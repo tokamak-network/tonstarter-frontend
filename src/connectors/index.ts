@@ -35,6 +35,8 @@ export const injected = new InjectedConnector({
   supportedChainIds: [1, 3],
 });
 
+// Fixes https://github.com/NoahZinsmeister/web3-react/issues/124
+// You can close and open walletconnect at will with this fix
 export let walletconnect = newWalletConnect();
 export let walletlink = newWalletLink();
 
