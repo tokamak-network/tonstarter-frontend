@@ -9,6 +9,8 @@ import theme from 'theme';
 import store from 'store';
 import {Router} from 'pages/Router';
 
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+
 ReactDOM.render(
   <React.StrictMode>
     <ColorModeScript />
@@ -27,3 +29,4 @@ ReactDOM.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+serviceWorkerRegistration.register();
