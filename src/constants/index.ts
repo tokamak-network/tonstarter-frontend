@@ -8,7 +8,7 @@ export const SUPPORTED_WALLETS: {[key: string]: WalletInfo} = {
   INJECTED: {
     connector: injected,
     name: 'Injected',
-    iconName: 'arrow-right.svg',
+    iconName: 'metamask.svg',
     description: 'Injected web3 provider.',
     href: null,
     color: '#010101',
@@ -17,7 +17,7 @@ export const SUPPORTED_WALLETS: {[key: string]: WalletInfo} = {
   METAMASK: {
     connector: injected,
     name: 'MetaMask',
-    iconName: 'metamask.png',
+    iconName: 'metamask.svg',
     description: 'Easy-to-use browser extension.',
     href: null,
     color: '#E8831D',
@@ -25,8 +25,8 @@ export const SUPPORTED_WALLETS: {[key: string]: WalletInfo} = {
   WALLET_CONNECT: {
     connector: walletconnect,
     name: 'Wallet Connect',
-    iconName: 'metamask.png',
-    description: 'Easy-to-use browser extension.',
+    iconName: 'walletconnect.svg',
+    description: 'Connect to Trust Wallet, Rainbow Wallet and more...',
     href: null,
     color: '#E8831D',
   },

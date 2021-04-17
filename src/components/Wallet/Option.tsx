@@ -1,4 +1,4 @@
-import {Box, Text} from '@chakra-ui/react';
+import {Box, Text, Image, Flex} from '@chakra-ui/react';
 import {FC} from 'react';
 
 type WalletOptionProps = {
@@ -18,7 +18,9 @@ export const WalletOption: FC<WalletOptionProps> = ({
   id,
   header,
   subheader,
+  icon,
 }) => {
+  console.log(icon);
   return (
     <Box
       id={id}
@@ -29,7 +31,10 @@ export const WalletOption: FC<WalletOptionProps> = ({
       px={5}
       py={3}
       mb={3}>
-      <Text fontSize="md">{header}</Text>
+      <Flex align="center">
+        <Image mr={2} w={5} height={5} src={icon} alt={header} />
+        <Text fontSize="md">{header}</Text>
+      </Flex>
       <Text fontSize="sm">{subheader}</Text>
     </Box>
   );

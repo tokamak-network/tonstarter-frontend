@@ -180,7 +180,8 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
               color={option.color}
               link={option.href}
               header={option.name}
-              subheader={null}
+              subheader={option.description}
+              icon={require('../../assets/svgs/' + option.iconName).default}
             />
           );
         }
@@ -199,8 +200,9 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
                 key={key}
                 color={'#E8831D'}
                 header={'Install Metamask'}
-                subheader={null}
+                subheader={option.description}
                 link={'https://metamask.io/'}
+                icon={require('../../assets/svgs/' + option.iconName).default}
               />
             );
           } else {
@@ -233,7 +235,8 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
             color={option.color}
             link={option.href}
             header={option.name}
-            subheader={null} //use option.descriptio to bring back multi-line
+            subheader={option.description} //use option.descriptio to bring back multi-line
+            icon={require('../../assets/svgs/' + option.iconName).default}
           />
         )
       );
