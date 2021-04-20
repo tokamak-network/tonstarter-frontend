@@ -10,4 +10,5 @@ export type WalletInfo = {
   primary?: boolean;
   mobile?: boolean;
   mobileOnly?: boolean;
+  type?: string;
 };

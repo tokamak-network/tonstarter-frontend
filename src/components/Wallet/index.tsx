@@ -19,7 +19,7 @@ import {getExplorerLink, shortenAddress} from 'utils';
 import {SUPPORTED_WALLETS} from 'constants/index';
 import {isMobile} from 'react-device-detect';
 import {WalletOption} from 'components/Wallet/Option';
-import {injected, walletlink} from 'connectors';
+import {injected, walletconnect, walletlink} from 'connectors';
 import {WalletPending} from 'components/Wallet/Pending';
 import usePrevious from 'hooks/usePrevious';
 import {useEagerConnect, useInactiveListener} from 'hooks/useWeb3';
@@ -38,7 +38,15 @@ const WALLET_VIEWS = {
 };
 
 export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
-  const {account, connector, chainId, activate, error, active} = useWeb3React();
+  const {
+    account,
+    connector,
+    chainId,
+    activate,
+    error,
+    active,
+    deactivate,
+  } = useWeb3React();
   const {onCopy} = useClipboard(account as string);
   const [copyText, setCopyText] = useState<string>('Copy Address');
   const [walletView, setWalletView] = useState<string>(WALLET_VIEWS.ACCOUNT);
@@ -264,6 +272,18 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
                         colorScheme="red"
                         onClick={() => {
                           (connector as any).close();
+                        }}>
+                        Disconnect
+                      </Button>
+                    )}
+                    {connector !== walletconnect && (active || error) && (
+                      <Button
+                        size="xs"
+                        mr={3}
+                        outline="none"
+                        colorScheme="red"
+                        onClick={() => {
+                          deactivate();
                         }}>
                         Disconnect
                       </Button>

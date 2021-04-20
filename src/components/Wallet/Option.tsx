@@ -20,7 +20,6 @@ export const WalletOption: FC<WalletOptionProps> = ({
   subheader,
   icon,
 }) => {
-  console.log(icon);
   return (
     <Box
       id={id}

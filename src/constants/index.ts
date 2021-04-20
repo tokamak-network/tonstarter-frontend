@@ -13,6 +13,7 @@ export const SUPPORTED_WALLETS: {[key: string]: WalletInfo} = {
     href: null,
     color: '#010101',
     primary: true,
+    type: 'INJECTED',
   },
   METAMASK: {
     connector: injected,
@@ -21,6 +22,7 @@ export const SUPPORTED_WALLETS: {[key: string]: WalletInfo} = {
     description: 'Easy-to-use browser extension.',
     href: null,
     color: '#E8831D',
+    type: 'METAMASK',
   },
   WALLET_CONNECT: {
     connector: walletconnect,
@@ -29,5 +31,7 @@ export const SUPPORTED_WALLETS: {[key: string]: WalletInfo} = {
     description: 'Connect to Trust Wallet, Rainbow Wallet and more...',
     href: null,
     color: '#E8831D',
+    mobile: true,
+    type: 'WALLET_CONNECT',
   },
 };
