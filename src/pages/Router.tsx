@@ -6,7 +6,8 @@ import { Header } from 'components/Header';
 import { Home } from './Home';
 import { Staking } from './Staking';
 import {Support} from './Support';
-
+import {Wallet} from './Wallet';
+import {PowerTON} from './PowerTON';
 import { Switch, Route } from 'react-router-dom';
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> { }
 
@@ -31,6 +32,8 @@ export const Router: FC<RouterProps> = () => {
         <Route exact path="/" component={Home} />
         <Route exact path="/staking" component={Staking} />
         <Route exact path="/support" component={Support} />
+        <Route exact path="/wallet" component={Wallet} />
+        <Route exact path="/powerton" component={PowerTON} />
       </Switch>
     </>
   );
