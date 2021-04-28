@@ -1,20 +1,20 @@
-import React, { FC, HTMLAttributes, useState } from 'react';
-import { WalletModal } from 'components/Wallet';
-import { useDisclosure } from '@chakra-ui/react';
-import { useWeb3React } from '@web3-react/core';
-import { Header } from 'components/Header';
-import { Home } from './Home';
-import { Staking } from './Staking';
+import React, {FC, HTMLAttributes, useState} from 'react';
+import {WalletModal} from 'components/Wallet';
+import {useDisclosure} from '@chakra-ui/react';
+import {useWeb3React} from '@web3-react/core';
+import {Header} from 'components/Header';
+import {Home} from './Home';
+import {Staking} from './Staking';
 import {Support} from './Support';
 import {Wallet} from './Wallet';
 import {PowerTON} from './PowerTON';
-import { Switch, Route } from 'react-router-dom';
-export interface RouterProps extends HTMLAttributes<HTMLDivElement> { }
+import {Switch, Route} from 'react-router-dom';
+export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
 export const Router: FC<RouterProps> = () => {
   const [walletState, setWalletState] = useState<string>('');
-  const { onOpen, isOpen: isModalOpen, onClose } = useDisclosure();
-  const { account } = useWeb3React();
+  const {onOpen, isOpen: isModalOpen, onClose} = useDisclosure();
+  const {account} = useWeb3React();
 
   const handleWalletModalOpen = (state: string) => {
     setWalletState(state);
