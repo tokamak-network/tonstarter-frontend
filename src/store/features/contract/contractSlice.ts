@@ -28,12 +28,12 @@ const contractSlice = createSlice({
   name: 'contract',
   initialState,
   reducers: {
-    getAbi: (state, action): string => {
-      //   return initialState.contractAddress.temp;
-    },
+    // getAbi: (state, action): string => {
+    //   //   return initialState.contractAddress.temp;
+    // },
   },
 });
 
-export const {getAbi} = contractSlice.actions;
+// export const {getAbi} = contractSlice.actions;
 
 export default contractSlice.reducer;
