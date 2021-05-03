@@ -1,3 +1,1 @@
-export type AppState = {
-  theme: string;
-};
+export * from 'types/wallet';
