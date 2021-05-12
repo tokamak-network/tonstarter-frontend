@@ -1,35 +1,57 @@
 import {Box} from '@chakra-ui/layout';
-import {FC, HTMLAttributes} from 'react';
+import {FC, HTMLAttributes, useEffect, useState} from 'react';
+import {ethers} from 'ethers';
 import {useSelector, useDispatch} from 'react-redux';
 import {add} from 'store/features/user/userSlice';
-import number from '../utils/number';
+import number from 'utils/number';
+import {useContract} from '../hooks/useContract';
 export interface HomeProps extends HTMLAttributes<HTMLDivElement> {
   classes?: string;
 }
 
+const test = async (result: any) => {
+  const dd = await result.totalSupply();
+  console.log(dd);
+};
+
 export const Home: React.FC<HomeProps> = (prop) => {
-  const test = useSelector((state) => state);
-  const testGo = useDispatch();
-  const gogo = () => testGo(add(10));
-  const num = number({type: 'TON', amount: '1234940000000000000000'});
-  const num2 = number({
-    type: 'TON',
-    amount: '1234940000000000000000',
-    optRound: 'roundDown',
-  });
-  const num3 = number({
-    type: 'TON',
-    amount: '1234940000000000000000',
-    optRound: 'roundup',
-  });
-  console.log(num);
-  console.log(num2);
-  console.log(num3);
+  // const test = useSelector((state) => state);
+  // // const testGo = useDispatch();
+  // // const gogo = () => testGo(add(10));
+  // console.log(test);
+
+  const contractAbi = [
+    'function approve(address, uint256) returns (bool)',
+    // view functions
+    'function balanceOf(address) view returns (uint256)',
+    'function totalSupply() view returns (uint256)',
+  ];
+
+  const [testContract, getTestContract] = useState('');
+  const contract = useContract(
+    '0x44d4f5d89e9296337b8c48a332b3b2fb2c190cd0',
+    contractAbi,
+  );
+
+  // useEffect(() => {
+  //   if (!testContract) {
+  //     test(contract);
+  //   }
+  // }, []);
+
+  const test = async (contract: any) => {
+    const result = await contract?.totalSupply();
+    getTestContract(result);
+  };
+
+  //  if (!testContract) {
+  //    test(contract);
+  //  }
 
   return (
     <Box>
       Home
-      <button onClick={() => gogo()}>Test</button>
+      <button onClick={() => console.log(testContract)}>Test</button>
     </Box>
   );
 };
