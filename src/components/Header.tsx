@@ -4,6 +4,7 @@ import {shortenAddress} from 'utils';
 import {ThemeSwitcher} from './ThemeSwitcher';
 
 import TokamakLogo from 'assets/images/logo.png';
+import { Link } from 'react-router-dom';
 
 type HeaderProps = {
   onWalletOpen: () => void;
@@ -29,6 +30,7 @@ export const Header: React.FC<HeaderProps> = props => {
           color={["white", "white", "primary.500", "primary.500"]}
         /> */}
       <MenuToggle toggle={toggle} isOpen={isOpen} />
+      <MenuItems isOpen={isOpen} {...props}/>
       <MenuLinks isOpen={isOpen} {...props} />
     </NavBarContainer>
   );
@@ -109,7 +111,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({
         pt={[4, 4, 0, 0]}>
     <Link to="/">FLD Starter</Link>
     <Link to="/pools">Pools</Link>
-    <Link to="/staking">Staking</Link>
+   <Link to="/staking">Staking</Link>
     {/* <Link to="/starter">Starter</Link>
     <Link to="/dao">Dao</Link> */}
 
@@ -117,6 +119,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({
     </Box>
   );
 };
+
 
 const NavBarContainer = ({children, ...props}: {children: any}) => {
   return (
