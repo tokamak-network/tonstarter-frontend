@@ -32,8 +32,8 @@ export const Router: FC<RouterProps> = () => {
         <Route exact path="/" component={FLDstarter} />
         <Route exact path="/pools" component={Pools} />
         <Route exact path="/staking" component={Staking} />
-        <Route exact path="/starter" component={Starter} />
-        <Route exact path="/DAO" component={DAO} />
+        {/* <Route exact path="/starter" component={Starter} /> */}
+        {/* <Route exact path="/dao" component={DAO} /> */}
       </Switch>
     </>
   );

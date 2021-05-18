@@ -15,15 +15,15 @@ export const FLDstarter: React.FC<HomeProps> = props => {
 
             </Flex>
             <Box p={10}>
-                <SimpleGrid minChildWidth="190px" spacing="20px">
-                    <Box bg="blue.300" height="80px"></Box>
-                    <Box bg="tomato" height="80px" display="flex" alignItems="center" justifyContent="center">
+                <SimpleGrid minChildWidth={40} spacing={5}>
+                    <Box bg="blue.300" height={20}></Box>
+                    <Box bg="tomato" height={20} display="flex" alignItems="center" justifyContent="center">
                         <Button colorScheme="blue" outline="none" _focus={{outline:"none"}}>Stake</Button>
                     </Box>
-                    <Box bg="tomato" height="80px"></Box>
-                    <Box bg="tomato" height="80px"></Box>
-                    <Box bg="tomato" height="80px"></Box>
-                    <Box bg="tomato" height="80px"></Box>
+                    <Box bg="tomato" height={20}></Box>
+                    <Box bg="tomato" height={20}></Box>
+                    <Box bg="tomato" height={20}></Box>
+                    <Box bg="tomato" height={20}></Box>
                 </SimpleGrid>
             </Box>
         </Box>

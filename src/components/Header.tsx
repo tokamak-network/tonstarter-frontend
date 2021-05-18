@@ -112,8 +112,8 @@ const MenuItems: React.FC<MenuLinksProps> = ({
     <Link to="/">FLD Starter</Link>
     <Link to="/pools">Pools</Link>
     <Link to="/staking">Staking</Link>
-    <Link to="/starter">Starter</Link>
-    <Link to="/dao">Dao</Link>
+    {/* <Link to="/starter">Starter</Link>
+    <Link to="/dao">Dao</Link> */}
 
       </Stack>
     </Box>
