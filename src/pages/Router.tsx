@@ -3,11 +3,11 @@ import { WalletModal } from 'components/Wallet';
 import { useDisclosure } from '@chakra-ui/react';
 import { useWeb3React } from '@web3-react/core';
 import { Header } from 'components/Header';
-import { Home } from './Home';
-import { Staking } from './Staking';
-import {Support} from './Support';
-import {Wallet} from './Wallet';
-import {PowerTON} from './PowerTON';
+import { FLDstarter } from './FLDstarter';
+import { Pools } from './Pools';
+import {Staking} from './Staking';
+import {Starter} from './Starter';
+import {DAO} from './DAO';
 import { Switch, Route } from 'react-router-dom';
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> { }
 
@@ -29,11 +29,11 @@ export const Router: FC<RouterProps> = () => {
       />
       <WalletModal state={walletState} isOpen={isModalOpen} onClose={onClose} />
       <Switch>
-        <Route exact path="/" component={Home} />
+        <Route exact path="/" component={FLDstarter} />
+        <Route exact path="/pools" component={Pools} />
         <Route exact path="/staking" component={Staking} />
-        <Route exact path="/support" component={Support} />
-        <Route exact path="/wallet" component={Wallet} />
-        <Route exact path="/powerton" component={PowerTON} />
+        <Route exact path="/starter" component={Starter} />
+        <Route exact path="/DAO" component={DAO} />
       </Switch>
     </>
   );

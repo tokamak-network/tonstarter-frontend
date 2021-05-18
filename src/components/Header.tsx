@@ -109,11 +109,11 @@ const MenuItems: React.FC<MenuLinksProps> = ({
         justify={['center', 'space-between', 'flex-end', 'flex-end']}
         direction={['column', 'row', 'row', 'row']}
         pt={[4, 4, 0, 0]}>
-    <Link to="/">Home</Link>
+    <Link to="/">FLD Starter</Link>
+    <Link to="/pools">Pools</Link>
     <Link to="/staking">Staking</Link>
-    <Link to="/powerton">PowerTON</Link>
-    <Link to="/wallet">Wallet</Link>
-    <Link to="/support">Support</Link>
+    <Link to="/starter">Starter</Link>
+    <Link to="/dao">Dao</Link>
 
       </Stack>
     </Box>
