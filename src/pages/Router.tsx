@@ -13,8 +13,8 @@ export interface RouterProps extends HTMLAttributes<HTMLDivElement> { }
 
 export const Router: FC<RouterProps> = () => {
   const [walletState, setWalletState] = useState<string>('');
-  const { onOpen, isOpen: isModalOpen, onClose } = useDisclosure();
-  const { account } = useWeb3React();
+  const {onOpen, isOpen: isModalOpen, onClose} = useDisclosure();
+  const {account} = useWeb3React();
 
   const handleWalletModalOpen = (state: string) => {
     setWalletState(state);
@@ -28,6 +28,7 @@ export const Router: FC<RouterProps> = () => {
         onWalletOpen={() => handleWalletModalOpen('wallet')}
       />
       <WalletModal state={walletState} isOpen={isModalOpen} onClose={onClose} />
+
       <Switch>
         <Route exact path="/" component={FLDstarter} />
         <Route exact path="/pools" component={Pools} />

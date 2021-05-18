@@ -9,5 +9,6 @@ yarn start
 
 ## Additional Reading
 
-https://redux-toolkit.js.org/
-https://chakra-ui.com/
+1. https://redux-toolkit.js.org/
+2. https://chakra-ui.com/
+3. https://react.i18next.com/
