@@ -153,7 +153,7 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
       )
       .map(k => SUPPORTED_WALLETS[k].name)[0];
     return (
-      <Text colorScheme="gray.100" fontSize="sm">
+      <Text colorScheme="gray.600" fontSize="sm">
         Connected with {name.toString()}
       </Text>
     );

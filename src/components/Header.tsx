@@ -4,6 +4,7 @@ import {shortenAddress} from 'utils';
 import {ThemeSwitcher} from './ThemeSwitcher';
 
 import TokamakLogo from 'assets/images/logo.png';
+import { Link } from 'react-router-dom';
 
 type HeaderProps = {
   onWalletOpen: () => void;
@@ -29,6 +30,7 @@ export const Header: React.FC<HeaderProps> = props => {
           color={["white", "white", "primary.500", "primary.500"]}
         /> */}
       <MenuToggle toggle={toggle} isOpen={isOpen} />
+      <MenuItems isOpen={isOpen} {...props}/>
       <MenuLinks isOpen={isOpen} {...props} />
     </NavBarContainer>
   );
@@ -93,6 +95,31 @@ const MenuLinks: React.FC<MenuLinksProps> = ({
     </Box>
   );
 };
+
+const MenuItems: React.FC<MenuLinksProps> = ({
+  isOpen
+}) => {
+  return (
+    <Box
+      display={{base: isOpen ? 'block' : 'none', md: 'block'}}
+      flexBasis={{base: '100%', md: 'auto'}}>
+      <Stack
+        spacing={8}
+        align="center"
+        justify={['center', 'space-between', 'flex-end', 'flex-end']}
+        direction={['column', 'row', 'row', 'row']}
+        pt={[4, 4, 0, 0]}>
+    <Link to="/">FLD Starter</Link>
+    <Link to="/pools">Pools</Link>
+   <Link to="/staking">Staking</Link>
+    {/* <Link to="/starter">Starter</Link>
+    <Link to="/dao">Dao</Link> */}
+
+      </Stack>
+    </Box>
+  );
+};
+
 
 const NavBarContainer = ({children, ...props}: {children: any}) => {
   return (
