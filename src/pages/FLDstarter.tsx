@@ -1,5 +1,5 @@
 import { Box, Text, Flex, Image, SimpleGrid, Button } from '@chakra-ui/react';
-import { HTMLAttributes } from 'react';
+import {  HTMLAttributes } from 'react';
 import TokamakLogo from 'assets/images/logo.png';
 
 export interface HomeProps extends HTMLAttributes<HTMLDivElement> {
