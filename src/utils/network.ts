@@ -23,18 +23,26 @@ export const getNetworkDetails = async (provider: any, address: string) => {
 };
 
 export const getNetworkName = async (id: string | number) => {
+  let link: string;
   switch (id) {
     case 1:
-      return 'Main Network';
+      link = 'Main Network';
+      break;
     case 3:
-      return 'Ropsten Testnet Network';
+      link = 'Ropsten Testnet Network';
+      break;
     case 4:
-      return 'Rinkeby Testnet Network';
+      link = 'Rinkeby Testnet Network';
+      break;
     case 42:
-      return 'Kovan Testnet Network';
+      link = 'Kovan Testnet Network';
+      break;
     default:
-      return 'Local Testnet Network';
+      link = 'Local Testnet Network';
+      break;
   }
+
+  return link as string;
 };
 
 export const getExplorerLink = async (

@@ -15,8 +15,8 @@ import {
 } from '@chakra-ui/react';
 import {UnsupportedChainIdError, useWeb3React} from '@web3-react/core';
 import {AbstractConnector} from '@web3-react/abstract-connector';
-import {getExplorerLink, shortenAddress} from 'utils';
-import {SUPPORTED_WALLETS} from 'constants/index';
+import {getExplorerLink, getNetworkName, shortenAddress} from 'utils';
+import {DEFAULT_NETWORK, SUPPORTED_WALLETS} from 'constants/index';
 import {isMobile} from 'react-device-detect';
 import {WalletOption} from 'components/Wallet/Option';
 import {injected, walletconnect, walletlink} from 'connectors';
@@ -57,16 +57,18 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
   const [activatingConnector, setActivatingConnector] = useState<any>();
 
   const [explorerLink, setExplorerLink] = useState('');
+  const [defaultNetwork, setDefaultNetwork] = useState<string>('');
 
   const previousAccount = usePrevious(account);
 
   useEffect(() => {
-    const loadNetworkURL = async () => {
+    const loadNetwork = async () => {
       if (account) {
         setExplorerLink(await getExplorerLink(chainId, account));
       }
+      setDefaultNetwork(await getNetworkName(DEFAULT_NETWORK));
     };
-    loadNetworkURL();
+    loadNetwork();
   }, [account, chainId]);
 
   useEffect(() => {
@@ -252,7 +254,7 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
   };
 
   return (
-    <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
+    <Modal closeOnOverlayClick={false} isCentered isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       {walletView === WALLET_VIEWS.ACCOUNT && account ? (
         <ModalContent>
@@ -337,8 +339,8 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
           <ModalBody pb={6}>
             {error instanceof UnsupportedChainIdError ? (
               <Text>
-                App is running on Rinkeby. Please update your network
-                configuration.
+                App is running on <b>{`${defaultNetwork}`}</b>. Please update
+                your network configuration.
               </Text>
             ) : (
               'Error connecting. Try refreshing the page.'
