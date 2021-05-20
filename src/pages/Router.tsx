@@ -6,8 +6,8 @@ import { Header } from 'components/Header';
 import { FLDstarter } from './FLDstarter';
 import { Pools } from './Pools';
 import {Staking} from './Staking';
-import {Starter} from './Starter';
-import {DAO} from './DAO';
+// import {Starter} from './Starter';
+// import {DAO} from './DAO';
 import { Switch, Route } from 'react-router-dom';
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> { }
 
