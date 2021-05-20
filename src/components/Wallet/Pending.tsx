@@ -1,6 +1,6 @@
 import {FC} from 'react';
 import {AbstractConnector} from '@web3-react/abstract-connector';
-import {Box, Button, Flex} from '@chakra-ui/react';
+import {Box, Button, Flex, Text, Spinner} from '@chakra-ui/react';
 
 type WalletPendingProps = {
   connector?: AbstractConnector;
@@ -18,9 +18,10 @@ export const WalletPending: FC<WalletPendingProps> = ({
     <Box>
       {error ? (
         <Flex alignItems="center">
-          <div>Error connecting.</div>
+          <Text>Error connecting to wallet.</Text>
           <Button
             size="sm"
+            colorScheme={'blue'}
             ml={2}
             onClick={() => {
               setPendingError(false);
@@ -30,7 +31,10 @@ export const WalletPending: FC<WalletPendingProps> = ({
           </Button>
         </Flex>
       ) : (
-        <>Initializing...</>
+        <Flex alignItems="center">
+          <Spinner size={'sm'} color="red.500" />
+          <Text ml={3}>Connecting to a wallet</Text>
+        </Flex>
       )}
     </Box>
   );

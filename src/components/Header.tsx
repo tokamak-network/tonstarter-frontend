@@ -7,12 +7,12 @@ import TokamakLogo from 'assets/images/logo.png';
 import { Link } from 'react-router-dom';
 
 type HeaderProps = {
-  onWalletOpen: () => void;
+  walletopen: () => void;
   account: string | undefined | null;
 };
 
 type MenuLinksProps = {
-  onWalletOpen: () => void;
+  walletopen: () => void;
   account: string | undefined | null;
   isOpen: boolean;
 };
@@ -25,10 +25,6 @@ export const Header: React.FC<HeaderProps> = props => {
   return (
     <NavBarContainer {...props}>
       <Image src={TokamakLogo} w={16} alt="Tokamak Logo" />
-      {/* <Logo
-          w="100px"
-          color={["white", "white", "primary.500", "primary.500"]}
-        /> */}
       <MenuToggle toggle={toggle} isOpen={isOpen} />
       <MenuItems isOpen={isOpen} {...props}/>
       <MenuLinks isOpen={isOpen} {...props} />
@@ -75,7 +71,7 @@ const MenuToggle = ({
 const MenuLinks: React.FC<MenuLinksProps> = ({
   isOpen,
   account,
-  onWalletOpen,
+  walletopen,
 }) => {
   return (
     <Box
@@ -87,7 +83,7 @@ const MenuLinks: React.FC<MenuLinksProps> = ({
         justify={['center', 'space-between', 'flex-end', 'flex-end']}
         direction={['column', 'row', 'row', 'row']}
         pt={[4, 4, 0, 0]}>
-        <Button size="sm" onClick={() => onWalletOpen()} rounded="md">
+        <Button size="sm" onClick={walletopen} rounded="md">
           {account ? shortenAddress(account) : 'Connect wallet'}
         </Button>
         <ThemeSwitcher />
@@ -121,7 +117,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({
 };
 
 
-const NavBarContainer = ({children, ...props}: {children: any}) => {
+const NavBarContainer = ({children, ...rest}: {children: any}) => {
   return (
     <Flex
       as="nav"
@@ -132,7 +128,7 @@ const NavBarContainer = ({children, ...props}: {children: any}) => {
       mb={8}
       px={8}
       py={4}
-      {...props}>
+      {...rest}>
       {children}
     </Flex>
   );

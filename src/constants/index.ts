@@ -2,7 +2,7 @@ import {injected, walletconnect} from 'connectors';
 import {WalletInfo} from 'types';
 
 export const NetworkContextName = `${new Date().getTime()}-NETWORK`;
-export const DEFAULT_NETWORK = 4;
+export const DEFAULT_NETWORK = process.env.REACT_APP_DEFAULT_NETWORK as string;
 
 export const SUPPORTED_WALLETS: {[key: string]: WalletInfo} = {
   INJECTED: {
