@@ -8,6 +8,8 @@ import {
   Flex,
   useDisclosure,
 } from '@chakra-ui/react';
+import {IconClose} from 'components/Icons/IconClose';
+import {IconOpen} from 'components/Icons/IconOpen';
 import {Head} from 'components/SEO';
 import {StakeOptionModal} from 'components/StakeOptionModal';
 import {Table} from 'components/Table';
@@ -24,7 +26,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
 }) => {
   return (
     <Container maxW={'sm'}>
-      <Box textAlign={'center'} borderRadius={'lg'}>
+      <Box textAlign={'center'} py={10} px={5} shadow={'md'} borderRadius={'lg'}>
         <Heading>1,000 TON</Heading>
         <Box py={5}>
           <Text>Available in wallet</Text>
@@ -122,7 +124,7 @@ export const Staking = () => {
           // We can use the getToggleRowExpandedProps prop-getter
           // to build the expander.
           <span {...row.getToggleRowExpandedProps()}>
-            {row.isExpanded ? '👇' : '👉'}
+            {row.isExpanded ? <IconClose /> : <IconOpen />}
           </span>
         ),
       },
@@ -152,7 +154,7 @@ export const Staking = () => {
             <Text fontWeight={'bold'}>Closing day</Text>
           </Box>
         </Flex>
-        <Box p={12}>
+        <Box p={8}>
           <WalletInformation onOpenStakeOptionModal={handleStakeOptionSelect} />
         </Box>
         <Flex
