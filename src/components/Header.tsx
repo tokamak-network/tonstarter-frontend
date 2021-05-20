@@ -4,7 +4,7 @@ import {shortenAddress} from 'utils';
 import {ThemeSwitcher} from './ThemeSwitcher';
 
 import TokamakLogo from 'assets/images/logo.png';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
 type HeaderProps = {
   walletopen: () => void;
@@ -26,7 +26,7 @@ export const Header: React.FC<HeaderProps> = props => {
     <NavBarContainer {...props}>
       <Image src={TokamakLogo} w={16} alt="Tokamak Logo" />
       <MenuToggle toggle={toggle} isOpen={isOpen} />
-      <MenuItems isOpen={isOpen} {...props}/>
+      <MenuItems isOpen={isOpen} {...props} />
       <MenuLinks isOpen={isOpen} {...props} />
     </NavBarContainer>
   );
@@ -68,11 +68,7 @@ const MenuToggle = ({
   );
 };
 
-const MenuLinks: React.FC<MenuLinksProps> = ({
-  isOpen,
-  account,
-  walletopen,
-}) => {
+const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
   return (
     <Box
       display={{base: isOpen ? 'block' : 'none', md: 'block'}}
@@ -92,9 +88,7 @@ const MenuLinks: React.FC<MenuLinksProps> = ({
   );
 };
 
-const MenuItems: React.FC<MenuLinksProps> = ({
-  isOpen
-}) => {
+const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
   return (
     <Box
       display={{base: isOpen ? 'block' : 'none', md: 'block'}}
@@ -105,17 +99,15 @@ const MenuItems: React.FC<MenuLinksProps> = ({
         justify={['center', 'space-between', 'flex-end', 'flex-end']}
         direction={['column', 'row', 'row', 'row']}
         pt={[4, 4, 0, 0]}>
-    <Link to="/">FLD Starter</Link>
-    <Link to="/pools">Pools</Link>
-   <Link to="/staking">Staking</Link>
-    {/* <Link to="/starter">Starter</Link>
+        <Link to="/">FLD Starter</Link>
+        <Link to="/pools">Pools</Link>
+        <Link to="/staking">Staking</Link>
+        {/* <Link to="/starter">Starter</Link>
     <Link to="/dao">Dao</Link> */}
-
       </Stack>
     </Box>
   );
 };
-
 
 const NavBarContainer = ({children, ...rest}: {children: any}) => {
   return (
@@ -126,7 +118,7 @@ const NavBarContainer = ({children, ...rest}: {children: any}) => {
       wrap="wrap"
       w="100%"
       mb={8}
-      px={8}
+      px={{base: 4, md: 8}}
       py={4}
       {...rest}>
       {children}
