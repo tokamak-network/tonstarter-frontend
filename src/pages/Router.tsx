@@ -24,7 +24,7 @@ export const Router: FC<RouterProps> = () => {
     <>
       <Header
         account={account}
-        onwalletopen={() => handleWalletModalOpen('wallet')}
+        walletopen={() => handleWalletModalOpen('wallet')}
       />
       <WalletModal state={walletState} isOpen={isModalOpen} onClose={onClose} />
 
