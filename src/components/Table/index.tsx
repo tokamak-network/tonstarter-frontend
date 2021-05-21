@@ -34,14 +34,10 @@ export const Table: FC<TableProps> = ({columns, data, renderDetail}) => {
         {rows.map((row: any, i) => {
           prepareRow(row);
           return [
-            <chakra.tr
-              borderWidth={1}
-              h={10}
-              key={i}
-              {...row.getRowProps()}>
+            <chakra.tr borderWidth={1} h={10} key={i} {...row.getRowProps()}>
               {row.cells.map((cell: any, index: number) => {
                 return (
-                  <chakra.td key={index} {...cell.getCellProps()}>
+                  <chakra.td px={3} py={3} key={index} {...cell.getCellProps()}>
                     {cell.render('Cell')}
                   </chakra.td>
                 );
@@ -69,3 +65,8 @@ export const Table: FC<TableProps> = ({columns, data, renderDetail}) => {
     </chakra.table>
   );
 };
+
+// @todo (isaac): add mobile table
+// const MobileTable = () => {
+//   return;
+// };
