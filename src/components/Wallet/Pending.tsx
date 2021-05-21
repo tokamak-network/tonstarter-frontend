@@ -20,7 +20,7 @@ export const WalletPending: FC<WalletPendingProps> = ({
         <Flex alignItems="center">
           <Text>Error connecting to wallet.</Text>
           <Button
-            size="sm"
+            size="xs"
             colorScheme={'blue'}
             ml={2}
             onClick={() => {
