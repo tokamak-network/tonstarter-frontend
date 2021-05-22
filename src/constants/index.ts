@@ -4,6 +4,8 @@ import {WalletInfo} from 'types';
 export const NetworkContextName = `${new Date().getTime()}-NETWORK`;
 export const DEFAULT_NETWORK = process.env.REACT_APP_DEFAULT_NETWORK as string;
 
+export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+
 export const SUPPORTED_WALLETS: {[key: string]: WalletInfo} = {
   INJECTED: {
     connector: injected,
@@ -35,3 +37,14 @@ export const SUPPORTED_WALLETS: {[key: string]: WalletInfo} = {
     type: 'WALLET_CONNECT',
   },
 };
+
+export const REACT_APP_FLD = process.env.REACT_APP_FLD;
+export const REACT_APP_STAKE_REGISTRY = process.env.REACT_APP_STAKE_REGISTRY;
+export const REACT_APP_STAKE_LOGIC = process.env.REACT_APP_STAKE_LOGIC;
+export const REACT_APP_STAKE_PROXY = process.env.REACT_APP_STAKE_PROXY;
+export const REACT_APP_STAKE_FACTORY = process.env.REACT_APP_STAKE_FACTORY;
+export const REACT_APP_TON = process.env.REACT_APP_TON;
+export const REACT_APP_WTON = process.env.REACT_APP_WTON;
+export const REACT_APP_DEPOSIT_MANAGER = process.env.REACT_APP_DEPOSIT_MANAGER;
+export const REACT_APP_SEIGMANAGER = process.env.REACT_APP_SEIGMANAGER;
+export const REACT_STAKE_VAULT = '0x57Ac4234c5E4CA367fB2b956679415d46f757CBd';

@@ -11,11 +11,16 @@ import {
 import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
 import {Head} from 'components/SEO';
-import {StakeOptionModal} from 'components/StakeOptionModal';
-import {Table} from 'components/Table';
-import {data} from 'make';
-import {FC, Fragment, useCallback, useMemo, useState} from 'react';
+import {StakeOptionModal} from './StakeOptionModal';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {FC, Fragment, useCallback, useEffect, useMemo, useState} from 'react';
 import {shortenAddress} from 'utils';
+import {StakingTable} from './StakingTable';
+import {fetchStakes, selectStakes} from './staking.reducer';
+import {useContract} from 'hooks/useContract';
+import {REACT_APP_STAKE_PROXY} from 'constants/index';
+import * as StakeLogic from 'services/abis/Stake1Logic.json';
+import {useWeb3React} from '@web3-react/core';
 
 type WalletInformationProps = {
   onOpenStakeOptionModal: Function;
@@ -26,7 +31,12 @@ const WalletInformation: FC<WalletInformationProps> = ({
 }) => {
   return (
     <Container maxW={'sm'}>
-      <Box textAlign={'center'} py={10} px={5} shadow={'md'} borderRadius={'lg'}>
+      <Box
+        textAlign={'center'}
+        py={10}
+        px={5}
+        shadow={'md'}
+        borderRadius={'lg'}>
         <Heading>1,000 TON</Heading>
         <Box py={5}>
           <Text>Available in wallet</Text>
@@ -77,6 +87,15 @@ const WalletInformation: FC<WalletInformationProps> = ({
 };
 
 export const Staking = () => {
+  const stakeRegistryContract = useContract(
+    REACT_APP_STAKE_PROXY,
+    StakeLogic.abi,
+  );
+
+  const dispatch = useAppDispatch();
+  const {data, loading} = useAppSelector(selectStakes);
+  const {library} = useWeb3React();
+
   const {isOpen, onClose, onOpen} = useDisclosure();
   const [stakeOption, setStakeOption] = useState<{
     title: string;
@@ -85,11 +104,15 @@ export const Staking = () => {
     title: '',
     subtitle: '',
   });
+  useEffect(() => {
+    dispatch(fetchStakes({contract: stakeRegistryContract, library}) as any);
+  }, [stakeRegistryContract, dispatch, library]);
+
   const columns = useMemo(
     () => [
       {
         Header: 'Name',
-        accessor: 'name',
+        accessor: 'symbol',
       },
       {
         Header: 'Period',
@@ -141,40 +164,45 @@ export const Staking = () => {
   );
 
   const renderRowSubComponent = useCallback(
-    ({row}) => (
-      <Box borderWidth={1} mt={0}>
-        <Flex
-          px={{base: 3, md: 20}}
-          py={{base: 1, md: 10}}
-          justifyContent={'space-between'}>
-          <Box>
-            <Text fontWeight={'bold'}>Starting Day</Text>
+    ({row}) => {
+      console.log(data[row.id]);
+      return (
+        <Box mt={0}>
+          <Flex
+            px={{base: 3, md: 20}}
+            py={{base: 1, md: 10}}
+            justifyContent={'space-between'}>
+            <Box>
+              <Text fontWeight={'bold'}>Starting Day</Text>
+              <Text>{data[row.id]?.saleStartBlock}</Text>
+            </Box>
+            <Box>
+              <Text fontWeight={'bold'}>Closing day</Text>
+              <Text>{data[row.id]?.stakeEndBlock}</Text>
+            </Box>
+          </Flex>
+          <Box p={8}>
+            <WalletInformation
+              onOpenStakeOptionModal={handleStakeOptionSelect}
+            />
           </Box>
-          <Box>
-            <Text fontWeight={'bold'}>Closing day</Text>
-          </Box>
-        </Flex>
-        <Box p={8}>
-          <WalletInformation onOpenStakeOptionModal={handleStakeOptionSelect} />
+          <Flex
+            px={{base: 3, md: 20}}
+            py={{base: 1, md: 10}}
+            justifyContent={'space-between'}>
+            <Box>
+              <Text fontWeight={'bold'}>Total stakers</Text>
+              <Text textAlign={'center'}>100</Text>
+            </Box>
+            <Box>
+              <Text fontWeight={'bold'}>Contract</Text>
+              <Text>{shortenAddress(data[row.id]?.contractAddress)}</Text>
+            </Box>
+          </Flex>
         </Box>
-        <Flex
-          px={{base: 3, md: 20}}
-          py={{base: 1, md: 10}}
-          justifyContent={'space-between'}>
-          <Box>
-            <Text fontWeight={'bold'}>Total stakers</Text>
-            <Text textAlign={'center'}>100</Text>
-          </Box>
-          <Box>
-            <Text fontWeight={'bold'}>Contract</Text>
-            <Text>
-              {shortenAddress('0x0000000000000000000000000000000000000000')}
-            </Text>
-          </Box>
-        </Flex>
-      </Box>
-    ),
-    [handleStakeOptionSelect],
+      );
+    },
+    [data, handleStakeOptionSelect],
   );
 
   return (
@@ -191,16 +219,21 @@ export const Staking = () => {
         </Box>
 
         <Box py={20}>
-          <Table
+          <StakingTable
             renderDetail={renderRowSubComponent}
             columns={columns}
             data={data}
+            isLoading={loading === 'pending' ? true : false}
           />
         </Box>
       </Container>
       <StakeOptionModal
         stakeOption={stakeOption}
         isOpen={isOpen}
+        form={{
+          size: 10,
+          variant: '',
+        }}
         onClose={onClose}
       />
     </Fragment>

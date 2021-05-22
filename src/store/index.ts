@@ -2,7 +2,7 @@ import {configureStore, Action, getDefaultMiddleware} from '@reduxjs/toolkit';
 import {useDispatch} from 'react-redux';
 import {ThunkAction} from 'redux-thunk';
 import logger from 'redux-logger';
-import rootReducer, {RootState} from 'store/reducers';
+import rootReducer, { RootState } from './reducers';
 
 const middleware = [...getDefaultMiddleware(), logger];
 
