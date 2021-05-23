@@ -1,7 +1,7 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {RootState} from 'store/reducers';
 import {getContract} from 'utils/contract';
-import {formatEther} from 'ethers/lib/utils';
+import {utils} from 'ethers';
 import {ZERO_ADDRESS} from 'constants/index';
 import * as StakeVault from 'services/abis/Stake1Vault.json';
 import * as IERC20 from 'services/abis/IERC20.json';
@@ -55,7 +55,7 @@ export const fetchStakes = createAsyncThunk(
           const token = await stakeVault.paytoken();
           const vaultInfo: Partial<Stake> = {
             paytoken: token,
-            cap: formatEther(await stakeVault.cap()),
+            cap: utils.formatEther(await stakeVault.cap()),
             saleStartBlock: (await stakeVault.saleStartBlock()).toString(),
             stakeStartBlock: (await stakeVault.stakeStartBlock()).toString(),
             blockTotalReward: (await stakeVault.blockTotalReward()).toString(),
