@@ -10,6 +10,7 @@ const fonts = {
 };
 
 const breakpoints = createBreakpoints({
+  xs: '5em',
   sm: '40em',
   md: '52em',
   lg: '64em',
@@ -18,6 +19,9 @@ const breakpoints = createBreakpoints({
 
 const colors = {
   gray: {
+    900: '#304156',
+    800: '#3d495d',
+    700: '#808992',
     600: '#3e495c',
     500: '#818992',
     400: '#86929d',
@@ -25,6 +29,7 @@ const colors = {
     200: '#dfe4ee',
     100: '#f4f6f9',
     50: '#fafbfc',
+    25: '#e9edf1'
   },
   blue: {
     400: '#0062c2',
