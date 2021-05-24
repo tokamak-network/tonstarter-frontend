@@ -1,0 +1,15 @@
+<svg id="facebook-s-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-2 {
+        fill: #354052;
+      }
+    </style>
+  </defs>
+  <rect id="Base" class="cls-1" width="20" height="20"/>
+  <path id="Facebook" class="cls-2" d="M5.193,16V8.7H7.554L7.9,5.859H5.193V4.042c0-.822.22-1.384,1.356-1.384H8V.111A18.142,18.142,0,0,0,5.888,0C3.795,0,2.367,1.329,2.367,3.764v2.1H0V8.708H2.367V16Z" transform="translate(6 2)"/>
+</svg>

@@ -1,9 +1,8 @@
-import {Box, Flex, Button, Stack, Image, useTheme} from '@chakra-ui/react';
+import {Box, Flex, Button, Stack, Image} from '@chakra-ui/react';
 import React from 'react';
 import {shortenAddress} from 'utils';
 import {ThemeSwitcher} from './ThemeSwitcher';
 import {NavLink} from 'react-router-dom';
-import {css, Global} from '@emotion/react';
 
 import TokamakLogo from 'assets/images/logo.png';
 
@@ -90,7 +89,6 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
 };
 
 const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
-  const theme = useTheme();
 
   return (
     <Box
@@ -114,18 +112,6 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
         {/* <Link to="/starter">Starter</Link>
     <Link to="/dao">Dao</Link> */}
       </Stack>
-      <Global
-        styles={css`
-          .link {
-            font-weight: 700;
-            font-size: ${theme.fontSizes.sm}
-            font-family: ${theme.fonts.heading};
-          }
-          .active {
-            color: ${theme.colors.blue[300]};
-          }
-        `}
-      />
     </Box>
   );
 };
