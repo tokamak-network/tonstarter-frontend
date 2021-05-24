@@ -3,9 +3,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {shortenAddress} from 'utils';
 import {ThemeSwitcher} from './ThemeSwitcher';
+import {NavLink} from 'react-router-dom';
 
 import TokamakLogo from 'assets/images/logo.png';
-import {Link} from 'react-router-dom';
 
 type HeaderProps = {
   onOpen: () => void;
@@ -100,9 +100,15 @@ const MenuItems: React.FC<{isOpen: boolean}> = ({isOpen}) => {
         justify={['center', 'space-between', 'flex-end', 'flex-end']}
         direction={['column', 'row', 'row', 'row']}
         pt={[4, 4, 0, 0]}>
-        <Link to="/">FLD Starter</Link>
-        <Link to="/pools">Pools</Link>
-        <Link to="/staking">Staking</Link>
+        <NavLink to="/" exact className={'link'} activeClassName={'active'}>
+          FLD Starter
+        </NavLink>
+        <NavLink to="/pools" className={'link'} activeClassName={'active'}>
+          Pools
+        </NavLink>
+        <NavLink to="/staking" className={'link'} activeClassName={'active'}>
+          Staking
+        </NavLink>
         {/* <Link to="/starter">Starter</Link>
     <Link to="/dao">Dao</Link> */}
       </Stack>

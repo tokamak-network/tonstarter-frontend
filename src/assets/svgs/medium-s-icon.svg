@@ -1,0 +1,19 @@
+<svg id="medium-s-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-2 {
+        fill: #354052;
+      }
+    </style>
+  </defs>
+  <rect id="Base" class="cls-1" width="20" height="20"/>
+  <g id="그룹_5284" data-name="그룹 5284" transform="translate(0 4)">
+    <circle id="타원_1" data-name="타원 1" class="cls-2" cx="5.677" cy="5.677" r="5.677"/>
+    <ellipse id="타원_2" data-name="타원 2" class="cls-2" cx="2.775" cy="5.313" rx="2.775" ry="5.313" transform="translate(11.929 0.364)"/>
+    <ellipse id="타원_3" data-name="타원 3" class="cls-2" cx="1.015" cy="4.772" rx="1.015" ry="4.772" transform="translate(17.97 0.905)"/>
+  </g>
+</svg>
