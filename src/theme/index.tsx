@@ -87,6 +87,7 @@ const theme = extendTheme({
       }
     }
   },
+
   },
   colors,
   fonts,
