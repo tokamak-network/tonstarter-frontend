@@ -1,5 +1,5 @@
 import {Image} from '@chakra-ui/image';
-import {Box, Container, Flex, Link, Text, Grid} from '@chakra-ui/layout';
+import {Box, Container, Flex, Link, Text} from '@chakra-ui/layout';
 import TelegramIcon from 'assets/svgs/telegram-s-icon.svg';
 import DiscordIcon from 'assets/svgs/discord-s-icon.svg';
 import FacebookIcon from 'assets/svgs/facebook-s-icon.svg';

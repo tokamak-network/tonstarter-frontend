@@ -49,6 +49,14 @@ const theme = extendTheme({
           color: 'blue.300',
         },
       },
+      '.link': {
+        fontWeight: 700,
+        fontSize: props.theme.fontSizes.sm,
+        fontFamily: props.theme.fonts.heading,
+      },
+      '.active': {
+        color: props.theme.colors.blue[300],
+      },
     }),
   },
   colors,
