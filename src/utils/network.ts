@@ -47,21 +47,20 @@ export const getNetworkName = async (id: string | number) => {
 
 export const getExplorerLink = async (
   id: string | number | undefined,
-  address: string,
 ) => {
   let link: string;
   switch (id) {
     case 1:
-      link = `https://etherscan.io/address/${address}`;
+      link = `https://etherscan.io/address/`;
       break;
     case 3:
-      link = `https://ropsten.etherscan.io/address/${address}`;
+      link = `https://ropsten.etherscan.io/address/`;
       break;
     case 4:
-      link = `https://rinkeby.etherscan.io/address/${address}`;
+      link = `https://rinkeby.etherscan.io/address/`;
       break;
     case 42:
-      link = `https://kovan.etherscan.io/address/${address}`;
+      link = `https://kovan.etherscan.io/address/`;
       break;
     default:
       link = 'Unknown network';

@@ -4,5 +4,6 @@ export const Input = {
     backgroundColor: 'transparent',
     textAlign: 'center',
     outline: 'none',
+    maxWidth: 'fit-content',
   }),
 };

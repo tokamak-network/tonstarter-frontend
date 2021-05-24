@@ -51,7 +51,6 @@ export const fetchStakes = createAsyncThunk(
       stakeVaults = await Promise.all(
         vaults.map(async (vault: any) => {
           const stakeVault = await getContract(vault, StakeVault.abi, library);
-          console.log(stakeVault);
           const token = await stakeVault.paytoken();
           const vaultInfo: Partial<Stake> = {
             paytoken: token,
@@ -111,4 +110,3 @@ export const stakeReducer = createSlice({
 });
 
 export const selectStakes = (state: RootState) => state.stakes;
-export const selectStake = (selectState: any, stake: any) => stake;

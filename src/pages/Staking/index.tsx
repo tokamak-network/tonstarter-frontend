@@ -7,13 +7,13 @@ import {
   Grid,
   Flex,
   useDisclosure,
+  Link,
 } from '@chakra-ui/react';
 import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
 import {Head} from 'components/SEO';
-import {StakeOptionModal} from './StakeOptionModal';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {FC, Fragment, useCallback, useEffect, useMemo, useState} from 'react';
+import {FC, Fragment, useCallback, useEffect, useMemo} from 'react';
 import {shortenAddress} from 'utils';
 import {StakingTable} from './StakingTable';
 import {fetchStakes, selectStakes} from './staking.reducer';
@@ -21,13 +21,25 @@ import {useContract} from 'hooks/useContract';
 import {REACT_APP_STAKE_PROXY} from 'constants/index';
 import * as StakeLogic from 'services/abis/Stake1Logic.json';
 import {useWeb3React} from '@web3-react/core';
+import {
+  ClaimOptionModal,
+  StakeOptionModal,
+  UnstakeOptionModal,
+} from './StakeOptionModal';
+import {selectApp} from 'store/app/app.reducer';
 
 type WalletInformationProps = {
   onOpenStakeOptionModal: Function;
+  onOpenClaimOptionModal: Function;
+  onOpenUnstakeOptionModal: Function;
+  onOpenManageOptionModal: Function;
 };
 
 const WalletInformation: FC<WalletInformationProps> = ({
   onOpenStakeOptionModal,
+  onOpenClaimOptionModal,
+  onOpenManageOptionModal,
+  onOpenUnstakeOptionModal,
 }) => {
   return (
     <Container maxW={'sm'}>
@@ -43,41 +55,16 @@ const WalletInformation: FC<WalletInformationProps> = ({
         </Box>
 
         <Grid templateColumns={'repeat(2, 1fr)'} gap={6}>
-          <Button
-            colorScheme="blue"
-            onClick={() =>
-              onOpenStakeOptionModal({
-                title: 'Stake',
-              })
-            }>
+          <Button colorScheme="blue" onClick={() => onOpenStakeOptionModal()}>
             Stake
           </Button>
-          <Button
-            colorScheme="blue"
-            onClick={() =>
-              onOpenStakeOptionModal({
-                title: 'Unstake',
-              })
-            }>
+          <Button colorScheme="blue" onClick={() => onOpenUnstakeOptionModal()}>
             Unstake
           </Button>
-          <Button
-            colorScheme="blue"
-            onClick={() =>
-              onOpenStakeOptionModal({
-                title: 'Claim',
-                subtitle: `You can claim xxx and earn xxx`,
-              })
-            }>
+          <Button colorScheme="blue" onClick={() => onOpenClaimOptionModal()}>
             Claim
           </Button>
-          <Button
-            colorScheme="blue"
-            onClick={() =>
-              onOpenStakeOptionModal({
-                title: 'Manage',
-              })
-            }>
+          <Button colorScheme="blue" onClick={() => onOpenManageOptionModal()}>
             Manage
           </Button>
         </Grid>
@@ -91,19 +78,34 @@ export const Staking = () => {
     REACT_APP_STAKE_PROXY,
     StakeLogic.abi,
   );
-
   const dispatch = useAppDispatch();
+  // @ts-ignore
   const {data, loading} = useAppSelector(selectStakes);
+  // @ts-ignore
+  const {data: appConfig} = useAppSelector(selectApp);
   const {library} = useWeb3React();
 
-  const {isOpen, onClose, onOpen} = useDisclosure();
-  const [stakeOption, setStakeOption] = useState<{
-    title: string;
-    subtitle: string;
-  }>({
-    title: '',
-    subtitle: '',
-  });
+  const {
+    isOpen: isClaimModalOpen,
+    onClose: onCloseClaimOptionModal,
+    onOpen: onOpenClaimOptionModal,
+  } = useDisclosure();
+  const {
+    isOpen: isStakeModalOpen,
+    onClose: onCloseStakeOptionModal,
+    onOpen: onOpenStakeOptionModal,
+  } = useDisclosure();
+  const {
+    isOpen: isUnstakeModalOpen,
+    onClose: onCloseUnstakeOptionModal,
+    onOpen: onOpenUnstakeOptionModal,
+  } = useDisclosure();
+  const {
+    // isOpen: isManageModalOpen,
+    // onClose: onCloseManageOptionModal,
+    onOpen: onOpenManageOptionModal,
+  } = useDisclosure();
+
   useEffect(() => {
     dispatch(fetchStakes({contract: stakeRegistryContract, library}) as any);
   }, [stakeRegistryContract, dispatch, library]);
@@ -155,17 +157,8 @@ export const Staking = () => {
     [],
   );
 
-  const handleStakeOptionSelect = useCallback(
-    ({title, subtitle}: {title: string; subtitle: string}) => {
-      setStakeOption({title, subtitle});
-      onOpen();
-    },
-    [onOpen],
-  );
-
   const renderRowSubComponent = useCallback(
     ({row}) => {
-      console.log(data[row.id]);
       return (
         <Box mt={0}>
           <Flex
@@ -183,7 +176,10 @@ export const Staking = () => {
           </Flex>
           <Box p={8}>
             <WalletInformation
-              onOpenStakeOptionModal={handleStakeOptionSelect}
+              onOpenStakeOptionModal={onOpenStakeOptionModal}
+              onOpenClaimOptionModal={onOpenClaimOptionModal}
+              onOpenManageOptionModal={onOpenManageOptionModal}
+              onOpenUnstakeOptionModal={onOpenUnstakeOptionModal}
             />
           </Box>
           <Flex
@@ -196,13 +192,30 @@ export const Staking = () => {
             </Box>
             <Box>
               <Text fontWeight={'bold'}>Contract</Text>
-              <Text>{shortenAddress(data[row.id]?.contractAddress)}</Text>
+              <Link
+                isExternal={true}
+                outline={'none'}
+                _focus={{
+                  outline: 'none',
+                }}
+                href={`${appConfig.explorerLink}${
+                  data[row.id]?.contractAddress
+                }`}>
+                {shortenAddress(data[row.id]?.contractAddress)}
+              </Link>
             </Box>
           </Flex>
         </Box>
       );
     },
-    [data, handleStakeOptionSelect],
+    [
+      appConfig.explorerLink,
+      data,
+      onOpenClaimOptionModal,
+      onOpenManageOptionModal,
+      onOpenStakeOptionModal,
+      onOpenUnstakeOptionModal,
+    ],
   );
 
   return (
@@ -228,13 +241,16 @@ export const Staking = () => {
         </Box>
       </Container>
       <StakeOptionModal
-        stakeOption={stakeOption}
-        isOpen={isOpen}
-        form={{
-          size: 10,
-          variant: '',
-        }}
-        onClose={onClose}
+        isOpen={isStakeModalOpen}
+        onClose={onCloseStakeOptionModal}
+      />
+      <UnstakeOptionModal
+        isOpen={isUnstakeModalOpen}
+        onClose={onCloseUnstakeOptionModal}
+      />
+      <ClaimOptionModal
+        isOpen={isClaimModalOpen}
+        onClose={onCloseClaimOptionModal}
       />
     </Fragment>
   );
