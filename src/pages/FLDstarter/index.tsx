@@ -2,18 +2,9 @@ import {
     Container,
     Box,
     Text,
-    Heading,
-    Button,
-    Grid,
-    Flex,
-    useDisclosure,
   } from '@chakra-ui/react';
   import {Head} from 'components/SEO';
-  import {StakeOptionModal} from 'components/StakeOptionModal';
-  import {Table} from 'components/Table';
-  import {data} from 'make';
-  import {FC, Fragment, useCallback, useMemo, useState} from 'react';
-  import {shortenAddress} from 'utils';
+  import {Fragment, useState} from 'react';
   import {PageHeader} from 'components/PageHeader';
   import {DropDown} from 'components/DropDown';
 

@@ -2,13 +2,10 @@ import {useState, useEffect} from 'react';
 import {
   Box,
   Text,
-  Button,
-  Stack,
   Flex,
   Image,
   useTheme,
 } from '@chakra-ui/react';
-import { mode } from '@chakra-ui/theme-tools'
 import arrowFolded from 'assets/images/arrow-folded.png';
 import arrowUnfolded from 'assets/images/arrow-unfolded.png';
 import {css, Global} from '@emotion/react';
@@ -33,12 +30,11 @@ export const DropDown: React.FC<dropDownProps> = ({
     if (selectedItem === '') {
       setSelectedItem(hint);
     }
-  }, [selectedItem]);
+  }, [selectedItem, hint]);
   const selected = (item: string) => {
     setSelectedItem(item);
     setUnfolded(false);
     select(item)
-    console.log(item);
   };
   return (
     <Box>
