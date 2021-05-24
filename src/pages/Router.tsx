@@ -1,4 +1,4 @@
-import {FC, HTMLAttributes} from 'react';
+import {FC, HTMLAttributes, useEffect} from 'react';
 import {WalletModal} from 'components/Wallet';
 import {useDisclosure} from '@chakra-ui/react';
 import {useWeb3React} from '@web3-react/core';
@@ -7,12 +7,19 @@ import {FLDstarter} from './FLDstarter';
 import {Pools} from './Pools';
 import {Staking} from './Staking';
 import {Switch, Route} from 'react-router-dom';
+import {useAppDispatch} from 'store';
+import {fetchAppConfig} from 'store/app/app.reducer';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
 export const Router: FC<RouterProps> = () => {
+  const dispatch = useAppDispatch();
   const {onOpen, isOpen: isModalOpen, onClose} = useDisclosure();
-  const {account} = useWeb3React();
+  const {account, chainId} = useWeb3React();
+
+  useEffect(() => {
+    dispatch(fetchAppConfig({chainId}) as any);
+  }, [chainId, dispatch]);
 
   return (
     <>
