@@ -47,7 +47,6 @@ const colors = {
 const theme = extendTheme({
   styles: {
     global: props => {
-      console.log(props);
       return {
       body: {
         bgColor: mode('gray.50', 'gray.800')(props),
@@ -73,8 +72,9 @@ const theme = extendTheme({
       '.dropdown-btn-hint': {
         color: mode('gray.400','gray.300')(props),
       },
-      '.dropdown-btn:active': {
-        color:mode('gray.400','gray.300')(props),
+      '.dropdown-btn': {
+        _active: { 
+          color:mode('gray.400','gray.300')(props),}
       },
       '.dropdown-btn-unfolded': {
         color: mode('gray.600','gray.400')(props),
