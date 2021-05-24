@@ -1,5 +1,5 @@
 import {FC} from 'react';
-import {Box, Text, useTheme} from '@chakra-ui/react';
+import {Box, Text} from '@chakra-ui/react';
 
 type HeadProps = {
   title?: string;
@@ -7,7 +7,6 @@ type HeadProps = {
 };
 
 export const PageHeader: FC<HeadProps> = ({title}) => {
-  const theme = useTheme();
 
   return (
     <Box>
