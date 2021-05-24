@@ -103,11 +103,11 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
         direction={['column', 'row', 'row', 'row']}
         pt={[4, 4, 0, 0]}>
         <NavLink to="/" exact className={'link'} activeClassName={'active'}>
-          Home
+          FLD Starter
         </NavLink>
-        <NavLink to="/pools" className={'link'} activeClassName={'active'}>
+        {/* <NavLink to="/pools" className={'link'} activeClassName={'active'}>
           Pools
-        </NavLink>
+        </NavLink> */}
         <NavLink to="/staking" className={'link'} activeClassName={'active'}>
           Staking
         </NavLink>

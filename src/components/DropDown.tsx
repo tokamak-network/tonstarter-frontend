@@ -8,6 +8,7 @@ import {
   Image,
   useTheme,
 } from '@chakra-ui/react';
+import { mode } from '@chakra-ui/theme-tools'
 import arrowFolded from 'assets/images/arrow-folded.png';
 import arrowUnfolded from 'assets/images/arrow-unfolded.png';
 import {css, Global} from '@emotion/react';
@@ -24,6 +25,7 @@ export const DropDown: React.FC<dropDownProps> = ({
   hint,
   select,
 }) => {
+  const theme = useTheme();
   const [selectedItem, setSelectedItem] = useState<string>('');
   const [unfolded, setUnfolded] = useState<Boolean>(false);
 
@@ -39,26 +41,27 @@ export const DropDown: React.FC<dropDownProps> = ({
     console.log(item);
   };
   return (
-    <Box
-      w={'xs'}>
+    <Box>
       <Flex
       onMouseDown={() => {
         unfolded ? setUnfolded(false) : setUnfolded(true);
       }}
+      w={200}
+      h={8}
         direction={'row'}
         py={3}
         px={3}
+        shadow={'md'}
         alignItems={'center'}
         justifyContent={'space-between'}
-        borderWidth={1}
-        className={`dropdown-btn ${
+        className={`dropdown-btn dropdown-btn-properties ${
           selectedItem === hint ? 'dropdown-btn-hint' : ''
         } ${unfolded ? 'dropdown-btn-unfolded' : ''}`}>
         {selectedItem}
         {unfolded ? (
-          <Image src={arrowFolded} w={3} h={2} alt="arrow folded" />
+          <Image src={arrowFolded} w={3} h={2} alt="" />
         ) : (
-          <Image src={arrowUnfolded} w={3} h={2} alt="arrow unfolded" />
+          <Image src={arrowUnfolded} w={3} h={2} alt="" />
         )}
       </Flex>
       <Box
@@ -66,7 +69,7 @@ export const DropDown: React.FC<dropDownProps> = ({
         className={`dropdown-content ${
           unfolded ? 'dropdown-content-unfolded' : 'dropdown-content'
         }`}
-        w={'xs'}>
+        w={200}>
         {items.map((item, index) => (
           <Text
             className={'dropdown-item'}
@@ -81,38 +84,18 @@ export const DropDown: React.FC<dropDownProps> = ({
         styles={css`
           .dropdown-btn {
             width: 100%;
-            height: 32px;
-            font-family: Roboto;
-            font-size: 12px;
             font-weight: normal;
-            font-stretch: normal;
-            font-style: normal;
-            letter-spacing: 0.2px;
+            font-size: 13px;
             text-align: left;
-            color: #86929d;
-            border-radius: 4px;
             outline: none;
             padding-left: 16px;
-          }
-          .dropdown-btn-hint {
-            color: #86929d;
           }
           .dropdown-btn:hover {
             cursor: pointer;
           }
-          .dropdown-btn-a:active,
-          dropdown-btn-b:active {
-            color: #3e495c;
-          }
-          .dropdown-btn-hint {
-            color: #86929d;
-          }
-          .dropdown-btn-unfolded {
-            color: #3e495c;
-          }
           .dropdown-btn-disabled {
-            border: solid 1px #dfe4ee;
-            background-color: #e9edf1;
+            border: solid 1px ${theme.colors.gray[200]};
+            background-color: ${theme.colors.gray[25]};
           }
           .dropdown-btn-disabled:hover {
             cursor: not-allowed;
@@ -120,7 +103,6 @@ export const DropDown: React.FC<dropDownProps> = ({
           .dropdown-content {
             display: none;
             position: absolute;
-            background: #ffffff;
             border-radius: 4px;
             box-shadow: 0 2px 4px 0 rgba(96, 97, 112, 0.14);
             margin-top: 5px;
@@ -129,24 +111,16 @@ export const DropDown: React.FC<dropDownProps> = ({
             display: flex;
             flex-direction: column;
           }
-          .dropdown-content-disabled {
-            color: #8f96a1;
-          }
 
           .dropdown-item {
             height: 32px;
-            font-family: Roboto;
-            font-size: 12px;
-            font-weight: lighter;
-            font-stretch: normal;
-            font-style: normal;
+            font-weight: normal;
+            font-family: ${theme.fonts.heading};
+            font-size: 13px;
             letter-spacing: 0.2px;
             text-align: left;
-            color: #3e495c;
-            background: #ffffff;
             border: none;
             outline: none;
-
             padding-left: 15px;
           }
           .dropdown-item:hover {
@@ -156,7 +130,7 @@ export const DropDown: React.FC<dropDownProps> = ({
             border-radius: 4px;
           }
           .dropdown-item:hover {
-            color: #2a72e5;
+            color: ${theme.colors.blue[300]};
           }
         `}
       />
