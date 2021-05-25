@@ -1,5 +1,5 @@
 import {FC} from 'react';
-import {Flex, Text, Container, useTheme} from '@chakra-ui/react';
+import {Flex, Text, Container} from '@chakra-ui/react';
 
 type TokenComponentProps = {
   phase?: string;

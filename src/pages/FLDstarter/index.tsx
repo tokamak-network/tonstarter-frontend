@@ -6,7 +6,7 @@ import {
     Center,
   } from '@chakra-ui/react';
   import {Head} from 'components/SEO';
-  import {Fragment, useState} from 'react';
+  import {Fragment} from 'react';
   import {PageHeader} from 'components/PageHeader';
   import {RoadmapItem} from './RoadmapItem';
   import {TokenComponent} from './TokenComponent';
