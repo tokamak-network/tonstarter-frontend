@@ -75,5 +75,7 @@ export const userReducer = createSlice({
   },
 });
 
+// @ts-ignore
 export const selectUser = (state: RootState) => state.user;
+// @ts-ignore
 export const selectBalance = (state: RootState) => state.user.data.balance;
