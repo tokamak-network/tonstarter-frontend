@@ -4,12 +4,10 @@ import {
     Text,
     SimpleGrid,
     Center,
-    Flex
   } from '@chakra-ui/react';
   import {Head} from 'components/SEO';
   import {Fragment, useState} from 'react';
   import {PageHeader} from 'components/PageHeader';
-  import {DropDown} from 'components/DropDown';
   import {RoadmapItem} from './RoadmapItem';
   import {TokenComponent} from './TokenComponent';
   import {IconContainer} from './IconContainer';
@@ -19,11 +17,11 @@ import {
   import {data} from 'make';
 
   export const FLDstarter = () => {
-    const [selected, setSelected] = useState<string>('hi');
+    // const [selected, setSelected] = useState<string>('hi');
 
-    const select = (selectedItem: string) => {
-      setSelected(selectedItem);
-    }
+    // const select = (selectedItem: string) => {
+    //   setSelected(selectedItem);
+    // }
   
     return (
       <Fragment>

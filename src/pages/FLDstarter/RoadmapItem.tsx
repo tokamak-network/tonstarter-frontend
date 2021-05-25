@@ -1,5 +1,5 @@
 import {FC} from 'react';
-import {Flex, Box, Text, Container, Image} from '@chakra-ui/react';
+import {Flex, Text, Container} from '@chakra-ui/react';
 
 type RoadmapItemProps = {
   phase?: string;

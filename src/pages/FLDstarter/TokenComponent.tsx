@@ -1,5 +1,5 @@
 import {FC} from 'react';
-import {Flex, Box, Text, Container, Image, useTheme} from '@chakra-ui/react';
+import {Flex, Text, Container, useTheme} from '@chakra-ui/react';
 
 type TokenComponentProps = {
   phase?: string;
@@ -7,7 +7,6 @@ type TokenComponentProps = {
 };
 
 export const TokenComponent: FC<TokenComponentProps> = ({phase, subtitle}) => {
-    const theme = useTheme();
   return (
     <Container bg="gray.0">
     <Flex direction={'column'} alignItems={'center'} justifyContent={'center'}>
