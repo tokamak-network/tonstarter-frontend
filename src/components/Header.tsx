@@ -1,5 +1,6 @@
 import {Box, Flex, Button, Stack, Image} from '@chakra-ui/react';
 import React from 'react';
+import PropTypes from 'prop-types';
 import {shortenAddress} from 'utils';
 import {ThemeSwitcher} from './ThemeSwitcher';
 import {NavLink} from 'react-router-dom';
@@ -7,27 +8,27 @@ import {NavLink} from 'react-router-dom';
 import TokamakLogo from 'assets/images/logo.png';
 
 type HeaderProps = {
-  walletopen: () => void;
+  onOpen: () => void;
   account: string | undefined | null;
 };
 
 type MenuLinksProps = {
-  walletopen: () => void;
+  onOpen: () => void;
   account: string | undefined | null;
   isOpen: boolean;
 };
 
-export const Header: React.FC<HeaderProps> = props => {
+export const Header: React.FC<HeaderProps> = ({onOpen, account}) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   const toggle = () => setIsOpen(!isOpen);
 
   return (
-    <NavBarContainer {...props}>
+    <NavBarContainer>
       <Image src={TokamakLogo} w={16} alt="Tokamak Logo" />
       <MenuToggle toggle={toggle} isOpen={isOpen} />
-      <MenuItems isOpen={isOpen} {...props} />
-      <MenuLinks isOpen={isOpen} {...props} />
+      <MenuItems isOpen={isOpen} />
+      <MenuLinks isOpen={isOpen} account={account} onOpen={onOpen} />
     </NavBarContainer>
   );
 };
@@ -68,7 +69,7 @@ const MenuToggle = ({
   );
 };
 
-const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
+const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, onOpen}) => {
   return (
     <Box
       display={{base: isOpen ? 'block' : 'none', md: 'block'}}
@@ -79,7 +80,7 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
         justify={['center', 'space-between', 'flex-end', 'flex-end']}
         direction={['column', 'row', 'row', 'row']}
         pt={[4, 4, 0, 0]}>
-        <Button size="sm" onClick={walletopen} rounded="md">
+        <Button size="sm" onClick={onOpen} rounded="md">
           {account ? shortenAddress(account) : 'Connect wallet'}
         </Button>
         <ThemeSwitcher />
@@ -88,8 +89,7 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
   );
 };
 
-const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
-
+const MenuItems: React.FC<{isOpen: boolean}> = ({isOpen}) => {
   return (
     <Box
       display={{base: isOpen ? 'block' : 'none', md: 'block'}}
@@ -125,10 +125,15 @@ const NavBarContainer = ({children, ...rest}: {children: any}) => {
       wrap="wrap"
       w="100%"
       mb={8}
-      px={8}
+      px={{base: 4, md: 8}}
       py={4}
       {...rest}>
       {children}
     </Flex>
   );
+};
+
+Header.propTypes = {
+  account: PropTypes.string,
+  onOpen: PropTypes.func.isRequired,
 };

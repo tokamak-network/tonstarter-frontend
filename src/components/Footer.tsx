@@ -83,12 +83,12 @@ const SocialLinks = () => {
 
 export const Footer = () => {
   return (
-    <Container maxW={'full'} py={{base: 0, md: 4}}>
+    <Container maxW={'full'} px={{base: 4, md: 8}} py={{base: 0, md: 4}}>
       <Flex
         flexDirection={{base: 'column', md: 'row'}}
         justifyContent={'space-between'}>
         <Flex flexGrow={2} direction={{base: 'column', md: 'row'}}>
-          <Box mr={{base: 0, md: 3}}>
+          <Box>
             <Text fontWeight={'bold'} letterSpacing={'normal'}>
               ONTHER PTE.LTD.
             </Text>

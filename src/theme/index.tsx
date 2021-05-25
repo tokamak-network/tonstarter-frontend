@@ -1,6 +1,6 @@
 import {extendTheme} from '@chakra-ui/react';
 import {createBreakpoints, mode} from '@chakra-ui/theme-tools';
-
+import {Input} from 'theme/components/input';
 import '@fontsource/titillium-web/200.css';
 import '@fontsource/roboto/400.css';
 
@@ -45,6 +45,9 @@ const colors = {
 };
 
 const theme = extendTheme({
+  components: {
+    Input,
+  },
   styles: {
     global: props => {
       return {
@@ -59,6 +62,10 @@ const theme = extendTheme({
         _active: {
           color: 'blue.300',
         },
+      },
+      '.link': {
+        fontWeight: 700,
+        fontSize: props.theme.fontSizes.md,
       },
       '.page-title': {
         color:mode('gray.800','gray.300')(props),

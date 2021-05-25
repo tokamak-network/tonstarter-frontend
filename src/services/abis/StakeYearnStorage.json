@@ -1,0 +1,417 @@
+{
+  "contractName": "StakeYearnStorage",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "endBlock",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "paytoken",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "rewardClaimedTotal",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "saleStartBlock",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "startBlock",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "token",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "totalStakedAmount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "userStaked",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "claimedBlock",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "claimedAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "releasedBlock",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "releasedAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "released",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "vault",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "yearnV2Vault",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.7.6+commit.7338295f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"endBlock\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"paytoken\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"rewardClaimedTotal\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"saleStartBlock\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"startBlock\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"token\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalStakedAmount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"userStaked\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"claimedBlock\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"claimedAmount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"releasedBlock\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"releasedAmount\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"released\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"vault\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"yearnV2Vault\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/Users/zena/ico2.0/ico20-contracts/contracts/stake/StakeYearnStorage.sol\":\"StakeYearnStorage\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/zena/ico2.0/ico20-contracts/contracts/libraries/LibTokenStake1.sol\":{\"keccak256\":\"0x4cfc0c40cab2ee67f226816877a71f9eb3938789cbacef2dece288f262ca13a0\",\"license\":\"Unlicense\",\"urls\":[\"bzz-raw://cbb298ee8c1e52738a8501f317315751e8deea85979712f7fb3bb832da07d178\",\"dweb:/ipfs/Qma7CzuxaEVVbP8hbT6o9hgrNeiLtYZBEYAeFZYd8Jaas7\"]},\"/Users/zena/ico2.0/ico20-contracts/contracts/stake/Stake1Storage.sol\":{\"keccak256\":\"0x94a10bea08d1111fae32a23fecef1c74b74ce3352304376e145a461b974a28ee\",\"license\":\"Unlicense\",\"urls\":[\"bzz-raw://bedaae19bd20199e2b4df78a0a995cda14ee7c67e5001efbfa616d1f35fa2385\",\"dweb:/ipfs/QmdiG5HHthtJSiNEv2B6nncsdeX5vNto6oU7D4Qts4YCEb\"]},\"/Users/zena/ico2.0/ico20-contracts/contracts/stake/StakeYearnStorage.sol\":{\"keccak256\":\"0x0215811640be8cc9c511fb45133e64e73f46996027d277fc73cd7c67fd704896\",\"license\":\"Unlicense\",\"urls\":[\"bzz-raw://daa0b2cb219be126c60d070cb1ab00441434bdfac947ae7482c103d6d896b14f\",\"dweb:/ipfs/QmaJ19Bc5i1r8EJEhANCEz6H9fvKbsGpD6WDah77VPtL32\"]}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b5061023c806100206000396000f3fe608060405234801561001057600080fd5b506004361061009e5760003560e01c8063a2095f2911610066578063a2095f29146100f9578063acc3a93914610101578063b2d4d6a31461015c578063fbfa77cf14610164578063fc0c546a1461016c5761009e565b8063083c6323146100a357806320027275146100bd57806343b0934a146100c557806348cd4cb1146100e9578063567e98f9146100f1575b600080fd5b6100ab610174565b60408051918252519081900360200190f35b6100ab61017a565b6100cd610180565b604080516001600160a01b039092168252519081900360200190f35b6100ab61018f565b6100ab610195565b6100cd61019b565b6101276004803603602081101561011757600080fd5b50356001600160a01b03166101aa565b6040805196875260208701959095528585019390935260608501919091526080840152151560a0830152519081900360c00190f35b6100ab6101e2565b6100cd6101e8565b6100cd6101f7565b60055481565b60035481565b6001546001600160a01b031681565b60045481565b60075481565b600a546001600160a01b031681565b600860205260009081526040902080546001820154600283015460038401546004850154600590950154939492939192909160ff1686565b60065481565b6002546001600160a01b031681565b6000546001600160a01b03168156fea2646970667358221220d9f476ee19e18490b28c91ff6e47054f87c52ae38d7904dcbb321ce08f7753e464736f6c63430007060033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061009e5760003560e01c8063a2095f2911610066578063a2095f29146100f9578063acc3a93914610101578063b2d4d6a31461015c578063fbfa77cf14610164578063fc0c546a1461016c5761009e565b8063083c6323146100a357806320027275146100bd57806343b0934a146100c557806348cd4cb1146100e9578063567e98f9146100f1575b600080fd5b6100ab610174565b60408051918252519081900360200190f35b6100ab61017a565b6100cd610180565b604080516001600160a01b039092168252519081900360200190f35b6100ab61018f565b6100ab610195565b6100cd61019b565b6101276004803603602081101561011757600080fd5b50356001600160a01b03166101aa565b6040805196875260208701959095528585019390935260608501919091526080840152151560a0830152519081900360c00190f35b6100ab6101e2565b6100cd6101e8565b6100cd6101f7565b60055481565b60035481565b6001546001600160a01b031681565b60045481565b60075481565b600a546001600160a01b031681565b600860205260009081526040902080546001820154600283015460038401546004850154600590950154939492939192909160ff1686565b60065481565b6002546001600160a01b031681565b6000546001600160a01b03168156fea2646970667358221220d9f476ee19e18490b28c91ff6e47054f87c52ae38d7904dcbb321ce08f7753e464736f6c63430007060033",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "93:81:27:-:0;;;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "93:81:27:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;513:23:19;;;:::i;:::-;;;;;;;;;;;;;;;;447:29;;;:::i;317:23::-;;;:::i;:::-;;;;-1:-1:-1;;;;;317:23:19;;;;;;;;;;;;;;482:25;;;:::i;644:32::-;;;:::i;143:27:27:-;;;:::i;732:65:19:-;;;;;;;;;;;;;;;;-1:-1:-1;732:65:19;-1:-1:-1;;;;;732:65:19;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;605:33;;;:::i;346:20::-;;;:::i;215:::-;;;:::i;513:23::-;;;;:::o;447:29::-;;;;:::o;317:23::-;;;-1:-1:-1;;;;;317:23:19;;:::o;482:25::-;;;;:::o;644:32::-;;;;:::o;143:27:27:-;;;-1:-1:-1;;;;;143:27:27;;:::o;732:65:19:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;605:33::-;;;;:::o;346:20::-;;;-1:-1:-1;;;;;346:20:19;;:::o;215:::-;;;-1:-1:-1;;;;;215:20:19;;:::o",
+  "source": "//SPDX-License-Identifier: Unlicense\npragma solidity ^0.7.6;\n\nimport \"./Stake1Storage.sol\";\n\ncontract StakeYearnStorage is Stake1Storage {\n    address public yearnV2Vault;\n\n}\n",
+  "sourcePath": "/Users/zena/ico2.0/ico20-contracts/contracts/stake/StakeYearnStorage.sol",
+  "ast": {
+    "absolutePath": "/Users/zena/ico2.0/ico20-contracts/contracts/stake/StakeYearnStorage.sol",
+    "exportedSymbols": {
+      "LibTokenStake1": [
+        2495
+      ],
+      "Stake1Storage": [
+        3045
+      ],
+      "StakeYearnStorage": [
+        6262
+      ]
+    },
+    "id": 6263,
+    "license": "Unlicense",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 6256,
+        "literals": [
+          "solidity",
+          "^",
+          "0.7",
+          ".6"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "37:23:27"
+      },
+      {
+        "absolutePath": "/Users/zena/ico2.0/ico20-contracts/contracts/stake/Stake1Storage.sol",
+        "file": "./Stake1Storage.sol",
+        "id": 6257,
+        "nodeType": "ImportDirective",
+        "scope": 6263,
+        "sourceUnit": 3046,
+        "src": "62:29:27",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": false,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 6258,
+              "name": "Stake1Storage",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 3045,
+              "src": "123:13:27",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_Stake1Storage_$3045",
+                "typeString": "contract Stake1Storage"
+              }
+            },
+            "id": 6259,
+            "nodeType": "InheritanceSpecifier",
+            "src": "123:13:27"
+          }
+        ],
+        "contractDependencies": [
+          3045
+        ],
+        "contractKind": "contract",
+        "fullyImplemented": true,
+        "id": 6262,
+        "linearizedBaseContracts": [
+          6262,
+          3045
+        ],
+        "name": "StakeYearnStorage",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": false,
+            "functionSelector": "a2095f29",
+            "id": 6261,
+            "mutability": "mutable",
+            "name": "yearnV2Vault",
+            "nodeType": "VariableDeclaration",
+            "scope": 6262,
+            "src": "143:27:27",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 6260,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "143:7:27",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "visibility": "public"
+          }
+        ],
+        "scope": 6263,
+        "src": "93:81:27"
+      }
+    ],
+    "src": "37:138:27"
+  },
+  "legacyAST": {
+    "attributes": {
+      "absolutePath": "/Users/zena/ico2.0/ico20-contracts/contracts/stake/StakeYearnStorage.sol",
+      "exportedSymbols": {
+        "LibTokenStake1": [
+          2495
+        ],
+        "Stake1Storage": [
+          3045
+        ],
+        "StakeYearnStorage": [
+          6262
+        ]
+      },
+      "license": "Unlicense"
+    },
+    "children": [
+      {
+        "attributes": {
+          "literals": [
+            "solidity",
+            "^",
+            "0.7",
+            ".6"
+          ]
+        },
+        "id": 6256,
+        "name": "PragmaDirective",
+        "src": "37:23:27"
+      },
+      {
+        "attributes": {
+          "SourceUnit": 3046,
+          "absolutePath": "/Users/zena/ico2.0/ico20-contracts/contracts/stake/Stake1Storage.sol",
+          "file": "./Stake1Storage.sol",
+          "scope": 6263,
+          "symbolAliases": [
+            null
+          ],
+          "unitAlias": ""
+        },
+        "id": 6257,
+        "name": "ImportDirective",
+        "src": "62:29:27"
+      },
+      {
+        "attributes": {
+          "abstract": false,
+          "contractDependencies": [
+            3045
+          ],
+          "contractKind": "contract",
+          "fullyImplemented": true,
+          "linearizedBaseContracts": [
+            6262,
+            3045
+          ],
+          "name": "StakeYearnStorage",
+          "scope": 6263
+        },
+        "children": [
+          {
+            "attributes": {},
+            "children": [
+              {
+                "attributes": {
+                  "name": "Stake1Storage",
+                  "referencedDeclaration": 3045,
+                  "type": "contract Stake1Storage"
+                },
+                "id": 6258,
+                "name": "UserDefinedTypeName",
+                "src": "123:13:27"
+              }
+            ],
+            "id": 6259,
+            "name": "InheritanceSpecifier",
+            "src": "123:13:27"
+          },
+          {
+            "attributes": {
+              "constant": false,
+              "functionSelector": "a2095f29",
+              "mutability": "mutable",
+              "name": "yearnV2Vault",
+              "scope": 6262,
+              "stateVariable": true,
+              "storageLocation": "default",
+              "type": "address",
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "name": "address",
+                  "stateMutability": "nonpayable",
+                  "type": "address"
+                },
+                "id": 6260,
+                "name": "ElementaryTypeName",
+                "src": "143:7:27"
+              }
+            ],
+            "id": 6261,
+            "name": "VariableDeclaration",
+            "src": "143:27:27"
+          }
+        ],
+        "id": 6262,
+        "name": "ContractDefinition",
+        "src": "93:81:27"
+      }
+    ],
+    "id": 6263,
+    "name": "SourceUnit",
+    "src": "37:138:27"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.7.6+commit.7338295f.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.3.4",
+  "updatedAt": "2021-05-17T15:11:33.516Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}
