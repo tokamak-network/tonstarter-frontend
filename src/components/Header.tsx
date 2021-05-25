@@ -103,9 +103,9 @@ const MenuItems: React.FC<{isOpen: boolean}> = ({isOpen}) => {
         <NavLink to="/" exact className={'link'} activeClassName={'active'}>
           FLD Starter
         </NavLink>
-        <NavLink to="/pools" className={'link'} activeClassName={'active'}>
+        {/* <NavLink to="/pools" className={'link'} activeClassName={'active'}>
           Pools
-        </NavLink>
+        </NavLink> */}
         <NavLink to="/staking" className={'link'} activeClassName={'active'}>
           Staking
         </NavLink>
