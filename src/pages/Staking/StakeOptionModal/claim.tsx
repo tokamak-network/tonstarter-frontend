@@ -11,12 +11,11 @@ import {
   Input,
   Stack,
 } from '@chakra-ui/react';
-import {BigNumber} from 'ethers';
 import React, {FC, useCallback, useState} from 'react';
 
 type ClaimOptionModalProps = {
   isOpen: boolean;
-  balance: BigNumber;
+  balance: string;
   onClose: Function;
 };
 
@@ -86,12 +85,12 @@ export const ClaimOptionModal: FC<ClaimOptionModalProps> = ({
             alignItems={'center'}>
             <Box textAlign={'center'}>
               <Text>Claim Available</Text>
-              <Text>{balance.toString()} TON</Text>
+              <Text>{balance} TON</Text>
             </Box>
           </Stack>
 
           <Box py={4} as={Flex} justifyContent={'center'}>
-            <Button disabled={balance.lte(0)} colorScheme={'blue'}>
+            <Button disabled={+balance <= 0} colorScheme={'blue'}>
               Claim
             </Button>
           </Box>

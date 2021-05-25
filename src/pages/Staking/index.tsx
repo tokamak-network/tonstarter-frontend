@@ -28,7 +28,6 @@ import {
 } from './StakeOptionModal';
 import {selectApp} from 'store/app/app.reducer';
 import {selectUser} from 'store/app/user.reducer';
-import {BigNumber} from 'ethers';
 
 type WalletInformationProps = {
   onOpenStakeOptionModal: Function;
@@ -36,7 +35,7 @@ type WalletInformationProps = {
   onOpenUnstakeOptionModal: Function;
   onOpenManageOptionModal: Function;
   user: {
-    balance: BigNumber;
+    balance: string;
   };
 };
 
@@ -229,7 +228,7 @@ export const Staking = () => {
   return (
     <Fragment>
       <Head title={'Staking'} />
-      <Container maxW={'8xl'}>
+      <Container maxW={'6xl'}>
         <Box>
           <Text fontWeight={'medium'} fontSize={'xl'}>
             Staking

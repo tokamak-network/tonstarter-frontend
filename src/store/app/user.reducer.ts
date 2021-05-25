@@ -1,12 +1,12 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import {BigNumber} from 'ethers';
 import {RootState} from 'store/reducers';
 import {getContract} from 'utils/contract';
 import * as ERC20 from 'services/abis/ERC20.json';
 import {REACT_APP_TON} from 'constants/index';
+import {formatEther} from '@ethersproject/units';
 
 export type User = {
-  balance: BigNumber;
+  balance: string;
 };
 
 interface IUser {
@@ -18,7 +18,7 @@ interface IUser {
 
 const initialState = {
   data: {
-    balance: BigNumber.from(0),
+    balance: '0',
   },
   loading: 'idle',
   error: null,
@@ -38,7 +38,7 @@ export const fetchUserInfo = createAsyncThunk(
     const contract = getContract(REACT_APP_TON, ERC20.abi, library);
 
     let user: User = {
-      balance: await contract.balanceOf(address),
+      balance: formatEther(await contract.balanceOf(address)),
     };
 
     return user;

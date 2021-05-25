@@ -11,12 +11,11 @@ import {
   Input,
   Stack,
 } from '@chakra-ui/react';
-import {BigNumber} from 'ethers';
 import React, {FC, useCallback, useState} from 'react';
 
 type StakeOptionModalProps = {
   isOpen: boolean;
-  balance: BigNumber;
+  balance: string;
   onClose: Function;
 };
 
@@ -90,7 +89,7 @@ export const StakeOptionModal: FC<StakeOptionModalProps> = ({
           </Stack>
 
           <Box py={4} as={Flex} justifyContent={'center'}>
-            <Button disabled={balance.lte(0)} colorScheme={'blue'}>
+            <Button disabled={+balance <= 0} colorScheme={'blue'}>
               Stake
             </Button>
           </Box>
