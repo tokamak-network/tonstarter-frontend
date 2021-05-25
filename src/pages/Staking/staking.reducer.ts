@@ -23,6 +23,8 @@ export type Stake = {
   totalRewardAmount: BigNumber | string;
   claimRewardAmount: BigNumber | string;
   totalStakers: number | string;
+  token: string;
+  staketype: string;
 };
 
 interface StakeState {
@@ -42,7 +44,7 @@ const initialState = {
 export const fetchStakes = createAsyncThunk(
   'stakes/all',
   async ({contract, library}: any, {requestId, getState}) => {
-    let projectsList: any[] = [];
+    let stakeVaults: any[] = [];
 
     // @ts-ignore
     const {currentRequestId, loading} = getState().stakes;
@@ -51,53 +53,37 @@ export const fetchStakes = createAsyncThunk(
     }
     if (contract) {
       const vaults = await contract.vaultsOfPahse(1);
-      // stakeVaults = await Promise.all(
-      //   vaults.map(async (vault: any) => {
-      const stakeVault = await getContract(vaults[0], StakeVault.abi, library);
-      // const stakeType = await stakeVault?.stakeType();
-      // const token = await stakeVault.paytoken();
-      const stakeList: string[] = await stakeVault?.stakeAddressesAll();
-      projectsList = await Promise.all(
-        stakeList.map(async (item, index) => {
-          let info = await stakeVault.stakeInfos(item);
+      await Promise.all(
+        vaults.map(async (vault: any) => {
+          const stakeVault = await getContract(vault, StakeVault.abi, library);
+          const stakeType = await stakeVault?.stakeType();
+          const token = await stakeVault.paytoken();
+          const stakeList: string[] = await stakeVault?.stakeAddressesAll();
+          stakeVaults = await Promise.all(
+            stakeList.map(async (item, index) => {
+              let info = await stakeVault.stakeInfos(item);
 
-          const stakeInfo: Partial<Stake> = {
-            stakeContract: stakeList,
-            name: info[0],
-            saleStartBlock: 0,
-            stakeStartBlock: info[1],
-            stakeEndBlock: info[2],
-            balance: formatEther(info[3]),
-            totalRewardAmount: formatEther(info[4]),
-            claimRewardAmount: formatEther(info[5]),
-            totalStakers: 0,
-          };
+              const stakeInfo: Partial<Stake> = {
+                stakeContract: stakeList,
+                name: info[0],
+                saleStartBlock: 0,
+                stakeStartBlock: info[1],
+                stakeEndBlock: info[2],
+                balance: formatEther(info[3]),
+                totalRewardAmount: formatEther(info[4]),
+                claimRewardAmount: formatEther(info[5]),
+                totalStakers: 0,
+                token,
+                stakeType,
+              };
 
-          return stakeInfo;
+              return stakeInfo;
+            }),
+          );
         }),
       );
-      // const vaultInfo: Partial<Stake> = {
-      //   paytoken: token,
-      //   cap: utils.formatEther(await stakeVault.cap()),
-      //   saleStartBlock: (await stakeVault.saleStartBlock()).toString(),
-      //   stakeStartBlock: (await stakeVault.stakeStartBlock()).toString(),
-      //   blockTotalReward: (await stakeVault.blockTotalReward()).toString(),
-      //   saleClosed: await stakeVault.saleClosed(),
-      //   contractAddress: vault,
-      //   defiAddr: await stakeVault.defiAddr(),
-      // };
-      // if (token !== ZERO_ADDRESS) {
-      //   const erc20Token = await getContract(token, IERC20.abi, library);
-      //   vaultInfo.name = await erc20Token.name();
-      //   vaultInfo.symbol = await erc20Token.symbol();
-      // } else {
-      //   vaultInfo.name = 'Unknown Token';
-      //   vaultInfo.symbol = '';
-      // }
-      //   }),
-      // );
     }
-    return projectsList;
+    return stakeVaults;
   },
 );
 

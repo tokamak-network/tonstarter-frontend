@@ -45,9 +45,8 @@ export const getNetworkName = async (id: string | number) => {
   return link as string;
 };
 
-export const getExplorerLink = async (
-  id: string | number | undefined,
-) => {
+export const getExplorerLink = async (id: string | number | undefined) => {
+  console.log(id);
   let link: string;
   switch (id) {
     case 1:

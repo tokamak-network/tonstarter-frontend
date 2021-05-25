@@ -39,6 +39,8 @@ export const fetchAppConfig = createAsyncThunk(
       selectedNetwork: await getNetworkName(chainId || DEFAULT_NETWORK),
     };
 
+    console.log(appConfig);
+
     return appConfig;
   },
 );

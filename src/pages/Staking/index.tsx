@@ -142,7 +142,7 @@ export const Staking = () => {
       },
       {
         Header: 'Earned',
-        accessor: 'earned',
+        accessor: 'totalRewardAmount',
       },
       {
         // Make an expander cell
@@ -171,11 +171,11 @@ export const Staking = () => {
             justifyContent={'space-between'}>
             <Box>
               <Text fontWeight={'bold'}>Starting Day</Text>
-              <Text>{data[row.id]?.saleStartBlock}</Text>
+              <Text>{data[row.id]?.stakeStartBlock.toString()}</Text>
             </Box>
             <Box>
               <Text fontWeight={'bold'}>Closing day</Text>
-              <Text>{data[row.id]?.stakeEndBlock}</Text>
+              <Text>{data[row.id]?.stakeEndBlock.toString()}</Text>
             </Box>
           </Flex>
           <Box p={8}>
@@ -192,7 +192,7 @@ export const Staking = () => {
             justifyContent={'space-between'}>
             <Box>
               <Text fontWeight={'bold'}>Total stakers</Text>
-              <Text textAlign={'center'}>100</Text>
+              <Text textAlign={'center'}>{data[row.id]?.totalStakers}</Text>
             </Box>
             <Box>
               <Text fontWeight={'bold'}>Contract</Text>
@@ -202,10 +202,8 @@ export const Staking = () => {
                 _focus={{
                   outline: 'none',
                 }}
-                href={`${appConfig.explorerLink}${
-                  data[row.id]?.contractAddress
-                }`}>
-                {shortenAddress(data[row.id]?.contractAddress)}
+                href={`${appConfig.explorerLink}${data[row.id]?.token}`}>
+                {shortenAddress(data[row.id]?.token)}
               </Link>
             </Box>
           </Flex>
