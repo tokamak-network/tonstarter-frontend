@@ -10,7 +10,7 @@ import {Staking} from './Staking';
 import {Switch, Route} from 'react-router-dom';
 import {useAppDispatch} from 'hooks/useRedux';
 import {fetchAppConfig} from 'store/app/app.reducer';
-import {DEFAULT_NETWORK} from 'constants/index';
+import {fetchUserInfo} from 'store/app/user.reducer';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -18,12 +18,16 @@ export const Router: FC<RouterProps> = () => {
   const dispatch = useAppDispatch();
   const [walletState, setWalletState] = useState<string>('');
   const {onOpen, isOpen: isModalOpen, onClose} = useDisclosure();
-  const {account, chainId} = useWeb3React();
+  const {account, chainId, library} = useWeb3React();
 
   useEffect(() => {
-    // @ts-ignore
-    dispatch(fetchAppConfig(chainId || DEFAULT_NETWORK));
-  }, [chainId, dispatch]);
+    if (account && chainId) {
+      // @ts-ignore
+      dispatch(fetchAppConfig({chainId}));
+      // @ts-ignore
+      dispatch(fetchUserInfo({address: account, library}));
+    }
+  }, [chainId, account, library, dispatch]);
 
   const handleWalletModalOpen = (state: string) => {
     setWalletState(state);

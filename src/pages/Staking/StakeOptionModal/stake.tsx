@@ -11,20 +11,25 @@ import {
   Input,
   Stack,
 } from '@chakra-ui/react';
+import {BigNumber} from 'ethers';
 import React, {FC, useCallback, useState} from 'react';
 
 type StakeOptionModalProps = {
   isOpen: boolean;
+  balance: BigNumber;
   onClose: Function;
 };
 
 export const StakeOptionModal: FC<StakeOptionModalProps> = ({
   isOpen,
   onClose,
+  balance,
 }) => {
-  const [value, setValue] = useState<number>(10);
+  const [value, setValue] = useState<number>(+balance);
 
   const handleChange = useCallback(e => setValue(e.target.value), []);
+  const setMax = useCallback(_e => setValue(+balance), [balance]);
+
   return (
     <Modal isOpen={isOpen} isCentered onClose={() => onClose()}>
       <ModalOverlay />
@@ -62,6 +67,8 @@ export const StakeOptionModal: FC<StakeOptionModalProps> = ({
             />
             <Box position={'absolute'} right={5}>
               <Button
+                onClick={setMax}
+                type={'button'}
                 variant="outline"
                 _focus={{
                   outline: 'none',
@@ -78,12 +85,14 @@ export const StakeOptionModal: FC<StakeOptionModalProps> = ({
             alignItems={'center'}>
             <Box textAlign={'center'}>
               <Text>Available Balance</Text>
-              <Text>2,000 TON</Text>
+              <Text>{balance.toString()} TON</Text>
             </Box>
           </Stack>
 
           <Box py={4} as={Flex} justifyContent={'center'}>
-            <Button colorScheme={'blue'}>Stake</Button>
+            <Button disabled={balance.lte(0)} colorScheme={'blue'}>
+              Stake
+            </Button>
           </Box>
         </ModalBody>
       </ModalContent>

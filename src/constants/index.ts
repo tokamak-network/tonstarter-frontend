@@ -38,25 +38,25 @@ export const SUPPORTED_WALLETS: {[key: string]: WalletInfo} = {
   },
 };
 
-export const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
-export const REACT_APP_DEFAULT_NETWORK = process.env.REACT_APP_DEFAULT_NETWORK;
-export const REACT_APP_FLD = process.env.REACT_APP_FLD;
+export const REACT_APP_API_URL = process.env.REACT_APP_API_URL as string;
+export const REACT_APP_DEFAULT_NETWORK = process.env.REACT_APP_DEFAULT_NETWORK as string;
+export const REACT_APP_FLD = process.env.REACT_APP_FLD as string;
 export const REACT_APP_STAKE_TON_LOGIC_FACTORY =
-  process.env.REACT_APP_STAKE_TON_LOGIC_FACTORY;
+  process.env.REACT_APP_STAKE_TON_LOGIC_FACTORY as string;
 export const REACT_APP_STAKE_TON_PROXY_FACTORY =
-  process.env.REACT_APP_STAKE_TON_PROXY_FACTORY;
+  process.env.REACT_APP_STAKE_TON_PROXY_FACTORY as string;
 export const REACT_APP_STAKE_TON_FACTORY =
-  process.env.REACT_APP_STAKE_TON_FACTORY;
+  process.env.REACT_APP_STAKE_TON_FACTORY as string;
 export const REACT_APP_STAKE_VAULT_FACTORY =
-  process.env.REACT_APP_STAKE_VAULT_FACTORY;
+  process.env.REACT_APP_STAKE_VAULT_FACTORY as string;
 export const REACT_APP_STAKE_FOR_STABLE_COIN_FACTORY =
-  process.env.REACT_APP_STAKE_FOR_STABLE_COIN_FACTORY;
-export const REACT_APP_STAKE_FACTORY = process.env.REACT_APP_STAKE_FACTORY;
-export const REACT_APP_STAKE_REGISTRY = process.env.REACT_APP_STAKE_REGISTRY;
-export const REACT_APP_STAKE1_LOGIC = process.env.REACT_APP_STAKE1_LOGIC;
-export const REACT_APP_STAKE1_PROXY = process.env.REACT_APP_STAKE1_PROXY;
-export const REACT_APP_TON = process.env.REACT_APP_TON;
-export const REACT_APP_WTON = process.env.REACT_APP_WTON;
-export const REACT_APP_DEPOSIT_MANAGER = process.env.REACT_APP_DEPOSIT_MANAGER;
-export const REACT_APP_SEIG_MANAGER = process.env.REACT_APP_SEIG_MANAGER;
-export const REACT_APP_TOKAMAK_LAYER2 = process.env.REACT_APP_TOKAMAK_LAYER2;
+  process.env.REACT_APP_STAKE_FOR_STABLE_COIN_FACTORY as string;
+export const REACT_APP_STAKE_FACTORY = process.env.REACT_APP_STAKE_FACTORY as string;
+export const REACT_APP_STAKE_REGISTRY = process.env.REACT_APP_STAKE_REGISTRY as string;
+export const REACT_APP_STAKE1_LOGIC = process.env.REACT_APP_STAKE1_LOGIC as string;
+export const REACT_APP_STAKE1_PROXY = process.env.REACT_APP_STAKE1_PROXY as string;
+export const REACT_APP_TON = process.env.REACT_APP_TON as string;
+export const REACT_APP_WTON = process.env.REACT_APP_WTON as string;
+export const REACT_APP_DEPOSIT_MANAGER = process.env.REACT_APP_DEPOSIT_MANAGER as string;
+export const REACT_APP_SEIG_MANAGER = process.env.REACT_APP_SEIG_MANAGER as string;
+export const REACT_APP_TOKAMAK_LAYER2 = process.env.REACT_APP_TOKAMAK_LAYER2 as string;
