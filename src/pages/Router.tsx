@@ -27,13 +27,13 @@ export const Router: FC<RouterProps> = () => {
         account={account}
         onOpen={() => handleWalletModalOpen('wallet')}
       />
-        <Switch>
-          <Route exact path="/" component={FLDstarter} />
-          <Route exact path="/pools" component={Pools} />
-          <Route exact path="/staking" component={Staking} />
-          {/* <Route exact path="/starter" component={Starter} /> */}
-          {/* <Route exact path="/dao" component={DAO} /> */}
-        </Switch>
+      <Switch>
+        <Route exact path="/" component={FLDstarter} />
+        <Route exact path="/pools" component={Pools} />
+        <Route exact path="/staking/:address" component={Staking} />
+        {/* <Route exact path="/starter" component={Starter} /> */}
+        {/* <Route exact path="/dao" component={DAO} /> */}
+      </Switch>
       <Footer />
       <WalletModal state={walletState} isOpen={isModalOpen} onClose={onClose} />
     </>

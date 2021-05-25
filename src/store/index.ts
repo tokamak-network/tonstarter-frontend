@@ -8,9 +8,18 @@ let middleware: any[] = [];
 
 // disable redux logger on production
 if (process.env.NODE_ENV !== 'production') {
-  middleware = [...getDefaultMiddleware(), logger];
+  middleware = [
+    ...getDefaultMiddleware({
+      serializableCheck: false,
+    }),
+    logger,
+  ];
 } else {
-  middleware = [...getDefaultMiddleware()];
+  middleware = [
+    ...getDefaultMiddleware({
+      serializableCheck: false,
+    }),
+  ];
 }
 
 const store = configureStore({

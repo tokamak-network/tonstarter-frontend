@@ -18,7 +18,7 @@ import {shortenAddress} from 'utils';
 import {StakingTable} from './StakingTable';
 import {fetchStakes, selectStakes} from './staking.reducer';
 import {useContract} from 'hooks/useContract';
-import {REACT_APP_STAKE_PROXY} from 'constants/index';
+import {REACT_APP_STAKE1_PROXY} from 'constants/index';
 import * as StakeLogic from 'services/abis/Stake1Logic.json';
 import {useWeb3React} from '@web3-react/core';
 import {
@@ -27,6 +27,7 @@ import {
   UnstakeOptionModal,
 } from './StakeOptionModal';
 import {selectApp} from 'store/app/app.reducer';
+import {useHistory} from 'react-router';
 
 type WalletInformationProps = {
   onOpenStakeOptionModal: Function;
@@ -75,9 +76,12 @@ const WalletInformation: FC<WalletInformationProps> = ({
 
 export const Staking = () => {
   const stakeRegistryContract = useContract(
-    REACT_APP_STAKE_PROXY,
+    REACT_APP_STAKE1_PROXY,
     StakeLogic.abi,
   );
+
+  const router = useHistory();
+  console.log(router);
   const dispatch = useAppDispatch();
   // @ts-ignore
   const {data, loading} = useAppSelector(selectStakes);
@@ -114,7 +118,7 @@ export const Staking = () => {
     () => [
       {
         Header: 'Name',
-        accessor: 'symbol',
+        accessor: 'name',
       },
       {
         Header: 'Period',
