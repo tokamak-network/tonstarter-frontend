@@ -27,13 +27,17 @@ import {
   UnstakeOptionModal,
 } from './StakeOptionModal';
 import {selectApp} from 'store/app/app.reducer';
-import {useHistory} from 'react-router';
+import {selectUser} from 'store/app/user.reducer';
+import {BigNumber} from 'ethers';
 
 type WalletInformationProps = {
   onOpenStakeOptionModal: Function;
   onOpenClaimOptionModal: Function;
   onOpenUnstakeOptionModal: Function;
   onOpenManageOptionModal: Function;
+  user: {
+    balance: BigNumber;
+  };
 };
 
 const WalletInformation: FC<WalletInformationProps> = ({
@@ -41,6 +45,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
   onOpenClaimOptionModal,
   onOpenManageOptionModal,
   onOpenUnstakeOptionModal,
+  user,
 }) => {
   return (
     <Container maxW={'sm'}>
@@ -50,7 +55,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
         px={5}
         shadow={'md'}
         borderRadius={'lg'}>
-        <Heading>1,000 TON</Heading>
+        <Heading>{user.balance.toString()} TON</Heading>
         <Box py={5}>
           <Text>Available in wallet</Text>
         </Box>
@@ -80,11 +85,10 @@ export const Staking = () => {
     StakeLogic.abi,
   );
 
-  const router = useHistory();
-  console.log(router);
   const dispatch = useAppDispatch();
   // @ts-ignore
   const {data, loading} = useAppSelector(selectStakes);
+  const {data: user} = useAppSelector(selectUser);
   // @ts-ignore
   const {data: appConfig} = useAppSelector(selectApp);
   const {library} = useWeb3React();
@@ -184,6 +188,7 @@ export const Staking = () => {
               onOpenClaimOptionModal={onOpenClaimOptionModal}
               onOpenManageOptionModal={onOpenManageOptionModal}
               onOpenUnstakeOptionModal={onOpenUnstakeOptionModal}
+              user={user}
             />
           </Box>
           <Flex
@@ -217,6 +222,7 @@ export const Staking = () => {
       onOpenManageOptionModal,
       onOpenStakeOptionModal,
       onOpenUnstakeOptionModal,
+      user,
     ],
   );
 
@@ -244,14 +250,17 @@ export const Staking = () => {
       </Container>
       <StakeOptionModal
         isOpen={isStakeModalOpen}
+        balance={user.balance}
         onClose={onCloseStakeOptionModal}
       />
       <UnstakeOptionModal
         isOpen={isUnstakeModalOpen}
+        balance={user.balance}
         onClose={onCloseUnstakeOptionModal}
       />
       <ClaimOptionModal
         isOpen={isClaimModalOpen}
+        balance={user.balance}
         onClose={onCloseClaimOptionModal}
       />
     </Fragment>

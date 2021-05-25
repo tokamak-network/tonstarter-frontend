@@ -11,20 +11,25 @@ import {
   Input,
   Stack,
 } from '@chakra-ui/react';
+import {BigNumber} from 'ethers';
 import React, {FC, useCallback, useState} from 'react';
 
 type ClaimOptionModalProps = {
   isOpen: boolean;
+  balance: BigNumber;
   onClose: Function;
 };
 
 export const ClaimOptionModal: FC<ClaimOptionModalProps> = ({
   isOpen,
+  balance,
   onClose,
 }) => {
-  const [value, setValue] = useState<number>(10);
+  const [value, setValue] = useState<number>(+balance);
 
   const handleChange = useCallback(e => setValue(e.target.value), []);
+  const setMax = useCallback(_e => setValue(+balance), [balance]);
+
   return (
     <Modal isOpen={isOpen} isCentered onClose={() => onClose()}>
       <ModalOverlay />
@@ -63,7 +68,9 @@ export const ClaimOptionModal: FC<ClaimOptionModalProps> = ({
             />
             <Box position={'absolute'} right={5}>
               <Button
+                onClick={setMax}
                 variant="outline"
+                type={'button'}
                 _focus={{
                   outline: 'none',
                 }}>
@@ -79,12 +86,14 @@ export const ClaimOptionModal: FC<ClaimOptionModalProps> = ({
             alignItems={'center'}>
             <Box textAlign={'center'}>
               <Text>Claim Available</Text>
-              <Text>2,000 TON</Text>
+              <Text>{balance.toString()} TON</Text>
             </Box>
           </Stack>
 
           <Box py={4} as={Flex} justifyContent={'center'}>
-            <Button colorScheme={'blue'}>Claim</Button>
+            <Button disabled={balance.lte(0)} colorScheme={'blue'}>
+              Claim
+            </Button>
           </Box>
         </ModalBody>
       </ModalContent>
