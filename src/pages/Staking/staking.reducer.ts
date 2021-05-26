@@ -62,7 +62,6 @@ export const fetchStakes = createAsyncThunk(
           stakeVaults = await Promise.all(
             stakeList.map(async (item, index) => {
               let info = await stakeVault.stakeInfos(item);
-              console.log(info);
 
               const stakeInfo: Partial<Stake> = {
                 stakeContract: stakeList,
