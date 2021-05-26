@@ -56,6 +56,10 @@ export const fetchStakes = createAsyncThunk(
       await Promise.all(
         vaults.map(async (vault: any) => {
           const stakeVault = await getContract(vault, StakeVault.abi, library);
+
+          const test = await stakeVault.blockTotalReward();
+          console.log(test.toString());
+
           const stakeType = await stakeVault?.stakeType();
           const token = await stakeVault.paytoken();
           const stakeList: string[] = await stakeVault?.stakeAddressesAll();

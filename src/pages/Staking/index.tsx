@@ -85,6 +85,8 @@ export const Staking = () => {
     StakeLogic.abi,
   );
 
+  console.log(stakeRegistryContract);
+
   const dispatch = useAppDispatch();
   // @ts-ignore
   const {data, loading} = useAppSelector(selectStakes);
