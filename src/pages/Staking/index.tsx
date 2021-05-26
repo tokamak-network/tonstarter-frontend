@@ -29,7 +29,6 @@ import {
 import {selectApp} from 'store/app/app.reducer';
 import {selectUser} from 'store/app/user.reducer';
 import {BigNumber} from 'ethers';
-
 type WalletInformationProps = {
   onOpenStakeOptionModal: Function;
   onOpenClaimOptionModal: Function;
@@ -91,7 +90,7 @@ export const Staking = () => {
   const {data: user} = useAppSelector(selectUser);
   // @ts-ignore
   const {data: appConfig} = useAppSelector(selectApp);
-  const {library} = useWeb3React();
+  const {library, account} = useWeb3React();
 
   const {
     isOpen: isClaimModalOpen,
@@ -115,8 +114,8 @@ export const Staking = () => {
   } = useDisclosure();
 
   useEffect(() => {
-    dispatch(fetchStakes({contract: stakeRegistryContract, library}) as any);
-  }, [stakeRegistryContract, dispatch, library]);
+    dispatch(fetchStakes({contract: stakeRegistryContract, library, account}) as any);
+  }, [stakeRegistryContract, dispatch, library, account]);
 
   const columns = useMemo(
     () => [
@@ -134,14 +133,14 @@ export const Staking = () => {
       },
       {
         Header: 'Total Staked',
-        accessor: 'total_staked',
+        accessor: 'balance',
       },
       {
         Header: 'Earning Per Block',
         accessor: 'earning_per_block',
       },
       {
-        Header: 'Staked',
+        Header: 'My Staked',
         accessor: 'staked',
       },
       {
@@ -175,11 +174,19 @@ export const Staking = () => {
             justifyContent={'space-between'}>
             <Box>
               <Text fontWeight={'bold'}>Starting Day</Text>
-              <Text>{data[row.id]?.stakeStartBlock.toString()}</Text>
+              <Text>{data[row.id]?.startTime}</Text>
             </Box>
             <Box>
               <Text fontWeight={'bold'}>Closing day</Text>
-              <Text>{data[row.id]?.stakeEndBlock.toString()}</Text>
+              <Text>{data[row.id]?.endTime}</Text>
+            </Box>
+            <Box>
+              <Text fontWeight={'bold'}>TON</Text>
+              <Text>{data[row.id]?.myton}</Text>
+            </Box>
+            <Box>
+              <Text fontWeight={'bold'}>FLD</Text>
+              <Text>{data[row.id]?.myfld}</Text>
             </Box>
           </Flex>
           <Box p={8}>
@@ -237,6 +244,7 @@ export const Staking = () => {
           <Text>
             Put your tokens into FLD and earn without losing principal
           </Text>
+          <Text>{}</Text>
         </Box>
 
         <Box py={20}>
