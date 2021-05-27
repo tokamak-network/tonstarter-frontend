@@ -4,6 +4,7 @@ import {getContract} from 'utils/contract';
 import {BigNumber} from 'ethers';
 import * as StakeVault from 'services/abis/Stake1Vault.json';
 import {formatEther} from '@ethersproject/units';
+import {calculateApy} from 'utils/apy';
 
 export type Stake = {
   name?: string;
@@ -53,20 +54,52 @@ export const fetchStakes = createAsyncThunk(
     }
     if (contract) {
       const vaults = await contract.vaultsOfPahse(1);
+
       await Promise.all(
         vaults.map(async (vault: any) => {
           const stakeVault = await getContract(vault, StakeVault.abi, library);
+          // const test = await stakeVault.totalRewardAmount();
+          // console.log(stakeVault);
+          // const test = await stakeVault.paytoken();
+          // console.log(test);
 
-          const test = await stakeVault.blockTotalReward();
-          console.log(test.toString());
+          // console.log(stakeVault.address);
+          // const test = await stakeVault.stakeStartBlock();
+          // const test2 = await stakeVault.stakeEndBlock();
+          // console.log('----');
+          // console.log(test.toString());
+          // console.log(test2.toString());
+          // const test = await stakeVault.blockTotalReward();
+          // console.log('----');
+          // console.log(stakeVault.address);
+          // console.log(calculateApy(test));
 
           const stakeType = await stakeVault?.stakeType();
+          const cap = await stakeVault.cap();
           const token = await stakeVault.paytoken();
           const stakeList: string[] = await stakeVault?.stakeAddressesAll();
+
+          console.log(library);
+          calculateApy({
+            addresses: stakeList,
+            cap: formatEther(cap),
+            payToken: token,
+            library: library,
+          });
+
           stakeVaults = await Promise.all(
             stakeList.map(async (item, index) => {
               let info = await stakeVault.stakeInfos(item);
-              console.log(info);
+              console.log(item);
+              console.log(info.balance.toString());
+              // console.log(stakeVault.address);
+              // console.log(item);
+              // console.log(formatEther(info.balance));
+              // console.log(
+              //   Number(info[2].toString()) - Number(info[1].toString()),
+              // );
+              // console.log(info[2].toString());
+              // console.log(formatEther(info[4]));
 
               const stakeInfo: Partial<Stake> = {
                 stakeContract: stakeList,
