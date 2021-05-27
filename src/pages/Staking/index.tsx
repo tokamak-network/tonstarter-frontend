@@ -12,15 +12,11 @@ import {
 import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
 import {Head} from 'components/SEO';
-import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {FC, Fragment, useCallback, useEffect, useMemo} from 'react';
+import { useAppSelector} from 'hooks/useRedux';
+import {FC, Fragment, useCallback, useMemo} from 'react';
 import {shortenAddress} from 'utils';
 import {StakingTable} from './StakingTable';
-import {fetchStakes, selectStakes} from './staking.reducer';
-import {useContract} from 'hooks/useContract';
-import {REACT_APP_STAKE1_PROXY} from 'constants/index';
-import * as StakeLogic from 'services/abis/Stake1Logic.json';
-import {useWeb3React} from '@web3-react/core';
+import {selectStakes} from './staking.reducer';
 import {
   ClaimOptionModal,
   StakeOptionModal,
@@ -79,18 +75,14 @@ const WalletInformation: FC<WalletInformationProps> = ({
 };
 
 export const Staking = () => {
-  const stakeRegistryContract = useContract(
-    REACT_APP_STAKE1_PROXY,
-    StakeLogic.abi,
-  );
 
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   // @ts-ignore
   const {data, loading} = useAppSelector(selectStakes);
   const {data: user} = useAppSelector(selectUser);
   // @ts-ignore
   const {data: appConfig} = useAppSelector(selectApp);
-  const {library, account} = useWeb3React();
+  // const {library, account} = useWeb3React();
 
   const {
     isOpen: isClaimModalOpen,
@@ -113,9 +105,7 @@ export const Staking = () => {
     onOpen: onOpenManageOptionModal,
   } = useDisclosure();
 
-  useEffect(() => {
-    dispatch(fetchStakes({contract: stakeRegistryContract, library, account}) as any);
-  }, [stakeRegistryContract, dispatch, library, account]);
+
 
   const columns = useMemo(
     () => [
@@ -180,14 +170,7 @@ export const Staking = () => {
               <Text fontWeight={'bold'}>Closing day</Text>
               <Text>{data[row.id]?.endTime}</Text>
             </Box>
-            <Box>
-              <Text fontWeight={'bold'}>TON</Text>
-              <Text>{data[row.id]?.myton}</Text>
-            </Box>
-            <Box>
-              <Text fontWeight={'bold'}>FLD</Text>
-              <Text>{data[row.id]?.myfld}</Text>
-            </Box>
+            
           </Flex>
           <Box p={8}>
             <WalletInformation

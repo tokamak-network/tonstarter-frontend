@@ -3,14 +3,12 @@ import {RootState} from 'store/reducers';
 import {getContract} from 'utils/contract';
 import {BigNumber} from 'ethers';
 import * as StakeVault from 'services/abis/Stake1Vault.json';
-import * as StakeTONRegistry from 'services/abis/StakeRegistry.json';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import * as tonABI from 'services/abis/TON.json';
 import * as fldABI from 'services/abis/FLD.json';
 import {formatEther} from '@ethersproject/units';
 import {period, formatStartTime, formatEndTime} from 'utils/timeStamp';
 import {REACT_APP_TON, REACT_APP_FLD } from 'constants/index';
-import {useContract} from 'hooks/useContract';
 export type Stake = {
   name?: string;
   symbol?: string;
@@ -84,7 +82,6 @@ export const fetchStakes = createAsyncThunk(
               let info = await stakeVault.stakeInfos(item);              
               const startTime =  await formatStartTime(info[1]);
               const endTime = await formatEndTime(info[1], info[2]);
-              console.log(info);
               
               const stakeInfo: Partial<Stake> = {
                 stakeContract: stakeList,
@@ -135,12 +132,13 @@ const getMy = async (stakeInfo: Partial<Stake>, stakeContractAddress: string, li
   const StakeTONContract = await getContract(stakeContractAddress, StakeTON.abi, library);
   stakeInfo.saleStartBlock = await StakeTONContract?.saleStartBlock();
   const staked = await StakeTONContract?.userStaked(account);
-  console.log(StakeTONContract);
   
   stakeInfo.mystaked = formatEther(staked.amount);
   stakeInfo.myclaimed = formatEther(staked.claimedAmount);
   stakeInfo.mywithdraw = formatEther(staked.releasedAmount);
-  stakeInfo.totalStakers = await StakeTONContract?.totalStakers();
+  const total = await StakeTONContract?.totalStakers();
+  stakeInfo.totalStakers = total.toString();
+ 
   
 }
 
