@@ -1,20 +1,17 @@
-import {formatEther} from '@ethersproject/units';
-import {useWeb3React} from '@web3-react/core';
 import {getContract} from 'utils/contract';
 import * as IERC20 from 'services/abis/IERC20.json';
-import {Web3Provider} from '@ethersproject/providers';
-import {NumberDecrementStepper} from '@chakra-ui/number-input';
 
-type EthAddress = '0x0000000000000000000000000000000000000000';
-type TonAddress = '0x44d4F5d89E9296337b8c48a332B3b2fb2C190CD0';
+type EthAddressType = '0x0000000000000000000000000000000000000000';
+type TonAddressType = '0x44d4F5d89E9296337b8c48a332B3b2fb2C190CD0';
 
 type TokenTypes = 'eth' | 'ton';
 
-type args = {
+type MainArgsType = {
   addresses: string[];
   cap: string;
-  payToken: EthAddress | TonAddress;
+  payToken: EthAddressType | TonAddressType;
   library: any;
+  stakeVault: any;
 };
 
 type CheckedBalanceType = {
@@ -22,20 +19,91 @@ type CheckedBalanceType = {
   balance: number;
 };
 
-const tokenAddresses: {eth: EthAddress; ton: TonAddress} = {
+interface CheckedBlockType extends CheckedBalanceType {
+  startBlock: number;
+  endBlock: number;
+  blockDiff: number;
+}
+
+interface checkedEPBType extends CheckedBlockType {
+  epb: number;
+}
+
+const tokenAddresses: {eth: EthAddressType; ton: TonAddressType} = {
   eth: '0x0000000000000000000000000000000000000000',
   ton: '0x44d4F5d89E9296337b8c48a332B3b2fb2C190CD0',
+};
+
+const dividePeriod = (
+  sortedProjects: CheckedBlockType[],
+  earningPerblock: number,
+  totalBlocks: number,
+): checkedEPBType[] => {
+  const result: checkedEPBType[] = [];
+  let tempTotalBlocks = totalBlocks;
+  for (let i = 0; i < sortedProjects.length; i++) {
+    const eachEarningPerblock =
+      earningPerblock /
+      (sortedProjects[i].blockDiff * (sortedProjects.length - i));
+    tempTotalBlocks -=
+      sortedProjects[i].blockDiff * (sortedProjects.length - i);
+    result.push({
+      ...sortedProjects[i],
+      epb: eachEarningPerblock * sortedProjects[i].blockDiff,
+    } as checkedEPBType);
+  }
+  if (tempTotalBlocks !== 0) {
+    throw new Error(
+      `Something wrong in calculating APY process(func: dividePeriod)`,
+    );
+  }
+  return result;
+};
+
+const getEarningPerBlock = async (args: CheckedBlockType[], cap: string) => {
+  const numCap = Number(cap);
+  const totalBlocks: number = args.reduce((acc, cur) => acc + cur.blockDiff, 0);
+  const earningPerBlock: number = numCap / totalBlocks;
+  const sortedProjects = args.sort((a, b) => a.blockDiff - b.blockDiff);
+  const dividedEarningPerBlocks = dividePeriod(
+    sortedProjects,
+    earningPerBlock,
+    totalBlocks,
+  );
+
+  // let blocks: number = 0
+};
+
+const getBlocks = async (
+  args: CheckedBalanceType[],
+  stakeVault: any,
+): Promise<CheckedBlockType[]> => {
+  const result: CheckedBlockType[] = [];
+  const blocks = await Promise.all(
+    args.map(async (e) => {
+      const address = e.address;
+      const info = await stakeVault.stakeInfos(address);
+      const startBlock = Number(info.startBlcok.toString());
+      const endBlock = Number(info.endBlock.toString());
+      result.push({
+        ...e,
+        startBlock,
+        endBlock,
+        blockDiff: endBlock - startBlock,
+      } as CheckedBlockType);
+    }),
+  );
+  return result;
 };
 
 const getBalance = async (
   addresses: string[],
   tokenType: TokenTypes,
   library: any,
-) => {
-  const result: any = [];
+): Promise<CheckedBalanceType[] | []> => {
+  const result: CheckedBalanceType[] = [];
   const balances = await Promise.all(
     addresses.map(async (address) => {
-      console.log(tokenType);
       switch (tokenType) {
         case 'eth':
           // const ethContract = getContract(
@@ -67,12 +135,13 @@ const getBalance = async (
       }
     }),
   );
-  return console.log(result);
+  return result;
 };
 
-const checkTokenType = (payToken: EthAddress | TonAddress) => {
+const checkTokenType = (
+  payToken: EthAddressType | TonAddressType,
+): TokenTypes => {
   const tokenType = payToken === tokenAddresses['eth'] ? 'eth' : 'ton';
-
   switch (tokenType) {
     case 'eth':
       return 'eth';
@@ -83,10 +152,28 @@ const checkTokenType = (payToken: EthAddress | TonAddress) => {
   }
 };
 
-export const calculateApy = async (args: args) => {
-  const {addresses, cap, payToken, library} = args;
+export const calculateApy = async (mainArgs: MainArgsType) => {
+  const {addresses, cap, payToken, library, stakeVault} = mainArgs;
   const tokenType = await checkTokenType(payToken);
   const balances = await getBalance(addresses, tokenType, library);
-  return 'result';
+
+  //Can't calculate reward cuz every project's balance is 0
+  //Means nobody stakes to every projects
+  if (balances.length === 0) {
+    console.log(`any no staking balance for ${addresses}`);
+    return;
+  }
+
+  const blocks = await getBlocks(balances, stakeVault);
+  const earningPerBlock = await getEarningPerBlock(blocks, cap);
+
+  // const sortProject = balances.map(async (e: any) => {
+  //   const info = await stakeVault.stakeInfos(e.address);
+  //   console.log(info);
+  //   console.log(info.startBlcok.toString(), info.endBlock);
+  // });
+
+  // console.log(balances);
+  // return 'result';
   //   return conertNumber(convertArgs);
 };

@@ -58,48 +58,26 @@ export const fetchStakes = createAsyncThunk(
       await Promise.all(
         vaults.map(async (vault: any) => {
           const stakeVault = await getContract(vault, StakeVault.abi, library);
-          // const test = await stakeVault.totalRewardAmount();
-          // console.log(stakeVault);
-          // const test = await stakeVault.paytoken();
-          // console.log(test);
-
-          // console.log(stakeVault.address);
-          // const test = await stakeVault.stakeStartBlock();
-          // const test2 = await stakeVault.stakeEndBlock();
-          // console.log('----');
-          // console.log(test.toString());
-          // console.log(test2.toString());
-          // const test = await stakeVault.blockTotalReward();
-          // console.log('----');
-          // console.log(stakeVault.address);
-          // console.log(calculateApy(test));
 
           const stakeType = await stakeVault?.stakeType();
+
+          //Cap is actually total reward for each Vault
           const cap = await stakeVault.cap();
+
           const token = await stakeVault.paytoken();
           const stakeList: string[] = await stakeVault?.stakeAddressesAll();
 
-          console.log(library);
           calculateApy({
             addresses: stakeList,
             cap: formatEther(cap),
             payToken: token,
-            library: library,
+            library,
+            stakeVault,
           });
 
           stakeVaults = await Promise.all(
             stakeList.map(async (item, index) => {
               let info = await stakeVault.stakeInfos(item);
-              console.log(item);
-              console.log(info.balance.toString());
-              // console.log(stakeVault.address);
-              // console.log(item);
-              // console.log(formatEther(info.balance));
-              // console.log(
-              //   Number(info[2].toString()) - Number(info[1].toString()),
-              // );
-              // console.log(info[2].toString());
-              // console.log(formatEther(info[4]));
 
               const stakeInfo: Partial<Stake> = {
                 stakeContract: stakeList,

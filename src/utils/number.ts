@@ -25,7 +25,7 @@ function roundNumber(args: RoundFunc): string {
   return number.toFixed(r_maxDecimalDigits, Decimal.ROUND_HALF_UP);
 }
 
-export default function convertNumber(args: ConverNumberFunc): string {
+export function convertNumber(args: ConverNumberFunc): string {
   const {type, amount, round, decimalPlaces} = args;
   const utils = ethers.utils;
   const numberType: string = type ? type : 'wei';
