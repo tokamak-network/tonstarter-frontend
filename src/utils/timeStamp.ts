@@ -1,6 +1,6 @@
 import {BigNumber, ethers} from 'ethers';
 import moment from 'moment';
-// const provider = new ethers.providers.JsonRpcProvider();
+
 let provider = ethers.getDefaultProvider('rinkeby');
  
 export const period = (startBlockNum: BigNumber, endBlockNum: BigNumber) => {

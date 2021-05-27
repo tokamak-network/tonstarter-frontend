@@ -76,13 +76,11 @@ const WalletInformation: FC<WalletInformationProps> = ({
 
 export const Staking = () => {
 
-  // const dispatch = useAppDispatch();
   // @ts-ignore
   const {data, loading} = useAppSelector(selectStakes);
   const {data: user} = useAppSelector(selectUser);
   // @ts-ignore
   const {data: appConfig} = useAppSelector(selectApp);
-  // const {library, account} = useWeb3React();
 
   const {
     isOpen: isClaimModalOpen,
@@ -100,8 +98,6 @@ export const Staking = () => {
     onOpen: onOpenUnstakeOptionModal,
   } = useDisclosure();
   const {
-    // isOpen: isManageModalOpen,
-    // onClose: onCloseManageOptionModal,
     onOpen: onOpenManageOptionModal,
   } = useDisclosure();
 
