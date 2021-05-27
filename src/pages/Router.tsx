@@ -11,6 +11,10 @@ import {Switch, Route} from 'react-router-dom';
 import {useAppDispatch} from 'hooks/useRedux';
 import {fetchAppConfig} from 'store/app/app.reducer';
 import {fetchUserInfo} from 'store/app/user.reducer';
+import {fetchStakes} from './Staking/staking.reducer';
+import {useContract} from 'hooks/useContract';
+import {REACT_APP_STAKE1_PROXY} from 'constants/index';
+import * as StakeLogic from 'services/abis/Stake1Logic.json';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -19,7 +23,10 @@ export const Router: FC<RouterProps> = () => {
   const [walletState, setWalletState] = useState<string>('');
   const {onOpen, isOpen: isModalOpen, onClose} = useDisclosure();
   const {account, chainId, library} = useWeb3React();
-
+  const stakeRegistryContract = useContract(
+    REACT_APP_STAKE1_PROXY,
+    StakeLogic.abi,
+  );
   useEffect(() => {
     if (account && chainId) {
       // @ts-ignore
@@ -29,6 +36,9 @@ export const Router: FC<RouterProps> = () => {
     }
   }, [chainId, account, library, dispatch]);
 
+  useEffect(() => {
+    dispatch(fetchStakes({contract: stakeRegistryContract, library, account}) as any);
+  }, [stakeRegistryContract, dispatch, library, account]);
   const handleWalletModalOpen = (state: string) => {
     setWalletState(state);
     onOpen();
