@@ -13,7 +13,7 @@ import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
 import {Head} from 'components/SEO';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {FC, Fragment, useCallback, useEffect, useMemo} from 'react';
+import React, {FC, Fragment, useCallback, useEffect, useMemo} from 'react';
 import {shortenAddress} from 'utils';
 import {StakingTable} from './StakingTable';
 import {fetchStakes, selectStakes} from './staking.reducer';
@@ -28,6 +28,7 @@ import {
 } from './StakeOptionModal';
 import {selectApp} from 'store/app/app.reducer';
 import {selectUser} from 'store/app/user.reducer';
+import {PageHeader} from 'components/PageHeader';
 
 type WalletInformationProps = {
   onOpenStakeOptionModal: Function;
@@ -206,8 +207,10 @@ export const Staking = () => {
                 _focus={{
                   outline: 'none',
                 }}
-                href={`${appConfig.explorerLink}${data[row.id]?.token}`}>
-                {shortenAddress(data[row.id]?.token)}
+                href={`${appConfig.explorerLink}${
+                  data[row.id]?.contractAddress
+                }`}>
+                {shortenAddress(data[row.id]?.contractAddress)}
               </Link>
             </Box>
           </Flex>
@@ -225,17 +228,28 @@ export const Staking = () => {
     ],
   );
 
+  const onClaimSubmitted = useCallback(async value => {
+    // @ts-ignore
+    // dispatch(claimStake({account, value, library} as any));
+  }, []);
+
+  const onStakeSubmitted = useCallback(value => {}, []);
+
+  const onUnstakeSubmitted = useCallback(e => {
+    e.preventDefault();
+  }, []);
+
   return (
     <Fragment>
       <Head title={'Staking'} />
       <Container maxW={'6xl'}>
         <Box>
-          <Text fontWeight={'medium'} fontSize={'xl'}>
-            Staking
-          </Text>
-          <Text>
-            Put your tokens into FLD and earn without losing principal
-          </Text>
+          <PageHeader
+            title={'FLD Starter'}
+            subtitle={
+              'Put your tokens into FLD and earn without losing principal'
+            }
+          />
         </Box>
 
         <Box py={20}>
@@ -251,16 +265,19 @@ export const Staking = () => {
         isOpen={isStakeModalOpen}
         balance={user.balance}
         onClose={onCloseStakeOptionModal}
+        onSubmit={onStakeSubmitted}
       />
       <UnstakeOptionModal
         isOpen={isUnstakeModalOpen}
         balance={user.balance}
         onClose={onCloseUnstakeOptionModal}
+        onSubmit={onUnstakeSubmitted}
       />
       <ClaimOptionModal
         isOpen={isClaimModalOpen}
         balance={user.balance}
         onClose={onCloseClaimOptionModal}
+        onSubmit={onClaimSubmitted}
       />
     </Fragment>
   );

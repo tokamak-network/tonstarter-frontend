@@ -11,20 +11,25 @@ import {
   Input,
   Stack,
 } from '@chakra-ui/react';
+import {useAppSelector} from 'hooks/useRedux';
 import React, {FC, useCallback, useState} from 'react';
+import {selectStakes} from '../staking.reducer';
 
 type ClaimOptionModalProps = {
   isOpen: boolean;
   balance: string;
   onClose: Function;
+  onSubmit: Function;
 };
 
 export const ClaimOptionModal: FC<ClaimOptionModalProps> = ({
   isOpen,
   balance,
   onClose,
+  onSubmit,
 }) => {
   const [value, setValue] = useState<number>(+balance);
+  const {loading} = useAppSelector(selectStakes);
 
   const handleChange = useCallback(e => setValue(e.target.value), []);
   const setMax = useCallback(_e => setValue(+balance), [balance]);
@@ -90,7 +95,13 @@ export const ClaimOptionModal: FC<ClaimOptionModalProps> = ({
           </Stack>
 
           <Box py={4} as={Flex} justifyContent={'center'}>
-            <Button disabled={+balance <= 0} colorScheme={'blue'}>
+            <Button
+              type={'submit'}
+              isLoading={loading === 'pending'}
+              loadingText={'Claiming tokens'}
+              onClick={() => onSubmit(value)}
+              disabled={+balance <= 0 || loading === 'pending'}
+              colorScheme={'blue'}>
               Claim
             </Button>
           </Box>

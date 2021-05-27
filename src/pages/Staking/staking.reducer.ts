@@ -3,6 +3,7 @@ import {RootState} from 'store/reducers';
 import {getContract} from 'utils/contract';
 import {BigNumber} from 'ethers';
 import * as StakeVault from 'services/abis/Stake1Vault.json';
+import * as IERC20 from 'services/abis/IERC20.json';
 import {formatEther} from '@ethersproject/units';
 
 export type Stake = {
@@ -23,7 +24,11 @@ export type Stake = {
   totalRewardAmount: BigNumber | string;
   claimRewardAmount: BigNumber | string;
   totalStakers: number | string;
-  token: string;
+  token: {
+    address: string;
+    name: string;
+    symbol: string;
+  };
   staketype: string;
 };
 
@@ -58,22 +63,27 @@ export const fetchStakes = createAsyncThunk(
           const stakeVault = await getContract(vault, StakeVault.abi, library);
           const stakeType = await stakeVault?.stakeType();
           const token = await stakeVault.paytoken();
+          const iERC20 = await getContract(token, IERC20.abi, library);
           const stakeList: string[] = await stakeVault?.stakeAddressesAll();
           stakeVaults = await Promise.all(
-            stakeList.map(async (item, index) => {
+            stakeList.map(async item => {
               let info = await stakeVault.stakeInfos(item);
 
               const stakeInfo: Partial<Stake> = {
-                stakeContract: stakeList,
+                contractAddress: item,
                 name: info[0],
                 saleStartBlock: 0,
                 stakeStartBlock: info[1],
                 stakeEndBlock: info[2],
                 balance: formatEther(info[3]),
-                totalRewardAmount: formatEther(info[4]),
+                totalRewardAmount: parseFloat(formatEther(info[4])).toFixed(4),
                 claimRewardAmount: formatEther(info[5]),
                 totalStakers: 0,
-                token,
+                token: {
+                  address: token,
+                  name: await iERC20?.name(),
+                  symbol: await iERC20?.symbol(),
+                },
                 stakeType,
               };
 

@@ -11,11 +11,15 @@ import {Switch, Route} from 'react-router-dom';
 import {useAppDispatch} from 'hooks/useRedux';
 import {fetchAppConfig} from 'store/app/app.reducer';
 import {fetchUserInfo} from 'store/app/user.reducer';
+// import {useSelector} from 'react-redux';
+// import {selectStakes} from './Staking/staking.reducer';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
 export const Router: FC<RouterProps> = () => {
   const dispatch = useAppDispatch();
+  // const toast = useToast();
+  // const {data, loading, error} = useSelector(selectStakes);
   const [walletState, setWalletState] = useState<string>('');
   const {onOpen, isOpen: isModalOpen, onClose} = useDisclosure();
   const {account, chainId, library} = useWeb3React();
@@ -33,6 +37,12 @@ export const Router: FC<RouterProps> = () => {
     setWalletState(state);
     onOpen();
   };
+
+  // if (error) {
+  //   toast({
+  //     description: data.
+  //   })
+  // }
 
   return (
     <>

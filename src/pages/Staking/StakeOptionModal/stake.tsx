@@ -17,6 +17,7 @@ type StakeOptionModalProps = {
   isOpen: boolean;
   balance: string;
   onClose: Function;
+  onSubmit: Function;
 };
 
 export const StakeOptionModal: FC<StakeOptionModalProps> = ({

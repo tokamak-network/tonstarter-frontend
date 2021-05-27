@@ -17,12 +17,14 @@ type UnstakeOptionModalProps = {
   isOpen: boolean;
   balance: string;
   onClose: Function;
+  onSubmit: Function;
 };
 
 export const UnstakeOptionModal: FC<UnstakeOptionModalProps> = ({
   isOpen,
   onClose,
   balance,
+  onSubmit,
 }) => {
   const [value, setValue] = useState<number>(+balance);
 
@@ -88,7 +90,11 @@ export const UnstakeOptionModal: FC<UnstakeOptionModalProps> = ({
           </Stack>
 
           <Box py={4} as={Flex} justifyContent={'center'}>
-            <Button disabled={+balance <= 0} colorScheme={'blue'}>
+            <Button
+              type={'submit'}
+              onClick={() => onSubmit()}
+              disabled={+balance <= 0}
+              colorScheme={'blue'}>
               Unstake
             </Button>
           </Box>
