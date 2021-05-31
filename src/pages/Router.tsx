@@ -39,6 +39,8 @@ export const Router: FC<RouterProps> = () => {
   useEffect(() => {
     dispatch(fetchStakes({contract: stakeRegistryContract, library, account}) as any);
   }, [stakeRegistryContract, dispatch, library, account]);
+
+  
   const handleWalletModalOpen = (state: string) => {
     setWalletState(state);
     onOpen();
