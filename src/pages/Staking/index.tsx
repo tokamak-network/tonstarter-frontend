@@ -16,11 +16,7 @@ import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import React, {FC, Fragment, useCallback, useEffect, useMemo} from 'react';
 import {shortenAddress} from 'utils';
 import {StakingTable} from './StakingTable';
-import {fetchStakes, selectStakes} from './staking.reducer';
-import {useContract} from 'hooks/useContract';
-import {REACT_APP_STAKE1_PROXY} from 'constants/index';
-import * as StakeLogic from 'services/abis/Stake1Logic.json';
-import {useWeb3React} from '@web3-react/core';
+import {selectStakes} from './staking.reducer';
 import {
   ClaimOptionModal,
   StakeOptionModal,
@@ -80,18 +76,12 @@ const WalletInformation: FC<WalletInformationProps> = ({
 };
 
 export const Staking = () => {
-  const stakeRegistryContract = useContract(
-    REACT_APP_STAKE1_PROXY,
-    StakeLogic.abi,
-  );
 
-  const dispatch = useAppDispatch();
   // @ts-ignore
   const {data, loading} = useAppSelector(selectStakes);
   const {data: user} = useAppSelector(selectUser);
   // @ts-ignore
   const {data: appConfig} = useAppSelector(selectApp);
-  const {library} = useWeb3React();
 
   const {
     isOpen: isClaimModalOpen,
@@ -109,14 +99,10 @@ export const Staking = () => {
     onOpen: onOpenUnstakeOptionModal,
   } = useDisclosure();
   const {
-    // isOpen: isManageModalOpen,
-    // onClose: onCloseManageOptionModal,
     onOpen: onOpenManageOptionModal,
   } = useDisclosure();
 
-  useEffect(() => {
-    dispatch(fetchStakes({contract: stakeRegistryContract, library}) as any);
-  }, [stakeRegistryContract, dispatch, library]);
+
 
   const columns = useMemo(
     () => [
@@ -134,14 +120,14 @@ export const Staking = () => {
       },
       {
         Header: 'Total Staked',
-        accessor: 'total_staked',
+        accessor: 'balance',
       },
       {
         Header: 'Earning Per Block',
         accessor: 'earning_per_block',
       },
       {
-        Header: 'Staked',
+        Header: 'My Staked',
         accessor: 'staked',
       },
       {
@@ -175,12 +161,13 @@ export const Staking = () => {
             justifyContent={'space-between'}>
             <Box>
               <Text fontWeight={'bold'}>Starting Day</Text>
-              <Text>{data[row.id]?.stakeStartBlock.toString()}</Text>
+              <Text>{data[row.id]?.startTime}</Text>
             </Box>
             <Box>
               <Text fontWeight={'bold'}>Closing day</Text>
-              <Text>{data[row.id]?.stakeEndBlock.toString()}</Text>
+              <Text>{data[row.id]?.endTime}</Text>
             </Box>
+            
           </Flex>
           <Box p={8}>
             <WalletInformation

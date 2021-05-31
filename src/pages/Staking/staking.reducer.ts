@@ -4,8 +4,12 @@ import {getContract} from 'utils/contract';
 import {BigNumber} from 'ethers';
 import * as StakeVault from 'services/abis/Stake1Vault.json';
 import * as IERC20 from 'services/abis/IERC20.json';
+import * as StakeTON from 'services/abis/StakeTON.json';
+import * as tonABI from 'services/abis/TON.json';
+import * as fldABI from 'services/abis/FLD.json';
 import {formatEther} from '@ethersproject/units';
-
+import {period, formatStartTime, formatEndTime} from 'utils/timeStamp';
+import {REACT_APP_TON, REACT_APP_FLD} from 'constants/index';
 export type Stake = {
   name?: string;
   symbol?: string;
@@ -29,7 +33,21 @@ export type Stake = {
     name: string;
     symbol: string;
   };
+  myton: BigNumber | string;
+  myfld: BigNumber | string;
+  mystaked: BigNumber | string;
+  mywithdraw: BigNumber | string;
+  myclaimed: BigNumber | string;
+  canRewardAmount: BigNumber | string;
+  stakeBalanceTON: BigNumber | string;
+  stakeBalanceETH: BigNumber | string;
+  stakeBalanceFLD: BigNumber | string;
+  tokamakStaked: BigNumber | string;
+  tokamakPendingUnstaked: BigNumber | string;
   staketype: string;
+  period: string | number;
+  startTime: string;
+  endTime: string;
 };
 
 interface StakeState {
@@ -48,7 +66,7 @@ const initialState = {
 
 export const fetchStakes = createAsyncThunk(
   'stakes/all',
-  async ({contract, library}: any, {requestId, getState}) => {
+  async ({contract, library, account}: any, {requestId, getState}) => {
     let stakeVaults: any[] = [];
     let stakeList: any;
 
@@ -79,25 +97,42 @@ export const fetchStakes = createAsyncThunk(
       stakeVaults = await Promise.all(
         stakeList[0].stakeList.map(async (item: any) => {
           let info = await stakeList[0].stakeVault.stakeInfos(item);
-          console.log(info)
+
+          const startTime = await formatStartTime(info[1]);
+          const endTime = await formatEndTime(info[1], info[2]);
+
           const stakeInfo: Partial<Stake> = {
-            contractAddress: item,
+            stakeContract: stakeList,
             name: info[0],
             saleStartBlock: 0,
             stakeStartBlock: info[1],
             stakeEndBlock: info[2],
             balance: formatEther(info[3]),
-            totalRewardAmount: parseFloat(formatEther(info[4])).toFixed(4),
+            totalRewardAmount: formatEther(info[4]),
             claimRewardAmount: formatEther(info[5]),
             totalStakers: 0,
+            myton: formatEther(0),
+            myfld: formatEther(0),
+            mystaked: formatEther(0),
+            mywithdraw: formatEther(0),
+            myclaimed: formatEther(0),
+            canRewardAmount: formatEther(0),
+            stakeBalanceTON: formatEther(0),
+            stakeBalanceETH: formatEther(0),
+            stakeBalanceFLD: formatEther(0),
+            tokamakStaked: formatEther(0),
+            tokamakPendingUnstaked: formatEther(0),
             token: {
               address: stakeList[0].token,
               name: await stakeList[0].iERC20?.name(),
               symbol: await stakeList[0].iERC20?.symbol(),
             },
             stakeType: stakeList[0].stakeType,
+            period: period(info[1], info[2]),
+            startTime: startTime,
+            endTime: endTime,
           };
-
+          await getMy(stakeInfo, stakeList[0], library, account);
           return stakeInfo;
         }),
       );
@@ -106,6 +141,34 @@ export const fetchStakes = createAsyncThunk(
     return stakeVaults;
   },
 );
+
+const getMy = async (
+  stakeInfo: Partial<Stake>,
+  stakeContractAddress: string,
+  library: any,
+  account: string,
+) => {
+  const TON = await getContract(REACT_APP_TON, tonABI.abi, library);
+  const myTON = await TON?.balanceOf(account);
+  stakeInfo.myton = formatEther(myTON);
+  const FLD = await getContract(REACT_APP_FLD, fldABI.abi, library);
+  const myFLD = await FLD?.balanceOf(account);
+  stakeInfo.myfld = formatEther(myFLD);
+
+  const StakeTONContract = await getContract(
+    stakeContractAddress,
+    StakeTON.abi,
+    library,
+  );
+  stakeInfo.saleStartBlock = await StakeTONContract?.saleStartBlock();
+  const staked = await StakeTONContract?.userStaked(account);
+
+  stakeInfo.mystaked = formatEther(staked.amount);
+  stakeInfo.myclaimed = formatEther(staked.claimedAmount);
+  stakeInfo.mywithdraw = formatEther(staked.releasedAmount);
+  const total = await StakeTONContract?.totalStakers();
+  stakeInfo.totalStakers = total.toString();
+};
 
 export const stakeReducer = createSlice({
   name: 'stakes',
