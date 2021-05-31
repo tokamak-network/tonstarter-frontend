@@ -102,7 +102,7 @@ export const fetchStakes = createAsyncThunk(
           const endTime = await formatEndTime(info[1], info[2]);
 
           const stakeInfo: Partial<Stake> = {
-            stakeContract: stakeList,
+            contractAddress: item,
             name: info[0],
             saleStartBlock: 0,
             stakeStartBlock: info[1],
@@ -132,7 +132,7 @@ export const fetchStakes = createAsyncThunk(
             startTime: startTime,
             endTime: endTime,
           };
-          await getMy(stakeInfo, stakeList[0], library, account);
+          // await getMy(stakeInfo, stakeList[0], library, account);
           return stakeInfo;
         }),
       );

@@ -12,8 +12,8 @@ import {
 import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
 import {Head} from 'components/SEO';
-import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import React, {FC, Fragment, useCallback, useEffect, useMemo} from 'react';
+import {useAppSelector} from 'hooks/useRedux';
+import React, {FC, Fragment, useCallback, useMemo} from 'react';
 import {shortenAddress} from 'utils';
 import {StakingTable} from './StakingTable';
 import {selectStakes} from './staking.reducer';
@@ -76,7 +76,6 @@ const WalletInformation: FC<WalletInformationProps> = ({
 };
 
 export const Staking = () => {
-
   // @ts-ignore
   const {data, loading} = useAppSelector(selectStakes);
   const {data: user} = useAppSelector(selectUser);
@@ -98,11 +97,7 @@ export const Staking = () => {
     onClose: onCloseUnstakeOptionModal,
     onOpen: onOpenUnstakeOptionModal,
   } = useDisclosure();
-  const {
-    onOpen: onOpenManageOptionModal,
-  } = useDisclosure();
-
-
+  const {onOpen: onOpenManageOptionModal} = useDisclosure();
 
   const columns = useMemo(
     () => [
@@ -167,7 +162,6 @@ export const Staking = () => {
               <Text fontWeight={'bold'}>Closing day</Text>
               <Text>{data[row.id]?.endTime}</Text>
             </Box>
-            
           </Flex>
           <Box p={8}>
             <WalletInformation
