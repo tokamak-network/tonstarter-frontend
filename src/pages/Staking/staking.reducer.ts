@@ -50,6 +50,7 @@ export const fetchStakes = createAsyncThunk(
   'stakes/all',
   async ({contract, library}: any, {requestId, getState}) => {
     let stakeVaults: any[] = [];
+    let stakeList: any;
 
     // @ts-ignore
     const {currentRequestId, loading} = getState().stakes;
@@ -58,41 +59,50 @@ export const fetchStakes = createAsyncThunk(
     }
     if (contract) {
       const vaults = await contract.vaultsOfPahse(1);
-      await Promise.all(
+      stakeList = await Promise.all(
         vaults.map(async (vault: any) => {
           const stakeVault = await getContract(vault, StakeVault.abi, library);
           const stakeType = await stakeVault?.stakeType();
           const token = await stakeVault.paytoken();
           const iERC20 = await getContract(token, IERC20.abi, library);
-          const stakeList: string[] = await stakeVault?.stakeAddressesAll();
-          stakeVaults = await Promise.all(
-            stakeList.map(async item => {
-              let info = await stakeVault.stakeInfos(item);
+          // const stakeList: string[] = await stakeVault?.stakeAddressesAll();
+          return {
+            iERC20: iERC20,
+            stakeType: stakeType,
+            stakeList: await stakeVault?.stakeAddressesAll(),
+            stakeVault,
+            token,
+          };
+        }),
+      );
 
-              const stakeInfo: Partial<Stake> = {
-                contractAddress: item,
-                name: info[0],
-                saleStartBlock: 0,
-                stakeStartBlock: info[1],
-                stakeEndBlock: info[2],
-                balance: formatEther(info[3]),
-                totalRewardAmount: parseFloat(formatEther(info[4])).toFixed(4),
-                claimRewardAmount: formatEther(info[5]),
-                totalStakers: 0,
-                token: {
-                  address: token,
-                  name: await iERC20?.name(),
-                  symbol: await iERC20?.symbol(),
-                },
-                stakeType,
-              };
+      stakeVaults = await Promise.all(
+        stakeList[0].stakeList.map(async (item: any) => {
+          let info = await stakeList[0].stakeVault.stakeInfos(item);
+          console.log(info)
+          const stakeInfo: Partial<Stake> = {
+            contractAddress: item,
+            name: info[0],
+            saleStartBlock: 0,
+            stakeStartBlock: info[1],
+            stakeEndBlock: info[2],
+            balance: formatEther(info[3]),
+            totalRewardAmount: parseFloat(formatEther(info[4])).toFixed(4),
+            claimRewardAmount: formatEther(info[5]),
+            totalStakers: 0,
+            token: {
+              address: stakeList[0].token,
+              name: await stakeList[0].iERC20?.name(),
+              symbol: await stakeList[0].iERC20?.symbol(),
+            },
+            stakeType: stakeList[0].stakeType,
+          };
 
-              return stakeInfo;
-            }),
-          );
+          return stakeInfo;
         }),
       );
     }
+
     return stakeVaults;
   },
 );
