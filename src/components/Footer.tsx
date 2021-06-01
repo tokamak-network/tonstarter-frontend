@@ -90,7 +90,6 @@ export const Footer = () => {
   const { colorMode } = useColorMode();
   const theme = useTheme();
   return (
-
     <Container position="relative" bottom={0} maxW={'full'}>
       <Flex
         flexDirection={{base: 'column', md: 'row'}}

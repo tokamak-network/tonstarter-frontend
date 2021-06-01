@@ -5,7 +5,6 @@ import {BrowserRouter} from 'react-router-dom';
 import {ChakraProvider, ColorModeScript} from '@chakra-ui/react';
 import {createWeb3ReactRoot, Web3ReactProvider} from '@web3-react/core';
 import {I18nextProvider} from 'react-i18next';
-import {HelmetProvider} from 'react-helmet-async';
 
 import theme from 'theme';
 import store from 'store';
@@ -24,22 +23,20 @@ if (!!window.ethereum) {
 
 ReactDOM.render(
   <React.StrictMode>
-    <HelmetProvider>
-      <I18nextProvider i18n={i18n}>
-        <Web3ReactProvider getLibrary={getLibrary}>
-          <Web3ProviderNetwork getLibrary={getLibrary}>
-            <ColorModeScript />
-            <Provider store={store}>
-              <ChakraProvider resetCSS theme={theme}>
-                <BrowserRouter>
-                  <Router />
-                </BrowserRouter>
-              </ChakraProvider>
-            </Provider>
-          </Web3ProviderNetwork>
-        </Web3ReactProvider>
-      </I18nextProvider>
-    </HelmetProvider>
+    <I18nextProvider i18n={i18n}>
+      <Web3ReactProvider getLibrary={getLibrary}>
+        <Web3ProviderNetwork getLibrary={getLibrary}>
+          <ColorModeScript />
+          <Provider store={store}>
+            <ChakraProvider resetCSS theme={theme}>
+              <BrowserRouter>
+                <Router />
+              </BrowserRouter>
+            </ChakraProvider>
+          </Provider>
+        </Web3ProviderNetwork>
+      </Web3ReactProvider>
+    </I18nextProvider>
   </React.StrictMode>,
   document.getElementById('root'),
 );

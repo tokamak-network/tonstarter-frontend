@@ -1,7 +1,7 @@
 import {extendTheme} from '@chakra-ui/react';
 import {createBreakpoints, mode} from '@chakra-ui/theme-tools';
+
 import '@fontsource/titillium-web/400.css';
-import {Input} from 'theme/components/input';
 import '@fontsource/roboto/400.css';
 
 
@@ -49,9 +49,6 @@ const colors = {
 };
 
 const theme = extendTheme({
-  components: {
-    Input,
-  },
   styles: {
     global: props => {
       return {

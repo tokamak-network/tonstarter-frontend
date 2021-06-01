@@ -1,4 +1,4 @@
-// / this is a test data
+// this is a test data
 
 export const data = [
   {

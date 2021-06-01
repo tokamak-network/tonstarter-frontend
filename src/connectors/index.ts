@@ -10,11 +10,10 @@ const POLLING_INTERVAL = 12000;
 const RPC_URLS = {
   1: PUBLIC_NODE_URLS_BY_NETWORK_ID[1],
   3: PUBLIC_NODE_URLS_BY_NETWORK_ID[3],
-  4: PUBLIC_NODE_URLS_BY_NETWORK_ID[4],
 };
 
 export const network = new NetworkConnector({
-  urls: {1: RPC_URLS[1], 3: RPC_URLS[3], 4: RPC_URLS[4]},
+  urls: {1: RPC_URLS[1], 3: RPC_URLS[3]},
   defaultChainId: 1,
 });
 
@@ -33,7 +32,7 @@ const newWalletLink = () =>
   });
 
 export const injected = new InjectedConnector({
-  supportedChainIds: [1, 3, 4],
+  supportedChainIds: [1, 3],
 });
 
 // Fixes https://github.com/NoahZinsmeister/web3-react/issues/124

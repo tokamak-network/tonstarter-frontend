@@ -1,5 +1,5 @@
 import {FC} from 'react';
-import {Helmet} from 'react-helmet-async';
+import {Helmet} from 'react-helmet';
 
 type HeadProps = {
   title?: string;
@@ -14,6 +14,7 @@ export const Head: FC<HeadProps> = ({title, description}) => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#000000" />
         <meta name="description" content={description} />
+
         <title>{TITLE}</title>
       </Helmet>
     </>
