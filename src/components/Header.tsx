@@ -1,5 +1,6 @@
 import {Box, Flex, Button, Stack, Image} from '@chakra-ui/react';
 import React from 'react';
+import PropTypes from 'prop-types';
 import {shortenAddress} from 'utils';
 import {ThemeSwitcher} from './ThemeSwitcher';
 import {NavLink} from 'react-router-dom';
@@ -9,17 +10,17 @@ import logoDark from 'assets/svgs/fldw_bi.svg';
 
 
 type HeaderProps = {
-  walletopen: () => void;
+  onOpen: () => void;
   account: string | undefined | null;
 };
 
 type MenuLinksProps = {
-  walletopen: () => void;
+  onOpen: () => void;
   account: string | undefined | null;
   isOpen: boolean;
 };
 
-export const Header: React.FC<HeaderProps> = props => {
+export const Header: React.FC<HeaderProps> = ({onOpen, account}) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const { colorMode } = useColorMode();
   const toggle = () => setIsOpen(!isOpen);
@@ -72,7 +73,7 @@ const MenuToggle = ({
   );
 };
 
-const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
+const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, onOpen}) => {
   return (
     <Box
       display={{base: isOpen ? 'block' : 'none', md: 'block'}}
@@ -84,7 +85,7 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
         direction={['column', 'row', 'row', 'row']}
         pt={[4, 4, 0, 0]}>
         <Button  borderWidth={1}
-        borderColor={'currentcolor'} w={136} h={35} fontSize={15} fontWeight={600} onClick={walletopen} rounded={18} bg={'!currentcolor'}>
+        borderColor={'currentcolor'} w={136} h={35} fontSize={15} fontWeight={600} onClick={walletopen} rounded={18} bg={'!currentcolor'}
           {account ? shortenAddress(account) : 'Connect wallet'}
         </Button>
         <ThemeSwitcher />
@@ -93,8 +94,7 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
   );
 };
 
-const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
-
+const MenuItems: React.FC<{isOpen: boolean}> = ({isOpen}) => {
   return (
     <Box
       display={{base: isOpen ? 'block' : 'none', md: 'block'}}
@@ -131,10 +131,15 @@ const NavBarContainer = ({children, ...rest}: {children: any}) => {
       wrap="wrap"
       w="100%"
       mb={8}
-      px={8}
+      px={{base: 4, md: 8}}
       py={4}
       {...rest}>
       {children}
     </Flex>
   );
+};
+
+Header.propTypes = {
+  account: PropTypes.string,
+  onOpen: PropTypes.func.isRequired,
 };
