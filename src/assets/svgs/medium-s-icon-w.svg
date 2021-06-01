@@ -1,7 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" id="medium-s-icon" width="20" height="20" viewBox="0 0 20 20">
+<svg xmlns="http://www.w3.org/2000/svg" id="medium-s-icon-w" width="20" height="20" viewBox="0 0 20 20">
     <defs>
         <style>
-            .cls-2{fill:#354052}
+            .cls-2{fill:#7e8993}
         </style>
     </defs>
     <path id="Base" fill="none" d="M0 0H20V20H0z"/>

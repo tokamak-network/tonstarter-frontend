@@ -1,10 +1,13 @@
-import {Box, Flex, Button, Stack, Image} from '@chakra-ui/react';
+import {Box, Flex, Button, Stack, Image, useTheme} from '@chakra-ui/react';
 import React from 'react';
 import {shortenAddress} from 'utils';
 import {ThemeSwitcher} from './ThemeSwitcher';
 import {NavLink} from 'react-router-dom';
+import {css, Global} from '@emotion/react';
+import {useColorMode} from '@chakra-ui/react'
+import logoLight from 'assets/svgs/fld_bi.svg';
+import logoDark from 'assets/svgs/fldw_bi.svg';
 
-import TokamakLogo from 'assets/images/logo.png';
 
 type HeaderProps = {
   walletopen: () => void;
@@ -19,14 +22,17 @@ type MenuLinksProps = {
 
 export const Header: React.FC<HeaderProps> = props => {
   const [isOpen, setIsOpen] = React.useState(false);
-
+  const { colorMode, toggleColorMode } = useColorMode();
   const toggle = () => setIsOpen(!isOpen);
-
+  const theme = useTheme();
   return (
     <NavBarContainer {...props}>
-      <Image src={TokamakLogo} w={16} alt="Tokamak Logo" />
-      <MenuToggle toggle={toggle} isOpen={isOpen} />
+      <Flex justifyContent={'space-between'}>
+      <Image className={'header-image'} src={colorMode === "light" ? logoLight : logoDark} w={191} h={5} alt="FLD Logo"/>
       <MenuItems isOpen={isOpen} {...props} />
+      </Flex>
+      <MenuToggle toggle={toggle} isOpen={isOpen} />
+     
       <MenuLinks isOpen={isOpen} {...props} />
     </NavBarContainer>
   );
@@ -79,7 +85,8 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
         justify={['center', 'space-between', 'flex-end', 'flex-end']}
         direction={['column', 'row', 'row', 'row']}
         pt={[4, 4, 0, 0]}>
-        <Button size="sm" onClick={walletopen} rounded="md">
+        <Button  borderWidth={1}
+        borderColor={'currentcolor'} w={136} h={35} fontSize={15} fontWeight={600} onClick={walletopen} rounded={18} bg={'!currentcolor'}>
           {account ? shortenAddress(account) : 'Connect wallet'}
         </Button>
         <ThemeSwitcher />
@@ -93,7 +100,8 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
   return (
     <Box
       display={{base: isOpen ? 'block' : 'none', md: 'block'}}
-      flexBasis={{base: '100%', md: 'auto'}}>
+      flexBasis={{base: '100%', md: 'auto'}}
+      mx={100}>
       <Stack
         spacing={8}
         align="center"
