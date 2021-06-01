@@ -9,7 +9,7 @@ import GitHubIconDark from 'assets/svgs/github-s-icon-w.svg';
 // import LinkedInIcon from 'assets/svgs/linkedin-s-icon.svg';
 import MediumIconLight from 'assets/svgs/medium-s-icon.svg';
 import MediumIconDark from 'assets/svgs/medium-s-icon-w.svg';
-import TwitterIconLit from 'assets/svgs/Twitter-s-icon.svg';
+import TwitterIconLit from 'assets/svgs/Twitter-icon.svg';
 import TwitterIconDark from 'assets/svgs/Twitter-s-icon-w.svg';
 // import YoutubeIcon from 'assets/svgs/youtube-s-icon.svg';
 import {useColorMode} from '@chakra-ui/react';
