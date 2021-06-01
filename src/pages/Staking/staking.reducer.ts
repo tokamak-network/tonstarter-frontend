@@ -117,12 +117,11 @@ export const stakeTon = async (args: StakeTon) => {
   const amount = converToWei(tonAmount);
   const data = getData(REACT_APP_TOKAMAK_LAYER2);
   const signer = getSigner(library, userAddress);
-  // console.log(REACT_APP_TOKAMAK_LAYER2);
-  // console.log(userAddress);
-  // console.log(data);
+
   const tx = await contract
     .connect(signer)
     .approveAndCall(REACT_APP_WTON, amount, data);
+
   // .send({from: userAddress})
   // .on('transactionHash', async (transactionHash: any) => {
   //   console.log(typeof transactionHash);
@@ -145,8 +144,6 @@ export const stakeTon = async (args: StakeTon) => {
   //     //be confirmed to stake
   //   }
   // });
-  console.log(tx);
-  // const result = contract.approveAndCall()
 };
 
 export const unStakeTon = async () => {};
@@ -162,7 +159,6 @@ export const fetchStakes = createAsyncThunk(
     }
     if (contract) {
       const vaults = await contract.vaultsOfPahse(1);
-      console.log(vaults);
 
       await Promise.all(
         vaults.map(async (vault: any) => {
@@ -171,17 +167,10 @@ export const fetchStakes = createAsyncThunk(
           const token = await stakeVault.paytoken();
           const stakeList: string[] = await stakeVault?.stakeAddressesAll();
 
-          console.log(stakeList);
-
           stakeVaults = await Promise.all(
             stakeList.map(async (item, index) => {
               let info = await stakeVault.stakeInfos(item);
               console.log(info);
-              console.log(stakeVaults);
-
-              // console.log(info);
-              // console.log(item);
-
               const startTime = await formatStartTime(info[1]);
               const endTime = await formatEndTime(info[1], info[2]);
 
@@ -227,6 +216,7 @@ export const fetchStakes = createAsyncThunk(
         }),
       );
     }
+    console.log(stakeVaults);
     return stakeVaults;
   },
 );
