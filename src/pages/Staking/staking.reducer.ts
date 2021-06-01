@@ -1,8 +1,8 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {RootState} from 'store/reducers';
-import {getContract} from 'utils/contract';
+import {getContract, getSigner} from 'utils/contract';
 import {BigNumber, utils, ethers} from 'ethers';
-import {padLeft} from 'web3-utils';
+import {padLeft, toWei} from 'web3-utils';
 import moment from 'moment';
 import * as StakeVault from 'services/abis/Stake1Vault.json';
 import * as StakeTON from 'services/abis/StakeTON.json';
@@ -80,7 +80,7 @@ const initialState = {
   currentRequestId: undefined,
 } as StakeState;
 
-const converToWei = (num: string) => utils.formatUnits(num, 18);
+const converToWei = (num: string) => toWei(num, 'ether');
 
 const getUnmarshalString = (str: string) => {
   if (str.slice(0, 2) === '0x') {
@@ -116,33 +116,36 @@ export const stakeTon = async (args: StakeTon) => {
   }
   const amount = converToWei(tonAmount);
   const data = getData(REACT_APP_TOKAMAK_LAYER2);
-  console.log(userAddress);
-  console.log(data);
-  await contract
-    .approveAndCall(REACT_APP_WTON, amount, data)
-    .send({from: userAddress})
-    .on('transactionHash', async (transactionHash: any) => {
-      console.log(typeof transactionHash);
-      // const transaction = {
-      //   from: userAddress,
-      //   type: 'Delegated',
-      //   amount,
-      //   transactionHash,
-      //   target: operatorLayer2,
-      //   timestamp: moment().unix(),
-      // };
-    })
-    .on('receipt', (receipt: any) => {
-      //success to make a transaction
-      console.log(receipt);
-    });
+  const signer = getSigner(library, userAddress);
+  // console.log(REACT_APP_TOKAMAK_LAYER2);
+  // console.log(userAddress);
+  // console.log(data);
+  const tx = await contract
+    .connect(signer)
+    .approveAndCall(REACT_APP_WTON, amount, data);
+  // .send({from: userAddress})
+  // .on('transactionHash', async (transactionHash: any) => {
+  //   console.log(typeof transactionHash);
+  //   // const transaction = {
+  //   //   from: userAddress,
+  //   //   type: 'Delegated',
+  //   //   amount,
+  //   //   transactionHash,
+  //   //   target: operatorLayer2,
+  //   //   timestamp: moment().unix(),
+  //   // };
+  // })
+  // .on('receipt', (receipt: any) => {
+  //   //success to make a transaction
+  //   console.log(receipt);
+  // });
   // .on('confirmation', async (confirmationNumber: number) => {
   //   if (confirmationNumber === 0) {
   //     console.log(confirmationNumber);
   //     //be confirmed to stake
   //   }
   // });
-
+  console.log(tx);
   // const result = contract.approveAndCall()
 };
 
@@ -173,6 +176,8 @@ export const fetchStakes = createAsyncThunk(
           stakeVaults = await Promise.all(
             stakeList.map(async (item, index) => {
               let info = await stakeVault.stakeInfos(item);
+              console.log(info);
+              console.log(stakeVaults);
 
               // console.log(info);
               // console.log(item);

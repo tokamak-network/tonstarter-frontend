@@ -100,7 +100,7 @@ export const StakeOptionModal: FC<StakeOptionModalProps> = ({
               onClick={() =>
                 stakeTon({
                   userAddress: account,
-                  tonAmount: '1000',
+                  tonAmount: '10000000000000000000',
                   library: library,
                 })
               }>
