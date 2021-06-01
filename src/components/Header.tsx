@@ -1,9 +1,8 @@
-import {Box, Flex, Button, Stack, Image, useTheme} from '@chakra-ui/react';
+import {Box, Flex, Button, Stack, Image} from '@chakra-ui/react';
 import React from 'react';
 import {shortenAddress} from 'utils';
 import {ThemeSwitcher} from './ThemeSwitcher';
 import {NavLink} from 'react-router-dom';
-import {css, Global} from '@emotion/react';
 import {useColorMode} from '@chakra-ui/react'
 import logoLight from 'assets/svgs/fld_bi.svg';
 import logoDark from 'assets/svgs/fldw_bi.svg';
@@ -22,9 +21,8 @@ type MenuLinksProps = {
 
 export const Header: React.FC<HeaderProps> = props => {
   const [isOpen, setIsOpen] = React.useState(false);
-  const { colorMode, toggleColorMode } = useColorMode();
+  const { colorMode } = useColorMode();
   const toggle = () => setIsOpen(!isOpen);
-  const theme = useTheme();
   return (
     <NavBarContainer {...props}>
       <Flex justifyContent={'space-between'}>

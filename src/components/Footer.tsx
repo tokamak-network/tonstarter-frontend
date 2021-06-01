@@ -2,16 +2,16 @@ import {Image} from '@chakra-ui/image';
 import {Box, Container, Flex, Link, Text, useTheme} from '@chakra-ui/react';
 import TelegramIconLight from 'assets/svgs/telegram-s-icon.svg';
 import TelegramIconDark from 'assets/svgs/telegram-s-icon-w.svg';
-import DiscordIcon from 'assets/svgs/discord-s-icon.svg';
-import FacebookIcon from 'assets/svgs/facebook-s-icon.svg';
+// import DiscordIcon from 'assets/svgs/discord-s-icon.svg';
+// import FacebookIcon from 'assets/svgs/facebook-s-icon.svg';
 import GitHubIconLight from 'assets/svgs/github-s-icon.svg';
 import GitHubIconDark from 'assets/svgs/github-s-icon-w.svg';
-import LinkedInIcon from 'assets/svgs/linkedin-s-icon.svg';
+// import LinkedInIcon from 'assets/svgs/linkedin-s-icon.svg';
 import MediumIconLight from 'assets/svgs/medium-s-icon.svg';
 import MediumIconDark from 'assets/svgs/medium-s-icon-w.svg';
 import TwitterIconLight from 'assets/svgs/Twitter-s-icon.svg';
 import TwitterIconDark from 'assets/svgs/Twitter-s-icon-w.svg';
-import YoutubeIcon from 'assets/svgs/youtube-s-icon.svg';
+// import YoutubeIcon from 'assets/svgs/youtube-s-icon.svg';
 import {useColorMode} from '@chakra-ui/react';
 import emailIcon from 'assets/svgs/email.svg';
 
@@ -93,7 +93,7 @@ const SocialLinks: React.FC<SocialLinkProps> = ({colorMode}) => {
 };
 
 export const Footer = () => {
-  const { colorMode, toggleColorMode } = useColorMode();
+  const { colorMode } = useColorMode();
   const theme = useTheme();
   return (
     <Container position="relative" bottom={0} maxW={'full'} bg={colorMode === 'light'?theme.colors.gray[50] :theme.colors.gray[1000]  }>
