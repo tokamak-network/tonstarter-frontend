@@ -61,13 +61,7 @@ const socialLinks = [
     iconDark: MediumIconDark,
     href: 'https://medium.com/onther-tech/',
     isExternal: true,
-  }, 
-  // {
-  //   title: 'Youtube',
-  //   icon: YoutubeIcon,
-  //   href: 'https://www.youtube.com/channel/UCF6vtIKF_0QQVRG983czVEQ/',
-  //   isExternal: true,
-  // },
+  },
 ];
 type SocialLinkProps = {
   colorMode: string;
@@ -96,7 +90,7 @@ export const Footer = () => {
   const { colorMode } = useColorMode();
   const theme = useTheme();
   return (
-    <Container position="relative" bottom={0} maxW={'full'} bg={colorMode === 'light'?theme.colors.gray[50] :theme.colors.gray[1000]  }>
+    <Container position="relative" bottom={0} maxW={'full'}>
       <Flex
         flexDirection={{base: 'column', md: 'row'}}
         justifyContent={'space-between'}
