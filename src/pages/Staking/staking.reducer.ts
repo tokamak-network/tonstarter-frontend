@@ -4,12 +4,8 @@ import {getContract} from 'utils/contract';
 import {BigNumber} from 'ethers';
 import * as StakeVault from 'services/abis/Stake1Vault.json';
 import * as IERC20 from 'services/abis/IERC20.json';
-import * as StakeTON from 'services/abis/StakeTON.json';
-import * as tonABI from 'services/abis/TON.json';
-import * as fldABI from 'services/abis/FLD.json';
 import {formatEther} from '@ethersproject/units';
 import {period, formatStartTime, formatEndTime} from 'utils/timeStamp';
-import {REACT_APP_TON, REACT_APP_FLD} from 'constants/index';
 export type Stake = {
   name?: string;
   symbol?: string;
@@ -67,7 +63,7 @@ const initialState = {
 export const fetchStakes = createAsyncThunk(
   'stakes/all',
   async ({contract, library, account}: any, {requestId, getState}) => {
-    let stakeVaults: any[] = [];
+    let projects: any[] = [];
     let stakeList: any;
 
     // @ts-ignore
@@ -87,15 +83,15 @@ export const fetchStakes = createAsyncThunk(
           return {
             iERC20: iERC20,
             stakeType: stakeType,
-            stakeList: await stakeVault?.stakeAddressesAll(),
+            projects: await stakeVault?.stakeAddressesAll(),
             stakeVault,
             token,
           };
         }),
       );
 
-      stakeVaults = await Promise.all(
-        stakeList[0].stakeList.map(async (item: any) => {
+      projects = await Promise.all(
+        stakeList[0].projects.map(async (item: any) => {
           let info = await stakeList[0].stakeVault.stakeInfos(item);
 
           const startTime = await formatStartTime(info[1]);
@@ -138,37 +134,37 @@ export const fetchStakes = createAsyncThunk(
       );
     }
 
-    return stakeVaults;
+    return projects;
   },
 );
 
-const getMy = async (
-  stakeInfo: Partial<Stake>,
-  stakeContractAddress: string,
-  library: any,
-  account: string,
-) => {
-  const TON = await getContract(REACT_APP_TON, tonABI.abi, library);
-  const myTON = await TON?.balanceOf(account);
-  stakeInfo.myton = formatEther(myTON);
-  const FLD = await getContract(REACT_APP_FLD, fldABI.abi, library);
-  const myFLD = await FLD?.balanceOf(account);
-  stakeInfo.myfld = formatEther(myFLD);
+// const getMy = async (
+//   stakeInfo: Partial<Stake>,
+//   stakeContractAddress: string,
+//   library: any,
+//   account: string,
+// ) => {
+//   const TON = await getContract(REACT_APP_TON, tonABI.abi, library);
+//   const myTON = await TON?.balanceOf(account);
+//   stakeInfo.myton = formatEther(myTON);
+//   const FLD = await getContract(REACT_APP_FLD, fldABI.abi, library);
+//   const myFLD = await FLD?.balanceOf(account);
+//   stakeInfo.myfld = formatEther(myFLD);
 
-  const StakeTONContract = await getContract(
-    stakeContractAddress,
-    StakeTON.abi,
-    library,
-  );
-  stakeInfo.saleStartBlock = await StakeTONContract?.saleStartBlock();
-  const staked = await StakeTONContract?.userStaked(account);
+//   const StakeTONContract = await getContract(
+//     stakeContractAddress,
+//     StakeTON.abi,
+//     library,
+//   );
+//   stakeInfo.saleStartBlock = await StakeTONContract?.saleStartBlock();
+//   const staked = await StakeTONContract?.userStaked(account);
 
-  stakeInfo.mystaked = formatEther(staked.amount);
-  stakeInfo.myclaimed = formatEther(staked.claimedAmount);
-  stakeInfo.mywithdraw = formatEther(staked.releasedAmount);
-  const total = await StakeTONContract?.totalStakers();
-  stakeInfo.totalStakers = total.toString();
-};
+//   stakeInfo.mystaked = formatEther(staked.amount);
+//   stakeInfo.myclaimed = formatEther(staked.claimedAmount);
+//   stakeInfo.mywithdraw = formatEther(staked.releasedAmount);
+//   const total = await StakeTONContract?.totalStakers();
+//   stakeInfo.totalStakers = total.toString();
+// };
 
 export const stakeReducer = createSlice({
   name: 'stakes',

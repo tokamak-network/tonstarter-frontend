@@ -25,6 +25,7 @@ import {
 import {selectApp} from 'store/app/app.reducer';
 import {selectUser} from 'store/app/user.reducer';
 import {PageHeader} from 'components/PageHeader';
+import {ManageModal} from './StakeOptionModal/manage';
 
 type WalletInformationProps = {
   onOpenStakeOptionModal: Function;
@@ -97,7 +98,13 @@ export const Staking = () => {
     onClose: onCloseUnstakeOptionModal,
     onOpen: onOpenUnstakeOptionModal,
   } = useDisclosure();
-  const {onOpen: onOpenManageOptionModal} = useDisclosure();
+  const {
+    onOpen: onOpenManageOptionModal,
+    onClose: onCloseManageOptionModal,
+    isOpen: isManageModalOpen,
+  } = useDisclosure();
+
+  const onEndSale = useCallback(() => {}, []);
 
   const columns = useMemo(
     () => [
@@ -259,6 +266,15 @@ export const Staking = () => {
         balance={user.balance}
         onClose={onCloseClaimOptionModal}
         onSubmit={onClaimSubmitted}
+      />
+      <ManageModal
+        isOpen={isManageModalOpen}
+        onClose={onCloseManageOptionModal}
+        balance={user.balance}
+        onOpenClaimOptionModal={onOpenClaimOptionModal}
+        onEndSale={onEndSale}
+        onOpenStakeOptionModal={onOpenStakeOptionModal}
+        onOpenUnstakeOptionModal={onOpenUnstakeOptionModal}
       />
     </Fragment>
   );
