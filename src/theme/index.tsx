@@ -39,14 +39,14 @@ const colors = {
     0: '#ffffff'
   },
   blue: {
-    400: '#0062c2',
-    300: '#2a72e5',
-    200: '#007aff',
-    100: '#0070ed',
+    400: '#0062C2',
+    300: '#2A72E5',
+    200: '#007AFF',
+    100: '#0070ED',
   },
   white: {
-    100:  '#ffffff'
-  }, 
+    100: '#FFFFFF',
+  },
   yellow: {
     300: '#ffc200',
     200: '#fecf05',
@@ -56,7 +56,7 @@ const colors = {
 
 const theme = extendTheme({
   styles: {
-    global: props => {
+    global: (props) => {
       return {
       body: {
         bgColor: mode('gray.50', 'gray.275')(props),
@@ -66,8 +66,14 @@ const theme = extendTheme({
         _hover: {
           color: 'blue.300',
         },
-        _active: {
-          color: 'blue.300',
+        a: {
+          textDecoration: 'none',
+          _hover: {
+            color: 'blue.300',
+          },
+          _active: {
+            color: 'blue.300',
+          },
         },
       },
       button: {
