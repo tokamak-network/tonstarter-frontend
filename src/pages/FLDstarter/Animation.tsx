@@ -136,12 +136,12 @@ export const Animation: React.FC<HomeProps> = () => {
         borderX="1px solid rgba(255, 255, 255, 0.25)">
         <TextComponent
           header={'Dual Profit'}
-          content={'generated from the platform growth and individual projects'}
+          content={'Generated from the platform growth and individual projects'}
           circle="top"
         />
         <TextComponent
           header={'Permissionless'}
-          content={'Fair Opportunity to participation and rewards'}
+          content={'Fair Opportunity for participation and rewards'}
           borderY="1px solid rgba(255, 255, 255, 0.25)"
           borderRadius="10px dotted black"
           circle="all"
@@ -149,7 +149,7 @@ export const Animation: React.FC<HomeProps> = () => {
         <TextComponent
           header={'Transparent'}
           content={
-            'FLD holders can participate in all platform decisions by staking FLD into sFLD(staked FLD)'
+            'FLD holders can participate in all platform decisions by staking FLD into sFLD (staked FLD)'
           }
           circle="bottom"
         />

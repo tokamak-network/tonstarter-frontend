@@ -159,11 +159,10 @@ const NavBarContainer = ({children, ...rest}: {children: any}) => {
       justify="space-between"
       wrap="wrap"
       w="100%"
-      mb={8}
       px={8}
       py={4}
-      pos="absolute"
-      zIndex={1000}
+      // pos="absolute"
+      // zIndex={1000}
       {...rest}>
       {children}
     </Flex>

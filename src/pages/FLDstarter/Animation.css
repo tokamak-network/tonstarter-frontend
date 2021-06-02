@@ -3,7 +3,7 @@
 }
 .main-scroll::-webkit-scrollbar-thumb {
   background-color: #ffffff;
-  height: 1000px;
+  height: 100px;
 }
 .main-scroll::-webkit-resizer {
   width: 100px;

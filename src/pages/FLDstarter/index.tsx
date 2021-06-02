@@ -21,31 +21,8 @@ export const FLDstarter = () => {
     return (
       <Fragment>
         <Head title={'FLD Starter'} />
-        <Container maxW={'6xl'}>
-          <Box>
-         <PageHeader title={'FLD Starter'}/>
-           <Text my={{md:5}} textAlign={'center'} fontFamily={'body'} fontSize={16} color={'gray.225'}>Decentralized Launchpad Platform</Text>
-           {/* <Text textAlign={'center'} fontFamily={'body'} fontSize={16} color={'gray.700'}>Investors: Dual profit opportunities</Text>
-           <Text textAlign={'center'}fontFamily={'body'} fontSize={16} color={'gray.700'}>Projects: Low cost to setup a launch process and wider expose to new investors</Text> */}
-          </Box>
-          {/* <SimpleGrid minChildWidth={280} gap={6}>
-            <IconContainer title={'Dual Profit'} src={solution1} subtitle={'Generated from the platform growth and individual projects'}/>
-            <IconContainer title={'Permissionless'} src={solution2} subtitle={'Fair Opportunity to participation and rewards'}/>
-            <IconContainer title={'Transparent'} src={solution3} subtitle={'FLD holders can participate in all platform decisions by staking FLD into sFLD(staked FLD)'}/>
-          </SimpleGrid> */}
-          {/* <Box borderWidth={1} >
-            <Center my={5}>
-            <Text my={0} fontSize={30}>Roadmap</Text>
-            </Center>
-          <SimpleGrid minChildWidth={230} gap={3}>
-            <RoadmapItem phase={'Phase 1'} subtitle={'Launch FLD Mining'}/>
-            <RoadmapItem phase={'Phase 2'} subtitle={'FLD Starter(Project sale), Uniswap V3 migration'}/>
-            <RoadmapItem phase={'Phase 3'} subtitle={'FLD Governance'}/>
-            <RoadmapItem phase={'Phase 4'} subtitle={'Ethereum Layer2 migration: The platform will migrate into Tokamak layer 2 chain.'}/>
-           </SimpleGrid>
-          </Box> */}
-         
-         
+        <Animation></Animation>
+        <Container maxW={'6xl'} py={12}>
           <SimpleGrid minChildWidth={350} gap={30}>
             {data.map((item, index) => (
               <TokenComponent
