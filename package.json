@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@chakra-ui/icons": "^1.0.13",
     "@chakra-ui/react": "^1.5.1",
     "@emotion/react": "^11.4.0",
     "@emotion/styled": "^11",
     "@ethersproject/contracts": "^5.1.0",
     "@ethersproject/providers": "^5.1.0",
+    "@fontsource/rajdhani": "^4.4.2",
     "@fontsource/roboto": "^4.3.0",
     "@fontsource/titillium-web": "^4.3.0",
     "@reduxjs/toolkit": "^1.5.1",
