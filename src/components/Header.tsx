@@ -162,8 +162,6 @@ const NavBarContainer = ({children, ...rest}: {children: any}) => {
       mb={8}
       px={8}
       py={4}
-      pos="absolute"
-      zIndex={1000}
       {...rest}>
       {children}
     </Flex>
