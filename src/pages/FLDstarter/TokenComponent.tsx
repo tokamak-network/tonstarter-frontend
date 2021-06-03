@@ -4,10 +4,10 @@ import {
   Text,
   Button,
   Image,
-  Box,
   Container,
   useTheme,
   Avatar,
+  Tooltip
 } from '@chakra-ui/react';
 import {Link} from 'react-router-dom';
 import {useColorMode} from '@chakra-ui/react';
@@ -99,7 +99,10 @@ export const TokenComponent: FC<TokenComponentProps> = ({phase, subtitle}) => {
               mr={2}>
               TON
             </Text>
+            <Tooltip hasArrow placement="right" label="Total Staked" color={theme.colors.white[100]} bg={theme.colors.gray[375]}>
             <Image src={tooltipIcon} />
+            </Tooltip>
+           
           </Flex>
           <Text className={'fld-text1'} fontWeight={'normal'}>
             1644.99 USD

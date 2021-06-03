@@ -1,9 +1,10 @@
 import {extendTheme} from '@chakra-ui/react';
 import {createBreakpoints, mode} from '@chakra-ui/theme-tools';
-
 import '@fontsource/titillium-web/400.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/rajdhani/600.css'
+
+
 
 const fonts = {
   heading: 'Roboto',
@@ -21,6 +22,7 @@ const breakpoints = createBreakpoints({
 
 const colors = {
   gray: {
+    375: '#353c48',
     350: '#9f9f9f',
     325: '#e9e9ec',
     300: '#d7d9df',
@@ -55,27 +57,29 @@ const colors = {
 };
 
 const theme = extendTheme({
+  
   styles: {
     global: (props) => {
+      
       return {
       body: {
         bgColor: mode('gray.50', 'gray.275')(props),
       },
-      a: {
-        textDecoration: 'none',
-        _hover: {
-          color: 'blue.300',
-        },
-        a: {
-          textDecoration: 'none',
-          _hover: {
-            color: 'blue.300',
-          },
-          _active: {
-            color: 'blue.300',
-          },
-        },
-      },
+      // a: {
+      //   textDecoration: 'none',
+      //   _hover: {
+      //     color: 'blue.300',
+      //   },
+      //   a: {
+      //     textDecoration: 'none',
+      //     _hover: {
+      //       color: 'blue.300',
+      //     },
+      //     _active: {
+      //       color: 'blue.300',
+      //     },
+      //   },
+      // },
       button: {
         bg: 'transparent',
         boxShadow: 'none !important'
@@ -110,6 +114,12 @@ const theme = extendTheme({
         fontWeight: 'bold',
         color: mode('gray.275','white.100')(props),
       },
+      '.link-match': {
+        font: fonts.body,
+        fontSize: 17,
+        fontWeight: 'bold',
+        color: mode('gray.0','white.100')(props),
+      },
       '.fld-text1': {
         fontFamily: props.theme.fonts.fld,
         fontWeight: '400',
@@ -127,6 +137,13 @@ const theme = extendTheme({
       // },
       '.active': {
         color: mode('blue.100','yellow.100')(props),
+      },
+      '.active-fld': {
+        color: 'yellow.100'
+      },
+      '.header': {
+        height: '100%',
+        bg: mode(props.theme.colors.blue[200],props.theme.colors.gray[275])(props)
       }
     }
   }, 

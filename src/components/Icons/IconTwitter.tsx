@@ -1,7 +1,6 @@
 import * as React from "react"
-import {useColorMode, useTheme} from '@chakra-ui/react';
+import {useColorMode} from '@chakra-ui/react';
 export const IconTwitter = (props: React.SVGProps<SVGSVGElement>) =>{
-    const theme = useTheme();
     const {colorMode} = useColorMode();
   return (
     <svg

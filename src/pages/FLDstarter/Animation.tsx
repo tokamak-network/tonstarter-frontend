@@ -6,8 +6,8 @@ import {
   SimpleGrid,
   SkeletonCircle,
   Wrap,
-  WrapItem,
 } from '@chakra-ui/react';
+import {useColorMode} from '@chakra-ui/react';
 import {HTMLAttributes} from 'react';
 import './Animation.css';
 export interface HomeProps extends HTMLAttributes<HTMLDivElement> {
@@ -15,6 +15,7 @@ export interface HomeProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const Animation: React.FC<HomeProps> = () => {
+  const {colorMode} = useColorMode();
   const TextComponent = (props: any) => {
     const {header, content, circle, ...rest} = props;
     const makeCircles = () => {
@@ -112,7 +113,7 @@ export const Animation: React.FC<HomeProps> = () => {
     );
   };
   return (
-    <Flex maxW="100%" height={1024} bg="blue.200">
+    <Flex maxW="100%" height={1024} bg={colorMode==='light'? 'blue.200': 'gray.275' }>
       <Container
         m={0}
         pl={20}

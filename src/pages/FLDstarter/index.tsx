@@ -1,14 +1,8 @@
-import {Container, Box, Text, SimpleGrid, Center} from '@chakra-ui/react';
+import {Container, Box, SimpleGrid, } from '@chakra-ui/react';
 import {Head} from 'components/SEO';
 import {Fragment} from 'react';
-import {PageHeader} from 'components/PageHeader';
-import {RoadmapItem} from './RoadmapItem';
 import {TokenComponent} from './TokenComponent';
-import {IconContainer} from './IconContainer';
 import {Animation} from './Animation';
-import solution1 from 'assets/images/solution_img01.png';
-import solution2 from 'assets/images/solution_img02.png';
-import solution3 from 'assets/images/solution_img03.png';
 import {data} from 'make';
 
 export const FLDstarter = () => {

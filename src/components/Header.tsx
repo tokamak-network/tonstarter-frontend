@@ -1,8 +1,8 @@
-import {Box, Flex, Button, Stack, Image, useTheme} from '@chakra-ui/react';
+import {Box, Flex, Button, Stack, Image, useTheme, Tooltip} from '@chakra-ui/react';
 import React from 'react';
 import {shortenAddress} from 'utils';
 import {ThemeSwitcher} from './ThemeSwitcher';
-import {NavLink} from 'react-router-dom';
+import {NavLink, useRouteMatch} from 'react-router-dom';
 import {useColorMode} from '@chakra-ui/react';
 import logoLight from 'assets/svgs/fld_bi.svg';
 import logoDark from 'assets/svgs/fldw_bi.svg';
@@ -22,12 +22,14 @@ export const Header: React.FC<HeaderProps> = (props) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const {colorMode} = useColorMode();
   const toggle = () => setIsOpen(!isOpen);
+  const match = useRouteMatch("/");
+
   return (
-    <NavBarContainer {...props}>
-      <Flex justifyContent={'space-between'}>
+    <NavBarContainer {...props} >
+      <Flex  justifyContent={'space-between'}>
         <Image
           className={'header-image'}
-          src={colorMode === 'light' ? logoLight : logoDark}
+          src={match?.isExact? logoDark: colorMode === 'light' ? logoLight : logoDark}
           w={191}
           h={5}
           alt="FLD Logo"
@@ -80,6 +82,8 @@ const MenuToggle = ({
 const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
+  const match = useRouteMatch("/");
+  
   return (
     <Box
       display={{base: isOpen ? 'block' : 'none', md: 'block'}}
@@ -93,14 +97,14 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
         <Button
           borderWidth={1}
           color={
-            colorMode === 'light'
-              ? theme.colors.gray[175]
-              : theme.colors.gray[0]
+            colorMode === 'dark'
+            ? theme.colors.gray[0] : match?.isExact? theme.colors.gray[0] :
+            theme.colors.gray[175]
           }
           borderColor={
-            colorMode === 'light'
-              ? theme.colors.gray[300]
-              : theme.colors.gray[0]
+            colorMode === 'dark'
+              ? theme.colors.gray[0] : match?.isExact? theme.colors.gray[0] :
+              theme.colors.gray[300]
           }
           w={136}
           h={35}
@@ -108,7 +112,7 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
           fontWeight={600}
           onClick={walletopen}
           rounded={18}
-          bg={colorMode === 'light' ? 'gray.0' : 'transparent'}
+          bg={colorMode === 'dark' ? 'transparent' :  match?.isExact?  'blue.200': 'transparent'}
           _hover={{
             bg:
               colorMode === 'light'
@@ -124,6 +128,8 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
 };
 
 const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
+  const theme = useTheme();
+  const match = useRouteMatch("/");
   return (
     <Box
       display={{base: isOpen ? 'block' : 'none', md: 'block'}}
@@ -133,27 +139,36 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
         spacing={8}
         align="center"
         justify={['center', 'space-between', 'flex-end', 'flex-end']}
-        direction={['column', 'row', 'row', 'row']}
+        direction={['column', 'column', 'column', 'row']}
         pt={[4, 4, 0, 0]}>
-        <NavLink to="/" exact className={'link'} activeClassName={'active'}>
+        <NavLink to="/" exact className={match?.isExact?'link-match': 'link'} activeClassName={match?.isExact? 'active-fld':'active'}>
           FLD Starter
         </NavLink>
-        {/* <NavLink to="/pools" className={'link'} activeClassName={'active'}>
+        <Tooltip hasArrow placement="top" label="Coming Soon" color={theme.colors.white[100]} bg={theme.colors.gray[375]}>
+        <NavLink to="/pools" className={ match?.isExact?'link-match': 'link'} onClick={e => e.preventDefault()}>
           Pools
-        </NavLink> */}
-        <NavLink to="/staking" className={'link'} activeClassName={'active'}>
+        </NavLink>
+        </Tooltip>
+        <NavLink to="/staking"  className={ match?.isExact?'link-match': 'link'} activeClassName={'active'}>
           Staking
         </NavLink>
-        {/* <Link to="/starter">Starter</Link>
-    <Link to="/dao">Dao</Link> */}
+        <Tooltip hasArrow placement="top" label="Coming Soon" color={theme.colors.white[100]} bg={theme.colors.gray[375]}>
+        <NavLink to="/starter" className={ match?.isExact?'link-match': 'link'} onClick={e => e.preventDefault()}>Starter</NavLink>
+   </Tooltip>
+   <Tooltip hasArrow placement="top" label="Coming Soon" color={theme.colors.white[100]} bg={theme.colors.gray[375]}>
+
+    <NavLink to="/dao"  className={ match?.isExact?'link-match': 'link'} onClick={e => e.preventDefault()}>Dao</NavLink>
+     </Tooltip>
       </Stack>
     </Box>
   );
 };
 
 const NavBarContainer = ({children, ...rest}: {children: any}) => {
+  const match = useRouteMatch("/");
   return (
     <Flex
+    className={match?.isExact? 'header' : ''}
       as="nav"
       align="center"
       justify="space-between"
