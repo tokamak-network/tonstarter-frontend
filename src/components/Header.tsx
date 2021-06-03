@@ -114,11 +114,7 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
           rounded={18}
           bg={colorMode === 'dark' ? 'transparent' :  match?.isExact?  'blue.200': 'transparent'}
           _hover={{
-            bg:
-              colorMode === 'light'
-                ? theme.colors.gray[100]
-                : theme.colors.gray[75],
-          }}>
+            bg:'transparent'}}>
           {account ? shortenAddress(account) : 'Connect wallet'}
         </Button>
         <ThemeSwitcher />
@@ -176,8 +172,8 @@ const NavBarContainer = ({children, ...rest}: {children: any}) => {
       w="100%"
       px={8}
       py={4}
-      // pos="absolute"
-      // zIndex={1000}
+      pos="absolute"
+      zIndex={1000}
       {...rest}>
       {children}
     </Flex>

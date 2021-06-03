@@ -1,10 +1,10 @@
-import {Container, Box, SimpleGrid, } from '@chakra-ui/react';
+import {Container, Flex, Box, SimpleGrid, Image, Stack, Button} from '@chakra-ui/react';
 import {Head} from 'components/SEO';
 import {Fragment} from 'react';
 import {TokenComponent} from './TokenComponent';
 import {Animation} from './Animation';
 import {data} from 'make';
-
+import {IconTopArrow} from 'components/Icons/IconTopArrow'
 export const FLDstarter = () => {
   // const [selected, setSelected] = useState<string>('hi');
 
@@ -16,6 +16,7 @@ export const FLDstarter = () => {
       <Fragment>
         <Head title={'FLD Starter'} />
         <Animation></Animation>
+        <Stack  >
         <Container maxW={'6xl'} py={12}>
           <SimpleGrid minChildWidth={350} gap={30}>
             {data.map((item, index) => (
@@ -26,11 +27,13 @@ export const FLDstarter = () => {
               />
             ))}
             </SimpleGrid>
-        
-          
-          <Box>
-      </Box>
-        </Container>
+            </Container>
+            <Flex justifyContent={'flex-end'} pr={10}>
+              <Button variant="unstyled" onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
+            <IconTopArrow/>
+            </Button>
+            </Flex>
+        </Stack>
       </Fragment>
     );
   };

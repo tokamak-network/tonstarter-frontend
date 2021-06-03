@@ -142,7 +142,6 @@ const theme = extendTheme({
         color: 'yellow.100'
       },
       '.header': {
-        height: '100%',
         bg: mode(props.theme.colors.blue[200],props.theme.colors.gray[275])(props)
       }
     }
