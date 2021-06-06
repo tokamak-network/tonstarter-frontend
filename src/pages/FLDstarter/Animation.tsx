@@ -19,6 +19,12 @@ export interface HomeProps extends HTMLAttributes<HTMLDivElement> {
   classes?: string;
 }
 
+const elements = {
+  marinLeft: 81,
+  distanceMargin: 140,
+  circleSize: '1',
+};
+
 const TextComponent = (props: any) => {
   const {header, content, circle, ...rest} = props;
   const makeCircles = () => {
@@ -26,7 +32,7 @@ const TextComponent = (props: any) => {
       return (
         <>
           <SkeletonCircle
-            size="2"
+            size={elements.circleSize}
             pos={'absolute'}
             top={-1}
             left={-1}
@@ -34,7 +40,7 @@ const TextComponent = (props: any) => {
             style={{WebkitAnimation: 'none', background: '#ffffff'}}
           />
           <SkeletonCircle
-            size="2"
+            size={elements.circleSize}
             pos={'absolute'}
             top={-1}
             right={-1}
@@ -42,7 +48,7 @@ const TextComponent = (props: any) => {
             style={{WebkitAnimation: 'none', background: '#ffffff'}}
           />
           <SkeletonCircle
-            size="2"
+            size={elements.circleSize}
             pos={'absolute'}
             bottom={-1}
             left={-1}
@@ -50,7 +56,7 @@ const TextComponent = (props: any) => {
             style={{WebkitAnimation: 'none', background: '#ffffff'}}
           />
           <SkeletonCircle
-            size="2"
+            size={elements.circleSize}
             pos={'absolute'}
             bottom={-1}
             right={-1}
@@ -83,7 +89,7 @@ const TextComponent = (props: any) => {
 const makeCircle = (left: number, top: number) => {
   return (
     <SkeletonCircle
-      size="1"
+      size={elements.circleSize}
       pos={'absolute'}
       top={top}
       left={left === 0 ? 77 : 77 + left * 140}
@@ -124,16 +130,10 @@ const getCondition = (rIndex: number, cIndex: number) => {
 };
 
 const getLeftArea = (rowDots: number[]) => {
-  const leftMargin = 81;
-  const distantMargin = 140;
-  const middlePoint =
-    rowDots.length % 2 !== 0
-      ? Math.round(rowDots.length / 2) - 1
-      : Math.floor(rowDots.length / 2) - 1;
-  console.log(rowDots.length);
-  console.log(middlePoint);
-  console.log(leftMargin + middlePoint * 140);
-  return leftMargin + middlePoint * 140;
+  const leftMargin = elements.marinLeft;
+  const distantMargin = elements.distanceMargin;
+  const middlePoint = Math.round(rowDots.length / 2);
+  return leftMargin + middlePoint * distantMargin;
 };
 
 export const Animation: React.FC<HomeProps> = () => {
@@ -167,74 +167,100 @@ export const Animation: React.FC<HomeProps> = () => {
               style={{position: 'relative'}}
               initial={{opacity: 1}}
               animate={{opacity: getCondition(rIndex, cIndex) === true ? 1 : 0}}
-              transition={{delay: rIndex + cIndex}}>
+              transition={{delay: (rIndex + cIndex) / 10}}>
               {makeCircle(rIndex, c)}
             </motion.div>
           );
         }),
       )}
       <motion.div
-        initial={{opacity: 0}}
-        animate={{opacity: 1}}
-        style={{display: 'flex'}}>
-        <Container
-          m={0}
-          p={0}
-          w={getLeftArea(rowDots)}
-          d="flex"
-          flexDirection="column"
-          justifyContent="center"
-          color="white.100"
-          fontWeight="semibold"
-          fontSize={52}>
-          <Text>FLD Starter</Text>
-          <Text>Decentralized Launchpad</Text>
-          <Text>Platform</Text>
-        </Container>
-        <SimpleGrid
-          d="flex"
-          flexDirection="column"
-          justifyContent="center"
-          w="291px"
-          color="white.100"
-          borderX="1px solid rgba(255, 255, 255, 0.25)">
-          <TextComponent
-            header={'Dual Profit'}
-            content={
-              'generated from the platform growth and individual projects'
-            }
-          />
-          <TextComponent
-            header={'Permissionless'}
-            content={'Fair Opportunity to participation and rewards'}
-            borderY="1px solid rgba(255, 255, 255, 0.25)"
-            borderRadius="10px dotted black"
-            circle="all"
-          />
-          <TextComponent
-            header={'Transparent'}
-            content={
-              'FLD holders can participate in all platform decisions by staking FLD into sFLD(staked FLD)'
-            }
-          />
-        </SimpleGrid>
-        <Wrap
-          w="291px"
-          pt={676}
-          borderRight="1px solid rgba(255, 255, 255, 0.25)"
-          color="white.100"
-          overflowY="auto"
-          overflowX="hidden"
-          flexDirection="column"
-          className="main-scroll">
-          <Text pl={25} fontSize="26px" fontWeight={'bold'}>
-            ROAD MAP
-          </Text>
-          <TextComponent header={'Phase1'} content={'Launch FLD Mining'} />
-          <TextComponent header={'Phase1'} content={'Launch FLD Mining'} />
-          <TextComponent header={'Phase1'} content={'Launch FLD Mining'} />
-          <TextComponent header={'Phase1'} content={'Launch FLD Mining'} />
-        </Wrap>
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+        initial={{opacity: 1}}>
+        <motion.div initial={{opacity: 0}}>
+          <Container
+            m={0}
+            p={0}
+            w={getLeftArea(rowDots)}
+            d="flex"
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+            color="white.100"
+            fontWeight="semibold"
+            fontSize={52}>
+            <div>
+              <Text>FLD Starter</Text>
+              <Text>Decentralized Launchpad</Text>
+              <Text>Platform</Text>
+            </div>
+          </Container>
+        </motion.div>
+        <motion.div
+          initial={{
+            borderBottomWidth: '0px',
+            borderBlockColor: '#007AFF',
+            // y: -1024,
+          }}
+          animate={{
+            borderBottomWidth: '1px',
+            borderBottomColor: '#ffffff',
+            borderBlockStart: '1px solid black',
+            // y: 0,
+          }}
+          transition={{duration: 5}}>
+          <SimpleGrid
+            d="flex"
+            flexDirection="column"
+            justifyContent="center"
+            ml={-0.5}
+            w={elements.distanceMargin * 2 + 1}
+            color="white.100"
+            // borderX="1px solid rgba(255, 255, 255, 0.25)"
+          >
+            <TextComponent
+              header={'Dual Profit'}
+              content={
+                'generated from the platform growth and individual projects'
+              }
+            />
+            <TextComponent
+              header={'Permissionless'}
+              content={'Fair Opportunity to participation and rewards'}
+              // borderY="1px solid rgba(255, 255, 255, 0.25)"
+              borderRadius="10px dotted black"
+              circle="all"
+            />
+            <TextComponent
+              header={'Transparent'}
+              content={
+                'FLD holders can participate in all platform decisions by staking FLD into sFLD(staked FLD)'
+              }
+            />
+          </SimpleGrid>
+        </motion.div>
+        <motion.div initial={{opacity: 0}}>
+          <Wrap
+            w="291px"
+            pt={676}
+            borderRight="1px solid rgba(255, 255, 255, 0.25)"
+            color="white.100"
+            overflowY="auto"
+            overflowX="hidden"
+            flexDirection="column"
+            className="main-scroll">
+            <Text pl={25} fontSize="26px" fontWeight={'bold'}>
+              ROAD MAP
+            </Text>
+            <TextComponent header={'Phase1'} content={'Launch FLD Mining'} />
+            <TextComponent header={'Phase1'} content={'Launch FLD Mining'} />
+            <TextComponent header={'Phase1'} content={'Launch FLD Mining'} />
+            <TextComponent header={'Phase1'} content={'Launch FLD Mining'} />
+          </Wrap>
+        </motion.div>
       </motion.div>
     </Flex>
   );
