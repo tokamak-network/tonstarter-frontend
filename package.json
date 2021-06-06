@@ -18,7 +18,7 @@
     "@web3-react/walletconnect-connector": "^6.1.9",
     "@web3-react/walletlink-connector": "^6.1.9",
     "add": "^2.0.6",
-    "framer-motion": "^4.1.4",
+    "framer-motion": "^4.1.17",
     "history": "^5.0.0",
     "i18next": "^20.2.2",
     "i18next-browser-languagedetector": "^6.1.1",
