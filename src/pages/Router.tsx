@@ -4,7 +4,7 @@ import {useDisclosure} from '@chakra-ui/react';
 import {useWeb3React} from '@web3-react/core';
 import {Header} from 'components/Header';
 import {Footer} from 'components/Footer';
-import {FLDstarter} from './FLDstarter/Index';
+import {FLDstarter} from './FLDstarter/index';
 import {Pools} from './Pools';
 import {Staking} from './Staking';
 import {Switch, Route} from 'react-router-dom';

@@ -9,12 +9,11 @@ import {
   WrapItem,
   Image,
 } from '@chakra-ui/react';
-import {motion} from 'framer-motion';
+import {motion, useAnimation} from 'framer-motion';
 import {HTMLAttributes, useEffect, useState} from 'react';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import FLDLogo from 'assets/svgs/fld_bi_c.svg';
 import './Animation.css';
-import {composeInitialProps} from 'react-i18next';
 export interface HomeProps extends HTMLAttributes<HTMLDivElement> {
   classes?: string;
 }
@@ -25,48 +24,70 @@ const elements = {
   circleSize: '1',
 };
 
+const addCircles = (props: any) => {
+  const {delay} = props;
+  return (
+    <>
+      <motion.div
+        initial={{opacity: 0}}
+        animate={{opacity: 1}}
+        transition={{delay: delay, transition: 1}}>
+        <SkeletonCircle
+          size={elements.circleSize}
+          pos={'absolute'}
+          top={-1}
+          left="-2px"
+          opacity={1}
+          className="test"
+          style={{WebkitAnimation: 'none', background: '#ffffff'}}
+        />
+      </motion.div>
+      <motion.div
+        initial={{opacity: 0}}
+        animate={{opacity: 1}}
+        transition={{delay: delay + 1, transition: 1}}>
+        <SkeletonCircle
+          size={elements.circleSize}
+          pos={'absolute'}
+          top={-1}
+          right="-2px"
+          opacity={1}
+          style={{WebkitAnimation: 'none', background: '#ffffff'}}
+        />
+      </motion.div>
+      <motion.div
+        initial={{opacity: 0}}
+        animate={{opacity: 1}}
+        transition={{delay: delay + 2, transition: 1}}>
+        <SkeletonCircle
+          size={elements.circleSize}
+          pos={'absolute'}
+          bottom={-1}
+          right="-2px"
+          opacity={1}
+          style={{WebkitAnimation: 'none', background: '#ffffff'}}
+        />
+      </motion.div>
+      <motion.div
+        initial={{opacity: 0}}
+        animate={{opacity: 1}}
+        transition={{delay: delay + 3, transition: 1}}>
+        <SkeletonCircle
+          size={elements.circleSize}
+          pos={'absolute'}
+          bottom={-1}
+          left="-2px"
+          opacity={1}
+          style={{WebkitAnimation: 'none', background: '#ffffff'}}
+        />
+      </motion.div>
+    </>
+  );
+};
+
 const TextComponent = (props: any) => {
-  const {header, content, circle, ...rest} = props;
-  const makeCircles = () => {
-    if (circle === 'all') {
-      return (
-        <>
-          <SkeletonCircle
-            size={elements.circleSize}
-            pos={'absolute'}
-            top={-1}
-            left={-1}
-            opacity={1}
-            style={{WebkitAnimation: 'none', background: '#ffffff'}}
-          />
-          <SkeletonCircle
-            size={elements.circleSize}
-            pos={'absolute'}
-            top={-1}
-            right={-1}
-            opacity={1}
-            style={{WebkitAnimation: 'none', background: '#ffffff'}}
-          />
-          <SkeletonCircle
-            size={elements.circleSize}
-            pos={'absolute'}
-            bottom={-1}
-            left={-1}
-            opacity={1}
-            style={{WebkitAnimation: 'none', background: '#ffffff'}}
-          />
-          <SkeletonCircle
-            size={elements.circleSize}
-            pos={'absolute'}
-            bottom={-1}
-            right={-1}
-            opacity={1}
-            style={{WebkitAnimation: 'none', background: '#ffffff'}}
-          />
-        </>
-      );
-    }
-  };
+  const {header, content, circle, delay, ...rest} = props;
+
   return (
     <Center
       height="288px"
@@ -81,7 +102,7 @@ const TextComponent = (props: any) => {
       <Text fontSize="15px" fontWeight={300}>
         {content}
       </Text>
-      {makeCircles()}
+      {circle && delay ? addCircles({delay: delay}) : ''}
     </Center>
   );
 };
@@ -132,20 +153,42 @@ const getCondition = (rIndex: number, cIndex: number) => {
 const getLeftArea = (rowDots: number[]) => {
   const leftMargin = elements.marinLeft;
   const distantMargin = elements.distanceMargin;
-  const middlePoint = Math.round(rowDots.length / 2);
+  const middlePoint =
+    rowDots.length % 2 !== 0
+      ? Math.round(rowDots.length / 2) - 1
+      : Math.round(rowDots.length / 2);
   return leftMargin + middlePoint * distantMargin;
 };
 
 export const Animation: React.FC<HomeProps> = () => {
   const {width} = useWindowDimensions();
   const [rowDots, setRowDots] = useState<number[]>([]);
+  const [timer, setTimer] = useState<number>();
   const verticalDots: number[] = [77, 221, 365, 509, 653, 797, 941];
+
+  const controls = useAnimation();
+
+  const variants = {
+    visible: (i: number) => ({
+      opacity: 1,
+      transition: {
+        delay: i * 1,
+      },
+    }),
+    hidden: {opacity: 0},
+  };
 
   useEffect(() => {
     const result = makeDots(Number(width), 1024);
     console.log('width : ' + width);
     setRowDots(result);
-  }, [width]);
+    setTimer(result.length / 10);
+
+    controls.start((i) => ({
+      opacity: 1,
+      transition: {delay: i * 0.3},
+    }));
+  }, [width, controls]);
 
   return (
     <Flex maxW="100%" height={1024} bg="blue.200" position="relative">
@@ -180,7 +223,7 @@ export const Animation: React.FC<HomeProps> = () => {
           justifyContent: 'center',
         }}
         initial={{opacity: 1}}>
-        <motion.div initial={{opacity: 0}}>
+        <motion.div initial={{opacity: 1}}>
           <Container
             m={0}
             p={0}
@@ -201,65 +244,106 @@ export const Animation: React.FC<HomeProps> = () => {
         </motion.div>
         <motion.div
           initial={{
-            borderBottomWidth: '0px',
-            borderBlockColor: '#007AFF',
+            borderColor: '#007AFF',
             // y: -1024,
           }}
           animate={{
-            borderBottomWidth: '1px',
-            borderBottomColor: '#ffffff',
-            borderBlockStart: '1px solid black',
+            borderLeftWidth: '1px',
+            borderRightWidth: '1px',
+            borderLeftColor: '#ffffff',
+            borderRightColor: '#ffffff',
             // y: 0,
           }}
-          transition={{duration: 5}}>
+          style={{marginLeft: '-2.5px'}}
+          transition={{delay: timer, duration: 5}}>
           <SimpleGrid
             d="flex"
             flexDirection="column"
             justifyContent="center"
-            ml={-0.5}
-            w={elements.distanceMargin * 2 + 1}
+            w={elements.distanceMargin * 2 - 1}
             color="white.100"
             // borderX="1px solid rgba(255, 255, 255, 0.25)"
           >
-            <TextComponent
-              header={'Dual Profit'}
-              content={
-                'generated from the platform growth and individual projects'
-              }
-            />
-            <TextComponent
-              header={'Permissionless'}
-              content={'Fair Opportunity to participation and rewards'}
-              // borderY="1px solid rgba(255, 255, 255, 0.25)"
-              borderRadius="10px dotted black"
-              circle="all"
-            />
-            <TextComponent
-              header={'Transparent'}
-              content={
-                'FLD holders can participate in all platform decisions by staking FLD into sFLD(staked FLD)'
-              }
-            />
+            <motion.div
+              custom={0}
+              initial="hidden"
+              animate="visible"
+              variants={variants}>
+              <TextComponent
+                header={'Dual Profit'}
+                content={
+                  'generated from the platform growth and individual projects'
+                }
+              />
+            </motion.div>
+            <motion.div
+              initial={{
+                borderTopWidth: '1px',
+                borderBottomWidth: '1px',
+                borderColor: '#007AFF',
+              }}
+              animate={{
+                borderTopColor: [null, '#ffffff', '#ffffff'],
+                borderBottomColor: [null, '#007AFF', '#ffffff'],
+                // borderTopWidth: '1px',
+                // borderTopColor: '#ffffff'
+              }}
+              transition={{
+                delay: rowDots.length + 1,
+                duration: 5,
+                times: [0, 0.5, 1],
+              }}>
+              <motion.div
+                custom={1}
+                initial="hidden"
+                animate="visible"
+                variants={variants}>
+                <TextComponent
+                  header={'Permissionless'}
+                  content={'Fair Opportunity to participation and rewards'}
+                  // borderY="1px solid rgba(255, 255, 255, 0.25)"
+                  borderRadius="10px dotted black"
+                  circle="all"
+                  delay={5}
+                />
+              </motion.div>
+            </motion.div>
+            <motion.div
+              custom={2}
+              initial="hidden"
+              animate="visible"
+              variants={variants}>
+              <TextComponent
+                header={'Transparent'}
+                content={
+                  'FLD holders can participate in all platform decisions by staking FLD into sFLD(staked FLD)'
+                }
+              />
+            </motion.div>
           </SimpleGrid>
         </motion.div>
-        <motion.div initial={{opacity: 0}}>
-          <Wrap
-            w="291px"
-            pt={676}
-            borderRight="1px solid rgba(255, 255, 255, 0.25)"
-            color="white.100"
-            overflowY="auto"
-            overflowX="hidden"
-            flexDirection="column"
-            className="main-scroll">
-            <Text pl={25} fontSize="26px" fontWeight={'bold'}>
-              ROAD MAP
-            </Text>
-            <TextComponent header={'Phase1'} content={'Launch FLD Mining'} />
-            <TextComponent header={'Phase1'} content={'Launch FLD Mining'} />
-            <TextComponent header={'Phase1'} content={'Launch FLD Mining'} />
-            <TextComponent header={'Phase1'} content={'Launch FLD Mining'} />
-          </Wrap>
+        <motion.div
+          initial={{borderRight: ''}}
+          animate={{borderRight: '1px solid #ffffff'}}
+          transition={{delay: rowDots.length + 2}}>
+          <motion.div initial={{opacity: 0}}>
+            <Wrap
+              w="291px"
+              pt={676}
+              color="white.100"
+              overflowY="auto"
+              overflowX="hidden"
+              flexDirection="column"
+              className="main-scroll">
+              <Text pl={25} fontSize="26px" fontWeight={'bold'}>
+                ROAD MAP
+              </Text>
+              <TextComponent header={'Phase1'} content={'Launch FLD Mining'} />
+              <TextComponent header={'Phase1'} content={'Launch FLD Mining'} />
+              <TextComponent header={'Phase1'} content={'Launch FLD Mining'} />
+              <TextComponent header={'Phase1'} content={'Launch FLD Mining'} />
+            </Wrap>
+          </motion.div>
         </motion.div>
       </motion.div>
     </Flex>
