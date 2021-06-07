@@ -1,5 +1,6 @@
 import {Box, Flex, Button, Stack, Image} from '@chakra-ui/react';
 import React from 'react';
+import {motion} from 'framer-motion';
 import {shortenAddress} from 'utils';
 import {ThemeSwitcher} from './ThemeSwitcher';
 import {NavLink} from 'react-router-dom';
@@ -23,21 +24,26 @@ export const Header: React.FC<HeaderProps> = (props) => {
   const {colorMode} = useColorMode();
   const toggle = () => setIsOpen(!isOpen);
   return (
-    <NavBarContainer {...props}>
-      <Flex justifyContent={'space-between'}>
-        <Image
-          className={'header-image'}
-          src={colorMode === 'light' ? logoLight : logoDark}
-          w={191}
-          h={5}
-          alt="FLD Logo"
-        />
-        <MenuItems isOpen={isOpen} {...props} />
-      </Flex>
-      <MenuToggle toggle={toggle} isOpen={isOpen} />
+    <motion.div
+      initial={{opacity: 0}}
+      animate={{opacity: 1}}
+      transition={{delay: 1, duration: 1}}>
+      <NavBarContainer {...props}>
+        <Flex justifyContent={'space-between'}>
+          <Image
+            className={'header-image'}
+            src={colorMode === 'light' ? logoLight : logoDark}
+            w={191}
+            h={5}
+            alt="FLD Logo"
+          />
+          <MenuItems isOpen={isOpen} {...props} />
+        </Flex>
+        <MenuToggle toggle={toggle} isOpen={isOpen} />
 
-      <MenuLinks isOpen={isOpen} {...props} />
-    </NavBarContainer>
+        <MenuLinks isOpen={isOpen} {...props} />
+      </NavBarContainer>
+    </motion.div>
   );
 };
 
