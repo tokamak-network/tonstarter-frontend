@@ -1,8 +1,8 @@
 import {TransactionResponse} from '@ethersproject/providers';
 import {createAsyncThunk} from '@reduxjs/toolkit';
-import {REACT_APP_STAKE_VAULT_FACTORY} from 'constants/index';
-import * as StakeVault from 'services/abis/Stake1Vault.json';
-import {getContract} from 'utils/contract';
+import {REACT_APP_STAKE_VAULT_FACTORY} from '../constants/index';
+import * as StakeVault from './abis/Stake1Vault.json';
+import {getContract} from '../utils/contract';
 
 export const ClaimStake = createAsyncThunk(
   'stake/claimStake',
