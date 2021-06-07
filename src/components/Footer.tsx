@@ -13,12 +13,6 @@ const socialLinks = [
     href: 'https://t.me/tokamak_network/',
     isExternal: true,
   },
-  // {
-  //   title: 'Discord',
-  //   icon: DiscordIcon,
-  //   href: 'https://discord.gg/8wSpJKz',
-  //   isExternal: true,
-  // },
   {
     title: 'GitHub',
     icon: IconGithub,
