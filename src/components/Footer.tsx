@@ -40,21 +40,17 @@ const socialLinks = [
     href: 'https://medium.com/onther-tech/',
     isExternal: true,
   },
-  {
-    title: 'Twitter',
-    icon: TwitterIcon,
-    href: 'https://twitter.com/tokamak_network/',
-    isExternal: true,
-  },
-  {
-    title: 'Youtube',
-    icon: YoutubeIcon,
-    href: 'https://www.youtube.com/channel/UCF6vtIKF_0QQVRG983czVEQ/',
-    isExternal: true,
-  },
+  // {
+  //   title: 'Youtube',
+  //   icon: YoutubeIcon,
+  //   href: 'https://www.youtube.com/channel/UCF6vtIKF_0QQVRG983czVEQ/',
+  //   isExternal: true,
+  // },
 ];
-
-const SocialLinks = () => {
+type SocialLinkProps = {
+  colorMode: string;
+};
+const  SocialLinks: React.FC<SocialLinkProps> = ({colorMode}) => {
   return (
     <Flex direction={'row'} mr={3}>
       {socialLinks.map((socialLink, index) => (
@@ -72,6 +68,8 @@ const SocialLinks = () => {
 };
 
 export const Footer = () => {
+  const { colorMode } = useColorMode();
+  const theme = useTheme();
   return (
     <Container maxW={'full'} px={{base: 4, md: 8}} py={{base: 0, md: 4}}>
       <Flex
@@ -90,8 +88,8 @@ export const Footer = () => {
             10 Anson Road #23-140  International Plaza Singapore
             </Text>
           </Box>
-          <Box>
-            <Text>info@onther.io</Text>
+          <Box  mr={{base: 0, md: 3}}>
+          <Image src={emailIcon}/>
           </Box>
 
           <Box justifyContent={'center'} alignItems={'center'}>
