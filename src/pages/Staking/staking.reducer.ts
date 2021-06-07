@@ -109,7 +109,7 @@ export const stakeTon = async (args: StakeTon) => {
   if (userAddress === null || userAddress === undefined) {
     return;
   }
-  console.log(userAddress);
+
   const contract = getContract(REACT_APP_TON, TonABI.abi, library);
   if (!contract) {
     throw new Error(`Can't find the contract for staking actions`);
@@ -170,13 +170,12 @@ export const fetchStakes = createAsyncThunk(
           stakeVaults = await Promise.all(
             stakeList.map(async (item, index) => {
               let info = await stakeVault.stakeInfos(item);
-              console.log(info);
               const startTime = await formatStartTime(info[1]);
               const endTime = await formatEndTime(info[1], info[2]);
-
               const stakeInfo: Partial<Stake> = {
                 stakeContract: stakeList,
                 name: info.name,
+                contractAddress: item,
                 saleStartBlock: 0,
                 stakeStartBlock: info[1],
                 stakeEndBlock: info[2],
@@ -201,6 +200,8 @@ export const fetchStakes = createAsyncThunk(
                 startTime: startTime,
                 endTime: endTime,
               };
+              console.log(stakeInfo);
+              
               stakeInfos.push(stakeInfo);
               await getMy(stakeInfo, stakeList[0], library, account);
               await infoTokamak(
@@ -216,7 +217,6 @@ export const fetchStakes = createAsyncThunk(
         }),
       );
     }
-    console.log(stakeVaults);
     return stakeVaults;
   },
 );
@@ -332,5 +332,5 @@ export const stakeReducer = createSlice({
     },
   },
 });
-
+// @ts-ignore
 export const selectStakes = (state: RootState) => state.stakes;

@@ -19,12 +19,14 @@ import {getSigner} from 'utils/contract';
 
 type StakeOptionModalProps = {
   isOpen: boolean;
+  address: string;
   balance: BigNumber;
   onClose: Function;
 };
 
 export const StakeOptionModal: FC<StakeOptionModalProps> = ({
   isOpen,
+  address,
   onClose,
   balance,
 }) => {
@@ -90,6 +92,7 @@ export const StakeOptionModal: FC<StakeOptionModalProps> = ({
             <Box textAlign={'center'}>
               <Text>Available Balance</Text>
               <Text>{balance.toString()} TON</Text>
+              <Text>{address}</Text>
             </Box>
           </Stack>
 
@@ -100,7 +103,7 @@ export const StakeOptionModal: FC<StakeOptionModalProps> = ({
               onClick={() =>
                 stakeTon({
                   userAddress: account,
-                  tonAmount: '10000000000000000000',
+                  tonAmount: '10',
                   library: library,
                 })
               }>
