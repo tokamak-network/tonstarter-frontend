@@ -1,4 +1,4 @@
-import {Container, Flex, Box, SimpleGrid, Image, Stack, Button} from '@chakra-ui/react';
+import {Container, Flex, SimpleGrid, Stack, Button} from '@chakra-ui/react';
 import {Head} from 'components/SEO';
 import {Fragment} from 'react';
 import {TokenComponent} from './TokenComponent';
