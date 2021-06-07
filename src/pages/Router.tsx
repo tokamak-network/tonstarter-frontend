@@ -12,6 +12,9 @@ import {Switch, Route} from 'react-router-dom';
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
 export const Router: FC<RouterProps> = () => {
+  const dispatch = useAppDispatch();
+  // const toast = useToast();
+  // const {data, loading, error} = useSelector(selectStakes);
   const [walletState, setWalletState] = useState<string>('');
   const {onOpen, isOpen: isModalOpen, onClose} = useDisclosure();
   const {account} = useWeb3React();
@@ -20,6 +23,12 @@ export const Router: FC<RouterProps> = () => {
     setWalletState(state);
     onOpen();
   };
+
+  // if (error) {
+  //   toast({
+  //     description: data.
+  //   })
+  // }
 
   return (
     <>
