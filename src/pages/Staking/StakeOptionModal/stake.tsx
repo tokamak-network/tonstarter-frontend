@@ -98,7 +98,6 @@ export const StakeOptionModal: FC<StakeOptionModalProps> = ({
 
           <Box py={4} as={Flex} justifyContent={'center'}>
             <Button
-              disabled={balance.lte(0)}
               colorScheme={'blue'}
               onClick={() =>
                 stakeTon({

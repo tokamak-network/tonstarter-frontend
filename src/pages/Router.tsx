@@ -20,6 +20,8 @@ export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
 export const Router: FC<RouterProps> = () => {
   const dispatch = useAppDispatch();
+  // const toast = useToast();
+  // const {data, loading, error} = useSelector(selectStakes);
   const [walletState, setWalletState] = useState<string>('');
   const {onOpen, isOpen: isModalOpen, onClose} = useDisclosure();
   const {account, chainId, library} = useWeb3React();
@@ -39,18 +41,22 @@ export const Router: FC<RouterProps> = () => {
   useEffect(() => {
     dispatch(fetchStakes({contract: stakeRegistryContract, library, account}) as any);
   }, [stakeRegistryContract, dispatch, library, account]);
-
-  
   const handleWalletModalOpen = (state: string) => {
     setWalletState(state);
     onOpen();
   };
 
+  // if (error) {
+  //   toast({
+  //     description: data.
+  //   })
+  // }
+
   return (
     <>
       <Header
         account={account}
-        onOpen={() => handleWalletModalOpen('wallet')}
+        walletopen={() => handleWalletModalOpen('wallet')}
       />
       <Switch>
         <Route exact path="/" component={FLDstarter} />

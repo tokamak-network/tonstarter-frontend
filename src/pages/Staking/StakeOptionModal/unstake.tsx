@@ -11,19 +11,20 @@ import {
   Input,
   Stack,
 } from '@chakra-ui/react';
-import {BigNumber} from 'ethers';
 import React, {FC, useCallback, useState} from 'react';
 
 type UnstakeOptionModalProps = {
   isOpen: boolean;
-  balance: BigNumber;
+  balance: string;
   onClose: Function;
+  onSubmit: Function;
 };
 
 export const UnstakeOptionModal: FC<UnstakeOptionModalProps> = ({
   isOpen,
   onClose,
   balance,
+  onSubmit,
 }) => {
   const [value, setValue] = useState<number>(+balance);
 
@@ -84,12 +85,16 @@ export const UnstakeOptionModal: FC<UnstakeOptionModalProps> = ({
             alignItems={'center'}>
             <Box textAlign={'center'}>
               <Text>Available Balance</Text>
-              <Text>{balance.toString()} TON</Text>
+              <Text>{balance} TON</Text>
             </Box>
           </Stack>
 
           <Box py={4} as={Flex} justifyContent={'center'}>
-            <Button disabled={balance.lte(0)} colorScheme={'blue'}>
+            <Button
+              type={'submit'}
+              onClick={() => onSubmit()}
+              disabled={+balance <= 0}
+              colorScheme={'blue'}>
               Unstake
             </Button>
           </Box>

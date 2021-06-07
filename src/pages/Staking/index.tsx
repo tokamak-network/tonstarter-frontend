@@ -12,8 +12,8 @@ import {
 import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
 import {Head} from 'components/SEO';
-import { useAppSelector} from 'hooks/useRedux';
-import {FC, Fragment, useCallback, useMemo} from 'react';
+import {useAppSelector} from 'hooks/useRedux';
+import React, {FC, Fragment, useCallback, useMemo} from 'react';
 import {shortenAddress} from 'utils';
 import {StakingTable} from './StakingTable';
 import {selectStakes} from './staking.reducer';
@@ -24,14 +24,16 @@ import {
 } from './StakeOptionModal';
 import {selectApp} from 'store/app/app.reducer';
 import {selectUser} from 'store/app/user.reducer';
-import {BigNumber} from 'ethers';
+import {PageHeader} from 'components/PageHeader';
+import {ManageModal} from './StakeOptionModal/manage';
+
 type WalletInformationProps = {
   onOpenStakeOptionModal: Function;
   onOpenClaimOptionModal: Function;
   onOpenUnstakeOptionModal: Function;
   onOpenManageOptionModal: Function;
   user: {
-    balance: BigNumber;
+    balance: string;
   };
   stakeContractAddress: string;
 };
@@ -78,7 +80,6 @@ const WalletInformation: FC<WalletInformationProps> = ({
 };
 
 export const Staking = () => {
-
   // @ts-ignore
   const {data, loading} = useAppSelector(selectStakes);
   const {data: user} = useAppSelector(selectUser);
@@ -102,9 +103,11 @@ export const Staking = () => {
   } = useDisclosure();
   const {
     onOpen: onOpenManageOptionModal,
+    onClose: onCloseManageOptionModal,
+    isOpen: isManageModalOpen,
   } = useDisclosure();
 
-
+  const onEndSale = useCallback(() => {}, []);
 
   const columns = useMemo(
     () => [
@@ -169,7 +172,6 @@ export const Staking = () => {
               <Text fontWeight={'bold'}>Closing day</Text>
               <Text>{data[row.id]?.endTime}</Text>
             </Box>
-            
           </Flex>
           <Box p={8}>
             <WalletInformation
@@ -197,8 +199,10 @@ export const Staking = () => {
                 _focus={{
                   outline: 'none',
                 }}
-                href={`${appConfig.explorerLink}${data[row.id]?.token}`}>
-                {shortenAddress(data[row.id]?.token)}
+                href={`${appConfig.explorerLink}${
+                  data[row.id]?.contractAddress
+                }`}>
+                {shortenAddress(data[row.id]?.contractAddress)}
               </Link>
             </Box>
           </Flex>
@@ -216,18 +220,28 @@ export const Staking = () => {
     ],
   );
 
+  const onClaimSubmitted = useCallback(async value => {
+    // @ts-ignore
+    // dispatch(claimStake({account, value, library} as any));
+  }, []);
+
+  const onStakeSubmitted = useCallback(value => {}, []);
+
+  const onUnstakeSubmitted = useCallback(e => {
+    e.preventDefault();
+  }, []);
+
   return (
     <Fragment>
       <Head title={'Staking'} />
-      <Container maxW={'8xl'}>
+      <Container maxW={'6xl'}>
         <Box>
-          <Text fontWeight={'medium'} fontSize={'xl'}>
-            Staking
-          </Text>
-          <Text>
-            Put your tokens into FLD and earn without losing principal
-          </Text>
-          <Text>{}</Text>
+          <PageHeader
+            title={'FLD Starter'}
+            subtitle={
+              'Put your tokens into FLD and earn without losing principal'
+            }
+          />
         </Box>
 
         <Box py={20}>
@@ -244,16 +258,28 @@ export const Staking = () => {
         address={'fdgjfasj'}
         balance={user.balance}
         onClose={onCloseStakeOptionModal}
+        onSubmit={onStakeSubmitted}
       />
       <UnstakeOptionModal
         isOpen={isUnstakeModalOpen}
         balance={user.balance}
         onClose={onCloseUnstakeOptionModal}
+        onSubmit={onUnstakeSubmitted}
       />
       <ClaimOptionModal
         isOpen={isClaimModalOpen}
         balance={user.balance}
         onClose={onCloseClaimOptionModal}
+        onSubmit={onClaimSubmitted}
+      />
+      <ManageModal
+        isOpen={isManageModalOpen}
+        onClose={onCloseManageOptionModal}
+        balance={user.balance}
+        onOpenClaimOptionModal={onOpenClaimOptionModal}
+        onEndSale={onEndSale}
+        onOpenStakeOptionModal={onOpenStakeOptionModal}
+        onOpenUnstakeOptionModal={onOpenUnstakeOptionModal}
       />
     </Fragment>
   );

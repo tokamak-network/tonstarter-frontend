@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14">
+    <defs>
+        <style>
+            .cls-2{fill:none;stroke:#84919e;stroke-linecap:round;stroke-linejoin:round}
+        </style>
+    </defs>
+    <g id="email" transform="translate(-89 -89)">
+        <path id="Base" fill="none" d="M0 0H14V14H0z" transform="translate(89 89)"/>
+        <path id="패스_86" d="M90.75 92.062h10.5V99.5a.437.437 0 0 1-.438.437h-9.624a.437.437 0 0 1-.438-.437v-7.438z" class="cls-2"/>
+        <path id="패스_87" d="M101.25 92.062L96 96.875l-5.25-4.812" class="cls-2"/>
+    </g>
+</svg>
