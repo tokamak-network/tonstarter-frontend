@@ -140,14 +140,15 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
         <NavLink to="/" exact className={match?.isExact?'link-match': 'link'} activeClassName={match?.isExact? 'active-fld':'active'}>
           FLD Starter
         </NavLink>
+        <NavLink to="/staking"  className={ match?.isExact?'link-match': 'link'} activeClassName={'active'}>
+          Staking
+        </NavLink>
         <Tooltip hasArrow placement="top" label="Coming Soon" color={theme.colors.white[100]} bg={theme.colors.gray[375]}>
         <NavLink to="/pools" className={ match?.isExact?'link-match': 'link'} onClick={e => e.preventDefault()}>
           Pools
         </NavLink>
         </Tooltip>
-        <NavLink to="/staking"  className={ match?.isExact?'link-match': 'link'} activeClassName={'active'}>
-          Staking
-        </NavLink>
+       
         <Tooltip hasArrow placement="top" label="Coming Soon" color={theme.colors.white[100]} bg={theme.colors.gray[375]}>
         <NavLink to="/starter" className={ match?.isExact?'link-match': 'link'} onClick={e => e.preventDefault()}>Starter</NavLink>
    </Tooltip>
