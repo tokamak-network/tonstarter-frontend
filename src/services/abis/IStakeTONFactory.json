@@ -4,42 +4,27 @@
     {
       "inputs": [
         {
-          "internalType": "uint256",
-          "name": "_pahse",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "_vault",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "_token",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "_paytoken",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_period",
-          "type": "uint256"
-        },
-        {
           "internalType": "address[4]",
-          "name": "tokamakAddr",
+          "name": "_addr",
           "type": "address[4]"
         },
         {
           "internalType": "address",
-          "name": "_owner",
+          "name": "_registry",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256[3]",
+          "name": "_intdata",
+          "type": "uint256[3]"
+        },
+        {
+          "internalType": "address",
+          "name": "owner",
           "type": "address"
         }
       ],
-      "name": "deploy",
+      "name": "create",
       "outputs": [
         {
           "internalType": "address",
@@ -51,7 +36,7 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.7.6+commit.7338295f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_pahse\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_vault\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_token\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_paytoken\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_period\",\"type\":\"uint256\"},{\"internalType\":\"address[4]\",\"name\":\"tokamakAddr\",\"type\":\"address[4]\"},{\"internalType\":\"address\",\"name\":\"_owner\",\"type\":\"address\"}],\"name\":\"deploy\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IStakeTONFactory.sol\":\"IStakeTONFactory\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IStakeTONFactory.sol\":{\"keccak256\":\"0xc6f39d1742e00161ccaacbc37cf416199cd36185a1c06be74c997a326b31ece8\",\"license\":\"Unlicense\",\"urls\":[\"bzz-raw://3c6254a0f0f8b9d5af90eacfa6600f1c21d56ef8afffc3a17633d8984e1de500\",\"dweb:/ipfs/QmYL7GoCnhLEWhLeGK72y9Yj6QnafJbAZXd9GzRyypHfVy\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.7.6+commit.7338295f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address[4]\",\"name\":\"_addr\",\"type\":\"address[4]\"},{\"internalType\":\"address\",\"name\":\"_registry\",\"type\":\"address\"},{\"internalType\":\"uint256[3]\",\"name\":\"_intdata\",\"type\":\"uint256[3]\"},{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"create\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"create(address[4],address,uint256[3],address)\":{\"details\":\"Create a stake contract that can stake TON.\",\"params\":{\"_addr\":\"the array of [token, paytoken, vault, defiAddr]\",\"_intdata\":\"the array of [saleStartBlock, startBlock, periodBlocks]\",\"_registry\":\"the registry address\",\"owner\":\"owner address\"},\"returns\":{\"_0\":\"contract address\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IStakeTONFactory.sol\":\"IStakeTONFactory\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IStakeTONFactory.sol\":{\"keccak256\":\"0xb3d7a05513c358f2eb094e729408a2326b56b0b5e42b4c55950499b23460c3f2\",\"license\":\"Unlicense\",\"urls\":[\"bzz-raw://0a695d596e1e6b436b600b50a6cad81be314696f33a7455b880487eb9bbfaa22\",\"dweb:/ipfs/QmNV4XTSP4rkV5SVvLyiSDyBVu4REvuPgXBjaR2U4cWTv8\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
@@ -59,21 +44,21 @@
   "deployedGeneratedSources": [],
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "//SPDX-License-Identifier: Unlicense\npragma solidity ^0.7.6;\n\ninterface IStakeTONFactory {\n    function deploy(\n        uint256 _pahse,\n        address _vault,\n        address _token,\n        address _paytoken,\n        uint256 _period,\n        address[4] memory tokamakAddr,\n        address _owner\n    ) external returns (address);\n}\n",
+  "source": "//SPDX-License-Identifier: Unlicense\npragma solidity ^0.7.6;\n\ninterface IStakeTONFactory {\n    /// @dev Create a stake contract that can stake TON.\n    /// @param _addr the array of [token, paytoken, vault, defiAddr]\n    /// @param _registry  the registry address\n    /// @param _intdata the array of [saleStartBlock, startBlock, periodBlocks]\n    /// @param owner  owner address\n    /// @return contract address\n    function create(\n        address[4] calldata _addr,\n        address _registry,\n        uint256[3] calldata _intdata,\n        address owner\n    ) external returns (address);\n}\n",
   "sourcePath": "/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IStakeTONFactory.sol",
   "ast": {
     "absolutePath": "/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IStakeTONFactory.sol",
     "exportedSymbols": {
       "IStakeTONFactory": [
-        1618
+        1325
       ]
     },
-    "id": 1619,
+    "id": 1326,
     "license": "Unlicense",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 1596,
+        "id": 1306,
         "literals": [
           "solidity",
           "^",
@@ -81,7 +66,7 @@
           ".6"
         ],
         "nodeType": "PragmaDirective",
-        "src": "37:23:7"
+        "src": "37:23:15"
       },
       {
         "abstract": false,
@@ -89,195 +74,68 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "fullyImplemented": false,
-        "id": 1618,
+        "id": 1325,
         "linearizedBaseContracts": [
-          1618
+          1325
         ],
         "name": "IStakeTONFactory",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
-            "functionSelector": "267c1a81",
-            "id": 1617,
+            "documentation": {
+              "id": 1307,
+              "nodeType": "StructuredDocumentation",
+              "src": "95:317:15",
+              "text": "@dev Create a stake contract that can stake TON.\n @param _addr the array of [token, paytoken, vault, defiAddr]\n @param _registry  the registry address\n @param _intdata the array of [saleStartBlock, startBlock, periodBlocks]\n @param owner  owner address\n @return contract address"
+            },
+            "functionSelector": "ba3d3045",
+            "id": 1324,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
-            "name": "deploy",
+            "name": "create",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1613,
+              "id": 1320,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1598,
+                  "id": 1311,
                   "mutability": "mutable",
-                  "name": "_pahse",
+                  "name": "_addr",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1617,
-                  "src": "120:14:7",
+                  "scope": 1324,
+                  "src": "442:25:15",
                   "stateVariable": false,
-                  "storageLocation": "default",
+                  "storageLocation": "calldata",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 1597,
-                    "name": "uint256",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "120:7:7",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 1600,
-                  "mutability": "mutable",
-                  "name": "_vault",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 1617,
-                  "src": "144:14:7",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_address",
-                    "typeString": "address"
-                  },
-                  "typeName": {
-                    "id": 1599,
-                    "name": "address",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "144:7:7",
-                    "stateMutability": "nonpayable",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
-                    }
-                  },
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 1602,
-                  "mutability": "mutable",
-                  "name": "_token",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 1617,
-                  "src": "168:14:7",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_address",
-                    "typeString": "address"
-                  },
-                  "typeName": {
-                    "id": 1601,
-                    "name": "address",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "168:7:7",
-                    "stateMutability": "nonpayable",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
-                    }
-                  },
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 1604,
-                  "mutability": "mutable",
-                  "name": "_paytoken",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 1617,
-                  "src": "192:17:7",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_address",
-                    "typeString": "address"
-                  },
-                  "typeName": {
-                    "id": 1603,
-                    "name": "address",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "192:7:7",
-                    "stateMutability": "nonpayable",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
-                    }
-                  },
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 1606,
-                  "mutability": "mutable",
-                  "name": "_period",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 1617,
-                  "src": "219:15:7",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 1605,
-                    "name": "uint256",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "219:7:7",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 1610,
-                  "mutability": "mutable",
-                  "name": "tokamakAddr",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 1617,
-                  "src": "244:29:7",
-                  "stateVariable": false,
-                  "storageLocation": "memory",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_address_$4_memory_ptr",
+                    "typeIdentifier": "t_array$_t_address_$4_calldata_ptr",
                     "typeString": "address[4]"
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 1607,
+                      "id": 1308,
                       "name": "address",
                       "nodeType": "ElementaryTypeName",
-                      "src": "244:7:7",
+                      "src": "442:7:15",
                       "stateMutability": "nonpayable",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
                       }
                     },
-                    "id": 1609,
+                    "id": 1310,
                     "length": {
                       "hexValue": "34",
-                      "id": 1608,
+                      "id": 1309,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
                       "kind": "number",
                       "lValueRequested": false,
                       "nodeType": "Literal",
-                      "src": "252:1:7",
+                      "src": "450:1:15",
                       "typeDescriptions": {
                         "typeIdentifier": "t_rational_4_by_1",
                         "typeString": "int_const 4"
@@ -285,7 +143,7 @@
                       "value": "4"
                     },
                     "nodeType": "ArrayTypeName",
-                    "src": "244:10:7",
+                    "src": "442:10:15",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_address_$4_storage_ptr",
                       "typeString": "address[4]"
@@ -295,12 +153,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 1612,
+                  "id": 1313,
                   "mutability": "mutable",
-                  "name": "_owner",
+                  "name": "_registry",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1617,
-                  "src": "283:14:7",
+                  "scope": 1324,
+                  "src": "477:17:15",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -308,10 +166,88 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1611,
+                    "id": 1312,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "283:7:7",
+                    "src": "477:7:15",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1317,
+                  "mutability": "mutable",
+                  "name": "_intdata",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1324,
+                  "src": "504:28:15",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_uint256_$3_calldata_ptr",
+                    "typeString": "uint256[3]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 1314,
+                      "name": "uint256",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "504:7:15",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "id": 1316,
+                    "length": {
+                      "hexValue": "33",
+                      "id": 1315,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "kind": "number",
+                      "lValueRequested": false,
+                      "nodeType": "Literal",
+                      "src": "512:1:15",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_rational_3_by_1",
+                        "typeString": "int_const 3"
+                      },
+                      "value": "3"
+                    },
+                    "nodeType": "ArrayTypeName",
+                    "src": "504:10:15",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_uint256_$3_storage_ptr",
+                      "typeString": "uint256[3]"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1319,
+                  "mutability": "mutable",
+                  "name": "owner",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1324,
+                  "src": "542:13:15",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1318,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "542:7:15",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -321,20 +257,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "110:193:7"
+              "src": "432:129:15"
             },
             "returnParameters": {
-              "id": 1616,
+              "id": 1323,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1615,
+                  "id": 1322,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1617,
-                  "src": "322:7:7",
+                  "scope": 1324,
+                  "src": "580:7:15",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -342,10 +278,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1614,
+                    "id": 1321,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "322:7:7",
+                    "src": "580:7:15",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -355,27 +291,27 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "321:9:7"
+              "src": "579:9:15"
             },
-            "scope": 1618,
-            "src": "95:236:7",
+            "scope": 1325,
+            "src": "417:172:15",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 1619,
-        "src": "62:271:7"
+        "scope": 1326,
+        "src": "62:529:15"
       }
     ],
-    "src": "37:297:7"
+    "src": "37:555:15"
   },
   "legacyAST": {
     "attributes": {
       "absolutePath": "/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IStakeTONFactory.sol",
       "exportedSymbols": {
         "IStakeTONFactory": [
-          1618
+          1325
         ]
       },
       "license": "Unlicense"
@@ -390,9 +326,9 @@
             ".6"
           ]
         },
-        "id": 1596,
+        "id": 1306,
         "name": "PragmaDirective",
-        "src": "37:23:7"
+        "src": "37:23:15"
       },
       {
         "attributes": {
@@ -406,171 +342,46 @@
           "contractKind": "interface",
           "fullyImplemented": false,
           "linearizedBaseContracts": [
-            1618
+            1325
           ],
           "name": "IStakeTONFactory",
-          "scope": 1619
+          "scope": 1326
         },
         "children": [
           {
             "attributes": {
-              "functionSelector": "267c1a81",
+              "functionSelector": "ba3d3045",
               "implemented": false,
               "isConstructor": false,
               "kind": "function",
               "modifiers": [
                 null
               ],
-              "name": "deploy",
-              "scope": 1618,
+              "name": "create",
+              "scope": 1325,
               "stateMutability": "nonpayable",
               "virtual": false,
               "visibility": "external"
             },
             "children": [
               {
+                "attributes": {
+                  "text": "@dev Create a stake contract that can stake TON.\n @param _addr the array of [token, paytoken, vault, defiAddr]\n @param _registry  the registry address\n @param _intdata the array of [saleStartBlock, startBlock, periodBlocks]\n @param owner  owner address\n @return contract address"
+                },
+                "id": 1307,
+                "name": "StructuredDocumentation",
+                "src": "95:317:15"
+              },
+              {
                 "children": [
                   {
                     "attributes": {
                       "constant": false,
                       "mutability": "mutable",
-                      "name": "_pahse",
-                      "scope": 1617,
+                      "name": "_addr",
+                      "scope": 1324,
                       "stateVariable": false,
-                      "storageLocation": "default",
-                      "type": "uint256",
-                      "visibility": "internal"
-                    },
-                    "children": [
-                      {
-                        "attributes": {
-                          "name": "uint256",
-                          "type": "uint256"
-                        },
-                        "id": 1597,
-                        "name": "ElementaryTypeName",
-                        "src": "120:7:7"
-                      }
-                    ],
-                    "id": 1598,
-                    "name": "VariableDeclaration",
-                    "src": "120:14:7"
-                  },
-                  {
-                    "attributes": {
-                      "constant": false,
-                      "mutability": "mutable",
-                      "name": "_vault",
-                      "scope": 1617,
-                      "stateVariable": false,
-                      "storageLocation": "default",
-                      "type": "address",
-                      "visibility": "internal"
-                    },
-                    "children": [
-                      {
-                        "attributes": {
-                          "name": "address",
-                          "stateMutability": "nonpayable",
-                          "type": "address"
-                        },
-                        "id": 1599,
-                        "name": "ElementaryTypeName",
-                        "src": "144:7:7"
-                      }
-                    ],
-                    "id": 1600,
-                    "name": "VariableDeclaration",
-                    "src": "144:14:7"
-                  },
-                  {
-                    "attributes": {
-                      "constant": false,
-                      "mutability": "mutable",
-                      "name": "_token",
-                      "scope": 1617,
-                      "stateVariable": false,
-                      "storageLocation": "default",
-                      "type": "address",
-                      "visibility": "internal"
-                    },
-                    "children": [
-                      {
-                        "attributes": {
-                          "name": "address",
-                          "stateMutability": "nonpayable",
-                          "type": "address"
-                        },
-                        "id": 1601,
-                        "name": "ElementaryTypeName",
-                        "src": "168:7:7"
-                      }
-                    ],
-                    "id": 1602,
-                    "name": "VariableDeclaration",
-                    "src": "168:14:7"
-                  },
-                  {
-                    "attributes": {
-                      "constant": false,
-                      "mutability": "mutable",
-                      "name": "_paytoken",
-                      "scope": 1617,
-                      "stateVariable": false,
-                      "storageLocation": "default",
-                      "type": "address",
-                      "visibility": "internal"
-                    },
-                    "children": [
-                      {
-                        "attributes": {
-                          "name": "address",
-                          "stateMutability": "nonpayable",
-                          "type": "address"
-                        },
-                        "id": 1603,
-                        "name": "ElementaryTypeName",
-                        "src": "192:7:7"
-                      }
-                    ],
-                    "id": 1604,
-                    "name": "VariableDeclaration",
-                    "src": "192:17:7"
-                  },
-                  {
-                    "attributes": {
-                      "constant": false,
-                      "mutability": "mutable",
-                      "name": "_period",
-                      "scope": 1617,
-                      "stateVariable": false,
-                      "storageLocation": "default",
-                      "type": "uint256",
-                      "visibility": "internal"
-                    },
-                    "children": [
-                      {
-                        "attributes": {
-                          "name": "uint256",
-                          "type": "uint256"
-                        },
-                        "id": 1605,
-                        "name": "ElementaryTypeName",
-                        "src": "219:7:7"
-                      }
-                    ],
-                    "id": 1606,
-                    "name": "VariableDeclaration",
-                    "src": "219:15:7"
-                  },
-                  {
-                    "attributes": {
-                      "constant": false,
-                      "mutability": "mutable",
-                      "name": "tokamakAddr",
-                      "scope": 1617,
-                      "stateVariable": false,
-                      "storageLocation": "memory",
+                      "storageLocation": "calldata",
                       "type": "address[4]",
                       "visibility": "internal"
                     },
@@ -586,9 +397,9 @@
                               "stateMutability": "nonpayable",
                               "type": "address"
                             },
-                            "id": 1607,
+                            "id": 1308,
                             "name": "ElementaryTypeName",
-                            "src": "244:7:7"
+                            "src": "442:7:15"
                           },
                           {
                             "attributes": {
@@ -601,26 +412,26 @@
                               "type": "int_const 4",
                               "value": "4"
                             },
-                            "id": 1608,
+                            "id": 1309,
                             "name": "Literal",
-                            "src": "252:1:7"
+                            "src": "450:1:15"
                           }
                         ],
-                        "id": 1609,
+                        "id": 1310,
                         "name": "ArrayTypeName",
-                        "src": "244:10:7"
+                        "src": "442:10:15"
                       }
                     ],
-                    "id": 1610,
+                    "id": 1311,
                     "name": "VariableDeclaration",
-                    "src": "244:29:7"
+                    "src": "442:25:15"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "mutability": "mutable",
-                      "name": "_owner",
-                      "scope": 1617,
+                      "name": "_registry",
+                      "scope": 1324,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -633,19 +444,97 @@
                           "stateMutability": "nonpayable",
                           "type": "address"
                         },
-                        "id": 1611,
+                        "id": 1312,
                         "name": "ElementaryTypeName",
-                        "src": "283:7:7"
+                        "src": "477:7:15"
                       }
                     ],
-                    "id": 1612,
+                    "id": 1313,
                     "name": "VariableDeclaration",
-                    "src": "283:14:7"
+                    "src": "477:17:15"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "_intdata",
+                      "scope": 1324,
+                      "stateVariable": false,
+                      "storageLocation": "calldata",
+                      "type": "uint256[3]",
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "type": "uint256[3]"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "name": "uint256",
+                              "type": "uint256"
+                            },
+                            "id": 1314,
+                            "name": "ElementaryTypeName",
+                            "src": "504:7:15"
+                          },
+                          {
+                            "attributes": {
+                              "hexvalue": "33",
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": true,
+                              "lValueRequested": false,
+                              "token": "number",
+                              "type": "int_const 3",
+                              "value": "3"
+                            },
+                            "id": 1315,
+                            "name": "Literal",
+                            "src": "512:1:15"
+                          }
+                        ],
+                        "id": 1316,
+                        "name": "ArrayTypeName",
+                        "src": "504:10:15"
+                      }
+                    ],
+                    "id": 1317,
+                    "name": "VariableDeclaration",
+                    "src": "504:28:15"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "owner",
+                      "scope": 1324,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "stateMutability": "nonpayable",
+                          "type": "address"
+                        },
+                        "id": 1318,
+                        "name": "ElementaryTypeName",
+                        "src": "542:7:15"
+                      }
+                    ],
+                    "id": 1319,
+                    "name": "VariableDeclaration",
+                    "src": "542:13:15"
                   }
                 ],
-                "id": 1613,
+                "id": 1320,
                 "name": "ParameterList",
-                "src": "110:193:7"
+                "src": "432:129:15"
               },
               {
                 "children": [
@@ -654,7 +543,7 @@
                       "constant": false,
                       "mutability": "mutable",
                       "name": "",
-                      "scope": 1617,
+                      "scope": 1324,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -667,34 +556,34 @@
                           "stateMutability": "nonpayable",
                           "type": "address"
                         },
-                        "id": 1614,
+                        "id": 1321,
                         "name": "ElementaryTypeName",
-                        "src": "322:7:7"
+                        "src": "580:7:15"
                       }
                     ],
-                    "id": 1615,
+                    "id": 1322,
                     "name": "VariableDeclaration",
-                    "src": "322:7:7"
+                    "src": "580:7:15"
                   }
                 ],
-                "id": 1616,
+                "id": 1323,
                 "name": "ParameterList",
-                "src": "321:9:7"
+                "src": "579:9:15"
               }
             ],
-            "id": 1617,
+            "id": 1324,
             "name": "FunctionDefinition",
-            "src": "95:236:7"
+            "src": "417:172:15"
           }
         ],
-        "id": 1618,
+        "id": 1325,
         "name": "ContractDefinition",
-        "src": "62:271:7"
+        "src": "62:529:15"
       }
     ],
-    "id": 1619,
+    "id": 1326,
     "name": "SourceUnit",
-    "src": "37:297:7"
+    "src": "37:555:15"
   },
   "compiler": {
     "name": "solc",
@@ -702,10 +591,23 @@
   },
   "networks": {},
   "schemaVersion": "3.3.4",
-  "updatedAt": "2021-05-14T01:25:09.210Z",
+  "updatedAt": "2021-06-02T04:10:00.305Z",
   "devdoc": {
     "kind": "dev",
-    "methods": {},
+    "methods": {
+      "create(address[4],address,uint256[3],address)": {
+        "details": "Create a stake contract that can stake TON.",
+        "params": {
+          "_addr": "the array of [token, paytoken, vault, defiAddr]",
+          "_intdata": "the array of [saleStartBlock, startBlock, periodBlocks]",
+          "_registry": "the registry address",
+          "owner": "owner address"
+        },
+        "returns": {
+          "_0": "contract address"
+        }
+      }
+    },
     "version": 1
   },
   "userdoc": {

@@ -29,19 +29,6 @@
     },
     {
       "inputs": [],
-      "name": "secondsPerBlock",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
       "name": "seigManager",
       "outputs": [
         {
@@ -81,6 +68,19 @@
     },
     {
       "inputs": [],
+      "name": "stakeVaultFactory",
+      "outputs": [
+        {
+          "internalType": "contract IStakeVaultFactory",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
       "name": "ton",
       "outputs": [
         {
@@ -106,35 +106,38 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.7.6+commit.7338295f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"depositManager\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"fld\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"secondsPerBlock\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"seigManager\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"stakeFactory\",\"outputs\":[{\"internalType\":\"contract IStakeFactory\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"stakeRegistry\",\"outputs\":[{\"internalType\":\"contract IStakeRegistry\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"ton\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"wton\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/Users/zena/ico2.0/ico20-contracts/contracts/stake/StakeProxyStorage.sol\":\"StakeProxyStorage\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IStakeFactory.sol\":{\"keccak256\":\"0x393b2f4e3c65c2643f0671cf50648d092b10f91cbbceebe00da326e45d8baadc\",\"license\":\"Unlicense\",\"urls\":[\"bzz-raw://b0b92230090db0d54312deea72c7722e26737bb1ae49c746a0affc38e439a9fb\",\"dweb:/ipfs/QmRLh8rscc8mMDizCEZVW1aWxjiNSHjYmcBikgSqYUer7z\"]},\"/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IStakeRegistry.sol\":{\"keccak256\":\"0xb0e31a334ca0dc907fe576728a4544088a905bba4a3e3b257baebb433b7f56fe\",\"license\":\"Unlicense\",\"urls\":[\"bzz-raw://9c240b7fecd3fd7dc3fb1cfe3fbdd0086dc4e038d8d65ee10c0b40123befbba0\",\"dweb:/ipfs/QmTFfxEPSKNDEvW2NjaiwjEuhSbCMQnF3ocB63DBEuC1iC\"]},\"/Users/zena/ico2.0/ico20-contracts/contracts/stake/StakeProxyStorage.sol\":{\"keccak256\":\"0xabe347e1577e4d18d28bafc3852585c5bcd35baaa83a91b615a7b254bd58e60c\",\"license\":\"Unlicense\",\"urls\":[\"bzz-raw://a634e07eb9801ac3e129893a1d7ce826dbb7053e8d7de957b2bc51b42680120c\",\"dweb:/ipfs/QmTERVoQVSaUZ8L6s47aAwDTv8RvJ7kSQByKnJKg5Qq6in\"]}},\"version\":1}",
-  "bytecode": "0x608060405234801561001057600080fd5b506101a0806100206000396000f3fe608060405234801561001057600080fd5b50600436106100885760003560e01c80637a7d49371161005b5780637a7d4937146100c95780638d62d949146100e3578063cc48b947146100eb578063dd196f18146100f357610088565b806333bd2a491461008d57806368304835146100b15780636c7ac9d8146100b95780636fb7f558146100c1575b600080fd5b6100956100fb565b604080516001600160a01b039092168252519081900360200190f35b61009561010a565b610095610119565b610095610128565b6100d1610137565b60408051918252519081900360200190f35b61009561013d565b61009561014c565b61009561015b565b6003546001600160a01b031681565b6000546001600160a01b031681565b6006546001600160a01b031681565b6007546001600160a01b031681565b60025481565b6005546001600160a01b031681565b6004546001600160a01b031681565b6001546001600160a01b03168156fea264697066735822122028644ecb7dce88078c0b6908bf7db29b4b33495f61a3a44988c8023417e467c364736f6c63430007060033",
-  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100885760003560e01c80637a7d49371161005b5780637a7d4937146100c95780638d62d949146100e3578063cc48b947146100eb578063dd196f18146100f357610088565b806333bd2a491461008d57806368304835146100b15780636c7ac9d8146100b95780636fb7f558146100c1575b600080fd5b6100956100fb565b604080516001600160a01b039092168252519081900360200190f35b61009561010a565b610095610119565b610095610128565b6100d1610137565b60408051918252519081900360200190f35b61009561013d565b61009561014c565b61009561015b565b6003546001600160a01b031681565b6000546001600160a01b031681565b6006546001600160a01b031681565b6007546001600160a01b031681565b60025481565b6005546001600160a01b031681565b6004546001600160a01b031681565b6001546001600160a01b03168156fea264697066735822122028644ecb7dce88078c0b6908bf7db29b4b33495f61a3a44988c8023417e467c364736f6c63430007060033",
+  "metadata": "{\"compiler\":{\"version\":\"0.7.6+commit.7338295f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"depositManager\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"fld\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"seigManager\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"stakeFactory\",\"outputs\":[{\"internalType\":\"contract IStakeFactory\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"stakeRegistry\",\"outputs\":[{\"internalType\":\"contract IStakeRegistry\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"stakeVaultFactory\",\"outputs\":[{\"internalType\":\"contract IStakeVaultFactory\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"ton\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"wton\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"stateVariables\":{\"depositManager\":{\"details\":\"Depositmanager address in Tokamak\"},\"fld\":{\"details\":\"FLD address\"},\"seigManager\":{\"details\":\"SeigManager address in Tokamak\"},\"stakeFactory\":{\"details\":\"stakeFactory\"},\"stakeRegistry\":{\"details\":\"stakeRegistry\"},\"stakeVaultFactory\":{\"details\":\"stakeVaultFactory\"},\"ton\":{\"details\":\"TON address in Tokamak\"},\"wton\":{\"details\":\"WTON address in Tokamak\"}},\"title\":\"The storage of StakeProxy\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/Users/zena/ico2.0/ico20-contracts/contracts/stake/StakeProxyStorage.sol\":\"StakeProxyStorage\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":100},\"remappings\":[]},\"sources\":{\"/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IStakeFactory.sol\":{\"keccak256\":\"0x557231d525b9e1a74525ecd20a9acf53af76e0e1fa30e1939ad64abec76b614d\",\"license\":\"Unlicense\",\"urls\":[\"bzz-raw://693eeb2d8424ff21af7e273a586b8191fc3be6687908fd6eec4d7a462ea13a39\",\"dweb:/ipfs/QmSzM1ZxC5wnvN4KnAT19UgBXxqm5Qtf7C4DZofc11rRgv\"]},\"/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IStakeRegistry.sol\":{\"keccak256\":\"0x2e7c54aa72c42952e33cd8f99f4454db8b60ab388bc6eb4114f5a3237913aec2\",\"license\":\"Unlicense\",\"urls\":[\"bzz-raw://795d97a0465f92f011bd0c22f143954a5244ceb4c65e517bb27ececc6f8ea01f\",\"dweb:/ipfs/QmRqCNsvHC6S7wsWMVhugB7WHeXuGQej2WdDiKmBLv9mjv\"]},\"/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IStakeVaultFactory.sol\":{\"keccak256\":\"0xe547a51e352ba60d4a9211281c037214d35c966a8ef6ee8e155d68773ede2dcd\",\"license\":\"Unlicense\",\"urls\":[\"bzz-raw://0779b9b4c36099f1f7bc33c3d52f90d5acff40af7ca0c3e81d4a5985c8bcb667\",\"dweb:/ipfs/QmRk1sLfixwaLnyBK8t2rGNkHR3duMEHjjYViGvBUKCCX7\"]},\"/Users/zena/ico2.0/ico20-contracts/contracts/stake/StakeProxyStorage.sol\":{\"keccak256\":\"0x3f19c5e1f6f4cffa5d5654fecbaabc77365e4a1c55e6feb21b7a6760869a37f7\",\"license\":\"Unlicense\",\"urls\":[\"bzz-raw://7f0a0a58fa1a9c99c4b1ee2919cd2f7c073a307165b41d9be8f1a7bc47224973\",\"dweb:/ipfs/QmfFPabSPXcBWXuubdrk28HuZwXmw22kHHkaXPa4mfvp3T\"]}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b50610187806100206000396000f3fe608060405234801561001057600080fd5b50600436106100785760003560e01c806333bd2a491461007d57806368304835146100a15780636af8da27146100a95780636c7ac9d8146100b15780636fb7f558146100b95780638d62d949146100c1578063cc48b947146100c9578063dd196f18146100d1575b600080fd5b6100856100d9565b604080516001600160a01b039092168252519081900360200190f35b6100856100e8565b6100856100f7565b610085610106565b610085610115565b610085610124565b610085610133565b610085610142565b6003546001600160a01b031681565b6000546001600160a01b031681565b6002546001600160a01b031681565b6006546001600160a01b031681565b6007546001600160a01b031681565b6005546001600160a01b031681565b6004546001600160a01b031681565b6001546001600160a01b03168156fea2646970667358221220d207166535886952acb4a1d7334787f7ff2b767b0a46b7ca758bf625a100d8da64736f6c63430007060033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100785760003560e01c806333bd2a491461007d57806368304835146100a15780636af8da27146100a95780636c7ac9d8146100b15780636fb7f558146100b95780638d62d949146100c1578063cc48b947146100c9578063dd196f18146100d1575b600080fd5b6100856100d9565b604080516001600160a01b039092168252519081900360200190f35b6100856100e8565b6100856100f7565b610085610106565b610085610115565b610085610124565b610085610133565b610085610142565b6003546001600160a01b031681565b6000546001600160a01b031681565b6002546001600160a01b031681565b6006546001600160a01b031681565b6007546001600160a01b031681565b6005546001600160a01b031681565b6004546001600160a01b031681565b6001546001600160a01b03168156fea2646970667358221220d207166535886952acb4a1d7334787f7ff2b767b0a46b7ca758bf625a100d8da64736f6c63430007060033",
   "immutableReferences": {},
   "generatedSources": [],
   "deployedGeneratedSources": [],
-  "sourceMap": "191:648:11:-:0;;;;;;;;;;;;;;;;;;;",
-  "deployedSourceMap": "191:648:11:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;340:18;;;:::i;:::-;;;;-1:-1:-1;;;;;340:18:11;;;;;;;;;;;;;;224:35;;;:::i;414:29::-;;;:::i;449:26::-;;;:::i;304:30::-;;;:::i;:::-;;;;;;;;;;;;;;;;389:19;;;:::i;365:18::-;;;:::i;265:33::-;;;:::i;340:18::-;;;-1:-1:-1;;;;;340:18:11;;:::o;224:35::-;;;-1:-1:-1;;;;;224:35:11;;:::o;414:29::-;;;-1:-1:-1;;;;;414:29:11;;:::o;449:26::-;;;-1:-1:-1;;;;;449:26:11;;:::o;304:30::-;;;;:::o;389:19::-;;;-1:-1:-1;;;;;389:19:11;;:::o;365:18::-;;;-1:-1:-1;;;;;365:18:11;;:::o;265:33::-;;;-1:-1:-1;;;;;265:33:11;;:::o",
-  "source": "//SPDX-License-Identifier: Unlicense\npragma solidity ^0.7.6;\n\nimport {IStakeFactory} from \"../interfaces/IStakeFactory.sol\";\nimport {IStakeRegistry} from \"../interfaces/IStakeRegistry.sol\";\n\ncontract StakeProxyStorage {\n    IStakeRegistry public stakeRegistry;\n    IStakeFactory public stakeFactory;\n    uint256 public secondsPerBlock;\n    address public fld;\n\n    address public ton;\n    address public wton;\n    address public depositManager;\n    address public seigManager;\n\n    modifier validStakeRegistry() {\n        require(\n            address(stakeRegistry) != address(0),\n            \"StakeStorage: stakeRegistry is zero\"\n        );\n        _;\n    }\n\n    modifier validStakeFactory() {\n        require(\n            address(stakeFactory) != address(0),\n            \"StakeStorage: invalid stakeFactory\"\n        );\n        _;\n    }\n}\n",
+  "sourceMap": "350:579:23:-:0;;;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "350:579:23:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;624:18;;;:::i;:::-;;;;-1:-1:-1;;;;;624:18:23;;;;;;;;;;;;;;410:35;;;:::i;549:43::-;;;:::i;820:29::-;;;:::i;900:26::-;;;:::i;747:19::-;;;:::i;685:18::-;;;:::i;478:33::-;;;:::i;624:18::-;;;-1:-1:-1;;;;;624:18:23;;:::o;410:35::-;;;-1:-1:-1;;;;;410:35:23;;:::o;549:43::-;;;-1:-1:-1;;;;;549:43:23;;:::o;820:29::-;;;-1:-1:-1;;;;;820:29:23;;:::o;900:26::-;;;-1:-1:-1;;;;;900:26:23;;:::o;747:19::-;;;-1:-1:-1;;;;;747:19:23;;:::o;685:18::-;;;-1:-1:-1;;;;;685:18:23;;:::o;478:33::-;;;-1:-1:-1;;;;;478:33:23;;:::o",
+  "source": "//SPDX-License-Identifier: Unlicense\npragma solidity ^0.7.6;\n\n//import \"../interfaces/IStakeProxyStorage.sol\";\nimport {IStakeFactory} from \"../interfaces/IStakeFactory.sol\";\nimport {IStakeRegistry} from \"../interfaces/IStakeRegistry.sol\";\nimport {IStakeVaultFactory} from \"../interfaces/IStakeVaultFactory.sol\";\n\n/// @title The storage of StakeProxy\ncontract StakeProxyStorage {\n    /// @dev stakeRegistry\n    IStakeRegistry public stakeRegistry;\n\n    /// @dev stakeFactory\n    IStakeFactory public stakeFactory;\n\n    /// @dev stakeVaultFactory\n    IStakeVaultFactory public stakeVaultFactory;\n\n    /// @dev FLD address\n    address public fld;\n\n    /// @dev TON address in Tokamak\n    address public ton;\n\n    /// @dev WTON address in Tokamak\n    address public wton;\n\n    /// @dev Depositmanager address in Tokamak\n    address public depositManager;\n\n    /// @dev SeigManager address in Tokamak\n    address public seigManager;\n}\n",
   "sourcePath": "/Users/zena/ico2.0/ico20-contracts/contracts/stake/StakeProxyStorage.sol",
   "ast": {
     "absolutePath": "/Users/zena/ico2.0/ico20-contracts/contracts/stake/StakeProxyStorage.sol",
     "exportedSymbols": {
       "IStakeFactory": [
-        471
+        343
       ],
       "IStakeRegistry": [
-        515
+        469
+      ],
+      "IStakeVaultFactory": [
+        544
       ],
       "StakeProxyStorage": [
-        2493
+        1669
       ]
     },
-    "id": 2494,
+    "id": 1670,
     "license": "Unlicense",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 2438,
+        "id": 1637,
         "literals": [
           "solidity",
           "^",
@@ -142,24 +145,24 @@
           ".6"
         ],
         "nodeType": "PragmaDirective",
-        "src": "37:23:11"
+        "src": "37:23:23"
       },
       {
         "absolutePath": "/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IStakeFactory.sol",
         "file": "../interfaces/IStakeFactory.sol",
-        "id": 2440,
+        "id": 1639,
         "nodeType": "ImportDirective",
-        "scope": 2494,
-        "sourceUnit": 472,
-        "src": "62:62:11",
+        "scope": 1670,
+        "sourceUnit": 344,
+        "src": "111:62:23",
         "symbolAliases": [
           {
             "foreign": {
-              "id": 2439,
+              "id": 1638,
               "name": "IStakeFactory",
               "nodeType": "Identifier",
               "overloadedDeclarations": [],
-              "src": "70:13:11",
+              "src": "119:13:23",
               "typeDescriptions": {}
             }
           }
@@ -169,19 +172,41 @@
       {
         "absolutePath": "/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IStakeRegistry.sol",
         "file": "../interfaces/IStakeRegistry.sol",
-        "id": 2442,
+        "id": 1641,
         "nodeType": "ImportDirective",
-        "scope": 2494,
-        "sourceUnit": 516,
-        "src": "125:64:11",
+        "scope": 1670,
+        "sourceUnit": 470,
+        "src": "174:64:23",
         "symbolAliases": [
           {
             "foreign": {
-              "id": 2441,
+              "id": 1640,
               "name": "IStakeRegistry",
               "nodeType": "Identifier",
               "overloadedDeclarations": [],
-              "src": "133:14:11",
+              "src": "182:14:23",
+              "typeDescriptions": {}
+            }
+          }
+        ],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IStakeVaultFactory.sol",
+        "file": "../interfaces/IStakeVaultFactory.sol",
+        "id": 1643,
+        "nodeType": "ImportDirective",
+        "scope": 1670,
+        "sourceUnit": 545,
+        "src": "239:72:23",
+        "symbolAliases": [
+          {
+            "foreign": {
+              "id": 1642,
+              "name": "IStakeVaultFactory",
+              "nodeType": "Identifier",
+              "overloadedDeclarations": [],
+              "src": "247:18:23",
               "typeDescriptions": {}
             }
           }
@@ -193,37 +218,49 @@
         "baseContracts": [],
         "contractDependencies": [],
         "contractKind": "contract",
+        "documentation": {
+          "id": 1644,
+          "nodeType": "StructuredDocumentation",
+          "src": "313:37:23",
+          "text": "@title The storage of StakeProxy"
+        },
         "fullyImplemented": true,
-        "id": 2493,
+        "id": 1669,
         "linearizedBaseContracts": [
-          2493
+          1669
         ],
         "name": "StakeProxyStorage",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "constant": false,
+            "documentation": {
+              "id": 1645,
+              "nodeType": "StructuredDocumentation",
+              "src": "383:22:23",
+              "text": "@dev stakeRegistry"
+            },
             "functionSelector": "68304835",
-            "id": 2444,
+            "id": 1647,
             "mutability": "mutable",
             "name": "stakeRegistry",
             "nodeType": "VariableDeclaration",
-            "scope": 2493,
-            "src": "224:35:11",
+            "scope": 1669,
+            "src": "410:35:23",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_contract$_IStakeRegistry_$515",
+              "typeIdentifier": "t_contract$_IStakeRegistry_$469",
               "typeString": "contract IStakeRegistry"
             },
             "typeName": {
-              "id": 2443,
+              "id": 1646,
               "name": "IStakeRegistry",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 515,
-              "src": "224:14:11",
+              "referencedDeclaration": 469,
+              "src": "410:14:23",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_IStakeRegistry_$515",
+                "typeIdentifier": "t_contract$_IStakeRegistry_$469",
                 "typeString": "contract IStakeRegistry"
               }
             },
@@ -231,27 +268,33 @@
           },
           {
             "constant": false,
+            "documentation": {
+              "id": 1648,
+              "nodeType": "StructuredDocumentation",
+              "src": "452:21:23",
+              "text": "@dev stakeFactory"
+            },
             "functionSelector": "dd196f18",
-            "id": 2446,
+            "id": 1650,
             "mutability": "mutable",
             "name": "stakeFactory",
             "nodeType": "VariableDeclaration",
-            "scope": 2493,
-            "src": "265:33:11",
+            "scope": 1669,
+            "src": "478:33:23",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_contract$_IStakeFactory_$471",
+              "typeIdentifier": "t_contract$_IStakeFactory_$343",
               "typeString": "contract IStakeFactory"
             },
             "typeName": {
-              "id": 2445,
+              "id": 1649,
               "name": "IStakeFactory",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 471,
-              "src": "265:13:11",
+              "referencedDeclaration": 343,
+              "src": "478:13:23",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_IStakeFactory_$471",
+                "typeIdentifier": "t_contract$_IStakeFactory_$343",
                 "typeString": "contract IStakeFactory"
               }
             },
@@ -259,40 +302,53 @@
           },
           {
             "constant": false,
-            "functionSelector": "7a7d4937",
-            "id": 2448,
+            "documentation": {
+              "id": 1651,
+              "nodeType": "StructuredDocumentation",
+              "src": "518:26:23",
+              "text": "@dev stakeVaultFactory"
+            },
+            "functionSelector": "6af8da27",
+            "id": 1653,
             "mutability": "mutable",
-            "name": "secondsPerBlock",
+            "name": "stakeVaultFactory",
             "nodeType": "VariableDeclaration",
-            "scope": 2493,
-            "src": "304:30:11",
+            "scope": 1669,
+            "src": "549:43:23",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_uint256",
-              "typeString": "uint256"
+              "typeIdentifier": "t_contract$_IStakeVaultFactory_$544",
+              "typeString": "contract IStakeVaultFactory"
             },
             "typeName": {
-              "id": 2447,
-              "name": "uint256",
-              "nodeType": "ElementaryTypeName",
-              "src": "304:7:11",
+              "id": 1652,
+              "name": "IStakeVaultFactory",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 544,
+              "src": "549:18:23",
               "typeDescriptions": {
-                "typeIdentifier": "t_uint256",
-                "typeString": "uint256"
+                "typeIdentifier": "t_contract$_IStakeVaultFactory_$544",
+                "typeString": "contract IStakeVaultFactory"
               }
             },
             "visibility": "public"
           },
           {
             "constant": false,
+            "documentation": {
+              "id": 1654,
+              "nodeType": "StructuredDocumentation",
+              "src": "599:20:23",
+              "text": "@dev FLD address"
+            },
             "functionSelector": "33bd2a49",
-            "id": 2450,
+            "id": 1656,
             "mutability": "mutable",
             "name": "fld",
             "nodeType": "VariableDeclaration",
-            "scope": 2493,
-            "src": "340:18:11",
+            "scope": 1669,
+            "src": "624:18:23",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -300,10 +356,10 @@
               "typeString": "address"
             },
             "typeName": {
-              "id": 2449,
+              "id": 1655,
               "name": "address",
               "nodeType": "ElementaryTypeName",
-              "src": "340:7:11",
+              "src": "624:7:23",
               "stateMutability": "nonpayable",
               "typeDescriptions": {
                 "typeIdentifier": "t_address",
@@ -314,13 +370,19 @@
           },
           {
             "constant": false,
+            "documentation": {
+              "id": 1657,
+              "nodeType": "StructuredDocumentation",
+              "src": "649:31:23",
+              "text": "@dev TON address in Tokamak"
+            },
             "functionSelector": "cc48b947",
-            "id": 2452,
+            "id": 1659,
             "mutability": "mutable",
             "name": "ton",
             "nodeType": "VariableDeclaration",
-            "scope": 2493,
-            "src": "365:18:11",
+            "scope": 1669,
+            "src": "685:18:23",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -328,10 +390,10 @@
               "typeString": "address"
             },
             "typeName": {
-              "id": 2451,
+              "id": 1658,
               "name": "address",
               "nodeType": "ElementaryTypeName",
-              "src": "365:7:11",
+              "src": "685:7:23",
               "stateMutability": "nonpayable",
               "typeDescriptions": {
                 "typeIdentifier": "t_address",
@@ -342,13 +404,19 @@
           },
           {
             "constant": false,
+            "documentation": {
+              "id": 1660,
+              "nodeType": "StructuredDocumentation",
+              "src": "710:32:23",
+              "text": "@dev WTON address in Tokamak"
+            },
             "functionSelector": "8d62d949",
-            "id": 2454,
+            "id": 1662,
             "mutability": "mutable",
             "name": "wton",
             "nodeType": "VariableDeclaration",
-            "scope": 2493,
-            "src": "389:19:11",
+            "scope": 1669,
+            "src": "747:19:23",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -356,10 +424,10 @@
               "typeString": "address"
             },
             "typeName": {
-              "id": 2453,
+              "id": 1661,
               "name": "address",
               "nodeType": "ElementaryTypeName",
-              "src": "389:7:11",
+              "src": "747:7:23",
               "stateMutability": "nonpayable",
               "typeDescriptions": {
                 "typeIdentifier": "t_address",
@@ -370,13 +438,19 @@
           },
           {
             "constant": false,
+            "documentation": {
+              "id": 1663,
+              "nodeType": "StructuredDocumentation",
+              "src": "773:42:23",
+              "text": "@dev Depositmanager address in Tokamak"
+            },
             "functionSelector": "6c7ac9d8",
-            "id": 2456,
+            "id": 1665,
             "mutability": "mutable",
             "name": "depositManager",
             "nodeType": "VariableDeclaration",
-            "scope": 2493,
-            "src": "414:29:11",
+            "scope": 1669,
+            "src": "820:29:23",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -384,10 +458,10 @@
               "typeString": "address"
             },
             "typeName": {
-              "id": 2455,
+              "id": 1664,
               "name": "address",
               "nodeType": "ElementaryTypeName",
-              "src": "414:7:11",
+              "src": "820:7:23",
               "stateMutability": "nonpayable",
               "typeDescriptions": {
                 "typeIdentifier": "t_address",
@@ -398,13 +472,19 @@
           },
           {
             "constant": false,
+            "documentation": {
+              "id": 1666,
+              "nodeType": "StructuredDocumentation",
+              "src": "856:39:23",
+              "text": "@dev SeigManager address in Tokamak"
+            },
             "functionSelector": "6fb7f558",
-            "id": 2458,
+            "id": 1668,
             "mutability": "mutable",
             "name": "seigManager",
             "nodeType": "VariableDeclaration",
-            "scope": 2493,
-            "src": "449:26:11",
+            "scope": 1669,
+            "src": "900:26:23",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -412,10 +492,10 @@
               "typeString": "address"
             },
             "typeName": {
-              "id": 2457,
+              "id": 1667,
               "name": "address",
               "nodeType": "ElementaryTypeName",
-              "src": "449:7:11",
+              "src": "900:7:23",
               "stateMutability": "nonpayable",
               "typeDescriptions": {
                 "typeIdentifier": "t_address",
@@ -423,474 +503,29 @@
               }
             },
             "visibility": "public"
-          },
-          {
-            "body": {
-              "id": 2474,
-              "nodeType": "Block",
-              "src": "512:146:11",
-              "statements": [
-                {
-                  "expression": {
-                    "arguments": [
-                      {
-                        "commonType": {
-                          "typeIdentifier": "t_address",
-                          "typeString": "address"
-                        },
-                        "id": 2469,
-                        "isConstant": false,
-                        "isLValue": false,
-                        "isPure": false,
-                        "lValueRequested": false,
-                        "leftExpression": {
-                          "arguments": [
-                            {
-                              "id": 2463,
-                              "name": "stakeRegistry",
-                              "nodeType": "Identifier",
-                              "overloadedDeclarations": [],
-                              "referencedDeclaration": 2444,
-                              "src": "551:13:11",
-                              "typeDescriptions": {
-                                "typeIdentifier": "t_contract$_IStakeRegistry_$515",
-                                "typeString": "contract IStakeRegistry"
-                              }
-                            }
-                          ],
-                          "expression": {
-                            "argumentTypes": [
-                              {
-                                "typeIdentifier": "t_contract$_IStakeRegistry_$515",
-                                "typeString": "contract IStakeRegistry"
-                              }
-                            ],
-                            "id": 2462,
-                            "isConstant": false,
-                            "isLValue": false,
-                            "isPure": true,
-                            "lValueRequested": false,
-                            "nodeType": "ElementaryTypeNameExpression",
-                            "src": "543:7:11",
-                            "typeDescriptions": {
-                              "typeIdentifier": "t_type$_t_address_$",
-                              "typeString": "type(address)"
-                            },
-                            "typeName": {
-                              "id": 2461,
-                              "name": "address",
-                              "nodeType": "ElementaryTypeName",
-                              "src": "543:7:11",
-                              "typeDescriptions": {}
-                            }
-                          },
-                          "id": 2464,
-                          "isConstant": false,
-                          "isLValue": false,
-                          "isPure": false,
-                          "kind": "typeConversion",
-                          "lValueRequested": false,
-                          "names": [],
-                          "nodeType": "FunctionCall",
-                          "src": "543:22:11",
-                          "tryCall": false,
-                          "typeDescriptions": {
-                            "typeIdentifier": "t_address",
-                            "typeString": "address"
-                          }
-                        },
-                        "nodeType": "BinaryOperation",
-                        "operator": "!=",
-                        "rightExpression": {
-                          "arguments": [
-                            {
-                              "hexValue": "30",
-                              "id": 2467,
-                              "isConstant": false,
-                              "isLValue": false,
-                              "isPure": true,
-                              "kind": "number",
-                              "lValueRequested": false,
-                              "nodeType": "Literal",
-                              "src": "577:1:11",
-                              "typeDescriptions": {
-                                "typeIdentifier": "t_rational_0_by_1",
-                                "typeString": "int_const 0"
-                              },
-                              "value": "0"
-                            }
-                          ],
-                          "expression": {
-                            "argumentTypes": [
-                              {
-                                "typeIdentifier": "t_rational_0_by_1",
-                                "typeString": "int_const 0"
-                              }
-                            ],
-                            "id": 2466,
-                            "isConstant": false,
-                            "isLValue": false,
-                            "isPure": true,
-                            "lValueRequested": false,
-                            "nodeType": "ElementaryTypeNameExpression",
-                            "src": "569:7:11",
-                            "typeDescriptions": {
-                              "typeIdentifier": "t_type$_t_address_$",
-                              "typeString": "type(address)"
-                            },
-                            "typeName": {
-                              "id": 2465,
-                              "name": "address",
-                              "nodeType": "ElementaryTypeName",
-                              "src": "569:7:11",
-                              "typeDescriptions": {}
-                            }
-                          },
-                          "id": 2468,
-                          "isConstant": false,
-                          "isLValue": false,
-                          "isPure": true,
-                          "kind": "typeConversion",
-                          "lValueRequested": false,
-                          "names": [],
-                          "nodeType": "FunctionCall",
-                          "src": "569:10:11",
-                          "tryCall": false,
-                          "typeDescriptions": {
-                            "typeIdentifier": "t_address_payable",
-                            "typeString": "address payable"
-                          }
-                        },
-                        "src": "543:36:11",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_bool",
-                          "typeString": "bool"
-                        }
-                      },
-                      {
-                        "hexValue": "5374616b6553746f726167653a207374616b655265676973747279206973207a65726f",
-                        "id": 2470,
-                        "isConstant": false,
-                        "isLValue": false,
-                        "isPure": true,
-                        "kind": "string",
-                        "lValueRequested": false,
-                        "nodeType": "Literal",
-                        "src": "593:37:11",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_stringliteral_309ffa710991be09eb3244043cfe11a04cc3437f162480d6049ce8fb0d87bb18",
-                          "typeString": "literal_string \"StakeStorage: stakeRegistry is zero\""
-                        },
-                        "value": "StakeStorage: stakeRegistry is zero"
-                      }
-                    ],
-                    "expression": {
-                      "argumentTypes": [
-                        {
-                          "typeIdentifier": "t_bool",
-                          "typeString": "bool"
-                        },
-                        {
-                          "typeIdentifier": "t_stringliteral_309ffa710991be09eb3244043cfe11a04cc3437f162480d6049ce8fb0d87bb18",
-                          "typeString": "literal_string \"StakeStorage: stakeRegistry is zero\""
-                        }
-                      ],
-                      "id": 2460,
-                      "name": "require",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [
-                        4294967278,
-                        4294967278
-                      ],
-                      "referencedDeclaration": 4294967278,
-                      "src": "522:7:11",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
-                        "typeString": "function (bool,string memory) pure"
-                      }
-                    },
-                    "id": 2471,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "kind": "functionCall",
-                    "lValueRequested": false,
-                    "names": [],
-                    "nodeType": "FunctionCall",
-                    "src": "522:118:11",
-                    "tryCall": false,
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_tuple$__$",
-                      "typeString": "tuple()"
-                    }
-                  },
-                  "id": 2472,
-                  "nodeType": "ExpressionStatement",
-                  "src": "522:118:11"
-                },
-                {
-                  "id": 2473,
-                  "nodeType": "PlaceholderStatement",
-                  "src": "650:1:11"
-                }
-              ]
-            },
-            "id": 2475,
-            "name": "validStakeRegistry",
-            "nodeType": "ModifierDefinition",
-            "parameters": {
-              "id": 2459,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "509:2:11"
-            },
-            "src": "482:176:11",
-            "virtual": false,
-            "visibility": "internal"
-          },
-          {
-            "body": {
-              "id": 2491,
-              "nodeType": "Block",
-              "src": "693:144:11",
-              "statements": [
-                {
-                  "expression": {
-                    "arguments": [
-                      {
-                        "commonType": {
-                          "typeIdentifier": "t_address",
-                          "typeString": "address"
-                        },
-                        "id": 2486,
-                        "isConstant": false,
-                        "isLValue": false,
-                        "isPure": false,
-                        "lValueRequested": false,
-                        "leftExpression": {
-                          "arguments": [
-                            {
-                              "id": 2480,
-                              "name": "stakeFactory",
-                              "nodeType": "Identifier",
-                              "overloadedDeclarations": [],
-                              "referencedDeclaration": 2446,
-                              "src": "732:12:11",
-                              "typeDescriptions": {
-                                "typeIdentifier": "t_contract$_IStakeFactory_$471",
-                                "typeString": "contract IStakeFactory"
-                              }
-                            }
-                          ],
-                          "expression": {
-                            "argumentTypes": [
-                              {
-                                "typeIdentifier": "t_contract$_IStakeFactory_$471",
-                                "typeString": "contract IStakeFactory"
-                              }
-                            ],
-                            "id": 2479,
-                            "isConstant": false,
-                            "isLValue": false,
-                            "isPure": true,
-                            "lValueRequested": false,
-                            "nodeType": "ElementaryTypeNameExpression",
-                            "src": "724:7:11",
-                            "typeDescriptions": {
-                              "typeIdentifier": "t_type$_t_address_$",
-                              "typeString": "type(address)"
-                            },
-                            "typeName": {
-                              "id": 2478,
-                              "name": "address",
-                              "nodeType": "ElementaryTypeName",
-                              "src": "724:7:11",
-                              "typeDescriptions": {}
-                            }
-                          },
-                          "id": 2481,
-                          "isConstant": false,
-                          "isLValue": false,
-                          "isPure": false,
-                          "kind": "typeConversion",
-                          "lValueRequested": false,
-                          "names": [],
-                          "nodeType": "FunctionCall",
-                          "src": "724:21:11",
-                          "tryCall": false,
-                          "typeDescriptions": {
-                            "typeIdentifier": "t_address",
-                            "typeString": "address"
-                          }
-                        },
-                        "nodeType": "BinaryOperation",
-                        "operator": "!=",
-                        "rightExpression": {
-                          "arguments": [
-                            {
-                              "hexValue": "30",
-                              "id": 2484,
-                              "isConstant": false,
-                              "isLValue": false,
-                              "isPure": true,
-                              "kind": "number",
-                              "lValueRequested": false,
-                              "nodeType": "Literal",
-                              "src": "757:1:11",
-                              "typeDescriptions": {
-                                "typeIdentifier": "t_rational_0_by_1",
-                                "typeString": "int_const 0"
-                              },
-                              "value": "0"
-                            }
-                          ],
-                          "expression": {
-                            "argumentTypes": [
-                              {
-                                "typeIdentifier": "t_rational_0_by_1",
-                                "typeString": "int_const 0"
-                              }
-                            ],
-                            "id": 2483,
-                            "isConstant": false,
-                            "isLValue": false,
-                            "isPure": true,
-                            "lValueRequested": false,
-                            "nodeType": "ElementaryTypeNameExpression",
-                            "src": "749:7:11",
-                            "typeDescriptions": {
-                              "typeIdentifier": "t_type$_t_address_$",
-                              "typeString": "type(address)"
-                            },
-                            "typeName": {
-                              "id": 2482,
-                              "name": "address",
-                              "nodeType": "ElementaryTypeName",
-                              "src": "749:7:11",
-                              "typeDescriptions": {}
-                            }
-                          },
-                          "id": 2485,
-                          "isConstant": false,
-                          "isLValue": false,
-                          "isPure": true,
-                          "kind": "typeConversion",
-                          "lValueRequested": false,
-                          "names": [],
-                          "nodeType": "FunctionCall",
-                          "src": "749:10:11",
-                          "tryCall": false,
-                          "typeDescriptions": {
-                            "typeIdentifier": "t_address_payable",
-                            "typeString": "address payable"
-                          }
-                        },
-                        "src": "724:35:11",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_bool",
-                          "typeString": "bool"
-                        }
-                      },
-                      {
-                        "hexValue": "5374616b6553746f726167653a20696e76616c6964207374616b65466163746f7279",
-                        "id": 2487,
-                        "isConstant": false,
-                        "isLValue": false,
-                        "isPure": true,
-                        "kind": "string",
-                        "lValueRequested": false,
-                        "nodeType": "Literal",
-                        "src": "773:36:11",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_stringliteral_c7a250d6a8d28b225fa19fe0a07d5dc84287a8c41759f84c3821fd599435cdf5",
-                          "typeString": "literal_string \"StakeStorage: invalid stakeFactory\""
-                        },
-                        "value": "StakeStorage: invalid stakeFactory"
-                      }
-                    ],
-                    "expression": {
-                      "argumentTypes": [
-                        {
-                          "typeIdentifier": "t_bool",
-                          "typeString": "bool"
-                        },
-                        {
-                          "typeIdentifier": "t_stringliteral_c7a250d6a8d28b225fa19fe0a07d5dc84287a8c41759f84c3821fd599435cdf5",
-                          "typeString": "literal_string \"StakeStorage: invalid stakeFactory\""
-                        }
-                      ],
-                      "id": 2477,
-                      "name": "require",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [
-                        4294967278,
-                        4294967278
-                      ],
-                      "referencedDeclaration": 4294967278,
-                      "src": "703:7:11",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
-                        "typeString": "function (bool,string memory) pure"
-                      }
-                    },
-                    "id": 2488,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "kind": "functionCall",
-                    "lValueRequested": false,
-                    "names": [],
-                    "nodeType": "FunctionCall",
-                    "src": "703:116:11",
-                    "tryCall": false,
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_tuple$__$",
-                      "typeString": "tuple()"
-                    }
-                  },
-                  "id": 2489,
-                  "nodeType": "ExpressionStatement",
-                  "src": "703:116:11"
-                },
-                {
-                  "id": 2490,
-                  "nodeType": "PlaceholderStatement",
-                  "src": "829:1:11"
-                }
-              ]
-            },
-            "id": 2492,
-            "name": "validStakeFactory",
-            "nodeType": "ModifierDefinition",
-            "parameters": {
-              "id": 2476,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "690:2:11"
-            },
-            "src": "664:173:11",
-            "virtual": false,
-            "visibility": "internal"
           }
         ],
-        "scope": 2494,
-        "src": "191:648:11"
+        "scope": 1670,
+        "src": "350:579:23"
       }
     ],
-    "src": "37:803:11"
+    "src": "37:893:23"
   },
   "legacyAST": {
     "attributes": {
       "absolutePath": "/Users/zena/ico2.0/ico20-contracts/contracts/stake/StakeProxyStorage.sol",
       "exportedSymbols": {
         "IStakeFactory": [
-          471
+          343
         ],
         "IStakeRegistry": [
-          515
+          469
+        ],
+        "IStakeVaultFactory": [
+          544
         ],
         "StakeProxyStorage": [
-          2493
+          1669
         ]
       },
       "license": "Unlicense"
@@ -905,16 +540,16 @@
             ".6"
           ]
         },
-        "id": 2438,
+        "id": 1637,
         "name": "PragmaDirective",
-        "src": "37:23:11"
+        "src": "37:23:23"
       },
       {
         "attributes": {
-          "SourceUnit": 472,
+          "SourceUnit": 344,
           "absolutePath": "/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IStakeFactory.sol",
           "file": "../interfaces/IStakeFactory.sol",
-          "scope": 2494,
+          "scope": 1670,
           "symbolAliases": [
             {
               "foreign": {
@@ -924,24 +559,24 @@
                   ],
                   "value": "IStakeFactory"
                 },
-                "id": 2439,
+                "id": 1638,
                 "name": "Identifier",
-                "src": "70:13:11"
+                "src": "119:13:23"
               }
             }
           ],
           "unitAlias": ""
         },
-        "id": 2440,
+        "id": 1639,
         "name": "ImportDirective",
-        "src": "62:62:11"
+        "src": "111:62:23"
       },
       {
         "attributes": {
-          "SourceUnit": 516,
+          "SourceUnit": 470,
           "absolutePath": "/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IStakeRegistry.sol",
           "file": "../interfaces/IStakeRegistry.sol",
-          "scope": 2494,
+          "scope": 1670,
           "symbolAliases": [
             {
               "foreign": {
@@ -951,17 +586,44 @@
                   ],
                   "value": "IStakeRegistry"
                 },
-                "id": 2441,
+                "id": 1640,
                 "name": "Identifier",
-                "src": "133:14:11"
+                "src": "182:14:23"
               }
             }
           ],
           "unitAlias": ""
         },
-        "id": 2442,
+        "id": 1641,
         "name": "ImportDirective",
-        "src": "125:64:11"
+        "src": "174:64:23"
+      },
+      {
+        "attributes": {
+          "SourceUnit": 545,
+          "absolutePath": "/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IStakeVaultFactory.sol",
+          "file": "../interfaces/IStakeVaultFactory.sol",
+          "scope": 1670,
+          "symbolAliases": [
+            {
+              "foreign": {
+                "attributes": {
+                  "overloadedDeclarations": [
+                    null
+                  ],
+                  "value": "IStakeVaultFactory"
+                },
+                "id": 1642,
+                "name": "Identifier",
+                "src": "247:18:23"
+              }
+            }
+          ],
+          "unitAlias": ""
+        },
+        "id": 1643,
+        "name": "ImportDirective",
+        "src": "239:72:23"
       },
       {
         "attributes": {
@@ -975,19 +637,27 @@
           "contractKind": "contract",
           "fullyImplemented": true,
           "linearizedBaseContracts": [
-            2493
+            1669
           ],
           "name": "StakeProxyStorage",
-          "scope": 2494
+          "scope": 1670
         },
         "children": [
+          {
+            "attributes": {
+              "text": "@title The storage of StakeProxy"
+            },
+            "id": 1644,
+            "name": "StructuredDocumentation",
+            "src": "313:37:23"
+          },
           {
             "attributes": {
               "constant": false,
               "functionSelector": "68304835",
               "mutability": "mutable",
               "name": "stakeRegistry",
-              "scope": 2493,
+              "scope": 1669,
               "stateVariable": true,
               "storageLocation": "default",
               "type": "contract IStakeRegistry",
@@ -997,17 +667,25 @@
               {
                 "attributes": {
                   "name": "IStakeRegistry",
-                  "referencedDeclaration": 515,
+                  "referencedDeclaration": 469,
                   "type": "contract IStakeRegistry"
                 },
-                "id": 2443,
+                "id": 1646,
                 "name": "UserDefinedTypeName",
-                "src": "224:14:11"
+                "src": "410:14:23"
+              },
+              {
+                "attributes": {
+                  "text": "@dev stakeRegistry"
+                },
+                "id": 1645,
+                "name": "StructuredDocumentation",
+                "src": "383:22:23"
               }
             ],
-            "id": 2444,
+            "id": 1647,
             "name": "VariableDeclaration",
-            "src": "224:35:11"
+            "src": "410:35:23"
           },
           {
             "attributes": {
@@ -1015,7 +693,7 @@
               "functionSelector": "dd196f18",
               "mutability": "mutable",
               "name": "stakeFactory",
-              "scope": 2493,
+              "scope": 1669,
               "stateVariable": true,
               "storageLocation": "default",
               "type": "contract IStakeFactory",
@@ -1025,44 +703,61 @@
               {
                 "attributes": {
                   "name": "IStakeFactory",
-                  "referencedDeclaration": 471,
+                  "referencedDeclaration": 343,
                   "type": "contract IStakeFactory"
                 },
-                "id": 2445,
+                "id": 1649,
                 "name": "UserDefinedTypeName",
-                "src": "265:13:11"
+                "src": "478:13:23"
+              },
+              {
+                "attributes": {
+                  "text": "@dev stakeFactory"
+                },
+                "id": 1648,
+                "name": "StructuredDocumentation",
+                "src": "452:21:23"
               }
             ],
-            "id": 2446,
+            "id": 1650,
             "name": "VariableDeclaration",
-            "src": "265:33:11"
+            "src": "478:33:23"
           },
           {
             "attributes": {
               "constant": false,
-              "functionSelector": "7a7d4937",
+              "functionSelector": "6af8da27",
               "mutability": "mutable",
-              "name": "secondsPerBlock",
-              "scope": 2493,
+              "name": "stakeVaultFactory",
+              "scope": 1669,
               "stateVariable": true,
               "storageLocation": "default",
-              "type": "uint256",
+              "type": "contract IStakeVaultFactory",
               "visibility": "public"
             },
             "children": [
               {
                 "attributes": {
-                  "name": "uint256",
-                  "type": "uint256"
+                  "name": "IStakeVaultFactory",
+                  "referencedDeclaration": 544,
+                  "type": "contract IStakeVaultFactory"
                 },
-                "id": 2447,
-                "name": "ElementaryTypeName",
-                "src": "304:7:11"
+                "id": 1652,
+                "name": "UserDefinedTypeName",
+                "src": "549:18:23"
+              },
+              {
+                "attributes": {
+                  "text": "@dev stakeVaultFactory"
+                },
+                "id": 1651,
+                "name": "StructuredDocumentation",
+                "src": "518:26:23"
               }
             ],
-            "id": 2448,
+            "id": 1653,
             "name": "VariableDeclaration",
-            "src": "304:30:11"
+            "src": "549:43:23"
           },
           {
             "attributes": {
@@ -1070,7 +765,7 @@
               "functionSelector": "33bd2a49",
               "mutability": "mutable",
               "name": "fld",
-              "scope": 2493,
+              "scope": 1669,
               "stateVariable": true,
               "storageLocation": "default",
               "type": "address",
@@ -1083,14 +778,22 @@
                   "stateMutability": "nonpayable",
                   "type": "address"
                 },
-                "id": 2449,
+                "id": 1655,
                 "name": "ElementaryTypeName",
-                "src": "340:7:11"
+                "src": "624:7:23"
+              },
+              {
+                "attributes": {
+                  "text": "@dev FLD address"
+                },
+                "id": 1654,
+                "name": "StructuredDocumentation",
+                "src": "599:20:23"
               }
             ],
-            "id": 2450,
+            "id": 1656,
             "name": "VariableDeclaration",
-            "src": "340:18:11"
+            "src": "624:18:23"
           },
           {
             "attributes": {
@@ -1098,7 +801,7 @@
               "functionSelector": "cc48b947",
               "mutability": "mutable",
               "name": "ton",
-              "scope": 2493,
+              "scope": 1669,
               "stateVariable": true,
               "storageLocation": "default",
               "type": "address",
@@ -1111,14 +814,22 @@
                   "stateMutability": "nonpayable",
                   "type": "address"
                 },
-                "id": 2451,
+                "id": 1658,
                 "name": "ElementaryTypeName",
-                "src": "365:7:11"
+                "src": "685:7:23"
+              },
+              {
+                "attributes": {
+                  "text": "@dev TON address in Tokamak"
+                },
+                "id": 1657,
+                "name": "StructuredDocumentation",
+                "src": "649:31:23"
               }
             ],
-            "id": 2452,
+            "id": 1659,
             "name": "VariableDeclaration",
-            "src": "365:18:11"
+            "src": "685:18:23"
           },
           {
             "attributes": {
@@ -1126,7 +837,7 @@
               "functionSelector": "8d62d949",
               "mutability": "mutable",
               "name": "wton",
-              "scope": 2493,
+              "scope": 1669,
               "stateVariable": true,
               "storageLocation": "default",
               "type": "address",
@@ -1139,14 +850,22 @@
                   "stateMutability": "nonpayable",
                   "type": "address"
                 },
-                "id": 2453,
+                "id": 1661,
                 "name": "ElementaryTypeName",
-                "src": "389:7:11"
+                "src": "747:7:23"
+              },
+              {
+                "attributes": {
+                  "text": "@dev WTON address in Tokamak"
+                },
+                "id": 1660,
+                "name": "StructuredDocumentation",
+                "src": "710:32:23"
               }
             ],
-            "id": 2454,
+            "id": 1662,
             "name": "VariableDeclaration",
-            "src": "389:19:11"
+            "src": "747:19:23"
           },
           {
             "attributes": {
@@ -1154,7 +873,7 @@
               "functionSelector": "6c7ac9d8",
               "mutability": "mutable",
               "name": "depositManager",
-              "scope": 2493,
+              "scope": 1669,
               "stateVariable": true,
               "storageLocation": "default",
               "type": "address",
@@ -1167,14 +886,22 @@
                   "stateMutability": "nonpayable",
                   "type": "address"
                 },
-                "id": 2455,
+                "id": 1664,
                 "name": "ElementaryTypeName",
-                "src": "414:7:11"
+                "src": "820:7:23"
+              },
+              {
+                "attributes": {
+                  "text": "@dev Depositmanager address in Tokamak"
+                },
+                "id": 1663,
+                "name": "StructuredDocumentation",
+                "src": "773:42:23"
               }
             ],
-            "id": 2456,
+            "id": 1665,
             "name": "VariableDeclaration",
-            "src": "414:29:11"
+            "src": "820:29:23"
           },
           {
             "attributes": {
@@ -1182,7 +909,7 @@
               "functionSelector": "6fb7f558",
               "mutability": "mutable",
               "name": "seigManager",
-              "scope": 2493,
+              "scope": 1669,
               "stateVariable": true,
               "storageLocation": "default",
               "type": "address",
@@ -1195,512 +922,32 @@
                   "stateMutability": "nonpayable",
                   "type": "address"
                 },
-                "id": 2457,
+                "id": 1667,
                 "name": "ElementaryTypeName",
-                "src": "449:7:11"
+                "src": "900:7:23"
+              },
+              {
+                "attributes": {
+                  "text": "@dev SeigManager address in Tokamak"
+                },
+                "id": 1666,
+                "name": "StructuredDocumentation",
+                "src": "856:39:23"
               }
             ],
-            "id": 2458,
+            "id": 1668,
             "name": "VariableDeclaration",
-            "src": "449:26:11"
-          },
-          {
-            "attributes": {
-              "name": "validStakeRegistry",
-              "virtual": false,
-              "visibility": "internal"
-            },
-            "children": [
-              {
-                "attributes": {
-                  "parameters": [
-                    null
-                  ]
-                },
-                "children": [],
-                "id": 2459,
-                "name": "ParameterList",
-                "src": "509:2:11"
-              },
-              {
-                "children": [
-                  {
-                    "children": [
-                      {
-                        "attributes": {
-                          "isConstant": false,
-                          "isLValue": false,
-                          "isPure": false,
-                          "isStructConstructorCall": false,
-                          "lValueRequested": false,
-                          "names": [
-                            null
-                          ],
-                          "tryCall": false,
-                          "type": "tuple()",
-                          "type_conversion": false
-                        },
-                        "children": [
-                          {
-                            "attributes": {
-                              "argumentTypes": [
-                                {
-                                  "typeIdentifier": "t_bool",
-                                  "typeString": "bool"
-                                },
-                                {
-                                  "typeIdentifier": "t_stringliteral_309ffa710991be09eb3244043cfe11a04cc3437f162480d6049ce8fb0d87bb18",
-                                  "typeString": "literal_string \"StakeStorage: stakeRegistry is zero\""
-                                }
-                              ],
-                              "overloadedDeclarations": [
-                                4294967278,
-                                4294967278
-                              ],
-                              "referencedDeclaration": 4294967278,
-                              "type": "function (bool,string memory) pure",
-                              "value": "require"
-                            },
-                            "id": 2460,
-                            "name": "Identifier",
-                            "src": "522:7:11"
-                          },
-                          {
-                            "attributes": {
-                              "commonType": {
-                                "typeIdentifier": "t_address",
-                                "typeString": "address"
-                              },
-                              "isConstant": false,
-                              "isLValue": false,
-                              "isPure": false,
-                              "lValueRequested": false,
-                              "operator": "!=",
-                              "type": "bool"
-                            },
-                            "children": [
-                              {
-                                "attributes": {
-                                  "isConstant": false,
-                                  "isLValue": false,
-                                  "isPure": false,
-                                  "isStructConstructorCall": false,
-                                  "lValueRequested": false,
-                                  "names": [
-                                    null
-                                  ],
-                                  "tryCall": false,
-                                  "type": "address",
-                                  "type_conversion": true
-                                },
-                                "children": [
-                                  {
-                                    "attributes": {
-                                      "argumentTypes": [
-                                        {
-                                          "typeIdentifier": "t_contract$_IStakeRegistry_$515",
-                                          "typeString": "contract IStakeRegistry"
-                                        }
-                                      ],
-                                      "isConstant": false,
-                                      "isLValue": false,
-                                      "isPure": true,
-                                      "lValueRequested": false,
-                                      "type": "type(address)"
-                                    },
-                                    "children": [
-                                      {
-                                        "attributes": {
-                                          "name": "address"
-                                        },
-                                        "id": 2461,
-                                        "name": "ElementaryTypeName",
-                                        "src": "543:7:11"
-                                      }
-                                    ],
-                                    "id": 2462,
-                                    "name": "ElementaryTypeNameExpression",
-                                    "src": "543:7:11"
-                                  },
-                                  {
-                                    "attributes": {
-                                      "overloadedDeclarations": [
-                                        null
-                                      ],
-                                      "referencedDeclaration": 2444,
-                                      "type": "contract IStakeRegistry",
-                                      "value": "stakeRegistry"
-                                    },
-                                    "id": 2463,
-                                    "name": "Identifier",
-                                    "src": "551:13:11"
-                                  }
-                                ],
-                                "id": 2464,
-                                "name": "FunctionCall",
-                                "src": "543:22:11"
-                              },
-                              {
-                                "attributes": {
-                                  "isConstant": false,
-                                  "isLValue": false,
-                                  "isPure": true,
-                                  "isStructConstructorCall": false,
-                                  "lValueRequested": false,
-                                  "names": [
-                                    null
-                                  ],
-                                  "tryCall": false,
-                                  "type": "address payable",
-                                  "type_conversion": true
-                                },
-                                "children": [
-                                  {
-                                    "attributes": {
-                                      "argumentTypes": [
-                                        {
-                                          "typeIdentifier": "t_rational_0_by_1",
-                                          "typeString": "int_const 0"
-                                        }
-                                      ],
-                                      "isConstant": false,
-                                      "isLValue": false,
-                                      "isPure": true,
-                                      "lValueRequested": false,
-                                      "type": "type(address)"
-                                    },
-                                    "children": [
-                                      {
-                                        "attributes": {
-                                          "name": "address"
-                                        },
-                                        "id": 2465,
-                                        "name": "ElementaryTypeName",
-                                        "src": "569:7:11"
-                                      }
-                                    ],
-                                    "id": 2466,
-                                    "name": "ElementaryTypeNameExpression",
-                                    "src": "569:7:11"
-                                  },
-                                  {
-                                    "attributes": {
-                                      "hexvalue": "30",
-                                      "isConstant": false,
-                                      "isLValue": false,
-                                      "isPure": true,
-                                      "lValueRequested": false,
-                                      "token": "number",
-                                      "type": "int_const 0",
-                                      "value": "0"
-                                    },
-                                    "id": 2467,
-                                    "name": "Literal",
-                                    "src": "577:1:11"
-                                  }
-                                ],
-                                "id": 2468,
-                                "name": "FunctionCall",
-                                "src": "569:10:11"
-                              }
-                            ],
-                            "id": 2469,
-                            "name": "BinaryOperation",
-                            "src": "543:36:11"
-                          },
-                          {
-                            "attributes": {
-                              "hexvalue": "5374616b6553746f726167653a207374616b655265676973747279206973207a65726f",
-                              "isConstant": false,
-                              "isLValue": false,
-                              "isPure": true,
-                              "lValueRequested": false,
-                              "token": "string",
-                              "type": "literal_string \"StakeStorage: stakeRegistry is zero\"",
-                              "value": "StakeStorage: stakeRegistry is zero"
-                            },
-                            "id": 2470,
-                            "name": "Literal",
-                            "src": "593:37:11"
-                          }
-                        ],
-                        "id": 2471,
-                        "name": "FunctionCall",
-                        "src": "522:118:11"
-                      }
-                    ],
-                    "id": 2472,
-                    "name": "ExpressionStatement",
-                    "src": "522:118:11"
-                  },
-                  {
-                    "id": 2473,
-                    "name": "PlaceholderStatement",
-                    "src": "650:1:11"
-                  }
-                ],
-                "id": 2474,
-                "name": "Block",
-                "src": "512:146:11"
-              }
-            ],
-            "id": 2475,
-            "name": "ModifierDefinition",
-            "src": "482:176:11"
-          },
-          {
-            "attributes": {
-              "name": "validStakeFactory",
-              "virtual": false,
-              "visibility": "internal"
-            },
-            "children": [
-              {
-                "attributes": {
-                  "parameters": [
-                    null
-                  ]
-                },
-                "children": [],
-                "id": 2476,
-                "name": "ParameterList",
-                "src": "690:2:11"
-              },
-              {
-                "children": [
-                  {
-                    "children": [
-                      {
-                        "attributes": {
-                          "isConstant": false,
-                          "isLValue": false,
-                          "isPure": false,
-                          "isStructConstructorCall": false,
-                          "lValueRequested": false,
-                          "names": [
-                            null
-                          ],
-                          "tryCall": false,
-                          "type": "tuple()",
-                          "type_conversion": false
-                        },
-                        "children": [
-                          {
-                            "attributes": {
-                              "argumentTypes": [
-                                {
-                                  "typeIdentifier": "t_bool",
-                                  "typeString": "bool"
-                                },
-                                {
-                                  "typeIdentifier": "t_stringliteral_c7a250d6a8d28b225fa19fe0a07d5dc84287a8c41759f84c3821fd599435cdf5",
-                                  "typeString": "literal_string \"StakeStorage: invalid stakeFactory\""
-                                }
-                              ],
-                              "overloadedDeclarations": [
-                                4294967278,
-                                4294967278
-                              ],
-                              "referencedDeclaration": 4294967278,
-                              "type": "function (bool,string memory) pure",
-                              "value": "require"
-                            },
-                            "id": 2477,
-                            "name": "Identifier",
-                            "src": "703:7:11"
-                          },
-                          {
-                            "attributes": {
-                              "commonType": {
-                                "typeIdentifier": "t_address",
-                                "typeString": "address"
-                              },
-                              "isConstant": false,
-                              "isLValue": false,
-                              "isPure": false,
-                              "lValueRequested": false,
-                              "operator": "!=",
-                              "type": "bool"
-                            },
-                            "children": [
-                              {
-                                "attributes": {
-                                  "isConstant": false,
-                                  "isLValue": false,
-                                  "isPure": false,
-                                  "isStructConstructorCall": false,
-                                  "lValueRequested": false,
-                                  "names": [
-                                    null
-                                  ],
-                                  "tryCall": false,
-                                  "type": "address",
-                                  "type_conversion": true
-                                },
-                                "children": [
-                                  {
-                                    "attributes": {
-                                      "argumentTypes": [
-                                        {
-                                          "typeIdentifier": "t_contract$_IStakeFactory_$471",
-                                          "typeString": "contract IStakeFactory"
-                                        }
-                                      ],
-                                      "isConstant": false,
-                                      "isLValue": false,
-                                      "isPure": true,
-                                      "lValueRequested": false,
-                                      "type": "type(address)"
-                                    },
-                                    "children": [
-                                      {
-                                        "attributes": {
-                                          "name": "address"
-                                        },
-                                        "id": 2478,
-                                        "name": "ElementaryTypeName",
-                                        "src": "724:7:11"
-                                      }
-                                    ],
-                                    "id": 2479,
-                                    "name": "ElementaryTypeNameExpression",
-                                    "src": "724:7:11"
-                                  },
-                                  {
-                                    "attributes": {
-                                      "overloadedDeclarations": [
-                                        null
-                                      ],
-                                      "referencedDeclaration": 2446,
-                                      "type": "contract IStakeFactory",
-                                      "value": "stakeFactory"
-                                    },
-                                    "id": 2480,
-                                    "name": "Identifier",
-                                    "src": "732:12:11"
-                                  }
-                                ],
-                                "id": 2481,
-                                "name": "FunctionCall",
-                                "src": "724:21:11"
-                              },
-                              {
-                                "attributes": {
-                                  "isConstant": false,
-                                  "isLValue": false,
-                                  "isPure": true,
-                                  "isStructConstructorCall": false,
-                                  "lValueRequested": false,
-                                  "names": [
-                                    null
-                                  ],
-                                  "tryCall": false,
-                                  "type": "address payable",
-                                  "type_conversion": true
-                                },
-                                "children": [
-                                  {
-                                    "attributes": {
-                                      "argumentTypes": [
-                                        {
-                                          "typeIdentifier": "t_rational_0_by_1",
-                                          "typeString": "int_const 0"
-                                        }
-                                      ],
-                                      "isConstant": false,
-                                      "isLValue": false,
-                                      "isPure": true,
-                                      "lValueRequested": false,
-                                      "type": "type(address)"
-                                    },
-                                    "children": [
-                                      {
-                                        "attributes": {
-                                          "name": "address"
-                                        },
-                                        "id": 2482,
-                                        "name": "ElementaryTypeName",
-                                        "src": "749:7:11"
-                                      }
-                                    ],
-                                    "id": 2483,
-                                    "name": "ElementaryTypeNameExpression",
-                                    "src": "749:7:11"
-                                  },
-                                  {
-                                    "attributes": {
-                                      "hexvalue": "30",
-                                      "isConstant": false,
-                                      "isLValue": false,
-                                      "isPure": true,
-                                      "lValueRequested": false,
-                                      "token": "number",
-                                      "type": "int_const 0",
-                                      "value": "0"
-                                    },
-                                    "id": 2484,
-                                    "name": "Literal",
-                                    "src": "757:1:11"
-                                  }
-                                ],
-                                "id": 2485,
-                                "name": "FunctionCall",
-                                "src": "749:10:11"
-                              }
-                            ],
-                            "id": 2486,
-                            "name": "BinaryOperation",
-                            "src": "724:35:11"
-                          },
-                          {
-                            "attributes": {
-                              "hexvalue": "5374616b6553746f726167653a20696e76616c6964207374616b65466163746f7279",
-                              "isConstant": false,
-                              "isLValue": false,
-                              "isPure": true,
-                              "lValueRequested": false,
-                              "token": "string",
-                              "type": "literal_string \"StakeStorage: invalid stakeFactory\"",
-                              "value": "StakeStorage: invalid stakeFactory"
-                            },
-                            "id": 2487,
-                            "name": "Literal",
-                            "src": "773:36:11"
-                          }
-                        ],
-                        "id": 2488,
-                        "name": "FunctionCall",
-                        "src": "703:116:11"
-                      }
-                    ],
-                    "id": 2489,
-                    "name": "ExpressionStatement",
-                    "src": "703:116:11"
-                  },
-                  {
-                    "id": 2490,
-                    "name": "PlaceholderStatement",
-                    "src": "829:1:11"
-                  }
-                ],
-                "id": 2491,
-                "name": "Block",
-                "src": "693:144:11"
-              }
-            ],
-            "id": 2492,
-            "name": "ModifierDefinition",
-            "src": "664:173:11"
+            "src": "900:26:23"
           }
         ],
-        "id": 2493,
+        "id": 1669,
         "name": "ContractDefinition",
-        "src": "191:648:11"
+        "src": "350:579:23"
       }
     ],
-    "id": 2494,
+    "id": 1670,
     "name": "SourceUnit",
-    "src": "37:803:11"
+    "src": "37:893:23"
   },
   "compiler": {
     "name": "solc",
@@ -1708,10 +955,37 @@
   },
   "networks": {},
   "schemaVersion": "3.3.4",
-  "updatedAt": "2021-05-17T01:22:19.464Z",
+  "updatedAt": "2021-06-04T06:02:48.395Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},
+    "stateVariables": {
+      "depositManager": {
+        "details": "Depositmanager address in Tokamak"
+      },
+      "fld": {
+        "details": "FLD address"
+      },
+      "seigManager": {
+        "details": "SeigManager address in Tokamak"
+      },
+      "stakeFactory": {
+        "details": "stakeFactory"
+      },
+      "stakeRegistry": {
+        "details": "stakeRegistry"
+      },
+      "stakeVaultFactory": {
+        "details": "stakeVaultFactory"
+      },
+      "ton": {
+        "details": "TON address in Tokamak"
+      },
+      "wton": {
+        "details": "WTON address in Tokamak"
+      }
+    },
+    "title": "The storage of StakeProxy",
     "version": 1
   },
   "userdoc": {
