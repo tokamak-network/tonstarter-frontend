@@ -1,0 +1,1569 @@
+{
+  "contractName": "ProjectStakeVaultFactory",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "ADMIN_ROLE",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "project",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "deploy",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.7.6+commit.7338295f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"ADMIN_ROLE\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"project\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"}],\"name\":\"deploy\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/Users/zena/ico2.0/ico20-contracts/contracts/factory/ProjectStakeVaultFactory.sol\":\"ProjectStakeVaultFactory\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/zena/ico2.0/ico20-contracts/contracts/factory/ProjectStakeVaultFactory.sol\":{\"keccak256\":\"0xa4b8c5736f9f5d77cdf7979723dc37c26e0c33dfa6a28d57f20fffb9d77360bb\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://aa11247b35279b30ca1373cfc518f997ed2619bf661fa53d6d253ef8dfd3c37c\",\"dweb:/ipfs/QmWUZuqULUrbErLi66Nc4b6xzE9XPtFNJ58G6YRfdqhHnN\"]},\"/Users/zena/ico2.0/ico20-contracts/contracts/project/ProjectStakeVault.sol\":{\"keccak256\":\"0x83463a75e0948b87c3a8e70198d896fd5c4ad70c85f09c02bcbc7dd5f2f07f75\",\"license\":\"Unlicense\",\"urls\":[\"bzz-raw://701c5604cd7998bc0085ac286f7baf52860e967018c234faf641b6a0ee876102\",\"dweb:/ipfs/QmNSCbZkHRb6H3DWGF1GeybkFVjRiTmRoeYHwKUFzQSESL\"]},\"@openzeppelin/contracts/GSN/Context.sol\":{\"keccak256\":\"0x8d3cb350f04ff49cfb10aef08d87f19dcbaecc8027b0bed12f3275cd12f38cf0\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://ded47ec7c96750f9bd04bbbc84f659992d4ba901cb7b532a52cd468272cf378f\",\"dweb:/ipfs/QmfBrGtQP7rZEqEg6Wz6jh2N2Kukpj1z5v3CGWmAqrzm96\"]},\"@openzeppelin/contracts/access/AccessControl.sol\":{\"keccak256\":\"0x37ff88aa5ca8f533e31b9e1cb5354816b15bb7d41c904ea1c8f5dd5a78d6da25\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://f3731db435ced7084f2cb3947e708371c10a2e3f654dcfe2a237fc8fbdafbe5f\",\"dweb:/ipfs/QmUyiwkuiP2fYBVaTwwY82sJKxJyPQaBqAtS4uG6iaUSP7\"]},\"@openzeppelin/contracts/utils/Address.sol\":{\"keccak256\":\"0xa6a15ddddcbf29d2922a1e0d4151b5d2d33da24b93cc9ebc12390e0d855532f8\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7c119bcaecfa853d564ac88d312777f75fa1126a3bca88a3371adb0ad9f35cb0\",\"dweb:/ipfs/QmY9UPuXeSKq86Zh38fE43VGQPhKMN34mkuFSFqPcr6nvZ\"]},\"@openzeppelin/contracts/utils/EnumerableSet.sol\":{\"keccak256\":\"0xae0992eb1ec30fd1ecdf2e04a6036decfc9797bf11dc1ec84b546b74318d5ec2\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://3b61f99a64e999682ad7bfbb3a1c762a20a0a5b30f9f2011693fa857969af61f\",\"dweb:/ipfs/QmZystFY76wkWCf7V3yKh3buZuKVKbswiE7y6yU62kk3zi\"]}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b50610d70806100206000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c8063545e7c611461003b57806375b238fc14610085575b600080fd5b6100696004803603604081101561005157600080fd5b506001600160a01b038135811691602001351661009f565b604080516001600160a01b039092168252519081900360200190f35b61008d610257565b60408051918252519081900360200190f35b6000806040516100ae9061027b565b604051809103906000f0801580156100ca573d6000803e3d6000fd5b509050806001600160a01b031663485cc95585856040518363ffffffff1660e01b815260040180836001600160a01b03168152602001826001600160a01b0316815260200192505050600060405180830381600087803b15801561012d57600080fd5b505af1158015610141573d6000803e3d6000fd5b505060408051632f2ff15d60e01b81527fdf8b4c520ffe197c5343c6f5aec59570151ef9a492f2c624fd45ddde6135ec42600482015233602482015290516001600160a01b0385169350632f2ff15d9250604480830192600092919082900301818387803b1580156101b257600080fd5b505af11580156101c6573d6000803e3d6000fd5b50506040805163d547741f60e01b81527fdf8b4c520ffe197c5343c6f5aec59570151ef9a492f2c624fd45ddde6135ec42600482015230602482015290516001600160a01b038516935063d547741f9250604480830192600092919082900301818387803b15801561023757600080fd5b505af115801561024b573d6000803e3d6000fd5b50929695505050505050565b7fdf8b4c520ffe197c5343c6f5aec59570151ef9a492f2c624fd45ddde6135ec4281565b610ab2806102898339019056fe608060405234801561001057600080fd5b50610029600080516020610a9283398151915280610046565b610041600080516020610a9283398151915233610098565b61019d565b600082815260208190526040808220600201549051839285917fbd79b86ffe0ab8e8776151514217cd7cacd52c909f66475c3af44e129f0b00ff9190a460009182526020829052604090912060020155565b6100a282826100a6565b5050565b6000828152602081815260409091206100c8918390610544610119821b17901c565b156100a2576100d5610137565b6001600160a01b0316816001600160a01b0316837f2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d60405160405180910390a45050565b600061012e836001600160a01b03841661013b565b90505b92915050565b3390565b60006101478383610185565b61017d57508154600181810184556000848152602080822090930184905584548482528286019093526040902091909155610131565b506000610131565b60009081526001919091016020526040902054151590565b6108e6806101ac6000396000f3fe608060405234801561001057600080fd5b50600436106100b45760003560e01c806391d148541161007157806391d14854146101b7578063a217fddf146101f7578063ca15c873146101ff578063d547741f1461021c578063dab2997b14610248578063f60ca60d14610250576100b4565b8063248a9ca3146100b95780632f2ff15d146100e857806336568abe14610116578063485cc9551461014257806375b238fc146101705780639010d07c14610178575b600080fd5b6100d6600480360360208110156100cf57600080fd5b5035610258565b60408051918252519081900360200190f35b610114600480360360408110156100fe57600080fd5b50803590602001356001600160a01b031661026d565b005b6101146004803603604081101561012c57600080fd5b50803590602001356001600160a01b03166102d9565b6101146004803603604081101561015857600080fd5b506001600160a01b038135811691602001351661033a565b6100d6610454565b61019b6004803603604081101561018e57600080fd5b5080359060200135610478565b604080516001600160a01b039092168252519081900360200190f35b6101e3600480360360408110156101cd57600080fd5b50803590602001356001600160a01b0316610499565b604080519115158252519081900360200190f35b6100d66104b1565b6100d66004803603602081101561021557600080fd5b50356104b6565b6101146004803603604081101561023257600080fd5b50803590602001356001600160a01b03166104cd565b61019b610526565b61019b610535565b60009081526020819052604090206002015490565b6000828152602081905260409020600201546102909061028b610559565b610499565b6102cb5760405162461bcd60e51b815260040180806020018281038252602f815260200180610823602f913960400191505060405180910390fd5b6102d5828261055d565b5050565b6102e1610559565b6001600160a01b0316816001600160a01b0316146103305760405162461bcd60e51b815260040180806020018281038252602f815260200180610882602f913960400191505060405180910390fd5b6102d582826105c6565b6103647fdf8b4c520ffe197c5343c6f5aec59570151ef9a492f2c624fd45ddde6135ec4233610499565b6103b5576040805162461bcd60e51b815260206004820152601f60248201527f50726f6a6563743a2043616c6c6572206973206e6f7420616e2061646d696e00604482015290519081900360640190fd5b6001600160a01b038216158015906103d557506001600160a01b03811615155b610426576040805162461bcd60e51b815260206004820152601760248201527f50726f6a6563745374616b655661756c743a207a65726f000000000000000000604482015290519081900360640190fd5b600180546001600160a01b039384166001600160a01b03199182161790915560028054929093169116179055565b7fdf8b4c520ffe197c5343c6f5aec59570151ef9a492f2c624fd45ddde6135ec4281565b6000828152602081905260408120610490908361062f565b90505b92915050565b6000828152602081905260408120610490908361063b565b600081565b600081815260208190526040812061049390610650565b6000828152602081905260409020600201546104eb9061028b610559565b6103305760405162461bcd60e51b81526004018080602001828103825260308152602001806108526030913960400191505060405180910390fd5b6002546001600160a01b031681565b6001546001600160a01b031681565b6000610490836001600160a01b03841661065b565b3390565b60008281526020819052604090206105759082610544565b156102d557610582610559565b6001600160a01b0316816001600160a01b0316837f2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d60405160405180910390a45050565b60008281526020819052604090206105de90826106a5565b156102d5576105eb610559565b6001600160a01b0316816001600160a01b0316837ff6391f5c32d9c69d2a47ea670b442974b53935d1edc7fd64eb21e047a839171b60405160405180910390a45050565b600061049083836106ba565b6000610490836001600160a01b03841661071e565b600061049382610736565b6000610667838361071e565b61069d57508154600181810184556000848152602080822090930184905584548482528286019093526040902091909155610493565b506000610493565b6000610490836001600160a01b03841661073a565b815460009082106106fc5760405162461bcd60e51b81526004018080602001828103825260228152602001806108016022913960400191505060405180910390fd5b82600001828154811061070b57fe5b9060005260206000200154905092915050565b60009081526001919091016020526040902054151590565b5490565b600081815260018301602052604081205480156107f6578354600019808301919081019060009087908390811061076d57fe5b906000526020600020015490508087600001848154811061078a57fe5b6000918252602080832090910192909255828152600189810190925260409020908401905586548790806107ba57fe5b60019003818190600052602060002001600090559055866001016000878152602001908152602001600020600090556001945050505050610493565b600091505061049356fe456e756d657261626c655365743a20696e646578206f7574206f6620626f756e6473416363657373436f6e74726f6c3a2073656e646572206d75737420626520616e2061646d696e20746f206772616e74416363657373436f6e74726f6c3a2073656e646572206d75737420626520616e2061646d696e20746f207265766f6b65416363657373436f6e74726f6c3a2063616e206f6e6c792072656e6f756e636520726f6c657320666f722073656c66a2646970667358221220196484f2f450b58d0db7a816665a21a68849598f5704520ab5c7bc63869a77b864736f6c63430007060033df8b4c520ffe197c5343c6f5aec59570151ef9a492f2c624fd45ddde6135ec42a2646970667358221220e97b96c8b95271472ed2f5243c26b50d31538050b31fdd8ef1cfba7f0fe6931564736f6c63430007060033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100365760003560e01c8063545e7c611461003b57806375b238fc14610085575b600080fd5b6100696004803603604081101561005157600080fd5b506001600160a01b038135811691602001351661009f565b604080516001600160a01b039092168252519081900360200190f35b61008d610257565b60408051918252519081900360200190f35b6000806040516100ae9061027b565b604051809103906000f0801580156100ca573d6000803e3d6000fd5b509050806001600160a01b031663485cc95585856040518363ffffffff1660e01b815260040180836001600160a01b03168152602001826001600160a01b0316815260200192505050600060405180830381600087803b15801561012d57600080fd5b505af1158015610141573d6000803e3d6000fd5b505060408051632f2ff15d60e01b81527fdf8b4c520ffe197c5343c6f5aec59570151ef9a492f2c624fd45ddde6135ec42600482015233602482015290516001600160a01b0385169350632f2ff15d9250604480830192600092919082900301818387803b1580156101b257600080fd5b505af11580156101c6573d6000803e3d6000fd5b50506040805163d547741f60e01b81527fdf8b4c520ffe197c5343c6f5aec59570151ef9a492f2c624fd45ddde6135ec42600482015230602482015290516001600160a01b038516935063d547741f9250604480830192600092919082900301818387803b15801561023757600080fd5b505af115801561024b573d6000803e3d6000fd5b50929695505050505050565b7fdf8b4c520ffe197c5343c6f5aec59570151ef9a492f2c624fd45ddde6135ec4281565b610ab2806102898339019056fe608060405234801561001057600080fd5b50610029600080516020610a9283398151915280610046565b610041600080516020610a9283398151915233610098565b61019d565b600082815260208190526040808220600201549051839285917fbd79b86ffe0ab8e8776151514217cd7cacd52c909f66475c3af44e129f0b00ff9190a460009182526020829052604090912060020155565b6100a282826100a6565b5050565b6000828152602081815260409091206100c8918390610544610119821b17901c565b156100a2576100d5610137565b6001600160a01b0316816001600160a01b0316837f2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d60405160405180910390a45050565b600061012e836001600160a01b03841661013b565b90505b92915050565b3390565b60006101478383610185565b61017d57508154600181810184556000848152602080822090930184905584548482528286019093526040902091909155610131565b506000610131565b60009081526001919091016020526040902054151590565b6108e6806101ac6000396000f3fe608060405234801561001057600080fd5b50600436106100b45760003560e01c806391d148541161007157806391d14854146101b7578063a217fddf146101f7578063ca15c873146101ff578063d547741f1461021c578063dab2997b14610248578063f60ca60d14610250576100b4565b8063248a9ca3146100b95780632f2ff15d146100e857806336568abe14610116578063485cc9551461014257806375b238fc146101705780639010d07c14610178575b600080fd5b6100d6600480360360208110156100cf57600080fd5b5035610258565b60408051918252519081900360200190f35b610114600480360360408110156100fe57600080fd5b50803590602001356001600160a01b031661026d565b005b6101146004803603604081101561012c57600080fd5b50803590602001356001600160a01b03166102d9565b6101146004803603604081101561015857600080fd5b506001600160a01b038135811691602001351661033a565b6100d6610454565b61019b6004803603604081101561018e57600080fd5b5080359060200135610478565b604080516001600160a01b039092168252519081900360200190f35b6101e3600480360360408110156101cd57600080fd5b50803590602001356001600160a01b0316610499565b604080519115158252519081900360200190f35b6100d66104b1565b6100d66004803603602081101561021557600080fd5b50356104b6565b6101146004803603604081101561023257600080fd5b50803590602001356001600160a01b03166104cd565b61019b610526565b61019b610535565b60009081526020819052604090206002015490565b6000828152602081905260409020600201546102909061028b610559565b610499565b6102cb5760405162461bcd60e51b815260040180806020018281038252602f815260200180610823602f913960400191505060405180910390fd5b6102d5828261055d565b5050565b6102e1610559565b6001600160a01b0316816001600160a01b0316146103305760405162461bcd60e51b815260040180806020018281038252602f815260200180610882602f913960400191505060405180910390fd5b6102d582826105c6565b6103647fdf8b4c520ffe197c5343c6f5aec59570151ef9a492f2c624fd45ddde6135ec4233610499565b6103b5576040805162461bcd60e51b815260206004820152601f60248201527f50726f6a6563743a2043616c6c6572206973206e6f7420616e2061646d696e00604482015290519081900360640190fd5b6001600160a01b038216158015906103d557506001600160a01b03811615155b610426576040805162461bcd60e51b815260206004820152601760248201527f50726f6a6563745374616b655661756c743a207a65726f000000000000000000604482015290519081900360640190fd5b600180546001600160a01b039384166001600160a01b03199182161790915560028054929093169116179055565b7fdf8b4c520ffe197c5343c6f5aec59570151ef9a492f2c624fd45ddde6135ec4281565b6000828152602081905260408120610490908361062f565b90505b92915050565b6000828152602081905260408120610490908361063b565b600081565b600081815260208190526040812061049390610650565b6000828152602081905260409020600201546104eb9061028b610559565b6103305760405162461bcd60e51b81526004018080602001828103825260308152602001806108526030913960400191505060405180910390fd5b6002546001600160a01b031681565b6001546001600160a01b031681565b6000610490836001600160a01b03841661065b565b3390565b60008281526020819052604090206105759082610544565b156102d557610582610559565b6001600160a01b0316816001600160a01b0316837f2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d60405160405180910390a45050565b60008281526020819052604090206105de90826106a5565b156102d5576105eb610559565b6001600160a01b0316816001600160a01b0316837ff6391f5c32d9c69d2a47ea670b442974b53935d1edc7fd64eb21e047a839171b60405160405180910390a45050565b600061049083836106ba565b6000610490836001600160a01b03841661071e565b600061049382610736565b6000610667838361071e565b61069d57508154600181810184556000848152602080822090930184905584548482528286019093526040902091909155610493565b506000610493565b6000610490836001600160a01b03841661073a565b815460009082106106fc5760405162461bcd60e51b81526004018080602001828103825260228152602001806108016022913960400191505060405180910390fd5b82600001828154811061070b57fe5b9060005260206000200154905092915050565b60009081526001919091016020526040902054151590565b5490565b600081815260018301602052604081205480156107f6578354600019808301919081019060009087908390811061076d57fe5b906000526020600020015490508087600001848154811061078a57fe5b6000918252602080832090910192909255828152600189810190925260409020908401905586548790806107ba57fe5b60019003818190600052602060002001600090559055866001016000878152602001908152602001600020600090556001945050505050610493565b600091505061049356fe456e756d657261626c655365743a20696e646578206f7574206f6620626f756e6473416363657373436f6e74726f6c3a2073656e646572206d75737420626520616e2061646d696e20746f206772616e74416363657373436f6e74726f6c3a2073656e646572206d75737420626520616e2061646d696e20746f207265766f6b65416363657373436f6e74726f6c3a2063616e206f6e6c792072656e6f756e636520726f6c657320666f722073656c66a2646970667358221220196484f2f450b58d0db7a816665a21a68849598f5704520ab5c7bc63869a77b864736f6c63430007060033df8b4c520ffe197c5343c6f5aec59570151ef9a492f2c624fd45ddde6135ec42a2646970667358221220e97b96c8b95271472ed2f5243c26b50d31538050b31fdd8ef1cfba7f0fe6931564736f6c63430007060033",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "126:420:9:-:0;;;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "126:420:9:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;228:316;;;;;;;;;;;;;;;;-1:-1:-1;;;;;;228:316:9;;;;;;;;;;:::i;:::-;;;;-1:-1:-1;;;;;228:316:9;;;;;;;;;;;;;;166:55;;;:::i;:::-;;;;;;;;;;;;;;;;228:316;292:7;311:23;337;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;311:49;;370:5;-1:-1:-1;;;;;370:16:9;;387:7;396:5;370:32;;;;;;;;;;;;;-1:-1:-1;;;;;370:32:9;;;;;;-1:-1:-1;;;;;370:32:9;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;413:39:9;;;-1:-1:-1;;;413:39:9;;203:18;413:39;;;;441:10;413:39;;;;;;-1:-1:-1;;;;;413:15:9;;;-1:-1:-1;413:15:9;;-1:-1:-1;413:39:9;;;;;-1:-1:-1;;413:39:9;;;;;;;-1:-1:-1;413:15:9;:39;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;463:43:9;;;-1:-1:-1;;;463:43:9;;203:18;463:43;;;;500:4;463:43;;;;;;-1:-1:-1;;;;;463:16:9;;;-1:-1:-1;463:16:9;;-1:-1:-1;463:43:9;;;;;-1:-1:-1;;463:43:9;;;;;;;-1:-1:-1;463:16:9;:43;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;531:5:9;;228:316;-1:-1:-1;;;;;;228:316:9:o;166:55::-;203:18;166:55;:::o;-1:-1:-1:-;;;;;;;;:::o",
+  "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.7.6;\n\nimport {ProjectStakeVault} from \"../project/ProjectStakeVault.sol\";\n\ncontract ProjectStakeVaultFactory {\n    bytes32 public constant ADMIN_ROLE = keccak256(\"ADMIN\");\n\n    function deploy(address project, address token) public returns (address) {\n        ProjectStakeVault vault = new ProjectStakeVault();\n        vault.initialize(project, token);\n\n        vault.grantRole(ADMIN_ROLE, msg.sender);\n\n        vault.revokeRole(ADMIN_ROLE, address(this));\n        return address(vault);\n    }\n}\n",
+  "sourcePath": "/Users/zena/ico2.0/ico20-contracts/contracts/factory/ProjectStakeVaultFactory.sol",
+  "ast": {
+    "absolutePath": "/Users/zena/ico2.0/ico20-contracts/contracts/factory/ProjectStakeVaultFactory.sol",
+    "exportedSymbols": {
+      "ProjectStakeVault": [
+        6138
+      ],
+      "ProjectStakeVaultFactory": [
+        2045
+      ]
+    },
+    "id": 2046,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 1991,
+        "literals": [
+          "solidity",
+          "^",
+          "0.7",
+          ".6"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "32:23:9"
+      },
+      {
+        "absolutePath": "/Users/zena/ico2.0/ico20-contracts/contracts/project/ProjectStakeVault.sol",
+        "file": "../project/ProjectStakeVault.sol",
+        "id": 1993,
+        "nodeType": "ImportDirective",
+        "scope": 2046,
+        "sourceUnit": 6139,
+        "src": "57:67:9",
+        "symbolAliases": [
+          {
+            "foreign": {
+              "id": 1992,
+              "name": "ProjectStakeVault",
+              "nodeType": "Identifier",
+              "overloadedDeclarations": [],
+              "src": "65:17:9",
+              "typeDescriptions": {}
+            }
+          }
+        ],
+        "unitAlias": ""
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [
+          6138
+        ],
+        "contractKind": "contract",
+        "fullyImplemented": true,
+        "id": 2045,
+        "linearizedBaseContracts": [
+          2045
+        ],
+        "name": "ProjectStakeVaultFactory",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": true,
+            "functionSelector": "75b238fc",
+            "id": 1998,
+            "mutability": "constant",
+            "name": "ADMIN_ROLE",
+            "nodeType": "VariableDeclaration",
+            "scope": 2045,
+            "src": "166:55:9",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_bytes32",
+              "typeString": "bytes32"
+            },
+            "typeName": {
+              "id": 1994,
+              "name": "bytes32",
+              "nodeType": "ElementaryTypeName",
+              "src": "166:7:9",
+              "typeDescriptions": {
+                "typeIdentifier": "t_bytes32",
+                "typeString": "bytes32"
+              }
+            },
+            "value": {
+              "arguments": [
+                {
+                  "hexValue": "41444d494e",
+                  "id": 1996,
+                  "isConstant": false,
+                  "isLValue": false,
+                  "isPure": true,
+                  "kind": "string",
+                  "lValueRequested": false,
+                  "nodeType": "Literal",
+                  "src": "213:7:9",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_stringliteral_df8b4c520ffe197c5343c6f5aec59570151ef9a492f2c624fd45ddde6135ec42",
+                    "typeString": "literal_string \"ADMIN\""
+                  },
+                  "value": "ADMIN"
+                }
+              ],
+              "expression": {
+                "argumentTypes": [
+                  {
+                    "typeIdentifier": "t_stringliteral_df8b4c520ffe197c5343c6f5aec59570151ef9a492f2c624fd45ddde6135ec42",
+                    "typeString": "literal_string \"ADMIN\""
+                  }
+                ],
+                "id": 1995,
+                "name": "keccak256",
+                "nodeType": "Identifier",
+                "overloadedDeclarations": [],
+                "referencedDeclaration": 4294967288,
+                "src": "203:9:9",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_function_keccak256_pure$_t_bytes_memory_ptr_$returns$_t_bytes32_$",
+                  "typeString": "function (bytes memory) pure returns (bytes32)"
+                }
+              },
+              "id": 1997,
+              "isConstant": false,
+              "isLValue": false,
+              "isPure": true,
+              "kind": "functionCall",
+              "lValueRequested": false,
+              "names": [],
+              "nodeType": "FunctionCall",
+              "src": "203:18:9",
+              "tryCall": false,
+              "typeDescriptions": {
+                "typeIdentifier": "t_bytes32",
+                "typeString": "bytes32"
+              }
+            },
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 2043,
+              "nodeType": "Block",
+              "src": "301:243:9",
+              "statements": [
+                {
+                  "assignments": [
+                    2008
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 2008,
+                      "mutability": "mutable",
+                      "name": "vault",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 2043,
+                      "src": "311:23:9",
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_ProjectStakeVault_$6138",
+                        "typeString": "contract ProjectStakeVault"
+                      },
+                      "typeName": {
+                        "id": 2007,
+                        "name": "ProjectStakeVault",
+                        "nodeType": "UserDefinedTypeName",
+                        "referencedDeclaration": 6138,
+                        "src": "311:17:9",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_ProjectStakeVault_$6138",
+                          "typeString": "contract ProjectStakeVault"
+                        }
+                      },
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 2012,
+                  "initialValue": {
+                    "arguments": [],
+                    "expression": {
+                      "argumentTypes": [],
+                      "id": 2010,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "nodeType": "NewExpression",
+                      "src": "337:21:9",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_creation_nonpayable$__$returns$_t_contract$_ProjectStakeVault_$6138_$",
+                        "typeString": "function () returns (contract ProjectStakeVault)"
+                      },
+                      "typeName": {
+                        "id": 2009,
+                        "name": "ProjectStakeVault",
+                        "nodeType": "UserDefinedTypeName",
+                        "referencedDeclaration": 6138,
+                        "src": "341:17:9",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_ProjectStakeVault_$6138",
+                          "typeString": "contract ProjectStakeVault"
+                        }
+                      }
+                    },
+                    "id": 2011,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "337:23:9",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_ProjectStakeVault_$6138",
+                      "typeString": "contract ProjectStakeVault"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "311:49:9"
+                },
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "id": 2016,
+                        "name": "project",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 2000,
+                        "src": "387:7:9",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      },
+                      {
+                        "id": 2017,
+                        "name": "token",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 2002,
+                        "src": "396:5:9",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        },
+                        {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      ],
+                      "expression": {
+                        "id": 2013,
+                        "name": "vault",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 2008,
+                        "src": "370:5:9",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_ProjectStakeVault_$6138",
+                          "typeString": "contract ProjectStakeVault"
+                        }
+                      },
+                      "id": 2015,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "initialize",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 6137,
+                      "src": "370:16:9",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_external_nonpayable$_t_address_$_t_address_$returns$__$",
+                        "typeString": "function (address,address) external"
+                      }
+                    },
+                    "id": 2018,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "370:32:9",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 2019,
+                  "nodeType": "ExpressionStatement",
+                  "src": "370:32:9"
+                },
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "id": 2023,
+                        "name": "ADMIN_ROLE",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 1998,
+                        "src": "429:10:9",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      },
+                      {
+                        "expression": {
+                          "id": 2024,
+                          "name": "msg",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 4294967281,
+                          "src": "441:3:9",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_magic_message",
+                            "typeString": "msg"
+                          }
+                        },
+                        "id": 2025,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "sender",
+                        "nodeType": "MemberAccess",
+                        "src": "441:10:9",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address_payable",
+                          "typeString": "address payable"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        },
+                        {
+                          "typeIdentifier": "t_address_payable",
+                          "typeString": "address payable"
+                        }
+                      ],
+                      "expression": {
+                        "id": 2020,
+                        "name": "vault",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 2008,
+                        "src": "413:5:9",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_ProjectStakeVault_$6138",
+                          "typeString": "contract ProjectStakeVault"
+                        }
+                      },
+                      "id": 2022,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "grantRole",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 10785,
+                      "src": "413:15:9",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_external_nonpayable$_t_bytes32_$_t_address_$returns$__$",
+                        "typeString": "function (bytes32,address) external"
+                      }
+                    },
+                    "id": 2026,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "413:39:9",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 2027,
+                  "nodeType": "ExpressionStatement",
+                  "src": "413:39:9"
+                },
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "id": 2031,
+                        "name": "ADMIN_ROLE",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 1998,
+                        "src": "480:10:9",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      },
+                      {
+                        "arguments": [
+                          {
+                            "id": 2034,
+                            "name": "this",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 4294967268,
+                            "src": "500:4:9",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_contract$_ProjectStakeVaultFactory_$2045",
+                              "typeString": "contract ProjectStakeVaultFactory"
+                            }
+                          }
+                        ],
+                        "expression": {
+                          "argumentTypes": [
+                            {
+                              "typeIdentifier": "t_contract$_ProjectStakeVaultFactory_$2045",
+                              "typeString": "contract ProjectStakeVaultFactory"
+                            }
+                          ],
+                          "id": 2033,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "lValueRequested": false,
+                          "nodeType": "ElementaryTypeNameExpression",
+                          "src": "492:7:9",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_type$_t_address_$",
+                            "typeString": "type(address)"
+                          },
+                          "typeName": {
+                            "id": 2032,
+                            "name": "address",
+                            "nodeType": "ElementaryTypeName",
+                            "src": "492:7:9",
+                            "typeDescriptions": {}
+                          }
+                        },
+                        "id": 2035,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "kind": "typeConversion",
+                        "lValueRequested": false,
+                        "names": [],
+                        "nodeType": "FunctionCall",
+                        "src": "492:13:9",
+                        "tryCall": false,
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        },
+                        {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      ],
+                      "expression": {
+                        "id": 2028,
+                        "name": "vault",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 2008,
+                        "src": "463:5:9",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_ProjectStakeVault_$6138",
+                          "typeString": "contract ProjectStakeVault"
+                        }
+                      },
+                      "id": 2030,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "revokeRole",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 10811,
+                      "src": "463:16:9",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_external_nonpayable$_t_bytes32_$_t_address_$returns$__$",
+                        "typeString": "function (bytes32,address) external"
+                      }
+                    },
+                    "id": 2036,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "463:43:9",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 2037,
+                  "nodeType": "ExpressionStatement",
+                  "src": "463:43:9"
+                },
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "id": 2040,
+                        "name": "vault",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 2008,
+                        "src": "531:5:9",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_ProjectStakeVault_$6138",
+                          "typeString": "contract ProjectStakeVault"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_contract$_ProjectStakeVault_$6138",
+                          "typeString": "contract ProjectStakeVault"
+                        }
+                      ],
+                      "id": 2039,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "lValueRequested": false,
+                      "nodeType": "ElementaryTypeNameExpression",
+                      "src": "523:7:9",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_type$_t_address_$",
+                        "typeString": "type(address)"
+                      },
+                      "typeName": {
+                        "id": 2038,
+                        "name": "address",
+                        "nodeType": "ElementaryTypeName",
+                        "src": "523:7:9",
+                        "typeDescriptions": {}
+                      }
+                    },
+                    "id": 2041,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "typeConversion",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "523:14:9",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "functionReturnParameters": 2006,
+                  "id": 2042,
+                  "nodeType": "Return",
+                  "src": "516:21:9"
+                }
+              ]
+            },
+            "functionSelector": "545e7c61",
+            "id": 2044,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "deploy",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 2003,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2000,
+                  "mutability": "mutable",
+                  "name": "project",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2044,
+                  "src": "244:15:9",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1999,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "244:7:9",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2002,
+                  "mutability": "mutable",
+                  "name": "token",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2044,
+                  "src": "261:13:9",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 2001,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "261:7:9",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "243:32:9"
+            },
+            "returnParameters": {
+              "id": 2006,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2005,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2044,
+                  "src": "292:7:9",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 2004,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "292:7:9",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "291:9:9"
+            },
+            "scope": 2045,
+            "src": "228:316:9",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "public"
+          }
+        ],
+        "scope": 2046,
+        "src": "126:420:9"
+      }
+    ],
+    "src": "32:515:9"
+  },
+  "legacyAST": {
+    "attributes": {
+      "absolutePath": "/Users/zena/ico2.0/ico20-contracts/contracts/factory/ProjectStakeVaultFactory.sol",
+      "exportedSymbols": {
+        "ProjectStakeVault": [
+          6138
+        ],
+        "ProjectStakeVaultFactory": [
+          2045
+        ]
+      },
+      "license": "MIT"
+    },
+    "children": [
+      {
+        "attributes": {
+          "literals": [
+            "solidity",
+            "^",
+            "0.7",
+            ".6"
+          ]
+        },
+        "id": 1991,
+        "name": "PragmaDirective",
+        "src": "32:23:9"
+      },
+      {
+        "attributes": {
+          "SourceUnit": 6139,
+          "absolutePath": "/Users/zena/ico2.0/ico20-contracts/contracts/project/ProjectStakeVault.sol",
+          "file": "../project/ProjectStakeVault.sol",
+          "scope": 2046,
+          "symbolAliases": [
+            {
+              "foreign": {
+                "attributes": {
+                  "overloadedDeclarations": [
+                    null
+                  ],
+                  "value": "ProjectStakeVault"
+                },
+                "id": 1992,
+                "name": "Identifier",
+                "src": "65:17:9"
+              }
+            }
+          ],
+          "unitAlias": ""
+        },
+        "id": 1993,
+        "name": "ImportDirective",
+        "src": "57:67:9"
+      },
+      {
+        "attributes": {
+          "abstract": false,
+          "baseContracts": [
+            null
+          ],
+          "contractDependencies": [
+            6138
+          ],
+          "contractKind": "contract",
+          "fullyImplemented": true,
+          "linearizedBaseContracts": [
+            2045
+          ],
+          "name": "ProjectStakeVaultFactory",
+          "scope": 2046
+        },
+        "children": [
+          {
+            "attributes": {
+              "constant": true,
+              "functionSelector": "75b238fc",
+              "mutability": "constant",
+              "name": "ADMIN_ROLE",
+              "scope": 2045,
+              "stateVariable": true,
+              "storageLocation": "default",
+              "type": "bytes32",
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "name": "bytes32",
+                  "type": "bytes32"
+                },
+                "id": 1994,
+                "name": "ElementaryTypeName",
+                "src": "166:7:9"
+              },
+              {
+                "attributes": {
+                  "isConstant": false,
+                  "isLValue": false,
+                  "isPure": true,
+                  "isStructConstructorCall": false,
+                  "lValueRequested": false,
+                  "names": [
+                    null
+                  ],
+                  "tryCall": false,
+                  "type": "bytes32",
+                  "type_conversion": false
+                },
+                "children": [
+                  {
+                    "attributes": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_stringliteral_df8b4c520ffe197c5343c6f5aec59570151ef9a492f2c624fd45ddde6135ec42",
+                          "typeString": "literal_string \"ADMIN\""
+                        }
+                      ],
+                      "overloadedDeclarations": [
+                        null
+                      ],
+                      "referencedDeclaration": 4294967288,
+                      "type": "function (bytes memory) pure returns (bytes32)",
+                      "value": "keccak256"
+                    },
+                    "id": 1995,
+                    "name": "Identifier",
+                    "src": "203:9:9"
+                  },
+                  {
+                    "attributes": {
+                      "hexvalue": "41444d494e",
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "lValueRequested": false,
+                      "token": "string",
+                      "type": "literal_string \"ADMIN\"",
+                      "value": "ADMIN"
+                    },
+                    "id": 1996,
+                    "name": "Literal",
+                    "src": "213:7:9"
+                  }
+                ],
+                "id": 1997,
+                "name": "FunctionCall",
+                "src": "203:18:9"
+              }
+            ],
+            "id": 1998,
+            "name": "VariableDeclaration",
+            "src": "166:55:9"
+          },
+          {
+            "attributes": {
+              "functionSelector": "545e7c61",
+              "implemented": true,
+              "isConstructor": false,
+              "kind": "function",
+              "modifiers": [
+                null
+              ],
+              "name": "deploy",
+              "scope": 2045,
+              "stateMutability": "nonpayable",
+              "virtual": false,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "project",
+                      "scope": 2044,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "stateMutability": "nonpayable",
+                          "type": "address"
+                        },
+                        "id": 1999,
+                        "name": "ElementaryTypeName",
+                        "src": "244:7:9"
+                      }
+                    ],
+                    "id": 2000,
+                    "name": "VariableDeclaration",
+                    "src": "244:15:9"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "token",
+                      "scope": 2044,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "stateMutability": "nonpayable",
+                          "type": "address"
+                        },
+                        "id": 2001,
+                        "name": "ElementaryTypeName",
+                        "src": "261:7:9"
+                      }
+                    ],
+                    "id": 2002,
+                    "name": "VariableDeclaration",
+                    "src": "261:13:9"
+                  }
+                ],
+                "id": 2003,
+                "name": "ParameterList",
+                "src": "243:32:9"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "",
+                      "scope": 2044,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "stateMutability": "nonpayable",
+                          "type": "address"
+                        },
+                        "id": 2004,
+                        "name": "ElementaryTypeName",
+                        "src": "292:7:9"
+                      }
+                    ],
+                    "id": 2005,
+                    "name": "VariableDeclaration",
+                    "src": "292:7:9"
+                  }
+                ],
+                "id": 2006,
+                "name": "ParameterList",
+                "src": "291:9:9"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "assignments": [
+                        2008
+                      ]
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "constant": false,
+                          "mutability": "mutable",
+                          "name": "vault",
+                          "scope": 2043,
+                          "stateVariable": false,
+                          "storageLocation": "default",
+                          "type": "contract ProjectStakeVault",
+                          "visibility": "internal"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "name": "ProjectStakeVault",
+                              "referencedDeclaration": 6138,
+                              "type": "contract ProjectStakeVault"
+                            },
+                            "id": 2007,
+                            "name": "UserDefinedTypeName",
+                            "src": "311:17:9"
+                          }
+                        ],
+                        "id": 2008,
+                        "name": "VariableDeclaration",
+                        "src": "311:23:9"
+                      },
+                      {
+                        "attributes": {
+                          "arguments": [
+                            null
+                          ],
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "isStructConstructorCall": false,
+                          "lValueRequested": false,
+                          "names": [
+                            null
+                          ],
+                          "tryCall": false,
+                          "type": "contract ProjectStakeVault",
+                          "type_conversion": false
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": [
+                                null
+                              ],
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "type": "function () returns (contract ProjectStakeVault)"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "name": "ProjectStakeVault",
+                                  "referencedDeclaration": 6138,
+                                  "type": "contract ProjectStakeVault"
+                                },
+                                "id": 2009,
+                                "name": "UserDefinedTypeName",
+                                "src": "341:17:9"
+                              }
+                            ],
+                            "id": 2010,
+                            "name": "NewExpression",
+                            "src": "337:21:9"
+                          }
+                        ],
+                        "id": 2011,
+                        "name": "FunctionCall",
+                        "src": "337:23:9"
+                      }
+                    ],
+                    "id": 2012,
+                    "name": "VariableDeclarationStatement",
+                    "src": "311:49:9"
+                  },
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "isStructConstructorCall": false,
+                          "lValueRequested": false,
+                          "names": [
+                            null
+                          ],
+                          "tryCall": false,
+                          "type": "tuple()",
+                          "type_conversion": false
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": [
+                                {
+                                  "typeIdentifier": "t_address",
+                                  "typeString": "address"
+                                },
+                                {
+                                  "typeIdentifier": "t_address",
+                                  "typeString": "address"
+                                }
+                              ],
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "member_name": "initialize",
+                              "referencedDeclaration": 6137,
+                              "type": "function (address,address) external"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 2008,
+                                  "type": "contract ProjectStakeVault",
+                                  "value": "vault"
+                                },
+                                "id": 2013,
+                                "name": "Identifier",
+                                "src": "370:5:9"
+                              }
+                            ],
+                            "id": 2015,
+                            "name": "MemberAccess",
+                            "src": "370:16:9"
+                          },
+                          {
+                            "attributes": {
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 2000,
+                              "type": "address",
+                              "value": "project"
+                            },
+                            "id": 2016,
+                            "name": "Identifier",
+                            "src": "387:7:9"
+                          },
+                          {
+                            "attributes": {
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 2002,
+                              "type": "address",
+                              "value": "token"
+                            },
+                            "id": 2017,
+                            "name": "Identifier",
+                            "src": "396:5:9"
+                          }
+                        ],
+                        "id": 2018,
+                        "name": "FunctionCall",
+                        "src": "370:32:9"
+                      }
+                    ],
+                    "id": 2019,
+                    "name": "ExpressionStatement",
+                    "src": "370:32:9"
+                  },
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "isStructConstructorCall": false,
+                          "lValueRequested": false,
+                          "names": [
+                            null
+                          ],
+                          "tryCall": false,
+                          "type": "tuple()",
+                          "type_conversion": false
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": [
+                                {
+                                  "typeIdentifier": "t_bytes32",
+                                  "typeString": "bytes32"
+                                },
+                                {
+                                  "typeIdentifier": "t_address_payable",
+                                  "typeString": "address payable"
+                                }
+                              ],
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "member_name": "grantRole",
+                              "referencedDeclaration": 10785,
+                              "type": "function (bytes32,address) external"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 2008,
+                                  "type": "contract ProjectStakeVault",
+                                  "value": "vault"
+                                },
+                                "id": 2020,
+                                "name": "Identifier",
+                                "src": "413:5:9"
+                              }
+                            ],
+                            "id": 2022,
+                            "name": "MemberAccess",
+                            "src": "413:15:9"
+                          },
+                          {
+                            "attributes": {
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 1998,
+                              "type": "bytes32",
+                              "value": "ADMIN_ROLE"
+                            },
+                            "id": 2023,
+                            "name": "Identifier",
+                            "src": "429:10:9"
+                          },
+                          {
+                            "attributes": {
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "member_name": "sender",
+                              "type": "address payable"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 4294967281,
+                                  "type": "msg",
+                                  "value": "msg"
+                                },
+                                "id": 2024,
+                                "name": "Identifier",
+                                "src": "441:3:9"
+                              }
+                            ],
+                            "id": 2025,
+                            "name": "MemberAccess",
+                            "src": "441:10:9"
+                          }
+                        ],
+                        "id": 2026,
+                        "name": "FunctionCall",
+                        "src": "413:39:9"
+                      }
+                    ],
+                    "id": 2027,
+                    "name": "ExpressionStatement",
+                    "src": "413:39:9"
+                  },
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "isStructConstructorCall": false,
+                          "lValueRequested": false,
+                          "names": [
+                            null
+                          ],
+                          "tryCall": false,
+                          "type": "tuple()",
+                          "type_conversion": false
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": [
+                                {
+                                  "typeIdentifier": "t_bytes32",
+                                  "typeString": "bytes32"
+                                },
+                                {
+                                  "typeIdentifier": "t_address",
+                                  "typeString": "address"
+                                }
+                              ],
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "member_name": "revokeRole",
+                              "referencedDeclaration": 10811,
+                              "type": "function (bytes32,address) external"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 2008,
+                                  "type": "contract ProjectStakeVault",
+                                  "value": "vault"
+                                },
+                                "id": 2028,
+                                "name": "Identifier",
+                                "src": "463:5:9"
+                              }
+                            ],
+                            "id": 2030,
+                            "name": "MemberAccess",
+                            "src": "463:16:9"
+                          },
+                          {
+                            "attributes": {
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 1998,
+                              "type": "bytes32",
+                              "value": "ADMIN_ROLE"
+                            },
+                            "id": 2031,
+                            "name": "Identifier",
+                            "src": "480:10:9"
+                          },
+                          {
+                            "attributes": {
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "isStructConstructorCall": false,
+                              "lValueRequested": false,
+                              "names": [
+                                null
+                              ],
+                              "tryCall": false,
+                              "type": "address",
+                              "type_conversion": true
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": [
+                                    {
+                                      "typeIdentifier": "t_contract$_ProjectStakeVaultFactory_$2045",
+                                      "typeString": "contract ProjectStakeVaultFactory"
+                                    }
+                                  ],
+                                  "isConstant": false,
+                                  "isLValue": false,
+                                  "isPure": true,
+                                  "lValueRequested": false,
+                                  "type": "type(address)"
+                                },
+                                "children": [
+                                  {
+                                    "attributes": {
+                                      "name": "address"
+                                    },
+                                    "id": 2032,
+                                    "name": "ElementaryTypeName",
+                                    "src": "492:7:9"
+                                  }
+                                ],
+                                "id": 2033,
+                                "name": "ElementaryTypeNameExpression",
+                                "src": "492:7:9"
+                              },
+                              {
+                                "attributes": {
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 4294967268,
+                                  "type": "contract ProjectStakeVaultFactory",
+                                  "value": "this"
+                                },
+                                "id": 2034,
+                                "name": "Identifier",
+                                "src": "500:4:9"
+                              }
+                            ],
+                            "id": 2035,
+                            "name": "FunctionCall",
+                            "src": "492:13:9"
+                          }
+                        ],
+                        "id": 2036,
+                        "name": "FunctionCall",
+                        "src": "463:43:9"
+                      }
+                    ],
+                    "id": 2037,
+                    "name": "ExpressionStatement",
+                    "src": "463:43:9"
+                  },
+                  {
+                    "attributes": {
+                      "functionReturnParameters": 2006
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "isStructConstructorCall": false,
+                          "lValueRequested": false,
+                          "names": [
+                            null
+                          ],
+                          "tryCall": false,
+                          "type": "address",
+                          "type_conversion": true
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": [
+                                {
+                                  "typeIdentifier": "t_contract$_ProjectStakeVault_$6138",
+                                  "typeString": "contract ProjectStakeVault"
+                                }
+                              ],
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": true,
+                              "lValueRequested": false,
+                              "type": "type(address)"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "name": "address"
+                                },
+                                "id": 2038,
+                                "name": "ElementaryTypeName",
+                                "src": "523:7:9"
+                              }
+                            ],
+                            "id": 2039,
+                            "name": "ElementaryTypeNameExpression",
+                            "src": "523:7:9"
+                          },
+                          {
+                            "attributes": {
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 2008,
+                              "type": "contract ProjectStakeVault",
+                              "value": "vault"
+                            },
+                            "id": 2040,
+                            "name": "Identifier",
+                            "src": "531:5:9"
+                          }
+                        ],
+                        "id": 2041,
+                        "name": "FunctionCall",
+                        "src": "523:14:9"
+                      }
+                    ],
+                    "id": 2042,
+                    "name": "Return",
+                    "src": "516:21:9"
+                  }
+                ],
+                "id": 2043,
+                "name": "Block",
+                "src": "301:243:9"
+              }
+            ],
+            "id": 2044,
+            "name": "FunctionDefinition",
+            "src": "228:316:9"
+          }
+        ],
+        "id": 2045,
+        "name": "ContractDefinition",
+        "src": "126:420:9"
+      }
+    ],
+    "id": 2046,
+    "name": "SourceUnit",
+    "src": "32:515:9"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.7.6+commit.7338295f.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.3.4",
+  "updatedAt": "2021-05-13T02:55:22.612Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}
