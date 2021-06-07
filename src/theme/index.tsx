@@ -4,8 +4,6 @@ import '@fontsource/titillium-web/400.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/rajdhani/600.css'
 
-
-
 const fonts = {
   heading: 'Roboto',
   body: 'TitilliumWeb, sans-serif',
