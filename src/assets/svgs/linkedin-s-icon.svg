@@ -1,0 +1,16 @@
+<svg id="linkedin-s-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-2 {
+        fill: #354052;
+        stroke: rgba(0,0,0,0);
+      }
+    </style>
+  </defs>
+  <rect id="Base" class="cls-1" width="20" height="20"/>
+  <path id="Linkedin" class="cls-2" d="M7.858,14H4.96V4.648H7.734V5.93h.038a3.069,3.069,0,0,1,2.748-1.508C13.579,4.422,14,6.562,14,8.876V14H11.1V9.455c0-1.047,0-2.481-1.506-2.481-1.531,0-1.738,1.213-1.738,2.4V14ZM3.13,14H.227V4.648h2.9V14ZM1.684,3.373A1.687,1.687,0,1,1,3.368,1.687,1.687,1.687,0,0,1,1.684,3.373Z" transform="translate(3 3)"/>
+</svg>
