@@ -10,6 +10,8 @@ import * as TonABI from 'services/abis/TON.json';
 import * as FldABI from 'services/abis/FLD.json';
 import * as SeigManagerABI from 'services/abis/SeigManager.json';
 import * as DepositManagerABI from 'services/abis/DepositManager.json';
+import * as IERC20 from 'services/abis/IERC20.json';
+
 import {formatEther} from '@ethersproject/units';
 import {period, formatStartTime, formatEndTime} from 'utils/timeStamp';
 import {
@@ -42,6 +44,11 @@ export type Stake = {
   totalRewardAmount: BigNumber | string;
   claimRewardAmount: BigNumber | string;
   totalStakers: number | string;
+  token: {
+    address: string;
+    name: string;
+    symbol: string;
+  };
   myton: BigNumber | string;
   myfld: BigNumber | string;
   mystaked: BigNumber | string;
@@ -53,7 +60,6 @@ export type Stake = {
   stakeBalanceFLD: BigNumber | string;
   tokamakStaked: BigNumber | string;
   tokamakPendingUnstaked: BigNumber | string;
-  token: string;
   staketype: string;
   period: string | number;
   startTime: string;
@@ -151,7 +157,8 @@ export const unStakeTon = async () => {};
 export const fetchStakes = createAsyncThunk(
   'stakes/all',
   async ({contract, library, account}: any, {requestId, getState}) => {
-    let stakeVaults: any[] = [];
+    let projects: any[] = [];
+    let stakeList: any;
     // @ts-ignore
     const {currentRequestId, loading} = getState().stakes;
     if (loading !== 'pending' || requestId !== currentRequestId) {
@@ -159,68 +166,80 @@ export const fetchStakes = createAsyncThunk(
     }
     if (contract) {
       const vaults = await contract.vaultsOfPahse(1);
-
-      await Promise.all(
+      
+      stakeList = await Promise.all(
         vaults.map(async (vault: any) => {
           const stakeVault = await getContract(vault, StakeVault.abi, library);
           const stakeType = await stakeVault?.stakeType();
           const token = await stakeVault.paytoken();
+          // const iERC20 = await getContract(token, IERC20.abi, library);
           const stakeList: string[] = await stakeVault?.stakeAddressesAll();
+          return {
+            // iERC20: iERC20,
+            stakeType: stakeType,
+            projects: await stakeVault?.stakeAddressesAll(),
+            stakeVault,
+            token,
+          };
+        }),
+      );
+      console.log(stakeList);
+      projects = await Promise.all(
+        stakeList[0].projects.map(async (item: any, index:number) => {
+          let info = await stakeList[0].stakeVault.stakeInfos(item);
+          console.log(info)
+          const startTime = await formatStartTime(info?.startBlock);
+          const endTime = await formatEndTime(info[1], info[2]);
 
-          stakeVaults = await Promise.all(
-            stakeList.map(async (item, index) => {
-              let info = await stakeVault.stakeInfos(item);
-              const startTime = await formatStartTime(info[1]);
-              const endTime = await formatEndTime(info[1], info[2]);
-              const stakeInfo: Partial<Stake> = {
-                stakeContract: stakeList,
-                name: info.name,
-                contractAddress: item,
-                saleStartBlock: 0,
-                stakeStartBlock: info[1],
-                stakeEndBlock: info[2],
-                balance: formatEther(info[3]),
-                totalRewardAmount: formatEther(info[4]),
-                claimRewardAmount: formatEther(info[5]),
-                totalStakers: 0,
-                myton: formatEther(0),
-                myfld: formatEther(0),
-                mystaked: formatEther(0),
-                mywithdraw: formatEther(0),
-                myclaimed: formatEther(0),
-                canRewardAmount: formatEther(0),
-                stakeBalanceTON: formatEther(0),
-                stakeBalanceETH: formatEther(0),
-                stakeBalanceFLD: formatEther(0),
-                tokamakStaked: formatEther(0),
-                tokamakPendingUnstaked: formatEther(0),
-                token,
-                stakeType,
-                period: period(info[1], info[2]),
-                startTime: startTime,
-                endTime: endTime,
-              };
-              console.log(stakeInfo);
-              
-              stakeInfos.push(stakeInfo);
-              await getMy(stakeInfo, stakeList[0], library, account);
-              await infoTokamak(
-                stakeInfo,
-                stakeList[0],
-                index,
-                library,
-                account,
-              );
-              return stakeInfo;
-            }),
-          );
+          const stakeInfo: Partial<Stake> = {
+            contractAddress: item,
+            name: info[0],
+            saleStartBlock: 0,
+            stakeStartBlock: info[1],
+            stakeEndBlock: info[2],
+            balance: formatEther(info[3]),
+            totalRewardAmount: formatEther(info[4]),
+            claimRewardAmount: formatEther(info[5]),
+            totalStakers: 0,
+            myton: formatEther(0),
+            myfld: formatEther(0),
+            mystaked: formatEther(0),
+            mywithdraw: formatEther(0),
+            myclaimed: formatEther(0),
+            canRewardAmount: formatEther(0),
+            stakeBalanceTON: formatEther(0),
+            stakeBalanceETH: formatEther(0),
+            stakeBalanceFLD: formatEther(0),
+            tokamakStaked: formatEther(0),
+            tokamakPendingUnstaked: formatEther(0),
+            token: {
+              address: stakeList[0].token,
+              name: 'TON',
+              symbol: 'TON',
+            },
+            stakeType: stakeList[0].stakeType,
+            period: period(info[1], info[2]),
+            startTime: startTime,
+            endTime: endTime,
+          };
+        //  console.log(item);
+         
+          await getMy(stakeInfo, item, library, account);
+          // await infoTokamak(
+          //   stakeInfo,
+          //   stakeList[0],
+          //   index,
+          //   library,
+          //   account,
+          // );
+          return stakeInfo;
         }),
       );
     }
-    return stakeVaults;
+
+    return projects;
   },
 );
-
 const getMy = async (
   stakeInfo: Partial<Stake>,
   stakeContractAddress: string,
@@ -234,15 +253,20 @@ const getMy = async (
   const FLD = await getContract(REACT_APP_FLD, FldABI.abi, library);
   const myFLD = await FLD?.balanceOf(account);
   stakeInfo.myfld = formatEther(myFLD);
-
+  console.log(stakeContractAddress);
+  
   const StakeTONContract = await getContract(
     stakeContractAddress,
     StakeTON.abi,
     library,
   );
+  // console.log(StakeTONContract)
   stakeInfo.saleStartBlock = await StakeTONContract?.saleStartBlock();
+  // console.log(account)
   const staked = await StakeTONContract?.userStaked(account);
 
+  console.log(staked);
+  
   stakeInfo.mystaked = formatEther(staked.amount);
   stakeInfo.myclaimed = formatEther(staked.claimedAmount);
   stakeInfo.mywithdraw = formatEther(staked.releasedAmount);

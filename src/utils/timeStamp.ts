@@ -14,10 +14,23 @@ export const period = (startBlockNum: BigNumber, endBlockNum: BigNumber) => {
 };
 
 export const formatStartTime = async (blockNum: BigNumber) => {
-  const blockNumber = Number(blockNum);
-  const block = await provider.getBlock(blockNumber);
-  const timeStamp = block.timestamp;
-  return moment.unix(timeStamp).format('MMM DD, YYYY HH:mm:ss');
+  const blockNumberBN =  BigNumber.from(blockNum);
+  const blockNumber = blockNumberBN.toNumber();
+  let currentBlock = await provider.getBlockNumber();
+  if (currentBlock > blockNumber) {
+    const block = await provider.getBlock(blockNumber);
+    const timeStamp = block.timestamp;
+    console.log(block.toString(), timeStamp);
+    return moment.unix(timeStamp).format('MMM DD, YYYY HH:mm:ss');
+  }
+  else {
+    let seconds = (blockNumber - currentBlock) *13
+    const currentBlk = await provider.getBlock(currentBlock);
+    const currentTimeStamp = currentBlk.timestamp;
+    const timestamp = currentTimeStamp + seconds;
+    return moment.unix(timestamp).format('MMM DD, YYYY HH:mm:ss');
+  }
+  
 };
 
 export const formatEndTime = async (
@@ -34,8 +47,14 @@ export const formatEndTime = async (
     return moment.unix(timeStamp).format('MMM DD, YYYY HH:mm:ss');
   } else {
     let seconds = (endB - startB) * 13;
-    const startBlock = await provider.getBlock(startB);
-    const startTimeStamp = startBlock.timestamp;
+    const currentBlk = await provider.getBlock(currentBlock);
+    const currentTimeStamp = currentBlk.timestamp;
+    let seconds2 = (startB - currentBlock) *13
+    const startTimeStamp = currentTimeStamp + seconds2;
+
+    // const startBlock = await provider.getBlock(startB);
+    
+    // const startTimeStamp = startBlock.timestamp;
     const timestamp = startTimeStamp + seconds;
     return moment.unix(timestamp).format('MMM DD, YYYY HH:mm:ss');
   }

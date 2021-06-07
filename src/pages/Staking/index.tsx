@@ -35,7 +35,6 @@ type WalletInformationProps = {
   user: {
     balance: string;
   };
-  stakeContractAddress: string;
 };
 
 const WalletInformation: FC<WalletInformationProps> = ({
@@ -44,7 +43,6 @@ const WalletInformation: FC<WalletInformationProps> = ({
   onOpenManageOptionModal,
   onOpenUnstakeOptionModal,
   user,
-  stakeContractAddress,
 }) => {
   return (
     <Container maxW={'sm'}>
@@ -57,7 +55,6 @@ const WalletInformation: FC<WalletInformationProps> = ({
         <Heading>{user.balance.toString()} TON</Heading>
         <Box py={5}>
           <Text>Available in wallet</Text>
-        <Text>{stakeContractAddress}</Text>
         </Box>
 
         <Grid templateColumns={'repeat(2, 1fr)'} gap={6}>
@@ -180,7 +177,6 @@ export const Staking = () => {
               onOpenManageOptionModal={onOpenManageOptionModal}
               onOpenUnstakeOptionModal={onOpenUnstakeOptionModal}
               user={user}
-              stakeContractAddress={data[row.id]?.contractAddress}
             />
           </Box>
           <Flex
@@ -255,7 +251,6 @@ export const Staking = () => {
       </Container>
       <StakeOptionModal
         isOpen={isStakeModalOpen}
-        address={'fdgjfasj'}
         balance={user.balance}
         onClose={onCloseStakeOptionModal}
         onSubmit={onStakeSubmitted}

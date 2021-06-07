@@ -26,7 +26,7 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.7.6+commit.7338295f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"layer2\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"stakeOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IISeigManager.sol\":\"IISeigManager\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IISeigManager.sol\":{\"keccak256\":\"0x64a44411607b067e1d0231ec41d453f5a21385ea0329a48234715c54026f5477\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://cd09eda7b6282deeb1e9e3703c08be8db08f85a4431447442b0afd971ecaf9dc\",\"dweb:/ipfs/Qmd8dx6LW56VXN5ntD6487FuHtNoN1YvDSVHXXN6pzweW2\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.7.6+commit.7338295f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"layer2\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"stakeOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IISeigManager.sol\":\"IISeigManager\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IISeigManager.sol\":{\"keccak256\":\"0xc5e136ef7decb5ec1dc8fab36fd4be2b5ecdfb6de1105bd5a8be6131f7cdf6e9\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://3d2e835d8979e2c851fdaecb2e7b8220e19b21ef5a9d668c192efe677dd5b952\",\"dweb:/ipfs/QmeS7VAF8wCV2RxZp52mEVtCTg7Hesa9THW8FvLd6yfofS\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
@@ -34,21 +34,21 @@
   "deployedGeneratedSources": [],
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.7.6;\n\ninterface IISeigManager {\n\n    function stakeOf(address layer2, address account)\n        external\n        view\n        returns (uint256);\n\n}\n",
+  "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.7.6;\n\ninterface IISeigManager {\n    function stakeOf(address layer2, address account)\n        external\n        view\n        returns (uint256);\n}\n",
   "sourcePath": "/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IISeigManager.sol",
   "ast": {
     "absolutePath": "/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IISeigManager.sol",
     "exportedSymbols": {
       "IISeigManager": [
-        934
+        2466
       ]
     },
-    "id": 935,
+    "id": 2467,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 924,
+        "id": 2456,
         "literals": [
           "solidity",
           "^",
@@ -56,7 +56,7 @@
           ".6"
         ],
         "nodeType": "PragmaDirective",
-        "src": "32:23:3"
+        "src": "32:23:31"
       },
       {
         "abstract": false,
@@ -64,33 +64,33 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "fullyImplemented": false,
-        "id": 934,
+        "id": 2466,
         "linearizedBaseContracts": [
-          934
+          2466
         ],
         "name": "IISeigManager",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "functionSelector": "ce4cb876",
-            "id": 933,
+            "id": 2465,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "stakeOf",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 929,
+              "id": 2461,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 926,
+                  "id": 2458,
                   "mutability": "mutable",
                   "name": "layer2",
                   "nodeType": "VariableDeclaration",
-                  "scope": 933,
-                  "src": "105:14:3",
+                  "scope": 2465,
+                  "src": "104:14:31",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -98,10 +98,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 925,
+                    "id": 2457,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "105:7:3",
+                    "src": "104:7:31",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -112,12 +112,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 928,
+                  "id": 2460,
                   "mutability": "mutable",
                   "name": "account",
                   "nodeType": "VariableDeclaration",
-                  "scope": 933,
-                  "src": "121:15:3",
+                  "scope": 2465,
+                  "src": "120:15:31",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -125,10 +125,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 927,
+                    "id": 2459,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "121:7:3",
+                    "src": "120:7:31",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -138,20 +138,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "104:33:3"
+              "src": "103:33:31"
             },
             "returnParameters": {
-              "id": 932,
+              "id": 2464,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 931,
+                  "id": 2463,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 933,
-                  "src": "185:7:3",
+                  "scope": 2465,
+                  "src": "184:7:31",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -159,10 +159,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 930,
+                    "id": 2462,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "185:7:3",
+                    "src": "184:7:31",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -171,27 +171,27 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "184:9:3"
+              "src": "183:9:31"
             },
-            "scope": 934,
-            "src": "88:106:3",
+            "scope": 2466,
+            "src": "87:106:31",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 935,
-        "src": "57:140:3"
+        "scope": 2467,
+        "src": "57:138:31"
       }
     ],
-    "src": "32:166:3"
+    "src": "32:164:31"
   },
   "legacyAST": {
     "attributes": {
       "absolutePath": "/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IISeigManager.sol",
       "exportedSymbols": {
         "IISeigManager": [
-          934
+          2466
         ]
       },
       "license": "MIT"
@@ -206,9 +206,9 @@
             ".6"
           ]
         },
-        "id": 924,
+        "id": 2456,
         "name": "PragmaDirective",
-        "src": "32:23:3"
+        "src": "32:23:31"
       },
       {
         "attributes": {
@@ -222,10 +222,10 @@
           "contractKind": "interface",
           "fullyImplemented": false,
           "linearizedBaseContracts": [
-            934
+            2466
           ],
           "name": "IISeigManager",
-          "scope": 935
+          "scope": 2467
         },
         "children": [
           {
@@ -238,7 +238,7 @@
                 null
               ],
               "name": "stakeOf",
-              "scope": 934,
+              "scope": 2466,
               "stateMutability": "view",
               "virtual": false,
               "visibility": "external"
@@ -251,7 +251,7 @@
                       "constant": false,
                       "mutability": "mutable",
                       "name": "layer2",
-                      "scope": 933,
+                      "scope": 2465,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -264,21 +264,21 @@
                           "stateMutability": "nonpayable",
                           "type": "address"
                         },
-                        "id": 925,
+                        "id": 2457,
                         "name": "ElementaryTypeName",
-                        "src": "105:7:3"
+                        "src": "104:7:31"
                       }
                     ],
-                    "id": 926,
+                    "id": 2458,
                     "name": "VariableDeclaration",
-                    "src": "105:14:3"
+                    "src": "104:14:31"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "mutability": "mutable",
                       "name": "account",
-                      "scope": 933,
+                      "scope": 2465,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -291,19 +291,19 @@
                           "stateMutability": "nonpayable",
                           "type": "address"
                         },
-                        "id": 927,
+                        "id": 2459,
                         "name": "ElementaryTypeName",
-                        "src": "121:7:3"
+                        "src": "120:7:31"
                       }
                     ],
-                    "id": 928,
+                    "id": 2460,
                     "name": "VariableDeclaration",
-                    "src": "121:15:3"
+                    "src": "120:15:31"
                   }
                 ],
-                "id": 929,
+                "id": 2461,
                 "name": "ParameterList",
-                "src": "104:33:3"
+                "src": "103:33:31"
               },
               {
                 "children": [
@@ -312,7 +312,7 @@
                       "constant": false,
                       "mutability": "mutable",
                       "name": "",
-                      "scope": 933,
+                      "scope": 2465,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -324,34 +324,34 @@
                           "name": "uint256",
                           "type": "uint256"
                         },
-                        "id": 930,
+                        "id": 2462,
                         "name": "ElementaryTypeName",
-                        "src": "185:7:3"
+                        "src": "184:7:31"
                       }
                     ],
-                    "id": 931,
+                    "id": 2463,
                     "name": "VariableDeclaration",
-                    "src": "185:7:3"
+                    "src": "184:7:31"
                   }
                 ],
-                "id": 932,
+                "id": 2464,
                 "name": "ParameterList",
-                "src": "184:9:3"
+                "src": "183:9:31"
               }
             ],
-            "id": 933,
+            "id": 2465,
             "name": "FunctionDefinition",
-            "src": "88:106:3"
+            "src": "87:106:31"
           }
         ],
-        "id": 934,
+        "id": 2466,
         "name": "ContractDefinition",
-        "src": "57:140:3"
+        "src": "57:138:31"
       }
     ],
-    "id": 935,
+    "id": 2467,
     "name": "SourceUnit",
-    "src": "32:166:3"
+    "src": "32:164:31"
   },
   "compiler": {
     "name": "solc",
@@ -359,7 +359,7 @@
   },
   "networks": {},
   "schemaVersion": "3.3.4",
-  "updatedAt": "2021-05-17T02:45:12.708Z",
+  "updatedAt": "2021-05-27T10:44:45.311Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},

@@ -11,30 +11,24 @@ import {
   Input,
   Stack,
 } from '@chakra-ui/react';
-import {BigNumber} from 'ethers';
 import React, {FC, useCallback, useState} from 'react';
-import {useWeb3React} from '@web3-react/core';
-import {stakeTon} from '../staking.reducer';
-import {getSigner} from 'utils/contract';
 
 type StakeOptionModalProps = {
   isOpen: boolean;
-  address: string;
-  balance: BigNumber;
+  balance: string;
   onClose: Function;
+  onSubmit: Function;
 };
 
 export const StakeOptionModal: FC<StakeOptionModalProps> = ({
   isOpen,
-  address,
   onClose,
   balance,
 }) => {
-  const {account, library} = useWeb3React();
-
   const [value, setValue] = useState<number>(+balance);
-  const handleChange = useCallback((e) => setValue(e.target.value), []);
-  const setMax = useCallback((_e) => setValue(+balance), [balance]);
+
+  const handleChange = useCallback(e => setValue(e.target.value), []);
+  const setMax = useCallback(_e => setValue(+balance), [balance]);
 
   return (
     <Modal isOpen={isOpen} isCentered onClose={() => onClose()}>
@@ -92,20 +86,11 @@ export const StakeOptionModal: FC<StakeOptionModalProps> = ({
             <Box textAlign={'center'}>
               <Text>Available Balance</Text>
               <Text>{balance.toString()} TON</Text>
-              <Text>{address}</Text>
             </Box>
           </Stack>
 
           <Box py={4} as={Flex} justifyContent={'center'}>
-            <Button
-              colorScheme={'blue'}
-              onClick={() =>
-                stakeTon({
-                  userAddress: account,
-                  tonAmount: '10',
-                  library: library,
-                })
-              }>
+            <Button disabled={+balance <= 0} colorScheme={'blue'}>
               Stake
             </Button>
           </Box>
