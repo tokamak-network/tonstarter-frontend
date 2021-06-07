@@ -2502,6 +2502,11 @@
     "@ethersproject/properties" "^5.3.0"
     "@ethersproject/strings" "^5.3.0"
 
+"@fontsource/rajdhani@^4.4.2":
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/@fontsource/rajdhani/-/rajdhani-4.4.2.tgz#9768552e6738a9ec5a4caa4e58ae8ae9a837a625"
+  integrity sha512-qPzm6LePWoG5+h4IlxOKbhzqhXbRNaKR8E2/76FAurnRvOCeiKzG02yNeJIKarrbE3ltsnrqeZTqFrXHO/x/ig==
+
 "@fontsource/roboto@^4.3.0":
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/@fontsource/roboto/-/roboto-4.3.0.tgz#00f1cceca43eff85bb0e1d424311751ee41f6aa6"

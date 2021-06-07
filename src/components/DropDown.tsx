@@ -90,7 +90,7 @@ export const DropDown: React.FC<dropDownProps> = ({
             cursor: pointer;
           }
           .dropdown-btn-disabled {
-            border: solid 1px ${theme.colors.gray[200]};
+            border: solid 1px ${theme.colors.gray[125]};
             background-color: ${theme.colors.gray[25]};
           }
           .dropdown-btn-disabled:hover {

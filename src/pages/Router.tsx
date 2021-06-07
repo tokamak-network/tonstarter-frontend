@@ -56,7 +56,7 @@ export const Router: FC<RouterProps> = () => {
     <>
       <Header
         account={account}
-        onOpen={() => handleWalletModalOpen('wallet')}
+        walletopen={() => handleWalletModalOpen('wallet')}
       />
       <Switch>
         <Route exact path="/" component={FLDstarter} />
