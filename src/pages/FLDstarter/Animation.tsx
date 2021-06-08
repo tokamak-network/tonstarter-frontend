@@ -10,10 +10,11 @@ import {
 } from '@chakra-ui/react';
 import {motion, useAnimation} from 'framer-motion';
 import {HTMLAttributes, useEffect, useState} from 'react';
+import {Scrollbars} from 'react-custom-scrollbars-2';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import FLDLogo from 'assets/svgs/fld_bi_c.svg';
 import Arrow from 'assets/svgs/select1_arrow_inactive.svg';
-import './Animation.css';
+import {withTheme} from '@emotion/react';
 export interface HomeProps extends HTMLAttributes<HTMLDivElement> {
   classes?: string;
 }
@@ -37,7 +38,6 @@ const addCircles = (props: any) => {
           top="-2.5px"
           left="-2px"
           opacity={1}
-          className="test"
           style={{
             WebkitAnimation: 'none',
             background: `${elements.circleColor}`,
@@ -176,13 +176,13 @@ export const Animation: React.FC<HomeProps> = () => {
   const [rowDots, setRowDots] = useState<number[]>([]);
   const [timer] = useState({
     firstLine: 0,
-    scondLine: 2,
-    circles: 3,
-    innerLine: 4,
-    mainText: 6,
-    subText: 7,
-    lastPhase: 10,
-    lastCircle: 11,
+    scondLine: 0.5,
+    circles: 1,
+    innerLine: 1.5,
+    mainText: 4,
+    subText: 5,
+    lastPhase: 6,
+    lastCircle: 7,
   });
   const verticalDots: number[] = [77, 221, 365, 509, 653, 797, 941];
 
@@ -195,7 +195,9 @@ export const Animation: React.FC<HomeProps> = () => {
   const lastCircleControls = useAnimation();
 
   useEffect(() => {
+    const aniMultiplier = 5;
     const result = makeDots(Number(width), 1024);
+    const delay = result.length / aniMultiplier;
     console.log('width : ' + width);
     setRowDots(result);
 
@@ -210,7 +212,7 @@ export const Animation: React.FC<HomeProps> = () => {
       borderRightColor: [null, '#007AFF', `${elements.whiteWithOpacity}`],
 
       transition: {
-        delay: result.length / 2 + i,
+        delay: delay + i,
         duration: 2,
         times: [0, 0.5, 1],
       },
@@ -221,7 +223,7 @@ export const Animation: React.FC<HomeProps> = () => {
       borderRightColor: `${elements.whiteWithOpacity}`,
       opacity: 1,
       transition: {
-        delay: result.length / 2 + i,
+        delay: delay + i + 0.5,
         duration: 2,
       },
     }));
@@ -235,7 +237,7 @@ export const Animation: React.FC<HomeProps> = () => {
       borderBottomColor: [null, '#007AFF', `${elements.whiteWithOpacity}`],
       opacity: 1,
       transition: {
-        delay: result.length / 2 + i,
+        delay: delay + i,
         duration: 3,
         times: [0, 0.5, 1],
       },
@@ -244,28 +246,28 @@ export const Animation: React.FC<HomeProps> = () => {
     secondSubPhaseControls.start((i) => ({
       opacity: 1,
       transition: {
-        delay: result.length / 2 + i,
+        delay: delay + i,
       },
     }));
 
     lastPhase.start((i) => ({
       opacity: 1,
       transition: {
-        delay: result.length / 2 + i,
+        delay: delay + i,
       },
     }));
 
     circleControls.start((i) => ({
       opacity: 1,
       transition: {
-        delay: result.length / 2 + i,
+        delay: delay + i,
       },
     }));
 
     lastCircleControls.start((i) => ({
       opacity: 1,
       transition: {
-        delay: result.length / 2 + i,
+        delay: delay + i,
         // duration: 2,
       },
     }));
@@ -395,7 +397,7 @@ export const Animation: React.FC<HomeProps> = () => {
               style={{position: 'relative'}}>
               {addCircles({animate: circleControls, custom: timer.circles})}
               <motion.div
-                custom={timer.subText + 1}
+                custom={timer.subText + 0.4}
                 initial={{opacity: 0}}
                 animate={secondSubPhaseControls}>
                 <TextComponent
@@ -408,7 +410,7 @@ export const Animation: React.FC<HomeProps> = () => {
               </motion.div>
             </motion.div>
             <motion.div
-              custom={timer.subText + 2}
+              custom={timer.subText + 0.8}
               initial={{opacity: 0}}
               animate={secondSubPhaseControls}>
               <TextComponent
@@ -420,33 +422,60 @@ export const Animation: React.FC<HomeProps> = () => {
             </motion.div>
           </SimpleGrid>
         </motion.div>
+
         <motion.div
           custom={timer.scondLine}
           initial={{opacity: 0}}
           animate={mainSubControls}
-          style={{display: 'flex', height: '100%'}}>
+          style={{display: 'flex', height: '100%', paddingTop: '77.5px'}}>
           <motion.div
             custom={timer.lastPhase}
             initial={{opacity: 0}}
-            animate={lastPhase}>
-            <Wrap
-              w="279px"
-              pt="676px"
-              color="white.100"
-              overflowY="auto"
-              overflowX="hidden"
-              flexDirection="column"
-              className="main-scroll"
-              m={0}
-              style={{display: 'flex', height: '100%'}}>
-              <Text pl={25} fontSize="26px" fontWeight={'bold'}>
-                ROAD MAP
-              </Text>
-              <TextComponent header={'Phase1'} content={'Launch FLD Mining'} />
-              <TextComponent header={'Phase1'} content={'Launch FLD Mining'} />
-              <TextComponent header={'Phase1'} content={'Launch FLD Mining'} />
-              <TextComponent header={'Phase1'} content={'Launch FLD Mining'} />
-            </Wrap>
+            animate={lastPhase}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+            }}>
+            <Scrollbars
+              style={{
+                width: '279px',
+                display: 'flex',
+                position: 'relative',
+              }}
+              thumbSize={70}
+              renderThumbVertical={() => (
+                <div
+                  style={{
+                    background: '#ffffff',
+                    position: 'relative',
+                    right: '-2px',
+                  }}></div>
+              )}
+              renderThumbHorizontal={() => (
+                <div style={{background: 'black'}}></div>
+              )}>
+              <Wrap display="flex" h="100%" color="white.100" pt="640px">
+                <Text pl={25} fontSize="26px" fontWeight={'bold'}>
+                  ROAD MAP
+                </Text>
+                <TextComponent
+                  header={'Phase1'}
+                  content={'Launch FLD Mining'}
+                />
+                <TextComponent
+                  header={'Phase1'}
+                  content={'Launch FLD Mining'}
+                />
+                <TextComponent
+                  header={'Phase1'}
+                  content={'Launch FLD Mining'}
+                />
+                <TextComponent
+                  header={'Phase1'}
+                  content={'Launch FLD Mining'}
+                />
+              </Wrap>
+            </Scrollbars>
           </motion.div>
         </motion.div>
       </motion.div>
