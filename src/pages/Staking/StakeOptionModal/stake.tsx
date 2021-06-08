@@ -12,10 +12,15 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import React, {FC, useCallback, useState} from 'react';
+import {useWeb3React} from '@web3-react/core';
+import {stakePaytoken} from '../staking.reducer';
 
 type StakeOptionModalProps = {
   isOpen: boolean;
   balance: string;
+  payToken: string;
+  saleStartBlock: string | number;
+  address: string;
   onClose: Function;
   onSubmit: Function;
 };
@@ -24,7 +29,12 @@ export const StakeOptionModal: FC<StakeOptionModalProps> = ({
   isOpen,
   onClose,
   balance,
+  payToken,
+  saleStartBlock,
+  address
 }) => {
+  const {account, library} = useWeb3React();
+
   const [value, setValue] = useState<number>(+balance);
 
   const handleChange = useCallback(e => setValue(e.target.value), []);
@@ -42,6 +52,7 @@ export const StakeOptionModal: FC<StakeOptionModalProps> = ({
               textAlign={'center'}>
               Stake
             </Heading>
+            {/* <Text>{payToken}</Text> */}
           </Box>
 
           <Stack
@@ -90,7 +101,18 @@ export const StakeOptionModal: FC<StakeOptionModalProps> = ({
           </Stack>
 
           <Box py={4} as={Flex} justifyContent={'center'}>
-            <Button disabled={+balance <= 0} colorScheme={'blue'}>
+            <Button
+              colorScheme={'blue'}
+              onClick={() =>
+                stakePaytoken({
+                  userAddress: account,
+                  amount: '0.02',
+                  payToken: payToken,
+                  saleStartBlock: saleStartBlock,
+                  library: library,
+                  stakeContractAddress: address
+                })
+              }>
               Stake
             </Button>
           </Box>

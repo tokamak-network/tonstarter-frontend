@@ -15,7 +15,6 @@ export const formatStartTime = async (blockNum: BigNumber) => {
   if (currentBlock > blockNumber) {
     const block = await provider.getBlock(blockNumber);
     const timeStamp = block.timestamp;
-    console.log(block.toString(), timeStamp);
     return moment.unix(timeStamp).format('MMM DD, YYYY HH:mm:ss');
   } else {
     let seconds = (blockNumber - currentBlock) * 13;
