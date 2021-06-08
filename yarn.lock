@@ -2502,10 +2502,10 @@
     "@ethersproject/properties" "^5.3.0"
     "@ethersproject/strings" "^5.3.0"
 
-"@fontsource/rajdhani@^4.4.2":
-  version "4.4.2"
-  resolved "https://registry.yarnpkg.com/@fontsource/rajdhani/-/rajdhani-4.4.2.tgz#9768552e6738a9ec5a4caa4e58ae8ae9a837a625"
-  integrity sha512-qPzm6LePWoG5+h4IlxOKbhzqhXbRNaKR8E2/76FAurnRvOCeiKzG02yNeJIKarrbE3ltsnrqeZTqFrXHO/x/ig==
+"@fontsource/rajdhani@^4.4.5":
+  version "4.4.5"
+  resolved "https://registry.yarnpkg.com/@fontsource/rajdhani/-/rajdhani-4.4.5.tgz#c46a167a5b417ae47ba8553927d7d53d1210c082"
+  integrity sha512-6D6OzBZJerqwRfaEJ8VPpjfilvGP8KTgU+mZlIE0OmgB9fuevr9Zx5TaNISIyIYKIDHDRZZFyOtqJAgDcmXc7g==
 
 "@fontsource/rajdhani@^4.4.2":
   version "4.4.2"

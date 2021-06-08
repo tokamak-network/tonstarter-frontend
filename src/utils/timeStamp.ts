@@ -1,20 +1,15 @@
 import {BigNumber, ethers} from 'ethers';
 import moment from 'moment';
-
 let provider = ethers.getDefaultProvider('rinkeby');
-
 export const period = (startBlockNum: BigNumber, endBlockNum: BigNumber) => {
   let startBlock = Number(startBlockNum);
   let endBlock = Number(endBlockNum);
-
   let seconds = (endBlock - startBlock) * 13;
   const periodHumanized = moment.duration(seconds, 'seconds').humanize();
-
   return periodHumanized;
 };
-
 export const formatStartTime = async (blockNum: BigNumber) => {
-  const blockNumberBN =  BigNumber.from(blockNum);
+  const blockNumberBN = BigNumber.from(blockNum);
   const blockNumber = blockNumberBN.toNumber();
   let currentBlock = await provider.getBlockNumber();
   if (currentBlock > blockNumber) {
@@ -22,17 +17,14 @@ export const formatStartTime = async (blockNum: BigNumber) => {
     const timeStamp = block.timestamp;
     console.log(block.toString(), timeStamp);
     return moment.unix(timeStamp).format('MMM DD, YYYY HH:mm:ss');
-  }
-  else {
-    let seconds = (blockNumber - currentBlock) *13
+  } else {
+    let seconds = (blockNumber - currentBlock) * 13;
     const currentBlk = await provider.getBlock(currentBlock);
     const currentTimeStamp = currentBlk.timestamp;
     const timestamp = currentTimeStamp + seconds;
     return moment.unix(timestamp).format('MMM DD, YYYY HH:mm:ss');
   }
-  
 };
-
 export const formatEndTime = async (
   startBlockNum: BigNumber,
   endBlockNum: BigNumber,
@@ -40,7 +32,6 @@ export const formatEndTime = async (
   let startB = Number(startBlockNum);
   let endB = Number(endBlockNum);
   let currentBlock = await provider.getBlockNumber();
-
   if (Number(currentBlock > endB)) {
     const endBlock = await provider.getBlock(endB);
     const timeStamp = endBlock.timestamp;
@@ -49,11 +40,9 @@ export const formatEndTime = async (
     let seconds = (endB - startB) * 13;
     const currentBlk = await provider.getBlock(currentBlock);
     const currentTimeStamp = currentBlk.timestamp;
-    let seconds2 = (startB - currentBlock) *13
+    let seconds2 = (startB - currentBlock) * 13;
     const startTimeStamp = currentTimeStamp + seconds2;
-
     // const startBlock = await provider.getBlock(startB);
-    
     // const startTimeStamp = startBlock.timestamp;
     const timestamp = startTimeStamp + seconds;
     return moment.unix(timestamp).format('MMM DD, YYYY HH:mm:ss');
