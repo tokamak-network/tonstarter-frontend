@@ -190,7 +190,9 @@ export const Animation: React.FC<HomeProps> = () => {
   });
   const verticalDots: number[] = [77, 221, 365, 509, 653, 797, 941];
 
-  const bgColor = colorMode === 'light' ? 'bg.200' : '#000000';
+  const bgColor = colorMode === 'light' ? '#007AFF' : '#222222';
+  console.log(bgColor);
+  console.log(colorMode);
 
   const mainControls = useAnimation();
   const mainSubControls = useAnimation();
