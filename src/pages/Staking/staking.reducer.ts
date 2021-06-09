@@ -138,8 +138,7 @@ export const stakePaytoken = async (args: StakeProps)  => {
 
 }
 const stakeTon = async (args: StakeTon) => {
-  console.log('staked TON');
-  const {userAddress, amount, saleStartBlock, library, stakeContractAddress, stakeStartBlock} = args;
+ const {userAddress, amount, saleStartBlock, library, stakeContractAddress, stakeStartBlock} = args;
   if (userAddress === null || userAddress === undefined) {
     return;
   }
@@ -165,7 +164,6 @@ const stakeTon = async (args: StakeTon) => {
   
 };
 const stakeEth = async (args: StakeTon) => {
-  console.log('staked ETH');
   const {userAddress, amount, saleStartBlock, library, stakeContractAddress, stakeStartBlock} = args;
 
   if (userAddress === null || userAddress === undefined) {
