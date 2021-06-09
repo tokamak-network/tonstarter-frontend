@@ -12,17 +12,20 @@ import {
   Link,
   useClipboard,
   Button,
+  Skeleton,
 } from '@chakra-ui/react';
 import {UnsupportedChainIdError, useWeb3React} from '@web3-react/core';
 import {AbstractConnector} from '@web3-react/abstract-connector';
-import {getExplorerLink, getNetworkName, shortenAddress} from 'utils';
-import {DEFAULT_NETWORK, SUPPORTED_WALLETS} from 'constants/index';
+import {shortenAddress} from 'utils';
+import {SUPPORTED_WALLETS} from 'constants/index';
 import {isMobile} from 'react-device-detect';
 import {WalletOption} from 'components/Wallet/Option';
 import {injected, walletconnect, walletlink} from 'connectors';
 import {WalletPending} from 'components/Wallet/Pending';
 import usePrevious from 'hooks/usePrevious';
 import {useEagerConnect, useInactiveListener} from 'hooks/useWeb3';
+import {selectExplorerLink, selectNetwork} from 'store/app/app.reducer';
+import { useAppSelector } from 'hooks/useRedux';
 
 type WalletProps = {
   isOpen: boolean;
@@ -41,13 +44,18 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
   const {
     account,
     connector,
-    chainId,
     activate,
     error,
     active,
     deactivate,
   } = useWeb3React();
   const {onCopy} = useClipboard(account as string);
+  // @ts-ignore
+  const {data: explorerLink, loading: explorerLinkLoading} = useAppSelector(
+    selectExplorerLink,
+  );
+  // @ts-ignore
+  const {data: network, loading: networkLoading} = useAppSelector(selectNetwork);
   const [copyText, setCopyText] = useState<string>('Copy Address');
   const [walletView, setWalletView] = useState<string>(WALLET_VIEWS.ACCOUNT);
   const [pendingWallet, setPendingWallet] = useState<
@@ -56,20 +64,7 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
   const [pendingError, setPendingError] = useState<boolean>();
   const [activatingConnector, setActivatingConnector] = useState<any>();
 
-  const [explorerLink, setExplorerLink] = useState('');
-  const [defaultNetwork, setDefaultNetwork] = useState<string>('');
-
   const previousAccount = usePrevious(account);
-
-  useEffect(() => {
-    const loadNetwork = async () => {
-      if (account) {
-        setExplorerLink(await getExplorerLink(chainId, account));
-      }
-      setDefaultNetwork(await getNetworkName(DEFAULT_NETWORK));
-    };
-    loadNetwork();
-  }, [account, chainId]);
 
   useEffect(() => {
     if (activatingConnector && activatingConnector === connector) {
@@ -155,7 +150,7 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
       )
       .map(k => SUPPORTED_WALLETS[k].name)[0];
     return (
-      <Text colorScheme="gray.600" fontSize="sm">
+      <Text colorScheme="gray.200" fontSize="sm">
         Connected with {name.toString()}
       </Text>
     );
@@ -254,7 +249,11 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
   };
 
   return (
-    <Modal closeOnOverlayClick={false} isCentered isOpen={isOpen} onClose={onClose}>
+    <Modal
+      closeOnOverlayClick={false}
+      isCentered
+      isOpen={isOpen}
+      onClose={onClose}>
       <ModalOverlay />
       {walletView === WALLET_VIEWS.ACCOUNT && account ? (
         <ModalContent>
@@ -313,15 +312,19 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
                       mr={3}>
                       {copyText}
                     </Text>
-                    <Link
-                      isExternal
-                      href={explorerLink}
-                      fontSize="sm"
-                      _hover={{
-                        textDecoration: 'none',
-                      }}>
-                      View on Etherscan
-                    </Link>
+                    {explorerLinkLoading ? (
+                      <Skeleton />
+                    ) : (
+                      <Link
+                        isExternal
+                        href={`${explorerLink}${account}`}
+                        fontSize="sm"
+                        _hover={{
+                          textDecoration: 'none',
+                        }}>
+                        View on Etherscan
+                      </Link>
+                    )}
                   </Flex>
                 </Flex>
               </Box>
@@ -339,8 +342,12 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
           <ModalBody pb={6}>
             {error instanceof UnsupportedChainIdError ? (
               <Text>
-                App is running on <b>{`${defaultNetwork}`}</b>. Please update
-                your network configuration.
+                {networkLoading ? (
+                  <Skeleton />
+                ) : (
+                  `App is running on ${network}. Please update your
+                network configuration.`
+                )}
               </Text>
             ) : (
               'Error connecting. Try refreshing the page.'
