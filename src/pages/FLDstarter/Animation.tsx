@@ -7,7 +7,9 @@ import {
   SkeletonCircle,
   Wrap,
   Image,
+  Box,
 } from '@chakra-ui/react';
+import {useColorMode} from '@chakra-ui/react';
 import {motion, useAnimation} from 'framer-motion';
 import {HTMLAttributes, useEffect, useState} from 'react';
 import {Scrollbars} from 'react-custom-scrollbars-2';
@@ -25,6 +27,7 @@ const elements = {
   circleSize: '1',
   circleColor: '#ffffff',
   whiteWithOpacity: `rgba(255, 255, 255, 0.5)`,
+  whiteWithoutOpacity: `rgba(255, 255, 255, 0.0)`,
 };
 
 const addCircles = (props: any) => {
@@ -102,6 +105,7 @@ const TextComponent = (props: any) => {
       flexDirection="column"
       alignItems="left"
       pl={25}
+      pr={45}
       pos={'relative'}
       {...rest}>
       <Text fontSize="26px" fontWeight={'bold'}>
@@ -110,7 +114,6 @@ const TextComponent = (props: any) => {
       <Text fontSize="15px" fontWeight={300}>
         {content}
       </Text>
-      {/* {circle && delay ? addCircles({delay: delay}) : ''} */}
     </Center>
   );
 };
@@ -172,6 +175,7 @@ const getLeftArea = (rowDots: number[]) => {
 };
 
 export const Animation: React.FC<HomeProps> = () => {
+  const {colorMode} = useColorMode();
   const {width} = useWindowDimensions();
   const [rowDots, setRowDots] = useState<number[]>([]);
   const [timer] = useState({
@@ -186,6 +190,8 @@ export const Animation: React.FC<HomeProps> = () => {
   });
   const verticalDots: number[] = [77, 221, 365, 509, 653, 797, 941];
 
+  const bgColor = colorMode === 'light' ? 'bg.200' : '#000000';
+
   const mainControls = useAnimation();
   const mainSubControls = useAnimation();
   const secondPhaseControls = useAnimation();
@@ -195,7 +201,7 @@ export const Animation: React.FC<HomeProps> = () => {
   const lastCircleControls = useAnimation();
 
   useEffect(() => {
-    const aniMultiplier = 5;
+    const aniMultiplier = 15;
     const result = makeDots(Number(width), 1024);
     const delay = result.length / aniMultiplier;
     console.log('width : ' + width);
@@ -209,7 +215,11 @@ export const Animation: React.FC<HomeProps> = () => {
         `${elements.whiteWithOpacity}`,
         `${elements.whiteWithOpacity}`,
       ],
-      borderRightColor: [null, '#007AFF', `${elements.whiteWithOpacity}`],
+      borderRightColor: [
+        null,
+        `${elements.whiteWithoutOpacity}`,
+        `${elements.whiteWithOpacity}`,
+      ],
 
       transition: {
         delay: delay + i,
@@ -230,11 +240,15 @@ export const Animation: React.FC<HomeProps> = () => {
 
     secondPhaseControls.start((i) => ({
       borderTopColor: [
-        null,
-        `${elements.whiteWithOpacity}`,
-        `${elements.whiteWithOpacity}`,
+        elements.whiteWithoutOpacity,
+        elements.whiteWithOpacity,
+        elements.whiteWithOpacity,
       ],
-      borderBottomColor: [null, '#007AFF', `${elements.whiteWithOpacity}`],
+      borderBottomColor: [
+        elements.whiteWithoutOpacity,
+        elements.whiteWithoutOpacity,
+        elements.whiteWithOpacity,
+      ],
       opacity: 1,
       transition: {
         delay: delay + i,
@@ -268,13 +282,12 @@ export const Animation: React.FC<HomeProps> = () => {
       opacity: 1,
       transition: {
         delay: delay + i,
-        // duration: 2,
       },
     }));
   }, [width, mainControls]);
 
   return (
-    <Flex maxW="100%" height={1024} bg="blue.200" position="relative">
+    <Flex maxW="100%" height={1024} bg={bgColor} position="relative">
       <motion.div
         custom={timer.lastCircle}
         initial={{opacity: 0}}
@@ -290,7 +303,7 @@ export const Animation: React.FC<HomeProps> = () => {
           justifyContent="center"
           borderRadius={25}
           borderColor={elements.whiteWithOpacity}
-          bg="blue.200"
+          bg={bgColor}
           zIndex={100}>
           <Flex
             borderWidth="1px"
@@ -310,7 +323,7 @@ export const Animation: React.FC<HomeProps> = () => {
           opacity: 1,
         }}
         animate={{opacity: 0}}
-        transition={{duration: 2}}>
+        transition={{duration: 1}}>
         <Center>
           <Image src={FLDLogo}></Image>
         </Center>
@@ -322,7 +335,7 @@ export const Animation: React.FC<HomeProps> = () => {
               style={{position: 'relative'}}
               initial={{opacity: 1}}
               animate={{opacity: getCondition(rIndex, cIndex) === true ? 1 : 0}}
-              transition={{delay: (rIndex + cIndex) / 10}}>
+              transition={{delay: (rIndex + cIndex) / 20}}>
               {makeCircle(rIndex, c)}
             </motion.div>
           );
@@ -359,8 +372,7 @@ export const Animation: React.FC<HomeProps> = () => {
         </motion.div>
         <motion.div
           initial={{
-            borderColor: '#007AFF',
-            // y: -1024,
+            borderColor: `${elements.whiteWithoutOpacity}`,
           }}
           custom={timer.firstLine}
           animate={mainControls}
@@ -390,7 +402,7 @@ export const Animation: React.FC<HomeProps> = () => {
               initial={{
                 borderTopWidth: '1px',
                 borderBottomWidth: '1px',
-                borderColor: '#007AFF',
+                borderColor: `${elements.whiteWithoutOpacity}`,
               }}
               custom={timer.innerLine}
               animate={secondPhaseControls}
