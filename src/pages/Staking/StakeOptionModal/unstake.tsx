@@ -12,20 +12,29 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import React, {FC, useCallback, useState} from 'react';
+import {BigNumber} from 'ethers';
+import {withdraw} from '../staking.reducer';
+import {useWeb3React} from '@web3-react/core';
 
 type UnstakeOptionModalProps = {
+  balance: string | BigNumber;
+  stakeEndBlock: string | number;
+  address: string;
   isOpen: boolean;
-  balance: string;
   onClose: Function;
   onSubmit: Function;
 };
 
 export const UnstakeOptionModal: FC<UnstakeOptionModalProps> = ({
+  balance,
+  stakeEndBlock,
+  address,
   isOpen,
   onClose,
-  balance,
   onSubmit,
 }) => {
+  const {account, library} = useWeb3React();
+
   const [value, setValue] = useState<number>(+balance);
 
   const handleChange = useCallback(e => setValue(e.target.value), []);
@@ -92,7 +101,12 @@ export const UnstakeOptionModal: FC<UnstakeOptionModalProps> = ({
           <Box py={4} as={Flex} justifyContent={'center'}>
             <Button
               type={'submit'}
-              onClick={() => onSubmit()}
+              onClick={() => withdraw({
+                userAddress: account,
+                stakeEndBlock: stakeEndBlock,
+                library: library,
+                stakeContractAddress: address
+              })}
               disabled={+balance <= 0}
               colorScheme={'blue'}>
               Unstake
