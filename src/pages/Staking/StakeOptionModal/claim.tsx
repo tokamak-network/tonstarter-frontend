@@ -11,13 +11,15 @@ import {
   Input,
   Stack,
 } from '@chakra-ui/react';
-import {useAppSelector} from 'hooks/useRedux';
 import React, {FC, useCallback, useState} from 'react';
-import {selectStakes} from '../staking.reducer';
+import {claimReward} from '../staking.reducer';
+import {useWeb3React} from '@web3-react/core';
 
 type ClaimOptionModalProps = {
   isOpen: boolean;
   balance: string;
+  stakeStartBlock: string | number;
+  address: string;
   onClose: Function;
   onSubmit: Function;
 };
@@ -25,11 +27,13 @@ type ClaimOptionModalProps = {
 export const ClaimOptionModal: FC<ClaimOptionModalProps> = ({
   isOpen,
   balance,
+  stakeStartBlock,
+  address,
   onClose,
   onSubmit,
 }) => {
+  const {account, library} = useWeb3React();
   const [value, setValue] = useState<number>(+balance);
-  const {loading} = useAppSelector(selectStakes);
 
   const handleChange = useCallback(e => setValue(e.target.value), []);
   const setMax = useCallback(_e => setValue(+balance), [balance]);
@@ -96,11 +100,14 @@ export const ClaimOptionModal: FC<ClaimOptionModalProps> = ({
 
           <Box py={4} as={Flex} justifyContent={'center'}>
             <Button
-              type={'submit'}
-              isLoading={loading === 'pending'}
-              loadingText={'Claiming tokens'}
-              onClick={() => onSubmit(value)}
-              disabled={+balance <= 0 || loading === 'pending'}
+             onClick={() =>
+              claimReward({
+                userAddress: account,
+                stakeContractAddress: address,
+                stakeStartBlock: stakeStartBlock,
+                library: library
+              }) 
+            }
               colorScheme={'blue'}>
               Claim
             </Button>

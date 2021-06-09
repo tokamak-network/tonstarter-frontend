@@ -103,7 +103,6 @@ export const UnstakeOptionModal: FC<UnstakeOptionModalProps> = ({
               type={'submit'}
               onClick={() => withdraw({
                 userAddress: account,
-                amount: '100',
                 stakeEndBlock: stakeEndBlock,
                 library: library,
                 stakeContractAddress: address

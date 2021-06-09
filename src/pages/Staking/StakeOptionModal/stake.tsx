@@ -20,6 +20,7 @@ type StakeOptionModalProps = {
   balance: string;
   payToken: string;
   saleStartBlock: string | number;
+  stakeStartBlock: string | number;
   address: string;
   onClose: Function;
   onSubmit: Function;
@@ -31,6 +32,7 @@ export const StakeOptionModal: FC<StakeOptionModalProps> = ({
   balance,
   payToken,
   saleStartBlock,
+  stakeStartBlock,
   address
 }) => {
   const {account, library} = useWeb3React();
@@ -110,7 +112,8 @@ export const StakeOptionModal: FC<StakeOptionModalProps> = ({
                   payToken: payToken,
                   saleStartBlock: saleStartBlock,
                   library: library,
-                  stakeContractAddress: address
+                  stakeContractAddress: address,
+                  stakeStartBlock: stakeStartBlock
                 })
               }>
               Stake

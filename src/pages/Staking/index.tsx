@@ -206,6 +206,7 @@ export const Staking = () => {
             payToken={data[row.id]?.token}
             saleStartBlock= {data[row.id]?.saleStartBlock}
             address={data[row.id]?.contractAddress}
+            stakeStartBlock= {data[row.id]?.stakeStartBlock}
             onClose={onCloseStakeOptionModal}
             onSubmit={onStakeSubmitted}
           />
@@ -220,6 +221,8 @@ export const Staking = () => {
           <ClaimOptionModal
             isOpen={isClaimModalOpen}
             balance={user.balance}
+            stakeStartBlock= {data[row.id]?.stakeStartBlock}
+            address={data[row.id]?.contractAddress}
             onClose={onCloseClaimOptionModal}
             onSubmit={onClaimSubmitted}
           />
