@@ -108,7 +108,7 @@ export const StakeOptionModal: FC<StakeOptionModalProps> = ({
               onClick={() =>
                 stakePaytoken({
                   userAddress: account,
-                  amount: '0.02',
+                  amount: value.toString(),
                   payToken: payToken,
                   saleStartBlock: saleStartBlock,
                   library: library,
