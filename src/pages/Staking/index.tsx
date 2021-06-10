@@ -8,6 +8,7 @@ import {
   Flex,
   useDisclosure,
   Link,
+  useTheme
 } from '@chakra-ui/react';
 import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
@@ -17,6 +18,8 @@ import React, {FC, Fragment, useCallback, useMemo} from 'react';
 import {shortenAddress} from 'utils';
 import {StakingTable} from './StakingTable';
 import {selectStakes} from './staking.reducer';
+import {useColorMode} from '@chakra-ui/react';
+
 import {
   ClaimOptionModal,
   StakeOptionModal,
@@ -42,29 +45,34 @@ const WalletInformation: FC<WalletInformationProps> = ({
   onOpenUnstakeOptionModal,
   user,
 }) => {
+  const {colorMode} = useColorMode();
+  const theme = useTheme();
   return (
-    <Container maxW={'sm'}>
+    <Container maxW={'sm'}  >
       <Box
         textAlign={'center'}
         py={10}
         px={5}
-        shadow={'md'}
-        borderRadius={'lg'}>
+        bg={colorMode === 'light' ? theme.colors.white[100] : 'transparent'}
+      boxShadow="base"
+      rounded={15}
+      borderWidth={colorMode === 'light' ? 0 : 1}
+      borderColor={theme.colors.gray[75]}>
         <Heading>{user.balance.toString()} TON</Heading>
         <Box py={5}>
           <Text>Available in wallet</Text>
         </Box>
         <Grid templateColumns={'repeat(2, 1fr)'} gap={6}>
-          <Button colorScheme="blue" onClick={() => onOpenStakeOptionModal()}>
+          <Button bg={theme.colors.yellow[200]}  color={'black'} onClick={() => onOpenStakeOptionModal()}>
             Stake
           </Button>
-          <Button colorScheme="blue" onClick={() => onOpenUnstakeOptionModal()}>
+          <Button bg={theme.colors.yellow[200]}  color={'black'} onClick={() => onOpenUnstakeOptionModal()}>
             Unstake
           </Button>
-          <Button colorScheme="blue" onClick={() => onOpenClaimOptionModal()}>
+          <Button bg={theme.colors.yellow[200]}  color={'black'} onClick={() => onOpenClaimOptionModal()}>
             Claim
           </Button>
-          <Button colorScheme="blue" onClick={() => onOpenManageOptionModal()}>
+          <Button bg={theme.colors.yellow[200]}  color={'black'} onClick={() => onOpenManageOptionModal()}>
             Manage
           </Button>
         </Grid>
@@ -168,7 +176,7 @@ export const Staking = () => {
               <Text>{data[row.id]?.endTime}</Text>
             </Box>
           </Flex>
-          <Box p={8}>
+          <Box p={8} >
             <WalletInformation
               onOpenStakeOptionModal={onOpenStakeOptionModal}
               onOpenClaimOptionModal={onOpenClaimOptionModal}
