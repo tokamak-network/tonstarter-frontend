@@ -7,7 +7,7 @@ import {
   Container,
   useTheme,
   Avatar,
-  Tooltip
+  Tooltip,
 } from '@chakra-ui/react';
 import {Link} from 'react-router-dom';
 import {useColorMode} from '@chakra-ui/react';
@@ -28,7 +28,7 @@ export const TokenComponent: FC<TokenComponentProps> = ({phase, subtitle}) => {
       borderWidth={colorMode === 'light' ? 0 : 1}
       borderColor={theme.colors.gray[75]}
       p="4">
-      <Flex direction={'row'}>
+      <Flex direction={'row'} pos="relative">
         <Avatar src="" />
         <Flex direction={'column'} px={6}>
           <Text
@@ -99,10 +99,14 @@ export const TokenComponent: FC<TokenComponentProps> = ({phase, subtitle}) => {
               mr={2}>
               TON
             </Text>
-            <Tooltip hasArrow placement="right" label="Total Staked" color={theme.colors.white[100]} bg={theme.colors.gray[375]}>
-            <Image src={tooltipIcon} />
+            <Tooltip
+              hasArrow
+              placement="right"
+              label="Total Staked"
+              color={theme.colors.white[100]}
+              bg={theme.colors.gray[375]}>
+              <Image src={tooltipIcon} />
             </Tooltip>
-           
           </Flex>
           <Text className={'fld-text1'} fontWeight={'normal'}>
             1644.99 USD
@@ -121,40 +125,47 @@ export const TokenComponent: FC<TokenComponentProps> = ({phase, subtitle}) => {
               _hover={{bg: theme.colors.yellow[300]}}>
               Staking
             </Button>
-            
-              <Link to="/staking" >
+
+            <Link to="/staking">
               <Button
-              borderWidth={1}
-              borderColor={
-                colorMode === 'light' ? 'transparent' : theme.colors.gray[75]
-              }
-              h={8}
-              fontSize={16}
-              fontWeight={700}
-              color={
-                colorMode === 'light' ? theme.colors.gray[125] : '!currentcolor'
-              }
-              rounded={18}
-              bg={
-                colorMode === 'light' ? theme.colors.gray[200] : '!currentcolor'
-              }
-              px={34}
-              fontFamily={theme.fonts.fld}
-              _hover={{
-                bg:
+                borderWidth={1}
+                borderColor={
+                  colorMode === 'light' ? 'transparent' : theme.colors.gray[75]
+                }
+                h={8}
+                fontSize={16}
+                fontWeight={700}
+                color={
                   colorMode === 'light'
-                    ? theme.colors.gray[325]
-                    : 'transparent',
-                borderColor:
-                  colorMode === 'light'
-                    ? 'transparent'
-                    : theme.colors.gray[350],
-                    color: colorMode === 'light'
                     ? theme.colors.gray[125]
-                    : theme.colors.gray[0]
-              }}> Details </Button>
-              </Link>
-            
+                    : '!currentcolor'
+                }
+                rounded={18}
+                bg={
+                  colorMode === 'light'
+                    ? theme.colors.gray[200]
+                    : '!currentcolor'
+                }
+                px={34}
+                fontFamily={theme.fonts.fld}
+                _hover={{
+                  bg:
+                    colorMode === 'light'
+                      ? theme.colors.gray[325]
+                      : 'transparent',
+                  borderColor:
+                    colorMode === 'light'
+                      ? 'transparent'
+                      : theme.colors.gray[350],
+                  color:
+                    colorMode === 'light'
+                      ? theme.colors.gray[125]
+                      : theme.colors.gray[0],
+                }}>
+                {' '}
+                Details{' '}
+              </Button>
+            </Link>
           </Flex>
         </Flex>
       </Flex>

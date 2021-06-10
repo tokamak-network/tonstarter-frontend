@@ -223,10 +223,8 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
 };
 
 const NavBarContainer = ({children, ...rest}: {children: any}) => {
-  const match = useRouteMatch('/');
   return (
     <Flex
-      className={match?.isExact ? 'header' : ''}
       as="nav"
       align="center"
       justify="space-between"
