@@ -2,13 +2,13 @@ import React, {FC} from 'react';
 import {Column, useExpanded, usePagination, useTable} from 'react-table';
 import {
   chakra,
-  Skeleton,
   Text,
   Flex,
   IconButton,
   Tooltip,
   Select,
   Box,
+  Spinner,
 } from '@chakra-ui/react';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 
@@ -59,47 +59,54 @@ export const StakingTable: FC<StakingTableProps> = ({
               </chakra.tr>
             ))}
           </chakra.thead>
-          <chakra.tbody {...getTableBodyProps()}>
-            {page.map((row: any, i) => {
-              prepareRow(row);
-              return [
-                <chakra.tr
-                  borderWidth={1}
-                  h={16}
-                  key={i}
-                  {...row.getRowProps()}>
-                  {row.cells.map((cell: any, index: number) => {
-                    return (
-                      <chakra.td
-                        px={3}
-                        py={3}
-                        key={index}
-                        {...cell.getCellProps()}>
-                        {isLoading ? <Skeleton h={5} /> : cell.render('Cell')}
-                      </chakra.td>
-                    );
-                  })}
-                </chakra.tr>,
-                // If the row is in an expanded state, render a row with a
-                // column that fills the entire length of the table.
-                row.isExpanded ? (
-                  <chakra.tr borderWidth={1} h={10} key={i} m={0}>
-                    <chakra.td margin={0} colSpan={visibleColumns.length}>
-                      {/*
+          {!isLoading && (
+            <chakra.tbody {...getTableBodyProps()}>
+              {page.map((row: any, i) => {
+                prepareRow(row);
+                return [
+                  <chakra.tr
+                    borderWidth={1}
+                    h={16}
+                    key={i}
+                    {...row.getRowProps()}>
+                    {row.cells.map((cell: any, index: number) => {
+                      return (
+                        <chakra.td
+                          px={3}
+                          py={3}
+                          key={index}
+                          {...cell.getCellProps()}>
+                          {cell.render('Cell')}
+                        </chakra.td>
+                      );
+                    })}
+                  </chakra.tr>,
+                  // If the row is in an expanded state, render a row with a
+                  // column that fills the entire length of the table.
+                  row.isExpanded ? (
+                    <chakra.tr borderWidth={1} h={10} key={i} m={0}>
+                      <chakra.td margin={0} colSpan={visibleColumns.length}>
+                        {/*
                     Inside it, call our renderRowSubComponent function. In reality,
                     you could pass whatever you want as props to
                     a component like this, including the entire
                     table instance. But for this example, we'll just
                     pass the row
                   */}
-                      {renderDetail({row})}
-                    </chakra.td>
-                  </chakra.tr>
-                ) : null,
-              ];
-            })}
-          </chakra.tbody>
+                        {renderDetail({row})}
+                      </chakra.td>
+                    </chakra.tr>
+                  ) : null,
+                ];
+              })}
+            </chakra.tbody>
+          )}
         </chakra.table>
+        {isLoading && (
+          <Flex height={'70vh'} justifyContent={'center'} alignItems={'center'}>
+            <Spinner />
+          </Flex>
+        )}
         {/* 
         Pagination can be built however you'd like. 
         This is just a very basic UI implementation:
@@ -119,7 +126,7 @@ export const StakingTable: FC<StakingTableProps> = ({
               <IconButton
                 aria-label={'Previous Page'}
                 onClick={previousPage}
-                isDisabled={!canPreviousPage}
+                isDisabled={!canPreviousPage || isLoading}
                 size={'sm'}
                 mr={4}
                 icon={<ChevronLeftIcon h={6} w={6} />}
@@ -160,6 +167,7 @@ export const StakingTable: FC<StakingTableProps> = ({
               w={28}
               size={'sm'}
               value={pageSize}
+              disabled={isLoading}
               onChange={e => {
                 setPageSize(Number(e.target.value));
               }}>
@@ -177,7 +185,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                 aria-label={'Next Page'}
                 onClick={nextPage}
                 size={'sm'}
-                isDisabled={!canNextPage}
+                isDisabled={!canNextPage || isLoading}
                 icon={<ChevronRightIcon h={6} w={6} />}
                 ml={4}
               />

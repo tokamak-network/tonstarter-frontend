@@ -13,7 +13,7 @@ import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
 import {Head} from 'components/SEO';
 import {useAppSelector} from 'hooks/useRedux';
-import React, {FC, Fragment, useCallback, useMemo} from 'react';
+import React, {FC, Fragment, useCallback, useEffect, useMemo} from 'react';
 import {shortenAddress} from 'utils';
 import {StakingTable} from './StakingTable';
 import {selectStakes} from './staking.reducer';
@@ -26,6 +26,7 @@ import {selectApp} from 'store/app/app.reducer';
 import {selectUser} from 'store/app/user.reducer';
 import {PageHeader} from 'components/PageHeader';
 import {ManageModal} from './StakeOptionModal/manage';
+import {useLocation} from 'react-router-dom';
 
 type WalletInformationProps = {
   onOpenStakeOptionModal: Function;
@@ -77,11 +78,27 @@ const WalletInformation: FC<WalletInformationProps> = ({
 };
 
 export const Staking = () => {
+  const route = useLocation();
   // @ts-ignore
   const {data, loading} = useAppSelector(selectStakes);
   const {data: user} = useAppSelector(selectUser);
   // @ts-ignore
   const {data: appConfig} = useAppSelector(selectApp);
+  useEffect(() => {
+    const listenToQueryChanges = () => {
+      let search = route.search.split('&action=')[1];
+      switch (search) {
+        case 'stake':
+          return onOpenStakeOptionModal();
+        case 'info':
+          return onOpenManageOptionModal();
+        default:
+          return null;
+      }
+    };
+
+    listenToQueryChanges();
+  });
 
   const {
     isOpen: isClaimModalOpen,
@@ -153,6 +170,17 @@ export const Staking = () => {
     [],
   );
 
+  const onStakeSubmitted = useCallback(value => {}, []);
+
+  const onClaimSubmitted = useCallback(async value => {
+    // @ts-ignore
+    // dispatch(claimStake({account, value, library} as any));
+  }, []);
+
+  const onUnstakeSubmitted = useCallback(e => {
+    e.preventDefault();
+  }, []);
+
   const renderRowSubComponent = useCallback(
     ({row}) => {
       return (
@@ -202,30 +230,37 @@ export const Staking = () => {
               </Link>
             </Box>
           </Flex>
+          <UnstakeOptionModal
+            isOpen={isUnstakeModalOpen}
+            balance={user.balance}
+            onClose={onCloseUnstakeOptionModal}
+            onSubmit={onUnstakeSubmitted}
+          />
+          <ClaimOptionModal
+            isOpen={isClaimModalOpen}
+            balance={user.balance}
+            onClose={onCloseClaimOptionModal}
+            onSubmit={onClaimSubmitted}
+          />
         </Box>
       );
     },
     [
       appConfig.explorerLink,
       data,
+      isClaimModalOpen,
+      isUnstakeModalOpen,
+      onClaimSubmitted,
+      onCloseClaimOptionModal,
+      onCloseUnstakeOptionModal,
       onOpenClaimOptionModal,
       onOpenManageOptionModal,
       onOpenStakeOptionModal,
       onOpenUnstakeOptionModal,
+      onUnstakeSubmitted,
       user,
     ],
   );
-
-  const onClaimSubmitted = useCallback(async value => {
-    // @ts-ignore
-    // dispatch(claimStake({account, value, library} as any));
-  }, []);
-
-  const onStakeSubmitted = useCallback(value => {}, []);
-
-  const onUnstakeSubmitted = useCallback(e => {
-    e.preventDefault();
-  }, []);
 
   return (
     <Fragment>
@@ -249,24 +284,6 @@ export const Staking = () => {
           />
         </Box>
       </Container>
-      <StakeOptionModal
-        isOpen={isStakeModalOpen}
-        balance={user.balance}
-        onClose={onCloseStakeOptionModal}
-        onSubmit={onStakeSubmitted}
-      />
-      <UnstakeOptionModal
-        isOpen={isUnstakeModalOpen}
-        balance={user.balance}
-        onClose={onCloseUnstakeOptionModal}
-        onSubmit={onUnstakeSubmitted}
-      />
-      <ClaimOptionModal
-        isOpen={isClaimModalOpen}
-        balance={user.balance}
-        onClose={onCloseClaimOptionModal}
-        onSubmit={onClaimSubmitted}
-      />
       <ManageModal
         isOpen={isManageModalOpen}
         onClose={onCloseManageOptionModal}
@@ -275,6 +292,13 @@ export const Staking = () => {
         onEndSale={onEndSale}
         onOpenStakeOptionModal={onOpenStakeOptionModal}
         onOpenUnstakeOptionModal={onOpenUnstakeOptionModal}
+      />
+
+      <StakeOptionModal
+        isOpen={isStakeModalOpen}
+        balance={user.balance}
+        onClose={onCloseStakeOptionModal}
+        onSubmit={onStakeSubmitted}
       />
     </Fragment>
   );

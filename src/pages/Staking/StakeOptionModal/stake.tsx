@@ -10,6 +10,7 @@ import {
   Flex,
   Input,
   Stack,
+  ModalCloseButton,
 } from '@chakra-ui/react';
 import React, {FC, useCallback, useState} from 'react';
 
@@ -18,12 +19,14 @@ type StakeOptionModalProps = {
   balance: string;
   onClose: Function;
   onSubmit: Function;
+  dismissable?: boolean;
 };
 
 export const StakeOptionModal: FC<StakeOptionModalProps> = ({
   isOpen,
   onClose,
   balance,
+  dismissable,
 }) => {
   const [value, setValue] = useState<number>(+balance);
 
@@ -34,6 +37,7 @@ export const StakeOptionModal: FC<StakeOptionModalProps> = ({
     <Modal isOpen={isOpen} isCentered onClose={() => onClose()}>
       <ModalOverlay />
       <ModalContent>
+        {dismissable && <ModalCloseButton />}
         <ModalBody>
           <Box my={3} textAlign="center">
             <Heading
