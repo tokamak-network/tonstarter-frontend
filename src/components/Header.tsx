@@ -223,7 +223,6 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
 };
 
 const NavBarContainer = ({children, ...rest}: {children: any}) => {
-  const match = useRouteMatch('/');
   return (
     <Flex
       as="nav"
