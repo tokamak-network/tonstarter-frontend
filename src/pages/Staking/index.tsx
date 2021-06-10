@@ -109,10 +109,10 @@ export const Staking = () => {
         Header: 'Period',
         accessor: 'period',
       },
-      {
-        Header: 'APY',
-        accessor: 'apy',
-      },
+      // {
+      //   Header: 'APY',
+      //   accessor: 'apy',
+      // },
       {
         Header: 'Total Staked',
         accessor: 'stakeBalanceTON',

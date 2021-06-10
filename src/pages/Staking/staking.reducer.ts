@@ -111,7 +111,8 @@ const converToWei = (num: string) => toWei(num, 'ether');
 
 export const stakePaytoken = async (args: StakeProps)  => {
   const {userAddress, amount, payToken, saleStartBlock, library, stakeContractAddress, stakeStartBlock} = args;
-
+  console.log(amount);
+  
   if (payToken === DEPLOYED.TON) {
     
     await stakeTon(

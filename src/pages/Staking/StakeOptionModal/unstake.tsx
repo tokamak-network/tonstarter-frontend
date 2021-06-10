@@ -8,10 +8,9 @@ import {
   Text,
   Button,
   Flex,
-  Input,
   Stack,
 } from '@chakra-ui/react';
-import React, {FC, useCallback, useState} from 'react';
+import React, {FC} from 'react';
 import {BigNumber} from 'ethers';
 import {withdraw} from '../staking.reducer';
 import {useWeb3React} from '@web3-react/core';
@@ -35,10 +34,7 @@ export const UnstakeOptionModal: FC<UnstakeOptionModalProps> = ({
 }) => {
   const {account, library} = useWeb3React();
 
-  const [value, setValue] = useState<number>(+balance);
 
-  const handleChange = useCallback(e => setValue(e.target.value), []);
-  const setMax = useCallback(_e => setValue(+balance), [balance]);
   return (
     <Modal isOpen={isOpen} isCentered onClose={() => onClose()}>
       <ModalOverlay />
@@ -60,31 +56,20 @@ export const UnstakeOptionModal: FC<UnstakeOptionModalProps> = ({
             justifyContent={'center'}
             alignItems={'center'}
             w={'full'}>
-            <Input
+            <Text
               variant={'outline'}
               borderWidth={0}
               textAlign={'center'}
               fontWeight={'bold'}
               fontSize={'4xl'}
-              value={value}
               width={'xs'}
               mr={6}
-              onChange={handleChange}
               _focus={{
                 borderWidth: 0,
               }}
-            />
-            <Box position={'absolute'} right={5}>
-              <Button
-                onClick={setMax}
-                variant="outline"
-                type={'button'}
-                _focus={{
-                  outline: 'none',
-                }}>
-                Max
-              </Button>
-            </Box>
+            >
+             {balance} 
+            </Text>
           </Stack>
 
           <Stack
