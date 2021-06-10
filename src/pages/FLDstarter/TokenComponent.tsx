@@ -1,4 +1,4 @@
-import {FC, useState} from 'react';
+import {FC} from 'react';
 import {
   Flex,
   Text,
@@ -11,7 +11,6 @@ import {
 } from '@chakra-ui/react';
 import {Link} from 'react-router-dom';
 import {useColorMode} from '@chakra-ui/react';
-import {CustomSpinner} from './Spinner';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 type TokenComponentProps = {
   phase?: string;
@@ -21,7 +20,6 @@ type TokenComponentProps = {
 export const TokenComponent: FC<TokenComponentProps> = ({phase, subtitle}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const [loading, setLoading] = useState(true);
   return (
     <Container
       bg={colorMode === 'light' ? theme.colors.white[100] : 'transparent'}
@@ -30,11 +28,7 @@ export const TokenComponent: FC<TokenComponentProps> = ({phase, subtitle}) => {
       borderWidth={colorMode === 'light' ? 0 : 1}
       borderColor={theme.colors.gray[75]}
       p="4">
-      <Flex
-        direction={'row'}
-        pos="relative"
-        opacity={loading === true ? 0.5 : 1}>
-        <CustomSpinner loading={loading}></CustomSpinner>
+      <Flex direction={'row'} pos="relative">
         <Avatar src="" />
         <Flex direction={'column'} px={6}>
           <Text

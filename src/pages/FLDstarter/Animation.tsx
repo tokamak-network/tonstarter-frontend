@@ -7,7 +7,6 @@ import {
   SkeletonCircle,
   Wrap,
   Image,
-  Box,
 } from '@chakra-ui/react';
 import {useColorMode} from '@chakra-ui/react';
 import {motion, useAnimation} from 'framer-motion';
@@ -16,7 +15,6 @@ import {Scrollbars} from 'react-custom-scrollbars-2';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import FLDLogo from 'assets/svgs/fld_bi_c.svg';
 import Arrow from 'assets/svgs/select1_arrow_inactive.svg';
-import {withTheme} from '@emotion/react';
 export interface HomeProps extends HTMLAttributes<HTMLDivElement> {
   classes?: string;
 }
@@ -183,7 +181,7 @@ export const Animation: React.FC<HomeProps> = () => {
     scondLine: 0.5,
     circles: 1,
     innerLine: 1.5,
-    mainText: 4,
+    mainText: 4.5,
     subText: 5,
     lastPhase: 6,
     lastCircle: 7,
@@ -286,7 +284,16 @@ export const Animation: React.FC<HomeProps> = () => {
         delay: delay + i,
       },
     }));
-  }, [width, mainControls]);
+  }, [
+    width,
+    mainControls,
+    mainSubControls,
+    secondPhaseControls,
+    secondSubPhaseControls,
+    lastPhase,
+    circleControls,
+    lastCircleControls,
+  ]);
 
   return (
     <Flex maxW="100%" height={1024} bg={bgColor} position="relative">
