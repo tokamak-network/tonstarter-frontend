@@ -8,14 +8,12 @@ import {
   Text,
   Button,
   Flex,
-  Input,
   Stack,
   useTheme
 } from '@chakra-ui/react';
-import React, {FC, useCallback, useState} from 'react';
+import React, {FC} from 'react';
 import {closeSale, claimReward} from '../staking.reducer';
 import {useWeb3React} from '@web3-react/core';
-import {useColorMode} from '@chakra-ui/react';
 
 type ClaimOptionModalProps = {
   isOpen: boolean;
@@ -39,11 +37,6 @@ export const ClaimOptionModal: FC<ClaimOptionModalProps> = ({
   onSubmit,
 }) => {
   const {account, library} = useWeb3React();
-  const [value, setValue] = useState<number>(+balance);
-
-  const handleChange = useCallback(e => setValue(e.target.value), []);
-  const setMax = useCallback(_e => setValue(+balance), [balance]);
-  const {colorMode} = useColorMode();
   const theme = useTheme();
   return (
     <Modal isOpen={isOpen} isCentered onClose={() => onClose()}>
@@ -75,7 +68,6 @@ export const ClaimOptionModal: FC<ClaimOptionModalProps> = ({
               fontSize={'4xl'}
               width={'xs'}
               mr={6}
-              onChange={handleChange}
               _focus={{
                 borderWidth: 0,
               }}
