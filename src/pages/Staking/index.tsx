@@ -29,11 +29,13 @@ import {selectApp} from 'store/app/app.reducer';
 import {selectUser} from 'store/app/user.reducer';
 import {PageHeader} from 'components/PageHeader';
 import {ManageModal} from './StakeOptionModal/manage';
+import {StakeInLayer2Modal} from './StakeOptionModal/stakeInLayer2';
 type WalletInformationProps = {
   onOpenStakeOptionModal: Function;
   onOpenClaimOptionModal: Function;
   onOpenUnstakeOptionModal: Function;
   onOpenManageOptionModal: Function;
+  onOpenStakeInLayer2Modal: Function;
   user: {
     balance: string;
   };
@@ -43,6 +45,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
   onOpenClaimOptionModal,
   onOpenManageOptionModal,
   onOpenUnstakeOptionModal,
+  onOpenStakeInLayer2Modal,
   user,
 }) => {
   const {colorMode} = useColorMode();
@@ -105,6 +108,11 @@ export const Staking = () => {
     onOpen: onOpenManageOptionModal,
     onClose: onCloseManageOptionModal,
     isOpen: isManageModalOpen,
+  } = useDisclosure();
+  const {
+    onOpen: onOpenStakeInLayer2Modal,
+    onClose: onCloseStakeInLayer2Modal,
+    isOpen: isStakeInLayer2ModalOpen,
   } = useDisclosure();
   const onEndSale = useCallback(() => {}, []);
   const columns = useMemo(
@@ -182,6 +190,7 @@ export const Staking = () => {
               onOpenClaimOptionModal={onOpenClaimOptionModal}
               onOpenManageOptionModal={onOpenManageOptionModal}
               onOpenUnstakeOptionModal={onOpenUnstakeOptionModal}
+              onOpenStakeInLayer2Modal={onOpenStakeInLayer2Modal}
               user={user}
             />
           </Box>
@@ -228,9 +237,11 @@ export const Staking = () => {
           />
           <ClaimOptionModal
             isOpen={isClaimModalOpen}
-            balance={user.balance}
+            balance={(data[row.id]?.canRewardAmount).toString()}
             stakeStartBlock= {data[row.id]?.stakeStartBlock}
             address={data[row.id]?.contractAddress}
+            vaultAddress= {data[row.id]?.vaultAddress}
+            vaultClosed={data[row.id]?.vaultClosed}
             onClose={onCloseClaimOptionModal}
             onSubmit={onClaimSubmitted}
           />
@@ -240,8 +251,18 @@ export const Staking = () => {
             balance={user.balance}
             onOpenClaimOptionModal={onOpenClaimOptionModal}
             onEndSale={onEndSale}
-            onOpenStakeOptionModal={onOpenStakeOptionModal}
+            onOpenStakeOptionModal={onOpenStakeInLayer2Modal}
             onOpenUnstakeOptionModal={onOpenUnstakeOptionModal}
+          />
+          <StakeInLayer2Modal
+            isOpen={isStakeInLayer2ModalOpen}
+            balance={user.balance}
+            payToken={data[row.id]?.token}
+            saleStartBlock= {data[row.id]?.saleStartBlock}
+            address={data[row.id]?.contractAddress}
+            stakeStartBlock= {data[row.id]?.stakeStartBlock}
+            onClose={onCloseStakeInLayer2Modal}
+            onSubmit={onStakeSubmitted}
           />
         </Box>
       );
@@ -253,6 +274,7 @@ export const Staking = () => {
       isManageModalOpen,
       isStakeModalOpen,
       isUnstakeModalOpen,
+      isStakeInLayer2ModalOpen,
       onClaimSubmitted,
       onCloseClaimOptionModal,
       onCloseManageOptionModal,
@@ -265,6 +287,8 @@ export const Staking = () => {
       onOpenUnstakeOptionModal,
       onStakeSubmitted,
       onUnstakeSubmitted,
+      onOpenStakeInLayer2Modal,
+      onCloseStakeInLayer2Modal,
       user,
     ],
   );

@@ -54,24 +54,31 @@ export const ManageModal: FC<ManageModalProps> = ({
             alignItems={'center'}>
             <Box textAlign={'center'}>
               <Text>Available balance</Text>
-              <Text>{balance} TON</Text>
+              <Text>xxx TON</Text>
+            </Box>
+            <Box textAlign={'center'}>
+              <Text>Total: xxxx TON</Text>
+              <Text>Staked in Layer 2: xxxx TON</Text>
             </Box>
           </Stack>
 
           <Grid templateColumns={'repeat(2, 1fr)'} gap={6}>
             <Button colorScheme="blue" onClick={() => onOpenStakeOptionModal()}>
-              Stake
+              Stake in Layer2 
             </Button>
             <Button
               colorScheme="blue"
               onClick={() => onOpenUnstakeOptionModal()}>
-              Unstake
+              Unstake from Layer2
             </Button>
             <Button colorScheme="blue" onClick={() => onOpenClaimOptionModal()}>
-              Claim
+              Withdraw
             </Button>
             <Button colorScheme="blue" onClick={() => onEndSale()}>
-              End Sale
+             Swap
+            </Button>
+            <Button colorScheme="blue" onClick={() => onEndSale()}>
+             End Sale
             </Button>
           </Grid>
         </ModalBody>

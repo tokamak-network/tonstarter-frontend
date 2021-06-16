@@ -10,16 +10,20 @@ import {
   Flex,
   Input,
   Stack,
+  useTheme
 } from '@chakra-ui/react';
 import React, {FC, useCallback, useState} from 'react';
-import {claimReward} from '../staking.reducer';
+import {closeSale, claimReward} from '../staking.reducer';
 import {useWeb3React} from '@web3-react/core';
+import {useColorMode} from '@chakra-ui/react';
 
 type ClaimOptionModalProps = {
   isOpen: boolean;
   balance: string;
   stakeStartBlock: string | number;
   address: string;
+  vaultAddress: string;
+  vaultClosed: boolean;
   onClose: Function;
   onSubmit: Function;
 };
@@ -29,6 +33,8 @@ export const ClaimOptionModal: FC<ClaimOptionModalProps> = ({
   balance,
   stakeStartBlock,
   address,
+  vaultAddress,
+  vaultClosed,
   onClose,
   onSubmit,
 }) => {
@@ -37,7 +43,8 @@ export const ClaimOptionModal: FC<ClaimOptionModalProps> = ({
 
   const handleChange = useCallback(e => setValue(e.target.value), []);
   const setMax = useCallback(_e => setValue(+balance), [balance]);
-
+  const {colorMode} = useColorMode();
+  const theme = useTheme();
   return (
     <Modal isOpen={isOpen} isCentered onClose={() => onClose()}>
       <ModalOverlay />
@@ -60,31 +67,20 @@ export const ClaimOptionModal: FC<ClaimOptionModalProps> = ({
             justifyContent={'center'}
             alignItems={'center'}
             w={'full'}>
-            <Input
+            <Text
               variant={'outline'}
               borderWidth={0}
               textAlign={'center'}
               fontWeight={'bold'}
               fontSize={'4xl'}
-              value={value}
               width={'xs'}
               mr={6}
               onChange={handleChange}
               _focus={{
                 borderWidth: 0,
               }}
-            />
-            <Box position={'absolute'} right={5}>
-              <Button
-                onClick={setMax}
-                variant="outline"
-                type={'button'}
-                _focus={{
-                  outline: 'none',
-                }}>
-                Max
-              </Button>
-            </Box>
+            > {balance} TON
+            </Text>
           </Stack>
 
           <Stack
@@ -99,7 +95,17 @@ export const ClaimOptionModal: FC<ClaimOptionModalProps> = ({
           </Stack>
 
           <Box py={4} as={Flex} justifyContent={'center'}>
+            {!vaultClosed? <Button mr={4} onClick={() => closeSale(
+            {userAddress: account,
+              vaultContractAddress: vaultAddress,
+              stakeStartBlock: stakeStartBlock,
+            library: library})}
+              bg={theme.colors.yellow[200]}  color={'black'} >
+              End sale
+            </Button> : null}
+          
             <Button
+            disabled={!vaultClosed}
              onClick={() =>
               claimReward({
                 userAddress: account,
@@ -108,9 +114,10 @@ export const ClaimOptionModal: FC<ClaimOptionModalProps> = ({
                 library: library
               }) 
             }
-              colorScheme={'blue'}>
+            bg={theme.colors.yellow[200]}  color={'black'} >
               Claim
             </Button>
+
           </Box>
         </ModalBody>
       </ModalContent>
