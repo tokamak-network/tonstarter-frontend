@@ -102,11 +102,9 @@ export const Staking = () => {
   const columns = useMemo(
     () => [
       {
-        Header: 'Name',
         accessor: 'name',
       },
       {
-        Header: 'Period',
         accessor: 'period',
       },
       // {
@@ -114,21 +112,20 @@ export const Staking = () => {
       //   accessor: 'apy',
       // },
       {
-        Header: 'Total Staked',
         accessor: 'stakeBalanceTON',
       },
       {
-        Header: 'Earning Per Block',
+        // Header: 'Earning Per Block',
         accessor: 'earning_per_block',
       },
-      {
-        Header: 'My Staked',
-        accessor: 'mystaked',
-      },
-      {
-        Header: 'Earned',
-        accessor: 'totalRewardAmount',
-      },
+      // {
+      //   Header: 'My Staked',
+      //   accessor: 'mystaked',
+      // },
+      // {
+      //   Header: 'Earned',
+      //   accessor: 'totalRewardAmount',
+      // },
       {
         // Make an expander cell
         Header: () => null, // No header
@@ -145,30 +142,43 @@ export const Staking = () => {
     ],
     [],
   );
-  const onStakeSubmitted = useCallback(value => {}, []);
-  const onClaimSubmitted = useCallback(async value => {
+  const onStakeSubmitted = useCallback((value) => {}, []);
+  const onClaimSubmitted = useCallback(async (value) => {
     // @ts-ignore
     // dispatch(claimStake({account, value, library} as any));
   }, []);
-  const onUnstakeSubmitted =useCallback(value => {}, []);
+  const onUnstakeSubmitted = useCallback((value) => {}, []);
   const renderRowSubComponent = useCallback(
     ({row}) => {
+      console.log(data[row.id]);
+
       return (
-        <Box mt={0}>
+        <Flex
+          mt={0}
+          w={'100%'}
+          h={'500px'}
+          justifyContent={'space-between'}
+          alignItems="center">
           <Flex
             px={{base: 3, md: 20}}
             py={{base: 1, md: 10}}
-            justifyContent={'space-between'}>
-            <Box>
+            flexDir={'column'}
+            justifyContent={'space-between'}
+            h={'100%'}>
+            <Flex flexDir={'column'} alignItems={'space-between'}>
               <Text fontWeight={'bold'}>Starting Day</Text>
               <Text>{data[row.id]?.startTime}</Text>
-            </Box>
-            <Box>
+            </Flex>
+            <Flex flexDir={'column'} alignItems={'space-between'}>
               <Text fontWeight={'bold'}>Closing day</Text>
               <Text>{data[row.id]?.endTime}</Text>
-            </Box>
+            </Flex>
+            <Flex flexDir={'column'} alignItems={'space-between'}>
+              <Text fontWeight={'bold'}>Total stakers</Text>
+              <Text>{data[row.id]?.totalStakers}</Text>
+            </Flex>
           </Flex>
-          <Box p={8}>
+          <Box p={8} w={'450px'}>
             <WalletInformation
               onOpenStakeOptionModal={onOpenStakeOptionModal}
               onOpenClaimOptionModal={onOpenClaimOptionModal}
@@ -180,12 +190,20 @@ export const Staking = () => {
           <Flex
             px={{base: 3, md: 20}}
             py={{base: 1, md: 10}}
-            justifyContent={'space-between'}>
-            <Box>
-              <Text fontWeight={'bold'}>Total stakers</Text>
-              <Text textAlign={'center'}>{data[row.id]?.totalStakers}</Text>
-            </Box>
-            <Box>
+            flexDir={'column'}
+            justifyContent={'space-between'}
+            h={'100%'}>
+            <Flex flexDir={'column'} alignItems={'space-between'}>
+              <Text fontWeight={'bold'}>My staked</Text>
+              <Text>{data[row.id]?.mystaked}</Text>
+            </Flex>
+            <Flex flexDir={'column'} alignItems={'space-between'}>
+              <Text fontWeight={'bold'}>My Earned</Text>
+              <Text textAlign={'center'}>
+                {data[row.id]?.totalRewardAmount}
+              </Text>
+            </Flex>
+            <Flex flexDir={'column'} alignItems={'space-between'}>
               <Text fontWeight={'bold'}>Contract</Text>
               <Link
                 isExternal={true}
@@ -198,21 +216,21 @@ export const Staking = () => {
                 }`}>
                 {shortenAddress(data[row.id]?.contractAddress)}
               </Link>
-            </Box>
+            </Flex>
           </Flex>
           <StakeOptionModal
             isOpen={isStakeModalOpen}
             balance={user.balance}
             payToken={data[row.id]?.token}
-            saleStartBlock= {data[row.id]?.saleStartBlock}
+            saleStartBlock={data[row.id]?.saleStartBlock}
             address={data[row.id]?.contractAddress}
-            stakeStartBlock= {data[row.id]?.stakeStartBlock}
+            stakeStartBlock={data[row.id]?.stakeStartBlock}
             onClose={onCloseStakeOptionModal}
             onSubmit={onStakeSubmitted}
           />
           <UnstakeOptionModal
             balance={data[row.id]?.mystaked}
-            stakeEndBlock= {data[row.id]?.stakeEndBlock}
+            stakeEndBlock={data[row.id]?.stakeEndBlock}
             address={data[row.id]?.contractAddress}
             isOpen={isUnstakeModalOpen}
             onClose={onCloseUnstakeOptionModal}
@@ -221,7 +239,7 @@ export const Staking = () => {
           <ClaimOptionModal
             isOpen={isClaimModalOpen}
             balance={user.balance}
-            stakeStartBlock= {data[row.id]?.stakeStartBlock}
+            stakeStartBlock={data[row.id]?.stakeStartBlock}
             address={data[row.id]?.contractAddress}
             onClose={onCloseClaimOptionModal}
             onSubmit={onClaimSubmitted}
@@ -235,7 +253,7 @@ export const Staking = () => {
             onOpenStakeOptionModal={onOpenStakeOptionModal}
             onOpenUnstakeOptionModal={onOpenUnstakeOptionModal}
           />
-        </Box>
+        </Flex>
       );
     },
     [
@@ -264,7 +282,7 @@ export const Staking = () => {
     <Fragment>
       <Head title={'Staking'} />
       <Container maxW={'6xl'}>
-        <Box  py={20}>
+        <Box py={20}>
           <PageHeader
             title={'FLD Starter'}
             subtitle={

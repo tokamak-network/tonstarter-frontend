@@ -34,7 +34,7 @@ export const TokenComponent: FC<TokenComponentProps> = ({phase, subtitle}) => {
           borderWidth="1px"
           borderColor="#f4f6f8"
           bg="transparent"
-          color="#f4f6f8"
+          color="#c7d1d8"
           name="T"
         />
         <Flex direction={'column'} px={6}>

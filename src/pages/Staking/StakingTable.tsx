@@ -9,6 +9,7 @@ import {
   Tooltip,
   Select,
   Box,
+  Avatar,
 } from '@chakra-ui/react';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 
@@ -47,34 +48,85 @@ export const StakingTable: FC<StakingTableProps> = ({
   return (
     <>
       <Box overflowX={'auto'}>
-        <chakra.table width={'full'} variant="simple" {...getTableProps()}>
-          <chakra.thead textAlign={'justify'}>
-            {headerGroups.map(headerGroup => (
+        <chakra.table
+          width={'full'}
+          variant="simple"
+          {...getTableProps()}
+          display="flex"
+          flexDirection="column">
+          {/* <chakra.thead textAlign={'justify'}>
+            {headerGroups.map((headerGroup) => (
               <chakra.tr h={16} {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map(column => (
+                {headerGroup.headers.map((column) => (
                   <chakra.th px={3} py={3} {...column.getHeaderProps()}>
                     {column.render('Header')}
                   </chakra.th>
                 ))}
               </chakra.tr>
             ))}
-          </chakra.thead>
-          <chakra.tbody {...getTableBodyProps()}>
+          </chakra.thead> */}
+          <chakra.tbody
+            {...getTableBodyProps()}
+            display="flex"
+            flexDirection="column">
             {page.map((row: any, i) => {
               prepareRow(row);
               return [
                 <chakra.tr
-                  borderWidth={1}
+                  boxShadow="0 1px 1px 0 rgba(96, 97, 112, 0.16)"
                   h={16}
                   key={i}
+                  borderRadius={'10px'}
+                  borderBottomRadius={row.isExpanded === true ? '0px' : '10px'}
+                  mb={'20px'}
+                  w="100%"
+                  bg="white.100"
+                  display="flex"
+                  alignItems="center"
                   {...row.getRowProps()}>
                   {row.cells.map((cell: any, index: number) => {
+                    const type = cell.column.id;
+                    console.log(row.isExpanded);
                     return (
                       <chakra.td
                         px={3}
                         py={3}
                         key={index}
+                        m={0}
+                        w={type === 'name' ? '360px' : '200px'}
+                        display="flex"
+                        alignItems="center"
+                        color={type === 'name' ? '#304156' : '#86929d'}
+                        fontSize={type === 'name' ? '20px' : '13px'}
+                        fontWeight={type === 'name' ? 600 : 0}
                         {...cell.getCellProps()}>
+                        {type === 'name' ? (
+                          <Avatar
+                            src=""
+                            borderWidth="1px"
+                            borderColor="#f4f6f8"
+                            bg="transparent"
+                            color="#c7d1d8"
+                            name="T"
+                            h="48px"
+                            w="48px"
+                            ml="34px"
+                            mr="12px"
+                          />
+                        ) : (
+                          ''
+                        )}
+                        {type === 'period' ? <Text mr={2}>Period</Text> : ''}
+                        {type === 'stakeBalanceTON' ? (
+                          <Text mr={2}>Total Staked </Text>
+                        ) : (
+                          ''
+                        )}
+                        {type === 'earning_per_block' ? (
+                          <Text mr={2}>Earning Per Block </Text>
+                        ) : (
+                          ''
+                        )}
                         {isLoading ? <Skeleton h={5} /> : cell.render('Cell')}
                       </chakra.td>
                     );
@@ -83,8 +135,22 @@ export const StakingTable: FC<StakingTableProps> = ({
                 // If the row is in an expanded state, render a row with a
                 // column that fills the entire length of the table.
                 row.isExpanded ? (
-                  <chakra.tr borderWidth={1} h={10} key={i} m={0}>
-                    <chakra.td margin={0} colSpan={visibleColumns.length}>
+                  <chakra.tr
+                    borderTopWidth={1}
+                    boxShadow="0 1px 1px 0 rgba(96, 97, 112, 0.16)"
+                    w={'100%'}
+                    h={500}
+                    key={i}
+                    m={0}
+                    mb={'14px'}
+                    mt={-5}
+                    bg="white.100"
+                    borderBottomRadius="10px">
+                    <chakra.td
+                      display={'flex'}
+                      w={'100%'}
+                      margin={0}
+                      colSpan={visibleColumns.length}>
                       {/*
                     Inside it, call our renderRowSubComponent function. In reality,
                     you could pass whatever you want as props to
@@ -160,10 +226,10 @@ export const StakingTable: FC<StakingTableProps> = ({
               w={28}
               size={'sm'}
               value={pageSize}
-              onChange={e => {
+              onChange={(e) => {
                 setPageSize(Number(e.target.value));
               }}>
-              {[10, 20, 30, 40, 50].map(pageSize => (
+              {[10, 20, 30, 40, 50].map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
                   Show {pageSize}
                 </option>
