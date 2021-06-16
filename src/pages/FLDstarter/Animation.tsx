@@ -373,7 +373,7 @@ export const Animation: React.FC<HomeProps> = () => {
             fontWeight="semibold"
             fontSize={52}>
             <div>
-              <Text>FLD Starter</Text>
+              <Text>TON Starter</Text>
               <Text>Decentralized Launchpad</Text>
               <Text>Platform</Text>
             </div>

@@ -150,7 +150,7 @@ export const Staking = () => {
   const onUnstakeSubmitted = useCallback((value) => {}, []);
   const renderRowSubComponent = useCallback(
     ({row}) => {
-      console.log(data[row.id]);
+      console.log(data);
 
       return (
         <Flex
@@ -199,9 +199,7 @@ export const Staking = () => {
             </Flex>
             <Flex flexDir={'column'} alignItems={'space-between'}>
               <Text fontWeight={'bold'}>My Earned</Text>
-              <Text textAlign={'center'}>
-                {data[row.id]?.totalRewardAmount}
-              </Text>
+              <Text>{data[row.id]?.totalRewardAmount}</Text>
             </Flex>
             <Flex flexDir={'column'} alignItems={'space-between'}>
               <Text fontWeight={'bold'}>Contract</Text>
@@ -284,7 +282,7 @@ export const Staking = () => {
       <Container maxW={'6xl'}>
         <Box py={20}>
           <PageHeader
-            title={'FLD Starter'}
+            title={'TON Starter'}
             subtitle={
               'Put your tokens into FLD and earn without losing principal'
             }

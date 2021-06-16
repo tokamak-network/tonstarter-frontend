@@ -1,5 +1,11 @@
 import React, {FC} from 'react';
-import {Column, useExpanded, usePagination, useTable} from 'react-table';
+import {
+  Column,
+  useExpanded,
+  usePagination,
+  useTable,
+  useSortBy,
+} from 'react-table';
 import {
   chakra,
   Skeleton,
@@ -42,6 +48,7 @@ export const StakingTable: FC<StakingTableProps> = ({
     state: {pageIndex, pageSize},
   } = useTable(
     {columns, data, initialState: {pageIndex: 0}},
+    useSortBy,
     useExpanded,
     usePagination,
   );
@@ -86,7 +93,6 @@ export const StakingTable: FC<StakingTableProps> = ({
                   {...row.getRowProps()}>
                   {row.cells.map((cell: any, index: number) => {
                     const type = cell.column.id;
-                    console.log(row.isExpanded);
                     return (
                       <chakra.td
                         px={3}
