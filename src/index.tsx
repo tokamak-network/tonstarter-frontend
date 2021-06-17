@@ -13,6 +13,7 @@ import i18n from 'i18n';
 import {NetworkContextName} from 'constants/index';
 import {Router} from 'pages/Router';
 
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 import {getLibrary} from 'utils';
 
@@ -48,3 +49,4 @@ ReactDOM.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+serviceWorkerRegistration.register();
