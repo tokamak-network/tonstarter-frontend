@@ -13,7 +13,7 @@ import {
   } from '@chakra-ui/react';
   import React, {FC, useCallback, useState} from 'react';
   import {useWeb3React} from '@web3-react/core';
-  import {stakePaytoken} from '../staking.reducer';
+  import {stakeToLayer2} from '../staking.reducer';
   
   type StakeOptionModalProps = {
     isOpen: boolean;
@@ -21,6 +21,8 @@ import {
     payToken: string;
     saleStartBlock: string | number;
     stakeStartBlock: string | number;
+    stakeEndBlock: string | number;
+    vaultClosed: boolean;
     address: string;
     onClose: Function;
     onSubmit: Function;
@@ -33,6 +35,8 @@ import {
     payToken,
     saleStartBlock,
     stakeStartBlock,
+    stakeEndBlock,
+    vaultClosed,
     address
   }) => {
     const {account, library} = useWeb3React();
@@ -105,17 +109,13 @@ import {
             <Box py={4} as={Flex} justifyContent={'center'}>
               <Button
                 colorScheme={'blue'}
-                onClick={() =>
-                  stakePaytoken({
-                    userAddress: account,
-                    amount: value.toString(),
-                    payToken: payToken,
-                    saleStartBlock: saleStartBlock,
-                    library: library,
-                    stakeContractAddress: address,
-                    stakeStartBlock: stakeStartBlock
-                  })
-                }>
+                onClick={() => stakeToLayer2 ({
+                    userAddress:account, 
+                    amount: '100',
+                    stakeEndBlock: stakeEndBlock, 
+                    vaultClosed: vaultClosed,
+                    library: library
+                })}>
                 Stake
               </Button>
             </Box>

@@ -12,26 +12,33 @@ import {
   Grid,
 } from '@chakra-ui/react';
 import {FC} from 'react';
+import {closeSale} from '../staking.reducer';
+import {useWeb3React} from '@web3-react/core';
 
 type ManageModalProps = {
   onOpenStakeOptionModal: Function;
   onOpenClaimOptionModal: Function;
   onOpenUnstakeOptionModal: Function;
-  onEndSale: Function;
   onClose: Function;
   isOpen: boolean;
   balance: string;
+  vaultAddress: string;
+  vaultClosed: boolean;
+  stakeStartBlock: string | number;
 };
 
 export const ManageModal: FC<ManageModalProps> = ({
-  onEndSale,
   onOpenClaimOptionModal,
   onOpenStakeOptionModal,
   onOpenUnstakeOptionModal,
   isOpen,
   onClose,
   balance,
+  vaultAddress,
+  vaultClosed,
+  stakeStartBlock,
 }) => {
+  const {account, library} = useWeb3React();
   return (
     <Modal isOpen={isOpen} isCentered onClose={() => onClose()}>
       <ModalOverlay />
@@ -71,13 +78,17 @@ export const ManageModal: FC<ManageModalProps> = ({
               onClick={() => onOpenUnstakeOptionModal()}>
               Unstake from Layer2
             </Button>
-            <Button colorScheme="blue" onClick={() => onOpenClaimOptionModal()}>
+            <Button colorScheme="blue">
               Withdraw
             </Button>
-            <Button colorScheme="blue" onClick={() => onEndSale()}>
+            <Button colorScheme="blue">
              Swap
             </Button>
-            <Button colorScheme="blue" onClick={() => onEndSale()}>
+            <Button colorScheme="blue" disabled={vaultClosed} onClick={() => closeSale(
+            {userAddress: account,
+              vaultContractAddress: vaultAddress,
+              stakeStartBlock: stakeStartBlock,
+            library: library})}>
              End Sale
             </Button>
           </Grid>

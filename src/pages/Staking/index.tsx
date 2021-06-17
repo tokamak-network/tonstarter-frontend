@@ -114,7 +114,6 @@ export const Staking = () => {
     onClose: onCloseStakeInLayer2Modal,
     isOpen: isStakeInLayer2ModalOpen,
   } = useDisclosure();
-  const onEndSale = useCallback(() => {}, []);
   const columns = useMemo(
     () => [
       {
@@ -250,17 +249,21 @@ export const Staking = () => {
             onClose={onCloseManageOptionModal}
             balance={user.balance}
             onOpenClaimOptionModal={onOpenClaimOptionModal}
-            onEndSale={onEndSale}
             onOpenStakeOptionModal={onOpenStakeInLayer2Modal}
             onOpenUnstakeOptionModal={onOpenUnstakeOptionModal}
+            vaultAddress= {data[row.id]?.vaultAddress}
+            vaultClosed={data[row.id]?.vaultClosed}
+            stakeStartBlock= {data[row.id]?.stakeStartBlock}
           />
           <StakeInLayer2Modal
             isOpen={isStakeInLayer2ModalOpen}
             balance={user.balance}
             payToken={data[row.id]?.token}
             saleStartBlock= {data[row.id]?.saleStartBlock}
+            stakeEndBlock= {data[row.id]?.stakeEndBlock}
             address={data[row.id]?.contractAddress}
             stakeStartBlock= {data[row.id]?.stakeStartBlock}
+            vaultClosed={data[row.id]?.vaultClosed}
             onClose={onCloseStakeInLayer2Modal}
             onSubmit={onStakeSubmitted}
           />
@@ -280,7 +283,6 @@ export const Staking = () => {
       onCloseManageOptionModal,
       onCloseStakeOptionModal,
       onCloseUnstakeOptionModal,
-      onEndSale,
       onOpenClaimOptionModal,
       onOpenManageOptionModal,
       onOpenStakeOptionModal,
