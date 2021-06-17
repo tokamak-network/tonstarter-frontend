@@ -165,11 +165,16 @@ const getCondition = (rIndex: number, cIndex: number) => {
 const getLeftArea = (rowDots: number[]) => {
   const leftMargin = elements.marinLeft;
   const distantMargin = elements.distanceMargin;
+  console.log('---');
+  console.log(rowDots.length);
+  console.log((rowDots.length-1) % 2 !== 0);
   const middlePoint =
     rowDots.length % 2 !== 0
-      ? Math.round(rowDots.length / 2) - 1
+      ? Math.round(rowDots.length / 2) -1
       : Math.round(rowDots.length / 2);
-  return leftMargin + middlePoint * distantMargin;
+      console.log(middlePoint)
+   const finalMiddlePoint = middlePoint % 2 === 0 ? middlePoint : middlePoint -1   
+  return leftMargin + finalMiddlePoint * distantMargin;
 };
 
 export const Animation: React.FC<HomeProps> = () => {
@@ -180,8 +185,8 @@ export const Animation: React.FC<HomeProps> = () => {
     firstLine: 0,
     scondLine: 0.5,
     circles: 1,
-    innerLine: 1.5,
-    mainText: 4.5,
+    innerLine: 1.3,
+    mainText: 4,
     subText: 5,
     lastPhase: 6,
     lastCircle: 7,
