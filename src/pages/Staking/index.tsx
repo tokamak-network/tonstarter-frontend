@@ -102,9 +102,11 @@ export const Staking = () => {
   const columns = useMemo(
     () => [
       {
+        Header: 'name',
         accessor: 'name',
       },
       {
+        Header: 'period',
         accessor: 'period',
       },
       // {
@@ -112,10 +114,11 @@ export const Staking = () => {
       //   accessor: 'apy',
       // },
       {
+        Header: 'total staked',
         accessor: 'stakeBalanceTON',
       },
       {
-        // Header: 'Earning Per Block',
+        Header: 'Earning Per Block',
         accessor: 'earning_per_block',
       },
       // {

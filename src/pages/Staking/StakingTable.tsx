@@ -52,8 +52,63 @@ export const StakingTable: FC<StakingTableProps> = ({
     useExpanded,
     usePagination,
   );
+  console.log(getTableBodyProps());
+
+  console.log(page);
+
   return (
-    <>
+    <Flex w="1100px" flexDir={'column'}>
+      <Flex justifyContent={'space-between'} mb={'23px'}>
+        <Flex>
+          <Flex alignContent={'center'} alignItems={'center'} mr={'20px'}>
+            <Box
+              w={'8px'}
+              h={'8px'}
+              borderRadius={50}
+              bg="#f95359"
+              mr={'7px'}
+              mt={'2px'}></Box>
+            <Text fontSize={'11px'} color={'#304156'}>
+              On sale
+            </Text>
+          </Flex>
+          <Flex alignContent={'center'} alignItems={'center'} mr={'20px'}>
+            <Box
+              w={'8px'}
+              h={'8px'}
+              borderRadius={50}
+              bg="#ffdc00"
+              mr={'7px'}
+              mt={'2px'}></Box>
+            <Text fontSize={'11px'} color={'#304156'}>
+              started
+            </Text>
+          </Flex>
+          <Flex alignContent={'center'} alignItems={'center'}>
+            <Box
+              w={'8px'}
+              h={'8px'}
+              borderRadius={50}
+              bg="#2ea2f8"
+              mr={'7px'}
+              mt={'2px'}></Box>
+            <Text fontSize={'11px'} color={'#304156'}>
+              ended
+            </Text>
+          </Flex>
+        </Flex>
+        <Select
+          w={'137px'}
+          h={'32px'}
+          color={'#86929d'}
+          fontSize={'13px'}
+          placeholder="On sale Sort">
+          <option>Name</option>
+          <option>Period</option>
+          <option>Total staked</option>
+          <option>Earning per block</option>
+        </Select>
+      </Flex>
       <Box overflowX={'auto'}>
         <chakra.table
           width={'full'}
@@ -61,17 +116,20 @@ export const StakingTable: FC<StakingTableProps> = ({
           {...getTableProps()}
           display="flex"
           flexDirection="column">
-          {/* <chakra.thead textAlign={'justify'}>
+          <chakra.thead textAlign={'justify'}>
             {headerGroups.map((headerGroup) => (
               <chakra.tr h={16} {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
-                  <chakra.th px={3} py={3} {...column.getHeaderProps()}>
+                  <chakra.th
+                    px={3}
+                    py={3}
+                    {...column.getHeaderProps(column.getSortByToggleProps())}>
                     {column.render('Header')}
                   </chakra.th>
                 ))}
               </chakra.tr>
             ))}
-          </chakra.thead> */}
+          </chakra.thead>
           <chakra.tbody
             {...getTableBodyProps()}
             display="flex"
@@ -99,11 +157,22 @@ export const StakingTable: FC<StakingTableProps> = ({
                         py={3}
                         key={index}
                         m={0}
-                        w={type === 'name' ? '360px' : '200px'}
+                        mr={30}
+                        w={
+                          type === 'name'
+                            ? '280px'
+                            : type === 'period'
+                            ? '150px'
+                            : type === 'stakeBalanceTON'
+                            ? '200px'
+                            : type === 'earning_per_block'
+                            ? '340px'
+                            : '14px'
+                        }
                         display="flex"
                         alignItems="center"
-                        color={type === 'name' ? '#304156' : '#86929d'}
-                        fontSize={type === 'name' ? '20px' : '13px'}
+                        color={type === 'name' ? '#304156' : '#3a495f'}
+                        fontSize={type === 'name' ? '15px' : '13px'}
                         fontWeight={type === 'name' ? 600 : 0}
                         {...cell.getCellProps()}>
                         {type === 'name' ? (
@@ -122,14 +191,24 @@ export const StakingTable: FC<StakingTableProps> = ({
                         ) : (
                           ''
                         )}
-                        {type === 'period' ? <Text mr={2}>Period</Text> : ''}
+                        {type === 'period' ? (
+                          <Text mr={2} color="#86929d">
+                            Period
+                          </Text>
+                        ) : (
+                          ''
+                        )}
                         {type === 'stakeBalanceTON' ? (
-                          <Text mr={2}>Total Staked </Text>
+                          <Text mr={2} color="#86929d">
+                            Total Staked
+                          </Text>
                         ) : (
                           ''
                         )}
                         {type === 'earning_per_block' ? (
-                          <Text mr={2}>Earning Per Block </Text>
+                          <Text mr={2} color="#86929d">
+                            Earning Per Block
+                          </Text>
                         ) : (
                           ''
                         )}
@@ -228,19 +307,6 @@ export const StakingTable: FC<StakingTableProps> = ({
               <NumberDecrementStepper />
             </NumberInputStepper>
           </NumberInput> */}
-            <Select
-              w={28}
-              size={'sm'}
-              value={pageSize}
-              onChange={(e) => {
-                setPageSize(Number(e.target.value));
-              }}>
-              {[10, 20, 30, 40, 50].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  Show {pageSize}
-                </option>
-              ))}
-            </Select>
           </Flex>
 
           <Flex>
@@ -254,6 +320,19 @@ export const StakingTable: FC<StakingTableProps> = ({
                 ml={4}
               />
             </Tooltip>
+            <Select
+              w={28}
+              size={'sm'}
+              value={pageSize}
+              onChange={(e) => {
+                setPageSize(Number(e.target.value));
+              }}>
+              {[10, 20, 30, 40, 50].map((pageSize) => (
+                <option key={pageSize} value={pageSize}>
+                  Show {pageSize}
+                </option>
+              ))}
+            </Select>
             {/* <Tooltip label="Last Page">
             <IconButton
               aria-label={'Last Page'}
@@ -266,7 +345,7 @@ export const StakingTable: FC<StakingTableProps> = ({
           </Flex>
         </Flex>
       </Box>
-    </>
+    </Flex>
   );
 };
 
