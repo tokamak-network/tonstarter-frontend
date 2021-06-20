@@ -153,8 +153,6 @@ export const Staking = () => {
   const onUnstakeSubmitted = useCallback((value) => {}, []);
   const renderRowSubComponent = useCallback(
     ({row}) => {
-      console.log(data);
-
       return (
         <Flex
           mt={0}

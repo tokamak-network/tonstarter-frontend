@@ -2,7 +2,7 @@ import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {RootState} from 'store/reducers';
 import {getContract, getSigner} from 'utils/contract';
 import {BigNumber, utils, ethers} from 'ethers';
-import { toWei} from 'web3-utils';
+import {toWei} from 'web3-utils';
 import * as StakeVault from 'services/abis/Stake1Vault.json';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import * as TonABI from 'services/abis/TON.json';
@@ -17,12 +17,11 @@ import {
   REACT_APP_SEIG_MANAGER,
   REACT_APP_TOKAMAK_LAYER2,
   REACT_APP_DEPOSIT_MANAGER,
-  DEPLOYED
+  DEPLOYED,
 } from 'constants/index';
 
 const provider = ethers.getDefaultProvider('rinkeby');
 const stakeInfos: Array<any> = [];
-
 
 export type Stake = {
   name?: string;
@@ -90,14 +89,14 @@ type unstake = {
   stakeEndBlock: string | Number;
   library: any;
   stakeContractAddress: string;
-}
+};
 
 type claim = {
   userAddress: string | null | undefined;
   stakeContractAddress: string;
   stakeStartBlock: string | Number;
   library: any;
-}
+};
 
 const initialState = {
   data: [],
@@ -108,86 +107,100 @@ const initialState = {
 
 const converToWei = (num: string) => toWei(num, 'ether');
 
-
-export const stakePaytoken = async (args: StakeProps)  => {
-  const {userAddress, amount, payToken, saleStartBlock, library, stakeContractAddress, stakeStartBlock} = args;
+export const stakePaytoken = async (args: StakeProps) => {
+  const {
+    userAddress,
+    amount,
+    payToken,
+    saleStartBlock,
+    library,
+    stakeContractAddress,
+    stakeStartBlock,
+  } = args;
   console.log(amount);
-  
-  if (payToken === DEPLOYED.TON) {
-    
-    await stakeTon(
-      {
-        userAddress: userAddress,
-        amount: amount,
-        saleStartBlock: saleStartBlock,
-        library: library,
-        stakeContractAddress: stakeContractAddress,
-        stakeStartBlock: stakeStartBlock
-      }
-    );
-  }
-  else {
-   await stakeEth({
-    userAddress: userAddress,
-    amount: amount,
-    saleStartBlock: saleStartBlock,
-    library: library,
-    stakeContractAddress: stakeContractAddress,
-    stakeStartBlock: stakeStartBlock
-  } )
-  }
 
-}
+  if (payToken === DEPLOYED.TON) {
+    await stakeTon({
+      userAddress: userAddress,
+      amount: amount,
+      saleStartBlock: saleStartBlock,
+      library: library,
+      stakeContractAddress: stakeContractAddress,
+      stakeStartBlock: stakeStartBlock,
+    });
+  } else {
+    await stakeEth({
+      userAddress: userAddress,
+      amount: amount,
+      saleStartBlock: saleStartBlock,
+      library: library,
+      stakeContractAddress: stakeContractAddress,
+      stakeStartBlock: stakeStartBlock,
+    });
+  }
+};
 const stakeTon = async (args: StakeTon) => {
- const {userAddress, amount, saleStartBlock, library, stakeContractAddress, stakeStartBlock} = args;
+  const {
+    userAddress,
+    amount,
+    saleStartBlock,
+    library,
+    stakeContractAddress,
+    stakeStartBlock,
+  } = args;
   if (userAddress === null || userAddress === undefined) {
     return;
   }
   const currentBlock = await provider.getBlockNumber();
-  if(currentBlock > saleStartBlock  && currentBlock < stakeStartBlock) {
-    
+  if (currentBlock > saleStartBlock && currentBlock < stakeStartBlock) {
     const tonContract = getContract(REACT_APP_TON, TonABI.abi, library);
     if (!tonContract) {
       throw new Error(`Can't find the contract for staking actions`);
     }
     const tonAmount = converToWei(amount);
     const abicoder = ethers.utils.defaultAbiCoder;
-    const data = abicoder.encode(["address", "uint256"], [stakeContractAddress, tonAmount]);
-  
-    const signer = getSigner(library, userAddress);
-  
-    await tonContract.connect(signer)?.approveAndCall(stakeContractAddress, tonAmount, data);
-  }
+    const data = abicoder.encode(
+      ['address', 'uint256'],
+      [stakeContractAddress, tonAmount],
+    );
 
-  else {
-    return alert('staking period has ended')
+    const signer = getSigner(library, userAddress);
+
+    await tonContract
+      .connect(signer)
+      ?.approveAndCall(stakeContractAddress, tonAmount, data);
+  } else {
+    return alert('staking period has ended');
   }
-  
 };
 const stakeEth = async (args: StakeTon) => {
-  const {userAddress, amount, saleStartBlock, library, stakeContractAddress, stakeStartBlock} = args;
+  const {
+    userAddress,
+    amount,
+    saleStartBlock,
+    library,
+    stakeContractAddress,
+    stakeStartBlock,
+  } = args;
 
   if (userAddress === null || userAddress === undefined) {
     return;
   }
   const currentBlock = await provider.getBlockNumber();
-  
-  if(currentBlock > saleStartBlock && currentBlock < stakeStartBlock) {
-  const transactionRequest: any = {
-    to: stakeContractAddress,
-    value: utils.parseEther(amount)
-  }
-   
+
+  if (currentBlock > saleStartBlock && currentBlock < stakeStartBlock) {
+    const transactionRequest: any = {
+      to: stakeContractAddress,
+      value: utils.parseEther(amount),
+    };
+
     const signer = getSigner(library, userAddress);
     await signer.sendTransaction(transactionRequest);
-  
+  } else {
+    return alert('staking period has ended');
   }
+};
 
-  else {
-    return alert('staking period has ended')
-  }
-}
- 
 export const withdraw = async (args: unstake) => {
   const {userAddress, stakeEndBlock, library, stakeContractAddress} = args;
   const currentBlock = await provider.getBlockNumber();
@@ -201,41 +214,39 @@ export const withdraw = async (args: unstake) => {
       StakeTON.abi,
       library,
     );
-    
+
     if (!StakeTONContract) {
       throw new Error(`Can't find the contract for staking actions`);
     }
     const signer = getSigner(library, userAddress);
-  
-    await StakeTONContract.connect(signer)?.withdraw();
-  }
-  else {
-    return alert('sale has not ended yet')
-  }
 
-}
+    await StakeTONContract.connect(signer)?.withdraw();
+  } else {
+    return alert('sale has not ended yet');
+  }
+};
 
 export const claimReward = async (args: claim) => {
-  const {userAddress,stakeContractAddress, stakeStartBlock, library } = args;
+  const {userAddress, stakeContractAddress, stakeStartBlock, library} = args;
   const currentBlock = await provider.getBlockNumber();
 
   if (userAddress === null || userAddress === undefined) {
     return;
   }
-  if ( currentBlock > stakeStartBlock) {
+  if (currentBlock > stakeStartBlock) {
     const StakeTONContract = await getContract(
       stakeContractAddress,
       StakeTON.abi,
       library,
     );
-    
+
     if (!StakeTONContract) {
       throw new Error(`Can't find the contract for staking actions`);
     }
     const signer = getSigner(library, userAddress);
-   await StakeTONContract.connect(signer)?.claim();
+    await StakeTONContract.connect(signer)?.claim();
   }
-}
+};
 
 export const fetchStakes = createAsyncThunk(
   'stakes/all',
@@ -251,7 +262,7 @@ export const fetchStakes = createAsyncThunk(
     }
     if (contract) {
       const vaults = await contract.vaultsOfPahse(1);
-      
+
       stakeList = await Promise.all(
         vaults.map(async (vault: any) => {
           const stakeVault = await getContract(vault, StakeVault.abi, library);
@@ -273,10 +284,10 @@ export const fetchStakes = createAsyncThunk(
           return await Promise.all(
             stake.projects.map(async (item: any, index: number) => {
               let info = await stake.stakeVault.stakeInfos(item);
-            
-            //  console.log(stake);
-             
-             
+
+              //  console.log(stake);
+
+              console.log(info);
               const startTime = await formatStartTime(info[1]);
               const endTime = await formatEndTime(info[1], info[2]);
 
@@ -307,9 +318,9 @@ export const fetchStakes = createAsyncThunk(
                 startTime: startTime,
                 endTime: endTime,
               };
-              
+
               await getMy(stakeInfo, item, library, account);
-              await infoTokamak(stakeInfo, item, index, library, account)
+              await infoTokamak(stakeInfo, item, index, library, account);
               projects.push(stakeInfo);
             }),
           );

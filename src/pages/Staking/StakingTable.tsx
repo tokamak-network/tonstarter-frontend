@@ -18,6 +18,8 @@ import {
   Avatar,
 } from '@chakra-ui/react';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
+import './staking.css';
+import {checkTokenType} from 'utils/token';
 
 type StakingTableProps = {
   columns: Column[];
@@ -151,6 +153,8 @@ export const StakingTable: FC<StakingTableProps> = ({
                   {...row.getRowProps()}>
                   {row.cells.map((cell: any, index: number) => {
                     const type = cell.column.id;
+                    const token = checkTokenType(cell.row.original.token);
+
                     return (
                       <chakra.td
                         px={3}
@@ -177,7 +181,8 @@ export const StakingTable: FC<StakingTableProps> = ({
                         {...cell.getCellProps()}>
                         {type === 'name' ? (
                           <Avatar
-                            src=""
+                            src={token.symbol}
+                            backgroundColor={token.bg}
                             borderWidth="1px"
                             borderColor="#f4f6f8"
                             bg="transparent"
