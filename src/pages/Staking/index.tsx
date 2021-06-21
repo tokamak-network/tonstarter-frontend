@@ -231,16 +231,31 @@ export const Staking = () => {
             </Box>
           </Flex>
           <UnstakeOptionModal
+            balance={data[row.id]?.mystaked}
+            stakeEndBlock={data[row.id]?.stakeEndBlock}
+            address={data[row.id]?.contractAddress}
             isOpen={isUnstakeModalOpen}
-            balance={user.balance}
             onClose={onCloseUnstakeOptionModal}
             onSubmit={onUnstakeSubmitted}
           />
           <ClaimOptionModal
             isOpen={isClaimModalOpen}
             balance={user.balance}
+            stakeStartBlock={data[row.id]?.stakeStartBlock}
+            address={data[row.id]?.contractAddress}
             onClose={onCloseClaimOptionModal}
             onSubmit={onClaimSubmitted}
+          />
+
+          <StakeOptionModal
+            isOpen={isStakeModalOpen}
+            balance={user.balance}
+            payToken={data[row.id]?.token}
+            saleStartBlock={data[row.id]?.saleStartBlock}
+            address={data[row.id]?.contractAddress}
+            stakeStartBlock={data[row.id]?.stakeStartBlock}
+            onClose={onCloseStakeOptionModal}
+            onSubmit={onStakeSubmitted}
           />
         </Box>
       );
@@ -249,14 +264,17 @@ export const Staking = () => {
       appConfig.explorerLink,
       data,
       isClaimModalOpen,
+      isStakeModalOpen,
       isUnstakeModalOpen,
       onClaimSubmitted,
       onCloseClaimOptionModal,
+      onCloseStakeOptionModal,
       onCloseUnstakeOptionModal,
       onOpenClaimOptionModal,
       onOpenManageOptionModal,
       onOpenStakeOptionModal,
       onOpenUnstakeOptionModal,
+      onStakeSubmitted,
       onUnstakeSubmitted,
       user,
     ],
@@ -292,13 +310,6 @@ export const Staking = () => {
         onEndSale={onEndSale}
         onOpenStakeOptionModal={onOpenStakeOptionModal}
         onOpenUnstakeOptionModal={onOpenUnstakeOptionModal}
-      />
-
-      <StakeOptionModal
-        isOpen={isStakeModalOpen}
-        balance={user.balance}
-        onClose={onCloseStakeOptionModal}
-        onSubmit={onStakeSubmitted}
       />
     </Fragment>
   );
