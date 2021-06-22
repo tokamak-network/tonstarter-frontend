@@ -58,6 +58,8 @@ export type Stake = {
   period: string | number;
   startTime: string;
   endTime: string;
+  vaultAddress: string;
+  vaultClosed: boolean;
 };
 
 interface StakeState {
@@ -227,6 +229,52 @@ export const withdraw = async (args: unstake) => {
   }
 };
 
+export const closeSale = async (args: endsale) => {
+  const {userAddress, vaultContractAddress, stakeStartBlock, library} = args;
+  if (userAddress === null || userAddress === undefined) {
+    return;
+  }
+  const stakeVault = await getContract(
+    vaultContractAddress,
+    StakeVault.abi,
+    library,
+  );
+  const currentBlock = await provider.getBlockNumber();
+  if (currentBlock > stakeStartBlock) {
+    const signer = getSigner(library, userAddress);
+    await stakeVault.connect(signer)?.closeSale();
+  } else {
+    return alert('Staking has not ended yet');
+  }
+};
+
+export const stakeToLayer2 = async (args: stakeToLayer2Args) => {
+  const {userAddress, amount, stakeEndBlock, vaultClosed, library} = args;
+  if (userAddress === null || userAddress === undefined) {
+    return;
+  }
+  const depositManager = getContract(
+    REACT_APP_DEPOSIT_MANAGER,
+    DepositManagerABI.abi,
+    library,
+  );
+  const globalWithdrawalDelay = await depositManager?.globalWithdrawalDelay();
+  const currentBlock = await provider.getBlockNumber();
+  const endBlock = Number(stakeEndBlock);
+  if (currentBlock < endBlock - globalWithdrawalDelay && vaultClosed) {
+    const tonContract = getContract(REACT_APP_TON, TonABI.abi, library);
+    if (!tonContract) {
+      throw new Error(`Can't find the contract for staking actions`);
+    }
+    const tonAmount = converToWei(amount);
+    const data = getData(REACT_APP_TOKAMAK_LAYER2);
+    const signer = getSigner(library, userAddress);
+    await tonContract
+      .connect(signer)
+      .approveAndCall(REACT_APP_WTON, tonAmount, data);
+  }
+};
+
 export const claimReward = async (args: claim) => {
   const {userAddress, stakeContractAddress, stakeStartBlock, library} = args;
   const currentBlock = await provider.getBlockNumber();
@@ -254,8 +302,6 @@ export const fetchStakes = createAsyncThunk(
   async ({contract, library, account}: any, {requestId, getState}) => {
     let projects: any[] = [];
     // let iERC20: any;
-
-    console.log(account);
 
     console.log('--fetchStakes--');
 
