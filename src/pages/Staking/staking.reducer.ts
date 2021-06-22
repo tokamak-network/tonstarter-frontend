@@ -11,7 +11,6 @@ import * as SeigManagerABI from 'services/abis/SeigManager.json';
 import * as DepositManagerABI from 'services/abis/DepositManager.json';
 import {formatEther} from '@ethersproject/units';
 import {period, formatStartTime, formatEndTime} from 'utils/timeStamp';
-import axios from 'axios';
 import {
   REACT_APP_TON,
   REACT_APP_FLD,
@@ -301,107 +300,91 @@ export const fetchStakes = createAsyncThunk(
   'stakes/all',
   async ({contract, library, account}: any, {requestId, getState}) => {
     let projects: any[] = [];
-    // let iERC20: any;
+    let stakeList: any;
+    let iERC20: any;
 
+<<<<<<< HEAD
     console.log('--fetchStakes--');
+=======
+    console.log('--fetchStakes--')
+>>>>>>> parent of 9bc6480 (Feat : change process to fetch data for stakeList with api)
 
     // @ts-ignore
     const {currentRequestId, loading} = getState().stakes;
     if (loading !== 'pending' || requestId !== currentRequestId) {
-      console.log('peding || requestId && currentRequestId');
+      console.log('peding || requestId && currentRequestId')
       return;
     }
 
-    console.log('--contract--');
+      console.log('--contract--')
+      const vaults = await contract.vaultsOfPhase(1);
 
-    // const temp = await axios
-    //   .get('http://3.36.66.138:4000/v1/vaults?chainId=4')
-    //   .then((result) => result.data);
-    // const contracts = await axios
-    //   .get('http://3.36.66.138:4000/v1/stakecontracts?chainId=4')
-    //   .then((result) => result);
-    // console.log(temp);
-    // console.log(contracts);
+      stakeList = await Promise.all(
+        vaults.map(async (vault: any) => {
+          const stakeVault = await getContract(vault, StakeVault.abi, library);
+          const stakeType = await stakeVault?.stakeType();
+          const token = await stakeVault.paytoken();
+          // const stakeList: string[] = await stakeVault?.stakeAddressesAll();
+          return {
+            iERC20: iERC20,
+            stakeType: stakeType,
+            projects: await stakeVault?.stakeAddressesAll(),
+            stakeVault,
+            token,
+          };
+        }),
+      );
 
-    // const vaults = temp.datas;
+      console.log(stakeList)
 
-    // stakeList = await Promise.all(
-    //   vaults.map(async (vault: any) => {
-    //     const stakeVault = vault.vault;
-    //     const stakeType = vault.stakeType;
-    //     const token = vault.paytoken;
-    //     const projects = vault.stakeAddresses;
-    //     return {
-    //       // iERC20: iERC20,
-    //       stakeType,
-    //       projects,
-    //       stakeVault,
-    //       token,
-    //     };
-    //   }),
-    // );
+      await Promise.all(
+        stakeList.map(async (stake: any) => {
+          return await Promise.all(
+            stake.projects.map(async (item: any, index: number) => {
+              let info = await stake.stakeVault.stakeInfos(item);
 
-    const contracts = await axios
-      .get('http://3.36.66.138:4000/v1/stakecontracts?chainId=4')
-      .then((result) => result.data);
+              //  console.log(stake);
 
-    const stakeList = contracts.datas;
+              console.log(info);
+              const startTime = await formatStartTime(info[1]);
+              const endTime = await formatEndTime(info[1], info[2]);
 
-    console.log(stakeList);
+              const stakeInfo: Partial<Stake> = {
+                contractAddress: item,
+                name: info[0],
+                saleStartBlock: 0,
+                stakeStartBlock: info[1],
+                stakeEndBlock: info[2],
+                balance: formatEther(info[3]),
+                totalRewardAmount: formatEther(info[4]),
+                claimRewardAmount: formatEther(info[5]),
+                totalStakers: 0,
+                myton: formatEther(0),
+                myfld: formatEther(0),
+                mystaked: formatEther(0),
+                mywithdraw: formatEther(0),
+                myclaimed: formatEther(0),
+                canRewardAmount: formatEther(0),
+                stakeBalanceTON: formatEther(0),
+                stakeBalanceETH: formatEther(0),
+                stakeBalanceFLD: formatEther(0),
+                tokamakStaked: formatEther(0),
+                tokamakPendingUnstaked: formatEther(0),
+                token: stake.token,
+                stakeType: stake.stakeType,
+                period: period(info[1], info[2]),
+                startTime: startTime,
+                endTime: endTime,
+              };
 
-    await Promise.all(
-      stakeList.map(async (stake: any, index: number) => {
-        console.log(stake);
-        // let info = await stake.stakeVault.stakeInfos(item);
-
-        //  console.log(stake);
-
-        // const startTime = await formatStartTime(stake.saleStartBlock);
-        // const sendTime = await formatEndTime(
-        //   stake.saleStartBlock,
-        //   stake.saleStartBlock,
-        // );
-
-        const stakeInfo: Partial<Stake> = {
-          contractAddress: stake.stakeContract,
-          name: stake.name,
-          saleStartBlock: 0,
-          stakeStartBlock: 0,
-          stakeEndBlock: 0,
-          // balance: formatEther(info[3]),
-          // totalRewardAmount: formatEther(info[4]),
-          // claimRewardAmount: formatEther(info[5]),
-          totalStakers: formatEther(0),
-          myton: formatEther(0),
-          myfld: formatEther(0),
-          mystaked: formatEther(0),
-          mywithdraw: formatEther(0),
-          myclaimed: formatEther(0),
-          canRewardAmount: formatEther(0),
-          stakeBalanceTON: formatEther(String(stake.totalStakedAmount)),
-          stakeBalanceETH: formatEther(0),
-          stakeBalanceFLD: formatEther(0),
-          tokamakStaked: formatEther(0),
-          tokamakPendingUnstaked: formatEther(0),
-          token: stake.paytoken,
-          stakeType: stake.stakeType,
-          period: period(stake.startBlock, stake.endBlock),
-          startTime: 'MMM DD, YYYY HH:mm:ss',
-          endTime: 'MMM DD, YYYY HH:mm:ss',
-        };
-
-        if (account) {
-          await getMy(stakeInfo, stake, library, account);
-          await infoTokamak(stakeInfo, stake, index, library, account);
-        }
-
-        projects.push(stakeInfo);
-      }),
-    );
-    console.log(projects);
-    // if (account) {
-    //   console.log(account);
-    // }
+              await getMy(stakeInfo, item, library, account);
+              await infoTokamak(stakeInfo, item, index, library, account);
+              projects.push(stakeInfo);
+            }),
+          );
+        }),
+      );
+    
     return projects;
   },
 );
