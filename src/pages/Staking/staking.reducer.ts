@@ -2,7 +2,7 @@ import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {RootState} from 'store/reducers';
 import {getContract, getSigner} from 'utils/contract';
 import {BigNumber, utils, ethers} from 'ethers';
-import {toWei} from 'web3-utils';
+import {padLeft, toWei} from 'web3-utils';
 import * as StakeVault from 'services/abis/Stake1Vault.json';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import * as TonABI from 'services/abis/TON.json';
@@ -19,6 +19,7 @@ import {
   REACT_APP_TOKAMAK_LAYER2,
   REACT_APP_DEPOSIT_MANAGER,
   DEPLOYED,
+  REACT_APP_WTON,
 } from 'constants/index';
 
 const provider = ethers.getDefaultProvider('rinkeby');
@@ -99,6 +100,21 @@ type claim = {
   library: any;
 };
 
+type endsale = {
+  userAddress: string | null | undefined;
+  vaultContractAddress: string;
+  stakeStartBlock: string | Number;
+  library: any;
+};
+
+type stakeToLayer2Args = {
+  userAddress: string | null | undefined;
+  amount: string;
+  stakeEndBlock: string | Number;
+  vaultClosed: boolean;
+  library: any;
+};
+
 const initialState = {
   data: [],
   loading: 'idle',
@@ -107,6 +123,26 @@ const initialState = {
 } as StakeState;
 
 const converToWei = (num: string) => toWei(num, 'ether');
+
+const getUnmarshalString = (str: string) => {
+  if (str.slice(0, 2) === '0x') {
+    return str.slice(2);
+  }
+  return str;
+};
+const getMarshalString = (str: string) => {
+  if (str.slice(0, 2) === '0x') {
+    return str;
+  }
+  return '0x'.concat(str);
+};
+const getData = (operatorLayer2: string) => {
+  const depositManager = getMarshalString(REACT_APP_DEPOSIT_MANAGER);
+  const operator = getUnmarshalString(operatorLayer2);
+  const padDepositManager = padLeft(depositManager, 64);
+  const padOperator = padLeft(operator, 64);
+  return `${padDepositManager}${padOperator}`;
+};
 
 export const stakePaytoken = async (args: StakeProps) => {
   const {
@@ -249,6 +285,52 @@ export const claimReward = async (args: claim) => {
   }
 };
 
+export const closeSale = async (args: endsale) => {
+  const {userAddress, vaultContractAddress, stakeStartBlock, library} = args;
+  if (userAddress === null || userAddress === undefined) {
+    return;
+  }
+  const stakeVault = await getContract(
+    vaultContractAddress,
+    StakeVault.abi,
+    library,
+  );
+  const currentBlock = await provider.getBlockNumber();
+  if (currentBlock > stakeStartBlock) {
+    const signer = getSigner(library, userAddress);
+    await stakeVault.connect(signer)?.closeSale();
+  } else {
+    return alert('Staking has not ended yet');
+  }
+};
+
+export const stakeToLayer2 = async (args: stakeToLayer2Args) => {
+  const {userAddress, amount, stakeEndBlock, vaultClosed, library} = args;
+  if (userAddress === null || userAddress === undefined) {
+    return;
+  }
+  const depositManager = getContract(
+    REACT_APP_DEPOSIT_MANAGER,
+    DepositManagerABI.abi,
+    library,
+  );
+  const globalWithdrawalDelay = await depositManager?.globalWithdrawalDelay();
+  const currentBlock = await provider.getBlockNumber();
+  const endBlock = Number(stakeEndBlock);
+  if (currentBlock < endBlock - globalWithdrawalDelay && vaultClosed) {
+    const tonContract = getContract(REACT_APP_TON, TonABI.abi, library);
+    if (!tonContract) {
+      throw new Error(`Can't find the contract for staking actions`);
+    }
+    const tonAmount = converToWei(amount);
+    const data = getData(REACT_APP_TOKAMAK_LAYER2);
+    const signer = getSigner(library, userAddress);
+    await tonContract
+      .connect(signer)
+      .approveAndCall(REACT_APP_WTON, tonAmount, data);
+  }
+};
+
 export const fetchStakes = createAsyncThunk(
   'stakes/all',
   async ({contract, library, account}: any, {requestId, getState}) => {
@@ -345,10 +427,11 @@ export const fetchStakes = createAsyncThunk(
         };
 
         if (account) {
-          await getMy(stakeInfo, stake, library, account);
-          await infoTokamak(stakeInfo, stake, index, library, account);
+          console.log(account);
         }
 
+        // await getMy(stakeInfo, stake, library, account);
+        // await infoTokamak(stakeInfo, stake, index, library, account);
         projects.push(stakeInfo);
       }),
     );
