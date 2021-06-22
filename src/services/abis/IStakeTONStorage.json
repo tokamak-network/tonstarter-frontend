@@ -107,7 +107,7 @@
     },
     {
       "inputs": [],
-      "name": "swappedAmountFLD",
+      "name": "swappedAmountTOS",
       "outputs": [
         {
           "internalType": "uint256",
@@ -171,7 +171,7 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.7.6+commit.7338295f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"defiStatus\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"depositManager\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"finalBalanceTON\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"finalBalanceWTON\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"fromTokamak\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"seigManager\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"swappedAmountFLD\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"toTokamak\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"toUniswapWTON\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"tokamakLayer2\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"ton\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"withdrawFlag\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"wton\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"defiStatus()\":{\"details\":\"defi status -> NONE, APPROVE,DEPOSITED,REQUESTWITHDRAW,REQUESTWITHDRAWALL,WITHDRAW,END\"},\"depositManager()\":{\"details\":\"DepositManager address\"},\"finalBalanceTON()\":{\"details\":\"the TON balance in this contract when withdraw at first\"},\"finalBalanceWTON()\":{\"details\":\"the WTON balance in this contract when withdraw at first\"},\"fromTokamak()\":{\"details\":\"the accumulated WTON amount unstaked from tokamak , in ray unit\"},\"seigManager()\":{\"details\":\"SeigManager address\"},\"swappedAmountFLD()\":{\"details\":\"the FLD balance in this contract\"},\"toTokamak()\":{\"details\":\"the accumulated TON amount staked into tokamak , in wei unit\"},\"toUniswapWTON()\":{\"details\":\"the accumulated WTON amount swapped using uniswap , in ray unit\"},\"tokamakLayer2()\":{\"details\":\"the layer2 address in Tokamak\"},\"ton()\":{\"details\":\"TON address\"},\"withdrawFlag()\":{\"details\":\"the withdraw flag, when withdraw at first, set true\"},\"wton()\":{\"details\":\"WTON address\"}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IStakeTONStorage.sol\":\"IStakeTONStorage\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IStakeTONStorage.sol\":{\"keccak256\":\"0x0c90fa145d53fd9c0cedd5bb63cb33b25d40be83b1f23e2e05b09ba32302cf2a\",\"license\":\"Unlicense\",\"urls\":[\"bzz-raw://2612fb9be4415ef76914c38772f88f809b1183136714f34fa9479e0120b1f1c2\",\"dweb:/ipfs/QmQSqNJGzRXqbyriSdZu4oonmtKThDJC3gKdLoJfwuz2nL\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.7.6+commit.7338295f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"defiStatus\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"depositManager\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"finalBalanceTON\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"finalBalanceWTON\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"fromTokamak\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"seigManager\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"swappedAmountTOS\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"toTokamak\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"toUniswapWTON\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"tokamakLayer2\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"ton\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"withdrawFlag\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"wton\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"defiStatus()\":{\"details\":\"defi status -> NONE, APPROVE,DEPOSITED,REQUESTWITHDRAW,REQUESTWITHDRAWALL,WITHDRAW,END\"},\"depositManager()\":{\"details\":\"DepositManager address\"},\"finalBalanceTON()\":{\"details\":\"the TON balance in this contract when withdraw at first\"},\"finalBalanceWTON()\":{\"details\":\"the WTON balance in this contract when withdraw at first\"},\"fromTokamak()\":{\"details\":\"the accumulated WTON amount unstaked from tokamak , in ray unit\"},\"seigManager()\":{\"details\":\"SeigManager address\"},\"swappedAmountTOS()\":{\"details\":\"the TOS balance in this contract\"},\"toTokamak()\":{\"details\":\"the accumulated TON amount staked into tokamak , in wei unit\"},\"toUniswapWTON()\":{\"details\":\"the accumulated WTON amount swapped using uniswap , in ray unit\"},\"tokamakLayer2()\":{\"details\":\"the layer2 address in Tokamak\"},\"ton()\":{\"details\":\"TON address\"},\"withdrawFlag()\":{\"details\":\"the withdraw flag, when withdraw at first, set true\"},\"wton()\":{\"details\":\"WTON address\"}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IStakeTONStorage.sol\":\"IStakeTONStorage\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":100},\"remappings\":[]},\"sources\":{\"/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IStakeTONStorage.sol\":{\"keccak256\":\"0xdd24b48c8578f957b408a91ece1e7749a60ce9adc7efc755e91957a616e43a56\",\"license\":\"Unlicense\",\"urls\":[\"bzz-raw://9d7cbd9c9b90eef186dc00d1a341142096fa465214494874ed3973d6eb84460d\",\"dweb:/ipfs/QmTBqBXGXeLNWRNsAAtwhc8yUizySE2cH9VpWCMencpsGf\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
@@ -179,21 +179,21 @@
   "deployedGeneratedSources": [],
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "//SPDX-License-Identifier: Unlicense\npragma solidity ^0.7.6;\n\ninterface IStakeTONStorage {\n    /// @dev TON address\n    function ton() external view returns (address);\n\n    /// @dev WTON address\n    function wton() external view returns (address);\n\n    /// @dev SeigManager address\n    function seigManager() external view returns (address);\n\n    /// @dev DepositManager address\n    function depositManager() external view returns (address);\n\n    /// @dev the layer2 address in Tokamak\n    function tokamakLayer2() external view returns (address);\n\n    /// @dev the accumulated TON amount staked into tokamak , in wei unit\n    function toTokamak() external view returns (uint256);\n\n    /// @dev the accumulated WTON amount unstaked from tokamak , in ray unit\n    function fromTokamak() external view returns (uint256);\n\n    /// @dev the accumulated WTON amount swapped using uniswap , in ray unit\n    function toUniswapWTON() external view returns (uint256);\n\n    /// @dev the FLD balance in this contract\n    function swappedAmountFLD() external view returns (uint256);\n\n    /// @dev the TON balance in this contract when withdraw at first\n    function finalBalanceTON() external view returns (uint256);\n\n    /// @dev the WTON balance in this contract when withdraw at first\n    function finalBalanceWTON() external view returns (uint256);\n\n    /// @dev defi status -> NONE, APPROVE,DEPOSITED,REQUESTWITHDRAW,REQUESTWITHDRAWALL,WITHDRAW,END\n    function defiStatus() external view returns (uint256);\n\n    /// @dev the withdraw flag, when withdraw at first, set true\n    function withdrawFlag() external view returns (bool);\n}\n",
+  "source": "//SPDX-License-Identifier: Unlicense\npragma solidity ^0.7.6;\n\ninterface IStakeTONStorage {\n    /// @dev TON address\n    function ton() external view returns (address);\n\n    /// @dev WTON address\n    function wton() external view returns (address);\n\n    /// @dev SeigManager address\n    function seigManager() external view returns (address);\n\n    /// @dev DepositManager address\n    function depositManager() external view returns (address);\n\n    /// @dev the layer2 address in Tokamak\n    function tokamakLayer2() external view returns (address);\n\n    /// @dev the accumulated TON amount staked into tokamak , in wei unit\n    function toTokamak() external view returns (uint256);\n\n    /// @dev the accumulated WTON amount unstaked from tokamak , in ray unit\n    function fromTokamak() external view returns (uint256);\n\n    /// @dev the accumulated WTON amount swapped using uniswap , in ray unit\n    function toUniswapWTON() external view returns (uint256);\n\n    /// @dev the TOS balance in this contract\n    function swappedAmountTOS() external view returns (uint256);\n\n    /// @dev the TON balance in this contract when withdraw at first\n    function finalBalanceTON() external view returns (uint256);\n\n    /// @dev the WTON balance in this contract when withdraw at first\n    function finalBalanceWTON() external view returns (uint256);\n\n    /// @dev defi status -> NONE, APPROVE,DEPOSITED,REQUESTWITHDRAW,REQUESTWITHDRAWALL,WITHDRAW,END\n    function defiStatus() external view returns (uint256);\n\n    /// @dev the withdraw flag, when withdraw at first, set true\n    function withdrawFlag() external view returns (bool);\n}\n",
   "sourcePath": "/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IStakeTONStorage.sol",
   "ast": {
     "absolutePath": "/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IStakeTONStorage.sol",
     "exportedSymbols": {
       "IStakeTONStorage": [
-        3788
+        3538
       ]
     },
-    "id": 3789,
+    "id": 3539,
     "license": "Unlicense",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 3709,
+        "id": 3459,
         "literals": [
           "solidity",
           "^",
@@ -209,44 +209,44 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "fullyImplemented": false,
-        "id": 3788,
+        "id": 3538,
         "linearizedBaseContracts": [
-          3788
+          3538
         ],
         "name": "IStakeTONStorage",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "documentation": {
-              "id": 3710,
+              "id": 3460,
               "nodeType": "StructuredDocumentation",
               "src": "95:20:29",
               "text": "@dev TON address"
             },
             "functionSelector": "cc48b947",
-            "id": 3715,
+            "id": 3465,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "ton",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 3711,
+              "id": 3461,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "132:2:29"
             },
             "returnParameters": {
-              "id": 3714,
+              "id": 3464,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3713,
+                  "id": 3463,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3715,
+                  "scope": 3465,
                   "src": "158:7:29",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -255,7 +255,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 3712,
+                    "id": 3462,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "158:7:29",
@@ -270,7 +270,7 @@
               ],
               "src": "157:9:29"
             },
-            "scope": 3788,
+            "scope": 3538,
             "src": "120:47:29",
             "stateMutability": "view",
             "virtual": false,
@@ -278,35 +278,35 @@
           },
           {
             "documentation": {
-              "id": 3716,
+              "id": 3466,
               "nodeType": "StructuredDocumentation",
               "src": "173:21:29",
               "text": "@dev WTON address"
             },
             "functionSelector": "8d62d949",
-            "id": 3721,
+            "id": 3471,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "wton",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 3717,
+              "id": 3467,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "212:2:29"
             },
             "returnParameters": {
-              "id": 3720,
+              "id": 3470,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3719,
+                  "id": 3469,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3721,
+                  "scope": 3471,
                   "src": "238:7:29",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -315,7 +315,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 3718,
+                    "id": 3468,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "238:7:29",
@@ -330,7 +330,7 @@
               ],
               "src": "237:9:29"
             },
-            "scope": 3788,
+            "scope": 3538,
             "src": "199:48:29",
             "stateMutability": "view",
             "virtual": false,
@@ -338,35 +338,35 @@
           },
           {
             "documentation": {
-              "id": 3722,
+              "id": 3472,
               "nodeType": "StructuredDocumentation",
               "src": "253:28:29",
               "text": "@dev SeigManager address"
             },
             "functionSelector": "6fb7f558",
-            "id": 3727,
+            "id": 3477,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "seigManager",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 3723,
+              "id": 3473,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "306:2:29"
             },
             "returnParameters": {
-              "id": 3726,
+              "id": 3476,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3725,
+                  "id": 3475,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3727,
+                  "scope": 3477,
                   "src": "332:7:29",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -375,7 +375,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 3724,
+                    "id": 3474,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "332:7:29",
@@ -390,7 +390,7 @@
               ],
               "src": "331:9:29"
             },
-            "scope": 3788,
+            "scope": 3538,
             "src": "286:55:29",
             "stateMutability": "view",
             "virtual": false,
@@ -398,35 +398,35 @@
           },
           {
             "documentation": {
-              "id": 3728,
+              "id": 3478,
               "nodeType": "StructuredDocumentation",
               "src": "347:31:29",
               "text": "@dev DepositManager address"
             },
             "functionSelector": "6c7ac9d8",
-            "id": 3733,
+            "id": 3483,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "depositManager",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 3729,
+              "id": 3479,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "406:2:29"
             },
             "returnParameters": {
-              "id": 3732,
+              "id": 3482,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3731,
+                  "id": 3481,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3733,
+                  "scope": 3483,
                   "src": "432:7:29",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -435,7 +435,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 3730,
+                    "id": 3480,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "432:7:29",
@@ -450,7 +450,7 @@
               ],
               "src": "431:9:29"
             },
-            "scope": 3788,
+            "scope": 3538,
             "src": "383:58:29",
             "stateMutability": "view",
             "virtual": false,
@@ -458,35 +458,35 @@
           },
           {
             "documentation": {
-              "id": 3734,
+              "id": 3484,
               "nodeType": "StructuredDocumentation",
               "src": "447:38:29",
               "text": "@dev the layer2 address in Tokamak"
             },
             "functionSelector": "92ea3b4c",
-            "id": 3739,
+            "id": 3489,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "tokamakLayer2",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 3735,
+              "id": 3485,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "512:2:29"
             },
             "returnParameters": {
-              "id": 3738,
+              "id": 3488,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3737,
+                  "id": 3487,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3739,
+                  "scope": 3489,
                   "src": "538:7:29",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -495,7 +495,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 3736,
+                    "id": 3486,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "538:7:29",
@@ -510,7 +510,7 @@
               ],
               "src": "537:9:29"
             },
-            "scope": 3788,
+            "scope": 3538,
             "src": "490:57:29",
             "stateMutability": "view",
             "virtual": false,
@@ -518,35 +518,35 @@
           },
           {
             "documentation": {
-              "id": 3740,
+              "id": 3490,
               "nodeType": "StructuredDocumentation",
               "src": "553:69:29",
               "text": "@dev the accumulated TON amount staked into tokamak , in wei unit"
             },
             "functionSelector": "fd7fa460",
-            "id": 3745,
+            "id": 3495,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "toTokamak",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 3741,
+              "id": 3491,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "645:2:29"
             },
             "returnParameters": {
-              "id": 3744,
+              "id": 3494,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3743,
+                  "id": 3493,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3745,
+                  "scope": 3495,
                   "src": "671:7:29",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -555,7 +555,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 3742,
+                    "id": 3492,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "671:7:29",
@@ -569,7 +569,7 @@
               ],
               "src": "670:9:29"
             },
-            "scope": 3788,
+            "scope": 3538,
             "src": "627:53:29",
             "stateMutability": "view",
             "virtual": false,
@@ -577,35 +577,35 @@
           },
           {
             "documentation": {
-              "id": 3746,
+              "id": 3496,
               "nodeType": "StructuredDocumentation",
               "src": "686:72:29",
               "text": "@dev the accumulated WTON amount unstaked from tokamak , in ray unit"
             },
             "functionSelector": "0ac8e0f3",
-            "id": 3751,
+            "id": 3501,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "fromTokamak",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 3747,
+              "id": 3497,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "783:2:29"
             },
             "returnParameters": {
-              "id": 3750,
+              "id": 3500,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3749,
+                  "id": 3499,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3751,
+                  "scope": 3501,
                   "src": "809:7:29",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -614,7 +614,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 3748,
+                    "id": 3498,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "809:7:29",
@@ -628,7 +628,7 @@
               ],
               "src": "808:9:29"
             },
-            "scope": 3788,
+            "scope": 3538,
             "src": "763:55:29",
             "stateMutability": "view",
             "virtual": false,
@@ -636,35 +636,35 @@
           },
           {
             "documentation": {
-              "id": 3752,
+              "id": 3502,
               "nodeType": "StructuredDocumentation",
               "src": "824:72:29",
               "text": "@dev the accumulated WTON amount swapped using uniswap , in ray unit"
             },
             "functionSelector": "05871b78",
-            "id": 3757,
+            "id": 3507,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "toUniswapWTON",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 3753,
+              "id": 3503,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "923:2:29"
             },
             "returnParameters": {
-              "id": 3756,
+              "id": 3506,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3755,
+                  "id": 3505,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3757,
+                  "scope": 3507,
                   "src": "949:7:29",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -673,7 +673,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 3754,
+                    "id": 3504,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "949:7:29",
@@ -687,7 +687,7 @@
               ],
               "src": "948:9:29"
             },
-            "scope": 3788,
+            "scope": 3538,
             "src": "901:57:29",
             "stateMutability": "view",
             "virtual": false,
@@ -695,35 +695,35 @@
           },
           {
             "documentation": {
-              "id": 3758,
+              "id": 3508,
               "nodeType": "StructuredDocumentation",
               "src": "964:41:29",
-              "text": "@dev the FLD balance in this contract"
+              "text": "@dev the TOS balance in this contract"
             },
-            "functionSelector": "a938a605",
-            "id": 3763,
+            "functionSelector": "0ea3d9c9",
+            "id": 3513,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
-            "name": "swappedAmountFLD",
+            "name": "swappedAmountTOS",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 3759,
+              "id": 3509,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1035:2:29"
             },
             "returnParameters": {
-              "id": 3762,
+              "id": 3512,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3761,
+                  "id": 3511,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3763,
+                  "scope": 3513,
                   "src": "1061:7:29",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -732,7 +732,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 3760,
+                    "id": 3510,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1061:7:29",
@@ -746,7 +746,7 @@
               ],
               "src": "1060:9:29"
             },
-            "scope": 3788,
+            "scope": 3538,
             "src": "1010:60:29",
             "stateMutability": "view",
             "virtual": false,
@@ -754,35 +754,35 @@
           },
           {
             "documentation": {
-              "id": 3764,
+              "id": 3514,
               "nodeType": "StructuredDocumentation",
               "src": "1076:64:29",
               "text": "@dev the TON balance in this contract when withdraw at first"
             },
             "functionSelector": "e58e2747",
-            "id": 3769,
+            "id": 3519,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "finalBalanceTON",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 3765,
+              "id": 3515,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1169:2:29"
             },
             "returnParameters": {
-              "id": 3768,
+              "id": 3518,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3767,
+                  "id": 3517,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3769,
+                  "scope": 3519,
                   "src": "1195:7:29",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -791,7 +791,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 3766,
+                    "id": 3516,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1195:7:29",
@@ -805,7 +805,7 @@
               ],
               "src": "1194:9:29"
             },
-            "scope": 3788,
+            "scope": 3538,
             "src": "1145:59:29",
             "stateMutability": "view",
             "virtual": false,
@@ -813,35 +813,35 @@
           },
           {
             "documentation": {
-              "id": 3770,
+              "id": 3520,
               "nodeType": "StructuredDocumentation",
               "src": "1210:65:29",
               "text": "@dev the WTON balance in this contract when withdraw at first"
             },
             "functionSelector": "e6a7bc87",
-            "id": 3775,
+            "id": 3525,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "finalBalanceWTON",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 3771,
+              "id": 3521,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1305:2:29"
             },
             "returnParameters": {
-              "id": 3774,
+              "id": 3524,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3773,
+                  "id": 3523,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3775,
+                  "scope": 3525,
                   "src": "1331:7:29",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -850,7 +850,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 3772,
+                    "id": 3522,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1331:7:29",
@@ -864,7 +864,7 @@
               ],
               "src": "1330:9:29"
             },
-            "scope": 3788,
+            "scope": 3538,
             "src": "1280:60:29",
             "stateMutability": "view",
             "virtual": false,
@@ -872,35 +872,35 @@
           },
           {
             "documentation": {
-              "id": 3776,
+              "id": 3526,
               "nodeType": "StructuredDocumentation",
               "src": "1346:95:29",
               "text": "@dev defi status -> NONE, APPROVE,DEPOSITED,REQUESTWITHDRAW,REQUESTWITHDRAWALL,WITHDRAW,END"
             },
             "functionSelector": "72285326",
-            "id": 3781,
+            "id": 3531,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "defiStatus",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 3777,
+              "id": 3527,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1465:2:29"
             },
             "returnParameters": {
-              "id": 3780,
+              "id": 3530,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3779,
+                  "id": 3529,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3781,
+                  "scope": 3531,
                   "src": "1491:7:29",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -909,7 +909,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 3778,
+                    "id": 3528,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1491:7:29",
@@ -923,7 +923,7 @@
               ],
               "src": "1490:9:29"
             },
-            "scope": 3788,
+            "scope": 3538,
             "src": "1446:54:29",
             "stateMutability": "view",
             "virtual": false,
@@ -931,35 +931,35 @@
           },
           {
             "documentation": {
-              "id": 3782,
+              "id": 3532,
               "nodeType": "StructuredDocumentation",
               "src": "1506:60:29",
               "text": "@dev the withdraw flag, when withdraw at first, set true"
             },
             "functionSelector": "6e7cf534",
-            "id": 3787,
+            "id": 3537,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "withdrawFlag",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 3783,
+              "id": 3533,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1592:2:29"
             },
             "returnParameters": {
-              "id": 3786,
+              "id": 3536,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3785,
+                  "id": 3535,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3787,
+                  "scope": 3537,
                   "src": "1618:4:29",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -968,7 +968,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 3784,
+                    "id": 3534,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "1618:4:29",
@@ -982,14 +982,14 @@
               ],
               "src": "1617:6:29"
             },
-            "scope": 3788,
+            "scope": 3538,
             "src": "1571:53:29",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 3789,
+        "scope": 3539,
         "src": "62:1564:29"
       }
     ],
@@ -1000,7 +1000,7 @@
       "absolutePath": "/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IStakeTONStorage.sol",
       "exportedSymbols": {
         "IStakeTONStorage": [
-          3788
+          3538
         ]
       },
       "license": "Unlicense"
@@ -1015,7 +1015,7 @@
             ".6"
           ]
         },
-        "id": 3709,
+        "id": 3459,
         "name": "PragmaDirective",
         "src": "37:23:29"
       },
@@ -1031,10 +1031,10 @@
           "contractKind": "interface",
           "fullyImplemented": false,
           "linearizedBaseContracts": [
-            3788
+            3538
           ],
           "name": "IStakeTONStorage",
-          "scope": 3789
+          "scope": 3539
         },
         "children": [
           {
@@ -1047,7 +1047,7 @@
                 null
               ],
               "name": "ton",
-              "scope": 3788,
+              "scope": 3538,
               "stateMutability": "view",
               "virtual": false,
               "visibility": "external"
@@ -1057,7 +1057,7 @@
                 "attributes": {
                   "text": "@dev TON address"
                 },
-                "id": 3710,
+                "id": 3460,
                 "name": "StructuredDocumentation",
                 "src": "95:20:29"
               },
@@ -1068,7 +1068,7 @@
                   ]
                 },
                 "children": [],
-                "id": 3711,
+                "id": 3461,
                 "name": "ParameterList",
                 "src": "132:2:29"
               },
@@ -1079,7 +1079,7 @@
                       "constant": false,
                       "mutability": "mutable",
                       "name": "",
-                      "scope": 3715,
+                      "scope": 3465,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -1092,22 +1092,22 @@
                           "stateMutability": "nonpayable",
                           "type": "address"
                         },
-                        "id": 3712,
+                        "id": 3462,
                         "name": "ElementaryTypeName",
                         "src": "158:7:29"
                       }
                     ],
-                    "id": 3713,
+                    "id": 3463,
                     "name": "VariableDeclaration",
                     "src": "158:7:29"
                   }
                 ],
-                "id": 3714,
+                "id": 3464,
                 "name": "ParameterList",
                 "src": "157:9:29"
               }
             ],
-            "id": 3715,
+            "id": 3465,
             "name": "FunctionDefinition",
             "src": "120:47:29"
           },
@@ -1121,7 +1121,7 @@
                 null
               ],
               "name": "wton",
-              "scope": 3788,
+              "scope": 3538,
               "stateMutability": "view",
               "virtual": false,
               "visibility": "external"
@@ -1131,7 +1131,7 @@
                 "attributes": {
                   "text": "@dev WTON address"
                 },
-                "id": 3716,
+                "id": 3466,
                 "name": "StructuredDocumentation",
                 "src": "173:21:29"
               },
@@ -1142,7 +1142,7 @@
                   ]
                 },
                 "children": [],
-                "id": 3717,
+                "id": 3467,
                 "name": "ParameterList",
                 "src": "212:2:29"
               },
@@ -1153,7 +1153,7 @@
                       "constant": false,
                       "mutability": "mutable",
                       "name": "",
-                      "scope": 3721,
+                      "scope": 3471,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -1166,22 +1166,22 @@
                           "stateMutability": "nonpayable",
                           "type": "address"
                         },
-                        "id": 3718,
+                        "id": 3468,
                         "name": "ElementaryTypeName",
                         "src": "238:7:29"
                       }
                     ],
-                    "id": 3719,
+                    "id": 3469,
                     "name": "VariableDeclaration",
                     "src": "238:7:29"
                   }
                 ],
-                "id": 3720,
+                "id": 3470,
                 "name": "ParameterList",
                 "src": "237:9:29"
               }
             ],
-            "id": 3721,
+            "id": 3471,
             "name": "FunctionDefinition",
             "src": "199:48:29"
           },
@@ -1195,7 +1195,7 @@
                 null
               ],
               "name": "seigManager",
-              "scope": 3788,
+              "scope": 3538,
               "stateMutability": "view",
               "virtual": false,
               "visibility": "external"
@@ -1205,7 +1205,7 @@
                 "attributes": {
                   "text": "@dev SeigManager address"
                 },
-                "id": 3722,
+                "id": 3472,
                 "name": "StructuredDocumentation",
                 "src": "253:28:29"
               },
@@ -1216,7 +1216,7 @@
                   ]
                 },
                 "children": [],
-                "id": 3723,
+                "id": 3473,
                 "name": "ParameterList",
                 "src": "306:2:29"
               },
@@ -1227,7 +1227,7 @@
                       "constant": false,
                       "mutability": "mutable",
                       "name": "",
-                      "scope": 3727,
+                      "scope": 3477,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -1240,22 +1240,22 @@
                           "stateMutability": "nonpayable",
                           "type": "address"
                         },
-                        "id": 3724,
+                        "id": 3474,
                         "name": "ElementaryTypeName",
                         "src": "332:7:29"
                       }
                     ],
-                    "id": 3725,
+                    "id": 3475,
                     "name": "VariableDeclaration",
                     "src": "332:7:29"
                   }
                 ],
-                "id": 3726,
+                "id": 3476,
                 "name": "ParameterList",
                 "src": "331:9:29"
               }
             ],
-            "id": 3727,
+            "id": 3477,
             "name": "FunctionDefinition",
             "src": "286:55:29"
           },
@@ -1269,7 +1269,7 @@
                 null
               ],
               "name": "depositManager",
-              "scope": 3788,
+              "scope": 3538,
               "stateMutability": "view",
               "virtual": false,
               "visibility": "external"
@@ -1279,7 +1279,7 @@
                 "attributes": {
                   "text": "@dev DepositManager address"
                 },
-                "id": 3728,
+                "id": 3478,
                 "name": "StructuredDocumentation",
                 "src": "347:31:29"
               },
@@ -1290,7 +1290,7 @@
                   ]
                 },
                 "children": [],
-                "id": 3729,
+                "id": 3479,
                 "name": "ParameterList",
                 "src": "406:2:29"
               },
@@ -1301,7 +1301,7 @@
                       "constant": false,
                       "mutability": "mutable",
                       "name": "",
-                      "scope": 3733,
+                      "scope": 3483,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -1314,22 +1314,22 @@
                           "stateMutability": "nonpayable",
                           "type": "address"
                         },
-                        "id": 3730,
+                        "id": 3480,
                         "name": "ElementaryTypeName",
                         "src": "432:7:29"
                       }
                     ],
-                    "id": 3731,
+                    "id": 3481,
                     "name": "VariableDeclaration",
                     "src": "432:7:29"
                   }
                 ],
-                "id": 3732,
+                "id": 3482,
                 "name": "ParameterList",
                 "src": "431:9:29"
               }
             ],
-            "id": 3733,
+            "id": 3483,
             "name": "FunctionDefinition",
             "src": "383:58:29"
           },
@@ -1343,7 +1343,7 @@
                 null
               ],
               "name": "tokamakLayer2",
-              "scope": 3788,
+              "scope": 3538,
               "stateMutability": "view",
               "virtual": false,
               "visibility": "external"
@@ -1353,7 +1353,7 @@
                 "attributes": {
                   "text": "@dev the layer2 address in Tokamak"
                 },
-                "id": 3734,
+                "id": 3484,
                 "name": "StructuredDocumentation",
                 "src": "447:38:29"
               },
@@ -1364,7 +1364,7 @@
                   ]
                 },
                 "children": [],
-                "id": 3735,
+                "id": 3485,
                 "name": "ParameterList",
                 "src": "512:2:29"
               },
@@ -1375,7 +1375,7 @@
                       "constant": false,
                       "mutability": "mutable",
                       "name": "",
-                      "scope": 3739,
+                      "scope": 3489,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -1388,22 +1388,22 @@
                           "stateMutability": "nonpayable",
                           "type": "address"
                         },
-                        "id": 3736,
+                        "id": 3486,
                         "name": "ElementaryTypeName",
                         "src": "538:7:29"
                       }
                     ],
-                    "id": 3737,
+                    "id": 3487,
                     "name": "VariableDeclaration",
                     "src": "538:7:29"
                   }
                 ],
-                "id": 3738,
+                "id": 3488,
                 "name": "ParameterList",
                 "src": "537:9:29"
               }
             ],
-            "id": 3739,
+            "id": 3489,
             "name": "FunctionDefinition",
             "src": "490:57:29"
           },
@@ -1417,7 +1417,7 @@
                 null
               ],
               "name": "toTokamak",
-              "scope": 3788,
+              "scope": 3538,
               "stateMutability": "view",
               "virtual": false,
               "visibility": "external"
@@ -1427,7 +1427,7 @@
                 "attributes": {
                   "text": "@dev the accumulated TON amount staked into tokamak , in wei unit"
                 },
-                "id": 3740,
+                "id": 3490,
                 "name": "StructuredDocumentation",
                 "src": "553:69:29"
               },
@@ -1438,7 +1438,7 @@
                   ]
                 },
                 "children": [],
-                "id": 3741,
+                "id": 3491,
                 "name": "ParameterList",
                 "src": "645:2:29"
               },
@@ -1449,7 +1449,7 @@
                       "constant": false,
                       "mutability": "mutable",
                       "name": "",
-                      "scope": 3745,
+                      "scope": 3495,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -1461,22 +1461,22 @@
                           "name": "uint256",
                           "type": "uint256"
                         },
-                        "id": 3742,
+                        "id": 3492,
                         "name": "ElementaryTypeName",
                         "src": "671:7:29"
                       }
                     ],
-                    "id": 3743,
+                    "id": 3493,
                     "name": "VariableDeclaration",
                     "src": "671:7:29"
                   }
                 ],
-                "id": 3744,
+                "id": 3494,
                 "name": "ParameterList",
                 "src": "670:9:29"
               }
             ],
-            "id": 3745,
+            "id": 3495,
             "name": "FunctionDefinition",
             "src": "627:53:29"
           },
@@ -1490,7 +1490,7 @@
                 null
               ],
               "name": "fromTokamak",
-              "scope": 3788,
+              "scope": 3538,
               "stateMutability": "view",
               "virtual": false,
               "visibility": "external"
@@ -1500,7 +1500,7 @@
                 "attributes": {
                   "text": "@dev the accumulated WTON amount unstaked from tokamak , in ray unit"
                 },
-                "id": 3746,
+                "id": 3496,
                 "name": "StructuredDocumentation",
                 "src": "686:72:29"
               },
@@ -1511,7 +1511,7 @@
                   ]
                 },
                 "children": [],
-                "id": 3747,
+                "id": 3497,
                 "name": "ParameterList",
                 "src": "783:2:29"
               },
@@ -1522,7 +1522,7 @@
                       "constant": false,
                       "mutability": "mutable",
                       "name": "",
-                      "scope": 3751,
+                      "scope": 3501,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -1534,22 +1534,22 @@
                           "name": "uint256",
                           "type": "uint256"
                         },
-                        "id": 3748,
+                        "id": 3498,
                         "name": "ElementaryTypeName",
                         "src": "809:7:29"
                       }
                     ],
-                    "id": 3749,
+                    "id": 3499,
                     "name": "VariableDeclaration",
                     "src": "809:7:29"
                   }
                 ],
-                "id": 3750,
+                "id": 3500,
                 "name": "ParameterList",
                 "src": "808:9:29"
               }
             ],
-            "id": 3751,
+            "id": 3501,
             "name": "FunctionDefinition",
             "src": "763:55:29"
           },
@@ -1563,7 +1563,7 @@
                 null
               ],
               "name": "toUniswapWTON",
-              "scope": 3788,
+              "scope": 3538,
               "stateMutability": "view",
               "virtual": false,
               "visibility": "external"
@@ -1573,7 +1573,7 @@
                 "attributes": {
                   "text": "@dev the accumulated WTON amount swapped using uniswap , in ray unit"
                 },
-                "id": 3752,
+                "id": 3502,
                 "name": "StructuredDocumentation",
                 "src": "824:72:29"
               },
@@ -1584,7 +1584,7 @@
                   ]
                 },
                 "children": [],
-                "id": 3753,
+                "id": 3503,
                 "name": "ParameterList",
                 "src": "923:2:29"
               },
@@ -1595,7 +1595,7 @@
                       "constant": false,
                       "mutability": "mutable",
                       "name": "",
-                      "scope": 3757,
+                      "scope": 3507,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -1607,36 +1607,36 @@
                           "name": "uint256",
                           "type": "uint256"
                         },
-                        "id": 3754,
+                        "id": 3504,
                         "name": "ElementaryTypeName",
                         "src": "949:7:29"
                       }
                     ],
-                    "id": 3755,
+                    "id": 3505,
                     "name": "VariableDeclaration",
                     "src": "949:7:29"
                   }
                 ],
-                "id": 3756,
+                "id": 3506,
                 "name": "ParameterList",
                 "src": "948:9:29"
               }
             ],
-            "id": 3757,
+            "id": 3507,
             "name": "FunctionDefinition",
             "src": "901:57:29"
           },
           {
             "attributes": {
-              "functionSelector": "a938a605",
+              "functionSelector": "0ea3d9c9",
               "implemented": false,
               "isConstructor": false,
               "kind": "function",
               "modifiers": [
                 null
               ],
-              "name": "swappedAmountFLD",
-              "scope": 3788,
+              "name": "swappedAmountTOS",
+              "scope": 3538,
               "stateMutability": "view",
               "virtual": false,
               "visibility": "external"
@@ -1644,9 +1644,9 @@
             "children": [
               {
                 "attributes": {
-                  "text": "@dev the FLD balance in this contract"
+                  "text": "@dev the TOS balance in this contract"
                 },
-                "id": 3758,
+                "id": 3508,
                 "name": "StructuredDocumentation",
                 "src": "964:41:29"
               },
@@ -1657,7 +1657,7 @@
                   ]
                 },
                 "children": [],
-                "id": 3759,
+                "id": 3509,
                 "name": "ParameterList",
                 "src": "1035:2:29"
               },
@@ -1668,7 +1668,7 @@
                       "constant": false,
                       "mutability": "mutable",
                       "name": "",
-                      "scope": 3763,
+                      "scope": 3513,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -1680,22 +1680,22 @@
                           "name": "uint256",
                           "type": "uint256"
                         },
-                        "id": 3760,
+                        "id": 3510,
                         "name": "ElementaryTypeName",
                         "src": "1061:7:29"
                       }
                     ],
-                    "id": 3761,
+                    "id": 3511,
                     "name": "VariableDeclaration",
                     "src": "1061:7:29"
                   }
                 ],
-                "id": 3762,
+                "id": 3512,
                 "name": "ParameterList",
                 "src": "1060:9:29"
               }
             ],
-            "id": 3763,
+            "id": 3513,
             "name": "FunctionDefinition",
             "src": "1010:60:29"
           },
@@ -1709,7 +1709,7 @@
                 null
               ],
               "name": "finalBalanceTON",
-              "scope": 3788,
+              "scope": 3538,
               "stateMutability": "view",
               "virtual": false,
               "visibility": "external"
@@ -1719,7 +1719,7 @@
                 "attributes": {
                   "text": "@dev the TON balance in this contract when withdraw at first"
                 },
-                "id": 3764,
+                "id": 3514,
                 "name": "StructuredDocumentation",
                 "src": "1076:64:29"
               },
@@ -1730,7 +1730,7 @@
                   ]
                 },
                 "children": [],
-                "id": 3765,
+                "id": 3515,
                 "name": "ParameterList",
                 "src": "1169:2:29"
               },
@@ -1741,7 +1741,7 @@
                       "constant": false,
                       "mutability": "mutable",
                       "name": "",
-                      "scope": 3769,
+                      "scope": 3519,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -1753,22 +1753,22 @@
                           "name": "uint256",
                           "type": "uint256"
                         },
-                        "id": 3766,
+                        "id": 3516,
                         "name": "ElementaryTypeName",
                         "src": "1195:7:29"
                       }
                     ],
-                    "id": 3767,
+                    "id": 3517,
                     "name": "VariableDeclaration",
                     "src": "1195:7:29"
                   }
                 ],
-                "id": 3768,
+                "id": 3518,
                 "name": "ParameterList",
                 "src": "1194:9:29"
               }
             ],
-            "id": 3769,
+            "id": 3519,
             "name": "FunctionDefinition",
             "src": "1145:59:29"
           },
@@ -1782,7 +1782,7 @@
                 null
               ],
               "name": "finalBalanceWTON",
-              "scope": 3788,
+              "scope": 3538,
               "stateMutability": "view",
               "virtual": false,
               "visibility": "external"
@@ -1792,7 +1792,7 @@
                 "attributes": {
                   "text": "@dev the WTON balance in this contract when withdraw at first"
                 },
-                "id": 3770,
+                "id": 3520,
                 "name": "StructuredDocumentation",
                 "src": "1210:65:29"
               },
@@ -1803,7 +1803,7 @@
                   ]
                 },
                 "children": [],
-                "id": 3771,
+                "id": 3521,
                 "name": "ParameterList",
                 "src": "1305:2:29"
               },
@@ -1814,7 +1814,7 @@
                       "constant": false,
                       "mutability": "mutable",
                       "name": "",
-                      "scope": 3775,
+                      "scope": 3525,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -1826,22 +1826,22 @@
                           "name": "uint256",
                           "type": "uint256"
                         },
-                        "id": 3772,
+                        "id": 3522,
                         "name": "ElementaryTypeName",
                         "src": "1331:7:29"
                       }
                     ],
-                    "id": 3773,
+                    "id": 3523,
                     "name": "VariableDeclaration",
                     "src": "1331:7:29"
                   }
                 ],
-                "id": 3774,
+                "id": 3524,
                 "name": "ParameterList",
                 "src": "1330:9:29"
               }
             ],
-            "id": 3775,
+            "id": 3525,
             "name": "FunctionDefinition",
             "src": "1280:60:29"
           },
@@ -1855,7 +1855,7 @@
                 null
               ],
               "name": "defiStatus",
-              "scope": 3788,
+              "scope": 3538,
               "stateMutability": "view",
               "virtual": false,
               "visibility": "external"
@@ -1865,7 +1865,7 @@
                 "attributes": {
                   "text": "@dev defi status -> NONE, APPROVE,DEPOSITED,REQUESTWITHDRAW,REQUESTWITHDRAWALL,WITHDRAW,END"
                 },
-                "id": 3776,
+                "id": 3526,
                 "name": "StructuredDocumentation",
                 "src": "1346:95:29"
               },
@@ -1876,7 +1876,7 @@
                   ]
                 },
                 "children": [],
-                "id": 3777,
+                "id": 3527,
                 "name": "ParameterList",
                 "src": "1465:2:29"
               },
@@ -1887,7 +1887,7 @@
                       "constant": false,
                       "mutability": "mutable",
                       "name": "",
-                      "scope": 3781,
+                      "scope": 3531,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -1899,22 +1899,22 @@
                           "name": "uint256",
                           "type": "uint256"
                         },
-                        "id": 3778,
+                        "id": 3528,
                         "name": "ElementaryTypeName",
                         "src": "1491:7:29"
                       }
                     ],
-                    "id": 3779,
+                    "id": 3529,
                     "name": "VariableDeclaration",
                     "src": "1491:7:29"
                   }
                 ],
-                "id": 3780,
+                "id": 3530,
                 "name": "ParameterList",
                 "src": "1490:9:29"
               }
             ],
-            "id": 3781,
+            "id": 3531,
             "name": "FunctionDefinition",
             "src": "1446:54:29"
           },
@@ -1928,7 +1928,7 @@
                 null
               ],
               "name": "withdrawFlag",
-              "scope": 3788,
+              "scope": 3538,
               "stateMutability": "view",
               "virtual": false,
               "visibility": "external"
@@ -1938,7 +1938,7 @@
                 "attributes": {
                   "text": "@dev the withdraw flag, when withdraw at first, set true"
                 },
-                "id": 3782,
+                "id": 3532,
                 "name": "StructuredDocumentation",
                 "src": "1506:60:29"
               },
@@ -1949,7 +1949,7 @@
                   ]
                 },
                 "children": [],
-                "id": 3783,
+                "id": 3533,
                 "name": "ParameterList",
                 "src": "1592:2:29"
               },
@@ -1960,7 +1960,7 @@
                       "constant": false,
                       "mutability": "mutable",
                       "name": "",
-                      "scope": 3787,
+                      "scope": 3537,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "bool",
@@ -1972,32 +1972,32 @@
                           "name": "bool",
                           "type": "bool"
                         },
-                        "id": 3784,
+                        "id": 3534,
                         "name": "ElementaryTypeName",
                         "src": "1618:4:29"
                       }
                     ],
-                    "id": 3785,
+                    "id": 3535,
                     "name": "VariableDeclaration",
                     "src": "1618:4:29"
                   }
                 ],
-                "id": 3786,
+                "id": 3536,
                 "name": "ParameterList",
                 "src": "1617:6:29"
               }
             ],
-            "id": 3787,
+            "id": 3537,
             "name": "FunctionDefinition",
             "src": "1571:53:29"
           }
         ],
-        "id": 3788,
+        "id": 3538,
         "name": "ContractDefinition",
         "src": "62:1564:29"
       }
     ],
-    "id": 3789,
+    "id": 3539,
     "name": "SourceUnit",
     "src": "37:1590:29"
   },
@@ -2007,7 +2007,7 @@
   },
   "networks": {},
   "schemaVersion": "3.3.4",
-  "updatedAt": "2021-06-02T02:39:03.533Z",
+  "updatedAt": "2021-06-19T02:31:50.134Z",
   "devdoc": {
     "kind": "dev",
     "methods": {
@@ -2029,8 +2029,8 @@
       "seigManager()": {
         "details": "SeigManager address"
       },
-      "swappedAmountFLD()": {
-        "details": "the FLD balance in this contract"
+      "swappedAmountTOS()": {
+        "details": "the TOS balance in this contract"
       },
       "toTokamak()": {
         "details": "the accumulated TON amount staked into tokamak , in wei unit"

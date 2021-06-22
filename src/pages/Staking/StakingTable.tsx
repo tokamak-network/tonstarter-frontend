@@ -1,5 +1,11 @@
 import React, {FC} from 'react';
-import {Column, useExpanded, usePagination, useTable} from 'react-table';
+import {
+  Column,
+  useExpanded,
+  usePagination,
+  useTable,
+  useSortBy,
+} from 'react-table';
 import {
   chakra,
   Skeleton,
@@ -9,8 +15,11 @@ import {
   Tooltip,
   Select,
   Box,
+  Avatar,
 } from '@chakra-ui/react';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
+import './staking.css';
+import {checkTokenType} from 'utils/token';
 
 type StakingTableProps = {
   columns: Column[];
@@ -41,40 +50,170 @@ export const StakingTable: FC<StakingTableProps> = ({
     state: {pageIndex, pageSize},
   } = useTable(
     {columns, data, initialState: {pageIndex: 0}},
+    useSortBy,
     useExpanded,
     usePagination,
   );
+
   return (
-    <>
-      <Box>
-        <chakra.table width={'full'} variant="simple" {...getTableProps()}>
+    <Flex w="1100px" flexDir={'column'}>
+      <Flex justifyContent={'space-between'} mb={'23px'}>
+        <Flex>
+          <Flex alignContent={'center'} alignItems={'center'} mr={'20px'}>
+            <Box
+              w={'8px'}
+              h={'8px'}
+              borderRadius={50}
+              bg="#f95359"
+              mr={'7px'}
+              mt={'2px'}></Box>
+            <Text fontSize={'11px'} color={'#304156'}>
+              On sale
+            </Text>
+          </Flex>
+          <Flex alignContent={'center'} alignItems={'center'} mr={'20px'}>
+            <Box
+              w={'8px'}
+              h={'8px'}
+              borderRadius={50}
+              bg="#ffdc00"
+              mr={'7px'}
+              mt={'2px'}></Box>
+            <Text fontSize={'11px'} color={'#304156'}>
+              started
+            </Text>
+          </Flex>
+          <Flex alignContent={'center'} alignItems={'center'}>
+            <Box
+              w={'8px'}
+              h={'8px'}
+              borderRadius={50}
+              bg="#2ea2f8"
+              mr={'7px'}
+              mt={'2px'}></Box>
+            <Text fontSize={'11px'} color={'#304156'}>
+              ended
+            </Text>
+          </Flex>
+        </Flex>
+        <Select
+          w={'137px'}
+          h={'32px'}
+          color={'#86929d'}
+          fontSize={'13px'}
+          placeholder="On sale Sort">
+          <option>Name</option>
+          <option>Period</option>
+          <option>Total staked</option>
+          <option>Earning per block</option>
+        </Select>
+      </Flex>
+      <Box overflowX={'auto'}>
+        <chakra.table
+          width={'full'}
+          variant="simple"
+          {...getTableProps()}
+          display="flex"
+          flexDirection="column">
           <chakra.thead textAlign={'justify'}>
-            {headerGroups.map(headerGroup => (
+            {headerGroups.map((headerGroup) => (
               <chakra.tr h={16} {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map(column => (
-                  <chakra.th px={3} py={3} {...column.getHeaderProps()}>
+                {headerGroup.headers.map((column) => (
+                  <chakra.th
+                    px={3}
+                    py={3}
+                    {...column.getHeaderProps(column.getSortByToggleProps())}>
                     {column.render('Header')}
                   </chakra.th>
                 ))}
               </chakra.tr>
             ))}
           </chakra.thead>
-          <chakra.tbody {...getTableBodyProps()}>
+          <chakra.tbody
+            {...getTableBodyProps()}
+            display="flex"
+            flexDirection="column">
             {page.map((row: any, i) => {
               prepareRow(row);
               return [
                 <chakra.tr
-                  borderWidth={1}
+                  boxShadow="0 1px 1px 0 rgba(96, 97, 112, 0.16)"
                   h={16}
                   key={i}
+                  borderRadius={'10px'}
+                  borderBottomRadius={row.isExpanded === true ? '0px' : '10px'}
+                  mb={'20px'}
+                  w="100%"
+                  bg="white.100"
+                  display="flex"
+                  alignItems="center"
                   {...row.getRowProps()}>
                   {row.cells.map((cell: any, index: number) => {
+                    const type = cell.column.id;
+                    const token = checkTokenType(cell.row.original.token);
+
                     return (
                       <chakra.td
                         px={3}
                         py={3}
                         key={index}
+                        m={0}
+                        mr={30}
+                        w={
+                          type === 'name'
+                            ? '280px'
+                            : type === 'period'
+                            ? '150px'
+                            : type === 'stakeBalanceTON'
+                            ? '200px'
+                            : type === 'earning_per_block'
+                            ? '340px'
+                            : '14px'
+                        }
+                        display="flex"
+                        alignItems="center"
+                        color={type === 'name' ? '#304156' : '#3a495f'}
+                        fontSize={type === 'name' ? '15px' : '13px'}
+                        fontWeight={type === 'name' ? 600 : 0}
                         {...cell.getCellProps()}>
+                        {type === 'name' ? (
+                          <Avatar
+                            src={token.symbol}
+                            backgroundColor={token.bg}
+                            borderWidth="1px"
+                            borderColor="#f4f6f8"
+                            bg="transparent"
+                            color="#c7d1d8"
+                            name="T"
+                            h="48px"
+                            w="48px"
+                            ml="34px"
+                            mr="12px"
+                          />
+                        ) : (
+                          ''
+                        )}
+                        {type === 'period' ? (
+                          <Text mr={2} color="#86929d">
+                            Period
+                          </Text>
+                        ) : (
+                          ''
+                        )}
+                        {type === 'stakeBalanceTON' ? (
+                          <Text mr={2} color="#86929d">
+                            Total Staked
+                          </Text>
+                        ) : (
+                          ''
+                        )}
+                        {type === 'earning_per_block' ? (
+                          <Text mr={2} color="#86929d">
+                            Earning Per Block
+                          </Text>
+                        ) : (
+                          ''
+                        )}
                         {isLoading ? <Skeleton h={5} /> : cell.render('Cell')}
                       </chakra.td>
                     );
@@ -83,8 +222,22 @@ export const StakingTable: FC<StakingTableProps> = ({
                 // If the row is in an expanded state, render a row with a
                 // column that fills the entire length of the table.
                 row.isExpanded ? (
-                  <chakra.tr borderWidth={1} h={10} key={i} m={0}>
-                    <chakra.td margin={0} colSpan={visibleColumns.length}>
+                  <chakra.tr
+                    borderTopWidth={1}
+                    boxShadow="0 1px 1px 0 rgba(96, 97, 112, 0.16)"
+                    w={'100%'}
+                    h={500}
+                    key={i}
+                    m={0}
+                    mb={'14px'}
+                    mt={-5}
+                    bg="white.100"
+                    borderBottomRadius="10px">
+                    <chakra.td
+                      display={'flex'}
+                      w={'100%'}
+                      margin={0}
+                      colSpan={visibleColumns.length}>
                       {/*
                     Inside it, call our renderRowSubComponent function. In reality,
                     you could pass whatever you want as props to
@@ -156,19 +309,6 @@ export const StakingTable: FC<StakingTableProps> = ({
               <NumberDecrementStepper />
             </NumberInputStepper>
           </NumberInput> */}
-            <Select
-              w={28}
-              size={'sm'}
-              value={pageSize}
-              onChange={e => {
-                setPageSize(Number(e.target.value));
-              }}>
-              {[10, 20, 30, 40, 50].map(pageSize => (
-                <option key={pageSize} value={pageSize}>
-                  Show {pageSize}
-                </option>
-              ))}
-            </Select>
           </Flex>
 
           <Flex>
@@ -182,6 +322,19 @@ export const StakingTable: FC<StakingTableProps> = ({
                 ml={4}
               />
             </Tooltip>
+            <Select
+              w={28}
+              size={'sm'}
+              value={pageSize}
+              onChange={(e) => {
+                setPageSize(Number(e.target.value));
+              }}>
+              {[10, 20, 30, 40, 50].map((pageSize) => (
+                <option key={pageSize} value={pageSize}>
+                  Show {pageSize}
+                </option>
+              ))}
+            </Select>
             {/* <Tooltip label="Last Page">
             <IconButton
               aria-label={'Last Page'}
@@ -194,7 +347,7 @@ export const StakingTable: FC<StakingTableProps> = ({
           </Flex>
         </Flex>
       </Box>
-    </>
+    </Flex>
   );
 };
 

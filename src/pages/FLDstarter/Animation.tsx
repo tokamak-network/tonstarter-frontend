@@ -194,8 +194,6 @@ export const Animation: React.FC<HomeProps> = () => {
   const verticalDots: number[] = [77, 221, 365, 509, 653, 797, 941];
 
   const bgColor = colorMode === 'light' ? '#007AFF' : '#222222';
-  console.log(bgColor);
-  console.log(colorMode);
 
   const mainControls = useAnimation();
   const mainSubControls = useAnimation();
@@ -209,7 +207,7 @@ export const Animation: React.FC<HomeProps> = () => {
     const aniMultiplier = 15;
     const result = makeDots(Number(width), 1024);
     const delay = result.length / aniMultiplier;
-    console.log('width : ' + width);
+    // console.log('width : ' + width);
     setRowDots(result);
 
     mainControls.start((i) => ({
@@ -378,7 +376,7 @@ export const Animation: React.FC<HomeProps> = () => {
             fontWeight="semibold"
             fontSize={52}>
             <div>
-              <Text>FLD Starter</Text>
+              <Text>TON Starter</Text>
               <Text>Decentralized Launchpad</Text>
               <Text>Platform</Text>
             </div>

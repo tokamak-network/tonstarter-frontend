@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="17.464" height="30" viewBox="0 0 17.464 30">
+    <defs>
+        <style>
+            .cls-1{fill:#fff;fill-rule:evenodd}
+        </style>
+    </defs>
+    <g id="ETH-symbol" transform="translate(-923.075 -494.339)">
+        <path id="Fill-508" d="M931.792 516.888l-8.716-4.588 8.716-17.955v-.006l8.747 17.961z" class="cls-1"/>
+        <path id="Fill-510" d="M931.792 550.094l-8.716-11.382 8.716 4.783 8.747-4.783z" class="cls-1" transform="translate(0 -25.756)"/>
+    </g>
+</svg>

@@ -29,7 +29,14 @@ export const TokenComponent: FC<TokenComponentProps> = ({phase, subtitle}) => {
       borderColor={theme.colors.gray[75]}
       p="4">
       <Flex direction={'row'} pos="relative">
-        <Avatar src="" />
+        <Avatar
+          src=""
+          borderWidth="1px"
+          borderColor="#f4f6f8"
+          bg="transparent"
+          color="#c7d1d8"
+          name="T"
+        />
         <Flex direction={'column'} px={6}>
           <Text
             fontWeight={'bold'}

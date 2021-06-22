@@ -1,27 +1,27 @@
 {
-  "contractName": "IProjectDevVaultFactory",
+  "contractName": "IILayer2Registry",
   "abi": [
     {
       "inputs": [
         {
           "internalType": "address",
-          "name": "project",
+          "name": "layer2",
           "type": "address"
         }
       ],
-      "name": "deploy",
+      "name": "layer2s",
       "outputs": [
         {
-          "internalType": "address",
+          "internalType": "bool",
           "name": "",
-          "type": "address"
+          "type": "bool"
         }
       ],
-      "stateMutability": "nonpayable",
+      "stateMutability": "view",
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.7.6+commit.7338295f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"project\",\"type\":\"address\"}],\"name\":\"deploy\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IProjectDevVaultFactory.sol\":\"IProjectDevVaultFactory\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IProjectDevVaultFactory.sol\":{\"keccak256\":\"0x2c78b76d1544b3e077bfd01072aef4350d506badf71b530ed785fb38d7fcfe84\",\"license\":\"Unlicense\",\"urls\":[\"bzz-raw://620d82d7cd25c699c0355cb1e806558c684febb5a3f373438b9678c4a1f96602\",\"dweb:/ipfs/QmVNr7SqnY3srW43Wp5i4Z43GgT6MjAgVG8sBR96TM19mn\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.7.6+commit.7338295f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"layer2\",\"type\":\"address\"}],\"name\":\"layer2s\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IILayer2Registry.sol\":\"IILayer2Registry\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":100},\"remappings\":[]},\"sources\":{\"/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IILayer2Registry.sol\":{\"keccak256\":\"0x8c97a0aa63b891d62585a0a60434b0e67cae707b6f92afaf84ad010bfa958ef1\",\"license\":\"Unlicense\",\"urls\":[\"bzz-raw://edf7459518f99033b740b6b753685876e6b95963ec931a96be9caaedba19ebe3\",\"dweb:/ipfs/QmPtLqhumJ9tLX9tjMEcNCgKx1AsJE9Jax5h7b9XpVLyTc\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
@@ -29,21 +29,21 @@
   "deployedGeneratedSources": [],
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "//SPDX-License-Identifier: Unlicense\npragma solidity ^0.7.6;\n\ninterface IProjectDevVaultFactory {\n    function deploy(address project) external returns (address);\n}\n",
-  "sourcePath": "/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IProjectDevVaultFactory.sol",
+  "source": "//SPDX-License-Identifier: Unlicense\npragma solidity ^0.7.6;\n\ninterface IILayer2Registry {\n  function layer2s(address layer2) external view returns (bool);\n}\n",
+  "sourcePath": "/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IILayer2Registry.sol",
   "ast": {
-    "absolutePath": "/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IProjectDevVaultFactory.sol",
+    "absolutePath": "/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IILayer2Registry.sol",
     "exportedSymbols": {
-      "IProjectDevVaultFactory": [
-        2914
+      "IILayer2Registry": [
+        2014
       ]
     },
-    "id": 2915,
+    "id": 2015,
     "license": "Unlicense",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 2906,
+        "id": 2006,
         "literals": [
           "solidity",
           "^",
@@ -51,7 +51,7 @@
           ".6"
         ],
         "nodeType": "PragmaDirective",
-        "src": "37:23:17"
+        "src": "37:23:5"
       },
       {
         "abstract": false,
@@ -59,33 +59,33 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "fullyImplemented": false,
-        "id": 2914,
+        "id": 2014,
         "linearizedBaseContracts": [
-          2914
+          2014
         ],
-        "name": "IProjectDevVaultFactory",
+        "name": "IILayer2Registry",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
-            "functionSelector": "4c96a389",
-            "id": 2913,
+            "functionSelector": "61cdc5b8",
+            "id": 2013,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
-            "name": "deploy",
+            "name": "layer2s",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2909,
+              "id": 2009,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2908,
+                  "id": 2008,
                   "mutability": "mutable",
-                  "name": "project",
+                  "name": "layer2",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2913,
-                  "src": "118:15:17",
+                  "scope": 2013,
+                  "src": "110:14:5",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -93,10 +93,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 2907,
+                    "id": 2007,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "118:7:17",
+                    "src": "110:7:5",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -106,61 +106,60 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "117:17:17"
+              "src": "109:16:5"
             },
             "returnParameters": {
-              "id": 2912,
+              "id": 2012,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2911,
+                  "id": 2011,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2913,
-                  "src": "153:7:17",
+                  "scope": 2013,
+                  "src": "149:4:5",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_address",
-                    "typeString": "address"
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 2910,
-                    "name": "address",
+                    "id": 2010,
+                    "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "153:7:17",
-                    "stateMutability": "nonpayable",
+                    "src": "149:4:5",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
                     }
                   },
                   "visibility": "internal"
                 }
               ],
-              "src": "152:9:17"
+              "src": "148:6:5"
             },
-            "scope": 2914,
-            "src": "102:60:17",
-            "stateMutability": "nonpayable",
+            "scope": 2014,
+            "src": "93:62:5",
+            "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 2915,
-        "src": "62:102:17"
+        "scope": 2015,
+        "src": "62:95:5"
       }
     ],
-    "src": "37:128:17"
+    "src": "37:121:5"
   },
   "legacyAST": {
     "attributes": {
-      "absolutePath": "/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IProjectDevVaultFactory.sol",
+      "absolutePath": "/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/IILayer2Registry.sol",
       "exportedSymbols": {
-        "IProjectDevVaultFactory": [
-          2914
+        "IILayer2Registry": [
+          2014
         ]
       },
       "license": "Unlicense"
@@ -175,9 +174,9 @@
             ".6"
           ]
         },
-        "id": 2906,
+        "id": 2006,
         "name": "PragmaDirective",
-        "src": "37:23:17"
+        "src": "37:23:5"
       },
       {
         "attributes": {
@@ -191,24 +190,24 @@
           "contractKind": "interface",
           "fullyImplemented": false,
           "linearizedBaseContracts": [
-            2914
+            2014
           ],
-          "name": "IProjectDevVaultFactory",
-          "scope": 2915
+          "name": "IILayer2Registry",
+          "scope": 2015
         },
         "children": [
           {
             "attributes": {
-              "functionSelector": "4c96a389",
+              "functionSelector": "61cdc5b8",
               "implemented": false,
               "isConstructor": false,
               "kind": "function",
               "modifiers": [
                 null
               ],
-              "name": "deploy",
-              "scope": 2914,
-              "stateMutability": "nonpayable",
+              "name": "layer2s",
+              "scope": 2014,
+              "stateMutability": "view",
               "virtual": false,
               "visibility": "external"
             },
@@ -219,8 +218,8 @@
                     "attributes": {
                       "constant": false,
                       "mutability": "mutable",
-                      "name": "project",
-                      "scope": 2913,
+                      "name": "layer2",
+                      "scope": 2013,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -233,19 +232,19 @@
                           "stateMutability": "nonpayable",
                           "type": "address"
                         },
-                        "id": 2907,
+                        "id": 2007,
                         "name": "ElementaryTypeName",
-                        "src": "118:7:17"
+                        "src": "110:7:5"
                       }
                     ],
-                    "id": 2908,
+                    "id": 2008,
                     "name": "VariableDeclaration",
-                    "src": "118:15:17"
+                    "src": "110:14:5"
                   }
                 ],
-                "id": 2909,
+                "id": 2009,
                 "name": "ParameterList",
-                "src": "117:17:17"
+                "src": "109:16:5"
               },
               {
                 "children": [
@@ -254,47 +253,46 @@
                       "constant": false,
                       "mutability": "mutable",
                       "name": "",
-                      "scope": 2913,
+                      "scope": 2013,
                       "stateVariable": false,
                       "storageLocation": "default",
-                      "type": "address",
+                      "type": "bool",
                       "visibility": "internal"
                     },
                     "children": [
                       {
                         "attributes": {
-                          "name": "address",
-                          "stateMutability": "nonpayable",
-                          "type": "address"
+                          "name": "bool",
+                          "type": "bool"
                         },
-                        "id": 2910,
+                        "id": 2010,
                         "name": "ElementaryTypeName",
-                        "src": "153:7:17"
+                        "src": "149:4:5"
                       }
                     ],
-                    "id": 2911,
+                    "id": 2011,
                     "name": "VariableDeclaration",
-                    "src": "153:7:17"
+                    "src": "149:4:5"
                   }
                 ],
-                "id": 2912,
+                "id": 2012,
                 "name": "ParameterList",
-                "src": "152:9:17"
+                "src": "148:6:5"
               }
             ],
-            "id": 2913,
+            "id": 2013,
             "name": "FunctionDefinition",
-            "src": "102:60:17"
+            "src": "93:62:5"
           }
         ],
-        "id": 2914,
+        "id": 2014,
         "name": "ContractDefinition",
-        "src": "62:102:17"
+        "src": "62:95:5"
       }
     ],
-    "id": 2915,
+    "id": 2015,
     "name": "SourceUnit",
-    "src": "37:128:17"
+    "src": "37:121:5"
   },
   "compiler": {
     "name": "solc",
@@ -302,7 +300,7 @@
   },
   "networks": {},
   "schemaVersion": "3.3.4",
-  "updatedAt": "2021-05-13T02:55:22.631Z",
+  "updatedAt": "2021-06-09T03:55:47.446Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},

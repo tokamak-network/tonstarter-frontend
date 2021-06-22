@@ -134,14 +134,18 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
           rounded={18}
           bg={
             colorMode === 'dark'
-              ? 'transparent'
+              ? '#000000'
               : match?.isExact
               ? 'blue.200'
               : 'transparent'
           }
-          _hover={{
-            bg: 'transparent',
-          }}>
+          _hover={
+            {
+              // bg: 'transparent',
+              // zIndex: 100,
+            }
+          }
+          zIndex={100}>
           {account ? shortenAddress(account) : 'Connect wallet'}
         </Button>
         <ThemeSwitcher />
@@ -169,7 +173,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           exact
           className={match?.isExact ? 'link-match' : 'link'}
           activeClassName={match?.isExact ? 'active-fld' : 'active'}>
-          FLD Starter
+          Home
         </NavLink>
         <NavLink
           to="/staking"
@@ -214,7 +218,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
             to="/dao"
             className={match?.isExact ? 'link-match' : 'link'}
             onClick={(e) => e.preventDefault()}>
-            Dao
+            DAO
           </NavLink>
         </Tooltip>
       </Stack>
