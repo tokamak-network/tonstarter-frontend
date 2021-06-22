@@ -54,9 +54,6 @@ export const StakingTable: FC<StakingTableProps> = ({
     useExpanded,
     usePagination,
   );
-  console.log(getTableBodyProps());
-
-  console.log(page);
 
   return (
     <Flex w="1100px" flexDir={'column'}>

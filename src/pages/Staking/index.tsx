@@ -8,7 +8,6 @@ import {
   Flex,
   useDisclosure,
   Link,
-  useTheme,
 } from '@chakra-ui/react';
 import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
@@ -18,8 +17,6 @@ import React, {FC, Fragment, useCallback, useMemo} from 'react';
 import {shortenAddress} from 'utils';
 import {StakingTable} from './StakingTable';
 import {selectStakes} from './staking.reducer';
-import {useColorMode} from '@chakra-ui/react';
-
 import {
   ClaimOptionModal,
   StakeOptionModal,
@@ -48,46 +45,29 @@ const WalletInformation: FC<WalletInformationProps> = ({
   onOpenStakeInLayer2Modal,
   user,
 }) => {
-  const {colorMode} = useColorMode();
-  const theme = useTheme();
   return (
     <Container maxW={'sm'}>
       <Box
         textAlign={'center'}
         py={10}
         px={5}
-        bg={colorMode === 'light' ? theme.colors.white[100] : 'transparent'}
-        boxShadow="base"
-        rounded={15}
-        borderWidth={colorMode === 'light' ? 0 : 1}
-        borderColor={theme.colors.gray[75]}>
+        shadow={'md'}
+        borderRadius={'lg'}>
         <Heading>{user.balance.toString()} TON</Heading>
         <Box py={5}>
           <Text>Available in wallet</Text>
         </Box>
         <Grid templateColumns={'repeat(2, 1fr)'} gap={6}>
-          <Button
-            bg={theme.colors.yellow[200]}
-            color={'black'}
-            onClick={() => onOpenStakeOptionModal()}>
+          <Button colorScheme="blue" onClick={() => onOpenStakeOptionModal()}>
             Stake
           </Button>
-          <Button
-            bg={theme.colors.yellow[200]}
-            color={'black'}
-            onClick={() => onOpenUnstakeOptionModal()}>
+          <Button colorScheme="blue" onClick={() => onOpenUnstakeOptionModal()}>
             Unstake
           </Button>
-          <Button
-            bg={theme.colors.yellow[200]}
-            color={'black'}
-            onClick={() => onOpenClaimOptionModal()}>
+          <Button colorScheme="blue" onClick={() => onOpenClaimOptionModal()}>
             Claim
           </Button>
-          <Button
-            bg={theme.colors.yellow[200]}
-            color={'black'}
-            onClick={() => onOpenManageOptionModal()}>
+          <Button colorScheme="blue" onClick={() => onOpenManageOptionModal()}>
             Manage
           </Button>
         </Grid>
@@ -126,14 +106,15 @@ export const Staking = () => {
     onClose: onCloseStakeInLayer2Modal,
     isOpen: isStakeInLayer2ModalOpen,
   } = useDisclosure();
+  const onEndSale = useCallback(() => {}, []);
   const columns = useMemo(
     () => [
       {
-        Header: 'Name',
+        Header: 'name',
         accessor: 'name',
       },
       {
-        Header: 'Period',
+        Header: 'period',
         accessor: 'period',
       },
       // {
@@ -141,21 +122,21 @@ export const Staking = () => {
       //   accessor: 'apy',
       // },
       {
-        Header: 'Total Staked',
+        Header: 'total staked',
         accessor: 'stakeBalanceTON',
       },
       {
         Header: 'Earning Per Block',
         accessor: 'earning_per_block',
       },
-      {
-        Header: 'My Staked',
-        accessor: 'mystaked',
-      },
-      {
-        Header: 'Earned',
-        accessor: 'totalRewardAmount',
-      },
+      // {
+      //   Header: 'My Staked',
+      //   accessor: 'mystaked',
+      // },
+      // {
+      //   Header: 'Earned',
+      //   accessor: 'totalRewardAmount',
+      // },
       {
         // Make an expander cell
         Header: () => null, // No header
@@ -181,21 +162,32 @@ export const Staking = () => {
   const renderRowSubComponent = useCallback(
     ({row}) => {
       return (
-        <Box mt={0}>
+        <Flex
+          mt={0}
+          w={'100%'}
+          h={'500px'}
+          justifyContent={'space-between'}
+          alignItems="center">
           <Flex
             px={{base: 3, md: 20}}
             py={{base: 1, md: 10}}
-            justifyContent={'space-between'}>
-            <Box>
+            flexDir={'column'}
+            justifyContent={'space-between'}
+            h={'100%'}>
+            <Flex flexDir={'column'} alignItems={'space-between'}>
               <Text fontWeight={'bold'}>Starting Day</Text>
               <Text>{data[row.id]?.startTime}</Text>
-            </Box>
-            <Box>
+            </Flex>
+            <Flex flexDir={'column'} alignItems={'space-between'}>
               <Text fontWeight={'bold'}>Closing day</Text>
               <Text>{data[row.id]?.endTime}</Text>
-            </Box>
+            </Flex>
+            <Flex flexDir={'column'} alignItems={'space-between'}>
+              <Text fontWeight={'bold'}>Total stakers</Text>
+              <Text>{data[row.id]?.totalStakers}</Text>
+            </Flex>
           </Flex>
-          <Box p={8}>
+          <Box p={8} w={'450px'}>
             <WalletInformation
               onOpenStakeOptionModal={onOpenStakeOptionModal}
               onOpenClaimOptionModal={onOpenClaimOptionModal}
@@ -208,12 +200,18 @@ export const Staking = () => {
           <Flex
             px={{base: 3, md: 20}}
             py={{base: 1, md: 10}}
-            justifyContent={'space-between'}>
-            <Box>
-              <Text fontWeight={'bold'}>Total stakers</Text>
-              <Text textAlign={'center'}>{data[row.id]?.totalStakers}</Text>
-            </Box>
-            <Box>
+            flexDir={'column'}
+            justifyContent={'space-between'}
+            h={'100%'}>
+            <Flex flexDir={'column'} alignItems={'space-between'}>
+              <Text fontWeight={'bold'}>My staked</Text>
+              <Text>{data[row.id]?.mystaked}</Text>
+            </Flex>
+            <Flex flexDir={'column'} alignItems={'space-between'}>
+              <Text fontWeight={'bold'}>My Earned</Text>
+              <Text>{data[row.id]?.totalRewardAmount}</Text>
+            </Flex>
+            <Flex flexDir={'column'} alignItems={'space-between'}>
               <Text fontWeight={'bold'}>Contract</Text>
               <Link
                 isExternal={true}
@@ -226,9 +224,9 @@ export const Staking = () => {
                 }`}>
                 {shortenAddress(data[row.id]?.contractAddress)}
               </Link>
-            </Box>
+            </Flex>
           </Flex>
-          <StakeOptionModal
+          {/* <StakeOptionModal
             isOpen={isStakeModalOpen}
             balance={user.balance}
             payToken={data[row.id]?.token}
@@ -278,8 +276,8 @@ export const Staking = () => {
             vaultClosed={data[row.id]?.vaultClosed}
             onClose={onCloseStakeInLayer2Modal}
             onSubmit={onStakeSubmitted}
-          />
-        </Box>
+          /> */}
+        </Flex>
       );
     },
     [
@@ -312,7 +310,7 @@ export const Staking = () => {
       <Container maxW={'6xl'}>
         <Box py={20}>
           <PageHeader
-            title={'FLD Starter'}
+            title={'TON Starter'}
             subtitle={
               'Put your tokens into FLD and earn without losing principal'
             }
