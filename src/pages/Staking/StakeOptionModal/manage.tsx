@@ -11,36 +11,35 @@ import {
   Stack,
   Grid,
 } from '@chakra-ui/react';
-import {FC} from 'react';
 import {closeSale} from '../staking.reducer';
 import {useWeb3React} from '@web3-react/core';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {
+  closeModal,
+  ModalType,
+  openModal,
+  selectModalType,
+} from 'store/modal.reducer';
+import {useCallback} from 'react';
 
-type ManageModalProps = {
-  onOpenStakeOptionModal: Function;
-  onOpenClaimOptionModal: Function;
-  onOpenUnstakeOptionModal: Function;
-  onClose: Function;
-  isOpen: boolean;
-  balance: string;
-  vaultAddress: string;
-  vaultClosed: boolean;
-  stakeStartBlock: string | number;
-};
-
-export const ManageModal: FC<ManageModalProps> = ({
-  onOpenClaimOptionModal,
-  onOpenStakeOptionModal,
-  onOpenUnstakeOptionModal,
-  isOpen,
-  onClose,
-  balance,
-  vaultAddress,
-  vaultClosed,
-  stakeStartBlock,
-}) => {
+export const ManageModal = () => {
   const {account, library} = useWeb3React();
+  const {data} = useAppSelector(selectModalType);
+  const dispatch = useAppDispatch();
+
+  const toggleModal = useCallback(
+    (modal: ModalType) => {
+      dispatch(closeModal());
+      dispatch(openModal({type: modal}));
+    },
+    [dispatch],
+  );
+
   return (
-    <Modal isOpen={isOpen} isCentered onClose={() => onClose()}>
+    <Modal
+      isOpen={data.modal === 'manage' ? true : false}
+      isCentered
+      onClose={() => dispatch(closeModal())}>
       <ModalOverlay />
       <ModalContent>
         <ModalBody>
@@ -70,26 +69,26 @@ export const ManageModal: FC<ManageModalProps> = ({
           </Stack>
 
           <Grid templateColumns={'repeat(2, 1fr)'} gap={6}>
-            <Button colorScheme="blue" onClick={() => onOpenStakeOptionModal()}>
-              Stake in Layer2 
+            <Button colorScheme="blue" onClick={() => toggleModal('stakeL2')}>
+              Stake in Layer2
             </Button>
-            <Button
-              colorScheme="blue"
-              onClick={() => onOpenUnstakeOptionModal()}>
+            <Button colorScheme="blue" onClick={() => toggleModal('unstakeL2')}>
               Unstake from Layer2
             </Button>
-            <Button colorScheme="blue">
-              Withdraw
-            </Button>
-            <Button colorScheme="blue">
-             Swap
-            </Button>
-            <Button colorScheme="blue" disabled={vaultClosed} onClick={() => closeSale(
-            {userAddress: account,
-              vaultContractAddress: vaultAddress,
-              stakeStartBlock: stakeStartBlock,
-            library: library})}>
-             End Sale
+            <Button colorScheme="blue">Withdraw</Button>
+            <Button colorScheme="blue">Swap</Button>
+            <Button
+              colorScheme="blue"
+              // disabled={data.data.vaultClosed}
+              onClick={() =>
+                closeSale({
+                  userAddress: account,
+                  vaultContractAddress: data.data.vaultAddress,
+                  stakeStartBlock: data.data.stakeStartBlock,
+                  library: library,
+                })
+              }>
+              End Sale
             </Button>
           </Grid>
         </ModalBody>

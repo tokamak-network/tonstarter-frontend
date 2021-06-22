@@ -10,33 +10,23 @@ import {
   Flex,
   Stack,
 } from '@chakra-ui/react';
-import React, {FC} from 'react';
-import {BigNumber} from 'ethers';
 import {withdraw} from '../staking.reducer';
 import {useWeb3React} from '@web3-react/core';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {closeModal, selectModalType} from 'store/modal.reducer';
 
-type UnstakeOptionModalProps = {
-  balance: string | BigNumber;
-  stakeEndBlock: string | number;
-  address: string;
-  isOpen: boolean;
-  onClose: Function;
-  onSubmit: Function;
-};
-
-export const UnstakeOptionModal: FC<UnstakeOptionModalProps> = ({
-  balance,
-  stakeEndBlock,
-  address,
-  isOpen,
-  onClose,
-  onSubmit,
-}) => {
+export const UnstakeOptionModal = () => {
   const {account, library} = useWeb3React();
+  const {data} = useAppSelector(selectModalType);
+  const dispatch = useAppDispatch();
 
+  let balance = data?.data?.user?.balance;
 
   return (
-    <Modal isOpen={isOpen} isCentered onClose={() => onClose()}>
+    <Modal
+      isOpen={data.modal === 'unstake' ? true : false}
+      isCentered
+      onClose={() => dispatch(closeModal())}>
       <ModalOverlay />
       <ModalContent>
         <ModalBody>
@@ -66,9 +56,8 @@ export const UnstakeOptionModal: FC<UnstakeOptionModalProps> = ({
               mr={6}
               _focus={{
                 borderWidth: 0,
-              }}
-            >
-             {balance} 
+              }}>
+              {balance}
             </Text>
           </Stack>
 
@@ -86,12 +75,14 @@ export const UnstakeOptionModal: FC<UnstakeOptionModalProps> = ({
           <Box py={4} as={Flex} justifyContent={'center'}>
             <Button
               type={'submit'}
-              onClick={() => withdraw({
-                userAddress: account,
-                stakeEndBlock: stakeEndBlock,
-                library: library,
-                stakeContractAddress: address
-              })}
+              onClick={() =>
+                withdraw({
+                  userAddress: account,
+                  stakeEndBlock: data.data.stakeEndBlock,
+                  library: library,
+                  stakeContractAddress: data.data.contractAddress,
+                })
+              }
               disabled={+balance <= 0}
               colorScheme={'blue'}>
               Unstake

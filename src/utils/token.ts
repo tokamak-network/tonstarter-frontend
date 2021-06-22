@@ -4,7 +4,7 @@ import TonSymbol from 'assets/tokens/TON-symbol.svg';
 type EthAddressType = '0x0000000000000000000000000000000000000000';
 type TonAddressType = '0x44d4F5d89E9296337b8c48a332B3b2fb2C190CD0';
 
-type TokenTypes = 'eth' | 'ton';
+// type TokenTypes = 'eth' | 'ton';
 
 const tokenAddresses: {eth: EthAddressType; ton: TonAddressType} = {
   eth: '0x0000000000000000000000000000000000000000',

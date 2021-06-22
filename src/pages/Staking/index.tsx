@@ -6,45 +6,45 @@ import {
   Button,
   Grid,
   Flex,
-  useDisclosure,
   Link,
 } from '@chakra-ui/react';
 import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
 import {Head} from 'components/SEO';
-import {useAppSelector} from 'hooks/useRedux';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import React, {FC, Fragment, useCallback, useMemo} from 'react';
 import {shortenAddress} from 'utils';
 import {StakingTable} from './StakingTable';
 import {selectStakes} from './staking.reducer';
+import {selectApp} from 'store/app/app.reducer';
+import {selectUser} from 'store/app/user.reducer';
+import {PageHeader} from 'components/PageHeader';
 import {
   ClaimOptionModal,
   StakeOptionModal,
   UnstakeOptionModal,
 } from './StakeOptionModal';
-import {selectApp} from 'store/app/app.reducer';
-import {selectUser} from 'store/app/user.reducer';
-import {PageHeader} from 'components/PageHeader';
+import {AppDispatch} from 'store';
+import {openModal} from 'store/modal.reducer';
 import {ManageModal} from './StakeOptionModal/manage';
-import {StakeInLayer2Modal} from './StakeOptionModal/stakeInLayer2';
+
 type WalletInformationProps = {
-  onOpenStakeOptionModal: Function;
-  onOpenClaimOptionModal: Function;
-  onOpenUnstakeOptionModal: Function;
-  onOpenManageOptionModal: Function;
-  onOpenStakeInLayer2Modal: Function;
+  dispatch: AppDispatch;
+  data: {};
   user: {
     balance: string;
   };
 };
 const WalletInformation: FC<WalletInformationProps> = ({
-  onOpenStakeOptionModal,
-  onOpenClaimOptionModal,
-  onOpenManageOptionModal,
-  onOpenUnstakeOptionModal,
-  onOpenStakeInLayer2Modal,
   user,
+  data,
+  dispatch,
 }) => {
+  const payload = {
+    ...data,
+    user,
+  };
+
   return (
     <Container maxW={'sm'}>
       <Box
@@ -58,16 +58,26 @@ const WalletInformation: FC<WalletInformationProps> = ({
           <Text>Available in wallet</Text>
         </Box>
         <Grid templateColumns={'repeat(2, 1fr)'} gap={6}>
-          <Button colorScheme="blue" onClick={() => onOpenStakeOptionModal()}>
+          <Button
+            colorScheme="blue"
+            onClick={() => dispatch(openModal({type: 'stake', data: payload}))}>
             Stake
           </Button>
-          <Button colorScheme="blue" onClick={() => onOpenUnstakeOptionModal()}>
+          <Button
+            colorScheme="blue"
+            onClick={() =>
+              dispatch(openModal({type: 'unstake', data: payload}))
+            }>
             Unstake
           </Button>
-          <Button colorScheme="blue" onClick={() => onOpenClaimOptionModal()}>
+          <Button
+            colorScheme="blue"
+            onClick={() => dispatch(openModal({type: 'claim', data: payload}))}>
             Claim
           </Button>
-          <Button colorScheme="blue" onClick={() => onOpenManageOptionModal()}>
+          <Button
+            colorScheme="blue"
+            onClick={() => dispatch(openModal({type: 'manage'}))}>
             Manage
           </Button>
         </Grid>
@@ -76,37 +86,12 @@ const WalletInformation: FC<WalletInformationProps> = ({
   );
 };
 export const Staking = () => {
+  const dispatch = useAppDispatch();
   // @ts-ignore
   const {data, loading} = useAppSelector(selectStakes);
   const {data: user} = useAppSelector(selectUser);
   // @ts-ignore
   const {data: appConfig} = useAppSelector(selectApp);
-  const {
-    isOpen: isClaimModalOpen,
-    onClose: onCloseClaimOptionModal,
-    onOpen: onOpenClaimOptionModal,
-  } = useDisclosure();
-  const {
-    isOpen: isStakeModalOpen,
-    onClose: onCloseStakeOptionModal,
-    onOpen: onOpenStakeOptionModal,
-  } = useDisclosure();
-  const {
-    isOpen: isUnstakeModalOpen,
-    onClose: onCloseUnstakeOptionModal,
-    onOpen: onOpenUnstakeOptionModal,
-  } = useDisclosure();
-  const {
-    onOpen: onOpenManageOptionModal,
-    onClose: onCloseManageOptionModal,
-    isOpen: isManageModalOpen,
-  } = useDisclosure();
-  const {
-    onOpen: onOpenStakeInLayer2Modal,
-    onClose: onCloseStakeInLayer2Modal,
-    isOpen: isStakeInLayer2ModalOpen,
-  } = useDisclosure();
-  const onEndSale = useCallback(() => {}, []);
   const columns = useMemo(
     () => [
       {
@@ -153,12 +138,6 @@ export const Staking = () => {
     ],
     [],
   );
-  const onStakeSubmitted = useCallback((value) => {}, []);
-  const onClaimSubmitted = useCallback(async (value) => {
-    // @ts-ignore
-    // dispatch(claimStake({account, value, library} as any));
-  }, []);
-  const onUnstakeSubmitted = useCallback((value) => {}, []);
   const renderRowSubComponent = useCallback(
     ({row}) => {
       return (
@@ -189,11 +168,8 @@ export const Staking = () => {
           </Flex>
           <Box p={8} w={'450px'}>
             <WalletInformation
-              onOpenStakeOptionModal={onOpenStakeOptionModal}
-              onOpenClaimOptionModal={onOpenClaimOptionModal}
-              onOpenManageOptionModal={onOpenManageOptionModal}
-              onOpenUnstakeOptionModal={onOpenUnstakeOptionModal}
-              onOpenStakeInLayer2Modal={onOpenStakeInLayer2Modal}
+              dispatch={dispatch}
+              data={data[row.id]}
               user={user}
             />
           </Box>
@@ -226,83 +202,10 @@ export const Staking = () => {
               </Link>
             </Flex>
           </Flex>
-          {/* <StakeOptionModal
-            isOpen={isStakeModalOpen}
-            balance={user.balance}
-            payToken={data[row.id]?.token}
-            saleStartBlock={data[row.id]?.saleStartBlock}
-            address={data[row.id]?.contractAddress}
-            stakeStartBlock={data[row.id]?.stakeStartBlock}
-            onClose={onCloseStakeOptionModal}
-            onSubmit={onStakeSubmitted}
-          />
-          <UnstakeOptionModal
-            balance={data[row.id]?.mystaked}
-            stakeEndBlock={data[row.id]?.stakeEndBlock}
-            address={data[row.id]?.contractAddress}
-            isOpen={isUnstakeModalOpen}
-            onClose={onCloseUnstakeOptionModal}
-            onSubmit={onUnstakeSubmitted}
-          />
-          <ClaimOptionModal
-            isOpen={isClaimModalOpen}
-            balance={(data[row.id]?.canRewardAmount).toString()}
-            stakeStartBlock={data[row.id]?.stakeStartBlock}
-            address={data[row.id]?.contractAddress}
-            vaultAddress={data[row.id]?.vaultAddress}
-            vaultClosed={data[row.id]?.vaultClosed}
-            onClose={onCloseClaimOptionModal}
-            onSubmit={onClaimSubmitted}
-          />
-          <ManageModal
-            isOpen={isManageModalOpen}
-            onClose={onCloseManageOptionModal}
-            balance={user.balance}
-            onOpenClaimOptionModal={onOpenClaimOptionModal}
-            onOpenStakeOptionModal={onOpenStakeInLayer2Modal}
-            onOpenUnstakeOptionModal={onOpenUnstakeOptionModal}
-            vaultAddress={data[row.id]?.vaultAddress}
-            vaultClosed={data[row.id]?.vaultClosed}
-            stakeStartBlock={data[row.id]?.stakeStartBlock}
-          />
-          <StakeInLayer2Modal
-            isOpen={isStakeInLayer2ModalOpen}
-            balance={user.balance}
-            payToken={data[row.id]?.token}
-            saleStartBlock={data[row.id]?.saleStartBlock}
-            stakeEndBlock={data[row.id]?.stakeEndBlock}
-            address={data[row.id]?.contractAddress}
-            stakeStartBlock={data[row.id]?.stakeStartBlock}
-            vaultClosed={data[row.id]?.vaultClosed}
-            onClose={onCloseStakeInLayer2Modal}
-            onSubmit={onStakeSubmitted}
-          /> */}
         </Flex>
       );
     },
-    [
-      appConfig.explorerLink,
-      data,
-      isClaimModalOpen,
-      isManageModalOpen,
-      isStakeModalOpen,
-      isUnstakeModalOpen,
-      isStakeInLayer2ModalOpen,
-      onClaimSubmitted,
-      onCloseClaimOptionModal,
-      onCloseManageOptionModal,
-      onCloseStakeOptionModal,
-      onCloseUnstakeOptionModal,
-      onOpenClaimOptionModal,
-      onOpenManageOptionModal,
-      onOpenStakeOptionModal,
-      onOpenUnstakeOptionModal,
-      onStakeSubmitted,
-      onUnstakeSubmitted,
-      onOpenStakeInLayer2Modal,
-      onCloseStakeInLayer2Modal,
-      user,
-    ],
+    [data, dispatch, user, appConfig.explorerLink],
   );
   return (
     <Fragment>
@@ -325,6 +228,10 @@ export const Staking = () => {
           />
         </Box>
       </Container>
+      <StakeOptionModal />
+      <UnstakeOptionModal />
+      <ClaimOptionModal />
+      <ManageModal />
     </Fragment>
   );
 };

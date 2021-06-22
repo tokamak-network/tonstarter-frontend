@@ -11,39 +11,31 @@ import {
   Input,
   Stack,
 } from '@chakra-ui/react';
-import React, {FC, useCallback, useState} from 'react';
-import {useWeb3React} from '@web3-react/core';
-import {stakePaytoken} from '../staking.reducer';
+import React, {useCallback, useState} from 'react';
+// import {stakePaytoken} from '../staking.reducer';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {closeModal, selectModalType} from 'store/modal.reducer';
 
-type StakeOptionModalProps = {
-  isOpen: boolean;
-  balance: string;
-  payToken: string;
-  saleStartBlock: string | number;
-  stakeStartBlock: string | number;
-  address: string;
-  onClose: Function;
-  onSubmit: Function;
-};
+export const StakeOptionModal = () => {
+  const {data} = useAppSelector(selectModalType);
+  const dispatch = useAppDispatch();
 
-export const StakeOptionModal: FC<StakeOptionModalProps> = ({
-  isOpen,
-  onClose,
-  balance,
-  payToken,
-  saleStartBlock,
-  stakeStartBlock,
-  address
-}) => {
-  const {account, library} = useWeb3React();
+  let balance = data?.data?.user?.balance;
 
-  const [value, setValue] = useState<number>(+balance);
+  const [value, setValue] = useState<number>(balance);
 
   const handleChange = useCallback(e => setValue(e.target.value), []);
-  const setMax = useCallback(_e => setValue(+balance), [balance]);
+  const setMax = useCallback(_e => setValue(balance), [balance]);
+
+  const handleCloseModal = useCallback(() => dispatch(closeModal()), [
+    dispatch,
+  ]);
 
   return (
-    <Modal isOpen={isOpen} isCentered onClose={() => onClose()}>
+    <Modal
+      isOpen={data.modal === 'stake' ? true : false}
+      isCentered
+      onClose={handleCloseModal}>
       <ModalOverlay />
       <ModalContent>
         <ModalBody>
@@ -54,7 +46,7 @@ export const StakeOptionModal: FC<StakeOptionModalProps> = ({
               textAlign={'center'}>
               Stake
             </Heading>
-            {/* <Text>{payToken}</Text> */}
+            <Text>{data?.data?.token}</Text>
           </Box>
 
           <Stack
@@ -98,12 +90,12 @@ export const StakeOptionModal: FC<StakeOptionModalProps> = ({
             alignItems={'center'}>
             <Box textAlign={'center'}>
               <Text>Available Balance</Text>
-              <Text>{balance.toString()} TON</Text>
+              <Text>{balance} TON</Text>
             </Box>
           </Stack>
 
           <Box py={4} as={Flex} justifyContent={'center'}>
-            <Button
+            {/* <Button
               colorScheme={'blue'}
               onClick={() =>
                 stakePaytoken({
@@ -113,11 +105,11 @@ export const StakeOptionModal: FC<StakeOptionModalProps> = ({
                   saleStartBlock: saleStartBlock,
                   library: library,
                   stakeContractAddress: address,
-                  stakeStartBlock: stakeStartBlock
+                  stakeStartBlock: stakeStartBlock,
                 })
               }>
               Stake
-            </Button>
+            </Button> */}
           </Box>
         </ModalBody>
       </ModalContent>

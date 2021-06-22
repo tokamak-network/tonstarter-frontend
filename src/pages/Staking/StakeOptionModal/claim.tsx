@@ -9,37 +9,27 @@ import {
   Button,
   Flex,
   Stack,
-  useTheme
+  useTheme,
 } from '@chakra-ui/react';
-import React, {FC} from 'react';
-import {closeSale, claimReward} from '../staking.reducer';
+import {claimReward} from '../staking.reducer';
 import {useWeb3React} from '@web3-react/core';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {closeModal, selectModalType} from 'store/modal.reducer';
 
-type ClaimOptionModalProps = {
-  isOpen: boolean;
-  balance: string;
-  stakeStartBlock: string | number;
-  address: string;
-  vaultAddress: string;
-  vaultClosed: boolean;
-  onClose: Function;
-  onSubmit: Function;
-};
-
-export const ClaimOptionModal: FC<ClaimOptionModalProps> = ({
-  isOpen,
-  balance,
-  stakeStartBlock,
-  address,
-  vaultAddress,
-  vaultClosed,
-  onClose,
-  onSubmit,
-}) => {
+export const ClaimOptionModal = () => {
   const {account, library} = useWeb3React();
   const theme = useTheme();
+
+  const {data} = useAppSelector(selectModalType);
+  const dispatch = useAppDispatch();
+
+  let balance = data?.data?.user?.balance;
+
   return (
-    <Modal isOpen={isOpen} isCentered onClose={() => onClose()}>
+    <Modal
+      isOpen={data.modal === 'claim' ? true : false}
+      isCentered
+      onClose={() => dispatch(closeModal())}>
       <ModalOverlay />
       <ModalContent>
         <ModalBody>
@@ -70,8 +60,9 @@ export const ClaimOptionModal: FC<ClaimOptionModalProps> = ({
               mr={6}
               _focus={{
                 borderWidth: 0,
-              }}
-            > {balance} TON
+              }}>
+              {' '}
+              {balance} TON
             </Text>
           </Stack>
 
@@ -87,29 +78,37 @@ export const ClaimOptionModal: FC<ClaimOptionModalProps> = ({
           </Stack>
 
           <Box py={4} as={Flex} justifyContent={'center'}>
-            {!vaultClosed? <Button mr={4} onClick={() => closeSale(
-            {userAddress: account,
-              vaultContractAddress: vaultAddress,
-              stakeStartBlock: stakeStartBlock,
-            library: library})}
-              bg={theme.colors.yellow[200]}  color={'black'} >
-              End sale
-            </Button> : null}
-          
+            {/* {!data.data.vaultClosed ? (
+              <Button
+                mr={4}
+                onClick={() =>
+                  closeSale({
+                    userAddress: account,
+                    vaultContractAddress: data.data.vaultAddress,
+                    stakeStartBlock: data.data.stakeStartBlock,
+                    library: library,
+                  })
+                }
+                bg={theme.colors.yellow[200]}
+                color={'black'}>
+                End sale
+              </Button>
+            ) : null} */}
+
             <Button
-            disabled={!vaultClosed}
-             onClick={() =>
-              claimReward({
-                userAddress: account,
-                stakeContractAddress: address,
-                stakeStartBlock: stakeStartBlock,
-                library: library
-              }) 
-            }
-            bg={theme.colors.yellow[200]}  color={'black'} >
+              // disabled={!data.data.vaultClosed}
+              onClick={() =>
+                claimReward({
+                  userAddress: account,
+                  stakeContractAddress: data.data.contractAddress,
+                  stakeStartBlock: data.data.stakeStartBlock,
+                  library: library,
+                })
+              }
+              bg={theme.colors.yellow[200]}
+              color={'black'}>
               Claim
             </Button>
-
           </Box>
         </ModalBody>
       </ModalContent>

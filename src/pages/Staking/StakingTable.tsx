@@ -1,4 +1,4 @@
-import React, {FC} from 'react';
+import {FC} from 'react';
 import {
   Column,
   useExpanded,
@@ -37,7 +37,6 @@ export const StakingTable: FC<StakingTableProps> = ({
   const {
     getTableProps,
     getTableBodyProps,
-    headerGroups,
     prepareRow,
     visibleColumns,
     canPreviousPage,
@@ -115,7 +114,7 @@ export const StakingTable: FC<StakingTableProps> = ({
           {...getTableProps()}
           display="flex"
           flexDirection="column">
-          <chakra.thead textAlign={'justify'}>
+          {/* <chakra.thead textAlign={'justify'}>
             {headerGroups.map((headerGroup) => (
               <chakra.tr h={16} {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
@@ -128,7 +127,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                 ))}
               </chakra.tr>
             ))}
-          </chakra.thead>
+          </chakra.thead> */}
           <chakra.tbody
             {...getTableBodyProps()}
             display="flex"
@@ -326,10 +325,10 @@ export const StakingTable: FC<StakingTableProps> = ({
               w={28}
               size={'sm'}
               value={pageSize}
-              onChange={(e) => {
+              onChange={e => {
                 setPageSize(Number(e.target.value));
               }}>
-              {[10, 20, 30, 40, 50].map((pageSize) => (
+              {[10, 20, 30, 40, 50].map(pageSize => (
                 <option key={pageSize} value={pageSize}>
                   Show {pageSize}
                 </option>
