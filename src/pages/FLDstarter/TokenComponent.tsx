@@ -12,12 +12,13 @@ import {
 import {Link} from 'react-router-dom';
 import {useColorMode} from '@chakra-ui/react';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
+import {Stake} from 'pages/Staking/staking.reducer';
+
 type TokenComponentProps = {
-  phase?: string;
-  subtitle: string;
+  data: Stake;
 };
 
-export const TokenComponent: FC<TokenComponentProps> = ({phase, subtitle}) => {
+export const TokenComponent: FC<TokenComponentProps> = ({data}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   return (
@@ -41,14 +42,14 @@ export const TokenComponent: FC<TokenComponentProps> = ({phase, subtitle}) => {
                 ? theme.colors.gray[275]
                 : theme.colors.white[100]
             }>
-            {phase}
+            {data.name}
           </Text>
           <Flex mb={2}>
             <Text className={'fld-text1'} mr={1}>
               Period
             </Text>
             <Text className={'fld-text2'} mr={1}>
-              2 Weeks
+              {data.period}
             </Text>
             <Text
               fontWeight={'semibold'}
@@ -70,7 +71,7 @@ export const TokenComponent: FC<TokenComponentProps> = ({phase, subtitle}) => {
               Earning Per Block
             </Text>
             <Text className={'fld-text2'} mr={1}>
-              100 FLD
+              {data.totalRewardAmount} FLD
             </Text>
           </Flex>
           <Flex mt={3} alignItems={'center'}>
@@ -85,7 +86,7 @@ export const TokenComponent: FC<TokenComponentProps> = ({phase, subtitle}) => {
                   : theme.colors.white[100]
               }
               lineHeight={1}>
-              1,000,000.00
+              {data.tokamakStaked}
             </Text>
             <Text
               fontWeight={'semibold'}
@@ -113,6 +114,8 @@ export const TokenComponent: FC<TokenComponentProps> = ({phase, subtitle}) => {
           </Text>
           <Flex mt={4} mb={2}>
             <Button
+              as={Link}
+              to={`/staking?contract=${data.contractAddress}&action=stake`}
               h={8}
               fontSize={16}
               fontWeight={700}
@@ -126,46 +129,42 @@ export const TokenComponent: FC<TokenComponentProps> = ({phase, subtitle}) => {
               Staking
             </Button>
 
-            <Link to="/staking">
-              <Button
-                borderWidth={1}
-                borderColor={
-                  colorMode === 'light' ? 'transparent' : theme.colors.gray[75]
-                }
-                h={8}
-                fontSize={16}
-                fontWeight={700}
-                color={
+            <Button
+              as={Link}
+              to={`/staking?contract=${data.contractAddress}&action=info`}
+              borderWidth={1}
+              borderColor={
+                colorMode === 'light' ? 'transparent' : theme.colors.gray[75]
+              }
+              h={8}
+              fontSize={16}
+              fontWeight={700}
+              color={
+                colorMode === 'light' ? theme.colors.gray[125] : '!currentcolor'
+              }
+              rounded={18}
+              bg={
+                colorMode === 'light' ? theme.colors.gray[200] : '!currentcolor'
+              }
+              px={34}
+              fontFamily={theme.fonts.fld}
+              _hover={{
+                bg:
+                  colorMode === 'light'
+                    ? theme.colors.gray[325]
+                    : 'transparent',
+                borderColor:
+                  colorMode === 'light'
+                    ? 'transparent'
+                    : theme.colors.gray[350],
+                color:
                   colorMode === 'light'
                     ? theme.colors.gray[125]
-                    : '!currentcolor'
-                }
-                rounded={18}
-                bg={
-                  colorMode === 'light'
-                    ? theme.colors.gray[200]
-                    : '!currentcolor'
-                }
-                px={34}
-                fontFamily={theme.fonts.fld}
-                _hover={{
-                  bg:
-                    colorMode === 'light'
-                      ? theme.colors.gray[325]
-                      : 'transparent',
-                  borderColor:
-                    colorMode === 'light'
-                      ? 'transparent'
-                      : theme.colors.gray[350],
-                  color:
-                    colorMode === 'light'
-                      ? theme.colors.gray[125]
-                      : theme.colors.gray[0],
-                }}>
-                {' '}
-                Details{' '}
-              </Button>
-            </Link>
+                    : theme.colors.gray[0],
+              }}>
+              {' '}
+              Details{' '}
+            </Button>
           </Flex>
         </Flex>
       </Flex>
