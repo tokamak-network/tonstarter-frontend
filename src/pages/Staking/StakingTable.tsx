@@ -46,7 +46,7 @@ export const StakingTable: FC<StakingTableProps> = ({
   );
   return (
     <>
-      <Box overflowX={'auto'}>
+      <Box>
         <chakra.table width={'full'} variant="simple" {...getTableProps()}>
           <chakra.thead textAlign={'justify'}>
             {headerGroups.map(headerGroup => (

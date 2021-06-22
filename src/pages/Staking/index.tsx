@@ -8,6 +8,7 @@ import {
   Flex,
   useDisclosure,
   Link,
+  useTheme
 } from '@chakra-ui/react';
 import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
@@ -17,6 +18,8 @@ import React, {FC, Fragment, useCallback, useMemo} from 'react';
 import {shortenAddress} from 'utils';
 import {StakingTable} from './StakingTable';
 import {selectStakes} from './staking.reducer';
+import {useColorMode} from '@chakra-ui/react';
+
 import {
   ClaimOptionModal,
   StakeOptionModal,
@@ -26,11 +29,13 @@ import {selectApp} from 'store/app/app.reducer';
 import {selectUser} from 'store/app/user.reducer';
 import {PageHeader} from 'components/PageHeader';
 import {ManageModal} from './StakeOptionModal/manage';
+import {StakeInLayer2Modal} from './StakeOptionModal/stakeInLayer2';
 type WalletInformationProps = {
   onOpenStakeOptionModal: Function;
   onOpenClaimOptionModal: Function;
   onOpenUnstakeOptionModal: Function;
   onOpenManageOptionModal: Function;
+  onOpenStakeInLayer2Modal: Function;
   user: {
     balance: string;
   };
@@ -40,31 +45,37 @@ const WalletInformation: FC<WalletInformationProps> = ({
   onOpenClaimOptionModal,
   onOpenManageOptionModal,
   onOpenUnstakeOptionModal,
+  onOpenStakeInLayer2Modal,
   user,
 }) => {
+  const {colorMode} = useColorMode();
+  const theme = useTheme();
   return (
-    <Container maxW={'sm'}>
+    <Container maxW={'sm'}  >
       <Box
         textAlign={'center'}
         py={10}
         px={5}
-        shadow={'md'}
-        borderRadius={'lg'}>
+        bg={colorMode === 'light' ? theme.colors.white[100] : 'transparent'}
+      boxShadow="base"
+      rounded={15}
+      borderWidth={colorMode === 'light' ? 0 : 1}
+      borderColor={theme.colors.gray[75]}>
         <Heading>{user.balance.toString()} TON</Heading>
         <Box py={5}>
           <Text>Available in wallet</Text>
         </Box>
         <Grid templateColumns={'repeat(2, 1fr)'} gap={6}>
-          <Button colorScheme="blue" onClick={() => onOpenStakeOptionModal()}>
+          <Button bg={theme.colors.yellow[200]}  color={'black'} onClick={() => onOpenStakeOptionModal()}>
             Stake
           </Button>
-          <Button colorScheme="blue" onClick={() => onOpenUnstakeOptionModal()}>
+          <Button bg={theme.colors.yellow[200]}  color={'black'} onClick={() => onOpenUnstakeOptionModal()}>
             Unstake
           </Button>
-          <Button colorScheme="blue" onClick={() => onOpenClaimOptionModal()}>
+          <Button bg={theme.colors.yellow[200]}  color={'black'} onClick={() => onOpenClaimOptionModal()}>
             Claim
           </Button>
-          <Button colorScheme="blue" onClick={() => onOpenManageOptionModal()}>
+          <Button bg={theme.colors.yellow[200]}  color={'black'} onClick={() => onOpenManageOptionModal()}>
             Manage
           </Button>
         </Grid>
@@ -98,7 +109,11 @@ export const Staking = () => {
     onClose: onCloseManageOptionModal,
     isOpen: isManageModalOpen,
   } = useDisclosure();
-  const onEndSale = useCallback(() => {}, []);
+  const {
+    onOpen: onOpenStakeInLayer2Modal,
+    onClose: onCloseStakeInLayer2Modal,
+    isOpen: isStakeInLayer2ModalOpen,
+  } = useDisclosure();
   const columns = useMemo(
     () => [
       {
@@ -168,12 +183,13 @@ export const Staking = () => {
               <Text>{data[row.id]?.endTime}</Text>
             </Box>
           </Flex>
-          <Box p={8}>
+          <Box p={8} >
             <WalletInformation
               onOpenStakeOptionModal={onOpenStakeOptionModal}
               onOpenClaimOptionModal={onOpenClaimOptionModal}
               onOpenManageOptionModal={onOpenManageOptionModal}
               onOpenUnstakeOptionModal={onOpenUnstakeOptionModal}
+              onOpenStakeInLayer2Modal={onOpenStakeInLayer2Modal}
               user={user}
             />
           </Box>
@@ -220,9 +236,11 @@ export const Staking = () => {
           />
           <ClaimOptionModal
             isOpen={isClaimModalOpen}
-            balance={user.balance}
+            balance={(data[row.id]?.canRewardAmount).toString()}
             stakeStartBlock= {data[row.id]?.stakeStartBlock}
             address={data[row.id]?.contractAddress}
+            vaultAddress= {data[row.id]?.vaultAddress}
+            vaultClosed={data[row.id]?.vaultClosed}
             onClose={onCloseClaimOptionModal}
             onSubmit={onClaimSubmitted}
           />
@@ -231,9 +249,23 @@ export const Staking = () => {
             onClose={onCloseManageOptionModal}
             balance={user.balance}
             onOpenClaimOptionModal={onOpenClaimOptionModal}
-            onEndSale={onEndSale}
-            onOpenStakeOptionModal={onOpenStakeOptionModal}
+            onOpenStakeOptionModal={onOpenStakeInLayer2Modal}
             onOpenUnstakeOptionModal={onOpenUnstakeOptionModal}
+            vaultAddress= {data[row.id]?.vaultAddress}
+            vaultClosed={data[row.id]?.vaultClosed}
+            stakeStartBlock= {data[row.id]?.stakeStartBlock}
+          />
+          <StakeInLayer2Modal
+            isOpen={isStakeInLayer2ModalOpen}
+            balance={user.balance}
+            payToken={data[row.id]?.token}
+            saleStartBlock= {data[row.id]?.saleStartBlock}
+            stakeEndBlock= {data[row.id]?.stakeEndBlock}
+            address={data[row.id]?.contractAddress}
+            stakeStartBlock= {data[row.id]?.stakeStartBlock}
+            vaultClosed={data[row.id]?.vaultClosed}
+            onClose={onCloseStakeInLayer2Modal}
+            onSubmit={onStakeSubmitted}
           />
         </Box>
       );
@@ -245,18 +277,20 @@ export const Staking = () => {
       isManageModalOpen,
       isStakeModalOpen,
       isUnstakeModalOpen,
+      isStakeInLayer2ModalOpen,
       onClaimSubmitted,
       onCloseClaimOptionModal,
       onCloseManageOptionModal,
       onCloseStakeOptionModal,
       onCloseUnstakeOptionModal,
-      onEndSale,
       onOpenClaimOptionModal,
       onOpenManageOptionModal,
       onOpenStakeOptionModal,
       onOpenUnstakeOptionModal,
       onStakeSubmitted,
       onUnstakeSubmitted,
+      onOpenStakeInLayer2Modal,
+      onCloseStakeInLayer2Modal,
       user,
     ],
   );
