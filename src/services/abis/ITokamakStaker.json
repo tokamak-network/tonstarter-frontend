@@ -155,7 +155,7 @@
           "type": "uint256"
         }
       ],
-      "name": "exchangeWTONtoFLD",
+      "name": "exchangeWTONtoTOS",
       "outputs": [
         {
           "internalType": "uint256",
@@ -189,7 +189,7 @@
           "type": "uint256"
         }
       ],
-      "name": "exchangeWTONtoFLDv2",
+      "name": "exchangeWTONtoTOSv2",
       "outputs": [
         {
           "internalType": "uint256",
@@ -201,7 +201,7 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.7.6+commit.7338295f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_amountIn\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_amountOutMinimum\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_deadline\",\"type\":\"uint256\"},{\"internalType\":\"uint160\",\"name\":\"_sqrtPriceLimitX96\",\"type\":\"uint160\"},{\"internalType\":\"uint256\",\"name\":\"_kind\",\"type\":\"uint256\"}],\"name\":\"exchangeWTONtoFLD\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"amountOut\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_amountIn\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_amountOutMinimum\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_deadline\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_kind\",\"type\":\"uint256\"}],\"name\":\"exchangeWTONtoFLDv2\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"amountOut\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getUniswapInfo\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"uniswapRouter\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"npm\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"ext\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"fee\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"uniswapRouterV2\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_layer2\",\"type\":\"address\"}],\"name\":\"setTokamakLayer2\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"toWTON\",\"type\":\"bool\"}],\"name\":\"swapTONtoWTON\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_layer2\",\"type\":\"address\"}],\"name\":\"tokamakProcessUnStaking\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_layer2\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"wtonAmount\",\"type\":\"uint256\"}],\"name\":\"tokamakRequestUnStaking\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_layer2\",\"type\":\"address\"}],\"name\":\"tokamakRequestUnStakingAll\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_layer2\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"stakeAmount\",\"type\":\"uint256\"}],\"name\":\"tokamakStaking\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"exchangeWTONtoFLD(uint256,uint256,uint256,uint160,uint256)\":{\"details\":\"exchange holded WTON to FLD using uniswap-v3\",\"params\":{\"_amountIn\":\"the input amount\",\"_amountOutMinimum\":\"the minimun output amount\",\"_deadline\":\"deadline\",\"_kind\":\"the function type, if 0, use exactInputSingle function, else if, use exactInput function\",\"_sqrtPriceLimitX96\":\"sqrtPriceLimitX96\"}},\"exchangeWTONtoFLDv2(uint256,uint256,uint256,uint256)\":{\"details\":\"exchange holded WTON to FLD using uniswap-v2\",\"params\":{\"_amountIn\":\"the input amount\",\"_amountOutMinimum\":\"the minimun output amount\",\"_deadline\":\"deadline\",\"_kind\":\"the function type, if 0, use exactInputSingle function, else if, use exactInput function\"}},\"getUniswapInfo()\":{\"details\":\"get the addresses yhat used in uniswap interfaces\",\"returns\":{\"ext\":\"the address of ext\",\"fee\":\"the amount of fee\",\"npm\":\"the address of positionManagerAddress\",\"uniswapRouter\":\"the address of uniswapRouter\"}},\"setTokamakLayer2(address)\":{\"details\":\"set the tokamak Layer2 address\",\"params\":{\"_layer2\":\"new the tokamak Layer2 address\"}},\"swapTONtoWTON(uint256,bool)\":{\"details\":\"Change the TON holded in contract have to WTON, or change WTON to TON.\",\"params\":{\"amount\":\"the amount to be changed\",\"toWTON\":\"if it's true, TON->WTON , else WTON->TON\"}},\"tokamakProcessUnStaking(address)\":{\"details\":\"process unstaking in layer2 in tokamak\",\"params\":{\"_layer2\":\"the layer2 address in tokamak\"}},\"tokamakRequestUnStaking(address,uint256)\":{\"details\":\"request unstaking the wtonAmount in layer2 in tokamak\",\"params\":{\"_layer2\":\"the layer2 address in tokamak\",\"wtonAmount\":\"the amount requested to unstaking\"}},\"tokamakRequestUnStakingAll(address)\":{\"details\":\"request unstaking the wtonAmount in layer2 in tokamak\",\"params\":{\"_layer2\":\"the layer2 address in tokamak\"}},\"tokamakStaking(address,uint256)\":{\"details\":\"staking the staked TON in layer2 in tokamak\",\"params\":{\"_layer2\":\"the layer2 address in tokamak\",\"stakeAmount\":\"the amount that stake to layer2\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/ITokamakStaker.sol\":\"ITokamakStaker\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":100},\"remappings\":[]},\"sources\":{\"/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/ITokamakStaker.sol\":{\"keccak256\":\"0xc16b0ea968abb00c28cc60231e6a30761057e409f66a3db1aec73ab4cfd3b223\",\"license\":\"Unlicense\",\"urls\":[\"bzz-raw://66658dfbcdf2cea0faddfb22701b0e54c2f85edc10e77f3d6e586de5a1cee8c1\",\"dweb:/ipfs/QmUsu4nNGuEKLrmVvPUJ93to81hzQBCQXaZDoejRN1mshD\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.7.6+commit.7338295f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_amountIn\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_amountOutMinimum\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_deadline\",\"type\":\"uint256\"},{\"internalType\":\"uint160\",\"name\":\"_sqrtPriceLimitX96\",\"type\":\"uint160\"},{\"internalType\":\"uint256\",\"name\":\"_kind\",\"type\":\"uint256\"}],\"name\":\"exchangeWTONtoTOS\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"amountOut\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_amountIn\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_amountOutMinimum\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_deadline\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_kind\",\"type\":\"uint256\"}],\"name\":\"exchangeWTONtoTOSv2\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"amountOut\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getUniswapInfo\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"uniswapRouter\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"npm\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"ext\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"fee\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"uniswapRouterV2\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_layer2\",\"type\":\"address\"}],\"name\":\"setTokamakLayer2\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"toWTON\",\"type\":\"bool\"}],\"name\":\"swapTONtoWTON\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_layer2\",\"type\":\"address\"}],\"name\":\"tokamakProcessUnStaking\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_layer2\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"wtonAmount\",\"type\":\"uint256\"}],\"name\":\"tokamakRequestUnStaking\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_layer2\",\"type\":\"address\"}],\"name\":\"tokamakRequestUnStakingAll\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_layer2\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"stakeAmount\",\"type\":\"uint256\"}],\"name\":\"tokamakStaking\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"exchangeWTONtoTOS(uint256,uint256,uint256,uint160,uint256)\":{\"details\":\"exchange holded WTON to TOS using uniswap-v3\",\"params\":{\"_amountIn\":\"the input amount\",\"_amountOutMinimum\":\"the minimun output amount\",\"_deadline\":\"deadline\",\"_kind\":\"the function type, if 0, use exactInputSingle function, else if, use exactInput function\",\"_sqrtPriceLimitX96\":\"sqrtPriceLimitX96\"}},\"exchangeWTONtoTOSv2(uint256,uint256,uint256,uint256)\":{\"details\":\"exchange holded WTON to TOS using uniswap-v2\",\"params\":{\"_amountIn\":\"the input amount\",\"_amountOutMinimum\":\"the minimun output amount\",\"_deadline\":\"deadline\",\"_kind\":\"the function type, if 0, use exactInputSingle function, else if, use exactInput function\"}},\"getUniswapInfo()\":{\"details\":\"get the addresses yhat used in uniswap interfaces\",\"returns\":{\"ext\":\"the address of ext\",\"fee\":\"the amount of fee\",\"npm\":\"the address of positionManagerAddress\",\"uniswapRouter\":\"the address of uniswapRouter\"}},\"setTokamakLayer2(address)\":{\"details\":\"set the tokamak Layer2 address\",\"params\":{\"_layer2\":\"new the tokamak Layer2 address\"}},\"swapTONtoWTON(uint256,bool)\":{\"details\":\"Change the TON holded in contract have to WTON, or change WTON to TON.\",\"params\":{\"amount\":\"the amount to be changed\",\"toWTON\":\"if it's true, TON->WTON , else WTON->TON\"}},\"tokamakProcessUnStaking(address)\":{\"details\":\"process unstaking in layer2 in tokamak\",\"params\":{\"_layer2\":\"the layer2 address in tokamak\"}},\"tokamakRequestUnStaking(address,uint256)\":{\"details\":\"request unstaking the wtonAmount in layer2 in tokamak\",\"params\":{\"_layer2\":\"the layer2 address in tokamak\",\"wtonAmount\":\"the amount requested to unstaking\"}},\"tokamakRequestUnStakingAll(address)\":{\"details\":\"request unstaking the wtonAmount in layer2 in tokamak\",\"params\":{\"_layer2\":\"the layer2 address in tokamak\"}},\"tokamakStaking(address,uint256)\":{\"details\":\"staking the staked TON in layer2 in tokamak\",\"params\":{\"_layer2\":\"the layer2 address in tokamak\",\"stakeAmount\":\"the amount that stake to layer2\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/ITokamakStaker.sol\":\"ITokamakStaker\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":100},\"remappings\":[]},\"sources\":{\"/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/ITokamakStaker.sol\":{\"keccak256\":\"0x38c2139a9b3ee89eb01c25cb90942c53810fb2e8230066468a5c1e5187603101\",\"license\":\"Unlicense\",\"urls\":[\"bzz-raw://da77da63e4660d6e284fe56e05e7fea70ebf7875b4a6277a565e018f2c77a31a\",\"dweb:/ipfs/QmS534hap2xSsuhDqXbzUo2HNJKgCJrZRiQinxkWit2KQz\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
@@ -209,21 +209,21 @@
   "deployedGeneratedSources": [],
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "//SPDX-License-Identifier: Unlicense\npragma solidity ^0.7.6;\n\ninterface ITokamakStaker {\n    /// @dev set the tokamak Layer2 address\n    /// @param _layer2 new the tokamak Layer2 address\n    function setTokamakLayer2(address _layer2) external;\n\n    /// @dev get the addresses yhat used in uniswap interfaces\n    /// @return uniswapRouter the address of uniswapRouter\n    /// @return npm the address of positionManagerAddress\n    /// @return ext the address of ext\n    /// @return fee the amount of fee\n    function getUniswapInfo()\n        external\n        view\n        returns (\n            address uniswapRouter,\n            address npm,\n            address ext,\n            uint256 fee,\n            address uniswapRouterV2\n        );\n\n    /// @dev Change the TON holded in contract have to WTON, or change WTON to TON.\n    /// @param amount the amount to be changed\n    /// @param toWTON if it's true, TON->WTON , else WTON->TON\n    function swapTONtoWTON(uint256 amount, bool toWTON) external;\n\n    /// @dev  staking the staked TON in layer2 in tokamak\n    /// @param _layer2 the layer2 address in tokamak\n    /// @param stakeAmount the amount that stake to layer2\n    function tokamakStaking(address _layer2, uint256 stakeAmount) external;\n\n    /// @dev  request unstaking the wtonAmount in layer2 in tokamak\n    /// @param _layer2 the layer2 address in tokamak\n    /// @param wtonAmount the amount requested to unstaking\n    function tokamakRequestUnStaking(address _layer2, uint256 wtonAmount)\n        external;\n\n    /// @dev  request unstaking the wtonAmount in layer2 in tokamak\n    /// @param _layer2 the layer2 address in tokamak\n    function tokamakRequestUnStakingAll(address _layer2)\n        external;\n\n    /// @dev process unstaking in layer2 in tokamak\n    /// @param _layer2 the layer2 address in tokamak\n    function tokamakProcessUnStaking(address _layer2) external;\n\n    /// @dev exchange holded WTON to FLD using uniswap-v3\n    /// @param _amountIn the input amount\n    /// @param _amountOutMinimum the minimun output amount\n    /// @param _deadline deadline\n    /// @param _sqrtPriceLimitX96 sqrtPriceLimitX96\n    /// @param _kind the function type, if 0, use exactInputSingle function, else if, use exactInput function\n    function exchangeWTONtoFLD(\n        uint256 _amountIn,\n        uint256 _amountOutMinimum,\n        uint256 _deadline,\n        uint160 _sqrtPriceLimitX96,\n        uint256 _kind\n    ) external returns (uint256 amountOut);\n\n    /// @dev exchange holded WTON to FLD using uniswap-v2\n    /// @param _amountIn the input amount\n    /// @param _amountOutMinimum the minimun output amount\n    /// @param _deadline deadline\n    /// @param _kind the function type, if 0, use exactInputSingle function, else if, use exactInput function\n    function exchangeWTONtoFLDv2(\n        uint256 _amountIn,\n        uint256 _amountOutMinimum,\n        uint256 _deadline,\n        uint256 _kind\n    ) external returns (uint256 amountOut);\n}\n",
+  "source": "//SPDX-License-Identifier: Unlicense\npragma solidity ^0.7.6;\n\ninterface ITokamakStaker {\n    /// @dev set the tokamak Layer2 address\n    /// @param _layer2 new the tokamak Layer2 address\n    function setTokamakLayer2(address _layer2) external;\n\n    /// @dev get the addresses yhat used in uniswap interfaces\n    /// @return uniswapRouter the address of uniswapRouter\n    /// @return npm the address of positionManagerAddress\n    /// @return ext the address of ext\n    /// @return fee the amount of fee\n    function getUniswapInfo()\n        external\n        view\n        returns (\n            address uniswapRouter,\n            address npm,\n            address ext,\n            uint256 fee,\n            address uniswapRouterV2\n        );\n\n    /// @dev Change the TON holded in contract have to WTON, or change WTON to TON.\n    /// @param amount the amount to be changed\n    /// @param toWTON if it's true, TON->WTON , else WTON->TON\n    function swapTONtoWTON(uint256 amount, bool toWTON) external;\n\n    /// @dev  staking the staked TON in layer2 in tokamak\n    /// @param _layer2 the layer2 address in tokamak\n    /// @param stakeAmount the amount that stake to layer2\n    function tokamakStaking(address _layer2, uint256 stakeAmount) external;\n\n    /// @dev  request unstaking the wtonAmount in layer2 in tokamak\n    /// @param _layer2 the layer2 address in tokamak\n    /// @param wtonAmount the amount requested to unstaking\n    function tokamakRequestUnStaking(address _layer2, uint256 wtonAmount)\n        external;\n\n    /// @dev  request unstaking the wtonAmount in layer2 in tokamak\n    /// @param _layer2 the layer2 address in tokamak\n    function tokamakRequestUnStakingAll(address _layer2) external;\n\n    /// @dev process unstaking in layer2 in tokamak\n    /// @param _layer2 the layer2 address in tokamak\n    function tokamakProcessUnStaking(address _layer2) external;\n\n    /// @dev exchange holded WTON to TOS using uniswap-v3\n    /// @param _amountIn the input amount\n    /// @param _amountOutMinimum the minimun output amount\n    /// @param _deadline deadline\n    /// @param _sqrtPriceLimitX96 sqrtPriceLimitX96\n    /// @param _kind the function type, if 0, use exactInputSingle function, else if, use exactInput function\n    function exchangeWTONtoTOS(\n        uint256 _amountIn,\n        uint256 _amountOutMinimum,\n        uint256 _deadline,\n        uint160 _sqrtPriceLimitX96,\n        uint256 _kind\n    ) external returns (uint256 amountOut);\n\n    /// @dev exchange holded WTON to TOS using uniswap-v2\n    /// @param _amountIn the input amount\n    /// @param _amountOutMinimum the minimun output amount\n    /// @param _deadline deadline\n    /// @param _kind the function type, if 0, use exactInputSingle function, else if, use exactInput function\n    function exchangeWTONtoTOSv2(\n        uint256 _amountIn,\n        uint256 _amountOutMinimum,\n        uint256 _deadline,\n        uint256 _kind\n    ) external returns (uint256 amountOut);\n}\n",
   "sourcePath": "/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/ITokamakStaker.sol",
   "ast": {
     "absolutePath": "/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/ITokamakStaker.sol",
     "exportedSymbols": {
       "ITokamakStaker": [
-        2118
+        4006
       ]
     },
-    "id": 2119,
+    "id": 4007,
     "license": "Unlicense",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 2031,
+        "id": 3919,
         "literals": [
           "solidity",
           "^",
@@ -231,7 +231,7 @@
           ".6"
         ],
         "nodeType": "PragmaDirective",
-        "src": "37:23:20"
+        "src": "37:23:36"
       },
       {
         "abstract": false,
@@ -239,39 +239,39 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "fullyImplemented": false,
-        "id": 2118,
+        "id": 4006,
         "linearizedBaseContracts": [
-          2118
+          4006
         ],
         "name": "ITokamakStaker",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "documentation": {
-              "id": 2032,
+              "id": 3920,
               "nodeType": "StructuredDocumentation",
-              "src": "93:93:20",
+              "src": "93:93:36",
               "text": "@dev set the tokamak Layer2 address\n @param _layer2 new the tokamak Layer2 address"
             },
             "functionSelector": "a6e8670e",
-            "id": 2037,
+            "id": 3925,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "setTokamakLayer2",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2035,
+              "id": 3923,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2034,
+                  "id": 3922,
                   "mutability": "mutable",
                   "name": "_layer2",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2037,
-                  "src": "217:15:20",
+                  "scope": 3925,
+                  "src": "217:15:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -279,10 +279,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 2033,
+                    "id": 3921,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "217:7:20",
+                    "src": "217:7:36",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -292,52 +292,52 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "216:17:20"
+              "src": "216:17:36"
             },
             "returnParameters": {
-              "id": 2036,
+              "id": 3924,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "242:0:20"
+              "src": "242:0:36"
             },
-            "scope": 2118,
-            "src": "191:52:20",
+            "scope": 4006,
+            "src": "191:52:36",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
             "documentation": {
-              "id": 2038,
+              "id": 3926,
               "nodeType": "StructuredDocumentation",
-              "src": "249:252:20",
+              "src": "249:252:36",
               "text": "@dev get the addresses yhat used in uniswap interfaces\n @return uniswapRouter the address of uniswapRouter\n @return npm the address of positionManagerAddress\n @return ext the address of ext\n @return fee the amount of fee"
             },
             "functionSelector": "ff758788",
-            "id": 2051,
+            "id": 3939,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getUniswapInfo",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2039,
+              "id": 3927,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "529:2:20"
+              "src": "529:2:36"
             },
             "returnParameters": {
-              "id": 2050,
+              "id": 3938,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2041,
+                  "id": 3929,
                   "mutability": "mutable",
                   "name": "uniswapRouter",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2051,
-                  "src": "592:21:20",
+                  "scope": 3939,
+                  "src": "592:21:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -345,10 +345,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 2040,
+                    "id": 3928,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "592:7:20",
+                    "src": "592:7:36",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -359,12 +359,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2043,
+                  "id": 3931,
                   "mutability": "mutable",
                   "name": "npm",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2051,
-                  "src": "627:11:20",
+                  "scope": 3939,
+                  "src": "627:11:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -372,10 +372,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 2042,
+                    "id": 3930,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "627:7:20",
+                    "src": "627:7:36",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -386,12 +386,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2045,
+                  "id": 3933,
                   "mutability": "mutable",
                   "name": "ext",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2051,
-                  "src": "652:11:20",
+                  "scope": 3939,
+                  "src": "652:11:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -399,10 +399,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 2044,
+                    "id": 3932,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "652:7:20",
+                    "src": "652:7:36",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -413,12 +413,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2047,
+                  "id": 3935,
                   "mutability": "mutable",
                   "name": "fee",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2051,
-                  "src": "677:11:20",
+                  "scope": 3939,
+                  "src": "677:11:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -426,10 +426,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2046,
+                    "id": 3934,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "677:7:20",
+                    "src": "677:7:36",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -439,12 +439,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2049,
+                  "id": 3937,
                   "mutability": "mutable",
                   "name": "uniswapRouterV2",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2051,
-                  "src": "702:23:20",
+                  "scope": 3939,
+                  "src": "702:23:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -452,10 +452,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 2048,
+                    "id": 3936,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "702:7:20",
+                    "src": "702:7:36",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -465,40 +465,40 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "578:157:20"
+              "src": "578:157:36"
             },
-            "scope": 2118,
-            "src": "506:230:20",
+            "scope": 4006,
+            "src": "506:230:36",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
             "documentation": {
-              "id": 2052,
+              "id": 3940,
               "nodeType": "StructuredDocumentation",
-              "src": "742:189:20",
+              "src": "742:189:36",
               "text": "@dev Change the TON holded in contract have to WTON, or change WTON to TON.\n @param amount the amount to be changed\n @param toWTON if it's true, TON->WTON , else WTON->TON"
             },
             "functionSelector": "7df3f40c",
-            "id": 2059,
+            "id": 3947,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "swapTONtoWTON",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2057,
+              "id": 3945,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2054,
+                  "id": 3942,
                   "mutability": "mutable",
                   "name": "amount",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2059,
-                  "src": "959:14:20",
+                  "scope": 3947,
+                  "src": "959:14:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -506,10 +506,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2053,
+                    "id": 3941,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "959:7:20",
+                    "src": "959:7:36",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -519,12 +519,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2056,
+                  "id": 3944,
                   "mutability": "mutable",
                   "name": "toWTON",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2059,
-                  "src": "975:11:20",
+                  "scope": 3947,
+                  "src": "975:11:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -532,10 +532,10 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 2055,
+                    "id": 3943,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "975:4:20",
+                    "src": "975:4:36",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -544,46 +544,46 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "958:29:20"
+              "src": "958:29:36"
             },
             "returnParameters": {
-              "id": 2058,
+              "id": 3946,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "996:0:20"
+              "src": "996:0:36"
             },
-            "scope": 2118,
-            "src": "936:61:20",
+            "scope": 4006,
+            "src": "936:61:36",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
             "documentation": {
-              "id": 2060,
+              "id": 3948,
               "nodeType": "StructuredDocumentation",
-              "src": "1003:165:20",
+              "src": "1003:165:36",
               "text": "@dev  staking the staked TON in layer2 in tokamak\n @param _layer2 the layer2 address in tokamak\n @param stakeAmount the amount that stake to layer2"
             },
             "functionSelector": "065c4313",
-            "id": 2067,
+            "id": 3955,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "tokamakStaking",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2065,
+              "id": 3953,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2062,
+                  "id": 3950,
                   "mutability": "mutable",
                   "name": "_layer2",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2067,
-                  "src": "1197:15:20",
+                  "scope": 3955,
+                  "src": "1197:15:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -591,10 +591,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 2061,
+                    "id": 3949,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1197:7:20",
+                    "src": "1197:7:36",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -605,12 +605,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2064,
+                  "id": 3952,
                   "mutability": "mutable",
                   "name": "stakeAmount",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2067,
-                  "src": "1214:19:20",
+                  "scope": 3955,
+                  "src": "1214:19:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -618,10 +618,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2063,
+                    "id": 3951,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1214:7:20",
+                    "src": "1214:7:36",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -630,46 +630,46 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1196:38:20"
+              "src": "1196:38:36"
             },
             "returnParameters": {
-              "id": 2066,
+              "id": 3954,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1243:0:20"
+              "src": "1243:0:36"
             },
-            "scope": 2118,
-            "src": "1173:71:20",
+            "scope": 4006,
+            "src": "1173:71:36",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
             "documentation": {
-              "id": 2068,
+              "id": 3956,
               "nodeType": "StructuredDocumentation",
-              "src": "1250:176:20",
+              "src": "1250:176:36",
               "text": "@dev  request unstaking the wtonAmount in layer2 in tokamak\n @param _layer2 the layer2 address in tokamak\n @param wtonAmount the amount requested to unstaking"
             },
             "functionSelector": "ce681ce6",
-            "id": 2075,
+            "id": 3963,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "tokamakRequestUnStaking",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2073,
+              "id": 3961,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2070,
+                  "id": 3958,
                   "mutability": "mutable",
                   "name": "_layer2",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2075,
-                  "src": "1464:15:20",
+                  "scope": 3963,
+                  "src": "1464:15:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -677,10 +677,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 2069,
+                    "id": 3957,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1464:7:20",
+                    "src": "1464:7:36",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -691,12 +691,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2072,
+                  "id": 3960,
                   "mutability": "mutable",
                   "name": "wtonAmount",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2075,
-                  "src": "1481:18:20",
+                  "scope": 3963,
+                  "src": "1481:18:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -704,10 +704,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2071,
+                    "id": 3959,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1481:7:20",
+                    "src": "1481:7:36",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -716,46 +716,46 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1463:37:20"
+              "src": "1463:37:36"
             },
             "returnParameters": {
-              "id": 2074,
+              "id": 3962,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1517:0:20"
+              "src": "1517:0:36"
             },
-            "scope": 2118,
-            "src": "1431:87:20",
+            "scope": 4006,
+            "src": "1431:87:36",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
             "documentation": {
-              "id": 2076,
+              "id": 3964,
               "nodeType": "StructuredDocumentation",
-              "src": "1524:116:20",
+              "src": "1524:116:36",
               "text": "@dev  request unstaking the wtonAmount in layer2 in tokamak\n @param _layer2 the layer2 address in tokamak"
             },
             "functionSelector": "71def0b3",
-            "id": 2081,
+            "id": 3969,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "tokamakRequestUnStakingAll",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2079,
+              "id": 3967,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2078,
+                  "id": 3966,
                   "mutability": "mutable",
                   "name": "_layer2",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2081,
-                  "src": "1681:15:20",
+                  "scope": 3969,
+                  "src": "1681:15:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -763,10 +763,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 2077,
+                    "id": 3965,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1681:7:20",
+                    "src": "1681:7:36",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -776,46 +776,46 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1680:17:20"
+              "src": "1680:17:36"
             },
             "returnParameters": {
-              "id": 2080,
+              "id": 3968,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1714:0:20"
+              "src": "1706:0:36"
             },
-            "scope": 2118,
-            "src": "1645:70:20",
+            "scope": 4006,
+            "src": "1645:62:36",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
             "documentation": {
-              "id": 2082,
+              "id": 3970,
               "nodeType": "StructuredDocumentation",
-              "src": "1721:100:20",
+              "src": "1713:100:36",
               "text": "@dev process unstaking in layer2 in tokamak\n @param _layer2 the layer2 address in tokamak"
             },
             "functionSelector": "730464a9",
-            "id": 2087,
+            "id": 3975,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "tokamakProcessUnStaking",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2085,
+              "id": 3973,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2084,
+                  "id": 3972,
                   "mutability": "mutable",
                   "name": "_layer2",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2087,
-                  "src": "1859:15:20",
+                  "scope": 3975,
+                  "src": "1851:15:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -823,10 +823,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 2083,
+                    "id": 3971,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1859:7:20",
+                    "src": "1851:7:36",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -836,46 +836,46 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1858:17:20"
+              "src": "1850:17:36"
             },
             "returnParameters": {
-              "id": 2086,
+              "id": 3974,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1884:0:20"
+              "src": "1876:0:36"
             },
-            "scope": 2118,
-            "src": "1826:59:20",
+            "scope": 4006,
+            "src": "1818:59:36",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
             "documentation": {
-              "id": 2088,
+              "id": 3976,
               "nodeType": "StructuredDocumentation",
-              "src": "1891:350:20",
-              "text": "@dev exchange holded WTON to FLD using uniswap-v3\n @param _amountIn the input amount\n @param _amountOutMinimum the minimun output amount\n @param _deadline deadline\n @param _sqrtPriceLimitX96 sqrtPriceLimitX96\n @param _kind the function type, if 0, use exactInputSingle function, else if, use exactInput function"
+              "src": "1883:350:36",
+              "text": "@dev exchange holded WTON to TOS using uniswap-v3\n @param _amountIn the input amount\n @param _amountOutMinimum the minimun output amount\n @param _deadline deadline\n @param _sqrtPriceLimitX96 sqrtPriceLimitX96\n @param _kind the function type, if 0, use exactInputSingle function, else if, use exactInput function"
             },
-            "functionSelector": "821f9267",
-            "id": 2103,
+            "functionSelector": "f0cdfa53",
+            "id": 3991,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
-            "name": "exchangeWTONtoFLD",
+            "name": "exchangeWTONtoTOS",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2099,
+              "id": 3987,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2090,
+                  "id": 3978,
                   "mutability": "mutable",
                   "name": "_amountIn",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2103,
-                  "src": "2282:17:20",
+                  "scope": 3991,
+                  "src": "2274:17:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -883,10 +883,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2089,
+                    "id": 3977,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2282:7:20",
+                    "src": "2274:7:36",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -896,12 +896,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2092,
+                  "id": 3980,
                   "mutability": "mutable",
                   "name": "_amountOutMinimum",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2103,
-                  "src": "2309:25:20",
+                  "scope": 3991,
+                  "src": "2301:25:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -909,10 +909,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2091,
+                    "id": 3979,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2309:7:20",
+                    "src": "2301:7:36",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -922,12 +922,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2094,
+                  "id": 3982,
                   "mutability": "mutable",
                   "name": "_deadline",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2103,
-                  "src": "2344:17:20",
+                  "scope": 3991,
+                  "src": "2336:17:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -935,10 +935,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2093,
+                    "id": 3981,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2344:7:20",
+                    "src": "2336:7:36",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -948,12 +948,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2096,
+                  "id": 3984,
                   "mutability": "mutable",
                   "name": "_sqrtPriceLimitX96",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2103,
-                  "src": "2371:26:20",
+                  "scope": 3991,
+                  "src": "2363:26:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -961,10 +961,10 @@
                     "typeString": "uint160"
                   },
                   "typeName": {
-                    "id": 2095,
+                    "id": 3983,
                     "name": "uint160",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2371:7:20",
+                    "src": "2363:7:36",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint160",
                       "typeString": "uint160"
@@ -974,12 +974,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2098,
+                  "id": 3986,
                   "mutability": "mutable",
                   "name": "_kind",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2103,
-                  "src": "2407:13:20",
+                  "scope": 3991,
+                  "src": "2399:13:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -987,10 +987,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2097,
+                    "id": 3985,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2407:7:20",
+                    "src": "2399:7:36",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -999,20 +999,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2272:154:20"
+              "src": "2264:154:36"
             },
             "returnParameters": {
-              "id": 2102,
+              "id": 3990,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2101,
+                  "id": 3989,
                   "mutability": "mutable",
                   "name": "amountOut",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2103,
-                  "src": "2445:17:20",
+                  "scope": 3991,
+                  "src": "2437:17:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1020,10 +1020,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2100,
+                    "id": 3988,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2445:7:20",
+                    "src": "2437:7:36",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1032,40 +1032,40 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2444:19:20"
+              "src": "2436:19:36"
             },
-            "scope": 2118,
-            "src": "2246:218:20",
+            "scope": 4006,
+            "src": "2238:218:36",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
             "documentation": {
-              "id": 2104,
+              "id": 3992,
               "nodeType": "StructuredDocumentation",
-              "src": "2470:298:20",
-              "text": "@dev exchange holded WTON to FLD using uniswap-v2\n @param _amountIn the input amount\n @param _amountOutMinimum the minimun output amount\n @param _deadline deadline\n @param _kind the function type, if 0, use exactInputSingle function, else if, use exactInput function"
+              "src": "2462:298:36",
+              "text": "@dev exchange holded WTON to TOS using uniswap-v2\n @param _amountIn the input amount\n @param _amountOutMinimum the minimun output amount\n @param _deadline deadline\n @param _kind the function type, if 0, use exactInputSingle function, else if, use exactInput function"
             },
-            "functionSelector": "8b8292ec",
-            "id": 2117,
+            "functionSelector": "56dcfd38",
+            "id": 4005,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
-            "name": "exchangeWTONtoFLDv2",
+            "name": "exchangeWTONtoTOSv2",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2113,
+              "id": 4001,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2106,
+                  "id": 3994,
                   "mutability": "mutable",
                   "name": "_amountIn",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2117,
-                  "src": "2811:17:20",
+                  "scope": 4005,
+                  "src": "2803:17:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1073,10 +1073,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2105,
+                    "id": 3993,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2811:7:20",
+                    "src": "2803:7:36",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1086,12 +1086,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2108,
+                  "id": 3996,
                   "mutability": "mutable",
                   "name": "_amountOutMinimum",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2117,
-                  "src": "2838:25:20",
+                  "scope": 4005,
+                  "src": "2830:25:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1099,10 +1099,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2107,
+                    "id": 3995,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2838:7:20",
+                    "src": "2830:7:36",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1112,12 +1112,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2110,
+                  "id": 3998,
                   "mutability": "mutable",
                   "name": "_deadline",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2117,
-                  "src": "2873:17:20",
+                  "scope": 4005,
+                  "src": "2865:17:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1125,10 +1125,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2109,
+                    "id": 3997,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2873:7:20",
+                    "src": "2865:7:36",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1138,12 +1138,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2112,
+                  "id": 4000,
                   "mutability": "mutable",
                   "name": "_kind",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2117,
-                  "src": "2900:13:20",
+                  "scope": 4005,
+                  "src": "2892:13:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1151,10 +1151,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2111,
+                    "id": 3999,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2900:7:20",
+                    "src": "2892:7:36",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1163,20 +1163,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2801:118:20"
+              "src": "2793:118:36"
             },
             "returnParameters": {
-              "id": 2116,
+              "id": 4004,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2115,
+                  "id": 4003,
                   "mutability": "mutable",
                   "name": "amountOut",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2117,
-                  "src": "2938:17:20",
+                  "scope": 4005,
+                  "src": "2930:17:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1184,10 +1184,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2114,
+                    "id": 4002,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2938:7:20",
+                    "src": "2930:7:36",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1196,27 +1196,27 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2937:19:20"
+              "src": "2929:19:36"
             },
-            "scope": 2118,
-            "src": "2773:184:20",
+            "scope": 4006,
+            "src": "2765:184:36",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 2119,
-        "src": "62:2897:20"
+        "scope": 4007,
+        "src": "62:2889:36"
       }
     ],
-    "src": "37:2923:20"
+    "src": "37:2915:36"
   },
   "legacyAST": {
     "attributes": {
       "absolutePath": "/Users/zena/ico2.0/ico20-contracts/contracts/interfaces/ITokamakStaker.sol",
       "exportedSymbols": {
         "ITokamakStaker": [
-          2118
+          4006
         ]
       },
       "license": "Unlicense"
@@ -1231,9 +1231,9 @@
             ".6"
           ]
         },
-        "id": 2031,
+        "id": 3919,
         "name": "PragmaDirective",
-        "src": "37:23:20"
+        "src": "37:23:36"
       },
       {
         "attributes": {
@@ -1247,10 +1247,10 @@
           "contractKind": "interface",
           "fullyImplemented": false,
           "linearizedBaseContracts": [
-            2118
+            4006
           ],
           "name": "ITokamakStaker",
-          "scope": 2119
+          "scope": 4007
         },
         "children": [
           {
@@ -1263,7 +1263,7 @@
                 null
               ],
               "name": "setTokamakLayer2",
-              "scope": 2118,
+              "scope": 4006,
               "stateMutability": "nonpayable",
               "virtual": false,
               "visibility": "external"
@@ -1273,9 +1273,9 @@
                 "attributes": {
                   "text": "@dev set the tokamak Layer2 address\n @param _layer2 new the tokamak Layer2 address"
                 },
-                "id": 2032,
+                "id": 3920,
                 "name": "StructuredDocumentation",
-                "src": "93:93:20"
+                "src": "93:93:36"
               },
               {
                 "children": [
@@ -1284,7 +1284,7 @@
                       "constant": false,
                       "mutability": "mutable",
                       "name": "_layer2",
-                      "scope": 2037,
+                      "scope": 3925,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -1297,19 +1297,19 @@
                           "stateMutability": "nonpayable",
                           "type": "address"
                         },
-                        "id": 2033,
+                        "id": 3921,
                         "name": "ElementaryTypeName",
-                        "src": "217:7:20"
+                        "src": "217:7:36"
                       }
                     ],
-                    "id": 2034,
+                    "id": 3922,
                     "name": "VariableDeclaration",
-                    "src": "217:15:20"
+                    "src": "217:15:36"
                   }
                 ],
-                "id": 2035,
+                "id": 3923,
                 "name": "ParameterList",
-                "src": "216:17:20"
+                "src": "216:17:36"
               },
               {
                 "attributes": {
@@ -1318,14 +1318,14 @@
                   ]
                 },
                 "children": [],
-                "id": 2036,
+                "id": 3924,
                 "name": "ParameterList",
-                "src": "242:0:20"
+                "src": "242:0:36"
               }
             ],
-            "id": 2037,
+            "id": 3925,
             "name": "FunctionDefinition",
-            "src": "191:52:20"
+            "src": "191:52:36"
           },
           {
             "attributes": {
@@ -1337,7 +1337,7 @@
                 null
               ],
               "name": "getUniswapInfo",
-              "scope": 2118,
+              "scope": 4006,
               "stateMutability": "view",
               "virtual": false,
               "visibility": "external"
@@ -1347,9 +1347,9 @@
                 "attributes": {
                   "text": "@dev get the addresses yhat used in uniswap interfaces\n @return uniswapRouter the address of uniswapRouter\n @return npm the address of positionManagerAddress\n @return ext the address of ext\n @return fee the amount of fee"
                 },
-                "id": 2038,
+                "id": 3926,
                 "name": "StructuredDocumentation",
-                "src": "249:252:20"
+                "src": "249:252:36"
               },
               {
                 "attributes": {
@@ -1358,9 +1358,9 @@
                   ]
                 },
                 "children": [],
-                "id": 2039,
+                "id": 3927,
                 "name": "ParameterList",
-                "src": "529:2:20"
+                "src": "529:2:36"
               },
               {
                 "children": [
@@ -1369,7 +1369,7 @@
                       "constant": false,
                       "mutability": "mutable",
                       "name": "uniswapRouter",
-                      "scope": 2051,
+                      "scope": 3939,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -1382,21 +1382,21 @@
                           "stateMutability": "nonpayable",
                           "type": "address"
                         },
-                        "id": 2040,
+                        "id": 3928,
                         "name": "ElementaryTypeName",
-                        "src": "592:7:20"
+                        "src": "592:7:36"
                       }
                     ],
-                    "id": 2041,
+                    "id": 3929,
                     "name": "VariableDeclaration",
-                    "src": "592:21:20"
+                    "src": "592:21:36"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "mutability": "mutable",
                       "name": "npm",
-                      "scope": 2051,
+                      "scope": 3939,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -1409,21 +1409,21 @@
                           "stateMutability": "nonpayable",
                           "type": "address"
                         },
-                        "id": 2042,
+                        "id": 3930,
                         "name": "ElementaryTypeName",
-                        "src": "627:7:20"
+                        "src": "627:7:36"
                       }
                     ],
-                    "id": 2043,
+                    "id": 3931,
                     "name": "VariableDeclaration",
-                    "src": "627:11:20"
+                    "src": "627:11:36"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "mutability": "mutable",
                       "name": "ext",
-                      "scope": 2051,
+                      "scope": 3939,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -1436,21 +1436,21 @@
                           "stateMutability": "nonpayable",
                           "type": "address"
                         },
-                        "id": 2044,
+                        "id": 3932,
                         "name": "ElementaryTypeName",
-                        "src": "652:7:20"
+                        "src": "652:7:36"
                       }
                     ],
-                    "id": 2045,
+                    "id": 3933,
                     "name": "VariableDeclaration",
-                    "src": "652:11:20"
+                    "src": "652:11:36"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "mutability": "mutable",
                       "name": "fee",
-                      "scope": 2051,
+                      "scope": 3939,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -1462,21 +1462,21 @@
                           "name": "uint256",
                           "type": "uint256"
                         },
-                        "id": 2046,
+                        "id": 3934,
                         "name": "ElementaryTypeName",
-                        "src": "677:7:20"
+                        "src": "677:7:36"
                       }
                     ],
-                    "id": 2047,
+                    "id": 3935,
                     "name": "VariableDeclaration",
-                    "src": "677:11:20"
+                    "src": "677:11:36"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "mutability": "mutable",
                       "name": "uniswapRouterV2",
-                      "scope": 2051,
+                      "scope": 3939,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -1489,24 +1489,24 @@
                           "stateMutability": "nonpayable",
                           "type": "address"
                         },
-                        "id": 2048,
+                        "id": 3936,
                         "name": "ElementaryTypeName",
-                        "src": "702:7:20"
+                        "src": "702:7:36"
                       }
                     ],
-                    "id": 2049,
+                    "id": 3937,
                     "name": "VariableDeclaration",
-                    "src": "702:23:20"
+                    "src": "702:23:36"
                   }
                 ],
-                "id": 2050,
+                "id": 3938,
                 "name": "ParameterList",
-                "src": "578:157:20"
+                "src": "578:157:36"
               }
             ],
-            "id": 2051,
+            "id": 3939,
             "name": "FunctionDefinition",
-            "src": "506:230:20"
+            "src": "506:230:36"
           },
           {
             "attributes": {
@@ -1518,7 +1518,7 @@
                 null
               ],
               "name": "swapTONtoWTON",
-              "scope": 2118,
+              "scope": 4006,
               "stateMutability": "nonpayable",
               "virtual": false,
               "visibility": "external"
@@ -1528,9 +1528,9 @@
                 "attributes": {
                   "text": "@dev Change the TON holded in contract have to WTON, or change WTON to TON.\n @param amount the amount to be changed\n @param toWTON if it's true, TON->WTON , else WTON->TON"
                 },
-                "id": 2052,
+                "id": 3940,
                 "name": "StructuredDocumentation",
-                "src": "742:189:20"
+                "src": "742:189:36"
               },
               {
                 "children": [
@@ -1539,7 +1539,7 @@
                       "constant": false,
                       "mutability": "mutable",
                       "name": "amount",
-                      "scope": 2059,
+                      "scope": 3947,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -1551,21 +1551,21 @@
                           "name": "uint256",
                           "type": "uint256"
                         },
-                        "id": 2053,
+                        "id": 3941,
                         "name": "ElementaryTypeName",
-                        "src": "959:7:20"
+                        "src": "959:7:36"
                       }
                     ],
-                    "id": 2054,
+                    "id": 3942,
                     "name": "VariableDeclaration",
-                    "src": "959:14:20"
+                    "src": "959:14:36"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "mutability": "mutable",
                       "name": "toWTON",
-                      "scope": 2059,
+                      "scope": 3947,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "bool",
@@ -1577,19 +1577,19 @@
                           "name": "bool",
                           "type": "bool"
                         },
-                        "id": 2055,
+                        "id": 3943,
                         "name": "ElementaryTypeName",
-                        "src": "975:4:20"
+                        "src": "975:4:36"
                       }
                     ],
-                    "id": 2056,
+                    "id": 3944,
                     "name": "VariableDeclaration",
-                    "src": "975:11:20"
+                    "src": "975:11:36"
                   }
                 ],
-                "id": 2057,
+                "id": 3945,
                 "name": "ParameterList",
-                "src": "958:29:20"
+                "src": "958:29:36"
               },
               {
                 "attributes": {
@@ -1598,14 +1598,14 @@
                   ]
                 },
                 "children": [],
-                "id": 2058,
+                "id": 3946,
                 "name": "ParameterList",
-                "src": "996:0:20"
+                "src": "996:0:36"
               }
             ],
-            "id": 2059,
+            "id": 3947,
             "name": "FunctionDefinition",
-            "src": "936:61:20"
+            "src": "936:61:36"
           },
           {
             "attributes": {
@@ -1617,7 +1617,7 @@
                 null
               ],
               "name": "tokamakStaking",
-              "scope": 2118,
+              "scope": 4006,
               "stateMutability": "nonpayable",
               "virtual": false,
               "visibility": "external"
@@ -1627,9 +1627,9 @@
                 "attributes": {
                   "text": "@dev  staking the staked TON in layer2 in tokamak\n @param _layer2 the layer2 address in tokamak\n @param stakeAmount the amount that stake to layer2"
                 },
-                "id": 2060,
+                "id": 3948,
                 "name": "StructuredDocumentation",
-                "src": "1003:165:20"
+                "src": "1003:165:36"
               },
               {
                 "children": [
@@ -1638,7 +1638,7 @@
                       "constant": false,
                       "mutability": "mutable",
                       "name": "_layer2",
-                      "scope": 2067,
+                      "scope": 3955,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -1651,21 +1651,21 @@
                           "stateMutability": "nonpayable",
                           "type": "address"
                         },
-                        "id": 2061,
+                        "id": 3949,
                         "name": "ElementaryTypeName",
-                        "src": "1197:7:20"
+                        "src": "1197:7:36"
                       }
                     ],
-                    "id": 2062,
+                    "id": 3950,
                     "name": "VariableDeclaration",
-                    "src": "1197:15:20"
+                    "src": "1197:15:36"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "mutability": "mutable",
                       "name": "stakeAmount",
-                      "scope": 2067,
+                      "scope": 3955,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -1677,19 +1677,19 @@
                           "name": "uint256",
                           "type": "uint256"
                         },
-                        "id": 2063,
+                        "id": 3951,
                         "name": "ElementaryTypeName",
-                        "src": "1214:7:20"
+                        "src": "1214:7:36"
                       }
                     ],
-                    "id": 2064,
+                    "id": 3952,
                     "name": "VariableDeclaration",
-                    "src": "1214:19:20"
+                    "src": "1214:19:36"
                   }
                 ],
-                "id": 2065,
+                "id": 3953,
                 "name": "ParameterList",
-                "src": "1196:38:20"
+                "src": "1196:38:36"
               },
               {
                 "attributes": {
@@ -1698,14 +1698,14 @@
                   ]
                 },
                 "children": [],
-                "id": 2066,
+                "id": 3954,
                 "name": "ParameterList",
-                "src": "1243:0:20"
+                "src": "1243:0:36"
               }
             ],
-            "id": 2067,
+            "id": 3955,
             "name": "FunctionDefinition",
-            "src": "1173:71:20"
+            "src": "1173:71:36"
           },
           {
             "attributes": {
@@ -1717,7 +1717,7 @@
                 null
               ],
               "name": "tokamakRequestUnStaking",
-              "scope": 2118,
+              "scope": 4006,
               "stateMutability": "nonpayable",
               "virtual": false,
               "visibility": "external"
@@ -1727,9 +1727,9 @@
                 "attributes": {
                   "text": "@dev  request unstaking the wtonAmount in layer2 in tokamak\n @param _layer2 the layer2 address in tokamak\n @param wtonAmount the amount requested to unstaking"
                 },
-                "id": 2068,
+                "id": 3956,
                 "name": "StructuredDocumentation",
-                "src": "1250:176:20"
+                "src": "1250:176:36"
               },
               {
                 "children": [
@@ -1738,7 +1738,7 @@
                       "constant": false,
                       "mutability": "mutable",
                       "name": "_layer2",
-                      "scope": 2075,
+                      "scope": 3963,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -1751,21 +1751,21 @@
                           "stateMutability": "nonpayable",
                           "type": "address"
                         },
-                        "id": 2069,
+                        "id": 3957,
                         "name": "ElementaryTypeName",
-                        "src": "1464:7:20"
+                        "src": "1464:7:36"
                       }
                     ],
-                    "id": 2070,
+                    "id": 3958,
                     "name": "VariableDeclaration",
-                    "src": "1464:15:20"
+                    "src": "1464:15:36"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "mutability": "mutable",
                       "name": "wtonAmount",
-                      "scope": 2075,
+                      "scope": 3963,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -1777,19 +1777,19 @@
                           "name": "uint256",
                           "type": "uint256"
                         },
-                        "id": 2071,
+                        "id": 3959,
                         "name": "ElementaryTypeName",
-                        "src": "1481:7:20"
+                        "src": "1481:7:36"
                       }
                     ],
-                    "id": 2072,
+                    "id": 3960,
                     "name": "VariableDeclaration",
-                    "src": "1481:18:20"
+                    "src": "1481:18:36"
                   }
                 ],
-                "id": 2073,
+                "id": 3961,
                 "name": "ParameterList",
-                "src": "1463:37:20"
+                "src": "1463:37:36"
               },
               {
                 "attributes": {
@@ -1798,14 +1798,14 @@
                   ]
                 },
                 "children": [],
-                "id": 2074,
+                "id": 3962,
                 "name": "ParameterList",
-                "src": "1517:0:20"
+                "src": "1517:0:36"
               }
             ],
-            "id": 2075,
+            "id": 3963,
             "name": "FunctionDefinition",
-            "src": "1431:87:20"
+            "src": "1431:87:36"
           },
           {
             "attributes": {
@@ -1817,7 +1817,7 @@
                 null
               ],
               "name": "tokamakRequestUnStakingAll",
-              "scope": 2118,
+              "scope": 4006,
               "stateMutability": "nonpayable",
               "virtual": false,
               "visibility": "external"
@@ -1827,9 +1827,9 @@
                 "attributes": {
                   "text": "@dev  request unstaking the wtonAmount in layer2 in tokamak\n @param _layer2 the layer2 address in tokamak"
                 },
-                "id": 2076,
+                "id": 3964,
                 "name": "StructuredDocumentation",
-                "src": "1524:116:20"
+                "src": "1524:116:36"
               },
               {
                 "children": [
@@ -1838,7 +1838,7 @@
                       "constant": false,
                       "mutability": "mutable",
                       "name": "_layer2",
-                      "scope": 2081,
+                      "scope": 3969,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -1851,19 +1851,19 @@
                           "stateMutability": "nonpayable",
                           "type": "address"
                         },
-                        "id": 2077,
+                        "id": 3965,
                         "name": "ElementaryTypeName",
-                        "src": "1681:7:20"
+                        "src": "1681:7:36"
                       }
                     ],
-                    "id": 2078,
+                    "id": 3966,
                     "name": "VariableDeclaration",
-                    "src": "1681:15:20"
+                    "src": "1681:15:36"
                   }
                 ],
-                "id": 2079,
+                "id": 3967,
                 "name": "ParameterList",
-                "src": "1680:17:20"
+                "src": "1680:17:36"
               },
               {
                 "attributes": {
@@ -1872,14 +1872,14 @@
                   ]
                 },
                 "children": [],
-                "id": 2080,
+                "id": 3968,
                 "name": "ParameterList",
-                "src": "1714:0:20"
+                "src": "1706:0:36"
               }
             ],
-            "id": 2081,
+            "id": 3969,
             "name": "FunctionDefinition",
-            "src": "1645:70:20"
+            "src": "1645:62:36"
           },
           {
             "attributes": {
@@ -1891,7 +1891,7 @@
                 null
               ],
               "name": "tokamakProcessUnStaking",
-              "scope": 2118,
+              "scope": 4006,
               "stateMutability": "nonpayable",
               "virtual": false,
               "visibility": "external"
@@ -1901,9 +1901,9 @@
                 "attributes": {
                   "text": "@dev process unstaking in layer2 in tokamak\n @param _layer2 the layer2 address in tokamak"
                 },
-                "id": 2082,
+                "id": 3970,
                 "name": "StructuredDocumentation",
-                "src": "1721:100:20"
+                "src": "1713:100:36"
               },
               {
                 "children": [
@@ -1912,7 +1912,7 @@
                       "constant": false,
                       "mutability": "mutable",
                       "name": "_layer2",
-                      "scope": 2087,
+                      "scope": 3975,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -1925,19 +1925,19 @@
                           "stateMutability": "nonpayable",
                           "type": "address"
                         },
-                        "id": 2083,
+                        "id": 3971,
                         "name": "ElementaryTypeName",
-                        "src": "1859:7:20"
+                        "src": "1851:7:36"
                       }
                     ],
-                    "id": 2084,
+                    "id": 3972,
                     "name": "VariableDeclaration",
-                    "src": "1859:15:20"
+                    "src": "1851:15:36"
                   }
                 ],
-                "id": 2085,
+                "id": 3973,
                 "name": "ParameterList",
-                "src": "1858:17:20"
+                "src": "1850:17:36"
               },
               {
                 "attributes": {
@@ -1946,26 +1946,26 @@
                   ]
                 },
                 "children": [],
-                "id": 2086,
+                "id": 3974,
                 "name": "ParameterList",
-                "src": "1884:0:20"
+                "src": "1876:0:36"
               }
             ],
-            "id": 2087,
+            "id": 3975,
             "name": "FunctionDefinition",
-            "src": "1826:59:20"
+            "src": "1818:59:36"
           },
           {
             "attributes": {
-              "functionSelector": "821f9267",
+              "functionSelector": "f0cdfa53",
               "implemented": false,
               "isConstructor": false,
               "kind": "function",
               "modifiers": [
                 null
               ],
-              "name": "exchangeWTONtoFLD",
-              "scope": 2118,
+              "name": "exchangeWTONtoTOS",
+              "scope": 4006,
               "stateMutability": "nonpayable",
               "virtual": false,
               "visibility": "external"
@@ -1973,11 +1973,11 @@
             "children": [
               {
                 "attributes": {
-                  "text": "@dev exchange holded WTON to FLD using uniswap-v3\n @param _amountIn the input amount\n @param _amountOutMinimum the minimun output amount\n @param _deadline deadline\n @param _sqrtPriceLimitX96 sqrtPriceLimitX96\n @param _kind the function type, if 0, use exactInputSingle function, else if, use exactInput function"
+                  "text": "@dev exchange holded WTON to TOS using uniswap-v3\n @param _amountIn the input amount\n @param _amountOutMinimum the minimun output amount\n @param _deadline deadline\n @param _sqrtPriceLimitX96 sqrtPriceLimitX96\n @param _kind the function type, if 0, use exactInputSingle function, else if, use exactInput function"
                 },
-                "id": 2088,
+                "id": 3976,
                 "name": "StructuredDocumentation",
-                "src": "1891:350:20"
+                "src": "1883:350:36"
               },
               {
                 "children": [
@@ -1986,7 +1986,7 @@
                       "constant": false,
                       "mutability": "mutable",
                       "name": "_amountIn",
-                      "scope": 2103,
+                      "scope": 3991,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -1998,21 +1998,21 @@
                           "name": "uint256",
                           "type": "uint256"
                         },
-                        "id": 2089,
+                        "id": 3977,
                         "name": "ElementaryTypeName",
-                        "src": "2282:7:20"
+                        "src": "2274:7:36"
                       }
                     ],
-                    "id": 2090,
+                    "id": 3978,
                     "name": "VariableDeclaration",
-                    "src": "2282:17:20"
+                    "src": "2274:17:36"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "mutability": "mutable",
                       "name": "_amountOutMinimum",
-                      "scope": 2103,
+                      "scope": 3991,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -2024,21 +2024,21 @@
                           "name": "uint256",
                           "type": "uint256"
                         },
-                        "id": 2091,
+                        "id": 3979,
                         "name": "ElementaryTypeName",
-                        "src": "2309:7:20"
+                        "src": "2301:7:36"
                       }
                     ],
-                    "id": 2092,
+                    "id": 3980,
                     "name": "VariableDeclaration",
-                    "src": "2309:25:20"
+                    "src": "2301:25:36"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "mutability": "mutable",
                       "name": "_deadline",
-                      "scope": 2103,
+                      "scope": 3991,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -2050,21 +2050,21 @@
                           "name": "uint256",
                           "type": "uint256"
                         },
-                        "id": 2093,
+                        "id": 3981,
                         "name": "ElementaryTypeName",
-                        "src": "2344:7:20"
+                        "src": "2336:7:36"
                       }
                     ],
-                    "id": 2094,
+                    "id": 3982,
                     "name": "VariableDeclaration",
-                    "src": "2344:17:20"
+                    "src": "2336:17:36"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "mutability": "mutable",
                       "name": "_sqrtPriceLimitX96",
-                      "scope": 2103,
+                      "scope": 3991,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint160",
@@ -2076,21 +2076,21 @@
                           "name": "uint160",
                           "type": "uint160"
                         },
-                        "id": 2095,
+                        "id": 3983,
                         "name": "ElementaryTypeName",
-                        "src": "2371:7:20"
+                        "src": "2363:7:36"
                       }
                     ],
-                    "id": 2096,
+                    "id": 3984,
                     "name": "VariableDeclaration",
-                    "src": "2371:26:20"
+                    "src": "2363:26:36"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "mutability": "mutable",
                       "name": "_kind",
-                      "scope": 2103,
+                      "scope": 3991,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -2102,19 +2102,19 @@
                           "name": "uint256",
                           "type": "uint256"
                         },
-                        "id": 2097,
+                        "id": 3985,
                         "name": "ElementaryTypeName",
-                        "src": "2407:7:20"
+                        "src": "2399:7:36"
                       }
                     ],
-                    "id": 2098,
+                    "id": 3986,
                     "name": "VariableDeclaration",
-                    "src": "2407:13:20"
+                    "src": "2399:13:36"
                   }
                 ],
-                "id": 2099,
+                "id": 3987,
                 "name": "ParameterList",
-                "src": "2272:154:20"
+                "src": "2264:154:36"
               },
               {
                 "children": [
@@ -2123,7 +2123,7 @@
                       "constant": false,
                       "mutability": "mutable",
                       "name": "amountOut",
-                      "scope": 2103,
+                      "scope": 3991,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -2135,36 +2135,36 @@
                           "name": "uint256",
                           "type": "uint256"
                         },
-                        "id": 2100,
+                        "id": 3988,
                         "name": "ElementaryTypeName",
-                        "src": "2445:7:20"
+                        "src": "2437:7:36"
                       }
                     ],
-                    "id": 2101,
+                    "id": 3989,
                     "name": "VariableDeclaration",
-                    "src": "2445:17:20"
+                    "src": "2437:17:36"
                   }
                 ],
-                "id": 2102,
+                "id": 3990,
                 "name": "ParameterList",
-                "src": "2444:19:20"
+                "src": "2436:19:36"
               }
             ],
-            "id": 2103,
+            "id": 3991,
             "name": "FunctionDefinition",
-            "src": "2246:218:20"
+            "src": "2238:218:36"
           },
           {
             "attributes": {
-              "functionSelector": "8b8292ec",
+              "functionSelector": "56dcfd38",
               "implemented": false,
               "isConstructor": false,
               "kind": "function",
               "modifiers": [
                 null
               ],
-              "name": "exchangeWTONtoFLDv2",
-              "scope": 2118,
+              "name": "exchangeWTONtoTOSv2",
+              "scope": 4006,
               "stateMutability": "nonpayable",
               "virtual": false,
               "visibility": "external"
@@ -2172,11 +2172,11 @@
             "children": [
               {
                 "attributes": {
-                  "text": "@dev exchange holded WTON to FLD using uniswap-v2\n @param _amountIn the input amount\n @param _amountOutMinimum the minimun output amount\n @param _deadline deadline\n @param _kind the function type, if 0, use exactInputSingle function, else if, use exactInput function"
+                  "text": "@dev exchange holded WTON to TOS using uniswap-v2\n @param _amountIn the input amount\n @param _amountOutMinimum the minimun output amount\n @param _deadline deadline\n @param _kind the function type, if 0, use exactInputSingle function, else if, use exactInput function"
                 },
-                "id": 2104,
+                "id": 3992,
                 "name": "StructuredDocumentation",
-                "src": "2470:298:20"
+                "src": "2462:298:36"
               },
               {
                 "children": [
@@ -2185,7 +2185,7 @@
                       "constant": false,
                       "mutability": "mutable",
                       "name": "_amountIn",
-                      "scope": 2117,
+                      "scope": 4005,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -2197,21 +2197,21 @@
                           "name": "uint256",
                           "type": "uint256"
                         },
-                        "id": 2105,
+                        "id": 3993,
                         "name": "ElementaryTypeName",
-                        "src": "2811:7:20"
+                        "src": "2803:7:36"
                       }
                     ],
-                    "id": 2106,
+                    "id": 3994,
                     "name": "VariableDeclaration",
-                    "src": "2811:17:20"
+                    "src": "2803:17:36"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "mutability": "mutable",
                       "name": "_amountOutMinimum",
-                      "scope": 2117,
+                      "scope": 4005,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -2223,21 +2223,21 @@
                           "name": "uint256",
                           "type": "uint256"
                         },
-                        "id": 2107,
+                        "id": 3995,
                         "name": "ElementaryTypeName",
-                        "src": "2838:7:20"
+                        "src": "2830:7:36"
                       }
                     ],
-                    "id": 2108,
+                    "id": 3996,
                     "name": "VariableDeclaration",
-                    "src": "2838:25:20"
+                    "src": "2830:25:36"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "mutability": "mutable",
                       "name": "_deadline",
-                      "scope": 2117,
+                      "scope": 4005,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -2249,21 +2249,21 @@
                           "name": "uint256",
                           "type": "uint256"
                         },
-                        "id": 2109,
+                        "id": 3997,
                         "name": "ElementaryTypeName",
-                        "src": "2873:7:20"
+                        "src": "2865:7:36"
                       }
                     ],
-                    "id": 2110,
+                    "id": 3998,
                     "name": "VariableDeclaration",
-                    "src": "2873:17:20"
+                    "src": "2865:17:36"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "mutability": "mutable",
                       "name": "_kind",
-                      "scope": 2117,
+                      "scope": 4005,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -2275,19 +2275,19 @@
                           "name": "uint256",
                           "type": "uint256"
                         },
-                        "id": 2111,
+                        "id": 3999,
                         "name": "ElementaryTypeName",
-                        "src": "2900:7:20"
+                        "src": "2892:7:36"
                       }
                     ],
-                    "id": 2112,
+                    "id": 4000,
                     "name": "VariableDeclaration",
-                    "src": "2900:13:20"
+                    "src": "2892:13:36"
                   }
                 ],
-                "id": 2113,
+                "id": 4001,
                 "name": "ParameterList",
-                "src": "2801:118:20"
+                "src": "2793:118:36"
               },
               {
                 "children": [
@@ -2296,7 +2296,7 @@
                       "constant": false,
                       "mutability": "mutable",
                       "name": "amountOut",
-                      "scope": 2117,
+                      "scope": 4005,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -2308,34 +2308,34 @@
                           "name": "uint256",
                           "type": "uint256"
                         },
-                        "id": 2114,
+                        "id": 4002,
                         "name": "ElementaryTypeName",
-                        "src": "2938:7:20"
+                        "src": "2930:7:36"
                       }
                     ],
-                    "id": 2115,
+                    "id": 4003,
                     "name": "VariableDeclaration",
-                    "src": "2938:17:20"
+                    "src": "2930:17:36"
                   }
                 ],
-                "id": 2116,
+                "id": 4004,
                 "name": "ParameterList",
-                "src": "2937:19:20"
+                "src": "2929:19:36"
               }
             ],
-            "id": 2117,
+            "id": 4005,
             "name": "FunctionDefinition",
-            "src": "2773:184:20"
+            "src": "2765:184:36"
           }
         ],
-        "id": 2118,
+        "id": 4006,
         "name": "ContractDefinition",
-        "src": "62:2897:20"
+        "src": "62:2889:36"
       }
     ],
-    "id": 2119,
+    "id": 4007,
     "name": "SourceUnit",
-    "src": "37:2923:20"
+    "src": "37:2915:36"
   },
   "compiler": {
     "name": "solc",
@@ -2343,12 +2343,12 @@
   },
   "networks": {},
   "schemaVersion": "3.3.4",
-  "updatedAt": "2021-06-07T01:48:52.041Z",
+  "updatedAt": "2021-06-19T02:31:50.141Z",
   "devdoc": {
     "kind": "dev",
     "methods": {
-      "exchangeWTONtoFLD(uint256,uint256,uint256,uint160,uint256)": {
-        "details": "exchange holded WTON to FLD using uniswap-v3",
+      "exchangeWTONtoTOS(uint256,uint256,uint256,uint160,uint256)": {
+        "details": "exchange holded WTON to TOS using uniswap-v3",
         "params": {
           "_amountIn": "the input amount",
           "_amountOutMinimum": "the minimun output amount",
@@ -2357,8 +2357,8 @@
           "_sqrtPriceLimitX96": "sqrtPriceLimitX96"
         }
       },
-      "exchangeWTONtoFLDv2(uint256,uint256,uint256,uint256)": {
-        "details": "exchange holded WTON to FLD using uniswap-v2",
+      "exchangeWTONtoTOSv2(uint256,uint256,uint256,uint256)": {
+        "details": "exchange holded WTON to TOS using uniswap-v2",
         "params": {
           "_amountIn": "the input amount",
           "_amountOutMinimum": "the minimun output amount",

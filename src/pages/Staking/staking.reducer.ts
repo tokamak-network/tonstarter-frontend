@@ -6,7 +6,7 @@ import {toWei} from 'web3-utils';
 import * as StakeVault from 'services/abis/Stake1Vault.json';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import * as TonABI from 'services/abis/TON.json';
-import * as FldABI from 'services/abis/FLD.json';
+import * as FldABI from 'services/abis/TOS.json';
 import * as SeigManagerABI from 'services/abis/SeigManager.json';
 import * as DepositManagerABI from 'services/abis/DepositManager.json';
 import {formatEther} from '@ethersproject/units';
@@ -255,13 +255,17 @@ export const fetchStakes = createAsyncThunk(
     let stakeList: any;
     let iERC20: any;
 
+    console.log('--fetchStakes--')
+
     // @ts-ignore
     const {currentRequestId, loading} = getState().stakes;
     if (loading !== 'pending' || requestId !== currentRequestId) {
+      console.log('peding || requestId && currentRequestId')
       return;
     }
-    if (contract) {
-      const vaults = await contract.vaultsOfPahse(1);
+
+      console.log('--contract--')
+      const vaults = await contract.vaultsOfPhase(1);
 
       stakeList = await Promise.all(
         vaults.map(async (vault: any) => {
@@ -278,6 +282,8 @@ export const fetchStakes = createAsyncThunk(
           };
         }),
       );
+
+      console.log(stakeList)
 
       await Promise.all(
         stakeList.map(async (stake: any) => {
@@ -326,7 +332,7 @@ export const fetchStakes = createAsyncThunk(
           );
         }),
       );
-    }
+    
     return projects;
   },
 );
