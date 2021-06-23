@@ -9,7 +9,6 @@ import * as TonABI from 'services/abis/TON.json';
 import * as DepositManagerABI from 'services/abis/DepositManager.json';
 import {formatEther} from '@ethersproject/units';
 import {period} from 'utils/timeStamp';
-import axios from 'axios';
 import {
   REACT_APP_TON,
   REACT_APP_TOKAMAK_LAYER2,
@@ -339,15 +338,6 @@ export const fetchStakes = createAsyncThunk(
       return;
     }
 
-    // const temp = await axios
-    //   .get('http://3.36.66.138:4000/v1/vaults?chainId=4')
-    //   .then((result) => result.data);
-    // const contracts = await axios
-    //   .get('http://3.36.66.138:4000/v1/stakecontracts?chainId=4')
-    //   .then((result) => result);
-    // console.log(temp);
-    // console.log(contracts);
-
     // const vaults = temp.datas;
 
     // stakeList = await Promise.all(
@@ -366,11 +356,13 @@ export const fetchStakes = createAsyncThunk(
     //   }),
     // );
 
-    const contracts = await axios
-      .get('http://3.36.66.138:4000/v1/stakecontracts?chainId=4')
-      .then(result => result.data);
+    const req = await fetch(
+      'http://3.36.66.138:4000/v1/stakecontracts?chainId=4',
+    )
+      .then((res) => res.json())
+      .then((result) => result);
 
-    const stakeList = contracts.datas;
+    const stakeList = req.datas;
 
     await Promise.all(
       stakeList.map(async (stake: any, index: number) => {
