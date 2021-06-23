@@ -7,13 +7,14 @@ import {
   Grid,
   Flex,
   Link,
+  useColorMode,
 } from '@chakra-ui/react';
 import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
 import {Head} from 'components/SEO';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import React, {FC, Fragment, useCallback, useMemo} from 'react';
-import {shortenAddress} from 'utils';
+import {formatStartTime, shortenAddress} from 'utils';
 import {StakingTable} from './StakingTable';
 import {selectStakes} from './staking.reducer';
 import {selectApp} from 'store/app/app.reducer';
@@ -45,14 +46,17 @@ const WalletInformation: FC<WalletInformationProps> = ({
     user,
   };
 
+  const {colorMode} = useColorMode();
+
   return (
-    <Container maxW={'sm'}>
-      <Box
-        textAlign={'center'}
-        py={10}
-        px={5}
-        shadow={'md'}
-        borderRadius={'lg'}>
+    <Container
+      maxW={'sm'}
+      shadow={'md'}
+      borderRadius={'lg'}
+      border={
+        colorMode === 'light' ? 'solid 1px #f4f6f8' : 'solid 1px #373737'
+      }>
+      <Box w={'100%'} p={0} textAlign={'center'} py={10} px={5}>
         <Heading>{user.balance.toString()} TON</Heading>
         <Box py={5}>
           <Text>Available in wallet</Text>
@@ -138,6 +142,7 @@ export const Staking = () => {
     ],
     [],
   );
+
   const renderRowSubComponent = useCallback(
     ({row}) => {
       return (
@@ -146,7 +151,8 @@ export const Staking = () => {
           w={'100%'}
           h={'500px'}
           justifyContent={'space-between'}
-          alignItems="center">
+          alignItems="center"
+          border={'none'}>
           <Flex
             px={{base: 3, md: 20}}
             py={{base: 1, md: 10}}
@@ -166,7 +172,7 @@ export const Staking = () => {
               <Text>{data[row.id]?.totalStakers}</Text>
             </Flex>
           </Flex>
-          <Box p={8} w={'450px'}>
+          <Box p={8} w={'450px'} borderRadius={'10px'}>
             <WalletInformation
               dispatch={dispatch}
               data={data[row.id]}

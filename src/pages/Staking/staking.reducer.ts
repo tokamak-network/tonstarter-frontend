@@ -8,7 +8,7 @@ import * as StakeTON from 'services/abis/StakeTON.json';
 import * as TonABI from 'services/abis/TON.json';
 import * as DepositManagerABI from 'services/abis/DepositManager.json';
 import {formatEther} from '@ethersproject/units';
-import {period} from 'utils/timeStamp';
+import {period, formatStartTime} from 'utils/timeStamp';
 import {
   REACT_APP_TON,
   REACT_APP_TOKAMAK_LAYER2,
@@ -53,6 +53,7 @@ export type Stake = {
   period: string | number;
   startTime: string;
   endTime: string;
+  status: string;
 };
 
 interface StakeState {
@@ -327,8 +328,9 @@ export const stakeToLayer2 = async (args: stakeToLayer2Args) => {
 
 export const fetchStakes = createAsyncThunk(
   'stakes/all',
-  async ({contract, library, account}: any, {requestId, getState}) => {
+  async ({contract, library, account, chainId}: any, {requestId, getState}) => {
     let projects: any[] = [];
+    const fetchUrl = `http://3.36.66.138:4000/v1/stakecontracts?chainId=${chainId}`;
     // let iERC20: any;
 
     // @ts-ignore
@@ -356,9 +358,7 @@ export const fetchStakes = createAsyncThunk(
     //   }),
     // );
 
-    const req = await fetch(
-      'http://3.36.66.138:4000/v1/stakecontracts?chainId=4',
-    )
+    const req = await fetch(fetchUrl)
       .then((res) => res.json())
       .then((result) => result);
 
@@ -370,8 +370,8 @@ export const fetchStakes = createAsyncThunk(
 
         //  console.log(stake);
 
-        // const startTime = await formatStartTime(stake.saleStartBlock);
-        // const sendTime = await formatEndTime(
+        // const startTime = await formatStartTime(stake.startBlock);
+        // const endTime = await formatEndTime(
         //   stake.saleStartBlock,
         //   stake.saleStartBlock,
         // );
@@ -400,8 +400,9 @@ export const fetchStakes = createAsyncThunk(
           token: stake.paytoken,
           stakeType: stake.stakeType,
           period: period(stake.startBlock, stake.endBlock),
-          startTime: 'MMM DD, YYYY HH:mm:ss',
-          endTime: 'MMM DD, YYYY HH:mm:ss',
+          startTime: stake.startBlock,
+          endTime: stake.endBlock,
+          status: stake.saleClosed === true ? 'end' : getStatus(stake),
         };
 
         // await getMy(stakeInfo, stake, library, account);
@@ -415,6 +416,14 @@ export const fetchStakes = createAsyncThunk(
     return projects;
   },
 );
+
+const getStatus = (args: any) => {
+  const {blockNumber, saleStartBlock} = args;
+  if (blockNumber >= saleStartBlock) {
+    return 'start';
+  }
+  return 'sale';
+};
 
 // const getMy = async (
 //   stakeInfo: Partial<Stake>,
