@@ -14,9 +14,9 @@ import {IconOpen} from 'components/Icons/IconOpen';
 import {Head} from 'components/SEO';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import React, {FC, Fragment, useCallback, useMemo} from 'react';
-import {formatStartTime, shortenAddress} from 'utils';
+import {formatStartTime, formatEndTime, shortenAddress} from 'utils';
 import {StakingTable} from './StakingTable';
-import {selectStakes} from './staking.reducer';
+import {selectStakes, getUserInfo} from './staking.reducer';
 import {selectApp} from 'store/app/app.reducer';
 import {selectUser} from 'store/app/user.reducer';
 import {PageHeader} from 'components/PageHeader';
@@ -28,6 +28,9 @@ import {
 import {AppDispatch} from 'store';
 import {openModal} from 'store/modal.reducer';
 import {ManageModal} from './StakeOptionModal/manage';
+import {useState} from 'react';
+import {useContract} from 'hooks/useContract';
+import * as TonABI from 'services/abis/TON.json';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
@@ -35,18 +38,20 @@ type WalletInformationProps = {
   user: {
     balance: string;
   };
+  account: string | undefined;
 };
 const WalletInformation: FC<WalletInformationProps> = ({
   user,
   data,
   dispatch,
+  account,
 }) => {
   const payload = {
     ...data,
     user,
   };
-
   const {colorMode} = useColorMode();
+  const btnDisabled = account === undefined ? true : false;
 
   return (
     <Container
@@ -64,11 +69,13 @@ const WalletInformation: FC<WalletInformationProps> = ({
         <Grid templateColumns={'repeat(2, 1fr)'} gap={6}>
           <Button
             colorScheme="blue"
+            isDisabled={btnDisabled}
             onClick={() => dispatch(openModal({type: 'stake', data: payload}))}>
             Stake
           </Button>
           <Button
             colorScheme="blue"
+            isDisabled={btnDisabled}
             onClick={() =>
               dispatch(openModal({type: 'unstake', data: payload}))
             }>
@@ -76,11 +83,13 @@ const WalletInformation: FC<WalletInformationProps> = ({
           </Button>
           <Button
             colorScheme="blue"
+            isDisabled={btnDisabled}
             onClick={() => dispatch(openModal({type: 'claim', data: payload}))}>
             Claim
           </Button>
           <Button
             colorScheme="blue"
+            isDisabled={btnDisabled}
             onClick={() => dispatch(openModal({type: 'manage'}))}>
             Manage
           </Button>
@@ -143,8 +152,40 @@ export const Staking = () => {
     [],
   );
 
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
+  const [myStaked, setMyStaked] = useState('');
+  const [myEarned, setMyEarned] = useState('');
+
+  const fetchDatas = async (args: any) => {
+    const {startTime, endTime} = args;
+    const fetchedStartTime = await formatStartTime(startTime);
+    const fetchedEndTime = await formatEndTime(startTime, endTime);
+    setStartTime(fetchedStartTime);
+    setEndTime(fetchedEndTime);
+  };
+
+  const fetchUserData = async (
+    library: any,
+    account: string,
+    contractAddress: string,
+  ) => {
+    const res = await getUserInfo(library, account, contractAddress);
+    const {userStaked, userTOS} = res;
+    setMyStaked(userStaked);
+  };
+
   const renderRowSubComponent = useCallback(
     ({row}) => {
+      console.log(row);
+      const {account, library, contractAddress} = row.original;
+      fetchDatas({
+        startTime: data[row.id]?.startTime,
+        endTime: data[row.id]?.endTime,
+      });
+      const dd = fetchUserData(library, account, contractAddress);
+      // const dd = getUserInfo(account, library);
+      // console.log(dd);
       return (
         <Flex
           mt={0}
@@ -160,12 +201,12 @@ export const Staking = () => {
             justifyContent={'space-between'}
             h={'100%'}>
             <Flex flexDir={'column'} alignItems={'space-between'}>
-              <Text fontWeight={'bold'}>Starting Day</Text>
-              <Text>{data[row.id]?.startTime}</Text>
+              <Text fontWeight={'bold'}>Mining Starting Day</Text>
+              <Text>{startTime}</Text>
             </Flex>
             <Flex flexDir={'column'} alignItems={'space-between'}>
-              <Text fontWeight={'bold'}>Closing day</Text>
-              <Text>{data[row.id]?.endTime}</Text>
+              <Text fontWeight={'bold'}>Mining Closing day</Text>
+              <Text>{endTime}</Text>
             </Flex>
             <Flex flexDir={'column'} alignItems={'space-between'}>
               <Text fontWeight={'bold'}>Total stakers</Text>
@@ -177,6 +218,7 @@ export const Staking = () => {
               dispatch={dispatch}
               data={data[row.id]}
               user={user}
+              account={account}
             />
           </Box>
           <Flex
@@ -187,11 +229,13 @@ export const Staking = () => {
             h={'100%'}>
             <Flex flexDir={'column'} alignItems={'space-between'}>
               <Text fontWeight={'bold'}>My staked</Text>
-              <Text>{data[row.id]?.mystaked}</Text>
+              <Text>{myStaked}</Text>
+              {/* <Text>{data[row.id]?.mystaked}</Text> */}
             </Flex>
             <Flex flexDir={'column'} alignItems={'space-between'}>
               <Text fontWeight={'bold'}>My Earned</Text>
-              <Text>{data[row.id]?.totalRewardAmount}</Text>
+              <Text>{myEarned}</Text>
+              {/* <Text>{data[row.id]?.totalRewardAmount}</Text> */}
             </Flex>
             <Flex flexDir={'column'} alignItems={'space-between'}>
               <Text fontWeight={'bold'}>Contract</Text>
@@ -211,8 +255,9 @@ export const Staking = () => {
         </Flex>
       );
     },
-    [data, dispatch, user, appConfig.explorerLink],
+    [data, dispatch, user, appConfig.explorerLink, startTime, endTime],
   );
+
   return (
     <Fragment>
       <Head title={'Staking'} />

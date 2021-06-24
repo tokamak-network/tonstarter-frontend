@@ -7,6 +7,7 @@ import * as StakeVault from 'services/abis/Stake1Vault.json';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import * as TonABI from 'services/abis/TON.json';
 import * as DepositManagerABI from 'services/abis/DepositManager.json';
+import * as TosABI from 'services/abis/ITOS.json';
 import {formatEther} from '@ethersproject/units';
 import {period, formatStartTime} from 'utils/timeStamp';
 import {
@@ -15,6 +16,7 @@ import {
   REACT_APP_DEPOSIT_MANAGER,
   DEPLOYED,
   REACT_APP_WTON,
+  REACT_APP_TOS,
 } from 'constants/index';
 
 const provider = ethers.getDefaultProvider('rinkeby');
@@ -54,6 +56,8 @@ export type Stake = {
   startTime: string;
   endTime: string;
   status: string;
+  library: any;
+  account: any;
 };
 
 interface StakeState {
@@ -149,7 +153,6 @@ export const stakePaytoken = async (args: StakeProps) => {
     stakeContractAddress,
     stakeStartBlock,
   } = args;
-  console.log(amount);
 
   if (payToken === DEPLOYED.TON) {
     await stakeTon({
@@ -330,7 +333,8 @@ export const fetchStakes = createAsyncThunk(
   'stakes/all',
   async ({contract, library, account, chainId}: any, {requestId, getState}) => {
     let projects: any[] = [];
-    const fetchUrl = `http://3.36.66.138:4000/v1/stakecontracts?chainId=${chainId}`;
+    const chainIdforFetch = chainId === undefined ? '4' : chainId;
+    const fetchUrl = `http://3.36.66.138:4000/v1/stakecontracts?chainId=${chainIdforFetch}`;
     // let iERC20: any;
 
     // @ts-ignore
@@ -364,6 +368,8 @@ export const fetchStakes = createAsyncThunk(
 
     const stakeList = req.datas;
 
+    console.log(stakeList);
+
     await Promise.all(
       stakeList.map(async (stake: any, index: number) => {
         // let info = await stake.stakeVault.stakeInfos(item);
@@ -385,7 +391,7 @@ export const fetchStakes = createAsyncThunk(
           // balance: formatEther(info[3]),
           // totalRewardAmount: formatEther(info[4]),
           // claimRewardAmount: formatEther(info[5]),
-          totalStakers: formatEther(0),
+          totalStakers: stake.totalStakers,
           myton: formatEther(0),
           myfld: formatEther(0),
           mystaked: formatEther(0),
@@ -403,16 +409,15 @@ export const fetchStakes = createAsyncThunk(
           startTime: stake.startBlock,
           endTime: stake.endBlock,
           status: stake.saleClosed === true ? 'end' : getStatus(stake),
+          library,
+          account,
         };
-
-        // await getMy(stakeInfo, stake, library, account);
+        // const test = await getUserInfo(library, account);
+        // console.log(test);
         // await infoTokamak(stakeInfo, stake, index, library, account);
         projects.push(stakeInfo);
       }),
     );
-    // if (account) {
-    //   console.log(account);
-    // }
     return projects;
   },
 );
@@ -425,35 +430,40 @@ const getStatus = (args: any) => {
   return 'sale';
 };
 
-// const getMy = async (
-//   stakeInfo: Partial<Stake>,
-//   stakeContractAddress: string,
-//   library: any,
-//   account: string,
-// ) => {
-//   const currentBlock = await provider.getBlockNumber();
+export const getUserInfo = async (
+  // stakeInfo: Partial<Stake>,
+  // stakeContractAddress: string,
+  library: any,
+  account: string,
+  contractAddress: string,
+) => {
+  // const currentBlock = await provider.getBlockNumber();
 
-//   const TON = await getContract(REACT_APP_TON, TonABI.abi, library);
-//   const myTON = await TON?.balanceOf(account);
-//   stakeInfo.myton = formatEther(myTON);
-//   const FLD = await getContract(REACT_APP_FLD, FldABI.abi, library);
-//   const myFLD = await FLD?.balanceOf(account);
-//   stakeInfo.myfld = formatEther(myFLD);
+  const StakeTONContract = await getContract(
+    contractAddress,
+    StakeTON.abi,
+    library,
+  );
+  const staked = await StakeTONContract?.userStaked(account);
 
-//   const StakeTONContract = await getContract(
-//     stakeContractAddress,
-//     StakeTON.abi,
-//     library,
-//   );
-//   const saleBlock = await StakeTONContract?.saleStartBlock();
-//   stakeInfo.saleStartBlock = Number(saleBlock);
-//   const staked = await StakeTONContract?.userStaked(account);
+  console.log(staked);
 
-//   stakeInfo.mystaked = formatEther(staked.amount);
-//   stakeInfo.myclaimed = formatEther(staked.claimedAmount);
-//   stakeInfo.mywithdraw = formatEther(staked.releasedAmount);
-//   // const total = await StakeTONContract?.totalStakers();
-//   // stakeInfo.totalStakers = total.toString();
+  // const TOS = await getContract(REACT_APP_TOS, TosABI.abi, library);
+  // const myTOS = await TOS?.balanceOf(account);
+
+  return {userStaked: formatEther(staked.amount), userTOS: formatEther(0)};
+  // stakeInfo.myfld = formatEther(myTOS);
+
+  // const saleBlock = await StakeTONContract?.saleStartBlock();
+  // stakeInfo.saleStartBlock = Number(saleBlock);
+
+  // stakeInfo.mystaked = formatEther(staked.amount);
+  // stakeInfo.myclaimed = formatEther(staked.claimedAmount);
+  // stakeInfo.mywithdraw = formatEther(staked.releasedAmount);
+};
+
+// const total = await StakeTONContract?.totalStakers();
+// stakeInfo.totalStakers = total.toString();
 
 //   if (Number(stakeInfo.mystaked) > 0) {
 //     try {
