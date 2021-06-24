@@ -59,7 +59,10 @@ const getCircle = (type: 'sale' | 'start' | 'end') => {
   );
 };
 
-const getStatus = (type: 'sale' | 'start' | 'end') => {
+const getStatus = (
+  type: 'sale' | 'start' | 'end',
+  colorMode: 'light' | 'dark',
+) => {
   return (
     <Flex alignContent={'center'} alignItems={'center'} mr={'20px'}>
       <Box
@@ -71,7 +74,9 @@ const getStatus = (type: 'sale' | 'start' | 'end') => {
         }
         mr={'7px'}
         mt={'2px'}></Box>
-      <Text fontSize={'11px'} color={'#304156'}>
+      <Text
+        fontSize={'11px'}
+        color={colorMode === 'light' ? '#304156' : 'white.100'}>
         {type === 'sale' ? 'On sale' : type === 'start' ? 'started' : 'ended'}
       </Text>
     </Flex>
@@ -111,9 +116,9 @@ export const StakingTable: FC<StakingTableProps> = ({
     <Flex w="1100px" flexDir={'column'}>
       <Flex justifyContent={'space-between'} mb={'23px'}>
         <Flex>
-          {getStatus('sale')}
-          {getStatus('start')}
-          {getStatus('end')}
+          {getStatus('sale', colorMode)}
+          {getStatus('start', colorMode)}
+          {getStatus('end', colorMode)}
         </Flex>
         <Select
           w={'137px'}

@@ -62,20 +62,26 @@ const WalletInformation: FC<WalletInformationProps> = ({
         colorMode === 'light' ? 'solid 1px #f4f6f8' : 'solid 1px #373737'
       }>
       <Box w={'100%'} p={0} textAlign={'center'} py={10} px={5}>
-        <Heading>{user.balance.toString()} TON</Heading>
+        <Heading color={'blue.300'}>{user.balance.toString()} TON</Heading>
         <Box py={5}>
-          <Text>Available in wallet</Text>
+          <Text fontSize={'15px'} color={'gray.400'}>
+            Available in wallet
+          </Text>
         </Box>
         <Grid templateColumns={'repeat(2, 1fr)'} gap={6}>
           <Button
             colorScheme="blue"
             isDisabled={btnDisabled}
+            color={'white.100'}
+            fontSize={'14px'}
             onClick={() => dispatch(openModal({type: 'stake', data: payload}))}>
             Stake
           </Button>
           <Button
             colorScheme="blue"
             isDisabled={btnDisabled}
+            color={'white.100'}
+            fontSize={'14px'}
             onClick={() =>
               dispatch(openModal({type: 'unstake', data: payload}))
             }>
@@ -84,12 +90,16 @@ const WalletInformation: FC<WalletInformationProps> = ({
           <Button
             colorScheme="blue"
             isDisabled={btnDisabled}
+            color={'white.100'}
+            fontSize={'14px'}
             onClick={() => dispatch(openModal({type: 'claim', data: payload}))}>
             Claim
           </Button>
           <Button
             colorScheme="blue"
             isDisabled={btnDisabled}
+            color={'white.100'}
+            fontSize={'14px'}
             onClick={() => dispatch(openModal({type: 'manage'}))}>
             Manage
           </Button>
@@ -183,7 +193,7 @@ export const Staking = () => {
         startTime: data[row.id]?.startTime,
         endTime: data[row.id]?.endTime,
       });
-      const dd = fetchUserData(library, account, contractAddress);
+      fetchUserData(library, account, contractAddress);
       // const dd = getUserInfo(account, library);
       // console.log(dd);
       return (
@@ -201,16 +211,28 @@ export const Staking = () => {
             justifyContent={'space-between'}
             h={'100%'}>
             <Flex flexDir={'column'} alignItems={'space-between'}>
-              <Text fontWeight={'bold'}>Mining Starting Day</Text>
-              <Text>{startTime}</Text>
+              <Text fontSize={'15px'} color="gray.425">
+                Mining Starting Day
+              </Text>
+              <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
+                {startTime}
+              </Text>
             </Flex>
             <Flex flexDir={'column'} alignItems={'space-between'}>
-              <Text fontWeight={'bold'}>Mining Closing day</Text>
-              <Text>{endTime}</Text>
+              <Text fontSize={'15px'} color="gray.425">
+                Mining Closing day
+              </Text>
+              <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
+                {endTime}
+              </Text>
             </Flex>
             <Flex flexDir={'column'} alignItems={'space-between'}>
-              <Text fontWeight={'bold'}>Total stakers</Text>
-              <Text>{data[row.id]?.totalStakers}</Text>
+              <Text fontSize={'15px'} color="gray.425">
+                Total stakers
+              </Text>
+              <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
+                {data[row.id]?.totalStakers}
+              </Text>
             </Flex>
           </Flex>
           <Box p={8} w={'450px'} borderRadius={'10px'}>
@@ -228,17 +250,27 @@ export const Staking = () => {
             justifyContent={'space-between'}
             h={'100%'}>
             <Flex flexDir={'column'} alignItems={'space-between'}>
-              <Text fontWeight={'bold'}>My staked</Text>
-              <Text>{myStaked}</Text>
+              <Text fontSize={'15px'} color="gray.425">
+                My staked
+              </Text>
+              <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
+                {myStaked}
+              </Text>
               {/* <Text>{data[row.id]?.mystaked}</Text> */}
             </Flex>
             <Flex flexDir={'column'} alignItems={'space-between'}>
-              <Text fontWeight={'bold'}>My Earned</Text>
-              <Text>{myEarned}</Text>
+              <Text fontSize={'15px'} color="gray.425">
+                My Earned
+              </Text>
+              <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
+                {myEarned}
+              </Text>
               {/* <Text>{data[row.id]?.totalRewardAmount}</Text> */}
             </Flex>
             <Flex flexDir={'column'} alignItems={'space-between'}>
-              <Text fontWeight={'bold'}>Contract</Text>
+              <Text fontSize={'15px'} color="gray.425">
+                Contract
+              </Text>
               <Link
                 isExternal={true}
                 outline={'none'}
@@ -255,7 +287,15 @@ export const Staking = () => {
         </Flex>
       );
     },
-    [data, dispatch, user, appConfig.explorerLink, startTime, endTime],
+    [
+      data,
+      dispatch,
+      user,
+      appConfig.explorerLink,
+      startTime,
+      endTime,
+      myStaked,
+    ],
   );
 
   return (
