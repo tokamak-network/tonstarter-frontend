@@ -7,14 +7,16 @@ import * as StakeVault from 'services/abis/Stake1Vault.json';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import * as TonABI from 'services/abis/TON.json';
 import * as DepositManagerABI from 'services/abis/DepositManager.json';
+import * as TosABI from 'services/abis/ITOS.json';
 import {formatEther} from '@ethersproject/units';
-import {period} from 'utils/timeStamp';
+import {period, formatStartTime} from 'utils/timeStamp';
 import {
   REACT_APP_TON,
   REACT_APP_TOKAMAK_LAYER2,
   REACT_APP_DEPOSIT_MANAGER,
   DEPLOYED,
   REACT_APP_WTON,
+  REACT_APP_TOS,
 } from 'constants/index';
 
 const provider = ethers.getDefaultProvider('rinkeby');
@@ -53,6 +55,9 @@ export type Stake = {
   period: string | number;
   startTime: string;
   endTime: string;
+  status: string;
+  library: any;
+  account: any;
 };
 
 interface StakeState {
@@ -148,7 +153,6 @@ export const stakePaytoken = async (args: StakeProps) => {
     stakeContractAddress,
     stakeStartBlock,
   } = args;
-  console.log(amount);
 
   if (payToken === DEPLOYED.TON) {
     await stakeTon({
@@ -327,8 +331,10 @@ export const stakeToLayer2 = async (args: stakeToLayer2Args) => {
 
 export const fetchStakes = createAsyncThunk(
   'stakes/all',
-  async ({contract, library, account}: any, {requestId, getState}) => {
+  async ({contract, library, account, chainId}: any, {requestId, getState}) => {
     let projects: any[] = [];
+    const chainIdforFetch = chainId === undefined ? '4' : chainId;
+    const fetchUrl = `http://3.36.66.138:4000/v1/stakecontracts?chainId=${chainIdforFetch}`;
     // let iERC20: any;
 
     // @ts-ignore
@@ -356,13 +362,13 @@ export const fetchStakes = createAsyncThunk(
     //   }),
     // );
 
-    const req = await fetch(
-      'http://3.36.66.138:4000/v1/stakecontracts?chainId=4',
-    )
+    const req = await fetch(fetchUrl)
       .then((res) => res.json())
       .then((result) => result);
 
     const stakeList = req.datas;
+
+    console.log(stakeList);
 
     await Promise.all(
       stakeList.map(async (stake: any, index: number) => {
@@ -370,8 +376,8 @@ export const fetchStakes = createAsyncThunk(
 
         //  console.log(stake);
 
-        // const startTime = await formatStartTime(stake.saleStartBlock);
-        // const sendTime = await formatEndTime(
+        // const startTime = await formatStartTime(stake.startBlock);
+        // const endTime = await formatEndTime(
         //   stake.saleStartBlock,
         //   stake.saleStartBlock,
         // );
@@ -385,7 +391,7 @@ export const fetchStakes = createAsyncThunk(
           // balance: formatEther(info[3]),
           // totalRewardAmount: formatEther(info[4]),
           // claimRewardAmount: formatEther(info[5]),
-          totalStakers: formatEther(0),
+          totalStakers: stake.totalStakers,
           myton: formatEther(0),
           myfld: formatEther(0),
           mystaked: formatEther(0),
@@ -400,51 +406,64 @@ export const fetchStakes = createAsyncThunk(
           token: stake.paytoken,
           stakeType: stake.stakeType,
           period: period(stake.startBlock, stake.endBlock),
-          startTime: 'MMM DD, YYYY HH:mm:ss',
-          endTime: 'MMM DD, YYYY HH:mm:ss',
+          startTime: stake.startBlock,
+          endTime: stake.endBlock,
+          status: stake.saleClosed === true ? 'end' : getStatus(stake),
+          library,
+          account,
         };
-
-        // await getMy(stakeInfo, stake, library, account);
+        // const test = await getUserInfo(library, account);
+        // console.log(test);
         // await infoTokamak(stakeInfo, stake, index, library, account);
         projects.push(stakeInfo);
       }),
     );
-    // if (account) {
-    //   console.log(account);
-    // }
     return projects;
   },
 );
 
-// const getMy = async (
-//   stakeInfo: Partial<Stake>,
-//   stakeContractAddress: string,
-//   library: any,
-//   account: string,
-// ) => {
-//   const currentBlock = await provider.getBlockNumber();
+const getStatus = (args: any) => {
+  const {blockNumber, saleStartBlock} = args;
+  if (blockNumber >= saleStartBlock) {
+    return 'start';
+  }
+  return 'sale';
+};
 
-//   const TON = await getContract(REACT_APP_TON, TonABI.abi, library);
-//   const myTON = await TON?.balanceOf(account);
-//   stakeInfo.myton = formatEther(myTON);
-//   const FLD = await getContract(REACT_APP_FLD, FldABI.abi, library);
-//   const myFLD = await FLD?.balanceOf(account);
-//   stakeInfo.myfld = formatEther(myFLD);
+export const getUserInfo = async (
+  // stakeInfo: Partial<Stake>,
+  // stakeContractAddress: string,
+  library: any,
+  account: string,
+  contractAddress: string,
+) => {
+  // const currentBlock = await provider.getBlockNumber();
 
-//   const StakeTONContract = await getContract(
-//     stakeContractAddress,
-//     StakeTON.abi,
-//     library,
-//   );
-//   const saleBlock = await StakeTONContract?.saleStartBlock();
-//   stakeInfo.saleStartBlock = Number(saleBlock);
-//   const staked = await StakeTONContract?.userStaked(account);
+  const StakeTONContract = await getContract(
+    contractAddress,
+    StakeTON.abi,
+    library,
+  );
+  const staked = await StakeTONContract?.userStaked(account);
 
-//   stakeInfo.mystaked = formatEther(staked.amount);
-//   stakeInfo.myclaimed = formatEther(staked.claimedAmount);
-//   stakeInfo.mywithdraw = formatEther(staked.releasedAmount);
-//   // const total = await StakeTONContract?.totalStakers();
-//   // stakeInfo.totalStakers = total.toString();
+  console.log(staked);
+
+  // const TOS = await getContract(REACT_APP_TOS, TosABI.abi, library);
+  // const myTOS = await TOS?.balanceOf(account);
+
+  return {userStaked: formatEther(staked.amount), userTOS: formatEther(0)};
+  // stakeInfo.myfld = formatEther(myTOS);
+
+  // const saleBlock = await StakeTONContract?.saleStartBlock();
+  // stakeInfo.saleStartBlock = Number(saleBlock);
+
+  // stakeInfo.mystaked = formatEther(staked.amount);
+  // stakeInfo.myclaimed = formatEther(staked.claimedAmount);
+  // stakeInfo.mywithdraw = formatEther(staked.releasedAmount);
+};
+
+// const total = await StakeTONContract?.totalStakers();
+// stakeInfo.totalStakers = total.toString();
 
 //   if (Number(stakeInfo.mystaked) > 0) {
 //     try {

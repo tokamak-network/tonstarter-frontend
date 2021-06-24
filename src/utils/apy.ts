@@ -4,6 +4,7 @@ import * as IERC20 from 'services/abis/IERC20.json';
 type EthAddressType = '0x0000000000000000000000000000000000000000';
 type TonAddressType = '0x44d4F5d89E9296337b8c48a332B3b2fb2C190CD0';
 
+type TokenAddressTypes = EthAddressType | TonAddressType;
 type TokenTypes = 'eth' | 'ton';
 
 type MainArgsType = {
@@ -70,7 +71,7 @@ const getEarningPerBlock = async (args: CheckedBlockType[], cap: string) => {
     earningPerBlock,
     totalBlocks,
   );
-
+  return dividedEarningPerBlocks;
   // let blocks: number = 0
 };
 
@@ -79,7 +80,7 @@ const getBlocks = async (
   stakeVault: any,
 ): Promise<CheckedBlockType[]> => {
   const result: CheckedBlockType[] = [];
-  const blocks = await Promise.all(
+  await Promise.all(
     args.map(async (e) => {
       const address = e.address;
       const info = await stakeVault.stakeInfos(address);
@@ -102,7 +103,7 @@ const getBalance = async (
   library: any,
 ): Promise<CheckedBalanceType[] | []> => {
   const result: CheckedBalanceType[] = [];
-  const balances = await Promise.all(
+  await Promise.all(
     addresses.map(async (address) => {
       switch (tokenType) {
         case 'eth':
@@ -138,9 +139,7 @@ const getBalance = async (
   return result;
 };
 
-const checkTokenType = (
-  payToken: EthAddressType | TonAddressType,
-): TokenTypes => {
+const checkTokenType = (payToken: TokenAddressTypes): TokenTypes => {
   const tokenType = payToken === tokenAddresses['eth'] ? 'eth' : 'ton';
   switch (tokenType) {
     case 'eth':
@@ -154,18 +153,19 @@ const checkTokenType = (
 
 export const calculateApy = async (mainArgs: MainArgsType) => {
   const {addresses, cap, payToken, library, stakeVault} = mainArgs;
-  const tokenType = await checkTokenType(payToken);
+  const tokenType = checkTokenType(payToken);
   const balances = await getBalance(addresses, tokenType, library);
 
   //Can't calculate reward cuz every project's balance is 0
   //Means nobody stakes to every projects
   if (balances.length === 0) {
-    console.log(`any no staking balance for ${addresses}`);
-    return;
+    throw new Error(`any no staking balance for ${addresses}`);
   }
 
   const blocks = await getBlocks(balances, stakeVault);
   const earningPerBlock = await getEarningPerBlock(blocks, cap);
+
+  return earningPerBlock;
 
   // const sortProject = balances.map(async (e: any) => {
   //   const info = await stakeVault.stakeInfos(e.address);
