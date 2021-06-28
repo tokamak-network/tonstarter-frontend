@@ -298,7 +298,7 @@ export const Animation: React.FC<HomeProps> = () => {
   ]);
 
   //temp code for pre-open
-  const [date, setDate] = useState('2021/07/19');
+  const [date] = useState('2021/07/19');
 
   const trimDigit = (arg: any) => {
     if (String(arg).length === 1) {

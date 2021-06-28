@@ -1,5 +1,3 @@
-import {Image} from '@chakra-ui/image';
-
 import {Box, Container, Flex, Link, Text, useTheme} from '@chakra-ui/react';
 import {useColorMode} from '@chakra-ui/react';
 // import emailIcon from 'assets/svgs/email.svg';
@@ -9,7 +7,6 @@ import {IconMedium} from './Icons/IconMedium';
 import {IconTwitter} from './Icons/IconTwitter';
 import {EmailIcon} from '@chakra-ui/icons';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
-import {useEffect} from 'react';
 
 const socialLinks = [
   {

@@ -29,8 +29,6 @@ import {AppDispatch} from 'store';
 import {openModal} from 'store/modal.reducer';
 import {ManageModal} from './StakeOptionModal/manage';
 import {useState} from 'react';
-import {useContract} from 'hooks/useContract';
-import * as TonABI from 'services/abis/TON.json';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
@@ -165,7 +163,7 @@ export const Staking = () => {
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [myStaked, setMyStaked] = useState('');
-  const [myEarned, setMyEarned] = useState('');
+  const [myEarned] = useState('');
 
   const fetchDatas = async (args: any) => {
     const {startTime, endTime} = args;
@@ -181,7 +179,7 @@ export const Staking = () => {
     contractAddress: string,
   ) => {
     const res = await getUserInfo(library, account, contractAddress);
-    const {userStaked, userTOS} = res;
+    const {userStaked} = res;
     setMyStaked(userStaked);
   };
 
