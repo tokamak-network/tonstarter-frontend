@@ -165,15 +165,12 @@ const getCondition = (rIndex: number, cIndex: number) => {
 const getLeftArea = (rowDots: number[]) => {
   const leftMargin = elements.marinLeft;
   const distantMargin = elements.distanceMargin;
-  console.log('---');
-  console.log(rowDots.length);
-  console.log((rowDots.length-1) % 2 !== 0);
   const middlePoint =
     rowDots.length % 2 !== 0
-      ? Math.round(rowDots.length / 2) -1
+      ? Math.round(rowDots.length / 2) - 1
       : Math.round(rowDots.length / 2);
-      console.log(middlePoint)
-   const finalMiddlePoint = middlePoint % 2 === 0 ? middlePoint : middlePoint -1   
+  const finalMiddlePoint =
+    middlePoint % 2 === 0 ? middlePoint : middlePoint - 1;
   return leftMargin + finalMiddlePoint * distantMargin;
 };
 

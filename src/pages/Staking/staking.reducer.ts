@@ -341,6 +341,7 @@ export const fetchStakes = createAsyncThunk(
     const {currentRequestId, loading} = getState().stakes;
     if (loading !== 'pending' || requestId !== currentRequestId) {
       console.log('peding || requestId && currentRequestId');
+      console.log(`${loading} || ${requestId} || ${currentRequestId}`);
       return;
     }
 
@@ -362,12 +363,17 @@ export const fetchStakes = createAsyncThunk(
     //   }),
     // );
 
+    const vaultReq = await fetch('http://3.36.66.138:4000/v1/vaults?chainId=4')
+      .then((res) => res.json())
+      .then((result) => result);
+
     const req = await fetch(fetchUrl)
       .then((res) => res.json())
       .then((result) => result);
 
     const stakeList = req.datas;
 
+    console.log(vaultReq);
     console.log(stakeList);
 
     await Promise.all(
