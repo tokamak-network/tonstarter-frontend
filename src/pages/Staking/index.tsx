@@ -193,7 +193,9 @@ export const Staking = () => {
         startTime: data[row.id]?.startTime,
         endTime: data[row.id]?.endTime,
       });
-      fetchUserData(library, account, contractAddress);
+      if(account) {
+        fetchUserData(library, account, contractAddress);
+      }
       // const dd = getUserInfo(account, library);
       // console.log(dd);
       return (
