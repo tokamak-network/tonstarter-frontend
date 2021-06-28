@@ -32,6 +32,15 @@ export const Router: FC<RouterProps> = () => {
     }
   }, [chainId, account, library, dispatch]);
 
+  useEffect(() => {
+    dispatch(
+      fetchStakes({
+        library,
+        account,
+        chainId,
+      }) as any,
+    );
+  }, [dispatch, library, account, chainId]);
   const handleWalletModalOpen = (state: string) => {
     setWalletState(state);
     onOpen();

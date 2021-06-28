@@ -16,16 +16,71 @@ import {
   Select,
   Box,
   Avatar,
+  useColorMode,
 } from '@chakra-ui/react';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import './staking.css';
 import {checkTokenType} from 'utils/token';
+import {useState} from 'react';
+import {formatStartTime} from 'utils/timeStamp';
 
 type StakingTableProps = {
   columns: Column[];
   data: any[];
   renderDetail: Function;
   isLoading: boolean;
+};
+
+const getTextColor = (type: string, colorMode: string) => {
+  if (colorMode === 'light') {
+    if (type === 'name') {
+      return '#304156';
+    }
+    return '#3a495f';
+  } else if (colorMode === 'dark') {
+    if (type === 'name') {
+      return 'white.100';
+    }
+    return '#f3f4f1';
+  }
+};
+
+const getCircle = (type: 'sale' | 'start' | 'end') => {
+  return (
+    <Flex alignContent={'center'} alignItems={'center'} mr={0} ml={'16px'}>
+      <Box
+        w={'8px'}
+        h={'8px'}
+        borderRadius={50}
+        bg={
+          type === 'sale' ? '#f95359' : type === 'start' ? '#ffdc00' : '#2ea2f8'
+        }></Box>
+    </Flex>
+  );
+};
+
+const getStatus = (
+  type: 'sale' | 'start' | 'end',
+  colorMode: 'light' | 'dark',
+) => {
+  return (
+    <Flex alignContent={'center'} alignItems={'center'} mr={'20px'}>
+      <Box
+        w={'8px'}
+        h={'8px'}
+        borderRadius={50}
+        bg={
+          type === 'sale' ? '#f95359' : type === 'start' ? '#ffdc00' : '#2ea2f8'
+        }
+        mr={'7px'}
+        mt={'2px'}></Box>
+      <Text
+        fontSize={'11px'}
+        color={colorMode === 'light' ? '#304156' : 'white.100'}>
+        {type === 'sale' ? 'On sale' : type === 'start' ? 'started' : 'ended'}
+      </Text>
+    </Flex>
+  );
 };
 
 export const StakingTable: FC<StakingTableProps> = ({
@@ -37,6 +92,7 @@ export const StakingTable: FC<StakingTableProps> = ({
   const {
     getTableProps,
     getTableBodyProps,
+    headerGroups,
     prepareRow,
     visibleColumns,
     canPreviousPage,
@@ -54,46 +110,15 @@ export const StakingTable: FC<StakingTableProps> = ({
     usePagination,
   );
 
+  const {colorMode} = useColorMode();
+
   return (
     <Flex w="1100px" flexDir={'column'}>
       <Flex justifyContent={'space-between'} mb={'23px'}>
         <Flex>
-          <Flex alignContent={'center'} alignItems={'center'} mr={'20px'}>
-            <Box
-              w={'8px'}
-              h={'8px'}
-              borderRadius={50}
-              bg="#f95359"
-              mr={'7px'}
-              mt={'2px'}></Box>
-            <Text fontSize={'11px'} color={'#304156'}>
-              On sale
-            </Text>
-          </Flex>
-          <Flex alignContent={'center'} alignItems={'center'} mr={'20px'}>
-            <Box
-              w={'8px'}
-              h={'8px'}
-              borderRadius={50}
-              bg="#ffdc00"
-              mr={'7px'}
-              mt={'2px'}></Box>
-            <Text fontSize={'11px'} color={'#304156'}>
-              started
-            </Text>
-          </Flex>
-          <Flex alignContent={'center'} alignItems={'center'}>
-            <Box
-              w={'8px'}
-              h={'8px'}
-              borderRadius={50}
-              bg="#2ea2f8"
-              mr={'7px'}
-              mt={'2px'}></Box>
-            <Text fontSize={'11px'} color={'#304156'}>
-              ended
-            </Text>
-          </Flex>
+          {getStatus('sale', colorMode)}
+          {getStatus('start', colorMode)}
+          {getStatus('end', colorMode)}
         </Flex>
         <Select
           w={'137px'}
@@ -114,7 +139,7 @@ export const StakingTable: FC<StakingTableProps> = ({
           {...getTableProps()}
           display="flex"
           flexDirection="column">
-          {/* <chakra.thead textAlign={'justify'}>
+          <chakra.thead textAlign={'justify'}>
             {headerGroups.map((headerGroup) => (
               <chakra.tr h={16} {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
@@ -127,7 +152,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                 ))}
               </chakra.tr>
             ))}
-          </chakra.thead> */}
+          </chakra.thead>
           <chakra.tbody
             {...getTableBodyProps()}
             display="flex"
@@ -136,20 +161,26 @@ export const StakingTable: FC<StakingTableProps> = ({
               prepareRow(row);
               return [
                 <chakra.tr
-                  boxShadow="0 1px 1px 0 rgba(96, 97, 112, 0.16)"
+                  boxShadow={
+                    colorMode === 'light'
+                      ? '0 1px 1px 0 rgba(96, 97, 112, 0.16)'
+                      : ''
+                  }
                   h={16}
                   key={i}
                   borderRadius={'10px'}
                   borderBottomRadius={row.isExpanded === true ? '0px' : '10px'}
                   mb={'20px'}
                   w="100%"
-                  bg="white.100"
+                  bg={colorMode === 'light' ? 'white.100' : 'black.200'}
+                  border={colorMode === 'dark' ? '1px solid #373737' : ''}
                   display="flex"
                   alignItems="center"
                   {...row.getRowProps()}>
                   {row.cells.map((cell: any, index: number) => {
                     const type = cell.column.id;
                     const token = checkTokenType(cell.row.original.token);
+                    const status = cell.row.original.status;
 
                     return (
                       <chakra.td
@@ -171,43 +202,54 @@ export const StakingTable: FC<StakingTableProps> = ({
                         }
                         display="flex"
                         alignItems="center"
-                        color={type === 'name' ? '#304156' : '#3a495f'}
+                        color={getTextColor(type, colorMode)}
                         fontSize={type === 'name' ? '15px' : '13px'}
                         fontWeight={type === 'name' ? 600 : 0}
                         {...cell.getCellProps()}>
+                        {type === 'name' ? getCircle(status) : ''}
                         {type === 'name' ? (
                           <Avatar
                             src={token.symbol}
                             backgroundColor={token.bg}
-                            borderWidth="1px"
-                            borderColor="#f4f6f8"
                             bg="transparent"
                             color="#c7d1d8"
                             name="T"
                             h="48px"
                             w="48px"
-                            ml="34px"
+                            ml="10px"
                             mr="12px"
                           />
                         ) : (
                           ''
                         )}
                         {type === 'period' ? (
-                          <Text mr={2} color="#86929d">
+                          <Text
+                            mr={2}
+                            color={
+                              colorMode === 'light' ? '#86929d' : '#949494'
+                            }>
                             Period
                           </Text>
                         ) : (
                           ''
                         )}
                         {type === 'stakeBalanceTON' ? (
-                          <Text mr={2} color="#86929d">
+                          <Text
+                            mr={2}
+                            color={
+                              colorMode === 'light' ? '#86929d' : '#949494'
+                            }>
                             Total Staked
                           </Text>
                         ) : (
                           ''
                         )}
                         {type === 'earning_per_block' ? (
-                          <Text mr={2} color="#86929d">
+                          <Text
+                            mr={2}
+                            color={
+                              colorMode === 'light' ? '#86929d' : '#949494'
+                            }>
                             Earning Per Block
                           </Text>
                         ) : (
@@ -222,7 +264,6 @@ export const StakingTable: FC<StakingTableProps> = ({
                 // column that fills the entire length of the table.
                 row.isExpanded ? (
                   <chakra.tr
-                    borderTopWidth={1}
                     boxShadow="0 1px 1px 0 rgba(96, 97, 112, 0.16)"
                     w={'100%'}
                     h={500}
@@ -230,7 +271,9 @@ export const StakingTable: FC<StakingTableProps> = ({
                     m={0}
                     mb={'14px'}
                     mt={-5}
-                    bg="white.100"
+                    bg={colorMode === 'light' ? 'white.100' : ''}
+                    border={colorMode === 'light' ? '' : 'solid 1px #373737'}
+                    borderTopWidth={0}
                     borderBottomRadius="10px">
                     <chakra.td
                       display={'flex'}
@@ -325,10 +368,10 @@ export const StakingTable: FC<StakingTableProps> = ({
               w={28}
               size={'sm'}
               value={pageSize}
-              onChange={e => {
+              onChange={(e) => {
                 setPageSize(Number(e.target.value));
               }}>
-              {[10, 20, 30, 40, 50].map(pageSize => (
+              {[10, 20, 30, 40, 50].map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
                   Show {pageSize}
                 </option>
