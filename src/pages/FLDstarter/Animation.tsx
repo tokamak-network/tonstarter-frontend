@@ -13,7 +13,7 @@ import {motion, useAnimation} from 'framer-motion';
 import {HTMLAttributes, useEffect, useState} from 'react';
 import {Scrollbars} from 'react-custom-scrollbars-2';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
-import FLDLogo from 'assets/svgs/ts_bi_c.svg';
+import TONStaterLogo from 'assets/svgs/ts_bi_c.svg';
 import Arrow from 'assets/svgs/select1_arrow_inactive.svg';
 import Countdown from 'react-countdown';
 
@@ -368,7 +368,7 @@ export const Animation: React.FC<HomeProps> = () => {
         animate={{opacity: 0}}
         transition={{duration: 1}}>
         <Center>
-          <Image src={FLDLogo}></Image>
+          <Image src={TONStaterLogo}></Image>
         </Center>
       </motion.div>
       {rowDots.map((r, rIndex) =>
@@ -471,7 +471,7 @@ export const Animation: React.FC<HomeProps> = () => {
               <TextComponent
                 header={'Transparent'}
                 content={
-                  'FLD holders can participate in all platform decisions by staking FLD into sFLD(staked FLD)'
+                  'TOS holders can participate in all platform decisions by staking TOS into sTOS(staked TOS)'
                 }
               />
             </motion.div>
