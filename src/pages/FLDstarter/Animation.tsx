@@ -13,7 +13,7 @@ import {motion, useAnimation} from 'framer-motion';
 import {HTMLAttributes, useEffect, useState} from 'react';
 import {Scrollbars} from 'react-custom-scrollbars-2';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
-import FLDLogo from 'assets/svgs/fld_bi_c.svg';
+import FLDLogo from 'assets/svgs/ts_bi_c.svg';
 import Arrow from 'assets/svgs/select1_arrow_inactive.svg';
 import Countdown from 'react-countdown';
 
