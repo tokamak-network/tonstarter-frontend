@@ -111,7 +111,7 @@ const TextComponent = (props: any) => {
       <Text fontSize="26px" fontWeight={'bold'}>
         {header}
       </Text>
-      <Text fontSize="15px" fontWeight={300}>
+      <Text fontSize="15px" fontWeight={300} opacity={0.75}>
         {content}
       </Text>
     </Center>
