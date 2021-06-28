@@ -295,6 +295,7 @@ export const Staking = () => {
       startTime,
       endTime,
       myStaked,
+      myEarned,
     ],
   );
 
