@@ -15,6 +15,7 @@ import {fetchStakes} from './Staking/staking.reducer';
 import {useContract} from 'hooks/useContract';
 import {REACT_APP_STAKE1_PROXY} from 'constants/index';
 import * as StakeLogic from 'services/abis/Stake1Logic.json';
+import {useWindowDimensions} from 'hooks/useWindowDimentions';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -58,6 +59,13 @@ export const Router: FC<RouterProps> = () => {
   //     description: data.
   //   })
   // }
+
+  const {width} = useWindowDimensions();
+  console.log(width);
+
+  if (width < 400) {
+    return <div>gogo</div>;
+  }
 
   return (
     <>
