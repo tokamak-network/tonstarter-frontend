@@ -8,13 +8,15 @@ import {
   Wrap,
   Image,
 } from '@chakra-ui/react';
-import {useColorMode} from '@chakra-ui/react';
+import {useColorMode, useTheme} from '@chakra-ui/react';
 import {motion, useAnimation} from 'framer-motion';
 import {HTMLAttributes, useEffect, useState} from 'react';
 import {Scrollbars} from 'react-custom-scrollbars-2';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import FLDLogo from 'assets/svgs/fld_bi_c.svg';
 import Arrow from 'assets/svgs/select1_arrow_inactive.svg';
+import Countdown from 'react-countdown';
+
 export interface HomeProps extends HTMLAttributes<HTMLDivElement> {
   classes?: string;
 }
@@ -165,20 +167,18 @@ const getCondition = (rIndex: number, cIndex: number) => {
 const getLeftArea = (rowDots: number[]) => {
   const leftMargin = elements.marinLeft;
   const distantMargin = elements.distanceMargin;
-  console.log('---');
-  console.log(rowDots.length);
-  console.log((rowDots.length-1) % 2 !== 0);
   const middlePoint =
     rowDots.length % 2 !== 0
-      ? Math.round(rowDots.length / 2) -1
+      ? Math.round(rowDots.length / 2) - 1
       : Math.round(rowDots.length / 2);
-      console.log(middlePoint)
-   const finalMiddlePoint = middlePoint % 2 === 0 ? middlePoint : middlePoint -1   
+  const finalMiddlePoint =
+    middlePoint % 2 === 0 ? middlePoint : middlePoint - 1;
   return leftMargin + finalMiddlePoint * distantMargin;
 };
 
 export const Animation: React.FC<HomeProps> = () => {
   const {colorMode} = useColorMode();
+  const theme = useTheme();
   const {width} = useWindowDimensions();
   const [rowDots, setRowDots] = useState<number[]>([]);
   const [timer] = useState({
@@ -207,7 +207,6 @@ export const Animation: React.FC<HomeProps> = () => {
     const aniMultiplier = 15;
     const result = makeDots(Number(width), 1024);
     const delay = result.length / aniMultiplier;
-    // console.log('width : ' + width);
     setRowDots(result);
 
     mainControls.start((i) => ({
@@ -298,8 +297,41 @@ export const Animation: React.FC<HomeProps> = () => {
     lastCircleControls,
   ]);
 
+  //temp code for pre-open
+  const [date, setDate] = useState('2021/07/19');
+
+  const trimDigit = (arg: any) => {
+    if (String(arg).length === 1) {
+      return `0${arg}`;
+    }
+    return arg;
+  };
+
+  //@ts-ignore
+  const countDownRenderer = ({days, hours, minutes, seconds, completed}) => {
+    console.log(days);
+    if (completed) {
+      // Render a completed state
+      return null;
+    } else {
+      // Render a countdown
+      return (
+        <Text fontSize={86}>
+          {days}D {trimDigit(hours)}:{trimDigit(minutes)}:{trimDigit(seconds)}
+        </Text>
+      );
+    }
+  };
+
   return (
-    <Flex maxW="100%" height={1024} bg={bgColor} position="relative" borderBottomWidth="1px" borderBottomColor={`${elements.whiteWithOpacity}`}>
+    <Flex
+      maxW="100%"
+      height={1024}
+      bg={bgColor}
+      position="relative"
+      borderBottomWidth="1px"
+      borderBottomColor={`${elements.whiteWithOpacity}`}
+      fontFamily={theme.fonts.fld}>
       <motion.div
         custom={timer.lastCircle}
         initial={{opacity: 0}}
@@ -371,14 +403,14 @@ export const Animation: React.FC<HomeProps> = () => {
             d="flex"
             flexDirection="column"
             justifyContent="center"
-            alignItems="center"
+            pl={'80px'}
             color="white.100"
             fontWeight="semibold"
-            fontSize={52}>
+            fontSize={46}>
             <div>
-              <Text>TON Starter</Text>
-              <Text>Decentralized Launchpad</Text>
-              <Text>Platform</Text>
+              <Text>TOS Liquidity Mining</Text>
+              <Text mb={'28px'}>Coming Soon</Text>
+              <Countdown date={date} renderer={countDownRenderer} />
             </div>
           </Container>
         </motion.div>
@@ -483,20 +515,20 @@ export const Animation: React.FC<HomeProps> = () => {
                   ROAD MAP
                 </Text>
                 <TextComponent
-                  header={'Phase1'}
-                  content={'Launch FLD Mining'}
+                  header={'Phase 1'}
+                  content={'TOS Liquidity Mining Launch'}
                 />
                 <TextComponent
-                  header={'Phase1'}
-                  content={'Launch FLD Mining'}
+                  header={'Phase 2'}
+                  content={' TOS staking, TONStarter Governance'}
                 />
                 <TextComponent
-                  header={'Phase1'}
-                  content={'Launch FLD Mining'}
+                  header={'Phase 3'}
+                  content={'Project Starter Open'}
                 />
                 <TextComponent
-                  header={'Phase1'}
-                  content={'Launch FLD Mining'}
+                  header={'Phase 4'}
+                  content={'Tokamak Network Layer2 Integration'}
                 />
               </Wrap>
             </Scrollbars>

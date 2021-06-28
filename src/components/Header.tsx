@@ -53,7 +53,6 @@ export const Header: React.FC<HeaderProps> = (props) => {
         <MenuItems isOpen={isOpen} {...props} />
       </Flex>
       <MenuToggle toggle={toggle} isOpen={isOpen} />
-
       <MenuLinks isOpen={isOpen} {...props} />
     </NavBarContainer>
   );
@@ -110,6 +109,12 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
         justify={['center', 'space-between', 'flex-end', 'flex-end']}
         direction={['column', 'row', 'row', 'row']}
         pt={[4, 4, 0, 0]}>
+        <Tooltip
+          hasArrow
+          placement="top"
+          label="Coming Soon"
+          color={theme.colors.white[100]}
+          bg={theme.colors.gray[375]}>
         <Button
           borderWidth={1}
           color={
@@ -130,7 +135,7 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
           h={35}
           fontSize={15}
           fontWeight={600}
-          onClick={walletopen}
+          onClick={(e) => e.preventDefault()}
           rounded={18}
           bg={
             colorMode === 'dark'
@@ -145,9 +150,12 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
               // zIndex: 100,
             }
           }
-          zIndex={100}>
+            zIndex={100}
+        
+          >
           {account ? shortenAddress(account) : 'Connect wallet'}
-        </Button>
+          </Button>
+          </Tooltip>
         <ThemeSwitcher />
       </Stack>
     </Box>
