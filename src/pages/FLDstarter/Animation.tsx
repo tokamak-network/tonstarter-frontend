@@ -309,7 +309,6 @@ export const Animation: React.FC<HomeProps> = () => {
 
   //@ts-ignore
   const countDownRenderer = ({days, hours, minutes, seconds, completed}) => {
-    console.log(days);
     if (completed) {
       // Render a completed state
       return null;
