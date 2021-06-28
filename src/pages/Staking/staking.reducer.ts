@@ -62,6 +62,7 @@ export type Stake = {
   status: string;
   library: any;
   account: any;
+  vault: string;
 };
 
 interface StakeState {
@@ -292,6 +293,7 @@ export const claimReward = async (args: claim) => {
 };
 
 export const closeSale = async (args: endsale) => {
+  console.log(args);
   const {userAddress, vaultContractAddress, stakeStartBlock, library} = args;
   if (userAddress === null || userAddress === undefined) {
     return;
@@ -377,8 +379,6 @@ export const fetchStakes = createAsyncThunk(
 
     const stakeList = req.datas;
 
-    console.log(stakeList);
-
     await Promise.all(
       stakeList.map(async (stake: any, index: number) => {
         // let info = await stake.stakeVault.stakeInfos(item);
@@ -421,6 +421,7 @@ export const fetchStakes = createAsyncThunk(
           library,
           tokenSymbol: await getTokenSymbol(stake.paytoken, library),
           account,
+          vault: stake.vault,
         };
         // const test = await getUserInfo(library, account);
         // console.log(test);

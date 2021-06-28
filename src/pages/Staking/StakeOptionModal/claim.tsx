@@ -38,7 +38,10 @@ export const ClaimOptionModal = () => {
               textAlign={'center'}>
               Claim
             </Heading>
-            <Text>You can claimxxx and earn xxx</Text>
+            <Text>
+              You can claim {data.data.tokenSymbol} and earn{' '}
+              {data.data.tokenSymbol}
+            </Text>
           </Box>
 
           <Stack
@@ -60,7 +63,7 @@ export const ClaimOptionModal = () => {
                 borderWidth: 0,
               }}>
               {' '}
-              {data.data.myclaimed} TON
+              {data.data.myclaimed} {data.data.tokenSymbol}
             </Text>
           </Stack>
 
@@ -71,7 +74,9 @@ export const ClaimOptionModal = () => {
             alignItems={'center'}>
             <Box textAlign={'center'}>
               <Text>Claim Available</Text>
-              <Text>{data.data.myclaimed} TON</Text>
+              <Text>
+                {data.data.myclaimed} {data.data.tokenSymbol}
+              </Text>
             </Box>
           </Stack>
 
@@ -82,7 +87,7 @@ export const ClaimOptionModal = () => {
                 onClick={() =>
                   closeSale({
                     userAddress: account,
-                    vaultContractAddress: data.data.vaultAddress,
+                    vaultContractAddress: data.data.vault,
                     stakeStartBlock: data.data.stakeStartBlock,
                     library: library,
                   })

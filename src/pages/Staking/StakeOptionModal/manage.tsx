@@ -60,11 +60,11 @@ export const ManageModal = () => {
             alignItems={'center'}>
             <Box textAlign={'center'}>
               <Text>Available balance</Text>
-              <Text>xxx TON</Text>
+              <Text>xxx {data.data.tokenSymbol}</Text>
             </Box>
             <Box textAlign={'center'}>
-              <Text>Total: xxxx TON</Text>
-              <Text>Staked in Layer 2: xxxx TON</Text>
+              <Text>Total: xxxx {data.data.tokenSymbol}</Text>
+              <Text>Staked in Layer 2: xxxx {data.data.tokenSymbol}</Text>
             </Box>
           </Stack>
 
@@ -79,11 +79,11 @@ export const ManageModal = () => {
             <Button colorScheme="blue">Swap</Button>
             <Button
               colorScheme="blue"
-              // disabled={data.data.vaultClosed}
+              disabled={!data.data.vaultClosed}
               onClick={() =>
                 closeSale({
                   userAddress: account,
-                  vaultContractAddress: data.data.vaultAddress,
+                  vaultContractAddress: data.data.vault,
                   stakeStartBlock: data.data.stakeStartBlock,
                   library: library,
                 })

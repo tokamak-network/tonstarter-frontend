@@ -29,6 +29,7 @@ import {AppDispatch} from 'store';
 import {openModal} from 'store/modal.reducer';
 import {ManageModal} from './StakeOptionModal/manage';
 import {useState} from 'react';
+import {useWeb3React} from '@web3-react/core';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
@@ -110,6 +111,8 @@ const WalletInformation: FC<WalletInformationProps> = ({
 };
 export const Staking = () => {
   const dispatch = useAppDispatch();
+  const {account, library} = useWeb3React();
+
   // @ts-ignore
   const {data, loading} = useAppSelector(selectStakes);
   const {data: user} = useAppSelector(selectUser);
@@ -188,12 +191,12 @@ export const Staking = () => {
 
   const renderRowSubComponent = useCallback(
     ({row}) => {
-      const {account, library, contractAddress} = row.original;
-      fetchDatas({
-        startTime: data[row.id]?.startTime,
-        endTime: data[row.id]?.endTime,
-      });
-      fetchUserData(library, account, contractAddress);
+      // const {contractAddress} = row.original;
+      // fetchDatas({
+      //   startTime: data[row.id]?.startTime,
+      //   endTime: data[row.id]?.endTime,
+      // });
+      // fetchUserData(library, account, contractAddress);
       // const dd = getUserInfo(account, library);
       // console.log(dd);
       return (
@@ -240,7 +243,7 @@ export const Staking = () => {
               dispatch={dispatch}
               data={data[row.id]}
               user={user}
-              account={account}
+              account={account!}
             />
           </Box>
           <Flex
@@ -291,6 +294,7 @@ export const Staking = () => {
       data,
       dispatch,
       user,
+      account,
       appConfig.explorerLink,
       startTime,
       endTime,
