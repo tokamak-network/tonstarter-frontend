@@ -175,12 +175,19 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           activeClassName={match?.isExact ? 'active-fld' : 'active'}>
           Home
         </NavLink>
+        <Tooltip
+          hasArrow
+          placement="top"
+          label="Coming Soon"
+          color={theme.colors.white[100]}
+          bg={theme.colors.gray[375]}>
         <NavLink
           to="/staking"
           className={match?.isExact ? 'link-match' : 'link'}
-          activeClassName={'active'}>
+          onClick={(e) => e.preventDefault()}>
           Staking
         </NavLink>
+        </Tooltip>
         <Tooltip
           hasArrow
           placement="top"

@@ -16,26 +16,6 @@ export const FLDstarter = () => {
     <Fragment>
       <Head title={'TON Starter'} />
       <Animation></Animation>
-      <Stack>
-        <Container maxW={'6xl'} py={12}>
-          <SimpleGrid minChildWidth={350} gap={30}>
-            {data.map((item, index) => (
-              <TokenComponent
-                phase={item.name}
-                subtitle={item.period}
-                key={index}
-              />
-            ))}
-          </SimpleGrid>
-        </Container>
-        <Flex justifyContent={'flex-end'} pr={10}>
-          <Button
-            variant="unstyled"
-            onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
-            <IconTopArrow />
-          </Button>
-        </Flex>
-      </Stack>
     </Fragment>
   );
 };

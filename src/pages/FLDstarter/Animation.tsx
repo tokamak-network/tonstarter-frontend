@@ -193,7 +193,7 @@ export const Animation: React.FC<HomeProps> = () => {
   });
   const verticalDots: number[] = [77, 221, 365, 509, 653, 797, 941];
 
-  const bgColor = colorMode === 'light' ? '#007AFF' : '#222222';
+  const bgColor = colorMode === 'light' ? 'blue.200' : 'black.200';
 
   const mainControls = useAnimation();
   const mainSubControls = useAnimation();
@@ -299,7 +299,7 @@ export const Animation: React.FC<HomeProps> = () => {
   ]);
 
   return (
-    <Flex maxW="100%" height={1024} bg={bgColor} position="relative">
+    <Flex maxW="100%" height={1024} bg={bgColor} position="relative" borderBottomWidth="1px" borderBottomColor={`${elements.whiteWithOpacity}`}>
       <motion.div
         custom={timer.lastCircle}
         initial={{opacity: 0}}
