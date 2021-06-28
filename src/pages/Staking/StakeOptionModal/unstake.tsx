@@ -20,8 +20,6 @@ export const UnstakeOptionModal = () => {
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
 
-  let balance = data?.data?.user?.balance;
-
   return (
     <Modal
       isOpen={data.modal === 'unstake' ? true : false}
@@ -57,7 +55,7 @@ export const UnstakeOptionModal = () => {
               _focus={{
                 borderWidth: 0,
               }}>
-              {balance}
+              {data.data.mystaked}
             </Text>
           </Stack>
 
@@ -68,7 +66,7 @@ export const UnstakeOptionModal = () => {
             alignItems={'center'}>
             <Box textAlign={'center'}>
               <Text>Available Balance</Text>
-              <Text>{balance} TON</Text>
+              <Text>{data.data.mystaked} TON</Text>
             </Box>
           </Stack>
 
@@ -83,7 +81,7 @@ export const UnstakeOptionModal = () => {
                   stakeContractAddress: data.data.contractAddress,
                 })
               }
-              disabled={+balance <= 0}
+              disabled={+data.data.mystaked <= 0}
               colorScheme={'blue'}>
               Unstake
             </Button>

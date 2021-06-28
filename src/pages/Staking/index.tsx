@@ -77,7 +77,9 @@ const WalletInformation: FC<WalletInformationProps> = ({
           </Button>
           <Button
             colorScheme="blue"
-            onClick={() => dispatch(openModal({type: 'manage'}))}>
+            onClick={() =>
+              dispatch(openModal({type: 'manage', data: payload}))
+            }>
             Manage
           </Button>
         </Grid>

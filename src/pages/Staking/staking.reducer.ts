@@ -7,6 +7,7 @@ import * as StakeVault from 'services/abis/Stake1Vault.json';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import * as TonABI from 'services/abis/TON.json';
 import * as DepositManagerABI from 'services/abis/DepositManager.json';
+import * as IERC20 from 'services/abis/IERC20.json';
 import {formatEther} from '@ethersproject/units';
 import {period} from 'utils/timeStamp';
 import axios from 'axios';
@@ -16,6 +17,7 @@ import {
   REACT_APP_DEPOSIT_MANAGER,
   DEPLOYED,
   REACT_APP_WTON,
+  ZERO_ADDRESS,
 } from 'constants/index';
 
 const provider = ethers.getDefaultProvider('rinkeby');
@@ -54,6 +56,8 @@ export type Stake = {
   period: string | number;
   startTime: string;
   endTime: string;
+  vaultClosed: boolean;
+  tokenSymbol: any;
 };
 
 interface StakeState {
@@ -149,7 +153,6 @@ export const stakePaytoken = async (args: StakeProps) => {
     stakeContractAddress,
     stakeStartBlock,
   } = args;
-  console.log(amount);
 
   if (payToken === DEPLOYED.TON) {
     await stakeTon({
@@ -184,7 +187,8 @@ const stakeTon = async (args: StakeTon) => {
     return;
   }
   const currentBlock = await provider.getBlockNumber();
-  if (currentBlock > saleStartBlock && currentBlock < stakeStartBlock) {
+  // if (currentBlock > saleStartBlock && currentBlock < stakeStartBlock) {
+  try {
     const tonContract = getContract(REACT_APP_TON, TonABI.abi, library);
     if (!tonContract) {
       throw new Error(`Can't find the contract for staking actions`);
@@ -201,9 +205,12 @@ const stakeTon = async (args: StakeTon) => {
     await tonContract
       .connect(signer)
       ?.approveAndCall(stakeContractAddress, tonAmount, data);
-  } else {
-    return alert('staking period has ended');
+  } catch (error) {
+    console.log('Error ', error);
   }
+  // } else {
+  //   return alert('staking period has ended');
+  // }
 };
 const stakeEth = async (args: StakeTon) => {
   const {
@@ -328,10 +335,10 @@ export const stakeToLayer2 = async (args: stakeToLayer2Args) => {
 
 export const fetchStakes = createAsyncThunk(
   'stakes/all',
-  async ({contract, library, account}: any, {requestId, getState}) => {
+  async ({library}: any, {requestId, getState}) => {
     let projects: any[] = [];
-    // let iERC20: any;
 
+    // let iERC20: any;
     // @ts-ignore
     const {currentRequestId, loading} = getState().stakes;
     if (loading !== 'pending' || requestId !== currentRequestId) {
@@ -408,8 +415,10 @@ export const fetchStakes = createAsyncThunk(
           token: stake.paytoken,
           stakeType: stake.stakeType,
           period: period(stake.startBlock, stake.endBlock),
-          startTime: 'MMM DD, YYYY HH:mm:ss',
-          endTime: 'MMM DD, YYYY HH:mm:ss',
+          startTime: '',
+          endTime: '',
+          vaultClosed: stake.saleClosed,
+          tokenSymbol: await getTokenSymbol(stake.paytoken, library),
         };
 
         // await getMy(stakeInfo, stake, library, account);
@@ -417,12 +426,20 @@ export const fetchStakes = createAsyncThunk(
         projects.push(stakeInfo);
       }),
     );
-    // if (account) {
-    //   console.log(account);
-    // }
     return projects;
   },
 );
+
+const getTokenSymbol = async (address: string, library: any) => {
+  if (library) {
+    if (address === ZERO_ADDRESS) {
+      return 'ETH';
+    } else {
+      const contract = await getContract(address, IERC20.abi, library);
+      return (await contract.symbol()) as string;
+    }
+  }
+};
 
 // const getMy = async (
 //   stakeInfo: Partial<Stake>,
