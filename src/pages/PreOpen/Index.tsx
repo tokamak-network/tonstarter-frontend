@@ -150,23 +150,22 @@ into sTOS(staked TOS)"
               </Text>
               <TextComponent
                 header="Phase1"
-                content="Launch TON Mining"></TextComponent>
+                content="TOS Liquidity Mining Launch"></TextComponent>
               <TextComponent
                 borderColor="blue.200"
                 header="Phase2"
-                content="TOS staking, 
-TONStarter Governance"
+                content=" TOS staking, LP staking"
                 contentWidth={'99px'}></TextComponent>
               <TextComponent
                 borderColor="blue.200"
+                contentWidth={'121px'}
                 header="Phase3"
-                content="Project Starter Open"></TextComponent>
+                content="Project Starter Open TONStarter Governance"></TextComponent>
               <TextComponent
                 borderColor="blue.200"
                 contentWidth={'110px'}
                 header="Phase4"
-                content="Tokamak Network Layer2 
-Integration"></TextComponent>
+                content="Tokamak Network Layer2 Integration"></TextComponent>
             </Container>
           </Flex>
         </Flex>

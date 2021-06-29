@@ -521,11 +521,11 @@ export const Animation: React.FC<HomeProps> = () => {
                 />
                 <TextComponent
                   header={'Phase 2'}
-                  content={' TOS staking, TONStarter Governance'}
+                  content={'TOS staking, LP staking'}
                 />
                 <TextComponent
                   header={'Phase 3'}
-                  content={'Project Starter Open'}
+                  content={'Project Starter Open, TONStarter Governance'}
                 />
                 <TextComponent
                   header={'Phase 4'}
