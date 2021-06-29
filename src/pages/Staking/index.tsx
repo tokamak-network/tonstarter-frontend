@@ -14,7 +14,7 @@ import {IconOpen} from 'components/Icons/IconOpen';
 import {Head} from 'components/SEO';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import React, {FC, Fragment, useCallback, useMemo} from 'react';
-import {formatStartTime, formatEndTime, shortenAddress} from 'utils';
+import {shortenAddress} from 'utils';
 import {StakingTable} from './StakingTable';
 import {selectStakes} from './staking.reducer';
 import {selectApp} from 'store/app/app.reducer';
@@ -28,7 +28,6 @@ import {
 import {AppDispatch} from 'store';
 import {openModal} from 'store/modal.reducer';
 import {ManageModal} from './StakeOptionModal/manage';
-import {fetchStakes} from './staking.reducer';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
@@ -173,9 +172,6 @@ export const Staking = () => {
       //     type: 'detail',
       //   }) as any,
       // );
-      console.log(data);
-      console.log(row.id);
-      console.log(data[row.id]?.mystaked);
 
       return (
         <Flex
@@ -278,7 +274,7 @@ export const Staking = () => {
           <PageHeader
             title={'TON Starter'}
             subtitle={
-              'Put your tokens into FLD and earn without losing principal'
+              'Put your tokens into TON Starter and earn reward without losing principal'
             }
           />
         </Box>

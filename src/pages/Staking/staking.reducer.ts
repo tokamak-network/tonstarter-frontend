@@ -18,6 +18,7 @@ import {
   REACT_APP_WTON,
   REACT_APP_TOS,
 } from 'constants/index';
+import {TokenType} from 'types/index';
 
 const provider = ethers.getDefaultProvider('rinkeby');
 
@@ -39,7 +40,7 @@ export type Stake = {
   totalRewardAmount: BigNumber | string;
   claimRewardAmount: BigNumber | string;
   totalStakers: number | string;
-  token: string;
+  token: TokenType;
   myton: BigNumber | string;
   myfld: BigNumber | string;
   mystaked: BigNumber | string;
@@ -47,13 +48,13 @@ export type Stake = {
   mywithdraw: BigNumber | string;
   myclaimed: BigNumber | string;
   canRewardAmount: BigNumber | string;
-  stakeBalanceTON: BigNumber | string;
+  stakeBalanceTON: string;
   stakeBalanceETH: BigNumber | string;
   stakeBalanceFLD: BigNumber | string;
   tokamakStaked: BigNumber | string;
   tokamakPendingUnstaked: BigNumber | string;
   staketype: string;
-  period: string | number;
+  period: string;
   startTime: string;
   endTime: string;
   status: string;
