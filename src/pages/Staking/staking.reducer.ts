@@ -9,7 +9,7 @@ import * as TonABI from 'services/abis/TON.json';
 import * as DepositManagerABI from 'services/abis/DepositManager.json';
 import * as TosABI from 'services/abis/ITOS.json';
 import {formatEther} from '@ethersproject/units';
-import {period, formatStartTime} from 'utils/timeStamp';
+import {period, formatStartTime, formatEndTime} from 'utils/timeStamp';
 import {
   REACT_APP_TON,
   REACT_APP_TOKAMAK_LAYER2,
@@ -42,7 +42,8 @@ export type Stake = {
   token: string;
   myton: BigNumber | string;
   myfld: BigNumber | string;
-  mystaked: BigNumber | string;
+  mystaked: BigNumber | string | any;
+  myearned: BigNumber | string | any;
   mywithdraw: BigNumber | string;
   myclaimed: BigNumber | string;
   canRewardAmount: BigNumber | string;
@@ -331,7 +332,10 @@ export const stakeToLayer2 = async (args: stakeToLayer2Args) => {
 
 export const fetchStakes = createAsyncThunk(
   'stakes/all',
-  async ({contract, library, account, chainId}: any, {requestId, getState}) => {
+  async (
+    {contract, library, account, chainId, type}: any,
+    {requestId, getState},
+  ) => {
     let projects: any[] = [];
     const chainIdforFetch = chainId === undefined ? '4' : chainId;
     const fetchUrl = `http://3.36.66.138:4000/v1/stakecontracts?chainId=${chainIdforFetch}`;
@@ -341,6 +345,7 @@ export const fetchStakes = createAsyncThunk(
     const {currentRequestId, loading} = getState().stakes;
     if (loading !== 'pending' || requestId !== currentRequestId) {
       console.log('peding || requestId && currentRequestId');
+      console.log(`${loading} || ${requestId} || ${currentRequestId}`);
       return;
     }
 
@@ -362,25 +367,30 @@ export const fetchStakes = createAsyncThunk(
     //   }),
     // );
 
+    const vaultReq = await fetch('http://3.36.66.138:4000/v1/vaults?chainId=4')
+      .then((res) => res.json())
+      .then((result) => result);
+
     const req = await fetch(fetchUrl)
       .then((res) => res.json())
       .then((result) => result);
 
     const stakeList = req.datas;
 
-    console.log(stakeList);
-
+    // console.log(vaultReq);
+    // console.log(stakeList);
     await Promise.all(
       stakeList.map(async (stake: any, index: number) => {
-        // let info = await stake.stakeVault.stakeInfos(item);
+        // let info = await stake.stakeVault.stakeInfos(item)
 
-        //  console.log(stake);
-
-        // const startTime = await formatStartTime(stake.startBlock);
-        // const endTime = await formatEndTime(
-        //   stake.saleStartBlock,
-        //   stake.saleStartBlock,
-        // );
+        let mystaked: any = '';
+        if (account) {
+          mystaked = await fetchUserData(library, account, stake.stakeContract);
+        }
+        let status = 'loading';
+        setTimeout(async () => {
+          status = stake.saleClosed === true ? 'end' : await getStatus(stake);
+        }, 0);
 
         const stakeInfo: Partial<Stake> = {
           contractAddress: stake.stakeContract,
@@ -394,7 +404,8 @@ export const fetchStakes = createAsyncThunk(
           totalStakers: stake.totalStakers,
           myton: formatEther(0),
           myfld: formatEther(0),
-          mystaked: formatEther(0),
+          mystaked,
+          myearned: '',
           mywithdraw: formatEther(0),
           myclaimed: formatEther(0),
           canRewardAmount: formatEther(0),
@@ -408,7 +419,7 @@ export const fetchStakes = createAsyncThunk(
           period: period(stake.startBlock, stake.endBlock),
           startTime: stake.startBlock,
           endTime: stake.endBlock,
-          status: stake.saleClosed === true ? 'end' : getStatus(stake),
+          status,
           library,
           account,
         };
@@ -418,19 +429,22 @@ export const fetchStakes = createAsyncThunk(
         projects.push(stakeInfo);
       }),
     );
+
     return projects;
   },
 );
 
-const getStatus = (args: any) => {
-  const {blockNumber, saleStartBlock} = args;
-  if (blockNumber >= saleStartBlock) {
-    return 'start';
-  }
-  return 'sale';
+const fetchUserData = async (
+  library: any,
+  account: string,
+  contractAddress: string,
+) => {
+  const res = await getUserInfo(library, account, contractAddress);
+  const {userStaked} = res;
+  return userStaked;
 };
 
-export const getUserInfo = async (
+const getUserInfo = async (
   // stakeInfo: Partial<Stake>,
   // stakeContractAddress: string,
   library: any,
@@ -439,17 +453,17 @@ export const getUserInfo = async (
 ) => {
   // const currentBlock = await provider.getBlockNumber();
 
-  const StakeTONContract = await getContract(
-    contractAddress,
-    StakeTON.abi,
-    library,
-  );
+  const StakeTONContract = getContract(contractAddress, StakeTON.abi, library);
   const staked = await StakeTONContract?.userStaked(account);
-
+  console.log(StakeTONContract);
   console.log(staked);
+  console.log(REACT_APP_TOS);
+  console.log(TosABI);
 
-  // const TOS = await getContract(REACT_APP_TOS, TosABI.abi, library);
+  // const TOS = getContract(REACT_APP_TOS, TosABI.abi, library);
   // const myTOS = await TOS?.balanceOf(account);
+
+  // console.log(TOS);
 
   return {userStaked: formatEther(staked.amount), userTOS: formatEther(0)};
   // stakeInfo.myfld = formatEther(myTOS);
@@ -460,6 +474,25 @@ export const getUserInfo = async (
   // stakeInfo.mystaked = formatEther(staked.amount);
   // stakeInfo.myclaimed = formatEther(staked.claimedAmount);
   // stakeInfo.mywithdraw = formatEther(staked.releasedAmount);
+};
+
+const getTimes = async (startTime: any, endTime: any) => {
+  const fetchedStartTime = await formatStartTime(startTime);
+  const fetchedEndTime = await formatEndTime(startTime, endTime);
+  return {fetchedStartTime, fetchedEndTime};
+};
+
+const getStatus = async (args: any) => {
+  const {blockNumber, saleStartBlock, saleClosed} = args;
+  const currenBlock = await provider.getBlockNumber();
+
+  if (saleClosed) {
+    return 'sale';
+  }
+  if (blockNumber >= saleStartBlock) {
+    // return 'sale';
+  }
+  return 'start';
 };
 
 // const total = await StakeTONContract?.totalStakers();

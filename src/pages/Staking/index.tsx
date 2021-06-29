@@ -16,7 +16,7 @@ import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import React, {FC, Fragment, useCallback, useMemo} from 'react';
 import {formatStartTime, formatEndTime, shortenAddress} from 'utils';
 import {StakingTable} from './StakingTable';
-import {selectStakes, getUserInfo} from './staking.reducer';
+import {selectStakes} from './staking.reducer';
 import {selectApp} from 'store/app/app.reducer';
 import {selectUser} from 'store/app/user.reducer';
 import {PageHeader} from 'components/PageHeader';
@@ -28,9 +28,7 @@ import {
 import {AppDispatch} from 'store';
 import {openModal} from 'store/modal.reducer';
 import {ManageModal} from './StakeOptionModal/manage';
-import {useState} from 'react';
-import {useContract} from 'hooks/useContract';
-import * as TonABI from 'services/abis/TON.json';
+import {fetchStakes} from './staking.reducer';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
@@ -162,40 +160,23 @@ export const Staking = () => {
     [],
   );
 
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
-  const [myStaked, setMyStaked] = useState('');
-  const [myEarned, setMyEarned] = useState('');
-
-  const fetchDatas = async (args: any) => {
-    const {startTime, endTime} = args;
-    const fetchedStartTime = await formatStartTime(startTime);
-    const fetchedEndTime = await formatEndTime(startTime, endTime);
-    setStartTime(fetchedStartTime);
-    setEndTime(fetchedEndTime);
-  };
-
-  const fetchUserData = async (
-    library: any,
-    account: string,
-    contractAddress: string,
-  ) => {
-    const res = await getUserInfo(library, account, contractAddress);
-    const {userStaked, userTOS} = res;
-    setMyStaked(userStaked);
-  };
-
   const renderRowSubComponent = useCallback(
     ({row}) => {
-      console.log(row);
       const {account, library, contractAddress} = row.original;
-      fetchDatas({
-        startTime: data[row.id]?.startTime,
-        endTime: data[row.id]?.endTime,
-      });
-      fetchUserData(library, account, contractAddress);
-      // const dd = getUserInfo(account, library);
-      // console.log(dd);
+
+      // dispatch(
+      //   fetchStakes({
+      //     contractAddress,
+      //     library,
+      //     account,
+      //     chaindId: 4,
+      //     type: 'detail',
+      //   }) as any,
+      // );
+      console.log(data);
+      console.log(row.id);
+      console.log(data[row.id]?.mystaked);
+
       return (
         <Flex
           mt={0}
@@ -215,7 +196,7 @@ export const Staking = () => {
                 Mining Starting Day
               </Text>
               <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-                {startTime}
+                {data[row.id]?.startTime}
               </Text>
             </Flex>
             <Flex flexDir={'column'} alignItems={'space-between'}>
@@ -223,7 +204,7 @@ export const Staking = () => {
                 Mining Closing day
               </Text>
               <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-                {endTime}
+                {data[row.id]?.endTime}
               </Text>
             </Flex>
             <Flex flexDir={'column'} alignItems={'space-between'}>
@@ -254,7 +235,7 @@ export const Staking = () => {
                 My staked
               </Text>
               <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-                {myStaked}
+                {data[row.id]?.mystaked}
               </Text>
               {/* <Text>{data[row.id]?.mystaked}</Text> */}
             </Flex>
@@ -263,9 +244,8 @@ export const Staking = () => {
                 My Earned
               </Text>
               <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-                {myEarned}
+                {data[row.id]?.myearned}
               </Text>
-              {/* <Text>{data[row.id]?.totalRewardAmount}</Text> */}
             </Flex>
             <Flex flexDir={'column'} alignItems={'space-between'}>
               <Text fontSize={'15px'} color="gray.425">
@@ -287,15 +267,7 @@ export const Staking = () => {
         </Flex>
       );
     },
-    [
-      data,
-      dispatch,
-      user,
-      appConfig.explorerLink,
-      startTime,
-      endTime,
-      myStaked,
-    ],
+    [data, dispatch, user, appConfig.explorerLink],
   );
 
   return (

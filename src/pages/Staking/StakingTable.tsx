@@ -45,7 +45,7 @@ const getTextColor = (type: string, colorMode: string) => {
   }
 };
 
-const getCircle = (type: 'sale' | 'start' | 'end') => {
+const getCircle = (type: 'loading' | 'sale' | 'start' | 'end') => {
   return (
     <Flex alignContent={'center'} alignItems={'center'} mr={0} ml={'16px'}>
       <Box
@@ -53,7 +53,13 @@ const getCircle = (type: 'sale' | 'start' | 'end') => {
         h={'8px'}
         borderRadius={50}
         bg={
-          type === 'sale' ? '#f95359' : type === 'start' ? '#ffdc00' : '#2ea2f8'
+          type === 'loading'
+            ? '#C0C0C0'
+            : type === 'sale'
+            ? '#f95359'
+            : type === 'start'
+            ? '#ffdc00'
+            : '#2ea2f8'
         }></Box>
     </Flex>
   );
@@ -181,7 +187,6 @@ export const StakingTable: FC<StakingTableProps> = ({
                     const type = cell.column.id;
                     const token = checkTokenType(cell.row.original.token);
                     const status = cell.row.original.status;
-
                     return (
                       <chakra.td
                         px={3}
