@@ -2,6 +2,32 @@ import {Head} from 'components/SEO';
 import {Fragment} from 'react';
 import {Flex, Text, Image, Container, useTheme, Center} from '@chakra-ui/react';
 import logoDark from 'assets/svgs/fldw_bi.svg';
+import Countdown from 'react-countdown';
+import {useState} from 'react';
+
+const trimDigit = (arg: any) => {
+  if (String(arg).length === 1) {
+    return `0${arg}`;
+  }
+  return arg;
+};
+
+//@ts-ignore
+const countDownRenderer = ({days, hours, minutes, seconds, completed}) => {
+  if (completed) {
+    // Render a completed state
+    return null;
+  } else {
+    // Render a countdown
+    return (
+      <Text fontSize={'3.438em'} fontWeight={600} mb={'103px'}>
+        {days}
+        <span style={{color: '#ffff07'}}>D</span> {trimDigit(hours)}:
+        {trimDigit(minutes)}:{trimDigit(seconds)}
+      </Text>
+    );
+  }
+};
 
 const TextComponent = (props: any) => {
   const {
@@ -44,16 +70,20 @@ const TextComponent = (props: any) => {
 
 export const MobilePreOpen = () => {
   const theme = useTheme();
+
+  //temp code for pre-open
+  const [date] = useState('2021/07/19');
+
   return (
     <Fragment>
       <Head title={'TON Starter'} />
       <Flex
         bg={'blue.200'}
         w={'100%'}
-        h={'1159px'}
         flexDir={'column'}
         pt={'1.875em'}
-        fontFamily={theme.fonts.fld}>
+        fontFamily={theme.fonts.fld}
+        color="white.100">
         <Image src={logoDark} w={'11.875em'} pl={'1.250em'} />
         <Flex mt={'6.250em'} flexDir="column" alignItems="center">
           <Flex
@@ -65,9 +95,11 @@ export const MobilePreOpen = () => {
             <Text>TOS Liquidity Mining</Text>
             <Text>Coming Soon</Text>
           </Flex>
-          <Text fontSize={'3.438em'} fontWeight={600} mb={'103px'}>
+          <Countdown date={date} renderer={countDownRenderer} />
+
+          {/* <Text fontSize={'3.438em'} fontWeight={600} mb={'103px'}>
             10D 22:40:24
-          </Text>
+          </Text> */}
           <Flex w={'100%'}>
             <Container w={'50%'} p={0} borderRightWidth={1}>
               <TextComponent

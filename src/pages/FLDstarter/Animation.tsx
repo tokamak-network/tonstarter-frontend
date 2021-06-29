@@ -316,7 +316,9 @@ export const Animation: React.FC<HomeProps> = () => {
       // Render a countdown
       return (
         <Text fontSize={86}>
-          {days}D {trimDigit(hours)}:{trimDigit(minutes)}:{trimDigit(seconds)}
+          {days}
+          <span style={{color: '#ffff07'}}>D</span> {trimDigit(hours)}:
+          {trimDigit(minutes)}:{trimDigit(seconds)}
         </Text>
       );
     }
