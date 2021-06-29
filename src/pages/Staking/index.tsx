@@ -16,7 +16,7 @@ import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import React, {FC, Fragment, useCallback, useMemo} from 'react';
 import {formatStartTime, formatEndTime, shortenAddress} from 'utils';
 import {StakingTable} from './StakingTable';
-import {selectStakes, getUserInfo} from './staking.reducer';
+import {selectStakes} from './staking.reducer';
 import {selectApp} from 'store/app/app.reducer';
 import {selectUser} from 'store/app/user.reducer';
 import {PageHeader} from 'components/PageHeader';
@@ -28,10 +28,7 @@ import {
 import {AppDispatch} from 'store';
 import {openModal} from 'store/modal.reducer';
 import {ManageModal} from './StakeOptionModal/manage';
-import {useState} from 'react';
-import {useContract} from 'hooks/useContract';
-import * as TonABI from 'services/abis/TON.json';
-import {useEffect} from 'react';
+import {fetchStakes} from './staking.reducer';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
@@ -163,253 +160,115 @@ export const Staking = () => {
     [],
   );
 
-  const [startTime, setStartTime] = useState([]);
-  const [endTime, setEndTime] = useState([]);
-  const [myStaked, setMyStaked] = useState([]);
-  const [myEarned, setMyEarned] = useState([]);
+  const renderRowSubComponent = useCallback(
+    ({row}) => {
+      const {account, library, contractAddress} = row.original;
 
-  const fetchDatas = async (args: any) => {
-    const {id, startTime, endTime} = args;
-    // console.log(args);
-    const fetchedStartTime = await formatStartTime(startTime);
-    const fetchedEndTime = await formatEndTime(startTime, endTime);
-    setStartTime({...startTime, [id]: {fetchedStartTime: fetchedStartTime}});
-    setEndTime({...endTime, [id]: {fetchedEndTime: fetchedEndTime}});
-  };
+      // dispatch(
+      //   fetchStakes({
+      //     contractAddress,
+      //     library,
+      //     account,
+      //     chaindId: 4,
+      //     type: 'detail',
+      //   }) as any,
+      // );
+      console.log(data);
+      console.log(row.id);
+      console.log(data[row.id]?.mystaked);
 
-  const fetchUserData = async (
-    library: any,
-    account: string,
-    contractAddress: string,
-  ) => {
-    const res = await getUserInfo(library, account, contractAddress);
-    const {userStaked, userTOS} = res;
-    // setMyStaked(userStaked);
-  };
-
-  // const renderRowSubComponent = useCallback(
-  //   ({row}) => {
-  //     const {account, library, contractAddress} = row.original;
-
-  //     fetchDatas({
-  //       id: row.id,
-  //       startTime: data[row.id]?.startTime,
-  //       endTime: data[row.id]?.endTime,
-  //     });
-  //     if (account) {
-  //       fetchUserData(library, account, contractAddress);
-  //     }
-  //     // const dd = getUserInfo(account, library);
-  //     // console.log(dd);
-  //     console.log(startTime);
-  //     return (
-  //       <Flex
-  //         mt={0}
-  //         w={'100%'}
-  //         h={'500px'}
-  //         justifyContent={'space-between'}
-  //         alignItems="center"
-  //         border={'none'}>
-  //         <Flex
-  //           px={{base: 3, md: 20}}
-  //           py={{base: 1, md: 10}}
-  //           flexDir={'column'}
-  //           justifyContent={'space-between'}
-  //           h={'100%'}>
-  //           <Flex flexDir={'column'} alignItems={'space-between'}>
-  //             <Text fontSize={'15px'} color="gray.425">
-  //               Mining Starting Day
-  //             </Text>
-  //             <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-  //               {/* {data[row.id]?.startTime} */}
-  //             </Text>
-  //           </Flex>
-  //           <Flex flexDir={'column'} alignItems={'space-between'}>
-  //             <Text fontSize={'15px'} color="gray.425">
-  //               Mining Closing day
-  //             </Text>
-  //             <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-  //               {/* {endTime} */}
-  //             </Text>
-  //           </Flex>
-  //           <Flex flexDir={'column'} alignItems={'space-between'}>
-  //             <Text fontSize={'15px'} color="gray.425">
-  //               Total stakers
-  //             </Text>
-  //             <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-  //               {data[row.id]?.totalStakers}
-  //             </Text>
-  //           </Flex>
-  //         </Flex>
-  //         <Box p={8} w={'450px'} borderRadius={'10px'}>
-  //           <WalletInformation
-  //             dispatch={dispatch}
-  //             data={data[row.id]}
-  //             user={user}
-  //             account={account}
-  //           />
-  //         </Box>
-  //         <Flex
-  //           px={{base: 3, md: 20}}
-  //           py={{base: 1, md: 10}}
-  //           flexDir={'column'}
-  //           justifyContent={'space-between'}
-  //           h={'100%'}>
-  //           <Flex flexDir={'column'} alignItems={'space-between'}>
-  //             <Text fontSize={'15px'} color="gray.425">
-  //               My staked
-  //             </Text>
-  //             <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-  //               {myStaked}
-  //             </Text>
-  //             {/* <Text>{data[row.id]?.mystaked}</Text> */}
-  //           </Flex>
-  //           <Flex flexDir={'column'} alignItems={'space-between'}>
-  //             <Text fontSize={'15px'} color="gray.425">
-  //               My Earned
-  //             </Text>
-  //             <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-  //               {myEarned}
-  //             </Text>
-  //             {/* <Text>{data[row.id]?.totalRewardAmount}</Text> */}
-  //           </Flex>
-  //           <Flex flexDir={'column'} alignItems={'space-between'}>
-  //             <Text fontSize={'15px'} color="gray.425">
-  //               Contract
-  //             </Text>
-  //             <Link
-  //               isExternal={true}
-  //               outline={'none'}
-  //               _focus={{
-  //                 outline: 'none',
-  //               }}
-  //               href={`${appConfig.explorerLink}${
-  //                 data[row.id]?.contractAddress
-  //               }`}>
-  //               {shortenAddress(data[row.id]?.contractAddress)}
-  //             </Link>
-  //           </Flex>
-  //         </Flex>
-  //       </Flex>
-  //     );
-  //   },
-  //   [
-  //     data,
-  //     dispatch,
-  //     user,
-  //     appConfig.explorerLink,
-  //     startTime,
-  //     endTime,
-  //     myStaked,
-  //   ],
-  // );
-
-  const renderRowSubComponent = ({row}: any) => {
-    console.log(row);
-    const {account, library, contractAddress} = row.original;
-
-    fetchDatas({
-      id: row.id,
-      startTime: data[row.id]?.startTime,
-      endTime: data[row.id]?.endTime,
-    });
-    if (account) {
-      fetchUserData(library, account, contractAddress);
-    }
-    // const dd = getUserInfo(account, library);
-    // console.log(dd);
-    console.log(startTime);
-    return (
-      <Flex
-        mt={0}
-        w={'100%'}
-        h={'500px'}
-        justifyContent={'space-between'}
-        alignItems="center"
-        border={'none'}>
+      return (
         <Flex
-          px={{base: 3, md: 20}}
-          py={{base: 1, md: 10}}
-          flexDir={'column'}
+          mt={0}
+          w={'100%'}
+          h={'500px'}
           justifyContent={'space-between'}
-          h={'100%'}>
-          <Flex flexDir={'column'} alignItems={'space-between'}>
-            <Text fontSize={'15px'} color="gray.425">
-              Mining Starting Day
-            </Text>
-            <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-              {/* {data[row.id]?.startTime} */}
-            </Text>
+          alignItems="center"
+          border={'none'}>
+          <Flex
+            px={{base: 3, md: 20}}
+            py={{base: 1, md: 10}}
+            flexDir={'column'}
+            justifyContent={'space-between'}
+            h={'100%'}>
+            <Flex flexDir={'column'} alignItems={'space-between'}>
+              <Text fontSize={'15px'} color="gray.425">
+                Mining Starting Day
+              </Text>
+              <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
+                {data[row.id]?.startTime}
+              </Text>
+            </Flex>
+            <Flex flexDir={'column'} alignItems={'space-between'}>
+              <Text fontSize={'15px'} color="gray.425">
+                Mining Closing day
+              </Text>
+              <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
+                {data[row.id]?.endTime}
+              </Text>
+            </Flex>
+            <Flex flexDir={'column'} alignItems={'space-between'}>
+              <Text fontSize={'15px'} color="gray.425">
+                Total stakers
+              </Text>
+              <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
+                {data[row.id]?.totalStakers}
+              </Text>
+            </Flex>
           </Flex>
-          <Flex flexDir={'column'} alignItems={'space-between'}>
-            <Text fontSize={'15px'} color="gray.425">
-              Mining Closing day
-            </Text>
-            <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-              {/* {endTime} */}
-            </Text>
-          </Flex>
-          <Flex flexDir={'column'} alignItems={'space-between'}>
-            <Text fontSize={'15px'} color="gray.425">
-              Total stakers
-            </Text>
-            <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-              {data[row.id]?.totalStakers}
-            </Text>
+          <Box p={8} w={'450px'} borderRadius={'10px'}>
+            <WalletInformation
+              dispatch={dispatch}
+              data={data[row.id]}
+              user={user}
+              account={account}
+            />
+          </Box>
+          <Flex
+            px={{base: 3, md: 20}}
+            py={{base: 1, md: 10}}
+            flexDir={'column'}
+            justifyContent={'space-between'}
+            h={'100%'}>
+            <Flex flexDir={'column'} alignItems={'space-between'}>
+              <Text fontSize={'15px'} color="gray.425">
+                My staked
+              </Text>
+              <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
+                {data[row.id]?.mystaked}
+              </Text>
+              {/* <Text>{data[row.id]?.mystaked}</Text> */}
+            </Flex>
+            <Flex flexDir={'column'} alignItems={'space-between'}>
+              <Text fontSize={'15px'} color="gray.425">
+                My Earned
+              </Text>
+              <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
+                {data[row.id]?.myearned}
+              </Text>
+            </Flex>
+            <Flex flexDir={'column'} alignItems={'space-between'}>
+              <Text fontSize={'15px'} color="gray.425">
+                Contract
+              </Text>
+              <Link
+                isExternal={true}
+                outline={'none'}
+                _focus={{
+                  outline: 'none',
+                }}
+                href={`${appConfig.explorerLink}${
+                  data[row.id]?.contractAddress
+                }`}>
+                {shortenAddress(data[row.id]?.contractAddress)}
+              </Link>
+            </Flex>
           </Flex>
         </Flex>
-        <Box p={8} w={'450px'} borderRadius={'10px'}>
-          <WalletInformation
-            dispatch={dispatch}
-            data={data[row.id]}
-            user={user}
-            account={account}
-          />
-        </Box>
-        <Flex
-          px={{base: 3, md: 20}}
-          py={{base: 1, md: 10}}
-          flexDir={'column'}
-          justifyContent={'space-between'}
-          h={'100%'}>
-          <Flex flexDir={'column'} alignItems={'space-between'}>
-            <Text fontSize={'15px'} color="gray.425">
-              My staked
-            </Text>
-            <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-              {myStaked}
-            </Text>
-            {/* <Text>{data[row.id]?.mystaked}</Text> */}
-          </Flex>
-          <Flex flexDir={'column'} alignItems={'space-between'}>
-            <Text fontSize={'15px'} color="gray.425">
-              My Earned
-            </Text>
-            <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-              {myEarned}
-            </Text>
-            {/* <Text>{data[row.id]?.totalRewardAmount}</Text> */}
-          </Flex>
-          <Flex flexDir={'column'} alignItems={'space-between'}>
-            <Text fontSize={'15px'} color="gray.425">
-              Contract
-            </Text>
-            <Link
-              isExternal={true}
-              outline={'none'}
-              _focus={{
-                outline: 'none',
-              }}
-              href={`${appConfig.explorerLink}${
-                data[row.id]?.contractAddress
-              }`}>
-              {shortenAddress(data[row.id]?.contractAddress)}
-            </Link>
-          </Flex>
-        </Flex>
-      </Flex>
-    );
-  };
+      );
+    },
+    [data, dispatch, user, appConfig.explorerLink],
+  );
 
   return (
     <Fragment>
