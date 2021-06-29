@@ -296,7 +296,13 @@ export const Animation: React.FC<HomeProps> = () => {
   ]);
 
   return (
-    <Flex maxW="100%" height={1024} bg={bgColor} position="relative">
+    <Flex
+      maxW="100%"
+      height={1024}
+      bg={bgColor}
+      position="relative"
+      borderBottomWidth={1}
+      borderBottomColor={elements.whiteWithOpacity}>
       <motion.div
         custom={timer.lastCircle}
         initial={{opacity: 0}}
