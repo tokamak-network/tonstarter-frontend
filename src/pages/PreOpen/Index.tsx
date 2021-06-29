@@ -5,6 +5,8 @@ import logoDark from 'assets/svgs/fldw_bi.svg';
 import Countdown from 'react-countdown';
 import {useState} from 'react';
 
+const whiteWithOpacity = `rgba(255, 255, 255, 0.5)`;
+
 const trimDigit = (arg: any) => {
   if (String(arg).length === 1) {
     return `0${arg}`;
@@ -49,7 +51,7 @@ const TextComponent = (props: any) => {
       pr={'0.750em'}
       pl={'1.250em'}
       borderTopWidth={1}
-      borderColor={borderColor}
+      borderColor={borderColor === undefined ? whiteWithOpacity : borderColor}
       {...rest}>
       <Text
         fontSize={mainFontSize === undefined ? '1.125em' : mainFontSize}
@@ -101,7 +103,11 @@ export const MobilePreOpen = () => {
             10D 22:40:24
           </Text> */}
           <Flex w={'100%'}>
-            <Container w={'50%'} p={0} borderRightWidth={1}>
+            <Container
+              w={'50%'}
+              p={0}
+              borderRightWidth={1}
+              borderRightColor={whiteWithOpacity}>
               <TextComponent
                 header="Dual Profit"
                 content="generated from the platform growth and individual projects"
@@ -133,7 +139,7 @@ into sTOS(staked TOS)"
                 E. info@onther.io
               </Text>
             </Container>
-            <Container pos="relative" w={'50%'} p={0} borderRightWidth={1}>
+            <Container pos="relative" w={'50%'} p={0}>
               <Text
                 pos="absolute"
                 p={0}
@@ -162,25 +168,6 @@ TONStarter Governance"
                 content="Tokamak Network Layer2 
 Integration"></TextComponent>
             </Container>
-            {/* <Container w={'50%'} p={0} borderTopWidth={1} pos="relative">
-              <TextComponentWithoutLine
-                header={'Phase 1'}
-                content={'TOS Liquidity Mining Launch'}
-              />
-              <TextComponentWithoutLine
-                header={'Phase 2'}
-                content={' TOS staking, TONStarter Governance'}
-              />
-              <TextComponentWithoutLine
-                header={'Phase 3'}
-                content={'Project Starter Open'}
-              />
-              <TextComponentWithoutLine
-                header={'Phase 4'}
-                content={'Tokamak Network Layer2 Integration'}
-              />
-            </Container> */}
-            {/* <Container w={'50%'} p={0} borderTopWidth={1}></Container> */}
           </Flex>
         </Flex>
       </Flex>
