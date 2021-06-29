@@ -42,8 +42,8 @@ export type Stake = {
   token: string;
   myton: BigNumber | string;
   myfld: BigNumber | string;
-  mystaked: BigNumber | string | any;
-  myearned: BigNumber | string | any;
+  mystaked: BigNumber | string;
+  myearned: BigNumber | string;
   mywithdraw: BigNumber | string;
   myclaimed: BigNumber | string;
   canRewardAmount: BigNumber | string;
@@ -384,8 +384,15 @@ export const fetchStakes = createAsyncThunk(
         // let info = await stake.stakeVault.stakeInfos(item)
 
         let mystaked: any = '';
+        let myearned: any = '';
         if (account) {
-          mystaked = await fetchUserData(library, account, stake.stakeContract);
+          const {userStaked, userRewardTOS} = await fetchUserData(
+            library,
+            account,
+            stake.stakeContract,
+          );
+          mystaked = userStaked;
+          myearned = `${userRewardTOS}TOS`;
         }
         let status = 'loading';
         setTimeout(async () => {
@@ -405,7 +412,7 @@ export const fetchStakes = createAsyncThunk(
           myton: formatEther(0),
           myfld: formatEther(0),
           mystaked,
-          myearned: '',
+          myearned,
           mywithdraw: formatEther(0),
           myclaimed: formatEther(0),
           canRewardAmount: formatEther(0),
@@ -440,8 +447,8 @@ const fetchUserData = async (
   contractAddress: string,
 ) => {
   const res = await getUserInfo(library, account, contractAddress);
-  const {userStaked} = res;
-  return userStaked;
+  const {userStaked, userRewardTOS} = res;
+  return {userStaked, userRewardTOS};
 };
 
 const getUserInfo = async (
@@ -455,17 +462,18 @@ const getUserInfo = async (
 
   const StakeTONContract = getContract(contractAddress, StakeTON.abi, library);
   const staked = await StakeTONContract?.userStaked(account);
-  console.log(StakeTONContract);
+
   console.log(staked);
-  console.log(REACT_APP_TOS);
-  console.log(TosABI);
 
   // const TOS = getContract(REACT_APP_TOS, TosABI.abi, library);
   // const myTOS = await TOS?.balanceOf(account);
 
   // console.log(TOS);
 
-  return {userStaked: formatEther(staked.amount), userTOS: formatEther(0)};
+  return {
+    userStaked: formatEther(staked.amount),
+    userRewardTOS: formatEther(staked.claimedAmount),
+  };
   // stakeInfo.myfld = formatEther(myTOS);
 
   // const saleBlock = await StakeTONContract?.saleStartBlock();
