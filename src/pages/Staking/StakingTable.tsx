@@ -21,8 +21,6 @@ import {
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import './staking.css';
 import {checkTokenType} from 'utils/token';
-import {useState} from 'react';
-import {formatStartTime} from 'utils/timeStamp';
 
 type StakingTableProps = {
   columns: Column[];
