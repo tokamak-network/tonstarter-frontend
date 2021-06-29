@@ -3,11 +3,13 @@ import {createBreakpoints, mode} from '@chakra-ui/theme-tools';
 import '@fontsource/titillium-web/400.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/rajdhani/600.css';
+import '@fontsource/open-sans';
 
 const fonts = {
   heading: 'Roboto',
   body: 'TitilliumWeb, sans-serif',
   fld: 'Rajdhani, sans-serif',
+  openSans: 'OpenSans',
 };
 
 const breakpoints = createBreakpoints({
