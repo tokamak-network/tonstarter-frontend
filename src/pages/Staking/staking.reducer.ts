@@ -2,6 +2,7 @@ import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {RootState} from 'store/reducers';
 import {getContract, getSigner} from 'utils/contract';
 import { Contract } from '@ethersproject/contracts';
+import { JsonRpcProvider } from '@ethersproject/providers';
 import {BigNumber, utils, ethers} from 'ethers';
 import {padLeft, toWei, toBN} from 'web3-utils';
 import * as StakeVault from 'services/abis/Stake1Vault.json';
@@ -20,8 +21,12 @@ import {
   REACT_APP_TOS,
 } from 'constants/index';
 import {TokenType} from 'types/index';
+import {convertNumber} from 'utils/number';
 
-const provider = ethers.getDefaultProvider('rinkeby');
+// const provider = ethers.getDefaultProvider('rinkeby');
+// const rpc = new JsonRpcProvider('https://rinkeby.rpc.tokamak.network');
+const rpc = new JsonRpcProvider('https://rinkeby.infura.io/v3/34448178b25e4fbda6d80f4da62afba2');
+// const rpc = new JsonRpcProvider('http://183.98.80.217:8545')
 
 export type Stake = {
   name?: string;
@@ -37,23 +42,23 @@ export type Stake = {
   stakeType: number | string;
   defiAddr: string;
   stakeContract: string[];
-  balance: BigNumber | string;
-  totalRewardAmount: BigNumber | string;
-  claimRewardAmount: BigNumber | string;
+  balance: Number | string;
+  totalRewardAmount: Number | string;
+  claimRewardAmount: Number | string;
   totalStakers: number | string;
   token: TokenType;
-  myton: BigNumber | string;
-  myfld: BigNumber | string;
-  mystaked: BigNumber | string;
-  myearned: BigNumber | string;
-  mywithdraw: BigNumber | string;
-  myclaimed: BigNumber | string;
-  canRewardAmount: BigNumber | string;
+  myton: Number | string;
+  myfld: Number | string;
+  mystaked: Number | string;
+  myearned: Number | string;
+  mywithdraw: Number | string;
+  myclaimed: Number | string;
+  canRewardAmount: Number | string;
   stakeBalanceTON: string;
-  stakeBalanceETH: BigNumber | string;
-  stakeBalanceFLD: BigNumber | string;
-  tokamakStaked: BigNumber | string;
-  tokamakPendingUnstaked: BigNumber | string;
+  stakeBalanceETH: Number | string;
+  stakeBalanceFLD: Number | string;
+  tokamakStaked: Number | string;
+  tokamakPendingUnstaked: Number | string;
   staketype: string;
   period: string;
   startTime: string;
@@ -189,23 +194,30 @@ const stakeTon = async (args: StakeTon) => {
   if (userAddress === null || userAddress === undefined) {
     return;
   }
-  const currentBlock = await provider.getBlockNumber();
-  const tonContract = new Contract(REACT_APP_TON, TonABI.abi, library);
+  const currentBlock = await rpc.getBlockNumber();
+  
+  const tonContract = new Contract(REACT_APP_TON, TonABI.abi, rpc);
+  if (!tonContract) {
+    throw new Error(`Can't find the contract for staking actions`);
+  }
   const tonAmount = converToWei(amount);
-    const abicoder = ethers.utils.defaultAbiCoder;
-    const data = abicoder.encode(
-      ['address', 'uint256'],
-      [stakeContractAddress, tonAmount],
-    );
+  const abicoder = ethers.utils.defaultAbiCoder;
+  const data = abicoder.encode(
+    ['address', 'uint256'],
+    [stakeContractAddress, tonAmount],
+  );
+  const signer = getSigner(library, userAddress);
+
+  try {
     console.log(tonContract);
-    const signer = getSigner(library, userAddress);
-
     await tonContract
-      .connect(signer)
-      ?.approveAndCall(stakeContractAddress, tonAmount, data);
-
+    .connect(signer)
+    ?.approveAndCall(stakeContractAddress, tonAmount, data);
+  } catch(err) {
+    console.log(err);
+  }
   if (currentBlock > saleStartBlock && currentBlock < stakeStartBlock) {
-    const tonContract = getContract(REACT_APP_TON, TonABI.abi, library);
+    const tonContract = new Contract(REACT_APP_TON, TonABI.abi, rpc);
     if (!tonContract) {
       throw new Error(`Can't find the contract for staking actions`);
     }
@@ -215,7 +227,6 @@ const stakeTon = async (args: StakeTon) => {
       ['address', 'uint256'],
       [stakeContractAddress, tonAmount],
     );
-    console.log(tonContract);
     const signer = getSigner(library, userAddress);
 
     await tonContract
@@ -238,7 +249,7 @@ const stakeEth = async (args: StakeTon) => {
   if (userAddress === null || userAddress === undefined) {
     return;
   }
-  const currentBlock = await provider.getBlockNumber();
+  const currentBlock = await rpc.getBlockNumber();
 
   if (currentBlock > saleStartBlock && currentBlock < stakeStartBlock) {
     const transactionRequest: any = {
@@ -255,16 +266,16 @@ const stakeEth = async (args: StakeTon) => {
 
 export const withdraw = async (args: unstake) => {
   const {userAddress, stakeEndBlock, library, stakeContractAddress} = args;
-  const currentBlock = await provider.getBlockNumber();
+  const currentBlock = await rpc.getBlockNumber();
 
   if (userAddress === null || userAddress === undefined) {
     return;
   }
   if (currentBlock > stakeEndBlock) {
-    const StakeTONContract = await getContract(
+    const StakeTONContract = await new Contract(
       stakeContractAddress,
       StakeTON.abi,
-      library,
+      rpc,
     );
 
     if (!StakeTONContract) {
@@ -280,16 +291,16 @@ export const withdraw = async (args: unstake) => {
 
 export const claimReward = async (args: claim) => {
   const {userAddress, stakeContractAddress, stakeStartBlock, library} = args;
-  const currentBlock = await provider.getBlockNumber();
+  const currentBlock = await rpc.getBlockNumber();
 
   if (userAddress === null || userAddress === undefined) {
     return;
   }
   if (currentBlock > stakeStartBlock) {
-    const StakeTONContract = await getContract(
+    const StakeTONContract = await new Contract(
       stakeContractAddress,
       StakeTON.abi,
-      library,
+      rpc,
     );
 
     if (!StakeTONContract) {
@@ -305,12 +316,12 @@ export const closeSale = async (args: endsale) => {
   if (userAddress === null || userAddress === undefined) {
     return;
   }
-  const stakeVault = await getContract(
+  const stakeVault = await new Contract(
     vaultContractAddress,
     StakeVault.abi,
-    library,
+    rpc,
   );
-  const currentBlock = await provider.getBlockNumber();
+  const currentBlock = await rpc.getBlockNumber();
   if (currentBlock > stakeStartBlock) {
     const signer = getSigner(library, userAddress);
     await stakeVault.connect(signer)?.closeSale();
@@ -324,16 +335,16 @@ export const stakeToLayer2 = async (args: stakeToLayer2Args) => {
   if (userAddress === null || userAddress === undefined) {
     return;
   }
-  const depositManager = getContract(
+  const depositManager = new Contract(
     REACT_APP_DEPOSIT_MANAGER,
     DepositManagerABI.abi,
-    library,
+    rpc,
   );
   const globalWithdrawalDelay = await depositManager?.globalWithdrawalDelay();
-  const currentBlock = await provider.getBlockNumber();
+  const currentBlock = await rpc.getBlockNumber();
   const endBlock = Number(stakeEndBlock);
   if (currentBlock < endBlock - globalWithdrawalDelay && vaultClosed) {
-    const tonContract = getContract(REACT_APP_TON, TonABI.abi, library);
+    const tonContract = new Contract(REACT_APP_TON, TonABI.abi, rpc);
     if (!tonContract) {
       throw new Error(`Can't find the contract for staking actions`);
     }
@@ -348,13 +359,11 @@ export const stakeToLayer2 = async (args: stakeToLayer2Args) => {
 
 export const fetchStakes = createAsyncThunk(
   'stakes/all',
-  async (
-    {contract, library, account, chainId, type}: any,
-    {requestId, getState},
-  ) => {
+  async ({contract, library, account, chainId}: any, {requestId, getState}) => {
     let projects: any[] = [];
     const chainIdforFetch = chainId === undefined ? '4' : chainId;
-    const fetchUrl = `http://3.36.66.138:4000/v1/stakecontracts?chainId=${chainIdforFetch}`;
+    const fetchValutUrl = `http://3.36.66.138:4000/v1/vaults?chainId=${chainIdforFetch}`;
+    const fetchStakeUrl = `http://3.36.66.138:4000/v1/stakecontracts?chainId=${chainIdforFetch}`;
     // let iERC20: any;
 
     // @ts-ignore
@@ -365,43 +374,33 @@ export const fetchStakes = createAsyncThunk(
       return;
     }
 
-    // const vaults = temp.datas;
-
-    // stakeList = await Promise.all(
-    //   vaults.map(async (vault: any) => {
-    //     const stakeVault = vault.vault;
-    //     const stakeType = vault.stakeType;
-    //     const token = vault.paytoken;
-    //     const projects = vault.stakeAddresses;
-    //     return {
-    //       // iERC20: iERC20,
-    //       stakeType,
-    //       projects,
-    //       stakeVault,
-    //       token,
-    //     };
-    //   }),
-    // );
-
-    const vaultReq = await fetch('http://3.36.66.138:4000/v1/vaults?chainId=4')
+    const vaultReq = await fetch(fetchValutUrl)
       .then((res) => res.json())
       .then((result) => result);
 
-    const req = await fetch(fetchUrl)
+    const stakeReq = await fetch(fetchStakeUrl)
       .then((res) => res.json())
       .then((result) => result);
 
-    const stakeList = req.datas;
+    const stakeList = stakeReq.datas;
+
+    console.log(stakeReq);
 
     // console.log(vaultReq);
     // console.log(stakeList);
+
+    console.log('-----------');
+
     await Promise.all(
       stakeList.map(async (stake: any, index: number) => {
         // let info = await stake.stakeVault.stakeInfos(item)
 
-        let mystaked: any = '';
-        let myearned: any = '';
+        let mystaked: string = '';
+        let myearned: string = '';
+        let status = 'loading';
+
         if (account) {
+          console.log('--acount--');
           const {userStaked, userRewardTOS} = await fetchUserData(
             library,
             account,
@@ -410,10 +409,13 @@ export const fetchStakes = createAsyncThunk(
           mystaked = userStaked;
           myearned = `${userRewardTOS}TOS`;
         }
-        let status = 'loading';
+
         setTimeout(async () => {
-          status = stake.saleClosed === true ? 'end' : await getStatus(stake);
-        }, 0);
+          status = await getStatus(stake);
+        }, 10);
+
+        // console.log(String(stake.totalStakedAmount));
+        // console.log(BigNumber.from(stake.totalStakedAmount));
 
         const stakeInfo: Partial<Stake> = {
           contractAddress: stake.stakeContract,
@@ -432,7 +434,12 @@ export const fetchStakes = createAsyncThunk(
           mywithdraw: formatEther(0),
           myclaimed: formatEther(0),
           canRewardAmount: formatEther(0),
-          stakeBalanceTON: formatEther(String(stake.totalStakedAmountString)),
+          // stakeBalanceTON: convertNumber({
+          //   amount: String(stake.totalStakedAmount),
+          // }),
+          stakeBalanceTON: convertNumber({
+            amount: stake.totalStakedAmountString,
+          }),
           stakeBalanceETH: formatEther(0),
           stakeBalanceFLD: formatEther(0),
           tokamakStaked: formatEther(0),
@@ -474,12 +481,12 @@ const getUserInfo = async (
   account: string,
   contractAddress: string,
 ) => {
-  // const currentBlock = await provider.getBlockNumber();
+  // const currentBlock = await rpc.getBlockNumber();
 
-  const StakeTONContract = getContract(contractAddress, StakeTON.abi, library);
+  const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
   const staked = await StakeTONContract?.userStaked(account);
 
-  // const TOS = getContract(REACT_APP_TOS, TosABI.abi, library);
+  // const TOS = new Contract(REACT_APP_TOS, TosABI.abi, rpc);
   // const myTOS = await TOS?.balanceOf(account);
 
   // console.log(TOS);
@@ -504,16 +511,15 @@ const getTimes = async (startTime: any, endTime: any) => {
   return {fetchedStartTime, fetchedEndTime};
 };
 
-const getStatus = async (args: any) => {
+export const getStatus = async (args: any) => {
   const {blockNumber, saleStartBlock, saleClosed} = args;
-  const currenBlock = await provider.getBlockNumber();
-
-  if (saleClosed) {
-    return 'sale';
-  }
-  if (blockNumber >= saleStartBlock) {
-    // return 'sale';
-  }
+  const currentBlock = await rpc.getBlockNumber();
+  // if (saleClosed) {
+  //   return 'sale';
+  // }
+  // if (blockNumber >= saleStartBlock) {
+  //   // return 'sale';
+  // }
   return 'start';
 };
 
@@ -531,7 +537,7 @@ const getStatus = async (args: any) => {
 //   }
 //   const stakeContractBalanceFLD = await FLD?.balanceOf(stakeContractAddress);
 //   const stakeContractBalanceTON = await TON?.balanceOf(stakeContractAddress);
-//   const stakeContractBalanceETH = await provider.getBalance(
+//   const stakeContractBalanceETH = await rpc.getBalance(
 //     stakeContractAddress,
 //   );
 //   stakeInfo.stakeBalanceFLD = formatEther(stakeContractBalanceFLD);
@@ -548,15 +554,15 @@ const getStatus = async (args: any) => {
 // ) => {
 //   if (index < stakeInfos.length) {
 //     try {
-//       const seigManager = getContract(
+//       const seigManager = new Contract(
 //         REACT_APP_SEIG_MANAGER,
 //         SeigManagerABI.abi,
-//         library,
+//         rpc,
 //       );
-//       const depositManager = getContract(
+//       const depositManager = new Contract(
 //         REACT_APP_DEPOSIT_MANAGER,
 //         DepositManagerABI.abi,
-//         library,
+//         rpc,
 //       );
 //       const staked = await seigManager?.stakeOf(
 //         REACT_APP_TOKAMAK_LAYER2,

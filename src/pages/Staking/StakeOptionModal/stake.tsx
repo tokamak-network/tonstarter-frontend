@@ -13,17 +13,14 @@ import {
 } from '@chakra-ui/react';
 import React, {useCallback, useState} from 'react';
 import {useWeb3React} from '@web3-react/core';
-import { JsonRpcProvider } from '@ethersproject/providers';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
 import {stakePaytoken} from '../staking.reducer';
-import { REACT_APP_RPC_URL } from 'constants/index';
 
 export const StakeOptionModal = () => {
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
-  const {account} = useWeb3React();
-  const rpc = new JsonRpcProvider(REACT_APP_RPC_URL);
+  const {account, library} = useWeb3React();
 
   let balance = data?.data?.user?.balance;
 
@@ -110,7 +107,7 @@ export const StakeOptionModal = () => {
                   amount: value.toString(),
                   payToken: data.data.token,
                   saleStartBlock: data.data.saleStartBlock,
-                  library: rpc,
+                  library: library,
                   stakeContractAddress: data.data.contractAddress,
                   stakeStartBlock: data.data.stakeStartBlock,
                 })

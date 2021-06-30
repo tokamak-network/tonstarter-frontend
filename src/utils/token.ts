@@ -12,8 +12,8 @@ const tokenAddresses: {eth: EthAddressType; ton: TonAddressType} = {
 };
 
 const tokenInfo = {
-  eth: {symbol: EthSymbol, bg: '#383736'},
-  ton: {symbol: TonSymbol, bg: '#007aff'},
+  eth: {fullName: 'ethereum', symbol: EthSymbol, bg: '#383736'},
+  ton: {fullName: 'tokamak-network', symbol: TonSymbol, bg: '#007aff'},
 };
 
 export const checkTokenType = (
