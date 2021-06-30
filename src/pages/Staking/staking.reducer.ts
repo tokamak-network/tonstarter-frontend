@@ -19,6 +19,7 @@ import {
   REACT_APP_TOS,
 } from 'constants/index';
 import {TokenType} from 'types/index';
+import {convertNumber} from 'utils/number';
 
 const provider = ethers.getDefaultProvider('rinkeby');
 
@@ -388,7 +389,8 @@ export const fetchStakes = createAsyncThunk(
           status = await getStatus(stake);
         }, 10);
 
-        console.log(stake);
+        // console.log(String(stake.totalStakedAmount));
+        // console.log(BigNumber.from(stake.totalStakedAmount));
 
         const stakeInfo: Partial<Stake> = {
           contractAddress: stake.stakeContract,
@@ -407,7 +409,12 @@ export const fetchStakes = createAsyncThunk(
           mywithdraw: formatEther(0),
           myclaimed: formatEther(0),
           canRewardAmount: formatEther(0),
-          stakeBalanceTON: String(stake.totalStakedAmount),
+          // stakeBalanceTON: convertNumber({
+          //   amount: String(stake.totalStakedAmount),
+          // }),
+          stakeBalanceTON: convertNumber({
+            amount: stake.totalStakedAmountString,
+          }),
           stakeBalanceETH: formatEther(0),
           stakeBalanceFLD: formatEther(0),
           tokamakStaked: formatEther(0),

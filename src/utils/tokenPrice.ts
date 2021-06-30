@@ -4,7 +4,6 @@ export const getTokenPrice = async (tokenName: string) => {
   )
     .then((res) => res.json())
     .then((result) => result);
-  console.log(fetchData);
   const {current_price} = fetchData[0];
   return current_price;
 };
