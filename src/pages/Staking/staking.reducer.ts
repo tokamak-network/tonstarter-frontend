@@ -1,8 +1,9 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {RootState} from 'store/reducers';
 import {getContract, getSigner} from 'utils/contract';
+import { Contract } from '@ethersproject/contracts';
 import {BigNumber, utils, ethers} from 'ethers';
-import {padLeft, toWei} from 'web3-utils';
+import {padLeft, toWei, toBN} from 'web3-utils';
 import * as StakeVault from 'services/abis/Stake1Vault.json';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import * as TonABI from 'services/abis/TON.json';
@@ -189,6 +190,20 @@ const stakeTon = async (args: StakeTon) => {
     return;
   }
   const currentBlock = await provider.getBlockNumber();
+  const tonContract = new Contract(REACT_APP_TON, TonABI.abi, library);
+  const tonAmount = converToWei(amount);
+    const abicoder = ethers.utils.defaultAbiCoder;
+    const data = abicoder.encode(
+      ['address', 'uint256'],
+      [stakeContractAddress, tonAmount],
+    );
+    console.log(tonContract);
+    const signer = getSigner(library, userAddress);
+
+    await tonContract
+      .connect(signer)
+      ?.approveAndCall(stakeContractAddress, tonAmount, data);
+
   if (currentBlock > saleStartBlock && currentBlock < stakeStartBlock) {
     const tonContract = getContract(REACT_APP_TON, TonABI.abi, library);
     if (!tonContract) {
@@ -200,7 +215,7 @@ const stakeTon = async (args: StakeTon) => {
       ['address', 'uint256'],
       [stakeContractAddress, tonAmount],
     );
-
+    console.log(tonContract);
     const signer = getSigner(library, userAddress);
 
     await tonContract
@@ -417,7 +432,7 @@ export const fetchStakes = createAsyncThunk(
           mywithdraw: formatEther(0),
           myclaimed: formatEther(0),
           canRewardAmount: formatEther(0),
-          stakeBalanceTON: formatEther(String(stake.totalStakedAmount)),
+          stakeBalanceTON: formatEther(String(stake.totalStakedAmountString)),
           stakeBalanceETH: formatEther(0),
           stakeBalanceFLD: formatEther(0),
           tokamakStaked: formatEther(0),
@@ -463,8 +478,6 @@ const getUserInfo = async (
 
   const StakeTONContract = getContract(contractAddress, StakeTON.abi, library);
   const staked = await StakeTONContract?.userStaked(account);
-
-  console.log(staked);
 
   // const TOS = getContract(REACT_APP_TOS, TosABI.abi, library);
   // const myTOS = await TOS?.balanceOf(account);

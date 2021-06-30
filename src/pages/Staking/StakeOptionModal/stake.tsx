@@ -12,13 +12,18 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import React, {useCallback, useState} from 'react';
-// import {stakePaytoken} from '../staking.reducer';
+import {useWeb3React} from '@web3-react/core';
+import { JsonRpcProvider } from '@ethersproject/providers';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
+import {stakePaytoken} from '../staking.reducer';
+import { REACT_APP_RPC_URL } from 'constants/index';
 
 export const StakeOptionModal = () => {
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
+  const {account} = useWeb3React();
+  const rpc = new JsonRpcProvider(REACT_APP_RPC_URL);
 
   let balance = data?.data?.user?.balance;
 
@@ -46,7 +51,7 @@ export const StakeOptionModal = () => {
               textAlign={'center'}>
               Stake
             </Heading>
-            <Text>{data?.data?.token}</Text>
+            {/* <Text>{data?.data?.token}</Text> */}
           </Box>
 
           <Stack
@@ -90,26 +95,28 @@ export const StakeOptionModal = () => {
             alignItems={'center'}>
             <Box textAlign={'center'}>
               <Text>Available Balance</Text>
-              <Text>{balance} TON</Text>
+              <Text>
+                {balance} {data.data.tokenSymbol}
+              </Text>
             </Box>
           </Stack>
 
           <Box py={4} as={Flex} justifyContent={'center'}>
-            {/* <Button
+            <Button
               colorScheme={'blue'}
               onClick={() =>
                 stakePaytoken({
                   userAddress: account,
                   amount: value.toString(),
-                  payToken: payToken,
-                  saleStartBlock: saleStartBlock,
-                  library: library,
-                  stakeContractAddress: address,
-                  stakeStartBlock: stakeStartBlock,
+                  payToken: data.data.token,
+                  saleStartBlock: data.data.saleStartBlock,
+                  library: rpc,
+                  stakeContractAddress: data.data.contractAddress,
+                  stakeStartBlock: data.data.stakeStartBlock,
                 })
               }>
               Stake
-            </Button> */}
+            </Button>
           </Box>
         </ModalBody>
       </ModalContent>

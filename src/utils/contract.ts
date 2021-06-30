@@ -1,7 +1,7 @@
 import {getAddress} from '@ethersproject/address';
 import {Contract} from '@ethersproject/contracts';
 import {AddressZero} from '@ethersproject/constants';
-import {JsonRpcSigner, Web3Provider} from '@ethersproject/providers';
+import {JsonRpcSigner, JsonRpcProvider} from '@ethersproject/providers';
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {
@@ -13,7 +13,7 @@ export function isAddress(value: any): string | false {
 }
 // account is not optional
 export function getSigner(
-  library: Web3Provider,
+  library: JsonRpcProvider,
   account: string,
 ): JsonRpcSigner {
   return library.getSigner(account).connectUnchecked();
@@ -21,9 +21,9 @@ export function getSigner(
 
 // account is optional
 export function getProviderOrSigner(
-  library: Web3Provider,
+  library: JsonRpcProvider,
   account?: string,
-): Web3Provider | JsonRpcSigner {
+): JsonRpcProvider | JsonRpcSigner {
   return account ? getSigner(library, account) : library;
 }
 
@@ -31,7 +31,7 @@ export function getProviderOrSigner(
 export function getContract(
   address: string,
   ABI: any,
-  library: Web3Provider,
+  library: JsonRpcProvider,
   account?: string,
 ): Contract {
   if (!isAddress(address) || address === AddressZero) {

@@ -63,6 +63,7 @@ export const REACT_APP_API_URL = process.env.REACT_APP_API_URL as string;
 export const REACT_APP_DEFAULT_NETWORK = process.env
   .REACT_APP_DEFAULT_NETWORK as string;
 export const REACT_APP_TOS = process.env.REACT_APP_TOS as string;
+export const REACT_APP_RPC_URL = process.env.REACT_APP_RPC_URL as string;
 export const REACT_APP_STAKE_TON_LOGIC_FACTORY = process.env
   .REACT_APP_STAKE_TON_LOGIC_FACTORY as string;
 export const REACT_APP_STAKE_TON_PROXY_FACTORY = process.env
