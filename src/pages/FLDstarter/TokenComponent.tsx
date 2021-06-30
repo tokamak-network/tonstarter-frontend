@@ -8,14 +8,15 @@ import {
   useTheme,
   Avatar,
   Tooltip,
+  useColorMode,
 } from '@chakra-ui/react';
-import {useColorMode} from '@chakra-ui/react';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
-import {useCallback} from 'react';
+import {useEffect, useCallback} from 'react';
 import {checkTokenType} from 'utils/token';
 import {TokenType} from 'types/index';
 import {getTokenPrice} from 'utils/tokenPrice';
-import {useEffect} from 'react';
+import {openModal} from 'store/modal.reducer';
+import {useAppDispatch} from 'hooks/useRedux';
 
 type TokenComponentProps = {
   phase?: string;
@@ -33,16 +34,20 @@ export const TokenComponent: FC<TokenComponentProps> = ({
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const tokenType = checkTokenType(token);
-  const [tokenPrice, setTokenPrice] = useState('0');
+  const [tokenPrice, setTokenPrice] = useState<string | undefined>('0');
   useEffect(() => {
     async function getPrice() {
-      const result = await getTokenPrice(tokenType.fullName);
-      const totalPrice = Number(stakedAmount) * result;
-      setTokenPrice(String(totalPrice));
+      const resTokenPrice = await getTokenPrice(tokenType.fullName);
+      const totalPrice = Number(stakedAmount) * resTokenPrice;
+      if (isNaN(totalPrice)) {
+        return;
+      }
+      setTokenPrice(totalPrice.toFixed(2));
     }
     getPrice();
-  }, [tokenType.fullName]);
+  }, []);
   const handleNavigation = useCallback(() => {}, []);
+
   return (
     <Container
       bg={colorMode === 'light' ? theme.colors.white[100] : 'transparent'}
@@ -117,8 +122,9 @@ export const TokenComponent: FC<TokenComponentProps> = ({
                   ? theme.colors.gray[125]
                   : theme.colors.white[100]
               }
-              mr={2}>
-              TON
+              mr={2}
+              pt={1}>
+              {tokenType.name}
             </Text>
             <Tooltip
               hasArrow

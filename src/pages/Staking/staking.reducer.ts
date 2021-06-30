@@ -461,8 +461,6 @@ const getUserInfo = async (
   const StakeTONContract = getContract(contractAddress, StakeTON.abi, library);
   const staked = await StakeTONContract?.userStaked(account);
 
-  console.log(staked);
-
   // const TOS = getContract(REACT_APP_TOS, TosABI.abi, library);
   // const myTOS = await TOS?.balanceOf(account);
 
@@ -491,7 +489,6 @@ const getTimes = async (startTime: any, endTime: any) => {
 export const getStatus = async (args: any) => {
   const {blockNumber, saleStartBlock, saleClosed} = args;
   const currentBlock = await provider.getBlockNumber();
-  console.log(currentBlock);
   // if (saleClosed) {
   //   return 'sale';
   // }

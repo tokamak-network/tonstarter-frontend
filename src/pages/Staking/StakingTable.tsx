@@ -115,6 +115,14 @@ export const StakingTable: FC<StakingTableProps> = ({
   );
 
   const {colorMode} = useColorMode();
+  const onChangeSelectBox = (e: any) => {
+    const filterValue = e.target.value;
+    headerGroups[0].headers.map((e) => {
+      if (e.Header === filterValue) {
+        e.toggleSortBy();
+      }
+    });
+  };
 
   return (
     <Flex w="1100px" flexDir={'column'}>
@@ -129,11 +137,12 @@ export const StakingTable: FC<StakingTableProps> = ({
           h={'32px'}
           color={'#86929d'}
           fontSize={'13px'}
-          placeholder="On sale Sort">
-          <option>Name</option>
-          <option>Period</option>
-          <option>Total staked</option>
-          <option>Earning per block</option>
+          placeholder="On sale Sort"
+          onChange={onChangeSelectBox}>
+          <option value="name">Name</option>
+          <option value="period">Period</option>
+          <option value="total staked">Total staked</option>
+          <option value="Earning Per Block">Earning per block</option>
         </Select>
       </Flex>
       <Box overflowX={'auto'}>
@@ -143,7 +152,8 @@ export const StakingTable: FC<StakingTableProps> = ({
           {...getTableProps()}
           display="flex"
           flexDirection="column">
-          <chakra.thead textAlign={'justify'}>
+          {/* <chakra.thead textAlign={'justify'}>
+            {console.log(headerGroups)}
             {headerGroups.map((headerGroup) => (
               <chakra.tr h={16} {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
@@ -156,7 +166,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                 ))}
               </chakra.tr>
             ))}
-          </chakra.thead>
+          </chakra.thead> */}
           <chakra.tbody
             {...getTableBodyProps()}
             display="flex"
