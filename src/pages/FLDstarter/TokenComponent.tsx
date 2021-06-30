@@ -37,7 +37,8 @@ export const TokenComponent: FC<TokenComponentProps> = ({
   useEffect(() => {
     async function getPrice() {
       const result = await getTokenPrice(tokenType.fullName);
-      setTokenPrice(result);
+      const totalPrice = Number(stakedAmount) * result;
+      setTokenPrice(String(totalPrice));
     }
     getPrice();
   }, [tokenType.fullName]);
