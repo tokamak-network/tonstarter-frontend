@@ -1,4 +1,4 @@
-import {FC} from 'react';
+import {FC, useState} from 'react';
 import {
   Flex,
   Text,
@@ -14,6 +14,8 @@ import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import {useCallback} from 'react';
 import {checkTokenType} from 'utils/token';
 import {TokenType} from 'types/index';
+import {getTokenPrice} from 'utils/tokenPrice';
+import {useEffect} from 'react';
 
 type TokenComponentProps = {
   phase?: string;
@@ -31,6 +33,15 @@ export const TokenComponent: FC<TokenComponentProps> = ({
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const tokenType = checkTokenType(token);
+  const [tokenPrice, setTokenPrice] = useState('0');
+  useEffect(() => {
+    async function getPrice() {
+      const result = await getTokenPrice(tokenType.fullName);
+      console.log(result);
+      setTokenPrice(result);
+    }
+    getPrice();
+  }, [tokenType.fullName]);
   const handleNavigation = useCallback(() => {}, []);
   return (
     <Container
@@ -119,7 +130,7 @@ export const TokenComponent: FC<TokenComponentProps> = ({
             </Tooltip>
           </Flex>
           <Text className={'fld-text1'} fontWeight={'normal'}>
-            1644.99 USD
+            {tokenPrice} USD
           </Text>
           <Flex mt={4} mb={2}>
             <Button

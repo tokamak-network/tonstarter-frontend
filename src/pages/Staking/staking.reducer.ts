@@ -36,23 +36,23 @@ export type Stake = {
   stakeType: number | string;
   defiAddr: string;
   stakeContract: string[];
-  balance: BigNumber | string;
-  totalRewardAmount: BigNumber | string;
-  claimRewardAmount: BigNumber | string;
+  balance: Number | string;
+  totalRewardAmount: Number | string;
+  claimRewardAmount: Number | string;
   totalStakers: number | string;
   token: TokenType;
-  myton: BigNumber | string;
-  myfld: BigNumber | string;
-  mystaked: BigNumber | string;
-  myearned: BigNumber | string;
-  mywithdraw: BigNumber | string;
-  myclaimed: BigNumber | string;
-  canRewardAmount: BigNumber | string;
+  myton: Number | string;
+  myfld: Number | string;
+  mystaked: Number | string;
+  myearned: Number | string;
+  mywithdraw: Number | string;
+  myclaimed: Number | string;
+  canRewardAmount: Number | string;
   stakeBalanceTON: string;
-  stakeBalanceETH: BigNumber | string;
-  stakeBalanceFLD: BigNumber | string;
-  tokamakStaked: BigNumber | string;
-  tokamakPendingUnstaked: BigNumber | string;
+  stakeBalanceETH: Number | string;
+  stakeBalanceFLD: Number | string;
+  tokamakStaked: Number | string;
+  tokamakPendingUnstaked: Number | string;
   staketype: string;
   period: string;
   startTime: string;
@@ -333,13 +333,11 @@ export const stakeToLayer2 = async (args: stakeToLayer2Args) => {
 
 export const fetchStakes = createAsyncThunk(
   'stakes/all',
-  async (
-    {contract, library, account, chainId, type}: any,
-    {requestId, getState},
-  ) => {
+  async ({contract, library, account, chainId}: any, {requestId, getState}) => {
     let projects: any[] = [];
     const chainIdforFetch = chainId === undefined ? '4' : chainId;
-    const fetchUrl = `http://3.36.66.138:4000/v1/stakecontracts?chainId=${chainIdforFetch}`;
+    const fetchValutUrl = `http://3.36.66.138:4000/v1/vaults?chainId=${chainIdforFetch}`;
+    const fetchStakeUrl = `http://3.36.66.138:4000/v1/stakecontracts?chainId=${chainIdforFetch}`;
     // let iERC20: any;
 
     // @ts-ignore
@@ -350,43 +348,33 @@ export const fetchStakes = createAsyncThunk(
       return;
     }
 
-    // const vaults = temp.datas;
-
-    // stakeList = await Promise.all(
-    //   vaults.map(async (vault: any) => {
-    //     const stakeVault = vault.vault;
-    //     const stakeType = vault.stakeType;
-    //     const token = vault.paytoken;
-    //     const projects = vault.stakeAddresses;
-    //     return {
-    //       // iERC20: iERC20,
-    //       stakeType,
-    //       projects,
-    //       stakeVault,
-    //       token,
-    //     };
-    //   }),
-    // );
-
-    const vaultReq = await fetch('http://3.36.66.138:4000/v1/vaults?chainId=4')
+    const vaultReq = await fetch(fetchValutUrl)
       .then((res) => res.json())
       .then((result) => result);
 
-    const req = await fetch(fetchUrl)
+    const stakeReq = await fetch(fetchStakeUrl)
       .then((res) => res.json())
       .then((result) => result);
 
-    const stakeList = req.datas;
+    const stakeList = stakeReq.datas;
+
+    console.log(stakeReq);
 
     // console.log(vaultReq);
     // console.log(stakeList);
+
+    console.log('-----------');
+
     await Promise.all(
       stakeList.map(async (stake: any, index: number) => {
         // let info = await stake.stakeVault.stakeInfos(item)
 
-        let mystaked: any = '';
-        let myearned: any = '';
+        let mystaked: string = '';
+        let myearned: string = '';
+        let status = 'loading';
+
         if (account) {
+          console.log('--acount--');
           const {userStaked, userRewardTOS} = await fetchUserData(
             library,
             account,
@@ -395,10 +383,12 @@ export const fetchStakes = createAsyncThunk(
           mystaked = userStaked;
           myearned = `${userRewardTOS}TOS`;
         }
-        let status = 'loading';
+
         setTimeout(async () => {
-          status = stake.saleClosed === true ? 'end' : await getStatus(stake);
-        }, 0);
+          status = await getStatus(stake);
+        }, 10);
+
+        console.log(stake);
 
         const stakeInfo: Partial<Stake> = {
           contractAddress: stake.stakeContract,
@@ -417,7 +407,7 @@ export const fetchStakes = createAsyncThunk(
           mywithdraw: formatEther(0),
           myclaimed: formatEther(0),
           canRewardAmount: formatEther(0),
-          stakeBalanceTON: formatEther(String(stake.totalStakedAmount)),
+          stakeBalanceTON: String(stake.totalStakedAmount),
           stakeBalanceETH: formatEther(0),
           stakeBalanceFLD: formatEther(0),
           tokamakStaked: formatEther(0),
@@ -491,16 +481,16 @@ const getTimes = async (startTime: any, endTime: any) => {
   return {fetchedStartTime, fetchedEndTime};
 };
 
-const getStatus = async (args: any) => {
+export const getStatus = async (args: any) => {
   const {blockNumber, saleStartBlock, saleClosed} = args;
-  const currenBlock = await provider.getBlockNumber();
-
-  if (saleClosed) {
-    return 'sale';
-  }
-  if (blockNumber >= saleStartBlock) {
-    // return 'sale';
-  }
+  const currentBlock = await provider.getBlockNumber();
+  console.log(currentBlock);
+  // if (saleClosed) {
+  //   return 'sale';
+  // }
+  // if (blockNumber >= saleStartBlock) {
+  //   // return 'sale';
+  // }
   return 'start';
 };
 

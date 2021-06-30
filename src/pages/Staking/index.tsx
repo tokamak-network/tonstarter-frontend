@@ -28,6 +28,7 @@ import {
 import {AppDispatch} from 'store';
 import {openModal} from 'store/modal.reducer';
 import {ManageModal} from './StakeOptionModal/manage';
+import {formatStartTime} from 'utils/timeStamp';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
@@ -159,19 +160,13 @@ export const Staking = () => {
     [],
   );
 
+  const test = async (arg: any) => {
+    return await formatStartTime(arg);
+  };
+
   const renderRowSubComponent = useCallback(
     ({row}) => {
       const {account, library, contractAddress} = row.original;
-
-      // dispatch(
-      //   fetchStakes({
-      //     contractAddress,
-      //     library,
-      //     account,
-      //     chaindId: 4,
-      //     type: 'detail',
-      //   }) as any,
-      // );
 
       return (
         <Flex
