@@ -83,7 +83,9 @@ export const ManageModal = () => {
             <Button colorScheme="blue" onClick={() => dispatch(openModal({type: 'withdraw', data: data.data}))}>
               Withdraw
             </Button>
-            <Button colorScheme="blue">Swap</Button>
+            <Button colorScheme="blue" onClick={() => dispatch(openModal({type: 'swap', data: data.data}))}>
+              Swap
+            </Button>
             <Button
               colorScheme="blue"
               // disabled={!data.data.vaultClosed}

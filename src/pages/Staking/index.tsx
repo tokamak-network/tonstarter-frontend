@@ -25,6 +25,9 @@ import {
   StakeOptionModal,
   UnstakeOptionModal,
   StakeInLayer2Modal,
+  UnStakeFromLayer2Modal,
+  WithdrawalOptionModal,
+  SwapModal,
 } from './StakeOptionModal';
 import {AppDispatch} from 'store';
 import {openModal} from 'store/modal.reducer';
@@ -288,6 +291,9 @@ export const Staking = () => {
       <ClaimOptionModal />
       <ManageModal />
       <StakeInLayer2Modal />
+      <UnStakeFromLayer2Modal />
+      <SwapModal />
+      <WithdrawalOptionModal />
     </Fragment>
   );
 };
