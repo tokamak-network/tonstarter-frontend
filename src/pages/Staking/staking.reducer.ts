@@ -20,6 +20,7 @@ import {
 } from 'constants/index';
 import {TokenType} from 'types/index';
 import {convertNumber} from 'utils/number';
+import store from 'store';
 
 const provider = ethers.getDefaultProvider('rinkeby');
 
@@ -334,7 +335,11 @@ export const stakeToLayer2 = async (args: stakeToLayer2Args) => {
 
 export const fetchStakes = createAsyncThunk(
   'stakes/all',
-  async ({contract, library, account, chainId}: any, {requestId, getState}) => {
+  async (
+    {contract, library, account, chainId, reFetch}: any,
+    {requestId, getState},
+  ) => {
+    const {appConfig} = store.getState();
     let projects: any[] = [];
     const chainIdforFetch = chainId === undefined ? '4' : chainId;
     const fetchValutUrl = `http://3.36.66.138:4000/v1/vaults?chainId=${chainIdforFetch}`;
@@ -358,14 +363,16 @@ export const fetchStakes = createAsyncThunk(
       .then((result) => result);
 
     const stakeList = stakeReq.datas;
-
-    console.log(stakeReq);
+    console.log('-----------');
+    console.log(vaultReq);
+    console.log(stakeList);
 
     // console.log(vaultReq);
     // console.log(stakeList);
 
-    console.log('-----------');
-
+    if (reFetch === true) {
+      console.log('---go---');
+    }
     await Promise.all(
       stakeList.map(async (stake: any, index: number) => {
         // let info = await stake.stakeVault.stakeInfos(item)
@@ -385,9 +392,10 @@ export const fetchStakes = createAsyncThunk(
           myearned = `${userRewardTOS}TOS`;
         }
 
-        setTimeout(async () => {
-          status = await getStatus(stake);
-        }, 10);
+        if (reFetch === true) {
+          console.log('--refetch run--');
+          status = await getStatus(stake, appConfig.data.blockNumber);
+        }
 
         // console.log(String(stake.totalStakedAmount));
         // console.log(BigNumber.from(stake.totalStakedAmount));
@@ -422,7 +430,7 @@ export const fetchStakes = createAsyncThunk(
           token: stake.paytoken,
           stakeType: stake.stakeType,
           period: period(stake.startBlock, stake.endBlock),
-          startTime: stake.startBlock,
+          startTime: appConfig.data.blockNumber,
           endTime: stake.endBlock,
           status,
           library,
@@ -486,9 +494,9 @@ const getTimes = async (startTime: any, endTime: any) => {
   return {fetchedStartTime, fetchedEndTime};
 };
 
-export const getStatus = async (args: any) => {
-  const {blockNumber, saleStartBlock, saleClosed} = args;
-  const currentBlock = await provider.getBlockNumber();
+export const getStatus = async (args: any, blockNumber: string) => {
+  const {saleStartBlock, saleClosed} = args;
+  const currentBlock = blockNumber;
   // if (saleClosed) {
   //   return 'sale';
   // }

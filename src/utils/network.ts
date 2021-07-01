@@ -1,4 +1,5 @@
 import {DEFAULT_NETWORK} from 'constants/index';
+import {ethers} from 'ethers';
 
 export const getNetworkDetails = async (provider: any, address: string) => {
   try {
@@ -66,4 +67,20 @@ export const getExplorerLink = async (id: string | number | undefined) => {
   }
 
   return link as string;
+};
+
+export const getBlockNumber = async (chainId: '1' | '4' | undefined) => {
+  const providerNet = {
+    1: 'main',
+    4: 'rinkeby',
+  };
+  let net = '';
+  if (chainId === undefined) {
+    net = 'rinkeby';
+  } else {
+    net = providerNet[chainId] === undefined ? 'rinkeby' : chainId;
+  }
+  const provider = ethers.getDefaultProvider(net);
+  const currentBlock = await provider.getBlockNumber();
+  return String(currentBlock);
 };

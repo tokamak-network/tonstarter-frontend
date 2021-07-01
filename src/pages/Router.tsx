@@ -8,10 +8,10 @@ import {FLDstarter} from './FLDstarter';
 import {Pools} from './Pools';
 import {Staking} from './Staking';
 import {Switch, Route} from 'react-router-dom';
-import {useAppDispatch} from 'hooks/useRedux';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {fetchAppConfig} from 'store/app/app.reducer';
 import {fetchUserInfo} from 'store/app/user.reducer';
-import {fetchStakes} from './Staking/staking.reducer';
+import {fetchStakes, selectStakes} from './Staking/staking.reducer';
 import {useContract} from 'hooks/useContract';
 import {REACT_APP_STAKE1_PROXY} from 'constants/index';
 import * as StakeLogic from 'services/abis/Stake1Logic.json';
@@ -20,8 +20,10 @@ export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
 export const Router: FC<RouterProps> = () => {
   const dispatch = useAppDispatch();
+
   // const toast = useToast();
-  // const {data, loading, error} = useSelector(selectStakes);
+  const {data, loading, error} = useAppSelector(selectStakes);
+  console.log(loading);
   const [walletState, setWalletState] = useState<string>('');
   const {onOpen, isOpen: isModalOpen, onClose} = useDisclosure();
   const {account, chainId, library} = useWeb3React();
@@ -48,6 +50,23 @@ export const Router: FC<RouterProps> = () => {
       }) as any,
     );
   }, [stakeRegistryContract, dispatch, library, account, chainId]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (data.length > 0) {
+        dispatch(
+          fetchStakes({
+            contract: stakeRegistryContract,
+            library,
+            account,
+            chainId,
+            reFetch: true,
+          }) as any,
+        );
+      }
+    }, 700);
+  }, [stakeRegistryContract, dispatch, library, account, chainId]);
+
   const handleWalletModalOpen = (state: string) => {
     setWalletState(state);
     onOpen();
