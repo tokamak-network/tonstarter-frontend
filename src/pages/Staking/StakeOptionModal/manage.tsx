@@ -29,11 +29,13 @@ export const ManageModal = () => {
 
   const toggleModal = useCallback(
     (modal: ModalType) => {
-      dispatch(closeModal());
       dispatch(openModal({type: modal}));
+      dispatch(closeModal());
     },
     [dispatch],
   );
+  console.log(data);
+  console.log(data?.data)
 
   return (
     <Modal
@@ -75,7 +77,9 @@ export const ManageModal = () => {
             <Button colorScheme="blue" onClick={() => toggleModal('unstakeL2')}>
               Unstake from Layer2
             </Button>
-            <Button colorScheme="blue">Withdraw</Button>
+            <Button colorScheme="blue" onClick={() => toggleModal('withdraw')}>
+              Withdraw
+            </Button>
             <Button colorScheme="blue">Swap</Button>
             <Button
               colorScheme="blue"
@@ -83,7 +87,7 @@ export const ManageModal = () => {
               onClick={() =>
                 closeSale({
                   userAddress: account,
-                  vaultContractAddress: data.data.vault,
+                  vaultContractAddress: data.data.contractAddress,
                   stakeStartBlock: data.data.stakeStartBlock,
                   library: library,
                 })

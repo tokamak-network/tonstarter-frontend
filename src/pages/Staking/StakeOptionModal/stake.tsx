@@ -23,7 +23,6 @@ export const StakeOptionModal = () => {
   const {account, library} = useWeb3React();
 
   let balance = data?.data?.user?.balance;
-  console.log(data?.data);
   const [value, setValue] = useState<number>(balance);
 
   const handleChange = useCallback(e => setValue(e.target.value), []);

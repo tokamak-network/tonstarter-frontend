@@ -256,7 +256,7 @@ const stakeEth = async (args: StakeTon) => {
   }
 };
 
-export const withdraw = async (args: unstake) => {
+export const unstake = async (args: unstake) => {
   const {userAddress, endTime, library, stakeContractAddress} = args;
   const currentBlock = await rpc.getBlockNumber();
 
@@ -275,7 +275,7 @@ export const withdraw = async (args: unstake) => {
     }
     const signer = getSigner(library, userAddress);
     try {
-      await StakeTONContract.connect(signer)?.withdraw();
+      await StakeTONContract.connect(signer)?.unstake();
     } catch (err) {
       console.log(err)
     }
@@ -291,8 +291,11 @@ export const claimReward = async (args: claim) => {
   if (userAddress === null || userAddress === undefined) {
     return;
   }
-  
-  if (currentBlock > startTime) {
+  if (currentBlock < startTime) {
+    return alert('Sale is not ended!');
+  } else if (myClaimed === '0.0') {
+    return alert('unsufficient reward');
+  } else {
     const StakeTONContract = await new Contract(
       stakeContractAddress,
       StakeTON.abi,
@@ -306,10 +309,8 @@ export const claimReward = async (args: claim) => {
     try {
       await StakeTONContract.connect(signer)?.claim();
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  } else {
-    return alert('Sale is not ended!');
   }
 };
 

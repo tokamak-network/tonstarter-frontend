@@ -10,7 +10,7 @@ import {
   Flex,
   Stack,
 } from '@chakra-ui/react';
-import {withdraw} from '../staking.reducer';
+import {unstake} from '../staking.reducer';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
@@ -22,8 +22,6 @@ export const UnstakeOptionModal = () => {
 
   let balance = data?.data?.stakeBalanceTON;
   console.log(data?.data);
-  console.log(data?.data?.stakeBalanceETH);
-  console.log(data?.data?.stakeBalanceTON);
 
   return (
     <Modal
@@ -79,7 +77,7 @@ export const UnstakeOptionModal = () => {
             <Button
               type={'submit'}
               onClick={() =>
-                withdraw({
+                unstake({
                   userAddress: account,
                   endTime: data.data.endTime,
                   library: library,
