@@ -93,7 +93,7 @@ export const StakeOptionModal = () => {
             <Box textAlign={'center'}>
               <Text>Available Balance</Text>
               <Text>
-                {balance} {data.data.tokenSymbol}
+                {balance}
               </Text>
             </Box>
           </Stack>

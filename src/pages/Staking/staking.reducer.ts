@@ -208,14 +208,6 @@ const stakeTon = async (args: StakeTon) => {
   );
   const signer = getSigner(library, userAddress);
 
-  try {
-    console.log(tonContract);
-    await tonContract
-    .connect(signer)
-    ?.approveAndCall(stakeContractAddress, tonAmount, data);
-  } catch(err) {
-    console.log(err);
-  }
   if (currentBlock > saleStartBlock && currentBlock < stakeStartBlock) {
     const tonContract = new Contract(REACT_APP_TON, TonABI.abi, rpc);
     if (!tonContract) {
@@ -229,9 +221,13 @@ const stakeTon = async (args: StakeTon) => {
     );
     const signer = getSigner(library, userAddress);
 
-    await tonContract
-      .connect(signer)
-      ?.approveAndCall(stakeContractAddress, tonAmount, data);
+    try {
+      await tonContract
+        .connect(signer)
+        ?.approveAndCall(stakeContractAddress, tonAmount, data);
+    } catch (err) {
+      console.log(err)
+    }
   } else {
     return alert('staking period has ended');
   }
@@ -258,7 +254,11 @@ const stakeEth = async (args: StakeTon) => {
     };
 
     const signer = getSigner(library, userAddress);
-    await signer.sendTransaction(transactionRequest);
+    try {
+      await signer.sendTransaction(transactionRequest);
+    } catch (err) {
+      console.log(err)
+    }
   } else {
     return alert('staking period has ended');
   }
@@ -282,8 +282,11 @@ export const withdraw = async (args: unstake) => {
       throw new Error(`Can't find the contract for staking actions`);
     }
     const signer = getSigner(library, userAddress);
-
-    await StakeTONContract.connect(signer)?.withdraw();
+    try {
+      await StakeTONContract.connect(signer)?.withdraw();
+    } catch (err) {
+      console.log(err)
+    }
   } else {
     return alert('sale has not ended yet');
   }
@@ -307,7 +310,11 @@ export const claimReward = async (args: claim) => {
       throw new Error(`Can't find the contract for staking actions`);
     }
     const signer = getSigner(library, userAddress);
-    await StakeTONContract.connect(signer)?.claim();
+    try {
+      await StakeTONContract.connect(signer)?.claim();
+    } catch (err) {
+      console.log(err)
+    }
   }
 };
 
@@ -324,7 +331,11 @@ export const closeSale = async (args: endsale) => {
   const currentBlock = await rpc.getBlockNumber();
   if (currentBlock > stakeStartBlock) {
     const signer = getSigner(library, userAddress);
-    await stakeVault.connect(signer)?.closeSale();
+    try {
+      await stakeVault.connect(signer)?.closeSale();
+    } catch (err) {
+      console.log(err)
+    }
   } else {
     return alert('Staking has not ended yet');
   }
@@ -351,9 +362,15 @@ export const stakeToLayer2 = async (args: stakeToLayer2Args) => {
     const tonAmount = converToWei(amount);
     const data = getData(REACT_APP_TOKAMAK_LAYER2);
     const signer = getSigner(library, userAddress);
-    await tonContract
-      .connect(signer)
-      .approveAndCall(REACT_APP_WTON, tonAmount, data);
+    try {
+      await tonContract
+        .connect(signer)
+        .approveAndCall(REACT_APP_WTON, tonAmount, data);
+    } catch (err) {
+      console.log(err)
+    }
+  } else {
+    return alert('staking period has ended'); // ToDo: comment check
   }
 };
 
@@ -414,8 +431,6 @@ export const fetchStakes = createAsyncThunk(
           status = await getStatus(stake);
         }, 10);
 
-        // console.log(String(stake.totalStakedAmount));
-        // console.log(BigNumber.from(stake.totalStakedAmount));
 
         const stakeInfo: Partial<Stake> = {
           contractAddress: stake.stakeContract,
