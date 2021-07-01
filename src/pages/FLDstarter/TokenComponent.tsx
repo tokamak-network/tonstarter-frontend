@@ -13,25 +13,29 @@ import {useColorMode} from '@chakra-ui/react';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import {useCallback} from 'react';
 import {checkTokenType} from 'utils/token';
-import {TokenType} from 'types/index';
+import {useDispatch} from 'react-redux';
+import {useHistory} from 'react-router';
+import {openModal} from 'store/modal.reducer';
 
 type TokenComponentProps = {
-  phase?: string;
-  period: string;
-  token: TokenType;
-  stakedAmount: string;
+  data: any;
 };
 
-export const TokenComponent: FC<TokenComponentProps> = ({
-  phase,
-  period,
-  token,
-  stakedAmount,
-}) => {
+export const TokenComponent: FC<TokenComponentProps> = ({data}) => {
+  const {phase, period, token, stakeBalanceTON} = data;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const tokenType = checkTokenType(token);
-  const handleNavigation = useCallback(() => {}, []);
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const handleStakingNavigation = useCallback(() => {
+    dispatch(openModal({type: 'stake', data}));
+    history.push(`/staking`);
+  }, [data, dispatch, history]);
+  const handleInfoNavigation = useCallback(() => {
+    dispatch(openModal({type: 'manage', data}));
+    history.push(`/staking`);
+  }, [data, dispatch, history]);
   return (
     <Container
       bg={colorMode === 'light' ? theme.colors.white[100] : 'transparent'}
@@ -95,7 +99,7 @@ export const TokenComponent: FC<TokenComponentProps> = ({
                   : theme.colors.white[100]
               }
               lineHeight={1}>
-              {stakedAmount}
+              {stakeBalanceTON}
             </Text>
             <Text
               fontWeight={'semibold'}
@@ -123,6 +127,7 @@ export const TokenComponent: FC<TokenComponentProps> = ({
           </Text>
           <Flex mt={4} mb={2}>
             <Button
+              onClick={() => handleStakingNavigation()}
               h={8}
               fontSize={16}
               fontWeight={700}
@@ -138,7 +143,7 @@ export const TokenComponent: FC<TokenComponentProps> = ({
 
             <Button
               borderWidth={1}
-              onClick={() => handleNavigation()}
+              onClick={() => handleInfoNavigation()}
               borderColor={
                 colorMode === 'light' ? 'transparent' : theme.colors.gray[75]
               }

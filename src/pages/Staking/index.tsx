@@ -28,6 +28,7 @@ import {
 import {AppDispatch} from 'store';
 import {openModal} from 'store/modal.reducer';
 import {ManageModal} from './StakeOptionModal/manage';
+import {StakeInLayer2Modal} from './StakeOptionModal/stakeInLayer2';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
@@ -115,6 +116,7 @@ export const Staking = () => {
   const {data: user} = useAppSelector(selectUser);
   // @ts-ignore
   const {data: appConfig} = useAppSelector(selectApp);
+
   const columns = useMemo(
     () => [
       {
@@ -164,18 +166,7 @@ export const Staking = () => {
 
   const renderRowSubComponent = useCallback(
     ({row}) => {
-      const {account, library, contractAddress} = row.original;
-
-      // dispatch(
-      //   fetchStakes({
-      //     contractAddress,
-      //     library,
-      //     account,
-      //     chaindId: 4,
-      //     type: 'detail',
-      //   }) as any,
-      // );
-
+      const {account} = row.original;
       return (
         <Flex
           mt={0}
@@ -294,6 +285,7 @@ export const Staking = () => {
       <UnstakeOptionModal />
       <ClaimOptionModal />
       <ManageModal />
+      <StakeInLayer2Modal />
     </Fragment>
   );
 };

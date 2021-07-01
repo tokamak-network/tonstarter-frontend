@@ -30,9 +30,9 @@ export const ManageModal = () => {
   const toggleModal = useCallback(
     (modal: ModalType) => {
       dispatch(closeModal());
-      dispatch(openModal({type: modal}));
+      dispatch(openModal({type: modal, data: data}));
     },
-    [dispatch],
+    [data, dispatch],
   );
 
   return (

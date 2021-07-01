@@ -348,9 +348,7 @@ export const fetchStakes = createAsyncThunk(
     let projects: any[] = [];
     const chainIdforFetch = chainId === undefined ? '4' : chainId;
     const fetchUrl = `http://3.36.66.138:4000/v1/stakecontracts?chainId=${chainIdforFetch}`;
-    // let iERC20: any;
 
-    // let iERC20: any;
     // @ts-ignore
     const {currentRequestId, loading} = getState().stakes;
     if (loading !== 'pending' || requestId !== currentRequestId) {
@@ -359,40 +357,15 @@ export const fetchStakes = createAsyncThunk(
       return;
     }
 
-    // const vaults = temp.datas;
-
-    // stakeList = await Promise.all(
-    //   vaults.map(async (vault: any) => {
-    //     const stakeVault = vault.vault;
-    //     const stakeType = vault.stakeType;
-    //     const token = vault.paytoken;
-    //     const projects = vault.stakeAddresses;
-    //     return {
-    //       // iERC20: iERC20,
-    //       stakeType,
-    //       projects,
-    //       stakeVault,
-    //       token,
-    //     };
-    //   }),
-    // );
-
-    const vaultReq = await fetch('http://3.36.66.138:4000/v1/vaults?chainId=4')
-      .then(res => res.json())
-      .then(result => result);
-
     const req = await fetch(fetchUrl)
       .then(res => res.json())
       .then(result => result);
 
     const stakeList = req.datas;
+    console.log(stakeList);
 
-    // console.log(vaultReq);
-    // console.log(stakeList);
     await Promise.all(
       stakeList.map(async (stake: any, index: number) => {
-        // let info = await stake.stakeVault.stakeInfos(item)
-
         let mystaked: any = '';
         let myearned: any = '';
         if (account) {
@@ -426,7 +399,8 @@ export const fetchStakes = createAsyncThunk(
           mywithdraw: formatEther(0),
           myclaimed: formatEther(0),
           canRewardAmount: formatEther(0),
-          stakeBalanceTON: formatEther(String(stake.totalStakedAmount)),
+          // stakeBalanceTON: formatEther(stake.totalStakedAmount),
+          stakeBalanceTON: formatEther(0),
           stakeBalanceETH: formatEther(0),
           stakeBalanceFLD: formatEther(0),
           tokamakStaked: formatEther(0),
