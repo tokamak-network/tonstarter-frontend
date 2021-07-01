@@ -22,8 +22,10 @@ export const ClaimOptionModal = () => {
 
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
-
-  let balance = data?.data?.user?.balance;
+  console.log(data?.data);
+  let claimed = data?.data?.myclaimed;
+  let earned = data?.data?.myearned;
+  let balance = data?.data?.myclaimed;
 
   return (
     <Modal
@@ -40,7 +42,7 @@ export const ClaimOptionModal = () => {
               textAlign={'center'}>
               Claim
             </Heading>
-            <Text>You can claimxxx and earn xxx</Text>
+            <Text>You can claim {claimed} TOS and earn {earned}</Text>
           </Box>
 
           <Stack
@@ -62,7 +64,7 @@ export const ClaimOptionModal = () => {
                 borderWidth: 0,
               }}>
               {' '}
-              {balance} TON
+              {balance} TOS
             </Text>
           </Stack>
 
@@ -73,7 +75,7 @@ export const ClaimOptionModal = () => {
             alignItems={'center'}>
             <Box textAlign={'center'}>
               <Text>Claim Available</Text>
-              <Text>{balance} TON</Text>
+              <Text>{balance} TOS</Text>
             </Box>
           </Stack>
 
@@ -101,8 +103,10 @@ export const ClaimOptionModal = () => {
                 claimReward({
                   userAddress: account,
                   stakeContractAddress: data.data.contractAddress,
-                  stakeStartBlock: data.data.stakeStartBlock,
+                  startTime: data.data.startTime,
                   library: library,
+                  myClaimed: data.data.myclaimed,
+                  myEarned: data.data.myearned
                 })
               }
               bg={theme.colors.yellow[200]}

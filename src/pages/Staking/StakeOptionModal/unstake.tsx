@@ -20,7 +20,10 @@ export const UnstakeOptionModal = () => {
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
 
-  let balance = data?.data?.user?.balance;
+  let balance = data?.data?.stakeBalanceTON;
+  console.log(data?.data);
+  console.log(data?.data?.stakeBalanceETH);
+  console.log(data?.data?.stakeBalanceTON);
 
   return (
     <Modal
@@ -57,7 +60,7 @@ export const UnstakeOptionModal = () => {
               _focus={{
                 borderWidth: 0,
               }}>
-              {balance}
+              {balance ? balance : '0.00'}
             </Text>
           </Stack>
 
@@ -68,7 +71,7 @@ export const UnstakeOptionModal = () => {
             alignItems={'center'}>
             <Box textAlign={'center'}>
               <Text>Available Balance</Text>
-              <Text>{balance} TON</Text>
+              <Text>{balance ? balance : '0.00'} TON</Text>
             </Box>
           </Stack>
 
@@ -78,7 +81,7 @@ export const UnstakeOptionModal = () => {
               onClick={() =>
                 withdraw({
                   userAddress: account,
-                  stakeEndBlock: data.data.stakeEndBlock,
+                  endTime: data.data.endTime,
                   library: library,
                   stakeContractAddress: data.data.contractAddress,
                 })

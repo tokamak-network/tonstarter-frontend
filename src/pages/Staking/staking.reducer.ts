@@ -82,7 +82,7 @@ type StakeProps = {
   saleStartBlock: string | Number;
   library: any;
   stakeContractAddress: string;
-  stakeStartBlock: string | Number;
+  startTime: string | Number;
 };
 type StakeTon = {
   userAddress: string | null | undefined;
@@ -90,12 +90,12 @@ type StakeTon = {
   saleStartBlock: string | Number;
   library: any;
   stakeContractAddress: string;
-  stakeStartBlock: string | Number;
+  startTime: string | Number;
 };
 
 type unstake = {
   userAddress: string | null | undefined;
-  stakeEndBlock: string | Number;
+  endTime: string | Number;
   library: any;
   stakeContractAddress: string;
 };
@@ -103,8 +103,10 @@ type unstake = {
 type claim = {
   userAddress: string | null | undefined;
   stakeContractAddress: string;
-  stakeStartBlock: string | Number;
+  startTime: string | Number;
   library: any;
+  myClaimed: string;
+  myEarned: string;
 };
 
 type endsale = {
@@ -159,7 +161,7 @@ export const stakePaytoken = async (args: StakeProps) => {
     saleStartBlock,
     library,
     stakeContractAddress,
-    stakeStartBlock,
+    startTime,
   } = args;
 
   if (payToken === DEPLOYED.TON) {
@@ -169,7 +171,7 @@ export const stakePaytoken = async (args: StakeProps) => {
       saleStartBlock: saleStartBlock,
       library: library,
       stakeContractAddress: stakeContractAddress,
-      stakeStartBlock: stakeStartBlock,
+      startTime: startTime,
     });
   } else {
     await stakeEth({
@@ -178,10 +180,11 @@ export const stakePaytoken = async (args: StakeProps) => {
       saleStartBlock: saleStartBlock,
       library: library,
       stakeContractAddress: stakeContractAddress,
-      stakeStartBlock: stakeStartBlock,
+      startTime: startTime,
     });
   }
 };
+
 const stakeTon = async (args: StakeTon) => {
   const {
     userAddress,
@@ -189,26 +192,14 @@ const stakeTon = async (args: StakeTon) => {
     saleStartBlock,
     library,
     stakeContractAddress,
-    stakeStartBlock,
+    startTime,
   } = args;
   if (userAddress === null || userAddress === undefined) {
     return;
   }
   const currentBlock = await rpc.getBlockNumber();
-  
-  const tonContract = new Contract(REACT_APP_TON, TonABI.abi, rpc);
-  if (!tonContract) {
-    throw new Error(`Can't find the contract for staking actions`);
-  }
-  const tonAmount = converToWei(amount);
-  const abicoder = ethers.utils.defaultAbiCoder;
-  const data = abicoder.encode(
-    ['address', 'uint256'],
-    [stakeContractAddress, tonAmount],
-  );
-  const signer = getSigner(library, userAddress);
 
-  if (currentBlock > saleStartBlock && currentBlock < stakeStartBlock) {
+  if (currentBlock > saleStartBlock && currentBlock < startTime) {
     const tonContract = new Contract(REACT_APP_TON, TonABI.abi, rpc);
     if (!tonContract) {
       throw new Error(`Can't find the contract for staking actions`);
@@ -229,9 +220,10 @@ const stakeTon = async (args: StakeTon) => {
       console.log(err)
     }
   } else {
-    return alert('staking period has ended');
+    return alert('Not staking period');
   }
 };
+
 const stakeEth = async (args: StakeTon) => {
   const {
     userAddress,
@@ -239,7 +231,7 @@ const stakeEth = async (args: StakeTon) => {
     saleStartBlock,
     library,
     stakeContractAddress,
-    stakeStartBlock,
+    startTime,
   } = args;
 
   if (userAddress === null || userAddress === undefined) {
@@ -247,7 +239,7 @@ const stakeEth = async (args: StakeTon) => {
   }
   const currentBlock = await rpc.getBlockNumber();
 
-  if (currentBlock > saleStartBlock && currentBlock < stakeStartBlock) {
+  if (currentBlock > saleStartBlock && currentBlock < startTime) {
     const transactionRequest: any = {
       to: stakeContractAddress,
       value: utils.parseEther(amount),
@@ -265,13 +257,13 @@ const stakeEth = async (args: StakeTon) => {
 };
 
 export const withdraw = async (args: unstake) => {
-  const {userAddress, stakeEndBlock, library, stakeContractAddress} = args;
+  const {userAddress, endTime, library, stakeContractAddress} = args;
   const currentBlock = await rpc.getBlockNumber();
 
   if (userAddress === null || userAddress === undefined) {
     return;
   }
-  if (currentBlock > stakeEndBlock) {
+  if (currentBlock > endTime) {
     const StakeTONContract = await new Contract(
       stakeContractAddress,
       StakeTON.abi,
@@ -293,13 +285,14 @@ export const withdraw = async (args: unstake) => {
 };
 
 export const claimReward = async (args: claim) => {
-  const {userAddress, stakeContractAddress, stakeStartBlock, library} = args;
+  const {userAddress, stakeContractAddress, startTime, library, myClaimed, myEarned} = args;
   const currentBlock = await rpc.getBlockNumber();
 
   if (userAddress === null || userAddress === undefined) {
     return;
   }
-  if (currentBlock > stakeStartBlock) {
+  
+  if (currentBlock > startTime) {
     const StakeTONContract = await new Contract(
       stakeContractAddress,
       StakeTON.abi,
@@ -315,6 +308,8 @@ export const claimReward = async (args: claim) => {
     } catch (err) {
       console.log(err)
     }
+  } else {
+    return alert('Sale is not ended!');
   }
 };
 

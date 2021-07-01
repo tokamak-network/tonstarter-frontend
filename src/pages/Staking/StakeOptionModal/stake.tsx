@@ -23,7 +23,7 @@ export const StakeOptionModal = () => {
   const {account, library} = useWeb3React();
 
   let balance = data?.data?.user?.balance;
-
+  console.log(data?.data);
   const [value, setValue] = useState<number>(balance);
 
   const handleChange = useCallback(e => setValue(e.target.value), []);
@@ -109,7 +109,7 @@ export const StakeOptionModal = () => {
                   saleStartBlock: data.data.saleStartBlock,
                   library: library,
                   stakeContractAddress: data.data.contractAddress,
-                  stakeStartBlock: data.data.stakeStartBlock,
+                  startTime: data.data.startTime,
                 })
               }>
               Stake
