@@ -25,10 +25,11 @@ import {
   StakeOptionModal,
   UnstakeOptionModal,
 } from './StakeOptionModal';
-import {AppDispatch} from 'store';
+import store, {AppDispatch} from 'store';
 import {openModal} from 'store/modal.reducer';
 import {ManageModal} from './StakeOptionModal/manage';
-import {formatStartTime} from 'utils/timeStamp';
+import {formatStartTime, formatEndTime} from 'utils/timeStamp';
+import {useState} from 'react';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
@@ -38,6 +39,21 @@ type WalletInformationProps = {
   };
   account: string | undefined;
 };
+
+const GetDate = ({time, currentBlock}: any) => {
+  const [date, setDate] = useState('');
+  const fetchDate = async () => {
+    const result = await formatStartTime(time, currentBlock);
+    setDate(result);
+  };
+  fetchDate();
+  return (
+    <Text fontSize={'20px'} color="white.200" fontWeight={'bold'} w="100%">
+      {date}
+    </Text>
+  );
+};
+
 const WalletInformation: FC<WalletInformationProps> = ({
   user,
   data,
@@ -162,13 +178,10 @@ export const Staking = () => {
     [],
   );
 
-  const test = async (arg: any) => {
-    return await formatStartTime(arg);
-  };
-
   const renderRowSubComponent = useCallback(
     ({row}) => {
       const {account, library, contractAddress} = row.original;
+      const currentBlock = store.getState().appConfig.data.blockNumber;
 
       return (
         <Flex
@@ -182,24 +195,42 @@ export const Staking = () => {
             px={{base: 3, md: 20}}
             py={{base: 1, md: 10}}
             flexDir={'column'}
+            width="347px"
             justifyContent={'space-between'}
             h={'100%'}>
             <Flex flexDir={'column'} alignItems={'space-between'}>
               <Text fontSize={'15px'} color="gray.425">
-                Mining Starting Day
+                {data[row.id]?.status === 'sale'
+                  ? 'Sale Starting Day'
+                  : 'Mining Starting Day'}
               </Text>
-              <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-                {data[row.id]?.startTime}
+              <Text w="210px">
+                <GetDate
+                  time={
+                    data[row.id]?.status === 'sale'
+                      ? data[row.id]?.saleStartTime
+                      : data[row.id]?.miningStartTime
+                  }
+                  currentBlock={currentBlock}></GetDate>
               </Text>
             </Flex>
             <Flex flexDir={'column'} alignItems={'space-between'}>
               <Text fontSize={'15px'} color="gray.425">
-                Mining Closing day
+                {data[row.id]?.status === 'sale'
+                  ? 'Sale Closing Day'
+                  : 'Mining Closing Day'}
               </Text>
-              <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-                {data[row.id]?.endTime}
+              <Text w="220px">
+                <GetDate
+                  time={
+                    data[row.id]?.status === 'sale'
+                      ? data[row.id]?.saleEndTime
+                      : data[row.id]?.miningEndTime
+                  }
+                  currentBlock={currentBlock}></GetDate>
               </Text>
             </Flex>
+
             <Flex flexDir={'column'} alignItems={'space-between'}>
               <Text fontSize={'15px'} color="gray.425">
                 Total stakers

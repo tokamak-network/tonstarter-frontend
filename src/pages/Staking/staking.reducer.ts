@@ -1,7 +1,7 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {RootState} from 'store/reducers';
 import {getContract, getSigner} from 'utils/contract';
-import {BigNumber, utils, ethers} from 'ethers';
+import {utils, ethers} from 'ethers';
 import {padLeft, toWei} from 'web3-utils';
 import * as StakeVault from 'services/abis/Stake1Vault.json';
 import * as StakeTON from 'services/abis/StakeTON.json';
@@ -9,7 +9,7 @@ import * as TonABI from 'services/abis/TON.json';
 import * as DepositManagerABI from 'services/abis/DepositManager.json';
 import * as TosABI from 'services/abis/ITOS.json';
 import {formatEther} from '@ethersproject/units';
-import {period, formatStartTime, formatEndTime} from 'utils/timeStamp';
+import {period} from 'utils/timeStamp';
 import {
   REACT_APP_TON,
   REACT_APP_TOKAMAK_LAYER2,
@@ -57,12 +57,14 @@ export type Stake = {
   tokamakPendingUnstaked: Number | string;
   staketype: string;
   period: string;
-  startTime: number;
-  endTime: string;
   status: string;
   library: any;
   account: any;
   fetchBlock: number | undefined;
+  saleStartTime: string | undefined;
+  saleEndTime: string | undefined;
+  miningStartTime: string | undefined;
+  miningEndTime: string | undefined;
 };
 
 interface StakeState {
@@ -349,8 +351,7 @@ export const fetchStakes = createAsyncThunk(
     // let iERC20: any;
 
     const {appConfig} = store.getState();
-    const appLoading = appConfig.loading;
-    const blockNumber = appConfig.data.blockNumber;
+    const currentBlockNumber = appConfig.data.blockNumber;
 
     // @ts-ignore
     const {currentRequestId, loading} = getState().stakes;
@@ -391,10 +392,11 @@ export const fetchStakes = createAsyncThunk(
           myearned = `${userRewardTOS}TOS`;
         }
 
-        const status = await getStatus(stake, blockNumber);
-
-        // console.log(String(stake.totalStakedAmount));
-        // console.log(BigNumber.from(stake.totalStakedAmount));
+        const status = await getStatus(stake, currentBlockNumber);
+        // const miningStartTime = await formatStartTime(
+        //   stake.startBlock,
+        //   currentBlockNumber,
+        // );
 
         const stakeInfo: Partial<Stake> = {
           contractAddress: stake.stakeContract,
@@ -426,9 +428,11 @@ export const fetchStakes = createAsyncThunk(
           token: stake.paytoken,
           stakeType: stake.stakeType,
           period: period(stake.startBlock, stake.endBlock),
-          startTime: stake.startBlock,
-          endTime: stake.endBlock,
-          fetchBlock: appConfig.data.blockNumber,
+          saleStartTime: '0000',
+          saleEndTime: '0000',
+          miningStartTime: stake.startBlock,
+          miningEndTime: stake.endBlock,
+          fetchBlock: currentBlockNumber,
           status,
           library,
           account,
@@ -485,11 +489,11 @@ const getUserInfo = async (
   // stakeInfo.mywithdraw = formatEther(staked.releasedAmount);
 };
 
-const getTimes = async (startTime: any, endTime: any) => {
-  const fetchedStartTime = await formatStartTime(startTime);
-  const fetchedEndTime = await formatEndTime(startTime, endTime);
-  return {fetchedStartTime, fetchedEndTime};
-};
+// const getTimes = async (startTime: any, endTime: any) => {
+//   const fetchedStartTime = await formatStartTime(startTime);
+//   const fetchedEndTime = await formatEndTime(startTime, endTime);
+//   return {fetchedStartTime, fetchedEndTime};
+// };
 
 export const getStatus = async (args: any, blockNumber: number) => {
   if (blockNumber === 0) {

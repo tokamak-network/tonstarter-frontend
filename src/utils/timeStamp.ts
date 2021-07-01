@@ -8,10 +8,12 @@ export const period = (startBlockNum: BigNumber, endBlockNum: BigNumber) => {
   const periodHumanized = moment.duration(seconds, 'seconds').humanize();
   return periodHumanized;
 };
-export const formatStartTime = async (blockNum: BigNumber) => {
+export const formatStartTime = async (
+  blockNum: string | undefined,
+  currentBlock: number,
+) => {
   const blockNumberBN = BigNumber.from(blockNum);
   const blockNumber = blockNumberBN.toNumber();
-  let currentBlock = await provider.getBlockNumber();
   if (currentBlock > blockNumber) {
     const block = await provider.getBlock(blockNumber);
     const timeStamp = block.timestamp;
@@ -27,10 +29,10 @@ export const formatStartTime = async (blockNum: BigNumber) => {
 export const formatEndTime = async (
   startBlockNum: BigNumber,
   endBlockNum: BigNumber,
+  currentBlock: number,
 ) => {
   let startB = Number(startBlockNum);
   let endB = Number(endBlockNum);
-  let currentBlock = await provider.getBlockNumber();
   if (Number(currentBlock > endB)) {
     const endBlock = await provider.getBlock(endB);
     const timeStamp = endBlock.timestamp;
