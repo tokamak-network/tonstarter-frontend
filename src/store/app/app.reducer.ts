@@ -6,7 +6,7 @@ import {getExplorerLink, getNetworkName, getBlockNumber} from 'utils';
 export type AppConfig = {
   selectedNetwork: string;
   explorerLink: string;
-  blockNumber: string;
+  blockNumber: number;
 };
 
 interface IAppInit {
@@ -20,7 +20,7 @@ const initialState = {
   data: {
     selectedNetwork: '',
     explorerLink: '',
-    blockNumber: '',
+    blockNumber: 0,
   },
   loading: 'idle',
   error: null,

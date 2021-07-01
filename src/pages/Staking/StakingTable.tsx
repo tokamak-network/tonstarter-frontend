@@ -1,4 +1,4 @@
-import {FC, useEffect} from 'react';
+import {FC, useState} from 'react';
 import {
   Column,
   useExpanded,
@@ -115,6 +115,7 @@ export const StakingTable: FC<StakingTableProps> = ({
   );
 
   const {colorMode} = useColorMode();
+  // const {isOpen, setIsOpen} = useState('');
   const onChangeSelectBox = (e: any) => {
     const filterValue = e.target.value;
     headerGroups[0].headers.map((e) => {

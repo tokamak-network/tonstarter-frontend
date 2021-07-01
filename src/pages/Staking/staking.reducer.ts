@@ -57,11 +57,12 @@ export type Stake = {
   tokamakPendingUnstaked: Number | string;
   staketype: string;
   period: string;
-  startTime: string;
+  startTime: number;
   endTime: string;
   status: string;
   library: any;
   account: any;
+  fetchBlock: number | undefined;
 };
 
 interface StakeState {
@@ -339,12 +340,17 @@ export const fetchStakes = createAsyncThunk(
     {contract, library, account, chainId, reFetch}: any,
     {requestId, getState},
   ) => {
-    const {appConfig} = store.getState();
+    //result to dispatch data for Stakes store
     let projects: any[] = [];
+
     const chainIdforFetch = chainId === undefined ? '4' : chainId;
     const fetchValutUrl = `http://3.36.66.138:4000/v1/vaults?chainId=${chainIdforFetch}`;
     const fetchStakeUrl = `http://3.36.66.138:4000/v1/stakecontracts?chainId=${chainIdforFetch}`;
     // let iERC20: any;
+
+    const {appConfig} = store.getState();
+    const appLoading = appConfig.loading;
+    const blockNumber = appConfig.data.blockNumber;
 
     // @ts-ignore
     const {currentRequestId, loading} = getState().stakes;
@@ -363,23 +369,16 @@ export const fetchStakes = createAsyncThunk(
       .then((result) => result);
 
     const stakeList = stakeReq.datas;
-    console.log('-----------');
-    console.log(vaultReq);
-    console.log(stakeList);
-
+    // console.log('-----------');
     // console.log(vaultReq);
     // console.log(stakeList);
 
-    if (reFetch === true) {
-      console.log('---go---');
-    }
     await Promise.all(
       stakeList.map(async (stake: any, index: number) => {
         // let info = await stake.stakeVault.stakeInfos(item)
 
         let mystaked: string = '';
         let myearned: string = '';
-        let status = 'loading';
 
         if (account) {
           console.log('--acount--');
@@ -392,10 +391,7 @@ export const fetchStakes = createAsyncThunk(
           myearned = `${userRewardTOS}TOS`;
         }
 
-        if (reFetch === true) {
-          console.log('--refetch run--');
-          status = await getStatus(stake, appConfig.data.blockNumber);
-        }
+        const status = await getStatus(stake, blockNumber);
 
         // console.log(String(stake.totalStakedAmount));
         // console.log(BigNumber.from(stake.totalStakedAmount));
@@ -430,8 +426,9 @@ export const fetchStakes = createAsyncThunk(
           token: stake.paytoken,
           stakeType: stake.stakeType,
           period: period(stake.startBlock, stake.endBlock),
-          startTime: appConfig.data.blockNumber,
+          startTime: stake.startBlock,
           endTime: stake.endBlock,
+          fetchBlock: appConfig.data.blockNumber,
           status,
           library,
           account,
@@ -494,16 +491,19 @@ const getTimes = async (startTime: any, endTime: any) => {
   return {fetchedStartTime, fetchedEndTime};
 };
 
-export const getStatus = async (args: any, blockNumber: string) => {
-  const {saleStartBlock, saleClosed} = args;
+export const getStatus = async (args: any, blockNumber: number) => {
+  if (blockNumber === 0) {
+    return 'loading';
+  }
+  const {startBlock, endBlock} = args;
   const currentBlock = blockNumber;
-  // if (saleClosed) {
-  //   return 'sale';
-  // }
-  // if (blockNumber >= saleStartBlock) {
-  //   // return 'sale';
-  // }
-  return 'start';
+  if (currentBlock < startBlock) {
+    return 'sale';
+  }
+  if (currentBlock >= startBlock && currentBlock <= endBlock) {
+    return 'start';
+  }
+  return 'end';
 };
 
 // const total = await StakeTONContract?.totalStakers();

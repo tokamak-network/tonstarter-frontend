@@ -82,5 +82,5 @@ export const getBlockNumber = async (chainId: '1' | '4' | undefined) => {
   }
   const provider = ethers.getDefaultProvider(net);
   const currentBlock = await provider.getBlockNumber();
-  return String(currentBlock);
+  return currentBlock;
 };
