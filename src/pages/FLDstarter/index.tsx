@@ -1,16 +1,22 @@
 import {Container, Flex, SimpleGrid, Stack, Button} from '@chakra-ui/react';
 import {Head} from 'components/SEO';
-import {Fragment} from 'react';
+import {Fragment, useReducer} from 'react';
 import {TokenComponent} from './TokenComponent';
 import {Animation} from './Animation';
-import {data} from 'make';
 import {IconTopArrow} from 'components/Icons/IconTopArrow';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectStakes} from '../Staking/staking.reducer';
+
 export const FLDstarter = () => {
   // const [selected, setSelected] = useState<string>('hi');
 
   // const select = (selectedItem: string) => {
   //   setSelected(selectedItem);
   // }
+
+  // @ts-ignore
+  const {data, loading} = useAppSelector(selectStakes);
+  console.log(data);
 
   return (
     <Fragment>
@@ -22,7 +28,9 @@ export const FLDstarter = () => {
             {data.map((item, index) => (
               <TokenComponent
                 phase={item.name}
-                subtitle={item.period}
+                period={item.period}
+                token={item.token}
+                stakedAmount={item.stakeBalanceTON}
                 key={index}
               />
             ))}

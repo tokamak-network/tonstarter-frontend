@@ -14,9 +14,9 @@ import {IconOpen} from 'components/Icons/IconOpen';
 import {Head} from 'components/SEO';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import React, {FC, Fragment, useCallback, useMemo} from 'react';
-import {formatStartTime, formatEndTime, shortenAddress} from 'utils';
+import {shortenAddress} from 'utils';
 import {StakingTable} from './StakingTable';
-import {selectStakes, getUserInfo} from './staking.reducer';
+import {selectStakes} from './staking.reducer';
 import {selectApp} from 'store/app/app.reducer';
 import {selectUser} from 'store/app/user.reducer';
 import {PageHeader} from 'components/PageHeader';
@@ -28,8 +28,6 @@ import {
 import {AppDispatch} from 'store';
 import {openModal} from 'store/modal.reducer';
 import {ManageModal} from './StakeOptionModal/manage';
-import {useState} from 'react';
-import {useWeb3React} from '@web3-react/core';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
@@ -111,7 +109,6 @@ const WalletInformation: FC<WalletInformationProps> = ({
 };
 export const Staking = () => {
   const dispatch = useAppDispatch();
-  const {account, library} = useWeb3React();
 
   // @ts-ignore
   const {data, loading} = useAppSelector(selectStakes);
@@ -165,40 +162,20 @@ export const Staking = () => {
     [],
   );
 
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
-  const [myStaked, setMyStaked] = useState('');
-  // @ts-ignore
-  const [myEarned, setMyEarned] = useState('');
-
-  const fetchDatas = async (args: any) => {
-    const {startTime, endTime} = args;
-    const fetchedStartTime = await formatStartTime(startTime);
-    const fetchedEndTime = await formatEndTime(startTime, endTime);
-    setStartTime(fetchedStartTime);
-    setEndTime(fetchedEndTime);
-  };
-
-  const fetchUserData = async (
-    library: any,
-    account: string,
-    contractAddress: string,
-  ) => {
-    const res = await getUserInfo(library, account, contractAddress);
-    const {userStaked} = res;
-    setMyStaked(userStaked);
-  };
-
   const renderRowSubComponent = useCallback(
     ({row}) => {
-      // const {contractAddress} = row.original;
-      // fetchDatas({
-      //   startTime: data[row.id]?.startTime,
-      //   endTime: data[row.id]?.endTime,
-      // });
-      // fetchUserData(library, account, contractAddress);
-      // const dd = getUserInfo(account, library);
-      // console.log(dd);
+      const {account, library, contractAddress} = row.original;
+
+      // dispatch(
+      //   fetchStakes({
+      //     contractAddress,
+      //     library,
+      //     account,
+      //     chaindId: 4,
+      //     type: 'detail',
+      //   }) as any,
+      // );
+
       return (
         <Flex
           mt={0}
@@ -218,7 +195,7 @@ export const Staking = () => {
                 Mining Starting Day
               </Text>
               <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-                {startTime}
+                {data[row.id]?.startTime}
               </Text>
             </Flex>
             <Flex flexDir={'column'} alignItems={'space-between'}>
@@ -226,7 +203,7 @@ export const Staking = () => {
                 Mining Closing day
               </Text>
               <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-                {endTime}
+                {data[row.id]?.endTime}
               </Text>
             </Flex>
             <Flex flexDir={'column'} alignItems={'space-between'}>
@@ -257,7 +234,7 @@ export const Staking = () => {
                 My staked
               </Text>
               <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-                {myStaked}
+                {data[row.id]?.mystaked}
               </Text>
               {/* <Text>{data[row.id]?.mystaked}</Text> */}
             </Flex>
@@ -266,9 +243,8 @@ export const Staking = () => {
                 My Earned
               </Text>
               <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-                {myEarned}
+                {data[row.id]?.myearned}
               </Text>
-              {/* <Text>{data[row.id]?.totalRewardAmount}</Text> */}
             </Flex>
             <Flex flexDir={'column'} alignItems={'space-between'}>
               <Text fontSize={'15px'} color="gray.425">
@@ -290,17 +266,7 @@ export const Staking = () => {
         </Flex>
       );
     },
-    [
-      data,
-      dispatch,
-      user,
-      account,
-      appConfig.explorerLink,
-      startTime,
-      endTime,
-      myStaked,
-      myEarned,
-    ],
+    [data, dispatch, user, appConfig.explorerLink],
   );
 
   return (
@@ -311,7 +277,7 @@ export const Staking = () => {
           <PageHeader
             title={'TON Starter'}
             subtitle={
-              'Put your tokens into FLD and earn without losing principal'
+              'Put your tokens into TON Starter and earn reward without losing principal'
             }
           />
         </Box>

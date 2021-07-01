@@ -12,15 +12,25 @@ import {
 import {useColorMode} from '@chakra-ui/react';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import {useCallback} from 'react';
+import {checkTokenType} from 'utils/token';
+import {TokenType} from 'types/index';
+
 type TokenComponentProps = {
   phase?: string;
-  subtitle: string;
+  period: string;
+  token: TokenType;
+  stakedAmount: string;
 };
 
-export const TokenComponent: FC<TokenComponentProps> = ({phase, subtitle}) => {
+export const TokenComponent: FC<TokenComponentProps> = ({
+  phase,
+  period,
+  token,
+  stakedAmount,
+}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
-
+  const tokenType = checkTokenType(token);
   const handleNavigation = useCallback(() => {}, []);
   return (
     <Container
@@ -32,12 +42,13 @@ export const TokenComponent: FC<TokenComponentProps> = ({phase, subtitle}) => {
       p="4">
       <Flex direction={'row'} pos="relative">
         <Avatar
-          src=""
-          borderWidth="1px"
-          borderColor="#f4f6f8"
+          src={tokenType.symbol}
+          backgroundColor={tokenType.bg}
           bg="transparent"
           color="#c7d1d8"
           name="T"
+          h="48px"
+          w="48px"
         />
         <Flex direction={'column'} px={6}>
           <Text
@@ -57,30 +68,20 @@ export const TokenComponent: FC<TokenComponentProps> = ({phase, subtitle}) => {
               Period
             </Text>
             <Text className={'fld-text2'} mr={1}>
-              2 Weeks
+              {period}
             </Text>
             <Text
               fontWeight={'semibold'}
               fontSize={16}
               fontFamily={theme.fonts.fld}
               mx={1}
-              color={theme.colors.gray[10]}>
-              /
-            </Text>
-            <Text className={'fld-text1'} mr={1}>
-              APY
-            </Text>
-            <Text className={'fld-text2'} mr={1}>
-              50%
-            </Text>
+              color={theme.colors.gray[10]}></Text>
           </Flex>
           <Flex>
             <Text className={'fld-text1'} mr={1}>
               Earning Per Block
             </Text>
-            <Text className={'fld-text2'} mr={1}>
-              100 FLD
-            </Text>
+            <Text className={'fld-text2'} mr={1}></Text>
           </Flex>
           <Flex mt={3} alignItems={'center'}>
             <Text
@@ -94,7 +95,7 @@ export const TokenComponent: FC<TokenComponentProps> = ({phase, subtitle}) => {
                   : theme.colors.white[100]
               }
               lineHeight={1}>
-              1,000,000.00
+              {stakedAmount}
             </Text>
             <Text
               fontWeight={'semibold'}
