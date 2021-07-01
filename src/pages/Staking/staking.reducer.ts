@@ -5,7 +5,7 @@ import { Contract } from '@ethersproject/contracts';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import {BigNumber, utils, ethers} from 'ethers';
 import {padLeft, toWei, toBN} from 'web3-utils';
-import * as StakeVault from 'services/abis/Stake1Vault.json';
+import * as StakeVault from 'services/abis/Stake1Logic.json';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import * as TonABI from 'services/abis/TON.json';
 import * as DepositManagerABI from 'services/abis/DepositManager.json';
@@ -19,6 +19,8 @@ import {
   DEPLOYED,
   REACT_APP_WTON,
   REACT_APP_TOS,
+  REACT_APP_STAKE1_LOGIC,
+  REACT_APP_STAKE1_PROXY,
 } from 'constants/index';
 import {TokenType} from 'types/index';
 import {convertNumber} from 'utils/number';
@@ -98,6 +100,7 @@ type unstake = {
   endTime: string | Number;
   library: any;
   stakeContractAddress: string;
+  mystaked: string;
 };
 
 type claim = {
@@ -257,13 +260,19 @@ const stakeEth = async (args: StakeTon) => {
 };
 
 export const unstake = async (args: unstake) => {
-  const {userAddress, endTime, library, stakeContractAddress} = args;
+  const {userAddress, endTime, library, stakeContractAddress, mystaked} = args;
   const currentBlock = await rpc.getBlockNumber();
 
   if (userAddress === null || userAddress === undefined) {
     return;
   }
-  if (currentBlock > endTime) {
+  if (currentBlock < endTime) {
+    // ModalClose();
+    return alert('sale has not ended yet');
+  } else if (mystaked === "0.0") {
+    // ModalClose();
+    return alert('You have no staked balance in this vault.')
+  } else {
     const StakeTONContract = await new Contract(
       stakeContractAddress,
       StakeTON.abi,
@@ -275,12 +284,11 @@ export const unstake = async (args: unstake) => {
     }
     const signer = getSigner(library, userAddress);
     try {
-      await StakeTONContract.connect(signer)?.unstake();
+      await StakeTONContract.connect(signer)?.withdraw();
     } catch (err) {
       console.log(err)
     }
-  } else {
-    return alert('sale has not ended yet');
+    // ModalClose();
   }
 };
 
@@ -293,8 +301,8 @@ export const claimReward = async (args: claim) => {
   }
   if (currentBlock < startTime) {
     return alert('Sale is not ended!');
-  } else if (myClaimed === '0.0') {
-    return alert('unsufficient reward');
+  // } else if (myClaimed === '0.0') {
+  //   return alert('unsufficient reward');
   } else {
     const StakeTONContract = await new Contract(
       stakeContractAddress,
@@ -320,15 +328,16 @@ export const closeSale = async (args: endsale) => {
     return;
   }
   const stakeVault = await new Contract(
-    vaultContractAddress,
+    REACT_APP_STAKE1_PROXY,
     StakeVault.abi,
     rpc,
   );
   const currentBlock = await rpc.getBlockNumber();
   if (currentBlock > stakeStartBlock) {
     const signer = getSigner(library, userAddress);
+    console.log(stakeVault);
     try {
-      await stakeVault.connect(signer)?.closeSale();
+      await stakeVault.connect(signer)?.closeSale(vaultContractAddress);
     } catch (err) {
       console.log(err)
     }

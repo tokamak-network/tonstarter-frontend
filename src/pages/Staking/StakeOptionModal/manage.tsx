@@ -28,14 +28,16 @@ export const ManageModal = () => {
   const dispatch = useAppDispatch();
 
   const toggleModal = useCallback(
-    (modal: ModalType) => {
-      dispatch(openModal({type: modal}));
-      dispatch(closeModal());
+    (modal: ModalType, ) => {
+      dispatch(openModal({type: modal, data: data}));
+      // dispatch(closeModal());
     },
     [dispatch],
   );
-  console.log(data);
-  console.log(data?.data)
+
+  let balance = data?.data?.user?.balance;
+  // console.log(data);
+  // console.log(data?.data)
 
   return (
     <Modal
@@ -62,22 +64,23 @@ export const ManageModal = () => {
             alignItems={'center'}>
             <Box textAlign={'center'}>
               <Text>Available balance</Text>
-              {/* <Text>xxx {data.data.tokenSymbol}</Text> */}
+              <Text>{balance} TON</Text>
             </Box>
             <Box textAlign={'center'}>
-              {/* <Text>Total: xxxx {data.data.tokenSymbol}</Text> */}
-              {/* <Text>Staked in Layer 2: xxxx {data.data.tokenSymbol}</Text> */}
+              <Text>Total: {data.data.stakeBalanceTON} TON</Text>
+              <Text>Staked in Layer 2: {data.data.tokamakStaked} TON</Text>
             </Box>
           </Stack>
 
           <Grid templateColumns={'repeat(2, 1fr)'} gap={6}>
-            <Button colorScheme="blue" onClick={() => toggleModal('stakeL2')}>
+            {/* <Button colorScheme="blue" onClick={() => toggleModal('stakeL2')}> */}
+            <Button colorScheme="blue" onClick={() => dispatch(openModal({type: 'stakeL2', data: data.data}))}>
               Stake in Layer2
             </Button>
-            <Button colorScheme="blue" onClick={() => toggleModal('unstakeL2')}>
+            <Button colorScheme="blue" onClick={() => dispatch(openModal({type: 'unstakeL2', data: data.data}))}>
               Unstake from Layer2
             </Button>
-            <Button colorScheme="blue" onClick={() => toggleModal('withdraw')}>
+            <Button colorScheme="blue" onClick={() => dispatch(openModal({type: 'withdraw', data: data.data}))}>
               Withdraw
             </Button>
             <Button colorScheme="blue">Swap</Button>

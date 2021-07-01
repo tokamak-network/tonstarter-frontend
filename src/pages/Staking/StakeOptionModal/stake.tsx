@@ -16,12 +16,13 @@ import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
 import {stakePaytoken} from '../staking.reducer';
+import { formatStartTime } from 'utils';
 
 export const StakeOptionModal = () => {
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
   const {account, library} = useWeb3React();
-
+  console.log(data?.data);
   let balance = data?.data?.user?.balance;
   const [value, setValue] = useState<number>(balance);
 
@@ -108,7 +109,7 @@ export const StakeOptionModal = () => {
                   saleStartBlock: data.data.saleStartBlock,
                   library: library,
                   stakeContractAddress: data.data.contractAddress,
-                  startTime: data.data.startTime,
+                  startTime: data.data.formatStartTime,
                 })
               }>
               Stake

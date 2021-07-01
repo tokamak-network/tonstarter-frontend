@@ -13,41 +13,32 @@ import {
   } from '@chakra-ui/react';
   import React, {FC, useCallback, useState} from 'react';
   import {useWeb3React} from '@web3-react/core';
+  import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+  import {
+    closeModal,
+    ModalType,
+    openModal,
+    selectModalType,
+  } from 'store/modal.reducer';
   import {stakeToLayer2} from '../staking.reducer';
   
-  type StakeOptionModalProps = {
-    isOpen: boolean;
-    balance: string;
-    payToken: string;
-    saleStartBlock: string | number;
-    stakeStartBlock: string | number;
-    stakeEndBlock: string | number;
-    vaultClosed: boolean;
-    address: string;
-    onClose: Function;
-    onSubmit: Function;
-  };
-  
-  export const StakeInLayer2Modal: FC<StakeOptionModalProps> = ({
-    isOpen,
-    onClose,
-    balance,
-    payToken,
-    saleStartBlock,
-    stakeStartBlock,
-    stakeEndBlock,
-    vaultClosed,
-    address
-  }) => {
+  export const StakeInLayer2Modal= () => {
     const {account, library} = useWeb3React();
+    const {data} = useAppSelector(selectModalType);
+    const dispatch = useAppDispatch();
+    let balance = data?.data?.user?.balance;
+    console.log(data);
   
-    const [value, setValue] = useState<number>(+balance);
+    const [value, setValue] = useState<number>(balance);
   
     const handleChange = useCallback(e => setValue(e.target.value), []);
-    const setMax = useCallback(_e => setValue(+balance), [balance]);
+    const setMax = useCallback(_e => setValue(balance), [balance]);
   
     return (
-      <Modal isOpen={isOpen} isCentered onClose={() => onClose()}>
+      <Modal 
+        isOpen={data.modal === 'stakeL2' ? true : false} 
+        isCentered 
+        onClose={() => dispatch(closeModal())}>
         <ModalOverlay />
         <ModalContent>
           <ModalBody>
@@ -74,7 +65,7 @@ import {
                 textAlign={'center'}
                 fontWeight={'bold'}
                 fontSize={'4xl'}
-                value={value}
+                // value={value}
                 width={'xs'}
                 mr={6}
                 onChange={handleChange}
@@ -102,7 +93,7 @@ import {
               alignItems={'center'}>
               <Box textAlign={'center'}>
                 <Text>Available Balance</Text>
-                <Text>{balance.toString()} TON</Text>
+                <Text>{balance} TON</Text>
               </Box>
             </Stack>
   
@@ -112,8 +103,8 @@ import {
                 onClick={() => stakeToLayer2 ({
                     userAddress:account, 
                     amount: '100',
-                    stakeEndBlock: stakeEndBlock, 
-                    vaultClosed: vaultClosed,
+                    stakeEndBlock: data?.data?.stakeEndBlock, 
+                    vaultClosed: data?.data?.vaultClosed,
                     library: library
                 })}>
                 Stake

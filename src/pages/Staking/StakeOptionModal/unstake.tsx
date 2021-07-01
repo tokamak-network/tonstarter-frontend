@@ -82,6 +82,7 @@ export const UnstakeOptionModal = () => {
                   endTime: data.data.endTime,
                   library: library,
                   stakeContractAddress: data.data.contractAddress,
+                  mystaked: data.data.mystaked,
                 })
               }
               disabled={+balance <= 0}
