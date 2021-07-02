@@ -21,6 +21,7 @@ import {
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import './staking.css';
 import {checkTokenType} from 'utils/token';
+import {TriangleUpIcon, TriangleDownIcon} from '@chakra-ui/icons';
 
 type StakingTableProps = {
   columns: Column[];
@@ -115,7 +116,9 @@ export const StakingTable: FC<StakingTableProps> = ({
   );
 
   const {colorMode} = useColorMode();
-  // const {isOpen, setIsOpen} = useState('');
+  const [isOpen, setIsOpen] = useState(
+    '0x6387bba686f4562326e1b04f8094aa5d328d32f9',
+  );
   const onChangeSelectBox = (e: any) => {
     const filterValue = e.target.value;
     headerGroups[0].headers.map((e) => {
@@ -123,6 +126,21 @@ export const StakingTable: FC<StakingTableProps> = ({
         e.toggleSortBy();
       }
     });
+  };
+
+  const renderBtn = (contractAddress: string) => {
+    if (isOpen === contractAddress)
+      return (
+        <TriangleDownIcon
+          _hover={{cursor: 'pointer'}}
+          onClick={() => setIsOpen('')}
+        />
+      );
+    return (
+      <TriangleUpIcon
+        _hover={{cursor: 'pointer'}}
+        onClick={() => setIsOpen(contractAddress)}></TriangleUpIcon>
+    );
   };
 
   return (
@@ -173,6 +191,7 @@ export const StakingTable: FC<StakingTableProps> = ({
             display="flex"
             flexDirection="column">
             {page.map((row: any, i) => {
+              const {contractAddress} = row.original;
               prepareRow(row);
               return [
                 <chakra.tr
@@ -193,9 +212,10 @@ export const StakingTable: FC<StakingTableProps> = ({
                   alignItems="center"
                   {...row.getRowProps()}>
                   {row.cells.map((cell: any, index: number) => {
+                    const {token, status, name, period, stakeBalanceTON} =
+                      cell.row.original;
                     const type = cell.column.id;
-                    const token = checkTokenType(cell.row.original.token);
-                    const status = cell.row.original.status;
+                    const tokenType = checkTokenType(token);
                     return (
                       <chakra.td
                         px={3}
@@ -222,39 +242,48 @@ export const StakingTable: FC<StakingTableProps> = ({
                         {...cell.getCellProps()}>
                         {type === 'name' ? getCircle(status) : ''}
                         {type === 'name' ? (
-                          <Avatar
-                            src={token.symbol}
-                            backgroundColor={token.bg}
-                            bg="transparent"
-                            color="#c7d1d8"
-                            name="T"
-                            h="48px"
-                            w="48px"
-                            ml="10px"
-                            mr="12px"
-                          />
+                          <>
+                            <Avatar
+                              src={tokenType.symbol}
+                              backgroundColor={tokenType.bg}
+                              bg="transparent"
+                              color="#c7d1d8"
+                              name="T"
+                              h="48px"
+                              w="48px"
+                              ml="10px"
+                              mr="12px"
+                            />
+                            <Text>{name}</Text>
+                          </>
                         ) : (
                           ''
                         )}
                         {type === 'period' ? (
-                          <Text
-                            mr={2}
-                            color={
-                              colorMode === 'light' ? '#86929d' : '#949494'
-                            }>
-                            Period
-                          </Text>
+                          <>
+                            <Text
+                              mr={2}
+                              color={
+                                colorMode === 'light' ? '#86929d' : '#949494'
+                              }>
+                              Period
+                            </Text>
+                            <Text>{period}</Text>
+                          </>
                         ) : (
                           ''
                         )}
                         {type === 'stakeBalanceTON' ? (
-                          <Text
-                            mr={2}
-                            color={
-                              colorMode === 'light' ? '#86929d' : '#949494'
-                            }>
-                            Total Staked
-                          </Text>
+                          <>
+                            <Text
+                              mr={2}
+                              color={
+                                colorMode === 'light' ? '#86929d' : '#949494'
+                              }>
+                              Total Staked
+                            </Text>
+                            <Text>{stakeBalanceTON}</Text>
+                          </>
                         ) : (
                           ''
                         )}
@@ -269,14 +298,17 @@ export const StakingTable: FC<StakingTableProps> = ({
                         ) : (
                           ''
                         )}
-                        {isLoading ? <Skeleton h={5} /> : cell.render('Cell')}
+                        {type === 'expander'
+                          ? renderBtn(contractAddress)
+                          : null}
+                        {/* {isLoading ? <Skeleton h={5} /> : cell.render('Cell')} */}
                       </chakra.td>
                     );
                   })}
                 </chakra.tr>,
                 // If the row is in an expanded state, render a row with a
                 // column that fills the entire length of the table.
-                row.isExpanded ? (
+                isOpen === contractAddress ? (
                   <chakra.tr
                     boxShadow="0 1px 1px 0 rgba(96, 97, 112, 0.16)"
                     w={'100%'}
