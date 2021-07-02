@@ -54,6 +54,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
   };
   const {colorMode} = useColorMode();
   const btnDisabled = account === undefined ? true : false;
+  console.log(payload)
 
   return (
     <Container
@@ -76,7 +77,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
             isDisabled={btnDisabled}
             color={'white.100'}
             fontSize={'14px'}
-            onClick={() => dispatch(openModal({type: 'stakeL2', data: payload}))}>
+            onClick={() => dispatch(openModal({type: 'stake', data: payload}))}>
             Stake
           </Button>
           <Button

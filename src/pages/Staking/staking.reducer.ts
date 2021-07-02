@@ -8,6 +8,7 @@ import {padLeft, toWei, toBN} from 'web3-utils';
 import * as StakeVault from 'services/abis/Stake1Logic.json';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import * as TonABI from 'services/abis/TON.json';
+import * as Candidate from 'services/abis/ICandidate.json';
 import * as DepositManagerABI from 'services/abis/DepositManager.json';
 import * as TosABI from 'services/abis/ITOS.json';
 import {formatEther} from '@ethersproject/units';
@@ -53,6 +54,7 @@ export type Stake = {
   myfld: Number | string;
   mystaked: Number | string;
   myearned: Number | string;
+  myStakedL2: Number | string;
   mywithdraw: Number | string;
   myclaimed: Number | string;
   canRewardAmount: Number | string;
@@ -359,7 +361,8 @@ export const stakeToLayer2 = async (args: stakeToLayer2Args) => {
   const globalWithdrawalDelay = await depositManager?.globalWithdrawalDelay();
   const currentBlock = await rpc.getBlockNumber();
   const endBlock = Number(stakeEndBlock);
-  if (currentBlock < endBlock - globalWithdrawalDelay && vaultClosed) {
+  // if (currentBlock < endBlock - globalWithdrawalDelay && vaultClosed) {
+  if (vaultClosed) {
     const tonContract = new Contract(REACT_APP_TON, TonABI.abi, rpc);
     if (!tonContract) {
       throw new Error(`Can't find the contract for staking actions`);
@@ -378,6 +381,12 @@ export const stakeToLayer2 = async (args: stakeToLayer2Args) => {
     return alert('staking period has ended'); // ToDo: comment check
   }
 };
+
+export const unstakeL2 = async () => {
+  // if (userAddress === null || userAddress === undefined) {
+  //   return;
+  // }
+}
 
 export const fetchStakes = createAsyncThunk(
   'stakes/all',
@@ -419,17 +428,20 @@ export const fetchStakes = createAsyncThunk(
 
         let mystaked: string = '';
         let myearned: string = '';
+        let myStakedL2: string = '';
         let status = 'loading';
 
         if (account) {
           console.log('--acount--');
-          const {userStaked, userRewardTOS} = await fetchUserData(
+          const {userStaked, userRewardTOS, stakedAmountInL2} = await fetchUserData(
+          // const {userStaked, userRewardTOS} = await fetchUserData(
             library,
             account,
             stake.stakeContract,
           );
           mystaked = userStaked;
-          myearned = `${userRewardTOS}TOS`;
+          myearned = `${userRewardTOS} TOS`;
+          myStakedL2 = stakedAmountInL2
         }
 
         setTimeout(async () => {
@@ -451,6 +463,7 @@ export const fetchStakes = createAsyncThunk(
           myfld: formatEther(0),
           mystaked,
           myearned,
+          myStakedL2,
           mywithdraw: formatEther(0),
           myclaimed: formatEther(0),
           canRewardAmount: formatEther(0),
@@ -490,8 +503,10 @@ const fetchUserData = async (
   contractAddress: string,
 ) => {
   const res = await getUserInfo(library, account, contractAddress);
-  const {userStaked, userRewardTOS} = res;
-  return {userStaked, userRewardTOS};
+  // const {userStaked, userRewardTOS} = res;
+  const {userStaked, userRewardTOS, stakedAmountInL2} = res;
+  return {userStaked, userRewardTOS, stakedAmountInL2};
+  // return {userStaked, userRewardTOS};
 };
 
 const getUserInfo = async (
@@ -502,9 +517,12 @@ const getUserInfo = async (
   contractAddress: string,
 ) => {
   // const currentBlock = await rpc.getBlockNumber();
-
+  const L2Contract = new Contract(REACT_APP_TOKAMAK_LAYER2, Candidate.abi, rpc)
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
   const staked = await StakeTONContract?.userStaked(account);
+
+  const stakedAmountInL2 = await L2Contract?.stakeOf(account);
+  console.log(stakedAmountInL2);
 
   // const TOS = new Contract(REACT_APP_TOS, TosABI.abi, rpc);
   // const myTOS = await TOS?.balanceOf(account);
@@ -514,6 +532,7 @@ const getUserInfo = async (
   return {
     userStaked: formatEther(staked.amount),
     userRewardTOS: formatEther(staked.claimedAmount),
+    stakedAmountInL2: formatEther(stakedAmountInL2),
   };
   // stakeInfo.myfld = formatEther(myTOS);
 

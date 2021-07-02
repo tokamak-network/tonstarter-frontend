@@ -65,7 +65,7 @@ import {
                 textAlign={'center'}
                 fontWeight={'bold'}
                 fontSize={'4xl'}
-                // value={value}
+                value={value}
                 width={'xs'}
                 mr={6}
                 onChange={handleChange}
@@ -102,7 +102,7 @@ import {
                 colorScheme={'blue'}
                 onClick={() => stakeToLayer2 ({
                     userAddress:account, 
-                    amount: '100',
+                    amount: value.toString(),
                     stakeEndBlock: data?.data?.stakeEndBlock, 
                     vaultClosed: data?.data?.vaultClosed,
                     library: library
