@@ -11,11 +11,12 @@ import {Switch, Route} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {fetchAppConfig, selectApp} from 'store/app/app.reducer';
 import {fetchUserInfo} from 'store/app/user.reducer';
-import {fetchStakes, selectStakes} from './Staking/staking.reducer';
+import {fetchStakes} from './Staking/staking.reducer';
 import {useContract} from 'hooks/useContract';
 import {REACT_APP_STAKE1_PROXY} from 'constants/index';
 import * as StakeLogic from 'services/abis/Stake1Logic.json';
 import store from 'store';
+import {useLocalStorage} from 'hooks/useStorage';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -25,11 +26,15 @@ export const Router: FC<RouterProps> = () => {
   const {data} = useAppSelector(selectApp);
   const [walletState, setWalletState] = useState<string>('');
   const {onOpen, isOpen: isModalOpen, onClose} = useDisclosure();
-  const {account, chainId, library} = useWeb3React();
+  const {account: webAccount, chainId, library} = useWeb3React();
   const stakeRegistryContract = useContract(
     REACT_APP_STAKE1_PROXY,
     StakeLogic.abi,
   );
+
+  const [storedValue] = useLocalStorage('account', {});
+  const account = storedValue.signIn === true ? webAccount : null;
+
   useEffect(() => {
     if (account && chainId) {
       // @ts-ignore
