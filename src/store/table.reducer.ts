@@ -1,10 +1,8 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from './reducers';
 
-export type ModalType = string;
-
 export type Modal = {
-  modal?: ModalType;
+  contractAddress?: string;
   data?: any;
 };
 
@@ -13,31 +11,31 @@ interface IModal {
 }
 
 type ModalPayload = {
-  type: ModalType;
+  contractAddress: string;
   data?: any;
 };
 
 const initialState = {
   data: {
-    modal: undefined,
+    contractAddress: undefined,
     data: {},
   },
 } as IModal;
 
 export const tableReducer = createSlice({
-  name: 'modal',
+  name: 'table',
   initialState,
   reducers: {
     openTable: (state, {payload}: PayloadAction<ModalPayload>) => {
-      state.data.modal = payload.type;
+      state.data.contractAddress = payload.contractAddress;
       state.data.data = payload.data;
     },
     closeTable: (state) => {
-      state.data.modal = undefined;
+      state.data.contractAddress = undefined;
       state.data.data = {};
     },
   },
 });
 
-export const selectModalType = (state: RootState) => state.modal;
+export const selectTableType = (state: RootState) => state.table;
 export const {openTable, closeTable} = tableReducer.actions;

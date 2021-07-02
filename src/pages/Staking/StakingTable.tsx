@@ -1,4 +1,4 @@
-import {FC, useState} from 'react';
+import {FC, useState, useRef} from 'react';
 import {
   Column,
   useExpanded,
@@ -22,6 +22,12 @@ import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import './staking.css';
 import {checkTokenType} from 'utils/token';
 import {TriangleUpIcon, TriangleDownIcon} from '@chakra-ui/icons';
+import {selectTableType} from 'store/table.reducer';
+import {useAppSelector} from 'hooks/useRedux';
+import {useCallback} from 'react';
+import {current} from '@reduxjs/toolkit';
+import {useEffect} from 'react';
+import {setTimeout} from 'timers';
 
 type StakingTableProps = {
   columns: Column[];
@@ -116,8 +122,18 @@ export const StakingTable: FC<StakingTableProps> = ({
   );
 
   const {colorMode} = useColorMode();
+  const focusTarget = useRef<any>([]);
+
+  useEffect(() => {
+    console.log(focusTarget.current);
+  }, [focusTarget]);
+
+  const {
+    data: {contractAddress},
+  } = useAppSelector(selectTableType);
+
   const [isOpen, setIsOpen] = useState(
-    '0x6387bba686f4562326e1b04f8094aa5d328d32f9',
+    contractAddress === undefined ? '' : contractAddress,
   );
   const onChangeSelectBox = (e: any) => {
     const filterValue = e.target.value;
@@ -128,7 +144,17 @@ export const StakingTable: FC<StakingTableProps> = ({
     });
   };
 
-  const renderBtn = (contractAddress: string) => {
+  const clickOpen = (contractAddress: string, index: number) => {
+    setIsOpen(contractAddress);
+    setTimeout(() => {
+      focusTarget.current[index].scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }, 100);
+  };
+
+  const renderBtn = (contractAddress: string, index: number) => {
     if (isOpen === contractAddress)
       return (
         <TriangleDownIcon
@@ -139,7 +165,7 @@ export const StakingTable: FC<StakingTableProps> = ({
     return (
       <TriangleUpIcon
         _hover={{cursor: 'pointer'}}
-        onClick={() => setIsOpen(contractAddress)}></TriangleUpIcon>
+        onClick={() => clickOpen(contractAddress, index)}></TriangleUpIcon>
     );
   };
 
@@ -200,6 +226,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                       ? '0 1px 1px 0 rgba(96, 97, 112, 0.16)'
                       : ''
                   }
+                  ref={(el) => (focusTarget.current[i] = el)}
                   h={16}
                   key={i}
                   borderRadius={'10px'}
@@ -287,6 +314,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                         ) : (
                           ''
                         )}
+
                         {type === 'earning_per_block' ? (
                           <Text
                             mr={2}
@@ -299,7 +327,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                           ''
                         )}
                         {type === 'expander'
-                          ? renderBtn(contractAddress)
+                          ? renderBtn(contractAddress, i)
                           : null}
                         {/* {isLoading ? <Skeleton h={5} /> : cell.render('Cell')} */}
                       </chakra.td>

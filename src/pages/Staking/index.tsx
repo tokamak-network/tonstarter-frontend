@@ -67,8 +67,6 @@ const WalletInformation: FC<WalletInformationProps> = ({
   const {colorMode} = useColorMode();
   const btnDisabled = account === undefined ? true : false;
 
-  console.log(payload);
-
   return (
     <Container
       maxW={'sm'}

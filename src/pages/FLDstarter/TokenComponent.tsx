@@ -12,17 +12,21 @@ import {
 } from '@chakra-ui/react';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import {useEffect, useCallback} from 'react';
+import {useHistory} from 'react-router';
 import {checkTokenType} from 'utils/token';
 import {TokenType} from 'types/index';
 import {getTokenPrice} from 'utils/tokenPrice';
-import {openModal} from 'store/modal.reducer';
+import {openTable} from 'store/table.reducer';
 import {useAppDispatch} from 'hooks/useRedux';
+import {openModal} from 'store/modal.reducer';
 
 type TokenComponentProps = {
   phase?: string;
   period: string;
   token: TokenType;
   stakedAmount: string;
+  contractAddress: string;
+  index: number;
 };
 
 export const TokenComponent: FC<TokenComponentProps> = ({
@@ -30,9 +34,13 @@ export const TokenComponent: FC<TokenComponentProps> = ({
   period,
   token,
   stakedAmount,
+  contractAddress,
+  index,
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
+  const dispatch = useAppDispatch();
+  const history = useHistory();
   const tokenType = checkTokenType(token);
   const [tokenPrice, setTokenPrice] = useState<string | undefined>('0');
   useEffect(() => {
@@ -46,7 +54,15 @@ export const TokenComponent: FC<TokenComponentProps> = ({
     }
     getPrice();
   }, []);
-  const handleNavigation = useCallback(() => {}, []);
+
+  const handleNavigation = useCallback((type) => {
+    history.push('./staking');
+    dispatch(openTable({contractAddress: contractAddress}));
+    if (type === 'stake') {
+      dispatch(openModal({type: 'stake'}));
+    }
+    window.scrollTo(0, 350 + index * 69);
+  }, []);
 
   return (
     <Container
@@ -149,13 +165,14 @@ export const TokenComponent: FC<TokenComponentProps> = ({
               fontFamily={theme.fonts.fld}
               mr={2}
               color={'black'}
+              onClick={() => handleNavigation('stake')}
               _hover={{bg: theme.colors.yellow[300]}}>
               Staking
             </Button>
 
             <Button
               borderWidth={1}
-              onClick={() => handleNavigation()}
+              onClick={() => handleNavigation('detail')}
               borderColor={
                 colorMode === 'light' ? 'transparent' : theme.colors.gray[75]
               }

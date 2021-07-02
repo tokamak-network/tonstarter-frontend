@@ -31,9 +31,11 @@ export const FLDstarter = () => {
                 period={item.period}
                 token={item.token}
                 stakedAmount={item.stakeBalanceTON}
-                key={index}
+                contractAddress={item.contractAddress}
+                index={index}
               />
             ))}
+            {data.map((item, index) => console.log(typeof index))}
           </SimpleGrid>
         </Container>
         <Flex justifyContent={'flex-end'} pr={10}>
