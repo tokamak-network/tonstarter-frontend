@@ -61,7 +61,6 @@ const GetDate = ({time, currentBlock, contractAddress, type}: GetDateProp) => {
 
   useEffect(() => {
     const fetchDate = async () => {
-      const newObj = {};
       const result = await formatStartTime(time, currentBlock);
       setDate(result);
 
@@ -79,7 +78,6 @@ const GetDate = ({time, currentBlock, contractAddress, type}: GetDateProp) => {
     ) {
       fetchDate();
     } else {
-      console.log('-0d-d-');
       setDate(localTableValue[contractAddress + type]);
     }
     fetchDate();

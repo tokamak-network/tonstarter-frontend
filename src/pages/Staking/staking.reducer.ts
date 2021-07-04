@@ -443,7 +443,19 @@ export const fetchStakes = createAsyncThunk(
       }),
     );
 
-    return projects;
+    const finalStakeList: any = [];
+
+    stakeList.map((stake: any) => {
+      projects.map((project, index) => {
+        if (stake.name === project.name) {
+          return finalStakeList.push(project);
+        }
+        return null;
+      });
+      return null;
+    });
+
+    return finalStakeList;
   },
 );
 
