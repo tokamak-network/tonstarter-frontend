@@ -9,7 +9,7 @@ import * as TonABI from 'services/abis/TON.json';
 import * as DepositManagerABI from 'services/abis/DepositManager.json';
 import * as TosABI from 'services/abis/ITOS.json';
 import {formatEther} from '@ethersproject/units';
-import {period} from 'utils/timeStamp';
+import {period, formatStartTime} from 'utils/timeStamp';
 import {
   REACT_APP_TON,
   REACT_APP_TOKAMAK_LAYER2,
@@ -351,7 +351,6 @@ export const fetchStakes = createAsyncThunk(
     // let iERC20: any;
 
     const {appConfig} = store.getState();
-    const currentBlockNumber = appConfig.data.blockNumber;
 
     // @ts-ignore
     const {currentRequestId, loading} = getState().stakes;
@@ -373,6 +372,7 @@ export const fetchStakes = createAsyncThunk(
     // console.log('-----------');
     // console.log(vaultReq);
     // console.log(stakeList);
+    const currentBlock = await provider.getBlockNumber();
 
     await Promise.all(
       stakeList.map(async (stake: any, index: number) => {
@@ -391,8 +391,7 @@ export const fetchStakes = createAsyncThunk(
           mystaked = userStaked;
           myearned = `${userRewardTOS}TOS`;
         }
-
-        const status = await getStatus(stake, currentBlockNumber);
+        const status = await getStatus(stake, currentBlock);
         // const miningStartTime = await formatStartTime(
         //   stake.startBlock,
         //   currentBlockNumber,
@@ -432,7 +431,7 @@ export const fetchStakes = createAsyncThunk(
           saleEndTime: '0000',
           miningStartTime: stake.startBlock,
           miningEndTime: stake.endBlock,
-          fetchBlock: currentBlockNumber,
+          fetchBlock: currentBlock,
           status,
           library,
           account,

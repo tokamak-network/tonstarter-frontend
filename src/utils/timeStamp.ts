@@ -23,6 +23,7 @@ export const formatStartTime = async (
     const currentBlk = await provider.getBlock(currentBlock);
     const currentTimeStamp = currentBlk.timestamp;
     const timestamp = currentTimeStamp + seconds;
+
     return moment.unix(timestamp).format('MMM DD, YYYY HH:mm:ss');
   }
 };

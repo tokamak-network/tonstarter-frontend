@@ -8,7 +8,6 @@ import {
 } from 'react-table';
 import {
   chakra,
-  Skeleton,
   Text,
   Flex,
   IconButton,
@@ -17,6 +16,8 @@ import {
   Box,
   Avatar,
   useColorMode,
+  CircularProgress,
+  Center,
 } from '@chakra-ui/react';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import './staking.css';
@@ -24,8 +25,6 @@ import {checkTokenType} from 'utils/token';
 import {TriangleUpIcon, TriangleDownIcon} from '@chakra-ui/icons';
 import {selectTableType} from 'store/table.reducer';
 import {useAppSelector} from 'hooks/useRedux';
-import {useCallback} from 'react';
-import {current} from '@reduxjs/toolkit';
 import {useEffect} from 'react';
 import {setTimeout} from 'timers';
 
@@ -168,6 +167,14 @@ export const StakingTable: FC<StakingTableProps> = ({
         onClick={() => clickOpen(contractAddress, index)}></TriangleUpIcon>
     );
   };
+
+  if (isLoading === true) {
+    return (
+      <Center>
+        <CircularProgress isIndeterminate color="blue.200"></CircularProgress>
+      </Center>
+    );
+  }
 
   return (
     <Flex w="1100px" flexDir={'column'}>

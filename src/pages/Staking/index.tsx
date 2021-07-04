@@ -28,8 +28,10 @@ import {
 import store, {AppDispatch} from 'store';
 import {openModal} from 'store/modal.reducer';
 import {ManageModal} from './StakeOptionModal/manage';
-import {formatStartTime, formatEndTime} from 'utils/timeStamp';
+import {formatStartTime} from 'utils/timeStamp';
 import {useState} from 'react';
+import {useLocalStorage} from 'hooks/useStorage';
+import {useEffect} from 'react';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
@@ -40,13 +42,49 @@ type WalletInformationProps = {
   account: string | undefined;
 };
 
-const GetDate = ({time, currentBlock}: any) => {
+type GetDateTimeType =
+  | 'sale-start'
+  | 'sale-end'
+  | 'mining-start'
+  | 'mining-end';
+
+type GetDateProp = {
+  time: string | undefined;
+  currentBlock: number;
+  contractAddress: string;
+  type: GetDateTimeType;
+};
+
+const GetDate = ({time, currentBlock, contractAddress, type}: GetDateProp) => {
   const [date, setDate] = useState('');
-  const fetchDate = async () => {
-    const result = await formatStartTime(time, currentBlock);
-    setDate(result);
-  };
-  fetchDate();
+  const [localTableValue, setLocalTableValue] = useLocalStorage('table', {});
+
+  useEffect(() => {
+    const fetchDate = async () => {
+      const newObj = {};
+      const result = await formatStartTime(time, currentBlock);
+      setDate(result);
+
+      //@ts-ignore
+      const localStorage = JSON.parse(window.localStorage.getItem('table'));
+
+      return await setLocalTableValue({
+        ...localStorage,
+        [contractAddress + type]: result,
+      });
+    };
+    if (
+      localTableValue === undefined ||
+      localTableValue[contractAddress + type] === undefined
+    ) {
+      fetchDate();
+    } else {
+      console.log('-0d-d-');
+      setDate(localTableValue[contractAddress + type]);
+    }
+    fetchDate();
+  }, []);
+
   return (
     <Text fontSize={'20px'} color="white.200" fontWeight={'bold'} w="100%">
       {date}
@@ -122,6 +160,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
     </Container>
   );
 };
+
 export const Staking = () => {
   const dispatch = useAppDispatch();
   // @ts-ignore
@@ -180,7 +219,6 @@ export const Staking = () => {
     ({row}) => {
       const {account, library, contractAddress} = row.original;
       const currentBlock = store.getState().appConfig.data.blockNumber;
-
       return (
         <Flex
           mt={0}
@@ -209,7 +247,13 @@ export const Staking = () => {
                       ? data[row.id]?.saleStartTime
                       : data[row.id]?.miningStartTime
                   }
-                  currentBlock={currentBlock}></GetDate>
+                  currentBlock={currentBlock}
+                  contractAddress={contractAddress}
+                  type={
+                    data[row.id]?.status === 'sale'
+                      ? 'sale-start'
+                      : 'mining-start'
+                  }></GetDate>
               </Text>
             </Flex>
             <Flex flexDir={'column'} alignItems={'space-between'}>
@@ -225,7 +269,11 @@ export const Staking = () => {
                       ? data[row.id]?.saleEndTime
                       : data[row.id]?.miningEndTime
                   }
-                  currentBlock={currentBlock}></GetDate>
+                  currentBlock={currentBlock}
+                  contractAddress={contractAddress}
+                  type={
+                    data[row.id]?.status === 'sale' ? 'sale-end' : 'mining-end'
+                  }></GetDate>
               </Text>
             </Flex>
 
