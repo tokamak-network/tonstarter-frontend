@@ -445,6 +445,7 @@ export const fetchStakes = createAsyncThunk(
 
     const finalStakeList: any = [];
 
+    //sort by api data
     stakeList.map((stake: any) => {
       projects.map((project, index) => {
         if (stake.name === project.name) {

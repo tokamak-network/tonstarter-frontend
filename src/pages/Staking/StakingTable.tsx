@@ -123,13 +123,30 @@ export const StakingTable: FC<StakingTableProps> = ({
   const {colorMode} = useColorMode();
   const focusTarget = useRef<any>([]);
 
-  useEffect(() => {
-    console.log(focusTarget.current);
-  }, [focusTarget]);
-
   const {
-    data: {contractAddress},
+    data: {contractAddress, index},
   } = useAppSelector(selectTableType);
+
+  useEffect(() => {
+    if (index) {
+      console.log(index);
+      console.log(Math.floor(index / 10));
+      let loop = Math.floor(index / 10);
+      while (loop) {
+        nextPage();
+        loop = loop - 1;
+        if (loop === 0) {
+          setTimeout(() => {
+            focusTarget.current[
+              index - Math.floor(index / 10) * 10
+            ].scrollIntoView({
+              block: 'start',
+            });
+          }, 200);
+        }
+      }
+    }
+  }, []);
 
   const [isOpen, setIsOpen] = useState(
     contractAddress === undefined ? '' : contractAddress,
@@ -140,6 +157,7 @@ export const StakingTable: FC<StakingTableProps> = ({
       if (e.Header === filterValue) {
         e.toggleSortBy();
       }
+      return null;
     });
   };
 
@@ -404,7 +422,7 @@ export const StakingTable: FC<StakingTableProps> = ({
           </Flex>
 
           <Flex alignItems="center">
-            <Text flexShrink={0} mr={8}>
+            <Text flexShrink={0}>
               Page{' '}
               <Text fontWeight="bold" as="span">
                 {pageIndex + 1}
@@ -443,6 +461,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                 isDisabled={!canNextPage}
                 icon={<ChevronRightIcon h={6} w={6} />}
                 ml={4}
+                mr={'1.5625em'}
               />
             </Tooltip>
             <Select
@@ -458,6 +477,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                 </option>
               ))}
             </Select>
+
             {/* <Tooltip label="Last Page">
             <IconButton
               aria-label={'Last Page'}

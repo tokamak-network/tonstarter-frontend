@@ -57,7 +57,7 @@ export const TokenComponent: FC<TokenComponentProps> = ({
 
   const handleNavigation = useCallback((type) => {
     history.push('./staking');
-    dispatch(openTable({contractAddress: contractAddress}));
+    dispatch(openTable({contractAddress: contractAddress, index}));
     if (type === 'stake') {
       dispatch(openModal({type: 'stake'}));
     }
