@@ -15,8 +15,7 @@ export const FLDstarter = () => {
   // }
 
   // @ts-ignore
-  const {data, loading} = useAppSelector(selectStakes);
-  console.log(data);
+  const {data} = useAppSelector(selectStakes);
 
   return (
     <Fragment>
@@ -35,7 +34,6 @@ export const FLDstarter = () => {
                 index={index}
               />
             ))}
-            {data.map((item, index) => console.log(typeof index))}
           </SimpleGrid>
         </Container>
         <Flex justifyContent={'flex-end'} pr={10}>

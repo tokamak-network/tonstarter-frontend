@@ -36,8 +36,6 @@ export const fetchAppConfig = createAsyncThunk(
       return;
     }
 
-    console.log(chainId);
-
     let appConfig: AppConfig = {
       explorerLink: await getExplorerLink(chainId || DEFAULT_NETWORK),
       selectedNetwork: await getNetworkName(chainId || DEFAULT_NETWORK),

@@ -16,6 +16,7 @@ import {useContract} from 'hooks/useContract';
 import {REACT_APP_STAKE1_PROXY} from 'constants/index';
 import * as StakeLogic from 'services/abis/Stake1Logic.json';
 import store from 'store';
+import {useLocalStorage} from 'hooks/useStorage';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -25,19 +26,36 @@ export const Router: FC<RouterProps> = () => {
   const {data} = useAppSelector(selectApp);
   const [walletState, setWalletState] = useState<string>('');
   const {onOpen, isOpen: isModalOpen, onClose} = useDisclosure();
-  const {account, chainId, library} = useWeb3React();
+  const {account, chainId, library, deactivate, connector} = useWeb3React();
   const stakeRegistryContract = useContract(
     REACT_APP_STAKE1_PROXY,
     StakeLogic.abi,
   );
+
+  // useEffect(() => {
+  //   setAccountValue({signIn: false});
+  //   if (accountValue.signIn === false) {
+  //     deactivate();
+  //     console.log(account);
+  //   }
+  // }, [chainId, account, library, dispatch]);
+
   useEffect(() => {
     if (account && chainId) {
+      //@ts-ignore
+      const accountStorage = JSON.parse(window.localStorage.getItem('account'));
+      const {signIn} = accountStorage;
       // @ts-ignore
       dispatch(fetchAppConfig({chainId}));
-      // @ts-ignore
-      dispatch(fetchUserInfo({address: account, library}));
+
+      if (signIn === false) {
+        return deactivate();
+      } else if (signIn === true) {
+        // @ts-ignore
+        dispatch(fetchUserInfo({address: account, library}));
+      }
     }
-  }, [chainId, account, library, dispatch]);
+  }, [chainId, account, library, dispatch, deactivate]);
 
   // useEffect(() => {
   //   dispatch(
@@ -49,8 +67,6 @@ export const Router: FC<RouterProps> = () => {
   //     }) as any,
   //   );
   // }, []);
-
-  console.log(data.blockNumber);
 
   useEffect(() => {
     //delay if Stake is in pending

@@ -129,8 +129,6 @@ export const StakingTable: FC<StakingTableProps> = ({
 
   useEffect(() => {
     if (index) {
-      console.log(index);
-      console.log(Math.floor(index / 10));
       let loop = Math.floor(index / 10);
       while (loop) {
         nextPage();

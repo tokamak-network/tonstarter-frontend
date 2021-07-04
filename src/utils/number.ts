@@ -72,6 +72,6 @@ export function convertNumber(args: ConverNumberFunc): string | undefined {
         throw new Error(`this type is not valid. It must be "WTON" or "TON"`);
     }
   } catch (e) {
-    console.log(`number.ts : ${e}`);
+    console.log(e);
   }
 }

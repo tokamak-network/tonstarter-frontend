@@ -350,8 +350,6 @@ export const fetchStakes = createAsyncThunk(
     const fetchStakeUrl = `http://3.36.66.138:4000/v1/stakecontracts?chainId=${chainIdforFetch}`;
     // let iERC20: any;
 
-    const {appConfig} = store.getState();
-
     // @ts-ignore
     const {currentRequestId, loading} = getState().stakes;
     if (loading !== 'pending' || requestId !== currentRequestId) {
@@ -369,9 +367,11 @@ export const fetchStakes = createAsyncThunk(
       .then((result) => result);
 
     const stakeList = stakeReq.datas;
+
     // console.log('-----------');
     // console.log(vaultReq);
     // console.log(stakeList);
+
     const currentBlock = await provider.getBlockNumber();
 
     await Promise.all(
@@ -382,7 +382,6 @@ export const fetchStakes = createAsyncThunk(
         let myearned: string = '';
 
         if (account) {
-          console.log('--acount--');
           const {userStaked, userRewardTOS} = await fetchUserData(
             library,
             account,
