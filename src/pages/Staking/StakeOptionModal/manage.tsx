@@ -27,14 +27,6 @@ export const ManageModal = () => {
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
 
-  const toggleModal = useCallback(
-    (modal: ModalType, ) => {
-      dispatch(openModal({type: modal, data: data}));
-      // dispatch(closeModal());
-    },
-    [dispatch],
-  );
-
   let balance = data?.data?.user?.balance;
 
   return (

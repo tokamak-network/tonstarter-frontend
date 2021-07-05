@@ -161,7 +161,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
             isDisabled={btnDisabled}
             color={'white.100'}
             fontSize={'14px'}
-            onClick={() => dispatch(openModal({type: 'manage'}))}>
+            onClick={() => dispatch(openModal({type: 'manage', data: payload}))}>
             Manage
           </Button>
         </Grid>
@@ -289,8 +289,8 @@ export const Staking = () => {
               <Text fontSize={'15px'} color="gray.400">
                 My staked
               </Text>
-              <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-                {data[row.id]?.mystaked}
+              <Text fontSize={'20px'} color="black.300" fontWeight={'bold'}>
+                {data[row.id]?.mystaked} TON
               </Text>
               {/* <Text>{data[row.id]?.mystaked}</Text> */}
             </Flex>
