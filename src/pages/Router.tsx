@@ -70,14 +70,7 @@ export const Router: FC<RouterProps> = () => {
         chainId,
       }) as any,
     );
-  }, [
-    data.blockNumber,
-    stakeRegistryContract,
-    dispatch,
-    library,
-    account,
-    chainId,
-  ]);
+  }, [account, stakeRegistryContract, dispatch, library, chainId]);
 
   const handleWalletModalOpen = (state: string) => {
     setWalletState(state);
