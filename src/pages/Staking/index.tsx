@@ -281,15 +281,9 @@ export const Staking = () => {
             <GetText
               title={'Total Staker'}
               content={data[row.id]?.totalStakers}></GetText>
-            <Flex flexDir={'column'} alignItems={'space-between'}>
-              <Text fontSize={'15px'} color="gray.400">
-                My staked
-              </Text>
-              <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-                {data[row.id]?.mystaked}
-              </Text>
-              {/* <Text>{data[row.id]?.mystaked}</Text> */}
-            </Flex>
+            <GetText
+              title={'My staked'}
+              content={data[row.id]?.mystaked}></GetText>
           </Flex>
 
           <Box p={0} w={'450px'} borderRadius={'10px'} alignSelf={'flex-start'}>
