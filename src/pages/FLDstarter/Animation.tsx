@@ -298,31 +298,31 @@ export const Animation: React.FC<HomeProps> = () => {
   ]);
 
   //temp code for pre-open
-  const [date] = useState('2021/07/19');
+  // const [date] = useState('2021/07/19');
 
-  const trimDigit = (arg: any) => {
-    if (String(arg).length === 1) {
-      return `0${arg}`;
-    }
-    return arg;
-  };
+  // const trimDigit = (arg: any) => {
+  //   if (String(arg).length === 1) {
+  //     return `0${arg}`;
+  //   }
+  //   return arg;
+  // };
 
   //@ts-ignore
-  const countDownRenderer = ({days, hours, minutes, seconds, completed}) => {
-    if (completed) {
-      // Render a completed state
-      return null;
-    } else {
-      // Render a countdown
-      return (
-        <Text fontSize={86}>
-          {days}
-          <span style={{color: '#ffff07'}}>D</span> {trimDigit(hours)}:
-          {trimDigit(minutes)}:{trimDigit(seconds)}
-        </Text>
-      );
-    }
-  };
+  // const countDownRenderer = ({days, hours, minutes, seconds, completed}) => {
+  //   if (completed) {
+  //     // Render a completed state
+  //     return null;
+  //   } else {
+  //     // Render a countdown
+  //     return (
+  //       <Text fontSize={86}>
+  //         {days}
+  //         <span style={{color: '#ffff07'}}>D</span> {trimDigit(hours)}:
+  //         {trimDigit(minutes)}:{trimDigit(seconds)}
+  //       </Text>
+  //     );
+  //   }
+  // };
 
   return (
     <Flex
@@ -409,9 +409,9 @@ export const Animation: React.FC<HomeProps> = () => {
             fontWeight="semibold"
             fontSize={46}>
             <div>
-              <Text>TOS Liquidity Mining</Text>
-              <Text mb={'28px'}>Coming Soon</Text>
-              <Countdown date={date} renderer={countDownRenderer} />
+              <Text>TON Starter</Text>
+              <Text>Decentralized Launchpad</Text>
+              <Text>Platform</Text>
             </div>
           </Container>
         </motion.div>

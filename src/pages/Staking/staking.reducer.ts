@@ -27,7 +27,6 @@ export type Stake = {
   symbol?: string;
   paytoken: string;
   contractAddress: string;
-  cap: string;
   saleStartBlock: string | number;
   stakeStartBlock: string | number;
   stakeEndBlock: string | number;
@@ -366,7 +365,7 @@ export const fetchStakes = createAsyncThunk(
 
     const stakeList = stakeReq.datas;
 
-    console.log('-----------');
+    console.log('-----------api-----------');
     console.log(vaultReq);
     console.log(stakeList);
 
@@ -411,9 +410,6 @@ export const fetchStakes = createAsyncThunk(
           mywithdraw: formatEther(0),
           myclaimed: formatEther(0),
           canRewardAmount: formatEther(0),
-          // stakeBalanceTON: convertNumber({
-          //   amount: String(stake.totalStakedAmount),
-          // }),
           stakeBalanceTON: convertNumber({
             amount: stake.totalStakedAmountString,
           }),
@@ -424,8 +420,8 @@ export const fetchStakes = createAsyncThunk(
           token: stake.paytoken,
           stakeType: stake.stakeType,
           period: period(stake.startBlock, stake.endBlock),
-          saleStartTime: '0000',
-          saleEndTime: '0000',
+          saleStartTime: stake.slaeStartBlock,
+          saleEndTime: stake.startBlock,
           miningStartTime: stake.startBlock,
           miningEndTime: stake.endBlock,
           fetchBlock: currentBlock,

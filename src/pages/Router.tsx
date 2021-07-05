@@ -57,17 +57,6 @@ export const Router: FC<RouterProps> = () => {
     }
   }, [chainId, account, library, dispatch, deactivate]);
 
-  // useEffect(() => {
-  //   dispatch(
-  //     fetchStakes({
-  //       contract: stakeRegistryContract,
-  //       library,
-  //       account,
-  //       chainId,
-  //     }) as any,
-  //   );
-  // }, []);
-
   useEffect(() => {
     //delay if Stake is in pending
     while (store.getState().stakes.loading === 'pending') {
@@ -102,7 +91,6 @@ export const Router: FC<RouterProps> = () => {
   // }
 
   const {width} = useWindowDimensions();
-  console.log(width);
 
   if (width < 1100) {
     // return <MobilePreOpen />;
