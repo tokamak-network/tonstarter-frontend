@@ -7,6 +7,7 @@ import '@fontsource/open-sans';
 
 const fonts = {
   heading: 'Roboto',
+  roboto: 'Roboto',
   body: 'TitilliumWeb, sans-serif',
   fld: 'Rajdhani, sans-serif',
   openSans: 'OpenSans',
