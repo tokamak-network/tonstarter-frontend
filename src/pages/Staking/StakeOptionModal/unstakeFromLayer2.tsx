@@ -10,7 +10,7 @@ import {
   Flex,
   Stack,
 } from '@chakra-ui/react';
-import {unstake} from '../staking.reducer';
+import {unstakeL2} from '../staking.reducer';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
@@ -20,7 +20,7 @@ export const UnStakeFromLayer2Modal = () => {
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
 
-  let balance = data?.data?.stakeBalanceTON;
+  let balance = data?.data?.myStakedL2;
   console.log(data?.data);
 
   return (
@@ -58,7 +58,7 @@ export const UnStakeFromLayer2Modal = () => {
               _focus={{
                 borderWidth: 0,
               }}>
-              {balance ? balance : '0.00'}
+              {balance ? balance : '0.00'} TON
             </Text>
           </Stack>
 
@@ -77,12 +77,12 @@ export const UnStakeFromLayer2Modal = () => {
             <Button
               type={'submit'}
               onClick={() =>
-                unstake({
-                  userAddress: account,
-                  endTime: data.data.endTime,
-                  library: library,
-                  stakeContractAddress: data.data.contractAddress,
-                  mystaked: data.data.mystaked,
+                unstakeL2({
+                  userAddress:account, 
+                  amount: data.data.myStakedL2,
+                  contractAddress: data.data.contractAddress,
+                  vaultClosed: data?.data?.vaultClosed,
+                  library: library
                 })
               }
               disabled={+balance <= 0}

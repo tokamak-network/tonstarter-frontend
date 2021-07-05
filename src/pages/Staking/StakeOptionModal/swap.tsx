@@ -20,7 +20,7 @@ import {
   openModal,
   selectModalType,
 } from 'store/modal.reducer';
-import {stakeToLayer2} from '../staking.reducer';
+import {swapWTONtoTOS} from '../staking.reducer';
 
 export const SwapModal= () => {
   const {account, library} = useWeb3React();
@@ -100,10 +100,10 @@ export const SwapModal= () => {
           <Box py={4} as={Flex} justifyContent={'center'}>
             <Button
               colorScheme={'blue'}
-              onClick={() => stakeToLayer2 ({
+              onClick={() => swapWTONtoTOS ({
                   userAddress:account, 
                   amount: '100',
-                  stakeEndBlock: data?.data?.stakeEndBlock, 
+                  contractAddress: data?.data?.contractAddress, 
                   vaultClosed: data?.data?.vaultClosed,
                   library: library
               })}>

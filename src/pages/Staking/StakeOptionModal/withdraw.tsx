@@ -16,6 +16,7 @@ import React, {useCallback, useState} from 'react';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
+import { withdraw } from '../staking.reducer';
 
 export const WithdrawalOptionModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -60,14 +61,15 @@ export const WithdrawalOptionModal = () => {
             <Box py={4} as={Flex} justifyContent={'center'}>
               <Button
                 type={'submit'}
-                // onClick={() =>
-                //   unstake({
-                //     userAddress: account,
-                //     endTime: data.data.endTime,
-                //     library: library,
-                //     stakeContractAddress: data.data.contractAddress,
-                //   })
-                // }
+                onClick={() =>
+                  withdraw({
+                    userAddress:account, 
+                    amount: data.data.myStakedL2,
+                    contractAddress: data.data.contractAddress,
+                    vaultClosed: data?.data?.vaultClosed,
+                    library: library
+                  })
+                }
                 disabled={+balance <= 0}
                 colorScheme={'blue'}>
                 Withdraw

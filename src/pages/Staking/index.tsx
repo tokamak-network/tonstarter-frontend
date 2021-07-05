@@ -29,10 +29,14 @@ import {
   WithdrawalOptionModal,
   SwapModal,
 } from './StakeOptionModal';
+
 import {AppDispatch} from 'store';
 import {openModal} from 'store/modal.reducer';
 import {ManageModal} from './StakeOptionModal/manage';
 import {formatStartTime} from 'utils/timeStamp';
+import {getTokamakContract} from 'utils/contract';
+import { Contract } from '@ethersproject/contracts';
+import * as StakeTON from 'services/abis/StakeTON.json';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
@@ -55,6 +59,16 @@ const WalletInformation: FC<WalletInformationProps> = ({
   const {colorMode} = useColorMode();
   const btnDisabled = account === undefined ? true : false;
   console.log(payload)
+  // console.log(payload?.contractAddress);
+
+  const getInfoFromContract = async function () {
+    // const StakeTONContract = new Contract(payload.contractAddress, StakeTON.abi, rpc);
+
+    const TON = getTokamakContract('TON');
+    const WTON = getTokamakContract('WTON');
+    const depositManager = getTokamakContract('DepositManager');
+    const seigManager = getTokamakContract('SeigManager');
+  }
 
   return (
     <Container
@@ -172,6 +186,7 @@ export const Staking = () => {
   const renderRowSubComponent = useCallback(
     ({row}) => {
       const {account, library, contractAddress} = row.original;
+
 
       return (
         <Flex
