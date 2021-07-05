@@ -34,7 +34,14 @@ export const ThemeSwitcher: React.FC<ThemeSwitcherProps> = (props) => {
       onClick={toggleColorMode}
       bg={'transparent'}
       icon={<SwitchIcon />}
-      _hover={{color: colorMode === 'light' ? '#ffff07' : 'red'}}
+      _hover={{
+        color:
+          colorMode === 'light'
+            ? match?.isExact
+              ? '#ffff07'
+              : '#007aff'
+            : 'red',
+      }}
       aria-label={`Switch to ${text} mode`}
       {...props}
     />
