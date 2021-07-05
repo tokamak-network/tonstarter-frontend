@@ -57,6 +57,7 @@ export const TokenComponent: FC<TokenComponentProps> = ({
 
   const handleNavigation = useCallback((type) => {
     history.push('./staking');
+    window.scrollTo(0, 0);
     dispatch(openTable({contractAddress: contractAddress, index}));
     if (type === 'stake') {
       dispatch(openModal({type: 'stake'}));

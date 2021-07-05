@@ -6,7 +6,6 @@ import {IconGithub} from './Icons/IconGithub';
 import {IconMedium} from './Icons/IconMedium';
 import {IconTwitter} from './Icons/IconTwitter';
 import {EmailIcon} from '@chakra-ui/icons';
-import {useWindowDimensions} from 'hooks/useWindowDimentions';
 
 const socialLinks = [
   {
@@ -59,7 +58,7 @@ const SocialLinks: React.FC<SocialLinkProps> = ({colorMode}) => {
           isExternal={socialLink.isExternal}
           mr={{base: 4, lg: 6}}
           key={index}>
-          <socialLink.icon color="white.100" />
+          <socialLink.icon />
         </Link>
       ))}
     </Flex>
@@ -69,16 +68,10 @@ const SocialLinks: React.FC<SocialLinkProps> = ({colorMode}) => {
 export const Footer = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const {height} = useWindowDimensions();
 
-  const bgColor = colorMode === 'light' ? 'blue.200' : 'black.200';
+  const bgColor = colorMode === 'light' ? 'gray.50' : 'black.200';
   return (
-    <Container
-      maxW={'full'}
-      bg={bgColor}
-      height={height - 1024}
-      pl={'2.5em'}
-      pr={'2.5em'}>
+    <Container maxW={'full'} bg={bgColor} pl={'2.5em'} pr={'2.5em'}>
       <Flex
         flexDirection={{base: 'column', md: 'row'}}
         justifyContent={'space-between'}
@@ -90,7 +83,7 @@ export const Footer = () => {
           alignItems={'center'}>
           <Box mr={{base: 0, md: 5}}>
             <Text
-              color={'white.100'}
+              color={colorMode === 'light' ? 'gray.225' : 'white.100'}
               fontWeight={600}
               fontSize={14}
               fontFamily={theme.fonts.body}
@@ -100,7 +93,7 @@ export const Footer = () => {
           </Box>
           <Box mr={3} py={{base: 4, md: 0}}>
             <Text
-              color={'white.100'}
+              color={colorMode === 'light' ? 'gray.175' : 'white.100'}
               fontSize={13}
               fontFamily={theme.fonts.body}
               fontWeight={'normal'}>
@@ -108,11 +101,14 @@ export const Footer = () => {
             </Text>
           </Box>
           <Box mr={{base: 0, md: 3}}>
-            <EmailIcon color="white.100"></EmailIcon>
+            <EmailIcon
+              color={
+                colorMode === 'light' ? '#84919e' : 'white.100'
+              }></EmailIcon>
           </Box>
           <Box justifyContent={'center'} alignItems={'center'}>
             <Text
-              color={'white.100'}
+              color={colorMode === 'light' ? 'gray.250' : 'white.100'}
               fontSize={13}
               fontFamily={theme.fonts.body}
               fontWeight={'normal'}>
@@ -125,8 +121,7 @@ export const Footer = () => {
             py={{base: 4, md: 0}}
             grow={2}
             direction={{base: 'column', lg: 'row'}}
-            justifyContent={'flex-end'}
-            color={'white.100'}>
+            justifyContent={'flex-end'}>
             <SocialLinks colorMode={colorMode} />
             {/* <Flex
               py={{base: 4, lg: 0}}
