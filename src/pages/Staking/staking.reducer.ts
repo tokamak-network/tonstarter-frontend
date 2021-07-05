@@ -368,9 +368,9 @@ export const fetchStakes = createAsyncThunk(
 
     const stakeList = stakeReq.datas;
 
-    // console.log('-----------');
-    // console.log(vaultReq);
-    // console.log(stakeList);
+    console.log('-----------');
+    console.log(vaultReq);
+    console.log(stakeList);
 
     const currentBlock = await provider.getBlockNumber();
 

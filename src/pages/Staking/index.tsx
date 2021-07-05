@@ -215,7 +215,7 @@ export const Staking = () => {
 
   const renderRowSubComponent = useCallback(
     ({row}) => {
-      const {account, library, contractAddress} = row.original;
+      const {account, contractAddress} = row.original;
       const currentBlock = store.getState().appConfig.data.blockNumber;
       return (
         <Flex
