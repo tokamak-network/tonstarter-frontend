@@ -27,9 +27,6 @@ export type Stake = {
   symbol?: string;
   paytoken: string;
   contractAddress: string;
-  saleStartBlock: string | number;
-  stakeStartBlock: string | number;
-  stakeEndBlock: string | number;
   blockTotalReward: string;
   saleClosed: boolean;
   stakeType: number | string;
@@ -40,18 +37,9 @@ export type Stake = {
   claimRewardAmount: Number | string;
   totalStakers: number | string;
   token: TokenType;
-  myton: Number | string;
-  myfld: Number | string;
   mystaked: Number | string;
   myearned: Number | string;
-  mywithdraw: Number | string;
-  myclaimed: Number | string;
-  canRewardAmount: Number | string;
   stakeBalanceTON: string;
-  stakeBalanceETH: Number | string;
-  stakeBalanceFLD: Number | string;
-  tokamakStaked: Number | string;
-  tokamakPendingUnstaked: Number | string;
   staketype: string;
   period: string;
   status: string;
@@ -396,27 +384,15 @@ export const fetchStakes = createAsyncThunk(
         const stakeInfo: Partial<Stake> = {
           contractAddress: stake.stakeContract,
           name: stake.name,
-          saleStartBlock: 0,
-          stakeStartBlock: 0,
-          stakeEndBlock: 0,
           // balance: formatEther(info[3]),
           // totalRewardAmount: formatEther(info[4]),
           // claimRewardAmount: formatEther(info[5]),
           totalStakers: stake.totalStakers,
-          myton: formatEther(0),
-          myfld: formatEther(0),
           mystaked,
           myearned,
-          mywithdraw: formatEther(0),
-          myclaimed: formatEther(0),
-          canRewardAmount: formatEther(0),
           stakeBalanceTON: convertNumber({
             amount: stake.totalStakedAmountString,
           }),
-          stakeBalanceETH: formatEther(0),
-          stakeBalanceFLD: formatEther(0),
-          tokamakStaked: formatEther(0),
-          tokamakPendingUnstaked: formatEther(0),
           token: stake.paytoken,
           stakeType: stake.stakeType,
           period: period(stake.startBlock, stake.endBlock),
