@@ -50,6 +50,7 @@ export type Stake = {
   saleEndTime: string | undefined;
   miningStartTime: string | undefined;
   miningEndTime: string | undefined;
+  vault: string;
 };
 
 interface StakeState {
@@ -384,9 +385,6 @@ export const fetchStakes = createAsyncThunk(
         const stakeInfo: Partial<Stake> = {
           contractAddress: stake.stakeContract,
           name: stake.name,
-          // balance: formatEther(info[3]),
-          // totalRewardAmount: formatEther(info[4]),
-          // claimRewardAmount: formatEther(info[5]),
           totalStakers: stake.totalStakers,
           mystaked,
           myearned,
@@ -404,6 +402,7 @@ export const fetchStakes = createAsyncThunk(
           status,
           library,
           account,
+          vault: stake.vault,
         };
         // const test = await getUserInfo(library, account);
         // console.log(test);

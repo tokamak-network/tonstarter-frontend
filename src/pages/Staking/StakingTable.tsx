@@ -184,6 +184,10 @@ export const StakingTable: FC<StakingTableProps> = ({
     );
   };
 
+  // const renderIconBtn = ({onClick, isDisabled, }) => {
+
+  // }
+
   if (isLoading === true) {
     return (
       <Center>
@@ -397,32 +401,30 @@ export const StakingTable: FC<StakingTableProps> = ({
         This is just a very basic UI implementation:
       */}
         <Flex justifyContent="flex-end" my={4} alignItems="center">
-          <Flex>
-            {/* <Tooltip label="First Page">
+          {/* <Flex> */}
+          <Tooltip label="Previous Page">
             <IconButton
-              aria-label={'First Page'}
-              onClick={() => gotoPage(0)}
+              w={'24px'}
+              h={'24px'}
+              background={'none'}
+              border={'solid 1px #424242'}
+              color={'#424242'}
+              borderRadius={4}
+              aria-label={'Previous Page'}
+              onClick={previousPage}
               isDisabled={!canPreviousPage}
-              icon={<ArrowLeftIcon h={3} w={3} />}
+              size={'sm'}
               mr={4}
+              _hover={{borderColor: '#2a72e5', color: '#2a72e5'}}
+              icon={<ChevronLeftIcon h={6} w={6} />}
             />
-          </Tooltip> */}
-            <Tooltip label="Previous Page">
-              <IconButton
-                aria-label={'Previous Page'}
-                onClick={previousPage}
-                isDisabled={!canPreviousPage}
-                size={'sm'}
-                mr={4}
-                icon={<ChevronLeftIcon h={6} w={6} />}
-              />
-            </Tooltip>
-          </Flex>
+          </Tooltip>
+          {/* </Flex> */}
 
-          <Flex alignItems="center">
+          <Flex alignItems="center" p={0} fontSize={'13px'} color={'#949494'}>
             <Text flexShrink={0}>
               Page{' '}
-              <Text fontWeight="bold" as="span">
+              <Text fontWeight="bold" as="span" color={'blue.300'}>
                 {pageIndex + 1}
               </Text>{' '}
               of{' '}
@@ -449,10 +451,9 @@ export const StakingTable: FC<StakingTableProps> = ({
             </NumberInputStepper>
           </NumberInput> */}
           </Flex>
-
           <Flex>
             <Tooltip label="Next Page">
-              <IconButton
+              {/* <IconButton
                 aria-label={'Next Page'}
                 onClick={nextPage}
                 size={'sm'}
@@ -460,7 +461,25 @@ export const StakingTable: FC<StakingTableProps> = ({
                 icon={<ChevronRightIcon h={6} w={6} />}
                 ml={4}
                 mr={'1.5625em'}
-              />
+              /> */}
+              <Center>
+                <IconButton
+                  w={'24px'}
+                  h={'24px'}
+                  background={'none'}
+                  border={'solid 1px #424242'}
+                  color={'#424242'}
+                  borderRadius={4}
+                  aria-label={'Next Page'}
+                  onClick={nextPage}
+                  isDisabled={!canNextPage}
+                  size={'sm'}
+                  ml={4}
+                  mr={'1.5625em'}
+                  _hover={{borderColor: '#2a72e5', color: '#2a72e5'}}
+                  icon={<ChevronRightIcon h={6} w={6} />}
+                />
+              </Center>
             </Tooltip>
             <Select
               w={28}
