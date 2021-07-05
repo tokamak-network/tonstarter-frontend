@@ -194,7 +194,8 @@ const stakeTon = async (args: StakeTon) => {
   if (userAddress === null || userAddress === undefined) {
     return;
   }
-  const currentBlock = await await getRPC().getBlockNumber();
+  const currentBlock = await getRPC().getBlockNumber();
+  console.log(currentBlock);
 
   if (currentBlock > saleStartBlock && currentBlock < startTime) {
     const tonContract = getTokamakContract('TON');
@@ -455,8 +456,8 @@ export const fetchStakes = createAsyncThunk(
     const stakeList = stakeReq.datas;
 
     console.log('-----------api-----------');
-    console.log(vaultReq);
-    console.log(stakeList);
+    // console.log(vaultReq);
+    // console.log(stakeList);
 
     const currentBlock = await rpc.getBlockNumber();
 
@@ -493,15 +494,15 @@ export const fetchStakes = createAsyncThunk(
           totalStakers: stake.totalStakers,
           mystaked,
           myearned,
-          myStakedL2: convertNumber({
-            amount: myStakedL2,
-            type: 'ray',
-          }),
+          // myStakedL2: convertNumber({
+          //   amount: myStakedL2,
+          //   type: 'ray',
+          // }),
           // tokamakStaked: formatEther(0),
           // tokamakPendingUnstaked: formatEther(0),
-          stakeBalanceTON: convertNumber({
-            amount: stake.totalStakedAmountString,
-          }),
+          // stakeBalanceTON: convertNumber({
+          //   amount: stake.totalStakedAmountString,
+          // }),
           token: stake.paytoken,
           stakeType: stake.stakeType,
           period: period(stake.startBlock, stake.endBlock),
@@ -561,8 +562,12 @@ const getUserInfo = async (
   const L2Contract = getTokamakContract('TokamakLayer2');
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
   const staked = await StakeTONContract?.userStaked(account);
-
-  const stakedAmountInL2 = await L2Contract?.stakedOf(account);
+  let stakedAmountInL2;
+  try {
+    stakedAmountInL2 = await L2Contract?.stakedOf(account);
+  } catch (err) {
+    console.log(err);
+  }
 
   // const TOS = new Contract(REACT_APP_TOS, TosABI.abi, rpc);
   // const myTOS = await TOS?.balanceOf(account);

@@ -92,7 +92,7 @@ export const ManageModal = () => {
               onClick={() =>
                 closeSale({
                   userAddress: account,
-                  vaultContractAddress: data.data.contractAddress,
+                  vaultContractAddress: data.data.vault,
                   stakeStartBlock: data.data.stakeStartBlock,
                   library: library,
                 })
