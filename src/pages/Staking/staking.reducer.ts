@@ -7,16 +7,14 @@ import * as StakeVault from 'services/abis/Stake1Vault.json';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import * as TonABI from 'services/abis/TON.json';
 import * as DepositManagerABI from 'services/abis/DepositManager.json';
-import * as TosABI from 'services/abis/ITOS.json';
 import {formatEther} from '@ethersproject/units';
-import {period, formatStartTime} from 'utils/timeStamp';
+import {period} from 'utils/timeStamp';
 import {
   REACT_APP_TON,
   REACT_APP_TOKAMAK_LAYER2,
   REACT_APP_DEPOSIT_MANAGER,
   DEPLOYED,
   REACT_APP_WTON,
-  REACT_APP_TOS,
 } from 'constants/index';
 import {TokenType} from 'types/index';
 import {convertNumber} from 'utils/number';

@@ -11,12 +11,12 @@ import {Switch, Route} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {fetchAppConfig, selectApp} from 'store/app/app.reducer';
 import {fetchUserInfo} from 'store/app/user.reducer';
-import {fetchStakes, selectStakes} from './Staking/staking.reducer';
+import {fetchStakes} from './Staking/staking.reducer';
 import {useContract} from 'hooks/useContract';
 import {REACT_APP_STAKE1_PROXY} from 'constants/index';
 import * as StakeLogic from 'services/abis/Stake1Logic.json';
 import store from 'store';
-import {useLocalStorage} from 'hooks/useStorage';
+import {useWindowDimensions} from 'hooks/useWindowDimentions';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -26,7 +26,7 @@ export const Router: FC<RouterProps> = () => {
   const {data} = useAppSelector(selectApp);
   const [walletState, setWalletState] = useState<string>('');
   const {onOpen, isOpen: isModalOpen, onClose} = useDisclosure();
-  const {account, chainId, library, deactivate, connector} = useWeb3React();
+  const {account, chainId, library, deactivate} = useWeb3React();
   const stakeRegistryContract = useContract(
     REACT_APP_STAKE1_PROXY,
     StakeLogic.abi,
@@ -100,6 +100,13 @@ export const Router: FC<RouterProps> = () => {
   //     description: data.
   //   })
   // }
+
+  const {width} = useWindowDimensions();
+  console.log(width);
+
+  if (width < 1100) {
+    // return <MobilePreOpen />;
+  }
 
   return (
     <>

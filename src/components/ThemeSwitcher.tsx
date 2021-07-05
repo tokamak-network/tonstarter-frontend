@@ -22,12 +22,12 @@ export const ThemeSwitcher: React.FC<ThemeSwitcherProps> = props => {
       size="md"
       fontSize="lg"
       variant="unstyled"
-      color={colorMode==='light'? theme.colors.gray[275]:theme.colors.white[100]}
+      color={colorMode==='light'? 'white.100':theme.colors.white[100]}
       marginLeft="2"
       onClick={toggleColorMode}
       bg={'transparent'}
       icon={<SwitchIcon />}
-      _hover={{ color: colorMode==='light'? theme.colors.blue[100]: 'red' }}
+      _hover={{ color: colorMode==='light'? '#ffff07' : 'red' }}
       aria-label={`Switch to ${text} mode`}
       {...props}
     />
