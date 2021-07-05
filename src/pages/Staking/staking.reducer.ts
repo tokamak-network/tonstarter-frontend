@@ -445,10 +445,7 @@ export const withdraw = async (args: unstakeFromLayer2Args) => {
 
 export const fetchStakes = createAsyncThunk(
   'stakes/all',
-  async (
-    {contract, library, account, chainId, reFetch}: any,
-    {requestId, getState},
-  ) => {
+  async ({library, account, chainId, reFetch}: any, {requestId, getState}) => {
     //result to dispatch data for Stakes store
     let projects: any[] = [];
 
@@ -483,10 +480,6 @@ export const fetchStakes = createAsyncThunk(
 
     await Promise.all(
       stakeList.map(async (stake: any, index: number) => {
-        // let info = await stake.stakeVault.stakeInfos(item)
-        // console.log('-------info--------')
-        // console.log(stake);
-
         let mystaked: string = '';
         let myearned: string = '';
         let myStakedL2: string = '';
@@ -526,6 +519,8 @@ export const fetchStakes = createAsyncThunk(
         //   stake.startBlock,
         //   currentBlockNumber,
         // );
+
+        console.log(account);
 
         const stakeInfo: Partial<Stake> = {
           contractAddress: stake.stakeContract,

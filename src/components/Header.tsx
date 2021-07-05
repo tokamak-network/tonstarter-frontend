@@ -12,8 +12,8 @@ import {shortenAddress} from 'utils';
 import {ThemeSwitcher} from './ThemeSwitcher';
 import {NavLink, useRouteMatch} from 'react-router-dom';
 import {useColorMode} from '@chakra-ui/react';
-import logoLight from 'assets/svgs/fld_bi.svg';
-import logoDark from 'assets/svgs/fldw_bi.svg';
+import logoLight from 'assets/svgs/fld_bi_white.svg';
+import logoGray from 'assets/svgs/fld_bi_gray.svg';
 
 type HeaderProps = {
   walletopen: () => void;
@@ -37,17 +37,17 @@ export const Header: React.FC<HeaderProps> = (props) => {
       <Flex justifyContent={'space-between'}>
         <NavLink to="/">
           <Image
-            className={'header-image'}
             src={
               match?.isExact
-                ? logoDark
-                : colorMode === 'light'
                 ? logoLight
-                : logoDark
+                : colorMode === 'light'
+                ? logoGray
+                : logoLight
             }
-            w={191}
-            h={5}
-            alt="FLD Logo"
+            color="white.200"
+            w={'11.375em'}
+            h={'1.5625em'}
+            alt="TON Starter Logo"
           />
         </NavLink>
         <MenuItems isOpen={isOpen} {...props} />

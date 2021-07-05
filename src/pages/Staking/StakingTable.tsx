@@ -18,6 +18,7 @@ import {
   useColorMode,
   CircularProgress,
   Center,
+  useTheme,
 } from '@chakra-ui/react';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import './staking.css';
@@ -121,6 +122,7 @@ export const StakingTable: FC<StakingTableProps> = ({
   );
 
   const {colorMode} = useColorMode();
+  const theme = useTheme();
   const focusTarget = useRef<any>([]);
 
   const {
@@ -257,7 +259,13 @@ export const StakingTable: FC<StakingTableProps> = ({
                   h={16}
                   key={i}
                   borderRadius={'10px'}
-                  borderBottomRadius={row.isExpanded === true ? '0px' : '10px'}
+                  borderBottomRadius={
+                    isOpen === contractAddress ? '0px' : '10px'
+                  }
+                  borderBottom={isOpen === contractAddress ? '1px' : ''}
+                  borderBottomColor={
+                    isOpen === contractAddress ? '#f4f6f8' : ''
+                  }
                   mb={'20px'}
                   w="100%"
                   bg={colorMode === 'light' ? 'white.100' : 'black.200'}
@@ -367,7 +375,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                   <chakra.tr
                     boxShadow="0 1px 1px 0 rgba(96, 97, 112, 0.16)"
                     w={'100%'}
-                    h={500}
+                    h={'413px'}
                     key={i}
                     m={0}
                     mb={'14px'}
@@ -406,9 +414,13 @@ export const StakingTable: FC<StakingTableProps> = ({
               <IconButton
                 w={'24px'}
                 h={'24px'}
-                background={'none'}
-                border={'solid 1px #424242'}
-                color={'#424242'}
+                bg={colorMode === 'light' ? 'white.100' : 'none'}
+                border={
+                  colorMode === 'light'
+                    ? 'solid 1px #e6eaee'
+                    : 'solid 1px #424242'
+                }
+                color={colorMode === 'light' ? '#e6eaee' : '#424242'}
                 borderRadius={4}
                 aria-label={'Previous Page'}
                 onClick={previousPage}
@@ -425,7 +437,8 @@ export const StakingTable: FC<StakingTableProps> = ({
             alignItems="center"
             p={0}
             fontSize={'13px'}
-            color={'#949494'}
+            fontFamily={theme.fonts.roboto}
+            color={colorMode === 'light' ? '#3a495f' : '#949494'}
             pb={'3px'}>
             <Text flexShrink={0}>
               Page{' '}
@@ -473,9 +486,13 @@ export const StakingTable: FC<StakingTableProps> = ({
                 <IconButton
                   w={'24px'}
                   h={'24px'}
-                  background={'none'}
-                  border={'solid 1px #424242'}
-                  color={'#424242'}
+                  border={
+                    colorMode === 'light'
+                      ? 'solid 1px #e6eaee'
+                      : 'solid 1px #424242'
+                  }
+                  color={colorMode === 'light' ? '#e6eaee' : '#424242'}
+                  bg={colorMode === 'light' ? 'white.100' : 'none'}
                   borderRadius={4}
                   aria-label={'Next Page'}
                   onClick={nextPage}
@@ -489,9 +506,20 @@ export const StakingTable: FC<StakingTableProps> = ({
               </Center>
             </Tooltip>
             <Select
-              w={28}
+              w={'117px'}
+              h={'32px'}
+              color={colorMode === 'light' ? ' #3e495c' : '#f3f4f1'}
+              bg={colorMode === 'light' ? 'white.100' : ''}
+              boxShadow={
+                colorMode === 'light'
+                  ? '0 1px 1px 0 rgba(96, 97, 112, 0.14)'
+                  : ''
+              }
+              border={colorMode === 'light' ? '' : 'solid 1px #424242'}
+              borderRadius={4}
               size={'sm'}
               value={pageSize}
+              fontFamily={theme.fonts.roboto}
               onChange={(e) => {
                 setPageSize(Number(e.target.value));
               }}>

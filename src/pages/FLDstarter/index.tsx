@@ -8,7 +8,7 @@ import {
   CircularProgress,
 } from '@chakra-ui/react';
 import {Head} from 'components/SEO';
-import {Fragment, useReducer} from 'react';
+import {Fragment} from 'react';
 import {TokenComponent} from './TokenComponent';
 import {Animation} from './Animation';
 import {IconTopArrow} from 'components/Icons/IconTopArrow';
