@@ -1,4 +1,12 @@
-import {Container, Flex, SimpleGrid, Stack, Button} from '@chakra-ui/react';
+import {
+  Container,
+  Flex,
+  SimpleGrid,
+  Stack,
+  Button,
+  Center,
+  CircularProgress,
+} from '@chakra-ui/react';
 import {Head} from 'components/SEO';
 import {Fragment, useReducer} from 'react';
 import {TokenComponent} from './TokenComponent';
@@ -16,7 +24,6 @@ export const FLDstarter = () => {
 
   // @ts-ignore
   const {data, loading} = useAppSelector(selectStakes);
-  console.log(data);
 
   return (
     <Fragment>
@@ -25,15 +32,24 @@ export const FLDstarter = () => {
       <Stack>
         <Container maxW={'6xl'} py={12}>
           <SimpleGrid minChildWidth={350} gap={30}>
-            {data.map((item, index) => (
-              <TokenComponent
-                phase={item.name}
-                period={item.period}
-                token={item.token}
-                stakedAmount={item.stakeBalanceTON}
-                key={index}
-              />
-            ))}
+            {loading === 'pending' ? (
+              <Center>
+                <CircularProgress
+                  isIndeterminate
+                  color="blue.200"></CircularProgress>
+              </Center>
+            ) : (
+              data.map((item, index) => (
+                <TokenComponent
+                  phase={item.name}
+                  period={item.period}
+                  token={item.token}
+                  stakedAmount={item.stakeBalanceTON}
+                  contractAddress={item.contractAddress}
+                  index={index}
+                />
+              ))
+            )}
           </SimpleGrid>
         </Container>
         <Flex justifyContent={'flex-end'} pr={10}>

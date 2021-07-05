@@ -1,11 +1,12 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {DEFAULT_NETWORK} from 'constants/index';
 import {RootState} from 'store/reducers';
-import {getExplorerLink, getNetworkName} from 'utils';
+import {getExplorerLink, getNetworkName, getBlockNumber} from 'utils';
 
 export type AppConfig = {
   selectedNetwork: string;
   explorerLink: string;
+  blockNumber: number;
 };
 
 interface IAppInit {
@@ -19,6 +20,7 @@ const initialState = {
   data: {
     selectedNetwork: '',
     explorerLink: '',
+    blockNumber: 0,
   },
   loading: 'idle',
   error: null,
@@ -37,6 +39,7 @@ export const fetchAppConfig = createAsyncThunk(
     let appConfig: AppConfig = {
       explorerLink: await getExplorerLink(chainId || DEFAULT_NETWORK),
       selectedNetwork: await getNetworkName(chainId || DEFAULT_NETWORK),
+      blockNumber: await getBlockNumber(chainId || DEFAULT_NETWORK),
     };
 
     return appConfig;

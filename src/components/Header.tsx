@@ -53,7 +53,6 @@ export const Header: React.FC<HeaderProps> = (props) => {
         <MenuItems isOpen={isOpen} {...props} />
       </Flex>
       <MenuToggle toggle={toggle} isOpen={isOpen} />
-
       <MenuLinks isOpen={isOpen} {...props} />
     </NavBarContainer>
   );
@@ -177,8 +176,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
         </NavLink>
         <NavLink
           to="/staking"
-          className={match?.isExact ? 'link-match' : 'link'}
-          activeClassName={'active'}>
+          className={match?.isExact ? 'link-match' : 'link'}>
           Staking
         </NavLink>
         <Tooltip

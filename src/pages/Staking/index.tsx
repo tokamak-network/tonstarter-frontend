@@ -29,11 +29,6 @@ import {
   WithdrawalOptionModal,
   SwapModal,
 } from './StakeOptionModal';
-
-import {AppDispatch} from 'store';
-import {openModal} from 'store/modal.reducer';
-import {ManageModal} from './StakeOptionModal/manage';
-import {formatStartTime} from 'utils/timeStamp';
 import {getTokamakContract} from 'utils/contract';
 import { Contract } from '@ethersproject/contracts';
 import * as StakeTON from 'services/abis/StakeTON.json';
@@ -45,6 +40,13 @@ import {
   REACT_APP_STAKE1_PROXY,
 } from 'constants/index';
 import {convertNumber} from 'utils/number';
+import store, {AppDispatch} from 'store';
+import {openModal} from 'store/modal.reducer';
+import {ManageModal} from './StakeOptionModal/manage';
+import {formatStartTime} from 'utils/timeStamp';
+import {useState} from 'react';
+import {useLocalStorage} from 'hooks/useStorage';
+import {useEffect} from 'react';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
@@ -54,6 +56,55 @@ type WalletInformationProps = {
   };
   account: string | undefined;
 };
+
+type GetDateTimeType =
+  | 'sale-start'
+  | 'sale-end'
+  | 'mining-start'
+  | 'mining-end';
+
+type GetDateProp = {
+  time: string | undefined;
+  currentBlock: number;
+  contractAddress: string;
+  type: GetDateTimeType;
+};
+
+const GetDate = ({time, currentBlock, contractAddress, type}: GetDateProp) => {
+  const [date, setDate] = useState('');
+  const [localTableValue, setLocalTableValue] = useLocalStorage('table', {});
+
+  useEffect(() => {
+    const fetchDate = async () => {
+      const result = await formatStartTime(time, currentBlock);
+      setDate(result);
+
+      //@ts-ignore
+      const localStorage = JSON.parse(window.localStorage.getItem('table'));
+
+      return await setLocalTableValue({
+        ...localStorage,
+        [contractAddress + type]: result,
+      });
+    };
+    if (
+      localTableValue === undefined ||
+      localTableValue[contractAddress + type] === undefined
+    ) {
+      fetchDate();
+    } else {
+      setDate(localTableValue[contractAddress + type]);
+    }
+    fetchDate();
+  }, []);
+
+  return (
+    <Text fontSize={'20px'} color="white.200" fontWeight={'bold'} w="100%">
+      {date}
+    </Text>
+  );
+};
+
 const WalletInformation: FC<WalletInformationProps> = ({
   user,
   data,
@@ -147,6 +198,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
     </Container>
   );
 };
+
 export const Staking = () => {
   const dispatch = useAppDispatch();
   // @ts-ignore
@@ -201,15 +253,10 @@ export const Staking = () => {
     [],
   );
 
-  const test = async (arg: any) => {
-    return await formatStartTime(arg);
-  };
-
   const renderRowSubComponent = useCallback(
     ({row}) => {
-      const {account, library, contractAddress} = row.original;
-
-
+      const {account, contractAddress} = row.original;
+      const currentBlock = store.getState().appConfig.data.blockNumber;
       return (
         <Flex
           mt={0}
@@ -222,24 +269,52 @@ export const Staking = () => {
             px={{base: 3, md: 20}}
             py={{base: 1, md: 10}}
             flexDir={'column'}
+            width="347px"
             justifyContent={'space-between'}
             h={'100%'}>
             <Flex flexDir={'column'} alignItems={'space-between'}>
               <Text fontSize={'15px'} color="gray.425">
-                Mining Starting Day
+                {data[row.id]?.status === 'sale'
+                  ? 'Sale Starting Day'
+                  : 'Mining Starting Day'}
               </Text>
-              <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-                {data[row.id]?.startTime}
+              <Text w="210px">
+                <GetDate
+                  time={
+                    data[row.id]?.status === 'sale'
+                      ? data[row.id]?.saleStartTime
+                      : data[row.id]?.miningStartTime
+                  }
+                  currentBlock={currentBlock}
+                  contractAddress={contractAddress}
+                  type={
+                    data[row.id]?.status === 'sale'
+                      ? 'sale-start'
+                      : 'mining-start'
+                  }></GetDate>
               </Text>
             </Flex>
             <Flex flexDir={'column'} alignItems={'space-between'}>
               <Text fontSize={'15px'} color="gray.425">
-                Mining Closing day
+                {data[row.id]?.status === 'sale'
+                  ? 'Sale Closing Day'
+                  : 'Mining Closing Day'}
               </Text>
-              <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-                {data[row.id]?.endTime}
+              <Text w="220px">
+                <GetDate
+                  time={
+                    data[row.id]?.status === 'sale'
+                      ? data[row.id]?.saleEndTime
+                      : data[row.id]?.miningEndTime
+                  }
+                  currentBlock={currentBlock}
+                  contractAddress={contractAddress}
+                  type={
+                    data[row.id]?.status === 'sale' ? 'sale-end' : 'mining-end'
+                  }></GetDate>
               </Text>
             </Flex>
+
             <Flex flexDir={'column'} alignItems={'space-between'}>
               <Text fontSize={'15px'} color="gray.425">
                 Total stakers

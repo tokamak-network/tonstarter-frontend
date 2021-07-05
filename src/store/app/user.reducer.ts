@@ -7,6 +7,7 @@ import {formatEther} from '@ethersproject/units';
 
 export type User = {
   balance: string;
+  address: string;
 };
 
 interface IUser {
@@ -38,6 +39,7 @@ export const fetchUserInfo = createAsyncThunk(
     const contract = getContract(REACT_APP_TON, ERC20.abi, library);
 
     let user: User = {
+      address,
       balance: formatEther(await contract.balanceOf(address)),
     };
 

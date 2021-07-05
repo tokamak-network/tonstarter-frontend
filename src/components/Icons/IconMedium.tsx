@@ -11,7 +11,7 @@ export const IconMedium = (props: React.SVGProps<SVGSVGElement>) =>{
     viewBox="0 0 20 20"
   >
     <defs>
-      <style>{`.prefix__cls-2{fill:${colorMode==='light'? '#354052': '#7e8993'}}`}</style>
+      <style>{`.prefix__cls-2{fill:${colorMode==='light'? '#ffffff': '#ffffff'}}`}</style>
     </defs>
     <path id="prefix__Base" fill="none" d="M0 0h20v20H0z" />
     <g id="prefix__\uADF8\uB8F9_5284" transform="translate(0 4)">
