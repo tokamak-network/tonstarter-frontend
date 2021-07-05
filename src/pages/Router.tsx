@@ -9,15 +9,11 @@ import {Pools} from './Pools';
 import {Staking} from './Staking';
 import {Switch, Route} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {fetchAppConfig, selectApp} from 'store/app/app.reducer';
+import {fetchAppConfig} from 'store/app/app.reducer';
 import {fetchUserInfo} from 'store/app/user.reducer';
-import {fetchStakes} from './Staking/staking.reducer';
-import {useContract} from 'hooks/useContract';
-import {REACT_APP_STAKE1_PROXY} from 'constants/index';
-import * as StakeLogic from 'services/abis/Stake1Logic.json';
-import store from 'store';
+import {fetchStakes, selectStakes} from './Staking/staking.reducer';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
-import {useLocalStorage} from 'hooks/useStorage';
+import store from 'store';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -27,28 +23,14 @@ export const Router: FC<RouterProps> = () => {
   const [walletState, setWalletState] = useState<string>('');
   const {onOpen, isOpen: isModalOpen, onClose} = useDisclosure();
   const {account, chainId, library, deactivate} = useWeb3React();
-  const stakeRegistryContract = useContract(
-    REACT_APP_STAKE1_PROXY,
-    StakeLogic.abi,
-  );
-
-  // useEffect(() => {
-  //   setAccountValue({signIn: false});
-  //   if (accountValue.signIn === false) {
-  //     deactivate();
-  //     console.log(account);
-  //   }
-  // }, [chainId, account, library, dispatch]);
-
-  const [accountValue, setAccountValue] = useLocalStorage('account', {});
 
   useEffect(() => {
     if (account && chainId) {
       //@ts-ignore
       const accountStorage = JSON.parse(window.localStorage.getItem('account'));
-
+      //@ts-ignore
       if (accountStorage === null) {
-        setAccountValue({signIn: false});
+        window.localStorage.setItem('account', JSON.stringify({signIn: false}));
         return deactivate();
       }
 
@@ -57,29 +39,39 @@ export const Router: FC<RouterProps> = () => {
       // @ts-ignore
       dispatch(fetchAppConfig({chainId}));
 
+      console.log(signIn);
+
       if (signIn === false) {
-        return deactivate();
+        deactivate();
       } else if (signIn === true) {
         // @ts-ignore
-        dispatch(fetchUserInfo({address: account, library}));
+        dispatch(fetchUserInfo({address: account, library})).then(() => {
+          dispatch(
+            fetchStakes({
+              library,
+              account,
+              chainId,
+            }) as any,
+          );
+        });
       }
     }
   }, [chainId, account, library, dispatch, deactivate]);
 
   useEffect(() => {
-    //delay if Stake is in pending
-    while (store.getState().stakes.loading === 'pending') {
-      break;
+    //@ts-ignore
+    const accountStorage = JSON.parse(window.localStorage.getItem('account'));
+    const {signIn} = accountStorage;
+    if (account === undefined && signIn === false) {
+      dispatch(
+        fetchStakes({
+          library,
+          account,
+          chainId,
+        }) as any,
+      );
     }
-    dispatch(
-      fetchStakes({
-        contract: stakeRegistryContract,
-        library,
-        account,
-        chainId,
-      }) as any,
-    );
-  }, [account, stakeRegistryContract, dispatch, library, chainId]);
+  }, [account, dispatch, library, chainId]);
 
   const handleWalletModalOpen = (state: string) => {
     setWalletState(state);

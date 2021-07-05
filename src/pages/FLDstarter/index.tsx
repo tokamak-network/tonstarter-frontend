@@ -14,7 +14,6 @@ import {Animation} from './Animation';
 import {IconTopArrow} from 'components/Icons/IconTopArrow';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectStakes} from '../Staking/staking.reducer';
-import {selectUser} from 'store/app/user.reducer';
 
 export const FLDstarter = () => {
   // const [selected, setSelected] = useState<string>('hi');
@@ -25,9 +24,6 @@ export const FLDstarter = () => {
 
   // @ts-ignore
   const {data, loading} = useAppSelector(selectStakes);
-  const {data: user} = useAppSelector(selectUser);
-
-  console.log(user);
 
   return (
     <Fragment>

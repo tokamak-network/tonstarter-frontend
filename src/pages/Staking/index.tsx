@@ -238,10 +238,10 @@ export const Staking = () => {
     );
   };
 
-  const GetColor = () => {
-    const {colorMode} = useColorMode();
-    return colorMode;
-  };
+  // const GetColor = () => {
+  //   const {colorMode} = useColorMode();
+  //   return colorMode;
+  // };
 
   const renderRowSubComponent = useCallback(
     ({row}) => {
@@ -330,7 +330,7 @@ export const Staking = () => {
               <Link
                 fontSize={'20px'}
                 fontWeight={'bold'}
-                color={GetColor() === 'light' ? 'black.300' : 'white.200'}
+                // color={GetColor() === 'light' ? 'black.300' : 'white.200'}
                 isExternal={true}
                 outline={'none'}
                 _focus={{
