@@ -20,10 +20,7 @@ import {
 import {TokenType} from 'types/index';
 import {convertNumber} from 'utils/number';
 
-// const provider = ethers.getDefaultProvider('rinkeby');
-// const rpc = new JsonRpcProvider('https://rinkeby.rpc.tokamak.network');
 const rpc = getRPC();
-// const rpc = new JsonRpcProvider('http://183.98.80.217:8545')
 
 export type Stake = {
   name?: string;
@@ -330,6 +327,7 @@ export const closeSale = async (args: endsale) => {
   if (userAddress === null || userAddress === undefined) {
     return;
   }
+
   const stakeVault = await new Contract(
     REACT_APP_STAKE1_PROXY,
     StakeVault.abi,
@@ -462,15 +460,15 @@ export const fetchStakes = createAsyncThunk(
     console.log(stakeReq);
 
     // console.log(vaultReq);
-    // console.log(stakeList);
+    console.log(stakeList);
 
     console.log('-----------');
 
     await Promise.all(
       stakeList.map(async (stake: any, index: number) => {
         // let info = await stake.stakeVault.stakeInfos(item)
-        console.log('-------info--------')
-        console.log(stake);
+        // console.log('-------info--------')
+        // console.log(stake);
 
         let mystaked: string = '';
         let myearned: string = '';
@@ -524,8 +522,8 @@ export const fetchStakes = createAsyncThunk(
           }),
           stakeBalanceETH: formatEther(0),
           stakeBalanceFLD: formatEther(0),
-          tokamakStaked: formatEther(0),
-          tokamakPendingUnstaked: formatEther(0),
+          // tokamakStaked: formatEther(0),
+          // tokamakPendingUnstaked: formatEther(0),
           token: stake.paytoken,
           stakeType: stake.stakeType,
           period: period(stake.startBlock, stake.endBlock),

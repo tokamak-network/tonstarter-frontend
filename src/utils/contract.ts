@@ -8,6 +8,7 @@ import * as WtonABI from 'services/abis/WTON.json';
 import * as DepositManagerABI from 'services/abis/DepositManager.json';
 import * as SeigManagerABI from 'services/abis/SeigManager.json';
 import * as CandidateABI from 'services/abis/ICandidate.json';
+import * as StakeTON from 'services/abis/StakeTON.json';
 import {
   REACT_APP_TOKAMAK_LAYER2,
   REACT_APP_TON,
@@ -46,7 +47,7 @@ export function getRPC (): JsonRpcProvider {
   return new JsonRpcProvider('https://rinkeby.infura.io/v3/34448178b25e4fbda6d80f4da62afba2');
 }
 
-export function getTokamakContract (want?: string): any {
+export function getTokamakContract (want: string, address?: string): any {
   const rpc = getRPC();
 
   const TON = new Contract(REACT_APP_TON, TonABI.abi, rpc);
@@ -65,6 +66,12 @@ export function getTokamakContract (want?: string): any {
     return DepositManager 
   } else if (want === 'TokamakLayer2') {
     return TokamakLayer2 
+  } else if (want === 'StakeTON') {
+    if (address) {
+      return new Contract(address, StakeTON.abi, rpc);
+    } else {
+      throw Error('Need Contract Address!');
+    }
   } else {
     throw Error('Invalid contract name!');
   }

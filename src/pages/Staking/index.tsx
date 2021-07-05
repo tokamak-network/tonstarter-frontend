@@ -37,10 +37,18 @@ import {formatStartTime} from 'utils/timeStamp';
 import {getTokamakContract} from 'utils/contract';
 import { Contract } from '@ethersproject/contracts';
 import * as StakeTON from 'services/abis/StakeTON.json';
+import {
+  REACT_APP_TOKAMAK_LAYER2,
+  REACT_APP_SEIG_MANAGER,
+  DEPLOYED,
+  REACT_APP_STAKE1_LOGIC,
+  REACT_APP_STAKE1_PROXY,
+} from 'constants/index';
+import {convertNumber} from 'utils/number';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
-  data: {};
+  data: any;
   user: {
     balance: string;
   };
@@ -58,17 +66,31 @@ const WalletInformation: FC<WalletInformationProps> = ({
   };
   const {colorMode} = useColorMode();
   const btnDisabled = account === undefined ? true : false;
-  console.log(payload)
-  // console.log(payload?.contractAddress);
 
-  const getInfoFromContract = async function () {
+  const getInfoFromContract = function () {
     // const StakeTONContract = new Contract(payload.contractAddress, StakeTON.abi, rpc);
 
     const TON = getTokamakContract('TON');
     const WTON = getTokamakContract('WTON');
     const depositManager = getTokamakContract('DepositManager');
     const seigManager = getTokamakContract('SeigManager');
+    const staked = seigManager.stakeOf(REACT_APP_TOKAMAK_LAYER2, data.contractAddress);
+    const pendingUnstaked = depositManager.pendingUnstaked(REACT_APP_TOKAMAK_LAYER2, data.contractAddress);
+    
+    return {
+      toakamakStaked: convertNumber({
+        amount: staked, 
+        type: 'ray' 
+      }),
+      tokamakPendingUnstaked: convertNumber({
+        amount: pendingUnstaked,
+        type: 'ray'
+      })
+    }
   }
+
+  console.log(payload)
+
 
   return (
     <Container
