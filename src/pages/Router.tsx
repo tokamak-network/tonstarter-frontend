@@ -17,13 +17,13 @@ import {REACT_APP_STAKE1_PROXY} from 'constants/index';
 import * as StakeLogic from 'services/abis/Stake1Logic.json';
 import store from 'store';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
+import {useLocalStorage} from 'hooks/useStorage';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
 export const Router: FC<RouterProps> = () => {
   const dispatch = useAppDispatch();
   // const toast = useToast();
-  const {data} = useAppSelector(selectApp);
   const [walletState, setWalletState] = useState<string>('');
   const {onOpen, isOpen: isModalOpen, onClose} = useDisclosure();
   const {account, chainId, library, deactivate} = useWeb3React();
@@ -40,11 +40,20 @@ export const Router: FC<RouterProps> = () => {
   //   }
   // }, [chainId, account, library, dispatch]);
 
+  const [accountValue, setAccountValue] = useLocalStorage('account', {});
+
   useEffect(() => {
     if (account && chainId) {
       //@ts-ignore
       const accountStorage = JSON.parse(window.localStorage.getItem('account'));
+
+      if (accountStorage === null) {
+        setAccountValue({signIn: false});
+        return deactivate();
+      }
+
       const {signIn} = accountStorage;
+
       // @ts-ignore
       dispatch(fetchAppConfig({chainId}));
 

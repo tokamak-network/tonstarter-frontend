@@ -401,27 +401,32 @@ export const StakingTable: FC<StakingTableProps> = ({
         This is just a very basic UI implementation:
       */}
         <Flex justifyContent="flex-end" my={4} alignItems="center">
-          {/* <Flex> */}
-          <Tooltip label="Previous Page">
-            <IconButton
-              w={'24px'}
-              h={'24px'}
-              background={'none'}
-              border={'solid 1px #424242'}
-              color={'#424242'}
-              borderRadius={4}
-              aria-label={'Previous Page'}
-              onClick={previousPage}
-              isDisabled={!canPreviousPage}
-              size={'sm'}
-              mr={4}
-              _hover={{borderColor: '#2a72e5', color: '#2a72e5'}}
-              icon={<ChevronLeftIcon h={6} w={6} />}
-            />
-          </Tooltip>
-          {/* </Flex> */}
+          <Flex>
+            <Tooltip label="Previous Page">
+              <IconButton
+                w={'24px'}
+                h={'24px'}
+                background={'none'}
+                border={'solid 1px #424242'}
+                color={'#424242'}
+                borderRadius={4}
+                aria-label={'Previous Page'}
+                onClick={previousPage}
+                isDisabled={!canPreviousPage}
+                size={'sm'}
+                mr={4}
+                _hover={{borderColor: '#2a72e5', color: '#2a72e5'}}
+                icon={<ChevronLeftIcon h={6} w={6} />}
+              />
+            </Tooltip>
+          </Flex>
 
-          <Flex alignItems="center" p={0} fontSize={'13px'} color={'#949494'}>
+          <Flex
+            alignItems="center"
+            p={0}
+            fontSize={'13px'}
+            color={'#949494'}
+            pb={'3px'}>
             <Text flexShrink={0}>
               Page{' '}
               <Text fontWeight="bold" as="span" color={'blue.300'}>
@@ -432,6 +437,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                 {pageOptions.length}
               </Text>
             </Text>
+
             {/* <Text flexShrink={0}>Go to page:</Text>{' '}
           <NumberInput
             ml={2}
@@ -451,6 +457,7 @@ export const StakingTable: FC<StakingTableProps> = ({
             </NumberInputStepper>
           </NumberInput> */}
           </Flex>
+
           <Flex>
             <Tooltip label="Next Page">
               {/* <IconButton
