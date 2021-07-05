@@ -8,6 +8,7 @@ import {
   Flex,
   Link,
   useColorMode,
+  useTheme,
 } from '@chakra-ui/react';
 import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
@@ -56,6 +57,8 @@ type GetDateProp = {
 };
 
 const GetDate = ({time, currentBlock, contractAddress, type}: GetDateProp) => {
+  const {colorMode} = useColorMode();
+
   const [date, setDate] = useState('');
   const [localTableValue, setLocalTableValue] = useLocalStorage('table', {});
 
@@ -84,7 +87,11 @@ const GetDate = ({time, currentBlock, contractAddress, type}: GetDateProp) => {
   }, []);
 
   return (
-    <Text fontSize={'20px'} color="white.200" fontWeight={'bold'} w="100%">
+    <Text
+      fontSize={'20px'}
+      color={colorMode === 'light' ? 'black.300' : 'white.200'}
+      fontWeight={'bold'}
+      w="100%">
       {date}
     </Text>
   );
@@ -160,6 +167,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
 };
 
 export const Staking = () => {
+  const theme = useTheme();
   const dispatch = useAppDispatch();
   // @ts-ignore
   const {data, loading} = useAppSelector(selectStakes);
@@ -213,27 +221,43 @@ export const Staking = () => {
     [],
   );
 
+  const GetText = ({title, content}: any) => {
+    const {colorMode} = useColorMode();
+    return (
+      <Flex flexDir={'column'} alignItems={'space-between'}>
+        <Text fontSize={'15px'} color="gray.400">
+          {title}
+        </Text>
+        <Text
+          fontSize={'20px'}
+          color={colorMode === 'light' ? 'black.300' : 'white.200'}
+          fontWeight={'bold'}>
+          {content}
+        </Text>
+      </Flex>
+    );
+  };
+
+  const GetColor = () => {
+    const {colorMode} = useColorMode();
+    return colorMode;
+  };
+
   const renderRowSubComponent = useCallback(
     ({row}) => {
       const {account, contractAddress} = row.original;
       const currentBlock = store.getState().appConfig.data.blockNumber;
       return (
         <Flex
-          mt={0}
-          w={'100%'}
-          h={'500px'}
+          w="100%"
+          m={0}
           justifyContent={'space-between'}
           alignItems="center"
+          p="70px"
           border={'none'}>
-          <Flex
-            px={{base: 3, md: 20}}
-            py={{base: 1, md: 10}}
-            flexDir={'column'}
-            width="347px"
-            justifyContent={'space-between'}
-            h={'100%'}>
+          <Flex flexDir={'column'} justifyContent={'space-between'} h={'100%'}>
             <Flex flexDir={'column'} alignItems={'space-between'}>
-              <Text fontSize={'15px'} color="gray.425">
+              <Text fontSize={'15px'} color="gray.400">
                 {data[row.id]?.status === 'sale'
                   ? 'Sale Starting Day'
                   : 'Mining Starting Day'}
@@ -254,8 +278,32 @@ export const Staking = () => {
                   }></GetDate>
               </Text>
             </Flex>
+            <GetText
+              title={'Total Staker'}
+              content={data[row.id]?.totalStakers}></GetText>
             <Flex flexDir={'column'} alignItems={'space-between'}>
-              <Text fontSize={'15px'} color="gray.425">
+              <Text fontSize={'15px'} color="gray.400">
+                My staked
+              </Text>
+              <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
+                {data[row.id]?.mystaked}
+              </Text>
+              {/* <Text>{data[row.id]?.mystaked}</Text> */}
+            </Flex>
+          </Flex>
+
+          <Box p={0} w={'450px'} borderRadius={'10px'} alignSelf={'flex-start'}>
+            <WalletInformation
+              dispatch={dispatch}
+              data={data[row.id]}
+              user={user}
+              account={account}
+            />
+          </Box>
+
+          <Flex flexDir={'column'} h={'100%'} justifyContent={'space-between'}>
+            <Flex flexDir={'column'} alignItems={'space-between'}>
+              <Text fontSize={'15px'} color="gray.400">
                 {data[row.id]?.status === 'sale'
                   ? 'Sale Closing Day'
                   : 'Mining Closing Day'}
@@ -276,50 +324,13 @@ export const Staking = () => {
             </Flex>
 
             <Flex flexDir={'column'} alignItems={'space-between'}>
-              <Text fontSize={'15px'} color="gray.425">
-                Total stakers
-              </Text>
-              <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-                {data[row.id]?.totalStakers}
-              </Text>
-            </Flex>
-          </Flex>
-          <Box p={8} w={'450px'} borderRadius={'10px'}>
-            <WalletInformation
-              dispatch={dispatch}
-              data={data[row.id]}
-              user={user}
-              account={account}
-            />
-          </Box>
-          <Flex
-            px={{base: 3, md: 20}}
-            py={{base: 1, md: 10}}
-            flexDir={'column'}
-            justifyContent={'space-between'}
-            h={'100%'}>
-            <Flex flexDir={'column'} alignItems={'space-between'}>
-              <Text fontSize={'15px'} color="gray.425">
-                My staked
-              </Text>
-              <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-                {data[row.id]?.mystaked}
-              </Text>
-              {/* <Text>{data[row.id]?.mystaked}</Text> */}
-            </Flex>
-            <Flex flexDir={'column'} alignItems={'space-between'}>
-              <Text fontSize={'15px'} color="gray.425">
-                My Earned
-              </Text>
-              <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-                {data[row.id]?.myearned}
-              </Text>
-            </Flex>
-            <Flex flexDir={'column'} alignItems={'space-between'}>
-              <Text fontSize={'15px'} color="gray.425">
+              <Text fontSize={'15px'} color="gray.400">
                 Contract
               </Text>
               <Link
+                fontSize={'20px'}
+                fontWeight={'bold'}
+                color={GetColor() === 'light' ? 'black.300' : 'white.200'}
                 isExternal={true}
                 outline={'none'}
                 _focus={{
@@ -331,6 +342,9 @@ export const Staking = () => {
                 {shortenAddress(data[row.id]?.contractAddress)}
               </Link>
             </Flex>
+            <GetText
+              title={'Earned'}
+              content={data[row.id]?.myearned}></GetText>
           </Flex>
         </Flex>
       );
@@ -350,7 +364,7 @@ export const Staking = () => {
             }
           />
         </Box>
-        <Box>
+        <Box fontFamily={theme.fonts.roboto}>
           <StakingTable
             renderDetail={renderRowSubComponent}
             columns={columns}

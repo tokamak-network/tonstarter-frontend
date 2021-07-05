@@ -259,7 +259,13 @@ export const StakingTable: FC<StakingTableProps> = ({
                   h={16}
                   key={i}
                   borderRadius={'10px'}
-                  borderBottomRadius={row.isExpanded === true ? '0px' : '10px'}
+                  borderBottomRadius={
+                    isOpen === contractAddress ? '0px' : '10px'
+                  }
+                  borderBottom={isOpen === contractAddress ? '1px' : ''}
+                  borderBottomColor={
+                    isOpen === contractAddress ? '#f4f6f8' : ''
+                  }
                   mb={'20px'}
                   w="100%"
                   bg={colorMode === 'light' ? 'white.100' : 'black.200'}
@@ -369,7 +375,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                   <chakra.tr
                     boxShadow="0 1px 1px 0 rgba(96, 97, 112, 0.16)"
                     w={'100%'}
-                    h={500}
+                    h={'413px'}
                     key={i}
                     m={0}
                     mb={'14px'}

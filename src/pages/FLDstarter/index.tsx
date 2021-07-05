@@ -8,12 +8,13 @@ import {
   CircularProgress,
 } from '@chakra-ui/react';
 import {Head} from 'components/SEO';
-import {Fragment, useReducer} from 'react';
+import {Fragment} from 'react';
 import {TokenComponent} from './TokenComponent';
 import {Animation} from './Animation';
 import {IconTopArrow} from 'components/Icons/IconTopArrow';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectStakes} from '../Staking/staking.reducer';
+import {selectUser} from 'store/app/user.reducer';
 
 export const FLDstarter = () => {
   // const [selected, setSelected] = useState<string>('hi');
@@ -24,6 +25,9 @@ export const FLDstarter = () => {
 
   // @ts-ignore
   const {data, loading} = useAppSelector(selectStakes);
+  const {data: user} = useAppSelector(selectUser);
+
+  console.log(user);
 
   return (
     <Fragment>

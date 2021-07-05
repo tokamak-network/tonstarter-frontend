@@ -54,6 +54,7 @@ const colors = {
     100: '#FFFFFF',
   },
   black: {
+    300: '#304156',
     200: '#222222',
   },
   yellow: {
