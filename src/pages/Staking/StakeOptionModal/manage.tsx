@@ -36,8 +36,6 @@ export const ManageModal = () => {
   );
 
   let balance = data?.data?.user?.balance;
-  // console.log(data);
-  // console.log(data?.data)
 
   return (
     <Modal
@@ -67,8 +65,9 @@ export const ManageModal = () => {
               <Text>{balance} TON</Text>
             </Box>
             <Box textAlign={'center'}>
-              <Text>Total: {data.data.stakeBalanceTON} TON</Text>
-              <Text>Staked in Layer 2: {data.data.tokamakStaked} TON</Text>
+              <Text>Total: {data.data.totalStakedAmountInL2} TON</Text>
+              <Text>Staked in Layer 2: {data.data.stakeContractBalanceWTON} TON</Text>
+              <Text>Pending UnStaked in Layer 2: {data.data.totalPendingUnstakedAmountInL2} TON</Text>
             </Box>
           </Stack>
 
@@ -95,6 +94,7 @@ export const ManageModal = () => {
                   vaultContractAddress: data.data.vault,
                   stakeStartBlock: data.data.stakeStartBlock,
                   library: library,
+                  handleCloseModal: dispatch(closeModal()),
                 })
               }>
               End Sale

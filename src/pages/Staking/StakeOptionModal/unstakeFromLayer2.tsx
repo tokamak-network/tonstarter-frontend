@@ -21,7 +21,6 @@ export const UnStakeFromLayer2Modal = () => {
   const dispatch = useAppDispatch();
 
   let balance = data?.data?.myStakedL2;
-  console.log(data?.data);
 
   return (
     <Modal
@@ -82,7 +81,8 @@ export const UnStakeFromLayer2Modal = () => {
                   amount: data.data.myStakedL2,
                   contractAddress: data.data.contractAddress,
                   vaultClosed: data?.data?.vaultClosed,
-                  library: library
+                  library: library,
+                  handleCloseModal: dispatch(closeModal()),
                 })
               }
               disabled={+balance <= 0}

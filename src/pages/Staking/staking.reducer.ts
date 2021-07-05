@@ -9,6 +9,7 @@ import * as StakeTON from 'services/abis/StakeTON.json';
 import * as DepositManagerABI from 'services/abis/DepositManager.json';
 import {formatEther} from '@ethersproject/units';
 import {period} from 'utils/timeStamp';
+import {toBN} from 'web3-utils';
 import {
   REACT_APP_TOKAMAK_LAYER2,
   REACT_APP_DEPOSIT_MANAGER,
@@ -40,7 +41,12 @@ export type Stake = {
   token: TokenType;
   mystaked: Number | string;
   myearned: Number | string;
+  mywithdraw: Number | string;
   myStakedL2: string;
+  totalStakedAmountInL2: string;
+  totalPendingUnstakedAmountInL2: string;
+  stakeContractBalanceWTON: string;
+  stakeContractBalanceTON: string;
   stakeBalanceTON: string;
   staketype: string;
   period: string;
@@ -70,6 +76,7 @@ type StakeProps = {
   library: any;
   stakeContractAddress: string;
   startTime: string | Number;
+  handleCloseModal: any;
 };
 type StakeTon = {
   userAddress: string | null | undefined;
@@ -78,6 +85,7 @@ type StakeTon = {
   library: any;
   stakeContractAddress: string;
   startTime: string | Number;
+  handleCloseModal: any;
 };
 
 type unstake = {
@@ -86,6 +94,7 @@ type unstake = {
   library: any;
   stakeContractAddress: string;
   mystaked: string;
+  handleCloseModal: any;
 };
 
 type claim = {
@@ -95,6 +104,7 @@ type claim = {
   library: any;
   myClaimed: string;
   myEarned: string;
+  handleCloseModal: any;
 };
 
 type endsale = {
@@ -102,6 +112,7 @@ type endsale = {
   vaultContractAddress: string;
   stakeStartBlock: string | Number;
   library: any;
+  handleCloseModal: any;
 };
 
 type stakeToLayer2Args = {
@@ -111,6 +122,7 @@ type stakeToLayer2Args = {
   stakeEndBlock: string | Number;
   vaultClosed: boolean;
   library: any;
+  handleCloseModal: any;
 };
 
 type unstakeFromLayer2Args = {
@@ -119,6 +131,7 @@ type unstakeFromLayer2Args = {
   contractAddress: string;
   vaultClosed: boolean;
   library: any;
+  handleCloseModal: any;
 };
 
 const initialState = {
@@ -159,6 +172,7 @@ export const stakePaytoken = async (args: StakeProps) => {
     library,
     stakeContractAddress,
     startTime,
+    handleCloseModal,
   } = args;
 
   if (payToken === DEPLOYED.TON) {
@@ -169,6 +183,7 @@ export const stakePaytoken = async (args: StakeProps) => {
       library: library,
       stakeContractAddress: stakeContractAddress,
       startTime: startTime,
+      handleCloseModal: handleCloseModal
     });
   } else {
     await stakeEth({
@@ -178,6 +193,7 @@ export const stakePaytoken = async (args: StakeProps) => {
       library: library,
       stakeContractAddress: stakeContractAddress,
       startTime: startTime,
+      handleCloseModal: handleCloseModal,
     });
   }
 };
@@ -190,12 +206,12 @@ const stakeTon = async (args: StakeTon) => {
     library,
     stakeContractAddress,
     startTime,
+    handleCloseModal,
   } = args;
   if (userAddress === null || userAddress === undefined) {
     return;
   }
   const currentBlock = await getRPC().getBlockNumber();
-  console.log(currentBlock);
 
   if (currentBlock > saleStartBlock && currentBlock < startTime) {
     const tonContract = getTokamakContract('TON');
@@ -230,6 +246,7 @@ const stakeEth = async (args: StakeTon) => {
     library,
     stakeContractAddress,
     startTime,
+    handleCloseModal,
   } = args;
 
   if (userAddress === null || userAddress === undefined) {
@@ -249,13 +266,15 @@ const stakeEth = async (args: StakeTon) => {
     } catch (err) {
       console.log(err)
     }
+    
   } else {
+    
     return alert('staking period has ended');
   }
 };
 
 export const unstake = async (args: unstake) => {
-  const {userAddress, endTime, library, stakeContractAddress, mystaked} = args;
+  const {userAddress, endTime, library, stakeContractAddress, mystaked, handleCloseModal} = args;
   const currentBlock = await getRPC().getBlockNumber();
 
   if (userAddress === null || userAddress === undefined) {
@@ -281,7 +300,7 @@ export const unstake = async (args: unstake) => {
     } catch (err) {
       console.log(err)
     }
-    // ModalClose();
+    
   }
 };
 
@@ -316,7 +335,7 @@ export const claimReward = async (args: claim) => {
 };
 
 export const closeSale = async (args: endsale) => {
-  const {userAddress, vaultContractAddress, stakeStartBlock, library} = args;
+  const {userAddress, vaultContractAddress, stakeStartBlock, library, handleCloseModal} = args;
   if (userAddress === null || userAddress === undefined) {
     return;
   }
@@ -327,21 +346,21 @@ export const closeSale = async (args: endsale) => {
     rpc,
   );
   const currentBlock = await getRPC().getBlockNumber();
-  if (currentBlock > stakeStartBlock) {
+  // if (currentBlock > stakeStartBlock) {
     const signer = getSigner(library, userAddress);
-    console.log(stakeVault);
     try {
       await stakeVault.connect(signer)?.closeSale(vaultContractAddress);
     } catch (err) {
       console.log(err)
     }
-  } else {
-    return alert('Staking has not ended yet');
-  }
+    
+  // } else {
+  //   return alert('Staking has not ended yet');
+  // }
 };
 
 export const stakeToLayer2 = async (args: stakeToLayer2Args) => {
-  const {userAddress, amount, stakeEndBlock, contractAddress, vaultClosed, library} = args;
+  const {userAddress, amount, stakeEndBlock, contractAddress, vaultClosed, library, handleCloseModal} = args;
   if (userAddress === null || userAddress === undefined) {
     return;
   }
@@ -350,7 +369,6 @@ export const stakeToLayer2 = async (args: stakeToLayer2Args) => {
   const currentBlock = await getRPC().getBlockNumber();
   const endBlock = Number(stakeEndBlock);
   // if (currentBlock < endBlock - globalWithdrawalDelay && vaultClosed) {
-  // if (vaultClosed) {
     const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
     if (!StakeTONContract) {
       throw new Error(`Can't find the contract for staking actions`);
@@ -364,13 +382,14 @@ export const stakeToLayer2 = async (args: stakeToLayer2Args) => {
     } catch (err) {
       console.log(err)
     }
+    
   // } else {
   //   return alert('staking period has ended'); // ToDo: comment check
   // }
 };
 
 export const unstakeL2 = async (args: unstakeFromLayer2Args) => {
-  const {userAddress, amount, contractAddress, vaultClosed, library} = args;
+  const {userAddress, amount, contractAddress, vaultClosed, library, handleCloseModal} = args;
   if (userAddress === null || userAddress === undefined) {
     return;
   }
@@ -385,27 +404,28 @@ export const unstakeL2 = async (args: unstakeFromLayer2Args) => {
   } catch (err) {
     console.log(err);
   }
+  ;
 }
 
 export const swapWTONtoTOS = async (args: unstakeFromLayer2Args) => {
-  const {userAddress, amount, contractAddress, vaultClosed, library} = args;
+  const {userAddress, amount, contractAddress, vaultClosed, library, handleCloseModal} = args;
+  if (userAddress === null || userAddress === undefined) {
+    return;
+  }
+  const ray = '1' + '0'.repeat(27);
+  
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
-  const TON = getTokamakContract('TON');
-  const WTON = getTokamakContract('WTON');
-  const depositManager = getTokamakContract('DepositManager');
-  const seigManager = getTokamakContract('SeigManager');
-
-  let totalStakedAmount = await StakeTONContract.totalStakedAmount();
-  console.log(formatEther(totalStakedAmount));
-
-  let pendingUnstaked = await depositManager.pendingUnstaked(REACT_APP_TOKAMAK_LAYER2, contractAddress);
-  let stakeOf = await seigManager.stakeOf(REACT_APP_TOKAMAK_LAYER2, contractAddress);
-  let stakeContractBalanceWTON = await WTON.balanceOf(contractAddress);
-  let stakeContractBalanceTON = await TON.balanceOf(contractAddress);
-  console.log(formatEther(pendingUnstaked));
-  console.log(stakeOf.toString());
-  console.log(stakeContractBalanceTON.toString());
-  console.log(stakeContractBalanceWTON.toString())
+  const amountRay = toBN(amount).mul(toBN(ray));
+  console.log(amountRay);
+  console.log(amountRay.toString());
+  const signer = getSigner(library, userAddress);
+  const deadline = Date.now()/1000 + 900;
+  let amountOutMinimum = toBN('0');
+  try {
+    await StakeTONContract.connect(signer).exchangeWTONtoTOS(ray, ray, parseInt(deadline.toString()), toBN('0'), toBN('0'))
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 export const withdraw = async (args: unstakeFromLayer2Args) => {
@@ -470,17 +490,36 @@ export const fetchStakes = createAsyncThunk(
         let mystaked: string = '';
         let myearned: string = '';
         let myStakedL2: string = '';
+        let mywithdraw: string = '';
+        let totalStakedAmountInL2: string = '';
+        let totalPendingUnstakedAmountInL2: string = '';
+        let stakeContractBalanceWTON: string = '';
+        let stakeContractBalanceTON: string = '';
 
         if (account) {
-          const {userStaked, userRewardTOS, stakedAmountInL2} = await fetchUserData(
+          const {
+            userStaked, 
+            userRewardTOS,
+            userWithdraw,
+            userStakedAmount, 
+            totalStakedAmount,
+            totalPendingUnstakedAmount,
+            stakeContractBalanceWton,
+            stakeContractBalanceTon,
+          } = await fetchUserData(
             library,
             account,
             stake.stakeContract,
           );
           mystaked = userStaked;
-          myearned = `${userRewardTOS} TOS`;
-          myStakedL2 = stakedAmountInL2;
-
+          // myearned = `${userRewardTOS} TOS`;
+          myearned = userRewardTOS;
+          mywithdraw = userWithdraw;
+          myStakedL2 = userStakedAmount;
+          totalStakedAmountInL2 = totalStakedAmount;
+          totalPendingUnstakedAmountInL2 = totalPendingUnstakedAmount;
+          stakeContractBalanceWTON = stakeContractBalanceWton;
+          stakeContractBalanceTON = stakeContractBalanceTon;
         }
         const status = await getStatus(stake, currentBlock);
         // const miningStartTime = await formatStartTime(
@@ -493,16 +532,32 @@ export const fetchStakes = createAsyncThunk(
           name: stake.name,
           totalStakers: stake.totalStakers,
           mystaked,
-          myearned,
-          // myStakedL2: convertNumber({
-          //   amount: myStakedL2,
-          //   type: 'ray',
-          // }),
+          myearned: convertNumber({
+            amount: myearned
+          }),
+          mywithdraw,
+          myStakedL2: convertNumber({
+            amount: myStakedL2,
+            type: 'ray',
+          }),
+          totalStakedAmountInL2: convertNumber({
+            amount: totalStakedAmountInL2
+          }),
+          totalPendingUnstakedAmountInL2: convertNumber({
+            amount: totalPendingUnstakedAmountInL2,
+            type: 'ray',
+          }),
+          stakeContractBalanceWTON: convertNumber({
+            amount: stakeContractBalanceWTON
+          }),
+          stakeContractBalanceTON: convertNumber({
+            amount: stakeContractBalanceTON
+          }),
           // tokamakStaked: formatEther(0),
           // tokamakPendingUnstaked: formatEther(0),
-          // stakeBalanceTON: convertNumber({
-          //   amount: stake.totalStakedAmountString,
-          // }),
+          stakeBalanceTON: convertNumber({
+            amount: stake.totalStakedAmountString,
+          }),
           token: stake.paytoken,
           stakeType: stake.stakeType,
           period: period(stake.startBlock, stake.endBlock),
@@ -546,9 +601,27 @@ const fetchUserData = async (
   contractAddress: string,
 ) => {
   const res = await getUserInfo(library, account, contractAddress);
-  const {userStaked, userRewardTOS, stakedAmountInL2} = res;
+  const {
+    userStaked, 
+    userRewardTOS,
+    userWithdraw, 
+    userStakedAmount, 
+    totalStakedAmount,
+    totalPendingUnstakedAmount,
+    stakeContractBalanceWton,
+    stakeContractBalanceTon,
+  } = res;
 
-  return {userStaked, userRewardTOS, stakedAmountInL2};
+  return {
+    userStaked, 
+    userRewardTOS,
+    userWithdraw,
+    userStakedAmount, 
+    totalStakedAmount,
+    totalPendingUnstakedAmount,
+    stakeContractBalanceWton,
+    stakeContractBalanceTon,
+  };
 };
 
 const getUserInfo = async (
@@ -562,6 +635,17 @@ const getUserInfo = async (
   const L2Contract = getTokamakContract('TokamakLayer2');
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
   const staked = await StakeTONContract?.userStaked(account);
+  const TON = getTokamakContract('TON');
+  const WTON = getTokamakContract('WTON');
+  const depositManager = getTokamakContract('DepositManager');
+  // const seigManager = getTokamakContract('SeigManager');
+
+  let totalStakedAmount = await StakeTONContract.totalStakedAmount();
+
+  let pendingUnstaked = await depositManager.pendingUnstaked(REACT_APP_TOKAMAK_LAYER2, contractAddress);
+  // let stakeOf = await seigManager.stakeOf(REACT_APP_TOKAMAK_LAYER2, contractAddress);
+  let stakeContractBalanceWTON = await WTON.balanceOf(contractAddress);
+  let stakeContractBalanceTON = await TON.balanceOf(contractAddress);
   let stakedAmountInL2;
   try {
     stakedAmountInL2 = await L2Contract?.stakedOf(account);
@@ -576,8 +660,14 @@ const getUserInfo = async (
 
   return {
     userStaked: formatEther(staked.amount),
-    userRewardTOS: formatEther(staked.claimedAmount),
-    stakedAmountInL2: stakedAmountInL2,
+    // userRewardTOS: formatEther(staked.claimedAmount),
+    userRewardTOS: staked.claimedAmount,
+    userWithdraw: formatEther(staked.releasedAmount),
+    userStakedAmount: stakedAmountInL2,
+    totalStakedAmount: totalStakedAmount,
+    totalPendingUnstakedAmount: pendingUnstaked,
+    stakeContractBalanceWton: stakeContractBalanceWTON,
+    stakeContractBalanceTon: stakeContractBalanceTON,
   };
   // stakeInfo.myfld = formatEther(myTOS);
 

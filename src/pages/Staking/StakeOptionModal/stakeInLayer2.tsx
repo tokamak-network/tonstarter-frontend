@@ -27,7 +27,6 @@ import {
     const {data} = useAppSelector(selectModalType);
     const dispatch = useAppDispatch();
     let balance = data?.data?.user?.balance;
-    console.log(data);
   
     const [value, setValue] = useState<number>(balance);
   
@@ -106,7 +105,8 @@ import {
                     contractAddress: data?.data?.contractAddress,
                     stakeEndBlock: data?.data?.stakeEndBlock, 
                     vaultClosed: data?.data?.vaultClosed,
-                    library: library
+                    library: library,
+                    handleCloseModal: dispatch(closeModal()),
                 })}>
                 Stake
               </Button>

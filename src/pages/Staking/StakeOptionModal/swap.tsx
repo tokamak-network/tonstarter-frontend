@@ -27,7 +27,6 @@ export const SwapModal= () => {
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
   let balance = data?.data?.user?.balance;
-  console.log(data);
 
   const [value, setValue] = useState<number>(balance);
 
@@ -102,12 +101,13 @@ export const SwapModal= () => {
               colorScheme={'blue'}
               onClick={() => swapWTONtoTOS ({
                   userAddress:account, 
-                  amount: '100',
+                  amount: value.toString(),
                   contractAddress: data?.data?.contractAddress, 
                   vaultClosed: data?.data?.vaultClosed,
-                  library: library
+                  library: library,
+                  handleCloseModal: dispatch(closeModal()),
               })}>
-              Stake
+              Swap
             </Button>
           </Box>
         </ModalBody>

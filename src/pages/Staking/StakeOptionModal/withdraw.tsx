@@ -67,7 +67,8 @@ export const WithdrawalOptionModal = () => {
                     amount: data.data.myStakedL2,
                     contractAddress: data.data.contractAddress,
                     vaultClosed: data?.data?.vaultClosed,
-                    library: library
+                    library: library,
+                    handleCloseModal: dispatch(closeModal()),
                   })
                 }
                 disabled={+balance <= 0}

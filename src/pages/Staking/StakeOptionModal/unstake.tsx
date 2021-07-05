@@ -21,7 +21,6 @@ export const UnstakeOptionModal = () => {
   const dispatch = useAppDispatch();
 
   let balance = data?.data?.stakeBalanceTON;
-  console.log(data?.data);
 
   return (
     <Modal
@@ -83,6 +82,7 @@ export const UnstakeOptionModal = () => {
                   library: library,
                   stakeContractAddress: data.data.contractAddress,
                   mystaked: data.data.mystaked,
+                  handleCloseModal: dispatch(closeModal()),
                 })
               }
               disabled={+balance <= 0}

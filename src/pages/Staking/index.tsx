@@ -343,7 +343,7 @@ export const Staking = () => {
                 My staked
               </Text>
               <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-                {data[row.id]?.mystaked}
+                {data[row.id]?.mystaked} TON
               </Text>
               {/* <Text>{data[row.id]?.mystaked}</Text> */}
             </Flex>
@@ -352,7 +352,7 @@ export const Staking = () => {
                 My Earned
               </Text>
               <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-                {data[row.id]?.myearned}
+                {data[row.id]?.myearned} TOS
               </Text>
             </Flex>
             <Flex flexDir={'column'} alignItems={'space-between'}>

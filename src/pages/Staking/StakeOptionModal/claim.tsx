@@ -22,7 +22,6 @@ export const ClaimOptionModal = () => {
 
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
-  console.log(data?.data);
   let claimed = data?.data?.myclaimed;
   let earned = data?.data?.myearned;
   let balance = data?.data?.myclaimed;
@@ -106,7 +105,8 @@ export const ClaimOptionModal = () => {
                   startTime: data.data.startTime,
                   library: library,
                   myClaimed: data.data.myclaimed,
-                  myEarned: data.data.myearned
+                  myEarned: data.data.myearned,
+                  handleCloseModal: dispatch(closeModal()),
                 })
               }
               bg={theme.colors.yellow[200]}

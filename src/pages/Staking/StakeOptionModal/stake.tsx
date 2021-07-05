@@ -22,7 +22,7 @@ export const StakeOptionModal = () => {
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
   const {account, library} = useWeb3React();
-  console.log(data?.data);
+
   let balance = data?.data?.user?.balance;
   const [value, setValue] = useState<number>(balance);
 
@@ -110,6 +110,7 @@ export const StakeOptionModal = () => {
                   library: library,
                   stakeContractAddress: data.data.contractAddress,
                   startTime: data.data.formatStartTime,
+                  handleCloseModal: dispatch(closeModal()),
                 })
               }>
               Stake
