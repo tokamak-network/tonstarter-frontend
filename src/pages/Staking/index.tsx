@@ -38,6 +38,7 @@ import {useState} from 'react';
 import {useLocalStorage} from 'hooks/useStorage';
 import {useEffect} from 'react';
 import {Stake, fetchManageModalPayload} from './staking.reducer';
+import {ModalType} from "store/modal.reducer"
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
@@ -121,7 +122,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
     return result;
   };
 
-  const modalData = useCallback(async (modal: string) => {
+  const modalData = useCallback(async (modal: ModalType) => {
     let payload;
 
     if (modal === 'manage' || modal === 'claim') {
@@ -135,7 +136,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
       }
     }
     console.log(modal);
-
+    
     dispatch(openModal({type: modal, data: payload}));
   }, []);
 

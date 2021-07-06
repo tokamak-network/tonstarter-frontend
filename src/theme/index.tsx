@@ -9,6 +9,7 @@ const fonts = {
   heading: 'Roboto',
   roboto: 'Roboto',
   body: 'TitilliumWeb, sans-serif',
+  titil: 'TitilliumWeb, sans-serif',
   fld: 'Rajdhani, sans-serif',
   openSans: 'OpenSans',
 };
@@ -54,6 +55,7 @@ const colors = {
     100: '#FFFFFF',
   },
   black: {
+    400: '#257eee',
     300: '#304156',
     200: '#222222',
   },
