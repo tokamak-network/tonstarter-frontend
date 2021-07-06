@@ -39,7 +39,9 @@ export type Stake = {
   claimRewardAmount: Number | string;
   totalStakers: number | string;
   token: TokenType;
+  withdrawalDelay: string;
   mystaked: Number | string;
+  claimableAmount: Number | string;
   myearned: Number | string;
   mywithdraw: Number | string;
   myStakedL2: string;
@@ -488,10 +490,14 @@ export const fetchStakes = createAsyncThunk(
         let totalPendingUnstakedAmountInL2: string = '';
         let stakeContractBalanceWTON: string = '';
         let stakeContractBalanceTON: string = '';
+        let claimableAmount: string = '';
+        let withdrawalDelay: string = '';
 
         if (account) {
           const {
-            userStaked, 
+            userStaked,
+            globalWithdrawalDelay,
+            canRewardAmount, 
             userRewardTOS,
             userWithdraw,
             userStakedAmount, 
@@ -505,7 +511,7 @@ export const fetchStakes = createAsyncThunk(
             stake.stakeContract,
           );
           mystaked = userStaked;
-          // myearned = `${userRewardTOS} TOS`;
+          claimableAmount = canRewardAmount;
           myearned = userRewardTOS;
           mywithdraw = userWithdraw;
           myStakedL2 = userStakedAmount;
@@ -513,6 +519,7 @@ export const fetchStakes = createAsyncThunk(
           totalPendingUnstakedAmountInL2 = totalPendingUnstakedAmount;
           stakeContractBalanceWTON = stakeContractBalanceWton;
           stakeContractBalanceTON = stakeContractBalanceTon;
+          withdrawalDelay = globalWithdrawalDelay;
         }
         const status = await getStatus(stake, currentBlock);
         // const miningStartTime = await formatStartTime(
@@ -520,13 +527,15 @@ export const fetchStakes = createAsyncThunk(
         //   currentBlockNumber,
         // );
 
-        console.log(account);
-
         const stakeInfo: Partial<Stake> = {
           contractAddress: stake.stakeContract,
           name: stake.name,
           totalStakers: stake.totalStakers,
           mystaked,
+          withdrawalDelay,
+          claimableAmount: convertNumber({
+            amount: claimableAmount
+          }),
           myearned: convertNumber({
             amount: myearned
           }),
@@ -597,7 +606,8 @@ const fetchUserData = async (
 ) => {
   const res = await getUserInfo(library, account, contractAddress);
   const {
-    userStaked, 
+    userStaked,
+    canRewardAmount,
     userRewardTOS,
     userWithdraw, 
     userStakedAmount, 
@@ -605,10 +615,12 @@ const fetchUserData = async (
     totalPendingUnstakedAmount,
     stakeContractBalanceWton,
     stakeContractBalanceTon,
+    globalWithdrawalDelay,
   } = res;
 
   return {
-    userStaked, 
+    userStaked,
+    canRewardAmount,
     userRewardTOS,
     userWithdraw,
     userStakedAmount, 
@@ -616,6 +628,7 @@ const fetchUserData = async (
     totalPendingUnstakedAmount,
     stakeContractBalanceWton,
     stakeContractBalanceTon,
+    globalWithdrawalDelay,
   };
 };
 
@@ -626,17 +639,19 @@ const getUserInfo = async (
   account: string,
   contractAddress: string,
 ) => {
-  // const currentBlock = await getRPC().getBlockNumber();
+  const currentBlock = getRPC().getBlockNumber();
   const L2Contract = getTokamakContract('TokamakLayer2');
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
   const staked = await StakeTONContract?.userStaked(account);
+  const canRewardAmount = await StakeTONContract?.canRewardAmount(account, currentBlock);
+
   const TON = getTokamakContract('TON');
   const WTON = getTokamakContract('WTON');
   const depositManager = getTokamakContract('DepositManager');
   // const seigManager = getTokamakContract('SeigManager');
 
   let totalStakedAmount = await StakeTONContract.totalStakedAmount();
-
+  let globalWithdrawalDelay = await depositManager?.globalWithdrawalDelay();
   let pendingUnstaked = await depositManager.pendingUnstaked(REACT_APP_TOKAMAK_LAYER2, contractAddress);
   // let stakeOf = await seigManager.stakeOf(REACT_APP_TOKAMAK_LAYER2, contractAddress);
   let stakeContractBalanceWTON = await WTON.balanceOf(contractAddress);
@@ -656,6 +671,7 @@ const getUserInfo = async (
   return {
     userStaked: formatEther(staked.amount),
     // userRewardTOS: formatEther(staked.claimedAmount),
+    canRewardAmount: canRewardAmount,
     userRewardTOS: staked.claimedAmount,
     userWithdraw: formatEther(staked.releasedAmount),
     userStakedAmount: stakedAmountInL2,
@@ -663,6 +679,7 @@ const getUserInfo = async (
     totalPendingUnstakedAmount: pendingUnstaked,
     stakeContractBalanceWton: stakeContractBalanceWTON,
     stakeContractBalanceTon: stakeContractBalanceTON,
+    globalWithdrawalDelay: globalWithdrawalDelay,
   };
   // stakeInfo.myfld = formatEther(myTOS);
 

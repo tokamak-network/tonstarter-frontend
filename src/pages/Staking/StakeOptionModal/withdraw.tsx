@@ -28,7 +28,7 @@ export const WithdrawalOptionModal = () => {
 
   const handleChange = useCallback(e => setValue(e.target.value), []);
   // const setMax = useCallback(_e => setValue(balance), [balance]);
-
+  console.log(data?.data)
   const handleCloseModal = useCallback(() => dispatch(closeModal()), [
     dispatch,
   ]);
@@ -50,14 +50,14 @@ export const WithdrawalOptionModal = () => {
             </Heading>
             <Stack>
               <Text>
-                You can withdraw after
+                {/* You can withdraw after {data?.data?.withdrawalDelay.toString()} Blocks */}
               </Text>
             </Stack>
-            <Stack>
+            {/* <Stack>
               <Text>
                 date data
               </Text>
-            </Stack>
+            </Stack> */}
             <Box py={4} as={Flex} justifyContent={'center'}>
               <Button
                 type={'submit'}

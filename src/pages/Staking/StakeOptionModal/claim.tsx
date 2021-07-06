@@ -22,7 +22,7 @@ export const ClaimOptionModal = () => {
 
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
-  let claimed = data?.data?.myclaimed;
+  let claimed = data?.data?.claimableAmount;
   let earned = data?.data?.myearned;
   let balance = data?.data?.myclaimed;
 
@@ -41,9 +41,12 @@ export const ClaimOptionModal = () => {
               textAlign={'center'}>
               Claim
             </Heading>
-            <Text>You can claim {claimed} TOS and earn {earned}</Text>
           </Box>
-
+          <Stack
+            textAlign={'center'}
+          >
+            <Text>You can claim {claimed} TOS and earned {earned} TOS</Text>
+          </Stack>
           <Stack
             as={Flex}
             py={10}
@@ -51,6 +54,7 @@ export const ClaimOptionModal = () => {
             justifyContent={'center'}
             alignItems={'center'}
             w={'full'}>
+              
             <Text
               variant={'outline'}
               borderWidth={0}
@@ -63,7 +67,7 @@ export const ClaimOptionModal = () => {
                 borderWidth: 0,
               }}>
               {' '}
-              {balance} TOS
+              {earned} TOS
             </Text>
           </Stack>
 
@@ -74,7 +78,7 @@ export const ClaimOptionModal = () => {
             alignItems={'center'}>
             <Box textAlign={'center'}>
               <Text>Claim Available</Text>
-              <Text>{balance} TOS</Text>
+              <Text>{claimed} TOS</Text>
             </Box>
           </Stack>
 
