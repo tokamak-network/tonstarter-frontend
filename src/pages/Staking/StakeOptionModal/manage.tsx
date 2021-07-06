@@ -80,12 +80,12 @@ export const ManageModal = () => {
             </Button>
             <Button
               colorScheme="blue"
-              // disabled={!data.data.vaultClosed}
+              // disabled={!data.data.status}
               onClick={() =>
                 closeSale({
                   userAddress: account,
                   vaultContractAddress: data.data.vault,
-                  stakeStartBlock: data.data.stakeStartBlock,
+                  miningEndTime: data.data.miningEndTime,
                   library: library,
                   handleCloseModal: dispatch(closeModal()),
                 })

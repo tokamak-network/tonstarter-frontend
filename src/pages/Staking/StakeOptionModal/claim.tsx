@@ -83,7 +83,7 @@ export const ClaimOptionModal = () => {
           </Stack>
 
           <Box py={4} as={Flex} justifyContent={'center'}>
-            {/* {!data.data.vaultClosed ? (
+            {/* {!data.data.status ? (
               <Button
                 mr={4}
                 onClick={() =>
@@ -101,14 +101,14 @@ export const ClaimOptionModal = () => {
             ) : null} */}
 
             <Button
-              // disabled={!data.data.vaultClosed}
+              // disabled={!data.data.status}
               onClick={() =>
                 claimReward({
                   userAddress: account,
                   stakeContractAddress: data.data.contractAddress,
-                  startTime: data.data.startTime,
+                  saleEndTime: data.data.saleEndTime,
                   library: library,
-                  myClaimed: data.data.myclaimed,
+                  canRewardAmount: data.data.canRewardAmount,
                   myEarned: data.data.myearned,
                   handleCloseModal: dispatch(closeModal()),
                 })

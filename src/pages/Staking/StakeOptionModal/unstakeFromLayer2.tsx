@@ -80,7 +80,7 @@ export const UnStakeFromLayer2Modal = () => {
                   userAddress:account, 
                   amount: data.data.myStakedL2,
                   contractAddress: data.data.contractAddress,
-                  vaultClosed: data?.data?.vaultClosed,
+                  status: data?.data?.status,
                   library: library,
                   handleCloseModal: dispatch(closeModal()),
                 })

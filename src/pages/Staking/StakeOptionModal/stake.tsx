@@ -106,10 +106,10 @@ export const StakeOptionModal = () => {
                   userAddress: account,
                   amount: value.toString(),
                   payToken: data.data.token,
-                  saleStartBlock: data.data.saleStartBlock,
+                  saleStartTime: data.data.saleStartTime,
                   library: library,
                   stakeContractAddress: data.data.contractAddress,
-                  startTime: data.data.formatStartTime,
+                  miningStartTime: data.data.miningStartTime,
                   handleCloseModal: dispatch(closeModal()),
                 })
               }>
