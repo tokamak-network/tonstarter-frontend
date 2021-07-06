@@ -27,13 +27,7 @@ export const ManageModal = () => {
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
 
-  const toggleModal = useCallback(
-    (modal: ModalType) => {
-      dispatch(closeModal());
-      dispatch(openModal({type: modal}));
-    },
-    [dispatch],
-  );
+  let balance = data?.data?.user?.balance;
 
   return (
     <Modal
@@ -60,32 +54,39 @@ export const ManageModal = () => {
             alignItems={'center'}>
             <Box textAlign={'center'}>
               <Text>Available balance</Text>
-              <Text>xxx TON</Text>
+              <Text>{balance} TON</Text>
             </Box>
             <Box textAlign={'center'}>
-              <Text>Total: xxxx TON</Text>
-              <Text>Staked in Layer 2: xxxx TON</Text>
+              <Text>Total: {data.data.totalStakedAmountInL2} TON</Text>
+              <Text>Staked in Layer 2: {data.data.stakeContractBalanceWTON} TON</Text>
+              <Text>Pending UnStaked in Layer 2: {data.data.totalPendingUnstakedAmountInL2} TON</Text>
             </Box>
           </Stack>
 
           <Grid templateColumns={'repeat(2, 1fr)'} gap={6}>
-            <Button colorScheme="blue" onClick={() => toggleModal('stakeL2')}>
+            {/* <Button colorScheme="blue" onClick={() => toggleModal('stakeL2')}> */}
+            <Button colorScheme="blue" onClick={() => dispatch(openModal({type: 'stakeL2', data: data.data}))}>
               Stake in Layer2
             </Button>
-            <Button colorScheme="blue" onClick={() => toggleModal('unstakeL2')}>
+            <Button colorScheme="blue" onClick={() => dispatch(openModal({type: 'unstakeL2', data: data.data}))}>
               Unstake from Layer2
             </Button>
-            <Button colorScheme="blue">Withdraw</Button>
-            <Button colorScheme="blue">Swap</Button>
+            <Button colorScheme="blue" onClick={() => dispatch(openModal({type: 'withdraw', data: data.data}))}>
+              Withdraw
+            </Button>
+            <Button colorScheme="blue" onClick={() => dispatch(openModal({type: 'swap', data: data.data}))}>
+              Swap
+            </Button>
             <Button
               colorScheme="blue"
-              // disabled={data.data.vaultClosed}
+              // disabled={!data.data.vaultClosed}
               onClick={() =>
                 closeSale({
                   userAddress: account,
-                  vaultContractAddress: data.data.vaultAddress,
+                  vaultContractAddress: data.data.vault,
                   stakeStartBlock: data.data.stakeStartBlock,
                   library: library,
+                  handleCloseModal: dispatch(closeModal()),
                 })
               }>
               End Sale

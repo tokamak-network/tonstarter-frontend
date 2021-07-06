@@ -25,6 +25,10 @@ import {
   ClaimOptionModal,
   StakeOptionModal,
   UnstakeOptionModal,
+  StakeInLayer2Modal,
+  UnStakeFromLayer2Modal,
+  WithdrawalOptionModal,
+  SwapModal,
 } from './StakeOptionModal';
 import store, {AppDispatch} from 'store';
 import {openModal} from 'store/modal.reducer';
@@ -157,7 +161,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
             isDisabled={btnDisabled}
             color={'white.100'}
             fontSize={'14px'}
-            onClick={() => dispatch(openModal({type: 'manage'}))}>
+            onClick={() => dispatch(openModal({type: 'manage', data: payload}))}>
             Manage
           </Button>
         </Grid>
@@ -371,6 +375,10 @@ export const Staking = () => {
       <UnstakeOptionModal />
       <ClaimOptionModal />
       <ManageModal />
+      <StakeInLayer2Modal />
+      <UnStakeFromLayer2Modal />
+      <WithdrawalOptionModal />
+      <SwapModal />
     </Fragment>
   );
 };

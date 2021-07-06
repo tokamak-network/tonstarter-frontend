@@ -12,16 +12,18 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import React, {useCallback, useState} from 'react';
-// import {stakePaytoken} from '../staking.reducer';
+import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
+import {stakePaytoken} from '../staking.reducer';
+import { formatStartTime } from 'utils';
 
 export const StakeOptionModal = () => {
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
+  const {account, library} = useWeb3React();
 
   let balance = data?.data?.user?.balance;
-
   const [value, setValue] = useState<number>(balance);
 
   const handleChange = useCallback(e => setValue(e.target.value), []);
@@ -46,7 +48,7 @@ export const StakeOptionModal = () => {
               textAlign={'center'}>
               Stake
             </Heading>
-            <Text>{data?.data?.token}</Text>
+            {/* <Text>{data?.data?.token}</Text> */}
           </Box>
 
           <Stack
@@ -90,26 +92,29 @@ export const StakeOptionModal = () => {
             alignItems={'center'}>
             <Box textAlign={'center'}>
               <Text>Available Balance</Text>
-              <Text>{balance} TON</Text>
+              <Text>
+                {balance}
+              </Text>
             </Box>
           </Stack>
 
           <Box py={4} as={Flex} justifyContent={'center'}>
-            {/* <Button
+            <Button
               colorScheme={'blue'}
               onClick={() =>
                 stakePaytoken({
                   userAddress: account,
                   amount: value.toString(),
-                  payToken: payToken,
-                  saleStartBlock: saleStartBlock,
+                  payToken: data.data.token,
+                  saleStartBlock: data.data.saleStartBlock,
                   library: library,
-                  stakeContractAddress: address,
-                  stakeStartBlock: stakeStartBlock,
+                  stakeContractAddress: data.data.contractAddress,
+                  startTime: data.data.formatStartTime,
+                  handleCloseModal: dispatch(closeModal()),
                 })
               }>
               Stake
-            </Button> */}
+            </Button>
           </Box>
         </ModalBody>
       </ModalContent>

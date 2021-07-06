@@ -8,24 +8,35 @@ import {
   Text,
   Button,
   Flex,
+  Input,
   Stack,
 } from '@chakra-ui/react';
-import {unstake} from '../staking.reducer';
+import React, {FC, useCallback, useState} from 'react';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {closeModal, selectModalType} from 'store/modal.reducer';
+import {
+  closeModal,
+  ModalType,
+  openModal,
+  selectModalType,
+} from 'store/modal.reducer';
+import {swapWTONtoTOS} from '../staking.reducer';
 
-export const UnstakeOptionModal = () => {
+export const SwapModal= () => {
   const {account, library} = useWeb3React();
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
+  let balance = data?.data?.user?.balance;
 
-  let balance = data?.data?.stakeBalanceTON;
+  const [value, setValue] = useState<number>(balance);
+
+  const handleChange = useCallback(e => setValue(e.target.value), []);
+  const setMax = useCallback(_e => setValue(balance), [balance]);
 
   return (
-    <Modal
-      isOpen={data.modal === 'unstake' ? true : false}
-      isCentered
+    <Modal 
+      isOpen={data.modal === 'swap' ? true : false} 
+      isCentered 
       onClose={() => dispatch(closeModal())}>
       <ModalOverlay />
       <ModalContent>
@@ -35,8 +46,9 @@ export const UnstakeOptionModal = () => {
               fontWeight={'normal'}
               fontSize={'3xl'}
               textAlign={'center'}>
-              Unstake
+              Swap
             </Heading>
+            {/* <Text>{payToken}</Text> */}
           </Box>
 
           <Stack
@@ -46,19 +58,31 @@ export const UnstakeOptionModal = () => {
             justifyContent={'center'}
             alignItems={'center'}
             w={'full'}>
-            <Text
+            <Input
               variant={'outline'}
               borderWidth={0}
               textAlign={'center'}
               fontWeight={'bold'}
               fontSize={'4xl'}
+              // value={value}
               width={'xs'}
               mr={6}
+              onChange={handleChange}
               _focus={{
                 borderWidth: 0,
-              }}>
-              {balance ? balance : '0.00'}
-            </Text>
+              }}
+            />
+            <Box position={'absolute'} right={5}>
+              <Button
+                onClick={setMax}
+                type={'button'}
+                variant="outline"
+                _focus={{
+                  outline: 'none',
+                }}>
+                Max
+              </Button>
+            </Box>
           </Stack>
 
           <Stack
@@ -68,26 +92,22 @@ export const UnstakeOptionModal = () => {
             alignItems={'center'}>
             <Box textAlign={'center'}>
               <Text>Available Balance</Text>
-              <Text>{balance ? balance : '0.00'} TON</Text>
+              <Text>{balance} TON</Text>
             </Box>
           </Stack>
 
           <Box py={4} as={Flex} justifyContent={'center'}>
             <Button
-              type={'submit'}
-              onClick={() =>
-                unstake({
-                  userAddress: account,
-                  endTime: data.data.endTime,
+              colorScheme={'blue'}
+              onClick={() => swapWTONtoTOS ({
+                  userAddress:account, 
+                  amount: value.toString(),
+                  contractAddress: data?.data?.contractAddress, 
+                  vaultClosed: data?.data?.vaultClosed,
                   library: library,
-                  stakeContractAddress: data.data.contractAddress,
-                  mystaked: data.data.mystaked,
                   handleCloseModal: dispatch(closeModal()),
-                })
-              }
-              disabled={+balance <= 0}
-              colorScheme={'blue'}>
-              Unstake
+              })}>
+              Swap
             </Button>
           </Box>
         </ModalBody>

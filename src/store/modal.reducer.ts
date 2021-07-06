@@ -7,7 +7,9 @@ export type ModalType =
   | 'claim'
   | 'manage'
   | 'stakeL2'
-  | 'unstakeL2';
+  | 'unstakeL2'
+  | 'withdraw'
+  | 'swap';
 
 export type Modal = {
   modal?: ModalType;

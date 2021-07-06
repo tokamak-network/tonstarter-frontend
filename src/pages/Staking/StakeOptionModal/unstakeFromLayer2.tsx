@@ -9,26 +9,22 @@ import {
   Button,
   Flex,
   Stack,
-  useTheme,
 } from '@chakra-ui/react';
-import {claimReward} from '../staking.reducer';
+import {unstakeL2} from '../staking.reducer';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
 
-export const ClaimOptionModal = () => {
+export const UnStakeFromLayer2Modal = () => {
   const {account, library} = useWeb3React();
-  const theme = useTheme();
-
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
-  let claimed = data?.data?.myclaimed;
-  let earned = data?.data?.myearned;
-  let balance = data?.data?.myclaimed;
+
+  let balance = data?.data?.myStakedL2;
 
   return (
     <Modal
-      isOpen={data.modal === 'claim' ? true : false}
+      isOpen={data.modal === 'unstakeL2' ? true : false}
       isCentered
       onClose={() => dispatch(closeModal())}>
       <ModalOverlay />
@@ -39,9 +35,8 @@ export const ClaimOptionModal = () => {
               fontWeight={'normal'}
               fontSize={'3xl'}
               textAlign={'center'}>
-              Claim
+              Unstake From Tokamak
             </Heading>
-            <Text>You can claim {claimed} TOS and earn {earned}</Text>
           </Box>
 
           <Stack
@@ -62,8 +57,7 @@ export const ClaimOptionModal = () => {
               _focus={{
                 borderWidth: 0,
               }}>
-              {' '}
-              {balance} TOS
+              {balance ? balance : '0.00'} TON
             </Text>
           </Stack>
 
@@ -73,45 +67,27 @@ export const ClaimOptionModal = () => {
             justifyContent={'center'}
             alignItems={'center'}>
             <Box textAlign={'center'}>
-              <Text>Claim Available</Text>
-              <Text>{balance} TOS</Text>
+              <Text>Available Balance</Text>
+              <Text>{balance ? balance : '0.00'} TON</Text>
             </Box>
           </Stack>
 
           <Box py={4} as={Flex} justifyContent={'center'}>
-            {/* {!data.data.vaultClosed ? (
-              <Button
-                mr={4}
-                onClick={() =>
-                  closeSale({
-                    userAddress: account,
-                    vaultContractAddress: data.data.vaultAddress,
-                    stakeStartBlock: data.data.stakeStartBlock,
-                    library: library,
-                  })
-                }
-                bg={theme.colors.yellow[200]}
-                color={'black'}>
-                End sale
-              </Button>
-            ) : null} */}
-
             <Button
-              // disabled={!data.data.vaultClosed}
+              type={'submit'}
               onClick={() =>
-                claimReward({
-                  userAddress: account,
-                  stakeContractAddress: data.data.contractAddress,
-                  startTime: data.data.startTime,
+                unstakeL2({
+                  userAddress:account, 
+                  amount: data.data.myStakedL2,
+                  contractAddress: data.data.contractAddress,
+                  vaultClosed: data?.data?.vaultClosed,
                   library: library,
-                  myClaimed: data.data.myclaimed,
-                  myEarned: data.data.myearned,
                   handleCloseModal: dispatch(closeModal()),
                 })
               }
-              bg={theme.colors.yellow[200]}
-              color={'black'}>
-              Claim
+              disabled={+balance <= 0}
+              colorScheme={'blue'}>
+              Unstake
             </Button>
           </Box>
         </ModalBody>
