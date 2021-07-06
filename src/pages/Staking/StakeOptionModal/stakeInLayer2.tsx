@@ -105,6 +105,7 @@ import {
                     contractAddress: data?.data?.contractAddress,
                     miningEndTime: data?.data?.miningEndTime, 
                     status: data?.data?.status,
+                    globalWithdrawalDelay: data?.data?.globalWithdrawalDelay,
                     library: library,
                     handleCloseModal: dispatch(closeModal()),
                 })}>
