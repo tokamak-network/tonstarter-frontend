@@ -37,10 +37,11 @@ import {formatStartTime} from 'utils/timeStamp';
 import {useState} from 'react';
 import {useLocalStorage} from 'hooks/useStorage';
 import {useEffect} from 'react';
+import {Stake, fetchManageModalPayload} from './staking.reducer';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
-  data: {};
+  data: Stake;
   user: {
     balance: string;
   };
@@ -114,6 +115,18 @@ const WalletInformation: FC<WalletInformationProps> = ({
   const {colorMode} = useColorMode();
   const btnDisabled = account === undefined ? true : false;
 
+  const test = async () => {
+    const result = await fetchManageModalPayload(
+      data.library,
+      data.account,
+      data.contractAddress,
+    );
+    return console.log(result);
+  };
+  test();
+
+  console.log(data);
+
   return (
     <Container
       maxW={'sm'}
@@ -161,7 +174,9 @@ const WalletInformation: FC<WalletInformationProps> = ({
             isDisabled={btnDisabled}
             color={'white.100'}
             fontSize={'14px'}
-            onClick={() => dispatch(openModal({type: 'manage', data: payload}))}>
+            onClick={() =>
+              dispatch(openModal({type: 'manage', data: payload}))
+            }>
             Manage
           </Button>
         </Grid>
