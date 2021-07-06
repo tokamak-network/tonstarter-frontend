@@ -16,7 +16,6 @@ import {
   Box,
   Avatar,
   useColorMode,
-  CircularProgress,
   Center,
   useTheme,
 } from '@chakra-ui/react';
@@ -28,6 +27,7 @@ import {selectTableType} from 'store/table.reducer';
 import {useAppSelector} from 'hooks/useRedux';
 import {useEffect} from 'react';
 import {setTimeout} from 'timers';
+import {LoadingComponent} from 'components/Loading';
 
 type StakingTableProps = {
   columns: Column[];
@@ -193,7 +193,7 @@ export const StakingTable: FC<StakingTableProps> = ({
   if (isLoading === true) {
     return (
       <Center>
-        <CircularProgress isIndeterminate color="blue.200"></CircularProgress>
+        <LoadingComponent />
       </Center>
     );
   }

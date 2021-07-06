@@ -5,7 +5,6 @@ import {
   Stack,
   Button,
   Center,
-  CircularProgress,
 } from '@chakra-ui/react';
 import {Head} from 'components/SEO';
 import {Fragment} from 'react';
@@ -14,6 +13,7 @@ import {Animation} from './Animation';
 import {IconTopArrow} from 'components/Icons/IconTopArrow';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectStakes} from '../Staking/staking.reducer';
+import {LoadingComponent} from 'components/Loading';
 
 export const FLDstarter = () => {
   // const [selected, setSelected] = useState<string>('hi');
@@ -34,9 +34,7 @@ export const FLDstarter = () => {
           <SimpleGrid minChildWidth={350} gap={30}>
             {loading === 'pending' ? (
               <Center>
-                <CircularProgress
-                  isIndeterminate
-                  color="blue.200"></CircularProgress>
+                <LoadingComponent />
               </Center>
             ) : (
               data.map((item, index) => (

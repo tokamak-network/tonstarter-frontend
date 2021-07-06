@@ -125,8 +125,6 @@ const WalletInformation: FC<WalletInformationProps> = ({
   };
   test();
 
-  console.log(data);
-
   return (
     <Container
       maxW={'sm'}
