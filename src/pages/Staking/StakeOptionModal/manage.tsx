@@ -28,6 +28,7 @@ export const ManageModal = () => {
   const dispatch = useAppDispatch();
 
   let balance = data?.data?.user?.balance;
+  console.log(data?.data);
 
   return (
     <Modal
@@ -57,9 +58,9 @@ export const ManageModal = () => {
               <Text>{balance} TON</Text>
             </Box>
             <Box textAlign={'center'}>
-              <Text>Total: {data.data.totalStakedAmountInL2} TON</Text>
-              <Text>Staked in Layer 2: {data.data.stakeContractBalanceWTON} TON</Text>
-              <Text>Pending UnStaked in Layer 2: {data.data.totalPendingUnstakedAmountInL2} TON</Text>
+              <Text>Total: {data.data.totalStakedAmount} TON</Text>
+              <Text>Staked in Layer 2: {data.data.stakeContractBalanceWton} TON</Text>
+              <Text>Pending UnStaked in Layer 2: {data.data.totalPendingUnstakedAmount} TON</Text>
             </Box>
           </Stack>
 

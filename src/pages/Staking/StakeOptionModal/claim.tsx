@@ -22,7 +22,7 @@ export const ClaimOptionModal = () => {
 
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
-  let claimed = data?.data?.claimableAmount;
+  let claimed = data?.data?.canRewardAmount;
   let earned = data?.data?.myearned;
   let balance = data?.data?.myclaimed;
 

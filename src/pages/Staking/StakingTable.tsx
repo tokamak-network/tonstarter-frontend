@@ -509,7 +509,7 @@ export const StakingTable: FC<StakingTableProps> = ({
               w={'117px'}
               h={'32px'}
               color={colorMode === 'light' ? ' #3e495c' : '#f3f4f1'}
-              bg={colorMode === 'light' ? 'white.100' : ''}
+              bg={colorMode === 'light' ? 'white.100' : 'none'}
               boxShadow={
                 colorMode === 'light'
                   ? '0 1px 1px 0 rgba(96, 97, 112, 0.14)'

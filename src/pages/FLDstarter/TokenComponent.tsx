@@ -26,6 +26,7 @@ type TokenComponentProps = {
   token: TokenType;
   stakedAmount: string;
   contractAddress: string;
+  account: string | undefined;
   index: number;
 };
 
@@ -35,6 +36,7 @@ export const TokenComponent: FC<TokenComponentProps> = ({
   token,
   stakedAmount,
   contractAddress,
+  account,
   index,
 }) => {
   const {colorMode} = useColorMode();
@@ -43,6 +45,7 @@ export const TokenComponent: FC<TokenComponentProps> = ({
   const history = useHistory();
   const tokenType = checkTokenType(token);
   const [tokenPrice, setTokenPrice] = useState<string | undefined>('0');
+
   useEffect(() => {
     async function getPrice() {
       const resTokenPrice = await getTokenPrice(tokenType.fullName);
@@ -57,6 +60,7 @@ export const TokenComponent: FC<TokenComponentProps> = ({
 
   const handleNavigation = useCallback((type) => {
     history.push('./staking');
+    window.scrollTo(0, 0);
     dispatch(openTable({contractAddress: contractAddress, index}));
     if (type === 'stake') {
       dispatch(openModal({type: 'stake'}));
@@ -160,11 +164,12 @@ export const TokenComponent: FC<TokenComponentProps> = ({
               fontSize={16}
               fontWeight={700}
               rounded={18}
-              bg={theme.colors.yellow[200]}
+              bg={account ? theme.colors.yellow[200] : '#f1f1f3'}
               px={34}
               fontFamily={theme.fonts.fld}
               mr={2}
-              color={'black'}
+              color={account ? 'black' : '#a8adb6'}
+              isDisabled={account !== undefined ? false : true}
               onClick={() => handleNavigation('stake')}
               _hover={{bg: theme.colors.yellow[300]}}>
               Staking
