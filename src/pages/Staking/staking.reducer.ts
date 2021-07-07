@@ -3,7 +3,7 @@ import {RootState} from 'store/reducers';
 import {getTokamakContract, getSigner, getRPC} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import {BigNumber, utils, ethers} from 'ethers';
-import {padLeft, toWei, toBN} from 'web3-utils';
+import {toWei, toBN} from 'web3-utils';
 import * as StakeVault from 'services/abis/Stake1Logic.json';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import * as DepositManagerABI from 'services/abis/DepositManager.json';
@@ -24,6 +24,7 @@ import {convertNumber} from 'utils/number';
 import {setTxPending} from 'store/tx.reducer';
 import store from 'store';
 import {fetchUserInfo} from 'store/app/user.reducer';
+import {openToast} from 'store/app/toast.reducer';
 
 const rpc = getRPC();
 
@@ -240,8 +241,21 @@ const stakeTon = async (args: StakeTon) => {
         ?.approveAndCall(stakeContractAddress, tonAmount, data);
       store.dispatch(setTxPending({tx: true}));
 
-      alert(`Tx sent successfully! Tx hash is ${receipt.txHash}`);
       if (receipt) {
+        store.dispatch(
+          //@ts-ignore
+          openToast({
+            payload: {
+              title: 'Tx sent successfully! ',
+              description: `Tx hash is ${receipt.hash}`,
+              status: 'success',
+              duration: 5000,
+              isClosable: true,
+            },
+          }),
+        );
+        // store.dispatch(closeToast());
+
         await receipt
           .wait()
           .then((result: any) => {
@@ -271,7 +285,6 @@ const stakeEth = async (args: StakeTon) => {
     library,
     stakeContractAddress,
     miningStartTime,
-    handleCloseModal,
   } = args;
 
   if (userAddress === null || userAddress === undefined) {
@@ -303,14 +316,7 @@ const stakeEth = async (args: StakeTon) => {
 };
 
 export const unstake = async (args: unstake) => {
-  const {
-    userAddress,
-    endTime,
-    library,
-    stakeContractAddress,
-    mystaked,
-    handleCloseModal,
-  } = args;
+  const {userAddress, endTime, library, stakeContractAddress, mystaked} = args;
   const currentBlock = await getRPC().getBlockNumber();
 
   if (userAddress === null || userAddress === undefined) {
@@ -462,17 +468,13 @@ export const stakeToLayer2 = async (args: stakeToLayer2Args) => {
     }
     const signer = getSigner(library, userAddress);
     try {
-      
-      store.dispatch(setTxPending({ tx: true }));
-      await StakeTONContract.connect(signer).tokamakStaking(
-        REACT_APP_TOKAMAK_LAYER2, 
-        tonAmount
-        ).then((receipt: any) => {
+      store.dispatch(setTxPending({tx: true}));
+      await StakeTONContract.connect(signer)
+        .tokamakStaking(REACT_APP_TOKAMAK_LAYER2, tonAmount)
+        .then((receipt: any) => {
           alert(`Tx sent successfully! Tx hash is ${receipt?.hash}`);
-        store.dispatch(setTxPending({tx: false}));
-
-        }
-      );
+          store.dispatch(setTxPending({tx: false}));
+        });
     } catch (err) {
       store.dispatch(setTxPending({tx: false}));
       console.log(err);
@@ -501,19 +503,19 @@ export const unstakeL2 = async (args: unstakeFromLayer2Args) => {
   const wtonAmount = utils.parseUnits(amount, '27');
   console.log(wtonAmount);
   // if (status === 'end') {
-    try {
-      const receipt = await StakeTONContract.connect(
-        signer,
-      ).tokamakRequestUnStakingAll(REACT_APP_TOKAMAK_LAYER2, wtonAmount);
-      store.dispatch(setTxPending({tx: true}));
-      alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
-      if (receipt) {
-        store.dispatch(setTxPending({tx: false}));
-      }
-    } catch (err) {
+  try {
+    const receipt = await StakeTONContract.connect(
+      signer,
+    ).tokamakRequestUnStakingAll(REACT_APP_TOKAMAK_LAYER2, wtonAmount);
+    store.dispatch(setTxPending({tx: true}));
+    alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
+    if (receipt) {
       store.dispatch(setTxPending({tx: false}));
-      console.log(err);
     }
+  } catch (err) {
+    store.dispatch(setTxPending({tx: false}));
+    console.log(err);
+  }
   // } else {
   //   return alert('Sale is not ended yet!')
   // }
@@ -576,10 +578,12 @@ export const withdraw = async (args: withdraw) => {
   const endBlock = Number(miningEndTime);
   if (endBlock > currentBlock) {
     try {
-      await StakeTONContract.connect(signer).tokamakProcessUnStaking(REACT_APP_TOKAMAK_LAYER2).then((receipt: any) => {
-        alert(`Tx sent successfully! Tx hash is ${receipt?.hash}`);
-        store.dispatch(setTxPending({tx: false}));
-      });
+      await StakeTONContract.connect(signer)
+        .tokamakProcessUnStaking(REACT_APP_TOKAMAK_LAYER2)
+        .then((receipt: any) => {
+          alert(`Tx sent successfully! Tx hash is ${receipt?.hash}`);
+          store.dispatch(setTxPending({tx: false}));
+        });
     } catch (err) {
       store.dispatch(setTxPending({tx: false}));
       console.log(err);
@@ -696,9 +700,9 @@ export const fetchWithdrawPayload = async (
     const res = await getWithdrawableInfo(library, account, contractAddress);
     return res;
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
-}
+};
 
 const getWithdrawableInfo = async (
   library: any,
@@ -707,15 +711,18 @@ const getWithdrawableInfo = async (
 ) => {
   const depositManager = getTokamakContract('DepositManager');
   return Promise.all([
-    depositManager.numPendingRequests(REACT_APP_TOKAMAK_LAYER2, contractAddress),
+    depositManager.numPendingRequests(
+      REACT_APP_TOKAMAK_LAYER2,
+      contractAddress,
+    ),
     // depositManager.withdrawalRequestIndex(REACT_APP_TOKAMAK_LAYER2, contractAddress),
   ]).then((result) => {
     return {
       requestNum: result[0],
       // requestIndex: result[1],
-    }
-  })
-}
+    };
+  });
+};
 
 export const fetchManageModalPayload = async (
   library: any,
@@ -723,7 +730,12 @@ export const fetchManageModalPayload = async (
   contractAddress: string,
   vaultAddress: string,
 ) => {
-  const res = await getUserInfoForManage(library, account, contractAddress, vaultAddress);
+  const res = await getUserInfoForManage(
+    library,
+    account,
+    contractAddress,
+    vaultAddress,
+  );
   return res;
 };
 

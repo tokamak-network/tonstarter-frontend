@@ -18,12 +18,9 @@ export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
 export const Router: FC<RouterProps> = () => {
   const dispatch = useAppDispatch();
-  // const toast = useToast();
   const [walletState, setWalletState] = useState<string>('');
   const {onOpen, isOpen: isModalOpen, onClose} = useDisclosure();
   const {account, chainId, library, deactivate} = useWeb3React();
-
-  console.log('--restart--');
 
   useEffect(() => {
     if (account && chainId) {

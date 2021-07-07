@@ -190,7 +190,7 @@ export const StakingTable: FC<StakingTableProps> = ({
 
   // }
 
-  if (isLoading === true) {
+  if (isLoading === true || data.length === 0) {
     return (
       <Center>
         <LoadingComponent />

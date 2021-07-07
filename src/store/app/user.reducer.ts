@@ -1,16 +1,15 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {RootState} from 'store/reducers';
-import {getContract, getTokamakContract} from 'utils/contract';
+import {getContract} from 'utils/contract';
 import * as ERC20 from 'services/abis/ERC20.json';
 import {REACT_APP_TON} from 'constants/index';
-import {convertNumber} from 'utils/number';
 import {formatEther} from '@ethersproject/units';
 
 export type User = {
   balance: string;
   address: string;
   library: any;
-  tosBalance: string;
+  // tosBalance: string;
 };
 
 interface IUser {
@@ -43,26 +42,29 @@ export const fetchUserInfo = createAsyncThunk(
       return initialState;
     }
 
-    let tonBalance;
-    let tosBalance;
+    // let tonBalance;
+    // let tosBalance;
 
     const contract = getContract(REACT_APP_TON, ERC20.abi, library);
-    const TOS = getTokamakContract('TOS');
+    // const TOS = getTokamakContract('TOS');
     // const TosBalance = await TOS.balanceOf(address);
 
-    await Promise.all([
-      contract.balanceOf(address),
-      TOS.balanceOf(address),
-    ]).then((res) => {
-      tonBalance = res[0];
-      tosBalance = res[1];
-    });
+    // await Promise.all([
+    //   contract.balanceOf(address),
+    //   TOS.balanceOf(address),
+    // ]).then((res) => {
+    //   tonBalance = res[0];
+    //   tosBalance = res[1];
+    // });
+
+    const balance = formatEther(await contract.balanceOf(address));
 
     const user: User = {
       address,
       library,
-      balance: tonBalance !== undefined ? formatEther(tonBalance) : '0',
-      tosBalance: tosBalance !== undefined ? formatEther(tosBalance) : '0',
+      balance,
+      // balance: tonBalance !== undefined ? formatEther(tonBalance) : '0',
+      // tosBalance: tosBalance !== undefined ? formatEther(tosBalance) : '0',
     };
 
     return user;

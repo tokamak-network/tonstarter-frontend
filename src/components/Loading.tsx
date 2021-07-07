@@ -6,7 +6,7 @@ export const LoadingComponent = () => {
   //@ts-ignore
   return (
     <motion.div
-      style={{width: '4em'}}
+      style={{width: '2em'}}
       initial={{rotate: 0}}
       animate={{rotate: 360}}
       transition={{flip: Infinity, duration: 2, ease: 'easeInOut'}}>
