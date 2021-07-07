@@ -21,6 +21,8 @@ import {
 } from 'constants/index';
 import {TokenType} from 'types/index';
 import {convertNumber} from 'utils/number';
+import {setTxPending} from 'store/tx.reducer';
+import store from 'store';
 
 const rpc = getRPC();
 
@@ -210,7 +212,6 @@ const stakeTon = async (args: StakeTon) => {
     library,
     stakeContractAddress,
     miningStartTime,
-    handleCloseModal,
   } = args;
   if (userAddress === null || userAddress === undefined) {
     return;
@@ -234,7 +235,12 @@ const stakeTon = async (args: StakeTon) => {
       const receipt = await tonContract
         .connect(signer)
         ?.approveAndCall(stakeContractAddress, tonAmount, data);
+      store.dispatch(setTxPending({tx: true}));
+
       alert(`Tx sent successfully! Tx hash is ${receipt.txHash}`);
+      if (receipt) {
+        store.dispatch(setTxPending({tx: false}));
+      }
     } catch (err) {
       console.log(err);
     }

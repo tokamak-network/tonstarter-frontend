@@ -8,12 +8,11 @@ import {FLDstarter} from './FLDstarter';
 import {Pools} from './Pools';
 import {Staking} from './Staking';
 import {Switch, Route} from 'react-router-dom';
-import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {useAppDispatch} from 'hooks/useRedux';
 import {fetchAppConfig} from 'store/app/app.reducer';
 import {fetchUserInfo} from 'store/app/user.reducer';
-import {fetchStakes, selectStakes} from './Staking/staking.reducer';
+import {fetchStakes} from './Staking/staking.reducer';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
-import store from 'store';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -39,11 +38,13 @@ export const Router: FC<RouterProps> = () => {
       // @ts-ignore
       dispatch(fetchAppConfig({chainId}));
 
-      console.log(signIn);
-
       if (signIn === false) {
         deactivate();
       } else if (signIn === true) {
+        console.log('gogo');
+        if (chainId !== 4) {
+          return alert('please use Rinkeby test network');
+        }
         // @ts-ignore
         dispatch(fetchUserInfo({address: account, library})).then(() => {
           dispatch(

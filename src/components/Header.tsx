@@ -6,6 +6,7 @@ import {
   Image,
   useTheme,
   Tooltip,
+  CircularProgress,
 } from '@chakra-ui/react';
 import React from 'react';
 import {shortenAddress} from 'utils';
@@ -14,6 +15,8 @@ import {NavLink, useRouteMatch} from 'react-router-dom';
 import {useColorMode} from '@chakra-ui/react';
 import logoLight from 'assets/svgs/fld_bi_white.svg';
 import logoGray from 'assets/svgs/fld_bi_gray.svg';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectTxType} from 'store/tx.reducer';
 
 type HeaderProps = {
   walletopen: () => void;
@@ -99,6 +102,9 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
   const theme = useTheme();
   const match = useRouteMatch('/');
 
+  const {tx} = useAppSelector(selectTxType);
+  console.log(tx);
+
   return (
     <Box
       display={{base: isOpen ? 'block' : 'none', md: 'block'}}
@@ -110,6 +116,7 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
         direction={['column', 'row', 'row', 'row']}
         pt={[4, 4, 0, 0]}>
         <Button
+          opacity={0.5}
           borderWidth={1}
           color={
             colorMode === 'dark'
@@ -146,7 +153,16 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
           }
           zIndex={100}>
           {account ? shortenAddress(account) : 'Connect wallet'}
+          {tx === true ? (
+            <CircularProgress
+              isIndeterminate
+              size={6}
+              zIndex={100}
+              color="blue.500"
+              pos="absolute"></CircularProgress>
+          ) : null}
         </Button>
+
         <ThemeSwitcher />
       </Stack>
     </Box>
