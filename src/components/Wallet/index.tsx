@@ -27,6 +27,8 @@ import {useEagerConnect, useInactiveListener} from 'hooks/useWeb3';
 import {selectExplorerLink, selectNetwork} from 'store/app/app.reducer';
 import {useAppSelector} from 'hooks/useRedux';
 import {useLocalStorage} from 'hooks/useStorage';
+import store from 'store';
+import {fetchUserInfo} from 'store/app/user.reducer';
 
 type WalletProps = {
   isOpen: boolean;
@@ -286,6 +288,12 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
                         onClick={() => {
                           deactivate();
                           setAccountValue({signIn: false});
+                          const {address, library} = store.getState().user.data;
+                          //@ts-ignore
+                          store.dispatch(
+                            //@ts-ignore
+                            fetchUserInfo({address, library, reset: true}),
+                          );
                         }}>
                         Disconnect
                       </Button>

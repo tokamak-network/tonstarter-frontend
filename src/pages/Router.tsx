@@ -23,6 +23,8 @@ export const Router: FC<RouterProps> = () => {
   const {onOpen, isOpen: isModalOpen, onClose} = useDisclosure();
   const {account, chainId, library, deactivate} = useWeb3React();
 
+  console.log('--restart--');
+
   useEffect(() => {
     if (account && chainId) {
       //@ts-ignore
@@ -64,6 +66,7 @@ export const Router: FC<RouterProps> = () => {
     const accountStorage = JSON.parse(window.localStorage.getItem('account'));
     const {signIn} = accountStorage;
     if (account === undefined && signIn === false) {
+      console.log(account, library);
       dispatch(
         fetchStakes({
           library,
@@ -71,6 +74,8 @@ export const Router: FC<RouterProps> = () => {
           chainId,
         }) as any,
       );
+      // @ts-ignore
+      // dispatch(fetchUserInfo());
     }
   }, [account, dispatch, library, chainId]);
 

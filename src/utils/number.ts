@@ -10,7 +10,7 @@ type RoundFunc = {
 
 type ConverNumberFunc = {
   type?: 'ray' | 'wei';
-  amount: string;
+  amount: string | undefined;
   round?: boolean;
   decimalPlaces?: number;
 };
@@ -34,6 +34,9 @@ export function convertNumber(args: ConverNumberFunc): string | undefined {
     const numberType: string = type ? type : 'wei';
     const optRound = round ? round : false;
     const decimalPoint: number = decimalPlaces ? decimalPlaces : 2;
+    if (amount === undefined) {
+      throw new Error(`user balance is undefined`);
+    }
     if (decimalPoint <= 0) {
       throw new Error(`decimalPoint must be positive number`);
     }

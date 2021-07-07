@@ -163,7 +163,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
         colorMode === 'light' ? 'solid 1px #f4f6f8' : 'solid 1px #373737'
       }>
       <Box w={'100%'} p={0} textAlign={'center'} py={10} px={5}>
-        <Heading color={'blue.300'}>{user.balance.toString()} TON</Heading>
+        <Heading color={'blue.300'}>{user.balance} TON</Heading>
         <Box py={5}>
           <Text fontSize={'15px'} color={'gray.400'}>
             Available in wallet

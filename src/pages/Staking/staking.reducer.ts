@@ -23,6 +23,7 @@ import {TokenType} from 'types/index';
 import {convertNumber} from 'utils/number';
 import {setTxPending} from 'store/tx.reducer';
 import store from 'store';
+import {fetchUserInfo} from 'store/app/user.reducer';
 
 const rpc = getRPC();
 
@@ -239,6 +240,16 @@ const stakeTon = async (args: StakeTon) => {
 
       alert(`Tx sent successfully! Tx hash is ${receipt.txHash}`);
       if (receipt) {
+        await receipt
+          .wait()
+          .then((result: any) => {
+            if (result) {
+              const {address, library} = store.getState().user.data;
+              //@ts-ignore
+              store.dispatch(fetchUserInfo({address, library}));
+            }
+          })
+          .catch((e: any) => console.log(e));
         store.dispatch(setTxPending({tx: false}));
       }
     } catch (err) {

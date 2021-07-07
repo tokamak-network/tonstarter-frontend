@@ -3,11 +3,12 @@ import {RootState} from 'store/reducers';
 import {getContract} from 'utils/contract';
 import * as ERC20 from 'services/abis/ERC20.json';
 import {REACT_APP_TON} from 'constants/index';
-import {formatEther} from '@ethersproject/units';
+import {convertNumber} from 'utils/number';
 
 export type User = {
   balance: string;
   address: string;
+  library: any;
 };
 
 interface IUser {
@@ -29,18 +30,29 @@ const initialState = {
 export const fetchUserInfo = createAsyncThunk(
   'app/user',
   // @ts-ignore
-  async ({address, library}, {requestId, getState}) => {
+  async ({address, library, reset}, {requestId, getState}) => {
     // @ts-ignore
     const {currentRequestId, loading} = getState().user;
     if (loading !== 'pending' || requestId !== currentRequestId) {
       return;
     }
 
-    const contract = getContract(REACT_APP_TON, ERC20.abi, library);
+    if (reset) {
+      return initialState;
+    }
 
-    let user: User = {
+    const contract = getContract(REACT_APP_TON, ERC20.abi, library);
+    const amount = await contract.balanceOf(address);
+    const balance = convertNumber({amount});
+
+    if (balance === undefined) {
+      throw new Error(`user balance is undefined`);
+    }
+
+    const user: User = {
       address,
-      balance: formatEther(await contract.balanceOf(address)),
+      library,
+      balance,
     };
 
     return user;

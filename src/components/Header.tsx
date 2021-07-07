@@ -101,9 +101,7 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const match = useRouteMatch('/');
-
   const {tx} = useAppSelector(selectTxType);
-  console.log(tx);
 
   return (
     <Box
@@ -116,7 +114,7 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
         direction={['column', 'row', 'row', 'row']}
         pt={[4, 4, 0, 0]}>
         <Button
-          opacity={0.5}
+          opacity={tx === true ? 0.5 : 1}
           borderWidth={1}
           color={
             colorMode === 'dark'
