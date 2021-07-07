@@ -242,6 +242,7 @@ const stakeTon = async (args: StakeTon) => {
         store.dispatch(setTxPending({tx: false}));
       }
     } catch (err) {
+      store.dispatch(setTxPending({tx: false}));
       console.log(err);
     }
   } else {
@@ -274,8 +275,13 @@ const stakeEth = async (args: StakeTon) => {
     const signer = getSigner(library, userAddress);
     try {
       const receipt = await signer.sendTransaction(transactionRequest);
+      store.dispatch(setTxPending({tx: true}));
       alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
+      if (receipt) {
+        store.dispatch(setTxPending({tx: false}));
+      }
     } catch (err) {
+      store.dispatch(setTxPending({tx: false}));
       console.log(err);
     }
   } else {
@@ -314,8 +320,13 @@ export const unstake = async (args: unstake) => {
     const signer = getSigner(library, userAddress);
     try {
       const receipt = await StakeTONContract.connect(signer)?.withdraw();
+      store.dispatch(setTxPending({tx: true}));
       alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
+      if (receipt) {
+        store.dispatch(setTxPending({tx: false}));
+      }
     } catch (err) {
+      store.dispatch(setTxPending({tx: false}));
       console.log(err);
     }
   }
@@ -352,9 +363,15 @@ export const claimReward = async (args: claim) => {
     const signer = getSigner(library, userAddress);
     try {
       const receipt = await StakeTONContract.connect(signer)?.claim();
+      store.dispatch(setTxPending({tx: true}));
+
       alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
+      if (receipt) {
+        store.dispatch(setTxPending({tx: false}));
+      }
     } catch (err) {
       console.log(err);
+      store.dispatch(setTxPending({tx: false}));
     }
   }
 };
@@ -383,8 +400,13 @@ export const closeSale = async (args: endsale) => {
       const receipt = await stakeVault
         .connect(signer)
         ?.closeSale(vaultContractAddress);
+      store.dispatch(setTxPending({tx: true}));
+      if (receipt) {
+        store.dispatch(setTxPending({tx: false}));
+      }
       alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
     } catch (err) {
+      store.dispatch(setTxPending({tx: false}));
       console.log(err);
     }
   } else {
@@ -430,9 +452,14 @@ export const stakeToLayer2 = async (args: stakeToLayer2Args) => {
         REACT_APP_TOKAMAK_LAYER2,
         amount,
       );
+      store.dispatch(setTxPending({tx: true}));
       console.log(receipt);
+      if (receipt) {
+        store.dispatch(setTxPending({tx: false}));
+      }
       alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
     } catch (err) {
+      store.dispatch(setTxPending({tx: false}));
       console.log(err);
     }
   }
@@ -459,8 +486,13 @@ export const unstakeL2 = async (args: unstakeFromLayer2Args) => {
       const receipt = await StakeTONContract.connect(
         signer,
       ).tokamakRequestUnStakingAll(REACT_APP_TOKAMAK_LAYER2);
+      store.dispatch(setTxPending({tx: true}));
       alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
+      if (receipt) {
+        store.dispatch(setTxPending({tx: false}));
+      }
     } catch (err) {
+      store.dispatch(setTxPending({tx: false}));
       console.log(err);
     }
   } else {
@@ -497,8 +529,13 @@ export const swapWTONtoTOS = async (args: unstakeFromLayer2Args) => {
       0,
       1,
     );
+    store.dispatch(setTxPending({tx: true}));
     alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
+    if (receipt) {
+      store.dispatch(setTxPending({tx: false}));
+    }
   } catch (err) {
+    store.dispatch(setTxPending({tx: false}));
     console.log(err);
   }
 };
@@ -521,8 +558,13 @@ export const withdraw = async (args: withdraw) => {
   if (endBlock > currentBlock) {
     try {
       const receipt = await StakeTONContract.connect(signer).withdraw();
+      store.dispatch(setTxPending({tx: true}));
       alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
+      if (receipt) {
+        store.dispatch(setTxPending({tx: false}));
+      }
     } catch (err) {
+      store.dispatch(setTxPending({tx: false}));
       console.log(err);
     }
   } else {
