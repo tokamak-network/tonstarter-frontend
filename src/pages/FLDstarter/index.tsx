@@ -25,6 +25,8 @@ export const FLDstarter = () => {
   // @ts-ignore
   const {data, loading} = useAppSelector(selectStakes);
 
+  console.log(loading);
+
   return (
     <Fragment>
       <Head title={'TON Starter'} />
@@ -32,7 +34,7 @@ export const FLDstarter = () => {
       <Stack>
         <Container maxW={'6xl'} py={12}>
           <SimpleGrid minChildWidth={350} gap={30}>
-            {loading === 'pending' ? (
+            {loading === 'pending' || data.length === 0 ? (
               <Center>
                 <LoadingComponent />
               </Center>

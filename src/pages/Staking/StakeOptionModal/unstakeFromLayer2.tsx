@@ -12,14 +12,12 @@ import {
   Stack,
   useTheme,
   useColorMode,
-  Input,
 } from '@chakra-ui/react';
 import {unstakeL2} from '../staking.reducer';
-import React, {FC, useCallback, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
-import {useCallback, useState} from 'react';
 
 export const UnStakeFromLayer2Modal = () => {
   const {account, library} = useWeb3React();
@@ -31,11 +29,6 @@ export const UnStakeFromLayer2Modal = () => {
   let balance = data?.data?.totalStakedAmountL2;
 
   const [value, setValue] = useState<number>(balance);
-  const handleChange = useCallback(e => setValue(e.target.value), []);
-  const setMax = useCallback(_e => setValue(balance), [balance]);
-
-  const [value, setValue] = useState<number>(balance);
-
   const handleChange = useCallback((e) => setValue(e.target.value), []);
   const setMax = useCallback((_e) => setValue(balance), [balance]);
 

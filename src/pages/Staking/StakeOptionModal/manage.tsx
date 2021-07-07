@@ -16,12 +16,8 @@ import {
 import {closeSale, fetchWithdrawPayload} from '../staking.reducer';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import { useCallback } from 'react';
-import {
-  closeModal,
-  openModal,
-  selectModalType,
-} from 'store/modal.reducer';
+import {useCallback} from 'react';
+import {closeModal, openModal, selectModalType} from 'store/modal.reducer';
 
 export const ManageModal = () => {
   const {account, library} = useWeb3React();
@@ -38,15 +34,16 @@ export const ManageModal = () => {
       data?.data.contractAddress,
     );
 
-    return result
+    return result;
   };
 
   const withdrawData = useCallback(async () => {
     const payloadWithdraw = await withdrawPayload();
-    console.log(data)
+    console.log(data);
     const payload = {
-      ...data?.data, ...payloadWithdraw
-    }
+      ...data?.data,
+      ...payloadWithdraw,
+    };
     console.log(payload);
     dispatch(openModal({type: 'withdraw', data: data.data}));
   }, []);
@@ -178,14 +175,7 @@ export const ManageModal = () => {
               bg={'blue.500'}
               color={'white.100'}
               fontSize={'12px'}
-              fontWeight={100}
-              onClick={() =>
-                withdrawData()
-              }>
-            <Button width='150px'
-            bg={'blue.400'}
-            color={'white.100'}
-            fontSize={'12px'} onClick={() => withdrawData()}>
+              onClick={() => withdrawData()}>
               Withdraw
             </Button>
             <Button

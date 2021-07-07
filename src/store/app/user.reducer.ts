@@ -3,8 +3,8 @@ import {RootState} from 'store/reducers';
 import {getContract, getTokamakContract} from 'utils/contract';
 import * as ERC20 from 'services/abis/ERC20.json';
 import {REACT_APP_TON} from 'constants/index';
-import { convertNumber } from 'utils/number';
-import {formatEther} from "ethers"
+import {convertNumber} from 'utils/number';
+import {formatEther} from '@ethersproject/units';
 
 export type User = {
   balance: string;
@@ -43,21 +43,26 @@ export const fetchUserInfo = createAsyncThunk(
       return initialState;
     }
 
-    const contract = getContract(REACT_APP_TON, ERC20.abi, library);
-    const amount = await contract.balanceOf(address);
-    const balance = convertNumber({amount});
+    let tonBalance;
+    let tosBalance;
 
-    if (balance === undefined) {
-      throw new Error(`user balance is undefined`);
-    }
+    const contract = getContract(REACT_APP_TON, ERC20.abi, library);
     const TOS = getTokamakContract('TOS');
     // const TosBalance = await TOS.balanceOf(address);
+
+    await Promise.all([
+      contract.balanceOf(address),
+      TOS.balanceOf(address),
+    ]).then((res) => {
+      tonBalance = res[0];
+      tosBalance = res[1];
+    });
 
     const user: User = {
       address,
       library,
-      balance: formatEther(await contract.balanceOf(address)),
-      tosBalance: formatEther(await TOS.balanceOf(address)),
+      balance: tonBalance !== undefined ? formatEther(tonBalance) : '0',
+      tosBalance: tosBalance !== undefined ? formatEther(tosBalance) : '0',
     };
 
     return user;
