@@ -38,6 +38,7 @@ import {useState} from 'react';
 import {useLocalStorage} from 'hooks/useStorage';
 import {useEffect} from 'react';
 import {Stake, fetchManageModalPayload} from './staking.reducer';
+import {ModalType} from "store/modal.reducer"
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
@@ -108,22 +109,36 @@ const WalletInformation: FC<WalletInformationProps> = ({
   dispatch,
   account,
 }) => {
-  const payload = {
-    ...data,
-    user,
-  };
   const {colorMode} = useColorMode();
   const btnDisabled = account === undefined ? true : false;
 
-  const test = async () => {
+  const modalPayload = async () => {
     const result = await fetchManageModalPayload(
       data.library,
       data.account,
       data.contractAddress,
     );
-    return console.log(result);
+
+    return result;
   };
-  test();
+
+  const modalData = useCallback(async (modal: ModalType) => {
+    let payload;
+
+    if (modal === 'manage' || modal === 'claim') {
+      const payloadModal = await modalPayload();
+      payload = {
+        ...data, ...payloadModal, user
+      }
+    } else {
+      payload = {
+        ...data, user,
+      }
+    }
+    console.log(modal);
+    
+    dispatch(openModal({type: modal, data: payload}));
+  }, []);
 
   return (
     <Container
@@ -146,7 +161,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
             isDisabled={btnDisabled}
             color={'white.100'}
             fontSize={'14px'}
-            onClick={() => dispatch(openModal({type: 'stake', data: payload}))}>
+            onClick={() => modalData('stake')}>
             Stake
           </Button>
           <Button
@@ -155,7 +170,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
             color={'white.100'}
             fontSize={'14px'}
             onClick={() =>
-              dispatch(openModal({type: 'unstake', data: payload}))
+              modalData('unstake')
             }>
             Unstake
           </Button>
@@ -164,7 +179,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
             isDisabled={btnDisabled}
             color={'white.100'}
             fontSize={'14px'}
-            onClick={() => dispatch(openModal({type: 'claim', data: payload}))}>
+            onClick={() => modalData('claim')}>
             Claim
           </Button>
           <Button
@@ -173,7 +188,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
             color={'white.100'}
             fontSize={'14px'}
             onClick={() =>
-              dispatch(openModal({type: 'manage', data: payload}))
+              modalData('manage')
             }>
             Manage
           </Button>

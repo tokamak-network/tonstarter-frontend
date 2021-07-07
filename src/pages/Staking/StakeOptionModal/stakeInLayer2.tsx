@@ -103,8 +103,9 @@ import {
                     userAddress:account, 
                     amount: value.toString(),
                     contractAddress: data?.data?.contractAddress,
-                    stakeEndBlock: data?.data?.stakeEndBlock, 
-                    vaultClosed: data?.data?.vaultClosed,
+                    miningEndTime: data?.data?.miningEndTime, 
+                    status: data?.data?.status,
+                    globalWithdrawalDelay: data?.data?.globalWithdrawalDelay,
                     library: library,
                     handleCloseModal: dispatch(closeModal()),
                 })}>

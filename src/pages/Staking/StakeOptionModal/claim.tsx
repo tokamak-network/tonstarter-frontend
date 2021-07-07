@@ -22,7 +22,7 @@ export const ClaimOptionModal = () => {
 
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
-  let claimed = data?.data?.myclaimed;
+  let claimed = data?.data?.canRewardAmount;
   let earned = data?.data?.myearned;
   let balance = data?.data?.myclaimed;
 
@@ -41,9 +41,12 @@ export const ClaimOptionModal = () => {
               textAlign={'center'}>
               Claim
             </Heading>
-            <Text>You can claim {claimed} TOS and earn {earned}</Text>
           </Box>
-
+          <Stack
+            textAlign={'center'}
+          >
+            <Text>You can claim {claimed} TOS and earned {earned} TOS</Text>
+          </Stack>
           <Stack
             as={Flex}
             py={10}
@@ -51,6 +54,7 @@ export const ClaimOptionModal = () => {
             justifyContent={'center'}
             alignItems={'center'}
             w={'full'}>
+              
             <Text
               variant={'outline'}
               borderWidth={0}
@@ -63,7 +67,7 @@ export const ClaimOptionModal = () => {
                 borderWidth: 0,
               }}>
               {' '}
-              {balance} TOS
+              {earned} TOS
             </Text>
           </Stack>
 
@@ -74,12 +78,12 @@ export const ClaimOptionModal = () => {
             alignItems={'center'}>
             <Box textAlign={'center'}>
               <Text>Claim Available</Text>
-              <Text>{balance} TOS</Text>
+              <Text>{claimed} TOS</Text>
             </Box>
           </Stack>
 
           <Box py={4} as={Flex} justifyContent={'center'}>
-            {/* {!data.data.vaultClosed ? (
+            {/* {!data.data.status ? (
               <Button
                 mr={4}
                 onClick={() =>
@@ -97,14 +101,14 @@ export const ClaimOptionModal = () => {
             ) : null} */}
 
             <Button
-              // disabled={!data.data.vaultClosed}
+              // disabled={!data.data.status}
               onClick={() =>
                 claimReward({
                   userAddress: account,
                   stakeContractAddress: data.data.contractAddress,
-                  startTime: data.data.startTime,
+                  saleEndTime: data.data.saleEndTime,
                   library: library,
-                  myClaimed: data.data.myclaimed,
+                  canRewardAmount: data.data.canRewardAmount,
                   myEarned: data.data.myearned,
                   handleCloseModal: dispatch(closeModal()),
                 })
