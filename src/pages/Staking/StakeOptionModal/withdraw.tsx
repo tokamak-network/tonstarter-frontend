@@ -27,8 +27,8 @@ export const WithdrawalOptionModal = () => {
   const [value, setValue] = useState<number>(balance);
 
   const handleChange = useCallback(e => setValue(e.target.value), []);
-  // const setMax = useCallback(_e => setValue(balance), [balance]);
-  console.log(data?.data)
+  const withdrawalDelay = data?.data?.globalWithdrawalDelay;
+
   const handleCloseModal = useCallback(() => dispatch(closeModal()), [
     dispatch,
   ]);
@@ -50,7 +50,7 @@ export const WithdrawalOptionModal = () => {
             </Heading>
             <Stack>
               <Text>
-                {/* You can withdraw after {data?.data?.withdrawalDelay.toString()} Blocks */}
+                You can withdraw after {withdrawalDelay}  Blocks
               </Text>
             </Stack>
             {/* <Stack>
@@ -64,9 +64,8 @@ export const WithdrawalOptionModal = () => {
                 onClick={() =>
                   withdraw({
                     userAddress:account, 
-                    amount: data.data.myStakedL2,
                     contractAddress: data.data.contractAddress,
-                    vaultClosed: data?.data?.vaultClosed,
+                    miningEndTime: data?.data?.miningEndTime,
                     library: library,
                     handleCloseModal: dispatch(closeModal()),
                   })

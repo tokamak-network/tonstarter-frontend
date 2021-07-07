@@ -146,7 +146,7 @@ export const ManageModal = () => {
                 closeSale({
                   userAddress: account,
                   vaultContractAddress: data.data.vault,
-                  stakeStartBlock: data.data.stakeStartBlock,
+                  miningEndTime: data.data.miningEndTime,
                   library: library,
                   handleCloseModal: dispatch(closeModal()),
                 })

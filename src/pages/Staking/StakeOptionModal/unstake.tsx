@@ -20,7 +20,7 @@ export const UnstakeOptionModal = () => {
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
 
-  let balance = data?.data?.stakeBalanceTON;
+  let balance = data?.data?.mystaked;
 
   return (
     <Modal
@@ -78,7 +78,7 @@ export const UnstakeOptionModal = () => {
               onClick={() =>
                 unstake({
                   userAddress: account,
-                  endTime: data.data.endTime,
+                  endTime: data.data.saleEndTime,
                   library: library,
                   stakeContractAddress: data.data.contractAddress,
                   mystaked: data.data.mystaked,
