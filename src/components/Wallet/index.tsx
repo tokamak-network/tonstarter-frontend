@@ -63,6 +63,7 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
 
   const previousAccount = usePrevious(account);
 
+  /* eslint-disable */
   const [accountValue, setAccountValue] = useLocalStorage('account', {});
 
   useEffect(() => {

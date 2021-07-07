@@ -23,6 +23,7 @@ export const WithdrawalOptionModal = () => {
   const {account, library} = useWeb3React();
 
   let balance = data?.data?.user?.stakeBalanceTON;
+  /*eslint-disable */
   const [value, setValue] = useState<number>(balance);
 
   const handleChange = useCallback((e) => setValue(e.target.value), []);

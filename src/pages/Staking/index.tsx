@@ -92,7 +92,7 @@ const GetDate = ({time, currentBlock, contractAddress, type}: GetDateProp) => {
       setDate(localTableValue[contractAddress + type]);
     }
     fetchDate();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Text
@@ -151,7 +151,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
 
     setLoading(false);
     dispatch(openModal({type: modal, data: payload}));
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Container

@@ -46,7 +46,7 @@ export const ManageModal = () => {
     };
     console.log(payload);
     dispatch(openModal({type: 'withdraw', data: data.data}));
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Modal

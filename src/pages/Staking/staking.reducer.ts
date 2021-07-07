@@ -294,6 +294,7 @@ const stakeEth = async (args: StakeTon) => {
   }
 };
 
+/*eslint-disable */
 export const unstake = async (args: unstake) => {
   const {userAddress, endTime, library, stakeContractAddress, mystaked} = args;
   const currentBlock = await getRPC().getBlockNumber();
