@@ -18,12 +18,6 @@ import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
 import {stakePaytoken} from '../staking.reducer';
 
-const addComma = (num:string) => {
-  const removeCommaNum = num.replaceAll(",", "")
-  const localNum = Number(removeCommaNum).toLocaleString()
-  return String(localNum)
-}
-
 export const StakeOptionModal = () => {
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
@@ -33,7 +27,22 @@ export const StakeOptionModal = () => {
   const [value, setValue] = useState<string>('0');
   const theme = useTheme();
 
-  const handleChange = useCallback(e => setValue(e.target.value), []);
+  const addComma = (inputVal:string) => {
+    if(inputVal.length > 0 && value.substring(0, 1) === '0' ) {
+      if(inputVal.split('.').length > 1) {
+        return setValue(inputVal);
+      }
+      return setValue(value.substring(1, 2))
+    }
+    if(inputVal === '.') {
+      setValue(inputVal)
+    } else {
+      setValue(inputVal.replace(/[^0-9a-zA-Z.]/g, '')
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+    }
+  }
+
+  const handleChange = useCallback(e => addComma(e.target.value), []);
   const setMax = useCallback(_e => setValue(balance), [balance]);
 
   const handleCloseModal = useCallback(() => dispatch(closeModal()), [
@@ -82,7 +91,7 @@ export const StakeOptionModal = () => {
               textAlign={'center'}
               fontWeight={'bold'}
               fontSize={'4xl'}
-              value={addComma(value)}
+              value={value}
               w="60%"
               mr={6}
               onChange={handleChange}
@@ -125,7 +134,10 @@ export const StakeOptionModal = () => {
 
           <Box as={Flex} justifyContent={'center'} mt={'25px'}>
             <Button
-              colorScheme={'blue'}
+            w={'150px'}
+            bg={'blue.500'}
+            color="white.100"
+            fontSize="14px"
               onClick={() =>
                 stakePaytoken({
                   userAddress: account,
