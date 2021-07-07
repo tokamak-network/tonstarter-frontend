@@ -7,6 +7,9 @@ import {formatEther} from '@ethersproject/units';
 
 export type User = {
   balance: string;
+  address: string;
+  library: any;
+  // tosBalance: string;
 };
 
 interface IUser {
@@ -28,17 +31,40 @@ const initialState = {
 export const fetchUserInfo = createAsyncThunk(
   'app/user',
   // @ts-ignore
-  async ({address, library}, {requestId, getState}) => {
+  async ({address, library, reset}, {requestId, getState}) => {
     // @ts-ignore
     const {currentRequestId, loading} = getState().user;
     if (loading !== 'pending' || requestId !== currentRequestId) {
       return;
     }
 
-    const contract = getContract(REACT_APP_TON, ERC20.abi, library);
+    if (reset) {
+      return initialState;
+    }
 
-    let user: User = {
-      balance: formatEther(await contract.balanceOf(address)),
+    // let tonBalance;
+    // let tosBalance;
+
+    const contract = getContract(REACT_APP_TON, ERC20.abi, library);
+    // const TOS = getTokamakContract('TOS');
+    // const TosBalance = await TOS.balanceOf(address);
+
+    // await Promise.all([
+    //   contract.balanceOf(address),
+    //   TOS.balanceOf(address),
+    // ]).then((res) => {
+    //   tonBalance = res[0];
+    //   tosBalance = res[1];
+    // });
+
+    const balance = formatEther(await contract.balanceOf(address));
+
+    const user: User = {
+      address,
+      library,
+      balance,
+      // balance: tonBalance !== undefined ? formatEther(tonBalance) : '0',
+      // tosBalance: tosBalance !== undefined ? formatEther(tosBalance) : '0',
     };
 
     return user;

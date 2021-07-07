@@ -12,42 +12,75 @@ import {useAppDispatch} from 'hooks/useRedux';
 import {fetchAppConfig} from 'store/app/app.reducer';
 import {fetchUserInfo} from 'store/app/user.reducer';
 import {fetchStakes} from './Staking/staking.reducer';
-import {useContract} from 'hooks/useContract';
-import {REACT_APP_STAKE1_PROXY} from 'constants/index';
-import * as StakeLogic from 'services/abis/Stake1Logic.json';
+import {useWindowDimensions} from 'hooks/useWindowDimentions';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
 export const Router: FC<RouterProps> = () => {
   const dispatch = useAppDispatch();
-  // const toast = useToast();
-  // const {data, loading, error} = useSelector(selectStakes);
   const [walletState, setWalletState] = useState<string>('');
   const {onOpen, isOpen: isModalOpen, onClose} = useDisclosure();
-  const {account, chainId, library} = useWeb3React();
-  const stakeRegistryContract = useContract(
-    REACT_APP_STAKE1_PROXY,
-    StakeLogic.abi,
-  );
-  useEffect(() => {
-    if (account && chainId) {
-      // @ts-ignore
-      dispatch(fetchAppConfig({chainId}));
-      // @ts-ignore
-      dispatch(fetchUserInfo({address: account, library}));
-    }
-  }, [chainId, account, library, dispatch]);
+  const {account, chainId, library, deactivate} = useWeb3React();
 
   useEffect(() => {
-    dispatch(
-      fetchStakes({
-        contract: stakeRegistryContract,
-        library,
-        account,
-        chainId,
-      }) as any,
-    );
-  }, [stakeRegistryContract, dispatch, library, account, chainId]);
+    if (account && chainId) {
+      //@ts-ignore
+      const accountStorage = JSON.parse(window.localStorage.getItem('account'));
+      //@ts-ignore
+      if (accountStorage === null) {
+        window.localStorage.setItem('account', JSON.stringify({signIn: false}));
+        return deactivate();
+      }
+
+      const {signIn} = accountStorage;
+
+      // @ts-ignore
+      dispatch(fetchAppConfig({chainId}));
+
+      if (signIn === false) {
+        deactivate();
+      } else if (signIn === true) {
+        console.log('gogo');
+        if (chainId !== 4) {
+          deactivate();
+          window.localStorage.setItem(
+            'account',
+            JSON.stringify({signIn: false}),
+          );
+          return alert('please use Rinkeby test network');
+        }
+        // @ts-ignore
+        dispatch(fetchUserInfo({address: account, library})).then(() => {
+          dispatch(
+            fetchStakes({
+              library,
+              account,
+              chainId,
+            }) as any,
+          );
+        });
+      }
+    }
+  }, [chainId, account, library, dispatch, deactivate]);
+
+  useEffect(() => {
+    //@ts-ignore
+    const accountStorage = JSON.parse(window.localStorage.getItem('account'));
+    const {signIn} = accountStorage;
+    if (account === undefined && signIn === false) {
+      console.log(account, library);
+      dispatch(
+        fetchStakes({
+          library,
+          account,
+          chainId,
+        }) as any,
+      );
+      // @ts-ignore
+      // dispatch(fetchUserInfo());
+    }
+  }, [account, dispatch, library, chainId]);
+
   const handleWalletModalOpen = (state: string) => {
     setWalletState(state);
     onOpen();
@@ -58,6 +91,12 @@ export const Router: FC<RouterProps> = () => {
   //     description: data.
   //   })
   // }
+
+  const {width} = useWindowDimensions();
+
+  if (width < 1100) {
+    // return <MobilePreOpen />;
+  }
 
   return (
     <>

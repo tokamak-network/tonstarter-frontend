@@ -8,13 +8,14 @@ import {
   Wrap,
   Image,
 } from '@chakra-ui/react';
-import {useColorMode} from '@chakra-ui/react';
+import {useColorMode, useTheme} from '@chakra-ui/react';
 import {motion, useAnimation} from 'framer-motion';
 import {HTMLAttributes, useEffect, useState} from 'react';
 import {Scrollbars} from 'react-custom-scrollbars-2';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
-import FLDLogo from 'assets/svgs/fld_bi_c.svg';
+import TONStaterLogo from 'assets/svgs/ts_bi_c.svg';
 import Arrow from 'assets/svgs/select1_arrow_inactive.svg';
+
 export interface HomeProps extends HTMLAttributes<HTMLDivElement> {
   classes?: string;
 }
@@ -109,7 +110,7 @@ const TextComponent = (props: any) => {
       <Text fontSize="26px" fontWeight={'bold'}>
         {header}
       </Text>
-      <Text fontSize="15px" fontWeight={300}>
+      <Text fontSize="15px" fontWeight={300} opacity={0.75}>
         {content}
       </Text>
     </Center>
@@ -176,6 +177,7 @@ const getLeftArea = (rowDots: number[]) => {
 
 export const Animation: React.FC<HomeProps> = () => {
   const {colorMode} = useColorMode();
+  const theme = useTheme();
   const {width} = useWindowDimensions();
   const [rowDots, setRowDots] = useState<number[]>([]);
   const [timer] = useState({
@@ -190,7 +192,7 @@ export const Animation: React.FC<HomeProps> = () => {
   });
   const verticalDots: number[] = [77, 221, 365, 509, 653, 797, 941];
 
-  const bgColor = colorMode === 'light' ? '#007AFF' : '#222222';
+  const bgColor = colorMode === 'light' ? 'blue.200' : 'black.200';
 
   const mainControls = useAnimation();
   const mainSubControls = useAnimation();
@@ -204,7 +206,6 @@ export const Animation: React.FC<HomeProps> = () => {
     const aniMultiplier = 15;
     const result = makeDots(Number(width), 1024);
     const delay = result.length / aniMultiplier;
-    // console.log('width : ' + width);
     setRowDots(result);
 
     mainControls.start((i) => ({
@@ -295,14 +296,42 @@ export const Animation: React.FC<HomeProps> = () => {
     lastCircleControls,
   ]);
 
+  //temp code for pre-open
+  // const [date] = useState('2021/07/19');
+
+  // const trimDigit = (arg: any) => {
+  //   if (String(arg).length === 1) {
+  //     return `0${arg}`;
+  //   }
+  //   return arg;
+  // };
+
+  //@ts-ignore
+  // const countDownRenderer = ({days, hours, minutes, seconds, completed}) => {
+  //   if (completed) {
+  //     // Render a completed state
+  //     return null;
+  //   } else {
+  //     // Render a countdown
+  //     return (
+  //       <Text fontSize={86}>
+  //         {days}
+  //         <span style={{color: '#ffff07'}}>D</span> {trimDigit(hours)}:
+  //         {trimDigit(minutes)}:{trimDigit(seconds)}
+  //       </Text>
+  //     );
+  //   }
+  // };
+
   return (
     <Flex
       maxW="100%"
       height={1024}
       bg={bgColor}
       position="relative"
-      borderBottomWidth={1}
-      borderBottomColor={elements.whiteWithOpacity}>
+      borderBottomWidth="1px"
+      borderBottomColor={`${elements.whiteWithOpacity}`}
+      fontFamily={theme.fonts.fld}>
       <motion.div
         custom={timer.lastCircle}
         initial={{opacity: 0}}
@@ -340,7 +369,7 @@ export const Animation: React.FC<HomeProps> = () => {
         animate={{opacity: 0}}
         transition={{duration: 1}}>
         <Center>
-          <Image src={FLDLogo}></Image>
+          <Image src={TONStaterLogo}></Image>
         </Center>
       </motion.div>
       {rowDots.map((r, rIndex) =>
@@ -374,10 +403,10 @@ export const Animation: React.FC<HomeProps> = () => {
             d="flex"
             flexDirection="column"
             justifyContent="center"
-            alignItems="center"
+            pl={'80px'}
             color="white.100"
             fontWeight="semibold"
-            fontSize={52}>
+            fontSize={46}>
             <div>
               <Text>TON Starter</Text>
               <Text>Decentralized Launchpad</Text>
@@ -443,7 +472,7 @@ export const Animation: React.FC<HomeProps> = () => {
               <TextComponent
                 header={'Transparent'}
                 content={
-                  'FLD holders can participate in all platform decisions by staking FLD into sFLD(staked FLD)'
+                  'TOS holders can participate in all platform decisions by staking TOS into sTOS(staked TOS)'
                 }
               />
             </motion.div>
@@ -486,20 +515,20 @@ export const Animation: React.FC<HomeProps> = () => {
                   ROAD MAP
                 </Text>
                 <TextComponent
-                  header={'Phase1'}
-                  content={'Launch FLD Mining'}
+                  header={'Phase 1'}
+                  content={'TOS Liquidity Mining Launch'}
                 />
                 <TextComponent
-                  header={'Phase1'}
-                  content={'Launch FLD Mining'}
+                  header={'Phase 2'}
+                  content={'TOS staking, LP staking'}
                 />
                 <TextComponent
-                  header={'Phase1'}
-                  content={'Launch FLD Mining'}
+                  header={'Phase 3'}
+                  content={'Project Starter Open, TONStarter Governance'}
                 />
                 <TextComponent
-                  header={'Phase1'}
-                  content={'Launch FLD Mining'}
+                  header={'Phase 4'}
+                  content={'Tokamak Network Layer2 Integration'}
                 />
               </Wrap>
             </Scrollbars>

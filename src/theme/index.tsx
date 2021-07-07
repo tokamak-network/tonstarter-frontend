@@ -3,11 +3,15 @@ import {createBreakpoints, mode} from '@chakra-ui/theme-tools';
 import '@fontsource/titillium-web/400.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/rajdhani/600.css';
+import '@fontsource/open-sans';
 
 const fonts = {
   heading: 'Roboto',
+  roboto: 'Roboto',
   body: 'TitilliumWeb, sans-serif',
+  titil: 'TitilliumWeb, sans-serif',
   fld: 'Rajdhani, sans-serif',
+  openSans: 'OpenSans',
 };
 
 const breakpoints = createBreakpoints({
@@ -41,6 +45,7 @@ const colors = {
     0: '#ffffff',
   },
   blue: {
+    500: '#257eee',
     400: '#0062C2',
     300: '#2A72E5',
     200: '#007AFF',
@@ -51,6 +56,7 @@ const colors = {
     100: '#FFFFFF',
   },
   black: {
+    300: '#304156',
     200: '#222222',
   },
   yellow: {
@@ -58,6 +64,16 @@ const colors = {
     200: '#fecf05',
     100: '#ffff07',
   },
+};
+
+const modalStyle = {
+  modalContent: `
+    fontFamily={theme.fonts.roboto}
+    bg={colorMode === 'light' ? 'white.100' : 'black.200'}
+    w="350px"
+    pt="25px"
+    pb="25px"
+  `,
 };
 
 const theme = extendTheme({
@@ -156,6 +172,7 @@ const theme = extendTheme({
   colors,
   fonts,
   breakpoints,
+  modalStyle,
 });
 
 export default theme;

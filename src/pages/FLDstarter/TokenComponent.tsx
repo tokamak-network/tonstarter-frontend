@@ -1,4 +1,4 @@
-import {FC} from 'react';
+import {FC, useState} from 'react';
 import {
   Flex,
   Text,
@@ -8,30 +8,71 @@ import {
   useTheme,
   Avatar,
   Tooltip,
+  useColorMode,
 } from '@chakra-ui/react';
-import {useColorMode} from '@chakra-ui/react';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
-import {useCallback} from 'react';
+import {useEffect, useCallback} from 'react';
+import {useHistory} from 'react-router';
 import {checkTokenType} from 'utils/token';
 import {TokenType} from 'types/index';
+import {getTokenPrice} from 'utils/tokenPrice';
+import {openTable} from 'store/table.reducer';
+import {useAppDispatch} from 'hooks/useRedux';
+import {openModal} from 'store/modal.reducer';
+import store from 'store';
 
 type TokenComponentProps = {
+  data: any;
   phase?: string;
   period: string;
   token: TokenType;
   stakedAmount: string;
+  contractAddress: string;
+  account: string | undefined;
+  index: number;
 };
 
 export const TokenComponent: FC<TokenComponentProps> = ({
+  data,
   phase,
   period,
   token,
   stakedAmount,
+  contractAddress,
+  account,
+  index,
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
+  const dispatch = useAppDispatch();
+  const history = useHistory();
   const tokenType = checkTokenType(token);
-  const handleNavigation = useCallback(() => {}, []);
+  const [tokenPrice, setTokenPrice] = useState<string | undefined>('0');
+
+  useEffect(() => {
+    async function getPrice() {
+      const resTokenPrice = await getTokenPrice(tokenType.fullName);
+      const totalPrice = Number(stakedAmount) * resTokenPrice;
+      if (isNaN(totalPrice)) {
+        return;
+      }
+      setTokenPrice(totalPrice.toFixed(2));
+    }
+    getPrice();
+  }, []);
+
+  const handleNavigation = useCallback((type) => {
+    history.push('./staking');
+    window.scrollTo(0, 0);
+    dispatch(openTable({contractAddress: contractAddress, index}));
+    if (type === 'stake') {
+      const user = store.getState().user.data;
+      const payload = {...data, user};
+      dispatch(openModal({type: 'stake', data: payload}));
+    }
+    window.scrollTo(0, 350 + index * 69);
+  }, []);
+
   return (
     <Container
       bg={colorMode === 'light' ? theme.colors.white[100] : 'transparent'}
@@ -106,8 +147,9 @@ export const TokenComponent: FC<TokenComponentProps> = ({
                   ? theme.colors.gray[125]
                   : theme.colors.white[100]
               }
-              mr={2}>
-              TON
+              mr={2}
+              pt={1}>
+              {tokenType.name}
             </Text>
             <Tooltip
               hasArrow
@@ -119,7 +161,7 @@ export const TokenComponent: FC<TokenComponentProps> = ({
             </Tooltip>
           </Flex>
           <Text className={'fld-text1'} fontWeight={'normal'}>
-            1644.99 USD
+            {tokenPrice} USD
           </Text>
           <Flex mt={4} mb={2}>
             <Button
@@ -127,18 +169,20 @@ export const TokenComponent: FC<TokenComponentProps> = ({
               fontSize={16}
               fontWeight={700}
               rounded={18}
-              bg={theme.colors.yellow[200]}
+              bg={account ? theme.colors.yellow[200] : '#f1f1f3'}
               px={34}
               fontFamily={theme.fonts.fld}
               mr={2}
-              color={'black'}
+              color={account ? 'black' : '#a8adb6'}
+              isDisabled={account !== undefined ? false : true}
+              onClick={() => handleNavigation('stake')}
               _hover={{bg: theme.colors.yellow[300]}}>
               Staking
             </Button>
 
             <Button
               borderWidth={1}
-              onClick={() => handleNavigation()}
+              onClick={() => handleNavigation('detail')}
               borderColor={
                 colorMode === 'light' ? 'transparent' : theme.colors.gray[75]
               }

@@ -6,14 +6,17 @@ import {
   Image,
   useTheme,
   Tooltip,
+  CircularProgress,
+  useColorMode,
 } from '@chakra-ui/react';
 import React from 'react';
 import {shortenAddress} from 'utils';
 import {ThemeSwitcher} from './ThemeSwitcher';
 import {NavLink, useRouteMatch} from 'react-router-dom';
-import {useColorMode} from '@chakra-ui/react';
-import logoLight from 'assets/svgs/fld_bi.svg';
-import logoDark from 'assets/svgs/fldw_bi.svg';
+import logoLight from 'assets/svgs/fld_bi_white.svg';
+import logoGray from 'assets/svgs/fld_bi_gray.svg';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectTxType} from 'store/tx.reducer';
 
 type HeaderProps = {
   walletopen: () => void;
@@ -37,23 +40,22 @@ export const Header: React.FC<HeaderProps> = (props) => {
       <Flex justifyContent={'space-between'}>
         <NavLink to="/">
           <Image
-            className={'header-image'}
             src={
               match?.isExact
-                ? logoDark
-                : colorMode === 'light'
                 ? logoLight
-                : logoDark
+                : colorMode === 'light'
+                ? logoGray
+                : logoLight
             }
-            w={191}
-            h={5}
-            alt="FLD Logo"
+            color="white.200"
+            w={'11.375em'}
+            h={'1.5625em'}
+            alt="TON Starter Logo"
           />
         </NavLink>
         <MenuItems isOpen={isOpen} {...props} />
       </Flex>
       <MenuToggle toggle={toggle} isOpen={isOpen} />
-
       <MenuLinks isOpen={isOpen} {...props} />
     </NavBarContainer>
   );
@@ -99,6 +101,7 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const match = useRouteMatch('/');
+  const {tx} = useAppSelector(selectTxType);
 
   return (
     <Box
@@ -111,6 +114,7 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
         direction={['column', 'row', 'row', 'row']}
         pt={[4, 4, 0, 0]}>
         <Button
+          opacity={tx === true ? 0.5 : 1}
           borderWidth={1}
           color={
             colorMode === 'dark'
@@ -147,7 +151,16 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
           }
           zIndex={100}>
           {account ? shortenAddress(account) : 'Connect wallet'}
+          {tx === true ? (
+            <CircularProgress
+              isIndeterminate
+              size={6}
+              zIndex={100}
+              color="blue.500"
+              pos="absolute"></CircularProgress>
+          ) : null}
         </Button>
+
         <ThemeSwitcher />
       </Stack>
     </Box>
@@ -172,13 +185,14 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           to="/"
           exact
           className={match?.isExact ? 'link-match' : 'link'}
-          activeClassName={match?.isExact ? 'active-fld' : 'active'}>
+          activeClassName={match?.isExact ? 'active-fld' : 'active'}
+          style={{zIndex: 100}}>
           Home
         </NavLink>
         <NavLink
           to="/staking"
           className={match?.isExact ? 'link-match' : 'link'}
-          activeClassName={'active'}>
+          style={{zIndex: 100}}>
           Staking
         </NavLink>
         <Tooltip
@@ -190,7 +204,8 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           <NavLink
             to="/pools"
             className={match?.isExact ? 'link-match' : 'link'}
-            onClick={(e) => e.preventDefault()}>
+            onClick={(e) => e.preventDefault()}
+            style={{zIndex: 100}}>
             Pools
           </NavLink>
         </Tooltip>
@@ -204,6 +219,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           <NavLink
             to="/starter"
             className={match?.isExact ? 'link-match' : 'link'}
+            style={{zIndex: 100}}
             onClick={(e) => e.preventDefault()}>
             Starter
           </NavLink>
@@ -217,6 +233,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           <NavLink
             to="/dao"
             className={match?.isExact ? 'link-match' : 'link'}
+            style={{zIndex: 100}}
             onClick={(e) => e.preventDefault()}>
             DAO
           </NavLink>

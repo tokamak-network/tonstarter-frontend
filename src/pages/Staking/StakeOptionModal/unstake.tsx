@@ -9,8 +9,10 @@ import {
   Button,
   Flex,
   Stack,
+  useTheme,
+  useColorMode,
 } from '@chakra-ui/react';
-import {withdraw} from '../staking.reducer';
+import {unstake} from '../staking.reducer';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
@@ -19,8 +21,10 @@ export const UnstakeOptionModal = () => {
   const {account, library} = useWeb3React();
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
+  const theme = useTheme();
+  const {colorMode} = useColorMode();
 
-  let balance = data?.data?.user?.balance;
+  let balance = data?.data?.mystaked;
 
   return (
     <Modal
@@ -28,15 +32,30 @@ export const UnstakeOptionModal = () => {
       isCentered
       onClose={() => dispatch(closeModal())}>
       <ModalOverlay />
-      <ModalContent>
-        <ModalBody>
-          <Box my={3} textAlign="center">
+      <ModalContent
+        fontFamily={theme.fonts.roboto}
+        bg={colorMode === 'light' ? 'white.100' : 'black.200'}
+        w="350px"
+        pt="25px"
+        pb="25px">
+        <ModalBody p={0}>
+          <Box
+            my={3}
+            pb={'1.250em'}
+            borderBottom={
+              colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
+            }>
             <Heading
-              fontWeight={'normal'}
-              fontSize={'3xl'}
+              fontSize={'1.250em'}
+              fontWeight={'bold'}
+              fontFamily={theme.fonts.titil}
+              color={colorMode === 'light' ? 'gray.250' : 'white.100'}
               textAlign={'center'}>
               Unstake
             </Heading>
+            <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
+              You can earn TON and POWER
+            </Text>
           </Box>
 
           <Stack
@@ -45,7 +64,11 @@ export const UnstakeOptionModal = () => {
             flexDir={'row'}
             justifyContent={'center'}
             alignItems={'center'}
-            w={'full'}>
+            w={'full'}
+            borderBottom={
+              colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
+            }
+            mb={'25px'}>
             <Text
               variant={'outline'}
               borderWidth={0}
@@ -57,34 +80,27 @@ export const UnstakeOptionModal = () => {
               _focus={{
                 borderWidth: 0,
               }}>
-              {balance}
+              {balance ? balance : '0.00'}
             </Text>
           </Stack>
 
-          <Stack
-            pb={5}
-            as={Flex}
-            justifyContent={'center'}
-            alignItems={'center'}>
-            <Box textAlign={'center'}>
-              <Text>Available Balance</Text>
-              <Text>{balance} TON</Text>
-            </Box>
-          </Stack>
-
-          <Box py={4} as={Flex} justifyContent={'center'}>
+          <Box as={Flex} justifyContent={'center'}>
             <Button
-              type={'submit'}
+              w={'150px'}
+              bg={'blue.500'}
+              color="white.100"
+              fontSize="14px"
               onClick={() =>
-                withdraw({
+                unstake({
                   userAddress: account,
-                  stakeEndBlock: data.data.stakeEndBlock,
+                  endTime: data.data.saleEndTime,
                   library: library,
                   stakeContractAddress: data.data.contractAddress,
+                  mystaked: data.data.mystaked,
+                  handleCloseModal: dispatch(closeModal()),
                 })
               }
-              disabled={+balance <= 0}
-              colorScheme={'blue'}>
+              disabled={+balance <= 0}>
               Unstake
             </Button>
           </Box>

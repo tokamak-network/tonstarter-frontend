@@ -1,5 +1,6 @@
 import {
   Container,
+  Center,
   Box,
   Text,
   Heading,
@@ -8,6 +9,7 @@ import {
   Flex,
   Link,
   useColorMode,
+  useTheme,
 } from '@chakra-ui/react';
 import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
@@ -24,31 +26,132 @@ import {
   ClaimOptionModal,
   StakeOptionModal,
   UnstakeOptionModal,
+  StakeInLayer2Modal,
+  UnStakeFromLayer2Modal,
+  WithdrawalOptionModal,
+  SwapModal,
 } from './StakeOptionModal';
-import {AppDispatch} from 'store';
+import store, {AppDispatch} from 'store';
 import {openModal} from 'store/modal.reducer';
 import {ManageModal} from './StakeOptionModal/manage';
+import {formatStartTime} from 'utils/timeStamp';
+import {useState} from 'react';
+import {useLocalStorage} from 'hooks/useStorage';
+import {useEffect} from 'react';
+import {Stake, fetchManageModalPayload} from './staking.reducer';
+import {ModalType} from 'store/modal.reducer';
+import {LoadingComponent} from 'components/Loading';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
-  data: {};
+  data: Stake;
   user: {
     balance: string;
   };
   account: string | undefined;
 };
+
+type GetDateTimeType =
+  | 'sale-start'
+  | 'sale-end'
+  | 'mining-start'
+  | 'mining-end';
+
+type GetDateProp = {
+  time: string | undefined;
+  currentBlock: number;
+  contractAddress: string;
+  type: GetDateTimeType;
+};
+
+const GetDate = ({time, currentBlock, contractAddress, type}: GetDateProp) => {
+  const {colorMode} = useColorMode();
+
+  const [date, setDate] = useState('');
+  const [localTableValue, setLocalTableValue] = useLocalStorage('table', {});
+
+  useEffect(() => {
+    const fetchDate = async () => {
+      const result = await formatStartTime(time, currentBlock);
+      setDate(result);
+
+      //@ts-ignore
+      const localStorage = JSON.parse(window.localStorage.getItem('table'));
+
+      return await setLocalTableValue({
+        ...localStorage,
+        [contractAddress + type]: result,
+      });
+    };
+    if (
+      localTableValue === undefined ||
+      localTableValue[contractAddress + type] === undefined
+    ) {
+      fetchDate();
+    } else {
+      setDate(localTableValue[contractAddress + type]);
+    }
+    fetchDate();
+  }, []);
+
+  return (
+    <Text
+      fontSize={'20px'}
+      color={colorMode === 'light' ? 'black.300' : 'white.200'}
+      fontWeight={'bold'}
+      w="100%">
+      {date}
+    </Text>
+  );
+};
+
 const WalletInformation: FC<WalletInformationProps> = ({
   user,
   data,
   dispatch,
   account,
 }) => {
-  const payload = {
-    ...data,
-    user,
-  };
   const {colorMode} = useColorMode();
+  const [loading, setLoading] = useState(false);
   const btnDisabled = account === undefined ? true : false;
+
+  const modalPayload = async (data: any) => {
+    const result = await fetchManageModalPayload(
+      data.library,
+      data.account,
+      data.contractAddress,
+      data.vault,
+    );
+
+    return result;
+  };
+
+  const modalData = useCallback(async (modal: ModalType) => {
+    setLoading(true);
+    let payload;
+
+    try {
+      if (modal === 'manage' || modal === 'claim') {
+        const payloadModal = await modalPayload(data);
+        payload = {
+          ...data,
+          ...payloadModal,
+          user,
+        };
+      } else {
+        payload = {
+          ...data,
+          user,
+        };
+      }
+    } catch (e) {
+      console.log(e);
+      setLoading(false);
+    }
+
+    setLoading(false);
+    dispatch(openModal({type: modal, data: payload}));
+  }, []);
 
   return (
     <Container
@@ -59,53 +162,70 @@ const WalletInformation: FC<WalletInformationProps> = ({
         colorMode === 'light' ? 'solid 1px #f4f6f8' : 'solid 1px #373737'
       }>
       <Box w={'100%'} p={0} textAlign={'center'} py={10} px={5}>
-        <Heading color={'blue.300'}>{user.balance.toString()} TON</Heading>
+        <Heading color={'blue.300'}>{user.balance} TON</Heading>
         <Box py={5}>
           <Text fontSize={'15px'} color={'gray.400'}>
             Available in wallet
           </Text>
         </Box>
-        <Grid templateColumns={'repeat(2, 1fr)'} gap={6}>
+        <Grid pos="relative" templateColumns={'repeat(2, 1fr)'} gap={6}>
           <Button
-            colorScheme="blue"
+            bg="blue.500"
             isDisabled={btnDisabled}
             color={'white.100'}
             fontSize={'14px'}
-            onClick={() => dispatch(openModal({type: 'stake', data: payload}))}>
+            opacity={loading === true ? 0.5 : 1}
+            onClick={() => modalData('stake')}>
             Stake
           </Button>
           <Button
-            colorScheme="blue"
+            bg="blue.500"
             isDisabled={btnDisabled}
             color={'white.100'}
             fontSize={'14px'}
-            onClick={() =>
-              dispatch(openModal({type: 'unstake', data: payload}))
-            }>
+            opacity={loading === true ? 0.5 : 1}
+            onClick={() => modalData('unstake')}>
             Unstake
           </Button>
           <Button
-            colorScheme="blue"
+            bg="blue.500"
             isDisabled={btnDisabled}
             color={'white.100'}
             fontSize={'14px'}
-            onClick={() => dispatch(openModal({type: 'claim', data: payload}))}>
+            opacity={loading === true ? 0.5 : 1}
+            onClick={() => modalData('claim')}>
             Claim
           </Button>
           <Button
-            colorScheme="blue"
+            bg="blue.500"
             isDisabled={btnDisabled}
             color={'white.100'}
             fontSize={'14px'}
-            onClick={() => dispatch(openModal({type: 'manage'}))}>
+            opacity={loading === true ? 0.5 : 1}
+            onClick={() => modalData('manage')}>
             Manage
           </Button>
+          {loading === true ? (
+            <Flex
+              pos="absolute"
+              zIndex={100}
+              w="100%"
+              h="100%"
+              alignItems="cneter"
+              justifyContent="center">
+              <Center>
+                <LoadingComponent></LoadingComponent>
+              </Center>
+            </Flex>
+          ) : null}
         </Grid>
       </Box>
     </Container>
   );
 };
+
 export const Staking = () => {
+  const theme = useTheme();
   const dispatch = useAppDispatch();
   // @ts-ignore
   const {data, loading} = useAppSelector(selectStakes);
@@ -159,60 +279,72 @@ export const Staking = () => {
     [],
   );
 
+  const GetText = ({title, content}: any) => {
+    const {colorMode} = useColorMode();
+    return (
+      <Flex flexDir={'column'} alignItems={'space-between'}>
+        <Text fontSize={'15px'} color="gray.400">
+          {title}
+        </Text>
+        <Text
+          fontSize={'20px'}
+          color={colorMode === 'light' ? 'black.300' : 'white.200'}
+          fontWeight={'bold'}>
+          {content}
+        </Text>
+      </Flex>
+    );
+  };
+
+  // const GetColor = () => {
+  //   const {colorMode} = useColorMode();
+  //   return colorMode;
+  // };
+
   const renderRowSubComponent = useCallback(
     ({row}) => {
-      const {account, library, contractAddress} = row.original;
-
-      // dispatch(
-      //   fetchStakes({
-      //     contractAddress,
-      //     library,
-      //     account,
-      //     chaindId: 4,
-      //     type: 'detail',
-      //   }) as any,
-      // );
-
+      const {account, contractAddress} = row.original;
+      const currentBlock = store.getState().appConfig.data.blockNumber;
       return (
         <Flex
-          mt={0}
-          w={'100%'}
-          h={'500px'}
+          w="100%"
+          m={0}
           justifyContent={'space-between'}
           alignItems="center"
+          p="70px"
           border={'none'}>
-          <Flex
-            px={{base: 3, md: 20}}
-            py={{base: 1, md: 10}}
-            flexDir={'column'}
-            justifyContent={'space-between'}
-            h={'100%'}>
+          <Flex flexDir={'column'} justifyContent={'space-between'} h={'100%'}>
             <Flex flexDir={'column'} alignItems={'space-between'}>
-              <Text fontSize={'15px'} color="gray.425">
-                Mining Starting Day
+              <Text fontSize={'15px'} color="gray.400">
+                {data[row.id]?.status === 'sale'
+                  ? 'Sale Starting Day'
+                  : 'Mining Starting Day'}
               </Text>
-              <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-                {data[row.id]?.startTime}
+              <Text w="210px">
+                <GetDate
+                  time={
+                    data[row.id]?.status === 'sale'
+                      ? data[row.id]?.saleStartTime
+                      : data[row.id]?.miningStartTime
+                  }
+                  currentBlock={currentBlock}
+                  contractAddress={contractAddress}
+                  type={
+                    data[row.id]?.status === 'sale'
+                      ? 'sale-start'
+                      : 'mining-start'
+                  }></GetDate>
               </Text>
             </Flex>
-            <Flex flexDir={'column'} alignItems={'space-between'}>
-              <Text fontSize={'15px'} color="gray.425">
-                Mining Closing day
-              </Text>
-              <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-                {data[row.id]?.endTime}
-              </Text>
-            </Flex>
-            <Flex flexDir={'column'} alignItems={'space-between'}>
-              <Text fontSize={'15px'} color="gray.425">
-                Total stakers
-              </Text>
-              <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-                {data[row.id]?.totalStakers}
-              </Text>
-            </Flex>
+            <GetText
+              title={'Total Staker'}
+              content={data[row.id]?.totalStakers}></GetText>
+            <GetText
+              title={'My staked'}
+              content={data[row.id]?.mystaked}></GetText>
           </Flex>
-          <Box p={8} w={'450px'} borderRadius={'10px'}>
+
+          <Box p={0} w={'450px'} borderRadius={'10px'} alignSelf={'flex-start'}>
             <WalletInformation
               dispatch={dispatch}
               data={data[row.id]}
@@ -220,34 +352,37 @@ export const Staking = () => {
               account={account}
             />
           </Box>
-          <Flex
-            px={{base: 3, md: 20}}
-            py={{base: 1, md: 10}}
-            flexDir={'column'}
-            justifyContent={'space-between'}
-            h={'100%'}>
+
+          <Flex flexDir={'column'} h={'100%'} justifyContent={'space-between'}>
             <Flex flexDir={'column'} alignItems={'space-between'}>
-              <Text fontSize={'15px'} color="gray.425">
-                My staked
+              <Text fontSize={'15px'} color="gray.400">
+                {data[row.id]?.status === 'sale'
+                  ? 'Sale Closing Day'
+                  : 'Mining Closing Day'}
               </Text>
-              <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-                {data[row.id]?.mystaked}
+              <Text w="220px">
+                <GetDate
+                  time={
+                    data[row.id]?.status === 'sale'
+                      ? data[row.id]?.saleEndTime
+                      : data[row.id]?.miningEndTime
+                  }
+                  currentBlock={currentBlock}
+                  contractAddress={contractAddress}
+                  type={
+                    data[row.id]?.status === 'sale' ? 'sale-end' : 'mining-end'
+                  }></GetDate>
               </Text>
-              {/* <Text>{data[row.id]?.mystaked}</Text> */}
             </Flex>
+
             <Flex flexDir={'column'} alignItems={'space-between'}>
-              <Text fontSize={'15px'} color="gray.425">
-                My Earned
-              </Text>
-              <Text fontSize={'20px'} color="white.200" fontWeight={'bold'}>
-                {data[row.id]?.myearned}
-              </Text>
-            </Flex>
-            <Flex flexDir={'column'} alignItems={'space-between'}>
-              <Text fontSize={'15px'} color="gray.425">
+              <Text fontSize={'15px'} color="gray.400">
                 Contract
               </Text>
               <Link
+                fontSize={'20px'}
+                fontWeight={'bold'}
+                // color={GetColor() === 'light' ? 'black.300' : 'white.200'}
                 isExternal={true}
                 outline={'none'}
                 _focus={{
@@ -259,6 +394,9 @@ export const Staking = () => {
                 {shortenAddress(data[row.id]?.contractAddress)}
               </Link>
             </Flex>
+            <GetText
+              title={'Earned'}
+              content={data[row.id]?.myearned}></GetText>
           </Flex>
         </Flex>
       );
@@ -278,7 +416,7 @@ export const Staking = () => {
             }
           />
         </Box>
-        <Box>
+        <Box fontFamily={theme.fonts.roboto}>
           <StakingTable
             renderDetail={renderRowSubComponent}
             columns={columns}
@@ -291,6 +429,10 @@ export const Staking = () => {
       <UnstakeOptionModal />
       <ClaimOptionModal />
       <ManageModal />
+      <StakeInLayer2Modal />
+      <UnStakeFromLayer2Modal />
+      <WithdrawalOptionModal />
+      <SwapModal />
     </Fragment>
   );
 };

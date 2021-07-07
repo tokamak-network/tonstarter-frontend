@@ -1,65 +1,56 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {RootState} from 'store/reducers';
-import {getContract, getSigner} from 'utils/contract';
-import {BigNumber, utils, ethers} from 'ethers';
-import {padLeft, toWei} from 'web3-utils';
-import * as StakeVault from 'services/abis/Stake1Vault.json';
+import {getTokamakContract, getSigner, getRPC} from 'utils/contract';
+import {Contract} from '@ethersproject/contracts';
+import {utils, ethers} from 'ethers';
+import {toWei, toBN} from 'web3-utils';
+import * as StakeVault from 'services/abis/Stake1Logic.json';
 import * as StakeTON from 'services/abis/StakeTON.json';
-import * as TonABI from 'services/abis/TON.json';
-import * as DepositManagerABI from 'services/abis/DepositManager.json';
-import * as TosABI from 'services/abis/ITOS.json';
 import {formatEther} from '@ethersproject/units';
-import {period, formatStartTime, formatEndTime} from 'utils/timeStamp';
+import {period, toastWithReceipt} from 'utils';
 import {
-  REACT_APP_TON,
   REACT_APP_TOKAMAK_LAYER2,
-  REACT_APP_DEPOSIT_MANAGER,
   DEPLOYED,
-  REACT_APP_WTON,
-  REACT_APP_TOS,
+  REACT_APP_STAKE1_PROXY,
 } from 'constants/index';
 import {TokenType} from 'types/index';
+import {convertNumber} from 'utils/number';
+import {setTxPending} from 'store/tx.reducer';
+import store from 'store';
+import {openToast} from 'store/app/toast.reducer';
 
-const provider = ethers.getDefaultProvider('rinkeby');
+const rpc = getRPC();
 
 export type Stake = {
   name?: string;
   symbol?: string;
   paytoken: string;
   contractAddress: string;
-  cap: string;
-  saleStartBlock: string | number;
-  stakeStartBlock: string | number;
-  stakeEndBlock: string | number;
   blockTotalReward: string;
   saleClosed: boolean;
   stakeType: number | string;
-  defiAddr: string;
   stakeContract: string[];
-  balance: BigNumber | string;
-  totalRewardAmount: BigNumber | string;
-  claimRewardAmount: BigNumber | string;
+  balance: Number | string;
+  totalRewardAmount: Number | string;
+  claimRewardAmount: Number | string;
   totalStakers: number | string;
   token: TokenType;
-  myton: BigNumber | string;
-  myfld: BigNumber | string;
-  mystaked: BigNumber | string;
-  myearned: BigNumber | string;
-  mywithdraw: BigNumber | string;
-  myclaimed: BigNumber | string;
-  canRewardAmount: BigNumber | string;
+  withdrawalDelay: string;
+  mystaked: Number | string;
+  claimableAmount: Number | string;
+  myearned: Number | string;
   stakeBalanceTON: string;
-  stakeBalanceETH: BigNumber | string;
-  stakeBalanceFLD: BigNumber | string;
-  tokamakStaked: BigNumber | string;
-  tokamakPendingUnstaked: BigNumber | string;
   staketype: string;
   period: string;
-  startTime: string;
-  endTime: string;
   status: string;
   library: any;
   account: any;
+  fetchBlock: number | undefined;
+  saleStartTime: string | undefined;
+  saleEndTime: string | undefined;
+  miningStartTime: string | undefined;
+  miningEndTime: string | undefined;
+  vault: string;
 };
 
 interface StakeState {
@@ -73,47 +64,75 @@ type StakeProps = {
   userAddress: string | null | undefined;
   amount: string;
   payToken: string;
-  saleStartBlock: string | Number;
+  saleStartTime: string | Number;
   library: any;
   stakeContractAddress: string;
-  stakeStartBlock: string | Number;
+  miningStartTime: string | Number;
+  handleCloseModal: any;
 };
 type StakeTon = {
   userAddress: string | null | undefined;
   amount: string;
-  saleStartBlock: string | Number;
+  saleStartTime: string | Number;
   library: any;
   stakeContractAddress: string;
-  stakeStartBlock: string | Number;
+  miningStartTime: string | Number;
+  handleCloseModal: any;
 };
 
 type unstake = {
   userAddress: string | null | undefined;
-  stakeEndBlock: string | Number;
+  endTime: string | Number;
   library: any;
   stakeContractAddress: string;
+  mystaked: string;
+  handleCloseModal: any;
 };
 
 type claim = {
   userAddress: string | null | undefined;
   stakeContractAddress: string;
-  stakeStartBlock: string | Number;
+  saleEndTime: string | Number;
   library: any;
+  canRewardAmount: string;
+  myEarned: string;
+  handleCloseModal: any;
 };
 
 type endsale = {
   userAddress: string | null | undefined;
   vaultContractAddress: string;
-  stakeStartBlock: string | Number;
+  miningEndTime: string | Number;
   library: any;
+  handleCloseModal: any;
 };
 
 type stakeToLayer2Args = {
   userAddress: string | null | undefined;
   amount: string;
-  stakeEndBlock: string | Number;
-  vaultClosed: boolean;
+  contractAddress: string;
+  miningEndTime: string | Number;
+  status: string;
+  globalWithdrawalDelay: string;
   library: any;
+  handleCloseModal: any;
+};
+
+type unstakeFromLayer2Args = {
+  userAddress: string | null | undefined;
+  amount: string;
+  contractAddress: string;
+  status: string;
+  library: any;
+  handleCloseModal: any;
+};
+
+type withdraw = {
+  userAddress: string | null | undefined;
+  contractAddress: string;
+  miningEndTime: string;
+  library: any;
+  handleCloseModal: any;
 };
 
 const initialState = {
@@ -123,223 +142,448 @@ const initialState = {
   currentRequestId: undefined,
 } as StakeState;
 
-const converToWei = (num: string) => toWei(num, 'ether');
+const convertToWei = (num: string) => toWei(num, 'ether');
 
-const getUnmarshalString = (str: string) => {
-  if (str.slice(0, 2) === '0x') {
-    return str.slice(2);
-  }
-  return str;
-};
-const getMarshalString = (str: string) => {
-  if (str.slice(0, 2) === '0x') {
-    return str;
-  }
-  return '0x'.concat(str);
-};
-const getData = (operatorLayer2: string) => {
-  const depositManager = getMarshalString(REACT_APP_DEPOSIT_MANAGER);
-  const operator = getUnmarshalString(operatorLayer2);
-  const padDepositManager = padLeft(depositManager, 64);
-  const padOperator = padLeft(operator, 64);
-  return `${padDepositManager}${padOperator}`;
-};
+// const getUnmarshalString = (str: string) => {
+//   if (str.slice(0, 2) === '0x') {
+//     return str.slice(2);
+//   }
+//   return str;
+// };
+// const getMarshalString = (str: string) => {
+//   if (str.slice(0, 2) === '0x') {
+//     return str;
+//   }
+//   return '0x'.concat(str);
+// };
+// const getData = (operatorLayer2: string) => {
+//   const depositManager = getMarshalString(REACT_APP_DEPOSIT_MANAGER);
+//   const operator = getUnmarshalString(operatorLayer2);
+//   const padDepositManager = padLeft(depositManager, 64);
+//   const padOperator = padLeft(operator, 64);
+//   return `${padDepositManager}${padOperator}`;
+// };
+
+//const [inputValue, setInputValue] = React.useState('0');
 
 export const stakePaytoken = async (args: StakeProps) => {
   const {
     userAddress,
     amount,
     payToken,
-    saleStartBlock,
+    saleStartTime,
     library,
     stakeContractAddress,
-    stakeStartBlock,
+    miningStartTime,
+    handleCloseModal,
   } = args;
 
   if (payToken === DEPLOYED.TON) {
     await stakeTon({
       userAddress: userAddress,
       amount: amount,
-      saleStartBlock: saleStartBlock,
+      saleStartTime: saleStartTime,
       library: library,
       stakeContractAddress: stakeContractAddress,
-      stakeStartBlock: stakeStartBlock,
+      miningStartTime: miningStartTime,
+      handleCloseModal: handleCloseModal,
     });
   } else {
     await stakeEth({
       userAddress: userAddress,
       amount: amount,
-      saleStartBlock: saleStartBlock,
+      saleStartTime: saleStartTime,
       library: library,
       stakeContractAddress: stakeContractAddress,
-      stakeStartBlock: stakeStartBlock,
+      miningStartTime: miningStartTime,
+      handleCloseModal: handleCloseModal,
     });
   }
 };
+
 const stakeTon = async (args: StakeTon) => {
   const {
     userAddress,
     amount,
-    saleStartBlock,
+    saleStartTime,
     library,
     stakeContractAddress,
-    stakeStartBlock,
+    miningStartTime,
   } = args;
   if (userAddress === null || userAddress === undefined) {
     return;
   }
-  const currentBlock = await provider.getBlockNumber();
-  if (currentBlock > saleStartBlock && currentBlock < stakeStartBlock) {
-    const tonContract = getContract(REACT_APP_TON, TonABI.abi, library);
+  const currentBlock = await getRPC().getBlockNumber();
+
+  if (currentBlock > saleStartTime && currentBlock < miningStartTime) {
+    const tonContract = getTokamakContract('TON');
     if (!tonContract) {
       throw new Error(`Can't find the contract for staking actions`);
     }
-    const tonAmount = converToWei(amount);
+    const tonAmount = convertToWei(amount);
     const abicoder = ethers.utils.defaultAbiCoder;
     const data = abicoder.encode(
       ['address', 'uint256'],
       [stakeContractAddress, tonAmount],
     );
-
     const signer = getSigner(library, userAddress);
 
-    await tonContract
-      .connect(signer)
-      ?.approveAndCall(stakeContractAddress, tonAmount, data);
+    try {
+      const receipt = await tonContract
+        .connect(signer)
+        ?.approveAndCall(stakeContractAddress, tonAmount, data);
+      store.dispatch(setTxPending({tx: true}));
+      if (receipt) {
+        toastWithReceipt(receipt, setTxPending);
+      }
+    } catch (err) {
+      store.dispatch(setTxPending({tx: false}));
+      console.log(err);
+    }
   } else {
-    return alert('staking period has ended');
+    return store.dispatch(
+      //@ts-ignore
+      openToast({
+        payload: {
+          status: 'error',
+          title: 'Tx fail to send',
+          description: `staking period has ended`,
+          duration: 5000,
+          isClosable: true,
+        },
+      }),
+    );
   }
 };
+
 const stakeEth = async (args: StakeTon) => {
   const {
     userAddress,
     amount,
-    saleStartBlock,
+    saleStartTime,
     library,
     stakeContractAddress,
-    stakeStartBlock,
+    miningStartTime,
   } = args;
 
   if (userAddress === null || userAddress === undefined) {
     return;
   }
-  const currentBlock = await provider.getBlockNumber();
+  const currentBlock = await getRPC().getBlockNumber();
 
-  if (currentBlock > saleStartBlock && currentBlock < stakeStartBlock) {
+  if (currentBlock > saleStartTime && currentBlock < miningStartTime) {
     const transactionRequest: any = {
       to: stakeContractAddress,
       value: utils.parseEther(amount),
     };
 
     const signer = getSigner(library, userAddress);
-    await signer.sendTransaction(transactionRequest);
+    try {
+      const receipt = await signer.sendTransaction(transactionRequest);
+      store.dispatch(setTxPending({tx: true}));
+      alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
+      if (receipt) {
+        store.dispatch(setTxPending({tx: false}));
+      }
+    } catch (err) {
+      store.dispatch(setTxPending({tx: false}));
+      console.log(err);
+    }
   } else {
     return alert('staking period has ended');
   }
 };
 
-export const withdraw = async (args: unstake) => {
-  const {userAddress, stakeEndBlock, library, stakeContractAddress} = args;
-  const currentBlock = await provider.getBlockNumber();
+export const unstake = async (args: unstake) => {
+  const {userAddress, endTime, library, stakeContractAddress, mystaked} = args;
+  const currentBlock = await getRPC().getBlockNumber();
 
   if (userAddress === null || userAddress === undefined) {
     return;
   }
-  if (currentBlock > stakeEndBlock) {
-    const StakeTONContract = await getContract(
+  if (currentBlock < endTime) {
+    store.dispatch(
+      //@ts-ignore
+      openToast({
+        payload: {
+          status: 'error',
+          title: 'Tx fail to send',
+          description: `Sale has not ended yet`,
+          duration: 5000,
+          isClosable: true,
+        },
+      }),
+    );
+  } else if (mystaked === '0.0') {
+    return alert('You have no staked balance in this vault.');
+  } else {
+    const StakeTONContract = await new Contract(
       stakeContractAddress,
       StakeTON.abi,
-      library,
+      rpc,
     );
 
     if (!StakeTONContract) {
       throw new Error(`Can't find the contract for staking actions`);
     }
     const signer = getSigner(library, userAddress);
-
-    await StakeTONContract.connect(signer)?.withdraw();
-  } else {
-    return alert('sale has not ended yet');
+    try {
+      const receipt = await StakeTONContract.connect(signer)?.withdraw();
+      store.dispatch(setTxPending({tx: true}));
+      if (receipt) {
+        toastWithReceipt(receipt, setTxPending);
+      }
+    } catch (err) {
+      store.dispatch(setTxPending({tx: false}));
+      console.log(err);
+    }
   }
 };
 
 export const claimReward = async (args: claim) => {
-  const {userAddress, stakeContractAddress, stakeStartBlock, library} = args;
-  const currentBlock = await provider.getBlockNumber();
+  const {
+    userAddress,
+    stakeContractAddress,
+    saleEndTime,
+    library,
+    canRewardAmount,
+  } = args;
+  const currentBlock = await getRPC().getBlockNumber();
 
   if (userAddress === null || userAddress === undefined) {
     return;
   }
-  if (currentBlock > stakeStartBlock) {
-    const StakeTONContract = await getContract(
+  // < Stake1Vault(vault).totalRewardAmount(address(this))
+  if (currentBlock < saleEndTime) {
+    return alert('Sale is not ended!');
+  } else if (canRewardAmount === '0.0') {
+    return alert('unsufficient reward');
+  } else {
+    const StakeTONContract = await new Contract(
       stakeContractAddress,
       StakeTON.abi,
-      library,
+      rpc,
     );
 
     if (!StakeTONContract) {
       throw new Error(`Can't find the contract for staking actions`);
     }
     const signer = getSigner(library, userAddress);
-    await StakeTONContract.connect(signer)?.claim();
+    try {
+      const receipt = await StakeTONContract.connect(signer)?.claim();
+      store.dispatch(setTxPending({tx: true}));
+      if (receipt) {
+        toastWithReceipt(receipt, setTxPending);
+      }
+    } catch (err) {
+      store.dispatch(setTxPending({tx: false}));
+      console.log(err);
+    }
   }
 };
 
 export const closeSale = async (args: endsale) => {
-  const {userAddress, vaultContractAddress, stakeStartBlock, library} = args;
+  const {userAddress, vaultContractAddress, miningEndTime, library} = args;
   if (userAddress === null || userAddress === undefined) {
     return;
   }
-  const stakeVault = await getContract(
-    vaultContractAddress,
+
+  const stakeVault = await new Contract(
+    REACT_APP_STAKE1_PROXY,
     StakeVault.abi,
-    library,
+    rpc,
   );
-  const currentBlock = await provider.getBlockNumber();
-  if (currentBlock > stakeStartBlock) {
+  const currentBlock = await getRPC().getBlockNumber();
+  if (currentBlock < miningEndTime) {
     const signer = getSigner(library, userAddress);
-    await stakeVault.connect(signer)?.closeSale();
+    try {
+      const receipt = await stakeVault
+        .connect(signer)
+        ?.closeSale(vaultContractAddress);
+      store.dispatch(setTxPending({tx: true}));
+      if (receipt) {
+        toastWithReceipt(receipt, setTxPending);
+      }
+    } catch (err) {
+      store.dispatch(setTxPending({tx: false}));
+      if (err.message.indexOf('already closed')) {
+        store.dispatch(
+          //@ts-ignore
+          openToast({
+            payload: {
+              status: 'error',
+              title: 'Tx fail to send',
+              description: `it's already closed`,
+              duration: 5000,
+              isClosable: true,
+            },
+          }),
+        );
+      }
+      console.log(err);
+    }
   } else {
-    return alert('Staking has not ended yet');
+    return store.dispatch(
+      //@ts-ignore
+      openToast({
+        payload: {
+          status: 'error',
+          title: 'Tx fail to send',
+          description: `staking period has ended`,
+          duration: 5000,
+          isClosable: true,
+        },
+      }),
+    );
   }
 };
 
 export const stakeToLayer2 = async (args: stakeToLayer2Args) => {
-  const {userAddress, amount, stakeEndBlock, vaultClosed, library} = args;
+  const {
+    userAddress,
+    amount,
+    miningEndTime,
+    contractAddress,
+    status,
+    globalWithdrawalDelay,
+    library,
+  } = args;
   if (userAddress === null || userAddress === undefined) {
     return;
   }
-  const depositManager = getContract(
-    REACT_APP_DEPOSIT_MANAGER,
-    DepositManagerABI.abi,
-    library,
-  );
-  const globalWithdrawalDelay = await depositManager?.globalWithdrawalDelay();
-  const currentBlock = await provider.getBlockNumber();
-  const endBlock = Number(stakeEndBlock);
-  if (currentBlock < endBlock - globalWithdrawalDelay && vaultClosed) {
-    const tonContract = getContract(REACT_APP_TON, TonABI.abi, library);
-    if (!tonContract) {
+
+  const currentBlock = await getRPC().getBlockNumber();
+  const endBlock = Number(miningEndTime);
+  const TON = getTokamakContract('TON');
+  const tonBalance = await TON.balanceOf(userAddress);
+  const tonAmount = convertToWei(amount);
+
+  if (currentBlock > endBlock - Number(globalWithdrawalDelay)) {
+    return alert('staking period has ended'); // ToDo: comment check
+  } else if (status === 'end') {
+    return alert('sale is not closed!');
+  } else if (tonBalance < tonAmount) {
+    return alert('unsufficient balance!');
+  } else {
+    const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
+    if (!StakeTONContract) {
       throw new Error(`Can't find the contract for staking actions`);
     }
-    const tonAmount = converToWei(amount);
-    const data = getData(REACT_APP_TOKAMAK_LAYER2);
     const signer = getSigner(library, userAddress);
-    await tonContract
-      .connect(signer)
-      .approveAndCall(REACT_APP_WTON, tonAmount, data);
+    try {
+      store.dispatch(setTxPending({tx: true}));
+      await StakeTONContract.connect(signer)
+        .tokamakStaking(REACT_APP_TOKAMAK_LAYER2, tonAmount)
+        .then((receipt: any) => {
+          alert(`Tx sent successfully! Tx hash is ${receipt?.hash}`);
+          store.dispatch(setTxPending({tx: false}));
+        });
+    } catch (err) {
+      store.dispatch(setTxPending({tx: false}));
+      console.log(err);
+    }
+  }
+};
+
+export const unstakeL2 = async (args: unstakeFromLayer2Args) => {
+  const {userAddress, amount, contractAddress, library} = args;
+  if (userAddress === null || userAddress === undefined) {
+    return;
+  }
+  const signer = getSigner(library, userAddress);
+  // const vault = getTokamakContract('Vault');
+  // const VaultProxy = new Contract(REACT_APP_STAKE1_PROXY, StakeVault.abi, rpc);
+  // const closed = await vault.saleClosed()
+  const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
+  // const depositManager = new Contract(REACT_APP_DEPOSIT_MANAGER, DepositManagerABI.abi, rpc);
+  const wtonAmount = utils.parseUnits(amount, '27');
+  console.log(wtonAmount);
+  // if (status === 'end') {
+  try {
+    const receipt = await StakeTONContract.connect(
+      signer,
+    ).tokamakRequestUnStakingAll(REACT_APP_TOKAMAK_LAYER2, wtonAmount);
+    store.dispatch(setTxPending({tx: true}));
+    alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
+    if (receipt) {
+      store.dispatch(setTxPending({tx: false}));
+    }
+  } catch (err) {
+    store.dispatch(setTxPending({tx: false}));
+    console.log(err);
+  }
+  // } else {
+  //   return alert('Sale is not ended yet!')
+  // }
+};
+
+export const swapWTONtoTOS = async (args: unstakeFromLayer2Args) => {
+  const {userAddress, amount, contractAddress, library} = args;
+  if (userAddress === null || userAddress === undefined) {
+    return;
+  }
+  const ray = '1' + '0'.repeat(27);
+
+  const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
+  const amountRay = toBN(amount).mul(toBN(ray));
+  console.log(amountRay);
+  console.log(amountRay.toString());
+  const signer = getSigner(library, userAddress);
+  const deadline = Date.now() / 1000 + 900;
+  try {
+    const receipt = await StakeTONContract.connect(signer).exchangeWTONtoTOS(
+      amount,
+      0,
+      parseInt(deadline.toString()),
+      0,
+      1,
+    );
+    store.dispatch(setTxPending({tx: true}));
+    alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
+    if (receipt) {
+      store.dispatch(setTxPending({tx: false}));
+    }
+  } catch (err) {
+    store.dispatch(setTxPending({tx: false}));
+    console.log(err);
+  }
+};
+
+export const withdraw = async (args: withdraw) => {
+  const {userAddress, contractAddress, miningEndTime, library} = args;
+  if (userAddress === null || userAddress === undefined) {
+    return;
+  }
+  const currentBlock = await getRPC().getBlockNumber();
+  const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
+  const signer = getSigner(library, userAddress);
+  const endBlock = Number(miningEndTime);
+  if (endBlock > currentBlock) {
+    try {
+      await StakeTONContract.connect(signer)
+        .tokamakProcessUnStaking(REACT_APP_TOKAMAK_LAYER2)
+        .then((receipt: any) => {
+          alert(`Tx sent successfully! Tx hash is ${receipt?.hash}`);
+          store.dispatch(setTxPending({tx: false}));
+        });
+    } catch (err) {
+      store.dispatch(setTxPending({tx: false}));
+      console.log(err);
+    }
+  } else {
+    return alert('not withdrawable time.');
   }
 };
 
 export const fetchStakes = createAsyncThunk(
   'stakes/all',
-  async (
-    {contract, library, account, chainId, type}: any,
-    {requestId, getState},
-  ) => {
+  async ({library, account, chainId, reFetch}: any, {requestId, getState}) => {
+    //result to dispatch data for Stakes store
     let projects: any[] = [];
+
     const chainIdforFetch = chainId === undefined ? '4' : chainId;
-    const fetchUrl = `http://3.36.66.138:4000/v1/stakecontracts?chainId=${chainIdforFetch}`;
+    const fetchValutUrl = `http://3.36.66.138:4000/v1/vaults?chainId=${chainIdforFetch}`;
+    const fetchStakeUrl = `http://3.36.66.138:4000/v1/stakecontracts?chainId=${chainIdforFetch}`;
     // let iERC20: any;
 
     // @ts-ignore
@@ -350,42 +594,27 @@ export const fetchStakes = createAsyncThunk(
       return;
     }
 
-    // const vaults = temp.datas;
-
-    // stakeList = await Promise.all(
-    //   vaults.map(async (vault: any) => {
-    //     const stakeVault = vault.vault;
-    //     const stakeType = vault.stakeType;
-    //     const token = vault.paytoken;
-    //     const projects = vault.stakeAddresses;
-    //     return {
-    //       // iERC20: iERC20,
-    //       stakeType,
-    //       projects,
-    //       stakeVault,
-    //       token,
-    //     };
-    //   }),
-    // );
-
-    const vaultReq = await fetch('http://3.36.66.138:4000/v1/vaults?chainId=4')
+    const vaultReq = await fetch(fetchValutUrl)
       .then((res) => res.json())
       .then((result) => result);
 
-    const req = await fetch(fetchUrl)
+    const stakeReq = await fetch(fetchStakeUrl)
       .then((res) => res.json())
       .then((result) => result);
 
-    const stakeList = req.datas;
+    const stakeList = stakeReq.datas;
 
-    // console.log(vaultReq);
+    console.log('-----------api-----------');
+    console.log(vaultReq);
     // console.log(stakeList);
+
+    const currentBlock = await rpc.getBlockNumber();
+
     await Promise.all(
       stakeList.map(async (stake: any, index: number) => {
-        // let info = await stake.stakeVault.stakeInfos(item)
+        let mystaked: string = '';
+        let myearned: string = '';
 
-        let mystaked: any = '';
-        let myearned: any = '';
         if (account) {
           const {userStaked, userRewardTOS} = await fetchUserData(
             library,
@@ -393,54 +622,165 @@ export const fetchStakes = createAsyncThunk(
             stake.stakeContract,
           );
           mystaked = userStaked;
-          myearned = `${userRewardTOS}TOS`;
+          myearned = userRewardTOS;
         }
-        let status = 'loading';
-        setTimeout(async () => {
-          status = stake.saleClosed === true ? 'end' : await getStatus(stake);
-        }, 0);
+        const status = await getStatus(stake, currentBlock);
 
         const stakeInfo: Partial<Stake> = {
           contractAddress: stake.stakeContract,
           name: stake.name,
-          saleStartBlock: 0,
-          stakeStartBlock: 0,
-          stakeEndBlock: 0,
-          // balance: formatEther(info[3]),
-          // totalRewardAmount: formatEther(info[4]),
-          // claimRewardAmount: formatEther(info[5]),
           totalStakers: stake.totalStakers,
-          myton: formatEther(0),
-          myfld: formatEther(0),
-          mystaked,
-          myearned,
-          mywithdraw: formatEther(0),
-          myclaimed: formatEther(0),
-          canRewardAmount: formatEther(0),
-          stakeBalanceTON: formatEther(String(stake.totalStakedAmount)),
-          stakeBalanceETH: formatEther(0),
-          stakeBalanceFLD: formatEther(0),
-          tokamakStaked: formatEther(0),
-          tokamakPendingUnstaked: formatEther(0),
+          mystaked: convertNumber({
+            amount: mystaked,
+          }),
+          myearned: convertNumber({
+            amount: myearned,
+          }),
+          stakeBalanceTON: convertNumber({
+            amount: stake.totalStakedAmountString,
+          }),
           token: stake.paytoken,
           stakeType: stake.stakeType,
           period: period(stake.startBlock, stake.endBlock),
-          startTime: stake.startBlock,
-          endTime: stake.endBlock,
+          saleStartTime: stake.saleStartBlock,
+          saleEndTime: stake.startBlock,
+          miningStartTime: stake.startBlock,
+          miningEndTime: stake.endBlock,
+          fetchBlock: currentBlock,
           status,
           library,
           account,
+          vault: stake.vault,
         };
-        // const test = await getUserInfo(library, account);
-        // console.log(test);
-        // await infoTokamak(stakeInfo, stake, index, library, account);
         projects.push(stakeInfo);
       }),
     );
 
-    return projects;
+    const finalStakeList: any = [];
+
+    //sort by api data
+    stakeList.map((stake: any) => {
+      projects.map((project, index) => {
+        if (stake.name === project.name) {
+          return finalStakeList.push(project);
+        }
+        return null;
+      });
+      return null;
+    });
+
+    return finalStakeList;
   },
 );
+
+export const fetchWithdrawPayload = async (
+  library: any,
+  account: string,
+  contractAddress: string,
+) => {
+  try {
+    const res = await getWithdrawableInfo(library, account, contractAddress);
+    return res;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const getWithdrawableInfo = async (
+  library: any,
+  account: string,
+  contractAddress: string,
+) => {
+  const depositManager = getTokamakContract('DepositManager');
+  return Promise.all([
+    depositManager.numPendingRequests(
+      REACT_APP_TOKAMAK_LAYER2,
+      contractAddress,
+    ),
+    // depositManager.withdrawalRequestIndex(REACT_APP_TOKAMAK_LAYER2, contractAddress),
+  ]).then((result) => {
+    return {
+      requestNum: result[0],
+      // requestIndex: result[1],
+    };
+  });
+};
+
+export const fetchManageModalPayload = async (
+  library: any,
+  account: string,
+  contractAddress: string,
+  vaultAddress: string,
+) => {
+  const res = await getUserInfoForManage(
+    library,
+    account,
+    contractAddress,
+    vaultAddress,
+  );
+  return res;
+};
+
+const getUserInfoForManage = async (
+  library: any,
+  account: string,
+  contractAddress: string,
+  vaultAddress: string,
+) => {
+  const currentBlock = getRPC().getBlockNumber();
+  const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
+  const L2Contract = getTokamakContract('TokamakLayer2');
+  const TON = getTokamakContract('TON');
+  const WTON = getTokamakContract('WTON');
+  const depositManager = getTokamakContract('DepositManager');
+  const seigManager = getTokamakContract('SeigManager');
+  // IIStake1Vault(vault).saleClosed()
+
+  return Promise.all([
+    StakeTONContract?.userStaked(account),
+    L2Contract?.stakedOf(account),
+    StakeTONContract.totalStakedAmount(),
+    seigManager.stakeOf(REACT_APP_TOKAMAK_LAYER2, contractAddress),
+    depositManager.pendingUnstaked(REACT_APP_TOKAMAK_LAYER2, contractAddress),
+    WTON.balanceOf(contractAddress),
+    TON.balanceOf(contractAddress),
+    StakeTONContract.canRewardAmount(account, currentBlock),
+    depositManager.globalWithdrawalDelay(),
+  ])
+    .then((result) => {
+      return {
+        userRewardTOS: formatEther(result[0].claimedAmount),
+        userWithdraw: formatEther(result[0].releasedAmount),
+        userStakedAmount: convertNumber({
+          amount: result[1],
+          type: 'ray',
+        }),
+        totalStakedAmount: convertNumber({
+          amount: result[2],
+        }),
+        totalStakedAmountL2: convertNumber({
+          amount: result[3],
+          type: 'ray',
+        }),
+        totalPendingUnstakedAmountL2: convertNumber({
+          amount: result[4],
+          type: 'ray',
+        }),
+        stakeContractBalanceWton: convertNumber({
+          amount: result[5],
+          type: 'ray',
+        }),
+        stakeContractBalanceTon: convertNumber({
+          amount: result[6],
+        }),
+        canRewardAmount: convertNumber({
+          amount: result[7],
+        }),
+        globalWithdrawalDelay: result[8].toString(),
+      };
+    })
+    .catch((e) => console.log(e));
+};
 
 const fetchUserData = async (
   library: any,
@@ -449,7 +789,10 @@ const fetchUserData = async (
 ) => {
   const res = await getUserInfo(library, account, contractAddress);
   const {userStaked, userRewardTOS} = res;
-  return {userStaked, userRewardTOS};
+  return {
+    userStaked,
+    userRewardTOS,
+  };
 };
 
 const getUserInfo = async (
@@ -459,108 +802,28 @@ const getUserInfo = async (
   account: string,
   contractAddress: string,
 ) => {
-  // const currentBlock = await provider.getBlockNumber();
-
-  const StakeTONContract = getContract(contractAddress, StakeTON.abi, library);
+  const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
   const staked = await StakeTONContract?.userStaked(account);
-
-  console.log(staked);
-
-  // const TOS = getContract(REACT_APP_TOS, TosABI.abi, library);
-  // const myTOS = await TOS?.balanceOf(account);
-
-  // console.log(TOS);
-
   return {
-    userStaked: formatEther(staked.amount),
-    userRewardTOS: formatEther(staked.claimedAmount),
+    userStaked: staked.amount,
+    userRewardTOS: staked.claimedAmount,
   };
-  // stakeInfo.myfld = formatEther(myTOS);
-
-  // const saleBlock = await StakeTONContract?.saleStartBlock();
-  // stakeInfo.saleStartBlock = Number(saleBlock);
-
-  // stakeInfo.mystaked = formatEther(staked.amount);
-  // stakeInfo.myclaimed = formatEther(staked.claimedAmount);
-  // stakeInfo.mywithdraw = formatEther(staked.releasedAmount);
 };
 
-const getTimes = async (startTime: any, endTime: any) => {
-  const fetchedStartTime = await formatStartTime(startTime);
-  const fetchedEndTime = await formatEndTime(startTime, endTime);
-  return {fetchedStartTime, fetchedEndTime};
-};
-
-const getStatus = async (args: any) => {
-  const {blockNumber, saleStartBlock, saleClosed} = args;
-  const currenBlock = await provider.getBlockNumber();
-
-  if (saleClosed) {
+export const getStatus = async (args: any, blockNumber: number) => {
+  if (blockNumber === 0) {
+    return 'loading';
+  }
+  const {startBlock, endBlock} = args;
+  const currentBlock = blockNumber;
+  if (currentBlock < startBlock) {
     return 'sale';
   }
-  if (blockNumber >= saleStartBlock) {
-    // return 'sale';
+  if (currentBlock >= startBlock && currentBlock <= endBlock) {
+    return 'start';
   }
-  return 'start';
+  return 'end';
 };
-
-// const total = await StakeTONContract?.totalStakers();
-// stakeInfo.totalStakers = total.toString();
-
-//   if (Number(stakeInfo.mystaked) > 0) {
-//     try {
-//       let canRewardAmount = await StakeTONContract?.canRewardAmount(
-//         account,
-//         currentBlock,
-//       );
-//       stakeInfo.canRewardAmount = utils.formatUnits(canRewardAmount, 18);
-//     } catch (err) {}
-//   }
-//   const stakeContractBalanceFLD = await FLD?.balanceOf(stakeContractAddress);
-//   const stakeContractBalanceTON = await TON?.balanceOf(stakeContractAddress);
-//   const stakeContractBalanceETH = await provider.getBalance(
-//     stakeContractAddress,
-//   );
-//   stakeInfo.stakeBalanceFLD = formatEther(stakeContractBalanceFLD);
-//   stakeInfo.stakeBalanceTON = formatEther(stakeContractBalanceTON);
-//   stakeInfo.stakeBalanceETH = formatEther(stakeContractBalanceETH);
-// };
-
-// const infoTokamak = async (
-//   stakeInfo: Partial<Stake>,
-//   stakeContractAddress: string,
-//   index: number,
-//   library: any,
-//   account: string,
-// ) => {
-//   if (index < stakeInfos.length) {
-//     try {
-//       const seigManager = getContract(
-//         REACT_APP_SEIG_MANAGER,
-//         SeigManagerABI.abi,
-//         library,
-//       );
-//       const depositManager = getContract(
-//         REACT_APP_DEPOSIT_MANAGER,
-//         DepositManagerABI.abi,
-//         library,
-//       );
-//       const staked = await seigManager?.stakeOf(
-//         REACT_APP_TOKAMAK_LAYER2,
-//         stakeContractAddress,
-//       );
-//       stakeInfo.tokamakStaked = utils.formatUnits(staked, 27);
-
-//       const pendingUnstaked = await depositManager?.pendingUnstaked(
-//         REACT_APP_TOKAMAK_LAYER2,
-//         stakeContractAddress,
-//       );
-//       stakeInfo.tokamakPendingUnstaked = utils.formatUnits(pendingUnstaked, 27);
-//     } catch (err) {
-//       console.log('infoTokamak err', err);
-//     }
-//   }
-// };
 
 export const stakeReducer = createSlice({
   name: 'stakes',

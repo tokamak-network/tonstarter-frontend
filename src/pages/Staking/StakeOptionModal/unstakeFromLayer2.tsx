@@ -13,28 +13,28 @@ import {
   useTheme,
   useColorMode,
 } from '@chakra-ui/react';
+import {unstakeL2} from '../staking.reducer';
 import React, {useCallback, useState} from 'react';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
-import {stakeToLayer2} from '../staking.reducer';
 
-export const StakeInLayer2Modal = () => {
+export const UnStakeFromLayer2Modal = () => {
   const {account, library} = useWeb3React();
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
-  let balance = data?.data?.user?.balance;
-
-  const [value, setValue] = useState<number>(balance);
   const theme = useTheme();
   const {colorMode} = useColorMode();
 
+  let balance = data?.data?.totalStakedAmountL2;
+
+  const [value, setValue] = useState<number>(balance);
   const handleChange = useCallback((e) => setValue(e.target.value), []);
   const setMax = useCallback((_e) => setValue(balance), [balance]);
 
   return (
     <Modal
-      isOpen={data.modal === 'stakeL2' ? true : false}
+      isOpen={data.modal === 'unstakeL2' ? true : false}
       isCentered
       onClose={() => dispatch(closeModal())}>
       <ModalOverlay />
@@ -56,7 +56,7 @@ export const StakeInLayer2Modal = () => {
               fontFamily={theme.fonts.titil}
               color={colorMode === 'light' ? 'gray.250' : 'white.100'}
               textAlign={'center'}>
-              Stake in Layer2
+              Unstake From Tokamak
             </Heading>
             <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
               You can earn TON and POWER
@@ -124,18 +124,18 @@ export const StakeInLayer2Modal = () => {
               color="white.100"
               fontSize="14px"
               onClick={() =>
-                stakeToLayer2({
+                unstakeL2({
                   userAddress: account,
                   amount: value.toString(),
-                  contractAddress: data?.data?.contractAddress,
-                  miningEndTime: data?.data?.miningEndTime,
+                  contractAddress: data.data.contractAddress,
                   status: data?.data?.status,
-                  globalWithdrawalDelay: data?.data?.globalWithdrawalDelay,
                   library: library,
                   handleCloseModal: dispatch(closeModal()),
                 })
-              }>
-              Stake
+              }
+              disabled={+balance <= 0}
+              colorScheme={'blue'}>
+              Unstake
             </Button>
           </Box>
         </ModalBody>

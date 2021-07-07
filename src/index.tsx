@@ -15,6 +15,7 @@ import {Router} from 'pages/Router';
 
 import reportWebVitals from './reportWebVitals';
 import {getLibrary} from 'utils';
+import {Toast} from 'components/Toast';
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName);
 
@@ -23,24 +24,23 @@ if (!!window.ethereum) {
 }
 
 ReactDOM.render(
-  <React.StrictMode>
-    <HelmetProvider>
-      <I18nextProvider i18n={i18n}>
-        <Web3ReactProvider getLibrary={getLibrary}>
-          <Web3ProviderNetwork getLibrary={getLibrary}>
-            <ColorModeScript />
-            <Provider store={store}>
-              <ChakraProvider resetCSS theme={theme}>
-                <BrowserRouter>
-                  <Router />
-                </BrowserRouter>
-              </ChakraProvider>
-            </Provider>
-          </Web3ProviderNetwork>
-        </Web3ReactProvider>
-      </I18nextProvider>
-    </HelmetProvider>
-  </React.StrictMode>,
+  <HelmetProvider>
+    <I18nextProvider i18n={i18n}>
+      <Web3ReactProvider getLibrary={getLibrary}>
+        <Web3ProviderNetwork getLibrary={getLibrary}>
+          <ColorModeScript />
+          <Provider store={store}>
+            <ChakraProvider resetCSS theme={theme}>
+              <Toast></Toast>
+              <BrowserRouter>
+                <Router />
+              </BrowserRouter>
+            </ChakraProvider>
+          </Provider>
+        </Web3ProviderNetwork>
+      </Web3ReactProvider>
+    </I18nextProvider>
+  </HelmetProvider>,
   document.getElementById('root'),
 );
 

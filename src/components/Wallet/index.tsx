@@ -25,7 +25,10 @@ import {WalletPending} from 'components/Wallet/Pending';
 import usePrevious from 'hooks/usePrevious';
 import {useEagerConnect, useInactiveListener} from 'hooks/useWeb3';
 import {selectExplorerLink, selectNetwork} from 'store/app/app.reducer';
-import { useAppSelector } from 'hooks/useRedux';
+import {useAppSelector} from 'hooks/useRedux';
+import {useLocalStorage} from 'hooks/useStorage';
+import store from 'store';
+import {fetchUserInfo} from 'store/app/user.reducer';
 
 type WalletProps = {
   isOpen: boolean;
@@ -41,21 +44,15 @@ const WALLET_VIEWS = {
 };
 
 export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
-  const {
-    account,
-    connector,
-    activate,
-    error,
-    active,
-    deactivate,
-  } = useWeb3React();
+  const {account, connector, activate, error, active, deactivate} =
+    useWeb3React();
   const {onCopy} = useClipboard(account as string);
   // @ts-ignore
-  const {data: explorerLink, loading: explorerLinkLoading} = useAppSelector(
-    selectExplorerLink,
-  );
+  const {data: explorerLink, loading: explorerLinkLoading} =
+    useAppSelector(selectExplorerLink);
   // @ts-ignore
-  const {data: network, loading: networkLoading} = useAppSelector(selectNetwork);
+  const {data: network, loading: networkLoading} =
+    useAppSelector(selectNetwork);
   const [copyText, setCopyText] = useState<string>('Copy Address');
   const [walletView, setWalletView] = useState<string>(WALLET_VIEWS.ACCOUNT);
   const [pendingWallet, setPendingWallet] = useState<
@@ -65,6 +62,8 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
   const [activatingConnector, setActivatingConnector] = useState<any>();
 
   const previousAccount = usePrevious(account);
+
+  const [accountValue, setAccountValue] = useLocalStorage('account', {});
 
   useEffect(() => {
     if (activatingConnector && activatingConnector === connector) {
@@ -119,7 +118,7 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
   }, [copyText, onCopy]);
 
   const tryActivation = async (connector: AbstractConnector | undefined) => {
-    Object.keys(SUPPORTED_WALLETS).map(key => {
+    Object.keys(SUPPORTED_WALLETS).map((key) => {
       if (connector === SUPPORTED_WALLETS[key].connector) {
         return SUPPORTED_WALLETS[key].name;
       }
@@ -127,9 +126,10 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
     });
     setPendingWallet(connector); // set wallet for pending view
     setWalletView(WALLET_VIEWS.PENDING);
+    setAccountValue({signIn: true});
 
     connector &&
-      activate(connector, undefined, true).catch(error => {
+      activate(connector, undefined, true).catch((error) => {
         if (error instanceof UnsupportedChainIdError) {
           activate(connector); // a little janky...can't use setError because the connector isn't set
         } else {
@@ -144,11 +144,11 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
     const isMetaMask = !!(ethereum && ethereum.isMetaMask);
     const name: string = Object.keys(SUPPORTED_WALLETS)
       .filter(
-        k =>
+        (k) =>
           SUPPORTED_WALLETS[k].connector === connector &&
           (connector !== injected || isMetaMask === (k === 'METAMASK')),
       )
-      .map(k => SUPPORTED_WALLETS[k].name)[0];
+      .map((k) => SUPPORTED_WALLETS[k].name)[0];
     return (
       <Text colorScheme="gray.200" fontSize="sm">
         Connected with {name.toString()}
@@ -161,12 +161,13 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
 
   const getOptions = () => {
     let isMetamask: boolean = false;
+
     if (typeof window !== 'undefined') {
       // @ts-ignore
       isMetamask = window?.ethereum?.isMetaMask;
     }
 
-    return Object.keys(SUPPORTED_WALLETS).map(key => {
+    return Object.keys(SUPPORTED_WALLETS).map((key) => {
       const option = SUPPORTED_WALLETS[key];
 
       if (isMobile) {
@@ -273,6 +274,7 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
                         colorScheme="red"
                         onClick={() => {
                           (connector as any).close();
+                          setAccountValue({signIn: false});
                         }}>
                         Disconnect
                       </Button>
@@ -285,6 +287,13 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
                         colorScheme="red"
                         onClick={() => {
                           deactivate();
+                          setAccountValue({signIn: false});
+                          const {address, library} = store.getState().user.data;
+                          //@ts-ignore
+                          store.dispatch(
+                            //@ts-ignore
+                            fetchUserInfo({address, library, reset: true}),
+                          );
                         }}>
                         Disconnect
                       </Button>

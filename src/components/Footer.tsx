@@ -1,12 +1,12 @@
-import {Image} from '@chakra-ui/image';
-
 import {Box, Container, Flex, Link, Text, useTheme} from '@chakra-ui/react';
 import {useColorMode} from '@chakra-ui/react';
-import emailIcon from 'assets/svgs/email.svg';
+// import emailIcon from 'assets/svgs/email.svg';
 import {IconTelegram} from './Icons/IconTelegram';
 import {IconGithub} from './Icons/IconGithub';
 import {IconMedium} from './Icons/IconMedium';
 import {IconTwitter} from './Icons/IconTwitter';
+import {EmailIcon} from '@chakra-ui/icons';
+
 const socialLinks = [
   {
     title: 'Telegram',
@@ -27,7 +27,6 @@ const socialLinks = [
     isExternal: true,
   },
   {
-
     title: 'Twitter',
     icon: IconTwitter,
     href: 'https://twitter.com/tokamak_network/',
@@ -50,7 +49,7 @@ const socialLinks = [
 type SocialLinkProps = {
   colorMode: string;
 };
-const  SocialLinks: React.FC<SocialLinkProps> = ({colorMode}) => {
+const SocialLinks: React.FC<SocialLinkProps> = ({colorMode}) => {
   return (
     <Flex direction={'row'} mr={3}>
       {socialLinks.map((socialLink, index) => (
@@ -59,8 +58,7 @@ const  SocialLinks: React.FC<SocialLinkProps> = ({colorMode}) => {
           isExternal={socialLink.isExternal}
           mr={{base: 4, lg: 6}}
           key={index}>
-
-          <socialLink.icon/>
+          <socialLink.icon />
         </Link>
       ))}
     </Flex>
@@ -68,32 +66,54 @@ const  SocialLinks: React.FC<SocialLinkProps> = ({colorMode}) => {
 };
 
 export const Footer = () => {
-  const { colorMode } = useColorMode();
+  const {colorMode} = useColorMode();
   const theme = useTheme();
+
+  const bgColor = colorMode === 'light' ? 'gray.50' : 'black.200';
   return (
-    <Container maxW={'full'} px={{base: 4, md: 8}} py={{base: 0, md: 4}}>
+    <Container maxW={'full'} bg={bgColor} pl={'2.5em'} pr={'2.5em'}>
       <Flex
         flexDirection={{base: 'column', md: 'row'}}
-
         justifyContent={'space-between'}
-        alignItems={'center'}  h={76}>
-        <Flex flexGrow={2} direction={{base: 'column', md: 'row'}} alignItems={'center'}>
+        alignItems={'center'}
+        h={76}>
+        <Flex
+          flexGrow={2}
+          direction={{base: 'column', md: 'row'}}
+          alignItems={'center'}>
           <Box mr={{base: 0, md: 5}}>
-            <Text color={colorMode === 'light'?theme.colors.gray[225]: theme.colors.white[100] } fontWeight={600} fontSize={14} fontFamily={theme.fonts.body} letterSpacing={'normal'}>
-            Seoul Ethereum Meet up
+            <Text
+              color={colorMode === 'light' ? 'gray.225' : 'white.100'}
+              fontWeight={600}
+              fontSize={14}
+              fontFamily={theme.fonts.body}
+              letterSpacing={'normal'}>
+              ONTHER PTE.LTD
             </Text>
           </Box>
           <Box mr={3} py={{base: 4, md: 0}}>
-            <Text color={'gray.175'} fontSize={13} fontFamily={theme.fonts.body} fontWeight={'normal'}>
-            10 Anson Road #23-140  International Plaza Singapore
+            <Text
+              color={colorMode === 'light' ? 'gray.175' : 'white.100'}
+              fontSize={13}
+              fontFamily={theme.fonts.body}
+              fontWeight={'normal'}>
+              111 SOMERSET ROAD #06-07 111 SOMERSET SINGAPORE 238164
             </Text>
           </Box>
-          <Box  mr={{base: 0, md: 3}}>
-          <Image src={emailIcon}/>
+          <Box mr={{base: 0, md: 3}}>
+            <EmailIcon
+              color={
+                colorMode === 'light' ? '#84919e' : 'white.100'
+              }></EmailIcon>
           </Box>
-
           <Box justifyContent={'center'} alignItems={'center'}>
-            <Text color={colorMode === 'light'?theme.colors.gray[250]: theme.colors.white[100] } fontSize={13} fontFamily={theme.fonts.body} fontWeight={'normal'}>info@onther.io</Text>
+            <Text
+              color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+              fontSize={13}
+              fontFamily={theme.fonts.body}
+              fontWeight={'normal'}>
+              info@onther.io
+            </Text>
           </Box>
         </Flex>
         <Box maxW={'full'}>
@@ -101,9 +121,8 @@ export const Footer = () => {
             py={{base: 4, md: 0}}
             grow={2}
             direction={{base: 'column', lg: 'row'}}
-            justifyContent={'flex-end'}
-            color={colorMode === 'light'?theme.colors.gray[250]:theme.colors.white[100] }>
-            <SocialLinks  colorMode={colorMode} />
+            justifyContent={'flex-end'}>
+            <SocialLinks colorMode={colorMode} />
             {/* <Flex
               py={{base: 4, lg: 0}}
               justifyContent={{base: 'flex-start', lg: 'center'}}>

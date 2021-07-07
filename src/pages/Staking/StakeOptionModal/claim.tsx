@@ -10,6 +10,7 @@ import {
   Flex,
   Stack,
   useTheme,
+  useColorMode,
 } from '@chakra-ui/react';
 import {claimReward} from '../staking.reducer';
 import {useWeb3React} from '@web3-react/core';
@@ -19,11 +20,12 @@ import {closeModal, selectModalType} from 'store/modal.reducer';
 export const ClaimOptionModal = () => {
   const {account, library} = useWeb3React();
   const theme = useTheme();
+  const {colorMode} = useColorMode();
 
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
-
-  let balance = data?.data?.user?.balance;
+  let claimed = data?.data?.canRewardAmount;
+  let earned = data?.data?.myearned;
 
   return (
     <Modal
@@ -31,16 +33,29 @@ export const ClaimOptionModal = () => {
       isCentered
       onClose={() => dispatch(closeModal())}>
       <ModalOverlay />
-      <ModalContent>
-        <ModalBody>
-          <Box my={3} textAlign="center">
+      <ModalContent
+        fontFamily={theme.fonts.roboto}
+        bg={colorMode === 'light' ? 'white.100' : 'black.200'}
+        w="350px"
+        pt="25px"
+        pb="25px">
+        <ModalBody p={0}>
+          <Box
+            pb={'1.250em'}
+            borderBottom={
+              colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
+            }>
             <Heading
-              fontWeight={'normal'}
-              fontSize={'3xl'}
+              fontSize={'1.250em'}
+              fontWeight={'bold'}
+              fontFamily={theme.fonts.titil}
+              color={colorMode === 'light' ? 'gray.250' : 'white.100'}
               textAlign={'center'}>
               Claim
             </Heading>
-            <Text>You can claimxxx and earn xxx</Text>
+            <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
+              You can claim {claimed} TOS and earned {earned} TOS
+            </Text>
           </Box>
 
           <Stack
@@ -49,7 +64,11 @@ export const ClaimOptionModal = () => {
             flexDir={'row'}
             justifyContent={'center'}
             alignItems={'center'}
-            w={'full'}>
+            w={'full'}
+            borderBottom={
+              colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
+            }
+            mb={'25px'}>
             <Text
               variant={'outline'}
               borderWidth={0}
@@ -61,24 +80,12 @@ export const ClaimOptionModal = () => {
               _focus={{
                 borderWidth: 0,
               }}>
-              {' '}
-              {balance} TON
+              {earned} TOS
             </Text>
           </Stack>
 
-          <Stack
-            pb={5}
-            as={Flex}
-            justifyContent={'center'}
-            alignItems={'center'}>
-            <Box textAlign={'center'}>
-              <Text>Claim Available</Text>
-              <Text>{balance} TON</Text>
-            </Box>
-          </Stack>
-
-          <Box py={4} as={Flex} justifyContent={'center'}>
-            {/* {!data.data.vaultClosed ? (
+          <Box as={Flex} justifyContent={'center'}>
+            {/* {!data.data.status ? (
               <Button
                 mr={4}
                 onClick={() =>
@@ -96,17 +103,22 @@ export const ClaimOptionModal = () => {
             ) : null} */}
 
             <Button
-              // disabled={!data.data.vaultClosed}
+              disabled={earned <= 0}
+              w={'150px'}
+              bg={'blue.500'}
+              color="white.100"
+              fontSize="14px"
               onClick={() =>
                 claimReward({
                   userAddress: account,
                   stakeContractAddress: data.data.contractAddress,
-                  stakeStartBlock: data.data.stakeStartBlock,
+                  saleEndTime: data.data.saleEndTime,
                   library: library,
+                  canRewardAmount: data.data.canRewardAmount,
+                  myEarned: data.data.myearned,
+                  handleCloseModal: dispatch(closeModal()),
                 })
-              }
-              bg={theme.colors.yellow[200]}
-              color={'black'}>
+              }>
               Claim
             </Button>
           </Box>

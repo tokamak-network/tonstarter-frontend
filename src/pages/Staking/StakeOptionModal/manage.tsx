@@ -10,30 +10,43 @@ import {
   Flex,
   Stack,
   Grid,
+  useTheme,
+  useColorMode,
 } from '@chakra-ui/react';
-import {closeSale} from '../staking.reducer';
+import {closeSale, fetchWithdrawPayload} from '../staking.reducer';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {
-  closeModal,
-  ModalType,
-  openModal,
-  selectModalType,
-} from 'store/modal.reducer';
 import {useCallback} from 'react';
+import {closeModal, openModal, selectModalType} from 'store/modal.reducer';
 
 export const ManageModal = () => {
   const {account, library} = useWeb3React();
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
+  const theme = useTheme();
+  const {colorMode} = useColorMode();
+  let balance = data?.data?.stakeContractBalanceTon;
 
-  const toggleModal = useCallback(
-    (modal: ModalType) => {
-      dispatch(closeModal());
-      dispatch(openModal({type: modal}));
-    },
-    [dispatch],
-  );
+  const withdrawPayload = async () => {
+    const result = await fetchWithdrawPayload(
+      data?.data.library,
+      data?.data.account,
+      data?.data.contractAddress,
+    );
+
+    return result;
+  };
+
+  const withdrawData = useCallback(async () => {
+    const payloadWithdraw = await withdrawPayload();
+    console.log(data);
+    const payload = {
+      ...data?.data,
+      ...payloadWithdraw,
+    };
+    console.log(payload);
+    dispatch(openModal({type: 'withdraw', data: data.data}));
+  }, []);
 
   return (
     <Modal
@@ -41,55 +54,162 @@ export const ManageModal = () => {
       isCentered
       onClose={() => dispatch(closeModal())}>
       <ModalOverlay />
-      <ModalContent>
-        <ModalBody>
-          <Box my={3} textAlign="center">
+      <ModalContent
+        w={'21.875em'}
+        fontFamily={theme.fonts.roboto}
+        bg={colorMode === 'light' ? 'white.100' : 'black.200'}
+        pt={'1.250em'}
+        pb={'1.563em'}>
+        <ModalBody p={0}>
+          <Box
+            textAlign="center"
+            pb={'1.250em'}
+            borderBottom={
+              colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
+            }>
             <Heading
-              fontWeight={'normal'}
-              fontSize={'3xl'}
+              fontSize={'1.250em'}
+              fontWeight={'bold'}
+              fontFamily={theme.fonts.titil}
+              color={colorMode === 'light' ? 'gray.250' : 'white.100'}
               textAlign={'center'}>
               Manage
             </Heading>
-            <Text>You can manage tokens</Text>
+            <Text color="gray.175" fontSize={'0.750em'}>
+              You can manage tokens
+            </Text>
           </Box>
 
           <Stack
-            p={5}
             as={Flex}
+            pt={'1.875em'}
+            pl={'1.875em'}
+            pr={'1.875em'}
             justifyContent={'center'}
-            alignItems={'center'}>
+            alignItems={'center'}
+            mb={'25px'}>
             <Box textAlign={'center'}>
-              <Text>Available balance</Text>
-              <Text>xxx TON</Text>
+              <Text fontSize={'0.813em'} color={'blue.300'} mb={'1.125em'}>
+                Available balance
+              </Text>
+              <Text fontSize={'2em'}>
+                {balance} <span style={{fontSize: '13px'}}>TON</span>
+              </Text>
             </Box>
-            <Box textAlign={'center'}>
-              <Text>Total: xxxx TON</Text>
-              <Text>Staked in Layer 2: xxxx TON</Text>
+            <Box
+              display={'flex'}
+              justifyContent="space-between"
+              flexDir="column"
+              w={'100%'}
+              borderBottom={
+                colorMode === 'light'
+                  ? '1px solid #f4f6f8'
+                  : '1px solid #373737'
+              }>
+              <Flex justifyContent="space-between" alignItems="center" h="55px">
+                <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
+                  Total
+                </Text>
+                <Text
+                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+                  fontWeight={500}
+                  fontSize={'18px'}>
+                  {data.data.totalStakedAmount} TON
+                </Text>
+              </Flex>
+              <Flex justifyContent="space-between" alignItems="center" h="55px">
+                <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
+                  Staked in Layer 2
+                </Text>
+                <Text
+                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+                  fontWeight={500}
+                  fontSize={'18px'}>
+                  {data.data.totalStakedAmountL2} TON
+                </Text>
+              </Flex>
+              <Flex justifyContent="space-between" alignItems="center" h="55px">
+                <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
+                  Pending UnStaked in Layer 2
+                </Text>
+                <Text
+                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+                  fontWeight={500}
+                  fontSize={'18px'}>
+                  {data.data.totalPendingUnstakedAmountL2} TON
+                </Text>
+              </Flex>
             </Box>
           </Stack>
 
-          <Grid templateColumns={'repeat(2, 1fr)'} gap={6}>
-            <Button colorScheme="blue" onClick={() => toggleModal('stakeL2')}>
+          <Grid
+            templateColumns={'repeat(2, 1fr)'}
+            pl="19px"
+            pr="19px"
+            gap={'12px'}>
+            {/* <Button colorScheme="blue" onClick={() => toggleModal('stakeL2')}> */}
+            <Button
+              width="150px"
+              bg={'blue.500'}
+              color={'white.100'}
+              fontSize={'0.750em'}
+              fontWeight={100}
+              onClick={() =>
+                dispatch(openModal({type: 'stakeL2', data: data.data}))
+              }>
               Stake in Layer2
             </Button>
-            <Button colorScheme="blue" onClick={() => toggleModal('unstakeL2')}>
+            <Button
+              width="150px"
+              bg={'blue.500'}
+              color={'white.100'}
+              fontSize={'12px'}
+              fontWeight={100}
+              onClick={() =>
+                dispatch(openModal({type: 'unstakeL2', data: data.data}))
+              }>
               Unstake from Layer2
             </Button>
-            <Button colorScheme="blue">Withdraw</Button>
-            <Button colorScheme="blue">Swap</Button>
             <Button
-              colorScheme="blue"
-              // disabled={data.data.vaultClosed}
-              onClick={() =>
-                closeSale({
-                  userAddress: account,
-                  vaultContractAddress: data.data.vaultAddress,
-                  stakeStartBlock: data.data.stakeStartBlock,
-                  library: library,
-                })
-              }>
-              End Sale
+              width="150px"
+              bg={'blue.500'}
+              color={'white.100'}
+              fontSize={'12px'}
+              fontWeight={100}
+              onClick={() => withdrawData()}>
+              Withdraw
             </Button>
+            <Button
+              width="150px"
+              bg={'blue.500'}
+              color={'white.100'}
+              fontSize={'12px'}
+              fontWeight={100}
+              onClick={() =>
+                dispatch(openModal({type: 'swap', data: data.data}))
+              }>
+              Swap
+            </Button>
+            <Flex w="200%" justifyContent="center">
+              <Button
+                width="150px"
+                bg={'blue.500'}
+                color={'white.100'}
+                fontSize={'12px'}
+                fontWeight={100}
+                // disabled={!data.data.vaultClosed}
+                onClick={() =>
+                  closeSale({
+                    userAddress: account,
+                    vaultContractAddress: data.data.vault,
+                    miningEndTime: data.data.miningEndTime,
+                    library: library,
+                    handleCloseModal: dispatch(closeModal()),
+                  })
+                }>
+                End Sale
+              </Button>
+            </Flex>
           </Grid>
         </ModalBody>
       </ModalContent>
