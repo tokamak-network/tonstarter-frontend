@@ -26,7 +26,7 @@ export const SwapModal= () => {
   const {account, library} = useWeb3React();
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
-  let balance = data?.data?.user?.balance;
+  let balance = data?.data?.totalStakedAmountL2;
 
   const [value, setValue] = useState<number>(balance);
 

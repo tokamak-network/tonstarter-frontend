@@ -42,7 +42,7 @@ export const modalReducer = createSlice({
     },
     closeModal: state => {
       state.data.modal = undefined;
-      state.data.data = {};
+      state.data.data = {};  
     },
   },
 });

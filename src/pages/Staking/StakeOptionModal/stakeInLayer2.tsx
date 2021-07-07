@@ -26,7 +26,7 @@ import {
     const {account, library} = useWeb3React();
     const {data} = useAppSelector(selectModalType);
     const dispatch = useAppDispatch();
-    let balance = data?.data?.user?.balance;
+    let balance = data?.data?.stakeContractBalanceTon;
   
     const [value, setValue] = useState<number>(balance);
   

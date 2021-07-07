@@ -5,17 +5,21 @@ import {JsonRpcSigner, Web3Provider, JsonRpcProvider} from '@ethersproject/provi
 
 import * as TonABI from 'services/abis/TON.json';
 import * as WtonABI from 'services/abis/WTON.json';
+import * as TosABI from 'services/abis/TOS.json';
 import * as DepositManagerABI from 'services/abis/DepositManager.json';
 import * as SeigManagerABI from 'services/abis/SeigManager.json';
 import * as CandidateABI from 'services/abis/ICandidate.json';
 import * as StakeTON from 'services/abis/StakeTON.json';
+import * as StakeVault from 'services/abis/Stake1Logic.json';
 import {
   REACT_APP_TOKAMAK_LAYER2,
   REACT_APP_TON,
+  REACT_APP_TOS,
   REACT_APP_DEPOSIT_MANAGER,
   REACT_APP_SEIG_MANAGER,
   DEPLOYED,
   REACT_APP_WTON,
+  REACT_APP_STAKE1_PROXY,
 } from 'constants/index';
 
 // returns the checksummed address if the address is valid, otherwise returns false
@@ -52,12 +56,16 @@ export function getTokamakContract (want: string, address?: string): any {
 
   const TON = new Contract(REACT_APP_TON, TonABI.abi, rpc);
   const WTON = new Contract(REACT_APP_WTON, WtonABI.abi, rpc);
+  const TOS = new Contract(REACT_APP_TOS, TosABI.abi, rpc);
   const SeigManager = new Contract(REACT_APP_SEIG_MANAGER, SeigManagerABI.abi, rpc);
   const DepositManager = new Contract(REACT_APP_DEPOSIT_MANAGER, DepositManagerABI.abi, rpc)
   const TokamakLayer2 = new Contract(REACT_APP_TOKAMAK_LAYER2, CandidateABI.abi, rpc);
+  const VaultProxy = new Contract(REACT_APP_STAKE1_PROXY, StakeVault.abi, rpc);
 
   if (want === 'TON') {
     return TON;
+  } else if (want === 'TOS') {
+    return TOS;
   } else if (want === 'WTON') {
     return WTON;
   } else if (want === 'SeigManager') {
@@ -72,6 +80,8 @@ export function getTokamakContract (want: string, address?: string): any {
     } else {
       throw Error('Need Contract Address!');
     }
+  } else if (want === 'Vault') {
+    return VaultProxy;
   } else {
     throw Error('Invalid contract name!');
   }

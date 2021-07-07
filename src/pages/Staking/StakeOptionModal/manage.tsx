@@ -12,9 +12,10 @@ import {
   Grid,
   useTheme
 } from '@chakra-ui/react';
-import {closeSale} from '../staking.reducer';
+import {closeSale, fetchWithdrawPayload} from '../staking.reducer';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import { useCallback } from 'react';
 import {
   closeModal,
   openModal,
@@ -25,9 +26,29 @@ export const ManageModal = () => {
   const {account, library} = useWeb3React();
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
-  const theme = useTheme();
-  let balance = data?.data?.user?.balance;
+  const theme = useTheme();  
+  let balance = data?.data?.stakeContractBalanceTon;
   console.log(data?.data);
+
+  const withdrawPayload = async () => {
+    const result = await fetchWithdrawPayload(
+      data?.data.library,
+      data?.data.account,
+      data?.data.contractAddress,
+    );
+
+    return result
+  };
+
+  const withdrawData = useCallback(async () => {
+    const payloadWithdraw = await withdrawPayload();
+    console.log(data)
+    const payload = {
+      ...data?.data, ...payloadWithdraw
+    }
+    console.log(payload);
+    dispatch(openModal({type: 'withdraw', data: data.data}));
+  }, []);
 
   return (
     <Modal
@@ -92,7 +113,7 @@ export const ManageModal = () => {
               <Text color="gray.250"
               fontWeight={500}
               fontSize={'18px'}
-              >{data.data.stakeContractBalanceWton} TON</Text>
+              >{data.data.totalStakedAmountL2} TON</Text>
               </Flex>
               <Flex justifyContent="space-between"
               alignItems="center"
@@ -103,7 +124,7 @@ export const ManageModal = () => {
                  <Text color="gray.250"
               fontWeight={500}
               fontSize={'18px'}
-              >{data.data.totalPendingUnstakedAmount} TON</Text>
+              >{data.data.totalPendingUnstakedAmountL2} TON</Text>
               </Flex>
               </Box>
           </Stack>
@@ -127,7 +148,7 @@ export const ManageModal = () => {
             <Button width='150px'
             bg={'blue.400'}
             color={'white.100'}
-            fontSize={'12px'} onClick={() => dispatch(openModal({type: 'withdraw', data: data.data}))}>
+            fontSize={'12px'} onClick={() => withdrawData()}>
               Withdraw
             </Button>
             <Button width='150px'

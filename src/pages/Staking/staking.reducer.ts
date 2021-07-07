@@ -167,6 +167,8 @@ const convertToWei = (num: string) => toWei(num, 'ether');
 //   return `${padDepositManager}${padOperator}`;
 // };
 
+//const [inputValue, setInputValue] = React.useState('0');
+
 export const stakePaytoken = async (args: StakeProps) => {
   const {
     userAddress,
@@ -329,10 +331,11 @@ export const claimReward = async (args: claim) => {
   if (userAddress === null || userAddress === undefined) {
     return;
   }
+  // < Stake1Vault(vault).totalRewardAmount(address(this))
   if (currentBlock < saleEndTime) {
     return alert('Sale is not ended!');
-    } else if (canRewardAmount === '0.0') {
-      return alert('unsufficient reward');
+  } else if (canRewardAmount === '0.0') {
+    return alert('unsufficient reward');
   } else {
     const StakeTONContract = await new Contract(
       stakeContractAddress,
@@ -418,9 +421,13 @@ export const stakeToLayer2 = async (args: stakeToLayer2Args) => {
     }
     const signer = getSigner(library, userAddress);
     try {
-      const receipt = await StakeTONContract.connect(signer).tokamakStaking(REACT_APP_TOKAMAK_LAYER2, amount);
-      console.log(receipt);
-      alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
+      await StakeTONContract.connect(signer).tokamakStaking(
+        REACT_APP_TOKAMAK_LAYER2, 
+        tonAmount
+        ).then((receipt: any) => {
+          alert(`Tx sent successfully! Tx hash is ${receipt?.hash}`);
+        }
+      );
     } catch (err) {
       console.log(err);
     }
@@ -440,21 +447,26 @@ export const unstakeL2 = async (args: unstakeFromLayer2Args) => {
     return;
   }
   const signer = getSigner(library, userAddress);
+  // const vault = getTokamakContract('Vault');
+  // const VaultProxy = new Contract(REACT_APP_STAKE1_PROXY, StakeVault.abi, rpc);
+  // const closed = await vault.saleClosed()
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
   // const depositManager = new Contract(REACT_APP_DEPOSIT_MANAGER, DepositManagerABI.abi, rpc);
-  const tonAmount = convertToWei(amount);
-  if (status === 'end') {
+  const wtonAmount = utils.parseUnits(amount, '27');
+  console.log(wtonAmount);
+  // if (status === 'end') {
     try {
-      const receipt = await StakeTONContract.connect(signer).tokamakRequestUnStakingAll(
+      const receipt = await StakeTONContract.connect(signer).tokamakRequestUnStaking(
         REACT_APP_TOKAMAK_LAYER2,
+        wtonAmount,
       );
       alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
     } catch (err) {
       console.log(err);
     }
-  } else {
-    return alert('Sale is not ended yet!')
-  }
+  // } else {
+  //   return alert('Sale is not ended yet!')
+  // }
 };
 
 export const swapWTONtoTOS = async (args: unstakeFromLayer2Args) => {
@@ -503,8 +515,9 @@ export const withdraw = async (args: withdraw) => {
   const endBlock = Number(miningEndTime);
   if (endBlock > currentBlock) {
     try {
-      const receipt = await StakeTONContract.connect(signer).withdraw();
-      alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
+      await StakeTONContract.connect(signer).tokamakProcessUnStaking(REACT_APP_TOKAMAK_LAYER2).then((receipt: any) => {
+        alert(`Tx sent successfully! Tx hash is ${receipt?.hash}`);
+      });
     } catch (err) {
       console.log(err);
     }
@@ -560,7 +573,6 @@ export const fetchStakes = createAsyncThunk(
             stake.stakeContract,
           );
           mystaked = userStaked;
-          // claimableAmount = canRewardAmount;
           myearned = userRewardTOS;
         }
         const status = await getStatus(stake, currentBlock);
@@ -615,12 +627,43 @@ export const fetchStakes = createAsyncThunk(
   },
 );
 
-export const fetchManageModalPayload = async (
+export const fetchWithdrawPayload = async (
   library: any,
   account: string,
   contractAddress: string,
 ) => {
-  const res = await getUserInfoForManage(library, account, contractAddress);
+  try {
+    const res = await getWithdrawableInfo(library, account, contractAddress);
+    return res;
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+const getWithdrawableInfo = async (
+  library: any,
+  account: string,
+  contractAddress: string,
+) => {
+  const depositManager = getTokamakContract('DepositManager');
+  return Promise.all([
+    depositManager.numPendingRequests(REACT_APP_TOKAMAK_LAYER2, contractAddress),
+    // depositManager.withdrawalRequestIndex(REACT_APP_TOKAMAK_LAYER2, contractAddress),
+  ]).then((result) => {
+    return {
+      requestNum: result[0],
+      // requestIndex: result[1],
+    }
+  })
+}
+
+export const fetchManageModalPayload = async (
+  library: any,
+  account: string,
+  contractAddress: string,
+  vaultAddress: string,
+) => {
+  const res = await getUserInfoForManage(library, account, contractAddress, vaultAddress);
   return res;
 };
 
@@ -628,6 +671,7 @@ const getUserInfoForManage = async (
   library: any,
   account: string,
   contractAddress: string,
+  vaultAddress: string,
 ) => {
   const currentBlock = getRPC().getBlockNumber();
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
@@ -637,6 +681,7 @@ const getUserInfoForManage = async (
   const WTON = getTokamakContract('WTON');
   const depositManager = getTokamakContract('DepositManager');
   const seigManager = getTokamakContract('SeigManager');
+  // IIStake1Vault(vault).saleClosed()
 
   return Promise.all([
     StakeTONContract?.userStaked(account),
@@ -662,6 +707,7 @@ const getUserInfoForManage = async (
         }),
         totalStakedAmountL2: convertNumber({
           amount: result[3],
+          type: 'ray',
         }),
         totalPendingUnstakedAmountL2: convertNumber({
           amount: result[4],
