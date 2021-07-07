@@ -1,14 +1,16 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {RootState} from 'store/reducers';
-import {getContract} from 'utils/contract';
+import {getContract, getTokamakContract} from 'utils/contract';
 import * as ERC20 from 'services/abis/ERC20.json';
 import {REACT_APP_TON} from 'constants/index';
-import {convertNumber} from 'utils/number';
+import { convertNumber } from 'utils/number';
+import {formatEther} from "ethers"
 
 export type User = {
   balance: string;
   address: string;
   library: any;
+  tosBalance: string;
 };
 
 interface IUser {
@@ -48,11 +50,14 @@ export const fetchUserInfo = createAsyncThunk(
     if (balance === undefined) {
       throw new Error(`user balance is undefined`);
     }
+    const TOS = getTokamakContract('TOS');
+    // const TosBalance = await TOS.balanceOf(address);
 
     const user: User = {
       address,
       library,
-      balance,
+      balance: formatEther(await contract.balanceOf(address)),
+      tosBalance: formatEther(await TOS.balanceOf(address)),
     };
 
     return user;

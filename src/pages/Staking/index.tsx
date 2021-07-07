@@ -120,6 +120,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
       data.library,
       data.account,
       data.contractAddress,
+      data.vault,
     );
 
     return result;
@@ -147,8 +148,6 @@ const WalletInformation: FC<WalletInformationProps> = ({
       console.log(e);
       setLoading(false);
     }
-
-    console.log(modal);
 
     setLoading(false);
     dispatch(openModal({type: modal, data: payload}));

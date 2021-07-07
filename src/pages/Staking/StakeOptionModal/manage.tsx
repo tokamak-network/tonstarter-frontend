@@ -13,10 +13,15 @@ import {
   useTheme,
   useColorMode,
 } from '@chakra-ui/react';
-import {closeSale} from '../staking.reducer';
+import {closeSale, fetchWithdrawPayload} from '../staking.reducer';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {closeModal, openModal, selectModalType} from 'store/modal.reducer';
+import { useCallback } from 'react';
+import {
+  closeModal,
+  openModal,
+  selectModalType,
+} from 'store/modal.reducer';
 
 export const ManageModal = () => {
   const {account, library} = useWeb3React();
@@ -24,8 +29,27 @@ export const ManageModal = () => {
   const dispatch = useAppDispatch();
   const theme = useTheme();
   const {colorMode} = useColorMode();
-  let balance = data?.data?.user?.balance;
-  console.log(data?.data);
+  let balance = data?.data?.stakeContractBalanceTon;
+
+  const withdrawPayload = async () => {
+    const result = await fetchWithdrawPayload(
+      data?.data.library,
+      data?.data.account,
+      data?.data.contractAddress,
+    );
+
+    return result
+  };
+
+  const withdrawData = useCallback(async () => {
+    const payloadWithdraw = await withdrawPayload();
+    console.log(data)
+    const payload = {
+      ...data?.data, ...payloadWithdraw
+    }
+    console.log(payload);
+    dispatch(openModal({type: 'withdraw', data: data.data}));
+  }, []);
 
   return (
     <Modal
@@ -104,7 +128,7 @@ export const ManageModal = () => {
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                   fontWeight={500}
                   fontSize={'18px'}>
-                  {data.data.stakeContractBalanceWton} TON
+                  {data.data.totalStakedAmountL2} TON
                 </Text>
               </Flex>
               <Flex justifyContent="space-between" alignItems="center" h="55px">
@@ -156,8 +180,12 @@ export const ManageModal = () => {
               fontSize={'12px'}
               fontWeight={100}
               onClick={() =>
-                dispatch(openModal({type: 'withdraw', data: data.data}))
+                withdrawData()
               }>
+            <Button width='150px'
+            bg={'blue.400'}
+            color={'white.100'}
+            fontSize={'12px'} onClick={() => withdrawData()}>
               Withdraw
             </Button>
             <Button
