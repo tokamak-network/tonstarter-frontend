@@ -7,12 +7,12 @@ import {
   useTheme,
   Tooltip,
   CircularProgress,
+  useColorMode,
 } from '@chakra-ui/react';
 import React from 'react';
 import {shortenAddress} from 'utils';
 import {ThemeSwitcher} from './ThemeSwitcher';
 import {NavLink, useRouteMatch} from 'react-router-dom';
-import {useColorMode} from '@chakra-ui/react';
 import logoLight from 'assets/svgs/fld_bi_white.svg';
 import logoGray from 'assets/svgs/fld_bi_gray.svg';
 import {useAppSelector} from 'hooks/useRedux';
@@ -185,12 +185,14 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           to="/"
           exact
           className={match?.isExact ? 'link-match' : 'link'}
-          activeClassName={match?.isExact ? 'active-fld' : 'active'}>
+          activeClassName={match?.isExact ? 'active-fld' : 'active'}
+          style={{zIndex: 100}}>
           Home
         </NavLink>
         <NavLink
           to="/staking"
-          className={match?.isExact ? 'link-match' : 'link'}>
+          className={match?.isExact ? 'link-match' : 'link'}
+          style={{zIndex: 100}}>
           Staking
         </NavLink>
         <Tooltip
@@ -202,7 +204,8 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           <NavLink
             to="/pools"
             className={match?.isExact ? 'link-match' : 'link'}
-            onClick={(e) => e.preventDefault()}>
+            onClick={(e) => e.preventDefault()}
+            style={{zIndex: 100}}>
             Pools
           </NavLink>
         </Tooltip>
@@ -216,6 +219,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           <NavLink
             to="/starter"
             className={match?.isExact ? 'link-match' : 'link'}
+            style={{zIndex: 100}}
             onClick={(e) => e.preventDefault()}>
             Starter
           </NavLink>
@@ -229,6 +233,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           <NavLink
             to="/dao"
             className={match?.isExact ? 'link-match' : 'link'}
+            style={{zIndex: 100}}
             onClick={(e) => e.preventDefault()}>
             DAO
           </NavLink>

@@ -45,6 +45,11 @@ export const Router: FC<RouterProps> = () => {
       } else if (signIn === true) {
         console.log('gogo');
         if (chainId !== 4) {
+          deactivate();
+          window.localStorage.setItem(
+            'account',
+            JSON.stringify({signIn: false}),
+          );
           return alert('please use Rinkeby test network');
         }
         // @ts-ignore
