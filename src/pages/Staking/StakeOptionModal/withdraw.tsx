@@ -8,7 +8,6 @@ import {
   Text,
   Button,
   Flex,
-  Input,
   Stack,
 } from '@chakra-ui/react';
 
@@ -16,7 +15,7 @@ import React, {useCallback, useState} from 'react';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
-import { withdraw } from '../staking.reducer';
+import {withdraw} from '../staking.reducer';
 
 export const WithdrawalOptionModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -26,12 +25,13 @@ export const WithdrawalOptionModal = () => {
   let balance = data?.data?.user?.stakeBalanceTON;
   const [value, setValue] = useState<number>(balance);
 
-  const handleChange = useCallback(e => setValue(e.target.value), []);
+  const handleChange = useCallback((e) => setValue(e.target.value), []);
   const withdrawalDelay = data?.data?.globalWithdrawalDelay;
 
-  const handleCloseModal = useCallback(() => dispatch(closeModal()), [
-    dispatch,
-  ]);
+  const handleCloseModal = useCallback(
+    () => dispatch(closeModal()),
+    [dispatch],
+  );
 
   return (
     <Modal
@@ -49,9 +49,7 @@ export const WithdrawalOptionModal = () => {
               Withdraw
             </Heading>
             <Stack>
-              <Text>
-                You can withdraw after {withdrawalDelay}  Blocks
-              </Text>
+              <Text>You can withdraw after {withdrawalDelay} Blocks</Text>
             </Stack>
             {/* <Stack>
               <Text>
@@ -63,7 +61,7 @@ export const WithdrawalOptionModal = () => {
                 type={'submit'}
                 onClick={() =>
                   withdraw({
-                    userAddress:account, 
+                    userAddress: account,
                     contractAddress: data.data.contractAddress,
                     miningEndTime: data?.data?.miningEndTime,
                     library: library,
@@ -78,8 +76,6 @@ export const WithdrawalOptionModal = () => {
           </Box>
         </ModalBody>
       </ModalContent>
-
     </Modal>
-
-  )
-}
+  );
+};

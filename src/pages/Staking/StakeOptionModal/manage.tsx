@@ -175,6 +175,7 @@ export const ManageModal = () => {
               bg={'blue.500'}
               color={'white.100'}
               fontSize={'12px'}
+              fontWeight={100}
               onClick={() => withdrawData()}>
               Withdraw
             </Button>

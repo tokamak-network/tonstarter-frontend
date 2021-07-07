@@ -1,6 +1,5 @@
 import {ethers, BigNumber} from 'ethers';
 import Decimal from 'decimal.js';
-import {toBN} from 'web3-utils';
 
 type RoundFunc = {
   r_amount: string;

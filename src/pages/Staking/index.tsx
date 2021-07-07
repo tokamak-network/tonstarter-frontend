@@ -115,7 +115,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
   const [loading, setLoading] = useState(false);
   const btnDisabled = account === undefined ? true : false;
 
-  const modalPayload = async () => {
+  const modalPayload = async (data: any) => {
     const result = await fetchManageModalPayload(
       data.library,
       data.account,
@@ -132,7 +132,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
 
     try {
       if (modal === 'manage' || modal === 'claim') {
-        const payloadModal = await modalPayload();
+        const payloadModal = await modalPayload(data);
         payload = {
           ...data,
           ...payloadModal,

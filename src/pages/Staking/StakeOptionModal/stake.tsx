@@ -18,7 +18,6 @@ import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
 import {stakePaytoken} from '../staking.reducer';
-import {convertNumber} from 'utils/number';
 
 export const StakeOptionModal = () => {
   const {data} = useAppSelector(selectModalType);
