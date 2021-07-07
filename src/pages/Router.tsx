@@ -12,9 +12,6 @@ import {useAppDispatch} from 'hooks/useRedux';
 import {fetchAppConfig} from 'store/app/app.reducer';
 import {fetchUserInfo} from 'store/app/user.reducer';
 import {fetchStakes} from './Staking/staking.reducer';
-import {useContract} from 'hooks/useContract';
-import {REACT_APP_STAKE1_PROXY} from 'constants/index';
-import * as StakeLogic from 'services/abis/Stake1Logic.json';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -25,39 +22,29 @@ export const Router: FC<RouterProps> = () => {
   const [walletState, setWalletState] = useState<string>('');
   const {onOpen, isOpen: isModalOpen, onClose} = useDisclosure();
   const {account, chainId, library} = useWeb3React();
-  const stakeRegistryContract = useContract(
-    REACT_APP_STAKE1_PROXY,
-    StakeLogic.abi,
-  );
   useEffect(() => {
     if (account && chainId) {
       // @ts-ignore
-      dispatch(fetchAppConfig({chainId}));
+      dispatch(fetchAppConfig({chainId}) as any);
+      dispatch(fetchStakes({library}) as any);
       // @ts-ignore
-      dispatch(fetchUserInfo({address: account, library}));
+      dispatch(fetchUserInfo({address: account, library}) as any);
     }
   }, [chainId, account, library, dispatch]);
 
   useEffect(() => {
     dispatch(
       fetchStakes({
-        contract: stakeRegistryContract,
         library,
         account,
         chainId,
       }) as any,
     );
-  }, [stakeRegistryContract, dispatch, library, account, chainId]);
+  }, [dispatch, library, account, chainId]);
   const handleWalletModalOpen = (state: string) => {
     setWalletState(state);
     onOpen();
   };
-
-  // if (error) {
-  //   toast({
-  //     description: data.
-  //   })
-  // }
 
   return (
     <>

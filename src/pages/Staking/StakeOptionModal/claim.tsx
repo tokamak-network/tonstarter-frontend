@@ -11,7 +11,7 @@ import {
   Stack,
   useTheme,
 } from '@chakra-ui/react';
-import {claimReward} from '../staking.reducer';
+import {claimReward, closeSale} from '../staking.reducer';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
@@ -22,8 +22,6 @@ export const ClaimOptionModal = () => {
 
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
-
-  let balance = data?.data?.user?.balance;
 
   return (
     <Modal
@@ -40,7 +38,10 @@ export const ClaimOptionModal = () => {
               textAlign={'center'}>
               Claim
             </Heading>
-            <Text>You can claimxxx and earn xxx</Text>
+            <Text>
+              You can claim {data.data.tokenSymbol} and earn{' '}
+              {data.data.tokenSymbol}
+            </Text>
           </Box>
 
           <Stack
@@ -62,7 +63,7 @@ export const ClaimOptionModal = () => {
                 borderWidth: 0,
               }}>
               {' '}
-              {balance} TON
+              {data.data.myclaimed} {data.data.tokenSymbol}
             </Text>
           </Stack>
 
@@ -73,18 +74,20 @@ export const ClaimOptionModal = () => {
             alignItems={'center'}>
             <Box textAlign={'center'}>
               <Text>Claim Available</Text>
-              <Text>{balance} TON</Text>
+              <Text>
+                {data.data.myclaimed} {data.data.tokenSymbol}
+              </Text>
             </Box>
           </Stack>
 
           <Box py={4} as={Flex} justifyContent={'center'}>
-            {/* {!data.data.vaultClosed ? (
+            {!data.data.vaultClosed ? (
               <Button
                 mr={4}
                 onClick={() =>
                   closeSale({
                     userAddress: account,
-                    vaultContractAddress: data.data.vaultAddress,
+                    vaultContractAddress: data.data.vault,
                     stakeStartBlock: data.data.stakeStartBlock,
                     library: library,
                   })
@@ -93,10 +96,10 @@ export const ClaimOptionModal = () => {
                 color={'black'}>
                 End sale
               </Button>
-            ) : null} */}
+            ) : null}
 
             <Button
-              // disabled={!data.data.vaultClosed}
+              disabled={!data.data.vaultClosed}
               onClick={() =>
                 claimReward({
                   userAddress: account,

@@ -1,6 +1,6 @@
 import {Container, Flex, SimpleGrid, Stack, Button} from '@chakra-ui/react';
 import {Head} from 'components/SEO';
-import {Fragment, useReducer} from 'react';
+import {Fragment} from 'react';
 import {TokenComponent} from './TokenComponent';
 import {Animation} from './Animation';
 import {IconTopArrow} from 'components/Icons/IconTopArrow';
@@ -8,15 +8,8 @@ import {useAppSelector} from 'hooks/useRedux';
 import {selectStakes} from '../Staking/staking.reducer';
 
 export const FLDstarter = () => {
-  // const [selected, setSelected] = useState<string>('hi');
-
-  // const select = (selectedItem: string) => {
-  //   setSelected(selectedItem);
-  // }
-
   // @ts-ignore
-  const {data, loading} = useAppSelector(selectStakes);
-  console.log(data);
+  const {data} = useAppSelector(selectStakes);
 
   return (
     <Fragment>
@@ -26,13 +19,7 @@ export const FLDstarter = () => {
         <Container maxW={'6xl'} py={12}>
           <SimpleGrid minChildWidth={350} gap={30}>
             {data.map((item, index) => (
-              <TokenComponent
-                phase={item.name}
-                period={item.period}
-                token={item.token}
-                stakedAmount={item.stakeBalanceTON}
-                key={index}
-              />
+              <TokenComponent data={item} key={index} />
             ))}
           </SimpleGrid>
         </Container>

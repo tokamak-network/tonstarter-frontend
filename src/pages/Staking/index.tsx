@@ -28,6 +28,7 @@ import {
 import {AppDispatch} from 'store';
 import {openModal} from 'store/modal.reducer';
 import {ManageModal} from './StakeOptionModal/manage';
+import {StakeInLayer2Modal} from './StakeOptionModal/stakeInLayer2';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
@@ -97,7 +98,9 @@ const WalletInformation: FC<WalletInformationProps> = ({
             isDisabled={btnDisabled}
             color={'white.100'}
             fontSize={'14px'}
-            onClick={() => dispatch(openModal({type: 'manage'}))}>
+            onClick={() =>
+              dispatch(openModal({type: 'manage', data: payload}))
+            }>
             Manage
           </Button>
         </Grid>
@@ -107,11 +110,13 @@ const WalletInformation: FC<WalletInformationProps> = ({
 };
 export const Staking = () => {
   const dispatch = useAppDispatch();
+
   // @ts-ignore
   const {data, loading} = useAppSelector(selectStakes);
   const {data: user} = useAppSelector(selectUser);
   // @ts-ignore
   const {data: appConfig} = useAppSelector(selectApp);
+
   const columns = useMemo(
     () => [
       {
@@ -161,18 +166,7 @@ export const Staking = () => {
 
   const renderRowSubComponent = useCallback(
     ({row}) => {
-      const {account, library, contractAddress} = row.original;
-
-      // dispatch(
-      //   fetchStakes({
-      //     contractAddress,
-      //     library,
-      //     account,
-      //     chaindId: 4,
-      //     type: 'detail',
-      //   }) as any,
-      // );
-
+      const {account} = row.original;
       return (
         <Flex
           mt={0}
@@ -217,7 +211,7 @@ export const Staking = () => {
               dispatch={dispatch}
               data={data[row.id]}
               user={user}
-              account={account}
+              account={account!}
             />
           </Box>
           <Flex
@@ -291,6 +285,7 @@ export const Staking = () => {
       <UnstakeOptionModal />
       <ClaimOptionModal />
       <ManageModal />
+      <StakeInLayer2Modal />
     </Fragment>
   );
 };
