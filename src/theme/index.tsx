@@ -66,6 +66,16 @@ const colors = {
   },
 };
 
+const modalStyle = {
+  modalContent: `
+    fontFamily={theme.fonts.roboto}
+    bg={colorMode === 'light' ? 'white.100' : 'black.200'}
+    w="350px"
+    pt="25px"
+    pb="25px"
+  `,
+};
+
 const theme = extendTheme({
   styles: {
     global: (props) => {
@@ -162,6 +172,7 @@ const theme = extendTheme({
   colors,
   fonts,
   breakpoints,
+  modalStyle,
 });
 
 export default theme;

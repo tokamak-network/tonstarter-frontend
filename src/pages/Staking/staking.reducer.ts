@@ -133,7 +133,7 @@ type unstakeFromLayer2Args = {
 type withdraw = {
   userAddress: string | null | undefined;
   contractAddress: string;
-  miningEndTime: string
+  miningEndTime: string;
   library: any;
   handleCloseModal: any;
 };
@@ -331,8 +331,8 @@ export const claimReward = async (args: claim) => {
   }
   if (currentBlock < saleEndTime) {
     return alert('Sale is not ended!');
-    } else if (canRewardAmount === '0.0') {
-      return alert('unsufficient reward');
+  } else if (canRewardAmount === '0.0') {
+    return alert('unsufficient reward');
   } else {
     const StakeTONContract = await new Contract(
       stakeContractAddress,
@@ -346,7 +346,7 @@ export const claimReward = async (args: claim) => {
     const signer = getSigner(library, userAddress);
     try {
       const receipt = await StakeTONContract.connect(signer)?.claim();
-      alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);;
+      alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
     } catch (err) {
       console.log(err);
     }
@@ -374,7 +374,9 @@ export const closeSale = async (args: endsale) => {
   if (currentBlock < miningEndTime) {
     const signer = getSigner(library, userAddress);
     try {
-      const receipt = await stakeVault.connect(signer)?.closeSale(vaultContractAddress);
+      const receipt = await stakeVault
+        .connect(signer)
+        ?.closeSale(vaultContractAddress);
       alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
     } catch (err) {
       console.log(err);
@@ -407,8 +409,8 @@ export const stakeToLayer2 = async (args: stakeToLayer2Args) => {
 
   if (currentBlock > endBlock - Number(globalWithdrawalDelay)) {
     return alert('staking period has ended'); // ToDo: comment check
-  } else if ( status === 'end') {
-    return alert('sale is not closed!') ;
+  } else if (status === 'end') {
+    return alert('sale is not closed!');
   } else if (tonBalance < tonAmount) {
     return alert('unsufficient balance!');
   } else {
@@ -418,7 +420,10 @@ export const stakeToLayer2 = async (args: stakeToLayer2Args) => {
     }
     const signer = getSigner(library, userAddress);
     try {
-      const receipt = await StakeTONContract.connect(signer).tokamakStaking(REACT_APP_TOKAMAK_LAYER2, amount);
+      const receipt = await StakeTONContract.connect(signer).tokamakStaking(
+        REACT_APP_TOKAMAK_LAYER2,
+        amount,
+      );
       console.log(receipt);
       alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
     } catch (err) {
@@ -445,15 +450,15 @@ export const unstakeL2 = async (args: unstakeFromLayer2Args) => {
   const tonAmount = convertToWei(amount);
   if (status === 'end') {
     try {
-      const receipt = await StakeTONContract.connect(signer).tokamakRequestUnStakingAll(
-        REACT_APP_TOKAMAK_LAYER2,
-      );
+      const receipt = await StakeTONContract.connect(
+        signer,
+      ).tokamakRequestUnStakingAll(REACT_APP_TOKAMAK_LAYER2);
       alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
     } catch (err) {
       console.log(err);
     }
   } else {
-    return alert('Sale is not ended yet!')
+    return alert('Sale is not ended yet!');
   }
 };
 
@@ -486,14 +491,20 @@ export const swapWTONtoTOS = async (args: unstakeFromLayer2Args) => {
       0,
       1,
     );
-    alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);;
+    alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
   } catch (err) {
     console.log(err);
   }
 };
 
 export const withdraw = async (args: withdraw) => {
-  const {userAddress, contractAddress, miningEndTime, library, handleCloseModal} = args;
+  const {
+    userAddress,
+    contractAddress,
+    miningEndTime,
+    library,
+    handleCloseModal,
+  } = args;
   if (userAddress === null || userAddress === undefined) {
     return;
   }
@@ -509,7 +520,7 @@ export const withdraw = async (args: withdraw) => {
       console.log(err);
     }
   } else {
-    return alert('not withdrawable time.')
+    return alert('not withdrawable time.');
   }
 };
 
@@ -543,7 +554,7 @@ export const fetchStakes = createAsyncThunk(
     const stakeList = stakeReq.datas;
 
     console.log('-----------api-----------');
-    // console.log(vaultReq);
+    console.log(vaultReq);
     // console.log(stakeList);
 
     const currentBlock = await rpc.getBlockNumber();
@@ -684,10 +695,7 @@ const fetchUserData = async (
   contractAddress: string,
 ) => {
   const res = await getUserInfo(library, account, contractAddress);
-  const {
-    userStaked,
-    userRewardTOS,
-  } = res;
+  const {userStaked, userRewardTOS} = res;
   return {
     userStaked,
     userRewardTOS,

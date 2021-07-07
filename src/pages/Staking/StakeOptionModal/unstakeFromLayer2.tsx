@@ -9,18 +9,29 @@ import {
   Button,
   Flex,
   Stack,
+  useTheme,
+  useColorMode,
+  Input,
 } from '@chakra-ui/react';
 import {unstakeL2} from '../staking.reducer';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
+import {useCallback, useState} from 'react';
 
 export const UnStakeFromLayer2Modal = () => {
   const {account, library} = useWeb3React();
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
+  const theme = useTheme();
+  const {colorMode} = useColorMode();
 
   let balance = data?.data?.myStakedL2;
+
+  const [value, setValue] = useState<number>(balance);
+
+  const handleChange = useCallback((e) => setValue(e.target.value), []);
+  const setMax = useCallback((_e) => setValue(balance), [balance]);
 
   return (
     <Modal
@@ -28,57 +39,95 @@ export const UnStakeFromLayer2Modal = () => {
       isCentered
       onClose={() => dispatch(closeModal())}>
       <ModalOverlay />
-      <ModalContent>
-        <ModalBody>
-          <Box my={3} textAlign="center">
+      <ModalContent
+        fontFamily={theme.fonts.roboto}
+        bg={colorMode === 'light' ? 'white.100' : 'black.200'}
+        w="350px"
+        pt="25px"
+        pb="25px">
+        <ModalBody p={0}>
+          <Box
+            pb={'1.250em'}
+            borderBottom={
+              colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
+            }>
             <Heading
-              fontWeight={'normal'}
-              fontSize={'3xl'}
+              fontSize={'1.250em'}
+              fontWeight={'bold'}
+              fontFamily={theme.fonts.titil}
+              color={colorMode === 'light' ? 'gray.250' : 'white.100'}
               textAlign={'center'}>
               Unstake From Tokamak
             </Heading>
+            <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
+              You can earn TON and POWER
+            </Text>
           </Box>
 
           <Stack
+            pt="27px"
             as={Flex}
-            py={10}
             flexDir={'row'}
             justifyContent={'center'}
             alignItems={'center'}
             w={'full'}>
-            <Text
+            <Input
               variant={'outline'}
               borderWidth={0}
               textAlign={'center'}
               fontWeight={'bold'}
               fontSize={'4xl'}
-              width={'xs'}
+              value={value}
+              w="60%"
               mr={6}
+              onChange={handleChange}
               _focus={{
                 borderWidth: 0,
-              }}>
-              {balance ? balance : '0.00'} TON
-            </Text>
-          </Stack>
-
-          <Stack
-            pb={5}
-            as={Flex}
-            justifyContent={'center'}
-            alignItems={'center'}>
-            <Box textAlign={'center'}>
-              <Text>Available Balance</Text>
-              <Text>{balance ? balance : '0.00'} TON</Text>
+              }}
+            />
+            <Box position={'absolute'} right={5}>
+              <Button
+                onClick={setMax}
+                type={'button'}
+                variant="outline"
+                _focus={{
+                  outline: 'none',
+                }}>
+                Max
+              </Button>
             </Box>
           </Stack>
 
-          <Box py={4} as={Flex} justifyContent={'center'}>
+          <Stack
+            as={Flex}
+            justifyContent={'center'}
+            alignItems={'center'}
+            borderBottom={
+              colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
+            }
+            mb={'25px'}>
+            <Box textAlign={'center'} pt="33px" pb="13px">
+              <Text fontWeight={500} fontSize={'0.813em'} color={'gray.400'}>
+                TON Balance
+              </Text>
+              <Text
+                fontSize={'18px'}
+                color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
+                {balance} TON
+              </Text>
+            </Box>
+          </Stack>
+
+          <Box as={Flex} justifyContent={'center'}>
             <Button
-              type={'submit'}
+              w={'150px'}
+              bg={'blue.500'}
+              color="white.100"
+              fontSize="14px"
               onClick={() =>
                 unstakeL2({
-                  userAddress:account, 
-                  amount: data.data.myStakedL2,
+                  userAddress: account,
+                  amount: value.toString(),
                   contractAddress: data.data.contractAddress,
                   status: data?.data?.status,
                   library: library,

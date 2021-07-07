@@ -10,13 +10,15 @@ import {
   Flex,
   Input,
   Stack,
-  useTheme
+  useTheme,
+  useColorMode,
 } from '@chakra-ui/react';
 import React, {useCallback, useState} from 'react';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
 import {stakePaytoken} from '../staking.reducer';
+import {convertNumber} from 'utils/number';
 
 export const StakeOptionModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -26,28 +28,33 @@ export const StakeOptionModal = () => {
   let balance = data?.data?.user?.balance;
   const [value, setValue] = useState<string>('0');
   const theme = useTheme();
+  const {colorMode} = useColorMode();
 
-  const addComma = (inputVal:string) => {
-    if(inputVal.length > 0 && value.substring(0, 1) === '0' ) {
-      if(inputVal.split('.').length > 1) {
+  const addComma = (inputVal: string) => {
+    if (inputVal.length > 0 && value.substring(0, 1) === '0') {
+      if (inputVal.split('.').length > 1) {
         return setValue(inputVal);
       }
-      return setValue(value.substring(1, 2))
+      return setValue(value.substring(1, 2));
     }
-    if(inputVal === '.') {
-      setValue(inputVal)
+    if (inputVal === '.') {
+      setValue(inputVal);
     } else {
-      setValue(inputVal.replace(/[^0-9a-zA-Z.]/g, '')
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+      setValue(
+        inputVal
+          .replace(/[^0-9a-zA-Z.]/g, '')
+          .replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+      );
     }
-  }
+  };
 
-  const handleChange = useCallback(e => addComma(e.target.value), []);
-  const setMax = useCallback(_e => setValue(balance), [balance]);
+  const handleChange = (e: any) => addComma(e.target.value);
+  const setMax = useCallback((_e) => setValue(balance), [balance]);
 
-  const handleCloseModal = useCallback(() => dispatch(closeModal()), [
-    dispatch,
-  ]);
+  const handleCloseModal = useCallback(
+    () => dispatch(closeModal()),
+    [dispatch],
+  );
 
   return (
     <Modal
@@ -56,30 +63,32 @@ export const StakeOptionModal = () => {
       onClose={handleCloseModal}>
       <ModalOverlay />
       <ModalContent
-      fontFamily={theme.fonts.roboto}
-      w="350px"
-      pt="25px"
-      pb="25px"
-      >
+        fontFamily={theme.fonts.roboto}
+        bg={colorMode === 'light' ? 'white.100' : 'black.200'}
+        w="350px"
+        pt="25px"
+        pb="25px">
         <ModalBody p={0}>
-          <Box t
-           pb={'1.250em'} borderBottom="1px solid #f4f6f8">
+          <Box
+            pb={'1.250em'}
+            borderBottom={
+              colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
+            }>
             <Heading
-            fontSize={'1.250em'}
-            fontWeight={'bold'}
-            fontFamily={theme.fonts.titil}
-            color={'gray.250'}
-            textAlign={'center'}
-            >
+              fontSize={'1.250em'}
+              fontWeight={'bold'}
+              fontFamily={theme.fonts.titil}
+              color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+              textAlign={'center'}>
               Stake
             </Heading>
-            <Text color="gray.175" fontSize={'0.750em'}
-            textAlign={'center'}
-            >You can earn TON and POWER</Text>
+            <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
+              You can earn TON and POWER
+            </Text>
           </Box>
 
           <Stack
-          pt="27px"
+            pt="27px"
             as={Flex}
             flexDir={'row'}
             justifyContent={'center'}
@@ -116,32 +125,32 @@ export const StakeOptionModal = () => {
             as={Flex}
             justifyContent={'center'}
             alignItems={'center'}
-            borderBottom="1px solid #f4f6f8"
-            >
-            <Box textAlign={'center'}
-            pt="33px"
-            pb="13px"
-            >
-              <Text 
-              fontWeight={500}
-              fontSize={'0.813em'} color={'gray.400'}
-              >TON Balance</Text>
-              <Text fontSize={'18px'} color="gray.250">
+            borderBottom={
+              colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
+            }
+            mb={'25px'}>
+            <Box textAlign={'center'} pt="33px" pb="13px">
+              <Text fontWeight={500} fontSize={'0.813em'} color={'gray.400'}>
+                TON Balance
+              </Text>
+              <Text
+                fontSize={'18px'}
+                color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
                 {balance} TON
               </Text>
             </Box>
           </Stack>
 
-          <Box as={Flex} justifyContent={'center'} mt={'25px'}>
+          <Box as={Flex} justifyContent={'center'}>
             <Button
-            w={'150px'}
-            bg={'blue.500'}
-            color="white.100"
-            fontSize="14px"
+              w={'150px'}
+              bg={'blue.500'}
+              color="white.100"
+              fontSize="14px"
               onClick={() =>
                 stakePaytoken({
                   userAddress: account,
-                  amount: value.replaceAll(",", ""),
+                  amount: value.replaceAll(',', ''),
                   payToken: data.data.token,
                   saleStartTime: data.data.saleStartTime,
                   library: library,

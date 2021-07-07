@@ -10,22 +10,20 @@ import {
   Flex,
   Stack,
   Grid,
-  useTheme
+  useTheme,
+  useColorMode,
 } from '@chakra-ui/react';
 import {closeSale} from '../staking.reducer';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {
-  closeModal,
-  openModal,
-  selectModalType,
-} from 'store/modal.reducer';
+import {closeModal, openModal, selectModalType} from 'store/modal.reducer';
 
 export const ManageModal = () => {
   const {account, library} = useWeb3React();
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
   const theme = useTheme();
+  const {colorMode} = useColorMode();
   let balance = data?.data?.user?.balance;
   console.log(data?.data);
 
@@ -33,28 +31,32 @@ export const ManageModal = () => {
     <Modal
       isOpen={data.modal === 'manage' ? true : false}
       isCentered
-      onClose={() => dispatch(closeModal())}
-      
-    >
+      onClose={() => dispatch(closeModal())}>
       <ModalOverlay />
-      <ModalContent 
+      <ModalContent
         w={'21.875em'}
         fontFamily={theme.fonts.roboto}
-        pt={'1.250em'} 
-        pb={'1.563em'}
-    >
+        bg={colorMode === 'light' ? 'white.100' : 'black.200'}
+        pt={'1.250em'}
+        pb={'1.563em'}>
         <ModalBody p={0}>
-          <Box textAlign="center" pb={'1.250em'} borderBottom="1px solid #f4f6f8">
+          <Box
+            textAlign="center"
+            pb={'1.250em'}
+            borderBottom={
+              colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
+            }>
             <Heading
               fontSize={'1.250em'}
               fontWeight={'bold'}
               fontFamily={theme.fonts.titil}
-              color={'gray.250'}
-              textAlign={'center'}
-              >
+              color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+              textAlign={'center'}>
               Manage
             </Heading>
-            <Text color="gray.175" fontSize={'0.750em'}>You can manage tokens</Text>
+            <Text color="gray.175" fontSize={'0.750em'}>
+              You can manage tokens
+            </Text>
           </Box>
 
           <Stack
@@ -63,96 +65,132 @@ export const ManageModal = () => {
             pl={'1.875em'}
             pr={'1.875em'}
             justifyContent={'center'}
-            alignItems={'center'}>
+            alignItems={'center'}
+            mb={'25px'}>
             <Box textAlign={'center'}>
-              <Text fontSize={'0.813em'} color={'blue.300'} mb={'1.125em'}>Available balance</Text>
-              <Text fontSize={'2em'}>{balance} <span style={{fontSize: '13px'}}>TON</span></Text>
+              <Text fontSize={'0.813em'} color={'blue.300'} mb={'1.125em'}>
+                Available balance
+              </Text>
+              <Text fontSize={'2em'}>
+                {balance} <span style={{fontSize: '13px'}}>TON</span>
+              </Text>
             </Box>
-            <Box display={'flex'} justifyContent="space-between"
-            flexDir="column"
-            w={'100%'}
-            >
-              <Flex justifyContent="space-between"
-              alignItems="center"
-              h="55px"
-              >
-                <Text color={'gray.400'} fontSize="13px"
-                fontWeight={500}>Total</Text>
-              <Text color="gray.250"
-              fontWeight={500}
-              fontSize={'18px'}
-              >{data.data.totalStakedAmount} TON</Text>
+            <Box
+              display={'flex'}
+              justifyContent="space-between"
+              flexDir="column"
+              w={'100%'}
+              borderBottom={
+                colorMode === 'light'
+                  ? '1px solid #f4f6f8'
+                  : '1px solid #373737'
+              }>
+              <Flex justifyContent="space-between" alignItems="center" h="55px">
+                <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
+                  Total
+                </Text>
+                <Text
+                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+                  fontWeight={500}
+                  fontSize={'18px'}>
+                  {data.data.totalStakedAmount} TON
+                </Text>
               </Flex>
-              <Flex justifyContent="space-between"
-              alignItems="center"
-              h="55px"
-              >
-                <Text color={'gray.400'} fontSize="13px"
-                fontWeight={500}>Staked in Layer 2</Text>
-              <Text color="gray.250"
-              fontWeight={500}
-              fontSize={'18px'}
-              >{data.data.stakeContractBalanceWton} TON</Text>
+              <Flex justifyContent="space-between" alignItems="center" h="55px">
+                <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
+                  Staked in Layer 2
+                </Text>
+                <Text
+                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+                  fontWeight={500}
+                  fontSize={'18px'}>
+                  {data.data.stakeContractBalanceWton} TON
+                </Text>
               </Flex>
-              <Flex justifyContent="space-between"
-              alignItems="center"
-              h="55px"
-              >
-                <Text color={'gray.400'} fontSize="13px"
-                fontWeight={500}>Pending UnStaked in Layer 2</Text>
-                 <Text color="gray.250"
-              fontWeight={500}
-              fontSize={'18px'}
-              >{data.data.totalPendingUnstakedAmount} TON</Text>
+              <Flex justifyContent="space-between" alignItems="center" h="55px">
+                <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
+                  Pending UnStaked in Layer 2
+                </Text>
+                <Text
+                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+                  fontWeight={500}
+                  fontSize={'18px'}>
+                  {data.data.totalPendingUnstakedAmountL2} TON
+                </Text>
               </Flex>
-              </Box>
+            </Box>
           </Stack>
 
-          <Grid templateColumns={'repeat(2, 1fr)'} pl="19px" pr="19px" gap={'12px'}>
+          <Grid
+            templateColumns={'repeat(2, 1fr)'}
+            pl="19px"
+            pr="19px"
+            gap={'12px'}>
             {/* <Button colorScheme="blue" onClick={() => toggleModal('stakeL2')}> */}
-            <Button 
-            width='150px'
-            bg={'blue.400'}
-            color={'white.100'}
-            fontSize={'12px'}
-            onClick={() => dispatch(openModal({type: 'stakeL2', data: data.data}))}>
+            <Button
+              width="150px"
+              bg={'blue.500'}
+              color={'white.100'}
+              fontSize={'0.750em'}
+              fontWeight={100}
+              onClick={() =>
+                dispatch(openModal({type: 'stakeL2', data: data.data}))
+              }>
               Stake in Layer2
             </Button>
-            <Button width='150px'
-            bg={'blue.400'}
-            color={'white.100'}
-            fontSize={'12px'} onClick={() => dispatch(openModal({type: 'unstakeL2', data: data.data}))}>
+            <Button
+              width="150px"
+              bg={'blue.500'}
+              color={'white.100'}
+              fontSize={'12px'}
+              fontWeight={100}
+              onClick={() =>
+                dispatch(openModal({type: 'unstakeL2', data: data.data}))
+              }>
               Unstake from Layer2
             </Button>
-            <Button width='150px'
-            bg={'blue.400'}
-            color={'white.100'}
-            fontSize={'12px'} onClick={() => dispatch(openModal({type: 'withdraw', data: data.data}))}>
+            <Button
+              width="150px"
+              bg={'blue.500'}
+              color={'white.100'}
+              fontSize={'12px'}
+              fontWeight={100}
+              onClick={() =>
+                dispatch(openModal({type: 'withdraw', data: data.data}))
+              }>
               Withdraw
             </Button>
-            <Button width='150px'
-            bg={'blue.400'}
-            color={'white.100'}
-            fontSize={'12px'}onClick={() => dispatch(openModal({type: 'swap', data: data.data}))}>
+            <Button
+              width="150px"
+              bg={'blue.500'}
+              color={'white.100'}
+              fontSize={'12px'}
+              fontWeight={100}
+              onClick={() =>
+                dispatch(openModal({type: 'swap', data: data.data}))
+              }>
               Swap
             </Button>
-            <Button
-            width='150px'
-            bg={'blue.400'}
-            color={'white.100'}
-            fontSize={'12px'}
-              // disabled={!data.data.vaultClosed}
-              onClick={() =>
-                closeSale({
-                  userAddress: account,
-                  vaultContractAddress: data.data.vault,
-                  miningEndTime: data.data.miningEndTime,
-                  library: library,
-                  handleCloseModal: dispatch(closeModal()),
-                })
-              }>
-              End Sale
-            </Button>
+            <Flex w="200%" justifyContent="center">
+              <Button
+                width="150px"
+                bg={'blue.500'}
+                color={'white.100'}
+                fontSize={'12px'}
+                fontWeight={100}
+                // disabled={!data.data.vaultClosed}
+                onClick={() =>
+                  closeSale({
+                    userAddress: account,
+                    vaultContractAddress: data.data.vault,
+                    miningEndTime: data.data.miningEndTime,
+                    library: library,
+                    handleCloseModal: dispatch(closeModal()),
+                  })
+                }>
+                End Sale
+              </Button>
+            </Flex>
           </Grid>
         </ModalBody>
       </ModalContent>

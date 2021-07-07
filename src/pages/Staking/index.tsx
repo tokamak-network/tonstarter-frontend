@@ -1,5 +1,6 @@
 import {
   Container,
+  Center,
   Box,
   Text,
   Heading,
@@ -38,7 +39,8 @@ import {useState} from 'react';
 import {useLocalStorage} from 'hooks/useStorage';
 import {useEffect} from 'react';
 import {Stake, fetchManageModalPayload} from './staking.reducer';
-import {ModalType} from "store/modal.reducer"
+import {ModalType} from 'store/modal.reducer';
+import {LoadingComponent} from 'components/Loading';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
@@ -110,6 +112,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
   account,
 }) => {
   const {colorMode} = useColorMode();
+  const [loading, setLoading] = useState(false);
   const btnDisabled = account === undefined ? true : false;
 
   const modalPayload = async () => {
@@ -123,20 +126,31 @@ const WalletInformation: FC<WalletInformationProps> = ({
   };
 
   const modalData = useCallback(async (modal: ModalType) => {
+    setLoading(true);
     let payload;
 
-    if (modal === 'manage' || modal === 'claim') {
-      const payloadModal = await modalPayload();
-      payload = {
-        ...data, ...payloadModal, user
+    try {
+      if (modal === 'manage' || modal === 'claim') {
+        const payloadModal = await modalPayload();
+        payload = {
+          ...data,
+          ...payloadModal,
+          user,
+        };
+      } else {
+        payload = {
+          ...data,
+          user,
+        };
       }
-    } else {
-      payload = {
-        ...data, user,
-      }
+    } catch (e) {
+      console.log(e);
+      setLoading(false);
     }
+
     console.log(modal);
-    
+
+    setLoading(false);
     dispatch(openModal({type: modal, data: payload}));
   }, []);
 
@@ -155,43 +169,56 @@ const WalletInformation: FC<WalletInformationProps> = ({
             Available in wallet
           </Text>
         </Box>
-        <Grid templateColumns={'repeat(2, 1fr)'} gap={6}>
+        <Grid pos="relative" templateColumns={'repeat(2, 1fr)'} gap={6}>
           <Button
-            colorScheme="blue"
+            bg="blue.500"
             isDisabled={btnDisabled}
             color={'white.100'}
             fontSize={'14px'}
+            opacity={loading === true ? 0.5 : 1}
             onClick={() => modalData('stake')}>
             Stake
           </Button>
           <Button
-            colorScheme="blue"
+            bg="blue.500"
             isDisabled={btnDisabled}
             color={'white.100'}
             fontSize={'14px'}
-            onClick={() =>
-              modalData('unstake')
-            }>
+            opacity={loading === true ? 0.5 : 1}
+            onClick={() => modalData('unstake')}>
             Unstake
           </Button>
           <Button
-            colorScheme="blue"
+            bg="blue.500"
             isDisabled={btnDisabled}
             color={'white.100'}
             fontSize={'14px'}
+            opacity={loading === true ? 0.5 : 1}
             onClick={() => modalData('claim')}>
             Claim
           </Button>
           <Button
-            colorScheme="blue"
+            bg="blue.500"
             isDisabled={btnDisabled}
             color={'white.100'}
             fontSize={'14px'}
-            onClick={() =>
-              modalData('manage')
-            }>
+            opacity={loading === true ? 0.5 : 1}
+            onClick={() => modalData('manage')}>
             Manage
           </Button>
+          {loading === true ? (
+            <Flex
+              pos="absolute"
+              zIndex={100}
+              w="100%"
+              h="100%"
+              alignItems="cneter"
+              justifyContent="center">
+              <Center>
+                <LoadingComponent></LoadingComponent>
+              </Center>
+            </Flex>
+          ) : null}
         </Grid>
       </Box>
     </Container>
