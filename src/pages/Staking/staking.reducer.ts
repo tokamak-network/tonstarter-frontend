@@ -9,6 +9,7 @@ import * as StakeTON from 'services/abis/StakeTON.json';
 import * as DepositManagerABI from 'services/abis/DepositManager.json';
 import {formatEther} from '@ethersproject/units';
 import {period} from 'utils/timeStamp';
+import {range} from 'lodash';
 
 import {
   REACT_APP_TOKAMAK_LAYER2,
@@ -692,6 +693,7 @@ export const fetchWithdrawPayload = async (
   account: string,
   contractAddress: string,
 ) => {
+  console.log(contractAddress)
   try {
     const res = await getWithdrawableInfo(library, account, contractAddress);
     return res;
@@ -705,13 +707,35 @@ const getWithdrawableInfo = async (
   account: string,
   contractAddress: string,
 ) => {
-  const depositManager = getTokamakContract('DepositManager');
+  try {
+    const blockNumber = await getRPC().getBlockNumber();
+    const depositManager = getTokamakContract('DepositManager');
+    console.log(depositManager)
+    console.log(REACT_APP_TOKAMAK_LAYER2);
+    console.log(contractAddress);
+    try {const numPendingRequests = await depositManager.numPendingRequests(REACT_APP_TOKAMAK_LAYER2, contractAddress);} catch (err) {console.log(err)}
+    try {let requestIndex = await depositManager.withdrawalRequestIndex(REACT_APP_TOKAMAK_LAYER2, contractAddress);} catch (err) {console.log(err)}
+    // try {} catch (err) {console.log(err)}
+    // try {} catch (err) {console.log(err)}
+    // try {} catch (err) {console.log(err)}
+    const numPendingRequests = await depositManager.numPendingRequests(REACT_APP_TOKAMAK_LAYER2, contractAddress);
+    let requestIndex = await depositManager.withdrawalRequestIndex(REACT_APP_TOKAMAK_LAYER2, contractAddress);
+    const pendingRequests = [];
+    for (const _ of range(numPendingRequests)) {
+      pendingRequests.push(depositManager.withdrawalRequest(depositManager, contractAddress, requestIndex));
+      requestIndex++;
+    }
+    const withdrawableRequests = pendingRequests.filter(request => parseInt(request.withdrawableBlockNumber) <= blockNumber);
+    console.log(withdrawableRequests)
+  } catch (err) {
+    console.log(err)
+  }
   return Promise.all([
-    depositManager.numPendingRequests(REACT_APP_TOKAMAK_LAYER2, contractAddress),
+    // depositManager.numPendingRequests(REACT_APP_TOKAMAK_LAYER2, contractAddress),
     // depositManager.withdrawalRequestIndex(REACT_APP_TOKAMAK_LAYER2, contractAddress),
   ]).then((result) => {
     return {
-      requestNum: result[0],
+      // requestNum: result[0],
       // requestIndex: result[1],
     }
   })
