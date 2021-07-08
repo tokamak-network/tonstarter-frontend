@@ -581,8 +581,8 @@ export const fetchStakes = createAsyncThunk(
     let projects: any[] = [];
 
     const chainIdforFetch = chainId === undefined ? '4' : chainId;
-    const fetchValutUrl = `https://api.tokamak.network/v1/vaults?chainId=${chainIdforFetch}`;
-    const fetchStakeUrl = `https://api.tokamak.network/v1/stakecontracts?chainId=${chainIdforFetch}`;
+    const fetchValutUrl = `http://3.36.66.138:4000/v1/vaults?chainId=${chainIdforFetch}`;
+    const fetchStakeUrl = `http://3.36.66.138:4000/v1/stakecontracts?chainId=${chainIdforFetch}`;
     // let iERC20: any;
 
     // @ts-ignore
