@@ -20,6 +20,7 @@
     "@web3-react/network-connector": "^6.1.9",
     "@web3-react/walletconnect-connector": "^6.1.9",
     "@web3-react/walletlink-connector": "^6.1.9",
+    "axios": "^0.21.1",
     "ethers": "^5.2.0",
     "framer-motion": "^4.1.4",
     "history": "^5.0.0",
