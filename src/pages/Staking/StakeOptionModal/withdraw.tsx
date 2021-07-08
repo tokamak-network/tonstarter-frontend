@@ -29,10 +29,10 @@ export const WithdrawalOptionModal = () => {
   const handleChange = useCallback((e) => setValue(e.target.value), []);
   const withdrawalDelay = data?.data?.globalWithdrawalDelay;
 
-  const handleCloseModal = useCallback(
-    () => dispatch(closeModal()),
-    [dispatch],
-  );
+  const handleCloseModal = useCallback(() => {
+    dispatch(closeModal());
+    setValue(0);
+  }, [dispatch]);
 
   return (
     <Modal

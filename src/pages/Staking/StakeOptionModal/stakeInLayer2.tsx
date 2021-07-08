@@ -32,11 +32,16 @@ export const StakeInLayer2Modal = () => {
   const handleChange = useCallback((e) => setValue(e.target.value), []);
   const setMax = useCallback((_e) => setValue(balance), [balance]);
 
+  const handleCloseModal = useCallback(() => {
+    dispatch(closeModal());
+    setValue(0);
+  }, [dispatch]);
+
   return (
     <Modal
       isOpen={data.modal === 'stakeL2' ? true : false}
       isCentered
-      onClose={() => dispatch(closeModal())}>
+      onClose={handleCloseModal}>
       <ModalOverlay />
       <ModalContent
         fontFamily={theme.fonts.roboto}
