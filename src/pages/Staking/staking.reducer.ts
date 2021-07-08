@@ -500,7 +500,6 @@ export const unstakeL2 = async (args: unstakeFromLayer2Args) => {
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
   // const depositManager = new Contract(REACT_APP_DEPOSIT_MANAGER, DepositManagerABI.abi, rpc);
   const wtonAmount = utils.parseUnits(amount, '27');
-  console.log(wtonAmount);
   // if (status === 'end') {
     try {
       const receipt = await StakeTONContract.connect(
@@ -536,8 +535,6 @@ export const swapWTONtoTOS = async (args: unstakeFromLayer2Args) => {
 
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
   const amountRay = toBN(amount).mul(toBN(ray));
-  console.log(amountRay);
-  console.log(amountRay.toString());
   const signer = getSigner(library, userAddress);
   const deadline = Date.now() / 1000 + 900;
   let amountOutMinimum = toBN('0');

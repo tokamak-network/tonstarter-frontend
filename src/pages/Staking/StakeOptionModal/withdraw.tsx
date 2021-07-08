@@ -29,7 +29,6 @@ export const WithdrawalOptionModal = () => {
 
   let balance = data?.data?.user?.stakeBalanceTON;
   const [value, setValue] = useState<number>(balance);
-  console.log(data);
 
   const handleChange = useCallback(e => setValue(e.target.value), []);
   const withdrawalDelay = data?.data?.globalWithdrawalDelay;
