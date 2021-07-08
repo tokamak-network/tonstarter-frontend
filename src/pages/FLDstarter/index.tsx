@@ -25,8 +25,6 @@ export const FLDstarter = () => {
   // @ts-ignore
   const {data, loading} = useAppSelector(selectStakes);
 
-  console.log(loading);
-
   return (
     <Fragment>
       <Head title={'TON Starter'} />
