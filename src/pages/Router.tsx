@@ -22,6 +22,12 @@ export const Router: FC<RouterProps> = () => {
   const {onOpen, isOpen: isModalOpen, onClose} = useDisclosure();
   const {account, chainId, library, deactivate} = useWeb3React();
 
+  //@ts-ignore
+  const accountStorage = JSON.parse(window.localStorage.getItem('account'));
+  if (accountStorage === null) {
+    window.localStorage.setItem('account', JSON.stringify({signIn: false}));
+  }
+
   useEffect(() => {
     if (account && chainId) {
       //@ts-ignore
@@ -40,7 +46,6 @@ export const Router: FC<RouterProps> = () => {
       if (signIn === false) {
         deactivate();
       } else if (signIn === true) {
-        console.log('gogo');
         if (chainId !== 4) {
           deactivate();
           window.localStorage.setItem(

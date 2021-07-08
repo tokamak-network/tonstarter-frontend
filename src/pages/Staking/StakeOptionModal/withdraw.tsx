@@ -23,15 +23,16 @@ export const WithdrawalOptionModal = () => {
   const {account, library} = useWeb3React();
 
   let balance = data?.data?.user?.stakeBalanceTON;
+  /*eslint-disable */
   const [value, setValue] = useState<number>(balance);
 
   const handleChange = useCallback((e) => setValue(e.target.value), []);
   const withdrawalDelay = data?.data?.globalWithdrawalDelay;
 
-  const handleCloseModal = useCallback(
-    () => dispatch(closeModal()),
-    [dispatch],
-  );
+  const handleCloseModal = useCallback(() => {
+    dispatch(closeModal());
+    setValue(0);
+  }, [dispatch]);
 
   return (
     <Modal

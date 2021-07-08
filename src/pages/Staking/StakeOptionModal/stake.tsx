@@ -52,10 +52,10 @@ export const StakeOptionModal = () => {
   const handleChange = (e: any) => addComma(e.target.value);
   const setMax = useCallback((_e) => setValue(balance), [balance]);
 
-  const handleCloseModal = useCallback(
-    () => dispatch(closeModal()),
-    [dispatch],
-  );
+  const handleCloseModal = useCallback(() => {
+    dispatch(closeModal());
+    setValue('0');
+  }, [dispatch]);
 
   return (
     <Modal
@@ -157,7 +157,7 @@ export const StakeOptionModal = () => {
                   library: library,
                   stakeContractAddress: data.data.contractAddress,
                   miningStartTime: data.data.miningStartTime,
-                  handleCloseModal: dispatch(closeModal()),
+                  handleCloseModal: handleCloseModal(),
                 })
               }>
               Stake

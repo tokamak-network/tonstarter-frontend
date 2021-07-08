@@ -32,11 +32,16 @@ export const UnStakeFromLayer2Modal = () => {
   const handleChange = useCallback((e) => setValue(e.target.value), []);
   const setMax = useCallback((_e) => setValue(balance), [balance]);
 
+  const handleCloseModal = useCallback(() => {
+    dispatch(closeModal());
+    setValue(0);
+  }, [dispatch]);
+
   return (
     <Modal
       isOpen={data.modal === 'unstakeL2' ? true : false}
       isCentered
-      onClose={() => dispatch(closeModal())}>
+      onClose={handleCloseModal}>
       <ModalOverlay />
       <ModalContent
         fontFamily={theme.fonts.roboto}
@@ -130,7 +135,7 @@ export const UnStakeFromLayer2Modal = () => {
                   contractAddress: data.data.contractAddress,
                   status: data?.data?.status,
                   library: library,
-                  handleCloseModal: dispatch(closeModal()),
+                  handleCloseModal: handleCloseModal(),
                 })
               }
               disabled={+balance <= 0}

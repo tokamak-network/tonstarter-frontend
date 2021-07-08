@@ -59,7 +59,7 @@ export const TokenComponent: FC<TokenComponentProps> = ({
       setTokenPrice(totalPrice.toFixed(2));
     }
     getPrice();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleNavigation = useCallback((type) => {
     history.push('./staking');
@@ -71,7 +71,7 @@ export const TokenComponent: FC<TokenComponentProps> = ({
       dispatch(openModal({type: 'stake', data: payload}));
     }
     window.scrollTo(0, 350 + index * 69);
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Container
