@@ -16,7 +16,7 @@ import {
 import {closeSale, fetchWithdrawPayload} from '../staking.reducer';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {useCallback} from 'react';
+import {useCallback, useState} from 'react';
 import {ModalType} from 'store/modal.reducer';
 import {closeModal, openModal, selectModalType} from 'store/modal.reducer';
 
@@ -28,30 +28,31 @@ export const ManageModal = () => {
   const {colorMode} = useColorMode();
   let balance = data?.data?.stakeContractBalanceTon;
   const address = data?.data?.contractAddress
-  console.log(address);
   
   const withdrawPayload = async () => {
-    console.log(data.data.contractAddress);
-    console.log(address);
+  
     const result = await fetchWithdrawPayload(
       data.data.library,
       data.data.account,
-      address,
+      data.data.contractAddress,
     );
 
     return result;
   };
-  console.log(data?.data)
+
   const withdrawData = useCallback(async (modal: ModalType) => {
     const payloadWithdraw = await withdrawPayload();
-    console.log(data);
-    const payload = {
-      ...data?.data,
-      ...payloadWithdraw,
-    };
-    console.log(payload);
-    dispatch(openModal({type: modal, data: data.data}));
-  }, []);
+    let payload;
+    try {
+      payload = {
+        ...data?.data,
+        withdrawableAmount: payloadWithdraw,
+      };
+    } catch (e) {
+      console.log(e);
+    }
+    dispatch(openModal({type: modal, data: payload}));
+  }, [data]);
 
   return (
     <Modal
