@@ -2,11 +2,12 @@ import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {RootState} from 'store/reducers';
 import {getTokamakContract, getSigner, getRPC} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
-import {utils, ethers} from 'ethers';
+import {utils, ethers, BigNumber} from 'ethers';
 import {toWei, toBN} from 'web3-utils';
 import * as StakeVault from 'services/abis/Stake1Logic.json';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import {formatEther} from '@ethersproject/units';
+import {range} from 'lodash';
 import {period, toastWithReceipt} from 'utils';
 import {
   REACT_APP_TOKAMAK_LAYER2,
@@ -407,20 +408,20 @@ export const closeSale = async (args: endsale) => {
       }
     } catch (err) {
       store.dispatch(setTxPending({tx: false}));
-      if (err.message.indexOf('already closed')) {
-        store.dispatch(
-          //@ts-ignore
-          openToast({
-            payload: {
-              status: 'error',
-              title: 'Tx fail to send',
-              description: `it's already closed`,
-              duration: 5000,
-              isClosable: true,
-            },
-          }),
-        );
-      }
+      // if (err.message.indexOf('already closed')) {
+      //   store.dispatch(
+      //     //@ts-ignore
+      //     openToast({
+      //       payload: {
+      //         status: 'error',
+      //         title: 'Tx fail to send',
+      //         description: `it's already closed`,
+      //         duration: 5000,
+      //         isClosable: true,
+      //       },
+      //     }),
+      //   );
+      // }
       console.log(err);
     }
   } else {
@@ -498,21 +499,20 @@ export const unstakeL2 = async (args: unstakeFromLayer2Args) => {
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
   // const depositManager = new Contract(REACT_APP_DEPOSIT_MANAGER, DepositManagerABI.abi, rpc);
   const wtonAmount = utils.parseUnits(amount, '27');
-  console.log(wtonAmount);
   // if (status === 'end') {
-  try {
-    const receipt = await StakeTONContract.connect(
-      signer,
-    ).tokamakRequestUnStakingAll(REACT_APP_TOKAMAK_LAYER2, wtonAmount);
-    store.dispatch(setTxPending({tx: true}));
-    alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
-    if (receipt) {
+    try {
+      const receipt = await StakeTONContract.connect(
+        signer,
+      ).tokamakRequestUnStaking(REACT_APP_TOKAMAK_LAYER2, wtonAmount);
+      store.dispatch(setTxPending({tx: true}));
+      alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
+      if (receipt) {
+        store.dispatch(setTxPending({tx: false}));
+      }
+    } catch (err) {
       store.dispatch(setTxPending({tx: false}));
+      console.log(err);
     }
-  } catch (err) {
-    store.dispatch(setTxPending({tx: false}));
-    console.log(err);
-  }
   // } else {
   //   return alert('Sale is not ended yet!')
   // }
@@ -676,8 +676,25 @@ export const fetchWithdrawPayload = async (
   contractAddress: string,
 ) => {
   try {
-    const res = await getWithdrawableInfo(library, account, contractAddress);
-    return res;
+    const {requestNum, requestIndex} = await getWithdrawableInfo(library, account, contractAddress);
+    const depositManager = getTokamakContract('DepositManager');
+    const blockNumber = await getRPC().getBlockNumber();
+    const pendingRequests = [];
+    let index = requestIndex
+    for (const _ of range(requestNum)) {
+      pendingRequests.push(await depositManager.withdrawalRequest(REACT_APP_TOKAMAK_LAYER2, contractAddress, index));
+      index++;
+    }
+    const withdrawableRequests = pendingRequests.filter(request => parseInt(request.withdrawableBlockNumber) <= blockNumber);
+
+    const initialAmount = BigNumber.from('0')
+    const reducer = (amount:any, request:any) => amount.add(BigNumber.from(request.amount));
+
+    const withdrawableAmount = withdrawableRequests.reduce(reducer, initialAmount);
+    return convertNumber({
+      amount: withdrawableAmount,
+      type: 'ray',
+    });
   } catch (err) {
     console.log(err);
   }
@@ -688,20 +705,33 @@ const getWithdrawableInfo = async (
   account: string,
   contractAddress: string,
 ) => {
+  const blockNumber = await getRPC().getBlockNumber();
   const depositManager = getTokamakContract('DepositManager');
+
+  // const numPendingRequests = await depositManager.numPendingRequests(REACT_APP_TOKAMAK_LAYER2, contractAddress);
+  // let requestIndex = await depositManager.withdrawalRequestIndex(REACT_APP_TOKAMAK_LAYER2, contractAddress);
+  
+  // const withdrawableRequests = pendingRequests.filter(request => parseInt(request.withdrawableBlockNumber) <= blockNumber);
+
+  // const initialAmount = BigNumber.from('0')
+  // const reducer = (amount:any, request:any) => amount.add(BigNumber.from(request.amount));
+
+  // const withdrawableAmount = withdrawableRequests.reduce(reducer, initialAmount);
+  // console.log(withdrawableAmount);
+  // console.log(convertNumber({
+  //   amount: withdrawableAmount,
+  //   type: 'ray',
+  // }));
   return Promise.all([
-    depositManager.numPendingRequests(
-      REACT_APP_TOKAMAK_LAYER2,
-      contractAddress,
-    ),
-    // depositManager.withdrawalRequestIndex(REACT_APP_TOKAMAK_LAYER2, contractAddress),
+    depositManager.numPendingRequests(REACT_APP_TOKAMAK_LAYER2, contractAddress),
+    depositManager.withdrawalRequestIndex(REACT_APP_TOKAMAK_LAYER2, contractAddress),
   ]).then((result) => {
     return {
       requestNum: result[0],
-      // requestIndex: result[1],
-    };
-  });
-};
+      requestIndex: result[1],
+    }
+  })
+}
 
 export const fetchManageModalPayload = async (
   library: any,
