@@ -3,7 +3,7 @@ import {RootState} from 'store/reducers';
 import {getContract} from 'utils/contract';
 import * as ERC20 from 'services/abis/ERC20.json';
 import {REACT_APP_TON} from 'constants/index';
-import {formatEther} from '@ethersproject/units';
+import {convertNumber} from 'utils/number';
 
 export type User = {
   balance: string;
@@ -57,11 +57,13 @@ export const fetchUserInfo = createAsyncThunk(
     //   tosBalance = res[1];
     // });
 
-    const balance = formatEther(await contract.balanceOf(address));
+    const contractIserBalance = await contract.balanceOf(address);
+    const balance = convertNumber({amount: String(contractIserBalance)});
 
     const user: User = {
       address,
       library,
+      //@ts-ignore
       balance,
       // balance: tonBalance !== undefined ? formatEther(tonBalance) : '0',
       // tosBalance: tosBalance !== undefined ? formatEther(tosBalance) : '0',

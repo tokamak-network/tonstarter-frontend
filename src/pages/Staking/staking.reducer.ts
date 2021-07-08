@@ -588,8 +588,6 @@ export const fetchStakes = createAsyncThunk(
     // @ts-ignore
     const {currentRequestId, loading} = getState().stakes;
     if (loading !== 'pending' || requestId !== currentRequestId) {
-      console.log('peding || requestId && currentRequestId');
-      console.log(`${loading} || ${requestId} || ${currentRequestId}`);
       return;
     }
 
@@ -603,8 +601,8 @@ export const fetchStakes = createAsyncThunk(
 
     const stakeList = stakeReq.datas;
 
-    console.log('-----------api-----------');
-    console.log(vaultReq);
+    // console.log('-----------api-----------');
+    // console.log(vaultReq);
     // console.log(stakeList);
 
     const currentBlock = await rpc.getBlockNumber();

@@ -1,6 +1,6 @@
 import {ethers, BigNumber} from 'ethers';
 import Decimal from 'decimal.js';
-
+// eslint-disable-next-line
 type RoundFunc = {
   r_amount: string;
   r_maxDecimalDigits: number;
@@ -9,7 +9,7 @@ type RoundFunc = {
 
 type ConverNumberFunc = {
   type?: 'ray' | 'wei';
-  amount: string | undefined;
+  amount: string;
   round?: boolean;
   decimalPlaces?: number;
 };

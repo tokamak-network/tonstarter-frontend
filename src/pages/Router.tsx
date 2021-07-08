@@ -73,7 +73,6 @@ export const Router: FC<RouterProps> = () => {
     const accountStorage = JSON.parse(window.localStorage.getItem('account'));
     const {signIn} = accountStorage;
     if (account === undefined && signIn === false) {
-      console.log(account, library);
       dispatch(
         fetchStakes({
           library,
