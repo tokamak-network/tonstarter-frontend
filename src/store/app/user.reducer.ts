@@ -61,7 +61,6 @@ export const fetchUserInfo = createAsyncThunk(
     const contractIserBalance = await contract.balanceOf(address);
     const balance = convertNumber({amount: String(contractIserBalance)});
 
-    console.log(balance);
     const user: User = {
       address,
       library,

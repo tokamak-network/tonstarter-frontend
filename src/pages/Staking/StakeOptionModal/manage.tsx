@@ -39,7 +39,6 @@ export const ManageModal = () => {
 
   const withdrawData = useCallback(async () => {
     const payloadWithdraw = await withdrawPayload();
-    console.log(data);
     const payload = {
       ...data?.data,
       ...payloadWithdraw,

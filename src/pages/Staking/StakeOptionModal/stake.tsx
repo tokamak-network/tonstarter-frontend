@@ -30,11 +30,9 @@ export const StakeOptionModal = () => {
   const {colorMode} = useColorMode();
 
   const addComma = (inputVal: string) => {
-    console.log(inputVal.split('.')[1]?.length);
     if (inputVal.split('.')[1]?.length >= 3) {
       return;
     }
-    console.log(inputVal.split('.')[1]?.substring(0, 2));
     if (inputVal.length > 0 && value.substring(0, 1) === '0') {
       if (inputVal.split('.').length > 1) {
         return setValue(inputVal);

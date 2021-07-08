@@ -527,8 +527,6 @@ export const swapWTONtoTOS = async (args: unstakeFromLayer2Args) => {
 
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
   const amountRay = toBN(amount).mul(toBN(ray));
-  console.log(amountRay);
-  console.log(amountRay.toString());
   const signer = getSigner(library, userAddress);
   const deadline = Date.now() / 1000 + 900;
   try {
@@ -590,8 +588,6 @@ export const fetchStakes = createAsyncThunk(
     // @ts-ignore
     const {currentRequestId, loading} = getState().stakes;
     if (loading !== 'pending' || requestId !== currentRequestId) {
-      console.log('peding || requestId && currentRequestId');
-      console.log(`${loading} || ${requestId} || ${currentRequestId}`);
       return;
     }
 
@@ -605,8 +601,8 @@ export const fetchStakes = createAsyncThunk(
 
     const stakeList = stakeReq.datas;
 
-    console.log('-----------api-----------');
-    console.log(vaultReq);
+    // console.log('-----------api-----------');
+    // console.log(vaultReq);
     // console.log(stakeList);
 
     const currentBlock = await rpc.getBlockNumber();
