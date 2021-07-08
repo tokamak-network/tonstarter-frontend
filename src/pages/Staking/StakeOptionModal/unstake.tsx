@@ -80,7 +80,7 @@ export const UnstakeOptionModal = () => {
               _focus={{
                 borderWidth: 0,
               }}>
-              {balance ? balance : '0.00'}
+              {balance ? balance : '0.00'} TON
             </Text>
           </Stack>
 
