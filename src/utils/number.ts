@@ -1,6 +1,6 @@
 import {ethers, BigNumber} from 'ethers';
 import Decimal from 'decimal.js';
-
+// eslint-disable-next-line
 type RoundFunc = {
   r_amount: string;
   r_maxDecimalDigits: number;
