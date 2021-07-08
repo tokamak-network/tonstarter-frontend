@@ -146,7 +146,7 @@ export const StakingTable: FC<StakingTableProps> = ({
         }
       }
     }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const [isOpen, setIsOpen] = useState(
     contractAddress === undefined ? '' : contractAddress,
@@ -190,7 +190,7 @@ export const StakingTable: FC<StakingTableProps> = ({
 
   // }
 
-  if (isLoading === true) {
+  if (isLoading === true || data.length === 0) {
     return (
       <Center>
         <LoadingComponent />

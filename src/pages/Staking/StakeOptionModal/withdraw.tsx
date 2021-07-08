@@ -8,7 +8,6 @@ import {
   Text,
   Button,
   Flex,
-  Input,
   Stack,
   useTheme,
   useColorMode,
@@ -18,7 +17,7 @@ import React, {useCallback, useState} from 'react';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
-import { withdraw } from '../staking.reducer';
+import {withdraw} from '../staking.reducer';
 
 export const WithdrawalOptionModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -28,15 +27,17 @@ export const WithdrawalOptionModal = () => {
   const {colorMode} = useColorMode();
 
   let balance = data?.data?.user?.stakeBalanceTON;
+  /*eslint-disable */
   const [value, setValue] = useState<number>(balance);
 
-  const handleChange = useCallback(e => setValue(e.target.value), []);
+  const handleChange = useCallback((e) => setValue(e.target.value), []);
   const withdrawalDelay = data?.data?.globalWithdrawalDelay;
   const withdrawableBalance = data?.data?.withdrawableAmount;
 
-  const handleCloseModal = useCallback(() => dispatch(closeModal()), [
-    dispatch,
-  ]);
+  const handleCloseModal = useCallback(() => {
+    dispatch(closeModal());
+    setValue(0);
+  }, [dispatch]);
 
   return (
     <Modal

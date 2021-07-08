@@ -1,5 +1,4 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {number} from 'prop-types';
 import {RootState} from './reducers';
 
 export type Modal = {

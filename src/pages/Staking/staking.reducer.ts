@@ -2,29 +2,23 @@ import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {RootState} from 'store/reducers';
 import {getTokamakContract, getSigner, getRPC} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
-import {BigNumber, utils, ethers} from 'ethers';
-import {padLeft, toWei, toBN} from 'web3-utils';
+import {utils, ethers, BigNumber} from 'ethers';
+import {toWei, toBN} from 'web3-utils';
 import * as StakeVault from 'services/abis/Stake1Logic.json';
 import * as StakeTON from 'services/abis/StakeTON.json';
-import * as DepositManagerABI from 'services/abis/DepositManager.json';
 import {formatEther} from '@ethersproject/units';
-import {period} from 'utils/timeStamp';
 import {range} from 'lodash';
-
+import {period, toastWithReceipt} from 'utils';
 import {
   REACT_APP_TOKAMAK_LAYER2,
-  REACT_APP_DEPOSIT_MANAGER,
   DEPLOYED,
-  REACT_APP_STAKE1_LOGIC,
   REACT_APP_STAKE1_PROXY,
-  REACT_APP_WTON,
-  REACT_APP_TOS,
 } from 'constants/index';
 import {TokenType} from 'types/index';
 import {convertNumber} from 'utils/number';
 import {setTxPending} from 'store/tx.reducer';
 import store from 'store';
-import {fetchUserInfo} from 'store/app/user.reducer';
+import {openToast} from 'store/app/toast.reducer';
 
 const rpc = getRPC();
 
@@ -240,27 +234,26 @@ const stakeTon = async (args: StakeTon) => {
         .connect(signer)
         ?.approveAndCall(stakeContractAddress, tonAmount, data);
       store.dispatch(setTxPending({tx: true}));
-
-      alert(`Tx sent successfully! Tx hash is ${receipt.txHash}`);
       if (receipt) {
-        await receipt
-          .wait()
-          .then((result: any) => {
-            if (result) {
-              const {address, library} = store.getState().user.data;
-              //@ts-ignore
-              store.dispatch(fetchUserInfo({address, library}));
-            }
-          })
-          .catch((e: any) => console.log(e));
-        store.dispatch(setTxPending({tx: false}));
+        toastWithReceipt(receipt, setTxPending);
       }
     } catch (err) {
       store.dispatch(setTxPending({tx: false}));
       console.log(err);
     }
   } else {
-    return alert('Not staking period');
+    return store.dispatch(
+      //@ts-ignore
+      openToast({
+        payload: {
+          status: 'error',
+          title: 'Tx fail to send',
+          description: `staking period has ended`,
+          duration: 5000,
+          isClosable: true,
+        },
+      }),
+    );
   }
 };
 
@@ -272,7 +265,6 @@ const stakeEth = async (args: StakeTon) => {
     library,
     stakeContractAddress,
     miningStartTime,
-    handleCloseModal,
   } = args;
 
   if (userAddress === null || userAddress === undefined) {
@@ -303,22 +295,27 @@ const stakeEth = async (args: StakeTon) => {
   }
 };
 
+/*eslint-disable */
 export const unstake = async (args: unstake) => {
-  const {
-    userAddress,
-    endTime,
-    library,
-    stakeContractAddress,
-    mystaked,
-    handleCloseModal,
-  } = args;
+  const {userAddress, endTime, library, stakeContractAddress, mystaked} = args;
   const currentBlock = await getRPC().getBlockNumber();
 
   if (userAddress === null || userAddress === undefined) {
     return;
   }
   if (currentBlock < endTime) {
-    return alert('sale has not ended yet');
+    store.dispatch(
+      //@ts-ignore
+      openToast({
+        payload: {
+          status: 'error',
+          title: 'Tx fail to send',
+          description: `Sale has not ended yet`,
+          duration: 5000,
+          isClosable: true,
+        },
+      }),
+    );
   } else if (mystaked === '0.0') {
     return alert('You have no staked balance in this vault.');
   } else {
@@ -335,9 +332,8 @@ export const unstake = async (args: unstake) => {
     try {
       const receipt = await StakeTONContract.connect(signer)?.withdraw();
       store.dispatch(setTxPending({tx: true}));
-      alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
       if (receipt) {
-        store.dispatch(setTxPending({tx: false}));
+        toastWithReceipt(receipt, setTxPending);
       }
     } catch (err) {
       store.dispatch(setTxPending({tx: false}));
@@ -353,7 +349,6 @@ export const claimReward = async (args: claim) => {
     saleEndTime,
     library,
     canRewardAmount,
-    myEarned,
   } = args;
   const currentBlock = await getRPC().getBlockNumber();
 
@@ -379,26 +374,18 @@ export const claimReward = async (args: claim) => {
     try {
       const receipt = await StakeTONContract.connect(signer)?.claim();
       store.dispatch(setTxPending({tx: true}));
-
-      alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
       if (receipt) {
-        store.dispatch(setTxPending({tx: false}));
+        toastWithReceipt(receipt, setTxPending);
       }
     } catch (err) {
-      console.log(err);
       store.dispatch(setTxPending({tx: false}));
+      console.log(err);
     }
   }
 };
 
 export const closeSale = async (args: endsale) => {
-  const {
-    userAddress,
-    vaultContractAddress,
-    miningEndTime,
-    library,
-    handleCloseModal,
-  } = args;
+  const {userAddress, vaultContractAddress, miningEndTime, library} = args;
   if (userAddress === null || userAddress === undefined) {
     return;
   }
@@ -417,15 +404,39 @@ export const closeSale = async (args: endsale) => {
         ?.closeSale(vaultContractAddress);
       store.dispatch(setTxPending({tx: true}));
       if (receipt) {
-        store.dispatch(setTxPending({tx: false}));
+        toastWithReceipt(receipt, setTxPending);
       }
-      alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
     } catch (err) {
       store.dispatch(setTxPending({tx: false}));
+      // if (err.message.indexOf('already closed')) {
+      //   store.dispatch(
+      //     //@ts-ignore
+      //     openToast({
+      //       payload: {
+      //         status: 'error',
+      //         title: 'Tx fail to send',
+      //         description: `it's already closed`,
+      //         duration: 5000,
+      //         isClosable: true,
+      //       },
+      //     }),
+      //   );
+      // }
       console.log(err);
     }
   } else {
-    return alert('Staking has not ended yet');
+    return store.dispatch(
+      //@ts-ignore
+      openToast({
+        payload: {
+          status: 'error',
+          title: 'Tx fail to send',
+          description: `staking period has ended`,
+          duration: 5000,
+          isClosable: true,
+        },
+      }),
+    );
   }
 };
 
@@ -438,7 +449,6 @@ export const stakeToLayer2 = async (args: stakeToLayer2Args) => {
     status,
     globalWithdrawalDelay,
     library,
-    handleCloseModal,
   } = args;
   if (userAddress === null || userAddress === undefined) {
     return;
@@ -463,17 +473,13 @@ export const stakeToLayer2 = async (args: stakeToLayer2Args) => {
     }
     const signer = getSigner(library, userAddress);
     try {
-      
-      store.dispatch(setTxPending({ tx: true }));
-      await StakeTONContract.connect(signer).tokamakStaking(
-        REACT_APP_TOKAMAK_LAYER2, 
-        tonAmount
-        ).then((receipt: any) => {
+      store.dispatch(setTxPending({tx: true}));
+      await StakeTONContract.connect(signer)
+        .tokamakStaking(REACT_APP_TOKAMAK_LAYER2, tonAmount)
+        .then((receipt: any) => {
           alert(`Tx sent successfully! Tx hash is ${receipt?.hash}`);
-        store.dispatch(setTxPending({tx: false}));
-
-        }
-      );
+          store.dispatch(setTxPending({tx: false}));
+        });
     } catch (err) {
       store.dispatch(setTxPending({tx: false}));
       console.log(err);
@@ -482,14 +488,7 @@ export const stakeToLayer2 = async (args: stakeToLayer2Args) => {
 };
 
 export const unstakeL2 = async (args: unstakeFromLayer2Args) => {
-  const {
-    userAddress,
-    amount,
-    contractAddress,
-    status,
-    library,
-    handleCloseModal,
-  } = args;
+  const {userAddress, amount, contractAddress, library} = args;
   if (userAddress === null || userAddress === undefined) {
     return;
   }
@@ -520,14 +519,7 @@ export const unstakeL2 = async (args: unstakeFromLayer2Args) => {
 };
 
 export const swapWTONtoTOS = async (args: unstakeFromLayer2Args) => {
-  const {
-    userAddress,
-    amount,
-    contractAddress,
-    status,
-    library,
-    handleCloseModal,
-  } = args;
+  const {userAddress, amount, contractAddress, library} = args;
   if (userAddress === null || userAddress === undefined) {
     return;
   }
@@ -537,7 +529,6 @@ export const swapWTONtoTOS = async (args: unstakeFromLayer2Args) => {
   const amountRay = toBN(amount).mul(toBN(ray));
   const signer = getSigner(library, userAddress);
   const deadline = Date.now() / 1000 + 900;
-  let amountOutMinimum = toBN('0');
   try {
     const receipt = await StakeTONContract.connect(signer).exchangeWTONtoTOS(
       amount,
@@ -558,13 +549,7 @@ export const swapWTONtoTOS = async (args: unstakeFromLayer2Args) => {
 };
 
 export const withdraw = async (args: withdraw) => {
-  const {
-    userAddress,
-    contractAddress,
-    miningEndTime,
-    library,
-    handleCloseModal,
-  } = args;
+  const {userAddress, contractAddress, miningEndTime, library} = args;
   if (userAddress === null || userAddress === undefined) {
     return;
   }
@@ -574,10 +559,12 @@ export const withdraw = async (args: withdraw) => {
   const endBlock = Number(miningEndTime);
   if (endBlock > currentBlock) {
     try {
-      await StakeTONContract.connect(signer).tokamakProcessUnStaking(REACT_APP_TOKAMAK_LAYER2).then((receipt: any) => {
-        alert(`Tx sent successfully! Tx hash is ${receipt?.hash}`);
-        store.dispatch(setTxPending({tx: false}));
-      });
+      await StakeTONContract.connect(signer)
+        .tokamakProcessUnStaking(REACT_APP_TOKAMAK_LAYER2)
+        .then((receipt: any) => {
+          alert(`Tx sent successfully! Tx hash is ${receipt?.hash}`);
+          store.dispatch(setTxPending({tx: false}));
+        });
     } catch (err) {
       store.dispatch(setTxPending({tx: false}));
       console.log(err);
@@ -594,8 +581,8 @@ export const fetchStakes = createAsyncThunk(
     let projects: any[] = [];
 
     const chainIdforFetch = chainId === undefined ? '4' : chainId;
-    const fetchValutUrl = `http://3.36.66.138:4000/v1/vaults?chainId=${chainIdforFetch}`;
-    const fetchStakeUrl = `http://3.36.66.138:4000/v1/stakecontracts?chainId=${chainIdforFetch}`;
+    const fetchValutUrl = `https://api.tokamak.network/v1/vaults?chainId=${chainIdforFetch}`;
+    const fetchStakeUrl = `https://api.tokamak.network/v1/stakecontracts?chainId=${chainIdforFetch}`;
     // let iERC20: any;
 
     // @ts-ignore
@@ -711,9 +698,9 @@ export const fetchWithdrawPayload = async (
       type: 'ray',
     });
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
-}
+};
 
 const getWithdrawableInfo = async (
   library: any,
@@ -754,7 +741,12 @@ export const fetchManageModalPayload = async (
   contractAddress: string,
   vaultAddress: string,
 ) => {
-  const res = await getUserInfoForManage(library, account, contractAddress, vaultAddress);
+  const res = await getUserInfoForManage(
+    library,
+    account,
+    contractAddress,
+    vaultAddress,
+  );
   return res;
 };
 

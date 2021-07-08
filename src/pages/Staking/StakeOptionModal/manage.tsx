@@ -162,7 +162,8 @@ export const ManageModal = () => {
               fontWeight={100}
               onClick={() =>
                 dispatch(openModal({type: 'stakeL2', data: data.data}))
-              }>
+              }
+              _hover={{backgroundColor: 'blue.100'}}>
               Stake in Layer2
             </Button>
             <Button
@@ -171,6 +172,7 @@ export const ManageModal = () => {
               color={'white.100'}
               fontSize={'12px'}
               fontWeight={100}
+              _hover={{backgroundColor: 'blue.100'}}
               onClick={() =>
                 dispatch(openModal({type: 'unstakeL2', data: data.data}))
               }>
@@ -181,6 +183,8 @@ export const ManageModal = () => {
               bg={'blue.500'}
               color={'white.100'}
               fontSize={'12px'}
+              fontWeight={100}
+              _hover={{backgroundColor: 'blue.100'}}
               onClick={() => withdrawData('withdraw')}>
               Withdraw
             </Button>
@@ -190,6 +194,7 @@ export const ManageModal = () => {
               color={'white.100'}
               fontSize={'12px'}
               fontWeight={100}
+              _hover={{backgroundColor: 'blue.100'}}
               onClick={() =>
                 dispatch(openModal({type: 'swap', data: data.data}))
               }>
@@ -202,7 +207,7 @@ export const ManageModal = () => {
                 color={'white.100'}
                 fontSize={'12px'}
                 fontWeight={100}
-                // disabled={!data.data.vaultClosed}
+                _hover={{backgroundColor: 'blue.100'}}
                 onClick={() =>
                   closeSale({
                     userAddress: account,

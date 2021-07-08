@@ -19,8 +19,10 @@ import {getTokenPrice} from 'utils/tokenPrice';
 import {openTable} from 'store/table.reducer';
 import {useAppDispatch} from 'hooks/useRedux';
 import {openModal} from 'store/modal.reducer';
+import store from 'store';
 
 type TokenComponentProps = {
+  data: any;
   phase?: string;
   period: string;
   token: TokenType;
@@ -31,6 +33,7 @@ type TokenComponentProps = {
 };
 
 export const TokenComponent: FC<TokenComponentProps> = ({
+  data,
   phase,
   period,
   token,
@@ -56,17 +59,19 @@ export const TokenComponent: FC<TokenComponentProps> = ({
       setTokenPrice(totalPrice.toFixed(2));
     }
     getPrice();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleNavigation = useCallback((type) => {
     history.push('./staking');
     window.scrollTo(0, 0);
     dispatch(openTable({contractAddress: contractAddress, index}));
     if (type === 'stake') {
-      dispatch(openModal({type: 'stake'}));
+      const user = store.getState().user.data;
+      const payload = {...data, user};
+      dispatch(openModal({type: 'stake', data: payload}));
     }
     window.scrollTo(0, 350 + index * 69);
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Container

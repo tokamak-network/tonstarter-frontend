@@ -18,12 +18,15 @@ export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
 export const Router: FC<RouterProps> = () => {
   const dispatch = useAppDispatch();
-  // const toast = useToast();
   const [walletState, setWalletState] = useState<string>('');
   const {onOpen, isOpen: isModalOpen, onClose} = useDisclosure();
   const {account, chainId, library, deactivate} = useWeb3React();
 
-  console.log('--restart--');
+  //@ts-ignore
+  const accountStorage = JSON.parse(window.localStorage.getItem('account'));
+  if (accountStorage === null) {
+    window.localStorage.setItem('account', JSON.stringify({signIn: false}));
+  }
 
   useEffect(() => {
     if (account && chainId) {
@@ -43,7 +46,6 @@ export const Router: FC<RouterProps> = () => {
       if (signIn === false) {
         deactivate();
       } else if (signIn === true) {
-        console.log('gogo');
         if (chainId !== 4) {
           deactivate();
           window.localStorage.setItem(

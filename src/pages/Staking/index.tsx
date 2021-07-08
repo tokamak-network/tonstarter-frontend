@@ -92,7 +92,7 @@ const GetDate = ({time, currentBlock, contractAddress, type}: GetDateProp) => {
       setDate(localTableValue[contractAddress + type]);
     }
     fetchDate();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Text
@@ -115,7 +115,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
   const [loading, setLoading] = useState(false);
   const btnDisabled = account === undefined ? true : false;
 
-  const modalPayload = async () => {
+  const modalPayload = async (data: any) => {
     const result = await fetchManageModalPayload(
       data.library,
       data.account,
@@ -132,7 +132,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
 
     try {
       if (modal === 'manage' || modal === 'claim') {
-        const payloadModal = await modalPayload();
+        const payloadModal = await modalPayload(data);
         payload = {
           ...data,
           ...payloadModal,
@@ -151,7 +151,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
 
     setLoading(false);
     dispatch(openModal({type: modal, data: payload}));
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Container
@@ -170,12 +170,13 @@ const WalletInformation: FC<WalletInformationProps> = ({
         </Box>
         <Grid pos="relative" templateColumns={'repeat(2, 1fr)'} gap={6}>
           <Button
-            bg="blue.500"
+            bg={'blue.500'}
             isDisabled={btnDisabled}
             color={'white.100'}
             fontSize={'14px'}
             opacity={loading === true ? 0.5 : 1}
-            onClick={() => modalData('stake')}>
+            onClick={() => modalData('stake')}
+            _hover={{backgroundColor: 'blue.100'}}>
             Stake
           </Button>
           <Button
@@ -184,7 +185,8 @@ const WalletInformation: FC<WalletInformationProps> = ({
             color={'white.100'}
             fontSize={'14px'}
             opacity={loading === true ? 0.5 : 1}
-            onClick={() => modalData('unstake')}>
+            onClick={() => modalData('unstake')}
+            _hover={{backgroundColor: 'blue.100'}}>
             Unstake
           </Button>
           <Button
@@ -193,7 +195,8 @@ const WalletInformation: FC<WalletInformationProps> = ({
             color={'white.100'}
             fontSize={'14px'}
             opacity={loading === true ? 0.5 : 1}
-            onClick={() => modalData('claim')}>
+            onClick={() => modalData('claim')}
+            _hover={{backgroundColor: 'blue.100'}}>
             Claim
           </Button>
           <Button
@@ -202,7 +205,8 @@ const WalletInformation: FC<WalletInformationProps> = ({
             color={'white.100'}
             fontSize={'14px'}
             opacity={loading === true ? 0.5 : 1}
-            onClick={() => modalData('manage')}>
+            onClick={() => modalData('manage')}
+            _hover={{backgroundColor: 'blue.100'}}>
             Manage
           </Button>
           {loading === true ? (
@@ -291,6 +295,7 @@ export const Staking = () => {
           color={colorMode === 'light' ? 'black.300' : 'white.200'}
           fontWeight={'bold'}>
           {content}
+          {title === 'Earned' ? <span> TOS</span> : null}
         </Text>
       </Flex>
     );

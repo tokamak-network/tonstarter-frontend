@@ -1,7 +1,11 @@
 import {getAddress} from '@ethersproject/address';
 import {Contract} from '@ethersproject/contracts';
 import {AddressZero} from '@ethersproject/constants';
-import {JsonRpcSigner, Web3Provider, JsonRpcProvider} from '@ethersproject/providers';
+import {
+  JsonRpcSigner,
+  Web3Provider,
+  JsonRpcProvider,
+} from '@ethersproject/providers';
 
 import * as TonABI from 'services/abis/TON.json';
 import * as WtonABI from 'services/abis/WTON.json';
@@ -17,7 +21,6 @@ import {
   REACT_APP_TOS,
   REACT_APP_DEPOSIT_MANAGER,
   REACT_APP_SEIG_MANAGER,
-  DEPLOYED,
   REACT_APP_WTON,
   REACT_APP_STAKE1_PROXY,
 } from 'constants/index';
@@ -46,20 +49,34 @@ export function getProviderOrSigner(
   return account ? getSigner(library, account) : library;
 }
 
-export function getRPC (): JsonRpcProvider {
+export function getRPC(): JsonRpcProvider {
   // return new JsonRpcProvider('https://rinkeby.rpc.tokamak.network');
-  return new JsonRpcProvider('https://rinkeby.infura.io/v3/34448178b25e4fbda6d80f4da62afba2');
+  return new JsonRpcProvider(
+    'https://rinkeby.infura.io/v3/34448178b25e4fbda6d80f4da62afba2',
+  );
 }
 
-export function getTokamakContract (want: string, address?: string): any {
+export function getTokamakContract(want: string, address?: string): any {
   const rpc = getRPC();
 
   const TON = new Contract(REACT_APP_TON, TonABI.abi, rpc);
   const WTON = new Contract(REACT_APP_WTON, WtonABI.abi, rpc);
   const TOS = new Contract(REACT_APP_TOS, TosABI.abi, rpc);
-  const SeigManager = new Contract(REACT_APP_SEIG_MANAGER, SeigManagerABI.abi, rpc);
-  const DepositManager = new Contract(REACT_APP_DEPOSIT_MANAGER, DepositManagerABI.abi, rpc)
-  const TokamakLayer2 = new Contract(REACT_APP_TOKAMAK_LAYER2, CandidateABI.abi, rpc);
+  const SeigManager = new Contract(
+    REACT_APP_SEIG_MANAGER,
+    SeigManagerABI.abi,
+    rpc,
+  );
+  const DepositManager = new Contract(
+    REACT_APP_DEPOSIT_MANAGER,
+    DepositManagerABI.abi,
+    rpc,
+  );
+  const TokamakLayer2 = new Contract(
+    REACT_APP_TOKAMAK_LAYER2,
+    CandidateABI.abi,
+    rpc,
+  );
   const VaultProxy = new Contract(REACT_APP_STAKE1_PROXY, StakeVault.abi, rpc);
 
   if (want === 'TON') {
@@ -69,11 +86,11 @@ export function getTokamakContract (want: string, address?: string): any {
   } else if (want === 'WTON') {
     return WTON;
   } else if (want === 'SeigManager') {
-    return SeigManager 
+    return SeigManager;
   } else if (want === 'DepositManager') {
-    return DepositManager 
+    return DepositManager;
   } else if (want === 'TokamakLayer2') {
-    return TokamakLayer2 
+    return TokamakLayer2;
   } else if (want === 'StakeTON') {
     if (address) {
       return new Contract(address, StakeTON.abi, rpc);

@@ -11,18 +11,13 @@ import {
   Input,
   Stack,
 } from '@chakra-ui/react';
-import React, {FC, useCallback, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {
-  closeModal,
-  ModalType,
-  openModal,
-  selectModalType,
-} from 'store/modal.reducer';
+import {closeModal, selectModalType} from 'store/modal.reducer';
 import {swapWTONtoTOS} from '../staking.reducer';
 
-export const SwapModal= () => {
+export const SwapModal = () => {
   const {account, library} = useWeb3React();
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
@@ -30,13 +25,13 @@ export const SwapModal= () => {
 
   const [value, setValue] = useState<number>(balance);
 
-  const handleChange = useCallback(e => setValue(e.target.value), []);
-  const setMax = useCallback(_e => setValue(balance), [balance]);
+  const handleChange = useCallback((e) => setValue(e.target.value), []);
+  const setMax = useCallback((_e) => setValue(balance), [balance]);
 
   return (
-    <Modal 
-      isOpen={data.modal === 'swap' ? true : false} 
-      isCentered 
+    <Modal
+      isOpen={data.modal === 'swap' ? true : false}
+      isCentered
       onClose={() => dispatch(closeModal())}>
       <ModalOverlay />
       <ModalContent>
@@ -99,14 +94,16 @@ export const SwapModal= () => {
           <Box py={4} as={Flex} justifyContent={'center'}>
             <Button
               colorScheme={'blue'}
-              onClick={() => swapWTONtoTOS ({
-                  userAddress:account, 
+              onClick={() =>
+                swapWTONtoTOS({
+                  userAddress: account,
                   amount: value.toString(),
-                  contractAddress: data?.data?.contractAddress, 
+                  contractAddress: data?.data?.contractAddress,
                   status: data?.data?.status,
                   library: library,
                   handleCloseModal: dispatch(closeModal()),
-              })}>
+                })
+              }>
               Swap
             </Button>
           </Box>

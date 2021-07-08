@@ -18,7 +18,6 @@ import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
 import {stakePaytoken} from '../staking.reducer';
-import {convertNumber} from 'utils/number';
 
 export const StakeOptionModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -31,8 +30,6 @@ export const StakeOptionModal = () => {
   const {colorMode} = useColorMode();
 
   const addComma = (inputVal: string) => {
-    if (value.split('.')[1]?.length >= 2) {
-    }
     if (inputVal.length > 0 && value.substring(0, 1) === '0') {
       if (inputVal.split('.').length > 1) {
         return setValue(inputVal);
@@ -53,10 +50,10 @@ export const StakeOptionModal = () => {
   const handleChange = (e: any) => addComma(e.target.value);
   const setMax = useCallback((_e) => setValue(balance), [balance]);
 
-  const handleCloseModal = useCallback(
-    () => dispatch(closeModal()),
-    [dispatch],
-  );
+  const handleCloseModal = useCallback(() => {
+    dispatch(closeModal());
+    setValue('0');
+  }, [dispatch]);
 
   return (
     <Modal
@@ -158,7 +155,7 @@ export const StakeOptionModal = () => {
                   library: library,
                   stakeContractAddress: data.data.contractAddress,
                   miningStartTime: data.data.miningStartTime,
-                  handleCloseModal: dispatch(closeModal()),
+                  handleCloseModal: handleCloseModal(),
                 })
               }>
               Stake

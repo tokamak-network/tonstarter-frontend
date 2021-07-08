@@ -85,23 +85,6 @@ export const ClaimOptionModal = () => {
           </Stack>
 
           <Box as={Flex} justifyContent={'center'}>
-            {/* {!data.data.status ? (
-              <Button
-                mr={4}
-                onClick={() =>
-                  closeSale({
-                    userAddress: account,
-                    vaultContractAddress: data.data.vaultAddress,
-                    stakeStartBlock: data.data.stakeStartBlock,
-                    library: library,
-                  })
-                }
-                bg={theme.colors.yellow[200]}
-                color={'black'}>
-                End sale
-              </Button>
-            ) : null} */}
-
             <Button
               disabled={earned <= 0}
               w={'150px'}
