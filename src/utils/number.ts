@@ -9,7 +9,7 @@ type RoundFunc = {
 
 type ConverNumberFunc = {
   type?: 'ray' | 'wei';
-  amount: string | undefined;
+  amount: string;
   round?: boolean;
   decimalPlaces?: number;
 };

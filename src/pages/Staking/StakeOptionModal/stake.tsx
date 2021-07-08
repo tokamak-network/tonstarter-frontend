@@ -30,11 +30,16 @@ export const StakeOptionModal = () => {
   const {colorMode} = useColorMode();
 
   const addComma = (inputVal: string) => {
+    console.log(inputVal.split('.')[1]?.length);
+    if (inputVal.split('.')[1]?.length >= 3) {
+      return;
+    }
+    console.log(inputVal.split('.')[1]?.substring(0, 2));
     if (inputVal.length > 0 && value.substring(0, 1) === '0') {
       if (inputVal.split('.').length > 1) {
         return setValue(inputVal);
       }
-      return setValue(value.substring(1, 2));
+      return setValue(inputVal.substring(1, 2));
     }
     if (inputVal === '.') {
       setValue(inputVal);
@@ -45,6 +50,9 @@ export const StakeOptionModal = () => {
           .replace(/\B(?=(\d{3})+(?!\d))/g, ','),
       );
     }
+    // if (value.split('.')[1]?.length > 2) {
+    //   console.log(value);
+    // }
   };
 
   const handleChange = (e: any) => addComma(e.target.value);

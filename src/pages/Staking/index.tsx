@@ -41,6 +41,7 @@ import {useEffect} from 'react';
 import {Stake, fetchManageModalPayload} from './staking.reducer';
 import {ModalType} from 'store/modal.reducer';
 import {LoadingComponent} from 'components/Loading';
+import {convertNumber} from 'utils/number';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
