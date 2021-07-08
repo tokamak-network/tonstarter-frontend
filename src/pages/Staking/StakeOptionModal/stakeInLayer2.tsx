@@ -137,7 +137,7 @@ export const StakeInLayer2Modal = () => {
                   status: data?.data?.status,
                   globalWithdrawalDelay: data?.data?.globalWithdrawalDelay,
                   library: library,
-                  handleCloseModal: dispatch(closeModal()),
+                  handleCloseModal: handleCloseModal(),
                 })
               }>
               Stake

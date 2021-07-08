@@ -6,9 +6,11 @@ import {userReducer} from './app/user.reducer';
 import {modalReducer} from './modal.reducer';
 import {tableReducer} from './table.reducer';
 import {txReducer} from './tx.reducer';
+import {stakeDetailReducer} from 'pages/Staking/stakingDetail.reducer';
 
 const rootReducer = combineReducers({
   stakes: stakeReducer.reducer,
+  stakesDetail: stakeDetailReducer.reducer,
   appConfig: appReducer.reducer,
   user: userReducer.reducer,
   toast: toastReducer.reducer,

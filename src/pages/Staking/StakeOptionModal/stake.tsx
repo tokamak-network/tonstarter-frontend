@@ -157,7 +157,7 @@ export const StakeOptionModal = () => {
                   library: library,
                   stakeContractAddress: data.data.contractAddress,
                   miningStartTime: data.data.miningStartTime,
-                  handleCloseModal: dispatch(closeModal()),
+                  handleCloseModal: handleCloseModal(),
                 })
               }>
               Stake
