@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@apollo/client": "^3.3.21",
     "@chakra-ui/icons": "^1.0.13",
     "@chakra-ui/react": "^1.6.2",
     "@emotion/react": "^11.4.0",
@@ -22,6 +23,7 @@
     "@web3-react/walletlink-connector": "^6.1.9",
     "ethers": "^5.2.0",
     "framer-motion": "^4.1.4",
+    "graphql": "^15.5.1",
     "history": "^5.0.0",
     "i18next": "^20.2.2",
     "i18next-browser-languagedetector": "^6.1.1",
