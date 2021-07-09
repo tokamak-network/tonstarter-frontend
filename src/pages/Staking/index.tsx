@@ -128,7 +128,6 @@ const WalletInformation: FC<WalletInformationProps> = ({
 
     return result;
   };
-  console.log(data);
 
   const modalData = useCallback(async (modal: ModalType) => {
     setLoading(true);

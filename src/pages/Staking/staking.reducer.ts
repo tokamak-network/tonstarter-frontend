@@ -603,7 +603,7 @@ export const fetchStakes = createAsyncThunk(
 
     // console.log('-----------api-----------');
     // console.log(vaultReq);
-    console.log(stakeList);
+    // console.log(stakeList);
 
     const currentBlock = await rpc.getBlockNumber();
 
@@ -706,23 +706,7 @@ const getWithdrawableInfo = async (
   account: string,
   contractAddress: string,
 ) => {
-  const blockNumber = await getRPC().getBlockNumber();
   const depositManager = getTokamakContract('DepositManager');
-
-  // const numPendingRequests = await depositManager.numPendingRequests(REACT_APP_TOKAMAK_LAYER2, contractAddress);
-  // let requestIndex = await depositManager.withdrawalRequestIndex(REACT_APP_TOKAMAK_LAYER2, contractAddress);
-  
-  // const withdrawableRequests = pendingRequests.filter(request => parseInt(request.withdrawableBlockNumber) <= blockNumber);
-
-  // const initialAmount = BigNumber.from('0')
-  // const reducer = (amount:any, request:any) => amount.add(BigNumber.from(request.amount));
-
-  // const withdrawableAmount = withdrawableRequests.reduce(reducer, initialAmount);
-  // console.log(withdrawableAmount);
-  // console.log(convertNumber({
-  //   amount: withdrawableAmount,
-  //   type: 'ray',
-  // }));
   return Promise.all([
     depositManager.numPendingRequests(REACT_APP_TOKAMAK_LAYER2, contractAddress),
     depositManager.withdrawalRequestIndex(REACT_APP_TOKAMAK_LAYER2, contractAddress),
