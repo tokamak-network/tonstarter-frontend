@@ -33,6 +33,9 @@ export const StakeOptionModal = () => {
     if (inputVal.split('.')[1]?.length >= 3) {
       return;
     }
+    if (inputVal.split('.').length > 2) {
+      return;
+    }
     if (inputVal.length > 0 && value.substring(0, 1) === '0') {
       if (inputVal.split('.').length > 1) {
         return setValue(inputVal);

@@ -286,7 +286,7 @@ export const Staking = () => {
     [],
   );
 
-  const GetText = ({title, content}: any) => {
+  const GetText = ({title, content, user}: any) => {
     const {colorMode} = useColorMode();
     return (
       <Flex flexDir={'column'} alignItems={'space-between'}>
@@ -298,7 +298,9 @@ export const Staking = () => {
           color={colorMode === 'light' ? 'black.300' : 'white.200'}
           fontWeight={'bold'}>
           {content}
-          {title === 'Earned' ? <span> TOS</span> : null}
+          {title === 'Earned' && user?.account !== undefined ? (
+            <span> TOS</span>
+          ) : null}
         </Text>
       </Flex>
     );
@@ -404,7 +406,8 @@ export const Staking = () => {
             </Flex>
             <GetText
               title={'Earned'}
-              content={data[row.id]?.myearned}></GetText>
+              content={data[row.id]?.myearned}
+              user={user}></GetText>
           </Flex>
         </Flex>
       );
