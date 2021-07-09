@@ -12,8 +12,8 @@ import {shortenAddress} from 'utils';
 import {ThemeSwitcher} from './ThemeSwitcher';
 import {NavLink, useRouteMatch} from 'react-router-dom';
 import {useColorMode} from '@chakra-ui/react';
-import logoLight from 'assets/svgs/fld_bi.svg';
-import logoDark from 'assets/svgs/fldw_bi.svg';
+import logoLight from 'assets/svgs/fld_bi_white.svg';
+import logoGray from 'assets/svgs/fld_bi_gray.svg';
 
 type HeaderProps = {
   walletopen: () => void;
@@ -40,14 +40,14 @@ export const Header: React.FC<HeaderProps> = (props) => {
             className={'header-image'}
             src={
               match?.isExact
-                ? logoDark
-                : colorMode === 'light'
                 ? logoLight
-                : logoDark
+                : colorMode === 'light'
+                ? logoGray
+                : logoLight
             }
             w={191}
             h={5}
-            alt="FLD Logo"
+            alt="TON Starter Logo"
           />
         </NavLink>
         <MenuItems isOpen={isOpen} {...props} />
@@ -115,47 +115,45 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
           label="Coming Soon"
           color={theme.colors.white[100]}
           bg={theme.colors.gray[375]}>
-        <Button
-          borderWidth={1}
-          color={
-            colorMode === 'dark'
-              ? theme.colors.gray[0]
-              : match?.isExact
-              ? theme.colors.gray[0]
-              : theme.colors.gray[175]
-          }
-          borderColor={
-            colorMode === 'dark'
-              ? theme.colors.gray[0]
-              : match?.isExact
-              ? theme.colors.gray[0]
-              : theme.colors.gray[300]
-          }
-          w={136}
-          h={35}
-          fontSize={15}
-          fontWeight={600}
-          onClick={(e) => e.preventDefault()}
-          rounded={18}
-          bg={
-            colorMode === 'dark'
-              ? '#000000'
-              : match?.isExact
-              ? 'blue.200'
-              : 'transparent'
-          }
-          _hover={
-            {
-              // bg: 'transparent',
-              // zIndex: 100,
+          <Button
+            borderWidth={1}
+            color={
+              colorMode === 'dark'
+                ? theme.colors.gray[0]
+                : match?.isExact
+                ? theme.colors.gray[0]
+                : theme.colors.gray[175]
             }
-          }
-            zIndex={100}
-        
-          >
-          {account ? shortenAddress(account) : 'Connect wallet'}
+            borderColor={
+              colorMode === 'dark'
+                ? theme.colors.gray[0]
+                : match?.isExact
+                ? theme.colors.gray[0]
+                : theme.colors.gray[300]
+            }
+            w={136}
+            h={35}
+            fontSize={15}
+            fontWeight={600}
+            onClick={(e) => e.preventDefault()}
+            rounded={18}
+            bg={
+              colorMode === 'dark'
+                ? '#000000'
+                : match?.isExact
+                ? 'blue.200'
+                : 'transparent'
+            }
+            _hover={
+              {
+                // bg: 'transparent',
+                // zIndex: 100,
+              }
+            }
+            zIndex={100}>
+            {account ? shortenAddress(account) : 'Connect wallet'}
           </Button>
-          </Tooltip>
+        </Tooltip>
         <ThemeSwitcher />
       </Stack>
     </Box>
@@ -189,12 +187,12 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           label="Coming Soon"
           color={theme.colors.white[100]}
           bg={theme.colors.gray[375]}>
-        <NavLink
-          to="/staking"
-          className={match?.isExact ? 'link-match' : 'link'}
-          onClick={(e) => e.preventDefault()}>
-          Staking
-        </NavLink>
+          <NavLink
+            to="/staking"
+            className={match?.isExact ? 'link-match' : 'link'}
+            onClick={(e) => e.preventDefault()}>
+            Staking
+          </NavLink>
         </Tooltip>
         <Tooltip
           hasArrow

@@ -12,7 +12,7 @@ const socialLinks = [
   {
     title: 'Telegram',
     icon: IconTelegram,
-    href: 'https://t.me/tokamak_network/',
+    href: 'https://t.me/TONStarter_ANN',
     isExternal: true,
   },
   // {
@@ -30,14 +30,14 @@ const socialLinks = [
   {
     title: 'Twitter',
     icon: IconTwitter,
-    href: 'https://twitter.com/tokamak_network/',
+    href: 'https://twitter.com/tonstarter',
     isExternal: true,
   },
   {
     title: 'Medium',
 
     icon: IconMedium,
-    href: 'https://medium.com/onther-tech/',
+    href: 'https://medium.com/onther-tech/https-medium-com-onther-tech-tos/home',
     isExternal: true,
   },
   // {
