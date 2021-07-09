@@ -396,7 +396,7 @@ export const closeSale = async (args: endsale) => {
     rpc,
   );
   const currentBlock = await getRPC().getBlockNumber();
-  if (currentBlock < miningEndTime) {
+  // if (currentBlock < miningEndTime) {
     const signer = getSigner(library, userAddress);
     try {
       const receipt = await stakeVault
@@ -424,20 +424,20 @@ export const closeSale = async (args: endsale) => {
       // }
       console.log(err);
     }
-  } else {
-    return store.dispatch(
-      //@ts-ignore
-      openToast({
-        payload: {
-          status: 'error',
-          title: 'Tx fail to send',
-          description: `staking period has ended`,
-          duration: 5000,
-          isClosable: true,
-        },
-      }),
-    );
-  }
+  // } else {
+  //   return store.dispatch(
+  //     //@ts-ignore
+  //     openToast({
+  //       payload: {
+  //         status: 'error',
+  //         title: 'Tx fail to send',
+  //         description: `staking period has ended`,
+  //         duration: 5000,
+  //         isClosable: true,
+  //       },
+  //     }),
+  //   );
+  // }
 };
 
 export const stakeToLayer2 = async (args: stakeToLayer2Args) => {
@@ -648,6 +648,7 @@ export const fetchStakes = createAsyncThunk(
           library,
           account,
           vault: stake.vault,
+          saleClosed: stake.saleClosed,
         };
         projects.push(stakeInfo);
       }),
@@ -705,23 +706,7 @@ const getWithdrawableInfo = async (
   account: string,
   contractAddress: string,
 ) => {
-  const blockNumber = await getRPC().getBlockNumber();
   const depositManager = getTokamakContract('DepositManager');
-
-  // const numPendingRequests = await depositManager.numPendingRequests(REACT_APP_TOKAMAK_LAYER2, contractAddress);
-  // let requestIndex = await depositManager.withdrawalRequestIndex(REACT_APP_TOKAMAK_LAYER2, contractAddress);
-  
-  // const withdrawableRequests = pendingRequests.filter(request => parseInt(request.withdrawableBlockNumber) <= blockNumber);
-
-  // const initialAmount = BigNumber.from('0')
-  // const reducer = (amount:any, request:any) => amount.add(BigNumber.from(request.amount));
-
-  // const withdrawableAmount = withdrawableRequests.reduce(reducer, initialAmount);
-  // console.log(withdrawableAmount);
-  // console.log(convertNumber({
-  //   amount: withdrawableAmount,
-  //   type: 'ray',
-  // }));
   return Promise.all([
     depositManager.numPendingRequests(REACT_APP_TOKAMAK_LAYER2, contractAddress),
     depositManager.withdrawalRequestIndex(REACT_APP_TOKAMAK_LAYER2, contractAddress),
