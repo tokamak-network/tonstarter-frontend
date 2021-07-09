@@ -28,7 +28,7 @@ export const ManageModal = () => {
   const {colorMode} = useColorMode();
   let balance = data?.data?.stakeContractBalanceTon;
   
-  const withdrawPayload = async (data: any) => {
+  const withdrawPayload = async () => {
     const result = await fetchWithdrawPayload(
       data.data.library,
       data.data.account,
@@ -38,18 +38,13 @@ export const ManageModal = () => {
   };
 
   const withdrawData = useCallback(async (modal: ModalType) => {
-    const payloadWithdraw = await withdrawPayload(data);
-    let payload = {};
-    try {
-      payload = {
-        ...data?.data,
-        withdrawableAmount: payloadWithdraw,
-      };
-    } catch (e) {
-      console.log(e);
-    }
+    const payloadWithdraw = await withdrawPayload();
+    const payload = {
+      ...data?.data,
+      payloadWithdraw,
+    };
     dispatch(openModal({type: modal, data: payload}));
-  }, [data, dispatch]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Modal
@@ -157,6 +152,7 @@ export const ManageModal = () => {
               color={'white.100'}
               fontSize={'0.750em'}
               fontWeight={100}
+              isDisabled={!data.data.saleClosed}
               onClick={() =>
                 dispatch(openModal({type: 'stakeL2', data: data.data}))
               }
@@ -169,6 +165,7 @@ export const ManageModal = () => {
               color={'white.100'}
               fontSize={'12px'}
               fontWeight={100}
+              isDisabled={!data.data.saleClosed}
               _hover={{backgroundColor: 'blue.100'}}
               onClick={() =>
                 dispatch(openModal({type: 'unstakeL2', data: data.data}))
@@ -181,6 +178,7 @@ export const ManageModal = () => {
               color={'white.100'}
               fontSize={'12px'}
               fontWeight={100}
+              isDisabled={!data.data.saleClosed}
               _hover={{backgroundColor: 'blue.100'}}
               onClick={() => withdrawData('withdraw')}>
               Withdraw
@@ -191,6 +189,7 @@ export const ManageModal = () => {
               color={'white.100'}
               fontSize={'12px'}
               fontWeight={100}
+              isDisabled={!data.data.saleClosed}
               _hover={{backgroundColor: 'blue.100'}}
               onClick={() =>
                 dispatch(openModal({type: 'swap', data: data.data}))
@@ -205,6 +204,7 @@ export const ManageModal = () => {
                 fontSize={'12px'}
                 fontWeight={100}
                 _hover={{backgroundColor: 'blue.100'}}
+                isDisabled={data.data.fetchBlock < data.data.miningStartTime}
                 onClick={() =>
                   closeSale({
                     userAddress: account,
