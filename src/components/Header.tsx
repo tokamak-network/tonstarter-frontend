@@ -120,7 +120,9 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
             colorMode === 'dark'
               ? theme.colors.gray[0]
               : match?.isExact
-              ? theme.colors.gray[225]
+              ? account
+                ? theme.colors.gray[225]
+                : 'white.100'
               : theme.colors.gray[175]
           }
           w={136}
@@ -133,16 +135,13 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
             colorMode === 'dark'
               ? 'black.200'
               : match?.isExact
-              ? 'white.100'
+              ? account
+                ? 'white.100'
+                : 'blue.200'
               : 'transparent'
           }
-          _hover={
-            {
-              // bg: 'transparent',
-              // zIndex: 100,
-            }
-          }
-          zIndex={100}>
+          zIndex={100}
+          _hover={{}}>
           {account ? shortenAddress(account) : 'Connect wallet'}
           {tx === true ? (
             <CircularProgress
@@ -184,7 +183,8 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
                 : theme.colors.gray[175]
             }
             fontWeight={500}
-            fontSize={'15px'}>
+            fontSize={'15px'}
+            _hover={{}}>
             Airdrop Claim
           </Button>
         ) : null}
