@@ -330,7 +330,14 @@ export const Staking = () => {
           color={colorMode === 'light' ? 'black.300' : 'white.200'}
           fontWeight={'bold'}
           h="30px">
-          {balance} {balance !== undefined ? <span> TOS</span> : null}
+          {balance}{' '}
+          {balance !== undefined ? (
+            title === 'My staked' ? (
+              <span> TON</span>
+            ) : (
+              <span> TOS</span>
+            )
+          ) : null}
         </Text>
       </Flex>
     );
