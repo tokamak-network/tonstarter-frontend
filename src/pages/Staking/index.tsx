@@ -20,7 +20,7 @@ import {shortenAddress} from 'utils';
 import {StakingTable} from './StakingTable';
 import {selectStakes} from './staking.reducer';
 import {selectApp} from 'store/app/app.reducer';
-import {selectUser} from 'store/app/user.reducer';
+import {selectUser, User} from 'store/app/user.reducer';
 import {PageHeader} from 'components/PageHeader';
 import {
   ClaimOptionModal,
@@ -41,14 +41,12 @@ import {useEffect} from 'react';
 import {Stake, fetchManageModalPayload} from './staking.reducer';
 import {ModalType} from 'store/modal.reducer';
 import {LoadingComponent} from 'components/Loading';
-import {getUserBalance} from 'client/getUserBalance';
+import {getUserBalance, getUserTonBalance} from 'client/getUserBalance';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
   data: Stake;
-  user: {
-    balance: string;
-  };
+  user: User;
   account: string | undefined;
 };
 
@@ -114,6 +112,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
 }) => {
   const {colorMode} = useColorMode();
   const [loading, setLoading] = useState(false);
+  const [userTonBalance, setUserTonBalance] = useState<string>('...');
   const btnDisabled = account === undefined ? true : false;
   const currentBlock = data.fetchBlock;
   const miningStart = data.miningStartTime;
@@ -128,6 +127,16 @@ const WalletInformation: FC<WalletInformationProps> = ({
     );
 
     return result;
+  };
+
+  const getWalletTonBalance = async () => {
+    const result = await getUserTonBalance({
+      account: user.address,
+      library: user.library,
+    });
+    if (result) {
+      setUserTonBalance(result);
+    }
   };
 
   const modalData = useCallback(async (modal: ModalType) => {
@@ -157,6 +166,10 @@ const WalletInformation: FC<WalletInformationProps> = ({
     dispatch(openModal({type: modal, data: payload}));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  if (user.address !== undefined) {
+    getWalletTonBalance();
+  }
+
   return (
     <Container
       maxW={'sm'}
@@ -166,7 +179,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
         colorMode === 'light' ? 'solid 1px #f4f6f8' : 'solid 1px #373737'
       }>
       <Box w={'100%'} p={0} textAlign={'center'} py={10} px={5}>
-        <Heading color={'blue.300'}>{user.balance} TON</Heading>
+        <Heading color={'blue.300'}>{userTonBalance} TON</Heading>
         <Box py={5}>
           <Text fontSize={'15px'} color={'gray.400'}>
             Available in wallet
