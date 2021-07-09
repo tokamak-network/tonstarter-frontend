@@ -204,7 +204,7 @@ export const ManageModal = () => {
                 fontSize={'12px'}
                 fontWeight={100}
                 _hover={{backgroundColor: 'blue.100'}}
-                isDisabled={data.data.saleClosed}
+                isDisabled={data.data.fetchBlock < data.data.miningStartTime}
                 onClick={() =>
                   closeSale({
                     userAddress: account,
