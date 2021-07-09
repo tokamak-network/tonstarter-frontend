@@ -1,8 +1,10 @@
 import {Contract} from '@ethersproject/contracts';
 import * as StakeTON from 'services/abis/StakeTON.json';
-import {getRPC} from 'utils/contract';
+import {getContract, getRPC} from 'utils/contract';
 import store from 'store';
 import {convertNumber} from 'utils/number';
+import {REACT_APP_TON} from 'constants/index';
+import * as ERC20 from 'services/abis/ERC20.json';
 
 const rpc = getRPC();
 
@@ -23,16 +25,13 @@ export const getUserBalance = async (contractAddress: any) => {
     totalStakedBalance: convertNumber({amount: userStaked}),
   };
   return result;
-  //   return store.dispatch(
-  //     //@ts-ignore
-  //     openTable({
-  //       data: {
-  //         rewardTosBalance: convertNumber({amount: userRewardTOS}),
-  //         rewardTonBalance: undefined,
-  //         totalStakedBalance: convertNumber({amount: userStaked}),
-  //       },
-  //     }),
-  //   );
+};
+
+export const getUserTonBalance = async ({account, library}: any) => {
+  const contract = getContract(REACT_APP_TON, ERC20.abi, library);
+  const contractIserBalance = await contract.balanceOf(account);
+  const balance = convertNumber({amount: String(contractIserBalance)});
+  return balance;
 };
 
 const fetchUserData = async (
