@@ -115,6 +115,9 @@ const WalletInformation: FC<WalletInformationProps> = ({
   const {colorMode} = useColorMode();
   const [loading, setLoading] = useState(false);
   const btnDisabled = account === undefined ? true : false;
+  const currentBlock = data.fetchBlock;
+  const miningStart = data.miningStartTime;
+  const miningEnd = data.miningEndTime;
 
   const modalPayload = async (data: any) => {
     const result = await fetchManageModalPayload(
@@ -172,7 +175,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
         <Grid pos="relative" templateColumns={'repeat(2, 1fr)'} gap={6}>
           <Button
             bg={'blue.500'}
-            isDisabled={btnDisabled}
+            isDisabled={+miningStart! < +currentBlock!}
             color={'white.100'}
             fontSize={'14px'}
             opacity={loading === true ? 0.5 : 1}
@@ -182,7 +185,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
           </Button>
           <Button
             bg="blue.500"
-            isDisabled={btnDisabled}
+            isDisabled={+currentBlock! < +miningEnd!}
             color={'white.100'}
             fontSize={'14px'}
             opacity={loading === true ? 0.5 : 1}
@@ -192,7 +195,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
           </Button>
           <Button
             bg="blue.500"
-            isDisabled={btnDisabled}
+            isDisabled={!data.saleClosed}
             color={'white.100'}
             fontSize={'14px'}
             opacity={loading === true ? 0.5 : 1}
