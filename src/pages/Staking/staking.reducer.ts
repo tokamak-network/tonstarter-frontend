@@ -396,7 +396,7 @@ export const closeSale = async (args: endsale) => {
     rpc,
   );
   const currentBlock = await getRPC().getBlockNumber();
-  if (currentBlock < miningEndTime) {
+  // if (currentBlock < miningEndTime) {
     const signer = getSigner(library, userAddress);
     try {
       const receipt = await stakeVault
@@ -424,20 +424,20 @@ export const closeSale = async (args: endsale) => {
       // }
       console.log(err);
     }
-  } else {
-    return store.dispatch(
-      //@ts-ignore
-      openToast({
-        payload: {
-          status: 'error',
-          title: 'Tx fail to send',
-          description: `staking period has ended`,
-          duration: 5000,
-          isClosable: true,
-        },
-      }),
-    );
-  }
+  // } else {
+  //   return store.dispatch(
+  //     //@ts-ignore
+  //     openToast({
+  //       payload: {
+  //         status: 'error',
+  //         title: 'Tx fail to send',
+  //         description: `staking period has ended`,
+  //         duration: 5000,
+  //         isClosable: true,
+  //       },
+  //     }),
+  //   );
+  // }
 };
 
 export const stakeToLayer2 = async (args: stakeToLayer2Args) => {
@@ -603,7 +603,7 @@ export const fetchStakes = createAsyncThunk(
 
     // console.log('-----------api-----------');
     // console.log(vaultReq);
-    // console.log(stakeList);
+    console.log(stakeList);
 
     const currentBlock = await rpc.getBlockNumber();
 
@@ -648,6 +648,7 @@ export const fetchStakes = createAsyncThunk(
           library,
           account,
           vault: stake.vault,
+          saleClosed: stake.saleClosed,
         };
         projects.push(stakeInfo);
       }),
