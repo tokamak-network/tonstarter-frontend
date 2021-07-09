@@ -16,6 +16,8 @@ import {Router} from 'pages/Router';
 import reportWebVitals from './reportWebVitals';
 import {getLibrary} from 'utils';
 import {Toast} from 'components/Toast';
+import {ApolloProvider} from '@apollo/client';
+import {client} from 'client/client';
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName);
 
@@ -25,21 +27,23 @@ if (!!window.ethereum) {
 
 ReactDOM.render(
   <HelmetProvider>
-    <I18nextProvider i18n={i18n}>
-      <Web3ReactProvider getLibrary={getLibrary}>
-        <Web3ProviderNetwork getLibrary={getLibrary}>
-          <ColorModeScript />
-          <Provider store={store}>
-            <ChakraProvider resetCSS theme={theme}>
-              <Toast></Toast>
-              <BrowserRouter>
-                <Router />
-              </BrowserRouter>
-            </ChakraProvider>
-          </Provider>
-        </Web3ProviderNetwork>
-      </Web3ReactProvider>
-    </I18nextProvider>
+    <ApolloProvider client={client}>
+      <I18nextProvider i18n={i18n}>
+        <Web3ReactProvider getLibrary={getLibrary}>
+          <Web3ProviderNetwork getLibrary={getLibrary}>
+            <ColorModeScript />
+            <Provider store={store}>
+              <ChakraProvider resetCSS theme={theme}>
+                <Toast></Toast>
+                <BrowserRouter>
+                  <Router />
+                </BrowserRouter>
+              </ChakraProvider>
+            </Provider>
+          </Web3ProviderNetwork>
+        </Web3ReactProvider>
+      </I18nextProvider>
+    </ApolloProvider>
   </HelmetProvider>,
   document.getElementById('root'),
 );

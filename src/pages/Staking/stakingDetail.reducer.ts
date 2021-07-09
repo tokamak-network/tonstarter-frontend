@@ -26,34 +26,6 @@ const initialState = {
   currentRequestId: undefined,
 } as IStakeDetail;
 
-// const getUserInfo = async (
-//   // stakeInfo: Partial<Stake>,
-//   // stakeContractAddress: string,
-//   library: any,
-//   account: string,
-//   contractAddress: string,
-// ) => {
-//   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
-//   const staked = await StakeTONContract?.userStaked(account);
-//   return {
-//     userStaked: staked.amount,
-//     userRewardTOS: staked.claimedAmount,
-//   };
-// };
-
-// const fetchUserData = async (
-//   library: any,
-//   account: string,
-//   contractAddress: string,
-// ) => {
-//   const res = await getUserInfo(library, account, contractAddress);
-//   const {userStaked, userRewardTOS} = res;
-//   return {
-//     userStaked,
-//     userRewardTOS,
-//   };
-// };
-
 export const fetchStakesDetail = createAsyncThunk(
   'app/stakeDetail',
   // @ts-ignore
