@@ -328,7 +328,8 @@ export const Staking = () => {
         <Text
           fontSize={'20px'}
           color={colorMode === 'light' ? 'black.300' : 'white.200'}
-          fontWeight={'bold'}>
+          fontWeight={'bold'}
+          h="30px">
           {balance} {balance !== undefined ? <span> TOS</span> : null}
         </Text>
       </Flex>
