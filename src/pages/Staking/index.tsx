@@ -311,7 +311,7 @@ export const Staking = () => {
           fontSize={'20px'}
           color={colorMode === 'light' ? 'black.300' : 'white.200'}
           fontWeight={'bold'}>
-          {content} {content !== undefined ? <span> TOS</span> : null}
+          {content}
         </Text>
       </Flex>
     );
@@ -394,7 +394,6 @@ export const Staking = () => {
             <GetText
               title={'Total Staker'}
               content={data[row.id]?.totalStakers}></GetText>
-            {/* <GetText title={'My staked'} content={0}></GetText> */}
             <GetBalance
               title={'My staked'}
               contractAddress={contractAddress}
