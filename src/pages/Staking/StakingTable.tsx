@@ -396,7 +396,9 @@ export const StakingTable: FC<StakingTableProps> = ({
                     table instance. But for this example, we'll just
                     pass the row
                   */}
-                      {renderDetail({row})}
+                      {renderDetail({
+                        row,
+                      })}
                     </chakra.td>
                   </chakra.tr>
                 ) : null,

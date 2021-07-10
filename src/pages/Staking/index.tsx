@@ -20,7 +20,7 @@ import {shortenAddress} from 'utils';
 import {StakingTable} from './StakingTable';
 import {selectStakes} from './staking.reducer';
 import {selectApp} from 'store/app/app.reducer';
-import {selectUser} from 'store/app/user.reducer';
+import {selectUser, User} from 'store/app/user.reducer';
 import {PageHeader} from 'components/PageHeader';
 import {
   ClaimOptionModal,
@@ -41,13 +41,12 @@ import {useEffect} from 'react';
 import {Stake, fetchManageModalPayload} from './staking.reducer';
 import {ModalType} from 'store/modal.reducer';
 import {LoadingComponent} from 'components/Loading';
+import {getUserBalance, getUserTonBalance} from 'client/getUserBalance';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
   data: Stake;
-  user: {
-    balance: string;
-  };
+  user: User;
   account: string | undefined;
 };
 
@@ -113,6 +112,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
 }) => {
   const {colorMode} = useColorMode();
   const [loading, setLoading] = useState(false);
+  const [userTonBalance, setUserTonBalance] = useState<string>('...');
   const btnDisabled = account === undefined ? true : false;
   const currentBlock = data.fetchBlock;
   const miningStart = data.miningStartTime;
@@ -127,6 +127,16 @@ const WalletInformation: FC<WalletInformationProps> = ({
     );
 
     return result;
+  };
+
+  const getWalletTonBalance = async () => {
+    const result = await getUserTonBalance({
+      account: user.address,
+      library: user.library,
+    });
+    if (result) {
+      setUserTonBalance(result);
+    }
   };
 
   const modalData = useCallback(async (modal: ModalType) => {
@@ -156,6 +166,10 @@ const WalletInformation: FC<WalletInformationProps> = ({
     dispatch(openModal({type: modal, data: payload}));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  if (user.address !== undefined) {
+    getWalletTonBalance();
+  }
+
   return (
     <Container
       maxW={'sm'}
@@ -165,7 +179,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
         colorMode === 'light' ? 'solid 1px #f4f6f8' : 'solid 1px #373737'
       }>
       <Box w={'100%'} p={0} textAlign={'center'} py={10} px={5}>
-        <Heading color={'blue.300'}>{user.balance} TON</Heading>
+        <Heading color={'blue.300'}>{userTonBalance} TON</Heading>
         <Box py={5}>
           <Text fontSize={'15px'} color={'gray.400'}>
             Available in wallet
@@ -298,18 +312,49 @@ export const Staking = () => {
           color={colorMode === 'light' ? 'black.300' : 'white.200'}
           fontWeight={'bold'}>
           {content}
-          {title === 'Earned' && user?.account !== undefined ? (
-            <span> TOS</span>
-          ) : null}
         </Text>
       </Flex>
     );
   };
 
-  // const GetColor = () => {
-  //   const {colorMode} = useColorMode();
-  //   return colorMode;
-  // };
+  const GetBalance = ({title, contractAddress, user}: any) => {
+    const {colorMode} = useColorMode();
+    const [balance, SetBalance] = useState(undefined);
+    const getBalance = async () => {
+      const result = await getUserBalance(contractAddress);
+      if (title === 'My staked') {
+        //@ts-ignore
+        return SetBalance(result.totalStakedBalance);
+      }
+      //@ts-ignore
+      SetBalance(result.rewardTosBalance);
+    };
+    if (user.address !== undefined) {
+      getBalance();
+    }
+
+    return (
+      <Flex flexDir={'column'} alignItems={'space-between'}>
+        <Text fontSize={'15px'} color="gray.400">
+          {title}
+        </Text>
+        <Text
+          fontSize={'20px'}
+          color={colorMode === 'light' ? 'black.300' : 'white.200'}
+          fontWeight={'bold'}
+          h="30px">
+          {balance}{' '}
+          {balance !== undefined ? (
+            title === 'My staked' ? (
+              <span> TON</span>
+            ) : (
+              <span> TOS</span>
+            )
+          ) : null}
+        </Text>
+      </Flex>
+    );
+  };
 
   const renderRowSubComponent = useCallback(
     ({row}) => {
@@ -349,9 +394,10 @@ export const Staking = () => {
             <GetText
               title={'Total Staker'}
               content={data[row.id]?.totalStakers}></GetText>
-            <GetText
+            <GetBalance
               title={'My staked'}
-              content={data[row.id]?.mystaked}></GetText>
+              contractAddress={contractAddress}
+              user={user}></GetBalance>
           </Flex>
 
           <Box p={0} w={'450px'} borderRadius={'10px'} alignSelf={'flex-start'}>
@@ -404,10 +450,10 @@ export const Staking = () => {
                 {shortenAddress(data[row.id]?.contractAddress)}
               </Link>
             </Flex>
-            <GetText
+            <GetBalance
               title={'Earned'}
-              content={data[row.id]?.myearned}
-              user={user}></GetText>
+              contractAddress={contractAddress}
+              user={user}></GetBalance>
           </Flex>
         </Flex>
       );

@@ -2,7 +2,11 @@ import {openToast} from 'store/app/toast.reducer';
 import store from '../store';
 import {fetchUserInfo} from '../store/app/user.reducer';
 
-export const toastWithReceipt = async (recepit: any, setTxPending: any) => {
+export const toastWithReceipt = async (
+  recepit: any,
+  setTxPending: any,
+  stakeContractAddress?: string,
+) => {
   try {
     store.dispatch(
       //@ts-ignore
@@ -17,6 +21,8 @@ export const toastWithReceipt = async (recepit: any, setTxPending: any) => {
       }),
     );
     store.dispatch(setTxPending({tx: false}));
+
+    console.log(recepit);
 
     await recepit
       .wait()

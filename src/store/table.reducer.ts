@@ -21,7 +21,11 @@ const initialState = {
   data: {
     contractAddress: undefined,
     index: undefined,
-    data: {},
+    data: {
+      rewardTosBalance: undefined,
+      rewardTonBlanace: undefined,
+      totalStakedBalance: undefined,
+    },
   },
 } as IModal;
 
