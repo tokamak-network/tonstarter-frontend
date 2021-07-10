@@ -194,7 +194,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
           </Button>
           <Button
             bg="blue.500"
-            isDisabled={!data.saleClosed}
+            isDisabled={btnDisabled}
             color={'white.100'}
             fontSize={'14px'}
             opacity={loading === true ? 0.5 : 1}
