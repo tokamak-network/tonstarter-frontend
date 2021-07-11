@@ -41,6 +41,7 @@ export const FLDstarter = () => {
                 <TokenComponent
                   data={item}
                   phase={item.name}
+                  status={item.status}
                   period={item.period}
                   token={item.token}
                   stakedAmount={item.stakeBalanceTON}
