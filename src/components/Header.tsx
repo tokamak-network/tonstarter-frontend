@@ -17,6 +17,8 @@ import logoLight from 'assets/svgs/fld_bi_white.svg';
 import logoGray from 'assets/svgs/fld_bi_gray.svg';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectTxType} from 'store/tx.reducer';
+import {useDispatch} from 'react-redux';
+import {openModal} from 'store/modal.reducer';
 
 type HeaderProps = {
   walletopen: () => void;
@@ -102,6 +104,11 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
   const theme = useTheme();
   const match = useRouteMatch('/');
   const {tx} = useAppSelector(selectTxType);
+  const dispatch = useDispatch();
+
+  const airdropModalOpen = () => {
+    dispatch(openModal({type: 'airdrop'}));
+  };
 
   return (
     <Box
@@ -115,20 +122,15 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
         pt={[4, 4, 0, 0]}>
         <Button
           opacity={tx === true ? 0.5 : 1}
-          borderWidth={1}
+          border="solid 1px #d7d9df"
           color={
             colorMode === 'dark'
               ? theme.colors.gray[0]
               : match?.isExact
-              ? theme.colors.gray[0]
+              ? account
+                ? theme.colors.gray[225]
+                : 'white.100'
               : theme.colors.gray[175]
-          }
-          borderColor={
-            colorMode === 'dark'
-              ? theme.colors.gray[0]
-              : match?.isExact
-              ? theme.colors.gray[0]
-              : theme.colors.gray[300]
           }
           w={136}
           h={35}
@@ -138,18 +140,15 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
           rounded={18}
           bg={
             colorMode === 'dark'
-              ? '#000000'
+              ? 'black.200'
               : match?.isExact
-              ? 'blue.200'
+              ? account
+                ? 'white.100'
+                : 'blue.200'
               : 'transparent'
           }
-          _hover={
-            {
-              // bg: 'transparent',
-              // zIndex: 100,
-            }
-          }
-          zIndex={100}>
+          zIndex={100}
+          _hover={{}}>
           {account ? shortenAddress(account) : 'Connect wallet'}
           {tx === true ? (
             <CircularProgress
@@ -160,8 +159,44 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
               pos="absolute"></CircularProgress>
           ) : null}
         </Button>
-
-        <ThemeSwitcher />
+        {account ? (
+          <Button
+            w={'7.875rem'}
+            h={'2.188rem'}
+            style={{marginLeft: '15px'}}
+            marginLeft="15px"
+            p={0}
+            bg={
+              colorMode === 'dark'
+                ? 'black.200'
+                : match?.isExact
+                ? 'blue.200'
+                : 'transparent'
+            }
+            borderWidth={1}
+            borderColor={
+              colorMode === 'dark'
+                ? '#d7d9df'
+                : match?.isExact
+                ? '#a6d0ff'
+                : '#d7d9df'
+            }
+            borderRadius={'19px'}
+            color={
+              colorMode === 'dark'
+                ? theme.colors.gray[0]
+                : match?.isExact
+                ? 'white.100'
+                : theme.colors.gray[175]
+            }
+            onClick={airdropModalOpen}
+            fontWeight={500}
+            fontSize={'15px'}
+            _hover={{}}>
+            Airdrop Claim
+          </Button>
+        ) : null}
+        <ThemeSwitcher style={{marginLeft: '20px'}} />
       </Stack>
     </Box>
   );

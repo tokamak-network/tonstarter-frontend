@@ -67,13 +67,51 @@ const colors = {
 };
 
 const modalStyle = {
-  modalContent: `
-    fontFamily={theme.fonts.roboto}
-    bg={colorMode === 'light' ? 'white.100' : 'black.200'}
-    w="350px"
-    pt="25px"
-    pb="25px"
-  `,
+  modalContent: (props: any) => ({
+    fontFamily: fonts.roboto,
+    bg: props.colorMode === 'light' ? 'white.100' : 'black.200',
+    w: '350px',
+    pt: '25px',
+    pb: '25px',
+  }),
+  box: (props: any) => ({
+    pb: '1.250em',
+    borderBottom:
+      props.colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737',
+  }),
+  head: (props: any) => ({
+    fontSize: '1.250em',
+    fontWeight: 'bold',
+    fontFamily: fonts.titil,
+    color: props.colorMode === 'light' ? 'gray.250' : 'white.100',
+    textAlign: 'center',
+  }),
+  headText: {
+    color: 'gray.175',
+    fontSize: '0.750em',
+    textAlign: 'center',
+  },
+  stack: (props: any) => ({
+    as: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottom:
+      props.colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737',
+  }),
+  button: {
+    w: '9.375em',
+    bg: 'blue.500',
+    color: 'white.100',
+    fontSize: '0.875em',
+    fontWeight: 300,
+    _hover: {},
+  },
+  fontColor: (props: any) => ({
+    color: props.colorMode === 'light' ? 'black.300' : 'white.100',
+  }),
+  fontSubColor: (props: any) => ({
+    color: props.colorMode === 'light' ? 'gray.250' : 'white.200',
+  }),
 };
 
 const theme = extendTheme({

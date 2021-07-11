@@ -9,7 +9,8 @@ export type ModalType =
   | 'stakeL2'
   | 'unstakeL2'
   | 'withdraw'
-  | 'swap';
+  | 'swap'
+  | 'airdrop';
 
 export type Modal = {
   modal?: ModalType;
@@ -40,9 +41,9 @@ export const modalReducer = createSlice({
       state.data.modal = payload.type;
       state.data.data = payload.data;
     },
-    closeModal: state => {
+    closeModal: (state) => {
       state.data.modal = undefined;
-      state.data.data = {};  
+      state.data.data = {};
     },
   },
 });

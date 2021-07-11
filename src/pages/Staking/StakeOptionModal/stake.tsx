@@ -18,6 +18,7 @@ import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
 import {stakePaytoken} from '../staking.reducer';
+import {addComma} from 'utils/addComma';
 
 export const StakeOptionModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -29,34 +30,7 @@ export const StakeOptionModal = () => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
 
-  const addComma = (inputVal: string) => {
-    if (inputVal.split('.')[1]?.length >= 3) {
-      return;
-    }
-    if (inputVal.split('.').length > 2) {
-      return;
-    }
-    if (inputVal.length > 0 && value.substring(0, 1) === '0') {
-      if (inputVal.split('.').length > 1) {
-        return setValue(inputVal);
-      }
-      return setValue(inputVal.substring(1, 2));
-    }
-    if (inputVal === '.') {
-      setValue(inputVal);
-    } else {
-      setValue(
-        inputVal
-          .replace(/[^0-9a-zA-Z.]/g, '')
-          .replace(/\B(?=(\d{3})+(?!\d))/g, ','),
-      );
-    }
-    // if (value.split('.')[1]?.length > 2) {
-    //   console.log(value);
-    // }
-  };
-
-  const handleChange = (e: any) => addComma(e.target.value);
+  const handleChange = (e: any) => addComma(e.target.value, setValue);
   const setMax = useCallback((_e) => setValue(balance), [balance]);
 
   const handleCloseModal = useCallback(() => {
