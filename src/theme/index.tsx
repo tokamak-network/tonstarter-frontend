@@ -4,7 +4,6 @@ import '@fontsource/titillium-web/400.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/rajdhani/600.css';
 import '@fontsource/open-sans';
-import {graphql} from 'graphql';
 
 const fonts = {
   heading: 'Roboto',
