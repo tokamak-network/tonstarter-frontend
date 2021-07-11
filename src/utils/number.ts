@@ -1,5 +1,7 @@
 import {ethers, BigNumber} from 'ethers';
 import Decimal from 'decimal.js';
+import {toWei} from 'web3-utils';
+
 // eslint-disable-next-line
 type RoundFunc = {
   r_amount: string;
@@ -13,6 +15,8 @@ type ConverNumberFunc = {
   round?: boolean;
   decimalPlaces?: number;
 };
+
+export const convertToWei = (num: string) => toWei(num, 'ether');
 
 function roundNumber(args: RoundFunc): string {
   const {r_amount, r_maxDecimalDigits, r_opt} = args;
