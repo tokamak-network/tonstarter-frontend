@@ -106,6 +106,12 @@ const modalStyle = {
     fontWeight: 300,
     _hover: {},
   },
+  fontColor: (props: any) => ({
+    color: props.colorMode === 'light' ? 'black.300' : 'white.100',
+  }),
+  fontSubColor: (props: any) => ({
+    color: props.colorMode === 'light' ? 'gray.250' : 'white.200',
+  }),
 };
 
 const theme = extendTheme({

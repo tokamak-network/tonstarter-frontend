@@ -18,6 +18,7 @@ import {
 } from '@chakra-ui/react';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
+import {Scrollbars} from 'react-custom-scrollbars-2';
 
 const AirdropRecord = ({balance}: {balance: string}) => {
   return (
@@ -67,11 +68,14 @@ export const AirdropModal = () => {
               <Text
                 fontSize="2.000em"
                 fontWeight={500}
-                color="black.300"
+                {...modalStyle.fontColor({colorMode})}
                 mr="5px">
                 4,000.00
               </Text>
-              <Text fontSize="0.813em" color="gray.250" alignSelf="flex-end">
+              <Text
+                fontSize="0.813em"
+                alignSelf="flex-end"
+                {...modalStyle.fontSubColor({colorMode})}>
                 TOS
               </Text>
             </Flex>
@@ -81,24 +85,44 @@ export const AirdropModal = () => {
               color="gray.400">
               Detail
             </Text>
-            <Flex style={{marginTop: '0', marginBottom: '0.875em'}} h="24px">
-              <Text fontSize="1.125em" fontWeight={500} color="gray.250" mr={1}>
+            <Flex
+              style={{marginTop: '0', marginBottom: '0.875em'}}
+              h="24px"
+              {...modalStyle.fontSubColor({colorMode})}>
+              <Text fontSize="1.125em" fontWeight={500} mr={1}>
                 Genesis Airdrop 6,000
               </Text>
               <Text fontSize="0.750em" alignSelf="flex-end" fontWeight="bold">
                 TOS
               </Text>
             </Flex>
-            <Wrap
-              display="flex"
-              height="135px"
-              overflowY="auto"
-              overflowX="hidden"
-              style={{marginTop: '0', marginBottom: '20px'}}>
-              {dummyData.map((data) => (
-                <AirdropRecord balance={data}></AirdropRecord>
-              ))}
-            </Wrap>
+            <Scrollbars
+              style={{
+                width: '100%',
+                height: '135px',
+                display: 'flex',
+                position: 'relative',
+              }}
+              thumbSize={70}
+              renderThumbVertical={() => (
+                <div
+                  style={{
+                    background: colorMode === 'light' ? '#007aff' : '#ffffff',
+                    position: 'relative',
+                    right: '-2px',
+                  }}></div>
+              )}
+              renderThumbHorizontal={() => (
+                <div style={{background: 'black'}}></div>
+              )}>
+              <Wrap
+                display="flex"
+                style={{marginTop: '0', marginBottom: '20px'}}>
+                {dummyData.map((data) => (
+                  <AirdropRecord balance={data}></AirdropRecord>
+                ))}
+              </Wrap>
+            </Scrollbars>
           </Stack>
           <Center mt="25px">
             <Button {...modalStyle.button}>Claim</Button>
