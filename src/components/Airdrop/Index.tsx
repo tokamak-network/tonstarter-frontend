@@ -52,7 +52,10 @@ export const AirdropModal = () => {
       isCentered
       onClose={handleCloseModal}>
       <ModalOverlay />
-      <ModalContent {...modalStyle.modalContent({colorMode})} h="540px">
+      <ModalContent
+        {...modalStyle.modalContent({colorMode})}
+        h="540px"
+        borderRadius={15}>
         <ModalBody p={0}>
           <Box {...modalStyle.box({colorMode})}>
             <Heading {...modalStyle.head({colorMode})}>Airdrop Claim</Heading>
@@ -124,7 +127,7 @@ export const AirdropModal = () => {
               </Wrap>
             </Scrollbars>
           </Stack>
-          <Center mt="25px">
+          <Center mt="30px">
             <Button {...modalStyle.button}>Claim</Button>
           </Center>
         </ModalBody>
