@@ -113,6 +113,7 @@ export const AirdropModal = () => {
                     background: colorMode === 'light' ? '#007aff' : '#ffffff',
                     position: 'relative',
                     right: '-2px',
+                    borderRadius: '3px',
                   }}></div>
               )}
               renderThumbHorizontal={() => (
