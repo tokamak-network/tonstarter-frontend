@@ -13,6 +13,7 @@ import {fetchAppConfig} from 'store/app/app.reducer';
 import {fetchUserInfo} from 'store/app/user.reducer';
 import {fetchStakes} from './Staking/staking.reducer';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
+import {AirdropModal} from 'components/Airdrop/Index';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -117,6 +118,7 @@ export const Router: FC<RouterProps> = () => {
       </Switch>
       <Footer />
       <WalletModal state={walletState} isOpen={isModalOpen} onClose={onClose} />
+      <AirdropModal />
     </>
   );
 };

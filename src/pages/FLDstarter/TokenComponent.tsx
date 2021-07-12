@@ -24,6 +24,7 @@ import store from 'store';
 type TokenComponentProps = {
   data: any;
   phase?: string;
+  status: string;
   period: string;
   token: TokenType;
   stakedAmount: string;
@@ -35,6 +36,7 @@ type TokenComponentProps = {
 export const TokenComponent: FC<TokenComponentProps> = ({
   data,
   phase,
+  status,
   period,
   token,
   stakedAmount,
@@ -72,6 +74,8 @@ export const TokenComponent: FC<TokenComponentProps> = ({
     }
     window.scrollTo(0, 350 + index * 69);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const isDisabled = account === undefined || status !== 'sale' ? true : false;
 
   return (
     <Container
@@ -169,12 +173,12 @@ export const TokenComponent: FC<TokenComponentProps> = ({
               fontSize={16}
               fontWeight={700}
               rounded={18}
-              bg={account ? theme.colors.yellow[200] : '#f1f1f3'}
+              bg={isDisabled ? 'gray.200' : 'yellow.200'}
               px={34}
               fontFamily={theme.fonts.fld}
               mr={2}
               color={account ? 'black' : '#a8adb6'}
-              isDisabled={account !== undefined ? false : true}
+              isDisabled={isDisabled}
               onClick={() => handleNavigation('stake')}
               _hover={{bg: theme.colors.yellow[300]}}>
               Staking
