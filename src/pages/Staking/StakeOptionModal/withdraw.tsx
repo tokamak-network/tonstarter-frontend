@@ -17,7 +17,7 @@ import React, {useCallback, useState} from 'react';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
-import {withdraw} from '../staking.reducer';
+import {withdraw} from '../actions';
 
 export const WithdrawalOptionModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -26,12 +26,12 @@ export const WithdrawalOptionModal = () => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
 
-  let balance = data?.data?.user?.stakeBalanceTON;
+  let balance = data?.data?.totalPendingUnstakedAmountL2;
   /*eslint-disable */
   const [value, setValue] = useState<number>(balance);
-
-  const handleChange = useCallback((e) => setValue(e.target.value), []);
-  const withdrawalDelay = data?.data?.globalWithdrawalDelay;
+  // console.log(data?.data)
+  // const handleChange = useCallback((e) => setValue(e.target.value), []);
+  // const withdrawalDelay = data?.data?.globalWithdrawalDelay;
   const withdrawableBalance = data?.data?.withdrawableAmount;
 
   const handleCloseModal = useCallback(() => {
@@ -82,8 +82,7 @@ export const WithdrawalOptionModal = () => {
               display={'flex'}
               justifyContent="center"
               flexDir="column"
-              w={'100%'}
-            >
+              w={'100%'}>
               <Flex justifyContent="space-between" alignItems="center" h="15px">
                 <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
                   Withdrawable amount
@@ -92,19 +91,17 @@ export const WithdrawalOptionModal = () => {
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                   fontWeight={500}
                   fontSize={'18px'}>
-                  {withdrawableBalance} TON
+                  {withdrawableBalance ? withdrawableBalance : '0.00'} TON
                 </Text>
               </Flex>
             </Box>
           </Stack>
-          <Box 
-            py={4} 
-            as={Flex} 
+          <Box
+            py={4}
+            as={Flex}
             justifyContent={'center'}
             borderTop={
-              colorMode === 'light'
-                ? '1px solid #f4f6f8'
-                : '1px solid #373737'
+              colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
             }>
             <Button
               w={'150px'}
@@ -113,7 +110,7 @@ export const WithdrawalOptionModal = () => {
               fontSize="14px"
               onClick={() =>
                 withdraw({
-                  userAddress:account, 
+                  userAddress: account,
                   contractAddress: data.data.contractAddress,
                   miningEndTime: data?.data?.miningEndTime,
                   library: library,

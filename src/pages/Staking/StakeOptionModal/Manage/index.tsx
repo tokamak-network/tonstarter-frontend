@@ -13,7 +13,8 @@ import {
   useTheme,
   useColorMode,
 } from '@chakra-ui/react';
-import {closeSale, fetchWithdrawPayload} from '../staking.reducer';
+import {fetchWithdrawPayload} from './utils/fetchWithdrawPayload';
+import {closeSale} from '../../actions';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {useCallback} from 'react';
@@ -27,22 +28,22 @@ export const ManageModal = () => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
   let balance = data?.data?.stakeContractBalanceTon;
-  
-  const withdrawPayload = async () => {
+
+  const withdrawPayload = async (data: any) => {
     const result = await fetchWithdrawPayload(
-      data.data.library,
-      data.data.account,
-      data.data.contractAddress,
+      data.library,
+      data.account,
+      data.contractAddress,
     );
     return result;
   };
   // console.log(data?.data);
 
-  const withdrawData = useCallback(async (modal: ModalType) => {
-    const payloadWithdraw = await withdrawPayload();
+  const withdrawData = useCallback(async (modal: ModalType, data: any) => {
+    const payloadWithdraw = await withdrawPayload(data?.data);
     const payload = {
       ...data?.data,
-      payloadWithdraw,
+      withdrawableAmount: payloadWithdraw,
     };
     dispatch(openModal({type: modal, data: payload}));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -153,7 +154,6 @@ export const ManageModal = () => {
               color={'white.100'}
               fontSize={'0.750em'}
               fontWeight={100}
-              
               onClick={() =>
                 dispatch(openModal({type: 'stakeL2', data: data.data}))
               }
@@ -166,7 +166,6 @@ export const ManageModal = () => {
               color={'white.100'}
               fontSize={'12px'}
               fontWeight={100}
-              
               _hover={{backgroundColor: 'blue.100'}}
               onClick={() =>
                 dispatch(openModal({type: 'unstakeL2', data: data.data}))
@@ -179,9 +178,8 @@ export const ManageModal = () => {
               color={'white.100'}
               fontSize={'12px'}
               fontWeight={100}
-              
               _hover={{backgroundColor: 'blue.100'}}
-              onClick={() => withdrawData('withdraw')}>
+              onClick={() => withdrawData('withdraw', data)}>
               Withdraw
             </Button>
             <Button
@@ -190,7 +188,6 @@ export const ManageModal = () => {
               color={'white.100'}
               fontSize={'12px'}
               fontWeight={100}
-              
               _hover={{backgroundColor: 'blue.100'}}
               onClick={() =>
                 dispatch(openModal({type: 'swap', data: data.data}))

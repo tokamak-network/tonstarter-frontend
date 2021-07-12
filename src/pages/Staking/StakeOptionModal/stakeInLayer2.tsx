@@ -17,13 +17,14 @@ import React, {useCallback, useState} from 'react';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
-import {stakeToLayer2} from '../staking.reducer';
+import {stakeL2} from '../actions';
 
 export const StakeInLayer2Modal = () => {
   const {account, library} = useWeb3React();
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
-  let balance = data?.data?.user?.balance;
+  let balance = data?.data?.stakeBalanceTON;
+  // console.log(data?.data)
 
   const [value, setValue] = useState<number>(balance);
   const theme = useTheme();
@@ -129,7 +130,7 @@ export const StakeInLayer2Modal = () => {
               color="white.100"
               fontSize="14px"
               onClick={() =>
-                stakeToLayer2({
+                stakeL2({
                   userAddress: account,
                   amount: value.toString(),
                   contractAddress: data?.data?.contractAddress,

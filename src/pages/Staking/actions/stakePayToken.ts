@@ -28,7 +28,7 @@ type StakeTon = {
   handleCloseModal: any;
 };
 
-export const stakePaytoken = async (args: StakeProps) => {
+export const stakePayToken = async (args: StakeProps) => {
   const {
     userAddress,
     amount,

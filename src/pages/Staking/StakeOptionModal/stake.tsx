@@ -17,7 +17,7 @@ import React, {useCallback, useState} from 'react';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
-import {stakePaytoken} from '../staking.reducer';
+import {stakePayToken} from '../actions';
 import {addComma} from 'utils/addComma';
 
 export const StakeOptionModal = () => {
@@ -130,7 +130,7 @@ export const StakeOptionModal = () => {
               color="white.100"
               fontSize="14px"
               onClick={() =>
-                stakePaytoken({
+                stakePayToken({
                   userAddress: account,
                   amount: value.replaceAll(',', ''),
                   payToken: data.data.token,

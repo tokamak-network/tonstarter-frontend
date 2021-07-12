@@ -15,7 +15,7 @@ import React, {useCallback, useState} from 'react';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
-import {swapWTONtoTOS} from '../staking.reducer';
+import {swapWTONtoTOS} from '../actions';
 
 export const SwapModal = () => {
   const {account, library} = useWeb3React();

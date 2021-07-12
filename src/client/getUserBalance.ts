@@ -5,6 +5,7 @@ import store from 'store';
 import {convertNumber} from 'utils/number';
 import {REACT_APP_TON} from 'constants/index';
 import * as ERC20 from 'services/abis/ERC20.json';
+import {BigNumber} from 'ethers';
 
 const rpc = getRPC();
 
@@ -48,16 +49,25 @@ const fetchUserData = async (
 };
 
 const getUserInfo = async (
-  // stakeInfo: Partial<Stake>,
-  // stakeContractAddress: string,
   library: any,
   account: string,
   contractAddress: string,
 ) => {
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
-  const staked = await StakeTONContract?.userStaked(account);
-  return {
-    userStaked: staked.amount,
-    userRewardTOS: staked.claimedAmount,
-  };
+  const currentBlock = await getRPC().getBlockNumber();
+  return Promise.all([
+    StakeTONContract.userStaked(account),
+    StakeTONContract.canRewardAmount(account, currentBlock),
+  ]).then((result) => {
+    return {
+      userStaked: result[0].amount,
+      userRewardTOS: result[1],
+    };
+  });
+};
+
+export const getTotalStakers = async (contractAddress: string) => {
+  const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
+  const result = await StakeTONContract.totalStakers();
+  return String(BigNumber.from(result).toNumber());
 };

@@ -44,8 +44,6 @@ export const AirdropModal = () => {
 
   const dummyData = ['6000', '6000', '6000', '6000'];
 
-  console.log(modalStyle);
-
   return (
     <Modal
       isOpen={data.modal === 'airdrop' ? true : false}
