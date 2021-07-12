@@ -71,7 +71,13 @@ export const Footer = () => {
 
   const bgColor = colorMode === 'light' ? 'gray.50' : 'black.200';
   return (
-    <Container maxW={'full'} bg={bgColor} pl={'2.5em'} pr={'2.5em'}>
+    <Container
+      maxW={'full'}
+      bg={bgColor}
+      pl={'2.5em'}
+      pr={'2.5em'}
+      pos="fixed"
+      bottom={0}>
       <Flex
         flexDirection={{base: 'column', md: 'row'}}
         justifyContent={'space-between'}
