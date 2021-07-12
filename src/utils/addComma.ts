@@ -35,7 +35,6 @@ export const addComma = (
           .replace(/\B(?=(\d{3})+(?!\d))/g, ','),
       );
     }
-    setValue(_val);
   };
 
   return checkInputVal();
