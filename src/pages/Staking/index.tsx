@@ -117,7 +117,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
 }) => {
   const {colorMode} = useColorMode();
   const [loading, setLoading] = useState(false);
-  const [userTonBalance, setUserTonBalance] = useState<string>('...');
+  const [userTonBalance, setUserTonBalance] = useState<string>('');
   const btnDisabled = account === undefined ? true : false;
   const currentBlock = data.fetchBlock;
   const miningStart = data.miningStartTime;
