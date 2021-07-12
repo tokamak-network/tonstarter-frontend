@@ -28,21 +28,21 @@ export const ManageModal = () => {
   const {colorMode} = useColorMode();
   let balance = data?.data?.stakeContractBalanceTon;
   
-  const withdrawPayload = async () => {
+  const withdrawPayload = async (data: any) => {
     const result = await fetchWithdrawPayload(
-      data.data.library,
-      data.data.account,
-      data.data.contractAddress,
+      data.library,
+      data.account,
+      data.contractAddress,
     );
     return result;
   };
   // console.log(data?.data);
 
-  const withdrawData = useCallback(async (modal: ModalType) => {
-    const payloadWithdraw = await withdrawPayload();
+  const withdrawData = useCallback(async (modal: ModalType, data: any) => {
+    const payloadWithdraw = await withdrawPayload(data?.data);
     const payload = {
       ...data?.data,
-      payloadWithdraw,
+      withdrawableAmount: payloadWithdraw,
     };
     dispatch(openModal({type: modal, data: payload}));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -181,7 +181,7 @@ export const ManageModal = () => {
               fontWeight={100}
               
               _hover={{backgroundColor: 'blue.100'}}
-              onClick={() => withdrawData('withdraw')}>
+              onClick={() => withdrawData('withdraw', data)}>
               Withdraw
             </Button>
             <Button

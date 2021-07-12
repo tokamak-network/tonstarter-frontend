@@ -17,7 +17,7 @@ import * as StakeTON from 'services/abis/StakeTON.json';
 import * as StakeVaultLogic from 'services/abis/Stake1Logic.json';
 import * as StakeVault from 'services/abis/Stake1Vault.json';
 // import * as StakeVaultStorage from 'services/abis/StakeVaultStorage.json';
-// import * as AirdropVault from 'services/abis/AirdropVault.json';
+import * as AirdropVaultABI from 'services/abis/AirdropVault.json';
 import {
   REACT_APP_TOKAMAK_LAYER2,
   REACT_APP_TON,
@@ -26,6 +26,7 @@ import {
   REACT_APP_SEIG_MANAGER,
   REACT_APP_WTON,
   REACT_APP_STAKE1_PROXY,
+  REACT_APP_AIRDROP,
 } from 'constants/index';
 
 // returns the checksummed address if the address is valid, otherwise returns false
@@ -80,17 +81,23 @@ export function getTokamakContract(want: string, address?: string): any {
     CandidateABI.abi,
     rpc,
   );
-  // const AirdropVault = new Contract(REACT_APP_AIRDROP, AirdropVault.abi, rpc);
   const VaultProxy = new Contract(REACT_APP_STAKE1_PROXY, StakeVaultLogic.abi, rpc);
+  // try {
+  //   const Airdrop = new Contract(REACT_APP_AIRDROP, AirdropVaultABI.abi, rpc);
+  //   console.log(Airdrop)
+  // } catch (err) {
+  //   console.log(err);
+  // }
 
   if (want === 'TON') {
     return TON;
   } else if (want === 'TOS') {
     return TOS;
   } 
-  // else if (want === 'Airdrop') {
-  //   return AirdropVault;
-  // } 
+  else if (want === 'Airdrop') {
+    const Airdrop = new Contract(REACT_APP_AIRDROP, AirdropVaultABI.abi, rpc);
+    return Airdrop;
+  } 
   else if (want === 'WTON') {
     return WTON;
   } else if (want === 'SeigManager') {

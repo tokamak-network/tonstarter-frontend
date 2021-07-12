@@ -26,12 +26,12 @@ export const WithdrawalOptionModal = () => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
 
-  let balance = data?.data?.user?.stakeBalanceTON;
+  let balance = data?.data?.totalPendingUnstakedAmountL2;
   /*eslint-disable */
   const [value, setValue] = useState<number>(balance);
-
-  const handleChange = useCallback((e) => setValue(e.target.value), []);
-  const withdrawalDelay = data?.data?.globalWithdrawalDelay;
+  // console.log(data?.data)
+  // const handleChange = useCallback((e) => setValue(e.target.value), []);
+  // const withdrawalDelay = data?.data?.globalWithdrawalDelay;
   const withdrawableBalance = data?.data?.withdrawableAmount;
 
   const handleCloseModal = useCallback(() => {
@@ -92,7 +92,7 @@ export const WithdrawalOptionModal = () => {
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                   fontWeight={500}
                   fontSize={'18px'}>
-                  {withdrawableBalance} TON
+                  {withdrawableBalance?withdrawableBalance:'0.00'} TON
                 </Text>
               </Flex>
             </Box>
