@@ -33,7 +33,7 @@ import {
 } from './StakeOptionModal';
 import store, {AppDispatch} from 'store';
 import {openModal} from 'store/modal.reducer';
-import {ManageModal} from './StakeOptionModal/manage';
+import {ManageModal} from './StakeOptionModal/Manage/index';
 import {formatStartTime} from 'utils/timeStamp';
 import {useState} from 'react';
 import {useLocalStorage} from 'hooks/useStorage';
@@ -41,7 +41,11 @@ import {useEffect} from 'react';
 import {Stake, fetchManageModalPayload} from './staking.reducer';
 import {ModalType} from 'store/modal.reducer';
 import {LoadingComponent} from 'components/Loading';
-import {getUserBalance, getUserTonBalance} from 'client/getUserBalance';
+import {
+  getTotalStakers,
+  getUserBalance,
+  getUserTonBalance,
+} from 'client/getUserBalance';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
@@ -135,7 +139,10 @@ const WalletInformation: FC<WalletInformationProps> = ({
       library: user.library,
     });
     if (result) {
-      setUserTonBalance(result);
+      const trimNum = Number(result).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+      });
+      setUserTonBalance(trimNum);
     }
   };
 
@@ -300,18 +307,24 @@ export const Staking = () => {
     [],
   );
 
-  const GetText = ({title, content, user}: any) => {
+  const GetTotalStaker = ({contractAddress}: any) => {
     const {colorMode} = useColorMode();
+    const [totalStaker, setTotalStaker] = useState('');
+    const getlInfo = async () => {
+      const res = await getTotalStakers(contractAddress);
+      setTotalStaker(res);
+    };
+    getlInfo();
     return (
       <Flex flexDir={'column'} alignItems={'space-between'}>
         <Text fontSize={'15px'} color="gray.400">
-          {title}
+          Total Staker
         </Text>
         <Text
           fontSize={'20px'}
           color={colorMode === 'light' ? 'black.300' : 'white.200'}
           fontWeight={'bold'}>
-          {content}
+          {totalStaker}
         </Text>
       </Flex>
     );
@@ -322,6 +335,7 @@ export const Staking = () => {
     const [balance, SetBalance] = useState(undefined);
     const getBalance = async () => {
       const result = await getUserBalance(contractAddress);
+
       if (title === 'My staked') {
         //@ts-ignore
         return SetBalance(result.totalStakedBalance);
@@ -329,6 +343,7 @@ export const Staking = () => {
       //@ts-ignore
       SetBalance(result.rewardTosBalance);
     };
+
     if (user.address !== undefined) {
       getBalance();
     }
@@ -391,9 +406,7 @@ export const Staking = () => {
                   }></GetDate>
               </Text>
             </Flex>
-            <GetText
-              title={'Total Staker'}
-              content={data[row.id]?.totalStakers}></GetText>
+            <GetTotalStaker contractAddress={contractAddress}></GetTotalStaker>
             <GetBalance
               title={'My staked'}
               contractAddress={contractAddress}

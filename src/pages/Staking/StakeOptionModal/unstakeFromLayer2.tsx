@@ -13,7 +13,7 @@ import {
   useTheme,
   useColorMode,
 } from '@chakra-ui/react';
-import {unstakeL2} from '../staking.reducer';
+import {unstakeL2} from '../actions';
 import React, {useCallback, useState} from 'react';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
