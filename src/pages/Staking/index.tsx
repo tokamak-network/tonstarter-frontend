@@ -481,9 +481,9 @@ export const Staking = () => {
       <Container maxW={'6xl'}>
         <Box py={20}>
           <PageHeader
-            title={'TON Starter'}
+            title={'Staking'}
             subtitle={
-              'Put your tokens into TON Starter and earn reward without losing principal'
+              'Put your tokens into FLD and earn reward without losing principal'
             }
           />
         </Box>

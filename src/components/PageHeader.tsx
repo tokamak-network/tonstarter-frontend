@@ -1,6 +1,12 @@
 import {FC} from 'react';
-import {Heading, Box, Text, Container,useTheme} from '@chakra-ui/react';
-import {useColorMode} from '@chakra-ui/react';
+import {
+  Heading,
+  Flex,
+  Text,
+  Container,
+  useTheme,
+  useColorMode,
+} from '@chakra-ui/react';
 
 type HeadProps = {
   title?: string;
@@ -12,22 +18,27 @@ export const PageHeader: FC<HeadProps> = ({title, subtitle}) => {
   const theme = useTheme();
   return (
     <Container pt={12}>
-      <Box textAlign={'center'}>
+      <Flex flexDir="column" alignItems="center" justifyContent="center">
         <Heading
           fontWeight={'bold'}
           fontSize={'38'}
           className={'page-title'}
-          color={theme.colors.gray[150]}
-          fontFamily={theme.fonts.fld}>
+          color={theme.colors.gray[250]}
+          fontFamily={theme.fonts.titil}
+          mb="10px">
           {title}
         </Heading>
 
-        <Text fontWeight={'bold'}
-          fontSize={'20'}
+        <Text
+          fontSize={16}
           className={'page-title'}
-          color={colorMode === 'light' ? theme.colors.gray[75] : 'currentcolor'}
-          fontFamily={theme.fonts.fld}>{subtitle}</Text>
-      </Box>
+          color={
+            colorMode === 'light' ? theme.colors.gray[400] : 'currentcolor'
+          }
+          fontFamily={theme.fonts.titil}>
+          {subtitle}
+        </Text>
+      </Flex>
     </Container>
   );
 };
