@@ -114,7 +114,7 @@ export const ManageModal = () => {
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                   fontWeight={500}
                   fontSize={'18px'}>
-                  {data.data.totalStakedAmount} TON
+                  {data.data?.totalStakedAmount} TON
                 </Text>
               </Flex>
               <Flex justifyContent="space-between" alignItems="center" h="55px">
@@ -125,7 +125,7 @@ export const ManageModal = () => {
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                   fontWeight={500}
                   fontSize={'18px'}>
-                  {data.data.totalStakedAmountL2} TON
+                  {data.data?.totalStakedAmountL2} TON
                 </Text>
               </Flex>
               <Flex justifyContent="space-between" alignItems="center" h="55px">
@@ -136,7 +136,7 @@ export const ManageModal = () => {
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                   fontWeight={500}
                   fontSize={'18px'}>
-                  {data.data.totalPendingUnstakedAmountL2} TON
+                  {data.data?.totalPendingUnstakedAmountL2} TON
                 </Text>
               </Flex>
             </Box>
@@ -202,7 +202,7 @@ export const ManageModal = () => {
                 fontSize={'12px'}
                 fontWeight={100}
                 _hover={{backgroundColor: 'blue.100'}}
-                isDisabled={data.data.fetchBlock < data.data.miningStartTime}
+                isDisabled={data.data?.fetchBlock < data.data?.miningStartTime}
                 onClick={() =>
                   closeSale({
                     userAddress: account,
