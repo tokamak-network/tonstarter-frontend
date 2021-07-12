@@ -38,7 +38,8 @@ import {formatStartTime} from 'utils/timeStamp';
 import {useState} from 'react';
 import {useLocalStorage} from 'hooks/useStorage';
 import {useEffect} from 'react';
-import {Stake, fetchManageModalPayload} from './staking.reducer';
+import {Stake} from './staking.reducer';
+import {fetchManageModalPayload} from './utils';
 import {ModalType} from 'store/modal.reducer';
 import {LoadingComponent} from 'components/Loading';
 import {
