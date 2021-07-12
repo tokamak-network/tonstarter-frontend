@@ -54,7 +54,7 @@ export const ClaimOptionModal = () => {
               Claim
             </Heading>
             <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
-              You can claim {claimed} TOS and earned {earned} TOS
+              You can claim {claimed?claimed:'0.00'} TOS and earned {earned?earned:'0.00'} TOS
             </Text>
           </Box>
 
@@ -80,13 +80,13 @@ export const ClaimOptionModal = () => {
               _focus={{
                 borderWidth: 0,
               }}>
-              {earned} TOS
+              {claimed?claimed:'0.00'} TOS
             </Text>
           </Stack>
 
           <Box as={Flex} justifyContent={'center'}>
             <Button
-              disabled={earned <= 0}
+              disabled={Number(claimed) <= 0}
               w={'150px'}
               bg={'blue.500'}
               color="white.100"
