@@ -755,10 +755,17 @@ const getUserInfoForManage = async (
   const currentBlock = getRPC().getBlockNumber();
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
   const L2Contract = getTokamakContract('TokamakLayer2');
+  // const Vault = getTokamakContract('Vault', vaultAddress);
   const TON = getTokamakContract('TON');
   const WTON = getTokamakContract('WTON');
   const depositManager = getTokamakContract('DepositManager');
   const seigManager = getTokamakContract('SeigManager');
+  // try {
+  //   const Airdrop = getTokamakContract('Airdrop')
+  //   console.log(Airdrop);
+  // } catch (err) {
+  //   console.log(err)
+  // }
   // IIStake1Vault(vault).saleClosed()
 
   return Promise.all([

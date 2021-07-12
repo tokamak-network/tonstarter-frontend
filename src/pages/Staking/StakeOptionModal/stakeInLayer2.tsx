@@ -23,7 +23,8 @@ export const StakeInLayer2Modal = () => {
   const {account, library} = useWeb3React();
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
-  let balance = data?.data?.user?.balance;
+  let balance = data?.data?.stakeBalanceTON;
+  // console.log(data?.data)
 
   const [value, setValue] = useState<number>(balance);
   const theme = useTheme();
