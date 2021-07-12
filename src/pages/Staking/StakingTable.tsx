@@ -174,15 +174,15 @@ export const StakingTable: FC<StakingTableProps> = ({
   const renderBtn = (contractAddress: string, index: number) => {
     if (isOpen === contractAddress)
       return (
-        <TriangleDownIcon
+        <TriangleUpIcon
           _hover={{cursor: 'pointer'}}
           onClick={() => setIsOpen('')}
         />
       );
     return (
-      <TriangleUpIcon
+      <TriangleDownIcon
         _hover={{cursor: 'pointer'}}
-        onClick={() => clickOpen(contractAddress, index)}></TriangleUpIcon>
+        onClick={() => clickOpen(contractAddress, index)}></TriangleDownIcon>
     );
   };
 
