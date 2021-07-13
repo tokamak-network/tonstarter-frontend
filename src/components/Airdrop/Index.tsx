@@ -108,9 +108,7 @@ export const AirdropModal = () => {
                 {...modalStyle.fontColor({colorMode})}
                 mr="5px">
                 {airdropData[0]?.allocatedAmount === '' ? (
-                  <Flex h="1">
-                    <LoadingDots></LoadingDots>
-                  </Flex>
+                  <LoadingDots></LoadingDots>
                 ) : (
                   airdropData[0]?.allocatedAmount
                 )}
