@@ -12,7 +12,7 @@ import {
   useColorMode,
   useTheme,
   Wrap,
-  // WrapItem,
+  WrapItem,
   Button,
   Center,
 } from '@chakra-ui/react';
@@ -20,16 +20,16 @@ import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
 import {Scrollbars} from 'react-custom-scrollbars-2';
 
-// const AirdropRecord = (roundNumber: any, allocatedAmount: string) => {
-//   return (
-//     <WrapItem w="100%" h="37px">
-//       <Flex w="100%" justifyContent="space-between" pl="1.875em" pr="1.875em">
-//         <Text>{roundNumber}st Airdrop</Text>
-//         <Text> {allocatedAmount} TOS</Text>
-//       </Flex>
-//     </WrapItem>
-//   );
-// };
+const AirdropRecord = (roundNumber: any, allocatedAmount: string) => {
+  return (
+    <WrapItem w="100%" h="37px">
+      <Flex w="100%" justifyContent="space-between" pl="1.875em" pr="1.875em">
+        <Text>{roundNumber}st Airdrop</Text>
+        <Text> {allocatedAmount} TOS</Text>
+      </Flex>
+    </WrapItem>
+  );
+};
 
 export const AirdropModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -38,7 +38,7 @@ export const AirdropModal = () => {
   const theme = useTheme();
   const {modalStyle} = theme;
 
-  // const airdropInfo = data?.data?.airdropInfo
+  const airdropInfo = data?.data?.airdropInfo;
 
   const handleCloseModal = useCallback(() => {
     dispatch(closeModal());
@@ -120,12 +120,12 @@ export const AirdropModal = () => {
               <Wrap
                 display="flex"
                 style={{marginTop: '0', marginBottom: '20px'}}>
-                {/* {airdropInfo.map((data: any) => (
-                  <AirdropRecord 
+                {airdropInfo.map((data: any) => (
+                  <AirdropRecord
                     roundNumber={data.roundNumber}
-                    allocatedAmount={data.allocatedAmount} 
+                    allocatedAmount={data.allocatedAmount}
                   />
-                ))} */}
+                ))}
               </Wrap>
             </Scrollbars>
           </Stack>

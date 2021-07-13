@@ -12,7 +12,6 @@ import {useAppDispatch} from 'hooks/useRedux';
 import {fetchAppConfig} from 'store/app/app.reducer';
 import {fetchUserInfo} from 'store/app/user.reducer';
 import {fetchStakes} from './Staking/staking.reducer';
-import {fetchAirdrop} from '../components/Airdrop/airdrop.reducer'
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import {AirdropModal} from 'components/Airdrop/Index';
 
@@ -65,13 +64,6 @@ export const Router: FC<RouterProps> = () => {
               chainId,
             }) as any,
           );
-          dispatch(
-            fetchAirdrop({
-              library,
-              account,
-              chainId,
-            }) as any,
-          ); 
         });
       }
     }

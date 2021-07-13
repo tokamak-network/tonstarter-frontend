@@ -1,4 +1,3 @@
-import { airdropReducer } from './../components/Airdrop/airdrop.reducer';
 import {combineReducers} from '@reduxjs/toolkit';
 import {stakeReducer} from 'pages/Staking/staking.reducer';
 import {appReducer} from './app/app.reducer';
@@ -13,7 +12,6 @@ const rootReducer = combineReducers({
   stakes: stakeReducer.reducer,
   stakesDetail: stakeDetailReducer.reducer,
   appConfig: appReducer.reducer,
-  airdrop: airdropReducer.reducer,
   user: userReducer.reducer,
   toast: toastReducer.reducer,
   modal: modalReducer.reducer,
