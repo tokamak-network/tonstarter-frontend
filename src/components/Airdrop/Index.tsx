@@ -12,7 +12,7 @@ import {
   useColorMode,
   useTheme,
   Wrap,
-  WrapItem,
+  // WrapItem,
   Button,
   Center,
 } from '@chakra-ui/react';
@@ -20,16 +20,16 @@ import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
 import {Scrollbars} from 'react-custom-scrollbars-2';
 
-const AirdropRecord = ({balance}: {balance: string}) => {
-  return (
-    <WrapItem w="100%" h="37px">
-      <Flex w="100%" justifyContent="space-between" pl="1.875em" pr="1.875em">
-        <Text>1st Airdrop</Text>
-        <Text>{balance} TOS</Text>
-      </Flex>
-    </WrapItem>
-  );
-};
+// const AirdropRecord = (roundNumber: any, allocatedAmount: string) => {
+//   return (
+//     <WrapItem w="100%" h="37px">
+//       <Flex w="100%" justifyContent="space-between" pl="1.875em" pr="1.875em">
+//         <Text>{roundNumber}st Airdrop</Text>
+//         <Text> {allocatedAmount} TOS</Text>
+//       </Flex>
+//     </WrapItem>
+//   );
+// };
 
 export const AirdropModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -38,11 +38,11 @@ export const AirdropModal = () => {
   const theme = useTheme();
   const {modalStyle} = theme;
 
+  // const airdropInfo = data?.data?.airdropInfo
+
   const handleCloseModal = useCallback(() => {
     dispatch(closeModal());
   }, [dispatch]);
-
-  const dummyData = ['6000', '6000', '6000', '6000'];
 
   return (
     <Modal
@@ -120,9 +120,12 @@ export const AirdropModal = () => {
               <Wrap
                 display="flex"
                 style={{marginTop: '0', marginBottom: '20px'}}>
-                {dummyData.map((data) => (
-                  <AirdropRecord balance={data}></AirdropRecord>
-                ))}
+                {/* {airdropInfo.map((data: any) => (
+                  <AirdropRecord 
+                    roundNumber={data.roundNumber}
+                    allocatedAmount={data.allocatedAmount} 
+                  />
+                ))} */}
               </Wrap>
             </Scrollbars>
           </Stack>

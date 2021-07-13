@@ -82,12 +82,7 @@ export function getTokamakContract(want: string, address?: string): any {
     rpc,
   );
   const VaultProxy = new Contract(REACT_APP_STAKE1_PROXY, StakeVaultLogic.abi, rpc);
-  // try {
-  //   const Airdrop = new Contract(REACT_APP_AIRDROP, AirdropVaultABI.abi, rpc);
-  //   console.log(Airdrop)
-  // } catch (err) {
-  //   console.log(err);
-  // }
+  const Airdrop = new Contract(REACT_APP_AIRDROP, AirdropVaultABI.abi, rpc);
 
   if (want === 'TON') {
     return TON;
@@ -95,7 +90,6 @@ export function getTokamakContract(want: string, address?: string): any {
     return TOS;
   } 
   else if (want === 'Airdrop') {
-    const Airdrop = new Contract(REACT_APP_AIRDROP, AirdropVaultABI.abi, rpc);
     return Airdrop;
   } 
   else if (want === 'WTON') {

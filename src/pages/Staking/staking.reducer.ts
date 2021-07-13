@@ -4,6 +4,7 @@ import {getRPC} from 'utils/contract';
 import {period} from 'utils';
 import {TokenType} from 'types/index';
 import {convertNumber} from 'utils/number';
+// import { getTokamakContract } from '../../utils/contract';
 
 const rpc = getRPC();
 
