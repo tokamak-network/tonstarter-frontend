@@ -19,7 +19,6 @@ import {useAppSelector} from 'hooks/useRedux';
 import {selectTxType} from 'store/tx.reducer';
 import {useDispatch} from 'react-redux';
 import {openModal} from 'store/modal.reducer';
-import {fetchAirdropPayload} from './Airdrop/utils/fetchAirdropPayload';
 
 type HeaderProps = {
   walletopen: () => void;
@@ -106,11 +105,9 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
   const match = useRouteMatch('/');
   const {tx} = useAppSelector(selectTxType);
   const dispatch = useDispatch();
-  
-  
+
   const airdropModalOpen = async () => {
-    const data = await fetchAirdropPayload();
-    dispatch(openModal({type: 'airdrop', data: data}));
+    dispatch(openModal({type: 'airdrop'}));
   };
 
   return (

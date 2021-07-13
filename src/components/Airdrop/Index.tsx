@@ -22,7 +22,16 @@ import {claimAirdrop} from './actions';
 import {useState, useEffect} from 'react';
 import {Scrollbars} from 'react-custom-scrollbars-2';
 import {useWeb3React} from '@web3-react/core';
-// import {fetchAirdropPayload} from './utils/fetchAirdropPayload';
+import {fetchAirdropPayload} from './utils/fetchAirdropPayload';
+import {LoadingDots} from 'components/Loader/LoadingDots';
+
+type Round = {
+  allocatedAmount: string;
+  amount: string;
+  roundNumber: number;
+};
+
+type AirDropList = [Round];
 
 const AirdropRecord = (roundNumber: any, allocatedAmount: string) => {
   return (
@@ -36,7 +45,13 @@ const AirdropRecord = (roundNumber: any, allocatedAmount: string) => {
 };
 
 export const AirdropModal = () => {
-  const [airdropData, setAirdropData] = useState([]);
+  const [airdropData, setAirdropData] = useState<AirDropList>([
+    {
+      allocatedAmount: '',
+      amount: '',
+      roundNumber: 0,
+    },
+  ]);
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
   const {colorMode} = useColorMode();
@@ -45,23 +60,25 @@ export const AirdropModal = () => {
   const {account, library} = useWeb3React();
 
   useEffect(() => {
-    if (data?.data !== undefined) {
-      setAirdropData(data?.data);
+    async function callAirDropData() {
+      const res = await fetchAirdropPayload();
+      console.log(res);
+      return setAirdropData(res);
     }
-  }, [data])
+    callAirDropData();
+  }, []);
 
-  const airdropInfo = data?.data;
-  if (airdropData.length > 0) {
-    airdropData.map((data:any) => {console.log(data)})
-  }
-  const a = airdropData?.length > 0 ? airdropData.map((data: any) => (console.log(data))) : null
-  console.log(a)
+  // const airdropInfo = data?.data;
+  // if (airdropData.length > 0) {
+  //   airdropData.map((data:any) => {console.log(data)})
+  // }
+  // const a = airdropData?.length > 0 ? airdropData.map((data: any) => (console.log(data))) : null
+  // console.log(a)
 
   // airdropInfo && airdropInfo.map((data: any) => {console.log (data)})
   const handleCloseModal = useCallback(() => {
     dispatch(closeModal());
   }, [dispatch]);
-
   return (
     <Modal
       isOpen={data.modal === 'airdrop' ? true : false}
@@ -81,6 +98,7 @@ export const AirdropModal = () => {
             <Text fontSize={'0.813em'} color="blue.300" mb="1.125em">
               Available Balance
             </Text>
+
             <Flex
               style={{marginTop: '0', marginBottom: '2.500em'}}
               height="39px">
@@ -89,7 +107,13 @@ export const AirdropModal = () => {
                 fontWeight={500}
                 {...modalStyle.fontColor({colorMode})}
                 mr="5px">
-                {airdropInfo[0]?.allocatedAmount}
+                {airdropData[0]?.allocatedAmount === '' ? (
+                  <Flex h="1">
+                    <LoadingDots></LoadingDots>
+                  </Flex>
+                ) : (
+                  airdropData[0]?.allocatedAmount
+                )}
               </Text>
               <Text
                 fontSize="0.813em"
@@ -109,7 +133,7 @@ export const AirdropModal = () => {
               h="24px"
               {...modalStyle.fontSubColor({colorMode})}>
               <Text fontSize="1.125em" fontWeight={500} mr={1}>
-                Genesis Airdrop {airdropInfo[0]?.allocatedAmount}
+                Genesis Airdrop {airdropData[0]?.allocatedAmount}
               </Text>
               <Text fontSize="0.750em" alignSelf="flex-end" fontWeight="bold">
                 TOS
@@ -148,7 +172,7 @@ export const AirdropModal = () => {
             </Scrollbars>
           </Stack>
           <Center mt="30px">
-            <Button 
+            <Button
               w={'150px'}
               bg={'blue.500'}
               color="white.100"
@@ -160,7 +184,8 @@ export const AirdropModal = () => {
                   library: library,
                   handleCloseModal: dispatch(closeModal()),
                 })
-              }>Claim
+              }>
+              Claim
             </Button>
           </Center>
         </ModalBody>
