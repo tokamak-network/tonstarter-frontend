@@ -30,7 +30,9 @@ export const StakeOptionModal = () => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
 
-  const handleChange = (e: any) => addComma(e.target.value, setValue);
+  const handleChange = (e: any) => {
+    addComma(e.target.value, setValue);
+  };
   const setMax = useCallback((_e) => setValue(balance), [balance]);
 
   const handleCloseModal = useCallback(() => {

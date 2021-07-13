@@ -47,6 +47,8 @@ import {
   getUserBalance,
   getUserTonBalance,
 } from 'client/getUserBalance';
+//@ts-ignore
+import {Dot} from 'react-animated-dots';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
@@ -117,7 +119,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
 }) => {
   const {colorMode} = useColorMode();
   const [loading, setLoading] = useState(false);
-  const [userTonBalance, setUserTonBalance] = useState<string>('...');
+  const [userTonBalance, setUserTonBalance] = useState<string>('');
   const btnDisabled = account === undefined ? true : false;
   const currentBlock: number = Number(data.fetchBlock);
   const miningStart: number = Number(data.miningStartTime);
@@ -320,9 +322,19 @@ export const Staking = () => {
     [],
   );
 
+  const LoadingDots = () => {
+    return (
+      <Flex>
+        <Dot>·</Dot>
+        <Dot>·</Dot>
+        <Dot>·</Dot>
+      </Flex>
+    );
+  };
+
   const GetTotalStaker = ({contractAddress}: any) => {
     const {colorMode} = useColorMode();
-    const [totalStaker, setTotalStaker] = useState('');
+    const [totalStaker, setTotalStaker] = useState('-');
     const getlInfo = async () => {
       const res = await getTotalStakers(contractAddress);
       setTotalStaker(res);
@@ -337,7 +349,7 @@ export const Staking = () => {
           fontSize={'20px'}
           color={colorMode === 'light' ? 'black.300' : 'white.200'}
           fontWeight={'bold'}>
-          {totalStaker}
+          {totalStaker === '-' ? <LoadingDots></LoadingDots> : totalStaker}
         </Text>
       </Flex>
     );
@@ -345,7 +357,7 @@ export const Staking = () => {
 
   const GetBalance = ({title, contractAddress, user}: any) => {
     const {colorMode} = useColorMode();
-    const [balance, SetBalance] = useState(undefined);
+    const [balance, SetBalance] = useState('-');
     const getBalance = async () => {
       const result = await getUserBalance(contractAddress);
 
@@ -361,6 +373,23 @@ export const Staking = () => {
       getBalance();
     }
 
+    if (user.address === undefined) {
+      return (
+        <Flex flexDir={'column'} alignItems={'space-between'}>
+          <Text fontSize={'15px'} color="gray.400">
+            {title}
+          </Text>
+          <Text
+            fontSize={'20px'}
+            color={colorMode === 'light' ? 'black.300' : 'white.200'}
+            fontWeight={'bold'}
+            h="30px">
+            {balance}
+          </Text>
+        </Flex>
+      );
+    }
+
     return (
       <Flex flexDir={'column'} alignItems={'space-between'}>
         <Text fontSize={'15px'} color="gray.400">
@@ -371,8 +400,8 @@ export const Staking = () => {
           color={colorMode === 'light' ? 'black.300' : 'white.200'}
           fontWeight={'bold'}
           h="30px">
-          {balance}{' '}
-          {balance !== undefined ? (
+          {balance === '-' ? <LoadingDots></LoadingDots> : balance}
+          {balance !== '-' ? (
             title === 'My staked' ? (
               <span> TON</span>
             ) : (

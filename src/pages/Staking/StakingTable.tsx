@@ -28,6 +28,7 @@ import {useAppSelector} from 'hooks/useRedux';
 import {useEffect} from 'react';
 import {setTimeout} from 'timers';
 import {LoadingComponent} from 'components/Loading';
+import {useWindowDimensions} from 'hooks/useWindowDimentions';
 
 type StakingTableProps = {
   columns: Column[];
@@ -186,13 +187,11 @@ export const StakingTable: FC<StakingTableProps> = ({
     );
   };
 
-  // const renderIconBtn = ({onClick, isDisabled, }) => {
-
-  // }
+  const {height} = useWindowDimensions();
 
   if (isLoading === true || data.length === 0) {
     return (
-      <Center>
+      <Center h={height - 363}>
         <LoadingComponent />
       </Center>
     );

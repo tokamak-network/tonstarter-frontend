@@ -61,7 +61,7 @@ export const fetchStakes = createAsyncThunk(
     let projects: any[] = [];
 
     const chainIdforFetch = chainId === undefined ? '4' : chainId;
-    // const fetchValutUrl = `https://api.tokamak.network/v1/vaults?chainId=${chainIdforFetch}`;
+    const fetchValutUrl = `https://api.tokamak.network/v1/vaults?chainId=${chainIdforFetch}`;
     const fetchStakeUrl = `https://api.tokamak.network/v1/stakecontracts?chainId=${chainIdforFetch}`;
     // let iERC20: any;
 
@@ -71,9 +71,9 @@ export const fetchStakes = createAsyncThunk(
       return;
     }
 
-    // const vaultReq = await fetch(fetchValutUrl)
-    //   .then((res) => res.json())
-    //   .then((result) => result);
+    const vaultReq = await fetch(fetchValutUrl)
+      .then((res) => res.json())
+      .then((result) => result);
 
     const stakeReq = await fetch(fetchStakeUrl)
       .then((res) => res.json())
@@ -81,8 +81,8 @@ export const fetchStakes = createAsyncThunk(
 
     const stakeList = stakeReq.datas;
 
-    // console.log('-----------api-----------');
-    // console.log(vaultReq);
+    console.log('-----------api-----------');
+    console.log(vaultReq);
     // console.log(stakeList);
 
     const currentBlock = await rpc.getBlockNumber();

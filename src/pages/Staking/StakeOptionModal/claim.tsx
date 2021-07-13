@@ -92,6 +92,7 @@ export const ClaimOptionModal = () => {
               bg={'blue.500'}
               color="white.100"
               fontSize="14px"
+              _hover={{backgroundColor: 'blue.100'}}
               onClick={() =>
                 claimReward({
                   userAddress: account,
