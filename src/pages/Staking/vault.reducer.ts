@@ -37,12 +37,10 @@ const getEarningPerBlock = (vaults: VaultList) => {
     });
     const epb = Number(totalReward) / totalBlocks;
     console.log(totalBlocks, totalReward, epb);
-    const dd = expectedStakeEndBlockTotal.map(
-      (project: any, index: number) =>
-        ((project.block - stakeStartBlock) * epb) /
-          expectedStakeEndBlockTotal.length -
-        index,
-    );
+    const dd = expectedStakeEndBlockTotal.map((project: any, index: number) =>
+      ((project.block - stakeStartBlock) * epb) /
+        (expectedStakeEndBlockTotal.length -
+      index),
     console.log(dd);
   });
   console.log(result);
@@ -66,8 +64,6 @@ export const fetchVaults = createAsyncThunk(
       .then((res) => res.json())
       .then((result) => result);
     const vaultData = vaultReq.datas;
-    console.log(vaultData);
-
     const result = getEarningPerBlock(vaultData);
     return result;
   },
