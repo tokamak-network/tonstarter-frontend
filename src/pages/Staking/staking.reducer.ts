@@ -7,6 +7,8 @@ import {convertNumber} from 'utils/number';
 
 const rpc = getRPC();
 
+export type Vault = {};
+
 export type Stake = {
   name?: string;
   symbol?: string;
@@ -62,7 +64,6 @@ export const fetchStakes = createAsyncThunk(
     const chainIdforFetch = chainId === undefined ? '4' : chainId;
     const fetchValutUrl = `https://api.tokamak.network/v1/vaults?chainId=${chainIdforFetch}`;
     const fetchStakeUrl = `https://api.tokamak.network/v1/stakecontracts?chainId=${chainIdforFetch}`;
-    // let iERC20: any;
 
     // @ts-ignore
     const {currentRequestId, loading} = getState().stakes;
@@ -79,10 +80,11 @@ export const fetchStakes = createAsyncThunk(
       .then((result) => result);
 
     const stakeList = stakeReq.datas;
+    const vaultList = vaultReq.datas;
 
     console.log('-----------api-----------');
-    console.log(vaultReq);
-    // console.log(stakeList);
+    console.log(vaultList);
+    console.log(stakeList);
 
     const currentBlock = await rpc.getBlockNumber();
 

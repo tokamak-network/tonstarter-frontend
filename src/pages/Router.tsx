@@ -14,6 +14,7 @@ import {fetchUserInfo} from 'store/app/user.reducer';
 import {fetchStakes} from './Staking/staking.reducer';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import {AirdropModal} from 'components/Airdrop/Index';
+import {fetchVaults} from './Staking/vault.reducer';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -58,12 +59,18 @@ export const Router: FC<RouterProps> = () => {
         // @ts-ignore
         dispatch(fetchUserInfo({address: account, library})).then(() => {
           dispatch(
-            fetchStakes({
-              library,
-              account,
+            fetchVaults({
               chainId,
             }) as any,
-          );
+          ).then(() => {
+            dispatch(
+              fetchStakes({
+                library,
+                account,
+                chainId,
+              }) as any,
+            );
+          });
         });
       }
     }
@@ -75,12 +82,18 @@ export const Router: FC<RouterProps> = () => {
     const {signIn} = accountStorage;
     if (account === undefined && signIn === false) {
       dispatch(
-        fetchStakes({
-          library,
-          account,
+        fetchVaults({
           chainId,
         }) as any,
-      );
+      ).then(() => {
+        dispatch(
+          fetchStakes({
+            library,
+            account,
+            chainId,
+          }) as any,
+        );
+      });
       // @ts-ignore
       // dispatch(fetchUserInfo());
     }
@@ -113,6 +126,7 @@ export const Router: FC<RouterProps> = () => {
         <Route exact path="/" component={FLDstarter} />
         <Route exact path="/pools" component={Pools} />
         <Route exact path="/staking" component={Staking} />
+        <Route exact path="/pools" component={Staking} />
         {/* <Route exact path="/starter" component={Starter} /> */}
         {/* <Route exact path="/dao" component={DAO} /> */}
       </Switch>

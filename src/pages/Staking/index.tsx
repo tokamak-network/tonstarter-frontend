@@ -36,8 +36,6 @@ import {openModal} from 'store/modal.reducer';
 import {ManageModal} from './StakeOptionModal/Manage/index';
 import {formatStartTime} from 'utils/timeStamp';
 import {useState} from 'react';
-import {useLocalStorage} from 'hooks/useStorage';
-import {useEffect} from 'react';
 import {Stake} from './staking.reducer';
 import {fetchManageModalPayload} from './utils';
 import {ModalType} from 'store/modal.reducer';
@@ -70,44 +68,38 @@ type GetDateProp = {
   type: GetDateTimeType;
 };
 
+const LoadingDots = () => {
+  return (
+    <Flex h={30}>
+      <Dot>·</Dot>
+      <Dot>·</Dot>
+      <Dot>·</Dot>
+    </Flex>
+  );
+};
+
 const GetDate = ({time, currentBlock, contractAddress, type}: GetDateProp) => {
   const {colorMode} = useColorMode();
-
   const [date, setDate] = useState('');
-  const [localTableValue, setLocalTableValue] = useLocalStorage('table', {});
-
-  useEffect(() => {
-    const fetchDate = async () => {
-      const result = await formatStartTime(time, currentBlock);
-      setDate(result);
-
-      //@ts-ignore
-      const localStorage = JSON.parse(window.localStorage.getItem('table'));
-
-      return await setLocalTableValue({
-        ...localStorage,
-        [contractAddress + type]: result,
-      });
-    };
-    if (
-      localTableValue === undefined ||
-      localTableValue[contractAddress + type] === undefined
-    ) {
-      fetchDate();
-    } else {
-      setDate(localTableValue[contractAddress + type]);
-    }
-    fetchDate();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useMemo(async () => {
+    const result = await formatStartTime(time, currentBlock);
+    setDate(result);
+  }, [time, currentBlock]);
 
   return (
-    <Text
-      fontSize={'20px'}
-      color={colorMode === 'light' ? 'black.300' : 'white.200'}
-      fontWeight={'bold'}
-      w="100%">
-      {date}
-    </Text>
+    <>
+      {date === '' ? (
+        <LoadingDots />
+      ) : (
+        <Text
+          fontSize={'20px'}
+          color={colorMode === 'light' ? 'black.300' : 'white.200'}
+          fontWeight={'bold'}
+          w="100%">
+          {date}
+        </Text>
+      )}
+    </>
   );
 };
 
@@ -310,16 +302,6 @@ export const Staking = () => {
     [],
   );
 
-  const LoadingDots = () => {
-    return (
-      <Flex>
-        <Dot>·</Dot>
-        <Dot>·</Dot>
-        <Dot>·</Dot>
-      </Flex>
-    );
-  };
-
   const GetTotalStaker = ({contractAddress}: any) => {
     const {colorMode} = useColorMode();
     const [totalStaker, setTotalStaker] = useState('-');
@@ -435,6 +417,12 @@ export const Staking = () => {
                       : 'mining-start'
                   }></GetDate>
               </Text>
+              <Text w="210px" color="gray.400" fontSize={'0.813em'}>
+                Block Num.{' '}
+                {data[row.id]?.status === 'sale'
+                  ? data[row.id]?.saleStartTime
+                  : data[row.id]?.miningStartTime}
+              </Text>
             </Flex>
             <GetTotalStaker contractAddress={contractAddress}></GetTotalStaker>
             <GetBalance
@@ -472,6 +460,12 @@ export const Staking = () => {
                     data[row.id]?.status === 'sale' ? 'sale-end' : 'mining-end'
                   }></GetDate>
               </Text>
+              <Text w="210px" color="gray.400" fontSize={'0.813em'}>
+                Block Num.{' '}
+                {data[row.id]?.status === 'sale'
+                  ? data[row.id]?.saleEndTime
+                  : data[row.id]?.miningEndTime}
+              </Text>
             </Flex>
 
             <Flex flexDir={'column'} alignItems={'space-between'}>
@@ -501,6 +495,7 @@ export const Staking = () => {
         </Flex>
       );
     },
+    /* eslint-disable */
     [data, dispatch, user, appConfig.explorerLink],
   );
 

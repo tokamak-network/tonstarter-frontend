@@ -350,13 +350,16 @@ export const StakingTable: FC<StakingTableProps> = ({
                         )}
 
                         {type === 'earning_per_block' ? (
-                          <Text
-                            mr={2}
-                            color={
-                              colorMode === 'light' ? '#86929d' : '#949494'
-                            }>
-                            Earning Per Block
-                          </Text>
+                          <>
+                            <Text
+                              mr={2}
+                              color={
+                                colorMode === 'light' ? '#86929d' : '#949494'
+                              }>
+                              Earning Per Block
+                            </Text>
+                            {/* <Text>{getEarningPerBlock()}</Text> */}
+                          </>
                         ) : (
                           ''
                         )}
