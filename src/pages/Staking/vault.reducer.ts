@@ -28,22 +28,35 @@ const initialState = {
 } as IStakeDetail;
 
 const getEarningPerBlock = (vaults: VaultList) => {
-  console.log(vaults);
-  const result = vaults.map((e) => {
-    const {stakeStartBlock, stakeEndBlock, cap, expectedStakeEndBlockTotal} = e;
+  const result = vaults.map((vault) => {
+    console.log(vault);
+    const {stakeStartBlock, stakeEndBlock, cap, expectedStakeEndBlockTotal} =
+      vault;
     const totalBlocks = stakeEndBlock - stakeStartBlock;
     const totalReward = convertNumber({
       amount: cap.toLocaleString('fullwide', {useGrouping: false}),
     });
     const epb = Number(totalReward) / totalBlocks;
+    console.log(stakeEndBlock, stakeStartBlock);
     console.log(totalBlocks, totalReward, epb);
-    const dd = expectedStakeEndBlockTotal.map((project: any, index: number) =>
-      ((project.block - stakeStartBlock) * epb) /
-        (expectedStakeEndBlockTotal.length -
-      index),
+    const dd = expectedStakeEndBlockTotal.map((project: any, index: number) => {
+      if (index !== 0) {
+        return (
+          ((project.block - expectedStakeEndBlockTotal[index - 1].block) *
+            epb) /
+          Number(convertNumber({amount: project.stakedTotalString}))
+        );
+      } else {
+        return (
+          ((project.block - stakeStartBlock) * epb) /
+          Number(convertNumber({amount: project.stakedTotalString}))
+        );
+      }
+    });
+    console.log(vaults);
+    console.log(totalReward);
     console.log(dd);
   });
-  console.log(result);
   return result;
 };
 
