@@ -22,18 +22,31 @@ import {claimAirdrop} from './actions';
 import {useState, useEffect} from 'react';
 import {Scrollbars} from 'react-custom-scrollbars-2';
 import {useWeb3React} from '@web3-react/core';
-// import {fetchAirdropPayload} from './utils/fetchAirdropPayload';
+import {LoadingComponent} from 'components/Loading';
+import {useWindowDimensions} from 'hooks/useWindowDimentions';
 
-const AirdropRecord = (roundNumber: any, allocatedAmount: string) => {
+const AirdropRecord = ({roundNumber, amount}: {roundNumber: any, amount: any}) => {
   return (
     <WrapItem w="100%" h="37px">
       <Flex w="100%" justifyContent="space-between" pl="1.875em" pr="1.875em">
-        <Text>{roundNumber}st Airdrop</Text>
-        <Text> {allocatedAmount} TOS</Text>
+        <Text>{roundNumber - 1}{checker(roundNumber)} Airdrop</Text>
+        <Text>{amount} TOS</Text>
       </Flex>
     </WrapItem>
   );
 };
+
+const checker = (roundNumber: any) => {
+  if (roundNumber === 2) {
+    return 'st'
+  } else if (roundNumber === 3) {
+    return 'nd'
+  } else if (roundNumber === 4) {
+    return 'rd'
+  } else {
+    return 'st'
+  }
+}
 
 export const AirdropModal = () => {
   const [airdropData, setAirdropData] = useState([]);
@@ -45,23 +58,26 @@ export const AirdropModal = () => {
   const {account, library} = useWeb3React();
 
   useEffect(() => {
-    if (data?.data !== undefined) {
-      setAirdropData(data?.data);
+    if (data?.data.length > 1) {
+      setAirdropData(data?.data.slice(1));
     }
   }, [data])
 
   const airdropInfo = data?.data;
-  if (airdropData.length > 0) {
-    airdropData.map((data:any) => {console.log(data)})
-  }
-  const a = airdropData?.length > 0 ? airdropData.map((data: any) => (console.log(data))) : null
-  console.log(a)
-
-  // airdropInfo && airdropInfo.map((data: any) => {console.log (data)})
   const handleCloseModal = useCallback(() => {
     dispatch(closeModal());
   }, [dispatch]);
 
+  const {height} = useWindowDimensions();
+
+  if (airdropData.length === 0) {
+    return (
+      <Center h={height}>
+        <LoadingComponent />
+      </Center>
+    )
+  }
+  
   return (
     <Modal
       isOpen={data.modal === 'airdrop' ? true : false}
@@ -138,12 +154,12 @@ export const AirdropModal = () => {
               <Wrap
                 display="flex"
                 style={{marginTop: '0', marginBottom: '20px'}}>
-                {/* { airdropData?.length > 0 ? airdropData.map((data: any) => (
+                {airdropData?.length > 0 ? airdropData.map((data: any) => (
                   <AirdropRecord
                     roundNumber={data.roundNumber}
-                    allocatedAmount={data.allocatedAmount}
+                    amount = {data.amount}
                   />
-                )): null} */}
+                )): null}
               </Wrap>
             </Scrollbars>
           </Stack>
