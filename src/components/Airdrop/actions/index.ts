@@ -1,5 +1,5 @@
-// import {claimAirdrop} from './claimAirdrop';
-import {ethers} from 'ethers';
-// export {
-//   claimAirdrop,
-// };
+import {claimAirdrop} from './claim';
+
+export {
+  claimAirdrop,
+};

@@ -18,7 +18,11 @@ import {
 } from '@chakra-ui/react';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
+import {claimAirdrop} from './actions';
+import {useState, useEffect} from 'react';
 import {Scrollbars} from 'react-custom-scrollbars-2';
+import {useWeb3React} from '@web3-react/core';
+// import {fetchAirdropPayload} from './utils/fetchAirdropPayload';
 
 const AirdropRecord = (roundNumber: any, allocatedAmount: string) => {
   return (
@@ -32,14 +36,28 @@ const AirdropRecord = (roundNumber: any, allocatedAmount: string) => {
 };
 
 export const AirdropModal = () => {
+  const [airdropData, setAirdropData] = useState([]);
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {modalStyle} = theme;
+  const {account, library} = useWeb3React();
 
-  const airdropInfo = data?.data?.airdropInfo;
+  useEffect(() => {
+    if (data?.data !== undefined) {
+      setAirdropData(data?.data);
+    }
+  }, [data])
 
+  const airdropInfo = data?.data;
+  if (airdropData.length > 0) {
+    airdropData.map((data:any) => {console.log(data)})
+  }
+  const a = airdropData?.length > 0 ? airdropData.map((data: any) => (console.log(data))) : null
+  console.log(a)
+
+  // airdropInfo && airdropInfo.map((data: any) => {console.log (data)})
   const handleCloseModal = useCallback(() => {
     dispatch(closeModal());
   }, [dispatch]);
@@ -71,7 +89,7 @@ export const AirdropModal = () => {
                 fontWeight={500}
                 {...modalStyle.fontColor({colorMode})}
                 mr="5px">
-                4,000.00
+                {airdropInfo[0]?.allocatedAmount}
               </Text>
               <Text
                 fontSize="0.813em"
@@ -91,7 +109,7 @@ export const AirdropModal = () => {
               h="24px"
               {...modalStyle.fontSubColor({colorMode})}>
               <Text fontSize="1.125em" fontWeight={500} mr={1}>
-                Genesis Airdrop 6,000
+                Genesis Airdrop {airdropInfo[0]?.allocatedAmount}
               </Text>
               <Text fontSize="0.750em" alignSelf="flex-end" fontWeight="bold">
                 TOS
@@ -120,17 +138,30 @@ export const AirdropModal = () => {
               <Wrap
                 display="flex"
                 style={{marginTop: '0', marginBottom: '20px'}}>
-                {airdropInfo.map((data: any) => (
+                {/* { airdropData?.length > 0 ? airdropData.map((data: any) => (
                   <AirdropRecord
                     roundNumber={data.roundNumber}
                     allocatedAmount={data.allocatedAmount}
                   />
-                ))}
+                )): null} */}
               </Wrap>
             </Scrollbars>
           </Stack>
           <Center mt="30px">
-            <Button {...modalStyle.button}>Claim</Button>
+            <Button 
+              w={'150px'}
+              bg={'blue.500'}
+              color="white.100"
+              fontSize="14px"
+              _hover={{backgroundColor: 'blue.100'}}
+              onClick={() =>
+                claimAirdrop({
+                  userAddress: account,
+                  library: library,
+                  handleCloseModal: dispatch(closeModal()),
+                })
+              }>Claim
+            </Button>
           </Center>
         </ModalBody>
       </ModalContent>
