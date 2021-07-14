@@ -177,15 +177,22 @@ export const StakingTable: FC<StakingTableProps> = ({
   const renderBtn = (contractAddress: string, index: number) => {
     if (isOpen === contractAddress)
       return (
-        <TriangleUpIcon
-          _hover={{cursor: 'pointer'}}
+        <Flex
+          w={'100%'}
+          justifyContent="flex-end"
           onClick={() => setIsOpen('')}
-        />
+          _hover={{cursor: 'pointer'}}>
+          <TriangleUpIcon _hover={{cursor: 'pointer'}} />
+        </Flex>
       );
     return (
-      <TriangleDownIcon
-        _hover={{cursor: 'pointer'}}
-        onClick={() => clickOpen(contractAddress, index)}></TriangleDownIcon>
+      <Flex
+        w={'100%'}
+        justifyContent="flex-end"
+        onClick={() => clickOpen(contractAddress, index)}
+        _hover={{cursor: 'pointer'}}>
+        <TriangleDownIcon _hover={{cursor: 'pointer'}}></TriangleDownIcon>
+      </Flex>
     );
   };
 
@@ -285,7 +292,6 @@ export const StakingTable: FC<StakingTableProps> = ({
                         py={3}
                         key={index}
                         m={0}
-                        mr={30}
                         w={
                           type === 'name'
                             ? '280px'
@@ -294,8 +300,8 @@ export const StakingTable: FC<StakingTableProps> = ({
                             : type === 'stakeBalanceTON'
                             ? '200px'
                             : type === 'earning_per_block'
-                            ? '340px'
-                            : '14px'
+                            ? '250px'
+                            : '200px'
                         }
                         display="flex"
                         alignItems="center"
