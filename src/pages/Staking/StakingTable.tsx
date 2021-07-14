@@ -154,6 +154,17 @@ export const StakingTable: FC<StakingTableProps> = ({
   const [isOpen, setIsOpen] = useState(
     contractAddress === undefined ? '' : contractAddress,
   );
+
+  const goPrevPage = () => {
+    setIsOpen('');
+    previousPage();
+  };
+
+  const goNextPage = () => {
+    setIsOpen('');
+    nextPage();
+  };
+
   const onChangeSelectBox = (e: any) => {
     const filterValue = e.target.value;
     headerGroups[0].headers.map((e) => {
@@ -443,7 +454,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                 color={colorMode === 'light' ? '#e6eaee' : '#424242'}
                 borderRadius={4}
                 aria-label={'Previous Page'}
-                onClick={previousPage}
+                onClick={goPrevPage}
                 isDisabled={!canPreviousPage}
                 size={'sm'}
                 mr={4}
@@ -515,7 +526,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                   bg={colorMode === 'light' ? 'white.100' : 'none'}
                   borderRadius={4}
                   aria-label={'Next Page'}
-                  onClick={nextPage}
+                  onClick={goNextPage}
                   isDisabled={!canNextPage}
                   size={'sm'}
                   ml={4}
