@@ -113,9 +113,21 @@ const WalletInformation: FC<WalletInformationProps> = ({
   const [loading, setLoading] = useState(false);
   const [userTonBalance, setUserTonBalance] = useState<string>('');
   const btnDisabled = account === undefined ? true : false;
-  const currentBlock = data.fetchBlock;
-  const miningStart = data.miningStartTime;
-  const miningEnd = data.miningEndTime;
+  const currentBlock: number = Number(data.fetchBlock);
+  const miningStart: number = Number(data.miningStartTime);
+  const miningEnd: number = Number(data.miningEndTime);
+
+  const btnDisabledStake = () => {
+    return account !== undefined && miningStart > currentBlock ? false : true;
+  };
+
+  const btnDisabledUnstake = () => {
+    return account !== undefined && currentBlock > miningEnd ? false : true;
+  };
+
+  const btnDisabledClaim = () => {
+    return account !== undefined && data.saleClosed ? false : true;
+  };
 
   const modalPayload = async (data: any) => {
     const result = await fetchManageModalPayload(
@@ -190,7 +202,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
         <Grid pos="relative" templateColumns={'repeat(2, 1fr)'} gap={6}>
           <Button
             bg={'blue.500'}
-            isDisabled={+miningStart! < +currentBlock!}
+            isDisabled={btnDisabledStake()}
             color={'white.100'}
             fontSize={'14px'}
             opacity={loading === true ? 0.5 : 1}
@@ -200,7 +212,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
           </Button>
           <Button
             bg="blue.500"
-            isDisabled={+currentBlock! < +miningEnd!}
+            isDisabled={btnDisabledUnstake()}
             color={'white.100'}
             fontSize={'14px'}
             opacity={loading === true ? 0.5 : 1}
@@ -210,7 +222,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
           </Button>
           <Button
             bg="blue.500"
-            isDisabled={btnDisabled}
+            isDisabled={btnDisabledClaim()}
             color={'white.100'}
             fontSize={'14px'}
             opacity={loading === true ? 0.5 : 1}

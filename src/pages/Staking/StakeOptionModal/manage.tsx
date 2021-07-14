@@ -13,8 +13,8 @@ import {
   useTheme,
   useColorMode,
 } from '@chakra-ui/react';
-import {fetchWithdrawPayload} from './utils/fetchWithdrawPayload';
-import {closeSale} from '../../actions';
+import {fetchWithdrawPayload} from './Manage/utils/fetchWithdrawPayload';
+import {closeSale} from '../actions';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {useCallback} from 'react';
@@ -28,14 +28,7 @@ export const ManageModal = () => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
   let balance = data?.data?.stakeContractBalanceTon;
-  let closed;
-
-  try {
-    closed = data?.data?.saleClosed
-  } catch (e) {
-    console.log(e)
-  }
-
+  
   const withdrawPayload = async (data: any) => {
     const result = await fetchWithdrawPayload(
       data.library,
@@ -44,7 +37,6 @@ export const ManageModal = () => {
     );
     return result;
   };
-  // console.log(data?.data);
 
   const withdrawData = useCallback(async (modal: ModalType, data: any) => {
     const payloadWithdraw = await withdrawPayload(data?.data);
@@ -121,7 +113,7 @@ export const ManageModal = () => {
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                   fontWeight={500}
                   fontSize={'18px'}>
-                  {data.data?.totalStakedAmount} TON
+                  {data.data.totalStakedAmount} TON
                 </Text>
               </Flex>
               <Flex justifyContent="space-between" alignItems="center" h="55px">
@@ -132,7 +124,7 @@ export const ManageModal = () => {
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                   fontWeight={500}
                   fontSize={'18px'}>
-                  {data.data?.totalStakedAmountL2} TON
+                  {data.data.totalStakedAmountL2} TON
                 </Text>
               </Flex>
               <Flex justifyContent="space-between" alignItems="center" h="55px">
@@ -143,7 +135,7 @@ export const ManageModal = () => {
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                   fontWeight={500}
                   fontSize={'18px'}>
-                  {data.data?.totalPendingUnstakedAmountL2} TON
+                  {data.data.totalPendingUnstakedAmountL2} TON
                 </Text>
               </Flex>
             </Box>
@@ -161,7 +153,7 @@ export const ManageModal = () => {
               color={'white.100'}
               fontSize={'0.750em'}
               fontWeight={100}
-              isDisabled={closed?!closed:false}
+              // isDisabled={!data.data.saleClosed}
               onClick={() =>
                 dispatch(openModal({type: 'stakeL2', data: data.data}))
               }
@@ -174,8 +166,8 @@ export const ManageModal = () => {
               color={'white.100'}
               fontSize={'12px'}
               fontWeight={100}
+              
               _hover={{backgroundColor: 'blue.100'}}
-              isDisabled={closed?!closed:false}
               onClick={() =>
                 dispatch(openModal({type: 'unstakeL2', data: data.data}))
               }>
@@ -187,8 +179,8 @@ export const ManageModal = () => {
               color={'white.100'}
               fontSize={'12px'}
               fontWeight={100}
+              
               _hover={{backgroundColor: 'blue.100'}}
-              isDisabled={closed?!closed:false}
               onClick={() => withdrawData('withdraw', data)}>
               Withdraw
             </Button>
@@ -198,8 +190,8 @@ export const ManageModal = () => {
               color={'white.100'}
               fontSize={'12px'}
               fontWeight={100}
+              
               _hover={{backgroundColor: 'blue.100'}}
-              isDisabled={closed?!closed:false}
               onClick={() =>
                 dispatch(openModal({type: 'swap', data: data.data}))
               }>
@@ -213,7 +205,7 @@ export const ManageModal = () => {
                 fontSize={'12px'}
                 fontWeight={100}
                 _hover={{backgroundColor: 'blue.100'}}
-                isDisabled={data.data?.fetchBlock < data.data?.miningStartTime}
+                
                 onClick={() =>
                   closeSale({
                     userAddress: account,
