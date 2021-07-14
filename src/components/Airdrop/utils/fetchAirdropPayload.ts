@@ -1,4 +1,5 @@
 import { getTokamakContract } from '../../../utils/contract';
+import { convertNumber } from '../../../utils/number';
 
 export const fetchAirdropPayload = async () => {
   const AirdropVault = getTokamakContract('Airdrop');
@@ -6,16 +7,21 @@ export const fetchAirdropPayload = async () => {
   const tgeCount = await AirdropVault.totalTgeCount();
   let roundInfo: any = [];
   for (let i=1; i <= tgeCount; i++) {
-    await Promise.all([
-      AirdropVault.getTgeInfos(i)
-    ]).then((result) => {
+    const result = await AirdropVault.getTgeInfos(i)
+    if (result.allocated) {
       const airdropInfo = {
         roundNumber: i,
-        allocatedAmount: result[0].allocatedAmount.toString(),
-        amount: result[0].amount.toString(),
+        allocatedAmount: convertNumber({
+          amount: result.allocatedAmount
+        }),
+        amount: convertNumber({
+          amount: result.amount
+        }),
       }
       roundInfo.push(airdropInfo);
-    });
+    } else {
+      break;
+    }
   }
   return roundInfo
   // try {

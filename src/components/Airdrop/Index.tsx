@@ -104,7 +104,7 @@ export const AirdropModal = () => {
       <ModalOverlay />
       <ModalContent
         {...modalStyle.modalContent({colorMode})}
-        h="540px"
+        // h="540px"
         borderRadius={15}>
         <ModalBody p={0}>
           <Box {...modalStyle.box({colorMode})}>
@@ -127,7 +127,7 @@ export const AirdropModal = () => {
                 {airdropData[0]?.allocatedAmount === '' ? (
                   <LoadingDots></LoadingDots>
                 ) : (
-                  airdropData[0]?.allocatedAmount
+                  airdropData[0]?.amount
                 )}
               </Text>
               <Text
@@ -154,7 +154,7 @@ export const AirdropModal = () => {
                 TOS
               </Text>
             </Flex>
-            <Scrollbars
+            {airdropData?.length > 1 ?<Scrollbars
               style={{
                 width: '100%',
                 height: '135px',
@@ -177,14 +177,14 @@ export const AirdropModal = () => {
               <Wrap
                 display="flex"
                 style={{marginTop: '0', marginBottom: '20px'}}>
-                {airdropData?.length > 0 ? airdropData.map((data: any) => (
+                {airdropData?.length > 1 ? airdropData.map((data: any) => (
                   <AirdropRecord
                     roundNumber={data.roundNumber}
                     amount = {data.amount}
                   />
                 )): null}
               </Wrap>
-            </Scrollbars>
+            </Scrollbars>: null}
           </Stack>
           <Center mt="30px">
             <Button
