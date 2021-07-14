@@ -47,6 +47,7 @@ import {
 } from 'client/getUserBalance';
 //@ts-ignore
 import {Dot} from 'react-animated-dots';
+import {useEffect} from 'react';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
@@ -112,22 +113,38 @@ const WalletInformation: FC<WalletInformationProps> = ({
   const {colorMode} = useColorMode();
   const [loading, setLoading] = useState(false);
   const [userTonBalance, setUserTonBalance] = useState<string>('');
+  const [stakeDisabled, setStakeDisabled] = useState(true);
+  const [unstakeDisabled, setUnstakeDisabled] = useState(true);
+  const [claimDisabled, setClaimDisabled] = useState(true);
   const btnDisabled = account === undefined ? true : false;
   const currentBlock: number = Number(data.fetchBlock);
   const miningStart: number = Number(data.miningStartTime);
   const miningEnd: number = Number(data.miningEndTime);
 
   const btnDisabledStake = () => {
-    return account !== undefined && miningStart > currentBlock ? false : true;
+    return account !== undefined && miningStart > currentBlock
+      ? setStakeDisabled(false)
+      : setStakeDisabled(true);
   };
 
   const btnDisabledUnstake = () => {
-    return account !== undefined && currentBlock > miningEnd ? false : true;
+    return account !== undefined && currentBlock > miningEnd
+      ? setUnstakeDisabled(false)
+      : setUnstakeDisabled(true);
   };
 
   const btnDisabledClaim = () => {
-    return account !== undefined && data.saleClosed ? false : true;
+    return account !== undefined && data.saleClosed
+      ? setClaimDisabled(false)
+      : setClaimDisabled(true);
   };
+
+  useEffect(() => {
+    btnDisabledStake();
+    btnDisabledUnstake();
+    btnDisabledClaim();
+    /*eslint-disable*/
+  }, []);
 
   const modalPayload = async (data: any) => {
     const result = await fetchManageModalPayload(
@@ -201,43 +218,59 @@ const WalletInformation: FC<WalletInformationProps> = ({
         </Box>
         <Grid pos="relative" templateColumns={'repeat(2, 1fr)'} gap={6}>
           <Button
-            bg={'blue.500'}
-            isDisabled={btnDisabledStake()}
-            color={'white.100'}
+            bg={stakeDisabled === true ? 'gray.25' : 'blue.500'}
+            isDisabled={stakeDisabled}
+            color={stakeDisabled === true ? 'gray.175' : 'white.100'}
             fontSize={'14px'}
             opacity={loading === true ? 0.5 : 1}
             onClick={() => modalData('stake')}
-            _hover={{backgroundColor: 'blue.100'}}>
+            _hover={
+              stakeDisabled === true
+                ? {backgroundColor: 'gray.25'}
+                : {backgroundColor: 'blue.100'}
+            }>
             Stake
           </Button>
           <Button
-            bg="blue.500"
-            isDisabled={btnDisabledUnstake()}
-            color={'white.100'}
+            bg={unstakeDisabled === true ? 'gray.25' : 'blue.500'}
+            isDisabled={unstakeDisabled}
+            color={unstakeDisabled === true ? 'gray.175' : 'white.100'}
             fontSize={'14px'}
             opacity={loading === true ? 0.5 : 1}
             onClick={() => modalData('unstake')}
-            _hover={{backgroundColor: 'blue.100'}}>
+            _hover={
+              unstakeDisabled === true
+                ? {backgroundColor: 'gray.25'}
+                : {backgroundColor: 'blue.100'}
+            }>
             Unstake
           </Button>
           <Button
-            bg="blue.500"
-            isDisabled={btnDisabledClaim()}
-            color={'white.100'}
+            bg={claimDisabled === true ? 'gray.25' : 'blue.500'}
+            isDisabled={claimDisabled}
+            color={claimDisabled === true ? 'gray.175' : 'white.100'}
             fontSize={'14px'}
             opacity={loading === true ? 0.5 : 1}
             onClick={() => modalData('claim')}
-            _hover={{backgroundColor: 'blue.100'}}>
+            _hover={
+              claimDisabled === true
+                ? {backgroundColor: 'gray.25'}
+                : {backgroundColor: 'blue.100'}
+            }>
             Claim
           </Button>
           <Button
-            bg="blue.500"
+            bg={btnDisabled === true ? 'gray.25' : 'blue.500'}
             isDisabled={btnDisabled}
-            color={'white.100'}
+            color={btnDisabled === true ? 'gray.175' : 'white.100'}
             fontSize={'14px'}
             opacity={loading === true ? 0.5 : 1}
             onClick={() => modalData('manage')}
-            _hover={{backgroundColor: 'blue.100'}}>
+            _hover={
+              btnDisabled === true
+                ? {backgroundColor: 'gray.25'}
+                : {backgroundColor: 'blue.100'}
+            }>
             Manage
           </Button>
           {loading === true ? (

@@ -90,6 +90,7 @@ export const UnstakeOptionModal = () => {
               bg={'blue.500'}
               color="white.100"
               fontSize="14px"
+              _hover={{...theme.btnHover}}
               onClick={() =>
                 unstake({
                   userAddress: account,

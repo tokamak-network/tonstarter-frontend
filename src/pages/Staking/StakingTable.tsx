@@ -377,7 +377,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                               }>
                               Earning Per TON
                             </Text>
-                            <Text w={20}>{ept}</Text>
+                            <Text w={20}>{ept} TOS</Text>
                             <Tooltip
                               hasArrow
                               placement="right"
