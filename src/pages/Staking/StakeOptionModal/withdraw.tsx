@@ -13,10 +13,10 @@ import {
   useColorMode,
 } from '@chakra-ui/react';
 
-import React, {useCallback, useState} from 'react';
+import React, {useState} from 'react';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {closeModal, selectModalType} from 'store/modal.reducer';
+import {openModal, selectModalType} from 'store/modal.reducer';
 import {withdraw} from '../actions';
 
 export const WithdrawalOptionModal = () => {
@@ -34,16 +34,16 @@ export const WithdrawalOptionModal = () => {
   // const withdrawalDelay = data?.data?.globalWithdrawalDelay;
   const withdrawableBalance = data?.data?.withdrawableAmount;
 
-  const handleCloseModal = useCallback(() => {
-    dispatch(closeModal());
+  const handleCloseModal = () => {
+    dispatch(openModal({type: 'manage', data: data.data}));
     setValue(0);
-  }, [dispatch]);
+  };
 
   return (
     <Modal
       isOpen={data.modal === 'withdraw' ? true : false}
       isCentered
-      onClose={() => dispatch(closeModal())}>
+      onClose={handleCloseModal}>
       <ModalOverlay />
       <ModalContent
         fontFamily={theme.fonts.roboto}
@@ -115,7 +115,7 @@ export const WithdrawalOptionModal = () => {
                   contractAddress: data.data.contractAddress,
                   miningEndTime: data?.data?.miningEndTime,
                   library: library,
-                  handleCloseModal: dispatch(closeModal()),
+                  handleCloseModal: handleCloseModal,
                 })
               }
               disabled={+withdrawableBalance <= 0}>

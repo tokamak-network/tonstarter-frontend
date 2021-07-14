@@ -36,6 +36,8 @@ export const ManageModal = () => {
     console.log(e);
   }
 
+  console.log(data);
+
   const withdrawPayload = async (data: any) => {
     const result = await fetchWithdrawPayload(
       data.library,
