@@ -4,9 +4,11 @@ import {getRPC} from 'utils/contract';
 import {period} from 'utils';
 import {TokenType} from 'types/index';
 import {convertNumber} from 'utils/number';
-// import { getTokamakContract } from '../../utils/contract';
+import store from 'store';
 
 const rpc = getRPC();
+
+export type Vault = {};
 
 export type Stake = {
   name?: string;
@@ -38,6 +40,7 @@ export type Stake = {
   miningStartTime: string | undefined;
   miningEndTime: string | undefined;
   vault: string;
+  ept: any;
 };
 
 interface StakeState {
@@ -61,9 +64,8 @@ export const fetchStakes = createAsyncThunk(
     let projects: any[] = [];
 
     const chainIdforFetch = chainId === undefined ? '4' : chainId;
-    const fetchValutUrl = `https://api.tokamak.network/v1/vaults?chainId=${chainIdforFetch}`;
+    // const fetchValutUrl = `https://api.tokamak.network/v1/vaults?chainId=${chainIdforFetch}`;
     const fetchStakeUrl = `https://api.tokamak.network/v1/stakecontracts?chainId=${chainIdforFetch}`;
-    // let iERC20: any;
 
     // @ts-ignore
     const {currentRequestId, loading} = getState().stakes;
@@ -71,21 +73,24 @@ export const fetchStakes = createAsyncThunk(
       return;
     }
 
-    const vaultReq = await fetch(fetchValutUrl)
-      .then((res) => res.json())
-      .then((result) => result);
+    // const vaultReq = await fetch(fetchValutUrl)
+    //   .then((res) => res.json())
+    //   .then((result) => result);
 
     const stakeReq = await fetch(fetchStakeUrl)
       .then((res) => res.json())
       .then((result) => result);
 
     const stakeList = stakeReq.datas;
+    // const vaultList = vaultReq.datas;
 
-    console.log('-----------api-----------');
-    // console.log(vaultReq);
+    // console.log('-----------api-----------');
+    // console.log(vaultList);
     // console.log(stakeList);
 
     const currentBlock = await rpc.getBlockNumber();
+
+    const vaultsData = store.getState().vaults.data;
 
     await Promise.all(
       stakeList.map(async (stake: any, index: number) => {
@@ -120,6 +125,7 @@ export const fetchStakes = createAsyncThunk(
           account,
           vault: stake.vault,
           saleClosed: stake.saleClosed,
+          ept: getEarningPerTon(vaultsData, stake.vault, stake.endBlock),
         };
         projects.push(stakeInfo);
       }),
@@ -141,6 +147,21 @@ export const fetchStakes = createAsyncThunk(
     return finalStakeList;
   },
 );
+
+const getEarningPerTon = (
+  vaultsData: any,
+  valutAddress: any,
+  stakeEndBlock: any,
+) => {
+  let result = '';
+  vaultsData[valutAddress].map((project: string) => {
+    if (Number(Object.keys(project).toString()) === stakeEndBlock) {
+      result = project[stakeEndBlock];
+    }
+    return result;
+  });
+  return Number.parseFloat(result).toFixed(2);
+};
 
 const getStatus = async (args: any, blockNumber: number) => {
   if (blockNumber === 0) {

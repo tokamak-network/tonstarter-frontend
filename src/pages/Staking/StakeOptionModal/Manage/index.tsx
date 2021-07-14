@@ -31,10 +31,12 @@ export const ManageModal = () => {
   let closed;
 
   try {
-    closed = data?.data?.saleClosed
+    closed = data?.data?.saleClosed;
   } catch (e) {
-    console.log(e)
+    console.log(e);
   }
+
+  console.log(data);
 
   const withdrawPayload = async (data: any) => {
     const result = await fetchWithdrawPayload(
@@ -161,12 +163,12 @@ export const ManageModal = () => {
               color={'white.100'}
               fontSize={'0.750em'}
               fontWeight={100}
-              isDisabled={closed?!closed:false}
+              isDisabled={closed ? !closed : false}
               onClick={() =>
                 dispatch(openModal({type: 'stakeL2', data: data.data}))
               }
               _hover={{backgroundColor: 'blue.100'}}>
-              Stake in Layer2
+              Stake in Layer 2
             </Button>
             <Button
               width="150px"
@@ -175,11 +177,11 @@ export const ManageModal = () => {
               fontSize={'12px'}
               fontWeight={100}
               _hover={{backgroundColor: 'blue.100'}}
-              isDisabled={closed?!closed:false}
+              isDisabled={closed ? !closed : false}
               onClick={() =>
                 dispatch(openModal({type: 'unstakeL2', data: data.data}))
               }>
-              Unstake from Layer2
+              Unstake from Layer 2
             </Button>
             <Button
               width="150px"
@@ -188,7 +190,7 @@ export const ManageModal = () => {
               fontSize={'12px'}
               fontWeight={100}
               _hover={{backgroundColor: 'blue.100'}}
-              isDisabled={closed?!closed:false}
+              isDisabled={closed ? !closed : false}
               onClick={() => withdrawData('withdraw', data)}>
               Withdraw
             </Button>
@@ -199,7 +201,7 @@ export const ManageModal = () => {
               fontSize={'12px'}
               fontWeight={100}
               _hover={{backgroundColor: 'blue.100'}}
-              isDisabled={closed?!closed:false}
+              isDisabled={closed ? !closed : false}
               onClick={() =>
                 dispatch(openModal({type: 'swap', data: data.data}))
               }>

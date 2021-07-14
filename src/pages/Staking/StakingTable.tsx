@@ -18,7 +18,9 @@ import {
   useColorMode,
   Center,
   useTheme,
+  Image,
 } from '@chakra-ui/react';
+import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import './staking.css';
 import {checkTokenType} from 'utils/token';
@@ -152,6 +154,17 @@ export const StakingTable: FC<StakingTableProps> = ({
   const [isOpen, setIsOpen] = useState(
     contractAddress === undefined ? '' : contractAddress,
   );
+
+  const goPrevPage = () => {
+    setIsOpen('');
+    previousPage();
+  };
+
+  const goNextPage = () => {
+    setIsOpen('');
+    nextPage();
+  };
+
   const onChangeSelectBox = (e: any) => {
     const filterValue = e.target.value;
     headerGroups[0].headers.map((e) => {
@@ -175,15 +188,22 @@ export const StakingTable: FC<StakingTableProps> = ({
   const renderBtn = (contractAddress: string, index: number) => {
     if (isOpen === contractAddress)
       return (
-        <TriangleUpIcon
-          _hover={{cursor: 'pointer'}}
+        <Flex
+          w={'100%'}
+          justifyContent="flex-end"
           onClick={() => setIsOpen('')}
-        />
+          _hover={{cursor: 'pointer'}}>
+          <TriangleUpIcon _hover={{cursor: 'pointer'}} />
+        </Flex>
       );
     return (
-      <TriangleDownIcon
-        _hover={{cursor: 'pointer'}}
-        onClick={() => clickOpen(contractAddress, index)}></TriangleDownIcon>
+      <Flex
+        w={'100%'}
+        justifyContent="flex-end"
+        onClick={() => clickOpen(contractAddress, index)}
+        _hover={{cursor: 'pointer'}}>
+        <TriangleDownIcon _hover={{cursor: 'pointer'}}></TriangleDownIcon>
+      </Flex>
     );
   };
 
@@ -273,7 +293,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                   alignItems="center"
                   {...row.getRowProps()}>
                   {row.cells.map((cell: any, index: number) => {
-                    const {token, status, name, period, stakeBalanceTON} =
+                    const {token, status, name, period, stakeBalanceTON, ept} =
                       cell.row.original;
                     const type = cell.column.id;
                     const tokenType = checkTokenType(token);
@@ -283,7 +303,6 @@ export const StakingTable: FC<StakingTableProps> = ({
                         py={3}
                         key={index}
                         m={0}
-                        mr={30}
                         w={
                           type === 'name'
                             ? '280px'
@@ -292,8 +311,8 @@ export const StakingTable: FC<StakingTableProps> = ({
                             : type === 'stakeBalanceTON'
                             ? '200px'
                             : type === 'earning_per_block'
-                            ? '340px'
-                            : '14px'
+                            ? '250px'
+                            : '200px'
                         }
                         display="flex"
                         alignItems="center"
@@ -350,13 +369,24 @@ export const StakingTable: FC<StakingTableProps> = ({
                         )}
 
                         {type === 'earning_per_block' ? (
-                          <Text
-                            mr={2}
-                            color={
-                              colorMode === 'light' ? '#86929d' : '#949494'
-                            }>
-                            Earning Per Block
-                          </Text>
+                          <>
+                            <Text
+                              mr={2}
+                              color={
+                                colorMode === 'light' ? '#86929d' : '#949494'
+                              }>
+                              Earning Per TON
+                            </Text>
+                            <Text w={20}>{ept}</Text>
+                            <Tooltip
+                              hasArrow
+                              placement="right"
+                              label="This estimator could be change depending on the situation"
+                              color={theme.colors.white[100]}
+                              bg={theme.colors.gray[375]}>
+                              <Image src={tooltipIcon} />
+                            </Tooltip>
+                          </>
                         ) : (
                           ''
                         )}
@@ -374,7 +404,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                   <chakra.tr
                     boxShadow="0 1px 1px 0 rgba(96, 97, 112, 0.16)"
                     w={'100%'}
-                    h={'413px'}
+                    h={'430px'}
                     key={i}
                     m={0}
                     mb={'14px'}
@@ -424,7 +454,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                 color={colorMode === 'light' ? '#e6eaee' : '#424242'}
                 borderRadius={4}
                 aria-label={'Previous Page'}
-                onClick={previousPage}
+                onClick={goPrevPage}
                 isDisabled={!canPreviousPage}
                 size={'sm'}
                 mr={4}
@@ -496,7 +526,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                   bg={colorMode === 'light' ? 'white.100' : 'none'}
                   borderRadius={4}
                   aria-label={'Next Page'}
-                  onClick={nextPage}
+                  onClick={goNextPage}
                   isDisabled={!canNextPage}
                   size={'sm'}
                   ml={4}
@@ -509,6 +539,7 @@ export const StakingTable: FC<StakingTableProps> = ({
             <Select
               w={'117px'}
               h={'32px'}
+              mr={1}
               color={colorMode === 'light' ? ' #3e495c' : '#f3f4f1'}
               bg={colorMode === 'light' ? 'white.100' : 'none'}
               boxShadow={

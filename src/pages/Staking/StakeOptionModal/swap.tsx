@@ -15,7 +15,7 @@ import {
 import React, {useCallback, useState} from 'react';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {closeModal, selectModalType} from 'store/modal.reducer';
+import {openModal, selectModalType} from 'store/modal.reducer';
 import {swapWTONtoTOS} from '../actions';
 
 export const SwapModal = () => {
@@ -30,11 +30,16 @@ export const SwapModal = () => {
   const handleChange = useCallback((e) => setValue(e.target.value), []);
   const setMax = useCallback((_e) => setValue(balance), [balance]);
 
+  const handleCloseModal = () => {
+    dispatch(openModal({type: 'manage', data: data.data}));
+    setValue(0);
+  };
+
   return (
     <Modal
       isOpen={data.modal === 'swap' ? true : false}
       isCentered
-      onClose={() => dispatch(closeModal())}>
+      onClose={handleCloseModal}>
       <ModalOverlay />
       <ModalContent>
         <ModalBody>
@@ -107,7 +112,7 @@ export const SwapModal = () => {
                   contractAddress: data?.data?.contractAddress,
                   status: data?.data?.status,
                   library: library,
-                  handleCloseModal: dispatch(closeModal()),
+                  handleCloseModal: handleCloseModal,
                 })
               }>
               Swap
