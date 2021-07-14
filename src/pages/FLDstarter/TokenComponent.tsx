@@ -31,6 +31,7 @@ type TokenComponentProps = {
   contractAddress: string;
   account: string | undefined;
   index: number;
+  ept: string;
 };
 
 export const TokenComponent: FC<TokenComponentProps> = ({
@@ -43,6 +44,7 @@ export const TokenComponent: FC<TokenComponentProps> = ({
   contractAddress,
   account,
   index,
+  ept,
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -126,7 +128,9 @@ export const TokenComponent: FC<TokenComponentProps> = ({
             <Text className={'fld-text1'} mr={1}>
               Earning Per Block
             </Text>
-            <Text className={'fld-text2'} mr={1}></Text>
+            <Text className={'fld-text2'} mr={1}>
+              {ept}
+            </Text>
           </Flex>
           <Flex mt={3} alignItems={'center'}>
             <Text

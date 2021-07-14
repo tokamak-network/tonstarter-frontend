@@ -6,7 +6,6 @@ import {Header} from 'components/Header';
 import {Footer} from 'components/Footer';
 import {FLDstarter} from './FLDstarter';
 import {Staking} from './Staking';
-import {Pools} from './Pools';
 import {Switch, Route} from 'react-router-dom';
 import {useAppDispatch} from 'hooks/useRedux';
 import {fetchAppConfig} from 'store/app/app.reducer';
@@ -125,7 +124,7 @@ export const Router: FC<RouterProps> = () => {
       <Switch>
         <Route exact path="/" component={FLDstarter} />
         <Route exact path="/staking" component={Staking} />
-        <Route exact path="/pools" component={Pools} />
+        {/* <Route exact path="/pools" component={Pools} /> */}
         {/* <Route exact path="/starter" component={Starter} /> */}
         {/* <Route exact path="/dao" component={DAO} /> */}
       </Switch>

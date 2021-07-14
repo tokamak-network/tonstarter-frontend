@@ -48,6 +48,7 @@ export const FLDstarter = () => {
                   contractAddress={item.contractAddress}
                   account={item.account}
                   index={index}
+                  ept={item.ept}
                 />
               ))
             )}
