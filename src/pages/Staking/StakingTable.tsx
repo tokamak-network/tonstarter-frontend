@@ -18,7 +18,9 @@ import {
   useColorMode,
   Center,
   useTheme,
+  Image,
 } from '@chakra-ui/react';
+import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import './staking.css';
 import {checkTokenType} from 'utils/token';
@@ -28,6 +30,7 @@ import {useAppSelector} from 'hooks/useRedux';
 import {useEffect} from 'react';
 import {setTimeout} from 'timers';
 import {LoadingComponent} from 'components/Loading';
+import {useWindowDimensions} from 'hooks/useWindowDimentions';
 
 type StakingTableProps = {
   columns: Column[];
@@ -186,13 +189,11 @@ export const StakingTable: FC<StakingTableProps> = ({
     );
   };
 
-  // const renderIconBtn = ({onClick, isDisabled, }) => {
-
-  // }
+  const {height} = useWindowDimensions();
 
   if (isLoading === true || data.length === 0) {
     return (
-      <Center>
+      <Center h={height - 363}>
         <LoadingComponent />
       </Center>
     );
@@ -274,7 +275,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                   alignItems="center"
                   {...row.getRowProps()}>
                   {row.cells.map((cell: any, index: number) => {
-                    const {token, status, name, period, stakeBalanceTON} =
+                    const {token, status, name, period, stakeBalanceTON, ept} =
                       cell.row.original;
                     const type = cell.column.id;
                     const tokenType = checkTokenType(token);
@@ -351,13 +352,24 @@ export const StakingTable: FC<StakingTableProps> = ({
                         )}
 
                         {type === 'earning_per_block' ? (
-                          <Text
-                            mr={2}
-                            color={
-                              colorMode === 'light' ? '#86929d' : '#949494'
-                            }>
-                            Earning Per Block
-                          </Text>
+                          <>
+                            <Text
+                              mr={2}
+                              color={
+                                colorMode === 'light' ? '#86929d' : '#949494'
+                              }>
+                              Earning Per TON
+                            </Text>
+                            <Text w={20}>{ept}</Text>
+                            <Tooltip
+                              hasArrow
+                              placement="right"
+                              label="This estimator could be change depending on the situation"
+                              color={theme.colors.white[100]}
+                              bg={theme.colors.gray[375]}>
+                              <Image src={tooltipIcon} />
+                            </Tooltip>
+                          </>
                         ) : (
                           ''
                         )}

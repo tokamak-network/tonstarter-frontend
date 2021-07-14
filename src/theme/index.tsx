@@ -66,6 +66,10 @@ const colors = {
   },
 };
 
+const btnHover = {
+  backgroundColor: 'blue.100',
+};
+
 const modalStyle = {
   modalContent: (props: any) => ({
     fontFamily: fonts.roboto,
@@ -211,6 +215,7 @@ const theme = extendTheme({
   fonts,
   breakpoints,
   modalStyle,
+  btnHover,
 });
 
 export default theme;

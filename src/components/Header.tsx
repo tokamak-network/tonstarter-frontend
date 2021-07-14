@@ -106,7 +106,7 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
   const {tx} = useAppSelector(selectTxType);
   const dispatch = useDispatch();
 
-  const airdropModalOpen = () => {
+  const airdropModalOpen = async () => {
     dispatch(openModal({type: 'airdrop'}));
   };
 
@@ -230,20 +230,12 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           style={{zIndex: 100}}>
           Staking
         </NavLink>
-        <Tooltip
-          hasArrow
-          placement="top"
-          label="Coming Soon"
-          color={theme.colors.white[100]}
-          bg={theme.colors.gray[375]}>
-          <NavLink
-            to="/pools"
-            className={match?.isExact ? 'link-match' : 'link'}
-            onClick={(e) => e.preventDefault()}
-            style={{zIndex: 100}}>
-            Pools
-          </NavLink>
-        </Tooltip>
+        <NavLink
+          to="/pools"
+          className={match?.isExact ? 'link-match' : 'link'}
+          style={{zIndex: 100}}>
+          Pools
+        </NavLink>
 
         <Tooltip
           hasArrow

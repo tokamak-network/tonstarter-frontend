@@ -36,8 +36,6 @@ import {openModal} from 'store/modal.reducer';
 import {ManageModal} from './StakeOptionModal/Manage/index';
 import {formatStartTime} from 'utils/timeStamp';
 import {useState} from 'react';
-import {useLocalStorage} from 'hooks/useStorage';
-import {useEffect} from 'react';
 import {Stake} from './staking.reducer';
 import {fetchManageModalPayload} from './utils';
 import {ModalType} from 'store/modal.reducer';
@@ -47,6 +45,8 @@ import {
   getUserBalance,
   getUserTonBalance,
 } from 'client/getUserBalance';
+//@ts-ignore
+import {Dot} from 'react-animated-dots';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
@@ -68,44 +68,38 @@ type GetDateProp = {
   type: GetDateTimeType;
 };
 
+const LoadingDots = () => {
+  return (
+    <Flex h={30}>
+      <Dot>·</Dot>
+      <Dot>·</Dot>
+      <Dot>·</Dot>
+    </Flex>
+  );
+};
+
 const GetDate = ({time, currentBlock, contractAddress, type}: GetDateProp) => {
   const {colorMode} = useColorMode();
-
   const [date, setDate] = useState('');
-  const [localTableValue, setLocalTableValue] = useLocalStorage('table', {});
-
-  useEffect(() => {
-    const fetchDate = async () => {
-      const result = await formatStartTime(time, currentBlock);
-      setDate(result);
-
-      //@ts-ignore
-      const localStorage = JSON.parse(window.localStorage.getItem('table'));
-
-      return await setLocalTableValue({
-        ...localStorage,
-        [contractAddress + type]: result,
-      });
-    };
-    if (
-      localTableValue === undefined ||
-      localTableValue[contractAddress + type] === undefined
-    ) {
-      fetchDate();
-    } else {
-      setDate(localTableValue[contractAddress + type]);
-    }
-    fetchDate();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useMemo(async () => {
+    const result = await formatStartTime(time, currentBlock);
+    setDate(result);
+  }, [time, currentBlock]);
 
   return (
-    <Text
-      fontSize={'20px'}
-      color={colorMode === 'light' ? 'black.300' : 'white.200'}
-      fontWeight={'bold'}
-      w="100%">
-      {date}
-    </Text>
+    <>
+      {date === '' ? (
+        <LoadingDots />
+      ) : (
+        <Text
+          fontSize={'20px'}
+          color={colorMode === 'light' ? 'black.300' : 'white.200'}
+          fontWeight={'bold'}
+          w="100%">
+          {date}
+        </Text>
+      )}
+    </>
   );
 };
 
@@ -117,11 +111,23 @@ const WalletInformation: FC<WalletInformationProps> = ({
 }) => {
   const {colorMode} = useColorMode();
   const [loading, setLoading] = useState(false);
-  const [userTonBalance, setUserTonBalance] = useState<string>('...');
+  const [userTonBalance, setUserTonBalance] = useState<string>('');
   const btnDisabled = account === undefined ? true : false;
-  const currentBlock = data.fetchBlock;
-  const miningStart = data.miningStartTime;
-  const miningEnd = data.miningEndTime;
+  const currentBlock: number = Number(data.fetchBlock);
+  const miningStart: number = Number(data.miningStartTime);
+  const miningEnd: number = Number(data.miningEndTime);
+
+  const btnDisabledStake = () => {
+    return account !== undefined && miningStart > currentBlock ? false : true;
+  };
+
+  const btnDisabledUnstake = () => {
+    return account !== undefined && currentBlock > miningEnd ? false : true;
+  };
+
+  const btnDisabledClaim = () => {
+    return account !== undefined && data.saleClosed ? false : true;
+  };
 
   const modalPayload = async (data: any) => {
     const result = await fetchManageModalPayload(
@@ -196,7 +202,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
         <Grid pos="relative" templateColumns={'repeat(2, 1fr)'} gap={6}>
           <Button
             bg={'blue.500'}
-            isDisabled={+miningStart! < +currentBlock!}
+            isDisabled={btnDisabledStake()}
             color={'white.100'}
             fontSize={'14px'}
             opacity={loading === true ? 0.5 : 1}
@@ -206,7 +212,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
           </Button>
           <Button
             bg="blue.500"
-            isDisabled={+currentBlock! < +miningEnd!}
+            isDisabled={btnDisabledUnstake()}
             color={'white.100'}
             fontSize={'14px'}
             opacity={loading === true ? 0.5 : 1}
@@ -216,7 +222,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
           </Button>
           <Button
             bg="blue.500"
-            isDisabled={btnDisabled}
+            isDisabled={btnDisabledClaim()}
             color={'white.100'}
             fontSize={'14px'}
             opacity={loading === true ? 0.5 : 1}
@@ -310,7 +316,7 @@ export const Staking = () => {
 
   const GetTotalStaker = ({contractAddress}: any) => {
     const {colorMode} = useColorMode();
-    const [totalStaker, setTotalStaker] = useState('');
+    const [totalStaker, setTotalStaker] = useState('-');
     const getlInfo = async () => {
       const res = await getTotalStakers(contractAddress);
       setTotalStaker(res);
@@ -325,7 +331,7 @@ export const Staking = () => {
           fontSize={'20px'}
           color={colorMode === 'light' ? 'black.300' : 'white.200'}
           fontWeight={'bold'}>
-          {totalStaker}
+          {totalStaker === '-' ? <LoadingDots></LoadingDots> : totalStaker}
         </Text>
       </Flex>
     );
@@ -333,7 +339,7 @@ export const Staking = () => {
 
   const GetBalance = ({title, contractAddress, user}: any) => {
     const {colorMode} = useColorMode();
-    const [balance, SetBalance] = useState(undefined);
+    const [balance, SetBalance] = useState('-');
     const getBalance = async () => {
       const result = await getUserBalance(contractAddress);
 
@@ -349,6 +355,23 @@ export const Staking = () => {
       getBalance();
     }
 
+    if (user.address === undefined) {
+      return (
+        <Flex flexDir={'column'} alignItems={'space-between'}>
+          <Text fontSize={'15px'} color="gray.400">
+            {title}
+          </Text>
+          <Text
+            fontSize={'20px'}
+            color={colorMode === 'light' ? 'black.300' : 'white.200'}
+            fontWeight={'bold'}
+            h="30px">
+            {balance}
+          </Text>
+        </Flex>
+      );
+    }
+
     return (
       <Flex flexDir={'column'} alignItems={'space-between'}>
         <Text fontSize={'15px'} color="gray.400">
@@ -359,8 +382,8 @@ export const Staking = () => {
           color={colorMode === 'light' ? 'black.300' : 'white.200'}
           fontWeight={'bold'}
           h="30px">
-          {balance}{' '}
-          {balance !== undefined ? (
+          {balance === '-' ? <LoadingDots></LoadingDots> : balance}
+          {balance !== '-' ? (
             title === 'My staked' ? (
               <span> TON</span>
             ) : (
@@ -406,6 +429,12 @@ export const Staking = () => {
                       : 'mining-start'
                   }></GetDate>
               </Text>
+              <Text w="210px" color="gray.400" fontSize={'0.813em'}>
+                Block Num.{' '}
+                {data[row.id]?.status === 'sale'
+                  ? data[row.id]?.saleStartTime
+                  : data[row.id]?.miningStartTime}
+              </Text>
             </Flex>
             <GetTotalStaker contractAddress={contractAddress}></GetTotalStaker>
             <GetBalance
@@ -443,6 +472,12 @@ export const Staking = () => {
                     data[row.id]?.status === 'sale' ? 'sale-end' : 'mining-end'
                   }></GetDate>
               </Text>
+              <Text w="210px" color="gray.400" fontSize={'0.813em'}>
+                Block Num.{' '}
+                {data[row.id]?.status === 'sale'
+                  ? data[row.id]?.saleEndTime
+                  : data[row.id]?.miningEndTime}
+              </Text>
             </Flex>
 
             <Flex flexDir={'column'} alignItems={'space-between'}>
@@ -472,6 +507,7 @@ export const Staking = () => {
         </Flex>
       );
     },
+    /* eslint-disable */
     [data, dispatch, user, appConfig.explorerLink],
   );
 

@@ -128,6 +128,7 @@ export const UnStakeFromLayer2Modal = () => {
               bg={'blue.500'}
               color="white.100"
               fontSize="14px"
+              _hover={{...theme.btnHover}}
               onClick={() =>
                 unstakeL2({
                   userAddress: account,

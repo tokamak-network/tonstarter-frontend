@@ -10,6 +10,7 @@ import {
   Flex,
   Input,
   Stack,
+  useTheme,
 } from '@chakra-ui/react';
 import React, {useCallback, useState} from 'react';
 import {useWeb3React} from '@web3-react/core';
@@ -20,6 +21,7 @@ import {swapWTONtoTOS} from '../actions';
 export const SwapModal = () => {
   const {account, library} = useWeb3React();
   const {data} = useAppSelector(selectModalType);
+  const theme = useTheme();
   const dispatch = useAppDispatch();
   let balance = data?.data?.totalStakedAmountL2;
 
@@ -93,7 +95,11 @@ export const SwapModal = () => {
 
           <Box py={4} as={Flex} justifyContent={'center'}>
             <Button
-              colorScheme={'blue'}
+              w={'150px'}
+              bg={'blue.500'}
+              color="white.100"
+              fontSize="14px"
+              _hover={{...theme.btnHover}}
               onClick={() =>
                 swapWTONtoTOS({
                   userAddress: account,
