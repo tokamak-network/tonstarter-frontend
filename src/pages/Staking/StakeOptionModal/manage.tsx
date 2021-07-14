@@ -153,7 +153,7 @@ export const ManageModal = () => {
               color={'white.100'}
               fontSize={'0.750em'}
               fontWeight={100}
-              isDisabled={!data.data.saleClosed}
+              // isDisabled={!data.data.saleClosed}
               onClick={() =>
                 dispatch(openModal({type: 'stakeL2', data: data.data}))
               }

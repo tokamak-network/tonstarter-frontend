@@ -28,6 +28,13 @@ export const ManageModal = () => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
   let balance = data?.data?.stakeContractBalanceTon;
+  let closed;
+
+  try {
+    closed = data?.data?.saleClosed
+  } catch (e) {
+    console.log(e)
+  }
 
   const withdrawPayload = async (data: any) => {
     const result = await fetchWithdrawPayload(
@@ -154,7 +161,7 @@ export const ManageModal = () => {
               color={'white.100'}
               fontSize={'0.750em'}
               fontWeight={100}
-              isDisabled={!data.data.saleClosed}
+              isDisabled={closed?!closed:false}
               onClick={() =>
                 dispatch(openModal({type: 'stakeL2', data: data.data}))
               }
@@ -168,7 +175,7 @@ export const ManageModal = () => {
               fontSize={'12px'}
               fontWeight={100}
               _hover={{backgroundColor: 'blue.100'}}
-              isDisabled={!data.data.saleClosed}
+              isDisabled={closed?!closed:false}
               onClick={() =>
                 dispatch(openModal({type: 'unstakeL2', data: data.data}))
               }>
@@ -181,7 +188,7 @@ export const ManageModal = () => {
               fontSize={'12px'}
               fontWeight={100}
               _hover={{backgroundColor: 'blue.100'}}
-              isDisabled={!data.data.saleClosed}
+              isDisabled={closed?!closed:false}
               onClick={() => withdrawData('withdraw', data)}>
               Withdraw
             </Button>
@@ -192,7 +199,7 @@ export const ManageModal = () => {
               fontSize={'12px'}
               fontWeight={100}
               _hover={{backgroundColor: 'blue.100'}}
-              isDisabled={!data.data.saleClosed}
+              isDisabled={closed?!closed:false}
               onClick={() =>
                 dispatch(openModal({type: 'swap', data: data.data}))
               }>
