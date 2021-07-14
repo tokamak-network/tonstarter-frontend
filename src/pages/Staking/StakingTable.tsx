@@ -539,6 +539,7 @@ export const StakingTable: FC<StakingTableProps> = ({
             <Select
               w={'117px'}
               h={'32px'}
+              mr={1}
               color={colorMode === 'light' ? ' #3e495c' : '#f3f4f1'}
               bg={colorMode === 'light' ? 'white.100' : 'none'}
               boxShadow={
