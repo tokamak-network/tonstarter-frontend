@@ -144,7 +144,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
     btnDisabledUnstake();
     btnDisabledClaim();
     /*eslint-disable*/
-  }, []);
+  }, [account, data, dispatch]);
 
   const modalPayload = async (data: any) => {
     const result = await fetchManageModalPayload(
@@ -201,6 +201,9 @@ const WalletInformation: FC<WalletInformationProps> = ({
     getWalletTonBalance();
   }
 
+  const theme = useTheme();
+  const {btnStyle} = theme;
+
   return (
     <Container
       maxW={'sm'}
@@ -218,59 +221,43 @@ const WalletInformation: FC<WalletInformationProps> = ({
         </Box>
         <Grid pos="relative" templateColumns={'repeat(2, 1fr)'} gap={6}>
           <Button
-            bg={stakeDisabled === true ? 'gray.25' : 'blue.500'}
+            {...(stakeDisabled === true
+              ? {...btnStyle.btnDisable({colorMode})}
+              : {...btnStyle.btnAble()})}
             isDisabled={stakeDisabled}
-            color={stakeDisabled === true ? 'gray.175' : 'white.100'}
             fontSize={'14px'}
             opacity={loading === true ? 0.5 : 1}
-            onClick={() => modalData('stake')}
-            _hover={
-              stakeDisabled === true
-                ? {backgroundColor: 'gray.25'}
-                : {backgroundColor: 'blue.100'}
-            }>
+            onClick={() => modalData('stake')}>
             Stake
           </Button>
           <Button
-            bg={unstakeDisabled === true ? 'gray.25' : 'blue.500'}
+            {...(unstakeDisabled === true
+              ? {...btnStyle.btnDisable({colorMode})}
+              : {...btnStyle.btnAble()})}
             isDisabled={unstakeDisabled}
-            color={unstakeDisabled === true ? 'gray.175' : 'white.100'}
             fontSize={'14px'}
             opacity={loading === true ? 0.5 : 1}
-            onClick={() => modalData('unstake')}
-            _hover={
-              unstakeDisabled === true
-                ? {backgroundColor: 'gray.25'}
-                : {backgroundColor: 'blue.100'}
-            }>
+            onClick={() => modalData('unstake')}>
             Unstake
           </Button>
           <Button
-            bg={claimDisabled === true ? 'gray.25' : 'blue.500'}
+            {...(claimDisabled === true
+              ? {...btnStyle.btnDisable({colorMode})}
+              : {...btnStyle.btnAble()})}
             isDisabled={claimDisabled}
-            color={claimDisabled === true ? 'gray.175' : 'white.100'}
             fontSize={'14px'}
             opacity={loading === true ? 0.5 : 1}
-            onClick={() => modalData('claim')}
-            _hover={
-              claimDisabled === true
-                ? {backgroundColor: 'gray.25'}
-                : {backgroundColor: 'blue.100'}
-            }>
+            onClick={() => modalData('claim')}>
             Claim
           </Button>
           <Button
-            bg={btnDisabled === true ? 'gray.25' : 'blue.500'}
+            {...(btnDisabled === true
+              ? {...btnStyle.btnDisable({colorMode})}
+              : {...btnStyle.btnAble()})}
             isDisabled={btnDisabled}
-            color={btnDisabled === true ? 'gray.175' : 'white.100'}
             fontSize={'14px'}
             opacity={loading === true ? 0.5 : 1}
-            onClick={() => modalData('manage')}
-            _hover={
-              btnDisabled === true
-                ? {backgroundColor: 'gray.25'}
-                : {backgroundColor: 'blue.100'}
-            }>
+            onClick={() => modalData('manage')}>
             Manage
           </Button>
           {loading === true ? (
