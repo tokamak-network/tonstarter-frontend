@@ -156,8 +156,6 @@ const getEarningPerTon = (
   let result = '';
   vaultsData[valutAddress].map((project: string) => {
     if (Number(Object.keys(project).toString()) === stakeEndBlock) {
-      console.log(stakeEndBlock);
-      console.log(project[stakeEndBlock]);
       result = project[stakeEndBlock];
     }
     return result;

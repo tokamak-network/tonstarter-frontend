@@ -17,7 +17,7 @@ import {unstakeL2} from '../actions';
 import React, {useCallback, useState} from 'react';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {closeModal, selectModalType} from 'store/modal.reducer';
+import {openModal, selectModalType} from 'store/modal.reducer';
 
 export const UnStakeFromLayer2Modal = () => {
   const {account, library} = useWeb3React();
@@ -32,10 +32,10 @@ export const UnStakeFromLayer2Modal = () => {
   const handleChange = useCallback((e) => setValue(e.target.value), []);
   const setMax = useCallback((_e) => setValue(balance), [balance]);
 
-  const handleCloseModal = useCallback(() => {
-    dispatch(closeModal());
+  const handleCloseModal = () => {
+    dispatch(openModal({type: 'manage', data: data.data}));
     setValue(0);
-  }, [dispatch]);
+  };
 
   return (
     <Modal

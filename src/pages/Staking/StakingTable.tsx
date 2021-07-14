@@ -154,6 +154,17 @@ export const StakingTable: FC<StakingTableProps> = ({
   const [isOpen, setIsOpen] = useState(
     contractAddress === undefined ? '' : contractAddress,
   );
+
+  const goPrevPage = () => {
+    setIsOpen('');
+    previousPage();
+  };
+
+  const goNextPage = () => {
+    setIsOpen('');
+    nextPage();
+  };
+
   const onChangeSelectBox = (e: any) => {
     const filterValue = e.target.value;
     headerGroups[0].headers.map((e) => {
@@ -177,15 +188,22 @@ export const StakingTable: FC<StakingTableProps> = ({
   const renderBtn = (contractAddress: string, index: number) => {
     if (isOpen === contractAddress)
       return (
-        <TriangleUpIcon
-          _hover={{cursor: 'pointer'}}
+        <Flex
+          w={'100%'}
+          justifyContent="flex-end"
           onClick={() => setIsOpen('')}
-        />
+          _hover={{cursor: 'pointer'}}>
+          <TriangleUpIcon _hover={{cursor: 'pointer'}} />
+        </Flex>
       );
     return (
-      <TriangleDownIcon
-        _hover={{cursor: 'pointer'}}
-        onClick={() => clickOpen(contractAddress, index)}></TriangleDownIcon>
+      <Flex
+        w={'100%'}
+        justifyContent="flex-end"
+        onClick={() => clickOpen(contractAddress, index)}
+        _hover={{cursor: 'pointer'}}>
+        <TriangleDownIcon _hover={{cursor: 'pointer'}}></TriangleDownIcon>
+      </Flex>
     );
   };
 
@@ -285,7 +303,6 @@ export const StakingTable: FC<StakingTableProps> = ({
                         py={3}
                         key={index}
                         m={0}
-                        mr={30}
                         w={
                           type === 'name'
                             ? '280px'
@@ -294,8 +311,8 @@ export const StakingTable: FC<StakingTableProps> = ({
                             : type === 'stakeBalanceTON'
                             ? '200px'
                             : type === 'earning_per_block'
-                            ? '340px'
-                            : '14px'
+                            ? '250px'
+                            : '200px'
                         }
                         display="flex"
                         alignItems="center"
@@ -387,7 +404,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                   <chakra.tr
                     boxShadow="0 1px 1px 0 rgba(96, 97, 112, 0.16)"
                     w={'100%'}
-                    h={'413px'}
+                    h={'430px'}
                     key={i}
                     m={0}
                     mb={'14px'}
@@ -437,7 +454,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                 color={colorMode === 'light' ? '#e6eaee' : '#424242'}
                 borderRadius={4}
                 aria-label={'Previous Page'}
-                onClick={previousPage}
+                onClick={goPrevPage}
                 isDisabled={!canPreviousPage}
                 size={'sm'}
                 mr={4}
@@ -509,7 +526,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                   bg={colorMode === 'light' ? 'white.100' : 'none'}
                   borderRadius={4}
                   aria-label={'Next Page'}
-                  onClick={nextPage}
+                  onClick={goNextPage}
                   isDisabled={!canNextPage}
                   size={'sm'}
                   ml={4}
@@ -522,6 +539,7 @@ export const StakingTable: FC<StakingTableProps> = ({
             <Select
               w={'117px'}
               h={'32px'}
+              mr={1}
               color={colorMode === 'light' ? ' #3e495c' : '#f3f4f1'}
               bg={colorMode === 'light' ? 'white.100' : 'none'}
               boxShadow={
