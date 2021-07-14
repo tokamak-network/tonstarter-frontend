@@ -360,11 +360,11 @@ export const StakingTable: FC<StakingTableProps> = ({
                               }>
                               Earning Per TON
                             </Text>
-                            <Text mr={5}>{ept}</Text>
+                            <Text w={20}>{ept}</Text>
                             <Tooltip
                               hasArrow
                               placement="right"
-                              label="Total Staked"
+                              label="This estimator could be change depending on the situation"
                               color={theme.colors.white[100]}
                               bg={theme.colors.gray[375]}>
                               <Image src={tooltipIcon} />
