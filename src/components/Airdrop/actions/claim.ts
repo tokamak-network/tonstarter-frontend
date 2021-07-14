@@ -1,7 +1,8 @@
-import { getTokamakContract, getSigner, getRPC } from '../../../utils/contract';
+import { getTokamakContract, getSigner } from '../../../utils/contract';
 // import {Contract} from '@ethersproject/contracts';
 import store from '../../../store';
 import {setTxPending} from '../../../store/tx.reducer';
+import {toastWithReceipt} from 'utils';
 
 type AirdropClaimProps = {
   userAddress: string | null | undefined;
@@ -24,9 +25,9 @@ export const claimAirdrop = async (args: AirdropClaimProps) => {
   try {
     const receipt = await Airdrop.connect(signer)?.claim();
     store.dispatch(setTxPending({tx: true}));
-    // if (receipt) {
-    //   toastWithReceipt(receipt, setTxPending, stakeContractAddress);
-    // }
+    if (receipt) {
+      toastWithReceipt(receipt, setTxPending);
+    }
   } catch (err) {
     store.dispatch(setTxPending({tx: false}));
     console.log(err)

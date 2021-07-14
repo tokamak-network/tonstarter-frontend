@@ -82,7 +82,7 @@ export const fetchStakes = createAsyncThunk(
     const stakeList = stakeReq.datas;
 
     console.log('-----------api-----------');
-    console.log(vaultReq);
+    // console.log(vaultReq);
     // console.log(stakeList);
 
     const currentBlock = await rpc.getBlockNumber();

@@ -513,7 +513,7 @@ export const Staking = () => {
         </Flex>
       );
     },
-    [data, dispatch, user, appConfig.explorerLink],
+    [data, dispatch, user, GetBalance, GetTotalStaker, appConfig.explorerLink],
   );
 
   return (
