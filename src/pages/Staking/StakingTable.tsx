@@ -404,7 +404,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                   <chakra.tr
                     boxShadow="0 1px 1px 0 rgba(96, 97, 112, 0.16)"
                     w={'100%'}
-                    h={'413px'}
+                    h={'430px'}
                     key={i}
                     m={0}
                     mb={'14px'}
