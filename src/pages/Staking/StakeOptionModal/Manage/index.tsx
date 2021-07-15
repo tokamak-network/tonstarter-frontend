@@ -35,7 +35,7 @@ export const ManageModal = () => {
   } catch (e) {
     console.log(e);
   }
-
+  console.log(balance);
   console.log(data);
 
   const withdrawPayload = async (data: any) => {
