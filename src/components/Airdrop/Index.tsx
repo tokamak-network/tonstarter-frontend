@@ -26,6 +26,7 @@ import {LoadingComponent} from 'components/Loading';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import {fetchAirdropPayload} from './utils/fetchAirdropPayload';
 import {LoadingDots} from 'components/Loader/LoadingDots';
+// import { convertNumber } from '../../utils/number';
 
 type Round = {
   allocatedAmount: string;
@@ -36,20 +37,11 @@ type Round = {
 
 type AirDropList = [Round];
 
-const AirdropRecord = ({
-  roundNumber,
-  amount,
-}: {
-  roundNumber: any;
-  amount: any;
-}) => {
+const AirdropRecord = ({roundNumber, amount}: {roundNumber: any, amount: any}) => {
   return (
     <WrapItem w="100%" h="37px">
       <Flex w="100%" justifyContent="space-between" pl="1.875em" pr="1.875em">
-        <Text>
-          {roundNumber - 1}
-          {checker(roundNumber)} Airdrop
-        </Text>
+        <Text>{roundNumber - 1}{checker(roundNumber)} Airdrop</Text>
         <Text>{amount} TOS</Text>
       </Flex>
     </WrapItem>
@@ -58,15 +50,15 @@ const AirdropRecord = ({
 
 const checker = (roundNumber: any) => {
   if (roundNumber === 2) {
-    return 'st';
+    return 'st'
   } else if (roundNumber === 3) {
-    return 'nd';
+    return 'nd'
   } else if (roundNumber === 4) {
-    return 'rd';
+    return 'rd'
   } else {
-    return 'th';
+    return 'th'
   }
-};
+}
 
 export const AirdropModal = () => {
   const [airdropData, setAirdropData] = useState<AirDropList>([
@@ -89,19 +81,18 @@ export const AirdropModal = () => {
     async function callAirDropData() {
       const res = await fetchAirdropPayload(account);
       console.log(res);
-      setAirdropData(res.roundInfo);
-      setClaimedAmount(res.claimedAmount);
+      return setAirdropData(res.roundInfo), setClaimedAmount(res.claimedAmount);
     }
     callAirDropData();
   }, [account]);
 
   const availableAmount = () => {
     let myBalance = 0;
-    for (let i = 0; i < airdropData.length; i++) {
-      myBalance = myBalance + Number(airdropData[i].myAmount);
+    for (let i=0; i < airdropData.length; i ++) {
+      myBalance = myBalance + Number(airdropData[i].myAmount)
     }
-    return myBalance - Number(claimedAmount);
-  };
+    return myBalance - Number(claimedAmount)
+  }
 
   const handleCloseModal = useCallback(() => {
     dispatch(closeModal());
@@ -114,7 +105,7 @@ export const AirdropModal = () => {
       <Center h={height}>
         <LoadingComponent />
       </Center>
-    );
+    )
   }
 
   return (
@@ -169,8 +160,7 @@ export const AirdropModal = () => {
               h="24px"
               {...modalStyle.fontSubColor({colorMode})}>
               <Text fontSize="1.125em" fontWeight={500} mr={1}>
-                Genesis Airdrop{' '}
-                {airdropData[0]?.myAmount ? (
+                Genesis Airdrop {airdropData[0]?.myAmount ? (
                   airdropData[0]?.myAmount
                 ) : (
                   <LoadingDots></LoadingDots>
@@ -180,45 +170,40 @@ export const AirdropModal = () => {
                 TOS
               </Text>
             </Flex>
-            {airdropData?.length > 1 ? (
-              <Scrollbars
-                style={{
-                  width: '100%',
-                  height: '135px',
-                  display: 'flex',
-                  position: 'relative',
-                }}
-                thumbSize={70}
-                renderThumbVertical={() => (
-                  <div
-                    style={{
-                      background: colorMode === 'light' ? '#007aff' : '#ffffff',
-                      position: 'relative',
-                      right: '-2px',
-                      borderRadius: '3px',
-                    }}></div>
+            {airdropData?.length > 1 ?<Scrollbars
+              style={{
+                width: '100%',
+                height: '135px',
+                display: 'flex',
+                position: 'relative',
+              }}
+              thumbSize={70}
+              renderThumbVertical={() => (
+                <div
+                  style={{
+                    background: colorMode === 'light' ? '#007aff' : '#ffffff',
+                    position: 'relative',
+                    right: '-2px',
+                    borderRadius: '3px',
+                  }}></div>
+              )}
+              renderThumbHorizontal={() => (
+                <div style={{background: 'black'}}></div>
+              )}>
+              <Wrap
+                display="flex"
+                style={{marginTop: '0', marginBottom: '20px'}}>
+                {airdropData?.length > 1 ? airdropData.slice(1).map((data: any) => (
+                  <AirdropRecord
+                    roundNumber={data.roundNumber}
+                    amount = {data.amount}
+                  />
+                )
+                ) : (
+                  <LoadingDots></LoadingDots>
                 )}
-                renderThumbHorizontal={() => (
-                  <div style={{background: 'black'}}></div>
-                )}>
-                <Wrap
-                  display="flex"
-                  style={{marginTop: '0', marginBottom: '20px'}}>
-                  {airdropData?.length > 1 ? (
-                    airdropData
-                      .slice(1)
-                      .map((data: any) => (
-                        <AirdropRecord
-                          roundNumber={data.roundNumber}
-                          amount={data.amount}
-                        />
-                      ))
-                  ) : (
-                    <LoadingDots></LoadingDots>
-                  )}
-                </Wrap>
-              </Scrollbars>
-            ) : null}
+              </Wrap>
+            </Scrollbars>: null}
           </Stack>
           <Center mt="30px">
             <Button
