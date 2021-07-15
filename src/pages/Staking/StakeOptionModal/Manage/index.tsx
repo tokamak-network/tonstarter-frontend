@@ -16,8 +16,6 @@ import {
 import {closeSale} from '../../actions';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {useCallback} from 'react';
-import {ModalType} from 'store/modal.reducer';
 import {closeModal, openModal, selectModalType} from 'store/modal.reducer';
 
 export const ManageModal = () => {
