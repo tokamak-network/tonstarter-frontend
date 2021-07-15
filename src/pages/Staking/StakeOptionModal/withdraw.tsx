@@ -18,6 +18,8 @@ import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {openModal, selectModalType} from 'store/modal.reducer';
 import {withdraw} from '../actions';
+import {fetchWithdrawPayload} from './utils/fetchWithdrawPayload';
+import {useEffect} from 'react';
 
 export const WithdrawalOptionModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -29,10 +31,21 @@ export const WithdrawalOptionModal = () => {
   let balance = data?.data?.totalPendingUnstakedAmountL2;
   /*eslint-disable */
   const [value, setValue] = useState<number>(balance);
-  // console.log(data?.data)
-  // const handleChange = useCallback((e) => setValue(e.target.value), []);
-  // const withdrawalDelay = data?.data?.globalWithdrawalDelay;
-  const withdrawableBalance = data?.data?.withdrawableAmount;
+  const [withdrawBalance, setWithdrawBalance] = useState<string | undefined>(
+    undefined,
+  );
+
+  useEffect(() => {
+    async function withdrawPayload(data: any) {
+      const result = await fetchWithdrawPayload(
+        data.library,
+        data.account,
+        data.contractAddress,
+      );
+      return setWithdrawBalance(result === undefined ? '0.00' : result);
+    }
+    withdrawPayload(data);
+  }, [data]);
 
   const handleCloseModal = () => {
     dispatch(openModal({type: 'manage', data: data.data}));
@@ -91,7 +104,7 @@ export const WithdrawalOptionModal = () => {
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                   fontWeight={500}
                   fontSize={'18px'}>
-                  {withdrawableBalance ? withdrawableBalance : '0.00'} TON
+                  {withdrawBalance} TON
                 </Text>
               </Flex>
             </Box>
@@ -118,7 +131,9 @@ export const WithdrawalOptionModal = () => {
                   handleCloseModal: handleCloseModal,
                 })
               }
-              disabled={+withdrawableBalance <= 0}>
+              disabled={
+                withdrawBalance === undefined || Number(withdrawBalance) <= 0
+              }>
               Withdraw
             </Button>
           </Box>

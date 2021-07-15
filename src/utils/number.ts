@@ -38,7 +38,7 @@ export function convertNumber(args: ConverNumberFunc): string | undefined {
     const optRound = round ? round : false;
     const decimalPoint: number = decimalPlaces ? decimalPlaces : 2;
     if (amount === undefined) {
-      throw new Error(`user balance is undefined`);
+      throw new Error(`amount is undefined`);
     }
     if (decimalPoint <= 0) {
       throw new Error(`decimalPoint must be positive number`);

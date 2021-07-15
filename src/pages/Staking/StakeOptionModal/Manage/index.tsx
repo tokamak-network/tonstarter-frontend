@@ -13,7 +13,6 @@ import {
   useTheme,
   useColorMode,
 } from '@chakra-ui/react';
-import {fetchWithdrawPayload} from './utils/fetchWithdrawPayload';
 import {closeSale} from '../../actions';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
@@ -36,25 +35,8 @@ export const ManageModal = () => {
     console.log(e);
   }
 
-  console.log(data);
-
-  const withdrawPayload = async (data: any) => {
-    const result = await fetchWithdrawPayload(
-      data.library,
-      data.account,
-      data.contractAddress,
-    );
-    return result;
-  };
-  // console.log(data?.data);
-
   const withdrawData = useCallback(async (modal: ModalType, data: any) => {
-    const payloadWithdraw = await withdrawPayload(data?.data);
-    const payload = {
-      ...data?.data,
-      withdrawableAmount: payloadWithdraw,
-    };
-    dispatch(openModal({type: modal, data: payload}));
+    dispatch(openModal({type: modal, data: data.data}));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
