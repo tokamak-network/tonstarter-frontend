@@ -35,10 +35,6 @@ export const ManageModal = () => {
     console.log(e);
   }
 
-  const withdrawData = useCallback(async (modal: ModalType, data: any) => {
-    dispatch(openModal({type: modal, data: data.data}));
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
   return (
     <Modal
       isOpen={data.modal === 'manage' ? true : false}
@@ -173,7 +169,9 @@ export const ManageModal = () => {
               fontWeight={100}
               _hover={{backgroundColor: 'blue.100'}}
               isDisabled={closed ? !closed : false}
-              onClick={() => withdrawData('withdraw', data)}>
+              onClick={() =>
+                dispatch(openModal({type: 'withdraw', data: data.data}))
+              }>
               Withdraw
             </Button>
             <Button
@@ -197,7 +195,9 @@ export const ManageModal = () => {
                 fontSize={'12px'}
                 fontWeight={100}
                 _hover={{backgroundColor: 'blue.100'}}
-                isDisabled={data.data?.fetchBlock < data.data?.miningStartTime}
+                isDisabled={
+                  data.data?.fetchBlock < data.data?.miningStartTime && closed
+                }
                 onClick={() =>
                   closeSale({
                     userAddress: account,
