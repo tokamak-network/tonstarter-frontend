@@ -1,29 +1,50 @@
 import { getTokamakContract } from '../../../utils/contract';
 import { convertNumber } from '../../../utils/number';
 
-export const fetchAirdropPayload = async () => {
+export const fetchAirdropPayload = async (account: any) => {
+  
   const AirdropVault = getTokamakContract('Airdrop');
   
-  const tgeCount = await AirdropVault.totalTgeCount();
+  const tgeCount = await AirdropVault.currentRound();
   let roundInfo: any = [];
-  for (let i=1; i <= tgeCount; i++) {
-    const result = await AirdropVault.getTgeInfos(i)
-    if (result.allocated) {
-      const airdropInfo = {
-        roundNumber: i,
-        allocatedAmount: convertNumber({
-          amount: result.allocatedAmount
-        }),
-        amount: convertNumber({
-          amount: result.amount
-        }),
+  let claimedAmount;
+  if (account) {
+    try {
+      for (let i=1; i <= tgeCount; i++) {
+        const result = await AirdropVault.getTgeInfos(i)
+        let whitelist
+        let airdropInfo
+        
+          whitelist = await AirdropVault.getWhitelistInfo(i, account);
+          if (whitelist[0]) {
+            airdropInfo = {
+              roundNumber: i,
+              allocatedAmount: convertNumber({amount: result.allocatedAmount}),
+              amount: convertNumber({amount: result.amount}),
+              myAmount: convertNumber({amount: result.amount})
+            }
+          } else {
+            airdropInfo = {
+              roundNumber: i,
+              allocatedAmount: convertNumber({amount: result.allocatedAmount}),
+              amount: convertNumber({amount: result.amount}),
+              myAmount: convertNumber({amount: '0'}),
+            }
+          }
+        roundInfo.push(airdropInfo);
+        //  else {
+        //   break;
+        // }
       }
-      roundInfo.push(airdropInfo);
-    } else {
-      break;
+    } catch (e) {
+      console.log(e);
     }
+    claimedAmount = await AirdropVault.userClaimedAmount(account);
   }
-  return roundInfo
+  return {
+    roundInfo: roundInfo,
+    claimedAmount: convertNumber({ amount: claimedAmount })
+  }
   // try {
     //   unclaimedInfos = await AirdropVault.unclaimedInfos();
     //   tgeInfo = await AirdropVault.getTgeInfos(1);
