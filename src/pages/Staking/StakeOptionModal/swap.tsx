@@ -23,7 +23,11 @@ export const SwapModal = () => {
   const {data} = useAppSelector(selectModalType);
   const theme = useTheme();
   const dispatch = useAppDispatch();
-  let balance = data?.data?.totalStakedAmountL2;
+
+  const stakeBalanceTON = data?.data?.stakeContractBalanceTon
+  const totalStakedAmountL2 = data?.data?.totalStakedAmountL2
+  const totalStakedAmount = data?.data?.totalStakedAmount;
+  let balance = Number(stakeBalanceTON) + Number(totalStakedAmountL2) - Number(totalStakedAmount)
 
   const [value, setValue] = useState<number>(balance);
 
