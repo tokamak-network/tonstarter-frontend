@@ -193,7 +193,7 @@ export const StakingTable: FC<StakingTableProps> = ({
           justifyContent="flex-end"
           onClick={() => setIsOpen('')}
           _hover={{cursor: 'pointer'}}>
-          <TriangleUpIcon _hover={{cursor: 'pointer'}} />
+          <TriangleUpIcon color="blue.100" _hover={{cursor: 'pointer'}} />
         </Flex>
       );
     return (
@@ -202,7 +202,9 @@ export const StakingTable: FC<StakingTableProps> = ({
         justifyContent="flex-end"
         onClick={() => clickOpen(contractAddress, index)}
         _hover={{cursor: 'pointer'}}>
-        <TriangleDownIcon _hover={{cursor: 'pointer'}}></TriangleDownIcon>
+        <TriangleDownIcon
+          color="blue.100"
+          _hover={{cursor: 'pointer'}}></TriangleDownIcon>
       </Flex>
     );
   };
@@ -377,7 +379,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                               }>
                               Earning Per TON
                             </Text>
-                            <Text w={20}>{ept}</Text>
+                            <Text w={20}>{ept} TOS</Text>
                             <Tooltip
                               hasArrow
                               placement="right"
