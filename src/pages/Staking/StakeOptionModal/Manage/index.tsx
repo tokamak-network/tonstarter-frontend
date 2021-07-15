@@ -13,12 +13,9 @@ import {
   useTheme,
   useColorMode,
 } from '@chakra-ui/react';
-import {fetchWithdrawPayload} from './utils/fetchWithdrawPayload';
 import {closeSale} from '../../actions';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {useCallback} from 'react';
-import {ModalType} from 'store/modal.reducer';
 import {closeModal, openModal, selectModalType} from 'store/modal.reducer';
 
 export const ManageModal = () => {
@@ -35,27 +32,6 @@ export const ManageModal = () => {
   } catch (e) {
     console.log(e);
   }
-  console.log(balance);
-  console.log(data);
-
-  const withdrawPayload = async (data: any) => {
-    const result = await fetchWithdrawPayload(
-      data.library,
-      data.account,
-      data.contractAddress,
-    );
-    return result;
-  };
-  // console.log(data?.data);
-
-  const withdrawData = useCallback(async (modal: ModalType, data: any) => {
-    const payloadWithdraw = await withdrawPayload(data?.data);
-    const payload = {
-      ...data?.data,
-      withdrawableAmount: payloadWithdraw,
-    };
-    dispatch(openModal({type: modal, data: payload}));
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Modal
@@ -191,7 +167,9 @@ export const ManageModal = () => {
               fontWeight={100}
               _hover={{backgroundColor: 'blue.100'}}
               isDisabled={closed ? !closed : false}
-              onClick={() => withdrawData('withdraw', data)}>
+              onClick={() =>
+                dispatch(openModal({type: 'withdraw', data: data.data}))
+              }>
               Withdraw
             </Button>
             <Button
@@ -215,7 +193,9 @@ export const ManageModal = () => {
                 fontSize={'12px'}
                 fontWeight={100}
                 _hover={{backgroundColor: 'blue.100'}}
-                isDisabled={data.data?.fetchBlock < data.data?.miningStartTime && closed}
+                isDisabled={
+                  data.data?.fetchBlock < data.data?.miningStartTime && closed
+                }
                 onClick={() =>
                   closeSale({
                     userAddress: account,
