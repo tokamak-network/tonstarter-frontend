@@ -9,34 +9,35 @@ export const fetchAirdropPayload = async (account: any) => {
   let roundInfo: any = [];
   let claimedAmount;
   if (account) {
-    for (let i=1; i <= tgeCount; i++) {
-      const result = await AirdropVault.getTgeInfos(i)
-      let whitelist
-      let airdropInfo
-      try {
-        whitelist = await AirdropVault.getWhitelistInfo(i, account);
-        if (whitelist[0]) {
-          airdropInfo = {
-            roundNumber: i,
-            allocatedAmount: convertNumber({amount: result.allocatedAmount}),
-            amount: convertNumber({amount: result.amount}),
-            myAmount: convertNumber({amount: result.amount})
+    try {
+      for (let i=1; i <= tgeCount; i++) {
+        const result = await AirdropVault.getTgeInfos(i)
+        let whitelist
+        let airdropInfo
+        
+          whitelist = await AirdropVault.getWhitelistInfo(i, account);
+          if (whitelist[0]) {
+            airdropInfo = {
+              roundNumber: i,
+              allocatedAmount: convertNumber({amount: result.allocatedAmount}),
+              amount: convertNumber({amount: result.amount}),
+              myAmount: convertNumber({amount: result.amount})
+            }
+          } else {
+            airdropInfo = {
+              roundNumber: i,
+              allocatedAmount: convertNumber({amount: result.allocatedAmount}),
+              amount: convertNumber({amount: result.amount}),
+              myAmount: convertNumber({amount: '0'}),
+            }
           }
-        } else {
-          airdropInfo = {
-            roundNumber: i,
-            allocatedAmount: convertNumber({amount: result.allocatedAmount}),
-            amount: convertNumber({amount: result.amount}),
-            myAmount: convertNumber({amount: '0'}),
-          }
-        }
-      } catch (e) {
-        console.log(e);
+        roundInfo.push(airdropInfo);
+        //  else {
+        //   break;
+        // }
       }
-      roundInfo.push(airdropInfo);
-      //  else {
-      //   break;
-      // }
+    } catch (e) {
+      console.log(e);
     }
     claimedAmount = await AirdropVault.userClaimedAmount(account);
   }
