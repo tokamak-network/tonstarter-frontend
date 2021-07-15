@@ -1,4 +1,3 @@
-import {useCallback} from 'react';
 import {
   Modal,
   ModalOverlay,
@@ -21,12 +20,10 @@ import {closeModal, selectModalType} from 'store/modal.reducer';
 import {claimAirdrop} from './actions';
 import {useState, useEffect} from 'react';
 import {Scrollbars} from 'react-custom-scrollbars-2';
-import {useWeb3React} from '@web3-react/core';
 import {LoadingComponent} from 'components/Loading';
-import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import {fetchAirdropPayload} from './utils/fetchAirdropPayload';
-import {LoadingDots} from 'components/Loader/LoadingDots';
 import {selectUser} from 'store/app/user.reducer';
+import {convertNumber} from 'utils/number';
 // import { convertNumber } from '../../utils/number';
 
 type Round = {
@@ -72,8 +69,7 @@ const checker = (roundNumber: any) => {
 
 export const AirdropModal = () => {
   const [airdropData, setAirdropData] = useState<AirDropList>(undefined);
-  const [claimedAmount, setClaimedAmount] = useState<string | undefined>('0');
-  const [balance, setBalance] = useState<number>(0);
+  const [balance, setBalance] = useState<string | undefined>(undefined);
   const {data} = useAppSelector(selectModalType);
   const {
     data: {address, library},
@@ -84,34 +80,34 @@ export const AirdropModal = () => {
   const {modalStyle} = theme;
   const account = address;
 
+  const availableAmount = (
+    roundInfo: AirDropList,
+    claimedAmount: string | undefined,
+  ) => {
+    if (roundInfo !== undefined && claimedAmount !== undefined) {
+      let myBalance = 0;
+      for (let i = 0; i < roundInfo.length; i++) {
+        myBalance += Number(roundInfo[i].myAmount);
+      }
+      const convertedNumber = convertNumber({
+        amount: String(myBalance - Number(claimedAmount)),
+      });
+      return setBalance(convertedNumber);
+    }
+  };
+
   useEffect(() => {
     async function callAirDropData() {
-      console.log('**acount**');
-      console.log(account);
       const res = await fetchAirdropPayload(account);
       const {roundInfo, claimedAmount} = res;
-      console.log('**airdrop***');
-      console.log(roundInfo);
-      // setAirdropData(roundInfo);
-      setClaimedAmount(claimedAmount);
-      availableAmount();
+      setAirdropData(roundInfo);
+      availableAmount(roundInfo, claimedAmount);
     }
-    console.log('hmm');
     if (account !== undefined) {
       callAirDropData();
     }
     /*eslint-disable*/
   }, [account]);
-
-  const availableAmount = () => {
-    let myBalance = 0;
-    if (airdropData !== undefined) {
-      for (let i = 0; i < airdropData.length; i++) {
-        myBalance = myBalance + Number(airdropData[i].myAmount);
-      }
-      return setBalance(myBalance - Number(claimedAmount));
-    }
-  };
 
   const handleCloseModal = () => {
     dispatch(closeModal());
@@ -123,7 +119,24 @@ export const AirdropModal = () => {
       isCentered
       onClose={handleCloseModal}>
       <ModalOverlay />
-      <ModalContent {...modalStyle.modalContent({colorMode})} borderRadius={15}>
+      <ModalContent
+        {...modalStyle.modalContent({colorMode})}
+        borderRadius={15}
+        pos="relative">
+        {airdropData === undefined && (
+          <Flex
+            pos="absolute"
+            w="100%"
+            h="100%"
+            alignItems="center"
+            justifyContent="center"
+            pb={25}
+            zIndex={100}>
+            <Center w="100%" h="100%" bg="rgba( 255, 255, 255, 0.5 )">
+              <LoadingComponent></LoadingComponent>
+            </Center>
+          </Flex>
+        )}
         <ModalBody p={0}>
           <Box {...modalStyle.box({colorMode})}>
             <Heading {...modalStyle.head({colorMode})}>Airdrop Claim</Heading>
@@ -142,11 +155,7 @@ export const AirdropModal = () => {
                 fontWeight={500}
                 {...modalStyle.fontColor({colorMode})}
                 mr="5px">
-                {airdropData === undefined ? (
-                  <LoadingDots></LoadingDots>
-                ) : (
-                  {balance}
-                )}
+                {balance}
               </Text>
               <Text
                 fontSize="0.813em"
@@ -167,12 +176,7 @@ export const AirdropModal = () => {
               {...modalStyle.fontSubColor({colorMode})}>
               <Text fontSize="1.125em" fontWeight={500} mr={1}>
                 Genesis Airdrop{' '}
-                {airdropData !== undefined ? (
-                  // airdropData[0]?.myAmount
-                  <div>test</div>
-                ) : (
-                  <LoadingDots></LoadingDots>
-                )}
+                {airdropData !== undefined && airdropData[0]?.myAmount}
               </Text>
               <Text fontSize="0.750em" alignSelf="flex-end" fontWeight="bold">
                 TOS
@@ -202,7 +206,7 @@ export const AirdropModal = () => {
                 <Wrap
                   display="flex"
                   style={{marginTop: '0', marginBottom: '20px'}}>
-                  {airdropData.map((data: any) => (
+                  {airdropData.slice(1).map((data: any) => (
                     <AirdropRecord
                       roundNumber={data.roundNumber}
                       amount={data.amount}
