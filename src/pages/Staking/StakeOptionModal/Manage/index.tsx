@@ -47,6 +47,10 @@ export const ManageModal = () => {
     return result;
   };
   // console.log(data?.data);
+  // isDisabled={data.data?.fetchBlock < data.data?.miningStartTime}
+  console.log(data.data?.fetchBlock < data.data?.miningStartTime) // eslint-disable-line
+  console.log(data.data?.fetchBlock) // eslint-disable-line
+  console.log(data.data?.miningStartTime) // eslint-disable-line
 
   const withdrawData = useCallback(async (modal: ModalType, data: any) => {
     const payloadWithdraw = await withdrawPayload(data?.data);

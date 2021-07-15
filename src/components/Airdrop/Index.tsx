@@ -26,7 +26,7 @@ import {LoadingComponent} from 'components/Loading';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import {fetchAirdropPayload} from './utils/fetchAirdropPayload';
 import {LoadingDots} from 'components/Loader/LoadingDots';
-import { convertNumber } from '../../utils/number';
+// import { convertNumber } from '../../utils/number';
 
 type Round = {
   allocatedAmount: string;
