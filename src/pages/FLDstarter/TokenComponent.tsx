@@ -184,7 +184,7 @@ export const TokenComponent: FC<TokenComponentProps> = ({
               color={account ? 'black' : '#a8adb6'}
               isDisabled={isDisabled}
               onClick={() => handleNavigation('stake')}
-              _hover={{bg: theme.colors.yellow[300]}}>
+              _hover={{}}>
               Staking
             </Button>
 

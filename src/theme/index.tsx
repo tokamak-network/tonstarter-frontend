@@ -24,6 +24,7 @@ const breakpoints = createBreakpoints({
 
 const colors = {
   gray: {
+    450: '#5b5b5b',
     425: '#949494',
     400: '#808992',
     375: '#353c48',
@@ -70,8 +71,19 @@ const btnHover = {
   backgroundColor: 'blue.100',
 };
 
-const btnDisabled = {
-  backgroundColor: 'gray.25',
+const btnStyle = {
+  btnAble: () => ({
+    bg: 'blue.500',
+    color: 'white.100',
+    _hover: {backgroundColor: 'blue.100'},
+  }),
+  btnDisable: (props: any) => ({
+    bg: props.colorMode === 'light' ? 'gray.25' : '',
+    color: props.colorMode === 'light' ? 'gray.175' : 'gray.450',
+    borderWidth: props.colorMode === 'light' ? 0 : 1,
+    borderColor: props.colorMode === 'light' ? '' : 'gray.450',
+    _hover: {},
+  }),
 };
 
 const modalStyle = {
@@ -220,7 +232,7 @@ const theme = extendTheme({
   breakpoints,
   modalStyle,
   btnHover,
-  btnDisabled,
+  btnStyle,
 });
 
 export default theme;

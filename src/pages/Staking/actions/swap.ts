@@ -33,7 +33,7 @@ export const swapWTONtoTOS = async (args: UnstakeFromLayer2) => {
       0,
       parseInt(deadline.toString()),
       0,
-      1,
+      0,
     );
     store.dispatch(setTxPending({tx: true}));
     alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
