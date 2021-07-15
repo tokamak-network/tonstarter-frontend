@@ -5,12 +5,15 @@ export const fetchAirdropPayload = async (account: any) => {
   
   const AirdropVault = getTokamakContract('Airdrop');
   
-  const tgeCount = await AirdropVault.currentRound();
+  const currentRound = await AirdropVault.currentRound();
+  const totalTgeCount = await AirdropVault.totalTgeCount();
+  const tgeCount = currentRound >= totalTgeCount ? totalTgeCount : currentRound;
   let roundInfo: any = [];
   let claimedAmount;
+
   if (account) {
     try {
-      for (let i=1; i <= tgeCount; i++) {
+      for (let i=1; i < tgeCount; i++) {
         const result = await AirdropVault.getTgeInfos(i)
         let whitelist
         let airdropInfo
@@ -32,9 +35,6 @@ export const fetchAirdropPayload = async (account: any) => {
             }
           }
         roundInfo.push(airdropInfo);
-        //  else {
-        //   break;
-        // }
       }
     } catch (e) {
       console.log(e);
