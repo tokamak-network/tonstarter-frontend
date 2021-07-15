@@ -45,7 +45,7 @@ export const WithdrawalOptionModal = () => {
       return setWithdrawBalance(result === undefined ? '0.00' : result);
     }
     withdrawPayload(data);
-  }, [data]);
+  }, []);
 
   const handleCloseModal = () => {
     dispatch(openModal({type: 'manage', data: data.data}));
