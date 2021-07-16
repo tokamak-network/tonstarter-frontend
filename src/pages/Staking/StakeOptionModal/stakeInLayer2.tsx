@@ -25,7 +25,6 @@ export const StakeInLayer2Modal = () => {
   const dispatch = useAppDispatch();
   let balance = data?.data?.stakeContractBalanceTon;
   // console.log(data?.data)
-  console.log(balance);
 
   const [value, setValue] = useState<number>(balance);
   const theme = useTheme();
