@@ -77,7 +77,6 @@ export const SwapModal = () => {
               textAlign={'center'}>
               Swap
             </Heading>
-            {/* <Text>{payToken}</Text> */}
           </Box>
 
           <Stack
@@ -93,7 +92,7 @@ export const SwapModal = () => {
               textAlign={'center'}
               fontWeight={'bold'}
               fontSize={'4xl'}
-              // value={value}
+              value={value}
               width={'xs'}
               mr={6}
               onChange={handleChange}

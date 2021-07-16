@@ -359,7 +359,7 @@ export const Staking = () => {
 
   const GetBalance = ({title, contractAddress, user, myearned}: any) => {
     const {colorMode} = useColorMode();
-    const [balance, SetBalance] = useState('-');
+    const [balance, SetBalance] = useState<string | undefined>('-');
     const getBalance = async () => {
       const result = await getUserBalance(contractAddress);
 
@@ -368,8 +368,7 @@ export const Staking = () => {
         return SetBalance(result.totalStakedBalance);
       }
       //@ts-ignore
-      console.log(result);
-      SetBalance(myearned);
+      SetBalance(result?.claimedBalance);
     };
 
     if (user.address !== undefined) {
