@@ -18,6 +18,18 @@ import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, openModal, selectModalType} from 'store/modal.reducer';
 import {useState, useEffect} from 'react';
+import {fetchStakedBalancePayload} from '../utils/fetchStakedBalancePayload';
+import {Dot} from 'react-animated-dots';
+
+const LoadingDots = () => {
+  return (
+    <Flex h={30}>
+      <Dot>·</Dot>
+      <Dot>·</Dot>
+      <Dot>·</Dot>
+    </Flex>
+  );
+};
 
 export const ManageModal = () => {
   const {account, library} = useWeb3React();
@@ -27,6 +39,10 @@ export const ManageModal = () => {
   const [saleDisabled, setSaleDisabled] = useState(true);
   const [stakeL2Disabled, setStakeL2Disabled] = useState(true);
   const [swapDisabled, setSwapDisabled] = useState(true);
+  // const [availableBalance, setAvailableBalance] = useState(true);
+  // const [total, setTotal] = useState(true);
+  // const [stakedL2, setStakedL2] = useState(true);
+  // const [pendingUnstakedL2, setPendingUnstakedL2] = useState(true);
   const {colorMode} = useColorMode();
   let balance = data?.data?.stakeContractBalanceTon;
   let closed: any;
@@ -37,6 +53,56 @@ export const ManageModal = () => {
     closed = data?.data?.saleClosed;
   } catch (e) {
     console.log(e);
+  }
+
+  const GetStakedBalance = ({title, contractAddress, user}: any) => {
+    const [balance, setBalance] = useState<string | undefined >('-');
+    const {colorMode} = useColorMode();
+    const getStakedBalance = async () => {
+      const result = await fetchStakedBalancePayload(user.address, contractAddress);
+      // stakeContractBalanceTon
+      if (title === 'Total') {
+        return setBalance(result.totalStakedAmount)
+      } else if (title = 'Staked in Layer 2') {
+        return setBalance(result.totalStakedAmountL2)
+      } else {
+        return setBalance(result.totalPendingUnstakedAmountL2)
+      }
+    }
+
+    if (user.address === undefined) {
+      getStakedBalance();
+    }
+
+    if (user.address === undefined) {
+      return (
+        <Flex justifyContent="space-between" alignItems="center" h="55px">
+        <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
+          {title}
+        </Text>
+        <Text
+          color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+          fontWeight={500}
+          fontSize={'18px'}>
+          {balance === '-' ? <LoadingDots></LoadingDots> : balance} TON
+        </Text>
+      </Flex>
+      );
+    }
+
+    return (
+      <Flex justifyContent="space-between" alignItems="center" h="55px">
+        <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
+          {title}
+        </Text>
+        <Text
+          color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+          fontWeight={500}
+          fontSize={'18px'}>
+          {balance === '-' ? <LoadingDots></LoadingDots> : balance} TON
+        </Text>
+      </Flex>
+    );
   }
 
   const btnDisableEndSale = () => {
@@ -124,7 +190,22 @@ export const ManageModal = () => {
                   ? '1px solid #f4f6f8'
                   : '1px solid #373737'
               }>
-              <Flex justifyContent="space-between" alignItems="center" h="55px">
+              <GetStakedBalance
+                title={'Total'}
+                contractAddress={data.data?.contractAddress}
+                user={data.data?.user}
+              />
+              <GetStakedBalance
+                title={'Staked in Layer 2'}
+                contractAddress={data.data?.contractAddress}
+                user={data.data?.user}
+              />
+              <GetStakedBalance
+                title={'Pending UnStaked in Layer 2'}
+                contractAddress={data.data?.contractAddress}
+                user={data.data?.user}
+              />
+              {/* <Flex justifyContent="space-between" alignItems="center" h="55px">
                 <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
                   Total
                 </Text>
@@ -156,7 +237,7 @@ export const ManageModal = () => {
                   fontSize={'18px'}>
                   {data.data?.totalPendingUnstakedAmountL2} TON
                 </Text>
-              </Flex>
+              </Flex> */}
             </Box>
           </Stack>
 
