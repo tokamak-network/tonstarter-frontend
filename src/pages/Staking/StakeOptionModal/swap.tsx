@@ -40,7 +40,7 @@ export const SwapModal = () => {
     Number(totalStakedAmount) +
     Number(totalPendingUnstakedAmountL2) -
     Number(swappedBalance);
-  const [value, setValue] = useState<number>(balance);
+  const [value, setValue] = useState<number>(0);
 
   useEffect(() => {
     async function swapPayload(data: any) {
@@ -49,7 +49,6 @@ export const SwapModal = () => {
         data.account,
         data.contractAddress,
       );
-      console.log(result);
       return setSwappedBalance(result === undefined ? '0.00' : result);
     }
     swapPayload(data);
@@ -78,7 +77,6 @@ export const SwapModal = () => {
               textAlign={'center'}>
               Swap
             </Heading>
-            {/* <Text>{payToken}</Text> */}
           </Box>
 
           <Stack
@@ -94,7 +92,7 @@ export const SwapModal = () => {
               textAlign={'center'}
               fontWeight={'bold'}
               fontSize={'4xl'}
-              // value={value}
+              value={value}
               width={'xs'}
               mr={6}
               onChange={handleChange}

@@ -123,10 +123,14 @@ const WalletInformation: FC<WalletInformationProps> = ({
   const miningStart: number = Number(data.miningStartTime);
   const miningEnd: number = Number(data.miningEndTime);
 
+  console.log(currentBlock);
+  console.log(miningStart);
+  console.log(miningEnd);
+
   const btnDisabledStake = () => {
     console.log(account === undefined || miningStart > currentBlock);
     return account === undefined || miningStart < currentBlock
-      ? setStakeDisabled(false)
+      ? setStakeDisabled(true)
       : setStakeDisabled(false);
   };
 
@@ -402,11 +406,7 @@ export const Staking = () => {
         return SetBalance(result.totalStakedBalance);
       }
       //@ts-ignore
-      SetBalance(
-        String(
-          Number(result?.claimedBalance) + Number(result?.rewardTosBalance),
-        ),
-      );
+      SetBalance(result?.rewardTosBalance);
     };
 
     if (user.address !== undefined) {
