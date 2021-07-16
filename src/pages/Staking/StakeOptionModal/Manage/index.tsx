@@ -58,20 +58,20 @@ export const ManageModal = () => {
   const [stakedBalance, setStakedBalance] = useState<string | undefined >('-');
 
   const GetStakedBalance = ({title, contractAddress, user}: any) => {
+    async function getStakedBalance() {
+      const result = await fetchStakedBalancePayload(user.address, contractAddress);
+      // stakeContractBalanceTon
+      console.log(result);
+      if (title === 'Total') {
+        return setStakedBalance(result.totalStakedAmount)
+      } else if (title === 'Staked in Layer 2') {
+        return setStakedBalance(result.totalStakedAmountL2)
+      } 
+      setStakedBalance(result.totalPendingUnstakedAmountL2)
+    };
     useEffect(() => {
-      async function getStakedBalance() {
-        const result = await fetchStakedBalancePayload(user.address, contractAddress);
-        // stakeContractBalanceTon
-        console.log(result);
-        if (title === 'Total') {
-          return setStakedBalance(result.totalStakedAmount)
-        } else if (title === 'Staked in Layer 2') {
-          return setStakedBalance(result.totalStakedAmountL2)
-        } 
-        setStakedBalance(result.totalPendingUnstakedAmountL2)
-      };
       getStakedBalance();
-    }, [dispatch])
+    }, [user.address, data, dispatch])
 
     return (
       <Flex justifyContent="space-between" alignItems="center" h="55px">
