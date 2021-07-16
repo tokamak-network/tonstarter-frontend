@@ -31,6 +31,7 @@ export const unstakeL2 = async (args: UnstakeFromLayer2) => {
     ).tokamakRequestUnStaking(REACT_APP_TOKAMAK_LAYER2, wtonAmount);
     store.dispatch(setTxPending({tx: true}));
     alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
+    await receipt.wait();
     if (receipt) {
       store.dispatch(setTxPending({tx: false}));
     }

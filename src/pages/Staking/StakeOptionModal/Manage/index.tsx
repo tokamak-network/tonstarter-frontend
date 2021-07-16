@@ -188,39 +188,6 @@ export const ManageModal = () => {
                 contractAddress={data.data?.contractAddress}
                 user={data.data?.user}
               />
-              {/* <Flex justifyContent="space-between" alignItems="center" h="55px">
-                <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
-                  Total
-                </Text>
-                <Text
-                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}
-                  fontWeight={500}
-                  fontSize={'18px'}>
-                  {data.data?.totalStakedAmount} TON
-                </Text>
-              </Flex>
-              <Flex justifyContent="space-between" alignItems="center" h="55px">
-                <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
-                  Staked in Layer 2
-                </Text>
-                <Text
-                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}
-                  fontWeight={500}
-                  fontSize={'18px'}>
-                  {data.data?.totalStakedAmountL2} TON
-                </Text>
-              </Flex>
-              <Flex justifyContent="space-between" alignItems="center" h="55px">
-                <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
-                  Pending UnStaked in Layer 2
-                </Text>
-                <Text
-                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}
-                  fontWeight={500}
-                  fontSize={'18px'}>
-                  {data.data?.totalPendingUnstakedAmountL2} TON
-                </Text>
-              </Flex> */}
             </Box>
           </Stack>
 
