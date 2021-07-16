@@ -20,13 +20,13 @@ export const getUserBalance = async (contractAddress: any) => {
     account,
     contractAddress,
   );
-  console.log(myClaimed);
   const result = {
     rewardTosBalance: convertNumber({amount: userRewardTOS}),
     rewardTonBalance: undefined,
     totalStakedBalance: convertNumber({amount: userStaked}),
     claimedBalance: convertNumber({amount: myClaimed}),
   };
+  console.log(result);
   return result;
 };
 
@@ -62,6 +62,9 @@ const getUserInfo = async (
     StakeTONContract.userStaked(account),
     StakeTONContract.canRewardAmount(account, currentBlock),
   ]).then((result) => {
+    console.log('***');
+    console.log(result[0].claimedAmount);
+    console.log(result[1]);
     return {
       userStaked: result[0].amount,
       myClaimed: result[0].claimedAmount,

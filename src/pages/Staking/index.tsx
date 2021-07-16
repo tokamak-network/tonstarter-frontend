@@ -391,7 +391,7 @@ export const Staking = () => {
     );
   };
 
-  const GetBalance = ({title, contractAddress, user, myearned}: any) => {
+  const GetBalance = ({title, contractAddress, user}: any) => {
     const {colorMode} = useColorMode();
     const [balance, SetBalance] = useState('-');
     const getBalance = async () => {
@@ -402,8 +402,11 @@ export const Staking = () => {
         return SetBalance(result.totalStakedBalance);
       }
       //@ts-ignore
-      console.log(result);
-      SetBalance(myearned);
+      SetBalance(
+        String(
+          Number(result?.claimedBalance) + Number(result?.rewardTosBalance),
+        ),
+      );
     };
 
     if (user.address !== undefined) {
@@ -558,7 +561,6 @@ export const Staking = () => {
               title={'Earned'}
               contractAddress={contractAddress}
               user={user}
-              earned={data[row.id]?.myearned}
             />
           </Flex>
         </Flex>
