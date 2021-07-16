@@ -65,7 +65,7 @@ export const ManageModal = () => {
       console.log(result);
       if (title === 'Total') {
         return setBalance(result.totalStakedAmount)
-      } else if (title = 'Staked in Layer 2') {
+      } else if (title === 'Staked in Layer 2') {
         return setBalance(result.totalStakedAmountL2)
       } 
       setBalance(result.totalPendingUnstakedAmountL2)
