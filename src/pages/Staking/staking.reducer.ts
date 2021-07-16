@@ -95,7 +95,6 @@ export const fetchStakes = createAsyncThunk(
     await Promise.all(
       stakeList.map(async (stake: any, index: number) => {
         let mystaked: string = '';
-        let myearned: string = '';
 
         const status = await getStatus(stake, currentBlock);
 
@@ -107,7 +106,7 @@ export const fetchStakes = createAsyncThunk(
             amount: mystaked,
           }),
           myearned: convertNumber({
-            amount: myearned,
+            amount: stake.claimedAmount,
           }),
           stakeBalanceTON: convertNumber({
             amount: stake.totalStakedAmountString,

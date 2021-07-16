@@ -1,4 +1,4 @@
-import {getTokamakContract, getRPC} from 'utils/contract';
+import {getTokamakContract} from 'utils/contract';
 import {convertNumber} from 'utils/number';
 
 export const fetchSwapPayload = async (

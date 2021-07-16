@@ -53,7 +53,7 @@ export const SwapModal = () => {
       return setSwappedBalance(result === undefined ? '0.00' : result);
     }
     swapPayload(data);
-  }, []);
+  }, [data]);
 
   const handleChange = useCallback((e) => setValue(e.target.value), []);
   const setMax = useCallback((_e) => setValue(balance), [balance]);
