@@ -61,7 +61,6 @@ export const ManageModal = () => {
     async function getStakedBalance() {
       const result = await fetchStakedBalancePayload(user.address, contractAddress);
       // stakeContractBalanceTon
-      console.log(result);
       if (title === 'Total') {
         return setStakedBalance(result.totalStakedAmount)
       } else if (title === 'Staked in Layer 2') {
@@ -69,9 +68,7 @@ export const ManageModal = () => {
       } 
       setStakedBalance(result.totalPendingUnstakedAmountL2)
     };
-    useEffect(() => {
-      getStakedBalance();
-    }, [user.address, data, dispatch])
+    getStakedBalance();
 
     return (
       <Flex justifyContent="space-between" alignItems="center" h="55px">
