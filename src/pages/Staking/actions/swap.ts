@@ -2,7 +2,8 @@ import {getSigner, getRPC} from 'utils/contract';
 import {setTxPending} from 'store/tx.reducer';
 import store from 'store';
 import {Contract} from '@ethersproject/contracts';
-import {toBN} from 'web3-utils';
+import {ethers} from 'ethers';
+// import {toBN} from 'web3-utils';
 import * as StakeTON from 'services/abis/StakeTON.json';
 
 type UnstakeFromLayer2 = {
@@ -21,11 +22,10 @@ export const swapWTONtoTOS = async (args: UnstakeFromLayer2) => {
   if (userAddress === null || userAddress === undefined) {
     return;
   }
-  const ray = '1' + '0'.repeat(27);
   console.log(amount)
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
-  const amountRay = toBN(amount).mul(toBN(ray));
-  console.log(amountRay)
+  const amountRay = ethers.utils.formatUnits(amount, 27)
+  console.log(amountRay);
   const signer = getSigner(library, userAddress);
   const deadline = Date.now() / 1000 + 900;
   try {
