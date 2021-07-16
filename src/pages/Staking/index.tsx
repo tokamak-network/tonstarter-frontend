@@ -368,6 +368,7 @@ export const Staking = () => {
         return SetBalance(result.totalStakedBalance);
       }
       //@ts-ignore
+      console.log(result);
       SetBalance(myearned);
     };
 

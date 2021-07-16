@@ -91,13 +91,13 @@ export const fetchStakes = createAsyncThunk(
     const currentBlock = await rpc.getBlockNumber();
 
     const vaultsData = store.getState().vaults.data;
-
+    console.log(stakeList);
     await Promise.all(
       stakeList.map(async (stake: any, index: number) => {
         let mystaked: string = '';
 
         const status = await getStatus(stake, currentBlock);
-
+        console.log(stake);
         const stakeInfo: Partial<Stake> = {
           contractAddress: stake.stakeContract,
           name: stake.name,
