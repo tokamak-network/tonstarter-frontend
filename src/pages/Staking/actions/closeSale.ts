@@ -38,6 +38,7 @@ export const closeSale = async (args: Endsale) => {
     }
   } catch (err) {
     store.dispatch(setTxPending({tx: false}));
+    console.log(err.message);
     console.log(err);
   }
 };

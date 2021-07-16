@@ -36,6 +36,11 @@ export const ClaimOptionModal = () => {
     addComma(e.target.value, setValue);
   };
 
+  const handleCloseModal = useCallback(() => {
+    dispatch(closeModal());
+    setValue('0');
+  }, [dispatch]);
+
   const setMax = useCallback((_e) => setValue(claimed), [claimed]);
 
   return (
@@ -140,7 +145,7 @@ export const ClaimOptionModal = () => {
                   library: library,
                   canRewardAmount: data.data.canRewardAmount,
                   myEarned: data.data.myearned,
-                  handleCloseModal: dispatch(closeModal()),
+                  handleCloseModal: handleCloseModal(),
                 })
               }>
               Claim
