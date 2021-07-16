@@ -91,5 +91,4 @@ export const REACT_APP_SEIG_MANAGER = process.env
   .REACT_APP_SEIG_MANAGER as string;
 export const REACT_APP_TOKAMAK_LAYER2 = process.env
   .REACT_APP_TOKAMAK_LAYER2 as string;
-export const REACT_APP_AIRDROP = process.env
-  .REACT_APP_AIRDROP as string;
+export const REACT_APP_AIRDROP = process.env.REACT_APP_AIRDROP as string;

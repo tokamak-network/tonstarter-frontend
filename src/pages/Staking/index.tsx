@@ -122,21 +122,26 @@ const WalletInformation: FC<WalletInformationProps> = ({
   const miningEnd: number = Number(data.miningEndTime);
 
   const btnDisabledStake = () => {
-    return account !== undefined || miningStart > currentBlock
-      ? setStakeDisabled(false)
-      : setStakeDisabled(true);
+    console.log(account);
+    console.log(miningStart);
+    console.log(currentBlock);
+    console.log(miningStart > currentBlock);
+    console.log(account === undefined || miningStart > currentBlock);
+    return account === undefined || miningStart < currentBlock
+      ? setStakeDisabled(true)
+      : setStakeDisabled(false);
   };
 
   const btnDisabledUnstake = () => {
-    return account !== undefined || currentBlock > miningEnd
-      ? setUnstakeDisabled(false)
-      : setUnstakeDisabled(true);
+    return account === undefined || currentBlock < miningEnd
+      ? setUnstakeDisabled(true)
+      : setUnstakeDisabled(false);
   };
 
   const btnDisabledClaim = () => {
-    return account !== undefined || data.saleClosed
-      ? setClaimDisabled(false)
-      : setClaimDisabled(true);
+    return account === undefined || data.saleClosed
+      ? setClaimDisabled(true)
+      : setClaimDisabled(false);
   };
 
   useEffect(() => {
@@ -203,6 +208,9 @@ const WalletInformation: FC<WalletInformationProps> = ({
 
   const theme = useTheme();
   const {btnStyle} = theme;
+
+  console.log('--stake--');
+  console.log(stakeDisabled);
 
   return (
     <Container
