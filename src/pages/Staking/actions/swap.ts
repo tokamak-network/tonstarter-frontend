@@ -33,10 +33,10 @@ export const swapWTONtoTOS = async (args: UnstakeFromLayer2) => {
   try {
     const receipt = await StakeTONContract.connect(signer).exchangeWTONtoTOS(
       amountRay,
-      toBN('0'),
+      0,
       deadline,
-      toBN('0'),
-      toBN('1'),
+      0,
+      1,
     );
     store.dispatch(setTxPending({tx: true}));
     alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
