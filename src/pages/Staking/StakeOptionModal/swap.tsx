@@ -39,7 +39,7 @@ export const SwapModal = () => {
               - Number(totalStakedAmount) 
               + Number(totalPendingUnstakedAmountL2)
               - Number(swappedBalance)
-  const [value, setValue] = useState<number>(balance);
+  const [value, setValue] = useState<number>(0);
 
 
   useEffect(() => {
@@ -49,7 +49,6 @@ export const SwapModal = () => {
         data.account,
         data.contractAddress,
       );
-      console.log(result);
       return setSwappedBalance(result === undefined ? '0.00' : result);
     }
     swapPayload(data);

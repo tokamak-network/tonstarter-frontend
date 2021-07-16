@@ -20,7 +20,7 @@ export const getUserBalance = async (contractAddress: any) => {
     account,
     contractAddress,
   );
-  console.log(myClaimed);
+  console.log(convertNumber({amount: myClaimed}));
   const result = {
     rewardTosBalance: convertNumber({amount: userRewardTOS}),
     rewardTonBalance: undefined,
