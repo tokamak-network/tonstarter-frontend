@@ -19,6 +19,7 @@ import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, openModal, selectModalType} from 'store/modal.reducer';
 import {useState, useEffect} from 'react';
 import {fetchStakedBalancePayload} from '../utils/fetchStakedBalancePayload';
+//@ts-ignore
 import {Dot} from 'react-animated-dots';
 
 const LoadingDots = () => {
