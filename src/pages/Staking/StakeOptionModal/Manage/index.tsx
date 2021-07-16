@@ -62,6 +62,7 @@ export const ManageModal = () => {
     const getStakedBalance = async () => {
       const result = await fetchStakedBalancePayload(user.address, contractAddress);
       // stakeContractBalanceTon
+      console.log(result);
       if (title === 'Total') {
         return setBalance(result.totalStakedAmount)
       } else if (title = 'Staked in Layer 2') {
