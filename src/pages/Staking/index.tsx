@@ -122,11 +122,6 @@ const WalletInformation: FC<WalletInformationProps> = ({
   const miningEnd: number = Number(data.miningEndTime);
 
   const btnDisabledStake = () => {
-    console.log(account);
-    console.log(miningStart);
-    console.log(currentBlock);
-    console.log(miningStart > currentBlock);
-    console.log(account === undefined || miningStart > currentBlock);
     return account === undefined || miningStart < currentBlock
       ? setStakeDisabled(true)
       : setStakeDisabled(false);
@@ -139,7 +134,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
   };
 
   const btnDisabledClaim = () => {
-    return account === undefined || data.saleClosed
+    return account === undefined || !data.saleClosed
       ? setClaimDisabled(true)
       : setClaimDisabled(false);
   };

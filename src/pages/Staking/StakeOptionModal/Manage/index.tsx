@@ -17,15 +17,17 @@ import {closeSale} from '../../actions';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, openModal, selectModalType} from 'store/modal.reducer';
+import {useState, useEffect} from 'react';
 
 export const ManageModal = () => {
   const {account, library} = useWeb3React();
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
   const theme = useTheme();
+  const [saleDisabled, setSaleDisabled] = useState(true);
   const {colorMode} = useColorMode();
   let balance = data?.data?.stakeContractBalanceTon;
-  let closed;
+  let closed: any;
 
   console.log(data?.data)
 
@@ -34,6 +36,19 @@ export const ManageModal = () => {
   } catch (e) {
     console.log(e);
   }
+
+  const btnDisableEndSale = () => {
+    return data.data?.fetchBlock < data.data?.miningStartTime || closed
+      ? setSaleDisabled(true)
+      : setSaleDisabled(false)
+  }
+
+  const {btnStyle} = theme;
+
+  useEffect(() => {
+    btnDisableEndSale();
+    /*eslint-disable*/
+  }, [account, data, dispatch]);
 
   return (
     <Modal
@@ -195,9 +210,10 @@ export const ManageModal = () => {
                 fontSize={'12px'}
                 fontWeight={100}
                 _hover={{backgroundColor: 'blue.100'}}
-                isDisabled={
-                  data.data?.fetchBlock < data.data?.miningStartTime && closed
-                }
+                {...(saleDisabled === true
+                  ? {...btnStyle.btnDisable({colorMode})}
+                  : {...btnStyle.btnAble()})}
+                isDisabled={saleDisabled}
                 onClick={() =>
                   closeSale({
                     userAddress: account,
