@@ -32,7 +32,7 @@ import {
   SwapModal,
 } from './StakeOptionModal';
 import store, {AppDispatch} from 'store';
-import {openModal} from 'store/modal.reducer';
+import {openModal, closeModal} from 'store/modal.reducer';
 import {ManageModal} from './StakeOptionModal/Manage/index';
 import {formatStartTime} from 'utils/timeStamp';
 import {useState} from 'react';
@@ -48,6 +48,7 @@ import {
 //@ts-ignore
 import {Dot} from 'react-animated-dots';
 import {useEffect} from 'react';
+import {closeSale} from './actions';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
@@ -116,16 +117,13 @@ const WalletInformation: FC<WalletInformationProps> = ({
   const [stakeDisabled, setStakeDisabled] = useState(true);
   const [unstakeDisabled, setUnstakeDisabled] = useState(true);
   const [claimDisabled, setClaimDisabled] = useState(true);
+  const [manaDisabled, setManageDisabled] = useState(true);
   const btnDisabled = account === undefined ? true : false;
   const currentBlock: number = Number(data.fetchBlock);
   const miningStart: number = Number(data.miningStartTime);
   const miningEnd: number = Number(data.miningEndTime);
 
   const btnDisabledStake = () => {
-    console.log(account);
-    console.log(miningStart);
-    console.log(currentBlock);
-    console.log(miningStart > currentBlock);
     console.log(account === undefined || miningStart > currentBlock);
     return account === undefined || miningStart < currentBlock
       ? setStakeDisabled(true)
@@ -139,15 +137,22 @@ const WalletInformation: FC<WalletInformationProps> = ({
   };
 
   const btnDisabledClaim = () => {
-    return account === undefined || data.saleClosed
+    return account === undefined || !data.saleClosed
       ? setClaimDisabled(true)
       : setClaimDisabled(false);
+  };
+
+  const manageDisableClaim = () => {
+    return account === undefined || !data.saleClosed
+      ? setManageDisabled(true)
+      : setManageDisabled(false);
   };
 
   useEffect(() => {
     btnDisabledStake();
     btnDisabledUnstake();
     btnDisabledClaim();
+    manageDisableClaim();
     /*eslint-disable*/
   }, [account, data, dispatch]);
 
@@ -209,9 +214,6 @@ const WalletInformation: FC<WalletInformationProps> = ({
   const theme = useTheme();
   const {btnStyle} = theme;
 
-  console.log('--stake--');
-  console.log(stakeDisabled);
-
   return (
     <Container
       maxW={'sm'}
@@ -258,16 +260,40 @@ const WalletInformation: FC<WalletInformationProps> = ({
             onClick={() => modalData('claim')}>
             Claim
           </Button>
-          <Button
-            {...(btnDisabled === true
-              ? {...btnStyle.btnDisable({colorMode})}
-              : {...btnStyle.btnAble()})}
-            isDisabled={btnDisabled}
-            fontSize={'14px'}
-            opacity={loading === true ? 0.5 : 1}
-            onClick={() => modalData('manage')}>
-            Manage
-          </Button>
+          {manaDisabled === true ? (
+            <Button
+              {...(btnDisabled === true
+                ? {...btnStyle.btnDisable({colorMode})}
+                : {...btnStyle.btnAble()})}
+              isDisabled={btnDisabled}
+              fontSize={'14px'}
+              opacity={loading === true ? 0.5 : 1}
+              onClick={() =>
+                data.miningEndTime !== undefined
+                  ? closeSale({
+                      userAddress: account,
+                      vaultContractAddress: data.vault,
+                      miningEndTime: data.miningEndTime,
+                      library: user.library,
+                      handleCloseModal: dispatch(closeModal()),
+                    })
+                  : null
+              }>
+              End Sale
+            </Button>
+          ) : (
+            <Button
+              {...(btnDisabled === true
+                ? {...btnStyle.btnDisable({colorMode})}
+                : {...btnStyle.btnAble()})}
+              isDisabled={btnDisabled}
+              fontSize={'14px'}
+              opacity={loading === true ? 0.5 : 1}
+              onClick={() => modalData('manage')}>
+              Manage
+            </Button>
+          )}
+
           {loading === true ? (
             <Flex
               pos="absolute"
