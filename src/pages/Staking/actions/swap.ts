@@ -3,6 +3,7 @@ import {setTxPending} from 'store/tx.reducer';
 import store from 'store';
 import {Contract} from '@ethersproject/contracts';
 import {ethers} from 'ethers';
+import {toWei} from 'web3-utils';
 // import {toBN} from 'web3-utils';
 import * as StakeTON from 'services/abis/StakeTON.json';
 
@@ -24,7 +25,7 @@ export const swapWTONtoTOS = async (args: UnstakeFromLayer2) => {
   }
   console.log(amount)
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
-  const amountRay = ethers.utils.formatUnits(amount, -27)
+  const amountRay = toWei(amount, 'gether');
   console.log(amountRay);
   const signer = getSigner(library, userAddress);
   const deadline = Date.now() / 1000 + 900;
