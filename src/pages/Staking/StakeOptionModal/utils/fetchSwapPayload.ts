@@ -1,4 +1,4 @@
-import {getTokamakContract, getRPC} from 'utils/contract';
+import {getTokamakContract} from 'utils/contract';
 import {convertNumber} from 'utils/number';
 
 export const fetchSwapPayload = async (
@@ -6,16 +6,12 @@ export const fetchSwapPayload = async (
   account: string,
   contractAddress: string,
 ) => {
-  const tosBalance = await getSwapInfo(
-    library,
-    account,
-    contractAddress,
-  );
+  const tosBalance = await getSwapInfo(library, account, contractAddress);
 
   return convertNumber({
-    amount: tosBalance
-  })
-}
+    amount: tosBalance,
+  });
+};
 
 const getSwapInfo = async (
   library: any,
@@ -23,11 +19,11 @@ const getSwapInfo = async (
   contractAddress: string,
 ) => {
   const TOS = getTokamakContract('TOS');
-  let TosBalanceOfContract
+  let TosBalanceOfContract;
   try {
     TosBalanceOfContract = await TOS.balanceOf(contractAddress);
   } catch (e) {
-    console.log(e)
+    console.log(e);
   }
-  return TosBalanceOfContract
-}
+  return TosBalanceOfContract;
+};

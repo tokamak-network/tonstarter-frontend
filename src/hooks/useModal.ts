@@ -6,7 +6,6 @@ export const useModal = (
 ) => {
   const dispatch = useAppDispatch();
   const handleCloseModal = () => {
-    console.log('???');
     setValue('0');
     dispatch(closeModal());
   };
