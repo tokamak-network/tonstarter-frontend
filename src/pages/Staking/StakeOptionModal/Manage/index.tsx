@@ -55,21 +55,20 @@ export const ManageModal = () => {
   } catch (e) {
     console.log(e);
   }
+  const [stakedBalance, setStakedBalance] = useState<string | undefined >('-');
 
-  const GetStakedBalance = ({title, contractAddress, user}: any) => {
-    const [balance, setBalance] = useState<string | undefined >('-');
-    const {colorMode} = useColorMode();
-    const getStakedBalance = useCallback(async () => {
+  const GetStakedBalance = useCallback(({title, contractAddress, user}: any) => {
+    const getStakedBalance = async () => {
       const result = await fetchStakedBalancePayload(user.address, contractAddress);
       // stakeContractBalanceTon
       console.log(result);
       if (title === 'Total') {
-        return setBalance(result.totalStakedAmount)
+        return setStakedBalance(result.totalStakedAmount)
       } else if (title === 'Staked in Layer 2') {
-        return setBalance(result.totalStakedAmountL2)
+        return setStakedBalance(result.totalStakedAmountL2)
       } 
-      setBalance(result.totalPendingUnstakedAmountL2)
-    }, [dispatch, data]);
+      setStakedBalance(result.totalPendingUnstakedAmountL2)
+    };
 
     getStakedBalance();
 
@@ -82,11 +81,11 @@ export const ManageModal = () => {
           color={colorMode === 'light' ? 'gray.250' : 'white.100'}
           fontWeight={500}
           fontSize={'18px'}>
-          {balance === '-' ? <LoadingDots></LoadingDots> : balance} TON
+          {stakedBalance === '-' ? <LoadingDots></LoadingDots> : stakedBalance} TON
         </Text>
       </Flex>
     );
-  }
+  }, [dispatch, data])
 
   const btnDisableEndSale = () => {
     return data.data?.fetchBlock < data.data?.miningStartTime || closed
