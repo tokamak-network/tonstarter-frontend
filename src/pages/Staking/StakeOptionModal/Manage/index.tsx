@@ -17,7 +17,7 @@ import {closeSale} from '../../actions';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, openModal, selectModalType} from 'store/modal.reducer';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useCallback} from 'react';
 import {fetchStakedBalancePayload} from '../utils/fetchStakedBalancePayload';
 //@ts-ignore
 import {Dot} from 'react-animated-dots';
@@ -59,7 +59,7 @@ export const ManageModal = () => {
   const GetStakedBalance = ({title, contractAddress, user}: any) => {
     const [balance, setBalance] = useState<string | undefined >('-');
     const {colorMode} = useColorMode();
-    const getStakedBalance = async () => {
+    const getStakedBalance = useCallback(async () => {
       const result = await fetchStakedBalancePayload(user.address, contractAddress);
       // stakeContractBalanceTon
       console.log(result);
@@ -69,7 +69,7 @@ export const ManageModal = () => {
         return setBalance(result.totalStakedAmountL2)
       } 
       setBalance(result.totalPendingUnstakedAmountL2)
-    }
+    }, [dispatch, data]);
 
     getStakedBalance();
 
