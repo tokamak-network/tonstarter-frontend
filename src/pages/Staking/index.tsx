@@ -32,7 +32,7 @@ import {
   SwapModal,
 } from './StakeOptionModal';
 import store, {AppDispatch} from 'store';
-import {openModal} from 'store/modal.reducer';
+import {openModal, closeModal} from 'store/modal.reducer';
 import {ManageModal} from './StakeOptionModal/Manage/index';
 import {formatStartTime} from 'utils/timeStamp';
 import {useState} from 'react';
@@ -48,6 +48,7 @@ import {
 //@ts-ignore
 import {Dot} from 'react-animated-dots';
 import {useEffect} from 'react';
+import {closeSale} from './actions';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
@@ -113,19 +114,20 @@ const WalletInformation: FC<WalletInformationProps> = ({
   const {colorMode} = useColorMode();
   const [loading, setLoading] = useState(false);
   const [userTonBalance, setUserTonBalance] = useState<string>('');
+  const [stakeBalance, setStakeBalance] = useState<string | undefined>(
+    undefined,
+  );
+  const [tosBalance, setTosBalance] = useState<string | undefined>(undefined);
   const [stakeDisabled, setStakeDisabled] = useState(true);
   const [unstakeDisabled, setUnstakeDisabled] = useState(true);
   const [claimDisabled, setClaimDisabled] = useState(true);
+  const [manaDisabled, setManageDisabled] = useState(true);
   const btnDisabled = account === undefined ? true : false;
   const currentBlock: number = Number(data.fetchBlock);
   const miningStart: number = Number(data.miningStartTime);
   const miningEnd: number = Number(data.miningEndTime);
 
   const btnDisabledStake = () => {
-    console.log(account);
-    console.log(miningStart);
-    console.log(currentBlock);
-    console.log(miningStart > currentBlock);
     console.log(account === undefined || miningStart > currentBlock);
     return account === undefined || miningStart < currentBlock
       ? setStakeDisabled(true)
@@ -133,21 +135,34 @@ const WalletInformation: FC<WalletInformationProps> = ({
   };
 
   const btnDisabledUnstake = () => {
-    return account === undefined || currentBlock < miningEnd
+    return account === undefined ||
+      currentBlock < miningEnd ||
+      stakeBalance === undefined ||
+      stakeBalance === '0.00'
       ? setUnstakeDisabled(true)
       : setUnstakeDisabled(false);
   };
 
   const btnDisabledClaim = () => {
-    return account === undefined || data.saleClosed
+    return account === undefined ||
+      !data.saleClosed ||
+      tosBalance === undefined ||
+      tosBalance === '0.00'
       ? setClaimDisabled(true)
       : setClaimDisabled(false);
+  };
+
+  const manageDisableClaim = () => {
+    return account === undefined || !data.saleClosed
+      ? setManageDisabled(true)
+      : setManageDisabled(false);
   };
 
   useEffect(() => {
     btnDisabledStake();
     btnDisabledUnstake();
     btnDisabledClaim();
+    manageDisableClaim();
     /*eslint-disable*/
   }, [account, data, dispatch]);
 
@@ -167,11 +182,15 @@ const WalletInformation: FC<WalletInformationProps> = ({
       account: user.address,
       library: user.library,
     });
-    if (result) {
+    const userBalance = await getUserBalance(data.contractAddress);
+
+    if (result && userBalance) {
       const trimNum = Number(result).toLocaleString(undefined, {
         minimumFractionDigits: 2,
       });
       setUserTonBalance(trimNum);
+      setStakeBalance(userBalance.totalStakedBalance);
+      setTosBalance(userBalance.rewardTosBalance);
     }
   };
 
@@ -186,6 +205,12 @@ const WalletInformation: FC<WalletInformationProps> = ({
           ...data,
           ...payloadModal,
           user,
+        };
+      } else if (modal === 'unstake') {
+        const payloadModal = await getUserBalance(data.contractAddress);
+        payload = {
+          ...data,
+          totalStakedBalance: payloadModal?.totalStakedBalance,
         };
       } else {
         payload = {
@@ -208,9 +233,6 @@ const WalletInformation: FC<WalletInformationProps> = ({
 
   const theme = useTheme();
   const {btnStyle} = theme;
-
-  console.log('--stake--');
-  console.log(stakeDisabled);
 
   return (
     <Container
@@ -258,16 +280,40 @@ const WalletInformation: FC<WalletInformationProps> = ({
             onClick={() => modalData('claim')}>
             Claim
           </Button>
-          <Button
-            {...(btnDisabled === true
-              ? {...btnStyle.btnDisable({colorMode})}
-              : {...btnStyle.btnAble()})}
-            isDisabled={btnDisabled}
-            fontSize={'14px'}
-            opacity={loading === true ? 0.5 : 1}
-            onClick={() => modalData('manage')}>
-            Manage
-          </Button>
+          {manaDisabled === true ? (
+            <Button
+              {...(btnDisabled === true
+                ? {...btnStyle.btnDisable({colorMode})}
+                : {...btnStyle.btnAble()})}
+              isDisabled={btnDisabled}
+              fontSize={'14px'}
+              opacity={loading === true ? 0.5 : 1}
+              onClick={() =>
+                data.miningEndTime !== undefined
+                  ? closeSale({
+                      userAddress: account,
+                      vaultContractAddress: data.vault,
+                      miningEndTime: data.miningEndTime,
+                      library: user.library,
+                      handleCloseModal: dispatch(closeModal()),
+                    })
+                  : null
+              }>
+              End Sale
+            </Button>
+          ) : (
+            <Button
+              {...(btnDisabled === true
+                ? {...btnStyle.btnDisable({colorMode})}
+                : {...btnStyle.btnAble()})}
+              isDisabled={btnDisabled}
+              fontSize={'14px'}
+              opacity={loading === true ? 0.5 : 1}
+              onClick={() => modalData('manage')}>
+              Manage
+            </Button>
+          )}
+
           {loading === true ? (
             <Flex
               pos="absolute"
@@ -365,18 +411,17 @@ export const Staking = () => {
     );
   };
 
-  const GetBalance = ({title, contractAddress, user}: any) => {
+  const GetBalance = ({title, contractAddress, user, setStakeValance}: any) => {
     const {colorMode} = useColorMode();
     const [balance, SetBalance] = useState('-');
     const getBalance = async () => {
       const result = await getUserBalance(contractAddress);
-
       if (title === 'My staked') {
         //@ts-ignore
         return SetBalance(result.totalStakedBalance);
       }
       //@ts-ignore
-      SetBalance(result.rewardTosBalance);
+      SetBalance(result?.rewardTosBalance);
     };
 
     if (user.address !== undefined) {
@@ -530,7 +575,8 @@ export const Staking = () => {
             <GetBalance
               title={'Earned'}
               contractAddress={contractAddress}
-              user={user}></GetBalance>
+              user={user}
+            />
           </Flex>
         </Flex>
       );

@@ -13,13 +13,10 @@ import {
   useTheme,
   useColorMode,
 } from '@chakra-ui/react';
-import {closeSale} from '../../actions';
-import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, openModal, selectModalType} from 'store/modal.reducer';
 
 export const ManageModal = () => {
-  const {account, library} = useWeb3React();
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
   const theme = useTheme();
@@ -185,29 +182,6 @@ export const ManageModal = () => {
               }>
               Swap
             </Button>
-            <Flex w="200%" justifyContent="center">
-              <Button
-                width="150px"
-                bg={'blue.500'}
-                color={'white.100'}
-                fontSize={'12px'}
-                fontWeight={100}
-                _hover={{backgroundColor: 'blue.100'}}
-                isDisabled={
-                  data.data?.fetchBlock < data.data?.miningStartTime && closed
-                }
-                onClick={() =>
-                  closeSale({
-                    userAddress: account,
-                    vaultContractAddress: data.data.vault,
-                    miningEndTime: data.data.miningEndTime,
-                    library: library,
-                    handleCloseModal: dispatch(closeModal()),
-                  })
-                }>
-                End Sale
-              </Button>
-            </Flex>
           </Grid>
         </ModalBody>
       </ModalContent>

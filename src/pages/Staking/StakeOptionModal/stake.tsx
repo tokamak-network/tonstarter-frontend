@@ -13,32 +13,25 @@ import {
   useTheme,
   useColorMode,
 } from '@chakra-ui/react';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback} from 'react';
 import {useWeb3React} from '@web3-react/core';
-import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {closeModal, selectModalType} from 'store/modal.reducer';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectModalType} from 'store/modal.reducer';
 import {stakePayToken} from '../actions';
-import {addComma} from 'utils/addComma';
+import {useInput} from 'hooks/useInput';
+import {useModal} from 'hooks/useModal';
 
 export const StakeOptionModal = () => {
   const {data} = useAppSelector(selectModalType);
-  const dispatch = useAppDispatch();
   const {account, library} = useWeb3React();
 
   let balance = data?.data?.user?.balance;
-  const [value, setValue] = useState<string>('0');
   const theme = useTheme();
   const {colorMode} = useColorMode();
+  const {value, setValue, onChange} = useInput();
+  const {handleCloseModal} = useModal(setValue);
 
-  const handleChange = (e: any) => {
-    addComma(e.target.value, setValue);
-  };
-  const setMax = useCallback((_e) => setValue(balance), [balance]);
-
-  const handleCloseModal = useCallback(() => {
-    dispatch(closeModal());
-    setValue('0');
-  }, [dispatch]);
+  const setMax = useCallback((_e) => setValue(balance), [setValue, balance]);
 
   return (
     <Modal
@@ -87,7 +80,7 @@ export const StakeOptionModal = () => {
               value={value}
               w="60%"
               mr={6}
-              onChange={handleChange}
+              onChange={onChange}
               _focus={{
                 borderWidth: 0,
               }}

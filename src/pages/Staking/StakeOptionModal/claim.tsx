@@ -16,6 +16,7 @@ import {claimReward} from '../actions';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
+import {useCallback} from 'react';
 
 export const ClaimOptionModal = () => {
   const {account, library} = useWeb3React();
@@ -26,6 +27,10 @@ export const ClaimOptionModal = () => {
   const dispatch = useAppDispatch();
   let claimed = data?.data?.canRewardAmount;
   let earned = data?.data?.myearned;
+
+  const handleCloseModal = useCallback(() => {
+    dispatch(closeModal());
+  }, [dispatch]);
 
   return (
     <Modal
@@ -61,28 +66,20 @@ export const ClaimOptionModal = () => {
 
           <Stack
             as={Flex}
-            py={10}
-            flexDir={'row'}
             justifyContent={'center'}
             alignItems={'center'}
-            w={'full'}
             borderBottom={
               colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
             }
             mb={'25px'}>
-            <Text
-              variant={'outline'}
-              borderWidth={0}
-              textAlign={'center'}
-              fontWeight={'bold'}
-              fontSize={'4xl'}
-              width={'xs'}
-              mr={6}
-              _focus={{
-                borderWidth: 0,
-              }}>
-              {claimed ? claimed : '0.00'} TOS
-            </Text>
+            <Box textAlign={'center'} pt="20px" pb="20px">
+              <Text
+                fontSize={'26px'}
+                fontWeight={600}
+                color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
+                {claimed} TOS
+              </Text>
+            </Box>
           </Stack>
 
           <Box as={Flex} justifyContent={'center'}>
@@ -101,7 +98,7 @@ export const ClaimOptionModal = () => {
                   library: library,
                   canRewardAmount: data.data.canRewardAmount,
                   myEarned: data.data.myearned,
-                  handleCloseModal: dispatch(closeModal()),
+                  handleCloseModal: handleCloseModal(),
                 })
               }>
               Claim

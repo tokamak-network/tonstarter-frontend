@@ -12,10 +12,11 @@ import {
   Stack,
   useTheme,
 } from '@chakra-ui/react';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useState, useEffect} from 'react';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {openModal, selectModalType} from 'store/modal.reducer';
+import {fetchSwapPayload} from './utils/fetchSwapPayload';
 import {swapWTONtoTOS} from '../actions';
 
 export const SwapModal = () => {
@@ -24,13 +25,34 @@ export const SwapModal = () => {
   const theme = useTheme();
   const dispatch = useAppDispatch();
 
-  const stakeBalanceTON = data?.data?.stakeContractBalanceTon
-  const totalStakedAmountL2 = data?.data?.totalStakedAmountL2
+  const stakeBalanceTON = data?.data?.stakeContractBalanceTon;
+  const totalStakedAmountL2 = data?.data?.totalStakedAmountL2;
   const totalStakedAmount = data?.data?.totalStakedAmount;
-  const totalPendingUnstakedAmountL2 = data?.data?.totalPendingUnstakedAmountL2
-  let balance = Number(stakeBalanceTON) + Number(totalStakedAmountL2) - Number(totalStakedAmount) + Number(totalPendingUnstakedAmountL2)
+  const totalPendingUnstakedAmountL2 = data?.data?.totalPendingUnstakedAmountL2;
 
-  const [value, setValue] = useState<number>(balance);
+  const [swappedBalance, setSwappedBalance] = useState<string | undefined>(
+    undefined,
+  );
+
+  let balance =
+    Number(stakeBalanceTON) +
+    Number(totalStakedAmountL2) -
+    Number(totalStakedAmount) +
+    Number(totalPendingUnstakedAmountL2) -
+    Number(swappedBalance);
+  const [value, setValue] = useState<number>(0);
+
+  useEffect(() => {
+    async function swapPayload(data: any) {
+      const result = await fetchSwapPayload(
+        data.library,
+        data.account,
+        data.contractAddress,
+      );
+      return setSwappedBalance(result === undefined ? '0.00' : result);
+    }
+    swapPayload(data);
+  }, [data]);
 
   const handleChange = useCallback((e) => setValue(e.target.value), []);
   const setMax = useCallback((_e) => setValue(balance), [balance]);
@@ -55,7 +77,6 @@ export const SwapModal = () => {
               textAlign={'center'}>
               Swap
             </Heading>
-            {/* <Text>{payToken}</Text> */}
           </Box>
 
           <Stack
@@ -71,7 +92,7 @@ export const SwapModal = () => {
               textAlign={'center'}
               fontWeight={'bold'}
               fontSize={'4xl'}
-              // value={value}
+              value={value}
               width={'xs'}
               mr={6}
               onChange={handleChange}
