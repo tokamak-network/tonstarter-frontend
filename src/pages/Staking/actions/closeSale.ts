@@ -21,6 +21,7 @@ export const closeSale = async (args: Endsale) => {
   if (userAddress === null || userAddress === undefined) {
     return;
   }
+  console.log(REACT_APP_STAKE1_PROXY);
 
   const stakeVault = await new Contract(
     REACT_APP_STAKE1_PROXY,

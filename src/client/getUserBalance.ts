@@ -15,15 +15,17 @@ export const getUserBalance = async (contractAddress: any) => {
   if (account === undefined || null) {
     return;
   }
-  const {userStaked, userRewardTOS} = await fetchUserData(
+  const {userStaked, myClaimed, userRewardTOS} = await fetchUserData(
     library,
     account,
     contractAddress,
   );
+  console.log(myClaimed);
   const result = {
     rewardTosBalance: convertNumber({amount: userRewardTOS}),
     rewardTonBalance: undefined,
     totalStakedBalance: convertNumber({amount: userStaked}),
+    claimedBalance: convertNumber({amount: myClaimed}),
   };
   return result;
 };
@@ -41,9 +43,10 @@ const fetchUserData = async (
   contractAddress: string,
 ) => {
   const res = await getUserInfo(library, account, contractAddress);
-  const {userStaked, userRewardTOS} = res;
+  const {userStaked, myClaimed, userRewardTOS} = res;
   return {
     userStaked,
+    myClaimed,
     userRewardTOS,
   };
 };
@@ -61,6 +64,7 @@ const getUserInfo = async (
   ]).then((result) => {
     return {
       userStaked: result[0].amount,
+      myClaimed: result[0].claimedAmount,
       userRewardTOS: result[1],
     };
   });

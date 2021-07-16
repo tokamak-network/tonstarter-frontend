@@ -25,22 +25,22 @@ export const SwapModal = () => {
   const theme = useTheme();
   const dispatch = useAppDispatch();
 
-  const stakeBalanceTON = data?.data?.stakeContractBalanceTon;
-  const totalStakedAmountL2 = data?.data?.totalStakedAmountL2;
+  const stakeBalanceTON = data?.data?.stakeContractBalanceTon
+  const totalStakedAmountL2 = data?.data?.totalStakedAmountL2
   const totalStakedAmount = data?.data?.totalStakedAmount;
-  const totalPendingUnstakedAmountL2 = data?.data?.totalPendingUnstakedAmountL2;
+  const totalPendingUnstakedAmountL2 = data?.data?.totalPendingUnstakedAmountL2
 
   const [swappedBalance, setSwappedBalance] = useState<string | undefined>(
     undefined,
   );
 
-  let balance =
-    Number(stakeBalanceTON) +
-    Number(totalStakedAmountL2) -
-    Number(totalStakedAmount) +
-    Number(totalPendingUnstakedAmountL2) -
-    Number(swappedBalance);
+  let balance = Number(stakeBalanceTON) 
+              + Number(totalStakedAmountL2) 
+              - Number(totalStakedAmount) 
+              + Number(totalPendingUnstakedAmountL2)
+              - Number(swappedBalance)
   const [value, setValue] = useState<number>(balance);
+
 
   useEffect(() => {
     async function swapPayload(data: any) {
@@ -53,8 +53,7 @@ export const SwapModal = () => {
       return setSwappedBalance(result === undefined ? '0.00' : result);
     }
     swapPayload(data);
-    /* eslint-disable */
-  }, []);
+  }, [data]);
 
   const handleChange = useCallback((e) => setValue(e.target.value), []);
   const setMax = useCallback((_e) => setValue(balance), [balance]);
