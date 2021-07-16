@@ -24,7 +24,7 @@ export const swapWTONtoTOS = async (args: UnstakeFromLayer2) => {
   }
   console.log(amount)
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
-  const amountRay = ethers.utils.formatUnits(amount, 27)
+  const amountRay = ethers.utils.formatUnits(amount, -27)
   console.log(amountRay);
   const signer = getSigner(library, userAddress);
   const deadline = Date.now() / 1000 + 900;
