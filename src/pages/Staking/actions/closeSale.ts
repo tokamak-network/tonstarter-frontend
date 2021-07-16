@@ -3,7 +3,6 @@ import {Contract} from '@ethersproject/contracts';
 import store from 'store';
 import {setTxPending} from 'store/tx.reducer';
 import {toastWithReceipt} from 'utils';
-// import {REACT_APP_STAKE1_PROXY} from 'constants/index';
 import {DEPLOYED} from 'constants/index';
 import * as StakeVault from 'services/abis/Stake1Logic.json';
 
@@ -22,7 +21,6 @@ export const closeSale = async (args: Endsale) => {
   if (userAddress === null || userAddress === undefined) {
     return;
   }
-  console.log(DEPLOYED.Stake1Proxy);
 
   const stakeVault = await new Contract(
     DEPLOYED.Stake1Proxy,
