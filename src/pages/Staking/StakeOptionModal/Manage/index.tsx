@@ -85,7 +85,7 @@ export const ManageModal = () => {
         </Text>
       </Flex>
     );
-  }, [dispatch, data])
+  }, [dispatch])
 
   const btnDisableEndSale = () => {
     return data.data?.fetchBlock < data.data?.miningStartTime || closed
