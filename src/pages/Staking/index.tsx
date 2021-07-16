@@ -123,10 +123,6 @@ const WalletInformation: FC<WalletInformationProps> = ({
   const miningStart: number = Number(data.miningStartTime);
   const miningEnd: number = Number(data.miningEndTime);
 
-  console.log(currentBlock);
-  console.log(miningStart);
-  console.log(miningEnd);
-
   const btnDisabledStake = () => {
     return account === undefined || miningStart < currentBlock
       ? setStakeDisabled(true)

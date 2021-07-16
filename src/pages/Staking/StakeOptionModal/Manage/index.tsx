@@ -71,6 +71,8 @@ export const ManageModal = () => {
         return setBalance(result.totalPendingUnstakedAmountL2)
       }
     }
+    console.log(user.address)
+    console.log(user);
 
     if (user.address === undefined) {
       getStakedBalance();
