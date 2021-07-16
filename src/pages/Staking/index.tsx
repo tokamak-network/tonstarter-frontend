@@ -114,6 +114,10 @@ const WalletInformation: FC<WalletInformationProps> = ({
   const {colorMode} = useColorMode();
   const [loading, setLoading] = useState(false);
   const [userTonBalance, setUserTonBalance] = useState<string>('');
+  const [stakeBalance, setStakeBalance] = useState<string | undefined>(
+    undefined,
+  );
+  const [tosBalance, setTosBalance] = useState<string | undefined>(undefined);
   const [stakeDisabled, setStakeDisabled] = useState(true);
   const [unstakeDisabled, setUnstakeDisabled] = useState(true);
   const [claimDisabled, setClaimDisabled] = useState(true);
@@ -123,10 +127,6 @@ const WalletInformation: FC<WalletInformationProps> = ({
   const miningStart: number = Number(data.miningStartTime);
   const miningEnd: number = Number(data.miningEndTime);
 
-  console.log(currentBlock);
-  console.log(miningStart);
-  console.log(miningEnd);
-
   const btnDisabledStake = () => {
     console.log(account === undefined || miningStart > currentBlock);
     return account === undefined || miningStart < currentBlock
@@ -135,13 +135,19 @@ const WalletInformation: FC<WalletInformationProps> = ({
   };
 
   const btnDisabledUnstake = () => {
-    return account === undefined || currentBlock < miningEnd
+    return account === undefined ||
+      currentBlock < miningEnd ||
+      stakeBalance === undefined ||
+      stakeBalance === '0.00'
       ? setUnstakeDisabled(true)
       : setUnstakeDisabled(false);
   };
 
   const btnDisabledClaim = () => {
-    return account === undefined || !data.saleClosed
+    return account === undefined ||
+      !data.saleClosed ||
+      tosBalance === undefined ||
+      tosBalance === '0.00'
       ? setClaimDisabled(true)
       : setClaimDisabled(false);
   };
@@ -176,11 +182,15 @@ const WalletInformation: FC<WalletInformationProps> = ({
       account: user.address,
       library: user.library,
     });
-    if (result) {
+    const userBalance = await getUserBalance(data.contractAddress);
+
+    if (result && userBalance) {
       const trimNum = Number(result).toLocaleString(undefined, {
         minimumFractionDigits: 2,
       });
       setUserTonBalance(trimNum);
+      setStakeBalance(userBalance.totalStakedBalance);
+      setTosBalance(userBalance.rewardTosBalance);
     }
   };
 
@@ -195,6 +205,12 @@ const WalletInformation: FC<WalletInformationProps> = ({
           ...data,
           ...payloadModal,
           user,
+        };
+      } else if (modal === 'unstake') {
+        const payloadModal = await getUserBalance(data.contractAddress);
+        payload = {
+          ...data,
+          totalStakedBalance: payloadModal?.totalStakedBalance,
         };
       } else {
         payload = {
@@ -395,12 +411,11 @@ export const Staking = () => {
     );
   };
 
-  const GetBalance = ({title, contractAddress, user}: any) => {
+  const GetBalance = ({title, contractAddress, user, setStakeValance}: any) => {
     const {colorMode} = useColorMode();
     const [balance, SetBalance] = useState('-');
     const getBalance = async () => {
       const result = await getUserBalance(contractAddress);
-
       if (title === 'My staked') {
         //@ts-ignore
         return SetBalance(result.totalStakedBalance);
