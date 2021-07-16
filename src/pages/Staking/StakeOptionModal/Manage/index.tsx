@@ -25,6 +25,8 @@ export const ManageModal = () => {
   const dispatch = useAppDispatch();
   const theme = useTheme();
   const [saleDisabled, setSaleDisabled] = useState(true);
+  const [stakeL2Disabled, setStakeL2Disabled] = useState(true);
+  const [swapDisabled, setSwapDisabled] = useState(true);
   const {colorMode} = useColorMode();
   let balance = data?.data?.stakeContractBalanceTon;
   let closed: any;
@@ -43,10 +45,24 @@ export const ManageModal = () => {
       : setSaleDisabled(false)
   }
 
+  const btnDisableStakeL2 = () => {
+    return data.data?.fetchBlock > data.data?.miningEndTime - Number(data.data?.globalWithdrawalDelay) || !closed
+      ? setStakeL2Disabled(true)
+      : setStakeL2Disabled(false)
+  }
+
+  const btnDisableSwap = () => {
+    return data.data?.fetchBlock > data.data?.miningEndTime || !closed
+      ? setSwapDisabled(true)
+      : setSwapDisabled(false)
+  }
+
   const {btnStyle} = theme;
 
   useEffect(() => {
     btnDisableEndSale();
+    btnDisableStakeL2();
+    btnDisableSwap();
     /*eslint-disable*/
   }, [account, data, dispatch]);
 
@@ -156,7 +172,10 @@ export const ManageModal = () => {
               color={'white.100'}
               fontSize={'0.750em'}
               fontWeight={100}
-              isDisabled={closed ? !closed : false}
+              {...(stakeL2Disabled === true
+                ? {...btnStyle.btnDisable({colorMode})}
+                : {...btnStyle.btnAble()})}
+              isDisabled={stakeL2Disabled}
               onClick={() =>
                 dispatch(openModal({type: 'stakeL2', data: data.data}))
               }
@@ -170,7 +189,10 @@ export const ManageModal = () => {
               fontSize={'12px'}
               fontWeight={100}
               _hover={{backgroundColor: 'blue.100'}}
-              isDisabled={closed ? !closed : false}
+              {...(swapDisabled === true
+                ? {...btnStyle.btnDisable({colorMode})}
+                : {...btnStyle.btnAble()})}
+              isDisabled={swapDisabled}
               onClick={() =>
                 dispatch(openModal({type: 'unstakeL2', data: data.data}))
               }>
@@ -183,7 +205,10 @@ export const ManageModal = () => {
               fontSize={'12px'}
               fontWeight={100}
               _hover={{backgroundColor: 'blue.100'}}
-              isDisabled={closed ? !closed : false}
+              {...(swapDisabled === true
+                ? {...btnStyle.btnDisable({colorMode})}
+                : {...btnStyle.btnAble()})}
+              isDisabled={swapDisabled}
               onClick={() =>
                 dispatch(openModal({type: 'withdraw', data: data.data}))
               }>
@@ -196,7 +221,10 @@ export const ManageModal = () => {
               fontSize={'12px'}
               fontWeight={100}
               _hover={{backgroundColor: 'blue.100'}}
-              isDisabled={closed ? !closed : false}
+              {...(swapDisabled === true
+                ? {...btnStyle.btnDisable({colorMode})}
+                : {...btnStyle.btnAble()})}
+              isDisabled={swapDisabled}
               onClick={() =>
                 dispatch(openModal({type: 'swap', data: data.data}))
               }>
