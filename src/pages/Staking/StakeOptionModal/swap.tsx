@@ -27,22 +27,22 @@ export const SwapModal = () => {
   const {colorMode} = useColorMode();
   const dispatch = useAppDispatch();
 
-  const stakeBalanceTON = data?.data?.stakeContractBalanceTon
-  const totalStakedAmountL2 = data?.data?.totalStakedAmountL2
+  const stakeBalanceTON = data?.data?.stakeContractBalanceTon;
+  const totalStakedAmountL2 = data?.data?.totalStakedAmountL2;
   const totalStakedAmount = data?.data?.totalStakedAmount;
-  const totalPendingUnstakedAmountL2 = data?.data?.totalPendingUnstakedAmountL2
+  const totalPendingUnstakedAmountL2 = data?.data?.totalPendingUnstakedAmountL2;
 
   const [swappedBalance, setSwappedBalance] = useState<string | undefined>(
     undefined,
   );
 
-  let balance = Number(stakeBalanceTON) 
-              + Number(totalStakedAmountL2) 
-              - Number(totalStakedAmount) 
-              + Number(totalPendingUnstakedAmountL2)
-              - Number(swappedBalance)
+  let balance =
+    Number(stakeBalanceTON) +
+    Number(totalStakedAmountL2) -
+    Number(totalStakedAmount) +
+    Number(totalPendingUnstakedAmountL2) -
+    Number(swappedBalance);
   const [value, setValue] = useState<number>(0);
-
 
   useEffect(() => {
     async function swapPayload(data: any) {
