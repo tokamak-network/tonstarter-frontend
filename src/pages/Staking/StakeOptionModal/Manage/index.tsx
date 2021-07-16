@@ -74,23 +74,23 @@ export const ManageModal = () => {
     console.log(user.address)
     console.log(user);
 
-    if (user.address === undefined) {
+    if (user.address !== undefined) {
       getStakedBalance();
     }
 
     if (user.address === undefined) {
       return (
         <Flex justifyContent="space-between" alignItems="center" h="55px">
-        <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
-          {title}
-        </Text>
-        <Text
-          color={colorMode === 'light' ? 'gray.250' : 'white.100'}
-          fontWeight={500}
-          fontSize={'18px'}>
-          {balance === '-' ? <LoadingDots></LoadingDots> : balance} TON
-        </Text>
-      </Flex>
+          <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
+            {title}
+          </Text>
+          <Text
+            color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+            fontWeight={500}
+            fontSize={'18px'}>
+            {balance === '-' ? <LoadingDots></LoadingDots> : balance} TON
+          </Text>
+        </Flex>
       );
     }
 
