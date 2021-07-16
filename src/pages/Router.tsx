@@ -14,6 +14,7 @@ import {fetchStakes} from './Staking/staking.reducer';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import {AirdropModal} from 'components/Airdrop/Index';
 import {fetchVaults} from './Staking/vault.reducer';
+import {REACT_APP_DEFAULT_NETWORK} from 'constants/index';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -47,12 +48,13 @@ export const Router: FC<RouterProps> = () => {
       if (signIn === false) {
         deactivate();
       } else if (signIn === true) {
-        if (chainId !== 4) {
+        if (chainId !== Number(REACT_APP_DEFAULT_NETWORK)) {
           deactivate();
           window.localStorage.setItem(
             'account',
             JSON.stringify({signIn: false}),
           );
+          console.log('ho?');
           return alert('please use Rinkeby test network');
         }
         // @ts-ignore
