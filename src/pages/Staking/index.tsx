@@ -122,19 +122,19 @@ const WalletInformation: FC<WalletInformationProps> = ({
   const miningEnd: number = Number(data.miningEndTime);
 
   const btnDisabledStake = () => {
-    return account !== undefined && miningStart > currentBlock
+    return account !== undefined || miningStart > currentBlock
       ? setStakeDisabled(false)
       : setStakeDisabled(true);
   };
 
   const btnDisabledUnstake = () => {
-    return account !== undefined && currentBlock > miningEnd
+    return account !== undefined || currentBlock > miningEnd
       ? setUnstakeDisabled(false)
       : setUnstakeDisabled(true);
   };
 
   const btnDisabledClaim = () => {
-    return account !== undefined && data.saleClosed
+    return account !== undefined || data.saleClosed
       ? setClaimDisabled(false)
       : setClaimDisabled(true);
   };

@@ -313,7 +313,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                             : type === 'stakeBalanceTON'
                             ? '200px'
                             : type === 'earning_per_block'
-                            ? '250px'
+                            ? ''
                             : '200px'
                         }
                         display="flex"
@@ -379,7 +379,12 @@ export const StakingTable: FC<StakingTableProps> = ({
                               }>
                               Earning Per TON
                             </Text>
-                            <Text w={20}>{ept} TOS</Text>
+                            <Text w={120}>
+                              {ept !== Infinity || isNaN(ept) === false
+                                ? ept
+                                : null}{' '}
+                              TOS
+                            </Text>
                             <Tooltip
                               hasArrow
                               placement="right"
