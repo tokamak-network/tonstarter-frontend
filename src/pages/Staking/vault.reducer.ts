@@ -30,7 +30,6 @@ const initialState = {
 
 const getEarningPerBlock = (vaults: VaultList) => {
   const result: any = {};
-  let acc = 0;
   vaults.map((vault) => {
     const {
       stakeStartBlock,
@@ -39,6 +38,7 @@ const getEarningPerBlock = (vaults: VaultList) => {
       expectedStakeEndBlockTotal,
       vault: vaultAddress,
     } = vault;
+    let acc = 0;
     const totalBlocks = stakeEndBlock - stakeStartBlock;
     const totalReward = convertNumber({
       amount: cap.toLocaleString('fullwide', {useGrouping: false}),
@@ -58,6 +58,9 @@ const getEarningPerBlock = (vaults: VaultList) => {
             Number(convertNumber({amount: project.stakedTotalString}));
           acc += ept;
 
+          console.log(ept);
+          console.log(acc);
+
           return {
             [project.block]: acc,
           };
@@ -66,6 +69,9 @@ const getEarningPerBlock = (vaults: VaultList) => {
             ((project.block - stakeStartBlock) * epb) /
             Number(convertNumber({amount: project.stakedTotalString}));
           acc += ept;
+
+          console.log(ept);
+          console.log(acc);
 
           return {
             [project.block]: acc,
