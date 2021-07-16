@@ -27,8 +27,8 @@ export const SwapModal = () => {
   const stakeBalanceTON = data?.data?.stakeContractBalanceTon
   const totalStakedAmountL2 = data?.data?.totalStakedAmountL2
   const totalStakedAmount = data?.data?.totalStakedAmount;
-  let balance = Number(stakeBalanceTON) + Number(totalStakedAmountL2) - Number(totalStakedAmount)
-  console.log(balance);
+  const totalPendingUnstakedAmountL2 = data?.data?.totalPendingUnstakedAmountL2
+  let balance = Number(stakeBalanceTON) + Number(totalStakedAmountL2) - Number(totalStakedAmount) + Number(totalPendingUnstakedAmountL2)
 
   const [value, setValue] = useState<number>(balance);
 
