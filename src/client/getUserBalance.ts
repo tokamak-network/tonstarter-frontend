@@ -61,6 +61,7 @@ const getUserInfo = async (
     StakeTONContract.userStaked(account),
     StakeTONContract.canRewardAmount(account, currentBlock),
   ]).then((result) => {
+    console.log(result);
     return {
       userStaked: result[0].amount,
       myClaimed: result[0].claimedAmount,

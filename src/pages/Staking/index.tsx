@@ -121,11 +121,12 @@ const WalletInformation: FC<WalletInformationProps> = ({
   const [stakeDisabled, setStakeDisabled] = useState(true);
   const [unstakeDisabled, setUnstakeDisabled] = useState(true);
   const [claimDisabled, setClaimDisabled] = useState(true);
-  const [manaDisabled, setManageDisabled] = useState(true);
+  const [manageDisabled, setManageDisabled] = useState(true);
   const btnDisabled = account === undefined ? true : false;
   const currentBlock: number = Number(data.fetchBlock);
   const miningStart: number = Number(data.miningStartTime);
   const miningEnd: number = Number(data.miningEndTime);
+  const manageBtnDisabled = miningEnd <= currentBlock ? true : false;
 
   const btnDisabledStake = () => {
     console.log(account === undefined || miningStart > currentBlock);
@@ -153,7 +154,9 @@ const WalletInformation: FC<WalletInformationProps> = ({
   };
 
   const manageDisableClaim = () => {
-    return account === undefined || !data.saleClosed
+    return account === undefined ||
+      data.saleClosed === false ||
+      miningEnd >= currentBlock
       ? setManageDisabled(true)
       : setManageDisabled(false);
   };
@@ -280,7 +283,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
             onClick={() => modalData('claim')}>
             Claim
           </Button>
-          {manaDisabled === true ? (
+          {manageDisabled === true ? (
             <Button
               {...(btnDisabled === true
                 ? {...btnStyle.btnDisable({colorMode})}
@@ -303,10 +306,10 @@ const WalletInformation: FC<WalletInformationProps> = ({
             </Button>
           ) : (
             <Button
-              {...(btnDisabled === true
+              {...(manageBtnDisabled === true
                 ? {...btnStyle.btnDisable({colorMode})}
                 : {...btnStyle.btnAble()})}
-              isDisabled={btnDisabled}
+              isDisabled={manageBtnDisabled}
               fontSize={'14px'}
               opacity={loading === true ? 0.5 : 1}
               onClick={() => modalData('manage')}>
