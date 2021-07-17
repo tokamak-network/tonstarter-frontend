@@ -128,8 +128,10 @@ const WalletInformation: FC<WalletInformationProps> = ({
   const miningEnd: number = Number(data.miningEndTime);
   const manageBtnDisabled = miningEnd <= currentBlock ? true : false;
 
+  console.log(data);
+  console.log(tosBalance);
+
   const btnDisabledStake = () => {
-    console.log(account === undefined || miningStart > currentBlock);
     return account === undefined || miningStart < currentBlock
       ? setStakeDisabled(true)
       : setStakeDisabled(false);
@@ -146,7 +148,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
 
   const btnDisabledClaim = () => {
     return account === undefined ||
-      !data.saleClosed ||
+      data.saleClosed === false ||
       tosBalance === undefined ||
       tosBalance === '0.00'
       ? setClaimDisabled(true)
@@ -154,20 +156,21 @@ const WalletInformation: FC<WalletInformationProps> = ({
   };
 
   const manageDisableClaim = () => {
-    return account === undefined ||
-      data.saleClosed === false ||
-      miningEnd >= currentBlock
+    return account === undefined || data.saleClosed === false
       ? setManageDisabled(true)
       : setManageDisabled(false);
   };
 
   useEffect(() => {
+    if (user.address !== undefined) {
+      getWalletTonBalance();
+    }
     btnDisabledStake();
     btnDisabledUnstake();
     btnDisabledClaim();
     manageDisableClaim();
     /*eslint-disable*/
-  }, [account, data, dispatch]);
+  }, [account, data, dispatch, tosBalance]);
 
   const modalPayload = async (data: any) => {
     const result = await fetchManageModalPayload(
@@ -229,10 +232,6 @@ const WalletInformation: FC<WalletInformationProps> = ({
     setLoading(false);
     dispatch(openModal({type: modal, data: payload}));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  if (user.address !== undefined) {
-    getWalletTonBalance();
-  }
 
   const theme = useTheme();
   const {btnStyle} = theme;
