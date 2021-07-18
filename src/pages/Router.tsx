@@ -25,14 +25,9 @@ export const Router: FC<RouterProps> = () => {
   const {onOpen, isOpen: isModalOpen, onClose} = useDisclosure();
   const {account, chainId, library, deactivate} = useWeb3React();
 
-  console.log('***');
-  console.log(account, chainId, library);
-  console.log(useWeb3React());
-
-  console.log(account, chainId, library);
-
   //@ts-ignore
   const accountStorage = JSON.parse(window.localStorage.getItem('account'));
+
   if (accountStorage === null) {
     window.localStorage.setItem('account', JSON.stringify({signIn: false}));
   }

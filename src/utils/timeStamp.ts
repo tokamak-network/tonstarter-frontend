@@ -1,10 +1,11 @@
 import {BigNumber, ethers} from 'ethers';
 import moment from 'moment';
-let provider = ethers.getDefaultProvider('rinkeby');
+let provider = ethers.getDefaultProvider('mainnet');
+
 export const period = (startBlockNum: BigNumber, endBlockNum: BigNumber) => {
   let startBlock = Number(startBlockNum);
   let endBlock = Number(endBlockNum);
-  let seconds = (endBlock - startBlock) * 13;
+  let seconds = (endBlock - startBlock) * 13.2;
   const periodHumanized = moment.duration(seconds, 'seconds').humanize();
   return periodHumanized;
 };
@@ -19,7 +20,7 @@ export const formatStartTime = async (
     const timeStamp = block.timestamp;
     return moment.unix(timeStamp).format('MMM DD, YYYY HH:mm:ss');
   } else {
-    let seconds = (blockNumber - currentBlock) * 13;
+    let seconds = (blockNumber - currentBlock) * 13.2;
     const currentBlk = await provider.getBlock(currentBlock);
     const currentTimeStamp = currentBlk.timestamp;
     const timestamp = currentTimeStamp + seconds;

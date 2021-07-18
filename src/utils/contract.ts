@@ -56,7 +56,7 @@ export function getProviderOrSigner(
 export function getRPC(): JsonRpcProvider {
   // return new JsonRpcProvider('https://rinkeby.rpc.tokamak.network');
   return new JsonRpcProvider(
-    'https://infura.io/v3/34448178b25e4fbda6d80f4da62afba2',
+    'https://mainnet.infura.io/v3/34448178b25e4fbda6d80f4da62afba2',
   );
 }
 
