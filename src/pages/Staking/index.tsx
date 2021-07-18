@@ -49,6 +49,7 @@ import {
 import {Dot} from 'react-animated-dots';
 import {useEffect} from 'react';
 import {closeSale} from './actions';
+import {useWindowDimensions} from 'hooks/useWindowDimentions';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
@@ -589,15 +590,17 @@ export const Staking = () => {
     [data, dispatch, user, appConfig.explorerLink],
   );
 
+  const {height} = useWindowDimensions();
+
   return (
     <Fragment>
       <Head title={'Staking'} />
-      <Container maxW={'6xl'}>
+      <Container maxW={'6xl'} h={height - 80}>
         <Box py={20}>
           <PageHeader
             title={'Staking'}
             subtitle={
-              'Put your tokens into TON Starter and earn reward without losing principal'
+              'Put your tokens into TONStarter and earn reward without losing principal'
             }
           />
         </Box>
