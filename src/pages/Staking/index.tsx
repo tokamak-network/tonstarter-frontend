@@ -591,12 +591,10 @@ export const Staking = () => {
     [data, dispatch, user, appConfig.explorerLink],
   );
 
-  const {height} = useWindowDimensions();
-
   return (
     <Fragment>
       <Head title={'Staking'} />
-      <Container maxW={'6xl'} h={height - 80}>
+      <Container maxW={'6xl'}>
         <Box py={20}>
           <PageHeader
             title={'Staking'}
