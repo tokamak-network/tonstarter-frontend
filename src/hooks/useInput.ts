@@ -5,6 +5,9 @@ export const useInput = () => {
   const onChange = (event: any) => {
     const {target} = event;
     const {value: inputValue} = target;
+    // if (isNaN(Number(inputValue)) === false) {
+    //   return;
+    // }
     const _val = inputValue;
     setValue(addComma(_val));
   };

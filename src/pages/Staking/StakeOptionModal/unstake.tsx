@@ -23,8 +23,7 @@ export const UnstakeOptionModal = () => {
   const dispatch = useAppDispatch();
   const theme = useTheme();
   const {colorMode} = useColorMode();
-
-  let balance = data?.data?.mystaked;
+  const totalStakedBalance = data?.data?.totalStakedBalance;
 
   return (
     <Modal
@@ -60,28 +59,20 @@ export const UnstakeOptionModal = () => {
 
           <Stack
             as={Flex}
-            py={10}
-            flexDir={'row'}
             justifyContent={'center'}
             alignItems={'center'}
-            w={'full'}
             borderBottom={
               colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
             }
             mb={'25px'}>
-            <Text
-              variant={'outline'}
-              borderWidth={0}
-              textAlign={'center'}
-              fontWeight={'bold'}
-              fontSize={'4xl'}
-              width={'xs'}
-              mr={6}
-              _focus={{
-                borderWidth: 0,
-              }}>
-              {balance ? balance : '0.00'} TON
-            </Text>
+            <Box textAlign={'center'} pt="20px" pb="20px">
+              <Text
+                fontSize={'26px'}
+                fontWeight={600}
+                color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
+                {totalStakedBalance} TOS
+              </Text>
+            </Box>
           </Stack>
 
           <Box as={Flex} justifyContent={'center'}>
@@ -101,7 +92,7 @@ export const UnstakeOptionModal = () => {
                   handleCloseModal: dispatch(closeModal()),
                 })
               }
-              disabled={+balance <= 0}>
+              disabled={+totalStakedBalance <= 0}>
               Unstake
             </Button>
           </Box>

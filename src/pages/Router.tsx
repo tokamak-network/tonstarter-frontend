@@ -15,6 +15,7 @@ import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import {AirdropModal} from 'components/Airdrop/Index';
 import {fetchVaults} from './Staking/vault.reducer';
 import {REACT_APP_DEFAULT_NETWORK} from 'constants/index';
+import {MobilePreOpen} from './PreOpen/Index';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -34,6 +35,7 @@ export const Router: FC<RouterProps> = () => {
     if (account && chainId) {
       //@ts-ignore
       const accountStorage = JSON.parse(window.localStorage.getItem('account'));
+
       //@ts-ignore
       if (accountStorage === null) {
         window.localStorage.setItem('account', JSON.stringify({signIn: false}));
@@ -54,7 +56,6 @@ export const Router: FC<RouterProps> = () => {
             'account',
             JSON.stringify({signIn: false}),
           );
-          console.log('ho?');
           return alert('please use Rinkeby test network');
         }
         // @ts-ignore
@@ -81,6 +82,10 @@ export const Router: FC<RouterProps> = () => {
     //@ts-ignore
     const accountStorage = JSON.parse(window.localStorage.getItem('account'));
     const {signIn} = accountStorage;
+    if (accountStorage.signIn === true && account === undefined) {
+      window.localStorage.setItem('account', JSON.stringify({signIn: false}));
+      return deactivate();
+    }
     if (account === undefined && signIn === false) {
       dispatch(
         fetchVaults({
@@ -98,23 +103,17 @@ export const Router: FC<RouterProps> = () => {
       // @ts-ignore
       // dispatch(fetchUserInfo());
     }
-  }, [account, dispatch, library, chainId]);
+  }, [account, dispatch, library, chainId, deactivate]);
 
   const handleWalletModalOpen = (state: string) => {
     setWalletState(state);
     onOpen();
   };
 
-  // if (error) {
-  //   toast({
-  //     description: data.
-  //   })
-  // }
-
   const {width} = useWindowDimensions();
 
   if (width < 1100) {
-    // return <MobilePreOpen />;
+    return <MobilePreOpen />;
   }
 
   return (
