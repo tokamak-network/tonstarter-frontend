@@ -69,26 +69,26 @@ export function getTokamakContract(want: string, address?: string): any {
   const WTON = new Contract(DEPLOYED.WTON, WtonABI.abi, rpc);
   const TOS = new Contract(DEPLOYED.TOS,  TosABI.abi, rpc);
   const SeigManager = new Contract(
-    DEPLOYED.SEIG_MANAGER,
+    DEPLOYED.SeigManager,
     SeigManagerABI.abi,
     rpc,
   );
   const DepositManager = new Contract(
-    DEPLOYED.DEPOSIT_MANAGER,
+    DEPLOYED.DepositManager,
     DepositManagerABI.abi,
     rpc,
   );
   const TokamakLayer2 = new Contract(
-    DEPLOYED.TOKAMAK_LAYER2,
+    DEPLOYED.TokamakLayer2,
     CandidateABI.abi,
     rpc,
   );
   const VaultProxy = new Contract(
-    DEPLOYED.STAKE1_PROXY,
+    DEPLOYED.Stake1Proxy,
     StakeVaultLogic.abi,
     rpc,
   );
-  const Airdrop = new Contract(DEPLOYED.AIRDROP, AirdropVaultABI.abi, rpc);
+  const Airdrop = new Contract(DEPLOYED.Airdrop, AirdropVaultABI.abi, rpc);
 
   if (want === 'TON') {
     return TON;

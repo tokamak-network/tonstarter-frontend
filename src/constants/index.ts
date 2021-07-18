@@ -26,6 +26,7 @@ export const DEPLOYED = {
   SeigManager: '0x710936500aC59e8551331871Cbad3D33d5e0D909',
   SwapProxy: '0x30e65B3A6e6868F044944Aa0e9C5d52F8dcb138d',
   TokamakLayer2: '0x1fa621d238f30f6651ddc8bd5f4be21c6b894426',
+  Airdrop: '0x49108acF8c4fD9b70eCfC0804CfB84DE6EF475Ce',
 };
 
 export const SUPPORTED_WALLETS: {[key: string]: WalletInfo} = {
