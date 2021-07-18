@@ -77,12 +77,14 @@ export const TokenComponent: FC<TokenComponentProps> = ({
     window.scrollTo(0, 350 + index * 69);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const isDisabled =
-    account === undefined ||
-    status !== 'sale' ||
-    data.fetchBlock < data.saleStartTime
-      ? true
-      : false;
+  // const isDisabled =
+  //   account === undefined ||
+  //   status !== 'sale' ||
+  //   data.fetchBlock < data.saleStartTime
+  //     ? true
+  //     : false;
+
+  const isDisabled = true;
 
   return (
     <Container
@@ -211,6 +213,7 @@ export const TokenComponent: FC<TokenComponentProps> = ({
               }
               px={34}
               fontFamily={theme.fonts.fld}
+              isDisabled={true}
               _hover={{
                 bg:
                   colorMode === 'light'
