@@ -73,6 +73,8 @@ export const fetchStakes = createAsyncThunk(
       REACT_APP_MODE === 'DEV' ? REACT_APP_DEV_API : REACT_APP_MAINNET_API;
     const fetchStakeUrl = `${API_SERVER}/stakecontracts?chainId=${CHAIN}`;
 
+    console.log(fetchStakeUrl);
+
     // @ts-ignore
     const {currentRequestId, loading} = getState().stakes;
     if (loading !== 'pending' || requestId !== currentRequestId) {
@@ -88,7 +90,6 @@ export const fetchStakes = createAsyncThunk(
     const currentBlock = await rpc.getBlockNumber();
 
     const vaultsData = store.getState().vaults.data;
-    console.log(stakeList);
     await Promise.all(
       stakeList.map(async (stake: any, index: number) => {
         let mystaked: string = '';

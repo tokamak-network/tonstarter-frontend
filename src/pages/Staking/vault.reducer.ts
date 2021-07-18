@@ -1,6 +1,11 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {RootState} from 'store/reducers';
 import {convertNumber} from 'utils/number';
+import {
+  REACT_APP_MAINNET_API,
+  REACT_APP_DEV_API,
+  REACT_APP_MODE,
+} from 'constants/index';
 
 type Vault = {
   // address: AddressDetail;
@@ -85,12 +90,17 @@ export const fetchVaults = createAsyncThunk(
       return;
     }
 
-    const chainIdforFetch = chainId === undefined ? '4' : chainId;
-    const fetchValutUrl = `https://api.tokamak.network/v1/vaults?chainId=${chainIdforFetch}`;
+    const CHAIN = REACT_APP_MODE === 'DEV' ? '4' : '1';
+    const API_SERVER =
+      REACT_APP_MODE === 'DEV' ? REACT_APP_DEV_API : REACT_APP_MAINNET_API;
+    const fetchValutUrl = `${API_SERVER}/vaults?chainId=${CHAIN}`;
+
     const vaultReq = await fetch(fetchValutUrl)
       .then((res) => res.json())
       .then((result) => result);
     const vaultData = vaultReq.datas;
+    console.log('***');
+    console.log(vaultData);
     const result = getEarningPerBlock(vaultData);
     return result;
   },
