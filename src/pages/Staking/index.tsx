@@ -130,15 +130,14 @@ const WalletInformation: FC<WalletInformationProps> = ({
   const currentBlock: number = Number(data.fetchBlock);
   const miningStart: number = Number(data.miningStartTime);
   const miningEnd: number = Number(data.miningEndTime);
+  const saleStart: number = Number(data.saleStartTime);
   const endSaleBtnDisabled =
     account === undefined || miningStart >= currentBlock ? true : false;
   const manageBtnDisabled =
     account === undefined || miningEnd <= currentBlock ? true : false;
 
-  console.log(miningStart > currentBlock);
-
   const btnDisabledStake = () => {
-    return account === undefined || miningStart < currentBlock
+    return saleStart >= currentBlock
       ? setStakeDisabled(true)
       : setStakeDisabled(false);
   };
@@ -259,7 +258,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
         </Box>
         <Grid pos="relative" templateColumns={'repeat(2, 1fr)'} gap={6}>
           <Button
-            {...(stakeDisabled === true
+            {...(stakeDisabled || (account === undefined) === true
               ? {...btnStyle.btnDisable({colorMode})}
               : {...btnStyle.btnAble()})}
             isDisabled={stakeDisabled}
