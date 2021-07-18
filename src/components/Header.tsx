@@ -275,7 +275,9 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
               'https://github.com/Onther-Tech/tonstarter-docs/blob/main/whitepaper/TONStarter%20Whitepaper.md',
             )
           }>
-          <Text color="white.100">White Paper</Text>
+          <Text className={match?.isExact ? 'link-match' : 'link'}>
+            WhitePaper
+          </Text>
         </NavLink>
       </Stack>
     </Box>
