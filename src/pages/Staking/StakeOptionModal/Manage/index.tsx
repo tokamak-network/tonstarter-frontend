@@ -90,7 +90,7 @@ export const ManageModal = () => {
               }>
               <Flex justifyContent="space-between" alignItems="center" h="55px">
                 <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
-                  Total
+                  Total Staked
                 </Text>
                 <Text
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}

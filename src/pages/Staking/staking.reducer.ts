@@ -5,6 +5,11 @@ import {period} from 'utils';
 import {TokenType} from 'types/index';
 import {convertNumber} from 'utils/number';
 import store from 'store';
+import {
+  REACT_APP_MAINNET_API,
+  REACT_APP_DEV_API,
+  REACT_APP_MODE,
+} from 'constants/index';
 
 const rpc = getRPC();
 
@@ -63,9 +68,10 @@ export const fetchStakes = createAsyncThunk(
     //result to dispatch data for Stakes store
     let projects: any[] = [];
 
-    const chainIdforFetch = chainId === undefined ? '4' : chainId;
-    // const fetchValutUrl = `https://api.tokamak.network/v1/vaults?chainId=${chainIdforFetch}`;
-    const fetchStakeUrl = `https://api.tokamak.network/v1/stakecontracts?chainId=${chainIdforFetch}`;
+    const CHAIN = REACT_APP_MODE === 'DEV' ? '4' : '1';
+    const API_SERVER =
+      REACT_APP_MODE === 'DEV' ? REACT_APP_DEV_API : REACT_APP_MAINNET_API;
+    const fetchStakeUrl = `${API_SERVER}/stakecontracts?chainId=${CHAIN}`;
 
     // @ts-ignore
     const {currentRequestId, loading} = getState().stakes;
@@ -73,20 +79,11 @@ export const fetchStakes = createAsyncThunk(
       return;
     }
 
-    // const vaultReq = await fetch(fetchValutUrl)
-    //   .then((res) => res.json())
-    //   .then((result) => result);
-
     const stakeReq = await fetch(fetchStakeUrl)
       .then((res) => res.json())
       .then((result) => result);
 
     const stakeList = stakeReq.datas;
-    // const vaultList = vaultReq.datas;
-
-    // console.log('-----------api-----------');
-    // console.log(vaultList);
-    // console.log(stakeList);
 
     const currentBlock = await rpc.getBlockNumber();
 
@@ -97,7 +94,6 @@ export const fetchStakes = createAsyncThunk(
         let mystaked: string = '';
 
         const status = await getStatus(stake, currentBlock);
-        console.log(stake);
         const stakeInfo: Partial<Stake> = {
           contractAddress: stake.stakeContract,
           name: stake.name,

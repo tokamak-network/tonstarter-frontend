@@ -22,8 +22,6 @@ export const toastWithReceipt = async (
     );
     store.dispatch(setTxPending({tx: false}));
 
-    console.log(recepit);
-
     await recepit
       .wait()
       .then((result: any) => {

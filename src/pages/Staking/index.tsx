@@ -31,7 +31,7 @@ import {
   WithdrawalOptionModal,
   SwapModal,
 } from './StakeOptionModal';
-import store, {AppDispatch} from 'store';
+import {AppDispatch} from 'store';
 import {openModal, closeModal} from 'store/modal.reducer';
 import {ManageModal} from './StakeOptionModal/Manage/index';
 import {formatStartTime} from 'utils/timeStamp';
@@ -84,8 +84,12 @@ const GetDate = ({time, currentBlock, contractAddress, type}: GetDateProp) => {
   const {colorMode} = useColorMode();
   const [date, setDate] = useState('');
   useMemo(async () => {
-    const result = await formatStartTime(time, currentBlock);
-    setDate(result);
+    try {
+      const result = await formatStartTime(time, currentBlock);
+      setDate(result);
+    } catch (e) {
+      console.log(e);
+    }
   }, [time, currentBlock]);
 
   return (
@@ -122,14 +126,13 @@ const WalletInformation: FC<WalletInformationProps> = ({
   const [unstakeDisabled, setUnstakeDisabled] = useState(true);
   const [claimDisabled, setClaimDisabled] = useState(true);
   const [manageDisabled, setManageDisabled] = useState(true);
-  const btnDisabled = account === undefined ? true : false;
   const currentBlock: number = Number(data.fetchBlock);
   const miningStart: number = Number(data.miningStartTime);
   const miningEnd: number = Number(data.miningEndTime);
-  const manageBtnDisabled = miningEnd <= currentBlock ? true : false;
-
-  console.log(data);
-  console.log(tosBalance);
+  const endSaleBtnDisabled =
+    account === undefined || miningStart >= currentBlock ? true : false;
+  const manageBtnDisabled =
+    account === undefined || miningEnd <= currentBlock ? true : false;
 
   const btnDisabledStake = () => {
     return account === undefined || miningStart < currentBlock
@@ -284,10 +287,10 @@ const WalletInformation: FC<WalletInformationProps> = ({
           </Button>
           {manageDisabled === true ? (
             <Button
-              {...(btnDisabled === true
+              {...(endSaleBtnDisabled === true
                 ? {...btnStyle.btnDisable({colorMode})}
                 : {...btnStyle.btnAble()})}
-              isDisabled={btnDisabled}
+              isDisabled={endSaleBtnDisabled}
               fontSize={'14px'}
               opacity={loading === true ? 0.5 : 1}
               onClick={() =>
@@ -472,8 +475,7 @@ export const Staking = () => {
 
   const renderRowSubComponent = useCallback(
     ({row}) => {
-      const {account, contractAddress} = row.original;
-      const currentBlock = store.getState().appConfig.data.blockNumber;
+      const {account, contractAddress, fetchBlock} = row.original;
       return (
         <Flex
           w="100%"
@@ -496,7 +498,7 @@ export const Staking = () => {
                       ? data[row.id]?.saleStartTime
                       : data[row.id]?.miningStartTime
                   }
-                  currentBlock={currentBlock}
+                  currentBlock={fetchBlock}
                   contractAddress={contractAddress}
                   type={
                     data[row.id]?.status === 'sale'
@@ -541,7 +543,7 @@ export const Staking = () => {
                       ? data[row.id]?.saleEndTime
                       : data[row.id]?.miningEndTime
                   }
-                  currentBlock={currentBlock}
+                  currentBlock={fetchBlock}
                   contractAddress={contractAddress}
                   type={
                     data[row.id]?.status === 'sale' ? 'sale-end' : 'mining-end'

@@ -166,14 +166,4 @@ export const calculateApy = async (mainArgs: MainArgsType) => {
   const earningPerBlock = await getEarningPerBlock(blocks, cap);
 
   return earningPerBlock;
-
-  // const sortProject = balances.map(async (e: any) => {
-  //   const info = await stakeVault.stakeInfos(e.address);
-  //   console.log(info);
-  //   console.log(info.startBlcok.toString(), info.endBlock);
-  // });
-
-  // console.log(balances);
-  // return 'result';
-  //   return conertNumber(convertArgs);
 };

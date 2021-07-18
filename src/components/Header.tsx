@@ -217,14 +217,6 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
         direction={['column', 'column', 'column', 'row']}
         pt={[4, 4, 0, 0]}>
         <NavLink
-          to="/"
-          exact
-          className={match?.isExact ? 'link-match' : 'link'}
-          activeClassName={match?.isExact ? 'active-fld' : 'active'}
-          style={{zIndex: 100}}>
-          Home
-        </NavLink>
-        <NavLink
           to="/staking"
           className={match?.isExact ? 'link-match' : 'link'}
           style={{zIndex: 100}}>
@@ -271,6 +263,20 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
             style={{zIndex: 100}}
             onClick={(e) => e.preventDefault()}>
             DAO
+          </NavLink>
+        </Tooltip>
+        <Tooltip
+          hasArrow
+          placement="top"
+          label="Coming Soon"
+          color={theme.colors.white[100]}
+          bg={theme.colors.gray[375]}>
+          <NavLink
+            to="/dao"
+            className={match?.isExact ? 'link-match' : 'link'}
+            style={{zIndex: 100}}
+            onClick={(e) => e.preventDefault()}>
+            White Paper
           </NavLink>
         </Tooltip>
       </Stack>

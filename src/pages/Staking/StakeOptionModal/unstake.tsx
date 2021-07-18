@@ -23,6 +23,7 @@ export const UnstakeOptionModal = () => {
   const dispatch = useAppDispatch();
   const theme = useTheme();
   const {colorMode} = useColorMode();
+  const totalStakedBalance = data?.data?.totalStakedBalance;
 
   return (
     <Modal
@@ -69,7 +70,7 @@ export const UnstakeOptionModal = () => {
                 fontSize={'26px'}
                 fontWeight={600}
                 color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                {data.data.totalStakedBalance} TOS
+                {totalStakedBalance} TOS
               </Text>
             </Box>
           </Stack>
@@ -91,7 +92,7 @@ export const UnstakeOptionModal = () => {
                   handleCloseModal: dispatch(closeModal()),
                 })
               }
-              disabled={+data.data.totalStakedBalance <= 0}>
+              disabled={+totalStakedBalance <= 0}>
               Unstake
             </Button>
           </Box>
