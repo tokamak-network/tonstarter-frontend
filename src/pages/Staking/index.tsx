@@ -49,7 +49,6 @@ import {
 import {Dot} from 'react-animated-dots';
 import {useEffect} from 'react';
 import {closeSale} from './actions';
-import {useWindowDimensions} from 'hooks/useWindowDimentions';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
@@ -130,16 +129,15 @@ const WalletInformation: FC<WalletInformationProps> = ({
   const currentBlock: number = Number(data.fetchBlock);
   const miningStart: number = Number(data.miningStartTime);
   const miningEnd: number = Number(data.miningEndTime);
+  const saleStart: number = Number(data.saleStartTime);
   const endSaleBtnDisabled =
     account === undefined || miningStart >= currentBlock ? true : false;
   const manageBtnDisabled =
     account === undefined || miningEnd <= currentBlock ? true : false;
 
-  console.log(miningStart > currentBlock);
-
   const btnDisabledStake = () => {
-    return account === undefined || miningStart < currentBlock
-      ? setStakeDisabled(true)
+    return saleStart >= currentBlock
+      ? setStakeDisabled(false)
       : setStakeDisabled(false);
   };
 
@@ -259,7 +257,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
         </Box>
         <Grid pos="relative" templateColumns={'repeat(2, 1fr)'} gap={6}>
           <Button
-            {...(stakeDisabled === true
+            {...(stakeDisabled || (account === undefined) === true
               ? {...btnStyle.btnDisable({colorMode})}
               : {...btnStyle.btnAble()})}
             isDisabled={stakeDisabled}
@@ -592,12 +590,10 @@ export const Staking = () => {
     [data, dispatch, user, appConfig.explorerLink],
   );
 
-  const {height} = useWindowDimensions();
-
   return (
     <Fragment>
       <Head title={'Staking'} />
-      <Container maxW={'6xl'} h={height - 80}>
+      <Container maxW={'6xl'}>
         <Box py={20}>
           <PageHeader
             title={'Staking'}
