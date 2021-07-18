@@ -25,11 +25,26 @@ export const Router: FC<RouterProps> = () => {
   const {onOpen, isOpen: isModalOpen, onClose} = useDisclosure();
   const {account, chainId, library, deactivate} = useWeb3React();
 
+  console.log('***');
+  console.log(account, chainId, library);
+  console.log(useWeb3React());
+
+  console.log(account, chainId, library);
+
   //@ts-ignore
   const accountStorage = JSON.parse(window.localStorage.getItem('account'));
   if (accountStorage === null) {
     window.localStorage.setItem('account', JSON.stringify({signIn: false}));
   }
+
+  useEffect(() => {
+    if (
+      chainId !== Number(REACT_APP_DEFAULT_NETWORK) &&
+      chainId !== undefined
+    ) {
+      return alert('Please use mainnet');
+    }
+  }, [chainId]);
 
   useEffect(() => {
     if (account && chainId) {
@@ -56,24 +71,28 @@ export const Router: FC<RouterProps> = () => {
             'account',
             JSON.stringify({signIn: false}),
           );
-          return alert('please use Rinkeby test network');
+
+          return alert('please use mainnet!');
         }
-        // @ts-ignore
-        dispatch(fetchUserInfo({address: account, library})).then(() => {
-          dispatch(
-            fetchVaults({
-              chainId,
-            }) as any,
-          ).then(() => {
+
+        if (account !== undefined) {
+          // @ts-ignore
+          dispatch(fetchUserInfo({address: account, library})).then(() => {
             dispatch(
-              fetchStakes({
-                library,
-                account,
+              fetchVaults({
                 chainId,
               }) as any,
-            );
+            ).then(() => {
+              dispatch(
+                fetchStakes({
+                  library,
+                  account,
+                  chainId,
+                }) as any,
+              );
+            });
           });
-        });
+        }
       }
     }
   }, [chainId, account, library, dispatch, deactivate]);
@@ -82,10 +101,6 @@ export const Router: FC<RouterProps> = () => {
     //@ts-ignore
     const accountStorage = JSON.parse(window.localStorage.getItem('account'));
     const {signIn} = accountStorage;
-    if (accountStorage.signIn === true && account === undefined) {
-      window.localStorage.setItem('account', JSON.stringify({signIn: false}));
-      return deactivate();
-    }
     if (account === undefined && signIn === false) {
       dispatch(
         fetchVaults({
