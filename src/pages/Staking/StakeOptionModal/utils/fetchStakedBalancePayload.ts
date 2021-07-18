@@ -9,7 +9,6 @@ export const fetchStakedBalancePayload = async (
   contractAddress: string,
 ) => {
   const res = await getStakedBalance(account, contractAddress);
-  console.log(res);
   return res;
 }
 

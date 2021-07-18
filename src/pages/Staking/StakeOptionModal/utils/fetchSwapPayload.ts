@@ -23,7 +23,7 @@ const getSwapInfo = async (
   try {
     TosBalanceOfContract = await TOS.balanceOf(contractAddress);
   } catch (e) {
-    console.log(e);
+    // console.log(e);
   }
   return TosBalanceOfContract;
 };

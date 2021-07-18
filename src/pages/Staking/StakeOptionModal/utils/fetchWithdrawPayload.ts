@@ -48,7 +48,7 @@ export const fetchWithdrawPayload = async (
       type: 'ray',
     });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
   }
 };
 

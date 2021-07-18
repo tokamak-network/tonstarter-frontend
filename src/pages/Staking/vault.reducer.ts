@@ -99,8 +99,8 @@ export const fetchVaults = createAsyncThunk(
       .then((res) => res.json())
       .then((result) => result);
     const vaultData = vaultReq.datas;
-    console.log('***');
-    console.log(vaultData);
+    // console.log('***');
+    // console.log(vaultData);
     const result = getEarningPerBlock(vaultData);
     return result;
   },
