@@ -136,7 +136,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
 
   const btnDisabledStake = () => {
     return account === undefined || miningStart > currentBlock
-      ? setStakeDisabled(false)
+      ? setStakeDisabled(true)
       : setStakeDisabled(false);
   };
 
@@ -597,7 +597,7 @@ export const Staking = () => {
           <PageHeader
             title={'Staking'}
             subtitle={
-              'Put your tokens into FLD and earn reward without losing principal'
+              'Put your tokens into TON Starter and earn reward without losing principal'
             }
           />
         </Box>
