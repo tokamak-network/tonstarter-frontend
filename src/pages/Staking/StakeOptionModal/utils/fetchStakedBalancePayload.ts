@@ -1,5 +1,5 @@
 import {getTokamakContract, getRPC} from 'utils/contract';
-import {REACT_APP_TOKAMAK_LAYER2} from 'constants/index';
+import {DEPLOYED} from 'constants/index';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import {Contract} from '@ethersproject/contracts';
 import {convertNumber} from 'utils/number';
@@ -29,8 +29,8 @@ const getStakedBalance = async (
 
   return Promise.all([
     StakeTONContract.totalStakedAmount(),
-    seigManager.stakeOf(REACT_APP_TOKAMAK_LAYER2, contractAddress),
-    depositManager.pendingUnstaked(REACT_APP_TOKAMAK_LAYER2, contractAddress),
+    seigManager.stakeOf(DEPLOYED.TokamakLayer2, contractAddress),
+    depositManager.pendingUnstaked(DEPLOYED.TokamakLayer2, contractAddress),
     WTON.balanceOf(contractAddress),
     TON.balanceOf(contractAddress),
   ]).then((result) => {

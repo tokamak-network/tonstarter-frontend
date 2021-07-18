@@ -3,7 +3,7 @@ import {Contract} from '@ethersproject/contracts';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import store from 'store';
 import {setTxPending} from 'store/tx.reducer';
-import {REACT_APP_TOKAMAK_LAYER2} from 'constants/index';
+import {DEPLOYED} from 'constants/index';
 
 type Withdraw = {
   userAddress: string | null | undefined;
@@ -27,7 +27,7 @@ export const withdraw = async (args: Withdraw) => {
   if (endBlock > currentBlock) {
     try {
       await StakeTONContract.connect(signer)
-        .tokamakProcessUnStaking(REACT_APP_TOKAMAK_LAYER2)
+        .tokamakProcessUnStaking(DEPLOYED.TokamakLayer2)
         .then((receipt: any) => {
           alert(`Tx sent successfully! Tx hash is ${receipt?.hash}`);
           store.dispatch(setTxPending({tx: false}));

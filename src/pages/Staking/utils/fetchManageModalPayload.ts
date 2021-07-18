@@ -1,5 +1,5 @@
 import {getTokamakContract, getRPC} from 'utils/contract';
-import {REACT_APP_TOKAMAK_LAYER2} from 'constants/index';
+import {DEPLOYED} from 'constants/index';
 import {formatEther} from '@ethersproject/units';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import {Contract} from '@ethersproject/contracts';
@@ -40,8 +40,8 @@ const getUserInfoForManage = async (
     StakeTONContract?.userStaked(account),
     L2Contract?.stakedOf(account),
     StakeTONContract.totalStakedAmount(),
-    seigManager.stakeOf(REACT_APP_TOKAMAK_LAYER2, contractAddress),
-    depositManager.pendingUnstaked(REACT_APP_TOKAMAK_LAYER2, contractAddress),
+    seigManager.stakeOf(DEPLOYED.TokamakLayer2, contractAddress),
+    depositManager.pendingUnstaked(DEPLOYED.TokamakLayer2, contractAddress),
     WTON.balanceOf(contractAddress),
     TON.balanceOf(contractAddress),
     StakeTONContract.canRewardAmount(account, currentBlock),

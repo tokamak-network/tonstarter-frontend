@@ -64,8 +64,6 @@ export function getTokamakContract(want: string, address?: string): any {
   const rpc = getRPC();
 
   const TON = new Contract(DEPLOYED.TON, TonABI.abi, rpc);
-  console.log(DEPLOYED.TON);
-  console.log(DEPLOYED.TON)
   const WTON = new Contract(DEPLOYED.WTON, WtonABI.abi, rpc);
   const TOS = new Contract(DEPLOYED.TOS,  TosABI.abi, rpc);
   const SeigManager = new Contract(
@@ -73,7 +71,7 @@ export function getTokamakContract(want: string, address?: string): any {
     SeigManagerABI.abi,
     rpc,
   );
-  
+
   const DepositManager = new Contract(
     DEPLOYED.DepositManager,
     DepositManagerABI.abi,

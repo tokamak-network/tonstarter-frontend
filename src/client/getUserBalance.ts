@@ -3,7 +3,7 @@ import * as StakeTON from 'services/abis/StakeTON.json';
 import {getContract, getRPC} from 'utils/contract';
 import store from 'store';
 import {convertNumber} from 'utils/number';
-import {REACT_APP_TON} from 'constants/index';
+import {DEPLOYED} from 'constants/index';
 import * as ERC20 from 'services/abis/ERC20.json';
 import {BigNumber} from 'ethers';
 
@@ -30,7 +30,7 @@ export const getUserBalance = async (contractAddress: any) => {
 };
 
 export const getUserTonBalance = async ({account, library}: any) => {
-  const contract = getContract(REACT_APP_TON, ERC20.abi, library);
+  const contract = getContract(DEPLOYED.TON, ERC20.abi, library);
   const contractIserBalance = await contract.balanceOf(account);
   const balance = convertNumber({amount: String(contractIserBalance)});
   return balance;

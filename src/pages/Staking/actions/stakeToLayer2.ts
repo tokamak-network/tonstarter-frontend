@@ -3,7 +3,7 @@ import {Contract} from '@ethersproject/contracts';
 import store from 'store';
 import {setTxPending} from 'store/tx.reducer';
 import {convertToWei} from 'utils/number';
-import {REACT_APP_TOKAMAK_LAYER2} from 'constants/index';
+import {DEPLOYED} from 'constants/index';
 import * as StakeTON from 'services/abis/StakeTON.json';
 
 type StakeToLayer2 = {
@@ -54,7 +54,7 @@ export const stakeL2 = async (args: StakeToLayer2) => {
     try {
       store.dispatch(setTxPending({tx: true}));
       await StakeTONContract.connect(signer)
-        .tokamakStaking(REACT_APP_TOKAMAK_LAYER2, tonAmount)
+        .tokamakStaking(DEPLOYED.TokamakLayer2, tonAmount)
         .then((receipt: any) => {
           alert(`Tx sent successfully! Tx hash is ${receipt?.hash}`);
           store.dispatch(setTxPending({tx: false}));
