@@ -100,7 +100,18 @@ const stakeTon = async (args: StakeTon) => {
       }
     } catch (err) {
       store.dispatch(setTxPending({tx: false}));
-      console.log(err);
+      store.dispatch(
+        //@ts-ignore
+        openToast({
+          payload: {
+            status: 'error',
+            title: 'Tx fail to send',
+            description: `something went wrong`,
+            duration: 5000,
+            isClosable: true,
+          },
+        }),
+      );
     }
   } else {
     return store.dispatch(
