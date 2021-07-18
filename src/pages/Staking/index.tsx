@@ -49,7 +49,6 @@ import {
 import {Dot} from 'react-animated-dots';
 import {useEffect} from 'react';
 import {closeSale} from './actions';
-import {useWindowDimensions} from 'hooks/useWindowDimentions';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
@@ -138,7 +137,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
 
   const btnDisabledStake = () => {
     return saleStart >= currentBlock
-      ? setStakeDisabled(true)
+      ? setStakeDisabled(false)
       : setStakeDisabled(false);
   };
 
