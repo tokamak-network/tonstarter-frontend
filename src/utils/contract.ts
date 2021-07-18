@@ -73,6 +73,7 @@ export function getTokamakContract(want: string, address?: string): any {
     SeigManagerABI.abi,
     rpc,
   );
+  
   const DepositManager = new Contract(
     DEPLOYED.DepositManager,
     DepositManagerABI.abi,
