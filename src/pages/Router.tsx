@@ -75,24 +75,22 @@ export const Router: FC<RouterProps> = () => {
           return alert('please use mainnet!');
         }
 
-        if (account !== undefined) {
-          // @ts-ignore
-          dispatch(fetchUserInfo({address: account, library})).then(() => {
+        // @ts-ignore
+        dispatch(fetchUserInfo({address: account, library})).then(() => {
+          dispatch(
+            fetchVaults({
+              chainId,
+            }) as any,
+          ).then(() => {
             dispatch(
-              fetchVaults({
+              fetchStakes({
+                library,
+                account,
                 chainId,
               }) as any,
-            ).then(() => {
-              dispatch(
-                fetchStakes({
-                  library,
-                  account,
-                  chainId,
-                }) as any,
-              );
-            });
+            );
           });
-        }
+        });
       }
     }
   }, [chainId, account, library, dispatch, deactivate]);
