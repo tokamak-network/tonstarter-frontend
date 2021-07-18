@@ -135,8 +135,10 @@ const WalletInformation: FC<WalletInformationProps> = ({
   const manageBtnDisabled =
     account === undefined || miningEnd <= currentBlock ? true : false;
 
+  console.log(miningStart > currentBlock);
+
   const btnDisabledStake = () => {
-    return account === undefined || miningStart > currentBlock
+    return account === undefined || miningStart < currentBlock
       ? setStakeDisabled(true)
       : setStakeDisabled(false);
   };
