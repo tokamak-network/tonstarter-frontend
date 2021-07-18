@@ -8,6 +8,7 @@ import {
   Tooltip,
   CircularProgress,
   useColorMode,
+  Text,
 } from '@chakra-ui/react';
 import React from 'react';
 import {shortenAddress} from 'utils';
@@ -265,20 +266,19 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
             DAO
           </NavLink>
         </Tooltip>
-        <Tooltip
-          hasArrow
-          placement="top"
-          label="Coming Soon"
-          color={theme.colors.white[100]}
-          bg={theme.colors.gray[375]}>
-          <NavLink
-            to="/dao"
-            className={match?.isExact ? 'link-match' : 'link'}
-            style={{zIndex: 100}}
-            onClick={(e) => e.preventDefault()}>
-            White Paper
-          </NavLink>
-        </Tooltip>
+        <NavLink
+          to="/"
+          className={match?.isExact ? 'link-match' : 'link'}
+          style={{zIndex: 100}}
+          onClick={() =>
+            window.open(
+              'https://github.com/Onther-Tech/tonstarter-docs/blob/main/whitepaper/TONStarter%20Whitepaper.md',
+            )
+          }>
+          <Text className={match?.isExact ? 'link-match' : 'link'}>
+            WhitePaper
+          </Text>
+        </NavLink>
       </Stack>
     </Box>
   );

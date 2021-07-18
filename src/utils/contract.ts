@@ -6,7 +6,7 @@ import {
   Web3Provider,
   JsonRpcProvider,
 } from '@ethersproject/providers';
-
+import {DEPLOYED} from 'constants/index';
 import * as TonABI from 'services/abis/TON.json';
 import * as WtonABI from 'services/abis/WTON.json';
 import * as TosABI from 'services/abis/TOS.json';
@@ -18,16 +18,16 @@ import * as StakeVaultLogic from 'services/abis/Stake1Logic.json';
 import * as StakeVault from 'services/abis/Stake1Vault.json';
 // import * as StakeVaultStorage from 'services/abis/StakeVaultStorage.json';
 import * as AirdropVaultABI from 'services/abis/AirdropVault.json';
-import {
-  REACT_APP_TOKAMAK_LAYER2,
-  REACT_APP_TON,
-  REACT_APP_TOS,
-  REACT_APP_DEPOSIT_MANAGER,
-  REACT_APP_SEIG_MANAGER,
-  REACT_APP_WTON,
-  REACT_APP_STAKE1_PROXY,
-  REACT_APP_AIRDROP,
-} from 'constants/index';
+// import {
+//   DEPLOYED.TOKAMAK_LAYER2,
+//   DEPLOYED.TON,
+//   DEPLOYED.TOS,
+//   DEPLOYED.DEPOSIT_MANAGER,
+//   DEPLOYED.SEIG_MANAGER,
+//   DEPLOYED.WTON,
+//   DEPLOYED.STAKE1_PROXY,
+//   DEPLOYED.AIRDROP,
+// } from 'constants/index';
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {
@@ -54,45 +54,49 @@ export function getProviderOrSigner(
 }
 
 export function getRPC(): JsonRpcProvider {
-  return new JsonRpcProvider('https://rinkeby.rpc.tokamak.network');
-  // return new JsonRpcProvider(
-  //   'https://rinkeby.infura.io/v3/34448178b25e4fbda6d80f4da62afba2',
-  // );
+  // return new JsonRpcProvider('https://rinkeby.rpc.tokamak.network');
+  return new JsonRpcProvider(
+    'https://mainnet.infura.io/v3/34448178b25e4fbda6d80f4da62afba2',
+  );
 }
 
 export function getTokamakContract(want: string, address?: string): any {
   const rpc = getRPC();
 
-  const TON = new Contract(REACT_APP_TON, TonABI.abi, rpc);
-  const WTON = new Contract(REACT_APP_WTON, WtonABI.abi, rpc);
-  const TOS = new Contract(REACT_APP_TOS, TosABI.abi, rpc);
+  const TON = new Contract(DEPLOYED.TON, TonABI.abi, rpc);
+  console.log(DEPLOYED.TON);
+  console.log(DEPLOYED.TON)
+  const WTON = new Contract(DEPLOYED.WTON, WtonABI.abi, rpc);
+  const TOS = new Contract(DEPLOYED.TOS,  TosABI.abi, rpc);
   const SeigManager = new Contract(
-    REACT_APP_SEIG_MANAGER,
+    DEPLOYED.SEIG_MANAGER,
     SeigManagerABI.abi,
     rpc,
   );
   const DepositManager = new Contract(
-    REACT_APP_DEPOSIT_MANAGER,
+    DEPLOYED.DEPOSIT_MANAGER,
     DepositManagerABI.abi,
     rpc,
   );
   const TokamakLayer2 = new Contract(
-    REACT_APP_TOKAMAK_LAYER2,
+    DEPLOYED.TOKAMAK_LAYER2,
     CandidateABI.abi,
     rpc,
   );
-  const VaultProxy = new Contract(REACT_APP_STAKE1_PROXY, StakeVaultLogic.abi, rpc);
-  const Airdrop = new Contract(REACT_APP_AIRDROP, AirdropVaultABI.abi, rpc);
+  const VaultProxy = new Contract(
+    DEPLOYED.STAKE1_PROXY,
+    StakeVaultLogic.abi,
+    rpc,
+  );
+  const Airdrop = new Contract(DEPLOYED.AIRDROP, AirdropVaultABI.abi, rpc);
 
   if (want === 'TON') {
     return TON;
   } else if (want === 'TOS') {
     return TOS;
-  } 
-  else if (want === 'Airdrop') {
+  } else if (want === 'Airdrop') {
     return Airdrop;
-  } 
-  else if (want === 'WTON') {
+  } else if (want === 'WTON') {
     return WTON;
   } else if (want === 'SeigManager') {
     return SeigManager;

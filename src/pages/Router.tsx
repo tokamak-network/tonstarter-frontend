@@ -27,9 +27,19 @@ export const Router: FC<RouterProps> = () => {
 
   //@ts-ignore
   const accountStorage = JSON.parse(window.localStorage.getItem('account'));
+
   if (accountStorage === null) {
     window.localStorage.setItem('account', JSON.stringify({signIn: false}));
   }
+
+  useEffect(() => {
+    if (
+      chainId !== Number(REACT_APP_DEFAULT_NETWORK) &&
+      chainId !== undefined
+    ) {
+      return alert('Please use mainnet');
+    }
+  }, [chainId]);
 
   useEffect(() => {
     if (account && chainId) {
@@ -56,8 +66,10 @@ export const Router: FC<RouterProps> = () => {
             'account',
             JSON.stringify({signIn: false}),
           );
-          return alert('please use Rinkeby test network');
+
+          return alert('please use mainnet!');
         }
+
         // @ts-ignore
         dispatch(fetchUserInfo({address: account, library})).then(() => {
           dispatch(
@@ -82,10 +94,6 @@ export const Router: FC<RouterProps> = () => {
     //@ts-ignore
     const accountStorage = JSON.parse(window.localStorage.getItem('account'));
     const {signIn} = accountStorage;
-    if (accountStorage.signIn === true && account === undefined) {
-      window.localStorage.setItem('account', JSON.stringify({signIn: false}));
-      return deactivate();
-    }
     if (account === undefined && signIn === false) {
       dispatch(
         fetchVaults({

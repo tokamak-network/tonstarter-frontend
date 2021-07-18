@@ -30,7 +30,6 @@ export const StakeOptionModal = () => {
   const {colorMode} = useColorMode();
   const {value, setValue, onChange} = useInput();
   const {handleCloseModal} = useModal(setValue);
-
   const setMax = useCallback((_e) => setValue(balance), [setValue, balance]);
 
   return (
@@ -84,12 +83,10 @@ export const StakeOptionModal = () => {
                 const {target, keyCode} = e;
                 //@ts-ignore
                 const {selectionStart, value} = target;
-                console.log(keyCode);
-                console.log(value.split('')[selectionStart]);
 
                 if (keyCode === 46 && value.split('')[selectionStart] === ',') {
-                  console.log('ho');
-                  return;
+                  //@ts-ignore
+                  return (e.target.selectionStart = selectionStart);
                 }
                 if (
                   keyCode === 39 &&

@@ -65,6 +65,8 @@ export const TokenComponent: FC<TokenComponentProps> = ({
     getPrice();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  console.log(data.fetchBlock < data.saleStartTime);
+
   const handleNavigation = useCallback((type) => {
     history.push('./staking');
     window.scrollTo(0, 0);
@@ -77,7 +79,12 @@ export const TokenComponent: FC<TokenComponentProps> = ({
     window.scrollTo(0, 350 + index * 69);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const isDisabled = account === undefined || status !== 'sale' ? true : false;
+  const isDisabled =
+    account === undefined ||
+    status !== 'sale' ||
+    data.fetchBlock < data.saleStartTime
+      ? true
+      : false;
 
   return (
     <Container

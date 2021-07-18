@@ -49,6 +49,7 @@ import {
 import {Dot} from 'react-animated-dots';
 import {useEffect} from 'react';
 import {closeSale} from './actions';
+import {useWindowDimensions} from 'hooks/useWindowDimentions';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
@@ -134,9 +135,11 @@ const WalletInformation: FC<WalletInformationProps> = ({
   const manageBtnDisabled =
     account === undefined || miningEnd <= currentBlock ? true : false;
 
+  console.log(miningStart > currentBlock);
+
   const btnDisabledStake = () => {
     return account === undefined || miningStart < currentBlock
-      ? setStakeDisabled(false)
+      ? setStakeDisabled(true)
       : setStakeDisabled(false);
   };
 
@@ -589,15 +592,17 @@ export const Staking = () => {
     [data, dispatch, user, appConfig.explorerLink],
   );
 
+  const {height} = useWindowDimensions();
+
   return (
     <Fragment>
       <Head title={'Staking'} />
-      <Container maxW={'6xl'}>
+      <Container maxW={'6xl'} h={height - 80}>
         <Box py={20}>
           <PageHeader
             title={'Staking'}
             subtitle={
-              'Put your tokens into FLD and earn reward without losing principal'
+              'Put your tokens into TONStarter and earn reward without losing principal'
             }
           />
         </Box>
