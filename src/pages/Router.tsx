@@ -15,6 +15,7 @@ import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import {AirdropModal} from 'components/Airdrop/Index';
 import {fetchVaults} from './Staking/vault.reducer';
 import {REACT_APP_DEFAULT_NETWORK} from 'constants/index';
+import {MobilePreOpen} from './PreOpen/Index';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -102,7 +103,7 @@ export const Router: FC<RouterProps> = () => {
       // @ts-ignore
       // dispatch(fetchUserInfo());
     }
-  }, [account, dispatch, library, chainId]);
+  }, [account, dispatch, library, chainId, deactivate]);
 
   const handleWalletModalOpen = (state: string) => {
     setWalletState(state);
@@ -112,7 +113,7 @@ export const Router: FC<RouterProps> = () => {
   const {width} = useWindowDimensions();
 
   if (width < 1100) {
-    // return <MobilePreOpen />;
+    return <MobilePreOpen />;
   }
 
   return (

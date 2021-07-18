@@ -2,34 +2,8 @@ import {Head} from 'components/SEO';
 import {Fragment} from 'react';
 import {Flex, Text, Image, Container, useTheme, Center} from '@chakra-ui/react';
 import logoDark from 'assets/svgs/fldw_bi.svg';
-import Countdown from 'react-countdown';
-import {useState} from 'react';
 
 const whiteWithOpacity = `rgba(255, 255, 255, 0.5)`;
-
-const trimDigit = (arg: any) => {
-  if (String(arg).length === 1) {
-    return `0${arg}`;
-  }
-  return arg;
-};
-
-//@ts-ignore
-const countDownRenderer = ({days, hours, minutes, seconds, completed}) => {
-  if (completed) {
-    // Render a completed state
-    return null;
-  } else {
-    // Render a countdown
-    return (
-      <Text fontSize={'3.438em'} fontWeight={600} mb={'103px'}>
-        {days}
-        <span style={{color: '#ffff07'}}>D</span> {trimDigit(hours)}:
-        {trimDigit(minutes)}:{trimDigit(seconds)}
-      </Text>
-    );
-  }
-};
 
 const TextComponent = (props: any) => {
   const {
@@ -73,9 +47,6 @@ const TextComponent = (props: any) => {
 export const MobilePreOpen = () => {
   const theme = useTheme();
 
-  //temp code for pre-open
-  const [date] = useState('2021/07/19');
-
   return (
     <Fragment>
       <Head title={'TON Starter'} />
@@ -94,10 +65,11 @@ export const MobilePreOpen = () => {
             alignItems="center"
             fontSize={'1.813em'}
             fontWeight={600}>
-            <Text>TOS Liquidity Mining</Text>
-            <Text>Coming Soon</Text>
+            <Text>TON Starter is optimized on the web</Text>
+            <Text fontSize={'20px'} fontWeight={100}>
+              Mobile is not supported yet
+            </Text>
           </Flex>
-          <Countdown date={date} renderer={countDownRenderer} />
 
           {/* <Text fontSize={'3.438em'} fontWeight={600} mb={'103px'}>
             10D 22:40:24
