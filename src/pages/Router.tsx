@@ -34,6 +34,7 @@ export const Router: FC<RouterProps> = () => {
     if (account && chainId) {
       //@ts-ignore
       const accountStorage = JSON.parse(window.localStorage.getItem('account'));
+
       //@ts-ignore
       if (accountStorage === null) {
         window.localStorage.setItem('account', JSON.stringify({signIn: false}));
@@ -54,7 +55,6 @@ export const Router: FC<RouterProps> = () => {
             'account',
             JSON.stringify({signIn: false}),
           );
-          console.log('ho?');
           return alert('please use Rinkeby test network');
         }
         // @ts-ignore
@@ -81,6 +81,10 @@ export const Router: FC<RouterProps> = () => {
     //@ts-ignore
     const accountStorage = JSON.parse(window.localStorage.getItem('account'));
     const {signIn} = accountStorage;
+    if (accountStorage.signIn === true && account === undefined) {
+      window.localStorage.setItem('account', JSON.stringify({signIn: false}));
+      return deactivate();
+    }
     if (account === undefined && signIn === false) {
       dispatch(
         fetchVaults({
@@ -104,12 +108,6 @@ export const Router: FC<RouterProps> = () => {
     setWalletState(state);
     onOpen();
   };
-
-  // if (error) {
-  //   toast({
-  //     description: data.
-  //   })
-  // }
 
   const {width} = useWindowDimensions();
 
