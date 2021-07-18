@@ -84,12 +84,10 @@ export const StakeOptionModal = () => {
                 const {target, keyCode} = e;
                 //@ts-ignore
                 const {selectionStart, value} = target;
-                console.log(keyCode);
-                console.log(value.split('')[selectionStart]);
 
                 if (keyCode === 46 && value.split('')[selectionStart] === ',') {
-                  console.log('ho');
-                  return;
+                  //@ts-ignore
+                  return (e.target.selectionStart = selectionStart);
                 }
                 if (
                   keyCode === 39 &&

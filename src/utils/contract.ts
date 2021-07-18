@@ -56,7 +56,7 @@ export function getProviderOrSigner(
 export function getRPC(): JsonRpcProvider {
   // return new JsonRpcProvider('https://rinkeby.rpc.tokamak.network');
   return new JsonRpcProvider(
-    'https://rinkeby.infura.io/v3/34448178b25e4fbda6d80f4da62afba2',
+    'https://mainnet.infura.io/v3/34448178b25e4fbda6d80f4da62afba2',
   );
 }
 
@@ -81,18 +81,20 @@ export function getTokamakContract(want: string, address?: string): any {
     CandidateABI.abi,
     rpc,
   );
-  const VaultProxy = new Contract(REACT_APP_STAKE1_PROXY, StakeVaultLogic.abi, rpc);
+  const VaultProxy = new Contract(
+    REACT_APP_STAKE1_PROXY,
+    StakeVaultLogic.abi,
+    rpc,
+  );
   const Airdrop = new Contract(REACT_APP_AIRDROP, AirdropVaultABI.abi, rpc);
 
   if (want === 'TON') {
     return TON;
   } else if (want === 'TOS') {
     return TOS;
-  } 
-  else if (want === 'Airdrop') {
+  } else if (want === 'Airdrop') {
     return Airdrop;
-  } 
-  else if (want === 'WTON') {
+  } else if (want === 'WTON') {
     return WTON;
   } else if (want === 'SeigManager') {
     return SeigManager;

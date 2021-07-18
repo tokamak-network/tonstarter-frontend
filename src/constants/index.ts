@@ -25,7 +25,7 @@ export const DEPLOYED = {
   DepositManager: '0x57F5CD759A5652A697D539F1D9333ba38C615FC2',
   SeigManager: '0x957DaC3D3C4B82088A4939BE9A8063e20cB2efBE',
   SwapProxy: '0x8032d21F59CDB42C9c94a3A41524D4CCF0Cae96c',
-  TokamakLayer2: '0x1fa621d238f30f6651ddc8bd5f4be21c6b894426',
+  TokamakLayer2: '0x42ccf0769e87cb2952634f607df1c7d62e0bbc52',
 };
 
 export const SUPPORTED_WALLETS: {[key: string]: WalletInfo} = {
@@ -59,10 +59,8 @@ export const SUPPORTED_WALLETS: {[key: string]: WalletInfo} = {
     type: 'WALLET_CONNECT',
   },
 };
-
+export const REACT_APP_DEFAULT_NETWORK = 1;
 export const REACT_APP_API_URL = process.env.REACT_APP_API_URL as string;
-export const REACT_APP_DEFAULT_NETWORK = process.env
-  .REACT_APP_DEFAULT_NETWORK as string;
 export const REACT_APP_TOS = process.env.REACT_APP_TOS as string;
 export const REACT_APP_RPC_URL = process.env.REACT_APP_RPC_URL as string;
 export const REACT_APP_STAKE_TON_LOGIC_FACTORY = process.env
