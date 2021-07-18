@@ -80,6 +80,32 @@ export const StakeOptionModal = () => {
               value={value}
               w="60%"
               mr={6}
+              onKeyDown={(e) => {
+                const {target, keyCode} = e;
+                //@ts-ignore
+                const {selectionStart, value} = target;
+                console.log(keyCode);
+                console.log(value.split('')[selectionStart]);
+
+                if (keyCode === 46 && value.split('')[selectionStart] === ',') {
+                  console.log('ho');
+                  return;
+                }
+                if (
+                  keyCode === 39 &&
+                  value.split('')[selectionStart + 1] === ','
+                ) {
+                  //@ts-ignore
+                  e.target.selectionStart += 2;
+                }
+                if (
+                  keyCode === 37 &&
+                  value.split('')[selectionStart - 2] === ','
+                ) {
+                  //@ts-ignore
+                  e.target.selectionStart -= 2;
+                }
+              }}
               onChange={onChange}
               _focus={{
                 borderWidth: 0,
