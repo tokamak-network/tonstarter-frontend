@@ -7,7 +7,7 @@ export const REACT_APP_MAINNET_API = process.env
   .REACT_APP_MAINNET_API as string;
 export const REACT_APP_DEV_API = process.env.REACT_APP_DEV_API as string;
 export const NetworkContextName = `${new Date().getTime()}-NETWORK`;
-export const DEFAULT_NETWORK = process.env.REACT_APP_DEFAULT_NETWORK as string;
+export const DEFAULT_NETWORK = 1;
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 const API_SERVER =
