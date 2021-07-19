@@ -136,8 +136,8 @@ const WalletInformation: FC<WalletInformationProps> = ({
     account === undefined || miningEnd <= currentBlock ? true : false;
 
   const btnDisabledStake = () => {
-    return saleStart >= currentBlock
-      ? setStakeDisabled(false)
+    return account === undefined || saleStart >= currentBlock
+      ? setStakeDisabled(true)
       : setStakeDisabled(false);
   };
 
@@ -257,7 +257,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
         </Box>
         <Grid pos="relative" templateColumns={'repeat(2, 1fr)'} gap={6}>
           <Button
-            {...(stakeDisabled || (account === undefined) === true
+            {...(stakeDisabled === true
               ? {...btnStyle.btnDisable({colorMode})}
               : {...btnStyle.btnAble()})}
             isDisabled={stakeDisabled}
