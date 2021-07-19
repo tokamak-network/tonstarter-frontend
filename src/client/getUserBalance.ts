@@ -5,7 +5,7 @@ import store from 'store';
 import {convertNumber} from 'utils/number';
 import {DEPLOYED} from 'constants/index';
 import * as ERC20 from 'services/abis/ERC20.json';
-import {BigNumber} from 'ethers';
+import {BigNumber, ethers} from 'ethers';
 
 const {TON_ADDRESS} = DEPLOYED;
 
@@ -55,8 +55,9 @@ const getUserInfo = async (
   account: string,
   contractAddress: string,
 ) => {
+  const provider = ethers.getDefaultProvider('mainnet');
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, library);
-  const currentBlock = await library.getBlockNumber();
+  const currentBlock = await provider.getBlockNumber();
   return Promise.all([
     StakeTONContract.userStaked(account),
     StakeTONContract.canRewardAmount(account, currentBlock),

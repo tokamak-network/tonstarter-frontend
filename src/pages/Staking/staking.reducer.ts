@@ -5,6 +5,7 @@ import {TokenType} from 'types/index';
 import {convertNumber} from 'utils/number';
 import store from 'store';
 import {fetchStakeURL} from 'constants/index';
+import {BASE_PROVIDER} from 'constants/index'
 
 export type Vault = {};
 
@@ -73,7 +74,7 @@ export const fetchStakes = createAsyncThunk(
 
     const stakeList = stakeReq.datas;
 
-    const currentBlock = await library.getBlockNumber();
+    const currentBlock = await BASE_PROVIDER.getBlockNumber();
 
     const vaultsData = store.getState().vaults.data;
     await Promise.all(

@@ -4,6 +4,7 @@ import {formatEther} from '@ethersproject/units';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import {Contract} from '@ethersproject/contracts';
 import {convertNumber} from 'utils/number';
+import {BASE_PROVIDER} from 'constants/index'
 
 export const fetchManageModalPayload = async (
   library: any,
@@ -28,7 +29,7 @@ const getUserInfoForManage = async (
   contractAddress: string,
   vaultAddress: string,
 ) => {
-  const currentBlock = await library.getBlockNumber();
+  const currentBlock = await BASE_PROVIDER.getBlockNumber();
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, library);
   const L2Contract = getTokamakContract('TokamakLayer2', library);
   const TON = getTokamakContract('TON', library);

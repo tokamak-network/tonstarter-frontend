@@ -1,6 +1,7 @@
 import {injected, walletconnect} from 'connectors';
 import {WalletInfo} from 'types';
 import {DEPLOYED_TYPE} from './type';
+import {ethers} from 'ethers';
 
 export const REACT_APP_MODE = process.env.REACT_APP_MODE as string;
 export const REACT_APP_MAINNET_INFURA_API = process.env.REACT_APP_MAINNET_INFURA_API as string;
@@ -14,6 +15,7 @@ export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 const API_SERVER =
   REACT_APP_MODE === 'DEV' ? REACT_APP_DEV_API : REACT_APP_MAINNET_API;
+export const BASE_PROVIDER = REACT_APP_MODE === 'DEV' ? ethers.getDefaultProvider('rinkeby') : ethers.getDefaultProvider('mainnet');
 export const fetchStakeURL = `${API_SERVER}/stakecontracts?chainId=${DEFAULT_NETWORK}`;
 export const fetchValutURL = `${API_SERVER}/vaults?chainId=${DEFAULT_NETWORK}`;
 

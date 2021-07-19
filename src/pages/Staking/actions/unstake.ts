@@ -4,6 +4,7 @@ import * as StakeTON from 'services/abis/StakeTON.json';
 import store from 'store';
 import {setTxPending} from 'store/tx.reducer';
 import {toastWithReceipt} from 'utils';
+import {BASE_PROVIDER} from 'constants/index'
 
 type Unstake = {
   userAddress: string | null | undefined;
@@ -16,7 +17,7 @@ type Unstake = {
 
 export const unstake = async (args: Unstake) => {
   const {userAddress, endTime, library, stakeContractAddress, mystaked} = args;
-  const currentBlock = await library.getBlockNumber();
+  const currentBlock = await BASE_PROVIDER.getBlockNumber();
 
   if (userAddress === null || userAddress === undefined) {
     return;

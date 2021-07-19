@@ -6,6 +6,7 @@ import {setTxPending} from 'store/tx.reducer';
 import store from 'store';
 import {toastWithReceipt} from 'utils';
 import {openToast} from 'store/app/toast.reducer';
+import {BASE_PROVIDER} from 'constants/index'
 
 type StakeProps = {
   userAddress: string | null | undefined;
@@ -75,7 +76,7 @@ const stakeTon = async (args: StakeTon) => {
   if (userAddress === null || userAddress === undefined) {
     return;
   }
-  const currentBlock = await library.getBlockNumber();
+  const currentBlock = await BASE_PROVIDER.getBlockNumber();
 
   if (currentBlock > saleStartTime && currentBlock < miningStartTime) {
     const tonContract = getTokamakContract('TON', library);
@@ -142,7 +143,7 @@ const stakeEth = async (args: StakeTon) => {
   if (userAddress === null || userAddress === undefined) {
     return;
   }
-  const currentBlock = await library.getBlockNumber();
+  const currentBlock = await BASE_PROVIDER.getBlockNumber();
 
   if (currentBlock > saleStartTime && currentBlock < miningStartTime) {
     const transactionRequest: any = {

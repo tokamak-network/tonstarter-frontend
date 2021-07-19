@@ -1,6 +1,6 @@
 import {getTokamakContract} from 'utils/contract';
 import {BigNumber} from 'ethers';
-import {DEPLOYED} from 'constants/index';
+import {DEPLOYED, BASE_PROVIDER} from 'constants/index';
 import {convertNumber} from 'utils/number';
 import {range} from 'lodash';
 
@@ -19,7 +19,7 @@ export const fetchWithdrawPayload = async (
         contractAddress,
       );
       const depositManager = getTokamakContract('DepositManager', library);
-      const blockNumber = await library.getBlockNumber();
+      const blockNumber = await BASE_PROVIDER.getBlockNumber();
       const pendingRequests = [];
       let index = requestIndex;
   
