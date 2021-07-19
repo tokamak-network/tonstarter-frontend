@@ -1,4 +1,4 @@
-import {getTokamakContract, getRPC} from 'utils/contract';
+import {getTokamakContract} from 'utils/contract';
 import {DEPLOYED} from 'constants/index';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import {Contract} from '@ethersproject/contracts';
@@ -7,24 +7,22 @@ import {convertNumber} from 'utils/number';
 export const fetchStakedBalancePayload = async (
   account: string,
   contractAddress: string,
+  library: any,
 ) => {
-  const res = await getStakedBalance(account, contractAddress);
+  const res = await getStakedBalance(account, contractAddress, library);
   return res;
 }
-
-const rpc = getRPC();
 
 const getStakedBalance = async (
   account: string,
   contractAddress: string,
+  library: any,
 ) => {
-  // const currentBlock = getRPC().getBlockNumber();
-  const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
-  // const L2Contract = getTokamakContract('TokamakLayer2');
-  const TON = getTokamakContract('TON');
-  const WTON = getTokamakContract('WTON');
-  const depositManager = getTokamakContract('DepositManager');
-  const seigManager = getTokamakContract('SeigManager');
+  const StakeTONContract = new Contract(contractAddress, StakeTON.abi, library);
+  const TON = getTokamakContract('TON', library);
+  const WTON = getTokamakContract('WTON', library);
+  const depositManager = getTokamakContract('DepositManager', library);
+  const seigManager = getTokamakContract('SeigManager', library);
 
   return Promise.all([
     StakeTONContract.totalStakedAmount(),

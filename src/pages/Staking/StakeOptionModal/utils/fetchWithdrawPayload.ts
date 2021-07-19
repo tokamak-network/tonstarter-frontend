@@ -1,4 +1,4 @@
-import {getTokamakContract, getRPC} from 'utils/contract';
+import {getTokamakContract} from 'utils/contract';
 import {BigNumber} from 'ethers';
 import {DEPLOYED} from 'constants/index';
 import {convertNumber} from 'utils/number';
@@ -19,7 +19,7 @@ export const fetchWithdrawPayload = async (
         contractAddress,
       );
       const depositManager = getTokamakContract('DepositManager', library);
-      const blockNumber = await getRPC().getBlockNumber();
+      const blockNumber = await library.getBlockNumber();
       const pendingRequests = [];
       let index = requestIndex;
   

@@ -57,7 +57,7 @@ const getUserInfo = async (
   contractAddress: string,
 ) => {
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, library);
-  const currentBlock = await getRPC().getBlockNumber();
+  const currentBlock = await library.getBlockNumber();
   return Promise.all([
     StakeTONContract.userStaked(account),
     StakeTONContract.canRewardAmount(account, currentBlock),

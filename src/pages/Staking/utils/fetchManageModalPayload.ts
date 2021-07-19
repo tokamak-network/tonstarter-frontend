@@ -1,4 +1,4 @@
-import {getTokamakContract, getRPC} from 'utils/contract';
+import {getTokamakContract} from 'utils/contract';
 import {DEPLOYED} from 'constants/index';
 import {formatEther} from '@ethersproject/units';
 import * as StakeTON from 'services/abis/StakeTON.json';
@@ -20,7 +20,6 @@ export const fetchManageModalPayload = async (
   return res;
 };
 
-const rpc = getRPC();
 const {TokamakLayer2_ADDRESS} = DEPLOYED;
 
 const getUserInfoForManage = async (
@@ -29,8 +28,8 @@ const getUserInfoForManage = async (
   contractAddress: string,
   vaultAddress: string,
 ) => {
-  const currentBlock = getRPC().getBlockNumber();
-  const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
+  const currentBlock = await library.getBlockNumber();
+  const StakeTONContract = new Contract(contractAddress, StakeTON.abi, library);
   const L2Contract = getTokamakContract('TokamakLayer2', library);
   const TON = getTokamakContract('TON', library);
   const WTON = getTokamakContract('WTON', library);

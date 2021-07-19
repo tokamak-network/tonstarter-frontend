@@ -1,7 +1,6 @@
 import {ApolloClient, InMemoryCache} from '@apollo/client';
 import {Contract} from '@ethersproject/contracts';
 import * as StakeTON from 'services/abis/StakeTON.json';
-import {getRPC} from 'utils/contract';
 import store from 'store';
 import {convertNumber} from 'utils/number';
 

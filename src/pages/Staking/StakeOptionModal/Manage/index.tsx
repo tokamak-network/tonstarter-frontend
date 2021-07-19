@@ -48,9 +48,9 @@ export const ManageModal = () => {
   }
   const [stakedBalance, setStakedBalance] = useState<string | undefined >('-');
 
-  const GetStakedBalance = ({title, contractAddress, user}: any) => {
+  const GetStakedBalance = ({title, contractAddress, user, library}: any) => {
     async function getStakedBalance() {
-      const result = await fetchStakedBalancePayload(user.address, contractAddress);
+      const result = await fetchStakedBalancePayload(user.address, contractAddress, library);
       // stakeContractBalanceTon
       if (title === 'Total') {
         return setStakedBalance(result.totalStakedAmount)
