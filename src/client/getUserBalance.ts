@@ -30,9 +30,9 @@ export const getUserBalance = async (contractAddress: any) => {
 };
 
 export const getUserTonBalance = async ({account, library}: any) => {
-  const contract = getContract(DEPLOYED.TON, ERC20.abi, library);
-  const contractIserBalance = await contract.balanceOf(account);
-  const balance = convertNumber({amount: String(contractIserBalance)});
+  const contract = getContract(DEPLOYED.TON_ADDRESS, ERC20.abi, library);
+  const contractUserBalance = await contract.balanceOf(account);
+  const balance = convertNumber({amount: String(contractUserBalance)});
   return balance;
 };
 
@@ -55,7 +55,7 @@ const getUserInfo = async (
   account: string,
   contractAddress: string,
 ) => {
-  const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
+  const StakeTONContract = new Contract(contractAddress, StakeTON.abi, library);
   const currentBlock = await getRPC().getBlockNumber();
   return Promise.all([
     StakeTONContract.userStaked(account),

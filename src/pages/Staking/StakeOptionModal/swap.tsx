@@ -46,6 +46,7 @@ export const SwapModal = () => {
 
   useEffect(() => {
     async function swapPayload(data: any) {
+      console.log(data)
       const result = await fetchSwapPayload(
         data.library,
         data.account,

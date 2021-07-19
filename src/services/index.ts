@@ -9,7 +9,7 @@ export const ClaimStake = createAsyncThunk(
   async ({account, value, library}: any, {rejectWithValue}) => {
     try {
       const stakeVault = await getContract(
-        DEPLOYED.StakeVaultFactory,
+        DEPLOYED.StakeVaultFactory_ADDRESS,
         StakeVault.abi,
         library,
       );

@@ -45,7 +45,7 @@ export const fetchUserInfo = createAsyncThunk(
     // let tonBalance;
     // let tosBalance;
 
-    const contract = getContract(DEPLOYED.TON, ERC20.abi, library);
+    const contract = getContract(DEPLOYED.TON_ADDRESS, ERC20.abi, library);
     // const TOS = getTokamakContract('TOS');
     // const TosBalance = await TOS.balanceOf(address);
 

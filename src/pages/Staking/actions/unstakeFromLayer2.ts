@@ -28,7 +28,7 @@ export const unstakeL2 = async (args: UnstakeFromLayer2) => {
   try {
     const receipt = await StakeTONContract.connect(
       signer,
-    ).tokamakRequestUnStaking(DEPLOYED.TokamakLayer2, wtonAmount);
+    ).tokamakRequestUnStaking(DEPLOYED.TokamakLayer2_ADDRESS, wtonAmount);
     store.dispatch(setTxPending({tx: true}));
     alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
     await receipt.wait();

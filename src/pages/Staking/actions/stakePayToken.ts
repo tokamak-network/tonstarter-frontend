@@ -40,7 +40,7 @@ export const stakePayToken = async (args: StakeProps) => {
     handleCloseModal,
   } = args;
 
-  if (payToken === DEPLOYED.TON) {
+  if (payToken === DEPLOYED.TON_ADDRESS) {
     await stakeTon({
       userAddress: userAddress,
       amount: amount,

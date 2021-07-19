@@ -1,9 +1,11 @@
 import { getTokamakContract } from '../../../utils/contract';
 import { convertNumber } from '../../../utils/number';
+import store from 'store';
 
-export const fetchAirdropPayload = async (account: any) => {
-  
-  const AirdropVault = getTokamakContract('Airdrop');
+export const fetchAirdropPayload = async () => {
+  const user = store.getState().user.data;
+  const {address: account, library} = user;
+  const AirdropVault = getTokamakContract('Airdrop', library);
   let roundInfo: any = [];
   let claimedAmount;
   try {

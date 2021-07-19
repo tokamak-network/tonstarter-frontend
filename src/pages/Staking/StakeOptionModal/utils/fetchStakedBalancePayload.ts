@@ -28,8 +28,8 @@ const getStakedBalance = async (
 
   return Promise.all([
     StakeTONContract.totalStakedAmount(),
-    seigManager.stakeOf(DEPLOYED.TokamakLayer2, contractAddress),
-    depositManager.pendingUnstaked(DEPLOYED.TokamakLayer2, contractAddress),
+    seigManager.stakeOf(DEPLOYED.TokamakLayer2_ADDRESS, contractAddress),
+    depositManager.pendingUnstaked(DEPLOYED.TokamakLayer2_ADDRESS, contractAddress),
     WTON.balanceOf(contractAddress),
     TON.balanceOf(contractAddress),
   ]).then((result) => {

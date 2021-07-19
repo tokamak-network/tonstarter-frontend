@@ -27,7 +27,7 @@ export const withdraw = async (args: Withdraw) => {
   if (endBlock > currentBlock) {
     try {
       await StakeTONContract.connect(signer)
-        .tokamakProcessUnStaking(DEPLOYED.TokamakLayer2)
+        .tokamakProcessUnStaking(DEPLOYED.TokamakLayer2_ADDRESS)
         .then((receipt: any) => {
           alert(`Tx sent successfully! Tx hash is ${receipt?.hash}`);
           store.dispatch(setTxPending({tx: false}));

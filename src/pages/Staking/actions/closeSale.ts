@@ -23,7 +23,7 @@ export const closeSale = async (args: Endsale) => {
   }
 
   const stakeVault = await new Contract(
-    DEPLOYED.Stake1Proxy,
+    DEPLOYED.Stake1Proxy_ADDRESS,
     StakeVault.abi,
     rpc,
   );
