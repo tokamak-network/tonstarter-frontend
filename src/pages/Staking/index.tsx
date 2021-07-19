@@ -35,6 +35,7 @@ import {getTotalStakers, getUserBalance} from 'client/getUserBalance';
 //@ts-ignore
 import {useEffect} from 'react';
 import {LoadingDots} from 'components/Loader/LoadingDots';
+
 type GetDateTimeType =
   | 'sale-start'
   | 'sale-end'
@@ -62,10 +63,9 @@ const GetDate = ({time, currentBlock, contractAddress, type}: GetDateProp) => {
   };
 
   useEffect(() => {
-    const abortController = new AbortController();
     fetchDate();
     return () => {
-      abortController.abort();
+      setDate('');
     };
     /*eslint-disable*/
   }, [time, currentBlock]);
@@ -190,12 +190,11 @@ export const Staking = () => {
     };
 
     useEffect(() => {
-      const abortController = new AbortController();
       if (user.address !== undefined) {
         getBalance();
       }
       return () => {
-        abortController.abort();
+        SetBalance('-');
       };
       /*eslint-disable*/
     }, [user]);
