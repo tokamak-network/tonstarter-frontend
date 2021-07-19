@@ -143,7 +143,7 @@ const WalletInformation: FC<WalletInformationProps> = ({
 
   const btnDisabledUnstake = () => {
     return account === undefined ||
-      currentBlock < miningEnd ||
+      currentBlock <= miningEnd ||
       stakeBalance === undefined ||
       stakeBalance === '0.00'
       ? setUnstakeDisabled(true)
@@ -514,7 +514,9 @@ export const Staking = () => {
                   : data[row.id]?.miningStartTime}
               </Text>
             </Flex>
-            <GetTotalStaker contractAddress={contractAddress} library={library}></GetTotalStaker>
+            <GetTotalStaker
+              contractAddress={contractAddress}
+              library={library}></GetTotalStaker>
             <GetBalance
               title={'My staked'}
               contractAddress={contractAddress}
