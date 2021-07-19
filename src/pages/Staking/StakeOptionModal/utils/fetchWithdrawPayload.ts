@@ -9,7 +9,6 @@ export const fetchWithdrawPayload = async (
   account: string,
   contractAddress: string,
 ) => {
-  console.log(contractAddress);
   if (contractAddress && library) {
     try {
       const {requestNum, requestIndex} = await getWithdrawableInfo(
