@@ -30,11 +30,11 @@ const getUserInfoForManage = async (
 ) => {
   const currentBlock = getRPC().getBlockNumber();
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
-  const L2Contract = getTokamakContract('TokamakLayer2');
-  const TON = getTokamakContract('TON');
-  const WTON = getTokamakContract('WTON');
-  const depositManager = getTokamakContract('DepositManager');
-  const seigManager = getTokamakContract('SeigManager');
+  const L2Contract = getTokamakContract('TokamakLayer2', library);
+  const TON = getTokamakContract('TON', library);
+  const WTON = getTokamakContract('WTON', library);
+  const depositManager = getTokamakContract('DepositManager', library);
+  const seigManager = getTokamakContract('SeigManager', library);
 
   return Promise.all([
     StakeTONContract?.userStaked(account),

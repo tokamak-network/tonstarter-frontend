@@ -6,7 +6,7 @@ import {
   Web3Provider,
   JsonRpcProvider,
 } from '@ethersproject/providers';
-import {DEPLOYED} from 'constants/index';
+
 import * as TonABI from 'services/abis/TON.json';
 import * as WtonABI from 'services/abis/WTON.json';
 import * as TosABI from 'services/abis/TOS.json';
@@ -18,16 +18,16 @@ import * as StakeVaultLogic from 'services/abis/Stake1Logic.json';
 import * as StakeVault from 'services/abis/Stake1Vault.json';
 // import * as StakeVaultStorage from 'services/abis/StakeVaultStorage.json';
 import * as AirdropVaultABI from 'services/abis/AirdropVault.json';
-// import {
-//   DEPLOYED.TOKAMAK_LAYER2,
-//   DEPLOYED.TON,
-//   DEPLOYED.TOS,
-//   DEPLOYED.DEPOSIT_MANAGER,
-//   DEPLOYED.SEIG_MANAGER,
-//   DEPLOYED.WTON,
-//   DEPLOYED.STAKE1_PROXY,
-//   DEPLOYED.AIRDROP,
-// } from 'constants/index';
+import {
+  REACT_APP_TOKAMAK_LAYER2,
+  REACT_APP_TON,
+  REACT_APP_TOS,
+  REACT_APP_DEPOSIT_MANAGER,
+  REACT_APP_SEIG_MANAGER,
+  REACT_APP_WTON,
+  REACT_APP_STAKE1_PROXY,
+  REACT_APP_AIRDROP,
+} from 'constants/index';
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {
@@ -60,34 +60,34 @@ export function getRPC(): JsonRpcProvider {
   );
 }
 
-export function getTokamakContract(want: string, address?: string): any {
-  const rpc = getRPC();
+export function getTokamakContract(want: string, address?: string, library?: Web3Provider): any {
+  // const rpc = getRPC();
+  const rpc = library;
 
-  const TON = new Contract(DEPLOYED.TON, TonABI.abi, rpc);
-  const WTON = new Contract(DEPLOYED.WTON, WtonABI.abi, rpc);
-  const TOS = new Contract(DEPLOYED.TOS,  TosABI.abi, rpc);
+  const TON = new Contract(REACT_APP_TON, TonABI.abi, rpc);
+  const WTON = new Contract(REACT_APP_WTON, WtonABI.abi, rpc);
+  const TOS = new Contract(REACT_APP_TOS, TosABI.abi, rpc);
   const SeigManager = new Contract(
-    DEPLOYED.SeigManager,
+    REACT_APP_SEIG_MANAGER,
     SeigManagerABI.abi,
     rpc,
   );
-
   const DepositManager = new Contract(
-    DEPLOYED.DepositManager,
+    REACT_APP_DEPOSIT_MANAGER,
     DepositManagerABI.abi,
     rpc,
   );
   const TokamakLayer2 = new Contract(
-    DEPLOYED.TokamakLayer2,
+    REACT_APP_TOKAMAK_LAYER2,
     CandidateABI.abi,
     rpc,
   );
   const VaultProxy = new Contract(
-    DEPLOYED.Stake1Proxy,
+    REACT_APP_STAKE1_PROXY,
     StakeVaultLogic.abi,
     rpc,
   );
-  const Airdrop = new Contract(DEPLOYED.Airdrop, AirdropVaultABI.abi, rpc);
+  const Airdrop = new Contract(REACT_APP_AIRDROP, AirdropVaultABI.abi, rpc);
 
   if (want === 'TON') {
     return TON;

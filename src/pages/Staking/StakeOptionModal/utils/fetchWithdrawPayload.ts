@@ -15,7 +15,7 @@ export const fetchWithdrawPayload = async (
       account,
       contractAddress,
     );
-    const depositManager = getTokamakContract('DepositManager');
+    const depositManager = getTokamakContract('DepositManager', library);
     const blockNumber = await getRPC().getBlockNumber();
     const pendingRequests = [];
     let index = requestIndex;
@@ -57,7 +57,7 @@ const getWithdrawableInfo = async (
   account: string,
   contractAddress: string,
 ) => {
-  const depositManager = getTokamakContract('DepositManager');
+  const depositManager = getTokamakContract('DepositManager', library);
   return Promise.all([
     depositManager.numPendingRequests(
       DEPLOYED.TokamakLayer2,

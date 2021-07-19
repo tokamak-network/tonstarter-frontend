@@ -1,4 +1,4 @@
-import { getTokamakContract, getSigner } from '../../../utils/contract';
+import { getTokamakContract, getSigner, getContract } from '../../../utils/contract';
 // import {Contract} from '@ethersproject/contracts';
 import store from '../../../store';
 import {setTxPending} from '../../../store/tx.reducer';
@@ -19,7 +19,8 @@ export const claimAirdrop = async (args: AirdropClaimProps) => {
   if (userAddress === null || userAddress === undefined) {
     return;
   }
-  const Airdrop = getTokamakContract('Airdrop')
+  const Airdrop = getTokamakContract('Airdrop', library)
+  // const Airdrop = getContract('Airdrop')
   const signer = getSigner(library, userAddress);
 
   try {

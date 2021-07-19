@@ -78,7 +78,7 @@ const stakeTon = async (args: StakeTon) => {
   const currentBlock = await getRPC().getBlockNumber();
 
   if (currentBlock > saleStartTime && currentBlock < miningStartTime) {
-    const tonContract = getTokamakContract('TON');
+    const tonContract = getTokamakContract('TON', library);
     if (!tonContract) {
       throw new Error(`Can't find the contract for staking actions`);
     }
