@@ -24,12 +24,6 @@ export const ManageModal = () => {
   let balance = data?.data?.stakeContractBalanceTon;
   let closed;
 
-  try {
-    closed = data?.data?.saleClosed;
-  } catch (e) {
-    console.log(e);
-  }
-
   return (
     <Modal
       isOpen={data.modal === 'manage' ? true : false}
