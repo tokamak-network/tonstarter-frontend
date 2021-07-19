@@ -21,6 +21,7 @@ export const fetchManageModalPayload = async (
 };
 
 const rpc = getRPC();
+const {TokamakLayer2_ADDRESS} = DEPLOYED;
 
 const getUserInfoForManage = async (
   library: any,
@@ -40,8 +41,8 @@ const getUserInfoForManage = async (
     StakeTONContract?.userStaked(account),
     L2Contract?.stakedOf(account),
     StakeTONContract.totalStakedAmount(),
-    seigManager.stakeOf(DEPLOYED.TokamakLayer2_ADDRESS, contractAddress),
-    depositManager.pendingUnstaked(DEPLOYED.TokamakLayer2_ADDRESS, contractAddress),
+    seigManager.stakeOf(TokamakLayer2_ADDRESS, contractAddress),
+    depositManager.pendingUnstaked(TokamakLayer2_ADDRESS, contractAddress),
     WTON.balanceOf(contractAddress),
     TON.balanceOf(contractAddress),
     StakeTONContract.canRewardAmount(account, currentBlock),

@@ -5,11 +5,7 @@ import {period} from 'utils';
 import {TokenType} from 'types/index';
 import {convertNumber} from 'utils/number';
 import store from 'store';
-import {
-  REACT_APP_MAINNET_API,
-  REACT_APP_DEV_API,
-  REACT_APP_MODE,
-} from 'constants/index';
+import {fetchStakeURL} from 'constants/index';
 
 const rpc = getRPC();
 
@@ -68,18 +64,13 @@ export const fetchStakes = createAsyncThunk(
     //result to dispatch data for Stakes store
     let projects: any[] = [];
 
-    const CHAIN = REACT_APP_MODE === 'DEV' ? '4' : '1';
-    const API_SERVER =
-      REACT_APP_MODE === 'DEV' ? REACT_APP_DEV_API : REACT_APP_MAINNET_API;
-    const fetchStakeUrl = `${API_SERVER}/stakecontracts?chainId=${CHAIN}`;
-
     // @ts-ignore
     const {currentRequestId, loading} = getState().stakes;
     if (loading !== 'pending' || requestId !== currentRequestId) {
       return;
     }
 
-    const stakeReq = await fetch(fetchStakeUrl)
+    const stakeReq = await fetch(fetchStakeURL)
       .then((res) => res.json())
       .then((result) => result);
 

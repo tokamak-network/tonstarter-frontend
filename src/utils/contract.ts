@@ -18,9 +18,18 @@ import * as StakeVaultLogic from 'services/abis/Stake1Logic.json';
 import * as StakeVault from 'services/abis/Stake1Vault.json';
 // import * as StakeVaultStorage from 'services/abis/StakeVaultStorage.json';
 import * as AirdropVaultABI from 'services/abis/AirdropVault.json';
-import {
-  DEPLOYED
-} from 'constants/index';
+import {DEPLOYED} from 'constants/index';
+
+const {
+  TokamakLayer2_ADDRESS,
+  TON_ADDRESS,
+  TOS_ADDRESS,
+  DepositManager_ADDRESS,
+  SeigManager_ADDRESS,
+  WTON_ADDRESS,
+  Stake1Proxy_ADDRESS,
+  Airdrop_ADDRESS,
+} = DEPLOYED;
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {
@@ -57,30 +66,30 @@ export function getTokamakContract(want: string, address?: string, library?: Web
   // const rpc = getRPC();
   const rpc = library;
 
-  const TON = new Contract(DEPLOYED.TON_ADDRESS, TonABI.abi, rpc);
-  const WTON = new Contract(DEPLOYED.WTON_ADDRESS, WtonABI.abi, rpc);
-  const TOS = new Contract(DEPLOYED.TOS_ADDRESS, TosABI.abi, rpc);
+  const TON = new Contract(TON_ADDRESS, TonABI.abi, rpc);
+  const WTON = new Contract(WTON_ADDRESS, WtonABI.abi, rpc);
+  const TOS = new Contract(TOS_ADDRESS, TosABI.abi, rpc);
   const SeigManager = new Contract(
-    DEPLOYED.SeigManager_ADDRESS,
+    SeigManager_ADDRESS,
     SeigManagerABI.abi,
     rpc,
   );
   const DepositManager = new Contract(
-    DEPLOYED.DepositManager_ADDRESS,
+    DepositManager_ADDRESS,
     DepositManagerABI.abi,
     rpc,
   );
   const TokamakLayer2 = new Contract(
-    DEPLOYED.TokamakLayer2_ADDRESS,
+    TokamakLayer2_ADDRESS,
     CandidateABI.abi,
     rpc,
   );
   const VaultProxy = new Contract(
-    DEPLOYED.Stake1Proxy_ADDRESS,
+    Stake1Proxy_ADDRESS,
     StakeVaultLogic.abi,
     rpc,
   );
-  const Airdrop = new Contract(DEPLOYED.Airdrop_ADDRESS, AirdropVaultABI.abi, rpc);
+  const Airdrop = new Contract(Airdrop_ADDRESS, AirdropVaultABI.abi, rpc);
 
   if (want === 'TON') {
     return TON;

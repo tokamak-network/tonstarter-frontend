@@ -3,7 +3,6 @@ import {WalletModal} from 'components/Wallet';
 import {useDisclosure} from '@chakra-ui/react';
 import {useWeb3React} from '@web3-react/core';
 import {Header} from 'components/Header';
-import {Footer} from 'components/Footer';
 import {FLDstarter} from './FLDstarter';
 import {Staking} from './Staking';
 import {Switch, Route} from 'react-router-dom';
@@ -14,8 +13,9 @@ import {fetchStakes} from './Staking/staking.reducer';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import {AirdropModal} from 'components/Airdrop/Index';
 import {fetchVaults} from './Staking/vault.reducer';
-import {REACT_APP_DEFAULT_NETWORK} from 'constants/index';
+import {DEFAULT_NETWORK} from 'constants/index';
 import {MobilePreOpen} from './PreOpen/Index';
+import {Footer} from 'components/Footer';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -33,10 +33,7 @@ export const Router: FC<RouterProps> = () => {
   }
 
   useEffect(() => {
-    if (
-      chainId !== Number(REACT_APP_DEFAULT_NETWORK) &&
-      chainId !== undefined
-    ) {
+    if (chainId !== Number(DEFAULT_NETWORK) && chainId !== undefined) {
       return alert('Please use mainnet');
     }
   }, [chainId]);
@@ -60,7 +57,7 @@ export const Router: FC<RouterProps> = () => {
       if (signIn === false) {
         deactivate();
       } else if (signIn === true) {
-        if (chainId !== Number(REACT_APP_DEFAULT_NETWORK)) {
+        if (chainId !== Number(DEFAULT_NETWORK)) {
           deactivate();
           window.localStorage.setItem(
             'account',
@@ -125,7 +122,7 @@ export const Router: FC<RouterProps> = () => {
   }
 
   return (
-    <>
+    <div style={{minHeight: '100vh'}}>
       <Header
         account={account}
         walletopen={() => handleWalletModalOpen('wallet')}
@@ -140,6 +137,6 @@ export const Router: FC<RouterProps> = () => {
       <Footer />
       <WalletModal state={walletState} isOpen={isModalOpen} onClose={onClose} />
       <AirdropModal />
-    </>
+    </div>
   );
 };

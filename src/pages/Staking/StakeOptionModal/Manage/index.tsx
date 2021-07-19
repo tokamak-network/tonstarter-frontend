@@ -37,10 +37,6 @@ export const ManageModal = () => {
   const [saleDisabled, setSaleDisabled] = useState(true);
   const [stakeL2Disabled, setStakeL2Disabled] = useState(true);
   const [swapDisabled, setSwapDisabled] = useState(true);
-  // const [availableBalance, setAvailableBalance] = useState(true);
-  // const [total, setTotal] = useState(true);
-  // const [stakedL2, setStakedL2] = useState(true);
-  // const [pendingUnstakedL2, setPendingUnstakedL2] = useState(true);
   const {colorMode} = useColorMode();
   let balance = data?.data?.stakeContractBalanceTon;
   let closed: any;

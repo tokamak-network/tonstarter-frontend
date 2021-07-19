@@ -8,6 +8,7 @@ import * as ERC20 from 'services/abis/ERC20.json';
 import {BigNumber} from 'ethers';
 
 const rpc = getRPC();
+const {TON_ADDRESS} = DEPLOYED;
 
 export const getUserBalance = async (contractAddress: any) => {
   const user = store.getState().user.data;
@@ -30,9 +31,9 @@ export const getUserBalance = async (contractAddress: any) => {
 };
 
 export const getUserTonBalance = async ({account, library}: any) => {
-  const contract = getContract(DEPLOYED.TON_ADDRESS, ERC20.abi, library);
-  const contractUserBalance = await contract.balanceOf(account);
-  const balance = convertNumber({amount: String(contractUserBalance)});
+  const contract = getContract(TON_ADDRESS, ERC20.abi, library);
+  const contractIserBalance = await contract.balanceOf(account);
+  const balance = convertNumber({amount: String(contractIserBalance)});
   return balance;
 };
 

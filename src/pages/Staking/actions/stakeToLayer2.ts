@@ -18,6 +18,7 @@ type StakeToLayer2 = {
 };
 
 const rpc = getRPC();
+const {TokamakLayer2_ADDRESS} = DEPLOYED;
 
 export const stakeL2 = async (args: StakeToLayer2) => {
   const {
@@ -54,7 +55,7 @@ export const stakeL2 = async (args: StakeToLayer2) => {
     try {
       store.dispatch(setTxPending({tx: true}));
       await StakeTONContract.connect(signer)
-        .tokamakStaking(DEPLOYED.TokamakLayer2_ADDRESS, tonAmount)
+        .tokamakStaking(TokamakLayer2_ADDRESS, tonAmount)
         .then((receipt: any) => {
           alert(`Tx sent successfully! Tx hash is ${receipt?.hash}`);
           store.dispatch(setTxPending({tx: false}));

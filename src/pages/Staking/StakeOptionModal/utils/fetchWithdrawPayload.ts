@@ -4,6 +4,8 @@ import {DEPLOYED} from 'constants/index';
 import {convertNumber} from 'utils/number';
 import {range} from 'lodash';
 
+const {TokamakLayer2_ADDRESS} = DEPLOYED;
+
 export const fetchWithdrawPayload = async (
   library: any,
   account: string,
@@ -61,12 +63,9 @@ const getWithdrawableInfo = async (
 ) => {
   const depositManager = getTokamakContract('DepositManager', library);
   return Promise.all([
-    depositManager.numPendingRequests(
-      DEPLOYED.TokamakLayer2_ADDRESS,
-      contractAddress,
-    ),
+    depositManager.numPendingRequests(TokamakLayer2_ADDRESS, contractAddress),
     depositManager.withdrawalRequestIndex(
-      DEPLOYED.TokamakLayer2_ADDRESS,
+      TokamakLayer2_ADDRESS,
       contractAddress,
     ),
   ]).then((result) => {

@@ -5,6 +5,8 @@ import * as ERC20 from 'services/abis/ERC20.json';
 import {DEPLOYED} from 'constants/index';
 import {convertNumber} from 'utils/number';
 
+// const {TON_ADDRESS} = DEPLOYED;
+
 export type User = {
   balance: string;
   address: string;

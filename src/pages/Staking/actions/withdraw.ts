@@ -14,6 +14,7 @@ type Withdraw = {
 };
 
 const rpc = getRPC();
+const {TokamakLayer2_ADDRESS} = DEPLOYED;
 
 export const withdraw = async (args: Withdraw) => {
   const {userAddress, contractAddress, miningEndTime, library} = args;
@@ -27,7 +28,7 @@ export const withdraw = async (args: Withdraw) => {
   if (endBlock > currentBlock) {
     try {
       await StakeTONContract.connect(signer)
-        .tokamakProcessUnStaking(DEPLOYED.TokamakLayer2_ADDRESS)
+        .tokamakProcessUnStaking(TokamakLayer2_ADDRESS)
         .then((receipt: any) => {
           alert(`Tx sent successfully! Tx hash is ${receipt?.hash}`);
           store.dispatch(setTxPending({tx: false}));
