@@ -3,7 +3,7 @@ import {Contract} from '@ethersproject/contracts';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import store from 'store';
 import {setTxPending} from 'store/tx.reducer';
-import {DEPLOYED} from 'constants/index';
+import {DEPLOYED, BASE_PROVIDER} from 'constants/index';
 
 type Withdraw = {
   userAddress: string | null | undefined;
@@ -20,7 +20,7 @@ export const withdraw = async (args: Withdraw) => {
   if (userAddress === null || userAddress === undefined) {
     return;
   }
-  const currentBlock = await library.getBlockNumber();
+  const currentBlock = await BASE_PROVIDER.getBlockNumber();
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, library);
   const signer = getSigner(library, userAddress);
   const endBlock = Number(miningEndTime);

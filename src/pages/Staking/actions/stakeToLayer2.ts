@@ -5,6 +5,7 @@ import {setTxPending} from 'store/tx.reducer';
 import {convertToWei} from 'utils/number';
 import {DEPLOYED} from 'constants/index';
 import * as StakeTON from 'services/abis/StakeTON.json';
+import {BASE_PROVIDER} from 'constants/index'
 
 type StakeToLayer2 = {
   userAddress: string | null | undefined;
@@ -33,7 +34,7 @@ export const stakeL2 = async (args: StakeToLayer2) => {
     return;
   }
 
-  const currentBlock = await library.getBlockNumber();
+  const currentBlock = await BASE_PROVIDER.getBlockNumber();
   const endBlock = Number(miningEndTime);
   const TON = getTokamakContract('TON');
   const tonBalance = await TON.balanceOf(userAddress);
