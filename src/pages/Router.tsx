@@ -63,8 +63,6 @@ export const Router: FC<RouterProps> = () => {
             'account',
             JSON.stringify({signIn: false}),
           );
-
-          return alert('please use mainnet!');
         }
 
         // @ts-ignore
