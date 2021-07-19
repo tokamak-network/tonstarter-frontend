@@ -33,7 +33,9 @@ export const Router: FC<RouterProps> = () => {
 
   useEffect(() => {
     if (chainId !== Number(DEFAULT_NETWORK) && chainId !== undefined) {
-      return alert('Please use mainnet');
+      const netType =
+        DEFAULT_NETWORK === 1 ? 'mainnet' : 'Rinkeby Test Network';
+      return alert(`Please use ${netType}`);
     }
   }, [chainId]);
 

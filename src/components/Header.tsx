@@ -172,15 +172,13 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
                 ? 'black.200'
                 : match?.isExact
                 ? 'blue.200'
-                : 'transparent'
+                : '#2a72e5'
             }
-            borderWidth={1}
+            borderWidth={
+              colorMode === 'light' && match?.isExact === false ? '' : 1
+            }
             borderColor={
-              colorMode === 'dark'
-                ? '#d7d9df'
-                : match?.isExact
-                ? '#a6d0ff'
-                : '#d7d9df'
+              colorMode === 'dark' ? '#d7d9df' : match?.isExact ? '#a6d0ff' : ''
             }
             borderRadius={'19px'}
             color={
@@ -188,7 +186,7 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
                 ? theme.colors.gray[0]
                 : match?.isExact
                 ? 'white.100'
-                : theme.colors.gray[175]
+                : 'white.100'
             }
             onClick={airdropModalOpen}
             fontWeight={500}
