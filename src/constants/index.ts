@@ -3,6 +3,8 @@ import {WalletInfo} from 'types';
 import {DEPLOYED_TYPE} from './type';
 
 export const REACT_APP_MODE = process.env.REACT_APP_MODE as string;
+export const REACT_APP_MAINNET_INFURA_API = process.env.REACT_APP_MAINNET_INFURA_API as string;
+export const REACT_APP_RINKEBY_INFURA_API = process.env.REACT_APP_RINKEBY_INFURA_API as string;
 export const REACT_APP_MAINNET_API = process.env
   .REACT_APP_MAINNET_API as string;
 export const REACT_APP_DEV_API = process.env.REACT_APP_DEV_API as string;

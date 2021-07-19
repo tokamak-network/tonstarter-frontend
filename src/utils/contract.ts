@@ -4,7 +4,6 @@ import {AddressZero} from '@ethersproject/constants';
 import {
   JsonRpcSigner,
   Web3Provider,
-  JsonRpcProvider,
 } from '@ethersproject/providers';
 
 import * as TonABI from 'services/abis/TON.json';
@@ -55,41 +54,31 @@ export function getProviderOrSigner(
   return account ? getSigner(library, account) : library;
 }
 
-export function getRPC(): JsonRpcProvider {
-  // return new JsonRpcProvider('https://rinkeby.rpc.tokamak.network');
-  return new JsonRpcProvider(
-    'https://mainnet.infura.io/v3/34448178b25e4fbda6d80f4da62afba2',
-  );
-}
-
 export function getTokamakContract(want: string, address?: string, library?: Web3Provider): any {
-  // const rpc = getRPC();
-  const rpc = library;
-
-  const TON = new Contract(TON_ADDRESS, TonABI.abi, rpc);
-  const WTON = new Contract(WTON_ADDRESS, WtonABI.abi, rpc);
-  const TOS = new Contract(TOS_ADDRESS, TosABI.abi, rpc);
+  const TON = new Contract(TON_ADDRESS, TonABI.abi, library);
+  const WTON = new Contract(WTON_ADDRESS, WtonABI.abi, library);
+  const TOS = new Contract(TOS_ADDRESS, TosABI.abi, library);
   const SeigManager = new Contract(
     SeigManager_ADDRESS,
     SeigManagerABI.abi,
-    rpc,
+    library,
   );
   const DepositManager = new Contract(
     DepositManager_ADDRESS,
     DepositManagerABI.abi,
-    rpc,
+    library,
   );
   const TokamakLayer2 = new Contract(
     TokamakLayer2_ADDRESS,
     CandidateABI.abi,
-    rpc,
+    library,
   );
   const VaultProxy = new Contract(
     Stake1Proxy_ADDRESS,
     StakeVaultLogic.abi,
-    rpc,
+    library,
   );
-  const Airdrop = new Contract(Airdrop_ADDRESS, AirdropVaultABI.abi, rpc);
+  const Airdrop = new Contract(Airdrop_ADDRESS, AirdropVaultABI.abi, library);
 
   if (want === 'TON') {
     return TON;
@@ -107,7 +96,7 @@ export function getTokamakContract(want: string, address?: string, library?: Web
     return TokamakLayer2;
   } else if (want === 'StakeTON') {
     if (address) {
-      return new Contract(address, StakeTON.abi, rpc);
+      return new Contract(address, StakeTON.abi, library);
     } else {
       throw Error('Need Contract Address!');
     }
@@ -115,7 +104,7 @@ export function getTokamakContract(want: string, address?: string, library?: Web
     return VaultProxy;
   } else if (want === 'Vault') {
     if (address) {
-      return new Contract(address, StakeVault.abi, rpc);
+      return new Contract(address, StakeVault.abi, library);
     } else {
       throw Error('Need Contract Address!');
     }
