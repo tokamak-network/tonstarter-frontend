@@ -1,6 +1,7 @@
-import {BigNumber, ethers} from 'ethers';
+import {BASE_PROVIDER} from 'constants/index';
+import {BigNumber} from 'ethers';
 import moment from 'moment';
-let provider = ethers.getDefaultProvider('mainnet');
+let provider = BASE_PROVIDER;
 
 export const period = (startBlockNum: BigNumber, endBlockNum: BigNumber) => {
   let startBlock = Number(startBlockNum);

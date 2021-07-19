@@ -3,9 +3,9 @@ import * as StakeTON from 'services/abis/StakeTON.json';
 import {getContract} from 'utils/contract';
 import store from 'store';
 import {convertNumber} from 'utils/number';
-import {DEPLOYED} from 'constants/index';
+import {BASE_PROVIDER, DEPLOYED} from 'constants/index';
 import * as ERC20 from 'services/abis/ERC20.json';
-import {BigNumber, ethers} from 'ethers';
+import {BigNumber} from 'ethers';
 
 const {TON_ADDRESS} = DEPLOYED;
 
@@ -55,9 +55,8 @@ const getUserInfo = async (
   account: string,
   contractAddress: string,
 ) => {
-  const provider = ethers.getDefaultProvider('mainnet');
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, library);
-  const currentBlock = await provider.getBlockNumber();
+  const currentBlock = await BASE_PROVIDER.getBlockNumber();
   return Promise.all([
     StakeTONContract.userStaked(account),
     StakeTONContract.canRewardAmount(account, currentBlock),
@@ -70,7 +69,10 @@ const getUserInfo = async (
   });
 };
 
-export const getTotalStakers = async (contractAddress: string, library:any) => {
+export const getTotalStakers = async (
+  contractAddress: string,
+  library: any,
+) => {
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, library);
   const result = await StakeTONContract.totalStakers();
   return String(BigNumber.from(result).toNumber());

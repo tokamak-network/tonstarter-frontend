@@ -401,7 +401,11 @@ export const Staking = () => {
       const res = await getTotalStakers(contractAddress, library);
       setTotalStaker(res);
     };
-    getlInfo();
+
+    useEffect(() => {
+      getlInfo();
+    }, []);
+
     return (
       <Flex flexDir={'column'} alignItems={'space-between'}>
         <Text fontSize={'15px'} color="gray.400">
@@ -430,9 +434,9 @@ export const Staking = () => {
       SetBalance(result?.rewardTosBalance);
     };
 
-    if (user.address !== undefined) {
+    useEffect(() => {
       getBalance();
-    }
+    }, [user]);
 
     if (user.address === undefined) {
       return (
