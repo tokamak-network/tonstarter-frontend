@@ -86,9 +86,6 @@ export const fetchVaults = createAsyncThunk(
       return;
     }
 
-    console.log('***');
-    console.log(fetchValutURL);
-
     const vaultReq = await fetch(fetchValutURL)
       .then((res) => res.json())
       .then((result) => result);

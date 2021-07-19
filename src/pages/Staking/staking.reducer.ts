@@ -1,13 +1,10 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {RootState} from 'store/reducers';
-import {getRPC} from 'utils/contract';
 import {period} from 'utils';
 import {TokenType} from 'types/index';
 import {convertNumber} from 'utils/number';
 import store from 'store';
 import {fetchStakeURL} from 'constants/index';
-
-const rpc = getRPC();
 
 export type Vault = {};
 
@@ -76,7 +73,7 @@ export const fetchStakes = createAsyncThunk(
 
     const stakeList = stakeReq.datas;
 
-    const currentBlock = await rpc.getBlockNumber();
+    const currentBlock = await library.getBlockNumber();
 
     const vaultsData = store.getState().vaults.data;
     await Promise.all(

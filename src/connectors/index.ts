@@ -6,15 +6,14 @@ import {WalletLinkConnector} from '@web3-react/walletlink-connector';
 import {PUBLIC_NODE_URLS_BY_NETWORK_ID} from 'utils';
 
 const POLLING_INTERVAL = 12000;
-
+console.log(PUBLIC_NODE_URLS_BY_NETWORK_ID);
 const RPC_URLS = {
-  1: PUBLIC_NODE_URLS_BY_NETWORK_ID[1],
-  3: PUBLIC_NODE_URLS_BY_NETWORK_ID[3],
-  4: PUBLIC_NODE_URLS_BY_NETWORK_ID[4],
+  1: "https://mainnet.infura.io/v3/34448178b25e4fbda6d80f4da62afba2",
+  4: "https://rinkeby.infura.io/v3/34448178b25e4fbda6d80f4da62afba2",
 };
 
 export const network = new NetworkConnector({
-  urls: {1: RPC_URLS[1], 3: RPC_URLS[3], 4: RPC_URLS[4]},
+  urls: {1: RPC_URLS[1], 4: RPC_URLS[4]},
   defaultChainId: 1,
 });
 

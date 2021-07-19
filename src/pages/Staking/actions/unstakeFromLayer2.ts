@@ -1,4 +1,4 @@
-import {getSigner, getRPC} from 'utils/contract';
+import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import store from 'store';
 import {setTxPending} from 'store/tx.reducer';
@@ -14,8 +14,6 @@ type UnstakeFromLayer2 = {
   library: any;
   handleCloseModal: any;
 };
-
-const rpc = getRPC();
 const {TokamakLayer2_ADDRESS} = DEPLOYED;
 
 export const unstakeL2 = async (args: UnstakeFromLayer2) => {
@@ -24,7 +22,7 @@ export const unstakeL2 = async (args: UnstakeFromLayer2) => {
     return;
   }
   const signer = getSigner(library, userAddress);
-  const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
+  const StakeTONContract = new Contract(contractAddress, StakeTON.abi, library);
   const wtonAmount = utils.parseUnits(amount, '27');
   try {
     const receipt = await StakeTONContract.connect(

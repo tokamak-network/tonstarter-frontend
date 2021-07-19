@@ -394,11 +394,11 @@ export const Staking = () => {
     [],
   );
 
-  const GetTotalStaker = ({contractAddress}: any) => {
+  const GetTotalStaker = ({contractAddress, library}: any) => {
     const {colorMode} = useColorMode();
     const [totalStaker, setTotalStaker] = useState('-');
     const getlInfo = async () => {
-      const res = await getTotalStakers(contractAddress);
+      const res = await getTotalStakers(contractAddress, library);
       setTotalStaker(res);
     };
     getlInfo();
@@ -476,7 +476,7 @@ export const Staking = () => {
 
   const renderRowSubComponent = useCallback(
     ({row}) => {
-      const {account, contractAddress, fetchBlock} = row.original;
+      const {account, contractAddress, fetchBlock, library} = row.original;
       return (
         <Flex
           w="100%"
@@ -514,7 +514,7 @@ export const Staking = () => {
                   : data[row.id]?.miningStartTime}
               </Text>
             </Flex>
-            <GetTotalStaker contractAddress={contractAddress}></GetTotalStaker>
+            <GetTotalStaker contractAddress={contractAddress} library={library}></GetTotalStaker>
             <GetBalance
               title={'My staked'}
               contractAddress={contractAddress}

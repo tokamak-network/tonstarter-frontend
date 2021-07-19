@@ -1,5 +1,5 @@
 import {DEPLOYED} from 'constants/index';
-import {getTokamakContract, getSigner, getRPC} from 'utils/contract';
+import {getTokamakContract, getSigner} from 'utils/contract';
 import {convertToWei} from 'utils/number';
 import {utils, ethers} from 'ethers';
 import {setTxPending} from 'store/tx.reducer';
@@ -75,7 +75,7 @@ const stakeTon = async (args: StakeTon) => {
   if (userAddress === null || userAddress === undefined) {
     return;
   }
-  const currentBlock = await getRPC().getBlockNumber();
+  const currentBlock = await library.getBlockNumber();
 
   if (currentBlock > saleStartTime && currentBlock < miningStartTime) {
     const tonContract = getTokamakContract('TON', library);
@@ -142,7 +142,7 @@ const stakeEth = async (args: StakeTon) => {
   if (userAddress === null || userAddress === undefined) {
     return;
   }
-  const currentBlock = await getRPC().getBlockNumber();
+  const currentBlock = await library.getBlockNumber();
 
   if (currentBlock > saleStartTime && currentBlock < miningStartTime) {
     const transactionRequest: any = {

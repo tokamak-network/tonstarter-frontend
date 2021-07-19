@@ -1,4 +1,4 @@
-import {getSigner, getRPC} from 'utils/contract';
+import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import store from 'store';
@@ -13,7 +13,6 @@ type Withdraw = {
   handleCloseModal: any;
 };
 
-const rpc = getRPC();
 const {TokamakLayer2_ADDRESS} = DEPLOYED;
 
 export const withdraw = async (args: Withdraw) => {
@@ -21,8 +20,8 @@ export const withdraw = async (args: Withdraw) => {
   if (userAddress === null || userAddress === undefined) {
     return;
   }
-  const currentBlock = await getRPC().getBlockNumber();
-  const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
+  const currentBlock = await library.getBlockNumber();
+  const StakeTONContract = new Contract(contractAddress, StakeTON.abi, library);
   const signer = getSigner(library, userAddress);
   const endBlock = Number(miningEndTime);
   if (endBlock > currentBlock) {

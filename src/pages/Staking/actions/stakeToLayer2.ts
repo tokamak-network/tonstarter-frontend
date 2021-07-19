@@ -1,4 +1,4 @@
-import {getTokamakContract, getSigner, getRPC} from 'utils/contract';
+import {getTokamakContract, getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import store from 'store';
 import {setTxPending} from 'store/tx.reducer';
@@ -17,7 +17,6 @@ type StakeToLayer2 = {
   handleCloseModal: any;
 };
 
-const rpc = getRPC();
 const {TokamakLayer2_ADDRESS} = DEPLOYED;
 
 export const stakeL2 = async (args: StakeToLayer2) => {
@@ -34,7 +33,7 @@ export const stakeL2 = async (args: StakeToLayer2) => {
     return;
   }
 
-  const currentBlock = await getRPC().getBlockNumber();
+  const currentBlock = await library.getBlockNumber();
   const endBlock = Number(miningEndTime);
   const TON = getTokamakContract('TON');
   const tonBalance = await TON.balanceOf(userAddress);
@@ -47,7 +46,7 @@ export const stakeL2 = async (args: StakeToLayer2) => {
   } else if (tonBalance < tonAmount) {
     return alert('unsufficient balance!');
   } else {
-    const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
+    const StakeTONContract = new Contract(contractAddress, StakeTON.abi, library);
     if (!StakeTONContract) {
       throw new Error(`Can't find the contract for staking actions`);
     }
