@@ -65,8 +65,6 @@ export const TokenComponent: FC<TokenComponentProps> = ({
     getPrice();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  console.log(data.fetchBlock < data.saleStartTime);
-
   const handleNavigation = useCallback((type) => {
     history.push('./staking');
     window.scrollTo(0, 0);
