@@ -1,13 +1,12 @@
 import {Contract} from '@ethersproject/contracts';
 import * as StakeTON from 'services/abis/StakeTON.json';
-import {getContract, getRPC} from 'utils/contract';
+import {getContract} from 'utils/contract';
 import store from 'store';
 import {convertNumber} from 'utils/number';
 import {DEPLOYED} from 'constants/index';
 import * as ERC20 from 'services/abis/ERC20.json';
 import {BigNumber} from 'ethers';
 
-const rpc = getRPC();
 const {TON_ADDRESS} = DEPLOYED;
 
 export const getUserBalance = async (contractAddress: any) => {
@@ -70,8 +69,8 @@ const getUserInfo = async (
   });
 };
 
-export const getTotalStakers = async (contractAddress: string) => {
-  const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
+export const getTotalStakers = async (contractAddress: string, library:any) => {
+  const StakeTONContract = new Contract(contractAddress, StakeTON.abi, library);
   const result = await StakeTONContract.totalStakers();
   return String(BigNumber.from(result).toNumber());
 };
