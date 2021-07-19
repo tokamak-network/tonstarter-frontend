@@ -32,6 +32,8 @@ export const StakeOptionModal = () => {
   const {handleCloseModal} = useModal(setValue);
   const setMax = useCallback((_e) => setValue(balance), [setValue, balance]);
 
+  const period = data?.data?.period === "a month" ? "1 month" : data.data?.period
+
   return (
     <Modal
       isOpen={data.modal === 'stake' ? true : false}
@@ -150,7 +152,7 @@ export const StakeOptionModal = () => {
               _hover={{...theme.btnHover}}
               onClick={() => {
                 const question = window.confirm(
-                  `You can not withdraw this ${value} TON for next ${data.data.period}, and also its TON reward can not be given to you for this period(Except for TOS reward). Are you sure you want to stake?`,
+                  `You can not withdraw this ${value} TON for next ${period}, and also its TON reward can not be given to you for this period(Except for TOS reward). Are you sure you want to stake?`,
                 );
                 if (question === true) {
                   stakePayToken({
