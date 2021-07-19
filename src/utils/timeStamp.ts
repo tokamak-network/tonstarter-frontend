@@ -1,6 +1,11 @@
 import {BigNumber, ethers} from 'ethers';
 import moment from 'moment';
-let provider = ethers.getDefaultProvider('rinkeby');
+
+import {getRPC} from './contract';
+
+//let provider = ethers.getDefaultProvider('rinkeby');
+let provider = getRPC();
+
 export const period = (startBlockNum: BigNumber, endBlockNum: BigNumber) => {
   let startBlock = Number(startBlockNum);
   let endBlock = Number(endBlockNum);
@@ -12,16 +17,27 @@ export const formatStartTime = async (
   blockNum: string | undefined,
   currentBlock: number,
 ) => {
-  const blockNumberBN = BigNumber.from(blockNum);
+  console.log('blockNum',blockNum);
+  console.log('currentBlock',currentBlock);
+  const blockNumberBN = BigNumber.from(blockNum+"");
   const blockNumber = blockNumberBN.toNumber();
   if (currentBlock > blockNumber) {
     const block = await provider.getBlock(blockNumber);
     const timeStamp = block.timestamp;
     return moment.unix(timeStamp).format('MMM DD, YYYY HH:mm:ss');
   } else {
+
+
     let seconds = (blockNumber - currentBlock) * 13;
+    console.log('seconds',seconds);
+
+
     const currentBlk = await provider.getBlock(currentBlock);
+    console.log('currentBlk',currentBlk);
+
     const currentTimeStamp = currentBlk.timestamp;
+    console.log('currentTimeStamp',currentTimeStamp);
+
     const timestamp = currentTimeStamp + seconds;
 
     return moment.unix(timestamp).format('MMM DD, YYYY HH:mm:ss');

@@ -5,6 +5,8 @@ export const NetworkContextName = `${new Date().getTime()}-NETWORK`;
 export const DEFAULT_NETWORK = process.env.REACT_APP_DEFAULT_NETWORK as string;
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+
+/* - rinkeby
 export const DEPLOYED = {
   FLD: '0x9d4926fB64A656deC8720Ad4e33b80076558120e',
   StakeSimple: '0x1FBC61ed3159d5517F84fAd9AdC421bF0D176C43',
@@ -27,6 +29,21 @@ export const DEPLOYED = {
   SwapProxy: '0x8032d21F59CDB42C9c94a3A41524D4CCF0Cae96c',
   TokamakLayer2: '0x1fa621d238f30f6651ddc8bd5f4be21c6b894426',
 };
+*/
+
+// Mainnet
+export const DEPLOYED = {
+  "TOS": "0x1b481bca7156E990E2d90d1EC556d929340E9fC3",
+  "Stake1Proxy": "0x5F60D1F8720336A76bfb05A0AFCBa471F9673D9f",
+  "TON": "0x2be5e8c109e2197D077D13A82dAead6a9b3433C5",
+  "WTON": "0xc4A11aaf6ea915Ed7Ac194161d2fC9384F15bff2",
+  "DepositManager": "0x56E465f654393fa48f007Ed7346105c7195CEe43",
+  "SeigManager": "0x710936500aC59e8551331871Cbad3D33d5e0D909",
+  "SwapProxy": "0x30e65B3A6e6868F044944Aa0e9C5d52F8dcb138d",
+  "TokamakLayer2": '0x42ccf0769e87cb2952634f607df1c7d62e0bbc52',
+  "AirdropVault": "0x49108acF8c4fD9b70eCfC0804CfB84DE6EF475Ce"
+};
+
 
 export const SUPPORTED_WALLETS: {[key: string]: WalletInfo} = {
   INJECTED: {

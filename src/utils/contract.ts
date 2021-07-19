@@ -1,11 +1,14 @@
 import {getAddress} from '@ethersproject/address';
 import {Contract} from '@ethersproject/contracts';
 import {AddressZero} from '@ethersproject/constants';
+
 import {
   JsonRpcSigner,
   Web3Provider,
   JsonRpcProvider,
 } from '@ethersproject/providers';
+
+import { ethers } from 'ethers';
 
 import * as TonABI from 'services/abis/TON.json';
 import * as WtonABI from 'services/abis/WTON.json';
@@ -28,6 +31,8 @@ import {
   REACT_APP_STAKE1_PROXY,
   REACT_APP_AIRDROP,
 } from 'constants/index';
+import {NETWORK} from './config';
+
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {
@@ -53,15 +58,30 @@ export function getProviderOrSigner(
   return account ? getSigner(library, account) : library;
 }
 
-export function getRPC(): JsonRpcProvider {
+export function getWeb3(provider: any): any{
   // return new JsonRpcProvider('https://rinkeby.rpc.tokamak.network');
-  return new JsonRpcProvider(
-    'https://rinkeby.infura.io/v3/34448178b25e4fbda6d80f4da62afba2',
-  );
+  // return new JsonRpcProvider(
+  //   'https://mainnet.infura.io/v3/34448178b25e4fbda6d80f4da62afba2',
+  // );
+
+  if(provider == null || provider === undefined ) {
+    if(window.ethereum == null ){
+      provider = null;
+    }else {
+      provider = new ethers.providers.Web3Provider(window.ethereum);
+    }
+  }
+  return provider;
+}
+
+
+export function getRPC(): any{
+  return getWeb3(null);
 }
 
 export function getTokamakContract(want: string, address?: string): any {
   const rpc = getRPC();
+  if(rpc==null) throw Error('Neet to connect wallet!');
 
   const TON = new Contract(REACT_APP_TON, TonABI.abi, rpc);
   const WTON = new Contract(REACT_APP_WTON, WtonABI.abi, rpc);
@@ -88,10 +108,10 @@ export function getTokamakContract(want: string, address?: string): any {
     return TON;
   } else if (want === 'TOS') {
     return TOS;
-  } 
+  }
   else if (want === 'Airdrop') {
     return Airdrop;
-  } 
+  }
   else if (want === 'WTON') {
     return WTON;
   } else if (want === 'SeigManager') {

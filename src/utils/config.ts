@@ -8,3 +8,4 @@ export const PUBLIC_NODE_URLS_BY_NETWORK_ID = {
 };
 
 export const API_URL = process.env.REACT_APP_API_URL || '';
+export const NETWORK = 'mainnet'; // rinkeby or mainnet

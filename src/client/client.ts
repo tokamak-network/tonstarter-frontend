@@ -53,8 +53,14 @@ const getUserInfo = async (
   contractAddress: string,
 ) => {
   const rpc = getRPC();
+  console.log('rpc', rpc);
+
+
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
   const staked = await StakeTONContract?.userStaked(account);
+
+  console.log('staked', staked);
+
   return {
     userStaked: staked.amount,
     userRewardTOS: staked.claimedAmount,
