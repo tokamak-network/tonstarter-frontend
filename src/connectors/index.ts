@@ -3,12 +3,12 @@ import {NetworkConnector} from '@web3-react/network-connector';
 import {WalletConnectConnector} from '@web3-react/walletconnect-connector';
 import {WalletLinkConnector} from '@web3-react/walletlink-connector';
 
-import {REACT_APP_MAINNET_INFURA_API, REACT_APP_RINKEBY_INFURA_API} from 'constants/index';
+// import {REACT_APP_MAINNET_INFURA_API, REACT_APP_RINKEBY_INFURA_API} from 'constants/index';
 
 const POLLING_INTERVAL = 12000;
 const RPC_URLS = {
-  1: REACT_APP_MAINNET_INFURA_API,
-  4: REACT_APP_RINKEBY_INFURA_API,
+  1: "https://mainnet.infura.io/v3/34448178b25e4fbda6d80f4da62afba2",
+  4: "https://rinkeby.infura.io/v3/34448178b25e4fbda6d80f4da62afba2",
 };
 
 export const network = new NetworkConnector({
