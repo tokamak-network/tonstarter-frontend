@@ -31,7 +31,7 @@ ReactDOM.render(
       <I18nextProvider i18n={i18n}>
         <Web3ReactProvider getLibrary={getLibrary}>
           <Web3ProviderNetwork getLibrary={getLibrary}>
-            <ColorModeScript />
+            {/* <ColorModeScript /> */}
             <Provider store={store}>
               <ChakraProvider resetCSS theme={theme}>
                 <Toast></Toast>
