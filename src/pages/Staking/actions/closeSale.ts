@@ -22,10 +22,9 @@ export const closeSale = async (args: Endsale) => {
   if (userAddress === null || userAddress === undefined) {
     return;
   }
-  console.log(DEPLOYED.Stake1Proxy);
 
   const stakeVault = await new Contract(
-    DEPLOYED.Stake1Proxy,
+    DEPLOYED.Stake1Proxy_ADDRESS,
     StakeVault.abi,
     rpc,
   );

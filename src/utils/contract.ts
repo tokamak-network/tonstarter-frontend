@@ -18,16 +18,18 @@ import * as StakeVaultLogic from 'services/abis/Stake1Logic.json';
 import * as StakeVault from 'services/abis/Stake1Vault.json';
 // import * as StakeVaultStorage from 'services/abis/StakeVaultStorage.json';
 import * as AirdropVaultABI from 'services/abis/AirdropVault.json';
-import {
-  REACT_APP_TOKAMAK_LAYER2,
-  REACT_APP_TON,
-  REACT_APP_TOS,
-  REACT_APP_DEPOSIT_MANAGER,
-  REACT_APP_SEIG_MANAGER,
-  REACT_APP_WTON,
-  REACT_APP_STAKE1_PROXY,
-  REACT_APP_AIRDROP,
-} from 'constants/index';
+import {DEPLOYED} from 'constants/index';
+
+const {
+  TokamakLayer2_ADDRESS,
+  TON_ADDRESS,
+  TOS_ADDRESS,
+  DepositManager_ADDRESS,
+  SeigManager_ADDRESS,
+  WTON_ADDRESS,
+  Stake1Proxy_ADDRESS,
+  Airdrop_ADDRESS,
+} = DEPLOYED;
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {
@@ -63,30 +65,30 @@ export function getRPC(): JsonRpcProvider {
 export function getTokamakContract(want: string, address?: string): any {
   const rpc = getRPC();
 
-  const TON = new Contract(REACT_APP_TON, TonABI.abi, rpc);
-  const WTON = new Contract(REACT_APP_WTON, WtonABI.abi, rpc);
-  const TOS = new Contract(REACT_APP_TOS, TosABI.abi, rpc);
+  const TON = new Contract(TON_ADDRESS, TonABI.abi, rpc);
+  const WTON = new Contract(WTON_ADDRESS, WtonABI.abi, rpc);
+  const TOS = new Contract(TOS_ADDRESS, TosABI.abi, rpc);
   const SeigManager = new Contract(
-    REACT_APP_SEIG_MANAGER,
+    SeigManager_ADDRESS,
     SeigManagerABI.abi,
     rpc,
   );
   const DepositManager = new Contract(
-    REACT_APP_DEPOSIT_MANAGER,
+    DepositManager_ADDRESS,
     DepositManagerABI.abi,
     rpc,
   );
   const TokamakLayer2 = new Contract(
-    REACT_APP_TOKAMAK_LAYER2,
+    TokamakLayer2_ADDRESS,
     CandidateABI.abi,
     rpc,
   );
   const VaultProxy = new Contract(
-    REACT_APP_STAKE1_PROXY,
+    Stake1Proxy_ADDRESS,
     StakeVaultLogic.abi,
     rpc,
   );
-  const Airdrop = new Contract(REACT_APP_AIRDROP, AirdropVaultABI.abi, rpc);
+  const Airdrop = new Contract(Airdrop_ADDRESS, AirdropVaultABI.abi, rpc);
 
   if (want === 'TON') {
     return TON;

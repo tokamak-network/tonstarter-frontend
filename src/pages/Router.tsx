@@ -13,7 +13,7 @@ import {fetchStakes} from './Staking/staking.reducer';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import {AirdropModal} from 'components/Airdrop/Index';
 import {fetchVaults} from './Staking/vault.reducer';
-import {REACT_APP_DEFAULT_NETWORK} from 'constants/index';
+import {DEFAULT_NETWORK} from 'constants/index';
 import {MobilePreOpen} from './PreOpen/Index';
 import {Footer} from 'components/Footer';
 
@@ -33,10 +33,7 @@ export const Router: FC<RouterProps> = () => {
   }
 
   useEffect(() => {
-    if (
-      chainId !== Number(REACT_APP_DEFAULT_NETWORK) &&
-      chainId !== undefined
-    ) {
+    if (chainId !== Number(DEFAULT_NETWORK) && chainId !== undefined) {
       return alert('Please use mainnet');
     }
   }, [chainId]);
@@ -60,7 +57,7 @@ export const Router: FC<RouterProps> = () => {
       if (signIn === false) {
         deactivate();
       } else if (signIn === true) {
-        if (chainId !== Number(REACT_APP_DEFAULT_NETWORK)) {
+        if (chainId !== Number(DEFAULT_NETWORK)) {
           deactivate();
           window.localStorage.setItem(
             'account',

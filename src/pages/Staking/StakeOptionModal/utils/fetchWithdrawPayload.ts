@@ -1,8 +1,10 @@
 import {getTokamakContract, getRPC} from 'utils/contract';
 import {BigNumber} from 'ethers';
-import {REACT_APP_TOKAMAK_LAYER2} from 'constants/index';
+import {DEPLOYED} from 'constants/index';
 import {convertNumber} from 'utils/number';
 import {range} from 'lodash';
+
+const {TokamakLayer2_ADDRESS} = DEPLOYED;
 
 export const fetchWithdrawPayload = async (
   library: any,
@@ -24,7 +26,7 @@ export const fetchWithdrawPayload = async (
     for (const _ of range(requestNum)) {
       pendingRequests.push(
         await depositManager.withdrawalRequest(
-          REACT_APP_TOKAMAK_LAYER2,
+          TokamakLayer2_ADDRESS,
           contractAddress,
           index,
         ),
@@ -59,12 +61,9 @@ const getWithdrawableInfo = async (
 ) => {
   const depositManager = getTokamakContract('DepositManager');
   return Promise.all([
-    depositManager.numPendingRequests(
-      REACT_APP_TOKAMAK_LAYER2,
-      contractAddress,
-    ),
+    depositManager.numPendingRequests(TokamakLayer2_ADDRESS, contractAddress),
     depositManager.withdrawalRequestIndex(
-      REACT_APP_TOKAMAK_LAYER2,
+      TokamakLayer2_ADDRESS,
       contractAddress,
     ),
   ]).then((result) => {
