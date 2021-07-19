@@ -77,14 +77,12 @@ export const TokenComponent: FC<TokenComponentProps> = ({
     window.scrollTo(0, 350 + index * 69);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // const isDisabled =
-  //   account === undefined ||
-  //   status !== 'sale' ||
-  //   data.fetchBlock < data.saleStartTime
-  //     ? true
-  //     : false;
-
-  const isDisabled = true;
+  const isDisabled =
+    account === undefined ||
+    status !== 'sale' ||
+    data.fetchBlock < data.saleStartTime
+      ? true
+      : false;
 
   return (
     <Container
