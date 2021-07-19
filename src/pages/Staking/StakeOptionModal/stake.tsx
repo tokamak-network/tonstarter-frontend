@@ -149,18 +149,23 @@ export const StakeOptionModal = () => {
               color="white.100"
               fontSize="14px"
               _hover={{...theme.btnHover}}
-              onClick={() =>
-                stakePayToken({
-                  userAddress: account,
-                  amount: value.replaceAll(',', ''),
-                  payToken: data.data.token,
-                  saleStartTime: data.data.saleStartTime,
-                  library: library,
-                  stakeContractAddress: data.data.contractAddress,
-                  miningStartTime: data.data.miningStartTime,
-                  handleCloseModal: handleCloseModal(),
-                })
-              }>
+              onClick={() => {
+                const question = window.confirm(
+                  `You can not withdraw this ${value} TON for next ${data.data.period} months, and also its TON reward can not be given to you for this period(Except for TOS reward).Are you sure you want to stake?`,
+                );
+                if (question === true) {
+                  stakePayToken({
+                    userAddress: account,
+                    amount: value.replaceAll(',', ''),
+                    payToken: data.data.token,
+                    saleStartTime: data.data.saleStartTime,
+                    library: library,
+                    stakeContractAddress: data.data.contractAddress,
+                    miningStartTime: data.data.miningStartTime,
+                    handleCloseModal: handleCloseModal(),
+                  });
+                }
+              }}>
               Stake
             </Button>
           </Box>
