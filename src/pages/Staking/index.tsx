@@ -33,7 +33,6 @@ import {formatStartTime} from 'utils/timeStamp';
 import {useState} from 'react';
 import {getTotalStakers, getUserBalance} from 'client/getUserBalance';
 //@ts-ignore
-import {Dot} from 'react-animated-dots';
 import {useEffect} from 'react';
 import {LoadingDots} from 'components/Loader/LoadingDots';
 type GetDateTimeType =
@@ -52,13 +51,23 @@ type GetDateProp = {
 const GetDate = ({time, currentBlock, contractAddress, type}: GetDateProp) => {
   const {colorMode} = useColorMode();
   const [date, setDate] = useState('');
-  useMemo(async () => {
+
+  const fetchDate = async () => {
     try {
       const result = await formatStartTime(time, currentBlock);
       setDate(result);
     } catch (e) {
       console.log(e);
     }
+  };
+
+  useEffect(() => {
+    const abortController = new AbortController();
+    fetchDate();
+    return () => {
+      abortController.abort();
+    };
+    /*eslint-disable*/
   }, [time, currentBlock]);
 
   return (
@@ -167,20 +176,28 @@ export const Staking = () => {
   const GetBalance = ({title, contractAddress, user, setStakeValance}: any) => {
     const {colorMode} = useColorMode();
     const [balance, SetBalance] = useState('-');
+
     const getBalance = async () => {
-      const result = await getUserBalance(contractAddress);
-      if (title === 'My staked') {
+      try {
+        const result = await getUserBalance(contractAddress);
+        if (title === 'My staked') {
+          //@ts-ignore
+          return SetBalance(result?.totalStakedBalance);
+        }
         //@ts-ignore
-        return SetBalance(result.totalStakedBalance);
-      }
-      //@ts-ignore
-      SetBalance(result?.rewardTosBalance);
+        SetBalance(result?.rewardTosBalance);
+      } catch (e) {}
     };
 
     useEffect(() => {
+      const abortController = new AbortController();
       if (user.address !== undefined) {
         getBalance();
       }
+      return () => {
+        abortController.abort();
+      };
+      /*eslint-disable*/
     }, [user]);
 
     if (user.address === undefined) {

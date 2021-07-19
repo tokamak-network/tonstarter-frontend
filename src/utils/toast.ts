@@ -12,8 +12,8 @@ export const toastWithReceipt = async (
       //@ts-ignore
       openToast({
         payload: {
-          title: 'Tx sent successfully! ',
-          description: `Tx hash is ${recepit.hash}`,
+          title: 'Success',
+          description: `Tx is being successfully pending!`,
           status: 'success',
           duration: 5000,
           isClosable: true,

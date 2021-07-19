@@ -6,7 +6,7 @@ import {setTxPending} from 'store/tx.reducer';
 import store from 'store';
 import {toastWithReceipt} from 'utils';
 import {openToast} from 'store/app/toast.reducer';
-import {BASE_PROVIDER} from 'constants/index'
+import {BASE_PROVIDER} from 'constants/index';
 
 type StakeProps = {
   userAddress: string | null | undefined;
@@ -155,7 +155,7 @@ const stakeEth = async (args: StakeTon) => {
     try {
       const receipt = await signer.sendTransaction(transactionRequest);
       store.dispatch(setTxPending({tx: true}));
-      alert(`Tx is being pending! Tx hash is ${receipt.hash}`);
+      alert(`Tx is being successfully pending!`);
       if (receipt) {
         store.dispatch(setTxPending({tx: false}));
       }
