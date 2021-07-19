@@ -16,7 +16,7 @@ import {shortenAddress} from 'utils';
 import {StakingTable} from './StakingTable';
 import {selectStakes} from './staking.reducer';
 import {selectApp} from 'store/app/app.reducer';
-import {selectUser, User} from 'store/app/user.reducer';
+import {selectUser} from 'store/app/user.reducer';
 import {PageHeader} from 'components/PageHeader';
 import {
   ClaimOptionModal,
@@ -28,11 +28,9 @@ import {
   SwapModal,
 } from './StakeOptionModal';
 import {WalletInformation} from './components/WalletInformation';
-import {AppDispatch} from 'store';
 import {ManageModal} from './StakeOptionModal/Manage/index';
 import {formatStartTime} from 'utils/timeStamp';
 import {useState} from 'react';
-import {Stake} from './staking.reducer';
 import {getTotalStakers, getUserBalance} from 'client/getUserBalance';
 //@ts-ignore
 import {Dot} from 'react-animated-dots';

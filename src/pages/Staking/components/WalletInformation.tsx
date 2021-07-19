@@ -22,6 +22,7 @@ import {getUserBalance, getUserTonBalance} from 'client/getUserBalance';
 import {Dot} from 'react-animated-dots';
 import {useEffect} from 'react';
 import {closeSale} from '../actions';
+import {LoadingDots} from 'components/Loader/LoadingDots';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
@@ -38,7 +39,9 @@ export const WalletInformation: FC<WalletInformationProps> = ({
 }) => {
   const {colorMode} = useColorMode();
   const [loading, setLoading] = useState(false);
-  const [userTonBalance, setUserTonBalance] = useState<string>('');
+  const [userTonBalance, setUserTonBalance] = useState<string | undefined>(
+    undefined,
+  );
   const [stakeBalance, setStakeBalance] = useState<string | undefined>(
     undefined,
   );
@@ -170,7 +173,18 @@ export const WalletInformation: FC<WalletInformationProps> = ({
         colorMode === 'light' ? 'solid 1px #f4f6f8' : 'solid 1px #373737'
       }>
       <Box w={'100%'} p={0} textAlign={'center'} py={10} px={5}>
-        <Heading color={'blue.300'}>{userTonBalance} TON</Heading>
+        <Heading
+          color={'blue.300'}
+          display="flex"
+          alignItems="center"
+          justifyContent="center">
+          {userTonBalance === undefined && user.address !== undefined ? (
+            <LoadingDots />
+          ) : (
+            userTonBalance
+          )}{' '}
+          TON
+        </Heading>
         <Box py={5}>
           <Text fontSize={'15px'} color={'gray.400'}>
             Available in wallet
