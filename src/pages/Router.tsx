@@ -31,12 +31,31 @@ export const Router: FC<RouterProps> = () => {
     window.localStorage.setItem('account', JSON.stringify({signIn: false}));
   }
 
+  const fetchToInitialize = async () => {
+    dispatch(
+      fetchVaults({
+        chainId,
+      }) as any,
+    ).then(() => {
+      dispatch(
+        fetchStakes({
+          library,
+          account,
+          chainId,
+        }) as any,
+      );
+    });
+  };
+
   useEffect(() => {
     if (chainId !== Number(DEFAULT_NETWORK) && chainId !== undefined) {
       const netType =
         DEFAULT_NETWORK === 1 ? 'mainnet' : 'Rinkeby Test Network';
+      //@ts-ignore
+      dispatch(fetchUserInfo({reset: true}));
       return alert(`Please use ${netType}`);
     }
+    /*eslint-disable*/
   }, [chainId]);
 
   useEffect(() => {
@@ -68,22 +87,11 @@ export const Router: FC<RouterProps> = () => {
 
         // @ts-ignore
         dispatch(fetchUserInfo({address: account, library})).then(() => {
-          dispatch(
-            fetchVaults({
-              chainId,
-            }) as any,
-          ).then(() => {
-            dispatch(
-              fetchStakes({
-                library,
-                account,
-                chainId,
-              }) as any,
-            );
-          });
+          fetchToInitialize();
         });
       }
     }
+    /*eslint-disable*/
   }, [chainId, account, library, dispatch, deactivate]);
 
   useEffect(() => {
@@ -91,22 +99,9 @@ export const Router: FC<RouterProps> = () => {
     const accountStorage = JSON.parse(window.localStorage.getItem('account'));
     const {signIn} = accountStorage;
     if (account === undefined && signIn === false) {
-      dispatch(
-        fetchVaults({
-          chainId,
-        }) as any,
-      ).then(() => {
-        dispatch(
-          fetchStakes({
-            library,
-            account,
-            chainId,
-          }) as any,
-        );
-      });
-      // @ts-ignore
-      // dispatch(fetchUserInfo());
+      fetchToInitialize();
     }
+    /*eslint-disable*/
   }, [account, dispatch, library, chainId, deactivate]);
 
   const handleWalletModalOpen = (state: string) => {
