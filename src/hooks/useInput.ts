@@ -47,10 +47,27 @@ export const onKeyDown = (e: any) => {
   const {target, key} = e;
   //@ts-ignore
   const {selectionStart, value} = target;
-  const allowedKeys = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, '.'];
+  const allowedKeys = [
+    '0',
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '.',
+    'Backspace',
+    'Delete',
+    'ArrowRight',
+    'ArrowLeft',
+  ];
+
   //check number or .
   if (allowedKeys.indexOf(key) === -1) {
-    return target.value === undefined;
+    e.preventDefault();
   }
 
   if (key === 'Delete' && value.split('')[selectionStart] === ',') {
