@@ -105,10 +105,6 @@ export const Staking = () => {
         Header: 'period',
         accessor: 'period',
       },
-      // {
-      //   Header: 'APY',
-      //   accessor: 'apy',
-      // },
       {
         Header: 'total staked',
         accessor: 'stakeBalanceTON',
@@ -117,14 +113,6 @@ export const Staking = () => {
         Header: 'Earning Per Block',
         accessor: 'earning_per_block',
       },
-      // {
-      //   Header: 'My Staked',
-      //   accessor: 'mystaked',
-      // },
-      // {
-      //   Header: 'Earned',
-      //   accessor: 'totalRewardAmount',
-      // },
       {
         // Make an expander cell
         Header: () => null, // No header

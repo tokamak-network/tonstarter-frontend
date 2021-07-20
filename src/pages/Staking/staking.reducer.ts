@@ -77,9 +77,6 @@ export const fetchStakes = createAsyncThunk(
 
     const stakeList = stakeReq.datas;
 
-    console.log('***');
-    console.log(stakeList);
-
     const currentBlock = await BASE_PROVIDER.getBlockNumber();
 
     const vaultsData = store.getState().vaults.data;
@@ -93,6 +90,11 @@ export const fetchStakes = createAsyncThunk(
         const {saleClosed, period} = vaultsData[stake.vault];
         const periodKey = String(stake.stakeContract).toLowerCase();
         const stakePeriod = period[periodKey];
+        const res = stakePeriod.includes('year')
+          ? '100.' + stakePeriod
+          : stakePeriod.includes('month')
+          ? '10.' + stakePeriod
+          : stakePeriod;
 
         const stakeInfo: Partial<Stake> = {
           contractAddress: stake.stakeContract,
@@ -109,7 +111,7 @@ export const fetchStakes = createAsyncThunk(
           }),
           token: stake.paytoken,
           stakeType: stake.stakeType,
-          period: stakePeriod,
+          period: res,
           saleStartTime: stake.saleStartBlock,
           saleEndTime: stake.startBlock,
           miningStartTime: stake.startBlock,

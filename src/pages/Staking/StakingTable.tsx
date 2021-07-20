@@ -350,7 +350,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                               }>
                               Period
                             </Text>
-                            <Text>{period}</Text>
+                            <Text>{period.split('.')[1]}</Text>
                           </>
                         ) : (
                           ''
