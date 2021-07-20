@@ -61,7 +61,7 @@ const initialState = {
 
 export const fetchStakes = createAsyncThunk(
   'stakes/all',
-  async ({library, account, chainId, reFetch}: any, {requestId, getState}) => {
+  async ({library, account, reFetch}: any, {requestId, getState}) => {
     //result to dispatch data for Stakes store
     let projects: any[] = [];
 

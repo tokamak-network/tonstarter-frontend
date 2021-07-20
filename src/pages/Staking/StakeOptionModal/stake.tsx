@@ -18,7 +18,7 @@ import {useWeb3React} from '@web3-react/core';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {stakePayToken} from '../actions';
-import {useInput} from 'hooks/useInput';
+import {onKeyDown, useInput} from 'hooks/useInput';
 import {useModal} from 'hooks/useModal';
 
 export const StakeOptionModal = () => {
@@ -32,7 +32,8 @@ export const StakeOptionModal = () => {
   const {handleCloseModal} = useModal(setValue);
   const setMax = useCallback((_e) => setValue(balance), [setValue, balance]);
 
-  const period = data?.data?.period === "a month" ? "1 month" : data.data?.period
+  const period =
+    data?.data?.period === 'a month' ? '1 month' : data.data?.period;
 
   return (
     <Modal
@@ -81,30 +82,7 @@ export const StakeOptionModal = () => {
               value={value}
               w="60%"
               mr={6}
-              onKeyDown={(e) => {
-                const {target, keyCode} = e;
-                //@ts-ignore
-                const {selectionStart, value} = target;
-
-                if (keyCode === 46 && value.split('')[selectionStart] === ',') {
-                  //@ts-ignore
-                  return (e.target.selectionStart = selectionStart);
-                }
-                if (
-                  keyCode === 39 &&
-                  value.split('')[selectionStart + 1] === ','
-                ) {
-                  //@ts-ignore
-                  e.target.selectionStart += 2;
-                }
-                if (
-                  keyCode === 37 &&
-                  value.split('')[selectionStart - 2] === ','
-                ) {
-                  //@ts-ignore
-                  e.target.selectionStart -= 2;
-                }
-              }}
+              onKeyDown={onKeyDown}
               onChange={onChange}
               _focus={{
                 borderWidth: 0,

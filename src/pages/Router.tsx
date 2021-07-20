@@ -41,7 +41,6 @@ export const Router: FC<RouterProps> = () => {
         fetchStakes({
           library,
           account,
-          chainId,
         }) as any,
       );
     });
@@ -79,7 +78,7 @@ export const Router: FC<RouterProps> = () => {
       } else if (signIn === true) {
         if (chainId !== Number(DEFAULT_NETWORK)) {
           deactivate();
-          window.localStorage.setItem(
+          return window.localStorage.setItem(
             'account',
             JSON.stringify({signIn: false}),
           );
