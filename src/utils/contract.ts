@@ -79,6 +79,7 @@ export function getTokamakContract(
     StakeVaultLogic.abi,
     library,
   );
+  console.log(Airdrop_ADDRESS);
   const Airdrop = new Contract(Airdrop_ADDRESS, AirdropVaultABI.abi, library);
 
   if (want === 'TON') {
