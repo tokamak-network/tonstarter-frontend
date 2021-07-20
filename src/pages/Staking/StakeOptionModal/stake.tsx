@@ -30,12 +30,11 @@ export const StakeOptionModal = () => {
   let balance = data?.data?.user?.balance;
   const {btnStyle} = theme;
   const {value, setValue, onChange} = useInput();
-  const {handleCloseModal} = useModal(setValue);
+  const {handleCloseModal, handleOpenConfirmModal} = useModal(setValue);
   const setMax = useCallback((_e) => setValue(balance), [setValue, balance]);
   const keys = [undefined, '', '0', '0.', '0.0', '0.00'];
   const btnDisabled = keys.indexOf(value) !== -1 ? true : false;
-  const period =
-    data?.data?.period === 'a month' ? '1 month' : data.data?.period;
+  const period = data?.data?.period;
 
   return (
     <Modal
@@ -133,21 +132,24 @@ export const StakeOptionModal = () => {
               _hover={{...theme.btnHover}}
               disabled={btnDisabled}
               onClick={() => {
-                const question = window.confirm(
-                  `<strong>You</strong> can not withdraw this ${value} TON for next ${period}, and also its TON reward can not be given to you for this period(Except for TOS reward). Are you sure you want to stake?`,
-                );
-                if (question === true) {
-                  stakePayToken({
-                    userAddress: account,
-                    amount: value.replaceAll(',', ''),
-                    payToken: data.data.token,
-                    saleStartTime: data.data.saleStartTime,
-                    library: library,
-                    stakeContractAddress: data.data.contractAddress,
-                    miningStartTime: data.data.miningStartTime,
-                    handleCloseModal: handleCloseModal(),
-                  });
-                }
+                handleOpenConfirmModal({
+                  type: 'confirm',
+                  data: {
+                    amount: value,
+                    period,
+                    action: () =>
+                      stakePayToken({
+                        userAddress: account,
+                        amount: value.replaceAll(',', ''),
+                        payToken: data.data.token,
+                        saleStartTime: data.data.saleStartTime,
+                        library: library,
+                        stakeContractAddress: data.data.contractAddress,
+                        miningStartTime: data.data.miningStartTime,
+                        handleCloseModal: handleCloseModal(),
+                      }),
+                  },
+                });
               }}>
               Stake
             </Button>

@@ -17,6 +17,8 @@ import {DEFAULT_NETWORK} from 'constants/index';
 import {MobilePreOpen} from './PreOpen/Index';
 import {Footer} from 'components/Footer';
 
+import {ConfirmModal} from 'components/Modal';
+
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
 export const Router: FC<RouterProps> = () => {
@@ -116,6 +118,7 @@ export const Router: FC<RouterProps> = () => {
 
   return (
     <div style={{minHeight: '100vh'}}>
+      <ConfirmModal></ConfirmModal>
       <Header
         account={account}
         walletopen={() => handleWalletModalOpen('wallet')}
