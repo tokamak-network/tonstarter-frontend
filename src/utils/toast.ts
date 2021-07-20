@@ -23,12 +23,15 @@ export const toastWithReceipt = async (
     store.dispatch(setTxPending({tx: false}));
 
     await recepit
-      .wait()
+      .wait(6)
       .then((result: any) => {
         if (result) {
           const {address, library} = store.getState().user.data;
           //@ts-ignore
           store.dispatch(fetchUserInfo({address, library}));
+          setTimeout(() => {
+            //fetch server
+          }, 0);
         }
       })
       .catch((e: any) => console.log(e));

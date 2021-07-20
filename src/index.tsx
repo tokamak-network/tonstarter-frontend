@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
 import {BrowserRouter} from 'react-router-dom';
-import {ChakraProvider, ColorModeScript} from '@chakra-ui/react';
+import {ChakraProvider} from '@chakra-ui/react';
 import {createWeb3ReactRoot, Web3ReactProvider} from '@web3-react/core';
 import {I18nextProvider} from 'react-i18next';
 import {HelmetProvider} from 'react-helmet-async';

@@ -5,9 +5,12 @@ import {TokenType} from 'types/index';
 import {convertNumber} from 'utils/number';
 import store from 'store';
 import {fetchStakeURL} from 'constants/index';
-import {BASE_PROVIDER} from 'constants/index'
+import {BASE_PROVIDER} from 'constants/index';
 
-export type Vault = {};
+export type Vault = {
+  res: [];
+  saleClosed: boolean;
+};
 
 export type Stake = {
   name?: string;
@@ -77,11 +80,14 @@ export const fetchStakes = createAsyncThunk(
     const currentBlock = await BASE_PROVIDER.getBlockNumber();
 
     const vaultsData = store.getState().vaults.data;
+
     await Promise.all(
       stakeList.map(async (stake: any, index: number) => {
         let mystaked: string = '';
 
         const status = await getStatus(stake, currentBlock);
+        //@ts-ignore
+        const saleClosed = vaultsData[stake.vault].saleClosed;
         const stakeInfo: Partial<Stake> = {
           contractAddress: stake.stakeContract,
           name: stake.name,
@@ -107,7 +113,7 @@ export const fetchStakes = createAsyncThunk(
           library,
           account,
           vault: stake.vault,
-          saleClosed: stake.saleClosed,
+          saleClosed,
           ept: getEarningPerTon(vaultsData, stake.vault, stake.endBlock),
         };
         projects.push(stakeInfo);
@@ -137,7 +143,7 @@ const getEarningPerTon = (
   stakeEndBlock: any,
 ) => {
   let result = '';
-  vaultsData[valutAddress].map((project: string) => {
+  vaultsData[valutAddress].res.map((project: string) => {
     if (Number(Object.keys(project).toString()) === stakeEndBlock) {
       result = project[stakeEndBlock];
     }

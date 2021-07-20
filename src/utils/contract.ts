@@ -1,10 +1,7 @@
 import {getAddress} from '@ethersproject/address';
 import {Contract} from '@ethersproject/contracts';
 import {AddressZero} from '@ethersproject/constants';
-import {
-  JsonRpcSigner,
-  Web3Provider,
-} from '@ethersproject/providers';
+import {JsonRpcSigner, Web3Provider} from '@ethersproject/providers';
 
 import * as TonABI from 'services/abis/TON.json';
 import * as WtonABI from 'services/abis/WTON.json';
@@ -54,7 +51,11 @@ export function getProviderOrSigner(
   return account ? getSigner(library, account) : library;
 }
 
-export function getTokamakContract(want: string, address?: string, library?: Web3Provider): any {
+export function getTokamakContract(
+  want: string,
+  address?: string,
+  library?: Web3Provider,
+): any {
   const TON = new Contract(TON_ADDRESS, TonABI.abi, library);
   const WTON = new Contract(WTON_ADDRESS, WtonABI.abi, library);
   const TOS = new Contract(TOS_ADDRESS, TosABI.abi, library);
@@ -123,7 +124,6 @@ export function getContract(
   if (!isAddress(address) || address === AddressZero) {
     throw Error(`Invalid 'address' parameter '${address}'.`);
   }
-
   return new Contract(
     address,
     ABI,

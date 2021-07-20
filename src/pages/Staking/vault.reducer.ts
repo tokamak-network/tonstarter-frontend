@@ -11,6 +11,7 @@ type Vault = {
   stakeEndBlock: number;
   expectedStakeEndBlockTotal: [{block: number; stakedTotalString: string}];
   vault: string;
+  saleClosed: boolean;
 };
 
 type VaultList = [Vault];
@@ -38,6 +39,7 @@ const getEarningPerBlock = (vaults: VaultList) => {
       cap,
       expectedStakeEndBlockTotal,
       vault: vaultAddress,
+      saleClosed,
     } = vault;
     let acc = 0;
     const totalBlocks = stakeEndBlock - stakeStartBlock;
@@ -70,7 +72,7 @@ const getEarningPerBlock = (vaults: VaultList) => {
         }
       },
     );
-    return (result[vaultAddress] = res);
+    return (result[vaultAddress] = {res, saleClosed});
   });
 
   return result;
@@ -90,6 +92,7 @@ export const fetchVaults = createAsyncThunk(
       .then((res) => res.json())
       .then((result) => result);
     const vaultData = vaultReq.datas;
+
     const result = getEarningPerBlock(vaultData);
     return result;
   },

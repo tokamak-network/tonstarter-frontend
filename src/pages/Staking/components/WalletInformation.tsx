@@ -18,8 +18,6 @@ import {Stake} from '../staking.reducer';
 import {fetchManageModalPayload} from '../utils';
 import {LoadingComponent} from 'components/Loading';
 import {getUserBalance, getUserTonBalance} from 'client/getUserBalance';
-//@ts-ignore
-import {Dot} from 'react-animated-dots';
 import {useEffect} from 'react';
 import {closeSale} from '../actions';
 import {LoadingDots} from 'components/Loader/LoadingDots';
@@ -76,7 +74,6 @@ export const WalletInformation: FC<WalletInformationProps> = ({
 
   const btnDisabledClaim = () => {
     return account === undefined ||
-      data.saleClosed === false ||
       tosBalance === undefined ||
       tosBalance === '0.00'
       ? setClaimDisabled(true)
