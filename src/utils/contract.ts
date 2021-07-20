@@ -53,9 +53,10 @@ export function getProviderOrSigner(
 
 export function getTokamakContract(
   want: string,
-  address?: string,
   library?: Web3Provider,
+  address?: string,
 ): any {
+  console.log(library)
   const TON = new Contract(TON_ADDRESS, TonABI.abi, library);
   const WTON = new Contract(WTON_ADDRESS, WtonABI.abi, library);
   const TOS = new Contract(TOS_ADDRESS, TosABI.abi, library);
@@ -79,7 +80,6 @@ export function getTokamakContract(
     StakeVaultLogic.abi,
     library,
   );
-  console.log(Airdrop_ADDRESS);
   const Airdrop = new Contract(Airdrop_ADDRESS, AirdropVaultABI.abi, library);
 
   if (want === 'TON') {

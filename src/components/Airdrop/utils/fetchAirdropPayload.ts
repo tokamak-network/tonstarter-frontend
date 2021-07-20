@@ -1,20 +1,15 @@
 import {getTokamakContract} from '../../../utils/contract';
 import {convertNumber} from '../../../utils/number';
 import store from 'store';
+import ethers from 'ethers';
 
 export const fetchAirdropPayload = async () => {
   const user = store.getState().user.data;
   const {address: account, library} = user;
   const AirdropVault = getTokamakContract('Airdrop', library);
-  console.log(AirdropVault);
+  
   let roundInfo: any = [];
   let claimedAmount;
-  try {
-    const currentRound = await AirdropVault.getWhitelistInfo(1, "0xf30eadCdC68F9551fE943a685c23fa07FDe4B417");
-    console.log(currentRound)
-  } catch (err) {console.log(err)}
-  try {const totalTgeCount = await AirdropVault.totalTgeCount();} catch (err) {console.log(err)}
-  try {const result = await AirdropVault.getTgeInfos(0);} catch (err) {console.log(err)}
   try {
     const currentRound = await AirdropVault.currentRound();
     const totalTgeCount = await AirdropVault.totalTgeCount();
