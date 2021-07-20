@@ -20,19 +20,21 @@ import {selectModalType} from 'store/modal.reducer';
 import {stakePayToken} from '../actions';
 import {onKeyDown, useInput} from 'hooks/useInput';
 import {useModal} from 'hooks/useModal';
+import {useEffect} from 'react';
 
 export const StakeOptionModal = () => {
   const {data} = useAppSelector(selectModalType);
   const {account, library} = useWeb3React();
+  const {colorMode} = useColorMode();
+  const theme = useTheme();
 
   let balance = data?.data?.user?.balance;
-  const theme = useTheme();
-  const {colorMode} = useColorMode();
+  const {btnStyle} = theme;
   const {value, setValue, onChange} = useInput();
   const {handleCloseModal} = useModal(setValue);
   const setMax = useCallback((_e) => setValue(balance), [setValue, balance]);
-  const btnDisabled = value === '' ? true : false;
-
+  const keys = [undefined, '', '0', '0.', '0.0', '0.00'];
+  const btnDisabled = keys.indexOf(value) !== -1 ? true : false;
   const period =
     data?.data?.period === 'a month' ? '1 month' : data.data?.period;
 
@@ -124,9 +126,10 @@ export const StakeOptionModal = () => {
 
           <Box as={Flex} justifyContent={'center'}>
             <Button
+              {...(btnDisabled === true
+                ? {...btnStyle.btnDisable({colorMode})}
+                : {...btnStyle.btnAble()})}
               w={'150px'}
-              bg={'blue.500'}
-              color="white.100"
               fontSize="14px"
               _hover={{...theme.btnHover}}
               disabled={btnDisabled}

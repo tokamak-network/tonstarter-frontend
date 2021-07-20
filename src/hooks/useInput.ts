@@ -28,7 +28,7 @@ const addComma = (inputVal: any) => {
       _val.split('.')[0]?.length > 1 &&
       _val.split('.')[0]?.substring(0, 1) === '0'
     ) {
-      // return _val.split('.')[0].substring(1);
+      return _val.split('.')[0].substring(1);
     }
 
     //   return _val.substring(1, 2);
