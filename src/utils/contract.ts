@@ -13,7 +13,7 @@ import * as StakeTON from 'services/abis/StakeTON.json';
 import * as StakeVaultLogic from 'services/abis/Stake1Logic.json';
 import * as StakeVault from 'services/abis/Stake1Vault.json';
 // import * as StakeVaultStorage from 'services/abis/StakeVaultStorage.json';
-import * as AirdropVaultABI from 'services/abis/AirdropVault.json';
+import * as AirdropVaultABI from 'services/abis/WhitelistVault.json';
 import {DEPLOYED} from 'constants/index';
 
 const {
