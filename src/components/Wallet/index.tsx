@@ -327,7 +327,7 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
                     ) : (
                       <Link
                         isExternal
-                        href={`${explorerLink}${account}`}
+                        href={`https://etherscan.io/address/${account}`}
                         fontSize="sm"
                         _hover={{
                           textDecoration: 'none',
