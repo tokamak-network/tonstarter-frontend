@@ -277,6 +277,17 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
             WhitePaper
           </Text>
         </NavLink>
+        <NavLink
+          to="/"
+          className={match?.isExact ? 'link-match' : 'link'}
+          style={{zIndex: 100}}
+          onClick={() =>
+            window.open(
+              'https://medium.com/onther-tech/tonstarter-guide-en-kr-6b7cad5773f1',
+            )
+          }>
+          <Text className={match?.isExact ? 'link-match' : 'link'}>Guide</Text>
+        </NavLink>
       </Stack>
     </Box>
   );
@@ -292,6 +303,7 @@ const NavBarContainer = ({children, ...rest}: {children: any}) => {
       w="100%"
       px={8}
       py={4}
+      pr={3}
       pos="absolute"
       zIndex={1000}
       {...rest}>

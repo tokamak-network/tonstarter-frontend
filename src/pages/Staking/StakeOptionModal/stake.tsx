@@ -134,7 +134,7 @@ export const StakeOptionModal = () => {
               disabled={btnDisabled}
               onClick={() => {
                 const question = window.confirm(
-                  `You can not withdraw this ${value} TON for next ${period}, and also its TON reward can not be given to you for this period(Except for TOS reward). Are you sure you want to stake?`,
+                  `<strong>You</strong> can not withdraw this ${value} TON for next ${period}, and also its TON reward can not be given to you for this period(Except for TOS reward). Are you sure you want to stake?`,
                 );
                 if (question === true) {
                   stakePayToken({

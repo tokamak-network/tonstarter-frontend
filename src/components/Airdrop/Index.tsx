@@ -146,7 +146,6 @@ export const AirdropModal = () => {
             <Text fontSize={'0.813em'} color="blue.300" mb="1.125em">
               Available Balance
             </Text>
-
             <Flex
               style={{marginTop: '0', marginBottom: '2.500em'}}
               height="39px">
