@@ -20,7 +20,6 @@ import {selectModalType} from 'store/modal.reducer';
 import {stakePayToken} from '../actions';
 import {onKeyDown, useInput} from 'hooks/useInput';
 import {useModal} from 'hooks/useModal';
-import {useEffect} from 'react';
 
 export const StakeOptionModal = () => {
   const {data} = useAppSelector(selectModalType);
