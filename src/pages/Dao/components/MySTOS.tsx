@@ -11,11 +11,11 @@ import {useState} from 'react';
 import {User} from 'store/app/user.reducer';
 
 type PropsType = {
-  data: User;
+  userData: User;
 };
 
 export const MySTOS = (props: PropsType) => {
-  const {data} = props;
+  const {userData} = props;
   const [balance, setbalance] = useState('-');
   const theme = useTheme();
   const {colorMode} = useColorMode();

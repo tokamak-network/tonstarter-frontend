@@ -13,7 +13,7 @@ import {User} from 'store/app/user.reducer';
 import {openModal} from 'store/modal.reducer';
 
 type PropsType = {
-  data: User;
+  userData: User;
 };
 
 const themeDesign = {
@@ -28,7 +28,7 @@ const themeDesign = {
 };
 
 export const AvailableBalance = (props: PropsType) => {
-  const {data} = props;
+  const {userData} = props;
   const [balance, setbalance] = useState('-');
   const theme = useTheme();
   const {colorMode} = useColorMode();

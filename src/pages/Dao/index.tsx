@@ -33,7 +33,7 @@ export const DAO = () => {
 
   return (
     <Flex>
-      <Flex mt={theme.headerMargin.mt} px={'21%'}>
+      <Flex mt={theme.headerMargin.mt} w="100%" justifyContent="center">
         <Flex w={572} mr={108} mt={'122px'} flexDir="column">
           <Box mb={'45px'}>
             <Text

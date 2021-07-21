@@ -109,12 +109,12 @@ export const STOS = () => {
         </Text>
       </Flex>
       <Box mb={'20px'}>
-        <AvailableBalance data={data}></AvailableBalance>
+        <AvailableBalance userData={data}></AvailableBalance>
       </Box>
       <Box mb={'20px'}>
-        <MyStaked data={data}></MyStaked>
+        <MyStaked userData={data}></MyStaked>
       </Box>
-      <MySTOS data={data}></MySTOS>
+      <MySTOS userData={data}></MySTOS>
     </Flex>
   );
 };
