@@ -99,6 +99,10 @@ export const Router: FC<RouterProps> = () => {
     //@ts-ignore
     const accountStorage = JSON.parse(window.localStorage.getItem('account'));
     const {signIn} = accountStorage;
+    if (account === undefined && signIn === true) {
+      window.localStorage.setItem('account', JSON.stringify({signIn: false}));
+      fetchToInitialize();
+    }
     if (account === undefined && signIn === false) {
       fetchToInitialize();
     }
