@@ -10,14 +10,15 @@ export const fetchAirdropPayload = async () => {
   
   let roundInfo: any = [];
   let claimedAmount;
+  let unclaimed;
   try {
     const currentRound = await AirdropVault.currentRound();
     const totalTgeCount = await AirdropVault.totalTgeCount();
+    unclaimed = await AirdropVault.unclaimedInfos(account);
     const tgeCount =
-      currentRound >= totalTgeCount ? totalTgeCount : currentRound;
-
+      Number(currentRound.toString()) > Number(totalTgeCount.toString()) ? totalTgeCount : currentRound;
     if (account) {
-      for (let i = 1; i < tgeCount; i++) {
+      for (let i = 1; i <= tgeCount; i++) {
         const result = await AirdropVault.getTgeInfos(i);
         let whitelist;
         let airdropInfo;
@@ -48,5 +49,6 @@ export const fetchAirdropPayload = async () => {
   return {
     roundInfo: roundInfo,
     claimedAmount: convertNumber({amount: claimedAmount}),
+    unclaimedAmount: convertNumber({amount: unclaimed.amount})
   };
 };

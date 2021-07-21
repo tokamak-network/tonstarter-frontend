@@ -56,7 +56,6 @@ export function getTokamakContract(
   library?: Web3Provider,
   address?: string,
 ): any {
-  console.log(library)
   const TON = new Contract(TON_ADDRESS, TonABI.abi, library);
   const WTON = new Contract(WTON_ADDRESS, WtonABI.abi, library);
   const TOS = new Contract(TOS_ADDRESS, TosABI.abi, library);

@@ -83,25 +83,27 @@ export const AirdropModal = () => {
   const availableAmount = (
     roundInfo: AirDropList,
     claimedAmount: string | undefined,
+    unclaimedAmount: string | undefined
   ) => {
     if (roundInfo !== undefined && claimedAmount !== undefined) {
       let myBalance = 0;
-      for (let i = 0; i < roundInfo.length; i++) {
-        myBalance += Number(roundInfo[i].myAmount);
-      }
-      const convertedNumber = convertNumber({
-        amount: String(myBalance - Number(claimedAmount)),
-      });
-      return setBalance(convertedNumber);
+      // for (let i = 0; i < roundInfo.length; i++) {
+      //   myBalance += Number(roundInfo[i].myAmount);
+      // }
+      // const convertedNumber = convertNumber({
+      //   amount: String(myBalance - Number(claimedAmount)),
+      // });
+      return setBalance(unclaimedAmount);
     }
   };
 
   useEffect(() => {
     async function callAirDropData() {
       const res = await fetchAirdropPayload();
-      const {roundInfo, claimedAmount} = res;
+      const {roundInfo, claimedAmount, unclaimedAmount} = res;
+
       setAirdropData(roundInfo);
-      availableAmount(roundInfo, claimedAmount);
+      availableAmount(roundInfo, claimedAmount, unclaimedAmount);
     }
     if (account !== undefined) {
       callAirDropData();
