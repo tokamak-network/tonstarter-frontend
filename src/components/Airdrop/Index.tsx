@@ -23,8 +23,6 @@ import {Scrollbars} from 'react-custom-scrollbars-2';
 import {LoadingComponent} from 'components/Loading';
 import {fetchAirdropPayload} from './utils/fetchAirdropPayload';
 import {selectUser} from 'store/app/user.reducer';
-import {convertNumber} from 'utils/number';
-// import { convertNumber } from '../../utils/number';
 
 type Round = {
   allocatedAmount: string;
@@ -86,7 +84,7 @@ export const AirdropModal = () => {
     unclaimedAmount: string | undefined
   ) => {
     if (roundInfo !== undefined && claimedAmount !== undefined) {
-      let myBalance = 0;
+      // let myBalance = 0;
       // for (let i = 0; i < roundInfo.length; i++) {
       //   myBalance += Number(roundInfo[i].myAmount);
       // }
