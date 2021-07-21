@@ -6,6 +6,7 @@ import {
   useColorMode,
   useTheme,
 } from '@chakra-ui/react';
+import {getUserTosBalance} from 'client/getUserBalance';
 import {useAppDispatch} from 'hooks/useRedux';
 import {useEffect} from 'react';
 import {useState} from 'react';
@@ -34,7 +35,20 @@ export const AvailableBalance = (props: PropsType) => {
   const {colorMode} = useColorMode();
   const dispatch = useAppDispatch();
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const {address, library} = userData;
+    async function getTosBalance() {
+      const res = await getUserTosBalance(address, library);
+      if (res !== undefined) {
+        setbalance(res);
+      }
+    }
+    if (address !== undefined && library !== undefined) {
+      getTosBalance();
+    } else {
+      setbalance('-');
+    }
+  }, [userData]);
 
   return (
     <Flex

@@ -54,6 +54,8 @@ export const STOS = () => {
   useEffect(() => {
     if (account !== undefined) {
       setAddress(shortenAddress(account));
+    } else {
+      setAddress('-');
     }
   }, [account]);
 

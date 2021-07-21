@@ -30,7 +30,9 @@ export const MySTOS = (props: PropsType) => {
     },
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const {address, library} = userData;
+  }, [userData]);
 
   return (
     <Flex

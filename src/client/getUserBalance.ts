@@ -5,9 +5,10 @@ import store from 'store';
 import {convertNumber} from 'utils/number';
 import {BASE_PROVIDER, DEPLOYED} from 'constants/index';
 import * as ERC20 from 'services/abis/ERC20.json';
+import * as TOSABI from 'services/abis/TOS.json';
 import {BigNumber} from 'ethers';
 
-const {TON_ADDRESS} = DEPLOYED;
+const {TON_ADDRESS, TOS_ADDRESS} = DEPLOYED;
 
 export const getUserBalance = async (contractAddress: any) => {
   const user = store.getState().user.data;
@@ -48,6 +49,13 @@ const fetchUserData = async (
     myClaimed,
     userRewardTOS,
   };
+};
+
+export const getUserTosBalance = async (account: string, library: any) => {
+  const contract = getContract(TOS_ADDRESS, TOSABI.abi, library);
+  const userTosBalance = await contract.balanceOf(account);
+  const balance = convertNumber({amount: String(userTosBalance)});
+  return balance;
 };
 
 const getUserInfo = async (
