@@ -7,6 +7,8 @@ import {useEffect} from 'react';
 import {useState} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectUser} from 'store/app/user.reducer';
+import {useDispatch} from 'react-redux';
+import {useModal} from 'hooks/useModal';
 
 const themeDesign = {
   fontColorTitle: {

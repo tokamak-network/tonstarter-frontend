@@ -6,12 +6,25 @@ import {
   useColorMode,
   useTheme,
 } from '@chakra-ui/react';
+import {useAppDispatch} from 'hooks/useRedux';
 import {useEffect} from 'react';
 import {useState} from 'react';
 import {User} from 'store/app/user.reducer';
+import {openModal} from 'store/modal.reducer';
 
 type PropsType = {
   data: User;
+};
+
+const themeDesign = {
+  fontColorTitle: {
+    light: 'gray.400',
+    dark: 'gray.425',
+  },
+  fontColor: {
+    light: 'black.300',
+    dark: 'white.200',
+  },
 };
 
 export const AvailableBalance = (props: PropsType) => {
@@ -19,16 +32,7 @@ export const AvailableBalance = (props: PropsType) => {
   const [balance, setbalance] = useState('-');
   const theme = useTheme();
   const {colorMode} = useColorMode();
-  const themeDesign = {
-    fontColorTitle: {
-      light: 'gray.400',
-      dark: 'gray.425',
-    },
-    fontColor: {
-      light: 'black.300',
-      dark: 'white.200',
-    },
-  };
+  const dispatch = useAppDispatch();
 
   useEffect(() => {}, []);
 
@@ -60,7 +64,8 @@ export const AvailableBalance = (props: PropsType) => {
         color="white.100"
         fontSize={'14px'}
         fontWeight={400}
-        _hover={theme.btnHover}>
+        _hover={theme.btnHover}
+        onClick={() => dispatch(openModal({type: 'dao_stake'}))}>
         Stake
       </Button>
     </Flex>
