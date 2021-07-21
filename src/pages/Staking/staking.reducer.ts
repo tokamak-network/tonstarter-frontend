@@ -1,6 +1,5 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {RootState} from 'store/reducers';
-import {period} from 'utils';
 import {TokenType} from 'types/index';
 import {convertNumber} from 'utils/number';
 import store from 'store';
@@ -10,6 +9,7 @@ import {BASE_PROVIDER} from 'constants/index';
 export type Vault = {
   res: [];
   saleClosed: boolean;
+  period: Object;
 };
 
 export type Stake = {
@@ -61,7 +61,7 @@ const initialState = {
 
 export const fetchStakes = createAsyncThunk(
   'stakes/all',
-  async ({library, account, chainId, reFetch}: any, {requestId, getState}) => {
+  async ({library, account, reFetch}: any, {requestId, getState}) => {
     //result to dispatch data for Stakes store
     let projects: any[] = [];
 
@@ -87,7 +87,15 @@ export const fetchStakes = createAsyncThunk(
 
         const status = await getStatus(stake, currentBlock);
         //@ts-ignore
-        const saleClosed = vaultsData[stake.vault].saleClosed;
+        const {saleClosed, period} = vaultsData[stake.vault];
+        const periodKey = String(stake.stakeContract).toLowerCase();
+        const stakePeriod = period[periodKey];
+        const res = stakePeriod.includes('year')
+          ? '100.' + stakePeriod
+          : stakePeriod.includes('month')
+          ? '10.' + stakePeriod
+          : stakePeriod;
+
         const stakeInfo: Partial<Stake> = {
           contractAddress: stake.stakeContract,
           name: stake.name,
@@ -103,7 +111,7 @@ export const fetchStakes = createAsyncThunk(
           }),
           token: stake.paytoken,
           stakeType: stake.stakeType,
-          period: period(stake.startBlock, stake.endBlock),
+          period: res,
           saleStartTime: stake.saleStartBlock,
           saleEndTime: stake.startBlock,
           miningStartTime: stake.startBlock,

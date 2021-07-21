@@ -6,7 +6,6 @@ export type DEPLOYED_TYPE = {
   DepositManager_ADDRESS: string;
   SeigManager_ADDRESS: string;
   SwapProxy_ADDRESS: string;
-  StakeVaultFactory_ADDRESS: string;
   TokamakLayer2_ADDRESS: string;
   Airdrop_ADDRESS: string;
 };

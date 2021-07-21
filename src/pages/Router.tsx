@@ -17,6 +17,8 @@ import {DEFAULT_NETWORK} from 'constants/index';
 import {MobilePreOpen} from './PreOpen/Index';
 import {Footer} from 'components/Footer';
 
+import {ConfirmModal} from 'components/Modal';
+
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
 export const Router: FC<RouterProps> = () => {
@@ -41,7 +43,6 @@ export const Router: FC<RouterProps> = () => {
         fetchStakes({
           library,
           account,
-          chainId,
         }) as any,
       );
     });
@@ -79,7 +80,7 @@ export const Router: FC<RouterProps> = () => {
       } else if (signIn === true) {
         if (chainId !== Number(DEFAULT_NETWORK)) {
           deactivate();
-          window.localStorage.setItem(
+          return window.localStorage.setItem(
             'account',
             JSON.stringify({signIn: false}),
           );
@@ -98,6 +99,10 @@ export const Router: FC<RouterProps> = () => {
     //@ts-ignore
     const accountStorage = JSON.parse(window.localStorage.getItem('account'));
     const {signIn} = accountStorage;
+    if (account === undefined && signIn === true) {
+      window.localStorage.setItem('account', JSON.stringify({signIn: false}));
+      fetchToInitialize();
+    }
     if (account === undefined && signIn === false) {
       fetchToInitialize();
     }
@@ -117,6 +122,7 @@ export const Router: FC<RouterProps> = () => {
 
   return (
     <div style={{minHeight: '100vh'}}>
+      <ConfirmModal></ConfirmModal>
       <Header
         account={account}
         walletopen={() => handleWalletModalOpen('wallet')}

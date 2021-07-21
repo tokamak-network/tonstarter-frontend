@@ -12,6 +12,7 @@ type Vault = {
   expectedStakeEndBlockTotal: [{block: number; stakedTotalString: string}];
   vault: string;
   saleClosed: boolean;
+  stakeInfos: [];
 };
 
 type VaultList = [Vault];
@@ -40,8 +41,10 @@ const getEarningPerBlock = (vaults: VaultList) => {
       expectedStakeEndBlockTotal,
       vault: vaultAddress,
       saleClosed,
+      stakeInfos,
     } = vault;
     let acc = 0;
+    let period: any = {};
     const totalBlocks = stakeEndBlock - stakeStartBlock;
     const totalReward = convertNumber({
       amount: cap.toLocaleString('fullwide', {useGrouping: false}),
@@ -72,7 +75,13 @@ const getEarningPerBlock = (vaults: VaultList) => {
         }
       },
     );
-    return (result[vaultAddress] = {res, saleClosed});
+
+    stakeInfos.map((stake: any) => {
+      const address = stake.stakeAddress.toLowerCase();
+      return (period[address] = stake.memo);
+    });
+
+    return (result[vaultAddress] = {res, saleClosed, period});
   });
 
   return result;
