@@ -84,7 +84,7 @@ export const AirdropModal = () => {
   const availableAmount = (
     roundInfo: AirDropList,
     claimedAmount: string | undefined,
-    unclaimedAmount: string | undefined
+    unclaimedAmount: string | undefined,
   ) => {
     if (roundInfo !== undefined && claimedAmount !== undefined) {
       // let myBalance = 0;

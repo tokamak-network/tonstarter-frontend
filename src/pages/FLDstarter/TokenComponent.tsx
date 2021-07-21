@@ -120,7 +120,7 @@ export const TokenComponent: FC<TokenComponentProps> = ({
               Period
             </Text>
             <Text className={'fld-text2'} mr={1}>
-              {period}
+              {period?.split('.')[1]}
             </Text>
             <Text
               fontWeight={'semibold'}

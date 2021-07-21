@@ -30,7 +30,6 @@ import {useAppSelector} from 'hooks/useRedux';
 import {useEffect} from 'react';
 import {setTimeout} from 'timers';
 import {LoadingComponent} from 'components/Loading';
-import {useWindowDimensions} from 'hooks/useWindowDimentions';
 
 type StakingTableProps = {
   columns: Column[];
@@ -188,11 +187,7 @@ export const StakingTable: FC<StakingTableProps> = ({
   const renderBtn = (contractAddress: string, index: number) => {
     if (isOpen === contractAddress)
       return (
-        <Flex
-          w={'100%'}
-          justifyContent="flex-end"
-          onClick={() => setIsOpen('')}
-          _hover={{cursor: 'pointer'}}>
+        <Flex w={'100%'} justifyContent="flex-end" _hover={{cursor: 'pointer'}}>
           <TriangleUpIcon color="blue.100" _hover={{cursor: 'pointer'}} />
         </Flex>
       );
@@ -200,7 +195,7 @@ export const StakingTable: FC<StakingTableProps> = ({
       <Flex
         w={'100%'}
         justifyContent="flex-end"
-        onClick={() => clickOpen(contractAddress, index)}
+        // onClick={() => clickOpen(contractAddress, index)}
         _hover={{cursor: 'pointer'}}>
         <TriangleDownIcon
           color="blue.100"
@@ -209,11 +204,9 @@ export const StakingTable: FC<StakingTableProps> = ({
     );
   };
 
-  const {height} = useWindowDimensions();
-
   if (isLoading === true || data.length === 0) {
     return (
-      <Center h={height - 363}>
+      <Center>
         <LoadingComponent />
       </Center>
     );
@@ -279,6 +272,14 @@ export const StakingTable: FC<StakingTableProps> = ({
                   ref={(el) => (focusTarget.current[i] = el)}
                   h={16}
                   key={i}
+                  onClick={() => {
+                    if (isOpen === contractAddress) {
+                      setIsOpen('');
+                    } else {
+                      clickOpen(contractAddress, i);
+                    }
+                  }}
+                  cursor={'pointer'}
                   borderRadius={'10px'}
                   borderBottomRadius={
                     isOpen === contractAddress ? '0px' : '10px'
