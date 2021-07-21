@@ -1,12 +1,13 @@
 import {getTokamakContract} from '../../../utils/contract';
 import {convertNumber} from '../../../utils/number';
 import store from 'store';
+import {ethers} from "ethers";
 
 export const fetchAirdropPayload = async () => {
   const user = store.getState().user.data;
   const {address: account, library} = user;
   const AirdropVault = getTokamakContract('Airdrop', library);
-  
+
   let roundInfo: any = [];
   let claimedAmount;
   let unclaimed;
