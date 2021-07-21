@@ -1,8 +1,9 @@
-import {Flex, Text, useColorMode, useTheme} from '@chakra-ui/react';
+import {Flex, Text, useColorMode, useTheme, Box} from '@chakra-ui/react';
 import {AvailableBalance} from './AvailableBalance';
+import {MyStaked} from './MyStaked';
+import {MySTOS} from './MySTOS';
 import {shortenAddress} from 'utils';
 import {useEffect} from 'react';
-import store from 'store';
 import {useState} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectUser} from 'store/app/user.reducer';
@@ -57,7 +58,7 @@ export const STOS = () => {
   return (
     <Flex
       w={420}
-      h={'419px'}
+      h={'430px'}
       p={0}
       pt="19.5px"
       px={'20px'}
@@ -105,7 +106,13 @@ export const STOS = () => {
           {address}
         </Text>
       </Flex>
-      <AvailableBalance data={data}></AvailableBalance>
+      <Box mb={'20px'}>
+        <AvailableBalance data={data}></AvailableBalance>
+      </Box>
+      <Box mb={'20px'}>
+        <MyStaked data={data}></MyStaked>
+      </Box>
+      <MySTOS data={data}></MySTOS>
     </Flex>
   );
 };
