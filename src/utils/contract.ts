@@ -53,8 +53,8 @@ export function getProviderOrSigner(
 
 export function getTokamakContract(
   want: string,
-  address?: string,
   library?: Web3Provider,
+  address?: string,
 ): any {
   const TON = new Contract(TON_ADDRESS, TonABI.abi, library);
   const WTON = new Contract(WTON_ADDRESS, WtonABI.abi, library);
