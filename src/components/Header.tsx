@@ -262,20 +262,12 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
             Starter
           </NavLink>
         </Tooltip>
-        <Tooltip
-          hasArrow
-          placement="top"
-          label="Coming Soon"
-          color={theme.colors.white[100]}
-          bg={theme.colors.gray[375]}>
-          <NavLink
-            to="/dao"
-            className={match?.isExact ? 'link-match' : 'link'}
-            style={{zIndex: 100}}
-            onClick={(e) => e.preventDefault()}>
-            DAO
-          </NavLink>
-        </Tooltip>
+        <NavLink
+          to="/dao"
+          className={match?.isExact ? 'link-match' : 'link'}
+          style={{zIndex: 100}}>
+          DAO
+        </NavLink>
         <NavLink
           to="/"
           className={match?.isExact ? 'link-match' : 'link'}

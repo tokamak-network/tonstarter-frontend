@@ -67,6 +67,10 @@ const colors = {
   },
 };
 
+const headerMargin = {
+  mt: '72px',
+};
+
 const btnHover = {
   backgroundColor: 'blue.100',
 };
@@ -233,6 +237,7 @@ const theme = extendTheme({
   modalStyle,
   btnHover,
   btnStyle,
+  headerMargin,
 });
 
 export default theme;

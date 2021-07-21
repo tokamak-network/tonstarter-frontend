@@ -5,6 +5,7 @@ import {useWeb3React} from '@web3-react/core';
 import {Header} from 'components/Header';
 import {FLDstarter} from './FLDstarter';
 import {Staking} from './Staking';
+import {DAO} from './Dao/index';
 import {Switch, Route} from 'react-router-dom';
 import {useAppDispatch} from 'hooks/useRedux';
 import {fetchAppConfig} from 'store/app/app.reducer';
@@ -16,7 +17,6 @@ import {fetchVaults} from './Staking/vault.reducer';
 import {DEFAULT_NETWORK} from 'constants/index';
 import {MobilePreOpen} from './PreOpen/Index';
 import {Footer} from 'components/Footer';
-
 import {ConfirmModal} from 'components/Modal';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
@@ -114,11 +114,11 @@ export const Router: FC<RouterProps> = () => {
     onOpen();
   };
 
-  const {width} = useWindowDimensions();
+  // const {width} = useWindowDimensions();
 
-  if (width < 1100) {
-    return <MobilePreOpen />;
-  }
+  // if (width < 1100) {
+  //   return <MobilePreOpen />;
+  // }
 
   return (
     <div style={{minHeight: '100vh'}}>
@@ -132,7 +132,7 @@ export const Router: FC<RouterProps> = () => {
         <Route exact path="/staking" component={Staking} />
         {/* <Route exact path="/pools" component={Pools} /> */}
         {/* <Route exact path="/starter" component={Starter} /> */}
-        {/* <Route exact path="/dao" component={DAO} /> */}
+        <Route exact path="/dao" component={DAO} />
       </Switch>
       <Footer />
       <WalletModal state={walletState} isOpen={isModalOpen} onClose={onClose} />
