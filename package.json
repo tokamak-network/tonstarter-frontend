@@ -23,6 +23,8 @@
     "@web3-react/network-connector": "^6.1.9",
     "@web3-react/walletconnect-connector": "^6.1.9",
     "@web3-react/walletlink-connector": "^6.1.9",
+    "apollo-boost": "^0.4.9",
+    "apollo-cache-inmemory": "^1.6.6",
     "ethers": "^5.2.0",
     "framer-motion": "^4.1.4",
     "graphql": "^15.5.1",
