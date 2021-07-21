@@ -54,9 +54,9 @@ export const ConfirmModal = () => {
               {amount}
               TON
             </strong>{' '}
-            for next <strong>{period}</strong>, and also its TON reward can not
-            be given to you for this period(Except for TOS reward). Are you sure
-            you want to stake?
+            for next <strong>{period?.split('.')[1]}</strong>, and also its TON
+            reward can not be given to you for this period(Except for TOS
+            reward). Are you sure you want to stake?
           </Text>
           <Flex w="100%" alignItems="center" justifyContent="center">
             <Button
