@@ -74,7 +74,7 @@ export const AirdropModal = () => {
   const {
     data: {address, library},
   } = useAppSelector(selectUser);
-  const {poolInfo} = useGraphQueries('mainnet')
+  const {poolInfo} = useGraphQueries('rinkeby')
   const dispatch = useAppDispatch();
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -103,6 +103,9 @@ export const AirdropModal = () => {
       const res = await fetchAirdropPayload();
       const {roundInfo, claimedAmount, unclaimedAmount} = res;
       const info = await poolInfo
+      // .fetchMore({
+      //   query: GET_POOL_INFO
+      // })
       console.log(info.data)
       console.log(roundInfo)
       setAirdropData(roundInfo);

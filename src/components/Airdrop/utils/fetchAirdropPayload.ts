@@ -11,7 +11,7 @@ export const fetchAirdropPayload = async () => {
   const {address: account, library} = user;
   const AirdropVault = getTokamakContract('Airdrop', library);
   let roundInfo: any = [];
-  // const poolAddress = "0x516E1AF7303A94f81e91E4aC29e20F4319D4eCaf"
+  // const poolAddress = "0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf"
   // const poolContract = new ethers.Contract(
   //   poolAddress,
   //   IUniswapV3PoolABI,
