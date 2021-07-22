@@ -168,6 +168,9 @@ export const StakingTable: FC<StakingTableProps> = ({
     const filterValue = e.target.value;
     headerGroups[0].headers.map((e) => {
       if (e.Header === filterValue) {
+        if (e.Header === 'Earning Per TON') {
+          return e.toggleSortBy();
+        }
         e.toggleSortBy(true);
       }
       return null;
@@ -230,7 +233,7 @@ export const StakingTable: FC<StakingTableProps> = ({
           <option value="name">Name</option>
           <option value="period">Period</option>
           <option value="total staked">Total staked</option>
-          <option value="Earning Per Block">Earning per block</option>
+          <option value="Earning Per TON">Earning per TON</option>
         </Select>
       </Flex>
       <Box overflowX={'auto'}>
@@ -313,7 +316,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                             ? '150px'
                             : type === 'stakeBalanceTON'
                             ? '200px'
-                            : type === 'earning_per_block'
+                            : type === 'earning_per_ton'
                             ? ''
                             : '200px'
                         }
@@ -371,7 +374,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                           ''
                         )}
 
-                        {type === 'earning_per_block' ? (
+                        {type === 'earning_per_ton' ? (
                           <>
                             <Text
                               mr={2}

@@ -131,7 +131,7 @@ export const TokenComponent: FC<TokenComponentProps> = ({
           </Flex>
           <Flex>
             <Text className={'fld-text1'} mr={1}>
-              Earning Per Block
+              Earning Per TON
             </Text>
             <Text className={'fld-text2'} mr={1}>
               {ept}
