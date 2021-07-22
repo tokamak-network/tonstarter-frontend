@@ -29,6 +29,7 @@ export const ManageModal = () => {
   const {colorMode} = useColorMode();
   let balance = data?.data?.stakeContractBalanceTon;
   let closed: any;
+  console.log(data?.data)
 
   try {
     closed = data?.data?.saleClosed;
