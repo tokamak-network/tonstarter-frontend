@@ -39,12 +39,7 @@ export const stakeL2 = async (args: StakeToLayer2) => {
   const endBlock = Number(miningEndTime);
   const TON = getTokamakContract('TON', library);
   const tonBalance = await TON.balanceOf(contractAddress);
-  const tonBalanceUser = await TON.balanceOf(userAddress);
   const tonAmount = convertToWei(amount);
-  console.log(tonBalance)
-  console.log(tonAmount)
-  console.log(BigNumber.from(tonBalanceUser).toString())
-  console.log(BigNumber.from(tonBalance).toString())
 
   if (currentBlock > endBlock - Number(globalWithdrawalDelay)) {
     return alert('staking period has ended'); // ToDo: comment check
