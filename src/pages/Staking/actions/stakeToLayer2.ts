@@ -36,7 +36,7 @@ export const stakeL2 = async (args: StakeToLayer2) => {
 
   const currentBlock = await BASE_PROVIDER.getBlockNumber();
   const endBlock = Number(miningEndTime);
-  const TON = getTokamakContract('TON');
+  const TON = getTokamakContract('TON', library);
   const tonBalance = await TON.balanceOf(userAddress);
   const tonAmount = convertToWei(amount);
 
