@@ -48,6 +48,7 @@ export const WalletInformation: FC<WalletInformationProps> = ({
   const [unstakeDisabled, setUnstakeDisabled] = useState(true);
   const [claimDisabled, setClaimDisabled] = useState(true);
   const [manageDisabled, setManageDisabled] = useState(true);
+  const {status} = data;
   const currentBlock: number = Number(data.fetchBlock);
   const miningStart: number = Number(data.miningStartTime);
   const miningEnd: number = Number(data.miningEndTime);
@@ -58,7 +59,9 @@ export const WalletInformation: FC<WalletInformationProps> = ({
     account === undefined || miningEnd <= currentBlock ? true : false;
 
   const btnDisabledStake = () => {
-    return account === undefined || saleStart >= currentBlock
+    return account === undefined ||
+      saleStart >= currentBlock ||
+      status !== 'sale'
       ? setStakeDisabled(true)
       : setStakeDisabled(false);
   };
@@ -223,7 +226,7 @@ export const WalletInformation: FC<WalletInformationProps> = ({
               {...(endSaleBtnDisabled === true
                 ? {...btnStyle.btnDisable({colorMode})}
                 : {...btnStyle.btnAble()})}
-              isDisabled={endSaleBtnDisabled}
+              isDisabled={status === 'end' || endSaleBtnDisabled ? true : false}
               fontSize={'14px'}
               opacity={loading === true ? 0.5 : 1}
               onClick={() =>
