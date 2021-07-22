@@ -1,6 +1,14 @@
 import {Head} from 'components/SEO';
 import {Fragment} from 'react';
-import {Flex, Text, Image, Container, useTheme, Center} from '@chakra-ui/react';
+import {
+  Flex,
+  Text,
+  Image,
+  Container,
+  useTheme,
+  Center,
+  Box,
+} from '@chakra-ui/react';
 import logoDark from 'assets/svgs/fldw_bi.svg';
 
 const whiteWithOpacity = `rgba(255, 255, 255, 0.5)`;
@@ -58,17 +66,24 @@ export const MobilePreOpen = () => {
         fontFamily={theme.fonts.fld}
         color="white.100">
         <Image src={logoDark} w={'11.875em'} pl={'1.250em'} />
-        <Flex mt={'6.250em'} flexDir="column" alignItems="center">
+        <Flex
+          mt={'97px'}
+          flexDir="column"
+          alignItems="center"
+          justifyContent="center">
           <Flex
-            mb={'1.563em'}
+            w={'19.125em'}
+            mb={'128px'}
             flexDir="column"
             alignItems="center"
             fontSize={'1.813em'}
             fontWeight={600}>
-            <Text>TON Starter is optimized on the web</Text>
-            <Text fontSize={'20px'} fontWeight={100}>
-              Mobile is not supported yet
+            <Text>
+              <span style={{color: '#ffff07'}}>TON Starter</span> is optimized
             </Text>
+            <Text>on the web</Text>
+            <Text>Mobile is</Text>
+            <Text>not supported yet</Text>
           </Flex>
 
           {/* <Text fontSize={'3.438em'} fontWeight={600} mb={'103px'}>
