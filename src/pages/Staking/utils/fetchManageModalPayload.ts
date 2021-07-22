@@ -6,6 +6,7 @@ import {Contract} from '@ethersproject/contracts';
 import {convertNumber} from 'utils/number';
 import {BASE_PROVIDER} from 'constants/index'
 import * as CoinageABI from 'services/abis/AutoRefactorCoinage.json';
+import { ethers } from 'ethers';
 
 export const fetchManageModalPayload = async (
   library: any,
@@ -39,6 +40,8 @@ const getUserInfoForManage = async (
   const seigManager = getTokamakContract('SeigManager', library);
   const coinageAddress = await seigManager.coinages(TokamakLayer2_ADDRESS)
   const Coinage = new Contract(coinageAddress, CoinageABI.abi, library)
+  const balance = await Coinage.balanceOf(contractAddress, {blockNumber: currentBlock})
+  console.log(balance);
 
   return Promise.all([
     StakeTONContract?.userStaked(account),
@@ -51,7 +54,7 @@ const getUserInfoForManage = async (
     StakeTONContract.canRewardAmount(account, currentBlock),
     depositManager.globalWithdrawalDelay(),
     Coinage.balanceOf(contractAddress),
-    Coinage.balanceOf(contractAddress, {blockNumber: currentBlock}),
+    // Coinage.balanceOf(contractAddress, {blockNumber: currentBlock}),
   ])
     .then((result) => {
       return {
@@ -86,9 +89,9 @@ const getUserInfoForManage = async (
         maxBalance: convertNumber({
           amount: result[9],
         }),
-        maxBalances: convertNumber({
-          amount: result[10],
-        })
+        // maxBalances: convertNumber({
+        //   amount: result[10],
+        // })
       };
     })
     .catch((e) => console.log(e));
