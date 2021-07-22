@@ -24,7 +24,22 @@ import {useState, useEffect, useRef} from 'react';
 
 type SelectPeriod = '1month' | '6months' | '1year' | '3year';
 
-export const StakeOptionModal = () => {
+const themeDesign = {
+  border: {
+    light: 'solid 1px #d7d9df',
+    dark: 'solid 1px #535353',
+  },
+  font: {
+    light: 'black.300',
+    dark: 'gray.475',
+  },
+  tosFont: {
+    light: 'gray.250',
+    dark: 'black.100',
+  },
+};
+
+export const DaoStakeModal = () => {
   const {data} = useAppSelector(selectModalType);
   const {
     data: {userTosBalance},
@@ -121,7 +136,10 @@ export const StakeOptionModal = () => {
                 borderWidth: 0,
               }}
             />
-            <Text pt="6px" color="gray.250" fontWeight={600}>
+            <Text
+              pt="6px"
+              color={themeDesign.tosFont[colorMode]}
+              fontWeight={600}>
               TOS
             </Text>
           </Stack>
@@ -151,7 +169,7 @@ export const StakeOptionModal = () => {
               <Text
                 fontWeight={600}
                 fontSize={'0.813em'}
-                color={'black.300'}
+                color={themeDesign.font[colorMode]}
                 mb="10px">
                 Locking Period
               </Text>
@@ -160,7 +178,6 @@ export const StakeOptionModal = () => {
                 h="26px"
                 mb="10px"
                 fontSize={'0.750em'}
-                fontWeight={600}
                 cursor={'pointer'}>
                 {periods.map((period: string, index: number) => (
                   <Text
@@ -168,12 +185,14 @@ export const StakeOptionModal = () => {
                     h="100%"
                     id={period}
                     ref={(el) => (focusTarget.current[index] = el)}
-                    borderTop={'solid 1px #d7d9df'}
-                    borderBottom={'solid 1px #d7d9df'}
-                    borderLeft={index !== 0 ? '' : 'solid 1px #d7d9df'}
+                    borderTop={themeDesign.border[colorMode]}
+                    borderBottom={themeDesign.border[colorMode]}
+                    borderLeft={
+                      index !== 0 ? '' : themeDesign.border[colorMode]
+                    }
                     borderLeftRadius={index === 0 ? 4 : 0}
                     borderRightRadius={index === periods.length - 1 ? 4 : 0}
-                    borderRight={'solid 1px #d7d9df'}
+                    borderRight={themeDesign.border[colorMode]}
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
@@ -187,7 +206,8 @@ export const StakeOptionModal = () => {
                   w={'120px'}
                   h="26px"
                   bg="transparent"
-                  border="solid 1px #d7d9df"
+                  fontWeight={100}
+                  border={themeDesign.border[colorMode]}
                   fontSize={'0.750em'}
                   _hover={{}}
                   onClick={() => setIsCustom(true)}>

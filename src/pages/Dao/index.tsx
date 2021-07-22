@@ -10,7 +10,7 @@ import {
 import resources_icon from 'assets/svgs/resources_icon.svg';
 import resources_icon_blue from 'assets/svgs/resources_icon_blue.svg';
 import {STOS} from './components/STOS';
-import {StakeOptionModal} from './components/Modals/DaoStaking';
+import {DaoStakeModal, DaoManageModal} from './components/Modals';
 
 export const DAO = () => {
   const theme = useTheme();
@@ -154,7 +154,8 @@ export const DAO = () => {
           <STOS></STOS>
         </Flex>
       </Flex>
-      <StakeOptionModal></StakeOptionModal>
+      <DaoStakeModal></DaoStakeModal>
+      <DaoManageModal></DaoManageModal>
     </Flex>
   );
 };

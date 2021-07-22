@@ -8,7 +8,9 @@ import {
 } from '@chakra-ui/react';
 import {useEffect} from 'react';
 import {useState} from 'react';
+import {useDispatch} from 'react-redux';
 import {User} from 'store/app/user.reducer';
+import {openModal} from 'store/modal.reducer';
 
 type PropsType = {
   userData: User;
@@ -17,6 +19,7 @@ type PropsType = {
 
 export const MySTOS = (props: PropsType) => {
   const {userData, signIn} = props;
+  const dispatch = useDispatch();
   const [balance, setbalance] = useState('-');
   const theme = useTheme();
   const {btnStyle, btnHover} = theme;
@@ -66,7 +69,15 @@ export const MySTOS = (props: PropsType) => {
         fontSize={'14px'}
         fontWeight={400}
         isDisabled={!signIn}
-        _hover={btnHover.checkDisable({signIn})}>
+        _hover={btnHover.checkDisable({signIn})}
+        onClick={() =>
+          dispatch(
+            openModal({
+              type: 'dao_manage',
+              data: {userData, userTosBalance: balance},
+            }),
+          )
+        }>
         Manage
       </Button>
     </Flex>
