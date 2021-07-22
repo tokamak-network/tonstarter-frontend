@@ -168,7 +168,7 @@ export const StakingTable: FC<StakingTableProps> = ({
     const filterValue = e.target.value;
     headerGroups[0].headers.map((e) => {
       if (e.Header === filterValue) {
-        e.toggleSortBy();
+        e.toggleSortBy(true);
       }
       return null;
     });
