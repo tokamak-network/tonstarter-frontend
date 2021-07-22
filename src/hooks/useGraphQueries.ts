@@ -12,8 +12,8 @@ function useGraphQueries(network:string = 'mainnet') {
     client: client,
     // skip: true
   })
-  console.log(poolInfo)
-  console.log(factory.data);
+  // console.log(poolInfo)
+  // console.log(factory.data);
   return {
     poolInfo
   }

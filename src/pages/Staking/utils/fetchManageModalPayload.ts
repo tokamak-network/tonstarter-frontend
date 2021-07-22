@@ -6,7 +6,7 @@ import {Contract} from '@ethersproject/contracts';
 import {convertNumber} from 'utils/number';
 import {BASE_PROVIDER} from 'constants/index'
 import * as CoinageABI from 'services/abis/AutoRefactorCoinage.json';
-import { ethers } from 'ethers';
+import {BigNumber} from 'ethers';
 
 export const fetchManageModalPayload = async (
   library: any,
@@ -91,7 +91,7 @@ const getUserInfoForManage = async (
         // maxBalance: convertNumber({
         //   amount: result[10],
         // })
-        maxBalance: result[10].toString()
+        maxBalance: BigNumber.from(result[10])
       };
     })
     .catch((e) => console.log(e));

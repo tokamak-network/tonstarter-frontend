@@ -106,8 +106,8 @@ export const AirdropModal = () => {
       // .fetchMore({
       //   query: GET_POOL_INFO
       // })
-      console.log(info.data)
-      console.log(roundInfo)
+      // console.log(info.data)
+      // console.log(roundInfo)
       setAirdropData(roundInfo);
       availableAmount(roundInfo, claimedAmount, unclaimedAmount);
     }

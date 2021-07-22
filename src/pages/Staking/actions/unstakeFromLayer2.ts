@@ -24,18 +24,12 @@ export const unstakeL2 = async (args: UnstakeFromLayer2) => {
   }
   const signer = getSigner(library, userAddress);
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, library);
-  // const Coinage = createWeb3Contract(
-  //   AutoRefactorCoinageABI,
-  //   await SeigManager.methods.coinages(layer2).call()
-  // );
-  //Coinage.methods.balanceOf(user).call(null, blockNumber),
+  
   const wtonAmount = utils.parseUnits(amount, '27');
   console.log(wtonAmount);
   console.log(maxBalance);
   let inputValue = (Number(wtonAmount) > Number(maxBalance)) ? maxBalance : wtonAmount;
-  // if (Number(wtonAmount) > Number(maxBalance)) {
-  //   inputValue
-  // }
+  
   console.log(inputValue);
   try {
     const receipt = await StakeTONContract.connect(
