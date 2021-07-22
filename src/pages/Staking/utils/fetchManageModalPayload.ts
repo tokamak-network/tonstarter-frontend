@@ -41,9 +41,9 @@ const getUserInfoForManage = async (
   const coinageAddress = await seigManager.coinages(TokamakLayer2_ADDRESS)
   const Coinage = new Contract(coinageAddress, CoinageABI.abi, library)
   const balancea = await Coinage.balanceOf(contractAddress, {blockTag: currentBlock})
-  const balanceb = await Coinage.balanceOf(contractAddress, {blockNumber: currentBlock})
+  // const balanceb = await Coinage.balanceOf(contractAddress, {blockNumber: currentBlock})
   console.log(balancea);
-  console.log(balanceb);
+  // console.log(balanceb);
 
   return Promise.all([
     StakeTONContract?.userStaked(account),
