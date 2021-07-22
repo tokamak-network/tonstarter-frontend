@@ -28,6 +28,10 @@ export const unstakeL2 = async (args: UnstakeFromLayer2) => {
   const wtonAmount = utils.parseUnits(amount, '27');
   console.log(wtonAmount);
   console.log(maxBalance);
+  console.log(wtonAmount.toString());
+  console.log(maxBalance.toString());
+  console.log(Number(wtonAmount));
+  console.log(Number(maxBalance));
   let inputValue = (Number(wtonAmount) > Number(maxBalance)) ? maxBalance : wtonAmount;
   
   console.log(inputValue);
