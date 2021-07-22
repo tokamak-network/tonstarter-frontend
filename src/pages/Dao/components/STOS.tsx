@@ -7,8 +7,7 @@ import {useEffect} from 'react';
 import {useState} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectUser} from 'store/app/user.reducer';
-import {useDispatch} from 'react-redux';
-import {useModal} from 'hooks/useModal';
+import {useUser} from 'hooks/useUser';
 
 const themeDesign = {
   fontColorTitle: {
@@ -48,9 +47,9 @@ const themeDesign = {
 export const STOS = () => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
+  const {signIn, account, userData} = useUser();
   const [address, setAddress] = useState('-');
   const {data} = useAppSelector(selectUser);
-  const {address: account} = data;
   useEffect(() => {
     if (account !== undefined) {
       setAddress(shortenAddress(account));
@@ -111,12 +110,12 @@ export const STOS = () => {
         </Text>
       </Flex>
       <Box mb={'20px'}>
-        <AvailableBalance userData={data}></AvailableBalance>
+        <AvailableBalance signIn={signIn} userData={data}></AvailableBalance>
       </Box>
       <Box mb={'20px'}>
-        <MyStaked userData={data}></MyStaked>
+        <MyStaked signIn={signIn} userData={data}></MyStaked>
       </Box>
-      <MySTOS userData={data}></MySTOS>
+      <MySTOS signIn={signIn} userData={data}></MySTOS>
     </Flex>
   );
 };

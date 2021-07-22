@@ -12,33 +12,34 @@ import {
   Stack,
   useTheme,
   useColorMode,
-  Container,
   Select,
 } from '@chakra-ui/react';
-import React, {useCallback} from 'react';
-import {useWeb3React} from '@web3-react/core';
+import React from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {onKeyDown, useInput} from 'hooks/useInput';
 import {useModal} from 'hooks/useModal';
+import {useUser} from 'hooks/useUser';
 import {useState, useEffect, useRef} from 'react';
 
 type SelectPeriod = '1month' | '6months' | '1year' | '3year';
 
 export const StakeOptionModal = () => {
   const {data} = useAppSelector(selectModalType);
-  const {account, library} = useWeb3React();
+  const {
+    data: {userTosBalance},
+  } = data;
   const {colorMode} = useColorMode();
   const theme = useTheme();
+  const {signIn, account, library} = useUser();
   const [selectPeriod, setSelectPeriod] = useState<string | undefined>(
     undefined,
   );
   const [isCustom, setIsCustom] = useState<boolean>(false);
   const periods = ['1month', '6months', '1year', '3year'];
 
-  let balance = data?.data?.user?.balance;
   const {btnStyle} = theme;
-  const {value, setValue, onChange} = useInput();
+  const {value, setValue, onChange} = useInput('0');
   const {handleCloseModal, handleOpenConfirmModal} = useModal(setValue);
   const keys = [undefined, '', '0', '0.', '0.0', '0.00'];
   const btnDisabled = keys.indexOf(value) !== -1 ? true : false;
@@ -55,6 +56,10 @@ export const StakeOptionModal = () => {
     current[index].style.border = 'solid 1px #2a72e5';
     setSelectPeriod(current[index].id);
   };
+
+  if (signIn === false) {
+    return <></>;
+  }
 
   return (
     <Modal
@@ -103,7 +108,12 @@ export const StakeOptionModal = () => {
               textAlign={'center'}
               fontWeight={'bold'}
               fontSize={'4xl'}
-              w={'125px'}
+              maxW={'160px'}
+              minW={'20px'}
+              p={0}
+              ml={'29px'}
+              mr="5px"
+              w={value === '0' || undefined ? '20px' : `${20 * value.length}px`}
               value={value}
               onKeyDown={onKeyDown}
               onChange={onChange}
@@ -111,7 +121,9 @@ export const StakeOptionModal = () => {
                 borderWidth: 0,
               }}
             />
-            <Text>TOS</Text>
+            <Text pt="6px" color="gray.250" fontWeight={600}>
+              TOS
+            </Text>
           </Stack>
 
           <Stack as={Flex} justifyContent={'center'} alignItems={'center'}>
@@ -122,7 +134,7 @@ export const StakeOptionModal = () => {
               <Text
                 fontSize={'18px'}
                 color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                {balance} TOS
+                {userTosBalance} TOS
               </Text>
             </Box>
           </Stack>
@@ -208,7 +220,7 @@ export const StakeOptionModal = () => {
                 : {...btnStyle.btnAble()})}
               w={'150px'}
               fontSize="14px"
-              _hover={{...theme.btnHover}}
+              _hover={btnDisabled ? {} : {...theme.btnHover}}
               disabled={btnDisabled}
               onClick={() => {
                 handleOpenConfirmModal({

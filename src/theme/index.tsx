@@ -73,6 +73,9 @@ const headerMargin = {
 
 const btnHover = {
   backgroundColor: 'blue.100',
+  checkDisable: (props: any) => ({
+    bg: props.signIn ? 'blue.100' : {},
+  }),
 };
 
 const btnStyle = {

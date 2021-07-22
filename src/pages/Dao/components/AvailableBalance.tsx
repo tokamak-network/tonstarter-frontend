@@ -15,6 +15,7 @@ import {openModal} from 'store/modal.reducer';
 
 type PropsType = {
   userData: User;
+  signIn: boolean;
 };
 
 const themeDesign = {
@@ -29,9 +30,10 @@ const themeDesign = {
 };
 
 export const AvailableBalance = (props: PropsType) => {
-  const {userData} = props;
+  const {userData, signIn} = props;
   const [balance, setbalance] = useState('-');
   const theme = useTheme();
+  const {btnStyle, btnHover} = theme;
   const {colorMode} = useColorMode();
   const dispatch = useAppDispatch();
 
@@ -43,12 +45,12 @@ export const AvailableBalance = (props: PropsType) => {
         setbalance(res);
       }
     }
-    if (address !== undefined && library !== undefined) {
+    if (signIn) {
       getTosBalance();
     } else {
       setbalance('-');
     }
-  }, [userData]);
+  }, [signIn, userData]);
 
   return (
     <Flex
@@ -71,15 +73,24 @@ export const AvailableBalance = (props: PropsType) => {
         </Flex>
       </Box>
       <Button
+        {...(signIn
+          ? {...btnStyle.btnAble()}
+          : {...btnStyle.btnDisable({colorMode})})}
         w={'150px'}
         h="38px"
         p={0}
-        bg="blue.500"
-        color="white.100"
         fontSize={'14px'}
         fontWeight={400}
-        _hover={theme.btnHover}
-        onClick={() => dispatch(openModal({type: 'dao_stake'}))}>
+        isDisabled={!signIn}
+        _hover={btnHover.checkDisable({signIn})}
+        onClick={() =>
+          dispatch(
+            openModal({
+              type: 'dao_stake',
+              data: {userData, userTosBalance: balance},
+            }),
+          )
+        }>
         Stake
       </Button>
     </Flex>

@@ -12,12 +12,14 @@ import {User} from 'store/app/user.reducer';
 
 type PropsType = {
   userData: User;
+  signIn: boolean;
 };
 
 export const MyStaked = (props: PropsType) => {
-  const {userData} = props;
+  const {userData, signIn} = props;
   const [balance, setbalance] = useState('-');
   const theme = useTheme();
+  const {btnStyle, btnHover} = theme;
   const {colorMode} = useColorMode();
   const themeDesign = {
     fontColorTitle: {
@@ -53,14 +55,16 @@ export const MyStaked = (props: PropsType) => {
         </Flex>
       </Box>
       <Button
+        {...(signIn
+          ? {...btnStyle.btnAble()}
+          : {...btnStyle.btnDisable({colorMode})})}
         w={'150px'}
         h="38px"
         p={0}
-        bg="blue.500"
-        color="white.100"
         fontSize={'14px'}
         fontWeight={400}
-        _hover={theme.btnHover}>
+        isDisabled={!signIn}
+        _hover={btnHover.checkDisable({signIn})}>
         UnStake
       </Button>
     </Flex>
