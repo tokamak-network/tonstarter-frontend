@@ -1,6 +1,6 @@
-import clients from '../components/Airdrop/utils/clients';
+import clients from '../pages/Pools/utils/clients';
 import { useQuery } from '@apollo/client';
-import { GET_POOL_INFO, GET_FACTORIES } from '../components/Airdrop/utils/subgraph';
+import { GET_POOL_INFO, GET_FACTORIES } from '../pages/Pools/utils/subgraph';
 
 function useGraphQueries(network:string = 'mainnet') {
   const client = network === 'mainnet' ? clients.mainnet : clients.rinkeby;
