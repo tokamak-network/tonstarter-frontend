@@ -26,19 +26,12 @@ export const unstakeL2 = async (args: UnstakeFromLayer2) => {
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, library);
   
   const wtonAmount = utils.parseUnits(amount, '27');
-  console.log(wtonAmount);
-  console.log(maxBalance);
-  console.log(wtonAmount.toString());
-  console.log(maxBalance.toString());
-  console.log(Number(wtonAmount));
-  console.log(Number(maxBalance));
-  let inputValue = (Number(wtonAmount) > Number(maxBalance)) ? maxBalance : wtonAmount;
+  let inputValue = (Number(wtonAmount.toString()) > Number(maxBalance.toString())) ? maxBalance : wtonAmount;
   
-  console.log(inputValue);
   try {
     const receipt = await StakeTONContract.connect(
       signer,
-    ).tokamakRequestUnStaking(TokamakLayer2_ADDRESS, wtonAmount);
+    ).tokamakRequestUnStaking(TokamakLayer2_ADDRESS, inputValue);
     store.dispatch(setTxPending({tx: true}));
     alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
     await receipt.wait();

@@ -1,11 +1,11 @@
 import { gql } from 'apollo-boost';
 
-const poolParam = `
-  id
-  createdAtBlockNumber
-  token0 {id}
-  token1 {id}
-`;
+// const poolParam = `
+//   id
+//   createdAtBlockNumber
+//   token0 {id}
+//   token1 {id}
+// `;
 export const GET_POOL_INFO = gql`{
   query GetPool {
     pools(first: 5) {

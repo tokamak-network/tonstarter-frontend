@@ -1,5 +1,5 @@
 import clients from '../components/Airdrop/utils/clients';
-import { useQuery, gql } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { GET_POOL_INFO, GET_FACTORIES } from '../components/Airdrop/utils/subgraph';
 
 function useGraphQueries(network:string = 'mainnet') {
@@ -12,10 +12,10 @@ function useGraphQueries(network:string = 'mainnet') {
     client: client,
     // skip: true
   })
-  // console.log(poolInfo)
-  // console.log(factory.data);
+
   return {
-    poolInfo
+    poolInfo,
+    factory,
   }
 }
 
