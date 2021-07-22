@@ -40,10 +40,6 @@ const getUserInfoForManage = async (
   const seigManager = getTokamakContract('SeigManager', library);
   const coinageAddress = await seigManager.coinages(TokamakLayer2_ADDRESS)
   const Coinage = new Contract(coinageAddress, CoinageABI.abi, library)
-  const balancea = await Coinage.balanceOf(contractAddress, {blockTag: currentBlock})
-  // const balanceb = await Coinage.balanceOf(contractAddress, {blockNumber: currentBlock})
-  console.log(balancea);
-  // console.log(balanceb);
 
   return Promise.all([
     StakeTONContract?.userStaked(account),
@@ -56,6 +52,7 @@ const getUserInfoForManage = async (
     StakeTONContract.canRewardAmount(account, currentBlock),
     depositManager.globalWithdrawalDelay(),
     Coinage.balanceOf(contractAddress),
+    Coinage.balanceOf(contractAddress, {blockTag: currentBlock})
     // Coinage.balanceOf(contractAddress, {blockNumber: currentBlock}),
   ])
     .then((result) => {
@@ -88,12 +85,12 @@ const getUserInfoForManage = async (
           amount: result[7],
         }),
         globalWithdrawalDelay: result[8].toString(),
-        maxBalance: convertNumber({
+        coinageBalance: convertNumber({
           amount: result[9],
         }),
-        // maxBalances: convertNumber({
-        //   amount: result[10],
-        // })
+        maxBalance: convertNumber({
+          amount: result[10],
+        })
       };
     })
     .catch((e) => console.log(e));

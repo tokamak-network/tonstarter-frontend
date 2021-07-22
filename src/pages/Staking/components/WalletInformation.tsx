@@ -104,7 +104,6 @@ export const WalletInformation: FC<WalletInformationProps> = ({
       data.contractAddress,
       data.vault,
     );
-    console.log(result)
 
     return result;
   };
@@ -129,8 +128,6 @@ export const WalletInformation: FC<WalletInformationProps> = ({
   const modalData = useCallback(async (modal: ModalType) => {
     setLoading(true);
     let payload;
-    const payloadModal = await modalPayload(data);
-    console.log(payloadModal);
 
     try {
       if (modal === 'manage' || modal === 'claim') {
