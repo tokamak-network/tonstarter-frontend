@@ -11,13 +11,14 @@ type UnstakeFromLayer2 = {
   amount: string;
   contractAddress: string;
   status: string;
+  maxBalance: string;
   library: any;
   handleCloseModal: any;
 };
 const {TokamakLayer2_ADDRESS} = DEPLOYED;
 
 export const unstakeL2 = async (args: UnstakeFromLayer2) => {
-  const {userAddress, amount, contractAddress, library} = args;
+  const {userAddress, amount, contractAddress, maxBalance, library} = args;
   if (userAddress === null || userAddress === undefined) {
     return;
   }
@@ -29,6 +30,13 @@ export const unstakeL2 = async (args: UnstakeFromLayer2) => {
   // );
   //Coinage.methods.balanceOf(user).call(null, blockNumber),
   const wtonAmount = utils.parseUnits(amount, '27');
+  console.log(wtonAmount);
+  console.log(maxBalance);
+  let inputValue = (Number(wtonAmount) > Number(maxBalance)) ? maxBalance : wtonAmount;
+  // if (Number(wtonAmount) > Number(maxBalance)) {
+  //   inputValue
+  // }
+  console.log(inputValue);
   try {
     const receipt = await StakeTONContract.connect(
       signer,

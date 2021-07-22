@@ -88,9 +88,10 @@ const getUserInfoForManage = async (
         coinageBalance: convertNumber({
           amount: result[9],
         }),
-        maxBalance: convertNumber({
-          amount: result[10],
-        })
+        // maxBalance: convertNumber({
+        //   amount: result[10],
+        // })
+        maxBalance: result[10].toString()
       };
     })
     .catch((e) => console.log(e));
