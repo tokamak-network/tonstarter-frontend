@@ -51,6 +51,7 @@ const getUserInfoForManage = async (
     StakeTONContract.canRewardAmount(account, currentBlock),
     depositManager.globalWithdrawalDelay(),
     Coinage.balanceOf(contractAddress),
+    Coinage.balanceOf(contractAddress, {currentBlock}),
   ])
     .then((result) => {
       return {
@@ -84,6 +85,9 @@ const getUserInfoForManage = async (
         globalWithdrawalDelay: result[8].toString(),
         maxBalance: convertNumber({
           amount: result[9],
+        }),
+        maxBalances: convertNumber({
+          amount: result[10],
         })
       };
     })

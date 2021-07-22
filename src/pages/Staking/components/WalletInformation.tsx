@@ -129,6 +129,7 @@ export const WalletInformation: FC<WalletInformationProps> = ({
   const modalData = useCallback(async (modal: ModalType) => {
     setLoading(true);
     let payload;
+    const payloadModal = await modalPayload(data);
 
     try {
       if (modal === 'manage' || modal === 'claim') {
