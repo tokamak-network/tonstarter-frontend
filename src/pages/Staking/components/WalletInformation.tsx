@@ -104,6 +104,7 @@ export const WalletInformation: FC<WalletInformationProps> = ({
       data.contractAddress,
       data.vault,
     );
+    console.log(result)
 
     return result;
   };
