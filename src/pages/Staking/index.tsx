@@ -110,8 +110,8 @@ export const Staking = () => {
         accessor: 'stakeBalanceTON',
       },
       {
-        Header: 'Earning Per Block',
-        accessor: 'earning_per_block',
+        Header: 'Earning Per TON',
+        accessor: 'earning_per_ton',
       },
       {
         // Make an expander cell
