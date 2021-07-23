@@ -96,7 +96,7 @@ export const WalletInformation: FC<WalletInformationProps> = ({
     manageDisableClaim();
     /*eslint-disable*/
   }, [account, data, dispatch, tosBalance]);
-
+  console.log(data)
   const modalPayload = async (data: any) => {
     const result = await fetchManageModalPayload(
       data.library,
