@@ -19,6 +19,24 @@ export const GET_POOL_INFO = gql`{
   }
 }`
 
+export const GET_POSITION = gql`{
+  query GetPosition($address: String!) {
+    positions(where: {owner: $address}) {
+      id
+      pool {
+        id
+        token0 {
+          id
+        }
+        token1 {
+          id
+        }
+      }
+      owner
+    }
+  }
+}`
+
 export const GET_FACTORIES = gql`
   query GetFactory {
     factories (first:5) {
