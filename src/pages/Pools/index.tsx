@@ -23,7 +23,7 @@ import { useQuery } from '@apollo/client';
 import { GET_POOL_INFO, GET_FACTORIES } from './utils/subgraph';
 import { QueryResult, OperationVariables } from '@apollo/client';
 // import { GET_POOL_INFO } from './utils/subgraph';
-import { fetchPoolPayload } from './utils/fetchPoolPayload';
+
 
 export const Pools = () => {
   const theme = useTheme()
@@ -68,13 +68,7 @@ export const Pools = () => {
   // const {resultData, poolInfo} = useGraphQueries('rinkeby');
   // console.log(graph.resultData);
   // console.log(graph.poolInfo.data)
-  useEffect(() => {
-    async function callAirDropData() {
-      const res = await fetchPoolPayload();
-      console.log(res);
-    }
-    callAirDropData();
-  }, [])
+
   const TableData = () => {
     const {resultData, poolInfo} = useGraphQueries('rinkeby');
     const [totalStaker, setTotalStaker] = useState('-');
