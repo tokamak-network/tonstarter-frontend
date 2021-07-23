@@ -62,7 +62,8 @@ export const WalletInformation: FC<WalletInformationProps> = ({
     return account === undefined ||
       saleStart >= currentBlock ||
       status !== 'sale'
-      ? setStakeDisabled(true)
+      ? /*test*/
+        setStakeDisabled(false)
       : setStakeDisabled(false);
   };
 
