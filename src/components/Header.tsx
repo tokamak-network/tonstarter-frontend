@@ -202,7 +202,8 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
               onClick={(e) => e.preventDefault()}
               fontWeight={500}
               fontSize={'15px'}
-              _hover={{}}>
+              _hover={{}}
+              _active={{backgroundColor: 'none'}}>
               Airdrop Claim
             </Button>
           </Tooltip>

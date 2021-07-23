@@ -3,14 +3,11 @@ import {
   Flex,
   Text,
   Button,
-  Image,
   Container,
   useTheme,
   Avatar,
-  Tooltip,
   useColorMode,
 } from '@chakra-ui/react';
-import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import {useEffect, useCallback} from 'react';
 import {useHistory} from 'react-router';
 import {checkTokenType} from 'utils/token';
@@ -164,14 +161,6 @@ export const TokenComponent: FC<TokenComponentProps> = ({
               pt={1}>
               {tokenType.name}
             </Text>
-            <Tooltip
-              hasArrow
-              placement="right"
-              label="Total Staked"
-              color={theme.colors.white[100]}
-              bg={theme.colors.gray[375]}>
-              <Image src={tooltipIcon} />
-            </Tooltip>
           </Flex>
           <Text className={'fld-text1'} fontWeight={'normal'}>
             {tokenPrice} USD
