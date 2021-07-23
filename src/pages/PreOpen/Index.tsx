@@ -1,14 +1,6 @@
 import {Head} from 'components/SEO';
 import {Fragment} from 'react';
-import {
-  Flex,
-  Text,
-  Image,
-  Container,
-  useTheme,
-  Center,
-  Box,
-} from '@chakra-ui/react';
+import {Flex, Text, Image, Container, useTheme, Center} from '@chakra-ui/react';
 import logoDark from 'assets/svgs/fldw_bi.svg';
 
 const whiteWithOpacity = `rgba(255, 255, 255, 0.5)`;
