@@ -6,7 +6,6 @@ import {convertToWei} from 'utils/number';
 import {DEPLOYED} from 'constants/index';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import {BASE_PROVIDER} from 'constants/index'
-import { BigNumber } from 'ethers';
 
 type StakeToLayer2 = {
   userAddress: string | null | undefined;
