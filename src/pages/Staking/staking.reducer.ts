@@ -157,6 +157,13 @@ const getEarningPerTon = (
     }
     return result;
   });
+  if (
+    Number(result) === Infinity ||
+    isNaN(Number(result)) === true ||
+    result === ''
+  ) {
+    return undefined;
+  }
   return Number.parseFloat(result).toFixed(2);
 };
 

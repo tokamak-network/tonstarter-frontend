@@ -384,14 +384,8 @@ export const StakingTable: FC<StakingTableProps> = ({
                               Earning Per TON
                             </Text>
                             <Text w={120}>
-                              {ept.includes('Infinity') === true ||
-                              ept.includes('NaN') === true
-                                ? null
-                                : ept}{' '}
-                              {ept.includes('Infinity') === true ||
-                              ept.includes('NaN') === true
-                                ? null
-                                : 'TOS'}{' '}
+                              {ept === undefined ? null : ept}{' '}
+                              {ept === undefined ? null : 'TOS'}{' '}
                             </Text>
                             <Tooltip
                               hasArrow
