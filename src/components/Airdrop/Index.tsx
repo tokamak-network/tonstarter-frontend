@@ -23,8 +23,6 @@ import {Scrollbars} from 'react-custom-scrollbars-2';
 import {LoadingComponent} from 'components/Loading';
 import {fetchAirdropPayload} from './utils/fetchAirdropPayload';
 import {selectUser} from 'store/app/user.reducer';
-// import useGraphQueries from '../../hooks/useGraphQueries';
-// import { GET_POOL_INFO } from './utils/subgraph';
 
 type Round = {
   allocatedAmount: string;

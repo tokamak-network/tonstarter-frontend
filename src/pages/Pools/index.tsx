@@ -11,16 +11,25 @@ import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
 import {Head} from 'components/SEO';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import React, {Fragment, useCallback, useMemo} from 'react';
+import React, {Fragment, useCallback, useMemo, useEffect, useState} from 'react';
 import {shortenAddress} from 'utils';
 import {PoolTable} from './PoolTable';
 // import {selectStakes} from './staking.reducer';
 import {selectApp} from 'store/app/app.reducer';
 import {selectUser} from 'store/app/user.reducer';
 import {PageHeader} from 'components/PageHeader';
+import useGraphQueries from '../../hooks/useGraphQueries';
+import { useQuery } from '@apollo/client';
+import { GET_POOL_INFO, GET_FACTORIES } from './utils/subgraph';
+import { QueryResult, OperationVariables } from '@apollo/client';
+// import { GET_POOL_INFO } from './utils/subgraph';
+import { fetchPoolPayload } from './utils/fetchPoolPayload';
 
 export const Pools = () => {
   const theme = useTheme()
+  const {
+    data: {address, library},
+  } = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
   const columns = useMemo(
     () => [
@@ -56,6 +65,33 @@ export const Pools = () => {
     ],
     [],
   );
+  // const {resultData, poolInfo} = useGraphQueries('rinkeby');
+  // console.log(graph.resultData);
+  // console.log(graph.poolInfo.data)
+  useEffect(() => {
+    async function callAirDropData() {
+      const res = await fetchPoolPayload();
+      console.log(res);
+    }
+    callAirDropData();
+  }, [])
+  const TableData = () => {
+    const {resultData, poolInfo} = useGraphQueries('rinkeby');
+    const [totalStaker, setTotalStaker] = useState('-');
+    const getQuery = async () => {
+      console.log(await poolInfo)
+      // setTotalStaker(poolInfo.data.pool)
+    }
+    useEffect(() => {
+     getQuery();
+    }, [address])
+    return (
+      <Flex>
+        {totalStaker}
+      </Flex>
+    )
+  }
+  
 
   const renderRowSubComponent = useCallback(
     ({row}) => {
@@ -75,12 +111,7 @@ export const Pools = () => {
           />
         </Box>
         <Box fontFamily={theme.fonts.roboto}>
-          {/* <PoolTable 
-            renderDetail={renderRowSubComponent}
-            columns={columns}
-            data={data}
-            isLoading={loading === 'pending' ? true : false}
-          /> */}
+          <TableData />
         </Box>
       </Container>
     </Fragment>
