@@ -134,7 +134,7 @@ export const StakeOptionModal = () => {
               _hover={{...theme.btnHover}}
               disabled={btnDisabled}
               onClick={() => {
-                if (value > balance) {
+                if (value.replaceAll(',', '') > balance) {
                   return toastMsg({
                     status: 'error',
                     title: 'Error',
