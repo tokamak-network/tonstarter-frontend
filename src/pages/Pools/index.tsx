@@ -7,7 +7,6 @@ import {
   useColorMode,
   useTheme,
 } from '@chakra-ui/react';
-import {gql} from '@apollo/client';
 import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
 import {Head} from 'components/SEO';
@@ -25,10 +24,9 @@ import {PoolTable} from './PoolTable';
 import {selectApp} from 'store/app/app.reducer';
 import {selectUser} from 'store/app/user.reducer';
 import {PageHeader} from 'components/PageHeader';
+// import {LoadingComponent} from 'components/Loading';
 import {useQuery} from '@apollo/client';
-import {GET_POOL_INFO, GET_FACTORIES} from './utils/subgraph';
-import {QueryResult, OperationVariables} from '@apollo/client';
-// import { GET_POOL_INFO } from './utils/subgraph';
+import { GET_POOL1, GET_POOL2, GET_TOKEN } from './GraphQL/index';
 
 export const Pools = () => {
   const theme = useTheme();
@@ -70,44 +68,29 @@ export const Pools = () => {
     ],
     [],
   );
-  // const {resultData, poolInfo} = useGraphQueries('rinkeby');
-  // console.log(graph.resultData);
-  // console.log(graph.poolInfo.data)
 
-  // const TableData = () => {
-  //   useGraphQueries();
-  //   // const [totalStaker, setTotalStaker] = useState('-');
-  //   // const getQuery = async () => {
-  //   //   console.log(await poolInfo);
-  //   //   // setTotalStaker(poolInfo.data.pool)
-  //   // };
-  //   // useEffect(() => {
-  //   //   getQuery();
-  //   // }, [address]);
-  //   // return <Flex>{totalStaker}</Flex>;
-  // };
+  // const GET_POOL = gql`
+  //   query GetPool {
+  //     pools(where: {id: "0xb7ce38cc28e199adcd8dfa5c89fe03d3e8d267f2"}) {
+  //       id
+  //       token0 {
+  //         id
+  //       }
+  //       token1 {
+  //         id
+  //       }
+  //     }
+  //   }`;
+  const pool1 = useQuery(GET_POOL1);
+  const pool2 = useQuery(GET_POOL2);
+  // const token = useQuery(GET_TOKEN);
+  // console.log(token.data);
+  // if (pool1.loading) {return};
+  console.log(pool1.loading);
 
-  const GET_POOL = gql`
-    query GetPool {
-      pools(where: {id: "0xb7ce38cc28e199adcd8dfa5c89fe03d3e8d267f2"}) {
-        id
-        token0 {
-          id
-        }
-        token1 {
-          id
-        }
-        ticks {
-          id
-          price0
-          price1
-        }
-      }
-    }
-  `;
-  const {loading, error, data} = useQuery(GET_POOL);
-
-  console.log(loading, error, data);
+  console.log(pool2.loading, pool2.error, pool2.data.pools);
+  const poolArr = pool1.data.pools.concat(pool2.data.pools);
+  console.log(poolArr);
 
   const renderRowSubComponent = useCallback(({row}) => {}, []);
 
@@ -121,9 +104,13 @@ export const Pools = () => {
             subtitle={'Add liquidity into TOS ecosystem and earn reward'}
           />
         </Box>
-        {/* <Box fontFamily={theme.fonts.roboto}>
-          <TableData />
-        </Box> */}
+        <Box fontFamily={theme.fonts.roboto}>
+          <PoolTable
+            data={poolArr}
+            columns={columns}
+            isLoading={pool2.loading}
+          />
+        </Box>
       </Container>
     </Fragment>
   );
