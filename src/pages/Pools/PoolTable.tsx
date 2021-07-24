@@ -18,9 +18,8 @@ import {
   Center,
   useTheme,
   Image,
-  Tr,
-  Th,
-  Td,
+  Grid,
+  Button,
 } from '@chakra-ui/react';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
@@ -306,13 +305,13 @@ export const PoolTable: FC<PoolTableProps> = ({
                   cursor={'pointer'}
                   borderRadius={'10px'}
                   borderBottomRadius={
-                    isOpen === contractAddress ? '0px' : '10px'
+                    isOpen === id ? '0px' : '10px'
                   }
-                  borderBottom={isOpen === contractAddress ? '1px' : ''}
+                  borderBottom={isOpen === id ? '1px' : ''}
                   borderBottomColor={
-                    isOpen === contractAddress ? '#f4f6f8' : ''
+                    isOpen === id ? '#f4f6f8' : ''
                   }
-                  mb={'20px'}
+                  mt={'20px'}
                   w="100%"
                   bg={colorMode === 'light' ? 'white.100' : 'black.200'}
                   border={colorMode === 'dark' ? '1px solid #373737' : ''}
@@ -425,16 +424,20 @@ export const PoolTable: FC<PoolTableProps> = ({
                 isOpen === id ? (
                   <chakra.tr
                     w={'100%'}
-                    key={i}
-                    m={0}
-                    mb={'14px'}
+                    h={'67px'}
                     mt={-5}
+                    pt={'5px'}
                     bg={colorMode === 'light' ? 'white.100' : ''}
                     border={colorMode === 'light' ? '' : 'solid 1px #373737'}
+                    borderBottom={'1px'}
+                    borderBottomColor={'#f4f6f8'}
                     borderTopWidth={0}                    
                   >
                     <chakra.td
                       display={'flex'}
+                      px={12}
+                      pl={16}
+                      py={3}
                       w={'100%'}
                       margin={0}
                       colSpan={visibleColumns.length}
@@ -447,13 +450,102 @@ export const PoolTable: FC<PoolTableProps> = ({
                   filteredPosition.map((row: any) => {
                     // prepareRow(row);/
                     const poolName = getPoolName(row.pool.token0.symbol, row.pool.token1.symbol)
-                    console.log(row);
                     return (
                       <>
-                        <Flex>
-                          <Text>{poolName}</Text>
-                          <Text>_#{row.id}</Text>
-                        </Flex>
+                        <chakra.tr
+                          w={'100%'}
+                          key={i}
+                          // m={0}
+                          h={'80px'}
+                          pb={'3px'}
+                          bg={colorMode === 'light' ? 'white.100' : ''}
+                          border={colorMode === 'light' ? '' : 'solid 1px #373737'}
+                          borderBottom={'1px'}
+                          borderBottomColor={'#f4f6f8'}
+                          borderTopWidth={0}
+                          // color={getTextColor(type, colorMode)}                   
+                        >
+                          <chakra.td
+                            display={'flex'}
+                            w={'100%'}
+                            pl={12}
+                            py={5}
+                            colSpan={visibleColumns.length}
+                            fontSize={'17px'}
+                            fontWeight={600}
+                          > 
+                            {getCircle('staked')}
+                            <Flex
+                              ml={'32px'}
+                              w={'350px'}
+                              py={2}
+                            >
+                              <Text>{poolName}</Text>
+                              <Text fontSize={'14px'} pt={1}>
+                                _#{row.id}
+                              </Text>
+                            </Flex>
+                            <Grid pos="relative" templateColumns={'repeat(4, 1fr)'} gap={3} mr={'40px'}>
+                              <Button 
+                                w={'145px'}
+                                h={'38px'}
+                                py={'10px'}
+                                px={'29.5px'}
+                                borderRadius={'4px'}
+                                bg={'#00c3c4'}
+                                fontFamily={'Roboto'}
+                                fontSize={'14px'}
+                                fontWeight={500}
+                                color={'#ffffff'}
+                                // onClick={() => ()}
+                              >
+                                Add Liquidity
+                              </Button>
+                              <Button 
+                                w={'145px'}
+                                h={'38px'}
+                                py={'10px'}
+                                px={'29.5px'}
+                                borderRadius={'4px'}
+                                bg={'#257eee'}
+                                fontFamily={'Roboto'}
+                                fontSize={'14px'}
+                                fontWeight={500}
+                                color={'#ffffff'}
+                              >
+                                Staking
+                              </Button>
+                              <Button 
+                                w={'145px'}
+                                h={'38px'}
+                                py={'10px'}
+                                px={'29.5px'}
+                                borderRadius={'4px'}
+                                bg={'#257eee'}
+                                fontFamily={'Roboto'}
+                                fontSize={'14px'}
+                                fontWeight={500}
+                                color={'#ffffff'}
+                              >
+                                Unstaking
+                              </Button>
+                              <Button 
+                                w={'145px'}
+                                h={'38px'}
+                                py={'10px'}
+                                px={'29.5px'}
+                                borderRadius={'4px'}
+                                bg={'#257eee'}
+                                fontFamily={'Roboto'}
+                                fontSize={'14px'}
+                                fontWeight={500}
+                                color={'#ffffff'}
+                              >
+                                Claim
+                              </Button>
+                            </Grid>
+                          </chakra.td>
+                        </chakra.tr>
                       </>
                     )
                   })
