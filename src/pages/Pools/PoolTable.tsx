@@ -1,4 +1,4 @@
-import {FC, useState, useRef} from 'react';
+import React, {FC, useState, useRef} from 'react';
 import {
   Column,
   useExpanded,
@@ -18,24 +18,29 @@ import {
   Center,
   useTheme,
   Image,
+  Tr,
+  Th,
+  Td,
 } from '@chakra-ui/react';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {TriangleUpIcon, TriangleDownIcon} from '@chakra-ui/icons';
 import {useAppSelector} from 'hooks/useRedux';
-import {useEffect} from 'react';
+import {useEffect, useCallback} from 'react';
 import {setTimeout} from 'timers';
 import {selectTableType} from 'store/table.reducer';
 import {LoadingComponent} from 'components/Loading';
 import { chakra } from '@chakra-ui/react';
 import { getPoolName, checkTokenType } from '../../utils/token';
 import { convertNumber } from '../../utils/number';
+import { GET_POSITION, GET_POSITION1 } from './GraphQL/index';
+import { useQuery } from '@apollo/client';
 
 type PoolTableProps = {
   columns: Column[];
   data: any[];
-  // renderDetail: Function;
   isLoading: boolean;
+  address: string;
 }
 
 const getTextColor = (type: string, colorMode: string) => {
@@ -52,11 +57,51 @@ const getTextColor = (type: string, colorMode: string) => {
   }
 };
 
+const getCircle = (type: 'staked' | 'not staked') => {
+  return (
+    <Flex alignContent={'center'} alignItems={'center'} mr={0} ml={'16px'}>
+      <Box
+        w={'8px'}
+        h={'8px'}
+        borderRadius={50}
+        bg={
+          type === 'staked'
+            ? '#73d500'
+            : '#f95359'
+        }></Box>
+    </Flex>
+  );
+};
+
+const getStatus = (
+  type: 'staked' | 'not staked',
+  colorMode: 'light' | 'dark',
+) => {
+  return (
+    <Flex alignContent={'center'} alignItems={'center'} mr={'20px'}>
+      <Box
+        w={'8px'}
+        h={'8px'}
+        borderRadius={50}
+        bg={
+          type === 'staked' ? '#73d500' : '#f95359'
+        }
+        mr={'7px'}
+        mt={'2px'}></Box>
+      <Text
+        fontSize={'11px'}
+        color={colorMode === 'light' ? '#304156' : 'white.100'}>
+        {type === 'staked' ? 'Staked' : 'Not Staked'}
+      </Text>
+    </Flex>
+  );
+};
+
 export const PoolTable: FC<PoolTableProps> = ({
   columns,
   data,
-  // renderDetail,
   isLoading,
+  address,
 }) => {
   const {
     getTableProps,
@@ -86,6 +131,12 @@ export const PoolTable: FC<PoolTableProps> = ({
   const {
     data: {contractAddress, index},
   } = useAppSelector(selectTableType);
+  console.log(address.toLowerCase())
+  const position = useQuery(GET_POSITION1, {
+    variables: {address: address.toLowerCase()}
+  });
+  console.log(position.loading)
+  console.log(position.data)
 
   // useEffect(() => {
   //   if (index) {
@@ -167,10 +218,33 @@ export const PoolTable: FC<PoolTableProps> = ({
         </Text>
         <TriangleDownIcon
           color="blue.100"
-          _hover={{cursor: 'pointer'}}></TriangleDownIcon>
+          _hover={{cursor: 'pointer'}}
+        />
       </Flex>
     );
   };
+  const renderRowSubComponent = useCallback(() => {
+    // const data = row.original;
+    
+    return (
+      <Flex w="1100px" flexDir={'column'}>
+        <Flex justifyContent={'space-between'} mb={'23px'}>
+          <Flex>
+            {getStatus('staked', colorMode)}
+            {getStatus('not staked', colorMode)}
+          </Flex>
+          <Select
+            w={'137px'}
+            h={'32px'}
+            color={'#86929d'}
+            fontSize={'13px'}
+            placeholder="On sale Sort"
+            onChange={onChangeSelectBox}>
+          </Select>
+        </Flex>
+      </Flex>
+    )
+  }, []);
 
   if (isLoading === true || data.length === 0) {
     return (
@@ -210,6 +284,7 @@ export const PoolTable: FC<PoolTableProps> = ({
             flexDirection="column">
             {page.map((row: any, i) => {
               const {id} = row.original;
+              const filteredPosition = position.data.positions.filter((row: any) => row.pool.id === id)
               prepareRow(row);
               return [
                 <chakra.tr
@@ -230,6 +305,13 @@ export const PoolTable: FC<PoolTableProps> = ({
                   }}
                   cursor={'pointer'}
                   borderRadius={'10px'}
+                  borderBottomRadius={
+                    isOpen === contractAddress ? '0px' : '10px'
+                  }
+                  borderBottom={isOpen === contractAddress ? '1px' : ''}
+                  borderBottomColor={
+                    isOpen === contractAddress ? '#f4f6f8' : ''
+                  }
                   mb={'20px'}
                   w="100%"
                   bg={colorMode === 'light' ? 'white.100' : 'black.200'}
@@ -337,9 +419,45 @@ export const PoolTable: FC<PoolTableProps> = ({
                           ? renderBtn(data.id, i)
                           : null}
                       </chakra.td>
-                    )
+                    );
                   })}
-                </chakra.tr>
+                </chakra.tr>,
+                isOpen === id ? (
+                  <chakra.tr
+                    w={'100%'}
+                    key={i}
+                    m={0}
+                    mb={'14px'}
+                    mt={-5}
+                    bg={colorMode === 'light' ? 'white.100' : ''}
+                    border={colorMode === 'light' ? '' : 'solid 1px #373737'}
+                    borderTopWidth={0}                    
+                  >
+                    <chakra.td
+                      display={'flex'}
+                      w={'100%'}
+                      margin={0}
+                      colSpan={visibleColumns.length}
+                    >
+                      {renderRowSubComponent()}
+                    </chakra.td>
+                  </chakra.tr>
+                ) : null,
+                isOpen === id ? (
+                  filteredPosition.map((row: any) => {
+                    // prepareRow(row);/
+                    const poolName = getPoolName(row.pool.token0.symbol, row.pool.token1.symbol)
+                    console.log(row);
+                    return (
+                      <>
+                        <Flex>
+                          <Text>{poolName}</Text>
+                          <Text>_#{row.id}</Text>
+                        </Flex>
+                      </>
+                    )
+                  })
+                ) : null,
               ];
             })}
           </chakra.tbody>

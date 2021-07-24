@@ -243,21 +243,6 @@ export const StakingTable: FC<StakingTableProps> = ({
           {...getTableProps()}
           display="flex"
           flexDirection="column">
-          {/* <chakra.thead textAlign={'justify'}>
-            {console.log(headerGroups)}
-            {headerGroups.map((headerGroup) => (
-              <chakra.tr h={16} {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column) => (
-                  <chakra.th
-                    px={3}
-                    py={3}
-                    {...column.getHeaderProps(column.getSortByToggleProps())}>
-                    {column.render('Header')}
-                  </chakra.th>
-                ))}
-              </chakra.tr>
-            ))}
-          </chakra.thead> */}
           <chakra.tbody
             {...getTableBodyProps()}
             display="flex"

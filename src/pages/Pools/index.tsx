@@ -5,6 +5,7 @@ import {
   Flex,
   Link,
   useColorMode,
+  Select,
   useTheme,
 } from '@chakra-ui/react';
 import {IconClose} from 'components/Icons/IconClose';
@@ -26,7 +27,8 @@ import {selectUser} from 'store/app/user.reducer';
 import {PageHeader} from 'components/PageHeader';
 // import {LoadingComponent} from 'components/Loading';
 import {useQuery} from '@apollo/client';
-import { GET_POOL1, GET_POOL2, GET_TOKEN } from './GraphQL/index';
+import { GET_POOL1, GET_POOL2, GET_POOL3, GET_POOL_BY_POOL_ADDRESS } from './GraphQL/index';
+
 
 export const Pools = () => {
   const theme = useTheme();
@@ -34,6 +36,7 @@ export const Pools = () => {
     data: {address, library},
   } = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
+  const {colorMode} = useColorMode();
   const columns = useMemo(
     () => [
       {
@@ -68,31 +71,39 @@ export const Pools = () => {
     ],
     [],
   );
+  
+  const poolAddress = [
+    "0xb7ce38cc28e199adcd8dfa5c89fe03d3e8d267f2",
+    "0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf",
+    "0xfffcd9c7d2ab23c064d547387fce7e938fa3124b"
+  ]; // need to convern the way to get pool address
+  
+  const pool1 = useQuery(GET_POOL1, {
+    variables: {address: poolAddress[0]}
+  });
+  
+  // const [pools, setPools] = useState<Array<T>>()
+  // useEffect(() => {
+  //   async function getPool () {
+  //     console.log(pool1.loading)
+  //     console.log(pool1)
+  //     const mergedPool = await pool1.fetchMore({
+  //       query: GET_POOL_BY_POOL_ADDRESS,
+  //       variables: {address: poolAddress[1]}
+  //     })
+  //     console.log(mergedPool)
+  //   }
+  // }, [])
+  
+  const pool2 = useQuery(GET_POOL2, {
+    variables: {address: poolAddress[1]}
+  });
+  const pool3 = useQuery(GET_POOL3, {
+    variables: {address: poolAddress[2]}
+  });
 
-  // const GET_POOL = gql`
-  //   query GetPool {
-  //     pools(where: {id: "0xb7ce38cc28e199adcd8dfa5c89fe03d3e8d267f2"}) {
-  //       id
-  //       token0 {
-  //         id
-  //       }
-  //       token1 {
-  //         id
-  //       }
-  //     }
-  //   }`;
-  const pool1 = useQuery(GET_POOL1);
-  const pool2 = useQuery(GET_POOL2);
-  // const token = useQuery(GET_TOKEN);
-  // console.log(token.data);
-  // if (pool1.loading) {return};
-  console.log(pool1.loading);
-
-  console.log(pool2.loading, pool2.error, pool2.data.pools);
-  const poolArr = pool1.data.pools.concat(pool2.data.pools);
-  console.log(poolArr);
-
-  const renderRowSubComponent = useCallback(({row}) => {}, []);
+  const poolArr = pool1.loading || pool2.loading || pool3.loading ? [] : pool1.data.pools.concat(pool3.data.pools).concat(pool2.data.pools)
+  const account = address ? address : ''
 
   return (
     <Fragment>
@@ -105,11 +116,14 @@ export const Pools = () => {
           />
         </Box>
         <Box fontFamily={theme.fonts.roboto}>
+          {pool1.loading? '' :
           <PoolTable
             data={poolArr}
             columns={columns}
-            isLoading={pool2.loading}
+            isLoading={pool1.loading}
+            address={account}
           />
+          }
         </Box>
       </Container>
     </Fragment>
