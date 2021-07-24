@@ -425,7 +425,7 @@ export const PoolTable: FC<PoolTableProps> = ({
                   <chakra.tr
                     w={'100%'}
                     h={'67px'}
-                    mt={-5}
+                    // mt={-3}
                     pt={'5px'}
                     bg={colorMode === 'light' ? 'white.100' : ''}
                     border={colorMode === 'light' ? '' : 'solid 1px #373737'}
@@ -455,7 +455,7 @@ export const PoolTable: FC<PoolTableProps> = ({
                         <chakra.tr
                           w={'100%'}
                           key={i}
-                          // m={0}
+                          // mt={2}
                           h={'80px'}
                           pb={'3px'}
                           bg={colorMode === 'light' ? 'white.100' : ''}
@@ -549,6 +549,120 @@ export const PoolTable: FC<PoolTableProps> = ({
                       </>
                     )
                   })
+                ) : null,
+                isOpen === id ? (
+                  <chakra.tr
+                    w={'100%'}
+                    h={'80px'}
+                    // mt={-5}
+                    pt={'5px'}
+                    pr={9}
+                    bg={colorMode === 'light' ? 'white.100' : ''}
+                    border={colorMode === 'light' ? '' : 'solid 1px #373737'}
+                    borderBottom={'1px'}
+                    borderBottomColor={'#f4f6f8'}
+                    borderTopWidth={0}   
+                    borderBottomRadius="10px"
+                  >
+                    <chakra.td
+                      display={'flex'}
+                      w={'100%'}
+                      margin={0}
+                      justifyContent="flex-end"
+                      
+                      colSpan={visibleColumns.length}>
+                      <Flex justifyContent="flex-end" my={4} alignItems="center">
+                        <Flex>
+                          <Tooltip label="Previous Page">
+                            <IconButton
+                              w={'24px'}
+                              h={'24px'}
+                              bg={colorMode === 'light' ? 'white.100' : 'none'}
+                              border={
+                                colorMode === 'light'
+                                  ? 'solid 1px #e6eaee'
+                                  : 'solid 1px #424242'
+                              }
+                              color={colorMode === 'light' ? '#e6eaee' : '#424242'}
+                              borderRadius={4}
+                              aria-label={'Previous Page'}
+                              // onClick={goPrevPage}
+                              isDisabled={!canPreviousPage}
+                              size={'sm'}
+                              mr={4}
+                              _hover={{borderColor: '#2a72e5', color: '#2a72e5'}}
+                              icon={<ChevronLeftIcon h={6} w={6} />}
+                            />
+                          </Tooltip>
+                        </Flex>
+              
+                        <Flex
+                          alignItems="center"
+                          p={0}
+                          fontSize={'13px'}
+                          fontFamily={theme.fonts.roboto}
+                          color={colorMode === 'light' ? '#3a495f' : '#949494'}
+                          pb={'3px'}>
+                          <Text flexShrink={0}>
+                            <Text fontWeight="bold" as="span" color={'blue.300'}>
+                              {pageIndex + 1}
+                            </Text>{' '}
+                          </Text>
+                        </Flex>
+                        <Flex mr={'300px'}>
+                          <Tooltip label="Next Page">
+                            <Center>
+                              <IconButton
+                                w={'24px'}
+                                h={'24px'}
+                                border={
+                                  colorMode === 'light'
+                                    ? 'solid 1px #e6eaee'
+                                    : 'solid 1px #424242'
+                                }
+                                color={colorMode === 'light' ? '#e6eaee' : '#424242'}
+                                bg={colorMode === 'light' ? 'white.100' : 'none'}
+                                borderRadius={4}
+                                aria-label={'Next Page'}
+                                // onClick={goNextPage}
+                                isDisabled={!canNextPage}
+                                size={'sm'}
+                                ml={4}
+                                mr={'1.5625em'}
+                                _hover={{borderColor: '#2a72e5', color: '#2a72e5'}}
+                                icon={<ChevronRightIcon h={6} w={6} />}
+                              />
+                            </Center>
+                          </Tooltip>
+                        </Flex>
+                        <Select
+                            w={'117px'}
+                            h={'32px'}
+                            mr={1}
+                            color={colorMode === 'light' ? ' #3e495c' : '#f3f4f1'}
+                            bg={colorMode === 'light' ? 'white.100' : 'none'}
+                            boxShadow={
+                              colorMode === 'light'
+                                ? '0 1px 1px 0 rgba(96, 97, 112, 0.14)'
+                                : ''
+                            }
+                            border={colorMode === 'light' ? '' : 'solid 1px #424242'}
+                            borderRadius={4}
+                            size={'sm'}
+                            value={pageSize}
+                            fontFamily={theme.fonts.roboto}
+                            onChange={(e) => {
+                              setPageSize(Number(e.target.value));
+                            }}>
+                            {[10, 20, 30, 40, 50].map((pageSize) => (
+                              <option key={pageSize} value={pageSize}>
+                                Show {pageSize}
+                              </option>
+                            ))}
+                          </Select>
+                      </Flex>
+                      </chakra.td>
+                </chakra.tr>
                 ) : null,
               ];
             })}
