@@ -200,7 +200,7 @@ export const TokenComponent: FC<TokenComponentProps> = ({
               }
               px={34}
               fontFamily={theme.fonts.fld}
-              isDisabled={true}
+              isDisabled={false}
               _hover={{
                 bg:
                   colorMode === 'light'
