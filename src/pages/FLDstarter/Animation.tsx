@@ -15,6 +15,9 @@ import {Scrollbars} from 'react-custom-scrollbars-2';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import TONStaterLogo from 'assets/svgs/ts_bi_c.svg';
 import Arrow from 'assets/svgs/select1_arrow_inactive.svg';
+import {Stake, selectStakes} from 'pages/Staking/staking.reducer';
+import {useAppSelector} from 'hooks/useRedux';
+import {convertNumber} from 'utils/number';
 
 export interface HomeProps extends HTMLAttributes<HTMLDivElement> {
   classes?: string;
@@ -296,32 +299,23 @@ export const Animation: React.FC<HomeProps> = () => {
     lastCircleControls,
   ]);
 
-  //temp code for pre-open
-  // const [date] = useState('2021/07/19');
+  const [totalStakedAmount, setTotalStakedAmount] = useState('');
 
-  // const trimDigit = (arg: any) => {
-  //   if (String(arg).length === 1) {
-  //     return `0${arg}`;
-  //   }
-  //   return arg;
-  // };
+  const {data} = useAppSelector(selectStakes);
 
-  //@ts-ignore
-  // const countDownRenderer = ({days, hours, minutes, seconds, completed}) => {
-  //   if (completed) {
-  //     // Render a completed state
-  //     return null;
-  //   } else {
-  //     // Render a countdown
-  //     return (
-  //       <Text fontSize={86}>
-  //         {days}
-  //         <span style={{color: '#ffff07'}}>D</span> {trimDigit(hours)}:
-  //         {trimDigit(minutes)}:{trimDigit(seconds)}
-  //       </Text>
-  //     );
-  //   }
-  // };
+  useEffect(() => {
+    if (data) {
+      let total = 0;
+      data.map((e: Stake) => {
+        return (total += Number(e.stakeBalanceTON));
+      });
+      return setTotalStakedAmount(
+        Number(total).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+        }),
+      );
+    }
+  }, [data]);
 
   return (
     <Flex
@@ -390,15 +384,22 @@ export const Animation: React.FC<HomeProps> = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          height: '100%',
         }}
         initial={{opacity: 1}}>
         <motion.div
+          style={{
+            position: 'relative',
+            height: '100%',
+          }}
           custom={timer.mainText}
           initial={{opacity: 0}}
           animate={secondSubPhaseControls}>
           <Container
             m={0}
             p={0}
+            h={'100%'}
+            pos="relative"
             w={getLeftArea(rowDots)}
             d="flex"
             flexDirection="column"
@@ -411,6 +412,15 @@ export const Animation: React.FC<HomeProps> = () => {
               <Text>TON Starter</Text>
               <Text>Decentralized Launchpad</Text>
               <Text>Platform</Text>
+            </div>
+            <div style={{position: 'absolute', bottom: '163px'}}>
+              <Text fontSize={'26px'} color={'#ffff07'}>
+                Phase1 Total Staked
+              </Text>
+              <Text>
+                {totalStakedAmount}
+                <span style={{fontSize: '26px'}}>TON</span>
+              </Text>
             </div>
           </Container>
         </motion.div>
