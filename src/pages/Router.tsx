@@ -121,19 +121,21 @@ export const Router: FC<RouterProps> = () => {
   }
 
   return (
-    <div style={{minHeight: '100vh'}}>
+    <div style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
       <ConfirmModal></ConfirmModal>
       <Header
         account={account}
         walletopen={() => handleWalletModalOpen('wallet')}
       />
-      <Switch>
-        <Route exact path="/" component={FLDstarter} />
-        <Route exact path="/staking" component={Staking} />
-        {/* <Route exact path="/pools" component={Pools} /> */}
-        {/* <Route exact path="/starter" component={Starter} /> */}
-        {/* <Route exact path="/dao" component={DAO} /> */}
-      </Switch>
+      <div style={{flex: 1}}>
+        <Switch>
+          <Route exact path="/" component={FLDstarter} />
+          <Route exact path="/staking" component={Staking} />
+          {/* <Route exact path="/pools" component={Pools} /> */}
+          {/* <Route exact path="/starter" component={Starter} /> */}
+          {/* <Route exact path="/dao" component={DAO} /> */}
+        </Switch>
+      </div>
       <Footer />
       <WalletModal state={walletState} isOpen={isModalOpen} onClose={onClose} />
       <AirdropModal />
