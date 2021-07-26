@@ -1,4 +1,4 @@
-import {injected, walletconnect} from 'connectors';
+import {injected} from 'connectors';
 import {WalletInfo} from 'types';
 import {DEPLOYED_TYPE} from './type';
 import {ethers} from 'ethers';
@@ -33,7 +33,7 @@ const MAINNET_DEPLOYED = {
   SeigManager_ADDRESS: '0x710936500aC59e8551331871Cbad3D33d5e0D909',
   SwapProxy_ADDRESS: '0x30e65B3A6e6868F044944Aa0e9C5d52F8dcb138d',
   TokamakLayer2_ADDRESS: '0x42ccf0769e87cb2952634f607df1c7d62e0bbc52',
-  Airdrop_ADDRESS: '0x49108acF8c4fD9b70eCfC0804CfB84DE6EF475Ce',
+  Airdrop_ADDRESS: '0x0620492BAbe0a2cE13688025F8b783B8d6c28955',
 };
 
 // old version
@@ -84,14 +84,14 @@ export const SUPPORTED_WALLETS: {[key: string]: WalletInfo} = {
     color: '#E8831D',
     type: 'METAMASK',
   },
-  WALLET_CONNECT: {
-    connector: walletconnect,
-    name: 'Wallet Connect',
-    iconName: 'walletconnect.svg',
-    description: 'Connect to Trust Wallet, Rainbow Wallet and more...',
-    href: null,
-    color: '#E8831D',
-    mobile: true,
-    type: 'WALLET_CONNECT',
-  },
+  // WALLET_CONNECT: {
+  //   connector: walletconnect,
+  //   name: 'Wallet Connect',
+  //   iconName: 'walletconnect.svg',
+  //   description: 'Connect to Trust Wallet, Rainbow Wallet and more...',
+  //   href: null,
+  //   color: '#E8831D',
+  //   mobile: true,
+  //   type: 'WALLET_CONNECT',
+  // },
 };
