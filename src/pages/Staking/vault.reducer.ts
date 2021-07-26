@@ -81,7 +81,11 @@ const getEarningPerBlock = (vaults: VaultList) => {
       return (period[address] = stake.memo);
     });
 
-    return (result[vaultAddress] = {res, saleClosed, period});
+    return (result[vaultAddress] = {
+      res,
+      saleClosed,
+      period,
+    });
   });
 
   return result;
@@ -103,6 +107,7 @@ export const fetchVaults = createAsyncThunk(
     const vaultData = vaultReq.datas;
 
     const result = getEarningPerBlock(vaultData);
+
     return result;
   },
 );
