@@ -17,7 +17,6 @@ import TONStaterLogo from 'assets/svgs/ts_bi_c.svg';
 import Arrow from 'assets/svgs/select1_arrow_inactive.svg';
 import {Stake, selectStakes} from 'pages/Staking/staking.reducer';
 import {useAppSelector} from 'hooks/useRedux';
-import {convertNumber} from 'utils/number';
 
 export interface HomeProps extends HTMLAttributes<HTMLDivElement> {
   classes?: string;
@@ -413,11 +412,11 @@ export const Animation: React.FC<HomeProps> = () => {
               <Text>Decentralized Launchpad</Text>
               <Text>Platform</Text>
             </div>
-            <div style={{position: 'absolute', bottom: '163px'}}>
-              <Text fontSize={'26px'} color={'#ffff07'}>
+            <div style={{position: 'absolute', bottom: '170px'}}>
+              <Text fontSize={'26px'} color={'#ffff07'} h={'25px'}>
                 Phase1 Total Staked
               </Text>
-              <Text>
+              <Text fontSize={'52px'} h={'60px'}>
                 {totalStakedAmount}
                 <span style={{fontSize: '26px'}}>TON</span>
               </Text>
