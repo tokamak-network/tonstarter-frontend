@@ -20,10 +20,12 @@ export const stakeTOS = (args: StkaeTOS) => {
     LockTOSABI.abi,
     library,
   );
-  // const unlockTime = BigNumber.from(period);
   const unlockTime = moment().subtract(-Math.abs(period), 'weeks').unix();
   const signer = getSigner(library, account);
-  const BNamount = BigNumber.from(amount);
+  // const BNamount = BigNumber.from(amount);
+
+  console.log(amount);
+  console.log(LockTOSContract);
 
   return LockTOSContract.connect(signer).createLock(amount, unlockTime);
 };

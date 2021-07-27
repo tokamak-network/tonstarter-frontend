@@ -6,6 +6,7 @@ import {
   useColorMode,
   useTheme,
 } from '@chakra-ui/react';
+import {getUserSTOSBalance} from 'client/getUserBalance';
 import {useEffect} from 'react';
 import {useState} from 'react';
 import {useDispatch} from 'react-redux';
@@ -37,7 +38,18 @@ export const MySTOS = (props: PropsType) => {
 
   useEffect(() => {
     const {address, library} = userData;
-  }, [userData]);
+    async function getTosBalance() {
+      const res = await getUserSTOSBalance({account: address, library});
+      if (res !== undefined) {
+        setbalance(res);
+      }
+    }
+    if (signIn) {
+      getTosBalance();
+    } else {
+      setbalance('-');
+    }
+  }, [signIn, userData]);
 
   return (
     <Flex

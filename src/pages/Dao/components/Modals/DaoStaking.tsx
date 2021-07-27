@@ -62,7 +62,8 @@ export const DaoStakeModal = () => {
   const {value, setValue, onChange} = useInput('0');
   const {handleCloseModal, handleOpenConfirmModal} = useModal(setValue);
   const keys = [undefined, '', '0', '0.', '0.0', '0.00'];
-  const btnDisabled = keys.indexOf(value) !== -1 ? true : false;
+  const btnDisabled =
+    keys.indexOf(value) !== -1 || dateValue === 0 ? true : false;
 
   const focusTarget = useRef<any>([]);
   const focusCustomTarget = useRef(null);
@@ -227,7 +228,10 @@ export const DaoStakeModal = () => {
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
-                    onClick={() => changeBorderColor(index)}>
+                    onClick={() => {
+                      changeBorderColor(index);
+                      setIsCustom(false);
+                    }}>
                     {period as SelectPeriod}
                   </Text>
                 ))}

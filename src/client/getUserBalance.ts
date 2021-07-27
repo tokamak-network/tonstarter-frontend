@@ -45,13 +45,11 @@ export const getUserTOSStaked = async ({account, library}: any) => {
     LockTOSABI.abi,
     library,
   );
-  // console.log(LockTOSContract);
-  // console.log(account);
   const tosStakeList = await LockTOSContract.locksOf(account);
-  console.log(LockTOSContract);
-  // console.log(res);
 
-  return '0.00';
+  console.log(tosStakeList);
+
+  return '-';
 };
 
 export const getUserSTOSBalance = async ({account, library}: any) => {
@@ -61,11 +59,9 @@ export const getUserSTOSBalance = async ({account, library}: any) => {
     LockTOSABI.abi,
     library,
   );
-  // console.log(LockTOSContract);
-  // console.log(account);
-  // const res = await LockTOSContract.balanceOf(account);
-  // console.log(res);
-
+  console.log(LockTOSContract);
+  const res = await LockTOSContract.balanceOf(account);
+  console.log(res);
   return '0.00';
 };
 

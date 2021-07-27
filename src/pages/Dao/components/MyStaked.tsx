@@ -45,7 +45,6 @@ export const MyStaked = (props: PropsType) => {
       }
     }
     if (signIn) {
-      console.log(userData);
       getTosBalance();
     } else {
       setbalance('-');
