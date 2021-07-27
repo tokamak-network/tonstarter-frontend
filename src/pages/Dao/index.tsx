@@ -10,7 +10,11 @@ import {
 import resources_icon from 'assets/svgs/resources_icon.svg';
 import resources_icon_blue from 'assets/svgs/resources_icon_blue.svg';
 import {STOS} from './components/STOS';
-import {DaoStakeModal, DaoManageModal} from './components/Modals';
+import {
+  DaoStakeModal,
+  DaoUnstakeModal,
+  DaoManageModal,
+} from './components/Modals';
 
 export const DAO = () => {
   const theme = useTheme();
@@ -81,23 +85,6 @@ export const DAO = () => {
                 <Text>Go to forum</Text>
                 <Image src={resources_icon}></Image>
               </Box>
-              <Box
-                w={150}
-                h="38px"
-                bg={themeDesign.bg[colorMode]}
-                color="blue.300"
-                borderRadius={4}
-                border="solid 1px #2a72e5"
-                fontSize="0.813em"
-                fontWeight={600}
-                display="flex"
-                alignItems="center"
-                justifyContent="space-between"
-                px={15}
-                cursor={'pointer'}>
-                <Text>Go to forum</Text>
-                <Image src={resources_icon_blue}></Image>
-              </Box>
             </Container>
             <Container p={0} m={0}>
               <Box mb="30px">
@@ -130,23 +117,6 @@ export const DAO = () => {
                 <Text>Go to governance</Text>
                 <Image src={resources_icon}></Image>
               </Box>
-              <Box
-                w={160}
-                h="38px"
-                bg={themeDesign.bg[colorMode]}
-                color="blue.300"
-                borderRadius={4}
-                border="solid 1px #2a72e5"
-                fontSize="0.813em"
-                fontWeight={600}
-                display="flex"
-                alignItems="center"
-                justifyContent="space-between"
-                px={15}
-                cursor={'pointer'}>
-                <Text>Go to governance</Text>
-                <Image src={resources_icon_blue}></Image>
-              </Box>
             </Container>
           </Flex>
         </Flex>
@@ -155,6 +125,7 @@ export const DAO = () => {
         </Flex>
       </Flex>
       <DaoStakeModal></DaoStakeModal>
+      <DaoUnstakeModal></DaoUnstakeModal>
       <DaoManageModal></DaoManageModal>
     </Flex>
   );

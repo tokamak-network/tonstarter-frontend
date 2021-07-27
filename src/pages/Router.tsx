@@ -11,11 +11,9 @@ import {useAppDispatch} from 'hooks/useRedux';
 import {fetchAppConfig} from 'store/app/app.reducer';
 import {fetchUserInfo} from 'store/app/user.reducer';
 import {fetchStakes} from './Staking/staking.reducer';
-import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import {AirdropModal} from 'components/Airdrop/Index';
 import {fetchVaults} from './Staking/vault.reducer';
 import {DEFAULT_NETWORK} from 'constants/index';
-import {MobilePreOpen} from './PreOpen/Index';
 import {Footer} from 'components/Footer';
 import {ConfirmModal} from 'components/Modal';
 

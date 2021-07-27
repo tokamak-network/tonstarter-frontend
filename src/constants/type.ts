@@ -8,4 +8,5 @@ export type DEPLOYED_TYPE = {
   SwapProxy_ADDRESS: string;
   TokamakLayer2_ADDRESS: string;
   Airdrop_ADDRESS: string;
+  LockTOS_ADDRESS: string;
 };

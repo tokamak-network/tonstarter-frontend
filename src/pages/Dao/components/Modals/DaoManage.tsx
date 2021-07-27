@@ -14,6 +14,8 @@ import {
   useColorMode,
   Input,
   Select,
+  Radio,
+  RadioGroup,
 } from '@chakra-ui/react';
 import React from 'react';
 import {useAppSelector} from 'hooks/useRedux';
@@ -33,6 +35,8 @@ interface Stake {
 }
 
 type TosStakeList = Stake[] | undefined;
+
+type RadioSelect = 'select_amount' | 'select_period';
 
 const themeDesign = {
   border: {
@@ -59,11 +63,22 @@ const themeDesign = {
     light: 'solid 1px #dfe4ee',
     dark: 'solid 1px #dfe4ee',
   },
+  inputVariant: {
+    light: {
+      style: {backgroundColor: '#e9edf1'},
+      isDisabled: true,
+    },
+    dark: {
+      style: {backgroundColor: '#e9edf1'},
+      isDisabled: true,
+    },
+  },
 };
 
 export const DaoManageModal = () => {
   const {data} = useAppSelector(selectModalType);
   const [edit, setEdit] = useState(false);
+  const [select, setSelect] = useState('select_amount');
   const [tosStakeList, setTosStakeList] = useState<TosStakeList>(undefined);
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -235,118 +250,130 @@ export const DaoManageModal = () => {
   const EditScreen = () => {
     return (
       <ModalBody p={0}>
-        <Flex h="524px" flexDir="column" alignItems="center">
-          <Flex
-            w={'100%'}
-            borderBottom={
-              colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
-            }
-            pl={'1.250em'}
-            pb={'1.250em'}>
-            <Image
-              w="1.375em"
-              h="1.375em"
-              src={backArrowIcon}
-              mr="0.625em"
-              cursor={'pointer'}
-              onClick={() => setEdit(false)}></Image>
-            <Flex flexDir="column" alignItems="flex-start">
-              <Heading
-                fontSize={'1.250em'}
-                fontWeight={'bold'}
-                fontFamily={theme.fonts.titil}
-                color={colorMode === 'light' ? 'gray.250' : 'white.100'}
-                textAlign={'center'}
-                mb={'1px'}>
-                Edit
-              </Heading>
-              <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
-                You can edit the amount and Period.
-              </Text>
+        <RadioGroup onChange={setSelect} value={select}>
+          <Flex h="524px" flexDir="column" alignItems="center">
+            <Flex
+              w={'100%'}
+              borderBottom={
+                colorMode === 'light'
+                  ? '1px solid #f4f6f8'
+                  : '1px solid #373737'
+              }
+              pl={'1.250em'}
+              pb={'1.250em'}>
+              <Image
+                w="1.375em"
+                h="1.375em"
+                src={backArrowIcon}
+                mr="0.625em"
+                cursor={'pointer'}
+                onClick={() => setEdit(false)}></Image>
+              <Flex flexDir="column" alignItems="flex-start">
+                <Heading
+                  fontSize={'1.250em'}
+                  fontWeight={'bold'}
+                  fontFamily={theme.fonts.titil}
+                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+                  textAlign={'center'}
+                  mb={'1px'}>
+                  Edit
+                </Heading>
+                <Text
+                  color="gray.175"
+                  fontSize={'0.750em'}
+                  textAlign={'center'}>
+                  You can edit the amount and Period.
+                </Text>
+              </Flex>
             </Flex>
+            <Flex
+              alignItems="center"
+              pl="20px"
+              h={'64px'}
+              w={'100%'}
+              borderBottom={themeDesign.border[colorMode]}>
+              <Radio value="select_amount" mr="14px" cursor="pointer"></Radio>
+              <Text
+                w={'70px'}
+                fontSize={'0.813em'}
+                fontWeight={600}
+                fontColor={themeDesign.editBorder[colorMode]}>
+                Increase Amount
+              </Text>
+              <Input
+                w={'143px'}
+                h="32px"
+                mr={'10px'}
+                {...(select === 'select_period'
+                  ? themeDesign.inputVariant[colorMode]
+                  : '')}></Input>
+              <Button
+                w="70px"
+                h="32px"
+                bg="transparent"
+                fontSize={'0.813em'}
+                fontWeight={400}
+                border={themeDesign.editBorder[colorMode]}
+                _hover={{}}
+                onClick={() => setEdit(true)}
+                isDisabled={select === 'select_period' ? true : false}>
+                MAX
+              </Button>
+            </Flex>
+            <Flex
+              alignItems="center"
+              pl="20px"
+              h={'64px'}
+              w={'100%'}
+              borderBottom={themeDesign.border[colorMode]}>
+              <Radio value="select_period" mr="14px" cursor="pointer"></Radio>
+              <Text
+                w={'70px'}
+                fontSize={'0.813em'}
+                fontWeight={600}
+                fontColor={themeDesign.scrollNumberFont[colorMode]}>
+                Extend Period
+              </Text>
+              <Input
+                w={'143px'}
+                h="32px"
+                mr={'0.750em'}
+                fontSize={'0.750em'}
+                {...(select === 'select_amount'
+                  ? themeDesign.inputVariant[colorMode]
+                  : '')}></Input>
+            </Flex>
+            <Box
+              pos="absolute"
+              w={'91%'}
+              pt={'25px'}
+              bottom={'25px'}
+              as={Flex}
+              borderTop={themeDesign.border[colorMode]}
+              justifyContent={'center'}>
+              <Button
+                {...btnStyle.btnAble()}
+                w={'150px'}
+                fontSize="14px"
+                _hover={theme.btnHover.checkDisable({signIn})}
+                disabled={!signIn}
+                mr={'15px'}
+                onClick={() => {}}>
+                OK
+              </Button>
+              <Button
+                bg="transparent"
+                border={themeDesign.btnBorder[colorMode]}
+                w={'150px'}
+                fontSize="14px"
+                _hover={{}}
+                disabled={!signIn}
+                onClick={() => {}}>
+                Cancel
+              </Button>
+            </Box>
           </Flex>
-          <Flex
-            alignItems="center"
-            pl="1.438em"
-            h={'64px'}
-            w={'100%'}
-            pr="1.875em"
-            borderBottom={themeDesign.border[colorMode]}>
-            <Text
-              w={'55px'}
-              fontSize={'0.813em'}
-              fontWeight={600}
-              fontColor={themeDesign.editBorder[colorMode]}>
-              Amount
-            </Text>
-            <Input w={'10.188em'} h="32px" mr={'0.750em'}></Input>
-            <Button
-              w="70px"
-              h="32px"
-              bg="transparent"
-              fontSize={'0.813em'}
-              fontWeight={400}
-              border={themeDesign.editBorder[colorMode]}
-              _hover={{}}
-              onClick={() => setEdit(true)}>
-              Edit
-            </Button>
-          </Flex>
-          <Flex
-            alignItems="center"
-            pl="1.438em"
-            h={'64px'}
-            w={'100%'}
-            pr="1.875em"
-            borderBottom={themeDesign.border[colorMode]}>
-            <Text
-              w={'55px'}
-              fontSize={'0.813em'}
-              fontWeight={600}
-              fontColor={themeDesign.scrollNumberFont[colorMode]}>
-              Period
-            </Text>
-            <Input
-              w={'50px'}
-              h="32px"
-              mr={'0.750em'}
-              fontSize={'0.750em'}></Input>
-            <Select w={'6.250em'} h="32px" fontSize={'0.750em'}>
-              <option>Day</option>
-              <option>Month</option>
-              <option>Year</option>
-            </Select>
-          </Flex>
-          <Box
-            pos="absolute"
-            w={'91%'}
-            pt={'25px'}
-            bottom={'25px'}
-            as={Flex}
-            borderTop={themeDesign.border[colorMode]}
-            justifyContent={'center'}>
-            <Button
-              {...btnStyle.btnAble()}
-              w={'150px'}
-              fontSize="14px"
-              _hover={theme.btnHover.checkDisable({signIn})}
-              disabled={!signIn}
-              mr={'15px'}
-              onClick={() => {}}>
-              Manage
-            </Button>
-            <Button
-              bg="transparent"
-              border={themeDesign.btnBorder[colorMode]}
-              w={'150px'}
-              fontSize="14px"
-              _hover={{}}
-              disabled={!signIn}
-              onClick={() => {}}>
-              Cancel
-            </Button>
-          </Box>
-        </Flex>
+        </RadioGroup>
       </ModalBody>
     );
   };

@@ -6,9 +6,12 @@ import {
   useColorMode,
   useTheme,
 } from '@chakra-ui/react';
+import {getUserTOSStaked} from 'client/getUserBalance';
+import {useAppDispatch} from 'hooks/useRedux';
 import {useEffect} from 'react';
 import {useState} from 'react';
 import {User} from 'store/app/user.reducer';
+import {openModal} from 'store/modal.reducer';
 
 type PropsType = {
   userData: User;
@@ -21,6 +24,7 @@ export const MyStaked = (props: PropsType) => {
   const theme = useTheme();
   const {btnStyle, btnHover} = theme;
   const {colorMode} = useColorMode();
+  const dispatch = useAppDispatch();
   const themeDesign = {
     fontColorTitle: {
       light: 'gray.400',
@@ -32,7 +36,21 @@ export const MyStaked = (props: PropsType) => {
     },
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const {address, library} = userData;
+    async function getTosBalance() {
+      const res = await getUserTOSStaked({account: address, library});
+      if (res !== undefined) {
+        setbalance(res);
+      }
+    }
+    if (signIn) {
+      console.log(userData);
+      getTosBalance();
+    } else {
+      setbalance('-');
+    }
+  }, [signIn, userData]);
 
   return (
     <Flex
@@ -64,7 +82,15 @@ export const MyStaked = (props: PropsType) => {
         fontSize={'14px'}
         fontWeight={400}
         isDisabled={!signIn}
-        _hover={btnHover.checkDisable({signIn})}>
+        _hover={btnHover.checkDisable({signIn})}
+        onClick={() =>
+          dispatch(
+            openModal({
+              type: 'dao_unstake',
+              data: {userData, userTosBalance: balance},
+            }),
+          )
+        }>
         UnStake
       </Button>
     </Flex>

@@ -21,8 +21,9 @@ import {onKeyDown, useInput} from 'hooks/useInput';
 import {useModal} from 'hooks/useModal';
 import {useUser} from 'hooks/useUser';
 import {useState, useEffect, useRef} from 'react';
+import {stakeTOS} from '../utils/stakeTOS';
 
-type SelectPeriod = '1month' | '6months' | '1year' | '3year';
+type SelectPeriod = '1 month' | '6 months' | '1 year' | '3 years';
 
 const themeDesign = {
   border: {
@@ -50,8 +51,12 @@ export const DaoStakeModal = () => {
   const [selectPeriod, setSelectPeriod] = useState<string | undefined>(
     undefined,
   );
+  const [dateValue, setDateValue] = useState(0);
+  const [lockDateValue, setLockDateValue] = useState<string | undefined>(
+    undefined,
+  );
   const [isCustom, setIsCustom] = useState<boolean>(false);
-  const periods = ['1month', '6months', '1year', '3year'];
+  const periods = ['1 month', '6 months', '1 year', '3 years'];
 
   const {btnStyle} = theme;
   const {value, setValue, onChange} = useInput('0');
@@ -59,11 +64,8 @@ export const DaoStakeModal = () => {
   const keys = [undefined, '', '0', '0.', '0.0', '0.00'];
   const btnDisabled = keys.indexOf(value) !== -1 ? true : false;
 
-  useEffect(() => {
-    console.log(selectPeriod);
-  }, [selectPeriod]);
-
   const focusTarget = useRef<any>([]);
+  const focusCustomTarget = useRef(null);
 
   const changeBorderColor = (index: any) => {
     const {current} = focusTarget;
@@ -72,7 +74,36 @@ export const DaoStakeModal = () => {
     setSelectPeriod(current[index].id);
   };
 
-  if (signIn === false) {
+  const changeAllBorderColor = () => {
+    const {current} = focusTarget;
+    current.map((e: any) => (e.style.border = 'solid 1px #d7d9df'));
+  };
+
+  useEffect(() => {
+    if (selectPeriod === 'weeks' || selectPeriod === 'months') {
+      if (selectPeriod === 'weeks') {
+        setDateValue(Number(lockDateValue));
+      }
+      if (selectPeriod === 'months') {
+        setDateValue(Number(lockDateValue) * 4);
+      }
+    }
+    if (selectPeriod === '1 month') {
+      setDateValue(4);
+    }
+    if (selectPeriod === '6 months') {
+      setDateValue(24);
+    }
+    if (selectPeriod === '1 year') {
+      setDateValue(48);
+    }
+    if (selectPeriod === '3 years') {
+      setDateValue(144);
+    }
+    // return setDateValue(select)
+  }, [selectPeriod, lockDateValue]);
+
+  if (signIn === false || account === undefined) {
     return <></>;
   }
 
@@ -210,7 +241,10 @@ export const DaoStakeModal = () => {
                   border={themeDesign.border[colorMode]}
                   fontSize={'0.750em'}
                   _hover={{}}
-                  onClick={() => setIsCustom(true)}>
+                  onClick={() => {
+                    setIsCustom(true);
+                    changeAllBorderColor();
+                  }}>
                   Customized
                 </Button>
               )}
@@ -219,14 +253,28 @@ export const DaoStakeModal = () => {
                   <Text fontSize={'0.750em'} color="gray.250" fontWeight={600}>
                     Customized
                   </Text>
-                  <Input w="132px" h="32px"></Input>
-                  <Select w="100px" h="32px" fontSize={'0.750em'}>
+                  <Input
+                    w="132px"
+                    h="32px"
+                    ref={focusCustomTarget}
+                    onChange={(e) => {
+                      const {value} = e.target;
+                      setLockDateValue(value);
+                    }}
+                    onClick={() => changeAllBorderColor()}></Input>
+                  <Select
+                    w="100px"
+                    h="32px"
+                    fontSize={'0.750em'}
+                    onChange={(e) => {
+                      const type = e.target.value;
+                      setSelectPeriod(type);
+                    }}>
                     <option value="" disabled selected hidden>
                       Select
                     </option>
-                    <option value="days">days</option>
+                    <option value="weeks">weeks</option>
                     <option value="months">months</option>
-                    <option value="years">years</option>
                   </Select>
                 </Flex>
               )}
@@ -242,15 +290,19 @@ export const DaoStakeModal = () => {
               fontSize="14px"
               _hover={btnDisabled ? {} : {...theme.btnHover}}
               disabled={btnDisabled}
+              // onClick={() => {
+              //   handleOpenConfirmModal({
+              //     type: 'confirm',
+              //     data: {
+              //       amount: value,
+              //       // period,
+              //       action: () => {
+              //       },
+              //     },
+              //   });
+              // }}
               onClick={() => {
-                handleOpenConfirmModal({
-                  type: 'confirm',
-                  data: {
-                    amount: value,
-                    // period,
-                    action: () => {},
-                  },
-                });
+                stakeTOS({account, library, amount: value, period: dateValue});
               }}>
               Stake
             </Button>

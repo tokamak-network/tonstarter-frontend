@@ -6,6 +6,7 @@ import {convertNumber} from 'utils/number';
 import {BASE_PROVIDER, DEPLOYED} from 'constants/index';
 import * as ERC20 from 'services/abis/ERC20.json';
 import * as TOSABI from 'services/abis/TOS.json';
+import * as LockTOSABI from 'services/abis/LockTOS.json';
 import {BigNumber} from 'ethers';
 
 const {TON_ADDRESS, TOS_ADDRESS} = DEPLOYED;
@@ -35,6 +36,37 @@ export const getUserTonBalance = async ({account, library}: any) => {
   const contractIserBalance = await contract.balanceOf(account);
   const balance = convertNumber({amount: String(contractIserBalance)});
   return balance;
+};
+
+export const getUserTOSStaked = async ({account, library}: any) => {
+  const {LockTOS_ADDRESS} = DEPLOYED;
+  const LockTOSContract = new Contract(
+    LockTOS_ADDRESS,
+    LockTOSABI.abi,
+    library,
+  );
+  // console.log(LockTOSContract);
+  // console.log(account);
+  const tosStakeList = await LockTOSContract.locksOf(account);
+  console.log(LockTOSContract);
+  // console.log(res);
+
+  return '0.00';
+};
+
+export const getUserSTOSBalance = async ({account, library}: any) => {
+  const {LockTOS_ADDRESS} = DEPLOYED;
+  const LockTOSContract = new Contract(
+    LockTOS_ADDRESS,
+    LockTOSABI.abi,
+    library,
+  );
+  // console.log(LockTOSContract);
+  // console.log(account);
+  // const res = await LockTOSContract.balanceOf(account);
+  // console.log(res);
+
+  return '0.00';
 };
 
 const fetchUserData = async (
