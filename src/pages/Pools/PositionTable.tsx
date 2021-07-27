@@ -13,23 +13,20 @@ import {
   Tooltip,
   Select,
   Box,
-  Avatar,
   useColorMode,
   Center,
   useTheme,
-  Image,
   Grid,
   Button,
 } from '@chakra-ui/react';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
-import {TriangleUpIcon, TriangleDownIcon} from '@chakra-ui/icons';
-import {useAppSelector} from 'hooks/useRedux';
-import {useEffect, useCallback} from 'react';
-import { getPoolName, checkTokenType } from '../../utils/token';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {openModal, closeModal, ModalType} from 'store/modal.reducer';
+// import {useEffect, useCallback} from 'react';
+import { getPoolName } from '../../utils/token';
 import {selectTableType} from 'store/table.reducer';
 import {LoadingComponent} from 'components/Loading';
 import { chakra } from '@chakra-ui/react';
-import { useQuery } from '@apollo/client';
 import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
 
@@ -138,10 +135,8 @@ export const PositionTable: FC<PositionTableProps> = ({
     [],
   );
     const {
-      getTableProps,
       getTableBodyProps,
       headerGroups,
-      prepareRow,
       visibleColumns,
       canPreviousPage,
       canNextPage,
@@ -158,6 +153,7 @@ export const PositionTable: FC<PositionTableProps> = ({
       usePagination,
     );
     console.log(page);
+    const dispatch = useAppDispatch();
 
     const {colorMode} = useColorMode();
     const theme = useTheme();
@@ -291,6 +287,7 @@ export const PositionTable: FC<PositionTableProps> = ({
                           fontSize={'14px'}
                           fontWeight={500}
                           color={'#ffffff'}
+                          onClick={() => dispatch(openModal({ type:'stakePool'}))}
                         >
                           Staking
                         </Button>
@@ -305,6 +302,7 @@ export const PositionTable: FC<PositionTableProps> = ({
                           fontSize={'14px'}
                           fontWeight={500}
                           color={'#ffffff'}
+                          onClick={() => dispatch(openModal({ type:'unstakePool'}))}
                         >
                           Unstaking
                         </Button>
@@ -319,6 +317,7 @@ export const PositionTable: FC<PositionTableProps> = ({
                           fontSize={'14px'}
                           fontWeight={500}
                           color={'#ffffff'}
+                          onClick={() => dispatch(openModal({ type:'claimPool'}))}
                         >
                           Claim
                         </Button>

@@ -10,7 +10,10 @@ export type ModalType =
   | 'unstakeL2'
   | 'withdraw'
   | 'swap'
-  | 'airdrop';
+  | 'airdrop'
+  | 'stakePool'
+  | 'unstakePool'
+  | 'claimPool';
 
 export type Modal = {
   modal?: ModalType;

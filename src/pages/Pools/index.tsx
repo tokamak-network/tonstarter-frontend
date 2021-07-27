@@ -19,6 +19,11 @@ import React, {
   useEffect,
   useState,
 } from 'react';
+import {
+  ClaimOptionModal,
+  StakeOptionModal,
+  UnstakeOptionModal,
+} from './PoolOptionModal';
 import {shortenAddress} from 'utils';
 import {PoolTable} from './PoolTable';
 // import {selectStakes} from './staking.reducer';
@@ -128,6 +133,9 @@ export const Pools = () => {
           }
         </Box>
       </Container>
+      <StakeOptionModal />
+      <UnstakeOptionModal />
+      <ClaimOptionModal />
     </Fragment>
   );
 };
