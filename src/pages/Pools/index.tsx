@@ -82,6 +82,7 @@ export const Pools = () => {
     variables: {address: poolAddress[0]}
   });
   
+
   // const [pools, setPools] = useState<Array<T>>()
   // useEffect(() => {
   //   async function getPool () {
@@ -98,11 +99,12 @@ export const Pools = () => {
   const pool2 = useQuery(GET_POOL2, {
     variables: {address: poolAddress[1]}
   });
-  const pool3 = useQuery(GET_POOL3, {
-    variables: {address: poolAddress[2]}
-  });
+  // const pool3 = useQuery(GET_POOL3, {
+  //   variables: {address: poolAddress[2]}
+  // });
 
-  const poolArr = pool1.loading || pool2.loading || pool3.loading ? [] : pool1.data.pools.concat(pool3.data.pools).concat(pool2.data.pools)
+  // const poolArr = pool1.loading || pool2.loading || pool3.loading ? [] : pool1.data.pools.concat(pool3.data.pools).concat(pool2.data.pools)
+  const poolArr = pool1.loading || pool2.loading ? [] : pool1.data.pools.concat(pool2.data.pools)
   const account = address ? address : ''
 
   return (
