@@ -306,7 +306,12 @@ export const DaoStakeModal = () => {
               //   });
               // }}
               onClick={() => {
-                stakeTOS({account, library, amount: value, period: dateValue});
+                stakeTOS({
+                  account,
+                  library,
+                  amount: value.replaceAll(',', ''),
+                  period: dateValue,
+                });
               }}>
               Stake
             </Button>

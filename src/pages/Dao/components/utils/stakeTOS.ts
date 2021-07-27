@@ -1,9 +1,10 @@
 import {DEPLOYED} from 'constants/index';
 import * as LockTOSABI from 'services/abis/LockTOS.json';
-import {getSigner} from 'utils/contract';
+import {getContract, getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
-import {BigNumber} from 'ethers';
+import * as TOSABI from 'services/abis/TOS.json';
 import moment from 'moment';
+import {BigNumber, utils} from 'ethers';
 
 type StkaeTOS = {
   account: string;
@@ -12,20 +13,26 @@ type StkaeTOS = {
   library: any;
 };
 
-export const stakeTOS = (args: StkaeTOS) => {
+export const stakeTOS = async (args: StkaeTOS) => {
   const {account, library, amount, period} = args;
-  const {LockTOS_ADDRESS} = DEPLOYED;
+  const {LockTOS_ADDRESS, TOS_ADDRESS} = DEPLOYED;
   const LockTOSContract = new Contract(
     LockTOS_ADDRESS,
     LockTOSABI.abi,
     library,
   );
+  const tosContract = getContract(TOS_ADDRESS, TOSABI.abi, library);
+
   const unlockTime = moment().subtract(-Math.abs(period), 'weeks').unix();
   const signer = getSigner(library, account);
-  // const BNamount = BigNumber.from(amount);
+  // const amountNum = BigNumber.from(String(amount).replaceAll(',', ''));
+  // const weiAmoutnt = utils.formatUnits(amountNum, 18);
 
-  console.log(amount);
-  console.log(LockTOSContract);
+  const res = await tosContract
+    .connect(signer)
+    .approve(LockTOSContract.address, amount);
 
-  return LockTOSContract.connect(signer).createLock(amount, unlockTime);
+  return await res.wait(
+    LockTOSContract.connect(signer).createLock(amount, unlockTime),
+  );
 };
