@@ -15,14 +15,15 @@ import {
 } from '@chakra-ui/react';
 import React, {useCallback} from 'react';
 import {useWeb3React} from '@web3-react/core';
-import {useAppSelector} from 'hooks/useRedux';
-import {selectModalType} from 'store/modal.reducer';
-import {stakePayToken} from '../../Staking/actions';
+import {useAppSelector, useAppDispatch} from 'hooks/useRedux';
+import {closeModal, selectModalType} from 'store/modal.reducer';
+import {stake} from '../actions';
 import {onKeyDown, useInput} from 'hooks/useInput';
 import {useModal} from 'hooks/useModal';
 
 export const StakeOptionModal = () => {
   const {data} = useAppSelector(selectModalType);
+  const dispatch = useAppDispatch();
   const {account, library} = useWeb3React();
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -30,11 +31,13 @@ export const StakeOptionModal = () => {
   let balance = data?.data?.user?.balance;
   const {btnStyle} = theme;
   const {value, setValue, onChange} = useInput();
-  const {handleCloseModal, handleOpenConfirmModal} = useModal(setValue);
+  // const {handleCloseModal, handleOpenConfirmModal} = useModal(setValue);
   const setMax = useCallback((_e) => setValue(balance), [setValue, balance]);
   const keys = [undefined, '', '0', '0.', '0.0', '0.00'];
-  const btnDisabled = keys.indexOf(value) !== -1 ? true : false;
-  const period = data?.data?.period;
+  // const btnDisabled = keys.indexOf(value) !== -1 ? true : false;
+  const handleCloseModal = useCallback(() => {
+    dispatch(closeModal());
+  }, [dispatch]);
 
   return (
     <Modal
@@ -124,33 +127,22 @@ export const StakeOptionModal = () => {
 
           <Box as={Flex} justifyContent={'center'}>
             <Button
-              {...(btnDisabled === true
-                ? {...btnStyle.btnDisable({colorMode})}
-                : {...btnStyle.btnAble()})}
+              // {...(btnDisabled === true
+              //   ? {...btnStyle.btnDisable({colorMode})}
+              //   : {...btnStyle.btnAble()})}
               w={'150px'}
               fontSize="14px"
               _hover={{...theme.btnHover}}
-              disabled={btnDisabled}
-              onClick={() => {
-                handleOpenConfirmModal({
-                  type: 'confirm',
-                  data: {
-                    amount: value,
-                    period,
-                    action: () =>
-                      stakePayToken({
-                        userAddress: account,
-                        amount: value.replaceAll(',', ''),
-                        payToken: data.data.token,
-                        saleStartTime: data.data.saleStartTime,
-                        library: library,
-                        stakeContractAddress: data.data.contractAddress,
-                        miningStartTime: data.data.miningStartTime,
-                        handleCloseModal: handleCloseModal(),
-                      }),
-                  },
-                });
-              }}>
+              // disabled={btnDisabled}
+              onClick={() =>
+                stake({
+                  userAddress: account,
+                  tokenId: data.data,
+                  library: library,
+                  handleCloseModal: handleCloseModal(),
+                })
+              }
+            >
               Stake
             </Button>
           </Box>
@@ -159,3 +151,4 @@ export const StakeOptionModal = () => {
     </Modal>
   );
 };
+

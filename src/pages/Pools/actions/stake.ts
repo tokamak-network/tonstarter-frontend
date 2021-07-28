@@ -1,33 +1,37 @@
-import {getTokamakContract, getSigner} from '../../../utils/contract';
-// import {Contract} from '@ethersproject/contracts';
-import store from '../../../store';
-import {setTxPending} from '../../../store/tx.reducer';
+import { getSigner, getTokamakContract } from 'utils/contract';
+import {Contract} from '@ethersproject/contracts';
+import store from 'store';
+import {setTxPending} from 'store/tx.reducer';
+import {DEPLOYED} from 'constants/index';
+import {utils} from 'ethers';
 import {toastWithReceipt} from 'utils';
 import {openToast} from 'store/app/toast.reducer';
+import * as StakeUniswapABI from 'services/abis/StakeUniswapV3.json';
 
-type AirdropClaimProps = {
+type Stake = {
+  tokenId: string;
   userAddress: string | null | undefined;
   library: any;
   handleCloseModal: any;
-};
+}
+// const {NPM_Address, UniswapStaking_Address} = DEPLOYED;
 
-export const claimAirdrop = async (args: AirdropClaimProps) => {
-  const {userAddress, library} = args;
-
+export const stake = async (args: Stake) => {
+  const { userAddress, tokenId, library } = args;
   if (userAddress === null || userAddress === undefined) {
     return;
   }
-  const Airdrop = getTokamakContract('Airdrop', library);
-  // const Airdrop = getContract('Airdrop')
+  const StakeUniswap = new Contract('0x55eC1F59477f00a3Fb00B466AbCA19CE0233D66F', StakeUniswapABI.abi, library);
   const signer = getSigner(library, userAddress);
-
+  console.log(StakeUniswap);
   try {
-    const receipt = await Airdrop.connect(signer)?.claim();
+    const receipt = await StakeUniswap.connect(signer)?.stake(tokenId)
     store.dispatch(setTxPending({tx: true}));
     if (receipt) {
       toastWithReceipt(receipt, setTxPending);
     }
   } catch (err) {
+    console.log(err);
     store.dispatch(setTxPending({tx: false}));
     store.dispatch(
       //@ts-ignore
@@ -42,4 +46,4 @@ export const claimAirdrop = async (args: AirdropClaimProps) => {
       }),
     );
   }
-};
+}

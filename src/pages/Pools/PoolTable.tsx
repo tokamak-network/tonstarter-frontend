@@ -92,7 +92,7 @@ export const PoolTable: FC<PoolTableProps> = ({
   const position = useQuery(GET_POSITION1, {
     variables: {address: address.toLowerCase()}
   });
-
+  
   // console.log(position.loading)
   // console.log(position.data)
 

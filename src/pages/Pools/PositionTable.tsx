@@ -29,6 +29,8 @@ import {LoadingComponent} from 'components/Loading';
 import { chakra } from '@chakra-ui/react';
 import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
+import store from '../../store';
+import { approve } from './actions';
 
 type PositionTableProps = {
   // columns: Column[];
@@ -154,10 +156,10 @@ export const PositionTable: FC<PositionTableProps> = ({
     );
     console.log(page);
     const dispatch = useAppDispatch();
-
     const {colorMode} = useColorMode();
     const theme = useTheme();
     const focusTarget = useRef<any>([]);
+    const {address, library} = store.getState().user.data;
 
     const {
       data: {contractAddress, index},
@@ -260,7 +262,7 @@ export const PositionTable: FC<PositionTableProps> = ({
                           _#{id}
                         </Text>
                       </Flex>
-                      <Grid pos="relative" templateColumns={'repeat(4, 1fr)'} gap={3} mr={'40px'}>
+                      <Grid pos="relative" templateColumns={'repeat(5, 1fr)'} gap={3} mr={'40px'}>
                         <Button 
                           w={'145px'}
                           h={'38px'}
@@ -287,7 +289,26 @@ export const PositionTable: FC<PositionTableProps> = ({
                           fontSize={'14px'}
                           fontWeight={500}
                           color={'#ffffff'}
-                          onClick={() => dispatch(openModal({ type:'stakePool'}))}
+                          onClick={() => approve({
+                            tokenId: id,
+                            userAddress: address,
+                            library: library,
+                          })}
+                        >
+                          Approve
+                        </Button>
+                        <Button 
+                          w={'145px'}
+                          h={'38px'}
+                          py={'10px'}
+                          px={'29.5px'}
+                          borderRadius={'4px'}
+                          bg={'#257eee'}
+                          fontFamily={'Roboto'}
+                          fontSize={'14px'}
+                          fontWeight={500}
+                          color={'#ffffff'}
+                          onClick={() => dispatch(openModal({ type:'stakePool', data: id}))}
                         >
                           Staking
                         </Button>
