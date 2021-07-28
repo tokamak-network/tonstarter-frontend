@@ -4,7 +4,6 @@ import {getContract, getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import * as TOSABI from 'services/abis/TOS.json';
 import moment from 'moment';
-import {BigNumber, utils} from 'ethers';
 
 type StkaeTOS = {
   account: string;
@@ -26,7 +25,6 @@ export const stakeTOS = async (args: StkaeTOS) => {
   const unlockTime = moment().subtract(-Math.abs(period), 'weeks').unix();
   const signer = getSigner(library, account);
   // const amountNum = BigNumber.from(String(amount).replaceAll(',', ''));
-  // const weiAmoutnt = utils.formatUnits(amountNum, 18);
 
   const res = await tosContract
     .connect(signer)

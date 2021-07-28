@@ -131,7 +131,7 @@ export const Router: FC<RouterProps> = () => {
           <Route exact path="/staking" component={Staking} />
           {/* <Route exact path="/pools" component={Pools} /> */}
           {/* <Route exact path="/starter" component={Starter} /> */}
-          {/* <Route exact path="/dao" component={DAO} /> */}
+          <Route exact path="/dao" component={DAO} />
         </Switch>
       </div>
       <Footer />

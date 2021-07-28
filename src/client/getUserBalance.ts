@@ -46,15 +46,17 @@ export const getUserTOSStaked = async ({account, library}: any) => {
     library,
   );
   const tosStakeList = await LockTOSContract.locksOf(account);
+  console.log(tosStakeList);
+
   if (tosStakeList.length === 0) {
     return '0.00';
   }
-  const result = tosStakeList.reduce((acc: any, cur: any) => {
-    console.log(acc);
-    console.log(convertNumber({amount: acc}));
-    console.log(convertNumber({amount: cur}));
-    return acc + convertNumber({amount: cur});
-  });
+  // const result = tosStakeList.reduce((acc: any, cur: any) => {
+  //   console.log(acc);
+  //   console.log(convertNumber({amount: acc}));
+  //   console.log(convertNumber({amount: cur}));
+  //   return acc + convertNumber({amount: cur});
+  // });
 
   return '-';
 };

@@ -18,8 +18,8 @@ import logoLight from 'assets/svgs/fld_bi_white.svg';
 import logoGray from 'assets/svgs/fld_bi_gray.svg';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectTxType} from 'store/tx.reducer';
-// import {useDispatch} from 'react-redux';
-// import {openModal} from 'store/modal.reducer';
+import {useDispatch} from 'react-redux';
+import {openModal} from 'store/modal.reducer';
 
 type HeaderProps = {
   walletopen: () => void;
@@ -105,11 +105,11 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
   const theme = useTheme();
   const match = useRouteMatch('/');
   const {tx} = useAppSelector(selectTxType);
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-  // const airdropModalOpen = async () => {
-  //   dispatch(openModal({type: 'airdrop'}));
-  // };
+  const airdropModalOpen = async () => {
+    dispatch(openModal({type: 'airdrop'}));
+  };
 
   return (
     <Box
@@ -161,52 +161,40 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
           ) : null}
         </Button>
         {account ? (
-          <Tooltip
-            hasArrow
-            placement="top"
-            label="Coming Soon"
-            color={theme.colors.white[100]}
-            bg={theme.colors.gray[375]}>
-            <Button
-              w={'7.875rem'}
-              h={'2.188rem'}
-              style={{marginLeft: '15px'}}
-              marginLeft="15px"
-              p={0}
-              bg={
-                colorMode === 'dark'
-                  ? 'black.200'
-                  : match?.isExact
-                  ? 'blue.200'
-                  : '#2a72e5'
-              }
-              borderWidth={
-                colorMode === 'light' && match?.isExact === false ? '' : 1
-              }
-              borderColor={
-                colorMode === 'dark'
-                  ? '#d7d9df'
-                  : match?.isExact
-                  ? '#a6d0ff'
-                  : ''
-              }
-              borderRadius={'19px'}
-              color={
-                colorMode === 'dark'
-                  ? theme.colors.gray[0]
-                  : match?.isExact
-                  ? 'white.100'
-                  : 'white.100'
-              }
-              // onClick={airdropModalOpen}
-              onClick={(e) => e.preventDefault()}
-              fontWeight={500}
-              fontSize={'15px'}
-              _hover={{}}
-              _active={{backgroundColor: 'none'}}>
-              Airdrop Claim
-            </Button>
-          </Tooltip>
+          <Button
+            w={'7.875rem'}
+            h={'2.188rem'}
+            style={{marginLeft: '15px'}}
+            marginLeft="15px"
+            p={0}
+            bg={
+              colorMode === 'dark'
+                ? 'black.200'
+                : match?.isExact
+                ? 'blue.200'
+                : '#2a72e5'
+            }
+            borderWidth={
+              colorMode === 'light' && match?.isExact === false ? '' : 1
+            }
+            borderColor={
+              colorMode === 'dark' ? '#d7d9df' : match?.isExact ? '#a6d0ff' : ''
+            }
+            borderRadius={'19px'}
+            color={
+              colorMode === 'dark'
+                ? theme.colors.gray[0]
+                : match?.isExact
+                ? 'white.100'
+                : 'white.100'
+            }
+            onClick={airdropModalOpen}
+            fontWeight={500}
+            fontSize={'15px'}
+            _hover={{}}
+            _active={{backgroundColor: 'none'}}>
+            Airdrop Claim
+          </Button>
         ) : null}
         <ThemeSwitcher style={{marginLeft: '20px'}} />
       </Stack>

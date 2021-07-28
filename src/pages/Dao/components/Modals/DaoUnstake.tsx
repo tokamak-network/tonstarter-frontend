@@ -25,45 +25,23 @@ type SelectPeriod = '1month' | '6months' | '1year' | '3year';
 
 export const DaoUnstakeModal = () => {
   const {data} = useAppSelector(selectModalType);
-  const {
-    data: {userTosBalance},
-  } = data;
+
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const [selectPeriod, setSelectPeriod] = useState<string | undefined>(
-    undefined,
-  );
-  const [isCustom, setIsCustom] = useState<boolean>(false);
-  const periods = ['1month', '6months', '1year', '3year'];
 
-  let balance = data?.data?.user?.balance;
   const {btnStyle} = theme;
   const {value, setValue, onChange} = useInput();
   const {handleCloseModal, handleOpenConfirmModal} = useModal(setValue);
-  const keys = [undefined, '', '0', '0.', '0.0', '0.00'];
-  const btnDisabled = keys.indexOf(value) !== -1 ? true : false;
 
-  useEffect(() => {
-    console.log(selectPeriod);
-  }, [selectPeriod]);
+  const [btnDisabled, setBtnDisabled] = useState(false);
 
-  const focusTarget = useRef<any>([]);
-
-  const changeBorderColor = (index: any) => {
-    const {current} = focusTarget;
-    current.map((e: any) => (e.style.border = 'solid 1px #d7d9df'));
-    current[index].style.border = 'solid 1px #2a72e5';
-    setSelectPeriod(current[index].id);
-  };
-
-  console.log(data);
+  useEffect(() => {}, []);
 
   return (
     <Modal
       isOpen={data.modal === 'dao_unstake' ? true : false}
       isCentered
       onClose={() => {
-        setIsCustom(false);
         handleCloseModal();
       }}>
       <ModalOverlay />

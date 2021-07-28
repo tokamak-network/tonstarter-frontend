@@ -81,7 +81,8 @@ export const DAO = () => {
                 alignItems="center"
                 justifyContent="space-between"
                 px={15}
-                cursor={'pointer'}>
+                cursor={'pointer'}
+                _hover={{color: '#2a72e5', borderColor: '#2a72e5'}}>
                 <Text>Go to forum</Text>
                 <Image src={resources_icon}></Image>
               </Box>
@@ -113,7 +114,8 @@ export const DAO = () => {
                 alignItems="center"
                 justifyContent="space-between"
                 px={15}
-                cursor={'pointer'}>
+                cursor={'pointer'}
+                _hover={{color: '#2a72e5', borderColor: '#2a72e5'}}>
                 <Text>Go to governance</Text>
                 <Image src={resources_icon}></Image>
               </Box>
