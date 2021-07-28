@@ -99,8 +99,6 @@ export const ManageModal = () => {
     /*eslint-disable*/
   }, [data, dispatch]);
 
-  console.log(data);
-
   return (
     <Modal
       isOpen={data.modal === 'manage' ? true : false}
