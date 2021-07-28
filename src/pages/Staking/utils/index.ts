@@ -1,3 +1,4 @@
 import {fetchManageModalPayload} from './fetchManageModalPayload';
+import {checkSaleClosed} from './checkSaleClosed';
 
-export {fetchManageModalPayload};
+export {checkSaleClosed, fetchManageModalPayload};

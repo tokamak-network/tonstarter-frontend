@@ -15,25 +15,24 @@ import {AppDispatch} from 'store';
 import {openModal, closeModal, ModalType} from 'store/modal.reducer';
 import {User} from 'store/app/user.reducer';
 import {Stake} from '../staking.reducer';
-import {fetchManageModalPayload} from '../utils';
+import {checkSaleClosed, fetchManageModalPayload} from '../utils';
 import {LoadingComponent} from 'components/Loading';
 import {getUserBalance, getUserTonBalance} from 'client/getUserBalance';
 import {useEffect} from 'react';
 import {closeSale} from '../actions';
 import {LoadingDots} from 'components/Loader/LoadingDots';
+import {useUser} from 'hooks/useUser';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
   data: Stake;
   user: User;
-  account: string | undefined;
 };
 
 export const WalletInformation: FC<WalletInformationProps> = ({
   user,
   data,
   dispatch,
-  account,
 }) => {
   const {colorMode} = useColorMode();
   const [loading, setLoading] = useState(false);
@@ -44,21 +43,41 @@ export const WalletInformation: FC<WalletInformationProps> = ({
     undefined,
   );
   const [tosBalance, setTosBalance] = useState<string | undefined>(undefined);
+  const [saleClosed, setSaleClosed] = useState(false);
   const [stakeDisabled, setStakeDisabled] = useState(true);
   const [unstakeDisabled, setUnstakeDisabled] = useState(true);
   const [claimDisabled, setClaimDisabled] = useState(true);
   const [manageDisabled, setManageDisabled] = useState(true);
+  const [endSaleBtnDisabled, setEndSaleBtnDisabled] = useState(true);
+
+  const {account, library} = useUser();
+
+  useEffect(() => {
+    async function checkSale() {
+      const res = await checkSaleClosed(data.vault, library);
+      setSaleClosed(res);
+    }
+    checkSale();
+  }, []);
+
+  const {status} = data;
   const currentBlock: number = Number(data.fetchBlock);
   const miningStart: number = Number(data.miningStartTime);
   const miningEnd: number = Number(data.miningEndTime);
   const saleStart: number = Number(data.saleStartTime);
-  const endSaleBtnDisabled =
-    account === undefined || miningStart >= currentBlock ? true : false;
   const manageBtnDisabled =
     account === undefined || miningEnd <= currentBlock ? true : false;
 
+  const endSaleBtnDisable = () => {
+    return account === undefined || miningStart >= currentBlock
+      ? setEndSaleBtnDisabled(true)
+      : setEndSaleBtnDisabled(false);
+  };
+
   const btnDisabledStake = () => {
-    return account === undefined || saleStart >= currentBlock
+    return account === undefined ||
+      saleStart >= currentBlock ||
+      status !== 'sale'
       ? setStakeDisabled(true)
       : setStakeDisabled(false);
   };
@@ -81,7 +100,7 @@ export const WalletInformation: FC<WalletInformationProps> = ({
   };
 
   const manageDisableClaim = () => {
-    return account === undefined || data.saleClosed === false
+    return account === undefined || saleClosed === false
       ? setManageDisabled(true)
       : setManageDisabled(false);
   };
@@ -94,6 +113,7 @@ export const WalletInformation: FC<WalletInformationProps> = ({
     btnDisabledUnstake();
     btnDisabledClaim();
     manageDisableClaim();
+    endSaleBtnDisable();
     /*eslint-disable*/
   }, [account, data, dispatch, tosBalance]);
 
@@ -220,10 +240,10 @@ export const WalletInformation: FC<WalletInformationProps> = ({
           </Button>
           {manageDisabled === true ? (
             <Button
-              {...(endSaleBtnDisabled === true
+              {...(data.saleClosed || endSaleBtnDisabled === true
                 ? {...btnStyle.btnDisable({colorMode})}
                 : {...btnStyle.btnAble()})}
-              isDisabled={endSaleBtnDisabled}
+              isDisabled={endSaleBtnDisabled || data.saleClosed}
               fontSize={'14px'}
               opacity={loading === true ? 0.5 : 1}
               onClick={() =>
@@ -231,9 +251,7 @@ export const WalletInformation: FC<WalletInformationProps> = ({
                   ? closeSale({
                       userAddress: account,
                       vaultContractAddress: data.vault,
-                      miningEndTime: data.miningEndTime,
                       library: user.library,
-                      handleCloseModal: dispatch(closeModal()),
                     })
                   : null
               }>

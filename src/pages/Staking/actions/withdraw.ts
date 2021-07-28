@@ -4,6 +4,8 @@ import * as StakeTON from 'services/abis/StakeTON.json';
 import store from 'store';
 import {setTxPending} from 'store/tx.reducer';
 import {DEPLOYED, BASE_PROVIDER} from 'constants/index';
+import {toastWithReceipt} from 'utils';
+import {openToast} from 'store/app/toast.reducer';
 
 type Withdraw = {
   userAddress: string | null | undefined;
@@ -26,15 +28,27 @@ export const withdraw = async (args: Withdraw) => {
   const endBlock = Number(miningEndTime);
   if (endBlock > currentBlock) {
     try {
-      await StakeTONContract.connect(signer)
-        .tokamakProcessUnStaking(TokamakLayer2_ADDRESS)
-        .then((receipt: any) => {
-          alert(`Tx sent successfully! Tx hash is ${receipt?.hash}`);
-          store.dispatch(setTxPending({tx: false}));
-        });
+      const receipt = await StakeTONContract.connect(
+        signer,
+      ).tokamakProcessUnStaking(TokamakLayer2_ADDRESS);
+      store.dispatch(setTxPending({tx: true}));
+      if (receipt) {
+        toastWithReceipt(receipt, setTxPending);
+      }
     } catch (err) {
       store.dispatch(setTxPending({tx: false}));
-      console.log(err);
+      store.dispatch(
+        //@ts-ignore
+        openToast({
+          payload: {
+            status: 'error',
+            title: 'Tx fail to send',
+            description: `something went wrong`,
+            duration: 5000,
+            isClosable: true,
+          },
+        }),
+      );
     }
   } else {
     return alert('not withdrawable time.');

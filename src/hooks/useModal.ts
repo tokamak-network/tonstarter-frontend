@@ -11,6 +11,7 @@ export const useModal = (
   setValue?: React.Dispatch<React.SetStateAction<any>>,
 ) => {
   const dispatch = useAppDispatch();
+
   const handleCloseModal = () => {
     if (setValue) {
       setValue('0');

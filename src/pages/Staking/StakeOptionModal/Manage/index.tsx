@@ -16,7 +16,8 @@ import {
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, openModal, selectModalType} from 'store/modal.reducer';
 import {useState, useEffect} from 'react';
-// import {fetchStakedBalancePayload} from '../utils/fetchStakedBalancePayload';
+import {fetchStakedBalancePayload} from '../utils/fetchStakedBalancePayload';
+import {useUser} from 'hooks/useUser';
 
 export const ManageModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -26,9 +27,13 @@ export const ManageModal = () => {
   const [saleDisabled, setSaleDisabled] = useState(true);
   const [stakeL2Disabled, setStakeL2Disabled] = useState(true);
   const [swapDisabled, setSwapDisabled] = useState(true);
+  const [totalStaked, setTotalStaked] = useState('-');
+  const [stakedL2, setStakdL2] = useState('-');
+  const [unstakedL2, setUnstakedL2] = useState('-');
   const {colorMode} = useColorMode();
   let balance = data?.data?.stakeContractBalanceTon;
   let closed: any;
+  const {account, library} = useUser();
 
   try {
     closed = data?.data?.saleClosed;
@@ -37,37 +42,33 @@ export const ManageModal = () => {
   }
   const [stakedBalance, setStakedBalance] = useState<string | undefined>('-');
 
-  // const GetStakedBalance = ({title, contractAddress, user}: any) => {
-  //   async function getStakedBalance() {
-  //     const result = await fetchStakedBalancePayload(
-  //       user.address,
-  //       contractAddress,
-  //     );
-  //     // stakeContractBalanceTon
-  //     if (title === 'Total') {
-  //       return setStakedBalance(result.totalStakedAmount);
-  //     } else if (title === 'Staked in Layer 2') {
-  //       return setStakedBalance(result.totalStakedAmountL2);
-  //     }
-  //     setStakedBalance(result.totalPendingUnstakedAmountL2);
-  //   }
-  //   getStakedBalance();
-
-  //   return (
-  //     <Flex justifyContent="space-between" alignItems="center" h="55px">
-  //       <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
-  //         {title}
-  //       </Text>
-  //       <Text
-  //         color={colorMode === 'light' ? 'gray.250' : 'white.100'}
-  //         fontWeight={500}
-  //         fontSize={'18px'}>
-  //         {stakedBalance === '-' ? <LoadingDots></LoadingDots> : stakedBalance}{' '}
-  //         TON
-  //       </Text>
-  //     </Flex>
-  //   );
-  // };
+  useEffect(() => {
+    async function getStakedBalance() {
+      if (account && library && data.data.contractAddress) {
+        const result = await fetchStakedBalancePayload(
+          account,
+          data.data.contractAddress,
+          library,
+        );
+        const {
+          totalStakedAmount,
+          totalStakedAmountL2,
+          totalPendingUnstakedAmountL2,
+        } = result;
+        if (
+          totalStakedAmount &&
+          totalStakedAmountL2 &&
+          totalPendingUnstakedAmountL2
+        ) {
+          setTotalStaked(totalStakedAmount);
+          setStakdL2(totalStakedAmountL2);
+          setUnstakedL2(totalPendingUnstakedAmountL2);
+          setStakedBalance(data.data.stakeBalanceTON);
+        }
+      }
+    }
+    getStakedBalance();
+  }, [account, data]);
 
   const btnDisableEndSale = () => {
     return data.data?.fetchBlock < data.data?.miningStartTime || closed
@@ -143,7 +144,7 @@ export const ManageModal = () => {
                 Available balance
               </Text>
               <Text fontSize={'2em'}>
-                {balance} <span style={{fontSize: '13px'}}>TON</span>
+                {stakedBalance} <span style={{fontSize: '13px'}}>TON</span>
               </Text>
             </Box>
             <Box
@@ -164,7 +165,7 @@ export const ManageModal = () => {
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                   fontWeight={500}
                   fontSize={'18px'}>
-                  {data.data?.totalStakedAmount} TON
+                  {totalStaked} TON
                 </Text>
               </Flex>
               <Flex justifyContent="space-between" alignItems="center" h="55px">
@@ -175,7 +176,7 @@ export const ManageModal = () => {
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                   fontWeight={500}
                   fontSize={'18px'}>
-                  {data.data?.totalStakedAmountL2} TON
+                  {stakedL2} TON
                 </Text>
               </Flex>
               <Flex justifyContent="space-between" alignItems="center" h="55px">
@@ -186,7 +187,7 @@ export const ManageModal = () => {
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                   fontWeight={500}
                   fontSize={'18px'}>
-                  {data.data?.totalPendingUnstakedAmountL2} TON
+                  {unstakedL2} TON
                 </Text>
               </Flex>
             </Box>

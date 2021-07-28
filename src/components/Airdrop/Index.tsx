@@ -211,10 +211,11 @@ export const AirdropModal = () => {
                 <Wrap
                   display="flex"
                   style={{marginTop: '0', marginBottom: '20px'}}>
-                  {airdropData.slice(1).map((data: any) => (
+                  {airdropData.slice(1).map((data: any, index: number) => (
                     <AirdropRecord
                       roundNumber={data.roundNumber}
                       amount={data.amount}
+                      key={index}
                     />
                   ))}
                 </Wrap>

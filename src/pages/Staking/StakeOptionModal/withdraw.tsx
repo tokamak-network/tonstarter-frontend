@@ -19,11 +19,12 @@ import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {openModal, selectModalType} from 'store/modal.reducer';
 import {withdraw} from '../actions';
 import {fetchWithdrawPayload} from './utils/fetchWithdrawPayload';
+import {useUser} from 'hooks/useUser';
 
 export const WithdrawalOptionModal = () => {
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
-  const {account, library} = useWeb3React();
+  const {account, library} = useUser();
   const theme = useTheme();
   const {colorMode} = useColorMode();
 
@@ -35,15 +36,17 @@ export const WithdrawalOptionModal = () => {
   );
   useEffect(() => {
     async function withdrawPayload(data: any) {
-      const result = await fetchWithdrawPayload(
-        data.library,
-        data.account,
-        data.contractAddress,
-      );
-      return setWithdrawBalance(result === undefined ? '0.00' : result);
+      if (account) {
+        const result = await fetchWithdrawPayload(
+          library,
+          account,
+          data.data.contractAddress,
+        );
+        return setWithdrawBalance(result === undefined ? '0.00' : result);
+      }
     }
     withdrawPayload(data);
-  }, []);
+  }, [data]);
 
   const handleCloseModal = () => {
     dispatch(openModal({type: 'manage', data: data.data}));

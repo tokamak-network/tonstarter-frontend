@@ -5,6 +5,8 @@ import {setTxPending} from 'store/tx.reducer';
 import {DEPLOYED} from 'constants/index';
 import {utils} from 'ethers';
 import * as StakeTON from 'services/abis/StakeTON.json';
+import {toastWithReceipt} from 'utils';
+import {openToast} from 'store/app/toast.reducer';
 
 type UnstakeFromLayer2 = {
   userAddress: string | null | undefined;
@@ -33,13 +35,22 @@ export const unstakeL2 = async (args: UnstakeFromLayer2) => {
       signer,
     ).tokamakRequestUnStaking(TokamakLayer2_ADDRESS, inputValue);
     store.dispatch(setTxPending({tx: true}));
-    alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
-    await receipt.wait();
     if (receipt) {
-      store.dispatch(setTxPending({tx: false}));
+      toastWithReceipt(receipt, setTxPending);
     }
   } catch (err) {
     store.dispatch(setTxPending({tx: false}));
-    console.log(err);
+    return store.dispatch(
+      //@ts-ignore
+      openToast({
+        payload: {
+          status: 'error',
+          title: 'Tx fail to send',
+          description: `something went wrong`,
+          duration: 5000,
+          isClosable: true,
+        },
+      }),
+    );
   }
 };

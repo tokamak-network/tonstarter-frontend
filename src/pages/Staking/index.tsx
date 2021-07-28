@@ -135,6 +135,9 @@ export const Staking = () => {
     const [totalStaker, setTotalStaker] = useState('-');
     const getlInfo = async () => {
       const res = await getTotalStakers(contractAddress, library);
+      if (res === undefined) {
+        return setTotalStaker('0');
+      }
       setTotalStaker(res);
     };
 
@@ -149,7 +152,7 @@ export const Staking = () => {
     return (
       <Flex flexDir={'column'} alignItems={'space-between'}>
         <Text fontSize={'15px'} color="gray.400">
-          Total Staker
+          Total Stakers
         </Text>
         <Text
           fontSize={'20px'}
@@ -282,7 +285,6 @@ export const Staking = () => {
               dispatch={dispatch}
               data={data[row.id]}
               user={user}
-              account={account}
             />
           </Box>
 

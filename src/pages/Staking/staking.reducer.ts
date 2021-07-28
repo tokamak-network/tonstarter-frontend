@@ -90,11 +90,14 @@ export const fetchStakes = createAsyncThunk(
         const {saleClosed, period} = vaultsData[stake.vault];
         const periodKey = String(stake.stakeContract).toLowerCase();
         const stakePeriod = period[periodKey];
-        const res = stakePeriod.includes('year')
-          ? '100.' + stakePeriod
-          : stakePeriod.includes('month')
-          ? '10.' + stakePeriod
-          : stakePeriod;
+        const res =
+          stakePeriod === undefined
+            ? undefined
+            : stakePeriod.includes('year')
+            ? '100.' + stakePeriod
+            : stakePeriod.includes('month')
+            ? '10.' + stakePeriod
+            : stakePeriod;
 
         const stakeInfo: Partial<Stake> = {
           contractAddress: stake.stakeContract,
@@ -157,6 +160,13 @@ const getEarningPerTon = (
     }
     return result;
   });
+  if (
+    Number(result) === Infinity ||
+    isNaN(Number(result)) === true ||
+    result === ''
+  ) {
+    return undefined;
+  }
   return Number.parseFloat(result).toFixed(2);
 };
 

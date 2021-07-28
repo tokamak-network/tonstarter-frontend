@@ -115,13 +115,14 @@ const stakeTon = async (args: StakeTon) => {
       );
     }
   } else {
+    store.dispatch(setTxPending({tx: false}));
     return store.dispatch(
       //@ts-ignore
       openToast({
         payload: {
           status: 'error',
           title: 'Tx fail to send',
-          description: `staking period has ended`,
+          description: `something went wrong`,
           duration: 5000,
           isClosable: true,
         },
