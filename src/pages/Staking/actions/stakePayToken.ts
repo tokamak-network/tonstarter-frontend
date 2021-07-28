@@ -115,6 +115,7 @@ const stakeTon = async (args: StakeTon) => {
       );
     }
   } else {
+    store.dispatch(setTxPending({tx: false}));
     return store.dispatch(
       //@ts-ignore
       openToast({

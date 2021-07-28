@@ -25,8 +25,7 @@ export const ClaimOptionModal = () => {
 
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
-  let claimed = data?.data?.canRewardAmount;
-  let earned = data?.data?.myearned;
+  const claimed = data?.data?.canRewardAmount;
 
   const handleCloseModal = useCallback(() => {
     dispatch(closeModal());
@@ -59,8 +58,7 @@ export const ClaimOptionModal = () => {
               Claim
             </Heading>
             <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
-              You can claim {claimed ? claimed : '0.00'} TOS and earned{' '}
-              {earned ? earned : '0.00'} TOS
+              You can claim {claimed ? claimed : '0.00'} TOS
             </Text>
           </Box>
 

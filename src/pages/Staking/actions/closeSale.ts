@@ -24,7 +24,6 @@ export const closeSale = async (args: Endsale) => {
     library,
   );
   const signer = getSigner(library, userAddress);
-  console.log(stakeVault);
   try {
     const receipt = await stakeVault
       .connect(signer)

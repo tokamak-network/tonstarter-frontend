@@ -48,6 +48,8 @@ export const WalletInformation: FC<WalletInformationProps> = ({
   const [unstakeDisabled, setUnstakeDisabled] = useState(true);
   const [claimDisabled, setClaimDisabled] = useState(true);
   const [manageDisabled, setManageDisabled] = useState(true);
+  const [endSaleBtnDisabled, setEndSaleBtnDisabled] = useState(true);
+
   const {account, library} = useUser();
 
   useEffect(() => {
@@ -63,10 +65,14 @@ export const WalletInformation: FC<WalletInformationProps> = ({
   const miningStart: number = Number(data.miningStartTime);
   const miningEnd: number = Number(data.miningEndTime);
   const saleStart: number = Number(data.saleStartTime);
-  const endSaleBtnDisabled =
-    account === undefined || miningStart >= currentBlock ? true : false;
   const manageBtnDisabled =
     account === undefined || miningEnd <= currentBlock ? true : false;
+
+  const endSaleBtnDisable = () => {
+    return account === undefined || miningStart >= currentBlock
+      ? setEndSaleBtnDisabled(true)
+      : setEndSaleBtnDisabled(false);
+  };
 
   const btnDisabledStake = () => {
     return account === undefined ||
@@ -107,6 +113,7 @@ export const WalletInformation: FC<WalletInformationProps> = ({
     btnDisabledUnstake();
     btnDisabledClaim();
     manageDisableClaim();
+    endSaleBtnDisable();
     /*eslint-disable*/
   }, [account, data, dispatch, tosBalance]);
 
@@ -145,6 +152,7 @@ export const WalletInformation: FC<WalletInformationProps> = ({
     try {
       if (modal === 'manage' || modal === 'claim') {
         const payloadModal = await modalPayload(data);
+        console.log(payloadModal);
         payload = {
           ...data,
           ...payloadModal,
@@ -233,10 +241,10 @@ export const WalletInformation: FC<WalletInformationProps> = ({
           </Button>
           {manageDisabled === true ? (
             <Button
-              {...(endSaleBtnDisabled === true
+              {...(data.saleClosed || endSaleBtnDisabled === true
                 ? {...btnStyle.btnDisable({colorMode})}
                 : {...btnStyle.btnAble()})}
-              isDisabled={endSaleBtnDisabled}
+              isDisabled={endSaleBtnDisabled || data.saleClosed}
               fontSize={'14px'}
               opacity={loading === true ? 0.5 : 1}
               onClick={() =>
