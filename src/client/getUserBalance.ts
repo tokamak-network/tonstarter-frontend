@@ -117,7 +117,15 @@ export const getTotalStakers = async (
   contractAddress: string,
   library: any,
 ) => {
-  const StakeTONContract = new Contract(contractAddress, StakeTON.abi, library);
-  const result = await StakeTONContract.totalStakers();
-  return String(BigNumber.from(result).toNumber());
+  try {
+    const StakeTONContract = new Contract(
+      contractAddress,
+      StakeTON.abi,
+      library,
+    );
+    const result = await StakeTONContract.totalStakers();
+    return String(BigNumber.from(result).toNumber());
+  } catch (e) {
+    console.log(e);
+  }
 };

@@ -135,6 +135,9 @@ export const Staking = () => {
     const [totalStaker, setTotalStaker] = useState('-');
     const getlInfo = async () => {
       const res = await getTotalStakers(contractAddress, library);
+      if (res === undefined) {
+        return setTotalStaker('0');
+      }
       setTotalStaker(res);
     };
 
