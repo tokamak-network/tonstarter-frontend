@@ -13,7 +13,7 @@ import * as StakeTON from 'services/abis/StakeTON.json';
 import * as StakeVaultLogic from 'services/abis/Stake1Logic.json';
 import * as StakeVault from 'services/abis/Stake1Vault.json';
 // import * as StakeVaultStorage from 'services/abis/StakeVaultStorage.json';
-import * as AirdropVaultABI from 'services/abis/AirdropVault.json';
+import * as AirdropVaultABI from 'services/abis/WhitelistVault.json';
 import {DEPLOYED} from 'constants/index';
 
 const {
@@ -53,8 +53,8 @@ export function getProviderOrSigner(
 
 export function getTokamakContract(
   want: string,
-  address?: string,
   library?: Web3Provider,
+  address?: string,
 ): any {
   const TON = new Contract(TON_ADDRESS, TonABI.abi, library);
   const WTON = new Contract(WTON_ADDRESS, WtonABI.abi, library);

@@ -202,7 +202,8 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
               onClick={(e) => e.preventDefault()}
               fontWeight={500}
               fontSize={'15px'}
-              _hover={{}}>
+              _hover={{}}
+              _active={{backgroundColor: 'none'}}>
               Airdrop Claim
             </Button>
           </Tooltip>
@@ -272,11 +273,12 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           to="/"
           className={match?.isExact ? 'link-match' : 'link'}
           style={{zIndex: 100}}
-          onClick={() =>
+          onClick={(e) => {
+            e.preventDefault();
             window.open(
               'https://github.com/Onther-Tech/tonstarter-docs/blob/main/whitepaper/TONStarter%20Whitepaper.md',
-            )
-          }>
+            );
+          }}>
           <Text className={match?.isExact ? 'link-match' : 'link'}>
             WhitePaper
           </Text>
@@ -285,11 +287,12 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           to="/"
           className={match?.isExact ? 'link-match' : 'link'}
           style={{zIndex: 100}}
-          onClick={() =>
+          onClick={(e) => {
+            e.preventDefault();
             window.open(
-              'https://medium.com/onther-tech/tonstarter-guide-en-kr-6b7cad5773f1',
-            )
-          }>
+              'https://github.com/Onther-Tech/tonstarter-docs/blob/main/whitepaper/TONStarter%20Whitepaper.md',
+            );
+          }}>
           <Text className={match?.isExact ? 'link-match' : 'link'}>Guide</Text>
         </NavLink>
       </Stack>
