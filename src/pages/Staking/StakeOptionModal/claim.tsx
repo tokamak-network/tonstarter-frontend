@@ -13,19 +13,37 @@ import {
   useColorMode,
 } from '@chakra-ui/react';
 import {claimReward} from '../actions';
-import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
-import {useCallback} from 'react';
+import {useEffect, useState, useCallback} from 'react';
+import {getUserBalance} from 'client/getUserBalance';
+import {useUser} from 'hooks/useUser';
 
 export const ClaimOptionModal = () => {
-  const {account, library} = useWeb3React();
+  const {account, library} = useUser();
   const theme = useTheme();
   const {colorMode} = useColorMode();
+  const [claimAmount, setClaimAmount] = useState('0');
 
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
   const claimed = data?.data?.canRewardAmount;
+
+  useEffect(() => {
+    async function getCanClaimAmount() {
+      if (data.data.contractAddress) {
+        const result = await getUserBalance(data.data.contractAddress);
+        if (result) {
+          const claimAmount = result.rewardTosBalance;
+          if (claimAmount) {
+            setClaimAmount(claimAmount);
+          }
+        }
+      }
+    }
+    getCanClaimAmount();
+    /*eslint-disable*/
+  }, []);
 
   const handleCloseModal = useCallback(() => {
     dispatch(closeModal());
@@ -58,7 +76,7 @@ export const ClaimOptionModal = () => {
               Claim
             </Heading>
             <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
-              You can claim {claimed ? claimed : '0.00'} TOS
+              You can claim {claimAmount} TOS
             </Text>
           </Box>
 
@@ -75,7 +93,7 @@ export const ClaimOptionModal = () => {
                 fontSize={'26px'}
                 fontWeight={600}
                 color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                {claimed} TOS
+                {claimAmount} TOS
               </Text>
             </Box>
           </Stack>

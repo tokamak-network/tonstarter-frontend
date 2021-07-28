@@ -44,7 +44,7 @@ export const ManageModal = () => {
 
   useEffect(() => {
     async function getStakedBalance() {
-      if (account) {
+      if (account && library && data.data.contractAddress) {
         const result = await fetchStakedBalancePayload(
           account,
           data.data.contractAddress,
@@ -68,7 +68,7 @@ export const ManageModal = () => {
       }
     }
     getStakedBalance();
-  }, [account]);
+  }, [account, data]);
 
   const btnDisableEndSale = () => {
     return data.data?.fetchBlock < data.data?.miningStartTime || closed

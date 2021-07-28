@@ -42,7 +42,6 @@ export const WithdrawalOptionModal = () => {
           account,
           data.data.contractAddress,
         );
-        console.log(result);
         return setWithdrawBalance(result === undefined ? '0.00' : result);
       }
     }

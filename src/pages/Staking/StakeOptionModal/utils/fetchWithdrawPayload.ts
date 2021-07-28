@@ -18,8 +18,6 @@ export const fetchWithdrawPayload = async (
         account,
         contractAddress,
       );
-      console.log(requestNum, requestIndex);
-
       const depositManager = getTokamakContract('DepositManager', library);
       const blockNumber = await BASE_PROVIDER.getBlockNumber();
       const pendingRequests = [];

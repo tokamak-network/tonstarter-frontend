@@ -152,8 +152,6 @@ export const WalletInformation: FC<WalletInformationProps> = ({
     try {
       if (modal === 'manage' || modal === 'claim') {
         const payloadModal = await modalPayload(data);
-        console.log(payloadModal);
-        console.log(data);
         payload = {
           ...data,
           ...payloadModal,
