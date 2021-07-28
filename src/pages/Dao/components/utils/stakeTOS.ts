@@ -25,11 +25,13 @@ export const stakeTOS = async (args: StkaeTOS) => {
   const unlockTime = moment().subtract(-Math.abs(period), 'weeks').unix();
   const signer = getSigner(library, account);
 
+  console.log(amount);
+
   const res = await tosContract
     .connect(signer)
     .approve(LockTOSContract.address, amount);
 
-  return await res.wait(
-    LockTOSContract.connect(signer).createLock(amount, unlockTime),
-  );
+  await res.wait(3).then(() => {
+    return LockTOSContract.connect(signer).createLock(amount, unlockTime);
+  });
 };

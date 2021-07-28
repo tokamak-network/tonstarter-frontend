@@ -30,12 +30,6 @@ export const toastWithReceipt = async (
           const {address, library} = store.getState().user.data;
           //@ts-ignore
           store.dispatch(fetchUserInfo({address, library}));
-          // setTimeout(() => {
-          //   //fetch server
-          //   const user = store.getState().user.data;
-          //   const {address: account, library} = user;
-          //   store.dispatch(fetchStakes({account, library}) as any);
-          // }, 0);
         }
       })
       .catch((e: any) => console.log(e));
