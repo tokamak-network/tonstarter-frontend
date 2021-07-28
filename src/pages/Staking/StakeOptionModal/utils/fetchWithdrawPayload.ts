@@ -18,11 +18,13 @@ export const fetchWithdrawPayload = async (
         account,
         contractAddress,
       );
+      console.log(requestNum, requestIndex);
+
       const depositManager = getTokamakContract('DepositManager', library);
       const blockNumber = await BASE_PROVIDER.getBlockNumber();
       const pendingRequests = [];
       let index = requestIndex;
-  
+
       /* eslint-disable */
       for (const _ of range(requestNum)) {
         pendingRequests.push(
@@ -37,11 +39,11 @@ export const fetchWithdrawPayload = async (
       const withdrawableRequests = pendingRequests.filter(
         (request) => parseInt(request.withdrawableBlockNumber) <= blockNumber,
       );
-  
+
       const initialAmount = BigNumber.from('0');
       const reducer = (amount: any, request: any) =>
         amount.add(BigNumber.from(request.amount));
-  
+
       const withdrawableAmount = withdrawableRequests.reduce(
         reducer,
         initialAmount,

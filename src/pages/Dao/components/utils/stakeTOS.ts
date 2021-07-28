@@ -24,7 +24,6 @@ export const stakeTOS = async (args: StkaeTOS) => {
 
   const unlockTime = moment().subtract(-Math.abs(period), 'weeks').unix();
   const signer = getSigner(library, account);
-  // const amountNum = BigNumber.from(String(amount).replaceAll(',', ''));
 
   const res = await tosContract
     .connect(signer)

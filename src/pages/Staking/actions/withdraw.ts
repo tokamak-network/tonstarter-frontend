@@ -5,6 +5,7 @@ import store from 'store';
 import {setTxPending} from 'store/tx.reducer';
 import {DEPLOYED, BASE_PROVIDER} from 'constants/index';
 import {toastWithReceipt} from 'utils';
+import {openToast} from 'store/app/toast.reducer';
 
 type Withdraw = {
   userAddress: string | null | undefined;

@@ -7,6 +7,7 @@ import {DEPLOYED} from 'constants/index';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import {BASE_PROVIDER} from 'constants/index';
 import {toastWithReceipt} from 'utils';
+import {openToast} from 'store/app/toast.reducer';
 
 type StakeToLayer2 = {
   userAddress: string | null | undefined;

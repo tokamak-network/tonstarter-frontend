@@ -6,6 +6,7 @@ import {DEPLOYED} from 'constants/index';
 import {utils} from 'ethers';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import {toastWithReceipt} from 'utils';
+import {openToast} from 'store/app/toast.reducer';
 
 type UnstakeFromLayer2 = {
   userAddress: string | null | undefined;
