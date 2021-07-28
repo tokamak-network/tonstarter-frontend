@@ -42,9 +42,6 @@ const themeDesign = {
 
 export const DaoStakeModal = () => {
   const {data} = useAppSelector(selectModalType);
-  const {
-    data: {userTosBalance},
-  } = data;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {signIn, account, library} = useUser();
@@ -184,7 +181,7 @@ export const DaoStakeModal = () => {
               <Text
                 fontSize={'18px'}
                 color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                {userTosBalance} TOS
+                {data?.data?.userTosBalance} TOS
               </Text>
             </Box>
           </Stack>

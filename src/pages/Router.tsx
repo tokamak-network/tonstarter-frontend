@@ -46,8 +46,6 @@ export const Router: FC<RouterProps> = () => {
     });
   };
 
-  //test
-
   useEffect(() => {
     if (chainId !== Number(DEFAULT_NETWORK) && chainId !== undefined) {
       const netType =
