@@ -33,6 +33,7 @@ export const ManageModal = () => {
   const {colorMode} = useColorMode();
   let balance = data?.data?.stakeContractBalanceTon;
   let closed: any;
+  const {account, library} = useUser();
 
   try {
     closed = data?.data?.saleClosed;
@@ -40,8 +41,6 @@ export const ManageModal = () => {
     console.log(e);
   }
   const [stakedBalance, setStakedBalance] = useState<string | undefined>('-');
-
-  const {account, library} = useUser();
 
   useEffect(() => {
     async function getStakedBalance() {
@@ -69,7 +68,7 @@ export const ManageModal = () => {
       }
     }
     getStakedBalance();
-  }, []);
+  }, [account]);
 
   const btnDisableEndSale = () => {
     return data.data?.fetchBlock < data.data?.miningStartTime || closed
