@@ -43,15 +43,20 @@ export const WalletInformation: FC<WalletInformationProps> = ({
     undefined,
   );
   const [tosBalance, setTosBalance] = useState<string | undefined>(undefined);
+  const [saleClosed, setSaleClosed] = useState(false);
   const [stakeDisabled, setStakeDisabled] = useState(true);
   const [unstakeDisabled, setUnstakeDisabled] = useState(true);
   const [claimDisabled, setClaimDisabled] = useState(true);
   const [manageDisabled, setManageDisabled] = useState(true);
-
   const {account, library} = useUser();
 
-  console.log(data);
-  checkSaleClosed(data.vault, library);
+  useEffect(() => {
+    async function checkSale() {
+      const res = await checkSaleClosed(data.vault, library);
+      setSaleClosed(res);
+    }
+    checkSale();
+  }, []);
 
   const {status} = data;
   const currentBlock: number = Number(data.fetchBlock);
@@ -89,9 +94,7 @@ export const WalletInformation: FC<WalletInformationProps> = ({
   };
 
   const manageDisableClaim = () => {
-    console.log(account);
-    console.log(data.saleClosed);
-    return account === undefined || data.saleClosed === false
+    return account === undefined || saleClosed === false
       ? setManageDisabled(true)
       : setManageDisabled(false);
   };
