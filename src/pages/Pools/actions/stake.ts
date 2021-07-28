@@ -11,13 +11,14 @@ import * as StakeUniswapABI from 'services/abis/StakeUniswapV3.json';
 type Stake = {
   tokenId: string;
   userAddress: string | null | undefined;
+  contractAddress: string | null | undefined;
   library: any;
   handleCloseModal: any;
 }
 // const {NPM_Address, UniswapStaking_Address} = DEPLOYED;
 
 export const stake = async (args: Stake) => {
-  const { userAddress, tokenId, library } = args;
+  const { userAddress, contractAddress, tokenId, library } = args;
   if (userAddress === null || userAddress === undefined) {
     return;
   }

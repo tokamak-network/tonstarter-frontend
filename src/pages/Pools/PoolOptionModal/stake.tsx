@@ -137,6 +137,7 @@ export const StakeOptionModal = () => {
               onClick={() =>
                 stake({
                   userAddress: account,
+                  contractAddress: '',
                   tokenId: data.data,
                   library: library,
                   handleCloseModal: handleCloseModal(),

@@ -12,7 +12,7 @@ import {
   useTheme,
   useColorMode,
 } from '@chakra-ui/react';
-import {claimReward} from '../../Staking/actions';
+import {claim} from '../actions';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
@@ -91,13 +91,11 @@ export const ClaimOptionModal = () => {
               fontSize="14px"
               _hover={{backgroundColor: 'blue.100'}}
               onClick={() =>
-                claimReward({
+                claim({
                   userAddress: account,
-                  stakeContractAddress: data.data.contractAddress,
-                  saleEndTime: data.data.saleEndTime,
+                  contractAddress: '',
+                  tokenId: data.data,
                   library: library,
-                  canRewardAmount: data.data.canRewardAmount,
-                  myEarned: data.data.myearned,
                   handleCloseModal: handleCloseModal(),
                 })
               }>

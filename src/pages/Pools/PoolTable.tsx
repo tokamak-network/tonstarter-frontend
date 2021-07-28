@@ -88,7 +88,7 @@ export const PoolTable: FC<PoolTableProps> = ({
   const {
     data: {contractAddress, index},
   } = useAppSelector(selectTableType);
-
+  
   const position = useQuery(GET_POSITION1, {
     variables: {address: address.toLowerCase()}
   });
@@ -220,7 +220,7 @@ export const PoolTable: FC<PoolTableProps> = ({
             flexDirection="column">
             {page.map((row: any, i) => {
               const {id} = row.original;
-              const filteredPosition = position.data.positions.filter((row: any) => row.pool.id === id)
+              const filteredPosition = position.loading ? [] : position.data.positions.filter((row: any) => row.pool.id === id)
               prepareRow(row);
               return [
                 <chakra.tr

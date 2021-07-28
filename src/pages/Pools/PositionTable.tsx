@@ -164,7 +164,7 @@ export const PositionTable: FC<PositionTableProps> = ({
     const {
       data: {contractAddress, index},
     } = useAppSelector(selectTableType);
-
+    console.log(data)
     const onChangeSelectBox = (e: any) => {
       const filterValue = e.target.value;
       headerGroups[0].headers.map((e) => {
