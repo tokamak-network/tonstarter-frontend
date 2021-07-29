@@ -4,6 +4,7 @@ import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import store from 'store';
 import {setTransaction} from 'store/refetch.reducer';
+import {convertToWei} from 'utils/number';
 
 type IncreaseAmount = {
   account: string;
@@ -20,11 +21,11 @@ export const increaseAmount = async (args: IncreaseAmount) => {
     LockTOSABI.abi,
     library,
   );
-
+  const weiAmount = convertToWei(amount);
   const signer = getSigner(library, account);
   const res = await LockTOSContract.connect(signer).increaseAmount(
     lockId,
-    amount,
+    weiAmount,
   );
 
   return await res.wait().then((receipt: any) => {
