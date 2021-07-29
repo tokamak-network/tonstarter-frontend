@@ -2,6 +2,7 @@ import {Contract} from '@ethersproject/contracts';
 import {DEPLOYED} from 'constants/index';
 import * as LockTOSABI from 'services/abis/LockTOS.json';
 import moment from 'moment';
+import {convertNumber} from 'utils/number';
 
 export const getTosStakeList = async ({account, library}: any) => {
   const {LockTOS_ADDRESS} = DEPLOYED;
@@ -39,7 +40,7 @@ export const getTosStakeList = async ({account, library}: any) => {
         periodWeeks,
         periodDays,
         end,
-        lockedBalance: lockedBalance.amount.toString(),
+        lockedBalance: convertNumber({amount: lockedBalance.amount.toString()}),
       };
     }),
   );
