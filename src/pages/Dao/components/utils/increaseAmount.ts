@@ -1,6 +1,7 @@
 import {DEPLOYED} from 'constants/index';
 import * as LockTOSABI from 'services/abis/LockTOS.json';
-import {getSigner} from 'utils/contract';
+import * as TOSABI from 'services/abis/TOS.json';
+import {getContract, getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import store from 'store';
 import {setTransaction} from 'store/refetch.reducer';
@@ -15,20 +16,31 @@ type IncreaseAmount = {
 
 export const increaseAmount = async (args: IncreaseAmount) => {
   const {account, library, lockId, amount} = args;
-  const {LockTOS_ADDRESS} = DEPLOYED;
+  const {LockTOS_ADDRESS, TOS_ADDRESS} = DEPLOYED;
   const LockTOSContract = new Contract(
     LockTOS_ADDRESS,
     LockTOSABI.abi,
     library,
   );
+  const TosContract = getContract(TOS_ADDRESS, TOSABI.abi, library);
   const weiAmount = convertToWei(amount);
   const signer = getSigner(library, account);
-  const res = await LockTOSContract.connect(signer).increaseAmount(
-    lockId,
+
+  console.log('**INCREASE AMOUNT**');
+  console.log(lockId, weiAmount);
+
+  await TosContract.connect(signer).approve(LockTOSContract.address, weiAmount);
+
+  const res = await TosContract.connect(signer).approve(
+    LockTOSContract.address,
     weiAmount,
   );
 
-  return await res.wait().then((receipt: any) => {
+  const fres = await res.wait().then(() => {
+    return LockTOSContract.connect(signer).increaseAmount(lockId, weiAmount);
+  });
+
+  return await fres.wait().then((receipt: any) => {
     store.dispatch(
       setTransaction({
         transactionType: 'Dao',

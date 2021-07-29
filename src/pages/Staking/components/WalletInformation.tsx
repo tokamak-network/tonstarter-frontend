@@ -65,8 +65,7 @@ export const WalletInformation: FC<WalletInformationProps> = ({
   const miningStart: number = Number(data.miningStartTime);
   const miningEnd: number = Number(data.miningEndTime);
   const saleStart: number = Number(data.saleStartTime);
-  const manageBtnDisabled =
-    account === undefined || miningEnd <= currentBlock ? true : false;
+  const manageBtnDisabled = account === undefined ? true : false;
 
   const endSaleBtnDisable = () => {
     return account === undefined || miningStart >= currentBlock
@@ -117,12 +116,13 @@ export const WalletInformation: FC<WalletInformationProps> = ({
     /*eslint-disable*/
   }, [account, data, dispatch, tosBalance]);
 
-  const modalPayload = async (data: any) => {
+  const modalPayload = async (args: any) => {
+    const {account, library, contractAddress, vault} = args;
     const result = await fetchManageModalPayload(
-      data.library,
-      data.account,
-      data.contractAddress,
-      data.vault,
+      library,
+      account,
+      contractAddress,
+      vault,
     );
 
     return result;
@@ -148,10 +148,16 @@ export const WalletInformation: FC<WalletInformationProps> = ({
   const modalData = useCallback(async (modal: ModalType) => {
     setLoading(true);
     let payload;
-
+    const {contractAddress, vault} = data;
     try {
       if (modal === 'manage' || modal === 'claim') {
-        const payloadModal = await modalPayload(data);
+        const payloadModal = await modalPayload({
+          account,
+          library,
+          contractAddress,
+          vault,
+        });
+        console.log(payloadModal);
         payload = {
           ...data,
           ...payloadModal,

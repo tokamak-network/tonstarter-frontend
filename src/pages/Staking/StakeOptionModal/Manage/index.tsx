@@ -40,6 +40,16 @@ export const ManageModal = () => {
   } catch (e) {
     console.log(e);
   }
+
+  console.log(data);
+
+  console.log(closed);
+  console.log(
+    data.data?.fetchBlock,
+    data.data?.miningEndTime,
+    Number(data.data?.globalWithdrawalDelay),
+  );
+
   const [stakedBalance, setStakedBalance] = useState<string | undefined>('-');
 
   useEffect(() => {
@@ -209,10 +219,10 @@ export const ManageModal = () => {
                 ? {...btnStyle.btnDisable({colorMode})}
                 : {...btnStyle.btnAble()})}
               isDisabled={stakeL2Disabled}
+              _hover={{backgroundColor: 'blue.100'}}
               onClick={() =>
                 dispatch(openModal({type: 'stakeL2', data: data.data}))
-              }
-              _hover={{backgroundColor: 'blue.100'}}>
+              }>
               Stake in Layer 2
             </Button>
             <Button

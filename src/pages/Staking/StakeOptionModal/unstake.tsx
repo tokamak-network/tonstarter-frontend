@@ -70,7 +70,7 @@ export const UnstakeOptionModal = () => {
                 fontSize={'26px'}
                 fontWeight={600}
                 color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                {totalStakedBalance} TOS
+                {totalStakedBalance} TON
               </Text>
             </Box>
           </Stack>
