@@ -22,7 +22,7 @@ import {
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {openModal, closeModal, ModalType} from 'store/modal.reducer';
-// import {useEffect, useCallback} from 'react';
+import {useEffect, useCallback} from 'react';
 import { getPoolName } from '../../utils/token';
 import {selectTableType} from 'store/table.reducer';
 import {LoadingComponent} from 'components/Loading';
@@ -31,6 +31,9 @@ import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
 import store from '../../store';
 import { approve } from './actions';
+import { GET_POSITION, GET_POSITION_BY_ID } from './GraphQL/index';
+import { useQuery } from '@apollo/client';
+import { fetchPositionPayload } from './utils/fetchPositionPayload';
 
 type PositionTableProps = {
   // columns: Column[];
@@ -136,6 +139,31 @@ export const PositionTable: FC<PositionTableProps> = ({
     ],
     [],
   );
+
+  useEffect(() => {
+    async function positionPayload() {
+      if (address) {
+        const result = await fetchPositionPayload(
+          library,
+          address,
+          ''
+        );
+        let stringResult: any = [];
+        for (let i=0; i < result.length; i++) {
+          stringResult.push(result[i].toString())
+        }
+        console.log(stringResult);
+      }
+
+    }
+    positionPayload();
+  }, [])
+  const {address, library} = store.getState().user.data;
+  const stakedPosition = useQuery(GET_POSITION_BY_ID, {
+    variables: {id: ["3853"]}
+  });
+  console.log(stakedPosition)
+  console.log(data)
     const {
       getTableBodyProps,
       headerGroups,
@@ -159,7 +187,6 @@ export const PositionTable: FC<PositionTableProps> = ({
     const {colorMode} = useColorMode();
     const theme = useTheme();
     const focusTarget = useRef<any>([]);
-    const {address, library} = store.getState().user.data;
 
     const {
       data: {contractAddress, index},

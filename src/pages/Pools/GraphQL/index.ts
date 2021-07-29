@@ -65,8 +65,15 @@ query GetPool {
 }`;
 
 export const GET_POSITION = gql`
-  query GetPosition($address: [String!]) {
+  query GetPosition($address: String!) {
     positions(where: {owner: $address}) {
+      ${positionParam}
+    }
+  }
+`
+export const GET_POSITION_BY_ID = gql`
+  query GetPosition($address: [String!]) {
+    positions(where: {id_in: $address}) {
       ${positionParam}
     }
   }
