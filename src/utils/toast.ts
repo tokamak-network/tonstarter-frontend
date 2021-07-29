@@ -1,5 +1,6 @@
 // import {fetchStakes} from 'pages/Staking/staking.reducer';
 import {openToast} from 'store/app/toast.reducer';
+import {setTransaction} from 'store/refetch.reducer';
 import store from '../store';
 import {fetchUserInfo} from '../store/app/user.reducer';
 
@@ -7,6 +8,7 @@ export const toastWithReceipt = async (
   recepit: any,
   setTxPending: any,
   stakeContractAddress?: string,
+  from?: string,
 ) => {
   try {
     store.dispatch(
@@ -25,11 +27,27 @@ export const toastWithReceipt = async (
 
     await recepit
       .wait()
-      .then((result: any) => {
-        if (result) {
+      .then((receipt: any) => {
+        if (receipt) {
           const {address, library} = store.getState().user.data;
           //@ts-ignore
           store.dispatch(fetchUserInfo({address, library}));
+          if (from === 'Staking') {
+            return store.dispatch(
+              setTransaction({
+                transactionType: 'Staking',
+                blockNumber: receipt.blockNumber,
+              }),
+            );
+          }
+          if (from === 'Dao') {
+            return store.dispatch(
+              setTransaction({
+                transactionType: 'Dao',
+                blockNumber: receipt.blockNumber,
+              }),
+            );
+          }
         }
       })
       .catch((e: any) => console.log(e));

@@ -42,7 +42,7 @@ const getStakedBalance = async (
       totalStakedAmountL2: convertNumber({
         amount: result[1],
         type: 'ray',
-        round: true,
+        // round: true,
       }),
       totalPendingUnstakedAmountL2: convertNumber({
         amount: result[2],

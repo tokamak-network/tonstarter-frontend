@@ -43,7 +43,7 @@ export const ClaimOptionModal = () => {
     }
     getCanClaimAmount();
     /*eslint-disable*/
-  }, []);
+  }, [dispatch]);
 
   const handleCloseModal = useCallback(() => {
     dispatch(closeModal());

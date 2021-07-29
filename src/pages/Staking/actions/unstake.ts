@@ -4,7 +4,7 @@ import * as StakeTON from 'services/abis/StakeTON.json';
 import store from 'store';
 import {setTxPending} from 'store/tx.reducer';
 import {toastWithReceipt} from 'utils';
-import {BASE_PROVIDER} from 'constants/index'
+import {BASE_PROVIDER} from 'constants/index';
 
 type Unstake = {
   userAddress: string | null | undefined;
@@ -52,7 +52,12 @@ export const unstake = async (args: Unstake) => {
       const receipt = await StakeTONContract.connect(signer)?.withdraw();
       store.dispatch(setTxPending({tx: true}));
       if (receipt) {
-        toastWithReceipt(receipt, setTxPending, stakeContractAddress);
+        toastWithReceipt(
+          receipt,
+          setTxPending,
+          stakeContractAddress,
+          'Staking',
+        );
       }
     } catch (err) {
       store.dispatch(setTxPending({tx: false}));

@@ -22,6 +22,8 @@ import {useEffect} from 'react';
 import {closeSale} from '../actions';
 import {LoadingDots} from 'components/Loader/LoadingDots';
 import {useUser} from 'hooks/useUser';
+import {selectTransactionType} from 'store/refetch.reducer';
+import {useAppSelector} from 'hooks/useRedux';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
@@ -36,6 +38,8 @@ export const WalletInformation: FC<WalletInformationProps> = ({
 }) => {
   const {colorMode} = useColorMode();
   const [loading, setLoading] = useState(false);
+
+  //Balances
   const [userTonBalance, setUserTonBalance] = useState<string | undefined>(
     undefined,
   );
@@ -44,6 +48,8 @@ export const WalletInformation: FC<WalletInformationProps> = ({
   );
   const [tosBalance, setTosBalance] = useState<string | undefined>(undefined);
   const [saleClosed, setSaleClosed] = useState(false);
+
+  //Buttons
   const [stakeDisabled, setStakeDisabled] = useState(true);
   const [unstakeDisabled, setUnstakeDisabled] = useState(true);
   const [claimDisabled, setClaimDisabled] = useState(true);
@@ -51,6 +57,8 @@ export const WalletInformation: FC<WalletInformationProps> = ({
   const [endSaleBtnDisabled, setEndSaleBtnDisabled] = useState(true);
 
   const {account, library} = useUser();
+
+  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
 
   useEffect(() => {
     async function checkSale() {
@@ -82,10 +90,11 @@ export const WalletInformation: FC<WalletInformationProps> = ({
   };
 
   const btnDisabledUnstake = () => {
+    console.log(account);
+    console.log(stakeBalance);
     return account === undefined ||
-      currentBlock <= miningEnd ||
-      stakeBalance === undefined ||
-      stakeBalance === '0.00'
+      stakeBalance === '0.00' ||
+      stakeBalance === undefined
       ? setUnstakeDisabled(true)
       : setUnstakeDisabled(false);
   };
@@ -108,13 +117,15 @@ export const WalletInformation: FC<WalletInformationProps> = ({
     if (user.address !== undefined) {
       getWalletTonBalance();
     }
-    btnDisabledStake();
-    btnDisabledUnstake();
-    btnDisabledClaim();
-    manageDisableClaim();
-    endSaleBtnDisable();
+    if (transactionType === undefined || transactionType === 'Staking') {
+      btnDisabledStake();
+      btnDisabledUnstake();
+      btnDisabledClaim();
+      manageDisableClaim();
+      endSaleBtnDisable();
+    }
     /*eslint-disable*/
-  }, [account, data, dispatch, tosBalance]);
+  }, [account, data, dispatch, tosBalance, transactionType, blockNumber]);
 
   const modalPayload = async (args: any) => {
     const {account, library, contractAddress, vault} = args;
