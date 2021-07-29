@@ -31,8 +31,6 @@ import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
 import store from '../../store';
 import { approve } from './actions';
-import { GET_POSITION, GET_POSITION_BY_ID } from './GraphQL/index';
-import { useQuery } from '@apollo/client';
 
 
 type PositionTableProps = {
@@ -230,7 +228,7 @@ export const PositionTable: FC<PositionTableProps> = ({
               </chakra.td>
             </chakra.tr>
             {page.map((row: any, i) => {
-              const {id, pool} = row.original;
+              const {id, pool, owner} = row.original;
               const poolName = getPoolName(pool.token0.symbol, pool.token1.symbol)
               return [
                 <chakra.tr 
@@ -255,7 +253,7 @@ export const PositionTable: FC<PositionTableProps> = ({
                     fontSize={'17px'}
                     fontWeight={600}
                   >
-                    {getCircle('staked')}
+                    {owner === address.toLowerCase() ? getCircle('not staked') : getCircle('staked')}
                     <Flex
                       ml={'32px'}
                       w={'350px'}
@@ -293,6 +291,7 @@ export const PositionTable: FC<PositionTableProps> = ({
                         fontSize={'14px'}
                         fontWeight={500}
                         color={'#ffffff'}
+                        disabled={owner !== address.toLowerCase()}
                         onClick={() => approve({
                           tokenId: id,
                           userAddress: address,
@@ -312,6 +311,7 @@ export const PositionTable: FC<PositionTableProps> = ({
                         fontSize={'14px'}
                         fontWeight={500}
                         color={'#ffffff'}
+                        disabled={owner !== address.toLowerCase()}
                         onClick={() => dispatch(openModal({ type:'stakePool', data: id}))}
                       >
                         Staking
@@ -327,7 +327,8 @@ export const PositionTable: FC<PositionTableProps> = ({
                         fontSize={'14px'}
                         fontWeight={500}
                         color={'#ffffff'}
-                        onClick={() => dispatch(openModal({ type:'unstakePool'}))}
+                        disabled={owner === address.toLowerCase()}
+                        onClick={() => dispatch(openModal({ type:'unstakePool', data: id}))}
                       >
                         Unstaking
                       </Button>
@@ -342,7 +343,8 @@ export const PositionTable: FC<PositionTableProps> = ({
                         fontSize={'14px'}
                         fontWeight={500}
                         color={'#ffffff'}
-                        onClick={() => dispatch(openModal({ type:'claimPool'}))}
+                        disabled={owner === address.toLowerCase()}
+                        onClick={() => dispatch(openModal({ type:'claimPool', data: id}))}
                       >
                         Claim
                       </Button>
