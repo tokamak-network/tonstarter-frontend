@@ -6,6 +6,7 @@ import {userReducer} from './app/user.reducer';
 import {modalReducer} from './modal.reducer';
 import {tableReducer} from './table.reducer';
 import {txReducer} from './tx.reducer';
+import {refetchReducer} from './refetch.reducer';
 import {vaultReducer} from 'pages/Staking/vault.reducer';
 
 const rootReducer = combineReducers({
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   modal: modalReducer.reducer,
   table: tableReducer.reducer,
   tx: txReducer.reducer,
+  refetch: refetchReducer.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

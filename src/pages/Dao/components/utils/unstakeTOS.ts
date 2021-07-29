@@ -2,8 +2,6 @@ import {DEPLOYED} from 'constants/index';
 import * as LockTOSABI from 'services/abis/LockTOS.json';
 import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
-import {BigNumber} from 'ethers';
-import moment from 'moment';
 
 type UnstkaeTOS = {
   account: string;

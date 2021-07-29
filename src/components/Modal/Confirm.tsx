@@ -16,7 +16,7 @@ import {useModal} from 'hooks/useModal';
 
 export const ConfirmModal = () => {
   const {sub} = useAppSelector(selectModalType);
-  const {amount, period, action} = sub.data;
+  const {from, amount, period, action} = sub.data;
   const theme = useTheme();
   const {colorMode} = useColorMode();
   const {handleCloseConfirmModal} = useModal();
@@ -48,17 +48,29 @@ export const ConfirmModal = () => {
               }}
             />
           </Flex>
-          <Text fontSize="14px" color="#818992" px={8} h={100} mb="15px">
-            You <strong>can not withdraw</strong> this{' '}
-            <strong>
-              {amount}
-              TON
-            </strong>{' '}
-            for next <strong>{period?.split('.')[1]}</strong>, and also its{' '}
-            <strong>TON reward can not be given</strong> to you for this
-            period(Except for TOS reward).
-            <Text>Are you sure you want to stake?</Text>
-          </Text>
+          {from === 'staking/stake' ? (
+            <Text fontSize="14px" color="#818992" px={8} h={100} mb="15px">
+              You <strong>can not withdraw</strong> this{' '}
+              <strong>
+                {amount}
+                TON
+              </strong>{' '}
+              for next <strong>{period?.split('.')[1]}</strong>, and also its{' '}
+              <strong>TON reward can not be given</strong> to you for this
+              period(Except for TOS reward).
+              <Text>Are you sure you want to stake?</Text>
+            </Text>
+          ) : from === 'dao/stake' ? (
+            <Text fontSize="14px" color="#818992" px={8} h={100} mb="15px">
+              You <strong>can not withdraw</strong> this{' '}
+              <strong>
+                {amount}
+                TOS
+              </strong>{' '}
+              for next <strong>{period + ' weeks'}</strong>
+              <Text>Are you sure you want to stake?</Text>
+            </Text>
+          ) : null}
           <Flex w="100%" alignItems="center" justifyContent="center">
             <Button
               w={110}

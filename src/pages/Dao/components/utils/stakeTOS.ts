@@ -4,12 +4,15 @@ import {getContract, getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import * as TOSABI from 'services/abis/TOS.json';
 import moment from 'moment';
+import store from 'store';
+import {setTransaction} from 'store/refetch.reducer';
 
 type StkaeTOS = {
   account: string;
   amount: string;
   period: number;
   library: any;
+  handleCloseModal: any;
 };
 
 export const stakeTOS = async (args: StkaeTOS) => {
@@ -24,14 +27,23 @@ export const stakeTOS = async (args: StkaeTOS) => {
 
   const unlockTime = moment().subtract(-Math.abs(period), 'weeks').unix();
   const signer = getSigner(library, account);
-
-  console.log(amount);
-
   const res = await tosContract
     .connect(signer)
     .approve(LockTOSContract.address, amount);
 
-  await res.wait(3).then(() => {
+  console.log('**STAKE TOS**');
+  console.log(`unlickTime : ${unlockTime}`);
+
+  const fres = await res.wait(2).then(() => {
     return LockTOSContract.connect(signer).createLock(amount, unlockTime);
+  });
+
+  return await fres.wait().then((receipt: any) => {
+    store.dispatch(
+      setTransaction({
+        transactionType: 'Dao',
+        blockNumber: receipt.blockNumber,
+      }),
+    );
   });
 };

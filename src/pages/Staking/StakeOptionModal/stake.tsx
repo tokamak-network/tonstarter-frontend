@@ -146,6 +146,7 @@ export const StakeOptionModal = () => {
                 handleOpenConfirmModal({
                   type: 'confirm',
                   data: {
+                    from: 'staking/stake',
                     amount: value,
                     period,
                     action: () =>

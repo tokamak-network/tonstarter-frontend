@@ -53,7 +53,7 @@ export const UnstakeOptionModal = () => {
               Unstake
             </Heading>
             <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
-              You can earn TON and POWER
+              You can earn TOS and POWER
             </Text>
           </Box>
 

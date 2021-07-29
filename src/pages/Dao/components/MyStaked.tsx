@@ -16,11 +16,15 @@ import {openModal} from 'store/modal.reducer';
 type PropsType = {
   userData: User;
   signIn: boolean;
+  stakeList: any;
+  transactionType: string | undefined;
+  blockNumber: number | undefined;
 };
 
 export const MyStaked = (props: PropsType) => {
-  const {userData, signIn} = props;
+  const {userData, signIn, stakeList, transactionType, blockNumber} = props;
   const [balance, setbalance] = useState('-');
+  const [isEnd, setIsEnd] = useState(true);
   const theme = useTheme();
   const {btnStyle, btnHover} = theme;
   const {colorMode} = useColorMode();
@@ -46,10 +50,29 @@ export const MyStaked = (props: PropsType) => {
     }
     if (signIn) {
       getTosBalance();
+      stakeList.map((stake: any) => {
+        if (stake.end === true) {
+          setIsEnd(false);
+        }
+      });
     } else {
       setbalance('-');
     }
-  }, [signIn, userData]);
+  }, [signIn, userData, stakeList]);
+
+  useEffect(() => {
+    const {address, library} = userData;
+    async function getTosBalance() {
+      const res = await getUserTOSStaked({account: address, library});
+      if (res !== undefined) {
+        setbalance(res);
+      }
+    }
+    if (transactionType === 'Dao') {
+      getTosBalance();
+    }
+    /*eslint-disable*/
+  }, [transactionType, blockNumber]);
 
   return (
     <Flex
@@ -72,7 +95,7 @@ export const MyStaked = (props: PropsType) => {
         </Flex>
       </Box>
       <Button
-        {...(signIn
+        {...(signIn || isEnd
           ? {...btnStyle.btnAble()}
           : {...btnStyle.btnDisable({colorMode})})}
         w={'150px'}
@@ -80,7 +103,7 @@ export const MyStaked = (props: PropsType) => {
         p={0}
         fontSize={'14px'}
         fontWeight={400}
-        isDisabled={!signIn}
+        isDisabled={!signIn || isEnd}
         _hover={btnHover.checkDisable({signIn})}
         onClick={() =>
           dispatch(

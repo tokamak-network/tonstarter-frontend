@@ -8,6 +8,7 @@ import * as ERC20 from 'services/abis/ERC20.json';
 import * as TOSABI from 'services/abis/TOS.json';
 import * as LockTOSABI from 'services/abis/LockTOS.json';
 import {BigNumber} from 'ethers';
+import moment from 'moment';
 
 const {TON_ADDRESS, TOS_ADDRESS} = DEPLOYED;
 
