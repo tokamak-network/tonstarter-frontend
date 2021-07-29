@@ -60,7 +60,9 @@ export const getUserTOSStaked = async ({account, library}: any) => {
         account,
         stake.toString(),
       );
-      totalStakeAmount += Number(lockedBlanace.amount.toString());
+      totalStakeAmount += Number(
+        convertNumber({amount: lockedBlanace.amount.toString()}),
+      );
     }),
   );
 

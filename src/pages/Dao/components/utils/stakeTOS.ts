@@ -6,6 +6,7 @@ import * as TOSABI from 'services/abis/TOS.json';
 import moment from 'moment';
 import store from 'store';
 import {setTransaction} from 'store/refetch.reducer';
+import {convertToWei} from 'utils/number';
 
 type StkaeTOS = {
   account: string;
@@ -24,18 +25,18 @@ export const stakeTOS = async (args: StkaeTOS) => {
     library,
   );
   const tosContract = getContract(TOS_ADDRESS, TOSABI.abi, library);
-
+  const weiAmount = convertToWei(amount);
   const unlockTime = moment().subtract(-Math.abs(period), 'weeks').unix();
   const signer = getSigner(library, account);
   const res = await tosContract
     .connect(signer)
-    .approve(LockTOSContract.address, amount);
+    .approve(LockTOSContract.address, weiAmount);
 
   console.log('**STAKE TOS**');
   console.log(`unlickTime : ${unlockTime}`);
 
   const fres = await res.wait(2).then(() => {
-    return LockTOSContract.connect(signer).createLock(amount, unlockTime);
+    return LockTOSContract.connect(signer).createLock(weiAmount, unlockTime);
   });
 
   return await fres.wait().then((receipt: any) => {
