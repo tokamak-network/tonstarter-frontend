@@ -57,13 +57,6 @@ export const GET_POOL2 = gql`
     }
   }`;
 
-export const GET_POOL3 = gql`
-query GetPool {
-  pools(where: {id: "0xfffcd9c7d2ab23c064d547387fce7e938fa3124b"}) {
-    ${poolParam}
-  }
-}`;
-
 export const GET_POSITION = gql`
   query GetPosition($address: String!) {
     positions(where: {owner: $address}) {
@@ -82,6 +75,14 @@ export const GET_POSITION_BY_ID = gql`
 export const GET_POSITION1 = gql`
   query GetPosition {
     positions(where: {owner: "0xf30eadcdc68f9551fe943a685c23fa07fde4b417"}) {
+      ${positionParam}
+    }
+  }
+`
+
+export const GET_POSITION2 = gql`
+  query GetPosition {
+    positions(where: {id: "3853"}) {
       ${positionParam}
     }
   }

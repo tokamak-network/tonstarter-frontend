@@ -29,15 +29,17 @@ import {LoadingComponent} from 'components/Loading';
 import { chakra } from '@chakra-ui/react';
 import { getPoolName, checkTokenType } from '../../utils/token';
 import { convertNumber } from '../../utils/number';
-import { GET_POSITION, GET_POSITION1 } from './GraphQL/index';
+import { GET_POSITION, GET_POSITION1, GET_POSITION_BY_ID, GET_POSITION2 } from './GraphQL/index';
 import { useQuery } from '@apollo/client';
 import { PositionTable } from './PositionTable';
+import { fetchPositionPayload } from './utils/fetchPositionPayload';
 
 type PoolTableProps = {
   columns: Column[];
   data: any[];
   isLoading: boolean;
   address: string;
+  library: any;
 }
 
 const getTextColor = (type: string, colorMode: string) => {
@@ -59,6 +61,7 @@ export const PoolTable: FC<PoolTableProps> = ({
   data,
   isLoading,
   address,
+  library,
 }) => {
   const {
     getTableProps,
@@ -88,32 +91,40 @@ export const PoolTable: FC<PoolTableProps> = ({
   const {
     data: {contractAddress, index},
   } = useAppSelector(selectTableType);
+
   const position = useQuery(GET_POSITION1, {
     variables: {address: address.toLowerCase()}
   });
 
+  useEffect(() => {
+    async function positionPayload() {
+      if (address) {
+        const result = await fetchPositionPayload(
+          library,
+          address,
+          ''
+        );
+        let stringResult: any = [];
+        for (let i=0; i < result.length; i++) {
+          stringResult.push(result[i].toString())
+        }
+        console.log(stringResult);
+      }
+
+    }
+    positionPayload();
+  }, [])
+
+  const stakedPosition = useQuery(GET_POSITION2, {
+    variables: {id: ['3853']},
+  });
+  console.log(stakedPosition.error)
+  console.log(stakedPosition.data)
+  const withStakedPosition = position.loading || stakedPosition.loading ? 
+    [] : position.data.positions.concat(stakedPosition.data.positions)
   
   // console.log(position.loading)
   // console.log(position.data)
-
-  // useEffect(() => {
-  //   if (index) {
-  //     let loop = Math.floor(index / 10);
-  //     while (loop) {
-  //       nextPage();
-  //       loop = loop - 1;
-  //       if (loop === 0) {
-  //         setTimeout(() => {
-  //           focusTarget.current[
-  //             index - Math.floor(index / 10) * 10
-  //           ].scrollIntoView({
-  //             block: 'start',
-  //           });
-  //         }, 200);
-  //       }
-  //     }
-  //   }
-  // }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const [isOpen, setIsOpen] = useState(
     contractAddress === undefined ? '' : contractAddress,
@@ -220,7 +231,8 @@ export const PoolTable: FC<PoolTableProps> = ({
             flexDirection="column">
             {page.map((row: any, i) => {
               const {id} = row.original;
-              const filteredPosition = position.loading ? [] : position.data.positions.filter((row: any) => row.pool.id === id)
+              const filteredPosition = position.loading || stakedPosition.loading ? 
+                [] : withStakedPosition.filter((row: any) => id === row.pool.id )
               prepareRow(row);
               return [
                 <chakra.tr

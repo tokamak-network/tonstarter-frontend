@@ -32,7 +32,7 @@ import {selectUser} from 'store/app/user.reducer';
 import {PageHeader} from 'components/PageHeader';
 // import {LoadingComponent} from 'components/Loading';
 import {useQuery} from '@apollo/client';
-import { GET_POOL1, GET_POOL2, GET_POOL3, GET_POOL_BY_POOL_ADDRESS } from './GraphQL/index';
+import { GET_POOL1, GET_POOL2, GET_POOL_BY_POOL_ADDRESS } from './GraphQL/index';
 
 
 export const Pools = () => {
@@ -86,21 +86,6 @@ export const Pools = () => {
   const pool1 = useQuery(GET_POOL1, {
     variables: {address: poolAddress[0]}
   });
-  
-
-  // const [pools, setPools] = useState<Array<T>>()
-  // useEffect(() => {
-  //   async function getPool () {
-  //     console.log(pool1.loading)
-  //     console.log(pool1)
-  //     const mergedPool = await pool1.fetchMore({
-  //       query: GET_POOL_BY_POOL_ADDRESS,
-  //       variables: {address: poolAddress[1]}
-  //     })
-  //     console.log(mergedPool)
-  //   }
-  // }, [])
-  
   const pool2 = useQuery(GET_POOL2, {
     variables: {address: poolAddress[1]}
   });
@@ -129,6 +114,7 @@ export const Pools = () => {
             columns={columns}
             isLoading={pool1.loading}
             address={account}
+            library={library}
           />
           }
         </Box>

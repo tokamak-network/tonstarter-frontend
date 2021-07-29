@@ -33,7 +33,7 @@ import store from '../../store';
 import { approve } from './actions';
 import { GET_POSITION, GET_POSITION_BY_ID } from './GraphQL/index';
 import { useQuery } from '@apollo/client';
-import { fetchPositionPayload } from './utils/fetchPositionPayload';
+
 
 type PositionTableProps = {
   // columns: Column[];
@@ -140,240 +140,217 @@ export const PositionTable: FC<PositionTableProps> = ({
     [],
   );
 
-  useEffect(() => {
-    async function positionPayload() {
-      if (address) {
-        const result = await fetchPositionPayload(
-          library,
-          address,
-          ''
-        );
-        let stringResult: any = [];
-        for (let i=0; i < result.length; i++) {
-          stringResult.push(result[i].toString())
-        }
-        console.log(stringResult);
-      }
-
-    }
-    positionPayload();
-  }, [])
   const {address, library} = store.getState().user.data;
-  const stakedPosition = useQuery(GET_POSITION_BY_ID, {
-    variables: {id: ["3853"]}
-  });
-  console.log(stakedPosition)
-  console.log(data)
-    const {
-      getTableBodyProps,
-      headerGroups,
-      visibleColumns,
-      canPreviousPage,
-      canNextPage,
-      pageOptions,
-      page,
-      nextPage,
-      previousPage,
-      setPageSize,
-      state: {pageIndex, pageSize},
-    } = useTable(
-      {columns, data, initialState: {pageIndex: 0}},
-      useSortBy,
-      useExpanded,
-      usePagination,
-    );
-    console.log(page);
-    const dispatch = useAppDispatch();
-    const {colorMode} = useColorMode();
-    const theme = useTheme();
-    const focusTarget = useRef<any>([]);
 
-    const {
-      data: {contractAddress, index},
-    } = useAppSelector(selectTableType);
-    console.log(data)
-    const onChangeSelectBox = (e: any) => {
-      const filterValue = e.target.value;
-      headerGroups[0].headers.map((e) => {
-        // if (e.Header === filterValue) {
-        //   if (e.Header === 'staked') {
-        //     return e.toggleSortBy();
-        //   }
-        //   e.toggleSortBy(true);
-        // }
-        return null;
-      });
-    };
+  const {
+    getTableBodyProps,
+    headerGroups,
+    visibleColumns,
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    page,
+    nextPage,
+    previousPage,
+    setPageSize,
+    state: {pageIndex, pageSize},
+  } = useTable(
+    {columns, data, initialState: {pageIndex: 0}},
+    useSortBy,
+    useExpanded,
+    usePagination,
+  );
+  const dispatch = useAppDispatch();
+  const {colorMode} = useColorMode();
+  const theme = useTheme();
+  const focusTarget = useRef<any>([]);
+
+  const {
+    data: {contractAddress, index},
+  } = useAppSelector(selectTableType);
+
+  const onChangeSelectBox = (e: any) => {
+    const filterValue = e.target.value;
+    headerGroups[0].headers.map((e) => {
+      // if (e.Header === filterValue) {
+      //   if (e.Header === 'staked') {
+      //     return e.toggleSortBy();
+      //   }
+      //   e.toggleSortBy(true);
+      // }
+      return null;
+    });
+  };
     
-    return (
-      <Flex w="1100px" flexDir={'column'}>
-        <Box overflowX={'auto'}>
-          <chakra.table
-            width={'full'}
-            variant="simple"
+  return (
+    <Flex w="1100px" flexDir={'column'}>
+      <Box overflowX={'auto'}>
+        <chakra.table
+          width={'full'}
+          variant="simple"
+          display="flex"
+          flexDirection="column"
+        >
+          <chakra.tbody
+            {...getTableBodyProps()}
             display="flex"
             flexDirection="column"
           >
-            <chakra.tbody
-              {...getTableBodyProps()}
-              display="flex"
-              flexDirection="column"
+            <chakra.tr
+              h={'80px'}
+              pb={'3px'}
+              bg={colorMode === 'light' ? 'white.100' : ''}
+              border={colorMode === 'light' ? '' : 'solid 1px #373737'}
+              borderBottom={'1px'}
+              borderBottomColor={'#f4f6f8'}
+              borderTopWidth={0} 
             >
-              <chakra.tr
-                h={'80px'}
-                pb={'3px'}
-                bg={colorMode === 'light' ? 'white.100' : ''}
-                border={colorMode === 'light' ? '' : 'solid 1px #373737'}
-                borderBottom={'1px'}
-                borderBottomColor={'#f4f6f8'}
-                borderTopWidth={0} 
+              <chakra.td
+                display={'flex'}
+                justifyContent={'space-between'}
+                px={12}
+                pl={16}
+                py={5}
+                w={'100%'}
+                margin={0}
+                colSpan={visibleColumns.length}
               >
-                <chakra.td
-                  display={'flex'}
-                  justifyContent={'space-between'}
-                  px={12}
-                  pl={16}
-                  py={5}
+                <Flex>
+                  {getStatus('staked', colorMode)}
+                  {getStatus('not staked', colorMode)}
+                </Flex>
+                <Select
+                  w={'137px'}
+                  h={'32px'}
+                  color={'#86929d'}
+                  fontSize={'13px'}
+                  placeholder="On sale Sort"
+                  onChange={onChangeSelectBox}>
+                </Select>
+              </chakra.td>
+            </chakra.tr>
+            {page.map((row: any, i) => {
+              const {id, pool} = row.original;
+              const poolName = getPoolName(pool.token0.symbol, pool.token1.symbol)
+              return [
+                <chakra.tr 
                   w={'100%'}
-                  margin={0}
-                  colSpan={visibleColumns.length}
+                  key={i}
+                  // mt={2}
+                  h={'80px'}
+                  pb={'3px'}
+                  bg={colorMode === 'light' ? 'white.100' : ''}
+                  border={colorMode === 'light' ? '' : 'solid 1px #373737'}
+                  borderBottom={'1px'}
+                  borderBottomColor={'#f4f6f8'}
+                  borderTopWidth={0} 
                 >
-                  <Flex>
-                    {getStatus('staked', colorMode)}
-                    {getStatus('not staked', colorMode)}
-                  </Flex>
-                  <Select
-                    w={'137px'}
-                    h={'32px'}
-                    color={'#86929d'}
-                    fontSize={'13px'}
-                    placeholder="On sale Sort"
-                    onChange={onChangeSelectBox}>
-                  </Select>
-                </chakra.td>
-              </chakra.tr>
-              {page.map((row: any, i) => {
-                const {id, pool} = row.original;
-                const poolName = getPoolName(pool.token0.symbol, pool.token1.symbol)
-                return [
-                  <chakra.tr 
+                  <chakra.td
+                    display={'flex'}
                     w={'100%'}
-                    key={i}
-                    // mt={2}
-                    h={'80px'}
-                    pb={'3px'}
-                    bg={colorMode === 'light' ? 'white.100' : ''}
-                    border={colorMode === 'light' ? '' : 'solid 1px #373737'}
-                    borderBottom={'1px'}
-                    borderBottomColor={'#f4f6f8'}
-                    borderTopWidth={0} 
+                    pl={12}
+                    py={5}
+                    key={index}
+                    colSpan={visibleColumns.length}
+                    fontSize={'17px'}
+                    fontWeight={600}
                   >
-                    <chakra.td
-                      display={'flex'}
-                      w={'100%'}
-                      pl={12}
-                      py={5}
-                      key={index}
-                      colSpan={visibleColumns.length}
-                      fontSize={'17px'}
-                      fontWeight={600}
+                    {getCircle('staked')}
+                    <Flex
+                      ml={'32px'}
+                      w={'350px'}
+                      py={2}
                     >
-                      {getCircle('staked')}
-                      <Flex
-                        ml={'32px'}
-                        w={'350px'}
-                        py={2}
+                      <Text>{poolName}</Text>
+                      <Text fontSize={'14px'} pt={1}>
+                        _#{id}
+                      </Text>
+                    </Flex>
+                    <Grid pos="relative" templateColumns={'repeat(5, 1fr)'} gap={3} mr={'40px'}>
+                      <Button 
+                        w={'145px'}
+                        h={'38px'}
+                        py={'10px'}
+                        px={'29.5px'}
+                        borderRadius={'4px'}
+                        bg={'#00c3c4'}
+                        fontFamily={'Roboto'}
+                        fontSize={'14px'}
+                        fontWeight={500}
+                        color={'#ffffff'}
+                        // onClick={() => ()}
                       >
-                        <Text>{poolName}</Text>
-                        <Text fontSize={'14px'} pt={1}>
-                          _#{id}
-                        </Text>
-                      </Flex>
-                      <Grid pos="relative" templateColumns={'repeat(5, 1fr)'} gap={3} mr={'40px'}>
-                        <Button 
-                          w={'145px'}
-                          h={'38px'}
-                          py={'10px'}
-                          px={'29.5px'}
-                          borderRadius={'4px'}
-                          bg={'#00c3c4'}
-                          fontFamily={'Roboto'}
-                          fontSize={'14px'}
-                          fontWeight={500}
-                          color={'#ffffff'}
-                          // onClick={() => ()}
-                        >
-                          Add Liquidity
-                        </Button>
-                        <Button 
-                          w={'145px'}
-                          h={'38px'}
-                          py={'10px'}
-                          px={'29.5px'}
-                          borderRadius={'4px'}
-                          bg={'#257eee'}
-                          fontFamily={'Roboto'}
-                          fontSize={'14px'}
-                          fontWeight={500}
-                          color={'#ffffff'}
-                          onClick={() => approve({
-                            tokenId: id,
-                            userAddress: address,
-                            library: library,
-                          })}
-                        >
-                          Approve
-                        </Button>
-                        <Button 
-                          w={'145px'}
-                          h={'38px'}
-                          py={'10px'}
-                          px={'29.5px'}
-                          borderRadius={'4px'}
-                          bg={'#257eee'}
-                          fontFamily={'Roboto'}
-                          fontSize={'14px'}
-                          fontWeight={500}
-                          color={'#ffffff'}
-                          onClick={() => dispatch(openModal({ type:'stakePool', data: id}))}
-                        >
-                          Staking
-                        </Button>
-                        <Button 
-                          w={'145px'}
-                          h={'38px'}
-                          py={'10px'}
-                          px={'29.5px'}
-                          borderRadius={'4px'}
-                          bg={'#257eee'}
-                          fontFamily={'Roboto'}
-                          fontSize={'14px'}
-                          fontWeight={500}
-                          color={'#ffffff'}
-                          onClick={() => dispatch(openModal({ type:'unstakePool'}))}
-                        >
-                          Unstaking
-                        </Button>
-                        <Button 
-                          w={'145px'}
-                          h={'38px'}
-                          py={'10px'}
-                          px={'29.5px'}
-                          borderRadius={'4px'}
-                          bg={'#257eee'}
-                          fontFamily={'Roboto'}
-                          fontSize={'14px'}
-                          fontWeight={500}
-                          color={'#ffffff'}
-                          onClick={() => dispatch(openModal({ type:'claimPool'}))}
-                        >
-                          Claim
-                        </Button>
-                      </Grid>
-                    </chakra.td>
-                </chakra.tr>
-              ]
-            })}
+                        Add Liquidity
+                      </Button>
+                      <Button 
+                        w={'145px'}
+                        h={'38px'}
+                        py={'10px'}
+                        px={'29.5px'}
+                        borderRadius={'4px'}
+                        bg={'#257eee'}
+                        fontFamily={'Roboto'}
+                        fontSize={'14px'}
+                        fontWeight={500}
+                        color={'#ffffff'}
+                        onClick={() => approve({
+                          tokenId: id,
+                          userAddress: address,
+                          library: library,
+                        })}
+                      >
+                        Approve
+                      </Button>
+                      <Button 
+                        w={'145px'}
+                        h={'38px'}
+                        py={'10px'}
+                        px={'29.5px'}
+                        borderRadius={'4px'}
+                        bg={'#257eee'}
+                        fontFamily={'Roboto'}
+                        fontSize={'14px'}
+                        fontWeight={500}
+                        color={'#ffffff'}
+                        onClick={() => dispatch(openModal({ type:'stakePool', data: id}))}
+                      >
+                        Staking
+                      </Button>
+                      <Button 
+                        w={'145px'}
+                        h={'38px'}
+                        py={'10px'}
+                        px={'29.5px'}
+                        borderRadius={'4px'}
+                        bg={'#257eee'}
+                        fontFamily={'Roboto'}
+                        fontSize={'14px'}
+                        fontWeight={500}
+                        color={'#ffffff'}
+                        onClick={() => dispatch(openModal({ type:'unstakePool'}))}
+                      >
+                        Unstaking
+                      </Button>
+                      <Button 
+                        w={'145px'}
+                        h={'38px'}
+                        py={'10px'}
+                        px={'29.5px'}
+                        borderRadius={'4px'}
+                        bg={'#257eee'}
+                        fontFamily={'Roboto'}
+                        fontSize={'14px'}
+                        fontWeight={500}
+                        color={'#ffffff'}
+                        onClick={() => dispatch(openModal({ type:'claimPool'}))}
+                      >
+                        Claim
+                      </Button>
+                    </Grid>
+                  </chakra.td>
+              </chakra.tr>
+            ]
+          })}
             <chakra.tr
               w={'100%'}
               h={'80px'}
