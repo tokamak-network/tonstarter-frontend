@@ -139,6 +139,8 @@ export const WalletInformation: FC<WalletInformationProps> = ({
       vault,
     );
 
+    console.log(result);
+
     return result;
   };
 

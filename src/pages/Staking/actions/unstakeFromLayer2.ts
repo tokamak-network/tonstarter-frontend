@@ -26,9 +26,14 @@ export const unstakeL2 = async (args: UnstakeFromLayer2) => {
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, library);
   const wtonAmount = utils.parseUnits(amount, '27');
   try {
+    console.log(StakeTONContract);
     const receipt = await StakeTONContract.connect(
       signer,
     ).tokamakRequestUnStaking(TokamakLayer2_ADDRESS, wtonAmount);
+
+    //requestAll
+    // tokamakRequestUnStakingAll(TokamakLayer2_ADDRESS);
+
     store.dispatch(setTxPending({tx: true}));
     if (receipt) {
       toastWithReceipt(receipt, setTxPending, 'Staking');

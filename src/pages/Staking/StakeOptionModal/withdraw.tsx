@@ -14,7 +14,6 @@ import {
 } from '@chakra-ui/react';
 
 import React, {useState, useEffect} from 'react';
-import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {openModal, selectModalType} from 'store/modal.reducer';
 import {withdraw} from '../actions';
@@ -127,7 +126,6 @@ export const WithdrawalOptionModal = () => {
                 withdraw({
                   userAddress: account,
                   contractAddress: data.data.contractAddress,
-                  miningEndTime: data?.data?.miningEndTime,
                   library: library,
                   handleCloseModal: handleCloseModal,
                 })

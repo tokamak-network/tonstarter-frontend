@@ -32,8 +32,10 @@ export const ManageModal = () => {
   const {account, library} = useUser();
 
   const {
-    data: {contractAddress, status, vault},
+    data: {contractAddress, vault},
   } = data;
+
+  console.log(data);
 
   //Buttons
   const [stakeL2Disabled, setStakeL2Disabled] = useState(true);
@@ -42,10 +44,10 @@ export const ManageModal = () => {
   const [swapDisabled, setSwapDisabled] = useState(true);
 
   //Balances
+  const [availableBalance, setAvailableBalance] = useState('-');
   const [totalStaked, setTotalStaked] = useState('-');
   const [stakedL2, setStakdL2] = useState('-');
   const [pendingL2Balance, setPendingL2Balance] = useState('-');
-  const [stakedBalance, setStakedBalance] = useState<string | undefined>('-');
 
   //sale condition
   const [saleClosed, setSaleClosed] = useState(true);
@@ -69,20 +71,23 @@ export const ManageModal = () => {
           contractAddress,
           library,
         );
+        console.log(result);
         const {
           totalStakedAmount,
           totalStakedAmountL2,
           totalPendingUnstakedAmountL2,
+          stakeContractBalanceTon,
         } = result;
         if (
           totalStakedAmount &&
           totalStakedAmountL2 &&
-          totalPendingUnstakedAmountL2
+          totalPendingUnstakedAmountL2 &&
+          stakeContractBalanceTon
         ) {
+          setAvailableBalance(stakeContractBalanceTon);
           setTotalStaked(totalStakedAmount);
           setStakdL2(totalStakedAmountL2);
           setPendingL2Balance(totalPendingUnstakedAmountL2);
-          setStakedBalance(data.data.stakeBalanceTON);
         }
       }
     }
@@ -120,7 +125,6 @@ export const ManageModal = () => {
   useEffect(() => {
     async function checkSale() {
       const res = await checkSaleClosed(vaultAddress, library);
-      console.log(res);
       setSaleClosed(res);
     }
 
@@ -188,7 +192,7 @@ export const ManageModal = () => {
                 Available balance
               </Text>
               <Text fontSize={'2em'}>
-                {stakedBalance} <span style={{fontSize: '13px'}}>TON</span>
+                {availableBalance} <span style={{fontSize: '13px'}}>TON</span>
               </Text>
             </Box>
             <Box
