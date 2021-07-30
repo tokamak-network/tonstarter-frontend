@@ -65,8 +65,8 @@ export const GET_POSITION = gql`
   }
 `
 export const GET_POSITION_BY_ID = gql`
-  query GetPosition($address: [String!]) {
-    positions(where: {id_in: $address}) {
+  query GetPositionByID($id: [String!]) {
+    positions(where: {id_in: $id}) {
       ${positionParam}
     }
   }
@@ -82,7 +82,7 @@ export const GET_POSITION1 = gql`
 
 export const GET_POSITION2 = gql`
   query GetPosition {
-    positions(where: {id: "3853"}) {
+    positions(where: {id_in: ["3853", "3875"]}) {
       ${positionParam}
     }
   }

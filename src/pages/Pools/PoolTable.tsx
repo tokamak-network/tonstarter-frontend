@@ -92,10 +92,10 @@ export const PoolTable: FC<PoolTableProps> = ({
     data: {contractAddress, index},
   } = useAppSelector(selectTableType);
 
-  const position = useQuery(GET_POSITION1, {
-    variables: {address: address.toLowerCase()}
+  const position = useQuery(GET_POSITION, {
+    variables: {address: address}
   });
-
+  const [stakingPosition, setStakingPosition] = useState([]);
   useEffect(() => {
     async function positionPayload() {
       if (address) {
@@ -108,20 +108,33 @@ export const PoolTable: FC<PoolTableProps> = ({
         for (let i=0; i < result.length; i++) {
           stringResult.push(result[i].toString())
         }
-        console.log(stringResult);
+        setStakingPosition(stringResult)
       }
-
     }
     positionPayload();
   }, [])
 
-  const stakedPosition = useQuery(GET_POSITION2, {
-    variables: {id: ['3853']},
+  const positionWithVar = useQuery(GET_POSITION_BY_ID, {
+    variables: {id: stakingPosition},
   });
-  console.log(stakedPosition.error)
-  console.log(stakedPosition.data)
-  const withStakedPosition = position.loading || stakedPosition.loading ? 
-    [] : position.data.positions.concat(stakedPosition.data.positions)
+  console.log(positionWithVar.loading, positionWithVar.error, positionWithVar.data)
+  
+  console.log(position)
+  console.log(stakingPosition)
+  // const stakedPosition = useQuery(GET_POSITION2);
+  let withStakedPosition: any = [];
+  withStakedPosition = position.loading || positionWithVar.loading ? 
+    [] : position.data.positions.concat(positionWithVar.data.positions)
+  // if (positionWithVar.data) {
+  //   withStakedPosition = position.loading || positionWithVar.loading ? 
+  //   [] : position.data.positions.concat(positionWithVar.data.positions)
+  // } else if (position.data || position.data.length > 0 ) {
+  //   withStakedPosition = position.data.positions
+  // } 
+  // else {
+  //   // console.log(position)
+  //   withStakedPosition = []
+  // }
   
   // console.log(position.loading)
   // console.log(position.data)
@@ -193,6 +206,7 @@ export const PoolTable: FC<PoolTableProps> = ({
     );
   };
 
+
   if (isLoading === true || data.length === 0) {
     return (
       <Center>
@@ -231,7 +245,7 @@ export const PoolTable: FC<PoolTableProps> = ({
             flexDirection="column">
             {page.map((row: any, i) => {
               const {id} = row.original;
-              const filteredPosition = position.loading || stakedPosition.loading ? 
+              const filteredPosition = position.loading || positionWithVar.loading ? 
                 [] : withStakedPosition.filter((row: any) => id === row.pool.id )
               prepareRow(row);
               return [
