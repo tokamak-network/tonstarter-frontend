@@ -4,10 +4,46 @@ import {setTransaction} from 'store/refetch.reducer';
 import store from '../store';
 import {fetchUserInfo} from '../store/app/user.reducer';
 
+type SendToast = {
+  type: 'success' | 'error';
+  msg: string;
+};
+
+export const sendToast = (args: SendToast) => {
+  const {type, msg} = args;
+  if (type === 'success') {
+    return store.dispatch(
+      //@ts-ignore
+      openToast({
+        payload: {
+          title: 'Success',
+          description: msg,
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        },
+      }),
+    );
+  }
+  if (type === 'error') {
+    return store.dispatch(
+      //@ts-ignore
+      openToast({
+        payload: {
+          title: 'Success',
+          description: msg,
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        },
+      }),
+    );
+  }
+};
+
 export const toastWithReceipt = async (
   recepit: any,
   setTxPending: any,
-  stakeContractAddress?: string,
   from?: string,
 ) => {
   try {

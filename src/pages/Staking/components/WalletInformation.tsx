@@ -66,7 +66,8 @@ export const WalletInformation: FC<WalletInformationProps> = ({
       setSaleClosed(res);
     }
     checkSale();
-  }, []);
+    /*eslint-disable*/
+  }, [account, data, dispatch, tosBalance, transactionType, blockNumber]);
 
   const {status} = data;
   const currentBlock: number = Number(data.fetchBlock);
@@ -90,11 +91,12 @@ export const WalletInformation: FC<WalletInformationProps> = ({
   };
 
   const btnDisabledUnstake = () => {
-    console.log(account);
+    console.log('--stakebalance');
     console.log(stakeBalance);
     return account === undefined ||
       stakeBalance === '0.00' ||
-      stakeBalance === undefined
+      stakeBalance === undefined ||
+      status !== 'end'
       ? setUnstakeDisabled(true)
       : setUnstakeDisabled(false);
   };
@@ -114,6 +116,7 @@ export const WalletInformation: FC<WalletInformationProps> = ({
   };
 
   useEffect(() => {
+    console.log(transactionType);
     if (user.address !== undefined) {
       getWalletTonBalance();
     }

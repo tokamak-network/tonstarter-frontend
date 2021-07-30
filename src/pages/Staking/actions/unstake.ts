@@ -52,12 +52,7 @@ export const unstake = async (args: Unstake) => {
       const receipt = await StakeTONContract.connect(signer)?.withdraw();
       store.dispatch(setTxPending({tx: true}));
       if (receipt) {
-        toastWithReceipt(
-          receipt,
-          setTxPending,
-          stakeContractAddress,
-          'Staking',
-        );
+        toastWithReceipt(receipt, setTxPending, 'Staking');
       }
     } catch (err) {
       store.dispatch(setTxPending({tx: false}));

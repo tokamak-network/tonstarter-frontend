@@ -92,7 +92,7 @@ export const fetchStakes = createAsyncThunk(
         const stakePeriod = period[periodKey];
         const res =
           stakePeriod === undefined
-            ? undefined
+            ? '0.0'
             : stakePeriod.includes('year')
             ? '100.' + stakePeriod
             : stakePeriod.includes('month')

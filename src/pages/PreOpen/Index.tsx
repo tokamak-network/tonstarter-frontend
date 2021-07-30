@@ -115,7 +115,7 @@ into sTOS(staked TOS)"
                 fontSize="0.688em"
                 opacity={0.7}
                 fontFamily={theme.fonts.openSans}>
-                E. info@onther.io
+                E. hello@onther.io
               </Text>
             </Container>
             <Container pos="relative" w={'50%'} p={0}>

@@ -65,7 +65,7 @@ export const stakeL2 = async (args: StakeToLayer2) => {
       );
       store.dispatch(setTxPending({tx: true}));
       if (receipt) {
-        toastWithReceipt(receipt, setTxPending);
+        toastWithReceipt(receipt, setTxPending, 'Staking');
       }
     } catch (err) {
       store.dispatch(setTxPending({tx: false}));

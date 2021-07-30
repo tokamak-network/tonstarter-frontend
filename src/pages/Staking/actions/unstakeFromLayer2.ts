@@ -32,7 +32,7 @@ export const unstakeL2 = async (args: UnstakeFromLayer2) => {
     ).tokamakRequestUnStaking(TokamakLayer2_ADDRESS, wtonAmount);
     store.dispatch(setTxPending({tx: true}));
     if (receipt) {
-      toastWithReceipt(receipt, setTxPending);
+      toastWithReceipt(receipt, setTxPending, 'Staking');
     }
   } catch (err) {
     store.dispatch(setTxPending({tx: false}));

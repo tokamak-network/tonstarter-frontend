@@ -4,7 +4,7 @@ import * as StakeTON from 'services/abis/StakeTON.json';
 import store from 'store';
 import {setTxPending} from 'store/tx.reducer';
 import {toastWithReceipt} from 'utils';
-import {BASE_PROVIDER} from 'constants/index'
+import {BASE_PROVIDER} from 'constants/index';
 
 type Claim = {
   userAddress: string | null | undefined;
@@ -49,7 +49,7 @@ export const claimReward = async (args: Claim) => {
       const receipt = await StakeTONContract.connect(signer)?.claim();
       store.dispatch(setTxPending({tx: true}));
       if (receipt) {
-        toastWithReceipt(receipt, setTxPending, stakeContractAddress);
+        toastWithReceipt(receipt, setTxPending, 'Staking');
       }
     } catch (err) {
       store.dispatch(setTxPending({tx: false}));

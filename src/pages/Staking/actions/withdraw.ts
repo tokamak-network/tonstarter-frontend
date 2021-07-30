@@ -33,7 +33,7 @@ export const withdraw = async (args: Withdraw) => {
       ).tokamakProcessUnStaking(TokamakLayer2_ADDRESS);
       store.dispatch(setTxPending({tx: true}));
       if (receipt) {
-        toastWithReceipt(receipt, setTxPending);
+        toastWithReceipt(receipt, setTxPending, 'Staking');
       }
     } catch (err) {
       store.dispatch(setTxPending({tx: false}));
