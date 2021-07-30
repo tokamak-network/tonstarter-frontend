@@ -129,18 +129,17 @@ export const StakeInLayer2Modal = () => {
               color="white.100"
               fontSize="14px"
               _hover={{...theme.btnHover}}
-              onClick={() =>
-                stakeL2({
-                  userAddress: account,
-                  amount: value.toString(),
-                  contractAddress: data?.data?.contractAddress,
-                  miningEndTime: data?.data?.miningEndTime,
-                  status: data?.data?.status,
-                  globalWithdrawalDelay: data?.data?.globalWithdrawalDelay,
-                  library: library,
-                  handleCloseModal: handleCloseModal(),
-                })
-              }>
+              onClick={() => {
+                if (account) {
+                  stakeL2({
+                    account,
+                    library,
+                    amount: value.toString(),
+                    contractAddress: data?.data?.contractAddress,
+                    handleCloseModal: handleCloseModal(),
+                  });
+                }
+              }}>
               Stake
             </Button>
           </Box>

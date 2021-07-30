@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react';
 import React, {FC, useState, useCallback} from 'react';
 import {AppDispatch} from 'store';
-import {openModal, closeModal, ModalType} from 'store/modal.reducer';
+import {openModal, ModalType} from 'store/modal.reducer';
 import {User} from 'store/app/user.reducer';
 import {Stake} from '../staking.reducer';
 import {checkSaleClosed, fetchManageModalPayload} from '../utils';
@@ -159,44 +159,47 @@ export const WalletInformation: FC<WalletInformationProps> = ({
     }
   };
 
-  const modalData = useCallback(async (modal: ModalType) => {
-    setLoading(true);
-    let payload;
-    const {contractAddress, vault} = data;
-    try {
-      if (modal === 'manage' || modal === 'claim') {
-        const payloadModal = await modalPayload({
-          account,
-          library,
-          contractAddress,
-          vault,
-        });
-        console.log(payloadModal);
-        payload = {
-          ...data,
-          ...payloadModal,
-          user,
-        };
-      } else if (modal === 'unstake') {
-        const payloadModal = await getUserBalance(data.contractAddress);
-        payload = {
-          ...data,
-          totalStakedBalance: payloadModal?.totalStakedBalance,
-        };
-      } else {
-        payload = {
-          ...data,
-          user,
-        };
+  const modalData = useCallback(
+    async (modal: ModalType) => {
+      setLoading(true);
+      let payload;
+      const {contractAddress, vault} = data;
+      try {
+        if (modal === 'manage' || modal === 'claim') {
+          const payloadModal = await modalPayload({
+            account,
+            library,
+            contractAddress,
+            vault,
+          });
+          console.log(payloadModal);
+          payload = {
+            ...data,
+            ...payloadModal,
+            user,
+          };
+        } else if (modal === 'unstake') {
+          const payloadModal = await getUserBalance(data.contractAddress);
+          payload = {
+            ...data,
+            totalStakedBalance: payloadModal?.totalStakedBalance,
+          };
+        } else {
+          payload = {
+            ...data,
+            user,
+          };
+        }
+      } catch (e) {
+        console.log(e);
+        setLoading(false);
       }
-    } catch (e) {
-      console.log(e);
-      setLoading(false);
-    }
 
-    setLoading(false);
-    dispatch(openModal({type: modal, data: payload}));
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+      setLoading(false);
+      dispatch(openModal({type: modal, data: payload}));
+    },
+    [transactionType, blockNumber],
+  ); // eslint-disable-line react-hooks/exhaustive-deps
 
   const theme = useTheme();
   const {btnStyle} = theme;

@@ -19,15 +19,21 @@ import {useState, useEffect} from 'react';
 import {fetchStakedBalancePayload} from '../utils/fetchStakedBalancePayload';
 import {useUser} from 'hooks/useUser';
 import {selectTransactionType} from 'store/refetch.reducer';
+import {checkSaleClosed} from 'pages/Staking/utils';
 
 export const ManageModal = () => {
   const {data} = useAppSelector(selectModalType);
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const dispatch = useAppDispatch();
   const theme = useTheme();
+  const {btnStyle} = theme;
   const {colorMode} = useColorMode();
 
   const {account, library} = useUser();
+
+  const {
+    data: {contractAddress, status, vault},
+  } = data;
 
   //Buttons
   const [stakeL2Disabled, setStakeL2Disabled] = useState(true);
@@ -41,22 +47,26 @@ export const ManageModal = () => {
   const [pendingL2Balance, setPendingL2Balance] = useState('-');
   const [stakedBalance, setStakedBalance] = useState<string | undefined>('-');
 
-  let closed: any;
+  //sale condition
+  const [saleClosed, setSaleClosed] = useState(true);
 
-  try {
-    closed = data?.data?.saleClosed;
-  } catch (e) {
-    console.log(e);
-  }
+  //Set
+  const [vaultAddress, setVaultAddress] = useState('');
 
-  console.log(data);
+  //fetch status
+
+  //constant
+
+  useEffect(() => {
+    setVaultAddress(vault);
+  }, []);
 
   useEffect(() => {
     async function getStakedBalance() {
-      if (account && library && data.data.contractAddress) {
+      if (account && library && contractAddress) {
         const result = await fetchStakedBalancePayload(
           account,
-          data.data.contractAddress,
+          contractAddress,
           library,
         );
         const {
@@ -77,15 +87,16 @@ export const ManageModal = () => {
       }
     }
     getStakedBalance();
+
     /*eslint-disable*/
   }, [account, data, transactionType, blockNumber]);
 
+  // data.data?.fetchBlock >
+  //   data.data?.miningEndTime - Number(data.data?.globalWithdrawalDelay) ||
+  //   !closed;
+
   const btnDisableStakeL2 = () => {
-    return data.data?.fetchBlock >
-      data.data?.miningEndTime - Number(data.data?.globalWithdrawalDelay) ||
-      !closed
-      ? setStakeL2Disabled(true)
-      : setStakeL2Disabled(false);
+    return false ? setStakeL2Disabled(true) : setStakeL2Disabled(false);
   };
 
   const btnDisableUnstakeL2 = () => {
@@ -101,20 +112,36 @@ export const ManageModal = () => {
   };
 
   const btnDisableSwap = () => {
-    return data.data?.fetchBlock > data.data?.miningEndTime || !closed
+    return data.data?.fetchBlock > data.data?.miningEndTime || saleClosed
       ? setSwapDisabled(true)
       : setSwapDisabled(false);
   };
-
-  const {btnStyle} = theme;
-
+  //Btn disable control
   useEffect(() => {
+    async function checkSale() {
+      const res = await checkSaleClosed(vaultAddress, library);
+      console.log(res);
+      setSaleClosed(res);
+    }
+
+    if (vaultAddress && library) {
+      checkSale();
+    }
+
     btnDisableStakeL2();
     btnDisableSwap();
     btnDisableUnstakeL2();
     btnDisableWithdraw();
     /*eslint-disable*/
-  }, [totalStaked, stakedL2, pendingL2Balance, transactionType, blockNumber]);
+  }, [
+    account,
+    data,
+    totalStaked,
+    stakedL2,
+    pendingL2Balance,
+    transactionType,
+    blockNumber,
+  ]);
 
   return (
     <Modal
@@ -244,7 +271,15 @@ export const ManageModal = () => {
                 : {...btnStyle.btnAble()})}
               isDisabled={unstakeL2Disable}
               onClick={() =>
-                dispatch(openModal({type: 'unstakeL2', data: data.data}))
+                dispatch(
+                  openModal({
+                    type: 'unstakeL2',
+                    data: {
+                      contractAddress,
+                      totalStakedAmountL2: stakedL2,
+                    },
+                  }),
+                )
               }>
               Unstake from Layer 2
             </Button>

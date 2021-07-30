@@ -36,8 +36,6 @@ const getUserInfoForManage = async (
   const depositManager = getTokamakContract('DepositManager', library);
   const seigManager = getTokamakContract('SeigManager', library);
 
-  console.log('00');
-
   return Promise.all([
     StakeTONContract?.userStaked(account),
     L2Contract?.stakedOf(account),

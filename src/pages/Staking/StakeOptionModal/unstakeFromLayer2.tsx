@@ -15,22 +15,27 @@ import {
 } from '@chakra-ui/react';
 import {unstakeL2} from '../actions';
 import React, {useCallback, useState} from 'react';
-import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {openModal, selectModalType} from 'store/modal.reducer';
+import {useUser} from 'hooks/useUser';
 
 export const UnStakeFromLayer2Modal = () => {
-  const {account, library} = useWeb3React();
+  const {account, library} = useUser();
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
   const theme = useTheme();
   const {colorMode} = useColorMode();
 
-  let balance = data?.data?.totalStakedAmountL2;
+  const {
+    data: {contractAddress, totalStakedAmountL2},
+  } = data;
 
-  const [value, setValue] = useState<number>(balance);
+  const [value, setValue] = useState<number>(0);
   const handleChange = useCallback((e) => setValue(e.target.value), []);
-  const setMax = useCallback((_e) => setValue(balance), [balance]);
+  const setMax = useCallback(
+    (_e) => setValue(totalStakedAmountL2),
+    [totalStakedAmountL2],
+  );
 
   const handleCloseModal = () => {
     dispatch(openModal({type: 'manage', data: data.data}));
@@ -117,7 +122,7 @@ export const UnStakeFromLayer2Modal = () => {
               <Text
                 fontSize={'18px'}
                 color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                {balance} TON
+                {totalStakedAmountL2} TON
               </Text>
             </Box>
           </Stack>
@@ -133,13 +138,11 @@ export const UnStakeFromLayer2Modal = () => {
                 unstakeL2({
                   userAddress: account,
                   amount: value.toString(),
-                  contractAddress: data.data.contractAddress,
-                  status: data?.data?.status,
+                  contractAddress,
                   library: library,
                   handleCloseModal: handleCloseModal(),
                 })
               }
-              disabled={+balance <= 0}
               colorScheme={'blue'}>
               Unstake
             </Button>

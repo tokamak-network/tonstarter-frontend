@@ -33,6 +33,7 @@ export const ClaimOptionModal = () => {
     async function getCanClaimAmount() {
       if (data.data.contractAddress) {
         const result = await getUserBalance(data.data.contractAddress);
+        console.log(result);
         if (result) {
           const claimAmount = result.rewardTosBalance;
           if (claimAmount) {
@@ -43,7 +44,7 @@ export const ClaimOptionModal = () => {
     }
     getCanClaimAmount();
     /*eslint-disable*/
-  }, [dispatch]);
+  }, []);
 
   const handleCloseModal = useCallback(() => {
     dispatch(closeModal());
