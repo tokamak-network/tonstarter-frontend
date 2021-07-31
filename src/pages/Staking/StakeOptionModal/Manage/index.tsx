@@ -108,7 +108,7 @@ export const ManageModal = () => {
           setTotalStaked(totalStakedAmount);
           setStakdL2(totalStakedAmountL2);
           setPendingL2Balance(totalPendingUnstakedAmountL2);
-          setSwapBalance(swapBalance);
+          setSwapBalance(Number(swapBalance) <= 0 ? '0' : swapBalance);
         }
       }
     }
@@ -236,18 +236,23 @@ export const ManageModal = () => {
                 <Text
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                   fontWeight={500}
-                  fontSize={'18px'}>
+                  fontSize={'15px'}>
                   {totalStaked} TON
                 </Text>
               </Flex>
               <Flex justifyContent="space-between" alignItems="center" h="55px">
                 <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
-                  Staked in Layer 2
+                  Staked in Layer 2 (Seig:{' '}
+                  <strong style={{color: '#3d495d'}}>{swapBalance}</strong>{' '}
+                  <strong style={{color: '#3d495d', fontSize: '11px'}}>
+                    TON
+                  </strong>
+                  )
                 </Text>
                 <Text
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                   fontWeight={500}
-                  fontSize={'18px'}>
+                  fontSize={'15px'}>
                   {stakedL2} TON
                 </Text>
               </Flex>
@@ -258,7 +263,7 @@ export const ManageModal = () => {
                 <Text
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                   fontWeight={500}
-                  fontSize={'18px'}>
+                  fontSize={'15px'}>
                   {pendingL2Balance} TON
                 </Text>
               </Flex>
@@ -288,7 +293,7 @@ export const ManageModal = () => {
                 <Text
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                   fontWeight={500}
-                  fontSize={'18px'}>
+                  fontSize={'15px'}>
                   {swapBalance} TON
                 </Text>
               </Flex>

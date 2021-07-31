@@ -136,6 +136,7 @@ export const UnStakeFromLayer2Modal = () => {
               _hover={{...theme.btnHover}}
               onClick={() => {
                 unstakeL2({
+                  type: value === totalStakedAmountL2 ? true : false,
                   userAddress: account,
                   amount: value.toString(),
                   contractAddress,

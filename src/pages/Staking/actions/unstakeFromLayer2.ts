@@ -9,6 +9,7 @@ import {toastWithReceipt} from 'utils';
 import {openToast} from 'store/app/toast.reducer';
 
 type UnstakeFromLayer2 = {
+  type: boolean;
   userAddress: string | null | undefined;
   amount: string;
   contractAddress: string;
@@ -17,7 +18,7 @@ type UnstakeFromLayer2 = {
 const {TokamakLayer2_ADDRESS} = DEPLOYED;
 
 export const unstakeL2 = async (args: UnstakeFromLayer2) => {
-  const {userAddress, amount, contractAddress, library} = args;
+  const {type, userAddress, amount, contractAddress, library} = args;
   if (userAddress === null || userAddress === undefined) {
     return;
   }
@@ -25,12 +26,17 @@ export const unstakeL2 = async (args: UnstakeFromLayer2) => {
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, library);
   const wtonAmount = utils.parseUnits(amount, '27');
   try {
-    const receipt = await StakeTONContract.connect(
-      signer,
-    ).tokamakRequestUnStaking(TokamakLayer2_ADDRESS, wtonAmount);
-
-    //requestAll
-    // tokamakRequestUnStakingAll(TokamakLayer2_ADDRESS);
+    let receipt = undefined;
+    if (type === false) {
+      receipt = await StakeTONContract.connect(signer).tokamakRequestUnStaking(
+        TokamakLayer2_ADDRESS,
+        wtonAmount,
+      );
+    } else {
+      receipt = await StakeTONContract.connect(
+        signer,
+      ).tokamakRequestUnStakingAll(TokamakLayer2_ADDRESS);
+    }
 
     store.dispatch(setTxPending({tx: true}));
     if (receipt) {
