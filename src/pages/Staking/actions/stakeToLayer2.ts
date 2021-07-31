@@ -13,13 +13,12 @@ type StakeToLayer2 = {
   library: any;
   amount: string;
   contractAddress: string;
-  handleCloseModal: any;
 };
 
 const {TokamakLayer2_ADDRESS} = DEPLOYED;
 
 export const stakeL2 = async (args: StakeToLayer2) => {
-  const {account, library, amount, contractAddress, handleCloseModal} = args;
+  const {account, library, amount, contractAddress} = args;
 
   const tonAmount = convertToWei(amount);
 

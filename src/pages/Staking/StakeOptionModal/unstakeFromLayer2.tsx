@@ -134,15 +134,15 @@ export const UnStakeFromLayer2Modal = () => {
               color="white.100"
               fontSize="14px"
               _hover={{...theme.btnHover}}
-              onClick={() =>
+              onClick={() => {
                 unstakeL2({
                   userAddress: account,
                   amount: value.toString(),
                   contractAddress,
                   library: library,
-                  handleCloseModal: handleCloseModal(),
-                })
-              }
+                });
+                handleCloseModal();
+              }}
               colorScheme={'blue'}>
               Unstake
             </Button>

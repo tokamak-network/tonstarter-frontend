@@ -11,7 +11,6 @@ type Withdraw = {
   userAddress: string | null | undefined;
   contractAddress: string;
   library: any;
-  handleCloseModal: any;
 };
 
 const {TokamakLayer2_ADDRESS} = DEPLOYED;

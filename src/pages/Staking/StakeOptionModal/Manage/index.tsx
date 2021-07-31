@@ -12,15 +12,17 @@ import {
   Grid,
   useTheme,
   useColorMode,
+  Tooltip,
 } from '@chakra-ui/react';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, openModal, selectModalType} from 'store/modal.reducer';
-import {useState, useEffect, useCallback, useMemo} from 'react';
+import {useState, useEffect, useMemo} from 'react';
 import {fetchStakedBalancePayload} from '../utils/fetchStakedBalancePayload';
 import {useUser} from 'hooks/useUser';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {checkSaleClosed} from 'pages/Staking/utils';
 import {BASE_PROVIDER} from 'constants/index';
+import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 
 export const ManageModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -35,7 +37,7 @@ export const ManageModal = () => {
   const memo_originalData = useMemo(() => {
     return data.data;
     /*eslint-disable*/
-  }, []);
+  }, [data]);
 
   const {contractAddress, vault, globalWithdrawalDelay, miningEndTime} =
     memo_originalData;
@@ -51,6 +53,7 @@ export const ManageModal = () => {
   const [totalStaked, setTotalStaked] = useState('-');
   const [stakedL2, setStakdL2] = useState('-');
   const [pendingL2Balance, setPendingL2Balance] = useState('-');
+  const [swapBalance, setSwapBalance] = useState('-');
 
   //conditions
   const [saleClosed, setSaleClosed] = useState(true);
@@ -92,17 +95,20 @@ export const ManageModal = () => {
           totalStakedAmountL2,
           totalPendingUnstakedAmountL2,
           stakeContractBalanceTon,
+          swapBalance,
         } = result;
         if (
           totalStakedAmount &&
           totalStakedAmountL2 &&
           totalPendingUnstakedAmountL2 &&
-          stakeContractBalanceTon
+          stakeContractBalanceTon &&
+          swapBalance
         ) {
           setAvailableBalance(stakeContractBalanceTon);
           setTotalStaked(totalStakedAmount);
           setStakdL2(totalStakedAmountL2);
           setPendingL2Balance(totalPendingUnstakedAmountL2);
+          setSwapBalance(swapBalance);
         }
       }
     }
@@ -124,7 +130,7 @@ export const ManageModal = () => {
   };
 
   const btnDisableSwap = () => {
-    return data.data?.fetchBlock > data.data?.miningEndTime || saleClosed
+    return Number(swapBalance) <= 0
       ? setSwapDisabled(true)
       : setSwapDisabled(false);
   };
@@ -148,9 +154,22 @@ export const ManageModal = () => {
     totalStaked,
     stakedL2,
     pendingL2Balance,
+    swapBalance,
     transactionType,
     blockNumber,
   ]);
+
+  const tooltipMsg = () => {
+    return (
+      <Flex flexDir="column" fontSize="12px" pt="6px" pl="5px" pr="5px">
+        <Text textAlign="center" fontSize="12px">
+          You can swap using seig TON.
+        </Text>
+        <Text textAlign="center">If you want to swap, you must unstake</Text>
+        <Text textAlign="center">and withdraw seig TON first.</Text>
+      </Flex>
+    );
+  };
 
   return (
     <Modal
@@ -241,6 +260,36 @@ export const ManageModal = () => {
                   fontWeight={500}
                   fontSize={'18px'}>
                   {pendingL2Balance} TON
+                </Text>
+              </Flex>
+              <Flex justifyContent="space-between" alignItems="center" h="55px">
+                <Flex>
+                  <Text
+                    color={'gray.400'}
+                    fontSize="13px"
+                    fontWeight={500}
+                    mr="2px">
+                    Available to swap
+                  </Text>
+                  <Tooltip
+                    hasArrow
+                    placement="top"
+                    label={tooltipMsg()}
+                    color={theme.colors.white[100]}
+                    bg={theme.colors.gray[375]}
+                    p={0}
+                    w="227px"
+                    h="70px"
+                    borderRadius={3}
+                    fontSize="12px">
+                    <img src={tooltipIcon} />
+                  </Tooltip>
+                </Flex>
+                <Text
+                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+                  fontWeight={500}
+                  fontSize={'18px'}>
+                  {swapBalance} TON
                 </Text>
               </Flex>
             </Box>

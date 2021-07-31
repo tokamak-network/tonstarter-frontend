@@ -134,8 +134,8 @@ export const StakeInLayer2Modal = () => {
                     library,
                     amount: value.toString(),
                     contractAddress,
-                    handleCloseModal: handleCloseModal(),
                   });
+                  handleCloseModal();
                 }
               }}>
               Stake

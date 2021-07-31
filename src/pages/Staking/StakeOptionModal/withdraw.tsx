@@ -122,14 +122,14 @@ export const WithdrawalOptionModal = () => {
               color="white.100"
               fontSize="14px"
               _hover={{...theme.btnHover}}
-              onClick={() =>
+              onClick={() => {
                 withdraw({
                   userAddress: account,
                   contractAddress: data.data.contractAddress,
                   library: library,
-                  handleCloseModal: handleCloseModal,
-                })
-              }
+                });
+                handleCloseModal();
+              }}
               disabled={
                 withdrawBalance === undefined || Number(withdrawBalance) <= 0
               }>
