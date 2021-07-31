@@ -139,8 +139,6 @@ export const WalletInformation: FC<WalletInformationProps> = ({
       vault,
     );
 
-    console.log(result);
-
     return result;
   };
 
@@ -174,7 +172,6 @@ export const WalletInformation: FC<WalletInformationProps> = ({
             contractAddress,
             vault,
           });
-          console.log(payloadModal);
           payload = {
             ...data,
             ...payloadModal,

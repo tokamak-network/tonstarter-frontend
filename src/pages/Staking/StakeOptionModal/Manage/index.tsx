@@ -16,13 +16,26 @@ import {
 } from '@chakra-ui/react';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, openModal, selectModalType} from 'store/modal.reducer';
-import {useState, useEffect, useMemo} from 'react';
+import {useState, useEffect} from 'react';
 import {fetchStakedBalancePayload} from '../utils/fetchStakedBalancePayload';
 import {useUser} from 'hooks/useUser';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {checkSaleClosed} from 'pages/Staking/utils';
 import {BASE_PROVIDER} from 'constants/index';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
+import {useModal} from 'hooks/useModal';
+
+const tooltipMsg = () => {
+  return (
+    <Flex flexDir="column" fontSize="12px" pt="6px" pl="5px" pr="5px">
+      <Text textAlign="center" fontSize="12px">
+        You can swap using seig TON.
+      </Text>
+      <Text textAlign="center">If you want to swap, you must unstake</Text>
+      <Text textAlign="center">and withdraw seig TON first.</Text>
+    </Flex>
+  );
+};
 
 export const ManageModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -33,14 +46,11 @@ export const ManageModal = () => {
   const {colorMode} = useColorMode();
 
   const {account, library} = useUser();
+  const {handleOpenConfirmModal} = useModal();
 
-  const memo_originalData = useMemo(() => {
-    return data.data;
-    /*eslint-disable*/
-  }, [data]);
-
-  const {contractAddress, vault, globalWithdrawalDelay, miningEndTime} =
-    memo_originalData;
+  const {
+    data: {contractAddress, vault, globalWithdrawalDelay, miningEndTime},
+  } = data;
 
   //Buttons
   const [stakeL2Disabled, setStakeL2Disabled] = useState(true);
@@ -63,24 +73,6 @@ export const ManageModal = () => {
   //fetch status
 
   //constant
-
-  useEffect(() => {
-    async function getCurrentBlock() {
-      const currentBlock = await BASE_PROVIDER.getBlockNumber();
-      const res = miningEndTime - Number(globalWithdrawalDelay) <= currentBlock;
-      return setStakeL2Disabled(res);
-    }
-    getCurrentBlock();
-    /*eslint-disable*/
-  }, [
-    account,
-    data,
-    totalStaked,
-    stakedL2,
-    pendingL2Balance,
-    transactionType,
-    blockNumber,
-  ]);
 
   useEffect(() => {
     async function getStakedBalance() {
@@ -117,25 +109,35 @@ export const ManageModal = () => {
     /*eslint-disable*/
   }, [account, data, transactionType, blockNumber]);
 
-  const btnDisableUnstakeL2 = () => {
-    return stakedL2 === '-' || Number(stakedL2) === 0
-      ? setUnstakeL2Disable(true)
-      : setUnstakeL2Disable(false);
-  };
-
-  const btnDisableWithdraw = () => {
-    return pendingL2Balance === '-' || Number(pendingL2Balance) === 0
-      ? setWithdrawDisable(true)
-      : setWithdrawDisable(false);
-  };
-
-  const btnDisableSwap = () => {
-    return Number(swapBalance) <= 0
-      ? setSwapDisabled(true)
-      : setSwapDisabled(false);
-  };
   //Btn disable control
   useEffect(() => {
+    async function btnDisablestakeL2() {
+      if (globalWithdrawalDelay && miningEndTime) {
+        const currentBlock = await BASE_PROVIDER.getBlockNumber();
+        const res =
+          miningEndTime - Number(globalWithdrawalDelay) <= currentBlock;
+        return setStakeL2Disabled(res);
+      }
+    }
+
+    const btnDisableUnstakeL2 = () => {
+      return stakedL2 === '-' || stakedL2 === '0.00'
+        ? setUnstakeL2Disable(true)
+        : setUnstakeL2Disable(false);
+    };
+
+    const btnDisableWithdraw = () => {
+      return pendingL2Balance === '-' || pendingL2Balance === '0.00'
+        ? setWithdrawDisable(true)
+        : setWithdrawDisable(false);
+    };
+
+    const btnDisableSwap = () => {
+      return Number(swapBalance) <= 0 || saleClosed
+        ? setSwapDisabled(true)
+        : setSwapDisabled(false);
+    };
+
     async function checkSale() {
       const res = await checkSaleClosed(vault, library);
       setSaleClosed(res);
@@ -144,6 +146,8 @@ export const ManageModal = () => {
     if (vault && library) {
       checkSale();
     }
+
+    btnDisablestakeL2();
     btnDisableSwap();
     btnDisableUnstakeL2();
     btnDisableWithdraw();
@@ -159,23 +163,17 @@ export const ManageModal = () => {
     blockNumber,
   ]);
 
-  const tooltipMsg = () => {
-    return (
-      <Flex flexDir="column" fontSize="12px" pt="6px" pl="5px" pr="5px">
-        <Text textAlign="center" fontSize="12px">
-          You can swap using seig TON.
-        </Text>
-        <Text textAlign="center">If you want to swap, you must unstake</Text>
-        <Text textAlign="center">and withdraw seig TON first.</Text>
-      </Flex>
-    );
+  console.log(stakeL2Disabled);
+
+  const closeManageModal = () => {
+    dispatch(closeModal());
   };
 
   return (
     <Modal
       isOpen={data.modal === 'manage' ? true : false}
       isCentered
-      onClose={() => dispatch(closeModal())}>
+      onClose={() => closeManageModal()}>
       <ModalOverlay />
       <ModalContent
         w={'21.875em'}
@@ -318,17 +316,13 @@ export const ManageModal = () => {
                 : {...btnStyle.btnAble()})}
               isDisabled={stakeL2Disabled}
               onClick={() =>
-                dispatch(
-                  openModal({
-                    type: 'stakeL2',
-                    data: {
-                      account,
-                      library,
-                      balance: availableBalance,
-                      contractAddress,
-                    },
-                  }),
-                )
+                handleOpenConfirmModal({
+                  type: 'manage_stakeL2',
+                  data: {
+                    balance: availableBalance,
+                    contractAddress,
+                  },
+                })
               }>
               Stake in Layer 2
             </Button>
@@ -344,15 +338,13 @@ export const ManageModal = () => {
                 : {...btnStyle.btnAble()})}
               isDisabled={unstakeL2Disable}
               onClick={() =>
-                dispatch(
-                  openModal({
-                    type: 'unstakeL2',
-                    data: {
-                      contractAddress,
-                      totalStakedAmountL2: stakedL2,
-                    },
-                  }),
-                )
+                handleOpenConfirmModal({
+                  type: 'manage_unstakeL2',
+                  data: {
+                    totalStakedAmountL2: stakedL2,
+                    contractAddress,
+                  },
+                })
               }>
               Unstake from Layer 2
             </Button>
@@ -368,7 +360,13 @@ export const ManageModal = () => {
                 : {...btnStyle.btnAble()})}
               isDisabled={withdrawDisable}
               onClick={() =>
-                dispatch(openModal({type: 'withdraw', data: data.data}))
+                handleOpenConfirmModal({
+                  type: 'manage_withdraw',
+                  data: {
+                    contractAddress,
+                    pendingL2Balance,
+                  },
+                })
               }>
               Withdraw
             </Button>
@@ -384,7 +382,13 @@ export const ManageModal = () => {
                 : {...btnStyle.btnAble()})}
               isDisabled={swapDisabled}
               onClick={() =>
-                dispatch(openModal({type: 'swap', data: data.data}))
+                handleOpenConfirmModal({
+                  type: 'manage_swap',
+                  data: {
+                    contractAddress,
+                    swapBalance,
+                  },
+                })
               }>
               Swap
             </Button>

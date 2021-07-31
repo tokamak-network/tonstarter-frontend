@@ -15,20 +15,21 @@ import {
 } from '@chakra-ui/react';
 import {unstakeL2} from '../actions';
 import React, {useCallback, useState} from 'react';
-import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {openModal, selectModalType} from 'store/modal.reducer';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectModalType} from 'store/modal.reducer';
 import {useUser} from 'hooks/useUser';
+import {useModal} from 'hooks/useModal';
 
 export const UnStakeFromLayer2Modal = () => {
   const {account, library} = useUser();
-  const {data} = useAppSelector(selectModalType);
-  const dispatch = useAppDispatch();
+  const {sub} = useAppSelector(selectModalType);
   const theme = useTheme();
   const {colorMode} = useColorMode();
+  const {handleCloseConfirmModal} = useModal();
 
   const {
     data: {contractAddress, totalStakedAmountL2},
-  } = data;
+  } = sub;
 
   const [value, setValue] = useState<number>(0);
   const handleChange = useCallback((e) => setValue(e.target.value), []);
@@ -38,13 +39,13 @@ export const UnStakeFromLayer2Modal = () => {
   );
 
   const handleCloseModal = () => {
-    dispatch(openModal({type: 'manage', data: data.data}));
+    handleCloseConfirmModal();
     setValue(0);
   };
 
   return (
     <Modal
-      isOpen={data.modal === 'unstakeL2' ? true : false}
+      isOpen={sub.type === 'manage_unstakeL2' ? true : false}
       isCentered
       onClose={handleCloseModal}>
       <ModalOverlay />

@@ -14,30 +14,33 @@ import {
   useColorMode,
 } from '@chakra-ui/react';
 import React, {useCallback, useState} from 'react';
-import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {openModal, selectModalType} from 'store/modal.reducer';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectModalType} from 'store/modal.reducer';
 import {stakeL2} from '../actions';
+import {useUser} from 'hooks/useUser';
+import {useModal} from 'hooks/useModal';
 
 export const StakeInLayer2Modal = () => {
-  const {data} = useAppSelector(selectModalType);
-  const {account, library, balance, contractAddress} = data.data;
-  const dispatch = useAppDispatch();
+  const {sub} = useAppSelector(selectModalType);
+  const {account, library} = useUser();
+  const {balance, contractAddress} = sub.data;
 
   const [value, setValue] = useState<number>(balance);
   const theme = useTheme();
   const {colorMode} = useColorMode();
+  const {handleCloseConfirmModal} = useModal();
 
   const handleChange = useCallback((e) => setValue(e.target.value), []);
   const setMax = useCallback((_e) => setValue(balance), [balance]);
 
   const handleCloseModal = () => {
-    dispatch(openModal({type: 'manage', data: data.data}));
+    handleCloseConfirmModal();
     setValue(0);
   };
 
   return (
     <Modal
-      isOpen={data.modal === 'stakeL2' ? true : false}
+      isOpen={sub.type === 'manage_stakeL2' ? true : false}
       isCentered
       onClose={handleCloseModal}>
       <ModalOverlay />
