@@ -14,16 +14,14 @@ import {
   useColorMode,
 } from '@chakra-ui/react';
 import React, {useCallback, useState} from 'react';
-import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {openModal, selectModalType} from 'store/modal.reducer';
 import {stakeL2} from '../actions';
 
 export const StakeInLayer2Modal = () => {
-  const {account, library} = useWeb3React();
   const {data} = useAppSelector(selectModalType);
+  const {account, library, balance, contractAddress} = data.data;
   const dispatch = useAppDispatch();
-  let balance = data?.data?.stakeContractBalanceTon;
 
   const [value, setValue] = useState<number>(balance);
   const theme = useTheme();
@@ -135,7 +133,7 @@ export const StakeInLayer2Modal = () => {
                     account,
                     library,
                     amount: value.toString(),
-                    contractAddress: data?.data?.contractAddress,
+                    contractAddress,
                     handleCloseModal: handleCloseModal(),
                   });
                 }
