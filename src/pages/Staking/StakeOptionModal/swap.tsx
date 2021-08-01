@@ -13,15 +13,16 @@ import {
   useTheme,
   useColorMode,
 } from '@chakra-ui/react';
-import React, {useCallback, useState, useEffect} from 'react';
+import React, {useCallback, useState, useEffect, useMemo } from 'react';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {openModal, selectModalType} from 'store/modal.reducer';
 import {fetchSwapPayload} from './utils/fetchSwapPayload';
 import {swapWTONtoTOS} from '../actions';
 // import { useBestV3TradeExactIn } from '../../../hooks/useBestV3Trade';
-import { useDerivedSwapInfo } from '../../../store/swap/hooks';
-import TradePrice from '../components/TradePrice';
+import { useDerivedSwapInfo, useSwapState } from '../../../store/swap/hooks';
+// import TradePrice from '../components/TradePrice';
+import { Field } from '../../../store/swap/actions';
 
 export const SwapModal = () => {
   const {account, library} = useWeb3React();
@@ -30,6 +31,7 @@ export const SwapModal = () => {
   const {colorMode} = useColorMode();
   const dispatch = useAppDispatch();
 
+  const { independentField, typedValue, recipient } = useSwapState()
   const {
     v2Trade,
     v3TradeState: { trade: v3Trade, state: v3TradeState },
@@ -42,6 +44,30 @@ export const SwapModal = () => {
   } = useDerivedSwapInfo()
   console.log(allowedSlippage)
   console.log(trade)
+  console.log(currencies)
+  console.log(currencyBalances);
+  const showWrap = false
+  const parsedAmounts = useMemo(
+    () =>
+      showWrap
+        ? {
+            [Field.INPUT]: parsedAmount,
+            [Field.OUTPUT]: parsedAmount,
+          }
+        : {
+            [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
+            [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
+          },
+    [independentField, parsedAmount, showWrap, trade]
+  )
+  const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
+
+  const formattedAmounts = {
+    [independentField]: typedValue,
+    [dependentField]: showWrap
+      ? parsedAmounts[independentField]?.toExact() ?? ''
+      : parsedAmounts[dependentField]?.toSignificant(6) ?? '',
+  }
 
   const stakeBalanceTON = data?.data?.stakeContractBalanceTon;
   const totalStakedAmountL2 = data?.data?.totalStakedAmountL2;
