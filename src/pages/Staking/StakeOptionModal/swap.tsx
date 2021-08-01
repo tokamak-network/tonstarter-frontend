@@ -19,6 +19,8 @@ import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {openModal, selectModalType} from 'store/modal.reducer';
 import {fetchSwapPayload} from './utils/fetchSwapPayload';
 import {swapWTONtoTOS} from '../actions';
+// import { useBestV3TradeExactIn } from '../../../hooks/useBestV3Trade';
+import { useDerivedSwapInfo } from '../../../store/swap/hooks';
 
 export const SwapModal = () => {
   const {account, library} = useWeb3React();

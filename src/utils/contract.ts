@@ -1,7 +1,7 @@
 import {getAddress} from '@ethersproject/address';
 import {Contract} from '@ethersproject/contracts';
 import {AddressZero} from '@ethersproject/constants';
-import {JsonRpcSigner, Web3Provider} from '@ethersproject/providers';
+import {JsonRpcSigner, Web3Provider, Provider} from '@ethersproject/providers';
 
 import * as TonABI from 'services/abis/TON.json';
 import * as WtonABI from 'services/abis/WTON.json';
@@ -40,7 +40,7 @@ export function isAddress(value: any): string | false {
 export function getSigner(
   library: Web3Provider,
   account: string,
-): JsonRpcSigner {
+): any {
   return library.getSigner(account).connectUnchecked();
 }
 
@@ -54,7 +54,7 @@ export function getProviderOrSigner(
 
 export function getTokamakContract(
   want: string,
-  library?: Web3Provider,
+  library?: any,
   address?: string,
 ): any {
   const TON = new Contract(TON_ADDRESS, TonABI.abi, library);
