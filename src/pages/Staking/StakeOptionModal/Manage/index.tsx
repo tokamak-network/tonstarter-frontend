@@ -26,6 +26,11 @@ import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal/CloseButton';
 
+const seigFontColors = {
+  light: '#3d495d',
+  dark: '#f3f4f1',
+};
+
 const tooltipMsg = () => {
   return (
     <Flex flexDir="column" fontSize="12px" pt="6px" pl="5px" pr="5px">
@@ -236,8 +241,14 @@ export const ManageModal = () => {
               <Flex justifyContent="space-between" alignItems="center" h="55px">
                 <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
                   Staked in Layer 2 (Seig:{' '}
-                  <strong style={{color: '#3d495d'}}>{swapBalance}</strong>{' '}
-                  <strong style={{color: '#3d495d', fontSize: '11px'}}>
+                  <strong style={{color: seigFontColors[colorMode]}}>
+                    {swapBalance}
+                  </strong>{' '}
+                  <strong
+                    style={{
+                      color: seigFontColors[colorMode],
+                      fontSize: '11px',
+                    }}>
                     TON
                   </strong>
                   )

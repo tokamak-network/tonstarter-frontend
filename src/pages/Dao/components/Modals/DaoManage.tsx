@@ -287,20 +287,7 @@ export const DaoManageModal = () => {
                 onClick={() => {
                   setEdit(false);
                   setSelectLockId('');
-                  // setValue('0');
                 }}></img>
-              {/* <Image
-                w="1.375em"
-                h="1.375em"
-                src={backArrowIcon}
-                mr="0.625em"
-                cursor={'pointer'}
-                onClick={() => {
-                  console.log('?');
-                  setEdit(false);
-                  setSelectLockId('');
-                  // setValue('0');
-                }}></Image> */}
               <Flex flexDir="column" alignItems="flex-start">
                 <Heading
                   fontSize={'1.250em'}

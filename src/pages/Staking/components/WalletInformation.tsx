@@ -91,8 +91,6 @@ export const WalletInformation: FC<WalletInformationProps> = ({
   };
 
   const btnDisabledUnstake = () => {
-    console.log('--stakebalance');
-    console.log(stakeBalance);
     return account === undefined ||
       stakeBalance === '0.00' ||
       stakeBalance === undefined ||
@@ -116,7 +114,6 @@ export const WalletInformation: FC<WalletInformationProps> = ({
   };
 
   useEffect(() => {
-    console.log(transactionType);
     if (user.address !== undefined) {
       getWalletTonBalance();
     }
@@ -165,7 +162,7 @@ export const WalletInformation: FC<WalletInformationProps> = ({
       let payload;
       const {contractAddress, vault} = data;
       try {
-        if (modal === 'manage' || modal === 'claim') {
+        if (modal === 'manage') {
           const payloadModal = await modalPayload({
             account,
             library,
@@ -176,6 +173,11 @@ export const WalletInformation: FC<WalletInformationProps> = ({
             ...data,
             ...payloadModal,
             user,
+          };
+        } else if (modal === 'claim') {
+          payload = {
+            contractAddress,
+            tosBalance,
           };
         } else if (modal === 'unstake') {
           const payloadModal = await getUserBalance(data.contractAddress);
@@ -197,7 +199,7 @@ export const WalletInformation: FC<WalletInformationProps> = ({
       setLoading(false);
       dispatch(openModal({type: modal, data: payload}));
     },
-    [transactionType, blockNumber],
+    [data, tosBalance, transactionType, blockNumber],
   ); // eslint-disable-line react-hooks/exhaustive-deps
 
   const theme = useTheme();
