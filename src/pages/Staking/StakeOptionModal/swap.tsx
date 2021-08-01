@@ -182,7 +182,7 @@ export const SwapModal = () => {
             </Box>
           </Stack>
           <Stack>
-            <Image src={arrow} />
+            <Image w={'20px'} h={'20px'} src={arrow} />
           </Stack>
           <Stack
             pt="27px"
