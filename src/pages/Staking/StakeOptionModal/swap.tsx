@@ -17,16 +17,11 @@ import React, {useCallback, useState, useEffect, useMemo } from 'react';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {openModal, selectModalType} from 'store/modal.reducer';
-import {fetchSwapPayload} from './utils/fetchSwapPayload';
 import {swapWTONtoTOS} from '../actions';
 // import { useBestV3TradeExactIn } from '../../../hooks/useBestV3Trade';
 import { useDerivedSwapInfo, useSwapState } from '../../../store/swap/hooks';
 import TradePrice from '../components/TradePrice';
 import { Field } from '../../../store/swap/actions';
-import React, {useCallback, useState} from 'react';
-import {useAppSelector} from 'hooks/useRedux';
-import {selectModalType} from 'store/modal.reducer';
-import {swapWTONtoTOS} from '../actions';
 import {useUser} from 'hooks/useUser';
 import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal/CloseButton';
@@ -39,7 +34,11 @@ export const SwapModal = () => {
   } = sub;
   const theme = useTheme();
   const {colorMode} = useColorMode();
-  const dispatch = useAppDispatch();
+  const [value, setValue] = useState<number>(0);
+  const {handleCloseConfirmModal} = useModal();
+
+  const handleChange = useCallback((e) => setValue(e.target.value), []);
+  const setMax = useCallback((_e) => setValue(swapBalance), [swapBalance]);
 
   const { independentField, typedValue, recipient } = useSwapState()
   const {
@@ -79,27 +78,10 @@ export const SwapModal = () => {
       : parsedAmounts[dependentField]?.toSignificant(6) ?? '',
   }
 
-  const stakeBalanceTON = data?.data?.stakeContractBalanceTon;
-  const totalStakedAmountL2 = data?.data?.totalStakedAmountL2;
-  const totalStakedAmount = data?.data?.totalStakedAmount;
-  const totalPendingUnstakedAmountL2 = data?.data?.totalPendingUnstakedAmountL2;
-
   const [swappedBalance, setSwappedBalance] = useState<string | undefined>(
     undefined,
   );
   const [showInverted, setShowInverted] = useState<boolean>(false)
-
-  let balance =
-    Number(stakeBalanceTON) +
-    Number(totalStakedAmountL2) -
-    Number(totalStakedAmount) +
-    Number(totalPendingUnstakedAmountL2) -
-    Number(swappedBalance);
-  const [value, setValue] = useState<number>(0);
-  const {handleCloseConfirmModal} = useModal();
-
-  const handleChange = useCallback((e) => setValue(e.target.value), []);
-  const setMax = useCallback((_e) => setValue(swapBalance), [swapBalance]);
 
   const handleCloseModal = () => {
     handleCloseConfirmModal();

@@ -24,9 +24,7 @@ export const unstakeL2 = async (args: UnstakeFromLayer2) => {
   }
   const signer = getSigner(library, userAddress);
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, library);
-  
   const wtonAmount = utils.parseUnits(amount, '27');
-  let inputValue = (Number(wtonAmount.toString()) > Number(maxBalance.toString())) ? maxBalance : wtonAmount;
   
   try {
     let receipt = undefined;

@@ -41,6 +41,7 @@ export const UnStakeFromLayer2Modal = () => {
     [totalStakedAmountL2],
   );
 
+
   const handleCloseModal = () => {
     handleCloseConfirmModal();
     setValue(0);
