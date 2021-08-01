@@ -19,12 +19,13 @@ import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {openModal, selectModalType} from 'store/modal.reducer';
 import {swapWTONtoTOS} from '../actions';
 // import { useBestV3TradeExactIn } from '../../../hooks/useBestV3Trade';
-import { useDerivedSwapInfo, useSwapState } from '../../../store/swap/hooks';
+import { useDerivedSwapInfo, useSwapState, useSwapActionHandlers } from '../../../store/swap/hooks';
 import TradePrice from '../components/TradePrice';
 import { Field } from '../../../store/swap/actions';
 import {useUser} from 'hooks/useUser';
 import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal/CloseButton';
+import { SwapCurrencyPanel } from '../components/SwapCurrencyPanel';
 
 export const SwapModal = () => {
   const {sub} = useAppSelector(selectModalType);
@@ -69,7 +70,22 @@ export const SwapModal = () => {
           },
     [independentField, parsedAmount, showWrap, trade]
   )
+
+  const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
   const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
+  
+  const handleTypeInput = useCallback(
+    (value: string) => {
+      onUserInput(Field.INPUT, value)
+    },
+    [onUserInput]
+  )
+  const handleTypeOutput = useCallback(
+    (value: string) => {
+      onUserInput(Field.OUTPUT, value)
+    },
+    [onUserInput]
+  )
 
   const formattedAmounts = {
     [independentField]: typedValue,
@@ -132,20 +148,32 @@ export const SwapModal = () => {
             justifyContent={'center'}
             alignItems={'center'}
             w={'full'}>
-            <Input
+              <SwapCurrencyPanel
+                value={formattedAmounts[Field.INPUT]}
+                onUserInput={(val) => {
+                  handleTypeInput(val)
+                }}
+              />
+              <SwapCurrencyPanel
+                value={formattedAmounts[Field.OUTPUT]}
+                onUserInput={(val) => {
+                  handleTypeInput(val)
+                }}
+              />
+            {/* <Input
               variant={'outline'}
               borderWidth={0}
               textAlign={'center'}
               fontWeight={'bold'}
               fontSize={'4xl'}
-              value={value}
+              value={formattedAmounts[Field.INPUT]}
               width={'xs'}
               mr={6}
               onChange={handleChange}
               _focus={{
                 borderWidth: 0,
               }}
-            />
+            /> */}
             <Box position={'absolute'} right={5}>
               <Button
                 onClick={setMax}
