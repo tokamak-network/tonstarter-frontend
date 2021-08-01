@@ -5,20 +5,20 @@ import {setTxPending} from 'store/tx.reducer';
 import {DEPLOYED} from 'constants/index';
 import {utils} from 'ethers';
 import * as StakeTON from 'services/abis/StakeTON.json';
+import {toastWithReceipt} from 'utils';
+import {openToast} from 'store/app/toast.reducer';
 
 type UnstakeFromLayer2 = {
+  type: boolean;
   userAddress: string | null | undefined;
   amount: string;
   contractAddress: string;
-  status: string;
-  maxBalance: string;
   library: any;
-  handleCloseModal: any;
 };
 const {TokamakLayer2_ADDRESS} = DEPLOYED;
 
 export const unstakeL2 = async (args: UnstakeFromLayer2) => {
-  const {userAddress, amount, contractAddress, maxBalance, library} = args;
+  const {type, userAddress, amount, contractAddress, library} = args;
   if (userAddress === null || userAddress === undefined) {
     return;
   }
@@ -29,17 +29,35 @@ export const unstakeL2 = async (args: UnstakeFromLayer2) => {
   let inputValue = (Number(wtonAmount.toString()) > Number(maxBalance.toString())) ? maxBalance : wtonAmount;
   
   try {
-    const receipt = await StakeTONContract.connect(
-      signer,
-    ).tokamakRequestUnStaking(TokamakLayer2_ADDRESS, inputValue);
+    let receipt = undefined;
+    if (type === false) {
+      receipt = await StakeTONContract.connect(signer).tokamakRequestUnStaking(
+        TokamakLayer2_ADDRESS,
+        wtonAmount,
+      );
+    } else {
+      receipt = await StakeTONContract.connect(
+        signer,
+      ).tokamakRequestUnStakingAll(TokamakLayer2_ADDRESS);
+    }
+
     store.dispatch(setTxPending({tx: true}));
-    alert(`Tx sent successfully! Tx hash is ${receipt.hash}`);
-    await receipt.wait();
     if (receipt) {
-      store.dispatch(setTxPending({tx: false}));
+      toastWithReceipt(receipt, setTxPending, 'Staking');
     }
   } catch (err) {
     store.dispatch(setTxPending({tx: false}));
-    console.log(err);
+    return store.dispatch(
+      //@ts-ignore
+      openToast({
+        payload: {
+          status: 'error',
+          title: 'Tx fail to send',
+          description: `something went wrong`,
+          duration: 5000,
+          isClosable: true,
+        },
+      }),
+    );
   }
 };

@@ -4,9 +4,7 @@ import {formatEther} from '@ethersproject/units';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import {Contract} from '@ethersproject/contracts';
 import {convertNumber} from 'utils/number';
-import {BASE_PROVIDER} from 'constants/index'
-import * as CoinageABI from 'services/abis/AutoRefactorCoinage.json';
-import {BigNumber} from 'ethers';
+import {BASE_PROVIDER} from 'constants/index';
 
 export const fetchManageModalPayload = async (
   library: any,
@@ -23,14 +21,13 @@ export const fetchManageModalPayload = async (
   return res;
 };
 
-const {TokamakLayer2_ADDRESS} = DEPLOYED;
-
 const getUserInfoForManage = async (
   library: any,
   account: string,
   contractAddress: string,
   vaultAddress: string,
 ) => {
+  const {TokamakLayer2_ADDRESS} = DEPLOYED;
   const currentBlock = await BASE_PROVIDER.getBlockNumber();
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, library);
   const L2Contract = getTokamakContract('TokamakLayer2', library);

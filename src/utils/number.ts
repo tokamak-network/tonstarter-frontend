@@ -16,6 +16,20 @@ type ConverNumberFunc = {
   decimalPlaces?: number;
 };
 
+export const convertFromRayToWei = (num: string) => {
+  const numAmount = BigNumber.from(num).div(10 ** 9);
+  return numAmount;
+};
+
+export const convertFromWeiToRay = (num: string) => {
+  const numAmount = BigNumber.from(num).mul(10 ** 9);
+  return numAmount;
+  // .div(BigNumber.from(10 ** 9))
+  // .add(BigNumber.from(1));
+  // .mul
+  // .sub
+};
+
 export const convertToWei = (num: string) => toWei(num, 'ether');
 
 function roundNumber(args: RoundFunc): string {
@@ -38,7 +52,13 @@ export function convertNumber(args: ConverNumberFunc): string | undefined {
       return '0.00';
     }
 
+    //convert to wei
+    //from ray to wei
     const numAmount = BigNumber.from(amount);
+    // .div(BigNumber.from(10 ** 9))
+    // .add(BigNumber.from(1));
+    // .mul
+    // .sub
     const numberType: string = type ? type : 'wei';
     const optRound = round ? round : false;
     const decimalPoint: number = decimalPlaces ? decimalPlaces : 2;

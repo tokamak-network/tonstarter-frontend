@@ -6,11 +6,11 @@ import {userReducer} from './app/user.reducer';
 import {modalReducer} from './modal.reducer';
 import {tableReducer} from './table.reducer';
 import {txReducer} from './tx.reducer';
+import {refetchReducer} from './refetch.reducer';
 import {vaultReducer} from 'pages/Staking/vault.reducer';
 import multicall from './multicall/reducer'
 import swap from './swap/reducer'
 import application from './application/reducer'
-// import lists from './lists/reducer'
 import userSwap from './userSwap/reducer'
 
 const rootReducer = combineReducers({
@@ -25,8 +25,8 @@ const rootReducer = combineReducers({
   multicall,
   swap,
   application,
-  // lists,
   userSwap,
+  refetch: refetchReducer.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

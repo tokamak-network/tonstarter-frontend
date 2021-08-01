@@ -22,7 +22,7 @@ import {useState, useEffect} from 'react';
 import {Scrollbars} from 'react-custom-scrollbars-2';
 import {LoadingComponent} from 'components/Loading';
 import {fetchAirdropPayload} from './utils/fetchAirdropPayload';
-import {selectUser} from 'store/app/user.reducer';
+import {useUser} from 'hooks/useUser';
 
 type Round = {
   allocatedAmount: string;
@@ -69,15 +69,11 @@ export const AirdropModal = () => {
   const [airdropData, setAirdropData] = useState<AirDropList>(undefined);
   const [balance, setBalance] = useState<string | undefined>(undefined);
   const {data} = useAppSelector(selectModalType);
-  const {
-    data: {address, library},
-  } = useAppSelector(selectUser);
-  // const {poolInfo} = useGraphQueries('rinkeby')
+  const {account, library} = useUser();
   const dispatch = useAppDispatch();
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {modalStyle} = theme;
-  const account = address;
 
   const availableAmount = (
     roundInfo: AirDropList,
@@ -85,13 +81,6 @@ export const AirdropModal = () => {
     unclaimedAmount: string | undefined,
   ) => {
     if (roundInfo !== undefined && claimedAmount !== undefined) {
-      // let myBalance = 0;
-      // for (let i = 0; i < roundInfo.length; i++) {
-      //   myBalance += Number(roundInfo[i].myAmount);
-      // }
-      // const convertedNumber = convertNumber({
-      //   amount: String(myBalance - Number(claimedAmount)),
-      // });
       return setBalance(unclaimedAmount);
     }
   };
@@ -138,7 +127,7 @@ export const AirdropModal = () => {
             justifyContent="center"
             pb={25}
             zIndex={100}>
-            <Center w="100%" h="100%" bg="rgba( 255, 255, 255, 0.5 )">
+            <Center w="100%" h="100%" bg="rgba(255, 255, 255, 0.5)">
               <LoadingComponent></LoadingComponent>
             </Center>
           </Flex>
@@ -211,10 +200,11 @@ export const AirdropModal = () => {
                 <Wrap
                   display="flex"
                   style={{marginTop: '0', marginBottom: '20px'}}>
-                  {airdropData.slice(1).map((data: any) => (
+                  {airdropData.slice(1).map((data: any, index: number) => (
                     <AirdropRecord
                       roundNumber={data.roundNumber}
                       amount={data.amount}
+                      key={index}
                     />
                   ))}
                 </Wrap>
