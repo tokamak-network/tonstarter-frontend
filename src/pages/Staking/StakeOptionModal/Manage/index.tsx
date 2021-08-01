@@ -138,7 +138,8 @@ export const ManageModal = () => {
     };
 
     const btnDisableSwap = () => {
-      return Number(swapBalance) <= 0 || saleClosed
+      console.log(swapBalance);
+      return Number(swapBalance) <= 0
         ? setSwapDisabled(true)
         : setSwapDisabled(false);
     };
