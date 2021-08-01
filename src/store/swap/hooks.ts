@@ -128,9 +128,7 @@ export function useDerivedSwapInfo(): {
     [Field.INPUT]: { currencyId: inputCurrencyId },
     [Field.OUTPUT]: { currencyId: outputCurrencyId },
   } = useSwapState()
-  console.log([Field.INPUT])
 
-  console.log(typedValue)
   // const WTON = new Token(4, "0x709bef48982Bbfd6F2D4Be24660832665F53406C", 27, 'WTON', 'Wrapped TON')
   // const TOS = new Token(4, "0x73a54e5C054aA64C1AE7373C2B5474d8AFEa08bd", 18, 'TOS', 'TON Starter')
   const inputCurrency = new Token(4, "0x709bef48982Bbfd6F2D4Be24660832665F53406C", 27, 'WTON', 'Wrapped TON')
@@ -141,6 +139,7 @@ export function useDerivedSwapInfo(): {
     inputCurrency ?? undefined,
     outputCurrency ?? undefined,
   ])
+  console.log(relevantTokenBalances);
   const tempValue = '11'
   const isExactIn: boolean = independentField === Field.INPUT
   const parsedAmount = tryParseAmount(tempValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined)
@@ -152,7 +151,7 @@ export function useDerivedSwapInfo(): {
   console.log(bestV3TradeExactIn)
   
   const v3Trade = (isExactIn ? bestV3TradeExactIn : bestV3TradeExactOut) ?? undefined
-
+  console.log(v3Trade)
   const currencyBalances = {
     [Field.INPUT]: relevantTokenBalances[0],
     [Field.OUTPUT]: relevantTokenBalances[1],
@@ -189,7 +188,7 @@ export function useDerivedSwapInfo(): {
   console.log(v3Trade.trade)
   const toggledTrade =  v3Trade.trade ?? undefined
   const allowedSlippage = useSwapSlippageTolerance(toggledTrade)
-
+  console.log(allowedSlippage)
   // compare input balance to max input based on version
   // const [balanceIn, amountIn] = [currencyBalances[Field.INPUT], ]
 

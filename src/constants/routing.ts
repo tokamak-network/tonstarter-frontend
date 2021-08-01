@@ -4,7 +4,6 @@ import { SupportedChainId } from './chains'
 import {
   AMPL,
   DAI,
-  ExtendedEther,
   FEI,
   FRAX,
   FXS,
@@ -25,9 +24,9 @@ type ChainTokenList = {
   readonly [chainId: number]: Token[]
 }
 
-type ChainCurrencyList = {
-  readonly [chainId: number]: Currency[]
-}
+// type ChainCurrencyList = {
+//   readonly [chainId: number]: Currency[]
+// }
 
 // List of all mirror's assets addresses.
 // Last pulled from : https://whitelist.mirror.finance/eth/tokenlists.json
@@ -56,7 +55,7 @@ const WETH_ONLY: ChainTokenList = {
 // used to construct intermediary pairs for trading
 export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   ...WETH_ONLY,
-  [1]: [...WETH_ONLY[1], DAI, USDC, USDT, WBTC],
+  // [1]: [...WETH_ONLY[1], DAI, USDC, USDT, WBTC],
 }
 export const ADDITIONAL_BASES: { [chainId: number]: { [tokenAddress: string]: Token[] } } = {
   [1]: {
@@ -85,22 +84,6 @@ export const CUSTOM_BASES: { [chainId: number]: { [tokenAddress: string]: Token[
   },
 }
 
-/**
- * Shows up in the currency select for swap and add liquidity
- */
-export const COMMON_BASES: ChainCurrencyList = {
-  [1]: [ExtendedEther.onChain(1), DAI, USDC, USDT, WBTC, WETH9_EXTENDED[1]],
-  [3]: [ExtendedEther.onChain(3), WETH9_EXTENDED[3]],
-  [4]: [ExtendedEther.onChain(4), WETH9_EXTENDED[4]],
-  [5]: [ExtendedEther.onChain(5), WETH9_EXTENDED[5]],
-  [42]: [ExtendedEther.onChain(42), WETH9_EXTENDED[42]],
-}
-
-// used to construct the list of all pairs we consider by default in the frontend
-export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
-  ...WETH_ONLY,
-  [1]: [...WETH_ONLY[1], DAI, USDC, USDT, WBTC],
-}
 export const PINNED_PAIRS: { readonly [chainId: number]: [Token, Token][] } = {
   [1]: [
     [
