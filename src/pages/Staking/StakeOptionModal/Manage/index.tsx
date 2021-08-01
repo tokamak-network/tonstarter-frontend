@@ -15,7 +15,7 @@ import {
   Tooltip,
 } from '@chakra-ui/react';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {closeModal, openModal, selectModalType} from 'store/modal.reducer';
+import {selectModalType} from 'store/modal.reducer';
 import {useState, useEffect} from 'react';
 import {fetchStakedBalancePayload} from '../utils/fetchStakedBalancePayload';
 import {useUser} from 'hooks/useUser';
@@ -24,6 +24,7 @@ import {checkSaleClosed} from 'pages/Staking/utils';
 import {BASE_PROVIDER} from 'constants/index';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import {useModal} from 'hooks/useModal';
+import {CloseButton} from 'components/Modal/CloseButton';
 
 const tooltipMsg = () => {
   return (
@@ -40,13 +41,12 @@ const tooltipMsg = () => {
 export const ManageModal = () => {
   const {data} = useAppSelector(selectModalType);
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
-  const dispatch = useAppDispatch();
   const theme = useTheme();
   const {btnStyle} = theme;
   const {colorMode} = useColorMode();
 
   const {account, library} = useUser();
-  const {handleOpenConfirmModal} = useModal();
+  const {handleOpenConfirmModal, handleCloseModal} = useModal();
 
   const {
     data: {contractAddress, vault, globalWithdrawalDelay, miningEndTime},
@@ -163,17 +163,11 @@ export const ManageModal = () => {
     blockNumber,
   ]);
 
-  console.log(stakeL2Disabled);
-
-  const closeManageModal = () => {
-    dispatch(closeModal());
-  };
-
   return (
     <Modal
       isOpen={data.modal === 'manage' ? true : false}
       isCentered
-      onClose={() => closeManageModal()}>
+      onClose={handleCloseModal}>
       <ModalOverlay />
       <ModalContent
         w={'21.875em'}
@@ -181,6 +175,7 @@ export const ManageModal = () => {
         bg={colorMode === 'light' ? 'white.100' : 'black.200'}
         pt={'1.250em'}
         pb={'1.563em'}>
+        <CloseButton closeFunc={handleCloseModal}></CloseButton>
         <ModalBody p={0}>
           <Box
             textAlign="center"

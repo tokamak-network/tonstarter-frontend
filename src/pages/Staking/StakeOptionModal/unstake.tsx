@@ -16,6 +16,8 @@ import {unstake} from '../actions/';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
 import {useUser} from 'hooks/useUser';
+import {useModal} from 'hooks/useModal';
+import {CloseButton} from 'components/Modal/CloseButton';
 
 export const UnstakeOptionModal = () => {
   const {account, library} = useUser();
@@ -23,16 +25,14 @@ export const UnstakeOptionModal = () => {
   const dispatch = useAppDispatch();
   const theme = useTheme();
   const {colorMode} = useColorMode();
-  // const {
-  //   data: {totalStakedBalance},
-  // } = data;
   const totalStakedBalance = data?.data?.totalStakedBalance;
+  const {handleCloseModal} = useModal();
 
   return (
     <Modal
       isOpen={data.modal === 'unstake' ? true : false}
       isCentered
-      onClose={() => dispatch(closeModal())}>
+      onClose={handleCloseModal}>
       <ModalOverlay />
       <ModalContent
         fontFamily={theme.fonts.roboto}
@@ -40,6 +40,7 @@ export const UnstakeOptionModal = () => {
         w="350px"
         pt="25px"
         pb="25px">
+        <CloseButton closeFunc={handleCloseModal}></CloseButton>
         <ModalBody p={0}>
           <Box
             my={3}

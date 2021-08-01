@@ -13,11 +13,13 @@ import {
   useColorMode,
 } from '@chakra-ui/react';
 import {claimReward} from '../actions';
-import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {closeModal, selectModalType} from 'store/modal.reducer';
-import {useEffect, useState, useCallback} from 'react';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectModalType} from 'store/modal.reducer';
+import {useEffect, useState} from 'react';
 import {getUserBalance} from 'client/getUserBalance';
 import {useUser} from 'hooks/useUser';
+import {useModal} from 'hooks/useModal';
+import {CloseButton} from 'components/Modal/CloseButton';
 
 export const ClaimOptionModal = () => {
   const {account, library} = useUser();
@@ -26,7 +28,7 @@ export const ClaimOptionModal = () => {
   const [claimAmount, setClaimAmount] = useState('0');
 
   const {data} = useAppSelector(selectModalType);
-  const dispatch = useAppDispatch();
+  const {handleCloseModal} = useModal();
   const claimed = data?.data?.canRewardAmount;
 
   useEffect(() => {
@@ -46,15 +48,11 @@ export const ClaimOptionModal = () => {
     /*eslint-disable*/
   }, []);
 
-  const handleCloseModal = useCallback(() => {
-    dispatch(closeModal());
-  }, [dispatch]);
-
   return (
     <Modal
       isOpen={data.modal === 'claim' ? true : false}
       isCentered
-      onClose={() => dispatch(closeModal())}>
+      onClose={handleCloseModal}>
       <ModalOverlay />
       <ModalContent
         fontFamily={theme.fonts.roboto}
@@ -62,6 +60,7 @@ export const ClaimOptionModal = () => {
         w="350px"
         pt="25px"
         pb="25px">
+        <CloseButton closeFunc={handleCloseModal}></CloseButton>
         <ModalBody p={0}>
           <Box
             pb={'1.250em'}

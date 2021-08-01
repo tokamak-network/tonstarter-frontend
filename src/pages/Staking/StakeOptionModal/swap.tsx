@@ -19,6 +19,7 @@ import {selectModalType} from 'store/modal.reducer';
 import {swapWTONtoTOS} from '../actions';
 import {useUser} from 'hooks/useUser';
 import {useModal} from 'hooks/useModal';
+import {CloseButton} from 'components/Modal/CloseButton';
 
 export const SwapModal = () => {
   const {sub} = useAppSelector(selectModalType);
@@ -51,6 +52,7 @@ export const SwapModal = () => {
         w="350px"
         pt="25px"
         pb="25px">
+        <CloseButton closeFunc={handleCloseModal}></CloseButton>
         <ModalBody p={0}>
           <Box
             pb={'1.250em'}

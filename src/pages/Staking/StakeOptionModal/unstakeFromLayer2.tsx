@@ -19,6 +19,7 @@ import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {useUser} from 'hooks/useUser';
 import {useModal} from 'hooks/useModal';
+import {CloseButton} from 'components/Modal/CloseButton';
 
 export const UnStakeFromLayer2Modal = () => {
   const {account, library} = useUser();
@@ -55,6 +56,7 @@ export const UnStakeFromLayer2Modal = () => {
         w="350px"
         pt="25px"
         pb="25px">
+        <CloseButton closeFunc={handleCloseModal}></CloseButton>
         <ModalBody p={0}>
           <Box
             pb={'1.250em'}
