@@ -141,9 +141,9 @@ export function useDerivedSwapInfo(): {
     inputCurrency ?? undefined,
     outputCurrency ?? undefined,
   ])
-
+  const tempValue = '11'
   const isExactIn: boolean = independentField === Field.INPUT
-  const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined)
+  const parsedAmount = tryParseAmount(tempValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined)
 
   console.log(isExactIn)
   console.log(parsedAmount)

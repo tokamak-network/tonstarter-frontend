@@ -150,9 +150,7 @@ export const SwapModal = () => {
             w={'full'}>
               <SwapCurrencyPanel
                 value={formattedAmounts[Field.INPUT]}
-                onUserInput={(val) => {
-                  handleTypeInput(val)
-                }}
+                onUserInput={handleTypeInput}
               />
               
             {/* <Input
@@ -182,7 +180,7 @@ export const SwapModal = () => {
             </Box>
           </Stack>
           <Stack>
-            
+
           </Stack>
           <Stack
             pt="27px"
@@ -194,9 +192,7 @@ export const SwapModal = () => {
           >
             <SwapCurrencyPanel
               value={formattedAmounts[Field.OUTPUT]}
-              onUserInput={(val) => {
-                handleTypeInput(val)
-              }}
+              onUserInput={handleTypeOutput}
             />
           </Stack>
           <Stack

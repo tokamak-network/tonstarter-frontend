@@ -17,6 +17,7 @@ export const SwapCurrencyPanel = React.memo(function InnerInput({
       onUserInput(nextUserInput)
     }
   }
+  console.log(value)
 
   return (
     <Input 
