@@ -121,7 +121,7 @@ const stakeTon = async (args: StakeTon) => {
         payload: {
           status: 'error',
           title: 'Tx fail to send',
-          description: `staking period has ended`,
+          description: `something went wrong`,
           duration: 5000,
           isClosable: true,
         },

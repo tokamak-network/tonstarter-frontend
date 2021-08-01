@@ -20,12 +20,14 @@ import {selectModalType} from 'store/modal.reducer';
 import {stakePayToken} from '../actions';
 import {onKeyDown, useInput} from 'hooks/useInput';
 import {useModal} from 'hooks/useModal';
+import {useToast} from 'hooks/useToast';
 
 export const StakeOptionModal = () => {
   const {data} = useAppSelector(selectModalType);
   const {account, library} = useWeb3React();
   const {colorMode} = useColorMode();
   const theme = useTheme();
+  const {toastMsg} = useToast();
 
   let balance = data?.data?.user?.balance;
   const {btnStyle} = theme;
@@ -132,6 +134,15 @@ export const StakeOptionModal = () => {
               _hover={{...theme.btnHover}}
               disabled={btnDisabled}
               onClick={() => {
+                if (Number(value.replaceAll(',', '')) > Number(balance)) {
+                  return toastMsg({
+                    status: 'error',
+                    title: 'Error',
+                    description: 'Balance is not enough',
+                    duration: 5000,
+                    isClosable: true,
+                  });
+                }
                 handleOpenConfirmModal({
                   type: 'confirm',
                   data: {

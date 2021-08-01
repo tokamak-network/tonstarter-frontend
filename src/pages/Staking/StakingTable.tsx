@@ -10,7 +10,7 @@ import {
   chakra,
   Text,
   Flex,
-  IconButton,
+  // IconButton,
   Tooltip,
   Select,
   Box,
@@ -21,7 +21,7 @@ import {
   Image,
 } from '@chakra-ui/react';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
-import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
+// import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import './staking.css';
 import {checkTokenType} from 'utils/token';
 import {TriangleUpIcon, TriangleDownIcon} from '@chakra-ui/icons';
@@ -108,14 +108,14 @@ export const StakingTable: FC<StakingTableProps> = ({
     headerGroups,
     prepareRow,
     visibleColumns,
-    canPreviousPage,
-    canNextPage,
-    pageOptions,
+    // canPreviousPage,
+    // canNextPage,
+    // pageOptions,
     page,
     nextPage,
-    previousPage,
-    setPageSize,
-    state: {pageIndex, pageSize},
+    // previousPage,
+    // setPageSize,
+    // state: {pageIndex, pageSize},
   } = useTable(
     {columns, data, initialState: {pageIndex: 0}},
     useSortBy,
@@ -154,15 +154,15 @@ export const StakingTable: FC<StakingTableProps> = ({
     contractAddress === undefined ? '' : contractAddress,
   );
 
-  const goPrevPage = () => {
-    setIsOpen('');
-    previousPage();
-  };
+  // const goPrevPage = () => {
+  //   setIsOpen('');
+  //   previousPage();
+  // };
 
-  const goNextPage = () => {
-    setIsOpen('');
-    nextPage();
-  };
+  // const goNextPage = () => {
+  //   setIsOpen('');
+  //   nextPage();
+  // };
 
   const onChangeSelectBox = (e: any) => {
     const filterValue = e.target.value;
@@ -433,7 +433,9 @@ export const StakingTable: FC<StakingTableProps> = ({
         Pagination can be built however you'd like. 
         This is just a very basic UI implementation:
       */}
-        {/* PAGENATION FOR LATER */}
+
+        {/* 
+        PAGENATION FOR LATER
         <Flex justifyContent="flex-end" my={4} alignItems="center">
           <Flex>
             <Tooltip label="Previous Page">
@@ -527,7 +529,7 @@ export const StakingTable: FC<StakingTableProps> = ({
               ))}
             </Select>
           </Flex>
-        </Flex>
+        </Flex> */}
       </Box>
     </Flex>
   );
