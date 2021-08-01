@@ -19,6 +19,7 @@ import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {useUser} from 'hooks/useUser';
 import {useModal} from 'hooks/useModal';
+import {useCheckBalance} from 'hooks/useCheckBalance';
 import {CloseButton} from 'components/Modal/CloseButton';
 
 export const UnStakeFromLayer2Modal = () => {
@@ -27,6 +28,7 @@ export const UnStakeFromLayer2Modal = () => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
   const {handleCloseConfirmModal} = useModal();
+  const {checkBalance} = useCheckBalance();
 
   const {
     data: {contractAddress, totalStakedAmountL2},
@@ -138,14 +140,20 @@ export const UnStakeFromLayer2Modal = () => {
               fontSize="14px"
               _hover={{...theme.btnHover}}
               onClick={() => {
-                unstakeL2({
-                  type: value === totalStakedAmountL2 ? true : false,
-                  userAddress: account,
-                  amount: value.toString(),
-                  contractAddress,
-                  library: library,
-                });
-                handleCloseModal();
+                const isBalance = checkBalance(
+                  Number(value),
+                  Number(totalStakedAmountL2),
+                );
+                if (isBalance) {
+                  unstakeL2({
+                    type: value === totalStakedAmountL2 ? true : false,
+                    userAddress: account,
+                    amount: value.toString(),
+                    contractAddress,
+                    library: library,
+                  });
+                  handleCloseModal();
+                }
               }}
               colorScheme={'blue'}>
               Unstake

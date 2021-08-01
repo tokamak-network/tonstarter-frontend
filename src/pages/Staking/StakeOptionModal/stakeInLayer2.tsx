@@ -19,7 +19,8 @@ import {selectModalType} from 'store/modal.reducer';
 import {stakeL2} from '../actions';
 import {useUser} from 'hooks/useUser';
 import {useModal} from 'hooks/useModal';
-import {CloseButton} from 'components/Modal/CloseButton';
+import {useCheckBalance} from 'hooks/useCheckBalance';
+import {CloseButton} from 'components/Modal';
 
 export const StakeInLayer2Modal = () => {
   const {sub} = useAppSelector(selectModalType);
@@ -30,6 +31,7 @@ export const StakeInLayer2Modal = () => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
   const {handleCloseConfirmModal} = useModal();
+  const {checkBalance} = useCheckBalance();
 
   const handleChange = useCallback((e) => setValue(e.target.value), []);
   const setMax = useCallback((_e) => setValue(balance), [balance]);
@@ -134,13 +136,19 @@ export const StakeInLayer2Modal = () => {
               _hover={{...theme.btnHover}}
               onClick={() => {
                 if (account) {
-                  stakeL2({
-                    account,
-                    library,
-                    amount: value.toString(),
-                    contractAddress,
-                  });
-                  handleCloseModal();
+                  const isBalance = checkBalance(
+                    Number(value),
+                    Number(balance),
+                  );
+                  if (isBalance) {
+                    stakeL2({
+                      account,
+                      library,
+                      amount: value.toString(),
+                      contractAddress,
+                    });
+                    handleCloseModal();
+                  }
                 }
               }}>
               Stake
