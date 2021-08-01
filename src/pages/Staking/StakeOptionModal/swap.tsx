@@ -29,6 +29,19 @@ export const SwapModal = () => {
   const {colorMode} = useColorMode();
   const dispatch = useAppDispatch();
 
+  const {
+    v2Trade,
+    v3TradeState: { trade: v3Trade, state: v3TradeState },
+    toggledTrade: trade,
+    allowedSlippage,
+    currencyBalances,
+    parsedAmount,
+    currencies,
+    inputError: swapInputError,
+  } = useDerivedSwapInfo()
+  console.log(allowedSlippage)
+  console.log(trade)
+
   const stakeBalanceTON = data?.data?.stakeContractBalanceTon;
   const totalStakedAmountL2 = data?.data?.totalStakedAmountL2;
   const totalStakedAmount = data?.data?.totalStakedAmount;

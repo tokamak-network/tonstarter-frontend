@@ -10,7 +10,7 @@ import {vaultReducer} from 'pages/Staking/vault.reducer';
 import multicall from './multicall/reducer'
 import swap from './swap/reducer'
 import application from './application/reducer'
-import lists from './lists/reducer'
+// import lists from './lists/reducer'
 import userSwap from './userSwap/reducer'
 
 const rootReducer = combineReducers({
@@ -25,7 +25,7 @@ const rootReducer = combineReducers({
   multicall,
   swap,
   application,
-  lists,
+  // lists,
   userSwap,
 });
 

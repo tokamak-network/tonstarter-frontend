@@ -4,51 +4,56 @@ import { arrayify } from 'ethers/lib/utils'
 import { useMemo } from 'react'
 // import { createTokenFilterFunction } from '../components/SearchModal/filtering'
 import { ExtendedEther, WETH9_EXTENDED } from '../constants/tokens'
-import { useCombinedActiveList, TokenAddressMap } from '../store/lists/hooks'
+// import { useCombinedActiveList, TokenAddressMap } from '../store/lists/hooks'
 // import { WrappedTokenInfo } from '../state/lists/wrappedTokenInfo'
 import { NEVER_RELOAD, useSingleCallResult } from '../store/multicall/hooks'
-import { useUserAddedTokens } from '../store/userSwap/hooks'
+// import { useUserAddedTokens } from '../store/userSwap/hooks';
 import { isAddress } from '../utils'
 
 import { useActiveWeb3React } from './useWeb3'
 import { useBytes32TokenContract, useTokenContract } from './useUniswapContract'
 
 // reduce token map into standard address <-> Token mapping, optionally include user added tokens
-function useTokensFromMap(tokenMap: TokenAddressMap, includeUserAdded: boolean): { [address: string]: Token } {
-  const { chainId } = useActiveWeb3React()
-  const userAddedTokens = useUserAddedTokens()
+// function useTokensFromMap(tokenMap: TokenAddressMap, includeUserAdded: boolean): { [address: string]: Token } {
+//   const { chainId } = useActiveWeb3React()
+//   // const userAddedTokens = useUserAddedTokens()
+//   const WTON = new Token(4, "0x709bef48982Bbfd6F2D4Be24660832665F53406C", 27, 'WTON', 'Wrapped TON')
+//   const TOS = new Token(4, "0x73a54e5C054aA64C1AE7373C2B5474d8AFEa08bd", 18, 'TOS', 'TON Starter')
+//   const userAddedTokens: any[] = [];
+//   userAddedTokens.push(WTON);
+//   userAddedTokens.push(TOS);
 
-  return useMemo(() => {
-    if (!chainId) return {}
+//   return useMemo(() => {
+//     if (!chainId) return {}
 
-    // reduce to just tokens
-    const mapWithoutUrls = Object.keys(tokenMap[chainId] ?? {}).reduce<{ [address: string]: Token }>(
-      (newMap, address) => {
-        newMap[address] = tokenMap[chainId][address].token
-        return newMap
-      },
-      {}
-    )
+//     // reduce to just tokens
+//     const mapWithoutUrls = Object.keys(tokenMap[chainId] ?? {}).reduce<{ [address: string]: Token }>(
+//       (newMap, address) => {
+//         newMap[address] = tokenMap[chainId][address].token
+//         return newMap
+//       },
+//       {}
+//     )
 
-    if (includeUserAdded) {
-      return (
-        userAddedTokens
-          // reduce into all ALL_TOKENS filtered by the current chain
-          .reduce<{ [address: string]: Token }>(
-            (tokenMap, token) => {
-              tokenMap[token.address] = token
-              return tokenMap
-            },
-            // must make a copy because reduce modifies the map, and we do not
-            // want to make a copy in every iteration
-            { ...mapWithoutUrls }
-          )
-      )
-    }
+//     if (includeUserAdded) {
+//       return (
+//         userAddedTokens
+//           // reduce into all ALL_TOKENS filtered by the current chain
+//           .reduce<{ [address: string]: Token }>(
+//             (tokenMap, token) => {
+//               tokenMap[token.address] = token
+//               return tokenMap
+//             },
+//             // must make a copy because reduce modifies the map, and we do not
+//             // want to make a copy in every iteration
+//             { ...mapWithoutUrls }
+//           )
+//       )
+//     }
 
-    return mapWithoutUrls
-  }, [chainId, userAddedTokens, tokenMap, includeUserAdded])
-}
+//     return mapWithoutUrls
+//   }, [chainId, userAddedTokens, tokenMap, includeUserAdded])
+// }
 
 // parse a name or symbol from a token response
 const BYTES32_REGEX = /^0x[a-fA-F0-9]{64}$/
@@ -62,69 +67,69 @@ function parseStringOrBytes32(str: string | undefined, bytes32: string | undefin
     : defaultValue
 }
 
-export function useAllTokens(): { [address: string]: Token } {
-  const allTokens = useCombinedActiveList()
-  return useTokensFromMap(allTokens, true)
-}
+// export function useAllTokens(): { [address: string]: Token } {
+//   // const allTokens = useCombinedActiveList()
+//   return useTokensFromMap(allTokens, true)
+// }
 
 // undefined if invalid or does not exist
 // null if loading
 // otherwise returns the token
-export function useToken(tokenAddress?: string): Token | undefined | null {
-  const { chainId } = useActiveWeb3React()
-  const tokens = useAllTokens()
+// export function useToken(tokenAddress?: string): Token | undefined | null {
+//   const { chainId } = useActiveWeb3React()
+//   // const tokens = useAllTokens()
 
-  const address = isAddress(tokenAddress)
+//   const address = isAddress(tokenAddress)
 
-  const tokenContract = useTokenContract(address ? address : undefined, false)
-  const tokenContractBytes32 = useBytes32TokenContract(address ? address : undefined, false)
-  const token: Token | undefined = address ? tokens[address] : undefined
+//   const tokenContract = useTokenContract(address ? address : undefined, false)
+//   const tokenContractBytes32 = useBytes32TokenContract(address ? address : undefined, false)
+//   const token: Token | undefined = address ? tokens[address] : undefined
 
-  const tokenName = useSingleCallResult(token ? undefined : tokenContract, 'name', undefined, NEVER_RELOAD)
-  const tokenNameBytes32 = useSingleCallResult(
-    token ? undefined : tokenContractBytes32,
-    'name',
-    undefined,
-    NEVER_RELOAD
-  )
-  const symbol = useSingleCallResult(token ? undefined : tokenContract, 'symbol', undefined, NEVER_RELOAD)
-  const symbolBytes32 = useSingleCallResult(token ? undefined : tokenContractBytes32, 'symbol', undefined, NEVER_RELOAD)
-  const decimals = useSingleCallResult(token ? undefined : tokenContract, 'decimals', undefined, NEVER_RELOAD)
+//   const tokenName = useSingleCallResult(token ? undefined : tokenContract, 'name', undefined, NEVER_RELOAD)
+//   const tokenNameBytes32 = useSingleCallResult(
+//     token ? undefined : tokenContractBytes32,
+//     'name',
+//     undefined,
+//     NEVER_RELOAD
+//   )
+//   const symbol = useSingleCallResult(token ? undefined : tokenContract, 'symbol', undefined, NEVER_RELOAD)
+//   const symbolBytes32 = useSingleCallResult(token ? undefined : tokenContractBytes32, 'symbol', undefined, NEVER_RELOAD)
+//   const decimals = useSingleCallResult(token ? undefined : tokenContract, 'decimals', undefined, NEVER_RELOAD)
 
-  return useMemo(() => {
-    if (token) return token
-    if (!chainId || !address) return undefined
-    if (decimals.loading || symbol.loading || tokenName.loading) return null
-    if (decimals.result) {
-      return new Token(
-        chainId,
-        address,
-        decimals.result[0],
-        parseStringOrBytes32(symbol.result?.[0], symbolBytes32.result?.[0], 'UNKNOWN'),
-        parseStringOrBytes32(tokenName.result?.[0], tokenNameBytes32.result?.[0], 'Unknown Token')
-      )
-    }
-    return undefined
-  }, [
-    address,
-    chainId,
-    decimals.loading,
-    decimals.result,
-    symbol.loading,
-    symbol.result,
-    symbolBytes32.result,
-    token,
-    tokenName.loading,
-    tokenName.result,
-    tokenNameBytes32.result,
-  ])
-}
+//   return useMemo(() => {
+//     if (token) return token
+//     if (!chainId || !address) return undefined
+//     if (decimals.loading || symbol.loading || tokenName.loading) return null
+//     if (decimals.result) {
+//       return new Token(
+//         chainId,
+//         address,
+//         decimals.result[0],
+//         parseStringOrBytes32(symbol.result?.[0], symbolBytes32.result?.[0], 'UNKNOWN'),
+//         parseStringOrBytes32(tokenName.result?.[0], tokenNameBytes32.result?.[0], 'Unknown Token')
+//       )
+//     }
+//     return undefined
+//   }, [
+//     address,
+//     chainId,
+//     decimals.loading,
+//     decimals.result,
+//     symbol.loading,
+//     symbol.result,
+//     symbolBytes32.result,
+//     token,
+//     tokenName.loading,
+//     tokenName.result,
+//     tokenNameBytes32.result,
+//   ])
+// }
 
-export function useCurrency(currencyId: string | undefined): Currency | null | undefined {
-  const { chainId } = useActiveWeb3React()
-  const isETH = currencyId?.toUpperCase() === 'ETH'
-  const token = useToken(isETH ? undefined : currencyId)
-  const weth = chainId ? WETH9_EXTENDED[chainId] : undefined
-  if (weth?.address?.toLowerCase() === currencyId?.toLowerCase()) return weth
-  return isETH ? (chainId ? ExtendedEther.onChain(chainId) : undefined) : token
-}
+// export function useCurrency(currencyId: string | undefined): Currency | null | undefined {
+//   const { chainId } = useActiveWeb3React()
+//   const isETH = currencyId?.toUpperCase() === 'ETH'
+//   const token = useToken(isETH ? undefined : currencyId)
+//   const weth = chainId ? WETH9_EXTENDED[chainId] : undefined
+//   if (weth?.address?.toLowerCase() === currencyId?.toLowerCase()) return weth
+//   return isETH ? (chainId ? ExtendedEther.onChain(chainId) : undefined) : token
+// }

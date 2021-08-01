@@ -95,12 +95,12 @@ export function useUserSlippageToleranceWithDefault(defaultSlippageTolerance: Pe
   )
 }
 
-export function useUserAddedTokens(): Token[] {
-  const { chainId } = useActiveWeb3React()
-  const serializedTokensMap = useAppSelector(({ user: { tokens } }) => tokens)
+// export function useUserAddedTokens(): Token[] {
+//   const { chainId } = useActiveWeb3React()
+//   const serializedTokensMap = useAppSelector(({ user: { tokens } }) => tokens)
 
-  return useMemo(() => {
-    if (!chainId) return []
-    return Object.values(serializedTokensMap?.[chainId] ?? {}).map(deserializeToken)
-  }, [serializedTokensMap, chainId])
-}
+//   return useMemo(() => {
+//     if (!chainId) return []
+//     return Object.values(serializedTokensMap?.[chainId] ?? {}).map(deserializeToken)
+//   }, [serializedTokensMap, chainId])
+// }

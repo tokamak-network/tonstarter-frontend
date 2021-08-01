@@ -1,14 +1,14 @@
-import { t } from '@lingui/macro'
+// import { t } from '@lingui/macro'
 import JSBI from 'jsbi'
 import { Trade as V3Trade } from '@uniswap/v3-sdk'
 import { useBestV3TradeExactIn, useBestV3TradeExactOut, V3TradeState } from '../../hooks/useBestV3Trade'
 import { parseUnits } from '@ethersproject/units'
-import { Currency, CurrencyAmount, Percent, TradeType } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Percent, TradeType, Token } from '@uniswap/sdk-core';
 import { Trade as V2Trade } from '@uniswap/v2-sdk'
 
 import { useCallback } from 'react'
 import { useActiveWeb3React } from '../../hooks/useWeb3'
-import { useCurrency } from '../../hooks/Tokens'
+// import { useCurrency } from '../../hooks/Tokens'
 import useSwapSlippageTolerance from '../../hooks/useSwapSlippageTolerance'
 
 import { isAddress } from '../../utils/address'
@@ -131,9 +131,10 @@ export function useDerivedSwapInfo(): {
   console.log([Field.INPUT])
 
   console.log(typedValue)
-
-  const inputCurrency = useCurrency(inputCurrencyId)
-  const outputCurrency = useCurrency(outputCurrencyId)
+  // const WTON = new Token(4, "0x709bef48982Bbfd6F2D4Be24660832665F53406C", 27, 'WTON', 'Wrapped TON')
+  // const TOS = new Token(4, "0x73a54e5C054aA64C1AE7373C2B5474d8AFEa08bd", 18, 'TOS', 'TON Starter')
+  const inputCurrency = new Token(4, "0x709bef48982Bbfd6F2D4Be24660832665F53406C", 27, 'WTON', 'Wrapped TON')
+  const outputCurrency = new Token(4, "0x73a54e5C054aA64C1AE7373C2B5474d8AFEa08bd", 18, 'TOS', 'TON Starter')
   const to: string | null | undefined = account
 
   const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
@@ -164,25 +165,25 @@ export function useDerivedSwapInfo(): {
 
   let inputError: string | undefined
   if (!account) {
-    inputError = t`Connect Wallet`
+    inputError = `Connect Wallet`
   }
 
   if (!parsedAmount) {
-    inputError = inputError ?? t`Enter an amount`
+    inputError = inputError ?? `Enter an amount`
   }
 
   if (!currencies[Field.INPUT] || !currencies[Field.OUTPUT]) {
-    inputError = inputError ?? t`Select a token`
+    inputError = inputError ?? `Select a token`
   }
 
   const formattedTo = isAddress(to)
   if (!to || !formattedTo) {
-    inputError = inputError ?? t`Enter a recipient`
+    inputError = inputError ?? `Enter a recipient`
   } else {
     if (
       BAD_RECIPIENT_ADDRESSES[formattedTo]
     ) {
-      inputError = inputError ?? t`Invalid recipient`
+      inputError = inputError ?? `Invalid recipient`
     }
   }
 
