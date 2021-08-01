@@ -21,7 +21,7 @@ import {fetchSwapPayload} from './utils/fetchSwapPayload';
 import {swapWTONtoTOS} from '../actions';
 // import { useBestV3TradeExactIn } from '../../../hooks/useBestV3Trade';
 import { useDerivedSwapInfo, useSwapState } from '../../../store/swap/hooks';
-// import TradePrice from '../components/TradePrice';
+import TradePrice from '../components/TradePrice';
 import { Field } from '../../../store/swap/actions';
 
 export const SwapModal = () => {
@@ -133,11 +133,11 @@ export const SwapModal = () => {
               textAlign={'center'}>
               Swap
             </Heading>
-            {/* <TradePrice
+            <TradePrice
               price={trade?.executionPrice}
               showInverted={showInverted}
               setShowInverted={setShowInverted}
-            /> */}
+            />
             {/* <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
               
             </Text> */}

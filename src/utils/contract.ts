@@ -1,7 +1,7 @@
 import {getAddress} from '@ethersproject/address';
 import {Contract} from '@ethersproject/contracts';
 import {AddressZero} from '@ethersproject/constants';
-import {JsonRpcSigner, Web3Provider, Provider} from '@ethersproject/providers';
+import {JsonRpcSigner, Web3Provider} from '@ethersproject/providers';
 
 import * as TonABI from 'services/abis/TON.json';
 import * as WtonABI from 'services/abis/WTON.json';
