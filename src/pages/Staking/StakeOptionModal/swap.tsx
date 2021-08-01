@@ -12,6 +12,7 @@ import {
   Stack,
   useTheme,
   useColorMode,
+  Image,
 } from '@chakra-ui/react';
 import React, {useCallback, useState, useEffect, useMemo } from 'react';
 import {useWeb3React} from '@web3-react/core';
@@ -26,6 +27,7 @@ import {useUser} from 'hooks/useUser';
 import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal/CloseButton';
 import { SwapCurrencyPanel } from '../components/SwapCurrencyPanel';
+import arrow from 'assets/svgs/swap-arrow-icon.svg'
 
 export const SwapModal = () => {
   const {sub} = useAppSelector(selectModalType);
@@ -180,7 +182,7 @@ export const SwapModal = () => {
             </Box>
           </Stack>
           <Stack>
-
+            <Image src={arrow} />
           </Stack>
           <Stack
             pt="27px"
