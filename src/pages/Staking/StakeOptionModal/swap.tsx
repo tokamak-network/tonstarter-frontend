@@ -19,6 +19,7 @@ import {selectModalType} from 'store/modal.reducer';
 import {swapWTONtoTOS} from '../actions';
 import {useUser} from 'hooks/useUser';
 import {useModal} from 'hooks/useModal';
+import {useCheckBalance} from 'hooks/useCheckBalance';
 import {CloseButton} from 'components/Modal/CloseButton';
 
 export const SwapModal = () => {
@@ -31,6 +32,7 @@ export const SwapModal = () => {
   const {colorMode} = useColorMode();
   const [value, setValue] = useState<number>(0);
   const {handleCloseConfirmModal} = useModal();
+  const {checkBalance} = useCheckBalance();
 
   const handleChange = useCallback((e) => setValue(e.target.value), []);
   const setMax = useCallback((_e) => setValue(swapBalance), [swapBalance]);
@@ -131,13 +133,19 @@ export const SwapModal = () => {
               fontSize="14px"
               _hover={{...theme.btnHover}}
               onClick={() => {
-                swapWTONtoTOS({
-                  userAddress: account,
-                  amount: value.toString(),
-                  contractAddress,
-                  library,
-                });
-                handleCloseModal();
+                const isBalance = checkBalance(
+                  Number(value),
+                  Number(swapBalance),
+                );
+                if (isBalance) {
+                  swapWTONtoTOS({
+                    userAddress: account,
+                    amount: value.toString(),
+                    contractAddress,
+                    library,
+                  });
+                  handleCloseModal();
+                }
               }}>
               Swap
             </Button>
