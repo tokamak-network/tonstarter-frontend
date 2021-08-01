@@ -181,13 +181,19 @@ export const SwapModal = () => {
               </Button>
             </Box>
           </Stack>
-          <Stack>
+          <Stack
+            as={Flex}
+            flexDir={'row'}
+            justifyContent={'center'}
+            alignItems={'center'}
+            w={'full'}
+          >
             <Image
               w={'20px'}
               h={'20px'}
               src={arrow}
               as={Flex}
-              flexDir={'row'}
+              // flexDir={'row'}
               justifyContent={'center'}
               alignItems={'center'}
             />

@@ -32,6 +32,9 @@ export const SwapCurrencyPanel = React.memo(function InnerInput({
       onChange={(event) => {
         enforcer(event.target.value.replace(/,/g, '.'))
       }}
+      _focus={{
+        borderWidth: 0,
+      }}
     />
   )
 })
