@@ -186,7 +186,7 @@ export function useDerivedSwapInfo(): {
       inputError = inputError ?? `Invalid recipient`
     }
   }
-
+  console.log(v3Trade.trade)
   const toggledTrade =  v3Trade.trade ?? undefined
   const allowedSlippage = useSwapSlippageTolerance(toggledTrade)
 

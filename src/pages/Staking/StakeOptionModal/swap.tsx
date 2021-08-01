@@ -21,6 +21,7 @@ import {fetchSwapPayload} from './utils/fetchSwapPayload';
 import {swapWTONtoTOS} from '../actions';
 // import { useBestV3TradeExactIn } from '../../../hooks/useBestV3Trade';
 import { useDerivedSwapInfo } from '../../../store/swap/hooks';
+import TradePrice from '../components/TradePrice';
 
 export const SwapModal = () => {
   const {account, library} = useWeb3React();
@@ -50,6 +51,7 @@ export const SwapModal = () => {
   const [swappedBalance, setSwappedBalance] = useState<string | undefined>(
     undefined,
   );
+  const [showInverted, setShowInverted] = useState<boolean>(false)
 
   let balance =
     Number(stakeBalanceTON) +
@@ -105,6 +107,11 @@ export const SwapModal = () => {
               textAlign={'center'}>
               Swap
             </Heading>
+            {/* <TradePrice
+              price={trade?.executionPrice}
+              showInverted={showInverted}
+              setShowInverted={setShowInverted}
+            /> */}
             {/* <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
               
             </Text> */}
