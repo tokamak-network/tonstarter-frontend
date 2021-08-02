@@ -137,8 +137,9 @@ export const ManageModal = () => {
         }
       }
     }
-    getStakedBalance();
-
+    if (transactionType === 'Staking' || transactionType === undefined) {
+      getStakedBalance();
+    }
     /*eslint-disable*/
   }, [data, transactionType, blockNumber]);
 
@@ -179,7 +180,11 @@ export const ManageModal = () => {
       setSaleClosed(res);
     }
 
-    if (data.modal === 'manage') {
+    if (
+      data.modal === 'manage' ||
+      transactionType === 'Staking' ||
+      transactionType === undefined
+    ) {
       if (vault && library) {
         checkSale();
       }
