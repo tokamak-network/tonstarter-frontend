@@ -95,6 +95,7 @@ export const PoolTable: FC<PoolTableProps> = ({
 
   const [stakingPosition, setStakingPosition] = useState([]);
   const [positionData, setPositionData] = useState([]);
+  const [account, setAccount] = useState('');
   useEffect(() => {
     async function positionPayload() {
       if (address) {
@@ -109,12 +110,13 @@ export const PoolTable: FC<PoolTableProps> = ({
         }
         setPositionData(result)
         setStakingPosition(stringResult)
+        setAccount(address);
       }
     }
     positionPayload();
   }, [data, transactionType, blockNumber])
   const position = useQuery(GET_POSITION, {
-    variables: {address: address}
+    variables: {address: account}
   });
 
   const positionWithVar = useQuery(GET_POSITION_BY_ID, {
