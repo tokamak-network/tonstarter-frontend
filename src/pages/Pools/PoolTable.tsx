@@ -33,6 +33,7 @@ import { GET_POSITION, GET_POSITION1, GET_POSITION_BY_ID, GET_POSITION2 } from '
 import { useQuery } from '@apollo/client';
 import { PositionTable } from './PositionTable';
 import { fetchPositionPayload } from './utils/fetchPositionPayload';
+import { selectTransactionType } from 'store/refetch.reducer';
 
 type PoolTableProps = {
   columns: Column[];
@@ -83,7 +84,7 @@ export const PoolTable: FC<PoolTableProps> = ({
     useExpanded,
     usePagination,
   );
-
+  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const focusTarget = useRef<any>([]);
@@ -92,36 +93,38 @@ export const PoolTable: FC<PoolTableProps> = ({
     data: {contractAddress, index},
   } = useAppSelector(selectTableType);
 
-  const position = useQuery(GET_POSITION, {
-    variables: {address: address}
-  });
   const [stakingPosition, setStakingPosition] = useState([]);
+  const [positionData, setPositionData] = useState([]);
   useEffect(() => {
     async function positionPayload() {
       if (address) {
         const result = await fetchPositionPayload(
           library,
           address,
-          ''
         );
+
         let stringResult: any = [];
         for (let i=0; i < result.length; i++) {
-          stringResult.push(result[i].toString())
+          stringResult.push(result[i].positionid.toString())
         }
+        setPositionData(result)
         setStakingPosition(stringResult)
       }
     }
     positionPayload();
-  }, [])
+  }, [data, transactionType, blockNumber])
+  const position = useQuery(GET_POSITION, {
+    variables: {address: address}
+  });
 
   const positionWithVar = useQuery(GET_POSITION_BY_ID, {
     variables: {id: stakingPosition},
   });
-  console.log(positionWithVar.loading, positionWithVar.error, positionWithVar.data)
+
+
+  console.log(positionWithVar.data)
+  console.log(position.data)
   
-  console.log(position)
-  console.log(stakingPosition)
-  // const stakedPosition = useQuery(GET_POSITION2);
   let withStakedPosition: any = [];
   withStakedPosition = position.loading || positionWithVar.loading ? 
     [] : position.data.positions.concat(positionWithVar.data.positions)
@@ -394,7 +397,8 @@ export const PoolTable: FC<PoolTableProps> = ({
                         margin={0}
                       >
                         <PositionTable 
-                          data={filteredPosition}
+                          positions={filteredPosition}
+                          positionData={positionData}
                         />
                       </chakra.td>
                     </chakra.tr>

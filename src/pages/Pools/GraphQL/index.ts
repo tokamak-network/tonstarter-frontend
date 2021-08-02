@@ -43,16 +43,16 @@ export const GET_POOL_BY_POOL_ADDRESS = gql`
   }
 `;
 
-export const GET_POOL1 = gql`
-  query GetPool {
-    pools(where: {token0_in: ["0x73a54e5c054aa64c1ae7373c2b5474d8afea08bd"]}) {
+export const GET_TOS_POOL = gql`
+  query GetPool($address: [String!]) {
+    pools(where: {token0_in: $address}) {
       ${poolParam}
     }
   }`;
 
-export const GET_POOL2 = gql`
-  query GetPool {
-    pools(where: {token1_in: ["0x73a54e5c054aa64c1ae7373c2b5474d8afea08bd"]}) {
+export const GET_BASE_POOL = gql`
+  query GetPool($address: String!) {
+    pools(where: {id: $address}) {
       ${poolParam}
     }
   }`;

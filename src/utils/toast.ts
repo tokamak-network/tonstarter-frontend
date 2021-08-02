@@ -84,6 +84,14 @@ export const toastWithReceipt = async (
               }),
             );
           }
+          if (from === 'Pool') {
+            return store.dispatch(
+              setTransaction({
+                transactionType: 'Pool',
+                blockNumber: receipt.blockNumber,
+              }),
+            );
+          }
         }
       })
       .catch((e: any) => console.log(e));

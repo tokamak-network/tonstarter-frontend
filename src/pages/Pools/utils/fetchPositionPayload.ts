@@ -1,24 +1,34 @@
-import {BASE_PROVIDER} from 'constants/index'
 import {Contract} from '@ethersproject/contracts';
 import * as StakeUniswapABI from 'services/abis/StakeUniswapV3.json';
+import {DEPLOYED} from 'constants/index';
+
+const {UniswapStaking_Address} = DEPLOYED;
 
 export const fetchPositionPayload = async (
   library: any,
   account: string,
-  contractAddress: string,
 ) => {
-  const res = await getPositionInfo(library, account, contractAddress);
+  const res = await getPositionInfo(library, account);
   return res;
 }
 
 const getPositionInfo = async (
   library: any,
   account: string,
-  contractAddress: string,
 ) => {
   if (library) {
-    const StakeUniswap = new Contract('0x55eC1F59477f00a3Fb00B466AbCA19CE0233D66F', StakeUniswapABI.abi, library);
+    const StakeUniswap = new Contract(UniswapStaking_Address, StakeUniswapABI.abi, library);
+    console.log(StakeUniswap)
     const positionIds = await StakeUniswap.getUserStakedTokenIds(account);
-    return positionIds
+    let result: any = [];
+    for (let positionid of positionIds) {
+      const miningId = await StakeUniswap.getMiningTokenId(positionid);
+      const valueById = {
+        positionid,
+        ...miningId
+      }
+      result.push(valueById)
+    }
+    return result
   }
 }

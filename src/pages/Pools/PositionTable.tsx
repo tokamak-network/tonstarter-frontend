@@ -35,7 +35,8 @@ import { approve } from './actions';
 
 type PositionTableProps = {
   // columns: Column[];
-  data: any[];
+  positions: any[];
+  positionData: any[];
   // isLoading: boolean;
   // address: string;
 }
@@ -95,7 +96,8 @@ const getStatus = (
 };
 
 export const PositionTable: FC<PositionTableProps> = ({
-  data,
+  positions,
+  positionData
   // isLoading,
   // address,
 }) => {
@@ -153,7 +155,7 @@ export const PositionTable: FC<PositionTableProps> = ({
     setPageSize,
     state: {pageIndex, pageSize},
   } = useTable(
-    {columns, data, initialState: {pageIndex: 0}},
+    {columns, data: positions, initialState: {pageIndex: 0}},
     useSortBy,
     useExpanded,
     usePagination,
@@ -230,6 +232,7 @@ export const PositionTable: FC<PositionTableProps> = ({
             {page.map((row: any, i) => {
               const {id, pool, owner} = row.original;
               const poolName = getPoolName(pool.token0.symbol, pool.token1.symbol)
+              const lpData = positionData.find((data) => data.positionid.toString() === id)
               return [
                 <chakra.tr 
                   w={'100%'}
@@ -263,10 +266,16 @@ export const PositionTable: FC<PositionTableProps> = ({
                       <Text fontSize={'14px'} pt={1}>
                         _#{id}
                       </Text>
+                      
+                    </Flex>
+                    <Flex
+                      alignContent={'center'}
+                    >
+                      {lpData? <Text>{lpData.miningAmount.toString()}</Text> : ('')}
                     </Flex>
                     <Grid pos="relative" templateColumns={'repeat(5, 1fr)'} gap={3} mr={'40px'}>
                       <Button 
-                        w={'145px'}
+                        w={'125px'}
                         h={'38px'}
                         py={'10px'}
                         px={'29.5px'}
@@ -281,7 +290,7 @@ export const PositionTable: FC<PositionTableProps> = ({
                         Add Liquidity
                       </Button>
                       <Button 
-                        w={'145px'}
+                        w={'125px'}
                         h={'38px'}
                         py={'10px'}
                         px={'29.5px'}
@@ -301,7 +310,7 @@ export const PositionTable: FC<PositionTableProps> = ({
                         Approve
                       </Button>
                       <Button 
-                        w={'145px'}
+                        w={'125px'}
                         h={'38px'}
                         py={'10px'}
                         px={'29.5px'}
@@ -317,7 +326,7 @@ export const PositionTable: FC<PositionTableProps> = ({
                         Staking
                       </Button>
                       <Button 
-                        w={'145px'}
+                        w={'125px'}
                         h={'38px'}
                         py={'10px'}
                         px={'29.5px'}
@@ -333,7 +342,7 @@ export const PositionTable: FC<PositionTableProps> = ({
                         Unstaking
                       </Button>
                       <Button 
-                        w={'145px'}
+                        w={'125px'}
                         h={'38px'}
                         py={'10px'}
                         px={'29.5px'}

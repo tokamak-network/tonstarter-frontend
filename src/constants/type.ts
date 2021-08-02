@@ -11,4 +11,5 @@ export type DEPLOYED_TYPE = {
   LockTOS_ADDRESS: string;
   UniswapStaking_Address: string;
   NPM_Address: string;
+  BasePool_Address: string;
 };

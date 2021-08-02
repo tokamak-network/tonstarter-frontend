@@ -10,25 +10,24 @@ import * as StakeUniswapABI from 'services/abis/StakeUniswapV3.json';
 type Stake = {
   tokenId: string;
   userAddress: string | null | undefined;
-  contractAddress: string | null | undefined;
   library: any;
   handleCloseModal: any;
 }
 const {UniswapStaking_Address} = DEPLOYED;
 
 export const stake = async (args: Stake) => {
-  const { userAddress, contractAddress, tokenId, library } = args;
+  const { userAddress, tokenId, library } = args;
   if (userAddress === null || userAddress === undefined) {
     return;
   }
   const StakeUniswap = new Contract(UniswapStaking_Address, StakeUniswapABI.abi, library);
   const signer = getSigner(library, userAddress);
-  console.log(StakeUniswap);
+
   try {
     const receipt = await StakeUniswap.connect(signer)?.stake(tokenId)
     store.dispatch(setTxPending({tx: true}));
     if (receipt) {
-      toastWithReceipt(receipt, setTxPending);
+      toastWithReceipt(receipt, setTxPending, 'Pool');
     }
   } catch (err) {
     console.log(err);

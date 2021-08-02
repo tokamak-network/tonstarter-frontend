@@ -32,7 +32,11 @@ import {selectUser} from 'store/app/user.reducer';
 import {PageHeader} from 'components/PageHeader';
 // import {LoadingComponent} from 'components/Loading';
 import {useQuery} from '@apollo/client';
-import { GET_POOL1, GET_POOL2, GET_POOL_BY_POOL_ADDRESS } from './GraphQL/index';
+import { GET_TOS_POOL, GET_BASE_POOL, GET_POOL_BY_POOL_ADDRESS } from './GraphQL/index';
+import { selectTransactionType } from 'store/refetch.reducer';
+import { DEPLOYED } from '../../constants/index';
+
+const { BasePool_Address, TOS_ADDRESS } = DEPLOYED;
 
 
 export const Pools = () => {
@@ -42,6 +46,8 @@ export const Pools = () => {
   } = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
   const {colorMode} = useColorMode();
+  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
+
   const columns = useMemo(
     () => [
       {
@@ -77,24 +83,25 @@ export const Pools = () => {
     [],
   );
   
-  const poolAddress = [
-    "0xb7ce38cc28e199adcd8dfa5c89fe03d3e8d267f2",
-    "0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf",
-    "0xfffcd9c7d2ab23c064d547387fce7e938fa3124b"
-  ]; // need to convern the way to get pool address
-  
-  const pool1 = useQuery(GET_POOL1, {
-    variables: {address: poolAddress[0]}
+  const basePool = useQuery(GET_BASE_POOL, {
+    variables: {address: BasePool_Address}
   });
-  const pool2 = useQuery(GET_POOL2, {
-    variables: {address: poolAddress[1]}
+
+  const tosPool = useQuery(GET_TOS_POOL, {
+    variables: {address: [TOS_ADDRESS.toLowerCase()]}
   });
-  // const pool3 = useQuery(GET_POOL3, {
-  //   variables: {address: poolAddress[2]}
-  // });
+  console.log(basePool.loading, basePool.error, basePool.data)
+  const [pool, setPool] = useState([]);
+  useEffect(() => {
+    function getPool () {
+      const poolArr = basePool.loading || tosPool.loading ? [] : basePool.data.pools.concat(tosPool.data.pools)
+      setPool(poolArr)
+    }
+    getPool()
+  }, [transactionType, blockNumber])
 
   // const poolArr = pool1.loading || pool2.loading || pool3.loading ? [] : pool1.data.pools.concat(pool3.data.pools).concat(pool2.data.pools)
-  const poolArr = pool1.loading || pool2.loading ? [] : pool1.data.pools.concat(pool2.data.pools)
+  // const poolArr = pool1.loading || pool2.loading ? [] : pool1.data.pools.concat(pool2.data.pools)
   const account = address ? address : ''
 
   return (
@@ -108,11 +115,11 @@ export const Pools = () => {
           />
         </Box>
         <Box fontFamily={theme.fonts.roboto}>
-          {pool1.loading? '' :
+          {basePool.loading? '' :
           <PoolTable
-            data={poolArr}
+            data={pool}
             columns={columns}
-            isLoading={pool1.loading}
+            isLoading={basePool.loading}
             address={account}
             library={library}
           />

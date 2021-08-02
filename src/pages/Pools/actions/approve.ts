@@ -26,7 +26,7 @@ export const approve = async (args: Approve) => {
     const receipt = await NPM.connect(signer)?.approve(UniswapStaking_Address, tokenId)
     store.dispatch(setTxPending({tx: true}));
     if (receipt) {
-      toastWithReceipt(receipt, setTxPending);
+      toastWithReceipt(receipt, setTxPending, 'Pool');
     }
   } catch (err) {
     store.dispatch(setTxPending({tx: false}));

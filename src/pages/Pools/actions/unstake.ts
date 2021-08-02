@@ -23,12 +23,12 @@ export const unstake = async (args: Unstake) => {
   }
   const StakeUniswap = new Contract(UniswapStaking_Address, StakeUniswapABI.abi, library);
   const signer = getSigner(library, userAddress);
-  console.log(StakeUniswap);
+
   try {
     const receipt = await StakeUniswap.connect(signer)?.withdraw(tokenId)
     store.dispatch(setTxPending({tx: true}));
     if (receipt) {
-      toastWithReceipt(receipt, setTxPending);
+      toastWithReceipt(receipt, setTxPending, 'Pool');
     }
   } catch (err) {
     console.log(err);
