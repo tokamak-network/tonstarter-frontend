@@ -46,15 +46,15 @@ const themeDesign = {
   },
 };
 
-type TosStakeList = [
-  {
-    lockId: string;
-    periodWeeks: number;
-    periodDays: number;
-    end: boolean;
-    lockedBalance: string;
-  },
-];
+// type TosStakeList = [
+//   {
+//     lockId: string;
+//     periodWeeks: number;
+//     periodDays: number;
+//     end: boolean;
+//     lockedBalance: string;
+//   },
+// ];
 
 export const STOS = () => {
   const theme = useTheme();

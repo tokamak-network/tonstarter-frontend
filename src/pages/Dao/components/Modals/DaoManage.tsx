@@ -9,7 +9,6 @@ import {
   Button,
   Flex,
   Wrap,
-  Image,
   useTheme,
   useColorMode,
   Input,
@@ -39,7 +38,7 @@ interface Stake {
 
 type TosStakeList = Stake[] | undefined;
 
-type RadioSelect = 'select_amount' | 'select_period';
+// type RadioSelect = 'select_amount' | 'select_period';
 
 const themeDesign = {
   border: {
@@ -87,11 +86,13 @@ export const DaoManageModal = () => {
   const [balance, setBalance] = useState('0');
   const [tosStakeList, setTosStakeList] = useState<TosStakeList>(undefined);
   const {value, setValue, onChange} = useInput('0');
+  const {value: periodValue, onChange: periodOnchange} = useInput('0');
+
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {signIn, account, library} = useUser();
   const {btnStyle} = theme;
-  const {handleCloseModal, handleOpenConfirmModal} = useModal();
+  const {handleCloseModal} = useModal();
 
   const focusTarget = useRef<any>([]);
 
@@ -121,6 +122,16 @@ export const DaoManageModal = () => {
   if (signIn === false) {
     return <></>;
   }
+
+  const [test, setTest] = useState('');
+
+  const testOnChange = (e: any) => {
+    const {
+      target: {value},
+    } = e;
+    console.log(value);
+    setTest(value);
+  };
 
   const MainScreen = () => {
     return (
@@ -324,9 +335,9 @@ export const DaoManageModal = () => {
                 w={'143px'}
                 h="32px"
                 mr={'10px'}
-                value={value}
-                onKeyDown={onKeyDown}
-                onChange={onChange}
+                // value={test}
+                // onKeyDown={onKeyDown}
+                // onChange={testOnChange}
                 _focus={{
                   borderWidth: 0,
                 }}
@@ -367,8 +378,8 @@ export const DaoManageModal = () => {
                 h="32px"
                 mr={'0.750em'}
                 fontSize={'0.750em'}
-                value={value}
-                onChange={onChange}
+                value={periodValue}
+                onChange={periodOnchange}
                 {...(select === 'select_amount'
                   ? themeDesign.inputVariant[colorMode]
                   : '')}></Input>

@@ -14,7 +14,7 @@ import {
   useColorMode,
   Tooltip,
 } from '@chakra-ui/react';
-import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {useState, useEffect} from 'react';
 import {fetchStakedBalancePayload} from '../utils/fetchStakedBalancePayload';
@@ -25,6 +25,7 @@ import {BASE_PROVIDER} from 'constants/index';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal/CloseButton';
+import {AvailableBalance} from 'pages/Dao/components/AvailableBalance';
 
 const seigFontColors = {
   light: '#3d495d',
@@ -105,7 +106,17 @@ export const ManageModal = () => {
           setTotalStaked(totalStakedAmount);
           setStakdL2(totalStakedAmountL2);
           setPendingL2Balance(totalPendingUnstakedAmountL2);
-          setSwapBalance(Number(swapBalance) <= 0 ? '0' : swapBalance);
+
+          //calculate swap balance
+          if (Number(swapBalance) <= 0) {
+            return setSwapBalance('0');
+          }
+          if (Number(stakeContractBalanceTon) >= Number(swapBalance)) {
+            return setSwapBalance(swapBalance);
+          }
+          if (Number(stakeContractBalanceTon) < Number(swapBalance)) {
+            setSwapBalance(stakeContractBalanceTon);
+          }
         }
       }
     }
@@ -138,7 +149,6 @@ export const ManageModal = () => {
     };
 
     const btnDisableSwap = () => {
-      console.log(swapBalance);
       return Number(swapBalance) <= 0
         ? setSwapDisabled(true)
         : setSwapDisabled(false);

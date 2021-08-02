@@ -36,7 +36,15 @@ const getSwapBalance = (args: any) => {
 
   const tonsBalance = stakeContractBalanceWton.add(ray_StakeContractBalanceTon);
 
+  // console.log('--');
+  // console.log(availableBalance);
+  // console.log(tonsBalance);
+
   if (availableBalance.gt(tonsBalance)) {
+    console.log('--gt--');
+    console.log(availableBalance);
+    console.log(tonsBalance);
+
     return availableBalance
       .sub(tonsBalance)
       .sub(totalPendingUnstakedAmountL2)
@@ -44,6 +52,9 @@ const getSwapBalance = (args: any) => {
   }
 
   if (availableBalance.lte(tonsBalance)) {
+    console.log('----lte---');
+    console.log(availableBalance);
+    console.log(tonsBalance);
     return availableBalance;
   }
 };
@@ -58,6 +69,14 @@ const getStakedBalance = async (
   const WTON = getTokamakContract('WTON', library);
   const depositManager = getTokamakContract('DepositManager', library);
   const seigManager = getTokamakContract('SeigManager', library);
+
+  const test = await depositManager.withdrawalDelay(contractAddress);
+  const test2 = await depositManager.withdrawalDelay(
+    DEPLOYED.TokamakLayer2_ADDRESS,
+  );
+  console.log(depositManager);
+  console.log(test.toString());
+  console.log(test2.toString());
 
   return Promise.all([
     StakeTONContract.totalStakedAmount(),
