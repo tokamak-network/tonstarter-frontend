@@ -132,7 +132,7 @@ export const ManageModal = () => {
             return setSwapBalance(swapBalance);
           }
           if (Number(stakeContractBalanceTon) < Number(originalBalance)) {
-            setSwapBalance(stakeContractBalanceTon);
+            return setSwapBalance(stakeContractBalanceTon);
           }
         }
       }
@@ -140,7 +140,7 @@ export const ManageModal = () => {
     getStakedBalance();
 
     /*eslint-disable*/
-  }, [account, data, transactionType, blockNumber]);
+  }, [data, transactionType, blockNumber]);
 
   //Btn disable control
   useEffect(() => {
@@ -161,12 +161,14 @@ export const ManageModal = () => {
     };
 
     const btnDisableWithdraw = () => {
+      console.log(canWithdralAmount);
       return canWithdralAmount <= 0
         ? setWithdrawDisable(true)
         : setWithdrawDisable(false);
     };
 
     const btnDisableSwap = () => {
+      console.log(swapBalance);
       return Number(convertNumber({amount: swapBalance, round: false})) <= 0
         ? setSwapDisabled(true)
         : setSwapDisabled(false);
@@ -177,17 +179,21 @@ export const ManageModal = () => {
       setSaleClosed(res);
     }
 
-    if (vault && library) {
-      checkSale();
+    if (data.modal === 'manage') {
+      if (vault && library) {
+        checkSale();
+      }
+
+      setTimeout(() => {
+        btnDisablestakeL2();
+        btnDisableSwap();
+        btnDisableUnstakeL2();
+        btnDisableWithdraw();
+      }, 1500);
     }
 
-    btnDisablestakeL2();
-    btnDisableSwap();
-    btnDisableUnstakeL2();
-    btnDisableWithdraw();
     /*eslint-disable*/
   }, [
-    account,
     data,
     totalStaked,
     stakedL2,
@@ -197,11 +203,28 @@ export const ManageModal = () => {
     blockNumber,
   ]);
 
+  const handleCloseManageModal = () => {
+    setStakeL2Disabled(true);
+    setUnstakeL2Disable(true);
+    setWithdrawDisable(true);
+    setSwapDisabled(true);
+    setAvailableBalance('-');
+    setTotalStaked('-');
+    setStakdL2('-');
+    setPendingL2Balance('-');
+    setSwapBalance('-');
+    setCanWithdralAmount(0);
+    setOriginalStakeBalance(0);
+    setOriginalSwapBalance(0);
+    setSaleClosed(true);
+    handleCloseModal();
+  };
+
   return (
     <Modal
       isOpen={data.modal === 'manage' ? true : false}
       isCentered
-      onClose={handleCloseModal}>
+      onClose={handleCloseManageModal}>
       <ModalOverlay />
       <ModalContent
         w={'21.875em'}
@@ -209,7 +232,7 @@ export const ManageModal = () => {
         bg={colorMode === 'light' ? 'white.100' : 'black.200'}
         pt={'1.250em'}
         pb={'1.563em'}>
-        <CloseButton closeFunc={handleCloseModal}></CloseButton>
+        <CloseButton closeFunc={handleCloseManageModal}></CloseButton>
         <ModalBody p={0}>
           <Box
             textAlign="center"
