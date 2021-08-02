@@ -17,6 +17,7 @@ import { useCurrencyBalances } from '../wallet/hooks'
 import { Field, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions'
 // import { SwapState } from './reducer'
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux'
+import {useUser} from 'hooks/useUser';
 
 export function useSwapState(): AppState['swap'] {
   return useAppSelector((state) => state.swap)
@@ -120,8 +121,8 @@ export function useDerivedSwapInfo(): {
   toggledTrade: V2Trade<Currency, Currency, TradeType> | V3Trade<Currency, Currency, TradeType> | undefined
   allowedSlippage: Percent
 } {
-  const { account } = useActiveWeb3React()
-
+  const { account } = useUser()
+  console.log(account)
   const {
     independentField,
     typedValue,
@@ -190,10 +191,10 @@ export function useDerivedSwapInfo(): {
   const allowedSlippage = useSwapSlippageTolerance(toggledTrade)
   console.log(allowedSlippage)
   // compare input balance to max input based on version
-  // const [balanceIn, amountIn] = [currencyBalances[Field.INPUT], ]
+  const [balanceIn, amountIn] = [currencyBalances[Field.INPUT], undefined]
 
   // if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
-  //   inputError = t`Insufficient ${amountIn.currency.symbol} balance`
+  //   inputError = `Insufficient ${amountIn.currency.symbol} balance`
   // }
 
   return {
