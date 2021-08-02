@@ -77,7 +77,7 @@ export const MySTOS = (props: PropsType) => {
         </Flex>
       </Box>
       <Button
-        {...(signIn || btnDisabled
+        {...(signIn && !btnDisabled
           ? {...btnStyle.btnAble()}
           : {...btnStyle.btnDisable({colorMode})})}
         w={'150px'}
@@ -86,7 +86,7 @@ export const MySTOS = (props: PropsType) => {
         fontSize={'14px'}
         fontWeight={400}
         isDisabled={!signIn || btnDisabled}
-        _hover={btnHover.checkDisable({signIn})}
+        _hover={btnHover.backgroundColor}
         onClick={() =>
           dispatch(
             openModal({

@@ -95,7 +95,7 @@ export const MyStaked = (props: PropsType) => {
         </Flex>
       </Box>
       <Button
-        {...(signIn || isEnd
+        {...(signIn && !isEnd
           ? {...btnStyle.btnAble()}
           : {...btnStyle.btnDisable({colorMode})})}
         w={'150px'}
@@ -104,7 +104,7 @@ export const MyStaked = (props: PropsType) => {
         fontSize={'14px'}
         fontWeight={400}
         isDisabled={!signIn || isEnd}
-        _hover={btnHover.checkDisable({signIn})}
+        _hover={btnHover.backgroundColor}
         onClick={() =>
           dispatch(
             openModal({
