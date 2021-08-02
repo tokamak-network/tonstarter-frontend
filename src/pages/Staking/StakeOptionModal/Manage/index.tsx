@@ -25,7 +25,8 @@ import {BASE_PROVIDER} from 'constants/index';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal/CloseButton';
-import {AvailableBalance} from 'pages/Dao/components/AvailableBalance';
+import {fetchWithdrawPayload} from '../utils/fetchWithdrawPayload';
+import {convertNumber} from 'utils/number';
 
 const seigFontColors = {
   light: '#3d495d',
@@ -70,6 +71,11 @@ export const ManageModal = () => {
   const [stakedL2, setStakdL2] = useState('-');
   const [pendingL2Balance, setPendingL2Balance] = useState('-');
   const [swapBalance, setSwapBalance] = useState('-');
+  const [canWithdralAmount, setCanWithdralAmount] = useState(0);
+
+  //original balances
+  const [originalStakeBalance, setOriginalStakeBalance] = useState(0);
+  const [originalSwapBalance, setOriginalSwapBalance] = useState(0);
 
   //conditions
   const [saleClosed, setSaleClosed] = useState(true);
@@ -94,18 +100,29 @@ export const ManageModal = () => {
           totalPendingUnstakedAmountL2,
           stakeContractBalanceTon,
           swapBalance,
+          originalBalance,
         } = result;
+        const res_CanWithdralAmount = await fetchWithdrawPayload(
+          library,
+          account,
+          contractAddress,
+        );
         if (
           totalStakedAmount &&
           totalStakedAmountL2 &&
           totalPendingUnstakedAmountL2 &&
           stakeContractBalanceTon &&
-          swapBalance
+          swapBalance &&
+          res_CanWithdralAmount
         ) {
           setAvailableBalance(stakeContractBalanceTon);
           setTotalStaked(totalStakedAmount);
           setStakdL2(totalStakedAmountL2);
           setPendingL2Balance(totalPendingUnstakedAmountL2);
+          setCanWithdralAmount(Number(res_CanWithdralAmount.toString()));
+
+          //set original balances
+          setOriginalStakeBalance(originalBalance.stakeContractBalanceTon);
 
           //calculate swap balance
           if (Number(swapBalance) <= 0) {
@@ -114,7 +131,7 @@ export const ManageModal = () => {
           if (Number(stakeContractBalanceTon) >= Number(swapBalance)) {
             return setSwapBalance(swapBalance);
           }
-          if (Number(stakeContractBalanceTon) < Number(swapBalance)) {
+          if (Number(stakeContractBalanceTon) < Number(originalBalance)) {
             setSwapBalance(stakeContractBalanceTon);
           }
         }
@@ -132,7 +149,8 @@ export const ManageModal = () => {
         const currentBlock = await BASE_PROVIDER.getBlockNumber();
         const res =
           miningEndTime - Number(globalWithdrawalDelay) <= currentBlock;
-        return setStakeL2Disabled(res);
+        const checkBalance = Number(availableBalance) <= 0 ? true : false;
+        return setStakeL2Disabled(res || checkBalance);
       }
     }
 
@@ -143,7 +161,7 @@ export const ManageModal = () => {
     };
 
     const btnDisableWithdraw = () => {
-      return pendingL2Balance === '-' || pendingL2Balance === '0.00'
+      return canWithdralAmount <= 0
         ? setWithdrawDisable(true)
         : setWithdrawDisable(false);
     };
@@ -320,7 +338,6 @@ export const ManageModal = () => {
             pl="19px"
             pr="19px"
             gap={'12px'}>
-            {/* <Button colorScheme="blue" onClick={() => toggleModal('stakeL2')}> */}
             <Button
               width="150px"
               bg={'blue.500'}
@@ -338,6 +355,7 @@ export const ManageModal = () => {
                   data: {
                     balance: availableBalance,
                     contractAddress,
+                    originalStakeBalance,
                   },
                 })
               }>
@@ -381,7 +399,7 @@ export const ManageModal = () => {
                   type: 'manage_withdraw',
                   data: {
                     contractAddress,
-                    pendingL2Balance,
+                    pendingL2Balance: canWithdralAmount,
                   },
                 })
               }>

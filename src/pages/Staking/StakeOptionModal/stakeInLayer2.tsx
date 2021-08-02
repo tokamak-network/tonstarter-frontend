@@ -21,11 +21,12 @@ import {useUser} from 'hooks/useUser';
 import {useModal} from 'hooks/useModal';
 import {useCheckBalance} from 'hooks/useCheckBalance';
 import {CloseButton} from 'components/Modal';
+import {convertNumber} from 'utils/number';
 
 export const StakeInLayer2Modal = () => {
   const {sub} = useAppSelector(selectModalType);
   const {account, library} = useUser();
-  const {balance, contractAddress} = sub.data;
+  const {balance, contractAddress, originalStakeBalance} = sub.data;
 
   const [value, setValue] = useState<number>(balance);
   const theme = useTheme();
@@ -140,13 +141,19 @@ export const StakeInLayer2Modal = () => {
                     Number(value),
                     Number(balance),
                   );
-                  if (isBalance) {
+                  if (isBalance === true || 'balanceAll') {
+                    console.log(originalStakeBalance);
+                    console.log(originalStakeBalance.toString());
                     stakeL2({
                       account,
                       library,
-                      amount: value.toString(),
+                      amount:
+                        isBalance !== 'balanceAll'
+                          ? value.toString()
+                          : originalStakeBalance.toString(),
                       contractAddress,
                     });
+
                     handleCloseModal();
                   }
                 }

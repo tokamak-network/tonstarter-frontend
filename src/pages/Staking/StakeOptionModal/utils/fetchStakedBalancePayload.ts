@@ -36,25 +36,13 @@ const getSwapBalance = (args: any) => {
 
   const tonsBalance = stakeContractBalanceWton.add(ray_StakeContractBalanceTon);
 
-  // console.log('--');
-  // console.log(availableBalance);
-  // console.log(tonsBalance);
-
   if (availableBalance.gt(tonsBalance)) {
-    console.log('--gt--');
-    console.log(availableBalance);
-    console.log(tonsBalance);
-
     return availableBalance
       .sub(tonsBalance)
       .sub(totalPendingUnstakedAmountL2)
       .toString();
   }
-
   if (availableBalance.lte(tonsBalance)) {
-    console.log('----lte---');
-    console.log(availableBalance);
-    console.log(tonsBalance);
     return availableBalance;
   }
 };
@@ -84,29 +72,31 @@ const getStakedBalance = async (
     return {
       totalStakedAmount: convertNumber({
         amount: result[0],
-        round: true,
       }),
       totalStakedAmountL2: convertNumber({
         amount: result[1],
         type: 'ray',
-        round: true,
       }),
       totalPendingUnstakedAmountL2: convertNumber({
         amount: result[2],
         type: 'ray',
-        round: true,
       }),
       stakeContractBalanceWton: convertNumber({
         amount: result[3],
         type: 'ray',
-        round: true,
       }),
       stakeContractBalanceTon: convertNumber({
         amount: result[4],
-        round: true,
       }),
       seig: '',
       swapBalance: convertNumber({amount: getSwapBalance(result), type: 'ray'}),
+      originalBalance: {
+        totalStakedAmount: result[0],
+        totalStakedAmountL2: result[1],
+        totalPendingUnstakedAmountL2: result[2],
+        stakeContractBalanceWton: result[3],
+        stakeContractBalanceTon: result[4],
+      },
     };
   });
 };

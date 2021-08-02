@@ -12,6 +12,8 @@ export const useCheckBalance = () => {
         isClosable: true,
       });
       return false;
+    } else if (inputValue === balance) {
+      return 'balanceAll';
     } else {
       return true;
     }

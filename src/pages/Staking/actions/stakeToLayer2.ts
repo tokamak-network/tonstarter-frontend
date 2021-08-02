@@ -20,17 +20,18 @@ const {TokamakLayer2_ADDRESS} = DEPLOYED;
 export const stakeL2 = async (args: StakeToLayer2) => {
   const {account, library, amount, contractAddress} = args;
 
-  const tonAmount = convertToWei(amount);
+  // const tonAmount = convertToWei(amount);
 
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, library);
   if (!StakeTONContract) {
     throw new Error(`Can't find the contract for staking actions`);
   }
   const signer = getSigner(library, account);
+
   try {
     const receipt = await StakeTONContract.connect(signer).tokamakStaking(
       TokamakLayer2_ADDRESS,
-      tonAmount,
+      amount,
     );
     store.dispatch(setTxPending({tx: true}));
     if (receipt) {
