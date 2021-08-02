@@ -35,6 +35,7 @@ import {getTotalStakers, getUserBalance} from 'client/getUserBalance';
 //@ts-ignore
 import {useEffect} from 'react';
 import {LoadingDots} from 'components/Loader/LoadingDots';
+import {useUser} from 'hooks/useUser';
 
 type GetDateTimeType =
   | 'sale-start'
@@ -130,9 +131,10 @@ export const Staking = () => {
     [],
   );
 
-  const GetTotalStaker = ({contractAddress, library, data}: any) => {
+  const GetTotalStaker = ({contractAddress, data}: any) => {
     const {colorMode} = useColorMode();
     const [totalStaker, setTotalStaker] = useState('-');
+    const {library} = useUser();
     const getlInfo = async () => {
       const res = await getTotalStakers(contractAddress, library);
       if (res === undefined) {
@@ -270,10 +272,7 @@ export const Staking = () => {
                   : data[row.id]?.miningStartTime}
               </Text>
             </Flex>
-            <GetTotalStaker
-              contractAddress={contractAddress}
-              library={library}
-              data={data[row.id]?.totalStakers}></GetTotalStaker>
+            <GetTotalStaker contractAddress={contractAddress}></GetTotalStaker>
             <GetBalance
               title={'My staked'}
               contractAddress={contractAddress}

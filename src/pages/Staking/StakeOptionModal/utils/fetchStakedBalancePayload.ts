@@ -2,7 +2,7 @@ import {getTokamakContract} from 'utils/contract';
 import {DEPLOYED} from 'constants/index';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import {Contract} from '@ethersproject/contracts';
-import {convertNumber} from 'utils/number';
+import {convertFromWeiToRay, convertNumber} from 'utils/number';
 
 export const fetchStakedBalancePayload = async (
   account: string,
@@ -11,6 +11,40 @@ export const fetchStakedBalancePayload = async (
 ) => {
   const res = await getStakedBalance(account, contractAddress, library);
   return res;
+};
+
+const getSwapBalance = (args: any) => {
+  const totalStakedAmount = args[0];
+  //ray
+  const totalStakedAmountL2 = args[1];
+  //ray
+  const totalPendingUnstakedAmountL2 = args[2];
+  //ray
+  const stakeContractBalanceWton = args[3];
+  const stakeContractBalanceTon = args[4];
+
+  const ray_TotalStakedAmount = convertFromWeiToRay(totalStakedAmount);
+  const ray_StakeContractBalanceTon = convertFromWeiToRay(
+    stakeContractBalanceTon,
+  );
+
+  const availableBalance = totalStakedAmountL2
+    .add(totalPendingUnstakedAmountL2)
+    .add(stakeContractBalanceWton)
+    .add(ray_StakeContractBalanceTon)
+    .sub(ray_TotalStakedAmount);
+
+  const tonsBalance = stakeContractBalanceWton.add(ray_StakeContractBalanceTon);
+
+  if (availableBalance.gt(tonsBalance)) {
+    return availableBalance
+      .sub(tonsBalance)
+      .sub(totalPendingUnstakedAmountL2)
+      .toString();
+  }
+  if (availableBalance.lte(tonsBalance)) {
+    return availableBalance;
+  }
 };
 
 const getStakedBalance = async (
@@ -26,6 +60,7 @@ const getStakedBalance = async (
 
   return Promise.all([
     StakeTONContract.totalStakedAmount(),
+    //should convert to ray from wei for seigManager
     seigManager.stakeOf(DEPLOYED.TokamakLayer2_ADDRESS, contractAddress),
     depositManager.pendingUnstaked(
       DEPLOYED.TokamakLayer2_ADDRESS,
@@ -53,6 +88,16 @@ const getStakedBalance = async (
       stakeContractBalanceTon: convertNumber({
         amount: result[4],
       }),
+      seig: '',
+      swapBalance: convertNumber({amount: getSwapBalance(result), type: 'ray'}),
+      originalBalance: {
+        totalStakedAmount: result[0],
+        totalStakedAmountL2: result[1],
+        totalPendingUnstakedAmountL2: result[2],
+        stakeContractBalanceWton: result[3],
+        stakeContractBalanceTon: result[4],
+        swapBalance: getSwapBalance(result),
+      },
     };
   });
 };

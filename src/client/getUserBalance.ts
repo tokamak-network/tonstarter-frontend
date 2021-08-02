@@ -8,6 +8,7 @@ import * as ERC20 from 'services/abis/ERC20.json';
 import * as TOSABI from 'services/abis/TOS.json';
 import * as LockTOSABI from 'services/abis/LockTOS.json';
 import {BigNumber} from 'ethers';
+import moment from 'moment';
 
 const {TON_ADDRESS, TOS_ADDRESS} = DEPLOYED;
 
@@ -46,20 +47,26 @@ export const getUserTOSStaked = async ({account, library}: any) => {
     library,
   );
   const tosStakeList = await LockTOSContract.locksOf(account);
-  console.log('**TOS LOCK LIST**');
-  console.log(tosStakeList);
 
   if (tosStakeList.length === 0) {
     return '0.00';
   }
-  // const result = tosStakeList.reduce((acc: any, cur: any) => {
-  //   console.log(acc);
-  //   console.log(convertNumber({amount: acc}));
-  //   console.log(convertNumber({amount: cur}));
-  //   return acc + convertNumber({amount: cur});
-  // });
 
-  return '-';
+  let totalStakeAmount = 0;
+
+  await Promise.all(
+    tosStakeList.map(async (stake: any, index: number) => {
+      const lockedBlanace = await LockTOSContract.lockedBalances(
+        account,
+        stake.toString(),
+      );
+      totalStakeAmount += Number(
+        convertNumber({amount: lockedBlanace.amount.toString()}),
+      );
+    }),
+  );
+
+  return String(totalStakeAmount);
 };
 
 export const getUserSTOSBalance = async ({account, library}: any) => {

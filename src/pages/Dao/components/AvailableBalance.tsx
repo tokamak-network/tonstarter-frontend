@@ -82,7 +82,7 @@ export const AvailableBalance = (props: PropsType) => {
         fontSize={'14px'}
         fontWeight={400}
         isDisabled={!signIn}
-        _hover={btnHover.checkDisable({signIn})}
+        _hover={btnHover.backgroundColor}
         onClick={() =>
           dispatch(
             openModal({

@@ -30,7 +30,7 @@ export const closeSale = async (args: Endsale) => {
       ?.closeSale(vaultContractAddress);
     store.dispatch(setTxPending({tx: true}));
     if (receipt) {
-      toastWithReceipt(receipt, setTxPending);
+      toastWithReceipt(receipt, setTxPending, "Staking");
     }
   } catch (err) {
     store.dispatch(setTxPending({tx: false}));

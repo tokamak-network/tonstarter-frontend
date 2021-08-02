@@ -108,7 +108,7 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
   const dispatch = useDispatch();
 
   const airdropModalOpen = async () => {
-    dispatch(openModal({type: 'airdrop'}));
+    dispatch(openModal({type: 'airdrop', data: {}}));
   };
 
   return (

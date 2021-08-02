@@ -8,6 +8,8 @@ import {useState} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectUser} from 'store/app/user.reducer';
 import {useUser} from 'hooks/useUser';
+import {getTosStakeList} from './utils';
+import {selectTransactionType} from 'store/refetch.reducer';
 
 const themeDesign = {
   fontColorTitle: {
@@ -44,19 +46,54 @@ const themeDesign = {
   },
 };
 
+// type TosStakeList = [
+//   {
+//     lockId: string;
+//     periodWeeks: number;
+//     periodDays: number;
+//     end: boolean;
+//     lockedBalance: string;
+//   },
+// ];
+
 export const STOS = () => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
-  const {signIn, account, userData} = useUser();
+  const {signIn, account, library} = useUser();
   const [address, setAddress] = useState('-');
   const {data} = useAppSelector(selectUser);
+  const [stakeList, setStakeList] = useState<any[]>([]);
+  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
+
   useEffect(() => {
+    async function getStakeList() {
+      const res = await getTosStakeList({account, library});
+      if (res) {
+        setStakeList(res);
+      }
+    }
     if (account !== undefined) {
       setAddress(shortenAddress(account));
+      getStakeList();
     } else {
       setAddress('-');
     }
-  }, [account]);
+  }, [account, library]);
+
+  useEffect(() => {
+    async function getStakeList() {
+      const res = await getTosStakeList({account, library});
+      if (res) {
+        setStakeList(res);
+      }
+    }
+    if (transactionType === 'Dao') {
+      getStakeList();
+    }
+    /*eslint-disable*/
+  }, [transactionType, blockNumber]);
+
+  console.log(stakeList);
 
   return (
     <Flex
@@ -113,9 +150,14 @@ export const STOS = () => {
         <AvailableBalance signIn={signIn} userData={data}></AvailableBalance>
       </Box>
       <Box mb={'20px'}>
-        <MyStaked signIn={signIn} userData={data}></MyStaked>
+        <MyStaked
+          signIn={signIn}
+          userData={data}
+          stakeList={stakeList}
+          transactionType={transactionType}
+          blockNumber={blockNumber}></MyStaked>
       </Box>
-      <MySTOS signIn={signIn} userData={data}></MySTOS>
+      <MySTOS signIn={signIn} userData={data} stakeList={stakeList}></MySTOS>
     </Flex>
   );
 };

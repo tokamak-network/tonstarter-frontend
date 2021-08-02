@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react';
 import React, {FC, useState, useCallback} from 'react';
 import {AppDispatch} from 'store';
-import {openModal, closeModal, ModalType} from 'store/modal.reducer';
+import {openModal, ModalType} from 'store/modal.reducer';
 import {User} from 'store/app/user.reducer';
 import {Stake} from '../staking.reducer';
 import {checkSaleClosed, fetchManageModalPayload} from '../utils';
@@ -22,6 +22,8 @@ import {useEffect} from 'react';
 import {closeSale} from '../actions';
 import {LoadingDots} from 'components/Loader/LoadingDots';
 import {useUser} from 'hooks/useUser';
+import {selectTransactionType} from 'store/refetch.reducer';
+import {useAppSelector} from 'hooks/useRedux';
 
 type WalletInformationProps = {
   dispatch: AppDispatch;
@@ -36,6 +38,8 @@ export const WalletInformation: FC<WalletInformationProps> = ({
 }) => {
   const {colorMode} = useColorMode();
   const [loading, setLoading] = useState(false);
+
+  //Balances
   const [userTonBalance, setUserTonBalance] = useState<string | undefined>(
     undefined,
   );
@@ -44,6 +48,8 @@ export const WalletInformation: FC<WalletInformationProps> = ({
   );
   const [tosBalance, setTosBalance] = useState<string | undefined>(undefined);
   const [saleClosed, setSaleClosed] = useState(false);
+
+  //Buttons
   const [stakeDisabled, setStakeDisabled] = useState(true);
   const [unstakeDisabled, setUnstakeDisabled] = useState(true);
   const [claimDisabled, setClaimDisabled] = useState(true);
@@ -52,21 +58,23 @@ export const WalletInformation: FC<WalletInformationProps> = ({
 
   const {account, library} = useUser();
 
+  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
+
   useEffect(() => {
     async function checkSale() {
       const res = await checkSaleClosed(data.vault, library);
       setSaleClosed(res);
     }
     checkSale();
-  }, []);
+    /*eslint-disable*/
+  }, [account, data, dispatch, tosBalance, transactionType, blockNumber]);
 
   const {status} = data;
   const currentBlock: number = Number(data.fetchBlock);
   const miningStart: number = Number(data.miningStartTime);
   const miningEnd: number = Number(data.miningEndTime);
   const saleStart: number = Number(data.saleStartTime);
-  const manageBtnDisabled =
-    account === undefined || miningEnd <= currentBlock ? true : false;
+  const manageBtnDisabled = account === undefined ? true : false;
 
   const endSaleBtnDisable = () => {
     return account === undefined || miningStart >= currentBlock
@@ -84,9 +92,9 @@ export const WalletInformation: FC<WalletInformationProps> = ({
 
   const btnDisabledUnstake = () => {
     return account === undefined ||
-      currentBlock <= miningEnd ||
+      stakeBalance === '0.00' ||
       stakeBalance === undefined ||
-      stakeBalance === '0.00'
+      status !== 'end'
       ? setUnstakeDisabled(true)
       : setUnstakeDisabled(false);
   };
@@ -109,20 +117,23 @@ export const WalletInformation: FC<WalletInformationProps> = ({
     if (user.address !== undefined) {
       getWalletTonBalance();
     }
-    btnDisabledStake();
-    btnDisabledUnstake();
-    btnDisabledClaim();
-    manageDisableClaim();
-    endSaleBtnDisable();
+    if (transactionType === undefined || transactionType === 'Staking') {
+      btnDisabledStake();
+      btnDisabledUnstake();
+      btnDisabledClaim();
+      manageDisableClaim();
+      endSaleBtnDisable();
+    }
     /*eslint-disable*/
-  }, [account, data, dispatch, tosBalance]);
+  }, [account, data, dispatch, tosBalance, transactionType, blockNumber]);
 
-  const modalPayload = async (data: any) => {
+  const modalPayload = async (args: any) => {
+    const {account, library, contractAddress, vault} = args;
     const result = await fetchManageModalPayload(
-      data.library,
-      data.account,
-      data.contractAddress,
-      data.vault,
+      library,
+      account,
+      contractAddress,
+      vault,
     );
 
     return result;
@@ -145,38 +156,51 @@ export const WalletInformation: FC<WalletInformationProps> = ({
     }
   };
 
-  const modalData = useCallback(async (modal: ModalType) => {
-    setLoading(true);
-    let payload;
-
-    try {
-      if (modal === 'manage' || modal === 'claim') {
-        const payloadModal = await modalPayload(data);
-        payload = {
-          ...data,
-          ...payloadModal,
-          user,
-        };
-      } else if (modal === 'unstake') {
-        const payloadModal = await getUserBalance(data.contractAddress);
-        payload = {
-          ...data,
-          totalStakedBalance: payloadModal?.totalStakedBalance,
-        };
-      } else {
-        payload = {
-          ...data,
-          user,
-        };
+  const modalData = useCallback(
+    async (modal: ModalType) => {
+      setLoading(true);
+      let payload;
+      const {contractAddress, vault} = data;
+      try {
+        if (modal === 'manage') {
+          const payloadModal = await modalPayload({
+            account,
+            library,
+            contractAddress,
+            vault,
+          });
+          payload = {
+            ...data,
+            ...payloadModal,
+            user,
+          };
+        } else if (modal === 'claim') {
+          payload = {
+            contractAddress,
+            tosBalance,
+          };
+        } else if (modal === 'unstake') {
+          const payloadModal = await getUserBalance(data.contractAddress);
+          payload = {
+            ...data,
+            totalStakedBalance: payloadModal?.totalStakedBalance,
+          };
+        } else {
+          payload = {
+            ...data,
+            user,
+          };
+        }
+      } catch (e) {
+        console.log(e);
+        setLoading(false);
       }
-    } catch (e) {
-      console.log(e);
-      setLoading(false);
-    }
 
-    setLoading(false);
-    dispatch(openModal({type: modal, data: payload}));
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+      setLoading(false);
+      dispatch(openModal({type: modal, data: payload}));
+    },
+    [data, tosBalance, transactionType, blockNumber],
+  ); // eslint-disable-line react-hooks/exhaustive-deps
 
   const theme = useTheme();
   const {btnStyle} = theme;

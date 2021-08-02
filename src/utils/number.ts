@@ -16,7 +16,18 @@ type ConverNumberFunc = {
   decimalPlaces?: number;
 };
 
+export const convertFromRayToWei = (num: string) => {
+  const numAmount = BigNumber.from(num).div(10 ** 9);
+  return numAmount;
+};
+
+export const convertFromWeiToRay = (num: string) => {
+  const numAmount = BigNumber.from(num).mul(10 ** 9);
+  return numAmount;
+};
+
 export const convertToWei = (num: string) => toWei(num, 'ether');
+export const convertToRay = (num: string) => toWei(num, 'gether');
 
 function roundNumber(args: RoundFunc): string {
   const {r_amount, r_maxDecimalDigits, r_opt} = args;
@@ -37,10 +48,9 @@ export function convertNumber(args: ConverNumberFunc): string | undefined {
     if (amount === '0' || amount === undefined || amount === '') {
       return '0.00';
     }
-
     const numAmount = BigNumber.from(amount);
     const numberType: string = type ? type : 'wei';
-    const optRound = round ? round : false;
+    const optRound = round ? round : true;
     const decimalPoint: number = decimalPlaces ? decimalPlaces : 2;
     if (amount === undefined) {
       throw new Error(`amount is undefined`);

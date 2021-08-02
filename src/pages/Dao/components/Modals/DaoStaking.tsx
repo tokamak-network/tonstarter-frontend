@@ -20,6 +20,7 @@ import {selectModalType} from 'store/modal.reducer';
 import {onKeyDown, useInput} from 'hooks/useInput';
 import {useModal} from 'hooks/useModal';
 import {useUser} from 'hooks/useUser';
+import {useToast} from 'hooks/useToast';
 import {useState, useEffect, useRef} from 'react';
 import {stakeTOS} from '../utils/stakeTOS';
 
@@ -45,6 +46,8 @@ export const DaoStakeModal = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {signIn, account, library} = useUser();
+  const {toastMsg} = useToast();
+
   const [selectPeriod, setSelectPeriod] = useState<string | undefined>(
     undefined,
   );
@@ -292,23 +295,34 @@ export const DaoStakeModal = () => {
               fontSize="14px"
               _hover={btnDisabled ? {} : {...theme.btnHover}}
               disabled={btnDisabled}
-              // onClick={() => {
-              //   handleOpenConfirmModal({
-              //     type: 'confirm',
-              //     data: {
-              //       amount: value,
-              //       // period,
-              //       action: () => {
-              //       },
-              //     },
-              //   });
-              // }}
               onClick={() => {
-                stakeTOS({
-                  account,
-                  library,
-                  amount: value.replaceAll(',', ''),
-                  period: dateValue,
+                if (
+                  Number(value.replaceAll(',', '')) >
+                  Number(data?.data?.userTosBalance)
+                ) {
+                  return toastMsg({
+                    status: 'error',
+                    title: 'Error',
+                    description: 'Balance is not enough',
+                    duration: 5000,
+                    isClosable: true,
+                  });
+                }
+                handleOpenConfirmModal({
+                  type: 'confirm',
+                  data: {
+                    from: 'dao/stake',
+                    amount: value,
+                    period: dateValue,
+                    action: () =>
+                      stakeTOS({
+                        account,
+                        library,
+                        amount: value.replaceAll(',', ''),
+                        period: dateValue,
+                        handleCloseModal: handleCloseModal(),
+                      }),
+                  },
                 });
               }}>
               Stake

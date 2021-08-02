@@ -13,47 +13,28 @@ import {
   useColorMode,
 } from '@chakra-ui/react';
 import {claimReward} from '../actions';
-import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {closeModal, selectModalType} from 'store/modal.reducer';
-import {useEffect, useState, useCallback} from 'react';
-import {getUserBalance} from 'client/getUserBalance';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectModalType} from 'store/modal.reducer';
 import {useUser} from 'hooks/useUser';
+import {useModal} from 'hooks/useModal';
+import {CloseButton} from 'components/Modal';
 
 export const ClaimOptionModal = () => {
   const {account, library} = useUser();
   const theme = useTheme();
   const {colorMode} = useColorMode();
-  const [claimAmount, setClaimAmount] = useState('0');
+  const {handleCloseModal} = useModal();
 
   const {data} = useAppSelector(selectModalType);
-  const dispatch = useAppDispatch();
-  const claimed = data?.data?.canRewardAmount;
-
-  useEffect(() => {
-    async function getCanClaimAmount() {
-      if (data.data.contractAddress) {
-        const result = await getUserBalance(data.data.contractAddress);
-        if (result) {
-          const claimAmount = result.rewardTosBalance;
-          if (claimAmount) {
-            setClaimAmount(claimAmount);
-          }
-        }
-      }
-    }
-    getCanClaimAmount();
-    /*eslint-disable*/
-  }, []);
-
-  const handleCloseModal = useCallback(() => {
-    dispatch(closeModal());
-  }, [dispatch]);
+  const {
+    data: {contractAddress, tosBalance},
+  } = data;
 
   return (
     <Modal
       isOpen={data.modal === 'claim' ? true : false}
       isCentered
-      onClose={() => dispatch(closeModal())}>
+      onClose={handleCloseModal}>
       <ModalOverlay />
       <ModalContent
         fontFamily={theme.fonts.roboto}
@@ -61,6 +42,7 @@ export const ClaimOptionModal = () => {
         w="350px"
         pt="25px"
         pb="25px">
+        <CloseButton closeFunc={handleCloseModal}></CloseButton>
         <ModalBody p={0}>
           <Box
             pb={'1.250em'}
@@ -76,7 +58,7 @@ export const ClaimOptionModal = () => {
               Claim
             </Heading>
             <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
-              You can claim {claimAmount} TOS
+              You can claim {tosBalance} TOS
             </Text>
           </Box>
 
@@ -93,30 +75,28 @@ export const ClaimOptionModal = () => {
                 fontSize={'26px'}
                 fontWeight={600}
                 color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                {claimAmount} TOS
+                {tosBalance} TOS
               </Text>
             </Box>
           </Stack>
 
           <Box as={Flex} justifyContent={'center'}>
             <Button
-              disabled={Number(claimed) <= 0}
+              disabled={Number(tosBalance) <= 0}
               w={'150px'}
               bg={'blue.500'}
               color="white.100"
               fontSize="14px"
               _hover={{backgroundColor: 'blue.100'}}
-              onClick={() =>
-                claimReward({
-                  userAddress: account,
-                  stakeContractAddress: data.data.contractAddress,
-                  saleEndTime: data.data.saleEndTime,
-                  library: library,
-                  canRewardAmount: data.data.canRewardAmount,
-                  myEarned: data.data.myearned,
-                  handleCloseModal: handleCloseModal(),
-                })
-              }>
+              onClick={() => {
+                if (account) {
+                  claimReward({
+                    account,
+                    library,
+                    stakeContractAddress: contractAddress,
+                  }) && handleCloseModal();
+                }
+              }}>
               Claim
             </Button>
           </Box>

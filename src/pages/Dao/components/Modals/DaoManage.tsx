@@ -9,34 +9,36 @@ import {
   Button,
   Flex,
   Wrap,
-  Image,
   useTheme,
   useColorMode,
   Input,
-  Select,
   Radio,
   RadioGroup,
 } from '@chakra-ui/react';
 import React from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
-// import {onKeyDown, useInput} from 'hooks/useInput';
+import {onKeyDown, useInput} from 'hooks/useInput';
 import {useModal} from 'hooks/useModal';
 import {useUser} from 'hooks/useUser';
 import {useState, useEffect} from 'react';
 import {Scrollbars} from 'react-custom-scrollbars-2';
 import backArrowIcon from 'assets/svgs/back_arrow_icon.svg';
 import {useRef} from 'react';
+import {increaseAmount, extendPeriod} from '../utils';
+import {getUserTosBalance} from 'client/getUserBalance';
 
 interface Stake {
-  address: string;
-  amount: string;
-  period: string;
+  lockId: string;
+  lockedBalance: string;
+  end: false;
+  periodDays: number;
+  periodweeks: number;
 }
 
 type TosStakeList = Stake[] | undefined;
 
-type RadioSelect = 'select_amount' | 'select_period';
+// type RadioSelect = 'select_amount' | 'select_period';
 
 const themeDesign = {
   border: {
@@ -77,34 +79,59 @@ const themeDesign = {
 
 export const DaoManageModal = () => {
   const {data} = useAppSelector(selectModalType);
+  const {stakeList} = data.data;
   const [edit, setEdit] = useState(false);
+  const [selectLockId, setSelectLockId] = useState('');
   const [select, setSelect] = useState('select_amount');
+  const [balance, setBalance] = useState('0');
   const [tosStakeList, setTosStakeList] = useState<TosStakeList>(undefined);
+  const {value, setValue, onChange} = useInput('0');
+  const {value: periodValue, onChange: periodOnchange} = useInput('0');
+
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {signIn, account, library} = useUser();
   const {btnStyle} = theme;
-  const {handleCloseModal, handleOpenConfirmModal} = useModal();
+  const {handleCloseModal} = useModal();
 
   const focusTarget = useRef<any>([]);
 
   useEffect(() => {
-    const dummyData: Stake[] = [
-      {address: 'temp1', amount: '1,000,000', period: '23'},
-      {address: 'temp2', amount: '1,000,000', period: '23'},
-      {address: 'temp3', amount: '1,000,000', period: '23'},
-      {address: 'temp4', amount: '1,000,000', period: '23'},
-      {address: 'temp5', amount: '1,000,000', period: '23'},
-      {address: 'temp6', amount: '1,000,000', period: '23'},
-    ];
+    if (stakeList) {
+      setTosStakeList(stakeList);
+    }
+  }, [signIn, account, library, stakeList]);
 
-    //set the data set for rendering stake list
-    setTosStakeList(dummyData);
-  }, [signIn, account, library]);
+  useEffect(() => {
+    async function getTosBalance() {
+      if (account !== undefined) {
+        const res = await getUserTosBalance(account, library);
+        if (res !== undefined) {
+          setBalance(res);
+        }
+      }
+    }
+    if (signIn) {
+      getTosBalance();
+    } else {
+      setBalance('-');
+    }
+    /*eslint-disable*/
+  }, []);
 
   if (signIn === false) {
     return <></>;
   }
+
+  const [test, setTest] = useState('');
+
+  const testOnChange = (e: any) => {
+    const {
+      target: {value},
+    } = e;
+    console.log(value);
+    setTest(value);
+  };
 
   const MainScreen = () => {
     return (
@@ -130,7 +157,7 @@ export const DaoManageModal = () => {
           <Scrollbars
             style={{
               width: '100%',
-              height: '395px',
+              height: '330px',
               display: 'flex',
               position: 'relative',
             }}
@@ -148,7 +175,7 @@ export const DaoManageModal = () => {
               <div style={{background: 'black'}}></div>
             )}>
             <Wrap display="flex" style={{marginTop: '0', marginBottom: '20px'}}>
-              {tosStakeList?.map((data: any, index: number) => {
+              {tosStakeList?.map((stake: any, index: number) => {
                 return (
                   <Flex
                     ref={(el) => (focusTarget.current[index] = el)}
@@ -162,7 +189,7 @@ export const DaoManageModal = () => {
                       fontSize={'0.813em'}
                       fontWeight={600}
                       fontColor={themeDesign.scrollNumberFont[colorMode]}>
-                      {index}
+                      {index + 1}
                     </Text>
                     <Box w={'7em'}>
                       <Text
@@ -174,7 +201,7 @@ export const DaoManageModal = () => {
                         fontSize={'1em'}
                         fontColor={themeDesign.scrollNumberFont[colorMode]}
                         fontWeight={'bold'}>
-                        {data.amount}
+                        {Number(stake.lockedBalance).toLocaleString()}
                         <span
                           style={{
                             fontSize: '0.688em',
@@ -194,13 +221,13 @@ export const DaoManageModal = () => {
                         fontSize={'1em'}
                         fontColor={themeDesign.scrollNumberFont[colorMode]}
                         fontWeight={'bold'}>
-                        {data.period}
+                        {stake.periodWeeks}
                         <span
                           style={{
                             fontSize: '0.688em',
                             paddingLeft: '0.188em',
                           }}>
-                          day
+                          {stake.periodWeeks > 1 ? 'weeks' : 'week'}
                         </span>
                       </Text>
                     </Box>
@@ -212,7 +239,10 @@ export const DaoManageModal = () => {
                       fontWeight={400}
                       border={themeDesign.btnBorder[colorMode]}
                       _hover={{}}
-                      onClick={() => setEdit(true)}>
+                      onClick={() => {
+                        setEdit(true);
+                        setSelectLockId(stake.lockId);
+                      }}>
                       Edit
                     </Button>
                   </Flex>
@@ -231,16 +261,10 @@ export const DaoManageModal = () => {
             _hover={theme.btnHover.checkDisable({signIn})}
             disabled={!signIn}
             onClick={() => {
-              handleOpenConfirmModal({
-                type: 'confirm',
-                data: {
-                  // amount: value,
-                  // period,
-                  action: () => {},
-                },
-              });
+              setEdit(false);
+              handleCloseModal();
             }}>
-            Manage
+            Close
           </Button>
         </Box>
       </ModalBody>
@@ -251,7 +275,7 @@ export const DaoManageModal = () => {
     return (
       <ModalBody p={0}>
         <RadioGroup onChange={setSelect} value={select}>
-          <Flex h="524px" flexDir="column" alignItems="center">
+          <Flex h="460px" flexDir="column" alignItems="center">
             <Flex
               w={'100%'}
               borderBottom={
@@ -261,13 +285,20 @@ export const DaoManageModal = () => {
               }
               pl={'1.250em'}
               pb={'1.250em'}>
-              <Image
-                w="1.375em"
-                h="1.375em"
+              <img
+                style={{
+                  width: '1.375em',
+                  height: '1.375em',
+                  marginTop: '0.2em',
+                  marginRight: '0.625em',
+                  cursor: 'pointer',
+                }}
+                alt={'arrowBtn'}
                 src={backArrowIcon}
-                mr="0.625em"
-                cursor={'pointer'}
-                onClick={() => setEdit(false)}></Image>
+                onClick={() => {
+                  setEdit(false);
+                  setSelectLockId('');
+                }}></img>
               <Flex flexDir="column" alignItems="flex-start">
                 <Heading
                   fontSize={'1.250em'}
@@ -304,6 +335,12 @@ export const DaoManageModal = () => {
                 w={'143px'}
                 h="32px"
                 mr={'10px'}
+                // value={test}
+                // onKeyDown={onKeyDown}
+                // onChange={testOnChange}
+                _focus={{
+                  borderWidth: 0,
+                }}
                 {...(select === 'select_period'
                   ? themeDesign.inputVariant[colorMode]
                   : '')}></Input>
@@ -315,7 +352,9 @@ export const DaoManageModal = () => {
                 fontWeight={400}
                 border={themeDesign.editBorder[colorMode]}
                 _hover={{}}
-                onClick={() => setEdit(true)}
+                onClick={() => {
+                  setValue(balance);
+                }}
                 isDisabled={select === 'select_period' ? true : false}>
                 MAX
               </Button>
@@ -339,6 +378,8 @@ export const DaoManageModal = () => {
                 h="32px"
                 mr={'0.750em'}
                 fontSize={'0.750em'}
+                value={periodValue}
+                onChange={periodOnchange}
                 {...(select === 'select_amount'
                   ? themeDesign.inputVariant[colorMode]
                   : '')}></Input>
@@ -358,7 +399,28 @@ export const DaoManageModal = () => {
                 _hover={theme.btnHover.checkDisable({signIn})}
                 disabled={!signIn}
                 mr={'15px'}
-                onClick={() => {}}>
+                onClick={() => {
+                  if (select === 'select_amount') {
+                    if (account !== undefined && selectLockId !== '') {
+                      increaseAmount({
+                        account,
+                        library,
+                        lockId: selectLockId,
+                        amount: value,
+                      });
+                    }
+                  }
+                  if (select === 'select_period') {
+                    if (account !== undefined && selectLockId !== '') {
+                      extendPeriod({
+                        account,
+                        library,
+                        lockId: selectLockId,
+                        period: Number(value),
+                      });
+                    }
+                  }
+                }}>
                 OK
               </Button>
               <Button
@@ -368,7 +430,10 @@ export const DaoManageModal = () => {
                 fontSize="14px"
                 _hover={{}}
                 disabled={!signIn}
-                onClick={() => {}}>
+                onClick={() => {
+                  setEdit(false);
+                  setSelectLockId('');
+                }}>
                 Cancel
               </Button>
             </Box>

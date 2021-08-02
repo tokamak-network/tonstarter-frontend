@@ -4,9 +4,7 @@ import {formatEther} from '@ethersproject/units';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import {Contract} from '@ethersproject/contracts';
 import {convertNumber} from 'utils/number';
-import {BASE_PROVIDER} from 'constants/index'
-import * as CoinageABI from 'services/abis/AutoRefactorCoinage.json';
-import {BigNumber} from 'ethers';
+import {BASE_PROVIDER} from 'constants/index';
 
 export const fetchManageModalPayload = async (
   library: any,
@@ -23,14 +21,13 @@ export const fetchManageModalPayload = async (
   return res;
 };
 
-const {TokamakLayer2_ADDRESS} = DEPLOYED;
-
 const getUserInfoForManage = async (
   library: any,
   account: string,
   contractAddress: string,
   vaultAddress: string,
 ) => {
+  const {TokamakLayer2_ADDRESS} = DEPLOYED;
   const currentBlock = await BASE_PROVIDER.getBlockNumber();
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, library);
   const L2Contract = getTokamakContract('TokamakLayer2', library);
@@ -38,8 +35,6 @@ const getUserInfoForManage = async (
   const WTON = getTokamakContract('WTON', library);
   const depositManager = getTokamakContract('DepositManager', library);
   const seigManager = getTokamakContract('SeigManager', library);
-  const coinageAddress = await seigManager.coinages(TokamakLayer2_ADDRESS)
-  const Coinage = new Contract(coinageAddress, CoinageABI.abi, library)
 
   return Promise.all([
     StakeTONContract?.userStaked(account),
@@ -51,9 +46,6 @@ const getUserInfoForManage = async (
     TON.balanceOf(contractAddress),
     StakeTONContract.canRewardAmount(account, currentBlock),
     depositManager.globalWithdrawalDelay(),
-    Coinage.balanceOf(contractAddress),
-    Coinage.balanceOf(contractAddress, {blockTag: currentBlock})
-    // Coinage.balanceOf(contractAddress, {blockNumber: currentBlock}),
   ])
     .then((result) => {
       return {
@@ -85,13 +77,6 @@ const getUserInfoForManage = async (
           amount: result[7],
         }),
         globalWithdrawalDelay: result[8].toString(),
-        coinageBalance: convertNumber({
-          amount: result[9],
-        }),
-        // maxBalance: convertNumber({
-        //   amount: result[10],
-        // })
-        maxBalance: BigNumber.from(result[10])
       };
     })
     .catch((e) => console.log(e));

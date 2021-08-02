@@ -13,60 +13,39 @@ import {
   useTheme,
   useColorMode,
 } from '@chakra-ui/react';
-import React, {useCallback, useState, useEffect} from 'react';
-import {useWeb3React} from '@web3-react/core';
-import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {openModal, selectModalType} from 'store/modal.reducer';
-import {fetchSwapPayload} from './utils/fetchSwapPayload';
+import React, {useCallback, useState} from 'react';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectModalType} from 'store/modal.reducer';
 import {swapWTONtoTOS} from '../actions';
+import {useUser} from 'hooks/useUser';
+import {useModal} from 'hooks/useModal';
+import {useCheckBalance} from 'hooks/useCheckBalance';
+import {CloseButton} from 'components/Modal/CloseButton';
+import {convertFromRayToWei, convertToRay} from 'utils/number';
 
 export const SwapModal = () => {
-  const {account, library} = useWeb3React();
-  const {data} = useAppSelector(selectModalType);
+  const {sub} = useAppSelector(selectModalType);
+  const {account, library} = useUser();
+  const {
+    data: {contractAddress, swapBalance, originalSwapBalance},
+  } = sub;
   const theme = useTheme();
   const {colorMode} = useColorMode();
-  const dispatch = useAppDispatch();
-
-  const stakeBalanceTON = data?.data?.stakeContractBalanceTon;
-  const totalStakedAmountL2 = data?.data?.totalStakedAmountL2;
-  const totalStakedAmount = data?.data?.totalStakedAmount;
-  const totalPendingUnstakedAmountL2 = data?.data?.totalPendingUnstakedAmountL2;
-
-  const [swappedBalance, setSwappedBalance] = useState<string | undefined>(
-    undefined,
-  );
-
-  let balance =
-    Number(stakeBalanceTON) +
-    Number(totalStakedAmountL2) -
-    Number(totalStakedAmount) +
-    Number(totalPendingUnstakedAmountL2) -
-    Number(swappedBalance);
   const [value, setValue] = useState<number>(0);
-
-  useEffect(() => {
-    async function swapPayload(data: any) {
-      const result = await fetchSwapPayload(
-        data.library,
-        data.account,
-        data.contractAddress,
-      );
-      return setSwappedBalance(result === undefined ? '0.00' : result);
-    }
-    swapPayload(data);
-  }, [data]);
+  const {handleCloseConfirmModal} = useModal();
+  const {checkBalance} = useCheckBalance();
 
   const handleChange = useCallback((e) => setValue(e.target.value), []);
-  const setMax = useCallback((_e) => setValue(balance), [balance]);
+  const setMax = useCallback((_e) => setValue(swapBalance), [swapBalance]);
 
   const handleCloseModal = () => {
-    dispatch(openModal({type: 'manage', data: data.data}));
+    handleCloseConfirmModal();
     setValue(0);
   };
 
   return (
     <Modal
-      isOpen={data.modal === 'swap' ? true : false}
+      isOpen={sub.type === 'manage_swap' ? true : false}
       isCentered
       onClose={handleCloseModal}>
       <ModalOverlay />
@@ -76,8 +55,9 @@ export const SwapModal = () => {
         w="350px"
         pt="25px"
         pb="25px">
+        <CloseButton closeFunc={handleCloseModal}></CloseButton>
         <ModalBody p={0}>
-          <Box 
+          <Box
             pb={'1.250em'}
             borderBottom={
               colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
@@ -90,9 +70,6 @@ export const SwapModal = () => {
               textAlign={'center'}>
               Swap
             </Heading>
-            {/* <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
-              
-            </Text> */}
           </Box>
 
           <Stack
@@ -144,7 +121,7 @@ export const SwapModal = () => {
               <Text
                 fontSize={'18px'}
                 color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                {balance} TON
+                {swapBalance} TON
               </Text>
             </Box>
           </Stack>
@@ -156,16 +133,26 @@ export const SwapModal = () => {
               color="white.100"
               fontSize="14px"
               _hover={{...theme.btnHover}}
-              onClick={() =>
-                swapWTONtoTOS({
-                  userAddress: account,
-                  amount: value.toString(),
-                  contractAddress: data?.data?.contractAddress,
-                  status: data?.data?.status,
-                  library: library,
-                  handleCloseModal: handleCloseModal,
-                })
-              }>
+              onClick={() => {
+                const isBalance = checkBalance(
+                  Number(value),
+                  Number(swapBalance),
+                );
+                if (isBalance) {
+                  const amountRay = convertToRay(value.toString());
+                  swapWTONtoTOS({
+                    userAddress: account,
+                    amount:
+                      isBalance !== 'balanceAll'
+                        ? amountRay
+                        : originalSwapBalance.toString(),
+                    contractAddress,
+                    library,
+                  }).then(() => {
+                    handleCloseModal();
+                  });
+                }
+              }}>
               Swap
             </Button>
           </Box>

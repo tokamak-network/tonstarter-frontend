@@ -16,12 +16,14 @@ import {openModal} from 'store/modal.reducer';
 type PropsType = {
   userData: User;
   signIn: boolean;
+  stakeList: any;
 };
 
 export const MySTOS = (props: PropsType) => {
-  const {userData, signIn} = props;
+  const {userData, signIn, stakeList} = props;
   const dispatch = useDispatch();
   const [balance, setbalance] = useState('-');
+  const [btnDisabled, setBtnDisabled] = useState(true);
   const theme = useTheme();
   const {btnStyle, btnHover} = theme;
   const {colorMode} = useColorMode();
@@ -42,6 +44,9 @@ export const MySTOS = (props: PropsType) => {
       const res = await getUserSTOSBalance({account: address, library});
       if (res !== undefined) {
         setbalance(res);
+        if (stakeList.length !== 0) {
+          setBtnDisabled(false);
+        }
       }
     }
     if (signIn) {
@@ -49,7 +54,7 @@ export const MySTOS = (props: PropsType) => {
     } else {
       setbalance('-');
     }
-  }, [signIn, userData]);
+  }, [signIn, userData, stakeList]);
 
   return (
     <Flex
@@ -67,12 +72,12 @@ export const MySTOS = (props: PropsType) => {
             {balance}
           </Text>
           <Text fontSize={'0.813em'} alignSelf="flex-end" mb={0.5}>
-            TOS
+            sTOS
           </Text>
         </Flex>
       </Box>
       <Button
-        {...(signIn
+        {...(signIn && !btnDisabled
           ? {...btnStyle.btnAble()}
           : {...btnStyle.btnDisable({colorMode})})}
         w={'150px'}
@@ -80,13 +85,13 @@ export const MySTOS = (props: PropsType) => {
         p={0}
         fontSize={'14px'}
         fontWeight={400}
-        isDisabled={!signIn}
-        _hover={btnHover.checkDisable({signIn})}
+        isDisabled={!signIn || btnDisabled}
+        _hover={btnHover.backgroundColor}
         onClick={() =>
           dispatch(
             openModal({
               type: 'dao_manage',
-              data: {userData, userTosBalance: balance},
+              data: {userData, userTosBalance: balance, stakeList},
             }),
           )
         }>

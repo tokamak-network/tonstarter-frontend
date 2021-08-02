@@ -23,7 +23,13 @@ export type Modal = {
   data?: any;
 };
 
-type SubModalTypes = 'confirm' | undefined;
+type SubModalTypes =
+  | 'confirm'
+  | 'manage_stakeL2'
+  | 'manage_unstakeL2'
+  | 'manage_withdraw'
+  | 'manage_swap'
+  | undefined;
 
 type SubModal = {
   type: SubModalTypes;
