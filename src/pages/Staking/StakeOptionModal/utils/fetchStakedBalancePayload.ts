@@ -70,14 +70,6 @@ const getStakedBalance = async (
   const depositManager = getTokamakContract('DepositManager', library);
   const seigManager = getTokamakContract('SeigManager', library);
 
-  const test = await depositManager.withdrawalDelay(contractAddress);
-  const test2 = await depositManager.withdrawalDelay(
-    DEPLOYED.TokamakLayer2_ADDRESS,
-  );
-  console.log(depositManager);
-  console.log(test.toString());
-  console.log(test2.toString());
-
   return Promise.all([
     StakeTONContract.totalStakedAmount(),
     //should convert to ray from wei for seigManager
