@@ -150,12 +150,12 @@ export const SwapModal = () => {
             justifyContent={'center'}
             alignItems={'center'}
             w={'full'}>
-              <SwapCurrencyPanel
+              {/* <SwapCurrencyPanel
                 value={formattedAmounts[Field.INPUT]}
                 onUserInput={handleTypeInput}
-              />
+              /> */}
               
-            {/* <Input
+            <Input
               variant={'outline'}
               borderWidth={0}
               textAlign={'center'}
@@ -168,7 +168,7 @@ export const SwapModal = () => {
               _focus={{
                 borderWidth: 0,
               }}
-            /> */}
+            />
             <Box position={'absolute'} right={5}>
               <Button
                 onClick={setMax}
