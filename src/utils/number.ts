@@ -27,6 +27,7 @@ export const convertFromWeiToRay = (num: string) => {
 };
 
 export const convertToWei = (num: string) => toWei(num, 'ether');
+export const convertToRay = (num: string) => toWei(num, 'gether');
 
 function roundNumber(args: RoundFunc): string {
   const {r_amount, r_maxDecimalDigits, r_opt} = args;

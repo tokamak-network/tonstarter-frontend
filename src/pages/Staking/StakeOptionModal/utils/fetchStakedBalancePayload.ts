@@ -96,6 +96,7 @@ const getStakedBalance = async (
         totalPendingUnstakedAmountL2: result[2],
         stakeContractBalanceWton: result[3],
         stakeContractBalanceTon: result[4],
+        swapBalance: getSwapBalance(result),
       },
     };
   });

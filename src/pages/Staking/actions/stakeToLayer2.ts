@@ -2,7 +2,6 @@ import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import store from 'store';
 import {setTxPending} from 'store/tx.reducer';
-import {convertToWei} from 'utils/number';
 import {DEPLOYED} from 'constants/index';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import {toastWithReceipt} from 'utils';

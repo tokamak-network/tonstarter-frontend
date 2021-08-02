@@ -21,12 +21,13 @@ import {useUser} from 'hooks/useUser';
 import {useModal} from 'hooks/useModal';
 import {useCheckBalance} from 'hooks/useCheckBalance';
 import {CloseButton} from 'components/Modal/CloseButton';
+import {convertFromRayToWei, convertToRay} from 'utils/number';
 
 export const SwapModal = () => {
   const {sub} = useAppSelector(selectModalType);
   const {account, library} = useUser();
   const {
-    data: {contractAddress, swapBalance},
+    data: {contractAddress, swapBalance, originalSwapBalance},
   } = sub;
   const theme = useTheme();
   const {colorMode} = useColorMode();
@@ -138,13 +139,18 @@ export const SwapModal = () => {
                   Number(swapBalance),
                 );
                 if (isBalance) {
+                  const amountRay = convertToRay(value.toString());
                   swapWTONtoTOS({
                     userAddress: account,
-                    amount: value.toString(),
+                    amount:
+                      isBalance !== 'balanceAll'
+                        ? amountRay
+                        : originalSwapBalance.toString(),
                     contractAddress,
                     library,
+                  }).then(() => {
+                    handleCloseModal();
                   });
-                  handleCloseModal();
                 }
               }}>
               Swap

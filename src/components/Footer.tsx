@@ -111,7 +111,7 @@ export const Footer = () => {
               fontSize={13}
               fontFamily={theme.fonts.body}
               fontWeight={'normal'}>
-              info@onther.io
+              hello@tokamak.network
             </Text>
           </Box>
         </Flex>

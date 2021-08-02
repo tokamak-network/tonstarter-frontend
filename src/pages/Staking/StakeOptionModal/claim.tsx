@@ -23,12 +23,12 @@ export const ClaimOptionModal = () => {
   const {account, library} = useUser();
   const theme = useTheme();
   const {colorMode} = useColorMode();
+  const {handleCloseModal} = useModal();
 
   const {data} = useAppSelector(selectModalType);
   const {
     data: {contractAddress, tosBalance},
   } = data;
-  const {handleCloseModal} = useModal();
 
   return (
     <Modal
