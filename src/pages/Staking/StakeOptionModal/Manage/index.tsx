@@ -66,11 +66,11 @@ export const ManageModal = () => {
   const [swapDisabled, setSwapDisabled] = useState(true);
 
   //Balances
-  const [availableBalance, setAvailableBalance] = useState('-');
+  const [availableBalance, setAvailableBalance] = useState('0');
   const [totalStaked, setTotalStaked] = useState('-');
   const [stakedL2, setStakdL2] = useState('-');
   const [pendingL2Balance, setPendingL2Balance] = useState('-');
-  const [swapBalance, setSwapBalance] = useState('-');
+  const [swapBalance, setSwapBalance] = useState('0');
   const [canWithdralAmount, setCanWithdralAmount] = useState(0);
 
   //original balances
@@ -150,6 +150,7 @@ export const ManageModal = () => {
         const currentBlock = await BASE_PROVIDER.getBlockNumber();
         const res =
           miningEndTime - Number(globalWithdrawalDelay) <= currentBlock;
+        console.log(availableBalance);
         const checkBalance = Number(availableBalance) <= 0 ? true : false;
         return setStakeL2Disabled(res || checkBalance);
       }
@@ -162,7 +163,6 @@ export const ManageModal = () => {
     };
 
     const btnDisableWithdraw = () => {
-      console.log(canWithdralAmount);
       return canWithdralAmount <= 0
         ? setWithdrawDisable(true)
         : setWithdrawDisable(false);
@@ -213,11 +213,11 @@ export const ManageModal = () => {
     setUnstakeL2Disable(true);
     setWithdrawDisable(true);
     setSwapDisabled(true);
-    setAvailableBalance('-');
+    setAvailableBalance('0');
     setTotalStaked('-');
     setStakdL2('-');
     setPendingL2Balance('-');
-    setSwapBalance('-');
+    setSwapBalance('0');
     setCanWithdralAmount(0);
     setOriginalStakeBalance(0);
     setOriginalSwapBalance(0);

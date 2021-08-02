@@ -22,9 +22,6 @@ export const extendPeriod = async (args: ExtendPeriod) => {
     library,
   );
 
-  console.log('**EXTEND PERIOD**');
-  console.log(lockId, period);
-
   const signer = getSigner(library, account);
   const unlockTime = moment().subtract(-Math.abs(period), 'weeks').unix();
   const res = await LockTOSContract.connect(signer).increaseUnlockTime(

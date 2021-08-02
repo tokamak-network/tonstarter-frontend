@@ -26,9 +26,6 @@ export const increaseAmount = async (args: IncreaseAmount) => {
   const weiAmount = convertToWei(amount);
   const signer = getSigner(library, account);
 
-  console.log('**INCREASE AMOUNT**');
-  console.log(lockId, weiAmount);
-
   await TosContract.connect(signer).approve(LockTOSContract.address, weiAmount);
 
   const res = await TosContract.connect(signer).approve(

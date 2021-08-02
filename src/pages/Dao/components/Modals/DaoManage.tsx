@@ -119,17 +119,12 @@ export const DaoManageModal = () => {
     /*eslint-disable*/
   }, []);
 
-  if (signIn === false) {
-    return <></>;
-  }
-
   const [test, setTest] = useState('');
 
   const testOnChange = (e: any) => {
     const {
       target: {value},
     } = e;
-    console.log(value);
     setTest(value);
   };
 

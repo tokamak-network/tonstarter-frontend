@@ -24,18 +24,18 @@ export const stakeTOS = async (args: StkaeTOS) => {
     LockTOSABI.abi,
     library,
   );
+
   const tosContract = getContract(TOS_ADDRESS, TOSABI.abi, library);
   const weiAmount = convertToWei(amount);
-  const unlockTime = moment().subtract(-Math.abs(period), 'weeks').unix();
+  // const unlockTime = moment().subtract(-Math.abs(period), 'weeks').format('ss');
+  const unlockTime = Number(period) * 7 * 24 * 60 * 60;
+
   const signer = getSigner(library, account);
   const res = await tosContract
     .connect(signer)
     .approve(LockTOSContract.address, weiAmount);
 
-  console.log('**STAKE TOS**');
-  console.log(`unlickTime : ${unlockTime}`);
-
-  const fres = await res.wait(2).then(() => {
+  const fres = await res.wait().then(() => {
     return LockTOSContract.connect(signer).createLock(weiAmount, unlockTime);
   });
 

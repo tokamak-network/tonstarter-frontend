@@ -93,8 +93,6 @@ export const STOS = () => {
     /*eslint-disable*/
   }, [transactionType, blockNumber]);
 
-  console.log(stakeList);
-
   return (
     <Flex
       w={420}
