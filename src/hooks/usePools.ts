@@ -35,7 +35,7 @@ export function usePools(
       return [token0, token1, feeAmount]
     })
   }, [chainId, poolKeys])
-
+  console.log(transformed)
   const poolAddresses: (string | undefined)[] = useMemo(() => {
     const v3CoreFactoryAddress = chainId && V3_CORE_FACTORY_ADDRESSES[chainId]
 
@@ -49,10 +49,11 @@ export function usePools(
       })
     })
   }, [chainId, transformed])
-
+  console.log(poolAddresses)
   const slot0s = useMultipleContractSingleData(poolAddresses, POOL_STATE_INTERFACE, 'slot0')
   const liquidities = useMultipleContractSingleData(poolAddresses, POOL_STATE_INTERFACE, 'liquidity')
-
+  console.log(slot0s)
+  console.log(liquidities)
   return useMemo(() => {
     return poolKeys.map((_key, index) => {
       const [token0, token1, fee] = transformed[index] ?? []

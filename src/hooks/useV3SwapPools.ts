@@ -17,7 +17,7 @@ export function useV3SwapPools(
   loading: boolean
 } {
   const allCurrencyCombinations = useAllCurrencyCombinations(currencyIn, currencyOut)
-
+  console.log(allCurrencyCombinations)
   const allCurrencyCombinationsWithAllFees: [Token, Token, FeeAmount][] = useMemo(
     () =>
       allCurrencyCombinations.reduce<[Token, Token, FeeAmount][]>((list, [tokenA, tokenB]) => {
@@ -29,9 +29,9 @@ export function useV3SwapPools(
       }, []),
     [allCurrencyCombinations]
   )
-
+  console.log(allCurrencyCombinationsWithAllFees)
   const pools = usePools(allCurrencyCombinationsWithAllFees)
-
+  console.log(pools)
   return useMemo(() => {
     return {
       pools: pools

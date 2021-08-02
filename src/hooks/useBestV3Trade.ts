@@ -24,17 +24,21 @@ export function useBestV3TradeExactIn(
   currencyOut?: Currency
 ): { state: V3TradeState; trade: Trade<Currency, Currency, TradeType.EXACT_INPUT> | null } {
   const quoter = useV3Quoter()
+  console.log(amountIn?.currency)
+  console.log(currencyOut)
+  console.log(quoter)
   const { routes, loading: routesLoading } = useAllV3Routes(amountIn?.currency, currencyOut)
-
+  console.log(routes)
+  console.log(amountIn?.quotient.toString(16))
   const quoteExactInInputs = useMemo(() => {
     return routes.map((route) => [
       encodeRouteToPath(route, false),
       amountIn ? `0x${amountIn.quotient.toString(16)}` : undefined,
     ])
   }, [amountIn, routes])
-
+  console.log(quoteExactInInputs)
   const quotesResults = useSingleContractMultipleData(quoter, 'quoteExactInput', quoteExactInInputs)
-
+  console.log(quotesResults)
   return useMemo(() => {
     if (!amountIn || !currencyOut) {
       return {

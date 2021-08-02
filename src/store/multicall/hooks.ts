@@ -5,6 +5,7 @@ import { useEffect, useMemo } from 'react'
 import { useAppDispatch, useAppSelector } from 'hooks/useRedux';
 import { useActiveWeb3React } from '../../hooks/useWeb3'
 import { useBlockNumber } from '../application/hooks'
+import { RootState } from 'store/reducers';
 import {
   addMulticallListeners,
   Call,
@@ -50,8 +51,11 @@ export const NEVER_RELOAD: ListenerOptions = {
 // the lowest level call for subscribing to contract data
 function useCallsData(calls: (Call | undefined)[], options?: ListenerOptions): CallResult[] {
   const { chainId } = useActiveWeb3React()
-  const callResults = useAppSelector((state) => state.multicall.callResults)
+  const callResults = useAppSelector((state: RootState) => state.multicall.callResults)
   const dispatch = useAppDispatch()
+  console.log(chainId)
+  console.log(callResults) // check callResult
+  console.log(options)
 
   const serializedCallKeys: string = useMemo(
     () =>
@@ -63,12 +67,16 @@ function useCallsData(calls: (Call | undefined)[], options?: ListenerOptions): C
       ),
     [calls]
   )
+  console.log(serializedCallKeys)
 
   // update listeners when there is an actual change that persists for at least 100ms
   useEffect(() => {
     const callKeys: string[] = JSON.parse(serializedCallKeys)
+    console.log(callKeys)
+    console.log(callKeys.length);
     if (!chainId || callKeys.length === 0) return undefined
     const calls = callKeys.map((key) => parseCallKey(key))
+    console.log(calls)
     dispatch(
       addMulticallListeners({
         chainId,
@@ -235,6 +243,7 @@ export function useMultipleContractSingleData(
   gasRequired?: number
 ): CallState[] {
   const fragment = useMemo(() => contractInterface.getFunction(methodName), [contractInterface, methodName])
+  console.log(fragment)
   const callData: string | undefined = useMemo(
     () =>
       fragment && isValidMethodArgs(callInputs)
@@ -242,6 +251,7 @@ export function useMultipleContractSingleData(
         : undefined,
     [callInputs, contractInterface, fragment]
   )
+  console.log(callData);
 
   const calls = useMemo(
     () =>
@@ -260,7 +270,7 @@ export function useMultipleContractSingleData(
   )
 
   const results = useCallsData(calls, options)
-
+  console.log(results)
   const latestBlockNumber = useBlockNumber()
 
   return useMemo(() => {
