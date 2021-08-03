@@ -124,12 +124,13 @@ export const ManageModal = () => {
           //set original balances
           setOriginalStakeBalance(originalBalance.stakeContractBalanceTon);
           setOriginalSwapBalance(originalBalance.swapBalance);
+
           //calculate swap balance
           if (Number(swapBalance) <= 0) {
-            return setSwapBalance('0');
+            return setSwapBalance('0.00');
           }
           if (Number(stakeContractBalanceTon) >= Number(swapBalance)) {
-            return setSwapBalance(swapBalance);
+            setSwapBalance(swapBalance);
           }
           if (Number(stakeContractBalanceTon) < Number(originalBalance)) {
             return setSwapBalance(stakeContractBalanceTon);
@@ -150,7 +151,6 @@ export const ManageModal = () => {
         const currentBlock = await BASE_PROVIDER.getBlockNumber();
         const res =
           miningEndTime - Number(globalWithdrawalDelay) <= currentBlock;
-        console.log(availableBalance);
         const checkBalance = Number(availableBalance) <= 0 ? true : false;
         return setStakeL2Disabled(res || checkBalance);
       }
@@ -169,8 +169,8 @@ export const ManageModal = () => {
     };
 
     const btnDisableSwap = () => {
-      console.log(swapBalance);
-      return Number(convertNumber({amount: swapBalance, round: false})) <= 0
+      return Number(convertNumber({amount: swapBalance, round: false})) <= 0 ||
+        saleClosed
         ? setSwapDisabled(true)
         : setSwapDisabled(false);
     };
@@ -189,12 +189,10 @@ export const ManageModal = () => {
         checkSale();
       }
 
-      setTimeout(() => {
-        btnDisablestakeL2();
-        btnDisableSwap();
-        btnDisableUnstakeL2();
-        btnDisableWithdraw();
-      }, 1500);
+      btnDisablestakeL2();
+      btnDisableSwap();
+      btnDisableUnstakeL2();
+      btnDisableWithdraw();
     }
 
     /*eslint-disable*/
@@ -206,6 +204,8 @@ export const ManageModal = () => {
     swapBalance,
     transactionType,
     blockNumber,
+    canWithdralAmount,
+    saleClosed,
   ]);
 
   const handleCloseManageModal = () => {
