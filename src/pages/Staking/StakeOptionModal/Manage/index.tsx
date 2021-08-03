@@ -169,8 +169,7 @@ export const ManageModal = () => {
     };
 
     const btnDisableSwap = () => {
-      return Number(convertNumber({amount: swapBalance, round: false})) <= 0 ||
-        saleClosed
+      return Number(convertNumber({amount: swapBalance, round: false})) <= 0
         ? setSwapDisabled(true)
         : setSwapDisabled(false);
     };
