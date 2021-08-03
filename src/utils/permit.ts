@@ -1,5 +1,5 @@
 import {Contract} from '@ethersproject/contracts';
-import {DEPLOYED, permitTOSAddress} from 'constants/index';
+import {DEPLOYED} from 'constants/index';
 import {getSigner} from 'utils/contract';
 import * as TOSABI from 'services/abis/TOS.json';
 import Web3 from 'web3';
@@ -13,9 +13,9 @@ export async function tosPermit(account: string, library: any, amount: number) {
   //@ts-ignore
   const web3 = new Web3(window.ethereum);
   const signer = getSigner(library, account);
-  const {TOS_ADDRESS} = DEPLOYED;
+  const {TOS_ADDRESS, LockTOS_ADDRESS} = DEPLOYED;
   const TOSContract = new Contract(TOS_ADDRESS, TOSABI.abi, library);
-  const to = permitTOSAddress;
+  const to = LockTOS_ADDRESS;
 
   let nonce = await TOSContract.connect(signer).nonces(account);
   nonce = parseInt(nonce);
