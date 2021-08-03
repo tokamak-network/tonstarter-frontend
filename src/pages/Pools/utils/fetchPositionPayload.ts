@@ -25,13 +25,13 @@ const getPositionInfo = async (
       const miningId = await StakeUniswap.getMiningTokenId(positionid);
       const valueById = {
         positionid,
-        ...miningId
+        ...miningId,
       }
       result.push(valueById)
     }
     return {
       positionData: result,
-      saleStartTime: startTime
+      saleStartTime: startTime,
     }
   }
 }

@@ -98,6 +98,7 @@ export const PoolTable: FC<PoolTableProps> = ({
   const [positionData, setPositionData] = useState([]);
   const [account, setAccount] = useState('');
   const [stakingDisable, setStakingDisable] = useState(true);
+
   useEffect(() => {
     async function positionPayload() {
       if (address) {
@@ -107,15 +108,12 @@ export const PoolTable: FC<PoolTableProps> = ({
         );
         // console.log(result)
         // const {positionData, saleStartTime} = result;
-        console.log(positionData)
+        console.log(result)
         let stringResult: any = [];
         for (let i=0; i < result?.positionData.length; i++) {
           stringResult.push(result?.positionData[i]?.positionid.toString())
         }
-
         const nowTime = moment().unix();
-        console.log(nowTime);
-        console.log(result?.saleStartTime.toString())
         nowTime > Number(result?.saleStartTime.toString()) ? setStakingDisable(false) : setStakingDisable(true)
 
         setPositionData(result?.positionData)
@@ -126,8 +124,6 @@ export const PoolTable: FC<PoolTableProps> = ({
     positionPayload();
   }, [data, transactionType, blockNumber, address])
 
-  console.log(positionData)
-  console.log(stakingDisable);
   const position = useQuery(GET_POSITION, {
     variables: {address: account}
   });
@@ -135,23 +131,36 @@ export const PoolTable: FC<PoolTableProps> = ({
   const positionWithVar = useQuery(GET_POSITION_BY_ID, {
     variables: {id: stakingPosition},
   });
+
+  // position.refetch()
   const [positions, setPositions] = useState([]);
   useEffect(() => {
     function getPosition () {
-      if (position.loading || positionWithVar.loading) {
-        setPositions([])
-      } else if (position.data && positionWithVar.data) {
-        const filteredPosition = position.data.positions.filter((data: any) => data.owner === account.toLowerCase())
-        console.log(filteredPosition)
+      // if (position.loading || positionWithVar.loading) {
+      //   setPositions([])
+      // } else 
+      if (position.data && positionWithVar.data) {
         const withStakedPosition = position.data.positions.concat(positionWithVar.data.positions)
         setPositions(withStakedPosition)
+        position.refetch()
       }
     }
     getPosition()
-  }, [transactionType, blockNumber, position.loading, positionWithVar.loading, address])
+  }, [
+    transactionType,
+    blockNumber,
+    position.loading,
+    positionWithVar.loading,
+    position.error,
+    positionWithVar.error,
+    position.data,
+    positionWithVar.data,
+    address
+  ])
 
   console.log(positionWithVar.data)
   console.log(position.data)
+  console.log(positions)
   
 
   const [isOpen, setIsOpen] = useState(
@@ -260,8 +269,8 @@ export const PoolTable: FC<PoolTableProps> = ({
             flexDirection="column">
             {page.map((row: any, i) => {
               const {id} = row.original;
-              const filteredPosition = position.loading || positionWithVar.loading ? 
-                [] : positions.filter((row: any) => id === row.pool.id )
+              const filteredPosition = positions.filter((row: any) => id === row.pool.id )
+              console.log(filteredPosition)
               prepareRow(row);
               return [
                 <chakra.tr
@@ -372,7 +381,7 @@ export const PoolTable: FC<PoolTableProps> = ({
                               }>
                               Volume(24hrs)
                             </Text>
-                            <Text>$ {data.poolDayData[0].volumeUSD}</Text>
+                            <Text>$ {Number(data.poolDayData[0].volumeUSD).toFixed(2)}</Text>
                           </>
                         ) : (
                           ''
@@ -387,7 +396,7 @@ export const PoolTable: FC<PoolTableProps> = ({
                               }>
                               Fees(24hrs)
                             </Text>
-                            <Text>$ {data.poolDayData[0].feesUSD}</Text>
+                            <Text>$ {Number(data.poolDayData[0].feesUSD).toFixed(2)}</Text>
                           </>
                         ) : (
                           ''

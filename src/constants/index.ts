@@ -37,7 +37,7 @@ const MAINNET_DEPLOYED = {
   LockTOS_ADDRESS: '',
   UniswapStaking_Address: '',
   NPM_Address: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
-  BasePool_Address: '',
+  BasePool_Address: '0xc29271e3a68a7647fd1399298ef18feca3879f59',
 };
 
 const RINKEBY_DEPLOYED = {

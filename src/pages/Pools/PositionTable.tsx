@@ -19,6 +19,7 @@ import {
   Grid,
   Button,
   position,
+  Link,
 } from '@chakra-ui/react';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
@@ -35,7 +36,7 @@ import { approve } from './actions';
 import { convertNumber } from '../../utils/number';
 import {selectTransactionType} from 'store/refetch.reducer';
 import { BooleanValueNode } from 'graphql';
-
+import { fetchPositionRangePayload } from './utils/fetchPositionRangePayload';
 
 type PositionTableProps = {
   // columns: Column[];
@@ -84,6 +85,22 @@ const getCircle = (type: 'staked' | 'not staked') => {
   );
 };
 
+const getRange = (type: 'range' | 'not range') => {
+  return (
+    <Flex alignContent={'center'} alignItems={'center'} mr={0} ml={'4px'}>
+      <Box
+        w={'8px'}
+        h={'8px'}
+        borderRadius={50}
+        bg={
+          type === 'range'
+            ? '#2ea2f8'
+            : '#ff7800'
+        }></Box>
+    </Flex>
+  );
+};
+
 const getStatus = (
   type: 'staked' | 'not staked',
   colorMode: 'light' | 'dark',
@@ -98,11 +115,35 @@ const getStatus = (
           type === 'staked' ? '#73d500' : '#f95359'
         }
         mr={'7px'}
-        mt={'2px'} />
+         />
       <Text
         fontSize={'11px'}
         color={colorMode === 'light' ? '#304156' : 'white.100'}>
         {type === 'staked' ? 'Staked' : 'Not Staked'}
+      </Text>
+    </Flex>
+  );
+};
+
+const getRangeStatus = (
+  type: 'range' | 'not range',
+  colorMode: 'light' | 'dark',
+) => {
+  return (
+    <Flex alignContent={'center'} alignItems={'center'} mr={'20px'}>
+      <Box
+        w={'8px'}
+        h={'8px'}
+        borderRadius={50}
+        bg={
+          type === 'range' ? '#2ea2f8' : '#ff7800'
+        }
+        mr={'7px'}
+         />
+      <Text
+        fontSize={'11px'}
+        color={colorMode === 'light' ? '#304156' : 'white.100'}>
+        {type === 'range' ? 'In range' : 'Out of range'}
       </Text>
     </Flex>
   );
@@ -184,21 +225,6 @@ export const PositionTable: FC<PositionTableProps> = ({
     data: {contractAddress, index},
   } = useAppSelector(selectTableType);
 
-  const [stakingBtnDisable, setStakingBtnDisable] = useState(true);
-  const [claimBtnDisable, setClaimBtnDisable] = useState(true);
-
-  // useEffect(() => {
-  //   function setStakingBtn () {
-  //     owner === address.toLowerCase()
-  //   }
-    
-  //   function setClaimBtn () {
-
-  //   }
-  //   setStakingBtn()
-  //   setClaimBtn()
-  // }, [position, stakingDisable, transactionType, blockNumber])
-
   const onChangeSelectBox = (e: any) => {
     const filterValue = e.target.value;
     headerGroups[0].headers.map((e) => {
@@ -221,7 +247,43 @@ export const PositionTable: FC<PositionTableProps> = ({
     const {colorMode} = useColorMode();
     const [stakingBtnDisable, setStakingBtnDisable] = useState(true);
     const [claimBtnDisable, setClaimBtnDisable] = useState(true);
+    const btnStyle = {
+      btn: () => ({
+        bg: 'blue.500',
+        color: 'white.100',
+        borderRadius: '4px',
+        w: '105px',
+        h: '38px',
+        py: '10px',
+        px: '29.5px',
+        fontFamily: 'Roboto',
+        fontSize: '14px',
+        fontWeight: '500',
+        _hover: {backgroundColor: 'white.200'},
+      }),
+    }
+    const [range, setRange] = useState(false);
 
+    const rangePayload = async (args: any) => {
+      const {address, library, id} = args;
+      const result = await fetchPositionRangePayload(library, id, address);
+
+      return result;
+    }
+    useEffect(() => {
+      async function getRange() {
+        if (id && address && library) {
+          const result = await rangePayload({library, id, address});
+          // const { tick, tickLower, tickUpper } = result
+          // console.log(Number(result?.tick) > Number(result.tickLower))
+          // console.log(result)
+          // (Number(result.tick) > Number(result.tickLower) && Number(result.tick) < Number(result.tickUpper)) ? setRange(true) : setRange(false)
+        }
+      }
+      getRange()
+    }, [])
+
+    console.log(range)
     useEffect(() => {
       function setStakingBtn () {
         if (owner === address.toLowerCase() || stakingDisable) {
@@ -245,6 +307,7 @@ export const PositionTable: FC<PositionTableProps> = ({
     return (
       <Flex>
         {owner === address.toLowerCase() ? getCircle('not staked') : getCircle('staked')}
+        {getRange('range')}
         <Flex
           ml={'32px'}
           w={'170px'}
@@ -253,17 +316,17 @@ export const PositionTable: FC<PositionTableProps> = ({
           <Text>{poolName}</Text>
           <Text fontSize={'14px'} pt={1}>
             _#{id}
-          </Text>
-          
+          </Text>    
         </Flex>
         <Flex
           alignContent={'center'}
           fontWeight={300}
-          fontSize={'14px'}
-          direction={'column'}
-          w={'120px'}
+          fontSize={'12px'}
+          direction={'row'}
+          w={'180px'}
+          py={3}
         >
-          <Text>TOS Earned</Text>
+          <Text color={'#2a72e5'} mr={1}>TOS Earned </Text>
           { lpData ?
           <Text>{convertNumber({
             amount: lpData.miningAmount.toString()
@@ -272,31 +335,14 @@ export const PositionTable: FC<PositionTableProps> = ({
         </Flex>
         <Grid pos="relative" templateColumns={'repeat(5, 1fr)'} gap={3} mr={'40px'}>
           <Button 
-            w={'125px'}
-            h={'38px'}
-            py={'10px'}
-            px={'29.5px'}
-            borderRadius={'4px'}
-            bg={'#00c3c4'}
-            fontFamily={'Roboto'}
-            fontSize={'14px'}
-            fontWeight={500}
-            color={'#ffffff'}
-            // onClick={() => ()}
+            {...btnStyle.btn()}
+            disabled={claimBtnDisable}
+            onClick={() => dispatch(openModal({ type:'claimPool', data: id}))}
           >
-            Add Liquidity
+            Claim
           </Button>
           <Button 
-            w={'125px'}
-            h={'38px'}
-            py={'10px'}
-            px={'29.5px'}
-            borderRadius={'4px'}
-            bg={'#257eee'}
-            fontFamily={'Roboto'}
-            fontSize={'14px'}
-            fontWeight={500}
-            color={'#ffffff'}
+           {...btnStyle.btn()}
             disabled={owner !== address.toLowerCase()}
             onClick={() => approve({
               tokenId: id,
@@ -307,52 +353,25 @@ export const PositionTable: FC<PositionTableProps> = ({
             Approve
           </Button>
           <Button 
-            w={'125px'}
-            h={'38px'}
-            py={'10px'}
-            px={'29.5px'}
-            borderRadius={'4px'}
-            bg={'#257eee'}
-            fontFamily={'Roboto'}
-            fontSize={'14px'}
-            fontWeight={500}
-            color={'#ffffff'}
+            {...btnStyle.btn()}
             disabled={stakingBtnDisable}
             onClick={() => dispatch(openModal({ type:'stakePool', data: id}))}
           >
             Staking
           </Button>
           <Button 
-            w={'125px'}
-            h={'38px'}
-            py={'10px'}
-            px={'29.5px'}
-            borderRadius={'4px'}
-            bg={'#257eee'}
-            fontFamily={'Roboto'}
-            fontSize={'14px'}
-            fontWeight={500}
-            color={'#ffffff'}
+            {...btnStyle.btn()}
             disabled={owner === address.toLowerCase()}
             onClick={() => dispatch(openModal({ type:'unstakePool', data: id}))}
           >
             Unstaking
           </Button>
           <Button 
-            w={'125px'}
-            h={'38px'}
-            py={'10px'}
-            px={'29.5px'}
-            borderRadius={'4px'}
-            bg={'#257eee'}
-            fontFamily={'Roboto'}
-            fontSize={'14px'}
-            fontWeight={500}
-            color={'#ffffff'}
-            disabled={claimBtnDisable}
-            onClick={() => dispatch(openModal({ type:'claimPool', data: id}))}
+            {...btnStyle.btn()}
+            bg={'#00c3c4'}
+            onClick={() => window.location.href=`https://app.uniswap.org/#/pool/${id}`}
           >
-            Claim
+            Edit
           </Button>
         </Grid>
       </Flex>
@@ -395,6 +414,9 @@ export const PositionTable: FC<PositionTableProps> = ({
                 <Flex>
                   {getStatus('staked', colorMode)}
                   {getStatus('not staked', colorMode)}
+                  <Text fontSize={'11px'} py={2} mr={3}>/</Text>
+                  {getRangeStatus('range', colorMode)}
+                  {getRangeStatus('not range', colorMode)}
                 </Flex>
                 <Select
                   w={'137px'}
