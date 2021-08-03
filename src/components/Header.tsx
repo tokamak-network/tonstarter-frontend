@@ -298,7 +298,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           onClick={(e) => {
             e.preventDefault();
             window.open(
-              'https://github.com/Onther-Tech/tonstarter-docs/blob/main/whitepaper/TONStarter%20Whitepaper.md',
+              'https://medium.com/onther-tech/tonstarter-guide-en-kr-6b7cad5773f1',
             );
           }}>
           <Text className={match?.isExact ? 'link-match' : 'link'}>Guide</Text>
