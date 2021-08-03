@@ -37,7 +37,7 @@ export const stakeTOS = async (args: StkaeTOS) => {
 
   const signer = getSigner(library, account);
 
-  console.log({weiAmount, unlockTime, _v, _r, _s});
+  console.log(weiAmount, unlockTime, _v, _r, _s);
 
   const res = await LockTOSContract.connect(signer).createLockPermit(
     weiAmount,
