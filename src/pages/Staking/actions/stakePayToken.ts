@@ -97,7 +97,7 @@ const stakeTon = async (args: StakeTon) => {
         ?.approveAndCall(stakeContractAddress, tonAmount, data);
       store.dispatch(setTxPending({tx: true}));
       if (receipt) {
-        toastWithReceipt(receipt, setTxPending, 'Staking');
+        toastWithReceipt(receipt, setTxPending, 'Staking', 'Stake');
       }
     } catch (err) {
       store.dispatch(setTxPending({tx: false}));
