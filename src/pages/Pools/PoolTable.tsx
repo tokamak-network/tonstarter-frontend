@@ -34,6 +34,7 @@ import { useQuery } from '@apollo/client';
 import { PositionTable } from './PositionTable';
 import { fetchPositionPayload } from './utils/fetchPositionPayload';
 import { selectTransactionType } from 'store/refetch.reducer';
+import moment from 'moment';
 
 type PoolTableProps = {
   columns: Column[];
@@ -96,6 +97,7 @@ export const PoolTable: FC<PoolTableProps> = ({
   const [stakingPosition, setStakingPosition] = useState([]);
   const [positionData, setPositionData] = useState([]);
   const [account, setAccount] = useState('');
+  const [stakingDisable, setStakingDisable] = useState(true);
   useEffect(() => {
     async function positionPayload() {
       if (address) {
@@ -103,18 +105,29 @@ export const PoolTable: FC<PoolTableProps> = ({
           library,
           address,
         );
-
+        // console.log(result)
+        // const {positionData, saleStartTime} = result;
+        console.log(positionData)
         let stringResult: any = [];
-        for (let i=0; i < result.length; i++) {
-          stringResult.push(result[i].positionid.toString())
+        for (let i=0; i < result?.positionData.length; i++) {
+          stringResult.push(result?.positionData[i]?.positionid.toString())
         }
-        setPositionData(result)
+
+        const nowTime = moment().unix();
+        console.log(nowTime);
+        console.log(result?.saleStartTime.toString())
+        nowTime > Number(result?.saleStartTime.toString()) ? setStakingDisable(false) : setStakingDisable(true)
+
+        setPositionData(result?.positionData)
         setStakingPosition(stringResult)
         setAccount(address);
       }
     }
     positionPayload();
-  }, [data, transactionType, blockNumber])
+  }, [data, transactionType, blockNumber, address])
+
+  console.log(positionData)
+  console.log(stakingDisable);
   const position = useQuery(GET_POSITION, {
     variables: {address: account}
   });
@@ -122,27 +135,24 @@ export const PoolTable: FC<PoolTableProps> = ({
   const positionWithVar = useQuery(GET_POSITION_BY_ID, {
     variables: {id: stakingPosition},
   });
-
+  const [positions, setPositions] = useState([]);
+  useEffect(() => {
+    function getPosition () {
+      if (position.loading || positionWithVar.loading) {
+        setPositions([])
+      } else if (position.data && positionWithVar.data) {
+        const filteredPosition = position.data.positions.filter((data: any) => data.owner === account.toLowerCase())
+        console.log(filteredPosition)
+        const withStakedPosition = position.data.positions.concat(positionWithVar.data.positions)
+        setPositions(withStakedPosition)
+      }
+    }
+    getPosition()
+  }, [transactionType, blockNumber, position.loading, positionWithVar.loading, address])
 
   console.log(positionWithVar.data)
   console.log(position.data)
   
-  let withStakedPosition: any = [];
-  withStakedPosition = position.loading || positionWithVar.loading ? 
-    [] : position.data.positions.concat(positionWithVar.data.positions)
-  // if (positionWithVar.data) {
-  //   withStakedPosition = position.loading || positionWithVar.loading ? 
-  //   [] : position.data.positions.concat(positionWithVar.data.positions)
-  // } else if (position.data || position.data.length > 0 ) {
-  //   withStakedPosition = position.data.positions
-  // } 
-  // else {
-  //   // console.log(position)
-  //   withStakedPosition = []
-  // }
-  
-  // console.log(position.loading)
-  // console.log(position.data)
 
   const [isOpen, setIsOpen] = useState(
     contractAddress === undefined ? '' : contractAddress,
@@ -251,7 +261,7 @@ export const PoolTable: FC<PoolTableProps> = ({
             {page.map((row: any, i) => {
               const {id} = row.original;
               const filteredPosition = position.loading || positionWithVar.loading ? 
-                [] : withStakedPosition.filter((row: any) => id === row.pool.id )
+                [] : positions.filter((row: any) => id === row.pool.id )
               prepareRow(row);
               return [
                 <chakra.tr
@@ -401,6 +411,7 @@ export const PoolTable: FC<PoolTableProps> = ({
                         <PositionTable 
                           positions={filteredPosition}
                           positionData={positionData}
+                          stakingDisable={stakingDisable}
                         />
                       </chakra.td>
                     </chakra.tr>

@@ -18,6 +18,7 @@ import {
   useTheme,
   Grid,
   Button,
+  position,
 } from '@chakra-ui/react';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
@@ -31,14 +32,26 @@ import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
 import store from '../../store';
 import { approve } from './actions';
+import { convertNumber } from '../../utils/number';
+import {selectTransactionType} from 'store/refetch.reducer';
+import { BooleanValueNode } from 'graphql';
 
 
 type PositionTableProps = {
   // columns: Column[];
   positions: any[];
   positionData: any[];
+  stakingDisable: boolean;
   // isLoading: boolean;
   // address: string;
+}
+
+type LiquidityPositionProps = {
+  stakingDisable: boolean;
+  owner: string;
+  lpData: any;
+  poolName: string;
+  id: string;
 }
 
 const getTextColor = (type: string, colorMode: string) => {
@@ -97,7 +110,8 @@ const getStatus = (
 
 export const PositionTable: FC<PositionTableProps> = ({
   positions,
-  positionData
+  positionData,
+  stakingDisable,
   // isLoading,
   // address,
 }) => {
@@ -164,10 +178,26 @@ export const PositionTable: FC<PositionTableProps> = ({
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const focusTarget = useRef<any>([]);
+  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
 
   const {
     data: {contractAddress, index},
   } = useAppSelector(selectTableType);
+
+  const [stakingBtnDisable, setStakingBtnDisable] = useState(true);
+  const [claimBtnDisable, setClaimBtnDisable] = useState(true);
+
+  // useEffect(() => {
+  //   function setStakingBtn () {
+  //     owner === address.toLowerCase()
+  //   }
+    
+  //   function setClaimBtn () {
+
+  //   }
+  //   setStakingBtn()
+  //   setClaimBtn()
+  // }, [position, stakingDisable, transactionType, blockNumber])
 
   const onChangeSelectBox = (e: any) => {
     const filterValue = e.target.value;
@@ -181,6 +211,153 @@ export const PositionTable: FC<PositionTableProps> = ({
       return null;
     });
   };
+  const LiquidityPosition : FC<LiquidityPositionProps>= ({
+    owner,
+    stakingDisable,
+    poolName,
+    lpData,
+    id,
+  }) => {
+    const {colorMode} = useColorMode();
+    const [stakingBtnDisable, setStakingBtnDisable] = useState(true);
+    const [claimBtnDisable, setClaimBtnDisable] = useState(true);
+
+    useEffect(() => {
+      function setStakingBtn () {
+        if (owner === address.toLowerCase() || stakingDisable) {
+          setStakingBtnDisable(false)
+        } else {
+          setStakingBtnDisable(true)
+        }
+      }
+      
+      function setClaimBtn () {
+        if (owner !== address.toLowerCase() && lpData) {
+          if (lpData.miningAmount.toString() !== '0') {
+            setClaimBtnDisable(false)
+          }
+        }
+      }
+      setStakingBtn()
+      setClaimBtn()
+    }, [position, stakingDisable, transactionType, blockNumber])
+
+    return (
+      <Flex>
+        {owner === address.toLowerCase() ? getCircle('not staked') : getCircle('staked')}
+        <Flex
+          ml={'32px'}
+          w={'170px'}
+          py={2}
+        >
+          <Text>{poolName}</Text>
+          <Text fontSize={'14px'} pt={1}>
+            _#{id}
+          </Text>
+          
+        </Flex>
+        <Flex
+          alignContent={'center'}
+          fontWeight={300}
+          fontSize={'14px'}
+          direction={'column'}
+          w={'120px'}
+        >
+          <Text>TOS Earned</Text>
+          { lpData ?
+          <Text>{convertNumber({
+            amount: lpData.miningAmount.toString()
+          })} TOS</Text> : 
+          <Text>0.00 TOS</Text>}
+        </Flex>
+        <Grid pos="relative" templateColumns={'repeat(5, 1fr)'} gap={3} mr={'40px'}>
+          <Button 
+            w={'125px'}
+            h={'38px'}
+            py={'10px'}
+            px={'29.5px'}
+            borderRadius={'4px'}
+            bg={'#00c3c4'}
+            fontFamily={'Roboto'}
+            fontSize={'14px'}
+            fontWeight={500}
+            color={'#ffffff'}
+            // onClick={() => ()}
+          >
+            Add Liquidity
+          </Button>
+          <Button 
+            w={'125px'}
+            h={'38px'}
+            py={'10px'}
+            px={'29.5px'}
+            borderRadius={'4px'}
+            bg={'#257eee'}
+            fontFamily={'Roboto'}
+            fontSize={'14px'}
+            fontWeight={500}
+            color={'#ffffff'}
+            disabled={owner !== address.toLowerCase()}
+            onClick={() => approve({
+              tokenId: id,
+              userAddress: address,
+              library: library,
+            })}
+          >
+            Approve
+          </Button>
+          <Button 
+            w={'125px'}
+            h={'38px'}
+            py={'10px'}
+            px={'29.5px'}
+            borderRadius={'4px'}
+            bg={'#257eee'}
+            fontFamily={'Roboto'}
+            fontSize={'14px'}
+            fontWeight={500}
+            color={'#ffffff'}
+            disabled={stakingBtnDisable}
+            onClick={() => dispatch(openModal({ type:'stakePool', data: id}))}
+          >
+            Staking
+          </Button>
+          <Button 
+            w={'125px'}
+            h={'38px'}
+            py={'10px'}
+            px={'29.5px'}
+            borderRadius={'4px'}
+            bg={'#257eee'}
+            fontFamily={'Roboto'}
+            fontSize={'14px'}
+            fontWeight={500}
+            color={'#ffffff'}
+            disabled={owner === address.toLowerCase()}
+            onClick={() => dispatch(openModal({ type:'unstakePool', data: id}))}
+          >
+            Unstaking
+          </Button>
+          <Button 
+            w={'125px'}
+            h={'38px'}
+            py={'10px'}
+            px={'29.5px'}
+            borderRadius={'4px'}
+            bg={'#257eee'}
+            fontFamily={'Roboto'}
+            fontSize={'14px'}
+            fontWeight={500}
+            color={'#ffffff'}
+            disabled={claimBtnDisable}
+            onClick={() => dispatch(openModal({ type:'claimPool', data: id}))}
+          >
+            Claim
+          </Button>
+        </Grid>
+      </Flex>
+    )
+  }
     
   return (
     <Flex w="1100px" flexDir={'column'}>
@@ -230,7 +407,7 @@ export const PositionTable: FC<PositionTableProps> = ({
               </chakra.td>
             </chakra.tr>
             {page.map((row: any, i) => {
-              const {id, pool, owner} = row.original;
+              const {id, pool, owner} = row.original;  
               const poolName = getPoolName(pool.token0.symbol, pool.token1.symbol)
               const lpData = positionData.find((data) => data.positionid.toString() === id)
               return [
@@ -256,108 +433,13 @@ export const PositionTable: FC<PositionTableProps> = ({
                     fontSize={'17px'}
                     fontWeight={600}
                   >
-                    {owner === address.toLowerCase() ? getCircle('not staked') : getCircle('staked')}
-                    <Flex
-                      ml={'32px'}
-                      w={'350px'}
-                      py={2}
-                    >
-                      <Text>{poolName}</Text>
-                      <Text fontSize={'14px'} pt={1}>
-                        _#{id}
-                      </Text>
-                      
-                    </Flex>
-                    <Flex
-                      alignContent={'center'}
-                    >
-                      {lpData? <Text>{lpData.miningAmount.toString()}</Text> : ('')}
-                    </Flex>
-                    <Grid pos="relative" templateColumns={'repeat(5, 1fr)'} gap={3} mr={'40px'}>
-                      <Button 
-                        w={'125px'}
-                        h={'38px'}
-                        py={'10px'}
-                        px={'29.5px'}
-                        borderRadius={'4px'}
-                        bg={'#00c3c4'}
-                        fontFamily={'Roboto'}
-                        fontSize={'14px'}
-                        fontWeight={500}
-                        color={'#ffffff'}
-                        // onClick={() => ()}
-                      >
-                        Add Liquidity
-                      </Button>
-                      <Button 
-                        w={'125px'}
-                        h={'38px'}
-                        py={'10px'}
-                        px={'29.5px'}
-                        borderRadius={'4px'}
-                        bg={'#257eee'}
-                        fontFamily={'Roboto'}
-                        fontSize={'14px'}
-                        fontWeight={500}
-                        color={'#ffffff'}
-                        disabled={owner !== address.toLowerCase()}
-                        onClick={() => approve({
-                          tokenId: id,
-                          userAddress: address,
-                          library: library,
-                        })}
-                      >
-                        Approve
-                      </Button>
-                      <Button 
-                        w={'125px'}
-                        h={'38px'}
-                        py={'10px'}
-                        px={'29.5px'}
-                        borderRadius={'4px'}
-                        bg={'#257eee'}
-                        fontFamily={'Roboto'}
-                        fontSize={'14px'}
-                        fontWeight={500}
-                        color={'#ffffff'}
-                        disabled={owner !== address.toLowerCase()}
-                        onClick={() => dispatch(openModal({ type:'stakePool', data: id}))}
-                      >
-                        Staking
-                      </Button>
-                      <Button 
-                        w={'125px'}
-                        h={'38px'}
-                        py={'10px'}
-                        px={'29.5px'}
-                        borderRadius={'4px'}
-                        bg={'#257eee'}
-                        fontFamily={'Roboto'}
-                        fontSize={'14px'}
-                        fontWeight={500}
-                        color={'#ffffff'}
-                        disabled={owner === address.toLowerCase()}
-                        onClick={() => dispatch(openModal({ type:'unstakePool', data: id}))}
-                      >
-                        Unstaking
-                      </Button>
-                      <Button 
-                        w={'125px'}
-                        h={'38px'}
-                        py={'10px'}
-                        px={'29.5px'}
-                        borderRadius={'4px'}
-                        bg={'#257eee'}
-                        fontFamily={'Roboto'}
-                        fontSize={'14px'}
-                        fontWeight={500}
-                        color={'#ffffff'}
-                        disabled={owner === address.toLowerCase()}
-                        onClick={() => dispatch(openModal({ type:'claimPool', data: id}))}
-                      >
-                        Claim
-                      </Button>
-                    </Grid>
+                    <LiquidityPosition 
+                      poolName={poolName}
+                      owner={owner}
+                      lpData={lpData}
+                      stakingDisable={stakingDisable}
+                      id={id}
+                    />
                   </chakra.td>
               </chakra.tr>
             ]

@@ -98,7 +98,7 @@ export const Pools = () => {
       setPool(poolArr)
     }
     getPool()
-  }, [transactionType, blockNumber])
+  }, [transactionType, blockNumber, basePool.loading, tosPool.loading])
 
   // const poolArr = pool1.loading || pool2.loading || pool3.loading ? [] : pool1.data.pools.concat(pool3.data.pools).concat(pool2.data.pools)
   // const poolArr = pool1.loading || pool2.loading ? [] : pool1.data.pools.concat(pool2.data.pools)

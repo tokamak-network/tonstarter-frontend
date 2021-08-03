@@ -18,8 +18,8 @@ const getPositionInfo = async (
 ) => {
   if (library) {
     const StakeUniswap = new Contract(UniswapStaking_Address, StakeUniswapABI.abi, library);
-    console.log(StakeUniswap)
     const positionIds = await StakeUniswap.getUserStakedTokenIds(account);
+    const startTime = await StakeUniswap.saleStartTime()
     let result: any = [];
     for (let positionid of positionIds) {
       const miningId = await StakeUniswap.getMiningTokenId(positionid);
@@ -29,6 +29,9 @@ const getPositionInfo = async (
       }
       result.push(valueById)
     }
-    return result
+    return {
+      positionData: result,
+      saleStartTime: startTime
+    }
   }
 }
