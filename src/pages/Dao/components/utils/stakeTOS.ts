@@ -1,12 +1,11 @@
 import {DEPLOYED} from 'constants/index';
 import * as LockTOSABI from 'services/abis/LockTOS.json';
-import {getContract, getSigner} from 'utils/contract';
+import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
-import * as TOSABI from 'services/abis/TOS.json';
-import moment from 'moment';
 import store from 'store';
 import {setTransaction} from 'store/refetch.reducer';
 import {convertToWei} from 'utils/number';
+import {finalPermit, tosPermit} from 'utils/permit';
 
 type StkaeTOS = {
   account: string;
@@ -18,28 +17,37 @@ type StkaeTOS = {
 
 export const stakeTOS = async (args: StkaeTOS) => {
   const {account, library, amount, period} = args;
-  const {LockTOS_ADDRESS, TOS_ADDRESS} = DEPLOYED;
+  const {LockTOS_ADDRESS} = DEPLOYED;
   const LockTOSContract = new Contract(
     LockTOS_ADDRESS,
     LockTOSABI.abi,
     library,
   );
 
-  const tosContract = getContract(TOS_ADDRESS, TOSABI.abi, library);
+  const permit = await tosPermit(account, library, 10000);
+  console.log(permit);
+  //@ts-ignore
+  const {method, params} = permit;
+  const fPermit = await finalPermit(method, params, account);
+  console.log(fPermit);
+  const {_v, _r, _s} = fPermit;
   const weiAmount = convertToWei(amount);
   // const unlockTime = moment().subtract(-Math.abs(period), 'weeks').format('ss');
   const unlockTime = Number(period) * 7 * 24 * 60 * 60;
 
   const signer = getSigner(library, account);
-  const res = await tosContract
-    .connect(signer)
-    .approve(LockTOSContract.address, weiAmount);
 
-  const fres = await res.wait().then(() => {
-    return LockTOSContract.connect(signer).createLock(weiAmount, unlockTime);
-  });
+  console.log({weiAmount, unlockTime, _v, _r, _s});
 
-  return await fres.wait().then((receipt: any) => {
+  const res = await LockTOSContract.connect(signer).createLockPermit(
+    weiAmount,
+    unlockTime,
+    _v,
+    _r,
+    _s,
+  );
+
+  return await res.wait().then((receipt: any) => {
     store.dispatch(
       setTransaction({
         transactionType: 'Dao',

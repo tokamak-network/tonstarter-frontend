@@ -216,13 +216,14 @@ export const DaoManageModal = () => {
                         fontSize={'1em'}
                         fontColor={themeDesign.scrollNumberFont[colorMode]}
                         fontWeight={'bold'}>
-                        {stake.periodWeeks}
+                        {stake.periodDays}
                         <span
                           style={{
                             fontSize: '0.688em',
                             paddingLeft: '0.188em',
                           }}>
-                          {stake.periodWeeks > 1 ? 'weeks' : 'week'}
+                          {/* {stake.periodWeeks > 1 ? 'weeks' : 'week'} */}
+                          Days
                         </span>
                       </Text>
                     </Box>
