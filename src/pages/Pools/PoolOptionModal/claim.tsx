@@ -90,15 +90,16 @@ export const ClaimOptionModal = () => {
               color="white.100"
               fontSize="14px"
               _hover={{backgroundColor: 'blue.100'}}
-              onClick={() =>
-                claim({
-                  userAddress: account,
-                  contractAddress: '',
-                  tokenId: data.data,
-                  library: library,
-                  handleCloseModal: handleCloseModal(),
-                })
-              }>
+              // onClick={() =>
+              //   claim({
+              //     userAddress: account,
+              //     contractAddress: '',
+              //     tokenId: data.data,
+              //     library: library,
+              //     handleCloseModal: handleCloseModal(),
+              //   })
+              // }
+            >
               Claim
             </Button>
           </Box>

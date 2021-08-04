@@ -11,7 +11,7 @@ type Stake = {
   tokenId: string;
   userAddress: string | null | undefined;
   library: any;
-  handleCloseModal: any;
+  // handleCloseModal: any;
 }
 const {UniswapStaking_Address} = DEPLOYED;
 

@@ -75,14 +75,14 @@ export const StakeOptionModal = () => {
               fontSize="14px"
               _hover={{...theme.btnHover}}
               // disabled={btnDisabled}
-              onClick={() =>
-                stake({
-                  userAddress: account,
-                  tokenId: data.data,
-                  library: library,
-                  handleCloseModal: handleCloseModal(),
-                })
-              }
+              // onClick={() =>
+              //   stake({
+              //     userAddress: account,
+              //     tokenId: data.data,
+              //     library: library,
+              //     // handleCloseModal: handleCloseModal(),
+              //   })
+              // }
             >
               Stake
             </Button>

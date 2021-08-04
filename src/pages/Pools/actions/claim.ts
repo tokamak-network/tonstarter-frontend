@@ -10,14 +10,14 @@ import * as StakeUniswapABI from 'services/abis/StakeUniswapV3.json';
 type Claim = {
   tokenId: string;
   userAddress: string | null | undefined;
-  contractAddress: string | null | undefined;
+  // contractAddress: string | null | undefined;
   library: any;
-  handleCloseModal: any;
+  // handleCloseModal: any;
 }
 const {UniswapStaking_Address} = DEPLOYED;
 
 export const claim = async (args: Claim) => {
-  const { userAddress, contractAddress, tokenId, library } = args;
+  const { userAddress, tokenId, library } = args;
   if (userAddress === null || userAddress === undefined) {
     return;
   }

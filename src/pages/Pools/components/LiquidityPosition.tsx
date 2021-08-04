@@ -161,7 +161,11 @@ export const LiquidityPosition : FC<LiquidityPositionProps>= ({
         <Button 
           {...btnStyle.btn()}
           disabled={claimBtnDisable}
-          onClick={() => dispatch(openModal({ type:'claimPool', data: id}))}
+          onClick={() => claim({
+            tokenId: id,
+            userAddress: address,
+            library: library,
+          })}
         >
           Claim
         </Button>
@@ -179,7 +183,11 @@ export const LiquidityPosition : FC<LiquidityPositionProps>= ({
         <Button 
           {...btnStyle.btn()}
           disabled={stakingBtnDisable}
-          onClick={() => dispatch(openModal({ type:'stakePool', data: id}))}
+          onClick={() => stake({
+            tokenId: id,
+            userAddress: address,
+            library: library,
+          })}
         >
           Staking
         </Button>
