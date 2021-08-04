@@ -9,10 +9,13 @@ export const fetchPositionRangePayload = async (
   id: string,
   account: string,
 ) => {
-  const res = await getPositionRange(library, account, id);
-  // {tick, tickLower, tickUpper} = res
-  console.log(res)
-  return res;
+  if (library && account && id) {
+    const res = await getPositionRange(library, account, id);
+    const {tick, tickLower, tickUpper} = res
+    const result = (tick > tickLower && tick < tickUpper)
+    
+    return result;
+  }
 }
 
 const getPositionRange = async (
@@ -25,19 +28,9 @@ const getPositionRange = async (
     const npmPositions = await StakeUniswap.npmPositions(id)
     const poolSlot0 = await StakeUniswap.poolSlot0()
     return {
-      npmPositions: npmPositions,
-      poolSlot0: poolSlot0,
+      ...npmPositions,
+      ...poolSlot0,
     }
-    // return Promise.all([
-    //   StakeUniswap.npmPositions(id),
-    //   StakeUniswap.poolSlot0(),
-    // ]).then((result) => {
-    //   return {
-    //     ...result[0],
-    //     ...result[1]
-    //   }
-    // })
-    
   }
 
 }

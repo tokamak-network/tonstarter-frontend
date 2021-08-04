@@ -157,9 +157,6 @@ export const PoolTable: FC<PoolTableProps> = ({
     positionWithVar.data,
     address
   ])
-
-  console.log(positionWithVar.data)
-  console.log(position.data)
   console.log(positions)
   
 
