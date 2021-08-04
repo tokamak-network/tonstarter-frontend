@@ -170,6 +170,7 @@ export const ManageModal = () => {
       );
       console.log(StakeTONContract);
       console.log(contractAddress);
+      console.log(library);
       const isUnstakeL2 = await StakeTONContract.canTokamakRequestUnStakingAll(
         contractAddress,
       );
@@ -179,9 +180,11 @@ export const ManageModal = () => {
       const canAmount = await StakeTONContract.canTokamakRequestUnStaking(
         contractAddress,
       );
-      console.log(canAmount);
+      console.log(block);
       console.log(`canTokamakRequestUnStakingAllBlock : ${block.toString()}`);
+      console.log(canAmount);
       console.log(`canTokamakRequestUnStaking : ${canAmount.toString()}`);
+      console.log(await StakeTONContract.tokamakLayer2());
       return stakedL2 === '-' || stakedL2 === '0.00'
         ? setUnstakeL2Disable(true)
         : setUnstakeL2Disable(false);

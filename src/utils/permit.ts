@@ -23,16 +23,25 @@ export const permitForCreateLock = async (
     LockTOSABI.abi,
     library,
   );
+  console.log(userSigner);
   const signer = getSigner(library, account);
-  const nonce = parseInt(await TOSContract.connect(signer).nonces(account));
+  console.log(TOSContract);
+  const nonce = parseInt(await TOSContract.nonces(account));
   let deadline = Date.now() / 1000;
   //@ts-ignore
   deadline = parseInt(deadline) + 100;
+  console.log({
+    owner: account,
+    spender: LockTOS_ADDRESS,
+    value: amount,
+    nonce,
+    deadline,
+  });
   const rawSignature = await userSigner._signTypedData(
     {
       chainId: 4,
-      name: 'TOS',
-      version: '1',
+      name: 'TONStarter',
+      version: '1.0',
       verifyingContract: TOS_ADDRESS,
     },
     {
@@ -46,7 +55,7 @@ export const permitForCreateLock = async (
     },
     {
       owner: account,
-      spender: TOS_ADDRESS,
+      spender: LockTOS_ADDRESS,
       value: amount,
       nonce,
       deadline,
@@ -54,18 +63,15 @@ export const permitForCreateLock = async (
   );
 
   const signature = ethers.utils.splitSignature(rawSignature);
-  console.log(signature);
 
-  return await (
-    await LockTOSContract.connect(signer).createLockWithPermit(
-      amount,
-      unlockTime,
-      deadline,
-      signature.v,
-      signature.r,
-      signature.s,
-    )
-  ).wait();
+  return await LockTOSContract.connect(account).createLockWithPermit(
+    amount,
+    unlockTime,
+    deadline,
+    signature.v,
+    signature.r,
+    signature.s,
+  );
 };
 
 // export async function tosPermit(account: string, library: any, amount: number) {
