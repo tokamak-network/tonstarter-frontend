@@ -13,6 +13,8 @@ import {
   useTheme,
   useColorMode,
   Select,
+  Tooltip,
+  Image,
 } from '@chakra-ui/react';
 import React from 'react';
 import {useAppSelector} from 'hooks/useRedux';
@@ -23,6 +25,7 @@ import {useUser} from 'hooks/useUser';
 import {useToast} from 'hooks/useToast';
 import {useState, useEffect, useRef} from 'react';
 import {stakeTOS} from '../utils/stakeTOS';
+import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 
 type SelectPeriod = '1 month' | '6 months' | '1 year' | '3 years';
 
@@ -283,6 +286,32 @@ export const DaoStakeModal = () => {
                   </Select>
                 </Flex>
               )}
+              <Flex flexDir="column" mt={'10px'}>
+                <Flex justifyContent="space-between">
+                  <Text>Estimated end date</Text>
+                  <Text>2021.12.31(KST)</Text>
+                  <Tooltip
+                    hasArrow
+                    placement="top"
+                    label="Lock up-period is calculated  based on every Monday 00: 00 UTC."
+                    color={theme.colors.white[100]}
+                    bg={theme.colors.gray[375]}>
+                    <Image src={tooltipIcon} />
+                  </Tooltip>
+                </Flex>
+                <Flex justifyContent="space-between">
+                  <Text>Estimated reward</Text>
+                  <Text>1,000 sTOS</Text>
+                  <Tooltip
+                    hasArrow
+                    placement="top"
+                    label="This estimator could be change depending on the situation"
+                    color={theme.colors.white[100]}
+                    bg={theme.colors.gray[375]}>
+                    <Image src={tooltipIcon} />
+                  </Tooltip>
+                </Flex>
+              </Flex>
             </Box>
           </Stack>
 
