@@ -27,6 +27,8 @@ import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal/CloseButton';
 import {fetchWithdrawPayload} from '../utils/fetchWithdrawPayload';
 import {convertNumber} from 'utils/number';
+import {Contract} from '@ethersproject/contracts';
+import * as StakeTON from 'services/abis/StakeTON.json';
 
 const seigFontColors = {
   light: '#3d495d',
@@ -156,7 +158,13 @@ export const ManageModal = () => {
       }
     }
 
-    const btnDisableUnstakeL2 = () => {
+    const btnDisableUnstakeL2 = async () => {
+      const StakeTONContract = new Contract(
+        contractAddress,
+        StakeTON.abi,
+        library,
+      );
+      console.log(StakeTONContract.canTokamakRequestUnStakingAll);
       return stakedL2 === '-' || stakedL2 === '0.00'
         ? setUnstakeL2Disable(true)
         : setUnstakeL2Disable(false);
