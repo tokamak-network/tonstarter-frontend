@@ -109,7 +109,7 @@ export const LiquidityPosition : FC<LiquidityPositionProps>= ({
     }
 
     function setStakingBtn () {
-      if (owner === address.toLowerCase() || stakingDisable) {
+      if (owner === address.toLowerCase() && !stakingDisable) {
         setStakingBtnDisable(false)
       } else {
         setStakingBtnDisable(true)
@@ -118,8 +118,10 @@ export const LiquidityPosition : FC<LiquidityPositionProps>= ({
     
     function setClaimBtn () {
       if (owner !== address.toLowerCase() && lpData) {
-        if (lpData?.miningAmount.toString() !== '0') {
+        if (lpData?.miningAmount.toString() !== '0' && !stakingDisable) {
           setClaimBtnDisable(false)
+        } else {
+          setClaimBtnDisable(true)
         }
       }
     }

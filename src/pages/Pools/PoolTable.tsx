@@ -90,7 +90,7 @@ export const PoolTable: FC<PoolTableProps> = ({
   const focusTarget = useRef<any>([]);
 
   const {
-    data: {contractAddress, index},
+    data: {contractAddress},
   } = useAppSelector(selectTableType);
 
   const [stakingPosition, setStakingPosition] = useState([]);
@@ -111,7 +111,9 @@ export const PoolTable: FC<PoolTableProps> = ({
           stringResult.push(result?.positionData[i]?.positionid.toString())
         }
         const nowTime = moment().unix();
-        (nowTime > Number(result?.saleStartTime.toString()) && nowTime < Number(result?.miningEndTime.toString())  ) ? setStakingDisable(false) : setStakingDisable(true)
+        (nowTime > Number(result?.saleStartTime.toString()) &&
+          nowTime < Number(result?.miningEndTime.toString())) ?
+            setStakingDisable(false) : setStakingDisable(true)
 
         setPositionData(result?.positionData)
         setStakingPosition(stringResult)
@@ -134,9 +136,6 @@ export const PoolTable: FC<PoolTableProps> = ({
   const [positions, setPositions] = useState([]);
   useEffect(() => {
     function getPosition () {
-      // if (position.loading || positionWithVar.loading) {
-      //   setPositions([])
-      // } else 
       if (position.data && positionWithVar.data) {
         position.refetch()
         const withStakedPosition = position.data.positions.concat(positionWithVar.data.positions)
@@ -263,7 +262,6 @@ export const PoolTable: FC<PoolTableProps> = ({
             {page.map((row: any, i) => {
               const {id} = row.original;
               const filteredPosition = positions.filter((row: any) => id === row.pool.id )
-              console.log(filteredPosition)
               prepareRow(row);
               return [
                 <chakra.tr

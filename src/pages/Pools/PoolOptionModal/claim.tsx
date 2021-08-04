@@ -92,7 +92,7 @@ export const ClaimOptionModal = () => {
               onClick={() =>
                 claim({
                   userAddress: account,
-                  tokenId: data.data,
+                  tokenId: data.data.id,
                   library: library,
                   handleCloseModal: handleCloseModal(),
                 })
