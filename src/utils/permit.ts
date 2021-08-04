@@ -57,7 +57,7 @@ export const permitForCreateLock = async (
   console.log(signature);
 
   return await (
-    await LockTOSContract.connect(account).createLockPermit(
+    await LockTOSContract.connect(signer).createLockWithPermit(
       amount,
       unlockTime,
       deadline,

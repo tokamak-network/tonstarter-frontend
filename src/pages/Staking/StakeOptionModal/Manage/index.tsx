@@ -73,6 +73,7 @@ export const ManageModal = () => {
   const [stakedL2, setStakdL2] = useState('-');
   const [pendingL2Balance, setPendingL2Balance] = useState('-');
   const [swapBalance, setSwapBalance] = useState('0');
+  const [seigBalance, setSeigBalance] = useState('0');
   const [canWithdralAmount, setCanWithdralAmount] = useState(0);
 
   //original balances
@@ -122,7 +123,7 @@ export const ManageModal = () => {
           setStakdL2(totalStakedAmountL2);
           setPendingL2Balance(totalPendingUnstakedAmountL2);
           setCanWithdralAmount(Number(res_CanWithdralAmount.toString()));
-
+          setSeigBalance(swapBalance);
           //set original balances
           setOriginalStakeBalance(originalBalance.stakeContractBalanceTon);
           setOriginalSwapBalance(originalBalance.swapBalance);
@@ -132,9 +133,9 @@ export const ManageModal = () => {
             return setSwapBalance('0.00');
           }
           if (Number(stakeContractBalanceTon) >= Number(swapBalance)) {
-            setSwapBalance(swapBalance);
+            return setSwapBalance(swapBalance);
           }
-          if (Number(stakeContractBalanceTon) < Number(originalBalance)) {
+          if (Number(stakeContractBalanceTon) < Number(swapBalance)) {
             return setSwapBalance(stakeContractBalanceTon);
           }
         }
@@ -159,12 +160,28 @@ export const ManageModal = () => {
     }
 
     const btnDisableUnstakeL2 = async () => {
+      if (contractAddress === undefined) {
+        return;
+      }
       const StakeTONContract = new Contract(
         contractAddress,
         StakeTON.abi,
         library,
       );
-      console.log(StakeTONContract.canTokamakRequestUnStakingAll);
+      console.log(StakeTONContract);
+      console.log(contractAddress);
+      const isUnstakeL2 = await StakeTONContract.canTokamakRequestUnStakingAll(
+        contractAddress,
+      );
+      const block = await StakeTONContract.canTokamakRequestUnStakingAllBlock(
+        contractAddress,
+      );
+      const canAmount = await StakeTONContract.canTokamakRequestUnStaking(
+        contractAddress,
+      );
+      console.log(canAmount);
+      console.log(`canTokamakRequestUnStakingAllBlock : ${block.toString()}`);
+      console.log(`canTokamakRequestUnStaking : ${canAmount.toString()}`);
       return stakedL2 === '-' || stakedL2 === '0.00'
         ? setUnstakeL2Disable(true)
         : setUnstakeL2Disable(false);
@@ -306,7 +323,7 @@ export const ManageModal = () => {
                 <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
                   Staked in Layer 2 (Seig:{' '}
                   <strong style={{color: seigFontColors[colorMode]}}>
-                    {swapBalance}
+                    {seigBalance}
                   </strong>{' '}
                   <strong
                     style={{
