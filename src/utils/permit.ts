@@ -124,18 +124,19 @@ export async function stakingPermit(account: string, library: any, tokenId: stri
   console.log(NPMContract)
   let position = await NPMContract.positions(tokenId);
   // let nonce = await NPMContract.connect(signer).nonces(account);
-
+  console.log('nonce', position.nonce.toString());
   //@ts-ignore
   let nonce = position.nonce.toString();
+  console.log('nonce',nonce );
   nonce = parseInt(nonce);
-  const to = UniswapStaking_Address
+  const to = '0x5bDA681f5F0cff84813172c3D4310dF90939b073'
 
   // let position = await NPMContract.positions(tokenId);
 
   let deadline = Date.now() / 1000;
   //@ts-ignore
   deadline = parseInt(deadline) + 100;
-
+  console.log('deadline',deadline);
   //@ts-ignore
   const res = await web3.givenProvider.send(
     {
@@ -145,6 +146,7 @@ export async function stakingPermit(account: string, library: any, tokenId: stri
     },
     async function (err: any, result: any) {
       const netId = result.result;
+      console.log('netId',netId);
 
       const Permit = [
         {name: "spender", type: "address"},
@@ -159,7 +161,7 @@ export async function stakingPermit(account: string, library: any, tokenId: stri
         deadline: deadline
       };
 
-      //   console.log('message:', message);
+        console.log('message:', message);
 
       let msgParams = {
         types: {
@@ -181,11 +183,12 @@ export async function stakingPermit(account: string, library: any, tokenId: stri
         },
         message: message,
       };
-
+      console.log('msgParams1:' , msgParams );
       //@ts-ignore
       msgParams = JSON.stringify(msgParams);
+      console.log('msgParams2:' , msgParams );
       var params = [account, msgParams];
-      //   console.dir(params);
+      console.dir(params);
       //var method = 'eth_signTypedData_v3'
       var method = 'eth_signTypedData_v4';
       //@ts-ignore
@@ -211,16 +214,16 @@ export async function finalPermit(method: any, params: any, account: string) {
         alert(result.error.message);
       }
       if (result.error) return console.error('ERROR', result);
-      //   console.log('TYPED SIGNED:' + JSON.stringify(result.result));
+        console.log('TYPED SIGNED:' + JSON.stringify(result.result));
 
       const signature = result.result.substring(2);
       const r = '0x' + signature.substring(0, 64);
       const s = '0x' + signature.substring(64, 128);
       const v = parseInt(signature.substring(128, 130), 16);
 
-      //   console.log('TYPED r:', r);
-      //   console.log('TYPED s:', s);
-      //   console.log('TYPED v:', v);
+        console.log('TYPED r:', r);
+        console.log('TYPED s:', s);
+        console.log('TYPED v:', v);
 
       return {_v: v, _r: r, _s: s};
     },

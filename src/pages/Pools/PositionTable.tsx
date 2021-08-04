@@ -148,8 +148,6 @@ export const PositionTable: FC<PositionTableProps> = ({
     [],
   );
 
-  const {address, library} = store.getState().user.data;
-
   const {
     getTableBodyProps,
     headerGroups,
@@ -172,7 +170,6 @@ export const PositionTable: FC<PositionTableProps> = ({
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const focusTarget = useRef<any>([]);
-  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
 
   const {
     data: {contractAddress, index},
@@ -218,7 +215,7 @@ export const PositionTable: FC<PositionTableProps> = ({
                 display={'flex'}
                 justifyContent={'space-between'}
                 px={12}
-                pl={16}
+                pl={'54px'}
                 py={5}
                 w={'100%'}
                 margin={0}
@@ -261,7 +258,7 @@ export const PositionTable: FC<PositionTableProps> = ({
                   <chakra.td
                     display={'flex'}
                     w={'100%'}
-                    pl={12}
+                    pl={9}
                     py={5}
                     key={index}
                     colSpan={visibleColumns.length}

@@ -30,7 +30,7 @@ import { chakra } from '@chakra-ui/react';
 import { getPoolName, checkTokenType } from '../../utils/token';
 import { convertNumber } from '../../utils/number';
 import { GET_POSITION, GET_POSITION1, GET_POSITION_BY_ID, GET_POSITION2 } from './GraphQL/index';
-import { useQuery } from '@apollo/client';
+import { useQuery, useSubscription } from '@apollo/client';
 import { PositionTable } from './PositionTable';
 import { fetchPositionPayload } from './utils/fetchPositionPayload';
 import { selectTransactionType } from 'store/refetch.reducer';
@@ -124,11 +124,13 @@ export const PoolTable: FC<PoolTableProps> = ({
     positionPayload();
   }, [data, transactionType, blockNumber, address])
 
-  const position = useQuery(GET_POSITION, {
+  const position = useQuery(
+    GET_POSITION, {
     variables: {address: account}
   });
 
-  const positionWithVar = useQuery(GET_POSITION_BY_ID, {
+  const positionWithVar = useQuery(
+    GET_POSITION_BY_ID, {
     variables: {id: stakingPosition},
   });
 
@@ -150,8 +152,6 @@ export const PoolTable: FC<PoolTableProps> = ({
     blockNumber,
     position.loading,
     positionWithVar.loading,
-    position.error,
-    positionWithVar.error,
     position.data,
     positionWithVar.data,
     address

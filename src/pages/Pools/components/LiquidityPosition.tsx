@@ -68,23 +68,24 @@ export const LiquidityPosition : FC<LiquidityPositionProps>= ({
   const dispatch = useAppDispatch();
   const {colorMode} = useColorMode();
   const theme = useTheme();
+  const {btnStyle, btnHover} = theme;
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [stakingBtnDisable, setStakingBtnDisable] = useState(true);
   const [claimBtnDisable, setClaimBtnDisable] = useState(true);
   const {address, library} = store.getState().user.data;
-  const btnStyle = {
+  const localBtnStyled = {
     btn: () => ({
       bg: 'blue.500',
       color: 'white.100',
       borderRadius: '4px',
-      w: '105px',
+      w: '125px',
       h: '38px',
       py: '10px',
       px: '29.5px',
       fontFamily: 'Roboto',
       fontSize: '14px',
       fontWeight: '500',
-      _hover: {backgroundColor: 'white.200'},
+      _hover: {backgroundColor: 'blue.100'},
     }),
   }
   const [range, setRange] = useState(false);
@@ -129,12 +130,13 @@ export const LiquidityPosition : FC<LiquidityPositionProps>= ({
   }, [lpData, stakingDisable, transactionType, blockNumber])
 
   return (
-    <Flex>
+    <Flex justifyContent={'space-between'}>
       {owner === address.toLowerCase() ? getCircle('not staked') : getCircle('staked')}
       {range ? getRange('range') : getRange('not range')}
       <Flex
         ml={'32px'}
         w={'170px'}
+        mr={'73px'}
         py={2}
       >
         <Text>{poolName}</Text>
@@ -147,7 +149,8 @@ export const LiquidityPosition : FC<LiquidityPositionProps>= ({
         fontWeight={300}
         fontSize={'12px'}
         direction={'row'}
-        w={'180px'}
+        w={'147px'}
+        mr={'50px'}
         py={3}
       >
         <Text color={'#2a72e5'} mr={1}>TOS Earned </Text>
@@ -159,8 +162,11 @@ export const LiquidityPosition : FC<LiquidityPositionProps>= ({
       </Flex>
       <Grid pos="relative" templateColumns={'repeat(5, 1fr)'} gap={3} mr={'40px'}>
         <Button 
-          {...btnStyle.btn()}
-          disabled={claimBtnDisable}
+          {...(claimBtnDisable
+            ? {...btnStyle.btnAble()}
+            : {...btnStyle.btnDisable({colorMode})})}
+          {...localBtnStyled.btn()}
+          isDisabled={claimBtnDisable}
           onClick={() => claim({
             tokenId: id,
             userAddress: address,
@@ -170,19 +176,11 @@ export const LiquidityPosition : FC<LiquidityPositionProps>= ({
           Claim
         </Button>
         <Button 
-         {...btnStyle.btn()}
-          disabled={owner !== address.toLowerCase()}
-          onClick={() => approve({
-            tokenId: id,
-            userAddress: address,
-            library: library,
-          })}
-        >
-          Approve
-        </Button>
-        <Button 
-          {...btnStyle.btn()}
-          disabled={stakingBtnDisable}
+        {...(stakingBtnDisable
+          ? {...btnStyle.btnAble()}
+          : {...btnStyle.btnDisable({colorMode})})}
+          {...localBtnStyled.btn()}
+          isDisabled={stakingBtnDisable}
           onClick={() => stake({
             tokenId: id,
             userAddress: address,
@@ -192,7 +190,7 @@ export const LiquidityPosition : FC<LiquidityPositionProps>= ({
           Staking
         </Button>
         <Button 
-          {...btnStyle.btn()}
+          {...localBtnStyled.btn()}
           disabled={owner === address.toLowerCase()}
           onClick={() => unstake({
             tokenId: id,
@@ -205,8 +203,9 @@ export const LiquidityPosition : FC<LiquidityPositionProps>= ({
           Unstaking
         </Button>
         <Button 
-          {...btnStyle.btn()}
+          {...localBtnStyled.btn()}
           bg={'#00c3c4'}
+          // _hover={bg: 'blue.100'}
           onClick={() => window.location.href=`https://app.uniswap.org/#/pool/${id}`}
         >
           Edit
