@@ -17,6 +17,7 @@ import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
 import {useCallback} from 'react';
+import { convertNumber } from '../../../utils/number';
 
 export const ClaimOptionModal = () => {
   const {account, library} = useWeb3React();
@@ -25,8 +26,7 @@ export const ClaimOptionModal = () => {
 
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
-  let claimed = data?.data?.canRewardAmount;
-  let earned = data?.data?.myearned;
+  let claimed = convertNumber({ amount: data?.data?.lpData });
 
   const handleCloseModal = useCallback(() => {
     dispatch(closeModal());
@@ -59,8 +59,7 @@ export const ClaimOptionModal = () => {
               Claim
             </Heading>
             <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
-              You can claim {claimed ? claimed : '0.00'} TOS and earned{' '}
-              {earned ? earned : '0.00'} TOS
+              You can claim {claimed ? claimed : '0.00'} TOS
             </Text>
           </Box>
 
@@ -90,15 +89,14 @@ export const ClaimOptionModal = () => {
               color="white.100"
               fontSize="14px"
               _hover={{backgroundColor: 'blue.100'}}
-              // onClick={() =>
-              //   claim({
-              //     userAddress: account,
-              //     contractAddress: '',
-              //     tokenId: data.data,
-              //     library: library,
-              //     handleCloseModal: handleCloseModal(),
-              //   })
-              // }
+              onClick={() =>
+                claim({
+                  userAddress: account,
+                  tokenId: data.data,
+                  library: library,
+                  handleCloseModal: handleCloseModal(),
+                })
+              }
             >
               Claim
             </Button>

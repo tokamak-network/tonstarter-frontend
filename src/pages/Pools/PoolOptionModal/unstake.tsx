@@ -12,22 +12,21 @@ import {
   useTheme,
   useColorMode,
 } from '@chakra-ui/react';
-import {unstake} from '../actions';
+// import {unstake} from '../actions';
 import {useCallback} from 'react';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
 
 export const UnstakeOptionModal = () => {
-  const {account, library} = useWeb3React();
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
   const theme = useTheme();
   const {colorMode} = useColorMode();
   const totalStakedBalance = data?.data?.totalStakedBalance;
-  const handleCloseModal = useCallback(() => {
-    dispatch(closeModal());
-  }, [dispatch]);
+  // const handleCloseModal = useCallback(() => {
+  //   dispatch(closeModal());
+  // }, [dispatch]);
 
   return (
     <Modal

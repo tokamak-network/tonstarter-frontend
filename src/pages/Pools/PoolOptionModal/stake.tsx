@@ -8,27 +8,23 @@ import {
   Text,
   Button,
   Flex,
-  Input,
-  Stack,
   useTheme,
   useColorMode,
 } from '@chakra-ui/react';
-import React, {useCallback} from 'react';
+import {useCallback} from 'react';
 import {useWeb3React} from '@web3-react/core';
 import {useAppSelector, useAppDispatch} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
-import {stake} from '../actions';
-import {onKeyDown, useInput} from 'hooks/useInput';
-import {useModal} from 'hooks/useModal';
+// import {stake} from '../actions';
 
 export const StakeOptionModal = () => {
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
-  const {account, library} = useWeb3React();
+  // const {account, library} = useWeb3React();
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
-  const {btnStyle} = theme;
+  // const {btnStyle} = theme;
   // const {handleCloseModal, handleOpenConfirmModal} = useModal(setValue);
   // const btnDisabled = keys.indexOf(value) !== -1 ? true : false;
   const handleCloseModal = useCallback(() => {

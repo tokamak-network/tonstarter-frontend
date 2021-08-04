@@ -1,4 +1,4 @@
-import React, {FC, useState, useRef, useMemo} from 'react';
+import {FC, useState} from 'react';
 import {
   Text,
   Flex,
@@ -9,11 +9,11 @@ import {
   Button,
 } from '@chakra-ui/react';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {openModal, closeModal, ModalType} from 'store/modal.reducer';
-import {useEffect, useCallback} from 'react';
+import {openModal} from 'store/modal.reducer';
+import {useEffect} from 'react';
 // import { getPoolName } from '../../utils/token';
 import store from '../../../store';
-import { approve, stake, unstake, claim } from '../actions';
+import { stake, unstake } from '../actions';
 import { convertNumber } from '../../../utils/number';
 import {selectTransactionType} from 'store/refetch.reducer';
 import { fetchPositionRangePayload } from '../utils/fetchPositionRangePayload';
@@ -167,11 +167,13 @@ export const LiquidityPosition : FC<LiquidityPositionProps>= ({
             : {...btnStyle.btnDisable({colorMode})})}
           {...localBtnStyled.btn()}
           isDisabled={claimBtnDisable}
-          onClick={() => claim({
-            tokenId: id,
-            userAddress: address,
-            library: library,
-          })}
+          onClick={() => dispatch(openModal({
+            type:'claimPool',
+            data: {
+              id: id,
+              lpData: lpData.miningAmount
+            }
+          }))}
         >
           Claim
         </Button>

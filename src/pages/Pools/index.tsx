@@ -1,20 +1,15 @@
 import {
   Container,
   Box,
-  Text,
-  Flex,
-  Link,
   useColorMode,
-  Select,
   useTheme,
 } from '@chakra-ui/react';
 import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
 import {Head} from 'components/SEO';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import React, {
+import {
   Fragment,
-  useCallback,
   useMemo,
   useEffect,
   useState,
@@ -24,15 +19,12 @@ import {
   StakeOptionModal,
   UnstakeOptionModal,
 } from './PoolOptionModal';
-import {shortenAddress} from 'utils';
 import {PoolTable} from './PoolTable';
-// import {selectStakes} from './staking.reducer';
-import {selectApp} from 'store/app/app.reducer';
 import {selectUser} from 'store/app/user.reducer';
 import {PageHeader} from 'components/PageHeader';
 // import {LoadingComponent} from 'components/Loading';
 import {useQuery} from '@apollo/client';
-import { GET_TOS_POOL, GET_BASE_POOL, GET_POOL_BY_POOL_ADDRESS } from './GraphQL/index';
+import { GET_TOS_POOL, GET_BASE_POOL } from './GraphQL/index';
 import { selectTransactionType } from 'store/refetch.reducer';
 import { DEPLOYED } from '../../constants/index';
 
@@ -44,8 +36,8 @@ export const Pools = () => {
   const {
     data: {address, library},
   } = useAppSelector(selectUser);
-  const dispatch = useAppDispatch();
-  const {colorMode} = useColorMode();
+  // const dispatch = useAppDispatch();
+  // const {colorMode} = useColorMode();
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
 
   const columns = useMemo(

@@ -22,15 +22,15 @@ import {
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {TriangleUpIcon, TriangleDownIcon} from '@chakra-ui/icons';
 import {useAppSelector} from 'hooks/useRedux';
-import {useEffect, useCallback} from 'react';
+import {useEffect} from 'react';
 // import {setTimeout} from 'timers';
 import {selectTableType} from 'store/table.reducer';
 import {LoadingComponent} from 'components/Loading';
 import { chakra } from '@chakra-ui/react';
 import { getPoolName, checkTokenType } from '../../utils/token';
 import { convertNumber } from '../../utils/number';
-import { GET_POSITION, GET_POSITION1, GET_POSITION_BY_ID, GET_POSITION2 } from './GraphQL/index';
-import { useQuery, useSubscription } from '@apollo/client';
+import { GET_POSITION, GET_POSITION_BY_ID } from './GraphQL/index';
+import { useQuery } from '@apollo/client';
 import { PositionTable } from './PositionTable';
 import { fetchPositionPayload } from './utils/fetchPositionPayload';
 import { selectTransactionType } from 'store/refetch.reducer';
@@ -70,13 +70,12 @@ export const PoolTable: FC<PoolTableProps> = ({
     getTableBodyProps,
     headerGroups,
     prepareRow,
-    visibleColumns,
     canPreviousPage,
     canNextPage,
     pageOptions,
     page,
-    nextPage,
-    previousPage,
+    // nextPage,
+    // previousPage,
     setPageSize,
     state: {pageIndex, pageSize},
   } = useTable(
@@ -106,15 +105,13 @@ export const PoolTable: FC<PoolTableProps> = ({
           library,
           address,
         );
-        // console.log(result)
-        // const {positionData, saleStartTime} = result;
-        console.log(result)
+
         let stringResult: any = [];
         for (let i=0; i < result?.positionData.length; i++) {
           stringResult.push(result?.positionData[i]?.positionid.toString())
         }
         const nowTime = moment().unix();
-        nowTime > Number(result?.saleStartTime.toString()) ? setStakingDisable(false) : setStakingDisable(true)
+        (nowTime > Number(result?.saleStartTime.toString()) && nowTime < Number(result?.miningEndTime.toString())  ) ? setStakingDisable(false) : setStakingDisable(true)
 
         setPositionData(result?.positionData)
         setStakingPosition(stringResult)

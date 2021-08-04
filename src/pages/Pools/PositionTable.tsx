@@ -1,6 +1,5 @@
-import React, {FC, useState, useRef, useMemo} from 'react';
+import {FC, useRef, useMemo} from 'react';
 import {
-  Column,
   useExpanded,
   usePagination,
   useTable,
@@ -19,16 +18,14 @@ import {
 } from '@chakra-ui/react';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {openModal, closeModal, ModalType} from 'store/modal.reducer';
-import {useEffect, useCallback} from 'react';
 import { getPoolName } from '../../utils/token';
 import {selectTableType} from 'store/table.reducer';
-import {LoadingComponent} from 'components/Loading';
+// import {LoadingComponent} from 'components/Loading';
 import { chakra } from '@chakra-ui/react';
 import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
-import store from '../../store';
-import {selectTransactionType} from 'store/refetch.reducer';
+// import store from '../../store';
+// import {selectTransactionType} from 'store/refetch.reducer';
 import { LiquidityPosition } from './components/LiquidityPosition';
 
 type PositionTableProps = {
@@ -154,10 +151,10 @@ export const PositionTable: FC<PositionTableProps> = ({
     visibleColumns,
     canPreviousPage,
     canNextPage,
-    pageOptions,
+    // pageOptions,
     page,
-    nextPage,
-    previousPage,
+    // nextPage,
+    // previousPage,
     setPageSize,
     state: {pageIndex, pageSize},
   } = useTable(
