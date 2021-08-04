@@ -86,14 +86,13 @@ export const UnstakeOptionModal = () => {
               color="white.100"
               fontSize="14px"
               _hover={{...theme.btnHover}}
-              onClick={() =>
-                unstake({
-                  userAddress: account,
-                  contractAddress: '',
-                  tokenId: data.data,
-                  library: library,
-                  handleCloseModal: handleCloseModal(),
-                })
+              onClick={() => {}
+                // unstake({
+                //   userAddress: account,
+                //   tokenId: data.data,
+                //   library: library,
+                //   // handleCloseModal: handleCloseModal(),
+                // })
               }
               disabled={+totalStakedBalance <= 0}>
               Unstake

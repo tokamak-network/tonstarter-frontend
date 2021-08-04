@@ -10,19 +10,23 @@ import * as StakeUniswapABI from 'services/abis/StakeUniswapV3.json';
 type Unstake = {
   tokenId: string;
   userAddress: string | null | undefined;
-  contractAddress: string | null | undefined;
+  // contractAddress: string | null | undefined;
+  miningAmount: string;
   library: any;
-  handleCloseModal: any;
+  // handleCloseModal: any;
 }
-const {NPM_Address, UniswapStaking_Address} = DEPLOYED;
+const {UniswapStaking_Address} = DEPLOYED;
 
 export const unstake = async (args: Unstake) => {
-  const { userAddress, contractAddress, tokenId, library } = args;
+  const { userAddress, tokenId, library, miningAmount } = args;
   if (userAddress === null || userAddress === undefined) {
     return;
   }
   const StakeUniswap = new Contract(UniswapStaking_Address, StakeUniswapABI.abi, library);
   const signer = getSigner(library, userAddress);
+  if (miningAmount.toString() !== '0') {
+    throw new Error(`You have claimeable amount!`);
+  }
 
   try {
     const receipt = await StakeUniswap.connect(signer)?.withdraw(tokenId)

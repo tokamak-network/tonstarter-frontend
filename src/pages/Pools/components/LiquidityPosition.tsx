@@ -1,12 +1,5 @@
 import React, {FC, useState, useRef, useMemo} from 'react';
 import {
-  Column,
-  useExpanded,
-  usePagination,
-  useTable,
-  useSortBy,
-} from 'react-table';
-import {
   Text,
   Flex,
   Box,
@@ -20,7 +13,7 @@ import {openModal, closeModal, ModalType} from 'store/modal.reducer';
 import {useEffect, useCallback} from 'react';
 // import { getPoolName } from '../../utils/token';
 import store from '../../../store';
-import { approve } from '../actions';
+import { approve, stake, unstake, claim } from '../actions';
 import { convertNumber } from '../../../utils/number';
 import {selectTransactionType} from 'store/refetch.reducer';
 import { fetchPositionRangePayload } from '../utils/fetchPositionRangePayload';
@@ -102,6 +95,9 @@ export const LiquidityPosition : FC<LiquidityPositionProps>= ({
 
     return result;
   }
+
+  // const { miningAmount } = lpData;
+
   useEffect(() => {
     async function getRange() {
       if (id && address && library) {
@@ -110,10 +106,7 @@ export const LiquidityPosition : FC<LiquidityPositionProps>= ({
         setRange(inRange)
       }
     }
-    getRange()
-  }, [])
 
-  useEffect(() => {
     function setStakingBtn () {
       if (owner === address.toLowerCase() || stakingDisable) {
         setStakingBtnDisable(false)
@@ -124,11 +117,13 @@ export const LiquidityPosition : FC<LiquidityPositionProps>= ({
     
     function setClaimBtn () {
       if (owner !== address.toLowerCase() && lpData) {
-        if (lpData.miningAmount.toString() !== '0') {
+        if (lpData?.miningAmount.toString() !== '0') {
           setClaimBtnDisable(false)
         }
       }
     }
+
+    getRange()
     setStakingBtn()
     setClaimBtn()
   }, [lpData, stakingDisable, transactionType, blockNumber])
@@ -191,7 +186,13 @@ export const LiquidityPosition : FC<LiquidityPositionProps>= ({
         <Button 
           {...btnStyle.btn()}
           disabled={owner === address.toLowerCase()}
-          onClick={() => dispatch(openModal({ type:'unstakePool', data: id}))}
+          onClick={() => unstake({
+            tokenId: id,
+            userAddress: address,
+            library: library,
+            miningAmount: lpData.miningAmount
+          })}
+            // dispatch(openModal({ type:'unstakePool', data: {id: id, lpData: lpData.miningAmount}}))}
         >
           Unstaking
         </Button>
