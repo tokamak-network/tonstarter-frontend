@@ -2,6 +2,7 @@ import {Contract} from '@ethersproject/contracts';
 import {DEPLOYED} from 'constants/index';
 import {getSigner} from 'utils/contract';
 import * as TOSABI from 'services/abis/TOS.json';
+import * as NPMABI from 'services/abis/NonfungiblePositionManager.json';
 import Web3 from 'web3';
 
 export async function tosPermit(account: string, library: any, amount: number) {
@@ -97,6 +98,92 @@ export async function tosPermit(account: string, library: any, amount: number) {
       //     account,
       //     msgParams,
       //   );
+      var params = [account, msgParams];
+      //   console.dir(params);
+      //var method = 'eth_signTypedData_v3'
+      var method = 'eth_signTypedData_v4';
+      //@ts-ignore
+      return {method, params};
+    },
+  );
+  return res;
+}
+
+export async function stakingPermit(account: string, library: any, tokenId: string) {
+  if (!account || !library) {
+    return;
+  }
+
+  //@ts-ignore
+  const web3 = new Web3(window.ethereum);
+  const signer = getSigner(library, account);
+
+  const {UniswapStaking_Address, NPM_Address} = DEPLOYED;
+
+  const NPMContract = new Contract(NPM_Address, NPMABI.abi,  library)
+  console.log(NPMContract)
+  let position = await NPMContract.positions(tokenId);
+  // let nonce = await NPMContract.connect(signer).nonces(account);
+
+  //@ts-ignore
+  let nonce = position.nonce.toString();
+  nonce = parseInt(nonce);
+  const to = UniswapStaking_Address
+
+  // let position = await NPMContract.positions(tokenId);
+
+  let deadline = Date.now() / 1000;
+  //@ts-ignore
+  deadline = parseInt(deadline) + 100;
+
+  //@ts-ignore
+  const res = await web3.givenProvider.send(
+    {
+      method: 'net_version',
+      params: [],
+      jsonrpc: '2.0',
+    },
+    async function (err: any, result: any) {
+      const netId = result.result;
+
+      const Permit = [
+        {name: "spender", type: "address"},
+        {name: "tokenId", type: "uint256"},
+        {name: "nonce", type: "uint256"},
+        {name: "deadline", type: "uint256"}
+      ];
+      const message = {
+        spender: to,
+        tokenId: tokenId,
+        nonce: nonce,
+        deadline: deadline
+      };
+
+      //   console.log('message:', message);
+
+      let msgParams = {
+        types: {
+          EIP712Domain: [
+            {name: 'name', type: 'string'},
+            {name: 'version', type: 'string'},
+            {name: 'chainId', type: 'uint256'},
+            {name: 'verifyingContract', type: 'address'},
+          ],
+          Permit: Permit,
+        },
+        primaryType: 'Permit',
+        domain: {
+          name : 'Uniswap V3 Positions NFT-V1',
+          version: '1.0',
+          chainId: netId,
+          symbol: 'UNI-V3-POS',
+          verifyingContract: NPM_Address,
+        },
+        message: message,
+      };
+
+      //@ts-ignore
+      msgParams = JSON.stringify(msgParams);
       var params = [account, msgParams];
       //   console.dir(params);
       //var method = 'eth_signTypedData_v3'

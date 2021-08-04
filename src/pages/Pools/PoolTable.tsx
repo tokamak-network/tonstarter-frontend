@@ -132,7 +132,6 @@ export const PoolTable: FC<PoolTableProps> = ({
     variables: {id: stakingPosition},
   });
 
-  // position.refetch()
   const [positions, setPositions] = useState([]);
   useEffect(() => {
     function getPosition () {
@@ -140,9 +139,9 @@ export const PoolTable: FC<PoolTableProps> = ({
       //   setPositions([])
       // } else 
       if (position.data && positionWithVar.data) {
+        position.refetch()
         const withStakedPosition = position.data.positions.concat(positionWithVar.data.positions)
         setPositions(withStakedPosition)
-        position.refetch()
       }
     }
     getPosition()
