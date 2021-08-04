@@ -21,7 +21,7 @@ import {fetchStakedBalancePayload} from '../utils/fetchStakedBalancePayload';
 import {useUser} from 'hooks/useUser';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {checkSaleClosed} from 'pages/Staking/utils';
-import {BASE_PROVIDER} from 'constants/index';
+import {BASE_PROVIDER, DEPLOYED} from 'constants/index';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal/CloseButton';
@@ -49,6 +49,8 @@ const tooltipMsg = () => {
 
 export const ManageModal = () => {
   const {data} = useAppSelector(selectModalType);
+  const {TokamakLayer2_ADDRESS} = DEPLOYED;
+
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const theme = useTheme();
   const {btnStyle} = theme;
@@ -172,19 +174,21 @@ export const ManageModal = () => {
       console.log(contractAddress);
       console.log(library);
       const isUnstakeL2 = await StakeTONContract.canTokamakRequestUnStakingAll(
-        contractAddress,
+        TokamakLayer2_ADDRESS,
       );
       const block = await StakeTONContract.canTokamakRequestUnStakingAllBlock(
-        contractAddress,
+        TokamakLayer2_ADDRESS,
       );
       const canAmount = await StakeTONContract.canTokamakRequestUnStaking(
-        contractAddress,
+        TokamakLayer2_ADDRESS,
       );
       console.log(block);
       console.log(`canTokamakRequestUnStakingAllBlock : ${block.toString()}`);
       console.log(canAmount);
       console.log(`canTokamakRequestUnStaking : ${canAmount.toString()}`);
       console.log(await StakeTONContract.tokamakLayer2());
+      console.log(await StakeTONContract.seigManager());
+
       return stakedL2 === '-' || stakedL2 === '0.00'
         ? setUnstakeL2Disable(true)
         : setUnstakeL2Disable(false);
