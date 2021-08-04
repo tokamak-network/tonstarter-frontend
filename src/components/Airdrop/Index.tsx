@@ -127,12 +127,12 @@ export const AirdropModal = () => {
             justifyContent="center"
             pb={25}
             zIndex={100}>
-            <Center w="100%" h="100%" bg="rgba(255, 255, 255, 0.5)">
+            <Center w="100%" h="100%">
               <LoadingComponent></LoadingComponent>
             </Center>
           </Flex>
         )}
-        <ModalBody p={0}>
+        <ModalBody p={0} opacity={airdropData === undefined ? 0.5 : 1}>
           <Box {...modalStyle.box({colorMode})}>
             <Heading {...modalStyle.head({colorMode})}>Airdrop Claim</Heading>
             <Text {...modalStyle.headText}>You can claim TOS</Text>

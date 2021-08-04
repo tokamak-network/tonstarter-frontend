@@ -45,6 +45,7 @@ export const toastWithReceipt = async (
   recepit: any,
   setTxPending: any,
   from?: string,
+  actionType?: string,
 ) => {
   try {
     store.dispatch(
@@ -73,6 +74,9 @@ export const toastWithReceipt = async (
               setTransaction({
                 transactionType: 'Staking',
                 blockNumber: receipt.blockNumber,
+                data: {
+                  actionType,
+                },
               }),
             );
           }

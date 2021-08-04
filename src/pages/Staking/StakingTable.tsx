@@ -30,6 +30,8 @@ import {useAppSelector} from 'hooks/useRedux';
 import {useEffect} from 'react';
 import {setTimeout} from 'timers';
 import {LoadingComponent} from 'components/Loading';
+// import {fetchStakeURL} from 'constants/index';
+// import {selectTransactionType} from 'store/refetch.reducer';
 
 type StakingTableProps = {
   columns: Column[];
@@ -149,6 +151,29 @@ export const StakingTable: FC<StakingTableProps> = ({
       }
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  //refetch to update Total Staked, Earninger Per Ton after stake, unstake
+  // const {
+  //   transactionType,
+  //   blockNumber,
+  //   data: txData,
+  // } = useAppSelector(selectTransactionType);
+  // const {actionType, txContractAddress} = txData;
+
+  // useEffect(() => {
+  //   async function refetchStake() {
+  //     if (
+  //       (transactionType === 'Staking' && actionType === 'Stake') ||
+  //       actionType === 'Untake'
+  //     )
+  //       console.log('**refetch**');
+  //     console.log(txContractAddress);
+  //     const fetchEachStakeURL = `${fetchStakeURL}&stakeContract=${txContractAddress}`;
+  //     const res = await fetch(fetchEachStakeURL);
+  //     console.log(res);
+  //   }
+  //   refetchStake();
+  // }, [transactionType, blockNumber, txData, actionType, txContractAddress]);
 
   const [isOpen, setIsOpen] = useState(
     contractAddress === undefined ? '' : contractAddress,

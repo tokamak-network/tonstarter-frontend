@@ -119,17 +119,12 @@ export const DaoManageModal = () => {
     /*eslint-disable*/
   }, []);
 
-  if (signIn === false) {
-    return <></>;
-  }
-
   const [test, setTest] = useState('');
 
   const testOnChange = (e: any) => {
     const {
       target: {value},
     } = e;
-    console.log(value);
     setTest(value);
   };
 
@@ -221,13 +216,14 @@ export const DaoManageModal = () => {
                         fontSize={'1em'}
                         fontColor={themeDesign.scrollNumberFont[colorMode]}
                         fontWeight={'bold'}>
-                        {stake.periodWeeks}
+                        {stake.periodDays}
                         <span
                           style={{
                             fontSize: '0.688em',
                             paddingLeft: '0.188em',
                           }}>
-                          {stake.periodWeeks > 1 ? 'weeks' : 'week'}
+                          {/* {stake.periodWeeks > 1 ? 'weeks' : 'week'} */}
+                          Days
                         </span>
                       </Text>
                     </Box>

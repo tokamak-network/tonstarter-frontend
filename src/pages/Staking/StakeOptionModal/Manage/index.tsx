@@ -66,11 +66,11 @@ export const ManageModal = () => {
   const [swapDisabled, setSwapDisabled] = useState(true);
 
   //Balances
-  const [availableBalance, setAvailableBalance] = useState('-');
+  const [availableBalance, setAvailableBalance] = useState('0');
   const [totalStaked, setTotalStaked] = useState('-');
   const [stakedL2, setStakdL2] = useState('-');
   const [pendingL2Balance, setPendingL2Balance] = useState('-');
-  const [swapBalance, setSwapBalance] = useState('-');
+  const [swapBalance, setSwapBalance] = useState('0');
   const [canWithdralAmount, setCanWithdralAmount] = useState(0);
 
   //original balances
@@ -124,12 +124,13 @@ export const ManageModal = () => {
           //set original balances
           setOriginalStakeBalance(originalBalance.stakeContractBalanceTon);
           setOriginalSwapBalance(originalBalance.swapBalance);
+
           //calculate swap balance
           if (Number(swapBalance) <= 0) {
-            return setSwapBalance('0');
+            return setSwapBalance('0.00');
           }
           if (Number(stakeContractBalanceTon) >= Number(swapBalance)) {
-            return setSwapBalance(swapBalance);
+            setSwapBalance(swapBalance);
           }
           if (Number(stakeContractBalanceTon) < Number(originalBalance)) {
             return setSwapBalance(stakeContractBalanceTon);
@@ -137,8 +138,9 @@ export const ManageModal = () => {
         }
       }
     }
-    getStakedBalance();
-
+    if (transactionType === 'Staking' || transactionType === undefined) {
+      getStakedBalance();
+    }
     /*eslint-disable*/
   }, [data, transactionType, blockNumber]);
 
@@ -161,14 +163,12 @@ export const ManageModal = () => {
     };
 
     const btnDisableWithdraw = () => {
-      console.log(canWithdralAmount);
       return canWithdralAmount <= 0
         ? setWithdrawDisable(true)
         : setWithdrawDisable(false);
     };
 
     const btnDisableSwap = () => {
-      console.log(swapBalance);
       return Number(convertNumber({amount: swapBalance, round: false})) <= 0
         ? setSwapDisabled(true)
         : setSwapDisabled(false);
@@ -179,17 +179,19 @@ export const ManageModal = () => {
       setSaleClosed(res);
     }
 
-    if (data.modal === 'manage') {
+    if (
+      data.modal === 'manage' ||
+      transactionType === 'Staking' ||
+      transactionType === undefined
+    ) {
       if (vault && library) {
         checkSale();
       }
 
-      setTimeout(() => {
-        btnDisablestakeL2();
-        btnDisableSwap();
-        btnDisableUnstakeL2();
-        btnDisableWithdraw();
-      }, 1500);
+      btnDisablestakeL2();
+      btnDisableSwap();
+      btnDisableUnstakeL2();
+      btnDisableWithdraw();
     }
 
     /*eslint-disable*/
@@ -201,6 +203,8 @@ export const ManageModal = () => {
     swapBalance,
     transactionType,
     blockNumber,
+    canWithdralAmount,
+    saleClosed,
   ]);
 
   const handleCloseManageModal = () => {
@@ -208,11 +212,11 @@ export const ManageModal = () => {
     setUnstakeL2Disable(true);
     setWithdrawDisable(true);
     setSwapDisabled(true);
-    setAvailableBalance('-');
+    setAvailableBalance('0');
     setTotalStaked('-');
     setStakdL2('-');
     setPendingL2Balance('-');
-    setSwapBalance('-');
+    setSwapBalance('0');
     setCanWithdralAmount(0);
     setOriginalStakeBalance(0);
     setOriginalSwapBalance(0);

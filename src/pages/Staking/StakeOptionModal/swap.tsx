@@ -21,7 +21,7 @@ import {useUser} from 'hooks/useUser';
 import {useModal} from 'hooks/useModal';
 import {useCheckBalance} from 'hooks/useCheckBalance';
 import {CloseButton} from 'components/Modal/CloseButton';
-import {convertFromRayToWei, convertToRay} from 'utils/number';
+import {convertToRay} from 'utils/number';
 
 export const SwapModal = () => {
   const {sub} = useAppSelector(selectModalType);
