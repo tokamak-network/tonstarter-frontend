@@ -81,6 +81,14 @@ export const fetchStakes = createAsyncThunk(
 
     const vaultsData = store.getState().vaults.data;
 
+    const temp = [
+      '0x904E4281D706aF6a4e2dFd811add0202ee96e185',
+      '0xCf07EEC0B526979A2b37788c967e133327f3db99',
+      '0x62516BdAdDF4a60fa810177D0aF92a67F459F2D6',
+      '0x2322ac9d8C97ee6dD1553295DF355a882F2baDe6',
+      '0x989A3dB201cF461E0b431D80452502A729588aBe',
+    ];
+
     await Promise.all(
       stakeList.map(async (stake: any, index: number) => {
         let mystaked: string = '';
@@ -100,7 +108,7 @@ export const fetchStakes = createAsyncThunk(
             : stakePeriod;
 
         const stakeInfo: Partial<Stake> = {
-          contractAddress: stake.stakeContract,
+          contractAddress: temp[stakeList.length - index - 1],
           name: stake.name,
           totalStakers: stake.totalStakers,
           mystaked: convertNumber({
