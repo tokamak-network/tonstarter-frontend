@@ -82,7 +82,7 @@ export const Pools = () => {
   const tosPool = useQuery(GET_TOS_POOL, {
     variables: {address: [TOS_ADDRESS.toLowerCase()]}
   });
-  console.log(basePool.loading, basePool.error, basePool.data)
+  // console.log(basePool.loading, basePool.error, basePool.data)
   const [pool, setPool] = useState([]);
   useEffect(() => {
     function getPool () {
