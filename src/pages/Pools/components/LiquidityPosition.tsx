@@ -124,7 +124,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
     setStakingBtn();
     setClaimBtn();
   }, [lpData, stakingDisable, transactionType, blockNumber]);
-
+  console.log(lpData)
   return (
     <Flex justifyContent={'space-between'}>
       {owner === address.toLowerCase()
@@ -142,8 +142,8 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
         fontWeight={300}
         fontSize={'12px'}
         direction={'row'}
-        w={'147px'}
-        mr={'50px'}
+        w={'200px'}
+        mr={'30px'}
         py={3}>
         <Text color={'#2a72e5'} mr={1}>
           TOS Earned{' '}
@@ -151,7 +151,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
         {lpData ? (
           <Text>
             {convertNumber({
-              amount: lpData.miningAmount.toString(),
+              amount: lpData.claimedAmount.toString(),
             })}{' '}
             TOS
           </Text>
@@ -163,7 +163,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
         pos="relative"
         templateColumns={'repeat(5, 1fr)'}
         gap={3}
-        mr={'40px'}>
+        mr={'4px'}>
         <Button
           {...(claimBtnDisable
             ? {...btnStyle.btnAble()}
