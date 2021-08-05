@@ -123,6 +123,8 @@ export const LiquidityPosition : FC<LiquidityPositionProps>= ({
         } else {
           setClaimBtnDisable(true)
         }
+      } else {
+        setClaimBtnDisable(true)
       }
     }
 

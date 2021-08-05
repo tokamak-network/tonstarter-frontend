@@ -3,9 +3,11 @@ import {DEPLOYED} from 'constants/index';
 import {getSigner} from 'utils/contract';
 import * as TOSABI from 'services/abis/TOS.json';
 import * as NPMABI from 'services/abis/NonfungiblePositionManager.json';
+import * as LockTOSABI from 'services/abis/LockTOS.json';
 import Web3 from 'web3';
 import {ethers} from 'ethers';
-import * as LockTOSABI from 'services/abis/LockTOS.json';
+import ethUtil from 'ethereumjs-util'
+import sigUtil from 'eth-sig-util'
 
 // user, amount, unlockTime;
 export const permitForCreateLock = async (
@@ -42,7 +44,7 @@ export const permitForCreateLock = async (
     {
       chainId: 4,
       name: 'TONStarter',
-      version: '1.0',
+      version: '1',
       verifyingContract: TOS_ADDRESS,
     },
     {
@@ -75,7 +77,7 @@ export const permitForCreateLock = async (
   )
 }
 
-export async function stakingPermit(account: string, library: any, tokenId: string) {
+export async function stakingPermit(account: string, library: any, tokenId: string, deadline: number) {
   if (!account || !library) {
     return;
   }
@@ -87,22 +89,13 @@ export async function stakingPermit(account: string, library: any, tokenId: stri
   const {UniswapStaking_Address, NPM_Address} = DEPLOYED;
 
   const NPMContract = new Contract(NPM_Address, NPMABI.abi,  library)
-  console.log(NPMContract)
   let position = await NPMContract.positions(tokenId);
   // let nonce = await NPMContract.connect(signer).nonces(account);
-  console.log('nonce', position.nonce.toString());
+  // let owner = await NPMContract.ownerOf(tokenId);
   //@ts-ignore
   let nonce = position.nonce.toString();
-  console.log('nonce',nonce );
   nonce = parseInt(nonce);
-  const to = '0x5bDA681f5F0cff84813172c3D4310dF90939b073'
-
-  // let position = await NPMContract.positions(tokenId);
-
-  let deadline = Date.now() / 1000;
-  //@ts-ignore
-  deadline = parseInt(deadline) + 100;
-  console.log('deadline',deadline);
+  const to = UniswapStaking_Address
   //@ts-ignore
   const res = await web3.givenProvider.send(
     {
@@ -112,7 +105,6 @@ export async function stakingPermit(account: string, library: any, tokenId: stri
     },
     async function (err: any, result: any) {
       const netId = result.result;
-      console.log('netId',netId);
 
       const Permit = [
         {name: "spender", type: "address"},
@@ -122,12 +114,10 @@ export async function stakingPermit(account: string, library: any, tokenId: stri
       ];
       const message = {
         spender: to,
-        tokenId: tokenId,
+        tokenId: Number(tokenId),
         nonce: nonce,
         deadline: deadline
       };
-
-        console.log('message:', message);
 
       let msgParams = {
         types: {
@@ -142,20 +132,15 @@ export async function stakingPermit(account: string, library: any, tokenId: stri
         primaryType: 'Permit',
         domain: {
           name : 'Uniswap V3 Positions NFT-V1',
-          version: '1.0',
+          version: '1',
           chainId: netId,
-          symbol: 'UNI-V3-POS',
           verifyingContract: NPM_Address,
         },
         message: message,
       };
-      console.log('msgParams1:' , msgParams );
       //@ts-ignore
       msgParams = JSON.stringify(msgParams);
-      console.log('msgParams2:' , msgParams );
       var params = [account, msgParams];
-      console.dir(params);
-      //var method = 'eth_signTypedData_v3'
       var method = 'eth_signTypedData_v4';
       //@ts-ignore
       return {method, params};
@@ -180,16 +165,16 @@ export async function finalPermit(method: any, params: any, account: string) {
         alert(result.error.message);
       }
       if (result.error) return console.error('ERROR', result);
-        console.log('TYPED SIGNED:' + JSON.stringify(result.result));
+        // console.log('TYPED SIGNED:' + JSON.stringify(result.result));
 
       const signature = result.result.substring(2);
       const r = '0x' + signature.substring(0, 64);
       const s = '0x' + signature.substring(64, 128);
       const v = parseInt(signature.substring(128, 130), 16);
 
-        console.log('TYPED r:', r);
-        console.log('TYPED s:', s);
-        console.log('TYPED v:', v);
+      // console.log('TYPED r:', r);
+      // console.log('TYPED s:', s);
+      // console.log('TYPED v:', v);
 
       return {_v: v, _r: r, _s: s};
     },
