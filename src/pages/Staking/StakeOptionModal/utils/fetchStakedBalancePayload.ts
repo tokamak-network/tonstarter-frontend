@@ -2,7 +2,11 @@ import {getTokamakContract} from 'utils/contract';
 import {DEPLOYED} from 'constants/index';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import {Contract} from '@ethersproject/contracts';
-import {convertFromWeiToRay, convertNumber} from 'utils/number';
+import {
+  convertFromWeiToRay,
+  convertNumber,
+  parseFromRayToWei,
+} from 'utils/number';
 
 export const fetchStakedBalancePayload = async (
   account: string,
@@ -28,7 +32,7 @@ const getSwapBalance = (args: any) => {
     stakeContractBalanceTon,
   );
 
-  const availableBalance = totalStakedAmountL2
+  const totalBalance = totalStakedAmountL2
     .add(totalPendingUnstakedAmountL2)
     .add(stakeContractBalanceWton)
     .add(ray_StakeContractBalanceTon)
@@ -36,14 +40,16 @@ const getSwapBalance = (args: any) => {
 
   const tonsBalance = stakeContractBalanceWton.add(ray_StakeContractBalanceTon);
 
-  if (availableBalance.gt(tonsBalance)) {
-    return availableBalance
+  if (totalBalance.gt(tonsBalance)) {
+    const stringTotalBalanceNum = totalBalance
       .sub(tonsBalance)
       .sub(totalPendingUnstakedAmountL2)
       .toString();
+
+    return parseFromRayToWei(stringTotalBalanceNum);
   }
-  if (availableBalance.lte(tonsBalance)) {
-    return availableBalance;
+  if (totalBalance.lte(tonsBalance)) {
+    return totalBalance;
   }
 };
 

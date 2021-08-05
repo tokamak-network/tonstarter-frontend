@@ -1,10 +1,5 @@
 import {FC, useRef, useMemo} from 'react';
-import {
-  useExpanded,
-  usePagination,
-  useTable,
-  useSortBy,
-} from 'react-table';
+import {useExpanded, usePagination, useTable, useSortBy} from 'react-table';
 import {
   Text,
   Flex,
@@ -18,15 +13,15 @@ import {
 } from '@chakra-ui/react';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import { getPoolName } from '../../utils/token';
+import {getPoolName} from '../../utils/token';
 import {selectTableType} from 'store/table.reducer';
 // import {LoadingComponent} from 'components/Loading';
-import { chakra } from '@chakra-ui/react';
+import {chakra} from '@chakra-ui/react';
 import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
 // import store from '../../store';
 // import {selectTransactionType} from 'store/refetch.reducer';
-import { LiquidityPosition } from './components/LiquidityPosition';
+import {LiquidityPosition} from './components/LiquidityPosition';
 
 type PositionTableProps = {
   // columns: Column[];
@@ -35,7 +30,7 @@ type PositionTableProps = {
   stakingDisable: boolean;
   // isLoading: boolean;
   // address: string;
-}
+};
 
 const getTextColor = (type: string, colorMode: string) => {
   if (colorMode === 'light') {
@@ -61,11 +56,9 @@ const getStatus = (
         w={'8px'}
         h={'8px'}
         borderRadius={50}
-        bg={
-          type === 'staked' ? '#73d500' : '#f95359'
-        }
+        bg={type === 'staked' ? '#73d500' : '#f95359'}
         mr={'7px'}
-         />
+      />
       <Text
         fontSize={'11px'}
         color={colorMode === 'light' ? '#304156' : 'white.100'}>
@@ -85,11 +78,9 @@ const getRangeStatus = (
         w={'8px'}
         h={'8px'}
         borderRadius={50}
-        bg={
-          type === 'range' ? '#2ea2f8' : '#ff7800'
-        }
+        bg={type === 'range' ? '#2ea2f8' : '#ff7800'}
         mr={'7px'}
-         />
+      />
       <Text
         fontSize={'11px'}
         color={colorMode === 'light' ? '#304156' : 'white.100'}>
@@ -184,30 +175,27 @@ export const PositionTable: FC<PositionTableProps> = ({
       return null;
     });
   };
-    
+
   return (
     <Flex w="1100px" flexDir={'column'}>
-      <Box overflowX={'auto'}>
+      <Box>
         <chakra.table
           width={'full'}
           variant="simple"
           display="flex"
-          flexDirection="column"
-        >
+          flexDirection="column">
           <chakra.tbody
             {...getTableBodyProps()}
             display="flex"
-            flexDirection="column"
-          >
+            flexDirection="column">
             <chakra.tr
               h={'80px'}
               pb={'3px'}
               bg={colorMode === 'light' ? 'white.100' : ''}
               border={colorMode === 'light' ? '' : 'solid 1px #373737'}
-              borderBottom={'1px'}
-              borderBottomColor={'#f4f6f8'}
-              borderTopWidth={0} 
-            >
+              // borderBottom={'1px'}
+              // borderBottomColor={'#f4f6f8'}
+              borderTopWidth={0}>
               <chakra.td
                 display={'flex'}
                 justifyContent={'space-between'}
@@ -216,12 +204,13 @@ export const PositionTable: FC<PositionTableProps> = ({
                 py={5}
                 w={'100%'}
                 margin={0}
-                colSpan={visibleColumns.length}
-              >
+                colSpan={visibleColumns.length}>
                 <Flex>
                   {getStatus('staked', colorMode)}
                   {getStatus('not staked', colorMode)}
-                  <Text fontSize={'11px'} py={2} mr={3}>/</Text>
+                  <Text fontSize={'11px'} py={2} mr={3}>
+                    /
+                  </Text>
                   {getRangeStatus('range', colorMode)}
                   {getRangeStatus('not range', colorMode)}
                 </Flex>
@@ -231,16 +220,20 @@ export const PositionTable: FC<PositionTableProps> = ({
                   color={'#86929d'}
                   fontSize={'13px'}
                   placeholder="On sale Sort"
-                  onChange={onChangeSelectBox}>
-                </Select>
+                  onChange={onChangeSelectBox}></Select>
               </chakra.td>
             </chakra.tr>
             {page.map((row: any, i) => {
-              const {id, pool, owner} = row.original;  
-              const poolName = getPoolName(pool.token0.symbol, pool.token1.symbol)
-              const lpData = positionData.find((data) => data.positionid.toString() === id)
+              const {id, pool, owner} = row.original;
+              const poolName = getPoolName(
+                pool.token0.symbol,
+                pool.token1.symbol,
+              );
+              const lpData = positionData.find(
+                (data) => data.positionid.toString() === id,
+              );
               return [
-                <chakra.tr 
+                <chakra.tr
                   w={'100%'}
                   key={i}
                   // mt={2}
@@ -248,10 +241,9 @@ export const PositionTable: FC<PositionTableProps> = ({
                   pb={'3px'}
                   bg={colorMode === 'light' ? 'white.100' : ''}
                   border={colorMode === 'light' ? '' : 'solid 1px #373737'}
-                  borderBottom={'1px'}
-                  borderBottomColor={'#f4f6f8'}
-                  borderTopWidth={0} 
-                >
+                  // borderBottom={'1px'}
+                  // borderBottomColor={'#f4f6f8'}
+                  borderTopWidth={0}>
                   <chakra.td
                     display={'flex'}
                     w={'100%'}
@@ -260,9 +252,8 @@ export const PositionTable: FC<PositionTableProps> = ({
                     key={index}
                     colSpan={visibleColumns.length}
                     fontSize={'17px'}
-                    fontWeight={600}
-                  >
-                    <LiquidityPosition 
+                    fontWeight={600}>
+                    <LiquidityPosition
                       poolName={poolName}
                       owner={owner}
                       lpData={lpData}
@@ -270,9 +261,9 @@ export const PositionTable: FC<PositionTableProps> = ({
                       id={id}
                     />
                   </chakra.td>
-              </chakra.tr>
-            ]
-          })}
+                </chakra.tr>,
+              ];
+            })}
             <chakra.tr
               w={'100%'}
               h={'80px'}
@@ -281,19 +272,16 @@ export const PositionTable: FC<PositionTableProps> = ({
               pr={9}
               bg={colorMode === 'light' ? 'white.100' : ''}
               border={colorMode === 'light' ? '' : 'solid 1px #373737'}
-              borderBottom={'1px'}
-              borderBottomColor={'#f4f6f8'}
-              borderTopWidth={0}   
-              borderBottomRadius="10px"
-            >
+              // borderBottom={'1px'}
+              // borderBottomColor={'#f4f6f8'}
+              borderTopWidth={0}
+              borderBottomRadius="10px">
               <chakra.td
                 display={'flex'}
                 w={'100%'}
                 margin={0}
                 justifyContent="flex-end"
-                
-                colSpan={visibleColumns.length}
-              >
+                colSpan={visibleColumns.length}>
                 <Flex justifyContent="flex-end" my={4} alignItems="center">
                   <Flex>
                     <Tooltip label="Previous Page">
@@ -389,5 +377,5 @@ export const PositionTable: FC<PositionTableProps> = ({
         </chakra.table>
       </Box>
     </Flex>
-  )
-}
+  );
+};

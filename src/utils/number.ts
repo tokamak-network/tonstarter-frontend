@@ -16,6 +16,13 @@ type ConverNumberFunc = {
   decimalPlaces?: number;
 };
 
+//temp
+export const parseFromRayToWei = (num: BigNumber) => {
+  const argBigNum = BigNumber.from(num);
+  const weiNum = convertFromRayToWei(argBigNum.toString());
+  return weiNum;
+};
+
 export const convertFromRayToWei = (num: string) => {
   const numAmount = BigNumber.from(num).div(10 ** 9);
   return numAmount;
