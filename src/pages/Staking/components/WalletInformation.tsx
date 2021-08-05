@@ -13,7 +13,6 @@ import {
 import React, {FC, useState, useCallback} from 'react';
 import {AppDispatch} from 'store';
 import {openModal, ModalType} from 'store/modal.reducer';
-import {User} from 'store/app/user.reducer';
 import {Stake} from '../staking.reducer';
 import {checkSaleClosed, fetchManageModalPayload} from '../utils';
 import {LoadingComponent} from 'components/Loading';
@@ -28,16 +27,15 @@ import {useAppSelector} from 'hooks/useRedux';
 type WalletInformationProps = {
   dispatch: AppDispatch;
   data: Stake;
-  user: User;
 };
 
 export const WalletInformation: FC<WalletInformationProps> = ({
-  user,
   data,
   dispatch,
 }) => {
   const {colorMode} = useColorMode();
   const [loading, setLoading] = useState(false);
+  const {account, library} = useUser();
 
   //Balances
   const [userTonBalance, setUserTonBalance] = useState<string | undefined>(
@@ -56,18 +54,26 @@ export const WalletInformation: FC<WalletInformationProps> = ({
   const [manageDisabled, setManageDisabled] = useState(true);
   const [endSaleBtnDisabled, setEndSaleBtnDisabled] = useState(true);
 
-  const {account, library} = useUser();
-
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
 
   useEffect(() => {
     async function checkSale() {
-      const res = await checkSaleClosed(data.vault, library);
-      setSaleClosed(res);
+      if (library) {
+        const res = await checkSaleClosed(data.vault, library);
+        setSaleClosed(res);
+      }
     }
     checkSale();
     /*eslint-disable*/
-  }, [account, data, dispatch, tosBalance, transactionType, blockNumber]);
+  }, [
+    account,
+    library,
+    data,
+    dispatch,
+    tosBalance,
+    transactionType,
+    blockNumber,
+  ]);
 
   const {status} = data;
   const currentBlock: number = Number(data.fetchBlock);
@@ -114,7 +120,7 @@ export const WalletInformation: FC<WalletInformationProps> = ({
   };
 
   useEffect(() => {
-    if (user.address !== undefined) {
+    if (account !== undefined) {
       getWalletTonBalance();
     }
     if (transactionType === undefined || transactionType === 'Staking') {
@@ -141,8 +147,8 @@ export const WalletInformation: FC<WalletInformationProps> = ({
 
   const getWalletTonBalance = async () => {
     const result = await getUserTonBalance({
-      account: user.address,
-      library: user.library,
+      account: account,
+      library: library,
     });
     const userBalance = await getUserBalance(data.contractAddress);
 
@@ -172,7 +178,6 @@ export const WalletInformation: FC<WalletInformationProps> = ({
           payload = {
             ...data,
             ...payloadModal,
-            user,
           };
         } else if (modal === 'claim') {
           payload = {
@@ -188,7 +193,6 @@ export const WalletInformation: FC<WalletInformationProps> = ({
         } else {
           payload = {
             ...data,
-            user,
           };
         }
       } catch (e) {
@@ -219,7 +223,7 @@ export const WalletInformation: FC<WalletInformationProps> = ({
           display="flex"
           alignItems="center"
           justifyContent="center">
-          {userTonBalance === undefined && user.address !== undefined ? (
+          {userTonBalance === undefined && account !== undefined ? (
             <LoadingDots />
           ) : (
             userTonBalance
@@ -275,7 +279,7 @@ export const WalletInformation: FC<WalletInformationProps> = ({
                   ? closeSale({
                       userAddress: account,
                       vaultContractAddress: data.vault,
-                      library: user.library,
+                      library,
                     })
                   : null
               }>

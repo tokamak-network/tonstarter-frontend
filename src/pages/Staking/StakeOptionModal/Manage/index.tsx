@@ -132,6 +132,10 @@ export const ManageModal = () => {
           setOriginalStakeBalance(originalBalance.stakeContractBalanceTon);
           setOriginalSwapBalance(originalBalance.swapBalance);
 
+          console.log(stakeContractBalanceTon);
+          console.log(originalBalance);
+          console.log(swapBalance);
+
           //calculate swap balance
           if (Number(swapBalance) <= 0) {
             return setSwapBalance('0.00');
@@ -182,15 +186,10 @@ export const ManageModal = () => {
           TokamakLayer2_ADDRESS,
         );
 
-      console.log(canReqeustUnstaking);
-      console.log(canReqeustUnstaking.toString());
-
       const convertedUnstakeNum = convertNumber({
         amount: canReqeustUnstaking,
         type: 'ray',
       });
-
-      console.log(convertedUnstakeNum);
 
       setUnstakeAll(isUnstakeL2All);
       setCanUntakdL2(convertedUnstakeNum);
