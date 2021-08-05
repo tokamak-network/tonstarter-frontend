@@ -77,7 +77,7 @@ export const ManageModal = () => {
   const [unstakeAll, setUnstakeAll] = useState<boolean>(false);
   const [pendingL2Balance, setPendingL2Balance] = useState('-');
   const [swapBalance, setSwapBalance] = useState('0');
-  const [seigBalance, setSeigBalance] = useState('0');
+  const [seigBalance, setSeigBalance] = useState<string | undefined>('0');
   const [canWithdralAmount, setCanWithdralAmount] = useState(0);
 
   //original balances
@@ -127,7 +127,6 @@ export const ManageModal = () => {
           setStakdL2(totalStakedAmountL2);
           setPendingL2Balance(totalPendingUnstakedAmountL2);
           setCanWithdralAmount(Number(res_CanWithdralAmount.toString()));
-          setSeigBalance(swapBalance);
           //set original balances
           setOriginalStakeBalance(originalBalance.stakeContractBalanceTon);
           setOriginalSwapBalance(originalBalance.swapBalance);
@@ -189,6 +188,7 @@ export const ManageModal = () => {
 
       setUnstakeAll(isUnstakeL2All);
       setCanUntakdL2(convertedUnstakeNum);
+      setSeigBalance(convertedUnstakeNum);
 
       return Number(convertedUnstakeNum) <= 0
         ? setUnstakeL2Disable(true)
