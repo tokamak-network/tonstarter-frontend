@@ -80,10 +80,7 @@ export const UnStakeFromLayer2Modal = () => {
               justifyContent="center"
               flexDir="column"
               w={'100%'}>
-              <Flex justifyContent="space-between" alignItems="center" h="15px">
-                <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
-                  Withdrawable amount
-                </Text>
+              <Flex justifyContent="center" alignItems="center" h="15px">
                 <Text
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                   fontWeight={500}

@@ -132,10 +132,6 @@ export const ManageModal = () => {
           setOriginalStakeBalance(originalBalance.stakeContractBalanceTon);
           setOriginalSwapBalance(originalBalance.swapBalance);
 
-          console.log(stakeContractBalanceTon);
-          console.log(originalBalance);
-          console.log(swapBalance);
-
           //calculate swap balance
           if (Number(swapBalance) <= 0) {
             return setSwapBalance('0.00');
@@ -206,7 +202,7 @@ export const ManageModal = () => {
     };
 
     const btnDisableSwap = () => {
-      return Number(convertNumber({amount: swapBalance, round: false})) <= 0
+      return Number(swapBalance) <= 0
         ? setSwapDisabled(true)
         : setSwapDisabled(false);
     };
