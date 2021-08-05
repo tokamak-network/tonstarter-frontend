@@ -9,4 +9,7 @@ export type DEPLOYED_TYPE = {
   TokamakLayer2_ADDRESS: string;
   Airdrop_ADDRESS: string;
   LockTOS_ADDRESS: string;
+  UniswapStaking_Address: string;
+  NPM_Address: string;
+  BasePool_Address: string;
 };

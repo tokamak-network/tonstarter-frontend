@@ -1,4 +1,4 @@
-import {FC, useState, useRef} from 'react';
+import React, {FC, useState, useRef} from 'react';
 import {
   Column,
   useExpanded,
@@ -7,7 +7,6 @@ import {
   useSortBy,
 } from 'react-table';
 import {
-  chakra,
   Text,
   Flex,
   IconButton,
@@ -18,27 +17,32 @@ import {
   useColorMode,
   Center,
   useTheme,
-  Image,
 } from '@chakra-ui/react';
-import tooltipIcon from 'assets/svgs/input_question_icon.svg';
+// import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
-import './staking.css';
-import {checkTokenType} from 'utils/token';
 import {TriangleUpIcon, TriangleDownIcon} from '@chakra-ui/icons';
-import {selectTableType} from 'store/table.reducer';
 import {useAppSelector} from 'hooks/useRedux';
 import {useEffect} from 'react';
-import {setTimeout} from 'timers';
+// import {setTimeout} from 'timers';
+import {selectTableType} from 'store/table.reducer';
 import {LoadingComponent} from 'components/Loading';
-// import {fetchStakeURL} from 'constants/index';
-// import {selectTransactionType} from 'store/refetch.reducer';
+import { chakra } from '@chakra-ui/react';
+import { getPoolName, checkTokenType } from '../../utils/token';
+import { convertNumber } from '../../utils/number';
+import { GET_POSITION, GET_POSITION_BY_ID } from './GraphQL/index';
+import { useQuery } from '@apollo/client';
+import { PositionTable } from './PositionTable';
+import { fetchPositionPayload } from './utils/fetchPositionPayload';
+import { selectTransactionType } from 'store/refetch.reducer';
+import moment from 'moment';
 
-type StakingTableProps = {
+type PoolTableProps = {
   columns: Column[];
   data: any[];
-  renderDetail: Function;
   isLoading: boolean;
-};
+  address: string | undefined;
+  library: any;
+}
 
 const getTextColor = (type: string, colorMode: string) => {
   if (colorMode === 'light') {
@@ -54,68 +58,24 @@ const getTextColor = (type: string, colorMode: string) => {
   }
 };
 
-const getCircle = (type: 'loading' | 'sale' | 'start' | 'end') => {
-  return (
-    <Flex alignContent={'center'} alignItems={'center'} mr={0} ml={'16px'}>
-      <Box
-        w={'8px'}
-        h={'8px'}
-        borderRadius={50}
-        bg={
-          type === 'loading'
-            ? '#C0C0C0'
-            : type === 'sale'
-            ? '#f95359'
-            : type === 'start'
-            ? '#ffdc00'
-            : '#2ea2f8'
-        }></Box>
-    </Flex>
-  );
-};
-
-const getStatus = (
-  type: 'sale' | 'start' | 'end',
-  colorMode: 'light' | 'dark',
-) => {
-  return (
-    <Flex alignContent={'center'} alignItems={'center'} mr={'20px'}>
-      <Box
-        w={'8px'}
-        h={'8px'}
-        borderRadius={50}
-        bg={
-          type === 'sale' ? '#f95359' : type === 'start' ? '#ffdc00' : '#2ea2f8'
-        }
-        mr={'7px'}
-        mt={'2px'}></Box>
-      <Text
-        fontSize={'11px'}
-        color={colorMode === 'light' ? '#304156' : 'white.100'}>
-        {type === 'sale' ? 'On sale' : type === 'start' ? 'started' : 'ended'}
-      </Text>
-    </Flex>
-  );
-};
-
-export const StakingTable: FC<StakingTableProps> = ({
+export const PoolTable: FC<PoolTableProps> = ({
   columns,
   data,
-  renderDetail,
   isLoading,
+  address,
+  library,
 }) => {
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
     prepareRow,
-    visibleColumns,
     canPreviousPage,
     canNextPage,
     pageOptions,
     page,
-    nextPage,
-    previousPage,
+    // nextPage,
+    // previousPage,
     setPageSize,
     state: {pageIndex, pageSize},
   } = useTable(
@@ -124,76 +84,96 @@ export const StakingTable: FC<StakingTableProps> = ({
     useExpanded,
     usePagination,
   );
-
+  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const focusTarget = useRef<any>([]);
 
   const {
-    data: {contractAddress, index},
+    data: {contractAddress},
   } = useAppSelector(selectTableType);
 
+  const [stakingPosition, setStakingPosition] = useState([]);
+  const [positionData, setPositionData] = useState([]);
+  const [account, setAccount] = useState('');
+  const [stakingDisable, setStakingDisable] = useState(true);
+
   useEffect(() => {
-    if (index) {
-      let loop = Math.floor(index / 10);
-      while (loop) {
-        nextPage();
-        loop = loop - 1;
-        if (loop === 0) {
-          setTimeout(() => {
-            focusTarget.current[
-              index - Math.floor(index / 10) * 10
-            ].scrollIntoView({
-              block: 'start',
-            });
-          }, 200);
+    async function positionPayload() {
+      if (address) {
+        const result = await fetchPositionPayload(
+          library,
+          address,
+        );
+
+        let stringResult: any = [];
+        for (let i=0; i < result?.positionData.length; i++) {
+          stringResult.push(result?.positionData[i]?.positionid.toString())
         }
+        const nowTime = moment().unix();
+        (nowTime > Number(result?.saleStartTime.toString()) &&
+          nowTime < Number(result?.miningEndTime.toString())) ?
+            setStakingDisable(false) : setStakingDisable(true)
+
+        setPositionData(result?.positionData)
+        setStakingPosition(stringResult)
+        setAccount(address);
       }
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    positionPayload();
+  }, [data, transactionType, blockNumber, address])
 
-  //refetch to update Total Staked, Earninger Per Ton after stake, unstake
-  // const {
-  //   transactionType,
-  //   blockNumber,
-  //   data: txData,
-  // } = useAppSelector(selectTransactionType);
-  // const {actionType, txContractAddress} = txData;
+  const position = useQuery(
+    GET_POSITION, {
+    variables: {address: account}
+  });
 
-  // useEffect(() => {
-  //   async function refetchStake() {
-  //     if (
-  //       (transactionType === 'Staking' && actionType === 'Stake') ||
-  //       actionType === 'Untake'
-  //     )
-  //       console.log('**refetch**');
-  //     console.log(txContractAddress);
-  //     const fetchEachStakeURL = `${fetchStakeURL}&stakeContract=${txContractAddress}`;
-  //     const res = await fetch(fetchEachStakeURL);
-  //     console.log(res);
-  //   }
-  //   refetchStake();
-  // }, [transactionType, blockNumber, txData, actionType, txContractAddress]);
+  const positionWithVar = useQuery(
+    GET_POSITION_BY_ID, {
+    variables: {id: stakingPosition},
+  });
+
+  const [positions, setPositions] = useState([]);
+  useEffect(() => {
+    function getPosition () {
+      if (position.data && positionWithVar.data) {
+        position.refetch()
+        const withStakedPosition = position.data.positions.concat(positionWithVar.data.positions)
+        setPositions(withStakedPosition)
+      }
+    }
+    getPosition()
+  }, [
+    transactionType,
+    blockNumber,
+    position.loading,
+    positionWithVar.loading,
+    position.data,
+    positionWithVar.data,
+    address
+  ])
+  console.log(positions)
+  
 
   const [isOpen, setIsOpen] = useState(
     contractAddress === undefined ? '' : contractAddress,
   );
 
-  const goPrevPage = () => {
-    setIsOpen('');
-    previousPage();
-  };
+  // const goPrevPage = () => {
+  //   setIsOpen('');
+  //   previousPage();
+  // };
 
-  const goNextPage = () => {
-    setIsOpen('');
-    nextPage();
-  };
+  // const goNextPage = () => {
+  //   setIsOpen('');
+  //   nextPage();
+  // };
 
   const onChangeSelectBox = (e: any) => {
     const filterValue = e.target.value;
     headerGroups[0].headers.map((e) => {
       if (e.Header === filterValue) {
-        if (e.Header === 'Earning Per TON') {
+        if (e.Header === 'fee') {
           return e.toggleSortBy();
         }
         e.toggleSortBy(true);
@@ -201,21 +181,22 @@ export const StakingTable: FC<StakingTableProps> = ({
       return null;
     });
   };
-
   const clickOpen = (contractAddress: string, index: number) => {
     setIsOpen(contractAddress);
-    setTimeout(() => {
-      focusTarget.current[index].scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
-    }, 100);
   };
 
   const renderBtn = (contractAddress: string, index: number) => {
     if (isOpen === contractAddress)
       return (
         <Flex w={'100%'} justifyContent="flex-end" _hover={{cursor: 'pointer'}}>
+          <Text
+            mr="14px"
+            fontFamily="roboto"
+            h="18px"
+            fontWeight="bold"
+          >
+            Choose LP
+          </Text>
           <TriangleUpIcon color="blue.100" _hover={{cursor: 'pointer'}} />
         </Flex>
       );
@@ -223,14 +204,24 @@ export const StakingTable: FC<StakingTableProps> = ({
       <Flex
         w={'100%'}
         justifyContent="flex-end"
-        // onClick={() => clickOpen(contractAddress, index)}
+        onClick={() => clickOpen(contractAddress, index)}
         _hover={{cursor: 'pointer'}}>
+        <Text
+          mr="14px"
+          fontFamily="roboto"
+          h="18px"
+          fontWeight="bold"
+        >
+          Choose LP
+        </Text>
         <TriangleDownIcon
           color="blue.100"
-          _hover={{cursor: 'pointer'}}></TriangleDownIcon>
+          _hover={{cursor: 'pointer'}}
+        />
       </Flex>
     );
   };
+
 
   if (isLoading === true || data.length === 0) {
     return (
@@ -242,23 +233,18 @@ export const StakingTable: FC<StakingTableProps> = ({
 
   return (
     <Flex w="1100px" flexDir={'column'}>
-      <Flex justifyContent={'space-between'} mb={'23px'}>
-        <Flex>
-          {getStatus('sale', colorMode)}
-          {getStatus('start', colorMode)}
-          {getStatus('end', colorMode)}
-        </Flex>
+      <Flex justifyContent={'flex-end'}>
         <Select
-          w={'137px'}
-          h={'32px'}
-          color={'#86929d'}
-          fontSize={'13px'}
-          placeholder="On Sale Sort"
-          onChange={onChangeSelectBox}>
-          <option value="name">Name</option>
-          <option value="period">Period</option>
-          <option value="total staked">Total Staked</option>
-          <option value="Earning Per TON">Earning Per TON</option>
+            w={'137px'}
+            h={'32px'}
+            color={'#86929d'}
+            fontSize={'13px'}
+            placeholder="On sale Sort"
+            onChange={onChangeSelectBox}>
+            <option value="name">Name</option>
+            <option value="pliquidity">Liquidity</option>
+            <option value="volume">Volume</option>
+            <option value="fee">Fees</option>
         </Select>
       </Flex>
       <Box overflowX={'auto'}>
@@ -267,13 +253,15 @@ export const StakingTable: FC<StakingTableProps> = ({
           variant="simple"
           {...getTableProps()}
           display="flex"
-          flexDirection="column">
+          flexDirection="column"
+        >
           <chakra.tbody
             {...getTableBodyProps()}
             display="flex"
             flexDirection="column">
             {page.map((row: any, i) => {
-              const {contractAddress} = row.original;
+              const {id} = row.original;
+              const filteredPosition = positions.filter((row: any) => id === row.pool.id )
               prepareRow(row);
               return [
                 <chakra.tr
@@ -286,33 +274,34 @@ export const StakingTable: FC<StakingTableProps> = ({
                   h={16}
                   key={i}
                   onClick={() => {
-                    if (isOpen === contractAddress) {
+                    if (isOpen === id && filteredPosition.length > 0) {
                       setIsOpen('');
                     } else {
-                      clickOpen(contractAddress, i);
+                      clickOpen(id, i);
                     }
                   }}
                   cursor={'pointer'}
                   borderRadius={'10px'}
                   borderBottomRadius={
-                    isOpen === contractAddress ? '0px' : '10px'
+                    isOpen === id && filteredPosition.length > 0 ? '0px' : '10px'
                   }
-                  borderBottom={isOpen === contractAddress ? '1px' : ''}
+                  borderBottom={isOpen === id && filteredPosition.length > 0 ? '1px' : ''}
                   borderBottomColor={
-                    isOpen === contractAddress ? '#f4f6f8' : ''
+                    isOpen === id && filteredPosition.length > 0 ? '#f4f6f8' : ''
                   }
-                  mb={'20px'}
+                  mt={'20px'}
                   w="100%"
                   bg={colorMode === 'light' ? 'white.100' : 'black.200'}
                   border={colorMode === 'dark' ? '1px solid #373737' : ''}
                   display="flex"
                   alignItems="center"
-                  {...row.getRowProps()}>
+                  {...row.getRowProps()}
+                >
                   {row.cells.map((cell: any, index: number) => {
-                    const {token, status, name, period, stakeBalanceTON, ept} =
-                      cell.row.original;
+                    const data = cell.row.original;
                     const type = cell.column.id;
-                    const tokenType = checkTokenType(token);
+                    const poolName = getPoolName(data.token0.symbol, data.token1.symbol);
+                    const tokenType = checkTokenType(data.token0.id);
                     return (
                       <chakra.td
                         px={3}
@@ -322,143 +311,115 @@ export const StakingTable: FC<StakingTableProps> = ({
                         w={
                           type === 'name'
                             ? '280px'
-                            : type === 'period'
-                            ? '150px'
-                            : type === 'stakeBalanceTON'
+                            : type === 'liquidity'
                             ? '200px'
-                            : type === 'earning_per_ton'
+                            : type === 'volume'
+                            ? '200px'
+                            : type === 'fee'
                             ? ''
-                            : '200px'
+                            : '280px'
                         }
                         display="flex"
                         alignItems="center"
                         color={getTextColor(type, colorMode)}
                         fontSize={type === 'name' ? '15px' : '13px'}
                         fontWeight={type === 'name' ? 600 : 0}
-                        {...cell.getCellProps()}>
-                        {type === 'name' ? getCircle(status) : ''}
+                        {...cell.getCellProps()}
+                      >
                         {type === 'name' ? (
                           <>
-                            <Avatar
-                              src={tokenType.symbol}
-                              backgroundColor={tokenType.bg}
-                              bg="transparent"
-                              color="#c7d1d8"
-                              name="T"
-                              h="48px"
-                              w="48px"
-                              ml="10px"
-                              mr="12px"
-                            />
-                            <Text>{name}</Text>
+                          <Avatar
+                            src={tokenType.symbol}
+                            backgroundColor={tokenType.bg}
+                            bg="transparent"
+                            color="#c7d1d8"
+                            name="T"
+                            h="48px"
+                            w="48px"
+                            ml="34px"
+                            mr="12px"
+                          />
+                          <Text>{poolName}</Text>
+                        </>
+                        ) : (
+                          ''
+                        )} {type === 'liquidity' ? (
+                          <>
+                            <Text
+                              mr={3}
+                              color={
+                                colorMode === 'light' ? '#86929d' : '#949494'
+                              }>
+                              Liquidity
+                            </Text>
+                            <Text>$ {
+                              convertNumber({
+                                amount: data.liquidity,
+                                type: 'ray'
+                              })
+                            }
+                            </Text>
                           </>
                         ) : (
                           ''
                         )}
-                        {type === 'period' ? (
+                        {type === 'volume' ? (
                           <>
                             <Text
-                              mr={2}
+                              mr={3}
                               color={
                                 colorMode === 'light' ? '#86929d' : '#949494'
                               }>
-                              Period
+                              Volume(24hrs)
                             </Text>
-                            <Text>{period.split('.')[1]}</Text>
-                          </>
-                        ) : (
-                          ''
-                        )}
-                        {type === 'stakeBalanceTON' ? (
-                          <>
-                            <Text
-                              mr={2}
-                              color={
-                                colorMode === 'light' ? '#86929d' : '#949494'
-                              }>
-                              Total Staked
-                            </Text>
-                            <Text>{stakeBalanceTON}</Text>
+                            <Text>$ {Number(data.poolDayData[0].volumeUSD).toFixed(2)}</Text>
                           </>
                         ) : (
                           ''
                         )}
 
-                        {type === 'earning_per_ton' ? (
+                        {type === 'fee' ? (
                           <>
                             <Text
                               mr={2}
                               color={
                                 colorMode === 'light' ? '#86929d' : '#949494'
                               }>
-                              Earning Per TON
+                              Fees(24hrs)
                             </Text>
-                            <Text w={120}>
-                              {ept === undefined ? null : ept}{' '}
-                              {ept === undefined ? null : 'TOS'}{' '}
-                            </Text>
-                            <Tooltip
-                              hasArrow
-                              placement="right"
-                              label="This estimator could be change depending on the situation"
-                              color={theme.colors.white[100]}
-                              bg={theme.colors.gray[375]}>
-                              <Image src={tooltipIcon} />
-                            </Tooltip>
+                            <Text>$ {Number(data.poolDayData[0].feesUSD).toFixed(2)}</Text>
                           </>
                         ) : (
                           ''
                         )}
                         {type === 'expander'
-                          ? renderBtn(contractAddress, i)
+                          ? renderBtn(data.id, i)
                           : null}
-                        {/* {isLoading ? <Skeleton h={5} /> : cell.render('Cell')} */}
                       </chakra.td>
                     );
                   })}
                 </chakra.tr>,
-                // If the row is in an expanded state, render a row with a
-                // column that fills the entire length of the table.
-                isOpen === contractAddress ? (
-                  <chakra.tr
-                    boxShadow="0 1px 1px 0 rgba(96, 97, 112, 0.16)"
-                    w={'100%'}
-                    h={'430px'}
-                    key={i}
-                    m={0}
-                    mb={'14px'}
-                    mt={-5}
-                    bg={colorMode === 'light' ? 'white.100' : ''}
-                    border={colorMode === 'light' ? '' : 'solid 1px #373737'}
-                    borderTopWidth={0}
-                    borderBottomRadius="10px">
-                    <chakra.td
-                      display={'flex'}
-                      w={'100%'}
-                      margin={0}
-                      colSpan={visibleColumns.length}>
-                      {/*
-                    Inside it, call our renderRowSubComponent function. In reality,
-                    you could pass whatever you want as props to
-                    a component like this, including the entire
-                    table instance. But for this example, we'll just
-                    pass the row
-                  */}
-                      {renderDetail({
-                        row,
-                      })}
-                    </chakra.td>
-                  </chakra.tr>
-                ) : null,
+                  isOpen === id && filteredPosition.length > 0 ? (
+                    <chakra.tr
+                      w={'100%'}                    
+                    >
+                      <chakra.td
+                        display={'flex'}
+                        w={'100%'}
+                        margin={0}
+                      >
+                        <PositionTable 
+                          positions={filteredPosition}
+                          positionData={positionData}
+                          stakingDisable={stakingDisable}
+                        />
+                      </chakra.td>
+                    </chakra.tr>
+                  ) : null,
               ];
             })}
           </chakra.tbody>
         </chakra.table>
-        {/* 
-        Pagination can be built however you'd like. 
-        This is just a very basic UI implementation:
-      */}
-        {/* PAGENATION FOR LATER */}
         <Flex justifyContent="flex-end" my={4} alignItems="center">
           <Flex>
             <Tooltip label="Previous Page">
@@ -474,7 +435,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                 color={colorMode === 'light' ? '#e6eaee' : '#424242'}
                 borderRadius={4}
                 aria-label={'Previous Page'}
-                onClick={goPrevPage}
+                // onClick={goPrevPage}
                 isDisabled={!canPreviousPage}
                 size={'sm'}
                 mr={4}
@@ -483,7 +444,6 @@ export const StakingTable: FC<StakingTableProps> = ({
               />
             </Tooltip>
           </Flex>
-
           <Flex
             alignItems="center"
             p={0}
@@ -491,13 +451,15 @@ export const StakingTable: FC<StakingTableProps> = ({
             fontFamily={theme.fonts.roboto}
             color={colorMode === 'light' ? '#3a495f' : '#949494'}
             pb={'3px'}>
-            Page{' '}
-            <Text fontWeight="bold" as="span" color={'blue.300'}>
-              {pageIndex + 1}
-            </Text>{' '}
-            of{' '}
-            <Text fontWeight="bold" as="span">
-              {pageOptions.length}
+            <Text flexShrink={0}>
+              Page{' '}
+              <Text fontWeight="bold" as="span" color={'blue.300'}>
+                {pageIndex + 1}
+              </Text>{' '}
+              of{' '}
+              <Text fontWeight="bold" as="span">
+                {pageOptions.length}
+              </Text>
             </Text>
           </Flex>
 
@@ -516,7 +478,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                   bg={colorMode === 'light' ? 'white.100' : 'none'}
                   borderRadius={4}
                   aria-label={'Next Page'}
-                  onClick={goNextPage}
+                  // onClick={goNextPage}
                   isDisabled={!canNextPage}
                   size={'sm'}
                   ml={4}
@@ -555,10 +517,5 @@ export const StakingTable: FC<StakingTableProps> = ({
         </Flex>
       </Box>
     </Flex>
-  );
-};
-
-// @todo (isaac): add mobile table
-// const MobileTable = () => {
-//   return;
-// };
+  )
+}

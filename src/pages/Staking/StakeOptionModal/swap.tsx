@@ -11,6 +11,7 @@ import {
   Input,
   Stack,
   useTheme,
+  Image,
   useColorMode,
 } from '@chakra-ui/react';
 import React, {useCallback, useState} from 'react';
@@ -22,6 +23,9 @@ import {useModal} from 'hooks/useModal';
 import {useCheckBalance} from 'hooks/useCheckBalance';
 import {CloseButton} from 'components/Modal/CloseButton';
 import {convertToRay} from 'utils/number';
+import { fetchSwapPayload } from './utils/fetchSwapPayload';
+import {useEffect} from 'react';
+import swapArrow from 'assets/svgs/swap-arrow-icon.svg'
 
 export const SwapModal = () => {
   const {sub} = useAppSelector(selectModalType);
@@ -32,12 +36,25 @@ export const SwapModal = () => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
   const [value, setValue] = useState<number>(0);
+  const [swapValue, setSwapValue] = useState<number>(0);
   const {handleCloseConfirmModal} = useModal();
   const {checkBalance} = useCheckBalance();
-
-  const handleChange = useCallback((e) => setValue(e.target.value), []);
+  useEffect(() => {
+    async function getPrice() {
+      if (library) {
+        const price = await fetchSwapPayload(library)
+        setPrice(price)
+      }
+    }
+    getPrice()
+  }, [])
+  const handleChange = useCallback((e) => {
+    setValue(e.target.value)
+    setSwapValue(e.target.value * Number(price))
+  }, []);
   const setMax = useCallback((_e) => setValue(swapBalance), [swapBalance]);
-
+  const [price, setPrice] = useState<string | undefined>('0');
+  
   const handleCloseModal = () => {
     handleCloseConfirmModal();
     setValue(0);
@@ -67,9 +84,14 @@ export const SwapModal = () => {
               fontWeight={'bold'}
               fontFamily={theme.fonts.titil}
               color={colorMode === 'light' ? 'gray.250' : 'white.100'}
-              textAlign={'center'}>
+              textAlign={'center'}
+              mb={'3px'}
+            >
               Swap
             </Heading>
+            <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
+              1 TON = {price} TOS
+            </Text>
           </Box>
 
           <Stack
@@ -87,7 +109,7 @@ export const SwapModal = () => {
               fontSize={'4xl'}
               value={value}
               width={'xs'}
-              mr={6}
+              // mr={6}
               onChange={handleChange}
               _focus={{
                 borderWidth: 0,
@@ -105,7 +127,38 @@ export const SwapModal = () => {
               </Button>
             </Box>
           </Stack>
-
+          <Stack
+            pt="27px"
+            as={Flex}
+            flexDir={'row'}
+            justifyContent={'center'}
+            alignItems={'center'}
+            w={'full'}
+          >
+            <Image src={swapArrow} w={5} h={5} alt="" />
+          </Stack>
+          <Stack
+            pt="27px"
+            as={Flex}
+            flexDir={'row'}
+            justifyContent={'center'}
+            alignItems={'center'}
+            w={'full'}
+          >
+            <Input
+              variant={'outline'}
+              borderWidth={0}
+              textAlign={'center'}
+              fontWeight={'bold'}
+              fontSize={'4xl'}
+              value={swapValue}
+              width={'xs'}
+              // mr={6}
+              _focus={{
+                borderWidth: 0,
+              }}
+            />
+          </Stack>
           <Stack
             as={Flex}
             justifyContent={'center'}

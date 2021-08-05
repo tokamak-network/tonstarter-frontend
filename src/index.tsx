@@ -17,7 +17,7 @@ import reportWebVitals from './reportWebVitals';
 import {getLibrary} from 'utils';
 import {Toast} from 'components/Toast';
 import {ApolloProvider} from '@apollo/client';
-import {client} from 'client/client';
+import {client} from 'client';
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName);
 

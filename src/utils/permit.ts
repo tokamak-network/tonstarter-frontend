@@ -2,9 +2,12 @@ import {Contract} from '@ethersproject/contracts';
 import {DEPLOYED} from 'constants/index';
 import {getSigner} from 'utils/contract';
 import * as TOSABI from 'services/abis/TOS.json';
+import * as NPMABI from 'services/abis/NonfungiblePositionManager.json';
+import * as LockTOSABI from 'services/abis/LockTOS.json';
 import Web3 from 'web3';
 import {ethers} from 'ethers';
-import * as LockTOSABI from 'services/abis/LockTOS.json';
+import ethUtil from 'ethereumjs-util'
+import sigUtil from 'eth-sig-util'
 
 // user, amount, unlockTime;
 export const permitForCreateLock = async (
@@ -41,7 +44,7 @@ export const permitForCreateLock = async (
     {
       chainId: 4,
       name: 'TONStarter',
-      version: '1.0',
+      version: '1',
       verifyingContract: TOS_ADDRESS,
     },
     {
@@ -71,6 +74,110 @@ export const permitForCreateLock = async (
     signature.v,
     signature.r,
     signature.s,
+  )
+}
+
+export async function stakingPermit(account: string, library: any, tokenId: string, deadline: number) {
+  if (!account || !library) {
+    return;
+  }
+
+  //@ts-ignore
+  const web3 = new Web3(window.ethereum);
+  const signer = getSigner(library, account);
+
+  const {UniswapStaking_Address, NPM_Address} = DEPLOYED;
+
+  const NPMContract = new Contract(NPM_Address, NPMABI.abi,  library)
+  let position = await NPMContract.positions(tokenId);
+  // let nonce = await NPMContract.connect(signer).nonces(account);
+  // let owner = await NPMContract.ownerOf(tokenId);
+  //@ts-ignore
+  let nonce = position.nonce.toString();
+  nonce = parseInt(nonce);
+  const to = UniswapStaking_Address
+  //@ts-ignore
+  const res = await web3.givenProvider.send(
+    {
+      method: 'net_version',
+      params: [],
+      jsonrpc: '2.0',
+    },
+    async function (err: any, result: any) {
+      const netId = result.result;
+
+      const Permit = [
+        {name: "spender", type: "address"},
+        {name: "tokenId", type: "uint256"},
+        {name: "nonce", type: "uint256"},
+        {name: "deadline", type: "uint256"}
+      ];
+      const message = {
+        spender: to,
+        tokenId: Number(tokenId),
+        nonce: nonce,
+        deadline: deadline
+      };
+
+      let msgParams = {
+        types: {
+          EIP712Domain: [
+            {name: 'name', type: 'string'},
+            {name: 'version', type: 'string'},
+            {name: 'chainId', type: 'uint256'},
+            {name: 'verifyingContract', type: 'address'},
+          ],
+          Permit: Permit,
+        },
+        primaryType: 'Permit',
+        domain: {
+          name : 'Uniswap V3 Positions NFT-V1',
+          version: '1',
+          chainId: netId,
+          verifyingContract: NPM_Address,
+        },
+        message: message,
+      };
+      //@ts-ignore
+      msgParams = JSON.stringify(msgParams);
+      var params = [account, msgParams];
+      var method = 'eth_signTypedData_v4';
+      //@ts-ignore
+      return {method, params};
+    },
+  );
+  return res;
+}
+
+export async function finalPermit(method: any, params: any, account: string) {
+  //@ts-ignore
+  const web3 = new Web3(window.ethereum);
+
+  return await web3.givenProvider.send(
+    {
+      method,
+      params,
+      account,
+    },
+    async function (err: any, result: any) {
+      if (err) return console.dir(err);
+      if (result.error) {
+        alert(result.error.message);
+      }
+      if (result.error) return console.error('ERROR', result);
+        // console.log('TYPED SIGNED:' + JSON.stringify(result.result));
+
+      const signature = result.result.substring(2);
+      const r = '0x' + signature.substring(0, 64);
+      const s = '0x' + signature.substring(64, 128);
+      const v = parseInt(signature.substring(128, 130), 16);
+
+      // console.log('TYPED r:', r);
+      // console.log('TYPED s:', s);
+      // console.log('TYPED v:', v);
+
+      return {_v: v, _r: r, _s: s};
+    },
   );
 };
 

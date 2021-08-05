@@ -5,6 +5,7 @@ import {useWeb3React} from '@web3-react/core';
 import {Header} from 'components/Header';
 import {FLDstarter} from './FLDstarter';
 import {Staking} from './Staking';
+import {Pools} from './Pools';
 import {DAO} from './Dao/index';
 import {Switch, Route} from 'react-router-dom';
 import {useAppDispatch} from 'hooks/useRedux';
@@ -129,7 +130,7 @@ export const Router: FC<RouterProps> = () => {
         <Switch>
           <Route exact path="/" component={FLDstarter} />
           <Route exact path="/staking" component={Staking} />
-          {/* <Route exact path="/pools" component={Pools} /> */}
+          <Route exact path="/pools" component={Pools} />
           {/* <Route exact path="/starter" component={Starter} /> */}
           <Route exact path="/dao" component={DAO} />
         </Switch>

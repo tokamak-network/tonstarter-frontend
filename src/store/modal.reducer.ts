@@ -11,7 +11,10 @@ type StakingModal =
   | 'unstakeL2'
   | 'withdraw'
   | 'swap'
-  | 'airdrop';
+  | 'airdrop'
+  | 'stakePool'
+  | 'unstakePool'
+  | 'claimPool';
 
 export type ModalType = StakingModal | DaoModal;
 
