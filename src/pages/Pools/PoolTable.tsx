@@ -26,14 +26,14 @@ import {useEffect} from 'react';
 // import {setTimeout} from 'timers';
 import {selectTableType} from 'store/table.reducer';
 import {LoadingComponent} from 'components/Loading';
-import { chakra } from '@chakra-ui/react';
-import { getPoolName, checkTokenType } from '../../utils/token';
-import { convertNumber } from '../../utils/number';
-import { GET_POSITION, GET_POSITION_BY_ID } from './GraphQL/index';
-import { useQuery } from '@apollo/client';
-import { PositionTable } from './PositionTable';
-import { fetchPositionPayload } from './utils/fetchPositionPayload';
-import { selectTransactionType } from 'store/refetch.reducer';
+import {chakra} from '@chakra-ui/react';
+import {getPoolName, checkTokenType} from '../../utils/token';
+import {convertNumber} from '../../utils/number';
+import {GET_POSITION, GET_POSITION_BY_ID} from './GraphQL/index';
+import {useQuery} from '@apollo/client';
+import {PositionTable} from './PositionTable';
+import {fetchPositionPayload} from './utils/fetchPositionPayload';
+import {selectTransactionType} from 'store/refetch.reducer';
 import moment from 'moment';
 
 type PoolTableProps = {
@@ -42,7 +42,7 @@ type PoolTableProps = {
   isLoading: boolean;
   address: string | undefined;
   library: any;
-}
+};
 
 const getTextColor = (type: string, colorMode: string) => {
   if (colorMode === 'light') {
@@ -101,48 +101,46 @@ export const PoolTable: FC<PoolTableProps> = ({
   useEffect(() => {
     async function positionPayload() {
       if (address) {
-        const result = await fetchPositionPayload(
-          library,
-          address,
-        );
+        const result = await fetchPositionPayload(library, address);
 
         let stringResult: any = [];
-        for (let i=0; i < result?.positionData.length; i++) {
-          stringResult.push(result?.positionData[i]?.positionid.toString())
+        for (let i = 0; i < result?.positionData.length; i++) {
+          stringResult.push(result?.positionData[i]?.positionid.toString());
         }
         const nowTime = moment().unix();
-        (nowTime > Number(result?.saleStartTime.toString()) &&
-          nowTime < Number(result?.miningEndTime.toString())) ?
-            setStakingDisable(false) : setStakingDisable(true)
+        nowTime > Number(result?.saleStartTime.toString()) &&
+        nowTime < Number(result?.miningEndTime.toString())
+          ? setStakingDisable(false)
+          : setStakingDisable(true);
 
-        setPositionData(result?.positionData)
-        setStakingPosition(stringResult)
+        setPositionData(result?.positionData);
+        setStakingPosition(stringResult);
         setAccount(address);
       }
     }
     positionPayload();
-  }, [data, transactionType, blockNumber, address])
+  }, [data, transactionType, blockNumber, address]);
 
-  const position = useQuery(
-    GET_POSITION, {
-    variables: {address: account}
+  const position = useQuery(GET_POSITION, {
+    variables: {address: account},
   });
 
-  const positionWithVar = useQuery(
-    GET_POSITION_BY_ID, {
+  const positionWithVar = useQuery(GET_POSITION_BY_ID, {
     variables: {id: stakingPosition},
   });
 
   const [positions, setPositions] = useState([]);
   useEffect(() => {
-    function getPosition () {
+    function getPosition() {
       if (position.data && positionWithVar.data) {
-        position.refetch()
-        const withStakedPosition = position.data.positions.concat(positionWithVar.data.positions)
-        setPositions(withStakedPosition)
+        position.refetch();
+        const withStakedPosition = position.data.positions.concat(
+          positionWithVar.data.positions,
+        );
+        setPositions(withStakedPosition);
       }
     }
-    getPosition()
+    getPosition();
   }, [
     transactionType,
     blockNumber,
@@ -150,10 +148,9 @@ export const PoolTable: FC<PoolTableProps> = ({
     positionWithVar.loading,
     position.data,
     positionWithVar.data,
-    address
-  ])
-  console.log(positions)
-  
+    address,
+  ]);
+  console.log(positions);
 
   const [isOpen, setIsOpen] = useState(
     contractAddress === undefined ? '' : contractAddress,
@@ -189,12 +186,7 @@ export const PoolTable: FC<PoolTableProps> = ({
     if (isOpen === contractAddress)
       return (
         <Flex w={'100%'} justifyContent="flex-end" _hover={{cursor: 'pointer'}}>
-          <Text
-            mr="14px"
-            fontFamily="roboto"
-            h="18px"
-            fontWeight="bold"
-          >
+          <Text mr="14px" fontFamily="roboto" h="18px" fontWeight="bold">
             Choose LP
           </Text>
           <TriangleUpIcon color="blue.100" _hover={{cursor: 'pointer'}} />
@@ -206,22 +198,13 @@ export const PoolTable: FC<PoolTableProps> = ({
         justifyContent="flex-end"
         onClick={() => clickOpen(contractAddress, index)}
         _hover={{cursor: 'pointer'}}>
-        <Text
-          mr="14px"
-          fontFamily="roboto"
-          h="18px"
-          fontWeight="bold"
-        >
+        <Text mr="14px" fontFamily="roboto" h="18px" fontWeight="bold">
           Choose LP
         </Text>
-        <TriangleDownIcon
-          color="blue.100"
-          _hover={{cursor: 'pointer'}}
-        />
+        <TriangleDownIcon color="blue.100" _hover={{cursor: 'pointer'}} />
       </Flex>
     );
   };
-
 
   if (isLoading === true || data.length === 0) {
     return (
@@ -235,33 +218,34 @@ export const PoolTable: FC<PoolTableProps> = ({
     <Flex w="1100px" flexDir={'column'}>
       <Flex justifyContent={'flex-end'}>
         <Select
-            w={'137px'}
-            h={'32px'}
-            color={'#86929d'}
-            fontSize={'13px'}
-            placeholder="On sale Sort"
-            onChange={onChangeSelectBox}>
-            <option value="name">Name</option>
-            <option value="pliquidity">Liquidity</option>
-            <option value="volume">Volume</option>
-            <option value="fee">Fees</option>
+          w={'137px'}
+          h={'32px'}
+          color={'#86929d'}
+          fontSize={'13px'}
+          placeholder="On sale Sort"
+          onChange={onChangeSelectBox}>
+          <option value="name">Name</option>
+          <option value="pliquidity">Liquidity</option>
+          <option value="volume">Volume</option>
+          <option value="fee">Fees</option>
         </Select>
       </Flex>
-      <Box overflowX={'auto'}>
+      <Box>
         <chakra.table
           width={'full'}
           variant="simple"
           {...getTableProps()}
           display="flex"
-          flexDirection="column"
-        >
+          flexDirection="column">
           <chakra.tbody
             {...getTableBodyProps()}
             display="flex"
             flexDirection="column">
             {page.map((row: any, i) => {
               const {id} = row.original;
-              const filteredPosition = positions.filter((row: any) => id === row.pool.id )
+              const filteredPosition = positions.filter(
+                (row: any) => id === row.pool.id,
+              );
               prepareRow(row);
               return [
                 <chakra.tr
@@ -283,11 +267,17 @@ export const PoolTable: FC<PoolTableProps> = ({
                   cursor={'pointer'}
                   borderRadius={'10px'}
                   borderBottomRadius={
-                    isOpen === id && filteredPosition.length > 0 ? '0px' : '10px'
+                    isOpen === id && filteredPosition.length > 0
+                      ? '0px'
+                      : '10px'
                   }
-                  borderBottom={isOpen === id && filteredPosition.length > 0 ? '1px' : ''}
+                  borderBottom={
+                    isOpen === id && filteredPosition.length > 0 ? '1px' : ''
+                  }
                   borderBottomColor={
-                    isOpen === id && filteredPosition.length > 0 ? '#f4f6f8' : ''
+                    isOpen === id && filteredPosition.length > 0
+                      ? '#f4f6f8'
+                      : ''
                   }
                   mt={'20px'}
                   w="100%"
@@ -295,12 +285,14 @@ export const PoolTable: FC<PoolTableProps> = ({
                   border={colorMode === 'dark' ? '1px solid #373737' : ''}
                   display="flex"
                   alignItems="center"
-                  {...row.getRowProps()}
-                >
+                  {...row.getRowProps()}>
                   {row.cells.map((cell: any, index: number) => {
                     const data = cell.row.original;
                     const type = cell.column.id;
-                    const poolName = getPoolName(data.token0.symbol, data.token1.symbol);
+                    const poolName = getPoolName(
+                      data.token0.symbol,
+                      data.token1.symbol,
+                    );
                     const tokenType = checkTokenType(data.token0.id);
                     return (
                       <chakra.td
@@ -324,26 +316,26 @@ export const PoolTable: FC<PoolTableProps> = ({
                         color={getTextColor(type, colorMode)}
                         fontSize={type === 'name' ? '15px' : '13px'}
                         fontWeight={type === 'name' ? 600 : 0}
-                        {...cell.getCellProps()}
-                      >
+                        {...cell.getCellProps()}>
                         {type === 'name' ? (
                           <>
-                          <Avatar
-                            src={tokenType.symbol}
-                            backgroundColor={tokenType.bg}
-                            bg="transparent"
-                            color="#c7d1d8"
-                            name="T"
-                            h="48px"
-                            w="48px"
-                            ml="34px"
-                            mr="12px"
-                          />
-                          <Text>{poolName}</Text>
-                        </>
+                            <Avatar
+                              src={tokenType.symbol}
+                              backgroundColor={tokenType.bg}
+                              bg="transparent"
+                              color="#c7d1d8"
+                              name="T"
+                              h="48px"
+                              w="48px"
+                              ml="34px"
+                              mr="12px"
+                            />
+                            <Text>{poolName}</Text>
+                          </>
                         ) : (
                           ''
-                        )} {type === 'liquidity' ? (
+                        )}{' '}
+                        {type === 'liquidity' ? (
                           <>
                             <Text
                               mr={3}
@@ -352,12 +344,12 @@ export const PoolTable: FC<PoolTableProps> = ({
                               }>
                               Liquidity
                             </Text>
-                            <Text>$ {
-                              convertNumber({
+                            <Text>
+                              ${' '}
+                              {convertNumber({
                                 amount: data.liquidity,
-                                type: 'ray'
-                              })
-                            }
+                                type: 'ray',
+                              })}
                             </Text>
                           </>
                         ) : (
@@ -372,12 +364,14 @@ export const PoolTable: FC<PoolTableProps> = ({
                               }>
                               Volume(24hrs)
                             </Text>
-                            <Text>$ {Number(data.poolDayData[0].volumeUSD).toFixed(2)}</Text>
+                            <Text>
+                              ${' '}
+                              {Number(data.poolDayData[0].volumeUSD).toFixed(2)}
+                            </Text>
                           </>
                         ) : (
                           ''
                         )}
-
                         {type === 'fee' ? (
                           <>
                             <Text
@@ -387,35 +381,29 @@ export const PoolTable: FC<PoolTableProps> = ({
                               }>
                               Fees(24hrs)
                             </Text>
-                            <Text>$ {Number(data.poolDayData[0].feesUSD).toFixed(2)}</Text>
+                            <Text>
+                              $ {Number(data.poolDayData[0].feesUSD).toFixed(2)}
+                            </Text>
                           </>
                         ) : (
                           ''
                         )}
-                        {type === 'expander'
-                          ? renderBtn(data.id, i)
-                          : null}
+                        {type === 'expander' ? renderBtn(data.id, i) : null}
                       </chakra.td>
                     );
                   })}
                 </chakra.tr>,
-                  isOpen === id && filteredPosition.length > 0 ? (
-                    <chakra.tr
-                      w={'100%'}                    
-                    >
-                      <chakra.td
-                        display={'flex'}
-                        w={'100%'}
-                        margin={0}
-                      >
-                        <PositionTable 
-                          positions={filteredPosition}
-                          positionData={positionData}
-                          stakingDisable={stakingDisable}
-                        />
-                      </chakra.td>
-                    </chakra.tr>
-                  ) : null,
+                isOpen === id && filteredPosition.length > 0 ? (
+                  <chakra.tr w={'100%'}>
+                    <chakra.td display={'flex'} w={'100%'} margin={0}>
+                      <PositionTable
+                        positions={filteredPosition}
+                        positionData={positionData}
+                        stakingDisable={stakingDisable}
+                      />
+                    </chakra.td>
+                  </chakra.tr>
+                ) : null,
               ];
             })}
           </chakra.tbody>
@@ -517,5 +505,5 @@ export const PoolTable: FC<PoolTableProps> = ({
         </Flex>
       </Box>
     </Flex>
-  )
-}
+  );
+};

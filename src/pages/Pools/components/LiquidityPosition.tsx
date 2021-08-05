@@ -13,10 +13,10 @@ import {openModal} from 'store/modal.reducer';
 import {useEffect} from 'react';
 // import { getPoolName } from '../../utils/token';
 import store from '../../../store';
-import { stake, unstake } from '../actions';
-import { convertNumber } from '../../../utils/number';
+import {stake, unstake} from '../actions';
+import {convertNumber} from '../../../utils/number';
 import {selectTransactionType} from 'store/refetch.reducer';
-import { fetchPositionRangePayload } from '../utils/fetchPositionRangePayload';
+import {fetchPositionRangePayload} from '../utils/fetchPositionRangePayload';
 
 type LiquidityPositionProps = {
   stakingDisable: boolean;
@@ -24,7 +24,7 @@ type LiquidityPositionProps = {
   lpData: any;
   poolName: string;
   id: string;
-}
+};
 
 const getCircle = (type: 'staked' | 'not staked') => {
   return (
@@ -33,11 +33,7 @@ const getCircle = (type: 'staked' | 'not staked') => {
         w={'8px'}
         h={'8px'}
         borderRadius={50}
-        bg={
-          type === 'staked'
-            ? '#73d500'
-            : '#f95359'
-        }></Box>
+        bg={type === 'staked' ? '#73d500' : '#f95359'}></Box>
     </Flex>
   );
 };
@@ -49,16 +45,12 @@ const getRange = (type: 'range' | 'not range') => {
         w={'8px'}
         h={'8px'}
         borderRadius={50}
-        bg={
-          type === 'range'
-            ? '#2ea2f8'
-            : '#ff7800'
-        }></Box>
+        bg={type === 'range' ? '#2ea2f8' : '#ff7800'}></Box>
     </Flex>
   );
 };
 
-export const LiquidityPosition : FC<LiquidityPositionProps>= ({
+export const LiquidityPosition: FC<LiquidityPositionProps> = ({
   owner,
   stakingDisable,
   poolName,
@@ -87,7 +79,7 @@ export const LiquidityPosition : FC<LiquidityPositionProps>= ({
       fontWeight: '500',
       _hover: {backgroundColor: 'blue.100'},
     }),
-  }
+  };
   const [range, setRange] = useState(false);
 
   const rangePayload = async (args: any) => {
@@ -95,7 +87,7 @@ export const LiquidityPosition : FC<LiquidityPositionProps>= ({
     const result = await fetchPositionRangePayload(library, id, address);
 
     return result;
-  }
+  };
 
   // const { miningAmount } = lpData;
 
@@ -103,50 +95,47 @@ export const LiquidityPosition : FC<LiquidityPositionProps>= ({
     async function getRange() {
       if (id && address && library) {
         const result = await rangePayload({library, id, address});
-        const inRange = result !== undefined ? result : false
-        setRange(inRange)
+        const inRange = result !== undefined ? result : false;
+        setRange(inRange);
       }
     }
 
-    function setStakingBtn () {
+    function setStakingBtn() {
       if (owner === address.toLowerCase() && !stakingDisable) {
-        setStakingBtnDisable(false)
+        setStakingBtnDisable(false);
       } else {
-        setStakingBtnDisable(true)
+        setStakingBtnDisable(true);
       }
     }
-    
-    function setClaimBtn () {
+
+    function setClaimBtn() {
       if (owner !== address.toLowerCase() && lpData) {
         if (lpData?.miningAmount.toString() !== '0' && !stakingDisable) {
-          setClaimBtnDisable(false)
+          setClaimBtnDisable(false);
         } else {
-          setClaimBtnDisable(true)
+          setClaimBtnDisable(true);
         }
       } else {
-        setClaimBtnDisable(true)
+        setClaimBtnDisable(true);
       }
     }
 
-    getRange()
-    setStakingBtn()
-    setClaimBtn()
-  }, [lpData, stakingDisable, transactionType, blockNumber])
+    getRange();
+    setStakingBtn();
+    setClaimBtn();
+  }, [lpData, stakingDisable, transactionType, blockNumber]);
 
   return (
     <Flex justifyContent={'space-between'}>
-      {owner === address.toLowerCase() ? getCircle('not staked') : getCircle('staked')}
+      {owner === address.toLowerCase()
+        ? getCircle('not staked')
+        : getCircle('staked')}
       {range ? getRange('range') : getRange('not range')}
-      <Flex
-        ml={'32px'}
-        w={'170px'}
-        mr={'73px'}
-        py={2}
-      >
+      <Flex ml={'32px'} w={'170px'} mr={'73px'} py={2}>
         <Text>{poolName}</Text>
         <Text fontSize={'14px'} pt={1}>
           _#{id}
-        </Text>    
+        </Text>
       </Flex>
       <Flex
         alignContent={'center'}
@@ -155,68 +144,86 @@ export const LiquidityPosition : FC<LiquidityPositionProps>= ({
         direction={'row'}
         w={'147px'}
         mr={'50px'}
-        py={3}
-      >
-        <Text color={'#2a72e5'} mr={1}>TOS Earned </Text>
-        { lpData ?
-        <Text>{convertNumber({
-          amount: lpData.miningAmount.toString()
-        })} TOS</Text> : 
-        <Text>0.00 TOS</Text>}
+        py={3}>
+        <Text color={'#2a72e5'} mr={1}>
+          TOS Earned{' '}
+        </Text>
+        {lpData ? (
+          <Text>
+            {convertNumber({
+              amount: lpData.miningAmount.toString(),
+            })}{' '}
+            TOS
+          </Text>
+        ) : (
+          <Text>0.00 TOS</Text>
+        )}
       </Flex>
-      <Grid pos="relative" templateColumns={'repeat(5, 1fr)'} gap={3} mr={'40px'}>
-        <Button 
+      <Grid
+        pos="relative"
+        templateColumns={'repeat(5, 1fr)'}
+        gap={3}
+        mr={'40px'}>
+        <Button
           {...(claimBtnDisable
             ? {...btnStyle.btnAble()}
             : {...btnStyle.btnDisable({colorMode})})}
           {...localBtnStyled.btn()}
           isDisabled={claimBtnDisable}
-          onClick={() => dispatch(openModal({
-            type:'claimPool',
-            data: {
-              id: id,
-              lpData: lpData.miningAmount
-            }
-          }))}
-        >
+          onClick={() =>
+            dispatch(
+              openModal({
+                type: 'claimPool',
+                data: {
+                  id: id,
+                  lpData: lpData.miningAmount,
+                },
+              }),
+            )
+          }>
           Claim
         </Button>
-        <Button 
-        {...(stakingBtnDisable
-          ? {...btnStyle.btnAble()}
-          : {...btnStyle.btnDisable({colorMode})})}
+        <Button
+          {...(stakingBtnDisable
+            ? {...btnStyle.btnAble()}
+            : {...btnStyle.btnDisable({colorMode})})}
           {...localBtnStyled.btn()}
           isDisabled={stakingBtnDisable}
-          onClick={() => stake({
-            tokenId: id,
-            userAddress: address,
-            library: library,
-          })}
-        >
+          onClick={() =>
+            stake({
+              tokenId: id,
+              userAddress: address,
+              library: library,
+            })
+          }>
           Staking
         </Button>
-        <Button 
+        <Button
           {...localBtnStyled.btn()}
           disabled={owner === address.toLowerCase()}
-          onClick={() => unstake({
-            tokenId: id,
-            userAddress: address,
-            library: library,
-            miningAmount: lpData.miningAmount
-          })}
-            // dispatch(openModal({ type:'unstakePool', data: {id: id, lpData: lpData.miningAmount}}))}
+          onClick={() =>
+            unstake({
+              tokenId: id,
+              userAddress: address,
+              library: library,
+              miningAmount: lpData.miningAmount,
+            })
+          }
+          // dispatch(openModal({ type:'unstakePool', data: {id: id, lpData: lpData.miningAmount}}))}
         >
           Unstaking
         </Button>
-        <Button 
+        <Button
           {...localBtnStyled.btn()}
           bg={'#00c3c4'}
           // _hover={bg: 'blue.100'}
-          onClick={() => window.location.href=`https://app.uniswap.org/#/pool/${id}`}
-        >
+          onClick={(e: any) => {
+            e.preventDefault();
+            window.open(`https://app.uniswap.org/#/pool/${id}`);
+          }}>
           Edit
         </Button>
       </Grid>
     </Flex>
-  )
-}
+  );
+};
