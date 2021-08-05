@@ -84,7 +84,7 @@ export const WalletInformation: FC<WalletInformationProps> = ({
 
   const endSaleBtnDisable = () => {
     return account === undefined || miningStart >= currentBlock
-      ? setEndSaleBtnDisabled(true)
+      ? setEndSaleBtnDisabled(false)
       : setEndSaleBtnDisabled(false);
   };
 
@@ -92,7 +92,7 @@ export const WalletInformation: FC<WalletInformationProps> = ({
     return account === undefined ||
       saleStart >= currentBlock ||
       status !== 'sale'
-      ? setStakeDisabled(true)
+      ? setStakeDisabled(false)
       : setStakeDisabled(false);
   };
 
@@ -101,7 +101,7 @@ export const WalletInformation: FC<WalletInformationProps> = ({
       stakeBalance === '0.00' ||
       stakeBalance === undefined ||
       status !== 'end'
-      ? setUnstakeDisabled(true)
+      ? setUnstakeDisabled(false)
       : setUnstakeDisabled(false);
   };
 
@@ -109,13 +109,13 @@ export const WalletInformation: FC<WalletInformationProps> = ({
     return account === undefined ||
       tosBalance === undefined ||
       tosBalance === '0.00'
-      ? setClaimDisabled(true)
+      ? setClaimDisabled(false)
       : setClaimDisabled(false);
   };
 
   const manageDisableClaim = () => {
     return account === undefined || saleClosed === false
-      ? setManageDisabled(true)
+      ? setManageDisabled(false)
       : setManageDisabled(false);
   };
 
@@ -266,12 +266,12 @@ export const WalletInformation: FC<WalletInformationProps> = ({
             onClick={() => modalData('claim')}>
             Claim
           </Button>
-          {manageDisabled === true ? (
+          {manageDisabled === false ? (
             <Button
               {...(data.saleClosed || endSaleBtnDisabled === true
                 ? {...btnStyle.btnDisable({colorMode})}
                 : {...btnStyle.btnAble()})}
-              isDisabled={endSaleBtnDisabled || data.saleClosed}
+              isDisabled={false}
               fontSize={'14px'}
               opacity={loading === true ? 0.5 : 1}
               onClick={() =>
