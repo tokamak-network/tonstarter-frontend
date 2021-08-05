@@ -26,7 +26,7 @@ import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal/CloseButton';
 import {fetchWithdrawPayload} from '../utils/fetchWithdrawPayload';
-import {convertNumber} from 'utils/number';
+import {convertNumber, convertToRay} from 'utils/number';
 import {Contract} from '@ethersproject/contracts';
 import * as StakeTON from 'services/abis/StakeTON.json';
 
@@ -73,6 +73,8 @@ export const ManageModal = () => {
   const [availableBalance, setAvailableBalance] = useState('0');
   const [totalStaked, setTotalStaked] = useState('-');
   const [stakedL2, setStakdL2] = useState('-');
+  const [canUnstakedL2, setCanUntakdL2] = useState<string | undefined>('0');
+  const [unstakeAll, setUnstakeAll] = useState<boolean>(false);
   const [pendingL2Balance, setPendingL2Balance] = useState('-');
   const [swapBalance, setSwapBalance] = useState('0');
   const [seigBalance, setSeigBalance] = useState('0');
@@ -170,26 +172,31 @@ export const ManageModal = () => {
         StakeTON.abi,
         library,
       );
-      console.log(StakeTONContract);
-      console.log(contractAddress);
-      console.log(library);
-      const isUnstakeL2 = await StakeTONContract.canTokamakRequestUnStakingAll(
-        TokamakLayer2_ADDRESS,
-      );
-      const block = await StakeTONContract.canTokamakRequestUnStakingAllBlock(
-        TokamakLayer2_ADDRESS,
-      );
-      const canAmount = await StakeTONContract.canTokamakRequestUnStaking(
-        TokamakLayer2_ADDRESS,
-      );
-      console.log(block);
-      console.log(`canTokamakRequestUnStakingAllBlock : ${block.toString()}`);
-      console.log(canAmount);
-      console.log(`canTokamakRequestUnStaking : ${canAmount.toString()}`);
-      console.log(await StakeTONContract.tokamakLayer2());
-      console.log(await StakeTONContract.seigManager());
+      const isUnstakeL2All =
+        await StakeTONContract.canTokamakRequestUnStakingAll(
+          TokamakLayer2_ADDRESS,
+        );
 
-      return stakedL2 === '-' || stakedL2 === '0.00'
+      const canReqeustUnstaking =
+        await StakeTONContract.canTokamakRequestUnStaking(
+          TokamakLayer2_ADDRESS,
+        );
+
+      console.log(canReqeustUnstaking);
+      console.log(canReqeustUnstaking.toString());
+
+      const convertedUnstakeNum = convertNumber({
+        amount: canReqeustUnstaking,
+        type: 'ray',
+        round: false,
+      });
+
+      console.log(convertedUnstakeNum);
+
+      setUnstakeAll(isUnstakeL2All);
+      setCanUntakdL2(convertedUnstakeNum);
+
+      return Number(convertedUnstakeNum) <= 0
         ? setUnstakeL2Disable(true)
         : setUnstakeL2Disable(false);
     };
@@ -435,8 +442,9 @@ export const ManageModal = () => {
                 handleOpenConfirmModal({
                   type: 'manage_unstakeL2',
                   data: {
-                    totalStakedAmountL2: stakedL2,
+                    canUnstakedL2,
                     contractAddress,
+                    unstakeAll,
                   },
                 })
               }>
