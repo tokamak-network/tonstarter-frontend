@@ -141,6 +141,7 @@ export const PoolTable: FC<PoolTableProps> = ({
       }
     }
     getPosition();
+    /*eslint-disable*/
   }, [
     transactionType,
     blockNumber,
@@ -150,7 +151,6 @@ export const PoolTable: FC<PoolTableProps> = ({
     positionWithVar.data,
     address,
   ]);
-  console.log(positions);
 
   const [isOpen, setIsOpen] = useState(
     contractAddress === undefined ? '' : contractAddress,
