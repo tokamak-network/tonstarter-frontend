@@ -131,6 +131,8 @@ export const ManageModal = () => {
           setOriginalStakeBalance(originalBalance.stakeContractBalanceTon);
           setOriginalSwapBalance(originalBalance.swapBalance);
 
+          console.log('**swapbalance**');
+
           console.log(swapBalance);
           console.log(originalBalance);
 

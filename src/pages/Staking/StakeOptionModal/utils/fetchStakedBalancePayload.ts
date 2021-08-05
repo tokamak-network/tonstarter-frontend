@@ -42,21 +42,11 @@ const getSwapBalance = (args: any) => {
 
   console.log(totalBalance.toString());
   console.log(tonsBalance.toString());
+
+  console.log(stakeContractBalanceWton.toString());
+
   if (totalBalance.gt(tonsBalance)) {
-    console.log('--totalBalance.gt(tonsBalance)--');
-    console.log(totalBalance.toString());
-    console.log(tonsBalance.toString());
-    console.log(totalPendingUnstakedAmountL2.toString());
-
-    const stringTotalBalanceNum = totalBalance
-      .sub(tonsBalance)
-      .sub(totalPendingUnstakedAmountL2)
-      .toString();
-
-    console.log(stringTotalBalanceNum);
-    console.log(parseFromRayToWei(stringTotalBalanceNum));
-
-    return parseFromRayToWei(stringTotalBalanceNum);
+    return tonsBalance;
   }
   if (totalBalance.lte(tonsBalance)) {
     return totalBalance;
