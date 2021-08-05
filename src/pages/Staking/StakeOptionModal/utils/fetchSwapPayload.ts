@@ -1,13 +1,15 @@
-import {getTokamakContract} from 'utils/contract';
+// import {getTokamakContract} from 'utils/contract';
+import {Contract} from '@ethersproject/contracts';
 import {convertNumber} from 'utils/number';
+import * as StakeUniswapABI from 'services/abis/StakeUniswapV3.json';
+import {DEPLOYED} from 'constants/index';
+// import { convertToWei } from '../../../../utils/number';
+const {UniswapStaking_Address} = DEPLOYED;
 
 export const fetchSwapPayload = async (
   library: any,
-  account: string,
-  contractAddress: string,
 ) => {
-  const tosBalance = await getSwapInfo(library, account, contractAddress);
-
+  const tosBalance = await getSwapInfo(library);
   return convertNumber({
     amount: tosBalance,
   });
@@ -15,17 +17,18 @@ export const fetchSwapPayload = async (
 
 const getSwapInfo = async (
   library: any,
-  account: string,
-  contractAddress: string,
 ) => {
-  if (contractAddress && library) {
-    const TOS = getTokamakContract('TOS', library);
-    let TosBalanceOfContract;
+  if (library) {
+    // const TOS = getTokamakContract('TOS', library);
+    const StakeUniswap = new Contract(UniswapStaking_Address, StakeUniswapABI.abi, library);
+    const basePrice = '1000000000000000000000000000'
+    
+    let price
     try {
-      TosBalanceOfContract = await TOS.balanceOf(contractAddress);
+      price = await StakeUniswap.getPrice(basePrice)
     } catch (e) {
       console.log(e);
     }
-    return TosBalanceOfContract;
+    return price
   }
 };

@@ -40,7 +40,7 @@ type PoolTableProps = {
   columns: Column[];
   data: any[];
   isLoading: boolean;
-  address: string;
+  address: string | undefined;
   library: any;
 }
 

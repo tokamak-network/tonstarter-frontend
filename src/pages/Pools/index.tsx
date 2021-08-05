@@ -20,22 +20,21 @@ import {
   UnstakeOptionModal,
 } from './PoolOptionModal';
 import {PoolTable} from './PoolTable';
-import {selectUser} from 'store/app/user.reducer';
 import {PageHeader} from 'components/PageHeader';
 // import {LoadingComponent} from 'components/Loading';
 import {useQuery} from '@apollo/client';
 import { GET_TOS_POOL, GET_BASE_POOL } from './GraphQL/index';
 import { selectTransactionType } from 'store/refetch.reducer';
 import { DEPLOYED } from '../../constants/index';
+import { useUser } from '../../hooks/useUser';
+
 
 const { BasePool_Address, TOS_ADDRESS } = DEPLOYED;
 
 
 export const Pools = () => {
   const theme = useTheme();
-  const {
-    data: {address, library},
-  } = useAppSelector(selectUser);
+  const {account, library} = useUser();
   // const dispatch = useAppDispatch();
   // const {colorMode} = useColorMode();
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
@@ -103,7 +102,7 @@ export const Pools = () => {
 
   // const poolArr = pool1.loading || pool2.loading || pool3.loading ? [] : pool1.data.pools.concat(pool3.data.pools).concat(pool2.data.pools)
   // const poolArr = pool1.loading || pool2.loading ? [] : pool1.data.pools.concat(pool2.data.pools)
-  const account = address ? address : ''
+  // const account = address ? address : ''
 
   return (
     <Fragment>
