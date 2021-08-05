@@ -22,18 +22,22 @@ const getPositionInfo = async (
     const startTime = await StakeUniswap.saleStartTime()
     const endTime = await StakeUniswap.miningEndTime()
     let result: any = [];
-    for (let positionid of positionIds) {
-      const miningId = await StakeUniswap.getMiningTokenId(positionid);
-      const valueById = {
-        positionid,
-        ...miningId,
+    try {
+      for (let positionid of positionIds) {
+        const miningId = await StakeUniswap.getMiningTokenId(positionid)
+        const valueById = {
+          positionid,
+          ...miningId,
+        }
+        result.push(valueById)
       }
-      result.push(valueById)
-    }
-    return {
-      positionData: result,
-      saleStartTime: startTime,
-      miningEndTime: endTime,
+      return {
+        positionData: result,
+        saleStartTime: startTime,
+        miningEndTime: endTime,
+      }
+    } catch (e) {
+      console.log(e)
     }
   }
 }
