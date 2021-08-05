@@ -46,15 +46,15 @@ export const Pools = () => {
         accessor: 'name',
       },
       {
-        Header: 'Liquidity',
+        Header: 'liquidity',
         accessor: 'liquidity',
       },
       {
-        Header: 'Volume(24hrs)',
+        Header: 'volume',
         accessor: 'volume',
       },
       {
-        Header: 'Fee(24hrs)',
+        Header: 'fee',
         accessor: 'fee',
       },
       {

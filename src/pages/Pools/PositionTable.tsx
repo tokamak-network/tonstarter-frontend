@@ -1,4 +1,4 @@
-import {FC, useRef, useMemo} from 'react';
+import {FC, useState, useMemo, useEffect, useRef} from 'react';
 import {useExpanded, usePagination, useTable, useSortBy} from 'react-table';
 import {
   Text,
@@ -142,10 +142,10 @@ export const PositionTable: FC<PositionTableProps> = ({
     visibleColumns,
     canPreviousPage,
     canNextPage,
-    // pageOptions,
+    pageOptions,
     page,
-    // nextPage,
-    // previousPage,
+    nextPage,
+    previousPage,
     setPageSize,
     state: {pageIndex, pageSize},
   } = useTable(
@@ -163,15 +163,49 @@ export const PositionTable: FC<PositionTableProps> = ({
     data: {contractAddress, index},
   } = useAppSelector(selectTableType);
 
+  useEffect(() => {
+    if (index) {
+      console.log(index)
+      let loop = Math.floor(index / 10);
+      while (loop) {
+        nextPage();
+        loop = loop - 1;
+        if (loop === 0) {
+          setTimeout(() => {
+            focusTarget.current[
+              index - Math.floor(index / 10) * 10
+            ].scrollIntoView({
+              block: 'start',
+            });
+          }, 200);
+        }
+      }
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const [isOpen, setIsOpen] = useState(
+    contractAddress === undefined ? '' : contractAddress,
+  );
+  
+  const goPrevPage = () => {
+    setIsOpen('');
+    previousPage();
+  };
+
+  const goNextPage = () => {
+    setIsOpen('');
+    nextPage();
+  };
+
   const onChangeSelectBox = (e: any) => {
     const filterValue = e.target.value;
     headerGroups[0].headers.map((e) => {
-      // if (e.Header === filterValue) {
-      //   if (e.Header === 'staked') {
-      //     return e.toggleSortBy();
-      //   }
-      //   e.toggleSortBy(true);
-      // }
+      if (e.Header === filterValue) {
+        if (e.Header === 'staked') {
+          return e.toggleSortBy();
+        }
+        e.toggleSortBy(true);
+      }
       return null;
     });
   };
@@ -193,8 +227,6 @@ export const PositionTable: FC<PositionTableProps> = ({
               pb={'3px'}
               bg={colorMode === 'light' ? 'white.100' : ''}
               border={colorMode === 'light' ? '' : 'solid 1px #373737'}
-              // borderBottom={'1px'}
-              // borderBottomColor={'#f4f6f8'}
               borderTopWidth={0}>
               <chakra.td
                 display={'flex'}
@@ -241,8 +273,6 @@ export const PositionTable: FC<PositionTableProps> = ({
                   pb={'3px'}
                   bg={colorMode === 'light' ? 'white.100' : ''}
                   border={colorMode === 'light' ? '' : 'solid 1px #373737'}
-                  // borderBottom={'1px'}
-                  // borderBottomColor={'#f4f6f8'}
                   borderTopWidth={0}>
                   <chakra.td
                     display={'flex'}
@@ -297,28 +327,38 @@ export const PositionTable: FC<PositionTableProps> = ({
                         color={colorMode === 'light' ? '#e6eaee' : '#424242'}
                         borderRadius={4}
                         aria-label={'Previous Page'}
-                        // onClick={goPrevPage}
+                        onClick={goPrevPage}
                         isDisabled={!canPreviousPage}
                         size={'sm'}
-                        mr={4}
+                        mr={3}
                         _hover={{borderColor: '#2a72e5', color: '#2a72e5'}}
                         icon={<ChevronLeftIcon h={6} w={6} />}
                       />
                     </Tooltip>
                   </Flex>
-                  <Flex
-                    alignItems="center"
-                    p={0}
-                    fontSize={'13px'}
-                    fontFamily={theme.fonts.roboto}
-                    color={colorMode === 'light' ? '#3a495f' : '#949494'}
-                    pb={'3px'}>
-                    <Text flexShrink={0}>
-                      <Text fontWeight="bold" as="span" color={'blue.300'}>
-                        {pageIndex + 1}
-                      </Text>{' '}
-                    </Text>
-                  </Flex>
+                  {pageOptions.map((page) => {
+                    return [
+                      <Flex
+                        alignItems="center"
+                        p={0}
+                        fontSize={'13px'}
+                        fontFamily={theme.fonts.roboto}
+                        color={colorMode === 'light' ? '#3a495f' : '#949494'}
+                        pb={'3px'}>
+                        <Text flexShrink={0}>
+                          <Text
+                            fontWeight="bold"
+                            as="span"
+                            color={pageIndex === page ? '#2a72e5' : '#94a5b7'}
+                            mr={2}
+                            ml={2}
+                          >
+                            { page + 1 }
+                          </Text>
+                        </Text>
+                      </Flex>
+                    ]
+                  })}
                   <Flex mr={'300px'}>
                     <Tooltip label="Next Page">
                       <Center>
@@ -334,10 +374,10 @@ export const PositionTable: FC<PositionTableProps> = ({
                           bg={colorMode === 'light' ? 'white.100' : 'none'}
                           borderRadius={4}
                           aria-label={'Next Page'}
-                          // onClick={goNextPage}
+                          onClick={goNextPage}
                           isDisabled={!canNextPage}
                           size={'sm'}
-                          ml={4}
+                          ml={3}
                           mr={'1.5625em'}
                           _hover={{borderColor: '#2a72e5', color: '#2a72e5'}}
                           icon={<ChevronRightIcon h={6} w={6} />}

@@ -124,7 +124,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
     setStakingBtn();
     setClaimBtn();
   }, [lpData, stakingDisable, transactionType, blockNumber]);
-  console.log(lpData)
+
   return (
     <Flex justifyContent={'space-between'}>
       {owner === address.toLowerCase()

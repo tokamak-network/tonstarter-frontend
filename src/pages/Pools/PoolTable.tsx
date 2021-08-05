@@ -74,8 +74,8 @@ export const PoolTable: FC<PoolTableProps> = ({
     canNextPage,
     pageOptions,
     page,
-    // nextPage,
-    // previousPage,
+    nextPage,
+    previousPage,
     setPageSize,
     state: {pageIndex, pageSize},
   } = useTable(
@@ -134,8 +134,9 @@ export const PoolTable: FC<PoolTableProps> = ({
     function getPosition() {
       if (position.data && positionWithVar.data) {
         position.refetch();
-        const withStakedPosition = position.data.positions.concat(
-          positionWithVar.data.positions,
+        
+        const withStakedPosition = positionWithVar.data.positions.concat(
+          position.data.positions,
         );
         setPositions(withStakedPosition);
       }
@@ -156,21 +157,21 @@ export const PoolTable: FC<PoolTableProps> = ({
     contractAddress === undefined ? '' : contractAddress,
   );
 
-  // const goPrevPage = () => {
-  //   setIsOpen('');
-  //   previousPage();
-  // };
+  const goPrevPage = () => {
+    setIsOpen('');
+    previousPage();
+  };
 
-  // const goNextPage = () => {
-  //   setIsOpen('');
-  //   nextPage();
-  // };
+  const goNextPage = () => {
+    setIsOpen('');
+    nextPage();
+  };
 
   const onChangeSelectBox = (e: any) => {
     const filterValue = e.target.value;
     headerGroups[0].headers.map((e) => {
       if (e.Header === filterValue) {
-        if (e.Header === 'fee') {
+        if (e.Header === 'liquidity') {
           return e.toggleSortBy();
         }
         e.toggleSortBy(true);
@@ -183,7 +184,7 @@ export const PoolTable: FC<PoolTableProps> = ({
   };
 
   const renderBtn = (contractAddress: string, index: number) => {
-    if (isOpen === contractAddress)
+    if (isOpen === contractAddress || index === 0)
       return (
         <Flex w={'100%'} justifyContent="flex-end" _hover={{cursor: 'pointer'}}>
           <Text mr="14px" fontFamily="roboto" h="18px" fontWeight="bold">
@@ -233,7 +234,7 @@ export const PoolTable: FC<PoolTableProps> = ({
           placeholder="On sale Sort"
           onChange={onChangeSelectBox}>
           <option value="name">Name</option>
-          <option value="pliquidity">Liquidity</option>
+          <option value="liquidity">Liquidity</option>
           <option value="volume">Volume</option>
           <option value="fee">Fees</option>
         </Select>
@@ -396,7 +397,7 @@ export const PoolTable: FC<PoolTableProps> = ({
                         ) : (
                           ''
                         )}
-                        {type === 'expander' ? renderBtn(data.id, i) : null}
+                        {type === 'expander' ? renderBtn(data.id, filteredPosition.length) : null}
                       </chakra.td>
                     );
                   })}
@@ -474,7 +475,7 @@ export const PoolTable: FC<PoolTableProps> = ({
                   bg={colorMode === 'light' ? 'white.100' : 'none'}
                   borderRadius={4}
                   aria-label={'Next Page'}
-                  // onClick={goNextPage}
+                  onClick={goNextPage}
                   isDisabled={!canNextPage}
                   size={'sm'}
                   ml={4}
