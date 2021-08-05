@@ -8,18 +8,16 @@ import {
   Text,
   Button,
   Flex,
-  Input,
   Stack,
   useTheme,
   useColorMode,
 } from '@chakra-ui/react';
 import {unstakeL2} from '../actions';
-import React, {useCallback, useState} from 'react';
+import React from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {useUser} from 'hooks/useUser';
 import {useModal} from 'hooks/useModal';
-import {useCheckBalance} from 'hooks/useCheckBalance';
 import {CloseButton} from 'components/Modal/CloseButton';
 
 export const UnStakeFromLayer2Modal = () => {
@@ -28,22 +26,13 @@ export const UnStakeFromLayer2Modal = () => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
   const {handleCloseConfirmModal} = useModal();
-  const {checkBalance} = useCheckBalance();
 
   const {
-    data: {contractAddress, totalStakedAmountL2},
+    data: {contractAddress, canUnstakedL2, unstakeAll},
   } = sub;
-
-  const [value, setValue] = useState<number>(0);
-  const handleChange = useCallback((e) => setValue(e.target.value), []);
-  const setMax = useCallback(
-    (_e) => setValue(totalStakedAmountL2),
-    [totalStakedAmountL2],
-  );
 
   const handleCloseModal = () => {
     handleCloseConfirmModal();
-    setValue(0);
   };
 
   return (
@@ -79,56 +68,29 @@ export const UnStakeFromLayer2Modal = () => {
           </Box>
 
           <Stack
-            pt="27px"
             as={Flex}
-            flexDir={'row'}
+            pt={'1.875em'}
+            pl={'1.875em'}
+            pr={'1.875em'}
             justifyContent={'center'}
             alignItems={'center'}
-            w={'full'}>
-            <Input
-              variant={'outline'}
-              borderWidth={0}
-              textAlign={'center'}
-              fontWeight={'bold'}
-              fontSize={'4xl'}
-              value={value}
-              w="60%"
-              mr={6}
-              onChange={handleChange}
-              _focus={{
-                borderWidth: 0,
-              }}
-            />
-            <Box position={'absolute'} right={5}>
-              <Button
-                onClick={setMax}
-                type={'button'}
-                variant="outline"
-                _focus={{
-                  outline: 'none',
-                }}>
-                Max
-              </Button>
-            </Box>
-          </Stack>
-
-          <Stack
-            as={Flex}
-            justifyContent={'center'}
-            alignItems={'center'}
-            borderBottom={
-              colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
-            }
             mb={'25px'}>
-            <Box textAlign={'center'} pt="33px" pb="13px">
-              <Text fontWeight={500} fontSize={'0.813em'} color={'gray.400'}>
-                TON Balance
-              </Text>
-              <Text
-                fontSize={'18px'}
-                color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                {totalStakedAmountL2} TON
-              </Text>
+            <Box
+              display={'flex'}
+              justifyContent="center"
+              flexDir="column"
+              w={'100%'}>
+              <Flex justifyContent="space-between" alignItems="center" h="15px">
+                <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
+                  Withdrawable amount
+                </Text>
+                <Text
+                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+                  fontWeight={500}
+                  fontSize={'18px'}>
+                  {canUnstakedL2} TON
+                </Text>
+              </Flex>
             </Box>
           </Stack>
 
@@ -140,20 +102,14 @@ export const UnStakeFromLayer2Modal = () => {
               fontSize="14px"
               _hover={{...theme.btnHover}}
               onClick={() => {
-                const isBalance = checkBalance(
-                  Number(value),
-                  Number(totalStakedAmountL2),
-                );
-                if (isBalance) {
-                  unstakeL2({
-                    type: value === totalStakedAmountL2 ? true : false,
-                    userAddress: account,
-                    amount: value.toString(),
-                    contractAddress,
-                    library: library,
-                  });
-                  handleCloseModal();
-                }
+                unstakeL2({
+                  type: unstakeAll,
+                  userAddress: account,
+                  amount: canUnstakedL2,
+                  contractAddress,
+                  library: library,
+                });
+                handleCloseModal();
               }}
               colorScheme={'blue'}>
               Unstake

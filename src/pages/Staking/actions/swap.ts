@@ -29,7 +29,7 @@ export const swapWTONtoTOS = async (args: UnstakeFromLayer2) => {
       0,
       deadline,
       0,
-      1,
+      0,
     );
     store.dispatch(setTxPending({tx: true}));
     if (receipt) {

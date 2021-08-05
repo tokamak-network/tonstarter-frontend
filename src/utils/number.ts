@@ -31,13 +31,17 @@ export const convertToRay = (num: string) => toWei(num, 'gether');
 
 function roundNumber(args: RoundFunc): string {
   const {r_amount, r_maxDecimalDigits, r_opt} = args;
+  const displayPoint = 2;
   const number = new Decimal(r_amount);
   if (r_opt === 'up') {
-    return number.toFixed(r_maxDecimalDigits, Decimal.ROUND_UP);
+    const res = number.toFixed(r_maxDecimalDigits, Decimal.ROUND_UP);
+    return Number(res).toFixed(displayPoint);
   } else if (r_opt === 'down') {
-    return number.toFixed(r_maxDecimalDigits, Decimal.ROUND_DOWN);
+    const res = number.toFixed(r_maxDecimalDigits, Decimal.ROUND_DOWN);
+    return Number(res).toFixed(displayPoint);
   }
-  return number.toFixed(r_maxDecimalDigits, Decimal.ROUND_HALF_UP);
+  const res = number.toFixed(r_maxDecimalDigits, Decimal.ROUND_HALF_UP);
+  return Number(res).toFixed(displayPoint);
 }
 
 export function convertNumber(args: ConverNumberFunc): string | undefined {
@@ -50,8 +54,8 @@ export function convertNumber(args: ConverNumberFunc): string | undefined {
     }
     const numAmount = BigNumber.from(amount);
     const numberType: string = type ? type : 'wei';
-    const optRound = round ? round : true;
-    const decimalPoint: number = decimalPlaces ? decimalPlaces : 2;
+    const optRound = round ? round : false;
+    const decimalPoint: number = decimalPlaces ? decimalPlaces : 3;
     if (amount === undefined) {
       throw new Error(`amount is undefined`);
     }

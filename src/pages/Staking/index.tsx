@@ -16,7 +16,6 @@ import {shortenAddress} from 'utils';
 import {StakingTable} from './StakingTable';
 import {selectStakes} from './staking.reducer';
 import {selectApp} from 'store/app/app.reducer';
-import {selectUser} from 'store/app/user.reducer';
 import {PageHeader} from 'components/PageHeader';
 import {
   ClaimOptionModal,
@@ -93,7 +92,6 @@ export const Staking = () => {
   const dispatch = useAppDispatch();
   // @ts-ignore
   const {data, loading} = useAppSelector(selectStakes);
-  const {data: user} = useAppSelector(selectUser);
   // @ts-ignore
   const {data: appConfig} = useAppSelector(selectApp);
   const columns = useMemo(
@@ -131,10 +129,10 @@ export const Staking = () => {
     [],
   );
 
-  const GetTotalStaker = ({contractAddress, data}: any) => {
+  const GetTotalStaker = ({contractAddress, totalStakers}: any) => {
     const {colorMode} = useColorMode();
     const [totalStaker, setTotalStaker] = useState('-');
-    const {library} = useUser();
+    const {account, library} = useUser();
     const getlInfo = async () => {
       const res = await getTotalStakers(contractAddress, library);
       if (res === undefined) {
@@ -144,10 +142,10 @@ export const Staking = () => {
     };
 
     useEffect(() => {
-      if (user.address !== undefined) {
+      if (account !== undefined) {
         getlInfo();
       } else {
-        setTotalStaker(data);
+        setTotalStaker(totalStakers);
       }
     }, []);
 
@@ -166,9 +164,10 @@ export const Staking = () => {
     );
   };
 
-  const GetBalance = ({title, contractAddress, user, setStakeValance}: any) => {
+  const GetBalance = ({title, contractAddress, setStakeValance}: any) => {
     const {colorMode} = useColorMode();
     const [balance, SetBalance] = useState('-');
+    const {account, library} = useUser();
 
     const getBalance = async () => {
       try {
@@ -183,16 +182,16 @@ export const Staking = () => {
     };
 
     useEffect(() => {
-      if (user.address !== undefined) {
+      if (account !== undefined) {
         getBalance();
       }
       return () => {
         SetBalance('-');
       };
       /*eslint-disable*/
-    }, [user]);
+    }, [account]);
 
-    if (user.address === undefined) {
+    if (account === undefined) {
       return (
         <Flex flexDir={'column'} alignItems={'space-between'}>
           <Text fontSize={'15px'} color="gray.400">
@@ -272,19 +271,16 @@ export const Staking = () => {
                   : data[row.id]?.miningStartTime}
               </Text>
             </Flex>
-            <GetTotalStaker contractAddress={contractAddress}></GetTotalStaker>
+            <GetTotalStaker
+              contractAddress={contractAddress}
+              totalStakers={data[row.id]?.totalStakers}></GetTotalStaker>
             <GetBalance
               title={'My staked'}
-              contractAddress={contractAddress}
-              user={user}></GetBalance>
+              contractAddress={contractAddress}></GetBalance>
           </Flex>
 
           <Box p={0} w={'450px'} borderRadius={'10px'} alignSelf={'flex-start'}>
-            <WalletInformation
-              dispatch={dispatch}
-              data={data[row.id]}
-              user={user}
-            />
+            <WalletInformation dispatch={dispatch} data={data[row.id]} />
           </Box>
 
           <Flex flexDir={'column'} h={'100%'} justifyContent={'space-between'}>
@@ -334,17 +330,13 @@ export const Staking = () => {
                 {shortenAddress(data[row.id]?.contractAddress)}
               </Link>
             </Flex>
-            <GetBalance
-              title={'Earned'}
-              contractAddress={contractAddress}
-              user={user}
-            />
+            <GetBalance title={'Earned'} contractAddress={contractAddress} />
           </Flex>
         </Flex>
       );
     },
     /* eslint-disable */
-    [data, dispatch, user, appConfig.explorerLink],
+    [data, dispatch, appConfig.explorerLink],
   );
 
   return (

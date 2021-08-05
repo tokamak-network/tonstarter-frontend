@@ -21,12 +21,12 @@ import {fetchStakedBalancePayload} from '../utils/fetchStakedBalancePayload';
 import {useUser} from 'hooks/useUser';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {checkSaleClosed} from 'pages/Staking/utils';
-import {BASE_PROVIDER} from 'constants/index';
+import {BASE_PROVIDER, DEPLOYED} from 'constants/index';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal/CloseButton';
 import {fetchWithdrawPayload} from '../utils/fetchWithdrawPayload';
-import {convertNumber} from 'utils/number';
+import {convertNumber, convertToRay} from 'utils/number';
 import {Contract} from '@ethersproject/contracts';
 import * as StakeTON from 'services/abis/StakeTON.json';
 
@@ -49,6 +49,8 @@ const tooltipMsg = () => {
 
 export const ManageModal = () => {
   const {data} = useAppSelector(selectModalType);
+  const {TokamakLayer2_ADDRESS} = DEPLOYED;
+
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const theme = useTheme();
   const {btnStyle} = theme;
@@ -71,6 +73,8 @@ export const ManageModal = () => {
   const [availableBalance, setAvailableBalance] = useState('0');
   const [totalStaked, setTotalStaked] = useState('-');
   const [stakedL2, setStakdL2] = useState('-');
+  const [canUnstakedL2, setCanUntakdL2] = useState<string | undefined>('0');
+  const [unstakeAll, setUnstakeAll] = useState<boolean>(false);
   const [pendingL2Balance, setPendingL2Balance] = useState('-');
   const [swapBalance, setSwapBalance] = useState('0');
   const [seigBalance, setSeigBalance] = useState('0');
@@ -128,6 +132,10 @@ export const ManageModal = () => {
           setOriginalStakeBalance(originalBalance.stakeContractBalanceTon);
           setOriginalSwapBalance(originalBalance.swapBalance);
 
+          console.log(stakeContractBalanceTon);
+          console.log(originalBalance);
+          console.log(swapBalance);
+
           //calculate swap balance
           if (Number(swapBalance) <= 0) {
             return setSwapBalance('0.00');
@@ -168,24 +176,25 @@ export const ManageModal = () => {
         StakeTON.abi,
         library,
       );
-      console.log(StakeTONContract);
-      console.log(contractAddress);
-      console.log(library);
-      const isUnstakeL2 = await StakeTONContract.canTokamakRequestUnStakingAll(
-        contractAddress,
-      );
-      const block = await StakeTONContract.canTokamakRequestUnStakingAllBlock(
-        contractAddress,
-      );
-      const canAmount = await StakeTONContract.canTokamakRequestUnStaking(
-        contractAddress,
-      );
-      console.log(block);
-      console.log(`canTokamakRequestUnStakingAllBlock : ${block.toString()}`);
-      console.log(canAmount);
-      console.log(`canTokamakRequestUnStaking : ${canAmount.toString()}`);
-      console.log(await StakeTONContract.tokamakLayer2());
-      return stakedL2 === '-' || stakedL2 === '0.00'
+      const isUnstakeL2All =
+        await StakeTONContract.canTokamakRequestUnStakingAll(
+          TokamakLayer2_ADDRESS,
+        );
+
+      const canReqeustUnstaking =
+        await StakeTONContract.canTokamakRequestUnStaking(
+          TokamakLayer2_ADDRESS,
+        );
+
+      const convertedUnstakeNum = convertNumber({
+        amount: canReqeustUnstaking,
+        type: 'ray',
+      });
+
+      setUnstakeAll(isUnstakeL2All);
+      setCanUntakdL2(convertedUnstakeNum);
+
+      return Number(convertedUnstakeNum) <= 0
         ? setUnstakeL2Disable(true)
         : setUnstakeL2Disable(false);
     };
@@ -431,8 +440,9 @@ export const ManageModal = () => {
                 handleOpenConfirmModal({
                   type: 'manage_unstakeL2',
                   data: {
-                    totalStakedAmountL2: stakedL2,
+                    canUnstakedL2,
                     contractAddress,
+                    unstakeAll,
                   },
                 })
               }>
