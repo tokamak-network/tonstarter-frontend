@@ -189,7 +189,11 @@ export const PoolTable: FC<PoolTableProps> = ({
           <Text mr="14px" fontFamily="roboto" h="18px" fontWeight="bold">
             Choose LP
           </Text>
-          <TriangleUpIcon color="blue.100" _hover={{cursor: 'pointer'}} />
+          <TriangleUpIcon
+            mt={'3px'}
+            color="blue.100"
+            _hover={{cursor: 'pointer'}}
+          />
         </Flex>
       );
     return (
@@ -201,7 +205,11 @@ export const PoolTable: FC<PoolTableProps> = ({
         <Text mr="14px" fontFamily="roboto" h="18px" fontWeight="bold">
           Choose LP
         </Text>
-        <TriangleDownIcon color="blue.100" _hover={{cursor: 'pointer'}} />
+        <TriangleDownIcon
+          mt={'3px'}
+          color="blue.100"
+          _hover={{cursor: 'pointer'}}
+        />
       </Flex>
     );
   };
