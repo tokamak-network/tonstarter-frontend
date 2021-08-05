@@ -216,6 +216,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
         <Button
           {...localBtnStyled.btn()}
           bg={'#00c3c4'}
+          _hover={{bg: '#00b3b4'}}
           // _hover={bg: 'blue.100'}
           onClick={(e: any) => {
             e.preventDefault();
