@@ -43,7 +43,7 @@ const getSwapBalance = (args: any) => {
   console.log(totalBalance.toString());
   console.log(tonsBalance.toString());
   if (totalBalance.gt(tonsBalance)) {
-    console.log('??');
+    console.log('--totalBalance.gt(tonsBalance)--');
     console.log(totalBalance.toString());
     console.log(tonsBalance.toString());
     console.log(totalPendingUnstakedAmountL2.toString());
