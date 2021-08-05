@@ -6,8 +6,6 @@ import * as NPMABI from 'services/abis/NonfungiblePositionManager.json';
 import * as LockTOSABI from 'services/abis/LockTOS.json';
 import Web3 from 'web3';
 import {ethers} from 'ethers';
-import ethUtil from 'ethereumjs-util'
-import sigUtil from 'eth-sig-util'
 
 // user, amount, unlockTime;
 export const permitForCreateLock = async (
