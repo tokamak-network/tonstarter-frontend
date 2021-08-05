@@ -25,9 +25,11 @@ const getPositionInfo = async (
     try {
       for (let positionid of positionIds) {
         const miningId = await StakeUniswap.getMiningTokenId(positionid)
+        const stakedCoinageTokens = await StakeUniswap.stakedCoinageTokens(positionid)
         const valueById = {
           positionid,
           ...miningId,
+          ...stakedCoinageTokens
         }
         result.push(valueById)
       }
