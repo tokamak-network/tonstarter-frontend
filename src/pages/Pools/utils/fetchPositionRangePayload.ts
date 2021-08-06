@@ -25,24 +25,13 @@ const getPositionRange = async (
 ) => {
   if (library && id) {
     const StakeUniswap = new Contract(UniswapStaking_Address, StakeUniswapABI.abi, library);
-    const currentTime = Date.now() / 1000;
-    const blockNumber = await library.getBlock('latest')
-    console.log(blockNumber);
-    //@ts-ignore
-    const now = parseInt(currentTime)
-    console.log(now)
 
     const npmPositions = await StakeUniswap.npmPositions(id)
     const poolSlot0 = await StakeUniswap.poolSlot0()
-    let expectedClaimable
-    try {
-      expectedClaimable = await StakeUniswap.expectedPlusClaimableAmount(id, now)
-    } catch (e) {}
-    console.log(id, expectedClaimable)
+
     return {
       ...npmPositions,
       ...poolSlot0,
-      ...expectedClaimable
     }
   }
 

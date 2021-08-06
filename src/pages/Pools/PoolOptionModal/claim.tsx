@@ -17,7 +17,6 @@ import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
 import {useCallback} from 'react';
-import { convertNumber } from '../../../utils/number';
 
 export const ClaimOptionModal = () => {
   const {account, library} = useWeb3React();
@@ -26,7 +25,8 @@ export const ClaimOptionModal = () => {
 
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
-  let claimed = convertNumber({ amount: data?.data?.lpData });
+  
+  const swapableAmount = data?.data?.swapableAmount
 
   const handleCloseModal = useCallback(() => {
     dispatch(closeModal());
@@ -59,7 +59,7 @@ export const ClaimOptionModal = () => {
               Claim
             </Heading>
             <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
-              You can claim {claimed ? claimed : '0.00'} TOS
+              You can claim {swapableAmount ? swapableAmount : '0.00'} TOS
             </Text>
           </Box>
 
@@ -76,14 +76,14 @@ export const ClaimOptionModal = () => {
                 fontSize={'26px'}
                 fontWeight={600}
                 color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                {claimed} TOS
+                {swapableAmount} TOS
               </Text>
             </Box>
           </Stack>
 
           <Box as={Flex} justifyContent={'center'}>
             <Button
-              disabled={Number(claimed) <= 0}
+              disabled={!(Number(swapableAmount) > 0)}
               w={'150px'}
               bg={'blue.500'}
               color="white.100"

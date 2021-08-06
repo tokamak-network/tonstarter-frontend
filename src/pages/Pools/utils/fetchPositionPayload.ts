@@ -24,13 +24,19 @@ const getPositionInfo = async (
     let result: any = [];
     try {
       for (let positionid of positionIds) {
+        const currentTime = Date.now() / 1000;
+        //@ts-ignore
+        const now = parseInt(currentTime)
         const miningId = await StakeUniswap.getMiningTokenId(positionid)
         const stakedCoinageTokens = await StakeUniswap.stakedCoinageTokens(positionid)
+        const expectedClaimable = await StakeUniswap.expectedPlusClaimableAmount(positionid, now)
         const valueById = {
           positionid,
           ...miningId,
-          ...stakedCoinageTokens
+          ...stakedCoinageTokens,
+          ...expectedClaimable,
         }
+
         result.push(valueById)
       }
       return {

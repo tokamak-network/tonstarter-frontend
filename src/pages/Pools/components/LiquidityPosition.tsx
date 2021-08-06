@@ -64,6 +64,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [stakingBtnDisable, setStakingBtnDisable] = useState(true);
   const [claimBtnDisable, setClaimBtnDisable] = useState(true);
+  const [expectedSeig, setExpectedSeig] = useState('0')
   const {address, library} = store.getState().user.data;
   const localBtnStyled = {
     btn: () => ({
@@ -81,6 +82,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
     }),
   };
   const [range, setRange] = useState(false);
+  const [swapableAmount, setSwapableAmount] = useState<string | undefined>('0');
 
   const rangePayload = async (args: any) => {
     const {address, library, id} = args;
@@ -95,7 +97,6 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
     async function getRange() {
       if (id && address && library) {
         const result = await rangePayload({library, id, address});
-        console.log(result)
         const inRange = result !== undefined ? result : false;
         setRange(inRange);
         return result
@@ -104,7 +105,6 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
 
     async function setStakingBtn() {
       const inRange = await getRange()
-      console.log(id, inRange)
       if (owner === address.toLowerCase() && !stakingDisable && inRange) {
         setStakingBtnDisable(false);
       } else {
@@ -114,16 +114,23 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
 
     function setClaimBtn() {
       if (owner !== address.toLowerCase() && lpData) {
-        if (lpData?.miningAmount.toString() !== '0' && !stakingDisable) {
-          setClaimBtnDisable(false);
-        } else {
-          setClaimBtnDisable(true);
-        }
+        setClaimBtnDisable(false);
       } else {
         setClaimBtnDisable(true);
       }
     }
 
+    function setSwapable () {
+      const claimed = lpData?.miningAmount;
+      const expected = lpData?.minableAmount;
+      if (claimed && expected) {
+        const addedValue = claimed.add(expected)
+        const expectedAmount = convertNumber({ amount: addedValue})
+        setSwapableAmount(expectedAmount)
+      }
+    }
+
+    setSwapable()
     getRange();
     setStakingBtn();
     setClaimBtn();
@@ -180,7 +187,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
                 type: 'claimPool',
                 data: {
                   id: id,
-                  lpData: lpData.miningAmount,
+                  swapableAmount: swapableAmount,
                 },
               }),
             )
