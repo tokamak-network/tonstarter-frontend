@@ -24,6 +24,7 @@ import {useCheckBalance} from 'hooks/useCheckBalance';
 import {CloseButton} from 'components/Modal/CloseButton';
 import {convertToRay} from 'utils/number';
 import { fetchSwapPayload } from './utils/fetchSwapPayload';
+import {LoadingDots} from 'components/Loader/LoadingDots';
 import {useEffect} from 'react';
 import swapArrow from 'assets/svgs/swap-arrow-icon.svg'
 
@@ -90,7 +91,7 @@ export const SwapModal = () => {
               Swap
             </Heading>
             <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
-              1 TON = {price} TOS
+              Current price {price === '0' ? (<LoadingDots />) : ({price})} TOS per TON
             </Text>
           </Box>
 
