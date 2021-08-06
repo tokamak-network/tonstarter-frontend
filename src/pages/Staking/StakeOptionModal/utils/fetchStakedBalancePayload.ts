@@ -40,13 +40,13 @@ const getSwapBalance = (args: any) => {
 
   const tonsBalance = stakeContractBalanceWton.add(ray_StakeContractBalanceTon);
 
-  if (totalBalance.gt(tonsBalance)) {
-    const stringTotalBalanceNum = totalBalance
-      .sub(tonsBalance)
-      .sub(totalPendingUnstakedAmountL2)
-      .toString();
+  console.log(totalBalance.toString());
+  console.log(tonsBalance.toString());
 
-    return parseFromRayToWei(stringTotalBalanceNum);
+  console.log(stakeContractBalanceWton.toString());
+
+  if (totalBalance.gt(tonsBalance)) {
+    return tonsBalance;
   }
   if (totalBalance.lte(tonsBalance)) {
     return totalBalance;

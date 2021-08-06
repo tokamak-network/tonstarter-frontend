@@ -26,7 +26,7 @@ import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal/CloseButton';
 import {fetchWithdrawPayload} from '../utils/fetchWithdrawPayload';
-import {convertNumber, convertToRay} from 'utils/number';
+import {convertNumber} from 'utils/number';
 import {Contract} from '@ethersproject/contracts';
 import * as StakeTON from 'services/abis/StakeTON.json';
 
@@ -130,6 +130,11 @@ export const ManageModal = () => {
           //set original balances
           setOriginalStakeBalance(originalBalance.stakeContractBalanceTon);
           setOriginalSwapBalance(originalBalance.swapBalance);
+
+          console.log('**swapbalance**');
+
+          console.log(swapBalance);
+          console.log(originalBalance);
 
           //calculate swap balance
           if (Number(swapBalance) <= 0) {
