@@ -97,11 +97,14 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
         const result = await rangePayload({library, id, address});
         const inRange = result !== undefined ? result : false;
         setRange(inRange);
+        return result
       }
     }
 
-    function setStakingBtn() {
-      if (owner === address.toLowerCase() && !stakingDisable) {
+    async function setStakingBtn() {
+      const inRange = await getRange()
+      console.log(id, inRange)
+      if (owner === address.toLowerCase() && !stakingDisable && inRange) {
         setStakingBtnDisable(false);
       } else {
         setStakingBtnDisable(true);
