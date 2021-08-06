@@ -95,6 +95,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
     async function getRange() {
       if (id && address && library) {
         const result = await rangePayload({library, id, address});
+        console.log(result)
         const inRange = result !== undefined ? result : false;
         setRange(inRange);
         return result
