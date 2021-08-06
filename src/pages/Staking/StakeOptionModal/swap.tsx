@@ -14,7 +14,7 @@ import {
   Image,
   useColorMode,
 } from '@chakra-ui/react';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useState, useEffect} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {swapWTONtoTOS} from '../actions';
@@ -23,39 +23,35 @@ import {useModal} from 'hooks/useModal';
 import {useCheckBalance} from 'hooks/useCheckBalance';
 import {CloseButton} from 'components/Modal/CloseButton';
 import {convertToRay} from 'utils/number';
-import { fetchSwapPayload } from './utils/fetchSwapPayload';
 import {LoadingDots} from 'components/Loader/LoadingDots';
-import {useEffect} from 'react';
 import swapArrow from 'assets/svgs/swap-arrow-icon.svg'
 
 export const SwapModal = () => {
   const {sub} = useAppSelector(selectModalType);
   const {account, library} = useUser();
   const {
-    data: {contractAddress, swapBalance, originalSwapBalance},
+    data: {contractAddress, swapBalance, originalSwapBalance, currentTosPrice},
   } = sub;
   const theme = useTheme();
   const {colorMode} = useColorMode();
   const [value, setValue] = useState<number>(0);
   const [swapValue, setSwapValue] = useState<number>(0);
+  const [tosPrice, setTosPrice] = useState('0');
+
   const {handleCloseConfirmModal} = useModal();
   const {checkBalance} = useCheckBalance();
-  useEffect(() => {
-    async function getPrice() {
-      if (library) {
-        const price = await fetchSwapPayload(library)
-        setPrice(price)
-      }
-    }
-    getPrice()
-  }, [])
+
+  const setMax = useCallback((_e) => setValue(swapBalance), [swapBalance]);
+  
   const handleChange = useCallback((e) => {
     setValue(e.target.value)
-    setSwapValue(e.target.value * Number(price))
+    setTosPrice(currentTosPrice)
   }, []);
-  const setMax = useCallback((_e) => setValue(swapBalance), [swapBalance]);
-  const [price, setPrice] = useState<string | undefined>('0');
-  
+
+  useEffect(() => {
+    setSwapValue(value * Number(currentTosPrice))
+  }, [value])
+
   const handleCloseModal = () => {
     handleCloseConfirmModal();
     setValue(0);
@@ -90,8 +86,8 @@ export const SwapModal = () => {
             >
               Swap
             </Heading>
-            <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
-              Current price {price === '0' ? (<LoadingDots />) : ({price})} TOS per TON
+            <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'} w={'100%'}>
+              Current price {(currentTosPrice === '0') ? (<LoadingDots />) : (currentTosPrice)} TOS per TON
             </Text>
           </Box>
 

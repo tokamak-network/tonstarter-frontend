@@ -2,11 +2,15 @@ import {getTokamakContract} from 'utils/contract';
 import {DEPLOYED} from 'constants/index';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import {Contract} from '@ethersproject/contracts';
+import * as StakeUniswapABI from 'services/abis/StakeUniswapV3.json';
+
 import {
   convertFromWeiToRay,
   convertNumber,
   parseFromRayToWei,
 } from 'utils/number';
+
+const {UniswapStaking_Address} = DEPLOYED;
 
 export const fetchStakedBalancePayload = async (
   account: string,
@@ -63,6 +67,8 @@ const getStakedBalance = async (
   const WTON = getTokamakContract('WTON', library);
   const depositManager = getTokamakContract('DepositManager', library);
   const seigManager = getTokamakContract('SeigManager', library);
+  const StakeUniswap = new Contract(UniswapStaking_Address, StakeUniswapABI.abi, library);
+  const basePrice = '1000000000000000000000000000'
 
   return Promise.all([
     StakeTONContract.totalStakedAmount(),
@@ -74,6 +80,7 @@ const getStakedBalance = async (
     ),
     WTON.balanceOf(contractAddress),
     TON.balanceOf(contractAddress),
+    StakeUniswap.getPrice(basePrice),
   ]).then((result) => {
     return {
       totalStakedAmount: convertNumber({
@@ -103,6 +110,7 @@ const getStakedBalance = async (
         stakeContractBalanceWton: result[3],
         stakeContractBalanceTon: result[4],
         swapBalance: getSwapBalance(result),
+        tosPrice: convertNumber({amount: result[5]}),
       },
     };
   });

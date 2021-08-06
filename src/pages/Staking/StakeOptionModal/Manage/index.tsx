@@ -83,6 +83,7 @@ export const ManageModal = () => {
   //original balances
   const [originalStakeBalance, setOriginalStakeBalance] = useState(0);
   const [originalSwapBalance, setOriginalSwapBalance] = useState(0);
+  const [currentTosPrice, setCurrentTosPrice] = useState<string | undefined>('0');
 
   //conditions
   const [saleClosed, setSaleClosed] = useState(true);
@@ -130,11 +131,13 @@ export const ManageModal = () => {
           //set original balances
           setOriginalStakeBalance(originalBalance.stakeContractBalanceTon);
           setOriginalSwapBalance(originalBalance.swapBalance);
+          setCurrentTosPrice(originalBalance.tosPrice)
 
           console.log('**swapbalance**');
 
           console.log(swapBalance);
           console.log(originalBalance);
+          console.log(currentTosPrice)
 
           //calculate swap balance
           if (Number(swapBalance) <= 0) {
@@ -489,6 +492,7 @@ export const ManageModal = () => {
                     contractAddress,
                     swapBalance,
                     originalSwapBalance,
+                    currentTosPrice,
                   },
                 })
               }>
