@@ -89,12 +89,22 @@ export const ManageModal = () => {
 
   //conditions
   const [saleClosed, setSaleClosed] = useState(true);
+  const [currentBlock, setCurrentBlock] = useState<number>(99999999999999);
 
   //Set
 
   //fetch status
 
   //constant
+
+  //getCurrentBlock
+  useEffect(() => {
+    async function getCurrentBlock() {
+      const currentBlock = await BASE_PROVIDER.getBlockNumber();
+      setCurrentBlock(currentBlock);
+    }
+    getCurrentBlock();
+  }, [data, transactionType, blockNumber]);
 
   useEffect(() => {
     async function getStakedBalance() {
@@ -158,7 +168,6 @@ export const ManageModal = () => {
   useEffect(() => {
     async function btnDisablestakeL2() {
       if (globalWithdrawalDelay && miningEndTime) {
-        const currentBlock = await BASE_PROVIDER.getBlockNumber();
         const res =
           miningEndTime - Number(globalWithdrawalDelay) <= currentBlock;
         const checkBalance = Number(availableBalance) <= 0 ? true : false;
@@ -206,7 +215,7 @@ export const ManageModal = () => {
     };
 
     const btnDisableSwap = () => {
-      return Number(swapBalance) <= 0
+      return Number(swapBalance) <= 0 || miningEndTime <= currentBlock
         ? setSwapDisabled(true)
         : setSwapDisabled(false);
     };
@@ -242,6 +251,7 @@ export const ManageModal = () => {
     blockNumber,
     canWithdralAmount,
     saleClosed,
+    currentBlock,
   ]);
 
   const handleCloseManageModal = () => {
