@@ -15,6 +15,7 @@ import {useEffect} from 'react';
 import store from '../../../store';
 import {stake, unstake} from '../actions';
 import {convertNumber} from '../../../utils/number';
+import {formatEther} from '@ethersproject/units';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {fetchPositionRangePayload} from '../utils/fetchPositionRangePayload';
 
@@ -125,7 +126,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
       const expected = lpData?.minableAmount;
       if (claimed && expected) {
         const addedValue = claimed.add(expected)
-        const expectedAmount = convertNumber({ amount: addedValue})
+        const expectedAmount = formatEther(addedValue)
         setSwapableAmount(expectedAmount)
       }
     }
