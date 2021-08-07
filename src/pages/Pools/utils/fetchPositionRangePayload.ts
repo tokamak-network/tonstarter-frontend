@@ -25,8 +25,10 @@ const getPositionRange = async (
 ) => {
   if (library && id) {
     const StakeUniswap = new Contract(UniswapStaking_Address, StakeUniswapABI.abi, library);
+
     const npmPositions = await StakeUniswap.npmPositions(id)
     const poolSlot0 = await StakeUniswap.poolSlot0()
+
     return {
       ...npmPositions,
       ...poolSlot0,
