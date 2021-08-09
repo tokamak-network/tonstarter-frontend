@@ -165,7 +165,7 @@ export const PositionTable: FC<PositionTableProps> = ({
 
   useEffect(() => {
     if (index) {
-      console.log(index)
+      console.log(index);
       let loop = Math.floor(index / 10);
       while (loop) {
         nextPage();
@@ -183,10 +183,11 @@ export const PositionTable: FC<PositionTableProps> = ({
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  /*eslint-disable*/
   const [isOpen, setIsOpen] = useState(
     contractAddress === undefined ? '' : contractAddress,
   );
-  
+
   const goPrevPage = () => {
     setIsOpen('');
     previousPage();
@@ -351,13 +352,12 @@ export const PositionTable: FC<PositionTableProps> = ({
                             as="span"
                             color={pageIndex === page ? '#2a72e5' : '#94a5b7'}
                             mr={2}
-                            ml={2}
-                          >
-                            { page + 1 }
+                            ml={2}>
+                            {page + 1}
                           </Text>
                         </Text>
-                      </Flex>
-                    ]
+                      </Flex>,
+                    ];
                   })}
                   <Flex mr={'300px'}>
                     <Tooltip label="Next Page">

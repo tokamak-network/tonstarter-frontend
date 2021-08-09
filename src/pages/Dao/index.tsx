@@ -8,7 +8,6 @@ import {
   useTheme,
 } from '@chakra-ui/react';
 import resources_icon from 'assets/svgs/resources_icon.svg';
-import resources_icon_blue from 'assets/svgs/resources_icon_blue.svg';
 import {STOS} from './components/STOS';
 import {
   DaoStakeModal,

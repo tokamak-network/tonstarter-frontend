@@ -1,6 +1,6 @@
 import {Contract} from '@ethersproject/contracts';
 import {DEPLOYED} from 'constants/index';
-import {getSigner} from 'utils/contract';
+// import {getSigner} from 'utils/contract';
 import * as TOSABI from 'services/abis/TOS.json';
 import * as NPMABI from 'services/abis/NonfungiblePositionManager.json';
 import * as LockTOSABI from 'services/abis/LockTOS.json';
@@ -25,7 +25,7 @@ export const permitForCreateLock = async (
     library,
   );
   console.log(userSigner);
-  const signer = getSigner(library, account);
+  // const signer = getSigner(library, account);
   console.log(TOSContract);
   const nonce = parseInt(await TOSContract.nonces(account));
   let deadline = Date.now() / 1000;
@@ -72,28 +72,33 @@ export const permitForCreateLock = async (
     signature.v,
     signature.r,
     signature.s,
-  )
-}
+  );
+};
 
-export async function stakingPermit(account: string, library: any, tokenId: string, deadline: number) {
+export async function stakingPermit(
+  account: string,
+  library: any,
+  tokenId: string,
+  deadline: number,
+) {
   if (!account || !library) {
     return;
   }
 
   //@ts-ignore
   const web3 = new Web3(window.ethereum);
-  const signer = getSigner(library, account);
+  // const signer = getSigner(library, account);
 
   const {UniswapStaking_Address, NPM_Address} = DEPLOYED;
 
-  const NPMContract = new Contract(NPM_Address, NPMABI.abi,  library)
+  const NPMContract = new Contract(NPM_Address, NPMABI.abi, library);
   let position = await NPMContract.positions(tokenId);
   // let nonce = await NPMContract.connect(signer).nonces(account);
   // let owner = await NPMContract.ownerOf(tokenId);
   //@ts-ignore
   let nonce = position.nonce.toString();
   nonce = parseInt(nonce);
-  const to = UniswapStaking_Address
+  const to = UniswapStaking_Address;
   //@ts-ignore
   const res = await web3.givenProvider.send(
     {
@@ -105,16 +110,16 @@ export async function stakingPermit(account: string, library: any, tokenId: stri
       const netId = result.result;
 
       const Permit = [
-        {name: "spender", type: "address"},
-        {name: "tokenId", type: "uint256"},
-        {name: "nonce", type: "uint256"},
-        {name: "deadline", type: "uint256"}
+        {name: 'spender', type: 'address'},
+        {name: 'tokenId', type: 'uint256'},
+        {name: 'nonce', type: 'uint256'},
+        {name: 'deadline', type: 'uint256'},
       ];
       const message = {
         spender: to,
         tokenId: Number(tokenId),
         nonce: nonce,
-        deadline: deadline
+        deadline: deadline,
       };
 
       let msgParams = {
@@ -129,7 +134,7 @@ export async function stakingPermit(account: string, library: any, tokenId: stri
         },
         primaryType: 'Permit',
         domain: {
-          name : 'Uniswap V3 Positions NFT-V1',
+          name: 'Uniswap V3 Positions NFT-V1',
           version: '1',
           chainId: netId,
           verifyingContract: NPM_Address,
@@ -163,7 +168,7 @@ export async function finalPermit(method: any, params: any, account: string) {
         alert(result.error.message);
       }
       if (result.error) return console.error('ERROR', result);
-        // console.log('TYPED SIGNED:' + JSON.stringify(result.result));
+      // console.log('TYPED SIGNED:' + JSON.stringify(result.result));
 
       const signature = result.result.substring(2);
       const r = '0x' + signature.substring(0, 64);
@@ -177,7 +182,7 @@ export async function finalPermit(method: any, params: any, account: string) {
       return {_v: v, _r: r, _s: s};
     },
   );
-};
+}
 
 // export async function tosPermit(account: string, library: any, amount: number) {
 //   console.log(account, library, amount);

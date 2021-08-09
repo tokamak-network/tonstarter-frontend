@@ -3,10 +3,10 @@ import * as LockTOSABI from 'services/abis/LockTOS.json';
 import * as TOSABI from 'services/abis/TOS.json';
 import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
-import store from 'store';
-import {setTransaction} from 'store/refetch.reducer';
+// import store from 'store';
+// import {setTransaction} from 'store/refetch.reducer';
 import {convertToWei} from 'utils/number';
-import {permitForCreateLock} from 'utils/permit';
+// import {permitForCreateLock} from 'utils/permit';
 
 type StkaeTOS = {
   account: string;
