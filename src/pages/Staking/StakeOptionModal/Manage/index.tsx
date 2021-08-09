@@ -20,20 +20,11 @@ import {useState, useEffect} from 'react';
 import {fetchStakedBalancePayload} from '../utils/fetchStakedBalancePayload';
 import {useUser} from 'hooks/useUser';
 import {selectTransactionType} from 'store/refetch.reducer';
-import {checkSaleClosed} from 'pages/Staking/utils';
-import {BASE_PROVIDER, DEPLOYED} from 'constants/index';
+import {BASE_PROVIDER} from 'constants/index';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal/CloseButton';
 import {fetchWithdrawPayload} from '../utils/fetchWithdrawPayload';
-import {convertNumber} from 'utils/number';
-import {Contract} from '@ethersproject/contracts';
-import * as StakeTON from 'services/abis/StakeTON.json';
-
-const seigFontColors = {
-  light: '#3d495d',
-  dark: '#f3f4f1',
-};
 
 const tooltipMsg = () => {
   return (
@@ -49,8 +40,6 @@ const tooltipMsg = () => {
 
 export const ManageModal = () => {
   const {data} = useAppSelector(selectModalType);
-  const {TokamakLayer2_ADDRESS} = DEPLOYED;
-
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const theme = useTheme();
   const {btnStyle} = theme;
@@ -60,7 +49,7 @@ export const ManageModal = () => {
   const {handleOpenConfirmModal, handleCloseModal} = useModal();
 
   const {
-    data: {contractAddress, vault, globalWithdrawalDelay, miningEndTime},
+    data: {contractAddress, globalWithdrawalDelay, miningEndTime},
   } = data;
 
   //Buttons
@@ -73,11 +62,11 @@ export const ManageModal = () => {
   const [availableBalance, setAvailableBalance] = useState('0');
   const [totalStaked, setTotalStaked] = useState('-');
   const [stakedL2, setStakdL2] = useState('-');
+  /*eslint-disable*/
   const [canUnstakedL2, setCanUntakdL2] = useState<string | undefined>('0');
   const [unstakeAll, setUnstakeAll] = useState<boolean>(false);
   const [pendingL2Balance, setPendingL2Balance] = useState('-');
   const [swapBalance, setSwapBalance] = useState('0');
-  const [seigBalance, setSeigBalance] = useState<string | undefined>('0');
   const [canWithdralAmount, setCanWithdralAmount] = useState(0);
 
   //original balances
@@ -119,7 +108,6 @@ export const ManageModal = () => {
           totalStakedAmountL2,
           totalPendingUnstakedAmountL2,
           stakeContractBalanceTon,
-          swapBalance,
           originalBalance,
         } = result;
         const res_CanWithdralAmount = await fetchWithdrawPayload(
@@ -142,8 +130,6 @@ export const ManageModal = () => {
           setCanWithdralAmount(Number(res_CanWithdralAmount.toString()));
           //set original balances
           setOriginalStakeBalance(originalBalance.stakeContractBalanceTon);
-          setOriginalSwapBalance(originalBalance.swapBalance);
-          setCurrentTosPrice(originalBalance.tosPrice);
 
           //calculate swap balance
           if (Number(swapBalance) <= 0) {
@@ -174,72 +160,7 @@ export const ManageModal = () => {
         return setStakeL2Disabled(res || checkBalance);
       }
     }
-
-    const btnDisableUnstakeL2 = async () => {
-      if (contractAddress === undefined) {
-        return;
-      }
-      const StakeTONContract = new Contract(
-        contractAddress,
-        StakeTON.abi,
-        library,
-      );
-      const isUnstakeL2All =
-        await StakeTONContract.canTokamakRequestUnStakingAll(
-          TokamakLayer2_ADDRESS,
-        );
-
-      const canReqeustUnstaking =
-        await StakeTONContract.canTokamakRequestUnStaking(
-          TokamakLayer2_ADDRESS,
-        );
-
-      const convertedUnstakeNum = convertNumber({
-        amount: canReqeustUnstaking,
-        type: 'ray',
-      });
-
-      setUnstakeAll(isUnstakeL2All);
-      setCanUntakdL2(convertedUnstakeNum);
-      setSeigBalance(convertedUnstakeNum);
-
-      return Number(convertedUnstakeNum) <= 0
-        ? setUnstakeL2Disable(true)
-        : setUnstakeL2Disable(false);
-    };
-
-    const btnDisableWithdraw = () => {
-      return canWithdralAmount <= 0
-        ? setWithdrawDisable(true)
-        : setWithdrawDisable(false);
-    };
-
-    const btnDisableSwap = () => {
-      return Number(swapBalance) <= 0 || miningEndTime <= currentBlock
-        ? setSwapDisabled(true)
-        : setSwapDisabled(false);
-    };
-
-    async function checkSale() {
-      const res = await checkSaleClosed(vault, library);
-      setSaleClosed(res);
-    }
-
-    if (
-      data.modal === 'manage' ||
-      transactionType === 'Staking' ||
-      transactionType === undefined
-    ) {
-      if (vault && library) {
-        checkSale();
-      }
-
-      btnDisablestakeL2();
-      btnDisableSwap();
-      btnDisableUnstakeL2();
-      btnDisableWithdraw();
-    }
-
+    btnDisablestakeL2();
     /*eslint-disable*/
   }, [
     data,
@@ -350,17 +271,6 @@ export const ManageModal = () => {
                   fontWeight={500}
                   fontSize={'15px'}>
                   {stakedL2} TON
-                </Text>
-              </Flex>
-              <Flex justifyContent="space-between" alignItems="center" h="55px">
-                <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
-                  Seigniorage
-                </Text>
-                <Text
-                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}
-                  fontWeight={500}
-                  fontSize={'15px'}>
-                  {seigBalance} TON
                 </Text>
               </Flex>
               <Flex justifyContent="space-between" alignItems="center" h="55px">

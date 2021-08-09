@@ -30,7 +30,11 @@ export const StakeOptionModal = () => {
   const theme = useTheme();
   const {toastMsg} = useToast();
 
-  let balance = data?.data?.user?.balance;
+  const {
+    data: {userTonBalance},
+  } = data;
+  const balance = userTonBalance;
+
   const {btnStyle} = theme;
   const {value, setValue, onChange} = useInput();
   const {handleCloseModal, handleOpenConfirmModal} = useModal(setValue);

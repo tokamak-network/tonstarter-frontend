@@ -122,7 +122,6 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
         direction={['column', 'row', 'row', 'row']}
         pt={[4, 4, 0, 0]}>
         <Button
-          opacity={tx === true ? 0.5 : 1}
           border="solid 1px #d7d9df"
           color={
             colorMode === 'dark'
@@ -150,14 +149,30 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
           }
           zIndex={100}
           _hover={{}}>
-          {account ? shortenAddress(account) : 'Connect wallet'}
+          {account ? (
+            tx === true ? (
+              <Text
+                fontFamily={theme.fonts.roboto}
+                fontWeight={100}
+                fontSize={'14px'}
+                ml={'18px'}
+                pt={'1px'}>
+                Tx PENDING
+              </Text>
+            ) : (
+              shortenAddress(account)
+            )
+          ) : (
+            'Connect wallet'
+          )}
           {tx === true ? (
             <CircularProgress
               isIndeterminate
-              size={6}
+              size={4}
               zIndex={100}
               color="blue.500"
-              pos="absolute"></CircularProgress>
+              pos="absolute"
+              left={'14px'}></CircularProgress>
           ) : null}
         </Button>
         {account ? (
@@ -225,13 +240,14 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
         <Tooltip
           hasArrow
           placement="top"
+          label="Coming Soon"
           color={theme.colors.white[100]}
           bg={theme.colors.gray[375]}>
           <NavLink
             to="/pools"
             className={match?.isExact ? 'link-match' : 'link'}
             style={{zIndex: 100}}
-          >
+            onClick={(e) => e.preventDefault()}>
             Pools
           </NavLink>
         </Tooltip>
@@ -250,12 +266,20 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
             Starter
           </NavLink>
         </Tooltip>
-        <NavLink
-          to="/dao"
-          className={match?.isExact ? 'link-match' : 'link'}
-          style={{zIndex: 100}}>
-          DAO
-        </NavLink>
+        <Tooltip
+          hasArrow
+          placement="top"
+          label="Coming Soon"
+          color={theme.colors.white[100]}
+          bg={theme.colors.gray[375]}>
+          <NavLink
+            to="/dao"
+            className={match?.isExact ? 'link-match' : 'link'}
+            style={{zIndex: 100}}
+            onClick={(e) => e.preventDefault()}>
+            DAO
+          </NavLink>
+        </Tooltip>
         <NavLink
           to="/"
           className={match?.isExact ? 'link-match' : 'link'}

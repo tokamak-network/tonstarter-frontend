@@ -23,6 +23,7 @@ export const stakeL2 = async (args: StakeToLayer2) => {
   if (!StakeTONContract) {
     throw new Error(`Can't find the contract for staking actions`);
   }
+
   const signer = getSigner(library, account);
 
   try {

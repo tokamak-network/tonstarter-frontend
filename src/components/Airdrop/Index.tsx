@@ -89,12 +89,6 @@ export const AirdropModal = () => {
     async function callAirDropData() {
       const res = await fetchAirdropPayload();
       const {roundInfo, claimedAmount, unclaimedAmount} = res;
-      // const info = await poolInfo
-      // .fetchMore({
-      //   query: GET_POOL_INFO
-      // })
-      // console.log(info.data)
-      // console.log(roundInfo)
       setAirdropData(roundInfo);
       availableAmount(roundInfo, claimedAmount, unclaimedAmount);
     }
@@ -171,6 +165,10 @@ export const AirdropModal = () => {
               <Text fontSize="1.125em" fontWeight={500} mr={1}>
                 Genesis Airdrop{' '}
                 {airdropData !== undefined && airdropData[0]?.myAmount}
+                {airdropData !== undefined &&
+                airdropData[0]?.myAmount === undefined
+                  ? '0.00'
+                  : null}
               </Text>
               <Text fontSize="0.750em" alignSelf="flex-end" fontWeight="bold">
                 TOS

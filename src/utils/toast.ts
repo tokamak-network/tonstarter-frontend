@@ -60,13 +60,14 @@ export const toastWithReceipt = async (
         },
       }),
     );
-    store.dispatch(setTxPending({tx: false}));
 
     await recepit
       .wait()
       .then((receipt: any) => {
         if (receipt) {
           const {address, library} = store.getState().user.data;
+          store.dispatch(setTxPending({tx: false}));
+
           //@ts-ignore
           store.dispatch(fetchUserInfo({address, library}));
           if (from === 'Staking') {

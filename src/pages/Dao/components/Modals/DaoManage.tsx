@@ -18,7 +18,7 @@ import {
 import React from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
-import {onKeyDown, useInput} from 'hooks/useInput';
+import {useInput} from 'hooks/useInput';
 import {useModal} from 'hooks/useModal';
 import {useUser} from 'hooks/useUser';
 import {useState, useEffect} from 'react';
@@ -85,7 +85,7 @@ export const DaoManageModal = () => {
   const [select, setSelect] = useState('select_amount');
   const [balance, setBalance] = useState('0');
   const [tosStakeList, setTosStakeList] = useState<TosStakeList>(undefined);
-  const {value, setValue, onChange} = useInput('0');
+  const {value, setValue} = useInput('0');
   const {value: periodValue, onChange: periodOnchange} = useInput('0');
 
   const {colorMode} = useColorMode();

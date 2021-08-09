@@ -133,7 +133,7 @@ export const PoolTable: FC<PoolTableProps> = ({
     function getPosition() {
       if (position.data && positionWithVar.data) {
         position.refetch();
-        
+
         const withStakedPosition = positionWithVar.data.positions.concat(
           position.data.positions,
         );
@@ -402,7 +402,9 @@ export const PoolTable: FC<PoolTableProps> = ({
                         ) : (
                           ''
                         )}
-                        {type === 'expander' ? renderBtn(data.id, filteredPosition.length) : null}
+                        {type === 'expander'
+                          ? renderBtn(data.id, filteredPosition.length)
+                          : null}
                       </chakra.td>
                     );
                   })}

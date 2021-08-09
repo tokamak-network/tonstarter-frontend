@@ -17,8 +17,8 @@ import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
 import {useCallback, useState} from 'react';
-import { fetchClaimablePayload } from '../utils/fetchPositionPayload';
-import { ethers } from 'ethers';
+import {fetchClaimablePayload} from '../utils/fetchPositionPayload';
+import {ethers} from 'ethers';
 
 export const ClaimOptionModal = () => {
   const {account, library} = useWeb3React();
@@ -35,9 +35,9 @@ export const ClaimOptionModal = () => {
       const res = await fetchClaimablePayload(library, account, data.data.id)
       const addedValue = res?.minable.add(res?.expected)
       const expectedAmount = ethers.utils.formatUnits(addedValue, 18);
-      setSwapable(Number(expectedAmount).toFixed(9))
+      setSwapable(Number(expectedAmount).toFixed(9));
     }
-  }
+  };
 
   amount()
 
@@ -47,7 +47,7 @@ export const ClaimOptionModal = () => {
 
   const handleCloseModal = useCallback(() => {
     dispatch(closeModal());
-    setSwapable('0.00')
+    setSwapable('0.00');
   }, [dispatch]);
 
   return (
@@ -114,8 +114,7 @@ export const ClaimOptionModal = () => {
                   library: library,
                   handleCloseModal: handleCloseModal(),
                 })
-              }
-            >
+              }>
               Claim
             </Button>
           </Box>

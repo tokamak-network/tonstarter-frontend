@@ -52,8 +52,9 @@ export const MyStaked = (props: PropsType) => {
       getTosBalance();
       stakeList.map((stake: any) => {
         if (stake.end === true) {
-          setIsEnd(false);
+          return setIsEnd(false);
         }
+        return null;
       });
     } else {
       setbalance('-');

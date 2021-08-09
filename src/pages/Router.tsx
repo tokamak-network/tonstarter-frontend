@@ -17,7 +17,6 @@ import {fetchVaults} from './Staking/vault.reducer';
 import {DEFAULT_NETWORK} from 'constants/index';
 import {Footer} from 'components/Footer';
 import {ConfirmModal} from 'components/Modal';
-
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
 export const Router: FC<RouterProps> = () => {
