@@ -109,7 +109,6 @@ export const ManageModal = () => {
           contractAddress,
           library,
         );
-        console.log(result);
         const {
           totalStakedAmount,
           totalStakedAmountL2,
@@ -118,13 +117,11 @@ export const ManageModal = () => {
           swapBalance,
           originalBalance,
         } = result;
-        console.log(library, account, contractAddress);
         const res_CanWithdralAmount = await fetchWithdrawPayload(
           library,
           account,
           contractAddress,
         );
-        console.log(res_CanWithdralAmount);
         if (
           totalStakedAmount &&
           totalStakedAmountL2 &&
@@ -197,8 +194,6 @@ export const ManageModal = () => {
         amount: canReqeustUnstaking,
         type: 'ray',
       });
-
-      console.log(isUnstakeL2All, canReqeustUnstaking, convertedUnstakeNum);
 
       setUnstakeAll(isUnstakeL2All);
       setCanUntakdL2(convertedUnstakeNum);

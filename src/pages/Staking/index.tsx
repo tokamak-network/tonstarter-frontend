@@ -166,30 +166,34 @@ export const Staking = () => {
     );
   };
 
-  const GetBalance = ({title, contractAddress, setStakeValance}: any) => {
+  const GetBalance = ({
+    title,
+    contractAddress,
+    setStakeValance,
+    status,
+  }: any) => {
     const {colorMode} = useColorMode();
     const [balance, SetBalance] = useState('-');
     const {account, library} = useUser();
     const [toggle, setToggle] = useState('Earned TOS');
 
-    const getBalance = async () => {
-      try {
-        const result = await getUserBalance(contractAddress);
-        if (title === 'My staked') {
-          //@ts-ignore
-          return SetBalance(result?.totalStakedBalance);
-        }
-        //@ts-ignore
-        SetBalance(result?.rewardTosBalance);
-      } catch (e) {}
-    };
-
     useEffect(() => {
-      console.log('**TEST**');
       getEarnedTon({contractAddress, library});
     }, []);
 
     useEffect(() => {
+      const getBalance = async () => {
+        try {
+          const result = await getUserBalance(contractAddress);
+          if (title === 'My staked') {
+            //@ts-ignore
+            return SetBalance(result?.totalStakedBalance);
+          }
+          //@ts-ignore
+          SetBalance(result?.rewardTosBalance);
+        } catch (e) {}
+      };
+
       if (account !== undefined) {
         getBalance();
       }
@@ -240,6 +244,32 @@ export const Staking = () => {
       );
     }
 
+    if (status !== 'end') {
+      return (
+        <Flex flexDir={'column'} alignItems={'space-between'}>
+          <Flex>
+            <Text fontSize={'15px'} color="gray.400" mr={2} _hover={{}}>
+              {toggle}
+            </Text>
+          </Flex>
+          <Text
+            fontSize={'20px'}
+            color={colorMode === 'light' ? 'black.300' : 'white.200'}
+            fontWeight={'bold'}
+            h="30px">
+            {balance === '-' ? <LoadingDots></LoadingDots> : balance}
+            {balance !== '-' ? (
+              title === 'My staked' ? (
+                <span> TON</span>
+              ) : (
+                <span> TOS</span>
+              )
+            ) : null}
+          </Text>
+        </Flex>
+      );
+    }
+
     return (
       <Flex flexDir={'column'} alignItems={'space-between'}>
         <Flex>
@@ -260,10 +290,10 @@ export const Staking = () => {
           h="30px">
           {balance === '-' ? <LoadingDots></LoadingDots> : balance}
           {balance !== '-' ? (
-            title === 'My staked' ? (
-              <span> TON</span>
-            ) : (
+            toggle === 'Earned TOS' ? (
               <span> TOS</span>
+            ) : (
+              <span> TON</span>
             )
           ) : null}
         </Text>
@@ -273,7 +303,8 @@ export const Staking = () => {
 
   const renderRowSubComponent = useCallback(
     ({row}) => {
-      const {account, contractAddress, fetchBlock, library} = row.original;
+      const {account, contractAddress, fetchBlock, library, status} =
+        row.original;
       return (
         <Flex
           w="100%"
@@ -373,6 +404,7 @@ export const Staking = () => {
             <GetBalance
               title={'Earned TOS'}
               contractAddress={contractAddress}
+              status={data[row.id]?.status}
             />
           </Flex>
         </Flex>
