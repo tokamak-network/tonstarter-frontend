@@ -18,7 +18,7 @@ type Unstake = {
 const {UniswapStaking_Address} = DEPLOYED;
 
 export const unstake = async (args: Unstake) => {
-  const { userAddress, tokenId, library, miningAmount } = args;
+  const { userAddress, tokenId, library } = args;
   if (userAddress === null || userAddress === undefined) {
     return;
   }

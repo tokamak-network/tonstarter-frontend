@@ -1,4 +1,4 @@
-import {FC, useState, useMemo, useEffect, useRef} from 'react';
+import {FC, useMemo, useEffect, useRef} from 'react';
 import {useExpanded, usePagination, useTable, useSortBy} from 'react-table';
 import {
   Text,
@@ -12,7 +12,7 @@ import {
   useTheme,
 } from '@chakra-ui/react';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
-import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {useAppSelector} from 'hooks/useRedux';
 import {getPoolName} from '../../utils/token';
 import {selectTableType} from 'store/table.reducer';
 // import {LoadingComponent} from 'components/Loading';
@@ -32,19 +32,19 @@ type PositionTableProps = {
   // address: string;
 };
 
-const getTextColor = (type: string, colorMode: string) => {
-  if (colorMode === 'light') {
-    if (type === 'name') {
-      return '#304156';
-    }
-    return '#3a495f';
-  } else if (colorMode === 'dark') {
-    if (type === 'name') {
-      return 'white.100';
-    }
-    return '#f3f4f1';
-  }
-};
+// const getTextColor = (type: string, colorMode: string) => {
+//   if (colorMode === 'light') {
+//     if (type === 'name') {
+//       return '#304156';
+//     }
+//     return '#3a495f';
+//   } else if (colorMode === 'dark') {
+//     if (type === 'name') {
+//       return 'white.100';
+//     }
+//     return '#f3f4f1';
+//   }
+// };
 
 const getStatus = (
   type: 'staked' | 'not staked',
@@ -154,13 +154,13 @@ export const PositionTable: FC<PositionTableProps> = ({
     useExpanded,
     usePagination,
   );
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const focusTarget = useRef<any>([]);
 
   const {
-    data: {contractAddress, index},
+    data: {index},
   } = useAppSelector(selectTableType);
 
   useEffect(() => {
@@ -182,18 +182,18 @@ export const PositionTable: FC<PositionTableProps> = ({
       }
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const [isOpen, setIsOpen] = useState(
-    contractAddress === undefined ? '' : contractAddress,
-  );
+  
+  // const [isOpen, setIsOpen] = useState(
+  //   contractAddress === undefined ? '' : contractAddress,
+  // );
   
   const goPrevPage = () => {
-    setIsOpen('');
+    // setIsOpen('');
     previousPage();
   };
 
   const goNextPage = () => {
-    setIsOpen('');
+    // setIsOpen('');
     nextPage();
   };
 
@@ -297,13 +297,10 @@ export const PositionTable: FC<PositionTableProps> = ({
             <chakra.tr
               w={'100%'}
               h={'80px'}
-              // mt={-5}
               pt={'5px'}
               pr={9}
               bg={colorMode === 'light' ? 'white.100' : ''}
               border={colorMode === 'light' ? '' : 'solid 1px #373737'}
-              // borderBottom={'1px'}
-              // borderBottomColor={'#f4f6f8'}
               borderTopWidth={0}
               borderBottomRadius="10px">
               <chakra.td

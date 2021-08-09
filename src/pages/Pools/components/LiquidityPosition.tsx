@@ -1,4 +1,4 @@
-import {FC, useState} from 'react';
+import {FC, useState, useEffect} from 'react';
 import {
   Text,
   Flex,
@@ -10,7 +10,6 @@ import {
 } from '@chakra-ui/react';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {openModal} from 'store/modal.reducer';
-import {useEffect} from 'react';
 // import { getPoolName } from '../../utils/token';
 import store from '../../../store';
 import {stake, unstake} from '../actions';
@@ -63,11 +62,10 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
   const dispatch = useAppDispatch();
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const {btnStyle, btnHover} = theme;
+  const {btnStyle} = theme;
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [stakingBtnDisable, setStakingBtnDisable] = useState(true);
   const [claimBtnDisable, setClaimBtnDisable] = useState(true);
-  const [expectedSeig, setExpectedSeig] = useState('0')
   const {address, library} = store.getState().user.data;
   const localBtnStyled = {
     btn: () => ({
@@ -123,21 +121,21 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
       }
     }
 
-    function setSwapable () {
-      const claimed = lpData?.miningAmount;
-      const expected = lpData?.minableAmount;
-      if (claimed && expected) {
-        const addedValue = claimed.add(expected)
-        const expectedAmount = ethers.utils.formatUnits(addedValue, 18);
-        setSwapableAmount(Number(expectedAmount).toFixed(9))
-      }
-    }
+    // function setSwapable () {
+    //   const claimed = lpData?.miningId.miningAmount;
+    //   const expected = lpData?.expectedClaimable.miningAmount;
+    //   if (claimed && expected) {
+    //     const addedValue = claimed.add(expected)
+    //     const expectedAmount = ethers.utils.formatUnits(addedValue, 18);
+    //     setSwapableAmount(Number(expectedAmount).toFixed(9))
+    //   }
+    // }
 
-    setSwapable()
+    // setSwapable()
     getRange();
     setStakingBtn();
     setClaimBtn();
-  }, [lpData, stakingDisable, transactionType, blockNumber]);
+  }, [lpData, stakingDisable, transactionType, blockNumber, address, id, library, owner]);
 
   return (
     <Flex justifyContent={'space-between'}>
