@@ -170,6 +170,7 @@ export const Staking = () => {
     const {colorMode} = useColorMode();
     const [balance, SetBalance] = useState('-');
     const {account, library} = useUser();
+    const [toggle, setToggle] = useState('Earned TOS');
 
     const getBalance = async () => {
       try {
@@ -238,8 +239,6 @@ export const Staking = () => {
         </Flex>
       );
     }
-
-    const [toggle, setToggle] = useState('Earned TOS');
 
     return (
       <Flex flexDir={'column'} alignItems={'space-between'}>

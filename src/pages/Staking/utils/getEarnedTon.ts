@@ -6,8 +6,6 @@ import {toBN, BN} from 'web3-utils';
 import {Contract} from '@ethersproject/contracts';
 import * as AutoRefactorCoinageABI from 'services/abis/AutoRefactorCoinage.json';
 import * as TonABI from 'services/abis/TON.json';
-import {BigNumber} from '@ethersproject/units/node_modules/@ethersproject/bignumber';
-import web3 from 'web3';
 
 type GetEarnedTon = {
   contractAddress: string;
@@ -18,6 +16,9 @@ export const getEarnedTon = async ({
   contractAddress,
   library,
 }: GetEarnedTon) => {
+  if (library === undefined) {
+    return;
+  }
   const SeigManager = getTokamakContract('SeigManager', library);
   const currentBlockNumber = await BASE_PROVIDER.getBlockNumber();
   const {TokamakLayer2_ADDRESS, TON_ADDRESS, WTON_ADDRESS} = DEPLOYED;
