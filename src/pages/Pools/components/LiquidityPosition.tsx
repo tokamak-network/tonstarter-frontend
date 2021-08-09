@@ -17,6 +17,9 @@ import {stake, unstake} from '../actions';
 import {convertNumber} from '../../../utils/number';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {fetchPositionRangePayload} from '../utils/fetchPositionRangePayload';
+import { ethers } from 'ethers';
+
+
 
 type LiquidityPositionProps = {
   stakingDisable: boolean;
@@ -125,8 +128,8 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
       const expected = lpData?.minableAmount;
       if (claimed && expected) {
         const addedValue = claimed.add(expected)
-        const expectedAmount = convertNumber({ amount: addedValue})
-        setSwapableAmount(expectedAmount)
+        const expectedAmount = ethers.utils.formatUnits(addedValue, 18);
+        setSwapableAmount(Number(expectedAmount).toFixed(9))
       }
     }
 

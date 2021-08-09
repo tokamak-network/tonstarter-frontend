@@ -45,9 +45,13 @@ export const getEarnedTon = async ({
 
   const totalStaked = await COINAGE_CONTRACT.balanceOf(contractAddress);
 
-  const dd = await SeigManager.lastCommitBlock(TokamakLayer2_ADDRESS);
-  console.log(dd);
-  console.log(dd.toString());
+  console.log('***');
+  console.log(await SeigManager.lastCommitBlock(TokamakLayer2_ADDRESS));
+  console.log(currentBlockNumber);
+  console.log(totalStaked);
+  console.log(await Tot.totalSupply());
+  console.log(tos);
+  console.log(await SeigManager.relativeSeigRate());
 
   try {
     const seigniorage = calculateExpectedSeig(

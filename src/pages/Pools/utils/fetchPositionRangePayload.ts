@@ -1,8 +1,9 @@
 import {Contract} from '@ethersproject/contracts';
 import * as StakeUniswapABI from 'services/abis/StakeUniswapV3.json';
+import * as NPMABI from 'services/abis/NonfungiblePositionManager.json';
 import {DEPLOYED} from 'constants/index';
 
-const {UniswapStaking_Address} = DEPLOYED;
+const {UniswapStaking_Address, NPM_Address} = DEPLOYED;
 
 export const fetchPositionRangePayload = async (
   library: any,
@@ -25,12 +26,11 @@ const getPositionRange = async (
 ) => {
   if (library && id) {
     const StakeUniswap = new Contract(UniswapStaking_Address, StakeUniswapABI.abi, library);
-
-    const npmPositions = await StakeUniswap.npmPositions(id)
+    const NPM = new Contract(NPM_Address, NPMABI.abi, library);
+    const positions = await NPM.positions(id)
     const poolSlot0 = await StakeUniswap.poolSlot0()
-
     return {
-      ...npmPositions,
+      ...positions,
       ...poolSlot0,
     }
   }

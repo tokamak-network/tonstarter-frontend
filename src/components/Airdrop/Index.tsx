@@ -171,6 +171,10 @@ export const AirdropModal = () => {
               <Text fontSize="1.125em" fontWeight={500} mr={1}>
                 Genesis Airdrop{' '}
                 {airdropData !== undefined && airdropData[0]?.myAmount}
+                {airdropData !== undefined &&
+                airdropData[0]?.myAmount === undefined
+                  ? '0.00'
+                  : null}
               </Text>
               <Text fontSize="0.750em" alignSelf="flex-end" fontWeight="bold">
                 TOS
