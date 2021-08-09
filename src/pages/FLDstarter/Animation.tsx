@@ -417,8 +417,7 @@ export const Animation: React.FC<HomeProps> = () => {
                 Phase1 Total Staked
               </Text>
               <Text fontSize={'52px'} h={'60px'}>
-                {totalStakedAmount}
-                <span style={{fontSize: '26px'}}>TON</span>
+                {totalStakedAmount} <span style={{fontSize: '26px'}}>TON</span>
               </Text>
             </div>
           </Container>
