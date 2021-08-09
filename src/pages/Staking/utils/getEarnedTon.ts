@@ -46,23 +46,23 @@ export const getEarnedTon = async ({
   const totalStaked = await COINAGE_CONTRACT.balanceOf(contractAddress);
 
   console.log('***');
-  console.log(await SeigManager.lastCommitBlock(TokamakLayer2_ADDRESS));
+  console.log((await SeigManager.lastCommitBlock(TokamakLayer2_ADDRESS)).toString());
   console.log(currentBlockNumber);
-  console.log(totalStaked);
-  console.log(await Tot.totalSupply());
-  console.log(tos);
-  console.log(await SeigManager.relativeSeigRate());
+  console.log(totalStaked.toString());
+  console.log((await Tot.totalSupply()).toString());
+  console.log(tos.toString());
+  console.log((await SeigManager.relativeSeigRate()).toString());
 
   try {
     const seigniorage = calculateExpectedSeig(
-      new BN(await SeigManager.lastCommitBlock(TokamakLayer2_ADDRESS)),
-      new BN(currentBlockNumber),
-      new BN(totalStaked),
-      new BN(await Tot.totalSupply()),
-      new BN(tos),
-      new BN(await SeigManager.relativeSeigRate()),
+      new BN((await SeigManager.lastCommitBlock(TokamakLayer2_ADDRESS)).toString()),
+      new BN(currentBlockNumber.toString()),
+      new BN(totalStaked.toString()),
+      new BN((await Tot.totalSupply()).toString()),
+      new BN(tos.toString()),
+      new BN((await SeigManager.relativeSeigRate()).toString()),
     );
-    console.log(seigniorage);
+    console.log(seigniorage.toString());
   } catch (e) {
     console.log(e);
   }
