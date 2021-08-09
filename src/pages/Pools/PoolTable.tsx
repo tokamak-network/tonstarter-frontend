@@ -16,7 +16,6 @@ import {
   Avatar,
   useColorMode,
   Center,
-  useTheme,
 } from '@chakra-ui/react';
 // import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 // import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
@@ -76,7 +75,7 @@ export const PoolTable: FC<PoolTableProps> = ({
     nextPage,
     previousPage,
     // setPageSize,
-    state: {pageIndex, pageSize},
+    // state: {pageIndex, pageSize},
   } = useTable(
     {columns, data, initialState: {pageIndex: 0}},
     useSortBy,
@@ -297,9 +296,9 @@ export const PoolTable: FC<PoolTableProps> = ({
                   {row.cells.map((cell: any, index: number) => {
                     const data = cell.row.original;
                     const type = cell.column.id;
-                    const {poolDayData} = data
+                    const {poolDayData} = data;
 
-                    const length = poolDayData.length - 1
+                    const length = poolDayData.length - 1;
                     const poolName = getPoolName(
                       data.token0.symbol,
                       data.token1.symbol,
@@ -357,7 +356,9 @@ export const PoolTable: FC<PoolTableProps> = ({
                             </Text>
                             <Text>
                               ${' '}
-                              {Number(poolDayData[length].tvlUSD).toLocaleString(undefined, {
+                              {Number(
+                                poolDayData[length].tvlUSD,
+                              ).toLocaleString(undefined, {
                                 minimumFractionDigits: 2,
                               })}
                             </Text>
@@ -376,7 +377,9 @@ export const PoolTable: FC<PoolTableProps> = ({
                             </Text>
                             <Text>
                               ${' '}
-                              {Number(poolDayData[length].volumeUSD).toLocaleString(undefined, {
+                              {Number(
+                                poolDayData[length].volumeUSD,
+                              ).toLocaleString(undefined, {
                                 minimumFractionDigits: 2,
                               })}
                             </Text>
@@ -394,7 +397,10 @@ export const PoolTable: FC<PoolTableProps> = ({
                               Fees(24hrs)
                             </Text>
                             <Text>
-                              $ {Number(poolDayData[length].feesUSD).toLocaleString(undefined, {
+                              ${' '}
+                              {Number(
+                                poolDayData[length].feesUSD,
+                              ).toLocaleString(undefined, {
                                 minimumFractionDigits: 2,
                               })}
                             </Text>
