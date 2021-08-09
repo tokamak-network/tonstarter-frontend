@@ -193,6 +193,7 @@ export const WalletInformation: FC<WalletInformationProps> = ({
         } else {
           payload = {
             ...data,
+            userTonBalance,
           };
         }
       } catch (e) {

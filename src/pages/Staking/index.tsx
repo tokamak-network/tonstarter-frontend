@@ -189,8 +189,12 @@ export const Staking = () => {
             //@ts-ignore
             return SetBalance(result?.totalStakedBalance);
           }
+
+          const totalClaimedAmount =
+            Number(result?.rewardTosBalance) + Number(result?.claimedBalance);
+          // const BN_totalClaimedAmount = BigNumber.from()
           //@ts-ignore
-          SetBalance(result?.rewardTosBalance);
+          SetBalance(convertNumber({amount: String(totalClaimedAmount)}));
         } catch (e) {}
       };
 
