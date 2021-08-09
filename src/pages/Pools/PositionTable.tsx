@@ -192,7 +192,7 @@ export const PositionTable: FC<PositionTableProps> = ({
     previousPage();
   };
 
-  
+
   const goNextPage = () => {
     setIsOpen('');
     nextPage();
@@ -297,7 +297,7 @@ export const PositionTable: FC<PositionTableProps> = ({
             })}
             <chakra.tr
               w={'100%'}
-              h={'80px'}
+              h={'10px'}
               // mt={-5}
               pt={'5px'}
               pr={9}
@@ -313,7 +313,7 @@ export const PositionTable: FC<PositionTableProps> = ({
                 margin={0}
                 justifyContent="flex-end"
                 colSpan={visibleColumns.length}>
-                <Flex justifyContent="flex-end" my={4} alignItems="center">
+                {/* <Flex justifyContent="flex-end" my={4} alignItems="center">
                   <Flex>
                     <Tooltip label="Previous Page">
                       <IconButton
@@ -410,7 +410,7 @@ export const PositionTable: FC<PositionTableProps> = ({
                       </option>
                     ))}
                   </Select>
-                </Flex>
+                </Flex> */}
               </chakra.td>
             </chakra.tr>
           </chakra.tbody>
