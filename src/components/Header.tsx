@@ -108,7 +108,7 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
   const dispatch = useDispatch();
 
   const airdropModalOpen = async () => {
-    dispatch(openModal({type: 'airdrop'}));
+    dispatch(openModal({type: 'airdrop', data: {}}));
   };
 
   return (
@@ -172,15 +172,13 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
                 ? 'black.200'
                 : match?.isExact
                 ? 'blue.200'
-                : 'transparent'
+                : '#2a72e5'
             }
-            borderWidth={1}
+            borderWidth={
+              colorMode === 'light' && match?.isExact === false ? '' : 1
+            }
             borderColor={
-              colorMode === 'dark'
-                ? '#d7d9df'
-                : match?.isExact
-                ? '#a6d0ff'
-                : '#d7d9df'
+              colorMode === 'dark' ? '#d7d9df' : match?.isExact ? '#a6d0ff' : ''
             }
             borderRadius={'19px'}
             color={
@@ -188,12 +186,13 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
                 ? theme.colors.gray[0]
                 : match?.isExact
                 ? 'white.100'
-                : theme.colors.gray[175]
+                : 'white.100'
             }
             onClick={airdropModalOpen}
             fontWeight={500}
             fontSize={'15px'}
-            _hover={{}}>
+            _hover={{}}
+            _active={{backgroundColor: 'none'}}>
             Airdrop Claim
           </Button>
         ) : null}
@@ -217,31 +216,22 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
         justify={['center', 'space-between', 'flex-end', 'flex-end']}
         direction={['column', 'column', 'column', 'row']}
         pt={[4, 4, 0, 0]}>
+        <NavLink
+          to="/staking"
+          className={match?.isExact ? 'link-match' : 'link'}
+          style={{zIndex: 100}}>
+          Staking
+        </NavLink>
         <Tooltip
           hasArrow
           placement="top"
-          label="Coming Soon"
-          color={theme.colors.white[100]}
-          bg={theme.colors.gray[375]}>
-          <NavLink
-            to="/staking"
-            onClick={(e) => e.preventDefault()}
-            className={match?.isExact ? 'link-match' : 'link'}
-            style={{zIndex: 100}}>
-            Staking
-          </NavLink>
-        </Tooltip>
-        <Tooltip
-          hasArrow
-          placement="top"
-          label="Coming Soon"
           color={theme.colors.white[100]}
           bg={theme.colors.gray[375]}>
           <NavLink
             to="/pools"
             className={match?.isExact ? 'link-match' : 'link'}
             style={{zIndex: 100}}
-            onClick={(e) => e.preventDefault()}>
+          >
             Pools
           </NavLink>
         </Tooltip>
@@ -260,32 +250,37 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
             Starter
           </NavLink>
         </Tooltip>
-        <Tooltip
-          hasArrow
-          placement="top"
-          label="Coming Soon"
-          color={theme.colors.white[100]}
-          bg={theme.colors.gray[375]}>
-          <NavLink
-            to="/dao"
-            className={match?.isExact ? 'link-match' : 'link'}
-            style={{zIndex: 100}}
-            onClick={(e) => e.preventDefault()}>
-            DAO
-          </NavLink>
-        </Tooltip>
+        <NavLink
+          to="/dao"
+          className={match?.isExact ? 'link-match' : 'link'}
+          style={{zIndex: 100}}>
+          DAO
+        </NavLink>
         <NavLink
           to="/"
           className={match?.isExact ? 'link-match' : 'link'}
           style={{zIndex: 100}}
-          onClick={() =>
+          onClick={(e) => {
+            e.preventDefault();
             window.open(
               'https://github.com/Onther-Tech/tonstarter-docs/blob/main/whitepaper/TONStarter%20Whitepaper.md',
-            )
-          }>
+            );
+          }}>
           <Text className={match?.isExact ? 'link-match' : 'link'}>
             WhitePaper
           </Text>
+        </NavLink>
+        <NavLink
+          to="/"
+          className={match?.isExact ? 'link-match' : 'link'}
+          style={{zIndex: 100}}
+          onClick={(e) => {
+            e.preventDefault();
+            window.open(
+              'https://medium.com/onther-tech/tonstarter-guide-en-kr-6b7cad5773f1',
+            );
+          }}>
+          <Text className={match?.isExact ? 'link-match' : 'link'}>Guide</Text>
         </NavLink>
       </Stack>
     </Box>
@@ -302,6 +297,7 @@ const NavBarContainer = ({children, ...rest}: {children: any}) => {
       w="100%"
       px={8}
       py={4}
+      pr={3}
       pos="absolute"
       zIndex={1000}
       {...rest}>

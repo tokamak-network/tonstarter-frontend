@@ -1,9 +1,10 @@
-import {getTokamakContract, getRPC} from 'utils/contract';
-import {REACT_APP_TOKAMAK_LAYER2} from 'constants/index';
+import {getTokamakContract} from 'utils/contract';
+import {DEPLOYED} from 'constants/index';
 import {formatEther} from '@ethersproject/units';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import {Contract} from '@ethersproject/contracts';
 import {convertNumber} from 'utils/number';
+import {BASE_PROVIDER} from 'constants/index';
 
 export const fetchManageModalPayload = async (
   library: any,
@@ -20,28 +21,27 @@ export const fetchManageModalPayload = async (
   return res;
 };
 
-const rpc = getRPC();
-
 const getUserInfoForManage = async (
   library: any,
   account: string,
   contractAddress: string,
   vaultAddress: string,
 ) => {
-  const currentBlock = getRPC().getBlockNumber();
-  const StakeTONContract = new Contract(contractAddress, StakeTON.abi, rpc);
-  const L2Contract = getTokamakContract('TokamakLayer2');
-  const TON = getTokamakContract('TON');
-  const WTON = getTokamakContract('WTON');
-  const depositManager = getTokamakContract('DepositManager');
-  const seigManager = getTokamakContract('SeigManager');
+  const {TokamakLayer2_ADDRESS} = DEPLOYED;
+  const currentBlock = await BASE_PROVIDER.getBlockNumber();
+  const StakeTONContract = new Contract(contractAddress, StakeTON.abi, library);
+  const L2Contract = getTokamakContract('TokamakLayer2', library);
+  const TON = getTokamakContract('TON', library);
+  const WTON = getTokamakContract('WTON', library);
+  const depositManager = getTokamakContract('DepositManager', library);
+  const seigManager = getTokamakContract('SeigManager', library);
 
   return Promise.all([
     StakeTONContract?.userStaked(account),
     L2Contract?.stakedOf(account),
     StakeTONContract.totalStakedAmount(),
-    seigManager.stakeOf(REACT_APP_TOKAMAK_LAYER2, contractAddress),
-    depositManager.pendingUnstaked(REACT_APP_TOKAMAK_LAYER2, contractAddress),
+    seigManager.stakeOf(TokamakLayer2_ADDRESS, contractAddress),
+    depositManager.pendingUnstaked(TokamakLayer2_ADDRESS, contractAddress),
     WTON.balanceOf(contractAddress),
     TON.balanceOf(contractAddress),
     StakeTONContract.canRewardAmount(account, currentBlock),

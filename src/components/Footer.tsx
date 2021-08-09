@@ -6,7 +6,6 @@ import {IconGithub} from './Icons/IconGithub';
 import {IconMedium} from './Icons/IconMedium';
 import {IconTwitter} from './Icons/IconTwitter';
 import {EmailIcon} from '@chakra-ui/icons';
-
 const socialLinks = [
   {
     title: 'Telegram',
@@ -97,7 +96,7 @@ export const Footer = () => {
               fontSize={13}
               fontFamily={theme.fonts.body}
               fontWeight={'normal'}>
-              111 SOMERSET ROAD #06-070 111 SOMERSET SINGAPORE 238164
+              111 SOMERSET ROAD #06-07O 111 SOMERSET SINGAPORE 238164
             </Text>
           </Box>
           <Box mr={{base: 0, md: 3}}>
@@ -112,7 +111,7 @@ export const Footer = () => {
               fontSize={13}
               fontFamily={theme.fonts.body}
               fontWeight={'normal'}>
-              info@onther.io
+              hello@tokamak.network
             </Text>
           </Box>
         </Flex>

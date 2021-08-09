@@ -12,29 +12,270 @@ import {
   Grid,
   useTheme,
   useColorMode,
+  Tooltip,
 } from '@chakra-ui/react';
-import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {closeModal, openModal, selectModalType} from 'store/modal.reducer';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectModalType} from 'store/modal.reducer';
+import {useState, useEffect} from 'react';
+import {fetchStakedBalancePayload} from '../utils/fetchStakedBalancePayload';
+import {useUser} from 'hooks/useUser';
+import {selectTransactionType} from 'store/refetch.reducer';
+import {checkSaleClosed} from 'pages/Staking/utils';
+import {BASE_PROVIDER, DEPLOYED} from 'constants/index';
+import tooltipIcon from 'assets/svgs/input_question_icon.svg';
+import {useModal} from 'hooks/useModal';
+import {CloseButton} from 'components/Modal/CloseButton';
+import {fetchWithdrawPayload} from '../utils/fetchWithdrawPayload';
+import {convertNumber} from 'utils/number';
+import {Contract} from '@ethersproject/contracts';
+import * as StakeTON from 'services/abis/StakeTON.json';
+
+const seigFontColors = {
+  light: '#3d495d',
+  dark: '#f3f4f1',
+};
+
+const tooltipMsg = () => {
+  return (
+    <Flex flexDir="column" fontSize="12px" pt="6px" pl="5px" pr="5px">
+      <Text textAlign="center" fontSize="12px">
+        You can swap using seig TON.
+      </Text>
+      <Text textAlign="center">If you want to swap, you must unstake</Text>
+      <Text textAlign="center">and withdraw seig TON first.</Text>
+    </Flex>
+  );
+};
 
 export const ManageModal = () => {
   const {data} = useAppSelector(selectModalType);
-  const dispatch = useAppDispatch();
-  const theme = useTheme();
-  const {colorMode} = useColorMode();
-  let balance = data?.data?.stakeContractBalanceTon;
-  let closed;
+  const {TokamakLayer2_ADDRESS} = DEPLOYED;
 
-  try {
-    closed = data?.data?.saleClosed;
-  } catch (e) {
-    console.log(e);
-  }
+  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
+  const theme = useTheme();
+  const {btnStyle} = theme;
+  const {colorMode} = useColorMode();
+
+  const {account, library} = useUser();
+  const {handleOpenConfirmModal, handleCloseModal} = useModal();
+
+  const {
+    data: {contractAddress, vault, globalWithdrawalDelay, miningEndTime},
+  } = data;
+
+  //Buttons
+  const [stakeL2Disabled, setStakeL2Disabled] = useState(true);
+  const [unstakeL2Disable, setUnstakeL2Disable] = useState(true);
+  const [withdrawDisable, setWithdrawDisable] = useState(true);
+  const [swapDisabled, setSwapDisabled] = useState(true);
+
+  //Balances
+  const [availableBalance, setAvailableBalance] = useState('0');
+  const [totalStaked, setTotalStaked] = useState('-');
+  const [stakedL2, setStakdL2] = useState('-');
+  const [canUnstakedL2, setCanUntakdL2] = useState<string | undefined>('0');
+  const [unstakeAll, setUnstakeAll] = useState<boolean>(false);
+  const [pendingL2Balance, setPendingL2Balance] = useState('-');
+  const [swapBalance, setSwapBalance] = useState('0');
+  const [seigBalance, setSeigBalance] = useState<string | undefined>('0');
+  const [canWithdralAmount, setCanWithdralAmount] = useState(0);
+
+  //original balances
+  const [originalStakeBalance, setOriginalStakeBalance] = useState(0);
+  const [originalSwapBalance, setOriginalSwapBalance] = useState(0);
+  const [currentTosPrice, setCurrentTosPrice] = useState<string | undefined>(
+    '0',
+  );
+
+  //conditions
+  const [saleClosed, setSaleClosed] = useState(true);
+  const [currentBlock, setCurrentBlock] = useState<number>(99999999999999);
+
+  //Set
+
+  //fetch status
+
+  //constant
+
+  //getCurrentBlock
+  useEffect(() => {
+    async function getCurrentBlock() {
+      const currentBlock = await BASE_PROVIDER.getBlockNumber();
+      setCurrentBlock(currentBlock);
+    }
+    getCurrentBlock();
+  }, [data, transactionType, blockNumber]);
+
+  useEffect(() => {
+    async function getStakedBalance() {
+      if (account && library && contractAddress) {
+        const result = await fetchStakedBalancePayload(
+          account,
+          contractAddress,
+          library,
+        );
+        const {
+          totalStakedAmount,
+          totalStakedAmountL2,
+          totalPendingUnstakedAmountL2,
+          stakeContractBalanceTon,
+          swapBalance,
+          originalBalance,
+        } = result;
+        const res_CanWithdralAmount = await fetchWithdrawPayload(
+          library,
+          account,
+          contractAddress,
+        );
+        if (
+          totalStakedAmount &&
+          totalStakedAmountL2 &&
+          totalPendingUnstakedAmountL2 &&
+          stakeContractBalanceTon &&
+          swapBalance &&
+          res_CanWithdralAmount
+        ) {
+          setAvailableBalance(stakeContractBalanceTon);
+          setTotalStaked(totalStakedAmount);
+          setStakdL2(totalStakedAmountL2);
+          setPendingL2Balance(totalPendingUnstakedAmountL2);
+          setCanWithdralAmount(Number(res_CanWithdralAmount.toString()));
+          //set original balances
+          setOriginalStakeBalance(originalBalance.stakeContractBalanceTon);
+          setOriginalSwapBalance(originalBalance.swapBalance);
+          setCurrentTosPrice(originalBalance.tosPrice);
+
+          //calculate swap balance
+          if (Number(swapBalance) <= 0) {
+            return setSwapBalance('0.00');
+          }
+          if (Number(stakeContractBalanceTon) >= Number(swapBalance)) {
+            return setSwapBalance(swapBalance);
+          }
+          if (Number(stakeContractBalanceTon) < Number(swapBalance)) {
+            return setSwapBalance(stakeContractBalanceTon);
+          }
+        }
+      }
+    }
+    if (transactionType === 'Staking' || transactionType === undefined) {
+      getStakedBalance();
+    }
+    /*eslint-disable*/
+  }, [data, transactionType, blockNumber]);
+
+  //Btn disable control
+  useEffect(() => {
+    async function btnDisablestakeL2() {
+      if (globalWithdrawalDelay && miningEndTime) {
+        const res =
+          miningEndTime - Number(globalWithdrawalDelay) <= currentBlock;
+        const checkBalance = Number(availableBalance) <= 0 ? true : false;
+        return setStakeL2Disabled(res || checkBalance);
+      }
+    }
+
+    const btnDisableUnstakeL2 = async () => {
+      if (contractAddress === undefined) {
+        return;
+      }
+      const StakeTONContract = new Contract(
+        contractAddress,
+        StakeTON.abi,
+        library,
+      );
+      const isUnstakeL2All =
+        await StakeTONContract.canTokamakRequestUnStakingAll(
+          TokamakLayer2_ADDRESS,
+        );
+
+      const canReqeustUnstaking =
+        await StakeTONContract.canTokamakRequestUnStaking(
+          TokamakLayer2_ADDRESS,
+        );
+
+      const convertedUnstakeNum = convertNumber({
+        amount: canReqeustUnstaking,
+        type: 'ray',
+      });
+
+      setUnstakeAll(isUnstakeL2All);
+      setCanUntakdL2(convertedUnstakeNum);
+      setSeigBalance(convertedUnstakeNum);
+
+      return Number(convertedUnstakeNum) <= 0
+        ? setUnstakeL2Disable(true)
+        : setUnstakeL2Disable(false);
+    };
+
+    const btnDisableWithdraw = () => {
+      return canWithdralAmount <= 0
+        ? setWithdrawDisable(true)
+        : setWithdrawDisable(false);
+    };
+
+    const btnDisableSwap = () => {
+      return Number(swapBalance) <= 0 || miningEndTime <= currentBlock
+        ? setSwapDisabled(true)
+        : setSwapDisabled(false);
+    };
+
+    async function checkSale() {
+      const res = await checkSaleClosed(vault, library);
+      setSaleClosed(res);
+    }
+
+    if (
+      data.modal === 'manage' ||
+      transactionType === 'Staking' ||
+      transactionType === undefined
+    ) {
+      if (vault && library) {
+        checkSale();
+      }
+
+      btnDisablestakeL2();
+      btnDisableSwap();
+      btnDisableUnstakeL2();
+      btnDisableWithdraw();
+    }
+
+    /*eslint-disable*/
+  }, [
+    data,
+    totalStaked,
+    stakedL2,
+    pendingL2Balance,
+    swapBalance,
+    transactionType,
+    blockNumber,
+    canWithdralAmount,
+    saleClosed,
+    currentBlock,
+  ]);
+
+  const handleCloseManageModal = () => {
+    setStakeL2Disabled(true);
+    setUnstakeL2Disable(true);
+    setWithdrawDisable(true);
+    setSwapDisabled(true);
+    setAvailableBalance('0');
+    setTotalStaked('-');
+    setStakdL2('-');
+    setPendingL2Balance('-');
+    setSwapBalance('0');
+    setCanWithdralAmount(0);
+    setOriginalStakeBalance(0);
+    setOriginalSwapBalance(0);
+    setSaleClosed(true);
+    handleCloseModal();
+  };
 
   return (
     <Modal
       isOpen={data.modal === 'manage' ? true : false}
       isCentered
-      onClose={() => dispatch(closeModal())}>
+      onClose={handleCloseManageModal}>
       <ModalOverlay />
       <ModalContent
         w={'21.875em'}
@@ -42,6 +283,7 @@ export const ManageModal = () => {
         bg={colorMode === 'light' ? 'white.100' : 'black.200'}
         pt={'1.250em'}
         pb={'1.563em'}>
+        <CloseButton closeFunc={handleCloseManageModal}></CloseButton>
         <ModalBody p={0}>
           <Box
             textAlign="center"
@@ -75,7 +317,7 @@ export const ManageModal = () => {
                 Available balance
               </Text>
               <Text fontSize={'2em'}>
-                {balance} <span style={{fontSize: '13px'}}>TON</span>
+                {availableBalance} <span style={{fontSize: '13px'}}>TON</span>
               </Text>
             </Box>
             <Box
@@ -95,8 +337,8 @@ export const ManageModal = () => {
                 <Text
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                   fontWeight={500}
-                  fontSize={'18px'}>
-                  {data.data?.totalStakedAmount} TON
+                  fontSize={'15px'}>
+                  {totalStaked} TON
                 </Text>
               </Flex>
               <Flex justifyContent="space-between" alignItems="center" h="55px">
@@ -106,8 +348,19 @@ export const ManageModal = () => {
                 <Text
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                   fontWeight={500}
-                  fontSize={'18px'}>
-                  {data.data?.totalStakedAmountL2} TON
+                  fontSize={'15px'}>
+                  {stakedL2} TON
+                </Text>
+              </Flex>
+              <Flex justifyContent="space-between" alignItems="center" h="55px">
+                <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
+                  Seigniorage
+                </Text>
+                <Text
+                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+                  fontWeight={500}
+                  fontSize={'15px'}>
+                  {seigBalance} TON
                 </Text>
               </Flex>
               <Flex justifyContent="space-between" alignItems="center" h="55px">
@@ -117,8 +370,38 @@ export const ManageModal = () => {
                 <Text
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                   fontWeight={500}
-                  fontSize={'18px'}>
-                  {data.data?.totalPendingUnstakedAmountL2} TON
+                  fontSize={'15px'}>
+                  {pendingL2Balance} TON
+                </Text>
+              </Flex>
+              <Flex justifyContent="space-between" alignItems="center" h="55px">
+                <Flex>
+                  <Text
+                    color={'gray.400'}
+                    fontSize="13px"
+                    fontWeight={500}
+                    mr="2px">
+                    Available to swap
+                  </Text>
+                  <Tooltip
+                    hasArrow
+                    placement="top"
+                    label={tooltipMsg()}
+                    color={theme.colors.white[100]}
+                    bg={theme.colors.gray[375]}
+                    p={0}
+                    w="227px"
+                    h="70px"
+                    borderRadius={3}
+                    fontSize="12px">
+                    <img src={tooltipIcon} />
+                  </Tooltip>
+                </Flex>
+                <Text
+                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+                  fontWeight={500}
+                  fontSize={'15px'}>
+                  {swapBalance} TON
                 </Text>
               </Flex>
             </Box>
@@ -129,18 +412,27 @@ export const ManageModal = () => {
             pl="19px"
             pr="19px"
             gap={'12px'}>
-            {/* <Button colorScheme="blue" onClick={() => toggleModal('stakeL2')}> */}
             <Button
               width="150px"
               bg={'blue.500'}
               color={'white.100'}
-              fontSize={'0.750em'}
+              fontSize={'12px'}
               fontWeight={100}
-              isDisabled={closed ? !closed : false}
+              _hover={{backgroundColor: 'blue.100'}}
+              {...(stakeL2Disabled === true
+                ? {...btnStyle.btnDisable({colorMode})}
+                : {...btnStyle.btnAble()})}
+              isDisabled={stakeL2Disabled}
               onClick={() =>
-                dispatch(openModal({type: 'stakeL2', data: data.data}))
-              }
-              _hover={{backgroundColor: 'blue.100'}}>
+                handleOpenConfirmModal({
+                  type: 'manage_stakeL2',
+                  data: {
+                    balance: availableBalance,
+                    contractAddress,
+                    originalStakeBalance,
+                  },
+                })
+              }>
               Stake in Layer 2
             </Button>
             <Button
@@ -150,9 +442,19 @@ export const ManageModal = () => {
               fontSize={'12px'}
               fontWeight={100}
               _hover={{backgroundColor: 'blue.100'}}
-              isDisabled={closed ? !closed : false}
+              {...(unstakeL2Disable === true
+                ? {...btnStyle.btnDisable({colorMode})}
+                : {...btnStyle.btnAble()})}
+              isDisabled={unstakeL2Disable}
               onClick={() =>
-                dispatch(openModal({type: 'unstakeL2', data: data.data}))
+                handleOpenConfirmModal({
+                  type: 'manage_unstakeL2',
+                  data: {
+                    canUnstakedL2,
+                    contractAddress,
+                    unstakeAll,
+                  },
+                })
               }>
               Unstake from Layer 2
             </Button>
@@ -163,9 +465,18 @@ export const ManageModal = () => {
               fontSize={'12px'}
               fontWeight={100}
               _hover={{backgroundColor: 'blue.100'}}
-              isDisabled={closed ? !closed : false}
+              {...(withdrawDisable === true
+                ? {...btnStyle.btnDisable({colorMode})}
+                : {...btnStyle.btnAble()})}
+              isDisabled={withdrawDisable}
               onClick={() =>
-                dispatch(openModal({type: 'withdraw', data: data.data}))
+                handleOpenConfirmModal({
+                  type: 'manage_withdraw',
+                  data: {
+                    contractAddress,
+                    pendingL2Balance: canWithdralAmount,
+                  },
+                })
               }>
               Withdraw
             </Button>
@@ -176,9 +487,20 @@ export const ManageModal = () => {
               fontSize={'12px'}
               fontWeight={100}
               _hover={{backgroundColor: 'blue.100'}}
-              isDisabled={closed ? !closed : false}
+              {...(swapDisabled === true
+                ? {...btnStyle.btnDisable({colorMode})}
+                : {...btnStyle.btnAble()})}
+              isDisabled={swapDisabled}
               onClick={() =>
-                dispatch(openModal({type: 'swap', data: data.data}))
+                handleOpenConfirmModal({
+                  type: 'manage_swap',
+                  data: {
+                    contractAddress,
+                    swapBalance,
+                    originalSwapBalance,
+                    currentTosPrice,
+                  },
+                })
               }>
               Swap
             </Button>

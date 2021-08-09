@@ -13,48 +13,35 @@ import {
   useColorMode,
 } from '@chakra-ui/react';
 
-import React, {useState, useEffect} from 'react';
-import {useWeb3React} from '@web3-react/core';
-import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {openModal, selectModalType} from 'store/modal.reducer';
+import React, {useState} from 'react';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectModalType} from 'store/modal.reducer';
 import {withdraw} from '../actions';
-import {fetchWithdrawPayload} from './utils/fetchWithdrawPayload';
+import {useUser} from 'hooks/useUser';
+import {useModal} from 'hooks/useModal';
+import {CloseButton} from 'components/Modal/CloseButton';
 
 export const WithdrawalOptionModal = () => {
-  const {data} = useAppSelector(selectModalType);
-  const dispatch = useAppDispatch();
-  const {account, library} = useWeb3React();
+  const {sub} = useAppSelector(selectModalType);
+  const {account, library} = useUser();
   const theme = useTheme();
   const {colorMode} = useColorMode();
+  const {handleCloseConfirmModal} = useModal();
 
-  let balance = data?.data?.totalPendingUnstakedAmountL2;
+  const {
+    data: {contractAddress, pendingL2Balance},
+  } = sub;
   /*eslint-disable */
-  const [value, setValue] = useState<number>(balance);
-  const [withdrawBalance, setWithdrawBalance] = useState<string | undefined>(
-    undefined,
-  );
-
-  useEffect(() => {
-    async function withdrawPayload(data: any) {
-      const result = await fetchWithdrawPayload(
-        data.library,
-        data.account,
-        data.contractAddress,
-      );
-      console.log(result);
-      return setWithdrawBalance(result === undefined ? '0.00' : result);
-    }
-    withdrawPayload(data);
-  }, []);
+  const [value, setValue] = useState<number>(pendingL2Balance);
 
   const handleCloseModal = () => {
-    dispatch(openModal({type: 'manage', data: data.data}));
+    handleCloseConfirmModal();
     setValue(0);
   };
 
   return (
     <Modal
-      isOpen={data.modal === 'withdraw' ? true : false}
+      isOpen={sub.type === 'manage_withdraw' ? true : false}
       isCentered
       onClose={handleCloseModal}>
       <ModalOverlay />
@@ -64,6 +51,7 @@ export const WithdrawalOptionModal = () => {
         w="350px"
         pt="25px"
         pb="25px">
+        <CloseButton closeFunc={handleCloseModal}></CloseButton>
         <ModalBody p={0}>
           <Box
             my={2}
@@ -104,7 +92,7 @@ export const WithdrawalOptionModal = () => {
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                   fontWeight={500}
                   fontSize={'18px'}>
-                  {withdrawBalance} TON
+                  {pendingL2Balance} TON
                 </Text>
               </Flex>
             </Box>
@@ -122,18 +110,14 @@ export const WithdrawalOptionModal = () => {
               color="white.100"
               fontSize="14px"
               _hover={{...theme.btnHover}}
-              onClick={() =>
+              onClick={() => {
                 withdraw({
                   userAddress: account,
-                  contractAddress: data.data.contractAddress,
-                  miningEndTime: data?.data?.miningEndTime,
+                  contractAddress,
                   library: library,
-                  handleCloseModal: handleCloseModal,
-                })
-              }
-              disabled={
-                withdrawBalance === undefined || Number(withdrawBalance) <= 0
-              }>
+                });
+                handleCloseModal();
+              }}>
               Withdraw
             </Button>
           </Box>

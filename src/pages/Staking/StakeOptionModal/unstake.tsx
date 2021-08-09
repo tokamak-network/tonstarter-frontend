@@ -13,23 +13,26 @@ import {
   useColorMode,
 } from '@chakra-ui/react';
 import {unstake} from '../actions/';
-import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
+import {useUser} from 'hooks/useUser';
+import {useModal} from 'hooks/useModal';
+import {CloseButton} from 'components/Modal/CloseButton';
 
 export const UnstakeOptionModal = () => {
-  const {account, library} = useWeb3React();
+  const {account, library} = useUser();
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
   const theme = useTheme();
   const {colorMode} = useColorMode();
   const totalStakedBalance = data?.data?.totalStakedBalance;
+  const {handleCloseModal} = useModal();
 
   return (
     <Modal
       isOpen={data.modal === 'unstake' ? true : false}
       isCentered
-      onClose={() => dispatch(closeModal())}>
+      onClose={handleCloseModal}>
       <ModalOverlay />
       <ModalContent
         fontFamily={theme.fonts.roboto}
@@ -37,6 +40,7 @@ export const UnstakeOptionModal = () => {
         w="350px"
         pt="25px"
         pb="25px">
+        <CloseButton closeFunc={handleCloseModal}></CloseButton>
         <ModalBody p={0}>
           <Box
             my={3}
@@ -53,7 +57,7 @@ export const UnstakeOptionModal = () => {
               Unstake
             </Heading>
             <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
-              You can earn TON and POWER
+              You can earn TOS and POWER
             </Text>
           </Box>
 
@@ -70,7 +74,7 @@ export const UnstakeOptionModal = () => {
                 fontSize={'26px'}
                 fontWeight={600}
                 color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                {totalStakedBalance} TOS
+                {totalStakedBalance} TON
               </Text>
             </Box>
           </Stack>

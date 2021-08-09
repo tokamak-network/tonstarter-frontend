@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" id="resources_icon" width="14" height="14" viewBox="0 0 14 14">
+    <defs>
+        <style>
+            .cls-2{fill:none;stroke:#3d495d;stroke-linecap:round;stroke-linejoin:round}
+        </style>
+    </defs>
+    <g id="resources_icon-2" transform="translate(-89 -89)">
+        <path id="Base" fill="none" d="M0 0H14V14H0z" transform="translate(89 89)"/>
+        <g id="icon">
+            <rect id="사각형_31" width="8.75" height="7" class="cls-2" rx=".438" transform="translate(90.532 93.594)"/>
+            <path id="패스_36" d="M92.5 91.406h8.532a.438.438 0 0 1 .437.438v6.781" class="cls-2"/>
+        </g>
+    </g>
+</svg>

@@ -24,6 +24,7 @@ const breakpoints = createBreakpoints({
 
 const colors = {
   gray: {
+    475: '#9d9ea5',
     450: '#5b5b5b',
     425: '#949494',
     400: '#808992',
@@ -67,8 +68,15 @@ const colors = {
   },
 };
 
+const headerMargin = {
+  mt: '72px',
+};
+
 const btnHover = {
   backgroundColor: 'blue.100',
+  checkDisable: (props: any) => ({
+    bg: props.signIn ? 'blue.100' : {},
+  }),
 };
 
 const btnStyle = {
@@ -233,6 +241,7 @@ const theme = extendTheme({
   modalStyle,
   btnHover,
   btnStyle,
+  headerMargin,
 });
 
 export default theme;
