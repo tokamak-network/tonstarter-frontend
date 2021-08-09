@@ -1,6 +1,7 @@
 import {Contract} from '@ethersproject/contracts';
 import * as StakeUniswapABI from 'services/abis/StakeUniswapV3.json';
 import {DEPLOYED} from 'constants/index';
+import {BigNumber} from 'ethers';
 
 const {UniswapStaking_Address} = DEPLOYED;
 
@@ -10,6 +11,27 @@ export const fetchPositionPayload = async (
 ) => {
   const res = await getPositionInfo(library, account);
   return res;
+}
+
+export const fetchClaimablePayload = async (
+  library: any,
+  account: string,
+  id: string,
+) => {
+  if (id) {
+    const currentTime = Date.now() / 1000;
+    //@ts-ignore
+    const now = parseInt(currentTime)
+    const positionId = BigNumber.from(id)
+    
+    const StakeUniswap = new Contract(UniswapStaking_Address, StakeUniswapABI.abi, library);
+    const expectedClaimable = await StakeUniswap.expectedPlusClaimableAmount(positionId, now)
+    const miningId = await StakeUniswap.getMiningTokenId(positionId)
+    return {
+      minable: miningId.miningAmount,
+      expected: expectedClaimable.miningAmount
+    }
+  }
 }
 
 const getPositionInfo = async (
@@ -30,6 +52,7 @@ const getPositionInfo = async (
         console.log(now);
         const miningId = await StakeUniswap.getMiningTokenId(positionid)
         const stakedCoinageTokens = await StakeUniswap.stakedCoinageTokens(positionid)
+        // console.log(positionid, now)
         const expectedClaimable = await StakeUniswap.expectedPlusClaimableAmount(positionid, now)
         const valueById = {
           positionid,

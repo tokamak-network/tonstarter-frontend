@@ -1,13 +1,13 @@
 import {
   Container,
   Box,
-  useColorMode,
+  // useColorMode,
   useTheme,
 } from '@chakra-ui/react';
 import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
 import {Head} from 'components/SEO';
-import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {useAppSelector} from 'hooks/useRedux';
 import {
   Fragment,
   useMemo,
@@ -16,8 +16,6 @@ import {
 } from 'react';
 import {
   ClaimOptionModal,
-  StakeOptionModal,
-  UnstakeOptionModal,
 } from './PoolOptionModal';
 import {PoolTable} from './PoolTable';
 import {PageHeader} from 'components/PageHeader';
@@ -126,8 +124,6 @@ export const Pools = () => {
           }
         </Box>
       </Container>
-      <StakeOptionModal />
-      <UnstakeOptionModal />
       <ClaimOptionModal />
     </Fragment>
   );
