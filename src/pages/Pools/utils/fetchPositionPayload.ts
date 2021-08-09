@@ -45,6 +45,7 @@ const getPositionInfo = async (library: any, account: string) => {
       StakeUniswapABI.abi,
       library,
     );
+
     const positionIds = await StakeUniswap.getUserStakedTokenIds(account);
     const startTime = await StakeUniswap.saleStartTime();
     const endTime = await StakeUniswap.miningEndTime();
