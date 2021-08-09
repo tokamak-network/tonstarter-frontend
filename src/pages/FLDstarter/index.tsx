@@ -47,7 +47,6 @@ export const FLDstarter = () => {
                   token={item.token}
                   stakedAmount={item.stakeBalanceTON}
                   contractAddress={item.contractAddress}
-                  account={item.account}
                   index={index}
                   ept={item.ept}
                 />

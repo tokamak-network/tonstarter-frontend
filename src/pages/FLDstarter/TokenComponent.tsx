@@ -17,6 +17,7 @@ import {openTable} from 'store/table.reducer';
 import {useAppDispatch} from 'hooks/useRedux';
 import {openModal} from 'store/modal.reducer';
 import store from 'store';
+import {useUser} from 'hooks/useUser';
 
 type TokenComponentProps = {
   data: any;
@@ -26,7 +27,6 @@ type TokenComponentProps = {
   token: TokenType;
   stakedAmount: string;
   contractAddress: string;
-  account: string | undefined;
   index: number;
   ept: string;
 };
@@ -39,7 +39,6 @@ export const TokenComponent: FC<TokenComponentProps> = ({
   token,
   stakedAmount,
   contractAddress,
-  account,
   index,
   ept,
 }) => {
@@ -49,6 +48,8 @@ export const TokenComponent: FC<TokenComponentProps> = ({
   const history = useHistory();
   const tokenType = checkTokenType(token);
   const [tokenPrice, setTokenPrice] = useState<string | undefined>('0');
+  const {account} = useUser();
+  const [isDisabled, setIsDisabled] = useState(false);
 
   useEffect(() => {
     async function getPrice() {
@@ -74,12 +75,15 @@ export const TokenComponent: FC<TokenComponentProps> = ({
     window.scrollTo(0, 350 + index * 69);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const isDisabled =
-    account === undefined ||
-    status !== 'sale' ||
-    data.fetchBlock < data.saleStartTime
-      ? true
-      : false;
+  useEffect(() => {
+    const isDisabled =
+      account === undefined ||
+      status !== 'sale' ||
+      data.fetchBlock < data.saleStartTime
+        ? true
+        : false;
+    setIsDisabled(isDisabled);
+  }, [account, data, status]);
 
   return (
     <Container
