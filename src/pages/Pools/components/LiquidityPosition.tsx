@@ -130,7 +130,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
       if (claimed && expected) {
         const addedValue = claimed.add(expected)
         const expectedAmount = ethers.utils.formatUnits(addedValue, 18);
-        setSwapableAmount(Number(expectedAmount).toFixed(10))
+        setSwapableAmount(Number(expectedAmount).toFixed(9))
       }
     }
 
