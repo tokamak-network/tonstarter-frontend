@@ -24,9 +24,9 @@ export const unstake = async (args: Unstake) => {
   }
   const StakeUniswap = new Contract(UniswapStaking_Address, StakeUniswapABI.abi, library);
   const signer = getSigner(library, userAddress);
-  if (miningAmount.toString() !== '0') {
-    throw new Error(`You have claimeable amount!`);
-  }
+  // if (miningAmount.toString() !== '0') {
+  //   throw new Error(`You have claimeable amount!`);
+  // }
 
   try {
     const receipt = await StakeUniswap.connect(signer)?.withdraw(tokenId)
