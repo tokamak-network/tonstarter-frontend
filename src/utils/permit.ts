@@ -1,6 +1,5 @@
 import {Contract} from '@ethersproject/contracts';
 import {DEPLOYED} from 'constants/index';
-import {getSigner} from 'utils/contract';
 import * as TOSABI from 'services/abis/TOS.json';
 import * as NPMABI from 'services/abis/NonfungiblePositionManager.json';
 import * as LockTOSABI from 'services/abis/LockTOS.json';
@@ -25,7 +24,7 @@ export const permitForCreateLock = async (
     library,
   );
   console.log(userSigner);
-  const signer = getSigner(library, account);
+  // const signer = getSigner(library, account);
   console.log(TOSContract);
   const nonce = parseInt(await TOSContract.nonces(account));
   let deadline = Date.now() / 1000;
@@ -79,17 +78,13 @@ export async function stakingPermit(account: string, library: any, tokenId: stri
   if (!account || !library) {
     return;
   }
-
   //@ts-ignore
   const web3 = new Web3(window.ethereum);
-  const signer = getSigner(library, account);
-
   const {UniswapStaking_Address, NPM_Address} = DEPLOYED;
 
   const NPMContract = new Contract(NPM_Address, NPMABI.abi,  library)
   let position = await NPMContract.positions(tokenId);
-  // let nonce = await NPMContract.connect(signer).nonces(account);
-  // let owner = await NPMContract.ownerOf(tokenId);
+  
   //@ts-ignore
   let nonce = position.nonce.toString();
   nonce = parseInt(nonce);

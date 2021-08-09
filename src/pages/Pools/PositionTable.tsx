@@ -1,4 +1,4 @@
-import {FC, useState, useMemo, useEffect, useRef} from 'react';
+import {FC, useMemo, useEffect, useRef} from 'react';
 import {useExpanded, usePagination, useTable, useSortBy} from 'react-table';
 import {
   Text,
@@ -160,7 +160,7 @@ export const PositionTable: FC<PositionTableProps> = ({
   const focusTarget = useRef<any>([]);
 
   const {
-    data: {contractAddress, index},
+    data: {index},
   } = useAppSelector(selectTableType);
 
   useEffect(() => {
@@ -182,18 +182,18 @@ export const PositionTable: FC<PositionTableProps> = ({
       }
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const [isOpen, setIsOpen] = useState(
-    contractAddress === undefined ? '' : contractAddress,
-  );
+  
+  // const [isOpen, setIsOpen] = useState(
+  //   contractAddress === undefined ? '' : contractAddress,
+  // );
   
   const goPrevPage = () => {
-    setIsOpen('');
+    // setIsOpen('');
     previousPage();
   };
 
   const goNextPage = () => {
-    setIsOpen('');
+    // setIsOpen('');
     nextPage();
   };
 
@@ -297,13 +297,10 @@ export const PositionTable: FC<PositionTableProps> = ({
             <chakra.tr
               w={'100%'}
               h={'80px'}
-              // mt={-5}
               pt={'5px'}
               pr={9}
               bg={colorMode === 'light' ? 'white.100' : ''}
               border={colorMode === 'light' ? '' : 'solid 1px #373737'}
-              // borderBottom={'1px'}
-              // borderBottomColor={'#f4f6f8'}
               borderTopWidth={0}
               borderBottomRadius="10px">
               <chakra.td
