@@ -30,11 +30,6 @@ import {convertNumber} from 'utils/number';
 import {Contract} from '@ethersproject/contracts';
 import * as StakeTON from 'services/abis/StakeTON.json';
 
-const seigFontColors = {
-  light: '#3d495d',
-  dark: '#f3f4f1',
-};
-
 const tooltipMsg = () => {
   return (
     <Flex flexDir="column" fontSize="12px" pt="6px" pl="5px" pr="5px">
@@ -114,6 +109,7 @@ export const ManageModal = () => {
           contractAddress,
           library,
         );
+        console.log(result);
         const {
           totalStakedAmount,
           totalStakedAmountL2,
@@ -122,11 +118,13 @@ export const ManageModal = () => {
           swapBalance,
           originalBalance,
         } = result;
+        console.log(library, account, contractAddress);
         const res_CanWithdralAmount = await fetchWithdrawPayload(
           library,
           account,
           contractAddress,
         );
+        console.log(res_CanWithdralAmount);
         if (
           totalStakedAmount &&
           totalStakedAmountL2 &&
@@ -184,6 +182,7 @@ export const ManageModal = () => {
         StakeTON.abi,
         library,
       );
+
       const isUnstakeL2All =
         await StakeTONContract.canTokamakRequestUnStakingAll(
           TokamakLayer2_ADDRESS,
@@ -198,6 +197,8 @@ export const ManageModal = () => {
         amount: canReqeustUnstaking,
         type: 'ray',
       });
+
+      console.log(isUnstakeL2All, canReqeustUnstaking, convertedUnstakeNum);
 
       setUnstakeAll(isUnstakeL2All);
       setCanUntakdL2(convertedUnstakeNum);
