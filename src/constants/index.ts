@@ -1,4 +1,4 @@
-import {injected, walletconnect} from 'connectors';
+import {injected} from 'connectors';
 import {WalletInfo} from 'types';
 import {DEPLOYED_TYPE} from './type';
 import {ethers} from 'ethers';
@@ -98,15 +98,5 @@ export const SUPPORTED_WALLETS: {[key: string]: WalletInfo} = {
     href: null,
     color: '#E8831D',
     type: 'METAMASK',
-  },
-  WALLET_CONNECT: {
-    connector: walletconnect,
-    name: 'Wallet Connect',
-    iconName: 'walletconnect.svg',
-    description: 'Connect to Trust Wallet, Rainbow Wallet and more...',
-    href: null,
-    color: '#E8831D',
-    mobile: true,
-    type: 'WALLET_CONNECT',
   },
 };

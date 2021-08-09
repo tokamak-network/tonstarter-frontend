@@ -89,12 +89,6 @@ export const AirdropModal = () => {
     async function callAirDropData() {
       const res = await fetchAirdropPayload();
       const {roundInfo, claimedAmount, unclaimedAmount} = res;
-      // const info = await poolInfo
-      // .fetchMore({
-      //   query: GET_POOL_INFO
-      // })
-      // console.log(info.data)
-      // console.log(roundInfo)
       setAirdropData(roundInfo);
       availableAmount(roundInfo, claimedAmount, unclaimedAmount);
     }

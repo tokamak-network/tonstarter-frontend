@@ -31,13 +31,6 @@ export const permitForCreateLock = async (
   let deadline = Date.now() / 1000;
   //@ts-ignore
   deadline = parseInt(deadline) + 100;
-  console.log({
-    owner: account,
-    spender: LockTOS_ADDRESS,
-    value: amount,
-    nonce,
-    deadline,
-  });
   const rawSignature = await userSigner._signTypedData(
     {
       chainId: 4,
