@@ -19,6 +19,13 @@ import {Footer} from 'components/Footer';
 import {ConfirmModal} from 'components/Modal';
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
+/*
+###################
+###PHASE 2 EALRY###
+######MANAGE#######
+################### 
+*/
+
 export const Router: FC<RouterProps> = () => {
   const dispatch = useAppDispatch();
   const [walletState, setWalletState] = useState<string>('');
