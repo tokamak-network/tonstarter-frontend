@@ -122,7 +122,6 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
         direction={['column', 'row', 'row', 'row']}
         pt={[4, 4, 0, 0]}>
         <Button
-          opacity={tx === true ? 0.5 : 1}
           border="solid 1px #d7d9df"
           color={
             colorMode === 'dark'
@@ -150,14 +149,30 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
           }
           zIndex={100}
           _hover={{}}>
-          {account ? shortenAddress(account) : 'Connect wallet'}
+          {account ? (
+            tx === true ? (
+              <Text
+                fontFamily={theme.fonts.roboto}
+                fontWeight={100}
+                fontSize={'14px'}
+                ml={'18px'}
+                pt={'1px'}>
+                Tx PENDING
+              </Text>
+            ) : (
+              shortenAddress(account)
+            )
+          ) : (
+            'Connect wallet'
+          )}
           {tx === true ? (
             <CircularProgress
               isIndeterminate
-              size={6}
+              size={4}
               zIndex={100}
               color="blue.500"
-              pos="absolute"></CircularProgress>
+              pos="absolute"
+              left={'14px'}></CircularProgress>
           ) : null}
         </Button>
         {account ? (

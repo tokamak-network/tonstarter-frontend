@@ -24,9 +24,7 @@ export const permitForCreateLock = async (
     LockTOSABI.abi,
     library,
   );
-  console.log(userSigner);
   // const signer = getSigner(library, account);
-  console.log(TOSContract);
   const nonce = parseInt(await TOSContract.nonces(account));
   let deadline = Date.now() / 1000;
   //@ts-ignore

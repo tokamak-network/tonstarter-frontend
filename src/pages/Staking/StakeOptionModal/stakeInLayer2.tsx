@@ -140,6 +140,9 @@ export const StakeInLayer2Modal = () => {
                     Number(value),
                     Number(balance),
                   );
+                  if (isBalance === false) {
+                    return;
+                  }
                   if (isBalance === true || 'balanceAll') {
                     stakeL2({
                       account,
@@ -150,7 +153,6 @@ export const StakeInLayer2Modal = () => {
                           : originalStakeBalance.toString(),
                       contractAddress,
                     });
-
                     handleCloseModal();
                   }
                 }
