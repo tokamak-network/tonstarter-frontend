@@ -58,7 +58,7 @@ const getPositionInfo = async (library: any, account: string) => {
         const stakedCoinageTokens = await StakeUniswap.stakedCoinageTokens(
           positionid,
         );
-        // console.log(positionid, now)
+
         const expectedClaimable =
           await StakeUniswap.expectedPlusClaimableAmount(positionid, now);
         const valueById = {
