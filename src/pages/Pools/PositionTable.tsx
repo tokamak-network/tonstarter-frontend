@@ -1,17 +1,7 @@
 import {FC, useState, useMemo, useEffect, useRef} from 'react';
 import {useExpanded, usePagination, useTable, useSortBy} from 'react-table';
-import {
-  Text,
-  Flex,
-  IconButton,
-  Tooltip,
-  Select,
-  Box,
-  useColorMode,
-  Center,
-  useTheme,
-} from '@chakra-ui/react';
-import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
+import {Text, Flex, Select, Box, useColorMode} from '@chakra-ui/react';
+// import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {useAppSelector} from 'hooks/useRedux';
 import {getPoolName} from '../../utils/token';
 import {selectTableType} from 'store/table.reducer';
@@ -140,14 +130,14 @@ export const PositionTable: FC<PositionTableProps> = ({
     getTableBodyProps,
     headerGroups,
     visibleColumns,
-    canPreviousPage,
-    canNextPage,
-    pageOptions,
+    // canPreviousPage,
+    // canNextPage,
+    // pageOptions,
     page,
     nextPage,
     previousPage,
-    setPageSize,
-    state: {pageIndex, pageSize},
+    // setPageSize,
+    // state: {pageIndex, pageSize},
   } = useTable(
     {columns, data: positions, initialState: {pageIndex: 0}},
     useSortBy,
@@ -156,7 +146,7 @@ export const PositionTable: FC<PositionTableProps> = ({
   );
   // const dispatch = useAppDispatch();
   const {colorMode} = useColorMode();
-  const theme = useTheme();
+  // const theme = useTheme();
   const focusTarget = useRef<any>([]);
 
   const {
@@ -191,7 +181,6 @@ export const PositionTable: FC<PositionTableProps> = ({
     setIsOpen('');
     previousPage();
   };
-
 
   const goNextPage = () => {
     setIsOpen('');
