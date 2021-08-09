@@ -16,7 +16,9 @@ import {claim} from '../actions';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
-import {useCallback} from 'react';
+import {useCallback, useState, useEffect} from 'react';
+import { fetchClaimablePayload } from '../utils/fetchPositionPayload';
+import { ethers } from 'ethers';
 
 export const ClaimOptionModal = () => {
   const {account, library} = useWeb3React();
@@ -25,11 +27,32 @@ export const ClaimOptionModal = () => {
 
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
+
+  const [swapable, setSwapable] = useState<string | undefined>('0');
+
+  const amount = async () => {
+    if (data.data.id && account) {
+      const res = await fetchClaimablePayload(library, account, data.data.id)
+      const {minable, expected} = res
+      const addedValue = minable.add(expected)
+      // console.log(minable.toString(), expected.toString(), addedValue.toString())
+      const expectedAmount = ethers.utils.formatUnits(addedValue, 18);
+      setSwapable(Number(expectedAmount).toFixed(9))
+    }
+  }
+
+  // useEffect(() => {
+  //   amount()
+  // }, [dispatch])
+  amount()
+
+  console.log(swapable)
   
-  const swapableAmount = data?.data?.swapableAmount
+  const swapableAmount = swapable
 
   const handleCloseModal = useCallback(() => {
     dispatch(closeModal());
+    setSwapable('0.00')
   }, [dispatch]);
 
   return (

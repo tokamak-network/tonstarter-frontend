@@ -1,4 +1,4 @@
-import {FC, useState} from 'react';
+import {FC, useState, useEffect} from 'react';
 import {
   Text,
   Flex,
@@ -10,7 +10,6 @@ import {
 } from '@chakra-ui/react';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {openModal} from 'store/modal.reducer';
-import {useEffect} from 'react';
 // import { getPoolName } from '../../utils/token';
 import store from '../../../store';
 import {stake, unstake} from '../actions';
