@@ -6,6 +6,7 @@ import {
   Link,
   useColorMode,
   useTheme,
+  Switch,
 } from '@chakra-ui/react';
 import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
@@ -35,6 +36,7 @@ import {getTotalStakers, getUserBalance} from 'client/getUserBalance';
 import {useEffect} from 'react';
 import {LoadingDots} from 'components/Loader/LoadingDots';
 import {useUser} from 'hooks/useUser';
+import {getEarnedTon} from './utils/getEarnedTon';
 
 type GetDateTimeType =
   | 'sale-start'
@@ -182,6 +184,11 @@ export const Staking = () => {
     };
 
     useEffect(() => {
+      console.log('**TEST**');
+      getEarnedTon({contractAddress, library});
+    }, []);
+
+    useEffect(() => {
       if (account !== undefined) {
         getBalance();
       }
@@ -208,11 +215,45 @@ export const Staking = () => {
       );
     }
 
+    if (title === 'My staked') {
+      return (
+        <Flex flexDir={'column'} alignItems={'space-between'}>
+          <Text fontSize={'15px'} color="gray.400">
+            {title}
+          </Text>
+          <Text
+            fontSize={'20px'}
+            color={colorMode === 'light' ? 'black.300' : 'white.200'}
+            fontWeight={'bold'}
+            h="30px">
+            {balance === '-' ? <LoadingDots></LoadingDots> : balance}
+            {balance !== '-' ? (
+              title === 'My staked' ? (
+                <span> TON</span>
+              ) : (
+                <span> TOS</span>
+              )
+            ) : null}
+          </Text>
+        </Flex>
+      );
+    }
+
+    const [toggle, setToggle] = useState('Earned TOS');
+
     return (
       <Flex flexDir={'column'} alignItems={'space-between'}>
-        <Text fontSize={'15px'} color="gray.400">
-          {title}
-        </Text>
+        <Flex>
+          <Text fontSize={'15px'} color="gray.400" mr={2} _hover={{}}>
+            {toggle}
+          </Text>
+          <Switch
+            onChange={() =>
+              setToggle(toggle === 'Earned TOS' ? 'Earned TON' : 'Earned TOS')
+            }
+            // defaultChecked={true}
+            value={0}></Switch>
+        </Flex>
         <Text
           fontSize={'20px'}
           color={colorMode === 'light' ? 'black.300' : 'white.200'}
@@ -330,7 +371,10 @@ export const Staking = () => {
                 {shortenAddress(data[row.id]?.contractAddress)}
               </Link>
             </Flex>
-            <GetBalance title={'Earned'} contractAddress={contractAddress} />
+            <GetBalance
+              title={'Earned TOS'}
+              contractAddress={contractAddress}
+            />
           </Flex>
         </Flex>
       );
