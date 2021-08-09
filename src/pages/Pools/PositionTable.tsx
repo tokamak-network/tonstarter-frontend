@@ -12,7 +12,7 @@ import {
   useTheme,
 } from '@chakra-ui/react';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
-import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {useAppSelector} from 'hooks/useRedux';
 import {getPoolName} from '../../utils/token';
 import {selectTableType} from 'store/table.reducer';
 // import {LoadingComponent} from 'components/Loading';
@@ -32,19 +32,19 @@ type PositionTableProps = {
   // address: string;
 };
 
-const getTextColor = (type: string, colorMode: string) => {
-  if (colorMode === 'light') {
-    if (type === 'name') {
-      return '#304156';
-    }
-    return '#3a495f';
-  } else if (colorMode === 'dark') {
-    if (type === 'name') {
-      return 'white.100';
-    }
-    return '#f3f4f1';
-  }
-};
+// const getTextColor = (type: string, colorMode: string) => {
+//   if (colorMode === 'light') {
+//     if (type === 'name') {
+//       return '#304156';
+//     }
+//     return '#3a495f';
+//   } else if (colorMode === 'dark') {
+//     if (type === 'name') {
+//       return 'white.100';
+//     }
+//     return '#f3f4f1';
+//   }
+// };
 
 const getStatus = (
   type: 'staked' | 'not staked',
@@ -154,7 +154,7 @@ export const PositionTable: FC<PositionTableProps> = ({
     useExpanded,
     usePagination,
   );
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const focusTarget = useRef<any>([]);

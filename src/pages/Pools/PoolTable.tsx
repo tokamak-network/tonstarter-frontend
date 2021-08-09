@@ -119,7 +119,7 @@ export const PoolTable: FC<PoolTableProps> = ({
       }
     }
     positionPayload();
-  }, [data, transactionType, blockNumber, address]);
+  }, [data, transactionType, blockNumber, address, library]);
 
   const position = useQuery(GET_POSITION, {
     variables: {address: account},
@@ -432,7 +432,7 @@ export const PoolTable: FC<PoolTableProps> = ({
                 color={colorMode === 'light' ? '#e6eaee' : '#424242'}
                 borderRadius={4}
                 aria-label={'Previous Page'}
-                // onClick={goPrevPage}
+                onClick={goPrevPage}
                 isDisabled={!canPreviousPage}
                 size={'sm'}
                 mr={4}

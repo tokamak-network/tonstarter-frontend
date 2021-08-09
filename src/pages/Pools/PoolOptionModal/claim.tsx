@@ -16,7 +16,7 @@ import {claim} from '../actions';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
-import {useCallback, useState, useEffect} from 'react';
+import {useCallback, useState} from 'react';
 import { fetchClaimablePayload } from '../utils/fetchPositionPayload';
 import { ethers } from 'ethers';
 
