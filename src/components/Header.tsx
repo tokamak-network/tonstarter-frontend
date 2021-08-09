@@ -18,8 +18,8 @@ import logoLight from 'assets/svgs/fld_bi_white.svg';
 import logoGray from 'assets/svgs/fld_bi_gray.svg';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectTxType} from 'store/tx.reducer';
-// import {useDispatch} from 'react-redux';
-// import {openModal} from 'store/modal.reducer';
+import {useDispatch} from 'react-redux';
+import {openModal} from 'store/modal.reducer';
 
 type HeaderProps = {
   walletopen: () => void;
@@ -105,11 +105,11 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
   const theme = useTheme();
   const match = useRouteMatch('/');
   const {tx} = useAppSelector(selectTxType);
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-  // const airdropModalOpen = async () => {
-  //   dispatch(openModal({type: 'airdrop', data: {}}));
-  // };
+  const airdropModalOpen = async () => {
+    dispatch(openModal({type: 'airdrop', data: {}}));
+  };
 
   return (
     <Box
@@ -203,8 +203,7 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
                 ? 'white.100'
                 : 'white.100'
             }
-            onClick={(e: any) => e.preventDefault()}
-            // onClick={airdropModalOpen}
+            onClick={airdropModalOpen}
             fontWeight={500}
             fontSize={'15px'}
             _hover={{}}
