@@ -33,8 +33,7 @@ export const ClaimOptionModal = () => {
   const amount = async () => {
     if (data.data.id && account) {
       const res = await fetchClaimablePayload(library, account, data.data.id)
-      const {minable, expected} = res
-      const addedValue = minable.add(expected)
+      const addedValue = res?.minable.add(res?.expected)
       // console.log(minable.toString(), expected.toString(), addedValue.toString())
       const expectedAmount = ethers.utils.formatUnits(addedValue, 18);
       setSwapable(Number(expectedAmount).toFixed(9))
