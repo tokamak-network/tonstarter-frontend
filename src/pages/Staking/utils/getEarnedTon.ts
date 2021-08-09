@@ -6,8 +6,6 @@ import {toBN, BN} from 'web3-utils';
 import {Contract} from '@ethersproject/contracts';
 import * as AutoRefactorCoinageABI from 'services/abis/AutoRefactorCoinage.json';
 import * as TonABI from 'services/abis/TON.json';
-import {BigNumber} from '@ethersproject/units/node_modules/@ethersproject/bignumber';
-import web3 from 'web3';
 
 type GetEarnedTon = {
   contractAddress: string;
@@ -18,6 +16,9 @@ export const getEarnedTon = async ({
   contractAddress,
   library,
 }: GetEarnedTon) => {
+  if (library === undefined) {
+    return;
+  }
   const SeigManager = getTokamakContract('SeigManager', library);
   const currentBlockNumber = await BASE_PROVIDER.getBlockNumber();
   const {TokamakLayer2_ADDRESS, TON_ADDRESS, WTON_ADDRESS} = DEPLOYED;
@@ -45,24 +46,18 @@ export const getEarnedTon = async ({
 
   const totalStaked = await COINAGE_CONTRACT.balanceOf(contractAddress);
 
-  console.log('***');
-  console.log((await SeigManager.lastCommitBlock(TokamakLayer2_ADDRESS)).toString());
-  console.log(currentBlockNumber);
-  console.log(totalStaked.toString());
-  console.log((await Tot.totalSupply()).toString());
-  console.log(tos.toString());
-  console.log((await SeigManager.relativeSeigRate()).toString());
-
   try {
     const seigniorage = calculateExpectedSeig(
-      new BN((await SeigManager.lastCommitBlock(TokamakLayer2_ADDRESS)).toString()),
+      new BN(
+        await SeigManager.lastCommitBlock(TokamakLayer2_ADDRESS).toString(),
+      ),
       new BN(currentBlockNumber.toString()),
       new BN(totalStaked.toString()),
-      new BN((await Tot.totalSupply()).toString()),
+      new BN(await Tot.totalSupply().toString()),
       new BN(tos.toString()),
-      new BN((await SeigManager.relativeSeigRate()).toString()),
+      new BN(await SeigManager.relativeSeigRate().toString()),
     );
-    console.log(seigniorage.toString());
+    console.log(seigniorage);
   } catch (e) {
     console.log(e);
   }
