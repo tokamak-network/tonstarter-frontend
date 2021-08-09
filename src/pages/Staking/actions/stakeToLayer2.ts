@@ -6,7 +6,6 @@ import {DEPLOYED} from 'constants/index';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import {toastWithReceipt} from 'utils';
 import {openToast} from 'store/app/toast.reducer';
-import {convertToWei} from 'utils/number';
 
 type StakeToLayer2 = {
   account: string;
@@ -24,13 +23,13 @@ export const stakeL2 = async (args: StakeToLayer2) => {
   if (!StakeTONContract) {
     throw new Error(`Can't find the contract for staking actions`);
   }
+
   const signer = getSigner(library, account);
-  const weiAmount = convertToWei(amount);
 
   try {
     const receipt = await StakeTONContract.connect(signer).tokamakStaking(
       TokamakLayer2_ADDRESS,
-      weiAmount,
+      amount,
     );
     store.dispatch(setTxPending({tx: true}));
     if (receipt) {

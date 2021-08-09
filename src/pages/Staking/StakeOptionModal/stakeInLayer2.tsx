@@ -21,6 +21,7 @@ import {useUser} from 'hooks/useUser';
 import {useModal} from 'hooks/useModal';
 import {useCheckBalance} from 'hooks/useCheckBalance';
 import {CloseButton} from 'components/Modal';
+import {convertToWei} from 'utils/number';
 
 export const StakeInLayer2Modal = () => {
   const {sub} = useAppSelector(selectModalType);
@@ -149,7 +150,7 @@ export const StakeInLayer2Modal = () => {
                       library,
                       amount:
                         isBalance !== 'balanceAll'
-                          ? value.toString()
+                          ? convertToWei(value.toString())
                           : originalStakeBalance.toString(),
                       contractAddress,
                     });
