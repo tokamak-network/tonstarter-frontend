@@ -21,13 +21,13 @@ import {PoolTable} from './PoolTable';
 import {PageHeader} from 'components/PageHeader';
 // import {LoadingComponent} from 'components/Loading';
 import {useQuery} from '@apollo/client';
-import { GET_TOS_POOL, GET_BASE_POOL } from './GraphQL/index';
+import { GET_TOS_POOL } from './GraphQL/index';
 import { selectTransactionType } from 'store/refetch.reducer';
 import { DEPLOYED } from '../../constants/index';
 import { useUser } from '../../hooks/useUser';
 
 
-const { BasePool_Address, TOS_ADDRESS } = DEPLOYED;
+const { TOS_ADDRESS } = DEPLOYED;
 
 
 export const Pools = () => {
@@ -72,35 +72,32 @@ export const Pools = () => {
     [],
   );
   
-  const basePool = useQuery(GET_BASE_POOL, {
-    variables: {address: BasePool_Address}
-  });
+  // const basePool = useQuery(GET_BASE_POOL, {
+  //   variables: {address: BasePool_Address}
+  // });
 
   const tosPool = useQuery(GET_TOS_POOL, {
     variables: {address: [TOS_ADDRESS.toLowerCase()]}
   });
-  // console.log(basePool.loading, basePool.error, basePool.data)
+  
   const [pool, setPool] = useState([]);
   useEffect(() => {
     function getPool () {
-      const poolArr = basePool.loading || tosPool.loading ? [] : basePool.data.pools.concat(tosPool.data.pools)
+      // const poolArr = basePool.loading || tosPool.loading ? [] : basePool.data.pools.concat(tosPool.data.pools)
+      const poolArr = tosPool.loading ? [] : tosPool.data.pools
       setPool(poolArr)
     }
     getPool()
   }, [
     transactionType,
     blockNumber,
-    basePool.loading,
+    // basePool.loading,
     tosPool.loading,
-    basePool.error,
+    // basePool.error,
     tosPool.error,
-    basePool.data,
+    // basePool.data,
     tosPool.data,
   ])
-
-  // const poolArr = pool1.loading || pool2.loading || pool3.loading ? [] : pool1.data.pools.concat(pool3.data.pools).concat(pool2.data.pools)
-  // const poolArr = pool1.loading || pool2.loading ? [] : pool1.data.pools.concat(pool2.data.pools)
-  // const account = address ? address : ''
 
   return (
     <Fragment>
@@ -113,11 +110,11 @@ export const Pools = () => {
           />
         </Box>
         <Box fontFamily={theme.fonts.roboto}>
-          {basePool.loading? '' :
+          {tosPool.loading? '' :
           <PoolTable
             data={pool}
             columns={columns}
-            isLoading={basePool.loading}
+            isLoading={tosPool.loading}
             address={account}
             library={library}
           />

@@ -55,7 +55,7 @@ export const checkTokenType = (
   const tokenType = payToken === tokenAddresses['eth'] ?
             'eth' : payToken === tokenAddresses['ton'] ?
             'ton' : payToken === tokenAddresses['tos'] ?
-            'tos' : 'wton';
+            'tos' : 'tos';
 
   switch (tokenType) {
     case 'eth':
@@ -64,8 +64,8 @@ export const checkTokenType = (
       return tokenInfo[tokenType];
     case 'tos':
       return tokenInfo[tokenType];
-    case 'wton':
-      return tokenInfo[tokenType];
+    // case 'wton':
+    //   return tokenInfo[tokenType];
     default:
       throw new Error(`There is no token type for ${tokenType}`);
   }

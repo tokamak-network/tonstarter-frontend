@@ -15,6 +15,7 @@ const poolParam = `
     date
     volumeUSD
     feesUSD
+    tvlUSD
   }
   liquidity
 `;

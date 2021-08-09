@@ -165,7 +165,6 @@ export const PositionTable: FC<PositionTableProps> = ({
 
   useEffect(() => {
     if (index) {
-      console.log(index);
       let loop = Math.floor(index / 10);
       while (loop) {
         nextPage();
