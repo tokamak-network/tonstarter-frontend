@@ -27,6 +27,7 @@ const getPositionInfo = async (
         const currentTime = Date.now() / 1000;
         //@ts-ignore
         const now = parseInt(currentTime)
+        console.log(now);
         const miningId = await StakeUniswap.getMiningTokenId(positionid)
         const stakedCoinageTokens = await StakeUniswap.stakedCoinageTokens(positionid)
         const expectedClaimable = await StakeUniswap.expectedPlusClaimableAmount(positionid, now)

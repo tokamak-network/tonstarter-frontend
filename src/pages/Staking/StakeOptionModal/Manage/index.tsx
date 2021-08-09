@@ -83,16 +83,28 @@ export const ManageModal = () => {
   //original balances
   const [originalStakeBalance, setOriginalStakeBalance] = useState(0);
   const [originalSwapBalance, setOriginalSwapBalance] = useState(0);
-  const [currentTosPrice, setCurrentTosPrice] = useState<string | undefined>('0');
+  const [currentTosPrice, setCurrentTosPrice] = useState<string | undefined>(
+    '0',
+  );
 
   //conditions
   const [saleClosed, setSaleClosed] = useState(true);
+  const [currentBlock, setCurrentBlock] = useState<number>(99999999999999);
 
   //Set
 
   //fetch status
 
   //constant
+
+  //getCurrentBlock
+  useEffect(() => {
+    async function getCurrentBlock() {
+      const currentBlock = await BASE_PROVIDER.getBlockNumber();
+      setCurrentBlock(currentBlock);
+    }
+    getCurrentBlock();
+  }, [data, transactionType, blockNumber]);
 
   useEffect(() => {
     async function getStakedBalance() {
@@ -131,13 +143,7 @@ export const ManageModal = () => {
           //set original balances
           setOriginalStakeBalance(originalBalance.stakeContractBalanceTon);
           setOriginalSwapBalance(originalBalance.swapBalance);
-          setCurrentTosPrice(originalBalance.tosPrice)
-
-          console.log('**swapbalance**');
-
-          console.log(swapBalance);
-          console.log(originalBalance);
-          console.log(currentTosPrice)
+          setCurrentTosPrice(originalBalance.tosPrice);
 
           //calculate swap balance
           if (Number(swapBalance) <= 0) {
@@ -162,7 +168,6 @@ export const ManageModal = () => {
   useEffect(() => {
     async function btnDisablestakeL2() {
       if (globalWithdrawalDelay && miningEndTime) {
-        const currentBlock = await BASE_PROVIDER.getBlockNumber();
         const res =
           miningEndTime - Number(globalWithdrawalDelay) <= currentBlock;
         const checkBalance = Number(availableBalance) <= 0 ? true : false;
@@ -210,7 +215,7 @@ export const ManageModal = () => {
     };
 
     const btnDisableSwap = () => {
-      return Number(swapBalance) <= 0
+      return Number(swapBalance) <= 0 || miningEndTime <= currentBlock
         ? setSwapDisabled(true)
         : setSwapDisabled(false);
     };
@@ -246,6 +251,7 @@ export const ManageModal = () => {
     blockNumber,
     canWithdralAmount,
     saleClosed,
+    currentBlock,
   ]);
 
   const handleCloseManageModal = () => {
@@ -337,24 +343,24 @@ export const ManageModal = () => {
               </Flex>
               <Flex justifyContent="space-between" alignItems="center" h="55px">
                 <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
-                  Staked in Layer 2 (Seig:{' '}
-                  <strong style={{color: seigFontColors[colorMode]}}>
-                    {seigBalance}
-                  </strong>{' '}
-                  <strong
-                    style={{
-                      color: seigFontColors[colorMode],
-                      fontSize: '11px',
-                    }}>
-                    TON
-                  </strong>
-                  )
+                  Staked in Layer 2
                 </Text>
                 <Text
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                   fontWeight={500}
                   fontSize={'15px'}>
                   {stakedL2} TON
+                </Text>
+              </Flex>
+              <Flex justifyContent="space-between" alignItems="center" h="55px">
+                <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
+                  Seigniorage
+                </Text>
+                <Text
+                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+                  fontWeight={500}
+                  fontSize={'15px'}>
+                  {seigBalance} TON
                 </Text>
               </Flex>
               <Flex justifyContent="space-between" alignItems="center" h="55px">

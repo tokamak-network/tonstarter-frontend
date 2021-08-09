@@ -17,7 +17,6 @@ import {stake, unstake} from '../actions';
 import {convertNumber} from '../../../utils/number';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {fetchPositionRangePayload} from '../utils/fetchPositionRangePayload';
-import { formatEther } from '@ethersproject/units';
 import { ethers } from 'ethers';
 
 

@@ -24,7 +24,7 @@ import {useCheckBalance} from 'hooks/useCheckBalance';
 import {CloseButton} from 'components/Modal/CloseButton';
 import {convertToRay} from 'utils/number';
 import {LoadingDots} from 'components/Loader/LoadingDots';
-import swapArrow from 'assets/svgs/swap-arrow-icon.svg'
+import swapArrow from 'assets/svgs/swap-arrow-icon.svg';
 
 export const SwapModal = () => {
   const {sub} = useAppSelector(selectModalType);
@@ -36,21 +36,20 @@ export const SwapModal = () => {
   const {colorMode} = useColorMode();
   const [value, setValue] = useState<number>(0);
   const [swapValue, setSwapValue] = useState<number>(0);
-  const [tosPrice, setTosPrice] = useState('0');
 
   const {handleCloseConfirmModal} = useModal();
   const {checkBalance} = useCheckBalance();
 
   const setMax = useCallback((_e) => setValue(swapBalance), [swapBalance]);
-  
+
   const handleChange = useCallback((e) => {
-    setValue(e.target.value)
-    setTosPrice(currentTosPrice)
+    setValue(e.target.value);
+    /*eslint-disable*/
   }, []);
 
   useEffect(() => {
-    setSwapValue(value * Number(currentTosPrice))
-  }, [value])
+    setSwapValue(value * Number(currentTosPrice));
+  }, [value, currentTosPrice]);
 
   const handleCloseModal = () => {
     handleCloseConfirmModal();
@@ -82,12 +81,17 @@ export const SwapModal = () => {
               fontFamily={theme.fonts.titil}
               color={colorMode === 'light' ? 'gray.250' : 'white.100'}
               textAlign={'center'}
-              mb={'3px'}
-            >
+              mb={'3px'}>
               Swap
             </Heading>
-            <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'} w={'100%'}>
-              Current price {(currentTosPrice === '0') ? (<LoadingDots />) : (currentTosPrice)} TOS per TON
+            <Text
+              color="gray.175"
+              fontSize={'0.750em'}
+              textAlign={'center'}
+              w={'100%'}>
+              Current price{' '}
+              {currentTosPrice === '0' ? <LoadingDots /> : currentTosPrice} TOS
+              per TON
             </Text>
           </Box>
 
@@ -130,8 +134,7 @@ export const SwapModal = () => {
             flexDir={'row'}
             justifyContent={'center'}
             alignItems={'center'}
-            w={'full'}
-          >
+            w={'full'}>
             <Image src={swapArrow} w={5} h={5} alt="" />
           </Stack>
           <Stack
@@ -140,15 +143,14 @@ export const SwapModal = () => {
             flexDir={'row'}
             justifyContent={'center'}
             alignItems={'center'}
-            w={'full'}
-          >
+            w={'full'}>
             <Input
               variant={'outline'}
               borderWidth={0}
               textAlign={'center'}
               fontWeight={'bold'}
               fontSize={'4xl'}
-              value={swapValue}
+              value={Number(swapValue).toFixed(2)}
               width={'xs'}
               // mr={6}
               _focus={{
