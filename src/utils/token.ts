@@ -1,11 +1,14 @@
+import { DEPLOYED } from 'constants/index';
 import EthSymbol from 'assets/tokens/ETH-symbol.svg';
 import TonSymbol from 'assets/tokens/TON-symbol.svg';
 import TosSymbol from 'assets/tokens/TOS-symbol.svg';
 
+const {TON_ADDRESS, TOS_ADDRESS, WTON_ADDRESS} = DEPLOYED
+
 type EthAddressType = '0x0000000000000000000000000000000000000000';
-type TonAddressType = '0x44d4F5d89E9296337b8c48a332B3b2fb2C190CD0';
-type TosAddressType = '0x73a54e5c054aa64c1ae7373c2b5474d8afea08bd';
-type WtonAddressType = '0x709bef48982bbfd6f2d4be24660832665f53406c';
+type TonAddressType = typeof TON_ADDRESS;
+type TosAddressType = typeof TOS_ADDRESS;
+type WtonAddressType = typeof WTON_ADDRESS;
 // type WethAddressType = '';
 
 // type TokenTypes = 'eth' | 'ton';
@@ -17,9 +20,9 @@ const tokenAddresses: {
   wton: WtonAddressType;
 } = {
   eth: '0x0000000000000000000000000000000000000000',
-  ton: '0x44d4F5d89E9296337b8c48a332B3b2fb2C190CD0',
-  tos: '0x73a54e5c054aa64c1ae7373c2b5474d8afea08bd',
-  wton: '0x709bef48982bbfd6f2d4be24660832665f53406c',
+  ton: TON_ADDRESS,
+  tos: TOS_ADDRESS,
+  wton: WTON_ADDRESS,
 };
 
 const tokenInfo = {

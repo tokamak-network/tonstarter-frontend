@@ -1,4 +1,4 @@
-import React, {FC, useState, useRef} from 'react';
+import {FC, useState, useRef} from 'react';
 import {
   Column,
   useExpanded,
@@ -9,8 +9,8 @@ import {
 import {
   Text,
   Flex,
-  IconButton,
-  Tooltip,
+  // IconButton,
+  // Tooltip,
   Select,
   Box,
   Avatar,
@@ -19,7 +19,7 @@ import {
   useTheme,
 } from '@chakra-ui/react';
 // import tooltipIcon from 'assets/svgs/input_question_icon.svg';
-import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
+// import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {TriangleUpIcon, TriangleDownIcon} from '@chakra-ui/icons';
 import {useAppSelector} from 'hooks/useRedux';
 import {useEffect} from 'react';
@@ -28,7 +28,6 @@ import {selectTableType} from 'store/table.reducer';
 import {LoadingComponent} from 'components/Loading';
 import {chakra} from '@chakra-ui/react';
 import {getPoolName, checkTokenType} from '../../utils/token';
-import {convertNumber} from '../../utils/number';
 import {GET_POSITION, GET_POSITION_BY_ID} from './GraphQL/index';
 import {useQuery} from '@apollo/client';
 import {PositionTable} from './PositionTable';
@@ -70,13 +69,13 @@ export const PoolTable: FC<PoolTableProps> = ({
     getTableBodyProps,
     headerGroups,
     prepareRow,
-    canPreviousPage,
-    canNextPage,
-    pageOptions,
+    // canPreviousPage,
+    // canNextPage,
+    // pageOptions,
     page,
     nextPage,
     previousPage,
-    setPageSize,
+    // setPageSize,
     state: {pageIndex, pageSize},
   } = useTable(
     {columns, data, initialState: {pageIndex: 0}},
@@ -86,7 +85,7 @@ export const PoolTable: FC<PoolTableProps> = ({
   );
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const {colorMode} = useColorMode();
-  const theme = useTheme();
+  // const theme = useTheme();
   const focusTarget = useRef<any>([]);
 
   const {
@@ -299,6 +298,7 @@ export const PoolTable: FC<PoolTableProps> = ({
                     const data = cell.row.original;
                     const type = cell.column.id;
                     const {poolDayData} = data
+
                     const length = poolDayData.length - 1
                     const poolName = getPoolName(
                       data.token0.symbol,
@@ -424,7 +424,7 @@ export const PoolTable: FC<PoolTableProps> = ({
             })}
           </chakra.tbody>
         </chakra.table>
-        <Flex justifyContent="flex-end" my={4} alignItems="center">
+        {/* <Flex justifyContent="flex-end" my={4} alignItems="center">
           <Flex>
             <Tooltip label="Previous Page">
               <IconButton
@@ -518,7 +518,7 @@ export const PoolTable: FC<PoolTableProps> = ({
               ))}
             </Select>
           </Flex>
-        </Flex>
+        </Flex> */}
       </Box>
     </Flex>
   );
