@@ -27,7 +27,7 @@ export const fetchClaimablePayload = async (
     const StakeUniswap = new Contract(UniswapStaking_Address, StakeUniswapABI.abi, library);
     const expectedClaimable = await StakeUniswap.expectedPlusClaimableAmount(positionId, now)
     const miningId = await StakeUniswap.getMiningTokenId(positionId)
-    console.log(miningId.miningAmount.toString(), expectedClaimable.miningAmount.toString(), now)
+    // console.log(miningId.miningAmount.toString(), expectedClaimable.miningAmount.toString(), now)
     return {
       minable: miningId.miningAmount,
       expected: expectedClaimable.miningAmount

@@ -357,7 +357,9 @@ export const PoolTable: FC<PoolTableProps> = ({
                             </Text>
                             <Text>
                               ${' '}
-                              {Number(poolDayData[length].tvlUSD).toFixed(2)}
+                              {Number(poolDayData[length].tvlUSD).toLocaleString(undefined, {
+                                minimumFractionDigits: 2,
+                              })}
                             </Text>
                           </>
                         ) : (
@@ -374,7 +376,9 @@ export const PoolTable: FC<PoolTableProps> = ({
                             </Text>
                             <Text>
                               ${' '}
-                              {Number(poolDayData[length].volumeUSD).toFixed(2)}
+                              {Number(poolDayData[length].volumeUSD).toLocaleString(undefined, {
+                                minimumFractionDigits: 2,
+                              })}
                             </Text>
                           </>
                         ) : (
@@ -390,7 +394,9 @@ export const PoolTable: FC<PoolTableProps> = ({
                               Fees(24hrs)
                             </Text>
                             <Text>
-                              $ {Number(poolDayData[length].feesUSD).toFixed(2)}
+                              $ {Number(poolDayData[length].feesUSD).toLocaleString(undefined, {
+                                minimumFractionDigits: 2,
+                              })}
                             </Text>
                           </>
                         ) : (
