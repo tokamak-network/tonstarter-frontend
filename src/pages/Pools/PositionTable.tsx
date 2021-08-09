@@ -193,6 +193,7 @@ export const PositionTable: FC<PositionTableProps> = ({
     previousPage();
   };
 
+  
   const goNextPage = () => {
     setIsOpen('');
     nextPage();
