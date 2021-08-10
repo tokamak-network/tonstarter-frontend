@@ -22,15 +22,18 @@ import {PageHeader} from 'components/PageHeader';
 // import {LoadingComponent} from 'components/Loading';
 import {useQuery} from '@apollo/client';
 import {
-  GET_TOS_POOL,
-  // GET_BASE_POOL
+  // GET_TOS_POOL,
+  GET_BASE_POOL
 } from './GraphQL/index';
 import { selectTransactionType } from 'store/refetch.reducer';
 import { DEPLOYED } from '../../constants/index';
 import { useUser } from '../../hooks/useUser';
 
 
-const { TOS_ADDRESS, BasePool_Address } = DEPLOYED;
+const {
+  // TOS_ADDRESS,
+  BasePool_Address
+} = DEPLOYED;
 
 
 export const Pools = () => {
@@ -75,31 +78,32 @@ export const Pools = () => {
     [],
   );
   
-  // const basePool = useQuery(GET_BASE_POOL, {
-  //   variables: {address: BasePool_Address}
-  // });
-
-  const tosPool = useQuery(GET_TOS_POOL, {
-    variables: {address: [TOS_ADDRESS.toLowerCase()]}
+  const basePool = useQuery(GET_BASE_POOL, {
+    variables: {address: BasePool_Address}
   });
+
+  // const tosPool = useQuery(GET_TOS_POOL, {
+  //   variables: {address: [TOS_ADDRESS.toLowerCase()]}
+  // });
   
   const [pool, setPool] = useState([]);
   useEffect(() => {
     function getPool () {
       // const poolArr = basePool.loading || tosPool.loading ? [] : basePool.data.pools.concat(tosPool.data.pools)
-      const poolArr = tosPool.loading ? [] : tosPool.data.pools
+      // const poolArr = tosPool.loading ? [] : tosPool.data.pools
+      const poolArr = basePool.loading ? [] : basePool.data.pools
       setPool(poolArr)
     }
     getPool()
   }, [
     transactionType,
     blockNumber,
-    // basePool.loading,
-    tosPool.loading,
-    // basePool.error,
-    tosPool.error,
-    // basePool.data,
-    tosPool.data,
+    basePool.loading,
+    // tosPool.loading,
+    basePool.error,
+    // tosPool.error,
+    basePool.data,
+    // tosPool.data,
   ])
 
   return (
@@ -113,11 +117,11 @@ export const Pools = () => {
           />
         </Box>
         <Box fontFamily={theme.fonts.roboto}>
-          {tosPool.loading? '' :
+          {basePool.loading? '' :
           <PoolTable
             data={pool}
             columns={columns}
-            isLoading={tosPool.loading}
+            isLoading={basePool.loading}
             address={account}
             library={library}
           />
