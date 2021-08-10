@@ -1,4 +1,4 @@
-import { getSigner } from 'utils/contract';
+import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import store from 'store';
 import {setTxPending} from 'store/tx.reducer';
@@ -12,21 +12,25 @@ type Stake = {
   userAddress: string | null | undefined;
   library: any;
   // handleCloseModal: any;
-}
-const {UniswapStaking_Address, NPM_Address} = DEPLOYED;
+};
+const {UniswapStaking_Address} = DEPLOYED;
 
 export const stake = async (args: Stake) => {
-  const { userAddress, tokenId, library } = args;
+  const {userAddress, tokenId, library} = args;
   if (userAddress === null || userAddress === undefined) {
     return;
   }
-  
-  const StakeUniswap = new Contract(UniswapStaking_Address, StakeUniswapABI.abi, library);
+
+  const StakeUniswap = new Contract(
+    UniswapStaking_Address,
+    StakeUniswapABI.abi,
+    library,
+  );
   const signer = getSigner(library, userAddress);
-  
+
   try {
-    const receipt = await StakeUniswap.connect(signer)?.stake(tokenId)
-  
+    const receipt = await StakeUniswap.connect(signer)?.stake(tokenId);
+
     store.dispatch(setTxPending({tx: true}));
     if (receipt) {
       toastWithReceipt(receipt, setTxPending, 'Pool');
@@ -47,4 +51,4 @@ export const stake = async (args: Stake) => {
       }),
     );
   }
-}
+};

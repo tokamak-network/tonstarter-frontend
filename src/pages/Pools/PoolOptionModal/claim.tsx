@@ -19,6 +19,7 @@ import {closeModal, selectModalType} from 'store/modal.reducer';
 import {useCallback, useState} from 'react';
 import {fetchClaimablePayload} from '../utils/fetchPositionPayload';
 import {ethers} from 'ethers';
+import {CloseButton} from 'components/Modal/CloseButton';
 
 export const ClaimOptionModal = () => {
   const {account, library} = useWeb3React();
@@ -56,7 +57,7 @@ export const ClaimOptionModal = () => {
     <Modal
       isOpen={data.modal === 'claimPool' ? true : false}
       isCentered
-      onClose={() => dispatch(closeModal())}>
+      onClose={handleCloseModal}>
       <ModalOverlay />
       <ModalContent
         fontFamily={theme.fonts.roboto}
@@ -64,6 +65,7 @@ export const ClaimOptionModal = () => {
         w="350px"
         pt="25px"
         pb="25px">
+        <CloseButton closeFunc={handleCloseModal}></CloseButton>
         <ModalBody p={0}>
           <Box
             pb={'1.250em'}
