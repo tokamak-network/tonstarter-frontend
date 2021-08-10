@@ -229,7 +229,7 @@ export const PositionTable: FC<PositionTableProps> = ({
               h={'80px'}
               pb={'3px'}
               bg={colorMode === 'light' ? 'white.100' : ''}
-              border={
+              borderX={
                 colorMode === 'light'
                   ? 'solid 1px #f4f6f8'
                   : 'solid 1px #373737'
@@ -302,7 +302,7 @@ export const PositionTable: FC<PositionTableProps> = ({
                   pb={'3px'}
                   bg={colorMode === 'light' ? 'white.100' : ''}
                   border={colorMode === 'light' ? '' : 'solid 1px #373737'}
-                  borderTopWidth={0}
+                  borderTopWidth={1}
                   borderBottomRadius={index === page.length - 1 ? 10 : ''}>
                   <chakra.td
                     display={'flex'}

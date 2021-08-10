@@ -278,14 +278,14 @@ export const PoolTable: FC<PoolTableProps> = ({
                       ? '0px'
                       : '10px'
                   }
-                  borderBottom={
-                    isOpen === id && filteredPosition.length > 0 ? '1px' : ''
-                  }
-                  borderBottomColor={
-                    isOpen === id && filteredPosition.length > 0
-                      ? '#f4f6f8'
-                      : ''
-                  }
+                  // borderBottom={
+                  //   isOpen === id && filteredPosition.length > 0 ? '1px' : ''
+                  // }
+                  // borderBottomColor={
+                  //   isOpen === id && filteredPosition.length > 0
+                  //     ? '#f4f6f8'
+                  //     : ''
+                  // }
                   mt={'20px'}
                   w="100%"
                   bg={colorMode === 'light' ? 'white.100' : 'black.200'}
