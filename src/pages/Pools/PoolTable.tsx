@@ -265,7 +265,7 @@ export const PoolTable: FC<PoolTableProps> = ({
                   h={16}
                   key={i}
                   onClick={() => {
-                    if (isOpen === id && filteredPosition.length > 0) {
+                    if (address && isOpen === id && filteredPosition.length > 0) {
                       setIsOpen('');
                     } else {
                       clickOpen(id, i);

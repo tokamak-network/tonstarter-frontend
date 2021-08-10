@@ -39,7 +39,7 @@ export const fetchClaimablePayload = async (
 };
 
 const getPositionInfo = async (library: any, account: string) => {
-  if (library) {
+  if (library && account) {
     const StakeUniswap = new Contract(
       UniswapStaking_Address,
       StakeUniswapABI.abi,

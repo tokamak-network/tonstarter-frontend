@@ -66,6 +66,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
   const {btnStyle} = theme;
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [stakingBtnDisable, setStakingBtnDisable] = useState(true);
+  const [unStakingBtnDisable, setUnStakingBtnDisable] = useState(true);
   const [claimBtnDisable, setClaimBtnDisable] = useState(true);
   const {address, library} = store.getState().user.data;
   const localBtnStyled = {
@@ -107,15 +108,23 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
 
     async function setStakingBtn() {
       const inRange = await getRange();
-      if (owner === address.toLowerCase() && !stakingDisable && inRange) {
+      if (address && owner === address.toLowerCase() && !stakingDisable && inRange) {
         setStakingBtnDisable(false);
       } else {
         setStakingBtnDisable(true);
       }
     }
 
+    async function setUnStakingBtn() {
+      if (address && owner === address.toLowerCase()) {
+        setUnStakingBtnDisable(false);
+      } else {
+        setUnStakingBtnDisable(true);
+      }
+    }
+
     function setClaimBtn() {
-      if (owner !== address.toLowerCase() && lpData) {
+      if (address && owner !== address.toLowerCase() && lpData) {
         setClaimBtnDisable(false);
       } else {
         setClaimBtnDisable(true);
@@ -132,9 +141,10 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
       }
     }
 
-    setSwapable();
     getRange();
+    setSwapable();
     setStakingBtn();
+    setUnStakingBtn();
     setClaimBtn();
   }, [
     lpData,
@@ -172,7 +182,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
 
   return (
     <Flex justifyContent={'space-between'}>
-      {owner === address.toLowerCase()
+      {!address ? '' : owner === address.toLowerCase()
         ? getCircle('not staked')
         : getCircle('staked')}
       {range ? getRange('range') : getRange('not range')}
@@ -327,10 +337,10 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
               Approve
             </Button>
             <Button
+              {...localBtnStyled.btn()}
               {...(stakingBtnDisable
                 ? {...btnStyle.btnDisable({colorMode})}
                 : {...btnStyle.btnAble()})}
-              {...localBtnStyled.btn()}
               isDisabled={stakingBtnDisable}
               onClick={() =>
                 stake({
@@ -343,10 +353,10 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
             </Button>
             <Button
               {...localBtnStyled.btn()}
-              {...(owner === address.toLowerCase()
+              {...(unStakingBtnDisable
                 ? {...btnStyle.btnDisable({colorMode})}
                 : {...btnStyle.btnAble()})}
-              disabled={owner === address.toLowerCase()}
+              disabled={unStakingBtnDisable}
               onClick={() =>
                 unstake({
                   tokenId: id,
