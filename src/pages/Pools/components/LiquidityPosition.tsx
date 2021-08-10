@@ -65,6 +65,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
   const {btnStyle} = theme;
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [stakingBtnDisable, setStakingBtnDisable] = useState(true);
+  const [unStakingBtnDisable, setUnStakingBtnDisable] = useState(true);
   const [claimBtnDisable, setClaimBtnDisable] = useState(true);
   const {address, library} = store.getState().user.data;
   const localBtnStyled = {
@@ -106,15 +107,23 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
 
     async function setStakingBtn() {
       const inRange = await getRange();
-      if (owner === address.toLowerCase() && !stakingDisable && inRange) {
+      if (address && owner === address.toLowerCase() && !stakingDisable && inRange) {
         setStakingBtnDisable(false);
       } else {
         setStakingBtnDisable(true);
       }
     }
 
+    async function setUnStakingBtn() {
+      if (address && owner === address.toLowerCase()) {
+        setUnStakingBtnDisable(false);
+      } else {
+        setUnStakingBtnDisable(true);
+      }
+    }
+
     function setClaimBtn() {
-      if (owner !== address.toLowerCase() && lpData) {
+      if (address && owner !== address.toLowerCase() && lpData) {
         setClaimBtnDisable(false);
       } else {
         setClaimBtnDisable(true);
@@ -131,9 +140,10 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
       }
     }
 
-    setSwapable();
     getRange();
+    setSwapable();
     setStakingBtn();
+    setUnStakingBtn();
     setClaimBtn();
   }, [
     lpData,
@@ -260,10 +270,10 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
         )}
         <Button
           {...localBtnStyled.btn()}
-          {...(owner === address.toLowerCase()
+          {...(unStakingBtnDisable
             ? {...btnStyle.btnDisable({colorMode})}
             : {...btnStyle.btnAble()})}
-          disabled={owner === address.toLowerCase()}
+          disabled={unStakingBtnDisable}
           onClick={() =>
             unstake({
               tokenId: id,

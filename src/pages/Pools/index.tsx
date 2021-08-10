@@ -96,6 +96,7 @@ export const Pools = () => {
     }
     getPool()
   }, [
+    account,
     transactionType,
     blockNumber,
     basePool.loading,
