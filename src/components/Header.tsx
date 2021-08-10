@@ -240,8 +240,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
         <NavLink
           to="/pools"
           className={match?.isExact ? 'link-match' : 'link'}
-          style={{zIndex: 100}}
-        >
+          style={{zIndex: 100}}>
           Pools
         </NavLink>
         <Tooltip
@@ -293,7 +292,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           onClick={(e) => {
             e.preventDefault();
             window.open(
-              'https://medium.com/onther-tech/tonstarter-guide-en-kr-6b7cad5773f1',
+              'https://medium.com/onther-tech/wton-tos-lp-staking-reward-system-en-kr-881e57ec0568',
             );
           }}>
           <Text className={match?.isExact ? 'link-match' : 'link'}>Guide</Text>
