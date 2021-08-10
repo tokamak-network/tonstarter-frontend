@@ -72,7 +72,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
       bg: 'blue.500',
       color: 'white.100',
       borderRadius: '4px',
-      w: '105px',
+      w: '125px',
       h: '38px',
       py: '10px',
       px: '29.5px',
@@ -195,7 +195,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
           }>
           Claim
         </Button>
-        <Button
+        {/* <Button
           {...(stakingBtnDisable
             ? {...btnStyle.btnAble()}
             : {...btnStyle.btnDisable({colorMode})})}
@@ -209,7 +209,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
             })
           }>
           Approve
-        </Button>
+        </Button> */}
         <Button
           {...(stakingBtnDisable
             ? {...btnStyle.btnAble()}
@@ -223,7 +223,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
               library: library,
             })
           }>
-          Staking
+          Stake
         </Button>
         <Button
           {...localBtnStyled.btn()}
@@ -238,7 +238,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
           }
           // dispatch(openModal({ type:'unstakePool', data: {id: id, lpData: lpData.miningAmount}}))}
         >
-          Unstaking
+          Unstake
         </Button>
         <Button
           {...localBtnStyled.btn()}
