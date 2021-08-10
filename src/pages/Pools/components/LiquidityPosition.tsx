@@ -12,7 +12,7 @@ import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {openModal} from 'store/modal.reducer';
 // import { getPoolName } from '../../utils/token';
 import store from '../../../store';
-import {stake, unstake, approve} from '../actions';
+import {stake, unstake, approve, stakePermit} from '../actions';
 import {convertNumber} from '../../../utils/number';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {fetchPositionRangePayload} from '../utils/fetchPositionRangePayload';
@@ -25,6 +25,7 @@ type LiquidityPositionProps = {
   owner: string;
   lpData: any;
   poolName: string;
+  toggle: string;
   id: string;
 };
 
@@ -57,6 +58,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
   stakingDisable,
   poolName,
   lpData,
+  toggle,
   id,
 }) => {
   const dispatch = useAppDispatch();
@@ -72,7 +74,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
       bg: 'blue.500',
       color: 'white.100',
       borderRadius: '4px',
-      w: '125px',
+      w: toggle === '4button' ? '125px' : '105px',
       h: '38px',
       py: '10px',
       px: '29.5px',
@@ -143,7 +145,12 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
         ? getCircle('not staked')
         : getCircle('staked')}
       {range ? getRange('range') : getRange('not range')}
-      <Flex ml={'32px'} w={'170px'} mr={'23px'} py={2}>
+      <Flex 
+        ml={'32px'}
+        w={'170px'}
+        mr={'33px'}
+        py={2}
+      >
         <Text>{poolName}</Text>
         <Text fontSize={'14px'} pt={1}>
           _#{id}
@@ -154,7 +161,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
         fontWeight={300}
         fontSize={'12px'}
         direction={'row'}
-        w={'180px'}
+        w={'185px'}
         mr={'0px'}
         py={3}>
         <Text color={'#2a72e5'} mr={1}>
@@ -175,6 +182,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
         pos="relative"
         templateColumns={'repeat(5, 1fr)'}
         gap={3}
+        w={'575px'}
         mr={'4px'}>
         <Button
           {...(claimBtnDisable
@@ -195,36 +203,58 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
           }>
           Claim
         </Button>
-        {/* <Button
-          {...(stakingBtnDisable
-            ? {...btnStyle.btnAble()}
-            : {...btnStyle.btnDisable({colorMode})})}
-          {...localBtnStyled.btn()}
-          isDisabled={stakingBtnDisable}
-          onClick={() =>
-            approve({
-              tokenId: id,
-              userAddress: address,
-              library: library,
-            })
-          }>
-          Approve
-        </Button> */}
-        <Button
-          {...(stakingBtnDisable
-            ? {...btnStyle.btnAble()}
-            : {...btnStyle.btnDisable({colorMode})})}
-          {...localBtnStyled.btn()}
-          isDisabled={stakingBtnDisable}
-          onClick={() =>
-            stake({
-              tokenId: id,
-              userAddress: address,
-              library: library,
-            })
-          }>
-          Stake
-        </Button>
+        {toggle ==='4button' ? (
+          <> 
+            <Button
+              {...(stakingBtnDisable
+                ? {...btnStyle.btnAble()}
+                : {...btnStyle.btnDisable({colorMode})})}
+              {...localBtnStyled.btn()}
+              isDisabled={stakingBtnDisable}
+              onClick={() =>
+                stakePermit({
+                  tokenId: id,
+                  userAddress: address,
+                  library: library,
+                })
+              }>
+              Stake
+            </Button> 
+          </>
+        ) : (
+          <> 
+            <Button
+              {...(stakingBtnDisable
+                ? {...btnStyle.btnAble()}
+                : {...btnStyle.btnDisable({colorMode})})}
+              {...localBtnStyled.btn()}
+              isDisabled={stakingBtnDisable}
+              onClick={() =>
+                approve({
+                  tokenId: id,
+                  userAddress: address,
+                  library: library,
+                })
+              }>
+              Approve
+            </Button>
+            <Button
+              {...(stakingBtnDisable
+                ? {...btnStyle.btnAble()}
+                : {...btnStyle.btnDisable({colorMode})})}
+              {...localBtnStyled.btn()}
+              isDisabled={stakingBtnDisable}
+              onClick={() =>
+                stake({
+                  tokenId: id,
+                  userAddress: address,
+                  library: library,
+                })
+              }>
+              Stake
+            </Button>
+          </>
+        )}
         <Button
           {...localBtnStyled.btn()}
           disabled={owner === address.toLowerCase()}
@@ -236,7 +266,6 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
               miningAmount: lpData.miningAmount,
             })
           }
-          // dispatch(openModal({ type:'unstakePool', data: {id: id, lpData: lpData.miningAmount}}))}
         >
           Unstake
         </Button>

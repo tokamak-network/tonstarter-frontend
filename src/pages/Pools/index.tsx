@@ -21,13 +21,16 @@ import {PoolTable} from './PoolTable';
 import {PageHeader} from 'components/PageHeader';
 // import {LoadingComponent} from 'components/Loading';
 import {useQuery} from '@apollo/client';
-import { GET_TOS_POOL } from './GraphQL/index';
+import {
+  GET_TOS_POOL,
+  // GET_BASE_POOL
+} from './GraphQL/index';
 import { selectTransactionType } from 'store/refetch.reducer';
 import { DEPLOYED } from '../../constants/index';
 import { useUser } from '../../hooks/useUser';
 
 
-const { TOS_ADDRESS } = DEPLOYED;
+const { TOS_ADDRESS, BasePool_Address } = DEPLOYED;
 
 
 export const Pools = () => {

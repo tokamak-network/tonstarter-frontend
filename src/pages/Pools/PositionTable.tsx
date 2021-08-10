@@ -1,17 +1,29 @@
 import {FC, useState, useMemo, useEffect, useRef} from 'react';
 import {useExpanded, usePagination, useTable, useSortBy} from 'react-table';
-import {Text, Flex, Select, Box, useColorMode} from '@chakra-ui/react';
+import {
+  Text, 
+  Flex, 
+  Select, 
+  Box, 
+  useColorMode, 
+  Switch,
+  // Tooltip,
+  // IconButton,
+  // Center
+} from '@chakra-ui/react';
 // import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {useAppSelector} from 'hooks/useRedux';
 import {getPoolName} from '../../utils/token';
 import {selectTableType} from 'store/table.reducer';
-// import {LoadingComponent} from 'components/Loading';
-import {chakra} from '@chakra-ui/react';
+import {
+  chakra,
+  // useTheme
+} from '@chakra-ui/react';
 import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
-// import store from '../../store';
-// import {selectTransactionType} from 'store/refetch.reducer';
 import {LiquidityPosition} from './components/LiquidityPosition';
+// import { useAppDispatch } from '../../store/index';
+
 
 type PositionTableProps = {
   // columns: Column[];
@@ -148,6 +160,7 @@ export const PositionTable: FC<PositionTableProps> = ({
   const {colorMode} = useColorMode();
   // const theme = useTheme();
   const focusTarget = useRef<any>([]);
+  const [toggle, setToggle] = useState('4button');
 
   const {
     data: {contractAddress, index},
@@ -236,13 +249,56 @@ export const PositionTable: FC<PositionTableProps> = ({
                   {getRangeStatus('range', colorMode)}
                   {getRangeStatus('not range', colorMode)}
                 </Flex>
+                <Flex 
+                  justifyContent={'center'}
+                  alignContent={'center'}
+                  w={'190px'}
+                  mr={'280px'}
+                  py={1}
+                >
+                  <Text
+                    fontSize={'12px'}
+                    mr={2}
+                    color={'#828d99'}
+                  >
+                    Mode Selection
+                  </Text>
+                  <Switch
+                    onChange={() =>
+                      setToggle(toggle === '4button' ? '5button' : '4button')
+                    }
+                    value={0}
+                  />
+                  {toggle === '4button' ? (
+                    <>
+                      <Text
+                        fontSize={'12px'}
+                        ml={2}
+                        color={'#304156'}
+                      >
+                        Basic
+                      </Text>
+                    </>
+                  ) : (
+                    <>
+                      <Text
+                        fontSize={'12px'}
+                        ml={2}
+                        color={'#304156'}
+                      >
+                        Advanced
+                      </Text>
+                    </>
+                  )}
+                </Flex>
                 <Select
                   w={'137px'}
                   h={'32px'}
                   color={'#86929d'}
                   fontSize={'13px'}
                   placeholder="On sale Sort"
-                  onChange={onChangeSelectBox}></Select>
+                  onChange={onChangeSelectBox}
+                />
               </chakra.td>
             </chakra.tr>
             {page.map((row: any, i) => {
@@ -278,6 +334,7 @@ export const PositionTable: FC<PositionTableProps> = ({
                       owner={owner}
                       lpData={lpData}
                       stakingDisable={stakingDisable}
+                      toggle={toggle}
                       id={id}
                     />
                   </chakra.td>

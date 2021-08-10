@@ -17,7 +17,7 @@ type Stake = {
 }
 const {UniswapStaking_Address} = DEPLOYED;
 
-export const stake = async (args: Stake) => {
+export const stakePermit = async (args: Stake) => {
   const { userAddress, tokenId, library } = args;
   if (userAddress === null || userAddress === undefined) {
     return;
