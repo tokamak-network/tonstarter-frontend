@@ -250,7 +250,6 @@ export const PoolTable: FC<PoolTableProps> = ({
             flexDirection="column">
             {page.map((row: any, i) => {
               const {id} = row.original;
-              console.log(address)
               const filteredPosition = positions.filter(
                 (row: any) => id === row.pool.id,
               );

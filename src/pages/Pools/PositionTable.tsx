@@ -1,11 +1,11 @@
 import {FC, useState, useMemo, useEffect, useRef} from 'react';
 import {useExpanded, usePagination, useTable, useSortBy} from 'react-table';
 import {
-  Text, 
-  Flex, 
-  Select, 
-  Box, 
-  useColorMode, 
+  Text,
+  Flex,
+  Select,
+  Box,
+  useColorMode,
   Switch,
   // Tooltip,
   // IconButton,
@@ -23,7 +23,6 @@ import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
 import {LiquidityPosition} from './components/LiquidityPosition';
 // import { useAppDispatch } from '../../store/index';
-
 
 type PositionTableProps = {
   // columns: Column[];
@@ -226,21 +225,27 @@ export const PositionTable: FC<PositionTableProps> = ({
             display="flex"
             flexDirection="column">
             <chakra.tr
+              w={'100%'}
               h={'80px'}
               pb={'3px'}
               bg={colorMode === 'light' ? 'white.100' : ''}
-              border={colorMode === 'light' ? '' : 'solid 1px #373737'}
+              border={
+                colorMode === 'light'
+                  ? 'solid 1px #f4f6f8'
+                  : 'solid 1px #373737'
+              }
               borderTopWidth={0}>
               <chakra.td
                 display={'flex'}
-                justifyContent={'space-between'}
-                px={12}
-                pl={'54px'}
-                py={5}
+                alignItems="center"
+                justifyContent="center"
+                pt={'28px'}
                 w={'100%'}
                 margin={0}
-                colSpan={visibleColumns.length}>
-                <Flex>
+                colSpan={visibleColumns.length}
+                // borderBottomWidth={1}
+              >
+                <Flex w={360}>
                   {getStatus('staked', colorMode)}
                   {getStatus('not staked', colorMode)}
                   <Text fontSize={'11px'} py={2} mr={3}>
@@ -249,49 +254,27 @@ export const PositionTable: FC<PositionTableProps> = ({
                   {getRangeStatus('range', colorMode)}
                   {getRangeStatus('not range', colorMode)}
                 </Flex>
-                <Flex 
-                  justifyContent={'center'}
-                  alignContent={'center'}
-                  w={'190px'}
-                  mr={'280px'}
-                  py={1}
-                >
-                  <Text
-                    fontSize={'12px'}
-                    mr={2}
-                    color={'#828d99'}
-                  >
+                <Flex w={500} alignItems="center">
+                  <Text fontSize={'12px'} mr={2} color={'#828d99'}>
                     Mode Selection
                   </Text>
                   <Switch
+                    size="md"
+                    colorScheme={'green'}
                     onChange={() =>
                       setToggle(toggle === '4button' ? '5button' : '4button')
                     }
                     value={0}
                   />
-                  {toggle === '4button' ? (
-                    <>
-                      <Text
-                        fontSize={'12px'}
-                        ml={2}
-                        color={'#304156'}
-                      >
-                        Basic
-                      </Text>
-                    </>
-                  ) : (
-                    <>
-                      <Text
-                        fontSize={'12px'}
-                        ml={2}
-                        color={'#304156'}
-                      >
-                        Advanced
-                      </Text>
-                    </>
-                  )}
+                  <Text
+                    fontSize={'12px'}
+                    ml={2}
+                    color={colorMode === 'light' ? '#304156' : 'white.100'}>
+                    {toggle === '4button' ? 'Basic' : 'Advance'}
+                  </Text>
                 </Flex>
                 <Select
+                  alignSelf="flex-end"
                   w={'137px'}
                   h={'32px'}
                   color={'#86929d'}
@@ -301,7 +284,7 @@ export const PositionTable: FC<PositionTableProps> = ({
                 />
               </chakra.td>
             </chakra.tr>
-            {page.map((row: any, i) => {
+            {page.map((row: any, index: number) => {
               const {id, pool, owner} = row.original;
               const poolName = getPoolName(
                 pool.token0.symbol,
@@ -313,13 +296,14 @@ export const PositionTable: FC<PositionTableProps> = ({
               return [
                 <chakra.tr
                   w={'100%'}
-                  key={i}
+                  key={'pool_page_' + index}
                   // mt={2}
                   h={'80px'}
                   pb={'3px'}
                   bg={colorMode === 'light' ? 'white.100' : ''}
                   border={colorMode === 'light' ? '' : 'solid 1px #373737'}
-                  borderTopWidth={0}>
+                  borderTopWidth={0}
+                  borderBottomRadius={index === page.length - 1 ? 10 : ''}>
                   <chakra.td
                     display={'flex'}
                     w={'100%'}
@@ -341,9 +325,9 @@ export const PositionTable: FC<PositionTableProps> = ({
                 </chakra.tr>,
               ];
             })}
-            <chakra.tr
+            {/* <chakra.tr
               w={'100%'}
-              h={'10px'}
+              h={'50px'}
               // mt={-5}
               pt={'5px'}
               pr={9}
@@ -358,8 +342,8 @@ export const PositionTable: FC<PositionTableProps> = ({
                 w={'100%'}
                 margin={0}
                 justifyContent="flex-end"
-                colSpan={visibleColumns.length}>
-                {/* <Flex justifyContent="flex-end" my={4} alignItems="center">
+                colSpan={visibleColumns.length}> */}
+            {/* <Flex justifyContent="flex-end" my={4} alignItems="center">
                   <Flex>
                     <Tooltip label="Previous Page">
                       <IconButton
@@ -457,8 +441,8 @@ export const PositionTable: FC<PositionTableProps> = ({
                     ))}
                   </Select>
                 </Flex> */}
-              </chakra.td>
-            </chakra.tr>
+            {/* </chakra.td>
+            </chakra.tr> */}
           </chakra.tbody>
         </chakra.table>
       </Box>
