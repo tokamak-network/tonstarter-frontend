@@ -16,9 +16,7 @@ import {stake, unstake, approve, stakePermit} from '../actions';
 import {convertNumber} from '../../../utils/number';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {fetchPositionRangePayload} from '../utils/fetchPositionRangePayload';
-import { ethers } from 'ethers';
-
-
+import {ethers} from 'ethers';
 
 type LiquidityPositionProps = {
   stakingDisable: boolean;
@@ -102,12 +100,12 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
         const result = await rangePayload({library, id, address});
         const inRange = result !== undefined ? result : false;
         setRange(inRange);
-        return result
+        return result;
       }
     }
 
     async function setStakingBtn() {
-      const inRange = await getRange()
+      const inRange = await getRange();
       if (owner === address.toLowerCase() && !stakingDisable && inRange) {
         setStakingBtnDisable(false);
       } else {
@@ -123,21 +121,30 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
       }
     }
 
-    function setSwapable () {
+    function setSwapable() {
       const claimed = lpData?.miningAmount;
       const expected = lpData?.minableAmount;
       if (claimed && expected) {
-        const addedValue = claimed.add(expected)
+        const addedValue = claimed.add(expected);
         const expectedAmount = ethers.utils.formatUnits(addedValue, 18);
-        setSwapableAmount(Number(expectedAmount).toFixed(9))
+        setSwapableAmount(Number(expectedAmount).toFixed(9));
       }
     }
 
-    setSwapable()
+    setSwapable();
     getRange();
     setStakingBtn();
     setClaimBtn();
-  }, [lpData, stakingDisable, transactionType, blockNumber, address, id, library, owner]);
+  }, [
+    lpData,
+    stakingDisable,
+    transactionType,
+    blockNumber,
+    address,
+    id,
+    library,
+    owner,
+  ]);
 
   return (
     <Flex justifyContent={'space-between'}>
@@ -145,12 +152,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
         ? getCircle('not staked')
         : getCircle('staked')}
       {range ? getRange('range') : getRange('not range')}
-      <Flex 
-        ml={'32px'}
-        w={'170px'}
-        mr={'33px'}
-        py={2}
-      >
+      <Flex ml={'32px'} w={'170px'} mr={'33px'} py={2}>
         <Text>{poolName}</Text>
         <Text fontSize={'14px'} pt={1}>
           _#{id}
@@ -185,10 +187,11 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
         w={'575px'}
         mr={'4px'}>
         <Button
-          {...(claimBtnDisable
-            ? {...btnStyle.btnAble()}
-            : {...btnStyle.btnDisable({colorMode})})}
           {...localBtnStyled.btn()}
+          color={'#838383'}
+          {...(claimBtnDisable
+            ? {...btnStyle.btnDisable({colorMode})}
+            : {...btnStyle.btnAble()})}
           isDisabled={claimBtnDisable}
           onClick={() =>
             dispatch(
@@ -203,13 +206,13 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
           }>
           Claim
         </Button>
-        {toggle ==='4button' ? (
-          <> 
+        {toggle === '4button' ? (
+          <>
             <Button
-              {...(stakingBtnDisable
-                ? {...btnStyle.btnAble()}
-                : {...btnStyle.btnDisable({colorMode})})}
               {...localBtnStyled.btn()}
+              {...(stakingBtnDisable
+                ? {...btnStyle.btnDisable({colorMode})}
+                : {...btnStyle.btnAble()})}
               isDisabled={stakingBtnDisable}
               onClick={() =>
                 stakePermit({
@@ -219,15 +222,15 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
                 })
               }>
               Stake
-            </Button> 
+            </Button>
           </>
         ) : (
-          <> 
+          <>
             <Button
-              {...(stakingBtnDisable
-                ? {...btnStyle.btnAble()}
-                : {...btnStyle.btnDisable({colorMode})})}
               {...localBtnStyled.btn()}
+              {...(stakingBtnDisable
+                ? {...btnStyle.btnDisable({colorMode})}
+                : {...btnStyle.btnAble()})}
               isDisabled={stakingBtnDisable}
               onClick={() =>
                 approve({
@@ -240,8 +243,8 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
             </Button>
             <Button
               {...(stakingBtnDisable
-                ? {...btnStyle.btnAble()}
-                : {...btnStyle.btnDisable({colorMode})})}
+                ? {...btnStyle.btnDisable({colorMode})}
+                : {...btnStyle.btnAble()})}
               {...localBtnStyled.btn()}
               isDisabled={stakingBtnDisable}
               onClick={() =>
@@ -257,6 +260,9 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
         )}
         <Button
           {...localBtnStyled.btn()}
+          {...(owner === address.toLowerCase()
+            ? {...btnStyle.btnDisable({colorMode})}
+            : {...btnStyle.btnAble()})}
           disabled={owner === address.toLowerCase()}
           onClick={() =>
             unstake({
@@ -265,8 +271,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
               library: library,
               miningAmount: lpData.miningAmount,
             })
-          }
-        >
+          }>
           Unstake
         </Button>
         <Button

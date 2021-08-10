@@ -427,6 +427,7 @@ export const Staking = () => {
             subtitle={
               'Put your tokens into TONStarter and earn reward without losing principal'
             }
+            secondSubTitle={'TON base unit principal'}
           />
         </Box>
         <Box fontFamily={theme.fonts.roboto}>
