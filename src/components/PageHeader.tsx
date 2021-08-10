@@ -23,7 +23,7 @@ export const PageHeader: FC<HeadProps> = ({title, subtitle}) => {
           fontWeight={'bold'}
           fontSize={'38'}
           className={'page-title'}
-          color={theme.colors.gray[250]}
+          color={colorMode === 'light' ? theme.colors.gray[250] : '#ffffff'}
           fontFamily={theme.fonts.titil}
           mb="10px">
           {title}
@@ -32,9 +32,7 @@ export const PageHeader: FC<HeadProps> = ({title, subtitle}) => {
         <Text
           fontSize={16}
           className={'page-title'}
-          color={
-            colorMode === 'light' ? theme.colors.gray[400] : 'currentcolor'
-          }
+          color={colorMode === 'light' ? theme.colors.gray[400] : '#9d9ea5'}
           fontFamily={theme.fonts.titil}>
           {subtitle}
         </Text>
