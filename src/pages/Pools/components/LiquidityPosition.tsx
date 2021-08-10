@@ -7,6 +7,7 @@ import {
   useTheme,
   Grid,
   Button,
+  Tooltip,
 } from '@chakra-ui/react';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {openModal} from 'store/modal.reducer';
@@ -146,6 +147,29 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
     owner,
   ]);
 
+  const tooltipMsg = () => {
+    return (
+      <Flex flexDir="column" fontSize="12px" pt="6px" pl="5px" pr="5px">
+        <Text textAlign="center" fontSize="12px">
+          After LP staking, you cannot adjust the position through Uniswap.
+        </Text>
+        <Text textAlign="center">
+          You must first unstake and adjust the position.
+        </Text>
+        <Text textAlign="center">
+          We are still developing a function for increasing/decreasing liquidity
+        </Text>
+        <Text textAlign="center">
+          while LP is still staked. But if you want to provide liquidity with
+          different
+        </Text>
+        <Text textAlign="center">
+          price range, you must create new position in Uniswap.
+        </Text>
+      </Flex>
+    );
+  };
+
   return (
     <Flex justifyContent={'space-between'}>
       {owner === address.toLowerCase()
@@ -186,46 +210,107 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
         gap={3}
         w={'575px'}
         mr={'4px'}>
-        <Button
-          {...localBtnStyled.btn()}
-          color={'#838383'}
-          {...(claimBtnDisable
-            ? {...btnStyle.btnDisable({colorMode})}
-            : {...btnStyle.btnAble()})}
-          isDisabled={claimBtnDisable}
-          onClick={() =>
-            dispatch(
-              openModal({
-                type: 'claimPool',
-                data: {
-                  id: id,
-                  swapableAmount: swapableAmount,
-                },
-              }),
-            )
-          }>
-          Claim
-        </Button>
         {toggle === '4button' ? (
           <>
             <Button
               {...localBtnStyled.btn()}
-              {...(stakingBtnDisable
+              color={'#838383'}
+              {...(claimBtnDisable
                 ? {...btnStyle.btnDisable({colorMode})}
                 : {...btnStyle.btnAble()})}
-              isDisabled={stakingBtnDisable}
+              isDisabled={claimBtnDisable}
               onClick={() =>
-                stakePermit({
+                dispatch(
+                  openModal({
+                    type: 'claimPool',
+                    data: {
+                      id: id,
+                      swapableAmount: swapableAmount,
+                    },
+                  }),
+                )
+              }>
+              Claim
+            </Button>
+            <Tooltip
+              hasArrow
+              placement="bottom"
+              maxW={415}
+              w={415}
+              h="105px"
+              label={tooltipMsg()}
+              color={theme.colors.white[100]}
+              bg={theme.colors.gray[375]}
+              p={0}
+              borderRadius={3}
+              fontSize="12px">
+              <Button
+                {...localBtnStyled.btn()}
+                {...(stakingBtnDisable
+                  ? {...btnStyle.btnDisable({colorMode})}
+                  : {...btnStyle.btnAble()})}
+                isDisabled={stakingBtnDisable}
+                onClick={() =>
+                  stakePermit({
+                    tokenId: id,
+                    userAddress: address,
+                    library: library,
+                  })
+                }>
+                Stake
+              </Button>
+            </Tooltip>
+
+            <Button
+              {...localBtnStyled.btn()}
+              {...(owner === address.toLowerCase()
+                ? {...btnStyle.btnDisable({colorMode})}
+                : {...btnStyle.btnAble()})}
+              disabled={owner === address.toLowerCase()}
+              onClick={() =>
+                unstake({
                   tokenId: id,
                   userAddress: address,
                   library: library,
+                  miningAmount: lpData.miningAmount,
                 })
               }>
-              Stake
+              Unstake
+            </Button>
+            <Button
+              {...localBtnStyled.btn()}
+              bg={'#00c3c4'}
+              _hover={{bg: '#00b3b4'}}
+              // _hover={bg: 'blue.100'}
+              onClick={(e: any) => {
+                e.preventDefault();
+                window.open(`https://app.uniswap.org/#/pool/${id}`);
+              }}>
+              Edit
             </Button>
           </>
         ) : (
           <>
+            <Button
+              {...localBtnStyled.btn()}
+              color={'#838383'}
+              {...(claimBtnDisable
+                ? {...btnStyle.btnDisable({colorMode})}
+                : {...btnStyle.btnAble()})}
+              isDisabled={claimBtnDisable}
+              onClick={() =>
+                dispatch(
+                  openModal({
+                    type: 'claimPool',
+                    data: {
+                      id: id,
+                      swapableAmount: swapableAmount,
+                    },
+                  }),
+                )
+              }>
+              Claim
+            </Button>
             <Button
               {...localBtnStyled.btn()}
               {...(stakingBtnDisable
@@ -256,35 +341,35 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
               }>
               Stake
             </Button>
+            <Button
+              {...localBtnStyled.btn()}
+              {...(owner === address.toLowerCase()
+                ? {...btnStyle.btnDisable({colorMode})}
+                : {...btnStyle.btnAble()})}
+              disabled={owner === address.toLowerCase()}
+              onClick={() =>
+                unstake({
+                  tokenId: id,
+                  userAddress: address,
+                  library: library,
+                  miningAmount: lpData.miningAmount,
+                })
+              }>
+              Unstake
+            </Button>
+            <Button
+              {...localBtnStyled.btn()}
+              bg={'#00c3c4'}
+              _hover={{bg: '#00b3b4'}}
+              // _hover={bg: 'blue.100'}
+              onClick={(e: any) => {
+                e.preventDefault();
+                window.open(`https://app.uniswap.org/#/pool/${id}`);
+              }}>
+              Edit
+            </Button>
           </>
         )}
-        <Button
-          {...localBtnStyled.btn()}
-          {...(owner === address.toLowerCase()
-            ? {...btnStyle.btnDisable({colorMode})}
-            : {...btnStyle.btnAble()})}
-          disabled={owner === address.toLowerCase()}
-          onClick={() =>
-            unstake({
-              tokenId: id,
-              userAddress: address,
-              library: library,
-              miningAmount: lpData.miningAmount,
-            })
-          }>
-          Unstake
-        </Button>
-        <Button
-          {...localBtnStyled.btn()}
-          bg={'#00c3c4'}
-          _hover={{bg: '#00b3b4'}}
-          // _hover={bg: 'blue.100'}
-          onClick={(e: any) => {
-            e.preventDefault();
-            window.open(`https://app.uniswap.org/#/pool/${id}`);
-          }}>
-          Edit
-        </Button>
       </Grid>
     </Flex>
   );
