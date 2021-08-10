@@ -266,7 +266,10 @@ export const PositionTable: FC<PositionTableProps> = ({
                     }
                     value={0}
                   />
-                  <Text fontSize={'12px'} ml={2} color={'#304156'}>
+                  <Text
+                    fontSize={'12px'}
+                    ml={2}
+                    color={colorMode === 'light' ? '#304156' : 'white.100'}>
                     {toggle === '4button' ? 'Basic' : 'Advance'}
                   </Text>
                 </Flex>
