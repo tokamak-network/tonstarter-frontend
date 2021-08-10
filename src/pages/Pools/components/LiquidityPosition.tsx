@@ -141,7 +141,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
 
   return (
     <Flex justifyContent={'space-between'}>
-      {owner === address.toLowerCase()
+      {!address ? '' : owner === address.toLowerCase()
         ? getCircle('not staked')
         : getCircle('staked')}
       {range ? getRange('range') : getRange('not range')}
