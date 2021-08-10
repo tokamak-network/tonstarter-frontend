@@ -11,9 +11,14 @@ import {
 type HeadProps = {
   title?: string;
   subtitle?: string;
+  secondSubTitle?: string;
 };
 
-export const PageHeader: FC<HeadProps> = ({title, subtitle}) => {
+export const PageHeader: FC<HeadProps> = ({
+  title,
+  subtitle,
+  secondSubTitle,
+}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   return (
@@ -28,13 +33,20 @@ export const PageHeader: FC<HeadProps> = ({title, subtitle}) => {
           mb="10px">
           {title}
         </Heading>
-
         <Text
           fontSize={16}
           className={'page-title'}
           color={colorMode === 'light' ? theme.colors.gray[400] : '#9d9ea5'}
           fontFamily={theme.fonts.titil}>
           {subtitle}
+        </Text>
+        <Text
+          fontSize={13}
+          fontWeight={'bold'}
+          className={'page-title'}
+          color={colorMode === 'light' ? theme.colors.gray[400] : '#9d9ea5'}
+          fontFamily={theme.fonts.titil}>
+          {secondSubTitle}
         </Text>
       </Flex>
     </Container>
