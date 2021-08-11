@@ -146,11 +146,19 @@ export const WalletInformation: FC<WalletInformationProps> = ({
   };
 
   const getWalletTonBalance = async () => {
+    if (account === undefined) {
+      return;
+    }
+
     const result = await getUserTonBalance({
-      account: account,
-      library: library,
+      account,
+      library,
     });
-    const userBalance = await getUserBalance(data.contractAddress);
+    const userBalance = await getUserBalance(
+      account,
+      library,
+      data.contractAddress,
+    );
 
     if (result && userBalance) {
       const trimNum = Number(result).toLocaleString(undefined, {
@@ -185,7 +193,14 @@ export const WalletInformation: FC<WalletInformationProps> = ({
             tosBalance,
           };
         } else if (modal === 'unstake') {
-          const payloadModal = await getUserBalance(data.contractAddress);
+          if (account === undefined) {
+            return;
+          }
+          const payloadModal = await getUserBalance(
+            account,
+            library,
+            data.contractAddress,
+          );
           payload = {
             ...data,
             totalStakedBalance: payloadModal?.totalStakedBalance,

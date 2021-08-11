@@ -183,10 +183,15 @@ export const Staking = () => {
 
     useEffect(() => {
       const getBalance = async () => {
+        if (account === undefined) {
+          return;
+        }
         try {
-          console.log(account, library);
-          console.log(contractAddress);
-          const result = await getUserBalance(contractAddress);
+          const result = await getUserBalance(
+            account,
+            library,
+            contractAddress,
+          );
           if (title === 'My staked') {
             //@ts-ignore
             return SetBalance(result?.totalStakedBalance);

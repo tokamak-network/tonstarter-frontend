@@ -1,19 +1,26 @@
 import {Contract} from '@ethersproject/contracts';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import {getContract} from 'utils/contract';
-import store from 'store';
 import {convertNumber} from 'utils/number';
 import {BASE_PROVIDER, DEPLOYED} from 'constants/index';
 import * as ERC20 from 'services/abis/ERC20.json';
 import * as TOSABI from 'services/abis/TOS.json';
 import * as LockTOSABI from 'services/abis/LockTOS.json';
 import {BigNumber} from 'ethers';
+import Web3 from 'web3';
 
 const {TON_ADDRESS, TOS_ADDRESS} = DEPLOYED;
 
-export const getUserBalance = async (contractAddress: any) => {
-  const user = store.getState().user.data;
-  const {address: account, library} = user;
+type GetUserTonBalance = {
+  account: string;
+  library: any;
+};
+
+export const getUserBalance = async (
+  account: string,
+  library: any,
+  contractAddress: any,
+) => {
   if (account === undefined || null) {
     return;
   }
@@ -32,7 +39,11 @@ export const getUserBalance = async (contractAddress: any) => {
 };
 
 export const getUserTonBalance = async ({account, library}: any) => {
-  const contract = getContract(TON_ADDRESS, ERC20.abi, library);
+  const contract = new Contract(
+    '0x2be5e8c109e2197D077D13A82dAead6a9b3433C5',
+    ERC20.abi,
+    library,
+  );
   const contractIserBalance = await contract.balanceOf(account);
   const balance = convertNumber({amount: String(contractIserBalance)});
   return balance;
@@ -105,7 +116,6 @@ const getUserInfo = async (
   account: string,
   contractAddress: string,
 ) => {
-  console.log(library, account, contractAddress);
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, library);
   const currentBlock = await BASE_PROVIDER.getBlockNumber();
   return Promise.all([
