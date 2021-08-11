@@ -14,7 +14,7 @@ import {fetchUserInfo} from 'store/app/user.reducer';
 import {fetchStakes} from './Staking/staking.reducer';
 import {AirdropModal} from 'components/Airdrop/Index';
 import {fetchVaults} from './Staking/vault.reducer';
-import {DEFAULT_NETWORK} from 'constants/index';
+import {DEFAULT_NETWORK, DEPLOYED} from 'constants/index';
 import {Footer} from 'components/Footer';
 import {ConfirmModal} from 'components/Modal';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
@@ -24,8 +24,11 @@ export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 /*
 ###################
 ###PHASE 2 OPEN####
+#######TEST########
 ################### 
 */
+
+console.log(DEPLOYED);
 
 export const Router: FC<RouterProps> = () => {
   const dispatch = useAppDispatch();

@@ -77,7 +77,7 @@ export const ManageModal = () => {
 
   //original balances
   const [originalStakeBalance, setOriginalStakeBalance] = useState(0);
-  const [originalSwapBalance, setOriginalSwapBalance] = useState(0);
+  const [originalSwapBalance, setOriginalSwapBalance] = useState('0');
   const [currentTosPrice, setCurrentTosPrice] = useState<string | undefined>(
     '0',
   );
@@ -135,35 +135,22 @@ export const ManageModal = () => {
           setCanWithdralAmount(Number(res_CanWithdralAmount.toString()));
           //set original balances
           setOriginalStakeBalance(originalBalance.stakeContractBalanceTon);
-          setOriginalSwapBalance(originalBalance.stakeContractBalanceTon);
+          setOriginalSwapBalance(originalBalance.stakeContractBalanceTonRay);
           setCurrentTosPrice('0');
 
-          const StakeTONContract = new Contract(
-            contractAddress,
-            StakeTON.abi,
-            library,
-          );
-
-          const canReqeustUnstaking =
-            await StakeTONContract.canTokamakRequestUnStaking(
-              TokamakLayer2_ADDRESS,
-            );
-          const convertedUnstakeNum = convertNumber({
-            amount: canReqeustUnstaking,
-            type: 'ray',
-          });
+          setSwapBalance(stakeContractBalanceTon);
 
           //calculate swap balance
-          if (Number(convertedUnstakeNum) <= 0) {
-            return setSwapBalance('0.00');
-          }
-          if (Number(stakeContractBalanceTon) >= Number(convertedUnstakeNum)) {
-            //@ts-ignore
-            return setSwapBalance(convertedUnstakeNum);
-          }
-          if (Number(stakeContractBalanceTon) < Number(swapBalance)) {
-            return setSwapBalance(stakeContractBalanceTon);
-          }
+          // if (Number(convertedUnstakeNum) <= 0) {
+          //   return setSwapBalance('0.00');
+          // }
+          // if (Number(stakeContractBalanceTon) >= Number(convertedUnstakeNum)) {
+          //   //@ts-ignore
+          //   return setSwapBalance(stakeContractBalanceTon);
+          // }
+          // if (Number(stakeContractBalanceTon) < Number(swapBalance)) {
+          //   return setSwapBalance(stakeContractBalanceTon);
+          // }
         }
       }
     }
@@ -276,7 +263,7 @@ export const ManageModal = () => {
     setSwapBalance('0');
     setCanWithdralAmount(0);
     setOriginalStakeBalance(0);
-    setOriginalSwapBalance(0);
+    setOriginalSwapBalance('0');
     setSaleClosed(true);
     handleCloseModal();
   };
