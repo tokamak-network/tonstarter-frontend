@@ -7,14 +7,8 @@ import * as ERC20 from 'services/abis/ERC20.json';
 import * as TOSABI from 'services/abis/TOS.json';
 import * as LockTOSABI from 'services/abis/LockTOS.json';
 import {BigNumber} from 'ethers';
-import Web3 from 'web3';
 
 const {TON_ADDRESS, TOS_ADDRESS} = DEPLOYED;
-
-type GetUserTonBalance = {
-  account: string;
-  library: any;
-};
 
 export const getUserBalance = async (
   account: string,
@@ -39,11 +33,7 @@ export const getUserBalance = async (
 };
 
 export const getUserTonBalance = async ({account, library}: any) => {
-  const contract = new Contract(
-    '0x2be5e8c109e2197D077D13A82dAead6a9b3433C5',
-    ERC20.abi,
-    library,
-  );
+  const contract = new Contract(TON_ADDRESS, ERC20.abi, library);
   const contractIserBalance = await contract.balanceOf(account);
   const balance = convertNumber({amount: String(contractIserBalance)});
   return balance;
