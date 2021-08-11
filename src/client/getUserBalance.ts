@@ -1,7 +1,6 @@
 import {Contract} from '@ethersproject/contracts';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import {getContract} from 'utils/contract';
-import store from 'store';
 import {convertNumber} from 'utils/number';
 import {BASE_PROVIDER, DEPLOYED} from 'constants/index';
 import * as ERC20 from 'services/abis/ERC20.json';
@@ -11,9 +10,11 @@ import {BigNumber} from 'ethers';
 
 const {TON_ADDRESS, TOS_ADDRESS} = DEPLOYED;
 
-export const getUserBalance = async (contractAddress: any) => {
-  const user = store.getState().user.data;
-  const {address: account, library} = user;
+export const getUserBalance = async (
+  account: string,
+  library: any,
+  contractAddress: any,
+) => {
   if (account === undefined || null) {
     return;
   }
@@ -32,7 +33,7 @@ export const getUserBalance = async (contractAddress: any) => {
 };
 
 export const getUserTonBalance = async ({account, library}: any) => {
-  const contract = getContract(TON_ADDRESS, ERC20.abi, library);
+  const contract = new Contract(TON_ADDRESS, ERC20.abi, library);
   const contractIserBalance = await contract.balanceOf(account);
   const balance = convertNumber({amount: String(contractIserBalance)});
   return balance;
