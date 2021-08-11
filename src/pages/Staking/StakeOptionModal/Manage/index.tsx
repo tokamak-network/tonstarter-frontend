@@ -114,7 +114,6 @@ export const ManageModal = () => {
           totalStakedAmountL2,
           totalPendingUnstakedAmountL2,
           stakeContractBalanceTon,
-          swapBalance,
           originalBalance,
         } = result;
         const res_CanWithdralAmount = await fetchWithdrawPayload(
@@ -127,7 +126,6 @@ export const ManageModal = () => {
           totalStakedAmountL2 &&
           totalPendingUnstakedAmountL2 &&
           stakeContractBalanceTon &&
-          swapBalance &&
           res_CanWithdralAmount
         ) {
           setAvailableBalance(stakeContractBalanceTon);
@@ -137,15 +135,31 @@ export const ManageModal = () => {
           setCanWithdralAmount(Number(res_CanWithdralAmount.toString()));
           //set original balances
           setOriginalStakeBalance(originalBalance.stakeContractBalanceTon);
-          setOriginalSwapBalance(originalBalance.swapBalance);
-          setCurrentTosPrice(originalBalance.tosPrice);
+          setOriginalSwapBalance(originalBalance.stakeContractBalanceTon);
+          setCurrentTosPrice('0');
+
+          const StakeTONContract = new Contract(
+            contractAddress,
+            StakeTON.abi,
+            library,
+          );
+
+          const canReqeustUnstaking =
+            await StakeTONContract.canTokamakRequestUnStaking(
+              TokamakLayer2_ADDRESS,
+            );
+          const convertedUnstakeNum = convertNumber({
+            amount: canReqeustUnstaking,
+            type: 'ray',
+          });
 
           //calculate swap balance
-          if (Number(swapBalance) <= 0) {
+          if (Number(convertedUnstakeNum) <= 0) {
             return setSwapBalance('0.00');
           }
-          if (Number(stakeContractBalanceTon) >= Number(swapBalance)) {
-            return setSwapBalance(swapBalance);
+          if (Number(stakeContractBalanceTon) >= Number(convertedUnstakeNum)) {
+            //@ts-ignore
+            return setSwapBalance(convertedUnstakeNum);
           }
           if (Number(stakeContractBalanceTon) < Number(swapBalance)) {
             return setSwapBalance(stakeContractBalanceTon);

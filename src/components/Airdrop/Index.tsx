@@ -87,7 +87,10 @@ export const AirdropModal = () => {
 
   useEffect(() => {
     async function callAirDropData() {
-      const res = await fetchAirdropPayload();
+      if (account === undefined) {
+        return;
+      }
+      const res = await fetchAirdropPayload(account, library);
       const {roundInfo, claimedAmount, unclaimedAmount} = res;
       setAirdropData(roundInfo);
       availableAmount(roundInfo, claimedAmount, unclaimedAmount);
