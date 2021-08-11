@@ -105,10 +105,9 @@ const getUserInfo = async (
   account: string,
   contractAddress: string,
 ) => {
+  console.log(library, account, contractAddress);
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, library);
   const currentBlock = await BASE_PROVIDER.getBlockNumber();
-  console.log(StakeTONContract);
-  console.log(await StakeTONContract.rewardClaimedTotal());
   return Promise.all([
     StakeTONContract.userStaked(account),
     StakeTONContract.canRewardAmount(account, currentBlock),

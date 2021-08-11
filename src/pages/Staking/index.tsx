@@ -184,6 +184,8 @@ export const Staking = () => {
     useEffect(() => {
       const getBalance = async () => {
         try {
+          console.log(account, library);
+          console.log(contractAddress);
           const result = await getUserBalance(contractAddress);
           if (title === 'My staked') {
             //@ts-ignore

@@ -1,14 +1,9 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {RootState} from 'store/reducers';
-import {getContract} from 'utils/contract';
-import * as ERC20 from 'services/abis/ERC20.json';
-import {DEPLOYED} from 'constants/index';
-import {convertNumber} from 'utils/number';
 
 // const {TON_ADDRESS} = DEPLOYED;
 
 export type User = {
-  balance: string;
   address: string;
   library: any;
   // tosBalance: string;
@@ -22,9 +17,6 @@ interface IUser {
 }
 
 const initialState = {
-  data: {
-    balance: '0',
-  },
   loading: 'idle',
   error: null,
   currentRequestId: undefined,
@@ -34,6 +26,8 @@ export const fetchUserInfo = createAsyncThunk(
   'app/user',
   // @ts-ignore
   async ({address, library, reset}, {requestId, getState}) => {
+    console.log('**fetchuser**');
+    console.log(address, library);
     // @ts-ignore
     const {currentRequestId, loading} = getState().user;
     if (loading !== 'pending' || requestId !== currentRequestId) {
@@ -44,29 +38,10 @@ export const fetchUserInfo = createAsyncThunk(
       return initialState;
     }
 
-    // let tonBalance;
-    // let tosBalance;
-
-    const contract = getContract(DEPLOYED.TON_ADDRESS, ERC20.abi, library);
-    // const TOS = getTokamakContract('TOS');
-    // const TosBalance = await TOS.balanceOf(address);
-
-    // await Promise.all([
-    //   contract.balanceOf(address),
-    //   TOS.balanceOf(address),
-    // ]).then((res) => {
-    //   tonBalance = res[0];
-    //   tosBalance = res[1];
-    // });
-
-    const contractIserBalance = await contract.balanceOf(address);
-    const balance = convertNumber({amount: String(contractIserBalance)});
-
     const user: User = {
       address,
       library,
       //@ts-ignore
-      balance,
       // balance: tonBalance !== undefined ? formatEther(tonBalance) : '0',
       // tosBalance: tosBalance !== undefined ? formatEther(tosBalance) : '0',
     };
