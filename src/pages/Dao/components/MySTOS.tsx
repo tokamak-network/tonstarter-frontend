@@ -19,6 +19,7 @@ type PropsType = {
 
 export const MySTOS = (props: PropsType) => {
   const {stakeList} = props;
+  console.log(stakeList);
   const dispatch = useDispatch();
   const [balance, setbalance] = useState('-');
   const [btnDisabled, setBtnDisabled] = useState(true);

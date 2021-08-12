@@ -177,7 +177,11 @@ export const DaoManageModal = () => {
                     alignItems="center"
                     pl="1.438em"
                     h={'64px'}
-                    borderBottom={themeDesign.border[colorMode]}
+                    borderBottom={
+                      index !== tosStakeList.length - 1
+                        ? themeDesign.border[colorMode]
+                        : ''
+                    }
                     key={index}>
                     <Text
                       w="3.750em"
