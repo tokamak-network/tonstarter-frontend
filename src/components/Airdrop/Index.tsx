@@ -91,11 +91,14 @@ export const AirdropModal = () => {
         return;
       }
       const res = await fetchAirdropPayload(account, library);
+      if (res === undefined) {
+        return;
+      }
       const {roundInfo, claimedAmount, unclaimedAmount} = res;
       setAirdropData(roundInfo);
       availableAmount(roundInfo, claimedAmount, unclaimedAmount);
     }
-    if (account !== undefined) {
+    if (account !== undefined && library !== undefined) {
       callAirDropData();
     }
     /*eslint-disable*/

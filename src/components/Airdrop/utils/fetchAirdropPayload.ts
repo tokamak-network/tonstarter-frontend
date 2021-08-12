@@ -46,6 +46,8 @@ export const fetchAirdropPayload = async (account: string, library: any) => {
   return {
     roundInfo: roundInfo,
     claimedAmount: convertNumber({amount: claimedAmount}),
-    unclaimedAmount: convertNumber({amount: unclaimed.amount}),
+    unclaimedAmount: convertNumber({
+      amount: unclaimed === undefined ? undefined : unclaimed.amount,
+    }),
   };
 };

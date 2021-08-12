@@ -190,7 +190,6 @@ export const SwapModal = () => {
                   Number(value),
                   Number(swapBalance),
                 );
-                console.log(originalSwapBalance.toString());
                 if (isBalance) {
                   const amountRay = convertToRay(value.toString());
                   swapWTONtoTOS({

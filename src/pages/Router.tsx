@@ -28,8 +28,6 @@ export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 ################### 
 */
 
-console.log(DEPLOYED);
-
 export const Router: FC<RouterProps> = () => {
   const dispatch = useAppDispatch();
   const [walletState, setWalletState] = useState<string>('');
