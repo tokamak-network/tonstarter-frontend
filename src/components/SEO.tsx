@@ -7,7 +7,8 @@ type HeadProps = {
 };
 
 export const Head: FC<HeadProps> = ({title, description}) => {
-  const TITLE = `${title ? `${title} - ` : ''} Tokamak`;
+  // const TITLE = `${title ? `${title} - ` : ''} Tokamak`;
+  const TITLE = `TONStarter - Tokamak`;
   return (
     <>
       <Helmet>
