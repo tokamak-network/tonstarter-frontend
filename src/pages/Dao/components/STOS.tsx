@@ -6,7 +6,6 @@ import {shortenAddress} from 'utils';
 import {useEffect} from 'react';
 import {useState} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
-import {selectUser} from 'store/app/user.reducer';
 import {useUser} from 'hooks/useUser';
 import {getTosStakeList} from './utils';
 import {selectTransactionType} from 'store/refetch.reducer';
@@ -59,7 +58,7 @@ const themeDesign = {
 export const STOS = () => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
-  const {signIn, account, library} = useUser();
+  const {account, library} = useUser();
   const [address, setAddress] = useState('-');
   const [stakeList, setStakeList] = useState<any[]>([]);
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);

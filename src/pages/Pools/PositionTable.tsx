@@ -23,6 +23,7 @@ import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
 import {LiquidityPosition} from './components/LiquidityPosition';
 // import { useAppDispatch } from '../../store/index';
+import './css/liquidityPosition.css';
 
 type PositionTableProps = {
   // columns: Column[];
@@ -259,6 +260,7 @@ export const PositionTable: FC<PositionTableProps> = ({
                     Mode Selection
                   </Text>
                   <Switch
+                    className="pool_switch"
                     size="md"
                     colorScheme={'green'}
                     onChange={() =>

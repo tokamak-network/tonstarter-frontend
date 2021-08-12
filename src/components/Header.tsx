@@ -224,7 +224,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
     <Box
       display={{base: isOpen ? 'block' : 'none', md: 'block'}}
       flexBasis={{base: '100%', md: 'auto'}}
-      mx={100}>
+      ml={100}>
       <Stack
         spacing={8}
         align="center"

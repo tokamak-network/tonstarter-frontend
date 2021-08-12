@@ -12,12 +12,12 @@ import {
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {openModal} from 'store/modal.reducer';
 // import { getPoolName } from '../../utils/token';
-import store from '../../../store';
 import {stake, unstake, approve, stakePermit} from '../actions';
 import {convertNumber} from '../../../utils/number';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {fetchPositionRangePayload} from '../utils/fetchPositionRangePayload';
 import {ethers} from 'ethers';
+import {useUser} from 'hooks/useUser';
 
 type LiquidityPositionProps = {
   stakingDisable: boolean;
@@ -68,7 +68,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
   const [stakingBtnDisable, setStakingBtnDisable] = useState(true);
   const [unStakingBtnDisable, setUnStakingBtnDisable] = useState(true);
   const [claimBtnDisable, setClaimBtnDisable] = useState(true);
-  const {address, library} = store.getState().user.data;
+  const {account: address, library} = useUser();
   const localBtnStyled = {
     btn: () => ({
       bg: 'blue.500',
@@ -108,7 +108,12 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
 
     async function setStakingBtn() {
       const inRange = await getRange();
-      if (address && owner === address.toLowerCase() && !stakingDisable && inRange) {
+      if (
+        address &&
+        owner === address.toLowerCase() &&
+        !stakingDisable &&
+        inRange
+      ) {
         setStakingBtnDisable(false);
       } else {
         setStakingBtnDisable(true);
@@ -116,7 +121,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
     }
 
     async function setUnStakingBtn() {
-      if (address && owner === address.toLowerCase()) {
+      if (address && owner !== address.toLowerCase()) {
         setUnStakingBtnDisable(false);
       } else {
         setUnStakingBtnDisable(true);
@@ -182,7 +187,9 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
 
   return (
     <Flex justifyContent={'space-between'}>
-      {!address ? '' : owner === address.toLowerCase()
+      {!address
+        ? ''
+        : owner === address.toLowerCase()
         ? getCircle('not staked')
         : getCircle('staked')}
       {range ? getRange('range') : getRange('not range')}
@@ -273,10 +280,10 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
 
             <Button
               {...localBtnStyled.btn()}
-              {...(owner === address.toLowerCase()
+              {...(unStakingBtnDisable
                 ? {...btnStyle.btnDisable({colorMode})}
                 : {...btnStyle.btnAble()})}
-              disabled={owner === address.toLowerCase()}
+              disabled={unStakingBtnDisable}
               onClick={() =>
                 unstake({
                   tokenId: id,

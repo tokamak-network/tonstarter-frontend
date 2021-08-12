@@ -138,6 +138,10 @@ export const ManageModal = () => {
           setOriginalSwapBalance(originalBalance.stakeContractBalanceTonRay);
           setCurrentTosPrice('0');
 
+          if (saleClosed) {
+            return setSwapBalance('0.00');
+          }
+
           setSwapBalance(stakeContractBalanceTon);
 
           //calculate swap balance
