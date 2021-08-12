@@ -17,7 +17,6 @@ import {fetchVaults} from './Staking/vault.reducer';
 import {DEFAULT_NETWORK, DEPLOYED} from 'constants/index';
 import {Footer} from 'components/Footer';
 import {ConfirmModal} from 'components/Modal';
-import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import {MobilePreOpen} from './PreOpen/Index';
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -123,9 +122,7 @@ export const Router: FC<RouterProps> = () => {
     onOpen();
   };
 
-  const {width} = useWindowDimensions();
-
-  if (width < 1100) {
+  if (window.devicePixelRatio > 1) {
     return <MobilePreOpen />;
   }
 

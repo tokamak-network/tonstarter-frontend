@@ -8,26 +8,26 @@ import {
 } from '@chakra-ui/react';
 import {getUserTOSStaked} from 'client/getUserBalance';
 import {useAppDispatch} from 'hooks/useRedux';
+import {useUser} from 'hooks/useUser';
 import {useEffect} from 'react';
 import {useState} from 'react';
-import {User} from 'store/app/user.reducer';
 import {openModal} from 'store/modal.reducer';
 
 type PropsType = {
-  userData: User;
-  signIn: boolean;
   stakeList: any;
   transactionType: string | undefined;
   blockNumber: number | undefined;
 };
 
 export const MyStaked = (props: PropsType) => {
-  const {userData, signIn, stakeList, transactionType, blockNumber} = props;
+  const {stakeList, transactionType, blockNumber} = props;
   const [balance, setbalance] = useState('-');
   const [isEnd, setIsEnd] = useState(true);
   const theme = useTheme();
   const {btnStyle, btnHover} = theme;
   const {colorMode} = useColorMode();
+  const {account, library, signIn} = useUser();
+
   const dispatch = useAppDispatch();
   const themeDesign = {
     fontColorTitle: {
@@ -41,9 +41,8 @@ export const MyStaked = (props: PropsType) => {
   };
 
   useEffect(() => {
-    const {address, library} = userData;
     async function getTosBalance() {
-      const res = await getUserTOSStaked({account: address, library});
+      const res = await getUserTOSStaked({account, library});
       if (res !== undefined) {
         setbalance(res);
       }
@@ -59,12 +58,11 @@ export const MyStaked = (props: PropsType) => {
     } else {
       setbalance('-');
     }
-  }, [signIn, userData, stakeList]);
+  }, [signIn, account, library, stakeList]);
 
   useEffect(() => {
-    const {address, library} = userData;
     async function getTosBalance() {
-      const res = await getUserTOSStaked({account: address, library});
+      const res = await getUserTOSStaked({account, library});
       if (res !== undefined) {
         setbalance(res);
       }
@@ -110,7 +108,7 @@ export const MyStaked = (props: PropsType) => {
           dispatch(
             openModal({
               type: 'dao_unstake',
-              data: {userData, userTosBalance: balance},
+              data: {userTosBalance: balance},
             }),
           )
         }>

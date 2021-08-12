@@ -7,26 +7,26 @@ import {
   useTheme,
 } from '@chakra-ui/react';
 import {getUserSTOSBalance} from 'client/getUserBalance';
+import {useUser} from 'hooks/useUser';
 import {useEffect} from 'react';
 import {useState} from 'react';
 import {useDispatch} from 'react-redux';
-import {User} from 'store/app/user.reducer';
 import {openModal} from 'store/modal.reducer';
 
 type PropsType = {
-  userData: User;
-  signIn: boolean;
   stakeList: any;
 };
 
 export const MySTOS = (props: PropsType) => {
-  const {userData, signIn, stakeList} = props;
+  const {stakeList} = props;
   const dispatch = useDispatch();
   const [balance, setbalance] = useState('-');
   const [btnDisabled, setBtnDisabled] = useState(true);
   const theme = useTheme();
   const {btnStyle, btnHover} = theme;
   const {colorMode} = useColorMode();
+  const {account, library, signIn} = useUser();
+
   const themeDesign = {
     fontColorTitle: {
       light: 'gray.400',
@@ -39,9 +39,8 @@ export const MySTOS = (props: PropsType) => {
   };
 
   useEffect(() => {
-    const {address, library} = userData;
     async function getTosBalance() {
-      const res = await getUserSTOSBalance({account: address, library});
+      const res = await getUserSTOSBalance({account, library});
       if (res !== undefined) {
         setbalance(res);
         if (stakeList.length !== 0) {
@@ -54,7 +53,7 @@ export const MySTOS = (props: PropsType) => {
     } else {
       setbalance('-');
     }
-  }, [signIn, userData, stakeList]);
+  }, [signIn, account, library, stakeList]);
 
   return (
     <Flex
@@ -91,7 +90,7 @@ export const MySTOS = (props: PropsType) => {
           dispatch(
             openModal({
               type: 'dao_manage',
-              data: {userData, userTosBalance: balance, stakeList},
+              data: {userTosBalance: balance, stakeList},
             }),
           )
         }>

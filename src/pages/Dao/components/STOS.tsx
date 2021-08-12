@@ -61,7 +61,6 @@ export const STOS = () => {
   const {colorMode} = useColorMode();
   const {signIn, account, library} = useUser();
   const [address, setAddress] = useState('-');
-  const {data} = useAppSelector(selectUser);
   const [stakeList, setStakeList] = useState<any[]>([]);
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
 
@@ -145,17 +144,15 @@ export const STOS = () => {
         </Text>
       </Flex>
       <Box mb={'20px'}>
-        <AvailableBalance signIn={signIn} userData={data}></AvailableBalance>
+        <AvailableBalance></AvailableBalance>
       </Box>
       <Box mb={'20px'}>
         <MyStaked
-          signIn={signIn}
-          userData={data}
           stakeList={stakeList}
           transactionType={transactionType}
           blockNumber={blockNumber}></MyStaked>
       </Box>
-      <MySTOS signIn={signIn} userData={data} stakeList={stakeList}></MySTOS>
+      <MySTOS stakeList={stakeList}></MySTOS>
     </Flex>
   );
 };
