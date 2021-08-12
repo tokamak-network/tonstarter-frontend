@@ -138,7 +138,7 @@ export const ManageModal = () => {
           setOriginalSwapBalance(originalBalance.stakeContractBalanceTonRay);
           setCurrentTosPrice('0');
 
-          if (saleClosed) {
+          if (miningEndTime <= currentBlock) {
             return setSwapBalance('0.00');
           }
 
