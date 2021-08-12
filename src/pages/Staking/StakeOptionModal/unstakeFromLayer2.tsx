@@ -60,7 +60,7 @@ export const UnStakeFromLayer2Modal = () => {
               fontFamily={theme.fonts.titil}
               color={colorMode === 'light' ? 'gray.250' : 'white.100'}
               textAlign={'center'}>
-              Unstake From Tokamak
+              Unstake TON from the TON Pool
             </Heading>
             <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
               You can earn TON and POWER

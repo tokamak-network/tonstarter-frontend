@@ -297,11 +297,12 @@ export const ManageModal = () => {
               fontWeight={'bold'}
               fontFamily={theme.fonts.titil}
               color={colorMode === 'light' ? 'gray.250' : 'white.100'}
-              textAlign={'center'}>
+              textAlign={'center'}
+              mb={'8px'}>
               Manage
             </Heading>
             <Text color="gray.175" fontSize={'0.750em'}>
-              You can manage tokens
+              You can manage TON Pool
             </Text>
           </Box>
 

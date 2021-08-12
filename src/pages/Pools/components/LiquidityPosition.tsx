@@ -343,21 +343,34 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
               }>
               Approve
             </Button>
-            <Button
-              {...localBtnStyled.btn()}
-              {...(stakingBtnDisable
-                ? {...btnStyle.btnDisable({colorMode})}
-                : {...btnStyle.btnAble()})}
-              isDisabled={stakingBtnDisable}
-              onClick={() =>
-                stake({
-                  tokenId: id,
-                  userAddress: address,
-                  library: library,
-                })
-              }>
-              Stake
-            </Button>
+            <Tooltip
+              hasArrow
+              placement="bottom"
+              maxW={415}
+              w={415}
+              h="105px"
+              label={tooltipMsg()}
+              color={theme.colors.white[100]}
+              bg={theme.colors.gray[375]}
+              p={0}
+              borderRadius={3}
+              fontSize="12px">
+              <Button
+                {...localBtnStyled.btn()}
+                {...(stakingBtnDisable
+                  ? {...btnStyle.btnDisable({colorMode})}
+                  : {...btnStyle.btnAble()})}
+                isDisabled={stakingBtnDisable}
+                onClick={() =>
+                  stake({
+                    tokenId: id,
+                    userAddress: address,
+                    library: library,
+                  })
+                }>
+                Stake
+              </Button>
+            </Tooltip>
             <Button
               {...localBtnStyled.btn()}
               {...(unStakingBtnDisable
