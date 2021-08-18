@@ -55,7 +55,7 @@ export const ManageModal = () => {
   const {handleOpenConfirmModal, handleCloseModal} = useModal();
 
   const {
-    data: {contractAddress, vault, globalWithdrawalDelay, miningEndTime},
+    data: {contractAddress, vault, globalWithdrawalDelay, miningEndTime, name},
   } = data;
 
   //Buttons
@@ -302,7 +302,7 @@ export const ManageModal = () => {
               Manage
             </Heading>
             <Text color="gray.175" fontSize={'0.750em'}>
-              You can manage TON Pool
+              You can manage {name} Product
             </Text>
           </Box>
 
@@ -455,6 +455,7 @@ export const ManageModal = () => {
                     canUnstakedL2,
                     contractAddress,
                     unstakeAll,
+                    name,
                   },
                 })
               }>

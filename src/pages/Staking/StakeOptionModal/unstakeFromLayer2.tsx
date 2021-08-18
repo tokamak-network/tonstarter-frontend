@@ -28,7 +28,7 @@ export const UnStakeFromLayer2Modal = () => {
   const {handleCloseConfirmModal} = useModal();
 
   const {
-    data: {contractAddress, canUnstakedL2, unstakeAll},
+    data: {contractAddress, canUnstakedL2, unstakeAll, name},
   } = sub;
 
   const handleCloseModal = () => {
@@ -60,7 +60,7 @@ export const UnStakeFromLayer2Modal = () => {
               fontFamily={theme.fonts.titil}
               color={colorMode === 'light' ? 'gray.250' : 'white.100'}
               textAlign={'center'}>
-              Unstake TON from the TON Pool
+              Unstake TON from the {name} Product
             </Heading>
             <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
               You can earn TON and POWER
