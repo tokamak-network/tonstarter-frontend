@@ -26,8 +26,6 @@ export const fetchUserInfo = createAsyncThunk(
   'app/user',
   // @ts-ignore
   async ({address, library, reset}, {requestId, getState}) => {
-    console.log('**fetchuser**');
-    console.log(address, library);
     // @ts-ignore
     const {currentRequestId, loading} = getState().user;
     if (loading !== 'pending' || requestId !== currentRequestId) {

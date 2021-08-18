@@ -16,16 +16,18 @@ import {
   Tooltip,
   Image,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, {useCallback} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {onKeyDown, useInput} from 'hooks/useInput';
 import {useModal} from 'hooks/useModal';
 import {useUser} from 'hooks/useUser';
-import {useToast} from 'hooks/useToast';
 import {useState, useEffect, useRef} from 'react';
 import {stakeTOS} from '../utils/stakeTOS';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
+import {useCheckBalance} from 'hooks/useCheckBalance';
+import moment from 'moment';
+import Decimal from 'decimal.js';
 
 type SelectPeriod = '1 month' | '6 months' | '1 year' | '3 years';
 
@@ -49,7 +51,12 @@ export const DaoStakeModal = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {signIn, account, library} = useUser();
-  const {toastMsg} = useToast();
+  const {checkBalance} = useCheckBalance();
+
+  const [balance, setBalance] = useState('0');
+  const [btnDisable, setBtnDisable] = useState(true);
+  const [endDate, setEndDate] = useState('-');
+  const [reward, setReward] = useState('-');
 
   const [selectPeriod, setSelectPeriod] = useState<string | undefined>(
     undefined,
@@ -64,9 +71,6 @@ export const DaoStakeModal = () => {
   const {btnStyle} = theme;
   const {value, setValue, onChange} = useInput('0');
   const {handleCloseModal, handleOpenConfirmModal} = useModal(setValue);
-  const keys = [undefined, '', '0', '0.', '0.0', '0.00'];
-  const btnDisabled =
-    keys.indexOf(value) !== -1 || dateValue === 0 ? true : false;
 
   const focusTarget = useRef<any>([]);
   const focusCustomTarget = useRef(null);
@@ -83,6 +87,85 @@ export const DaoStakeModal = () => {
     current.map((e: any) => (e.style.border = 'solid 1px #d7d9df'));
   };
 
+  // set Estimated reward;
+  const getEstimatedReward = useCallback(
+    (diffDate: number) => {
+      if (value !== '' && value !== '0' && value !== undefined) {
+        const differNum = diffDate - 7;
+        const maxPeriod = 1095;
+        const numValue = Number(value.replaceAll(',', ''));
+        const avgProfit = numValue / maxPeriod;
+        const estimatedReward = avgProfit * differNum;
+        const deciamlNum = new Decimal(estimatedReward);
+        const resultNum = deciamlNum.toFixed(3, Decimal.ROUND_HALF_UP);
+        const result = Number(resultNum).toFixed(2);
+        setReward(String(result));
+      }
+      return;
+    },
+    [value],
+  );
+
+  //check btn able condition
+  useEffect(() => {
+    const keys = [undefined, '', '0', '0.', '0.0', '0.00'];
+    const btnDisabled =
+      keys.indexOf(value) !== -1 || dateValue === 0 ? true : false;
+    setBtnDisable(btnDisabled);
+  }, [value, dateValue]);
+
+  useEffect(() => {
+    setBalance(data?.data?.userTosBalance);
+  }, [data]);
+
+  //calculate estimated end date
+  useEffect(() => {
+    if (dateValue === 0) {
+      setReward('-');
+      return setEndDate('-');
+    }
+    const dayForThursday = 4; // for Thursday
+    const today = moment().isoWeekday();
+    if (today <= dayForThursday) {
+      if (dateValue === 1) {
+        const date = moment().isoWeekday(4).format('MMM DD, YYYY');
+        const diffDate = moment()
+          .add(dateValue, 'weeks')
+          .isoWeekday(dayForThursday)
+          .diff(new Date(), 'days');
+        getEstimatedReward(diffDate);
+        setEndDate(date);
+      } else {
+        const date = moment()
+          .add(dateValue, 'weeks')
+          .isoWeekday(dayForThursday)
+          .format('MMM DD, YYYY');
+        const diffDate = moment()
+          .add(dateValue, 'weeks')
+          .isoWeekday(dayForThursday)
+          .diff(new Date(), 'days');
+        getEstimatedReward(diffDate);
+        setEndDate(date);
+      }
+    } else {
+      const date = moment()
+        .add(dateValue, 'weeks')
+        .isoWeekday(dayForThursday)
+        .format('MMM DD, YYYY');
+      const diffDate = moment()
+        .add(dateValue, 'weeks')
+        .isoWeekday(dayForThursday)
+        .diff(new Date(), 'days');
+      getEstimatedReward(diffDate);
+      setEndDate(date);
+    }
+  }, [dateValue, value, getEstimatedReward]);
+
+  //calculate estimated reward
+  // useEffect(() => {
+  //   setReward;
+  // }, [])
+
   useEffect(() => {
     if (selectPeriod === 'weeks' || selectPeriod === 'months') {
       if (selectPeriod === 'weeks') {
@@ -96,13 +179,13 @@ export const DaoStakeModal = () => {
       setDateValue(4);
     }
     if (selectPeriod === '6 months') {
-      setDateValue(24);
+      setDateValue(26);
     }
     if (selectPeriod === '1 year') {
-      setDateValue(48);
+      setDateValue(52);
     }
     if (selectPeriod === '3 years') {
-      setDateValue(144);
+      setDateValue(156);
     }
     // return setDateValue(select)
   }, [selectPeriod, lockDateValue]);
@@ -117,6 +200,9 @@ export const DaoStakeModal = () => {
       isCentered
       onClose={() => {
         setIsCustom(false);
+        setDateValue(0);
+        setReward('-');
+        setReward('-');
         handleCloseModal();
       }}>
       <ModalOverlay />
@@ -187,7 +273,7 @@ export const DaoStakeModal = () => {
               <Text
                 fontSize={'18px'}
                 color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                {data?.data?.userTosBalance} TOS
+                {balance} TOS
               </Text>
             </Box>
           </Stack>
@@ -250,7 +336,9 @@ export const DaoStakeModal = () => {
                   fontSize={'0.750em'}
                   _hover={{}}
                   onClick={() => {
+                    setDateValue(0);
                     setIsCustom(true);
+                    setSelectPeriod(undefined);
                     changeAllBorderColor();
                   }}>
                   Customized
@@ -286,30 +374,53 @@ export const DaoStakeModal = () => {
                   </Select>
                 </Flex>
               )}
-              <Flex flexDir="column" mt={'10px'}>
-                <Flex justifyContent="space-between">
-                  <Text>Estimated end date</Text>
-                  <Text>2021.12.31(KST)</Text>
-                  <Tooltip
-                    hasArrow
-                    placement="top"
-                    label="Lock up-period is calculated  based on every Monday 00: 00 UTC."
-                    color={theme.colors.white[100]}
-                    bg={theme.colors.gray[375]}>
-                    <Image src={tooltipIcon} />
-                  </Tooltip>
+              <Flex flexDir="column" mt={'14px'}>
+                <Flex
+                  justifyContent="space-between"
+                  alignItems="center"
+                  h="45px">
+                  <Flex>
+                    <Text fontSize="13px" color="gray.400" mr="5px">
+                      Estimated end date
+                    </Text>
+                    <Tooltip
+                      hasArrow
+                      placement="top"
+                      label="Lock up-period is calculated  based on every Monday 00: 00 UTC."
+                      color={theme.colors.white[100]}
+                      bg={theme.colors.gray[375]}>
+                      <Image src={tooltipIcon} />
+                    </Tooltip>
+                  </Flex>
+                  <Text
+                    fontSize="15px"
+                    color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+                    fontWeight={600}>
+                    {endDate} (KST)
+                  </Text>
                 </Flex>
-                <Flex justifyContent="space-between">
-                  <Text>Estimated reward</Text>
-                  <Text>1,000 sTOS</Text>
-                  <Tooltip
-                    hasArrow
-                    placement="top"
-                    label="This estimator could be change depending on the situation"
-                    color={theme.colors.white[100]}
-                    bg={theme.colors.gray[375]}>
-                    <Image src={tooltipIcon} />
-                  </Tooltip>
+                <Flex
+                  justifyContent="space-between"
+                  alignItems="center"
+                  h="45px">
+                  <Flex>
+                    <Text fontSize="13px" color="gray.400" mr="5px">
+                      Estimated reward
+                    </Text>
+                    <Tooltip
+                      hasArrow
+                      placement="top"
+                      label="Lock up-period is calculated  based on every Monday 00: 00 UTC."
+                      color={theme.colors.white[100]}
+                      bg={theme.colors.gray[375]}>
+                      <Image src={tooltipIcon} />
+                    </Tooltip>
+                  </Flex>
+                  <Text
+                    color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+                    fontWeight={600}>
+                    {reward} sTOS
+                  </Text>
                 </Flex>
               </Flex>
             </Box>
@@ -317,42 +428,36 @@ export const DaoStakeModal = () => {
 
           <Box as={Flex} justifyContent={'center'}>
             <Button
-              {...(btnDisabled === true
+              {...(btnDisable === true
                 ? {...btnStyle.btnDisable({colorMode})}
                 : {...btnStyle.btnAble()})}
               w={'150px'}
               fontSize="14px"
-              _hover={btnDisabled ? {} : {...theme.btnHover}}
-              disabled={btnDisabled}
+              _hover={btnDisable ? {} : {...theme.btnHover}}
+              disabled={btnDisable}
               onClick={() => {
-                if (
-                  Number(value.replaceAll(',', '')) >
-                  Number(data?.data?.userTosBalance)
-                ) {
-                  return toastMsg({
-                    status: 'error',
-                    title: 'Error',
-                    description: 'Balance is not enough',
-                    duration: 5000,
-                    isClosable: true,
+                const isBalance = checkBalance(
+                  Number(value.replaceAll(',', '')),
+                  Number(balance),
+                );
+                if (isBalance) {
+                  handleOpenConfirmModal({
+                    type: 'confirm',
+                    data: {
+                      from: 'dao/stake',
+                      amount: value,
+                      period: dateValue,
+                      action: () =>
+                        stakeTOS({
+                          account,
+                          library,
+                          amount: value.replaceAll(',', ''),
+                          period: dateValue,
+                          handleCloseModal: handleCloseModal(),
+                        }),
+                    },
                   });
                 }
-                handleOpenConfirmModal({
-                  type: 'confirm',
-                  data: {
-                    from: 'dao/stake',
-                    amount: value,
-                    period: dateValue,
-                    action: () =>
-                      stakeTOS({
-                        account,
-                        library,
-                        amount: value.replaceAll(',', ''),
-                        period: dateValue,
-                        handleCloseModal: handleCloseModal(),
-                      }),
-                  },
-                });
               }}>
               Stake
             </Button>

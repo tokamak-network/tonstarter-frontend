@@ -10,11 +10,11 @@ type ExtendPeriod = {
   account: string;
   library: any;
   lockId: string;
-  period: number;
+  lockupTime: number;
 };
 
 export const extendPeriod = async (args: ExtendPeriod) => {
-  const {account, library, lockId, period} = args;
+  const {account, library, lockId, lockupTime} = args;
   const {LockTOS_ADDRESS} = DEPLOYED;
   const LockTOSContract = new Contract(
     LockTOS_ADDRESS,
@@ -22,11 +22,11 @@ export const extendPeriod = async (args: ExtendPeriod) => {
     library,
   );
 
+  console.log(lockupTime);
   const signer = getSigner(library, account);
-  const unlockTime = moment().subtract(-Math.abs(period), 'weeks').unix();
   const res = await LockTOSContract.connect(signer).increaseUnlockTime(
     lockId,
-    unlockTime,
+    lockupTime,
   );
 
   return await res.wait().then((receipt: any) => {

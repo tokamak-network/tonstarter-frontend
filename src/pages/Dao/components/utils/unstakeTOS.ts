@@ -2,16 +2,18 @@ import {DEPLOYED} from 'constants/index';
 import * as LockTOSABI from 'services/abis/LockTOS.json';
 import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
+import store from 'store';
+import {setTransaction} from 'store/refetch.reducer';
 
 type UnstkaeTOS = {
   account: string;
-  amount: string;
-  period: number;
   library: any;
+  lockId: string;
+  handleCloseModal: any;
 };
 
-export const unstakeTOS = (args: UnstkaeTOS) => {
-  const {account, library} = args;
+export const unstakeTOS = async (args: UnstkaeTOS) => {
+  const {account, library, lockId} = args;
   const {LockTOS_ADDRESS} = DEPLOYED;
   const LockTOSContract = new Contract(
     LockTOS_ADDRESS,
@@ -20,5 +22,16 @@ export const unstakeTOS = (args: UnstkaeTOS) => {
   );
   const signer = getSigner(library, account);
 
-  return LockTOSContract.connect(signer).withdraw();
+  const res = await LockTOSContract.connect(signer).withdraw(lockId);
+
+  return await res.wait().then((receipt: any) => {
+    if (receipt) {
+      store.dispatch(
+        setTransaction({
+          transactionType: 'Dao',
+          blockNumber: receipt.blockNumber,
+        }),
+      );
+    }
+  });
 };

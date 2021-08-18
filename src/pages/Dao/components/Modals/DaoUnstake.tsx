@@ -20,8 +20,10 @@ import {selectModalType} from 'store/modal.reducer';
 import {useModal} from 'hooks/useModal';
 import {useEffect, useState} from 'react';
 import {Scrollbars} from 'react-custom-scrollbars-2';
+import {unstakeTOS} from '../utils';
+import {useUser} from 'hooks/useUser';
 
-const UnstakeRecord = ({number, amount}: {number: number; amount: any}) => {
+const UnstakeRecord = ({number, amount}: {number: number; amount: string}) => {
   const {colorMode} = useColorMode();
   return (
     <WrapItem w="100%" h="37px">
@@ -47,12 +49,23 @@ export const DaoUnstakeModal = (props: any) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {handleCloseModal} = useModal();
-  const [unstakeList, setUnstakeList] = useState<Number[]>([]);
+  const {account, library} = useUser();
+
+  const [unstakeList, setUnstakeList] = useState<[{}]>([{}]);
+  const [lockId, setLockId] = useState<string>('1');
 
   useEffect(() => {
-    const dummyData = [4000, 6000, 10000];
-    setUnstakeList(dummyData);
-  }, [setUnstakeList]);
+    const lockList = data?.data?.lockList;
+    if (lockList === undefined) {
+      return;
+    }
+    const unstakedList = lockList.filter((e: any) => e.end === false);
+    setUnstakeList(unstakedList);
+
+    //need to add setLockId here
+
+    /*eslint-disable*/
+  }, [data]);
 
   return (
     <Modal
@@ -133,8 +146,12 @@ export const DaoUnstakeModal = (props: any) => {
                 <Wrap
                   display="flex"
                   style={{marginTop: '0', marginBottom: '20px'}}>
-                  {unstakeList.map((amount: any, index: number) => (
-                    <UnstakeRecord number={index} amount={amount} key={index} />
+                  {unstakeList.map((unstake: any, index: number) => (
+                    <UnstakeRecord
+                      number={index}
+                      amount={unstake.lockedBalance}
+                      key={index}
+                    />
                   ))}
                 </Wrap>
               </Scrollbars>
@@ -148,8 +165,12 @@ export const DaoUnstakeModal = (props: any) => {
               color="white.100"
               fontSize="14px"
               _hover={{...theme.btnHover}}
-              onClick={() => {}}>
-              Stake
+              onClick={() => {
+                if (account) {
+                  unstakeTOS({account, library, lockId, handleCloseModal});
+                }
+              }}>
+              Unstake
             </Button>
           </Box>
         </ModalBody>

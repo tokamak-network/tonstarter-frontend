@@ -47,7 +47,7 @@ export const MyStaked = (props: PropsType) => {
         setbalance(res);
       }
     }
-    if (signIn) {
+    if (account) {
       getTosBalance();
       stakeList.map((stake: any) => {
         if (stake.end === true) {
@@ -108,7 +108,7 @@ export const MyStaked = (props: PropsType) => {
           dispatch(
             openModal({
               type: 'dao_unstake',
-              data: {userTosBalance: balance},
+              data: {userTosBalance: balance, lockList: stakeList},
             }),
           )
         }>

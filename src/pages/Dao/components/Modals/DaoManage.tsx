@@ -27,6 +27,7 @@ import backArrowIcon from 'assets/svgs/back_arrow_icon.svg';
 import {useRef} from 'react';
 import {increaseAmount, extendPeriod} from '../utils';
 import {getUserTosBalance} from 'client/getUserBalance';
+import {checkDocument} from '@apollo/client/utilities';
 
 interface Stake {
   lockId: string;
@@ -85,8 +86,10 @@ export const DaoManageModal = () => {
   const [select, setSelect] = useState('select_amount');
   const [balance, setBalance] = useState('0');
   const [tosStakeList, setTosStakeList] = useState<TosStakeList>(undefined);
-  const {value, setValue} = useInput('0');
+  const [value, setValue] = useState('0');
   const {value: periodValue, onChange: periodOnchange} = useInput('0');
+
+  const [btnDisable, setBtnDisable] = useState(true);
 
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -95,6 +98,8 @@ export const DaoManageModal = () => {
   const {handleCloseModal} = useModal();
 
   const focusTarget = useRef<any>([]);
+  const amountRef = useRef<HTMLInputElement>(null);
+  const periodRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (stakeList) {
@@ -111,13 +116,20 @@ export const DaoManageModal = () => {
         }
       }
     }
-    if (signIn) {
+    if (signIn && account) {
       getTosBalance();
     } else {
       setBalance('-');
     }
     /*eslint-disable*/
-  }, []);
+  }, [signIn, account]);
+
+  useEffect(() => {
+    const checkCondition =
+      amountRef.current?.value === '' && periodRef.current?.value === '';
+    console.log(checkCondition);
+    setBtnDisable(checkCondition);
+  }, [amountRef.current?.value, periodRef.current?.value]);
 
   const [test, setTest] = useState('');
 
@@ -332,18 +344,19 @@ export const DaoManageModal = () => {
                 Increase Amount
               </Text>
               <Input
+                {...(select === 'select_period'
+                  ? themeDesign.inputVariant[colorMode]
+                  : '')}
+                ref={amountRef}
                 w={'143px'}
                 h="32px"
                 mr={'10px'}
-                // value={test}
-                // onKeyDown={onKeyDown}
-                // onChange={testOnChange}
+                fontSize={'0.750em'}
+                // value={value}
+                // onChange={(e) => setValue(e.target.value)}
                 _focus={{
                   borderWidth: 0,
-                }}
-                {...(select === 'select_period'
-                  ? themeDesign.inputVariant[colorMode]
-                  : '')}></Input>
+                }}></Input>
               <Button
                 w="70px"
                 h="32px"
@@ -374,12 +387,13 @@ export const DaoManageModal = () => {
                 Extend Period
               </Text>
               <Input
+                ref={periodRef}
                 w={'143px'}
                 h="32px"
                 mr={'0.750em'}
                 fontSize={'0.750em'}
-                value={periodValue}
-                onChange={periodOnchange}
+                // value={periodValue}
+                // onChange={periodOnchange}
                 {...(select === 'select_amount'
                   ? themeDesign.inputVariant[colorMode]
                   : '')}></Input>
@@ -393,30 +407,43 @@ export const DaoManageModal = () => {
               borderTop={themeDesign.border[colorMode]}
               justifyContent={'center'}>
               <Button
-                {...btnStyle.btnAble()}
+                {...(btnDisable
+                  ? {...btnStyle.btnDisable({colorMode})}
+                  : {...btnStyle.btnAble()})}
                 w={'150px'}
                 fontSize="14px"
-                _hover={theme.btnHover.checkDisable({signIn})}
-                disabled={!signIn}
+                _hover={theme.btnHover.checkDisable(
+                  amountRef.current?.value !== '' ||
+                    periodRef.current?.value !== '',
+                )}
+                disabled={false}
                 mr={'15px'}
                 onClick={() => {
                   if (select === 'select_amount') {
-                    if (account !== undefined && selectLockId !== '') {
+                    if (
+                      account !== undefined &&
+                      selectLockId !== '' &&
+                      amountRef.current
+                    ) {
                       increaseAmount({
                         account,
                         library,
                         lockId: selectLockId,
-                        amount: value,
+                        amount: amountRef.current?.value,
                       });
                     }
                   }
                   if (select === 'select_period') {
-                    if (account !== undefined && selectLockId !== '') {
+                    if (
+                      account !== undefined &&
+                      selectLockId !== '' &&
+                      amountRef.current
+                    ) {
                       extendPeriod({
                         account,
                         library,
                         lockId: selectLockId,
-                        period: Number(value),
+                        lockupTime: Number(periodRef.current?.value),
                       });
                     }
                   }

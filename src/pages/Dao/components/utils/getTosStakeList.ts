@@ -30,8 +30,6 @@ export const getTosStakeList = async ({account, library}: any) => {
       const startTime = Number(lockedBalance.start.toString());
       const endTime = Number(lockedBalance.end.toString());
 
-      console.log(endTime);
-
       const unixStartTime = moment.unix(startTime);
       const unixEndTime = moment.unix(endTime);
       const periodWeeks = unixEndTime.diff(unixStartTime, 'weeks');
@@ -41,9 +39,10 @@ export const getTosStakeList = async ({account, library}: any) => {
       return {
         lockId,
         periodWeeks,
-        periodDays,
+        periodDays: periodDays + 1,
         end,
         lockedBalance: convertNumber({amount: lockedBalance.amount.toString()}),
+        startTime,
         endTime,
       };
     }),

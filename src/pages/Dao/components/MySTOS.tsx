@@ -19,6 +19,7 @@ type PropsType = {
 
 export const MySTOS = (props: PropsType) => {
   const {stakeList} = props;
+  console.log('**USER TOS STAKE LIST**');
   console.log(stakeList);
   const dispatch = useDispatch();
   const [balance, setbalance] = useState('-');
@@ -49,7 +50,7 @@ export const MySTOS = (props: PropsType) => {
         }
       }
     }
-    if (signIn) {
+    if (account) {
       getTosBalance();
     } else {
       setbalance('-');
