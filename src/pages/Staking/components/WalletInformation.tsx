@@ -299,7 +299,7 @@ export const WalletInformation: FC<WalletInformationProps> = ({
                     })
                   : null
               }>
-              End Sale
+              {status === 'start' ? 'Manage' : 'End Sale'}
             </Button>
           ) : (
             <Button
