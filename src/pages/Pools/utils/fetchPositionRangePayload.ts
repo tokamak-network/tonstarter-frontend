@@ -12,10 +12,13 @@ export const fetchPositionRangePayload = async (
 ) => {
   if (library && account && id) {
     const res = await getPositionRange(library, account, id);
-    const {tick, tickLower, tickUpper} = res
-    const result = (tick > tickLower && tick < tickUpper)
+    const {tick, tickLower, tickUpper, approved} = res
+    const range = (tick > tickLower && tick < tickUpper)
     
-    return result;
+    return {
+      range: range,
+      approved: approved,
+    };
   }
 }
 
@@ -27,11 +30,13 @@ const getPositionRange = async (
   if (library && id) {
     const StakeUniswap = new Contract(UniswapStaking_Address, StakeUniswapABI.abi, library);
     const NPM = new Contract(NPM_Address, NPMABI.abi, library);
+    const getApproved = await NPM.getApproved(id)
     const positions = await NPM.positions(id)
     const poolSlot0 = await StakeUniswap.poolSlot0()
     return {
       ...positions,
       ...poolSlot0,
+      approved: getApproved,
     }
   }
 

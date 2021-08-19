@@ -74,7 +74,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
       bg: 'blue.500',
       color: 'white.100',
       borderRadius: '4px',
-      w: toggle === '4button' ? '125px' : '105px',
+      w: '125px',
       h: '38px',
       py: '10px',
       px: '29.5px',
@@ -85,6 +85,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
     }),
   };
   const [range, setRange] = useState(false);
+  const [approval, setApproval] = useState(false);
   const [swapableAmount, setSwapableAmount] = useState<string | undefined>('0');
 
   const rangePayload = async (args: any) => {
@@ -100,8 +101,12 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
     async function getRange() {
       if (id && address && library) {
         const result = await rangePayload({library, id, address});
-        const inRange = result !== undefined ? result : false;
-        setRange(inRange);
+        if (result) {
+          const { range, approved } = result
+          const inRange = range !== undefined ? range : false;
+          setRange(inRange);
+          setApproval(approved)
+        }
         return result;
       }
     }
@@ -117,9 +122,9 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
 
     async function setUnStakingBtn() {
       if (address && owner === address.toLowerCase()) {
-        setUnStakingBtnDisable(false);
-      } else {
         setUnStakingBtnDisable(true);
+      } else {
+        setUnStakingBtnDisable(false);
       }
     }
 
@@ -203,7 +208,10 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
         <Text color={'#2a72e5'} mr={1}>
           TOS Earned{' '}
         </Text>
-        {lpData ? (
+        <Text>
+          <> {lpData ? (convertNumber({amount: lpData.claimedAmount.toString()})) : ('0.00')} TOS </>
+        </Text>
+        {/* {lpData ? (
           <Text>
             {convertNumber({
               amount: lpData.claimedAmount.toString(),
@@ -212,7 +220,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
           </Text>
         ) : (
           <Text>0.00 TOS</Text>
-        )}
+        )} */}
       </Flex>
       <Grid
         pos="relative"
@@ -273,10 +281,10 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
 
             <Button
               {...localBtnStyled.btn()}
-              {...(owner === address.toLowerCase()
+              {...(unStakingBtnDisable
                 ? {...btnStyle.btnDisable({colorMode})}
                 : {...btnStyle.btnAble()})}
-              disabled={owner === address.toLowerCase()}
+              disabled={unStakingBtnDisable}
               onClick={() =>
                 unstake({
                   tokenId: id,
@@ -321,22 +329,28 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
               }>
               Claim
             </Button>
+            
             <Button
               {...localBtnStyled.btn()}
               {...(stakingBtnDisable
                 ? {...btnStyle.btnDisable({colorMode})}
                 : {...btnStyle.btnAble()})}
               isDisabled={stakingBtnDisable}
-              onClick={() =>
+              onClick={() => approval ?
                 approve({
+                  tokenId: id,
+                  userAddress: address,
+                  library: library,
+                }) : 
+                stake({
                   tokenId: id,
                   userAddress: address,
                   library: library,
                 })
               }>
-              Approve
+              {approval ? 'Stake ': 'Approve'}
             </Button>
-            <Button
+            {/* <Button
               {...localBtnStyled.btn()}
               {...(stakingBtnDisable
                 ? {...btnStyle.btnDisable({colorMode})}
@@ -350,7 +364,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
                 })
               }>
               Stake
-            </Button>
+            </Button> */}
             <Button
               {...localBtnStyled.btn()}
               {...(unStakingBtnDisable
