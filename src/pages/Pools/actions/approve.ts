@@ -23,7 +23,6 @@ export const approve = async (args: Approve) => {
   const signer = getSigner(library, userAddress);
 
   try {
-    // const receipt = await NPM.connect(signer)?.approve(UniswapStaking_Address, tokenId)
     const receipt = await NPM.connect(signer)?.setApprovalForAll(UniswapStaking_Address, true)
     store.dispatch(setTxPending({tx: true}));
     if (receipt) {

@@ -7,7 +7,7 @@ import {
   useTheme,
   Grid,
   Button,
-  // Tooltip,
+  Tooltip,
 } from '@chakra-ui/react';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {openModal} from 'store/modal.reducer';
@@ -238,8 +238,55 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
           }>
           Claim
         </Button>
-        
-        <Button
+        <> 
+        {approval ? (
+          <Tooltip
+            hasArrow
+            placement="bottom"
+            maxW={415}
+            w={415}
+            h="105px"
+            label={tooltipMsg()}
+            color={theme.colors.white[100]}
+            bg={theme.colors.gray[375]}
+            p={0}
+            borderRadius={3}
+            fontSize="12px">
+            <Button
+              {...localBtnStyled.btn()}
+              {...(stakingBtnDisable
+                ? {...btnStyle.btnDisable({colorMode})}
+                : {...btnStyle.btnAble()})}
+              isDisabled={stakingBtnDisable}
+              onClick={() =>
+                stake({
+                  tokenId: id,
+                  userAddress: address,
+                  library: library,
+                })
+              }>
+              Stake
+            </Button>
+          </Tooltip>
+          ) : (
+          <Button
+            {...localBtnStyled.btn()}
+            {...(stakingBtnDisable
+              ? {...btnStyle.btnDisable({colorMode})}
+              : {...btnStyle.btnAble()})}
+            isDisabled={stakingBtnDisable}
+            onClick={() => 
+              approve({
+                tokenId: id,
+                userAddress: address,
+                library: library,
+              })
+            }>
+          Approve
+        </Button>
+          ) }
+        </>
+        {/* <Button
           {...localBtnStyled.btn()}
           {...(stakingBtnDisable
             ? {...btnStyle.btnDisable({colorMode})}
@@ -258,7 +305,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
             })
           }>
           {approval ? 'Stake ': 'Approve'}
-        </Button>
+        </Button> */}
         <Button
           {...localBtnStyled.btn()}
           {...(unStakingBtnDisable
