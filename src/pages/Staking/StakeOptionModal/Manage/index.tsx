@@ -29,6 +29,7 @@ import {fetchWithdrawPayload} from '../utils/fetchWithdrawPayload';
 import {convertNumber} from 'utils/number';
 import {Contract} from '@ethersproject/contracts';
 import * as StakeTON from 'services/abis/StakeTON.json';
+import { fetchSwapPayload } from '../utils/fetchSwapPayload';
 
 const tooltipMsg = () => {
   return (
@@ -121,6 +122,7 @@ export const ManageModal = () => {
           account,
           contractAddress,
         );
+        const tosPrice = await fetchSwapPayload(library);
         if (
           totalStakedAmount &&
           totalStakedAmountL2 &&
@@ -136,7 +138,7 @@ export const ManageModal = () => {
           //set original balances
           setOriginalStakeBalance(originalBalance.stakeContractBalanceTon);
           setOriginalSwapBalance(originalBalance.stakeContractBalanceTonRay);
-          setCurrentTosPrice('0');
+          setCurrentTosPrice(tosPrice);
 
           if (miningEndTime <= currentBlock) {
             return setSwapBalance('0.00');
