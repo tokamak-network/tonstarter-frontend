@@ -15,7 +15,7 @@ type Approve = {
 const {NPM_Address, UniswapStaking_Address} = DEPLOYED;
 
 export const approve = async (args: Approve) => {
-  const { userAddress, tokenId, library } = args;
+  const { userAddress, library } = args;
   if (userAddress === null || userAddress === undefined) {
     return;
   }

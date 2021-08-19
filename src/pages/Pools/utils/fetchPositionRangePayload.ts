@@ -30,7 +30,8 @@ const getPositionRange = async (
   if (library && id) {
     const StakeUniswap = new Contract(UniswapStaking_Address, StakeUniswapABI.abi, library);
     const NPM = new Contract(NPM_Address, NPMABI.abi, library);
-    const getApproved = await NPM.getApproved(id)
+    const getApproved = await NPM.isApprovedForAll(account, UniswapStaking_Address)
+    console.log(getApproved)
     const positions = await NPM.positions(id)
     const poolSlot0 = await StakeUniswap.poolSlot0()
     return {

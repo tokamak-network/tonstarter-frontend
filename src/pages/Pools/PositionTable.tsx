@@ -6,7 +6,6 @@ import {
   Select,
   Box,
   useColorMode,
-  Switch,
   // Tooltip,
   // IconButton,
   // Center
@@ -159,7 +158,6 @@ export const PositionTable: FC<PositionTableProps> = ({
   const {colorMode} = useColorMode();
   // const theme = useTheme();
   const focusTarget = useRef<any>([]);
-  const [toggle, setToggle] = useState('4button');
 
   const {
     data: {contractAddress, index},
@@ -238,14 +236,14 @@ export const PositionTable: FC<PositionTableProps> = ({
               <chakra.td
                 display={'flex'}
                 alignItems="center"
-                justifyContent="center"
+                justifyContent="space-between"
                 pt={'28px'}
-                w={'100%'}
-                margin={0}
+                w={'90%'}
+                ml={'50px'}
                 colSpan={visibleColumns.length}
                 // borderBottomWidth={1}
               >
-                <Flex w={360}>
+                <Flex w={360} >
                   {getStatus('staked', colorMode)}
                   {getStatus('not staked', colorMode)}
                   <Text fontSize={'11px'} py={2} mr={3}>
@@ -253,25 +251,6 @@ export const PositionTable: FC<PositionTableProps> = ({
                   </Text>
                   {getRangeStatus('range', colorMode)}
                   {getRangeStatus('not range', colorMode)}
-                </Flex>
-                <Flex w={500} alignItems="center">
-                  <Text fontSize={'12px'} mr={2} color={'#828d99'}>
-                    Mode Selection
-                  </Text>
-                  <Switch
-                    size="md"
-                    colorScheme={'green'}
-                    onChange={() =>
-                      setToggle(toggle === '4button' ? '5button' : '4button')
-                    }
-                    value={0}
-                  />
-                  <Text
-                    fontSize={'12px'}
-                    ml={2}
-                    color={colorMode === 'light' ? '#304156' : 'white.100'}>
-                    {toggle === '4button' ? 'Basic' : 'Advance'}
-                  </Text>
                 </Flex>
                 <Select
                   alignSelf="flex-end"
@@ -318,7 +297,6 @@ export const PositionTable: FC<PositionTableProps> = ({
                       owner={owner}
                       lpData={lpData}
                       stakingDisable={stakingDisable}
-                      toggle={toggle}
                       id={id}
                     />
                   </chakra.td>
