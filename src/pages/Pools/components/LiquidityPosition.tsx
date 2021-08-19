@@ -211,16 +211,6 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
         <Text>
           <> {lpData ? (convertNumber({amount: lpData.claimedAmount.toString()})) : ('0.00')} TOS </>
         </Text>
-        {/* {lpData ? (
-          <Text>
-            {convertNumber({
-              amount: lpData.claimedAmount.toString(),
-            })}{' '}
-            TOS
-          </Text>
-        ) : (
-          <Text>0.00 TOS</Text>
-        )} */}
       </Flex>
       <Grid
         pos="relative"
@@ -244,6 +234,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
                     data: {
                       id: id,
                       swapableAmount: swapableAmount,
+                      earned: convertNumber({amount: lpData.claimedAmount.toString()})
                     },
                   }),
                 )
@@ -323,6 +314,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
                     data: {
                       id: id,
                       swapableAmount: swapableAmount,
+                      earned: convertNumber({amount: lpData.claimedAmount.toString()})
                     },
                   }),
                 )
@@ -350,21 +342,6 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
               }>
               {approval ? 'Stake ': 'Approve'}
             </Button>
-            {/* <Button
-              {...localBtnStyled.btn()}
-              {...(stakingBtnDisable
-                ? {...btnStyle.btnDisable({colorMode})}
-                : {...btnStyle.btnAble()})}
-              isDisabled={stakingBtnDisable}
-              onClick={() =>
-                stake({
-                  tokenId: id,
-                  userAddress: address,
-                  library: library,
-                })
-              }>
-              Stake
-            </Button> */}
             <Button
               {...localBtnStyled.btn()}
               {...(unStakingBtnDisable
