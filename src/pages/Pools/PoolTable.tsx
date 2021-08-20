@@ -121,7 +121,7 @@ export const PoolTable: FC<PoolTableProps> = ({
         if (data.length !== 0) {
           setTimeout(() => {
             setIsPositionLoading(false);
-          }, 500);
+          }, 1500);
         }
       }
     }
