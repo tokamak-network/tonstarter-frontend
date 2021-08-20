@@ -93,6 +93,10 @@ export const PoolTable: FC<PoolTableProps> = ({
 
   const [stakingPosition, setStakingPosition] = useState([]);
   const [positionData, setPositionData] = useState([]);
+
+  //check loading positionData
+  const [isPositionLoading, setIsPositionLoading] = useState(true);
+
   const [account, setAccount] = useState('');
   const [stakingDisable, setStakingDisable] = useState(true);
 
@@ -114,6 +118,13 @@ export const PoolTable: FC<PoolTableProps> = ({
         setPositionData(result?.positionData);
         setStakingPosition(stringResult);
         setAccount(address);
+        console.log('--');
+        console.log(data, transactionType, blockNumber, address, library);
+        if (data.length !== 0) {
+          setTimeout(() => {
+            setIsPositionLoading(false);
+          }, 500);
+        }
       }
     }
     positionPayload();
@@ -213,7 +224,7 @@ export const PoolTable: FC<PoolTableProps> = ({
     );
   };
 
-  if (isLoading === true || data.length === 0) {
+  if (isPositionLoading === true || data.length === 0) {
     return (
       <Center>
         <LoadingComponent />
@@ -223,7 +234,7 @@ export const PoolTable: FC<PoolTableProps> = ({
 
   return (
     <Flex w="1100px" flexDir={'column'}>
-      <Flex justifyContent={'flex-end'}>
+      <Flex justifyContent={'flex-end'} mb={'15px'}>
         <Select
           w={'137px'}
           h={'32px'}
@@ -237,6 +248,34 @@ export const PoolTable: FC<PoolTableProps> = ({
           <option value="fee">Fees</option>
         </Select>
       </Flex>
+      {positions.length === 0 && isPositionLoading === false ? (
+        <Flex
+          w="100%"
+          h={'38px'}
+          bg={'#1991eb'}
+          borderRadius={4}
+          alignContent="center"
+          alignItems="center">
+          <Text w="100%" textAlign="center" fontSize={'14px'} color="white.100">
+            <span style={{fontWeight: 'bold'}}>Notice!</span> You don’t have any
+            LP, please add Liquidity to{' '}
+            <span
+              style={{
+                fontWeight: 'bold',
+                textDecoration: 'underline',
+                cursor: 'pointer',
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                window.open(
+                  'https://app.uniswap.org/#/add/0x409c4D8cd5d2924b9bc5509230d16a61289c8153/0xc4A11aaf6ea915Ed7Ac194161d2fC9384F15bff2/3000',
+                );
+              }}>
+              UniswapV3
+            </span>
+          </Text>
+        </Flex>
+      ) : null}
       <Box>
         <chakra.table
           width={'full'}
@@ -265,7 +304,11 @@ export const PoolTable: FC<PoolTableProps> = ({
                   h={16}
                   key={i}
                   onClick={() => {
-                    if (address && isOpen === id && filteredPosition.length > 0) {
+                    if (
+                      address &&
+                      isOpen === id &&
+                      filteredPosition.length > 0
+                    ) {
                       setIsOpen('');
                     } else {
                       clickOpen(id, i);

@@ -244,7 +244,7 @@ export const PositionTable: FC<PositionTableProps> = ({
                 colSpan={visibleColumns.length}
                 // borderBottomWidth={1}
               >
-                <Flex w={360} >
+                <Flex w={360}>
                   {getStatus('staked', colorMode)}
                   {getStatus('not staked', colorMode)}
                   <Text fontSize={'11px'} py={2} mr={3}>

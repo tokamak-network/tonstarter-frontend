@@ -12,7 +12,6 @@ import {
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {openModal} from 'store/modal.reducer';
 // import { getPoolName } from '../../utils/token';
-import store from '../../../store';
 import {stake, unstake, approve} from '../actions';
 import {convertNumber} from '../../../utils/number';
 import {selectTransactionType} from 'store/refetch.reducer';
@@ -101,10 +100,10 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
       if (id && address && library) {
         const result = await rangePayload({library, id, address});
         if (result) {
-          const { range, approved } = result
+          const {range, approved} = result;
           const inRange = range !== undefined ? range : false;
           setRange(inRange);
-          setApproval(approved)
+          setApproval(approved);
         }
         return result;
       }
@@ -215,7 +214,13 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
           TOS Earned{' '}
         </Text>
         <Text>
-          <> {lpData ? (convertNumber({amount: lpData.claimedAmount.toString()})) : ('0.00')} TOS </>
+          <>
+            {' '}
+            {lpData
+              ? convertNumber({amount: lpData.claimedAmount.toString()})
+              : '0.00'}{' '}
+            TOS{' '}
+          </>
         </Text>
       </Flex>
       <Grid
@@ -224,7 +229,6 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
         gap={3}
         w={'575px'}
         mr={'4px'}>
-    
         <Button
           {...localBtnStyled.btn()}
           color={'#838383'}
@@ -239,27 +243,46 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
                 data: {
                   id: id,
                   swapableAmount: swapableAmount,
-                  earned: convertNumber({amount: lpData.claimedAmount.toString()})
+                  earned: convertNumber({
+                    amount: lpData.claimedAmount.toString(),
+                  }),
                 },
               }),
             )
           }>
           Claim
         </Button>
-        <> 
-        {approval ? (
-          <Tooltip
-            hasArrow
-            placement="bottom"
-            maxW={415}
-            w={415}
-            h="105px"
-            label={tooltipMsg()}
-            color={theme.colors.white[100]}
-            bg={theme.colors.gray[375]}
-            p={0}
-            borderRadius={3}
-            fontSize="12px">
+        <>
+          {approval ? (
+            <Tooltip
+              hasArrow
+              placement="bottom"
+              maxW={415}
+              w={415}
+              h="105px"
+              label={tooltipMsg()}
+              color={theme.colors.white[100]}
+              bg={theme.colors.gray[375]}
+              p={0}
+              borderRadius={3}
+              fontSize="12px">
+              <Button
+                {...localBtnStyled.btn()}
+                {...(stakingBtnDisable
+                  ? {...btnStyle.btnDisable({colorMode})}
+                  : {...btnStyle.btnAble()})}
+                isDisabled={stakingBtnDisable}
+                onClick={() =>
+                  stake({
+                    tokenId: id,
+                    userAddress: address,
+                    library: library,
+                  })
+                }>
+                Stake
+              </Button>
+            </Tooltip>
+          ) : (
             <Button
               {...localBtnStyled.btn()}
               {...(stakingBtnDisable
@@ -267,32 +290,15 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
                 : {...btnStyle.btnAble()})}
               isDisabled={stakingBtnDisable}
               onClick={() =>
-                stake({
+                approve({
                   tokenId: id,
                   userAddress: address,
                   library: library,
                 })
               }>
-              Stake
+              Approve
             </Button>
-          </Tooltip>
-          ) : (
-          <Button
-            {...localBtnStyled.btn()}
-            {...(stakingBtnDisable
-              ? {...btnStyle.btnDisable({colorMode})}
-              : {...btnStyle.btnAble()})}
-            isDisabled={stakingBtnDisable}
-            onClick={() => 
-              approve({
-                tokenId: id,
-                userAddress: address,
-                library: library,
-              })
-            }>
-          Approve
-        </Button>
-          ) }
+          )}
         </>
         {/* <Button
           {...localBtnStyled.btn()}
