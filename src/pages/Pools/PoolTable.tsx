@@ -118,8 +118,6 @@ export const PoolTable: FC<PoolTableProps> = ({
         setPositionData(result?.positionData);
         setStakingPosition(stringResult);
         setAccount(address);
-        console.log('--');
-        console.log(data, transactionType, blockNumber, address, library);
         if (data.length !== 0) {
           setTimeout(() => {
             setIsPositionLoading(false);
