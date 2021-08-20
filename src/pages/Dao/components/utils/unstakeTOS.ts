@@ -8,12 +8,11 @@ import {setTransaction} from 'store/refetch.reducer';
 type UnstkaeTOS = {
   account: string;
   library: any;
-  lockId: string;
   handleCloseModal: any;
 };
 
 export const unstakeTOS = async (args: UnstkaeTOS) => {
-  const {account, library, lockId} = args;
+  const {account, library} = args;
   const {LockTOS_ADDRESS} = DEPLOYED;
   const LockTOSContract = new Contract(
     LockTOS_ADDRESS,
@@ -22,7 +21,7 @@ export const unstakeTOS = async (args: UnstkaeTOS) => {
   );
   const signer = getSigner(library, account);
 
-  const res = await LockTOSContract.connect(signer).withdraw(lockId);
+  const res = await LockTOSContract.connect(signer).withdrawAll();
 
   return await res.wait().then((receipt: any) => {
     if (receipt) {

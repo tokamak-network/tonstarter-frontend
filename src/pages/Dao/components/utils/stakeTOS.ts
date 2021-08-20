@@ -3,8 +3,8 @@ import * as LockTOSABI from 'services/abis/LockTOS.json';
 import * as TOSABI from 'services/abis/TOS.json';
 import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
-// import store from 'store';
-// import {setTransaction} from 'store/refetch.reducer';
+import store from 'store';
+import {setTransaction} from 'store/refetch.reducer';
 import {convertToWei} from 'utils/number';
 // import {permitForCreateLock} from 'utils/permit';
 
@@ -39,31 +39,30 @@ export const stakeTOS = async (args: StkaeTOS) => {
 
   // permitForCreateLock(account, library, weiAmount, unlockTime);
 
-  const firstRes = await TOSContract.connect(signer).approve(
+  const approve = await TOSContract.connect(signer).approve(
     LockTOS_ADDRESS,
     weiAmount,
   );
 
-  await firstRes.wait().then((receipt: any) => {
+  return await approve.wait().then(async (receipt: any) => {
     if (receipt) {
-      LockTOSContract.connect(signer).createLock(
+      const createLock = await LockTOSContract.connect(signer).createLock(
         weiAmount,
         period,
         // _v,
         // _r,
         // _s,
       );
+      await createLock.wait().then((rec: any) => {
+        if (rec) {
+          store.dispatch(
+            setTransaction({
+              transactionType: 'Dao',
+              blockNumber: receipt.blockNumber,
+            }),
+          );
+        }
+      });
     }
   });
-
-  // return await finalRes.wait().then((receipt: any) => {
-  //   if (receipt) {
-  //     store.dispatch(
-  //       setTransaction({
-  //         transactionType: 'Dao',
-  //         blockNumber: receipt.blockNumber,
-  //       }),
-  //     );
-  //   }
-  // });
 };

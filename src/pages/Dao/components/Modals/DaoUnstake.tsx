@@ -167,7 +167,7 @@ export const DaoUnstakeModal = (props: any) => {
               _hover={{...theme.btnHover}}
               onClick={() => {
                 if (account) {
-                  unstakeTOS({account, library, lockId, handleCloseModal});
+                  unstakeTOS({account, library, handleCloseModal});
                 }
               }}>
               Unstake

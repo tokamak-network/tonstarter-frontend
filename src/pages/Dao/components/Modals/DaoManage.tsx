@@ -14,6 +14,7 @@ import {
   Input,
   Radio,
   RadioGroup,
+  Tooltip,
 } from '@chakra-ui/react';
 import React from 'react';
 import {useAppSelector} from 'hooks/useRedux';
@@ -27,8 +28,7 @@ import backArrowIcon from 'assets/svgs/back_arrow_icon.svg';
 import {useRef} from 'react';
 import {increaseAmount, extendPeriod} from '../utils';
 import {getUserTosBalance} from 'client/getUserBalance';
-import {checkDocument} from '@apollo/client/utilities';
-
+import BOOST_ICON from 'assets/svgs/booster_icon.svg';
 interface Stake {
   lockId: string;
   lockedBalance: string;
@@ -127,7 +127,6 @@ export const DaoManageModal = () => {
   useEffect(() => {
     const checkCondition =
       amountRef.current?.value === '' && periodRef.current?.value === '';
-    console.log(checkCondition);
     setBtnDisable(checkCondition);
   }, [amountRef.current?.value, periodRef.current?.value]);
 
@@ -187,7 +186,7 @@ export const DaoManageModal = () => {
                   <Flex
                     ref={(el) => (focusTarget.current[index] = el)}
                     alignItems="center"
-                    pl="1.438em"
+                    pl="0.4em"
                     h={'64px'}
                     borderBottom={
                       index !== tosStakeList.length - 1
@@ -195,14 +194,29 @@ export const DaoManageModal = () => {
                         : ''
                     }
                     key={index}>
+                    {stake.isBoosted ? (
+                      <Tooltip
+                        hasArrow
+                        placement="right"
+                        w={100}
+                        h={'28px'}
+                        fontSize={'12px'}
+                        pt={1}
+                        label="Boosted locker"
+                        color={theme.colors.white[100]}
+                        bg={theme.colors.gray[375]}>
+                        <img style={{position: 'absolute'}} src={BOOST_ICON} />
+                      </Tooltip>
+                    ) : null}
                     <Text
-                      w="3.750em"
+                      w="60px"
+                      textAlign="center"
                       fontSize={'0.813em'}
                       fontWeight={600}
                       fontColor={themeDesign.scrollNumberFont[colorMode]}>
-                      {index + 1}
+                      {index < 10 ? '0' + (index + 1) : index}
                     </Text>
-                    <Box w={'7em'}>
+                    <Box w={'5em'}>
                       <Text
                         fontSize={'0.750em'}
                         color={themeDesign.scrollAmountFont[colorMode]}>
@@ -222,25 +236,18 @@ export const DaoManageModal = () => {
                         </span>
                       </Text>
                     </Box>
-                    <Box w={'5em'}>
+                    <Box w={'6em'} mr={'1em'}>
                       <Text
                         fontSize={'0.750em'}
-                        color={themeDesign.scrollAmountFont[colorMode]}>
-                        Period
+                        color={themeDesign.scrollAmountFont[colorMode]}
+                        textAlign="center">
+                        End Date
                       </Text>
                       <Text
                         fontSize={'1em'}
                         fontColor={themeDesign.scrollNumberFont[colorMode]}
                         fontWeight={'bold'}>
-                        {stake.periodDays}
-                        <span
-                          style={{
-                            fontSize: '0.688em',
-                            paddingLeft: '0.188em',
-                          }}>
-                          {/* {stake.periodWeeks > 1 ? 'weeks' : 'week'} */}
-                          Days
-                        </span>
+                        {stake.endDate}
                       </Text>
                     </Box>
                     <Button

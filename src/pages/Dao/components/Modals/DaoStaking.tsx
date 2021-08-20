@@ -16,7 +16,7 @@ import {
   Tooltip,
   Image,
 } from '@chakra-ui/react';
-import React, {useCallback} from 'react';
+import React, {SetStateAction, useCallback} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {onKeyDown, useInput} from 'hooks/useInput';
@@ -28,6 +28,9 @@ import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import {useCheckBalance} from 'hooks/useCheckBalance';
 import moment from 'moment';
 import Decimal from 'decimal.js';
+import {Contract} from '@ethersproject/contracts';
+import {DEPLOYED} from 'constants/index';
+import * as LockTOSABI from 'services/abis/LockTOS.json';
 
 type SelectPeriod = '1 month' | '6 months' | '1 year' | '3 years';
 
@@ -46,12 +49,26 @@ const themeDesign = {
   },
 };
 
+const checkPhase3StartTime = async (library: any) => {
+  const {LockTOS_ADDRESS} = DEPLOYED;
+  const LockTOSContract = new Contract(
+    LockTOS_ADDRESS,
+    LockTOSABI.abi,
+    library,
+  );
+  const phase3StartTime = await LockTOSContract.phase3StartTime();
+  const isBoosted = Date.now() > Number(phase3StartTime) ? true : false;
+  return isBoosted;
+};
+
 export const DaoStakeModal = () => {
   const {data} = useAppSelector(selectModalType);
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const {signIn, account, library} = useUser();
+  const {account, library} = useUser();
   const {checkBalance} = useCheckBalance();
+
+  const [boostOpt, setBoostOpt] = useState<boolean>(false);
 
   const [balance, setBalance] = useState('0');
   const [btnDisable, setBtnDisable] = useState(true);
@@ -91,7 +108,7 @@ export const DaoStakeModal = () => {
   const getEstimatedReward = useCallback(
     (diffDate: number) => {
       if (value !== '' && value !== '0' && value !== undefined) {
-        const differNum = diffDate - 7;
+        const differNum = diffDate > 7 ? diffDate - 7 : diffDate;
         const maxPeriod = 1095;
         const numValue = Number(value.replaceAll(',', ''));
         const avgProfit = numValue / maxPeriod;
@@ -99,12 +116,25 @@ export const DaoStakeModal = () => {
         const deciamlNum = new Decimal(estimatedReward);
         const resultNum = deciamlNum.toFixed(3, Decimal.ROUND_HALF_UP);
         const result = Number(resultNum).toFixed(2);
-        setReward(String(result));
+        setReward(
+          boostOpt === true ? String(Number(result) * 2) : String(result),
+        );
       }
       return;
     },
-    [value],
+    [value, boostOpt],
   );
+
+  //check Phse 3 Start Time
+  useEffect(() => {
+    async function isPhase3StartTime() {
+      const res = await checkPhase3StartTime(library);
+      setBoostOpt(res);
+    }
+    if (library) {
+      isPhase3StartTime();
+    }
+  }, [library]);
 
   //check btn able condition
   useEffect(() => {
@@ -161,11 +191,6 @@ export const DaoStakeModal = () => {
     }
   }, [dateValue, value, getEstimatedReward]);
 
-  //calculate estimated reward
-  // useEffect(() => {
-  //   setReward;
-  // }, [])
-
   useEffect(() => {
     if (selectPeriod === 'weeks' || selectPeriod === 'months') {
       if (selectPeriod === 'weeks') {
@@ -189,10 +214,6 @@ export const DaoStakeModal = () => {
     }
     // return setDateValue(select)
   }, [selectPeriod, lockDateValue]);
-
-  if (signIn === false || account === undefined) {
-    return <></>;
-  }
 
   return (
     <Modal
@@ -440,7 +461,7 @@ export const DaoStakeModal = () => {
                   Number(value.replaceAll(',', '')),
                   Number(balance),
                 );
-                if (isBalance) {
+                if (isBalance && account) {
                   handleOpenConfirmModal({
                     type: 'confirm',
                     data: {

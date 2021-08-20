@@ -35,6 +35,9 @@ export const getTosStakeList = async ({account, library}: any) => {
       const periodWeeks = unixEndTime.diff(unixStartTime, 'weeks');
       const periodDays = unixEndTime.diff(unixStartTime, 'days');
       const end = endTime <= nowTime;
+      const endDate = moment(unixEndTime).format('MMM DD, YYYY');
+      const isBoosted =
+        lockedBalance.boostValue.toString() === '2' ? true : false;
 
       return {
         lockId,
@@ -44,6 +47,8 @@ export const getTosStakeList = async ({account, library}: any) => {
         lockedBalance: convertNumber({amount: lockedBalance.amount.toString()}),
         startTime,
         endTime,
+        endDate,
+        isBoosted,
       };
     }),
   );
