@@ -77,7 +77,6 @@ export const getUserSTOSBalance = async ({account, library}: any) => {
     library,
   );
   const res = await LockTOSContract.balanceOf(account);
-  console.log(res.toString());
   return convertNumber({amount: res});
 };
 

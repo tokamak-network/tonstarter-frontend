@@ -43,7 +43,6 @@ export const MySTOS = (props: PropsType) => {
   useEffect(() => {
     async function getTosBalance() {
       const res = await getUserSTOSBalance({account, library});
-      console.log(res);
       if (res !== undefined) {
         setbalance(res);
         if (stakeList.length !== 0) {

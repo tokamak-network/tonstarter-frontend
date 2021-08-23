@@ -52,15 +52,24 @@ export const DaoUnstakeModal = (props: any) => {
   const {account, library} = useUser();
 
   const [unstakeList, setUnstakeList] = useState<[{}]>([{}]);
-  const [lockId, setLockId] = useState<string>('1');
+  const [unstakeBalance, setUnstakeBalance] = useState('-');
 
   useEffect(() => {
     const lockList = data?.data?.lockList;
     if (lockList === undefined) {
       return;
     }
-    const unstakedList = lockList.filter((e: any) => e.end === false);
+    const unstakedList = lockList.filter((e: any) => e.end === true);
+    const unstakedBalance = unstakedList.reduce((acc: any, cur: any) => {
+      console.log(acc.lockedBalance);
+      console.log(cur.lockedBalance);
+      return Number(acc.lockedBalance) + Number(cur.lockedBalance);
+
+      // return acc + cur
+    });
+    console.log(unstakedBalance);
     setUnstakeList(unstakedList);
+    setUnstakeBalance(unstakedBalance.toFixed(2));
 
     //need to add setLockId here
 
@@ -113,7 +122,7 @@ export const DaoUnstakeModal = (props: any) => {
                 fontSize={'26px'}
                 fontWeight={600}
                 color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                4000 TOS
+                {unstakeBalance} TOS
               </Text>
             </Box>
             <Text
@@ -145,7 +154,8 @@ export const DaoUnstakeModal = (props: any) => {
                 )}>
                 <Wrap
                   display="flex"
-                  style={{marginTop: '0', marginBottom: '20px'}}>
+                  style={{marginTop: '0', marginBottom: '20px'}}
+                  justifyContent="center">
                   {unstakeList.map((unstake: any, index: number) => (
                     <UnstakeRecord
                       number={index}
