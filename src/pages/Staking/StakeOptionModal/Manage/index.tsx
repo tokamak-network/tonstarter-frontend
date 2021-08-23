@@ -29,7 +29,7 @@ import {fetchWithdrawPayload} from '../utils/fetchWithdrawPayload';
 import {convertNumber} from 'utils/number';
 import {Contract} from '@ethersproject/contracts';
 import * as StakeTON from 'services/abis/StakeTON.json';
-import { fetchSwapPayload } from '../utils/fetchSwapPayload';
+import {fetchSwapPayload} from '../utils/fetchSwapPayload';
 
 const tooltipMsg = () => {
   return (

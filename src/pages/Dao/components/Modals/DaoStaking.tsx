@@ -57,7 +57,8 @@ const checkPhase3StartTime = async (library: any) => {
     library,
   );
   const phase3StartTime = await LockTOSContract.phase3StartTime();
-  const isBoosted = Date.now() > Number(phase3StartTime) ? true : false;
+  const isBoosted =
+    Date.now() < Number(phase3StartTime.toString()) ? true : false;
   return isBoosted;
 };
 

@@ -66,7 +66,7 @@ export const getUserTOSStaked = async ({account, library}: any) => {
     }),
   );
 
-  return String(totalStakeAmount);
+  return String(totalStakeAmount.toFixed(2));
 };
 
 export const getUserSTOSBalance = async ({account, library}: any) => {
@@ -77,6 +77,7 @@ export const getUserSTOSBalance = async ({account, library}: any) => {
     library,
   );
   const res = await LockTOSContract.balanceOf(account);
+  console.log(res.toString());
   return convertNumber({amount: res});
 };
 
