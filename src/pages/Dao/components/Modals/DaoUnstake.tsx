@@ -61,12 +61,10 @@ export const DaoUnstakeModal = (props: any) => {
     }
     const unstakedList = lockList.filter((e: any) => e.end === true);
     const unstakedBalance = unstakedList.reduce((acc: any, cur: any) => {
-      console.log(acc.lockedBalance);
-      console.log(cur.lockedBalance);
-      return Number(acc.lockedBalance) + Number(cur.lockedBalance);
+      return Number(acc) + Number(cur.lockedBalance);
 
       // return acc + cur
-    });
+    }, 0);
     console.log(unstakedBalance);
     setUnstakeList(unstakedList);
     setUnstakeBalance(unstakedBalance.toFixed(2));
