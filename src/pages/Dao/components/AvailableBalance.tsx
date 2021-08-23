@@ -8,10 +8,11 @@ import {
 } from '@chakra-ui/react';
 import {getUserTosBalance} from 'client/getUserBalance';
 import {useAppDispatch} from 'hooks/useRedux';
+import {useBlockNumber} from 'hooks/useBlock';
 import {useUser} from 'hooks/useUser';
-import {useEffect} from 'react';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {openModal} from 'store/modal.reducer';
+import {checkApprove, getAllowance} from './utils/approve';
 
 const themeDesign = {
   fontColorTitle: {
@@ -26,11 +27,13 @@ const themeDesign = {
 
 export const AvailableBalance = () => {
   const [balance, setbalance] = useState('-');
+  const [btnType, setBtnType] = useState<string>('-');
   const theme = useTheme();
   const {btnStyle, btnHover} = theme;
   const {colorMode} = useColorMode();
   const dispatch = useAppDispatch();
   const {account, library, signIn} = useUser();
+  const {blockNumber} = useBlockNumber();
 
   useEffect(() => {
     async function getTosBalance() {
@@ -46,7 +49,19 @@ export const AvailableBalance = () => {
     } else {
       setbalance('-');
     }
-  }, [signIn, account, library]);
+  }, [signIn, account, library, blockNumber]);
+
+  //set btn condition
+  useEffect(() => {
+    async function checkApproved(account: string, library: any) {
+      const isApproved = await checkApprove(account, library);
+      setBtnType(isApproved === true ? 'Stake' : 'Approve');
+    }
+
+    if (account && library) {
+      checkApproved(account, library);
+    }
+  }, [signIn, account, library, blockNumber]);
 
   return (
     <Flex
@@ -80,14 +95,16 @@ export const AvailableBalance = () => {
         isDisabled={!signIn}
         _hover={btnHover.backgroundColor}
         onClick={() =>
-          dispatch(
-            openModal({
-              type: 'dao_stake',
-              data: {userTosBalance: balance},
-            }),
-          )
+          btnType === 'Approve' && account
+            ? getAllowance(account, library)
+            : dispatch(
+                openModal({
+                  type: 'dao_stake',
+                  data: {userTosBalance: balance},
+                }),
+              )
         }>
-        Stake
+        {btnType}
       </Button>
     </Flex>
   );

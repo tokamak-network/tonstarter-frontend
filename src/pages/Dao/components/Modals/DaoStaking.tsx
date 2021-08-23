@@ -57,7 +57,6 @@ const checkPhase3StartTime = async (library: any) => {
     library,
   );
   const phase3StartTime = await LockTOSContract.phase3StartTime();
-  console.log(phase3StartTime);
   const isBoosted =
     Date.now() / 1000 < Number(phase3StartTime.toString()) ? true : false;
   return isBoosted;
@@ -158,6 +157,7 @@ export const DaoStakeModal = () => {
     }
     const dayForThursday = 4; // for Thursday
     const today = moment().isoWeekday();
+    console.log(dateValue);
     if (today <= dayForThursday) {
       if (dateValue === 1) {
         const date = moment().isoWeekday(4).format('MMM DD, YYYY');

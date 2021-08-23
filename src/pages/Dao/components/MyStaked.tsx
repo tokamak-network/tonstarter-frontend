@@ -73,6 +73,8 @@ export const MyStaked = (props: PropsType) => {
     /*eslint-disable*/
   }, [transactionType, blockNumber]);
 
+  console.log(signIn || isEnd);
+
   return (
     <Flex
       alignItems="center"
