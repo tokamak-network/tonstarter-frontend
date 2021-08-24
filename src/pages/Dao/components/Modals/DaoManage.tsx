@@ -103,7 +103,7 @@ export const DaoManageModal = () => {
 
   useEffect(() => {
     if (stakeList) {
-      setTosStakeList(stakeList);
+      setTosStakeList(stakeList.filter((e:any) => e.end === false));
     }
   }, [signIn, account, library, stakeList]);
 

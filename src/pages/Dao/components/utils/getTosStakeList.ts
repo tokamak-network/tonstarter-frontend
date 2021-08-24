@@ -27,8 +27,6 @@ export const getTosStakeList = async ({account, library}: any) => {
         lockId,
       );
 
-      console.log(lockedBalance);
-
       const startTime = Number(lockedBalance.start.toString());
       const endTime = Number(lockedBalance.end.toString());
 
@@ -55,5 +53,5 @@ export const getTosStakeList = async ({account, library}: any) => {
     }),
   );
 
-  return res;
+  return res.filter((e:any) => e.lockId !== '0')
 };

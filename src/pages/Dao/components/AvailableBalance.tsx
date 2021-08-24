@@ -49,12 +49,13 @@ export const AvailableBalance = () => {
     } else {
       setbalance('-');
     }
-  }, [signIn, account, library, blockNumber]);
+  }, [signIn, account, library, blockNumber, dispatch]);
 
   //set btn condition
   useEffect(() => {
     async function checkApproved(account: string, library: any) {
       const isApproved = await checkApprove(account, library);
+      console.log(isApproved);
       setBtnType(isApproved === true ? 'Stake' : 'Approve');
     }
 

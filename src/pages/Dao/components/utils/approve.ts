@@ -11,7 +11,7 @@ export const checkApprove = async (
   const contract = new Contract(TOS_ADDRESS, TOSABI.abi, library);
   const totalSupply = await contract.totalSupply();
   const approvedAmount = await contract.allowance(account, LockTOS_ADDRESS);
-  return approvedAmount.eq(totalSupply) ? true : false;
+  return totalSupply.toString() === approvedAmount.toString() ? true : false;
 };
 
 export const getAllowance = async (account: string, library: any) => {

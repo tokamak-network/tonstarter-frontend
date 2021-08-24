@@ -30,6 +30,7 @@ import {convertNumber} from 'utils/number';
 import {Contract} from '@ethersproject/contracts';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import {fetchSwapPayload} from '../utils/fetchSwapPayload';
+import {fetchSwappedTosBalance} from '../utils/fetchSwappedTosBalance';
 
 const tooltipMsg = () => {
   return (
@@ -75,6 +76,7 @@ export const ManageModal = () => {
   const [swapBalance, setSwapBalance] = useState('0');
   const [seigBalance, setSeigBalance] = useState<string | undefined>('0');
   const [canWithdralAmount, setCanWithdralAmount] = useState(0);
+  const [swappedTosBalance, setSwappedTosBalance] = useState<string>('0');
 
   //original balances
   const [originalStakeBalance, setOriginalStakeBalance] = useState(0);
@@ -123,18 +125,21 @@ export const ManageModal = () => {
           contractAddress,
         );
         const tosPrice = await fetchSwapPayload(library);
+        const fetchedSwappedTosBalance = await fetchSwappedTosBalance(contractAddress, library);
         if (
           totalStakedAmount &&
           totalStakedAmountL2 &&
           totalPendingUnstakedAmountL2 &&
           stakeContractBalanceTon &&
-          res_CanWithdralAmount
+          res_CanWithdralAmount && 
+          fetchedSwappedTosBalance
         ) {
           setAvailableBalance(stakeContractBalanceTon);
           setTotalStaked(totalStakedAmount);
           setStakdL2(totalStakedAmountL2);
           setPendingL2Balance(totalPendingUnstakedAmountL2);
           setCanWithdralAmount(Number(res_CanWithdralAmount.toString()));
+          setSwappedTosBalance(fetchedSwappedTosBalance)
           //set original balances
           setOriginalStakeBalance(originalBalance.stakeContractBalanceTon);
           setOriginalSwapBalance(originalBalance.stakeContractBalanceTonRay);
@@ -405,6 +410,36 @@ export const ManageModal = () => {
                   fontWeight={500}
                   fontSize={'15px'}>
                   {swapBalance} TON
+                </Text>
+              </Flex>
+              <Flex justifyContent="space-between" alignItems="center" h="55px">
+                <Flex>
+                  <Text
+                    color={'gray.400'}
+                    fontSize="13px"
+                    fontWeight={500}
+                    mr="2px">
+                    Swapped TOS
+                  </Text>
+                  {/* <Tooltip
+                    hasArrow
+                    placement="top"
+                    label={tooltipMsg()}
+                    color={theme.colors.white[100]}
+                    bg={theme.colors.gray[375]}
+                    p={0}
+                    w="227px"
+                    h="70px"
+                    borderRadius={3}
+                    fontSize="12px">
+                    <img src={tooltipIcon} />
+                  </Tooltip> */}
+                </Flex>
+                <Text
+                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+                  fontWeight={500}
+                  fontSize={'15px'}>
+                  {swappedTosBalance} TOS
                 </Text>
               </Flex>
             </Box>
