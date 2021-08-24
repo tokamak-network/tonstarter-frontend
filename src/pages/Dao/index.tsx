@@ -115,7 +115,10 @@ export const DAO = () => {
                 px={15}
                 cursor={'pointer'}
                 _hover={{color: '#2a72e5', borderColor: '#2a72e5'}}>
-                <Text>Go to governance</Text>
+                <Text onClick={(e:any)=>{
+                  e.preventDefault();
+                  window.open(`https://snapshot.org/#/tonstarter.eth`);
+                }}>Go to governance</Text>
                 <Image src={resources_icon}></Image>
               </Box>
             </Container>

@@ -55,7 +55,6 @@ export const AvailableBalance = () => {
   useEffect(() => {
     async function checkApproved(account: string, library: any) {
       const isApproved = await checkApprove(account, library);
-      console.log(isApproved);
       setBtnType(isApproved === true ? 'Stake' : 'Approve');
     }
 
