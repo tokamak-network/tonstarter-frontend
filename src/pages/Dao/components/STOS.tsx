@@ -7,6 +7,7 @@ import {useEffect} from 'react';
 import {useState} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {useUser} from 'hooks/useUser';
+import {useBlockNumber} from 'hooks/useBlock';
 import {getTosStakeList} from './utils';
 import {selectTransactionType} from 'store/refetch.reducer';
 
@@ -61,7 +62,7 @@ export const STOS = () => {
   const {account, library} = useUser();
   const [address, setAddress] = useState('-');
   const [stakeList, setStakeList] = useState<any[]>([]);
-  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
+  const {blockNumber} = useBlockNumber();
 
   useEffect(() => {
     async function getStakeList() {
@@ -76,20 +77,7 @@ export const STOS = () => {
     } else {
       setAddress('-');
     }
-  }, [account, library]);
-
-  useEffect(() => {
-    async function getStakeList() {
-      const res = await getTosStakeList({account, library});
-      if (res) {
-        setStakeList(res);
-      }
-    }
-    if (transactionType === 'Dao') {
-      getStakeList();
-    }
-    /*eslint-disable*/
-  }, [transactionType, blockNumber]);
+  }, [account, library, blockNumber]);
 
   return (
     <Flex
@@ -147,9 +135,7 @@ export const STOS = () => {
       </Box>
       <Box mb={'20px'}>
         <MyStaked
-          stakeList={stakeList}
-          transactionType={transactionType}
-          blockNumber={blockNumber}></MyStaked>
+          stakeList={stakeList}></MyStaked>
       </Box>
       <MySTOS stakeList={stakeList}></MySTOS>
     </Flex>

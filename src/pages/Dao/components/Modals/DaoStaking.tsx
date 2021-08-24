@@ -157,7 +157,6 @@ export const DaoStakeModal = () => {
     }
     const dayForThursday = 4; // for Thursday
     const today = moment().isoWeekday();
-    console.log(dateValue);
     if (today <= dayForThursday) {
       if (dateValue === 1) {
         const date = moment().isoWeekday(4).format('MMM DD, YYYY');

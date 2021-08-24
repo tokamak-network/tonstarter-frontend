@@ -9,18 +9,16 @@ import {
 import {getUserTOSStaked} from 'client/getUserBalance';
 import {useAppDispatch} from 'hooks/useRedux';
 import {useUser} from 'hooks/useUser';
-import {useEffect} from 'react';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {openModal} from 'store/modal.reducer';
+import {useBlockNumber} from 'hooks/useBlock';
 
 type PropsType = {
   stakeList: any;
-  transactionType: string | undefined;
-  blockNumber: number | undefined;
 };
 
 export const MyStaked = (props: PropsType) => {
-  const {stakeList, transactionType, blockNumber} = props;
+  const {stakeList} = props;
   const [balance, setbalance] = useState('-');
   const [isEnd, setIsEnd] = useState(true);
   const theme = useTheme();
@@ -28,6 +26,7 @@ export const MyStaked = (props: PropsType) => {
   const {colorMode} = useColorMode();
   const {account, library, signIn} = useUser();
   const dispatch = useAppDispatch();
+  const {blockNumber} = useBlockNumber();
 
   const themeDesign = {
     fontColorTitle: {
@@ -59,7 +58,7 @@ export const MyStaked = (props: PropsType) => {
     } else {
       setbalance('-');
     }
-  }, [signIn, account, library, stakeList, dispatch]);
+  }, [signIn, account, library, stakeList, dispatch, blockNumber]);
 
   return (
     <Flex

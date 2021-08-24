@@ -62,15 +62,9 @@ export const DaoUnstakeModal = (props: any) => {
     const unstakedList = lockList.filter((e: any) => e.end === true);
     const unstakedBalance = unstakedList.reduce((acc: any, cur: any) => {
       return Number(acc) + Number(cur.lockedBalance);
-
-      // return acc + cur
     }, 0);
-    console.log(unstakedBalance);
     setUnstakeList(unstakedList);
     setUnstakeBalance(unstakedBalance.toFixed(2));
-
-    //need to add setLockId here
-
     /*eslint-disable*/
   }, [data]);
 
@@ -129,7 +123,7 @@ export const DaoUnstakeModal = (props: any) => {
               color="gray.400">
               Detail
             </Text>
-            {unstakeList !== undefined && unstakeList.length > 1 && (
+            {unstakeList !== undefined && unstakeList.length > 0 && (
               <Scrollbars
                 style={{
                   width: '100%',
@@ -150,9 +144,8 @@ export const DaoUnstakeModal = (props: any) => {
                 renderThumbHorizontal={() => (
                   <div style={{background: 'black'}}></div>
                 )}>
-                <Wrap
-                  display="flex"
-                  style={{marginTop: '0', marginBottom: '20px'}}
+                <Flex
+                  style={{ marginTop: '0', marginBottom: '20px'}}
                   justifyContent="center">
                   {unstakeList.map((unstake: any, index: number) => (
                     <UnstakeRecord
@@ -161,7 +154,7 @@ export const DaoUnstakeModal = (props: any) => {
                       key={index}
                     />
                   ))}
-                </Wrap>
+                </Flex>
               </Scrollbars>
             )}
           </Stack>

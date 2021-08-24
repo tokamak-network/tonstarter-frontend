@@ -9,6 +9,7 @@ import {
 } from '@chakra-ui/react';
 import resources_icon from 'assets/svgs/resources_icon.svg';
 import {STOS} from './components/STOS';
+import {DAOStatistics} from './components/DAOStatistics';
 import {
   DaoStakeModal,
   DaoUnstakeModal,
@@ -36,7 +37,8 @@ export const DAO = () => {
 
   return (
     <Flex>
-      <Flex mt={theme.headerMargin.mt} w="100%" justifyContent="center">
+      <Flex mt={theme.headerMargin.mt} w="100%"  flexDir="column">
+      <Flex justifyContent='center'>
         <Flex w={572} mr={108} mt={'122px'} flexDir="column">
           <Box mb={'45px'}>
             <Text
@@ -126,6 +128,10 @@ export const DAO = () => {
         </Flex>
         <Flex mt={75}>
           <STOS></STOS>
+        </Flex>
+        </Flex>
+        <Flex>
+        <DAOStatistics />
         </Flex>
       </Flex>
       <DaoStakeModal></DaoStakeModal>
