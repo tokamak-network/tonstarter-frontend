@@ -27,8 +27,8 @@ export const MyStaked = (props: PropsType) => {
   const {btnStyle, btnHover} = theme;
   const {colorMode} = useColorMode();
   const {account, library, signIn} = useUser();
-
   const dispatch = useAppDispatch();
+
   const themeDesign = {
     fontColorTitle: {
       light: 'gray.400',
@@ -49,6 +49,7 @@ export const MyStaked = (props: PropsType) => {
     }
     if (account) {
       getTosBalance();
+      setIsEnd(true);
       stakeList.map((stake: any) => {
         if (stake.end === true) {
           return setIsEnd(false);
@@ -58,20 +59,7 @@ export const MyStaked = (props: PropsType) => {
     } else {
       setbalance('-');
     }
-  }, [signIn, account, library, stakeList]);
-
-  useEffect(() => {
-    async function getTosBalance() {
-      const res = await getUserTOSStaked({account, library});
-      if (res !== undefined) {
-        setbalance(res);
-      }
-    }
-    if (transactionType === 'Dao') {
-      getTosBalance();
-    }
-    /*eslint-disable*/
-  }, [transactionType, blockNumber]);
+  }, [signIn, account, library, stakeList, dispatch]);
 
   return (
     <Flex

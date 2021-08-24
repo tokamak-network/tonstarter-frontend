@@ -10,8 +10,8 @@ export const checkApprove = async (
   const {TOS_ADDRESS, LockTOS_ADDRESS} = DEPLOYED;
   const contract = new Contract(TOS_ADDRESS, TOSABI.abi, library);
   const approvedAmount = await contract.allowance(account, LockTOS_ADDRESS);
-  const userTosBalance = await contract.balanceOf(account)
-  return approvedAmount.gte(userTosBalance) ? true : false;
+  const userTosBalance = await contract.balanceOf(account);
+  return approvedAmount.gt(userTosBalance) ? true : false;
 };
 
 export const getAllowance = async (account: string, library: any) => {

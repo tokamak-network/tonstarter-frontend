@@ -28,6 +28,7 @@ export const MySTOS = (props: PropsType) => {
   const {btnStyle, btnHover} = theme;
   const {colorMode} = useColorMode();
   const {account, library, signIn} = useUser();
+  const filteredStakeList = stakeList.filter((e:any) => e.end === false);
 
   const themeDesign = {
     fontColorTitle: {
@@ -43,9 +44,10 @@ export const MySTOS = (props: PropsType) => {
   useEffect(() => {
     async function getTosBalance() {
       const res = await getUserSTOSBalance({account, library});
+      setBtnDisabled(true);
       if (res !== undefined) {
         setbalance(res);
-        if (stakeList.length !== 0) {
+        if (filteredStakeList.length !== 0) {
           setBtnDisabled(false);
         }
       }
@@ -92,7 +94,7 @@ export const MySTOS = (props: PropsType) => {
           dispatch(
             openModal({
               type: 'dao_manage',
-              data: {userTosBalance: balance, stakeList},
+              data: {userTosBalance: balance, stakeList: filteredStakeList},
             }),
           )
         }>
