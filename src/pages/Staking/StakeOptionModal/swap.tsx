@@ -150,7 +150,7 @@ export const SwapModal = () => {
               textAlign={'center'}
               fontWeight={'bold'}
               fontSize={'4xl'}
-              value={Number(swapValue).toFixed(6)}
+              value={Number(swapValue).toFixed(2)}
               width={'xs'}
               // mr={6}
               _focus={{
