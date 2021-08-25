@@ -19,8 +19,6 @@ type PropsType = {
 
 export const MySTOS = (props: PropsType) => {
   const {stakeList} = props;
-  console.log('**USER TOS STAKE LIST**');
-  console.log(stakeList);
   const dispatch = useDispatch();
   const [balance, setbalance] = useState('-');
   const [btnDisabled, setBtnDisabled] = useState(true);
@@ -28,7 +26,7 @@ export const MySTOS = (props: PropsType) => {
   const {btnStyle, btnHover} = theme;
   const {colorMode} = useColorMode();
   const {account, library, signIn} = useUser();
-  const filteredStakeList = stakeList.filter((e:any) => e.end === false);
+  const filteredStakeList = stakeList.filter((e: any) => e.end === false);
 
   const themeDesign = {
     fontColorTitle: {
