@@ -204,6 +204,10 @@ export const ManageModal = () => {
       setCanUntakdL2(convertedUnstakeNum);
       setSeigBalance(convertedUnstakeNum);
 
+      if (isUnstakeL2All) {
+        setCanUntakdL2(stakedL2);
+        return setUnstakeL2Disable(false);
+      }
       return Number(convertedUnstakeNum) <= 0
         ? setUnstakeL2Disable(true)
         : setUnstakeL2Disable(false);
