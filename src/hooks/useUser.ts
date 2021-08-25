@@ -12,6 +12,6 @@ export const useUser = () => {
   return {
     signIn: false,
     account: undefined,
-    library: undefined,
+    library,
   };
 };
