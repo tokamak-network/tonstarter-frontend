@@ -145,7 +145,7 @@ export const DaoUnstakeModal = (props: any) => {
                   <div style={{background: 'black'}}></div>
                 )}>
                 <Flex
-                  style={{ marginTop: '0', marginBottom: '20px'}}
+                  style={{marginTop: '0', marginBottom: '20px'}}
                   justifyContent="center">
                   {unstakeList.map((unstake: any, index: number) => (
                     <UnstakeRecord
@@ -168,7 +168,11 @@ export const DaoUnstakeModal = (props: any) => {
               _hover={{...theme.btnHover}}
               onClick={() => {
                 if (account) {
-                  unstakeTOS({account, library, handleCloseModal});
+                  unstakeTOS({
+                    account,
+                    library,
+                    handleCloseModal: handleCloseModal(),
+                  });
                 }
               }}>
               Unstake

@@ -6,6 +6,7 @@ import {useUser} from 'hooks/useUser';
 import {useEffect, useState} from 'react';
 import {convertNumber} from 'utils/number';
 import {useBlockNumber} from 'hooks/useBlock';
+import {useWeb3React} from '@web3-react/core';
 
 export const DAOStatistics = () => {
   const {library} = useUser();
@@ -15,6 +16,7 @@ export const DAOStatistics = () => {
   const [averageWeek, setAverageWeek] = useState('');
 
   const {LockTOS_ADDRESS} = DEPLOYED;
+
   const LockTOSContract = new Contract(
     LockTOS_ADDRESS,
     LockTOSABI.abi,
@@ -44,9 +46,11 @@ export const DAOStatistics = () => {
   };
 
   useEffect(() => {
-    getTotalTOS();
-    getTotalSTOS();
-    getAverageLockTime();
+    if (library) {
+      getTotalTOS();
+      getTotalSTOS();
+      getAverageLockTime();
+    }
     return () => {};
     /*eslint-disable*/
   }, [library, blockNumber]);

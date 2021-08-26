@@ -3,6 +3,7 @@ import * as LockTOSABI from 'services/abis/LockTOS.json';
 import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import {convertToWei} from 'utils/number';
+import {setTx} from 'application';
 
 type StkaeTOS = {
   account: string;
@@ -23,5 +24,5 @@ export const stakeTOS = async (args: StkaeTOS) => {
   const weiAmount = convertToWei(amount);
   const signer = getSigner(library, account);
 
-  return await LockTOSContract.connect(signer).createLock(weiAmount, period);
+  return setTx(LockTOSContract.connect(signer).createLock(weiAmount, period));
 };

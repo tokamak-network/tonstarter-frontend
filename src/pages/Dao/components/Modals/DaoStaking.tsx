@@ -16,7 +16,7 @@ import {
   Tooltip,
   Image,
 } from '@chakra-ui/react';
-import React, {SetStateAction, useCallback} from 'react';
+import React, {useCallback} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {onKeyDown, useInput} from 'hooks/useInput';
@@ -31,6 +31,7 @@ import Decimal from 'decimal.js';
 import {Contract} from '@ethersproject/contracts';
 import {DEPLOYED} from 'constants/index';
 import * as LockTOSABI from 'services/abis/LockTOS.json';
+import BOOST_ICON from 'assets/svgs/booster_icon.svg';
 
 type SelectPeriod = '1 month' | '6 months' | '1 year' | '3 years';
 
@@ -439,11 +440,17 @@ export const DaoStakeModal = () => {
                       <Image src={tooltipIcon} />
                     </Tooltip>
                   </Flex>
-                  <Text
-                    color={colorMode === 'light' ? 'gray.250' : 'white.100'}
-                    fontWeight={600}>
-                    {reward} sTOS
-                  </Text>
+                  <Flex flexDir="row">
+                    {boostOpt === true ? (
+                      <img src={BOOST_ICON} alt={'BOOST_ICON'} />
+                    ) : null}
+                    <Text
+                      ml={2}
+                      color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+                      fontWeight={600}>
+                      {reward} sTOS
+                    </Text>
+                  </Flex>
                 </Flex>
               </Flex>
             </Box>
