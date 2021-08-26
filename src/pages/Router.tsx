@@ -123,9 +123,9 @@ export const Router: FC<RouterProps> = () => {
 
   const {width} = useWindowDimensions();
 
-  // if (width < 1100) {
-  //   return <MobilePreOpen />;
-  // }
+  if (width < 1100) {
+    return <MobilePreOpen />;
+  }
 
   return (
     <div style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
