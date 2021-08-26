@@ -6,6 +6,8 @@ export function useBlockNumber(): {blockNumber: number} {
 
   //@ts-ignore
   const web3 = new Web3(window.ethereum);
+  // const currentBlockNumber = web3.eth.getBlockNumber();
+  // currentBlockNumber.then((e) => setBlockNumber(e));
   web3.eth
     .subscribe('newBlockHeaders', function (error, result) {
       if (!error) {

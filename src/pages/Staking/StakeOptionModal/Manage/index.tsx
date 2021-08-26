@@ -31,6 +31,7 @@ import {Contract} from '@ethersproject/contracts';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import {fetchSwapPayload} from '../utils/fetchSwapPayload';
 import {fetchSwappedTosBalance} from '../utils/fetchSwappedTosBalance';
+import {getTokamakContract} from 'utils/contract';
 
 const tooltipMsg = () => {
   return (
@@ -40,6 +41,25 @@ const tooltipMsg = () => {
       </Text>
       <Text textAlign="center">If you want to swap, you must unstake</Text>
       <Text textAlign="center">and withdraw seig TON first.</Text>
+    </Flex>
+  );
+};
+
+const TooltipPendingMsg = (
+  currentBlock: number,
+  withdrawableBlock: string,
+  withdrawableAmount: string,
+) => {
+  return (
+    <Flex flexDir="column" fontSize="12px" pt="6px" pl="5px" pr="5px">
+      <Text textAlign="center">{withdrawableAmount} TON will be withdrawn</Text>
+      <Text textAlign="center">
+        at {withdrawableBlock} block (
+        {Number(withdrawableBlock) - currentBlock <= 0
+          ? 0
+          : Number(withdrawableBlock) - currentBlock}{' '}
+        left)
+      </Text>
     </Flex>
   );
 };
@@ -89,6 +109,10 @@ export const ManageModal = () => {
   const [saleClosed, setSaleClosed] = useState(true);
   const [currentBlock, setCurrentBlock] = useState<number>(99999999999999);
 
+  //for tooltip
+  const [withdrawableBlock, setWithdrawableBlock] = useState('0');
+  const [withdrawableAmount, setWithdrawableAmount] = useState('0');
+
   //Set
 
   //fetch status
@@ -103,6 +127,36 @@ export const ManageModal = () => {
     }
     getCurrentBlock();
   }, [data, transactionType, blockNumber]);
+
+  //pending tooltip
+  useEffect(() => {
+    async function getWithdrawableBlock() {
+      const depositManager = getTokamakContract('DepositManager', library);
+      const requestedIndex = await depositManager.withdrawalRequestIndex(
+        DEPLOYED.TokamakLayer2_ADDRESS,
+        contractAddress,
+      );
+      const res = await depositManager.withdrawalRequest(
+        DEPLOYED.TokamakLayer2_ADDRESS,
+        contractAddress,
+        requestedIndex,
+      );
+      const convertedNum = convertNumber({amount: res.amount, type: 'ray'});
+      if (convertedNum) {
+        setWithdrawableBlock(res.withdrawableBlockNumber.toString());
+        setWithdrawableAmount(convertedNum);
+      }
+    }
+    if (pendingL2Balance !== '-' && pendingL2Balance !== '0.00')
+      getWithdrawableBlock();
+  }, [
+    contractAddress,
+    account,
+    blockNumber,
+    currentBlock,
+    library,
+    pendingL2Balance,
+  ]);
 
   useEffect(() => {
     async function getStakedBalance() {
@@ -125,13 +179,16 @@ export const ManageModal = () => {
           contractAddress,
         );
         const tosPrice = await fetchSwapPayload(library);
-        const fetchedSwappedTosBalance = await fetchSwappedTosBalance(contractAddress, library);
+        const fetchedSwappedTosBalance = await fetchSwappedTosBalance(
+          contractAddress,
+          library,
+        );
         if (
           totalStakedAmount &&
           totalStakedAmountL2 &&
           totalPendingUnstakedAmountL2 &&
           stakeContractBalanceTon &&
-          res_CanWithdralAmount && 
+          res_CanWithdralAmount &&
           fetchedSwappedTosBalance
         ) {
           setAvailableBalance(stakeContractBalanceTon);
@@ -139,7 +196,7 @@ export const ManageModal = () => {
           setStakdL2(totalStakedAmountL2);
           setPendingL2Balance(totalPendingUnstakedAmountL2);
           setCanWithdralAmount(Number(res_CanWithdralAmount.toString()));
-          setSwappedTosBalance(fetchedSwappedTosBalance)
+          setSwappedTosBalance(fetchedSwappedTosBalance);
           //set original balances
           setOriginalStakeBalance(originalBalance.stakeContractBalanceTon);
           setOriginalSwapBalance(originalBalance.stakeContractBalanceTonRay);
@@ -372,9 +429,35 @@ export const ManageModal = () => {
                 </Text>
               </Flex>
               <Flex justifyContent="space-between" alignItems="center" h="55px">
-                <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
-                  Pending UnStaked in Layer 2
-                </Text>
+                <Flex>
+                  <Text
+                    color={'gray.400'}
+                    fontSize="13px"
+                    fontWeight={500}
+                    mr={1}>
+                    Pending UnStaked in Layer 2
+                  </Text>
+                  {pendingL2Balance === '-' ||
+                  Number(pendingL2Balance) <= 0 ? null : (
+                    <Tooltip
+                      hasArrow
+                      placement="top"
+                      label={TooltipPendingMsg(
+                        currentBlock,
+                        withdrawableBlock,
+                        withdrawableAmount,
+                      )}
+                      color={theme.colors.white[100]}
+                      bg={theme.colors.gray[375]}
+                      p={0}
+                      w="220px"
+                      h="50px"
+                      borderRadius={3}
+                      fontSize="12px">
+                      <img src={tooltipIcon} />
+                    </Tooltip>
+                  )}
+                </Flex>
                 <Text
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                   fontWeight={500}

@@ -6,7 +6,7 @@ import {toWei} from 'web3-utils';
 type RoundFunc = {
   r_amount: string;
   r_maxDecimalDigits: number;
-  r_opt?: 'up' | 'down';
+  r_opt?: 'up' | 'down' | 'none';
   localeString?: boolean;
 };
 
@@ -44,7 +44,10 @@ function roundNumber(args: RoundFunc): string {
   const number = new Decimal(r_amount);
   if (r_opt === 'up') {
     const res = number.toFixed(r_maxDecimalDigits, Decimal.ROUND_UP);
-    return Number(res).toFixed(displayPoint);
+    const fixedNum = Number(res).toFixed(displayPoint);
+    return localeString === true
+      ? Number(fixedNum).toLocaleString(undefined, {minimumFractionDigits: 2})
+      : Number(res).toFixed(displayPoint);
   } else if (r_opt === 'down') {
     const res = number.toFixed(r_maxDecimalDigits, Decimal.ROUND_DOWN);
     const fixedNum = Number(res).toFixed(displayPoint);
@@ -53,7 +56,10 @@ function roundNumber(args: RoundFunc): string {
       : Number(res).toFixed(displayPoint);
   }
   const res = number.toFixed(r_maxDecimalDigits, Decimal.ROUND_HALF_UP);
-  return Number(res).toFixed(displayPoint);
+  const fixedNum = Number(res).toFixed(displayPoint);
+  return localeString === true
+    ? Number(fixedNum).toLocaleString(undefined, {minimumFractionDigits: 2})
+    : Number(res).toFixed(displayPoint);
 }
 
 export function convertNumber(args: ConverNumberFunc): string | undefined {
@@ -66,7 +72,7 @@ export function convertNumber(args: ConverNumberFunc): string | undefined {
     }
     const numAmount = BigNumber.from(amount);
     const numberType: string = type ? type : 'wei';
-    const optRound = round ? round : false;
+    const optRound = round ? round : undefined;
     const decimalPoint: number = decimalPlaces ? decimalPlaces : 3;
     if (amount === undefined) {
       throw new Error(`amount is undefined`);
@@ -86,10 +92,18 @@ export function convertNumber(args: ConverNumberFunc): string | undefined {
             localeString,
           });
         }
+        if (optRound === false) {
+          return roundNumber({
+            r_amount: weiAmountStr,
+            r_maxDecimalDigits: decimalPoint,
+            r_opt: 'down',
+            localeString,
+          });
+        }
         return roundNumber({
           r_amount: weiAmountStr,
           r_maxDecimalDigits: decimalPoint,
-          r_opt: 'down',
+          r_opt: 'none',
           localeString,
         });
       case 'ray':

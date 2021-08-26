@@ -52,11 +52,8 @@ export const getUserTOSStaked = async ({account, library}: any) => {
     return '0.00';
   }
 
-  console.log(tosStakeList);
-
   const res = tosStakeList.reduce((acc: any, cur: any) => {
     return cur.amount.add(acc);
-    // return cur.balance.add(acc === undefined ? '0' : acc);
   }, 0);
 
   return convertNumber({amount: res.toString(), localeString: true});
