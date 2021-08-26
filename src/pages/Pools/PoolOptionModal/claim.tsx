@@ -77,7 +77,7 @@ export const ClaimOptionModal = () => {
               Claim
             </Heading>
             <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
-              You can claim {swapableAmount ? swapableAmount : '0.00'} TOS
+              You earned {data?.data.earned ? data?.data.earned : '0.00'} TOS
             </Text>
           </Box>
 

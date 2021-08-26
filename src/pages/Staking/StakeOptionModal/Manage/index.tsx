@@ -77,7 +77,7 @@ export const ManageModal = () => {
   const {handleOpenConfirmModal, handleCloseModal} = useModal();
 
   const {
-    data: {contractAddress, vault, globalWithdrawalDelay, miningEndTime},
+    data: {contractAddress, vault, globalWithdrawalDelay, miningEndTime, name},
   } = data;
 
   //Buttons
@@ -268,6 +268,10 @@ export const ManageModal = () => {
       setCanUntakdL2(convertedUnstakeNum);
       setSeigBalance(convertedUnstakeNum);
 
+      if (isUnstakeL2All) {
+        setCanUntakdL2(stakedL2);
+        return setUnstakeL2Disable(false);
+      }
       return Number(convertedUnstakeNum) <= 0
         ? setUnstakeL2Disable(true)
         : setUnstakeL2Disable(false);
@@ -361,11 +365,12 @@ export const ManageModal = () => {
               fontWeight={'bold'}
               fontFamily={theme.fonts.titil}
               color={colorMode === 'light' ? 'gray.250' : 'white.100'}
-              textAlign={'center'}>
+              textAlign={'center'}
+              mb={'8px'}>
               Manage
             </Heading>
             <Text color="gray.175" fontSize={'0.750em'}>
-              You can manage tokens
+              You can manage {name} Product
             </Text>
           </Box>
 
@@ -561,6 +566,7 @@ export const ManageModal = () => {
                     canUnstakedL2,
                     contractAddress,
                     unstakeAll,
+                    name,
                   },
                 })
               }>

@@ -17,7 +17,9 @@ import TONStaterLogo from 'assets/svgs/ts_bi_c.svg';
 import Arrow from 'assets/svgs/select1_arrow_inactive.svg';
 import {Stake, selectStakes} from 'pages/Staking/staking.reducer';
 import {useAppSelector} from 'hooks/useRedux';
-
+import {useQuery} from '@apollo/client';
+import {GET_BASE_POOL} from '../Pools/GraphQL/index';
+import {DEPLOYED} from 'constants/index';
 export interface HomeProps extends HTMLAttributes<HTMLDivElement> {
   classes?: string;
 }
@@ -299,8 +301,33 @@ export const Animation: React.FC<HomeProps> = () => {
   ]);
 
   const [totalStakedAmount, setTotalStakedAmount] = useState('');
+  const [liquidity, setLiquidity] = useState('');
 
   const {data} = useAppSelector(selectStakes);
+
+  //GET Phase 2 Liquidity Info
+  const {BasePool_Address} = DEPLOYED;
+  const basePool = useQuery(GET_BASE_POOL, {
+    variables: {address: BasePool_Address},
+  });
+
+  useEffect(() => {
+    if (basePool?.data?.pools) {
+      const {
+        data: {pools},
+      } = basePool;
+      //GET WTON-PAIR WITH KEY 0
+      const WTON_TOS_PAIR = pools[0];
+      const {poolDayData} = WTON_TOS_PAIR;
+      const lastestLiquidity = poolDayData[poolDayData.length - 1].tvlUSD;
+      const res = Number(lastestLiquidity).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+      });
+      setLiquidity(
+        res.split('.')[0] + '.' + res.split('.')[1][0] + res.split('.')[1][1],
+      );
+    }
+  }, [basePool]);
 
   useEffect(() => {
     if (data) {
@@ -407,17 +434,25 @@ export const Animation: React.FC<HomeProps> = () => {
             color="white.100"
             fontWeight="semibold"
             fontSize={46}>
-            <div>
+            <div style={{position: 'absolute', bottom: '561px'}}>
               <Text>TON Starter</Text>
               <Text>Decentralized Launchpad</Text>
               <Text>Platform</Text>
             </div>
-            <div style={{position: 'absolute', bottom: '170px'}}>
+            <div style={{position: 'absolute', bottom: '302px'}}>
               <Text fontSize={'26px'} color={'#ffff07'} h={'25px'}>
-                Phase1 Total Staked
+                Phase 1 Total Staked
               </Text>
               <Text fontSize={'52px'} h={'60px'}>
                 {totalStakedAmount} <span style={{fontSize: '26px'}}>TON</span>
+              </Text>
+            </div>
+            <div style={{position: 'absolute', bottom: '193px'}}>
+              <Text fontSize={'26px'} color={'#ffff07'} h={'25px'}>
+                Phase 2 Total WTON-TOS liquidity
+              </Text>
+              <Text fontSize={'52px'} h={'60px'}>
+                {liquidity} <span style={{fontSize: '26px'}}>$</span>
               </Text>
             </div>
           </Container>
