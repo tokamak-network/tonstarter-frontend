@@ -46,27 +46,20 @@ export const getUserTOSStaked = async ({account, library}: any) => {
     LockTOSABI.abi,
     library,
   );
-  const tosStakeList = await LockTOSContract.locksOf(account);
+  const tosStakeList = await LockTOSContract.alivelocksOf(account);
 
   if (tosStakeList.length === 0) {
     return '0.00';
   }
 
-  let totalStakeAmount = 0;
+  console.log(tosStakeList);
 
-  await Promise.all(
-    tosStakeList.map(async (stake: any, index: number) => {
-      const lockedBlanace = await LockTOSContract.lockedBalances(
-        account,
-        stake.toString(),
-      );
-      totalStakeAmount += Number(
-        convertNumber({amount: lockedBlanace.amount.toString()}),
-      );
-    }),
-  );
+  const res = tosStakeList.reduce((acc: any, cur: any) => {
+    return cur.amount.add(acc);
+    // return cur.balance.add(acc === undefined ? '0' : acc);
+  }, 0);
 
-  return String(totalStakeAmount.toFixed(2));
+  return convertNumber({amount: res.toString(), localeString: true});
 };
 
 export const getUserSTOSBalance = async ({account, library}: any) => {
@@ -77,7 +70,7 @@ export const getUserSTOSBalance = async ({account, library}: any) => {
     library,
   );
   const res = await LockTOSContract.balanceOf(account);
-  return convertNumber({amount: res});
+  return convertNumber({amount: res, localeString: true});
 };
 
 const fetchUserData = async (
@@ -97,7 +90,10 @@ const fetchUserData = async (
 export const getUserTosBalance = async (account: string, library: any) => {
   const contract = getContract(TOS_ADDRESS, TOSABI.abi, library);
   const userTosBalance = await contract.balanceOf(account);
-  const balance = convertNumber({amount: String(userTosBalance)});
+  const balance = convertNumber({
+    amount: String(userTosBalance),
+    localeString: true,
+  });
   return balance;
 };
 

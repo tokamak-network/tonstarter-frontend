@@ -7,6 +7,7 @@ type RoundFunc = {
   r_amount: string;
   r_maxDecimalDigits: number;
   r_opt?: 'up' | 'down';
+  localeString?: boolean;
 };
 
 type ConverNumberFunc = {
@@ -14,6 +15,7 @@ type ConverNumberFunc = {
   amount: string;
   round?: boolean;
   decimalPlaces?: number;
+  localeString?: boolean;
 };
 
 //temp
@@ -37,7 +39,7 @@ export const convertToWei = (num: string) => toWei(num, 'ether');
 export const convertToRay = (num: string) => toWei(num, 'gether');
 
 function roundNumber(args: RoundFunc): string {
-  const {r_amount, r_maxDecimalDigits, r_opt} = args;
+  const {r_amount, r_maxDecimalDigits, r_opt, localeString} = args;
   const displayPoint = 2;
   const number = new Decimal(r_amount);
   if (r_opt === 'up') {
@@ -45,7 +47,10 @@ function roundNumber(args: RoundFunc): string {
     return Number(res).toFixed(displayPoint);
   } else if (r_opt === 'down') {
     const res = number.toFixed(r_maxDecimalDigits, Decimal.ROUND_DOWN);
-    return Number(res).toFixed(displayPoint);
+    const fixedNum = Number(res).toFixed(displayPoint);
+    return localeString === true
+      ? Number(fixedNum).toLocaleString(undefined, {minimumFractionDigits: 2})
+      : Number(res).toFixed(displayPoint);
   }
   const res = number.toFixed(r_maxDecimalDigits, Decimal.ROUND_HALF_UP);
   return Number(res).toFixed(displayPoint);
@@ -53,7 +58,7 @@ function roundNumber(args: RoundFunc): string {
 
 export function convertNumber(args: ConverNumberFunc): string | undefined {
   try {
-    const {type, amount, round, decimalPlaces} = args;
+    const {type, amount, round, decimalPlaces, localeString} = args;
     const utils = ethers.utils;
 
     if (amount === '0' || amount === undefined || amount === '') {
@@ -78,12 +83,14 @@ export function convertNumber(args: ConverNumberFunc): string | undefined {
             r_amount: weiAmountStr,
             r_maxDecimalDigits: decimalPoint,
             r_opt: 'up',
+            localeString,
           });
         }
         return roundNumber({
           r_amount: weiAmountStr,
           r_maxDecimalDigits: decimalPoint,
           r_opt: 'down',
+          localeString,
         });
       case 'ray':
         const rayAmount = utils.formatUnits(numAmount, 27);
@@ -93,12 +100,14 @@ export function convertNumber(args: ConverNumberFunc): string | undefined {
             r_amount: rayAmountStr,
             r_maxDecimalDigits: decimalPoint,
             r_opt: 'up',
+            localeString,
           });
         }
         return roundNumber({
           r_amount: rayAmountStr,
           r_maxDecimalDigits: decimalPoint,
           r_opt: 'down',
+          localeString,
         });
       default:
         throw new Error(`this type is not valid. It must be "WTON" or "TON"`);

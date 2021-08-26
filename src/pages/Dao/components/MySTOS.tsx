@@ -55,6 +55,7 @@ export const MySTOS = (props: PropsType) => {
     } else {
       setbalance('-');
     }
+    /*eslint-disable*/
   }, [signIn, account, library, stakeList]);
 
   return (

@@ -79,8 +79,8 @@ export const DAOStatistics = () => {
         color={themeDesign.fontColor[colorMode]}
         fontSize={'1.250em'}
         fontWeight={'bold'}
-        mb="10px">
-        TONStarter DAO Statistics
+        mb="15px">
+        DAO Statistics
       </Text>
       <Flex>
         <Box mr={'6em'}>
