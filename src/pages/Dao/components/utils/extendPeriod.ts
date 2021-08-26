@@ -5,6 +5,7 @@ import {Contract} from '@ethersproject/contracts';
 import store from 'store';
 import {setTransaction} from 'store/refetch.reducer';
 import moment from 'moment';
+import {setTx} from 'application';
 
 type ExtendPeriod = {
   account: string;
@@ -27,13 +28,5 @@ export const extendPeriod = async (args: ExtendPeriod) => {
     lockId,
     lockupTime,
   );
-
-  return await res.wait().then((receipt: any) => {
-    store.dispatch(
-      setTransaction({
-        transactionType: 'Dao',
-        blockNumber: receipt.blockNumber,
-      }),
-    );
-  });
+  return setTx(res);
 };

@@ -5,6 +5,7 @@ import {getContract, getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import store from 'store';
 import {convertToWei} from 'utils/number';
+import {setTx} from 'application';
 
 type IncreaseAmount = {
   account: string;
@@ -24,5 +25,9 @@ export const increaseAmount = async (args: IncreaseAmount) => {
   const weiAmount = convertToWei(amount);
   const signer = getSigner(library, account);
 
-  return await LockTOSContract.connect(signer).increaseAmount(lockId, weiAmount);
+  const res = await LockTOSContract.connect(signer).increaseAmount(
+    lockId,
+    weiAmount,
+  );
+  return setTx(res);
 };

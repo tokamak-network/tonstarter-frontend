@@ -37,7 +37,7 @@ const UnstakeRecord = ({number, amount}: {number: number; amount: string}) => {
           color={colorMode === 'light' ? 'gray.250' : 'white.200'}
           fontSize={'15px'}
           fontWeight={600}>
-          {amount} sTOS
+          {amount} TOS
         </Text>
       </Flex>
     </WrapItem>

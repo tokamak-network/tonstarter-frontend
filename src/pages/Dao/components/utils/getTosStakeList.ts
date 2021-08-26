@@ -11,7 +11,7 @@ export const getTosStakeList = async ({account, library}: any) => {
     LockTOSABI.abi,
     library,
   );
-  const tosStakeList = await LockTOSContract.locksOf(account);
+  const tosStakeList = await LockTOSContract.alivelocksOf(account);
 
   if (tosStakeList.length === 0) {
     return [];
@@ -21,7 +21,7 @@ export const getTosStakeList = async ({account, library}: any) => {
 
   const res = await Promise.all(
     tosStakeList.map(async (stake: any, index: number) => {
-      const lockId = stake.toString();
+      const lockId = stake.id.toString();
       const lockedBalance = await LockTOSContract.lockedBalances(
         account,
         lockId,
@@ -53,5 +53,5 @@ export const getTosStakeList = async ({account, library}: any) => {
     }),
   );
 
-  return res.filter((e:any) => e.lockId !== '0')
+  return res.filter((e: any) => e.lockId !== '0');
 };
