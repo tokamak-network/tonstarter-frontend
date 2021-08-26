@@ -15,6 +15,24 @@ export const DAOStatistics = () => {
   const [totalSTOS, setTotalSTOS] = useState('');
   const [averageWeek, setAverageWeek] = useState('');
 
+  const theme = useTheme();
+  const {colorMode} = useColorMode();
+
+  const themeDesign = {
+    fontColor: {
+      light: 'gray.250',
+      dark: 'white.100',
+    },
+    bg: {
+      light: 'white.100',
+      dark: 'black.200',
+    },
+    border: {
+      light: 'solid 1px #d7d9df',
+      dark: 'solid 1px #535353',
+    },
+  };
+
   const {LockTOS_ADDRESS} = DEPLOYED;
 
   const LockTOSContract = new Contract(
@@ -42,7 +60,7 @@ export const DAOStatistics = () => {
     const totalIdCount = await LockTOSContract.lockIdCounter();
     const avgWeek =
       Number(totalEpoch.toString()) / Number(totalIdCount.toString());
-    setAverageWeek(isNaN(avgWeek) === true ? '0' : String(avgWeek));
+    setAverageWeek(isNaN(avgWeek) === true ? '0' : String(avgWeek.toFixed(1)));
   };
 
   useEffect(() => {
@@ -56,19 +74,52 @@ export const DAOStatistics = () => {
   }, [library, blockNumber]);
 
   return (
-    <Flex justifyContent="space-around" w="100%">
-      <Box>
-        <Text>Total TOS locked</Text>
-        <Text>{totalTOS}</Text>
-      </Box>
-      <Box>
-        <Text>Total sTOS</Text>
-        <Text>{totalSTOS}</Text>
-      </Box>
-      <Box>
-        <Text>Average lock time</Text>
-        <Text>{averageWeek}</Text>
-      </Box>
+    <Flex justifyContent="space-around" w="100%" flexDir="column">
+      <Text
+        color={themeDesign.fontColor[colorMode]}
+        fontSize={'1.250em'}
+        fontWeight={'bold'}
+        mb="10px">
+        TONStarter DAO Statistics
+      </Text>
+      <Flex>
+        <Box mr={'6em'}>
+          <Text color={'gray.400'} fontSize={'1.000em'}>
+            Total TOS locked
+          </Text>
+          <Text
+            fontFamily={theme.fonts.roboto}
+            color={themeDesign.fontColor[colorMode]}
+            fontWeight={'bold'}
+            fontSize={'1.125em'}>
+            {totalTOS} <span style={{fontSize: '0.813em'}}>TOS</span>
+          </Text>
+        </Box>
+        <Box mr={'6em'}>
+          <Text color={'gray.400'} fontSize={'1.000em'}>
+            Total sTOS
+          </Text>
+          <Text
+            fontFamily={theme.fonts.roboto}
+            color={themeDesign.fontColor[colorMode]}
+            fontWeight={'bold'}
+            fontSize={'1.125em'}>
+            {totalSTOS} <span style={{fontSize: '0.813em'}}>sTOS</span>
+          </Text>
+        </Box>
+        <Box>
+          <Text color={'gray.400'} fontSize={'1.000em'}>
+            Average lock time
+          </Text>
+          <Text
+            fontFamily={theme.fonts.roboto}
+            color={themeDesign.fontColor[colorMode]}
+            fontWeight={'bold'}
+            fontSize={'1.125em'}>
+            {averageWeek} <span style={{fontSize: '0.813em'}}> Week</span>
+          </Text>
+        </Box>
+      </Flex>
     </Flex>
   );
 };
