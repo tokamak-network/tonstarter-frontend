@@ -68,7 +68,7 @@ export const WithdrawalOptionModal = () => {
               Withdraw
             </Heading>
             <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
-              Do You really want to withdraw your TON now?
+              Do You really want to withdraw TON Starter's TON now?
             </Text>
           </Box>
           <Stack
