@@ -15,10 +15,18 @@ import {
   DaoUnstakeModal,
   DaoManageModal,
 } from './components/Modals';
+import {useEffect} from 'react';
+import {useAppDispatch} from 'hooks/useRedux';
+import {useUser} from 'hooks/useUser';
+import {fetchTosStakes} from './dao.reducer';
+import {useBlockNumber} from 'hooks/useBlock';
 
 export const DAO = () => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
+  const {account, library} = useUser();
+  const dispatch = useAppDispatch();
+  const {blockNumber} = useBlockNumber();
 
   const themeDesign = {
     fontColor: {
@@ -34,6 +42,17 @@ export const DAO = () => {
       dark: 'solid 1px #535353',
     },
   };
+
+  useEffect(() => {
+    if (account && library) {
+      dispatch(
+        fetchTosStakes({
+          account,
+          library,
+        }) as any,
+      );
+    }
+  }, [account, library, dispatch, blockNumber]);
 
   return (
     <Flex>

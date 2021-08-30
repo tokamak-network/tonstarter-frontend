@@ -10,16 +10,13 @@ import {getUserSTOSBalance} from 'client/getUserBalance';
 import {useUser} from 'hooks/useUser';
 import {useEffect} from 'react';
 import {useState} from 'react';
-import {useDispatch} from 'react-redux';
 import {openModal} from 'store/modal.reducer';
+import {selectDao} from '../dao.reducer';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 
-type PropsType = {
-  stakeList: any;
-};
-
-export const MySTOS = (props: PropsType) => {
-  const {stakeList} = props;
-  const dispatch = useDispatch();
+export const MySTOS = () => {
+  const dispatch = useAppDispatch();
+  const {data: stakeList} = (useAppSelector as any)(selectDao);
   const [balance, setbalance] = useState('-');
   const [btnDisabled, setBtnDisabled] = useState(true);
   const theme = useTheme();

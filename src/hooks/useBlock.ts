@@ -4,8 +4,7 @@ import Web3 from 'web3';
 export function useBlockNumber(): {blockNumber: number} {
   const [blockNumber, setBlockNumber] = useState(0);
 
-  //@ts-ignore
-  const web3 = new Web3(window.ethereum);
+  const web3 = new Web3((window as any).ethereum);
   // const currentBlockNumber = web3.eth.getBlockNumber();
   // currentBlockNumber.then((e) => setBlockNumber(e));
   web3.eth

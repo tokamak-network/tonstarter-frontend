@@ -7,25 +7,22 @@ import {
   useTheme,
 } from '@chakra-ui/react';
 import {getUserTOSStaked} from 'client/getUserBalance';
-import {useAppDispatch} from 'hooks/useRedux';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {useUser} from 'hooks/useUser';
 import {useEffect, useState} from 'react';
 import {openModal} from 'store/modal.reducer';
 import {useBlockNumber} from 'hooks/useBlock';
+import {selectDao} from '../dao.reducer';
 
-type PropsType = {
-  stakeList: any;
-};
-
-export const MyStaked = (props: PropsType) => {
-  const {stakeList} = props;
+export const MyStaked = () => {
+  const dispatch = useAppDispatch();
+  const {data: stakeList} = (useAppSelector as any)(selectDao);
   const [balance, setbalance] = useState('-');
   const [isEnd, setIsEnd] = useState(true);
   const theme = useTheme();
   const {btnStyle, btnHover} = theme;
   const {colorMode} = useColorMode();
   const {account, library, signIn} = useUser();
-  const dispatch = useAppDispatch();
   const {blockNumber} = useBlockNumber();
 
   const themeDesign = {

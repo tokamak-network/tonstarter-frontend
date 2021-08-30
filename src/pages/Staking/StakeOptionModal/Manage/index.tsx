@@ -77,7 +77,7 @@ export const ManageModal = () => {
   const {handleOpenConfirmModal, handleCloseModal} = useModal();
 
   const {
-    data: {contractAddress, vault, globalWithdrawalDelay, miningEndTime},
+    data: {contractAddress, vault, globalWithdrawalDelay, miningEndTime, name},
   } = data;
 
   //Buttons
@@ -268,6 +268,10 @@ export const ManageModal = () => {
       setCanUntakdL2(convertedUnstakeNum);
       setSeigBalance(convertedUnstakeNum);
 
+      if (isUnstakeL2All) {
+        setCanUntakdL2(stakedL2);
+        return setUnstakeL2Disable(false);
+      }
       return Number(convertedUnstakeNum) <= 0
         ? setUnstakeL2Disable(true)
         : setUnstakeL2Disable(false);
@@ -361,11 +365,12 @@ export const ManageModal = () => {
               fontWeight={'bold'}
               fontFamily={theme.fonts.titil}
               color={colorMode === 'light' ? 'gray.250' : 'white.100'}
-              textAlign={'center'}>
+              textAlign={'center'}
+              mb={'8px'}>
               Manage
             </Heading>
             <Text color="gray.175" fontSize={'0.750em'}>
-              You can manage tokens
+              You can manage {name} Product
             </Text>
           </Box>
 
@@ -504,19 +509,6 @@ export const ManageModal = () => {
                     mr="2px">
                     Swapped TOS
                   </Text>
-                  {/* <Tooltip
-                    hasArrow
-                    placement="top"
-                    label={tooltipMsg()}
-                    color={theme.colors.white[100]}
-                    bg={theme.colors.gray[375]}
-                    p={0}
-                    w="227px"
-                    h="70px"
-                    borderRadius={3}
-                    fontSize="12px">
-                    <img src={tooltipIcon} />
-                  </Tooltip> */}
                 </Flex>
                 <Text
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}
@@ -574,6 +566,7 @@ export const ManageModal = () => {
                     canUnstakedL2,
                     contractAddress,
                     unstakeAll,
+                    name,
                   },
                 })
               }>
