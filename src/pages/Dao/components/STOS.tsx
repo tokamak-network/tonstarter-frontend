@@ -6,7 +6,6 @@ import {shortenAddress} from 'utils';
 import {useEffect} from 'react';
 import {useState} from 'react';
 import {useUser} from 'hooks/useUser';
-import {useBlockNumber} from 'hooks/useBlock';
 
 const themeDesign = {
   fontColorTitle: {
@@ -43,22 +42,11 @@ const themeDesign = {
   },
 };
 
-// type TosStakeList = [
-//   {
-//     lockId: string;
-//     periodWeeks: number;
-//     periodDays: number;
-//     end: boolean;
-//     lockedBalance: string;
-//   },
-// ];
-
 export const STOS = () => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
   const {account, library} = useUser();
   const [address, setAddress] = useState('-');
-  const {blockNumber} = useBlockNumber();
 
   useEffect(() => {
     if (account !== undefined) {
@@ -66,7 +54,7 @@ export const STOS = () => {
     } else {
       setAddress('-');
     }
-  }, [account, library, blockNumber]);
+  }, [account, library]);
 
   return (
     <Flex

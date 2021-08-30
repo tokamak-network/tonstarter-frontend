@@ -12,7 +12,7 @@ export const getTosStakeList = async ({
 }: {
   account: string;
   library: LibraryType;
-}): Promise<any | []> => {
+}): Promise<TosStakeList[] | []> => {
   const {LockTOS_ADDRESS} = DEPLOYED;
   const LockTOSContract = new Contract(
     LockTOS_ADDRESS,
@@ -27,7 +27,7 @@ export const getTosStakeList = async ({
 
   const nowTime = moment().unix();
 
-  const res = await Promise.all(
+  const res: TosStakeList[] = await Promise.all(
     tosStakeList.map(async (stake: any, index: number) => {
       const lockId = stake.id.toString();
       const lockedBalance = await LockTOSContract.lockedBalances(
@@ -60,8 +60,6 @@ export const getTosStakeList = async ({
       };
     }),
   );
-
-  console.log(res);
 
   return res.filter((e: any) => e.lockId !== '0');
 };
