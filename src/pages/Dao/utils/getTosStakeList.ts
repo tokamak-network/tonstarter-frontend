@@ -3,8 +3,16 @@ import {DEPLOYED} from 'constants/index';
 import * as LockTOSABI from 'services/abis/LockTOS.json';
 import moment from 'moment';
 import {convertNumber} from 'utils/number';
+import {TosStakeList} from '../types/index';
+import {LibraryType} from 'types/index';
 
-export const getTosStakeList = async ({account, library}: any) => {
+export const getTosStakeList = async ({
+  account,
+  library,
+}: {
+  account: string;
+  library: LibraryType;
+}): Promise<any | []> => {
   const {LockTOS_ADDRESS} = DEPLOYED;
   const LockTOSContract = new Contract(
     LockTOS_ADDRESS,
@@ -52,6 +60,8 @@ export const getTosStakeList = async ({account, library}: any) => {
       };
     }),
   );
+
+  console.log(res);
 
   return res.filter((e: any) => e.lockId !== '0');
 };

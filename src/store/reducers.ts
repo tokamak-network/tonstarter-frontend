@@ -1,5 +1,6 @@
 import {combineReducers} from '@reduxjs/toolkit';
 import {stakeReducer} from 'pages/Staking/staking.reducer';
+import {daoReducer} from 'pages/Dao/dao.reducer';
 import {appReducer} from './app/app.reducer';
 import {toastReducer} from './app/toast.reducer';
 import {userReducer} from './app/user.reducer';
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   table: tableReducer.reducer,
   tx: txReducer.reducer,
   refetch: refetchReducer.reducer,
+  dao: daoReducer.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
