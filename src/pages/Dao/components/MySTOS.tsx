@@ -53,7 +53,7 @@ export const MySTOS = () => {
       setbalance('-');
     }
     /*eslint-disable*/
-  }, [signIn, account, library, stakeList]);
+  }, [signIn, account, library, dispatch, stakeList]);
 
   return (
     <Flex

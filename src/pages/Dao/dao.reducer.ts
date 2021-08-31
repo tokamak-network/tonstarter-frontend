@@ -27,11 +27,8 @@ const initialState = {
 export const fetchTosStakes = createAsyncThunk(
   'dao/tosStakesAll',
   async ({account, library}: FetchTosStakes, {requestId, getState}) => {
-    console.log('gogo');
-
     const {currentRequestId, loading} = (getState as any)().dao;
 
-    console.log(currentRequestId, loading);
     if (loading !== 'pending' || requestId !== currentRequestId) {
       return;
     }
