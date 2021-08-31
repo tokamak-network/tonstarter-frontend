@@ -18,6 +18,7 @@ const poolParam = `
     tvlUSD
   }
   liquidity
+  tick
 `;
 
 const positionParam = `

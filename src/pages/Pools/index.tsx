@@ -81,6 +81,7 @@ export const Pools = () => {
   const basePool = useQuery(GET_BASE_POOL, {
     variables: {address: BasePool_Address}
   });
+  console.log(basePool.data)
 
   // const tosPool = useQuery(GET_TOS_POOL, {
   //   variables: {address: [TOS_ADDRESS.toLowerCase()]}
@@ -91,7 +92,9 @@ export const Pools = () => {
     function getPool () {
       // const poolArr = basePool.loading || tosPool.loading ? [] : basePool.data.pools.concat(tosPool.data.pools)
       // const poolArr = tosPool.loading ? [] : tosPool.data.pools
+      console.log(basePool.data.pools)
       const poolArr = basePool.loading ? [] : basePool.data.pools
+      console.log(poolArr)
       setPool(poolArr)
     }
     getPool()
@@ -106,7 +109,7 @@ export const Pools = () => {
     basePool.data,
     // tosPool.data,
   ])
-
+  console.log(pool)
   return (
     <Fragment>
       <Head title={'Pools'} />
@@ -120,7 +123,7 @@ export const Pools = () => {
         <Box fontFamily={theme.fonts.roboto}>
           {basePool.loading? '' :
           <PoolTable
-            data={pool}
+            data={basePool.data.pools}
             columns={columns}
             isLoading={basePool.loading}
             address={account}
