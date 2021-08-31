@@ -16,6 +16,7 @@ import {
   Avatar,
   useColorMode,
   Center,
+  Image,
 } from '@chakra-ui/react';
 // import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 // import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
@@ -33,6 +34,8 @@ import {PositionTable} from './PositionTable';
 import {fetchPositionPayload} from './utils/fetchPositionPayload';
 import {selectTransactionType} from 'store/refetch.reducer';
 import moment from 'moment';
+import calculator_icon from 'assets/svgs/calculator_icon.svg';
+import calculator_icon_light from 'assets/svgs/calculator_icon_light_mode.svg';
 
 type PoolTableProps = {
   columns: Column[];
@@ -382,6 +385,13 @@ export const PoolTable: FC<PoolTableProps> = ({
                               mr="12px"
                             />
                             <Text>{poolName}</Text>
+                            <Image
+                              ml={'1em'}
+                              src={calculator_icon_light}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                              }}
+                            />
                           </>
                         ) : (
                           ''

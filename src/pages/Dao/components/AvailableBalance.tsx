@@ -44,7 +44,7 @@ export const AvailableBalance = () => {
         }
       }
     }
-    if (signIn) {
+    if (account) {
       getTosBalance();
     } else {
       setbalance('-');
