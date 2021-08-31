@@ -34,7 +34,7 @@ export const SwapModal = () => {
   } = sub;
   const theme = useTheme();
   const {colorMode} = useColorMode();
-  const [value, setValue] = useState<number>(Number(swapBalance));
+  const [value, setValue] = useState<number>(0);
   const [swapValue, setSwapValue] = useState<number>(0);
 
   const {handleCloseConfirmModal} = useModal();
@@ -51,9 +51,13 @@ export const SwapModal = () => {
     setSwapValue(value * Number(currentTosPrice));
   }, [value, currentTosPrice]);
 
+  useEffect(() => {
+    setValue(Number(swapBalance));
+  }, [swapBalance]);
+
   const handleCloseModal = () => {
     handleCloseConfirmModal();
-    setValue(swapBalance);
+    setValue(0);
   };
 
   return (
