@@ -1,1 +1,1 @@
-export {ClaimOptionModal} from './Claim';
+export {ClaimOptionModal} from './claim';
