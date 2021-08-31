@@ -12,24 +12,34 @@ import {
   useTheme,
   useColorMode,
 } from '@chakra-ui/react';
-import {claim} from '../actions';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
 import {useCallback, useState} from 'react';
 import {CloseButton} from 'components/Modal/CloseButton';
 import {useUser} from 'hooks/useUser';
+import {selectUser} from 'store/app/user.reducer';
 
 export const Simulator = () => {
-  const {account, library} = useUser();
+  // const {account, library} = useUser();
   const theme = useTheme();
   const {colorMode} = useColorMode();
 
   const {data} = useAppSelector(selectModalType);
+  const {data: userData} = useAppSelector(selectUser);
+
   const dispatch = useAppDispatch();
 
   const handleCloseModal = useCallback(() => {
     dispatch(closeModal());
   }, [dispatch]);
+
+  if (!userData) {
+    return <></>;
+  }
+
+  const {
+    balance: {wton, tos},
+  } = userData;
 
   return (
     <Modal
@@ -56,10 +66,14 @@ export const Simulator = () => {
               fontFamily={theme.fonts.titil}
               color={colorMode === 'light' ? 'gray.250' : 'white.100'}
               textAlign={'center'}>
-              Claim
+              LP Reward Simulator
             </Heading>
             <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
-              You earned {data?.data.earned ? data?.data.earned : '0.00'} TOS
+              You can calculate how much WTON and TOS you need to provide LP &
+              Expected APY
+            </Text>
+            <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
+              Price Range Current Price: xx,xxx TOS per WTON
             </Text>
           </Box>
 
@@ -76,7 +90,15 @@ export const Simulator = () => {
                 fontSize={'26px'}
                 fontWeight={600}
                 color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                TOS
+                {wton} WTON
+              </Text>
+            </Box>
+            <Box textAlign={'center'} pt="20px" pb="20px">
+              <Text
+                fontSize={'26px'}
+                fontWeight={600}
+                color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
+                {tos} TOS
               </Text>
             </Box>
           </Stack>

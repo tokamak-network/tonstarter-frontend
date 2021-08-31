@@ -36,6 +36,7 @@ import {selectTransactionType} from 'store/refetch.reducer';
 import moment from 'moment';
 import calculator_icon from 'assets/svgs/calculator_icon.svg';
 import calculator_icon_light from 'assets/svgs/calculator_icon_light_mode.svg';
+import {useModal} from 'hooks/useModal';
 
 type PoolTableProps = {
   columns: Column[];
@@ -93,6 +94,8 @@ export const PoolTable: FC<PoolTableProps> = ({
   const {
     data: {contractAddress},
   } = useAppSelector(selectTableType);
+
+  const {openAnyModal} = useModal();
 
   const [stakingPosition, setStakingPosition] = useState([]);
   const [positionData, setPositionData] = useState([]);
@@ -390,6 +393,7 @@ export const PoolTable: FC<PoolTableProps> = ({
                               src={calculator_icon_light}
                               onClick={(e) => {
                                 e.stopPropagation();
+                                openAnyModal('pool_simulator', {});
                               }}
                             />
                           </>
