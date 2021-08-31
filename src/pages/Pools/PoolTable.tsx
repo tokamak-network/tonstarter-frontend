@@ -16,6 +16,7 @@ import {
   Avatar,
   useColorMode,
   Center,
+  Image,
 } from '@chakra-ui/react';
 // import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 // import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
@@ -37,6 +38,9 @@ import { useDensityChartData } from './components/LiquidityChartRangeInput/useDe
 import { useCurrency } from '../../hooks/Tokens';
 import { FeeAmount } from '@uniswap/v3-sdk';
 
+import calculator_icon from 'assets/svgs/calculator_icon.svg';
+import calculator_icon_light from 'assets/svgs/calculator_icon_light_mode.svg';
+import {useModal} from 'hooks/useModal';
 
 type PoolTableProps = {
   columns: Column[];
@@ -94,6 +98,8 @@ export const PoolTable: FC<PoolTableProps> = ({
   const {
     data: {contractAddress},
   } = useAppSelector(selectTableType);
+
+  const {openAnyModal} = useModal();
 
   const [stakingPosition, setStakingPosition] = useState([]);
   const [positionData, setPositionData] = useState([]);
@@ -397,6 +403,14 @@ export const PoolTable: FC<PoolTableProps> = ({
                               mr="12px"
                             />
                             <Text>{poolName}</Text>
+                            <Image
+                              ml={'1em'}
+                              src={calculator_icon_light}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openAnyModal('pool_simulator', {});
+                              }}
+                            />
                           </>
                         ) : (
                           ''
