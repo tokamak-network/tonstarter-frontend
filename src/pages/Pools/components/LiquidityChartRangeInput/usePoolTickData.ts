@@ -69,10 +69,9 @@ export function usePoolActiveLiquidity(
   // graphql에서 pool의 tick 사용
   
   const activeTick = useMemo(() => getActiveTick(pool.data?.pools[0].tick, feeAmount), [pool, feeAmount])
-  console.log(activeTick)
 
   const { loading, error, ticks } = useAllV3Ticks(currencyA, currencyB, feeAmount)
-  console.log(ticks)
+  
   return useMemo(() => {
     if (
       !currencyA ||
@@ -87,7 +86,6 @@ export function usePoolActiveLiquidity(
         data: undefined,
       }
     }
-  
 
     const token0 = currencyA?.wrapped
     const token1 = currencyB?.wrapped
@@ -108,20 +106,18 @@ export function usePoolActiveLiquidity(
     }
     // 현재 activeTick을 확인
     const activeTickProcessed: TickProcessed = {
-      liquidityActive: JSBI.BigInt(pool.data?.pools.liquidity ?? 0),
+      liquidityActive: JSBI.BigInt(pool.data?.pools[0].liquidity ?? 0),
       tickIdx: activeTick,
       liquidityNet:
         Number(ticks[pivot].tickIdx) === activeTick ? JSBI.BigInt(ticks[pivot].liquidityNet) : JSBI.BigInt(0),
       price0: tickToPrice(token0, token1, activeTick).toFixed(PRICE_FIXED_DIGITS),
     }
-
     // activeTick 이후의 tick
     const subsequentTicks = computeSurroundingTicks(token0, token1, activeTickProcessed, ticks, pivot, true)
     // activeTick 이전의 tick
     const previousTicks = computeSurroundingTicks(token0, token1, activeTickProcessed, ticks, pivot, false)
     // previousTick + activeTick + subsequentTick
     const ticksProcessed = previousTicks.concat(activeTickProcessed).concat(subsequentTicks)
-
     return {
       loading,
       error,

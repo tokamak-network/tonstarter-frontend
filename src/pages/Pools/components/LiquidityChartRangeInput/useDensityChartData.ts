@@ -27,15 +27,14 @@ export function useDensityChartData({
     }
 
     const newData: ChartEntry[] = []
-    console.log(data)
     for (let i = 0; i < data.length; i++) {
       const t: TickProcessed = data[i]
-      console.log(parseFloat(t.liquidityActive.toString()))
 
       const chartEntry = {
         activeLiquidity: parseFloat(t.liquidityActive.toString()),
         price0: parseFloat(t.price0),
       }
+      // console.log(parseFloat(t.liquidityActive.toString()), parseFloat(t.price0))
 
       if (chartEntry.activeLiquidity > 0) {
         newData.push(chartEntry)
@@ -44,7 +43,6 @@ export function useDensityChartData({
 
     return newData
   }, [data])
-  console.log(formatData())
 
   return useMemo(() => {
     return {

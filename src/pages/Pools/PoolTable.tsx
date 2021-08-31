@@ -27,7 +27,7 @@ import {selectTableType} from 'store/table.reducer';
 import {LoadingComponent} from 'components/Loading';
 import {chakra} from '@chakra-ui/react';
 import {getPoolName, checkTokenType} from '../../utils/token';
-import {GET_POSITION, GET_POSITION_BY_ID, GET_TICKS} from './GraphQL/index';
+import {GET_POSITION, GET_POSITION_BY_ID} from './GraphQL/index';
 import {useQuery} from '@apollo/client';
 import {PositionTable} from './PositionTable';
 import {fetchPositionPayload} from './utils/fetchPositionPayload';
@@ -103,7 +103,8 @@ export const PoolTable: FC<PoolTableProps> = ({
 
   const [account, setAccount] = useState('');
   const [stakingDisable, setStakingDisable] = useState(true);
-  console.log(data)
+  // console.log(data)
+
   const currencyA = useCurrency(data[0]?.token0.id)
   const currencyB = useCurrency(data[0]?.token1.id)
   const feeAmount: FeeAmount | undefined =

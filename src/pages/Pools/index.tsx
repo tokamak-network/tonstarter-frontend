@@ -92,7 +92,7 @@ export const Pools = () => {
     function getPool () {
       // const poolArr = basePool.loading || tosPool.loading ? [] : basePool.data.pools.concat(tosPool.data.pools)
       // const poolArr = tosPool.loading ? [] : tosPool.data.pools
-      console.log(basePool.data.pools)
+      // console.log(basePool.data.pools)
       const poolArr = basePool.loading ? [] : basePool.data.pools
       console.log(poolArr)
       setPool(poolArr)

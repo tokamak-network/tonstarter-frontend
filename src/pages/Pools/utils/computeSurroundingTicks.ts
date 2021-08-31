@@ -2,7 +2,7 @@ import { Token } from '@uniswap/sdk-core'
 import { tickToPrice } from '@uniswap/v3-sdk'
 import { TickProcessed } from '../components/LiquidityChartRangeInput/usePoolTickData'
 import JSBI from 'jsbi'
-// import { AllV3TicksQuery } from 'state/data/generated'
+// import { AllV3TicksQuery } from 'store/data/generated'
 
 
 const PRICE_FIXED_DIGITS = 8
