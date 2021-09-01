@@ -28,6 +28,7 @@ const store = configureStore({
   devTools: process.env.NODE_ENV !== 'production' ? true : false, // disable devtools on production
 });
 
+export type AppState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch;
 export const useAppDispatch = () => useDispatch();
 export type AppThunk = ThunkAction<void, RootState, unknown, Action>;
