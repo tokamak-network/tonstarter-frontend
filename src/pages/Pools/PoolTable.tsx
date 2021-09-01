@@ -109,7 +109,7 @@ export const PoolTable: FC<PoolTableProps> = ({
 
   const [account, setAccount] = useState('');
   const [stakingDisable, setStakingDisable] = useState(true);
-  // console.log(data)
+  console.log(data)
 
   const currencyA = useCurrency(data[0]?.token0.id)
   const currencyB = useCurrency(data[0]?.token1.id)

@@ -9,20 +9,23 @@ import * as ERC20 from 'services/abis/IERC20.json';
 // otherwise returns the token
 export function useToken(tokenAddress: string): Token | undefined {
   const { chainId, library } = useActiveWeb3React()
-
+  
   const address = tokenAddress
-  const contract = new Contract(tokenAddress, ERC20.abi, library)
+  
   const [decimals, setDecimals] = useState(1);
   const [tokenName, setTokenName] = useState('');
   const [symbol, setSymbol] = useState('');
   useEffect(() => {
     async function getTokenInfo() {
-      const decimal = await contract.decimals();
-      const name = await contract.name()
-      const tokenSymbol = await contract.symbol()
-      setDecimals(decimal)
-      setTokenName(name)
-      setSymbol(tokenSymbol)
+      if (tokenAddress) {
+        const contract = new Contract(tokenAddress, ERC20.abi, library)
+        const decimal = await contract.decimals();
+        const name = await contract.name()
+        const tokenSymbol = await contract.symbol()
+        setDecimals(decimal)
+        setTokenName(name)
+        setSymbol(tokenSymbol)
+      }
     }
     getTokenInfo()
 
