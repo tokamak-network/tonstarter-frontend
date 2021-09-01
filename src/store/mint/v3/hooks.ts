@@ -199,11 +199,8 @@ export function useV3DerivedMintInfo(
     }
     getPoolInfo()
   }, [])
-  console.log(typeof liquidity)
-  // console.log(slot0?.tick)
-  // console.log(slot0?.sqrtPriceX96)
+
   const pool = (token0 && token1 && feeAmount && slot0 && liquidity) ? new Pool(token0, token1, feeAmount, slot0?.sqrtPriceX96, liquidity, slot0?.tick) : undefined
-  console.log(pool)
   // // const [poolState, pool] = usePool(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B], feeAmount)
   // const poolState = 2;
   const noLiquidity = false

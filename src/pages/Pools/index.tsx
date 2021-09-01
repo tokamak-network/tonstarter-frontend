@@ -72,7 +72,7 @@ export const Pools = () => {
   const basePool = useQuery(GET_BASE_POOL, {
     variables: {address: BasePool_Address},
   });
-  console.log(basePool.data)
+  // console.log(basePool.data)
 
   // const tosPool = useQuery(GET_TOS_POOL, {
   //   variables: {address: [TOS_ADDRESS.toLowerCase()]}

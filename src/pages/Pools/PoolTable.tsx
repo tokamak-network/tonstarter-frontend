@@ -109,21 +109,17 @@ export const PoolTable: FC<PoolTableProps> = ({
 
   const [account, setAccount] = useState('');
   const [stakingDisable, setStakingDisable] = useState(true);
-  console.log(data)
+  
 
   const currencyA = useCurrency(data[0]?.token0.id)
   const currencyB = useCurrency(data[0]?.token1.id)
-  const feeAmount: FeeAmount | undefined =
-    '3000' && Object.values(FeeAmount).includes(parseFloat('3000'))
-      ? parseFloat('3000')
-      : undefined
-  const a = useV3DerivedMintInfo(currencyA, currencyB, feeAmount, currencyA)
-  const b = useV3MintActionHandlers(false)
-  // const a = useV3MintState();
-  console.log(a)
-  console.log(b)
-  const { formattedData } = useDensityChartData({currencyA, currencyB, feeAmount})
-  console.log(formattedData)
+  console.log(currencyA)
+  // const feeAmount: FeeAmount | undefined =
+  //   '3000' && Object.values(FeeAmount).includes(parseFloat('3000'))
+  //     ? parseFloat('3000')
+  //     : undefined
+  // const { formattedData } = useDensityChartData({currencyA, currencyB, feeAmount})
+  // console.log(formattedData)
 
   useEffect(() => {
     async function positionPayload() {

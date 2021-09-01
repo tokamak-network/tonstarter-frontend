@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef } from 'react'
-import { ButtonGray } from 'components/Button'
+import { ButtonGray } from '../Button'
 import styled from 'styled-components/macro'
 import { ScaleLinear, select, ZoomBehavior, zoom, ZoomTransform, zoomIdentity } from 'd3'
 import { RefreshCcw, ZoomIn, ZoomOut } from 'react-feather'
@@ -108,7 +108,7 @@ export default function Zoom({
 
   return (
     <Wrapper count={showResetButton ? 3 : 2}>
-      {showResetButton && (
+      {/* {showResetButton && (
         <Button
           onClick={() => {
             resetBrush()
@@ -124,7 +124,7 @@ export default function Zoom({
       </Button>
       <Button onClick={zoomOut} disabled={false}>
         <ZoomOut size={16} />
-      </Button>
+      </Button> */}
     </Wrapper>
   )
 }

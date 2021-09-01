@@ -9,11 +9,11 @@ import { Chart } from './Chart'
 import { FeeAmount } from '@uniswap/v3-sdk'
 import { saturate } from 'polished'
 import { ZoomLevels } from './types'
+// import { TYPE } from '../../theme'
 import styled from 'styled-components/macro'
 import { useDensityChartData } from './useDensityChartData';
 import { batch } from 'react-redux'
-import { useTheme } from '@chakra-ui/react';
-
+import { useTheme, Flex, Heading, Text } from '@chakra-ui/react';
 
 const ZOOM_LEVELS: Record<FeeAmount, ZoomLevels> = {
   [FeeAmount.LOW]: {
@@ -35,12 +35,26 @@ const ZOOM_LEVELS: Record<FeeAmount, ZoomLevels> = {
     max: 20,
   },
 }
+
 const ChartWrapper = styled.div`
   position: relative;
 
   justify-content: center;
   align-content: center;
 `
+
+function InfoBox({ message, icon }: { message?: ReactNode; icon: ReactNode }) {
+  return (
+    <ColumnCenter style={{ height: '100%', justifyContent: 'center' }}>
+      {icon}
+      {message && (
+        <Heading padding={10} marginTop="20px" textAlign="center">
+          {message}
+        </Heading>
+      )}
+    </ColumnCenter>
+  )
+}
 
 export default function  LiquidityChartRangeInput({
   currencyA,
@@ -66,6 +80,8 @@ export default function  LiquidityChartRangeInput({
   interactive: boolean
 }) {
   const isSorted = currencyA && currencyB && currencyA?.wrapped.sortsBefore(currencyB?.wrapped)
+  console.log(currencyA)
+  console.log(currencyB)
   const { error, formattedData } = useDensityChartData({
     currencyA,
     currencyB,
@@ -103,6 +119,7 @@ export default function  LiquidityChartRangeInput({
     },
     [isSorted, onLeftRangeInput, onRightRangeInput, ticksAtLimit]
   )
+
   interactive = interactive && Boolean(formattedData?.length)
 
   const brushDomain: [number, number] | undefined = useMemo(() => {
@@ -128,9 +145,17 @@ export default function  LiquidityChartRangeInput({
     },
     [isSorted, price, ticksAtLimit]
   )
+  console.log(error)
+  console.log(price)
 
   return (
     <AutoColumn gap="md" style={{ minHeight: '200px' }}>
+      {!formattedData || formattedData === [] || !price ? (
+        <InfoBox
+          message={<Text>There is no liquidity data.</Text>}
+          icon={<BarChart2 size={56} stroke={theme.text4} />}
+        />
+      ) : (
         <ChartWrapper>
           <Chart
             data={{ series: formattedData, current: price }}
@@ -155,7 +180,7 @@ export default function  LiquidityChartRangeInput({
             ticksAtLimit={ticksAtLimit}
           />
         </ChartWrapper>
-      )
+      )}
     </AutoColumn>
   )
 }
