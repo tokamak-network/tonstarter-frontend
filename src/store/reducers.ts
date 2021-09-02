@@ -9,6 +9,7 @@ import {tableReducer} from './table.reducer';
 import {txReducer} from './tx.reducer';
 import {refetchReducer} from './refetch.reducer';
 import {vaultReducer} from 'pages/Staking/vault.reducer';
+import mintV3 from './mint/v3/reducer'
 
 const rootReducer = combineReducers({
   stakes: stakeReducer.reducer,
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
   tx: txReducer.reducer,
   refetch: refetchReducer.reducer,
   dao: daoReducer.reducer,
+  mintV3: mintV3,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
