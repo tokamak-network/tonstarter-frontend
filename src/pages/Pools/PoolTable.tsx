@@ -34,9 +34,9 @@ import {PositionTable} from './PositionTable';
 import {fetchPositionPayload} from './utils/fetchPositionPayload';
 import {selectTransactionType} from 'store/refetch.reducer';
 import moment from 'moment';
-import { useDensityChartData } from './components/LiquidityChartRangeInput/useDensityChartData';
-import { useCurrency } from '../../hooks/Tokens';
-import { FeeAmount } from '@uniswap/v3-sdk';
+import {useDensityChartData} from './components/LiquidityChartRangeInput/useDensityChartData';
+import {useCurrency} from '../../hooks/Tokens';
+import {FeeAmount} from '@uniswap/v3-sdk';
 
 import calculator_icon from 'assets/svgs/calculator_icon.svg';
 import calculator_icon_light from 'assets/svgs/calculator_icon_light_mode.svg';
@@ -109,17 +109,20 @@ export const PoolTable: FC<PoolTableProps> = ({
 
   const [account, setAccount] = useState('');
   const [stakingDisable, setStakingDisable] = useState(true);
-  console.log(data)
+  console.log(data);
 
-  const currencyA = useCurrency(data[0]?.token0.id)
-  const currencyB = useCurrency(data[0]?.token1.id)
+  const currencyA = useCurrency(data[0]?.token0.id);
+  const currencyB = useCurrency(data[0]?.token1.id);
   const feeAmount: FeeAmount | undefined =
     '3000' && Object.values(FeeAmount).includes(parseFloat('3000'))
       ? parseFloat('3000')
-      : undefined
-  
-  const { formattedData } = useDensityChartData({currencyA, currencyB, feeAmount})
-  console.log(formattedData)
+      : undefined;
+
+  const {formattedData} = useDensityChartData({
+    currencyA,
+    currencyB,
+    feeAmount,
+  });
 
   useEffect(() => {
     async function positionPayload() {

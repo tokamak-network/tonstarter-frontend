@@ -19,7 +19,12 @@ import {useCallback, useEffect, useState} from 'react';
 import {CloseButton} from 'components/Modal/CloseButton';
 import {useUser} from 'hooks/useUser';
 import {selectUser} from 'store/app/user.reducer';
-import {getTOSContract, fetchSwapPayload} from '../utils/simulator';
+import {
+  getTOSContract,
+  fetchSwapPayload,
+  UserLiquidity,
+} from '../utils/simulator';
+import {convertToWei, convertFromRayToWei} from 'utils/number';
 
 export const Simulator = () => {
   // const {account, library} = useUser();
@@ -35,6 +40,9 @@ export const Simulator = () => {
   const [currentPrice, setCurrentPrice] = useState<number>(0);
   const [wtonValue, setWtonValue] = useState<number>(0);
   const [tosValue, setTosValue] = useState<number>(0);
+  const [LP, setLP] = useState<number>(0);
+  // const [tosValue, setTosValue] = useState<number>(0);
+
   // const [estimatedReward, setEstimatedReward] = useState<number>(0);
 
   const handleCloseModal = useCallback(() => {
@@ -53,10 +61,10 @@ export const Simulator = () => {
   }, []);
 
   useEffect(() => {
-    console.log(currentPrice);
-    console.log(wtonValue);
-    console.log(tosValue);
-  }, []);
+    const test = new UserLiquidity(wtonValue, tosValue, currentPrice, 5, 12);
+    setLP(test.liquidity());
+    console.log(convertToWei(String(test.liquidity())));
+  }, [wtonValue, tosValue]);
 
   if (!userData) {
     return null;
@@ -115,25 +123,17 @@ export const Simulator = () => {
                 fontSize={'26px'}
                 fontWeight={600}
                 color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                {wton} WTON
+                LP : {LP}
               </Text>
             </Box>
-            <Box textAlign={'center'} pt="20px" pb="20px">
-              <Text
-                fontSize={'26px'}
-                fontWeight={600}
-                color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                {tos} TOS
-              </Text>
-            </Box>
-            <Box textAlign={'center'} pt="20px" pb="20px">
+            {/* <Box textAlign={'center'} pt="20px" pb="20px">
               <Text
                 fontSize={'26px'}
                 fontWeight={600}
                 color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
                 Estimated Reward
               </Text>
-            </Box>
+            </Box> */}
             <Box textAlign={'center'} pt="20px" pb="20px">
               <Text>WTON</Text>
               <Input
