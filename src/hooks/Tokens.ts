@@ -11,13 +11,12 @@ export function useToken(tokenAddress: string): Token | undefined {
   const { chainId, library } = useActiveWeb3React()
   
   const address = tokenAddress
-  
-  const [decimals, setDecimals] = useState(1);
+  const [decimals, setDecimals] = useState(0);
   const [tokenName, setTokenName] = useState('');
   const [symbol, setSymbol] = useState('');
   useEffect(() => {
     async function getTokenInfo() {
-      if (tokenAddress) {
+      if (tokenAddress && library) {
         const contract = new Contract(tokenAddress, ERC20.abi, library)
         const decimal = await contract.decimals();
         const name = await contract.name()
@@ -29,7 +28,7 @@ export function useToken(tokenAddress: string): Token | undefined {
     }
     getTokenInfo()
 
-  }, [decimals, tokenName, symbol])
+  }, [decimals, tokenName, symbol, library, address])
   
 
   return useMemo(() => {
