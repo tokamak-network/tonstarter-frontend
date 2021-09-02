@@ -131,7 +131,7 @@ export const Simulator = () => {
               Price Range Current Price: xx,xxx TOS per WTON
             </Text>
           </Box>
-          <Box>
+          
             <LiquidityChartRangeInput 
               currencyA={baseCurrency ?? undefined}
               currencyB={quoteCurrency ?? undefined}
@@ -146,7 +146,7 @@ export const Simulator = () => {
               onRightRangeInput={onRightRangeInput}
               interactive={!false}
             />
-          </Box>
+          
 
           <Stack
             as={Flex}

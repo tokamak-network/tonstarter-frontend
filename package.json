@@ -15,6 +15,10 @@
     "@fontsource/rajdhani": "^4.4.5",
     "@fontsource/roboto": "^4.3.0",
     "@fontsource/titillium-web": "^4.3.0",
+    "@graphql-codegen/cli": "^2.1.1",
+    "@graphql-codegen/typescript": "^2.1.2",
+    "@graphql-codegen/typescript-operations": "^2.1.2",
+    "@graphql-codegen/typescript-rtk-query": "^2.1.2",
     "@reduxjs/toolkit": "^1.6.1",
     "@types/d3": "^7.0.0",
     "@types/rebass": "^4.0.9",
@@ -34,6 +38,7 @@
     "ethers": "^5.2.0",
     "framer-motion": "^4.1.4",
     "graphql": "^15.5.1",
+    "graphql-codegen": "^0.4.0",
     "graphql-request": "^3.5.0",
     "history": "^5.0.0",
     "i": "^0.3.6",
@@ -70,6 +75,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "GENERATE_SOURCEMAP=false react-scripts build",
+    "graphql:generate": "graphql-codegen --config codegen.yml",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
