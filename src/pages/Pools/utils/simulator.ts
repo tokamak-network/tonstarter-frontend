@@ -26,6 +26,9 @@ export const getToken = (
 };
 
 export const getTOSContract = async () => {
+  if (!store.getState().user.data) {
+    return;
+  }
   const {library} = store.getState().user.data;
   if (!library) {
     return;
@@ -37,13 +40,12 @@ export const getTOSContract = async () => {
   );
 
   const totalSupply = await StakeUniswap.totalSupplyCoinage();
-  console.log(StakeUniswap);
-
-  console.log(totalSupply.toString());
-  console.log(convertFromRayToWei(totalSupply).toString());
 };
 
 export const fetchSwapPayload = async () => {
+  if (!store.getState().user.data) {
+    return;
+  }
   const {library} = store.getState().user.data;
   if (!library) {
     return;

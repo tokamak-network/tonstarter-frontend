@@ -33,6 +33,37 @@ import {
   useV3MintActionHandlers,
 } from '../../../store/mint/v3/hooks';
 import {Bound} from '../components/LiquidityChartRangeInput/Bound';
+import {formatTickPrice} from '../utils/formatTickPrice';
+import minus_icon_Normal from 'assets/svgs/minus_icon_Normal.svg';
+import Plus_icon_Normal from 'assets/svgs/Plus_icon_Normal.svg';
+import {CustomInput, CustomSelectBox} from 'components/Basic/index';
+
+const themeDesign = {
+  border: {
+    light: 'solid 1px #d7d9df',
+    dark: 'solid 1px #535353',
+  },
+  selectBorder: 'solid 1px #2a72e5',
+  font: {
+    light: 'black.300',
+    dark: 'gray.475',
+  },
+  tosFont: {
+    light: 'gray.250',
+    dark: 'black.100',
+  },
+};
+
+const borderLineStyle = '1px solid #d7d9df';
+
+export const Title = (prop: {title: string; fontSize: number}) => {
+  const {title, fontSize} = prop;
+  return (
+    <Text color="black.300" fontSize={fontSize} fontWeight={600}>
+      {title}
+    </Text>
+  );
+};
 
 export const Simulator = () => {
   // const {account, library} = useUser();
@@ -44,12 +75,24 @@ export const Simulator = () => {
 
   const dispatch = useAppDispatch();
 
+  //input values
   const [estimatedReward, setEstimatedReward] = useState<number>(0);
   const [currentPrice, setCurrentPrice] = useState<number>(0);
   const [wtonValue, setWtonValue] = useState<number>(0);
   const [tosValue, setTosValue] = useState<number>(0);
+  const [minPrice, setMinPrice] = useState<number>(0);
+  const [maxPrice, setMaxPrice] = useState<number>(0);
+
+  //select value
+  type Duration = 'Day' | 'Month' | 'Year';
+  const durationType: Duration[] = ['Day', 'Month', 'Year'];
+  const [selectDurationType, setSelectDurationType] = useState<Duration>('Day');
+  const [durationValue, setDurationValue] = useState<number>(0);
+
   const [LP, setLP] = useState<number>(0);
-  // const [tosValue, setTosValue] = useState<number>(0);
+
+  // Select Mode
+  const [baseToken, setBaseToken] = useState<'WTON' | 'TOS'>('WTON');
 
   // const [estimatedReward, setEstimatedReward] = useState<number>(0);
 
@@ -59,7 +102,6 @@ export const Simulator = () => {
 
   useEffect(() => {
     async function init() {
-      const d = await getTOSContract();
       const swapPrice = await fetchSwapPayload();
       if (swapPrice) {
         setCurrentPrice(Number(swapPrice));
@@ -68,16 +110,15 @@ export const Simulator = () => {
     init();
   }, []);
 
-  useEffect(() => {
-    const test = new UserLiquidity(wtonValue, tosValue, currentPrice, 5, 12);
-    setLP(test.liquidity());
-    console.log(convertToWei(String(test.liquidity())));
-  }, [wtonValue, tosValue]);
-
   // const currencyA = useCurrency(data[0]?.token0.id)
   // const currencyB = useCurrency(data[0]?.token1.id)
-  const tosAddr = '0x409c4D8cd5d2924b9bc5509230d16a61289c8153';
-  const wtonAddr = '0xc4A11aaf6ea915Ed7Ac194161d2fC9384F15bff2';
+
+  // const tosAddr = '0x409c4D8cd5d2924b9bc5509230d16a61289c8153';
+  // const wtonAddr = '0xc4A11aaf6ea915Ed7Ac194161d2fC9384F15bff2';
+
+  const tosAddr = '0x73a54e5c054aa64c1ae7373c2b5474d8afea08bd';
+  const wtonAddr = '0x709bef48982bbfd6f2d4be24660832665f53406c';
+
   const baseCurrency = useCurrency(tosAddr.toLowerCase());
   const currencyB = useCurrency(wtonAddr.toLowerCase());
   const quoteCurrency =
@@ -133,8 +174,6 @@ export const Simulator = () => {
   const a = price
     ? parseFloat((invertPrice ? price.invert() : price).toSignificant(8))
     : undefined;
-  console.log(a);
-  console.log(priceUpper);
 
   const {
     balance: {wton, tos},
@@ -149,9 +188,9 @@ export const Simulator = () => {
       <ModalContent
         fontFamily={theme.fonts.roboto}
         bg={colorMode === 'light' ? 'white.100' : 'black.200'}
-        w="350px"
         pt="25px"
-        pb="25px">
+        pb="25px"
+        maxW={650}>
         <CloseButton closeFunc={handleCloseModal}></CloseButton>
         <ModalBody p={0}>
           <Box
@@ -159,6 +198,68 @@ export const Simulator = () => {
             borderBottom={
               colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
             }>
+            <Box pos="absolute" d="flex" w={'140px'} h={'26px'} right={30}>
+              <Text
+                w={'50%'}
+                fontSize={'0.750em'}
+                color={baseToken === 'WTON' ? 'blue.300' : ''}
+                textAlign="center"
+                lineHeight="26px"
+                verticalAlign="middle"
+                onClick={() => setBaseToken('WTON')}
+                cursor={'pointer'}
+                borderTop={
+                  baseToken === 'WTON'
+                    ? themeDesign.selectBorder
+                    : themeDesign.border[colorMode]
+                }
+                borderBottom={
+                  baseToken === 'WTON'
+                    ? themeDesign.selectBorder
+                    : themeDesign.border[colorMode]
+                }
+                borderLeft={
+                  baseToken === 'WTON'
+                    ? themeDesign.selectBorder
+                    : themeDesign.border[colorMode]
+                }
+                borderLeftRadius={4}
+                borderRight={
+                  baseToken === 'WTON' ? themeDesign.selectBorder : ''
+                }>
+                WTON
+              </Text>
+              <Text
+                w={'50%'}
+                fontSize={'0.750em'}
+                color={baseToken === 'TOS' ? 'blue.300' : ''}
+                textAlign="center"
+                lineHeight="26px"
+                verticalAlign="middle"
+                onClick={() => setBaseToken('TOS')}
+                cursor={'pointer'}
+                borderTop={
+                  baseToken === 'TOS'
+                    ? themeDesign.selectBorder
+                    : themeDesign.border[colorMode]
+                }
+                borderBottom={
+                  baseToken === 'TOS'
+                    ? themeDesign.selectBorder
+                    : themeDesign.border[colorMode]
+                }
+                borderRight={
+                  baseToken === 'TOS'
+                    ? themeDesign.selectBorder
+                    : themeDesign.border[colorMode]
+                }
+                borderRightRadius={4}
+                borderLeft={
+                  baseToken === 'TOS' ? themeDesign.selectBorder : ''
+                }>
+                TOS
+              </Text>
+            </Box>
             <Heading
               fontSize={'1.250em'}
               fontWeight={'bold'}
@@ -168,115 +269,226 @@ export const Simulator = () => {
               LP Reward Simulator
             </Heading>
             <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
-              You can calculate how much WTON and TOS you need to provide LP &
-              Expected APY
+              You can calculate how much WTON and TOS
             </Text>
             <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
-              Price Range Current Price: {currentPrice} TOS per WTON
+              you need to provide LP & Expected APY
             </Text>
           </Box>
-          <Box>
-            <LiquidityChartRangeInput
-              currencyA={baseCurrency ?? undefined}
-              currencyB={quoteCurrency ?? undefined}
-              feeAmount={feeAmount}
-              ticksAtLimit={ticksAtLimit}
-              price={
-                price
-                  ? parseFloat(
-                      (invertPrice ? price.invert() : price).toSignificant(8),
-                    )
-                  : undefined
-              }
-              priceLower={priceLower}
-              priceUpper={priceUpper}
-              onLeftRangeInput={onLeftRangeInput}
-              onRightRangeInput={onRightRangeInput}
-              interactive={!false}
-            />
-          </Box>
+          <Flex flexDir="column" pl={30} pr={30}>
+            <Flex pt={'16px'} flexDir="column" alignItems="center">
+              <Text color="gray.400" fontSize={'1em'}>
+                Price Range
+              </Text>
+              <Text color="gray.250" fontSize={'1.125em'} textAlign={'center'}>
+                Price Range Current Price: {currentPrice} TOS per WTON
+              </Text>
+            </Flex>
+            <Flex>
+              <Box w={340} h={'166px'}>
+                <LiquidityChartRangeInput
+                  currencyA={baseCurrency ?? undefined}
+                  currencyB={quoteCurrency ?? undefined}
+                  feeAmount={feeAmount}
+                  ticksAtLimit={ticksAtLimit}
+                  price={
+                    price
+                      ? parseFloat(
+                          (invertPrice ? price.invert() : price).toSignificant(
+                            8,
+                          ),
+                        )
+                      : undefined
+                  }
+                  priceLower={priceLower}
+                  priceUpper={priceUpper}
+                  onLeftRangeInput={onLeftRangeInput}
+                  onRightRangeInput={onRightRangeInput}
+                  interactive={!false}
+                />
+              </Box>
+              <Flex flexDir="column" ml={'20px'} pt={'23px'}>
+                <Flex
+                  w={230}
+                  h={'78px'}
+                  border={borderLineStyle}
+                  borderRadius={10}
+                  flexDir="column"
+                  alignItems="center"
+                  justifyContent="center"
+                  pl={15}
+                  pr={15}
+                  mb={'10px'}>
+                  <Text>Min Price</Text>
+                  <Flex justifyContent="space-around" alignItems="center">
+                    <Flex
+                      w={'24px'}
+                      h={'24px'}
+                      border={borderLineStyle}
+                      alignItems="center"
+                      justifyContent="center">
+                      <img src={minus_icon_Normal} alt="minus_icon"></img>
+                    </Flex>
+                    <CustomInput
+                      w={'150px'}
+                      value={minPrice}
+                      setValue={setMinPrice}></CustomInput>
+                    <Flex
+                      w={'24px'}
+                      h={'24px'}
+                      border={borderLineStyle}
+                      alignItems="center"
+                      justifyContent="center">
+                      <img src={Plus_icon_Normal} alt="plus_icon"></img>
+                    </Flex>
+                  </Flex>
+                </Flex>
+                <Flex
+                  w={230}
+                  h={'78px'}
+                  border={borderLineStyle}
+                  borderRadius={10}
+                  flexDir="column"
+                  alignItems="center"
+                  justifyContent="center"
+                  pl={15}
+                  pr={15}>
+                  <Text>Max Price</Text>
+                  <Flex justifyContent="space-around" alignItems="center">
+                    <Flex
+                      w={'24px'}
+                      h={'24px'}
+                      border="1px solid #e6eaee"
+                      alignItems="center"
+                      justifyContent="center">
+                      <img src={minus_icon_Normal} alt="minus_icon"></img>
+                    </Flex>
+                    <CustomInput
+                      w={'150px'}
+                      value={maxPrice}
+                      setValue={setMaxPrice}></CustomInput>
+                    <Flex
+                      w={'24px'}
+                      h={'24px'}
+                      border="1px solid #e6eaee"
+                      alignItems="center"
+                      justifyContent="center">
+                      <img src={Plus_icon_Normal} alt="plus_icon"></img>
+                    </Flex>
+                  </Flex>
+                </Flex>
+              </Flex>
+            </Flex>
+          </Flex>
 
-          <Stack
-            as={Flex}
-            justifyContent={'center'}
-            alignItems={'center'}
-            borderBottom={
-              colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
-            }
-            mb={'25px'}>
-            <Box textAlign={'center'} pt="20px" pb="20px">
-              <Text
-                fontSize={'26px'}
-                fontWeight={600}
-                color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                LP : {LP}
-              </Text>
-            </Box>
-            {/* <Box textAlign={'center'} pt="20px" pb="20px">
-              <Text
-                fontSize={'26px'}
-                fontWeight={600}
-                color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                Estimated Reward
-              </Text>
-            </Box> */}
-            <Box textAlign={'center'} pt="20px" pb="20px">
-              <Text>WTON</Text>
-              <Input
-                variant={'outline'}
-                borderWidth={0}
-                textAlign={'center'}
-                fontWeight={'bold'}
-                fontSize={'4xl'}
-                value={wtonValue}
-                onChange={(e) => setWtonValue(Number(e.target.value))}
-                w="60%"
-                mr={6}
-                _focus={{
-                  borderWidth: 0,
-                }}
-              />
-              <Box position={'absolute'} right={5}>
-                <Button
-                  onClick={() => setWtonValue(Number(wton))}
-                  type={'button'}
-                  variant="outline"
-                  _focus={{
-                    outline: 'none',
-                  }}>
-                  Max
-                </Button>
+          <Flex
+            flexDir="column"
+            alignItems="center"
+            mt={'22px'}
+            pr="30px"
+            pl="30px">
+            <Title title={'Deposited Amount'} fontSize={15}></Title>
+            <Flex
+              mt="12px"
+              w={'100%'}
+              justifyContent={'space-between'}
+              flexDir={baseToken === 'WTON' ? 'row' : 'row-reverse'}>
+              <Box
+                w="285px"
+                h="78px"
+                border={borderLineStyle}
+                py={'0.875em'}
+                pl={'1.563em'}
+                pr={'0.938em'}
+                borderRadius={10}>
+                <Box
+                  d="flex"
+                  justifyContent="space-between"
+                  h={'21px'}
+                  mb={'11px'}>
+                  <Title title={'WTON'} fontSize={16}></Title>
+                  <CustomInput
+                    value={wtonValue}
+                    setValue={setWtonValue}
+                    numberOnly={true}
+                  />
+                </Box>
+                <Box>
+                  <Text fontSize={'12px'}>Balance : {wton} WTON</Text>
+                </Box>
               </Box>
-            </Box>
-            <Box textAlign={'center'} pt="20px" pb="20px">
-              <Text>TOS</Text>
-              <Input
-                variant={'outline'}
-                borderWidth={0}
-                textAlign={'center'}
-                fontWeight={'bold'}
-                fontSize={'4xl'}
-                value={tosValue}
-                onChange={(e) => setTosValue(Number(e.target.value))}
-                w="60%"
-                mr={6}
-                _focus={{
-                  borderWidth: 0,
-                }}
-              />
-              <Box position={'absolute'} right={5}>
-                <Button
-                  onClick={() => setTosValue(Number(tos))}
-                  type={'button'}
-                  variant="outline"
-                  _focus={{
-                    outline: 'none',
-                  }}>
-                  Max
-                </Button>
+              <Box
+                w="285px"
+                h="78px"
+                border={borderLineStyle}
+                py={'0.875em'}
+                pl={'1.563em'}
+                pr={'0.938em'}
+                borderRadius={10}>
+                <Box
+                  d="flex"
+                  justifyContent="space-between"
+                  h={'21px'}
+                  mb={'11px'}>
+                  <Title title={'TOS'} fontSize={16}></Title>
+                  <CustomInput
+                    value={tosValue}
+                    setValue={setTosValue}
+                    numberOnly={true}
+                  />
+                </Box>
+                <Box>
+                  <Text fontSize={'12px'}>Balance : {tos} TOS</Text>
+                </Box>
               </Box>
-            </Box>
-          </Stack>
+            </Flex>
+            <Flex
+              mt="19px"
+              w={'100%'}
+              justifyContent="space-between"
+              borderBottom="1px solid #f4f6f8"
+              pb={'26px'}>
+              <Box w="285px" h="32px" borderRadius={10}>
+                <Box
+                  d="flex"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  h={'100%'}>
+                  <Title title={'Duration'} fontSize={13}></Title>
+                  <Box
+                    w="80px"
+                    h="100%"
+                    border={borderLineStyle}
+                    borderRadius={4}>
+                    <CustomInput
+                      w={'100%'}
+                      h={'100%'}
+                      value={durationValue}
+                      setValue={setDurationValue}
+                      numberOnly={true}
+                    />
+                  </Box>
+                  <CustomSelectBox
+                    w={'125px'}
+                    h={'32px'}
+                    list={durationType}
+                    setValue={setSelectDurationType}></CustomSelectBox>
+                </Box>
+              </Box>
+              <Box w="285px" h="32px" borderRadius={10}>
+                <Box
+                  d="flex"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  h={'100%'}>
+                  <Title title={'Estimated Reward'} fontSize={13}></Title>
+                  <Text fontSize={'1.125em'} color="black.300" fontWeight={600}>
+                    7,146,412.05 <span style={{fontSize: '12px'}}>TOS</span>
+                  </Text>
+                </Box>
+              </Box>
+            </Flex>
+          </Flex>
         </ModalBody>
       </ModalContent>
     </Modal>
