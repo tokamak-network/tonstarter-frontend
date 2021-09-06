@@ -37,6 +37,8 @@ import {formatTickPrice} from '../utils/formatTickPrice';
 import minus_icon_Normal from 'assets/svgs/minus_icon_Normal.svg';
 import Plus_icon_Normal from 'assets/svgs/Plus_icon_Normal.svg';
 import {CustomInput, CustomSelectBox} from 'components/Basic/index';
+import {TOKENS} from 'constants/index';
+import {useWeb3React} from '@web3-react/core';
 
 const themeDesign = {
   border: {
@@ -90,6 +92,12 @@ export const Simulator = () => {
   const [durationValue, setDurationValue] = useState<number>(0);
 
   const [LP, setLP] = useState<number>(0);
+  const {chainId} = useWeb3React();
+
+  const {TON, WTON} = TOKENS;
+
+  const tosAddr = TON.address[chainId || 1];
+  const wtonAddr = WTON.address[chainId || 1];
 
   // Select Mode
   const [baseToken, setBaseToken] = useState<'WTON' | 'TOS'>('WTON');
@@ -109,15 +117,6 @@ export const Simulator = () => {
     }
     init();
   }, []);
-
-  // const currencyA = useCurrency(data[0]?.token0.id)
-  // const currencyB = useCurrency(data[0]?.token1.id)
-
-  // const tosAddr = '0x409c4D8cd5d2924b9bc5509230d16a61289c8153';
-  // const wtonAddr = '0xc4A11aaf6ea915Ed7Ac194161d2fC9384F15bff2';
-
-  const tosAddr = '0x73a54e5c054aa64c1ae7373c2b5474d8afea08bd';
-  const wtonAddr = '0x709bef48982bbfd6f2d4be24660832665f53406c';
 
   const baseCurrency = useCurrency(tosAddr.toLowerCase());
   const currencyB = useCurrency(wtonAddr.toLowerCase());

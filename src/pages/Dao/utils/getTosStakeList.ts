@@ -19,7 +19,10 @@ export const getTosStakeList = async ({
     LockTOSABI.abi,
     library,
   );
-  const tosStakeList = await LockTOSContract.alivelocksOf(account);
+  console.log('**LockTOSContract**');
+  console.log(LockTOSContract);
+  const tosStakeList = await LockTOSContract.activeLocksOf(account);
+  console.log(tosStakeList);
 
   if (tosStakeList.length === 0) {
     return [];

@@ -57,17 +57,20 @@ export const getUserTOSStaked = async ({account, library}: any) => {
     LockTOSABI.abi,
     library,
   );
-  const tosStakeList = await LockTOSContract.alivelocksOf(account);
+  const tosStakeList = await LockTOSContract.activeLocksOf(account);
+  return undefined;
+  // console.log('**tosStakeList**');
+  // console.log(tosStakeList);
 
-  if (tosStakeList.length === 0) {
-    return '0.00';
-  }
+  // if (tosStakeList.length === 0) {
+  //   return '0.00';
+  // }
 
-  const res = tosStakeList.reduce((acc: any, cur: any) => {
-    return cur.amount.add(acc);
-  }, 0);
+  // const res = tosStakeList.reduce((acc: any, cur: any) => {
+  //   return cur.amount.add(acc);
+  // }, 0);
 
-  return convertNumber({amount: res.toString(), localeString: true});
+  // return convertNumber({amount: res.toString(), localeString: true});
 };
 
 export const getUserSTOSBalance = async ({account, library}: any) => {

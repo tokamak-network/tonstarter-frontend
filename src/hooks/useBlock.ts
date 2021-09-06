@@ -12,8 +12,8 @@ export function useBlockNumber(): {blockNumber: number} {
   web3.eth
     .subscribe('newBlockHeaders', function (error, result) {
       if (!error) {
-        const {number} = result;
-        setBN(number);
+        // const {number} = result;
+        // setBN(number);
 
         return;
       }
