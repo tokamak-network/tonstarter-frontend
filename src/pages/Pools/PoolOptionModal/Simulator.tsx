@@ -31,6 +31,7 @@ import {useCurrency} from '../../../hooks/Tokens';
 import {
   useV3DerivedMintInfo,
   useV3MintActionHandlers,
+  useRangeHopCallbacks,
 } from '../../../store/mint/v3/hooks';
 import {Bound} from '../components/LiquidityChartRangeInput/Bound';
 import {formatTickPrice} from '../utils/formatTickPrice';
@@ -39,6 +40,7 @@ import Plus_icon_Normal from 'assets/svgs/Plus_icon_Normal.svg';
 import {CustomInput, CustomSelectBox} from 'components/Basic/index';
 import {TOKENS} from 'constants/index';
 import {useWeb3React} from '@web3-react/core';
+import RangeSelector from '../components/RangeSelector/index';
 
 const themeDesign = {
   border: {
@@ -153,7 +155,7 @@ export const Simulator = () => {
     quoteCurrency ?? undefined,
     feeAmount,
     baseCurrency ?? undefined,
-    // existingPosition
+    undefined,
   );
 
   const {
@@ -164,15 +166,27 @@ export const Simulator = () => {
     onStartPriceInput,
   } = useV3MintActionHandlers(noLiquidity);
 
+  const {[Bound.LOWER]: tickLower, [Bound.UPPER]: tickUpper} = ticks;
   const {[Bound.LOWER]: priceLower, [Bound.UPPER]: priceUpper} = pricesAtTicks;
+
+  const {
+    getDecrementLower,
+    getIncrementLower,
+    getDecrementUpper,
+    getIncrementUpper,
+    getSetFullRange,
+  } = useRangeHopCallbacks(
+    baseCurrency ?? undefined,
+    quoteCurrency ?? undefined,
+    feeAmount,
+    tickLower,
+    tickUpper,
+    pool,
+  );
 
   if (!userData) {
     return null;
   }
-
-  const a = price
-    ? parseFloat((invertPrice ? price.invert() : price).toSignificant(8))
-    : undefined;
 
   const {
     balance: {wton, tos},
@@ -307,7 +321,7 @@ export const Simulator = () => {
                 />
               </Box>
               <Flex flexDir="column" ml={'20px'} pt={'23px'}>
-                <Flex
+                {/* <Flex
                   w={230}
                   h={'78px'}
                   border={borderLineStyle}
@@ -341,8 +355,22 @@ export const Simulator = () => {
                       <img src={Plus_icon_Normal} alt="plus_icon"></img>
                     </Flex>
                   </Flex>
-                </Flex>
-                <Flex
+                </Flex> */}
+                <RangeSelector
+                  priceLower={priceLower}
+                  priceUpper={priceUpper}
+                  getDecrementLower={getDecrementLower}
+                  getIncrementLower={getIncrementLower}
+                  getDecrementUpper={getDecrementUpper}
+                  getIncrementUpper={getIncrementUpper}
+                  onLeftRangeInput={onLeftRangeInput}
+                  onRightRangeInput={onRightRangeInput}
+                  currencyA={baseCurrency}
+                  currencyB={quoteCurrency}
+                  feeAmount={feeAmount}
+                  ticksAtLimit={ticksAtLimit}
+                />
+                {/* <Flex
                   w={230}
                   h={'78px'}
                   border={borderLineStyle}
@@ -375,7 +403,7 @@ export const Simulator = () => {
                       <img src={Plus_icon_Normal} alt="plus_icon"></img>
                     </Flex>
                   </Flex>
-                </Flex>
+                </Flex> */}
               </Flex>
             </Flex>
           </Flex>

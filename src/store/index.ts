@@ -3,6 +3,7 @@ import {useDispatch} from 'react-redux';
 import {ThunkAction} from 'redux-thunk';
 import logger from 'redux-logger';
 import rootReducer, {RootState} from './reducers';
+import { api as dataApi } from './data/slice'
 
 let middleware: any[] = [];
 
@@ -24,7 +25,9 @@ if (process.env.NODE_ENV !== 'production') {
 
 const store = configureStore({
   reducer: rootReducer,
-  middleware,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ thunk: true })
+      .concat(dataApi.middleware),
   devTools: process.env.NODE_ENV !== 'production' ? true : false, // disable devtools on production
 });
 
