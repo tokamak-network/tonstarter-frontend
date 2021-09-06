@@ -31,12 +31,14 @@ import {useCurrency} from '../../../hooks/Tokens';
 import {
   useV3DerivedMintInfo,
   useV3MintActionHandlers,
+  useRangeHopCallbacks,
 } from '../../../store/mint/v3/hooks';
 import {Bound} from '../components/LiquidityChartRangeInput/Bound';
 import {formatTickPrice} from '../utils/formatTickPrice';
 import minus_icon_Normal from 'assets/svgs/minus_icon_Normal.svg';
 import Plus_icon_Normal from 'assets/svgs/Plus_icon_Normal.svg';
 import {CustomInput, CustomSelectBox} from 'components/Basic/index';
+import RangeSelector from '../components/RangeSelector/index';
 
 const themeDesign = {
   border: {
@@ -113,11 +115,11 @@ export const Simulator = () => {
   // const currencyA = useCurrency(data[0]?.token0.id)
   // const currencyB = useCurrency(data[0]?.token1.id)
 
-  // const tosAddr = '0x409c4D8cd5d2924b9bc5509230d16a61289c8153';
-  // const wtonAddr = '0xc4A11aaf6ea915Ed7Ac194161d2fC9384F15bff2';
+  const tosAddr = '0x409c4D8cd5d2924b9bc5509230d16a61289c8153';
+  const wtonAddr = '0xc4A11aaf6ea915Ed7Ac194161d2fC9384F15bff2';
 
-  const tosAddr = '0x73a54e5c054aa64c1ae7373c2b5474d8afea08bd';
-  const wtonAddr = '0x709bef48982bbfd6f2d4be24660832665f53406c';
+  // const tosAddr = '0x73a54e5c054aa64c1ae7373c2b5474d8afea08bd';
+  // const wtonAddr = '0x709bef48982bbfd6f2d4be24660832665f53406c';
 
   const baseCurrency = useCurrency(tosAddr.toLowerCase());
   const currencyB = useCurrency(wtonAddr.toLowerCase());
@@ -165,7 +167,11 @@ export const Simulator = () => {
     onStartPriceInput,
   } = useV3MintActionHandlers(noLiquidity);
 
+  const { [Bound.LOWER]: tickLower, [Bound.UPPER]: tickUpper } = ticks
   const {[Bound.LOWER]: priceLower, [Bound.UPPER]: priceUpper} = pricesAtTicks;
+
+  const { getDecrementLower, getIncrementLower, getDecrementUpper, getIncrementUpper, getSetFullRange } =
+    useRangeHopCallbacks(baseCurrency ?? undefined, quoteCurrency ?? undefined, feeAmount, tickLower, tickUpper, pool)
 
   if (!userData) {
     return null;
@@ -304,7 +310,7 @@ export const Simulator = () => {
                 />
               </Box>
               <Flex flexDir="column" ml={'20px'} pt={'23px'}>
-                <Flex
+                {/* <Flex
                   w={230}
                   h={'78px'}
                   border={borderLineStyle}
@@ -338,8 +344,22 @@ export const Simulator = () => {
                       <img src={Plus_icon_Normal} alt="plus_icon"></img>
                     </Flex>
                   </Flex>
-                </Flex>
-                <Flex
+                </Flex> */}
+                <RangeSelector
+                  priceLower={priceLower}
+                  priceUpper={priceUpper}
+                  getDecrementLower={getDecrementLower}
+                  getIncrementLower={getIncrementLower}
+                  getDecrementUpper={getDecrementUpper}
+                  getIncrementUpper={getIncrementUpper}
+                  onLeftRangeInput={onLeftRangeInput}
+                  onRightRangeInput={onRightRangeInput}
+                  currencyA={baseCurrency}
+                  currencyB={quoteCurrency}
+                  feeAmount={feeAmount}
+                  ticksAtLimit={ticksAtLimit}
+                />
+                {/* <Flex
                   w={230}
                   h={'78px'}
                   border={borderLineStyle}
@@ -372,7 +392,7 @@ export const Simulator = () => {
                       <img src={Plus_icon_Normal} alt="plus_icon"></img>
                     </Flex>
                   </Flex>
-                </Flex>
+                </Flex> */}
               </Flex>
             </Flex>
           </Flex>

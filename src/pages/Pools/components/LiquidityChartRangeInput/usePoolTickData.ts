@@ -37,18 +37,18 @@ export function useAllV3Ticks(
   const poolAddress =
     currencyA && currencyB && feeAmount ? Pool.getAddress(currencyA?.wrapped, currencyB?.wrapped, feeAmount) : undefined
   //TODO(judo): determine if pagination is necessary for this query
-  // const { loading, error, data } = useQuery(GET_TICKS, {
-  //   variables: {
-  //     poolAddress: poolAddress?.toLowerCase(),
-  //     skip: 0
-  //   }
-  // })
+
   const { isLoading, isError, error, isUninitialized, data } = useAllV3TicksQuery(
     poolAddress ? { poolAddress: poolAddress?.toLowerCase(), skip: 0 } : skipToken,
     {
       pollingInterval: ms`2m`,
     }
   )
+  console.log(data )
+  console.log(error)
+  console.log(isError)
+  console.log(isLoading)
+  console.log(isUninitialized)
 
   return {
     isLoading,
@@ -68,10 +68,6 @@ export function usePoolActiveLiquidity(
   const pool = useQuery(GET_BASE_POOL, {
     variables: {address: BasePool_Address}
   })
-
-  // console.log(pool[1]?.tickCurrent)
-  // Find nearest valid tick for pool in case tick is not initialized.
-  // graphql에서 pool의 tick 사용
   
   const activeTick = useMemo(() => getActiveTick(pool.data?.pools[0].tick, feeAmount), [pool, feeAmount])
 

@@ -103,6 +103,17 @@ export const ButtonLight = styled(Base)`
   }
 `
 
+export const ButtonStep = styled(Base)`
+  background-color: #fff;
+  color: #565A69;
+  font-size: 16px;
+  font-weight: 500;
+  border: solid 1px #e6eaee;
+  border-radius: 3px;
+  width: 24px;
+  height: 24px;
+`
+
 export const ButtonGray = styled(Base)`
   background-color: #F7F8FA;
   color: #565A69;

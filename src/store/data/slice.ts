@@ -10,43 +10,6 @@ const CHAIN_SUBGRAPH_URL: Record<number, string> = {
   4: 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3',
 }
 
-const poolParam = `
-  id
-  token0 {
-    id
-    symbol
-  }
-  token1 {
-    id
-    symbol
-  }
-  poolDayData {
-    id
-    date
-    volumeUSD
-    feesUSD
-    tvlUSD
-  }
-  liquidity
-  tick
-`;
-
-const positionParam = `
-  id
-  pool {
-    id
-    token0 {
-      id
-      symbol
-    }
-    token1 {
-      id
-      symbol
-    }
-  }
-  owner
-`;
-
 export const api = createApi({
   reducerPath: 'dataApi',
   baseQuery: graphqlRequestBaseQuery(),
