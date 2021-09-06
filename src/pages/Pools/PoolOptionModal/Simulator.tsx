@@ -76,7 +76,7 @@ export const Simulator = () => {
     quoteCurrency ?? undefined,
     feeAmount,
     baseCurrency ?? undefined,
-    // existingPosition
+    undefined
   )
 
   const { onFieldAInput, onFieldBInput, onLeftRangeInput, onRightRangeInput, onStartPriceInput } =
@@ -89,8 +89,6 @@ export const Simulator = () => {
   }
 
   const a = price ? parseFloat((invertPrice ? price.invert() : price).toSignificant(8)) : undefined
-  console.log(a)
-  console.log(priceUpper)
 
   const {
     balance: {wton, tos},
