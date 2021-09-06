@@ -38,6 +38,7 @@ const ZOOM_LEVELS: Record<FeeAmount, ZoomLevels> = {
 };
 
 const ChartWrapper = styled.div`
+  margin-top: 10px;
   position: relative;
 
   justify-content: center;
@@ -49,7 +50,7 @@ function InfoBox({message, icon}: {message?: ReactNode; icon: ReactNode}) {
     <ColumnCenter style={{height: '100%', justifyContent: 'center'}}>
       {icon}
       {message && (
-        <Heading padding={10} marginTop="20px" textAlign="center">
+        <Heading padding={10} textAlign="center">
           {message}
         </Heading>
       )}
@@ -188,7 +189,7 @@ export default function LiquidityChartRangeInput({
             margins={{top: 10, right: 2, bottom: 20, left: 0}}
             styles={{
               area: {
-                selection: theme.blue1,
+                selection: '#0068FC',
               },
               brush: {
                 handle: {

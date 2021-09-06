@@ -104,7 +104,7 @@ export function Chart({
 
         <g transform={`translate(${margins.left},${margins.top})`}>
           <g clipPath={`url(#${id}-chart-clip)`}>
-            <Area series={series} xScale={xScale} yScale={yScale} xValue={xAccessor} yValue={yAccessor} />
+            <Area series={series} xScale={xScale} yScale={yScale} xValue={xAccessor} yValue={yAccessor} fill={'#0068FC'}/>
 
             {brushDomain && (
               // duplicate area chart with mask for selected area

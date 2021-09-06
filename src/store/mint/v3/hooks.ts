@@ -271,7 +271,7 @@ export function useV3DerivedMintInfo(
     }),
     [feeAmount]
   )
-  console.log('rightRangeTypedValue', rightRangeTypedValue)
+
   // parse typed range values and determine closest ticks
   // lower should always be a smaller tick
   const ticks: {
@@ -307,7 +307,6 @@ export function useV3DerivedMintInfo(
     token1,
     tickSpaceLimits,
   ])
-  console.log(ticks)
 
   const { [Bound.LOWER]: tickLower, [Bound.UPPER]: tickUpper } = ticks || {}
 

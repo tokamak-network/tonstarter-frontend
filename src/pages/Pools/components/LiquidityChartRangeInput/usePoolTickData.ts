@@ -44,11 +44,6 @@ export function useAllV3Ticks(
       pollingInterval: ms`2m`,
     }
   )
-  console.log(data )
-  console.log(error)
-  console.log(isError)
-  console.log(isLoading)
-  console.log(isUninitialized)
 
   return {
     isLoading,

@@ -28,7 +28,7 @@ const LabelGroup = styled.g<{ visible: boolean }>`
 `
 
 const TooltipBackground = styled.rect`
-  fill: ${({ theme }) => theme.bg2};
+  fill: #F7F8FA;
 `
 
 const Tooltip = styled.text`
@@ -224,6 +224,7 @@ export const Brush = ({
                   transform={`translate(50,0), scale(${flipEastHandle ? '-1' : '1'}, 1)`}
                   visible={showLabels || hovering}
                 >
+
                   <TooltipBackground y="0" x="-30" height="30" width="60" rx="8" />
                   <Tooltip y="15" dominantBaseline="middle">
                     {brushLabelValue('e', localBrushExtent[1])}
