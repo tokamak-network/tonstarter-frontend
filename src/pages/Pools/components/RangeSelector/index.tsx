@@ -38,14 +38,12 @@ export default function RangeSelector({
   const tokenA = (currencyA ?? undefined)?.wrapped
   const tokenB = (currencyB ?? undefined)?.wrapped
   const isSorted = tokenA && tokenB && tokenA.sortsBefore(tokenB)
-  console.log(priceLower)
 
   const leftPrice = isSorted ? priceLower : priceUpper?.invert()
   const rightPrice = isSorted ? priceUpper : priceLower?.invert()
 
   return (
-    <Flex flexDir="column" ml={'20px'} pt={'23px'} gap="md">
-      
+    <Flex flexDir="column" ml={'20px'} pt={'3px'} gap="md">  
         <StepCounter
           value={ticksAtLimit[isSorted ? Bound.LOWER : Bound.UPPER] ? '0' : leftPrice?.toSignificant(5) ?? ''}
           onUserInput={onLeftRangeInput}
@@ -56,7 +54,7 @@ export default function RangeSelector({
           incrementDisabled={ticksAtLimit[isSorted ? Bound.LOWER : Bound.UPPER]}
           feeAmount={feeAmount}
           label={leftPrice ? `${currencyB?.symbol}` : '-'}
-          title={<Text>Min Price</Text>}
+          title={<Text color={'#808992'} fontWeight={'500'} fontFamily={'Roboto'}>Min Price</Text>}
           tokenA={currencyA?.symbol}
           tokenB={currencyB?.symbol}
         />
@@ -72,7 +70,7 @@ export default function RangeSelector({
           label={rightPrice ? `${currencyB?.symbol}` : '-'}
           tokenA={currencyA?.symbol}
           tokenB={currencyB?.symbol}
-          title={<Text>Max Price</Text>}
+          title={<Text color={'#808992'} fontWeight={'500'} fontFamily={'Roboto'}>Max Price</Text>}
         />
     </Flex>
   )

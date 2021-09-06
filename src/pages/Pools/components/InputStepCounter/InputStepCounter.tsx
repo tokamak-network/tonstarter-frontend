@@ -128,6 +128,7 @@ const StepCounter = ({
       flexDir="column"
       alignItems="center"
       justifyContent="center"
+      mb={3}
       pl={15}
       pr={15}>
       <Flex flexDir="column" gap="6px">
