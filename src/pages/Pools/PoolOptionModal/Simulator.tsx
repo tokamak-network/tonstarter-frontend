@@ -96,9 +96,9 @@ export const Simulator = () => {
   const [LP, setLP] = useState<number>(0);
   const {chainId} = useWeb3React();
 
-  const {TON, WTON} = TOKENS;
+  const {TOS, WTON} = TOKENS;
 
-  const tosAddr = TON.address[chainId || 1];
+  const tosAddr = TOS.address[chainId || 1];
   const wtonAddr = WTON.address[chainId || 1];
 
   // Select Mode
