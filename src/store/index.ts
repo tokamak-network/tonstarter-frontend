@@ -12,22 +12,24 @@ if (process.env.NODE_ENV !== 'production') {
   middleware = [
     ...getDefaultMiddleware({
       serializableCheck: false,
-    }),
+      thunk: true,
+    }).concat(dataApi.middleware),
     logger,
   ];
 } else {
   middleware = [
     ...getDefaultMiddleware({
       serializableCheck: false,
-    }),
+      thunk: true,
+    }).concat(dataApi.middleware),
   ];
 }
 
 const store = configureStore({
   reducer: rootReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({ thunk: true })
-      .concat(dataApi.middleware),
+  // middleware: (getDefaultMiddleware) =>
+  //   getDefaultMiddleware({ thunk: true })
+  //     .concat(dataApi.middleware),
   devTools: process.env.NODE_ENV !== 'production' ? true : false, // disable devtools on production
 });
 

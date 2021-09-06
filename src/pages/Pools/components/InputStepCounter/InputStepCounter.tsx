@@ -50,12 +50,6 @@ const StyledInput = styled(NumericalInput)<{ usePercent?: boolean }>`
   padding: 0 10px;
 `
 
-const InputTitle = styled(TYPE.small)`
-  color: ${({ theme }) => theme.text2};
-  font-size: 12px;
-  font-weight: 500;
-`
-
 const ButtonLabel = styled(TYPE.white)<{ disabled: boolean }>`
   color: ${({ theme, disabled }) => (disabled ? theme.text2 : theme.text1)} !important;
 `
@@ -159,7 +153,6 @@ const StepCounter = ({
           {!locked && (
             <SmallButton onClick={handleDecrement} disabled={decrementDisabled}>
               <ButtonLabel disabled={decrementDisabled} fontSize="12px">
-                {/* <Minus size={18} /> */}
                 <img src={minus_icon_Normal} alt="plus_icon"></img>
               </ButtonLabel>
             </SmallButton>
@@ -178,7 +171,6 @@ const StepCounter = ({
           {!locked && (
             <SmallButton onClick={handleIncrement} disabled={incrementDisabled}>
               <ButtonLabel disabled={incrementDisabled} fontSize="12px">
-                {/* <Plus size={18} /> */}
                 <img src={Plus_icon_Normal} alt="plus_icon"></img>
               </ButtonLabel>
             </SmallButton>

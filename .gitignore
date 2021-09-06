@@ -5,8 +5,6 @@
 /.pnp
 .pnp.js
 
-/src/store/data/generated.ts
-
 # testing
 /coverage
 
