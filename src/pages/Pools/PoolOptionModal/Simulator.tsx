@@ -32,6 +32,7 @@ import {
   useV3DerivedMintInfo,
   useV3MintActionHandlers,
   useRangeHopCallbacks,
+  useV3MintState,
 } from '../../../store/mint/v3/hooks';
 import {Bound} from '../components/LiquidityChartRangeInput/Bound';
 import {formatTickPrice} from '../utils/formatTickPrice';
@@ -110,16 +111,6 @@ export const Simulator = () => {
     dispatch(closeModal());
   }, [dispatch]);
 
-  useEffect(() => {
-    async function init() {
-      const swapPrice = await fetchSwapPayload();
-      if (swapPrice) {
-        setCurrentPrice(Number(swapPrice));
-      }
-    }
-    init();
-  }, []);
-
   const baseCurrency = useCurrency(tosAddr.toLowerCase());
   const currencyB = useCurrency(wtonAddr.toLowerCase());
   const quoteCurrency =
@@ -183,6 +174,31 @@ export const Simulator = () => {
     tickUpper,
     pool,
   );
+
+  const {leftRangeTypedValue, rightRangeTypedValue} = useV3MintState();
+
+  useEffect(() => {
+    async function init() {
+      const swapPrice = await fetchSwapPayload();
+      if (swapPrice) {
+        console.log('***');
+        console.log('leftRangeTypedValue');
+        console.log(leftRangeTypedValue);
+        console.log(rightRangeTypedValue);
+        setCurrentPrice(Number(swapPrice));
+        const test = new UserLiquidity(
+          baseToken === 'WTON' ? wtonValue : tosValue,
+          baseToken === 'WTON' ? tosValue : wtonValue,
+          Number(swapPrice),
+          0,
+          100,
+        );
+        const dd = test.liquidity();
+        console.log(dd);
+      }
+    }
+    init();
+  }, [wtonValue, tosValue, leftRangeTypedValue, rightRangeTypedValue]);
 
   if (!userData) {
     return null;
