@@ -140,14 +140,14 @@ export const ModalTabs = (prop: ModalTabsProp) => {
           subTitle={true}></CustomTitle>
         <Box d="flex" fontSize={13} color={fontColorGray}>
           <Text mr={2}>Earning per Hour</Text>
-          <Text>{TOS_PER_HOUR}</Text>
+          <Text mr={'2px'}>{TOS_PER_HOUR}</Text>
           <Text fontSize={11} alignSelf="flex-end">
             TOS/$
           </Text>
         </Box>
         <Box d="flex" fontSize={13} color={fontColorGray}>
           <Text mr={2}>TOS earned</Text>
-          <Text>{TOS_EARNED}</Text>
+          <Text mr={'2px'}>{TOS_EARNED}</Text>
           <Text fontSize={11} alignSelf="flex-end">
             TOS
           </Text>
