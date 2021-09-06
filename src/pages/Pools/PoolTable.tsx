@@ -34,13 +34,8 @@ import {PositionTable} from './PositionTable';
 import {fetchPositionPayload} from './utils/fetchPositionPayload';
 import {selectTransactionType} from 'store/refetch.reducer';
 import moment from 'moment';
-import { useDensityChartData } from './components/LiquidityChartRangeInput/useDensityChartData';
-import { useCurrency } from '../../hooks/Tokens';
-import { FeeAmount } from '@uniswap/v3-sdk';
-import calculator_icon from 'assets/svgs/calculator_icon.svg';
 import calculator_icon_light from 'assets/svgs/calculator_icon_light_mode.svg';
 import {useModal} from 'hooks/useModal';
-import { useV3DerivedMintInfo, useV3MintState, useV3MintActionHandlers } from '../../store/mint/v3/hooks';
 
 type PoolTableProps = {
   columns: Column[];

@@ -3,11 +3,9 @@ import { useState, useCallback, useEffect, ReactNode } from 'react'
 import { Input as NumericalInput } from '../NumericalInput'
 import styled, { keyframes } from 'styled-components/macro'
 import { TYPE } from 'theme'
-import { AutoColumn } from '../Column'
 import { ButtonStep } from '../Button'
 import { FeeAmount } from '@uniswap/v3-sdk'
 import { Text, Flex } from '@chakra-ui/react'
-import { Plus, Minus } from 'react-feather'
 import minus_icon_Normal from 'assets/svgs/minus_icon_Normal.svg';
 import Plus_icon_Normal from 'assets/svgs/Plus_icon_Normal.svg';
 
@@ -26,21 +24,9 @@ const pulse = (color: string) => keyframes`
   }
 `
 
-const InputRow = styled.div`
-  display: grid;
-
-  grid-template-columns: 30px 1fr 30px;
-`
-
 const SmallButton = styled(ButtonStep)`
   padding: 4px;
 `
-
-// const FocusedOutlineCard = styled(OutlineCard)<{ active?: boolean; pulsing?: boolean }>`
-//   border-color: ${({ active, theme }) => active && theme.blue1};
-//   padding: 12px;
-//   animation: ${({ pulsing, theme }) => pulsing && pulse(theme.blue1)} 0.8s linear;
-// `
 
 const StyledInput = styled(NumericalInput)<{ usePercent?: boolean }>`
   background-color: transparent;
@@ -153,7 +139,7 @@ const StepCounter = ({
           {!locked && (
             <SmallButton onClick={handleDecrement} disabled={decrementDisabled}>
               <ButtonLabel disabled={decrementDisabled} fontSize="12px">
-                <img src={minus_icon_Normal} alt="plus_icon"></img>
+                <img src={minus_icon_Normal} alt="plus_icon" />
               </ButtonLabel>
             </SmallButton>
           )}
@@ -171,7 +157,7 @@ const StepCounter = ({
           {!locked && (
             <SmallButton onClick={handleIncrement} disabled={incrementDisabled}>
               <ButtonLabel disabled={incrementDisabled} fontSize="12px">
-                <img src={Plus_icon_Normal} alt="plus_icon"></img>
+                <img src={Plus_icon_Normal} alt="plus_icon" />
               </ButtonLabel>
             </SmallButton>
           )}
