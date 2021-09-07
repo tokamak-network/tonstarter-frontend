@@ -14,7 +14,11 @@ import React, {FC, useState, useCallback} from 'react';
 import {AppDispatch} from 'store';
 import {openModal, ModalType} from 'store/modal.reducer';
 import {Stake} from '../staking.reducer';
-import {checkSaleClosed, fetchManageModalPayload} from '../utils';
+import {
+  checkSaleClosed,
+  checkIsUnstake,
+  fetchManageModalPayload,
+} from '../utils';
 import {LoadingComponent} from 'components/Loading';
 import {getUserBalance, getUserTonBalance} from 'client/getUserBalance';
 import {useEffect} from 'react';
@@ -58,11 +62,12 @@ export const WalletInformation: FC<WalletInformationProps> = ({
 
   useEffect(() => {
     async function checkSale() {
-      if (library) {
+      if (library && data.vault) {
         const res = await checkSaleClosed(data.vault, library);
         setSaleClosed(res);
       }
     }
+
     checkSale();
     /*eslint-disable*/
   }, [
@@ -96,11 +101,17 @@ export const WalletInformation: FC<WalletInformationProps> = ({
       : setStakeDisabled(false);
   };
 
-  const btnDisabledUnstake = () => {
+  const btnDisabledUnstake = async () => {
+    const res =
+      library && data.vault && account
+        ? await checkIsUnstake(data.contractAddress, account, library)
+        : null;
+
     return account === undefined ||
       stakeBalance === '0.00' ||
       stakeBalance === undefined ||
-      status !== 'end'
+      status !== 'end' ||
+      res
       ? setUnstakeDisabled(true)
       : setUnstakeDisabled(false);
   };

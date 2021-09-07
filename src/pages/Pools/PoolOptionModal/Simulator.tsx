@@ -19,11 +19,7 @@ import {useCallback, useEffect, useState} from 'react';
 import {CloseButton} from 'components/Modal/CloseButton';
 import {useUser} from 'hooks/useUser';
 import {selectUser} from 'store/app/user.reducer';
-import {
-  getTOSContract,
-  fetchSwapPayload,
-  UserLiquidity,
-} from '../utils/simulator';
+import {fetchSwapPayload, getEstimatedReward} from '../utils/simulator';
 import {convertToWei, convertFromRayToWei} from 'utils/number';
 import LiquidityChartRangeInput from '../components/LiquidityChartRangeInput/index';
 import {FeeAmount} from '@uniswap/v3-sdk';
@@ -32,6 +28,7 @@ import {
   useV3DerivedMintInfo,
   useV3MintActionHandlers,
   useRangeHopCallbacks,
+  useV3MintState,
 } from '../../../store/mint/v3/hooks';
 import {Bound} from '../components/LiquidityChartRangeInput/Bound';
 import {formatTickPrice} from '../utils/formatTickPrice';
@@ -84,8 +81,8 @@ export const Simulator = () => {
   const [currentPrice, setCurrentPrice] = useState<number>(0);
   const [wtonValue, setWtonValue] = useState<number>(0);
   const [tosValue, setTosValue] = useState<number>(0);
-  const [minPrice, setMinPrice] = useState<number>(0);
-  const [maxPrice, setMaxPrice] = useState<number>(0);
+  // const [minPrice, setMinPrice] = useState<number>(0);
+  // const [maxPrice, setMaxPrice] = useState<number>(0);
 
   //select value
   type Duration = 'Day' | 'Month' | 'Year';
@@ -93,7 +90,7 @@ export const Simulator = () => {
   const [selectDurationType, setSelectDurationType] = useState<Duration>('Day');
   const [durationValue, setDurationValue] = useState<number>(0);
 
-  const [LP, setLP] = useState<number>(0);
+  // const [LP, setLP] = useState<number>(0);
   const {chainId} = useWeb3React();
 
   const {TOS, WTON} = TOKENS;
@@ -104,21 +101,9 @@ export const Simulator = () => {
   // Select Mode
   const [baseToken, setBaseToken] = useState<'WTON' | 'TOS'>('WTON');
 
-  // const [estimatedReward, setEstimatedReward] = useState<number>(0);
-
   const handleCloseModal = useCallback(() => {
     dispatch(closeModal());
   }, [dispatch]);
-
-  useEffect(() => {
-    async function init() {
-      const swapPrice = await fetchSwapPayload();
-      if (swapPrice) {
-        setCurrentPrice(Number(swapPrice));
-      }
-    }
-    init();
-  }, []);
 
   const baseCurrency = useCurrency(tosAddr.toLowerCase());
   const currencyB = useCurrency(wtonAddr.toLowerCase());
@@ -184,7 +169,43 @@ export const Simulator = () => {
     pool,
   );
 
-  if (!userData) {
+  const {leftRangeTypedValue, rightRangeTypedValue} = useV3MintState();
+
+  useEffect(() => {
+    async function init() {
+      const swapPrice = await fetchSwapPayload();
+      setCurrentPrice(Number(swapPrice) || 0);
+
+      if (swapPrice) {
+        const test = await getEstimatedReward({
+          token_0: baseToken === 'WTON' ? wtonValue : tosValue,
+          token_1: baseToken === 'WTON' ? tosValue : wtonValue,
+          cPrice: Number(swapPrice),
+          lower: Number(leftRangeTypedValue),
+          upper: Number(rightRangeTypedValue),
+          unit:
+            selectDurationType === 'Month'
+              ? durationValue * 30
+              : selectDurationType === 'Year'
+              ? durationValue * 365
+              : Number(durationValue),
+        });
+        setEstimatedReward(test);
+      }
+    }
+    init();
+  }, [
+    baseToken,
+    dispatch,
+    wtonValue,
+    tosValue,
+    leftRangeTypedValue,
+    rightRangeTypedValue,
+    selectDurationType,
+    durationValue,
+  ]);
+
+  if (!userData || !userData.balance) {
     return null;
   }
 
@@ -510,7 +531,8 @@ export const Simulator = () => {
                   h={'100%'}>
                   <Title title={'Estimated Reward'} fontSize={13}></Title>
                   <Text fontSize={'1.125em'} color="black.300" fontWeight={600}>
-                    7,146,412.05 <span style={{fontSize: '12px'}}>TOS</span>
+                    {estimatedReward}{' '}
+                    <span style={{fontSize: '12px'}}>TOS</span>
                   </Text>
                 </Box>
               </Box>
