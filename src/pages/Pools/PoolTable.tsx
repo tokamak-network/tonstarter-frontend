@@ -28,14 +28,14 @@ import {selectTableType} from 'store/table.reducer';
 import {LoadingComponent} from 'components/Loading';
 import {chakra} from '@chakra-ui/react';
 import {getPoolName, checkTokenType} from '../../utils/token';
-import {GET_POSITION, GET_POSITION_BY_ID} from './GraphQL/index';
-import {useQuery} from '@apollo/client';
 import {PositionTable} from './PositionTable';
 import {fetchPositionPayload} from './utils/fetchPositionPayload';
 import {selectTransactionType} from 'store/refetch.reducer';
 import moment from 'moment';
 import calculator_icon_light from 'assets/svgs/calculator_icon_light_mode.svg';
 import {useModal} from 'hooks/useModal';
+import { usePositionByUserQuery, usePositionByContractQuery } from 'store/data/generated';
+import ms from 'ms.macro';
 
 type PoolTableProps = {
   columns: Column[];
@@ -133,21 +133,26 @@ export const PoolTable: FC<PoolTableProps> = ({
     positionPayload();
   }, [data, transactionType, blockNumber, address, library]);
 
-  const position = useQuery(GET_POSITION, {
-    variables: {address: account},
-  });
-
-  const positionWithVar = useQuery(GET_POSITION_BY_ID, {
-    variables: {id: stakingPosition},
-  });
+  const position = usePositionByUserQuery(
+    { address: account },
+    {
+      pollingInterval: ms`2m`,
+    }
+  )
+  const positionByContract = usePositionByContractQuery(
+    { id: stakingPosition },
+    {
+      pollingInterval: ms`2m`,
+    }
+  )
 
   const [positions, setPositions] = useState([]);
   useEffect(() => {
     function getPosition() {
-      if (position.data && positionWithVar.data) {
+      if (position.data && positionByContract.data) {
         position.refetch();
 
-        const withStakedPosition = positionWithVar.data.positions.concat(
+        const withStakedPosition = positionByContract.data.positions.concat(
           position.data.positions,
         );
         setPositions(withStakedPosition);
@@ -158,10 +163,10 @@ export const PoolTable: FC<PoolTableProps> = ({
   }, [
     transactionType,
     blockNumber,
-    position.loading,
-    positionWithVar.loading,
+    position.isLoading,
+    positionByContract.isLoading,
     position.data,
-    positionWithVar.data,
+    positionByContract.data,
     address,
   ]);
 

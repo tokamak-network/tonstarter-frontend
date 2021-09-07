@@ -4,11 +4,9 @@ import JSBI from 'jsbi'
 // import { usePool } from './usePools'
 import { useMemo } from 'react'
 import computeSurroundingTicks from '../../utils/computeSurroundingTicks'
-import { useAllV3TicksQuery } from 'store/data/enhanced'
+import { useAllV3TicksQuery, usePoolByUserQuery } from 'store/data/enhanced'
 import { skipToken } from '@reduxjs/toolkit/query/react'
 import ms from 'ms.macro'
-import { useQuery } from '@apollo/client';
-import { GET_TICKS, GET_BASE_POOL } from '../../GraphQL/index';
 import { DEPLOYED } from '../../../../constants/index';
 import { AllV3TicksQuery } from 'store/data/generated'
 
@@ -55,14 +53,17 @@ export function useAllV3Ticks(
 }
 
 export function usePoolActiveLiquidity(
-  currencyA: Currency | undefined, // 이런 자료형들 고려
+  currencyA: Currency | undefined,
   currencyB: Currency | undefined,
   feeAmount: FeeAmount | undefined
 ) {
   //TODO(jason): change BasePool to variables
-  const pool = useQuery(GET_BASE_POOL, {
-    variables: {address: BasePool_Address}
-  })
+  const pool = usePoolByUserQuery(
+    { address: BasePool_Address },
+    {
+      pollingInterval: ms`2m`,
+    }
+  )
   
   const activeTick = useMemo(() => getActiveTick(pool.data?.pools[0].tick, feeAmount), [pool, feeAmount])
 
@@ -105,7 +106,6 @@ export function usePoolActiveLiquidity(
         data: undefined,
       }
     }
-    // 현재 activeTick을 확인
     const activeTickProcessed: TickProcessed = {
       liquidityActive: JSBI.BigInt(pool.data?.pools[0].liquidity ?? 0),
       tickIdx: activeTick,
@@ -113,11 +113,10 @@ export function usePoolActiveLiquidity(
         Number(ticks[pivot].tickIdx) === activeTick ? JSBI.BigInt(ticks[pivot].liquidityNet) : JSBI.BigInt(0),
       price0: tickToPrice(token0, token1, activeTick).toFixed(PRICE_FIXED_DIGITS),
     }
-    // activeTick 이후의 tick
+
     const subsequentTicks = computeSurroundingTicks(token0, token1, activeTickProcessed, ticks, pivot, true)
-    // activeTick 이전의 tick
     const previousTicks = computeSurroundingTicks(token0, token1, activeTickProcessed, ticks, pivot, false)
-    // previousTick + activeTick + subsequentTick
+
     const ticksProcessed = previousTicks.concat(activeTickProcessed).concat(subsequentTicks)
     return {
       isLoading,
