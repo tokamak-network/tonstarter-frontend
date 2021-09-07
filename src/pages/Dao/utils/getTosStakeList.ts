@@ -13,6 +13,7 @@ export const getTosStakeList = async ({
   account: string;
   library: LibraryType;
 }): Promise<TosStakeList[] | []> => {
+  console.log('go');
   const {LockTOS_ADDRESS} = DEPLOYED;
   const LockTOSContract = new Contract(
     LockTOS_ADDRESS,
