@@ -47,7 +47,7 @@ export const MyStaked = () => {
       getTosBalance();
       setIsEnd(true);
       stakeList.map((stake: any) => {
-        if (stake.end === true) {
+        if (stake.end === true && stake.endTime > 0) {
           return setIsEnd(false);
         }
         return null;

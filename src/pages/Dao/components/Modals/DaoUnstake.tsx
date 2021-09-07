@@ -59,7 +59,7 @@ export const DaoUnstakeModal = (props: any) => {
     if (lockList === undefined) {
       return;
     }
-    const unstakedList = lockList.filter((e: any) => e.end === true);
+    const unstakedList = lockList.filter((e: any) => e.end === true && e.endTime > 0);
     const unstakedBalance = unstakedList.reduce((acc: any, cur: any) => {
       return Number(acc) + Number(cur.lockedBalance);
     }, 0);
