@@ -19,11 +19,7 @@ import {useCallback, useEffect, useState} from 'react';
 import {CloseButton} from 'components/Modal/CloseButton';
 import {useUser} from 'hooks/useUser';
 import {selectUser} from 'store/app/user.reducer';
-import {
-  getTOSContract,
-  fetchSwapPayload,
-  UserLiquidity,
-} from '../utils/simulator';
+import {fetchSwapPayload, getEstimatedReward} from '../utils/simulator';
 import {convertToWei, convertFromRayToWei} from 'utils/number';
 import LiquidityChartRangeInput from '../components/LiquidityChartRangeInput/index';
 import {FeeAmount} from '@uniswap/v3-sdk';
@@ -85,8 +81,8 @@ export const Simulator = () => {
   const [currentPrice, setCurrentPrice] = useState<number>(0);
   const [wtonValue, setWtonValue] = useState<number>(0);
   const [tosValue, setTosValue] = useState<number>(0);
-  const [minPrice, setMinPrice] = useState<number>(0);
-  const [maxPrice, setMaxPrice] = useState<number>(0);
+  // const [minPrice, setMinPrice] = useState<number>(0);
+  // const [maxPrice, setMaxPrice] = useState<number>(0);
 
   //select value
   type Duration = 'Day' | 'Month' | 'Year';
@@ -94,7 +90,7 @@ export const Simulator = () => {
   const [selectDurationType, setSelectDurationType] = useState<Duration>('Day');
   const [durationValue, setDurationValue] = useState<number>(0);
 
-  const [LP, setLP] = useState<number>(0);
+  // const [LP, setLP] = useState<number>(0);
   const {chainId} = useWeb3React();
 
   const {TOS, WTON} = TOKENS;
@@ -104,8 +100,6 @@ export const Simulator = () => {
 
   // Select Mode
   const [baseToken, setBaseToken] = useState<'WTON' | 'TOS'>('WTON');
-
-  // const [estimatedReward, setEstimatedReward] = useState<number>(0);
 
   const handleCloseModal = useCallback(() => {
     dispatch(closeModal());
@@ -180,27 +174,38 @@ export const Simulator = () => {
   useEffect(() => {
     async function init() {
       const swapPrice = await fetchSwapPayload();
+      setCurrentPrice(Number(swapPrice) || 0);
+
       if (swapPrice) {
-        console.log('***');
-        console.log('leftRangeTypedValue');
-        console.log(leftRangeTypedValue);
-        console.log(rightRangeTypedValue);
-        setCurrentPrice(Number(swapPrice));
-        const test = new UserLiquidity(
-          baseToken === 'WTON' ? wtonValue : tosValue,
-          baseToken === 'WTON' ? tosValue : wtonValue,
-          Number(swapPrice),
-          0,
-          100,
-        );
-        const dd = test.liquidity();
-        console.log(dd);
+        const test = await getEstimatedReward({
+          token_0: baseToken === 'WTON' ? wtonValue : tosValue,
+          token_1: baseToken === 'WTON' ? tosValue : wtonValue,
+          cPrice: Number(swapPrice),
+          lower: Number(leftRangeTypedValue),
+          upper: Number(rightRangeTypedValue),
+          unit:
+            selectDurationType === 'Month'
+              ? durationValue * 30
+              : selectDurationType === 'Year'
+              ? durationValue * 365
+              : Number(durationValue),
+        });
+        setEstimatedReward(test);
       }
     }
     init();
-  }, [wtonValue, tosValue, leftRangeTypedValue, rightRangeTypedValue]);
+  }, [
+    baseToken,
+    dispatch,
+    wtonValue,
+    tosValue,
+    leftRangeTypedValue,
+    rightRangeTypedValue,
+    selectDurationType,
+    durationValue,
+  ]);
 
-  if (!userData) {
+  if (!userData || !userData.balance) {
     return null;
   }
 
@@ -526,7 +531,8 @@ export const Simulator = () => {
                   h={'100%'}>
                   <Title title={'Estimated Reward'} fontSize={13}></Title>
                   <Text fontSize={'1.125em'} color="black.300" fontWeight={600}>
-                    7,146,412.05 <span style={{fontSize: '12px'}}>TOS</span>
+                    {estimatedReward}{' '}
+                    <span style={{fontSize: '12px'}}>TOS</span>
                   </Text>
                 </Box>
               </Box>
