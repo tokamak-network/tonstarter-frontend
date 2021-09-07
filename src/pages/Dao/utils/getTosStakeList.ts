@@ -20,10 +20,7 @@ export const getTosStakeList = async ({
     LockTOSABI.abi,
     library,
   );
-  console.log('**LockTOSContract**');
-  console.log(LockTOSContract);
   const tosStakeList = await LockTOSContract.activeLocksOf(account);
-  console.log(tosStakeList);
 
   if (tosStakeList.length === 0) {
     return [];
@@ -32,8 +29,7 @@ export const getTosStakeList = async ({
   const nowTime = moment().unix();
 
   const res: TosStakeList[] = await Promise.all(
-    tosStakeList.map(async (stake: any, index: number) => {
-      const lockId = stake.id.toString();
+    tosStakeList.map(async (lockId: any, index: number) => {
       const lockedBalance = await LockTOSContract.lockedBalances(
         account,
         lockId,
@@ -48,9 +44,6 @@ export const getTosStakeList = async ({
       const periodDays = unixEndTime.diff(unixStartTime, 'days');
       const end = endTime <= nowTime;
       const endDate = moment(unixEndTime).format('MMM DD, YYYY');
-      const isBoosted =
-        lockedBalance.boostValue.toString() === '2' ? true : false;
-
       return {
         lockId,
         periodWeeks,
@@ -60,7 +53,6 @@ export const getTosStakeList = async ({
         startTime,
         endTime,
         endDate,
-        isBoosted,
       };
     }),
   );
