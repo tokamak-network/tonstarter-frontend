@@ -13,14 +13,11 @@ import {ClaimOptionModal, Simulator} from './PoolOptionModal';
 import {PoolTable} from './PoolTable';
 import {PageHeader} from 'components/PageHeader';
 // import {LoadingComponent} from 'components/Loading';
-import {useQuery} from '@apollo/client';
-import {
-  // GET_TOS_POOL,
-  GET_BASE_POOL,
-} from './GraphQL/index';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {DEPLOYED} from '../../constants/index';
 import {useUser} from '../../hooks/useUser';
+import {usePoolByUserQuery} from 'store/data/enhanced';
+import ms from 'ms.macro'
 
 const {
   // TOS_ADDRESS,
@@ -68,11 +65,12 @@ export const Pools = () => {
     ],
     [],
   );
-
-  const basePool = useQuery(GET_BASE_POOL, {
-    variables: {address: BasePool_Address},
-  });
-  // console.log(basePool.data)
+  const { isLoading, isError, error, isUninitialized, data } = usePoolByUserQuery(
+    { address: BasePool_Address?.toLowerCase() },
+    {
+      pollingInterval: ms`2m`,
+    }
+  )
 
   // const tosPool = useQuery(GET_TOS_POOL, {
   //   variables: {address: [TOS_ADDRESS.toLowerCase()]}
@@ -81,9 +79,9 @@ export const Pools = () => {
   const [pool, setPool] = useState([]);
   useEffect(() => {
     function getPool() {
-      // const poolArr = basePool.loading || tosPool.loading ? [] : basePool.data.pools.concat(tosPool.data.pools)
-      // const poolArr = tosPool.loading ? [] : tosPool.data.pools
-      const poolArr = basePool.loading ? [] : basePool.data.pools;
+      // const poolArr = basePool.loading ? [] : basePool.data.pools;
+
+      const poolArr = isLoading ? [] : data.pools;
       setPool(poolArr);
     }
     getPool();
@@ -91,12 +89,11 @@ export const Pools = () => {
     account,
     transactionType,
     blockNumber,
-    basePool.loading,
-    // tosPool.loading,
-    basePool.error,
-    // tosPool.error,
-    basePool.data,
-    // tosPool.data,
+    isLoading,
+    isError,
+    isUninitialized,
+    error,
+    data
   ]);
 
   return (
@@ -110,13 +107,13 @@ export const Pools = () => {
           />
         </Box>
         <Box fontFamily={theme.fonts.roboto}>
-          {basePool.loading ? (
+          {isLoading ? (
             ''
           ) : (
             <PoolTable
               data={pool}
               columns={columns}
-              isLoading={basePool.loading}
+              isLoading={isLoading}
               address={account}
               library={library}
             />
