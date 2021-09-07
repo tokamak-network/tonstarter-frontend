@@ -1,7 +1,8 @@
-import React, {ReactNode, useCallback, useMemo} from 'react';
-import {Currency, Price, Token} from '@uniswap/sdk-core';
-import {BarChart2, Inbox, CloudOff} from 'react-feather';
-import {AutoColumn, ColumnCenter} from '../Column';
+import React, { ReactNode, useCallback, useMemo } from 'react'
+import { Currency, Price, Token } from '@uniswap/sdk-core'
+import { BarChart2, Inbox, CloudOff } from 'react-feather'
+import { AutoColumn, ColumnCenter } from '../Column'
+import Loader from '../Loader'
 // import { format } from 'd3'
 import {format} from 'd3';
 import {Bound} from './Bound';
@@ -37,6 +38,7 @@ const ZOOM_LEVELS: Record<FeeAmount, ZoomLevels> = {
 };
 
 const ChartWrapper = styled.div`
+  margin-top: 10px;
   position: relative;
 
   justify-content: center;
@@ -48,7 +50,7 @@ function InfoBox({message, icon}: {message?: ReactNode; icon: ReactNode}) {
     <ColumnCenter style={{height: '100%', justifyContent: 'center'}}>
       {icon}
       {message && (
-        <Heading padding={10} marginTop="20px" textAlign="center">
+        <Heading padding={10} textAlign="center">
           {message}
         </Heading>
       )}
@@ -79,13 +81,8 @@ export default function LiquidityChartRangeInput({
   onRightRangeInput: (typedValue: string) => void;
   interactive: boolean;
 }) {
-  const isSorted =
-    currencyA &&
-    currencyB &&
-    currencyA?.wrapped.sortsBefore(currencyB?.wrapped);
-  console.log(currencyA);
-  console.log(currencyB);
-  const {error, formattedData} = useDensityChartData({
+  const isSorted = currencyA && currencyB && currencyA?.wrapped.sortsBefore(currencyB?.wrapped)
+  const { isLoading, isUninitialized, isError, error, formattedData } = useDensityChartData({
     currencyA,
     currencyB,
     feeAmount,
@@ -162,14 +159,24 @@ export default function LiquidityChartRangeInput({
         ? `${format(Math.abs(percent) > 1 ? '.2~s' : '.2~f')(percent)}%`
         : '';
     },
-    [isSorted, price, ticksAtLimit],
-  );
-  console.log(error);
-  console.log(price);
+    [isSorted, price, ticksAtLimit]
+  )
 
   return (
-    <AutoColumn gap="md" style={{minHeight: '200px'}}>
-      {!formattedData || formattedData === [] || !price ? (
+    <AutoColumn gap="md" style={{ minHeight: '200px' }}>
+      {isUninitialized ? (
+        <InfoBox
+          message={<Text>Your position will appear here.</Text>}
+          icon={<Inbox size={56} stroke={theme.text1} />}
+        />
+      ) : isLoading ? (
+        <InfoBox icon={<Loader size="40px" stroke={theme.text4} />} />
+      ) : isError ? (
+        <InfoBox
+          message={<Text>Liquidity data not available.</Text>}
+          icon={<CloudOff size={56} stroke={theme.text4} />}
+        />
+      ) : !formattedData || formattedData === [] || !price ? (
         <InfoBox
           message={<Text>There is no liquidity data.</Text>}
           icon={<BarChart2 size={56} stroke={theme.text4} />}
@@ -182,7 +189,7 @@ export default function LiquidityChartRangeInput({
             margins={{top: 10, right: 2, bottom: 20, left: 0}}
             styles={{
               area: {
-                selection: theme.blue1,
+                selection: '#0068FC',
               },
               brush: {
                 handle: {

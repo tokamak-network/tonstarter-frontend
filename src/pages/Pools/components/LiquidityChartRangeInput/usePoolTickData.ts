@@ -4,12 +4,11 @@ import JSBI from 'jsbi'
 // import { usePool } from './usePools'
 import { useMemo } from 'react'
 import computeSurroundingTicks from '../../utils/computeSurroundingTicks'
-// import { useAllV3TicksQuery } from 'state/data/enhanced'
-
-// import ms from 'ms.macro'
-import { useQuery } from '@apollo/client';
-import { GET_TICKS, GET_BASE_POOL } from '../../GraphQL/index';
+import { useAllV3TicksQuery, usePoolByUserQuery } from 'store/data/enhanced'
+import { skipToken } from '@reduxjs/toolkit/query/react'
+import ms from 'ms.macro'
 import { DEPLOYED } from '../../../../constants/index';
+import { AllV3TicksQuery } from 'store/data/generated'
 
 const {
   BasePool_Address
@@ -36,41 +35,39 @@ export function useAllV3Ticks(
   const poolAddress =
     currencyA && currencyB && feeAmount ? Pool.getAddress(currencyA?.wrapped, currencyB?.wrapped, feeAmount) : undefined
   //TODO(judo): determine if pagination is necessary for this query
-  const { loading, error, data } = useQuery(GET_TICKS, {
-    variables: {
-      poolAddress: poolAddress?.toLowerCase(),
-      skip: 0
+
+  const { isLoading, isError, error, isUninitialized, data } = useAllV3TicksQuery(
+    poolAddress ? { poolAddress: poolAddress?.toLowerCase(), skip: 0 } : skipToken,
+    {
+      pollingInterval: ms`2m`,
     }
-  })
+  )
 
   return {
-    loading,
+    isLoading,
+    isUninitialized,
+    isError,
     error,
-    ticks: data?.ticks as any,
+    ticks: data?.ticks as AllV3TicksQuery['ticks'],
   }
 }
 
 export function usePoolActiveLiquidity(
-  currencyA: Currency | undefined, // 이런 자료형들 고려
+  currencyA: Currency | undefined,
   currencyB: Currency | undefined,
   feeAmount: FeeAmount | undefined
-): {
-  error: any
-  activeTick: number | undefined
-  data: TickProcessed[] | undefined
-} {
+) {
   //TODO(jason): change BasePool to variables
-  const pool = useQuery(GET_BASE_POOL, {
-    variables: {address: BasePool_Address}
-  })
-
-  // console.log(pool[1]?.tickCurrent)
-  // Find nearest valid tick for pool in case tick is not initialized.
-  // graphql에서 pool의 tick 사용
+  const pool = usePoolByUserQuery(
+    { address: BasePool_Address },
+    {
+      pollingInterval: ms`2m`,
+    }
+  )
   
   const activeTick = useMemo(() => getActiveTick(pool.data?.pools[0].tick, feeAmount), [pool, feeAmount])
 
-  const { loading, error, ticks } = useAllV3Ticks(currencyA, currencyB, feeAmount)
+  const { isLoading, isUninitialized, isError, error, ticks } = useAllV3Ticks(currencyA, currencyB, feeAmount)
   
   return useMemo(() => {
     if (
@@ -78,9 +75,14 @@ export function usePoolActiveLiquidity(
       !currencyB ||
       activeTick === undefined ||
       !ticks ||
-      ticks.length === 0
+      ticks.length === 0 ||
+      isLoading ||
+      isUninitialized
     ) {
       return {
+        isLoading: isLoading,
+        isUninitialized,
+        isError,
         error,
         activeTick,
         data: undefined,
@@ -104,7 +106,6 @@ export function usePoolActiveLiquidity(
         data: undefined,
       }
     }
-    // 현재 activeTick을 확인
     const activeTickProcessed: TickProcessed = {
       liquidityActive: JSBI.BigInt(pool.data?.pools[0].liquidity ?? 0),
       tickIdx: activeTick,
@@ -112,14 +113,15 @@ export function usePoolActiveLiquidity(
         Number(ticks[pivot].tickIdx) === activeTick ? JSBI.BigInt(ticks[pivot].liquidityNet) : JSBI.BigInt(0),
       price0: tickToPrice(token0, token1, activeTick).toFixed(PRICE_FIXED_DIGITS),
     }
-    // activeTick 이후의 tick
+
     const subsequentTicks = computeSurroundingTicks(token0, token1, activeTickProcessed, ticks, pivot, true)
-    // activeTick 이전의 tick
     const previousTicks = computeSurroundingTicks(token0, token1, activeTickProcessed, ticks, pivot, false)
-    // previousTick + activeTick + subsequentTick
+
     const ticksProcessed = previousTicks.concat(activeTickProcessed).concat(subsequentTicks)
     return {
-      loading,
+      isLoading,
+      isUninitialized,
+      isError: isError,
       error,
       activeTick,
       data: ticksProcessed,

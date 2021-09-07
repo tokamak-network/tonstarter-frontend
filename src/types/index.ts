@@ -1,5 +1,3 @@
-import {any} from 'prop-types';
-
 export * from 'types/wallet';
 
 export type StakingTableProps = {

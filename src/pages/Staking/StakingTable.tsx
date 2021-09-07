@@ -141,12 +141,12 @@ export const StakingTable: FC<StakingTableProps> = ({
         loop = loop - 1;
         if (loop === 0) {
           setTimeout(() => {
-            focusTarget.current[
+            focusTarget?.current[
               index - Math.floor(index / 10) * 10
-            ].scrollIntoView({
+            ]?.scrollIntoView({
               block: 'start',
             });
-          }, 200);
+          }, 100);
         }
       }
     }
@@ -205,7 +205,7 @@ export const StakingTable: FC<StakingTableProps> = ({
   const clickOpen = (contractAddress: string, index: number) => {
     setIsOpen(contractAddress);
     setTimeout(() => {
-      focusTarget.current[index].scrollIntoView({
+      focusTarget?.current[index]?.scrollIntoView({
         behavior: 'smooth',
         block: 'start',
       });

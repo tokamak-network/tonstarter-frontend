@@ -125,6 +125,7 @@ export function useV3DerivedMintInfo(
   feeAmount?: FeeAmount,
   baseCurrency?: Currency,
   // override for existing position
+  existingPosition?: Position
 ): {
   pool?: Pool | null
   // poolState: PoolState
@@ -278,14 +279,18 @@ export function useV3DerivedMintInfo(
   } = useMemo(() => {
     return {
       [Bound.LOWER]:
-        (invertPrice && typeof rightRangeTypedValue === 'boolean') ||
+        typeof existingPosition?.tickLower === 'number'
+          ? existingPosition.tickLower
+          : (invertPrice && typeof rightRangeTypedValue === 'boolean') ||
             (!invertPrice && typeof leftRangeTypedValue === 'boolean')
           ? tickSpaceLimits[Bound.LOWER]
           : invertPrice
           ? tryParseTick(token1, token0, feeAmount, rightRangeTypedValue.toString())
           : tryParseTick(token0, token1, feeAmount, leftRangeTypedValue.toString()),
       [Bound.UPPER]:
-        (!invertPrice && typeof rightRangeTypedValue === 'boolean') ||
+        typeof existingPosition?.tickUpper === 'number'
+          ? existingPosition.tickUpper
+          : (!invertPrice && typeof rightRangeTypedValue === 'boolean') ||
             (invertPrice && typeof leftRangeTypedValue === 'boolean')
           ? tickSpaceLimits[Bound.UPPER]
           : invertPrice
@@ -293,6 +298,7 @@ export function useV3DerivedMintInfo(
           : tryParseTick(token0, token1, feeAmount, rightRangeTypedValue.toString()),
     }
   }, [
+    existingPosition,
     feeAmount,
     invertPrice,
     leftRangeTypedValue,
@@ -301,7 +307,6 @@ export function useV3DerivedMintInfo(
     token1,
     tickSpaceLimits,
   ])
-  console.log(ticks)
 
   const { [Bound.LOWER]: tickLower, [Bound.UPPER]: tickUpper } = ticks || {}
 

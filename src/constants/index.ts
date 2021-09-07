@@ -2,6 +2,7 @@ import {injected} from 'connectors';
 import {WalletInfo} from 'types';
 import {DEPLOYED_TYPE} from './type';
 import {ethers} from 'ethers';
+import {tokens} from './token';
 
 export const REACT_APP_MODE = process.env.REACT_APP_MODE as string;
 export const REACT_APP_MAINNET_INFURA_API = process.env
@@ -25,6 +26,8 @@ export const fetchStakeURL = `${API_SERVER}/stakecontracts?chainId=${DEFAULT_NET
 export const fetchValutURL = `${API_SERVER}/vaults?chainId=${DEFAULT_NETWORK}`;
 export const permitTOSAddress =
   REACT_APP_MODE === 'DEV' ? '0x865264b30eb29A2978b9503B8AfE2A2DDa33eD7E' : '';
+
+export const TOKENS = tokens;
 
 //Old Ver
 // const MAINNET_DEPLOYED = {

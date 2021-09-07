@@ -3,6 +3,7 @@ import {useDispatch} from 'react-redux';
 import {ThunkAction} from 'redux-thunk';
 import logger from 'redux-logger';
 import rootReducer, {RootState} from './reducers';
+import { api as dataApi } from './data/slice'
 
 let middleware: any[] = [];
 
@@ -11,6 +12,7 @@ if (process.env.NODE_ENV !== 'production') {
   middleware = [
     ...getDefaultMiddleware({
       serializableCheck: false,
+      thunk: true,
     }),
     logger,
   ];
@@ -18,6 +20,7 @@ if (process.env.NODE_ENV !== 'production') {
   middleware = [
     ...getDefaultMiddleware({
       serializableCheck: false,
+      thunk: true,
     }),
   ];
 }

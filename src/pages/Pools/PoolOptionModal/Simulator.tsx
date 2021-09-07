@@ -19,11 +19,7 @@ import {useCallback, useEffect, useState} from 'react';
 import {CloseButton} from 'components/Modal/CloseButton';
 import {useUser} from 'hooks/useUser';
 import {selectUser} from 'store/app/user.reducer';
-import {
-  getTOSContract,
-  fetchSwapPayload,
-  UserLiquidity,
-} from '../utils/simulator';
+import {fetchSwapPayload, getEstimatedReward} from '../utils/simulator';
 import {convertToWei, convertFromRayToWei} from 'utils/number';
 import LiquidityChartRangeInput from '../components/LiquidityChartRangeInput/index';
 import {FeeAmount} from '@uniswap/v3-sdk';
@@ -31,12 +27,17 @@ import {useCurrency} from '../../../hooks/Tokens';
 import {
   useV3DerivedMintInfo,
   useV3MintActionHandlers,
+  useRangeHopCallbacks,
+  useV3MintState,
 } from '../../../store/mint/v3/hooks';
 import {Bound} from '../components/LiquidityChartRangeInput/Bound';
 import {formatTickPrice} from '../utils/formatTickPrice';
 import minus_icon_Normal from 'assets/svgs/minus_icon_Normal.svg';
 import Plus_icon_Normal from 'assets/svgs/Plus_icon_Normal.svg';
 import {CustomInput, CustomSelectBox} from 'components/Basic/index';
+import {TOKENS} from 'constants/index';
+import {useWeb3React} from '@web3-react/core';
+import RangeSelector from '../components/RangeSelector/index';
 
 const themeDesign = {
   border: {
@@ -80,8 +81,8 @@ export const Simulator = () => {
   const [currentPrice, setCurrentPrice] = useState<number>(0);
   const [wtonValue, setWtonValue] = useState<number>(0);
   const [tosValue, setTosValue] = useState<number>(0);
-  const [minPrice, setMinPrice] = useState<number>(0);
-  const [maxPrice, setMaxPrice] = useState<number>(0);
+  // const [minPrice, setMinPrice] = useState<number>(0);
+  // const [maxPrice, setMaxPrice] = useState<number>(0);
 
   //select value
   type Duration = 'Day' | 'Month' | 'Year';
@@ -89,35 +90,20 @@ export const Simulator = () => {
   const [selectDurationType, setSelectDurationType] = useState<Duration>('Day');
   const [durationValue, setDurationValue] = useState<number>(0);
 
-  const [LP, setLP] = useState<number>(0);
+  // const [LP, setLP] = useState<number>(0);
+  const {chainId} = useWeb3React();
+
+  const {TOS, WTON} = TOKENS;
+
+  const tosAddr = TOS.address[chainId || 1];
+  const wtonAddr = WTON.address[chainId || 1];
 
   // Select Mode
   const [baseToken, setBaseToken] = useState<'WTON' | 'TOS'>('WTON');
 
-  // const [estimatedReward, setEstimatedReward] = useState<number>(0);
-
   const handleCloseModal = useCallback(() => {
     dispatch(closeModal());
   }, [dispatch]);
-
-  useEffect(() => {
-    async function init() {
-      const swapPrice = await fetchSwapPayload();
-      if (swapPrice) {
-        setCurrentPrice(Number(swapPrice));
-      }
-    }
-    init();
-  }, []);
-
-  // const currencyA = useCurrency(data[0]?.token0.id)
-  // const currencyB = useCurrency(data[0]?.token1.id)
-
-  // const tosAddr = '0x409c4D8cd5d2924b9bc5509230d16a61289c8153';
-  // const wtonAddr = '0xc4A11aaf6ea915Ed7Ac194161d2fC9384F15bff2';
-
-  const tosAddr = '0x73a54e5c054aa64c1ae7373c2b5474d8afea08bd';
-  const wtonAddr = '0x709bef48982bbfd6f2d4be24660832665f53406c';
 
   const baseCurrency = useCurrency(tosAddr.toLowerCase());
   const currencyB = useCurrency(wtonAddr.toLowerCase());
@@ -154,7 +140,7 @@ export const Simulator = () => {
     quoteCurrency ?? undefined,
     feeAmount,
     baseCurrency ?? undefined,
-    // existingPosition
+    undefined,
   );
 
   const {
@@ -165,15 +151,63 @@ export const Simulator = () => {
     onStartPriceInput,
   } = useV3MintActionHandlers(noLiquidity);
 
+  const {[Bound.LOWER]: tickLower, [Bound.UPPER]: tickUpper} = ticks;
   const {[Bound.LOWER]: priceLower, [Bound.UPPER]: priceUpper} = pricesAtTicks;
 
-  if (!userData) {
+  const {
+    getDecrementLower,
+    getIncrementLower,
+    getDecrementUpper,
+    getIncrementUpper,
+    getSetFullRange,
+  } = useRangeHopCallbacks(
+    baseCurrency ?? undefined,
+    quoteCurrency ?? undefined,
+    feeAmount,
+    tickLower,
+    tickUpper,
+    pool,
+  );
+
+  const {leftRangeTypedValue, rightRangeTypedValue} = useV3MintState();
+
+  useEffect(() => {
+    async function init() {
+      const swapPrice = await fetchSwapPayload();
+      setCurrentPrice(Number(swapPrice) || 0);
+
+      if (swapPrice) {
+        const test = await getEstimatedReward({
+          token_0: baseToken === 'WTON' ? wtonValue : tosValue,
+          token_1: baseToken === 'WTON' ? tosValue : wtonValue,
+          cPrice: Number(swapPrice),
+          lower: Number(leftRangeTypedValue),
+          upper: Number(rightRangeTypedValue),
+          unit:
+            selectDurationType === 'Month'
+              ? durationValue * 30
+              : selectDurationType === 'Year'
+              ? durationValue * 365
+              : Number(durationValue),
+        });
+        setEstimatedReward(test);
+      }
+    }
+    init();
+  }, [
+    baseToken,
+    dispatch,
+    wtonValue,
+    tosValue,
+    leftRangeTypedValue,
+    rightRangeTypedValue,
+    selectDurationType,
+    durationValue,
+  ]);
+
+  if (!userData || !userData.balance) {
     return null;
   }
-
-  const a = price
-    ? parseFloat((invertPrice ? price.invert() : price).toSignificant(8))
-    : undefined;
 
   const {
     balance: {wton, tos},
@@ -308,7 +342,7 @@ export const Simulator = () => {
                 />
               </Box>
               <Flex flexDir="column" ml={'20px'} pt={'23px'}>
-                <Flex
+                {/* <Flex
                   w={230}
                   h={'78px'}
                   border={borderLineStyle}
@@ -342,8 +376,22 @@ export const Simulator = () => {
                       <img src={Plus_icon_Normal} alt="plus_icon"></img>
                     </Flex>
                   </Flex>
-                </Flex>
-                <Flex
+                </Flex> */}
+                <RangeSelector
+                  priceLower={priceLower}
+                  priceUpper={priceUpper}
+                  getDecrementLower={getDecrementLower}
+                  getIncrementLower={getIncrementLower}
+                  getDecrementUpper={getDecrementUpper}
+                  getIncrementUpper={getIncrementUpper}
+                  onLeftRangeInput={onLeftRangeInput}
+                  onRightRangeInput={onRightRangeInput}
+                  currencyA={baseCurrency}
+                  currencyB={quoteCurrency}
+                  feeAmount={feeAmount}
+                  ticksAtLimit={ticksAtLimit}
+                />
+                {/* <Flex
                   w={230}
                   h={'78px'}
                   border={borderLineStyle}
@@ -376,7 +424,7 @@ export const Simulator = () => {
                       <img src={Plus_icon_Normal} alt="plus_icon"></img>
                     </Flex>
                   </Flex>
-                </Flex>
+                </Flex> */}
               </Flex>
             </Flex>
           </Flex>
@@ -483,7 +531,8 @@ export const Simulator = () => {
                   h={'100%'}>
                   <Title title={'Estimated Reward'} fontSize={13}></Title>
                   <Text fontSize={'1.125em'} color="black.300" fontWeight={600}>
-                    7,146,412.05 <span style={{fontSize: '12px'}}>TOS</span>
+                    {estimatedReward}{' '}
+                    <span style={{fontSize: '12px'}}>TOS</span>
                   </Text>
                 </Box>
               </Box>

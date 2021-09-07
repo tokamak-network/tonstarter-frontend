@@ -14,6 +14,7 @@ type StkaeTOS = {
 };
 
 export const stakeTOS = async (args: StkaeTOS) => {
+  console.log(args);
   const {account, library, amount, period} = args;
   const {LockTOS_ADDRESS} = DEPLOYED;
   const LockTOSContract = new Contract(

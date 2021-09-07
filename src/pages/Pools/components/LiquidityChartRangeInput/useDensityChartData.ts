@@ -20,7 +20,7 @@ export function useDensityChartData({
   currencyB: Currency | undefined
   feeAmount: FeeAmount | undefined
 }) {
-  const { error, data } = usePoolActiveLiquidity(currencyA, currencyB, feeAmount)
+  const { isLoading, isUninitialized, isError, error, data } = usePoolActiveLiquidity(currencyA, currencyB, feeAmount)
   const formatData = useCallback(() => {
     if (!data?.length) {
       return undefined
@@ -34,7 +34,6 @@ export function useDensityChartData({
         activeLiquidity: parseFloat(t.liquidityActive.toString()),
         price0: parseFloat(t.price0),
       }
-      // console.log(parseFloat(t.liquidityActive.toString()), parseFloat(t.price0))
 
       if (chartEntry.activeLiquidity > 0) {
         newData.push(chartEntry)
@@ -46,8 +45,11 @@ export function useDensityChartData({
 
   return useMemo(() => {
     return {
+      isLoading,
+      isUninitialized,
+      isError,
       error,
-      formattedData: formatData(),
+      formattedData: !isLoading && !isUninitialized ? formatData() : undefined,
     }
-  }, [error, formatData])
+  }, [isLoading, isUninitialized, isError, error, formatData])
 }
