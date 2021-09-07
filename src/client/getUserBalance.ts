@@ -57,16 +57,7 @@ export const getUserTOSStaked = async ({account, library}: any) => {
     LockTOSABI.abi,
     library,
   );
-  const tosStakeList = await LockTOSContract.alivelocksOf(account);
-
-  if (tosStakeList.length === 0) {
-    return '0.00';
-  }
-
-  const res = tosStakeList.reduce((acc: any, cur: any) => {
-    return cur.amount.add(acc);
-  }, 0);
-
+  const res = await LockTOSContract.totalLockedAmountOf(account);
   return convertNumber({amount: res.toString(), localeString: true});
 };
 
