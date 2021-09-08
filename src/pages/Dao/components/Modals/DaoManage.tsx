@@ -81,10 +81,7 @@ const themeDesign = {
 
 export const DaoManageModal = () => {
   const {data} = useAppSelector(selectModalType);
-  const {data: userData} = useAppSelector(selectUser);
-  const {
-    balance: {tos},
-  } = userData;
+
   const {stakeList} = data.data;
   const [edit, setEdit] = useState(false);
   const [selectLockId, setSelectLockId] = useState('');
@@ -143,6 +140,14 @@ export const DaoManageModal = () => {
     } = e;
     setTest(value);
   };
+
+  const {data: userData} = useAppSelector(selectUser);
+  if (!userData || !userData.balance.tos) {
+    return null;
+  }
+  const {
+    balance: {tos},
+  } = userData;
 
   const MainScreen = () => {
     return (

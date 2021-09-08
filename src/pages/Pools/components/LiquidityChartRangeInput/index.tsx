@@ -1,8 +1,8 @@
-import React, { ReactNode, useCallback, useMemo } from 'react'
-import { Currency, Price, Token } from '@uniswap/sdk-core'
-import { BarChart2, Inbox, CloudOff } from 'react-feather'
-import { AutoColumn, ColumnCenter } from '../Column'
-import Loader from '../Loader'
+import React, {ReactNode, useCallback, useMemo} from 'react';
+import {Currency, Price, Token} from '@uniswap/sdk-core';
+import {BarChart2, Inbox, CloudOff} from 'react-feather';
+import {AutoColumn, ColumnCenter} from '../Column';
+import Loader from '../Loader';
 // import { format } from 'd3'
 import {format} from 'd3';
 import {Bound} from './Bound';
@@ -14,7 +14,7 @@ import {ZoomLevels} from './types';
 import styled from 'styled-components/macro';
 import {useDensityChartData} from './useDensityChartData';
 import {batch} from 'react-redux';
-import {useTheme, Flex, Heading, Text} from '@chakra-ui/react';
+import {useTheme, Heading, Text} from '@chakra-ui/react';
 
 const ZOOM_LEVELS: Record<FeeAmount, ZoomLevels> = {
   [FeeAmount.LOW]: {
@@ -81,12 +81,16 @@ export default function LiquidityChartRangeInput({
   onRightRangeInput: (typedValue: string) => void;
   interactive: boolean;
 }) {
-  const isSorted = currencyA && currencyB && currencyA?.wrapped.sortsBefore(currencyB?.wrapped)
-  const { isLoading, isUninitialized, isError, error, formattedData } = useDensityChartData({
-    currencyA,
-    currencyB,
-    feeAmount,
-  });
+  const isSorted =
+    currencyA &&
+    currencyB &&
+    currencyA?.wrapped.sortsBefore(currencyB?.wrapped);
+  const {isLoading, isUninitialized, isError, formattedData} =
+    useDensityChartData({
+      currencyA,
+      currencyB,
+      feeAmount,
+    });
   const theme = useTheme();
 
   const onBrushDomainChangeEnded = useCallback(
@@ -159,11 +163,11 @@ export default function LiquidityChartRangeInput({
         ? `${format(Math.abs(percent) > 1 ? '.2~s' : '.2~f')(percent)}%`
         : '';
     },
-    [isSorted, price, ticksAtLimit]
-  )
+    [isSorted, price, ticksAtLimit],
+  );
 
   return (
-    <AutoColumn gap="md" style={{ minHeight: '200px' }}>
+    <AutoColumn gap="md" style={{minHeight: '200px'}}>
       {isUninitialized ? (
         <InfoBox
           message={<Text>Your position will appear here.</Text>}

@@ -1,9 +1,8 @@
 import {DEPLOYED} from 'constants/index';
 import * as LockTOSABI from 'services/abis/LockTOS.json';
-import * as TOSABI from 'services/abis/TOS.json';
-import {getContract, getSigner} from 'utils/contract';
+import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
-import store from 'store';
+// import store from 'store';
 import {convertToWei} from 'utils/number';
 import {setTx} from 'application';
 
