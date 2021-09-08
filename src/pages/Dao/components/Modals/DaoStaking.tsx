@@ -34,7 +34,6 @@ import {DEPLOYED} from 'constants/index';
 import * as LockTOSABI from 'services/abis/LockTOS.json';
 import BOOST_ICON from 'assets/svgs/booster_icon.svg';
 
-
 type SelectPeriod = '1 month' | '6 months' | '1 year' | '3 years';
 
 const themeDesign = {
@@ -51,7 +50,6 @@ const themeDesign = {
     dark: 'black.100',
   },
 };
-
 
 export const DaoStakeModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -84,7 +82,7 @@ export const DaoStakeModal = () => {
 
   const focusTarget = useRef<any>([]);
   const focusCustomTarget = useRef(null);
-  
+
   const changeBorderColor = (index: any) => {
     const {current} = focusTarget;
     current.map((e: any) => (e.style.border = 'solid 1px #d7d9df'));
@@ -99,28 +97,32 @@ export const DaoStakeModal = () => {
 
   useEffect(() => {
     const setConstants = async () => {
-      const { epochUnit, maxTime } = await getConstants({ library });
+      const {epochUnit, maxTime} = await getConstants({library});
       setOneWeek(epochUnit);
       setMaxPeriod(maxTime);
     };
     if (library) {
       setConstants();
     }
-  }, [library])
+  }, [library]);
 
   // set Estimated reward;
   const getEstimatedReward = useCallback(
-     async (date: number) => {
-      if (value !== '' && value !== '0' && value !== undefined && oneWeek > 0 && maxPeriod > 0) {
+    async (date: number) => {
+      if (
+        value !== '' &&
+        value !== '0' &&
+        value !== undefined &&
+        oneWeek > 0 &&
+        maxPeriod > 0
+      ) {
         const numValue = Number(value.replaceAll(',', ''));
         const avgProfit = numValue / maxPeriod;
         const estimatedReward = avgProfit * (date - moment().unix());
         const deciamlNum = new Decimal(estimatedReward);
         const resultNum = deciamlNum.toFixed(3, Decimal.ROUND_HALF_UP);
         const result = Number(resultNum).toFixed(2);
-        setReward(
-          String(Number(result)),
-        );
+        setReward(String(Number(result)));
       }
       return;
     },
@@ -149,8 +151,9 @@ export const DaoStakeModal = () => {
     const date = Math.floor((now + dateValue * oneWeek) / oneWeek) * oneWeek;
 
     getEstimatedReward(date);
-    setEndDate(date.toString());
-  }, [dateValue, value, getEstimatedReward, oneWeek]);
+    setEndDate(moment.unix(date).format('MMM DD YYYY'));
+    // setEndDate(moment(date).format('MMM DD, YYYY'));
+  }, [dateValue, value, getEstimatedReward, oneWeek, selectPeriod]);
 
   useEffect(() => {
     if (selectPeriod === 'weeks' || selectPeriod === 'months') {
