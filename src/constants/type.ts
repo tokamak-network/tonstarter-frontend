@@ -12,4 +12,5 @@ export type DEPLOYED_TYPE = {
   UniswapStaking_Address: string;
   NPM_Address: string;
   BasePool_Address: string;
+  StakeTonControl_ADDRESS: string;
 };

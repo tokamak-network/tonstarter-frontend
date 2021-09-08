@@ -7,7 +7,7 @@ import {REACT_APP_MODE} from 'constants/index';
 // List of supported subgraphs. Note that the app currently only support one active subgraph at a time
 const CHAIN_SUBGRAPH_URL: Record<number, string> = {
   1: 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3',
-  4: 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3',
+  4: 'https://api.thegraph.com/subgraphs/name/cd4761/uniswap-v3-rinkeby',
 }
 
 export const api = createApi({
@@ -165,7 +165,7 @@ function graphqlRequestBaseQuery(): BaseQueryFn<
       const chainId = REACT_APP_MODE === 'DEV' ? 4 : 1
 
       const subgraphUrl = chainId ? CHAIN_SUBGRAPH_URL[chainId] : undefined
-
+      console.log(subgraphUrl)
       if (!subgraphUrl) {
         return {
           error: {

@@ -12,7 +12,6 @@ import {
   useTheme,
   useColorMode,
   WrapItem,
-  Wrap,
 } from '@chakra-ui/react';
 import React from 'react';
 import {useAppSelector} from 'hooks/useRedux';
@@ -59,7 +58,9 @@ export const DaoUnstakeModal = (props: any) => {
     if (lockList === undefined) {
       return;
     }
-    const unstakedList = lockList.filter((e: any) => e.end === true && e.endTime > 0);
+    const unstakedList = lockList.filter(
+      (e: any) => e.end === true && e.endTime > 0,
+    );
     const unstakedBalance = unstakedList.reduce((acc: any, cur: any) => {
       return Number(acc) + Number(cur.lockedBalance);
     }, 0);
@@ -146,7 +147,8 @@ export const DaoUnstakeModal = (props: any) => {
                 )}>
                 <Flex
                   style={{marginTop: '0', marginBottom: '20px'}}
-                  justifyContent="center">
+                  justifyContent="center"
+                  flexDir="column">
                   {unstakeList.map((unstake: any, index: number) => (
                     <UnstakeRecord
                       number={index}

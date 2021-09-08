@@ -95,6 +95,10 @@ async function getReward(lp: number, unit: number): Promise<number> {
   const daySec = 86400;
   const lpRatio = Number(lp.toFixed(0)) / Number(totalSupply.toFixed(0));
 
+  if (!lpRatio) {
+    return 0;
+  }
+
   const lpRatioNum = Number(
     String(lpRatio).split('.')[0] +
       '.' +

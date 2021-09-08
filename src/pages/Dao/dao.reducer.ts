@@ -1,5 +1,4 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import {Account} from 'ethereumjs-util';
 import {RootState} from 'store/reducers';
 import {LibraryType} from 'types/index';
 import {TosStakeList} from './types/index';

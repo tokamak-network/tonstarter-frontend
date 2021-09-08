@@ -55,5 +55,8 @@ export const getTosStakeList = async ({
     }),
   );
 
-  return res.filter((e: any) => e.lockId !== '0');
+  console.log('**res**');
+
+  console.log(res);
+  return res.filter((e: TosStakeList) => e.lockId !== '0');
 };

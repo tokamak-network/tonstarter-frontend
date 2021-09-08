@@ -29,6 +29,7 @@ import {useRef} from 'react';
 import {increaseAmount, extendPeriod} from '../utils';
 import {getUserTosBalance} from 'client/getUserBalance';
 import BOOST_ICON from 'assets/svgs/booster_icon.svg';
+import {selectUser} from 'store/app/user.reducer';
 interface Stake {
   lockId: string;
   lockedBalance: string;
@@ -80,6 +81,7 @@ const themeDesign = {
 
 export const DaoManageModal = () => {
   const {data} = useAppSelector(selectModalType);
+
   const {stakeList} = data.data;
   const [edit, setEdit] = useState(false);
   const [selectLockId, setSelectLockId] = useState('');
@@ -138,6 +140,14 @@ export const DaoManageModal = () => {
     } = e;
     setTest(value);
   };
+
+  const {data: userData} = useAppSelector(selectUser);
+  if (!userData || !userData.balance.tos) {
+    return null;
+  }
+  const {
+    balance: {tos},
+  } = userData;
 
   const MainScreen = () => {
     return (
@@ -359,8 +369,8 @@ export const DaoManageModal = () => {
                 h="32px"
                 mr={'10px'}
                 fontSize={'0.750em'}
-                // value={value}
-                // onChange={(e) => setValue(e.target.value)}
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
                 _focus={{
                   borderWidth: 0,
                 }}></Input>
@@ -373,7 +383,7 @@ export const DaoManageModal = () => {
                 border={themeDesign.editBorder[colorMode]}
                 _hover={{}}
                 onClick={() => {
-                  setValue(balance);
+                  setValue(tos);
                 }}
                 isDisabled={select === 'select_period' ? true : false}>
                 MAX
@@ -393,14 +403,15 @@ export const DaoManageModal = () => {
                 fontColor={themeDesign.scrollNumberFont[colorMode]}>
                 Extend Period
               </Text>
+              <Box></Box>
               <Input
                 ref={periodRef}
                 w={'143px'}
                 h="32px"
                 mr={'0.750em'}
                 fontSize={'0.750em'}
-                // value={periodValue}
-                // onChange={periodOnchange}
+                value={periodValue}
+                onChange={periodOnchange}
                 {...(select === 'select_amount'
                   ? themeDesign.inputVariant[colorMode]
                   : '')}></Input>
@@ -423,7 +434,12 @@ export const DaoManageModal = () => {
                   amountRef.current?.value !== '' ||
                     periodRef.current?.value !== '',
                 )}
-                disabled={false}
+                disabled={
+                  amountRef.current?.value !== '' ||
+                  periodRef.current?.value !== ''
+                    ? false
+                    : true
+                }
                 mr={'15px'}
                 onClick={() => {
                   if (select === 'select_amount') {

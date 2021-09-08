@@ -1,5 +1,5 @@
 import {Tab} from '../types/index';
-import {Box, Text, Flex, useTheme, useColorMode} from '@chakra-ui/react';
+import {Box, Text, Flex, useColorMode} from '@chakra-ui/react';
 import {CustomTitle} from 'components/Basic/CustomTitle';
 
 type ModalTabsProp = {
@@ -13,7 +13,6 @@ type ModalTabsProp = {
 
 export const ModalTabs = (prop: ModalTabsProp) => {
   const {tab, TOS_PER_HOUR, TOS_EARNED, TOS_FEE, WTOS_FEE, TOS_CLAIM} = prop;
-  const theme = useTheme();
   const {colorMode} = useColorMode();
   const fontColorGray = colorMode === 'light' ? 'gray.250' : 'white.100';
   const fontColorBlack = colorMode === 'light' ? 'black.300' : 'white.100';

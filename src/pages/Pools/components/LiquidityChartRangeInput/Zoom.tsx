@@ -1,30 +1,37 @@
-import React, { useEffect, useMemo, useRef } from 'react'
-import { ButtonGray } from '../Button'
-import styled from 'styled-components/macro'
-import { ScaleLinear, select, ZoomBehavior, zoom, ZoomTransform, zoomIdentity } from 'd3'
-import { RefreshCcw, ZoomIn, ZoomOut } from 'react-feather'
-import { ZoomLevels } from './types'
+import React, {useEffect, useMemo, useRef} from 'react';
+// import { ButtonGray } from '../Button'
+import styled from 'styled-components/macro';
+import {
+  ScaleLinear,
+  select,
+  ZoomBehavior,
+  zoom,
+  ZoomTransform,
+  zoomIdentity,
+} from 'd3';
+// import { RefreshCcw, ZoomIn, ZoomOut } from 'react-feather'
+import {ZoomLevels} from './types';
 
-const Wrapper = styled.div<{ count: number }>`
+const Wrapper = styled.div<{count: number}>`
   display: grid;
-  grid-template-columns: repeat(${({ count }) => count.toString()}, 1fr);
+  grid-template-columns: repeat(${({count}) => count.toString()}, 1fr);
   grid-gap: 6px;
 
   position: absolute;
   top: -75px;
   right: 0;
-`
+`;
 
-const Button = styled(ButtonGray)`
-  &:hover {
-    background-color: ${({ theme }) => theme.bg2};
-    color: ${({ theme }) => theme.text1};
-  }
+// const Button = styled(ButtonGray)`
+//   &:hover {
+//     background-color: ${({ theme }) => theme.bg2};
+//     color: ${({ theme }) => theme.text1};
+//   }
 
-  width: 32px;
-  height: 32px;
-  padding: 4px;
-`
+//   width: 32px;
+//   height: 32px;
+//   padding: 4px;
+// `
 
 export const ZoomOverlay = styled.rect`
   fill: transparent;
@@ -33,7 +40,7 @@ export const ZoomOverlay = styled.rect`
   &:active {
     cursor: grabbing;
   }
-`
+`;
 
 export default function Zoom({
   svg,
@@ -45,16 +52,16 @@ export default function Zoom({
   showResetButton,
   zoomLevels,
 }: {
-  svg: SVGElement | null
-  xScale: ScaleLinear<number, number>
-  setZoom: (transform: ZoomTransform) => void
-  width: number
-  height: number
-  resetBrush: () => void
-  showResetButton: boolean
-  zoomLevels: ZoomLevels
+  svg: SVGElement | null;
+  xScale: ScaleLinear<number, number>;
+  setZoom: (transform: ZoomTransform) => void;
+  width: number;
+  height: number;
+  resetBrush: () => void;
+  showResetButton: boolean;
+  zoomLevels: ZoomLevels;
 }) {
-  const zoomBehavior = useRef<ZoomBehavior<Element, unknown>>()
+  const zoomBehavior = useRef<ZoomBehavior<Element, unknown>>();
 
   const [zoomIn, zoomOut, zoomInitial, zoomReset] = useMemo(
     () => [
@@ -80,15 +87,18 @@ export default function Zoom({
         svg &&
         zoomBehavior.current &&
         select(svg as Element)
-          .call(zoomBehavior.current.transform, zoomIdentity.translate(0, 0).scale(1))
+          .call(
+            zoomBehavior.current.transform,
+            zoomIdentity.translate(0, 0).scale(1),
+          )
           .transition()
           .call(zoomBehavior.current.scaleTo, 0.5),
     ],
-    [svg]
-  )
+    [svg],
+  );
 
   useEffect(() => {
-    if (!svg) return
+    if (!svg) return;
 
     zoomBehavior.current = zoom()
       .scaleExtent([zoomLevels.min, zoomLevels.max])
@@ -96,15 +106,27 @@ export default function Zoom({
         [0, 0],
         [width, height],
       ])
-      .on('zoom', ({ transform }: { transform: ZoomTransform }) => setZoom(transform))
+      .on('zoom', ({transform}: {transform: ZoomTransform}) =>
+        setZoom(transform),
+      );
 
-    select(svg as Element).call(zoomBehavior.current)
-  }, [height, width, setZoom, svg, xScale, zoomBehavior, zoomLevels, zoomLevels.max, zoomLevels.min])
+    select(svg as Element).call(zoomBehavior.current);
+  }, [
+    height,
+    width,
+    setZoom,
+    svg,
+    xScale,
+    zoomBehavior,
+    zoomLevels,
+    zoomLevels.max,
+    zoomLevels.min,
+  ]);
 
   useEffect(() => {
     // reset zoom to initial on zoomLevel change
-    zoomInitial()
-  }, [zoomInitial, zoomLevels])
+    zoomInitial();
+  }, [zoomInitial, zoomLevels]);
 
   return (
     <Wrapper count={showResetButton ? 3 : 2}>
@@ -126,5 +148,5 @@ export default function Zoom({
         <ZoomOut size={16} />
       </Button> */}
     </Wrapper>
-  )
+  );
 }

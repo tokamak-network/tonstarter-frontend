@@ -2,9 +2,7 @@ import {DEPLOYED} from 'constants/index';
 import * as LockTOSABI from 'services/abis/LockTOS.json';
 import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
-import store from 'store';
-import {setTransaction} from 'store/refetch.reducer';
-import moment from 'moment';
+// import store from 'store';
 import {setTx} from 'application';
 
 type ExtendPeriod = {
