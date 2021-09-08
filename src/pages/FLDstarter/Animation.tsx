@@ -18,8 +18,8 @@ import Arrow from 'assets/svgs/select1_arrow_inactive.svg';
 import {Stake, selectStakes} from 'pages/Staking/staking.reducer';
 import {useAppSelector} from 'hooks/useRedux';
 import {DEPLOYED} from 'constants/index';
-import { usePoolByUserQuery } from 'store/data/enhanced'
-import ms from 'ms.macro'
+import {usePoolByUserQuery} from 'store/data/enhanced';
+import ms from 'ms.macro';
 
 export interface HomeProps extends HTMLAttributes<HTMLDivElement> {
   classes?: string;
@@ -309,11 +309,11 @@ export const Animation: React.FC<HomeProps> = () => {
   //GET Phase 2 Liquidity Info
   const {BasePool_Address} = DEPLOYED;
   const basePool = usePoolByUserQuery(
-    { address: BasePool_Address?.toLowerCase() },
+    {address: BasePool_Address?.toLowerCase()},
     {
       pollingInterval: ms`2m`,
-    }
-  )
+    },
+  );
 
   useEffect(() => {
     if (basePool?.data?.pools) {
@@ -322,6 +322,10 @@ export const Animation: React.FC<HomeProps> = () => {
       } = basePool;
       //GET WTON-PAIR WITH KEY 0
       const WTON_TOS_PAIR = pools[0];
+      if (!WTON_TOS_PAIR) {
+        setLiquidity('0');
+        return;
+      }
       const {poolDayData} = WTON_TOS_PAIR;
       const lastestLiquidity = poolDayData[poolDayData.length - 1].tvlUSD;
       const res = Number(lastestLiquidity).toLocaleString(undefined, {

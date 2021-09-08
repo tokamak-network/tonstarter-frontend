@@ -393,14 +393,15 @@ export const DaoManageModal = () => {
                 fontColor={themeDesign.scrollNumberFont[colorMode]}>
                 Extend Period
               </Text>
+              <Box></Box>
               <Input
                 ref={periodRef}
                 w={'143px'}
                 h="32px"
                 mr={'0.750em'}
                 fontSize={'0.750em'}
-                // value={periodValue}
-                // onChange={periodOnchange}
+                value={periodValue}
+                onChange={periodOnchange}
                 {...(select === 'select_amount'
                   ? themeDesign.inputVariant[colorMode]
                   : '')}></Input>
@@ -423,7 +424,12 @@ export const DaoManageModal = () => {
                   amountRef.current?.value !== '' ||
                     periodRef.current?.value !== '',
                 )}
-                disabled={false}
+                disabled={
+                  amountRef.current?.value !== '' ||
+                  periodRef.current?.value !== ''
+                    ? false
+                    : true
+                }
                 mr={'15px'}
                 onClick={() => {
                   if (select === 'select_amount') {
