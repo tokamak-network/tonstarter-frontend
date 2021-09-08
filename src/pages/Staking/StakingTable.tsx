@@ -503,18 +503,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                   onClick={() => stakeTonControl()}>
                   Withdraw & Swap
                 </Button>
-              }>
-              {/* <Button
-                {...(isWithdrawAndSwapAll
-                  ? {...btnStyle.btnAble()}
-                  : {...btnStyle.btnDisable({colorMode})})}
-                isDisabled={!isWithdrawAndSwapAll}
-                fontSize={'14px'}
-                fontWeight={600}
-                onClick={() => stakeTonControl()}>
-                Withdraw & Swap
-              </Button> */}
-            </CustomTooltip>
+              }></CustomTooltip>
           </Flex>
           <Flex>
             <Tooltip label="Previous Page">

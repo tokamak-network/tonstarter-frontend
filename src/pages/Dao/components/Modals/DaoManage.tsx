@@ -15,6 +15,8 @@ import {
   Radio,
   RadioGroup,
   Tooltip,
+  NumberInput,
+  NumberInputField,
 } from '@chakra-ui/react';
 import React from 'react';
 import {useAppSelector} from 'hooks/useRedux';
@@ -88,8 +90,8 @@ export const DaoManageModal = () => {
   const [select, setSelect] = useState('select_amount');
   const [balance, setBalance] = useState('0');
   const [tosStakeList, setTosStakeList] = useState<TosStakeList>(undefined);
-  const [value, setValue] = useState('0');
-  const {value: periodValue, onChange: periodOnchange} = useInput('0');
+  const [value, setValue] = useState('');
+  const [periodValue, setPeriodValue] = useState('');
 
   const [btnDisable, setBtnDisable] = useState(true);
 
@@ -127,26 +129,28 @@ export const DaoManageModal = () => {
   }, [signIn, account]);
 
   useEffect(() => {
-    const checkCondition =
-      amountRef.current?.value === '' && periodRef.current?.value === '';
+    const checkCondition = value === '' && value === '' ? true : false;
     setBtnDisable(checkCondition);
-  }, [amountRef.current?.value, periodRef.current?.value]);
+    setTimeout(() => {
+      select === 'select_amount'
+        ? amountRef.current?.focus()
+        : periodRef.current?.focus();
+    }, 10);
+  }, [value, periodValue]);
 
-  const [test, setTest] = useState('');
-
-  const testOnChange = (e: any) => {
-    const {
-      target: {value},
-    } = e;
-    setTest(value);
-  };
+  useEffect(() => {
+    if (select) {
+      setPeriodValue('');
+    }
+    setValue('');
+  }, [select]);
 
   const {data: userData} = useAppSelector(selectUser);
   if (!userData || !userData.balance.tos) {
     return null;
   }
   const {
-    balance: {tos},
+    balance: {tos, tosOrigin},
   } = userData;
 
   const MainScreen = () => {
@@ -360,20 +364,22 @@ export const DaoManageModal = () => {
                 fontColor={themeDesign.editBorder[colorMode]}>
                 Increase Amount
               </Text>
-              <Input
-                {...(select === 'select_period'
-                  ? themeDesign.inputVariant[colorMode]
-                  : '')}
-                ref={amountRef}
+              <NumberInput
                 w={'143px'}
                 h="32px"
                 mr={'10px'}
-                fontSize={'0.750em'}
                 value={value}
-                onChange={(e) => setValue(e.target.value)}
-                _focus={{
-                  borderWidth: 0,
-                }}></Input>
+                onChange={(value) => setValue(value)}>
+                <NumberInputField
+                  {...(select === 'select_period'
+                    ? themeDesign.inputVariant[colorMode]
+                    : '')}
+                  ref={amountRef}
+                  fontSize={'0.750em'}
+                  _focus={{
+                    borderWidth: 0,
+                  }}></NumberInputField>
+              </NumberInput>
               <Button
                 w="70px"
                 h="32px"
@@ -403,18 +409,22 @@ export const DaoManageModal = () => {
                 fontColor={themeDesign.scrollNumberFont[colorMode]}>
                 Extend Period
               </Text>
-              <Box></Box>
-              <Input
-                ref={periodRef}
+              <NumberInput
                 w={'143px'}
                 h="32px"
                 mr={'0.750em'}
-                fontSize={'0.750em'}
                 value={periodValue}
-                onChange={periodOnchange}
-                {...(select === 'select_amount'
-                  ? themeDesign.inputVariant[colorMode]
-                  : '')}></Input>
+                onChange={(periodValue) => setPeriodValue(periodValue)}>
+                <NumberInputField
+                  {...(select === 'select_amount'
+                    ? themeDesign.inputVariant[colorMode]
+                    : '')}
+                  ref={periodRef}
+                  fontSize={'0.750em'}
+                  _focus={{
+                    borderWidth: 0,
+                  }}></NumberInputField>
+              </NumberInput>
             </Flex>
             <Box
               pos="absolute"
@@ -430,16 +440,11 @@ export const DaoManageModal = () => {
                   : {...btnStyle.btnAble()})}
                 w={'150px'}
                 fontSize="14px"
-                _hover={theme.btnHover.checkDisable(
-                  amountRef.current?.value !== '' ||
-                    periodRef.current?.value !== '',
-                )}
-                disabled={
-                  amountRef.current?.value !== '' ||
-                  periodRef.current?.value !== ''
-                    ? false
-                    : true
-                }
+                // _hover={theme.btnHover.checkDisable(
+                //   amountRef.current?.value !== '' ||
+                //     periodRef.current?.value !== '',
+                // )}
+                disabled={btnDisable}
                 mr={'15px'}
                 onClick={() => {
                   if (select === 'select_amount') {
@@ -452,7 +457,8 @@ export const DaoManageModal = () => {
                         account,
                         library,
                         lockId: selectLockId,
-                        amount: amountRef.current?.value,
+                        amount: value === tos ? tosOrigin : value,
+                        allBalance: value === tos,
                       });
                     }
                   }
