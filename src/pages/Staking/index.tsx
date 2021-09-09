@@ -178,8 +178,9 @@ export const Staking = () => {
     const [toggle, setToggle] = useState('Earned TOS');
 
     useEffect(() => {
-      if (account && contractAddress && library)
+      if (account && contractAddress && library) {
         getEarnedTon({account, contractAddress, library});
+      }
     }, []);
 
     useEffect(() => {

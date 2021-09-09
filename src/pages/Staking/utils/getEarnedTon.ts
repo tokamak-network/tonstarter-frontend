@@ -2,8 +2,9 @@ import {Contract} from '@ethersproject/contracts';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import {getTokamakContract} from 'utils/contract';
 // import {Web3Provider} from '@ethersproject/providers';
-import {convertNumber} from 'utils/number';
+import {convertFromWeiToRay, convertNumber} from 'utils/number';
 import {DEPLOYED} from 'constants/index';
+import {BigNumber} from 'ethers';
 
 type GetEarnedTon = {
   account: string;
@@ -38,8 +39,13 @@ export const getEarnedTon = async ({
     StakeTONContract.userStaked(account),
   ])
     .then((res) => {
-      console.log(res);
-      const totalSeig = res[0].add(res[1]).add(res[2]).add(res[3]).sub(res[4]);
+      const a = convertFromWeiToRay(res[0].toString());
+      const b = res[1].toString();
+      const c = res[2].toString();
+      const d = res[3].toString();
+      const e = convertFromWeiToRay(res[4].toString());
+
+      const totalSeig = BigNumber.from(a).add(b).add(c).add(d).sub(e);
       const userRatio = res[5].amount.div(res[4]);
 
       console.log(
@@ -72,8 +78,19 @@ export const getEarnedTon = async ({
       const rewardTON = totalSeig.mul(userRatio);
       console.log('--rewardTON--');
       console.log(rewardTON.toString());
-      console.log(convertNumber({amount: rewardTON, type: 'ray'}));
-      return convertNumber({amount: rewardTON, type: 'ray'});
+      console.log(totalSeig);
+      console.log(res[5]);
+      console.log(
+        convertNumber({
+          amount: totalSeig
+            .div(10 ** 9)
+            .mul(res[5].amount)
+            .div(res[4])
+            .toString(),
+        }),
+      );
+      // console.log(convertNumber({amount: rewardTON, type: 'ray'}));
+      // return convertNumber({amount: rewardTON, type: 'ray'});
     })
     .catch((e) => console.log(e));
 };
