@@ -284,9 +284,10 @@ export const ManageModal = () => {
     };
 
     const btnDisableSwap = () => {
+      //TEMP FIX
       return Number(swapBalance) <= 0 || miningEndTime <= currentBlock
         ? setSwapDisabled(true)
-        : setSwapDisabled(false);
+        : setSwapDisabled(true);
     };
 
     async function checkSale() {
