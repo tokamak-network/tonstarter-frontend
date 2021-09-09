@@ -129,7 +129,7 @@ export const DaoManageModal = () => {
   }, [signIn, account]);
 
   useEffect(() => {
-    const checkCondition = value === '' && value === '' ? true : false;
+    const checkCondition = value === '' && periodValue === '' ? true : false;
     setBtnDisable(checkCondition);
     setTimeout(() => {
       select === 'select_amount'
@@ -144,6 +144,12 @@ export const DaoManageModal = () => {
     }
     setValue('');
   }, [select]);
+
+  const cleanUpEditScreen = () => {
+    setValue('');
+    setPeriodValue('');
+    setSelect('select_amount');
+  };
 
   const {data: userData} = useAppSelector(selectUser);
   if (!userData || !userData.balance.tos) {
@@ -330,6 +336,7 @@ export const DaoManageModal = () => {
                 src={backArrowIcon}
                 onClick={() => {
                   setEdit(false);
+                  cleanUpEditScreen();
                   setSelectLockId('');
                 }}></img>
               <Flex flexDir="column" alignItems="flex-start">
@@ -488,6 +495,7 @@ export const DaoManageModal = () => {
                 disabled={!signIn}
                 onClick={() => {
                   setEdit(false);
+                  cleanUpEditScreen();
                   setSelectLockId('');
                 }}>
                 Cancel

@@ -152,7 +152,6 @@ export const DaoStakeModal = () => {
 
     getEstimatedReward(date);
     setEndDate(moment.unix(date).format('MMM DD YYYY'));
-    // setEndDate(moment(date).format('MMM DD, YYYY'));
   }, [dateValue, value, getEstimatedReward, oneWeek, selectPeriod]);
 
   useEffect(() => {
