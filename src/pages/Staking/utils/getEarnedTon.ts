@@ -1,13 +1,13 @@
 import {Contract} from '@ethersproject/contracts';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import {getTokamakContract} from 'utils/contract';
-import {Web3Provider} from '@ethersproject/providers';
-import {BigNumber} from 'ethers';
+// import {Web3Provider} from '@ethersproject/providers';
+import {convertNumber} from 'utils/number';
 
 type GetEarnedTon = {
   account: string;
   contractAddress: string;
-  library: Web3Provider;
+  library: any;
 };
 
 export const getEarnedTon = async ({
@@ -36,7 +36,11 @@ export const getEarnedTon = async ({
     SEIGMANAGER_CONTRACT.stakeOf(contractAddress),
     DEPOSITMANAGER_CONTRACT.pending(contractAddress),
     StakeTONContract.totalStakedAmount(),
+    StakeTONContract.userStaked(account),
   ]).then((res) => {
     const totalSeig = res[0].add(res[1], res[2], res[3]).sub(res[4]);
+    const userRatio = res[5].div(res[4]);
+    const rewardTON = totalSeig.mul(userRatio);
+    return convertNumber({amount: rewardTON});
   });
 };
