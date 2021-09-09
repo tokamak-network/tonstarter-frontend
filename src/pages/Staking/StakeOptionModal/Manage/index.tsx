@@ -595,30 +595,37 @@ export const ManageModal = () => {
               }>
               Withdraw
             </Button>
-            <Button
-              width="150px"
-              bg={'blue.500'}
-              color={'white.100'}
-              fontSize={'12px'}
-              fontWeight={100}
-              _hover={{backgroundColor: 'blue.100'}}
-              {...(swapDisabled === true
-                ? {...btnStyle.btnDisable({colorMode})}
-                : {...btnStyle.btnAble()})}
-              isDisabled={swapDisabled}
-              onClick={() =>
-                handleOpenConfirmModal({
-                  type: 'manage_swap',
-                  data: {
-                    contractAddress,
-                    swapBalance,
-                    originalSwapBalance,
-                    currentTosPrice,
-                  },
-                })
-              }>
-              Swap
-            </Button>
+            <Tooltip
+              hasArrow
+              placement="top"
+              label="Maintenance in progress"
+              color={theme.colors.white[100]}
+              bg={theme.colors.gray[375]}>
+              <Button
+                width="150px"
+                bg={'blue.500'}
+                color={'white.100'}
+                fontSize={'12px'}
+                fontWeight={100}
+                _hover={{backgroundColor: 'blue.100'}}
+                {...(swapDisabled === true
+                  ? {...btnStyle.btnDisable({colorMode})}
+                  : {...btnStyle.btnAble()})}
+                isDisabled={swapDisabled}
+                onClick={() =>
+                  handleOpenConfirmModal({
+                    type: 'manage_swap',
+                    data: {
+                      contractAddress,
+                      swapBalance,
+                      originalSwapBalance,
+                      currentTosPrice,
+                    },
+                  })
+                }>
+                Swap
+              </Button>
+            </Tooltip>
           </Grid>
         </ModalBody>
       </ModalContent>
