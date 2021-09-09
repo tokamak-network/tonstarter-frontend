@@ -174,14 +174,32 @@ export const Staking = () => {
   }: any) => {
     const {colorMode} = useColorMode();
     const [balance, SetBalance] = useState('-');
+    const [earnedTON, setEarnedTON] = useState('-');
     const {account, library} = useUser();
     const [toggle, setToggle] = useState('Earned TOS');
 
     useEffect(() => {
-      if (account && contractAddress && library) {
-        getEarnedTon({account, contractAddress, library});
+      async function callEarnedTON(
+        account: string,
+        contractAddress: string,
+        library: any,
+      ) {
+        const res_earnedTON = await getEarnedTon({
+          account,
+          contractAddress,
+          library,
+        });
+        setEarnedTON(res_earnedTON || '0');
       }
-    }, []);
+      try {
+        if (account && contractAddress && library) {
+          callEarnedTON(account, contractAddress, library);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+      return () => {};
+    }, [toggle]);
 
     useEffect(() => {
       const getBalance = async () => {
@@ -203,6 +221,7 @@ export const Staking = () => {
             Number(result?.rewardTosBalance) + Number(result?.claimedBalance);
           //@ts-ignore
           SetBalance(totalClaimedAmount.toFixed(2));
+          return () => {};
         } catch (e) {
           console.error(e);
         }
@@ -302,7 +321,13 @@ export const Staking = () => {
           color={colorMode === 'light' ? 'black.300' : 'white.200'}
           fontWeight={'bold'}
           h="30px">
-          {balance === '-' ? <LoadingDots></LoadingDots> : balance}
+          {balance === '-' ? (
+            <LoadingDots></LoadingDots>
+          ) : toggle === 'Earned TOS' ? (
+            balance
+          ) : (
+            earnedTON
+          )}
           {balance !== '-' ? (
             toggle === 'Earned TOS' ? (
               <span> TOS</span>

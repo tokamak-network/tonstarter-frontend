@@ -44,53 +44,12 @@ export const getEarnedTon = async ({
       const c = res[2].toString();
       const d = res[3].toString();
       const e = convertFromWeiToRay(res[4].toString());
-
       const totalSeig = BigNumber.from(a).add(b).add(c).add(d).sub(e);
-      const userRatio = res[5].amount.div(res[4]);
-
-      //   console.log(
-      //     `TON_CONTRACT.balanceOf(contractAddress) :  ${res[0].toString()}`,
-      //   );
-      //   console.log(
-      //     `WTON_CONTRACT.balanceOf(contractAddress) :  ${res[1].toString()}`,
-      //   );
-      //   console.log(
-      //     `SEIGMANAGER_CONTRACT.stakeOf(TokamakLayer2_ADDRESS, contractAddress) :  ${res[2].toString()}`,
-      //   );
-      //   console.log(
-      //     `DEPOSITMANAGER_CONTRACT.pendingUnstaked(
-      //   TokamakLayer2_ADDRESS,
-      //   contractAddress,
-      // ) :  ${res[3].toString()}`,
-      //   );
-      //   console.log(
-      //     `StakeTONContract.totalStakedAmount()
-      // :  ${res[4].toString()}`,
-      //   );
-      //   console.log(
-      //     `StakeTONContract.userStaked(account)
-      //  :  ${res[5].amount.toString()}`,
-      //   );
-
-      //   console.log(`totalSeig : ${totalSeig.toString()}`);
-      //   console.log(`userRatio : ${userRatio.toString()}`);
-
-      //   const rewardTON = totalSeig.mul(userRatio);
-      //   console.log('--rewardTON--');
-      //   console.log(rewardTON.toString());
-      //   console.log(totalSeig);
-      //   console.log(res[5]);
-      //   console.log(
-      //     convertNumber({
-      //       amount: totalSeig
-      //         .div(10 ** 9)
-      //         .mul(res[5].amount)
-      //         .div(res[4])
-      //         .toString(),
-      //     }),
-      //   );
-      // console.log(convertNumber({amount: rewardTON, type: 'ray'}));
-      // return convertNumber({amount: rewardTON, type: 'ray'});
+      const rewardTON = totalSeig
+        .div(10 ** 9)
+        .mul(res[5].amount)
+        .div(res[4]);
+      return convertNumber({amount: rewardTON.toString(), type: 'wei'});
     })
     .catch((e) => console.log(e));
 };
