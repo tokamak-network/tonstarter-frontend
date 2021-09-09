@@ -202,14 +202,16 @@ export const Staking = () => {
             Number(result?.rewardTosBalance) + Number(result?.claimedBalance);
           //@ts-ignore
           SetBalance(totalClaimedAmount.toFixed(2));
-        } catch (e) {}
+        } catch (e) {
+          console.error(e);
+        }
       };
 
       if (account !== undefined) {
         getBalance();
       }
       return () => {
-        SetBalance('-');
+        // SetBalance('-');
       };
       /*eslint-disable*/
     }, [account]);
