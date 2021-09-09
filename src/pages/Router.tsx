@@ -7,7 +7,7 @@ import {FLDstarter} from './FLDstarter';
 import {Staking} from './Staking';
 import {Pools} from './Pools';
 import {DAO} from './Dao/index';
-import {Switch, Route} from 'react-router-dom';
+import {Switch, Route, Redirect} from 'react-router-dom';
 import {useAppDispatch} from 'hooks/useRedux';
 import {fetchAppConfig} from 'store/app/app.reducer';
 import {fetchUserInfo} from 'store/app/user.reducer';
@@ -138,10 +138,12 @@ export const Router: FC<RouterProps> = () => {
       <div style={{flex: 1}}>
         <Switch>
           <Route exact path="/" component={FLDstarter} />
-          <Route exact path="/staking" component={Staking} />
+
+          {/* <Route exact path="/staking" component={Staking} /> */}
           <Route exact path="/pools" component={Pools} />
           {/* <Route exact path="/starter" component={Starter} /> */}
           <Route exact path="/dao" component={DAO} />
+          <Redirect path="/staking" to="/"></Redirect>
         </Switch>
       </div>
       <Footer />

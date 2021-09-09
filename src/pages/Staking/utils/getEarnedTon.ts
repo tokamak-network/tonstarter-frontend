@@ -1,64 +1,42 @@
-// import {calculateExpectedSeig} from 'tokamak-staking-lib';
-// import {getTokamakContract} from 'utils/contract';
-// import {BASE_PROVIDER, DEPLOYED} from 'constants/index';
-// //@ts-ignore
-// import {toBN, BN} from 'web3-utils';
-// import {Contract} from '@ethersproject/contracts';
-// import * as AutoRefactorCoinageABI from 'services/abis/AutoRefactorCoinage.json';
-// import * as TonABI from 'services/abis/TON.json';
+import {Contract} from '@ethersproject/contracts';
+import * as StakeTON from 'services/abis/StakeTON.json';
+import {getTokamakContract} from 'utils/contract';
+import {Web3Provider} from '@ethersproject/providers';
+import {BigNumber} from 'ethers';
 
 type GetEarnedTon = {
+  account: string;
   contractAddress: string;
-  library: any;
+  library: Web3Provider;
 };
 
 export const getEarnedTon = async ({
+  account,
   contractAddress,
   library,
 }: GetEarnedTon) => {
-  return null;
-  // if (library === undefined) {
-  //   return;
-  // }
-  // const SeigManager = getTokamakContract('SeigManager', library);
-  // const currentBlockNumber = await BASE_PROVIDER.getBlockNumber();
-  // const {TokamakLayer2_ADDRESS, TON_ADDRESS, WTON_ADDRESS} = DEPLOYED;
-  // const TON_CONTRACT = new Contract(TON_ADDRESS, TonABI.abi, library);
-  // const Tot_ADDRESS = await SeigManager.tot();
-  // const Tot = new Contract(Tot_ADDRESS, AutoRefactorCoinageABI.abi, library);
+  // const {
+  //   TON_ADDRESS,
+  //   WTON_ADDRESS,
+  //   SeigManager_ADDRESS,
+  //   DepositManager_ADDRESS,
+  // } = DEPLOYED;
 
-  // const [tonTotalSupply, totTotalSupply, tonBalanceOfWTON] = await Promise.all([
-  //   TON_CONTRACT.totalSupply(),
-  //   Tot.totalSupply(),
-  //   TON_CONTRACT.balanceOf(WTON_ADDRESS),
-  // ]);
+  // const TON_CONTRACT = new Contract(TON_ADDRESS, ERC20.abi, library);
+  //     const WTON = new Contract(WTON_ADDRESS, WtonABI.abi, library);
+  const StakeTONContract = new Contract(contractAddress, StakeTON.abi, library);
+  const TON_CONTRACT = getTokamakContract('TON', library);
+  const WTON_CONTRACT = getTokamakContract('WTON', library);
+  const SEIGMANAGER_CONTRACT = getTokamakContract('SeigManager', library);
+  const DEPOSITMANAGER_CONTRACT = getTokamakContract('DepositManager', library);
 
-  // const tos = toBN(tonTotalSupply)
-  //   .mul(toBN('1000000000'))
-  //   .add(toBN(totTotalSupply))
-  //   .sub(toBN(tonBalanceOfWTON));
-
-  // const COINAGE_ADDRESS = await SeigManager.coinages(TokamakLayer2_ADDRESS);
-  // const COINAGE_CONTRACT = new Contract(
-  //   COINAGE_ADDRESS,
-  //   AutoRefactorCoinageABI.abi,
-  //   library,
-  // );
-
-  // const totalStaked = await COINAGE_CONTRACT.balanceOf(contractAddress);
-
-  // try {
-  //   const seigniorage = calculateExpectedSeig(
-  //     new BN(
-  //       await SeigManager.lastCommitBlock(TokamakLayer2_ADDRESS).toString(),
-  //     ),
-  //     new BN(currentBlockNumber.toString()),
-  //     new BN(totalStaked.toString()),
-  //     new BN(await Tot.totalSupply().toString()),
-  //     new BN(tos.toString()),
-  //     new BN(await SeigManager.relativeSeigRate().toString()),
-  //   );
-  // } catch (e) {
-  //   console.log(e);
-  // }
+  return Promise.all([
+    TON_CONTRACT.balanceof(contractAddress),
+    WTON_CONTRACT.balanceof(contractAddress),
+    SEIGMANAGER_CONTRACT.stakeOf(contractAddress),
+    DEPOSITMANAGER_CONTRACT.pending(contractAddress),
+    StakeTONContract.totalStakedAmount(),
+  ]).then((res) => {
+    const totalSeig = res[0].add(res[1], res[2], res[3]).sub(res[4]);
+  });
 };

@@ -231,12 +231,20 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
         justify={['center', 'space-between', 'flex-end', 'flex-end']}
         direction={['column', 'column', 'column', 'row']}
         pt={[4, 4, 0, 0]}>
-        <NavLink
-          to="/staking"
-          className={match?.isExact ? 'link-match' : 'link'}
-          style={{zIndex: 100}}>
-          Staking
-        </NavLink>
+        <Tooltip
+          hasArrow
+          placement="top"
+          label="Maintenance in progress"
+          color={theme.colors.white[100]}
+          bg={theme.colors.gray[375]}>
+          <NavLink
+            onClick={(e) => e.preventDefault()}
+            to="/staking"
+            className={match?.isExact ? 'link-match' : 'link'}
+            style={{zIndex: 100}}>
+            Staking
+          </NavLink>
+        </Tooltip>
         <NavLink
           to="/pools"
           className={match?.isExact ? 'link-match' : 'link'}

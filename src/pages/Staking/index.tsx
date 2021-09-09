@@ -178,7 +178,7 @@ export const Staking = () => {
     const [toggle, setToggle] = useState('Earned TOS');
 
     useEffect(() => {
-      getEarnedTon({contractAddress, library});
+      // getEarnedTon({contractAddress, library});
     }, []);
 
     useEffect(() => {

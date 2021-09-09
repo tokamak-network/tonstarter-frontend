@@ -205,7 +205,7 @@ export const StakingTable: FC<StakingTableProps> = ({
   const clickOpen = (contractAddress: string, index: number) => {
     setIsOpen(contractAddress);
     setTimeout(() => {
-      focusTarget.current[index].scrollIntoView({
+      focusTarget?.current[index]?.scrollIntoView({
         behavior: 'smooth',
         block: 'start',
       });
