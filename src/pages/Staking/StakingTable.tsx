@@ -168,13 +168,14 @@ export const StakingTable: FC<StakingTableProps> = ({
   //withdraw&swapall btn able condition
   useEffect(() => {
     async function callIsWithdrawAndSwapAll() {
-      if (library) {
+      if (account && library) {
         const res = await checkCanWithdrawLayr2All(library);
         setIsWithdrawAndSwapAll(res || false);
       }
+      setIsWithdrawAndSwapAll(false);
     }
     callIsWithdrawAndSwapAll();
-  }, [blockNumber, library]);
+  }, [blockNumber, library, account]);
 
   const [isOpen, setIsOpen] = useState(
     contractAddress === undefined ? '' : contractAddress,
