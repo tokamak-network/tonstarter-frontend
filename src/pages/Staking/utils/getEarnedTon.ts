@@ -45,6 +45,16 @@ export const getEarnedTon = async ({
       const d = res[3].toString();
       const e = convertFromWeiToRay(res[4].toString());
       const totalSeig = BigNumber.from(a).add(b).add(c).add(d).sub(e);
+
+      const checkIsUnstaked = res[5].released;
+      console.log(res[5]);
+      if (checkIsUnstaked === true) {
+        const releasedAmount = res[5].releasedAmount;
+        const amount = res[5].amount;
+        const rewardTON = releasedAmount.sub(amount);
+        return convertNumber({amount: rewardTON.toString(), type: 'wei'});
+      }
+
       const rewardTON = totalSeig
         .div(10 ** 9)
         .mul(res[5].amount)

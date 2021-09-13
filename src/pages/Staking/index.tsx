@@ -66,9 +66,7 @@ const GetDate = ({time, currentBlock, contractAddress, type}: GetDateProp) => {
 
   useEffect(() => {
     fetchDate();
-    return () => {
-      setDate('');
-    };
+    return () => {};
     /*eslint-disable*/
   }, [time, currentBlock]);
 
