@@ -19,6 +19,7 @@ import {
   Center,
   useTheme,
   Image,
+  Button,
 } from '@chakra-ui/react';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
@@ -32,6 +33,13 @@ import {setTimeout} from 'timers';
 import {LoadingComponent} from 'components/Loading';
 // import {fetchStakeURL} from 'constants/index';
 // import {selectTransactionType} from 'store/refetch.reducer';
+import {
+  checkCanWithdrawLayr2All,
+  stakeTonControl,
+} from './actions/stakeTONControl';
+import {useBlockNumber} from 'hooks/useBlock';
+import {CustomTooltip} from 'components/Tooltip';
+import {useUser} from 'hooks/useUser';
 
 type StakingTableProps = {
   columns: Column[];
@@ -128,6 +136,8 @@ export const StakingTable: FC<StakingTableProps> = ({
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const focusTarget = useRef<any>([]);
+  const {blockNumber} = useBlockNumber();
+  const {account, library} = useUser();
 
   const {
     data: {contractAddress, index},
@@ -152,28 +162,19 @@ export const StakingTable: FC<StakingTableProps> = ({
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  //refetch to update Total Staked, Earninger Per Ton after stake, unstake
-  // const {
-  //   transactionType,
-  //   blockNumber,
-  //   data: txData,
-  // } = useAppSelector(selectTransactionType);
-  // const {actionType, txContractAddress} = txData;
+  const [isWithdrawAndSwapAll, setIsWithdrawAndSwapAll] =
+    useState<boolean>(false);
 
-  // useEffect(() => {
-  //   async function refetchStake() {
-  //     if (
-  //       (transactionType === 'Staking' && actionType === 'Stake') ||
-  //       actionType === 'Untake'
-  //     )
-  //       console.log('**refetch**');
-  //     console.log(txContractAddress);
-  //     const fetchEachStakeURL = `${fetchStakeURL}&stakeContract=${txContractAddress}`;
-  //     const res = await fetch(fetchEachStakeURL);
-  //     console.log(res);
-  //   }
-  //   refetchStake();
-  // }, [transactionType, blockNumber, txData, actionType, txContractAddress]);
+  //withdraw&swapall btn able condition
+  useEffect(() => {
+    async function callIsWithdrawAndSwapAll() {
+      if (library) {
+        const res = await checkCanWithdrawLayr2All(library);
+        setIsWithdrawAndSwapAll(res || false);
+      }
+    }
+    callIsWithdrawAndSwapAll();
+  }, [blockNumber, library]);
 
   const [isOpen, setIsOpen] = useState(
     contractAddress === undefined ? '' : contractAddress,
@@ -239,6 +240,8 @@ export const StakingTable: FC<StakingTableProps> = ({
       </Center>
     );
   }
+
+  const {btnStyle} = theme;
 
   return (
     <Flex w="1100px" flexDir={'column'}>
@@ -460,6 +463,33 @@ export const StakingTable: FC<StakingTableProps> = ({
       */}
         {/* PAGENATION FOR LATER */}
         <Flex justifyContent="flex-end" my={4} alignItems="center">
+          <Flex w={'100%'} r={'100%'}>
+            <CustomTooltip
+              toolTipW={245}
+              toolTipH={'50px'}
+              fontSize="12px"
+              msg={[
+                'You can withdraw&swap #1~#4 seig TON',
+                'thorough this function',
+              ]}
+              placement={'top'}
+              component={
+                <Button
+                  {...(isWithdrawAndSwapAll
+                    ? {...btnStyle.btnAble()}
+                    : {...btnStyle.btnDisable({colorMode})})}
+                  isDisabled={!isWithdrawAndSwapAll}
+                  fontSize={'14px'}
+                  fontWeight={600}
+                  onClick={() => {
+                    if (account && library) {
+                      stakeTonControl(account, library);
+                    }
+                  }}>
+                  Withdraw & Swap
+                </Button>
+              }></CustomTooltip>
+          </Flex>
           <Flex>
             <Tooltip label="Previous Page">
               <IconButton

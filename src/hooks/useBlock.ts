@@ -1,30 +1,22 @@
-import {useState} from 'react';
-import Web3 from 'web3';
+import {useWeb3React} from '@web3-react/core';
+import {useEffect, useState} from 'react';
 
 export function useBlockNumber(): {blockNumber: number} {
-  const [blockNumber, setBlockNumber] = useState(0);
+  const [blockNumber, setBlockNumber] = useState<number>(0);
+  const {library} = useWeb3React();
 
-  //@ts-ignore
-  const web3 = new Web3(window.ethereum);
-  // const currentBlockNumber = web3.eth.getBlockNumber();
-  // currentBlockNumber.then((e) => setBlockNumber(e));
-  web3.eth
-    .subscribe('newBlockHeaders', function (error, result) {
-      if (!error) {
-        const {number} = result;
-        setBlockNumber(number);
-        return;
-      }
-
-      console.error(error);
-    })
-    // .on('connected', function (subscriptionId) {
-    //   console.log(subscriptionId);
-    // })
-    // .on('data', function (blockHeader) {
-    //   console.log(blockHeader);
-    // })
-    .on('error', console.error);
+  useEffect(() => {
+    if (library) {
+      library.getBlockNumber().then((bn: any) => {
+        setBlockNumber(bn);
+      });
+      library.on('block', setBlockNumber);
+      return () => {
+        library.removeListener('block', setBlockNumber);
+        setBlockNumber(0);
+      };
+    }
+  }, [library]);
 
   return {blockNumber};
 }
