@@ -1,15 +1,10 @@
 import {DEPLOYED} from 'constants/index';
-import {getTokamakContract, getSigner} from 'utils/contract';
+import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
-import store from 'store';
 import {setTx} from 'application';
 import StakeTONControl from 'services/abis/StakeTONControl.json';
 
-export async function stakeTonControl() {
-  const {account, library} = store.getState().user.data;
-  if (!account || !library) {
-    return console.error('no account or library');
-  }
+export async function stakeTonControl(account: string, library: any) {
   const {StakeTonControl_ADDRESS} = DEPLOYED;
   const StakeTonControl_CONTRACT = new Contract(
     StakeTonControl_ADDRESS,
@@ -21,19 +16,14 @@ export async function stakeTonControl() {
     return;
   }
   const signer = getSigner(library, account);
-  return await StakeTonControl_CONTRACT.connect(
-    signer,
-  ).withdrawLayer2AllAndSwapAll([0, 0, 0, 0]);
+  return await setTx(
+    StakeTonControl_CONTRACT.connect(signer).withdrawLayer2AllAndSwapAll([
+      0, 0, 0, 0,
+    ]),
+  );
 }
 
-export async function checkCanWithdrawLayr2All() {
-  if (!store.getState().user.data) {
-    return;
-  }
-  const {account, library} = store.getState().user.data;
-  if (!account || !library) {
-    return console.error('no account or library');
-  }
+export async function checkCanWithdrawLayr2All(library: any) {
   const {StakeTonControl_ADDRESS} = DEPLOYED;
   const StakeTonControl_CONTRACT = new Contract(
     StakeTonControl_ADDRESS,
@@ -42,5 +32,4 @@ export async function checkCanWithdrawLayr2All() {
   );
   const res = await StakeTonControl_CONTRACT.canWithdrawLayer2All();
   return res.can;
-  //   return LockTOSContract.connect(signer).withdrawLayer2AllAndSwapAll();
 }

@@ -24,7 +24,8 @@ export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 /*
 ###################
 ###PHASE 2 OPEN####
-##STAKETONUPGRADE##
+##PENDING_TOOLTIP##
+###PUBLIC_DEPLOY###
 ################### 
 */
 
@@ -136,6 +137,7 @@ export const Router: FC<RouterProps> = () => {
       <div style={{flex: 1}}>
         <Switch>
           <Route exact path="/" component={FLDstarter} />
+
           <Route exact path="/staking" component={Staking} />
           <Route exact path="/pools" component={Pools} />
           {/* <Route exact path="/starter" component={Starter} /> */}

@@ -40,7 +40,7 @@ export const SwapModal = () => {
   const {handleCloseConfirmModal} = useModal();
   const {checkBalance} = useCheckBalance();
 
-  const setMax = useCallback((_e) => setValue(swapBalance), [swapBalance]);
+  // const setMax = useCallback((_e) => setValue(swapBalance), [swapBalance]);
 
   const handleChange = useCallback((e) => {
     setValue(e.target.value);
@@ -50,6 +50,10 @@ export const SwapModal = () => {
   useEffect(() => {
     setSwapValue(value * Number(currentTosPrice));
   }, [value, currentTosPrice]);
+
+  useEffect(() => {
+    setValue(Number(swapBalance));
+  }, [swapBalance]);
 
   const handleCloseModal = () => {
     handleCloseConfirmModal();
@@ -93,6 +97,13 @@ export const SwapModal = () => {
               {currentTosPrice === '0' ? <LoadingDots /> : currentTosPrice} TOS
               per TON
             </Text>
+            <Text
+              color="gray.175"
+              fontSize={'0.750em'}
+              textAlign={'center'}
+              w={'100%'}>
+              Withdrawn TON seig from this product will be swapped to TOS
+            </Text>
           </Box>
 
           <Stack
@@ -116,7 +127,7 @@ export const SwapModal = () => {
                 borderWidth: 0,
               }}
             />
-            <Box position={'absolute'} right={5}>
+            {/* <Box position={'absolute'} right={5}>
               <Button
                 onClick={setMax}
                 type={'button'}
@@ -126,7 +137,7 @@ export const SwapModal = () => {
                 }}>
                 Max
               </Button>
-            </Box>
+            </Box> */}
           </Stack>
           <Stack
             pt="27px"

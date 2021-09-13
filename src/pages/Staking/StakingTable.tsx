@@ -39,6 +39,7 @@ import {
 } from './actions/stakeTONControl';
 import {useBlockNumber} from 'hooks/useBlock';
 import {CustomTooltip} from 'components/Tooltip';
+import {useUser} from 'hooks/useUser';
 
 type StakingTableProps = {
   columns: Column[];
@@ -136,6 +137,7 @@ export const StakingTable: FC<StakingTableProps> = ({
   const theme = useTheme();
   const focusTarget = useRef<any>([]);
   const {blockNumber} = useBlockNumber();
+  const {account, library} = useUser();
 
   const {
     data: {contractAddress, index},
@@ -149,12 +151,12 @@ export const StakingTable: FC<StakingTableProps> = ({
         loop = loop - 1;
         if (loop === 0) {
           setTimeout(() => {
-            focusTarget?.current[
+            focusTarget.current[
               index - Math.floor(index / 10) * 10
-            ]?.scrollIntoView({
+            ].scrollIntoView({
               block: 'start',
             });
-          }, 100);
+          }, 200);
         }
       }
     }
@@ -166,34 +168,14 @@ export const StakingTable: FC<StakingTableProps> = ({
   //withdraw&swapall btn able condition
   useEffect(() => {
     async function callIsWithdrawAndSwapAll() {
-      const res = await checkCanWithdrawLayr2All();
-      setIsWithdrawAndSwapAll(res || false);
+      if (account && library) {
+        const res = await checkCanWithdrawLayr2All(library);
+        setIsWithdrawAndSwapAll(res || false);
+      }
+      setIsWithdrawAndSwapAll(false);
     }
     callIsWithdrawAndSwapAll();
-  }, [blockNumber]);
-
-  //refetch to update Total Staked, Earninger Per Ton after stake, unstake
-  // const {
-  //   transactionType,
-  //   blockNumber,
-  //   data: txData,
-  // } = useAppSelector(selectTransactionType);
-  // const {actionType, txContractAddress} = txData;
-
-  // useEffect(() => {
-  //   async function refetchStake() {
-  //     if (
-  //       (transactionType === 'Staking' && actionType === 'Stake') ||
-  //       actionType === 'Untake'
-  //     )
-  //       console.log('**refetch**');
-  //     console.log(txContractAddress);
-  //     const fetchEachStakeURL = `${fetchStakeURL}&stakeContract=${txContractAddress}`;
-  //     const res = await fetch(fetchEachStakeURL);
-  //     console.log(res);
-  //   }
-  //   refetchStake();
-  // }, [transactionType, blockNumber, txData, actionType, txContractAddress]);
+  }, [blockNumber, library, account]);
 
   const [isOpen, setIsOpen] = useState(
     contractAddress === undefined ? '' : contractAddress,
@@ -500,7 +482,11 @@ export const StakingTable: FC<StakingTableProps> = ({
                   isDisabled={!isWithdrawAndSwapAll}
                   fontSize={'14px'}
                   fontWeight={600}
-                  onClick={() => stakeTonControl()}>
+                  onClick={() => {
+                    if (account && library) {
+                      stakeTonControl(account, library);
+                    }
+                  }}>
                   Withdraw & Swap
                 </Button>
               }></CustomTooltip>

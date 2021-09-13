@@ -201,8 +201,9 @@ export const AirdropModal = () => {
                 renderThumbHorizontal={() => (
                   <div style={{background: 'black'}}></div>
                 )}>
-                <Wrap
+                <Box
                   display="flex"
+                  w="100%"
                   style={{marginTop: '0', marginBottom: '20px'}}>
                   {airdropData.slice(1).map((data: any, index: number) => (
                     <AirdropRecord
@@ -211,7 +212,7 @@ export const AirdropModal = () => {
                       key={index}
                     />
                   ))}
-                </Wrap>
+                </Box>
               </Scrollbars>
             )}
           </Stack>
