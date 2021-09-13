@@ -7,5 +7,6 @@ export interface TosStakeList {
   startTime: number;
   endTime: number;
   endDate: string;
-  isBoosted: boolean;
+  withdrawn: boolean;
+  reward: string;
 }

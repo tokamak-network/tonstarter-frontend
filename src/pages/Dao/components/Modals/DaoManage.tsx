@@ -8,18 +8,15 @@ import {
   Text,
   Button,
   Flex,
-  Wrap,
   useTheme,
   useColorMode,
   Radio,
   RadioGroup,
-  Tooltip,
   NumberInput,
   NumberInputField,
 } from '@chakra-ui/react';
 import React from 'react';
 import {useAppSelector} from 'hooks/useRedux';
-import {selectModalType} from 'store/modal.reducer';
 import {useModal} from 'hooks/useModal';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useState, useEffect} from 'react';
@@ -27,9 +24,16 @@ import {Scrollbars} from 'react-custom-scrollbars-2';
 import backArrowIcon from 'assets/svgs/back_arrow_icon.svg';
 import {useRef} from 'react';
 import {getUserTosBalance} from 'client/getUserBalance';
-import BOOST_ICON from 'assets/svgs/booster_icon.svg';
 import {selectUser} from 'store/app/user.reducer';
 import {increaseAmount, extendPeriod} from '../../actions';
+import {selectDao} from 'pages/Dao/dao.reducer';
+import {TosStakeList} from '../../types/index';
+import {selectModalType} from 'store/modal.reducer';
+import {CustomTooltip} from 'components/Tooltip';
+import {useBlockNumber} from 'hooks/useBlock';
+import {getConstants} from 'pages/Dao/utils';
+import moment from 'moment';
+import {useToast} from 'hooks/useToast';
 
 interface Stake {
   lockId: string;
@@ -38,8 +42,6 @@ interface Stake {
   periodDays: number;
   periodweeks: number;
 }
-
-type TosStakeList = Stake[] | undefined;
 
 // type RadioSelect = 'select_amount' | 'select_period';
 
@@ -82,31 +84,48 @@ const themeDesign = {
 
 export const DaoManageModal = () => {
   const {data} = useAppSelector(selectModalType);
+  const {data: stakeList} = useAppSelector(selectDao);
 
-  const {stakeList} = data.data;
   const [edit, setEdit] = useState(false);
   const [selectLockId, setSelectLockId] = useState('');
   const [select, setSelect] = useState('select_amount');
   const [balance, setBalance] = useState('0');
-  const [tosStakeList, setTosStakeList] = useState<TosStakeList>(undefined);
+  const [tosStakeList, setTosStakeList] = useState<TosStakeList[] | undefined>(
+    undefined,
+  );
+  const [epochUnit, setEpochUnit] = useState(0);
+  const [maxTime, setMaxTime] = useState(0);
   const [value, setValue] = useState('');
-  const [periodValue, setPeriodValue] = useState('');
-
+  const [periodValue, setPeriodValue] = useState(0);
   const [btnDisable, setBtnDisable] = useState(true);
+  const [availableWeeks, setAvailableWeeks] = useState(0);
 
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {active, account, library} = useActiveWeb3React();
   const {btnStyle} = theme;
   const {handleCloseModal} = useModal();
+  const {toastMsg} = useToast();
+  const {blockNumber} = useBlockNumber();
 
   const focusTarget = useRef<any>([]);
   const amountRef = useRef<HTMLInputElement>(null);
   const periodRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    const setConstants = async () => {
+      const {epochUnit, maxTime} = await getConstants({library});
+      setEpochUnit(epochUnit);
+      setMaxTime(maxTime);
+    };
+    if (library) {
+      setConstants();
+    }
+  }, [library]);
+
+  useEffect(() => {
     if (stakeList) {
-      setTosStakeList(stakeList);
+      setTosStakeList(stakeList.filter((e: TosStakeList) => e.end === false));
     }
   }, [active, account, library, stakeList]);
 
@@ -128,7 +147,7 @@ export const DaoManageModal = () => {
   }, [active, account]);
 
   useEffect(() => {
-    const checkCondition = value === '' && value === '' ? true : false;
+    const checkCondition = value === '' && periodValue === 0 ? true : false;
     setBtnDisable(checkCondition);
     setTimeout(() => {
       select === 'select_amount'
@@ -139,10 +158,33 @@ export const DaoManageModal = () => {
 
   useEffect(() => {
     if (select) {
-      setPeriodValue('');
+      setPeriodValue(0);
     }
     setValue('');
   }, [select]);
+
+  useEffect(() => {
+    const stake = tosStakeList?.filter(
+      (stake) => stake.lockId === selectLockId,
+    );
+    if (stake === undefined || stake?.length > 1) {
+      return console.error('Stakelist selected should be one');
+    }
+    if (stake[0] !== undefined) {
+      const {startTime, endTime} = stake[0];
+      const timeLeft = endTime - moment().unix();
+      const maxPeriod = maxTime - timeLeft;
+      console.log(maxPeriod);
+      setAvailableWeeks(Math.floor(maxPeriod / epochUnit));
+      // console.log(endTime, moment().unix());
+      // console.log(maxTime, timeLeft);
+      // console.log(moment().unix());
+      // console.log(maxPeriod);
+
+      // console.log('moment');
+      // console.log(maxPeriod / epochUnit);
+    }
+  }, [blockNumber, selectLockId, maxTime, epochUnit]);
 
   const {data: userData} = useAppSelector(selectUser);
   if (!userData || !userData.balance.tos) {
@@ -193,13 +235,14 @@ export const DaoManageModal = () => {
             renderThumbHorizontal={() => (
               <div style={{background: 'black'}}></div>
             )}>
-            <Wrap display="flex" style={{marginTop: '0', marginBottom: '20px'}}>
+            <Flex
+              flexDir="column"
+              style={{marginTop: '0', marginBottom: '20px'}}>
               {tosStakeList?.map((stake: any, index: number) => {
                 return (
                   <Flex
                     ref={(el) => (focusTarget.current[index] = el)}
                     alignItems="center"
-                    pl="0.4em"
                     h={'64px'}
                     borderBottom={
                       index !== tosStakeList.length - 1
@@ -207,20 +250,6 @@ export const DaoManageModal = () => {
                         : ''
                     }
                     key={index}>
-                    {stake.isBoosted ? (
-                      <Tooltip
-                        hasArrow
-                        placement="right"
-                        w={100}
-                        h={'28px'}
-                        fontSize={'12px'}
-                        pt={1}
-                        label="Boosted locker"
-                        color={theme.colors.white[100]}
-                        bg={theme.colors.gray[375]}>
-                        <img style={{position: 'absolute'}} src={BOOST_ICON} />
-                      </Tooltip>
-                    ) : null}
                     <Text
                       w="60px"
                       textAlign="center"
@@ -229,14 +258,14 @@ export const DaoManageModal = () => {
                       fontColor={themeDesign.scrollNumberFont[colorMode]}>
                       {index < 10 ? '0' + (index + 1) : index}
                     </Text>
-                    <Box w={'5em'}>
+                    <Box w={'94px'} mr={'30px'}>
                       <Text
                         fontSize={'0.750em'}
                         color={themeDesign.scrollAmountFont[colorMode]}>
                         Amount
                       </Text>
                       <Text
-                        fontSize={'1em'}
+                        fontSize={'14px'}
                         fontColor={themeDesign.scrollNumberFont[colorMode]}
                         fontWeight={'bold'}>
                         {Number(stake.lockedBalance).toLocaleString()}
@@ -249,18 +278,30 @@ export const DaoManageModal = () => {
                         </span>
                       </Text>
                     </Box>
-                    <Box w={'6em'} mr={'1em'}>
+                    <Box w={'82px'} mr="30px">
                       <Text
                         fontSize={'0.750em'}
-                        color={themeDesign.scrollAmountFont[colorMode]}
-                        textAlign="center">
-                        End Date
+                        color={themeDesign.scrollAmountFont[colorMode]}>
+                        End time
                       </Text>
                       <Text
-                        fontSize={'1em'}
+                        fontSize={'14px'}
                         fontColor={themeDesign.scrollNumberFont[colorMode]}
                         fontWeight={'bold'}>
                         {stake.endDate}
+                      </Text>
+                    </Box>
+                    <Box w={'82px'} mr={'30px'}>
+                      <Text
+                        fontSize={'0.750em'}
+                        color={themeDesign.scrollAmountFont[colorMode]}>
+                        sTOS
+                      </Text>
+                      <Text
+                        fontSize={'14px'}
+                        fontColor={themeDesign.scrollNumberFont[colorMode]}
+                        fontWeight={'bold'}>
+                        {Number(stake.lockedBalance).toLocaleString()}
                       </Text>
                     </Box>
                     <Button
@@ -280,7 +321,7 @@ export const DaoManageModal = () => {
                   </Flex>
                 );
               })}
-            </Wrap>
+            </Flex>
           </Scrollbars>
         </Box>
         <Box as={Flex} justifyContent={'center'}>
@@ -357,8 +398,8 @@ export const DaoManageModal = () => {
               borderBottom={themeDesign.border[colorMode]}>
               <Radio value="select_amount" mr="14px" cursor="pointer"></Radio>
               <Text
-                w={'70px'}
-                fontSize={'0.813em'}
+                w={'112px'}
+                fontSize={'12px'}
                 fontWeight={600}
                 fontColor={themeDesign.editBorder[colorMode]}>
                 Increase Amount
@@ -368,11 +409,14 @@ export const DaoManageModal = () => {
                 h="32px"
                 mr={'10px'}
                 value={value}
+                dir="rtl"
+                cursor=""
                 onChange={(value) => setValue(value)}>
                 <NumberInputField
                   {...(select === 'select_period'
                     ? themeDesign.inputVariant[colorMode]
                     : '')}
+                  disabled={select === 'select_period'}
                   ref={amountRef}
                   fontSize={'0.750em'}
                   _focus={{
@@ -402,8 +446,8 @@ export const DaoManageModal = () => {
               borderBottom={themeDesign.border[colorMode]}>
               <Radio value="select_period" mr="14px" cursor="pointer"></Radio>
               <Text
-                w={'70px'}
-                fontSize={'0.813em'}
+                w={'112px'}
+                fontSize={'12px'}
                 fontWeight={600}
                 fontColor={themeDesign.scrollNumberFont[colorMode]}>
                 Extend Period
@@ -413,17 +457,26 @@ export const DaoManageModal = () => {
                 h="32px"
                 mr={'0.750em'}
                 value={periodValue}
-                onChange={(periodValue) => setPeriodValue(periodValue)}>
+                onChange={(periodValue) => setPeriodValue(Number(periodValue))}>
                 <NumberInputField
                   {...(select === 'select_amount'
                     ? themeDesign.inputVariant[colorMode]
                     : '')}
+                  disabled={select === 'select_amount'}
                   ref={periodRef}
                   fontSize={'0.750em'}
                   _focus={{
                     borderWidth: 0,
                   }}></NumberInputField>
               </NumberInput>
+              <Flex h={'100%'} alignItems="center" justifyContent="center">
+                <CustomTooltip
+                  toolTipW={150}
+                  toolTipH={'50px'}
+                  msg={[
+                    `You can extend period within ${availableWeeks} weeks`,
+                  ]}></CustomTooltip>
+              </Flex>
             </Flex>
             <Box
               pos="absolute"
@@ -439,15 +492,11 @@ export const DaoManageModal = () => {
                   : {...btnStyle.btnAble()})}
                 w={'150px'}
                 fontSize="14px"
-                // _hover={theme.btnHover.checkDisable(
-                //   amountRef.current?.value !== '' ||
-                //     periodRef.current?.value !== '',
-                // )}
                 disabled={btnDisable}
                 mr={'15px'}
                 onClick={() => {
                   if (select === 'select_amount') {
-                    if (account && selectLockId !== '' && amountRef.current) {
+                    if (account && selectLockId !== '' && value !== '') {
                       increaseAmount({
                         account,
                         library,
@@ -458,13 +507,23 @@ export const DaoManageModal = () => {
                     }
                   }
                   if (select === 'select_period') {
-                    if (account && selectLockId !== '' && amountRef.current) {
-                      extendPeriod({
-                        account,
-                        library,
-                        lockId: selectLockId,
-                        lockupTime: Number(periodRef.current?.value),
-                      });
+                    if (account && selectLockId !== '' && periodValue !== 0) {
+                      if (periodValue > availableWeeks) {
+                        return toastMsg({
+                          status: 'error',
+                          title: 'Error',
+                          description: `You can extend period within ${availableWeeks} weeks`,
+                          duration: 5000,
+                          isClosable: true,
+                        });
+                      } else {
+                        extendPeriod({
+                          account,
+                          library,
+                          lockId: selectLockId,
+                          lockupTime: Number(periodRef.current?.value),
+                        });
+                      }
                     }
                   }
                 }}>
@@ -502,7 +561,7 @@ export const DaoManageModal = () => {
       <ModalContent
         fontFamily={theme.fonts.roboto}
         bg={colorMode === 'light' ? 'white.100' : 'black.200'}
-        w="350px"
+        maxW="500px"
         pt="25px"
         pb="25px">
         {!edit && <MainScreen />}

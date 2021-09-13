@@ -1,7 +1,16 @@
-import {Text, Flex, Tooltip, useTheme, Placement} from '@chakra-ui/react';
+import {
+  Text,
+  Flex,
+  Tooltip,
+  useTheme,
+  Placement,
+  Image,
+} from '@chakra-ui/react';
 import React, {ReactNode} from 'react';
+import tooltipIcon from 'assets/svgs/input_question_icon.svg';
+
 type CustomTooltipProp = {
-  component: ReactNode;
+  component?: ReactNode;
   toolTipW: number;
   toolTipH: string;
   msg: string[];
@@ -39,7 +48,7 @@ export const CustomTooltip = (prop: CustomTooltipProp) => {
       p={0}
       borderRadius={3}
       fontSize={fontSize || '12px'}>
-      {component}
+      {component || <img src={tooltipIcon} alt="tooltip icon" />}
     </Tooltip>
   );
 };

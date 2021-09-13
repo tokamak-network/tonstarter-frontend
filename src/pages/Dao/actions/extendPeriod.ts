@@ -13,18 +13,22 @@ type ExtendPeriod = {
 };
 
 export const extendPeriod = async (args: ExtendPeriod) => {
-  const {account, library, lockId, lockupTime} = args;
-  const {LockTOS_ADDRESS} = DEPLOYED;
-  const LockTOSContract = new Contract(
-    LockTOS_ADDRESS,
-    LockTOSABI.abi,
-    library,
-  );
+  try {
+    const {account, library, lockId, lockupTime} = args;
+    const {LockTOS_ADDRESS} = DEPLOYED;
+    const LockTOSContract = new Contract(
+      LockTOS_ADDRESS,
+      LockTOSABI.abi,
+      library,
+    );
 
-  const signer = getSigner(library, account);
-  const res = await LockTOSContract.connect(signer).increaseUnlockTime(
-    lockId,
-    lockupTime,
-  );
-  return setTx(res);
+    const signer = getSigner(library, account);
+    const res = await LockTOSContract.connect(signer).increaseUnlockTime(
+      lockId,
+      lockupTime,
+    );
+    return setTx(res);
+  } catch (e) {
+    console.log(e);
+  }
 };

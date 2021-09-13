@@ -40,6 +40,7 @@ export const AvailableBalance = () => {
       if (account) {
         const res = await getUserTosBalance(account, library);
         if (res !== undefined) {
+          console.log(res);
           setbalance(res);
         }
       }
@@ -49,6 +50,9 @@ export const AvailableBalance = () => {
     } else {
       setbalance('-');
     }
+    return () => {
+      setbalance('-');
+    };
   }, [active, account, library, blockNumber, dispatch]);
 
   //set btn condition
@@ -84,15 +88,15 @@ export const AvailableBalance = () => {
         </Flex>
       </Box>
       <Button
-        {...(active
-          ? {...btnStyle.btnAble()}
-          : {...btnStyle.btnDisable({colorMode})})}
+        {...(!active || (btnType === 'Stake' && balance === '0.00')
+          ? {...btnStyle.btnDisable({colorMode})}
+          : {...btnStyle.btnAble()})}
         w={'150px'}
         h="38px"
         p={0}
         fontSize={'14px'}
         fontWeight={400}
-        isDisabled={!active}
+        isDisabled={!active || (btnType === 'Stake' && balance === '0.00')}
         _hover={btnHover.backgroundColor}
         onClick={() =>
           btnType === 'Approve' && account

@@ -35,7 +35,6 @@ export type Stake = {
   period: string;
   status: string;
   library: any;
-  account: any;
   fetchBlock: number | undefined;
   saleStartTime: string | undefined;
   saleEndTime: string | undefined;
@@ -61,7 +60,7 @@ const initialState = {
 
 export const fetchStakes = createAsyncThunk(
   'stakes/all',
-  async ({library, account, reFetch}: any, {requestId, getState}) => {
+  async ({library, reFetch}: any, {requestId, getState}) => {
     //result to dispatch data for Stakes store
     let projects: any[] = [];
 
@@ -122,7 +121,6 @@ export const fetchStakes = createAsyncThunk(
           fetchBlock: currentBlock,
           status,
           library,
-          account,
           vault: stake.vault,
           saleClosed,
           ept: getEarningPerTon(vaultsData, stake.vault, stake.endBlock),

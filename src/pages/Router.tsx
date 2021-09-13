@@ -19,6 +19,7 @@ import {Footer} from 'components/Footer';
 import {ConfirmModal} from 'components/Modal';
 import {MobilePreOpen} from './PreOpen/Index';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
 /*
@@ -32,13 +33,16 @@ export const Router: FC<RouterProps> = () => {
   const dispatch = useAppDispatch();
   const [walletState, setWalletState] = useState<string>('');
   const {onOpen, isOpen: isModalOpen, onClose} = useDisclosure();
-  const {account, chainId, library, deactivate} = useWeb3React();
-  //@ts-ignore
-  const accountStorage = JSON.parse(window.localStorage.getItem('account'));
+  // const {account, chainId, library, deactivate} = useWeb3React();
+  const {account, chainId, library, deactivate} = useActiveWeb3React();
 
-  if (accountStorage === null) {
-    window.localStorage.setItem('account', JSON.stringify({signIn: false}));
-  }
+  //@ts-ignore
+  // const accountStorage = JSON.parse(window.localStorage.getItem('account'));
+
+  // if (accountStorage === null) {
+  //   // console.log('go');
+  //   window.localStorage.setItem('account', JSON.stringify({signIn: false}));
+  // }
 
   const fetchToInitialize = async () => {
     await dispatch(
@@ -49,7 +53,6 @@ export const Router: FC<RouterProps> = () => {
     await dispatch(
       fetchStakes({
         library,
-        account,
       }) as any,
     );
   };
@@ -68,35 +71,37 @@ export const Router: FC<RouterProps> = () => {
   useEffect(() => {
     if (account && chainId) {
       //@ts-ignore
-      const accountStorage = JSON.parse(window.localStorage.getItem('account'));
+      // const accountStorage = JSON.parse(window.localStorage.getItem('account'));
 
-      //@ts-ignore
-      if (accountStorage === null) {
-        window.localStorage.setItem('account', JSON.stringify({signIn: false}));
-        return deactivate();
-      }
+      // //@ts-ignore
+      // if (accountStorage === null) {
+      //   console.log('catch2');
 
-      const {signIn} = accountStorage;
+      //   // window.localStorage.setItem('account', JSON.stringify({signIn: false}));
+      //   return deactivate();
+      // }
+
+      // const {signIn} = accountStorage;
+
+      // // @ts-ignore
+      // dispatch(fetchAppConfig({chainId}));
+
+      // if (signIn === false) {
+      //   deactivate();
+      // } else if (signIn === true) {
+      //   if (chainId !== Number(DEFAULT_NETWORK)) {
+      //     deactivate();
+      //     return window.localStorage.setItem(
+      //       'account',
+      //       JSON.stringify({signIn: false}),
+      //     );
+      //   }
 
       // @ts-ignore
-      dispatch(fetchAppConfig({chainId}));
-
-      if (signIn === false) {
-        deactivate();
-      } else if (signIn === true) {
-        if (chainId !== Number(DEFAULT_NETWORK)) {
-          deactivate();
-          return window.localStorage.setItem(
-            'account',
-            JSON.stringify({signIn: false}),
-          );
-        }
-
-        // @ts-ignore
-        dispatch(fetchUserInfo({account, library})).then(() => {
-          fetchToInitialize();
-        });
-      }
+      dispatch(fetchUserInfo({account, library})).then(() => {
+        fetchToInitialize();
+      });
+      // }
     }
     /*eslint-disable*/
   }, [chainId, account, library, dispatch, deactivate]);
@@ -105,13 +110,13 @@ export const Router: FC<RouterProps> = () => {
     //@ts-ignore
     const accountStorage = JSON.parse(window.localStorage.getItem('account'));
     const {signIn} = accountStorage;
-    if (account === undefined && signIn === true) {
-      // window.localStorage.setItem('account', JSON.stringify({signIn: false}));
-      fetchToInitialize();
-    }
-    if (account === undefined && signIn === false) {
-      fetchToInitialize();
-    }
+    // if (account === undefined && signIn === true) {
+    //   fetchToInitialize();
+    // }
+    // if (signIn === false) {
+    //   deactivate();
+    // }
+    fetchToInitialize();
     /*eslint-disable*/
   }, [account, dispatch, library, chainId, deactivate]);
 

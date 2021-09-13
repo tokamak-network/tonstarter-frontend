@@ -41,7 +41,9 @@ export const getTosStakeList = async ({
       const periodWeeks = unixEndTime.diff(unixStartTime, 'weeks');
       const periodDays = unixEndTime.diff(unixStartTime, 'days');
       const end = endTime <= nowTime;
-      const endDate = moment(unixEndTime).format('MMM DD, YYYY');
+      const endDate = moment(unixEndTime).format('HH:MM:SS, DD');
+      const withdrawn = lockedBalance.withdrawn;
+      const reward = convertNumber({amount: lockedBalance.amount.toString()});
       return {
         lockId,
         periodWeeks,
@@ -51,11 +53,13 @@ export const getTosStakeList = async ({
         startTime,
         endTime,
         endDate,
+        withdrawn,
+        reward,
       };
     }),
   );
 
   console.log('**locksOf**');
   console.log(res);
-  return res.filter((e: TosStakeList) => e.lockId !== '0');
+  return res.filter((e: TosStakeList) => e.withdrawn === false);
 };
