@@ -17,7 +17,6 @@ import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
 import {useCallback, useEffect, useState} from 'react';
 import {CloseButton} from 'components/Modal/CloseButton';
-import {useUser} from 'hooks/useUser';
 import {selectUser} from 'store/app/user.reducer';
 import {fetchSwapPayload, getEstimatedReward} from '../utils/simulator';
 import {convertToWei, convertFromRayToWei} from 'utils/number';
@@ -67,7 +66,6 @@ export const Title = (prop: {title: string; fontSize: number}) => {
 };
 
 export const Simulator = () => {
-  // const {account, library} = useUser();
   const theme = useTheme();
   const {colorMode} = useColorMode();
 

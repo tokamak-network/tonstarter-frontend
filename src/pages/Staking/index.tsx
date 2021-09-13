@@ -174,7 +174,7 @@ export const Staking = () => {
   }: any) => {
     const {colorMode} = useColorMode();
     const [balance, SetBalance] = useState('-');
-    const {account, library} = useUser();
+    const {account, library} = useActiveWeb3React();
     const [toggle, setToggle] = useState('Earned TOS');
 
     useEffect(() => {
@@ -183,7 +183,7 @@ export const Staking = () => {
 
     useEffect(() => {
       const getBalance = async () => {
-        if (account === undefined) {
+        if (!account || !library) {
           return;
         }
         try {

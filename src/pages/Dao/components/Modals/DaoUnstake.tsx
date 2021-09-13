@@ -19,7 +19,7 @@ import {selectModalType} from 'store/modal.reducer';
 import {useModal} from 'hooks/useModal';
 import {useEffect, useState} from 'react';
 import {Scrollbars} from 'react-custom-scrollbars-2';
-import {unstakeTOS} from '@Dao/actions';
+import {unstakeTOS} from '../../actions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 
 const UnstakeRecord = ({number, amount}: {number: number; amount: string}) => {

@@ -157,7 +157,7 @@ export const WalletInformation: FC<WalletInformationProps> = ({
   };
 
   const getWalletTonBalance = async () => {
-    if (account === undefined) {
+    if (!account || !library) {
       return;
     }
 
@@ -204,7 +204,7 @@ export const WalletInformation: FC<WalletInformationProps> = ({
             tosBalance,
           };
         } else if (modal === 'unstake') {
-          if (account === undefined) {
+          if (!account || !library) {
             return;
           }
           const payloadModal = await getUserBalance(

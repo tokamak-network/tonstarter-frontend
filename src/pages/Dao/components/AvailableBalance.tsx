@@ -12,7 +12,7 @@ import {useBlockNumber} from 'hooks/useBlock';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useState, useEffect} from 'react';
 import {openModal} from 'store/modal.reducer';
-import {checkApprove, getAllowance} from '@Dao/actions/index';
+import {checkApprove, getAllowance} from '../actions/';
 
 const themeDesign = {
   fontColorTitle: {

@@ -1,4 +1,5 @@
 import {Contract} from '@ethersproject/contracts';
+import {setTx} from 'application';
 import {DEPLOYED} from 'constants/index';
 import * as TOSABI from 'services/abis/TOS.json';
 import {getSigner} from 'utils/contract';
@@ -20,8 +21,9 @@ export const getAllowance = async (account: string, library: any) => {
   const signer = getSigner(library, account);
   const totalSupply = await TOSContract.totalSupply();
 
-  return await TOSContract.connect(signer).approve(
+  const res = await TOSContract.connect(signer).approve(
     LockTOS_ADDRESS,
     totalSupply,
   );
+  return setTx(res);
 };

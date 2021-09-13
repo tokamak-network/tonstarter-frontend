@@ -114,7 +114,7 @@ export const Pools = () => {
               data={pool}
               columns={columns}
               isLoading={isLoading}
-              address={account}
+              address={account || undefined}
               library={library}
             />
           )}

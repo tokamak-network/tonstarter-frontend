@@ -292,7 +292,7 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
                           //@ts-ignore
                           store.dispatch(
                             //@ts-ignore
-                            fetchUserInfo({address, library, reset: true}),
+                            fetchUserInfo({account, library, reset: true}),
                           );
                         }}>
                         Disconnect

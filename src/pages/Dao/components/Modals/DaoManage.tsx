@@ -29,7 +29,7 @@ import {useRef} from 'react';
 import {getUserTosBalance} from 'client/getUserBalance';
 import BOOST_ICON from 'assets/svgs/booster_icon.svg';
 import {selectUser} from 'store/app/user.reducer';
-import {increaseAmount, extendPeriod} from '@Dao/actions';
+import {increaseAmount, extendPeriod} from '../../actions';
 
 interface Stake {
   lockId: string;
@@ -447,11 +447,7 @@ export const DaoManageModal = () => {
                 mr={'15px'}
                 onClick={() => {
                   if (select === 'select_amount') {
-                    if (
-                      account !== undefined &&
-                      selectLockId !== '' &&
-                      amountRef.current
-                    ) {
+                    if (account && selectLockId !== '' && amountRef.current) {
                       increaseAmount({
                         account,
                         library,
@@ -462,11 +458,7 @@ export const DaoManageModal = () => {
                     }
                   }
                   if (select === 'select_period') {
-                    if (
-                      account !== undefined &&
-                      selectLockId !== '' &&
-                      amountRef.current
-                    ) {
+                    if (account && selectLockId !== '' && amountRef.current) {
                       extendPeriod({
                         account,
                         library,

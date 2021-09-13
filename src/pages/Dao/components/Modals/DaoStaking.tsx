@@ -27,8 +27,8 @@ import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import {useCheckBalance} from 'hooks/useCheckBalance';
 import moment from 'moment';
 import Decimal from 'decimal.js';
-import {stakeTOS} from '@Dao/actions/stakeTOS';
-import {getConstants} from '@Dao/utils';
+import {stakeTOS} from '../../actions';
+import {getConstants} from '../../utils';
 
 type SelectPeriod = '1 month' | '6 months' | '1 year' | '3 years';
 
