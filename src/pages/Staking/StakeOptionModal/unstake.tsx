@@ -15,12 +15,12 @@ import {
 import {unstake} from '../actions/';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
-import {useUser} from 'hooks/useUser';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal/CloseButton';
 
 export const UnstakeOptionModal = () => {
-  const {account, library} = useUser();
+  const {account, library} = useActiveWeb3React();
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
   const theme = useTheme();

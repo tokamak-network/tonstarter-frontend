@@ -16,12 +16,12 @@ import {unstakeL2} from '../actions';
 import React from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
-import {useUser} from 'hooks/useUser';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal/CloseButton';
 
 export const UnStakeFromLayer2Modal = () => {
-  const {account, library} = useUser();
+  const {account, library} = useActiveWeb3React();
   const {sub} = useAppSelector(selectModalType);
   const theme = useTheme();
   const {colorMode} = useColorMode();

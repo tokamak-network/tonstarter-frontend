@@ -6,6 +6,7 @@
     "@apollo/client": "^3.3.21",
     "@chakra-ui/icons": "^1.0.13",
     "@chakra-ui/react": "^1.6.2",
+    "@craco/craco": "^6.3.0",
     "@emotion/react": "^11.4.0",
     "@emotion/styled": "^11",
     "@ethersproject/contracts": "^5.4.1",
@@ -74,10 +75,10 @@
     "web3-utils": "^1.2.6"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "GENERATE_SOURCEMAP=false react-scripts build",
+    "start": "craco start",
+    "build": "GENERATE_SOURCEMAP=false craco build",
     "codegen": "graphql-codegen --config codegen.yml",
-    "test": "react-scripts test",
+    "test": "craco test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -111,6 +112,7 @@
     "@types/react-router-dom": "^5.1.7",
     "@types/react-table": "^7.7.0",
     "@types/redux-logger": "^3.0.8",
+    "craco-alias": "^3.0.1",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "typescript": "^4.2.4"

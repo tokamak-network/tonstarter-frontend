@@ -5,7 +5,7 @@ import {MySTOS} from './MySTOS';
 import {shortenAddress} from 'utils';
 import {useEffect} from 'react';
 import {useState} from 'react';
-import {useUser} from 'hooks/useUser';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 
 const themeDesign = {
   fontColorTitle: {
@@ -45,11 +45,11 @@ const themeDesign = {
 export const STOS = () => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
-  const {account, library} = useUser();
+  const {account, library} = useActiveWeb3React();
   const [address, setAddress] = useState('-');
 
   useEffect(() => {
-    if (account !== undefined) {
+    if (account && library) {
       setAddress(shortenAddress(account));
     } else {
       setAddress('-');

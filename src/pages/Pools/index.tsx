@@ -15,9 +15,9 @@ import {PageHeader} from 'components/PageHeader';
 // import {LoadingComponent} from 'components/Loading';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {DEPLOYED} from '../../constants/index';
-import {useUser} from '../../hooks/useUser';
 import {usePoolByUserQuery} from 'store/data/enhanced';
-import ms from 'ms.macro'
+import ms from 'ms.macro';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 
 const {
   // TOS_ADDRESS,
@@ -26,7 +26,7 @@ const {
 
 export const Pools = () => {
   const theme = useTheme();
-  const {account, library} = useUser();
+  const {account, library} = useActiveWeb3React();
   // const dispatch = useAppDispatch();
   // const {colorMode} = useColorMode();
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
@@ -65,12 +65,12 @@ export const Pools = () => {
     ],
     [],
   );
-  const { isLoading, isError, error, isUninitialized, data } = usePoolByUserQuery(
-    { address: BasePool_Address?.toLowerCase() },
+  const {isLoading, isError, error, isUninitialized, data} = usePoolByUserQuery(
+    {address: BasePool_Address?.toLowerCase()},
     {
       pollingInterval: ms`2m`,
-    }
-  )
+    },
+  );
 
   // const tosPool = useQuery(GET_TOS_POOL, {
   //   variables: {address: [TOS_ADDRESS.toLowerCase()]}
@@ -93,7 +93,7 @@ export const Pools = () => {
     isError,
     isUninitialized,
     error,
-    data
+    data,
   ]);
 
   return (

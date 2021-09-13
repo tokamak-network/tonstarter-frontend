@@ -18,7 +18,7 @@ import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {useState, useEffect} from 'react';
 import {fetchStakedBalancePayload} from '../utils/fetchStakedBalancePayload';
-import {useUser} from 'hooks/useUser';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {checkSaleClosed} from 'pages/Staking/utils';
 import {BASE_PROVIDER, DEPLOYED} from 'constants/index';
@@ -73,7 +73,7 @@ export const ManageModal = () => {
   const {btnStyle} = theme;
   const {colorMode} = useColorMode();
 
-  const {account, library} = useUser();
+  const {account, library} = useActiveWeb3React();
   const {handleOpenConfirmModal, handleCloseModal} = useModal();
 
   const {

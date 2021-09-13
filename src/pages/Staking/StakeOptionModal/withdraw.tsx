@@ -17,13 +17,13 @@ import React, {useState} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {withdraw} from '../actions';
-import {useUser} from 'hooks/useUser';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal/CloseButton';
 
 export const WithdrawalOptionModal = () => {
   const {sub} = useAppSelector(selectModalType);
-  const {account, library} = useUser();
+  const {account, library} = useActiveWeb3React();
   const theme = useTheme();
   const {colorMode} = useColorMode();
   const {handleCloseConfirmModal} = useModal();

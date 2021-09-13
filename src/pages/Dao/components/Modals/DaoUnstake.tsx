@@ -19,8 +19,8 @@ import {selectModalType} from 'store/modal.reducer';
 import {useModal} from 'hooks/useModal';
 import {useEffect, useState} from 'react';
 import {Scrollbars} from 'react-custom-scrollbars-2';
-import {unstakeTOS} from '../utils';
-import {useUser} from 'hooks/useUser';
+import {unstakeTOS} from '@Dao/actions';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 
 const UnstakeRecord = ({number, amount}: {number: number; amount: string}) => {
   const {colorMode} = useColorMode();
@@ -48,7 +48,7 @@ export const DaoUnstakeModal = (props: any) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {handleCloseModal} = useModal();
-  const {account, library} = useUser();
+  const {account, library} = useActiveWeb3React();
 
   const [unstakeList, setUnstakeList] = useState<[{}]>([{}]);
   const [unstakeBalance, setUnstakeBalance] = useState('-');

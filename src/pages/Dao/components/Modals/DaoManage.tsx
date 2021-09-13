@@ -11,7 +11,6 @@ import {
   Wrap,
   useTheme,
   useColorMode,
-  Input,
   Radio,
   RadioGroup,
   Tooltip,
@@ -21,17 +20,17 @@ import {
 import React from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
-import {useInput} from 'hooks/useInput';
 import {useModal} from 'hooks/useModal';
-import {useUser} from 'hooks/useUser';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useState, useEffect} from 'react';
 import {Scrollbars} from 'react-custom-scrollbars-2';
 import backArrowIcon from 'assets/svgs/back_arrow_icon.svg';
 import {useRef} from 'react';
-import {increaseAmount, extendPeriod} from '../utils';
 import {getUserTosBalance} from 'client/getUserBalance';
 import BOOST_ICON from 'assets/svgs/booster_icon.svg';
 import {selectUser} from 'store/app/user.reducer';
+import {increaseAmount, extendPeriod} from '@Dao/actions';
+
 interface Stake {
   lockId: string;
   lockedBalance: string;
@@ -97,7 +96,7 @@ export const DaoManageModal = () => {
 
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const {signIn, account, library} = useUser();
+  const {active, account, library} = useActiveWeb3React();
   const {btnStyle} = theme;
   const {handleCloseModal} = useModal();
 
@@ -109,24 +108,24 @@ export const DaoManageModal = () => {
     if (stakeList) {
       setTosStakeList(stakeList);
     }
-  }, [signIn, account, library, stakeList]);
+  }, [active, account, library, stakeList]);
 
   useEffect(() => {
     async function getTosBalance() {
-      if (account !== undefined) {
+      if (account && library) {
         const res = await getUserTosBalance(account, library);
         if (res !== undefined) {
           setBalance(res);
         }
       }
     }
-    if (signIn && account) {
+    if (active && account) {
       getTosBalance();
     } else {
       setBalance('-');
     }
     /*eslint-disable*/
-  }, [signIn, account]);
+  }, [active, account]);
 
   useEffect(() => {
     const checkCondition = value === '' && value === '' ? true : false;
@@ -286,13 +285,13 @@ export const DaoManageModal = () => {
         </Box>
         <Box as={Flex} justifyContent={'center'}>
           <Button
-            {...(signIn
+            {...(active
               ? {...btnStyle.btnAble()}
               : {...btnStyle.btnDisable({colorMode})})}
             w={'150px'}
             fontSize="14px"
-            _hover={theme.btnHover.checkDisable({signIn})}
-            disabled={!signIn}
+            _hover={theme.btnHover.checkDisable({active})}
+            disabled={!active}
             onClick={() => {
               setEdit(false);
               handleCloseModal();
@@ -485,7 +484,7 @@ export const DaoManageModal = () => {
                 w={'150px'}
                 fontSize="14px"
                 _hover={{}}
-                disabled={!signIn}
+                disabled={!active}
                 onClick={() => {
                   setEdit(false);
                   setSelectLockId('');

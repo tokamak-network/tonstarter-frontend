@@ -17,7 +17,7 @@ import {openTable} from 'store/table.reducer';
 import {useAppDispatch} from 'hooks/useRedux';
 import {openModal} from 'store/modal.reducer';
 import store from 'store';
-import {useUser} from 'hooks/useUser';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 
 type TokenComponentProps = {
   data: any;
@@ -48,7 +48,7 @@ export const TokenComponent: FC<TokenComponentProps> = ({
   const history = useHistory();
   const tokenType = checkTokenType(token);
   const [tokenPrice, setTokenPrice] = useState<string | undefined>('0');
-  const {account} = useUser();
+  const {account} = useActiveWeb3React();
   const [isDisabled, setIsDisabled] = useState(false);
 
   useEffect(() => {

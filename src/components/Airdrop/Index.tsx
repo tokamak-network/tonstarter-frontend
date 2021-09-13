@@ -22,7 +22,7 @@ import {useState, useEffect} from 'react';
 import {Scrollbars} from 'react-custom-scrollbars-2';
 import {LoadingComponent} from 'components/Loading';
 import {fetchAirdropPayload} from './utils/fetchAirdropPayload';
-import {useUser} from 'hooks/useUser';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 
 type Round = {
   allocatedAmount: string;
@@ -69,7 +69,7 @@ export const AirdropModal = () => {
   const [airdropData, setAirdropData] = useState<AirDropList>(undefined);
   const [balance, setBalance] = useState<string | undefined>(undefined);
   const {data} = useAppSelector(selectModalType);
-  const {account, library} = useUser();
+  const {account, library, active} = useActiveWeb3React();
   const dispatch = useAppDispatch();
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -87,7 +87,7 @@ export const AirdropModal = () => {
 
   useEffect(() => {
     async function callAirDropData() {
-      if (account === undefined) {
+      if (account === undefined || account === null) {
         return;
       }
       const res = await fetchAirdropPayload(account, library);

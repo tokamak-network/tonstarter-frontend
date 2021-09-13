@@ -9,10 +9,10 @@ import {
 import {getUserTosBalance} from 'client/getUserBalance';
 import {useAppDispatch} from 'hooks/useRedux';
 import {useBlockNumber} from 'hooks/useBlock';
-import {useUser} from 'hooks/useUser';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useState, useEffect} from 'react';
 import {openModal} from 'store/modal.reducer';
-import {checkApprove, getAllowance} from './utils/approve';
+import {checkApprove, getAllowance} from '@Dao/actions/index';
 
 const themeDesign = {
   fontColorTitle: {
@@ -32,7 +32,7 @@ export const AvailableBalance = () => {
   const {btnStyle, btnHover} = theme;
   const {colorMode} = useColorMode();
   const dispatch = useAppDispatch();
-  const {account, library, signIn} = useUser();
+  const {account, library, active} = useActiveWeb3React();
   const {blockNumber} = useBlockNumber();
 
   useEffect(() => {
@@ -49,7 +49,7 @@ export const AvailableBalance = () => {
     } else {
       setbalance('-');
     }
-  }, [signIn, account, library, blockNumber, dispatch]);
+  }, [active, account, library, blockNumber, dispatch]);
 
   //set btn condition
   useEffect(() => {
@@ -61,7 +61,7 @@ export const AvailableBalance = () => {
     if (account && library) {
       checkApproved(account, library);
     }
-  }, [signIn, account, library, blockNumber]);
+  }, [active, account, library, blockNumber]);
 
   return (
     <Flex
@@ -84,7 +84,7 @@ export const AvailableBalance = () => {
         </Flex>
       </Box>
       <Button
-        {...(signIn
+        {...(active
           ? {...btnStyle.btnAble()}
           : {...btnStyle.btnDisable({colorMode})})}
         w={'150px'}
@@ -92,7 +92,7 @@ export const AvailableBalance = () => {
         p={0}
         fontSize={'14px'}
         fontWeight={400}
-        isDisabled={!signIn}
+        isDisabled={!active}
         _hover={btnHover.backgroundColor}
         onClick={() =>
           btnType === 'Approve' && account

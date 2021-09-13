@@ -2,14 +2,13 @@ import {Flex, Text, useColorMode, useTheme, Box} from '@chakra-ui/react';
 import {DEPLOYED} from 'constants/index';
 import * as LockTOSABI from 'services/abis/LockTOS.json';
 import {Contract} from '@ethersproject/contracts';
-import {useUser} from 'hooks/useUser';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect, useState} from 'react';
 import {convertNumber} from 'utils/number';
 import {useBlockNumber} from 'hooks/useBlock';
-import {useWeb3React} from '@web3-react/core';
 
 export const DAOStatistics = () => {
-  const {library} = useUser();
+  const {library} = useActiveWeb3React();
   const {blockNumber} = useBlockNumber();
   const [totalTOS, setTotalTOS] = useState('');
   const [totalSTOS, setTotalSTOS] = useState('');

@@ -7,7 +7,7 @@ import {
   useTheme,
 } from '@chakra-ui/react';
 import {getUserSTOSBalance} from 'client/getUserBalance';
-import {useUser} from 'hooks/useUser';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect} from 'react';
 import {useState} from 'react';
 import {openModal} from 'store/modal.reducer';
@@ -22,7 +22,7 @@ export const MySTOS = () => {
   const theme = useTheme();
   const {btnStyle, btnHover} = theme;
   const {colorMode} = useColorMode();
-  const {account, library, signIn} = useUser();
+  const {account, library, active} = useActiveWeb3React();
   const filteredStakeList = stakeList.filter((e: any) => e.end === false);
 
   const themeDesign = {
@@ -53,7 +53,7 @@ export const MySTOS = () => {
       setbalance('-');
     }
     /*eslint-disable*/
-  }, [signIn, account, library, dispatch, stakeList]);
+  }, [active, account, library, dispatch, stakeList]);
 
   return (
     <Flex
@@ -76,7 +76,7 @@ export const MySTOS = () => {
         </Flex>
       </Box>
       <Button
-        {...(signIn && !btnDisabled
+        {...(active && !btnDisabled
           ? {...btnStyle.btnAble()}
           : {...btnStyle.btnDisable({colorMode})})}
         w={'150px'}
@@ -84,7 +84,7 @@ export const MySTOS = () => {
         p={0}
         fontSize={'14px'}
         fontWeight={400}
-        isDisabled={!signIn || btnDisabled}
+        isDisabled={!active || btnDisabled}
         _hover={btnHover.backgroundColor}
         onClick={() =>
           dispatch(

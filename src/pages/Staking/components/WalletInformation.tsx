@@ -24,7 +24,7 @@ import {getUserBalance, getUserTonBalance} from 'client/getUserBalance';
 import {useEffect} from 'react';
 import {closeSale} from '../actions';
 import {LoadingDots} from 'components/Loader/LoadingDots';
-import {useUser} from 'hooks/useUser';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {useAppSelector} from 'hooks/useRedux';
 
@@ -39,7 +39,7 @@ export const WalletInformation: FC<WalletInformationProps> = ({
 }) => {
   const {colorMode} = useColorMode();
   const [loading, setLoading] = useState(false);
-  const {account, library} = useUser();
+  const {account, library} = useActiveWeb3React();
 
   //Balances
   const [userTonBalance, setUserTonBalance] = useState<string | undefined>(

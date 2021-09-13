@@ -17,7 +17,7 @@ import {convertNumber} from '../../../utils/number';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {fetchPositionRangePayload} from '../utils/fetchPositionRangePayload';
 import {ethers} from 'ethers';
-import {useUser} from 'hooks/useUser';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 
 type LiquidityPositionProps = {
   stakingDisable: boolean;
@@ -66,7 +66,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
   const [stakingBtnDisable, setStakingBtnDisable] = useState(true);
   const [unStakingBtnDisable, setUnStakingBtnDisable] = useState(true);
   const [claimBtnDisable, setClaimBtnDisable] = useState(true);
-  const {account: address, library} = useUser();
+  const {account: address, library} = useActiveWeb3React();
   const localBtnStyled = {
     btn: () => ({
       bg: 'blue.500',
@@ -82,7 +82,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
       _hover: {backgroundColor: 'blue.100'},
     }),
   };
-  
+
   const [range, setRange] = useState(false);
   const [approval, setApproval] = useState(false);
   const [swapableAmount, setSwapableAmount] = useState<string | undefined>('0');

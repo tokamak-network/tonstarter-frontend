@@ -35,7 +35,7 @@ import {getTotalStakers, getUserBalance} from 'client/getUserBalance';
 //@ts-ignore
 import {useEffect} from 'react';
 import {LoadingDots} from 'components/Loader/LoadingDots';
-import {useUser} from 'hooks/useUser';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 import {getEarnedTon} from './utils/getEarnedTon';
 
 type GetDateTimeType =
@@ -134,7 +134,7 @@ export const Staking = () => {
   const GetTotalStaker = ({contractAddress, totalStakers}: any) => {
     const {colorMode} = useColorMode();
     const [totalStaker, setTotalStaker] = useState('-');
-    const {account, library} = useUser();
+    const {account, library} = useActiveWeb3React();
     const getlInfo = async () => {
       const res = await getTotalStakers(contractAddress, library);
       if (res === undefined) {

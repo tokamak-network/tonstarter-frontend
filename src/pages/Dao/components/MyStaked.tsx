@@ -8,7 +8,7 @@ import {
 } from '@chakra-ui/react';
 import {getUserTOSStaked} from 'client/getUserBalance';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {useUser} from 'hooks/useUser';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect, useState} from 'react';
 import {openModal} from 'store/modal.reducer';
 import {useBlockNumber} from 'hooks/useBlock';
@@ -22,7 +22,7 @@ export const MyStaked = () => {
   const theme = useTheme();
   const {btnStyle, btnHover} = theme;
   const {colorMode} = useColorMode();
-  const {account, library, signIn} = useUser();
+  const {account, library, active} = useActiveWeb3React();
   const {blockNumber} = useBlockNumber();
 
   const themeDesign = {
@@ -55,7 +55,7 @@ export const MyStaked = () => {
     } else {
       setbalance('-');
     }
-  }, [signIn, account, library, stakeList, dispatch, blockNumber]);
+  }, [active, account, library, stakeList, dispatch, blockNumber]);
 
   return (
     <Flex
@@ -78,7 +78,7 @@ export const MyStaked = () => {
         </Flex>
       </Box>
       <Button
-        {...(signIn && !isEnd
+        {...(active && !isEnd
           ? {...btnStyle.btnAble()}
           : {...btnStyle.btnDisable({colorMode})})}
         w={'150px'}
@@ -86,7 +86,7 @@ export const MyStaked = () => {
         p={0}
         fontSize={'14px'}
         fontWeight={400}
-        isDisabled={!signIn || isEnd}
+        isDisabled={!active || isEnd}
         _hover={btnHover.backgroundColor}
         onClick={() =>
           dispatch(

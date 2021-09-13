@@ -21,18 +21,14 @@ import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {onKeyDown, useInput} from 'hooks/useInput';
 import {useModal} from 'hooks/useModal';
-import {useUser} from 'hooks/useUser';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useState, useEffect, useRef} from 'react';
-import {stakeTOS} from '../utils/stakeTOS';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import {useCheckBalance} from 'hooks/useCheckBalance';
 import moment from 'moment';
 import Decimal from 'decimal.js';
-import {getConstants} from '../utils';
-import {Contract} from '@ethersproject/contracts';
-import {DEPLOYED} from 'constants/index';
-import * as LockTOSABI from 'services/abis/LockTOS.json';
-import BOOST_ICON from 'assets/svgs/booster_icon.svg';
+import {stakeTOS} from '@Dao/actions/stakeTOS';
+import {getConstants} from '@Dao/utils';
 
 type SelectPeriod = '1 month' | '6 months' | '1 year' | '3 years';
 
@@ -55,7 +51,7 @@ export const DaoStakeModal = () => {
   const {data} = useAppSelector(selectModalType);
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const {account, library} = useUser();
+  const {account, library} = useActiveWeb3React();
   const {checkBalance} = useCheckBalance();
 
   const [balance, setBalance] = useState('0');

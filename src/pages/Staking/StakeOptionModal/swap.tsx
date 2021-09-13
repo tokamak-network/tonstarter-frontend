@@ -18,7 +18,7 @@ import React, {useCallback, useState, useEffect} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {swapWTONtoTOS} from '../actions';
-import {useUser} from 'hooks/useUser';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useModal} from 'hooks/useModal';
 import {useCheckBalance} from 'hooks/useCheckBalance';
 import {CloseButton} from 'components/Modal/CloseButton';
@@ -28,7 +28,7 @@ import swapArrow from 'assets/svgs/swap-arrow-icon.svg';
 
 export const SwapModal = () => {
   const {sub} = useAppSelector(selectModalType);
-  const {account, library} = useUser();
+  const {account, library} = useActiveWeb3React();
   const {
     data: {contractAddress, swapBalance, originalSwapBalance, currentTosPrice},
   } = sub;
