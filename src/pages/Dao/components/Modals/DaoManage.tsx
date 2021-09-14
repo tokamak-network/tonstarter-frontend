@@ -75,10 +75,22 @@ const themeDesign = {
     light: {
       style: {backgroundColor: '#e9edf1'},
       isDisabled: true,
+      color: '#86929d',
     },
     dark: {
-      style: {backgroundColor: '#e9edf1'},
+      // style: {backgroundColor: '#e9edf1'},
       isDisabled: true,
+      color: '#ffffff',
+    },
+  },
+  labelColor: {
+    light: {
+      active: '#3e495c',
+      notActive: '#8f96a1',
+    },
+    dark: {
+      active: '#ffffff',
+      notActive: '#86929d',
     },
   },
 };
@@ -125,6 +137,10 @@ export const DaoManageModal = () => {
       setConstants();
     }
   }, [library]);
+
+  useEffect(() => {
+    console.log(value);
+  }, [value]);
 
   useEffect(() => {
     if (stakeList) {
@@ -407,7 +423,7 @@ export const DaoManageModal = () => {
               <Text
                 w={'112px'}
                 fontSize={'12px'}
-                fontWeight={600}
+                fontWeight={colorMode === 'light' ? 600 : 500}
                 fontColor={themeDesign.editBorder[colorMode]}>
                 Increase Amount
               </Text>
@@ -415,7 +431,8 @@ export const DaoManageModal = () => {
                 {...(select === 'select_period'
                   ? themeDesign.inputVariant[colorMode]
                   : '')}
-                border="1px solid #dfe4ee"
+                pos="relative"
+                border={themeDesign.editBorder[colorMode]}
                 borderRadius={4}
                 w={'143px'}
                 mr={'10px'}>
@@ -437,6 +454,19 @@ export const DaoManageModal = () => {
                       borderWidth: 0,
                     }}></NumberInputField>
                 </NumberInput>
+                <Flex
+                  pos="absolute"
+                  right={1}
+                  h={'100%'}
+                  alignItems="center"
+                  fontSize={'12px'}
+                  color={
+                    themeDesign.labelColor[colorMode][
+                      select === 'select_amount' ? 'active' : 'notActive'
+                    ]
+                  }>
+                  <span>TOS</span>
+                </Flex>
               </Flex>
               <Button
                 w="70px"
@@ -463,27 +493,53 @@ export const DaoManageModal = () => {
               <Text
                 w={'112px'}
                 fontSize={'12px'}
-                fontWeight={600}
+                fontWeight={colorMode === 'light' ? 600 : 500}
                 fontColor={themeDesign.scrollNumberFont[colorMode]}>
                 Extend Period
               </Text>
-              <NumberInput
+              <Flex
+                {...(select === 'select_amount'
+                  ? themeDesign.inputVariant[colorMode]
+                  : null)}
+                pos="relative"
+                border={themeDesign.editBorder[colorMode]}
+                borderRadius={4}
                 w={'143px'}
-                h="32px"
-                mr={'0.750em'}
-                value={periodValue}
-                onChange={(periodValue) => setPeriodValue(Number(periodValue))}>
-                <NumberInputField
-                  {...(select === 'select_amount'
-                    ? themeDesign.inputVariant[colorMode]
-                    : '')}
-                  disabled={select === 'select_amount'}
-                  ref={periodRef}
-                  fontSize={'0.750em'}
-                  _focus={{
-                    borderWidth: 0,
-                  }}></NumberInputField>
-              </NumberInput>
+                mr={'10px'}>
+                <NumberInput
+                  h="32px"
+                  value={periodValue}
+                  cursor=""
+                  onChange={(periodValue) =>
+                    periodValue !== '-' && periodValue !== '.'
+                      ? setPeriodValue(Number(periodValue))
+                      : null
+                  }>
+                  <NumberInputField
+                    border="none"
+                    w={'125px'}
+                    h="32px"
+                    disabled={select === 'select_amount'}
+                    ref={periodRef}
+                    fontSize={'0.750em'}
+                    _focus={{
+                      borderWidth: 0,
+                    }}></NumberInputField>
+                </NumberInput>
+                <Flex
+                  pos="absolute"
+                  right={1}
+                  h={'100%'}
+                  alignItems="center"
+                  fontSize={'12px'}
+                  color={
+                    themeDesign.labelColor[colorMode][
+                      select === 'select_period' ? 'active' : 'notActive'
+                    ]
+                  }>
+                  <span>Weeks</span>
+                </Flex>
+              </Flex>
               <Flex h={'100%'} alignItems="center" justifyContent="center">
                 <CustomTooltip
                   toolTipW={150}
@@ -512,6 +568,15 @@ export const DaoManageModal = () => {
                 onClick={() => {
                   if (select === 'select_amount') {
                     if (account && selectLockId !== '' && value !== '0') {
+                      if (Number(value) > Number(balance.replaceAll(',', ''))) {
+                        return toastMsg({
+                          status: 'error',
+                          title: 'Error',
+                          description: `Balance is not enough`,
+                          duration: 5000,
+                          isClosable: true,
+                        });
+                      }
                       increaseAmount({
                         account,
                         library,
