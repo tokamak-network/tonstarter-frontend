@@ -115,10 +115,6 @@ export const DaoManageModal = () => {
   const periodRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    console.log(value.length);
-  }, [value.length]);
-
-  useEffect(() => {
     const setConstants = async () => {
       const {epochUnit, maxTime} = await getConstants({library});
       setEpochUnit(epochUnit);
@@ -273,7 +269,7 @@ export const DaoManageModal = () => {
                         fontSize={'14px'}
                         fontColor={themeDesign.scrollNumberFont[colorMode]}
                         fontWeight={'bold'}>
-                        {Number(stake.lockedBalance).toLocaleString()}
+                        {stake.lockedBalance}
                         <span
                           style={{
                             fontSize: '0.688em',
@@ -306,7 +302,7 @@ export const DaoManageModal = () => {
                         fontSize={'14px'}
                         fontColor={themeDesign.scrollNumberFont[colorMode]}
                         fontWeight={'bold'}>
-                        {Number(stake.reward).toLocaleString()}
+                        {stake.reward}
                       </Text>
                     </Box>
                     <Button

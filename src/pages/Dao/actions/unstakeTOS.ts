@@ -18,7 +18,6 @@ export const unstakeTOS = async (args: UnstkaeTOS) => {
     LockTOSABI.abi,
     library,
   );
-  console.log(LockTOSContract);
   const signer = getSigner(library, account);
   const res = await LockTOSContract.connect(signer).withdrawAll();
   return setTx(res);
