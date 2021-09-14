@@ -3,15 +3,23 @@ import {DEPLOYED} from 'constants/index';
 import * as LockTOSABI from 'services/abis/LockTOS.json';
 import moment from 'moment';
 import {convertNumber} from 'utils/number';
+import {TosStakeList} from '../types/index';
+import {LibraryType} from 'types/index';
 
-export const getTosStakeList = async ({account, library}: any) => {
+export const getTosStakeList = async ({
+  account,
+  library,
+}: {
+  account: string;
+  library: LibraryType;
+}): Promise<TosStakeList[] | []> => {
   const {LockTOS_ADDRESS} = DEPLOYED;
   const LockTOSContract = new Contract(
     LockTOS_ADDRESS,
     LockTOSABI.abi,
     library,
   );
-  const tosStakeList = await LockTOSContract.alivelocksOf(account);
+  const tosStakeList = await LockTOSContract.locksOf(account);
 
   if (tosStakeList.length === 0) {
     return [];
@@ -19,14 +27,12 @@ export const getTosStakeList = async ({account, library}: any) => {
 
   const nowTime = moment().unix();
 
-  const res = await Promise.all(
-    tosStakeList.map(async (stake: any, index: number) => {
-      const lockId = stake.id.toString();
+  const res: TosStakeList[] = await Promise.all(
+    tosStakeList.map(async (lockId: any, index: number) => {
       const lockedBalance = await LockTOSContract.lockedBalances(
         account,
         lockId,
       );
-
       const startTime = Number(lockedBalance.start.toString());
       const endTime = Number(lockedBalance.end.toString());
 
@@ -36,9 +42,6 @@ export const getTosStakeList = async ({account, library}: any) => {
       const periodDays = unixEndTime.diff(unixStartTime, 'days');
       const end = endTime <= nowTime;
       const endDate = moment(unixEndTime).format('MMM DD, YYYY');
-      const isBoosted =
-        lockedBalance.boostValue.toString() === '2' ? true : false;
-
       return {
         lockId,
         periodWeeks,
@@ -48,10 +51,11 @@ export const getTosStakeList = async ({account, library}: any) => {
         startTime,
         endTime,
         endDate,
-        isBoosted,
       };
     }),
   );
 
-  return res.filter((e: any) => e.lockId !== '0');
+  console.log('**locksOf**');
+  console.log(res);
+  return res.filter((e: TosStakeList) => e.lockId !== '0');
 };

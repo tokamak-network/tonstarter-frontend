@@ -2,6 +2,7 @@ import {injected} from 'connectors';
 import {WalletInfo} from 'types';
 import {DEPLOYED_TYPE} from './type';
 import {ethers} from 'ethers';
+import {tokens} from './token';
 
 export const REACT_APP_MODE = process.env.REACT_APP_MODE as string;
 export const REACT_APP_MAINNET_INFURA_API = process.env
@@ -25,6 +26,8 @@ export const fetchStakeURL = `${API_SERVER}/stakecontracts?chainId=${DEFAULT_NET
 export const fetchValutURL = `${API_SERVER}/vaults?chainId=${DEFAULT_NETWORK}`;
 export const permitTOSAddress =
   REACT_APP_MODE === 'DEV' ? '0x865264b30eb29A2978b9503B8AfE2A2DDa33eD7E' : '';
+
+export const TOKENS = tokens;
 
 //Old Ver
 // const MAINNET_DEPLOYED = {
@@ -73,7 +76,7 @@ const RINKEBY_DEPLOYED = {
   Airdrop_ADDRESS: '0xD958cD2d03aaEe169953780234848445504571E8',
   UniswapStaking_Address: '0x99b09c6CfF45C778a4F5fBF7a4EAD6c3DEBfdcBb',
   NPM_Address: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
-  LockTOS_ADDRESS: '0xec63A183f62716f74D65dc27C2De22843093F7D2',
+  LockTOS_ADDRESS: '0x92D36bb6a7d5810dD993E4026bA32020B5BFB156',
   BasePool_Address: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
   StakeTonControl_ADDRESS: '0xF049030A9D6faCbD6C76E08794CC751b1Dbaa072',
 };

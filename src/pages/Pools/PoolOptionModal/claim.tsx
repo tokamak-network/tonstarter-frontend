@@ -16,10 +16,13 @@ import {claim} from '../actions';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
-import {useCallback, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {fetchClaimablePayload} from '../utils/fetchPositionPayload';
 import {ethers} from 'ethers';
 import {CloseButton} from 'components/Modal/CloseButton';
+import {CustomTabs} from 'components/Basic/index';
+import {Tab} from '../types/index';
+import {ModalTabs} from '../components/Tabs';
 
 export const ClaimOptionModal = () => {
   const {account, library} = useWeb3React();
@@ -30,6 +33,10 @@ export const ClaimOptionModal = () => {
   const dispatch = useAppDispatch();
 
   const [swapable, setSwapable] = useState<string | undefined>('0');
+
+  //select tab
+  const tabList: Tab[] = ['Reward&Fee', 'Reward', 'Fee'];
+  const [tab, setTab] = useState<Tab>('Reward&Fee');
 
   const amount = async () => {
     if (data.data.id && account) {
@@ -48,6 +55,10 @@ export const ClaimOptionModal = () => {
     dispatch(closeModal());
     setSwapable('0.00');
   }, [dispatch]);
+
+  useEffect(() => {
+    console.log(tab);
+  }, [tab]);
 
   return (
     <Modal
@@ -89,14 +100,32 @@ export const ClaimOptionModal = () => {
               colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
             }
             mb={'25px'}>
-            <Box textAlign={'center'} pt="20px" pb="20px">
+            <Box pt={'15px'} mb="30px">
+              <CustomTabs
+                w={'90px'}
+                h={'26px'}
+                list={tabList}
+                setValue={setTab}></CustomTabs>
+            </Box>
+            <Box m={'0 !important'}>
+              <ModalTabs
+                tab={tab}
+                TOS_PER_HOUR={'0'}
+                TOS_CLAIM={swapableAmount || '0'}
+                TOS_EARNED={'0'}
+                TOS_FEE={'0'}
+                WTOS_FEE={'0'}
+              />
+            </Box>
+
+            {/* <Box textAlign={'center'} pt="20px" pb="20px">
               <Text
                 fontSize={'26px'}
                 fontWeight={600}
                 color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
                 {swapableAmount} TOS
               </Text>
-            </Box>
+            </Box> */}
           </Stack>
 
           <Box as={Flex} justifyContent={'center'}>

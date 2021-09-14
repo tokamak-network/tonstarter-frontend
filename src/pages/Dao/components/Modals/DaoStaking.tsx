@@ -28,6 +28,7 @@ import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import {useCheckBalance} from 'hooks/useCheckBalance';
 import moment from 'moment';
 import Decimal from 'decimal.js';
+import {getConstants} from '../utils';
 import {Contract} from '@ethersproject/contracts';
 import {DEPLOYED} from 'constants/index';
 import * as LockTOSABI from 'services/abis/LockTOS.json';
@@ -50,27 +51,12 @@ const themeDesign = {
   },
 };
 
-const checkPhase3StartTime = async (library: any) => {
-  const {LockTOS_ADDRESS} = DEPLOYED;
-  const LockTOSContract = new Contract(
-    LockTOS_ADDRESS,
-    LockTOSABI.abi,
-    library,
-  );
-  const phase3StartTime = await LockTOSContract.phase3StartTime();
-  const isBoosted =
-    Date.now() / 1000 < Number(phase3StartTime.toString()) ? true : false;
-  return isBoosted;
-};
-
 export const DaoStakeModal = () => {
   const {data} = useAppSelector(selectModalType);
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {account, library} = useUser();
   const {checkBalance} = useCheckBalance();
-
-  const [boostOpt, setBoostOpt] = useState<boolean>(false);
 
   const [balance, setBalance] = useState('0');
   const [btnDisable, setBtnDisable] = useState(true);
@@ -85,6 +71,9 @@ export const DaoStakeModal = () => {
     undefined,
   );
   const [isCustom, setIsCustom] = useState<boolean>(false);
+  const [oneWeek, setOneWeek] = useState(0);
+  const [maxPeriod, setMaxPeriod] = useState(0);
+
   const periods = ['1 month', '6 months', '1 year', '3 years'];
 
   const {btnStyle} = theme;
@@ -106,37 +95,39 @@ export const DaoStakeModal = () => {
     current.map((e: any) => (e.style.border = 'solid 1px #d7d9df'));
   };
 
+  useEffect(() => {
+    const setConstants = async () => {
+      const {epochUnit, maxTime} = await getConstants({library});
+      setOneWeek(epochUnit);
+      setMaxPeriod(maxTime);
+    };
+    if (library) {
+      setConstants();
+    }
+  }, [library]);
+
   // set Estimated reward;
   const getEstimatedReward = useCallback(
-    (diffDate: number) => {
-      if (value !== '' && value !== '0' && value !== undefined) {
-        const differNum = diffDate > 7 ? diffDate - 7 : diffDate;
-        const maxPeriod = 1095;
+    async (date: number) => {
+      if (
+        value !== '' &&
+        value !== '0' &&
+        value !== undefined &&
+        oneWeek > 0 &&
+        maxPeriod > 0
+      ) {
         const numValue = Number(value.replaceAll(',', ''));
         const avgProfit = numValue / maxPeriod;
-        const estimatedReward = avgProfit * differNum;
+        const estimatedReward = avgProfit * (date - moment().unix());
         const deciamlNum = new Decimal(estimatedReward);
         const resultNum = deciamlNum.toFixed(3, Decimal.ROUND_HALF_UP);
         const result = Number(resultNum).toFixed(2);
-        setReward(
-          boostOpt === true ? String(Number(result) * 2) : String(result),
-        );
+        setReward(String(Number(result)));
       }
       return;
     },
-    [value, boostOpt],
+    [value, maxPeriod, oneWeek],
   );
-
-  //check Phse 3 Start Time
-  useEffect(() => {
-    async function isPhase3StartTime() {
-      const res = await checkPhase3StartTime(library);
-      setBoostOpt(res);
-    }
-    if (library) {
-      isPhase3StartTime();
-    }
-  }, [library]);
 
   //check btn able condition
   useEffect(() => {
@@ -156,42 +147,12 @@ export const DaoStakeModal = () => {
       setReward('-');
       return setEndDate('-');
     }
-    const dayForThursday = 4; // for Thursday
-    const today = moment().isoWeekday();
-    if (today <= dayForThursday) {
-      if (dateValue === 1) {
-        const date = moment().isoWeekday(4).format('MMM DD, YYYY');
-        const diffDate = moment()
-          .add(dateValue, 'weeks')
-          .isoWeekday(dayForThursday)
-          .diff(new Date(), 'days');
-        getEstimatedReward(diffDate);
-        setEndDate(date);
-      } else {
-        const date = moment()
-          .add(dateValue, 'weeks')
-          .isoWeekday(dayForThursday)
-          .format('MMM DD, YYYY');
-        const diffDate = moment()
-          .add(dateValue, 'weeks')
-          .isoWeekday(dayForThursday)
-          .diff(new Date(), 'days');
-        getEstimatedReward(diffDate);
-        setEndDate(date);
-      }
-    } else {
-      const date = moment()
-        .add(dateValue, 'weeks')
-        .isoWeekday(dayForThursday)
-        .format('MMM DD, YYYY');
-      const diffDate = moment()
-        .add(dateValue, 'weeks')
-        .isoWeekday(dayForThursday)
-        .diff(new Date(), 'days');
-      getEstimatedReward(diffDate);
-      setEndDate(date);
-    }
-  }, [dateValue, value, getEstimatedReward]);
+    const now = moment().unix();
+    const date = Math.floor((now + dateValue * oneWeek) / oneWeek) * oneWeek;
+
+    getEstimatedReward(date);
+    setEndDate(moment.unix(date).format('MMM DD YYYY'));
+  }, [dateValue, value, getEstimatedReward, oneWeek, selectPeriod]);
 
   useEffect(() => {
     if (selectPeriod === 'weeks' || selectPeriod === 'months') {
@@ -440,9 +401,6 @@ export const DaoStakeModal = () => {
                     </Tooltip>
                   </Flex>
                   <Flex flexDir="row">
-                    {boostOpt === true ? (
-                      <img src={BOOST_ICON} alt={'BOOST_ICON'} />
-                    ) : null}
                     <Text
                       ml={2}
                       color={colorMode === 'light' ? 'gray.250' : 'white.100'}

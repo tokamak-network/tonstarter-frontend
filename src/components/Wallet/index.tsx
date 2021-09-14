@@ -288,11 +288,11 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
                         onClick={() => {
                           deactivate();
                           setAccountValue({signIn: false});
-                          const {address, library} = store.getState().user.data;
+                          const {account, library} = store.getState().user.data;
                           //@ts-ignore
                           store.dispatch(
                             //@ts-ignore
-                            fetchUserInfo({address, library, reset: true}),
+                            fetchUserInfo({account, library, reset: true}),
                           );
                         }}>
                         Disconnect

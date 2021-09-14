@@ -15,6 +15,8 @@ import {
   Radio,
   RadioGroup,
   Tooltip,
+  NumberInput,
+  NumberInputField,
 } from '@chakra-ui/react';
 import React from 'react';
 import {useAppSelector} from 'hooks/useRedux';
@@ -29,6 +31,7 @@ import {useRef} from 'react';
 import {increaseAmount, extendPeriod} from '../utils';
 import {getUserTosBalance} from 'client/getUserBalance';
 import BOOST_ICON from 'assets/svgs/booster_icon.svg';
+import {selectUser} from 'store/app/user.reducer';
 interface Stake {
   lockId: string;
   lockedBalance: string;
@@ -80,14 +83,15 @@ const themeDesign = {
 
 export const DaoManageModal = () => {
   const {data} = useAppSelector(selectModalType);
+
   const {stakeList} = data.data;
   const [edit, setEdit] = useState(false);
   const [selectLockId, setSelectLockId] = useState('');
   const [select, setSelect] = useState('select_amount');
   const [balance, setBalance] = useState('0');
   const [tosStakeList, setTosStakeList] = useState<TosStakeList>(undefined);
-  const [value, setValue] = useState('0');
-  const {value: periodValue, onChange: periodOnchange} = useInput('0');
+  const [value, setValue] = useState('');
+  const [periodValue, setPeriodValue] = useState('');
 
   const [btnDisable, setBtnDisable] = useState(true);
 
@@ -125,19 +129,35 @@ export const DaoManageModal = () => {
   }, [signIn, account]);
 
   useEffect(() => {
-    const checkCondition =
-      amountRef.current?.value === '' && periodRef.current?.value === '';
+    const checkCondition = value === '' && periodValue === '' ? true : false;
     setBtnDisable(checkCondition);
-  }, [amountRef.current?.value, periodRef.current?.value]);
+    setTimeout(() => {
+      select === 'select_amount'
+        ? amountRef.current?.focus()
+        : periodRef.current?.focus();
+    }, 10);
+  }, [value, periodValue]);
 
-  const [test, setTest] = useState('');
+  useEffect(() => {
+    if (select) {
+      setPeriodValue('');
+    }
+    setValue('');
+  }, [select]);
 
-  const testOnChange = (e: any) => {
-    const {
-      target: {value},
-    } = e;
-    setTest(value);
+  const cleanUpEditScreen = () => {
+    setValue('');
+    setPeriodValue('');
+    setSelect('select_amount');
   };
+
+  const {data: userData} = useAppSelector(selectUser);
+  if (!userData || !userData.balance.tos) {
+    return null;
+  }
+  const {
+    balance: {tos, tosOrigin},
+  } = userData;
 
   const MainScreen = () => {
     return (
@@ -316,6 +336,7 @@ export const DaoManageModal = () => {
                 src={backArrowIcon}
                 onClick={() => {
                   setEdit(false);
+                  cleanUpEditScreen();
                   setSelectLockId('');
                 }}></img>
               <Flex flexDir="column" alignItems="flex-start">
@@ -350,20 +371,22 @@ export const DaoManageModal = () => {
                 fontColor={themeDesign.editBorder[colorMode]}>
                 Increase Amount
               </Text>
-              <Input
-                {...(select === 'select_period'
-                  ? themeDesign.inputVariant[colorMode]
-                  : '')}
-                ref={amountRef}
+              <NumberInput
                 w={'143px'}
                 h="32px"
                 mr={'10px'}
-                fontSize={'0.750em'}
-                // value={value}
-                // onChange={(e) => setValue(e.target.value)}
-                _focus={{
-                  borderWidth: 0,
-                }}></Input>
+                value={value}
+                onChange={(value) => setValue(value)}>
+                <NumberInputField
+                  {...(select === 'select_period'
+                    ? themeDesign.inputVariant[colorMode]
+                    : '')}
+                  ref={amountRef}
+                  fontSize={'0.750em'}
+                  _focus={{
+                    borderWidth: 0,
+                  }}></NumberInputField>
+              </NumberInput>
               <Button
                 w="70px"
                 h="32px"
@@ -373,7 +396,7 @@ export const DaoManageModal = () => {
                 border={themeDesign.editBorder[colorMode]}
                 _hover={{}}
                 onClick={() => {
-                  setValue(balance);
+                  setValue(tos);
                 }}
                 isDisabled={select === 'select_period' ? true : false}>
                 MAX
@@ -393,17 +416,22 @@ export const DaoManageModal = () => {
                 fontColor={themeDesign.scrollNumberFont[colorMode]}>
                 Extend Period
               </Text>
-              <Input
-                ref={periodRef}
+              <NumberInput
                 w={'143px'}
                 h="32px"
                 mr={'0.750em'}
-                fontSize={'0.750em'}
-                // value={periodValue}
-                // onChange={periodOnchange}
-                {...(select === 'select_amount'
-                  ? themeDesign.inputVariant[colorMode]
-                  : '')}></Input>
+                value={periodValue}
+                onChange={(periodValue) => setPeriodValue(periodValue)}>
+                <NumberInputField
+                  {...(select === 'select_amount'
+                    ? themeDesign.inputVariant[colorMode]
+                    : '')}
+                  ref={periodRef}
+                  fontSize={'0.750em'}
+                  _focus={{
+                    borderWidth: 0,
+                  }}></NumberInputField>
+              </NumberInput>
             </Flex>
             <Box
               pos="absolute"
@@ -419,11 +447,11 @@ export const DaoManageModal = () => {
                   : {...btnStyle.btnAble()})}
                 w={'150px'}
                 fontSize="14px"
-                _hover={theme.btnHover.checkDisable(
-                  amountRef.current?.value !== '' ||
-                    periodRef.current?.value !== '',
-                )}
-                disabled={false}
+                // _hover={theme.btnHover.checkDisable(
+                //   amountRef.current?.value !== '' ||
+                //     periodRef.current?.value !== '',
+                // )}
+                disabled={btnDisable}
                 mr={'15px'}
                 onClick={() => {
                   if (select === 'select_amount') {
@@ -436,7 +464,8 @@ export const DaoManageModal = () => {
                         account,
                         library,
                         lockId: selectLockId,
-                        amount: amountRef.current?.value,
+                        amount: value === tos ? tosOrigin : value,
+                        allBalance: value === tos,
                       });
                     }
                   }
@@ -466,6 +495,7 @@ export const DaoManageModal = () => {
                 disabled={!signIn}
                 onClick={() => {
                   setEdit(false);
+                  cleanUpEditScreen();
                   setSelectLockId('');
                 }}>
                 Cancel

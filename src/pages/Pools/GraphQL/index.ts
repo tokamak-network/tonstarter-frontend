@@ -18,6 +18,7 @@ const poolParam = `
     tvlUSD
   }
   liquidity
+  tick
 `;
 
 const positionParam = `
@@ -50,6 +51,17 @@ export const GET_TOS_POOL = gql`
       ${poolParam}
     }
   }`;
+
+export const GET_TICKS = gql`
+  query allTicks($poolAddress: String!, $skip: Int!) {
+    ticks(first: 1000, skip: $skip, where: { poolAddress: $poolAddress }, orderBy: tickIdx) {
+      tickIdx
+      liquidityNet
+      price0
+      price1
+    }
+  }
+`
 
 export const GET_BASE_POOL = gql`
   query GetPool($address: String!) {
@@ -100,39 +112,3 @@ export const GET_TOKEN = gql`
     }
   }
 `
-
-export const GET_FACTORIES = gql`
-  query GetFactory {
-    factories(first: 5) {
-      id
-      poolCount
-    }
-  }
-`;
-// 0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf
-// 0xb7ce38cc28e199adcd8dfa5c89fe03d3e8d267f2
-// 0xfffcd9c7d2ab23c064d547387fce7e938fa3124b
-
-// {
-//   pools(where: {token1_in: ["0xc4a11aaf6ea915ed7ac194161d2fc9384f15bff2"]}) {
-//     id
-//     createdAtBlockNumber
-//     token0 {
-//       id
-//     }
-//     token1 {
-//       id
-//     }
-//     totalValueLockedToken0
-//     totalValueLockedToken1
-//     liquidityProviderCount
-//     poolDayData {
-//       id
-//       date
-//       volumeUSD
-//       feesUSD
-//     }
-//   }
-// }
-
-

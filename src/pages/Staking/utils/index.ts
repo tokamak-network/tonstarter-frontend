@@ -1,4 +1,4 @@
 import {fetchManageModalPayload} from './fetchManageModalPayload';
-import {checkSaleClosed} from './checkSaleClosed';
+import {checkSaleClosed, checkIsUnstake} from './checkSaleClosed';
 
-export {checkSaleClosed, fetchManageModalPayload};
+export {checkSaleClosed, checkIsUnstake, fetchManageModalPayload};

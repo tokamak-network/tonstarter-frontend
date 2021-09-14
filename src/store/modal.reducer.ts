@@ -14,7 +14,8 @@ type StakingModal =
   | 'airdrop'
   | 'stakePool'
   | 'unstakePool'
-  | 'claimPool';
+  | 'claimPool'
+  | 'pool_simulator';
 
 export type ModalType = StakingModal | DaoModal;
 

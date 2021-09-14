@@ -82,6 +82,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
       _hover: {backgroundColor: 'blue.100'},
     }),
   };
+  
   const [range, setRange] = useState(false);
   const [approval, setApproval] = useState(false);
   const [swapableAmount, setSwapableAmount] = useState<string | undefined>('0');

@@ -5,11 +5,7 @@ import {MySTOS} from './MySTOS';
 import {shortenAddress} from 'utils';
 import {useEffect} from 'react';
 import {useState} from 'react';
-import {useAppSelector} from 'hooks/useRedux';
 import {useUser} from 'hooks/useUser';
-import {useBlockNumber} from 'hooks/useBlock';
-import {getTosStakeList} from './utils';
-import {selectTransactionType} from 'store/refetch.reducer';
 
 const themeDesign = {
   fontColorTitle: {
@@ -46,38 +42,19 @@ const themeDesign = {
   },
 };
 
-// type TosStakeList = [
-//   {
-//     lockId: string;
-//     periodWeeks: number;
-//     periodDays: number;
-//     end: boolean;
-//     lockedBalance: string;
-//   },
-// ];
-
 export const STOS = () => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
   const {account, library} = useUser();
   const [address, setAddress] = useState('-');
-  const [stakeList, setStakeList] = useState<any[]>([]);
-  const {blockNumber} = useBlockNumber();
 
   useEffect(() => {
-    async function getStakeList() {
-      const res = await getTosStakeList({account, library});
-      if (res) {
-        setStakeList(res);
-      }
-    }
     if (account !== undefined) {
       setAddress(shortenAddress(account));
-      getStakeList();
     } else {
       setAddress('-');
     }
-  }, [account, library, blockNumber]);
+  }, [account, library]);
 
   return (
     <Flex
@@ -134,10 +111,9 @@ export const STOS = () => {
         <AvailableBalance></AvailableBalance>
       </Box>
       <Box mb={'20px'}>
-        <MyStaked
-          stakeList={stakeList}></MyStaked>
+        <MyStaked></MyStaked>
       </Box>
-      <MySTOS stakeList={stakeList}></MySTOS>
+      <MySTOS></MySTOS>
     </Flex>
   );
 };

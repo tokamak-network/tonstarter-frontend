@@ -43,18 +43,17 @@ export const Router: FC<RouterProps> = () => {
   }
 
   const fetchToInitialize = async () => {
-    dispatch(
+    await dispatch(
       fetchVaults({
         chainId,
       }) as any,
-    ).then(() => {
-      dispatch(
-        fetchStakes({
-          library,
-          account,
-        }) as any,
-      );
-    });
+    );
+    await dispatch(
+      fetchStakes({
+        library,
+        account,
+      }) as any,
+    );
   };
 
   useEffect(() => {
@@ -96,7 +95,7 @@ export const Router: FC<RouterProps> = () => {
         }
 
         // @ts-ignore
-        dispatch(fetchUserInfo({address: account, library})).then(() => {
+        dispatch(fetchUserInfo({account, library})).then(() => {
           fetchToInitialize();
         });
       }

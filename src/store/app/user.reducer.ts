@@ -1,11 +1,20 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
+import {getUserTossBalance, getUserWTONBalance} from 'client/getUserBalance';
 import {RootState} from 'store/reducers';
 
 // const {TON_ADDRESS} = DEPLOYED;
 
+type UserBalnace = {
+  wton: string;
+  wtonOrigin: string;
+  tos: string;
+  tosOrigin: string;
+};
+
 export type User = {
-  address: string;
+  account: string;
   library: any;
+  balance: UserBalnace;
   // tosBalance: string;
 };
 
@@ -25,7 +34,7 @@ const initialState = {
 export const fetchUserInfo = createAsyncThunk(
   'app/user',
   // @ts-ignore
-  async ({address, library, reset}, {requestId, getState}) => {
+  async ({account, library, reset}, {requestId, getState}) => {
     // @ts-ignore
     const {currentRequestId, loading} = getState().user;
     if (loading !== 'pending' || requestId !== currentRequestId) {
@@ -36,12 +45,13 @@ export const fetchUserInfo = createAsyncThunk(
       return initialState;
     }
 
+    const WTON_BALANCE = await getUserWTONBalance({account, library});
+    const TOS_BALANCE = await getUserTossBalance({account, library});
+
     const user: User = {
-      address,
+      account,
       library,
-      //@ts-ignore
-      // balance: tonBalance !== undefined ? formatEther(tonBalance) : '0',
-      // tosBalance: tosBalance !== undefined ? formatEther(tosBalance) : '0',
+      balance: {...WTON_BALANCE, ...TOS_BALANCE},
     };
 
     return user;

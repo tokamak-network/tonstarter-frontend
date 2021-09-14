@@ -6,7 +6,10 @@ import {BASE_PROVIDER, DEPLOYED} from 'constants/index';
 import * as ERC20 from 'services/abis/ERC20.json';
 import * as TOSABI from 'services/abis/TOS.json';
 import * as LockTOSABI from 'services/abis/LockTOS.json';
+import * as WTONABI from 'services/abis/WTON.json';
+
 import {BigNumber} from 'ethers';
+import {UserContract} from 'types/index';
 
 const {TON_ADDRESS, TOS_ADDRESS} = DEPLOYED;
 
@@ -39,6 +42,14 @@ export const getUserTonBalance = async ({account, library}: any) => {
   return balance;
 };
 
+export const getUserWTONBalance = async ({account, library}: UserContract) => {
+  const {WTON_ADDRESS} = DEPLOYED;
+  const WTON_CONTRACT = new Contract(WTON_ADDRESS, WTONABI.abi, library);
+  const wtonBalance = await WTON_CONTRACT.balanceOf(account);
+  const convertedRes = convertNumber({amount: wtonBalance, type: 'ray'});
+  return {wton: convertedRes || '0', wtonOrigin: wtonBalance.toString()};
+};
+
 export const getUserTOSStaked = async ({account, library}: any) => {
   const {LockTOS_ADDRESS} = DEPLOYED;
   const LockTOSContract = new Contract(
@@ -46,16 +57,7 @@ export const getUserTOSStaked = async ({account, library}: any) => {
     LockTOSABI.abi,
     library,
   );
-  const tosStakeList = await LockTOSContract.alivelocksOf(account);
-
-  if (tosStakeList.length === 0) {
-    return '0.00';
-  }
-
-  const res = tosStakeList.reduce((acc: any, cur: any) => {
-    return cur.amount.add(acc);
-  }, 0);
-
+  const res = await LockTOSContract.totalLockedAmountOf(account);
   return convertNumber({amount: res.toString(), localeString: true});
 };
 
@@ -92,6 +94,15 @@ export const getUserTosBalance = async (account: string, library: any) => {
     localeString: true,
   });
   return balance;
+};
+
+export const getUserTossBalance = async ({account, library}: UserContract) => {
+  const contract = getContract(TOS_ADDRESS, TOSABI.abi, library);
+  const userTosBalance = await contract.balanceOf(account);
+  const convertedRes = convertNumber({
+    amount: String(userTosBalance),
+  });
+  return {tos: convertedRes || '0', tosOrigin: userTosBalance.toString()};
 };
 
 const getUserInfo = async (
