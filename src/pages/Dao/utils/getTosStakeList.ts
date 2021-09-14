@@ -43,7 +43,9 @@ export const getTosStakeList = async ({
       const end = endTime <= nowTime;
       const endDate = moment(unixEndTime).format('HH:MM:SS, DD');
       const withdrawn = lockedBalance.withdrawn;
-      const reward = convertNumber({amount: lockedBalance.amount.toString()});
+
+      const sTOSBalance = await LockTOSContract.balanceOfLock(lockId);
+      const reward = convertNumber({amount: sTOSBalance.toString()});
       return {
         lockId,
         periodWeeks,

@@ -40,7 +40,6 @@ export const AvailableBalance = () => {
       if (account) {
         const res = await getUserTosBalance(account, library);
         if (res !== undefined) {
-          console.log(res);
           setbalance(res);
         }
       }
@@ -50,9 +49,6 @@ export const AvailableBalance = () => {
     } else {
       setbalance('-');
     }
-    return () => {
-      setbalance('-');
-    };
   }, [active, account, library, blockNumber, dispatch]);
 
   //set btn condition

@@ -64,11 +64,11 @@ const themeDesign = {
   },
   btnBorder: {
     light: 'solid 1px #dfe4ee',
-    dark: 'solid 1px #dfe4ee',
+    dark: 'solid 1px #535353',
   },
   editBorder: {
     light: 'solid 1px #dfe4ee',
-    dark: 'solid 1px #dfe4ee',
+    dark: 'solid 1px #535353',
   },
   inputVariant: {
     light: {
@@ -93,9 +93,11 @@ export const DaoManageModal = () => {
   const [tosStakeList, setTosStakeList] = useState<TosStakeList[] | undefined>(
     undefined,
   );
+
   const [epochUnit, setEpochUnit] = useState(0);
   const [maxTime, setMaxTime] = useState(0);
-  const [value, setValue] = useState('');
+
+  const [value, setValue] = useState('0');
   const [periodValue, setPeriodValue] = useState(0);
   const [btnDisable, setBtnDisable] = useState(true);
   const [availableWeeks, setAvailableWeeks] = useState(0);
@@ -111,6 +113,10 @@ export const DaoManageModal = () => {
   const focusTarget = useRef<any>([]);
   const amountRef = useRef<HTMLInputElement>(null);
   const periodRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    console.log(value.length);
+  }, [value.length]);
 
   useEffect(() => {
     const setConstants = async () => {
@@ -147,7 +153,7 @@ export const DaoManageModal = () => {
   }, [active, account]);
 
   useEffect(() => {
-    const checkCondition = value === '' && periodValue === 0 ? true : false;
+    const checkCondition = value === '0' && periodValue === 0 ? true : false;
     setBtnDisable(checkCondition);
     setTimeout(() => {
       select === 'select_amount'
@@ -160,7 +166,7 @@ export const DaoManageModal = () => {
     if (select) {
       setPeriodValue(0);
     }
-    setValue('');
+    setValue('0');
   }, [select]);
 
   useEffect(() => {
@@ -174,7 +180,6 @@ export const DaoManageModal = () => {
       const {startTime, endTime} = stake[0];
       const timeLeft = endTime - moment().unix();
       const maxPeriod = maxTime - timeLeft;
-      console.log(maxPeriod);
       setAvailableWeeks(Math.floor(maxPeriod / epochUnit));
       // console.log(endTime, moment().unix());
       // console.log(maxTime, timeLeft);
@@ -301,7 +306,7 @@ export const DaoManageModal = () => {
                         fontSize={'14px'}
                         fontColor={themeDesign.scrollNumberFont[colorMode]}
                         fontWeight={'bold'}>
-                        {Number(stake.lockedBalance).toLocaleString()}
+                        {Number(stake.reward).toLocaleString()}
                       </Text>
                     </Box>
                     <Button
@@ -404,25 +409,31 @@ export const DaoManageModal = () => {
                 fontColor={themeDesign.editBorder[colorMode]}>
                 Increase Amount
               </Text>
-              <NumberInput
+              <Flex
+                {...(select === 'select_period'
+                  ? themeDesign.inputVariant[colorMode]
+                  : '')}
+                border="1px solid #dfe4ee"
+                borderRadius={4}
                 w={'143px'}
-                h="32px"
-                mr={'10px'}
-                value={value}
-                dir="rtl"
-                cursor=""
-                onChange={(value) => setValue(value)}>
-                <NumberInputField
-                  {...(select === 'select_period'
-                    ? themeDesign.inputVariant[colorMode]
-                    : '')}
-                  disabled={select === 'select_period'}
-                  ref={amountRef}
-                  fontSize={'0.750em'}
-                  _focus={{
-                    borderWidth: 0,
-                  }}></NumberInputField>
-              </NumberInput>
+                mr={'10px'}>
+                <NumberInput
+                  h="32px"
+                  value={value}
+                  cursor=""
+                  onChange={(value) => setValue(value)}>
+                  <NumberInputField
+                    border="none"
+                    w={'143px'}
+                    h="32px"
+                    disabled={select === 'select_period'}
+                    ref={amountRef}
+                    fontSize={'0.750em'}
+                    _focus={{
+                      borderWidth: 0,
+                    }}></NumberInputField>
+                </NumberInput>
+              </Flex>
               <Button
                 w="70px"
                 h="32px"
@@ -496,7 +507,7 @@ export const DaoManageModal = () => {
                 mr={'15px'}
                 onClick={() => {
                   if (select === 'select_amount') {
-                    if (account && selectLockId !== '' && value !== '') {
+                    if (account && selectLockId !== '' && value !== '0') {
                       increaseAmount({
                         account,
                         library,
