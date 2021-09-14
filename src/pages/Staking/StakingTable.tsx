@@ -39,7 +39,7 @@ import {
 } from './actions/stakeTONControl';
 import {useBlockNumber} from 'hooks/useBlock';
 import {CustomTooltip} from 'components/Tooltip';
-import {useUser} from 'hooks/useUser';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 
 type StakingTableProps = {
   columns: Column[];
@@ -137,7 +137,7 @@ export const StakingTable: FC<StakingTableProps> = ({
   const theme = useTheme();
   const focusTarget = useRef<any>([]);
   const {blockNumber} = useBlockNumber();
-  const {account, library} = useUser();
+  const {account, library} = useActiveWeb3React();
 
   const {
     data: {contractAddress, index},
@@ -170,7 +170,7 @@ export const StakingTable: FC<StakingTableProps> = ({
     async function callIsWithdrawAndSwapAll() {
       if (account && library) {
         const res = await checkCanWithdrawLayr2All(library);
-        setIsWithdrawAndSwapAll(res || false);
+        return setIsWithdrawAndSwapAll(res || false);
       }
       setIsWithdrawAndSwapAll(false);
     }
