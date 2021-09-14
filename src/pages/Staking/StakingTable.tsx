@@ -458,7 +458,7 @@ export const StakingTable: FC<StakingTableProps> = ({
             })}
           </chakra.tbody>
         </chakra.table>
-        {/* 
+        {/*         
         Pagination can be built however you'd like. 
         This is just a very basic UI implementation:
       */}
@@ -482,7 +482,6 @@ export const StakingTable: FC<StakingTableProps> = ({
                   isDisabled={!isWithdrawAndSwapAll}
                   fontSize={'14px'}
                   fontWeight={600}
-                  display="none"
                   onClick={() => {
                     if (account && library) {
                       stakeTonControl(account, library);
