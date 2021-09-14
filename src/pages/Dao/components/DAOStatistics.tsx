@@ -46,14 +46,20 @@ export const DAOStatistics = () => {
     const TOSContract = new Contract(TOS_ADDRESS, TOSABI.abi, library);
     const _totalTOS = await TOSContract.balanceOf(LockTOS_ADDRESS);
     if (_totalTOS) {
-      const res = convertNumber({amount: _totalTOS.toString()});
+      const res = convertNumber({
+        amount: _totalTOS.toString(),
+        localeString: true,
+      });
       setTotalTOS(res !== undefined ? res : '');
     }
   };
   const getTotalSTOS = async () => {
     const totalSTOS = await LockTOSContract.totalSupply();
     if (totalSTOS) {
-      const res = convertNumber({amount: totalSTOS.toString()});
+      const res = convertNumber({
+        amount: totalSTOS.toString(),
+        localeString: true,
+      });
       setTotalSTOS(res !== undefined ? res : '');
     }
   };
