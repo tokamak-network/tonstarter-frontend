@@ -56,10 +56,6 @@ export const ClaimOptionModal = () => {
     setSwapable('0.00');
   }, [dispatch]);
 
-  useEffect(() => {
-    console.log(tab);
-  }, [tab]);
-
   return (
     <Modal
       isOpen={data.modal === 'claimPool' ? true : false}

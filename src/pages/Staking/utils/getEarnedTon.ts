@@ -47,7 +47,6 @@ export const getEarnedTon = async ({
       const totalSeig = BigNumber.from(a).add(b).add(c).add(d).sub(e);
 
       const checkIsUnstaked = res[5].released;
-      console.log(res[5]);
       if (checkIsUnstaked === true) {
         const releasedAmount = res[5].releasedAmount;
         const amount = res[5].amount;
