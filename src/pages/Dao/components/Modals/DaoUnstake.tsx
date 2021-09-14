@@ -21,6 +21,7 @@ import {useEffect, useState} from 'react';
 import {Scrollbars} from 'react-custom-scrollbars-2';
 import {unstakeTOS} from '../../actions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
+import {CloseButton} from 'components/Modal';
 
 const UnstakeRecord = ({number, amount}: {number: number; amount: string}) => {
   const {colorMode} = useColorMode();
@@ -83,6 +84,7 @@ export const DaoUnstakeModal = (props: any) => {
         w="350px"
         pt="25px"
         pb="25px">
+        <CloseButton closeFunc={handleCloseModal}></CloseButton>
         <ModalBody p={0}>
           <Box
             pb={'1.250em'}

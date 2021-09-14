@@ -34,6 +34,7 @@ import {useBlockNumber} from 'hooks/useBlock';
 import {getConstants} from 'pages/Dao/utils';
 import moment from 'moment';
 import {useToast} from 'hooks/useToast';
+import {CloseButton} from 'components/Modal';
 
 interface Stake {
   lockId: string;
@@ -259,7 +260,7 @@ export const DaoManageModal = () => {
                       fontColor={themeDesign.scrollNumberFont[colorMode]}>
                       {index < 10 ? '0' + (index + 1) : index}
                     </Text>
-                    <Box w={'94px'} mr={'30px'}>
+                    <Box w={'110px'} mr={'20px'}>
                       <Text
                         fontSize={'0.750em'}
                         color={themeDesign.scrollAmountFont[colorMode]}>
@@ -571,6 +572,7 @@ export const DaoManageModal = () => {
         maxW="500px"
         pt="25px"
         pb="25px">
+        <CloseButton closeFunc={handleCloseModal}></CloseButton>
         {!edit && <MainScreen />}
         {edit && <EditScreen />}
       </ModalContent>

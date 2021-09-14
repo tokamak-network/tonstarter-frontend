@@ -273,7 +273,9 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
                         outline="none"
                         colorScheme="red"
                         onClick={() => {
+                          deactivate();
                           (connector as any).close();
+
                           // setAccountValue({signIn: false});
                         }}>
                         Disconnect

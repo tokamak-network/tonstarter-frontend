@@ -29,6 +29,7 @@ import moment from 'moment';
 import Decimal from 'decimal.js';
 import {stakeTOS} from '../../actions';
 import {getConstants} from '../../utils';
+import {CloseButton} from 'components/Modal';
 
 type SelectPeriod = '1 month' | '6 months' | '1 year' | '3 years';
 
@@ -193,6 +194,7 @@ export const DaoStakeModal = () => {
         w="350px"
         pt="25px"
         pb="25px">
+        <CloseButton closeFunc={handleCloseModal}></CloseButton>
         <ModalBody p={0}>
           <Box
             pb={'1.250em'}

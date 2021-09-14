@@ -136,7 +136,6 @@ export const DAO = () => {
                   _hover={{color: '#2a72e5', borderColor: '#2a72e5'}}>
                   <Text
                     onClick={(e: any) => {
-                      e.preventDefault();
                       window.open(`https://snapshot.org/#/tonstarter.eth`);
                     }}>
                     Go to governance
