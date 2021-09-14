@@ -187,6 +187,7 @@ export const DaoStakeModal = () => {
         setDateValue(0);
         setReward('-');
         setReward('-');
+        setLockDateValue(undefined);
         handleCloseModal();
       }}>
       <ModalOverlay />

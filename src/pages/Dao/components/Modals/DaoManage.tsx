@@ -334,6 +334,8 @@ export const DaoManageModal = () => {
                       onClick={() => {
                         setEdit(true);
                         setSelectLockId(stake.lockId);
+                        setValue('0');
+                        setPeriodValue(0);
                       }}>
                       Edit
                     </Button>
@@ -615,6 +617,8 @@ export const DaoManageModal = () => {
                 onClick={() => {
                   setEdit(false);
                   setSelectLockId('');
+                  setValue('0');
+                  setPeriodValue(0);
                 }}>
                 Cancel
               </Button>
@@ -640,7 +644,14 @@ export const DaoManageModal = () => {
         maxW="500px"
         pt="25px"
         pb="25px">
-        <CloseButton closeFunc={handleCloseModal}></CloseButton>
+        <CloseButton
+          closeFunc={() => {
+            setEdit(false);
+            setSelectLockId('');
+            setValue('0');
+            setPeriodValue(0);
+            handleCloseModal();
+          }}></CloseButton>
         {!edit && <MainScreen />}
         {edit && <EditScreen />}
       </ModalContent>
