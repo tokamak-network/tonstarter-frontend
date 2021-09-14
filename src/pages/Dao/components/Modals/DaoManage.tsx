@@ -189,7 +189,7 @@ export const DaoManageModal = () => {
   }, [blockNumber, selectLockId, maxTime, epochUnit]);
 
   const {data: userData} = useAppSelector(selectUser);
-  if (!userData || !userData.balance.tos) {
+  if (!userData || !userData?.balance?.tos) {
     return null;
   }
   const {
