@@ -20,11 +20,11 @@ export const ModalTabs = (prop: ModalTabsProp) => {
   if (tab === 'Reward') {
     return (
       <Flex flexDir="column" alignItems="center">
-        <Box mb={'18px'}>
+        {/* <Box mb={'18px'}>
           <CustomTitle
             title={'Claim TOS reward'}
             fontSize={'13px'}></CustomTitle>
-        </Box>
+        </Box> */}
         <Box d="flex" mb={'24px'}>
           <Text
             h={'40px'}
@@ -42,7 +42,7 @@ export const ModalTabs = (prop: ModalTabsProp) => {
             TOS
           </Text>
         </Box>
-        <Box d="flex" flexDir={'column'} alignItems="center" mb={'18px'}>
+        {/* <Box d="flex" flexDir={'column'} alignItems="center" mb={'18px'}>
           <CustomTitle
             title={'Detail'}
             fontSize={'12px'}
@@ -61,7 +61,7 @@ export const ModalTabs = (prop: ModalTabsProp) => {
               TOS
             </Text>
           </Box>
-        </Box>
+        </Box> */}
       </Flex>
     );
   }
@@ -113,7 +113,7 @@ export const ModalTabs = (prop: ModalTabsProp) => {
   return (
     <Flex flexDir="column" alignItems="center">
       <Box mb={'18px'}>
-        <CustomTitle title={'Claim TOS reward'} fontSize={'13px'}></CustomTitle>
+        {/* <CustomTitle title={'Claim TOS reward'} fontSize={'13px'}></CustomTitle> */}
       </Box>
       <Box d="flex" mb={'24px'}>
         <Text
@@ -132,7 +132,7 @@ export const ModalTabs = (prop: ModalTabsProp) => {
           TOS
         </Text>
       </Box>
-      <Box d="flex" flexDir={'column'} alignItems="center" mb={'18px'}>
+      {/* <Box d="flex" flexDir={'column'} alignItems="center" mb={'18px'}>
         <CustomTitle
           title={'Detail'}
           fontSize={'12px'}
@@ -190,7 +190,7 @@ export const ModalTabs = (prop: ModalTabsProp) => {
             WTOS
           </Text>
         </Box>
-      </Box>
+      </Box> */}
     </Flex>
   );
 };

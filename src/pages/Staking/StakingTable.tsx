@@ -170,9 +170,8 @@ export const StakingTable: FC<StakingTableProps> = ({
     async function callIsWithdrawAndSwapAll() {
       if (account && library) {
         const res = await checkCanWithdrawLayr2All(library);
-        setIsWithdrawAndSwapAll(res || false);
+        return setIsWithdrawAndSwapAll(res || false);
       }
-      setIsWithdrawAndSwapAll(false);
     }
     callIsWithdrawAndSwapAll();
   }, [blockNumber, library, account]);
