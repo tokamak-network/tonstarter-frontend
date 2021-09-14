@@ -404,7 +404,7 @@ export const DaoStakeModal = () => {
                     fontSize="15px"
                     color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                     fontWeight={600}>
-                    {endDate} (KST)
+                    {endDate === 'Invalid date' ? null : endDate} (KST)
                   </Text>
                 </Flex>
                 <Flex
@@ -429,7 +429,7 @@ export const DaoStakeModal = () => {
                       ml={2}
                       color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                       fontWeight={600}>
-                      {reward} sTOS
+                      {reward === 'NaN' ? null : reward} sTOS
                     </Text>
                   </Flex>
                 </Flex>
