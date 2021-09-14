@@ -15,6 +15,8 @@ import {
   Select,
   Tooltip,
   Image,
+  NumberInputField,
+  NumberInput,
 } from '@chakra-ui/react';
 import React, {useCallback} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
@@ -332,7 +334,30 @@ export const DaoStakeModal = () => {
                   <Text fontSize={'0.750em'} color="gray.250" fontWeight={600}>
                     Customized
                   </Text>
-                  <Input
+                  <NumberInput
+                    w="132px"
+                    h="32px"
+                    value={lockDateValue}
+                    ref={focusCustomTarget}
+                    onChange={(value) =>
+                      value !== '-' && value !== '.'
+                        ? setLockDateValue(value)
+                        : null
+                    }
+                    onClick={() => changeAllBorderColor()}>
+                    <NumberInputField
+                      variant={'outline'}
+                      borderWidth={1}
+                      fontSize="12px"
+                      w={'100%'}
+                      h={'100%'}
+                      p={0}
+                      pl={15}
+                      _focus={{
+                        borderWidth: 0,
+                      }}></NumberInputField>
+                  </NumberInput>
+                  {/* <Input
                     w="132px"
                     h="32px"
                     ref={focusCustomTarget}
@@ -340,7 +365,7 @@ export const DaoStakeModal = () => {
                       const {value} = e.target;
                       setLockDateValue(value);
                     }}
-                    onClick={() => changeAllBorderColor()}></Input>
+                    onClick={() => changeAllBorderColor()}></Input> */}
                   <Select
                     w="100px"
                     h="32px"

@@ -150,7 +150,12 @@ export const DaoManageModal = () => {
   }, [active, account]);
 
   useEffect(() => {
-    const checkCondition = value === '0' && periodValue === 0 ? true : false;
+    const checkCondition =
+      (value === '0' && periodValue === 0) ||
+      String(value) === '' ||
+      String(periodValue) === ''
+        ? true
+        : false;
     setBtnDisable(checkCondition);
     setTimeout(() => {
       select === 'select_amount'
@@ -418,7 +423,9 @@ export const DaoManageModal = () => {
                   h="32px"
                   value={value}
                   cursor=""
-                  onChange={(value) => setValue(value)}>
+                  onChange={(value) =>
+                    value !== '-' ? setValue(value) : null
+                  }>
                   <NumberInputField
                     border="none"
                     w={'143px'}
