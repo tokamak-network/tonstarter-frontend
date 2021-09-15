@@ -413,7 +413,7 @@ export const DaoManageModal = () => {
                   color="gray.175"
                   fontSize={'0.750em'}
                   textAlign={'center'}>
-                  You can edit the amount and Period.
+                  You can edit the amount and period.
                 </Text>
               </Flex>
             </Flex>
@@ -549,7 +549,9 @@ export const DaoManageModal = () => {
                   toolTipW={150}
                   toolTipH={'50px'}
                   msg={[
-                    `You can extend period within ${availableWeeks} weeks`,
+                    `You can extend period within ${Math.ceil(
+                      availableWeeks / getMonth(),
+                    )} months`,
                   ]}></CustomTooltip>
               </Flex>
             </Flex>
@@ -598,11 +600,15 @@ export const DaoManageModal = () => {
                   }
                   if (select === 'select_period') {
                     if (account && selectLockId !== '' && periodValue !== 0) {
-                      if (periodValue > availableWeeks) {
+                      if (
+                        periodValue > Math.ceil(availableWeeks / getMonth())
+                      ) {
                         return toastMsg({
                           status: 'error',
                           title: 'Error',
-                          description: `You can extend period within ${availableWeeks} weeks`,
+                          description: `You can extend period within ${Math.ceil(
+                            availableWeeks / getMonth(),
+                          )} months`,
                           duration: 5000,
                           isClosable: true,
                         });
