@@ -11,6 +11,7 @@ import {
 
 export const useModal = (
   setValue?: React.Dispatch<React.SetStateAction<any>>,
+  cleanUp?: Function,
 ) => {
   const dispatch = useAppDispatch();
 
@@ -26,6 +27,9 @@ export const useModal = (
   const handleCloseModal = () => {
     if (setValue) {
       setValue('0');
+    }
+    if (cleanUp) {
+      cleanUp();
     }
     dispatch(closeModal());
   };

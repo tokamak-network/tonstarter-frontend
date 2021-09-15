@@ -119,7 +119,13 @@ export const DaoManageModal = () => {
   const theme = useTheme();
   const {active, account, library} = useActiveWeb3React();
   const {btnStyle} = theme;
-  const {handleCloseModal} = useModal();
+  const {handleCloseModal} = useModal(() => {
+    setEdit(false);
+    setSelectLockId('');
+    setSelect('select_amount');
+    setValue('0');
+    setPeriodValue(0);
+  });
   const {toastMsg} = useToast();
   const {blockNumber} = useBlockNumber();
 
@@ -565,6 +571,11 @@ export const DaoManageModal = () => {
                 mr={'15px'}
                 onClick={() => {
                   if (select === 'select_amount') {
+                    console.log(Number(value));
+                    console.log(Number(balance.replaceAll(',', '')));
+                    console.log(
+                      Number(value) > Number(balance.replaceAll(',', '')),
+                    );
                     if (account && selectLockId !== '' && value !== '0') {
                       if (Number(value) > Number(balance.replaceAll(',', ''))) {
                         return toastMsg({
@@ -581,6 +592,7 @@ export const DaoManageModal = () => {
                         lockId: selectLockId,
                         amount: value === tos ? tosOrigin : value,
                         allBalance: value === tos,
+                        handleCloseModal,
                       });
                     }
                   }
@@ -600,6 +612,7 @@ export const DaoManageModal = () => {
                           library,
                           lockId: selectLockId,
                           lockupTime: Number(periodRef.current?.value),
+                          handleCloseModal,
                         });
                       }
                     }

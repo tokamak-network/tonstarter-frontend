@@ -324,7 +324,7 @@ export const DaoStakeModal = () => {
                   onClick={() => {
                     setDateValue(0);
                     setIsCustom(true);
-                    setSelectPeriod(undefined);
+                    setSelectPeriod('months');
                     changeAllBorderColor();
                   }}>
                   Customized
@@ -375,11 +375,11 @@ export const DaoStakeModal = () => {
                       const type = e.target.value;
                       setSelectPeriod(type);
                     }}>
-                    <option value="" disabled selected hidden>
-                      Select
+                    <option value="months" selected>
+                      months
                     </option>
                     <option value="weeks">weeks</option>
-                    <option value="months">months</option>
+                    {/* <option value="months">months</option> */}
                   </Select>
                 </Flex>
               )}
@@ -414,7 +414,7 @@ export const DaoStakeModal = () => {
                   h="45px">
                   <Flex>
                     <Text fontSize="13px" color="gray.400" mr="5px">
-                      Estimated reward
+                      Estimated amount
                     </Text>
                     <Tooltip
                       hasArrow

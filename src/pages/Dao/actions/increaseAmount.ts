@@ -12,10 +12,11 @@ type IncreaseAmount = {
   lockId: string;
   amount: string;
   allBalance: boolean;
+  handleCloseModal: any;
 };
 
 export const increaseAmount = async (args: IncreaseAmount) => {
-  const {account, library, lockId, amount, allBalance} = args;
+  const {account, library, lockId, amount, allBalance, handleCloseModal} = args;
   const {LockTOS_ADDRESS} = DEPLOYED;
   const LockTOSContract = new Contract(
     LockTOS_ADDRESS,
@@ -24,7 +25,7 @@ export const increaseAmount = async (args: IncreaseAmount) => {
   );
   const weiAmount = allBalance ? amount : convertToWei(amount);
   const signer = getSigner(library, account);
-
+  handleCloseModal();
   const res = await LockTOSContract.connect(signer).increaseAmount(
     lockId,
     weiAmount,
