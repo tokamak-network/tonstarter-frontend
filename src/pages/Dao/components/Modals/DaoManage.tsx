@@ -31,7 +31,7 @@ import {TosStakeList} from '../../types/index';
 import {selectModalType} from 'store/modal.reducer';
 import {CustomTooltip} from 'components/Tooltip';
 import {useBlockNumber} from 'hooks/useBlock';
-import {getConstants} from 'pages/Dao/utils';
+import {getConstants, getMonth} from 'pages/Dao/utils';
 import moment from 'moment';
 import {useToast} from 'hooks/useToast';
 import {CloseButton} from 'components/Modal';
@@ -541,7 +541,7 @@ export const DaoManageModal = () => {
                       select === 'select_period' ? 'active' : 'notActive'
                     ]
                   }>
-                  <span>Weeks</span>
+                  <span>Months</span>
                 </Flex>
               </Flex>
               <Flex h={'100%'} alignItems="center" justifyContent="center">
@@ -611,7 +611,7 @@ export const DaoManageModal = () => {
                           account,
                           library,
                           lockId: selectLockId,
-                          lockupTime: Number(periodRef.current?.value),
+                          lockupTime: periodValue * getMonth(),
                           handleCloseModal,
                         });
                       }
