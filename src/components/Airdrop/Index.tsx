@@ -10,7 +10,7 @@ import {
   Text,
   useColorMode,
   useTheme,
-  Wrap,
+  // Wrap,
   WrapItem,
   Button,
   Center,
@@ -19,7 +19,7 @@ import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
 import {claimAirdrop} from './actions';
 import {useState, useEffect} from 'react';
-import {Scrollbars} from 'react-custom-scrollbars-2';
+// import {Scrollbars} from 'react-custom-scrollbars-2';
 import {LoadingComponent} from 'components/Loading';
 import {fetchAirdropPayload} from './utils/fetchAirdropPayload';
 import {useActiveWeb3React} from 'hooks/useWeb3';
@@ -73,7 +73,7 @@ export const AirdropModal = () => {
   const dispatch = useAppDispatch();
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const {modalStyle} = theme;
+  const {modalStyle, btnStyle} = theme;
 
   const availableAmount = (
     roundInfo: AirDropList,
@@ -217,11 +217,19 @@ export const AirdropModal = () => {
           </Stack>
           <Center mt="30px">
             <Button
+              {...(airdropData === undefined ||
+              airdropData[0]?.myAmount === '0.00'
+                ? {...btnStyle.btnDisable({colorMode})}
+                : {...btnStyle.btnAble()})}
               w={'150px'}
-              bg={'blue.500'}
-              color="white.100"
+              // bg={'blue.500'}
+              // color="white.100"
               fontSize="14px"
-              _hover={{backgroundColor: 'blue.100'}}
+              isDisabled={
+                airdropData === undefined || airdropData[0]?.myAmount === '0.00'
+                  ? true
+                  : false
+              }
               onClick={() =>
                 claimAirdrop({
                   userAddress: account,
