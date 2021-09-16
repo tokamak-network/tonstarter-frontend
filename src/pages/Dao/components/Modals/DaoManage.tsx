@@ -610,7 +610,9 @@ export const DaoManageModal = () => {
                           account,
                           library,
                           lockId: selectLockId,
-                          lockupTime: periodValue * getMonth(),
+                          lockupTime: Math.ceil(
+                            moment.duration(periodValue, 'months').asWeeks(),
+                          ),
                           handleCloseModal,
                         });
                       }
