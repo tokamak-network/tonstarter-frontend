@@ -61,7 +61,7 @@ const MAINNET_DEPLOYED = {
   UniswapStaking_Address: '0xC1349A9a33A0682804c390a3968e26E5a2366153',
   NPM_Address: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
   BasePool_Address: '0x1c0ce9aaa0c12f53df3b4d8d77b82d6ad343b4e4',
-  StakeTonControl_ADDRESS: '',
+  StakeTonControl_ADDRESS: '0xacdded49ac67ba9c87b1bbc5cb248b1bd7dc0f19',
 };
 
 const RINKEBY_DEPLOYED = {
