@@ -10,7 +10,7 @@ import {
   Text,
   useColorMode,
   useTheme,
-  Wrap,
+  // Wrap,
   WrapItem,
   Button,
   Center,
@@ -19,10 +19,10 @@ import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
 import {claimAirdrop} from './actions';
 import {useState, useEffect} from 'react';
-import {Scrollbars} from 'react-custom-scrollbars-2';
+// import {Scrollbars} from 'react-custom-scrollbars-2';
 import {LoadingComponent} from 'components/Loading';
 import {fetchAirdropPayload} from './utils/fetchAirdropPayload';
-import {useUser} from 'hooks/useUser';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 
 type Round = {
   allocatedAmount: string;
@@ -69,11 +69,11 @@ export const AirdropModal = () => {
   const [airdropData, setAirdropData] = useState<AirDropList>(undefined);
   const [balance, setBalance] = useState<string | undefined>(undefined);
   const {data} = useAppSelector(selectModalType);
-  const {account, library} = useUser();
+  const {account, library, active} = useActiveWeb3React();
   const dispatch = useAppDispatch();
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const {modalStyle} = theme;
+  const {modalStyle, btnStyle} = theme;
 
   const availableAmount = (
     roundInfo: AirDropList,
@@ -87,7 +87,7 @@ export const AirdropModal = () => {
 
   useEffect(() => {
     async function callAirDropData() {
-      if (account === undefined) {
+      if (account === undefined || account === null) {
         return;
       }
       const res = await fetchAirdropPayload(account, library);
@@ -201,9 +201,8 @@ export const AirdropModal = () => {
                 renderThumbHorizontal={() => (
                   <div style={{background: 'black'}}></div>
                 )}>
-                <Box
+                <Wrap
                   display="flex"
-                  w="100%"
                   style={{marginTop: '0', marginBottom: '20px'}}>
                   {airdropData.slice(1).map((data: any, index: number) => (
                     <AirdropRecord
@@ -212,17 +211,25 @@ export const AirdropModal = () => {
                       key={index}
                     />
                   ))}
-                </Box>
+                </Wrap>
               </Scrollbars>
             )} */}
           </Stack>
           <Center mt="30px">
             <Button
+              {...(airdropData === undefined ||
+              airdropData[0]?.myAmount === '0.00'
+                ? {...btnStyle.btnDisable({colorMode})}
+                : {...btnStyle.btnAble()})}
               w={'150px'}
-              bg={'blue.500'}
-              color="white.100"
+              // bg={'blue.500'}
+              // color="white.100"
               fontSize="14px"
-              _hover={{backgroundColor: 'blue.100'}}
+              isDisabled={
+                airdropData === undefined || airdropData[0]?.myAmount === '0.00'
+                  ? true
+                  : false
+              }
               onClick={() =>
                 claimAirdrop({
                   userAddress: account,
