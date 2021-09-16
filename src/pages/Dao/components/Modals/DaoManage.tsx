@@ -570,11 +570,6 @@ export const DaoManageModal = () => {
                 mr={'15px'}
                 onClick={() => {
                   if (select === 'select_amount') {
-                    console.log(Number(value));
-                    console.log(Number(balance.replaceAll(',', '')));
-                    console.log(
-                      Number(value) > Number(balance.replaceAll(',', '')),
-                    );
                     if (account && selectLockId !== '' && value !== '0') {
                       if (Number(value) > Number(balance.replaceAll(',', ''))) {
                         return toastMsg({

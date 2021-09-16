@@ -34,7 +34,10 @@ import {selectTransactionType} from 'store/refetch.reducer';
 import moment from 'moment';
 import calculator_icon_light from 'assets/svgs/calculator_icon_light_mode.svg';
 import {useModal} from 'hooks/useModal';
-import { usePositionByUserQuery, usePositionByContractQuery } from 'store/data/generated';
+import {
+  usePositionByUserQuery,
+  usePositionByContractQuery,
+} from 'store/data/generated';
 import ms from 'ms.macro';
 
 type PoolTableProps = {
@@ -134,17 +137,17 @@ export const PoolTable: FC<PoolTableProps> = ({
   }, [data, transactionType, blockNumber, address, library]);
 
   const position = usePositionByUserQuery(
-    { address: account },
+    {address: account},
     {
       pollingInterval: ms`2m`,
-    }
-  )
+    },
+  );
   const positionByContract = usePositionByContractQuery(
-    { id: stakingPosition },
+    {id: stakingPosition},
     {
       pollingInterval: ms`2m`,
-    }
-  )
+    },
+  );
 
   const [positions, setPositions] = useState([]);
   useEffect(() => {
@@ -392,14 +395,14 @@ export const PoolTable: FC<PoolTableProps> = ({
                               mr="12px"
                             />
                             <Text>{poolName}</Text>
-                            <Image
+                            {/* <Image
                               ml={'1em'}
                               src={calculator_icon_light}
                               onClick={(e) => {
                                 e.stopPropagation();
                                 openAnyModal('pool_simulator', {});
                               }}
-                            />
+                            /> */}
                           </>
                         ) : (
                           ''

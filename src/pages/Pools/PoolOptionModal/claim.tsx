@@ -56,10 +56,6 @@ export const ClaimOptionModal = () => {
     setSwapable('0.00');
   }, [dispatch]);
 
-  useEffect(() => {
-    console.log(tab);
-  }, [tab]);
-
   return (
     <Modal
       isOpen={data.modal === 'claimPool' ? true : false}
@@ -100,13 +96,13 @@ export const ClaimOptionModal = () => {
               colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
             }
             mb={'25px'}>
-            <Box pt={'15px'} mb="30px">
+            {/* <Box pt={'15px'} mb="30px">
               <CustomTabs
                 w={'90px'}
                 h={'26px'}
                 list={tabList}
                 setValue={setTab}></CustomTabs>
-            </Box>
+            </Box> */}
             <Box m={'0 !important'}>
               <ModalTabs
                 tab={tab}
