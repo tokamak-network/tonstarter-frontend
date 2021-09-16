@@ -388,7 +388,7 @@ export const PoolTable: FC<PoolTableProps> = ({
                               name="T"
                               h="48px"
                               w="48px"
-                              ml="34px"
+                              ml="15px"
                               mr="12px"
                             />
                             <Text>{poolName}</Text>

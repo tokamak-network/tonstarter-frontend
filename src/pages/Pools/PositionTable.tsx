@@ -239,8 +239,8 @@ export const PositionTable: FC<PositionTableProps> = ({
                 alignItems="center"
                 justifyContent="space-between"
                 pt={'28px'}
-                w={'90%'}
-                ml={'50px'}
+                w={'96%'}
+                ml={'25px'}
                 colSpan={visibleColumns.length}
                 // borderBottomWidth={1}
               >
@@ -287,7 +287,7 @@ export const PositionTable: FC<PositionTableProps> = ({
                   <chakra.td
                     display={'flex'}
                     w={'100%'}
-                    pl={9}
+                    pl={2}
                     py={5}
                     key={index}
                     colSpan={visibleColumns.length}

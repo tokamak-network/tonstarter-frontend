@@ -9,7 +9,7 @@ import {IconOpen} from 'components/Icons/IconOpen';
 import {Head} from 'components/SEO';
 import {useAppSelector} from 'hooks/useRedux';
 import {Fragment, useMemo, useEffect, useState} from 'react';
-import {ClaimOptionModal, Simulator} from './PoolOptionModal';
+import {ClaimOptionModal, Simulator, RemoveLiquidity} from './PoolOptionModal';
 import {PoolTable} from './PoolTable';
 import {PageHeader} from 'components/PageHeader';
 // import {LoadingComponent} from 'components/Loading';
@@ -99,11 +99,11 @@ export const Pools = () => {
   return (
     <Fragment>
       <Head title={'Pools'} />
-      <Container maxW={'6xl'}>
+      <Container maxW={'7xl'}>
         <Box py={20}>
           <PageHeader
             title={'Pools'}
-            subtitle={'Add liquidity into TOS ecosystem and earn reward'}
+            subtitle={'Add liquidity into TOS ecosystem and earn rewards'}
           />
         </Box>
         <Box fontFamily={theme.fonts.roboto}>
@@ -122,6 +122,7 @@ export const Pools = () => {
       </Container>
       <ClaimOptionModal />
       <Simulator />
+      <RemoveLiquidity/>
     </Fragment>
   );
 };

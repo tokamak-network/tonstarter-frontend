@@ -15,7 +15,9 @@ type StakingModal =
   | 'stakePool'
   | 'unstakePool'
   | 'claimPool'
-  | 'pool_simulator';
+  | 'pool_simulator'
+  | 'add_liquidity'
+  | 'remove_liquidity';
 
 export type ModalType = StakingModal | DaoModal;
 

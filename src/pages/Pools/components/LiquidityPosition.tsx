@@ -66,6 +66,8 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
   const [stakingBtnDisable, setStakingBtnDisable] = useState(true);
   const [unStakingBtnDisable, setUnStakingBtnDisable] = useState(true);
   const [claimBtnDisable, setClaimBtnDisable] = useState(true);
+  const [addLiquidityBtnDisable, setAddLiquidityBtnDisable] = useState(true);
+  const [removeLiquidityBtnDisable, setRemoveLiquidityBtnDisable] = useState(true);
   const {account: address, library} = useActiveWeb3React();
   const localBtnStyled = {
     btn: () => ({
@@ -140,6 +142,22 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
       }
     }
 
+    function setAddLiquidityBtn() {
+      if (address && owner !== address.toLowerCase() && lpData) {
+        setAddLiquidityBtnDisable(false);
+      } else {
+        setAddLiquidityBtnDisable(true);
+      }
+    }
+    function setRemoveLiquidityBtn() {
+      if (address && owner !== address.toLowerCase() && lpData) {
+        setRemoveLiquidityBtnDisable(false);
+      } else {
+        setRemoveLiquidityBtnDisable(true);
+      }
+    }
+    
+
     function setSwapable() {
       const claimed = lpData?.miningAmount;
       const expected = lpData?.minableAmount;
@@ -155,6 +173,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
     setStakingBtn();
     setUnStakingBtn();
     setClaimBtn();
+    setRemoveLiquidityBtn();
   }, [
     lpData,
     stakingDisable,
@@ -197,7 +216,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
         ? getCircle('not staked')
         : getCircle('staked')}
       {range ? getRange('range') : getRange('not range')}
-      <Flex ml={'32px'} w={'170px'} mr={'33px'} py={2}>
+      <Flex ml={'20px'} w={'150px'} mr={'20px'} py={2}>
         <Text>{poolName}</Text>
         <Text fontSize={'14px'} pt={1}>
           _#{id}
@@ -208,7 +227,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
         fontWeight={300}
         fontSize={'12px'}
         direction={'row'}
-        w={'185px'}
+        w={'165px'}
         mr={'0px'}
         py={3}>
         <Text color={'#2a72e5'} mr={1}>
@@ -337,7 +356,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
           }>
           Unstake
         </Button>
-        <Button
+        {/* <Button
           {...localBtnStyled.btn()}
           bg={'#00c3c4'}
           _hover={{bg: '#00b3b4'}}
@@ -347,6 +366,45 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
             window.open(`https://app.uniswap.org/#/pool/${id}`);
           }}>
           Edit
+        </Button> */}
+        <Button
+          {...localBtnStyled.btn()}
+          color={'#838383'}
+          {...(removeLiquidityBtnDisable
+            ? {...btnStyle.btnDisable({colorMode})}
+            : {...btnStyle.btnAble()})}
+          isDisabled={removeLiquidityBtnDisable}
+          onClick={() =>
+            dispatch(
+              openModal({
+                type: 'remove_liquidity',
+                data: {
+                  id: id,
+                },
+              }),
+            )
+          }>
+          Add Liquidity
+        </Button>
+        <Button
+          {...localBtnStyled.btn()}
+          color={'#838383'}
+          {...(removeLiquidityBtnDisable
+            ? {...btnStyle.btnDisable({colorMode})}
+            : {...btnStyle.btnAble()})}
+          isDisabled={removeLiquidityBtnDisable}
+          onClick={() =>
+            dispatch(
+              openModal({
+                type: 'remove_liquidity',
+                data: {
+                  id: id,
+                  poolName: poolName,
+                },
+              }),
+            )
+          }>
+          Remove Liquidity
         </Button>
       </Grid>
     </Flex>

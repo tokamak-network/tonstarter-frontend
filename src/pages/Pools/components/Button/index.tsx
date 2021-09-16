@@ -127,7 +127,6 @@ export const ButtonGray = styled(Base)`
     background-color: #EDEEF2;
   }
 `
-
 // export const ButtonSecondary = styled(Base)`
 //   border: 1px solid ${({ theme }) => theme.primary4};
 //   color: ${({ theme }) => theme.primary1};
@@ -330,7 +329,7 @@ export const ButtonGray = styled(Base)`
 //   border-radius: 50%;
 //   background-color: ${({ theme }) => theme.primary1};
 //   display: flex;
-//   align-items: center;
+//   align-items: center; 
 //   justify-content: center;
 // `
 
