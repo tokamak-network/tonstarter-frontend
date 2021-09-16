@@ -63,10 +63,15 @@ export const DaoUnstakeModal = (props: any) => {
       (e: any) => e.end === true && e.endTime > 0,
     );
     const unstakedBalance = unstakedList.reduce((acc: any, cur: any) => {
-      return Number(acc) + Number(cur.lockedBalance);
+      return Number(acc) + Number(cur.lockedBalance.replaceAll(',', ''));
     }, 0);
     setUnstakeList(unstakedList);
-    setUnstakeBalance(unstakedBalance.toFixed(2));
+    // setUnstakeBalance(unstakedBalance.toFixed(2));
+    setUnstakeBalance(
+      Number(unstakedBalance).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+      }),
+    );
     /*eslint-disable*/
   }, [data]);
 

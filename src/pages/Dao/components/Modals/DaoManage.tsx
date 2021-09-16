@@ -114,6 +114,7 @@ export const DaoManageModal = () => {
   const [periodValue, setPeriodValue] = useState(0);
   const [btnDisable, setBtnDisable] = useState(true);
   const [availableWeeks, setAvailableWeeks] = useState(0);
+  const [availableMonth, setAvailableMonth] = useState(0);
 
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -200,14 +201,12 @@ export const DaoManageModal = () => {
       const {startTime, endTime} = stake[0];
       const timeLeft = endTime - moment().unix();
       const maxPeriod = maxTime - timeLeft;
-      setAvailableWeeks(Math.floor(maxPeriod / epochUnit));
-      // console.log(endTime, moment().unix());
-      // console.log(maxTime, timeLeft);
-      // console.log(moment().unix());
-      // console.log(maxPeriod);
+      const maxWeeks = setAvailableWeeks(Math.floor(maxPeriod / epochUnit));
 
-      // console.log('moment');
-      // console.log(maxPeriod / epochUnit);
+      const duration = moment
+        .duration(Math.floor(maxPeriod / epochUnit), 'weeks')
+        .asMonths();
+      setAvailableMonth(Math.floor(duration));
     }
   }, [blockNumber, selectLockId, maxTime, epochUnit]);
 
@@ -549,9 +548,7 @@ export const DaoManageModal = () => {
                   toolTipW={150}
                   toolTipH={'50px'}
                   msg={[
-                    `You can extend period within ${Math.ceil(
-                      availableWeeks / getMonth(),
-                    )} months`,
+                    `You can extend period within ${availableMonth} months`,
                   ]}></CustomTooltip>
               </Flex>
             </Flex>
@@ -600,15 +597,11 @@ export const DaoManageModal = () => {
                   }
                   if (select === 'select_period') {
                     if (account && selectLockId !== '' && periodValue !== 0) {
-                      if (
-                        periodValue > Math.ceil(availableWeeks / getMonth())
-                      ) {
+                      if (periodValue > availableMonth) {
                         return toastMsg({
                           status: 'error',
                           title: 'Error',
-                          description: `You can extend period within ${Math.ceil(
-                            availableWeeks / getMonth(),
-                          )} months`,
+                          description: `You can extend period within ${availableMonth} months`,
                           duration: 5000,
                           isClosable: true,
                         });

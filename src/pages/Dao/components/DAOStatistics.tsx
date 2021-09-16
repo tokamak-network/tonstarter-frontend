@@ -64,11 +64,16 @@ export const DAOStatistics = () => {
     }
   };
   const getAverageLockTime = async () => {
-    const totalEpoch = await LockTOSContract.cumulativeEpochUnit();
-    const totalIdCount = await LockTOSContract.lockIdCounter();
-    const avgWeek =
-      Number(totalEpoch.toString()) / Number(totalIdCount.toString());
-    setAverageWeek(isNaN(avgWeek) === true ? '0' : String(avgWeek.toFixed(1)));
+    const totalEpoch = await LockTOSContract.cumulativeTOSAmount();
+    const totalUser = await LockTOSContract.allHolders();
+    const avgWeek = totalEpoch.div(totalUser.length);
+    const convertedNum = convertNumber({
+      amount: avgWeek.toString(),
+      localeString: true,
+    });
+
+    // const avgWeek = Number(totalEpoch.toString()) / Number(totalUser.length);
+    setAverageWeek(convertedNum || '0');
   };
 
   useEffect(() => {
@@ -117,14 +122,14 @@ export const DAOStatistics = () => {
         </Box>
         <Box>
           <Text color={'gray.400'} fontSize={'1.000em'}>
-            Average lock time
+            Average lock TOS amount
           </Text>
           <Text
             fontFamily={theme.fonts.roboto}
             color={themeDesign.fontColor[colorMode]}
             fontWeight={'bold'}
             fontSize={'1.125em'}>
-            {averageWeek} <span style={{fontSize: '0.813em'}}> Week</span>
+            {averageWeek} <span style={{fontSize: '0.813em'}}> TOS</span>
           </Text>
         </Box>
       </Flex>

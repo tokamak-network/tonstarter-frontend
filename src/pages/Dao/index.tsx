@@ -20,6 +20,7 @@ import {useAppDispatch} from 'hooks/useRedux';
 import {fetchTosStakes} from './dao.reducer';
 import {useBlockNumber} from 'hooks/useBlock';
 import {useActiveWeb3React} from 'hooks/useWeb3';
+import {Utility} from './components/Utility';
 
 export const DAO = () => {
   const theme = useTheme();
@@ -102,7 +103,12 @@ export const DAO = () => {
                   px={15}
                   cursor={'pointer'}
                   _hover={{color: '#2a72e5', borderColor: '#2a72e5'}}>
-                  <Text>Go to forum</Text>
+                  <Text
+                    onClick={(e: any) => {
+                      window.open(`https://forum.tonstarter.tokamak.network/`);
+                    }}>
+                    Go to forum
+                  </Text>
                   <Image src={resources_icon}></Image>
                 </Box>
               </Container>
@@ -144,8 +150,9 @@ export const DAO = () => {
                 </Box>
               </Container>
             </Flex>
-            <Flex>
+            <Flex flexDir="column" w={636}>
               <DAOStatistics></DAOStatistics>
+              <Utility></Utility>
             </Flex>
           </Flex>
           <Flex mt={75}>

@@ -150,8 +150,7 @@ export const DaoStakeModal = () => {
     const date = Math.floor((now + dateValue * oneWeek) / oneWeek) * oneWeek;
 
     getEstimatedReward(date);
-    setEndDate(moment.unix(date).format('MMM DD YYYY'));
-    // setEndDate(moment(date).format('MMM DD, YYYY'));
+    setEndDate(moment.unix(date).format('YYYY.MM.DD'));
   }, [dateValue, value, getEstimatedReward, oneWeek, selectPeriod]);
 
   useEffect(() => {
@@ -160,23 +159,30 @@ export const DaoStakeModal = () => {
         setDateValue(Number(lockDateValue));
       }
       if (selectPeriod === 'months') {
-        setDateValue(Number(lockDateValue) * 4);
+        const weeksNum = moment.duration(lockDateValue, 'months').asWeeks();
+        // console.log(moment.duration(lockDateValue, 'months').);
+        setDateValue(Math.ceil(weeksNum));
       }
     }
     if (selectPeriod === '1 month') {
-      setDateValue(4);
+      const weeksNum = moment.duration(1, 'months').asWeeks();
+      setDateValue(Math.ceil(weeksNum));
     }
     if (selectPeriod === '6 months') {
-      setDateValue(26);
+      const weeksNum = moment.duration(6, 'months').asWeeks();
+      setDateValue(Math.ceil(weeksNum));
     }
     if (selectPeriod === '1 year') {
-      setDateValue(52);
+      const weeksNum = moment.duration(1, 'year').asWeeks();
+      setDateValue(Math.ceil(weeksNum));
     }
     if (selectPeriod === '3 years') {
       setDateValue(156);
     }
     // return setDateValue(select)
   }, [selectPeriod, lockDateValue]);
+
+  useEffect(() => {}, []);
 
   return (
     <Modal
@@ -395,7 +401,7 @@ export const DaoStakeModal = () => {
                     <Tooltip
                       hasArrow
                       placement="top"
-                      label="Lock up-period is calculated  based on every Monday 00: 00 UTC."
+                      label="Lock up-period is calculated  based on every Thursday 00 : 00 UTC."
                       color={theme.colors.white[100]}
                       bg={theme.colors.gray[375]}>
                       <Image src={tooltipIcon} />
@@ -419,7 +425,7 @@ export const DaoStakeModal = () => {
                     <Tooltip
                       hasArrow
                       placement="top"
-                      label="Lock up-period is calculated  based on every Monday 00: 00 UTC."
+                      label="This estimator could be change depending on the situation."
                       color={theme.colors.white[100]}
                       bg={theme.colors.gray[375]}>
                       <Image src={tooltipIcon} />
@@ -459,14 +465,20 @@ export const DaoStakeModal = () => {
                       from: 'dao/stake',
                       amount: value,
                       period: dateValue,
-                      action: () =>
+                      action: () => {
+                        setIsCustom(false);
+                        setDateValue(0);
+                        setReward('-');
+                        setReward('-');
+                        setLockDateValue(undefined);
                         stakeTOS({
                           account,
                           library,
                           amount: value.replaceAll(',', ''),
                           period: dateValue,
                           handleCloseModal: handleCloseModal(),
-                        }),
+                        });
+                      },
                     },
                   });
                 }
