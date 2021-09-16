@@ -180,7 +180,7 @@ export const AirdropModal = () => {
                 TOS
               </Text>
             </Flex>
-            {airdropData !== undefined && airdropData.length > 1 && (
+            {/* {airdropData !== undefined && airdropData.length > 1 && (
               <Scrollbars
                 style={{
                   width: '100%',
@@ -214,7 +214,7 @@ export const AirdropModal = () => {
                   ))}
                 </Box>
               </Scrollbars>
-            )}
+            )} */}
           </Stack>
           <Center mt="30px">
             <Button
