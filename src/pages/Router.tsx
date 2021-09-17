@@ -24,8 +24,8 @@ export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
 /*
 ###################
-###PHASE 2 OPEN####
-##STAKETONUPGRADE##
+###PHASE 2.5 OPEN##
+########DAO########
 ################### 
 */
 
