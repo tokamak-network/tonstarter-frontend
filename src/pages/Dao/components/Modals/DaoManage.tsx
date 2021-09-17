@@ -195,7 +195,7 @@ export const DaoManageModal = () => {
       (stake) => stake.lockId === selectLockId,
     );
     if (stake === undefined || stake?.length > 1) {
-      return console.error('Stakelist selected should be one');
+      return;
     }
     if (stake[0] !== undefined) {
       const {startTime, endTime} = stake[0];
