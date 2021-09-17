@@ -243,20 +243,12 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           style={{zIndex: 100}}>
           Pools
         </NavLink>
-        <Tooltip
-          hasArrow
-          placement="top"
-          label="Coming Soon"
-          color={theme.colors.white[100]}
-          bg={theme.colors.gray[375]}>
-          <NavLink
-            to="/starter"
-            className={match?.isExact ? 'link-match' : 'link'}
-            style={{zIndex: 100}}
-            onClick={(e) => e.preventDefault()}>
-            Starter
-          </NavLink>
-        </Tooltip>
+        <NavLink
+          to="/starter"
+          className={match?.isExact ? 'link-match' : 'link'}
+          style={{zIndex: 100}}>
+          Starter
+        </NavLink>
         {/* <Tooltip
           hasArrow
           placement="top"
@@ -266,9 +258,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
         <NavLink
           to="/dao"
           className={match?.isExact ? 'link-match' : 'link'}
-          style={{zIndex: 100}}
-          // onClick={(e) => e.preventDefault()}
-        >
+          style={{zIndex: 100}}>
           DAO
         </NavLink>
         {/* </Tooltip> */}
