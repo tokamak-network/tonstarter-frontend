@@ -74,6 +74,44 @@ const colors = {
   },
 };
 
+interface STATER_PROP {
+  colorMode: 'light' | 'dark';
+}
+
+export const STATER_STYLE = {
+  containerStyle: (props: STATER_PROP) => ({
+    w: 378,
+    h: 295,
+    px: 25,
+    pt: '20px',
+    pb: 25,
+    bg: props.colorMode === 'light' ? 'white.100' : '',
+    borderRadius: 15,
+    border: props.colorMode === 'light' ? '' : 'solid 1px #535353',
+    boxShadow: '0 2px 5px 0 rgba(61, 73, 93, 0.1)',
+    _hover: {border: 'solid 1px #0070ed'},
+    cursor: 'pointer',
+  }),
+};
+
+type STATER_TEXT_PROP = STATER_PROP & {
+  text: string;
+};
+
+export const STATER_TEXT = {
+  main(prop: STATER_TEXT_PROP) {
+    return (
+      <Text
+        fontFamily={fonts.fld}
+        fontSize={28}
+        fontWeight={600}
+        color={prop.colorMode === 'light' ? 'gray.375' : 'white.100'}>
+        {prop.text}
+      </Text>
+    );
+  },
+};
+
 const TextWrapper = styled(Text)<{color: keyof Colors}>`
   color: ${({color, theme}) => (theme as any)[color]};
 `;
