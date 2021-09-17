@@ -109,8 +109,8 @@ export const Router: FC<RouterProps> = () => {
 
   useEffect(() => {
     //@ts-ignore
-    const accountStorage = JSON.parse(window.localStorage.getItem('account'));
-    const {signIn} = accountStorage;
+    // const accountStorage = JSON.parse(window.localStorage.getItem('account'));
+    // const {signIn} = accountStorage;
     // if (account === undefined && signIn === true) {
     //   fetchToInitialize();
     // }
