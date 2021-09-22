@@ -1,7 +1,6 @@
 import React, {FC, HTMLAttributes, useEffect, useState} from 'react';
 import {WalletModal} from 'components/Wallet';
 import {useDisclosure} from '@chakra-ui/react';
-import {useWeb3React} from '@web3-react/core';
 import {Header} from 'components/Header';
 import {FLDstarter} from './FLDstarter';
 import {Staking} from './Staking';
@@ -9,7 +8,7 @@ import {Pools} from './Pools';
 import {DAO} from './Dao/index';
 import {Switch, Route} from 'react-router-dom';
 import {useAppDispatch} from 'hooks/useRedux';
-import {fetchAppConfig} from 'store/app/app.reducer';
+// import {fetchAppConfig} from 'store/app/app.reducer';
 import {fetchUserInfo} from 'store/app/user.reducer';
 import {fetchStakes} from './Staking/staking.reducer';
 import {AirdropModal} from 'components/Airdrop/Index';
