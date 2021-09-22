@@ -509,7 +509,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                 </Button>
               }></CustomTooltip>
           </Flex>
-          <Flex>
+          {/* <Flex>
             <Tooltip label="Previous Page">
               <IconButton
                 w={'24px'}
@@ -531,7 +531,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                 icon={<ChevronLeftIcon h={6} w={6} />}
               />
             </Tooltip>
-          </Flex>
+          </Flex> */}
 
           {/* <Flex
             alignItems="center"
