@@ -23,7 +23,7 @@ export async function stakeTonControl() {
   const signer = getSigner(library, account);
   return await StakeTonControl_CONTRACT.connect(
     signer,
-  ).withdrawLayer2AllAndSwapAll([0, 0, 0, 0, 0]);
+  ).withdrawLayer2AllAndSwapAll([0, 0, 0, 0]);
 }
 
 export async function checkCanWithdrawLayr2All() {
