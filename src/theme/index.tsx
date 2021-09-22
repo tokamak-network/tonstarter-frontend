@@ -29,6 +29,7 @@ const breakpoints = createBreakpoints({
 
 const colors = {
   gray: {
+    525: '#3f536e',
     500: '#838383',
     475: '#9d9ea5',
     450: '#5b5b5b',
@@ -91,24 +92,41 @@ export const STATER_STYLE = {
     boxShadow: '0 2px 5px 0 rgba(61, 73, 93, 0.1)',
     _hover: {border: 'solid 1px #0070ed'},
     cursor: 'pointer',
+    fontFamily: fonts.fld,
   }),
-};
-
-type STATER_TEXT_PROP = STATER_PROP & {
-  text: string;
-};
-
-export const STATER_TEXT = {
-  main(prop: STATER_TEXT_PROP) {
-    return (
-      <Text
-        fontFamily={fonts.fld}
-        fontSize={28}
-        fontWeight={600}
-        color={prop.colorMode === 'light' ? 'gray.375' : 'white.100'}>
-        {prop.text}
-      </Text>
-    );
+  mainText: (props: STATER_PROP) => ({
+    fontSize: 28,
+    fontWeight: 600,
+    color: props.colorMode === 'light' ? 'gray.375' : 'white.100',
+  }),
+  subText: (props: STATER_PROP) => ({
+    fontSize: 14,
+    fontWeight: 600,
+    color: props.colorMode === 'light' ? 'gray.150' : 'white.100',
+  }),
+  subTextBlack: (props: STATER_PROP) => ({
+    fontSize: 14,
+    fontWeight: 600,
+    color: props.colorMode === 'light' ? 'gray.125' : 'white.100',
+  }),
+  progress: {
+    mainText: (props: STATER_PROP) => ({
+      fontSize: 15,
+      fontWeight: 600,
+      color: props.colorMode === 'light' ? 'gray.525' : 'white.100',
+    }),
+    percent: (props: STATER_PROP & {isZero: boolean}) => ({
+      fontSize: 13,
+      fontWeight: 600,
+      color:
+        props.colorMode === 'light'
+          ? props.isZero === true
+            ? 'gray.150'
+            : 'blue.100'
+          : props.isZero === true
+          ? 'white.100'
+          : '',
+    }),
   },
 };
 
@@ -358,6 +376,7 @@ const theme = extendTheme({
   btnHover,
   btnStyle,
   headerMargin,
+  STATER_STYLE,
 });
 
 export default theme;

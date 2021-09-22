@@ -7,6 +7,8 @@ export const StarterMain = () => {
   const activeProject = [
     {
       name: 'Realm',
+      saleStart: '2021.11.5',
+      saleEnd: '2021.11.5',
     },
   ];
   return (
