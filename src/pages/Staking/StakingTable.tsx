@@ -533,7 +533,7 @@ export const StakingTable: FC<StakingTableProps> = ({
             </Tooltip>
           </Flex>
 
-          <Flex
+          {/* <Flex
             alignItems="center"
             p={0}
             fontSize={'13px'}
@@ -548,9 +548,9 @@ export const StakingTable: FC<StakingTableProps> = ({
             <Text fontWeight="bold" as="span">
               {pageOptions.length}
             </Text>
-          </Flex>
+          </Flex> */}
 
-          <Flex>
+          {/* <Flex>
             <Tooltip label="Next Page">
               <Center>
                 <IconButton
@@ -600,7 +600,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                 </option>
               ))}
             </Select>
-          </Flex>
+          </Flex> */}
         </Flex>
       </Box>
     </Flex>
