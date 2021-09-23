@@ -165,7 +165,6 @@ function graphqlRequestBaseQuery(): BaseQueryFn<
       const chainId = REACT_APP_MODE === 'DEV' ? 4 : 1
 
       const subgraphUrl = chainId ? CHAIN_SUBGRAPH_URL[chainId] : undefined
-      console.log(subgraphUrl)
       if (!subgraphUrl) {
         return {
           error: {

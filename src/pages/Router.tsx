@@ -14,6 +14,7 @@ import {fetchUserInfo} from 'store/app/user.reducer';
 import {fetchStakes} from './Staking/staking.reducer';
 import {AirdropModal} from 'components/Airdrop/Index';
 import {fetchVaults} from './Staking/vault.reducer';
+import {fetchStarters} from './Starter/starter.reducer';
 import {DEFAULT_NETWORK} from 'constants/index';
 import {Footer} from 'components/Footer';
 import {ConfirmModal} from 'components/Modal';
@@ -52,6 +53,11 @@ export const Router: FC<RouterProps> = () => {
         chainId,
       }) as any,
     );
+    await dispatch(
+      fetchStarters({
+        chainId,
+      }) as any,
+    )
     await dispatch(
       fetchStakes({
         library,
