@@ -17,7 +17,7 @@ export const StarterMain = () => {
       name: 'Realm',
       saleStart: '2021.11.5',
       saleEnd: '2021.11.5',
-      isOpen: true,
+      isOpen: false,
     },
     {
       name: 'Realm',

@@ -53,7 +53,7 @@ export const ActiveProject = (props: ActiveProjectProp) => {
                     color="gray.125"
                     fontWeight={600}
                     ml={'7px'}>
-                    Exclusive Sale
+                    {project.isOpen ? 'Open Sale' : 'Exclusive Sale'}
                   </Text>
                 </Flex>
               </Flex>

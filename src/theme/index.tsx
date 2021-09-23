@@ -119,7 +119,7 @@ export const STATER_STYLE = {
   }),
   progress: {
     mainText: (props: STATER_PROP) => ({
-      fontSize: 15,
+      fontSize: props.fontSize || 15,
       fontWeight: 600,
       color: props.colorMode === 'light' ? 'gray.525' : 'white.100',
     }),

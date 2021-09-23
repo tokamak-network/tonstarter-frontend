@@ -53,8 +53,8 @@ export const PastProject = (props: PastProjectProp) => {
                 </Text>
               </Flex>
 
-              <Flex justifyContent="space-between" mb={'20px'}>
-                <Box d="flex" flexDir="column">
+              <Flex mb={'20px'}>
+                <Box d="flex" flexDir="column" w={'135px'}>
                   <Text
                     {...STATER_STYLE.mainText({
                       colorMode,
@@ -74,7 +74,7 @@ export const PastProject = (props: PastProjectProp) => {
                     <Text>TON</Text>
                   </Box>
                 </Box>
-                <Box d="flex" flexDir="column">
+                <Box d="flex" flexDir="column" w={'99px'}>
                   <Text
                     {...STATER_STYLE.mainText({
                       colorMode,
@@ -97,7 +97,7 @@ export const PastProject = (props: PastProjectProp) => {
                       colorMode,
                       fontSize: 14,
                     })}>
-                    Exchange Ratio
+                    ROI
                   </Text>
                   <Box d="flex" justifyContent="space-between">
                     <Flex alignItems="baseline">
@@ -106,20 +106,9 @@ export const PastProject = (props: PastProjectProp) => {
                           colorMode,
                           fontSize: 20,
                         })}>
-                        1
+                        300
                       </Text>
-                      <Text>TON</Text>
-                    </Flex>
-                    <Flex alignItems="center">=</Flex>
-                    <Flex alignItems="baseline">
-                      <Text
-                        {...STATER_STYLE.mainText({
-                          colorMode,
-                          fontSize: 20,
-                        })}>
-                        1
-                      </Text>
-                      <Text>EVE</Text>
+                      <Text>%</Text>
                     </Flex>
                   </Box>
                 </Box>
@@ -130,7 +119,12 @@ export const PastProject = (props: PastProjectProp) => {
                 justifyContent="space-between"
                 mb={'5px'}>
                 <Flex alignItems="center">
-                  <Text mr={1} {...STATER_STYLE.progress.mainText({colorMode})}>
+                  <Text
+                    mr={1}
+                    {...STATER_STYLE.progress.mainText({
+                      colorMode,
+                      fontSize: 13,
+                    })}>
                     Public Sale
                   </Text>
                   <Box
@@ -138,8 +132,13 @@ export const PastProject = (props: PastProjectProp) => {
                     h={'3px'}
                     bg={'blue.100'}
                     borderRadius={10}
-                    mr={'20px'}></Box>
-                  <Text mr={1} {...STATER_STYLE.progress.mainText({colorMode})}>
+                    mr={'25px'}></Box>
+                  <Text
+                    mr={1}
+                    {...STATER_STYLE.progress.mainText({
+                      colorMode,
+                      fontSize: 13,
+                    })}>
                     current
                   </Text>
                   <Box
@@ -149,10 +148,10 @@ export const PastProject = (props: PastProjectProp) => {
                     borderRadius={10}
                     mr={'20px'}></Box>
                 </Flex>
-                <Flex>
-                  <Text>0.00</Text>
-                  <Text>/</Text>
-                  <Text>5000000</Text>
+                <Flex color="gray.125" fontSize={12}>
+                  <Text mr={1}>$1</Text>
+                  <Text mr={1}>/</Text>
+                  <Text> $3</Text>
                 </Flex>
               </Box>
               <Box mb={'30px'}>
