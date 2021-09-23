@@ -270,9 +270,12 @@ export const PositionTable: FC<PositionTableProps> = ({
                 pool.token0.symbol,
                 pool.token1.symbol,
               );
+              
               const lpData = positionData.find(
                 (data) => data.positionid.toString() === id,
               );
+              console.log(lpData);
+              
               return [
                 <chakra.tr
                   w={'100%'}
@@ -297,6 +300,7 @@ export const PositionTable: FC<PositionTableProps> = ({
                       poolName={poolName}
                       owner={owner}
                       lpData={lpData}
+                      pool={pool}
                       stakingDisable={stakingDisable}
                       id={id}
                     />

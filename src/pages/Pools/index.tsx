@@ -9,7 +9,7 @@ import {IconOpen} from 'components/Icons/IconOpen';
 import {Head} from 'components/SEO';
 import {useAppSelector} from 'hooks/useRedux';
 import {Fragment, useMemo, useEffect, useState} from 'react';
-import {ClaimOptionModal, Simulator, RemoveLiquidity} from './PoolOptionModal';
+import {ClaimOptionModal, Simulator, RemoveLiquidity, AddLiquidity} from './PoolOptionModal';
 import {PoolTable} from './PoolTable';
 import {PageHeader} from 'components/PageHeader';
 // import {LoadingComponent} from 'components/Loading';
@@ -123,6 +123,7 @@ export const Pools = () => {
       <ClaimOptionModal />
       <Simulator />
       <RemoveLiquidity/>
+      <AddLiquidity/>
     </Fragment>
   );
 };

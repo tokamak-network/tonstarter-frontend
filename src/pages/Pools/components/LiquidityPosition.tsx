@@ -18,11 +18,13 @@ import {selectTransactionType} from 'store/refetch.reducer';
 import {fetchPositionRangePayload} from '../utils/fetchPositionRangePayload';
 import {ethers} from 'ethers';
 import {useActiveWeb3React} from 'hooks/useWeb3';
+import { Pool } from '@uniswap/v3-sdk';
 
 type LiquidityPositionProps = {
   stakingDisable: boolean;
   owner: string;
   lpData: any;
+  pool:any;
   poolName: string;
   id: string;
 };
@@ -55,6 +57,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
   owner,
   stakingDisable,
   poolName,
+  pool,
   lpData,
   id,
 }) => {
@@ -174,6 +177,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
     setUnStakingBtn();
     setClaimBtn();
     setRemoveLiquidityBtn();
+    setAddLiquidityBtn();
   }, [
     lpData,
     stakingDisable,
@@ -370,16 +374,19 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
         <Button
           {...localBtnStyled.btn()}
           color={'#838383'}
-          {...(removeLiquidityBtnDisable
+          {...(addLiquidityBtnDisable
             ? {...btnStyle.btnDisable({colorMode})}
             : {...btnStyle.btnAble()})}
-          isDisabled={removeLiquidityBtnDisable}
+          isDisabled={addLiquidityBtnDisable}
           onClick={() =>
             dispatch(
               openModal({
-                type: 'remove_liquidity',
+                type: 'add_liquidity',
                 data: {
                   id: id,
+                  poolName: poolName,
+                  token0: pool.token0.symbol,
+                  token1: pool.token1.symbol,
                 },
               }),
             )

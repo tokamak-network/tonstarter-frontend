@@ -53,9 +53,9 @@ export const RemoveLiquidity = () => {
       _hover: {border: '1px solid #2a72e5', color: 'blue.100'},
     }),
   };
-const changePercentage = (percent: number) => {
-  setPerentage(percent);
-}
+  const changePercentage = (percent: number) => {
+    setPerentage(percent);
+  };
   return (
     <Modal
       isOpen={data.modal === 'remove_liquidity' ? true : false}
@@ -155,7 +155,6 @@ const changePercentage = (percent: number) => {
             <Text mt={'40px'} color={fontColorBlack} fontSize={'13px'}>
               Removed Amount
             </Text>
-            <Text>{percentage}</Text>
             <Box
               d="flex"
               w={'92%'}
@@ -166,7 +165,7 @@ const changePercentage = (percent: number) => {
                 Removed WTON
               </Text>
               <Text fontSize={'15px'} color={fontColorBlack}>
-                {(token1Amount*(percentage/100)).toLocaleString(undefined, {
+                {(token1Amount * (percentage / 100)).toLocaleString(undefined, {
                   minimumFractionDigits: 2,
                 })}
               </Text>
@@ -179,36 +178,40 @@ const changePercentage = (percent: number) => {
               alignItems={'center'}
               pb={'33px'}
               borderBottom={
-                colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
+                colorMode === 'light'
+                  ? '1px solid #f4f6f8'
+                  : '1px solid #373737'
               }>
               <Text fontSize={'13px'} color={fontColorGray}>
                 Removed TOS
               </Text>
               <Text fontSize={'15px'} color={fontColorBlack}>
-                {(token2Amount*(percentage/100)).toLocaleString(undefined, {
+                {(token2Amount * (percentage / 100)).toLocaleString(undefined, {
                   minimumFractionDigits: 2,
                 })}
               </Text>
             </Box>
             <Button
-              disabled={Number(percentage)===0}
+              disabled={Number(percentage) === 0}
               w={'150px'}
               mt={'25px'}
               bg={'blue.500'}
               color="white.100"
               fontSize="14px"
               _hover={{backgroundColor: 'blue.100'}}
-              onClick={() => remove({
-                token1iD: 'WTON',
-                token2iD: 'TOs', 
-                token1Amount: '0',
-                token2Amount: '0',
-                userAddress: account,
-                library: library,
-                handleCloseModal: handleCloseModal()
-              })}>
+              onClick={() =>
+                remove({
+                  token1iD: 'WTON',
+                  token2iD: 'TOs',
+                  token1Amount: '0',
+                  token2Amount: '0',
+                  userAddress: account,
+                  library: library,
+                  handleCloseModal: handleCloseModal(),
+                })
+              }>
               Remove
-              </Button>
+            </Button>
           </Box>
         </ModalBody>
       </ModalContent>

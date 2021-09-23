@@ -100,7 +100,9 @@ export const AvailableBalance = () => {
             : dispatch(
                 openModal({
                   type: 'dao_stake',
-                  data: {userTosBalance: balance},
+                  data: {
+                    userTosBalance: balance
+                  },
                 }),
               )
         }>

@@ -57,8 +57,8 @@ export const ClaimOptionModal = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    console.log(tab);
-  }, [tab]);
+    console.log(data);
+  }, [data]);
 
   return (
     <Modal
