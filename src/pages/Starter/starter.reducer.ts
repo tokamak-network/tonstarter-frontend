@@ -1,7 +1,3 @@
-export const fetchTosStakes = () => {
-  return null;
-};
-
 // import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 // import {RootState} from 'store/reducers';
 // import {LibraryType} from 'types/index';

@@ -113,7 +113,7 @@ export const STATER_STYLE = {
     color: props.colorMode === 'light' ? 'gray.150' : 'white.100',
   }),
   subTextBlack: (props: STATER_PROP) => ({
-    fontSize: 14,
+    fontSize: props.fontSize || 14,
     fontWeight: 600,
     color: props.colorMode === 'light' ? 'gray.125' : 'white.100',
   }),

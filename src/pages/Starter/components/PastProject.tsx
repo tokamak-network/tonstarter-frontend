@@ -148,7 +148,10 @@ export const PastProject = (props: PastProjectProp) => {
                     borderRadius={10}
                     mr={'20px'}></Box>
                 </Flex>
-                <Flex color="gray.125" fontSize={12}>
+                <Flex
+                  {...{
+                    ...STATER_STYLE.subTextBlack({colorMode, fontSize: 12}),
+                  }}>
                   <Text mr={1}>$1</Text>
                   <Text mr={1}>/</Text>
                   <Text> $3</Text>

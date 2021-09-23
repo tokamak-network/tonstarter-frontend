@@ -1,7 +1,6 @@
 import React, {FC, HTMLAttributes, useEffect, useState} from 'react';
 import {WalletModal} from 'components/Wallet';
 import {useDisclosure} from '@chakra-ui/react';
-import {useWeb3React} from '@web3-react/core';
 import {Header} from 'components/Header';
 import {FLDstarter} from './FLDstarter';
 import {Staking} from './Staking';
@@ -21,6 +20,8 @@ import {ConfirmModal} from 'components/Modal';
 import {MobilePreOpen} from './PreOpen/Index';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
+import {StarterDetail} from './Starter/StarterDetail';
+
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
 /*
@@ -146,6 +147,7 @@ export const Router: FC<RouterProps> = () => {
           <Route exact path="/pools" component={Pools} />
           <Route exact path="/starter" component={Starter} />
           <Route exact path="/dao" component={DAO} />
+          <Route exact path={`/starter/:id`} component={StarterDetail} />
         </Switch>
       </div>
       <Footer />
