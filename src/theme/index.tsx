@@ -5,6 +5,7 @@ import '@fontsource/titillium-web/400.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/rajdhani/600.css';
 import '@fontsource/open-sans';
+import '@fontsource/poppins';
 import {Colors} from './styled';
 import styled from 'styled-components/macro';
 
@@ -17,6 +18,7 @@ const fonts = {
   titil: 'TitilliumWeb, sans-serif',
   fld: 'Rajdhani, sans-serif',
   openSans: 'OpenSans',
+  poppins: 'Poppins',
 };
 
 const breakpoints = createBreakpoints({
@@ -77,6 +79,7 @@ const colors = {
 
 interface STATER_PROP {
   colorMode: 'light' | 'dark';
+  fontSize?: number;
 }
 
 export const STATER_STYLE = {
@@ -94,8 +97,13 @@ export const STATER_STYLE = {
     cursor: 'pointer',
     fontFamily: fonts.fld,
   }),
+  header: (props: STATER_PROP) => ({
+    fontSize: props.fontSize || 32,
+    fontWeight: 600,
+    color: props.colorMode === 'light' ? 'gray.250' : 'white.100',
+  }),
   mainText: (props: STATER_PROP) => ({
-    fontSize: 28,
+    fontSize: props.fontSize || 28,
     fontWeight: 600,
     color: props.colorMode === 'light' ? 'gray.375' : 'white.100',
   }),

@@ -13,6 +13,7 @@
     "@ethersproject/experimental": "^5.4.0",
     "@ethersproject/providers": "^5.4.3",
     "@fontsource/open-sans": "^4.4.5",
+    "@fontsource/poppins": "^4.5.0",
     "@fontsource/rajdhani": "^4.4.5",
     "@fontsource/roboto": "^4.3.0",
     "@fontsource/titillium-web": "^4.3.0",
