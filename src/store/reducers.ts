@@ -9,12 +9,14 @@ import {tableReducer} from './table.reducer';
 import {txReducer} from './tx.reducer';
 import {refetchReducer} from './refetch.reducer';
 import {vaultReducer} from 'pages/Staking/vault.reducer';
+import {starterReducer} from 'pages/Starter/starter.reducer';
 import mintV3 from './mint/v3/reducer'
 import { api as dataApi } from './data/slice'
 
 const rootReducer = combineReducers({
   stakes: stakeReducer.reducer,
   vaults: vaultReducer.reducer,
+  starters: starterReducer.reducer,
   appConfig: appReducer.reducer,
   user: userReducer.reducer,
   toast: toastReducer.reducer,
