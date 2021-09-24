@@ -6,23 +6,29 @@ import {
   Avatar,
   Text,
 } from '@chakra-ui/react';
+import {useState} from 'react';
 import {useParams} from 'react-router-dom';
 import {checkTokenType} from 'utils/token';
-import {DetailIcons} from './components/Detail_Icons';
+import {ExclusiveSale} from './components/details/ExclusiveSale';
+import {DetailIcons} from './components/details/Detail_Icons';
+import {StarterStatus} from './types';
+import {DetailTable} from './components/details/Detail_Table';
 
 export const StarterDetail = () => {
-  console.log('**StarterDetail');
   const {id}: {id: string} = useParams();
   const {colorMode} = useColorMode();
   const theme = useTheme();
+
+  const [status, setStatus] = useState<StarterStatus | undefined>(undefined);
 
   const {STATER_STYLE} = theme;
   const tokenType = checkTokenType(
     '0x2be5e8c109e2197D077D13A82dAead6a9b3433C5',
   );
+
   return (
-    <Flex mt={'122px'} justifyContent="center">
-      <Flex w="1194px">
+    <Flex mt={'122px'} justifyContent="center" mb={'100px'}>
+      <Flex w="1194px" flexDir="column" mb={'10px'}>
         <Flex
           {...STATER_STYLE.containerStyle({colorMode})}
           w={'100%'}
@@ -31,7 +37,7 @@ export const StarterDetail = () => {
           py={'30px'}
           _hover={''}
           cursor="">
-          <Box d="flex" flexDir="column" w={'597px'} pr={35}>
+          <Box d="flex" flexDir="column" w={'562px'} pr={35}>
             <Flex justifyContent="space-between" mb={15}>
               <Avatar
                 src={tokenType.symbol}
@@ -76,24 +82,13 @@ export const StarterDetail = () => {
             bg={colorMode === 'light' ? '#f4f6f8' : '#323232'}
             boxShadow={'0 1px 1px 0 rgba(96, 97, 112, 0.16)'}></Box>
           <Box d="flex" flexDir="column" pt={'70px'} pl={'45px'}>
-            <Text
-              {...STATER_STYLE.mainText({colorMode, fontSize: 25})}
-              mb={'5px'}>
-              Exclusive Sale Whitelist
-            </Text>
-            <Text
-              {...STATER_STYLE.subText({colorMode})}
-              letterSpacing={'1.4px'}
-              mb={'11px'}
-              m={0}>
-              Period Information
-            </Text>
-            <Box>
-              <Text {...STATER_STYLE.mainText({colorMode, fontSize: 34})}>
-                2021.10.1~10.4
-              </Text>
-            </Box>
+            {status === 'active' && <ExclusiveSale></ExclusiveSale>}
+            {status === 'upcoming' && <ExclusiveSale></ExclusiveSale>}
+            {status === 'past' && <ExclusiveSale></ExclusiveSale>}
           </Box>
+        </Flex>
+        <Flex>
+          <DetailTable></DetailTable>
         </Flex>
       </Flex>
     </Flex>

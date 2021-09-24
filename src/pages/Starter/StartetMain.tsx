@@ -3,39 +3,44 @@ import {Banner} from './components/Banner';
 import {ActiveProject} from './components/ActiveProject';
 import {PastProject} from './components/PastProject';
 import {UpcomingProject} from './components/UpcomingProject';
-import {I_StarterProject} from '@Starter/types';
+import {I_StarterProject, StarterProject} from '@Starter/types';
 
 export const StarterMain = () => {
-  const activeProject: I_StarterProject[] = [
+  const activeProject: StarterProject[] = [
     {
       name: 'Realm',
       saleStart: '2021.11.5',
       saleEnd: '2021.11.5',
-      isOpen: true,
+      isExclusive: true,
+      status: 'active',
     },
     {
       name: 'Realm',
       saleStart: '2021.11.5',
       saleEnd: '2021.11.5',
-      isOpen: false,
+      isExclusive: false,
+      status: 'active',
     },
     {
       name: 'Realm',
       saleStart: '2021.11.5',
       saleEnd: '2021.11.5',
-      isOpen: true,
+      isExclusive: true,
+      status: 'active',
     },
     {
       name: 'Realm',
       saleStart: '2021.11.5',
       saleEnd: '2021.11.5',
-      isOpen: true,
+      isExclusive: true,
+      status: 'active',
     },
     {
       name: 'Realm',
       saleStart: '2021.11.5',
       saleEnd: '2021.11.5',
-      isOpen: true,
+      isExclusive: true,
+      status: 'active',
     },
   ];
   const upcomingProject: I_StarterProject[] = [
@@ -43,7 +48,7 @@ export const StarterMain = () => {
       name: 'Realm',
       saleStart: '2021.11.5',
       saleEnd: '2021.11.5',
-      isOpen: true,
+      status: 'upcoming',
     },
   ];
   const pastProject: I_StarterProject[] = [
@@ -51,7 +56,7 @@ export const StarterMain = () => {
       name: 'Realm',
       saleStart: '2021.11.5',
       saleEnd: '2021.11.5',
-      isOpen: true,
+      status: 'past',
     },
   ];
   return (

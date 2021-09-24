@@ -2,10 +2,10 @@
   "compilerOptions": {
     "baseUrl": "./src",
     "paths": {
-      "@Staking/*": ["pages/Staking/*"],
-      "@Pools/*": ["pages/Pools/*"],
-      "@Starter/*": ["pages/Starter/*"],
-      "@Dao/*": ["pages/Dao/*"]
+      "@Staking/*": ["./pages/Staking/*"],
+      "@Pools/*": ["./pages/Pools/*"],
+      "@Starter/*": ["./pages/Starter/*"],
+      "@Dao/*": ["./pages/Dao/*"]
     }
   }
 }
