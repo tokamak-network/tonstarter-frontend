@@ -48,7 +48,7 @@ export const StarterEdit = () => {
   );
 
   const myStarter = data.filter(data => account?.toLowerCase() == data.creator.toLowerCase())
-  console.log(myStarter)
+
   return (
     <Fragment>
       <Head title={'Starter Edit'} />

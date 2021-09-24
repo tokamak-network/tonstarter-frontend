@@ -18,7 +18,7 @@ import {
   Center,
   Image,
 } from '@chakra-ui/react';
-
+import {NavLink, useRouteMatch} from 'react-router-dom';
 import {useAppSelector} from 'hooks/useRedux';
 import {useEffect} from 'react';
 
@@ -62,7 +62,7 @@ export const StarterEditTable: FC<StarterEditTableProps> = ({
     data: {contractAddress},
   } = useAppSelector(selectTableType);
   console.log(data)
-
+  const match = useRouteMatch('/');
   return (
     <Flex w="1100px" flexDir={'column'}>
       <Flex justifyContent={'flex-end'} mb={'15px'}>
@@ -91,17 +91,9 @@ export const StarterEditTable: FC<StarterEditTableProps> = ({
                   ref={(el) => (focusTarget.current[i] = el)}
                   h={16}
                   key={i}
-                  // onClick={() => {
-                  //   if (
-                  //     address &&
-                  //     isOpen === id &&
-                  //     filteredPosition.length > 0
-                  //   ) {
-                  //     setIsOpen('');
-                  //   } else {
-                  //     clickOpen(id, i);
-                  //   }
-                  // }}
+                  onClick={() => {
+
+                  }}
                   cursor={'pointer'}
                   borderRadius={'10px'}
                   mt={'20px'}
@@ -116,75 +108,80 @@ export const StarterEditTable: FC<StarterEditTableProps> = ({
                     const data = cell.row.original;
                     const type = cell.column.id;
                     return (
-                      <chakra.td
-                        px={3}
-                        py={3}
-                        key={index}
-                        m={0}
-                        w={
-                          type === 'name'
-                            ? '280px'
-                            : type === 'max_allocation'
-                            ? '200px'
-                            : type === 'fee'
-                            ? ''
-                            : '280px'
-                        }
-                        display="flex"
-                        alignItems="center"
-                        fontSize={type === 'name' ? '15px' : '13px'}
-                        fontWeight={type === 'name' ? 600 : 0}
-                        {...cell.getCellProps()}
+                      <NavLink
+                        to={`/starteredit/${data.tokenAddress}`}
+                        // params={{ address: data.tokenAddress}}
                       >
-                        {type === 'name' ? (
-                          <>
-                            <Text
-                              mr={3}
-                              color={
-                                colorMode === 'light' ? '#86929d' : '#949494'
-                              }>
-                              Name
-                            </Text>
-                            <Text>
-                              {data.name}
-                            </Text>
-                          </>
-                        ) : (
-                          ''
-                        )}
-                        {type === 'max_allocation' ? (
-                          <>
-                            <Text
-                              mr={3}
-                              color={
-                                colorMode === 'light' ? '#86929d' : '#949494'
-                              }>
-                              Max Allocation
-                            </Text>
-                            <Text>
-                              {data.maxAllocation}
-                            </Text>
-                          </>
-                        ) : (
-                          ''
-                        )}
-                        {type === 'funding_token' ? (
-                          <>
-                            <Text
-                              mr={3}
-                              color={
-                                colorMode === 'light' ? '#86929d' : '#949494'
-                              }>
-                              Name
-                            </Text>
-                            <Text>
-                              {data.stakedToken}
-                            </Text>
-                          </>
-                        ) : (
-                          ''
-                        )}
-                      </chakra.td>
+                        <chakra.td
+                          px={3}
+                          py={3}
+                          key={index}
+                          m={0}
+                          w={
+                            type === 'name'
+                              ? '280px'
+                              : type === 'max_allocation'
+                              ? '200px'
+                              : type === 'fee'
+                              ? ''
+                              : '280px'
+                          }
+                          display="flex"
+                          alignItems="center"
+                          fontSize={type === 'name' ? '15px' : '13px'}
+                          fontWeight={type === 'name' ? 600 : 0}
+                          {...cell.getCellProps()}
+                        >
+                          {type === 'name' ? (
+                            <>
+                              <Text
+                                mr={3}
+                                color={
+                                  colorMode === 'light' ? '#86929d' : '#949494'
+                                }>
+                                Name
+                              </Text>
+                              <Text>
+                                {data.name}
+                              </Text>
+                            </>
+                          ) : (
+                            ''
+                          )}
+                          {type === 'max_allocation' ? (
+                            <>
+                              <Text
+                                mr={3}
+                                color={
+                                  colorMode === 'light' ? '#86929d' : '#949494'
+                                }>
+                                Max Allocation
+                              </Text>
+                              <Text>
+                                {data.maxAllocation}
+                              </Text>
+                            </>
+                          ) : (
+                            ''
+                          )}
+                          {type === 'funding_token' ? (
+                            <>
+                              <Text
+                                mr={3}
+                                color={
+                                  colorMode === 'light' ? '#86929d' : '#949494'
+                                }>
+                                Name
+                              </Text>
+                              <Text>
+                                {data.stakedToken}
+                              </Text>
+                            </>
+                          ) : (
+                            ''
+                          )}
+                        </chakra.td>
+                      </NavLink>
                     )
                   })}
                 </chakra.tr>

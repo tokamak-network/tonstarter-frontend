@@ -16,7 +16,7 @@ export const NetworkContextName = `${new Date().getTime()}-NETWORK`;
 export const DEFAULT_NETWORK = REACT_APP_MODE === 'DEV' ? 4 : 1;
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
-const API_SERVER =
+export const API_SERVER =
   REACT_APP_MODE === 'DEV' ? REACT_APP_DEV_API : REACT_APP_MAINNET_API;
 export const BASE_PROVIDER =
   REACT_APP_MODE === 'DEV'
@@ -25,6 +25,8 @@ export const BASE_PROVIDER =
 export const fetchStakeURL = `${API_SERVER}/stakecontracts?chainId=${DEFAULT_NETWORK}`;
 export const fetchValutURL = `${API_SERVER}/vaults?chainId=${DEFAULT_NETWORK}`;
 export const fetchStarterURL = `${API_SERVER}/starter?chainId=${DEFAULT_NETWORK}`
+// export const fetchRandomKeyURL = `${API_SERVER}`
+
 export const permitTOSAddress =
   REACT_APP_MODE === 'DEV' ? '0x865264b30eb29A2978b9503B8AfE2A2DDa33eD7E' : '';
 

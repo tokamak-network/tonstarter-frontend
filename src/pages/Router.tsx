@@ -157,7 +157,7 @@ export const Router: FC<RouterProps> = () => {
           <Route exact path="/dao" component={DAO} />
           <Route exact path={`/starter/:id`} component={StarterDetail} />
           <Route exact path="/starteredit" component={StarterEdit} />
-          <Route exact path={`/starteredit/:id`} component={StarterEditDetail} />
+          <Route exact path={`/starteredit/:address`} component={StarterEditDetail} />
         </Switch>
       </div>
       <Footer />
