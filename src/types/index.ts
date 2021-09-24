@@ -19,3 +19,10 @@ export interface UserContract {
 }
 
 export type TokenType = eth | ton;
+
+export type IconsSort =
+  | 'website'
+  | 'discord'
+  | 'telegram'
+  | 'twitter'
+  | 'medium';

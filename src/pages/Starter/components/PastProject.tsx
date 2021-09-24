@@ -9,7 +9,6 @@ import {
   Progress,
 } from '@chakra-ui/react';
 import {checkTokenType} from 'utils/token';
-import {Circle} from 'components/Circle';
 
 type PastProjectProp = {
   pastProject: any[];
