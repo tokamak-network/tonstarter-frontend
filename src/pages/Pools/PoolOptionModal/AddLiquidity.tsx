@@ -18,10 +18,13 @@ import {selectUser} from 'store/app/user.reducer';
 import {CloseButton} from 'components/Modal/CloseButton';
 import {useCallback, useEffect, useState} from 'react';
 // import {CustomTitle} from 'components/Basic/CustomTitle';
-import {CustomInput, CustomSelectBox} from 'components/Basic/index';
 import {remove} from '../actions';
 import {useWeb3React} from '@web3-react/core';
 import {number} from 'prop-types';
+import {CustomInput, CustomSelectBox} from 'components/Basic/index';
+import styled, {keyframes} from 'styled-components/macro';
+import {LiquidityInput} from '../components/LiquidityInput';
+import {Input, NumberInput, NumberInputField} from '@chakra-ui/react';
 
 export const AddLiquidity = () => {
   const theme = useTheme();
@@ -38,8 +41,8 @@ export const AddLiquidity = () => {
     dispatch(closeModal());
   }, [dispatch]);
   const [percentage, setPerentage] = useState<number>(0);
-  const [token1Amount, setToken1Amount] = useState<number>(10000000);
-  const [token2Amount, setToken2Amount] = useState<number>(100000);
+  const [token0Amount, setToken0Amount] = useState<number>();
+  const [token1Amount, setToken1Amount] = useState<number>();
   const [token0Approved, setApproveToken0] = useState<boolean>(false);
   const [token1Approved, setApproveToken1] = useState<boolean>(false);
   if (!userData || !userData.balance) {
@@ -189,7 +192,12 @@ export const AddLiquidity = () => {
                 <Text fontSize={'16px'} fontWeight={600} color={fontColorBlack}>
                   {data.data.token0}
                 </Text>
-                {token0Approved? <Text>dfshdfasjh</Text>:  <Button
+                {token0Approved?   <LiquidityInput
+                  fontSize={'20px'}
+                  balance={Number(wton)}
+                  value={token0Amount}
+                  setValue={setToken0Amount}
+                />:  <Button
                   {...localBtnStyled.btn()}
                   color={'#838383'}
                   {...btnStyle.btnAble()} onClick={()=>{
@@ -233,7 +241,12 @@ export const AddLiquidity = () => {
                 <Text fontSize={'16px'} fontWeight={600} color={fontColorBlack}>
                   {data.data.token1}
                 </Text>
-           {token1Approved? <Text>dfshdfasjh</Text>: <Button
+           {token1Approved? <LiquidityInput
+                  fontSize={'20px'}
+                  balance={Number(tos)}
+                  value={token1Amount}
+                  setValue={setToken1Amount}
+                />: <Button
                   {...localBtnStyled.btn()}
                   color={'#838383'}
                   {...btnStyle.btnAble()} onClick={()=>{
@@ -267,7 +280,7 @@ export const AddLiquidity = () => {
               _hover={{backgroundColor: 'blue.100'}}
               onClick={() =>
                 remove({
-                  token1iD: 'wTON',
+                  token1iD: 'WTON',
                   token2iD: 'TOs',
                   token1Amount: '0',
                   token2Amount: '0',
