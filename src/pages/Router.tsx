@@ -22,6 +22,8 @@ import {MobilePreOpen} from './PreOpen/Index';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {StarterDetail} from './Starter/StarterDetail';
+import {StarterEditDetail} from './Starter/StarterEditDetail';
+import {StarterEdit} from './Starter/StarterEdit';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -154,6 +156,8 @@ export const Router: FC<RouterProps> = () => {
           <Route exact path="/starter" component={Starter} />
           <Route exact path="/dao" component={DAO} />
           <Route exact path={`/starter/:id`} component={StarterDetail} />
+          <Route exact path="/starteredit" component={StarterEdit} />
+          <Route exact path={`/starteredit/:id`} component={StarterEditDetail} />
         </Switch>
       </div>
       <Footer />
