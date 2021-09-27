@@ -7,24 +7,6 @@ export const DetailTableTier = () => {
 
   const {STATER_STYLE} = theme;
 
-  const projectDetailTitle = 'Token Details';
-  const projectDetailData = [
-    {key: 'Name', value: 'Genesis Shards Public'},
-    {key: 'Symbol', value: 'GSP'},
-    {key: 'Contract', value: '0x9413336ef38202Dc49C4A5c94427FAA2eaf3C739'},
-    {key: 'Total Supply', value: '10,000,000'},
-  ];
-
-  const projectDetailTitle2 = 'Sale Details';
-  const projectDetailData2 = [
-    {key: 'Sale Period', value: '2021. 10. 1 ~ 10. 7'},
-    {key: 'Token Allocation', value: '10,000,000'},
-    {
-      key: 'Funding Crypto',
-      value: 'TON',
-    },
-  ];
-
   const projectTierData = [
     {
       title: 'Tier 1',
@@ -122,6 +104,8 @@ export const DetailTableTier = () => {
           return (
             <DetailTableContainer
               w={276}
+              itemPx={'20px'}
+              itemPy={'21px'}
               title={item.title}
               data={item.data}
               breakPoint={item.data.length}></DetailTableContainer>

@@ -5,12 +5,14 @@ type DetailTableContainerProp = {
   data: {key: string; value: string}[];
   breakPoint: number;
   w?: number;
+  itemPx?: string;
+  itemPy?: string;
 };
 
 const fontSize = 15;
 
 export const DetailTableContainer = (prop: DetailTableContainerProp) => {
-  const {title, data, breakPoint, w} = prop;
+  const {title, data, breakPoint, w, itemPx, itemPy} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
@@ -27,8 +29,8 @@ export const DetailTableContainer = (prop: DetailTableContainerProp) => {
       <Text
         {...STATER_STYLE.subText({colorMode, fontSize})}
         {...STATER_STYLE.table.container()}
-        pt={'23px'}
-        pb={'18px'}>
+        px={itemPx || '35px'}
+        py={itemPy || '21px'}>
         {title}
       </Text>
       {data.map((item, index) => {
@@ -37,6 +39,8 @@ export const DetailTableContainer = (prop: DetailTableContainerProp) => {
             {...STATER_STYLE.table.container({
               isLast: index >= breakPoint - 1 ? true : false,
             })}
+            px={itemPx || '35px'}
+            py={itemPy || '21px'}
             justifyContent="space-between">
             <Text {...STATER_STYLE.mainText({colorMode, fontSize})}>
               {item.key}
