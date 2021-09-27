@@ -6,7 +6,7 @@ export const Banner = () => {
   const {TitilliumWeb, roboto, poppins} = theme.fonts;
   return (
     <Flex pos="relative">
-      <Image src={bannerImg} h={510}></Image>
+      <Image src={bannerImg}></Image>
       <Flex
         w={'100%'}
         pos="absolute"

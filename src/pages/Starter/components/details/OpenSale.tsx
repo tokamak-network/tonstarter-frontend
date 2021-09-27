@@ -1,7 +1,7 @@
 import {Box, useColorMode, useTheme, Flex, Text} from '@chakra-ui/react';
 import {DetailCounter} from './Detail_Counter';
 
-export const ExclusiveSale = () => {
+export const OpenSale = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
@@ -10,7 +10,7 @@ export const ExclusiveSale = () => {
   return (
     <Flex flexDir="column">
       <Text {...STATER_STYLE.mainText({colorMode, fontSize: 25})} mb={'5px'}>
-        Exclusive Sale
+        Open Sale
       </Text>
       <Text
         {...STATER_STYLE.subText({colorMode})}

@@ -60,11 +60,11 @@ export const StarterMain = () => {
     },
   ];
   return (
-    <Flex flexDir="column">
+    <Flex flexDir="column" w={'100%'}>
       <Flex mb={'60px'}>
         <Banner></Banner>
       </Flex>
-      <Flex px={353} flexDir="column">
+      <Flex px={353} flexDir="column" alignItems="center">
         <Box mb={'80px'}>
           <ActiveProject activeProject={activeProject}></ActiveProject>
         </Box>

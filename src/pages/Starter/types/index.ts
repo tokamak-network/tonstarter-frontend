@@ -10,3 +10,4 @@ export type StarterProject = I_StarterProject & {
 };
 
 export type StarterStatus = 'active' | 'upcoming' | 'past';
+export type SaleStatus = 'whitelist' | 'exclusive' | 'open';

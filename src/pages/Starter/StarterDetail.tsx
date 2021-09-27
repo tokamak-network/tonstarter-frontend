@@ -6,12 +6,15 @@ import {
   Avatar,
   Text,
 } from '@chakra-ui/react';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 import {checkTokenType} from 'utils/token';
 import {ExclusiveSale} from './components/details/ExclusiveSale';
+import {WhiteList} from './components/details/WhiteList';
+import {OpenSale} from './components/details/OpenSale';
+
 import {DetailIcons} from './components/details/Detail_Icons';
-import {StarterStatus} from './types';
+import {SaleStatus} from './types';
 import {DetailTable} from './components/details/Detail_Table';
 
 export const StarterDetail = () => {
@@ -19,12 +22,17 @@ export const StarterDetail = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
-  const [status, setStatus] = useState<StarterStatus | undefined>(undefined);
+  const [status, setStatus] = useState<SaleStatus | undefined>(undefined);
 
   const {STATER_STYLE} = theme;
   const tokenType = checkTokenType(
     '0x2be5e8c109e2197D077D13A82dAead6a9b3433C5',
   );
+
+  useEffect(() => {
+    //Test
+    setStatus('exclusive');
+  }, []);
 
   return (
     <Flex mt={'122px'} justifyContent="center" mb={'100px'}>
@@ -37,7 +45,7 @@ export const StarterDetail = () => {
           py={'30px'}
           _hover={''}
           cursor="">
-          <Box d="flex" flexDir="column" w={'562px'} pr={35}>
+          <Box d="flex" flexDir="column" w={'562px'} pr={35} pos="relative">
             <Flex justifyContent="space-between" mb={15}>
               <Avatar
                 src={tokenType.symbol}
@@ -66,7 +74,7 @@ export const StarterDetail = () => {
               tech, make announcements and build awareness among some of the
               hardest consumers in the world to reach.
             </Text>
-            <Box>
+            <Box pos="absolute" bottom={'20px'}>
               <DetailIcons
                 linkInfo={[
                   {sort: 'website', url: 'go'},
@@ -82,9 +90,9 @@ export const StarterDetail = () => {
             bg={colorMode === 'light' ? '#f4f6f8' : '#323232'}
             boxShadow={'0 1px 1px 0 rgba(96, 97, 112, 0.16)'}></Box>
           <Box d="flex" flexDir="column" pt={'70px'} pl={'45px'}>
-            {status === 'active' && <ExclusiveSale></ExclusiveSale>}
-            {status === 'upcoming' && <ExclusiveSale></ExclusiveSale>}
-            {status === 'past' && <ExclusiveSale></ExclusiveSale>}
+            {status === 'whitelist' && <WhiteList></WhiteList>}
+            {status === 'exclusive' && <ExclusiveSale></ExclusiveSale>}
+            {status === 'open' && <OpenSale></OpenSale>}
           </Box>
         </Flex>
         <Flex>
