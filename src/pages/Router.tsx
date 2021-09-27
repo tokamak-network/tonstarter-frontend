@@ -24,6 +24,7 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 import {StarterDetail} from './Starter/StarterDetail';
 import {StarterEditDetail} from './Starter/StarterEditDetail';
 import {StarterEdit} from './Starter/StarterEdit';
+import { CreateStarter } from './Starter/CreateStarter';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -157,6 +158,7 @@ export const Router: FC<RouterProps> = () => {
           <Route exact path="/dao" component={DAO} />
           <Route exact path={`/starter/:id`} component={StarterDetail} />
           <Route exact path="/starteredit" component={StarterEdit} />
+          <Route exact path="/createstarter" component={CreateStarter} />
           <Route exact path={`/starteredit/:address`} component={StarterEditDetail} />
         </Switch>
       </div>

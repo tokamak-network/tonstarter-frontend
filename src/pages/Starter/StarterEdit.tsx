@@ -16,6 +16,7 @@ import {
   Switch,
 } from '@chakra-ui/react';
 import {useActiveWeb3React} from 'hooks/useWeb3';
+import { DEFAULT_NETWORK } from '../../constants/index';
 
 export const StarterEdit = () => {
   // @ts-ignore
@@ -47,7 +48,7 @@ export const StarterEdit = () => {
     [],
   );
 
-  const myStarter = data.filter(data => account?.toLowerCase() == data.creator.toLowerCase())
+  const myStarter = data.filter(data => account?.toLowerCase() == data.creator.toLowerCase() && data.chainId == DEFAULT_NETWORK )
 
   return (
     <Fragment>

@@ -66,6 +66,7 @@ export const StarterEditTable: FC<StarterEditTableProps> = ({
   return (
     <Flex w="1100px" flexDir={'column'}>
       <Flex justifyContent={'flex-end'} mb={'15px'}>
+        <NavLink to={`/createstarter`}>Create</NavLink>
       </Flex>
       <Box>
         <chakra.table
