@@ -40,6 +40,7 @@ import {
 import {useBlockNumber} from 'hooks/useBlock';
 import {CustomTooltip} from 'components/Tooltip';
 import {useActiveWeb3React} from 'hooks/useWeb3';
+import {makeReference} from '@apollo/client';
 
 type StakingTableProps = {
   columns: Column[];
@@ -101,6 +102,45 @@ const getStatus = (
         fontSize={'11px'}
         color={colorMode === 'light' ? '#304156' : 'white.100'}>
         {type === 'sale' ? 'On sale' : type === 'start' ? 'started' : 'ended'}
+      </Text>
+    </Flex>
+  );
+};
+
+const GetL2Status = ({
+  sort,
+  mr,
+}: {
+  sort: 'canUnstake' | 'canWithdraw' | 'canSwap';
+  mr?: string;
+}) => {
+  const {colorMode} = useColorMode();
+
+  return (
+    <Flex alignItems="center" mr={mr}>
+      <Flex
+        w={'16px'}
+        h={'16px'}
+        bg={
+          sort === 'canUnstake'
+            ? 'blue.500'
+            : sort === 'canWithdraw'
+            ? 'green.100'
+            : 'orange.100'
+        }
+        mr={'7px'}
+        alignItems="center"
+        justifyContent="center"
+        color="white.100"
+        fontSize={12}>
+        {sort === 'canUnstake' && 'U'}
+        {sort === 'canWithdraw' && 'W'}
+        {sort === 'canSwap' && 'S'}
+      </Flex>
+      <Text fontSize={11} color={colorMode ? 'black.300' : 'white.100'}>
+        {sort === 'canUnstake' && 'Unstake from layer2'}
+        {sort === 'canWithdraw' && 'Withdraw'}
+        {sort === 'canSwap' && 'Swap'}
       </Text>
     </Flex>
   );
@@ -273,6 +313,9 @@ export const StakingTable: FC<StakingTableProps> = ({
           {getStatus('sale', colorMode)}
           {getStatus('start', colorMode)}
           {getStatus('end', colorMode)}
+          <GetL2Status sort={'canUnstake'} mr={'20px'}></GetL2Status>
+          <GetL2Status sort={'canWithdraw'} mr={'20px'}></GetL2Status>
+          <GetL2Status sort={'canSwap'}></GetL2Status>
         </Flex>
         <Select
           w={'137px'}

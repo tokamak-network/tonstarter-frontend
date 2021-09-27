@@ -72,6 +72,12 @@ const colors = {
     200: '#fecf05',
     100: '#ffff07',
   },
+  green: {
+    100: '#36af47',
+  },
+  orange: {
+    100: '#f7981c',
+  },
 };
 
 const TextWrapper = styled(Text)<{color: keyof Colors}>`
