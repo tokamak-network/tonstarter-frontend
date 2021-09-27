@@ -136,6 +136,23 @@ export const STATER_STYLE = {
           : '',
     }),
   },
+  btn: (props: STATER_PROP & {isActive: boolean}) => ({
+    bg: '',
+    _hover: '',
+    p: 0,
+    textAlign: 'center',
+    verticalAlign: 'center',
+    fontSize: 17,
+    borderRadius: 0,
+    paddingBottom: props.isActive ? '' : '1px',
+    color: props.isActive ? '#0070ed' : '#90a5b9',
+    borderBottom: props.isActive ? '2px solid #0070ed' : '1px solid #c5d1d9',
+  }),
+  table: {
+    container: (props: STATER_PROP & {isLast: boolean}) => ({
+      borderBottom: props?.isLast === true ? '' : '1px solid #f4f6f8',
+    }),
+  },
 };
 
 const TextWrapper = styled(Text)<{color: keyof Colors}>`

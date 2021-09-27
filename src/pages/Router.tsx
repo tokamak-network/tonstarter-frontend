@@ -60,7 +60,7 @@ export const Router: FC<RouterProps> = () => {
       fetchStarters({
         chainId,
       }) as any,
-    )
+    );
     await dispatch(
       fetchStakes({
         library,
