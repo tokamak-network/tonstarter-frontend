@@ -150,7 +150,12 @@ export const STATER_STYLE = {
   }),
   table: {
     container: (props: STATER_PROP & {isLast: boolean}) => ({
-      borderBottom: props?.isLast === true ? '' : '1px solid #f4f6f8',
+      borderBottom:
+        props?.isLast === true
+          ? ''
+          : props.colorMode === 'light'
+          ? '1px solid #f4f6f8'
+          : '1px solid #323232',
     }),
   },
 };

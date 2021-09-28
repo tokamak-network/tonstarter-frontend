@@ -1,12 +1,18 @@
-import {Flex, Image, Text, Box, useTheme} from '@chakra-ui/react';
+import {Flex, Image, Text, useTheme} from '@chakra-ui/react';
 import bannerImg from 'assets/images/starter/banner2x.png';
+import bannerImg1X from 'assets/images/starter/Background_img.png';
 
 export const Banner = () => {
   const theme = useTheme();
   const {TitilliumWeb, roboto, poppins} = theme.fonts;
   return (
-    <Flex pos="relative">
-      <Image src={bannerImg}></Image>
+    <Flex
+      pos="relative"
+      w={'100%'}
+      h={'510px'}
+      bgImage={bannerImg1X}
+      backgroundRepeat="no-repeat">
+      {/* <Image src={bannerImg1X} w={'100%'} h={'510px'} objectFit="cover"></Image> */}
       <Flex
         w={'100%'}
         pos="absolute"

@@ -16,9 +16,7 @@ import {useEffect, useRef, useState} from 'react';
 
 type IconsProp = {
   name: IconsSort;
-  w?: number;
-  h?: number;
-  mouseOver: boolean;
+  mouseOver: boolean | string;
 };
 
 const iconType = {
@@ -38,17 +36,16 @@ const iconType_Hover = {
 };
 
 export const Icons = (prop: IconsProp) => {
-  const {name, w, h, mouseOver} = prop;
-  const imgRef = useRef(null);
+  const {name, mouseOver} = prop;
   const [img, setImg] = useState(iconType[name]);
 
   useEffect(() => {
-    if (mouseOver === true) {
+    if (mouseOver === name) {
       setImg(iconType_Hover[name]);
     } else {
       setImg(iconType[name]);
     }
   }, [mouseOver, name]);
 
-  return <Image src={img} alt={'icon'} w={w} h={h} ref={imgRef}></Image>;
+  return <img src={img} alt={`icon_${name}`}></img>;
 };

@@ -1,17 +1,15 @@
-import {
-  Box,
-  useColorMode,
-  useTheme,
-  Flex,
-  Container,
-  Text,
-  Button,
-} from '@chakra-ui/react';
+import {Box, useColorMode, useTheme, Flex, Button} from '@chakra-ui/react';
 import {useState} from 'react';
 import {DetailTableProject} from './Detail_Table_Project';
 import {DetailTableTier} from './Detail_Table_Tier';
+import {SaleStatus} from '@Starter/types';
 
-export const DetailTable = () => {
+type DetailTableProp = {
+  status: SaleStatus;
+};
+
+export const DetailTable = (prop: DetailTableProp) => {
+  const {status} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const [selectDetail, setSelectDetail] = useState<boolean>(true);
@@ -40,7 +38,7 @@ export const DetailTable = () => {
         {selectDetail === true ? (
           <DetailTableProject></DetailTableProject>
         ) : (
-          <DetailTableTier></DetailTableTier>
+          <DetailTableTier status={status}></DetailTableTier>
         )}
       </Box>
     </Flex>

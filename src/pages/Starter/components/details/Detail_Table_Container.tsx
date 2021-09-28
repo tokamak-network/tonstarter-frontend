@@ -28,7 +28,7 @@ export const DetailTableContainer = (prop: DetailTableContainerProp) => {
       p={0}>
       <Text
         {...STATER_STYLE.subText({colorMode, fontSize})}
-        {...STATER_STYLE.table.container()}
+        {...STATER_STYLE.table.container({colorMode})}
         px={itemPx || '35px'}
         py={itemPy || '21px'}>
         {title}
@@ -37,6 +37,7 @@ export const DetailTableContainer = (prop: DetailTableContainerProp) => {
         return (
           <Flex
             {...STATER_STYLE.table.container({
+              colorMode,
               isLast: index >= breakPoint - 1 ? true : false,
             })}
             px={itemPx || '35px'}

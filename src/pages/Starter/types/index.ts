@@ -11,3 +11,10 @@ export type StarterProject = I_StarterProject & {
 
 export type StarterStatus = 'active' | 'upcoming' | 'past';
 export type SaleStatus = 'whitelist' | 'exclusive' | 'open';
+
+export type Tier = 1 | 2 | 3 | 4;
+
+export type DetailTierData = {
+  title: string;
+  data: {key: string; value: string}[];
+}[];

@@ -60,8 +60,8 @@ export const StarterMain = () => {
     },
   ];
   return (
-    <Flex flexDir="column" w={'100%'}>
-      <Flex mb={'60px'}>
+    <Flex flexDir="column" w={'100%'} alignItems="center">
+      <Flex mb={'60px'} w={'100%'}>
         <Banner></Banner>
       </Flex>
       <Flex px={353} flexDir="column" alignItems="center">

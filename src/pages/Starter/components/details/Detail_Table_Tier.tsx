@@ -1,13 +1,22 @@
 import {Box, useColorMode, useTheme, Flex, Text} from '@chakra-ui/react';
+import {useEffect, useState} from 'react';
 import {DetailTableContainer} from './Detail_Table_Container';
+import {SaleStatus, DetailTierData, Tier} from '@Starter/types';
 
-export const DetailTableTier = () => {
+type DetailTableTierProp = {
+  status: SaleStatus;
+};
+
+export const DetailTableTier = (prop: DetailTableTierProp) => {
+  const {status} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
+  const [tier, setTier] = useState<Tier | undefined>(undefined);
+
   const {STATER_STYLE} = theme;
 
-  const projectTierData = [
+  const projectTierData: DetailTierData = [
     {
       title: 'Tier 1',
       data: [
@@ -94,18 +103,126 @@ export const DetailTableTier = () => {
     },
   ];
 
+  const projectTierDataAfterWhiteList: DetailTierData = [
+    {
+      title: 'tier 01',
+      data: [
+        {
+          key: 'Criteria',
+          value: '10,000,000 sTOS',
+        },
+        {
+          key: 'Allocation',
+          value: '10,000,000 sTOS',
+        },
+        {
+          key: '#of Members',
+          value: '10,000',
+        },
+        {
+          key: '#of Whitelisted',
+          value: '10,000',
+        },
+        {
+          key: 'Expected Allocation',
+          value: '10,000,000 sTOS',
+        },
+      ],
+    },
+    {
+      title: 'tier 02',
+      data: [
+        {
+          key: 'Criteria',
+          value: '10,000,000 sTOS',
+        },
+        {
+          key: 'Allocation',
+          value: '10,000,000 sTOS',
+        },
+        {
+          key: '#of Members',
+          value: '10,000',
+        },
+        {
+          key: '#of Whitelisted',
+          value: '10,000',
+        },
+        {
+          key: 'Expected Allocation',
+          value: '10,000,000 sTOS',
+        },
+      ],
+    },
+    {
+      title: 'tier 03',
+      data: [
+        {
+          key: 'Criteria',
+          value: '10,000,000 sTOS',
+        },
+        {
+          key: 'Allocation',
+          value: '10,000,000 sTOS',
+        },
+        {
+          key: '#of Members',
+          value: '10,000',
+        },
+        {
+          key: '#of Whitelisted',
+          value: '10,000',
+        },
+        {
+          key: 'Expected Allocation',
+          value: '10,000,000 sTOS',
+        },
+      ],
+    },
+    {
+      title: 'tier 04',
+      data: [
+        {
+          key: 'Criteria',
+          value: '10,000,000 sTOS',
+        },
+        {
+          key: 'Allocation',
+          value: '10,000,000 sTOS',
+        },
+        {
+          key: '#of Members',
+          value: '10,000',
+        },
+        {
+          key: '#of Whitelisted',
+          value: '10,000',
+        },
+        {
+          key: 'Expected Allocation',
+          value: '10,000,000 sTOS',
+        },
+      ],
+    },
+  ];
+
+  useEffect(() => {
+    setTier(1);
+  }, []);
+
   return (
     <Flex flexDir="column">
       <Text {...STATER_STYLE.mainText({colorMode, fontSize: 24})} mb={'30px'}>
         Tier details
       </Text>
       <Box d="flex" justifyContent="space-between">
-        {projectTierData.map((item) => {
+        {projectTierDataAfterWhiteList.map((item) => {
           return (
             <DetailTableContainer
               w={276}
               itemPx={'20px'}
               itemPy={'21px'}
+              key={item.title}
               title={item.title}
               data={item.data}
               breakPoint={item.data.length}></DetailTableContainer>

@@ -95,9 +95,7 @@ export const StarterDetail = () => {
             {status === 'open' && <OpenSale></OpenSale>}
           </Box>
         </Flex>
-        <Flex>
-          <DetailTable></DetailTable>
-        </Flex>
+        <Flex>{status && <DetailTable status={status}></DetailTable>}</Flex>
       </Flex>
     </Flex>
   );
