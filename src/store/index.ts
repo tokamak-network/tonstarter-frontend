@@ -7,7 +7,7 @@ import rootReducer, {RootState} from './reducers';
 
 let middleware: any[] = [];
 
-// disable redux logger on production
+// disable redux logger on 
 if (process.env.NODE_ENV !== 'production') {
   middleware = [
     ...getDefaultMiddleware({

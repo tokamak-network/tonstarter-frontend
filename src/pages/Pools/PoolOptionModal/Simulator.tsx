@@ -169,11 +169,20 @@ export const Simulator = () => {
 
   const {leftRangeTypedValue, rightRangeTypedValue} = useV3MintState();
 
+  const changeTosValue = (value: number) => {
+    setTosValue(value * currentPrice);
+    setWtonValue(value);
+  };
+  const changeWtonValue = (value: number) => {
+    setWtonValue(value / currentPrice);
+    setTosValue(value);
+  };
+
   useEffect(() => {
     async function init() {
       const swapPrice = await fetchSwapPayload();
-      setCurrentPrice(Number(swapPrice) || 0);
 
+      setCurrentPrice(Number(swapPrice) || 0);
       if (swapPrice) {
         const test = await getEstimatedReward({
           token_0: baseToken === 'WTON' ? wtonValue : tosValue,
@@ -191,6 +200,7 @@ export const Simulator = () => {
         setEstimatedReward(test);
       }
     }
+
     init();
   }, [
     baseToken,
@@ -301,10 +311,10 @@ export const Simulator = () => {
               LP Reward Simulator
             </Heading>
             <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
-              You can calculate how much WTON and TOS
+              You can calculate the Expected APY and
             </Text>
             <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
-              you need to provide LP & Expected APY
+              the amount of WTON and TOS needed to provide LP
             </Text>
           </Box>
           <Flex flexDir="column" pl={30} pr={30}>
@@ -455,12 +465,18 @@ export const Simulator = () => {
                   <Title title={'WTON'} fontSize={16}></Title>
                   <CustomInput
                     value={wtonValue}
-                    setValue={setWtonValue}
+                    setValue={changeTosValue}
                     numberOnly={true}
                   />
                 </Box>
                 <Box>
-                  <Text fontSize={'12px'}>Balance : {wton} WTON</Text>
+                  <Text fontSize={'12px'}>
+                    Balance :{' '}
+                    {Number(wton).toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                    })}{' '}
+                    WTON
+                  </Text>
                 </Box>
               </Box>
               <Box
@@ -479,12 +495,18 @@ export const Simulator = () => {
                   <Title title={'TOS'} fontSize={16}></Title>
                   <CustomInput
                     value={tosValue}
-                    setValue={setTosValue}
+                    setValue={changeWtonValue}
                     numberOnly={true}
                   />
                 </Box>
                 <Box>
-                  <Text fontSize={'12px'}>Balance : {tos} TOS</Text>
+                  <Text fontSize={'12px'}>
+                    Balance :{' '}
+                    {Number(tos).toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                    })}{' '}
+                    TOS
+                  </Text>
                 </Box>
               </Box>
             </Flex>
@@ -529,7 +551,9 @@ export const Simulator = () => {
                   h={'100%'}>
                   <Title title={'Estimated Reward'} fontSize={13}></Title>
                   <Text fontSize={'1.125em'} color="black.300" fontWeight={600}>
-                    {estimatedReward}{' '}
+                    {Number(estimatedReward).toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                    })}{' '}
                     <span style={{fontSize: '12px'}}>TOS</span>
                   </Text>
                 </Box>

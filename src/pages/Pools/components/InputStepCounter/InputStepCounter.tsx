@@ -7,8 +7,9 @@ import {ButtonStep} from '../Button';
 import {FeeAmount} from '@uniswap/v3-sdk';
 import {Text, Flex} from '@chakra-ui/react';
 import minus_icon_Normal from 'assets/svgs/minus_icon_Normal.svg';
+import minus_icon_Hover from 'assets/svgs/minus_icon_Hover.svg';
 import Plus_icon_Normal from 'assets/svgs/Plus_icon_Normal.svg';
-
+import Plus_icon_Hover from 'assets/svgs/Plus_icon_Hover.svg';
 // const pulse = (color: string) => keyframes`
 //   0% {
 //     box-shadow: 0 0 0 0 ${color};
@@ -25,6 +26,10 @@ import Plus_icon_Normal from 'assets/svgs/Plus_icon_Normal.svg';
 
 const SmallButton = styled(ButtonStep)`
   padding: 4px;
+  background-color: transparent;
+  &:hover {
+    border: 1px solid #2a72e5;
+  }
 `;
 
 const StyledInput = styled(NumericalInput)<{usePercent?: boolean}>`
@@ -77,7 +82,8 @@ const StepCounter = ({
   // let user type value and only update parent value on blur
   const [localValue, setLocalValue] = useState('');
   const [useLocalValue, setUseLocalValue] = useState(false);
-
+  const [minHover, setMinHover] = useState(false);
+  const [maxHover, setMaxHover] = useState(false);
   // animation if parent value updates local value
   const [pulsing, setPulsing] = useState<boolean>(false);
 
@@ -138,9 +144,20 @@ const StepCounter = ({
 
         <Flex justifyContent="space-around" alignItems="center">
           {!locked && (
-            <SmallButton onClick={handleDecrement} disabled={decrementDisabled}>
+            <SmallButton
+              onClick={handleDecrement}
+              disabled={decrementDisabled}
+              onMouseOver={() => {
+                minHover ? setMinHover(false) : setMinHover(true);
+              }}
+              onMouseOut={() => {
+                minHover ? setMinHover(false) : setMinHover(true);
+              }}>
               <ButtonLabel disabled={decrementDisabled} fontSize="12px">
-                <img src={minus_icon_Normal} alt="plus_icon" />
+                <img
+                  src={minHover ? minus_icon_Hover : minus_icon_Normal}
+                  alt="plus_icon"
+                />
               </ButtonLabel>
             </SmallButton>
           )}
@@ -156,9 +173,14 @@ const StepCounter = ({
           />
 
           {!locked && (
-            <SmallButton onClick={handleIncrement} disabled={incrementDisabled}>
+            <SmallButton onClick={handleIncrement} disabled={incrementDisabled} onMouseOver={() => {
+              maxHover ? setMaxHover(false) : setMaxHover(true);
+            }}
+            onMouseOut={() => {
+              maxHover ? setMaxHover(false) : setMaxHover(true);
+            }}>
               <ButtonLabel disabled={incrementDisabled} fontSize="12px">
-                <img src={Plus_icon_Normal} alt="plus_icon" />
+                <img src={maxHover? Plus_icon_Hover:Plus_icon_Normal} alt="plus_icon" />
               </ButtonLabel>
             </SmallButton>
           )}

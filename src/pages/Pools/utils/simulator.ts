@@ -36,11 +36,15 @@ export const fetchSwapPayload = async () => {
     return;
   }
   const tosBalance = await getSwapInfo(library);
+ 
+  
   if (REACT_APP_MODE === 'DEV') {
+    console.log('tosBalance1', convertNumber({amount: tosBalance}));
     return convertNumber({amount: tosBalance});
   } else {
     const wei = ethers.utils.formatUnits(tosBalance, 18);
     const invert = 1 / Number(wei);
+    console.log('tosBalance2', invert.toFixed(6));
     return invert.toFixed(6);
   }
 };
@@ -62,6 +66,8 @@ const getSwapInfo = async (library: any) => {
     } catch (e) {
       console.log(e);
     }
+    console.log('price', price);
+    
     return price;
   }
 };
@@ -87,14 +93,18 @@ async function getReward(lp: number, unit: number): Promise<number> {
 
   if (!totalSupply || totalSupply === 0) {
     console.error(
-      'Something wrong to call total supply from StakeUniswap.totalStakedAmount()',
+      'Something wrong when calling total supply from StakeUniswap.totalStakedAmount()',
     );
     return 0;
   }
   const seig = 0.845594452900389; //seig per sec
   const daySec = 86400;
   const lpRatio = Number(lp.toFixed(0)) / Number(totalSupply.toFixed(0));
+console.log('Number(lp.toFixed(0))', Number(lp.toFixed(0)));
+console.log('Number(totalSupply.toFixed(0))', Number(totalSupply.toFixed(0)));
 
+  console.log('lpRatio', lpRatio);
+  
   if (!lpRatio) {
     return 0;
   }
@@ -106,15 +116,17 @@ async function getReward(lp: number, unit: number): Promise<number> {
       String(lpRatio).split('.')[1][1],
   );
 
-  console.log('--reward--');
-  console.log(lpRatioNum);
-  console.log(seig);
-  console.log(daySec);
-  console.log(unit);
-  console.log(lpRatioNum / 100);
+console.log('lpRatioNum', lpRatioNum);
+
+  // console.log('--reward--');
+  // console.log(lpRatioNum);
+  // console.log(seig);
+  // console.log(daySec);
+  // console.log(unit);
+  // console.log(lpRatioNum / 100);
 
   const reward = (lpRatioNum / 100) * seig * daySec * unit;
-  console.log(reward);
+  // console.log(reward);
   return reward;
 }
 
@@ -129,21 +141,18 @@ type GetEstimatedReward = {
 
 function getLiquidity(args: GetEstimatedReward) {
   const {token_0, token_1, cPrice, lower, upper} = args;
-
   if (cPrice <= lower) {
-    const lq =
-      (token_0 * (Math.sqrt(upper) * Math.sqrt(lower))) /
-      (Math.sqrt(upper) - Math.sqrt(lower));
+    const lq = (token_0 * Math.sqrt(upper)*Math.sqrt(lower))/(Math.sqrt(upper)-Math.sqrt(cPrice)); 
+      
     return lq;
   } else if (lower < cPrice && cPrice <= upper) {
     const token0 =
-      (token_0 * (Math.sqrt(upper) * Math.sqrt(cPrice))) /
-      (Math.sqrt(upper) - Math.sqrt(cPrice));
+      (token_0 * Math.sqrt(upper) * Math.sqrt(cPrice))/(Math.sqrt(upper) - Math.sqrt(cPrice));
     const token1 = token_1 / (Math.sqrt(cPrice) - Math.sqrt(lower));
-    const lq = token0 > token1 ? token0 : token1;
+    const lq = token0 <= token1 ? token0 : token1;
     return lq;
   } else if (upper < cPrice) {
-    const lq = token_1 / Math.sqrt(upper) - Math.sqrt(lower);
+    const lq = token_1 / (Math.sqrt(upper) - Math.sqrt(lower));
     return lq;
   }
 
@@ -155,6 +164,7 @@ export async function getEstimatedReward(
 ): Promise<number> {
   const {unit} = args;
   const lp = getLiquidity(args);
+  
   if (lp === 0) {
     return 0;
   }

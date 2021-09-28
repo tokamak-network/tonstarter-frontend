@@ -201,8 +201,8 @@ export const RemoveLiquidity = () => {
               _hover={{backgroundColor: 'blue.100'}}
               onClick={() =>
                 remove({
-                  token1iD: 'WTON',
-                  token2iD: 'TOs',
+                  token1Id: 'WTON',
+                  token2Id: 'TOs',
                   token1Amount: '0',
                   token2Amount: '0',
                   userAddress: account,

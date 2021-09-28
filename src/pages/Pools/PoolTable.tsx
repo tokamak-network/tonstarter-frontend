@@ -33,6 +33,7 @@ import {fetchPositionPayload} from './utils/fetchPositionPayload';
 import {selectTransactionType} from 'store/refetch.reducer';
 import moment from 'moment';
 import calculator_icon_light from 'assets/svgs/calculator_icon_light_mode.svg';
+import calculator_icon from 'assets/svgs/calculator_icon.svg';
 import {useModal} from 'hooks/useModal';
 import { usePositionByUserQuery, usePositionByContractQuery } from 'store/data/generated';
 import ms from 'ms.macro';
@@ -394,7 +395,7 @@ export const PoolTable: FC<PoolTableProps> = ({
                             <Text>{poolName}</Text>
                             <Image
                               ml={'1em'}
-                              src={calculator_icon_light}
+                              src={colorMode === 'light' ? calculator_icon_light: calculator_icon}
                               onClick={(e) => {
                                 e.stopPropagation();
                                 openAnyModal('pool_simulator', {});
