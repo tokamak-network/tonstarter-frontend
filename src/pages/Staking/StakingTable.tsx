@@ -110,9 +110,11 @@ const getStatus = (
 const GetL2Status = ({
   sort,
   mr,
+  onlyImage,
 }: {
   sort: 'canUnstake' | 'canWithdraw' | 'canSwap';
   mr?: string;
+  onlyImage?: boolean;
 }) => {
   const {colorMode} = useColorMode();
 
@@ -138,9 +140,9 @@ const GetL2Status = ({
         {sort === 'canSwap' && 'S'}
       </Flex>
       <Text fontSize={11} color={colorMode ? 'black.300' : 'white.100'}>
-        {sort === 'canUnstake' && 'Unstake from layer2'}
-        {sort === 'canWithdraw' && 'Withdraw'}
-        {sort === 'canSwap' && 'Swap'}
+        {sort === 'canUnstake' && onlyImage === false && 'Unstake from layer2'}
+        {sort === 'canWithdraw' && onlyImage === false && 'Withdraw'}
+        {sort === 'canSwap' && onlyImage === false && 'Swap'}
       </Text>
     </Flex>
   );
@@ -313,9 +315,15 @@ export const StakingTable: FC<StakingTableProps> = ({
           {getStatus('sale', colorMode)}
           {getStatus('start', colorMode)}
           {getStatus('end', colorMode)}
-          <GetL2Status sort={'canUnstake'} mr={'20px'}></GetL2Status>
-          <GetL2Status sort={'canWithdraw'} mr={'20px'}></GetL2Status>
-          <GetL2Status sort={'canSwap'}></GetL2Status>
+          <GetL2Status
+            sort={'canUnstake'}
+            mr={'20px'}
+            onlyImage={false}></GetL2Status>
+          <GetL2Status
+            sort={'canWithdraw'}
+            mr={'20px'}
+            onlyImage={false}></GetL2Status>
+          <GetL2Status sort={'canSwap'} onlyImage={false}></GetL2Status>
         </Flex>
         <Select
           w={'137px'}
@@ -420,6 +428,15 @@ export const StakingTable: FC<StakingTableProps> = ({
                               mr="12px"
                             />
                             <Text>{name}</Text>
+                            <Flex>
+                              <GetL2Status
+                                sort={'canUnstake'}
+                                mr={'1px'}></GetL2Status>
+                              <GetL2Status
+                                sort={'canWithdraw'}
+                                mr={'1px'}></GetL2Status>
+                              <GetL2Status sort={'canSwap'}></GetL2Status>
+                            </Flex>
                           </>
                         ) : (
                           ''
