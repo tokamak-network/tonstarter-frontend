@@ -5,7 +5,8 @@
       "@Staking/*": ["./pages/Staking/*"],
       "@Pools/*": ["./pages/Pools/*"],
       "@Starter/*": ["./pages/Starter/*"],
-      "@Dao/*": ["./pages/Dao/*"]
+      "@Dao/*": ["./pages/Dao/*"],
+      "@Admin/*": ["./pages/Admin/*"]
     }
   }
 }

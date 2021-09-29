@@ -5,7 +5,6 @@ import {
   Stack,
   Image,
   useTheme,
-  Tooltip,
   CircularProgress,
   useColorMode,
   Text,
@@ -287,6 +286,12 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
             );
           }}>
           <Text className={match?.isExact ? 'link-match' : 'link'}>Guide</Text>
+        </NavLink>
+        <NavLink
+          to="/admin"
+          className={match?.isExact ? 'link-match' : 'link'}
+          style={{zIndex: 100}}>
+          Admin
         </NavLink>
       </Stack>
     </Box>
