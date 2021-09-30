@@ -8,7 +8,7 @@ export const OpenSale = () => {
   const {STATER_STYLE} = theme;
 
   return (
-    <Flex flexDir="column">
+    <Flex flexDir="column" pt={'70px'} pl={'45px'}>
       <Text {...STATER_STYLE.mainText({colorMode, fontSize: 25})} mb={'5px'}>
         Open Sale
       </Text>

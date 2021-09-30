@@ -7,16 +7,18 @@ type DetailTableContainerProp = {
   w?: number;
   itemPx?: string;
   itemPy?: string;
+  isUserTier?: boolean;
 };
 
 const fontSize = 15;
 
 export const DetailTableContainer = (prop: DetailTableContainerProp) => {
-  const {title, data, breakPoint, w, itemPx, itemPy} = prop;
+  const {title, data, breakPoint, w, itemPx, itemPy, isUserTier} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
   const {STATER_STYLE} = theme;
+
   return (
     <Box
       {...STATER_STYLE.containerStyle({colorMode})}
@@ -30,7 +32,11 @@ export const DetailTableContainer = (prop: DetailTableContainerProp) => {
         {...STATER_STYLE.subText({colorMode, fontSize})}
         {...STATER_STYLE.table.container({colorMode})}
         px={itemPx || '35px'}
-        py={itemPy || '21px'}>
+        py={itemPy || '21px'}
+        bg={isUserTier && 'blue.100'}
+        color={isUserTier && 'white.100'}
+        borderTopRadius={15}
+        textAlign="center">
         {title}
       </Text>
       {data.map((item, index) => {

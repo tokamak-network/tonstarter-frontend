@@ -14,8 +14,10 @@ import {WhiteList} from './components/details/WhiteList';
 import {OpenSale} from './components/details/OpenSale';
 
 import {DetailIcons} from './components/details/Detail_Icons';
-import {SaleStatus} from './types';
+import {SaleStatus, Tier} from './types';
 import {DetailTable} from './components/details/Detail_Table';
+import {OpenSaleDeposit} from './components/details/OpenSaleDeposit';
+import {ExclusiveSalePart} from './components/details/ExclusiveSalePart';
 
 export const StarterDetail = () => {
   const {id}: {id: string} = useParams();
@@ -23,6 +25,7 @@ export const StarterDetail = () => {
   const theme = useTheme();
 
   const [status, setStatus] = useState<SaleStatus | undefined>(undefined);
+  const [userTier, setUserTier] = useState<Tier | undefined>(undefined);
 
   const {STATER_STYLE} = theme;
   const tokenType = checkTokenType(
@@ -31,7 +34,8 @@ export const StarterDetail = () => {
 
   useEffect(() => {
     //Test
-    setStatus('exclusive');
+    setStatus('whitelist');
+    setUserTier(1);
   }, []);
 
   return (
@@ -89,13 +93,17 @@ export const StarterDetail = () => {
             w={'1px'}
             bg={colorMode === 'light' ? '#f4f6f8' : '#323232'}
             boxShadow={'0 1px 1px 0 rgba(96, 97, 112, 0.16)'}></Box>
-          <Box d="flex" flexDir="column" pt={'70px'} pl={'45px'}>
-            {status === 'whitelist' && <WhiteList></WhiteList>}
-            {status === 'exclusive' && <ExclusiveSale></ExclusiveSale>}
-            {status === 'open' && <OpenSale></OpenSale>}
-          </Box>
+          {/* {status === 'whitelist' && <WhiteList></WhiteList>}
+          {status === 'exclusive' && <ExclusiveSale></ExclusiveSale>}
+          {status === 'open' && <OpenSale></OpenSale>} */}
+          {/* <OpenSaleDeposit></OpenSaleDeposit> */}
+          <ExclusiveSalePart></ExclusiveSalePart>
         </Flex>
-        <Flex>{status && <DetailTable status={status}></DetailTable>}</Flex>
+        <Flex>
+          {status && (
+            <DetailTable status={status} userTier={userTier}></DetailTable>
+          )}
+        </Flex>
       </Flex>
     </Flex>
   );

@@ -5,14 +5,13 @@ import {SaleStatus, DetailTierData, Tier} from '@Starter/types';
 
 type DetailTableTierProp = {
   status: SaleStatus;
+  userTier: Tier;
 };
 
 export const DetailTableTier = (prop: DetailTableTierProp) => {
-  const {status} = prop;
+  const {status, userTier} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
-
-  const [tier, setTier] = useState<Tier | undefined>(undefined);
 
   const {STATER_STYLE} = theme;
 
@@ -206,17 +205,13 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
     },
   ];
 
-  useEffect(() => {
-    setTier(1);
-  }, []);
-
   return (
     <Flex flexDir="column">
       <Text {...STATER_STYLE.mainText({colorMode, fontSize: 24})} mb={'30px'}>
         Tier details
       </Text>
       <Box d="flex" justifyContent="space-between">
-        {projectTierDataAfterWhiteList.map((item) => {
+        {projectTierDataAfterWhiteList.map((item, index: number) => {
           return (
             <DetailTableContainer
               w={276}
@@ -225,7 +220,8 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
               key={item.title}
               title={item.title}
               data={item.data}
-              breakPoint={item.data.length}></DetailTableContainer>
+              breakPoint={item.data.length}
+              isUserTier={index + 1 === userTier}></DetailTableContainer>
           );
         })}
       </Box>

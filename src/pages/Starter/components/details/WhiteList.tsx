@@ -1,11 +1,4 @@
-import {
-  Box,
-  useColorMode,
-  useTheme,
-  Flex,
-  Text,
-  Button,
-} from '@chakra-ui/react';
+import {Box, useColorMode, useTheme, Flex, Text} from '@chakra-ui/react';
 import {DetailCounter} from './Detail_Counter';
 import {CustomButton} from 'components/Basic/CustomButton';
 
@@ -16,7 +9,7 @@ export const WhiteList = () => {
   const {STATER_STYLE} = theme;
 
   return (
-    <Flex flexDir="column" pos="relative" h={'100%'}>
+    <Flex flexDir="column" pos="relative" h={'100%'} pt={'70px'} pl={'45px'}>
       <Text {...STATER_STYLE.mainText({colorMode, fontSize: 25})} mb={'5px'}>
         Exclusive Sale Whitelist
       </Text>

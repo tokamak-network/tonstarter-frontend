@@ -12,9 +12,10 @@ export type StarterProject = I_StarterProject & {
 export type StarterStatus = 'active' | 'upcoming' | 'past';
 export type SaleStatus = 'whitelist' | 'exclusive' | 'open';
 
-export type Tier = 1 | 2 | 3 | 4;
+export type Tier = 1 | 2 | 3 | 4 | undefined;
 
 export type DetailTierData = {
+  userTier?: boolean;
   title: string;
   data: {key: string; value: string}[];
 }[];
