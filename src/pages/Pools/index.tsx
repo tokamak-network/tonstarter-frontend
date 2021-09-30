@@ -82,6 +82,8 @@ export const Pools = () => {
       // const poolArr = basePool.loading ? [] : basePool.data.pools;
 
       const poolArr = isLoading ? [] : data.pools;
+      console.log('poolArr', poolArr);
+      
       setPool(poolArr);
     }
     getPool();

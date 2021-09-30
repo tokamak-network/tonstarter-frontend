@@ -11,6 +11,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import React from 'react';
+import {useEffect} from 'react';
 import {shortenAddress} from 'utils';
 import {ThemeSwitcher} from './ThemeSwitcher';
 import {NavLink, useRouteMatch} from 'react-router-dom';
@@ -36,6 +37,7 @@ export const Header: React.FC<HeaderProps> = (props) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const {colorMode} = useColorMode();
   const toggle = () => setIsOpen(!isOpen);
+
   const match = useRouteMatch('/');
 
   return (
@@ -217,9 +219,44 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
   );
 };
 
+const OpenPools = ({togglePools}: {togglePools: () => void}) => {
+  const match = useRouteMatch('/');
+  return (
+    <Box as={Flex} flexDir="column" zIndex={'10000'}>
+      <NavLink
+        to="/pools"
+        className={match?.isExact ? 'link-match' : 'link'}
+        style={{zIndex: 100}}
+        onClick={togglePools}>
+        Pools
+      </NavLink>
+      <NavLink
+        to="/rewardProgram"
+        className={match?.isExact ? 'link-match' : 'link'}
+        style={{zIndex: 100}}
+        onClick={togglePools}>
+        Reward Program
+      </NavLink>
+    </Box>
+  );
+};
+
 const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
+  const [poolsOpen, setPoolsOpen] = React.useState(false);
+
   const theme = useTheme();
   const match = useRouteMatch('/');
+  const pools = useRouteMatch('/pools');
+  const reward = useRouteMatch('/rewardProgram');
+  const togglePools = () => setPoolsOpen(false);
+
+  useEffect(()=>{
+    console.log('----------------------');
+    
+    console.log('match', match?.path);
+    console.log('pools', pools?.path);
+    console.log('reward', reward?.path);
+  }, [pools, match, reward])
   return (
     <Box
       display={{base: isOpen ? 'block' : 'none', md: 'block'}}
@@ -238,10 +275,16 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           Staking
         </NavLink>
         <NavLink
-          to="/pools"
-          className={match?.isExact ? 'link-match' : 'link'}
-          style={{zIndex: 100}}>
-          Pools
+          style={{zIndex: 100}}
+          to="/"
+         
+          onClick={(e) => {
+            e.preventDefault();
+            poolsOpen ? setPoolsOpen(false) : setPoolsOpen(true);
+          }}>
+          <Text  className={(pools?.isExact || reward?.isExact) ? 'link-match' : 'link'}>
+            Pools
+          </Text>
         </NavLink>
         <NavLink
           to="/dao"
@@ -265,14 +308,6 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
             Starter
           </NavLink>
         </Tooltip>
-        {/* <Tooltip
-          hasArrow
-          placement="top"
-          label="Coming Soon"
-          color={theme.colors.white[100]}
-          bg={theme.colors.gray[375]}> */}
-
-        {/* </Tooltip> */}
         <NavLink
           to="/"
           className={match?.isExact ? 'link-match' : 'link'}
@@ -300,6 +335,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           <Text className={match?.isExact ? 'link-match' : 'link'}>Guide</Text>
         </NavLink>
       </Stack>
+      {poolsOpen ? <OpenPools togglePools={togglePools} /> : null}
     </Box>
   );
 };

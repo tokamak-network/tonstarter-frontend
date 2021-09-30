@@ -13,4 +13,7 @@ export type DEPLOYED_TYPE = {
   NPM_Address: string;
   BasePool_Address: string;
   StakeTonControl_ADDRESS: string;
+  LockTOSProxy_ADDRESS:string;
+  DividendPool_ADDRESS: string;
+  DividendPoolProxy_ADDRESS: string;
 };

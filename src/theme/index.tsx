@@ -281,7 +281,7 @@ const theme = extendTheme({
           font: fonts.body,
           fontSize: 17,
           fontWeight: 'bold',
-          color: mode('gray.0', 'white.100')(props),
+          color: mode('blue.100', 'yellow.100')(props),
         },
         '.fld-text1': {
           fontFamily: props.theme.fonts.fld,

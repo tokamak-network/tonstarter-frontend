@@ -109,10 +109,13 @@ export const PoolTable: FC<PoolTableProps> = ({
   const [stakingDisable, setStakingDisable] = useState(true);
 
   useEffect(() => {
+    console.log('page', page);
+    
     async function positionPayload() {
       if (address) {
         const result = await fetchPositionPayload(library, address);
-
+        console.log('result', result);
+        
         let stringResult: any = [];
         for (let i = 0; i < result?.positionData.length; i++) {
           stringResult.push(result?.positionData[i]?.positionid.toString());
