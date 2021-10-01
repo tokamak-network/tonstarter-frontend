@@ -2,6 +2,7 @@ import {Flex} from '@chakra-ui/react';
 import {useEffect, useState} from 'react';
 import {AdminObject, StepsName} from '@Admin/types';
 import {Step} from './components/Steps';
+import {createStarter} from './utils/createStarter';
 
 const initialValue: AdminObject = {
   name: '',
@@ -34,7 +35,7 @@ const initialValue: AdminObject = {
   claimStartTime: 0,
   //sec
   claimIntervals: 0,
-  claimCount: '',
+  claimCount: 0,
   position: '',
   production: '',
   topSlideExposure: false,
@@ -74,7 +75,7 @@ const stepsName: StepsName = {
     'claimStartTime',
     'claimIntervals',
   ],
-  stepFour: ['claimCount', 'position', 'production', 'topSlideExposure'],
+  stepFour: ['position', 'production', 'topSlideExposure'],
 };
 
 export const Admin = () => {
@@ -83,6 +84,7 @@ export const Admin = () => {
 
   const makeRequest = (formData: AdminObject) => {
     console.log('Form Submitted', formData);
+    return createStarter(formData);
   };
 
   const handleNextStep = (newData: any, final = false) => {

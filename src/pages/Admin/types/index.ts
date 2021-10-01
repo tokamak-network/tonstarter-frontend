@@ -35,10 +35,10 @@ export type StepThree = {
   claimStartTime: number;
   //sec
   claimIntervals: number;
+  claimCount: number;
 };
 
 export type StepFour = {
-  claimCount: string;
   position: 'active' | 'upcoming' | '';
   production: 'dev' | 'production' | '';
   topSlideExposure: boolean;
