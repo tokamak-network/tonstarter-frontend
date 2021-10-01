@@ -18,14 +18,22 @@ import {SaleStatus, Tier} from './types';
 import {DetailTable} from './components/details/Detail_Table';
 import {OpenSaleDeposit} from './components/details/OpenSaleDeposit';
 import {ExclusiveSalePart} from './components/details/ExclusiveSalePart';
+import store from 'store';
+import {useRouteMatch} from 'react-router-dom';
+import {AdminObject} from '@Admin/types';
 
 export const StarterDetail = () => {
   const {id}: {id: string} = useParams();
   const {colorMode} = useColorMode();
   const theme = useTheme();
+  const match = useRouteMatch();
+  const {url} = match;
+
+  const starterData = store.getState().starters.data;
 
   const [status, setStatus] = useState<SaleStatus | undefined>(undefined);
   const [userTier, setUserTier] = useState<Tier | undefined>(undefined);
+  const [saleInfo, setSaleInfo] = useState<AdminObject | undefined>(undefined);
 
   const {STATER_STYLE} = theme;
   const tokenType = checkTokenType(
@@ -37,6 +45,24 @@ export const StarterDetail = () => {
     setStatus('whitelist');
     setUserTier(1);
   }, []);
+
+  useEffect(() => {
+    if (url.includes('active')) {
+      const {activeData} = starterData;
+      const projectInfo = activeData.filter(
+        (data: AdminObject) => data.name === id,
+      );
+      setSaleInfo(projectInfo[0]);
+    }
+
+    if (url.includes('upcoming')) {
+    }
+
+    if (url.includes('past')) {
+    }
+  }, [starterData]);
+
+  console.log(saleInfo);
 
   return (
     <Flex mt={'122px'} justifyContent="center" mb={'100px'}>
@@ -62,7 +88,7 @@ export const StarterDetail = () => {
               />
             </Flex>
             <Text {...STATER_STYLE.mainText({colorMode, fontSize: 34})}>
-              Genesis Shards Public
+              {saleInfo?.name}
             </Text>
             <Text
               {...STATER_STYLE.subText({colorMode})}
@@ -73,19 +99,16 @@ export const StarterDetail = () => {
             <Text
               {...STATER_STYLE.subText({colorMode, fontSize: 15})}
               mb={'11px'}>
-              Co-ordinate campaigns and product launches, with improved overall
-              communication and collaboration for your whole team. Hardware,
-              tech, make announcements and build awareness among some of the
-              hardest consumers in the world to reach.
+              {saleInfo?.description}
             </Text>
             <Box pos="absolute" bottom={'20px'}>
               <DetailIcons
                 linkInfo={[
-                  {sort: 'website', url: 'go'},
-                  {sort: 'telegram', url: 'go'},
-                  {sort: 'medium', url: 'go'},
-                  {sort: 'twitter', url: 'go'},
-                  {sort: 'discord', url: 'go'},
+                  {sort: 'website', url: `${saleInfo?.website}`},
+                  {sort: 'telegram', url: `${saleInfo?.telegram}`},
+                  {sort: 'medium', url: `${saleInfo?.medium}`},
+                  {sort: 'twitter', url: `${saleInfo?.twitter}`},
+                  {sort: 'discord', url: `${saleInfo?.discord}`},
                 ]}></DetailIcons>
             </Box>
           </Box>

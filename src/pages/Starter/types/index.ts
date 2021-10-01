@@ -2,14 +2,22 @@ export interface I_StarterProject {
   name: string;
   saleStart: string;
   saleEnd: string;
-  status: StarterStatus;
 }
 
-export type StarterProject = I_StarterProject & {
+export type ActiveProjectType = I_StarterProject & {
   isExclusive: boolean;
+  tokenFundRaisingTargetAmount: string;
+  projectTokenRatio: number;
+  projectFundingTokenRatio: number;
 };
 
-export type StarterStatus = 'active' | 'upcoming' | 'past';
+export type UpcomingProjectType = I_StarterProject & {
+  tokenFundRaisingTargetAmount: number;
+  sector: string;
+};
+
+export type PastProjectType = I_StarterProject;
+
 export type SaleStatus = 'whitelist' | 'exclusive' | 'open';
 
 export type Tier = 1 | 2 | 3 | 4 | undefined;

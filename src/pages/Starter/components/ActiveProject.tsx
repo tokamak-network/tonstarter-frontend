@@ -11,9 +11,10 @@ import {
 import {checkTokenType} from 'utils/token';
 import {Circle} from 'components/Circle';
 import {Link, useRouteMatch} from 'react-router-dom';
+import {ActiveProjectType} from '@Starter/types';
 
 type ActiveProjectProp = {
-  activeProject: any[];
+  activeProject: ActiveProjectType[];
 };
 
 export const ActiveProject = (props: ActiveProjectProp) => {
@@ -39,7 +40,7 @@ export const ActiveProject = (props: ActiveProjectProp) => {
             '0x2be5e8c109e2197D077D13A82dAead6a9b3433C5',
           );
           return (
-            <Link to={`${url}/${project.name}`}>
+            <Link to={`${url}/active/${project.name}`}>
               <Box {...STATER_STYLE.containerStyle({colorMode})}>
                 <Flex justifyContent="space-between" mb={15}>
                   <Avatar
@@ -53,7 +54,7 @@ export const ActiveProject = (props: ActiveProjectProp) => {
                   />
                   <Flex alignItems="center">
                     <Circle
-                      bg={project.isOpen ? '#2ea2f8' : '#f95359'}></Circle>
+                      bg={project.isExclusive ? '#f95359' : '#2ea2f8'}></Circle>
                     <Text
                       {...{
                         ...STATER_STYLE.subTextBlack({
@@ -62,7 +63,7 @@ export const ActiveProject = (props: ActiveProjectProp) => {
                         }),
                       }}
                       ml={'7px'}>
-                      {project.isOpen ? 'Open Sale' : 'Exclusive Sale'}
+                      {project.isExclusive ? 'Exclusive Sale' : 'Open Sale'}
                     </Text>
                   </Flex>
                 </Flex>

@@ -38,8 +38,12 @@ export const Step: React.FC<StepProps> = (props) => {
       //@ts-ignore
       return (obj[name] = Yup.string().required().label(name));
     }
+    if (nameType === 'number') {
+      //@ts-ignore
+      return (obj[name] = Yup.number().required().label(name));
+    }
     //@ts-ignore
-    return (obj[name] = Yup.number().required().label(name));
+    return (obj[name] = Yup.boolean().required().label(name));
   });
 
   const stepOneValidationSchema = Yup.object({
