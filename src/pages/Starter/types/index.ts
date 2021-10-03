@@ -1,3 +1,5 @@
+import {AdminObject} from '@Admin/types';
+
 export interface I_StarterProject {
   name: string;
   saleStart: string;

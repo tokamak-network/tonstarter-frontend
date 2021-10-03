@@ -21,7 +21,7 @@ export const ExclusiveSale = () => {
       </Text>
       <Box d="flex" {...STATER_STYLE.mainText({colorMode, fontSize: 34})}>
         <Text mr={'25px'}>2021.10.1~10.4</Text>
-        <DetailCounter></DetailCounter>
+        {/* <DetailCounter></DetailCounter> */}
       </Box>
     </Flex>
   );

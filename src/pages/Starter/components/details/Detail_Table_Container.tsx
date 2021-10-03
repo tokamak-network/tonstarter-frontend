@@ -27,7 +27,8 @@ export const DetailTableContainer = (prop: DetailTableContainerProp) => {
       _hover=""
       cursor=""
       fontSize={15}
-      p={0}>
+      p={0}
+      border={isUserTier && '1px solid #0070ED'}>
       <Text
         {...STATER_STYLE.subText({colorMode, fontSize})}
         {...STATER_STYLE.table.container({colorMode})}
@@ -35,7 +36,7 @@ export const DetailTableContainer = (prop: DetailTableContainerProp) => {
         py={itemPy || '21px'}
         bg={isUserTier && 'blue.100'}
         color={isUserTier && 'white.100'}
-        borderTopRadius={15}
+        borderTopRadius={13}
         textAlign="center">
         {title}
       </Text>

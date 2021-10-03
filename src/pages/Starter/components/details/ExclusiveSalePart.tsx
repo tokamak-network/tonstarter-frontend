@@ -4,12 +4,29 @@ import {CustomButton} from 'components/Basic/CustomButton';
 import {useEffect, useRef, useState} from 'react';
 import {DetailCounter} from './Detail_Counter';
 import ArrowIcon from 'assets/svgs/arrow_icon.svg';
+import {AdminObject} from '@Admin/types';
+import {getUserTonBalance} from 'client/getUserBalance';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import {convertTimeStamp} from 'utils/convertTIme';
 
-export const ExclusiveSalePart = () => {
+type ExclusiveSalePartProps = {
+  saleInfo: AdminObject;
+};
+
+export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
+  const {saleInfo} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
+  const {account, library} = useActiveWeb3React();
+
   const [inputBalance, setInputBalance] = useState(0);
+
+  const [saleStartTime, setSaleStartTime] = useState<string>('-');
+  const [saleEndTime, setSaleEndTime] = useState<string>('-');
+  const [userTonBalance, setUserTonBalance] = useState<string>('-');
+  const [userAllocation, setUserAllocation] = useState<string>('-');
+  const [userTierAllocation, setUserTierAllocation] = useState<string>('-');
 
   const {STATER_STYLE} = theme;
 
@@ -21,7 +38,25 @@ export const ExclusiveSalePart = () => {
 
   useEffect(() => {
     console.log(inputRef);
+    console.log(saleInfo);
   }, [inputRef]);
+
+  useEffect(() => {
+    if (saleInfo) {
+      const startTime = convertTimeStamp(saleInfo.exclusiveStartTime);
+      const endTime = convertTimeStamp(saleInfo.saleEndTime, 'MM.DD');
+      setSaleStartTime(startTime);
+      setSaleEndTime(endTime);
+    }
+  }, [saleInfo]);
+
+  useEffect(() => {
+    async function callUserBalance() {
+      const tonBalance = await getUserTonBalance({account, library});
+      return setUserTonBalance(tonBalance || '-');
+    }
+    callUserBalance();
+  }, [account, library]);
 
   return (
     <Flex flexDir="column" pl={'45px'}>
@@ -31,7 +66,10 @@ export const ExclusiveSalePart = () => {
         </Text>
         <DetailCounter
           numberFontSize={'18px'}
-          stringFontSize={'14px'}></DetailCounter>
+          stringFontSize={'14px'}
+          date={
+            saleInfo && convertTimeStamp(saleInfo.saleEndTime, 'YYYY-MM-DD')
+          }></DetailCounter>
       </Box>
       <Box d="flex">
         <Text
@@ -45,7 +83,7 @@ export const ExclusiveSalePart = () => {
           {...STATER_STYLE.subText({colorMode})}
           letterSpacing={'1.4px'}
           mb={'10px'}>
-          (Your balance : 33,000,354 TON)
+          (Your balance : {userTonBalance} TON)
         </Text>
       </Box>
       <Box d="flex" alignItems="center" mb={'30px'}>
@@ -73,36 +111,41 @@ export const ExclusiveSalePart = () => {
             setValue={setInputBalance}></CustomInput>
         </Box>
       </Box>
-      <Box d="flex" flexDir="column" w={'400px'}>
+      <Box d="flex" flexDir="column" w={'495px'}>
         <Text {...STATER_STYLE.mainText({colorMode, fontSize: 14})}>
           Details
         </Text>
         <Box d="flex" fontSize={'13px'} justifyContent="space-between">
-          <Flex>
+          <Flex w={'235px'}>
             <Text color={'gray.400'} mr={'3px'}>
               Sale Period :{' '}
             </Text>
-            <Text {...detailSubTextStyle}>2021.10.1 ~ 10.5</Text>
+            <Text {...detailSubTextStyle}>
+              {saleStartTime} ~ {saleEndTime}
+            </Text>
           </Flex>
-          <Flex>
+          <Flex w={'235px'}>
             <Text color={'gray.400'} mr={'3px'}>
-              Sale Period :{' '}
+              Your Allocation :{' '}
             </Text>
-            <Text {...detailSubTextStyle}>2021.10.1 ~ 10.5</Text>
+            <Text> {userAllocation}</Text>
           </Flex>
         </Box>
         <Box d="flex" fontSize={'13px'} justifyContent="space-between">
-          <Flex>
+          <Flex w={'235px'}>
             <Text color={'gray.400'} mr={'3px'}>
-              Sale Period :{' '}
+              Tier Allocation(Tier: x) :{' '}
             </Text>
-            <Text {...detailSubTextStyle}>2021.10.1 ~ 10.5</Text>
+            <Text {...detailSubTextStyle}>{userTierAllocation}</Text>
           </Flex>
-          <Flex>
+          <Flex w={'235px'}>
             <Text color={'gray.400'} mr={'3px'}>
-              Sale Period :{' '}
+              Ratio :{' '}
             </Text>
-            <Text {...detailSubTextStyle}>2021.10.1 ~ 10.5</Text>
+            <Text {...detailSubTextStyle}>
+              {saleInfo?.projectTokenRatio} TON ={' '}
+              {saleInfo?.projectFundingTokenRatio} {saleInfo?.tokenName}
+            </Text>
           </Flex>
         </Box>
       </Box>

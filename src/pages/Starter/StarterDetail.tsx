@@ -21,6 +21,7 @@ import {ExclusiveSalePart} from './components/details/ExclusiveSalePart';
 import store from 'store';
 import {useRouteMatch} from 'react-router-dom';
 import {AdminObject} from '@Admin/types';
+import {convertTimeStamp} from 'utils/convertTIme';
 
 export const StarterDetail = () => {
   const {id}: {id: string} = useParams();
@@ -47,8 +48,9 @@ export const StarterDetail = () => {
   }, []);
 
   useEffect(() => {
+    const {activeData, upcomingData, pastData} = starterData;
+
     if (url.includes('active')) {
-      const {activeData} = starterData;
       const projectInfo = activeData.filter(
         (data: AdminObject) => data.name === id,
       );
@@ -56,13 +58,25 @@ export const StarterDetail = () => {
     }
 
     if (url.includes('upcoming')) {
+      const projectInfo = upcomingData.filter(
+        (data: AdminObject) => data.name === id,
+      );
+      setSaleInfo(projectInfo[0]);
     }
 
     if (url.includes('past')) {
+      const projectInfo = pastData.filter(
+        (data: AdminObject) => data.name === id,
+      );
+      setSaleInfo(projectInfo[0]);
     }
-  }, [starterData]);
+  }, [starterData, id, url]);
 
   console.log(saleInfo);
+
+  if (!saleInfo) {
+    return <div>error..</div>;
+  }
 
   return (
     <Flex mt={'122px'} justifyContent="center" mb={'100px'}>
@@ -116,15 +130,29 @@ export const StarterDetail = () => {
             w={'1px'}
             bg={colorMode === 'light' ? '#f4f6f8' : '#323232'}
             boxShadow={'0 1px 1px 0 rgba(96, 97, 112, 0.16)'}></Box>
+          {url.includes('upcoming') && (
+            <WhiteList
+              date={convertTimeStamp(saleInfo?.saleEndTime)}
+              startDate={convertTimeStamp(saleInfo?.saleStartTime)}
+              endDate={convertTimeStamp(
+                saleInfo?.saleEndTime,
+                'MM.D',
+              )}></WhiteList>
+          )}
           {/* {status === 'whitelist' && <WhiteList></WhiteList>}
           {status === 'exclusive' && <ExclusiveSale></ExclusiveSale>}
           {status === 'open' && <OpenSale></OpenSale>} */}
           {/* <OpenSaleDeposit></OpenSaleDeposit> */}
-          <ExclusiveSalePart></ExclusiveSalePart>
+          {url.includes('active') && (
+            <ExclusiveSalePart saleInfo={saleInfo}></ExclusiveSalePart>
+          )}
         </Flex>
         <Flex>
           {status && (
-            <DetailTable status={status} userTier={userTier}></DetailTable>
+            <DetailTable
+              saleInfo={saleInfo}
+              status={status}
+              userTier={userTier}></DetailTable>
           )}
         </Flex>
       </Flex>

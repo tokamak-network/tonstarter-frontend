@@ -1,11 +1,17 @@
-import {Box, useColorMode, useTheme, Flex, Text} from '@chakra-ui/react';
-import {useEffect, useState} from 'react';
+import {Text} from '@chakra-ui/react';
 import Countdown from 'react-countdown';
+
+// type YYYY = `19${d}${d}` | `20${d}${d}`;
+// type oneToNine = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+// type MM = `0${oneToNine}` | `1${0 | 1 | 2}`;
+// type DD = `${0}${oneToNine}` | `${1 | 2}${d}` | `3${0 | 1}`;
+// type DateYMString = `${YYYY}/${MM}`;
+// type DateYMDString = `${DateYMString}/${DD}`;
 
 type DetailCounterProps = {
   numberFontSize?: string;
   stringFontSize?: string;
-  // date: 'YYYY/MM/DD'
+  date: string;
 };
 
 const trimDigit = (arg: any) => {
@@ -16,9 +22,7 @@ const trimDigit = (arg: any) => {
 };
 
 export const DetailCounter: React.FC<DetailCounterProps> = (prop) => {
-  const {numberFontSize, stringFontSize} = prop;
-
-  const [date] = useState('2021/12/30');
+  const {numberFontSize, stringFontSize, date} = prop;
 
   //@ts-ignore
   const countDownRenderer = ({days, hours, minutes, seconds, completed}) => {

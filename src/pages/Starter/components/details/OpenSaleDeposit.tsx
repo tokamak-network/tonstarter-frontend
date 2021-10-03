@@ -24,7 +24,8 @@ export const OpenSaleDeposit = () => {
         </Text>
         <DetailCounter
           numberFontSize={'18px'}
-          stringFontSize={'14px'}></DetailCounter>
+          stringFontSize={'14px'}
+          date={'2021-11-11'}></DetailCounter>
       </Box>
       <Text
         {...STATER_STYLE.subText({colorMode})}

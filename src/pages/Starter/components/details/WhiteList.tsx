@@ -2,7 +2,14 @@ import {Box, useColorMode, useTheme, Flex, Text} from '@chakra-ui/react';
 import {DetailCounter} from './Detail_Counter';
 import {CustomButton} from 'components/Basic/CustomButton';
 
-export const WhiteList = () => {
+type WhiteListProps = {
+  date: string;
+  startDate: string;
+  endDate: string;
+};
+
+export const WhiteList: React.FC<WhiteListProps> = (prop) => {
+  const {date, startDate, endDate} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
@@ -21,8 +28,10 @@ export const WhiteList = () => {
         Period Information
       </Text>
       <Box d="flex" {...STATER_STYLE.mainText({colorMode, fontSize: 34})}>
-        <Text mr={'25px'}>2021.10.1~10.4</Text>
-        <DetailCounter></DetailCounter>
+        <Text mr={'25px'}>
+          {startDate} ~ {endDate}
+        </Text>
+        <DetailCounter date={date}></DetailCounter>
       </Box>
       <Box pos="absolute" bottom={'13px'}>
         <CustomButton text={'Add whitelist'}></CustomButton>

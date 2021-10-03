@@ -3,14 +3,16 @@ import {useState} from 'react';
 import {DetailTableProject} from './Detail_Table_Project';
 import {DetailTableTier} from './Detail_Table_Tier';
 import {SaleStatus, Tier} from '@Starter/types';
+import {AdminObject} from '@Admin/types';
 
 type DetailTableProp = {
   status: SaleStatus;
   userTier: Tier;
+  saleInfo: AdminObject;
 };
 
 export const DetailTable = (prop: DetailTableProp) => {
-  const {status, userTier} = prop;
+  const {status, userTier, saleInfo} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const [selectDetail, setSelectDetail] = useState<boolean>(true);
@@ -37,7 +39,7 @@ export const DetailTable = (prop: DetailTableProp) => {
       </Box>
       <Box d="flex" flexDir="column" pt={'35px'}>
         {selectDetail === true ? (
-          <DetailTableProject></DetailTableProject>
+          <DetailTableProject saleInfo={saleInfo}></DetailTableProject>
         ) : (
           <DetailTableTier
             status={status}
