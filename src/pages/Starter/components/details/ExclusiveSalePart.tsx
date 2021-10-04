@@ -1,7 +1,7 @@
 import {Box, useColorMode, useTheme, Flex, Text, Input} from '@chakra-ui/react';
 import {CustomInput} from 'components/Basic';
 import {CustomButton} from 'components/Basic/CustomButton';
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {DetailCounter} from './Detail_Counter';
 import ArrowIcon from 'assets/svgs/arrow_icon.svg';
 import {AdminObject} from '@Admin/types';
@@ -20,7 +20,9 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
 
   const {account, library} = useActiveWeb3React();
 
-  const [inputBalance, setInputBalance] = useState(0);
+  const [inputTonBalance, setInputTonBalance] = useState<string>('0');
+  const [convertedTokenBalance, setConvertedTokenBalance] =
+    useState<string>('0');
 
   const [saleStartTime, setSaleStartTime] = useState<string>('-');
   const [saleEndTime, setSaleEndTime] = useState<string>('-');
@@ -34,12 +36,14 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
     color: colorMode === 'light' ? 'gray.250' : 'white.100',
   };
 
-  const inputRef = useRef(null);
-
   useEffect(() => {
-    console.log(inputRef);
-    console.log(saleInfo);
-  }, [inputRef]);
+    if (saleInfo) {
+      const ratio = saleInfo.projectFundingTokenRatio;
+      const result = Number(inputTonBalance) * ratio;
+      setConvertedTokenBalance(String(result));
+      console.log(String(convertedTokenBalance));
+    }
+  }, [inputTonBalance, saleInfo]);
 
   useEffect(() => {
     if (saleInfo) {
@@ -55,7 +59,9 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
       const tonBalance = await getUserTonBalance({account, library});
       return setUserTonBalance(tonBalance || '-');
     }
-    callUserBalance();
+    if (account && library) {
+      callUserBalance();
+    }
   }, [account, library]);
 
   return (
@@ -92,8 +98,10 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             w={'220px'}
             h={'32px'}
             numberOnly={true}
-            value={inputBalance}
-            setValue={setInputBalance}></CustomInput>
+            value={inputTonBalance}
+            setValue={setInputTonBalance}
+            color={Number(inputTonBalance) > 0 ? 'gray.225' : 'gray.175'}
+            tokenName={'TON'}></CustomInput>
           <img
             src={ArrowIcon}
             alt={'icon_arrow'}
@@ -107,8 +115,10 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             w={'220px'}
             h={'32px'}
             numberOnly={true}
-            value={inputBalance}
-            setValue={setInputBalance}></CustomInput>
+            value={convertedTokenBalance}
+            setValue={setConvertedTokenBalance}
+            color={Number(inputTonBalance) > 0 ? 'gray.225' : 'gray.175'}
+            tokenName={saleInfo?.tokenName}></CustomInput>
         </Box>
       </Box>
       <Box d="flex" flexDir="column" w={'495px'}>
