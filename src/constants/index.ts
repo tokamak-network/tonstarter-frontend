@@ -16,7 +16,7 @@ export const NetworkContextName = `${new Date().getTime()}-NETWORK`;
 export const DEFAULT_NETWORK = REACT_APP_MODE === 'DEV' ? 4 : 1;
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
-const API_SERVER =
+export const API_SERVER =
   REACT_APP_MODE === 'DEV' ? REACT_APP_DEV_API : REACT_APP_MAINNET_API;
 export const BASE_PROVIDER =
   REACT_APP_MODE === 'DEV'
