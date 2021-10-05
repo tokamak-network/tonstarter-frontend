@@ -8,6 +8,8 @@ import {
   } from '@chakra-ui/react';
   import {useAppSelector} from 'hooks/useRedux';
   import {getPoolName} from '../../utils/token';
+  import {ClaimReward} from './components/ClaimReward';
+
   import {
     chakra,
     // useTheme
@@ -20,8 +22,11 @@ import {
   export const RewardContainer: FC<RewardContainerProps> =({
     pools }) =>{
         return (
-            <Flex>
-                <Text>RewardContainer</Text>
+            <Flex justifyContent={'space-between'} mt={'30px'}>
+               <Flex>Reward container</Flex>
+              <Flex>
+              <ClaimReward/>
+              </Flex>
             </Flex>
         )
   }

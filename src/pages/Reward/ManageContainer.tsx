@@ -8,6 +8,7 @@ import {
   } from '@chakra-ui/react';
   import {useAppSelector} from 'hooks/useRedux';
   import {getPoolName} from '../../utils/token';
+  import {CreateReward} from './components/CreateReward';
   import {
     chakra,
     // useTheme
@@ -19,9 +20,21 @@ import {
 
   export const ManageContainer: FC<ManageContainerProps> =({
     pools }) =>{
+
+      useEffect (()=> {
+        pools.map((item, index) =>{
+          console.log(item.name);
+          
+        })
+        
+      }, [pools])
         return (
-            <Flex>
-                <Text>ManageContainer</Text>
+            <Flex justifyContent={'space-between'} mt={'30px'}>
+              <Flex>Manage reward container</Flex>
+              <Flex>
+              <CreateReward pools={pools}/>
+              </Flex>
+                
             </Flex>
         )
   }
