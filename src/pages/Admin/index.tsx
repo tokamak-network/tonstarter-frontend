@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react';
 import {AdminObject, StepsName} from '@Admin/types';
 import {Step} from './components/Steps';
 import {createStarter} from './utils/createStarter';
+import {string} from 'prop-types';
 
 const initialValue: AdminObject = {
   name: '',
@@ -21,21 +22,24 @@ const initialValue: AdminObject = {
   tokenAllowcationAmount: '',
   tokenFundRaisingTargetAmount: '',
   tokenFundingRecipient: '',
-  projectTokenRatio: 0,
-  projectFundingTokenRatio: 0,
+  //step 3
   saleContractAddress: '',
   vestingContractAddress: '',
-  snapshotTimestamp: 0,
-  exclusiveStartTime: 0,
-  addWhitelistEndTime: 0,
-  participationEndTime: 0,
-  subscriptionStartTime: 0,
-  saleStartTime: 0,
-  saleEndTime: 0,
-  claimStartTime: 0,
-  //sec
-  claimIntervals: 0,
-  claimCount: 0,
+  projectTokenRatio: 0,
+  projectFundingTokenRatio: 0,
+  snapshot: 0,
+  startAddWhiteTime: 0,
+  endAddWhiteTime: 0,
+  startExclusiveTime: 0,
+  endExclusiveTime: 0,
+  startDepositTime: 0,
+  endDepositTime: 0,
+  startOpenSaleTime: 0,
+  endOpenSaleTime: 0,
+  startClaimTime: 0,
+  claimInterval: 0,
+  claimPeriod: 0,
+  //step 4
   position: '',
   production: '',
   topSlideExposure: false,
@@ -65,15 +69,18 @@ const stepsName: StepsName = {
   stepThree: [
     'saleContractAddress',
     'vestingContractAddress',
-    'snapshotTimestamp',
-    'exclusiveStartTime',
-    'addWhitelistEndTime',
-    'participationEndTime',
-    'subscriptionStartTime',
-    'saleStartTime',
-    'saleEndTime',
-    'claimStartTime',
-    'claimIntervals',
+    'snapshot',
+    'startAddWhiteTime',
+    'endAddWhiteTime',
+    'startExclusiveTime',
+    'endExclusiveTime',
+    'startDepositTime',
+    'endDepositTime',
+    'startOpenSaleTime',
+    'endOpenSaleTime',
+    'startClaimTime',
+    'claimInterval',
+    'claimPeriod',
   ],
   stepFour: ['position', 'production', 'topSlideExposure'],
 };

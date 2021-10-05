@@ -24,6 +24,8 @@ const trimDigit = (arg: any) => {
 export const DetailCounter: React.FC<DetailCounterProps> = (prop) => {
   const {numberFontSize, stringFontSize, date} = prop;
 
+  console.log(date);
+
   //@ts-ignore
   const countDownRenderer = ({days, hours, minutes, seconds, completed}) => {
     if (completed) {

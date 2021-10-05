@@ -12,6 +12,7 @@ import {checkTokenType} from 'utils/token';
 import {Circle} from 'components/Circle';
 import {Link, useRouteMatch} from 'react-router-dom';
 import {ActiveProjectType} from '@Starter/types';
+import {useCallContract} from 'hooks/useCallContract';
 
 type ActiveProjectProp = {
   activeProject: ActiveProjectType[];
@@ -25,6 +26,7 @@ export const ActiveProject = (props: ActiveProjectProp) => {
 
   const {STATER_STYLE} = theme;
   const {url} = match;
+  const PublicSale_CONTRACT = useCallContract('PUBLIC_SALE');
 
   return (
     <Flex flexDir="column">
@@ -161,7 +163,7 @@ export const ActiveProject = (props: ActiveProjectProp) => {
                             colorMode,
                             fontSize: 20,
                           })}>
-                          1
+                          {project.projectTokenRatio}
                         </Text>
                         <Text>TON</Text>
                       </Flex>
@@ -172,7 +174,7 @@ export const ActiveProject = (props: ActiveProjectProp) => {
                             colorMode,
                             fontSize: 20,
                           })}>
-                          1
+                          {project.projectFundingTokenRatio}
                         </Text>
                         <Text>EVE</Text>
                       </Flex>

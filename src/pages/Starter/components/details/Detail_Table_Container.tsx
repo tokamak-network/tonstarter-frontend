@@ -21,14 +21,13 @@ export const DetailTableContainer = (prop: DetailTableContainerProp) => {
 
   return (
     <Box
-      {...STATER_STYLE.containerStyle({colorMode})}
+      {...STATER_STYLE.containerStyle({colorMode, isUserTier})}
       w={w || 582}
       h={'100%'}
       _hover=""
       cursor=""
       fontSize={15}
-      p={0}
-      border={isUserTier && '1px solid #0070ED'}>
+      p={0}>
       <Text
         {...STATER_STYLE.subText({colorMode, fontSize})}
         {...STATER_STYLE.table.container({colorMode})}

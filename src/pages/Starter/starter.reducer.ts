@@ -60,27 +60,29 @@ export const fetchStarters = createAsyncThunk(
         : data.production === 'dev',
     );
     const activeData = matchData.filter(
-      (data: AdminObject) => data.position === 'active',
+      (data: AdminObject) =>
+        data.position === 'active' && data.endOpenSaleTime > nowTimeStamp,
     );
     const upcomingData = matchData.filter(
       (data: AdminObject) => data.position === 'upcoming',
     );
     const pastData = matchData.filter(
-      (data: AdminObject) => data.saleEndTime < nowTimeStamp,
+      (data: AdminObject) => data.endOpenSaleTime < nowTimeStamp,
     );
 
     const activeProjects: ActiveProjectType = activeData.map(
       (data: AdminObject) => {
         return {
           name: data.name,
-          saleStart: moment.unix(data.saleStartTime).format('YYYY.MM.DD'),
-          saleEnd: moment.unix(data.saleEndTime).format('YYYY.MM.DD'),
+          saleStart: moment.unix(data.startOpenSaleTime).format('YYYY.MM.DD'),
+          saleEnd: moment.unix(data.endOpenSaleTime).format('YYYY.MM.DD'),
           isExclusive:
-            data.exclusiveStartTime <= nowTimeStamp &&
-            nowTimeStamp < data.saleStartTime,
+            data.startExclusiveTime <= nowTimeStamp &&
+            nowTimeStamp < data.startOpenSaleTime,
           tokenFundRaisingTargetAmount: data.tokenFundRaisingTargetAmount,
           projectTokenRatio: data.projectTokenRatio,
           projectFundingTokenRatio: data.projectFundingTokenRatio,
+          saleContractAddress: data.saleContractAddress,
         };
       },
     );
@@ -89,10 +91,10 @@ export const fetchStarters = createAsyncThunk(
       (data: AdminObject) => {
         return {
           name: data.name,
-          saleStart: moment.unix(data.saleStartTime).format('YYYY.MM.DD'),
-          saleEnd: moment.unix(data.saleEndTime).format('YYYY.MM.DD'),
+          saleStart: moment.unix(data.startOpenSaleTime).format('YYYY.MM.DD'),
+          saleEnd: moment.unix(data.endOpenSaleTime).format('YYYY.MM.DD'),
           tokenFundRaisingTargetAmount: data.tokenFundRaisingTargetAmount,
-          sector: 'defi',
+          saleContractAddress: data.saleContractAddress,
         };
       },
     );
@@ -100,8 +102,9 @@ export const fetchStarters = createAsyncThunk(
     const pastProjects: PastProjectType = pastData.map((data: AdminObject) => {
       return {
         name: data.name,
-        saleStart: moment.unix(data.saleStartTime).format('YYYY.MM.DD'),
-        saleEnd: moment.unix(data.saleEndTime).format('YYYY.MM.DD'),
+        saleStart: moment.unix(data.startOpenSaleTime).format('YYYY.MM.DD'),
+        saleEnd: moment.unix(data.endOpenSaleTime).format('YYYY.MM.DD'),
+        saleContractAddress: data.saleContractAddress,
       };
     });
 

@@ -11,7 +11,9 @@ export const Banner = () => {
       w={'100%'}
       h={'510px'}
       bgImage={bannerImg1X}
-      backgroundRepeat="no-repeat">
+      backgroundRepeat="no-repeat"
+      backgroundPosition="center"
+      backgroundColor={'#0F1115'}>
       {/* <Image src={bannerImg1X} w={'100%'} h={'510px'} objectFit="cover"></Image> */}
       <Flex
         w={'100%'}

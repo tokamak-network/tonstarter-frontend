@@ -1,6 +1,6 @@
 import {Formik, Form, Field, ErrorMessage} from 'formik';
 import * as Yup from 'yup';
-import {Flex, Text, Button, Input} from '@chakra-ui/react';
+import {Flex, Text, Button} from '@chakra-ui/react';
 import {AdminObject, StepNameArrOneOf} from '@Admin/types';
 
 type InputFormProps = {

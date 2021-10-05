@@ -22,17 +22,22 @@ import store from 'store';
 import {useRouteMatch} from 'react-router-dom';
 import {AdminObject} from '@Admin/types';
 import {convertTimeStamp} from 'utils/convertTIme';
+import {Claim} from './components/details/Claim';
+import {useUrl} from './hooks/useUrl';
+import {useCallContract} from 'hooks/useCallContract';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 
 export const StarterDetail = () => {
   const {id}: {id: string} = useParams();
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const match = useRouteMatch();
-  const {url} = match;
+  const {projectStatus} = useUrl();
 
   const starterData = store.getState().starters.data;
 
-  const [status, setStatus] = useState<SaleStatus | undefined>(undefined);
+  const [activeStatus, setActiveStatus] = useState<SaleStatus | undefined>(
+    undefined,
+  );
   const [userTier, setUserTier] = useState<Tier | undefined>(undefined);
   const [saleInfo, setSaleInfo] = useState<AdminObject | undefined>(undefined);
 
@@ -41,38 +46,41 @@ export const StarterDetail = () => {
     '0x2be5e8c109e2197D077D13A82dAead6a9b3433C5',
   );
 
+  const {account, library} = useActiveWeb3React();
+  const PUBLICSALE_CONTRACT = useCallContract('PUBLIC_SALE');
+
+  console.log(PUBLICSALE_CONTRACT?.calculTier(account));
+
   useEffect(() => {
     //Test
-    setStatus('whitelist');
+    setActiveStatus('whitelist');
     setUserTier(1);
   }, []);
 
   useEffect(() => {
     const {activeData, upcomingData, pastData} = starterData;
 
-    if (url.includes('active')) {
+    if (projectStatus === 'active') {
       const projectInfo = activeData.filter(
         (data: AdminObject) => data.name === id,
       );
       setSaleInfo(projectInfo[0]);
     }
 
-    if (url.includes('upcoming')) {
+    if (projectStatus === 'upcoming') {
       const projectInfo = upcomingData.filter(
         (data: AdminObject) => data.name === id,
       );
       setSaleInfo(projectInfo[0]);
     }
 
-    if (url.includes('past')) {
+    if (projectStatus === 'past') {
       const projectInfo = pastData.filter(
         (data: AdminObject) => data.name === id,
       );
       setSaleInfo(projectInfo[0]);
     }
-  }, [starterData, id, url]);
-
-  console.log(saleInfo);
+  }, [starterData, id, projectStatus]);
 
   if (!saleInfo) {
     return <div>error..</div>;
@@ -130,28 +138,35 @@ export const StarterDetail = () => {
             w={'1px'}
             bg={colorMode === 'light' ? '#f4f6f8' : '#323232'}
             boxShadow={'0 1px 1px 0 rgba(96, 97, 112, 0.16)'}></Box>
-          {url.includes('upcoming') && (
+          {projectStatus === 'active' && activeStatus === 'whitelist' && (
             <WhiteList
-              date={convertTimeStamp(saleInfo?.saleEndTime)}
-              startDate={convertTimeStamp(saleInfo?.saleStartTime)}
+              date={convertTimeStamp(saleInfo?.endAddWhiteTime, 'YYYY-MM-DD')}
+              startDate={convertTimeStamp(saleInfo?.startAddWhiteTime)}
               endDate={convertTimeStamp(
-                saleInfo?.saleEndTime,
+                saleInfo?.endAddWhiteTime,
                 'MM.D',
               )}></WhiteList>
           )}
-          {/* {status === 'whitelist' && <WhiteList></WhiteList>}
-          {status === 'exclusive' && <ExclusiveSale></ExclusiveSale>}
-          {status === 'open' && <OpenSale></OpenSale>} */}
-          {/* <OpenSaleDeposit></OpenSaleDeposit> */}
-          {url.includes('active') && (
+          {projectStatus === 'active' && activeStatus === 'exclusive' && (
             <ExclusiveSalePart saleInfo={saleInfo}></ExclusiveSalePart>
           )}
+          {projectStatus === 'active' && activeStatus === 'deposit' && (
+            <OpenSaleDeposit
+              dDate={convertTimeStamp(
+                saleInfo?.endDepositTime,
+                'YYYY-MM-DD',
+              )}></OpenSaleDeposit>
+          )}
+          {projectStatus === 'active' && activeStatus === 'openSale' && (
+            <OpenSale></OpenSale>
+          )}
+          {projectStatus === 'past' && <Claim saleInfo={saleInfo}></Claim>}
         </Flex>
         <Flex>
-          {status && (
+          {activeStatus && (
             <DetailTable
               saleInfo={saleInfo}
-              status={status}
+              status={activeStatus}
               userTier={userTier}></DetailTable>
           )}
         </Flex>

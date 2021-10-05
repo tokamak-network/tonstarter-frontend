@@ -9,11 +9,11 @@ import {getUserTonBalance} from 'client/getUserBalance';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {convertTimeStamp} from 'utils/convertTIme';
 
-type ExclusiveSalePartProps = {
+type ClaimProps = {
   saleInfo: AdminObject;
 };
 
-export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
+export const Claim: React.FC<ClaimProps> = (prop) => {
   const {saleInfo} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -26,7 +26,6 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
 
   const [saleStartTime, setSaleStartTime] = useState<string>('-');
   const [saleEndTime, setSaleEndTime] = useState<string>('-');
-  const [userTonBalance, setUserTonBalance] = useState<string>('-');
   const [userAllocation, setUserAllocation] = useState<string>('-');
   const [userTierAllocation, setUserTierAllocation] = useState<string>('-');
 
@@ -53,23 +52,11 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
     }
   }, [saleInfo]);
 
-  useEffect(() => {
-    async function callUserBalance() {
-      const tonBalance = await getUserTonBalance({account, library});
-      return setUserTonBalance(tonBalance || '-');
-    }
-    if (account && library) {
-      callUserBalance();
-    }
-  }, [account, library]);
-
-  console.log(saleInfo);
-
   return (
     <Flex flexDir="column" pl={'45px'}>
       <Box d="flex" textAlign="center" alignItems="center" mb={'20px'}>
         <Text {...STATER_STYLE.mainText({colorMode, fontSize: 25})} mr={'20px'}>
-          Exclusive Sale
+          Claim
         </Text>
         <DetailCounter
           numberFontSize={'18px'}
@@ -84,13 +71,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
           fontSize={14}
           letterSpacing={'1.4px'}
           mb={'10px'}>
-          Your Sale
-        </Text>
-        <Text
-          {...STATER_STYLE.subText({colorMode: 'light'})}
-          letterSpacing={'1.4px'}
-          mb={'10px'}>
-          (Your balance : {userTonBalance} TON)
+          Available to Claim
         </Text>
       </Box>
       <Box d="flex" alignItems="center" mb={'30px'}>
@@ -100,7 +81,6 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             h={'32px'}
             numberOnly={true}
             value={inputTonBalance}
-            setValue={setInputTonBalance}
             color={
               Number(inputTonBalance) > 0
                 ? colorMode === 'light'
@@ -108,30 +88,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
                   : 'white.100'
                 : 'gray.175'
             }
-            tokenName={'TON'}></CustomInput>
-          <img
-            src={ArrowIcon}
-            alt={'icon_arrow'}
-            style={{
-              width: '20px',
-              height: '20px',
-              marginLeft: '20px',
-              marginRight: '20px',
-            }}></img>
-          <CustomInput
-            w={'220px'}
-            h={'32px'}
-            numberOnly={true}
-            value={convertedTokenBalance}
-            setValue={setConvertedTokenBalance}
-            color={
-              Number(inputTonBalance) > 0
-                ? colorMode === 'light'
-                  ? 'gray.225'
-                  : 'white.100'
-                : 'gray.175'
-            }
-            tokenName={saleInfo?.tokenName}></CustomInput>
+            tokenName={`${saleInfo?.tokenName}`}></CustomInput>
         </Box>
       </Box>
       <Box d="flex" flexDir="column" w={'495px'}>
@@ -141,7 +98,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
         <Box d="flex" fontSize={'13px'} justifyContent="space-between">
           <Flex w={'235px'}>
             <Text color={'gray.400'} mr={'3px'}>
-              Sale Period :{' '}
+              Exclusive Sale :{' '}
             </Text>
             <Text {...detailSubTextStyle}>
               {saleStartTime} ~ {saleEndTime}
@@ -149,7 +106,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
           </Flex>
           <Flex w={'235px'}>
             <Text color={'gray.400'} mr={'3px'}>
-              Your Allocation :{' '}
+              Remained Amount :{' '}
             </Text>
             <Text> {userAllocation}</Text>
           </Flex>
@@ -157,13 +114,13 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
         <Box d="flex" fontSize={'13px'} justifyContent="space-between">
           <Flex w={'235px'}>
             <Text color={'gray.400'} mr={'3px'}>
-              Tier Allocation(Tier: x) :{' '}
+              Open Sale :{' '}
             </Text>
             <Text {...detailSubTextStyle}>{userTierAllocation}</Text>
           </Flex>
           <Flex w={'235px'}>
             <Text color={'gray.400'} mr={'3px'}>
-              Ratio :{' '}
+              Next Vesting Date :{' '}
             </Text>
             <Text {...detailSubTextStyle}>
               {saleInfo?.projectTokenRatio} TON ={' '}

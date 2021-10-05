@@ -25,17 +25,18 @@ export type StepTwo = {
 export type StepThree = {
   saleContractAddress: string;
   vestingContractAddress: string;
-  snapshotTimestamp: number;
-  exclusiveStartTime: number;
-  addWhitelistEndTime: number;
-  participationEndTime: number;
-  subscriptionStartTime: number;
-  saleStartTime: number;
-  saleEndTime: number;
-  claimStartTime: number;
-  //sec
-  claimIntervals: number;
-  claimCount: number;
+  snapshot: number;
+  startAddWhiteTime: number;
+  endAddWhiteTime: number;
+  startExclusiveTime: number;
+  endExclusiveTime: number;
+  startDepositTime: number;
+  endDepositTime: number;
+  startOpenSaleTime: number;
+  endOpenSaleTime: number;
+  startClaimTime: number;
+  claimInterval: number;
+  claimPeriod: number;
 };
 
 export type StepFour = {

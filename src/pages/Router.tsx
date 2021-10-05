@@ -23,6 +23,7 @@ import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {StarterDetail} from './Starter/StarterDetail';
 import {Admin} from './Admin';
+import {useBlockNumber} from 'hooks/useBlock';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -39,6 +40,7 @@ export const Router: FC<RouterProps> = () => {
   const {onOpen, isOpen: isModalOpen, onClose} = useDisclosure();
   // const {account, chainId, library, deactivate} = useWeb3React();
   const {account, chainId, library, deactivate} = useActiveWeb3React();
+  const {blockNumber} = useBlockNumber();
 
   //@ts-ignore
   // const accountStorage = JSON.parse(window.localStorage.getItem('account'));
@@ -71,7 +73,7 @@ export const Router: FC<RouterProps> = () => {
       const netType =
         DEFAULT_NETWORK === 1 ? 'mainnet' : 'Rinkeby Test Network';
       //@ts-ignore
-      dispatch(fetchUserInfo({reset: true}));
+      // dispatch(fetchUserInfo({reset: true}));
       return alert(`Please use ${netType}`);
     }
     /*eslint-disable*/
@@ -106,14 +108,23 @@ export const Router: FC<RouterProps> = () => {
       //     );
       //   }
 
+      fetchToInitialize();
+
       // @ts-ignore
-      dispatch(fetchUserInfo({account, library})).then(() => {
-        fetchToInitialize();
-      });
+      // dispatch(fetchUserInfo({account, library})).then(() => {
+      //   fetchToInitialize();
+      // });
       // }
     }
     /*eslint-disable*/
   }, [chainId, account, library, dispatch, deactivate]);
+
+  useEffect(() => {
+    if (account && library) {
+      // @ts-ignore
+      dispatch(fetchUserInfo({account, library}));
+    }
+  }, [blockNumber, account, library]);
 
   useEffect(() => {
     //@ts-ignore

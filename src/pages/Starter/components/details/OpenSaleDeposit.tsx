@@ -4,7 +4,13 @@ import {CustomButton} from 'components/Basic/CustomButton';
 import {useState} from 'react';
 import {DetailCounter} from './Detail_Counter';
 
-export const OpenSaleDeposit = () => {
+type OpenSaleDepositProps = {
+  dDate: string;
+};
+
+export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
+  const {dDate} = prop;
+
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
@@ -25,7 +31,7 @@ export const OpenSaleDeposit = () => {
         <DetailCounter
           numberFontSize={'18px'}
           stringFontSize={'14px'}
-          date={'2021-11-11'}></DetailCounter>
+          date={dDate}></DetailCounter>
       </Box>
       <Text
         {...STATER_STYLE.subText({colorMode})}
@@ -91,7 +97,7 @@ export const OpenSaleDeposit = () => {
         </Box>
       </Box>
       <Box mt={'46px'}>
-        <CustomButton text={'Add whitelist'}></CustomButton>
+        <CustomButton text={'Deposit'}></CustomButton>
       </Box>
     </Flex>
   );

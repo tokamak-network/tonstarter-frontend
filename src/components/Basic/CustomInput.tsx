@@ -16,7 +16,7 @@ type CustomInputProp = {
   br?: number;
   tokenName?: string;
   value: any;
-  setValue: Dispatch<SetStateAction<any>>;
+  setValue?: Dispatch<SetStateAction<any>>;
   numberOnly?: boolean;
 };
 
@@ -26,15 +26,11 @@ export const CustomInput = (prop: CustomInputProp) => {
   const {w, h, border, value, setValue, numberOnly, br, color, tokenName} =
     prop;
 
-  console.log(tokenName);
-  console.log(value);
-  console.log(value.length);
-
   useEffect(() => {
-    if (value.length > 1 && value.startsWith('0')) {
+    if (setValue && value.length > 1 && value.startsWith('0')) {
       setValue(value.slice(1, value.legnth));
     }
-  }, [value]);
+  }, [value, setValue]);
 
   if (numberOnly) {
     return (
@@ -54,13 +50,13 @@ export const CustomInput = (prop: CustomInputProp) => {
           if ((value === '0' || value === '00') && value.length <= 2) {
             return null;
           }
-          if (value === '') {
+          if (value === '' && setValue) {
             return setValue('0');
           }
           if (value.length > 9) {
             return null;
           }
-          setValue(value);
+          return setValue ? setValue(value) : null;
         }}
         pos="relative">
         <Box
@@ -98,7 +94,7 @@ export const CustomInput = (prop: CustomInputProp) => {
       w={w}
       h={h}
       value={value}
-      onChange={(e: any) => setValue(e.target.value)}
+      onChange={(e: any) => (setValue ? setValue(e.target.value) : null)}
       _focus={{
         borderWidth: 0,
       }}

@@ -37,7 +37,7 @@ export const PastProject = (props: PastProjectProp) => {
             '0x2be5e8c109e2197D077D13A82dAead6a9b3433C5',
           );
           return (
-            <Link to={`${url}/upcoming/${project.name}`}>
+            <Link to={`${url}/past/${project.name}`}>
               <Box {...STATER_STYLE.containerStyle({colorMode})} h={'259px'}>
                 <Flex justifyContent="space-between" mb={15}>
                   <Avatar

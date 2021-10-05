@@ -82,8 +82,11 @@ interface STATER_PROP {
   fontSize?: number;
 }
 
+// props.isUserTier === true
+//   ? '1px solid #0070ED'
+
 export const STATER_STYLE = {
-  containerStyle: (props: STATER_PROP) => ({
+  containerStyle: (props: STATER_PROP & {isUserTier?: boolean}) => ({
     w: 378,
     h: 295,
     px: 25,
@@ -91,8 +94,12 @@ export const STATER_STYLE = {
     pb: 25,
     bg: props.colorMode === 'light' ? 'white.100' : '',
     borderRadius: 15,
-    border: props.colorMode === 'light' ? '' : 'solid 1px #535353',
     boxShadow: '0 2px 5px 0 rgba(61, 73, 93, 0.1)',
+    border: props.isUserTier
+      ? '1px solid #0070ED'
+      : props.colorMode === 'light'
+      ? ''
+      : '1px solid #535353',
     _hover: {border: 'solid 1px #0070ed'},
     cursor: 'pointer',
     fontFamily: fonts.fld,

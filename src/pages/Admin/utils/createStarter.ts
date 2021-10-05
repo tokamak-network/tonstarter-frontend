@@ -15,9 +15,11 @@ export async function createStarter(args: AdminObject) {
     const res = await instance.post(`/starter?chainId=${DEFAULT_NETWORK}`, {
       ...args,
     });
-    console.log(DEFAULT_NETWORK);
-    console.log(res);
-    console.log(res.data);
+    if (res.status === 200) {
+      alert('success');
+    } else {
+      alert('failed');
+    }
     return res.data;
   } catch (e) {
     console.log(e);

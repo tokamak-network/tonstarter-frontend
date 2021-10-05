@@ -26,10 +26,9 @@ export const DetailTableProject: React.FC<DetailTableProjectProps> = (prop) => {
   const projectDetailData2 = [
     {
       key: 'Sale Period',
-      value: `${convertTimeStamp(saleInfo?.saleStartTime)} ~ ${convertTimeStamp(
-        saleInfo?.saleEndTime,
-        'MM-DD',
-      )}`,
+      value: `${convertTimeStamp(
+        saleInfo?.startOpenSaleTime,
+      )} ~ ${convertTimeStamp(saleInfo?.endOpenSaleTime, 'MM-DD')}`,
     },
     {key: 'Token Allocation', value: '10,000,000'},
     {

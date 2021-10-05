@@ -1,6 +1,8 @@
 import {Box, useColorMode, useTheme, Flex, Text} from '@chakra-ui/react';
 import {DetailCounter} from './Detail_Counter';
 import {CustomButton} from 'components/Basic/CustomButton';
+import {addWhiteList} from '../../actions';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 
 type WhiteListProps = {
   date: string;
@@ -12,6 +14,7 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
   const {date, startDate, endDate} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
+  const {account, library} = useActiveWeb3React();
 
   const {STATER_STYLE} = theme;
 
@@ -21,7 +24,7 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
         Exclusive Sale Whitelist
       </Text>
       <Text
-        {...STATER_STYLE.subText({colorMode})}
+        // {...STATER_STYLE.subText({colorMode})}
         letterSpacing={'1.4px'}
         mb={'11px'}
         m={0}>
@@ -34,7 +37,9 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
         <DetailCounter date={date}></DetailCounter>
       </Box>
       <Box pos="absolute" bottom={'13px'}>
-        <CustomButton text={'Add whitelist'}></CustomButton>
+        <CustomButton
+          text={'Add whitelist'}
+          func={account && addWhiteList({account, library})}></CustomButton>
       </Box>
     </Flex>
   );
