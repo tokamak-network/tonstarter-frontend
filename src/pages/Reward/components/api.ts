@@ -24,21 +24,7 @@ function createInstance() {
 
 const instance = createInstance();
 
-
-export async function updateStarter(from: string, description: string, sig: string, tokenAddress: string) {
-    if (!description) {
-        description = '-';
-    }
-    const res = await instance.put(`/starter?chainId=${DEFAULT_NETWORK}`, {
-        description: description,
-        account: from,
-        sig: sig,
-        tokenAddress: tokenAddress,
-    });
-    return res.data;
-}
-
-export async function createStarter(args: CreateReward) {
+export async function createReward(args: CreateReward) {
     let {
         poolName,
         poolAddress,

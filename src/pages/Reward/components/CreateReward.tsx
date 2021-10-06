@@ -13,6 +13,7 @@ import {FC, useState, useEffect} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {CustomInput} from 'components/Basic';
+import { getRandomKey } from './api';
 
 const themeDesign = {
   border: {
@@ -40,6 +41,31 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
   const [claimableAmount, setClaimableAmount] = useState<Number>(100000.0);
   const [amount, setAmount] = useState<Number>(0);
   const [reward, setReward] = useState<Number>(0);
+  const generateSig = async (account: string) => {
+    const randomvalue = await getRandomKey(account);
+    //@ts-ignore
+    // const web3 = new Web3(window.ethereum);
+    console.log(randomvalue)
+    // if (randomvalue != null) {
+    //   const randomBn = new BigNumber(randomvalue).toFixed(0);
+    //   const soliditySha3 = await web3.utils.soliditySha3(
+    //     { type: 'string', value: account },
+    //     { type: 'uint256', value: randomBn },
+    //     {type: 'string', value: rewardToken},
+    //     {type: 'string', value: pool},
+    //     {type: 'uint256', value: startTime},
+    //     {type: 'uint256', value: endTime},
+    //     {type: 'string', value: refundee}
+    //   );
+  
+    //   //@ts-ignore
+    //   const sig = await web3.eth.personal.sign(soliditySha3, account, '');
+  
+    //   return sig;
+    // } else {
+    //   return null;
+    // }
+  }
   return (
     <Container>
       <Box
@@ -86,7 +112,8 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             bg={'blue.500'}
             color="white.100"
             fontSize="14px"
-            _hover={{backgroundColor: 'blue.100'}}>
+            _hover={{backgroundColor: 'blue.100'}}
+            onClick={() =>generateSig(account?account.toString(): '')}>
             Approve
           </Button>
           <Button
