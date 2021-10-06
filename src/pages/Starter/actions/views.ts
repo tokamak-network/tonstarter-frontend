@@ -15,3 +15,12 @@ export async function getTotalExpectSaleAmount(args: I_CallContract) {
   const convertedNum = convertNumber({amount: res.toString()});
   return convertedNum;
 }
+
+export async function getTimeStamps(args: I_CallContract) {
+  const {library, address} = args;
+  const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
+  const res = await Promise.all([PUBLICSALE_CONTRACT.startAddWhiteTime()]);
+  console.log('--res--');
+  console.log(res);
+  return res[0].toString();
+}

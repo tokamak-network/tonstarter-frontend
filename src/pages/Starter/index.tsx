@@ -7,18 +7,19 @@ import {useEffect} from 'react';
 
 export const Starter = () => {
   const dispatch = useAppDispatch();
-  const {chainId} = useActiveWeb3React();
+  const {chainId, library} = useActiveWeb3React();
 
   useEffect(() => {
     async function fetchData() {
       await dispatch(
         fetchStarters({
           chainId,
+          library,
         }) as any,
       );
     }
     fetchData();
-  }, [chainId, dispatch]);
+  }, [chainId, dispatch, library]);
 
   return (
     <Flex mt={'72px'}>

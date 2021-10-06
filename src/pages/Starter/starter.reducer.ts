@@ -1,14 +1,10 @@
-// export const fetchTosStakes = () => {
-//   return null;
-// };
-
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {RootState} from 'store/reducers';
 import {fetchStarterURL} from 'constants/index';
 import {AdminObject} from '@Admin/types';
 import moment from 'moment';
 import {ActiveProjectType, UpcomingProjectType, PastProjectType} from './types';
-
+import starterActions from './actions';
 interface StarterState {
   data: {
     activeProjects: ActiveProjectType[];
@@ -40,10 +36,14 @@ const initialState = {
 export const fetchStarters = createAsyncThunk(
   'app/starters',
   // @ts-ignore
-  async ({chainId}: any, {requestId, getState}) => {
+  async ({chainId, library}: any, {requestId, getState}) => {
     //@ts-ignore
     const {currentRequestId, loading} = getState().starters;
-    if (loading !== 'pending' || requestId !== currentRequestId) {
+    if (
+      loading !== 'pending' ||
+      requestId !== currentRequestId ||
+      library === undefined
+    ) {
       return;
     }
 
@@ -61,7 +61,10 @@ export const fetchStarters = createAsyncThunk(
     );
     const activeData = matchData.filter(
       (data: AdminObject) =>
-        data.position === 'active' && data.endOpenSaleTime > nowTimeStamp,
+        data.position === 'active' &&
+        data.saleContractAddress ===
+          '0xEba7Ab0eAeB4656EbE4D045c68005e892699EC75',
+      // data.position === 'active' && data.endOpenSaleTime > nowTimeStamp,
     );
     const upcomingData = matchData.filter(
       (data: AdminObject) => data.position === 'upcoming',
@@ -70,11 +73,19 @@ export const fetchStarters = createAsyncThunk(
       (data: AdminObject) => data.endOpenSaleTime < nowTimeStamp,
     );
 
-    const activeProjects: ActiveProjectType = activeData.map(
-      (data: AdminObject) => {
+    const activeProjects = await Promise.all(
+      activeData.map(async (data: AdminObject) => {
+        console.log('--library--');
+        console.log(library);
+        const startTime = await starterActions.getTimeStamps({
+          library,
+          address: data.saleContractAddress,
+        });
+        console.log('--startTime--');
+        console.log(startTime);
         return {
           name: data.name,
-          saleStart: moment.unix(data.startOpenSaleTime).format('YYYY.MM.DD'),
+          saleStart: moment.unix(startTime).format('YYYY.MM.DD'),
           saleEnd: moment.unix(data.endOpenSaleTime).format('YYYY.MM.DD'),
           isExclusive:
             data.startExclusiveTime <= nowTimeStamp &&
@@ -83,9 +94,13 @@ export const fetchStarters = createAsyncThunk(
           projectTokenRatio: data.projectTokenRatio,
           projectFundingTokenRatio: data.projectFundingTokenRatio,
           saleContractAddress: data.saleContractAddress,
+          startTime,
         };
-      },
+      }),
     );
+
+    console.log('--activeProjects--');
+    console.log(activeProjects);
 
     const upcomingProjects: UpcomingProjectType = upcomingData.map(
       (data: AdminObject) => {
