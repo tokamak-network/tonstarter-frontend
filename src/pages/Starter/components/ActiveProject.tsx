@@ -12,7 +12,9 @@ import {checkTokenType} from 'utils/token';
 import {Circle} from 'components/Circle';
 import {Link, useRouteMatch} from 'react-router-dom';
 import {ActiveProjectType} from '@Starter/types';
-import {useCallContract} from 'hooks/useCallContract';
+import starterActions from '../actions';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import {useEffect} from 'react';
 
 type ActiveProjectProp = {
   activeProject: ActiveProjectType[];
@@ -21,12 +23,12 @@ type ActiveProjectProp = {
 export const ActiveProject = (props: ActiveProjectProp) => {
   const {activeProject} = props;
   const {colorMode} = useColorMode();
+  const {library} = useActiveWeb3React();
   const theme = useTheme();
   const match = useRouteMatch();
 
   const {STATER_STYLE} = theme;
   const {url} = match;
-  const PublicSale_CONTRACT = useCallContract('PUBLIC_SALE');
 
   return (
     <Flex flexDir="column">
@@ -102,9 +104,9 @@ export const ActiveProject = (props: ActiveProjectProp) => {
                     </Text>
                   </Flex>
                   <Flex>
-                    <Text>0.00</Text>
+                    <Text>{}</Text>
                     <Text>/</Text>
-                    <Text>5000000</Text>
+                    <Text>{project.tokenFundRaisingTargetAmount}</Text>
                   </Flex>
                 </Box>
                 <Box mb={'30px'}>

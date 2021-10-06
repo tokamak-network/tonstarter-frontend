@@ -1,19 +1,15 @@
-import {DEPLOYED} from 'constants/index';
 import {useContract} from 'hooks/useContract';
-
 import * as publicSale from 'services/abis/PublicSale.json';
 
-type ContractTypes = 'PUBLIC_SALE';
+type ContractType = 'PUBLIC_SALE';
 
 export const useCallContract = (
-  contractType: ContractTypes,
+  address: string,
+  contractType: ContractType,
   needSigner?: boolean,
 ) => {
-  const {PublicSale_ADDRESS} = DEPLOYED;
+  const abi = contractType === 'PUBLIC_SALE' ? publicSale.abi : '';
+  const PublicSale_CONTRACT = useContract(address, abi);
 
-  const PublicSale_CONTRACT = useContract(PublicSale_ADDRESS, publicSale.abi);
-
-  if (contractType === 'PUBLIC_SALE') {
-    return PublicSale_CONTRACT;
-  }
+  return PublicSale_CONTRACT;
 };

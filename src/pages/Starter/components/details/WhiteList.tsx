@@ -1,22 +1,45 @@
 import {Box, useColorMode, useTheme, Flex, Text} from '@chakra-ui/react';
 import {DetailCounter} from './Detail_Counter';
 import {CustomButton} from 'components/Basic/CustomButton';
-import {addWhiteList} from '../../actions';
+import starterActions from '../../actions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
+import {useEffect, useState} from 'react';
+import {Tier} from '@Starter/types';
 
 type WhiteListProps = {
   date: string;
   startDate: string;
   endDate: string;
+  userTier: Tier;
 };
 
 export const WhiteList: React.FC<WhiteListProps> = (prop) => {
-  const {date, startDate, endDate} = prop;
+  const {date, startDate, endDate, userTier} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
+  const [isWhiteList, setIsWhiteList] = useState<boolean>(true);
 
   const {STATER_STYLE} = theme;
+
+  if (account) {
+    console.log(starterActions.checkApprove(account, library));
+  }
+
+  useEffect(() => {
+    async function getInfo() {
+      if (account && library) {
+        const whiteListInfo = await starterActions.isWhiteList({
+          account,
+          library,
+        });
+        setIsWhiteList(whiteListInfo[0]);
+      }
+    }
+    if (account && library) {
+      getInfo();
+    }
+  }, [account, library]);
 
   return (
     <Flex flexDir="column" pos="relative" h={'100%'} pt={'70px'} pl={'45px'}>
@@ -39,7 +62,12 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
       <Box pos="absolute" bottom={'13px'}>
         <CustomButton
           text={'Add whitelist'}
-          func={account && addWhiteList({account, library})}></CustomButton>
+          func={() =>
+            account && starterActions.addWhiteList({account, library})
+          }
+          isDisabled={
+            userTier === 0 || isWhiteList ? true : false
+          }></CustomButton>
       </Box>
     </Flex>
   );

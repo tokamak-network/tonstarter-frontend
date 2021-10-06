@@ -22,10 +22,12 @@ export const StarterMain = () => {
   const [pastProject, setPastProject] = useState<PastProjectType[]>([]);
 
   useEffect(() => {
-    const {activeProjects, upcomingProjects, pastProjects} = starterData;
-    setActiveProject(activeProjects);
-    setUpcomingProject(upcomingProjects);
-    setPastProject(pastProjects);
+    if (starterData) {
+      const {activeProjects, upcomingProjects, pastProjects} = starterData;
+      setActiveProject(activeProjects);
+      setUpcomingProject(upcomingProjects);
+      setPastProject(pastProjects);
+    }
   }, [starterData, chainId]);
 
   return (

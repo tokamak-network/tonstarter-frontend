@@ -1,15 +1,14 @@
 import {Box, useColorMode, useTheme, Flex, Text} from '@chakra-ui/react';
-import {useEffect, useState} from 'react';
 import {DetailTableContainer} from './Detail_Table_Container';
-import {SaleStatus, DetailTierData, Tier} from '@Starter/types';
+import {SaleStatus, DetailTierData, DetailInfo} from '@Starter/types';
 
 type DetailTableTierProp = {
   status: SaleStatus;
-  userTier: Tier;
+  detailInfo: DetailInfo;
 };
 
 export const DetailTableTier = (prop: DetailTableTierProp) => {
-  const {status, userTier} = prop;
+  const {status, detailInfo} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
@@ -21,19 +20,19 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
       data: [
         {
           key: 'Criteria',
-          value: '10,000,000 sTOS',
+          value: `${detailInfo.tierCriteria[1]}`,
         },
         {
           key: 'Allocation',
-          value: '10,000,000',
+          value: `${detailInfo.totalExpectSaleAmount[1]}`,
         },
         {
           key: 'Members',
-          value: '10,000',
+          value: `${detailInfo.tierAccounts[1]}`,
         },
         {
           key: 'Member Allocation',
-          value: '10,000,000',
+          value: `${detailInfo.tierAllocation[1]}`,
         },
       ],
     },
@@ -42,19 +41,19 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
       data: [
         {
           key: 'Criteria',
-          value: '10,000,000 sTOS',
+          value: `${detailInfo.tierCriteria[2]}`,
         },
         {
           key: 'Allocation',
-          value: '10,000,000',
+          value: `${detailInfo.totalExpectSaleAmount[2]}`,
         },
         {
           key: 'Members',
-          value: '10,000',
+          value: `${detailInfo.tierAccounts[2]}`,
         },
         {
           key: 'Member Allocation',
-          value: '10,000,000',
+          value: `${detailInfo.tierAllocation[2]}`,
         },
       ],
     },
@@ -63,19 +62,19 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
       data: [
         {
           key: 'Criteria',
-          value: '10,000,000 sTOS',
+          value: `${detailInfo.tierCriteria[3]}`,
         },
         {
           key: 'Allocation',
-          value: '10,000,000',
+          value: `${detailInfo.totalExpectSaleAmount[3]}`,
         },
         {
           key: 'Members',
-          value: '10,000',
+          value: `${detailInfo.tierAccounts[3]}`,
         },
         {
           key: 'Member Allocation',
-          value: '10,000,000',
+          value: `${detailInfo.tierAllocation[3]}`,
         },
       ],
     },
@@ -84,19 +83,19 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
       data: [
         {
           key: 'Criteria',
-          value: '10,000,000 sTOS',
+          value: `${detailInfo.tierCriteria[4]}`,
         },
         {
           key: 'Allocation',
-          value: '10,000,000',
+          value: `${detailInfo.totalExpectSaleAmount[4]}`,
         },
         {
           key: 'Members',
-          value: '10,000',
+          value: `${detailInfo.tierAccounts[4]}`,
         },
         {
           key: 'Member Allocation',
-          value: '10,000,000',
+          value: `${detailInfo.tierAllocation[4]}`,
         },
       ],
     },
@@ -104,102 +103,102 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
 
   const projectTierDataAfterWhiteList: DetailTierData = [
     {
-      title: 'tier 01',
+      title: 'tier 1',
       data: [
         {
           key: 'Criteria',
-          value: '10,000,000 sTOS',
+          value: `${detailInfo.tierCriteria[1]}`,
         },
         {
           key: 'Allocation',
-          value: '10,000,000 sTOS',
+          value: `${detailInfo.totalExpectSaleAmount[1]}`,
         },
         {
           key: '#of Members',
-          value: '10,000',
+          value: `${detailInfo.tierAccounts[1]}`,
         },
         {
           key: '#of Whitelisted',
-          value: '10,000',
+          value: `${detailInfo.tierAccounts[1]}`,
         },
         {
           key: 'Expected Allocation',
-          value: '10,000,000 sTOS',
+          value: `${detailInfo.tierAllocation[1]}`,
         },
       ],
     },
     {
-      title: 'tier 02',
+      title: 'tier 2',
       data: [
         {
           key: 'Criteria',
-          value: '10,000,000 sTOS',
+          value: `${detailInfo.tierCriteria[2]}`,
         },
         {
           key: 'Allocation',
-          value: '10,000,000 sTOS',
+          value: `${detailInfo.totalExpectSaleAmount[2]}`,
         },
         {
           key: '#of Members',
-          value: '10,000',
+          value: `${detailInfo.tierAccounts[2]}`,
         },
         {
           key: '#of Whitelisted',
-          value: '10,000',
+          value: `${detailInfo.tierAccounts[2]}`,
         },
         {
           key: 'Expected Allocation',
-          value: '10,000,000 sTOS',
+          value: `${detailInfo.tierAllocation[2]}`,
         },
       ],
     },
     {
-      title: 'tier 03',
+      title: 'tier 3',
       data: [
         {
           key: 'Criteria',
-          value: '10,000,000 sTOS',
+          value: `${detailInfo.tierCriteria[3]}`,
         },
         {
           key: 'Allocation',
-          value: '10,000,000 sTOS',
+          value: `${detailInfo.totalExpectSaleAmount[3]}`,
         },
         {
           key: '#of Members',
-          value: '10,000',
+          value: `${detailInfo.tierAccounts[3]}`,
         },
         {
           key: '#of Whitelisted',
-          value: '10,000',
+          value: `${detailInfo.tierAccounts[3]}`,
         },
         {
           key: 'Expected Allocation',
-          value: '10,000,000 sTOS',
+          value: `${detailInfo.tierAllocation[3]}`,
         },
       ],
     },
     {
-      title: 'tier 04',
+      title: 'tier 4',
       data: [
         {
           key: 'Criteria',
-          value: '10,000,000 sTOS',
+          value: `${detailInfo.tierCriteria[4]}`,
         },
         {
           key: 'Allocation',
-          value: '10,000,000 sTOS',
+          value: `${detailInfo.totalExpectSaleAmount[4]}`,
         },
         {
           key: '#of Members',
-          value: '10,000',
+          value: `${detailInfo.tierAccounts[4]}`,
         },
         {
           key: '#of Whitelisted',
-          value: '10,000',
+          value: `${detailInfo.tierAccounts[4]}`,
         },
         {
           key: 'Expected Allocation',
-          value: '10,000,000 sTOS',
+          value: `${detailInfo.tierAllocation[4]}`,
         },
       ],
     },
@@ -211,19 +210,38 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
         Tier details
       </Text>
       <Box d="flex" justifyContent="space-between">
-        {projectTierDataAfterWhiteList.map((item, index: number) => {
-          return (
-            <DetailTableContainer
-              w={276}
-              itemPx={'20px'}
-              itemPy={'21px'}
-              key={item.title}
-              title={item.title}
-              data={item.data}
-              breakPoint={item.data.length}
-              isUserTier={index + 1 === userTier}></DetailTableContainer>
-          );
-        })}
+        {status === 'whitelist' &&
+          projectTierData.map((item, index: number) => {
+            return (
+              <DetailTableContainer
+                w={276}
+                itemPx={'20px'}
+                itemPy={'21px'}
+                key={item.title}
+                title={item.title}
+                data={item.data}
+                breakPoint={item.data.length}
+                isUserTier={
+                  index + 1 === detailInfo.userTier
+                }></DetailTableContainer>
+            );
+          })}
+        {status !== 'whitelist' &&
+          projectTierDataAfterWhiteList.map((item, index: number) => {
+            return (
+              <DetailTableContainer
+                w={276}
+                itemPx={'20px'}
+                itemPy={'21px'}
+                key={item.title}
+                title={item.title}
+                data={item.data}
+                breakPoint={item.data.length}
+                isUserTier={
+                  index + 1 === detailInfo.userTier
+                }></DetailTableContainer>
+            );
+          })}
       </Box>
     </Flex>
   );

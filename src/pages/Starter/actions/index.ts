@@ -1,3 +1,14 @@
-import {addWhiteList} from './addWhiteList';
+import {addWhiteList, calculTier, isWhiteList, participate} from './actions';
+import {checkApprove} from './approve';
+import {getTotalExpectSaleAmount} from './views';
 
-export {addWhiteList};
+const actions = {
+  addWhiteList,
+  checkApprove,
+  calculTier,
+  isWhiteList,
+  participate,
+  getTotalExpectSaleAmount,
+};
+
+export default actions;

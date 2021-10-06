@@ -24,7 +24,7 @@ export const CustomButton = (prop: CustomButtonProp) => {
       fontSize={fontSize || 14}
       isDisabled={isDisabled}
       _hover={{}}
-      onClick={() => func}>
+      onClick={func}>
       {text}
     </Button>
   );

@@ -21,10 +21,46 @@ export type PastProjectType = I_StarterProject;
 export type SaleStatus = 'whitelist' | 'exclusive' | 'deposit' | 'openSale';
 
 export type ProjectStatus = 'active' | 'upcoming' | 'past';
-export type Tier = 1 | 2 | 3 | 4 | undefined;
+export type Tier = 0 | 1 | 2 | 3 | 4;
 
 export type DetailTierData = {
   userTier?: boolean;
   title: string;
   data: {key: string; value: string}[];
 }[];
+
+type tierTotalExpectSaleAmount = {
+  1: string;
+  2: string;
+  3: string;
+  4: string;
+};
+
+type TierAccounts = {
+  1: string;
+  2: string;
+  3: string;
+  4: string;
+};
+
+type TierCriteria = {
+  1: string;
+  2: string;
+  3: string;
+  4: string;
+};
+
+type TierAllocation = {
+  1: string;
+  2: string;
+  3: string;
+  4: string;
+};
+
+export type DetailInfo = {
+  userTier: Tier;
+  totalExpectSaleAmount: tierTotalExpectSaleAmount;
+  tierAccounts: TierAccounts;
+  tierCriteria: TierCriteria;
+  tierAllocation: TierAllocation;
+};

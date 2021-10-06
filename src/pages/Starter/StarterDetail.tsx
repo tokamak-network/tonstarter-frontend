@@ -14,18 +14,21 @@ import {WhiteList} from './components/details/WhiteList';
 import {OpenSale} from './components/details/OpenSale';
 
 import {DetailIcons} from './components/details/Detail_Icons';
-import {SaleStatus, Tier} from './types';
+import {SaleStatus, Tier, DetailInfo} from './types';
 import {DetailTable} from './components/details/Detail_Table';
 import {OpenSaleDeposit} from './components/details/OpenSaleDeposit';
 import {ExclusiveSalePart} from './components/details/ExclusiveSalePart';
 import store from 'store';
-import {useRouteMatch} from 'react-router-dom';
 import {AdminObject} from '@Admin/types';
 import {convertTimeStamp} from 'utils/convertTIme';
 import {Claim} from './components/details/Claim';
 import {useUrl} from './hooks/useUrl';
 import {useCallContract} from 'hooks/useCallContract';
 import {useActiveWeb3React} from 'hooks/useWeb3';
+import starterActions from './actions';
+import {convertNumber} from 'utils/number';
+import {BigNumber} from 'ethers';
+import moment from 'moment';
 
 export const StarterDetail = () => {
   const {id}: {id: string} = useParams();
@@ -38,8 +41,10 @@ export const StarterDetail = () => {
   const [activeStatus, setActiveStatus] = useState<SaleStatus | undefined>(
     undefined,
   );
-  const [userTier, setUserTier] = useState<Tier | undefined>(undefined);
   const [saleInfo, setSaleInfo] = useState<AdminObject | undefined>(undefined);
+  const [detailInfo, setDetailInfo] = useState<DetailInfo | undefined>(
+    undefined,
+  );
 
   const {STATER_STYLE} = theme;
   const tokenType = checkTokenType(
@@ -47,15 +52,116 @@ export const StarterDetail = () => {
   );
 
   const {account, library} = useActiveWeb3React();
-  const PUBLICSALE_CONTRACT = useCallContract('PUBLIC_SALE');
 
-  console.log(PUBLICSALE_CONTRACT?.calculTier(account));
+  const PUBLICSALE_CONTRACT = useCallContract(
+    starterData.activeData
+      .filter((data: AdminObject) => data.name === id)
+      .map((e: AdminObject) => e.saleContractAddress)[0],
+    'PUBLIC_SALE',
+  );
 
   useEffect(() => {
+    async function getInfo() {
+      if (account && library && PUBLICSALE_CONTRACT) {
+        const res = await Promise.all([
+          starterActions.calculTier({account, library}),
+          PUBLICSALE_CONTRACT.totalExpectSaleAmount(),
+          PUBLICSALE_CONTRACT.tiersAccount(1),
+          PUBLICSALE_CONTRACT.tiersAccount(2),
+          PUBLICSALE_CONTRACT.tiersAccount(3),
+          PUBLICSALE_CONTRACT.tiersAccount(4),
+          PUBLICSALE_CONTRACT.tiers(1),
+          PUBLICSALE_CONTRACT.tiers(2),
+          PUBLICSALE_CONTRACT.tiers(3),
+          PUBLICSALE_CONTRACT.tiers(4),
+        ]);
+        setDetailInfo({
+          userTier: Number(res[0].toString()) as Tier,
+          totalExpectSaleAmount: {
+            1: convertNumber({
+              amount: res[1].toString(),
+              localeString: true,
+            }) as string,
+            2: convertNumber({
+              amount: BigNumber.from(res[1]).mul(2).toString(),
+              localeString: true,
+            }) as string,
+            3: convertNumber({
+              amount: BigNumber.from(res[1]).mul(3).toString(),
+              localeString: true,
+            }) as string,
+            4: convertNumber({
+              amount: BigNumber.from(res[1]).mul(4).toString(),
+              localeString: true,
+            }) as string,
+          },
+          tierAccounts: {
+            1: res[2],
+            2: res[3],
+            3: res[4],
+            4: res[5],
+          },
+          tierCriteria: {
+            1: convertNumber({amount: res[6], localeString: true}) as string,
+            2: convertNumber({amount: res[7], localeString: true}) as string,
+            3: convertNumber({amount: res[8], localeString: true}) as string,
+            4: convertNumber({amount: res[9], localeString: true}) as string,
+          },
+          tierAllocation: {
+            1: convertNumber({
+              amount: BigNumber.from(res[1])
+                .mul(1)
+                .div(res[2].toString() === '0' ? 1 : res[2])
+                .toString(),
+              localeString: true,
+            }) as string,
+            2: convertNumber({
+              amount: BigNumber.from(res[1])
+                .mul(2)
+                .div(res[3].toString() === '0' ? 1 : res[3])
+                .toString(),
+              localeString: true,
+            }) as string,
+            3: convertNumber({
+              amount: BigNumber.from(res[1])
+                .mul(3)
+                .div(res[4].toString() === '0' ? 1 : res[4])
+                .toString(),
+              localeString: true,
+            }) as string,
+            4: convertNumber({
+              amount: BigNumber.from(res[1])
+                .mul(4)
+                .div(res[5].toString() === '0' ? 1 : res[5])
+                .toString(),
+              localeString: true,
+            }) as string,
+          },
+        });
+      }
+    }
+    if (account && library && PUBLICSALE_CONTRACT) {
+      getInfo();
+      console.log('--PUBLICSALE_CONTRACT--');
+      console.log(PUBLICSALE_CONTRACT);
+    }
+  }, [account, library, PUBLICSALE_CONTRACT]);
+
+  useEffect(() => {
+    async function getStatus() {
+      if (PUBLICSALE_CONTRACT) {
+        const nowTimeStamp = moment().unix();
+
+        const dd = await PUBLICSALE_CONTRACT.endAddWhiteTime();
+        console.log(Number(dd.toString()) > nowTimeStamp);
+        setActiveStatus('exclusive');
+      }
+    }
     //Test
-    setActiveStatus('whitelist');
-    setUserTier(1);
-  }, []);
+    if (PUBLICSALE_CONTRACT) {
+      getStatus();
+    }
+  }, [PUBLICSALE_CONTRACT]);
 
   useEffect(() => {
     const {activeData, upcomingData, pastData} = starterData;
@@ -64,21 +170,21 @@ export const StarterDetail = () => {
       const projectInfo = activeData.filter(
         (data: AdminObject) => data.name === id,
       );
-      setSaleInfo(projectInfo[0]);
+      return setSaleInfo(projectInfo[0]);
     }
 
     if (projectStatus === 'upcoming') {
       const projectInfo = upcomingData.filter(
         (data: AdminObject) => data.name === id,
       );
-      setSaleInfo(projectInfo[0]);
+      return setSaleInfo(projectInfo[0]);
     }
 
     if (projectStatus === 'past') {
       const projectInfo = pastData.filter(
         (data: AdminObject) => data.name === id,
       );
-      setSaleInfo(projectInfo[0]);
+      return setSaleInfo(projectInfo[0]);
     }
   }, [starterData, id, projectStatus]);
 
@@ -138,18 +244,22 @@ export const StarterDetail = () => {
             w={'1px'}
             bg={colorMode === 'light' ? '#f4f6f8' : '#323232'}
             boxShadow={'0 1px 1px 0 rgba(96, 97, 112, 0.16)'}></Box>
-          {projectStatus === 'active' && activeStatus === 'whitelist' && (
-            <WhiteList
-              date={convertTimeStamp(saleInfo?.endAddWhiteTime, 'YYYY-MM-DD')}
-              startDate={convertTimeStamp(saleInfo?.startAddWhiteTime)}
-              endDate={convertTimeStamp(
-                saleInfo?.endAddWhiteTime,
-                'MM.D',
-              )}></WhiteList>
-          )}
-          {projectStatus === 'active' && activeStatus === 'exclusive' && (
-            <ExclusiveSalePart saleInfo={saleInfo}></ExclusiveSalePart>
-          )}
+          {projectStatus === 'active' &&
+            activeStatus === 'whitelist' &&
+            detailInfo && (
+              <WhiteList
+                date={convertTimeStamp(saleInfo?.endAddWhiteTime, 'YYYY-MM-DD')}
+                startDate={convertTimeStamp(saleInfo?.startAddWhiteTime)}
+                endDate={convertTimeStamp(saleInfo?.endAddWhiteTime, 'MM.D')}
+                userTier={detailInfo.userTier}></WhiteList>
+            )}
+          {projectStatus === 'active' &&
+            activeStatus === 'exclusive' &&
+            detailInfo && (
+              <ExclusiveSalePart
+                saleInfo={saleInfo}
+                detailInfo={detailInfo}></ExclusiveSalePart>
+            )}
           {projectStatus === 'active' && activeStatus === 'deposit' && (
             <OpenSaleDeposit
               dDate={convertTimeStamp(
@@ -163,11 +273,11 @@ export const StarterDetail = () => {
           {projectStatus === 'past' && <Claim saleInfo={saleInfo}></Claim>}
         </Flex>
         <Flex>
-          {activeStatus && (
+          {activeStatus && detailInfo && (
             <DetailTable
               saleInfo={saleInfo}
               status={activeStatus}
-              userTier={userTier}></DetailTable>
+              detailInfo={detailInfo}></DetailTable>
           )}
         </Flex>
       </Flex>

@@ -8,13 +8,18 @@ import {AdminObject} from '@Admin/types';
 import {getUserTonBalance} from 'client/getUserBalance';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {convertTimeStamp} from 'utils/convertTIme';
+import {DetailInfo} from '@Starter/types';
+import {useCallContract} from 'hooks/useCallContract';
+import {convertNumber} from 'utils/number';
+import starterActions from '../../actions';
 
 type ExclusiveSalePartProps = {
   saleInfo: AdminObject;
+  detailInfo: DetailInfo;
 };
 
 export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
-  const {saleInfo} = prop;
+  const {saleInfo, detailInfo} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
@@ -27,14 +32,37 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
   const [saleStartTime, setSaleStartTime] = useState<string>('-');
   const [saleEndTime, setSaleEndTime] = useState<string>('-');
   const [userTonBalance, setUserTonBalance] = useState<string>('-');
-  const [userAllocation, setUserAllocation] = useState<string>('-');
+  const [userAllocation, setUserAllocation] = useState<string>(
+    detailInfo.tierAllocation[
+      detailInfo.userTier !== 0 ? detailInfo.userTier : 1
+    ],
+  );
   const [userTierAllocation, setUserTierAllocation] = useState<string>('-');
+
+  const PUBLICSALE_CONTRACT = useCallContract(
+    saleInfo.saleContractAddress,
+    'PUBLIC_SALE',
+  );
 
   const {STATER_STYLE} = theme;
 
   const detailSubTextStyle = {
     color: colorMode === 'light' ? 'gray.250' : 'white.100',
   };
+
+  useEffect(() => {
+    async function getTierAllowcation() {
+      if (PUBLICSALE_CONTRACT) {
+        const res = await PUBLICSALE_CONTRACT.calculTierAmount(account);
+        setUserTierAllocation(
+          convertNumber({amount: res.toString(), localeString: true}) as string,
+        );
+      }
+    }
+    if (account && library && PUBLICSALE_CONTRACT) {
+      getTierAllowcation();
+    }
+  }, [account, library, PUBLICSALE_CONTRACT]);
 
   useEffect(() => {
     if (saleInfo) {
@@ -62,8 +90,6 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
       callUserBalance();
     }
   }, [account, library]);
-
-  console.log(saleInfo);
 
   return (
     <Flex flexDir="column" pl={'45px'}>
@@ -157,7 +183,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
         <Box d="flex" fontSize={'13px'} justifyContent="space-between">
           <Flex w={'235px'}>
             <Text color={'gray.400'} mr={'3px'}>
-              Tier Allocation(Tier: x) :{' '}
+              {`Tier Allocation(Tier: ${detailInfo.userTier})`} :{' '}
             </Text>
             <Text {...detailSubTextStyle}>{userTierAllocation}</Text>
           </Flex>
@@ -173,7 +199,16 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
         </Box>
       </Box>
       <Box mt={'46px'}>
-        <CustomButton text={'Participate'}></CustomButton>
+        <CustomButton
+          text={'Participate'}
+          func={() =>
+            account &&
+            starterActions.participate({
+              account,
+              library,
+              amount: inputTonBalance,
+            })
+          }></CustomButton>
       </Box>
     </Flex>
   );
