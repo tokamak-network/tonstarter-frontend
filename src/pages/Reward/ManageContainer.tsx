@@ -15,7 +15,7 @@ import {
   } from '@chakra-ui/react';
 
   type ManageContainerProps = {
-      pools: any[];
+    pools: any[];
   };
 
   export const ManageContainer: FC<ManageContainerProps> =({
@@ -23,7 +23,7 @@ import {
 
       useEffect (()=> {
         pools.map((item, index) =>{
-          console.log(item.name);
+          // console.log(item.name);
           
         })
         

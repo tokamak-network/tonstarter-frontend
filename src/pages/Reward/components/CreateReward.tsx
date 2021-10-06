@@ -53,6 +53,7 @@ type CreateReward = {
   allocatedReward: string;
   numStakers: number;
   status: string;
+  account: string;
   verified: boolean;
   tx: string;
   sig: string;
@@ -68,9 +69,10 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
   const startTime = 1633588921;
   const endTime = 1633675321;
 
-  const generateSig = async (account: string) => {
+  const generateSig = async (account: string, key: any) => {
     const randomvalue = await getRandomKey(account);
-    const pool = '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf';
+    // const pool = '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf';
+    
     //@ts-ignore
     const web3 = new Web3(window.ethereum);
     if (randomvalue != null) {
@@ -78,17 +80,15 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
       const soliditySha3 = await web3.utils.soliditySha3(
         {type: 'string', value: account},
         {type: 'uint256', value: randomBn},
-        {type: 'string', value: TOS_ADDRESS},
-        {type: 'string', value: pool},
-        {type: 'uint256', value: startTime.toString()},
-        {type: 'uint256', value: endTime.toString()},
+        {type: 'string', value: key.rewardToken},
+        {type: 'string', value: key.pool},
+        {type: 'uint256', value: key.startTime},
+        {type: 'uint256', value: key.endTime},
       );
-
       //@ts-ignore
       const sig = await web3.eth.personal.sign(soliditySha3, account, '');
-      console.log(sig);
 
-      return sig.toString();
+      return sig
     } else {
       return '';
     }
@@ -98,19 +98,17 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
     if (account === null || account === undefined && library === undefined) {
       return;
     }
-  const uniswapStakerContract= new Contract(UniswapStaker_Address, STAKERABI.abi, library);
-  const tosContract = new Contract(TOS_ADDRESS, TOSABI.abi, library);
-  const totalReward = new BigNumber('100000000000000000000').toString();
-  if (library !== undefined){
-    // const uniswapV3Staker = getSigner(library,UniswapStaker_Address);
-    const signer = getSigner(library, account);
-    await tosContract.connect(signer).approve(UniswapStaker_Address,totalReward);
-    const allowAmount = await tosContract.connect(signer).allowance(account, UniswapStaker_Address);
-  console.log('startTime', startTime);
-  console.log('endTime', endTime);
-  
-  
-    const sig = await generateSig(account);
+    const uniswapStakerContract= new Contract(UniswapStaker_Address, STAKERABI.abi, library);
+    const tosContract = new Contract(TOS_ADDRESS, TOSABI.abi, library);
+    const totalReward = new BigNumber('100000000000000000000').toString();
+    if (library !== undefined){
+      // const uniswapV3Staker = getSigner(library,UniswapStaker_Address);
+      const signer = getSigner(library, account);
+      await tosContract.connect(signer).approve(UniswapStaker_Address,totalReward);
+      const allowAmount = await tosContract.connect(signer).allowance(account, UniswapStaker_Address);
+    console.log('startTime', startTime);
+    console.log('endTime', endTime);
+    
     const key = {
       rewardToken: TOS_ADDRESS,
       pool: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
@@ -118,12 +116,14 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
       endTime: endTime,
       refundee: account,
     };
-    const tx = await uniswapStakerContract.connect(signer).createIncentive(key, totalReward)
-    await tx.wait();
+    // const tx = await uniswapStakerContract.connect(signer).createIncentive(key, totalReward)
+    // await tx.wait();
+    const sig = await generateSig(account.toLowerCase(), key);
     const args: CreateReward = {
       poolName: 'test2 rewards',
       poolAddress: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
       rewardToken: TOS_ADDRESS,
+      account: account,
       incentiveKey: key,
       startTime: startTime,
       endTime: endTime,
@@ -131,7 +131,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
       numStakers: 2,
       status: 'open',
       verified: true,
-      tx: tx,
+      tx: 'tx',
       sig: sig,
     };
     const create = await createReward(args);

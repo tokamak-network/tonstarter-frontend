@@ -11,6 +11,7 @@ type CreateReward = {
     allocatedReward: string,
     numStakers: number,
     status: string,
+    account: string,
     verified: boolean,
     tx: string,
     sig: string,
@@ -38,6 +39,7 @@ export async function createReward(args: CreateReward) {
         numStakers,
         status,
         verified,
+        account,
         tx,
         sig,
     } = args
@@ -49,6 +51,7 @@ export async function createReward(args: CreateReward) {
         incentiveKey: incentiveKey,
         startTime: startTime,
         endTime: endTime,
+        account: account,
         allocatedReward: allocatedReward,
         numStakers: numStakers,
         status: status,

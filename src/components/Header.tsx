@@ -253,9 +253,9 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
   useEffect(()=>{
     console.log('----------------------');
     
-    console.log('match', match?.path);
-    console.log('pools', pools?.path);
-    console.log('reward', reward?.path);
+    // console.log('match', match?.path);
+    // console.log('pools', pools?.path);
+    // console.log('reward', reward?.path);
   }, [pools, match, reward])
   return (
     <Box
