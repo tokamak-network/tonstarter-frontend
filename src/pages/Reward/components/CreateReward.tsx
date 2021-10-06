@@ -13,7 +13,18 @@ import {FC, useState, useEffect} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {CustomInput} from 'components/Basic';
-import { getRandomKey } from './api';
+import {createReward, getRandomKey} from './api';
+import Web3 from 'web3';
+import BigNumber from 'bignumber.js';
+import moment from 'moment';
+import {DEPLOYED} from 'constants/index';
+import { getSigner } from 'utils/contract';
+import {Contract} from '@ethersproject/contracts';
+import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
+import * as TOSABI from 'services/abis/TOS.json';
+
+import { sign } from 'crypto';
+const {TOS_ADDRESS, UniswapStaker_Address} = DEPLOYED;
 
 const themeDesign = {
   border: {
@@ -32,7 +43,20 @@ const themeDesign = {
 type CreateRewardProps = {
   pools: any[];
 };
-
+type CreateReward = {
+  poolName: string;
+  poolAddress: string;
+  rewardToken: string;
+  incentiveKey: object;
+  startTime: number;
+  endTime: number;
+  allocatedReward: string;
+  numStakers: number;
+  status: string;
+  verified: boolean;
+  tx: string;
+  sig: string;
+};
 export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
   // const {data} = useAppSelector(selectModalType);
   const {colorMode} = useColorMode();
@@ -41,31 +65,83 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
   const [claimableAmount, setClaimableAmount] = useState<Number>(100000.0);
   const [amount, setAmount] = useState<Number>(0);
   const [reward, setReward] = useState<Number>(0);
+  const startTime = 1633588921;
+  const endTime = 1633675321;
+
   const generateSig = async (account: string) => {
     const randomvalue = await getRandomKey(account);
+    const pool = '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf';
     //@ts-ignore
-    // const web3 = new Web3(window.ethereum);
-    console.log(randomvalue)
-    // if (randomvalue != null) {
-    //   const randomBn = new BigNumber(randomvalue).toFixed(0);
-    //   const soliditySha3 = await web3.utils.soliditySha3(
-    //     { type: 'string', value: account },
-    //     { type: 'uint256', value: randomBn },
-    //     {type: 'string', value: rewardToken},
-    //     {type: 'string', value: pool},
-    //     {type: 'uint256', value: startTime},
-    //     {type: 'uint256', value: endTime},
-    //     {type: 'string', value: refundee}
-    //   );
+    const web3 = new Web3(window.ethereum);
+    if (randomvalue != null) {
+      const randomBn = new BigNumber(randomvalue).toFixed(0);
+      const soliditySha3 = await web3.utils.soliditySha3(
+        {type: 'string', value: account},
+        {type: 'uint256', value: randomBn},
+        {type: 'string', value: TOS_ADDRESS},
+        {type: 'string', value: pool},
+        {type: 'uint256', value: startTime.toString()},
+        {type: 'uint256', value: endTime.toString()},
+      );
+
+      //@ts-ignore
+      const sig = await web3.eth.personal.sign(soliditySha3, account, '');
+      console.log(sig);
+
+      return sig.toString();
+    } else {
+      return '';
+    }
+  };
+
+  const createRewardFunc = async (account: string) => {
+    if (account === null || account === undefined && library === undefined) {
+      return;
+    }
+  const uniswapStakerContract= new Contract(UniswapStaker_Address, STAKERABI.abi, library);
+  const tosContract = new Contract(TOS_ADDRESS, TOSABI.abi, library);
+  const totalReward = new BigNumber('100000000000000000000').toString();
+  if (library !== undefined){
+    // const uniswapV3Staker = getSigner(library,UniswapStaker_Address);
+    const signer = getSigner(library, account);
+    await tosContract.connect(signer).approve(UniswapStaker_Address,totalReward);
+    const allowAmount = await tosContract.connect(signer).allowance(account, UniswapStaker_Address);
+  console.log('startTime', startTime);
+  console.log('endTime', endTime);
   
-    //   //@ts-ignore
-    //   const sig = await web3.eth.personal.sign(soliditySha3, account, '');
   
-    //   return sig;
-    // } else {
-    //   return null;
-    // }
+    const sig = await generateSig(account);
+    const key = {
+      rewardToken: TOS_ADDRESS,
+      pool: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
+      startTime: startTime,
+      endTime: endTime,
+      refundee: account,
+    };
+    const tx = await uniswapStakerContract.connect(signer).createIncentive(key, totalReward)
+    await tx.wait();
+    const args: CreateReward = {
+      poolName: 'test2 rewards',
+      poolAddress: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
+      rewardToken: TOS_ADDRESS,
+      incentiveKey: key,
+      startTime: startTime,
+      endTime: endTime,
+      allocatedReward: totalReward,
+      numStakers: 2,
+      status: 'open',
+      verified: true,
+      tx: tx,
+      sig: sig,
+    };
+    const create = await createReward(args);
+    console.log('create', create);
+    
   }
+  
+ 
+  
+  };
   return (
     <Container>
       <Box
@@ -113,7 +189,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             color="white.100"
             fontSize="14px"
             _hover={{backgroundColor: 'blue.100'}}
-            onClick={() =>generateSig(account?account.toString(): '')}>
+            onClick={() => createRewardFunc(account ? account.toString() : '')}>
             Approve
           </Button>
           <Button

@@ -24,6 +24,7 @@ export const BASE_PROVIDER =
     : ethers.getDefaultProvider('mainnet');
 export const fetchStakeURL = `${API_SERVER}/stakecontracts?chainId=${DEFAULT_NETWORK}`;
 export const fetchValutURL = `${API_SERVER}/vaults?chainId=${DEFAULT_NETWORK}`;
+export const fetchRewardsURL = `${API_SERVER}/reward?chainId=${DEFAULT_NETWORK}`;
 export const permitTOSAddress =
   REACT_APP_MODE === 'DEV' ? '0x865264b30eb29A2978b9503B8AfE2A2DDa33eD7E' : '';
 
@@ -59,6 +60,7 @@ const MAINNET_DEPLOYED = {
   Airdrop_ADDRESS: '0x0620492BAbe0a2cE13688025F8b783B8d6c28955',
   LockTOS_ADDRESS: '0x69b4A202Fa4039B42ab23ADB725aA7b1e9EEBD79',
   UniswapStaking_Address: '0xC1349A9a33A0682804c390a3968e26E5a2366153',
+  UniswapStaker_Address: '0x1f98407aaB862CdDeF78Ed252D6f557aA5b0f00d',
   NPM_Address: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
   BasePool_Address: '0x1c0ce9aaa0c12f53df3b4d8d77b82d6ad343b4e4',
   StakeTonControl_ADDRESS: '0xacdded49ac67ba9c87b1bbc5cb248b1bd7dc0f19',
@@ -78,6 +80,7 @@ const RINKEBY_DEPLOYED = {
   TokamakLayer2_ADDRESS: '0x1fa621d238f30f6651ddc8bd5f4be21c6b894426',
   Airdrop_ADDRESS: '0xD958cD2d03aaEe169953780234848445504571E8',
   UniswapStaking_Address: '0x99b09c6CfF45C778a4F5fBF7a4EAD6c3DEBfdcBb',
+  UniswapStaker_Address: '0x1f98407aaB862CdDeF78Ed252D6f557aA5b0f00d',
   NPM_Address: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
   LockTOS_ADDRESS: '0x984eE833Ba070496cEE1eEBd537a873536b41a9F',
   BasePool_Address: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
