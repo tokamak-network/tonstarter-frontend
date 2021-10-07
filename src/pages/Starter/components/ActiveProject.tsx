@@ -20,7 +20,7 @@ type ActiveProjectProp = {
   activeProject: ActiveProjectType[];
 };
 
-export const ActiveProject = (props: ActiveProjectProp) => {
+export const ActiveProject = (props: any) => {
   const {activeProject} = props;
   const {colorMode} = useColorMode();
   const {library} = useActiveWeb3React();
@@ -39,7 +39,7 @@ export const ActiveProject = (props: ActiveProjectProp) => {
         Active Projects
       </Text>
       <Grid templateColumns="repeat(3, 1fr)" gap={30}>
-        {activeProject.map((project) => {
+        {activeProject.map((project: any) => {
           const tokenType = checkTokenType(
             '0x2be5e8c109e2197D077D13A82dAead6a9b3433C5',
           );
@@ -178,7 +178,7 @@ export const ActiveProject = (props: ActiveProjectProp) => {
                           })}>
                           {project.projectFundingTokenRatio}
                         </Text>
-                        <Text>EVE</Text>
+                        <Text>{project.tokenName}</Text>
                       </Flex>
                     </Box>
                   </Box>

@@ -75,17 +75,26 @@ export const fetchStarters = createAsyncThunk(
 
     const activeProjects = await Promise.all(
       activeData.map(async (data: AdminObject) => {
-        console.log('--library--');
-        console.log(library);
-        const startTime = await starterActions.getTimeStamps({
+        const address = data.saleContractAddress;
+        const timeStamps = await starterActions.getTimeStamps({
           library,
-          address: data.saleContractAddress,
+          address,
         });
-        console.log('--startTime--');
-        console.log(startTime);
+        const totalRaise = await starterActions.getTotalRaise({
+          library,
+          address,
+        });
+        const participant = await starterActions.getTimeStamps({
+          library,
+          address,
+        });
+
         return {
           name: data.name,
-          saleStart: moment.unix(startTime).format('YYYY.MM.DD'),
+          tokenName: data.tokenName,
+          saleStart: moment
+            .unix(timeStamps.startOpenSaleTime)
+            .format('YYYY.MM.DD'),
           saleEnd: moment.unix(data.endOpenSaleTime).format('YYYY.MM.DD'),
           isExclusive:
             data.startExclusiveTime <= nowTimeStamp &&
@@ -93,14 +102,14 @@ export const fetchStarters = createAsyncThunk(
           tokenFundRaisingTargetAmount: data.tokenFundRaisingTargetAmount,
           projectTokenRatio: data.projectTokenRatio,
           projectFundingTokenRatio: data.projectFundingTokenRatio,
-          saleContractAddress: data.saleContractAddress,
-          startTime,
+          saleContractAddress: address,
+          startTime: timeStamps.startExclusiveTime,
+          totalRaise,
+          participant,
+          step: timeStamps.checkStep,
         };
       }),
     );
-
-    console.log('--activeProjects--');
-    console.log(activeProjects);
 
     const upcomingProjects: UpcomingProjectType = upcomingData.map(
       (data: AdminObject) => {

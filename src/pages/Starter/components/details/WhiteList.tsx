@@ -22,10 +22,6 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
 
   const {STATER_STYLE} = theme;
 
-  if (account) {
-    console.log(starterActions.checkApprove(account, library));
-  }
-
   useEffect(() => {
     async function getInfo() {
       if (account && library) {

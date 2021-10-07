@@ -16,10 +16,11 @@ import starterActions from '../../actions';
 type ExclusiveSalePartProps = {
   saleInfo: AdminObject;
   detailInfo: DetailInfo;
+  isApprove: boolean;
 };
 
 export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
-  const {saleInfo, detailInfo} = prop;
+  const {saleInfo, detailInfo, isApprove} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
@@ -199,16 +200,29 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
         </Box>
       </Box>
       <Box mt={'46px'}>
-        <CustomButton
-          text={'Participate'}
-          func={() =>
-            account &&
-            starterActions.participate({
-              account,
-              library,
-              amount: inputTonBalance,
-            })
-          }></CustomButton>
+        {isApprove === true ? (
+          <CustomButton
+            text={'Participate'}
+            func={() =>
+              account &&
+              starterActions.participate({
+                account,
+                library,
+                amount: inputTonBalance,
+              })
+            }></CustomButton>
+        ) : (
+          <CustomButton
+            text={'Approve'}
+            func={() =>
+              account &&
+              starterActions.getAllowance(
+                account,
+                library,
+                saleInfo?.saleContractAddress,
+              )
+            }></CustomButton>
+        )}
       </Box>
     </Flex>
   );

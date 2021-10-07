@@ -1,4 +1,4 @@
-import {Flex, Box} from '@chakra-ui/react';
+import {Flex, Box, Center} from '@chakra-ui/react';
 import {Banner} from './components/Banner';
 import {ActiveProject} from './components/ActiveProject';
 import {PastProject} from './components/PastProject';
@@ -11,6 +11,7 @@ import {
 import store from 'store';
 import {useEffect, useState} from 'react';
 import {useActiveWeb3React} from 'hooks/useWeb3';
+import {LoadingComponent} from 'components/Loading';
 
 export const StarterMain = () => {
   const starterData = store.getState().starters.data;
@@ -20,6 +21,7 @@ export const StarterMain = () => {
     [],
   );
   const [pastProject, setPastProject] = useState<PastProjectType[]>([]);
+  const [pending, setPending] = useState<boolean>(true);
 
   useEffect(() => {
     if (starterData) {
@@ -27,6 +29,7 @@ export const StarterMain = () => {
       setActiveProject(activeProjects);
       setUpcomingProject(upcomingProjects);
       setPastProject(pastProjects);
+      setPending(false);
     }
   }, [starterData, chainId]);
 
@@ -35,6 +38,11 @@ export const StarterMain = () => {
       <Flex mb={'60px'} w={'100%'}>
         <Banner></Banner>
       </Flex>
+      {pending === true ? (
+        <Center>
+          <LoadingComponent />
+        </Center>
+      ) : null}
       <Flex px={353} flexDir="column" alignItems="center">
         {activeProject.length > 0 && (
           <Box mb={'80px'}>

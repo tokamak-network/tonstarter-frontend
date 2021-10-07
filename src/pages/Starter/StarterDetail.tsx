@@ -28,7 +28,7 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 import starterActions from './actions';
 import {convertNumber} from 'utils/number';
 import {BigNumber} from 'ethers';
-import moment from 'moment';
+import {useBlockNumber} from 'hooks/useBlock';
 
 export const StarterDetail = () => {
   const {id}: {id: string} = useParams();
@@ -46,6 +46,8 @@ export const StarterDetail = () => {
     undefined,
   );
 
+  const [isApprove, setIsApprove] = useState(false);
+
   const {STATER_STYLE} = theme;
   const tokenType = checkTokenType(
     '0x2be5e8c109e2197D077D13A82dAead6a9b3433C5',
@@ -59,6 +61,25 @@ export const StarterDetail = () => {
       .map((e: AdminObject) => e.saleContractAddress)[0],
     'PUBLIC_SALE',
   );
+
+  const {blockNumber} = useBlockNumber();
+
+  //check approve
+  useEffect(() => {
+    async function checkUserApprove() {
+      if (account && library) {
+        const isUserApprove = await starterActions.checkApprove(
+          account,
+          library,
+          starterData.activeData
+            .filter((data: AdminObject) => data.name === id)
+            .map((e: AdminObject) => e.saleContractAddress)[0],
+        );
+        setIsApprove(isUserApprove);
+      }
+    }
+    checkUserApprove();
+  }, [account, library, id, starterData.activeData, blockNumber]);
 
   useEffect(() => {
     async function getInfo() {
@@ -150,14 +171,16 @@ export const StarterDetail = () => {
   useEffect(() => {
     async function getStatus() {
       if (PUBLICSALE_CONTRACT) {
-        const nowTimeStamp = moment().unix();
-
-        const dd = await PUBLICSALE_CONTRACT.endAddWhiteTime();
-        console.log(Number(dd.toString()) > nowTimeStamp);
-        setActiveStatus('exclusive');
+        const {activeProjects} = starterData;
+        //@ts-ignore
+        const {step} = activeProjects.filter(
+          (data: any) => data.name === id,
+        )[0];
+        console.log('--step--');
+        console.log(step);
+        setActiveStatus(step);
       }
     }
-    //Test
     if (PUBLICSALE_CONTRACT) {
       getStatus();
     }
@@ -258,7 +281,8 @@ export const StarterDetail = () => {
             detailInfo && (
               <ExclusiveSalePart
                 saleInfo={saleInfo}
-                detailInfo={detailInfo}></ExclusiveSalePart>
+                detailInfo={detailInfo}
+                isApprove={isApprove}></ExclusiveSalePart>
             )}
           {projectStatus === 'active' && activeStatus === 'deposit' && (
             <OpenSaleDeposit

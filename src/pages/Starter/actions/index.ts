@@ -1,6 +1,12 @@
 import {addWhiteList, calculTier, isWhiteList, participate} from './actions';
-import {checkApprove} from './approve';
-import {getTotalExpectSaleAmount, getTimeStamps} from './views';
+import {checkApprove, getAllowance} from './approve';
+import {
+  getTotalExpectSaleAmount,
+  getTimeStamps,
+  getTotalExPurchasedAmount,
+  getTotalOpenPurchasedAmount,
+  getTotalRaise,
+} from './views';
 
 const actions = {
   addWhiteList,
@@ -10,6 +16,10 @@ const actions = {
   participate,
   getTotalExpectSaleAmount,
   getTimeStamps,
+  getTotalExPurchasedAmount,
+  getTotalOpenPurchasedAmount,
+  getTotalRaise,
+  getAllowance,
 };
 
 export default actions;
