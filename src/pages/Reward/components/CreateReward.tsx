@@ -101,13 +101,14 @@ const approve = async (account: string) => {
     return;
   }
   const tosContract = new Contract(TOS_ADDRESS, TOSABI.abi, library);
-  const totalReward = new BigNumber(Number(amount)).toString();
+  const totalReward = new BigNumber(100000000000000000000).toString();
   if (library !== undefined){
     const signer = getSigner(library, account);
     try{
       const receipt = await tosContract.connect(signer).approve(UniswapStaker_Address,totalReward);
+      store.dispatch(setTxPending({tx: true}));
       if (receipt) {
-        toastWithReceipt(receipt, setTxPending);
+        toastWithReceipt(receipt, setTxPending, );
       }
     }catch (err) {
       store.dispatch(setTxPending({tx: false}));
@@ -133,11 +134,12 @@ const approve = async (account: string) => {
       return;
     }
     const uniswapStakerContract= new Contract(UniswapStaker_Address, STAKERABI.abi, library);
-    const totalReward = new BigNumber(Number(amount)).toString();
+    const totalReward = new BigNumber(100000000000000000000).toString();
     if (library !== undefined){
       const tosContract = new Contract(TOS_ADDRESS, TOSABI.abi, library);
       const signer = getSigner(library, account);
       const allowAmount = await tosContract.connect(signer).allowance(account, UniswapStaker_Address);
+      console.log('allowAmount', allowAmount);
       
     const key = {
       rewardToken: TOS_ADDRESS,
@@ -150,7 +152,7 @@ const approve = async (account: string) => {
     await tx.wait();
     const sig = await generateSig(account.toLowerCase(), key);
     const args: CreateReward = {
-      poolName: 'lakmi test1',
+      poolName: 'lakmi test3',
       poolAddress: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
       rewardToken: TOS_ADDRESS,
       account: account,
@@ -158,7 +160,7 @@ const approve = async (account: string) => {
       startTime: startTime,
       endTime: endTime,
       allocatedReward: totalReward,
-      numStakers: 2,
+      numStakers: 3,
       status: 'open',
       verified: true,
       tx: tx,
@@ -216,6 +218,7 @@ const approve = async (account: string) => {
             bg={'blue.500'}
             color="white.100"
             fontSize="14px"
+            disabled={amount === 0}
             _hover={{backgroundColor: 'blue.100'}}
             onClick={() => approve(account ? account.toString() : '')}>
             Approve
