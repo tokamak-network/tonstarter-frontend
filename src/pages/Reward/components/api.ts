@@ -5,13 +5,13 @@ type CreateReward = {
     poolName: string,
     poolAddress: string,
     rewardToken: string,
+    account: string,
     incentiveKey: object,
     startTime: number,
     endTime: number,
     allocatedReward: string,
     numStakers: number,
     status: string,
-    account: string,
     verified: boolean,
     tx: string,
     sig: string,
@@ -32,6 +32,7 @@ export async function createReward(args: CreateReward) {
         poolName,
         poolAddress,
         rewardToken,
+        account,
         incentiveKey,
         startTime,
         endTime,
@@ -39,7 +40,6 @@ export async function createReward(args: CreateReward) {
         numStakers,
         status,
         verified,
-        account,
         tx,
         sig,
     } = args
@@ -48,10 +48,10 @@ export async function createReward(args: CreateReward) {
         poolName: poolName,
         poolAddress: poolAddress,
         rewardToken: rewardToken,
+        account: account,
         incentiveKey: incentiveKey,
         startTime: startTime,
         endTime: endTime,
-        account: account,
         allocatedReward: allocatedReward,
         numStakers: numStakers,
         status: status,
@@ -59,6 +59,7 @@ export async function createReward(args: CreateReward) {
         tx: tx,
         sig: sig,
     });
+
     
     return res.data;
 }

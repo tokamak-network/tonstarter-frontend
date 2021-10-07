@@ -16,14 +16,17 @@ import {CustomInput} from 'components/Basic';
 import {createReward, getRandomKey} from './api';
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
+import store from '../../../store';
 import moment from 'moment';
 import {DEPLOYED} from 'constants/index';
 import { getSigner } from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import * as TOSABI from 'services/abis/TOS.json';
+import {setTxPending} from '../../../store/tx.reducer';
+import {toastWithReceipt} from 'utils';
+import {openToast} from 'store/app/toast.reducer';
 
-import { sign } from 'crypto';
 const {TOS_ADDRESS, UniswapStaker_Address} = DEPLOYED;
 
 const themeDesign = {
@@ -93,22 +96,49 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
       return '';
     }
   };
+const approve = async (account: string) => {
+  if (account === null || account === undefined && library === undefined) {
+    return;
+  }
+  const tosContract = new Contract(TOS_ADDRESS, TOSABI.abi, library);
+  const totalReward = new BigNumber(Number(amount)).toString();
+  if (library !== undefined){
+    const signer = getSigner(library, account);
+    try{
+      const receipt = await tosContract.connect(signer).approve(UniswapStaker_Address,totalReward);
+      if (receipt) {
+        toastWithReceipt(receipt, setTxPending);
+      }
+    }catch (err) {
+      store.dispatch(setTxPending({tx: false}));
+      store.dispatch(
+        //@ts-ignore
+        openToast({
+          payload: {
+            status: 'error',
+            title: 'Tx fail to send',
+            description: `something went wrong`,
+            duration: 5000,
+            isClosable: true,
+          },
+        }),
+      );
+    }
+ 
+  }
+}
 
   const createRewardFunc = async (account: string) => {
     if (account === null || account === undefined && library === undefined) {
       return;
     }
     const uniswapStakerContract= new Contract(UniswapStaker_Address, STAKERABI.abi, library);
-    const tosContract = new Contract(TOS_ADDRESS, TOSABI.abi, library);
-    const totalReward = new BigNumber('100000000000000000000').toString();
+    const totalReward = new BigNumber(Number(amount)).toString();
     if (library !== undefined){
-      // const uniswapV3Staker = getSigner(library,UniswapStaker_Address);
+      const tosContract = new Contract(TOS_ADDRESS, TOSABI.abi, library);
       const signer = getSigner(library, account);
-      await tosContract.connect(signer).approve(UniswapStaker_Address,totalReward);
       const allowAmount = await tosContract.connect(signer).allowance(account, UniswapStaker_Address);
-    console.log('startTime', startTime);
-    console.log('endTime', endTime);
-    
+      
     const key = {
       rewardToken: TOS_ADDRESS,
       pool: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
@@ -116,11 +146,11 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
       endTime: endTime,
       refundee: account,
     };
-    // const tx = await uniswapStakerContract.connect(signer).createIncentive(key, totalReward)
-    // await tx.wait();
+    const tx = await uniswapStakerContract.connect(signer).createIncentive(key, totalReward)
+    await tx.wait();
     const sig = await generateSig(account.toLowerCase(), key);
     const args: CreateReward = {
-      poolName: 'test2 rewards',
+      poolName: 'lakmi test1',
       poolAddress: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
       rewardToken: TOS_ADDRESS,
       account: account,
@@ -131,15 +161,13 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
       numStakers: 2,
       status: 'open',
       verified: true,
-      tx: 'tx',
+      tx: tx,
       sig: sig,
     };
     const create = await createReward(args);
     console.log('create', create);
     
   }
-  
- 
   
   };
   return (
@@ -189,7 +217,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             color="white.100"
             fontSize="14px"
             _hover={{backgroundColor: 'blue.100'}}
-            onClick={() => createRewardFunc(account ? account.toString() : '')}>
+            onClick={() => approve(account ? account.toString() : '')}>
             Approve
           </Button>
           <Button
@@ -197,7 +225,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             bg={'blue.500'}
             color="white.100"
             fontSize="14px"
-            _hover={{backgroundColor: 'blue.100'}}>
+            _hover={{backgroundColor: 'blue.100'}} onClick={() => createRewardFunc(account ? account.toString() : '')} >
             Create
           </Button>
         </Flex>
