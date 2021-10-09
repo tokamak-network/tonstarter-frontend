@@ -15,6 +15,7 @@ import {ActiveProjectType} from '@Starter/types';
 import starterActions from '../actions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect} from 'react';
+import moment from 'moment';
 
 type ActiveProjectProp = {
   activeProject: ActiveProjectType[];
@@ -43,6 +44,12 @@ export const ActiveProject = (props: any) => {
           const tokenType = checkTokenType(
             '0x2be5e8c109e2197D077D13A82dAead6a9b3433C5',
           );
+          const nowTimeStamp = moment().unix();
+
+          if (nowTimeStamp > project.timeStamps.endOpenSaleTime) {
+            return null;
+          }
+
           return (
             <Link to={`${url}/active/${project.name}`}>
               <Box {...STATER_STYLE.containerStyle({colorMode})}>
@@ -104,7 +111,7 @@ export const ActiveProject = (props: any) => {
                     </Text>
                   </Flex>
                   <Flex>
-                    <Text>{}</Text>
+                    <Text>{project.totalRaise}</Text>
                     <Text>/</Text>
                     <Text>{project.tokenFundRaisingTargetAmount}</Text>
                   </Flex>

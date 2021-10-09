@@ -8,16 +8,16 @@ import {useEffect, useState} from 'react';
 import {convertTimeStamp} from 'utils/convertTIme';
 import {DetailCounter} from './Detail_Counter';
 import starterActions from '../../actions';
-import {useCheckBalance} from 'hooks/useCheckBalance';
 
-type OpenSaleDepositProps = {
+type OpenSaleAfterDepositProp = {
   saleInfo: AdminObject;
   activeProjectInfo: any;
-  isApprove: boolean;
 };
 
-export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
-  const {saleInfo, activeProjectInfo, isApprove} = prop;
+export const OpenSaleAfterDeposit: React.FC<OpenSaleAfterDepositProp> = (
+  prop,
+) => {
+  const {saleInfo, activeProjectInfo} = prop;
 
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -29,8 +29,6 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
   const [totalAllocation, setTotalAllocation] = useState<string>('-');
   const [totalDeposit, setTotalDeposit] = useState<string>('-');
   const [yourDeposit, setYourDeposit] = useState<string>('-');
-
-  const {checkBalance} = useCheckBalance();
 
   const {STATER_STYLE} = theme;
 
@@ -95,9 +93,7 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
         <DetailCounter
           numberFontSize={'18px'}
           stringFontSize={'14px'}
-          date={
-            activeProjectInfo?.timeStamps.endOpenSaleTime * 1000
-          }></DetailCounter>
+          date={activeProjectInfo?.timeStamps.endOpenSaleTime}></DetailCounter>
       </Box>
       <Text
         {...STATER_STYLE.subText({colorMode})}
@@ -173,31 +169,16 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
         </Box>
       </Box>
       <Box mt={'46px'}>
-        {isApprove === true ? (
-          <CustomButton
-            text={'Deposit'}
-            func={() =>
-              account &&
-              checkBalance(inputBalance, Number(userTonBalance)) &&
-              starterActions.deposit({
-                address: saleInfo.saleContractAddress,
-                account,
-                library,
-                amount: String(inputBalance),
-              })
-            }></CustomButton>
-        ) : (
-          <CustomButton
-            text={'Approve'}
-            func={() =>
-              account &&
-              starterActions.getAllowance(
-                account,
-                library,
-                saleInfo?.saleContractAddress,
-              )
-            }></CustomButton>
-        )}
+        <CustomButton
+          text={'Sale'}
+          func={() =>
+            account &&
+            starterActions.openSale({
+              account,
+              library,
+              address: saleInfo?.saleContractAddress,
+            })
+          }></CustomButton>
       </Box>
     </Flex>
   );

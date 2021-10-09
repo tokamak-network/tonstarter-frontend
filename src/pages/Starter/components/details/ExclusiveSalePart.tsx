@@ -17,10 +17,11 @@ type ExclusiveSalePartProps = {
   saleInfo: AdminObject;
   detailInfo: DetailInfo;
   isApprove: boolean;
+  activeProjectInfo: any;
 };
 
 export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
-  const {saleInfo, detailInfo, isApprove} = prop;
+  const {saleInfo, detailInfo, isApprove, activeProjectInfo} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
@@ -102,7 +103,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
           numberFontSize={'18px'}
           stringFontSize={'14px'}
           date={
-            saleInfo && convertTimeStamp(saleInfo.endOpenSaleTime, 'YYYY-MM-DD')
+            activeProjectInfo?.timeStamps.endExclusiveTime * 1000
           }></DetailCounter>
       </Box>
       <Box d="flex">
@@ -171,7 +172,15 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
               Sale Period :{' '}
             </Text>
             <Text {...detailSubTextStyle}>
-              {saleStartTime} ~ {saleEndTime}
+              {convertTimeStamp(
+                activeProjectInfo?.timeStamps?.startExclusiveTime,
+                'YYYY-MM-D',
+              )}{' '}
+              ~{' '}
+              {convertTimeStamp(
+                activeProjectInfo?.timeStamps?.endExclusiveTime,
+                'YYYY-MM-D',
+              )}
             </Text>
           </Flex>
           <Flex w={'235px'}>
@@ -208,6 +217,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
               starterActions.participate({
                 account,
                 library,
+                address: saleInfo.saleContractAddress,
                 amount: inputTonBalance,
               })
             }></CustomButton>

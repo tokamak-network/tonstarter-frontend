@@ -84,8 +84,50 @@ export async function getTotalOpenPurchasedAmount(args: I_CallContract) {
 export async function getTotalRaise(args: I_CallContract) {
   const res = await Promise.all([
     getTotalExPurchasedAmount(args),
-    getTotalOpenPurchasedAmount,
-    args,
+    getTotalOpenPurchasedAmount(args),
   ]);
   return String(Number(res[0]) + Number(res[1]));
+}
+
+export async function getTotalExpectOpenSaleAmount(args: I_CallContract) {
+  const {library, address} = args;
+  const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
+  const res = await PUBLICSALE_CONTRACT.totalExpectOpenSaleAmount();
+  const convertedNum = convertNumber({amount: res.toString()});
+  return convertedNum;
+}
+
+export async function getTotalDepositAmount(args: I_CallContract) {
+  const {library, address} = args;
+  const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
+  const res = await PUBLICSALE_CONTRACT.totalDepositAmount();
+  const convertedNum = convertNumber({amount: res.toString()});
+  return convertedNum;
+}
+
+export async function getUserDeposit(args: I_CallContract & {account: string}) {
+  const {library, address, account} = args;
+  const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
+  const res = await PUBLICSALE_CONTRACT.usersOpen(account);
+  const convertedNum = convertNumber({amount: res.depositAmount.toString()});
+  return convertedNum;
+}
+
+export async function getCalculClaimAmount(
+  args: I_CallContract & {account: string},
+) {
+  const {library, address, account} = args;
+  const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
+  const res = await PUBLICSALE_CONTRACT.calculClaimAmount(account);
+  const convertedNum = convertNumber({
+    amount: res?.depositAmount.toString() || '0',
+  });
+  return convertedNum;
+}
+
+export async function getStartClaimTime(args: I_CallContract) {
+  const {library, address} = args;
+  const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
+  const res = await PUBLICSALE_CONTRACT.startClaimTime();
+  return res;
 }

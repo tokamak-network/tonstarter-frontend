@@ -60,11 +60,7 @@ export const fetchStarters = createAsyncThunk(
         : data.production === 'dev',
     );
     const activeData = matchData.filter(
-      (data: AdminObject) =>
-        data.position === 'active' &&
-        data.saleContractAddress ===
-          '0xEba7Ab0eAeB4656EbE4D045c68005e892699EC75',
-      // data.position === 'active' && data.endOpenSaleTime > nowTimeStamp,
+      (data: AdminObject) => data.position === 'active',
     );
     const upcomingData = matchData.filter(
       (data: AdminObject) => data.position === 'upcoming',
@@ -84,29 +80,47 @@ export const fetchStarters = createAsyncThunk(
           library,
           address,
         });
-        const participant = await starterActions.getTimeStamps({
-          library,
-          address,
-        });
+
+        // const participant = await starterActions.getTimeStamps({
+        //   library,
+        //   address,
+        // });
+
+        const {
+          startAddWhiteTime,
+          endWhiteListTime,
+          startExclusiveTime,
+          endExclusiveTime,
+          startDepositTime,
+          endDepositTIme,
+          startOpenSaleTime,
+          endOpenSaleTime,
+          checkStep,
+        } = timeStamps;
 
         return {
           name: data.name,
           tokenName: data.tokenName,
-          saleStart: moment
-            .unix(timeStamps.startOpenSaleTime)
-            .format('YYYY.MM.DD'),
-          saleEnd: moment.unix(data.endOpenSaleTime).format('YYYY.MM.DD'),
+          saleStart:
+            checkStep === 'whitelist' || checkStep === 'exclusive'
+              ? moment.unix(startExclusiveTime).format('YYYY.MM.DD')
+              : moment.unix(startDepositTime).format('YYYY.MM.DD'),
+          saleEnd:
+            checkStep === 'whitelist' || checkStep === 'exclusive'
+              ? moment.unix(endExclusiveTime).format('YYYY.MM.DD')
+              : moment.unix(endDepositTIme).format('YYYY.MM.DD'),
           isExclusive:
-            data.startExclusiveTime <= nowTimeStamp &&
-            nowTimeStamp < data.startOpenSaleTime,
+            checkStep === 'whitelist' || checkStep === 'exclusive'
+              ? true
+              : false,
           tokenFundRaisingTargetAmount: data.tokenFundRaisingTargetAmount,
           projectTokenRatio: data.projectTokenRatio,
           projectFundingTokenRatio: data.projectFundingTokenRatio,
           saleContractAddress: address,
           startTime: timeStamps.startExclusiveTime,
           totalRaise,
-          participant,
-          step: timeStamps.checkStep,
+          timeStamps,
+          step: checkStep,
         };
       }),
     );

@@ -5,6 +5,7 @@ import {
   Flex,
   Avatar,
   Text,
+  Center,
 } from '@chakra-ui/react';
 import {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
@@ -12,6 +13,7 @@ import {checkTokenType} from 'utils/token';
 import {ExclusiveSale} from './components/details/ExclusiveSale';
 import {WhiteList} from './components/details/WhiteList';
 import {OpenSale} from './components/details/OpenSale';
+import {OpenSaleAfterDeposit} from './components/details/OpenSaleAfterDeposit';
 
 import {DetailIcons} from './components/details/Detail_Icons';
 import {SaleStatus, Tier, DetailInfo} from './types';
@@ -29,6 +31,7 @@ import starterActions from './actions';
 import {convertNumber} from 'utils/number';
 import {BigNumber} from 'ethers';
 import {useBlockNumber} from 'hooks/useBlock';
+import {LoadingComponent} from 'components/Loading';
 
 export const StarterDetail = () => {
   const {id}: {id: string} = useParams();
@@ -42,6 +45,10 @@ export const StarterDetail = () => {
     undefined,
   );
   const [saleInfo, setSaleInfo] = useState<AdminObject | undefined>(undefined);
+  const [activeProjectInfo, setActiveProjectInfo] = useState<any | undefined>(
+    undefined,
+  );
+
   const [detailInfo, setDetailInfo] = useState<DetailInfo | undefined>(
     undefined,
   );
@@ -83,9 +90,15 @@ export const StarterDetail = () => {
 
   useEffect(() => {
     async function getInfo() {
-      if (account && library && PUBLICSALE_CONTRACT) {
+      console.log('account && library && PUBLICSALE_CONTRACT && saleInfo');
+      console.log(account && library && PUBLICSALE_CONTRACT && saleInfo);
+      if (account && library && PUBLICSALE_CONTRACT && saleInfo) {
         const res = await Promise.all([
-          starterActions.calculTier({account, library}),
+          starterActions.calculTier({
+            account,
+            library,
+            address: saleInfo.saleContractAddress,
+          }),
           PUBLICSALE_CONTRACT.totalExpectSaleAmount(),
           PUBLICSALE_CONTRACT.tiersAccount(1),
           PUBLICSALE_CONTRACT.tiersAccount(2),
@@ -166,7 +179,7 @@ export const StarterDetail = () => {
       console.log('--PUBLICSALE_CONTRACT--');
       console.log(PUBLICSALE_CONTRACT);
     }
-  }, [account, library, PUBLICSALE_CONTRACT]);
+  }, [account, library, PUBLICSALE_CONTRACT, saleInfo]);
 
   useEffect(() => {
     async function getStatus() {
@@ -179,12 +192,15 @@ export const StarterDetail = () => {
         console.log('--step--');
         console.log(step);
         setActiveStatus(step);
+        setActiveProjectInfo(
+          activeProjects.filter((data: any) => data.name === id)[0],
+        );
       }
     }
     if (PUBLICSALE_CONTRACT) {
       getStatus();
     }
-  }, [PUBLICSALE_CONTRACT]);
+  }, [PUBLICSALE_CONTRACT, id, starterData]);
 
   useEffect(() => {
     const {activeData, upcomingData, pastData} = starterData;
@@ -212,7 +228,11 @@ export const StarterDetail = () => {
   }, [starterData, id, projectStatus]);
 
   if (!saleInfo) {
-    return <div>error..</div>;
+    return (
+      <Center mt={'100px'}>
+        <LoadingComponent></LoadingComponent>
+      </Center>
+    );
   }
 
   return (
@@ -274,7 +294,8 @@ export const StarterDetail = () => {
                 date={convertTimeStamp(saleInfo?.endAddWhiteTime, 'YYYY-MM-DD')}
                 startDate={convertTimeStamp(saleInfo?.startAddWhiteTime)}
                 endDate={convertTimeStamp(saleInfo?.endAddWhiteTime, 'MM.D')}
-                userTier={detailInfo.userTier}></WhiteList>
+                userTier={detailInfo.userTier}
+                activeProjectInfo={activeProjectInfo}></WhiteList>
             )}
           {projectStatus === 'active' &&
             activeStatus === 'exclusive' &&
@@ -282,19 +303,25 @@ export const StarterDetail = () => {
               <ExclusiveSalePart
                 saleInfo={saleInfo}
                 detailInfo={detailInfo}
+                activeProjectInfo={activeProjectInfo}
                 isApprove={isApprove}></ExclusiveSalePart>
             )}
           {projectStatus === 'active' && activeStatus === 'deposit' && (
             <OpenSaleDeposit
-              dDate={convertTimeStamp(
-                saleInfo?.endDepositTime,
-                'YYYY-MM-DD',
-              )}></OpenSaleDeposit>
+              saleInfo={saleInfo}
+              activeProjectInfo={activeProjectInfo}
+              isApprove={isApprove}></OpenSaleDeposit>
           )}
           {projectStatus === 'active' && activeStatus === 'openSale' && (
-            <OpenSale></OpenSale>
+            <OpenSaleAfterDeposit
+              saleInfo={saleInfo}
+              activeProjectInfo={activeProjectInfo}></OpenSaleAfterDeposit>
           )}
-          {projectStatus === 'past' && <Claim saleInfo={saleInfo}></Claim>}
+          {projectStatus === 'past' && (
+            <Claim
+              saleInfo={saleInfo}
+              activeProjectInfo={activeProjectInfo}></Claim>
+          )}
         </Flex>
         <Flex>
           {activeStatus && detailInfo && (

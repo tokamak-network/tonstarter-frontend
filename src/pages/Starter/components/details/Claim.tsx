@@ -8,26 +8,32 @@ import {AdminObject} from '@Admin/types';
 import {getUserTonBalance} from 'client/getUserBalance';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {convertTimeStamp} from 'utils/convertTIme';
+import starterActions from '../../actions';
+import moment from 'moment';
+import {useCallContract} from 'hooks/useCallContract';
 
 type ClaimProps = {
   saleInfo: AdminObject;
+  activeProjectInfo: any;
 };
 
 export const Claim: React.FC<ClaimProps> = (prop) => {
-  const {saleInfo} = prop;
+  const {saleInfo, activeProjectInfo} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
   const {account, library} = useActiveWeb3React();
 
   const [inputTonBalance, setInputTonBalance] = useState<string>('0');
-  const [convertedTokenBalance, setConvertedTokenBalance] =
-    useState<string>('0');
+  const [vestingDay, setVestingDay] = useState<string>('-');
+  const [exclusiveSale, setExclusiveSale] = useState<string>('-');
+  const [remainedAmount, setRemainedAmount] = useState<string>('-');
+  const [openSale, setOpenSale] = useState<string>('-');
 
-  const [saleStartTime, setSaleStartTime] = useState<string>('-');
-  const [saleEndTime, setSaleEndTime] = useState<string>('-');
-  const [userAllocation, setUserAllocation] = useState<string>('-');
-  const [userTierAllocation, setUserTierAllocation] = useState<string>('-');
+  const PUBLICSALE_CONTRACT = useCallContract(
+    saleInfo.saleContractAddress,
+    'PUBLIC_SALE',
+  );
 
   const {STATER_STYLE} = theme;
 
@@ -36,21 +42,68 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
   };
 
   useEffect(() => {
-    if (saleInfo) {
-      const ratio = saleInfo.projectFundingTokenRatio;
-      const result = Number(inputTonBalance) * ratio;
-      setConvertedTokenBalance(String(result));
+    async function getData() {
+      if (account && library && saleInfo) {
+        const userClaimAmount = await starterActions.getCalculClaimAmount({
+          account,
+          library,
+          address: saleInfo.saleContractAddress,
+        });
+        setInputTonBalance(userClaimAmount || '0');
+      }
     }
-  }, [inputTonBalance, saleInfo, convertedTokenBalance]);
+    if (account && library) {
+      getData();
+    }
+  }, [account, library, saleInfo]);
 
   useEffect(() => {
-    if (saleInfo) {
-      const startTime = convertTimeStamp(saleInfo.startExclusiveTime);
-      const endTime = convertTimeStamp(saleInfo.endOpenSaleTime, 'MM.DD');
-      setSaleStartTime(startTime);
-      setSaleEndTime(endTime);
+    async function getDate() {
+      if (PUBLICSALE_CONTRACT) {
+        const startClaimTime = await PUBLICSALE_CONTRACT.startClaimTime();
+        const startClaimTimeNum = Number(startClaimTime.toString());
+        const nowTime = moment().unix();
+        const diffTime = nowTime - startClaimTimeNum;
+        const interval = await PUBLICSALE_CONTRACT.claimInterval();
+        const intervalNum = Number(interval.toString());
+        const endPeriod = await PUBLICSALE_CONTRACT.claimPeriod();
+        const endPeriodNum = Number(endPeriod.toString());
+        const period = diffTime / intervalNum + 1;
+
+        if (period > endPeriodNum) {
+          const nextVestingDate = startClaimTimeNum + intervalNum * period;
+          setVestingDay(convertTimeStamp(nextVestingDate));
+        } else {
+          const nextVestingDate =
+            startClaimTimeNum + intervalNum * endPeriodNum;
+          setVestingDay(convertTimeStamp(nextVestingDate));
+        }
+      }
     }
-  }, [saleInfo]);
+    if (saleInfo && library && PUBLICSALE_CONTRACT) {
+      getDate();
+    }
+  }, [library, saleInfo, PUBLICSALE_CONTRACT]);
+
+  useEffect(() => {
+    async function getData() {
+      if (account && PUBLICSALE_CONTRACT) {
+        const usersEx = await PUBLICSALE_CONTRACT.usersEx(account);
+        const usersOpen = await PUBLICSALE_CONTRACT.usersOpen(account);
+        const usersClaim = await PUBLICSALE_CONTRACT.usersClaim(account);
+        const ramainedAmount =
+          Number(usersClaim?.totalClaimReward.toString()) -
+          Number(usersClaim?.claimAmount.toString());
+
+        setExclusiveSale(usersEx?.saleAmount.toString());
+        setRemainedAmount(String(ramainedAmount));
+        setOpenSale(usersOpen?.saleAmount.toString());
+      }
+    }
+    if (account && PUBLICSALE_CONTRACT) {
+      getData();
+    }
+  }, [account, PUBLICSALE_CONTRACT]);
 
   return (
     <Flex flexDir="column" pl={'45px'}>
@@ -58,12 +111,6 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
         <Text {...STATER_STYLE.mainText({colorMode, fontSize: 25})} mr={'20px'}>
           Claim
         </Text>
-        <DetailCounter
-          numberFontSize={'18px'}
-          stringFontSize={'14px'}
-          date={
-            saleInfo && convertTimeStamp(saleInfo.endOpenSaleTime, 'YYYY-MM-DD')
-          }></DetailCounter>
       </Box>
       <Box d="flex">
         <Text
@@ -100,15 +147,13 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
             <Text color={'gray.400'} mr={'3px'}>
               Exclusive Sale :{' '}
             </Text>
-            <Text {...detailSubTextStyle}>
-              {saleStartTime} ~ {saleEndTime}
-            </Text>
+            <Text {...detailSubTextStyle}>{exclusiveSale}</Text>
           </Flex>
           <Flex w={'235px'}>
             <Text color={'gray.400'} mr={'3px'}>
               Remained Amount :{' '}
             </Text>
-            <Text> {userAllocation}</Text>
+            <Text> {remainedAmount}</Text>
           </Flex>
         </Box>
         <Box d="flex" fontSize={'13px'} justifyContent="space-between">
@@ -116,21 +161,27 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
             <Text color={'gray.400'} mr={'3px'}>
               Open Sale :{' '}
             </Text>
-            <Text {...detailSubTextStyle}>{userTierAllocation}</Text>
+            <Text {...detailSubTextStyle}>{openSale}</Text>
           </Flex>
           <Flex w={'235px'}>
             <Text color={'gray.400'} mr={'3px'}>
               Next Vesting Date :{' '}
             </Text>
-            <Text {...detailSubTextStyle}>
-              {saleInfo?.projectTokenRatio} TON ={' '}
-              {saleInfo?.projectFundingTokenRatio} {saleInfo?.tokenName}
-            </Text>
+            <Text {...detailSubTextStyle}>{vestingDay}</Text>
           </Flex>
         </Box>
       </Box>
       <Box mt={'46px'}>
-        <CustomButton text={'Participate'}></CustomButton>
+        <CustomButton
+          text={'Claim'}
+          func={() =>
+            account &&
+            starterActions.claim({
+              account,
+              library,
+              address: saleInfo.saleContractAddress,
+            })
+          }></CustomButton>
       </Box>
     </Flex>
   );

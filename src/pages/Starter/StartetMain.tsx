@@ -26,12 +26,18 @@ export const StarterMain = () => {
   useEffect(() => {
     if (starterData) {
       const {activeProjects, upcomingProjects, pastProjects} = starterData;
-      setActiveProject(activeProjects);
-      setUpcomingProject(upcomingProjects);
-      setPastProject(pastProjects);
-      setPending(false);
+      if (
+        activeProjects.length > 0 ||
+        upcomingProjects.length > 0 ||
+        pastProject.length > 0
+      ) {
+        setActiveProject(activeProjects);
+        setUpcomingProject(upcomingProjects);
+        setPastProject(pastProjects);
+        setPending(false);
+      }
     }
-  }, [starterData, chainId]);
+  }, [starterData, chainId, pastProject.length]);
 
   return (
     <Flex flexDir="column" w={'100%'} alignItems="center">

@@ -5,16 +5,19 @@ import starterActions from '../../actions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect, useState} from 'react';
 import {Tier} from '@Starter/types';
+import {AdminObject} from '@Admin/types';
+import {convertTimeStamp} from 'utils/convertTIme';
 
 type WhiteListProps = {
   date: string;
   startDate: string;
   endDate: string;
   userTier: Tier;
+  activeProjectInfo: any;
 };
 
 export const WhiteList: React.FC<WhiteListProps> = (prop) => {
-  const {date, startDate, endDate, userTier} = prop;
+  const {date, startDate, endDate, userTier, activeProjectInfo} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
@@ -24,18 +27,19 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
 
   useEffect(() => {
     async function getInfo() {
-      if (account && library) {
+      if (account && library && activeProjectInfo) {
         const whiteListInfo = await starterActions.isWhiteList({
           account,
           library,
+          address: activeProjectInfo.saleContractAddress,
         });
         setIsWhiteList(whiteListInfo[0]);
       }
     }
-    if (account && library) {
+    if (account && library && activeProjectInfo) {
       getInfo();
     }
-  }, [account, library]);
+  }, [account, library, activeProjectInfo]);
 
   return (
     <Flex flexDir="column" pos="relative" h={'100%'} pt={'70px'} pl={'45px'}>
@@ -51,15 +55,27 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
       </Text>
       <Box d="flex" {...STATER_STYLE.mainText({colorMode, fontSize: 34})}>
         <Text mr={'25px'}>
-          {startDate} ~ {endDate}
+          {convertTimeStamp(activeProjectInfo?.timeStamps.startExclusiveTime)} ~{' '}
+          {convertTimeStamp(
+            activeProjectInfo?.timeStamps.endExclusiveTime,
+            'MM.D',
+          )}
         </Text>
-        <DetailCounter date={date}></DetailCounter>
+        <DetailCounter
+          date={Number(
+            activeProjectInfo?.timeStamps.endExclusiveTime + '000',
+          )}></DetailCounter>
       </Box>
       <Box pos="absolute" bottom={'13px'}>
         <CustomButton
           text={'Add whitelist'}
           func={() =>
-            account && starterActions.addWhiteList({account, library})
+            account &&
+            starterActions.addWhiteList({
+              account,
+              library,
+              address: activeProjectInfo.saleContractAddress,
+            })
           }
           isDisabled={
             userTier === 0 || isWhiteList ? true : false
