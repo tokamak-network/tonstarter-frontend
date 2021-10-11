@@ -237,16 +237,16 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           Staking
         </NavLink>
         <NavLink
-          to="/dao"
-          className={match?.isExact ? 'link-match' : 'link'}
-          style={{zIndex: 100}}>
-          DAO
-        </NavLink>
-        <NavLink
           to="/pools"
           className={match?.isExact ? 'link-match' : 'link'}
           style={{zIndex: 100}}>
           Pools
+        </NavLink>
+        <NavLink
+          to="/dao"
+          className={match?.isExact ? 'link-match' : 'link'}
+          style={{zIndex: 100}}>
+          DAO
         </NavLink>
         <NavLink
           to="/starter"
