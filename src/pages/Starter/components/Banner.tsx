@@ -11,15 +11,16 @@ export const Banner = () => {
       pos="relative"
       w={'100%'}
       h={'100vh'}
-      paddingTop={'190px'}
       // bgImage={bannerImg1X}
       // backgroundRepeat="no-repeat"
       // backgroundPosition="center"
-      backgroundColor={'#0F1115'}>
+      backgroundColor={'#0F1115'}
+      alignItems="center"
+      justifyContent="center">
       <img
         alt={'banner-img'}
         src={bannerImg1X}
-        style={{width: '100%', height: '510px', objectFit: 'cover'}}></img>
+        style={{width: '1440px', height: '510px', objectFit: 'cover'}}></img>
       <Flex
         w={'100%'}
         pos="absolute"
