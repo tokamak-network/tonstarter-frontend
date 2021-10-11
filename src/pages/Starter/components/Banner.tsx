@@ -1,6 +1,7 @@
 import {Flex, Image, Text, useTheme} from '@chakra-ui/react';
 import bannerImg from 'assets/images/starter/banner2x.png';
-import bannerImg1X from 'assets/images/starter/Background_img.png';
+import bannerImg1X from 'assets/images/starter/Background-img@2x.png';
+import {CustomButton} from 'components/Basic/CustomButton';
 
 export const Banner = () => {
   const theme = useTheme();
@@ -9,12 +10,13 @@ export const Banner = () => {
     <Flex
       pos="relative"
       w={'100%'}
-      h={'510px'}
-      bgImage={bannerImg1X}
-      backgroundRepeat="no-repeat"
-      backgroundPosition="center"
+      h={'100vh'}
+      paddingTop={'190px'}
+      // bgImage={bannerImg1X}
+      // backgroundRepeat="no-repeat"
+      // backgroundPosition="center"
       backgroundColor={'#0F1115'}>
-      {/* <Image src={bannerImg1X} w={'100%'} h={'510px'} objectFit="cover"></Image> */}
+      <Image src={bannerImg1X} w={'100%'} h={'510px'} objectFit="cover"></Image>
       <Flex
         w={'100%'}
         pos="absolute"
@@ -38,7 +40,7 @@ export const Banner = () => {
           lineHeight={1.14}
           mb={'20px'}>
           <Text>DOOROPEN</Text>
-          <Text>First Metaverse NFT</Text>
+          <Text>Coming soon</Text>
         </Flex>
         <Flex
           flexDir="column"
@@ -49,6 +51,21 @@ export const Banner = () => {
           color={'lightgray'}>
           <Text>NFT Designed to Distribute Value to Fandom</Text>
           <Text>Virtual Human</Text>
+        </Flex>
+        <Flex
+          flexDir="column"
+          alignItems="center"
+          fontSize={22}
+          fontFamily={roboto}
+          lineHeight={1.55}
+          color={'lightgray'}
+          mt={'34px'}>
+          <CustomButton
+            text={'Website'}
+            func={(e: any) => {
+              e.preventDefault();
+              window.open('https://dooropen.space/');
+            }}></CustomButton>
         </Flex>
       </Flex>
     </Flex>

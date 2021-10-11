@@ -40,11 +40,11 @@ export const StarterMain = () => {
   }, [starterData, chainId, pastProject.length]);
 
   return (
-    <Flex flexDir="column" w={'100%'} alignItems="center">
+    <Flex flexDir="column" w={'100%'} alignItems="center" h={'100vh'}>
       <Flex mb={'60px'} w={'100%'}>
         <Banner></Banner>
       </Flex>
-      {pending === true ? (
+      {/* {pending === true ? (
         <Center>
           <LoadingComponent />
         </Center>
@@ -66,7 +66,7 @@ export const StarterMain = () => {
             <PastProject pastProject={pastProject}></PastProject>
           </Box>
         )}
-      </Flex>
+      </Flex> */}
     </Flex>
   );
 };
