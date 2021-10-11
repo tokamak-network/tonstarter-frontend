@@ -16,7 +16,10 @@ export const Banner = () => {
       // backgroundRepeat="no-repeat"
       // backgroundPosition="center"
       backgroundColor={'#0F1115'}>
-      <Image src={bannerImg1X} w={'100%'} h={'510px'} objectFit="cover"></Image>
+      <img
+        alt={'banner-img'}
+        src={bannerImg1X}
+        style={{width: '100%', height: '510px', objectFit: 'cover'}}></img>
       <Flex
         w={'100%'}
         pos="absolute"
