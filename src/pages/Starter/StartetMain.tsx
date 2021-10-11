@@ -13,6 +13,7 @@ import store from 'store';
 import {useEffect, useState} from 'react';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {LoadingComponent} from 'components/Loading';
+import {useBlockNumber} from 'hooks/useBlock';
 
 export const StarterMain = () => {
   const starterData = store.getState().starters.data;
@@ -24,15 +25,18 @@ export const StarterMain = () => {
   const [pastProject, setPastProject] = useState<PastProjectType[]>([]);
   const [myProject, setMyProject] = useState<any[]>([]);
   const [pending, setPending] = useState<boolean>(true);
+  const {blockNumber} = useBlockNumber();
 
   useEffect(() => {
+    console.log('--starterData--');
+    console.log(starterData);
     if (starterData) {
       const {activeProjects, upcomingProjects, pastProjects, myProjects} =
         starterData;
       if (
         activeProjects.length > 0 ||
         upcomingProjects.length > 0 ||
-        pastProject.length > 0
+        pastProjects.length > 0
       ) {
         setActiveProject(activeProjects);
         setUpcomingProject(upcomingProjects);
@@ -41,7 +45,7 @@ export const StarterMain = () => {
         setPending(false);
       }
     }
-  }, [starterData, chainId, pastProject.length]);
+  }, [starterData, chainId, blockNumber]);
 
   return (
     <Flex flexDir="column" w={'100%'} alignItems="center">
