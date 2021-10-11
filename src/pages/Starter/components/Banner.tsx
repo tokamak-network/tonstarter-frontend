@@ -14,7 +14,7 @@ export const Banner = () => {
       // bgImage={bannerImg1X}
       // backgroundRepeat="no-repeat"
       // backgroundPosition="center"
-      backgroundColor={'#0F1115'}
+      backgroundColor={'#101216'}
       alignItems="center"
       justifyContent="center">
       <img
