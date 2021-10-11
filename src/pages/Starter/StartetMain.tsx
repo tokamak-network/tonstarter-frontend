@@ -49,7 +49,7 @@ export const StarterMain = () => {
         <Banner></Banner>
       </Flex>
       {pending === true ? (
-        <Center>
+        <Center mt={'80px'} mb={'80px'}>
           <LoadingComponent />
         </Center>
       ) : null}
