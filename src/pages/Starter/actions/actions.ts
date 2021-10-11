@@ -1,4 +1,3 @@
-import {DEPLOYED} from 'constants/index';
 import * as publicSale from 'services/abis/PublicSale.json';
 import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';

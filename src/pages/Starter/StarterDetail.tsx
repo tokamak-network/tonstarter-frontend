@@ -90,8 +90,6 @@ export const StarterDetail = () => {
 
   useEffect(() => {
     async function getInfo() {
-      console.log('account && library && PUBLICSALE_CONTRACT && saleInfo');
-      console.log(account && library && PUBLICSALE_CONTRACT && saleInfo);
       if (account && library && PUBLICSALE_CONTRACT && saleInfo) {
         const res = await Promise.all([
           starterActions.calculTier({
@@ -328,7 +326,8 @@ export const StarterDetail = () => {
             <DetailTable
               saleInfo={saleInfo}
               status={activeStatus}
-              detailInfo={detailInfo}></DetailTable>
+              detailInfo={detailInfo}
+              activeProjectInfo={activeProjectInfo}></DetailTable>
           )}
         </Flex>
       </Flex>

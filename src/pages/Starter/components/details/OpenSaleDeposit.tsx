@@ -111,6 +111,13 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
             w={'220px'}
             h={'32px'}
             numberOnly={true}
+            color={
+              Number(inputBalance) > 0
+                ? colorMode === 'light'
+                  ? 'gray.225'
+                  : 'white.100'
+                : 'gray.175'
+            }
             value={inputBalance}
             setValue={setInputBalance}></CustomInput>
         </Box>

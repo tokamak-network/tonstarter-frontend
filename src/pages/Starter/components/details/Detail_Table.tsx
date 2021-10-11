@@ -9,10 +9,11 @@ type DetailTableProp = {
   status: SaleStatus;
   saleInfo: AdminObject;
   detailInfo: DetailInfo;
+  activeProjectInfo: any;
 };
 
 export const DetailTable = (prop: DetailTableProp) => {
-  const {status, saleInfo, detailInfo} = prop;
+  const {status, saleInfo, detailInfo, activeProjectInfo} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const [selectDetail, setSelectDetail] = useState<boolean>(true);
@@ -39,7 +40,9 @@ export const DetailTable = (prop: DetailTableProp) => {
       </Box>
       <Box d="flex" flexDir="column" pt={'35px'}>
         {selectDetail === true ? (
-          <DetailTableProject saleInfo={saleInfo}></DetailTableProject>
+          <DetailTableProject
+            saleInfo={saleInfo}
+            activeProjectInfo={activeProjectInfo}></DetailTableProject>
         ) : (
           <DetailTableTier
             status={status}

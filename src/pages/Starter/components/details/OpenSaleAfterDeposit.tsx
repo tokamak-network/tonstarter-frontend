@@ -93,7 +93,9 @@ export const OpenSaleAfterDeposit: React.FC<OpenSaleAfterDepositProp> = (
         <DetailCounter
           numberFontSize={'18px'}
           stringFontSize={'14px'}
-          date={activeProjectInfo?.timeStamps.endOpenSaleTime}></DetailCounter>
+          date={Number(
+            activeProjectInfo?.timeStamps.endOpenSaleTime + '000',
+          )}></DetailCounter>
       </Box>
       <Text
         {...STATER_STYLE.subText({colorMode})}
@@ -129,8 +131,8 @@ export const OpenSaleAfterDeposit: React.FC<OpenSaleAfterDepositProp> = (
         <Text {...STATER_STYLE.mainText({colorMode, fontSize: 14})}>
           Details
         </Text>
-        <Box d="flex" fontSize={'13px'} justifyContent="space-between">
-          <Flex>
+        <Box d="flex" fontSize={'13px'}>
+          <Flex w={'235px'}>
             <Text color={'gray.400'} mr={'3px'}>
               Sale Period :{' '}
             </Text>
@@ -146,21 +148,21 @@ export const OpenSaleAfterDeposit: React.FC<OpenSaleAfterDepositProp> = (
               )}
             </Text>
           </Flex>
-          <Flex>
+          <Flex w={'235px'}>
             <Text color={'gray.400'} mr={'3px'}>
               Total Allocation :{' '}
             </Text>
             <Text {...detailSubTextStyle}>{totalAllocation}</Text>
           </Flex>
         </Box>
-        <Box d="flex" fontSize={'13px'} justifyContent="space-between">
-          <Flex>
+        <Box d="flex" fontSize={'13px'}>
+          <Flex w={'235px'}>
             <Text color={'gray.400'} mr={'3px'}>
               Total Deposited :{' '}
             </Text>
             <Text {...detailSubTextStyle}>{totalDeposit}</Text>
           </Flex>
-          <Flex>
+          <Flex w={'235px'}>
             <Text color={'gray.400'} mr={'3px'}>
               Your Deposited :{' '}
             </Text>

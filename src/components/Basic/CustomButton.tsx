@@ -7,23 +7,26 @@ type CustomButtonProp = {
   fontSize?: number;
   isDisabled?: boolean;
   func?: any;
+  bg?: string;
+  style?: any;
 };
 
 export const CustomButton = (prop: CustomButtonProp) => {
-  const {text, w, h, isDisabled, fontSize, func} = prop;
+  const {text, w, h, isDisabled, fontSize, func, style} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {btnStyle} = theme;
   return (
     <Button
+      _hover={{}}
       {...(isDisabled
         ? {...btnStyle.btnDisable({colorMode})}
         : {...btnStyle.btnAble()})}
+      {...style}
       w={w || '150px'}
       h={h || '38px'}
       fontSize={fontSize || 14}
       isDisabled={isDisabled}
-      _hover={{}}
       onClick={func}>
       {text}
     </Button>

@@ -5,10 +5,11 @@ import {DetailTableContainer} from './Detail_Table_Container';
 
 type DetailTableProjectProps = {
   saleInfo: AdminObject;
+  activeProjectInfo: any;
 };
 
 export const DetailTableProject: React.FC<DetailTableProjectProps> = (prop) => {
-  const {saleInfo} = prop;
+  const {saleInfo, activeProjectInfo} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
@@ -27,8 +28,11 @@ export const DetailTableProject: React.FC<DetailTableProjectProps> = (prop) => {
     {
       key: 'Sale Period',
       value: `${convertTimeStamp(
-        saleInfo?.startOpenSaleTime,
-      )} ~ ${convertTimeStamp(saleInfo?.endOpenSaleTime, 'MM-DD')}`,
+        activeProjectInfo?.timeStamps.startOpenSaleTime,
+      )} ~ ${convertTimeStamp(
+        activeProjectInfo?.timeStamps.endOpenSaleTime,
+        'MM-DD',
+      )}`,
     },
     {key: 'Token Allocation', value: '10,000,000'},
     {

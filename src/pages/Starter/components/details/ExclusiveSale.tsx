@@ -1,5 +1,4 @@
 import {Box, useColorMode, useTheme, Flex, Text} from '@chakra-ui/react';
-import {DetailCounter} from './Detail_Counter';
 
 export const ExclusiveSale = () => {
   const {colorMode} = useColorMode();

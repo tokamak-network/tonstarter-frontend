@@ -1,16 +1,15 @@
-import {Box, useColorMode, useTheme, Flex, Text, Input} from '@chakra-ui/react';
+import {Box, useColorMode, useTheme, Flex, Text} from '@chakra-ui/react';
 import {CustomInput} from 'components/Basic';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {useEffect, useState} from 'react';
-import {DetailCounter} from './Detail_Counter';
-import ArrowIcon from 'assets/svgs/arrow_icon.svg';
 import {AdminObject} from '@Admin/types';
-import {getUserTonBalance} from 'client/getUserBalance';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {convertTimeStamp} from 'utils/convertTIme';
 import starterActions from '../../actions';
 import moment from 'moment';
 import {useCallContract} from 'hooks/useCallContract';
+import {BigNumber} from 'ethers';
+import {convertNumber} from 'utils/number';
 
 type ClaimProps = {
   saleInfo: AdminObject;
@@ -91,13 +90,30 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
         const usersEx = await PUBLICSALE_CONTRACT.usersEx(account);
         const usersOpen = await PUBLICSALE_CONTRACT.usersOpen(account);
         const usersClaim = await PUBLICSALE_CONTRACT.usersClaim(account);
-        const ramainedAmount =
-          Number(usersClaim?.totalClaimReward.toString()) -
-          Number(usersClaim?.claimAmount.toString());
+        // const ramainedAmount =
+        //   Number(usersClaim?.totalClaimReward.toString()) -
+        //   Number(usersClaim?.claimAmount.toString());
 
-        setExclusiveSale(usersEx?.saleAmount.toString());
-        setRemainedAmount(String(ramainedAmount));
-        setOpenSale(usersOpen?.saleAmount.toString());
+        const ramainedAmount = BigNumber.from(usersClaim?.totalClaimReward).sub(
+          usersClaim?.claimAmount,
+        );
+
+        const convertedExSaleAmount = convertNumber({
+          amount: usersEx?.saleAmount.toString(),
+          localeString: true,
+        });
+        const convertedRamainedAmount = convertNumber({
+          amount: String(ramainedAmount),
+          localeString: true,
+        });
+        const convertedUsersOpen = convertNumber({
+          amount: usersOpen?.saleAmount.toString(),
+          localeString: true,
+        });
+
+        setExclusiveSale(convertedExSaleAmount || '0');
+        setRemainedAmount(convertedRamainedAmount || '0');
+        setOpenSale(convertedUsersOpen || '0');
       }
     }
     if (account && PUBLICSALE_CONTRACT) {

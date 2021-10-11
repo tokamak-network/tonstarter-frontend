@@ -18,6 +18,12 @@ export type UpcomingProjectType = I_StarterProject & {
 
 export type PastProjectType = I_StarterProject;
 
+export type MyProject = {
+  name: string;
+  saleContractAddress: string;
+  nextClaimableDate: number;
+};
+
 export type SaleStatus = 'whitelist' | 'exclusive' | 'deposit' | 'openSale';
 
 export type ProjectStatus = 'active' | 'upcoming' | 'past';

@@ -3,6 +3,7 @@ import {Contract} from '@ethersproject/contracts';
 import {LibraryType} from 'types';
 import {convertNumber} from 'utils/number';
 import moment from 'moment';
+import {convertTimeStamp} from 'utils/convertTIme';
 
 interface I_CallContract {
   library: LibraryType;
@@ -130,4 +131,27 @@ export async function getStartClaimTime(args: I_CallContract) {
   const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
   const res = await PUBLICSALE_CONTRACT.startClaimTime();
   return res;
+}
+
+export async function getNextVestingDay(args: I_CallContract) {
+  const {library, address} = args;
+  const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
+
+  const startClaimTime = await PUBLICSALE_CONTRACT.startClaimTime();
+  const startClaimTimeNum = Number(startClaimTime.toString());
+  const nowTime = moment().unix();
+  const diffTime = nowTime - startClaimTimeNum;
+  const interval = await PUBLICSALE_CONTRACT.claimInterval();
+  const intervalNum = Number(interval.toString());
+  const endPeriod = await PUBLICSALE_CONTRACT.claimPeriod();
+  const endPeriodNum = Number(endPeriod.toString());
+  const period = diffTime / intervalNum + 1;
+
+  if (period > endPeriodNum) {
+    const nextVestingDate = startClaimTimeNum + intervalNum * period;
+    return convertTimeStamp(nextVestingDate);
+  } else {
+    const nextVestingDate = startClaimTimeNum + intervalNum * endPeriodNum;
+    return convertTimeStamp(nextVestingDate);
+  }
 }

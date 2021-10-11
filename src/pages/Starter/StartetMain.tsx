@@ -3,6 +3,7 @@ import {Banner} from './components/Banner';
 import {ActiveProject} from './components/ActiveProject';
 import {PastProject} from './components/PastProject';
 import {UpcomingProject} from './components/UpcomingProject';
+import {MyProject} from './components/MyProject';
 import {
   ActiveProjectType,
   UpcomingProjectType,
@@ -15,17 +16,19 @@ import {LoadingComponent} from 'components/Loading';
 
 export const StarterMain = () => {
   const starterData = store.getState().starters.data;
-  const {chainId} = useActiveWeb3React();
+  const {chainId, account} = useActiveWeb3React();
   const [activeProject, setActiveProject] = useState<ActiveProjectType[]>([]);
   const [upcomingProject, setUpcomingProject] = useState<UpcomingProjectType[]>(
     [],
   );
   const [pastProject, setPastProject] = useState<PastProjectType[]>([]);
+  const [myProject, setMyProject] = useState<any[]>([]);
   const [pending, setPending] = useState<boolean>(true);
 
   useEffect(() => {
     if (starterData) {
-      const {activeProjects, upcomingProjects, pastProjects} = starterData;
+      const {activeProjects, upcomingProjects, pastProjects, myProjects} =
+        starterData;
       if (
         activeProjects.length > 0 ||
         upcomingProjects.length > 0 ||
@@ -34,6 +37,7 @@ export const StarterMain = () => {
         setActiveProject(activeProjects);
         setUpcomingProject(upcomingProjects);
         setPastProject(pastProjects);
+        setMyProject(myProjects);
         setPending(false);
       }
     }
@@ -41,7 +45,7 @@ export const StarterMain = () => {
 
   return (
     <Flex flexDir="column" w={'100%'} alignItems="center">
-      <Flex mb={'60px'} w={'100%'}>
+      <Flex w={'100%'}>
         <Banner></Banner>
       </Flex>
       {pending === true ? (
@@ -53,6 +57,11 @@ export const StarterMain = () => {
         {activeProject.length > 0 && (
           <Box mb={'80px'}>
             <ActiveProject activeProject={activeProject}></ActiveProject>
+          </Box>
+        )}
+        {account && myProject.length > 0 && (
+          <Box mb={'80px'}>
+            <MyProject myProject={myProject}></MyProject>
           </Box>
         )}
         {upcomingProject.length > 0 && (

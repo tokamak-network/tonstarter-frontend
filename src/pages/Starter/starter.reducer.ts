@@ -3,7 +3,12 @@ import {RootState} from 'store/reducers';
 import {fetchStarterURL} from 'constants/index';
 import {AdminObject} from '@Admin/types';
 import moment from 'moment';
-import {ActiveProjectType, UpcomingProjectType, PastProjectType} from './types';
+import {
+  ActiveProjectType,
+  UpcomingProjectType,
+  PastProjectType,
+  MyProject,
+} from './types';
 import starterActions from './actions';
 interface StarterState {
   data: {
@@ -13,6 +18,8 @@ interface StarterState {
     activeData: AdminObject[];
     upcomingData: AdminObject[];
     pastData: AdminObject[];
+    myProjects: any[];
+    // myProject: MyProject[];
   };
   loading: 'idle' | 'pending';
   error: any;
@@ -27,6 +34,7 @@ const initialState = {
     activeData: [],
     upcomingData: [],
     pastData: [],
+    myProjects: [],
   },
   loading: 'idle',
   error: null,
@@ -67,6 +75,10 @@ export const fetchStarters = createAsyncThunk(
     );
     const pastData = matchData.filter(
       (data: AdminObject) => data.endOpenSaleTime < nowTimeStamp,
+    );
+
+    const myProjects = matchData.filter(
+      (data: AdminObject) => data.position === 'active',
     );
 
     const activeProjects = await Promise.all(
@@ -156,6 +168,7 @@ export const fetchStarters = createAsyncThunk(
       activeData,
       upcomingData,
       pastData,
+      myProjects,
     };
   },
 );

@@ -14,7 +14,7 @@ import {Link, useRouteMatch} from 'react-router-dom';
 import {ActiveProjectType} from '@Starter/types';
 import starterActions from '../actions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import moment from 'moment';
 
 type ActiveProjectProp = {
@@ -31,14 +31,18 @@ export const ActiveProject = (props: any) => {
   const {STATER_STYLE} = theme;
   const {url} = match;
 
+  const [view, setView] = useState(false);
+
   return (
     <Flex flexDir="column">
-      <Text
-        {...STATER_STYLE.header({colorMode})}
-        alignSelf="center"
-        mb={'30px'}>
-        Active Projects
-      </Text>
+      {view && (
+        <Text
+          {...STATER_STYLE.header({colorMode})}
+          alignSelf="center"
+          mb={'30px'}>
+          Active Projects
+        </Text>
+      )}
       <Grid templateColumns="repeat(3, 1fr)" gap={30}>
         {activeProject.map((project: any) => {
           const tokenType = checkTokenType(
@@ -49,6 +53,8 @@ export const ActiveProject = (props: any) => {
           if (nowTimeStamp > project.timeStamps.endOpenSaleTime) {
             return null;
           }
+
+          setView(true);
 
           return (
             <Link to={`${url}/active/${project.name}`}>
