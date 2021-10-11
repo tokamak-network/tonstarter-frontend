@@ -53,7 +53,7 @@ export const Banner = () => {
           fontFamily={roboto}
           lineHeight={1.55}
           color={'lightgray'}>
-          <Text>First Metaverse NFT with Virtual Humans</Text>
+          <Text>First Metaverse NFT with</Text>
           <Text>Virtual Human</Text>
         </Flex>
         <Flex
