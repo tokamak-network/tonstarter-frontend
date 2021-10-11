@@ -16,7 +16,7 @@ export const NetworkContextName = `${new Date().getTime()}-NETWORK`;
 export const DEFAULT_NETWORK = REACT_APP_MODE === 'DEV' ? 4 : 1;
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
-const API_SERVER =
+export const API_SERVER =
   REACT_APP_MODE === 'DEV' ? REACT_APP_DEV_API : REACT_APP_MAINNET_API;
 export const BASE_PROVIDER =
   REACT_APP_MODE === 'DEV'
@@ -24,6 +24,7 @@ export const BASE_PROVIDER =
     : ethers.getDefaultProvider('mainnet');
 export const fetchStakeURL = `${API_SERVER}/stakecontracts?chainId=${DEFAULT_NETWORK}`;
 export const fetchValutURL = `${API_SERVER}/vaults?chainId=${DEFAULT_NETWORK}`;
+export const fetchStarterURL = `${API_SERVER}/starter?chainId=${DEFAULT_NETWORK}`;
 export const permitTOSAddress =
   REACT_APP_MODE === 'DEV' ? '0x865264b30eb29A2978b9503B8AfE2A2DDa33eD7E' : '';
 
@@ -62,6 +63,7 @@ const MAINNET_DEPLOYED = {
   NPM_Address: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
   BasePool_Address: '0x1c0ce9aaa0c12f53df3b4d8d77b82d6ad343b4e4',
   StakeTonControl_ADDRESS: '0xacdded49ac67ba9c87b1bbc5cb248b1bd7dc0f19',
+  PublicSale_ADDRESS: '',
 };
 
 const RINKEBY_DEPLOYED = {
@@ -76,9 +78,10 @@ const RINKEBY_DEPLOYED = {
   Airdrop_ADDRESS: '0xD958cD2d03aaEe169953780234848445504571E8',
   UniswapStaking_Address: '0x99b09c6CfF45C778a4F5fBF7a4EAD6c3DEBfdcBb',
   NPM_Address: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
-  LockTOS_ADDRESS: '0x92D36bb6a7d5810dD993E4026bA32020B5BFB156',
+  LockTOS_ADDRESS: '0x8487632Aa57d663A84E836c212977a022346c50D',
   BasePool_Address: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
   StakeTonControl_ADDRESS: '0xF049030A9D6faCbD6C76E08794CC751b1Dbaa072',
+  PublicSale_ADDRESS: '0x230f12eb4A37055dC0E11B3f7405c9EE94E71ee9',
 };
 
 export const DEPLOYED: DEPLOYED_TYPE =

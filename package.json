@@ -13,6 +13,7 @@
     "@ethersproject/experimental": "^5.4.0",
     "@ethersproject/providers": "^5.4.3",
     "@fontsource/open-sans": "^4.4.5",
+    "@fontsource/poppins": "^4.5.0",
     "@fontsource/rajdhani": "^4.4.5",
     "@fontsource/roboto": "^4.3.0",
     "@fontsource/titillium-web": "^4.3.0",
@@ -34,10 +35,12 @@
     "@web3-react/network-connector": "^6.1.9",
     "@web3-react/walletconnect-connector": "^6.1.9",
     "@web3-react/walletlink-connector": "^6.1.9",
+    "axios": "^0.21.4",
     "d3": "^7.0.0",
     "eth-sig-util": "^3.0.1",
     "ethereumjs-util": "^7.1.0",
     "ethers": "^5.2.0",
+    "formik": "^2.2.9",
     "framer-motion": "^4.1.4",
     "graphql": "^15.5.1",
     "graphql-codegen": "^0.4.0",
@@ -54,6 +57,7 @@
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-animated-dots": "^1.1.0",
+    "react-countdown": "^2.3.2",
     "react-custom-scrollbars-2": "^4.4.0",
     "react-device-detect": "^1.17.0",
     "react-dom": "^17.0.2",
@@ -72,7 +76,8 @@
     "tokamak-staking-lib": "0.0.18",
     "web-vitals": "^1.0.1",
     "web3": "^1.5.0",
-    "web3-utils": "^1.2.6"
+    "web3-utils": "^1.2.6",
+    "yup": "^0.32.9"
   },
   "scripts": {
     "start": "craco start",

@@ -42,6 +42,13 @@ export const getUserTonBalance = async ({account, library}: any) => {
   return balance;
 };
 
+export const getUserTonOriginBalance = async ({account, library}: any) => {
+  const contract = new Contract(TON_ADDRESS, ERC20.abi, library);
+  const contractIserBalance = await contract.balanceOf(account);
+  const balance = convertNumber({amount: String(contractIserBalance)});
+  return {ton: balance || '0', tonOrigin: contractIserBalance.toString()};
+};
+
 export const getUserWTONBalance = async ({account, library}: UserContract) => {
   const {WTON_ADDRESS} = DEPLOYED;
   const WTON_CONTRACT = new Contract(WTON_ADDRESS, WTONABI.abi, library);
