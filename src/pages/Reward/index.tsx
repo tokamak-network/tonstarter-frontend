@@ -44,6 +44,8 @@ export const Reward = () => {
 
   const onChangeSelectBoxPools = (e: any) => {
     const filterValue = e.target.value;
+    console.log(filterValue);
+    
     const result = poolsObj.filter((pool) => pool.name === filterValue);
     setPrograms(result[0].rewardPrograms);
   };
@@ -89,6 +91,7 @@ export const Reward = () => {
                 Manage
               </FormLabel>
               <Switch
+              colorScheme={'green'}
                 onChange={() =>
                   selected === 'reward'
                     ? setSelected('manage')
@@ -107,7 +110,7 @@ export const Reward = () => {
           </Flex>
         </Flex>
         {selected === 'reward' ? (
-          <RewardContainer pools={poolsObj} />
+          <RewardContainer pools={data} />
         ) : (
           <ManageContainer pools={poolsObj} />
         )}

@@ -36,12 +36,12 @@ import {
     const [claimableAmount, setClaimableAmount] = useState<Number>(100000.0);
     const [requestAmount, setRequestAmout] = useState<Number>(0);
     return (
-      <Container>
+      <Box display={'flex'} justifyContent={'flex-end'}  >
         <Box
           border={themeDesign.border[colorMode]}
           h={'300px'}
-          w={'400px'}
-          p={'10px'} display={'flex'} flexDirection={'column'} alignItems={'center'} >
+          w={'284px'}
+          p={'10px'} mt={'30px'} display={'flex'} flexDirection={'column'} alignItems={'center'} >
          <Box w={'100%'}>
           <Text fontWeight={'600'}>Claim</Text>
           <Flex justifyContent={'space-between'}>
@@ -75,7 +75,7 @@ import {
               _hover={{backgroundColor: 'blue.100'}}>claim</Button>
         </Box>
       
-      </Container>
+      </Box>
     );
   };
   

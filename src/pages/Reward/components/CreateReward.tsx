@@ -33,6 +33,7 @@ import '../css/calendarStyles.css';
 // import 'react-day-picker/lib/style.css';
 import clock from 'assets/svgs/poll_time_active_icon.svg';
 import MomentLocaleUtils from 'react-day-picker/moment';
+import {values} from 'lodash';
 const {TOS_ADDRESS, UniswapStaker_Address} = DEPLOYED;
 
 const themeDesign = {
@@ -75,9 +76,19 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
   const {account, library} = useActiveWeb3React();
   const [claimableAmount, setClaimableAmount] = useState<Number>(100000.0);
   const [amount, setAmount] = useState<Number>(0);
+  const [name, setName] = useState<string>('');
   const [reward, setReward] = useState<Number>(0);
   const [startTime, setStartTime] = useState<number>(0);
-  const endTime = 1633848121;
+  const [endTime, setEndTime] = useState<number>(0);
+  const [poolsArr, setPoolsArr] = useState([]);
+
+  useEffect(() => {
+    let poolArr: any = [];
+    poolArr = pools.map((pool) => {
+      return pool.name;
+    });
+    setPoolsArr(poolArr);
+  }, []);
 
   const generateSig = async (account: string, key: any) => {
     const randomvalue = await getRandomKey(account);
@@ -168,7 +179,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
       await tx.wait();
       const sig = await generateSig(account.toLowerCase(), key);
       const args: CreateReward = {
-        poolName: 'lakmi test5',
+        poolName: name,
         poolAddress: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
         rewardToken: TOS_ADDRESS,
         account: account,
@@ -187,10 +198,20 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
     }
   };
 
-  const logDate = (date: any) => {
+  const setStart = (date: any) => {
     const dateSelected = Number(new Date(date));
     setStartTime(dateSelected / 1000);
   };
+  const setEnd = (date: any) => {
+    const dateSelected = Number(new Date(date));
+    setEndTime(dateSelected / 1000);
+  };
+
+  const onChangeSelectBoxPools = (e: any) => {
+    const filterValue = e.target.value;
+    setName(filterValue);
+  };
+
   const dayStyle =
     colorMode === 'light'
       ? `.DayPicker-Day--outside {
@@ -231,7 +252,7 @@ input {
 }`;
 
   return (
-    <Container>
+    <Box display={'flex'} justifyContent={'flex-end'}>
       <Box
         border={themeDesign.border[colorMode]}
         h={'920px'}
@@ -253,10 +274,15 @@ input {
             w={'64px'}>
             Pool
           </Text>
-          <Select h={'30px'} color={'#86929d'} fontSize={'13px'} w={'190px'}>
-            {pools.map((item, index) => (
+          <Select
+            h={'30px'}
+            color={'#86929d'}
+            fontSize={'13px'}
+            w={'190px'}
+            onChange={onChangeSelectBoxPools}>
+            {poolsArr.map((item, index) => (
               <option value={item} key={index}>
-                {item.name}
+                {item}
               </option>
             ))}
           </Select>
@@ -282,7 +308,7 @@ input {
               keepFocus={false}
               formatDate={MomentLocaleUtils.formatDate}
               format="MM/DD/YYYY"
-              onDayChange={logDate}
+              onDayChange={setStart}
               dayPickerProps={{
                 showOutsideDays: true,
               }}
@@ -314,7 +340,7 @@ input {
               keepFocus={false}
               formatDate={MomentLocaleUtils.formatDate}
               format="MM/DD/YYYY"
-              onDayChange={logDate}
+              onDayChange={setEnd}
               dayPickerProps={{
                 showOutsideDays: true,
               }}
@@ -345,7 +371,7 @@ input {
             }}
             color={themeDesign.font[colorMode]}
           />
-           <Button
+          <Button
             w={'70px'}
             h={'30px'}
             bg={'blue.500'}
@@ -357,22 +383,31 @@ input {
             Search
           </Button>
         </Flex>
-        <Flex justifyContent={'space-between'}>
-          <Text  color={colorMode === 'light' ? 'gray.400' : 'white.100'}
+        <Flex justifyContent={'space-between'} alignItems={'center'} h={'45px'}>
+          <Text
+            color={colorMode === 'light' ? 'gray.400' : 'white.100'}
             fontWeight={500}
             fontSize={'13px'}
-            w={'64px'}>Amount</Text>
-          <Input h={'30px'}
+            w={'64px'}>
+            Amount
+          </Text>
+          <Input
+            h={'30px'}
             w={'190px'}
             border={themeDesign.border[colorMode]}
             fontSize={'13px'}
-            placeholder={'Search'}
+            value={Number(amount)}
+            onChange={(e) => {
+              const {value} = e.target;
+              setAmount(Number(value));
+            }}
             _focus={{
               border: themeDesign.border[colorMode],
             }}
-            color={themeDesign.font[colorMode]}/>
+            color={themeDesign.font[colorMode]}
+          />
         </Flex>
-        <Flex mt={'27px'} justifyContent={'center'} >
+        <Flex mt={'27px'} justifyContent={'center'}>
           <Button
             w={'100px'}
             h={'38px'}
@@ -397,6 +432,6 @@ input {
           </Button>
         </Flex>
       </Box>
-    </Container>
+    </Box>
   );
 };

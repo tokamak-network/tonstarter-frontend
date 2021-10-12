@@ -9,7 +9,7 @@ import {
   import {useAppSelector} from 'hooks/useRedux';
   import {getPoolName} from '../../utils/token';
   import {ClaimReward} from './components/ClaimReward';
-
+  import { RewardProgramCard } from './components/RewardProgramCard';
   import {
     chakra,
     // useTheme
@@ -21,10 +21,22 @@ import {
 
   export const RewardContainer: FC<RewardContainerProps> =({
     pools }) =>{
+
+      useEffect (()=> {
+        console.log(pools);
+        
+      },[])
         return (
-            <Flex justifyContent={'space-between'} mt={'30px'}>
-               <Flex>Reward container</Flex>
-              <Flex>
+          <Flex  justifyContent={'space-between'}>
+            <Flex mt={'30px'} flexWrap={'wrap'}>
+               { pools.map((pool, index) => (
+                 <RewardProgramCard name={pool.poolName} />
+               ))
+                
+                }
+             
+            </Flex>
+            <Flex>
               <ClaimReward/>
               </Flex>
             </Flex>

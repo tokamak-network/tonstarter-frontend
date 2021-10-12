@@ -74,6 +74,91 @@ const colors = {
   },
 };
 
+interface REWARD_PROP {
+  colorMode: 'light' | 'dark';
+  fontSize?: number;
+}
+export const REWARD_STYLE = {
+  containerStyle: (props: REWARD_PROP & {isUserTier?: boolean}) => ({
+    w: 378,
+    h: 295,
+    px: 25,
+    pt: '20px',
+    pb: 25,
+    bg: props.colorMode === 'light' ? 'white.100' : '',
+    borderRadius: 15,
+    boxShadow: '0 2px 5px 0 rgba(61, 73, 93, 0.1)',
+    border: props.isUserTier
+      ? '1px solid #0070ED'
+      : props.colorMode === 'light'
+      ? ''
+      : '1px solid #535353',
+    _hover: {border: 'solid 1px #0070ed'},
+    cursor: 'pointer',
+    fontFamily: fonts.fld,
+  }),
+  header: (props: REWARD_PROP) => ({
+    fontSize: props.fontSize || 32,
+    fontWeight: 600,
+    color: props.colorMode === 'light' ? 'gray.250' : 'white.100',
+  }),
+  mainText: (props: REWARD_PROP) => ({
+    fontSize: props.fontSize || 28,
+    fontWeight: 600,
+    color: props.colorMode === 'light' ? 'gray.375' : 'white.100',
+  }),
+  subText: (props: REWARD_PROP) => ({
+    fontSize: props.fontSize || 14,
+    fontWeight: 600,
+    color: props.colorMode === 'light' ? 'gray.150' : 'white.100',
+  }),
+  subTextBlack: (props: REWARD_PROP) => ({
+    fontSize: props.fontSize || 14,
+    fontWeight: 600,
+    color: props.colorMode === 'light' ? 'gray.125' : 'white.100',
+  }),
+  progress: {
+    mainText: (props: REWARD_PROP) => ({
+      fontSize: props.fontSize || 15,
+      fontWeight: 600,
+      color: props.colorMode === 'light' ? 'gray.525' : 'white.100',
+    }),
+    percent: (props: REWARD_PROP & {isZero: boolean}) => ({
+      fontSize: 13,
+      fontWeight: 600,
+      color:
+        props.colorMode === 'light'
+          ? props.isZero === true
+            ? 'gray.150'
+            : 'blue.100'
+          : props.isZero === true
+          ? 'white.100'
+          : '',
+    }),
+  },
+  btn: (props: REWARD_PROP & {isActive: boolean}) => ({
+    bg: '',
+    _hover: '',
+    p: 0,
+    textAlign: 'center',
+    verticalAlign: 'center',
+    fontSize: 17,
+    borderRadius: 0,
+    paddingBottom: props.isActive ? '' : '1px',
+    color: props.isActive ? '#0070ed' : '#90a5b9',
+    borderBottom: props.isActive ? '2px solid #0070ed' : '1px solid #c5d1d9',
+  }),
+  table: {
+    container: (props: REWARD_PROP & {isLast: boolean}) => ({
+      borderBottom:
+        props?.isLast === true
+          ? ''
+          : props.colorMode === 'light'
+          ? '1px solid #f4f6f8'
+          : '1px solid #323232',
+    }),
+  },
+};
 const TextWrapper = styled(Text)<{color: keyof Colors}>`
   color: ${({color, theme}) => (theme as any)[color]};
 `;
@@ -320,6 +405,7 @@ const theme = extendTheme({
   btnHover,
   btnStyle,
   headerMargin,
+  REWARD_STYLE
 });
 
 export default theme;
