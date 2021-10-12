@@ -30,6 +30,8 @@ export const MyProject: React.FC<MyProjectProp> = (props) => {
   const {STATER_STYLE} = theme;
 
   const [vestingDay, setVestingDay] = useState<any[]>();
+  const [claimAmount, setClaimAmount] = useState<any[]>();
+  const [holding, setHolding] = useState<any[]>();
 
   useEffect(() => {
     async function getVestingDays(address: string) {
@@ -46,6 +48,51 @@ export const MyProject: React.FC<MyProjectProp> = (props) => {
       });
     }
   }, [library, myProject]);
+
+  useEffect(() => {
+    async function getClaimAmount(address: string) {
+      if (account && library && address) {
+        // const userClaimAmount = await starterActions.getCalculClaimAmount({
+        //   account,
+        //   library,
+        //   address,
+        // });
+        return '0';
+        // return userClaimAmount || '0';
+      }
+    }
+    if (account && library && myProject) {
+      Promise.all(
+        myProject.map((project: any) => {
+          return getClaimAmount(project.saleContractAddress);
+        }),
+      ).then((data) => {
+        setClaimAmount(data);
+      });
+    }
+  }, [account, library, myProject]);
+
+  useEffect(() => {
+    async function getDepositAmount(address: string) {
+      if (account && library && address) {
+        const userDeposit = await starterActions.getUserDeposit({
+          account,
+          library,
+          address,
+        });
+        return userDeposit || '0';
+      }
+    }
+    if (account && library && myProject) {
+      Promise.all(
+        myProject.map((project: any) => {
+          return getDepositAmount(project.saleContractAddress);
+        }),
+      ).then((data) => {
+        setHolding(data);
+      });
+    }
+  }, [account, library, myProject]);
 
   return (
     <Flex flexDir="column">
@@ -126,7 +173,7 @@ export const MyProject: React.FC<MyProjectProp> = (props) => {
                         colorMode,
                         fontSize: 20,
                       })}>
-                      10,000,000
+                      {holding && holding[index]}
                     </Text>
                     <Text>TON</Text>
                   </Box>
@@ -146,7 +193,7 @@ export const MyProject: React.FC<MyProjectProp> = (props) => {
                         colorMode,
                         fontSize: 20,
                       })}>
-                      10,000,000
+                      {claimAmount && claimAmount[index]}
                     </Text>
                     <Text>TON</Text>
                   </Box>

@@ -121,7 +121,7 @@ export async function getCalculClaimAmount(
   const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
   const res = await PUBLICSALE_CONTRACT.calculClaimAmount(account);
   const convertedNum = convertNumber({
-    amount: res?.depositAmount.toString() || '0',
+    amount: res.toString() || '0',
   });
   return convertedNum;
 }

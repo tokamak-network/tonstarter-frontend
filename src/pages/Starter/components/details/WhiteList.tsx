@@ -7,6 +7,8 @@ import {useEffect, useState} from 'react';
 import {Tier} from '@Starter/types';
 import {AdminObject} from '@Admin/types';
 import {convertTimeStamp} from 'utils/convertTIme';
+import {useBlockNumber} from 'hooks/useBlock';
+import moment from 'moment';
 
 type WhiteListProps = {
   date: string;
@@ -22,8 +24,10 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
   const [isWhiteList, setIsWhiteList] = useState<boolean>(true);
+  const [btnDisable, setBtnDisable] = useState<boolean>(true);
 
   const {STATER_STYLE} = theme;
+  const {blockNumber} = useBlockNumber();
 
   useEffect(() => {
     async function getInfo() {
@@ -40,6 +44,12 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
       getInfo();
     }
   }, [account, library, activeProjectInfo]);
+
+  useEffect(() => {
+    const nowTimeStamp = moment().unix();
+    const startTime = activeProjectInfo.timeStamps.startAddWhiteTime;
+    setBtnDisable(startTime > nowTimeStamp);
+  }, [blockNumber, activeProjectInfo]);
 
   return (
     <Flex flexDir="column" pos="relative" h={'100%'} pt={'70px'} pl={'45px'}>
@@ -78,7 +88,7 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
             })
           }
           isDisabled={
-            userTier === 0 || isWhiteList ? true : false
+            userTier === 0 || isWhiteList ? true : false || btnDisable
           }></CustomButton>
       </Box>
     </Flex>

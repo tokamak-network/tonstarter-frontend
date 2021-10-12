@@ -28,8 +28,6 @@ export const StarterMain = () => {
   const {blockNumber} = useBlockNumber();
 
   useEffect(() => {
-    console.log('--starterData--');
-    console.log(starterData);
     if (starterData) {
       const {activeProjects, upcomingProjects, pastProjects, myProjects} =
         starterData;
@@ -57,7 +55,7 @@ export const StarterMain = () => {
           <LoadingComponent />
         </Center>
       ) : null}
-      <Flex px={353} flexDir="column" alignItems="center">
+      <Flex px={353} flexDir="column" alignItems="center" mt={'80px'}>
         {activeProject.length > 0 && (
           <Box mb={'80px'}>
             <ActiveProject activeProject={activeProject}></ActiveProject>

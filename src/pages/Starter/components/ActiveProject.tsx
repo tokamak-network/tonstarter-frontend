@@ -35,14 +35,12 @@ export const ActiveProject = (props: any) => {
 
   return (
     <Flex flexDir="column">
-      {view && (
-        <Text
-          {...STATER_STYLE.header({colorMode})}
-          alignSelf="center"
-          mb={'30px'}>
-          Active Projects
-        </Text>
-      )}
+      <Text
+        {...STATER_STYLE.header({colorMode})}
+        alignSelf="center"
+        mb={'30px'}>
+        Active Projects
+      </Text>
       <Grid templateColumns="repeat(3, 1fr)" gap={30}>
         {activeProject.map((project: any) => {
           const tokenType = checkTokenType(
@@ -53,8 +51,6 @@ export const ActiveProject = (props: any) => {
           if (nowTimeStamp > project.timeStamps.endOpenSaleTime) {
             return null;
           }
-
-          setView(true);
 
           return (
             <Link to={`${url}/active/${project.name}`}>
