@@ -73,7 +73,7 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
         </Text>
         <DetailCounter
           date={Number(
-            activeProjectInfo?.timeStamps.endExclusiveTime + '000',
+            activeProjectInfo?.timeStamps.endWhiteListTime + '000',
           )}></DetailCounter>
       </Box>
       <Box pos="absolute" bottom={'13px'}>

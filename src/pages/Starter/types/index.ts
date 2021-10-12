@@ -10,6 +10,17 @@ export type ActiveProjectType = I_StarterProject & {
   tokenFundRaisingTargetAmount: string;
   projectTokenRatio: number;
   projectFundingTokenRatio: number;
+  timeStamps: {
+    checkStep: string;
+    endDepositTIme: number;
+    endExclusiveTime: number;
+    endOpenSaleTime: number;
+    endWhiteListTime: number;
+    startAddWhiteTime: number;
+    startDepositTime: number;
+    startExclusiveTime: number;
+    startOpenSaleTime: number;
+  };
 };
 
 export type UpcomingProjectType = I_StarterProject & {
@@ -69,4 +80,5 @@ export type DetailInfo = {
   tierAccounts: TierAccounts;
   tierCriteria: TierCriteria;
   tierAllocation: TierAllocation;
+  tierOfMembers: TierCriteria;
 };

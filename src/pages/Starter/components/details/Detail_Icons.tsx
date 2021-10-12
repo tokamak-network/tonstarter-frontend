@@ -29,6 +29,9 @@ export const DetailIcons = (prop: DetailIconProp) => {
   return (
     <Flex>
       {linkInfo.map((link) => {
+        if (link.url === '') {
+          return null;
+        }
         return (
           <Flex
             cursor="pointer"

@@ -94,7 +94,10 @@ export async function getTotalExpectOpenSaleAmount(args: I_CallContract) {
   const {library, address} = args;
   const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
   const res = await PUBLICSALE_CONTRACT.totalExpectOpenSaleAmount();
-  const convertedNum = convertNumber({amount: res.toString()});
+  const convertedNum = convertNumber({
+    amount: res.toString(),
+    localeString: true,
+  });
   return convertedNum;
 }
 
@@ -102,7 +105,10 @@ export async function getTotalDepositAmount(args: I_CallContract) {
   const {library, address} = args;
   const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
   const res = await PUBLICSALE_CONTRACT.totalDepositAmount();
-  const convertedNum = convertNumber({amount: res.toString()});
+  const convertedNum = convertNumber({
+    amount: res.toString(),
+    localeString: true,
+  });
   return convertedNum;
 }
 
@@ -110,7 +116,10 @@ export async function getUserDeposit(args: I_CallContract & {account: string}) {
   const {library, address, account} = args;
   const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
   const res = await PUBLICSALE_CONTRACT.usersOpen(account);
-  const convertedNum = convertNumber({amount: res.depositAmount.toString()});
+  const convertedNum = convertNumber({
+    amount: res.depositAmount.toString(),
+    localeString: true,
+  });
   return convertedNum;
 }
 

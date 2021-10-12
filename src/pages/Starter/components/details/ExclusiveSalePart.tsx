@@ -55,7 +55,8 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
   useEffect(() => {
     async function getTierAllowcation() {
       if (PUBLICSALE_CONTRACT) {
-        const res = await PUBLICSALE_CONTRACT.calculTierAmount(account);
+        const res = await PUBLICSALE_CONTRACT.totalExpectSaleAmount();
+        //need to multiple
         setUserTierAllocation(
           convertNumber({amount: res.toString(), localeString: true}) as string,
         );

@@ -32,14 +32,23 @@ import {convertNumber} from 'utils/number';
 import {BigNumber} from 'ethers';
 import {useBlockNumber} from 'hooks/useBlock';
 import {LoadingComponent} from 'components/Loading';
+import moment from 'moment';
+
+const nowTimeStamp = moment().unix();
 
 export const StarterDetail = () => {
-  const {id}: {id: string} = useParams();
+  // const {id}: {id: string} = useParams();
+  const id = 'DOOROPEN';
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const {projectStatus} = useUrl();
+  // const {projectStatus} = useUrl();
 
   const starterData = store.getState().starters.data;
+
+  const projectStatus =
+    starterData?.activeProjects[0].timeStamps.endOpenSaleTime > nowTimeStamp
+      ? 'active'
+      : 'past';
 
   const [activeStatus, setActiveStatus] = useState<SaleStatus | undefined>(
     undefined,
@@ -106,28 +115,47 @@ export const StarterDetail = () => {
           PUBLICSALE_CONTRACT.tiers(2),
           PUBLICSALE_CONTRACT.tiers(3),
           PUBLICSALE_CONTRACT.tiers(4),
+          PUBLICSALE_CONTRACT.tiersPercents(1),
+          PUBLICSALE_CONTRACT.tiersPercents(2),
+          PUBLICSALE_CONTRACT.tiersPercents(3),
+          PUBLICSALE_CONTRACT.tiersPercents(4),
+          // PUBLICSALE_CONTRACT.tierExAccount(1),
+          // PUBLICSALE_CONTRACT.tierExAccount(2),
+          // PUBLICSALE_CONTRACT.tierExAccount(3),
+          // PUBLICSALE_CONTRACT.tierExAccount(4),
         ]);
         setDetailInfo({
           userTier: Number(res[0].toString()) as Tier,
           totalExpectSaleAmount: {
             1: convertNumber({
-              amount: res[1].toString(),
+              amount: BigNumber.from(res[1]).mul(res[10]).div(10000).toString(),
               localeString: true,
             }) as string,
             2: convertNumber({
-              amount: BigNumber.from(res[1]).mul(2).toString(),
+              amount: BigNumber.from(res[1]).mul(res[11]).div(10000).toString(),
               localeString: true,
             }) as string,
             3: convertNumber({
-              amount: BigNumber.from(res[1]).mul(3).toString(),
+              amount: BigNumber.from(res[1]).mul(res[12]).div(10000).toString(),
               localeString: true,
             }) as string,
             4: convertNumber({
-              amount: BigNumber.from(res[1]).mul(4).toString(),
+              amount: BigNumber.from(res[1]).mul(res[13]).div(10000).toString(),
               localeString: true,
             }) as string,
           },
           tierAccounts: {
+            1: res[2],
+            2: res[3],
+            3: res[4],
+            4: res[5],
+          },
+          tierOfMembers: {
+            // 1: res[14],
+            // 2: res[15],
+            // 3: res[16],
+            // 4: res[17],
+
             1: res[2],
             2: res[3],
             3: res[4],
@@ -142,28 +170,32 @@ export const StarterDetail = () => {
           tierAllocation: {
             1: convertNumber({
               amount: BigNumber.from(res[1])
-                .mul(1)
+                .mul(res[10])
+                .div(10000)
                 .div(res[2].toString() === '0' ? 1 : res[2])
                 .toString(),
               localeString: true,
             }) as string,
             2: convertNumber({
               amount: BigNumber.from(res[1])
-                .mul(2)
+                .mul(res[11])
+                .div(10000)
                 .div(res[3].toString() === '0' ? 1 : res[3])
                 .toString(),
               localeString: true,
             }) as string,
             3: convertNumber({
               amount: BigNumber.from(res[1])
-                .mul(3)
+                .mul(res[12])
+                .div(10000)
                 .div(res[4].toString() === '0' ? 1 : res[4])
                 .toString(),
               localeString: true,
             }) as string,
             4: convertNumber({
               amount: BigNumber.from(res[1])
-                .mul(4)
+                .mul(res[13])
+                .div(10000)
                 .div(res[5].toString() === '0' ? 1 : res[5])
                 .toString(),
               localeString: true,
@@ -174,8 +206,6 @@ export const StarterDetail = () => {
     }
     if (account && library && PUBLICSALE_CONTRACT) {
       getInfo();
-      console.log('--PUBLICSALE_CONTRACT--');
-      console.log(PUBLICSALE_CONTRACT);
     }
   }, [account, library, PUBLICSALE_CONTRACT, saleInfo]);
 
@@ -187,9 +217,8 @@ export const StarterDetail = () => {
         const {step} = activeProjects.filter(
           (data: any) => data.name === id,
         )[0];
-        console.log('--step--');
-        console.log(step);
         setActiveStatus(step);
+
         setActiveProjectInfo(
           activeProjects.filter((data: any) => data.name === id)[0],
         );
@@ -201,7 +230,7 @@ export const StarterDetail = () => {
   }, [PUBLICSALE_CONTRACT, id, starterData]);
 
   useEffect(() => {
-    const {activeData, upcomingData, pastData} = starterData;
+    const {activeData, pastData} = starterData;
 
     if (projectStatus === 'active') {
       const projectInfo = activeData.filter(
@@ -210,12 +239,12 @@ export const StarterDetail = () => {
       return setSaleInfo(projectInfo[0]);
     }
 
-    if (projectStatus === 'upcoming') {
-      const projectInfo = upcomingData.filter(
-        (data: AdminObject) => data.name === id,
-      );
-      return setSaleInfo(projectInfo[0]);
-    }
+    // if (projectStatus === 'upcoming') {
+    //   const projectInfo = upcomingData.filter(
+    //     (data: AdminObject) => data.name === id,
+    //   );
+    //   return setSaleInfo(projectInfo[0]);
+    // }
 
     if (projectStatus === 'past') {
       const projectInfo = pastData.filter(
@@ -234,7 +263,7 @@ export const StarterDetail = () => {
   }
 
   return (
-    <Flex mt={'122px'} justifyContent="center" mb={'100px'}>
+    <Flex mt={'122px'} w={'100%'} justifyContent="center" mb={'100px'}>
       <Flex w="1194px" flexDir="column" mb={'10px'}>
         <Flex
           {...STATER_STYLE.containerStyle({colorMode})}

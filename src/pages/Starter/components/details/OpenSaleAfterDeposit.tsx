@@ -8,6 +8,7 @@ import {useEffect, useState} from 'react';
 import {convertTimeStamp} from 'utils/convertTIme';
 import {DetailCounter} from './Detail_Counter';
 import starterActions from '../../actions';
+import {useCheckBalance} from 'hooks/useCheckBalance';
 
 type OpenSaleAfterDepositProp = {
   saleInfo: AdminObject;
@@ -30,6 +31,8 @@ export const OpenSaleAfterDeposit: React.FC<OpenSaleAfterDepositProp> = (
   const [totalDeposit, setTotalDeposit] = useState<string>('-');
   const [yourDeposit, setYourDeposit] = useState<string>('-');
 
+  const {checkBalance} = useCheckBalance();
+
   const {STATER_STYLE} = theme;
 
   const detailSubTextStyle = {
@@ -49,9 +52,6 @@ export const OpenSaleAfterDeposit: React.FC<OpenSaleAfterDepositProp> = (
   //call view funcions
   useEffect(() => {
     async function getData() {
-      // const res = await Promise.all([
-
-      // ])
       if (account && library && saleInfo) {
         const address = saleInfo.saleContractAddress;
         const res = await Promise.all([
@@ -109,8 +109,16 @@ export const OpenSaleAfterDeposit: React.FC<OpenSaleAfterDepositProp> = (
             w={'220px'}
             h={'32px'}
             numberOnly={true}
+            color={
+              Number(inputBalance) > 0
+                ? colorMode === 'light'
+                  ? 'gray.225'
+                  : 'white.100'
+                : 'gray.175'
+            }
             value={inputBalance}
-            setValue={setInputBalance}></CustomInput>
+            setValue={setInputBalance}
+            tokenName={`TON`}></CustomInput>
         </Box>
         <Text {...STATER_STYLE.mainText({colorMode, fontSize: 13})} mr={'3px'}>
           Your balance :{' '}
@@ -175,6 +183,7 @@ export const OpenSaleAfterDeposit: React.FC<OpenSaleAfterDepositProp> = (
           text={'Sale'}
           func={() =>
             account &&
+            checkBalance(inputBalance, Number(userTonBalance)) &&
             starterActions.openSale({
               account,
               library,

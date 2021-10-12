@@ -158,9 +158,6 @@ export const fetchStarters = createAsyncThunk(
       };
     });
 
-    console.log('*matchData*');
-    console.log(matchData);
-
     return {
       activeProjects,
       upcomingProjects,

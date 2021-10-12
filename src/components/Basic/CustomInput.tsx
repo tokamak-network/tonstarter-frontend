@@ -64,6 +64,7 @@ export const CustomInput = (prop: CustomInputProp) => {
           left={`${value.length * 8 + 18.5}px`}
           h={'100%'}
           d="flex"
+          pt={'2px'}
           alignItems="center"
           justifyContent="center">
           <Text>{tokenName}</Text>
