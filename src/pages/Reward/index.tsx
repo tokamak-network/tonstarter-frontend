@@ -17,7 +17,12 @@ import {PageHeader} from 'components/PageHeader';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {ManageContainer} from './ManageContainer';
 import {RewardContainer} from './RewardContainer';
+import {selectRewards} from './reward.reducer';
+import {useAppSelector} from 'hooks/useRedux';
+
 export const Reward = () => {
+
+  const {data, loading} = useAppSelector(selectRewards);
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
   const [pools, setPools] = useState([]);

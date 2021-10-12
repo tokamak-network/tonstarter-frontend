@@ -12,6 +12,7 @@ import {useAppDispatch} from 'hooks/useRedux';
 // import {fetchAppConfig} from 'store/app/app.reducer';
 import {fetchUserInfo} from 'store/app/user.reducer';
 import {fetchStakes} from './Staking/staking.reducer';
+import { fetchRewards } from './Reward/reward.reducer';
 import {AirdropModal} from 'components/Airdrop/Index';
 import {fetchVaults} from './Staking/vault.reducer';
 import {DEFAULT_NETWORK} from 'constants/index';
@@ -53,6 +54,11 @@ export const Router: FC<RouterProps> = () => {
     );
     await dispatch(
       fetchStakes({
+        library,
+      }) as any,
+    );
+    await dispatch(
+      fetchRewards({
         library,
       }) as any,
     );

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15">
+    <defs>
+        <style>
+            .cls-2{fill:none;stroke:#2a72e5;stroke-linecap:round;stroke-linejoin:round}
+        </style>
+    </defs>
+    <g id="poll_time_active_icon" transform="translate(-88.5 -88.5)">
+        <path id="Base" transform="translate(88.5 88.5)" style="fill:none" d="M0 0h15v15H0z"/>
+        <circle id="타원_5" data-name="타원 5" class="cls-2" cx="6.5" cy="6.5" r="6.5" transform="translate(89.5 89.5)"/>
+        <path id="패스_35" data-name="패스 35" class="cls-2" d="M96 91.97V96h4.03"/>
+    </g>
+</svg>
