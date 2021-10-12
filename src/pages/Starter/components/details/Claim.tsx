@@ -10,6 +10,7 @@ import moment from 'moment';
 import {useCallContract} from 'hooks/useCallContract';
 import {BigNumber} from 'ethers';
 import {convertNumber} from 'utils/number';
+import {useBlockNumber} from 'hooks/useBlock';
 
 type ClaimProps = {
   saleInfo: AdminObject;
@@ -28,6 +29,8 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
   const [exclusiveSale, setExclusiveSale] = useState<string>('-');
   const [remainedAmount, setRemainedAmount] = useState<string>('-');
   const [openSale, setOpenSale] = useState<string>('-');
+
+  const {blockNumber} = useBlockNumber();
 
   const PUBLICSALE_CONTRACT = useCallContract(
     saleInfo.saleContractAddress,
@@ -54,7 +57,7 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
     if (account && library) {
       getData();
     }
-  }, [account, library, saleInfo]);
+  }, [account, library, saleInfo, blockNumber]);
 
   useEffect(() => {
     async function getDate() {
@@ -190,6 +193,7 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
       <Box mt={'46px'}>
         <CustomButton
           text={'Claim'}
+          isDisabled={Number(inputTonBalance) <= 0}
           func={() =>
             account &&
             starterActions.claim({
