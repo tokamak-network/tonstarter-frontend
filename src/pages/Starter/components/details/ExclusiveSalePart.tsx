@@ -12,6 +12,7 @@ import {DetailInfo} from '@Starter/types';
 import {useCallContract} from 'hooks/useCallContract';
 import {convertNumber} from 'utils/number';
 import starterActions from '../../actions';
+import {useCheckBalance} from 'hooks/useCheckBalance';
 
 type ExclusiveSalePartProps = {
   saleInfo: AdminObject;
@@ -40,6 +41,8 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
     ],
   );
   const [userTierAllocation, setUserTierAllocation] = useState<string>('-');
+
+  const {checkBalance} = useCheckBalance();
 
   const PUBLICSALE_CONTRACT = useCallContract(
     saleInfo.saleContractAddress,
@@ -215,6 +218,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             text={'Participate'}
             func={() =>
               account &&
+              checkBalance(Number(inputTonBalance), Number(userTonBalance)) &&
               starterActions.participate({
                 account,
                 library,
