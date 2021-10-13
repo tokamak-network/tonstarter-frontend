@@ -234,11 +234,8 @@ export const StarterDetail = () => {
         const {step} = activeProjects.filter(
           (data: any) => data.name === id,
         )[0];
-        // setActiveStatus(step);
-        // setProject(isPassed ? 'past' : 'active');
-
-        setActiveStatus('openSale');
-        setProject('past');
+        setActiveStatus(step);
+        setProject(isPassed ? 'past' : 'active');
 
         setActiveProjectInfo(
           activeProjects.filter((data: any) => data.name === id)[0],

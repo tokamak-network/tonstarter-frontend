@@ -24,7 +24,6 @@ export async function getTotalExpectSaleAmount(args: I_CallContract) {
 
 export async function getTimeStamps(args: I_CallContract) {
   const nowTimeStamp = moment().unix();
-  console.log(nowTimeStamp);
   const {library, address} = args;
   const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
   const res = await Promise.all([
