@@ -162,38 +162,65 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
         <Text {...STATER_STYLE.mainText({colorMode, fontSize: 14})}>
           Details
         </Text>
-        <Box d="flex" fontSize={'13px'} justifyContent="space-between">
-          <Flex w={'235px'}>
+        <Box d="flex" fontSize={'13px'}>
+          <Flex w={'226px'}>
             <Text color={'gray.400'} mr={'3px'}>
               Exclusive Sale :{' '}
             </Text>
             <Text {...detailSubTextStyle}>{exclusiveSale}</Text>
+            <Text ml={'3px'}>{saleInfo?.tokenName}</Text>
           </Flex>
-          <Flex w={'235px'}>
+          <Flex>
             <Text color={'gray.400'} mr={'3px'}>
               Remained Amount :{' '}
             </Text>
             <Text> {remainedAmount}</Text>
+            <Text ml={'3px'}>{saleInfo?.tokenName}</Text>
           </Flex>
         </Box>
-        <Box d="flex" fontSize={'13px'} justifyContent="space-between">
-          <Flex w={'235px'}>
+        <Box d="flex" fontSize={'13px'}>
+          <Flex w={'226px'}>
             <Text color={'gray.400'} mr={'3px'}>
               Open Sale :{' '}
             </Text>
             <Text {...detailSubTextStyle}>{openSale}</Text>
+            <Text ml={'3px'}>{saleInfo?.tokenName}</Text>
           </Flex>
-          <Flex w={'235px'}>
+          <Flex>
             <Text color={'gray.400'} mr={'3px'}>
               Next Vesting Date :{' '}
             </Text>
             <Text {...detailSubTextStyle}>{vestingDay}</Text>
           </Flex>
         </Box>
+        <Box d="flex" fontSize={'13px'} justifyContent="space-between">
+          <Flex>
+            <Text color={'gray.400'} mr={'3px'}>
+              WithdrawClaim Number :{' '}
+            </Text>
+            <Text {...detailSubTextStyle}>3</Text>
+            <Text mx={'3px'}>/</Text>
+            <Text>6</Text>
+          </Flex>
+        </Box>
       </Box>
-      <Box mt={'46px'}>
+      <Box mt={'29px'} d="flex">
         <CustomButton
           text={'Claim'}
+          isDisabled={Number(inputTonBalance) <= 0}
+          style={{
+            mr: '12px',
+          }}
+          func={() =>
+            account &&
+            starterActions.claim({
+              account,
+              library,
+              address: saleInfo.saleContractAddress,
+            })
+          }></CustomButton>
+        <CustomButton
+          text={'Withdraw'}
           isDisabled={Number(inputTonBalance) <= 0}
           func={() =>
             account &&
@@ -203,6 +230,16 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
               address: saleInfo.saleContractAddress,
             })
           }></CustomButton>
+        <Flex
+          flexDir="column"
+          ml={'15px'}
+          fontSize={12}
+          justifyContent="center">
+          <Text color={'gray.400'} mr={'3px'}>
+            WithdrawClaim Number :{' '}
+          </Text>
+          <Text {...detailSubTextStyle}>10,000,000 TON</Text>
+        </Flex>
       </Box>
     </Flex>
   );

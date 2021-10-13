@@ -1,4 +1,4 @@
-import {Box, useColorMode, useTheme, Flex, Text, Input} from '@chakra-ui/react';
+import {Box, useColorMode, useTheme, Flex, Text} from '@chakra-ui/react';
 import {CustomInput} from 'components/Basic';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {useEffect, useState} from 'react';

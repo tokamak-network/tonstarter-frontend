@@ -119,7 +119,8 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
                 : 'gray.175'
             }
             value={inputBalance}
-            setValue={setInputBalance}></CustomInput>
+            setValue={setInputBalance}
+            tokenName={'TON'}></CustomInput>
         </Box>
         <Text {...STATER_STYLE.mainText({colorMode, fontSize: 13})} mr={'3px'}>
           Your balance :{' '}
@@ -140,8 +141,8 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
         <Text {...STATER_STYLE.mainText({colorMode, fontSize: 14})}>
           Details
         </Text>
-        <Box d="flex" fontSize={'13px'} justifyContent="space-between">
-          <Flex>
+        <Box d="flex" fontSize={'13px'}>
+          <Flex w={'286px'} mr={'25px'}>
             <Text color={'gray.400'} mr={'3px'}>
               Sale Period :{' '}
             </Text>
@@ -161,25 +162,57 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
             <Text color={'gray.400'} mr={'3px'}>
               Total Allocation :{' '}
             </Text>
-            <Text {...detailSubTextStyle}>{totalAllocation}</Text>
+            <Text {...detailSubTextStyle} mr={'3px'}>
+              {totalAllocation}
+            </Text>
+            <Text>{saleInfo?.tokenName}</Text>
           </Flex>
         </Box>
-        <Box d="flex" fontSize={'13px'} justifyContent="space-between">
-          <Flex>
+        <Box d="flex" fontSize={'13px'}>
+          <Flex w={'286px'} mr={'25px'}>
             <Text color={'gray.400'} mr={'3px'}>
               Total Deposited :{' '}
             </Text>
-            <Text {...detailSubTextStyle}>{totalDeposit}</Text>
+            <Text {...detailSubTextStyle} mr={'3px'}>
+              {totalDeposit}
+            </Text>
+            <Text>{saleInfo?.tokenName}</Text>
           </Flex>
           <Flex>
             <Text color={'gray.400'} mr={'3px'}>
               Your Deposited :{' '}
             </Text>
-            <Text {...detailSubTextStyle}>{yourDeposit}</Text>
+            <Text {...detailSubTextStyle} mr={'3px'}>
+              {yourDeposit}
+            </Text>
+            <Text>{saleInfo?.tokenName}</Text>
+          </Flex>
+        </Box>
+        <Box d="flex" fontSize={'13px'}>
+          <Flex w={'286px'} mr={'25px'}>
+            <Text color={'gray.400'} mr={'3px'}>
+              Public Round 1 :{' '}
+            </Text>
+            <Text {...detailSubTextStyle} mr={'3px'}>
+              200,000.00
+            </Text>
+            <Text mr={'3px'}>{saleInfo?.tokenName}</Text>
+            <Text color={'gray.400'} mr={'3px'}>
+              (XX,XXX.XX TON)
+            </Text>
+          </Flex>
+          <Flex>
+            <Text color={'gray.400'} mr={'3px'}>
+              Your Allocate :{' '}
+            </Text>
+            <Text {...detailSubTextStyle} mr={'3px'}>
+              {yourDeposit}
+            </Text>
+            <Text>{saleInfo?.tokenName}</Text>
           </Flex>
         </Box>
       </Box>
-      <Box mt={'46px'}>
+      <Box mt={'27px'}>
         {isApprove === true ? (
           <CustomButton
             text={'Deposit'}

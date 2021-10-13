@@ -1,7 +1,6 @@
 import {AdminObject} from '@Admin/types';
 import {Box, useColorMode, useTheme, Flex, Text} from '@chakra-ui/react';
 import {getUserTonBalance} from 'client/getUserBalance';
-import {CustomInput} from 'components/Basic';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect, useState} from 'react';
@@ -9,6 +8,7 @@ import {convertTimeStamp} from 'utils/convertTIme';
 import {DetailCounter} from './Detail_Counter';
 import starterActions from '../../actions';
 // import {useCheckBalance} from 'hooks/useCheckBalance';
+import ArrowIcon from 'assets/svgs/arrow_icon.svg';
 
 type OpenSaleAfterDepositProp = {
   saleInfo: AdminObject;
@@ -101,40 +101,42 @@ export const OpenSaleAfterDeposit: React.FC<OpenSaleAfterDepositProp> = (
         {...STATER_STYLE.subText({colorMode})}
         letterSpacing={'1.4px'}
         mb={'10px'}>
-        Deposited Amount
+        Your Deposit
       </Text>
-      <Box d="flex" alignItems="center" mb={'30px'}>
-        <Box mr={'10px'}>
-          <CustomInput
-            w={'220px'}
-            h={'32px'}
-            numberOnly={true}
-            color={
-              Number(inputBalance) > 0
-                ? colorMode === 'light'
-                  ? 'gray.225'
-                  : 'white.100'
-                : 'gray.175'
-            }
-            value={inputBalance}
-            setValue={setInputBalance}
-            tokenName={`TON`}></CustomInput>
+      <Box d="flex" alignItems="center">
+        <Box d="flex" mr={'10px'} alignItems="center" pos="relative">
+          <Flex
+            h={'36px'}
+            {...STATER_STYLE.mainText({colorMode, fontSize: 28})}
+            alignItems="baseline"
+            m={0}>
+            <Text mr={'8px'}>X,XXX,XXX.XX</Text>
+            <Text fontSize={25}>TON</Text>
+          </Flex>
+          <img
+            src={ArrowIcon}
+            alt={'icon_arrow'}
+            style={{
+              width: '20px',
+              height: '20px',
+              marginLeft: '20px',
+              marginRight: '20px',
+              alignSelf: 'center',
+            }}></img>
+          <Flex
+            h={'36px'}
+            {...STATER_STYLE.mainText({colorMode, fontSize: 28})}
+            alignItems="baseline">
+            <Text mr={'8px'}>X,XXX,XXX.XX</Text>
+            <Text fontSize={25}>{saleInfo?.tokenName}</Text>
+          </Flex>
         </Box>
-        <Text {...STATER_STYLE.mainText({colorMode, fontSize: 13})} mr={'3px'}>
-          Your balance :{' '}
-        </Text>
-        <Text
-          {...STATER_STYLE.mainText({colorMode, fontSize: 13})}
-          color={'blue.100'}
-          mr={'3px'}>
-          {userTonBalance}
-        </Text>
-        <Text
-          {...STATER_STYLE.mainText({colorMode, fontSize: 13})}
-          color={'blue.100'}>
-          TON
-        </Text>
       </Box>
+      <Flex w={'235px'} mb={'25px'}>
+        <Text color={'gray.400'} fontSize={13}>
+          You will refund XXX,XXX TON
+        </Text>
+      </Flex>
       <Box d="flex" flexDir="column">
         <Text {...STATER_STYLE.mainText({colorMode, fontSize: 14})}>
           Details
@@ -178,7 +180,7 @@ export const OpenSaleAfterDeposit: React.FC<OpenSaleAfterDepositProp> = (
           </Flex>
         </Box>
       </Box>
-      <Box mt={'46px'}>
+      <Box mt={'27px'}>
         <CustomButton
           text={'Sale'}
           func={() =>

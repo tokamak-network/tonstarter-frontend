@@ -114,7 +114,8 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
               <Text color={'gray.400'} mr={'3px'}>
                 Your Tier :{' '}
               </Text>
-              <Text {...detailSubTextStyle}>Tier 1</Text>
+              <Text
+                {...detailSubTextStyle}>{`Tier${detailInfo.userTier}`}</Text>
             </Flex>
             <Flex w={'235px'}>
               <Text color={'gray.400'} mr={'3px'}>
