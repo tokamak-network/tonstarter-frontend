@@ -8,7 +8,7 @@ import {useEffect, useState} from 'react';
 import {convertTimeStamp} from 'utils/convertTIme';
 import {DetailCounter} from './Detail_Counter';
 import starterActions from '../../actions';
-import {useCheckBalance} from 'hooks/useCheckBalance';
+// import {useCheckBalance} from 'hooks/useCheckBalance';
 
 type OpenSaleAfterDepositProp = {
   saleInfo: AdminObject;
@@ -31,7 +31,7 @@ export const OpenSaleAfterDeposit: React.FC<OpenSaleAfterDepositProp> = (
   const [totalDeposit, setTotalDeposit] = useState<string>('-');
   const [yourDeposit, setYourDeposit] = useState<string>('-');
 
-  const {checkBalance} = useCheckBalance();
+  // const {checkBalance} = useCheckBalance();
 
   const {STATER_STYLE} = theme;
 
@@ -183,7 +183,6 @@ export const OpenSaleAfterDeposit: React.FC<OpenSaleAfterDepositProp> = (
           text={'Sale'}
           func={() =>
             account &&
-            checkBalance(inputBalance, Number(userTonBalance)) &&
             starterActions.openSale({
               account,
               library,
