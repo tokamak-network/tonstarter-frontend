@@ -1,5 +1,8 @@
 import {Text} from '@chakra-ui/react';
 import Countdown from 'react-countdown';
+import {useAppDispatch} from 'hooks/useRedux';
+import {fetchStarters} from '../../starter.reducer';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 
 // type YYYY = `19${d}${d}` | `20${d}${d}`;
 // type oneToNine = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
@@ -23,11 +26,24 @@ const trimDigit = (arg: any) => {
 
 export const DetailCounter: React.FC<DetailCounterProps> = (prop) => {
   const {numberFontSize, stringFontSize, date} = prop;
+  const dispatch = useAppDispatch();
+  const {chainId, library} = useActiveWeb3React();
+
+  async function fetchStarter() {
+    await dispatch(
+      fetchStarters({
+        chainId,
+        library,
+      }) as any,
+    );
+  }
 
   //@ts-ignore
   const countDownRenderer = ({days, hours, minutes, seconds, completed}) => {
     if (completed) {
       // Render a completed state
+
+      fetchStarter();
       return null;
     } else {
       // Render a countdown

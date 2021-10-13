@@ -20,7 +20,7 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
       data: [
         {
           key: 'Criteria',
-          value: `${detailInfo.tierCriteria[1]}`,
+          value: `${detailInfo.tierCriteria[1]} sTOS`,
         },
         {
           key: 'Allocation',
@@ -41,7 +41,7 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
       data: [
         {
           key: 'Criteria',
-          value: `${detailInfo.tierCriteria[2]}`,
+          value: `${detailInfo.tierCriteria[2]} sTOS`,
         },
         {
           key: 'Allocation',
@@ -62,7 +62,7 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
       data: [
         {
           key: 'Criteria',
-          value: `${detailInfo.tierCriteria[3]}`,
+          value: `${detailInfo.tierCriteria[3]} sTOS`,
         },
         {
           key: 'Allocation',
@@ -83,7 +83,7 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
       data: [
         {
           key: 'Criteria',
-          value: `${detailInfo.tierCriteria[4]}`,
+          value: `${detailInfo.tierCriteria[4]} sTOS`,
         },
         {
           key: 'Allocation',
@@ -107,7 +107,7 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
       data: [
         {
           key: 'Criteria',
-          value: `${detailInfo.tierCriteria[1]}`,
+          value: `${detailInfo.tierCriteria[1]} sTOS`,
         },
         {
           key: 'Allocation',
@@ -132,7 +132,7 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
       data: [
         {
           key: 'Criteria',
-          value: `${detailInfo.tierCriteria[2]}`,
+          value: `${detailInfo.tierCriteria[2]} sTOS`,
         },
         {
           key: 'Allocation',
@@ -157,7 +157,7 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
       data: [
         {
           key: 'Criteria',
-          value: `${detailInfo.tierCriteria[3]}`,
+          value: `${detailInfo.tierCriteria[3]} sTOS`,
         },
         {
           key: 'Allocation',
@@ -182,7 +182,7 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
       data: [
         {
           key: 'Criteria',
-          value: `${detailInfo.tierCriteria[4]}`,
+          value: `${detailInfo.tierCriteria[4]} sTOS`,
         },
         {
           key: 'Allocation',

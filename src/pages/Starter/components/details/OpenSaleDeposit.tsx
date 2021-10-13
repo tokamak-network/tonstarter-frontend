@@ -90,13 +90,13 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
     <Flex flexDir="column" pl={'45px'}>
       <Box d="flex" textAlign="center" alignItems="center" mb={'20px'}>
         <Text {...STATER_STYLE.mainText({colorMode, fontSize: 25})} mr={'20px'}>
-          Open Sale
+          Public Round 2
         </Text>
         <DetailCounter
           numberFontSize={'18px'}
           stringFontSize={'14px'}
           date={
-            activeProjectInfo?.timeStamps.endOpenSaleTime * 1000
+            activeProjectInfo?.timeStamps.endDepositTIme * 1000
           }></DetailCounter>
       </Box>
       <Text

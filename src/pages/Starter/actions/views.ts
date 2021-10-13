@@ -10,7 +10,9 @@ interface I_CallContract {
   address: string;
 }
 
-const nowTimeStamp = moment().unix();
+type CallContractWithAddress = I_CallContract & {
+  account: string;
+};
 
 export async function getTotalExpectSaleAmount(args: I_CallContract) {
   const {library, address} = args;
@@ -21,6 +23,8 @@ export async function getTotalExpectSaleAmount(args: I_CallContract) {
 }
 
 export async function getTimeStamps(args: I_CallContract) {
+  const nowTimeStamp = moment().unix();
+  console.log(nowTimeStamp);
   const {library, address} = args;
   const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
   const res = await Promise.all([
@@ -163,4 +167,24 @@ export async function getNextVestingDay(args: I_CallContract) {
     const nextVestingDate = startClaimTimeNum + intervalNum * endPeriodNum;
     return convertTimeStamp(nextVestingDate);
   }
+}
+
+export async function getWithdrawAmount(args: CallContractWithAddress) {
+  const {library, address, account} = args;
+  const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
+  const res = await PUBLICSALE_CONTRACT.depositWithdraw(account);
+  const convertedNum = convertNumber({
+    amount: res.toString() || '0',
+  });
+  return convertedNum;
+}
+
+export async function getTotalExSaleAmount(args: I_CallContract) {
+  const {library, address} = args;
+  const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
+  const res = await PUBLICSALE_CONTRACT.totalExSaleAmount();
+  const convertedNum = convertNumber({
+    amount: res.toString() || '0',
+  });
+  return convertedNum;
 }

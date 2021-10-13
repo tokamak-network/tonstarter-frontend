@@ -13,6 +13,7 @@ import {useCallContract} from 'hooks/useCallContract';
 import {convertNumber} from 'utils/number';
 import starterActions from '../../actions';
 import {useCheckBalance} from 'hooks/useCheckBalance';
+import {useBlockNumber} from 'hooks/useBlock';
 
 type ExclusiveSalePartProps = {
   saleInfo: AdminObject;
@@ -32,8 +33,8 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
   const [convertedTokenBalance, setConvertedTokenBalance] =
     useState<string>('0');
 
-  const [saleStartTime, setSaleStartTime] = useState<string>('-');
-  const [saleEndTime, setSaleEndTime] = useState<string>('-');
+  const [amountAvailable, setAmountAvailable] = useState<string>('-');
+  const [publicRound, setPublicRound] = useState<string>('-');
   const [userTonBalance, setUserTonBalance] = useState<string>('-');
   const [userAllocation, setUserAllocation] = useState<string>(
     detailInfo.tierAllocation[
@@ -41,8 +42,10 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
     ],
   );
   const [userTierAllocation, setUserTierAllocation] = useState<string>('-');
+  const [btnDisabled, setBtnDisabled] = useState<boolean>(true);
 
   const {checkBalance} = useCheckBalance();
+  const {blockNumber} = useBlockNumber();
 
   const PUBLICSALE_CONTRACT = useCallContract(
     saleInfo.saleContractAddress,
@@ -78,24 +81,50 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
     }
   }, [inputTonBalance, saleInfo, convertedTokenBalance]);
 
-  useEffect(() => {
-    if (saleInfo) {
-      const startTime = convertTimeStamp(saleInfo.startExclusiveTime);
-      const endTime = convertTimeStamp(saleInfo.endOpenSaleTime, 'MM.DD');
-      setSaleStartTime(startTime);
-      setSaleEndTime(endTime);
-    }
-  }, [saleInfo]);
+  // useEffect(() => {
+  //   if (saleInfo) {
+  //     const startTime = convertTimeStamp(saleInfo.startExclusiveTime);
+  //     const endTime = convertTimeStamp(saleInfo.endOpenSaleTime, 'MM.DD');
+  //     setSaleStartTime(startTime);
+  //     setSaleEndTime(endTime);
+  //   }
+  // }, [saleInfo]);
 
   useEffect(() => {
     async function callUserBalance() {
-      const tonBalance = await getUserTonBalance({account, library});
+      const tonBalance = await getUserTonBalance({
+        account,
+        library,
+        localeString: true,
+      });
       return setUserTonBalance(tonBalance || '-');
     }
     if (account && library) {
       callUserBalance();
     }
-  }, [account, library]);
+  }, [account, library, blockNumber]);
+
+  useEffect(() => {
+    async function getInfo() {
+      if (account && library && activeProjectInfo) {
+        const whiteListInfo = await starterActions.isWhiteList({
+          account,
+          library,
+          address: activeProjectInfo.saleContractAddress,
+        });
+        // const amount = await starterActions.isWhiteList({
+        //   account,
+        //   library,
+        //   address: activeProjectInfo.saleContractAddress,
+        // });
+        setBtnDisabled(!whiteListInfo[0]);
+        // setAmountAvailable();
+      }
+    }
+    if (account && library && activeProjectInfo) {
+      getInfo();
+    }
+  }, [account, library, activeProjectInfo]);
 
   return (
     <Flex flexDir="column" pl={'45px'}>
@@ -116,7 +145,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
           fontSize={14}
           letterSpacing={'1.4px'}
           mb={'10px'}>
-          Your Sale
+          Buy Amount
         </Text>
         <Text
           {...STATER_STYLE.subText({colorMode: 'light'})}
@@ -126,7 +155,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
         </Text>
       </Box>
       <Box d="flex" alignItems="center" mb={'30px'}>
-        <Box d="flex" mr={'10px'} alignItems="center">
+        <Box d="flex" mr={'10px'} alignItems="center" pos="relative">
           <CustomInput
             w={'220px'}
             h={'32px'}
@@ -164,6 +193,13 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
                 : 'gray.175'
             }
             tokenName={saleInfo?.tokenName}></CustomInput>
+          <Flex pos="absolute" right={0} top={10} fontSize={'13px'}>
+            <Text color={'gray.400'} mr={'3px'}>
+              Amount Available :{' '}
+            </Text>
+            <Text mr={'3px'}> {amountAvailable} </Text>
+            <Text>{saleInfo?.tokenName}</Text>
+          </Flex>
         </Box>
       </Box>
       <Box d="flex" flexDir="column" w={'495px'}>
@@ -183,7 +219,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
               ~{' '}
               {convertTimeStamp(
                 activeProjectInfo?.timeStamps?.endExclusiveTime,
-                'YYYY-MM-D',
+                'MM-D',
               )}
             </Text>
           </Flex>
@@ -191,7 +227,8 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             <Text color={'gray.400'} mr={'3px'}>
               Your Allocation :{' '}
             </Text>
-            <Text> {userAllocation}</Text>
+            <Text mr={'3px'}> {userAllocation} </Text>
+            <Text>{saleInfo?.tokenName}</Text>
           </Flex>
         </Box>
         <Box d="flex" fontSize={'13px'} justifyContent="space-between">
@@ -199,7 +236,10 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             <Text color={'gray.400'} mr={'3px'}>
               {`Tier Allocation(Tier: ${detailInfo.userTier})`} :{' '}
             </Text>
-            <Text {...detailSubTextStyle}>{userTierAllocation}</Text>
+            <Text {...detailSubTextStyle} mr={'3px'}>
+              {userTierAllocation}
+            </Text>
+            <Text>{saleInfo?.tokenName}</Text>
           </Flex>
           <Flex w={'235px'}>
             <Text color={'gray.400'} mr={'3px'}>
@@ -211,11 +251,23 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             </Text>
           </Flex>
         </Box>
+        <Box d="flex" fontSize={'13px'} justifyContent="space-between">
+          <Flex>
+            <Text color={'gray.400'} mr={'3px'}>
+              Public Round 1 :{' '}
+            </Text>
+            <Text {...detailSubTextStyle} mr={'3px'}>
+              {userTierAllocation}
+            </Text>
+            <Text color={'gray.400'}>(XXX,XXX TON)</Text>
+          </Flex>
+        </Box>
       </Box>
-      <Box mt={'46px'}>
+      <Box mt={'27px'}>
         {isApprove === true ? (
           <CustomButton
-            text={'Participate'}
+            text={'Buy'}
+            isDisabled={btnDisabled}
             func={() =>
               account &&
               checkBalance(Number(inputTonBalance), Number(userTonBalance)) &&

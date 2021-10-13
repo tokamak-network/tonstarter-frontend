@@ -20,6 +20,8 @@ import {
   getCalculClaimAmount,
   getStartClaimTime,
   getNextVestingDay,
+  getWithdrawAmount,
+  getTotalExSaleAmount,
 } from './views';
 
 const actions = {
@@ -43,6 +45,8 @@ const actions = {
   getCalculClaimAmount,
   getStartClaimTime,
   getNextVestingDay,
+  getWithdrawAmount,
+  getTotalExSaleAmount,
 };
 
 export default actions;

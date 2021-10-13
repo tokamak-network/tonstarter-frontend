@@ -146,7 +146,7 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
             w={'220px'}
             h={'32px'}
             numberOnly={true}
-            value={inputTonBalance}
+            value={`${inputTonBalance} ${saleInfo?.tokenName}`}
             color={
               Number(inputTonBalance) > 0
                 ? colorMode === 'light'
@@ -154,7 +154,8 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
                   : 'white.100'
                 : 'gray.175'
             }
-            tokenName={`${saleInfo?.tokenName}`}></CustomInput>
+            // tokenName={`${saleInfo?.tokenName}`}
+          ></CustomInput>
         </Box>
       </Box>
       <Box d="flex" flexDir="column" w={'495px'}>

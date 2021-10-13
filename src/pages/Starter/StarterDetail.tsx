@@ -32,9 +32,7 @@ import {convertNumber} from 'utils/number';
 import {BigNumber} from 'ethers';
 import {useBlockNumber} from 'hooks/useBlock';
 import {LoadingComponent} from 'components/Loading';
-import moment from 'moment';
-
-const nowTimeStamp = moment().unix();
+import {useTime} from 'hooks/useTime';
 
 export const StarterDetail = () => {
   // const {id}: {id: string} = useParams();
@@ -45,10 +43,25 @@ export const StarterDetail = () => {
 
   const starterData = store.getState().starters.data;
 
-  const projectStatus =
-    starterData?.activeProjects[0].timeStamps.endOpenSaleTime > nowTimeStamp
-      ? 'active'
-      : 'past';
+  const {isPassed} = useTime(
+    starterData?.activeProjects[0].timeStamps.endOpenSaleTime,
+  );
+  const {isPassed: isEndWhiteListTime} = useTime(
+    starterData?.activeProjects[0].timeStamps.endWhiteListTime,
+  );
+  const {isPassed: isEndExclusiveTime} = useTime(
+    starterData?.activeProjects[0].timeStamps.endExclusiveTime,
+  );
+  const {isPassed: isEndDepositTIme} = useTime(
+    starterData?.activeProjects[0].timeStamps.endDepositTIme,
+  );
+  const {isPassed: isEndOpenSaleTime} = useTime(
+    starterData?.activeProjects[0].timeStamps.endOpenSaleTime,
+  );
+
+  const [projectStatus, setProject] = useState<'past' | 'active'>(
+    isPassed ? 'past' : 'active',
+  );
 
   const [activeStatus, setActiveStatus] = useState<SaleStatus | undefined>(
     undefined,
@@ -119,10 +132,10 @@ export const StarterDetail = () => {
           PUBLICSALE_CONTRACT.tiersPercents(2),
           PUBLICSALE_CONTRACT.tiersPercents(3),
           PUBLICSALE_CONTRACT.tiersPercents(4),
-          // PUBLICSALE_CONTRACT.tierExAccount(1),
-          // PUBLICSALE_CONTRACT.tierExAccount(2),
-          // PUBLICSALE_CONTRACT.tierExAccount(3),
-          // PUBLICSALE_CONTRACT.tierExAccount(4),
+          PUBLICSALE_CONTRACT.tiersExAccount(1),
+          PUBLICSALE_CONTRACT.tiersExAccount(2),
+          PUBLICSALE_CONTRACT.tiersExAccount(3),
+          PUBLICSALE_CONTRACT.tiersExAccount(4),
         ]);
         setDetailInfo({
           userTier: Number(res[0].toString()) as Tier,
@@ -151,15 +164,10 @@ export const StarterDetail = () => {
             4: res[5],
           },
           tierOfMembers: {
-            // 1: res[14],
-            // 2: res[15],
-            // 3: res[16],
-            // 4: res[17],
-
-            1: res[2],
-            2: res[3],
-            3: res[4],
-            4: res[5],
+            1: res[14],
+            2: res[15],
+            3: res[16],
+            4: res[17],
           },
           tierCriteria: {
             1: convertNumber({amount: res[6], localeString: true}) as string,
@@ -211,14 +219,23 @@ export const StarterDetail = () => {
 
   useEffect(() => {
     async function getStatus() {
-      if (PUBLICSALE_CONTRACT) {
+      if (PUBLICSALE_CONTRACT && saleInfo) {
         const {activeProjects} = starterData;
+        // const timeStamps = await starterActions.getTimeStamps({
+        //   library,
+        //   address: saleInfo.saleContractAddress,
+        // });
+        // const {checkStep} = timeStamps;
+        // if (checkStep) {
+        //   setActiveStatus(checkStep as SaleStatus);
+        // }
+
         //@ts-ignore
         const {step} = activeProjects.filter(
           (data: any) => data.name === id,
         )[0];
         setActiveStatus(step);
-
+        setProject(isPassed ? 'past' : 'active');
         setActiveProjectInfo(
           activeProjects.filter((data: any) => data.name === id)[0],
         );
@@ -227,7 +244,18 @@ export const StarterDetail = () => {
     if (PUBLICSALE_CONTRACT) {
       getStatus();
     }
-  }, [PUBLICSALE_CONTRACT, id, starterData]);
+  }, [
+    PUBLICSALE_CONTRACT,
+    id,
+    starterData,
+    library,
+    saleInfo,
+    isEndWhiteListTime,
+    isEndExclusiveTime,
+    isEndDepositTIme,
+    isEndOpenSaleTime,
+    isPassed,
+  ]);
 
   useEffect(() => {
     const {activeData, pastData} = starterData;
@@ -322,7 +350,9 @@ export const StarterDetail = () => {
                 startDate={convertTimeStamp(saleInfo?.startAddWhiteTime)}
                 endDate={convertTimeStamp(saleInfo?.endAddWhiteTime, 'MM.D')}
                 userTier={detailInfo.userTier}
-                activeProjectInfo={activeProjectInfo}></WhiteList>
+                activeProjectInfo={activeProjectInfo}
+                saleInfo={saleInfo}
+                detailInfo={detailInfo}></WhiteList>
             )}
           {projectStatus === 'active' &&
             activeStatus === 'exclusive' &&
