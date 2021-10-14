@@ -9,6 +9,7 @@ import {DetailCounter} from './Detail_Counter';
 import starterActions from '../../actions';
 // import {useCheckBalance} from 'hooks/useCheckBalance';
 import ArrowIcon from 'assets/svgs/arrow_icon.svg';
+import {useBlockNumber} from 'hooks/useBlock';
 
 type OpenSaleAfterDepositProp = {
   saleInfo: AdminObject;
@@ -24,6 +25,7 @@ export const OpenSaleAfterDeposit: React.FC<OpenSaleAfterDepositProp> = (
   const theme = useTheme();
 
   const {account, library} = useActiveWeb3React();
+  const {blockNumber} = useBlockNumber();
 
   const [inputBalance, setInputBalance] = useState(0);
   const [userTonBalance, setUserTonBalance] = useState<string>('-');
@@ -74,6 +76,11 @@ export const OpenSaleAfterDeposit: React.FC<OpenSaleAfterDepositProp> = (
             library,
             address,
           }),
+          // starterActions.getRefundAmount({
+          //   account,
+          //   library,
+          //   address,
+          // }),
         ]);
         if (res) {
           //@ts-ignore

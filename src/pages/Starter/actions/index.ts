@@ -25,6 +25,7 @@ import {
   getTotalExSaleAmount,
   getCalCulSaleAmount,
   getTotalExpectOpenSaleAmountView,
+  getRefundAmount,
 } from './views';
 
 const actions = {
@@ -53,6 +54,7 @@ const actions = {
   getCalCulSaleAmount,
   getTotalExpectOpenSaleAmountView,
   depositWithdraw,
+  getRefundAmount,
 };
 
 export default actions;

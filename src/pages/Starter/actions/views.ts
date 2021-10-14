@@ -4,6 +4,7 @@ import {LibraryType} from 'types';
 import {convertNumber} from 'utils/number';
 import moment from 'moment';
 import {convertTimeStamp} from 'utils/convertTIme';
+import {BigNumber} from '@ethersproject/units/node_modules/@ethersproject/bignumber';
 
 interface I_CallContract {
   library: LibraryType;
@@ -211,3 +212,24 @@ export async function getTotalExpectOpenSaleAmountView(args: I_CallContract) {
 }
 
 // If (calculSaleToken(TONamount) < calculOpenSaleAmount(address, 0) ) return calculSaleToken(TONamount)
+
+export async function getRefundAmount(args: CallContractWithAddress) {
+  const {library, address, account} = args;
+  const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
+  const docAmount = await PUBLICSALE_CONTRACT.calculOpenSaleAmount(account, 0);
+  const needTonAmount = await PUBLICSALE_CONTRACT.calculPayToken(docAmount);
+  const userAmount = await PUBLICSALE_CONTRACT.usersOpen(docAmount);
+  const userDepositAmount = userAmount.depositAmount;
+
+  console.log(docAmount, needTonAmount, userAmount);
+
+  // if (BigNumber.from(userDepositAmount).gt(needTonAmount)) {
+  //   const num = BigNumber.from(userDepositAmount).sub(needTonAmount);
+  //   const convertedNum = convertNumber({
+  //     amount: num.toString(),
+  //     localeString: true,
+  //   });
+  //   return convertedNum;
+  // }
+  return '0.00';
+}
