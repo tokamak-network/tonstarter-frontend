@@ -235,11 +235,11 @@ export const StarterDetail = () => {
           (data: any) => data.name === id,
         )[0];
 
-        // setActiveStatus(step);
-        // setProject(isPassed ? 'past' : 'active');
+        setActiveStatus(step);
+        setProject(isPassed ? 'past' : 'active');
 
-        setActiveStatus('exclusive');
-        setProject('active');
+        // setActiveStatus('deposit');
+        // setProject('active');
 
         setActiveProjectInfo(
           activeProjects.filter((data: any) => data.name === id)[0],

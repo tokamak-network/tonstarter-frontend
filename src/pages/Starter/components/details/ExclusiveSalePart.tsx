@@ -74,7 +74,10 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
         console.log(availableAmounT);
 
         const pay = convertNumber({amount: payAmount.saleAmount});
-        const sale = convertNumber({amount: payAmount.payAmount});
+        const sale = convertNumber({
+          amount: payAmount.payAmount,
+          localeString: true,
+        });
         const res =
           detailInfo.tierAllocation[
             detailInfo.userTier !== 0 ? detailInfo.userTier : 1
@@ -87,19 +90,15 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
           localeString: true,
         });
         setUserTierAllocation(res);
-
-        if (convertedAvailableAmount) {
-          setAmountAvailable(convertedAvailableAmount);
-        }
-        if (sale) {
-          setSaleAmount(sale);
-        }
+        setAmountAvailable(convertedAvailableAmount || '0.00');
+        setSaleAmount(sale || '0.00');
+        setPayAmount(pay || '0.00');
       }
     }
     if (account && library && PUBLICSALE_CONTRACT) {
       getTierAllowcation();
     }
-  }, [account, library, PUBLICSALE_CONTRACT]);
+  }, [account, library, PUBLICSALE_CONTRACT, detailInfo]);
 
   useEffect(() => {
     if (saleInfo) {
