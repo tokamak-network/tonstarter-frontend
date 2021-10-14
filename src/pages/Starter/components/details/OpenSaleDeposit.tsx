@@ -9,6 +9,8 @@ import {convertTimeStamp} from 'utils/convertTIme';
 import {DetailCounter} from './Detail_Counter';
 import starterActions from '../../actions';
 import {useCheckBalance} from 'hooks/useCheckBalance';
+import {useCallContract} from 'hooks/useCallContract';
+import {convertNumber} from 'utils/number';
 
 type OpenSaleDepositProps = {
   saleInfo: AdminObject;
@@ -29,6 +31,8 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
   const [totalAllocation, setTotalAllocation] = useState<string>('-');
   const [totalDeposit, setTotalDeposit] = useState<string>('-');
   const [yourDeposit, setYourDeposit] = useState<string>('-');
+  const [userPayAmount, setYourPayAmount] = useState<string>('-');
+  const [userSaleAmount, setUserSaleAmount] = useState<string>('-');
 
   const {checkBalance} = useCheckBalance();
 
@@ -37,6 +41,11 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
   const detailSubTextStyle = {
     color: colorMode === 'light' ? 'gray.250' : 'white.100',
   };
+
+  const PUBLICSALE_CONTRACT = useCallContract(
+    saleInfo.saleContractAddress,
+    'PUBLIC_SALE',
+  );
 
   useEffect(() => {
     async function callUserBalance() {
@@ -54,7 +63,7 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
       // const res = await Promise.all([
 
       // ])
-      if (account && library && saleInfo) {
+      if (account && library && saleInfo && PUBLICSALE_CONTRACT) {
         const address = saleInfo.saleContractAddress;
         const res = await Promise.all([
           starterActions.getTotalExpectOpenSaleAmount({
@@ -70,7 +79,9 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
             library,
             address,
           }),
+          PUBLICSALE_CONTRACT.usersEx(account),
         ]);
+
         if (res) {
           //@ts-ignore
           setTotalAllocation(res[0]);
@@ -78,13 +89,25 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
           setTotalDeposit(res[1]);
           //@ts-ignore
           setYourDeposit(res[2]);
+          const saleAmount = res[3].saleAmount;
+          const payAmount = res[3].payAmount;
+          const convertedSaleAmount = convertNumber({
+            amount: saleAmount.toString(),
+            localeString: true,
+          });
+          const convertedPayAmount = convertNumber({
+            amount: payAmount.toString(),
+            localeString: true,
+          });
+          setYourPayAmount(convertedSaleAmount || '0.00');
+          setUserSaleAmount(convertedPayAmount || '0.00');
         }
       }
     }
     if (account && library && saleInfo) {
       getData();
     }
-  }, [account, library, saleInfo]);
+  }, [account, library, saleInfo, PUBLICSALE_CONTRACT]);
 
   return (
     <Flex flexDir="column" pl={'45px'}>
@@ -176,7 +199,7 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
             <Text {...detailSubTextStyle} mr={'3px'}>
               {totalDeposit}
             </Text>
-            <Text>{saleInfo?.tokenName}</Text>
+            <Text>{'TON'}</Text>
           </Flex>
           <Flex>
             <Text color={'gray.400'} mr={'3px'}>
@@ -185,7 +208,7 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
             <Text {...detailSubTextStyle} mr={'3px'}>
               {yourDeposit}
             </Text>
-            <Text>{saleInfo?.tokenName}</Text>
+            <Text>{'TON'}</Text>
           </Flex>
         </Box>
         <Box d="flex" fontSize={'13px'}>
@@ -194,11 +217,11 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
               Public Round 1 :{' '}
             </Text>
             <Text {...detailSubTextStyle} mr={'3px'}>
-              200,000.00
+              {userPayAmount}
             </Text>
             <Text mr={'3px'}>{saleInfo?.tokenName}</Text>
             <Text color={'gray.400'} mr={'3px'}>
-              (XX,XXX.XX TON)
+              ({userSaleAmount} TON)
             </Text>
           </Flex>
           <Flex>

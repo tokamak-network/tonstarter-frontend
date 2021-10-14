@@ -30,6 +30,7 @@ export const OpenSaleAfterDeposit: React.FC<OpenSaleAfterDepositProp> = (
   const [totalAllocation, setTotalAllocation] = useState<string>('-');
   const [totalDeposit, setTotalDeposit] = useState<string>('-');
   const [yourDeposit, setYourDeposit] = useState<string>('-');
+  const [fundingTokenBalance, setFundingTokenBalance] = useState<string>('-');
 
   // const {checkBalance} = useCheckBalance();
 
@@ -55,15 +56,20 @@ export const OpenSaleAfterDeposit: React.FC<OpenSaleAfterDepositProp> = (
       if (account && library && saleInfo) {
         const address = saleInfo.saleContractAddress;
         const res = await Promise.all([
-          starterActions.getTotalExpectOpenSaleAmount({
-            address,
+          starterActions.getTotalExpectOpenSaleAmountView({
             library,
+            address,
           }),
           starterActions.getTotalDepositAmount({
             address,
             library,
           }),
           starterActions.getUserDeposit({
+            account,
+            library,
+            address,
+          }),
+          starterActions.getCalCulSaleAmount({
             account,
             library,
             address,
@@ -76,6 +82,8 @@ export const OpenSaleAfterDeposit: React.FC<OpenSaleAfterDepositProp> = (
           setTotalDeposit(res[1]);
           //@ts-ignore
           setYourDeposit(res[2]);
+          //@ts-ignore
+          setFundingTokenBalance(res[3]);
         }
       }
     }
@@ -110,7 +118,7 @@ export const OpenSaleAfterDeposit: React.FC<OpenSaleAfterDepositProp> = (
             {...STATER_STYLE.mainText({colorMode, fontSize: 28})}
             alignItems="baseline"
             m={0}>
-            <Text mr={'8px'}>X,XXX,XXX.XX</Text>
+            <Text mr={'8px'}>{totalDeposit}</Text>
             <Text fontSize={25}>TON</Text>
           </Flex>
           <img
@@ -127,7 +135,7 @@ export const OpenSaleAfterDeposit: React.FC<OpenSaleAfterDepositProp> = (
             h={'36px'}
             {...STATER_STYLE.mainText({colorMode, fontSize: 28})}
             alignItems="baseline">
-            <Text mr={'8px'}>X,XXX,XXX.XX</Text>
+            <Text mr={'8px'}>{fundingTokenBalance}</Text>
             <Text fontSize={25}>{saleInfo?.tokenName}</Text>
           </Flex>
         </Box>

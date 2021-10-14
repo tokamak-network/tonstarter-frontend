@@ -69,17 +69,16 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
           account,
         );
 
-        console.log('---');
-        console.log(payAmount);
-        console.log(availableAmounT);
-
-        const pay = convertNumber({amount: payAmount.saleAmount});
+        const pay = convertNumber({
+          amount: payAmount.saleAmount,
+          localeString: true,
+        });
         const sale = convertNumber({
           amount: payAmount.payAmount,
           localeString: true,
         });
         const res =
-          detailInfo.tierAllocation[
+          detailInfo.totalExpectSaleAmount[
             detailInfo.userTier !== 0 ? detailInfo.userTier : 1
           ];
         const availalbleSubPay = BigNumber.from(availableAmounT).sub(
@@ -89,7 +88,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
           amount: availalbleSubPay.toString(),
           localeString: true,
         });
-        setUserTierAllocation(res);
+        setUserTierAllocation(detailInfo.userTier === 0 ? '-' : res);
         setAmountAvailable(convertedAvailableAmount || '0.00');
         setSaleAmount(sale || '0.00');
         setPayAmount(pay || '0.00');
@@ -157,7 +156,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
     <Flex flexDir="column" pl={'45px'}>
       <Box d="flex" textAlign="center" alignItems="center" mb={'20px'}>
         <Text {...STATER_STYLE.mainText({colorMode, fontSize: 25})} mr={'20px'}>
-          Exclusive Sale
+          Public Round 1
         </Text>
         <DetailCounter
           numberFontSize={'18px'}
@@ -254,7 +253,10 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             <Text color={'gray.400'} mr={'3px'}>
               Your Allocation :{' '}
             </Text>
-            <Text mr={'3px'}> {userAllocation} </Text>
+            <Text mr={'3px'}>
+              {' '}
+              {btnDisabled === true ? '-' : userAllocation}{' '}
+            </Text>
             <Text>{saleInfo?.tokenName}</Text>
           </Flex>
         </Box>
@@ -308,6 +310,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
         ) : (
           <CustomButton
             text={'Approve'}
+            isDisabled={btnDisabled}
             func={() =>
               account &&
               starterActions.getAllowance(

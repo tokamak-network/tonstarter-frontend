@@ -6,6 +6,7 @@ import {
   openSale,
   deposit,
   claim,
+  depositWithdraw,
 } from './actions';
 import {checkApprove, getAllowance} from './approve';
 import {
@@ -22,6 +23,8 @@ import {
   getNextVestingDay,
   getWithdrawAmount,
   getTotalExSaleAmount,
+  getCalCulSaleAmount,
+  getTotalExpectOpenSaleAmountView,
 } from './views';
 
 const actions = {
@@ -47,6 +50,9 @@ const actions = {
   getNextVestingDay,
   getWithdrawAmount,
   getTotalExSaleAmount,
+  getCalCulSaleAmount,
+  getTotalExpectOpenSaleAmountView,
+  depositWithdraw,
 };
 
 export default actions;

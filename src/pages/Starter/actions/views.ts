@@ -187,3 +187,27 @@ export async function getTotalExSaleAmount(args: I_CallContract) {
   });
   return convertedNum;
 }
+
+export async function getCalCulSaleAmount(args: CallContractWithAddress) {
+  const {library, address, account} = args;
+  const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
+  const res = await PUBLICSALE_CONTRACT.calculOpenSaleAmount(account, 0);
+  const convertedNum = convertNumber({
+    amount: res.toString() || '0',
+    localeString: true,
+  });
+  return convertedNum;
+}
+
+export async function getTotalExpectOpenSaleAmountView(args: I_CallContract) {
+  const {library, address} = args;
+  const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
+  const res = await PUBLICSALE_CONTRACT.totalExpectOpenSaleAmountView();
+  const convertedNum = convertNumber({
+    amount: res.toString() || '0',
+    localeString: true,
+  });
+  return convertedNum;
+}
+
+// If (calculSaleToken(TONamount) < calculOpenSaleAmount(address, 0) ) return calculSaleToken(TONamount)

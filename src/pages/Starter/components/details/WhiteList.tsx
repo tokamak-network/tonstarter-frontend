@@ -80,7 +80,7 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
       pt={isPassed ? '0px' : '70px'}
       pl={'45px'}>
       <Text {...STATER_STYLE.mainText({colorMode, fontSize: 25})} mb={'5px'}>
-        Exclusive Sale Whitelist
+        Public Round 1
       </Text>
       <Text
         {...STATER_STYLE.subText({colorMode})}

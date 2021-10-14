@@ -70,3 +70,11 @@ export const claim = async (args: I_CallContract) => {
   const res = await PUBLICSALE_CONTRACT.connect(signer).claim();
   return setTx(res);
 };
+
+export const depositWithdraw = async (args: I_CallContract) => {
+  const {account, library, address} = args;
+  const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
+  const signer = getSigner(library, account);
+  const res = await PUBLICSALE_CONTRACT.connect(signer).depositWithdraw();
+  return setTx(res);
+};

@@ -29,6 +29,9 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
   const [exclusiveSale, setExclusiveSale] = useState<string>('-');
   const [remainedAmount, setRemainedAmount] = useState<string>('-');
   const [openSale, setOpenSale] = useState<string>('-');
+  const [period, setPeriod] = useState<string>('-');
+  const [endPeriod, setEndPeriod] = useState<string>('-');
+  const [withdrawAmount, setWithdrawAmount] = useState<string>('0');
 
   const {blockNumber} = useBlockNumber();
 
@@ -72,6 +75,9 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
         const endPeriodNum = Number(endPeriod.toString());
         const period = diffTime / intervalNum + 1;
 
+        setPeriod(String(Math.floor(period)));
+        setEndPeriod(endPeriod.toString());
+
         if (period > endPeriodNum) {
           const nextVestingDate = startClaimTimeNum + intervalNum * period;
           setVestingDay(convertTimeStamp(nextVestingDate));
@@ -85,7 +91,7 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
     if (saleInfo && library && PUBLICSALE_CONTRACT) {
       getDate();
     }
-  }, [library, saleInfo, PUBLICSALE_CONTRACT]);
+  }, [library, saleInfo, PUBLICSALE_CONTRACT, blockNumber]);
 
   useEffect(() => {
     async function getData() {
@@ -93,6 +99,7 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
         const usersEx = await PUBLICSALE_CONTRACT.usersEx(account);
         const usersOpen = await PUBLICSALE_CONTRACT.usersOpen(account);
         const usersClaim = await PUBLICSALE_CONTRACT.usersClaim(account);
+
         // const ramainedAmount =
         //   Number(usersClaim?.totalClaimReward.toString()) -
         //   Number(usersClaim?.claimAmount.toString());
@@ -114,15 +121,27 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
           localeString: true,
         });
 
+        const userDepositAmount = usersOpen?.depositAmount.toString();
+        const userSaleAmount = usersOpen?.saleAmount.toString();
+        const convertedDepositAmount = convertNumber({
+          amount: userDepositAmount,
+          localeString: true,
+        });
+
         setExclusiveSale(convertedExSaleAmount || '0');
         setRemainedAmount(convertedRamainedAmount || '0');
         setOpenSale(convertedUsersOpen || '0');
+        setWithdrawAmount(
+          Number(userDepositAmount) > 0 && userSaleAmount === '0'
+            ? convertedDepositAmount || '0'
+            : '0',
+        );
       }
     }
     if (account && PUBLICSALE_CONTRACT) {
       getData();
     }
-  }, [account, PUBLICSALE_CONTRACT]);
+  }, [account, PUBLICSALE_CONTRACT, blockNumber]);
 
   return (
     <Flex flexDir="column" pl={'45px'}>
@@ -198,9 +217,11 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
             <Text color={'gray.400'} mr={'3px'}>
               WithdrawClaim Number :{' '}
             </Text>
-            <Text {...detailSubTextStyle}>3</Text>
+            <Text {...detailSubTextStyle}>
+              {Number(period) > Number(endPeriod) ? endPeriod : period}
+            </Text>
             <Text mx={'3px'}>/</Text>
-            <Text>6</Text>
+            <Text>{endPeriod}</Text>
           </Flex>
         </Box>
       </Box>
@@ -219,27 +240,30 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
               address: saleInfo.saleContractAddress,
             })
           }></CustomButton>
-        <CustomButton
-          text={'Withdraw'}
-          isDisabled={Number(inputTonBalance) <= 0}
-          func={() =>
-            account &&
-            starterActions.claim({
-              account,
-              library,
-              address: saleInfo.saleContractAddress,
-            })
-          }></CustomButton>
-        <Flex
-          flexDir="column"
-          ml={'15px'}
-          fontSize={12}
-          justifyContent="center">
-          <Text color={'gray.400'} mr={'3px'}>
-            WithdrawClaim Number :{' '}
-          </Text>
-          <Text {...detailSubTextStyle}>10,000,000 TON</Text>
-        </Flex>
+        {withdrawAmount === '0' ? null : (
+          <>
+            <CustomButton
+              text={'Withdraw'}
+              func={() =>
+                account &&
+                starterActions.depositWithdraw({
+                  account,
+                  library,
+                  address: saleInfo.saleContractAddress,
+                })
+              }></CustomButton>
+            <Flex
+              flexDir="column"
+              ml={'15px'}
+              fontSize={12}
+              justifyContent="center">
+              <Text color={'gray.400'} mr={'3px'}>
+                WithdrawClaim Number :{' '}
+              </Text>
+              <Text {...detailSubTextStyle}>{withdrawAmount} TON</Text>
+            </Flex>
+          </>
+        )}
       </Box>
     </Flex>
   );

@@ -238,9 +238,6 @@ export const StarterDetail = () => {
         setActiveStatus(step);
         setProject(isPassed ? 'past' : 'active');
 
-        // setActiveStatus('deposit');
-        // setProject('active');
-
         setActiveProjectInfo(
           activeProjects.filter((data: any) => data.name === id)[0],
         );
