@@ -9,7 +9,7 @@ export const ExclusiveSale = () => {
   return (
     <Flex flexDir="column" pt={'70px'} pl={'45px'}>
       <Text {...STATER_STYLE.mainText({colorMode, fontSize: 25})} mb={'5px'}>
-        Exclusive Sale
+        Public Round 1
       </Text>
       <Text
         {...STATER_STYLE.subText({colorMode})}

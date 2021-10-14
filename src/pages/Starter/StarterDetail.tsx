@@ -235,8 +235,11 @@ export const StarterDetail = () => {
           (data: any) => data.name === id,
         )[0];
 
-        setActiveStatus(step);
-        setProject(isPassed ? 'past' : 'active');
+        // setActiveStatus(step);
+        // setProject(isPassed ? 'past' : 'active');
+
+        setActiveStatus('openSale');
+        setProject('active');
 
         setActiveProjectInfo(
           activeProjects.filter((data: any) => data.name === id)[0],
@@ -306,7 +309,9 @@ export const StarterDetail = () => {
           <Box d="flex" flexDir="column" w={'562px'} pr={35} pos="relative">
             <Flex justifyContent="space-between" mb={15}>
               <Avatar
-                src={tokenType.symbol}
+                src={
+                  'http://tonstarter-symbols.s3-website.ap-northeast-2.amazonaws.com/DOC.png'
+                }
                 backgroundColor={tokenType.bg}
                 bg="transparent"
                 color="#c7d1d8"

@@ -118,7 +118,7 @@ export const OpenSaleAfterDeposit: React.FC<OpenSaleAfterDepositProp> = (
             {...STATER_STYLE.mainText({colorMode, fontSize: 28})}
             alignItems="baseline"
             m={0}>
-            <Text mr={'8px'}>{totalDeposit}</Text>
+            <Text mr={'8px'}>{yourDeposit}</Text>
             <Text fontSize={25}>TON</Text>
           </Flex>
           <img
