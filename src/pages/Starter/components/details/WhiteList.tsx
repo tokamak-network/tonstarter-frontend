@@ -39,7 +39,7 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
   const {STATER_STYLE} = theme;
   const {blockNumber} = useBlockNumber();
   const {isPassed} = useTime(activeProjectInfo?.timeStamps.startAddWhiteTime);
-
+  console.log(detailInfo)
   const [userAllocation, setUserAllocation] = useState<string>(
     detailInfo.tierAllocation[
       detailInfo.userTier !== 0 ? detailInfo.userTier : 1
@@ -54,6 +54,7 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
           library,
           address: activeProjectInfo.saleContractAddress,
         });
+        console.log(whiteListInfo)
         setIsWhiteList(whiteListInfo[0]);
       }
     }
@@ -115,13 +116,16 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
                 Your Tier :{' '}
               </Text>
               <Text
-                {...detailSubTextStyle}>{`Tier${detailInfo.userTier}`}</Text>
+                {...detailSubTextStyle}
+              >
+                {isWhiteList ? `Tier${detailInfo.userTier}` : '-'}
+              </Text>
             </Flex>
             <Flex w={'235px'}>
               <Text color={'gray.400'} mr={'3px'}>
                 Your Allocation :{' '}
               </Text>
-              <Text mr={'3px'}> {userAllocation} </Text>
+              <Text mr={'3px'}> {isWhiteList ? userAllocation : '-'} </Text>
               <Text>{saleInfo?.tokenName}</Text>
             </Flex>
           </Box>

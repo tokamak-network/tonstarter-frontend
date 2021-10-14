@@ -216,7 +216,7 @@ export const StarterDetail = () => {
       getInfo();
     }
   }, [account, library, PUBLICSALE_CONTRACT, saleInfo]);
-
+  console.log(detailInfo)
   useEffect(() => {
     async function getStatus() {
       if (PUBLICSALE_CONTRACT && saleInfo) {
