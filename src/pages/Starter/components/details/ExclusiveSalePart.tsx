@@ -33,7 +33,11 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
   const [convertedTokenBalance, setConvertedTokenBalance] =
     useState<string>('0');
 
-  const [amountAvailable, setAmountAvailable] = useState<string>('-');
+  const [amountAvailable, setAmountAvailable] = useState<string>(
+    detailInfo.tierAllocation[
+      detailInfo.userTier !== 0 ? detailInfo.userTier : 1
+    ],
+  );
   const [publicRound, setPublicRound] = useState<string>('-');
   const [userTonBalance, setUserTonBalance] = useState<string>('-');
   const [userAllocation, setUserAllocation] = useState<string>(
@@ -42,6 +46,8 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
     ],
   );
   const [userTierAllocation, setUserTierAllocation] = useState<string>('-');
+  const [payAmount, setPayAmount] = useState<string>('-');
+  const [saleAmount, setSaleAmount] = useState<string>('-');
   const [btnDisabled, setBtnDisabled] = useState<boolean>(true);
 
   const {checkBalance} = useCheckBalance();
@@ -61,11 +67,28 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
   useEffect(() => {
     async function getTierAllowcation() {
       if (PUBLICSALE_CONTRACT) {
-        const res = await PUBLICSALE_CONTRACT.totalExpectSaleAmount();
+        // const payAmount = await PUBLICSALE_CONTRACT.totalExpectSaleAmount();
+        const payAmount = await PUBLICSALE_CONTRACT.usersEx(account);
+        const pay = convertNumber({amount: payAmount.saleAmount})
+        const sale = convertNumber({amount: payAmount.payAmount})
+        const res = detailInfo.tierAllocation[
+          detailInfo.userTier !== 0 ? detailInfo.userTier : 1
+        ]
+        console.log(res)
         //need to multiple
-        setUserTierAllocation(
-          convertNumber({amount: res.toString(), localeString: true}) as string,
-        );
+        if (pay) {
+          setPayAmount(pay)
+          console.log(pay)
+          // console.log(detailInfo.tierAllocation[
+          //   detailInfo.userTier !== 0 ? detailInfo.userTier : 1
+          // ])
+          console.log(typeof pay)
+          console.log(typeof res)
+          const remain = Number(amountAvailable) - Number(pay)
+          setAmountAvailable(remain.toString())
+        };
+        if (sale) setSaleAmount(sale);
+        setUserTierAllocation(res);
       }
     }
     if (account && library && PUBLICSALE_CONTRACT) {
@@ -257,9 +280,9 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
               Public Round 1 :{' '}
             </Text>
             <Text {...detailSubTextStyle} mr={'3px'}>
-              {userTierAllocation}
+              {payAmount}
             </Text>
-            <Text color={'gray.400'}>(XXX,XXX TON)</Text>
+              <Text color={'gray.400'}>({saleAmount} TON)</Text>
           </Flex>
         </Box>
       </Box>
