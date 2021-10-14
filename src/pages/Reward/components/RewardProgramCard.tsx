@@ -1,48 +1,254 @@
 import {FC, useState, useMemo, useEffect, useRef} from 'react';
 import {
-    Text,
-    Flex,
-    Select,
-    Box,
-    useTheme,
-    useColorMode,
-  } from '@chakra-ui/react';
-  import {useAppSelector} from 'hooks/useRedux';
+  Text,
+  Flex,
+  Select,
+  Box,
+  useTheme,
+  useColorMode,
+  Avatar,
+  Image,
+  Tooltip,
+  Button,
+  Progress,
+} from '@chakra-ui/react';
+import {useAppSelector} from 'hooks/useRedux';
+import {checkTokenType} from 'utils/token';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import tooltipIcon from 'assets/svgs/input_question_icon.svg';
+import moment from 'moment';
 
-  import {
-    chakra,
-    // useTheme
-  } from '@chakra-ui/react';
+type incentiveKey = {
+  rewardToken: string;
+  pool: string;
+  startTime: Number;
+  endTime: Number;
+  refundee: string;
+};
 
+type Reward = {
+  chainId: number;
+  poolName: string;
+  token1Address: string;
+  token2Address: string;
+  poolAddress: string;
+  rewardToken: string;
+  incentiveKey: incentiveKey;
+  startTime: Number;
+  endTime: Number;
+  allocatedReward: string;
+  numStakers: Number;
+  status: string;
+};
+const themeDesign = {
+  border: {
+    light: 'solid 1px #dfe4ee',
+    dark: 'solid 1px #535353',
+  },
+  font: {
+    light: 'black.300',
+    dark: 'gray.475',
+  },
+  tosFont: {
+    light: 'gray.250',
+    dark: 'black.100',
+  },
+};
+type RewardProgramCardProps = {
+  reward: Reward;
+};
 
-  const themeDesign = {
-    border: {
-      light: 'solid 1px #dfe4ee',
-      dark: 'solid 1px #535353',
-    },
-    font: {
-      light: 'black.300',
-      dark: 'gray.475',
-    },
-    tosFont: {
-      light: 'gray.250',
-      dark: 'black.100',
-    },
-  };
-  type RewardProgramCardProps = {
-      name: string
-  };
+export const RewardProgramCard: FC<RewardProgramCardProps> = ({reward}) => {
+  const {colorMode} = useColorMode();
+  const theme = useTheme();
+  const {REWARD_STYLE} = theme;
+  const {account, library} = useActiveWeb3React();
+  const [progress, setProgress] = useState<number>(0);
+  const [dDay, setdDay] = useState<any>();
 
-  export const RewardProgramCard: FC<RewardProgramCardProps> =({name }) =>{
-        const {colorMode} = useColorMode();
-        const theme = useTheme();
-        const {REWARD_STYLE} = theme;
-        return (
-            <Flex {...REWARD_STYLE.containerStyle({colorMode})}>
-               <Text>{name}</Text>
-              <Flex>
-            
+  useEffect(() => {
+    const now = moment().unix() + 605470;
+    const start = moment.unix(Number(reward.startTime)).startOf('day').unix();
+
+    const end = moment.unix(Number(reward.endTime)).endOf('day').unix();
+    if (now < start) {
+      const remainingDays = moment
+        .unix(now)
+        .diff(moment.unix(Number(reward.startTime)), 'days');
+      setdDay(remainingDays);
+      setProgress(0);
+    } else if (now > end) {
+      const totalDays = moment
+        .unix(Number(reward.endTime))
+        .diff(moment.unix(Number(reward.startTime)), 'days');
+      setdDay(totalDays);
+      setProgress(100);
+    } else {
+      const totalDays = moment
+        .unix(Number(reward.endTime))
+        .diff(moment.unix(Number(reward.startTime)), 'days');
+      const remainingDays = moment.unix(now).diff(moment.unix(start), 'days');
+      setdDay(remainingDays);
+      const progressCalc = (remainingDays / totalDays) * 100;
+      setProgress(progressCalc);
+    }
+  }, [reward]);
+
+  return (
+    <Flex {...REWARD_STYLE.containerStyle({colorMode})} flexDir={'column'}>
+      <Flex flexDir={'row'} width={'100%'} alignItems={'center'} h={'50px'}>
+        <Box>
+          <Avatar
+            src={checkTokenType(reward.token1Address).symbol}
+            backgroundColor={checkTokenType(reward.token1Address).bg}
+            bg="transparent"
+            color="#c7d1d8"
+            name="T"
+            border={checkTokenType(reward.token1Address).border}
+            h="50px"
+            w="50px"
+            zIndex={'100'}
+          />
+          <Avatar
+            src={checkTokenType(reward.token2Address).symbol}
+            backgroundColor={checkTokenType(reward.token2Address).bg}
+            bg="transparent"
+            color="#c7d1d8"
+            name="T"
+            h="50px"
+            w="50px"
+            ml={'-7px'}
+            border={checkTokenType(reward.token2Address).border}
+          />
+        </Box>
+        {account === reward.incentiveKey.refundee ? (
+          <Flex flexDir={'row'} alignItems={'center'}>
+            <Box
+              w={'8px'}
+              h={'8px'}
+              borderRadius={50}
+              bg={'#f95359'}
+              m={'7px'}></Box>
+            <Text
+              {...{
+                ...REWARD_STYLE.joinedText({
+                  colorMode,
+                  fontSize: 11,
+                }),
+              }}
+              mr={'30px'}>
+              Joined
+            </Text>
+            <Box>
+              <Text>1,000,000.00 TOS / 10%</Text>
+              <Flex flexDir={'row'}>
+                <Text
+                  {...REWARD_STYLE.subText({colorMode, fontSize: 12})}
+                  mr={'2px'}>
+                  My Reward{' '}
+                </Text>
+                <Tooltip
+                  hasArrow
+                  placement="top"
+                  label="These are the rewards that are allocated when you currently unstake. Depending on the time of unstaking, the reward amount may vary."
+                  color={theme.colors.white[100]}
+                  bg={theme.colors.gray[375]}>
+                  <Image src={tooltipIcon} mr={'2px'} />
+                </Tooltip>
+
+                <Text {...REWARD_STYLE.subText({colorMode, fontSize: 12})}>
+                  / My portion
+                </Text>
               </Flex>
-            </Flex>
-        )
-  }
+            </Box>
+          </Flex>
+        ) : (
+          ''
+        )}
+      </Flex>
+      <Flex mt={'15px'} alignItems={'center'}>
+        <Text {...REWARD_STYLE.mainText({colorMode})} mr={'10px'}>
+          {reward.poolName}
+        </Text>
+        <Box>
+          <Text {...REWARD_STYLE.subText({colorMode, fontSize: 12})}>
+            Reward Date
+          </Text>
+          <Text {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 14})}>
+            {moment.unix(Number(reward.startTime)).format('YYYY.MM.DD')} ~{' '}
+            {moment.unix(Number(reward.endTime)).format('YYYY.MM.DD')}
+          </Text>
+        </Box>
+      </Flex>
+      <Flex mt={'24px'} flexDirection="row" justifyContent={'space-between'}>
+        <Text {...REWARD_STYLE.progress.mainText({colorMode})}>Progress</Text>
+        <Box d="flex" flexDir="row">
+          <Text
+            {...REWARD_STYLE.progress.subText({colorMode, fontSize: 12})}
+            fontWeight={'bold'}>
+            D-day
+          </Text>
+          <Text
+            fontWeight={'bold'}
+            {...REWARD_STYLE.progress.percent({})}
+            mx={'2px'}>
+            {dDay}
+          </Text>
+          <Text {...REWARD_STYLE.progress.subText({colorMode, fontSize: 12})}>
+            / Total Days
+          </Text>
+          <Text
+            fontWeight={'bold'}
+            {...REWARD_STYLE.progress.subText({
+              colorMode,
+              fontSize: 12,
+            })}
+            ml={'2px'}>
+            {moment
+              .unix(Number(reward.endTime))
+              .diff(moment.unix(Number(reward.startTime)), 'days')}
+          </Text>
+        </Box>
+      </Flex>
+      <Box mt={'5px'}>
+        <Progress value={progress} borderRadius={10} h={'6px'}></Progress>
+      </Box>
+      <Flex mt={'30px'} flexDirection="row" alignItems={'center'} justifyContent={'space-between'}>
+        <Box>
+          <Text
+            {...REWARD_STYLE.mainText({
+              colorMode,
+              fontSize: 14,
+            })}>
+            Total Raise
+          </Text>
+          <Box d="flex" alignItems="baseline">
+            <Text
+              {...REWARD_STYLE.mainText({
+                colorMode,
+                fontSize: 20,
+              })} lineHeight={'0.7'}>
+              {Number(reward.allocatedReward).toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+              })}
+            </Text>
+            <Text ml="2px" fontSize="13">
+              {checkTokenType(reward.rewardToken).name}
+            </Text>
+          </Box>
+        </Box>
+        <Button
+            w={'120px'}
+            h={'33px'}
+            bg={'blue.500'}
+            color="white.100"
+            ml={'10px'}
+            fontSize="16px"
+            _hover={{backgroundColor: 'blue.100'}}
+            >
+            Approve
+          </Button>
+      </Flex>
+    </Flex>
+  );
+};

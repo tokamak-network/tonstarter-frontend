@@ -164,7 +164,6 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
       const allowAmount = await tosContract
         .connect(signer)
         .allowance(account, UniswapStaker_Address);
-      console.log('allowAmount', allowAmount);
 
       const key = {
         rewardToken: TOS_ADDRESS,
@@ -178,6 +177,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
         .createIncentive(key, totalReward);
       await tx.wait();
       const sig = await generateSig(account.toLowerCase(), key);
+      
       const args: CreateReward = {
         poolName: name,
         poolAddress: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',

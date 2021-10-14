@@ -60,6 +60,7 @@ const colors = {
     100: '#0070ED',
   },
   white: {
+    300: '#dee4ef',
     200: '#f3f4f1',
     100: '#FFFFFF',
   },
@@ -80,21 +81,19 @@ interface REWARD_PROP {
 }
 export const REWARD_STYLE = {
   containerStyle: (props: REWARD_PROP & {isUserTier?: boolean}) => ({
-    w: 378,
-    h: 295,
+    w: 382,
+    h: 272,
     px: 25,
     pt: '20px',
     pb: 25,
     bg: props.colorMode === 'light' ? 'white.100' : '',
     borderRadius: 15,
     boxShadow: '0 2px 5px 0 rgba(61, 73, 93, 0.1)',
-    border: props.isUserTier
-      ? '1px solid #0070ED'
-      : props.colorMode === 'light'
+    border: props.colorMode === 'light'
       ? ''
       : '1px solid #535353',
-    _hover: {border: 'solid 1px #0070ed'},
-    cursor: 'pointer',
+    // _hover: {border: 'solid 1px #0070ed'},
+    // cursor: 'pointer',
     fontFamily: fonts.fld,
   }),
   header: (props: REWARD_PROP) => ({
@@ -115,7 +114,12 @@ export const REWARD_STYLE = {
   subTextBlack: (props: REWARD_PROP) => ({
     fontSize: props.fontSize || 14,
     fontWeight: 600,
-    color: props.colorMode === 'light' ? 'gray.125' : 'white.100',
+    color: props.colorMode === 'light' ? 'gray.125' : 'white.300',
+  }),
+  joinedText: (props: REWARD_PROP) => ({
+    fontSize: props.fontSize || 11,
+    fontWeight: 600,
+    color: props.colorMode === 'light' ? 'black.300' : 'white.300',
   }),
   progress: {
     mainText: (props: REWARD_PROP) => ({
@@ -123,17 +127,13 @@ export const REWARD_STYLE = {
       fontWeight: 600,
       color: props.colorMode === 'light' ? 'gray.525' : 'white.100',
     }),
-    percent: (props: REWARD_PROP & {isZero: boolean}) => ({
-      fontSize: 13,
-      fontWeight: 600,
-      color:
-        props.colorMode === 'light'
-          ? props.isZero === true
-            ? 'gray.150'
-            : 'blue.100'
-          : props.isZero === true
-          ? 'white.100'
-          : '',
+    subText: (props: REWARD_PROP) => ({
+      fontSize: props.fontSize || 12,
+      color: props.colorMode === 'light' ? 'gray.125' : 'gray.475',
+    }),
+    percent: () => ({
+      fontSize: 12,
+      color:'blue.100',
     }),
   },
   btn: (props: REWARD_PROP & {isActive: boolean}) => ({

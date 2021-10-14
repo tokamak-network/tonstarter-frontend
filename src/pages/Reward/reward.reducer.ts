@@ -3,12 +3,19 @@ import {RootState} from 'store/reducers';
 import {fetchRewardsURL} from 'constants/index';
 import { any } from 'prop-types';
 
+type incentiveKey = {
+  rewardToken: string,
+  pool: string,
+  startTime: Number,
+  endTime: Number,
+  refundee: string
+}
 type Reward = {
     chainId: Number, 
     poolName: String,
     poolAddress: String,
     rewardToken: String,
-    incentiveKey: Object,
+    incentiveKey: incentiveKey,
     startTime: Number,
     endTime: Number,
     allocatedReward: String,
@@ -44,7 +51,6 @@ const initialState = {
     .then((res) => res.json())
     .then((result) => result);
     const rewardData = rewardReq.datas;
-    console.log('rewardData', rewardData);
     return rewardData;
 } 
   )

@@ -250,13 +250,6 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
   const reward = useRouteMatch('/rewardProgram');
   const togglePools = () => setPoolsOpen(false);
 
-  useEffect(()=>{
-    console.log('----------------------');
-    
-    // console.log('match', match?.path);
-    // console.log('pools', pools?.path);
-    // console.log('reward', reward?.path);
-  }, [pools, match, reward])
   return (
     <Box
       display={{base: isOpen ? 'block' : 'none', md: 'block'}}

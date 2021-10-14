@@ -26,25 +26,28 @@ const tokenAddresses: {
 };
 
 const tokenInfo = {
-  eth: {fullName: 'ethereum', name: 'ETH', symbol: EthSymbol, bg: '#383736'},
-  weth: {fullName: 'ethereum', name: 'ETH', symbol: EthSymbol, bg: '#383736'},
+  eth: {fullName: 'ethereum', name: 'ETH', symbol: EthSymbol, bg: '#383736', border: 'none'},
+  weth: {fullName: 'ethereum', name: 'ETH', symbol: EthSymbol, bg: '#383736', border: 'none'},
   ton: {
     fullName: 'tokamak-network',
     name: 'TON',
     symbol: TonSymbol,
     bg: '#007aff',
+    border: 'none',
   },
   wton: {
     fullName: 'tokamak-network',
     name: 'TON',
     symbol: TonSymbol,
     bg: '#007aff',
+    border: 'none',
   },
   tos: {
     fullName: 'tonstarter',
     name: 'TOS',
     symbol: TosSymbol,
-    bg: '#ffffff'
+    bg: '#ffffff',
+    border: '1px solid #e7edf3',
   }
 };
 
