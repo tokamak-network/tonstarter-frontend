@@ -216,7 +216,7 @@ export const StarterDetail = () => {
       getInfo();
     }
   }, [account, library, PUBLICSALE_CONTRACT, saleInfo]);
-  console.log(detailInfo)
+  console.log(detailInfo);
   useEffect(() => {
     async function getStatus() {
       if (PUBLICSALE_CONTRACT && saleInfo) {
@@ -234,8 +234,12 @@ export const StarterDetail = () => {
         const {step} = activeProjects.filter(
           (data: any) => data.name === id,
         )[0];
-        setActiveStatus(step);
-        setProject(isPassed ? 'past' : 'active');
+
+        // setActiveStatus(step);
+        // setProject(isPassed ? 'past' : 'active');
+
+        setActiveStatus('exclusive');
+        setProject('active');
 
         setActiveProjectInfo(
           activeProjects.filter((data: any) => data.name === id)[0],
