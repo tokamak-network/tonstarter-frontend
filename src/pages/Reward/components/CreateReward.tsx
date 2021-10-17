@@ -254,11 +254,15 @@ input {
   return (
     <Box display={'flex'} justifyContent={'flex-end'}>
       <Box
-        border={themeDesign.border[colorMode]}
+       boxShadow={'0 2px 5px 0 rgba(61, 73, 93, 0.1)'}
+       border={colorMode === 'light'
+         ? ''
+         : '1px solid #535353'}
         h={'920px'}
         w={'284px'}
         p={'20px 15px'}
-        borderRadius={'15px'}>
+        borderRadius={'15px'}
+        bg={colorMode === 'light' ? '#FFFFFF' : ''}>
         <Text
           fontWeight={'bold'}
           fontFamily={theme.fonts.titil}
@@ -268,16 +272,16 @@ input {
         </Text>
         <Flex alignItems={'center'} h={'45px'}>
           <Text
-            color={colorMode === 'light' ? 'gray.400' : 'white.100'}
-            fontWeight={500}
+            color={colorMode === 'light' ? '#808992' : '#949494'}
+            fontWeight={'bold'}
             fontSize={'13px'}
             w={'64px'}>
             Pool
           </Text>
           <Select
             h={'30px'}
-            color={'#86929d'}
-            fontSize={'13px'}
+            color={colorMode=== 'light'? '#3e495c': '#f3f4f1'}
+            fontSize={'12px'}
             w={'190px'}
             onChange={onChangeSelectBoxPools}>
             {poolsArr.map((item, index) => (
@@ -289,8 +293,8 @@ input {
         </Flex>
         <Flex alignItems={'center'} h={'45px'}>
           <Text
-            color={colorMode === 'light' ? 'gray.400' : 'white.100'}
-            fontWeight={500}
+           color={colorMode === 'light' ? '#808992' : '#949494'}
+            fontWeight={'bold'}
             fontSize={'13px'}
             w={'64px'}>
             Start
@@ -314,15 +318,15 @@ input {
               }}
             />
           </Flex>
-          <Text ml={'10px'} fontSize={'10px'}>
+          <Text ml={'10px'} fontSize={'10px'} color={colorMode === 'light' ? '#808992' : '#949494'}>
             Time setting
           </Text>
           <Image ml={'5px'} src={clock} alt="clock" />
         </Flex>
         <Flex alignItems={'center'} h={'45px'}>
           <Text
-            color={colorMode === 'light' ? 'gray.400' : 'white.100'}
-            fontWeight={500}
+            color={colorMode === 'light' ? '#808992' : '#949494'}
+            fontWeight={'bold'}
             fontSize={'13px'}
             w={'64px'}>
             End
@@ -346,15 +350,15 @@ input {
               }}
             />
           </Flex>
-          <Text ml={'10px'} fontSize={'10px'}>
+          <Text ml={'10px'} fontSize={'10px'} color={colorMode === 'light' ? '#808992' : '#949494'}>
             Time setting
           </Text>
           <Image ml={'5px'} src={clock} alt="clock" />
         </Flex>
         <Flex alignItems={'center'} h={'45px'}>
           <Text
-            color={colorMode === 'light' ? 'gray.400' : 'white.100'}
-            fontWeight={500}
+            color={colorMode === 'light' ? '#808992' : '#949494'}
+            fontWeight={'bold'}
             fontSize={'13px'}
             w={'64px'}>
             Reward
@@ -385,8 +389,8 @@ input {
         </Flex>
         <Flex justifyContent={'space-between'} alignItems={'center'} h={'45px'}>
           <Text
-            color={colorMode === 'light' ? 'gray.400' : 'white.100'}
-            fontWeight={500}
+           color={colorMode === 'light' ? '#808992' : '#949494'}
+            fontWeight={'bold'}
             fontSize={'13px'}
             w={'64px'}>
             Amount

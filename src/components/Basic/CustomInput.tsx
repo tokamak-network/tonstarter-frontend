@@ -5,21 +5,24 @@ type CustomInputProp = {
   w?: string;
   h?: string;
   border?: any;
+  fontSize?: any;
   value: any;
   setValue: Dispatch<SetStateAction<any>>;
   numberOnly?: boolean;
 };
 
 export const CustomInput = (prop: CustomInputProp) => {
-  const {w, h, border, value, setValue, numberOnly} = prop;
+  const {w, h, border,fontSize, value, setValue, numberOnly, } = prop;
   if (numberOnly) {
     return (
       <NumberInput
         w={w}
         h={h}
         value={value}
+        alignItems={'center'}
         onChange={(value) => setValue(value)}>
         <NumberInputField
+        
           variant={'outline'}
           borderWidth={0}
           border={border}
@@ -27,6 +30,7 @@ export const CustomInput = (prop: CustomInputProp) => {
           fontWeight={'bold'}
           w={'100%'}
           h={'100%'}
+          fontSize={fontSize}
           p={0}
           _focus={{
             borderWidth: 0,

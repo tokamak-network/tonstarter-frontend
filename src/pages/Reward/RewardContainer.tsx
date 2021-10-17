@@ -41,8 +41,8 @@ import {
         
       },[])
         return (
-          <Flex  justifyContent={'space-between'} mb='100px'>
-            <Flex mt={'30px'} flexWrap={'wrap'}>
+          <Flex  justifyContent={'space-between'} mb='100px' mt={'30px'}>
+            <Flex flexWrap={'wrap'}>
             <Grid templateColumns="repeat(2, 1fr)" gap={30}>
                { pools.map((pool, index) => {
                  const rewardProps = {
@@ -69,7 +69,7 @@ import {
                 }
              </Grid>
             </Flex>
-            <Flex>
+            <Flex >
               <ClaimReward/>
               </Flex>
             </Flex>
