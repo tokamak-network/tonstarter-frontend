@@ -8,12 +8,12 @@ import {
   Center,
 } from '@chakra-ui/react';
 import {useEffect, useState} from 'react';
-import {useParams} from 'react-router-dom';
+// import {useParams} from 'react-router-dom';
 import {checkTokenType} from 'utils/token';
-import {ExclusiveSale} from './components/details/ExclusiveSale';
+// import {ExclusiveSale} from './components/details/ExclusiveSale';
 import {WhiteList} from './components/details/WhiteList';
-import {OpenSale} from './components/details/OpenSale';
-import {OpenSaleAfterDeposit} from './components/details/OpenSaleAfterDeposit';
+// import {OpenSale} from './components/details/OpenSale';
+// import {OpenSaleAfterDeposit} from './components/details/OpenSaleAfterDeposit';
 
 import {DetailIcons} from './components/details/Detail_Icons';
 import {SaleStatus, Tier, DetailInfo} from './types';
@@ -24,7 +24,7 @@ import store from 'store';
 import {AdminObject} from '@Admin/types';
 import {convertTimeStamp} from 'utils/convertTIme';
 import {Claim} from './components/details/Claim';
-import {useUrl} from './hooks/useUrl';
+// import {useUrl} from './hooks/useUrl';
 import {useCallContract} from 'hooks/useCallContract';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import starterActions from './actions';
@@ -44,7 +44,7 @@ export const StarterDetail = () => {
   const starterData = store.getState().starters.data;
 
   const {isPassed} = useTime(
-    starterData?.activeProjects[0].timeStamps.endOpenSaleTime,
+    starterData?.activeProjects[0].timeStamps.endDepositTIme,
   );
   const {isPassed: isEndWhiteListTime} = useTime(
     starterData?.activeProjects[0].timeStamps.endWhiteListTime,
@@ -54,9 +54,6 @@ export const StarterDetail = () => {
   );
   const {isPassed: isEndDepositTIme} = useTime(
     starterData?.activeProjects[0].timeStamps.endDepositTIme,
-  );
-  const {isPassed: isEndOpenSaleTime} = useTime(
-    starterData?.activeProjects[0].timeStamps.endOpenSaleTime,
   );
 
   const [projectStatus, setProject] = useState<'past' | 'active'>(
@@ -255,7 +252,6 @@ export const StarterDetail = () => {
     isEndWhiteListTime,
     isEndExclusiveTime,
     isEndDepositTIme,
-    isEndOpenSaleTime,
     isPassed,
   ]);
 
@@ -373,11 +369,11 @@ export const StarterDetail = () => {
               activeProjectInfo={activeProjectInfo}
               isApprove={isApprove}></OpenSaleDeposit>
           )}
-          {projectStatus === 'active' && activeStatus === 'openSale' && (
+          {/* {projectStatus === 'active' && activeStatus === 'openSale' && (
             <OpenSaleAfterDeposit
               saleInfo={saleInfo}
               activeProjectInfo={activeProjectInfo}></OpenSaleAfterDeposit>
-          )}
+          )} */}
           {projectStatus === 'past' && (
             <Claim
               saleInfo={saleInfo}

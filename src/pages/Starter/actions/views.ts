@@ -4,7 +4,7 @@ import {LibraryType} from 'types';
 import {convertNumber} from 'utils/number';
 import moment from 'moment';
 import {convertTimeStamp} from 'utils/convertTIme';
-import {BigNumber} from '@ethersproject/units/node_modules/@ethersproject/bignumber';
+import {SaleStatus} from '@Starter/types';
 
 interface I_CallContract {
   library: LibraryType;
@@ -23,7 +23,13 @@ export async function getTotalExpectSaleAmount(args: I_CallContract) {
   return convertedNum;
 }
 
-export async function getTimeStamps(args: I_CallContract) {
+export async function getTimeStamps(args: I_CallContract): Promise<{
+  startExclusiveTime: number;
+  endExclusiveTime: number;
+  startDepositTime: number;
+  endDepositTIme: number;
+  checkStep: SaleStatus | 'past';
+}> {
   const nowTimeStamp = moment().unix();
   const {library, address} = args;
   const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
@@ -34,8 +40,8 @@ export async function getTimeStamps(args: I_CallContract) {
     PUBLICSALE_CONTRACT.endExclusiveTime(),
     PUBLICSALE_CONTRACT.startDepositTime(),
     PUBLICSALE_CONTRACT.endDepositTime(),
-    PUBLICSALE_CONTRACT.startOpenSaleTime(),
-    PUBLICSALE_CONTRACT.endOpenSaleTime(),
+    // PUBLICSALE_CONTRACT.startOpenSaleTime(),
+    // PUBLICSALE_CONTRACT.endOpenSaleTime(),
   ]);
   const closeTimeStamp = res.filter((timeStamp: any) => {
     return Number(timeStamp.toString()) > nowTimeStamp;
@@ -50,23 +56,24 @@ export async function getTimeStamps(args: I_CallContract) {
                 ? 'whitelist'
                 : index < 4
                 ? 'exclusive'
-                : index < 6
-                ? 'deposit'
-                : 'openSale';
+                : 'deposit';
+              // : index < 6
+              // ? 'deposit'
+              // : 'openSale';
             }
           })
           .filter((status: any) => status !== undefined)[0];
 
   return {
-    startAddWhiteTime: Number(res[0].toString()),
-    endWhiteListTime: Number(res[1].toString()),
+    // startAddWhiteTime: Number(res[0].toString()),
+    // endWhiteListTime: Number(res[1].toString()),
     startExclusiveTime: Number(res[2].toString()),
     endExclusiveTime: Number(res[3].toString()),
     startDepositTime: Number(res[4].toString()),
     endDepositTIme: Number(res[5].toString()),
-    startOpenSaleTime: Number(res[6].toString()),
-    endOpenSaleTime: Number(res[7].toString()),
-    checkStep,
+    // startOpenSaleTime: Number(res[6].toString()),
+    // endOpenSaleTime: Number(res[7].toString()),
+    checkStep: checkStep || 'past',
   };
 }
 

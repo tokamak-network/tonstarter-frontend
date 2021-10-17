@@ -7,7 +7,7 @@ import {
   ActiveProjectType,
   UpcomingProjectType,
   PastProjectType,
-  MyProject,
+  // MyProject,
 } from './types';
 import starterActions from './actions';
 interface StarterState {
@@ -99,14 +99,14 @@ export const fetchStarters = createAsyncThunk(
         // });
 
         const {
-          startAddWhiteTime,
-          endWhiteListTime,
+          // startAddWhiteTime,
+          // endWhiteListTime,
           startExclusiveTime,
           endExclusiveTime,
           startDepositTime,
           endDepositTIme,
-          startOpenSaleTime,
-          endOpenSaleTime,
+          // startOpenSaleTime,
+          // endOpenSaleTime,
           checkStep,
         } = timeStamps;
 
