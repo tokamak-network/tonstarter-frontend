@@ -12,7 +12,7 @@ export type ActiveProjectType = I_StarterProject & {
   projectFundingTokenRatio: number;
   timeStamps: {
     checkStep: string;
-    endDepositTIme: number;
+    endDepositTime: number;
     endExclusiveTime: number;
     endOpenSaleTime: number;
     endWhiteListTime: number;

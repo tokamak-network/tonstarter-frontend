@@ -28,9 +28,9 @@ export const DetailTableProject: React.FC<DetailTableProjectProps> = (prop) => {
     {
       key: 'Sale Period',
       value: `${convertTimeStamp(
-        activeProjectInfo?.timeStamps.startOpenSaleTime,
+        activeProjectInfo?.timeStamps.startExclusiveTime,
       )} ~ ${convertTimeStamp(
-        activeProjectInfo?.timeStamps.endOpenSaleTime,
+        activeProjectInfo?.timeStamps.endExclusiveTime,
         'MM-DD',
       )}`,
     },

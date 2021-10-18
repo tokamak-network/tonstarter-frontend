@@ -36,7 +36,7 @@ import {useTime} from 'hooks/useTime';
 
 export const StarterDetail = () => {
   // const {id}: {id: string} = useParams();
-  const id = 'DOOROPEN';
+  const id = 'DOOR OPEN';
   const {colorMode} = useColorMode();
   const theme = useTheme();
   // const {projectStatus} = useUrl();
@@ -44,7 +44,7 @@ export const StarterDetail = () => {
   const starterData = store.getState().starters.data;
 
   const {isPassed} = useTime(
-    starterData?.activeProjects[0].timeStamps.endDepositTIme,
+    starterData?.activeProjects[0].timeStamps.endDepositTime,
   );
   const {isPassed: isEndWhiteListTime} = useTime(
     starterData?.activeProjects[0].timeStamps.endWhiteListTime,
@@ -53,8 +53,11 @@ export const StarterDetail = () => {
     starterData?.activeProjects[0].timeStamps.endExclusiveTime,
   );
   const {isPassed: isEndDepositTIme} = useTime(
-    starterData?.activeProjects[0].timeStamps.endDepositTIme,
+    starterData?.activeProjects[0].timeStamps.endDepositTime,
   );
+
+  console.log('--isPassed--');
+  console.log(isPassed);
 
   const [projectStatus, setProject] = useState<'past' | 'active'>(
     isPassed ? 'past' : 'active',
@@ -287,6 +290,8 @@ export const StarterDetail = () => {
       </Center>
     );
   }
+
+  console.log(projectStatus);
 
   return (
     <Flex mt={'122px'} w={'100%'} justifyContent="center" mb={'100px'}>

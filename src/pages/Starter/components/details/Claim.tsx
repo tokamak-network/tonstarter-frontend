@@ -97,14 +97,15 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
     async function getData() {
       if (account && PUBLICSALE_CONTRACT) {
         const usersEx = await PUBLICSALE_CONTRACT.usersEx(account);
-        const usersOpen = await PUBLICSALE_CONTRACT.usersOpen(account);
+        const userOpenSaleUserAmount =
+          await PUBLICSALE_CONTRACT.openSaleUserAmount(account);
         const usersClaim = await PUBLICSALE_CONTRACT.usersClaim(account);
+        const totalClaim = await PUBLICSALE_CONTRACT.calculClaimAmount(
+          account,
+          0,
+        );
 
-        // const ramainedAmount =
-        //   Number(usersClaim?.totalClaimReward.toString()) -
-        //   Number(usersClaim?.claimAmount.toString());
-
-        const ramainedAmount = BigNumber.from(usersClaim?.totalClaimReward).sub(
+        const ramainedAmount = BigNumber.from(totalClaim[1]).sub(
           usersClaim?.claimAmount,
         );
 
@@ -117,12 +118,12 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
           localeString: true,
         });
         const convertedUsersOpen = convertNumber({
-          amount: usersOpen?.saleAmount.toString(),
+          amount: userOpenSaleUserAmount[1].toString(),
           localeString: true,
         });
 
-        const userDepositAmount = usersOpen?.depositAmount.toString();
-        const userSaleAmount = usersOpen?.saleAmount.toString();
+        const userDepositAmount = userOpenSaleUserAmount[0];
+        const userSaleAmount = userOpenSaleUserAmount[1].toString();
         const convertedDepositAmount = convertNumber({
           amount: userDepositAmount,
           localeString: true,

@@ -33,6 +33,7 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
   const [yourDeposit, setYourDeposit] = useState<string>('-');
   const [userPayAmount, setYourPayAmount] = useState<string>('-');
   const [userSaleAmount, setUserSaleAmount] = useState<string>('-');
+  const [userAllocate, setUserAllocate] = useState<string>('-');
 
   const {checkBalance} = useCheckBalance();
 
@@ -80,6 +81,11 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
             address,
           }),
           PUBLICSALE_CONTRACT.usersEx(account),
+          starterActions.getUserAllocate({
+            account,
+            library,
+            address,
+          }),
         ]);
 
         if (res) {
@@ -91,6 +97,7 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
           setYourDeposit(res[2]);
           const saleAmount = res[3].saleAmount;
           const payAmount = res[3].payAmount;
+          const userAllowcate = res[4];
           const convertedSaleAmount = convertNumber({
             amount: saleAmount.toString(),
             localeString: true,
@@ -101,6 +108,7 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
           });
           setYourPayAmount(convertedSaleAmount || '0.00');
           setUserSaleAmount(convertedPayAmount || '0.00');
+          setUserAllocate(userAllowcate || '0.00');
         }
       }
     }
@@ -119,7 +127,7 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
           numberFontSize={'18px'}
           stringFontSize={'14px'}
           date={
-            activeProjectInfo?.timeStamps.endDepositTIme * 1000
+            activeProjectInfo?.timeStamps.endDepositTime * 1000
           }></DetailCounter>
       </Box>
       <Text
@@ -171,13 +179,13 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
             </Text>
             <Text {...detailSubTextStyle}>
               {convertTimeStamp(
-                activeProjectInfo?.timeStamps?.startOpenSaleTime,
+                activeProjectInfo?.timeStamps?.startDepositTime,
                 'YYYY-MM-D',
               )}{' '}
               ~{' '}
               {convertTimeStamp(
-                activeProjectInfo?.timeStamps?.endOpenSaleTime,
-                'YYYY-MM-D',
+                activeProjectInfo?.timeStamps?.endDepositTime,
+                'MM-D',
               )}
             </Text>
           </Flex>
@@ -186,7 +194,7 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
               Total Allocation :{' '}
             </Text>
             <Text {...detailSubTextStyle} mr={'3px'}>
-              {totalAllocation}
+              {userAllocate}
             </Text>
             <Text>{saleInfo?.tokenName}</Text>
           </Flex>

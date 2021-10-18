@@ -24,10 +24,12 @@ export async function getTotalExpectSaleAmount(args: I_CallContract) {
 }
 
 export async function getTimeStamps(args: I_CallContract): Promise<{
+  startAddWhiteTime: number;
+  endWhiteListTime: number;
   startExclusiveTime: number;
   endExclusiveTime: number;
   startDepositTime: number;
-  endDepositTIme: number;
+  endDepositTime: number;
   checkStep: SaleStatus | 'past';
 }> {
   const nowTimeStamp = moment().unix();
@@ -65,12 +67,12 @@ export async function getTimeStamps(args: I_CallContract): Promise<{
           .filter((status: any) => status !== undefined)[0];
 
   return {
-    // startAddWhiteTime: Number(res[0].toString()),
-    // endWhiteListTime: Number(res[1].toString()),
+    startAddWhiteTime: Number(res[0].toString()),
+    endWhiteListTime: Number(res[1].toString()),
     startExclusiveTime: Number(res[2].toString()),
     endExclusiveTime: Number(res[3].toString()),
     startDepositTime: Number(res[4].toString()),
-    endDepositTIme: Number(res[5].toString()),
+    endDepositTime: Number(res[5].toString()),
     // startOpenSaleTime: Number(res[6].toString()),
     // endOpenSaleTime: Number(res[7].toString()),
     checkStep: checkStep || 'past',
@@ -104,7 +106,7 @@ export async function getTotalRaise(args: I_CallContract) {
 export async function getTotalExpectOpenSaleAmount(args: I_CallContract) {
   const {library, address} = args;
   const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
-  const res = await PUBLICSALE_CONTRACT.totalExpectOpenSaleAmount();
+  const res = await PUBLICSALE_CONTRACT.totalExpectOpenSaleAmountView();
   const convertedNum = convertNumber({
     amount: res.toString(),
     localeString: true,
@@ -139,9 +141,9 @@ export async function getCalculClaimAmount(
 ) {
   const {library, address, account} = args;
   const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
-  const res = await PUBLICSALE_CONTRACT.calculClaimAmount(account);
+  const res = await PUBLICSALE_CONTRACT.calculClaimAmount(account, 0);
   const convertedNum = convertNumber({
-    amount: res.toString() || '0',
+    amount: res[0].toString() || '0',
   });
   return convertedNum;
 }
@@ -239,4 +241,15 @@ export async function getRefundAmount(args: CallContractWithAddress) {
   //   return convertedNum;
   // }
   return '0.00';
+}
+
+export async function getUserAllocate(args: CallContractWithAddress) {
+  const {library, address, account} = args;
+  const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
+  const res = await PUBLICSALE_CONTRACT.openSaleUserAmount(account);
+  const convertedNum = convertNumber({
+    amount: res[1].toString() || '0',
+    localeString: true,
+  });
+  return convertedNum;
 }

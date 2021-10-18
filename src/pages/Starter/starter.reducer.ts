@@ -93,18 +93,13 @@ export const fetchStarters = createAsyncThunk(
           address,
         });
 
-        // const participant = await starterActions.getTimeStamps({
-        //   library,
-        //   address,
-        // });
-
         const {
           // startAddWhiteTime,
           // endWhiteListTime,
           startExclusiveTime,
           endExclusiveTime,
           startDepositTime,
-          endDepositTIme,
+          endDepositTime,
           // startOpenSaleTime,
           // endOpenSaleTime,
           checkStep,
@@ -120,7 +115,7 @@ export const fetchStarters = createAsyncThunk(
           saleEnd:
             checkStep === 'whitelist' || checkStep === 'exclusive'
               ? moment.unix(endExclusiveTime).format('YYYY.MM.DD')
-              : moment.unix(endDepositTIme).format('YYYY.MM.DD'),
+              : moment.unix(endDepositTime).format('YYYY.MM.DD'),
           isExclusive:
             checkStep === 'whitelist' || checkStep === 'exclusive'
               ? true
