@@ -183,8 +183,8 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
       const args: CreateReward = {
         poolName: name,
         poolAddress: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
-        token1Address: '0x409c4D8cd5d2924b9bc5509230d16a61289c8153',
-        token2Address: '0xc4A11aaf6ea915Ed7Ac194161d2fC9384F15bff2',
+        token1Address: '0x73a54e5C054aA64C1AE7373C2B5474d8AFEa08bd',
+        token2Address: '0x709bef48982Bbfd6F2D4Be24660832665F53406C',
         rewardToken: TOS_ADDRESS,
         account: account,
         incentiveKey: key,
