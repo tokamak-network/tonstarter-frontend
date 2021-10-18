@@ -4,6 +4,8 @@ import {Contract} from '@ethersproject/contracts';
 import {setTx} from 'application';
 import {LibraryType} from 'types';
 import {convertToWei} from 'utils/number';
+import store from 'store';
+import {openToast} from 'store/app/toast.reducer';
 
 interface I_CallContract {
   account: string;
@@ -18,7 +20,7 @@ export const participate = async (args: CallContractWithAmount) => {
   const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
   const signer = getSigner(library, account);
   const res = await PUBLICSALE_CONTRACT.connect(signer).exclusiveSale(
-    convertToWei(amount),
+    amount.length > 17 ? amount : convertToWei(amount),
   );
   return setTx(res);
 };
@@ -54,13 +56,33 @@ export const openSale = async (args: I_CallContract) => {
 };
 
 export const deposit = async (args: I_CallContract & {amount: string}) => {
-  const {account, library, address, amount} = args;
-  const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
-  const signer = getSigner(library, account);
-  const res = await PUBLICSALE_CONTRACT.connect(signer).deposit(
-    convertToWei(amount),
-  );
-  return setTx(res);
+  try {
+    const {account, library, address, amount} = args;
+    const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
+    const signer = getSigner(library, account);
+    const res = await PUBLICSALE_CONTRACT.connect(signer).deposit(
+      amount.length > 17 ? amount : convertToWei(amount),
+    );
+    return setTx(res);
+  } catch (e: any) {
+    switch (e.message) {
+      case e.message.includes('end the depositTime'):
+        console.log(e.message);
+        store.dispatch(
+          //@ts-ignore
+          openToast({
+            payload: {
+              status: 'error',
+              title: 'Tx fail to send',
+              description: `something went wrong`,
+              duration: 5000,
+              isClosable: true,
+            },
+          }),
+        );
+        break;
+    }
+  }
 };
 
 export const claim = async (args: I_CallContract) => {

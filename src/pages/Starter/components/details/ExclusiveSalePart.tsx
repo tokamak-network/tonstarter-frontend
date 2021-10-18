@@ -186,7 +186,16 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
                   : 'white.100'
                 : 'gray.175'
             }
-            tokenName={'TON'}></CustomInput>
+            tokenName={'TON'}
+            maxBtn={true}
+            maxValue={
+              Number(userTonBalance.replaceAll(',', '')) <=
+              Number(amountAvailable.replaceAll(',', '')) /
+                saleInfo?.projectFundingTokenRatio
+                ? Number(userTonBalance.replaceAll(',', ''))
+                : Number(amountAvailable.replaceAll(',', '')) /
+                  saleInfo?.projectFundingTokenRatio
+            }></CustomInput>
           <img
             src={ArrowIcon}
             alt={'icon_arrow'}
@@ -290,7 +299,10 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             isDisabled={btnDisabled}
             func={() =>
               account &&
-              checkBalance(Number(inputTonBalance), Number(userTonBalance)) &&
+              checkBalance(
+                Number(inputTonBalance),
+                Number(userTonBalance.replaceAll(',', '')),
+              ) &&
               starterActions.participate({
                 account,
                 library,

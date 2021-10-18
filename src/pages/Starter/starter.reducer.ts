@@ -58,7 +58,49 @@ export const fetchStarters = createAsyncThunk(
     const starterReq = await fetch(fetchStarterURL)
       .then((res) => res.json())
       .then((result) => result);
-    const starterData = starterReq.datas;
+    let starterData = starterReq.datas;
+
+    starterData = [
+      {
+        adminAddress: '0x8c595DA827F4182bC0E3917BccA8e654DF8223E1',
+        chainId: 4,
+        claimInterval: 0,
+        claimPeriod: 0,
+        del: false,
+        description:
+          'Co-ordinate campaigns and product launches, with improved overall communication and collaboration for your whole team. Hardware, tech, make announcements and build awareness among some of the hardest consumers in the world to reach.',
+        discord: '',
+        endAddWhiteTime: 0,
+        endDepositTime: 0,
+        endExclusiveTime: 0,
+        endOpenSaleTime: 0,
+        image: '',
+        medium: 'https://dooropen.space/',
+        name: 'DOOR OPEN',
+        position: 'active',
+        production: 'dev',
+        projectFundingTokenRatio: 600,
+        projectTokenRatio: 1,
+        saleContractAddress: '0x865200f8172bf55f99b53A8fa0E26988b94dfBbE',
+        snapshot: 0,
+        startAddWhiteTime: 0,
+        startClaimTime: 0,
+        startDepositTime: 0,
+        startExclusiveTime: 0,
+        startOpenSaleTime: 0,
+        telegram: 'https://dooropen.space/',
+        tokenAddress: '0xb109f4c20BDb494A63E32aA035257fBA0a4610A4',
+        tokenFundRaisingTargetAmount: '10000000',
+        tokenFundingRecipient: '0x8c595DA827F4182bC0E3917BccA8e654DF8223E1',
+        tokenName: 'DOC',
+        tokenSymbol: 'DOC',
+        tokenSymbolImage:
+          'https://tonstarter-symbols.s3.ap-northeast-2.amazonaws.com/DOC.png',
+        twitter: 'https://dooropen.space/',
+        vestingContractAddress: '0x865200f8172bf55f99b53A8fa0E26988b94dfBbE',
+        website: 'https://dooropen.space/',
+      },
+    ];
 
     const nowTimeStamp = moment().unix();
 
@@ -94,8 +136,8 @@ export const fetchStarters = createAsyncThunk(
         });
 
         const {
-          // startAddWhiteTime,
-          // endWhiteListTime,
+          startAddWhiteTime,
+          endWhiteListTime,
           startExclusiveTime,
           endExclusiveTime,
           startDepositTime,

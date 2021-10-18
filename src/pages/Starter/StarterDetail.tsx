@@ -56,9 +56,6 @@ export const StarterDetail = () => {
     starterData?.activeProjects[0].timeStamps.endDepositTime,
   );
 
-  console.log('--isPassed--');
-  console.log(isPassed);
-
   const [projectStatus, setProject] = useState<'past' | 'active'>(
     isPassed ? 'past' : 'active',
   );
@@ -240,6 +237,9 @@ export const StarterDetail = () => {
         setActiveStatus(step);
         setProject(isPassed ? 'past' : 'active');
 
+        // setActiveStatus('deposit');
+        // setProject('active');
+
         setActiveProjectInfo(
           activeProjects.filter((data: any) => data.name === id)[0],
         );
@@ -292,8 +292,6 @@ export const StarterDetail = () => {
       </Center>
     );
   }
-
-  console.log(projectStatus);
 
   return (
     <Flex mt={'122px'} w={'100%'} justifyContent="center" mb={'100px'}>

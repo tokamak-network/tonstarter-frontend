@@ -3,7 +3,6 @@ import {useToast} from 'hooks/useToast';
 export const useCheckBalance = () => {
   const {toastMsg} = useToast();
   const checkBalance = (inputValue: number, balance: number) => {
-    console.log(inputValue, balance);
     if (inputValue > balance || inputValue <= 0) {
       toastMsg({
         status: 'error',

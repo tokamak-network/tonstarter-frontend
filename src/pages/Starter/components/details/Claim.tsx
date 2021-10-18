@@ -109,11 +109,6 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
           0,
         );
 
-        console.log('--claim--');
-        console.log(blockNumber);
-        console.log(totalClaim);
-        console.log(usersClaim);
-
         const ramainedAmount = BigNumber.from(totalClaim[1]).sub(
           usersClaim?.claimAmount,
         );
@@ -222,13 +217,12 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
             <Text {...detailSubTextStyle} mr={'5px'}>
               {vestingDay}
             </Text>
-            {/* <DetailCounter date={d_Day * 1000}></DetailCounter> */}
             <DetailCounter
               style={{
                 color: colorMode === 'light' ? '#3d495d' : '#ffffff',
                 fontSize: '13px',
               }}
-              date={1634654019 * 1000}
+              date={d_Day * 1000}
               claimStep={true}></DetailCounter>
           </Flex>
         </Box>

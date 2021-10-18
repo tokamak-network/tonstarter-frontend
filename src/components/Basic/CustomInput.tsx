@@ -5,6 +5,7 @@ import {
   useColorMode,
   Text,
   Box,
+  Button,
 } from '@chakra-ui/react';
 import {Dispatch, SetStateAction, useEffect} from 'react';
 
@@ -18,13 +19,26 @@ type CustomInputProp = {
   value: any;
   setValue?: Dispatch<SetStateAction<any>>;
   numberOnly?: boolean;
+  maxBtn?: boolean;
+  maxValue?: number;
 };
 
 export const CustomInput = (prop: CustomInputProp) => {
   const {colorMode} = useColorMode();
 
-  const {w, h, border, value, setValue, numberOnly, br, color, tokenName} =
-    prop;
+  const {
+    w,
+    h,
+    border,
+    value,
+    setValue,
+    numberOnly,
+    br,
+    color,
+    tokenName,
+    maxBtn,
+    maxValue,
+  } = prop;
 
   useEffect(() => {
     if (setValue && value.length > 1 && value.startsWith('0')) {
@@ -69,6 +83,28 @@ export const CustomInput = (prop: CustomInputProp) => {
           justifyContent="center">
           <Text>{tokenName}</Text>
         </Box>
+        {maxBtn === true && maxValue && setValue ? (
+          <Button
+            zIndex={100}
+            pos="absolute"
+            right={'3px'}
+            w={'50px'}
+            h={'26px'}
+            mt={'2px'}
+            bg={'none'}
+            cursor={'pointer'}
+            border={
+              border || colorMode === 'light'
+                ? '1px solid #dfe4ee'
+                : '1px solid #424242'
+            }
+            _hover={{
+              border: '1px solid #2a72e5',
+            }}
+            onClick={() => setValue(String(maxValue))}>
+            Max
+          </Button>
+        ) : null}
         <NumberInputField
           // onSelect={(e: any) => {
           //   e.target.style.color = '#3e495c';

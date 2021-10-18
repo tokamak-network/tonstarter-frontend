@@ -11,6 +11,7 @@ import starterActions from '../../actions';
 import {useCheckBalance} from 'hooks/useCheckBalance';
 import {useCallContract} from 'hooks/useCallContract';
 import {convertNumber} from 'utils/number';
+import store from 'store';
 
 type OpenSaleDepositProps = {
   saleInfo: AdminObject;
@@ -26,7 +27,11 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
 
   const {account, library} = useActiveWeb3React();
 
-  const [inputBalance, setInputBalance] = useState(0);
+  const {
+    balance: {tonOrigin},
+  } = store.getState().user.data;
+
+  const [inputBalance, setInputBalance] = useState<string>('0');
   const [userTonBalance, setUserTonBalance] = useState<string>('-');
   const [totalAllocation, setTotalAllocation] = useState<string>('-');
   const [totalDeposit, setTotalDeposit] = useState<string>('-');
@@ -151,6 +156,8 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
             }
             value={inputBalance}
             setValue={setInputBalance}
+            maxBtn={true}
+            maxValue={Number(userTonBalance.replaceAll(',', ''))}
             tokenName={'TON'}></CustomInput>
         </Box>
         <Text {...STATER_STYLE.mainText({colorMode, fontSize: 13})} mr={'3px'}>
@@ -194,7 +201,7 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
               Total Allocation :{' '}
             </Text>
             <Text {...detailSubTextStyle} mr={'3px'}>
-              {userAllocate}
+              {totalAllocation}
             </Text>
             <Text>{saleInfo?.tokenName}</Text>
           </Flex>
@@ -249,12 +256,19 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
             text={'Deposit'}
             func={() =>
               account &&
-              checkBalance(inputBalance, Number(userTonBalance)) &&
+              checkBalance(
+                Number(inputBalance.replaceAll(',', '')),
+                Number(userTonBalance.replaceAll(',', '')),
+              ) &&
               starterActions.deposit({
                 address: saleInfo.saleContractAddress,
                 account,
                 library,
-                amount: String(inputBalance),
+                amount:
+                  Number(inputBalance.replaceAll(',', '')) ===
+                  Number(userTonBalance.replaceAll(',', ''))
+                    ? tonOrigin
+                    : String(inputBalance),
               })
             }></CustomButton>
         ) : (

@@ -7,16 +7,19 @@ import {useEffect, useState} from 'react';
 import {StarterDetail} from './StarterDetail';
 import {LoadingComponent} from 'components/Loading';
 import {useBlockNumber} from 'hooks/useBlock';
+import {fetchUserInfo} from 'store/app/user.reducer';
 
 export const Starter = () => {
   const dispatch = useAppDispatch();
-  const {chainId, library} = useActiveWeb3React();
+  const {chainId, library, account} = useActiveWeb3React();
   const {blockNumber} = useBlockNumber();
 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
+      // @ts-ignore
+      await dispatch(fetchUserInfo({account, library}));
       await dispatch(
         fetchStarters({
           chainId,
@@ -28,10 +31,10 @@ export const Starter = () => {
         }
       });
     }
-    if (library) {
+    if (library && account) {
       fetchData();
     }
-  }, [chainId, dispatch, library, blockNumber]);
+  }, [chainId, account, dispatch, library, blockNumber]);
 
   return (
     <Flex mt={'72px'} w={'100%'} alignItems="center">
