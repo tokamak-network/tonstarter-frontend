@@ -56,6 +56,8 @@ type CreateRewardProps = {
 type CreateReward = {
   poolName: string;
   poolAddress: string;
+  token1Address: string;
+  token2Address: string;
   rewardToken: string;
   incentiveKey: object;
   startTime: number;
@@ -181,6 +183,8 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
       const args: CreateReward = {
         poolName: name,
         poolAddress: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
+        token1Address: '0x409c4D8cd5d2924b9bc5509230d16a61289c8153',
+        token2Address: '0xc4A11aaf6ea915Ed7Ac194161d2fC9384F15bff2',
         rewardToken: TOS_ADDRESS,
         account: account,
         incentiveKey: key,
@@ -193,6 +197,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
         tx: tx,
         sig: sig,
       };
+      console.log(args);
       const create = await createReward(args);
       console.log('create', create);
     }

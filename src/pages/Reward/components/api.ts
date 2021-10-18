@@ -4,6 +4,8 @@ import { API_SERVER, DEFAULT_NETWORK } from '../../../constants/index';
 type CreateReward = {
     poolName: string,
     poolAddress: string,
+    token1Address: string,
+    token2Address: string,
     rewardToken: string,
     account: string,
     incentiveKey: object,
@@ -27,10 +29,12 @@ const instance = createInstance();
 
 export async function createReward(args: CreateReward) {
     console.log('came to createReward');
-    
+
     let {
         poolName,
         poolAddress,
+        token1Address,
+        token2Address,
         rewardToken,
         account,
         incentiveKey,
@@ -47,6 +51,8 @@ export async function createReward(args: CreateReward) {
     const res = await instance.post(`/reward?chainId=${DEFAULT_NETWORK}`, {
         poolName: poolName,
         poolAddress: poolAddress,
+        token1Address: token1Address,
+        token2Address: token2Address,
         rewardToken: rewardToken,
         account: account,
         incentiveKey: incentiveKey,
@@ -60,7 +66,7 @@ export async function createReward(args: CreateReward) {
         sig: sig,
     });
 
-    
+
     return res.data;
 }
 
