@@ -17,4 +17,5 @@ export type DEPLOYED_TYPE = {
   LockTOSProxy_ADDRESS:string;
   DividendPool_ADDRESS: string;
   DividendPoolProxy_ADDRESS: string;
+  PublicSale_ADDRESS: string;
 };

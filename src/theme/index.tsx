@@ -5,6 +5,7 @@ import '@fontsource/titillium-web/400.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/rajdhani/600.css';
 import '@fontsource/open-sans';
+import '@fontsource/poppins';
 import {Colors} from './styled';
 import styled from 'styled-components/macro';
 
@@ -17,6 +18,7 @@ const fonts = {
   titil: 'TitilliumWeb, sans-serif',
   fld: 'Rajdhani, sans-serif',
   openSans: 'OpenSans',
+  poppins: 'Poppins',
 };
 
 const breakpoints = createBreakpoints({
@@ -29,6 +31,7 @@ const breakpoints = createBreakpoints({
 
 const colors = {
   gray: {
+    525: '#3f536e',
     500: '#838383',
     475: '#9d9ea5',
     450: '#5b5b5b',

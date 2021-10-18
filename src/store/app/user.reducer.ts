@@ -1,14 +1,18 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import {getUserTossBalance, getUserWTONBalance} from 'client/getUserBalance';
+import {
+  getUserTonOriginBalance,
+  getUserTossBalance,
+  getUserWTONBalance,
+} from 'client/getUserBalance';
 import {RootState} from 'store/reducers';
-
-// const {TON_ADDRESS} = DEPLOYED;
 
 type UserBalnace = {
   wton: string;
   wtonOrigin: string;
   tos: string;
   tosOrigin: string;
+  ton: string;
+  tonOrigin: string;
 };
 
 export type User = {
@@ -47,11 +51,12 @@ export const fetchUserInfo = createAsyncThunk(
 
     const WTON_BALANCE = await getUserWTONBalance({account, library});
     const TOS_BALANCE = await getUserTossBalance({account, library});
+    const TON_BALANCE = await getUserTonOriginBalance({account, library});
 
     const user: User = {
       account,
       library,
-      balance: {...WTON_BALANCE, ...TOS_BALANCE},
+      balance: {...WTON_BALANCE, ...TOS_BALANCE, ...TON_BALANCE},
     };
 
     return user;

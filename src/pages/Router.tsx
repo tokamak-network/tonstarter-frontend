@@ -7,6 +7,7 @@ import {Staking} from './Staking';
 import {Pools} from './Pools';
 import {DAO} from './Dao/index';
 import {Reward} from './Reward';
+import {Starter} from './Starter/index';
 import {Switch, Route} from 'react-router-dom';
 import {useAppDispatch} from 'hooks/useRedux';
 // import {fetchAppConfig} from 'store/app/app.reducer';
@@ -15,12 +16,17 @@ import {fetchStakes} from './Staking/staking.reducer';
 import { fetchRewards } from './Reward/reward.reducer';
 import {AirdropModal} from 'components/Airdrop/Index';
 import {fetchVaults} from './Staking/vault.reducer';
+import {fetchStarters} from './Starter/starter.reducer';
 import {DEFAULT_NETWORK} from 'constants/index';
 import {Footer} from 'components/Footer';
 import {ConfirmModal} from 'components/Modal';
 import {MobilePreOpen} from './PreOpen/Index';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
+import {StarterDetail} from './Starter/StarterDetail';
+import {Admin} from './Admin';
+import {useBlockNumber} from 'hooks/useBlock';
+
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
 /*
@@ -37,6 +43,7 @@ export const Router: FC<RouterProps> = () => {
   const {onOpen, isOpen: isModalOpen, onClose} = useDisclosure();
   // const {account, chainId, library, deactivate} = useWeb3React();
   const {account, chainId, library, deactivate} = useActiveWeb3React();
+  const {blockNumber} = useBlockNumber();
 
   //@ts-ignore
   // const accountStorage = JSON.parse(window.localStorage.getItem('account'));
@@ -50,6 +57,12 @@ export const Router: FC<RouterProps> = () => {
     await dispatch(
       fetchVaults({
         chainId,
+      }) as any,
+    );
+    await dispatch(
+      fetchStarters({
+        chainId,
+        library,
       }) as any,
     );
     await dispatch(
@@ -69,7 +82,7 @@ export const Router: FC<RouterProps> = () => {
       const netType =
         DEFAULT_NETWORK === 1 ? 'mainnet' : 'Rinkeby Test Network';
       //@ts-ignore
-      dispatch(fetchUserInfo({reset: true}));
+      // dispatch(fetchUserInfo({reset: true}));
       return alert(`Please use ${netType}`);
     }
     /*eslint-disable*/
@@ -104,14 +117,23 @@ export const Router: FC<RouterProps> = () => {
       //     );
       //   }
 
+      fetchToInitialize();
+
       // @ts-ignore
-      dispatch(fetchUserInfo({account, library})).then(() => {
-        fetchToInitialize();
-      });
+      // dispatch(fetchUserInfo({account, library})).then(() => {
+      //   fetchToInitialize();
+      // });
       // }
     }
     /*eslint-disable*/
   }, [chainId, account, library, dispatch, deactivate]);
+
+  useEffect(() => {
+    if (account && library) {
+      // @ts-ignore
+      dispatch(fetchUserInfo({account, library}));
+    }
+  }, [blockNumber, account, library]);
 
   useEffect(() => {
     //@ts-ignore
@@ -152,7 +174,16 @@ export const Router: FC<RouterProps> = () => {
           <Route exact path="/pools" component={Pools} />
           <Route exact path="/rewardProgram" component={Reward} />
           {/* <Route exact path="/starter" component={Starter} /> */}
+          <Route exact path="/starter" component={Starter} />
           <Route exact path="/dao" component={DAO} />
+          <Route exact path="/admin" component={Admin} />
+          <Route exact path={`/starter/active/:id`} component={StarterDetail} />
+          <Route
+            exact
+            path={`/starter/upcoming/:id`}
+            component={StarterDetail}
+          />
+          <Route exact path={`/starter/past/:id`} component={StarterDetail} />
         </Switch>
       </div>
       <Footer />

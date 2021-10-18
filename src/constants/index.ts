@@ -29,6 +29,7 @@ export const BASE_PROVIDER =
 export const fetchStakeURL = `${API_SERVER}/stakecontracts?chainId=${DEFAULT_NETWORK}`;
 export const fetchValutURL = `${API_SERVER}/vaults?chainId=${DEFAULT_NETWORK}`;
 export const fetchRewardsURL = `${API_SERVER}/reward?chainId=${DEFAULT_NETWORK}`;
+export const fetchStarterURL = `${API_SERVER}/starter?chainId=${DEFAULT_NETWORK}`;
 export const permitTOSAddress =
   REACT_APP_MODE === 'DEV' ? '0x865264b30eb29A2978b9503B8AfE2A2DDa33eD7E' : '';
 
@@ -71,6 +72,7 @@ const MAINNET_DEPLOYED = {
   LockTOSProxy_ADDRESS:  '',
   DividendPool_ADDRESS:  '',
   DividendPoolProxy_ADDRESS:  '',
+  PublicSale_ADDRESS: '',
 };
 
 const RINKEBY_DEPLOYED = {
@@ -86,12 +88,13 @@ const RINKEBY_DEPLOYED = {
   UniswapStaking_Address: '0x99b09c6CfF45C778a4F5fBF7a4EAD6c3DEBfdcBb',
   UniswapStaker_Address: '0x1f98407aaB862CdDeF78Ed252D6f557aA5b0f00d',
   NPM_Address: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
-  LockTOS_ADDRESS: '0x8487632Aa57d663A84E836c212977a022346c50D',
   BasePool_Address: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
-  StakeTonControl_ADDRESS: '0xF049030A9D6faCbD6C76E08794CC751b1Dbaa072',
   LockTOSProxy_ADDRESS:  '0xc1545632e67cefF8ECaB83072118271577e66aDc',
   DividendPool_ADDRESS:  '0xF9a5f5bfdCf7E01B776A697ed53364BD5E1B7b71',
   DividendPoolProxy_ADDRESS:  '0xef632A3C8Ee385506884f117D1aEb5EB57Ef32a7',
+  LockTOS_ADDRESS: '0xecd5a04e6ae20da1b77db90fb33fb7a7a27784af',
+  StakeTonControl_ADDRESS: '0xF049030A9D6faCbD6C76E08794CC751b1Dbaa072',
+  PublicSale_ADDRESS: '0xE352fF539852620B35454466aBF85684Fd989397',
 };
 
 export const DEPLOYED: DEPLOYED_TYPE =
