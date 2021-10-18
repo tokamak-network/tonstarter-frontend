@@ -49,7 +49,7 @@ export const ClaimReward = () => {
       border={colorMode === 'light' ? '' : '1px solid #535353'}
       borderRadius={'15px'}
         bg={colorMode === 'light' ? '#FFFFFF' : ''}
-        h={'920px'}
+        h={'830px'}
        w={'284px'}
        >
       <Box
@@ -158,7 +158,7 @@ export const ClaimReward = () => {
         <Text mt='30px' fontSize='20px' color={colorMode==='light'?'gray.250': 'white.100'} fontWeight='bold'>Pools</Text>
       </Box>
       </Box>
-      <Box borderTop={themeDesign.border[colorMode]} width='100%'>
+      <Box width='100%'>
 
       </Box>
      <Box>

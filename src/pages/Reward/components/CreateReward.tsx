@@ -430,6 +430,7 @@ input {
             bg={'blue.500'}
             color="white.100"
             fontSize="14px"
+            disabled={amount === 0}
             _hover={{backgroundColor: 'blue.100'}}
             onClick={() => createRewardFunc(account ? account.toString() : '')}>
             Create

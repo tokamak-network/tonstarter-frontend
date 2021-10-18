@@ -66,9 +66,10 @@ export const Reward = () => {
           justifyContent={'space-between'}>
           <Flex>
             <Select
-              w={'137px'}
+              w={'157px'}
               h={'32px'}
               color={'#86929d'}
+              mr={'10px'}
               fontSize={'13px'}
               onChange={onChangeSelectBoxPools}>
               {pools.map((item, index) => (
@@ -86,7 +87,7 @@ export const Reward = () => {
             </Select>
           </Flex>
           <Flex>
-            <FormControl display="flex" alignItems="center">
+            <FormControl display="flex" alignItems="center" mr={'45px'}>
               <FormLabel htmlFor="email-alerts" mb="0">
                 Manage
               </FormLabel>

@@ -509,7 +509,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                 </Button>
               }></CustomTooltip>
           </Flex>
-          {/* <Flex>
+          <Flex>
             <Tooltip label="Previous Page">
               <IconButton
                 w={'24px'}
@@ -531,9 +531,9 @@ export const StakingTable: FC<StakingTableProps> = ({
                 icon={<ChevronLeftIcon h={6} w={6} />}
               />
             </Tooltip>
-          </Flex> */}
+          </Flex>
 
-          {/* <Flex
+          <Flex
             alignItems="center"
             p={0}
             fontSize={'13px'}
@@ -548,9 +548,9 @@ export const StakingTable: FC<StakingTableProps> = ({
             <Text fontWeight="bold" as="span">
               {pageOptions.length}
             </Text>
-          </Flex> */}
+          </Flex>
 
-          {/* <Flex>
+          <Flex>
             <Tooltip label="Next Page">
               <Center>
                 <IconButton
@@ -600,7 +600,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                 </option>
               ))}
             </Select>
-          </Flex> */}
+          </Flex>
         </Flex>
       </Box>
     </Flex>

@@ -67,7 +67,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({reward}) => {
   const [dDay, setdDay] = useState<any>();
 
   useEffect(() => {
-    const now = moment().unix() + 605470;
+    const now = moment().unix();
     const start = moment.unix(Number(reward.startTime)).startOf('day').unix();
 
     const end = moment.unix(Number(reward.endTime)).endOf('day').unix();
@@ -246,7 +246,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({reward}) => {
             fontSize="16px"
             _hover={{backgroundColor: 'blue.100'}}
             >
-            Approve
+            in progress
           </Button>
       </Flex>
     </Flex>
