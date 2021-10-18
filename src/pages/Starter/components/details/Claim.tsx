@@ -11,6 +11,7 @@ import {useCallContract} from 'hooks/useCallContract';
 import {BigNumber} from 'ethers';
 import {convertNumber} from 'utils/number';
 import {useBlockNumber} from 'hooks/useBlock';
+import {DetailCounter} from './Detail_Counter';
 
 type ClaimProps = {
   saleInfo: AdminObject;
@@ -32,6 +33,7 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
   const [period, setPeriod] = useState<string>('-');
   const [endPeriod, setEndPeriod] = useState<string>('-');
   const [withdrawAmount, setWithdrawAmount] = useState<string>('0');
+  const [d_Day, setD_Day] = useState<number>(0);
 
   const {blockNumber} = useBlockNumber();
 
@@ -80,10 +82,12 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
 
         if (period > endPeriodNum) {
           const nextVestingDate = startClaimTimeNum + intervalNum * period;
+          setD_Day(nextVestingDate);
           setVestingDay(convertTimeStamp(nextVestingDate));
         } else {
           const nextVestingDate =
             startClaimTimeNum + intervalNum * endPeriodNum;
+          setD_Day(nextVestingDate);
           setVestingDay(convertTimeStamp(nextVestingDate));
         }
       }
@@ -104,6 +108,11 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
           account,
           0,
         );
+
+        console.log('--claim--');
+        console.log(blockNumber);
+        console.log(totalClaim);
+        console.log(usersClaim);
 
         const ramainedAmount = BigNumber.from(totalClaim[1]).sub(
           usersClaim?.claimAmount,
@@ -210,13 +219,23 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
             <Text color={'gray.400'} mr={'3px'}>
               Next Vesting Date :{' '}
             </Text>
-            <Text {...detailSubTextStyle}>{vestingDay}</Text>
+            <Text {...detailSubTextStyle} mr={'5px'}>
+              {vestingDay}
+            </Text>
+            {/* <DetailCounter date={d_Day * 1000}></DetailCounter> */}
+            <DetailCounter
+              style={{
+                color: colorMode === 'light' ? '#3d495d' : '#ffffff',
+                fontSize: '13px',
+              }}
+              date={1634654019 * 1000}
+              claimStep={true}></DetailCounter>
           </Flex>
         </Box>
         <Box d="flex" fontSize={'13px'} justifyContent="space-between">
           <Flex>
             <Text color={'gray.400'} mr={'3px'}>
-              WithdrawClaim Number :{' '}
+              Withdraw Claims :{' '}
             </Text>
             <Text {...detailSubTextStyle}>
               {Number(period) > Number(endPeriod) ? endPeriod : period}

@@ -136,6 +136,7 @@ export const StarterDetail = () => {
           PUBLICSALE_CONTRACT.tiersExAccount(2),
           PUBLICSALE_CONTRACT.tiersExAccount(3),
           PUBLICSALE_CONTRACT.tiersExAccount(4),
+          PUBLICSALE_CONTRACT.snapshot(),
         ]);
         setDetailInfo({
           userTier: Number(res[0].toString()) as Tier,
@@ -209,6 +210,7 @@ export const StarterDetail = () => {
               localeString: true,
             }) as string,
           },
+          snapshot: res[18],
         });
       }
     }

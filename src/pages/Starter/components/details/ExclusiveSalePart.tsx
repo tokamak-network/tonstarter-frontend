@@ -107,15 +107,6 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
     }
   }, [inputTonBalance, saleInfo, convertedTokenBalance]);
 
-  // useEffect(() => {
-  //   if (saleInfo) {
-  //     const startTime = convertTimeStamp(saleInfo.startExclusiveTime);
-  //     const endTime = convertTimeStamp(saleInfo.endOpenSaleTime, 'MM.DD');
-  //     setSaleStartTime(startTime);
-  //     setSaleEndTime(endTime);
-  //   }
-  // }, [saleInfo]);
-
   useEffect(() => {
     async function callUserBalance() {
       const tonBalance = await getUserTonBalance({

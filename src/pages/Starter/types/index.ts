@@ -81,4 +81,5 @@ export type DetailInfo = {
   tierCriteria: TierCriteria;
   tierAllocation: TierAllocation;
   tierOfMembers: TierCriteria;
+  snapshot: number;
 };

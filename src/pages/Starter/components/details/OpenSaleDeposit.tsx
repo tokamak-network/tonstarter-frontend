@@ -211,7 +211,7 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
           </Flex>
           <Flex>
             <Text color={'gray.400'} mr={'3px'}>
-              Your Deposited :{' '}
+              Your Deposit :{' '}
             </Text>
             <Text {...detailSubTextStyle} mr={'3px'}>
               {yourDeposit}
@@ -234,10 +234,10 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
           </Flex>
           <Flex>
             <Text color={'gray.400'} mr={'3px'}>
-              Your Allocate :{' '}
+              Your Allocation :{' '}
             </Text>
             <Text {...detailSubTextStyle} mr={'3px'}>
-              {yourDeposit}
+              {userAllocate}
             </Text>
             <Text>{saleInfo?.tokenName}</Text>
           </Flex>

@@ -138,7 +138,7 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
         {isPassed ? (
           <CustomButton
             w={'180px'}
-            text={'Put me on the whitelist'}
+            text={'whitelist me'}
             func={() =>
               account &&
               starterActions.addWhiteList({

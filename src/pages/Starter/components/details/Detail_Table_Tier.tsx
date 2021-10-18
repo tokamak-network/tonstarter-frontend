@@ -1,6 +1,7 @@
 import {Box, useColorMode, useTheme, Flex, Text} from '@chakra-ui/react';
 import {DetailTableContainer} from './Detail_Table_Container';
 import {SaleStatus, DetailTierData, DetailInfo} from '@Starter/types';
+import {convertTimeStamp} from 'utils/convertTIme';
 
 type DetailTableTierProp = {
   status: SaleStatus;
@@ -206,9 +207,18 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
 
   return (
     <Flex flexDir="column">
-      <Text {...STATER_STYLE.mainText({colorMode, fontSize: 24})} mb={'30px'}>
-        Tier details
-      </Text>
+      <Flex mb={'30px'} alignItems="center">
+        <Text {...STATER_STYLE.mainText({colorMode, fontSize: 24})}>
+          Tier details
+        </Text>
+        <Text ml={2}>Ref</Text>
+        <Text ml={1}>
+          {convertTimeStamp(
+            Number(detailInfo.snapshot.toString()),
+            'YYYY.MM.DD HH:DD',
+          )}
+        </Text>
+      </Flex>
       <Box d="flex" justifyContent="space-between">
         {status === 'whitelist' &&
           projectTierData.map((item, index: number) => {
