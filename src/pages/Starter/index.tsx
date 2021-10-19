@@ -8,7 +8,7 @@ import {StarterDetail} from './StarterDetail';
 import {LoadingComponent} from 'components/Loading';
 import {useBlockNumber} from 'hooks/useBlock';
 // import {fetchUserInfo} from 'store/app/user.reducer';
-import store from 'store';
+// import store from 'store';
 
 export const Starter = () => {
   const dispatch = useAppDispatch();
@@ -17,10 +17,7 @@ export const Starter = () => {
 
   const [loading, setLoading] = useState(true);
 
-  const userData = store.getState().user.data;
-
-  console.log('--userData-');
-  console.log(userData);
+  // const userData = store.getState().user.data;
 
   useEffect(() => {
     async function fetchData() {

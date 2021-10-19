@@ -148,6 +148,11 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
     }
   }, [account, PUBLICSALE_CONTRACT, blockNumber]);
 
+  useEffect(() => {
+    console.log('--d--');
+    console.log(d_Day);
+  }, [d_Day]);
+
   return (
     <Flex flexDir="column" pl={'45px'}>
       <Box d="flex" textAlign="center" alignItems="center" mb={'20px'}>
@@ -189,7 +194,7 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
         <Box d="flex" fontSize={'13px'}>
           <Flex w={'226px'}>
             <Text color={'gray.400'} mr={'3px'}>
-              Exclusive Sale :{' '}
+              Public Round 1 :{' '}
             </Text>
             <Text {...detailSubTextStyle}>{exclusiveSale}</Text>
             <Text ml={'3px'}>{saleInfo?.tokenName}</Text>
@@ -205,7 +210,7 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
         <Box d="flex" fontSize={'13px'}>
           <Flex w={'226px'}>
             <Text color={'gray.400'} mr={'3px'}>
-              Open Sale :{' '}
+              Public Round 2 :{' '}
             </Text>
             <Text {...detailSubTextStyle}>{openSale}</Text>
             <Text ml={'3px'}>{saleInfo?.tokenName}</Text>
