@@ -27,6 +27,7 @@ import {
   getTotalExpectOpenSaleAmountView,
   getRefundAmount,
   getUserAllocate,
+  getTokenInfo,
 } from './views';
 
 const actions = {
@@ -57,6 +58,7 @@ const actions = {
   depositWithdraw,
   getRefundAmount,
   getUserAllocate,
+  getTokenInfo,
 };
 
 export default actions;

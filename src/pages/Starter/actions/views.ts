@@ -1,4 +1,6 @@
 import * as publicSale from 'services/abis/PublicSale.json';
+import * as ERC20 from 'services/abis/ERC20.json';
+
 import {Contract} from '@ethersproject/contracts';
 import {LibraryType} from 'types';
 import {convertNumber} from 'utils/number';
@@ -252,4 +254,17 @@ export async function getUserAllocate(args: CallContractWithAddress) {
     localeString: true,
   });
   return convertedNum;
+}
+
+export async function getTokenInfo(args: I_CallContract) {
+  const {library, address} = args;
+  const ERC20_CONTRACT = new Contract(address, ERC20.abi, library);
+  const resTotalSupply = await ERC20_CONTRACT.totalSupply();
+  const convertedTotalSupply = convertNumber({
+    amount: resTotalSupply.toString() || '0',
+    localeString: true,
+  });
+  return {
+    totalSupply: convertedTotalSupply,
+  };
 }

@@ -34,6 +34,8 @@ import {useBlockNumber} from 'hooks/useBlock';
 import {LoadingComponent} from 'components/Loading';
 import {useTime} from 'hooks/useTime';
 
+import DocSymbol from 'assets/tokens/DOC-symbol.png';
+
 export const StarterDetail = () => {
   // const {id}: {id: string} = useParams();
   const id = 'DOOR OPEN';
@@ -307,9 +309,7 @@ export const StarterDetail = () => {
           <Box d="flex" flexDir="column" w={'562px'} pr={35} pos="relative">
             <Flex justifyContent="space-between" mb={15}>
               <Avatar
-                src={
-                  'http://tonstarter-symbols.s3-website.ap-northeast-2.amazonaws.com/DOC.png'
-                }
+                src={DocSymbol}
                 backgroundColor={tokenType.bg}
                 bg="transparent"
                 color="#c7d1d8"

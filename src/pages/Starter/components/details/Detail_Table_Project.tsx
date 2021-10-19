@@ -19,14 +19,14 @@ export const DetailTableProject: React.FC<DetailTableProjectProps> = (prop) => {
   const projectDetailData = [
     {key: 'Name', value: `${saleInfo?.name}`},
     {key: 'Symbol', value: `${saleInfo?.tokenSymbol}`},
-    {key: 'Contract', value: `${saleInfo?.saleContractAddress}`},
-    {key: 'Total Supply', value: '10,000,000'},
+    {key: 'Contract', value: `${saleInfo?.tokenAddress}`},
+    {key: 'Total Supply', value: `${activeProjectInfo?.tokenInfo.totalSupply}`},
   ];
 
   const projectDetailTitle2 = 'Sale Details';
   const projectDetailData2 = [
     {
-      key: 'Sale Period',
+      key: 'Sale Period (Public Round 1)',
       value: `${convertTimeStamp(
         activeProjectInfo?.timeStamps.startExclusiveTime,
       )} ~ ${convertTimeStamp(
@@ -34,7 +34,23 @@ export const DetailTableProject: React.FC<DetailTableProjectProps> = (prop) => {
         'MM-DD',
       )}`,
     },
-    {key: 'Token Allocation', value: '10,000,000'},
+    {
+      key: 'Sale Period (Public Round 2)',
+      value: `${convertTimeStamp(
+        activeProjectInfo?.timeStamps.startDepositTime,
+      )} ~ ${convertTimeStamp(
+        activeProjectInfo?.timeStamps.endDepositTime,
+        'MM-DD',
+      )}`,
+    },
+    {
+      key: 'Token Allocation',
+      value: `${Number(
+        activeProjectInfo?.tokenFundRaisingTargetAmount,
+      ).toLocaleString(undefined, {
+        minimumFractionDigits: 0,
+      })}`,
+    },
     {
       key: 'Funding Crypto',
       value: 'TON',
