@@ -12,6 +12,7 @@ import {useCheckBalance} from 'hooks/useCheckBalance';
 import {useCallContract} from 'hooks/useCallContract';
 import {convertNumber} from 'utils/number';
 import store from 'store';
+import {useBlockNumber} from 'hooks/useBlock';
 
 type OpenSaleDepositProps = {
   saleInfo: AdminObject;
@@ -41,6 +42,7 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
   const [userAllocate, setUserAllocate] = useState<string>('-');
 
   const {checkBalance} = useCheckBalance();
+  const {blockNumber} = useBlockNumber();
 
   const {STATER_STYLE} = theme;
 
@@ -55,13 +57,17 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
 
   useEffect(() => {
     async function callUserBalance() {
-      const tonBalance = await getUserTonBalance({account, library});
+      const tonBalance = await getUserTonBalance({
+        account,
+        library,
+        localeString: true,
+      });
       return setUserTonBalance(tonBalance || '-');
     }
     if (account && library) {
       callUserBalance();
     }
-  }, [account, library]);
+  }, [account, library, blockNumber]);
 
   //call view funcions
   useEffect(() => {
@@ -120,7 +126,7 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
     if (account && library && saleInfo) {
       getData();
     }
-  }, [account, library, saleInfo, PUBLICSALE_CONTRACT]);
+  }, [account, library, saleInfo, PUBLICSALE_CONTRACT, blockNumber]);
 
   return (
     <Flex flexDir="column" pl={'45px'}>

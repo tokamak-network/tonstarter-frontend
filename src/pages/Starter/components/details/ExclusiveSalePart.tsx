@@ -189,12 +189,13 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             tokenName={'TON'}
             maxBtn={true}
             maxValue={
-              Number(userTonBalance.replaceAll(',', '')) <=
-              Number(amountAvailable.replaceAll(',', '')) /
-                saleInfo?.projectFundingTokenRatio
-                ? Number(userTonBalance.replaceAll(',', ''))
-                : Number(amountAvailable.replaceAll(',', '')) /
-                  saleInfo?.projectFundingTokenRatio
+              Number('2,555.666'.replaceAll(',', ''))
+              // Number(userTonBalance.replaceAll(',', '')) <=
+              // Number(amountAvailable.replaceAll(',', '')) /
+              //   saleInfo?.projectFundingTokenRatio
+              //   ? Number(userTonBalance.replaceAll(',', ''))
+              //   : Number(amountAvailable.replaceAll(',', '')) /
+              //     saleInfo?.projectFundingTokenRatio
             }></CustomInput>
           <img
             src={ArrowIcon}

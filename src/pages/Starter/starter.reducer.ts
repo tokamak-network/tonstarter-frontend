@@ -96,10 +96,12 @@ export const fetchStarters = createAsyncThunk(
           library,
           address: data.tokenAddress,
         });
+        const tokenAllocation = await starterActions.getTokenAllocation({
+          library,
+          address,
+        });
 
         const {
-          startAddWhiteTime,
-          endWhiteListTime,
           startExclusiveTime,
           endExclusiveTime,
           startDepositTime,
@@ -133,6 +135,7 @@ export const fetchStarters = createAsyncThunk(
           timeStamps,
           step: checkStep,
           tokenInfo,
+          tokenAllocation,
         };
       }),
     );

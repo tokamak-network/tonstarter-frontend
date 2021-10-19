@@ -102,10 +102,10 @@ export const CustomInput = (prop: CustomInputProp) => {
               border: '1px solid #2a72e5',
             }}
             onClick={() => {
-              if (String(maxValue).split('.')[1].length > 2) {
+              if (String(maxValue).split('.')[1]?.length > 2) {
                 const twoDecimalMaxValue = `${
                   String(maxValue).split('.')[0]
-                } + . +${String(maxValue).split('.')[1].substring(0, 2)}`;
+                }.${String(maxValue).split('.')[1].substring(0, 2)}`;
                 return setValue(twoDecimalMaxValue);
               }
               setValue(String(maxValue));

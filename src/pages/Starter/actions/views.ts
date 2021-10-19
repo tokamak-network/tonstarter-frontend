@@ -1,6 +1,6 @@
 import * as publicSale from 'services/abis/PublicSale.json';
 import * as ERC20 from 'services/abis/ERC20.json';
-
+import {BigNumber} from 'ethers';
 import {Contract} from '@ethersproject/contracts';
 import {LibraryType} from 'types';
 import {convertNumber} from 'utils/number';
@@ -267,4 +267,21 @@ export async function getTokenInfo(args: I_CallContract) {
   return {
     totalSupply: convertedTotalSupply,
   };
+}
+
+export async function getTokenAllocation(args: I_CallContract) {
+  const {library, address} = args;
+  const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
+  const totalExpectSaleAmount =
+    await PUBLICSALE_CONTRACT.totalExpectSaleAmount();
+  const totalExpectOpenSaleAmount =
+    await PUBLICSALE_CONTRACT.totalExpectOpenSaleAmount();
+  const sum = BigNumber.from(totalExpectSaleAmount).add(
+    totalExpectOpenSaleAmount,
+  );
+  const convertedNum = convertNumber({
+    amount: sum.toString() || '0',
+    localeString: true,
+  });
+  return convertedNum?.split('.')[0];
 }

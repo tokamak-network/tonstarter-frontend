@@ -28,6 +28,7 @@ import {
   getRefundAmount,
   getUserAllocate,
   getTokenInfo,
+  getTokenAllocation,
 } from './views';
 
 const actions = {
@@ -59,6 +60,7 @@ const actions = {
   getRefundAmount,
   getUserAllocate,
   getTokenInfo,
+  getTokenAllocation,
 };
 
 export default actions;

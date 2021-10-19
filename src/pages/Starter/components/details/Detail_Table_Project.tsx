@@ -20,7 +20,10 @@ export const DetailTableProject: React.FC<DetailTableProjectProps> = (prop) => {
     {key: 'Name', value: `${saleInfo?.name}`},
     {key: 'Symbol', value: `${saleInfo?.tokenSymbol}`},
     {key: 'Contract', value: `${saleInfo?.tokenAddress}`},
-    {key: 'Total Supply', value: `${activeProjectInfo?.tokenInfo.totalSupply}`},
+    {
+      key: 'Total Supply',
+      value: `${activeProjectInfo?.tokenInfo.totalSupply.split('.')[0]}`,
+    },
   ];
 
   const projectDetailTitle2 = 'Sale Details';
@@ -45,11 +48,7 @@ export const DetailTableProject: React.FC<DetailTableProjectProps> = (prop) => {
     },
     {
       key: 'Token Allocation',
-      value: `${Number(
-        activeProjectInfo?.tokenFundRaisingTargetAmount,
-      ).toLocaleString(undefined, {
-        minimumFractionDigits: 0,
-      })}`,
+      value: `${activeProjectInfo?.tokenAllocation}`,
     },
     {
       key: 'Funding Crypto',
