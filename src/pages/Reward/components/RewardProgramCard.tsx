@@ -65,11 +65,15 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({reward}) => {
   const {account, library} = useActiveWeb3React();
   const [progress, setProgress] = useState<number>(0);
   const [dDay, setdDay] = useState<any>();
+  const [canApprove, setCanApprove] = useState<boolean>(false);
 
   useEffect(() => {
     const now = moment().unix();
     const start = moment.unix(Number(reward.startTime)).startOf('day').unix();
-
+    
+    if (reward.startTime< now) {
+      setCanApprove(true);
+    }
     const end = moment.unix(Number(reward.endTime)).endOf('day').unix();
     if (now < start) {
       const remainingDays = moment
@@ -245,8 +249,9 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({reward}) => {
             ml={'10px'}
             fontSize="16px"
             _hover={{backgroundColor: 'blue.100'}}
+            disabled={!canApprove}
             >
-            in progress
+            Approve
           </Button>
       </Flex>
     </Flex>

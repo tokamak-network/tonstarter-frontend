@@ -34,6 +34,8 @@ import '../css/calendarStyles.css';
 import clock from 'assets/svgs/poll_time_active_icon.svg';
 import MomentLocaleUtils from 'react-day-picker/moment';
 import {values} from 'lodash';
+import {approve, create} from '../actions';
+
 const {TOS_ADDRESS, UniswapStaker_Address} = DEPLOYED;
 
 const themeDesign = {
@@ -56,8 +58,6 @@ type CreateRewardProps = {
 type CreateReward = {
   poolName: string;
   poolAddress: string;
-  token1Address: string;
-  token2Address: string;
   rewardToken: string;
   incentiveKey: object;
   startTime: number;
@@ -77,7 +77,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
   const [claimableAmount, setClaimableAmount] = useState<Number>(100000.0);
-  const [amount, setAmount] = useState<Number>(0);
+  const [amount, setAmount] = useState<number>(0);
   const [name, setName] = useState<string>('');
   const [reward, setReward] = useState<Number>(0);
   const [startTime, setStartTime] = useState<number>(0);
@@ -92,116 +92,12 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
     setPoolsArr(poolArr);
   }, []);
 
-  const generateSig = async (account: string, key: any) => {
-    const randomvalue = await getRandomKey(account);
-    // const pool = '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf';
-
-    //@ts-ignore
-    const web3 = new Web3(window.ethereum);
-    if (randomvalue != null) {
-      const randomBn = new BigNumber(randomvalue).toFixed(0);
-      const soliditySha3 = await web3.utils.soliditySha3(
-        {type: 'string', value: account},
-        {type: 'uint256', value: randomBn},
-        {type: 'string', value: key.rewardToken},
-        {type: 'string', value: key.pool},
-        {type: 'uint256', value: key.startTime},
-        {type: 'uint256', value: key.endTime},
-      );
-      //@ts-ignore
-      const sig = await web3.eth.personal.sign(soliditySha3, account, '');
-
-      return sig;
-    } else {
-      return '';
-    }
-  };
-  const approve = async (account: string) => {
-    if (account === null || (account === undefined && library === undefined)) {
-      return;
-    }
-    const tosContract = new Contract(TOS_ADDRESS, TOSABI.abi, library);
-    const totalReward = new BigNumber(Number(amount)).toString();
-    if (library !== undefined) {
-      const signer = getSigner(library, account);
-      try {
-        const receipt = await tosContract
-          .connect(signer)
-          .approve(UniswapStaker_Address, totalReward);
-        store.dispatch(setTxPending({tx: true}));
-        if (receipt) {
-          toastWithReceipt(receipt, setTxPending);
-        }
-      } catch (err) {
-        store.dispatch(setTxPending({tx: false}));
-        store.dispatch(
-          //@ts-ignore
-          openToast({
-            payload: {
-              status: 'error',
-              title: 'Tx fail to send',
-              description: `something went wrong`,
-              duration: 5000,
-              isClosable: true,
-            },
-          }),
-        );
-      }
-    }
-  };
-
-  const createRewardFunc = async (account: string) => {
-    if (account === null || (account === undefined && library === undefined)) {
-      return;
-    }
-    const uniswapStakerContract = new Contract(
-      UniswapStaker_Address,
-      STAKERABI.abi,
-      library,
-    );
-    const totalReward = new BigNumber(Number(amount)).toString();
-    if (library !== undefined) {
-      const tosContract = new Contract(TOS_ADDRESS, TOSABI.abi, library);
-      const signer = getSigner(library, account);
-      const allowAmount = await tosContract
-        .connect(signer)
-        .allowance(account, UniswapStaker_Address);
-
-      const key = {
-        rewardToken: TOS_ADDRESS,
-        pool: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
-        startTime: startTime,
-        endTime: endTime,
-        refundee: account,
-      };
-      const tx = await uniswapStakerContract
-        .connect(signer)
-        .createIncentive(key, totalReward);
-      await tx.wait();
-      const sig = await generateSig(account.toLowerCase(), key);
-      
-      const args: CreateReward = {
-        poolName: name,
-        poolAddress: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
-        token1Address: '0x73a54e5C054aA64C1AE7373C2B5474d8AFEa08bd',
-        token2Address: '0x709bef48982Bbfd6F2D4Be24660832665F53406C',
-        rewardToken: TOS_ADDRESS,
-        account: account,
-        incentiveKey: key,
-        startTime: startTime,
-        endTime: endTime,
-        allocatedReward: totalReward,
-        numStakers: 3,
-        status: 'open',
-        verified: true,
-        tx: tx,
-        sig: sig,
-      };
-      console.log(args);
-      const create = await createReward(args);
-      console.log('create', create);
-    }
-  };
+  // useEffect(() => {
+  //   const allowAmount = await tosContract
+  //   .connect(signer)
+  //   .allowance(account, UniswapStaker_Address);
+  //   console.log('allowAmount', Number(allowAmount));
+  // },[])
 
   const setStart = (date: any) => {
     const dateSelected = Number(new Date(date));
@@ -388,7 +284,8 @@ input {
             ml={'10px'}
             fontSize="14px"
             _hover={{backgroundColor: 'blue.100'}}
-            onClick={() => createRewardFunc(account ? account.toString() : '')}>
+            // onClick={() => createRewardFunc(account ? account.toString() : '')}
+            >
             Search
           </Button>
         </Flex>
@@ -426,7 +323,7 @@ input {
             fontSize="14px"
             disabled={amount === 0}
             _hover={{backgroundColor: 'blue.100'}}
-            onClick={() => approve(account ? account.toString() : '')}>
+            onClick={() => approve({library: library, amount:amount, userAddress: account})}>
             Approve
           </Button>
           <Button
@@ -437,7 +334,14 @@ input {
             fontSize="14px"
             disabled={amount === 0}
             _hover={{backgroundColor: 'blue.100'}}
-            onClick={() => createRewardFunc(account ? account.toString() : '')}>
+            onClick={() => create({
+              library: library,
+              amount: amount, 
+              userAddress: account,
+              startTime: startTime,
+               endTime: endTime, 
+               name: name
+            })}>
             Create
           </Button>
         </Flex>
