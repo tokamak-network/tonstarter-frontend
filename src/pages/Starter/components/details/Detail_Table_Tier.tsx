@@ -211,7 +211,7 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
         <Text {...STATER_STYLE.mainText({colorMode, fontSize: 24})}>
           Tier details
         </Text>
-        <Text ml={2}>Ref</Text>
+        <Text ml={2}>Snapshot date</Text>
         <Text ml={1}>
           {convertTimeStamp(
             Number(detailInfo.snapshot.toString()),
