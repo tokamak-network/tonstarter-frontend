@@ -16,8 +16,9 @@ type StakingModal =
   | 'unstakePool'
   | 'claimPool'
   | 'pool_simulator';
+type StarterModal = 'Starter_Approve';
 
-export type ModalType = StakingModal | DaoModal;
+export type ModalType = StakingModal | DaoModal | StarterModal;
 
 export type Modal = {
   modal?: ModalType;

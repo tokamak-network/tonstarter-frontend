@@ -15,16 +15,18 @@ import starterActions from '../../actions';
 import {useCheckBalance} from 'hooks/useCheckBalance';
 import {useBlockNumber} from 'hooks/useBlock';
 import {BigNumber} from 'ethers';
+import {useDispatch} from 'react-redux';
+import {openModal} from 'store/modal.reducer';
 
 type ExclusiveSalePartProps = {
   saleInfo: AdminObject;
   detailInfo: DetailInfo;
-  isApprove: boolean;
   activeProjectInfo: any;
+  approvedAmount: string;
 };
 
 export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
-  const {saleInfo, detailInfo, isApprove, activeProjectInfo} = prop;
+  const {saleInfo, detailInfo, activeProjectInfo, approvedAmount} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
@@ -35,9 +37,8 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
     useState<string>('0');
 
   const [amountAvailable, setAmountAvailable] = useState<string>('-');
-  const [publicRound, setPublicRound] = useState<string>('-');
   const [userTonBalance, setUserTonBalance] = useState<string>('-');
-  const [userAllocation, setUserAllocation] = useState<string>(
+  const [userAllocation] = useState<string>(
     detailInfo.tierAllocation[
       detailInfo.userTier !== 0 ? detailInfo.userTier : 1
     ],
@@ -46,9 +47,11 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
   const [payAmount, setPayAmount] = useState<string>('-');
   const [saleAmount, setSaleAmount] = useState<string>('-');
   const [btnDisabled, setBtnDisabled] = useState<boolean>(true);
+  const [isApprove, setIsApprove] = useState<boolean>(false);
 
   const {checkBalance} = useCheckBalance();
   const {blockNumber} = useBlockNumber();
+  const dispatch = useDispatch();
 
   const PUBLICSALE_CONTRACT = useCallContract(
     saleInfo.saleContractAddress,
@@ -142,6 +145,13 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
       getInfo();
     }
   }, [account, library, activeProjectInfo]);
+
+  //check approve
+  useEffect(() => {
+    const numInputTonBalance = Number(inputTonBalance.replaceAll(',', ''));
+    const numApprovedBalance = Number(approvedAmount.replaceAll(',', ''));
+    setIsApprove(numApprovedBalance >= numInputTonBalance);
+  }, [account, library, approvedAmount, inputTonBalance]);
 
   return (
     <Flex flexDir="column" pl={'45px'}>
@@ -317,10 +327,14 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             isDisabled={btnDisabled}
             func={() =>
               account &&
-              starterActions.getAllowance(
-                account,
-                library,
-                saleInfo?.saleContractAddress,
+              dispatch(
+                openModal({
+                  type: 'Starter_Approve',
+                  data: {
+                    address: saleInfo.saleContractAddress,
+                    amount: inputTonBalance,
+                  },
+                }),
               )
             }></CustomButton>
         )}

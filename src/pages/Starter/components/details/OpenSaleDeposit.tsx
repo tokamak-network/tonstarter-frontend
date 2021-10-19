@@ -13,20 +13,23 @@ import {useCallContract} from 'hooks/useCallContract';
 import {convertNumber} from 'utils/number';
 import store from 'store';
 import {useBlockNumber} from 'hooks/useBlock';
+import {useDispatch} from 'react-redux';
+import {openModal} from 'store/modal.reducer';
 
 type OpenSaleDepositProps = {
   saleInfo: AdminObject;
   activeProjectInfo: any;
-  isApprove: boolean;
+  approvedAmount: string;
 };
 
 export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
-  const {saleInfo, activeProjectInfo, isApprove} = prop;
+  const {saleInfo, activeProjectInfo, approvedAmount} = prop;
 
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
   const {account, library} = useActiveWeb3React();
+  const dispatch = useDispatch();
 
   const {
     balance: {tonOrigin},
@@ -40,6 +43,7 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
   const [userPayAmount, setYourPayAmount] = useState<string>('-');
   const [userSaleAmount, setUserSaleAmount] = useState<string>('-');
   const [userAllocate, setUserAllocate] = useState<string>('-');
+  const [isApprove, setIsApprove] = useState<boolean>(false);
 
   const {checkBalance} = useCheckBalance();
   const {blockNumber} = useBlockNumber();
@@ -127,6 +131,13 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
       getData();
     }
   }, [account, library, saleInfo, PUBLICSALE_CONTRACT, blockNumber]);
+
+  //check approve
+  useEffect(() => {
+    const numInputTonBalance = Number(inputBalance.replaceAll(',', ''));
+    const numApprovedBalance = Number(approvedAmount.replaceAll(',', ''));
+    setIsApprove(numApprovedBalance >= numInputTonBalance);
+  }, [account, library, approvedAmount, inputBalance]);
 
   return (
     <Flex flexDir="column" pl={'45px'}>
@@ -282,10 +293,14 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
             text={'Approve'}
             func={() =>
               account &&
-              starterActions.getAllowance(
-                account,
-                library,
-                saleInfo?.saleContractAddress,
+              dispatch(
+                openModal({
+                  type: 'Starter_Approve',
+                  data: {
+                    address: saleInfo.saleContractAddress,
+                    amount: inputBalance,
+                  },
+                }),
               )
             }></CustomButton>
         )}

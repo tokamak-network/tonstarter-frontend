@@ -7,6 +7,7 @@ import {useEffect, useState} from 'react';
 import {StarterDetail} from './StarterDetail';
 import {LoadingComponent} from 'components/Loading';
 import {useBlockNumber} from 'hooks/useBlock';
+import {ApproveModal} from './components/ApproveModal';
 // import {fetchUserInfo} from 'store/app/user.reducer';
 // import store from 'store';
 
@@ -46,6 +47,7 @@ export const Starter = () => {
           <LoadingComponent />
         </Center>
       )}
+      <ApproveModal></ApproveModal>
     </Flex>
   );
 };

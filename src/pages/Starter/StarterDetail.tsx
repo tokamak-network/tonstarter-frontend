@@ -74,7 +74,7 @@ export const StarterDetail = () => {
     undefined,
   );
 
-  const [isApprove, setIsApprove] = useState(false);
+  const [approvedAmount, setApprovedAmount] = useState<string>('0');
 
   const {STATER_STYLE} = theme;
   const tokenType = checkTokenType(
@@ -96,14 +96,14 @@ export const StarterDetail = () => {
   useEffect(() => {
     async function checkUserApprove() {
       if (account && library) {
-        const isUserApprove = await starterActions.checkApprove(
+        const amount = await starterActions.checkApprove(
           account,
           library,
           starterData.activeData
             .filter((data: AdminObject) => data.name === id)
             .map((e: AdminObject) => e.saleContractAddress)[0],
         );
-        setIsApprove(isUserApprove);
+        setApprovedAmount(amount);
       }
     }
     checkUserApprove();
@@ -236,11 +236,11 @@ export const StarterDetail = () => {
           (data: any) => data.name === id,
         )[0];
 
-        setActiveStatus(step);
-        setProject(isPassed ? 'past' : 'active');
+        // setActiveStatus(step);
+        // setProject(isPassed ? 'past' : 'active');
 
-        // setActiveStatus('deposit');
-        // setProject('active');
+        setActiveStatus('exclusive');
+        setProject('active');
 
         setActiveProjectInfo(
           activeProjects.filter((data: any) => data.name === id)[0],
@@ -366,13 +366,13 @@ export const StarterDetail = () => {
                 saleInfo={saleInfo}
                 detailInfo={detailInfo}
                 activeProjectInfo={activeProjectInfo}
-                isApprove={isApprove}></ExclusiveSalePart>
+                approvedAmount={approvedAmount}></ExclusiveSalePart>
             )}
           {projectStatus === 'active' && activeStatus === 'deposit' && (
             <OpenSaleDeposit
               saleInfo={saleInfo}
               activeProjectInfo={activeProjectInfo}
-              isApprove={isApprove}></OpenSaleDeposit>
+              approvedAmount={approvedAmount}></OpenSaleDeposit>
           )}
           {/* {projectStatus === 'active' && activeStatus === 'openSale' && (
             <OpenSaleAfterDeposit
