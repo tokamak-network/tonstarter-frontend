@@ -28,6 +28,7 @@ const trimDigit = (arg: any) => {
 
 export const DetailCounter: React.FC<DetailCounterProps> = (prop) => {
   const {numberFontSize, stringFontSize, date, style, claimStep} = prop;
+
   const dispatch = useAppDispatch();
   const {chainId, library} = useActiveWeb3React();
 

@@ -22,7 +22,6 @@ import {OpenSaleDeposit} from './components/details/OpenSaleDeposit';
 import {ExclusiveSalePart} from './components/details/ExclusiveSalePart';
 import store from 'store';
 import {AdminObject} from '@Admin/types';
-import {convertTimeStamp} from 'utils/convertTIme';
 import {Claim} from './components/details/Claim';
 // import {useUrl} from './hooks/useUrl';
 import {useCallContract} from 'hooks/useCallContract';
@@ -49,7 +48,7 @@ export const StarterDetail = () => {
     starterData?.activeProjects[0].timeStamps.endDepositTime,
   );
   const {isPassed: isEndWhiteListTime} = useTime(
-    starterData?.activeProjects[0].timeStamps.endWhiteListTime,
+    starterData?.activeProjects[0].timeStamps.endAddWhiteTime,
   );
   const {isPassed: isEndExclusiveTime} = useTime(
     starterData?.activeProjects[0].timeStamps.endExclusiveTime,
@@ -220,16 +219,8 @@ export const StarterDetail = () => {
 
   useEffect(() => {
     async function getStatus() {
-      if (PUBLICSALE_CONTRACT && saleInfo) {
+      if (saleInfo) {
         const {activeProjects} = starterData;
-        // const timeStamps = await starterActions.getTimeStamps({
-        //   library,
-        //   address: saleInfo.saleContractAddress,
-        // });
-        // const {checkStep} = timeStamps;
-        // if (checkStep) {
-        //   setActiveStatus(checkStep as SaleStatus);
-        // }
 
         //@ts-ignore
         const {step} = activeProjects.filter(
@@ -239,16 +230,16 @@ export const StarterDetail = () => {
         setActiveStatus(step);
         setProject(isPassed ? 'past' : 'active');
 
+        // setActiveStatus('whitelist');
+        // setProject('active');
+
         setActiveProjectInfo(
           activeProjects.filter((data: any) => data.name === id)[0],
         );
       }
     }
-    if (PUBLICSALE_CONTRACT) {
-      getStatus();
-    }
+    getStatus();
   }, [
-    PUBLICSALE_CONTRACT,
     id,
     starterData,
     library,
@@ -344,27 +335,20 @@ export const StarterDetail = () => {
             w={'1px'}
             bg={colorMode === 'light' ? '#f4f6f8' : '#323232'}
             boxShadow={'0 1px 1px 0 rgba(96, 97, 112, 0.16)'}></Box>
-          {projectStatus === 'active' &&
-            activeStatus === 'whitelist' &&
-            detailInfo && (
-              <WhiteList
-                date={convertTimeStamp(saleInfo?.endAddWhiteTime, 'YYYY-MM-DD')}
-                startDate={convertTimeStamp(saleInfo?.startAddWhiteTime)}
-                endDate={convertTimeStamp(saleInfo?.endAddWhiteTime, 'MM.D')}
-                userTier={detailInfo.userTier}
-                activeProjectInfo={activeProjectInfo}
-                saleInfo={saleInfo}
-                detailInfo={detailInfo}></WhiteList>
-            )}
-          {projectStatus === 'active' &&
-            activeStatus === 'exclusive' &&
-            detailInfo && (
-              <ExclusiveSalePart
-                saleInfo={saleInfo}
-                detailInfo={detailInfo}
-                activeProjectInfo={activeProjectInfo}
-                approvedAmount={approvedAmount}></ExclusiveSalePart>
-            )}
+          {projectStatus === 'active' && activeStatus === 'whitelist' && (
+            <WhiteList
+              userTier={detailInfo?.userTier || 0}
+              activeProjectInfo={activeProjectInfo}
+              saleInfo={saleInfo}
+              detailInfo={detailInfo}></WhiteList>
+          )}
+          {projectStatus === 'active' && activeStatus === 'exclusive' && (
+            <ExclusiveSalePart
+              saleInfo={saleInfo}
+              detailInfo={detailInfo}
+              activeProjectInfo={activeProjectInfo}
+              approvedAmount={approvedAmount}></ExclusiveSalePart>
+          )}
           {projectStatus === 'active' && activeStatus === 'deposit' && (
             <OpenSaleDeposit
               saleInfo={saleInfo}
@@ -383,7 +367,7 @@ export const StarterDetail = () => {
           )}
         </Flex>
         <Flex>
-          {activeStatus && detailInfo && (
+          {activeStatus && (
             <DetailTable
               saleInfo={saleInfo}
               status={activeStatus}

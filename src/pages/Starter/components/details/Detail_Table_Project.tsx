@@ -22,14 +22,14 @@ export const DetailTableProject: React.FC<DetailTableProjectProps> = (prop) => {
     {key: 'Contract', value: `${saleInfo?.tokenAddress}`},
     {
       key: 'Total Supply',
-      value: `${activeProjectInfo?.tokenInfo.totalSupply.split('.')[0]}`,
+      value: `${activeProjectInfo?.tokenInfo?.totalSupply?.split('.')[0]}`,
     },
   ];
 
-  const projectDetailTitle2 = 'Sale Details';
+  const projectDetailTitle2 = 'IDO Details';
   const projectDetailData2 = [
     {
-      key: 'Sale Period (Public Round 1)',
+      key: 'Public Round 1 Period',
       value: `${convertTimeStamp(
         activeProjectInfo?.timeStamps.startExclusiveTime,
       )} ~ ${convertTimeStamp(
@@ -38,7 +38,7 @@ export const DetailTableProject: React.FC<DetailTableProjectProps> = (prop) => {
       )}`,
     },
     {
-      key: 'Sale Period (Public Round 2)',
+      key: 'Public Round 2 Period',
       value: `${convertTimeStamp(
         activeProjectInfo?.timeStamps.startDepositTime,
       )} ~ ${convertTimeStamp(

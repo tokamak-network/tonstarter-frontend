@@ -20,7 +20,7 @@ import {openModal} from 'store/modal.reducer';
 
 type ExclusiveSalePartProps = {
   saleInfo: AdminObject;
-  detailInfo: DetailInfo;
+  detailInfo: DetailInfo | undefined;
   activeProjectInfo: any;
   approvedAmount: string;
 };
@@ -39,9 +39,11 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
   const [amountAvailable, setAmountAvailable] = useState<string>('-');
   const [userTonBalance, setUserTonBalance] = useState<string>('-');
   const [userAllocation] = useState<string>(
-    detailInfo.tierAllocation[
-      detailInfo.userTier !== 0 ? detailInfo.userTier : 1
-    ],
+    detailInfo
+      ? detailInfo.tierAllocation[
+          detailInfo.userTier !== 0 ? detailInfo.userTier : 1
+        ]
+      : '0',
   );
   const [userTierAllocation, setUserTierAllocation] = useState<string>('-');
   const [payAmount, setPayAmount] = useState<string>('-');
@@ -66,7 +68,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
 
   useEffect(() => {
     async function getTierAllowcation() {
-      if (PUBLICSALE_CONTRACT) {
+      if (PUBLICSALE_CONTRACT && detailInfo) {
         const payAmount = await PUBLICSALE_CONTRACT.usersEx(account);
         const availableAmounT = await PUBLICSALE_CONTRACT.calculTierAmount(
           account,
@@ -103,12 +105,12 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
   }, [account, library, PUBLICSALE_CONTRACT, detailInfo]);
 
   useEffect(() => {
-    if (saleInfo) {
-      const ratio = saleInfo.projectFundingTokenRatio;
+    if (activeProjectInfo) {
+      const ratio = activeProjectInfo.projectFundingTokenRatio;
       const result = Number(inputTonBalance) * ratio;
       setConvertedTokenBalance(String(result));
     }
-  }, [inputTonBalance, saleInfo, convertedTokenBalance]);
+  }, [inputTonBalance, activeProjectInfo, convertedTokenBalance]);
 
   useEffect(() => {
     async function callUserBalance() {
@@ -172,7 +174,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
           fontSize={14}
           letterSpacing={'1.4px'}
           mb={'10px'}>
-          Buy Amount
+          Acquire Amount
         </Text>
         <Text
           {...STATER_STYLE.subText({colorMode: 'light'})}
@@ -199,13 +201,12 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             tokenName={'TON'}
             maxBtn={true}
             maxValue={
-              Number('2,555.666'.replaceAll(',', ''))
-              // Number(userTonBalance.replaceAll(',', '')) <=
-              // Number(amountAvailable.replaceAll(',', '')) /
-              //   saleInfo?.projectFundingTokenRatio
-              //   ? Number(userTonBalance.replaceAll(',', ''))
-              //   : Number(amountAvailable.replaceAll(',', '')) /
-              //     saleInfo?.projectFundingTokenRatio
+              Number(userTonBalance.replaceAll(',', '')) <=
+              Number(amountAvailable.replaceAll(',', '')) /
+                saleInfo?.projectFundingTokenRatio
+                ? Number(userTonBalance.replaceAll(',', ''))
+                : Number(amountAvailable.replaceAll(',', '')) /
+                  saleInfo?.projectFundingTokenRatio
             }></CustomInput>
           <img
             src={ArrowIcon}
@@ -246,7 +247,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
         <Box d="flex" fontSize={'13px'} justifyContent="space-between">
           <Flex w={'235px'}>
             <Text color={'gray.400'} mr={'3px'}>
-              Sale Period :{' '}
+              Public Round 1 Period :{' '}
             </Text>
             <Text {...detailSubTextStyle}>
               {convertTimeStamp(
@@ -274,7 +275,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
         <Box d="flex" fontSize={'13px'} justifyContent="space-between">
           <Flex w={'235px'}>
             <Text color={'gray.400'} mr={'3px'}>
-              {`Tier Allocation(Tier: ${detailInfo.userTier})`} :{' '}
+              {`Tier Allocation(Tier: ${detailInfo?.userTier || '-'})`} :{' '}
             </Text>
             <Text {...detailSubTextStyle} mr={'3px'}>
               {userTierAllocation}
@@ -306,7 +307,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
       <Box mt={'27px'}>
         {isApprove === true ? (
           <CustomButton
-            text={'Buy'}
+            text={'Acquire'}
             isDisabled={btnDisabled || Number(amountAvailable) <= 0}
             func={() =>
               account &&

@@ -8,41 +8,31 @@ import {Tier, DetailInfo} from '@Starter/types';
 import {AdminObject} from '@Admin/types';
 import {convertTimeStamp} from 'utils/convertTIme';
 import {useBlockNumber} from 'hooks/useBlock';
-import moment from 'moment';
 import {useTime} from 'hooks/useTime';
 
 type WhiteListProps = {
-  date: string;
-  startDate: string;
-  endDate: string;
   userTier: Tier;
   activeProjectInfo: any;
-  detailInfo: DetailInfo;
+  detailInfo: DetailInfo | undefined;
   saleInfo: AdminObject;
 };
 
 export const WhiteList: React.FC<WhiteListProps> = (prop) => {
-  const {
-    date,
-    startDate,
-    endDate,
-    userTier,
-    activeProjectInfo,
-    detailInfo,
-    saleInfo,
-  } = prop;
+  const {userTier, activeProjectInfo, detailInfo, saleInfo} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
-  const [isWhiteList, setIsWhiteList] = useState<boolean>(true);
+  const [isWhiteList, setIsWhiteList] = useState<boolean>(false);
 
   const {STATER_STYLE} = theme;
   const {blockNumber} = useBlockNumber();
   const {isPassed} = useTime(activeProjectInfo?.timeStamps.startAddWhiteTime);
   const [userAllocation, setUserAllocation] = useState<string>(
-    detailInfo.tierAllocation[
-      detailInfo.userTier !== 0 ? detailInfo.userTier : 1
-    ],
+    detailInfo
+      ? detailInfo.tierAllocation[
+          detailInfo.userTier !== 0 ? detailInfo.userTier : 1
+        ]
+      : '0',
   );
 
   useEffect(() => {
@@ -99,15 +89,15 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
         </Text>
         <Box display={isPassed ? '' : 'none'}>
           <DetailCounter
-            date={Number(
-              activeProjectInfo?.timeStamps.endWhiteListTime + '000',
-            )}></DetailCounter>
+            date={
+              activeProjectInfo?.timeStamps.endAddWhiteTime * 1000
+            }></DetailCounter>
         </Box>
         <Box>
           <DetailCounter
-            date={Number(
-              activeProjectInfo?.timeStamps.startAddWhiteTime + '000',
-            )}></DetailCounter>
+            date={
+              activeProjectInfo?.timeStamps.startAddWhiteTime * 1000
+            }></DetailCounter>
         </Box>
       </Box>
       {isPassed && (
@@ -121,7 +111,7 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
                 Your Tier :{' '}
               </Text>
               <Text {...detailSubTextStyle}>
-                {isWhiteList ? `Tier${detailInfo.userTier}` : '-'}
+                {isWhiteList ? `Tier${detailInfo?.userTier}` : '-'}
               </Text>
             </Flex>
             <Flex w={'235px'}>

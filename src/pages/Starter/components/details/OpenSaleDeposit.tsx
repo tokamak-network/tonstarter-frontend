@@ -31,9 +31,9 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
   const {account, library} = useActiveWeb3React();
   const dispatch = useDispatch();
 
-  const {
-    balance: {tonOrigin},
-  } = store.getState().user.data;
+  // const {
+  //   balance: {tonOrigin},
+  // } = store.getState().user?.data;
 
   const [inputBalance, setInputBalance] = useState<string>('0');
   const [userTonBalance, setUserTonBalance] = useState<string>('-');
@@ -271,6 +271,11 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
         {isApprove === true ? (
           <CustomButton
             text={'Deposit'}
+            isDisabled={
+              account === undefined ||
+              library === undefined ||
+              inputBalance === '0'
+            }
             func={() =>
               account &&
               checkBalance(
@@ -284,7 +289,7 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
                 amount:
                   Number(inputBalance.replaceAll(',', '')) ===
                   Number(userTonBalance.replaceAll(',', ''))
-                    ? tonOrigin
+                    ? store.getState().user?.data?.balance?.tonOrigin
                     : String(inputBalance),
               })
             }></CustomButton>

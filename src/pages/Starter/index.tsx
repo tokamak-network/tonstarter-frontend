@@ -33,9 +33,7 @@ export const Starter = () => {
         }
       });
     }
-    if (library && account) {
-      fetchData();
-    }
+    fetchData();
   }, [chainId, account, dispatch, library, blockNumber]);
 
   return (

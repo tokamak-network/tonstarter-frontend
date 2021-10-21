@@ -62,10 +62,25 @@ export const ApproveModal = () => {
             </Text>
           </Box>
 
-          <Box as={Flex} justifyContent={'space-between'} px={2} pt={5}>
+          <Flex
+            flexDir="column"
+            alignItems="center"
+            mt={3}
+            px={5}
+            fontSize={15}
+            color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
+            <Text textAlign="center">
+              'Approve All' means to get an approval of the amount which is
+              total supply of TON
+            </Text>
+          </Flex>
+
+          <Box as={Flex} flexDir="column" alignItems="center" pt={5}>
             <Button
+              {...btnStyle.btnAble()}
               w={'150px'}
               fontSize="14px"
+              mb={3}
               _hover={{}}
               onClick={() => {
                 account &&
@@ -79,6 +94,7 @@ export const ApproveModal = () => {
               Approve All
             </Button>
             <Button
+              {...btnStyle.btnAble()}
               w={'150px'}
               fontSize="14px"
               _hover={{}}
@@ -92,7 +108,7 @@ export const ApproveModal = () => {
                     amount,
                   });
               }}>
-              Approve
+              Approve ({amount} TON)
             </Button>
           </Box>
         </ModalBody>

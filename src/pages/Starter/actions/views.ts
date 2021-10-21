@@ -27,7 +27,7 @@ export async function getTotalExpectSaleAmount(args: I_CallContract) {
 
 export async function getTimeStamps(args: I_CallContract): Promise<{
   startAddWhiteTime: number;
-  endWhiteListTime: number;
+  endAddWhiteListTime: number;
   startExclusiveTime: number;
   endExclusiveTime: number;
   startDepositTime: number;
@@ -70,7 +70,7 @@ export async function getTimeStamps(args: I_CallContract): Promise<{
 
   return {
     startAddWhiteTime: Number(res[0].toString()),
-    endWhiteListTime: Number(res[1].toString()),
+    endAddWhiteListTime: Number(res[1].toString()),
     startExclusiveTime: Number(res[2].toString()),
     endExclusiveTime: Number(res[3].toString()),
     startDepositTime: Number(res[4].toString()),

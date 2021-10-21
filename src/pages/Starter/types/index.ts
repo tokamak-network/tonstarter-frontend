@@ -15,7 +15,7 @@ export type ActiveProjectType = I_StarterProject & {
     endDepositTime: number;
     endExclusiveTime: number;
     endOpenSaleTime: number;
-    endWhiteListTime: number;
+    endAddWhiteTime: number;
     startAddWhiteTime: number;
     startDepositTime: number;
     startExclusiveTime: number;

@@ -125,33 +125,21 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
           amount: userOpenSaleUserAmount[1].toString(),
           localeString: true,
         });
-
-        const userDepositAmount = userOpenSaleUserAmount[0];
-        const userSaleAmount = userOpenSaleUserAmount[1].toString();
-        const convertedDepositAmount = convertNumber({
-          amount: userDepositAmount,
+        const convertedUserRefund = convertNumber({
+          amount: userOpenSaleUserAmount[2].toString(),
           localeString: true,
         });
 
         setExclusiveSale(convertedExSaleAmount || '0');
         setRemainedAmount(convertedRamainedAmount || '0');
         setOpenSale(convertedUsersOpen || '0');
-        setWithdrawAmount(
-          Number(userDepositAmount) > 0 && userSaleAmount === '0'
-            ? convertedDepositAmount || '0'
-            : '0',
-        );
+        setWithdrawAmount(convertedUserRefund || '0');
       }
     }
     if (account && PUBLICSALE_CONTRACT) {
       getData();
     }
   }, [account, PUBLICSALE_CONTRACT, blockNumber]);
-
-  useEffect(() => {
-    console.log('--d--');
-    console.log(d_Day);
-  }, [d_Day]);
 
   return (
     <Flex flexDir="column" pl={'45px'}>
@@ -259,29 +247,17 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
               address: saleInfo.saleContractAddress,
             })
           }></CustomButton>
-        {withdrawAmount === '0' ? null : (
-          <>
-            <CustomButton
-              text={'Withdraw'}
-              func={() =>
-                account &&
-                starterActions.depositWithdraw({
-                  account,
-                  library,
-                  address: saleInfo.saleContractAddress,
-                })
-              }></CustomButton>
-            <Flex
-              flexDir="column"
-              ml={'15px'}
-              fontSize={12}
-              justifyContent="center">
-              <Text color={'gray.400'} mr={'3px'}>
-                WithdrawClaim Number :{' '}
-              </Text>
-              <Text {...detailSubTextStyle}>{withdrawAmount} TON</Text>
-            </Flex>
-          </>
+        {withdrawAmount === '0' || withdrawAmount === '0.00' ? null : (
+          <Flex
+            flexDir="column"
+            ml={'15px'}
+            fontSize={12}
+            justifyContent="center">
+            <Text color={'gray.400'} mr={'3px'}>
+              WithdrawClaim Number :{' '}
+            </Text>
+            <Text {...detailSubTextStyle}>{withdrawAmount} TON</Text>
+          </Flex>
         )}
       </Box>
     </Flex>

@@ -16,13 +16,28 @@ interface I_CallContract {
 type CallContractWithAmount = I_CallContract & {amount: string};
 
 export const participate = async (args: CallContractWithAmount) => {
-  const {account, library, amount, address} = args;
-  const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
-  const signer = getSigner(library, account);
-  const res = await PUBLICSALE_CONTRACT.connect(signer).exclusiveSale(
-    amount.length > 17 ? amount : convertToWei(amount),
-  );
-  return setTx(res);
+  try {
+    const {account, library, amount, address} = args;
+    const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
+    const signer = getSigner(library, account);
+    const res = await PUBLICSALE_CONTRACT.connect(signer).exclusiveSale(
+      amount.length > 17 ? amount : convertToWei(amount),
+    );
+    return setTx(res);
+  } catch (e) {
+    store.dispatch(
+      //@ts-ignore
+      openToast({
+        payload: {
+          status: 'error',
+          title: 'Tx fail to send',
+          description: `something went wrong`,
+          duration: 5000,
+          isClosable: true,
+        },
+      }),
+    );
+  }
 };
 
 export const addWhiteList = async (args: I_CallContract) => {
@@ -65,23 +80,21 @@ export const deposit = async (args: I_CallContract & {amount: string}) => {
     );
     return setTx(res);
   } catch (e: any) {
-    switch (e.message) {
-      case e.message.includes('end the depositTime'):
-        console.log(e.message);
-        store.dispatch(
-          //@ts-ignore
-          openToast({
-            payload: {
-              status: 'error',
-              title: 'Tx fail to send',
-              description: `something went wrong`,
-              duration: 5000,
-              isClosable: true,
-            },
-          }),
-        );
-        break;
-    }
+    // switch (e.message) {
+    // case e.message.includes('end the depositTime'):
+    store.dispatch(
+      //@ts-ignore
+      openToast({
+        payload: {
+          status: 'error',
+          title: 'Tx fail to send',
+          description: `something went wrong`,
+          duration: 5000,
+          isClosable: true,
+        },
+      }),
+    );
+    // }
   }
 };
 
