@@ -35,10 +35,17 @@ export const getUserBalance = async (
   return result;
 };
 
-export const getUserTonBalance = async ({account, library}: any) => {
+export const getUserTonBalance = async ({
+  account,
+  library,
+  localeString,
+}: any) => {
   const contract = new Contract(TON_ADDRESS, ERC20.abi, library);
   const contractIserBalance = await contract.balanceOf(account);
-  const balance = convertNumber({amount: String(contractIserBalance)});
+  const balance = convertNumber({
+    amount: String(contractIserBalance),
+    localeString: localeString || false,
+  });
   return balance;
 };
 

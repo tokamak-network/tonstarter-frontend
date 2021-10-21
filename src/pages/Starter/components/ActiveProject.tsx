@@ -14,7 +14,7 @@ import {Link, useRouteMatch} from 'react-router-dom';
 import {ActiveProjectType} from '@Starter/types';
 import starterActions from '../actions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import moment from 'moment';
 
 type ActiveProjectProp = {
@@ -30,6 +30,8 @@ export const ActiveProject = (props: any) => {
 
   const {STATER_STYLE} = theme;
   const {url} = match;
+
+  const [view, setView] = useState(false);
 
   return (
     <Flex flexDir="column">

@@ -1,4 +1,4 @@
-import {Box, useColorMode, useTheme, Flex, Text, Input} from '@chakra-ui/react';
+import {Box, useColorMode, useTheme, Flex, Text} from '@chakra-ui/react';
 import {CustomInput} from 'components/Basic';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {useEffect, useState} from 'react';
@@ -12,16 +12,21 @@ import {DetailInfo} from '@Starter/types';
 import {useCallContract} from 'hooks/useCallContract';
 import {convertNumber} from 'utils/number';
 import starterActions from '../../actions';
+import {useCheckBalance} from 'hooks/useCheckBalance';
+import {useBlockNumber} from 'hooks/useBlock';
+import {BigNumber} from 'ethers';
+import {useDispatch} from 'react-redux';
+import {openModal} from 'store/modal.reducer';
 
 type ExclusiveSalePartProps = {
   saleInfo: AdminObject;
-  detailInfo: DetailInfo;
-  isApprove: boolean;
+  detailInfo: DetailInfo | undefined;
   activeProjectInfo: any;
+  approvedAmount: string;
 };
 
 export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
-  const {saleInfo, detailInfo, isApprove, activeProjectInfo} = prop;
+  const {saleInfo, detailInfo, activeProjectInfo, approvedAmount} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
@@ -31,15 +36,24 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
   const [convertedTokenBalance, setConvertedTokenBalance] =
     useState<string>('0');
 
-  const [saleStartTime, setSaleStartTime] = useState<string>('-');
-  const [saleEndTime, setSaleEndTime] = useState<string>('-');
+  const [amountAvailable, setAmountAvailable] = useState<string>('-');
   const [userTonBalance, setUserTonBalance] = useState<string>('-');
-  const [userAllocation, setUserAllocation] = useState<string>(
-    detailInfo.tierAllocation[
-      detailInfo.userTier !== 0 ? detailInfo.userTier : 1
-    ],
+  const [userAllocation] = useState<string>(
+    detailInfo
+      ? detailInfo.tierAllocation[
+          detailInfo.userTier !== 0 ? detailInfo.userTier : 1
+        ]
+      : '0',
   );
   const [userTierAllocation, setUserTierAllocation] = useState<string>('-');
+  const [payAmount, setPayAmount] = useState<string>('-');
+  const [saleAmount, setSaleAmount] = useState<string>('-');
+  const [btnDisabled, setBtnDisabled] = useState<boolean>(true);
+  const [isApprove, setIsApprove] = useState<boolean>(false);
+
+  const {checkBalance} = useCheckBalance();
+  const {blockNumber} = useBlockNumber();
+  const dispatch = useDispatch();
 
   const PUBLICSALE_CONTRACT = useCallContract(
     saleInfo.saleContractAddress,
@@ -54,50 +68,98 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
 
   useEffect(() => {
     async function getTierAllowcation() {
-      if (PUBLICSALE_CONTRACT) {
-        const res = await PUBLICSALE_CONTRACT.calculTierAmount(account);
-        setUserTierAllocation(
-          convertNumber({amount: res.toString(), localeString: true}) as string,
+      if (PUBLICSALE_CONTRACT && detailInfo) {
+        const payAmount = await PUBLICSALE_CONTRACT.usersEx(account);
+        const availableAmounT = await PUBLICSALE_CONTRACT.calculTierAmount(
+          account,
         );
+
+        const pay = convertNumber({
+          amount: payAmount.saleAmount,
+          localeString: true,
+        });
+        const sale = convertNumber({
+          amount: payAmount.payAmount,
+          localeString: true,
+        });
+        const res =
+          detailInfo.totalExpectSaleAmount[
+            detailInfo.userTier !== 0 ? detailInfo.userTier : 1
+          ];
+        const availalbleSubPay = BigNumber.from(availableAmounT).sub(
+          payAmount.saleAmount,
+        );
+        const convertedAvailableAmount = convertNumber({
+          amount: availalbleSubPay.toString(),
+          localeString: true,
+        });
+        setUserTierAllocation(detailInfo.userTier === 0 ? '-' : res);
+        setAmountAvailable(convertedAvailableAmount || '0.00');
+        setSaleAmount(sale || '0.00');
+        setPayAmount(pay || '0.00');
       }
     }
     if (account && library && PUBLICSALE_CONTRACT) {
       getTierAllowcation();
     }
-  }, [account, library, PUBLICSALE_CONTRACT]);
+  }, [account, library, PUBLICSALE_CONTRACT, detailInfo]);
 
   useEffect(() => {
-    if (saleInfo) {
-      const ratio = saleInfo.projectFundingTokenRatio;
+    if (activeProjectInfo) {
+      const ratio = activeProjectInfo.projectFundingTokenRatio;
       const result = Number(inputTonBalance) * ratio;
       setConvertedTokenBalance(String(result));
     }
-  }, [inputTonBalance, saleInfo, convertedTokenBalance]);
-
-  useEffect(() => {
-    if (saleInfo) {
-      const startTime = convertTimeStamp(saleInfo.startExclusiveTime);
-      const endTime = convertTimeStamp(saleInfo.endOpenSaleTime, 'MM.DD');
-      setSaleStartTime(startTime);
-      setSaleEndTime(endTime);
-    }
-  }, [saleInfo]);
+  }, [inputTonBalance, activeProjectInfo, convertedTokenBalance]);
 
   useEffect(() => {
     async function callUserBalance() {
-      const tonBalance = await getUserTonBalance({account, library});
+      const tonBalance = await getUserTonBalance({
+        account,
+        library,
+        localeString: true,
+      });
       return setUserTonBalance(tonBalance || '-');
     }
     if (account && library) {
       callUserBalance();
     }
-  }, [account, library]);
+  }, [account, library, blockNumber]);
+
+  useEffect(() => {
+    async function getInfo() {
+      if (account && library && activeProjectInfo) {
+        const whiteListInfo = await starterActions.isWhiteList({
+          account,
+          library,
+          address: activeProjectInfo.saleContractAddress,
+        });
+        // const amount = await starterActions.isWhiteList({
+        //   account,
+        //   library,
+        //   address: activeProjectInfo.saleContractAddress,
+        // });
+        setBtnDisabled(!whiteListInfo[0]);
+        // setAmountAvailable();
+      }
+    }
+    if (account && library && activeProjectInfo) {
+      getInfo();
+    }
+  }, [account, library, activeProjectInfo]);
+
+  //check approve
+  useEffect(() => {
+    const numInputTonBalance = Number(inputTonBalance.replaceAll(',', ''));
+    const numApprovedBalance = Number(approvedAmount.replaceAll(',', ''));
+    setIsApprove(numApprovedBalance >= numInputTonBalance);
+  }, [account, library, approvedAmount, inputTonBalance]);
 
   return (
     <Flex flexDir="column" pl={'45px'}>
       <Box d="flex" textAlign="center" alignItems="center" mb={'20px'}>
         <Text {...STATER_STYLE.mainText({colorMode, fontSize: 25})} mr={'20px'}>
-          Exclusive Sale
+          Public Round 1
         </Text>
         <DetailCounter
           numberFontSize={'18px'}
@@ -112,7 +174,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
           fontSize={14}
           letterSpacing={'1.4px'}
           mb={'10px'}>
-          Your Sale
+          Acquire Amount
         </Text>
         <Text
           {...STATER_STYLE.subText({colorMode: 'light'})}
@@ -122,7 +184,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
         </Text>
       </Box>
       <Box d="flex" alignItems="center" mb={'30px'}>
-        <Box d="flex" mr={'10px'} alignItems="center">
+        <Box d="flex" mr={'10px'} alignItems="center" pos="relative">
           <CustomInput
             w={'220px'}
             h={'32px'}
@@ -136,7 +198,16 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
                   : 'white.100'
                 : 'gray.175'
             }
-            tokenName={'TON'}></CustomInput>
+            tokenName={'TON'}
+            maxBtn={true}
+            maxValue={
+              Number(userTonBalance.replaceAll(',', '')) <=
+              Number(amountAvailable.replaceAll(',', '')) /
+                saleInfo?.projectFundingTokenRatio
+                ? Number(userTonBalance.replaceAll(',', ''))
+                : Number(amountAvailable.replaceAll(',', '')) /
+                  saleInfo?.projectFundingTokenRatio
+            }></CustomInput>
           <img
             src={ArrowIcon}
             alt={'icon_arrow'}
@@ -160,6 +231,13 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
                 : 'gray.175'
             }
             tokenName={saleInfo?.tokenName}></CustomInput>
+          <Flex pos="absolute" right={0} top={10} fontSize={'13px'}>
+            <Text color={'gray.400'} mr={'3px'}>
+              Amount Available :{' '}
+            </Text>
+            <Text mr={'3px'}> {amountAvailable} </Text>
+            <Text>{saleInfo?.tokenName}</Text>
+          </Flex>
         </Box>
       </Box>
       <Box d="flex" flexDir="column" w={'495px'}>
@@ -169,7 +247,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
         <Box d="flex" fontSize={'13px'} justifyContent="space-between">
           <Flex w={'235px'}>
             <Text color={'gray.400'} mr={'3px'}>
-              Sale Period :{' '}
+              Public Round 1 Period :{' '}
             </Text>
             <Text {...detailSubTextStyle}>
               {convertTimeStamp(
@@ -179,7 +257,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
               ~{' '}
               {convertTimeStamp(
                 activeProjectInfo?.timeStamps?.endExclusiveTime,
-                'YYYY-MM-D',
+                'MM-D',
               )}
             </Text>
           </Flex>
@@ -187,15 +265,22 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             <Text color={'gray.400'} mr={'3px'}>
               Your Allocation :{' '}
             </Text>
-            <Text> {userAllocation}</Text>
+            <Text mr={'3px'}>
+              {' '}
+              {btnDisabled === true ? '-' : userAllocation}{' '}
+            </Text>
+            <Text>{saleInfo?.tokenName}</Text>
           </Flex>
         </Box>
         <Box d="flex" fontSize={'13px'} justifyContent="space-between">
           <Flex w={'235px'}>
             <Text color={'gray.400'} mr={'3px'}>
-              {`Tier Allocation(Tier: ${detailInfo.userTier})`} :{' '}
+              {`Tier Allocation(Tier: ${detailInfo?.userTier || '-'})`} :{' '}
             </Text>
-            <Text {...detailSubTextStyle}>{userTierAllocation}</Text>
+            <Text {...detailSubTextStyle} mr={'3px'}>
+              {userTierAllocation}
+            </Text>
+            <Text>{saleInfo?.tokenName}</Text>
           </Flex>
           <Flex w={'235px'}>
             <Text color={'gray.400'} mr={'3px'}>
@@ -207,13 +292,29 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             </Text>
           </Flex>
         </Box>
+        <Box d="flex" fontSize={'13px'} justifyContent="space-between">
+          <Flex>
+            <Text color={'gray.400'} mr={'3px'}>
+              Public Round 1 :{' '}
+            </Text>
+            <Text {...detailSubTextStyle} mr={'3px'}>
+              {payAmount}
+            </Text>
+            <Text color={'gray.400'}>({saleAmount} TON)</Text>
+          </Flex>
+        </Box>
       </Box>
-      <Box mt={'46px'}>
+      <Box mt={'27px'}>
         {isApprove === true ? (
           <CustomButton
-            text={'Participate'}
+            text={'Acquire'}
+            isDisabled={btnDisabled || Number(amountAvailable) <= 0}
             func={() =>
               account &&
+              checkBalance(
+                Number(inputTonBalance),
+                Number(userTonBalance.replaceAll(',', '')),
+              ) &&
               starterActions.participate({
                 account,
                 library,
@@ -224,12 +325,17 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
         ) : (
           <CustomButton
             text={'Approve'}
+            isDisabled={btnDisabled}
             func={() =>
               account &&
-              starterActions.getAllowance(
-                account,
-                library,
-                saleInfo?.saleContractAddress,
+              dispatch(
+                openModal({
+                  type: 'Starter_Approve',
+                  data: {
+                    address: saleInfo.saleContractAddress,
+                    amount: inputTonBalance,
+                  },
+                }),
               )
             }></CustomButton>
         )}

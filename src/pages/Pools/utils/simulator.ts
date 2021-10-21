@@ -106,15 +106,7 @@ async function getReward(lp: number, unit: number): Promise<number> {
       String(lpRatio).split('.')[1][1],
   );
 
-  console.log('--reward--');
-  console.log(lpRatioNum);
-  console.log(seig);
-  console.log(daySec);
-  console.log(unit);
-  console.log(lpRatioNum / 100);
-
   const reward = (lpRatioNum / 100) * seig * daySec * unit;
-  console.log(reward);
   return reward;
 }
 

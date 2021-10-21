@@ -3,7 +3,12 @@ import {RootState} from 'store/reducers';
 import {fetchStarterURL} from 'constants/index';
 import {AdminObject} from '@Admin/types';
 import moment from 'moment';
-import {ActiveProjectType, UpcomingProjectType, PastProjectType} from './types';
+import {
+  ActiveProjectType,
+  UpcomingProjectType,
+  PastProjectType,
+  // MyProject,
+} from './types';
 import starterActions from './actions';
 interface StarterState {
   data: {
@@ -13,6 +18,8 @@ interface StarterState {
     activeData: AdminObject[];
     upcomingData: AdminObject[];
     pastData: AdminObject[];
+    myProjects: any[];
+    // myProject: MyProject[];
   };
   loading: 'idle' | 'pending';
   error: any;
@@ -27,6 +34,7 @@ const initialState = {
     activeData: [],
     upcomingData: [],
     pastData: [],
+    myProjects: [],
   },
   loading: 'idle',
   error: null,
@@ -39,11 +47,7 @@ export const fetchStarters = createAsyncThunk(
   async ({chainId, library}: any, {requestId, getState}) => {
     //@ts-ignore
     const {currentRequestId, loading} = getState().starters;
-    if (
-      loading !== 'pending' ||
-      requestId !== currentRequestId ||
-      library === undefined
-    ) {
+    if (loading !== 'pending' || requestId !== currentRequestId) {
       return;
     }
 
@@ -69,46 +73,103 @@ export const fetchStarters = createAsyncThunk(
       (data: AdminObject) => data.endOpenSaleTime < nowTimeStamp,
     );
 
+    const myProjects = matchData.filter(
+      (data: AdminObject) => data.position === 'active',
+    );
+
     const activeProjects = await Promise.all(
       activeData.map(async (data: AdminObject) => {
         const address = data.saleContractAddress;
-        const timeStamps = await starterActions.getTimeStamps({
-          library,
-          address,
-        });
-        const totalRaise = await starterActions.getTotalRaise({
-          library,
-          address,
-        });
 
-        // const participant = await starterActions.getTimeStamps({
-        //   library,
-        //   address,
-        // });
+        const totalRaise = library
+          ? await starterActions.getTotalRaise({
+              library,
+              address,
+            })
+          : 'XXX,XXX';
+        const tokenInfo = library
+          ? await starterActions.getTokenInfo({
+              library,
+              address: data.tokenAddress,
+            })
+          : {totalSupply: 'XXX,XXX'};
+
+        const tokenAllocation = library
+          ? await starterActions.getTokenAllocation({
+              library,
+              address,
+            })
+          : 'XXX,XXX';
+
+        const nowTimeStamp = moment().unix();
+
+        // const dummy = 1634804360;
+
+        // const {
+        //   startAddWhiteTime,
+        //   endAddWhiteTime,
+        //   startExclusiveTime,
+        //   endExclusiveTime,
+        //   startDepositTime,
+        //   endDepositTime,
+        // } = {
+        //   startAddWhiteTime: dummy,
+        //   endAddWhiteTime: dummy + 60,
+        //   startExclusiveTime: dummy + 61,
+        //   endExclusiveTime: dummy + 120,
+        //   startDepositTime: dummy + 121,
+        //   endDepositTime: dummy + 180,
+        // };
 
         const {
           startAddWhiteTime,
-          endWhiteListTime,
+          endAddWhiteTime,
           startExclusiveTime,
           endExclusiveTime,
           startDepositTime,
-          endDepositTIme,
-          startOpenSaleTime,
-          endOpenSaleTime,
+          endDepositTime,
+        } = data;
+
+        const checkStep =
+          endAddWhiteTime > nowTimeStamp
+            ? 'whitelist'
+            : endExclusiveTime > nowTimeStamp
+            ? 'exclusive'
+            : endDepositTime > nowTimeStamp
+            ? 'deposit'
+            : 'past';
+
+        const timeStamps = {
+          startAddWhiteTime,
+          endAddWhiteTime,
+          startExclusiveTime,
+          endExclusiveTime,
+          startDepositTime,
+          endDepositTime,
           checkStep,
-        } = timeStamps;
+        };
+
+        // const {
+        //   startExclusiveTime,
+        //   endExclusiveTime,
+        //   startDepositTime,
+        //   endDepositTime,
+        //   // startOpenSaleTime,
+        //   // endOpenSaleTime,
+        //   checkStep,
+        // } = timeStamps;
 
         return {
           name: data.name,
           tokenName: data.tokenName,
           saleStart:
             checkStep === 'whitelist' || checkStep === 'exclusive'
-              ? moment.unix(startExclusiveTime).format('YYYY.MM.DD')
-              : moment.unix(startDepositTime).format('YYYY.MM.DD'),
+              ? moment.unix(data.startExclusiveTime).format('YYYY.MM.DD')
+              : moment.unix(data.startDepositTime).format('YYYY.MM.DD'),
           saleEnd:
             checkStep === 'whitelist' || checkStep === 'exclusive'
-              ? moment.unix(endExclusiveTime).format('YYYY.MM.DD')
-              : moment.unix(endDepositTIme).format('YYYY.MM.DD'),
+              ? moment.unix(data.endExclusiveTime).format('YYYY.MM.DD')
+              : moment.unix(data.endDepositTime).format('YYYY.MM.DD'),
           isExclusive:
             checkStep === 'whitelist' || checkStep === 'exclusive'
               ? true
@@ -116,11 +177,14 @@ export const fetchStarters = createAsyncThunk(
           tokenFundRaisingTargetAmount: data.tokenFundRaisingTargetAmount,
           projectTokenRatio: data.projectTokenRatio,
           projectFundingTokenRatio: data.projectFundingTokenRatio,
+          tokenCalRatio: data.projectFundingTokenRatio / data.projectTokenRatio,
           saleContractAddress: address,
-          startTime: timeStamps.startExclusiveTime,
+          startTime: data.startExclusiveTime,
           totalRaise,
           timeStamps,
           step: checkStep,
+          tokenInfo,
+          tokenAllocation,
         };
       }),
     );
@@ -146,9 +210,6 @@ export const fetchStarters = createAsyncThunk(
       };
     });
 
-    console.log('*matchData*');
-    console.log(matchData);
-
     return {
       activeProjects,
       upcomingProjects,
@@ -156,6 +217,7 @@ export const fetchStarters = createAsyncThunk(
       activeData,
       upcomingData,
       pastData,
+      myProjects,
     };
   },
 );

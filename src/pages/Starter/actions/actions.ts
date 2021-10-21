@@ -1,10 +1,11 @@
-import {DEPLOYED} from 'constants/index';
 import * as publicSale from 'services/abis/PublicSale.json';
 import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import {setTx} from 'application';
 import {LibraryType} from 'types';
 import {convertToWei} from 'utils/number';
+import store from 'store';
+import {openToast} from 'store/app/toast.reducer';
 
 interface I_CallContract {
   account: string;
@@ -15,13 +16,28 @@ interface I_CallContract {
 type CallContractWithAmount = I_CallContract & {amount: string};
 
 export const participate = async (args: CallContractWithAmount) => {
-  const {account, library, amount, address} = args;
-  const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
-  const signer = getSigner(library, account);
-  const res = await PUBLICSALE_CONTRACT.connect(signer).exclusiveSale(
-    convertToWei(amount),
-  );
-  return setTx(res);
+  try {
+    const {account, library, amount, address} = args;
+    const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
+    const signer = getSigner(library, account);
+    const res = await PUBLICSALE_CONTRACT.connect(signer).exclusiveSale(
+      amount.length > 17 ? amount : convertToWei(amount),
+    );
+    return setTx(res);
+  } catch (e) {
+    store.dispatch(
+      //@ts-ignore
+      openToast({
+        payload: {
+          status: 'error',
+          title: 'Tx fail to send',
+          description: `something went wrong`,
+          duration: 5000,
+          isClosable: true,
+        },
+      }),
+    );
+  }
 };
 
 export const addWhiteList = async (args: I_CallContract) => {
@@ -55,13 +71,31 @@ export const openSale = async (args: I_CallContract) => {
 };
 
 export const deposit = async (args: I_CallContract & {amount: string}) => {
-  const {account, library, address, amount} = args;
-  const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
-  const signer = getSigner(library, account);
-  const res = await PUBLICSALE_CONTRACT.connect(signer).deposit(
-    convertToWei(amount),
-  );
-  return setTx(res);
+  try {
+    const {account, library, address, amount} = args;
+    const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
+    const signer = getSigner(library, account);
+    const res = await PUBLICSALE_CONTRACT.connect(signer).deposit(
+      amount.length > 17 ? amount : convertToWei(amount),
+    );
+    return setTx(res);
+  } catch (e: any) {
+    // switch (e.message) {
+    // case e.message.includes('end the depositTime'):
+    store.dispatch(
+      //@ts-ignore
+      openToast({
+        payload: {
+          status: 'error',
+          title: 'Tx fail to send',
+          description: `something went wrong`,
+          duration: 5000,
+          isClosable: true,
+        },
+      }),
+    );
+    // }
+  }
 };
 
 export const claim = async (args: I_CallContract) => {
@@ -69,5 +103,13 @@ export const claim = async (args: I_CallContract) => {
   const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
   const signer = getSigner(library, account);
   const res = await PUBLICSALE_CONTRACT.connect(signer).claim();
+  return setTx(res);
+};
+
+export const depositWithdraw = async (args: I_CallContract) => {
+  const {account, library, address} = args;
+  const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
+  const signer = getSigner(library, account);
+  const res = await PUBLICSALE_CONTRACT.connect(signer).depositWithdraw();
   return setTx(res);
 };

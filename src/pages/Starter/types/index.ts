@@ -10,6 +10,17 @@ export type ActiveProjectType = I_StarterProject & {
   tokenFundRaisingTargetAmount: string;
   projectTokenRatio: number;
   projectFundingTokenRatio: number;
+  timeStamps: {
+    checkStep: string;
+    endDepositTime: number;
+    endExclusiveTime: number;
+    endOpenSaleTime: number;
+    endAddWhiteTime: number;
+    startAddWhiteTime: number;
+    startDepositTime: number;
+    startExclusiveTime: number;
+    startOpenSaleTime: number;
+  };
 };
 
 export type UpcomingProjectType = I_StarterProject & {
@@ -18,7 +29,13 @@ export type UpcomingProjectType = I_StarterProject & {
 
 export type PastProjectType = I_StarterProject;
 
-export type SaleStatus = 'whitelist' | 'exclusive' | 'deposit' | 'openSale';
+export type MyProject = {
+  name: string;
+  saleContractAddress: string;
+  nextClaimableDate: number;
+};
+
+export type SaleStatus = 'whitelist' | 'exclusive' | 'deposit';
 
 export type ProjectStatus = 'active' | 'upcoming' | 'past';
 export type Tier = 0 | 1 | 2 | 3 | 4;
@@ -63,4 +80,6 @@ export type DetailInfo = {
   tierAccounts: TierAccounts;
   tierCriteria: TierCriteria;
   tierAllocation: TierAllocation;
+  tierOfMembers: TierCriteria;
+  snapshot: number;
 };

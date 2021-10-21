@@ -1,10 +1,11 @@
 import {Box, useColorMode, useTheme, Flex, Text} from '@chakra-ui/react';
 import {DetailTableContainer} from './Detail_Table_Container';
 import {SaleStatus, DetailTierData, DetailInfo} from '@Starter/types';
+import {convertTimeStamp} from 'utils/convertTIme';
 
 type DetailTableTierProp = {
   status: SaleStatus;
-  detailInfo: DetailInfo;
+  detailInfo: DetailInfo | undefined;
 };
 
 export const DetailTableTier = (prop: DetailTableTierProp) => {
@@ -14,25 +15,27 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
 
   const {STATER_STYLE} = theme;
 
+  const noLibraryText = 'XXX,XXX';
+
   const projectTierData: DetailTierData = [
     {
       title: 'Tier 1',
       data: [
         {
           key: 'Criteria',
-          value: `${detailInfo.tierCriteria[1]}`,
+          value: `${detailInfo?.tierCriteria[1] || noLibraryText} sTOS`,
         },
         {
           key: 'Allocation',
-          value: `${detailInfo.totalExpectSaleAmount[1]}`,
+          value: `${detailInfo?.totalExpectSaleAmount[1] || noLibraryText}`,
         },
         {
           key: 'Members',
-          value: `${detailInfo.tierAccounts[1]}`,
+          value: `${detailInfo?.tierAccounts[1] || noLibraryText}`,
         },
         {
           key: 'Member Allocation',
-          value: `${detailInfo.tierAllocation[1]}`,
+          value: `${detailInfo?.tierAllocation[1] || noLibraryText}`,
         },
       ],
     },
@@ -41,19 +44,19 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
       data: [
         {
           key: 'Criteria',
-          value: `${detailInfo.tierCriteria[2]}`,
+          value: `${detailInfo?.tierCriteria[2] || noLibraryText} sTOS`,
         },
         {
           key: 'Allocation',
-          value: `${detailInfo.totalExpectSaleAmount[2]}`,
+          value: `${detailInfo?.totalExpectSaleAmount[2] || noLibraryText}`,
         },
         {
           key: 'Members',
-          value: `${detailInfo.tierAccounts[2]}`,
+          value: `${detailInfo?.tierAccounts[2] || noLibraryText}`,
         },
         {
           key: 'Member Allocation',
-          value: `${detailInfo.tierAllocation[2]}`,
+          value: `${detailInfo?.tierAllocation[2] || noLibraryText}`,
         },
       ],
     },
@@ -62,19 +65,19 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
       data: [
         {
           key: 'Criteria',
-          value: `${detailInfo.tierCriteria[3]}`,
+          value: `${detailInfo?.tierCriteria[3] || noLibraryText} sTOS`,
         },
         {
           key: 'Allocation',
-          value: `${detailInfo.totalExpectSaleAmount[3]}`,
+          value: `${detailInfo?.totalExpectSaleAmount[3] || noLibraryText}`,
         },
         {
           key: 'Members',
-          value: `${detailInfo.tierAccounts[3]}`,
+          value: `${detailInfo?.tierAccounts[3] || noLibraryText}`,
         },
         {
           key: 'Member Allocation',
-          value: `${detailInfo.tierAllocation[3]}`,
+          value: `${detailInfo?.tierAllocation[3] || noLibraryText}`,
         },
       ],
     },
@@ -83,19 +86,19 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
       data: [
         {
           key: 'Criteria',
-          value: `${detailInfo.tierCriteria[4]}`,
+          value: `${detailInfo?.tierCriteria[4] || noLibraryText} sTOS`,
         },
         {
           key: 'Allocation',
-          value: `${detailInfo.totalExpectSaleAmount[4]}`,
+          value: `${detailInfo?.totalExpectSaleAmount[4] || noLibraryText}`,
         },
         {
           key: 'Members',
-          value: `${detailInfo.tierAccounts[4]}`,
+          value: `${detailInfo?.tierAccounts[4] || noLibraryText}`,
         },
         {
           key: 'Member Allocation',
-          value: `${detailInfo.tierAllocation[4]}`,
+          value: `${detailInfo?.tierAllocation[4] || noLibraryText}`,
         },
       ],
     },
@@ -107,23 +110,23 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
       data: [
         {
           key: 'Criteria',
-          value: `${detailInfo.tierCriteria[1]}`,
+          value: `${detailInfo?.tierCriteria[1] || noLibraryText} sTOS`,
         },
         {
           key: 'Allocation',
-          value: `${detailInfo.totalExpectSaleAmount[1]}`,
+          value: `${detailInfo?.totalExpectSaleAmount[1] || noLibraryText}`,
         },
         {
           key: '#of Members',
-          value: `${detailInfo.tierAccounts[1]}`,
+          value: `${detailInfo?.tierAccounts[1] || noLibraryText}`,
         },
         {
           key: '#of Whitelisted',
-          value: `${detailInfo.tierAccounts[1]}`,
+          value: `${detailInfo?.tierAccounts[1] || noLibraryText}`,
         },
         {
           key: 'Expected Allocation',
-          value: `${detailInfo.tierAllocation[1]}`,
+          value: `${detailInfo?.tierAllocation[1] || noLibraryText}`,
         },
       ],
     },
@@ -132,23 +135,23 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
       data: [
         {
           key: 'Criteria',
-          value: `${detailInfo.tierCriteria[2]}`,
+          value: `${detailInfo?.tierCriteria[2] || noLibraryText} sTOS`,
         },
         {
           key: 'Allocation',
-          value: `${detailInfo.totalExpectSaleAmount[2]}`,
+          value: `${detailInfo?.totalExpectSaleAmount[2] || noLibraryText}`,
         },
         {
           key: '#of Members',
-          value: `${detailInfo.tierAccounts[2]}`,
+          value: `${detailInfo?.tierAccounts[2] || noLibraryText}`,
         },
         {
           key: '#of Whitelisted',
-          value: `${detailInfo.tierAccounts[2]}`,
+          value: `${detailInfo?.tierAccounts[2] || noLibraryText}`,
         },
         {
           key: 'Expected Allocation',
-          value: `${detailInfo.tierAllocation[2]}`,
+          value: `${detailInfo?.tierAllocation[2] || noLibraryText}`,
         },
       ],
     },
@@ -157,23 +160,23 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
       data: [
         {
           key: 'Criteria',
-          value: `${detailInfo.tierCriteria[3]}`,
+          value: `${detailInfo?.tierCriteria[3] || noLibraryText} sTOS`,
         },
         {
           key: 'Allocation',
-          value: `${detailInfo.totalExpectSaleAmount[3]}`,
+          value: `${detailInfo?.totalExpectSaleAmount[3] || noLibraryText}`,
         },
         {
           key: '#of Members',
-          value: `${detailInfo.tierAccounts[3]}`,
+          value: `${detailInfo?.tierAccounts[3] || noLibraryText}`,
         },
         {
           key: '#of Whitelisted',
-          value: `${detailInfo.tierAccounts[3]}`,
+          value: `${detailInfo?.tierAccounts[3] || noLibraryText}`,
         },
         {
           key: 'Expected Allocation',
-          value: `${detailInfo.tierAllocation[3]}`,
+          value: `${detailInfo?.tierAllocation[3] || noLibraryText}`,
         },
       ],
     },
@@ -182,23 +185,23 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
       data: [
         {
           key: 'Criteria',
-          value: `${detailInfo.tierCriteria[4]}`,
+          value: `${detailInfo?.tierCriteria[4] || noLibraryText} sTOS`,
         },
         {
           key: 'Allocation',
-          value: `${detailInfo.totalExpectSaleAmount[4]}`,
+          value: `${detailInfo?.totalExpectSaleAmount[4] || noLibraryText}`,
         },
         {
           key: '#of Members',
-          value: `${detailInfo.tierAccounts[4]}`,
+          value: `${detailInfo?.tierAccounts[4] || noLibraryText}`,
         },
         {
           key: '#of Whitelisted',
-          value: `${detailInfo.tierAccounts[4]}`,
+          value: `${detailInfo?.tierAccounts[4] || noLibraryText}`,
         },
         {
           key: 'Expected Allocation',
-          value: `${detailInfo.tierAllocation[4]}`,
+          value: `${detailInfo?.tierAllocation[4] || noLibraryText}`,
         },
       ],
     },
@@ -206,9 +209,18 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
 
   return (
     <Flex flexDir="column">
-      <Text {...STATER_STYLE.mainText({colorMode, fontSize: 24})} mb={'30px'}>
-        Tier details
-      </Text>
+      <Flex mb={'30px'} alignItems="center">
+        <Text {...STATER_STYLE.mainText({colorMode, fontSize: 24})}>
+          Tier details
+        </Text>
+        <Text ml={2}>Snapshot date</Text>
+        <Text ml={1}>
+          {convertTimeStamp(
+            Number(detailInfo?.snapshot.toString()),
+            'YYYY.MM.DD HH:DD',
+          )}
+        </Text>
+      </Flex>
       <Box d="flex" justifyContent="space-between">
         {status === 'whitelist' &&
           projectTierData.map((item, index: number) => {
@@ -222,7 +234,7 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
                 data={item.data}
                 breakPoint={item.data.length}
                 isUserTier={
-                  index + 1 === detailInfo.userTier
+                  index + 1 === detailInfo?.userTier
                 }></DetailTableContainer>
             );
           })}
@@ -238,7 +250,7 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
                 data={item.data}
                 breakPoint={item.data.length}
                 isUserTier={
-                  index + 1 === detailInfo.userTier
+                  index + 1 === detailInfo?.userTier
                 }></DetailTableContainer>
             );
           })}

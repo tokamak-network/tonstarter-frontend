@@ -8,12 +8,12 @@ import {
   Center,
 } from '@chakra-ui/react';
 import {useEffect, useState} from 'react';
-import {useParams} from 'react-router-dom';
+// import {useParams} from 'react-router-dom';
 import {checkTokenType} from 'utils/token';
-import {ExclusiveSale} from './components/details/ExclusiveSale';
+// import {ExclusiveSale} from './components/details/ExclusiveSale';
 import {WhiteList} from './components/details/WhiteList';
-import {OpenSale} from './components/details/OpenSale';
-import {OpenSaleAfterDeposit} from './components/details/OpenSaleAfterDeposit';
+// import {OpenSale} from './components/details/OpenSale';
+// import {OpenSaleAfterDeposit} from './components/details/OpenSaleAfterDeposit';
 
 import {DetailIcons} from './components/details/Detail_Icons';
 import {SaleStatus, Tier, DetailInfo} from './types';
@@ -22,9 +22,8 @@ import {OpenSaleDeposit} from './components/details/OpenSaleDeposit';
 import {ExclusiveSalePart} from './components/details/ExclusiveSalePart';
 import store from 'store';
 import {AdminObject} from '@Admin/types';
-import {convertTimeStamp} from 'utils/convertTIme';
 import {Claim} from './components/details/Claim';
-import {useUrl} from './hooks/useUrl';
+// import {useUrl} from './hooks/useUrl';
 import {useCallContract} from 'hooks/useCallContract';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import starterActions from './actions';
@@ -32,14 +31,35 @@ import {convertNumber} from 'utils/number';
 import {BigNumber} from 'ethers';
 import {useBlockNumber} from 'hooks/useBlock';
 import {LoadingComponent} from 'components/Loading';
+import {useTime} from 'hooks/useTime';
+
+import DocSymbol from 'assets/tokens/DOC-symbol.png';
 
 export const StarterDetail = () => {
-  const {id}: {id: string} = useParams();
+  // const {id}: {id: string} = useParams();
+  const id = 'DOOR OPEN';
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const {projectStatus} = useUrl();
+  // const {projectStatus} = useUrl();
 
   const starterData = store.getState().starters.data;
+
+  const {isPassed} = useTime(
+    starterData?.activeProjects[0].timeStamps.endDepositTime,
+  );
+  const {isPassed: isEndWhiteListTime} = useTime(
+    starterData?.activeProjects[0].timeStamps.endAddWhiteTime,
+  );
+  const {isPassed: isEndExclusiveTime} = useTime(
+    starterData?.activeProjects[0].timeStamps.endExclusiveTime,
+  );
+  const {isPassed: isEndDepositTIme} = useTime(
+    starterData?.activeProjects[0].timeStamps.endDepositTime,
+  );
+
+  const [projectStatus, setProject] = useState<'past' | 'active'>(
+    isPassed ? 'past' : 'active',
+  );
 
   const [activeStatus, setActiveStatus] = useState<SaleStatus | undefined>(
     undefined,
@@ -53,7 +73,7 @@ export const StarterDetail = () => {
     undefined,
   );
 
-  const [isApprove, setIsApprove] = useState(false);
+  const [approvedAmount, setApprovedAmount] = useState<string>('0');
 
   const {STATER_STYLE} = theme;
   const tokenType = checkTokenType(
@@ -75,14 +95,14 @@ export const StarterDetail = () => {
   useEffect(() => {
     async function checkUserApprove() {
       if (account && library) {
-        const isUserApprove = await starterActions.checkApprove(
+        const amount = await starterActions.checkApprove(
           account,
           library,
           starterData.activeData
             .filter((data: AdminObject) => data.name === id)
             .map((e: AdminObject) => e.saleContractAddress)[0],
         );
-        setIsApprove(isUserApprove);
+        setApprovedAmount(amount);
       }
     }
     checkUserApprove();
@@ -90,8 +110,6 @@ export const StarterDetail = () => {
 
   useEffect(() => {
     async function getInfo() {
-      console.log('account && library && PUBLICSALE_CONTRACT && saleInfo');
-      console.log(account && library && PUBLICSALE_CONTRACT && saleInfo);
       if (account && library && PUBLICSALE_CONTRACT && saleInfo) {
         const res = await Promise.all([
           starterActions.calculTier({
@@ -108,24 +126,33 @@ export const StarterDetail = () => {
           PUBLICSALE_CONTRACT.tiers(2),
           PUBLICSALE_CONTRACT.tiers(3),
           PUBLICSALE_CONTRACT.tiers(4),
+          PUBLICSALE_CONTRACT.tiersPercents(1),
+          PUBLICSALE_CONTRACT.tiersPercents(2),
+          PUBLICSALE_CONTRACT.tiersPercents(3),
+          PUBLICSALE_CONTRACT.tiersPercents(4),
+          PUBLICSALE_CONTRACT.tiersExAccount(1),
+          PUBLICSALE_CONTRACT.tiersExAccount(2),
+          PUBLICSALE_CONTRACT.tiersExAccount(3),
+          PUBLICSALE_CONTRACT.tiersExAccount(4),
+          PUBLICSALE_CONTRACT.snapshot(),
         ]);
         setDetailInfo({
           userTier: Number(res[0].toString()) as Tier,
           totalExpectSaleAmount: {
             1: convertNumber({
-              amount: res[1].toString(),
+              amount: BigNumber.from(res[1]).mul(res[10]).div(10000).toString(),
               localeString: true,
             }) as string,
             2: convertNumber({
-              amount: BigNumber.from(res[1]).mul(2).toString(),
+              amount: BigNumber.from(res[1]).mul(res[11]).div(10000).toString(),
               localeString: true,
             }) as string,
             3: convertNumber({
-              amount: BigNumber.from(res[1]).mul(3).toString(),
+              amount: BigNumber.from(res[1]).mul(res[12]).div(10000).toString(),
               localeString: true,
             }) as string,
             4: convertNumber({
-              amount: BigNumber.from(res[1]).mul(4).toString(),
+              amount: BigNumber.from(res[1]).mul(res[13]).div(10000).toString(),
               localeString: true,
             }) as string,
           },
@@ -134,6 +161,12 @@ export const StarterDetail = () => {
             2: res[3],
             3: res[4],
             4: res[5],
+          },
+          tierOfMembers: {
+            1: res[14],
+            2: res[15],
+            3: res[16],
+            4: res[17],
           },
           tierCriteria: {
             1: convertNumber({amount: res[6], localeString: true}) as string,
@@ -144,66 +177,81 @@ export const StarterDetail = () => {
           tierAllocation: {
             1: convertNumber({
               amount: BigNumber.from(res[1])
-                .mul(1)
+                .mul(res[10])
+                .div(10000)
                 .div(res[2].toString() === '0' ? 1 : res[2])
                 .toString(),
               localeString: true,
             }) as string,
             2: convertNumber({
               amount: BigNumber.from(res[1])
-                .mul(2)
+                .mul(res[11])
+                .div(10000)
                 .div(res[3].toString() === '0' ? 1 : res[3])
                 .toString(),
               localeString: true,
             }) as string,
             3: convertNumber({
               amount: BigNumber.from(res[1])
-                .mul(3)
+                .mul(res[12])
+                .div(10000)
                 .div(res[4].toString() === '0' ? 1 : res[4])
                 .toString(),
               localeString: true,
             }) as string,
             4: convertNumber({
               amount: BigNumber.from(res[1])
-                .mul(4)
+                .mul(res[13])
+                .div(10000)
                 .div(res[5].toString() === '0' ? 1 : res[5])
                 .toString(),
               localeString: true,
             }) as string,
           },
+          snapshot: res[18],
         });
       }
     }
     if (account && library && PUBLICSALE_CONTRACT) {
       getInfo();
-      console.log('--PUBLICSALE_CONTRACT--');
-      console.log(PUBLICSALE_CONTRACT);
     }
   }, [account, library, PUBLICSALE_CONTRACT, saleInfo]);
 
   useEffect(() => {
     async function getStatus() {
-      if (PUBLICSALE_CONTRACT) {
+      if (saleInfo) {
         const {activeProjects} = starterData;
+
         //@ts-ignore
         const {step} = activeProjects.filter(
           (data: any) => data.name === id,
         )[0];
-        console.log('--step--');
-        console.log(step);
+
         setActiveStatus(step);
+        setProject(isPassed ? 'past' : 'active');
+
+        // setActiveStatus('whitelist');
+        // setProject('active');
+
         setActiveProjectInfo(
           activeProjects.filter((data: any) => data.name === id)[0],
         );
       }
     }
-    if (PUBLICSALE_CONTRACT) {
-      getStatus();
-    }
-  }, [PUBLICSALE_CONTRACT, id, starterData]);
+    getStatus();
+  }, [
+    id,
+    starterData,
+    library,
+    saleInfo,
+    isEndWhiteListTime,
+    isEndExclusiveTime,
+    isEndDepositTIme,
+    isPassed,
+  ]);
 
   useEffect(() => {
-    const {activeData, upcomingData, pastData} = starterData;
+    const {activeData, pastData} = starterData;
 
     if (projectStatus === 'active') {
       const projectInfo = activeData.filter(
@@ -212,12 +260,12 @@ export const StarterDetail = () => {
       return setSaleInfo(projectInfo[0]);
     }
 
-    if (projectStatus === 'upcoming') {
-      const projectInfo = upcomingData.filter(
-        (data: AdminObject) => data.name === id,
-      );
-      return setSaleInfo(projectInfo[0]);
-    }
+    // if (projectStatus === 'upcoming') {
+    //   const projectInfo = upcomingData.filter(
+    //     (data: AdminObject) => data.name === id,
+    //   );
+    //   return setSaleInfo(projectInfo[0]);
+    // }
 
     if (projectStatus === 'past') {
       const projectInfo = pastData.filter(
@@ -236,7 +284,7 @@ export const StarterDetail = () => {
   }
 
   return (
-    <Flex mt={'122px'} justifyContent="center" mb={'100px'}>
+    <Flex mt={'122px'} w={'100%'} justifyContent="center" mb={'100px'}>
       <Flex w="1194px" flexDir="column" mb={'10px'}>
         <Flex
           {...STATER_STYLE.containerStyle({colorMode})}
@@ -249,7 +297,7 @@ export const StarterDetail = () => {
           <Box d="flex" flexDir="column" w={'562px'} pr={35} pos="relative">
             <Flex justifyContent="space-between" mb={15}>
               <Avatar
-                src={tokenType.symbol}
+                src={DocSymbol}
                 backgroundColor={tokenType.bg}
                 bg="transparent"
                 color="#c7d1d8"
@@ -287,36 +335,31 @@ export const StarterDetail = () => {
             w={'1px'}
             bg={colorMode === 'light' ? '#f4f6f8' : '#323232'}
             boxShadow={'0 1px 1px 0 rgba(96, 97, 112, 0.16)'}></Box>
-          {projectStatus === 'active' &&
-            activeStatus === 'whitelist' &&
-            detailInfo && (
-              <WhiteList
-                date={convertTimeStamp(saleInfo?.endAddWhiteTime, 'YYYY-MM-DD')}
-                startDate={convertTimeStamp(saleInfo?.startAddWhiteTime)}
-                endDate={convertTimeStamp(saleInfo?.endAddWhiteTime, 'MM.D')}
-                userTier={detailInfo.userTier}
-                activeProjectInfo={activeProjectInfo}></WhiteList>
-            )}
-          {projectStatus === 'active' &&
-            activeStatus === 'exclusive' &&
-            detailInfo && (
-              <ExclusiveSalePart
-                saleInfo={saleInfo}
-                detailInfo={detailInfo}
-                activeProjectInfo={activeProjectInfo}
-                isApprove={isApprove}></ExclusiveSalePart>
-            )}
+          {projectStatus === 'active' && activeStatus === 'whitelist' && (
+            <WhiteList
+              userTier={detailInfo?.userTier || 0}
+              activeProjectInfo={activeProjectInfo}
+              saleInfo={saleInfo}
+              detailInfo={detailInfo}></WhiteList>
+          )}
+          {projectStatus === 'active' && activeStatus === 'exclusive' && (
+            <ExclusiveSalePart
+              saleInfo={saleInfo}
+              detailInfo={detailInfo}
+              activeProjectInfo={activeProjectInfo}
+              approvedAmount={approvedAmount}></ExclusiveSalePart>
+          )}
           {projectStatus === 'active' && activeStatus === 'deposit' && (
             <OpenSaleDeposit
               saleInfo={saleInfo}
               activeProjectInfo={activeProjectInfo}
-              isApprove={isApprove}></OpenSaleDeposit>
+              approvedAmount={approvedAmount}></OpenSaleDeposit>
           )}
-          {projectStatus === 'active' && activeStatus === 'openSale' && (
+          {/* {projectStatus === 'active' && activeStatus === 'openSale' && (
             <OpenSaleAfterDeposit
               saleInfo={saleInfo}
               activeProjectInfo={activeProjectInfo}></OpenSaleAfterDeposit>
-          )}
+          )} */}
           {projectStatus === 'past' && (
             <Claim
               saleInfo={saleInfo}
@@ -324,11 +367,12 @@ export const StarterDetail = () => {
           )}
         </Flex>
         <Flex>
-          {activeStatus && detailInfo && (
+          {activeStatus && (
             <DetailTable
               saleInfo={saleInfo}
               status={activeStatus}
-              detailInfo={detailInfo}></DetailTable>
+              detailInfo={detailInfo}
+              activeProjectInfo={activeProjectInfo}></DetailTable>
           )}
         </Flex>
       </Flex>

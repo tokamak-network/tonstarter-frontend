@@ -5,10 +5,11 @@ import {DetailTableContainer} from './Detail_Table_Container';
 
 type DetailTableProjectProps = {
   saleInfo: AdminObject;
+  activeProjectInfo: any;
 };
 
 export const DetailTableProject: React.FC<DetailTableProjectProps> = (prop) => {
-  const {saleInfo} = prop;
+  const {saleInfo, activeProjectInfo} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
@@ -18,19 +19,37 @@ export const DetailTableProject: React.FC<DetailTableProjectProps> = (prop) => {
   const projectDetailData = [
     {key: 'Name', value: `${saleInfo?.name}`},
     {key: 'Symbol', value: `${saleInfo?.tokenSymbol}`},
-    {key: 'Contract', value: `${saleInfo?.saleContractAddress}`},
-    {key: 'Total Supply', value: '10,000,000'},
+    {key: 'Contract', value: `${saleInfo?.tokenAddress}`},
+    {
+      key: 'Total Supply',
+      value: `${activeProjectInfo?.tokenInfo?.totalSupply?.split('.')[0]}`,
+    },
   ];
 
-  const projectDetailTitle2 = 'Sale Details';
+  const projectDetailTitle2 = 'IDO Details';
   const projectDetailData2 = [
     {
-      key: 'Sale Period',
+      key: 'Public Round 1 Period',
       value: `${convertTimeStamp(
-        saleInfo?.startOpenSaleTime,
-      )} ~ ${convertTimeStamp(saleInfo?.endOpenSaleTime, 'MM-DD')}`,
+        activeProjectInfo?.timeStamps.startExclusiveTime,
+      )} ~ ${convertTimeStamp(
+        activeProjectInfo?.timeStamps.endExclusiveTime,
+        'MM-DD',
+      )}`,
     },
-    {key: 'Token Allocation', value: '10,000,000'},
+    {
+      key: 'Public Round 2 Period',
+      value: `${convertTimeStamp(
+        activeProjectInfo?.timeStamps.startDepositTime,
+      )} ~ ${convertTimeStamp(
+        activeProjectInfo?.timeStamps.endDepositTime,
+        'MM-DD',
+      )}`,
+    },
+    {
+      key: 'Token Allocation',
+      value: `${activeProjectInfo?.tokenAllocation}`,
+    },
     {
       key: 'Funding Crypto',
       value: 'TON',
