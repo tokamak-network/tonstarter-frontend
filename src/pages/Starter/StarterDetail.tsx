@@ -298,7 +298,7 @@ export const StarterDetail = () => {
             <Flex justifyContent="space-between" mb={15}>
               <Avatar
                 src={DocSymbol}
-                backgroundColor={tokenType.bg}
+                // backgroundColor={tokenType.bg}
                 bg="transparent"
                 color="#c7d1d8"
                 name="T"

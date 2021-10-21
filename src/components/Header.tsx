@@ -288,12 +288,12 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           }}>
           <Text className={match?.isExact ? 'link-match' : 'link'}>Guide</Text>
         </NavLink>
-        {/* <NavLink
+        <NavLink
           to="/admin"
           className={match?.isExact ? 'link-match' : 'link'}
           style={{zIndex: 100}}>
           Admin
-        </NavLink> */}
+        </NavLink>
       </Stack>
     </Box>
   );
