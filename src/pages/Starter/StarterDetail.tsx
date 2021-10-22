@@ -76,9 +76,9 @@ export const StarterDetail = () => {
   const [approvedAmount, setApprovedAmount] = useState<string>('0');
 
   const {STATER_STYLE} = theme;
-  const tokenType = checkTokenType(
-    '0x2be5e8c109e2197D077D13A82dAead6a9b3433C5',
-  );
+  // const tokenType = checkTokenType(
+  //   '0x2be5e8c109e2197D077D13A82dAead6a9b3433C5',
+  // );
 
   const {account, library} = useActiveWeb3React();
 

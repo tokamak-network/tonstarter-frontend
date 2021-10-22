@@ -9,7 +9,7 @@ import {
   PastProjectType,
   // MyProject,
 } from './types';
-import starterActions from './actions';
+// import starterActions from './actions';
 interface StarterState {
   data: {
     activeProjects: ActiveProjectType[];
@@ -92,12 +92,12 @@ export const fetchStarters = createAsyncThunk(
           //       address,
           //     })
           //   : 'XXX,XXX';
-          const tokenInfo = library
-            ? await starterActions.getTokenInfo({
-                library,
-                address: data.tokenAddress,
-              })
-            : {totalSupply: 'XXX,XXX'};
+          // const tokenInfo = library
+          //   ? await starterActions.getTokenInfo({
+          //       library,
+          //       address: data.tokenAddress,
+          //     })
+          //   : {totalSupply: 'XXX,XXX'};
 
           // const tokenAllocation = library
           //   ? await starterActions.getTokenAllocation({
@@ -189,7 +189,7 @@ export const fetchStarters = createAsyncThunk(
             // totalRaise,
             timeStamps,
             step: checkStep,
-            tokenInfo,
+            // tokenInfo,
             tokenAllocation: Number(data.tokenAllocationAmount).toLocaleString(
               undefined,
               {

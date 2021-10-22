@@ -2,6 +2,9 @@ import {AdminObject} from '@Admin/types';
 import {Box, useColorMode, useTheme, Flex, Text} from '@chakra-ui/react';
 import {convertTimeStamp} from 'utils/convertTIme';
 import {DetailTableContainer} from './Detail_Table_Container';
+import {useWeb3React} from '@web3-react/core';
+import {useEffect, useState} from 'react';
+import starterActions from '../../actions';
 
 type DetailTableProjectProps = {
   saleInfo: AdminObject;
@@ -12,8 +15,27 @@ export const DetailTableProject: React.FC<DetailTableProjectProps> = (prop) => {
   const {saleInfo, activeProjectInfo} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
+  const {library} = useWeb3React();
 
   const {STATER_STYLE} = theme;
+
+  const [totalSupply, setTotalSupply] = useState<string>('XXX,XXX');
+
+  useEffect(() => {
+    async function getTotalSupply() {
+      const res = await starterActions.getTokenInfo({
+        library,
+        address: saleInfo.tokenAddress,
+      });
+      const {totalSupply} = res;
+      if (totalSupply) {
+        setTotalSupply(totalSupply.split('.')[0]);
+      }
+    }
+    if (library && saleInfo) {
+      getTotalSupply();
+    }
+  }, [library, saleInfo]);
 
   const projectDetailTitle = 'Token Details';
   const projectDetailData = [
@@ -22,7 +44,7 @@ export const DetailTableProject: React.FC<DetailTableProjectProps> = (prop) => {
     {key: 'Contract', value: `${saleInfo?.tokenAddress}`},
     {
       key: 'Total Supply',
-      value: `${activeProjectInfo?.tokenInfo?.totalSupply?.split('.')[0]}`,
+      value: `${totalSupply}`,
     },
   ];
 
@@ -31,7 +53,7 @@ export const DetailTableProject: React.FC<DetailTableProjectProps> = (prop) => {
     {
       key: 'Public Round 1 Period',
       value: `${convertTimeStamp(
-        activeProjectInfo?.timeStamps.startExclusiveTime,
+        activeProjectInfo?.timeStamps.startAddWhiteTime,
         'YYYY.MM.DD HH:mm',
       )} ~ ${convertTimeStamp(
         activeProjectInfo?.timeStamps.endExclusiveTime,

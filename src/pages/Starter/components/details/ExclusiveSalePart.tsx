@@ -251,7 +251,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             </Text>
             <Text {...detailSubTextStyle}>
               {convertTimeStamp(
-                activeProjectInfo?.timeStamps?.startExclusiveTime,
+                activeProjectInfo?.timeStamps?.startAdd,
                 'YYYY-MM-D',
               )}{' '}
               ~{' '}
