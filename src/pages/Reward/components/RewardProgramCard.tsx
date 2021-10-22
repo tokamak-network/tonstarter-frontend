@@ -17,6 +17,12 @@ import {checkTokenType} from 'utils/token';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import moment from 'moment';
+import {DEPLOYED} from 'constants/index';
+import {getSigner} from 'utils/contract';
+import {Contract} from '@ethersproject/contracts';
+import * as NPMABI from 'services/abis/NonfungiblePositionManager.json';
+import {approveStaking} from '../actions'
+import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 
 type incentiveKey = {
   rewardToken: string;
@@ -58,6 +64,8 @@ type RewardProgramCardProps = {
   reward: Reward;
 };
 
+const {UniswapStaking_Address} = DEPLOYED;
+
 export const RewardProgramCard: FC<RewardProgramCardProps> = ({reward}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -66,12 +74,15 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({reward}) => {
   const [progress, setProgress] = useState<number>(0);
   const [dDay, setdDay] = useState<any>();
   const [canApprove, setCanApprove] = useState<boolean>(false);
+  const {NPM_Address, UniswapStaking_Address} = DEPLOYED;
+  const [approved, setApproved] = useState<boolean>(false);
+  const [myReward, setMyReward] = useState<number>(0);
 
   useEffect(() => {
     const now = moment().unix();
     const start = moment.unix(Number(reward.startTime)).startOf('day').unix();
-    
-    if (reward.startTime< now) {
+
+    if (reward.startTime < now) {
       setCanApprove(true);
     }
     const end = moment.unix(Number(reward.endTime)).endOf('day').unix();
@@ -97,6 +108,52 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({reward}) => {
       setProgress(progressCalc);
     }
   }, [reward]);
+
+  useEffect(() => {
+    async function checkApproved() {
+      if (account === null || account === undefined || library === undefined) {
+        return;
+      }
+      const NPM = new Contract(NPM_Address, NPMABI.abi, library);
+      const signer = getSigner(library, account);
+
+      const isApprovedForAll = await NPM.connect(signer).isApprovedForAll(
+        account,
+        UniswapStaking_Address,
+      );
+      setApproved(isApprovedForAll);
+    }
+    if (account !== undefined && library !== undefined) {
+      checkApproved();
+    }
+    /*eslint-disable*/
+  }, [account, library]);
+
+  useEffect(() => {
+    async function getMyReward () {
+      if (account === null || account === undefined || library === undefined) {
+        return;
+      }
+      const key = {
+        rewardToken: reward.rewardToken,
+        pool: reward.poolAddress,
+        startTime: reward.startTime,
+        endTime: reward.endTime,
+        refundee: reward.incentiveKey.refundee
+      }
+      const uniswapStakerContract = new Contract(
+        UniswapStaking_Address,
+        STAKERABI.abi,
+        library
+      );
+      const signer = getSigner(library, account);
+      // const rewardInfo = await uniswapStakerContract.connect(signer).getRewardInfo(key, Number(5923));
+      // console.log('rewardInfo',rewardInfo.reward.toString());   
+    }
+    if (account !== undefined && library !== undefined) {
+      getMyReward();
+    }
+  },[account, library])
 
   return (
     <Flex {...REWARD_STYLE.containerStyle({colorMode})} flexDir={'column'}>
@@ -217,7 +274,11 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({reward}) => {
       <Box mt={'5px'}>
         <Progress value={progress} borderRadius={10} h={'6px'}></Progress>
       </Box>
-      <Flex mt={'30px'} flexDirection="row" alignItems={'center'} justifyContent={'space-between'}>
+      <Flex
+        mt={'30px'}
+        flexDirection="row"
+        alignItems={'center'}
+        justifyContent={'space-between'}>
         <Box>
           <Text
             {...REWARD_STYLE.mainText({
@@ -231,7 +292,8 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({reward}) => {
               {...REWARD_STYLE.mainText({
                 colorMode,
                 fontSize: 20,
-              })} lineHeight={'0.7'}>
+              })}
+              lineHeight={'0.7'}>
               {Number(reward.allocatedReward).toLocaleString(undefined, {
                 minimumFractionDigits: 2,
               })}
@@ -242,17 +304,23 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({reward}) => {
           </Box>
         </Box>
         <Button
-            w={'120px'}
-            h={'33px'}
-            bg={'blue.500'}
-            color="white.100"
-            ml={'10px'}
-            fontSize="16px"
-            _hover={{backgroundColor: 'blue.100'}}
-            disabled={!canApprove}
-            >
-            Approve
-          </Button>
+          w={'120px'}
+          h={'33px'}
+          bg={'blue.500'}
+          color="white.100"
+          ml={'10px'}
+          fontSize="16px"
+          _hover={{backgroundColor: 'blue.100'}}
+          onClick={() => approved? approveStaking({
+            userAddress: account,
+            library: library,
+          }): approveStaking({
+            userAddress: account,
+            library: library,
+          })}
+          disabled={!canApprove}>
+          {canApprove? approved? 'Stake' : 'Approve' : 'Approve'}
+        </Button>
       </Flex>
     </Flex>
   );

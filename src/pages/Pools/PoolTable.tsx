@@ -109,7 +109,6 @@ export const PoolTable: FC<PoolTableProps> = ({
   const [stakingDisable, setStakingDisable] = useState(true);
 
   useEffect(() => {
-    console.log('page', page);
     
     async function positionPayload() {
       if (address) {
@@ -120,6 +119,8 @@ export const PoolTable: FC<PoolTableProps> = ({
         for (let i = 0; i < result?.positionData.length; i++) {
           stringResult.push(result?.positionData[i]?.positionid.toString());
         }
+        console.log('stringResult', stringResult);
+        
         const nowTime = moment().unix();
         nowTime > Number(result?.saleStartTime.toString()) &&
         nowTime < Number(result?.miningEndTime.toString())
@@ -161,6 +162,8 @@ export const PoolTable: FC<PoolTableProps> = ({
         const withStakedPosition = positionByContract.data.positions.concat(
           position.data.positions,
         );
+        console.log('withStakedPosition', position);
+        
         setPositions(withStakedPosition);
       }
     }
@@ -303,9 +306,11 @@ export const PoolTable: FC<PoolTableProps> = ({
             flexDirection="column">
             {page.map((row: any, i) => {
               const {id} = row.original;
+              
               const filteredPosition = positions.filter(
                 (row: any) => id === row.pool.id,
               );
+              
               prepareRow(row);
               return [
                 <chakra.tr

@@ -45,6 +45,7 @@ export async function createReward(args: CreateReward) {
     } = args
 
     const res = await instance.post(`/reward?chainId=${DEFAULT_NETWORK}`, {
+        // chainId: DEFAULT_NETWORK,
         poolName: poolName,
         poolAddress: poolAddress,
         rewardToken: rewardToken,
@@ -60,7 +61,8 @@ export async function createReward(args: CreateReward) {
         sig: sig,
     });
 
-
+    console.log(res);
+    
     return res.data;
 }
 

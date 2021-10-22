@@ -22,6 +22,7 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 const {
   // TOS_ADDRESS,
   BasePool_Address,
+  UniswapStaking_Address
 } = DEPLOYED;
 
 export const Pools = () => {
@@ -71,6 +72,12 @@ export const Pools = () => {
       pollingInterval: ms`2m`,
     },
   );
+  // const { isLoading, isError, error, isUninitialized, data} = usePoolByUserQuery(
+  //   {address: UniswapStaking_Address?.toLowerCase()},
+  //   {
+  //     pollingInterval: ms`2m`,
+  //   },
+  // );
 
   // const tosPool = useQuery(GET_TOS_POOL, {
   //   variables: {address: [TOS_ADDRESS.toLowerCase()]}
@@ -78,12 +85,14 @@ export const Pools = () => {
 
   const [pool, setPool] = useState([]);
   useEffect(() => {
+    console.log('data from staking', data);
+    
+
     function getPool() {
       // const poolArr = basePool.loading ? [] : basePool.data.pools;
 
       const poolArr = isLoading ? [] : data.pools;
-      console.log('poolArr', poolArr);
-      
+    
       setPool(poolArr);
     }
     getPool();
