@@ -15,7 +15,7 @@ export type StepTwo = {
   tokenAddress: string;
   tokenSymbol: string;
   tokenSymbolImage: any;
-  tokenAllowcationAmount: string;
+  tokenAllocationAmount: string;
   tokenFundRaisingTargetAmount: string;
   tokenFundingRecipient: string;
   projectTokenRatio: number;

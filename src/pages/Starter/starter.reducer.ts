@@ -99,12 +99,12 @@ export const fetchStarters = createAsyncThunk(
               })
             : {totalSupply: 'XXX,XXX'};
 
-          const tokenAllocation = library
-            ? await starterActions.getTokenAllocation({
-                library,
-                address,
-              })
-            : 'XXX,XXX';
+          // const tokenAllocation = library
+          //   ? await starterActions.getTokenAllocation({
+          //       library,
+          //       address,
+          //     })
+          //   : 'XXX,XXX';
 
           const nowTimeStamp = moment().unix();
 
@@ -190,7 +190,12 @@ export const fetchStarters = createAsyncThunk(
             timeStamps,
             step: checkStep,
             tokenInfo,
-            tokenAllocation,
+            tokenAllocation: Number(data.tokenAllocationAmount).toLocaleString(
+              undefined,
+              {
+                minimumFractionDigits: 0,
+              },
+            ),
           };
         }),
       );

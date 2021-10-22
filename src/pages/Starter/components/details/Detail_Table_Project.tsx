@@ -32,23 +32,25 @@ export const DetailTableProject: React.FC<DetailTableProjectProps> = (prop) => {
       key: 'Public Round 1 Period',
       value: `${convertTimeStamp(
         activeProjectInfo?.timeStamps.startExclusiveTime,
+        'YYYY.MM.DD HH:mm',
       )} ~ ${convertTimeStamp(
         activeProjectInfo?.timeStamps.endExclusiveTime,
-        'MM-DD',
+        'MM.DD HH:mm',
       )}`,
     },
     {
       key: 'Public Round 2 Period',
       value: `${convertTimeStamp(
         activeProjectInfo?.timeStamps.startDepositTime,
+        'YYYY.MM.DD HH:mm',
       )} ~ ${convertTimeStamp(
         activeProjectInfo?.timeStamps.endDepositTime,
-        'MM-DD',
+        'MM.DD HH:mm',
       )}`,
     },
     {
       key: 'Token Allocation',
-      value: `${activeProjectInfo?.tokenAllocation}`,
+      value: `${activeProjectInfo?.tokenAllocation} ${activeProjectInfo.tokenName}`,
     },
     {
       key: 'Funding Crypto',

@@ -19,7 +19,7 @@ const initialValue: AdminObject = {
   tokenAddress: '',
   tokenSymbol: '',
   tokenSymbolImage: '',
-  tokenAllowcationAmount: '',
+  tokenAllocationAmount: '',
   tokenFundRaisingTargetAmount: '',
   tokenFundingRecipient: '',
   //step 3
@@ -60,7 +60,7 @@ const stepsName: StepsName = {
     'tokenAddress',
     'tokenSymbol',
     'tokenSymbolImage',
-    'tokenAllowcationAmount',
+    'tokenAllocationAmount',
     'tokenFundRaisingTargetAmount',
     'tokenFundingRecipient',
     'projectTokenRatio',
