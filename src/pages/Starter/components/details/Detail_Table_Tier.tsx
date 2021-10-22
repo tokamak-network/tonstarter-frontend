@@ -2,6 +2,7 @@ import {Box, useColorMode, useTheme, Flex, Text} from '@chakra-ui/react';
 import {DetailTableContainer} from './Detail_Table_Container';
 import {SaleStatus, DetailTierData, DetailInfo} from '@Starter/types';
 import {convertTimeStamp} from 'utils/convertTIme';
+import {useWeb3React} from '@web3-react/core';
 
 type DetailTableTierProp = {
   status: SaleStatus;
@@ -11,6 +12,8 @@ type DetailTableTierProp = {
 export const DetailTableTier = (prop: DetailTableTierProp) => {
   const {status, detailInfo} = prop;
   const {colorMode} = useColorMode();
+  const {library} = useWeb3React();
+
   const theme = useTheme();
 
   const {STATER_STYLE} = theme;
@@ -213,13 +216,17 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
         <Text {...STATER_STYLE.mainText({colorMode, fontSize: 24})}>
           Tier details
         </Text>
-        <Text ml={2}>Snapshot date</Text>
-        <Text ml={1}>
-          {convertTimeStamp(
-            Number(detailInfo?.snapshot.toString()),
-            'YYYY.MM.DD HH:DD',
-          )}
-        </Text>
+        {library && (
+          <>
+            <Text ml={2}>Snapshot date</Text>
+            <Text ml={1}>
+              {convertTimeStamp(
+                Number(detailInfo?.snapshot.toString()),
+                'YYYY.MM.DD HH:DD',
+              )}
+            </Text>
+          </>
+        )}
       </Flex>
       <Box d="flex" justifyContent="space-between">
         {status === 'whitelist' &&
