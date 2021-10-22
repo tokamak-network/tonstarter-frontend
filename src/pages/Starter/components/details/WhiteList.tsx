@@ -80,8 +80,8 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
         Period Information
       </Text>
       <Box d="flex" {...STATER_STYLE.mainText({colorMode, fontSize: 34})}>
-        <Text mr={'25px'}>
-          {convertTimeStamp(activeProjectInfo?.timeStamps.startExclusiveTime)} ~{' '}
+        <Text mr={'25px'} w={'244px'}>
+          {convertTimeStamp(activeProjectInfo?.timeStamps.startAddWhiteTime)} ~{' '}
           {convertTimeStamp(
             activeProjectInfo?.timeStamps.endExclusiveTime,
             'MM.D',
