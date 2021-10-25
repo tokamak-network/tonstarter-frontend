@@ -222,7 +222,7 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
             <Text ml={1}>
               {convertTimeStamp(
                 Number(detailInfo?.snapshot.toString()),
-                'YYYY.MM.DD HH:DD',
+                'YYYY.MM.DD HH:mm',
               )}
             </Text>
           </>
