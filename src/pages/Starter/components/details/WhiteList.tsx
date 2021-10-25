@@ -93,7 +93,7 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
               activeProjectInfo?.timeStamps.endAddWhiteTime * 1000
             }></DetailCounter>
         </Box>
-        <Box w={'255px'}>
+        <Box display={isPassed ? 'none' : ''} w={'255px'}>
           <DetailCounter
             date={
               activeProjectInfo?.timeStamps.startAddWhiteTime * 1000
