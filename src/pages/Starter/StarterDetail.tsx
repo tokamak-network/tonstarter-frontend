@@ -230,9 +230,6 @@ export const StarterDetail = () => {
         setActiveStatus(step);
         setProject(isPassed ? 'past' : 'active');
 
-        // setActiveStatus('whitelist');
-        // setProject('active');
-
         setActiveProjectInfo(
           activeProjects.filter((data: any) => data.name === id)[0],
         );
@@ -274,6 +271,8 @@ export const StarterDetail = () => {
       return setSaleInfo(projectInfo[0]);
     }
   }, [starterData, id, projectStatus]);
+
+  console.log(activeStatus, projectStatus);
 
   if (!saleInfo) {
     return (

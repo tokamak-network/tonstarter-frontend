@@ -106,7 +106,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
 
   useEffect(() => {
     if (activeProjectInfo) {
-      const ratio = activeProjectInfo.projectFundingTokenRatio;
+      const ratio = activeProjectInfo.tokenCalRatio;
       const result = Number(inputTonBalance) * ratio;
       setConvertedTokenBalance(String(result));
     }
@@ -251,7 +251,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             </Text>
             <Text {...detailSubTextStyle}>
               {convertTimeStamp(
-                activeProjectInfo?.timeStamps?.startAdd,
+                activeProjectInfo?.timeStamps?.startAddWhiteTime,
                 'YYYY-MM-D',
               )}{' '}
               ~{' '}
@@ -287,8 +287,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
               Ratio :{' '}
             </Text>
             <Text {...detailSubTextStyle}>
-              {saleInfo?.projectTokenRatio} TON ={' '}
-              {saleInfo?.projectFundingTokenRatio} {saleInfo?.tokenName}
+              1 TON = {activeProjectInfo?.tokenCalRatio} {saleInfo?.tokenName}
             </Text>
           </Flex>
         </Box>
