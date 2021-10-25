@@ -272,8 +272,6 @@ export const StarterDetail = () => {
     }
   }, [starterData, id, projectStatus]);
 
-  console.log(activeStatus, projectStatus);
-
   if (!saleInfo) {
     return (
       <Center mt={'100px'}>
