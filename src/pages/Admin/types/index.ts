@@ -75,3 +75,8 @@ export type StepsName = StepOneName &
   StepTwoName &
   StepThreeName &
   StepFourName;
+
+export type StepComponent = {
+  stepName: [name: string];
+  currentStep: number;
+};
