@@ -41,11 +41,29 @@ export const participate = async (args: CallContractWithAmount) => {
 };
 
 export const addWhiteList = async (args: I_CallContract) => {
-  const {account, library, address} = args;
-  const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
-  const signer = getSigner(library, account);
-  const res = await PUBLICSALE_CONTRACT.connect(signer).addWhiteList();
-  return setTx(res);
+  try {
+    const {account, library, address} = args;
+    const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
+    const signer = getSigner(library, account);
+    const res = await PUBLICSALE_CONTRACT.connect(signer).addWhiteList();
+    return setTx(res);
+  } catch (e: any) {
+    const isNotPassed = e.message.includes('whitelistStartTime has not passed');
+    if (isNotPassed) {
+      store.dispatch(
+        //@ts-ignore
+        openToast({
+          payload: {
+            status: 'error',
+            title: 'Tx fail to send',
+            description: `Whitelist Start Time has not been passed yet`,
+            duration: 5000,
+            isClosable: true,
+          },
+        }),
+      );
+    }
+  }
 };
 
 export const calculTier = async (args: I_CallContract) => {
