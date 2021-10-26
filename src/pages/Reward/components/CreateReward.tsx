@@ -23,6 +23,8 @@ import calender_Forward_icon_inactive from 'assets/svgs/calender_Forward_icon_in
 import calender_back_icon_inactive from 'assets/svgs/calender_back_icon_inactive.svg';
 import moment from 'moment';
 import {CustomCalendar} from './CustomCalendar';
+import {CustomClock} from './CustomClock';
+
 const themeDesign = {
   border: {
     light: 'solid 1px #dfe4ee',
@@ -66,10 +68,10 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
   const [name, setName] = useState<string>('');
   const [reward, setReward] = useState<Number>(0);
   const [startTime, setStartTime] = useState<number>(0);
+  const [startTimeArray, setStartTimeArray] = useState([]);
+  const [endTimeArray, setEndTimeArray] = useState([]);
   const [endTime, setEndTime] = useState<number>(0);
   const [poolsArr, setPoolsArr] = useState([]);
-
-
   useEffect(() => {
     let poolArr: any = [];
     poolArr = pools.map((pool) => {
@@ -82,6 +84,27 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
     const filterValue = e.target.value;
     setName(filterValue);
   };
+
+  useEffect(() => {
+   
+    
+    const ends = moment.unix(endTime);
+    const endDates = moment(ends).set({
+      hour: endTimeArray[0],
+      minute: endTimeArray[1],
+      second: endTimeArray[2],
+    });
+    setEndTime(endDates.unix());
+
+    const starts = moment.unix(startTime);
+    const startDates = moment(starts).set({
+      hour: startTimeArray[0],
+      minute: startTimeArray[1],
+      second: startTimeArray[2],
+    });
+    setStartTime(startDates.unix());
+    console.log(startDates.unix());
+  }, [startTimeArray, endTimeArray, endTime, startTime]);
 
   return (
     <Box display={'flex'} justifyContent={'flex-end'}>
@@ -129,14 +152,13 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             w={'64px'}>
             Start
           </Text>
-          <CustomCalendar setValue={setStartTime} />
-          <Text
-            ml={'10px'}
-            fontSize={'10px'}
-            color={colorMode === 'light' ? '#808992' : '#949494'}>
-            Time setting
-          </Text>
-          <Image ml={'5px'} src={clock} alt="clock" />
+          <CustomCalendar
+            setValue={setStartTime}
+            startTime={startTime}
+            endTime={endTime}
+            calendarType={'start'}
+          />
+          <CustomClock setTime={setStartTimeArray} />
         </Flex>
         <Flex alignItems={'center'} h={'45px'}>
           <Text
@@ -146,14 +168,13 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             w={'64px'}>
             End
           </Text>
-          <CustomCalendar setValue={setEndTime} />
-          <Text
-            ml={'10px'}
-            fontSize={'10px'}
-            color={colorMode === 'light' ? '#808992' : '#949494'}>
-            Time setting
-          </Text>
-          <Image ml={'5px'} src={clock} alt="clock" />
+          <CustomCalendar
+            setValue={setEndTime}
+            startTime={startTime}
+            endTime={endTime}
+            calendarType={'end'}
+          />
+          <CustomClock setTime={setEndTimeArray} />
         </Flex>
         <Flex alignItems={'center'} h={'45px'}>
           <Text

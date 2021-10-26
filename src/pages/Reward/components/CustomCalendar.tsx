@@ -18,6 +18,7 @@ import calender_Forward_icon_inactive from 'assets/svgs/calender_Forward_icon_in
 import calender_back_icon_inactive from 'assets/svgs/calender_back_icon_inactive.svg';
 import moment from 'moment';
 
+
 const themeDesign = {
   border: {
     light: 'solid 1px #dfe4ee',
@@ -35,16 +36,19 @@ const themeDesign = {
 
 type CalendarProps = {
   setValue: Dispatch<SetStateAction<any>>;
+  startTime: number;
+  endTime: number;
+  calendarType: string;
 };
 
 export const CustomCalendar = (prop: CalendarProps) => {
-  const {setValue} = prop;
+  const {setValue, startTime, endTime, calendarType} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const [showCalendar, setShowCalendar] = useState<boolean>(false);
   const [showInputValue, setShowInputValue] = useState<string>('');
   const refCalendar = useRef<HTMLInputElement>(null);
-
+  
   const setInput = (date: any) => {
     setShowCalendar(false);
     const dateSelected = Number(new Date(date));
@@ -53,22 +57,31 @@ export const CustomCalendar = (prop: CalendarProps) => {
     setShowInputValue(dateFormatted);
   };
 
-  const tilesDisabled = ({activeStartDate, date, view}: any ) => {
+  const tilesDisabled = ({activeStartDate, date, view}: any) => {
     const now = moment().startOf('day').unix();
     const formattedDate = moment(date).startOf('day').unix();
 
     if (view === 'month') {
       if (formattedDate < now) {
         return true;
+      } else if (
+        endTime !== 0 &&
+        formattedDate > endTime &&
+        calendarType === 'start'
+      ) {
+        return true;
+      } 
+
+      else if (calendarType === 'end' &&  startTime !== 0 && formattedDate <startTime ) {
+        return true;
       }
       else {
         return false;
       }
-    }
-    else {
+    } else {
       return false;
     }
-  }
+  };
   useEffect(() => {
     const hideCalendar = (ref: any) => {
       function handleClickOutside(event: any) {
@@ -84,7 +97,7 @@ export const CustomCalendar = (prop: CalendarProps) => {
       };
     };
     hideCalendar(refCalendar);
-  }, []);
+  }, [endTime, startTime]);
 
   const dayStyle =
     colorMode === 'light'
@@ -130,9 +143,8 @@ export const CustomCalendar = (prop: CalendarProps) => {
       w={'100px'}
       h={'30px'}
       onClick={() => setShowCalendar(true)}
-     display='flex'
-     justifyContent='end'
-     >
+      display="flex"
+      justifyContent="end">
       <Input
         fontSize={13}
         value={showInputValue}
@@ -149,8 +161,7 @@ export const CustomCalendar = (prop: CalendarProps) => {
       />
       <style>{dayStyle}</style>
       {showCalendar ? (
-       
-          <Calendar
+        <Calendar
           onChange={setInput}
           nextLabel={<img src={calender_Forward_icon_inactive} />}
           prevLabel={<img src={calender_back_icon_inactive} />}
@@ -158,8 +169,6 @@ export const CustomCalendar = (prop: CalendarProps) => {
           inputRef={refCalendar}
           tileDisabled={tilesDisabled}
         />
-       
-        
       ) : null}
     </Flex>
   );

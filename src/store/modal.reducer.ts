@@ -17,7 +17,8 @@ type StakingModal =
   | 'claimPool'
   | 'pool_simulator';
 
-export type ModalType = StakingModal | DaoModal;
+type GeneralModal = 'calendar';
+export type ModalType = StakingModal | DaoModal | GeneralModal;
 
 export type Modal = {
   modal?: ModalType;
