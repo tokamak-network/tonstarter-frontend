@@ -77,6 +77,6 @@ export type StepsName = StepOneName &
   StepFourName;
 
 export type StepComponent = {
-  stepName: [name: string];
+  stepName: string[];
   currentStep: number;
 };
