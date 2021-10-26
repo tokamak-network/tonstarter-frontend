@@ -108,6 +108,13 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
     if (activeProjectInfo) {
       const ratio = activeProjectInfo.tokenCalRatio;
       const result = Number(inputTonBalance) * ratio;
+      if (String(result).split('.')[1]?.length > 2) {
+        return setConvertedTokenBalance(
+          `${String(result).split('.')[0]}.${String(result)
+            .split('.')[1]
+            .slice(0, 2)}`,
+        );
+      }
       setConvertedTokenBalance(String(result));
     }
   }, [inputTonBalance, activeProjectInfo, convertedTokenBalance]);
@@ -203,10 +210,10 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             maxValue={
               Number(userTonBalance.replaceAll(',', '')) <=
               Number(amountAvailable.replaceAll(',', '')) /
-                saleInfo?.projectFundingTokenRatio
+                activeProjectInfo?.tokenCalRatio
                 ? Number(userTonBalance.replaceAll(',', ''))
                 : Number(amountAvailable.replaceAll(',', '')) /
-                  saleInfo?.projectFundingTokenRatio
+                  activeProjectInfo?.tokenCalRatio
             }></CustomInput>
           <img
             src={ArrowIcon}
