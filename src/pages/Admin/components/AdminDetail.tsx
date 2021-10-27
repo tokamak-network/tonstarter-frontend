@@ -34,12 +34,13 @@ const initialValue: AdminObject = {
   tokenSymbolImage: '',
   tokenAllocationAmount: '',
   tokenFundRaisingTargetAmount: '',
+  fundingTokenType: 'TON',
   tokenFundingRecipient: '',
+  projectTokenRatio: 0,
+  projectFundingTokenRatio: 0,
   //step 3
   saleContractAddress: '',
   vestingContractAddress: '',
-  projectTokenRatio: 0,
-  projectFundingTokenRatio: 0,
   snapshot: 0,
   startAddWhiteTime: 0,
   endAddWhiteTime: 0,
@@ -53,8 +54,8 @@ const initialValue: AdminObject = {
   claimInterval: 0,
   claimPeriod: 0,
   //step 4
-  position: '',
-  production: '',
+  position: 'upcoming',
+  production: 'dev',
   topSlideExposure: false,
 };
 
@@ -82,13 +83,19 @@ export const AdminDetail: React.FC<AdminDetailProp> = (props) => {
     setCurrentStep((prev) => prev + 1);
   };
 
+  const handlePrevStep = () => {
+    setCurrentStep((prev) => prev - 1);
+  };
+
   return (
     <Accordion
       w={'774px'}
       borderRadius={15}
       boxShadow={'0 2px 5px 0 rgba(61, 73, 93, 0.1)'}
       border={colorMode === 'light' ? '' : '1px solid #535353'}
-      bg={colorMode === 'light' ? 'white.100' : ''}>
+      bg={colorMode === 'light' ? 'white.100' : ''}
+      defaultIndex={0}
+      index={currentStep}>
       {stepName.map((step: string, index: number) => {
         return (
           <AccordionItem
@@ -122,7 +129,8 @@ export const AdminDetail: React.FC<AdminDetailProp> = (props) => {
                 <StepTwo
                   data={data}
                   lastStep={index - 1 === stepName.length}
-                  handleNextStep={handleNextStep}></StepTwo>
+                  handleNextStep={handleNextStep}
+                  handlePrevStep={handlePrevStep}></StepTwo>
               )}
             </AccordionPanel>
           </AccordionItem>

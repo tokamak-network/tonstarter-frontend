@@ -15,6 +15,7 @@ type StepProp = {
   data: AdminObject;
   lastStep: boolean;
   handleNextStep: Dispatch<SetStateAction<any>> | any;
+  handlePrevStep?: Dispatch<SetStateAction<any>> | any;
 };
 
 const fieldWrap = {
@@ -34,7 +35,24 @@ const CustomTextAreaField = (props: {name: string; title?: string}) => {
   const {name, title} = props;
   return (
     <Flex style={fieldWrap} flexDir="column" mb={'20px'} pos="relative">
-      <Text mb={'10px'}>{title || name}</Text>
+      <Flex mb={'10px'}>
+        <Text>{title || name}</Text>
+        <ErrorMessage
+          name={name}
+          render={() => (
+            <div
+              style={{
+                marginLeft: '3px',
+                color: 'red',
+                fontSize: '15px',
+                verticalAlign: 'center',
+                textAlign: 'center',
+              }}>
+              *
+            </div>
+          )}
+        />
+      </Flex>
       <Field
         name={name}
         as="textarea"
@@ -44,24 +62,46 @@ const CustomTextAreaField = (props: {name: string; title?: string}) => {
           border: '1px solid #dfe4ee',
           borderRadius: 4,
           paddingLeft: '15px',
+          paddingTop: '5px',
         }}
+        placeHolder={`input description`}
       />
-      <Box color="red" pos="absolute" bottom={-5}>
-        <ErrorMessage name={name} />
-      </Box>
     </Flex>
   );
 };
 
-const CustomField = (props: {name: string; title?: string}) => {
-  const {name, title} = props;
+const CustomField = (props: {
+  name: string;
+  title?: string;
+  w?: string;
+  placeHolder?: string;
+}) => {
+  const {name, title, w, placeHolder} = props;
   return (
     <Flex style={fieldWrap} flexDir="column" mb={'20px'} pos="relative">
-      <Text mb={'10px'}>{title || name}</Text>
-      <Field style={fieldStyle} name={name} placeHolder={`input ${name}`} />
-      <Box color="red" pos="absolute" bottom={-5}>
-        <ErrorMessage name={name} />
-      </Box>
+      <Flex mb={'10px'}>
+        <Text>{title || name}</Text>
+        <ErrorMessage
+          name={name}
+          render={() => (
+            <div
+              style={{
+                marginLeft: '3px',
+                color: 'red',
+                fontSize: '15px',
+                verticalAlign: 'center',
+                textAlign: 'center',
+              }}>
+              *
+            </div>
+          )}
+        />
+      </Flex>
+      <Field
+        style={{...fieldStyle, width: w || '327px'}}
+        name={name}
+        placeHolder={placeHolder || `input ${name}`}
+      />
     </Flex>
   );
 };
@@ -165,7 +205,7 @@ export const StepOne: React.FC<StepProp> = (props) => {
 };
 
 export const StepTwo: React.FC<StepProp> = (props) => {
-  const {data, lastStep, handleNextStep} = props;
+  const {data, lastStep, handleNextStep, handlePrevStep} = props;
 
   const handleSubmit = (values: any) => {
     handleNextStep(values, lastStep);
@@ -178,7 +218,10 @@ export const StepTwo: React.FC<StepProp> = (props) => {
     'tokenSymbolImage',
     'tokenAllocationAmount',
     'tokenFundRaisingTargetAmount',
+    'fundingTokenType',
     'tokenFundingRecipient',
+    'projectTokenRatio',
+    'projectFundingTokenRatio',
   ];
 
   const obj = {};
@@ -186,11 +229,11 @@ export const StepTwo: React.FC<StepProp> = (props) => {
   names.map((name: string) => {
     //@ts-ignore
     const nameType = typeof data[name];
-    const isRequired =
-      name === 'name' || name === 'description' || name === 'adminAddress';
-    if (!isRequired) {
-      return null;
-    }
+    // const isRequired =
+    //   name === 'name' || name === 'description' || name === 'adminAddress';
+    // if (!isRequired) {
+    //   return null;
+    // }
     if (nameType === 'string') {
       //@ts-ignore
       return (obj[name] = Yup.string().required().label(name));
@@ -207,6 +250,13 @@ export const StepTwo: React.FC<StepProp> = (props) => {
     ...obj,
   });
 
+  console.log(stepOneValidationSchema);
+
+  const titleStyle = {
+    color: 'black.300',
+    fontSize: 15,
+  };
+
   return (
     <Formik
       validationSchema={stepOneValidationSchema}
@@ -217,57 +267,118 @@ export const StepTwo: React.FC<StepProp> = (props) => {
           style={{
             display: 'flex',
             width: '100%',
-            height: '520px',
+            height: '850px',
             position: 'relative',
+            flexDirection: 'column',
             justifyContent: 'space-between',
           }}>
           <Flex flexDir="column">
-            <CustomField name={'tokenName'} title={'Token Name'}></CustomField>
-            <CustomTextAreaField
-              name={'description'}
-              title={'Description'}></CustomTextAreaField>
-            <CustomField
-              name={'image'}
-              title={'Upload Project Main Image'}></CustomField>
-            <CustomField
-              name={'adminAddress'}
-              title={'Admin address'}></CustomField>
+            <Flex
+              style={titleStyle}
+              alignItems="center"
+              mt={'40px'}
+              mb={'25px'}>
+              <span style={{fontSize: '4px'}}>○ </span>
+              <Text ml={'3px'}>Project Token</Text>
+            </Flex>
+            <Flex justifyContent="space-between">
+              <Flex flexDir="column">
+                <CustomField
+                  name={'tokenName'}
+                  title={'Token Name'}></CustomField>
+                <CustomField
+                  name={'tokenSymbol'}
+                  title={'Token Symbol'}></CustomField>
+                <CustomField
+                  name={'tokenAllocationAmount'}
+                  title={'Token Allocation Amount'}></CustomField>
+              </Flex>
+              <Flex flexDir="column">
+                <CustomField
+                  name={'tokenAddress'}
+                  title={'Token Address'}></CustomField>
+                <CustomField
+                  name={'tokenSymbolImage'}
+                  title={'Token Symbol Image'}></CustomField>
+              </Flex>
+            </Flex>
+            <Flex
+              style={titleStyle}
+              alignItems="center"
+              mt={'40px'}
+              mb={'25px'}>
+              <span style={{fontSize: '4px'}}>○ </span>
+              <Text ml={'3px'}>Funding Token</Text>
+            </Flex>
+            <Flex justifyContent="space-between">
+              <Flex flexDir="column">
+                <CustomField
+                  name={'fundingTokenType'}
+                  title={'Token Name'}></CustomField>
+                <CustomField
+                  name={'tokenFundRaisingTargetAmount'}
+                  title={'tokenFundRaisingTargetAmount'}></CustomField>
+              </Flex>
+              <Flex>
+                <CustomField
+                  name={'tokenFundingRecipient'}
+                  title={'Funding Token Recipient'}></CustomField>
+              </Flex>
+            </Flex>
+            <Flex
+              style={titleStyle}
+              alignItems="center"
+              mt={'40px'}
+              mb={'25px'}>
+              <span style={{fontSize: '4px'}}>○ </span>
+              <Text ml={'3px'}>Token Price Ratio</Text>
+            </Flex>
+            <Flex>
+              <CustomField
+                name={'projectTokenRatio'}
+                title={'Project Token'}
+                w={'150px'}
+                placeHolder={'0.00'}></CustomField>
+              <Text alignSelf="center" pt={'10px'} px={'11px'}>
+                :
+              </Text>
+              <CustomField
+                name={'projectFundingTokenRatio'}
+                title={'Funding Token'}
+                w={'150px'}
+                placeHolder={'0.00'}></CustomField>
+            </Flex>
           </Flex>
-          <Flex flexDir="column">
-            <CustomField name={'website'}></CustomField>
-            <CustomField name={'telegram'}></CustomField>
-            <CustomField name={'medium'}></CustomField>
-            <CustomField name={'twitter'}></CustomField>
-            <CustomField name={'discord'}></CustomField>
-          </Flex>
-          <Button
+
+          <Flex
             pos="absolute"
             bottom={'40px'}
-            type="submit"
-            alignSelf="center"
-            w={'150px'}
-            h={'38px'}
-            br={4}
-            bg={'blue.500'}
-            color={'white.100'}
-            disabled={!isValid}
-            _hover={{}}>
-            Prev
-          </Button>
-          <Button
-            pos="absolute"
-            bottom={'40px'}
-            type="submit"
-            alignSelf="center"
-            w={'150px'}
-            h={'38px'}
-            br={4}
-            bg={'blue.500'}
-            color={'white.100'}
-            disabled={!isValid}
-            _hover={{}}>
-            Next
-          </Button>
+            alignItems="center"
+            justifyContent="center">
+            <Button
+              w={'150px'}
+              h={'38px'}
+              br={4}
+              bg={'blue.500'}
+              color={'white.100'}
+              mr={'12px'}
+              onClick={() => handlePrevStep()}
+              _hover={{}}>
+              Prev
+            </Button>
+            <Button
+              type="submit"
+              alignSelf="center"
+              w={'150px'}
+              h={'38px'}
+              br={4}
+              bg={'blue.500'}
+              color={'white.100'}
+              disabled={!isValid}
+              _hover={{}}>
+              Next
+            </Button>
+          </Flex>
         </Form>
       )}
     </Formik>
