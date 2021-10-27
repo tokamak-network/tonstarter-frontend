@@ -77,14 +77,12 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({reward}) => {
   const {NPM_Address, UniswapStaking_Address} = DEPLOYED;
   const [approved, setApproved] = useState<boolean>(false);
   const [myReward, setMyReward] = useState<number>(0);
-
+  const [ staked, setStaked]=  useState<boolean>(false);
+  const [ buttonState, setButtonState]=  useState<string>('Approve');
+  const [tokenID, setTokenID] = useState<number>(6012);
   useEffect(() => {
     const now = moment().unix();
     const start = moment.unix(Number(reward.startTime)).startOf('day').unix();
-
-    if (reward.startTime < now) {
-      setCanApprove(true);
-    }
     const end = moment.unix(Number(reward.endTime)).endOf('day').unix();
     if (now < start) {
       const remainingDays = moment
@@ -153,7 +151,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({reward}) => {
       try {
         console.log('came to my info');
         
-        const rewardInfo = await uniswapStakerContract.connect(signer).getRewardInfo(key, Number(6173));
+        const rewardInfo = await uniswapStakerContract.connect(signer).getRewardInfo(key, Number(5923));
         console.log('rewardInfo', rewardInfo);
       } catch (err) {
         console.log('no reward');
@@ -164,6 +162,20 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({reward}) => {
       getMyReward();
     }
   }, [account, library]);
+
+  useEffect(()=>{
+    const now = moment().unix();
+    if (!approved && now> reward.startTime) {
+      setCanApprove(true);
+      setButtonState('Approve')
+    }
+    if (approved && now< reward.endTime) {
+      setButtonState('Stake');
+    }
+    if (staked && now< reward.endTime) {
+      setButtonState('In Progress');
+    }
+  },[approved])
 
   return (
     <Flex {...REWARD_STYLE.containerStyle({colorMode})} flexDir={'column'}>
@@ -338,8 +350,8 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({reward}) => {
                   library: library,
                 })
           }
-          disabled={!canApprove}>
-          {canApprove ? (approved ? 'Stake' : 'Approve') : 'Approve'}
+          disabled={!canApprove && buttonState === "Approve"? true: buttonState === 'In Progress'? true: false}>
+         {buttonState}
         </Button>
       </Flex>
     </Flex>

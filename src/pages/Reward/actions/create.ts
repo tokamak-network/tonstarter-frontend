@@ -10,6 +10,7 @@ import BigNumber from 'bignumber.js';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import * as TOSABI from 'services/abis/TOS.json';
 import { createReward, getRandomKey } from '../components/api';
+import {utils, ethers} from 'ethers';
 type Create = {
   library: any;
   amount: number;
@@ -72,7 +73,8 @@ export const create = async (args: Create) => {
     STAKERABI.abi,
     library,
   );
-  const totalReward = new BigNumber(Number(amount)).toString();
+
+  const weiAllocated = ethers.utils.parseEther(amount.toString())
 
   const tosContract = new Contract(TOS_ADDRESS, TOSABI.abi, library);
   const signer = getSigner(library, userAddress);
@@ -85,12 +87,14 @@ export const create = async (args: Create) => {
     refundee: userAddress,
   };
   try {
+    console.log(weiAllocated);
+    
     const receipt = await uniswapStakerContract
       .connect(signer)
-      .createIncentive(key, totalReward);
+      .createIncentive(key, weiAllocated);
     store.dispatch(setTxPending({ tx: true }));
     await receipt.wait();
-
+    
     if (receipt) {
       toastWithReceipt(receipt, setTxPending, 'Reward');
       const sig = await generateSig(userAddress.toLowerCase(), key);
@@ -102,7 +106,7 @@ export const create = async (args: Create) => {
         incentiveKey: key,
         startTime: startTime,
         endTime: endTime,
-        allocatedReward: totalReward,
+        allocatedReward: weiAllocated.toString(),
         numStakers: 3,
         status: 'open',
         verified: true,

@@ -9,7 +9,7 @@ import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import * as TOSABI from 'services/abis/TOS.json';
-
+import {utils, ethers} from 'ethers';
 type Approve = { 
     library: any;
     amount: number;
@@ -26,12 +26,13 @@ export const approve = async (args:Approve) => {
       }
 
       const tosContract = new Contract(TOS_ADDRESS, TOSABI.abi, library);
-      const totalReward = new BigNumber(Number(amount)).toString();
+      // const totalReward = new BigNumber(Number(amount)).toString();
+      const weiAllocated = ethers.utils.parseEther(amount.toString())
       const signer = getSigner(library, userAddress);
       try {
         const receipt = await tosContract
           .connect(signer)
-          .approve(UniswapStaker_Address, totalReward);
+          .approve(UniswapStaker_Address, weiAllocated);
         store.dispatch(setTxPending({tx: true}));
         await receipt.wait();
         if (receipt) {
