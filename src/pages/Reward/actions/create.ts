@@ -17,6 +17,7 @@ type Create = {
   startTime: number,
   endTime: number,
   name: string,
+  setAlllowed: any
 };
 type CreateReward = {
   poolName: string;
@@ -62,7 +63,7 @@ const generateSig = async (account: string, key: any) => {
 
 
 export const create = async (args: Create) => {
-  const { library, amount, userAddress, startTime, endTime, name } = args;
+  const { library, amount, userAddress, startTime, endTime, name, setAlllowed } = args;
   if (userAddress === null || userAddress === undefined || library === undefined) {
     return;
   }
@@ -91,7 +92,7 @@ export const create = async (args: Create) => {
     await receipt.wait();
 
     if (receipt) {
-      toastWithReceipt(receipt, setTxPending);
+      toastWithReceipt(receipt, setTxPending, 'Reward');
       const sig = await generateSig(userAddress.toLowerCase(), key);
       const arg: CreateReward = {
         poolName: name,
@@ -108,9 +109,10 @@ export const create = async (args: Create) => {
         tx: receipt,
         sig: sig,
       };
-
+      setAlllowed(0);
       const create = await createReward(arg);
       console.log('create', create);
+     
     }
   } catch (err) {
     store.dispatch(setTxPending({ tx: false }));

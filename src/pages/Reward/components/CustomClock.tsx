@@ -77,10 +77,6 @@ export const CustomClock = (props: ClockProps) => {
    }
   };
 
-useEffect(()=> {
-  console.log(meridiem);
-  
-},[meridiem])
 
   return (
     <Popover closeOnBlur={true} placement="bottom">

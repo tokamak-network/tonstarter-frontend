@@ -26,7 +26,7 @@ export const approveStaking = async (args: Approve) => {
       const receipt = await NPM.connect(signer)?.setApprovalForAll(UniswapStaking_Address, true)
       store.dispatch(setTxPending({tx: true}));
       if (receipt) {
-        toastWithReceipt(receipt, setTxPending, 'Pool');
+        toastWithReceipt(receipt, setTxPending, 'Reward');
       }
     } catch (err) {
       store.dispatch(setTxPending({tx: false}));

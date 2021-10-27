@@ -21,7 +21,7 @@ import {DEPLOYED} from 'constants/index';
 import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import * as NPMABI from 'services/abis/NonfungiblePositionManager.json';
-import {approveStaking} from '../actions'
+import {approveStaking, stake} from '../actions';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 
 type incentiveKey = {
@@ -130,7 +130,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({reward}) => {
   }, [account, library]);
 
   useEffect(() => {
-    async function getMyReward () {
+    async function getMyReward() {
       if (account === null || account === undefined || library === undefined) {
         return;
       }
@@ -139,21 +139,31 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({reward}) => {
         pool: reward.poolAddress,
         startTime: reward.startTime,
         endTime: reward.endTime,
-        refundee: reward.incentiveKey.refundee
-      }
+        refundee: reward.incentiveKey.refundee,
+      };
+      console.log(key);
+      
       const uniswapStakerContract = new Contract(
         UniswapStaking_Address,
         STAKERABI.abi,
-        library
+        library,
       );
+      
       const signer = getSigner(library, account);
-      // const rewardInfo = await uniswapStakerContract.connect(signer).getRewardInfo(key, Number(5923));
-      // console.log('rewardInfo',rewardInfo.reward.toString());   
+      try {
+        console.log('came to my info');
+        
+        const rewardInfo = await uniswapStakerContract.connect(signer).getRewardInfo(key, Number(6173));
+        console.log('rewardInfo', rewardInfo);
+      } catch (err) {
+        console.log('no reward');
+        
+      }
     }
     if (account !== undefined && library !== undefined) {
       getMyReward();
     }
-  },[account, library])
+  }, [account, library]);
 
   return (
     <Flex {...REWARD_STYLE.containerStyle({colorMode})} flexDir={'column'}>
@@ -311,15 +321,25 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({reward}) => {
           ml={'10px'}
           fontSize="16px"
           _hover={{backgroundColor: 'blue.100'}}
-          onClick={() => approved? approveStaking({
-            userAddress: account,
-            library: library,
-          }): approveStaking({
-            userAddress: account,
-            library: library,
-          })}
+          onClick={() =>
+            approved
+              ? stake({
+                  library: library,
+                  tokenid: 5923,
+                  userAddress: account,
+                  startTime: reward.startTime,
+                  endTime: reward.endTime,
+                  rewardToken: reward.rewardToken,
+                  poolAddress: reward.poolAddress,
+                  refundee: reward.incentiveKey.refundee,
+                })
+              : approveStaking({
+                  userAddress: account,
+                  library: library,
+                })
+          }
           disabled={!canApprove}>
-          {canApprove? approved? 'Stake' : 'Approve' : 'Approve'}
+          {canApprove ? (approved ? 'Stake' : 'Approve') : 'Approve'}
         </Button>
       </Flex>
     </Flex>

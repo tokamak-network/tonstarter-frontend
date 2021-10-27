@@ -16,7 +16,7 @@ import {FC, useRef, useState, useEffect} from 'react';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import clock from 'assets/svgs/poll_time_active_icon.svg';
 import MomentLocaleUtils from 'react-day-picker/moment';
-import {approve, create} from '../actions';
+import {approve, create, checkApproved} from '../actions';
 import Calendar from 'react-calendar';
 import '../css/Calendar.css';
 import calender_Forward_icon_inactive from 'assets/svgs/calender_Forward_icon_inactive.svg';
@@ -72,13 +72,15 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
   const [endTimeArray, setEndTimeArray] = useState([]);
   const [endTime, setEndTime] = useState<number>(0);
   const [poolsArr, setPoolsArr] = useState([]);
+  const [checkAllowed, setCheckAllowed] = useState<number>(0);
   useEffect(() => {
     let poolArr: any = [];
     poolArr = pools.map((pool) => {
       return pool.name;
     });
     setPoolsArr(poolArr);
-  }, []);
+    setName(poolArr[0]);
+  }, [pools]);
 
   const onChangeSelectBoxPools = (e: any) => {
     const filterValue = e.target.value;
@@ -86,8 +88,6 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
   };
 
   useEffect(() => {
-   
-    
     const ends = moment.unix(endTime);
     const endDates = moment(ends).set({
       hour: endTimeArray[0],
@@ -103,8 +103,14 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
       second: startTimeArray[2],
     });
     setStartTime(startDates.unix());
-    console.log(startDates.unix());
   }, [startTimeArray, endTimeArray, endTime, startTime]);
+
+  useEffect(() => {
+    checkApproved(library, account, setCheckAllowed);
+  }, [library, account, setCheckAllowed]);
+
+  
+
 
   return (
     <Box display={'flex'} justifyContent={'flex-end'}>
@@ -244,7 +250,12 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             disabled={amount === 0}
             _hover={{backgroundColor: 'blue.100'}}
             onClick={() =>
-              approve({library: library, amount: amount, userAddress: account})
+              approve({
+                library: library,
+                amount: amount,
+                userAddress: account,
+                setAlllowed: setCheckAllowed,
+              })
             }>
             Approve
           </Button>
@@ -254,7 +265,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             bg={'blue.500'}
             color="white.100"
             fontSize="14px"
-            disabled={amount === 0}
+            disabled={checkAllowed === 0}
             _hover={{backgroundColor: 'blue.100'}}
             onClick={() =>
               create({
@@ -264,6 +275,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
                 startTime: startTime,
                 endTime: endTime,
                 name: name,
+                setAlllowed: setCheckAllowed,
               })
             }>
             Create

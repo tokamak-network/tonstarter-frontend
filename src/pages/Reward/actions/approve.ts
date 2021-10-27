@@ -14,12 +14,13 @@ type Approve = {
     library: any;
     amount: number;
     userAddress: string | null | undefined;
+    setAlllowed: any
 }
 
 const {TOS_ADDRESS, UniswapStaker_Address} = DEPLOYED;
 
 export const approve = async (args:Approve) => {
-    const {library, amount, userAddress } = args;
+    const {library, amount, userAddress, setAlllowed } = args;
     if (userAddress === null || userAddress === undefined || library === undefined) {
         return;
       }
@@ -32,9 +33,10 @@ export const approve = async (args:Approve) => {
           .connect(signer)
           .approve(UniswapStaker_Address, totalReward);
         store.dispatch(setTxPending({tx: true}));
+        await receipt.wait();
         if (receipt) {
-          toastWithReceipt(receipt, setTxPending);
-          
+          toastWithReceipt(receipt, setTxPending, 'Reward');
+          checkApproved(library, userAddress, setAlllowed)
         }
       } catch (err) {
         store.dispatch(setTxPending({tx: false}));
@@ -52,4 +54,17 @@ export const approve = async (args:Approve) => {
         );
       }
 
+}
+
+export const checkApproved = async (library: any, userAddress: string | null | undefined, setAlllowed: any ) => {
+  if (userAddress === null || userAddress === undefined || library === undefined) {
+    return;
+  }
+  const tosContract = new Contract(TOS_ADDRESS, TOSABI.abi, library);
+  const signer = getSigner(library, userAddress);
+  const allowAmount = await tosContract
+        .connect(signer)
+        .allowance(userAddress, UniswapStaker_Address);
+  setAlllowed(parseInt(allowAmount))
+        
 }
