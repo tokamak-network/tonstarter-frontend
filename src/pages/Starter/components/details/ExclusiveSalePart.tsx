@@ -94,7 +94,14 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
           localeString: true,
         });
         setUserTierAllocation(detailInfo.userTier === 0 ? '-' : res);
-        setAmountAvailable(convertedAvailableAmount || '0.00');
+
+        //temp
+        setAmountAvailable(
+          convertedAvailableAmount &&
+            Number(convertedAvailableAmount.replaceAll(',', '')) > 5.27
+            ? convertedAvailableAmount
+            : '0.00' || '0.00',
+        );
         setSaleAmount(sale || '0.00');
         setPayAmount(pay || '0.00');
       }
