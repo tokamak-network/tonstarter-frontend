@@ -121,7 +121,7 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
         },
         {
           key: '#of Members',
-          value: `${detailInfo?.tierAccounts[1] || noLibraryText}`,
+          value: `${detailInfo?.tierOfMembers[1] || noLibraryText}`,
         },
         {
           key: '#of Whitelisted',
@@ -146,7 +146,7 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
         },
         {
           key: '#of Members',
-          value: `${detailInfo?.tierAccounts[2] || noLibraryText}`,
+          value: `${detailInfo?.tierOfMembers[2] || noLibraryText}`,
         },
         {
           key: '#of Whitelisted',
@@ -171,7 +171,7 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
         },
         {
           key: '#of Members',
-          value: `${detailInfo?.tierAccounts[3] || noLibraryText}`,
+          value: `${detailInfo?.tierOfMembers[3] || noLibraryText}`,
         },
         {
           key: '#of Whitelisted',
@@ -196,7 +196,7 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
         },
         {
           key: '#of Members',
-          value: `${detailInfo?.tierAccounts[4] || noLibraryText}`,
+          value: `${detailInfo?.tierOfMembers[4] || noLibraryText}`,
         },
         {
           key: '#of Whitelisted',
