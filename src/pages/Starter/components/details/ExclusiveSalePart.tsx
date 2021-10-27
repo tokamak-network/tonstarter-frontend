@@ -314,7 +314,9 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
         {isApprove === true ? (
           <CustomButton
             text={'Acquire'}
-            isDisabled={btnDisabled || Number(amountAvailable) <= 0}
+            isDisabled={
+              btnDisabled || Number(amountAvailable.replaceAll(',', '')) <= 0
+            }
             func={() =>
               account &&
               checkBalance(
@@ -331,7 +333,9 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
         ) : (
           <CustomButton
             text={'Approve'}
-            isDisabled={btnDisabled}
+            isDisabled={
+              btnDisabled || Number(amountAvailable.replaceAll(',', '')) < 10
+            }
             func={() =>
               account &&
               dispatch(
