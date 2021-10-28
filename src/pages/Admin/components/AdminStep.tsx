@@ -1,22 +1,18 @@
 import {Formik, Form, Field, ErrorMessage} from 'formik';
 import * as Yup from 'yup';
-import {
-  Flex,
-  Box,
-  Text,
-  useColorMode,
-  useTheme,
-  Button,
-} from '@chakra-ui/react';
+import {Flex, Box, Text, Button} from '@chakra-ui/react';
 import {AdminObject} from '@Admin/types';
-import {Dispatch, SetStateAction, useState} from 'react';
+import {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import {CustomButton} from 'components/Basic/CustomButton';
-
+import {LibraryType} from 'types';
+import {getTotalExpectSaleAmount} from '../utils/fetchContract';
+import {CustomTooltip} from 'components/Tooltip';
 type StepProp = {
   data: AdminObject;
   lastStep: boolean;
   handleNextStep: Dispatch<SetStateAction<any>> | any;
   handlePrevStep?: Dispatch<SetStateAction<any>> | any;
+  library?: LibraryType;
 };
 
 const fieldWrap = {
@@ -387,11 +383,26 @@ export const StepTwo: React.FC<StepProp> = (props) => {
 };
 
 export const StepThree: React.FC<StepProp> = (props) => {
-  const {data, lastStep, handleNextStep, handlePrevStep} = props;
+  const {lastStep, handleNextStep, handlePrevStep, library} = props;
 
   const handleSubmit = (values: any) => {
     handleNextStep(values, lastStep);
   };
+
+  const [data, setData] = useState({
+    saleContractAddress: '',
+    snapshot: '',
+    startAddWhiteTime: '',
+    endAddWhiteTime: '',
+    startExclusiveTime: '',
+    endExclusiveTime: '',
+    startDepositTime: '',
+    endDepositTime: '',
+    startClaimTime: '',
+    claimInterval: '',
+    claimPeriod: '',
+    claimFirst: '',
+  });
 
   const names = [
     'saleContractAddress',
@@ -444,16 +455,30 @@ export const StepThree: React.FC<StepProp> = (props) => {
     height: '24px',
     borderRadius: '18px',
     border: '1px solid #e6eaee',
-    color: '#848c98',
     alignItems: 'center',
     justifyContent: 'center',
-    background: '#ffffff',
     fontSize: '14px',
     fontWeight: 600,
   };
 
+  async function getFetch() {
+    const res = await getTotalExpectSaleAmount({
+      library,
+      address: '0x865200f8172bf55f99b53A8fa0E26988b94dfBbE',
+    });
+    console.log(res);
+    if (res) {
+      setData({...res, saleContractAddress: 'test'});
+    }
+  }
+
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
+
   return (
     <Formik
+      enableReinitialize
       validationSchema={stepOneValidationSchema}
       initialValues={data}
       onSubmit={handleSubmit}>
@@ -462,7 +487,7 @@ export const StepThree: React.FC<StepProp> = (props) => {
           style={{
             display: 'flex',
             width: '100%',
-            height: '850px',
+            height: '1300px',
             position: 'relative',
             flexDirection: 'column',
             justifyContent: 'space-between',
@@ -478,32 +503,112 @@ export const StepThree: React.FC<StepProp> = (props) => {
                   w={'64px'}
                   h={'32px'}
                   style={{mt: '8px'}}
-                  text={'Query'}></CustomButton>
+                  text={'Query'}
+                  func={() => getFetch()}></CustomButton>
               </Box>
             </Flex>
             <Flex mt={'15px'}>
               <Flex flexDir="column" w={'380px'}>
-                <Flex style={titleStyle} alignItems="center" mb={'30px'}>
+                <Flex style={titleStyle} alignItems="center" mb={'17px'}>
                   <span style={{fontSize: '4px'}}>○ </span>
                   <Text ml={'3px'}>Sale Timeline</Text>
                 </Flex>
                 <Flex pos="relative" w={'310px'}>
                   <Flex flexDir="column" pos="absolute" left={'60px'}>
-                    <Box fontSize={'13px'} pt={'3px'}>
+                    <Box
+                      fontSize={'13px'}
+                      pt={'3px'}
+                      fontWeight={600}
+                      mb={'405px'}
+                      d="flex"
+                      justifyContent="center">
                       <Text>Round 1</Text>
+                      <Box paddingTop={'1px'} pl={'5px'}>
+                        <CustomTooltip
+                          toolTipW={242}
+                          toolTipH={'64px'}
+                          fontSize="12px"
+                          msg={[
+                            `This is the sale period for sTOS holders.`,
+                            `sTOS holders can participate in the token`,
+                            `sale after registering on the white list.`,
+                          ]}
+                          placement={'top'}></CustomTooltip>
+                      </Box>
+                    </Box>
+                    <Box
+                      fontSize={'13px'}
+                      pt={'3px'}
+                      fontWeight={600}
+                      mb={'202px'}
+                      d="flex"
+                      justifyContent="center">
+                      <Text>Round 2</Text>
+                      <Box paddingTop={'1px'} pl={'5px'}>
+                        <CustomTooltip
+                          toolTipW={312}
+                          toolTipH={'96px'}
+                          fontSize="12px"
+                          msg={[
+                            `This is the period when anyone can`,
+                            `participate in the sale.`,
+                            `After deposit for tokens, you can purchase tokens.`,
+                            `Purchased tokens are locked up and can be withdrawn`,
+                            `sequentially during the vesting period.`,
+                          ]}
+                          placement={'top'}></CustomTooltip>
+                      </Box>
+                    </Box>
+                    <Box
+                      fontSize={'13px'}
+                      pt={'3px'}
+                      fontWeight={600}
+                      d="flex"
+                      justifyContent="center">
+                      <Text>Vesting</Text>
+                      <Box paddingTop={'1px'} pl={'5px'}>
+                        <CustomTooltip
+                          toolTipW={334}
+                          toolTipH={'64px'}
+                          fontSize="12px"
+                          msg={[
+                            `This is the period during which you can claim the tokens`,
+                            `allocated to you.`,
+                            `Tokens are unlocked sequentially during the vesting period.`,
+                          ]}
+                          placement={'top'}></CustomTooltip>
+                      </Box>
                     </Box>
                   </Flex>
                   <Flex flexDir="column" pos="absolute" left={'190px'}>
-                    <Box fontSize={'13px'} pt={'3px'} h={'16px'} mb={'104px'}>
+                    <Box
+                      fontSize={'13px'}
+                      pt={'3px'}
+                      h={'16px'}
+                      mb={'104px'}
+                      d="flex"
+                      justifyContent="center">
                       <Text>Snpashot</Text>
+                      <Box paddingTop={'1px'} pl={'5px'}>
+                        <CustomTooltip
+                          toolTipW={220}
+                          toolTipH={'64px'}
+                          fontSize="12px"
+                          msg={[
+                            `The tier of participants is determined`,
+                            `based on the sTOS balance at this`,
+                            `point.`,
+                          ]}
+                          placement={'top'}></CustomTooltip>
+                      </Box>
                     </Box>
-                    <Box fontSize={'13px'} pt={'3px'} h={'16px'} mb={'64px'}>
+                    <Box fontSize={'13px'} pt={'3px'} h={'16px'} mb={'145px'}>
                       <Text>Add Whitelist</Text>
                     </Box>
-                    <Box fontSize={'13px'} pt={'3px'} h={'16px'} mb={'200px'}>
+                    <Box fontSize={'13px'} pt={'3px'} h={'16px'} mb={'215px'}>
                       <Text>Sale</Text>
                     </Box>
-                    <Box fontSize={'13px'} pt={'3px'} h={'16px'} mb={'154px'}>
+                    <Box fontSize={'13px'} pt={'3px'} h={'16px'} mb={'165px'}>
                       <Text>Deposit</Text>
                     </Box>
                     <Box fontSize={'13px'} pt={'3px'}>
@@ -512,33 +617,44 @@ export const StepThree: React.FC<StepProp> = (props) => {
                   </Flex>
                   <Flex justifyContent="center" w={'100%'}>
                     <Flex zIndex={100} pl={0.5} flexDir="column">
-                      <Box style={circleStyle} mb={'51px'}>
+                      <Box
+                        style={circleStyle}
+                        color={false ? 'gray757' : 'white.100'}
+                        bg={false ? 'white.100' : 'blue.100'}
+                        mb={'57px'}>
                         <Text>1</Text>
                       </Box>
-                      <Box style={circleStyle} mb={'53px'}>
+                      <Box
+                        style={circleStyle}
+                        color={false ? 'gray757' : 'white.100'}
+                        bg={false ? 'white.100' : 'blue.100'}
+                        mb={'57px'}>
                         <Text>2</Text>
                       </Box>
-                      <Box style={circleStyle} mb={'52px'}>
+                      <Box style={circleStyle} mb={'57px'}>
                         <Text>3</Text>
                       </Box>
-                      <Box style={circleStyle} mb={'112px'}>
+                      <Box style={circleStyle} mb={'57px'}>
                         <Text>4</Text>
                       </Box>
-                      <Box style={circleStyle} mb={'52px'}>
+                      <Box style={circleStyle} mb={'117px'}>
                         <Text>5</Text>
                       </Box>
-                      <Box style={circleStyle} mb={'112px'}>
+                      <Box style={circleStyle} mb={'57px'}>
                         <Text>6</Text>
                       </Box>
-                      <Box style={circleStyle}>
+                      <Box style={circleStyle} mb={'124px'}>
                         <Text>7</Text>
+                      </Box>
+                      <Box style={circleStyle}>
+                        <Text>8</Text>
                       </Box>
                     </Flex>
                     <Flex></Flex>
                   </Flex>
                   <Box
                     w={'4px'}
-                    h={'600px'}
+                    h={'700px'}
                     left={'50%'}
                     bg={'#e7edf3'}
                     borderRadius={100}
@@ -547,7 +663,7 @@ export const StepThree: React.FC<StepProp> = (props) => {
               </Flex>
               <Flex flexDir="column">
                 <Flex style={titleStyle} alignItems="center" mb={'20px'}>
-                  <Text ml={'3px'}>Round 1</Text>
+                  <Text>Round 1</Text>
                 </Flex>
                 <Box>
                   <CustomField
@@ -589,8 +705,57 @@ export const StepThree: React.FC<StepProp> = (props) => {
                   alignItems="center"
                   mt={'20px'}
                   mb={'20px'}>
-                  <Text ml={'3px'}>Round 2</Text>
+                  <Text>Round 2</Text>
                 </Flex>
+                <Box>
+                  <CustomField
+                    name={'endExclusiveTime'}
+                    title={'6. Deposit Start Time'}
+                    w={'200px'}
+                    placeHolder={'MM/DD/YYYY'}></CustomField>
+                </Box>
+                <Box>
+                  <CustomField
+                    name={'endExclusiveTime'}
+                    title={'7. Deposit End Time'}
+                    w={'200px'}
+                    placeHolder={'MM/DD/YYYY'}></CustomField>
+                </Box>
+                <Flex
+                  style={titleStyle}
+                  alignItems="center"
+                  mt={'20px'}
+                  mb={'20px'}>
+                  <Text>Vesting</Text>
+                </Flex>
+                <Box>
+                  <CustomField
+                    name={'startClaimTime'}
+                    title={'8. Claim Start Time'}
+                    w={'200px'}
+                    placeHolder={'MM/DD/YYYY'}></CustomField>
+                </Box>
+                <Box>
+                  <CustomField
+                    name={'endExclusiveTime'}
+                    title={'Claim Intervals (sec)'}
+                    w={'200px'}></CustomField>
+                </Box>
+                <Box>
+                  <CustomField
+                    name={'endExclusiveTime'}
+                    title={'Claim count'}
+                    w={'300px'}></CustomField>
+                </Box>
+                <Box>
+                  <CustomField
+                    name={'endExclusiveTime'}
+                    title={'Percentage of claims in the first round'}
+                    w={'300px'}
+                    placeHolder={
+                      'input percentage of claims in the first round'
+                    }></CustomField>
+                </Box>
               </Flex>
             </Flex>
           </Flex>

@@ -1,9 +1,12 @@
-import {Flex, Box, useColorMode} from '@chakra-ui/react';
+import {Flex, Box, useColorMode, useTheme, Center} from '@chakra-ui/react';
 import {useEffect, useState} from 'react';
 import {StepsName, StepComponent} from '@Admin/types';
 import {Step} from './components/Steps';
 import {PageHeader} from 'components/PageHeader';
 import {AdminDetail} from './components/AdminDetail';
+import {CustomButton} from 'components/Basic/CustomButton';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import {LoadingComponent} from 'components/Loading';
 
 const Steps: React.FC<StepComponent> = (props) => {
   const {stepName, currentStep} = props;
@@ -37,6 +40,17 @@ const Steps: React.FC<StepComponent> = (props) => {
 
 export const Admin = () => {
   const [currentStep, setCurrentStep] = useState(0);
+  const theme = useTheme();
+  const {library} = useActiveWeb3React();
+
+  if (!library) {
+    alert('Please connect to the wallet');
+    return (
+      <Flex w={'100%'} h={'100vh'} alignItems="center" justifyContent="center">
+        <LoadingComponent></LoadingComponent>
+      </Flex>
+    );
+  }
 
   return (
     <Flex mt={'72px'} flexDir="column" alignItems="center">
@@ -49,12 +63,22 @@ export const Admin = () => {
           stepName={['Project', 'Token', 'Sale', 'Layout']}
           currentStep={currentStep}></Steps>
       </Flex>
-      <Flex>
+      <Flex mb={'50px'}>
         <AdminDetail
           stepName={['Project', 'Token', 'Sale', 'Layout']}
           currentStep={currentStep}
-          setCurrentStep={setCurrentStep}></AdminDetail>
+          setCurrentStep={setCurrentStep}
+          library={library}></AdminDetail>
       </Flex>
+      <CustomButton
+        w={'180px'}
+        h={'45px'}
+        text={'Project Save'}
+        isDisabled={true}
+        style={{
+          fontFamily: theme.fonts.roboto,
+          fontWeight: 600,
+        }}></CustomButton>
     </Flex>
   );
 };

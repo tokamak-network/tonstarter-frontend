@@ -217,7 +217,7 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
 };
 
 const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
-  const theme = useTheme();
+  // const theme = useTheme();
   const match = useRouteMatch('/');
   return (
     <Box

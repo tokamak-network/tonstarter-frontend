@@ -13,9 +13,11 @@ import {Dispatch, SetStateAction, useState} from 'react';
 import {AdminObject, StepComponent} from '@Admin/types';
 import {StepOne, StepThree, StepTwo} from './AdminStep';
 import {createStarter} from '../utils/createStarter';
+import {LibraryType} from 'types';
 
 type AdminDetailProp = StepComponent & {
   setCurrentStep: Dispatch<SetStateAction<number>>;
+  library: LibraryType;
 };
 
 const initialValue: AdminObject = {
@@ -60,7 +62,7 @@ const initialValue: AdminObject = {
 };
 
 export const AdminDetail: React.FC<AdminDetailProp> = (props) => {
-  const {stepName, currentStep, setCurrentStep} = props;
+  const {stepName, currentStep, setCurrentStep, library} = props;
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
@@ -137,7 +139,8 @@ export const AdminDetail: React.FC<AdminDetailProp> = (props) => {
                   data={data}
                   lastStep={index - 1 === stepName.length}
                   handleNextStep={handleNextStep}
-                  handlePrevStep={handlePrevStep}></StepThree>
+                  handlePrevStep={handlePrevStep}
+                  library={library}></StepThree>
               )}
             </AccordionPanel>
           </AccordionItem>
