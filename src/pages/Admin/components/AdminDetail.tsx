@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 import {Dispatch, SetStateAction, useState} from 'react';
 import {AdminObject, StepComponent} from '@Admin/types';
-import {StepOne, StepTwo} from './AdminStep';
+import {StepOne, StepThree, StepTwo} from './AdminStep';
 import {createStarter} from '../utils/createStarter';
 
 type AdminDetailProp = StepComponent & {
@@ -131,6 +131,13 @@ export const AdminDetail: React.FC<AdminDetailProp> = (props) => {
                   lastStep={index - 1 === stepName.length}
                   handleNextStep={handleNextStep}
                   handlePrevStep={handlePrevStep}></StepTwo>
+              )}
+              {currentStep === 2 && (
+                <StepThree
+                  data={data}
+                  lastStep={index - 1 === stepName.length}
+                  handleNextStep={handleNextStep}
+                  handlePrevStep={handlePrevStep}></StepThree>
               )}
             </AccordionPanel>
           </AccordionItem>
