@@ -197,32 +197,35 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
           <Text {...STATER_STYLE.mainText({colorMode, fontSize: 14})}>
             Details
           </Text>
-          <Box d="flex" fontSize={'20px'} ml={'15px'}>
+          {/* <Box d="flex" fontSize={'20px'} ml={'15px'}>
             <Flex w={'286px'} mr={'25px'}>
               <Text color={'gray.400'}>(</Text>
               <Text color={'blue.100'} mr={'3px'} ml={'4px'}>
                 Progress :{' '}
               </Text>
               <Text {...detailSubTextStyle} mr={'3px'}>
-                {String(
-                  (Number(totalDeposit.replaceAll(',', '')) /
-                    (Number(totalAllocation.replaceAll(',', '')) / 527.5)) *
-                    100,
-                ).split('.')[0] +
-                  '.' +
+                {(totalDeposit &&
+                  totalAllocation &&
                   String(
                     (Number(totalDeposit.replaceAll(',', '')) /
                       (Number(totalAllocation.replaceAll(',', '')) / 527.5)) *
                       100,
-                  )
-                    .split('.')[1]
-                    .slice(0, 1) || 100}
+                  ).split('.')[0] +
+                    '.' +
+                    String(
+                      (Number(totalDeposit.replaceAll(',', '')) /
+                        (Number(totalAllocation.replaceAll(',', '')) / 527.5)) *
+                        100,
+                    )
+                      .split('.')[1]
+                      .slice(0, 1)) ||
+                  100}
               </Text>
               <Text color={'gray.400'} mr={'3px'}>
                 % )
               </Text>
             </Flex>
-          </Box>
+          </Box> */}
         </Flex>
         <Box d="flex" fontSize={'13px'}>
           <Flex w={'286px'} mr={'25px'}>
