@@ -199,8 +199,9 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
           </Text>
           <Box d="flex" fontSize={'20px'} ml={'15px'}>
             <Flex w={'286px'} mr={'25px'}>
-              <Text color={'blue.100'} mr={'3px'}>
-                ( Progress :{' '}
+              <Text color={'gray.400'}>(</Text>
+              <Text color={'blue.100'} mr={'3px'} ml={'4px'}>
+                Progress :{' '}
               </Text>
               <Text {...detailSubTextStyle} mr={'3px'}>
                 {String(
