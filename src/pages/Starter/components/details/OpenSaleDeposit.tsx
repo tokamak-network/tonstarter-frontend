@@ -216,7 +216,7 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
                       100,
                   )
                     .split('.')[1]
-                    .slice(0, 1)}
+                    .slice(0, 1) || 100}
               </Text>
               <Text color={'gray.400'} mr={'3px'}>
                 % )
