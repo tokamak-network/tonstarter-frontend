@@ -20,9 +20,23 @@ import {
   chakra,
   // useTheme
 } from '@chakra-ui/react';
+type Pool = {
+  id: string, 
+  liquidity: string,
+  poolDayData: [],
+  tick: string,
+  token0: Token,
+  token1: Token
 
+}
+type Token = {
+  id: string,
+  symbol: string
+}
 type RewardContainerProps = {
-  pools: any[];
+  rewards: any[];
+  position?: string;
+  pool: Pool
 };
 type Reward = {
   chainId: Number;
@@ -38,23 +52,31 @@ type Reward = {
   numStakers: Number;
   status: String;
 };
-export const RewardContainer: FC<RewardContainerProps> = ({pools}) => {
+export const RewardContainer: FC<RewardContainerProps> = ({rewards, pool, position}) => {
   const [pageOptions, setPageOptions] = useState<number>(0);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(6)
   useEffect(() => {
-    const pagenumber = parseInt(((pools.length-1)/pageLimit + 1).toString());
+    const pagenumber = parseInt(((rewards.length-1)/pageLimit + 1).toString());
    setPageOptions(pagenumber)
+   console.log(pool);
+   
+  //  rewards.map((reward: any) => {
+  //    if (reward.poolAddress === pool.id) {
+  //      reward.token0 = pool.token0;
+  //      reward.token1 = pool.token1;
+  //    }
+  //  })
     
-    // console.log(pools);
-  }, [pools, pageLimit]);
-
+    console.log('pool', pool);
+  }, [rewards, pageLimit]);
 
   const getPaginatedData = () => {
     const startIndex = (pageIndex * pageLimit ) - pageLimit;
     const endIndex = startIndex + pageLimit;
-    return pools.slice(startIndex, endIndex);
+    return rewards.slice(startIndex, endIndex);
   }
+
 
   const goToNextPage = () => {
     setPageIndex(pageIndex+1);
@@ -71,20 +93,36 @@ export const RewardContainer: FC<RewardContainerProps> = ({pools}) => {
     <Flex justifyContent={'space-between'} mb="100px" mt={'30px'}>
       <Flex flexWrap={'wrap'}>
         <Grid templateColumns="repeat(2, 1fr)" gap={30}>
-          {getPaginatedData().map((pool, index) => {
+          {getPaginatedData().map((reward: any, index) => {
+            console.log('pool', pool);
+            
+            let token0;
+            let token1;
+             if (reward.poolAddress === pool.id) {
+                   token0 = pool.token0.id;
+                   token1 = pool.token1.id;
+                 }
+              else {
+                token0 = '0x0000000000000000000000000000000000000000';
+                token1 = '0x73a54e5C054aA64C1AE7373C2B5474d8AFEa08bd'
+              }
+              console.log('token0', token0);
+              console.log('token1', token1);
+              
+              
             const rewardProps = {
-              chainId: pool.chainId,
-              poolName: pool.poolName,
-              token1Address: '0x0000000000000000000000000000000000000000',
-              token2Address: '0x73a54e5C054aA64C1AE7373C2B5474d8AFEa08bd',
-              poolAddress: pool.poolAddress,
-              rewardToken: pool.rewardToken,
-              incentiveKey: pool.incentiveKey,
-              startTime: pool.startTime,
-              endTime: pool.endTime,
-              allocatedReward: pool.allocatedReward,
-              numStakers: pool.numStakers,
-              status: pool.status,
+              chainId: reward.chainId,
+              poolName: reward.poolName,
+              token0Address: token0,
+              token1Address: token1,
+              poolAddress: reward.poolAddress,
+              rewardToken: reward.rewardToken,
+              incentiveKey: reward.incentiveKey,
+              startTime: reward.startTime,
+              endTime: reward.endTime,
+              allocatedReward: reward.allocatedReward,
+              numStakers: reward.numStakers,
+              status: reward.status,
             };
             return <RewardProgramCard reward={rewardProps} />;
           })}

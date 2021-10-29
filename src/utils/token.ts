@@ -22,7 +22,7 @@ const tokenAddresses: {
   eth: '0x0000000000000000000000000000000000000000',
   ton: TON_ADDRESS,
   tos: TOS_ADDRESS,
-  wton: WTON_ADDRESS,
+  wton: WTON_ADDRESS.toLowerCase(),
 };
 
 const tokenInfo = {
@@ -57,11 +57,13 @@ export const getPoolName = (token0: string, token1: string): string => {
 
 export const checkTokenType = (
   payToken: EthAddressType | TonAddressType | TosAddressType | WtonAddressType,
-): any => {
+): any => {  
   const tokenType = payToken === tokenAddresses['eth'] ?
             'eth' : payToken === tokenAddresses['ton'] ?
-            'ton' : payToken === tokenAddresses['tos'] ?
-            'tos' : 'tos';
+            'ton' : payToken === tokenAddresses['tos'] ? 
+            'tos' :payToken === tokenAddresses['wton']? 
+            'wton': 'tos';
+console.log(tokenType);
 
   switch (tokenType) {
     case 'eth':
@@ -70,8 +72,8 @@ export const checkTokenType = (
       return tokenInfo[tokenType];
     case 'tos':
       return tokenInfo[tokenType];
-    // case 'wton':
-    //   return tokenInfo[tokenType];
+    case 'wton':
+      return tokenInfo[tokenType];
     default:
       throw new Error(`There is no token type for ${tokenType}`);
   }

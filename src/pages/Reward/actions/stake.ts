@@ -40,7 +40,8 @@ export const stake = async (args: Stake) => {
     endTime: endTime,
     refundee: refundee
   }
-
+  console.log(key);
+  
   const incentiveKeyAbi = 'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)'
   const abicoder = ethers.utils.defaultAbiCoder;
   const data = abicoder.encode([incentiveKeyAbi], [key],);

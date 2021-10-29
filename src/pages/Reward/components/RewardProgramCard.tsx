@@ -23,6 +23,7 @@ import {Contract} from '@ethersproject/contracts';
 import * as NPMABI from 'services/abis/NonfungiblePositionManager.json';
 import {approveStaking, stake} from '../actions';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
+import {utils, ethers} from 'ethers';
 
 type incentiveKey = {
   rewardToken: string;
@@ -35,8 +36,8 @@ type incentiveKey = {
 type Reward = {
   chainId: number;
   poolName: string;
+  token0Address: string;
   token1Address: string;
-  token2Address: string;
   poolAddress: string;
   rewardToken: string;
   incentiveKey: incentiveKey;
@@ -182,26 +183,26 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({reward}) => {
       <Flex flexDir={'row'} width={'100%'} alignItems={'center'} h={'50px'}>
         <Box>
           <Avatar
-            src={checkTokenType(reward.token1Address).symbol}
-            backgroundColor={checkTokenType(reward.token1Address).bg}
+            src={checkTokenType(reward.token0Address).symbol}
+            backgroundColor={checkTokenType(reward.token0Address).bg}
             bg="transparent"
             color="#c7d1d8"
             name="T"
-            border={checkTokenType(reward.token1Address).border}
+            border={checkTokenType(reward.token0Address).border}
             h="50px"
             w="50px"
             zIndex={'100'}
           />
           <Avatar
-            src={checkTokenType(reward.token2Address).symbol}
-            backgroundColor={checkTokenType(reward.token2Address).bg}
+            src={checkTokenType(reward.token1Address).symbol}
+            backgroundColor={checkTokenType(reward.token1Address).bg}
             bg="transparent"
             color="#c7d1d8"
             name="T"
             h="50px"
             w="50px"
             ml={'-7px'}
-            border={checkTokenType(reward.token2Address).border}
+            border={checkTokenType(reward.token1Address).border}
           />
         </Box>
         {account === reward.incentiveKey.refundee ? (
@@ -316,7 +317,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({reward}) => {
                 fontSize: 20,
               })}
               lineHeight={'0.7'}>
-              {Number(reward.allocatedReward).toLocaleString(undefined, {
+              {Number(ethers.utils.formatEther(reward.allocatedReward.toString())).toLocaleString(undefined, {
                 minimumFractionDigits: 2,
               })}
             </Text>
@@ -337,7 +338,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({reward}) => {
             approved
               ? stake({
                   library: library,
-                  tokenid: 5923,
+                  tokenid: 7775,
                   userAddress: account,
                   startTime: reward.startTime,
                   endTime: reward.endTime,

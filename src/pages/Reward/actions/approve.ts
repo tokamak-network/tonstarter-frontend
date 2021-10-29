@@ -37,7 +37,9 @@ export const approve = async (args:Approve) => {
         await receipt.wait();
         if (receipt) {
           toastWithReceipt(receipt, setTxPending, 'Reward');
-          checkApproved(library, userAddress, setAlllowed)
+          checkApproved(library, userAddress, setAlllowed);
+          console.log('receipt', receipt);
+          
         }
       } catch (err) {
         store.dispatch(setTxPending({tx: false}));

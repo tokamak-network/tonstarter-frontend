@@ -24,14 +24,14 @@ type Reward = {
 }
 
 interface RewardState{ 
-    data: Reward[];
+    datas: Reward[];
     loading: 'idle' | 'pending';
     error: any;
     currentRequestId?: string;
 }
 
 const initialState = {
-    data: [],
+    datas: [],
     loading: 'idle',
     error: null,
     currentRequestId: undefined,
@@ -70,7 +70,7 @@ const initialState = {
         const {requestId} = action.meta;
         if (state.loading === 'pending' && state.currentRequestId === requestId) {
           state.loading = 'idle';
-          state.data = action.payload;
+          state.datas = action.payload;
           state.currentRequestId = undefined;
         }
       },
