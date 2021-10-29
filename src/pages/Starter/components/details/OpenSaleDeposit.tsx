@@ -158,7 +158,7 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
         mb={'10px'}>
         Deposited Amount
       </Text>
-      <Box d="flex" alignItems="center" mb={'30px'}>
+      <Box d="flex" alignItems="center" mb={'20px'}>
         <Box mr={'10px'}>
           <CustomInput
             w={'220px'}
@@ -193,9 +193,36 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
         </Text>
       </Box>
       <Box d="flex" flexDir="column">
-        <Text {...STATER_STYLE.mainText({colorMode, fontSize: 14})}>
-          Details
-        </Text>
+        <Flex alignItems="center" pb={'5px'}>
+          <Text {...STATER_STYLE.mainText({colorMode, fontSize: 14})}>
+            Details
+          </Text>
+          <Box d="flex" fontSize={'20px'} ml={'15px'}>
+            <Flex w={'286px'} mr={'25px'}>
+              <Text color={'blue.100'} mr={'3px'}>
+                ( Progress :{' '}
+              </Text>
+              <Text {...detailSubTextStyle} mr={'3px'}>
+                {String(
+                  (Number(totalDeposit.replaceAll(',', '')) /
+                    (Number(totalAllocation.replaceAll(',', '')) / 527.5)) *
+                    100,
+                ).split('.')[0] +
+                  '.' +
+                  String(
+                    (Number(totalDeposit.replaceAll(',', '')) /
+                      (Number(totalAllocation.replaceAll(',', '')) / 527.5)) *
+                      100,
+                  )
+                    .split('.')[1]
+                    .slice(0, 1)}
+              </Text>
+              <Text color={'gray.400'} mr={'3px'}>
+                % )
+              </Text>
+            </Flex>
+          </Box>
+        </Flex>
         <Box d="flex" fontSize={'13px'}>
           <Flex w={'286px'} mr={'25px'}>
             <Text color={'gray.400'} mr={'3px'}>
@@ -267,6 +294,7 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
           </Flex>
         </Box>
       </Box>
+
       <Box mt={'27px'}>
         {isApprove === true ? (
           <CustomButton
