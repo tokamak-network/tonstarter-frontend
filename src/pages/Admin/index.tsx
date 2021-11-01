@@ -43,13 +43,16 @@ export const Admin = () => {
   const theme = useTheme();
   const {library} = useActiveWeb3React();
 
+  useEffect(() => {
+    if (!library) {
+      alert('Plase connect to the wallet');
+    }
+  }, [library]);
+
   if (!library) {
-    alert('Please connect to the wallet');
-    return (
-      <Flex w={'100%'} h={'100vh'} alignItems="center" justifyContent="center">
-        <LoadingComponent></LoadingComponent>
-      </Flex>
-    );
+    <Flex w={'100%'} h={'100vh'} alignItems="center" justifyContent="center">
+      <LoadingComponent></LoadingComponent>
+    </Flex>;
   }
 
   return (

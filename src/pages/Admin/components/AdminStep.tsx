@@ -385,6 +385,10 @@ export const StepTwo: React.FC<StepProp> = (props) => {
 export const StepThree: React.FC<StepProp> = (props) => {
   const {lastStep, handleNextStep, handlePrevStep, library} = props;
 
+  const [timeline, setTimeline] = useState<
+    0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+  >(9);
+
   const handleSubmit = (values: any) => {
     handleNextStep(values, lastStep);
   };
@@ -459,7 +463,22 @@ export const StepThree: React.FC<StepProp> = (props) => {
     justifyContent: 'center',
     fontSize: '14px',
     fontWeight: 600,
+    backgroundColor: '#ffffff',
   };
+
+  const timeLineStyle = (props: any) => ({
+    display: 'flex',
+    width: '24px',
+    height: '24px',
+    borderRadius: '18px',
+    border: props.isTimeLine ? '1px solid #0070ed' : '1px solid #e6eaee',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '14px',
+    fontWeight: 600,
+    backgroundColor: props.isTimeLine ? '#ffffff' : '#0070ed',
+    color: props.isTimeLine ? '#0070ed' : '#ffffff',
+  });
 
   async function getFetch() {
     const res = await getTotalExpectSaleAmount({
@@ -618,35 +637,92 @@ export const StepThree: React.FC<StepProp> = (props) => {
                   <Flex justifyContent="center" w={'100%'}>
                     <Flex zIndex={100} pl={0.5} flexDir="column">
                       <Box
-                        style={circleStyle}
-                        color={false ? 'gray757' : 'white.100'}
-                        bg={false ? 'white.100' : 'blue.100'}
+                        style={
+                          timeline < 1
+                            ? circleStyle
+                            : timeLineStyle({
+                                isTimeLine: timeline === 1,
+                              })
+                        }
+                        // color={false ? 'gray757' : 'white.100'}
+                        // bg={false ? 'white.100' : 'blue.100'}
                         mb={'57px'}>
                         <Text>1</Text>
                       </Box>
                       <Box
-                        style={circleStyle}
-                        color={false ? 'gray757' : 'white.100'}
-                        bg={false ? 'white.100' : 'blue.100'}
+                        style={
+                          timeline < 2
+                            ? circleStyle
+                            : timeLineStyle({
+                                isTimeLine: timeline === 2,
+                              })
+                        }
                         mb={'57px'}>
                         <Text>2</Text>
                       </Box>
-                      <Box style={circleStyle} mb={'57px'}>
+                      <Box
+                        style={
+                          timeline < 3
+                            ? circleStyle
+                            : timeLineStyle({
+                                isTimeLine: timeline === 3,
+                              })
+                        }
+                        mb={'57px'}>
                         <Text>3</Text>
                       </Box>
-                      <Box style={circleStyle} mb={'57px'}>
+                      <Box
+                        style={
+                          timeline < 4
+                            ? circleStyle
+                            : timeLineStyle({
+                                isTimeLine: timeline === 4,
+                              })
+                        }
+                        mb={'57px'}>
                         <Text>4</Text>
                       </Box>
-                      <Box style={circleStyle} mb={'117px'}>
+                      <Box
+                        style={
+                          timeline < 5
+                            ? circleStyle
+                            : timeLineStyle({
+                                isTimeLine: timeline === 5,
+                              })
+                        }
+                        mb={'117px'}>
                         <Text>5</Text>
                       </Box>
-                      <Box style={circleStyle} mb={'57px'}>
+                      <Box
+                        style={
+                          timeline < 6
+                            ? circleStyle
+                            : timeLineStyle({
+                                isTimeLine: timeline === 6,
+                              })
+                        }
+                        mb={'57px'}>
                         <Text>6</Text>
                       </Box>
-                      <Box style={circleStyle} mb={'124px'}>
+                      <Box
+                        style={
+                          timeline < 7
+                            ? circleStyle
+                            : timeLineStyle({
+                                isTimeLine: timeline === 7,
+                              })
+                        }
+                        mb={'124px'}>
                         <Text>7</Text>
                       </Box>
-                      <Box style={circleStyle}>
+                      <Box
+                        style={
+                          timeline < 8
+                            ? circleStyle
+                            : timeLineStyle({
+                                isTimeLine: timeline === 8,
+                              })
+                        }>
                         <Text>8</Text>
                       </Box>
                     </Flex>
@@ -657,6 +733,31 @@ export const StepThree: React.FC<StepProp> = (props) => {
                     h={'700px'}
                     left={'50%'}
                     bg={'#e7edf3'}
+                    borderRadius={100}
+                    pos={'absolute'}></Box>
+                  <Box
+                    w={'4px'}
+                    h={
+                      timeline === 0
+                        ? '0px'
+                        : timeline === 1
+                        ? '54px'
+                        : timeline === 2
+                        ? '135px'
+                        : timeline === 3
+                        ? '218px'
+                        : timeline === 4
+                        ? '298px'
+                        : timeline === 5
+                        ? '415px'
+                        : timeline === 6
+                        ? '520px'
+                        : timeline === 7
+                        ? '635px'
+                        : '700px'
+                    }
+                    left={'50%'}
+                    bg={'#0070ed'}
                     borderRadius={100}
                     pos={'absolute'}></Box>
                 </Flex>
