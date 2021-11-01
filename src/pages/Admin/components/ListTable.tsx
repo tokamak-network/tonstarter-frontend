@@ -26,6 +26,8 @@ import {setTimeout} from 'timers';
 import {LoadingComponent} from 'components/Loading';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {CustomButton} from 'components/Basic/CustomButton';
+import {useDispatch} from 'react-redux';
+import {openModal} from 'store/modal.reducer';
 
 type ListTableProps = {
   columns: Column[];
@@ -59,6 +61,7 @@ export const ListTable: FC<ListTableProps> = ({columns, data, isLoading}) => {
   const theme = useTheme();
   const focusTarget = useRef<any>([]);
   const {library} = useActiveWeb3React();
+  const dispatch = useDispatch();
 
   const {
     data: {contractAddress, index},
@@ -252,7 +255,17 @@ export const ListTable: FC<ListTableProps> = ({columns, data, isLoading}) => {
                             text={'Distribute'}
                             w={'78px'}
                             h={'25px'}
-                            fontSize={12}></CustomButton>
+                            fontSize={12}
+                            func={() =>
+                              dispatch(
+                                openModal({
+                                  type: 'Admin_Distribute',
+                                  data: {
+                                    address: name,
+                                  },
+                                }),
+                              )
+                            }></CustomButton>
                         )}
                       </chakra.td>
                     );
@@ -267,100 +280,102 @@ export const ListTable: FC<ListTableProps> = ({columns, data, isLoading}) => {
         This is just a very basic UI implementation:
       */}
         {/* PAGENATION FOR LATER */}
-        <Flex justifyContent="flex-end" my={4} alignItems="center">
-          <Flex>
-            <Tooltip label="Previous Page">
-              <IconButton
-                w={'24px'}
-                h={'24px'}
-                bg={colorMode === 'light' ? 'white.100' : 'none'}
-                border={
-                  colorMode === 'light'
-                    ? 'solid 1px #e6eaee'
-                    : 'solid 1px #424242'
-                }
-                color={colorMode === 'light' ? '#e6eaee' : '#424242'}
-                borderRadius={4}
-                aria-label={'Previous Page'}
-                onClick={previousPage}
-                isDisabled={!canPreviousPage}
-                size={'sm'}
-                mr={4}
-                _hover={{borderColor: '#2a72e5', color: '#2a72e5'}}
-                icon={<ChevronLeftIcon h={6} w={6} />}
-              />
-            </Tooltip>
-          </Flex>
-
-          <Flex
-            alignItems="center"
-            p={0}
-            fontSize={'13px'}
-            fontFamily={theme.fonts.roboto}
-            color={colorMode === 'light' ? '#3a495f' : '#949494'}
-            pb={'3px'}>
-            Page{' '}
-            <Text fontWeight="bold" as="span" color={'blue.300'}>
-              {pageIndex + 1}
-            </Text>{' '}
-            of{' '}
-            <Text fontWeight="bold" as="span">
-              {pageOptions.length}
-            </Text>
-          </Flex>
-
-          <Flex>
-            <Tooltip label="Next Page">
-              <Center>
+        {data.length > 10 && (
+          <Flex justifyContent="flex-end" my={4} alignItems="center">
+            <Flex>
+              <Tooltip label="Previous Page">
                 <IconButton
                   w={'24px'}
                   h={'24px'}
+                  bg={colorMode === 'light' ? 'white.100' : 'none'}
                   border={
                     colorMode === 'light'
                       ? 'solid 1px #e6eaee'
                       : 'solid 1px #424242'
                   }
                   color={colorMode === 'light' ? '#e6eaee' : '#424242'}
-                  bg={colorMode === 'light' ? 'white.100' : 'none'}
                   borderRadius={4}
-                  aria-label={'Next Page'}
+                  aria-label={'Previous Page'}
                   onClick={previousPage}
-                  isDisabled={!canNextPage}
+                  isDisabled={!canPreviousPage}
                   size={'sm'}
-                  ml={4}
-                  mr={'1.5625em'}
+                  mr={4}
                   _hover={{borderColor: '#2a72e5', color: '#2a72e5'}}
-                  icon={<ChevronRightIcon h={6} w={6} />}
+                  icon={<ChevronLeftIcon h={6} w={6} />}
                 />
-              </Center>
-            </Tooltip>
-            <Select
-              w={'117px'}
-              h={'32px'}
-              mr={1}
-              color={colorMode === 'light' ? ' #3e495c' : '#f3f4f1'}
-              bg={colorMode === 'light' ? 'white.100' : 'none'}
-              boxShadow={
-                colorMode === 'light'
-                  ? '0 1px 1px 0 rgba(96, 97, 112, 0.14)'
-                  : ''
-              }
-              border={colorMode === 'light' ? '' : 'solid 1px #424242'}
-              borderRadius={4}
-              size={'sm'}
-              value={pageSize}
+              </Tooltip>
+            </Flex>
+
+            <Flex
+              alignItems="center"
+              p={0}
+              fontSize={'13px'}
               fontFamily={theme.fonts.roboto}
-              onChange={(e) => {
-                setPageSize(Number(e.target.value));
-              }}>
-              {[10, 20, 30, 40, 50].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  Show {pageSize}
-                </option>
-              ))}
-            </Select>
+              color={colorMode === 'light' ? '#3a495f' : '#949494'}
+              pb={'3px'}>
+              Page{' '}
+              <Text fontWeight="bold" as="span" color={'blue.300'}>
+                {pageIndex + 1}
+              </Text>{' '}
+              of{' '}
+              <Text fontWeight="bold" as="span">
+                {pageOptions.length}
+              </Text>
+            </Flex>
+
+            <Flex>
+              <Tooltip label="Next Page">
+                <Center>
+                  <IconButton
+                    w={'24px'}
+                    h={'24px'}
+                    border={
+                      colorMode === 'light'
+                        ? 'solid 1px #e6eaee'
+                        : 'solid 1px #424242'
+                    }
+                    color={colorMode === 'light' ? '#e6eaee' : '#424242'}
+                    bg={colorMode === 'light' ? 'white.100' : 'none'}
+                    borderRadius={4}
+                    aria-label={'Next Page'}
+                    onClick={previousPage}
+                    isDisabled={!canNextPage}
+                    size={'sm'}
+                    ml={4}
+                    mr={'1.5625em'}
+                    _hover={{borderColor: '#2a72e5', color: '#2a72e5'}}
+                    icon={<ChevronRightIcon h={6} w={6} />}
+                  />
+                </Center>
+              </Tooltip>
+              <Select
+                w={'117px'}
+                h={'32px'}
+                mr={1}
+                color={colorMode === 'light' ? ' #3e495c' : '#f3f4f1'}
+                bg={colorMode === 'light' ? 'white.100' : 'none'}
+                boxShadow={
+                  colorMode === 'light'
+                    ? '0 1px 1px 0 rgba(96, 97, 112, 0.14)'
+                    : ''
+                }
+                border={colorMode === 'light' ? '' : 'solid 1px #424242'}
+                borderRadius={4}
+                size={'sm'}
+                value={pageSize}
+                fontFamily={theme.fonts.roboto}
+                onChange={(e) => {
+                  setPageSize(Number(e.target.value));
+                }}>
+                {[10, 20, 30, 40, 50].map((pageSize) => (
+                  <option key={pageSize} value={pageSize}>
+                    Show {pageSize}
+                  </option>
+                ))}
+              </Select>
+            </Flex>
           </Flex>
-        </Flex>
+        )}
       </Box>
     </Flex>
   );

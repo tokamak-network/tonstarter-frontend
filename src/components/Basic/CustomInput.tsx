@@ -21,6 +21,9 @@ type CustomInputProp = {
   numberOnly?: boolean;
   maxBtn?: boolean;
   maxValue?: number;
+  placeHolder?: string;
+  style?: any;
+  fontWeight?: number;
 };
 
 export const CustomInput = (prop: CustomInputProp) => {
@@ -38,6 +41,9 @@ export const CustomInput = (prop: CustomInputProp) => {
     tokenName,
     maxBtn,
     maxValue,
+    placeHolder,
+    style,
+    fontWeight,
   } = prop;
 
   useEffect(() => {
@@ -135,7 +141,7 @@ export const CustomInput = (prop: CustomInputProp) => {
       borderWidth={0}
       border={border}
       textAlign={'center'}
-      fontWeight={'bold'}
+      fontWeight={fontWeight || 'bold'}
       w={w}
       h={h}
       value={value}
@@ -143,6 +149,8 @@ export const CustomInput = (prop: CustomInputProp) => {
       _focus={{
         borderWidth: 0,
       }}
+      placeholder={placeHolder}
+      {...style}
     />
   );
 };

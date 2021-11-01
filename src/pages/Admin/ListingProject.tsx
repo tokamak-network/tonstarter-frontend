@@ -3,6 +3,7 @@ import {PageHeader} from 'components/PageHeader';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useMemo} from 'react';
 import {ListTable} from './components/ListTable';
+import {DistributeModal} from './components/DistributeModal';
 import {ListingTableData} from './types';
 
 export const ListingProject = () => {
@@ -84,6 +85,7 @@ export const ListingProject = () => {
           columns={columns}
           isLoading={isLoading}></ListTable>
       </Flex>
+      <DistributeModal></DistributeModal>
     </Flex>
   );
 };

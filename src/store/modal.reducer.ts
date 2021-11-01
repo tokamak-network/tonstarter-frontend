@@ -17,8 +17,9 @@ type StakingModal =
   | 'claimPool'
   | 'pool_simulator';
 type StarterModal = 'Starter_Approve';
+type AdminModal = 'Admin_Distribute';
 
-export type ModalType = StakingModal | DaoModal | StarterModal;
+export type ModalType = StakingModal | DaoModal | StarterModal | AdminModal;
 
 export type Modal = {
   modal?: ModalType;
