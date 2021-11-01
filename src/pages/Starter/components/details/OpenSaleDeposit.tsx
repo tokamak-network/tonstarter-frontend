@@ -220,7 +220,7 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
             Details
           </Text>
           <Box d="flex" fontSize={'20px'} ml={'15px'}>
-            <Flex w={'286px'} mr={'25px'}>
+            <Flex w={'286px'} mr={'25px'} fontSize={'16px'}>
               <Text color={'gray.400'}>(</Text>
               <Text color={'blue.100'} mr={'3px'} ml={'4px'}>
                 Progress :{' '}
