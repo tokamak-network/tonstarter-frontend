@@ -81,3 +81,14 @@ export type StepComponent = {
   stepName: string[];
   currentStep: number;
 };
+
+export type ListingTableData = {
+  name: string;
+  token: string;
+  saleStart: string;
+  saleEnd: string;
+  saleAmount: string;
+  fundingRaised: string;
+  status: string;
+  btn: any;
+};

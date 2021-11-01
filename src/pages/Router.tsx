@@ -23,6 +23,7 @@ import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {StarterDetail} from './Starter/StarterDetail';
 import {Admin} from './Admin';
+import {ListingProject} from './Admin/ListingProject';
 import {useBlockNumber} from 'hooks/useBlock';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
@@ -167,7 +168,9 @@ export const Router: FC<RouterProps> = () => {
           <Route exact path="/pools" component={Pools} />
           <Route exact path="/starter" component={Starter} />
           <Route exact path="/dao" component={DAO} />
-          <Route exact path="/admin" component={Admin} />
+          {/* <Route exact path="/admin" component={Admin} /> */}
+          <Route exact path="/admin" component={ListingProject} />
+
           <Route exact path={`/starter/active/:id`} component={StarterDetail} />
           <Route
             exact

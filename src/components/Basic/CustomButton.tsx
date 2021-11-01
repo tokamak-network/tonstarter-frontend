@@ -27,7 +27,9 @@ export const CustomButton = (prop: CustomButtonProp) => {
       h={h || '38px'}
       fontSize={fontSize || 14}
       isDisabled={isDisabled}
-      onClick={func}>
+      onClick={func}
+      textAlign={'center'}
+      lineHeight={h || '38px'}>
       {text}
     </Button>
   );

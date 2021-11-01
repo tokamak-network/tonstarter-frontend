@@ -1,7 +1,6 @@
-import {Flex, Box, useColorMode, useTheme, Center} from '@chakra-ui/react';
+import {Flex, Box, useColorMode, useTheme} from '@chakra-ui/react';
 import {useEffect, useState} from 'react';
-import {StepsName, StepComponent} from '@Admin/types';
-import {Step} from './components/Steps';
+import {StepComponent} from '@Admin/types';
 import {PageHeader} from 'components/PageHeader';
 import {AdminDetail} from './components/AdminDetail';
 import {CustomButton} from 'components/Basic/CustomButton';
