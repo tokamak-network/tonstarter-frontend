@@ -15,6 +15,7 @@ type Create = {
   library: any;
   amount: number;
   userAddress: string | null | undefined;
+  poolAddress: string;
   startTime: number,
   endTime: number,
   name: string,
@@ -64,7 +65,7 @@ const generateSig = async (account: string, key: any) => {
 
 
 export const create = async (args: Create) => {
-  const { library, amount, userAddress, startTime, endTime, name, setAlllowed } = args;
+  const { library, amount, userAddress, poolAddress, startTime, endTime, name, setAlllowed } = args;
   if (userAddress === null || userAddress === undefined || library === undefined) {
     return;
   }
@@ -81,11 +82,13 @@ export const create = async (args: Create) => {
 
   const key = {
     rewardToken: TOS_ADDRESS,
-    pool: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
+    pool: poolAddress,
     startTime: startTime,
     endTime: endTime,
     refundee: userAddress,
   };
+  console.log('key', key);
+  
   try {
     console.log(weiAllocated);
     
@@ -100,7 +103,7 @@ export const create = async (args: Create) => {
       const sig = await generateSig(userAddress.toLowerCase(), key);
       const arg: CreateReward = {
         poolName: name,
-        poolAddress: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
+        poolAddress: poolAddress,
         rewardToken: TOS_ADDRESS,
         account: userAddress,
         incentiveKey: key,

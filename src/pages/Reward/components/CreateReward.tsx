@@ -24,6 +24,7 @@ import calender_back_icon_inactive from 'assets/svgs/calender_back_icon_inactive
 import moment from 'moment';
 import {CustomCalendar} from './CustomCalendar';
 import {CustomClock} from './CustomClock';
+import {string} from 'yup';
 
 const themeDesign = {
   border: {
@@ -43,9 +44,25 @@ const themeDesign = {
     dark: 'dashed 1px #535353',
   },
 };
-type CreateRewardProps = {
-  pools: any[];
+type Pool = {
+  id: string;
+  liquidity: string;
+  poolDayData: [];
+  tick: string;
+  token0: {
+    id: string;
+    symbol: string;
+  };
+  token1: {
+    id: string;
+    symbol: string;
+  };
 };
+type CreateRewardProps = {
+  pools: Pool[];
+};
+
+
 type CreateReward = {
   poolName: string;
   poolAddress: string;
@@ -75,22 +92,30 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
   const [startTimeArray, setStartTimeArray] = useState([]);
   const [endTimeArray, setEndTimeArray] = useState([]);
   const [endTime, setEndTime] = useState<number>(0);
-  const [poolsArr, setPoolsArr] = useState([]);
   const [checkAllowed, setCheckAllowed] = useState<number>(0);
+  const [selectedAddress, setSelectedAddress] = useState('');
   useEffect(() => {
-    let poolArr: any = [];
-    poolArr = pools.map((pool) => {
-      return pool.name;
-    });
-    setPoolsArr(poolArr);
-    setName(poolArr[0]);
+    console.log(pools);
+
+    const poolName = pools[0];
+    const poolNm = getPoolName(poolName.token0.symbol, poolName.token1.symbol);
+    setName(poolNm);
+    setSelectedAddress(poolName.id);
   }, [pools]);
 
   const onChangeSelectBoxPools = (e: any) => {
     const filterValue = e.target.value;
-    setName(filterValue);
+    const selectedPool = pools.filter((pool: Pool) => pool.id === filterValue);
+    const name = getPoolName(
+      selectedPool[0].token0.symbol,
+      selectedPool[0].token1.symbol,
+    );
+    setName(name);
+    setSelectedAddress(selectedPool[0].id);
   };
-
+  const getPoolName = (token0: string, token1: string): string => {
+    return `${token0} + ${token1}`;
+  };
   useEffect(() => {
     const ends = moment.unix(endTime);
     const endDates = moment(ends).set({
@@ -113,11 +138,8 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
     checkApproved(library, account, setCheckAllowed);
   }, [library, account, setCheckAllowed]);
 
-  
-
-
   return (
-    <Box display={'flex'} justifyContent={'center'} >
+    <Box display={'flex'} justifyContent={'center'}>
       <Box w={'100%'} px={'15px'}>
         <Text
           fontWeight={'bold'}
@@ -140,9 +162,9 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             fontSize={'12px'}
             w={'190px'}
             onChange={onChangeSelectBoxPools}>
-            {poolsArr.map((item, index) => (
-              <option value={item} key={index}>
-                {item}
+            {pools.map((item, index) => (
+              <option value={item.id} key={index}>
+                {getPoolName(item.token0.symbol, item.token1.symbol)}
               </option>
             ))}
           </Select>
@@ -236,7 +258,10 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             color={themeDesign.font[colorMode]}
           />
         </Flex>
-        <Flex mt={'27px'} justifyContent={'center'} borderBottom={themeDesign.borderDashed[colorMode]}>
+        <Flex
+          mt={'27px'}
+          justifyContent={'center'}
+          borderBottom={themeDesign.borderDashed[colorMode]}>
           <Button
             w={'100px'}
             h={'38px'}
@@ -271,6 +296,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
                 library: library,
                 amount: amount,
                 userAddress: account,
+                poolAddress: selectedAddress,
                 startTime: startTime,
                 endTime: endTime,
                 name: name,
