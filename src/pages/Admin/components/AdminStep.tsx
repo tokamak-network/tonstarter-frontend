@@ -1,4 +1,11 @@
-import {Formik, Form, Field, ErrorMessage} from 'formik';
+import {
+  Formik,
+  Form,
+  Field,
+  ErrorMessage,
+  useFormikContext,
+  getIn,
+} from 'formik';
 import * as Yup from 'yup';
 import {Flex, Box, Text, Button} from '@chakra-ui/react';
 import {AdminObject} from '@Admin/types';
@@ -7,6 +14,9 @@ import {CustomButton} from 'components/Basic/CustomButton';
 import {LibraryType} from 'types';
 import {getTotalExpectSaleAmount} from '../utils/fetchContract';
 import {CustomTooltip} from 'components/Tooltip';
+import {convertTimeStamp} from 'utils/convertTIme';
+import WatchImg from 'assets/svgs/poll-time-active-icon.svg';
+
 type StepProp = {
   data: AdminObject;
   lastStep: boolean;
@@ -26,6 +36,73 @@ const fieldStyle = {
   borderRadius: 4,
   paddingLeft: '15px',
   verticalTextAlign: 'center',
+};
+
+const TimeSetting = (props: {timeStamp: number | ''}) => {
+  const {timeStamp} = props;
+  console.log(timeStamp);
+  return (
+    <Flex h={'13px'} alignSelf="center" ml={'10px'} pt={'3px'}>
+      <Text
+        fontSize={10}
+        color={timeStamp === '' ? 'gray.175' : 'gray.225'}
+        mr={'5px'}>
+        {timeStamp === ''
+          ? 'Time setting'
+          : convertTimeStamp(timeStamp, 'A hh:mm:ss')}
+      </Text>
+      <img
+        src={WatchImg}
+        alt={`watch_icon`}
+        style={{width: '15px', height: '15px'}}></img>
+    </Flex>
+  );
+};
+
+const CustomFieldWithTime = (props: {
+  name: string;
+  title?: string;
+  w?: string;
+  placeHolder?: string;
+}) => {
+  const {name, title, w, placeHolder} = props;
+
+  const {values} = useFormikContext();
+  const fieldValue = getIn(values, name);
+
+  return (
+    <Box d="flex">
+      <Flex style={fieldWrap} flexDir="column" mb={'20px'} pos="relative">
+        <Flex mb={'10px'}>
+          <Text>{title || name}</Text>
+          <ErrorMessage
+            name={name}
+            render={() => (
+              <div
+                style={{
+                  marginLeft: '3px',
+                  color: 'red',
+                  fontSize: '15px',
+                  verticalAlign: 'center',
+                  textAlign: 'center',
+                }}>
+                *
+              </div>
+            )}
+          />
+        </Flex>
+        <Field
+          style={{...fieldStyle, width: w || '327px'}}
+          name={name}
+          placeHolder={placeHolder || `input ${name}`}
+        />
+      </Flex>
+      <TimeSetting
+        timeStamp={
+          fieldValue === '' ? fieldValue : Number(fieldValue)
+        }></TimeSetting>
+    </Box>
+  );
 };
 
 const CustomTextAreaField = (props: {name: string; title?: string}) => {
@@ -74,6 +151,7 @@ const CustomField = (props: {
   placeHolder?: string;
 }) => {
   const {name, title, w, placeHolder} = props;
+
   return (
     <Flex style={fieldWrap} flexDir="column" mb={'20px'} pos="relative">
       <Flex mb={'10px'}>
@@ -387,7 +465,7 @@ export const StepThree: React.FC<StepProp> = (props) => {
 
   const [timeline, setTimeline] = useState<
     0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
-  >(9);
+  >(0);
 
   const handleSubmit = (values: any) => {
     handleNextStep(values, lastStep);
@@ -464,6 +542,7 @@ export const StepThree: React.FC<StepProp> = (props) => {
     fontSize: '14px',
     fontWeight: 600,
     backgroundColor: '#ffffff',
+    paddingLeft: '1px',
   };
 
   const timeLineStyle = (props: any) => ({
@@ -471,13 +550,14 @@ export const StepThree: React.FC<StepProp> = (props) => {
     width: '24px',
     height: '24px',
     borderRadius: '18px',
-    border: props.isTimeLine ? '1px solid #0070ed' : '1px solid #e6eaee',
+    border: props.isTimeLine ? '1px solid #0070ed' : '',
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: '14px',
     fontWeight: 600,
     backgroundColor: props.isTimeLine ? '#ffffff' : '#0070ed',
     color: props.isTimeLine ? '#0070ed' : '#ffffff',
+    paddingLeft: '1px',
   });
 
   async function getFetch() {
@@ -485,15 +565,56 @@ export const StepThree: React.FC<StepProp> = (props) => {
       library,
       address: '0x865200f8172bf55f99b53A8fa0E26988b94dfBbE',
     });
-    console.log(res);
     if (res) {
+      console.log(res);
       setData({...res, saleContractAddress: 'test'});
+      checkTimeLine(res);
     }
   }
 
-  useEffect(() => {
+  function checkTimeLine(data: any) {
+    console.log('data');
     console.log(data);
-  }, [data]);
+    for (const [key, value] of Object.entries(data)) {
+      if (key === 'snapshot' && value === '') {
+        return setTimeline(1);
+      }
+      if (key === 'startAddWhiteTime' && value === '') {
+        return setTimeline(2);
+      }
+      if (key === 'endAddWhiteTime' && value === '') {
+        return setTimeline(3);
+      }
+      if (key === 'startExclusiveTime' && value === '') {
+        return setTimeline(4);
+      }
+      if (key === 'endExclusiveTime' && value === '') {
+        return setTimeline(5);
+      }
+      if (key === 'startDepositTime' && value === '') {
+        return setTimeline(6);
+      }
+      if (key === 'endDepositTime' && value === '') {
+        return setTimeline(7);
+      }
+      if (key === 'endDepositTime' && value === '') {
+        return setTimeline(7);
+      }
+      if (key === 'startClaimTime' && value === '') {
+        return setTimeline(8);
+      }
+      if (key === 'claimInterval' && value === '') {
+        return setTimeline(8);
+      }
+      if (key === 'claimPeriod' && value === '') {
+        return setTimeline(8);
+      }
+      if (key === 'claimFirst' && value === '') {
+        return setTimeline(8);
+      }
+      return setTimeline(9);
+    }
+  }
 
   return (
     <Formik
@@ -767,39 +888,39 @@ export const StepThree: React.FC<StepProp> = (props) => {
                   <Text>Round 1</Text>
                 </Flex>
                 <Box>
-                  <CustomField
+                  <CustomFieldWithTime
                     name={'snapshot'}
                     title={'1. Snapshot Timestamp'}
                     w={'200px'}
-                    placeHolder={'MM/DD/YYYY'}></CustomField>
+                    placeHolder={'MM/DD/YYYY'}></CustomFieldWithTime>
                 </Box>
                 <Box>
-                  <CustomField
+                  <CustomFieldWithTime
                     name={'startAddWhiteTime'}
                     title={'2. AddWhiltelist Start Time'}
                     w={'200px'}
-                    placeHolder={'MM/DD/YYYY'}></CustomField>
+                    placeHolder={'MM/DD/YYYY'}></CustomFieldWithTime>
                 </Box>
                 <Box>
-                  <CustomField
+                  <CustomFieldWithTime
                     name={'endAddWhiteTime'}
                     title={'3. EndWhitelist End Time'}
                     w={'200px'}
-                    placeHolder={'MM/DD/YYYY'}></CustomField>
+                    placeHolder={'MM/DD/YYYY'}></CustomFieldWithTime>
                 </Box>
                 <Box>
-                  <CustomField
+                  <CustomFieldWithTime
                     name={'startExclusiveTime'}
                     title={'4. Exclusive Start Time'}
                     w={'200px'}
-                    placeHolder={'MM/DD/YYYY'}></CustomField>
+                    placeHolder={'MM/DD/YYYY'}></CustomFieldWithTime>
                 </Box>
                 <Box>
-                  <CustomField
+                  <CustomFieldWithTime
                     name={'endExclusiveTime'}
                     title={'5. Exclusive End Time'}
                     w={'200px'}
-                    placeHolder={'MM/DD/YYYY'}></CustomField>
+                    placeHolder={'MM/DD/YYYY'}></CustomFieldWithTime>
                 </Box>
                 <Flex
                   style={titleStyle}
@@ -809,18 +930,18 @@ export const StepThree: React.FC<StepProp> = (props) => {
                   <Text>Round 2</Text>
                 </Flex>
                 <Box>
-                  <CustomField
+                  <CustomFieldWithTime
                     name={'endExclusiveTime'}
                     title={'6. Deposit Start Time'}
                     w={'200px'}
-                    placeHolder={'MM/DD/YYYY'}></CustomField>
+                    placeHolder={'MM/DD/YYYY'}></CustomFieldWithTime>
                 </Box>
                 <Box>
-                  <CustomField
+                  <CustomFieldWithTime
                     name={'endExclusiveTime'}
                     title={'7. Deposit End Time'}
                     w={'200px'}
-                    placeHolder={'MM/DD/YYYY'}></CustomField>
+                    placeHolder={'MM/DD/YYYY'}></CustomFieldWithTime>
                 </Box>
                 <Flex
                   style={titleStyle}
@@ -830,11 +951,11 @@ export const StepThree: React.FC<StepProp> = (props) => {
                   <Text>Vesting</Text>
                 </Flex>
                 <Box>
-                  <CustomField
+                  <CustomFieldWithTime
                     name={'startClaimTime'}
                     title={'8. Claim Start Time'}
                     w={'200px'}
-                    placeHolder={'MM/DD/YYYY'}></CustomField>
+                    placeHolder={'MM/DD/YYYY'}></CustomFieldWithTime>
                 </Box>
                 <Box>
                   <CustomField
