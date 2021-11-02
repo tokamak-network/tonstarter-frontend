@@ -32,7 +32,7 @@ import {
   usePositionByUserQuery,
   usePositionByContractQuery,
 } from 'store/data/generated';
-
+import {SideContainer} from './SideContainer'
 const {UniswapStaking_Address, UniswapStaker_Address, NPM_Address} = DEPLOYED;
 type Pool = {
   id: string, 
@@ -41,7 +41,6 @@ type Pool = {
   tick: string,
   token0: Token,
   token1: Token
-
 }
 type Token = {
   id: string,
@@ -135,6 +134,8 @@ export const Reward = () => {
         pool.map((pool: any) => {
            const withStakedPosition = position.data.positions.filter((position: any) => pool.id === position.pool.id)
            setPositions(withStakedPosition);
+           console.log('withStakedPosition', withStakedPosition);
+           
            setSelectdPosition(withStakedPosition[0].id)
         })
        
@@ -229,13 +230,16 @@ export const Reward = () => {
             </Select>
           </Flex>
         </Flex>
+        <Flex flexDir={'row'} mt={'30px'} justifyContent={'space-between'}>
         {selected === 'reward' ? (
           <RewardContainer rewards={datas} position={selectdPosition} pool={selectedPool}/>
         ) : (
-          <ManageContainer pools={[]} />
+          <ManageContainer  />
         )}
-        </Box>) : null}
+        <SideContainer pools={pool} selected={selected} rewards={datas} LPTokens={positions}/> </Flex>
         
+        
+        </Box>) : null}
       </Container>
     </Fragment>
   );

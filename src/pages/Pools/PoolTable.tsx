@@ -359,7 +359,8 @@ export const PoolTable: FC<PoolTableProps> = ({
                     const data = cell.row.original;
                     const type = cell.column.id;
                     const {poolDayData} = data;
-
+                    console.log(poolDayData);
+                    
                     const length = poolDayData.length - 1;
                     const poolName = getPoolName(
                       data.token0.symbol,

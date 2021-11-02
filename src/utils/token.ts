@@ -63,7 +63,6 @@ export const checkTokenType = (
             'ton' : payToken === tokenAddresses['tos'] ? 
             'tos' :payToken === tokenAddresses['wton']? 
             'wton': 'tos';
-console.log(tokenType);
 
   switch (tokenType) {
     case 'eth':

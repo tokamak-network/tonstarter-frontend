@@ -58,17 +58,13 @@ export const RewardContainer: FC<RewardContainerProps> = ({rewards, pool, positi
   const [pageLimit, setPageLimit] = useState<number>(6)
   useEffect(() => {
     const pagenumber = parseInt(((rewards.length-1)/pageLimit + 1).toString());
-   setPageOptions(pagenumber)
-   console.log(pool);
-   
+   setPageOptions(pagenumber)   
   //  rewards.map((reward: any) => {
   //    if (reward.poolAddress === pool.id) {
   //      reward.token0 = pool.token0;
   //      reward.token1 = pool.token1;
   //    }
   //  })
-    
-    console.log('pool', pool);
   }, [rewards, pageLimit]);
 
   const getPaginatedData = () => {
@@ -90,11 +86,10 @@ export const RewardContainer: FC<RewardContainerProps> = ({rewards, pool, positi
   const theme = useTheme();
 
   return (
-    <Flex justifyContent={'space-between'} mb="100px" mt={'30px'}>
+    <Flex justifyContent={'space-between'} mb="100px">
       <Flex flexWrap={'wrap'}>
         <Grid templateColumns="repeat(2, 1fr)" gap={30}>
           {getPaginatedData().map((reward: any, index) => {
-            console.log('pool', pool);
             
             let token0;
             let token1;
@@ -106,10 +101,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({rewards, pool, positi
                 token0 = '0x0000000000000000000000000000000000000000';
                 token1 = '0x73a54e5C054aA64C1AE7373C2B5474d8AFEa08bd'
               }
-              console.log('token0', token0);
-              console.log('token1', token1);
-              
-              
+            
             const rewardProps = {
               chainId: reward.chainId,
               poolName: reward.poolName,
@@ -132,7 +124,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({rewards, pool, positi
         <Flex>
           <Tooltip label="Previous Page">
             <IconButton
-              w={'24px'}
+            minW={'24px'}
               h={'24px'}
               bg={colorMode === 'light' ? 'white.100' : 'none'}
               border={
@@ -173,7 +165,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({rewards, pool, positi
           <Tooltip label="Next Page">
             <Center>
               <IconButton
-                w={'24px'}
+               minW={'24px'}
                 h={'24px'}
                 border={
                   colorMode === 'light'
@@ -224,7 +216,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({rewards, pool, positi
       </Flex>
       </Flex>
       <Flex>
-        <ClaimReward />
+        {/* <ClaimReward /> */}
       </Flex>
      
     </Flex>

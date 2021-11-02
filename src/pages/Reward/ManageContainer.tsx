@@ -15,24 +15,21 @@ import {
   } from '@chakra-ui/react';
 
   type ManageContainerProps = {
-    pools: any[];
+
   };
 
-  export const ManageContainer: FC<ManageContainerProps> =({
-    pools }) =>{
+  export const ManageContainer: FC<ManageContainerProps> =({}) =>{
 
       useEffect (()=> {
-        pools.map((item, index) =>{
-          // console.log(item.name);
-          
-        })
         
-      }, [pools])
+      }, [])
+
+    
         return (
-            <Flex justifyContent={'space-between'} mt={'30px'}>
+            <Flex justifyContent={'space-between'}>
               <Flex>Manage reward container</Flex>
               <Flex>
-              <CreateReward pools={pools}/>
+              {/* <CreateReward pools={pools}/> */}
               </Flex>
                 
             </Flex>

@@ -38,6 +38,10 @@ const themeDesign = {
     light: 'gray.250',
     dark: 'black.100',
   },
+  borderDashed: {
+    light: 'dashed 1px #dfe4ee',
+    dark: 'dashed 1px #535353',
+  },
 };
 type CreateRewardProps = {
   pools: any[];
@@ -113,15 +117,8 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
 
 
   return (
-    <Box display={'flex'} justifyContent={'flex-end'}>
-      <Box
-        boxShadow={'0 2px 5px 0 rgba(61, 73, 93, 0.1)'}
-        border={colorMode === 'light' ? '' : '1px solid #535353'}
-        h={'920px'}
-        w={'284px'}
-        p={'20px 15px'}
-        borderRadius={'15px'}
-        bg={colorMode === 'light' ? '#FFFFFF' : ''}>
+    <Box display={'flex'} justifyContent={'center'} >
+      <Box w={'100%'} px={'15px'}>
         <Text
           fontWeight={'bold'}
           fontFamily={theme.fonts.titil}
@@ -239,12 +236,13 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             color={themeDesign.font[colorMode]}
           />
         </Flex>
-        <Flex mt={'27px'} justifyContent={'center'}>
+        <Flex mt={'27px'} justifyContent={'center'} borderBottom={themeDesign.borderDashed[colorMode]}>
           <Button
             w={'100px'}
             h={'38px'}
             bg={'blue.500'}
             mr={'10px'}
+            mb={'40px'}
             color="white.100"
             fontSize="14px"
             disabled={amount === 0}
@@ -262,6 +260,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
           <Button
             w={'100px'}
             h={'38px'}
+            mb={'40px'}
             bg={'blue.500'}
             color="white.100"
             fontSize="14px"
