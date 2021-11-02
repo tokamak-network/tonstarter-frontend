@@ -9,7 +9,7 @@ import {DAO} from './Dao/index';
 import {Starter} from './Starter/index';
 import {Switch, Route} from 'react-router-dom';
 import {useAppDispatch} from 'hooks/useRedux';
-// import {fetchAppConfig} from 'store/app/app.reducer';
+import {fetchAppConfig} from 'store/app/app.reducer';
 import {fetchUserInfo} from 'store/app/user.reducer';
 import {fetchStakes} from './Staking/staking.reducer';
 import {AirdropModal} from 'components/Airdrop/Index';
@@ -98,7 +98,7 @@ export const Router: FC<RouterProps> = () => {
       // const {signIn} = accountStorage;
 
       // // @ts-ignore
-      // dispatch(fetchAppConfig({chainId}));
+      dispatch(fetchAppConfig({chainId}));
 
       // if (signIn === false) {
       //   deactivate();
@@ -126,6 +126,8 @@ export const Router: FC<RouterProps> = () => {
     if (account && library) {
       // @ts-ignore
       dispatch(fetchUserInfo({account, library}));
+      // @ts-ignore
+      dispatch(fetchAppConfig({chainId}));
     }
   }, [blockNumber, account, library]);
 
@@ -168,8 +170,8 @@ export const Router: FC<RouterProps> = () => {
           <Route exact path="/pools" component={Pools} />
           <Route exact path="/starter" component={Starter} />
           <Route exact path="/dao" component={DAO} />
-          {/* <Route exact path="/admin" component={Admin} /> */}
-          <Route exact path="/admin" component={ListingProject} />
+          <Route exact path="/admin/createproject" component={Admin} />
+          <Route exact path="/admin/listproject" component={ListingProject} />
 
           <Route exact path={`/starter/active/:id`} component={StarterDetail} />
           <Route

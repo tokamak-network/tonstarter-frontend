@@ -19,6 +19,7 @@ import {useAppSelector} from 'hooks/useRedux';
 import {selectTxType} from 'store/tx.reducer';
 import {useDispatch} from 'react-redux';
 import {openModal} from 'store/modal.reducer';
+import {Menu, MenuButton, MenuList, MenuItem} from '@chakra-ui/react';
 
 type HeaderProps = {
   walletopen: () => void;
@@ -288,12 +289,53 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           }}>
           <Text className={match?.isExact ? 'link-match' : 'link'}>Guide</Text>
         </NavLink>
-        <NavLink
+        {/* <NavLink
           to="/admin"
           className={match?.isExact ? 'link-match' : 'link'}
           style={{zIndex: 100}}>
           Admin
-        </NavLink>
+        </NavLink> */}
+        <Menu>
+          <MenuButton>
+            <Text className={match?.isExact ? 'link-match' : 'link'}>
+              Admin
+            </Text>
+          </MenuButton>
+          <MenuList
+            pos={'absolute'}
+            left={'-33px'}
+            top={'15px'}
+            minW={'124px'}
+            w={'124px'}
+            h={'74px'}
+            p={0}
+            fontSize={13}
+            background={'#ffffff'}>
+            <NavLink
+              to="/admin/createproject"
+              activeStyle={{background: '#ffffff', color: '#1c1c1c'}}
+              style={{background: '#ffffff', color: '#1c1c1c'}}>
+              <MenuItem
+                _hover={{color: 'blue.100', bg: 'none'}}
+                w={'124px'}
+                h={'37px'}
+                _focus={{bg: '#ffffff'}}>
+                Create Project
+              </MenuItem>
+            </NavLink>
+            <NavLink
+              to="/admin/listproject"
+              activeStyle={{background: '#ffffff', color: '#1c1c1c'}}
+              style={{background: '#ffffff', color: '#1c1c1c'}}>
+              <MenuItem
+                _hover={{color: 'blue.100', bg: 'none'}}
+                w={'124px'}
+                h={'37px'}>
+                Listing Projects
+              </MenuItem>
+            </NavLink>
+          </MenuList>
+        </Menu>
       </Stack>
     </Box>
   );

@@ -1,4 +1,4 @@
-import {FC, useState, useRef} from 'react';
+import {FC, useRef} from 'react';
 import {
   Column,
   useExpanded,
@@ -17,17 +17,16 @@ import {
   Center,
   useTheme,
   Tooltip,
+  Link,
 } from '@chakra-ui/react';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
-import {selectTableType} from 'store/table.reducer';
-import {useAppSelector} from 'hooks/useRedux';
-import {useEffect} from 'react';
-import {setTimeout} from 'timers';
 import {LoadingComponent} from 'components/Loading';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {useDispatch} from 'react-redux';
 import {openModal} from 'store/modal.reducer';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectApp} from 'store/app/app.reducer';
 
 type ListTableProps = {
   columns: Column[];
@@ -41,7 +40,7 @@ export const ListTable: FC<ListTableProps> = ({columns, data, isLoading}) => {
     getTableBodyProps,
     headerGroups,
     prepareRow,
-    visibleColumns,
+    // visibleColumns,
     canPreviousPage,
     canNextPage,
     pageOptions,
@@ -62,29 +61,7 @@ export const ListTable: FC<ListTableProps> = ({columns, data, isLoading}) => {
   const focusTarget = useRef<any>([]);
   const {library} = useActiveWeb3React();
   const dispatch = useDispatch();
-
-  const {
-    data: {contractAddress, index},
-  } = useAppSelector(selectTableType);
-
-  useEffect(() => {
-    if (index) {
-      let loop = Math.floor(index / 10);
-      while (loop) {
-        nextPage();
-        loop = loop - 1;
-        if (loop === 0) {
-          setTimeout(() => {
-            focusTarget?.current[
-              index - Math.floor(index / 10) * 10
-            ]?.scrollIntoView({
-              block: 'start',
-            });
-          }, 100);
-        }
-      }
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const {data: appConfig} = useAppSelector(selectApp);
 
   const onChangeSelectBox = (e: any) => {
     const filterValue = e.target.value;
@@ -195,7 +172,6 @@ export const ListTable: FC<ListTableProps> = ({columns, data, isLoading}) => {
                   ref={(el) => (focusTarget.current[i] = el)}
                   h={16}
                   key={i}
-                  cursor={'pointer'}
                   borderBottomRadius={'10px'}
                   mb={'20px'}
                   w="100%"
@@ -213,6 +189,7 @@ export const ListTable: FC<ListTableProps> = ({columns, data, isLoading}) => {
                       saleAmount,
                       fundingRaised,
                       status,
+                      contractAddress,
                     } = cell.row.original;
                     const type = cell.column.id;
                     return (
@@ -243,7 +220,20 @@ export const ListTable: FC<ListTableProps> = ({columns, data, isLoading}) => {
                         p={0}
                         textAlign="center"
                         {...cell.getCellProps()}>
-                        {type === 'name' && name}
+                        {type === 'name' && (
+                          <Link
+                            textDecor={'underline'}
+                            cursor={'pointer'}
+                            isExternal={true}
+                            outline={'none'}
+                            fontWeight={600}
+                            _hover={{
+                              color: 'blue.100',
+                            }}
+                            href={`${appConfig.explorerLink}${contractAddress}`}>
+                            {name}
+                          </Link>
+                        )}
                         {type === 'token' && token}
                         {type === 'saleStart' && saleStart}
                         {type === 'saleEnd' && saleEnd}
@@ -261,7 +251,7 @@ export const ListTable: FC<ListTableProps> = ({columns, data, isLoading}) => {
                                 openModal({
                                   type: 'Admin_Distribute',
                                   data: {
-                                    address: name,
+                                    contractAddress,
                                   },
                                 }),
                               )

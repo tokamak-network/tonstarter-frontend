@@ -9,6 +9,7 @@ import {
   Button,
   Flex,
   useTheme,
+  useColorMode,
 } from '@chakra-ui/react';
 import React, {useState} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
@@ -25,10 +26,12 @@ export const DistributeModal = () => {
   const {account, library} = useActiveWeb3React();
   const {handleCloseModal} = useModal();
   const {btnStyle} = theme;
-  const {address, amount} = data.data;
+  const {contractAddress} = data.data;
 
   const [tokenAddress, setTokenAddress] = useState<string>('');
   const [tokenAmount, setTokenAmount] = useState('');
+
+  console.log(contractAddress);
 
   return (
     <Modal

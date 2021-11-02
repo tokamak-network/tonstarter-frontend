@@ -17,6 +17,8 @@ export const ListingProject = () => {
   } = {
     data: [
       {
+        contractAddress: '0x865200f8172bf55f99b53A8fa0E26988b94dfBbE',
+        adminAddress: '0x8c595DA827F4182bC0E3917BccA8e654DF8223E1',
         name: 'DOC Project',
         token: 'DOC',
         saleStart: '2021 09 01 20:00:00',
@@ -72,7 +74,7 @@ export const ListingProject = () => {
   const {data, columns, isLoading} = dummyData;
 
   return (
-    <Flex mt={'72px'} flexDir="column" alignItems="center">
+    <Flex mt={'110px'} flexDir="column" alignItems="center">
       <PageHeader
         title={'Listing Projects'}
         subtitle={

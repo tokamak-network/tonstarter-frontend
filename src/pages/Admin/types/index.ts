@@ -83,6 +83,8 @@ export type StepComponent = {
 };
 
 export type ListingTableData = {
+  contractAddress: string;
+  adminAddress: string;
   name: string;
   token: string;
   saleStart: string;
