@@ -20,6 +20,7 @@ import {
   chakra,
   // useTheme
 } from '@chakra-ui/react';
+import { number } from 'prop-types';
 type Pool = {
   id: string, 
   liquidity: string,
@@ -116,7 +117,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({rewards, pool, positi
               numStakers: reward.numStakers,
               status: reward.status,
             };
-            return <RewardProgramCard reward={rewardProps} />;
+            return <RewardProgramCard reward={rewardProps} selectedToken={Number(position)} />;
           })}
         </Grid>
         <Flex mt={'22px'} position={'relative'}>

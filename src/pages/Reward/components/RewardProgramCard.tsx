@@ -21,11 +21,10 @@ import {DEPLOYED} from 'constants/index';
 import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import * as NPMABI from 'services/abis/NonfungiblePositionManager.json';
-import {approveStaking, stake} from '../actions';
+import {approveStaking, stake, unstake} from '../actions';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import {utils, ethers} from 'ethers';
 import {soliditySha3} from 'web3-utils';
-import {stakeReducer} from '@Staking/staking.reducer';
 type incentiveKey = {
   rewardToken: string;
   pool: string;
@@ -64,11 +63,12 @@ const themeDesign = {
 };
 type RewardProgramCardProps = {
   reward: Reward;
+  selectedToken: number;
 };
 
 const {UniswapStaking_Address, UniswapStaker_Address} = DEPLOYED;
 
-export const RewardProgramCard: FC<RewardProgramCardProps> = ({reward}) => {
+export const RewardProgramCard: FC<RewardProgramCardProps> = ({reward,selectedToken}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {REWARD_STYLE} = theme;
@@ -136,18 +136,18 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({reward}) => {
         UniswapStaking_Address,
       );
       console.log('isApprovedForAll', isApprovedForAll);
-      
+
       setApproved(isApprovedForAll);
     }
-    
-      checkApproved();
-    
+
+    checkApproved();
+
     /*eslint-disable*/
   }, [account, library]);
 
   useEffect(() => {
     async function checkStaked() {
-      const tokenID = 7775;
+      // const tokenID = tokenID;
       if (account === null || account === undefined || library === undefined) {
         return;
       }
@@ -173,8 +173,6 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({reward}) => {
     checkStaked();
   }, [account, library]);
 
-  console.log(approved);
-  
   useEffect(() => {
     async function getMyReward() {
       if (account === null || account === undefined || library === undefined) {
@@ -185,7 +183,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({reward}) => {
         try {
           const rewardInfo = await uniswapStakerContract
             .connect(signer)
-            .getRewardInfo(key, Number(7775));
+            .getRewardInfo(key, Number(tokenID));
           const myReward = Number(rewardInfo.reward);
           setMyReward(myReward);
         } catch (err) {}
@@ -195,25 +193,61 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({reward}) => {
       getMyReward();
     }
   }, [account, library]);
+
   useEffect(() => {
-    console.log('staked', staked);
-    
     const now = moment().unix();
     if (!approved && now > reward.startTime) {
       setCanApprove(true);
       setButtonState('Approve');
-    } else if (approved && now < reward.endTime) {
+    } if (approved && now < reward.endTime) {
       setButtonState('Stake');
-    } else if (staked && now < reward.endTime) {
+    } if (staked && now < reward.endTime) {
       setButtonState('In Progress');
-    } else if (staked && now > reward.endTime) {
+    } if (staked && now > reward.endTime) {
       setButtonState('Unstake');
+    }  if (!staked && now > reward.endTime){
+      setButtonState('Closed');
     }
-    else {
-      setButtonState('withdraw');
-    }
-  }, [approved,staked]);
+  }, [approved, staked]);
 
+  const buttonFunction = (buttonCase: string) => {
+
+    if (buttonCase === 'Approve'){
+      console.log('Approve');
+      
+      approveStaking({
+        userAddress: account,
+        library: library,
+      });
+    }
+   if (buttonCase === 'Stake') {
+     console.log('Stake');
+     
+    stake({
+      library: library,
+      tokenid: selectedToken,
+      userAddress: account,
+      startTime: reward.startTime,
+      endTime: reward.endTime,
+      rewardToken: reward.rewardToken,
+      poolAddress: reward.poolAddress,
+      refundee: reward.incentiveKey.refundee,
+    });
+   }
+    if (buttonCase === 'Unstake') {
+      console.log('unstake');
+      
+      unstake({library: library,
+        tokenid: tokenID,
+        userAddress: account,
+        startTime: reward.startTime,
+        endTime: reward.endTime,
+        rewardToken: reward.rewardToken,
+        poolAddress: reward.poolAddress,
+        refundee: reward.incentiveKey.refundee,})
+    } 
+      
+  };
   return (
     <Flex {...REWARD_STYLE.containerStyle({colorMode})} flexDir={'column'}>
       <Flex flexDir={'row'} width={'100%'} alignItems={'center'} h={'50px'}>
@@ -267,12 +301,17 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({reward}) => {
                   minimumFractionDigits: 2,
                 })}{' '}
                 {checkTokenType(reward.rewardToken).name} /{' '}
-                {parseFloat(((Number(
-                    ethers.utils.formatEther(myReward.toString()),
-                  )*100) /
-                  Number(
-                    ethers.utils.formatEther(reward.allocatedReward.toString()),
-                  )).toFixed(4))}
+                {parseFloat(
+                  (
+                    (Number(ethers.utils.formatEther(myReward.toString())) *
+                      100) /
+                    Number(
+                      ethers.utils.formatEther(
+                        reward.allocatedReward.toString(),
+                      ),
+                    )
+                  ).toFixed(4),
+                )}
                 %
               </Text>
               <Flex flexDir={'row'}>
@@ -385,30 +424,12 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({reward}) => {
           color="white.100"
           ml={'10px'}
           fontSize="16px"
-          _hover={{backgroundColor: 'blue.100'}}
+          _hover={{backgroundColor: 'none'}}
+          _disabled={{backgroundColor: 'gray.25', cursor:'default'}}
           onClick={() =>
-            approved
-              ? stake({
-                  library: library,
-                  tokenid: 7775,
-                  userAddress: account,
-                  startTime: reward.startTime,
-                  endTime: reward.endTime,
-                  rewardToken: reward.rewardToken,
-                  poolAddress: reward.poolAddress,
-                  refundee: reward.incentiveKey.refundee,
-                })
-              : approveStaking({
-                  userAddress: account,
-                  library: library,
-                })
+            buttonFunction(buttonState)
           }
-          disabled={
-            !canApprove && buttonState === 'Approve'
-              ? true
-              : buttonState === 'In Progress'
-              ? true
-              : false
+          disabled={moment().unix() < reward.startTime || buttonState==='Closed'
           }>
           {buttonState}
         </Button>
