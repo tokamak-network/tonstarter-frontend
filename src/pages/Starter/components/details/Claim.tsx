@@ -80,16 +80,30 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
         setPeriod(String(Math.floor(period)));
         setEndPeriod(endPeriod.toString());
 
-        if (period > endPeriodNum) {
-          const nextVestingDate = startClaimTimeNum + intervalNum * period;
-          setD_Day(nextVestingDate);
-          setVestingDay(convertTimeStamp(nextVestingDate));
-        } else {
-          const nextVestingDate =
-            startClaimTimeNum + intervalNum * endPeriodNum;
-          setD_Day(nextVestingDate);
-          setVestingDay(convertTimeStamp(nextVestingDate));
-        }
+        const nextVestingDate = startClaimTimeNum + intervalNum * period;
+
+        setD_Day(nextVestingDate);
+        setVestingDay(convertTimeStamp(nextVestingDate));
+
+        // if (period > endPeriodNum) {
+        //   const nextVestingDate = startClaimTimeNum + intervalNum * period;
+        //   console.log(nextVestingDate);
+
+        //   setD_Day(nextVestingDate);
+        //   setVestingDay(convertTimeStamp(nextVestingDate));
+        // } else {
+        //   const nextVestingDate =
+        //     startClaimTimeNum + intervalNum * endPeriodNum;
+        //   console.log('-go-');
+        //   console.log(diffTime);
+        //   console.log(intervalNum + 1);
+        //   console.log(period);
+        //   console.log(endPeriodNum);
+        //   console.log(nextVestingDate);
+
+        //   setD_Day(nextVestingDate);
+        //   setVestingDay(convertTimeStamp(nextVestingDate));
+        // }
       }
     }
     if (saleInfo && library && PUBLICSALE_CONTRACT) {
