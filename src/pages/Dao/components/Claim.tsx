@@ -6,26 +6,26 @@ import {
   useColorMode,
   useTheme,
 } from '@chakra-ui/react';
-import {getUserTOSStaked} from 'client/getUserBalance';
-import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {getUserSTOSBalance} from 'client/getUserBalance';
 import {useActiveWeb3React} from 'hooks/useWeb3';
-import {useEffect, useState} from 'react';
+import {useEffect} from 'react';
+import {useState} from 'react';
 import {openModal} from 'store/modal.reducer';
-import {useBlockNumber} from 'hooks/useBlock';
 import {selectDao} from '../dao.reducer';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 
-export const MyStaked = () => {
+export const Claim = () => {
   const dispatch = useAppDispatch();
   const {
     data: {tosStakeList: stakeList},
   } = (useAppSelector as any)(selectDao);
   const [balance, setbalance] = useState('-');
-  const [isEnd, setIsEnd] = useState(true);
+  const [btnDisabled, setBtnDisabled] = useState(true);
   const theme = useTheme();
   const {btnStyle, btnHover} = theme;
   const {colorMode} = useColorMode();
   const {account, library, active} = useActiveWeb3React();
-  const {blockNumber} = useBlockNumber();
+  const filteredStakeList = stakeList.filter((e: any) => e.end === false);
 
   const themeDesign = {
     fontColorTitle: {
@@ -40,26 +40,22 @@ export const MyStaked = () => {
 
   useEffect(() => {
     async function getTosBalance() {
-      const res = await getUserTOSStaked({account, library});
+      const res = await getUserSTOSBalance({account, library});
+      setBtnDisabled(true);
       if (res !== undefined) {
         setbalance(res);
+        if (filteredStakeList.length !== 0) {
+          setBtnDisabled(false);
+        }
       }
     }
     if (account) {
       getTosBalance();
-      setIsEnd(true);
-      stakeList.map((stake: any) => {
-        if (stake.end === true && stake.endTime > 0) {
-          return setIsEnd(false);
-        }
-        return null;
-      });
     } else {
       setbalance('-');
     }
-  }, [active, account, library, stakeList, dispatch, blockNumber]);
-
-  console.log(stakeList);
+    /*eslint-disable*/
+  }, [active, account, library, dispatch, stakeList]);
 
   return (
     <Flex
@@ -70,19 +66,16 @@ export const MyStaked = () => {
         <Text
           fontSize={'0.875em'}
           color={themeDesign.fontColorTitle[colorMode]}>
-          My Staked
+          My Airdrop
         </Text>
         <Flex color={themeDesign.fontColor[colorMode]}>
           <Text fontSize={'1.250em'} mr="5px">
-            {balance}
-          </Text>
-          <Text fontSize={'0.813em'} alignSelf="flex-end" mb={0.5}>
-            TOS
+            $ {balance}
           </Text>
         </Flex>
       </Box>
       <Button
-        {...(active && !isEnd
+        {...(active && !btnDisabled
           ? {...btnStyle.btnAble()}
           : {...btnStyle.btnDisable({colorMode})})}
         w={'150px'}
@@ -90,17 +83,17 @@ export const MyStaked = () => {
         p={0}
         fontSize={'14px'}
         fontWeight={400}
-        isDisabled={!active || isEnd}
+        // isDisabled={!active || btnDisabled}
         _hover={btnHover.backgroundColor}
         onClick={() =>
           dispatch(
             openModal({
-              type: 'dao_unstake',
-              data: {userTosBalance: balance, lockList: stakeList},
+              type: 'dao_claim',
+              data: {userTosBalance: balance, stakeList: filteredStakeList},
             }),
           )
         }>
-        UnStake
+        Claim
       </Button>
     </Flex>
   );

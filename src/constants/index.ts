@@ -63,7 +63,7 @@ const MAINNET_DEPLOYED = {
   NPM_Address: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
   BasePool_Address: '0x1c0ce9aaa0c12f53df3b4d8d77b82d6ad343b4e4',
   StakeTonControl_ADDRESS: '0xacdded49ac67ba9c87b1bbc5cb248b1bd7dc0f19',
-  PublicSale_ADDRESS: '',
+  LockTOSDividend_ADDRESS: '',
 };
 
 const RINKEBY_DEPLOYED = {
@@ -81,7 +81,7 @@ const RINKEBY_DEPLOYED = {
   LockTOS_ADDRESS: '0xecd5a04e6ae20da1b77db90fb33fb7a7a27784af',
   BasePool_Address: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
   StakeTonControl_ADDRESS: '0xF049030A9D6faCbD6C76E08794CC751b1Dbaa072',
-  PublicSale_ADDRESS: '0x230f12eb4A37055dC0E11B3f7405c9EE94E71ee9',
+  LockTOSDividend_ADDRESS: '0x6fc6465da0c8ebaa9b2c549020225bf4f5386d29',
 };
 
 export const DEPLOYED: DEPLOYED_TYPE =

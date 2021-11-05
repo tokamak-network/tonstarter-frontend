@@ -40,7 +40,6 @@ const fieldStyle = {
 
 const TimeSetting = (props: {timeStamp: number | ''}) => {
   const {timeStamp} = props;
-  console.log(timeStamp);
   return (
     <Flex h={'13px'} alignSelf="center" ml={'10px'} pt={'3px'}>
       <Text
@@ -70,6 +69,12 @@ const CustomFieldWithTime = (props: {
   const {values} = useFormikContext();
   const fieldValue = getIn(values, name);
 
+  useEffect(() => {
+    console.log('--');
+    console.log(values);
+    console.log(fieldValue);
+  }, [values, fieldValue]);
+
   return (
     <Box d="flex">
       <Flex style={fieldWrap} flexDir="column" mb={'20px'} pos="relative">
@@ -92,8 +97,14 @@ const CustomFieldWithTime = (props: {
           />
         </Flex>
         <Field
-          style={{...fieldStyle, width: w || '327px'}}
+          disabled={true}
+          style={{...fieldStyle, width: w || '327px', background: '#ffffff'}}
           name={name}
+          value={
+            fieldValue === ''
+              ? ''
+              : convertTimeStamp(Number(fieldValue), 'MM/DD/YYYY')
+          }
           placeHolder={placeHolder || `input ${name}`}
         />
       </Flex>

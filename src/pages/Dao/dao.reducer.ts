@@ -1,11 +1,16 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {RootState} from 'store/reducers';
 import {LibraryType} from 'types/index';
-import {TosStakeList} from './types/index';
+import {TosStakeList, ClaimList} from './types/index';
 import {getTosStakeList} from './utils/getTosStakeList';
+import {getAirdropList} from './actions/airdropClaim';
+import {fetchStarterURL} from 'constants/index';
 
 interface TosStakeState {
-  data: TosStakeList[];
+  data: {
+    tosStakeList: TosStakeList[];
+    claimList: ClaimList[];
+  };
   loading: 'idle' | 'pending';
   error: any;
   currentRequestId?: string;
@@ -14,10 +19,14 @@ interface TosStakeState {
 type FetchTosStakes = {
   account: string;
   library: LibraryType;
+  chainId: number;
 };
 
 const initialState = {
-  data: [],
+  data: {
+    tosStakeList: [],
+    claimList: [],
+  },
   loading: 'idle',
   error: null,
   currentRequestId: undefined,
@@ -25,14 +34,34 @@ const initialState = {
 
 export const fetchTosStakes = createAsyncThunk(
   'dao/tosStakesAll',
-  async ({account, library}: FetchTosStakes, {requestId, getState}) => {
+  async (
+    {account, library, chainId}: FetchTosStakes,
+    {requestId, getState},
+  ) => {
     const {currentRequestId, loading} = (getState as any)().dao;
 
     if (loading !== 'pending' || requestId !== currentRequestId) {
       return;
     }
-    const res = await getTosStakeList({account, library});
-    return res;
+    //tos stake
+    const tosStakeList = await getTosStakeList({account, library});
+
+    //claim
+    const starterReq = await fetch(fetchStarterURL)
+      .then((res) => res.json())
+      .then((result) => result);
+
+    const starterData = starterReq.datas;
+    const tokenAddresses = starterData.map((project: any) => {
+      if (project.chainId === chainId) {
+        return project.tokenAddress;
+      }
+    });
+
+    // console.log('-gogo-');
+    // const claimList = await getAirdropList({account, library, tokenAddresses});
+    // console.log(claimList);
+    return {tosStakeList, claimList: []};
   },
 );
 

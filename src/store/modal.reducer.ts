@@ -1,7 +1,7 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from './reducers';
 
-type DaoModal = 'dao_stake' | 'dao_unstake' | 'dao_manage';
+type DaoModal = 'dao_stake' | 'dao_unstake' | 'dao_manage' | 'dao_claim';
 type StakingModal =
   | 'stake'
   | 'unstake'

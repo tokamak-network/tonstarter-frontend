@@ -14,6 +14,7 @@ import {
   DaoStakeModal,
   DaoUnstakeModal,
   DaoManageModal,
+  DaoClaim,
 } from './components/Modals';
 import {useEffect} from 'react';
 import {useAppDispatch} from 'hooks/useRedux';
@@ -27,7 +28,7 @@ export const DAO = () => {
   const {colorMode} = useColorMode();
   const dispatch = useAppDispatch();
   const {blockNumber} = useBlockNumber();
-  const {account, library} = useActiveWeb3React();
+  const {account, library, chainId} = useActiveWeb3React();
 
   const themeDesign = {
     fontColor: {
@@ -45,15 +46,16 @@ export const DAO = () => {
   };
 
   useEffect(() => {
-    if (account && library) {
+    if (account && library && chainId) {
       dispatch(
         fetchTosStakes({
           account,
           library,
+          chainId,
         }) as any,
       );
     }
-  }, [account, library, dispatch, blockNumber]);
+  }, [account, library, dispatch, blockNumber, chainId]);
 
   return (
     <Flex>
@@ -155,7 +157,7 @@ export const DAO = () => {
               <Utility></Utility>
             </Flex>
           </Flex>
-          <Flex mt={75}>
+          <Flex mt={'57px'}>
             <STOS></STOS>
           </Flex>
         </Flex>
@@ -163,6 +165,7 @@ export const DAO = () => {
       <DaoStakeModal></DaoStakeModal>
       <DaoUnstakeModal></DaoUnstakeModal>
       <DaoManageModal></DaoManageModal>
+      <DaoClaim></DaoClaim>
     </Flex>
   );
 };

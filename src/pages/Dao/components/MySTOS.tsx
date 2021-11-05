@@ -16,7 +16,9 @@ import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 
 export const MySTOS = () => {
   const dispatch = useAppDispatch();
-  const {data: stakeList} = (useAppSelector as any)(selectDao);
+  const {
+    data: {tosStakeList: stakeList},
+  } = (useAppSelector as any)(selectDao);
   const [balance, setbalance] = useState('-');
   const [btnDisabled, setBtnDisabled] = useState(true);
   const theme = useTheme();
