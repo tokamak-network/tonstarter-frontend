@@ -113,14 +113,11 @@ export const PoolTable: FC<PoolTableProps> = ({
     async function positionPayload() {
       if (address) {
         const result = await fetchPositionPayload(library, address);
-        console.log('result', result);
         
         let stringResult: any = [];
         for (let i = 0; i < result?.positionData.length; i++) {
           stringResult.push(result?.positionData[i]?.positionid.toString());
-        }
-        console.log('stringResult', stringResult);
-        
+        }        
         const nowTime = moment().unix();
         nowTime > Number(result?.saleStartTime.toString()) &&
         nowTime < Number(result?.miningEndTime.toString())
@@ -161,9 +158,7 @@ export const PoolTable: FC<PoolTableProps> = ({
 
         const withStakedPosition = positionByContract.data.positions.concat(
           position.data.positions,
-        );
-        console.log('withStakedPosition', position);
-        
+        );        
         setPositions(withStakedPosition);
       }
     }
@@ -358,9 +353,7 @@ export const PoolTable: FC<PoolTableProps> = ({
                   {row.cells.map((cell: any, index: number) => {
                     const data = cell.row.original;
                     const type = cell.column.id;
-                    const {poolDayData} = data;
-                    console.log(poolDayData);
-                    
+                    const {poolDayData} = data;                    
                     const length = poolDayData.length - 1;
                     const poolName = getPoolName(
                       data.token0.symbol,

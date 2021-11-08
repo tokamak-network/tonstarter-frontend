@@ -22,10 +22,11 @@ import {DEPLOYED} from 'constants/index';
 import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import * as NPMABI from 'services/abis/NonfungiblePositionManager.json';
-import {approveStaking, stake, unstake} from '../actions';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import {utils, ethers} from 'ethers';
 import {soliditySha3} from 'web3-utils';
+import {refund} from '../actions'
+
 type incentiveKey = {
   rewardToken: string;
   pool: string;
@@ -62,14 +63,14 @@ const themeDesign = {
     dark: 'black.100',
   },
 };
-type RewardProgramCardProps = {
+type RewardProgramCardManageProps = {
   reward: Reward;
   selectedToken: number;
 };
 
 const {UniswapStaking_Address, UniswapStaker_Address} = DEPLOYED;
 
-export const RewardProgramCard: FC<RewardProgramCardProps> = ({
+export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
   reward,
   selectedToken,
 }) => {
@@ -79,16 +80,10 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   const {account, library} = useActiveWeb3React();
   const [progress, setProgress] = useState<number>(0);
   const [dDay, setdDay] = useState<any>();
-  const [canApprove, setCanApprove] = useState<boolean>(false);
-  const {NPM_Address, UniswapStaking_Address} = DEPLOYED;
-  const [approved, setApproved] = useState<boolean>(false);
-  const [myReward, setMyReward] = useState<number>(0);
-  const [staked, setStaked] = useState<boolean>(false);
-  const [withdraw, setWithdraw] = useState<boolean>(false);
-  const [buttonState, setButtonState] = useState<string>('Approve');
   const [tokenID, setTokenID] = useState<number>(7775);
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
-
+  const [refundableAmount, setRefundableAmount] = useState<number>(0);
+  const [numStakers, setNumStakers] = useState<number>(0);
   const key = {
     rewardToken: reward.rewardToken,
     pool: reward.poolAddress,
@@ -104,6 +99,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   );
 
   useEffect(() => {
+
     const now = moment().unix();
     const start = moment.unix(Number(reward.startTime)).startOf('day').unix();
     const end = moment.unix(Number(reward.endTime)).endOf('day').unix();
@@ -131,141 +127,34 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   }, [reward]);
 
   useEffect(() => {
-    async function checkApproved() {
+    async function getIncentives() {
       if (account === null || account === undefined || library === undefined) {
         return;
       }
-      const NPM = new Contract(NPM_Address, NPMABI.abi, library);
+      
+      const incentiveABI =
+        'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)';
+      const abicoder = ethers.utils.defaultAbiCoder;
+      const incentiveId = soliditySha3(abicoder.encode([incentiveABI], [key]));
       const signer = getSigner(library, account);
-
-      const isApprovedForAll = await NPM.connect(signer).isApprovedForAll(
-        account,
-        UniswapStaking_Address,
-      );
-      setApproved(isApprovedForAll);
-    }
-    async function checkStaked() {
-      // const tokenID = tokenID;
-      if (account === null || account === undefined || library === undefined) {
-        return;
-      }
-      const signer = getSigner(library, account);
-      const depositInfo = await uniswapStakerContract
+      const incentiveInfo = await uniswapStakerContract
         .connect(signer)
-        .deposits(tokenID);
-      if (depositInfo.owner === account) {
-        const incentiveABI =
-          'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)';
-        const abicoder = ethers.utils.defaultAbiCoder;
-        const incentiveId = soliditySha3(
-          abicoder.encode([incentiveABI], [key]),
-        );
-        const stakeInfo = await uniswapStakerContract
-          .connect(signer)
-          .stakes(tokenID, incentiveId);
+        .incentives(incentiveId);
+        setRefundableAmount(Number(incentiveInfo.totalRewardUnclaimed));
+        setNumStakers(Number(incentiveInfo.numberOfStakes));
+    }
+   
+    getIncentives();
+  }, [account, library, transactionType, blockNumber, tokenID]);
 
-        stakeInfo.liquidity > 0 ? setStaked(true) : setStaked(false);
-      }
-    }
-
-    async function getMyReward() {
-      if (account === null || account === undefined || library === undefined) {
-        return;
-      }
-      if (staked) {
-        const signer = getSigner(library, account);
-        try {
-          const rewardInfo = await uniswapStakerContract
-            .connect(signer)
-            .getRewardInfo(key, Number(tokenID));
-          const myReward = Number(rewardInfo.reward);
-          setMyReward(myReward);
-        } catch (err) {}
-      }
-    }
-
-    // async function checkUnstaked () {
-    //   if (account === null || account === undefined || library === undefined) {
-    //     return;
-    //   }
-    //   const signer = getSigner(library, account);
-    //   const depositInfo = await uniswapStakerContract
-    //     .connect(signer)
-    //     .deposits(tokenID);
-    //   console.log('deposits', depositInfo);
-    //   if (depositInfo.owner === account && depositInfo.numberOfStakes===0) {
-    //     setWithdraw(true);
-
-
-    //   }
-    // }
-
-    checkApproved();
-    checkStaked();
-    getMyReward();
-    // checkUnstaked();
-    /*eslint-disable*/
-  }, [account, library, transactionType, blockNumber, tokenID, approved]);
-
-  useEffect(() => {
-    const now = moment().unix();
-    if (!approved && now > reward.startTime) {
-      setCanApprove(true);
-      setButtonState('Approve');
-    }
-    if (approved && now < reward.endTime) {
-      setButtonState('Stake');
-    }
-    if (staked && now < reward.endTime) {
-      setButtonState('In Progress');
-    }
-    if (staked && now > reward.endTime) {
-      setButtonState('Unstake');
-    }
-    if (!staked && now > reward.endTime) {
-      setButtonState('Closed');
-    }
-    // if (withdraw && buttonState==='Closed') {
-    //   setButtonState('Withdraw');
-    // }
-  }, [approved, staked]);
-
-  const buttonFunction = (buttonCase: string) => {
-    if (buttonCase === 'Approve') {
-      approveStaking({
-        userAddress: account,
-        library: library,
-      });
-    }
-    if (buttonCase === 'Stake') {
-      stake({
-        library: library,
-        tokenid: selectedToken,
-        userAddress: account,
-        startTime: reward.startTime,
-        endTime: reward.endTime,
-        rewardToken: reward.rewardToken,
-        poolAddress: reward.poolAddress,
-        refundee: reward.incentiveKey.refundee,
-      });
-      setTokenID(selectedToken);
-    }
-    if (buttonCase === 'Unstake') {
-      unstake({
-        library: library,
-        tokenid: tokenID,
-        userAddress: account,
-        startTime: reward.startTime,
-        endTime: reward.endTime,
-        rewardToken: reward.rewardToken,
-        poolAddress: reward.poolAddress,
-        refundee: reward.incentiveKey.refundee,
-      });
-    }
-  };
   return (
     <Flex {...REWARD_STYLE.containerStyle({colorMode})} flexDir={'column'}>
-      <Flex flexDir={'row'} width={'100%'} alignItems={'center'} h={'50px'}>
+      <Flex
+        flexDir={'row'}
+        width={'100%'}
+        alignItems={'center'}
+        justifyContent={'space-between'}
+        h={'50px'}>
         <Box>
           <Avatar
             src={checkTokenType(reward.token0Address).symbol}
@@ -290,69 +179,37 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
             border={checkTokenType(reward.token1Address).border}
           />
         </Box>
-        {staked ? (
-          <Flex flexDir={'row'} alignItems={'center'}>
-            <Box
-              w={'8px'}
-              h={'8px'}
-              borderRadius={50}
-              bg={'#f95359'}
-              m={'7px'}></Box>
-            <Text
-              {...{
-                ...REWARD_STYLE.joinedText({
-                  colorMode,
-                  fontSize: 11,
-                }),
-              }}
-              mr={'30px'}>
-              Joined
+        <Flex flexDir={'row'} alignItems={'center'}>
+          <Box>
+            <Text textAlign={'right'}>
+              {Number(
+                ethers.utils.formatEther(refundableAmount.toString()),
+              ).toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+              })}{' '}
+              {checkTokenType(reward.rewardToken).name} /{' '} {numStakers}
             </Text>
-            <Box>
-              <Text>
-                {Number(
-                  ethers.utils.formatEther(myReward.toString()),
-                ).toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                })}{' '}
-                {checkTokenType(reward.rewardToken).name} /{' '}
-                {parseFloat(
-                  (
-                    (Number(ethers.utils.formatEther(myReward.toString())) *
-                      100) /
-                    Number(
-                      ethers.utils.formatEther(
-                        reward.allocatedReward.toString(),
-                      ),
-                    )
-                  ).toFixed(4),
-                )}
-                %
+            <Flex flexDir={'row'}>
+              <Text
+                {...REWARD_STYLE.subText({colorMode, fontSize: 12})}
+                mr={'2px'}>
+                Refundable Amount{' '}
               </Text>
-              <Flex flexDir={'row'}>
-                <Text
-                  {...REWARD_STYLE.subText({colorMode, fontSize: 12})}
-                  mr={'2px'}>
-                  My Reward{' '}
-                </Text>
-                <Tooltip
-                  hasArrow
-                  placement="top"
-                  label="These are the rewards that are allocated when you currently unstake. Depending on the time of unstaking, the reward amount may vary."
-                  color={theme.colors.white[100]}
-                  bg={theme.colors.gray[375]}>
-                  <Image src={tooltipIcon} mr={'2px'} />
-                </Tooltip>
+              <Tooltip
+                hasArrow
+                placement="top"
+                label="These are the rewards that are allocated when you currently unstake. Depending on the time of unstaking, the reward amount may vary."
+                color={theme.colors.white[100]}
+                bg={theme.colors.gray[375]}>
+                <Image src={tooltipIcon} mr={'2px'} />
+              </Tooltip>
 
-                <Text {...REWARD_STYLE.subText({colorMode, fontSize: 12})}>
-                  / My portion
-                </Text>
-              </Flex>
-            </Box>
-          </Flex>
-        ) : (
-          ''
-        )}
+              <Text {...REWARD_STYLE.subText({colorMode, fontSize: 12})}>
+                / Stakers
+              </Text>
+            </Flex>
+          </Box>
+        </Flex>
       </Flex>
       <Flex mt={'15px'} alignItems={'center'}>
         <Text {...REWARD_STYLE.mainText({colorMode})} mr={'10px'}>
@@ -441,11 +298,14 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
           fontSize="16px"
           _hover={{backgroundColor: 'none'}}
           _disabled={{backgroundColor: 'gray.25', cursor: 'default'}}
-          onClick={() => buttonFunction(buttonState)}
-          disabled={
-            moment().unix() < reward.startTime || buttonState === 'Closed' || buttonState === 'In Progress'
-          }>
-          {buttonState}
+          disabled={numStakers !==0 || refundableAmount === 0}
+          onClick={()=> {refund({
+              library: library, 
+              userAddress: account,
+              key: key
+
+          })}}>
+        Refund
         </Button>
       </Flex>
     </Flex>

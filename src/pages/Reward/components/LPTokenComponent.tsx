@@ -118,8 +118,6 @@ export const LPTokenComponent: FC<LPTokenComponentProps> = ({tokens}) => {
       >
         <Grid templateColumns="repeat(3, 1fr)" gap={'10px'}>
           {getPaginatedData().map((token: Token, index) => {
-            //   console.log(token.id);
-
             return (
               <Flex
                 key={index}

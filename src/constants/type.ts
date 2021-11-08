@@ -13,6 +13,7 @@ export type DEPLOYED_TYPE = {
   UniswapStaker_Address: string;
   NPM_Address: string;
   BasePool_Address: string;
+  DOCPool_Address: string;
   StakeTonControl_ADDRESS: string;
   LockTOSProxy_ADDRESS:string;
   DividendPool_ADDRESS: string;

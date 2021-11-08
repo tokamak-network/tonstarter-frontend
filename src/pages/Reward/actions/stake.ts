@@ -42,8 +42,6 @@ export const stake = async (args: Stake) => {
   const incentiveKeyAbi = 'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)'
   const abicoder = ethers.utils.defaultAbiCoder;
   const data = abicoder.encode([incentiveKeyAbi], [key],);
-  console.log(data);
-
   try {
     const receipt = await NPM.connect(signer).safeTransferFrom(userAddress, UniswapStaker_Address, tokenid, data);
     store.dispatch(setTxPending({ tx: true }));

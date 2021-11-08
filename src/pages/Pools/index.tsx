@@ -85,9 +85,6 @@ export const Pools = () => {
 
   const [pool, setPool] = useState([]);
   useEffect(() => {
-    console.log('data from staking', data);
-    
-
     function getPool() {
       // const poolArr = basePool.loading ? [] : basePool.data.pools;
 
