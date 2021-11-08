@@ -87,10 +87,8 @@ export const create = async (args: Create) => {
     endTime: endTime,
     refundee: userAddress,
   };
-  console.log('key', key);
   
   try {
-    console.log(weiAllocated);
     
     const receipt = await uniswapStakerContract
       .connect(signer)

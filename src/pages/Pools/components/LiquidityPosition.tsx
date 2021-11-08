@@ -165,6 +165,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
     library,
     owner,
   ]);
+console.log('blockNumber', blockNumber);
 
   const tooltipMsg = () => {
     return (

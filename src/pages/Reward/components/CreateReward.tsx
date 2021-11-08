@@ -95,7 +95,6 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
   const [checkAllowed, setCheckAllowed] = useState<number>(0);
   const [selectedAddress, setSelectedAddress] = useState('');
   useEffect(() => {
-    console.log(pools);
 
     const poolName = pools[0];
     const poolNm = getPoolName(poolName.token0.symbol, poolName.token1.symbol);

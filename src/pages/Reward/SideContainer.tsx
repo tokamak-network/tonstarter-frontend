@@ -39,7 +39,7 @@ export const SideContainer: FC<SideContainerProps> = ({selected, pools, rewards,
       bg={colorMode === 'light' ? '#FFFFFF' : ''} mb={'20px'}>
       <Box>
         {selected === 'reward' ? (
-          <ClaimReward />
+          <ClaimReward rewards={rewards} />
         ) : (
           <CreateReward pools={pools} />
         )}

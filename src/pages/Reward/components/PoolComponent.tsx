@@ -110,13 +110,14 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
           Pools
         </Text>
       </Flex>
-      {getPaginatedData().map((pool: any) => {
+      {getPaginatedData().map((pool: any, index:number) => {
         const length = pool.poolDayData.length - 1;
         const numRewards = rewards.filter(
           (reward) => reward.poolAddress === pool.id,
         ).length;
         return (
           <Flex
+          key={index}
             h={'73px'}
             borderBottom={themeDesign.border[colorMode]}
             flexDirection={'row'}
@@ -215,10 +216,11 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
           </Tooltip>
         </Flex>
         <Flex>
-          {getPaginationGroup().map((groupIndex: number) => {
+          {getPaginationGroup().map((groupIndex: number, index:number) => {
             const data = getPaginatedData().length;
             return (
               <Button
+              key={index}
                 h="24px"
                 minW="24px"
                 background="transparent"

@@ -117,7 +117,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({rewards, pool, positi
               numStakers: reward.numStakers,
               status: reward.status,
             };
-            return <RewardProgramCard reward={rewardProps} selectedToken={Number(position)} />;
+            return <RewardProgramCard key={index} reward={rewardProps} selectedToken={Number(position)} />;
           })}
         </Grid>
         <Flex mt={'22px'} position={'relative'}>

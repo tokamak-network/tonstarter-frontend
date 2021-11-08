@@ -173,11 +173,12 @@ export const LPTokenComponent: FC<LPTokenComponentProps> = ({tokens}) => {
           </Tooltip>
         </Flex>
         <Flex>
-          {getPaginationGroup().map((groupIndex: number) => {
+          {getPaginationGroup().map((groupIndex: number, index:number) => {
             const data = getPaginatedData().length;
             return (
               <Button
                 h="24px"
+                key={index}
                 minW="24px"
                 background="transparent"
                 fontFamily={theme.fonts.roboto}
