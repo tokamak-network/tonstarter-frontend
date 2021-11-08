@@ -80,11 +80,6 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
         setPeriod(String(Math.floor(period)));
         setEndPeriod(endPeriod.toString());
 
-        // const nextVestingDate = startClaimTimeNum + intervalNum * period;
-
-        // setD_Day(nextVestingDate);
-        // setVestingDay(convertTimeStamp(nextVestingDate, 'YYYY.MM.DD hh:mm:ss'));
-
         if (period < endPeriodNum) {
           const nextVestingDate = startClaimTimeNum + intervalNum * period;
 
