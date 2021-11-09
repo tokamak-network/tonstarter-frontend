@@ -5,6 +5,7 @@ import {
   Flex,
   Link,
   Select,
+  Center,
   useColorMode,
   FormControl,
   FormLabel,
@@ -24,6 +25,8 @@ import {usePoolByUserQuery} from 'store/data/enhanced';
 import {DEPLOYED} from '../../constants/index';
 import ms from 'ms.macro';
 import {Contract} from '@ethersproject/contracts';
+import {LoadingComponent} from 'components/Loading';
+
 import * as StakeUniswapABI from 'services/abis/StakeUniswapV3.json';
 import {getSigner} from 'utils/contract';
 import {getPoolName, checkTokenType} from '../../utils/token';
@@ -78,6 +81,8 @@ export const Reward = () => {
   const [stakingPosition, setStakingPosition] = useState([]);
   const [positionData, setPositionData] = useState([]);
   const [manageDatas, setManageDatas] = useState<Reward[]>([]);
+  const [isPositionLoading, setIsPositionLoading] = useState(true);
+
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
 const [pools, setPools] = useState([]);
   const {isLoading, isError, error, isUninitialized, data} = usePoolByUserQuery(
@@ -129,10 +134,15 @@ const [pools, setPools] = useState([]);
             signer,
           ).getUserStakedTokenIds(account);
         }
+        if (datas.length !== 0) {
+          setTimeout(() => {
+            setIsPositionLoading(false);
+          }, 1500);
+        }
       }
     }
     positionPayload();
-  }, [account, library]);
+  }, [account, datas,library]);
   const position = usePositionByUserQuery(
     {address: account},
     {
@@ -186,8 +196,7 @@ const [pools, setPools] = useState([]);
     <Fragment>
       <Head title={'Reward'} />
       <Container maxW={'6xl'}>
-        {selectedPool ? (
-          <Box>
+        
             <Box py={20}>
               <PageHeader
                 title={'Rewards Program'}
@@ -196,7 +205,8 @@ const [pools, setPools] = useState([]);
                 }
               />
             </Box>
-
+            {(isPositionLoading !== true  && selectedPool && account !== undefined ) ? (
+          <Box>
             <Flex
               fontFamily={theme.fonts.roboto}
               flexDir={'row'}
@@ -282,7 +292,9 @@ const [pools, setPools] = useState([]);
               />{' '}
             </Flex>
           </Box>
-        ) : null}
+        ) :<Center>
+        <LoadingComponent />
+      </Center>}
       </Container>
     </Fragment>
   );

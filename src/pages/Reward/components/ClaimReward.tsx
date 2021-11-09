@@ -341,7 +341,8 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
           pb="30px"
           justifyContent={'center'}
           pt="19px"
-          mx="15px">
+          mx="15px"
+          borderBottom={themeDesign.borderDashed[colorMode]}>
           <Flex>
             <Tooltip label="Previous Page">
               <IconButton
