@@ -6,18 +6,16 @@ import { setTxPending } from 'store/tx.reducer';
 import { toastWithReceipt } from 'utils';
 import { openToast } from 'store/app/toast.reducer';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
-import { utils, ethers } from 'ethers';
 
-type Claim = {
+type Withdraw = {
     library: any;
     userAddress: string | null | undefined;
-    amount: string;
-    rewardToken: string;
+   tokenID: number
 }
 const { UniswapStaker_Address } = DEPLOYED;
 
-export const claim = async (args: Claim) => {
-    const { library, userAddress, amount, rewardToken } = args;
+export const withdraw = async (args: Withdraw) => {
+    const { library, userAddress,tokenID} = args;
     if (userAddress === null || userAddress === undefined) {
         return;
     }
@@ -30,10 +28,9 @@ export const claim = async (args: Claim) => {
         STAKERABI.abi,
         library,
     );
-
-    const claimAmount = ethers.utils.parseEther(amount.toString())
+   
     try {
-        const receipt = await uniswapStakerContract.connect(signer).claimReward(rewardToken, userAddress, claimAmount);
+        const receipt = await uniswapStakerContract.connect(signer).withdrawToken(tokenID, userAddress, '0x');
         store.dispatch(setTxPending({ tx: true }));
         if (receipt) {
             toastWithReceipt(receipt, setTxPending, 'Reward');

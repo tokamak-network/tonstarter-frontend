@@ -298,7 +298,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
           fontSize="16px"
           _hover={{backgroundColor: 'none'}}
           _disabled={{backgroundColor: 'gray.25', cursor: 'default'}}
-          disabled={numStakers !==0 || refundableAmount === 0}
+          disabled={(numStakers !==0 || refundableAmount === 0) || reward.endTime > moment().unix()}
           onClick={()=> {refund({
               library: library, 
               userAddress: account,

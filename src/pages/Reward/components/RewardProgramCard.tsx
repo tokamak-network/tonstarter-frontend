@@ -86,7 +86,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   const [staked, setStaked] = useState<boolean>(false);
   const [withdraw, setWithdraw] = useState<boolean>(false);
   const [buttonState, setButtonState] = useState<string>('Approve');
-  const [tokenID, setTokenID] = useState<number>(7775);
+  const [tokenID, setTokenID] = useState<number>(7774);
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
 
   const key = {

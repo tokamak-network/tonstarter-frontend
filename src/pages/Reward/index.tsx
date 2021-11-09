@@ -181,11 +181,7 @@ const [pools, setPools] = useState([]);
     );
     setManageDatas(filtered);
   }, [datas, account, library]);
-  // const onChangeSelectBoxPools = (e: any) => {
-  //   const filterValue = e.target.value;
-  //   console.log('filterValue', filterValue);
-  // };
-
+  
   return (
     <Fragment>
       <Head title={'Reward'} />
