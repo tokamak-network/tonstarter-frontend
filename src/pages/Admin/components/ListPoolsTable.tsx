@@ -199,6 +199,11 @@ export const ListPoolsTable: FC<ListTableProps> = ({
                               w={'78px'}
                               h={'25px'}
                               fontSize={12}
+                              style={{
+                                border: 'solid 1px #2a72e5',
+                                background: '#ffffff',
+                                color: '#2a72e5',
+                              }}
                               func={() =>
                                 dispatch(
                                   openModal({
