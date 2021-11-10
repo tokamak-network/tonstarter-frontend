@@ -77,7 +77,7 @@ export const Reward = () => {
   const [selectedPool, setSelectedPool] = useState<Pool>();
   const [selectdPosition, setSelectdPosition] = useState<string>('');
   const [selected, setSelected] = useState('reward');
-  const [pool, setPool] = useState([]);
+  const [pool, setPool] = useState<any[]>([]);
   const [stakingPosition, setStakingPosition] = useState([]);
   const [positionData, setPositionData] = useState([]);
   const [manageDatas, setManageDatas] = useState<Reward[]>([]);
@@ -100,7 +100,7 @@ export const Reward = () => {
 
   useEffect(() => {
     const filteredData = filterDatas();
-    setOrderedData(filteredData)
+    setOrderedData(filteredData);
   }, [sortString, datas]);
 
   const changeSelect = (e: any) => {
@@ -122,7 +122,14 @@ export const Reward = () => {
 
   useEffect(() => {
     function getPool() {
-      const poolArr = isLoading ? [] : data.pools;
+      const secondPool = {...dataddd.data};
+      const secondpooldata = {...secondPool};
+      const allPools: any[] = [];
+      if (!isLoading && !dataddd.isLoading) {
+        allPools.push(data.pools[0]);
+        allPools.push(secondpooldata.pools[0]);
+      }
+      const poolArr = isLoading ? [] : allPools;
       setSelectedPool(poolArr[0]);
       setPool(poolArr);
     }
@@ -136,6 +143,7 @@ export const Reward = () => {
     isUninitialized,
     error,
     data,
+    dataddd,
   ]);
 
   useEffect(() => {
@@ -185,21 +193,24 @@ export const Reward = () => {
     function getPosition() {
       if (position.data && positionByContract.data) {
         position.refetch();
-
-        pool.map((pool: any) => {
+        if (selectedPool !== undefined) {
           const withStakedPosition = position.data.positions.filter(
-            (position: any) => pool.id === position.pool.id,
+            (position: any) => selectedPool.id === position.pool.id,
           );
-          setPositions(withStakedPosition);
+          console.log('withStakedPosition', withStakedPosition);
 
-          setSelectdPosition(withStakedPosition[0].id);
-        });
+          setPositions(withStakedPosition);
+          if (withStakedPosition.length !== 0) {
+            setSelectdPosition(withStakedPosition[0].id);
+          }
+        }
       }
     }
     getPosition();
     /*eslint-disable*/
   }, [
     pool,
+    selectedPool,
     transactionType,
     blockNumber,
     position.isLoading,
@@ -216,6 +227,12 @@ export const Reward = () => {
     setManageDatas(filtered);
   }, [orderedData, sortString, account, library]);
 
+  const getSelectedPool = (poolAddress: string) => {
+    const selected = pool.filter((pool) => pool.id === poolAddress);
+    setSelectedPool(selected[0])
+    
+
+  }
   return (
     <Fragment>
       <Head title={'Reward'} />
@@ -226,20 +243,23 @@ export const Reward = () => {
             subtitle={'Stake Uniswap V3 liquidity tokens and receive rewards! '}
           />
         </Box>
-        {isPositionLoading !== true && selectedPool && account !== undefined ? (
+        {isPositionLoading !== true && account !== undefined ? (
           <Box>
             <Flex
               fontFamily={theme.fonts.roboto}
               flexDir={'row'}
               justifyContent={'space-between'}>
-              <Flex>
+              <Flex alignItems={'center'}>
                 <Select
                   w={'157px'}
                   h={'32px'}
                   color={'#86929d'}
                   mr={'10px'}
+                  placeholder="Pools"
                   fontSize={'13px'}
-                  onChange={(e) => {}}>
+                  onChange={(e) => {
+                    getSelectedPool(e.target.value);
+                  }}>
                   {pool.map((item: any, index) => {
                     const poolName = getPoolName(
                       item.token0.symbol,
@@ -257,6 +277,7 @@ export const Reward = () => {
                   h={'32px'}
                   color={'#86929d'}
                   fontSize={'13px'}
+                  placeholder="My LP tokens"
                   onChange={(e) => {
                     setSelectdPosition(e.target.value);
                   }}>
@@ -266,6 +287,22 @@ export const Reward = () => {
                     </option>
                   ))}
                 </Select>
+                {positions.length === 0 ? (
+                  <Text
+                    textDecoration={'underline'}
+                    pl={'20px'}
+                    cursor={'pointer'}
+                    color={'#0070ed'}
+                    fontSize={'13px'}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.open(
+                        'https://app.uniswap.org/#/add/0x409c4D8cd5d2924b9bc5509230d16a61289c8153/0xc4A11aaf6ea915Ed7Ac194161d2fC9384F15bff2/3000',
+                      );
+                    }}>
+                    Create your liquidity tokens here
+                  </Text>
+                ) : null}
               </Flex>
               <Flex>
                 <FormControl display="flex" alignItems="center" mr={'45px'}>
@@ -300,13 +337,15 @@ export const Reward = () => {
                 <RewardContainer
                   rewards={orderedData}
                   position={selectdPosition}
-                  pool={selectedPool}
+                  selectedPool={selectedPool}
+                  pools={pool}
                 />
               ) : (
                 <ManageContainer
                   position={selectdPosition}
-                  pool={selectedPool}
+                  selectedPool={selectedPool}
                   rewards={manageDatas}
+                  pools={pool}
                 />
               )}
               <SideContainer

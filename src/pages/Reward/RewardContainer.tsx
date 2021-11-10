@@ -17,7 +17,7 @@ import {getPoolName} from '../../utils/token';
 import {ClaimReward} from './components/ClaimReward';
 import {RewardProgramCard} from './components/RewardProgramCard';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
-import {stakeMultiple} from './actions'
+import {stakeMultiple} from './actions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 
 import {
@@ -40,7 +40,8 @@ type Token = {
 type RewardContainerProps = {
   rewards: any[];
   position?: string;
-  pool: Pool;
+  selectedPool?: Pool;
+  pools: any[]
 };
 type Reward = {
   chainId: Number;
@@ -58,13 +59,15 @@ type Reward = {
 };
 export const RewardContainer: FC<RewardContainerProps> = ({
   rewards,
-  pool,
+  selectedPool,
   position,
+  pools
 }) => {
   const [pageOptions, setPageOptions] = useState<number>(0);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(6);
   const {account, library} = useActiveWeb3React();
+  const [stakeList, setStakeList] = useState([]);
   const {colorMode} = useColorMode();
   const theme = useTheme();
   useEffect(() => {
@@ -72,12 +75,6 @@ export const RewardContainer: FC<RewardContainerProps> = ({
       ((rewards.length - 1) / pageLimit + 1).toString(),
     );
     setPageOptions(pagenumber);
-    //  rewards.map((reward: any) => {
-    //    if (reward.poolAddress === pool.id) {
-    //      reward.token0 = pool.token0;
-    //      reward.token1 = pool.token1;
-    //    }
-    //  })
   }, [rewards, pageLimit]);
 
   const getPaginatedData = () => {
@@ -97,8 +94,6 @@ export const RewardContainer: FC<RewardContainerProps> = ({
   const multipleStakeList: any = [];
 
   const stakeMultipleKeys = (key: any) => {
-    console.log(key.startTime, key.endTime);
-
     if (
       multipleStakeList.filter(
         (listkey: any) =>
@@ -108,11 +103,11 @@ export const RewardContainer: FC<RewardContainerProps> = ({
     ) {
       multipleStakeList.pop(key);
     } else {
-
       multipleStakeList.push(key);
     }
     return multipleStakeList;
   };
+
   return (
     <Flex justifyContent={'space-between'} mb="100px">
       <Flex flexWrap={'wrap'}>
@@ -120,13 +115,11 @@ export const RewardContainer: FC<RewardContainerProps> = ({
           {getPaginatedData().map((reward: any, index) => {
             let token0;
             let token1;
-            if (reward.poolAddress === pool.id) {
-              token0 = pool.token0.id;
-              token1 = pool.token1.id;
-            } else {
-              token0 = '0x0000000000000000000000000000000000000000';
-              token1 = '0x73a54e5C054aA64C1AE7373C2B5474d8AFEa08bd';
-            }
+
+            const includedPool = pools.filter((pool) => pool.id === reward.poolAddress);
+              token0 = includedPool[0].token0.id;
+              token1 = includedPool[0].token1.id;
+           
 
             const rewardProps = {
               chainId: reward.chainId,
@@ -168,16 +161,28 @@ export const RewardContainer: FC<RewardContainerProps> = ({
             fontSize="14px"
             fontWeight="500"
             _hover={{backgroundColor: 'none'}}
-            disabled={multipleStakeList.length===0}
-            _disabled={colorMode==='light' ? {backgroundColor: 'gray.25', cursor: 'default', color: '#86929d'}: {backgroundColor: '#353535', cursor: 'default', color: '#838383'}}
-
-            onClick={() => stakeMultiple({
-              userAddress: account,
-              tokenid: Number(position),
-              library: library,
-              stakeKeyList: multipleStakeList
-            })}>
-            Stake selected
+            _disabled={
+              colorMode === 'light'
+                ? {
+                    backgroundColor: 'gray.25',
+                    cursor: 'default',
+                    color: '#86929d',
+                  }
+                : {
+                    backgroundColor: '#353535',
+                    cursor: 'default',
+                    color: '#838383',
+                  }
+            }
+            onClick={() =>
+              stakeMultiple({
+                userAddress: account,
+                tokenid: Number(position),
+                library: library,
+                stakeKeyList: multipleStakeList,
+              })
+            }>
+           Stake Multiple
           </Button>
           <Flex flexDirection={'row'} h={'25px'} alignItems={'center'}>
             <Flex>

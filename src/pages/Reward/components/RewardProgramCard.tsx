@@ -186,27 +186,10 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
         } catch (err) {}
       }
     }
-
-    // async function checkUnstaked () {
-    //   if (account === null || account === undefined || library === undefined) {
-    //     return;
-    //   }
-    //   const signer = getSigner(library, account);
-    //   const depositInfo = await uniswapStakerContract
-    //     .connect(signer)
-    //     .deposits(tokenID);
-    //   console.log('deposits', depositInfo);
-    //   if (depositInfo.owner === account && depositInfo.numberOfStakes===0) {
-    //     setWithdraw(true);
-
-    //   }
-    // }
-
     checkApproved();
     checkStaked();
     getMyReward();
-    // checkUnstaked();
-    /*eslint-disable*/
+
   }, [account, library, transactionType, blockNumber, tokenID, approved]);
 
   useEffect(() => {
@@ -215,7 +198,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
       setCanApprove(true);
       setButtonState('Approve');
     }
-    if (approved && now < reward.endTime) {
+    if (approved && now < reward.endTime && now > reward.startTime) {
       setButtonState('Stake');
     }
     if (staked && now < reward.endTime) {
@@ -227,10 +210,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     if (!staked && now > reward.endTime) {
       setButtonState('Closed');
     }
-    // if (withdraw && buttonState==='Closed') {
-    //   setButtonState('Withdraw');
-    // }
-  }, [approved, staked]);
+  }, [approved, staked, account]);
 
   const buttonFunction = (buttonCase: string) => {
     if (buttonCase === 'Approve') {
@@ -265,6 +245,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
       });
     }
   };
+  
   return (
     <Flex {...REWARD_STYLE.containerStyle({colorMode})} flexDir={'column'}>
       <Flex flexDir={'row'} width={'100%'} alignItems={'center'} h={'50px'}>
@@ -454,7 +435,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
             disabled={
               moment().unix() < reward.startTime ||
               buttonState === 'Closed' ||
-              buttonState === 'In Progress'
+              buttonState === 'In Progress' ||  selectedToken === 0
             }>
             {buttonState}
           </Button>

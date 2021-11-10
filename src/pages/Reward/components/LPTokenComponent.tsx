@@ -116,25 +116,28 @@ export const LPTokenComponent: FC<LPTokenComponentProps> = ({tokens}) => {
         h={'81px'}
         alignItems={'center'}
       >
-        <Grid templateColumns="repeat(3, 1fr)" gap={'10px'}>
-          {getPaginatedData().map((token: Token, index) => {
-            return (
-              <Flex
-                key={index}
-                h="30px"
-                px={'15px'}
-                fontSize={'13px'}
-                fontFamily={theme.fonts.roboto}
-                fontWeight={'bold'}
-                borderRadius="19px"
-                justifyContent={'center'}
-                alignItems={'center'}
-                border={themeDesign.border[colorMode]}>
-                <Text color={'blue.500'}># {token.id}</Text>
-              </Flex>
-            );
-          })}
-        </Grid>
+        {getPaginatedData().length ===0? (
+          <Text fontSize={'13px'}>You don't have any LP tokens</Text>
+        ): <Grid templateColumns="repeat(3, 1fr)" gap={'10px'}>
+        {getPaginatedData().map((token: Token, index) => {
+          return (
+            <Flex
+              key={index}
+              h="30px"
+              px={'15px'}
+              fontSize={'13px'}
+              fontFamily={theme.fonts.roboto}
+              fontWeight={'bold'}
+              borderRadius="19px"
+              justifyContent={'center'}
+              alignItems={'center'}
+              border={themeDesign.border[colorMode]}>
+              <Text color={'blue.500'}># {token.id}</Text>
+            </Flex>
+          );
+        })}
+      </Grid>}
+        
       </Flex>
       <Flex
         flexDirection={'row'}

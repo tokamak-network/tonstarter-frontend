@@ -16,7 +16,10 @@ export const stakeMultiple = async (args: any) => {
     if (userAddress === null || userAddress === undefined) {
         return;
     }
-    console.log('stakeKeyList', stakeKeyList);
+
+    if (stakeKeyList.length === 0) {
+        return alert(`Please select rewards to stake`);
+    }
 
     const NPM = new Contract(NPM_Address, NPMABI.abi, library);
 

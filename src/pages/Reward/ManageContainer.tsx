@@ -36,13 +36,15 @@ type Token = {
 type ManageContainerProps = {
   rewards: any[];
   position?: string;
-  pool: Pool;
+  selectedPool?: Pool;
+  pools: Pool[]
 };
 
 export const ManageContainer: FC<ManageContainerProps> = ({
   rewards,
-  pool,
+  pools,
   position,
+  selectedPool
 }) => {
 
   const [pageOptions, setPageOptions] = useState<number>(0);
@@ -53,12 +55,7 @@ export const ManageContainer: FC<ManageContainerProps> = ({
       ((rewards.length - 1) / pageLimit + 1).toString(),
     );
     setPageOptions(pagenumber);
-    //  rewards.map((reward: any) => {
-    //    if (reward.poolAddress === pool.id) {
-    //      reward.token0 = pool.token0;
-    //      reward.token1 = pool.token1;
-    //    }
-    //  })
+  
   }, [rewards, pageLimit]);
 
   const getPaginatedData = () => {
@@ -85,13 +82,10 @@ export const ManageContainer: FC<ManageContainerProps> = ({
           {getPaginatedData().map((reward: any, index) => {
             let token0;
             let token1;
-            if (reward.poolAddress === pool.id) {
-              token0 = pool.token0.id;
-              token1 = pool.token1.id;
-            } else {
-              token0 = '0x0000000000000000000000000000000000000000';
-              token1 = '0x73a54e5C054aA64C1AE7373C2B5474d8AFEa08bd';
-            }
+            const includedPool = pools.filter((pool) => pool.id === reward.poolAddress);
+            token0 = includedPool[0].token0.id;
+              token1 = includedPool[0].token1.id;
+           
 
             const rewardProps = {
               chainId: reward.chainId,
