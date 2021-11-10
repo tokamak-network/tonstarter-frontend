@@ -291,7 +291,8 @@ export const ManageModal = () => {
     };
 
     const btnDisableSwap = () => {
-      return Number(swapBalance) <= 0 || miningEndTime <= currentBlock
+      return Number(swapBalance.replaceAll(',', '')) <= 0 ||
+        miningEndTime <= currentBlock
         ? setSwapDisabled(true)
         : setSwapDisabled(false);
     };
@@ -611,7 +612,7 @@ export const ManageModal = () => {
               {...(swapDisabled === true
                 ? {...btnStyle.btnDisable({colorMode})}
                 : {...btnStyle.btnAble()})}
-              isDisabled={name === 'TON #4' ? true : swapDisabled}
+              isDisabled={swapDisabled}
               onClick={() =>
                 handleOpenConfirmModal({
                   type: 'manage_swap',
