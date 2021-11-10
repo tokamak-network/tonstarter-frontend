@@ -26,7 +26,7 @@ import {DEPLOYED} from '../../constants/index';
 import ms from 'ms.macro';
 import {Contract} from '@ethersproject/contracts';
 import {LoadingComponent} from 'components/Loading';
-
+import {orderBy} from 'lodash';
 import * as StakeUniswapABI from 'services/abis/StakeUniswapV3.json';
 import {getSigner} from 'utils/contract';
 import {getPoolName, checkTokenType} from '../../utils/token';
@@ -36,7 +36,7 @@ import {
   usePositionByContractQuery,
 } from 'store/data/generated';
 import {SideContainer} from './SideContainer';
-const {UniswapStaking_Address, UniswapStaker_Address, NPM_Address, DOCPool_Address, BasePool_Address} = DEPLOYED;
+const {UniswapStaking_Address, DOCPool_Address, BasePool_Address} = DEPLOYED;
 type Pool = {
   id: string;
   liquidity: string;
@@ -82,11 +82,14 @@ export const Reward = () => {
   const [positionData, setPositionData] = useState([]);
   const [manageDatas, setManageDatas] = useState<Reward[]>([]);
   const [isPositionLoading, setIsPositionLoading] = useState(true);
-
+  const [sortString, setSortString] = useState<string>('start');
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
-const [pools, setPools] = useState([]);
+  const [orderedData, setOrderedData] = useState<Reward[]>([]);
+  const [order, setOrder] = useState<boolean | 'desc' | 'asc'>('desc');
+
   const {isLoading, isError, error, isUninitialized, data} = usePoolByUserQuery(
-    {address: BasePool_Address?.toLowerCase()},{pollingInterval: ms`2m`,},
+    {address: BasePool_Address?.toLowerCase()},
+    {pollingInterval: ms`2m`},
   );
   const dataddd = usePoolByUserQuery(
     {address: DOCPool_Address},
@@ -94,6 +97,28 @@ const [pools, setPools] = useState([]);
       pollingInterval: ms`2m`,
     },
   );
+
+  useEffect(() => {
+    const filteredData = filterDatas();
+    setOrderedData(filteredData)
+  }, [sortString, datas]);
+
+  const changeSelect = (e: any) => {
+    const filterValue = e.target.value;
+    order === 'desc' ? setOrder('asc') : setOrder('desc');
+    setSortString(filterValue);
+  };
+
+  const filterDatas = () => {
+    switch (sortString) {
+      case 'start':
+        return orderBy(datas, (data) => data.startTime, [order]);
+      case 'end':
+        return orderBy(datas, (data) => data.endTime, [order]);
+      default:
+        return datas;
+    }
+  };
 
   useEffect(() => {
     function getPool() {
@@ -134,7 +159,7 @@ const [pools, setPools] = useState([]);
             signer,
           ).getUserStakedTokenIds(account);
         }
-        if (datas.length !== 0) {
+        if (orderedData.length !== 0) {
           setTimeout(() => {
             setIsPositionLoading(false);
           }, 1500);
@@ -142,7 +167,7 @@ const [pools, setPools] = useState([]);
       }
     }
     positionPayload();
-  }, [account, datas,library]);
+  }, [account, orderedData, library]);
   const position = usePositionByUserQuery(
     {address: account},
     {
@@ -185,27 +210,23 @@ const [pools, setPools] = useState([]);
   ]);
 
   useEffect(() => {
-  
-    const filtered = datas.filter(
+    const filtered = orderedData.filter(
       (data) => data.incentiveKey.refundee === account,
     );
     setManageDatas(filtered);
-  }, [datas, account, library]);
-  
+  }, [orderedData, sortString, account, library]);
+
   return (
     <Fragment>
       <Head title={'Reward'} />
       <Container maxW={'6xl'}>
-        
-            <Box py={20}>
-              <PageHeader
-                title={'Rewards Program'}
-                subtitle={
-                  'Stake Uniswap V3 liquidity tokens and receive rewards! '
-                }
-              />
-            </Box>
-            {(isPositionLoading !== true  && selectedPool && account !== undefined ) ? (
+        <Box py={20}>
+          <PageHeader
+            title={'Rewards Program'}
+            subtitle={'Stake Uniswap V3 liquidity tokens and receive rewards! '}
+          />
+        </Box>
+        {isPositionLoading !== true && selectedPool && account !== undefined ? (
           <Box>
             <Flex
               fontFamily={theme.fonts.roboto}
@@ -260,20 +281,24 @@ const [pools, setPools] = useState([]);
                     }
                   />
                 </FormControl>
-                <Select h={'32px'} color={'#86929d'} fontSize={'13px'}>
-                  <option value="name">Start Date</option>
-                  <option value="liquidity">End Date</option>
-                  <option value="volume">Stakeable</option>
-                  <option value="fee">Claimable</option>
-                  <option value="fee">Joined</option>
-                  <option value="fee">Refundable</option>
+                <Select
+                  h={'32px'}
+                  color={'#86929d'}
+                  fontSize={'13px'}
+                  onChange={changeSelect}>
+                  <option value="start">Start Date</option>
+                  <option value="end">End Date</option>
+                  <option value="stakeable">Stakeable</option>
+                  <option value="claimable">Claimable</option>
+                  <option value="joined">Joined</option>
+                  <option value="refundable">Refundable</option>
                 </Select>
               </Flex>
             </Flex>
             <Flex flexDir={'row'} mt={'30px'} justifyContent={'space-between'}>
               {selected === 'reward' ? (
                 <RewardContainer
-                  rewards={datas}
+                  rewards={orderedData}
                   position={selectdPosition}
                   pool={selectedPool}
                 />
@@ -287,14 +312,16 @@ const [pools, setPools] = useState([]);
               <SideContainer
                 pools={pool}
                 selected={selected}
-                rewards={datas}
+                rewards={orderedData}
                 LPTokens={positions}
               />{' '}
             </Flex>
           </Box>
-        ) :<Center>
-        <LoadingComponent />
-      </Center>}
+        ) : (
+          <Center>
+            <LoadingComponent />
+          </Center>
+        )}
       </Container>
     </Fragment>
   );
