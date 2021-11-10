@@ -9,6 +9,7 @@ import {
   Avatar,
   Image,
   Tooltip,
+  Checkbox,
   Button,
   Progress,
 } from '@chakra-ui/react';
@@ -65,6 +66,7 @@ const themeDesign = {
 type RewardProgramCardProps = {
   reward: Reward;
   selectedToken: number;
+  sendKey: (key: any)=> void
 };
 
 const {UniswapStaking_Address, UniswapStaker_Address} = DEPLOYED;
@@ -72,6 +74,7 @@ const {UniswapStaking_Address, UniswapStaker_Address} = DEPLOYED;
 export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   reward,
   selectedToken,
+  sendKey,
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -195,7 +198,6 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     //   console.log('deposits', depositInfo);
     //   if (depositInfo.owner === account && depositInfo.numberOfStakes===0) {
     //     setWithdraw(true);
-
 
     //   }
     // }
@@ -432,21 +434,31 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
             </Text>
           </Box>
         </Box>
-        <Button
-          w={'120px'}
-          h={'33px'}
-          bg={'blue.500'}
-          color="white.100"
-          ml={'10px'}
-          fontSize="16px"
-          _hover={{backgroundColor: 'none'}}
-          _disabled={{backgroundColor: 'gray.25', cursor: 'default'}}
-          onClick={() => buttonFunction(buttonState)}
-          disabled={
-            moment().unix() < reward.startTime || buttonState === 'Closed' || buttonState === 'In Progress'
-          }>
-          {buttonState}
-        </Button>
+
+        <Flex flexDirection="row" justifyContent={'center'}>
+          {buttonState === 'Stake' && moment().unix() > reward.startTime ? (
+            <Box pb={'0px'}>
+              <Checkbox mt={'5px'} onChange={() => sendKey(key)}></Checkbox>
+            </Box>
+          ) : null}
+          <Button
+            w={'120px'}
+            h={'33px'}
+            bg={'blue.500'}
+            color="white.100"
+            ml={'10px'}
+            fontSize="16px"
+            _hover={{backgroundColor: 'none'}}
+            _disabled={{backgroundColor: 'gray.25', cursor: 'default'}}
+            onClick={() => buttonFunction(buttonState)}
+            disabled={
+              moment().unix() < reward.startTime ||
+              buttonState === 'Closed' ||
+              buttonState === 'In Progress'
+            }>
+            {buttonState}
+          </Button>
+        </Flex>
       </Flex>
     </Flex>
   );
