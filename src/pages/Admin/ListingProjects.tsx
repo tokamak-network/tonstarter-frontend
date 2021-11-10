@@ -9,7 +9,7 @@ import {fetchStarterURL} from 'constants/index';
 import AdminActions from './actions';
 import moment from 'moment';
 
-export const ListingProject = () => {
+export const ListingProjects = () => {
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
   const [projects, setProjects] = useState<any[]>([]);
@@ -39,10 +39,10 @@ export const ListingProject = () => {
               endAddWhiteTime > nowTimeStamp
                 ? 'Whitelist'
                 : endExclusiveTime > nowTimeStamp
-                ? 'Exclusive'
+                ? 'Round 1'
                 : endDepositTime > nowTimeStamp
-                ? 'Deposit'
-                : 'Past';
+                ? 'Round 2'
+                : 'Claim';
             return {...data, status: checkStep, saleAmount};
           }
         }),

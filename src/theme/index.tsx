@@ -69,6 +69,7 @@ const colors = {
     100: '#FFFFFF',
   },
   black: {
+    400: '#2d3136',
     300: '#304156',
     200: '#222222',
   },
@@ -86,6 +87,16 @@ interface STATER_PROP {
 
 // props.isUserTier === true
 //   ? '1px solid #0070ED'
+
+export const bgStyle = {
+  containerStyle: (props: STATER_PROP & {isUserTier?: boolean}) => ({
+    bg: props.colorMode === 'light' ? 'white.100' : '',
+    borderRadius: 15,
+    boxShadow: '0 2px 5px 0 rgba(61, 73, 93, 0.1)',
+    border: props.colorMode === 'light' ? '' : '1px solid #535353',
+    fontFamily: fonts.roboto,
+  }),
+};
 
 export const STATER_STYLE = {
   containerStyle: (props: STATER_PROP & {isUserTier?: boolean}) => ({
@@ -416,6 +427,7 @@ const theme = extendTheme({
   btnStyle,
   headerMargin,
   STATER_STYLE,
+  bgStyle,
 });
 
 export default theme;

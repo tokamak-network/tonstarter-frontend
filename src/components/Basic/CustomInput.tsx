@@ -25,6 +25,7 @@ type CustomInputProp = {
   style?: any;
   fontWeight?: number;
   startWithZero?: boolean;
+  textAlign?: string;
 };
 
 export const CustomInput = (prop: CustomInputProp) => {
@@ -46,6 +47,7 @@ export const CustomInput = (prop: CustomInputProp) => {
     style,
     fontWeight,
     startWithZero,
+    textAlign,
   } = prop;
 
   useEffect(() => {
@@ -143,9 +145,12 @@ export const CustomInput = (prop: CustomInputProp) => {
   return (
     <Input
       variant={'outline'}
-      borderWidth={0}
-      border={border}
-      textAlign={'center'}
+      border={
+        border || colorMode === 'light'
+          ? '1px solid #dfe4ee'
+          : '1px solid #424242'
+      }
+      textAlign={textAlign || 'center'}
       fontWeight={fontWeight || 'bold'}
       w={w}
       h={h}

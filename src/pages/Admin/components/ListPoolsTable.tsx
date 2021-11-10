@@ -34,7 +34,11 @@ type ListTableProps = {
   isLoading: boolean;
 };
 
-export const ListTable: FC<ListTableProps> = ({columns, data, isLoading}) => {
+export const ListPoolsTable: FC<ListTableProps> = ({
+  columns,
+  data,
+  isLoading,
+}) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -63,23 +67,6 @@ export const ListTable: FC<ListTableProps> = ({columns, data, isLoading}) => {
   const dispatch = useDispatch();
   const {data: appConfig} = useAppSelector(selectApp);
 
-  const onChangeSelectBox = (e: any) => {
-    const filterValue = e.target.value;
-    headerGroups[0].headers.map((e) => {
-      if (e.Header === filterValue) {
-        if (e.Header === 'Earning Per TON') {
-          return e.toggleSortBy();
-        }
-        e.toggleSortBy(true);
-      }
-      return null;
-    });
-  };
-
-  console.log('--data--');
-  console.log(data);
-  console.log(page);
-
   if (isLoading === true || data.length === 0) {
     return (
       <Center>
@@ -90,63 +77,43 @@ export const ListTable: FC<ListTableProps> = ({columns, data, isLoading}) => {
 
   return (
     <Flex w="1100px" flexDir={'column'}>
-      <Flex justifyContent={'end'} mb={'23px'}>
-        <Select
-          w={'137px'}
-          h={'32px'}
-          color={'#86929d'}
-          fontSize={'13px'}
-          placeholder="Filter"
-          onChange={onChangeSelectBox}>
-          <option value="Sale Start">Sale Start</option>
-          <option value="Sale End">Sale End</option>
-          <option value="Status">Status</option>
-          <option value="Sale Amount">Sale Amount</option>
-          <option value="Funding Raised">Funding Raised</option>
-        </Select>
-      </Flex>
       <Flex
         borderTopRadius={'10px'}
         boxShadow={
           colorMode === 'light' ? '0 1px 1px 0 rgba(96, 97, 112, 0.16)' : ''
         }>
-        {[
-          'Name',
-          'Token',
-          'Sale Start',
-          'Sale End',
-          'Sale Amount',
-          'Funding Raised',
-          'Status',
-          'Airdrop',
-        ].map((title: string) => {
-          return (
-            <Text
-              border={colorMode === 'dark' ? '1px solid #373737' : ''}
-              borderTopLeftRadius={title === 'Name' ? '10px' : ''}
-              borderTopRightRadius={title === 'Airdrop' ? '10px' : ''}
-              textAlign={'center'}
-              lineHeight={'45px'}
-              fontSize={'12px'}
-              fontWeight={'bold'}
-              h={'45px'}
-              bg={colorMode === 'light' ? 'white.100' : 'black.200'}
-              w={
-                title === 'Name'
-                  ? '137px'
-                  : title === 'Token'
-                  ? '87px'
-                  : '147px'
-              }
-              borderBottom={
-                colorMode === 'light'
-                  ? '1px solid #f4f6f8'
-                  : '1px solid #323232'
-              }>
-              {title}
-            </Text>
-          );
-        })}
+        {['Name', 'Address', 'Number of reward programs', 'Actions'].map(
+          (title: string) => {
+            return (
+              <Text
+                border={colorMode === 'dark' ? '1px solid #373737' : ''}
+                borderTopLeftRadius={title === 'Name' ? '10px' : ''}
+                borderTopRightRadius={title === 'Actions' ? '10px' : ''}
+                textAlign={'center'}
+                lineHeight={'45px'}
+                fontSize={'12px'}
+                fontWeight={'bold'}
+                h={'45px'}
+                bg={colorMode === 'light' ? 'white.100' : 'black.200'}
+                w={
+                  title === 'Name'
+                    ? '200px'
+                    : title === 'Address'
+                    ? '454px'
+                    : title === 'Number of reward programs'
+                    ? '220px'
+                    : '226px'
+                }
+                borderBottom={
+                  colorMode === 'light'
+                    ? '1px solid #f4f6f8'
+                    : '1px solid #323232'
+                }>
+                {title}
+              </Text>
+            );
+          },
+        )}
       </Flex>
       <Box overflowX={'auto'}>
         <chakra.table
@@ -180,16 +147,8 @@ export const ListTable: FC<ListTableProps> = ({columns, data, isLoading}) => {
                   alignItems="center"
                   {...row.getRowProps()}>
                   {row.cells.map((cell: any, index: number) => {
-                    const {
-                      name,
-                      tokenName,
-                      startAddWhiteTime,
-                      endDepositTime,
-                      saleAmount,
-                      tokenFundRaisingTargetAmount,
-                      status,
-                      saleContractAddress,
-                    } = cell.row.original;
+                    const {name, address, rewardPrograms, action} =
+                      cell.row.original;
                     const type = cell.column.id;
                     return (
                       <chakra.td
@@ -197,18 +156,12 @@ export const ListTable: FC<ListTableProps> = ({columns, data, isLoading}) => {
                         m={0}
                         w={
                           type === 'name'
-                            ? '137px'
-                            : type === 'token'
-                            ? '87px'
-                            : type === 'saleStart'
-                            ? '147px'
-                            : type === 'saleEnd'
-                            ? '147px'
-                            : type === 'saleAmount'
-                            ? '147px'
-                            : type === 'fundingRaised'
-                            ? '147px'
-                            : '147px'
+                            ? '200px'
+                            : type === 'address'
+                            ? '454px'
+                            : type === 'rewardPrograms'
+                            ? '220px'
+                            : '226px'
                         }
                         h={'55px'}
                         display="flex"
@@ -219,44 +172,42 @@ export const ListTable: FC<ListTableProps> = ({columns, data, isLoading}) => {
                         p={0}
                         textAlign="center"
                         {...cell.getCellProps()}>
-                        {type === 'name' && (
-                          <Link
-                            textDecor={'underline'}
-                            cursor={'pointer'}
-                            isExternal={true}
-                            outline={'none'}
-                            fontWeight={600}
-                            _hover={{
-                              color: 'blue.100',
-                            }}
-                            // href={`${appConfig.explorerLink}${contractAddress}`}
-                          >
-                            {name}
-                          </Link>
-                        )}
-                        {type === 'token' && tokenName}
-                        {type === 'saleStart' && startAddWhiteTime}
-                        {type === 'saleEnd' && endDepositTime}
-                        {type === 'saleAmount' && saleAmount}
-                        {type === 'fundingRaised' &&
-                          tokenFundRaisingTargetAmount}
-                        {type === 'status' && status}
-                        {type === 'airdrop' && (
-                          <CustomButton
-                            text={'Distribute'}
-                            w={'78px'}
-                            h={'25px'}
-                            fontSize={12}
-                            func={() =>
-                              dispatch(
-                                openModal({
-                                  type: 'Admin_Distribute',
-                                  data: {
-                                    contractAddress: saleContractAddress,
-                                  },
-                                }),
-                              )
-                            }></CustomButton>
+                        {type === 'name' && name}
+                        {type === 'address' && address}
+                        {type === 'rewardPrograms' && rewardPrograms}
+                        {type === 'action' && (
+                          <Flex
+                            w={'100%'}
+                            justifyContent="space-between"
+                            px={'30px'}
+                            py={'15px'}>
+                            <CustomButton
+                              text={'Edit'}
+                              w={'78px'}
+                              h={'25px'}
+                              fontSize={12}
+                              func={() =>
+                                dispatch(
+                                  openModal({
+                                    type: 'Admin_Distribute',
+                                    data: {},
+                                  }),
+                                )
+                              }></CustomButton>
+                            <CustomButton
+                              text={'Delete'}
+                              w={'78px'}
+                              h={'25px'}
+                              fontSize={12}
+                              func={() =>
+                                dispatch(
+                                  openModal({
+                                    type: 'Admin_Distribute',
+                                    data: {},
+                                  }),
+                                )
+                              }></CustomButton>
+                          </Flex>
                         )}
                       </chakra.td>
                     );

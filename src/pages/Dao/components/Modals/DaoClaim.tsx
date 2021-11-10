@@ -70,7 +70,9 @@ export const DaoClaim = (props: any) => {
       setUnstakeBalance(balance);
     }
     if (claimList) {
-      const list = claimList.filter((data: ClaimList) => data.price !== 0);
+      const list = claimList.filter(
+        (data: ClaimList) => Number(data.claimAmount.replaceAll(',', '')) > 0,
+      );
       const tokenAddresses = list.map((data: ClaimList) => {
         return data.tokenAddress;
       });

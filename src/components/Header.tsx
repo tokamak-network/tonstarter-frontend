@@ -305,9 +305,9 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
             pos={'absolute'}
             left={'-33px'}
             top={'15px'}
-            minW={'124px'}
-            w={'124px'}
-            h={'74px'}
+            minW={'182px'}
+            w={'182px'}
+            h={'148px'}
             p={0}
             fontSize={13}
             background={'#ffffff'}>
@@ -317,7 +317,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
               style={{background: '#ffffff', color: '#1c1c1c'}}>
               <MenuItem
                 _hover={{color: 'blue.100', bg: 'none'}}
-                w={'124px'}
+                w={'100%'}
                 h={'37px'}
                 _focus={{bg: '#ffffff'}}>
                 Create Project
@@ -329,9 +329,31 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
               style={{background: '#ffffff', color: '#1c1c1c'}}>
               <MenuItem
                 _hover={{color: 'blue.100', bg: 'none'}}
-                w={'124px'}
+                w={'100%'}
                 h={'37px'}>
                 Listing Projects
+              </MenuItem>
+            </NavLink>
+            <NavLink
+              to="/admin/listpools"
+              activeStyle={{background: '#ffffff', color: '#1c1c1c'}}
+              style={{background: '#ffffff', color: '#1c1c1c'}}>
+              <MenuItem
+                _hover={{color: 'blue.100', bg: 'none'}}
+                w={'100%'}
+                h={'37px'}>
+                Listing Pools for Reward
+              </MenuItem>
+            </NavLink>
+            <NavLink
+              to="/admin/listproject"
+              activeStyle={{background: '#ffffff', color: '#1c1c1c'}}
+              style={{background: '#ffffff', color: '#1c1c1c'}}>
+              <MenuItem
+                _hover={{color: 'blue.100', bg: 'none'}}
+                w={'100%'}
+                h={'37px'}>
+                Listing Reward Programs
               </MenuItem>
             </NavLink>
           </MenuList>

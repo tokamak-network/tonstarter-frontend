@@ -94,3 +94,10 @@ export type ListingTableData = {
   status: string;
   btn: any;
 };
+
+export type ListingPoolsTableData = {
+  name: string;
+  address: string;
+  rewardPrograms: number;
+  action: any;
+};
