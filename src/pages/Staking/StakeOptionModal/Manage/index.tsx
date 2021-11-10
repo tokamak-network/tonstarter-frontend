@@ -497,7 +497,7 @@ export const ManageModal = () => {
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                   fontWeight={500}
                   fontSize={'15px'}>
-                  {swapBalance} TON
+                  {name === 'TON #4' ? '0.00' : swapBalance} TON
                 </Text>
               </Flex>
               <Flex justifyContent="space-between" alignItems="center" h="55px">
