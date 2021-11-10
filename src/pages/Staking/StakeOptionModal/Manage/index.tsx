@@ -206,6 +206,13 @@ export const ManageModal = () => {
             return setSwapBalance('0.00');
           }
 
+          if (
+            Number(stakeContractBalanceTon.replaceAll(',', '')) >=
+            Number(totalStakedAmount.replaceAll(',', ''))
+          ) {
+            return setSwapBalance('0.00');
+          }
+
           setSwapBalance(stakeContractBalanceTon);
 
           //calculate swap balance
@@ -497,7 +504,7 @@ export const ManageModal = () => {
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                   fontWeight={500}
                   fontSize={'15px'}>
-                  {name === 'TON #4' ? '0.00' : swapBalance} TON
+                  {swapBalance} TON
                 </Text>
               </Flex>
               <Flex justifyContent="space-between" alignItems="center" h="55px">
@@ -604,7 +611,7 @@ export const ManageModal = () => {
               {...(swapDisabled === true
                 ? {...btnStyle.btnDisable({colorMode})}
                 : {...btnStyle.btnAble()})}
-              isDisabled={swapDisabled}
+              isDisabled={name === 'TON #4' ? true : swapDisabled}
               onClick={() =>
                 handleOpenConfirmModal({
                   type: 'manage_swap',
