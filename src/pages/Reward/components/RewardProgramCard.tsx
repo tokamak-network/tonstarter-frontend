@@ -449,7 +449,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
             ml={'10px'}
             fontSize="16px"
             _hover={{backgroundColor: 'none'}}
-            _disabled={{backgroundColor: 'gray.25', cursor: 'default'}}
+            _disabled={colorMode==='light' ? {backgroundColor: 'gray.25', cursor: 'default', color: '#86929d'}: {backgroundColor: '#353535', cursor: 'default', color: '#838383'}}
             onClick={() => buttonFunction(buttonState)}
             disabled={
               moment().unix() < reward.startTime ||

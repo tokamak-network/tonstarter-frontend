@@ -65,6 +65,8 @@ export const RewardContainer: FC<RewardContainerProps> = ({
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(6);
   const {account, library} = useActiveWeb3React();
+  const {colorMode} = useColorMode();
+  const theme = useTheme();
   useEffect(() => {
     const pagenumber = parseInt(
       ((rewards.length - 1) / pageLimit + 1).toString(),
@@ -92,8 +94,6 @@ export const RewardContainer: FC<RewardContainerProps> = ({
     setPageIndex(pageIndex - 1);
   };
 
-  const {colorMode} = useColorMode();
-  const theme = useTheme();
   const multipleStakeList: any = [];
 
   const stakeMultipleKeys = (key: any) => {
@@ -168,7 +168,9 @@ export const RewardContainer: FC<RewardContainerProps> = ({
             fontSize="14px"
             fontWeight="500"
             _hover={{backgroundColor: 'none'}}
-            _disabled={{backgroundColor: 'gray.25', cursor: 'default'}}
+            disabled={multipleStakeList.length===0}
+            _disabled={colorMode==='light' ? {backgroundColor: 'gray.25', cursor: 'default', color: '#86929d'}: {backgroundColor: '#353535', cursor: 'default', color: '#838383'}}
+
             onClick={() => stakeMultiple({
               userAddress: account,
               tokenid: Number(position),
