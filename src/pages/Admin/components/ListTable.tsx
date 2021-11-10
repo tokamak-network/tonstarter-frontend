@@ -183,13 +183,13 @@ export const ListTable: FC<ListTableProps> = ({columns, data, isLoading}) => {
                   {row.cells.map((cell: any, index: number) => {
                     const {
                       name,
-                      token,
-                      saleStart,
-                      saleEnd,
+                      tokenName,
+                      startAddWhiteTime,
+                      endDepositTime,
                       saleAmount,
-                      fundingRaised,
+                      tokenFundRaisingTargetAmount,
                       status,
-                      contractAddress,
+                      saleContractAddress,
                     } = cell.row.original;
                     const type = cell.column.id;
                     return (
@@ -230,15 +230,17 @@ export const ListTable: FC<ListTableProps> = ({columns, data, isLoading}) => {
                             _hover={{
                               color: 'blue.100',
                             }}
-                            href={`${appConfig.explorerLink}${contractAddress}`}>
+                            // href={`${appConfig.explorerLink}${contractAddress}`}
+                          >
                             {name}
                           </Link>
                         )}
-                        {type === 'token' && token}
-                        {type === 'saleStart' && saleStart}
-                        {type === 'saleEnd' && saleEnd}
+                        {type === 'token' && tokenName}
+                        {type === 'saleStart' && startAddWhiteTime}
+                        {type === 'saleEnd' && endDepositTime}
                         {type === 'saleAmount' && saleAmount}
-                        {type === 'fundingRaised' && fundingRaised}
+                        {type === 'fundingRaised' &&
+                          tokenFundRaisingTargetAmount}
                         {type === 'status' && status}
                         {type === 'airdrop' && (
                           <CustomButton
@@ -251,7 +253,7 @@ export const ListTable: FC<ListTableProps> = ({columns, data, isLoading}) => {
                                 openModal({
                                   type: 'Admin_Distribute',
                                   data: {
-                                    contractAddress,
+                                    contractAddress: saleContractAddress,
                                   },
                                 }),
                               )

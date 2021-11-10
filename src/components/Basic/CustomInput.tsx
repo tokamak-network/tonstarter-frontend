@@ -24,6 +24,7 @@ type CustomInputProp = {
   placeHolder?: string;
   style?: any;
   fontWeight?: number;
+  startWithZero?: boolean;
 };
 
 export const CustomInput = (prop: CustomInputProp) => {
@@ -44,13 +45,17 @@ export const CustomInput = (prop: CustomInputProp) => {
     placeHolder,
     style,
     fontWeight,
+    startWithZero,
   } = prop;
 
   useEffect(() => {
     if (setValue && value.length > 1 && value.startsWith('0')) {
+      if (startWithZero === true) {
+        return;
+      }
       setValue(value.slice(1, value.legnth));
     }
-  }, [value, setValue]);
+  }, [value, setValue, startWithZero]);
 
   if (numberOnly) {
     return (

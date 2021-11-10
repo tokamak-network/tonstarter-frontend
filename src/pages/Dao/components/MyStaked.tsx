@@ -59,8 +59,6 @@ export const MyStaked = () => {
     }
   }, [active, account, library, stakeList, dispatch, blockNumber]);
 
-  console.log(stakeList);
-
   return (
     <Flex
       alignItems="center"

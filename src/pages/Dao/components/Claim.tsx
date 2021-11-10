@@ -6,18 +6,18 @@ import {
   useColorMode,
   useTheme,
 } from '@chakra-ui/react';
-import {getUserSTOSBalance} from 'client/getUserBalance';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect} from 'react';
 import {useState} from 'react';
 import {openModal} from 'store/modal.reducer';
 import {selectDao} from '../dao.reducer';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {ClaimList} from '../types/index';
 
 export const Claim = () => {
   const dispatch = useAppDispatch();
   const {
-    data: {tosStakeList: stakeList},
+    data: {claimList},
   } = (useAppSelector as any)(selectDao);
   const [balance, setbalance] = useState('-');
   const [btnDisabled, setBtnDisabled] = useState(true);
@@ -25,7 +25,6 @@ export const Claim = () => {
   const {btnStyle, btnHover} = theme;
   const {colorMode} = useColorMode();
   const {account, library, active} = useActiveWeb3React();
-  const filteredStakeList = stakeList.filter((e: any) => e.end === false);
 
   const themeDesign = {
     fontColorTitle: {
@@ -39,23 +38,25 @@ export const Claim = () => {
   };
 
   useEffect(() => {
-    async function getTosBalance() {
-      const res = await getUserSTOSBalance({account, library});
-      setBtnDisabled(true);
-      if (res !== undefined) {
-        setbalance(res);
-        if (filteredStakeList.length !== 0) {
-          setBtnDisabled(false);
-        }
-      }
+    const totalBalance = claimList.reduce((acc: any, cur: ClaimList) => {
+      return Number(acc) + cur.price;
+    }, 0);
+    setbalance(
+      totalBalance.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+      }),
+    );
+    const isClaimAmount = claimList.filter((data: ClaimList) => {
+      return Number(data.claimAmount.replaceAll(',', '')) > 0;
+    });
+
+    if (isClaimAmount.length > 0) {
+      return setBtnDisabled(false);
     }
-    if (account) {
-      getTosBalance();
-    } else {
-      setbalance('-');
-    }
+    return setBtnDisabled(true);
+
     /*eslint-disable*/
-  }, [active, account, library, dispatch, stakeList]);
+  }, [active, account, library, dispatch, claimList]);
 
   return (
     <Flex
@@ -83,13 +84,13 @@ export const Claim = () => {
         p={0}
         fontSize={'14px'}
         fontWeight={400}
-        // isDisabled={!active || btnDisabled}
+        isDisabled={!active || btnDisabled}
         _hover={btnHover.backgroundColor}
         onClick={() =>
           dispatch(
             openModal({
               type: 'dao_claim',
-              data: {userTosBalance: balance, stakeList: filteredStakeList},
+              data: {claimList, balance},
             }),
           )
         }>

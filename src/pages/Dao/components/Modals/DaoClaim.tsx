@@ -19,11 +19,20 @@ import {selectModalType} from 'store/modal.reducer';
 import {useModal} from 'hooks/useModal';
 import {useEffect, useState} from 'react';
 import {Scrollbars} from 'react-custom-scrollbars-2';
-import {unstakeTOS} from '../../actions';
+import {claimDividendPool} from '../../actions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {CloseButton} from 'components/Modal';
+import {ClaimList} from '@Dao/types';
 
-const UnstakeRecord = ({number, amount}: {number: number; amount: string}) => {
+const ClaimRecord = ({
+  name,
+  amount,
+  tokenName,
+}: {
+  name: string;
+  amount: string;
+  tokenName: string;
+}) => {
   const {colorMode} = useColorMode();
   return (
     <WrapItem w="100%" h="37px">
@@ -31,13 +40,13 @@ const UnstakeRecord = ({number, amount}: {number: number; amount: string}) => {
         <Text
           color={colorMode === 'light' ? 'gray.400' : 'gray.425'}
           fontSize={'13px'}>
-          #{number + 1}
+          {name}
         </Text>
         <Text
           color={colorMode === 'light' ? 'gray.250' : 'white.200'}
           fontSize={'15px'}
           fontWeight={600}>
-          {amount} TOS
+          {amount} {tokenName}
         </Text>
       </Flex>
     </WrapItem>
@@ -46,34 +55,30 @@ const UnstakeRecord = ({number, amount}: {number: number; amount: string}) => {
 
 export const DaoClaim = (props: any) => {
   const {data} = useAppSelector(selectModalType);
+  const {balance, claimList} = data.data;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {handleCloseModal} = useModal();
   const {account, library} = useActiveWeb3React();
 
-  const [unstakeList, setUnstakeList] = useState<[{}]>([{}]);
+  const [unstakeList, setUnstakeList] = useState<ClaimList[] | []>([]);
   const [unstakeBalance, setUnstakeBalance] = useState('-');
+  const [tokenList, setTokenList] = useState([]);
 
   useEffect(() => {
-    const lockList = data?.data?.lockList;
-    if (lockList === undefined) {
-      return;
+    if (balance) {
+      setUnstakeBalance(balance);
     }
-    const unstakedList = lockList.filter(
-      (e: any) => e.end === true && e.endTime > 0,
-    );
-    const unstakedBalance = unstakedList.reduce((acc: any, cur: any) => {
-      return Number(acc) + Number(cur.lockedBalance.replaceAll(',', ''));
-    }, 0);
-    setUnstakeList(unstakedList);
-    // setUnstakeBalance(unstakedBalance.toFixed(2));
-    setUnstakeBalance(
-      Number(unstakedBalance).toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-      }),
-    );
+    if (claimList) {
+      const list = claimList.filter((data: ClaimList) => data.price !== 0);
+      const tokenAddresses = list.map((data: ClaimList) => {
+        return data.tokenAddress;
+      });
+      setTokenList(tokenAddresses);
+      setUnstakeList(list);
+    }
     /*eslint-disable*/
-  }, [data]);
+  }, [data, balance, claimList]);
 
   return (
     <Modal
@@ -156,11 +161,11 @@ export const DaoClaim = (props: any) => {
                   style={{marginTop: '0', marginBottom: '20px'}}
                   justifyContent="center"
                   flexDir="column">
-                  {unstakeList.map((unstake: any, index: number) => (
-                    <UnstakeRecord
-                      number={index}
-                      amount={unstake.lockedBalance}
-                      key={index}
+                  {unstakeList.map((data: ClaimList) => (
+                    <ClaimRecord
+                      name={data.name}
+                      amount={data.claimAmount}
+                      tokenName={data.tokenName}
                     />
                   ))}
                 </Flex>
@@ -176,11 +181,11 @@ export const DaoClaim = (props: any) => {
               fontSize="14px"
               _hover={{...theme.btnHover}}
               onClick={() => {
-                if (account) {
-                  unstakeTOS({
+                if (account && tokenList.length > 0) {
+                  claimDividendPool({
                     account,
                     library,
-                    handleCloseModal: handleCloseModal(),
+                    tokenAddress: tokenList,
                   });
                 }
               }}>

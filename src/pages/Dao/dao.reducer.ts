@@ -3,7 +3,7 @@ import {RootState} from 'store/reducers';
 import {LibraryType} from 'types/index';
 import {TosStakeList, ClaimList} from './types/index';
 import {getTosStakeList} from './utils/getTosStakeList';
-import {getAirdropList} from './actions/airdropClaim';
+import {getClaimalbeList} from './actions';
 import {fetchStarterURL} from 'constants/index';
 
 interface TosStakeState {
@@ -52,16 +52,8 @@ export const fetchTosStakes = createAsyncThunk(
       .then((result) => result);
 
     const starterData = starterReq.datas;
-    const tokenAddresses = starterData.map((project: any) => {
-      if (project.chainId === chainId) {
-        return project.tokenAddress;
-      }
-    });
-
-    // console.log('-gogo-');
-    // const claimList = await getAirdropList({account, library, tokenAddresses});
-    // console.log(claimList);
-    return {tosStakeList, claimList: []};
+    const claimList = await getClaimalbeList({account, library, starterData});
+    return {tosStakeList, claimList: claimList || []};
   },
 );
 

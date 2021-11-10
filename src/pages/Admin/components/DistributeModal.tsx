@@ -18,6 +18,7 @@ import {useModal} from 'hooks/useModal';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {CloseButton} from 'components/Modal';
 import {CustomInput} from 'components/Basic';
+import AdminActions from '../actions';
 
 export const DistributeModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -31,6 +32,7 @@ export const DistributeModal = () => {
   const [tokenAddress, setTokenAddress] = useState<string>('');
   const [tokenAmount, setTokenAmount] = useState('');
 
+  console.log(data);
   console.log(contractAddress);
 
   return (
@@ -86,6 +88,7 @@ export const DistributeModal = () => {
                   setValue={setTokenAddress}
                   placeHolder={'Enter token address'}
                   fontWeight={500}
+                  startWithZero={true}
                   color={
                     tokenAddress !== ''
                       ? colorMode === 'light'
@@ -102,12 +105,12 @@ export const DistributeModal = () => {
                   w={'290px'}
                   h={'32px'}
                   style={{fontSize: '12px', textAlign: 'left'}}
-                  value={tokenAddress}
-                  setValue={setTokenAddress}
+                  value={tokenAmount}
+                  setValue={setTokenAmount}
                   placeHolder={'0.00'}
                   fontWeight={500}
                   color={
-                    tokenAddress !== ''
+                    tokenAmount !== ''
                       ? colorMode === 'light'
                         ? 'gray.225'
                         : 'white.100'
@@ -130,7 +133,15 @@ export const DistributeModal = () => {
               w={'150px'}
               fontSize="14px"
               _hover={{}}
-              onClick={() => {}}>
+              onClick={() => {
+                account &&
+                  AdminActions.getERC20Approve({
+                    account,
+                    library,
+                    amount: tokenAmount,
+                    address: tokenAddress,
+                  });
+              }}>
               Approve
             </Button>
             <Button
@@ -138,7 +149,15 @@ export const DistributeModal = () => {
               w={'150px'}
               fontSize="14px"
               _hover={{}}
-              onClick={() => {}}>
+              onClick={() => {
+                account &&
+                  AdminActions.distribute({
+                    account,
+                    library,
+                    amount: tokenAmount,
+                    address: tokenAddress,
+                  });
+              }}>
               Distribute
             </Button>
           </Box>

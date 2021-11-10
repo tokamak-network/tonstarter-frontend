@@ -22,7 +22,10 @@ export interface TosStakeList {
 //   price: number;
 // }
 
-export type ClaimList = AdminObject & {
-  amount: string;
+export type ClaimList = {
+  name: string;
+  claimAmount: string;
+  tokenName: string;
   price: number;
+  tokenAddress: string;
 };
