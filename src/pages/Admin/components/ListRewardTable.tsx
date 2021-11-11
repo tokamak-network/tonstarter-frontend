@@ -1,4 +1,4 @@
-import {FC, useRef} from 'react';
+import {FC, useCallback, useRef, useState} from 'react';
 import {
   Column,
   useExpanded,
@@ -17,13 +17,12 @@ import {
   Center,
   useTheme,
   Tooltip,
-  Link,
+  useClipboard,
 } from '@chakra-ui/react';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {LoadingComponent} from 'components/Loading';
-import {CustomButton} from 'components/Basic/CustomButton';
-import {useDispatch} from 'react-redux';
-import {openModal} from 'store/modal.reducer';
+import {ListingRewardTableData} from '@Admin/types';
+import copyImg from 'assets/svgs/copy-icon.svg';
 
 type ListTableProps = {
   columns: Column[];
@@ -31,11 +30,15 @@ type ListTableProps = {
   isLoading: boolean;
 };
 
-export const ListTable: FC<ListTableProps> = ({columns, data, isLoading}) => {
+export const ListRewardTable: FC<ListTableProps> = ({
+  columns,
+  data,
+  isLoading,
+}) => {
   const {
     getTableProps,
     getTableBodyProps,
-    headerGroups,
+    // headerGroups,
     prepareRow,
     // visibleColumns,
     canPreviousPage,
@@ -56,20 +59,20 @@ export const ListTable: FC<ListTableProps> = ({columns, data, isLoading}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const focusTarget = useRef<any>([]);
-  const dispatch = useDispatch();
 
-  const onChangeSelectBox = (e: any) => {
-    const filterValue = e.target.value;
-    headerGroups[0].headers.map((e) => {
-      if (e.Header === filterValue) {
-        if (e.Header === 'Earning Per TON') {
-          return e.toggleSortBy();
-        }
-        e.toggleSortBy(true);
-      }
-      return null;
-    });
-  };
+  const [copyText, setCopyText] = useState<string>('');
+  const {onCopy} = useClipboard(copyText as string);
+
+  const handleCopyAction = useCallback(
+    (incentiveKeyObj: ListingRewardTableData['incentiveKey']) => {
+      setCopyText(JSON.stringify(incentiveKeyObj));
+      onCopy();
+      setTimeout(() => {
+        alert('copied!');
+      }, 1000);
+    },
+    [onCopy],
+  );
 
   if (isLoading === true || data.length === 0) {
     return (
@@ -81,41 +84,26 @@ export const ListTable: FC<ListTableProps> = ({columns, data, isLoading}) => {
 
   return (
     <Flex w="1100px" flexDir={'column'}>
-      <Flex justifyContent={'end'} mb={'23px'}>
-        <Select
-          w={'137px'}
-          h={'32px'}
-          color={'#86929d'}
-          fontSize={'13px'}
-          placeholder="Filter"
-          onChange={onChangeSelectBox}>
-          <option value="Sale Start">Sale Start</option>
-          <option value="Sale End">Sale End</option>
-          <option value="Status">Status</option>
-          <option value="Sale Amount">Sale Amount</option>
-          <option value="Funding Raised">Funding Raised</option>
-        </Select>
-      </Flex>
       <Flex
         borderTopRadius={'10px'}
         boxShadow={
           colorMode === 'light' ? '0 1px 1px 0 rgba(96, 97, 112, 0.16)' : ''
         }>
         {[
-          'Name',
-          'Token',
-          'Sale Start',
-          'Sale End',
-          'Sale Amount',
-          'Funding Raised',
+          'Pool',
+          'Reward Token',
+          'IncentiveKey',
+          'Start',
+          'End',
+          'Allocated Reward',
+          'Stakers',
           'Status',
-          'Airdrop',
         ].map((title: string) => {
           return (
             <Text
               border={colorMode === 'dark' ? '1px solid #373737' : ''}
               borderTopLeftRadius={title === 'Name' ? '10px' : ''}
-              borderTopRightRadius={title === 'Airdrop' ? '10px' : ''}
+              borderTopRightRadius={title === 'Actions' ? '10px' : ''}
               textAlign={'center'}
               lineHeight={'45px'}
               fontSize={'12px'}
@@ -123,11 +111,21 @@ export const ListTable: FC<ListTableProps> = ({columns, data, isLoading}) => {
               h={'45px'}
               bg={colorMode === 'light' ? 'white.100' : 'black.200'}
               w={
-                title === 'Name'
-                  ? '137px'
-                  : title === 'Token'
+                title === 'Pool'
+                  ? '120px'
+                  : title === 'Reward Token'
                   ? '87px'
-                  : '147px'
+                  : title === 'IncentiveKey'
+                  ? '383px'
+                  : title === 'Start'
+                  ? '95px'
+                  : title === 'End'
+                  ? '95px'
+                  : title === 'Allocated Reward'
+                  ? '120px'
+                  : title === 'Stakers'
+                  ? '90px'
+                  : '110px'
               }
               borderBottom={
                 colorMode === 'light'
@@ -160,7 +158,7 @@ export const ListTable: FC<ListTableProps> = ({columns, data, isLoading}) => {
                       : ''
                   }
                   ref={(el) => (focusTarget.current[i] = el)}
-                  h={16}
+                  h={'111px'}
                   key={i}
                   borderBottomRadius={'10px'}
                   mb={'20px'}
@@ -172,14 +170,14 @@ export const ListTable: FC<ListTableProps> = ({columns, data, isLoading}) => {
                   {...row.getRowProps()}>
                   {row.cells.map((cell: any, index: number) => {
                     const {
-                      name,
-                      tokenName,
-                      startAddWhiteTime,
-                      endDepositTime,
-                      saleAmount,
-                      tokenFundRaisingTargetAmount,
+                      pool,
+                      rewardToken,
+                      incentiveKey,
+                      start,
+                      end,
+                      allocatedReward,
+                      stakers,
                       status,
-                      saleContractAddress,
                     } = cell.row.original;
                     const type = cell.column.id;
                     return (
@@ -187,68 +185,70 @@ export const ListTable: FC<ListTableProps> = ({columns, data, isLoading}) => {
                         key={index}
                         m={0}
                         w={
-                          type === 'name'
-                            ? '137px'
-                            : type === 'token'
+                          type === 'pool'
+                            ? '120px'
+                            : type === 'rewardToken'
                             ? '87px'
-                            : type === 'saleStart'
-                            ? '147px'
-                            : type === 'saleEnd'
-                            ? '147px'
-                            : type === 'saleAmount'
-                            ? '147px'
-                            : type === 'fundingRaised'
-                            ? '147px'
-                            : '147px'
+                            : type === 'incentiveKey'
+                            ? '383px'
+                            : type === 'start'
+                            ? '95px'
+                            : type === 'end'
+                            ? '95px'
+                            : type === 'allocatedReward'
+                            ? '120px'
+                            : type === 'stakers'
+                            ? '90px'
+                            : '110px'
                         }
-                        h={'55px'}
+                        h={'111px'}
                         display="flex"
                         alignItems="center"
                         justifyContent="center"
-                        fontSize={'12px'}
+                        fontSize={12}
                         fontWeight={500}
                         p={0}
                         textAlign="center"
                         {...cell.getCellProps()}>
-                        {type === 'name' && (
-                          <Link
-                            textDecor={'underline'}
-                            cursor={'pointer'}
-                            isExternal={true}
-                            outline={'none'}
-                            fontWeight={600}
-                            _hover={{
-                              color: 'blue.100',
-                            }}
-                            // href={`${appConfig.explorerLink}${contractAddress}`}
-                          >
-                            {name}
-                          </Link>
+                        {type === 'pool' && pool}
+                        {type === 'rewardToken' && rewardToken}
+                        {/* {type === 'incentiveKey' &&
+                          JSON.stringify(incentiveKey, null, ' ')} */}
+                        {type === 'incentiveKey' && (
+                          <Flex
+                            flexDir="column"
+                            fontSize={10}
+                            textAlign="left"
+                            lineHeight={1.3}
+                            pos={'relative'}>
+                            <Text>{'{'}</Text>
+                            <Text>
+                              rewardToken : {incentiveKey.rewardToken}
+                            </Text>
+                            <Text>pool : {incentiveKey.pool}</Text>
+                            <Text>startTime : {incentiveKey.startTime}</Text>
+                            <Text>endTime : {incentiveKey.endTime}</Text>
+                            <Text>refundee : {incentiveKey.refundee}</Text>
+                            <Text>{'}'}</Text>
+                            <img
+                              src={copyImg}
+                              alt={'copy icon'}
+                              style={{
+                                position: 'absolute',
+                                right: -30,
+                                top: '40%',
+                                cursor: 'pointer',
+                              }}
+                              onClick={() => {
+                                handleCopyAction(incentiveKey);
+                              }}></img>
+                          </Flex>
                         )}
-                        {type === 'token' && tokenName}
-                        {type === 'saleStart' && startAddWhiteTime}
-                        {type === 'saleEnd' && endDepositTime}
-                        {type === 'saleAmount' && saleAmount}
-                        {type === 'fundingRaised' &&
-                          tokenFundRaisingTargetAmount}
+                        {type === 'start' && start}
+                        {type === 'end' && end}
+                        {type === 'allocatedReward' && allocatedReward}
+                        {type === 'stakers' && stakers}
                         {type === 'status' && status}
-                        {type === 'airdrop' && (
-                          <CustomButton
-                            text={'Distribute'}
-                            w={'78px'}
-                            h={'25px'}
-                            fontSize={12}
-                            func={() =>
-                              dispatch(
-                                openModal({
-                                  type: 'Admin_Distribute',
-                                  data: {
-                                    contractAddress: saleContractAddress,
-                                  },
-                                }),
-                              )
-                            }></CustomButton>
-                        )}
                       </chakra.td>
                     );
                   })}

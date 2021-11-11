@@ -17,16 +17,12 @@ import {
   Center,
   useTheme,
   Tooltip,
-  Link,
 } from '@chakra-ui/react';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {LoadingComponent} from 'components/Loading';
-import {useActiveWeb3React} from 'hooks/useWeb3';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {useDispatch} from 'react-redux';
 import {openModal} from 'store/modal.reducer';
-import {useAppSelector} from 'hooks/useRedux';
-import {selectApp} from 'store/app/app.reducer';
 
 type ListTableProps = {
   columns: Column[];
@@ -42,14 +38,14 @@ export const ListPoolsTable: FC<ListTableProps> = ({
   const {
     getTableProps,
     getTableBodyProps,
-    headerGroups,
+    // headerGroups,
     prepareRow,
     // visibleColumns,
     canPreviousPage,
     canNextPage,
     pageOptions,
     page,
-    nextPage,
+    // nextPage,
     previousPage,
     setPageSize,
     state: {pageIndex, pageSize},
@@ -63,9 +59,7 @@ export const ListPoolsTable: FC<ListTableProps> = ({
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const focusTarget = useRef<any>([]);
-  const {library} = useActiveWeb3React();
   const dispatch = useDispatch();
-  const {data: appConfig} = useAppSelector(selectApp);
 
   if (isLoading === true || data.length === 0) {
     return (

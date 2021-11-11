@@ -13,6 +13,7 @@ export const ListingProjects = () => {
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
   const [projects, setProjects] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     async function fetchProjectsData() {
@@ -39,16 +40,19 @@ export const ListingProjects = () => {
               endAddWhiteTime > nowTimeStamp
                 ? 'Whitelist'
                 : endExclusiveTime > nowTimeStamp
-                ? 'Round 1'
+                ? 'Public Round 1'
                 : endDepositTime > nowTimeStamp
-                ? 'Round 2'
+                ? 'Public Round 2'
                 : 'Claim';
             return {...data, status: checkStep, saleAmount};
           }
         }),
       );
-      if (res) {
-        return setProjects(res);
+      if (res[0] !== undefined) {
+        setProjects(res);
+        return setLoading(false);
+      } else {
+        return setProjects([]);
       }
     }
     fetchProjectsData();
@@ -97,7 +101,7 @@ export const ListingProjects = () => {
       ],
       [],
     ),
-    isLoading: false,
+    isLoading: loading,
   };
 
   const {data, columns, isLoading} = dummyData;
@@ -111,11 +115,13 @@ export const ListingProjects = () => {
         }
       />
       <Flex mt={'60px'}>
-        {data.length > 0 && (
+        {data.length > 0 ? (
           <ListTable
             data={data}
             columns={columns}
             isLoading={isLoading}></ListTable>
+        ) : (
+          <div>no data for this account address</div>
         )}
       </Flex>
       <DistributeModal></DistributeModal>

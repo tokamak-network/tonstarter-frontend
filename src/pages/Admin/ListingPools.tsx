@@ -5,7 +5,6 @@ import {useEffect, useMemo, useState} from 'react';
 import {ListPoolsTable} from './components/ListPoolsTable';
 import {DistributeModal} from './components/DistributeModal';
 import {ListingPoolsTableData} from './types';
-import AdminActions from './actions';
 import {CustomInput} from 'components/Basic';
 import {CustomButton} from 'components/Basic/CustomButton';
 

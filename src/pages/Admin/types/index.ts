@@ -101,3 +101,20 @@ export type ListingPoolsTableData = {
   rewardPrograms: number;
   action: any;
 };
+
+export type ListingRewardTableData = {
+  pool: string;
+  rewardToken: string;
+  incentiveKey: {
+    rewardToken: string;
+    pool: string;
+    startTime: number;
+    endTime: number;
+    refundee: string;
+  };
+  start: string;
+  end: string;
+  allocatedReward: string;
+  stakers: string;
+  status: 'Waiting' | 'On progress' | 'Closed';
+};

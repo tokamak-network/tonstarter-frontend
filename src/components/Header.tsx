@@ -346,7 +346,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
               </MenuItem>
             </NavLink>
             <NavLink
-              to="/admin/listproject"
+              to="/admin/listrewards"
               activeStyle={{background: '#ffffff', color: '#1c1c1c'}}
               style={{background: '#ffffff', color: '#1c1c1c'}}>
               <MenuItem
