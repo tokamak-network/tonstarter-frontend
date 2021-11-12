@@ -30,6 +30,22 @@ export const ListingRewards = () => {
           stakers: '10',
           status: 'Waiting',
         },
+        {
+          pool: 'WTON-TOS',
+          rewardToken: 'TOS',
+          incentiveKey: {
+            rewardToken: '0x73a54e5C054aA64C1AE7373C2B5474d8AFEa08bd',
+            pool: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
+            startTime: 1632716437,
+            endTime: 1632802837,
+            refundee: '0x3b9878Ef988B086F13E5788ecaB9A35E74082ED0',
+          },
+          start: '2021.09.01 20:00:00',
+          end: '2021.09.01 20:00:00',
+          allocatedReward: '10,000,000.00',
+          stakers: '10',
+          status: 'Waiting',
+        },
       ];
       setProjects(dummy);
     }

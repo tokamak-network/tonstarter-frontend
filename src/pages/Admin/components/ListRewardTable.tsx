@@ -1,4 +1,4 @@
-import {FC, useCallback, useRef, useState} from 'react';
+import {FC, useCallback, useEffect, useRef, useState} from 'react';
 import {
   Column,
   useExpanded,
@@ -61,18 +61,24 @@ export const ListRewardTable: FC<ListTableProps> = ({
   const focusTarget = useRef<any>([]);
 
   const [copyText, setCopyText] = useState<string>('');
+  const [oldCopyText, setOldCopyText] = useState<string>('');
   const {onCopy} = useClipboard(copyText as string);
 
   const handleCopyAction = useCallback(
     (incentiveKeyObj: ListingRewardTableData['incentiveKey']) => {
       setCopyText(JSON.stringify(incentiveKeyObj));
-      onCopy();
-      setTimeout(() => {
-        alert('copied!');
-      }, 1000);
     },
-    [onCopy],
+    [],
   );
+
+  useEffect(() => {
+    if (copyText !== '' && copyText !== oldCopyText) {
+      onCopy();
+      setOldCopyText(copyText);
+      alert('copied!');
+    }
+    /*eslint-disable*/
+  }, [copyText]);
 
   if (isLoading === true || data.length === 0) {
     return (
@@ -159,9 +165,9 @@ export const ListRewardTable: FC<ListTableProps> = ({
                   }
                   ref={(el) => (focusTarget.current[i] = el)}
                   h={'111px'}
-                  key={i}
-                  borderBottomRadius={'10px'}
-                  mb={'20px'}
+                  key={`reward_table_${i}`}
+                  borderBottomRadius={page.length - 1 !== i ? '' : '10px'}
+                  //   mb={'20px'}
                   w="100%"
                   bg={colorMode === 'light' ? 'white.100' : 'black.200'}
                   border={colorMode === 'dark' ? '1px solid #373737' : ''}
