@@ -20,7 +20,7 @@ type StarterModal = 'Starter_Approve';
 
 type GeneralModal = 'calendar';
 type RewardModal = 'search';
-export type ModalType = StakingModal | DaoModal | GeneralModal| RewardModal;
+export type ModalType = StakingModal | DaoModal | GeneralModal| RewardModal| StarterModal;
 
 export type Modal = {
   modal?: ModalType;

@@ -27,7 +27,7 @@ type CustomInputProp = {
 export const CustomInput = (prop: CustomInputProp) => {
   const {colorMode} = useColorMode();
 
-  const {w, h, border, value, setValue, numberOnly, br, color, tokenName, fontSize} =
+  const {w, h, border, value, setValue, numberOnly, br, color, tokenName, fontSize, maxBtn,maxValue} =
     prop;
 
   useEffect(() => {
