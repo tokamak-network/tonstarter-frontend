@@ -115,6 +115,32 @@ export const api = createApi({
         },
       })
     }),
+    positionByPool: builder.query({
+      query: ({ pool_id }) => ({
+        document: gql`
+          query positionByPool($pool_id: [String!]) {
+            positions(where: {pool_in: $pool_id}) {
+              id
+              pool {
+                id
+                token0 {
+                  id
+                  symbol
+                }
+                token1 {
+                  id
+                  symbol
+                }
+              }
+              owner
+            }
+          }
+        `,
+        variables: {
+          pool_id,
+        },
+      })
+    }),
     feeTierDistribution: builder.query({
       query: ({ token0, token1 }) => ({
         document: gql`

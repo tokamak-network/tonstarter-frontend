@@ -37,6 +37,7 @@ import {useModal} from 'hooks/useModal';
 import {
   usePositionByUserQuery,
   usePositionByContractQuery,
+  usePositionByPoolQuery
 } from 'store/data/generated';
 import ms from 'ms.macro';
 
@@ -137,6 +138,13 @@ export const PoolTable: FC<PoolTableProps> = ({
     positionPayload();
   }, [data, transactionType, blockNumber, address, library]);
 
+  const positionPool = usePositionByPoolQuery(
+    {pool_id: ['0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf']},
+    {
+      pollingInterval: ms`2m`,
+    },
+  );
+  console.log(positionPool)
   const position = usePositionByUserQuery(
     {address: account},
     {
@@ -149,6 +157,7 @@ export const PoolTable: FC<PoolTableProps> = ({
       pollingInterval: ms`2m`,
     },
   );
+
 
   const [positions, setPositions] = useState([]);
   useEffect(() => {
