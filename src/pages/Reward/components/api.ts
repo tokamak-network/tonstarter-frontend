@@ -26,8 +26,6 @@ function createInstance() {
 const instance = createInstance();
 
 export async function createReward(args: CreateReward) {
-    console.log('came to createReward');
-
     let {
         poolName,
         poolAddress,
@@ -60,8 +58,6 @@ export async function createReward(args: CreateReward) {
         tx: tx,
         sig: sig,
     });
-
-    console.log(res);
     
     return res.data;
 }

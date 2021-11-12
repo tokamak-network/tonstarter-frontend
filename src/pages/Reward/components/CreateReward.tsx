@@ -145,12 +145,6 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
     checkApproved(library, account, setCheckAllowed);
   }, [library, account, setCheckAllowed]);
 
-  useEffect(()=> {
-  
-    console.log('tokeninfo', tokeninfo);
-    
-    
-  }, [tokeninfo])
   return (
     <Box display={'flex'} justifyContent={'center'}>
       <Box w={'100%'} px={'15px'}>

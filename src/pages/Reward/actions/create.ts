@@ -89,9 +89,6 @@ export const create = async (args: Create) => {
     endTime: endTime,
     refundee: userAddress,
   };
-  console.log('key', key);
-  console.log(weiAllocated);
-  
   try {
     
     const receipt = await uniswapStakerContract
@@ -119,9 +116,7 @@ export const create = async (args: Create) => {
         sig: sig,
       };
       setAlllowed(0);
-      const create = await createReward(arg);
-      console.log('create', create);
-     
+      const create = await createReward(arg);     
     }
   } catch (err) {
     store.dispatch(setTxPending({ tx: false }));

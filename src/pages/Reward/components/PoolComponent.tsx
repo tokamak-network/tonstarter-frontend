@@ -57,7 +57,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(2);
   const [totalPAges, setTotalPages] = useState<number>(0);
-  useEffect(() => {
+  useEffect(() => {  
     const pagenumber = parseInt(
       ((pools.length - 1) / pageLimit + 1).toString(),
     );
@@ -103,7 +103,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
         </Text>
       </Flex>
       {getPaginatedData().map((pool: any, index:number) => {
-        const length = pool.poolDayData.length - 1;
+        const length = pool.poolDayData.length - 1;      
         const numRewards = rewards.filter(
           (reward) => reward.poolAddress === pool.id,
         ).length;

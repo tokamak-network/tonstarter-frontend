@@ -30,7 +30,6 @@ type Unstake = {
     if (userAddress === null || userAddress === undefined) {
       return;
     }
-    console.log(tokenid);
     const signer = getSigner(library, userAddress);
 
     const key = {

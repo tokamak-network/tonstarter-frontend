@@ -42,7 +42,6 @@ export const SideContainer: FC<SideContainerProps> = ({
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
   const [withdrawableTokens, setWithdrawableTokens] = useState<any[]>([]);
-  const stakedTokens = [8176, 7774, 7775, 5923, 6173];
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const uniswapStakerContract = new Contract(
     UniswapStaker_Address,
@@ -58,10 +57,10 @@ export const SideContainer: FC<SideContainerProps> = ({
       const signer = getSigner(library, account);
   
       let stringResult: any = [];
-    await Promise.all(stakedTokens.map(async (token) => {
+    await Promise.all(LPTokens.map(async (token) => {
         const depositInfo = await uniswapStakerContract
             .connect(signer)
-            .deposits(token);
+            .deposits(token.id);
           
           if (depositInfo.owner === account && depositInfo.numberOfStakes===0) {
             stringResult.push(token)
@@ -72,7 +71,7 @@ export const SideContainer: FC<SideContainerProps> = ({
       setWithdrawableTokens(stringResult)
     };
     getWithdrawable();
-  },[stakedTokens, account, library, transactionType, blockNumber])
+  },[LPTokens, account, library, transactionType, blockNumber])
   return (
     <Box
       display={'flex'}

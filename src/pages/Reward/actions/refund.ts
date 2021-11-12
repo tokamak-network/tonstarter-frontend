@@ -41,10 +41,7 @@ export const refund = async (args: Refund) => {
         library,
     );
 
-
     try {
-
-        console.log('key', key);
         
         const receipt = await uniswapStakerContract.connect(signer).endIncentive(key);
         store.dispatch(setTxPending({ tx: true }));

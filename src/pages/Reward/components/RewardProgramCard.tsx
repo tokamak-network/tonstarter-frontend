@@ -110,6 +110,8 @@ const [rewardSymbol, setRewardSymbol] = useState<string>('')
     STAKERABI.abi,
     library,
   );
+
+  
 useEffect(()=> {
 const getTokenFromContract = async (address: string) => {
     if (account === null || account === undefined || library === undefined) {
@@ -168,14 +170,13 @@ const getTokenFromContract = async (address: string) => {
       setApproved(isApprovedForAll);
     }
     async function checkStaked() {
-      // const tokenID = tokenID;
       if (account === null || account === undefined || library === undefined) {
         return;
       }
       const signer = getSigner(library, account);
       const depositInfo = await uniswapStakerContract
         .connect(signer)
-        .deposits(tokenID);
+        .deposits(selectedToken);
       if (depositInfo.owner === account) {
         const incentiveABI =
           'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)';
@@ -185,7 +186,7 @@ const getTokenFromContract = async (address: string) => {
         );
         const stakeInfo = await uniswapStakerContract
           .connect(signer)
-          .stakes(tokenID, incentiveId);
+          .stakes(selectedToken, incentiveId);
 
         stakeInfo.liquidity > 0 ? setStaked(true) : setStaked(false);
       }
@@ -200,7 +201,7 @@ const getTokenFromContract = async (address: string) => {
         try {
           const rewardInfo = await uniswapStakerContract
             .connect(signer)
-            .getRewardInfo(key, Number(tokenID));
+            .getRewardInfo(key, Number(selectedToken));
           const myReward = Number(rewardInfo.reward);
           setMyReward(myReward);
         } catch (err) {}
@@ -210,7 +211,7 @@ const getTokenFromContract = async (address: string) => {
     checkStaked();
     getMyReward();
 
-  }, [account, library, transactionType, blockNumber, tokenID, approved, pageIndex, selectedPool]);
+  }, [account, library, transactionType, blockNumber, selectedToken, approved, pageIndex, selectedPool]);
 
   useEffect(() => {
     const now = moment().unix();
@@ -233,7 +234,7 @@ const getTokenFromContract = async (address: string) => {
     // else {
     //   setButtonState('in progress');
     // }
-  }, [approved, staked, account, pageIndex, library, transactionType, blockNumber, tokenID]);
+  }, [approved, staked, account, pageIndex, library, transactionType, blockNumber, selectedToken]);
 
   const buttonFunction = (buttonCase: string) => {
     if (buttonCase === 'Approve') {
@@ -258,7 +259,7 @@ const getTokenFromContract = async (address: string) => {
     if (buttonCase === 'Unstake') {
       unstake({
         library: library,
-        tokenid: tokenID,
+        tokenid: selectedToken,
         userAddress: account,
         startTime: reward.startTime,
         endTime: reward.endTime,

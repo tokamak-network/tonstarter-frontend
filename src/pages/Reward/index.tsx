@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import {Fragment, useMemo, useEffect, useState} from 'react';
 import {Head} from 'components/SEO';
-import {SearchModal} from './RewardModals'
+import {SearchModal} from './RewardModals';
 import {PageHeader} from 'components/PageHeader';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {ManageContainer} from './ManageContainer';
@@ -32,12 +32,20 @@ import * as StakeUniswapABI from 'services/abis/StakeUniswapV3.json';
 import {getSigner} from 'utils/contract';
 import {getPoolName, checkTokenType} from '../../utils/token';
 import {fetchPositionPayload} from '../Pools/utils/fetchPositionPayload';
+import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
+
 import {
   usePositionByUserQuery,
   usePositionByContractQuery,
+  usePositionByPoolQuery,
 } from 'store/data/generated';
 import {SideContainer} from './SideContainer';
-const {UniswapStaking_Address, DOCPool_Address, BasePool_Address} = DEPLOYED;
+const {
+  UniswapStaking_Address,
+  DOCPool_Address,
+  BasePool_Address,
+  UniswapStaker_Address,
+} = DEPLOYED;
 type Pool = {
   id: string;
   liquidity: string;
@@ -98,7 +106,7 @@ export const Reward = () => {
       pollingInterval: ms`2m`,
     },
   );
-
+  
   useEffect(() => {
     const filteredData = filterDatas();
     setOrderedData(filteredData);
@@ -131,7 +139,7 @@ export const Reward = () => {
         allPools.push(secondpooldata.pools[0]);
       }
       const poolArr = isLoading ? [] : allPools;
-      setSelectedPool(poolArr[0]);
+      // setSelectedPool(poolArr[0]);
       setPool(poolArr);
     }
     getPool();
@@ -151,6 +159,7 @@ export const Reward = () => {
     async function positionPayload() {
       if (account) {
         const result = await fetchPositionPayload(library, account);
+        
         let stringResult: any = [];
         for (let i = 0; i < result?.positionData.length; i++) {
           stringResult.push(result?.positionData[i]?.positionid.toString());
@@ -167,8 +176,6 @@ export const Reward = () => {
           const positionIds = await StakeUniswap.connect(
             signer,
           ).getUserStakedTokenIds(account);
-          console.log('positionIds', positionIds);
-          
         }
         if (orderedData.length !== 0) {
           setTimeout(() => {
@@ -179,12 +186,28 @@ export const Reward = () => {
     }
     positionPayload();
   }, [account, orderedData, library]);
+
+  const positionPool1 = usePositionByPoolQuery(
+    {pool_id: [DOCPool_Address]},
+    {
+      pollingInterval: ms`2m`,
+    },
+  );
+
+  const positionPool2 = usePositionByPoolQuery(
+    {pool_id: [BasePool_Address]},
+    {
+      pollingInterval: ms`2m`,
+    },
+  );
+
   const position = usePositionByUserQuery(
     {address: account},
     {
       pollingInterval: ms`2m`,
     },
   );
+
   const positionByContract = usePositionByContractQuery(
     {id: stakingPosition},
     {
@@ -193,20 +216,75 @@ export const Reward = () => {
   );
 
   const [positions, setPositions] = useState([]);
+
   useEffect(() => {
-    function getPosition() {
-      if (position.data && positionByContract.data) {
+    async function getPosition() {
+      const uniswapStakerContract = new Contract(
+        UniswapStaker_Address,
+        STAKERABI.abi,
+        library,
+      );
+
+      if (
+        position.data &&
+        positionByContract.data &&
+        positionPool1.data &&
+        positionPool2.data
+      ) {
         position.refetch();
         if (selectedPool !== undefined) {
           const withStakedPosition = position.data.positions.filter(
             (position: any) => selectedPool.id === position.pool.id,
           );
-          console.log('withStakedPosition', withStakedPosition);
 
-          setPositions(withStakedPosition);
-          if (withStakedPosition.length !== 0) {
-            setSelectdPosition(withStakedPosition[0].id);
+          const positionsOfContract1 = positionPool1.data.positions.filter(
+            (position: any) =>
+              position.owner === UniswapStaker_Address.toLowerCase(),
+          );
+          const positionsOfContract2 = positionPool2.data.positions.filter(
+            (position: any) =>
+              position.owner === UniswapStaker_Address.toLowerCase(),
+          );
+           const allPools = positionsOfContract1.concat(positionsOfContract2);
+
+           
+           const poolsFromSelected = allPools.filter((token:any)=> (
+            token.pool.id === selectedPool.id
+           ))           
+           
+          if (
+            account === null ||
+            account === undefined ||
+            library === undefined
+          ) {
+            return;
           }
+
+          const signer = getSigner(library, account);
+
+         
+          let stringResult: any = [];
+
+          await Promise.all(
+            poolsFromSelected.map(async (token: any) => {
+              const depositInfo = await uniswapStakerContract
+                .connect(signer)
+                .deposits(token.id);
+
+              if (depositInfo.owner === account) {
+                stringResult.push(token);
+              }
+            }),
+          );
+          const allPos = withStakedPosition.concat(stringResult);
+          
+          setPositions(allPos);
+          if (allPos.length !== 0) {
+            setSelectdPosition(allPos[0].id);
+          }
+        }
+        else {
+          setPositions([]);
         }
       }
     }
@@ -232,20 +310,19 @@ export const Reward = () => {
   }, [orderedData, sortString, account, library]);
 
   const getSelectedPool = (poolAddress: string) => {
-    const selected = pool.filter((pool) => pool.id === poolAddress);
-    setSelectedPool(selected[0])
-   if (poolAddress === '') {
-    setOrderedData(datas);
-     
-   }
-    else {
-      const selectedRewards = datas.filter((data) => data.poolAddress === poolAddress)
+    const selected: Pool[] = pool.filter((pool) => pool.id === poolAddress);
+    setSelectedPool(selected[0]);
+
+    
+    if (poolAddress === '') {
+      setOrderedData(datas);
+    } else {
+      const selectedRewards = datas.filter(
+        (data) => data.poolAddress === poolAddress,
+      );
       setOrderedData(selectedRewards);
     }
-  
-    
-
-  }
+  };
   return (
     <Fragment>
       <Head title={'Reward'} />
@@ -294,11 +371,13 @@ export const Reward = () => {
                   onChange={(e) => {
                     setSelectdPosition(e.target.value);
                   }}>
-                  {positions.map((item: any, index) => (
+                  {selectedPool !==undefined ? 
+                  positions.map((item: any, index) => (
                     <option value={item.id} key={index}>
                       {item.id}
                     </option>
-                  ))}
+                  )) : null
+                }
                 </Select>
                 {positions.length === 0 ? (
                   <Text
@@ -342,7 +421,6 @@ export const Reward = () => {
                   <option value="stakeable">Stakeable</option>
                   <option value="stakeable">Unstakable</option>
                   <option value="claimable">Claimable</option> */}
-                 
                 </Select>
               </Flex>
             </Flex>
@@ -365,7 +443,7 @@ export const Reward = () => {
               <SideContainer
                 pools={pool}
                 selected={selected}
-                rewards={orderedData}
+                rewards={datas}
                 LPTokens={positions}
               />{' '}
             </Flex>
