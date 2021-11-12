@@ -43,6 +43,9 @@ export const refund = async (args: Refund) => {
 
 
     try {
+
+        console.log('key', key);
+        
         const receipt = await uniswapStakerContract.connect(signer).endIncentive(key);
         store.dispatch(setTxPending({ tx: true }));
         if (receipt) {
@@ -51,6 +54,8 @@ export const refund = async (args: Refund) => {
         }
     }
     catch (err) {
+        console.log(err);
+        
         store.dispatch(setTxPending({ tx: false }));
         store.dispatch(
           //@ts-ignore

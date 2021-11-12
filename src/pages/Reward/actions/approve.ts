@@ -14,23 +14,25 @@ type Approve = {
     library: any;
     amount: number;
     userAddress: string | null | undefined;
-    setAlllowed: any
+    setAlllowed: any;
+    tokenAddress: string
 }
 
 const {TOS_ADDRESS, UniswapStaker_Address} = DEPLOYED;
 
 export const approve = async (args:Approve) => {
-    const {library, amount, userAddress, setAlllowed } = args;
+    const {library, amount, userAddress, setAlllowed, tokenAddress } = args;
     if (userAddress === null || userAddress === undefined || library === undefined) {
         return;
       }
 
-      const tosContract = new Contract(TOS_ADDRESS, TOSABI.abi, library);
+      const contract = new Contract(tokenAddress, TOSABI.abi, library);
       // const totalReward = new BigNumber(Number(amount)).toString();
       const weiAllocated = ethers.utils.parseEther(amount.toString())
       const signer = getSigner(library, userAddress);
+      
       try {
-        const receipt = await tosContract
+        const receipt = await contract
           .connect(signer)
           .approve(UniswapStaker_Address, weiAllocated);
         store.dispatch(setTxPending({tx: true}));

@@ -58,16 +58,8 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
   const [pageLimit, setPageLimit] = useState<number>(2);
   const [totalPAges, setTotalPages] = useState<number>(0);
   useEffect(() => {
-    // extend the pools array since there is only 1 pool now
-    let addedPools = [];
-    for (let i = 0; i < 13; i++) {
-      addedPools.push(pools[0]);
-    }
-
-    setAllPools(addedPools);
-    // remove the part above and just use pools array for the part below
     const pagenumber = parseInt(
-      ((addedPools.length - 1) / pageLimit + 1).toString(),
+      ((pools.length - 1) / pageLimit + 1).toString(),
     );
     setPageOptions(pagenumber);
   }, [pools]);
@@ -75,7 +67,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
   const getPaginatedData = () => {
     const startIndex = pageIndex * pageLimit - pageLimit;
     const endIndex = startIndex + pageLimit;
-    return allPools.slice(startIndex, endIndex);
+    return pools.slice(startIndex, endIndex);
   };
 
   const goToNextPage = () => {

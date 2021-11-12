@@ -140,7 +140,9 @@ export const RewardContainer: FC<RewardContainerProps> = ({
                 key={index}
                 reward={rewardProps}
                 selectedToken={Number(position)}
+                selectedPool={selectedPool?selectedPool.id:''}
                 sendKey={stakeMultipleKeys}
+                pageIndex={pageIndex}
               />
             );
           })}

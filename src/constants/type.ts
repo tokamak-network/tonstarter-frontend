@@ -1,6 +1,7 @@
 export type DEPLOYED_TYPE = {
   Stake1Proxy_ADDRESS: string;
   TON_ADDRESS: string;
+  DOC_ADDRESS: string;
   TOS_ADDRESS: string;
   WTON_ADDRESS: string;
   DepositManager_ADDRESS: string;

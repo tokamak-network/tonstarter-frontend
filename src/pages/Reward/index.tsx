@@ -14,6 +14,7 @@ import {
 } from '@chakra-ui/react';
 import {Fragment, useMemo, useEffect, useState} from 'react';
 import {Head} from 'components/SEO';
+import {SearchModal} from './RewardModals'
 import {PageHeader} from 'components/PageHeader';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {ManageContainer} from './ManageContainer';
@@ -166,6 +167,8 @@ export const Reward = () => {
           const positionIds = await StakeUniswap.connect(
             signer,
           ).getUserStakedTokenIds(account);
+          console.log('positionIds', positionIds);
+          
         }
         if (orderedData.length !== 0) {
           setTimeout(() => {
@@ -188,6 +191,7 @@ export const Reward = () => {
       pollingInterval: ms`2m`,
     },
   );
+
   const [positions, setPositions] = useState([]);
   useEffect(() => {
     function getPosition() {
@@ -230,6 +234,15 @@ export const Reward = () => {
   const getSelectedPool = (poolAddress: string) => {
     const selected = pool.filter((pool) => pool.id === poolAddress);
     setSelectedPool(selected[0])
+   if (poolAddress === '') {
+    setOrderedData(datas);
+     
+   }
+    else {
+      const selectedRewards = datas.filter((data) => data.poolAddress === poolAddress)
+      setOrderedData(selectedRewards);
+    }
+  
     
 
   }
@@ -325,10 +338,11 @@ export const Reward = () => {
                   onChange={changeSelect}>
                   <option value="start">Start Date</option>
                   <option value="end">End Date</option>
+                  {/* <option value="joined">Joined</option>
                   <option value="stakeable">Stakeable</option>
-                  <option value="claimable">Claimable</option>
-                  <option value="joined">Joined</option>
-                  <option value="refundable">Refundable</option>
+                  <option value="stakeable">Unstakable</option>
+                  <option value="claimable">Claimable</option> */}
+                 
                 </Select>
               </Flex>
             </Flex>
@@ -362,6 +376,7 @@ export const Reward = () => {
           </Center>
         )}
       </Container>
+      <SearchModal />
     </Fragment>
   );
 };

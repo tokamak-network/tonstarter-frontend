@@ -18,7 +18,8 @@ type StakingModal =
   | 'pool_simulator';
 
 type GeneralModal = 'calendar';
-export type ModalType = StakingModal | DaoModal | GeneralModal;
+type RewardModal = 'search';
+export type ModalType = StakingModal | DaoModal | GeneralModal| RewardModal;
 
 export type Modal = {
   modal?: ModalType;

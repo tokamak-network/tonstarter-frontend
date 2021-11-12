@@ -137,14 +137,7 @@ export const PoolTable: FC<PoolTableProps> = ({
     }
     positionPayload();
   }, [data, transactionType, blockNumber, address, library]);
-
-  const positionPool = usePositionByPoolQuery(
-    {pool_id: ['0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf']},
-    {
-      pollingInterval: ms`2m`,
-    },
-  );
-  console.log(positionPool)
+  
   const position = usePositionByUserQuery(
     {address: account},
     {

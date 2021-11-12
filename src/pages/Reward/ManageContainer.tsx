@@ -106,6 +106,7 @@ export const ManageContainer: FC<ManageContainerProps> = ({
                 key={index}
                 reward={rewardProps}
                 selectedToken={Number(position)}
+                pageIndex={pageIndex}
               />
             );
           })}

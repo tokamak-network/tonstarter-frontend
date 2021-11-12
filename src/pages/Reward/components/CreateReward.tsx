@@ -10,9 +10,9 @@ import {
   Image,
   Input,
 } from '@chakra-ui/react';
-
+import {DEPLOYED} from 'constants/index';
 import {FC, useRef, useState, useEffect} from 'react';
-// import {useAppSelector} from 'hooks/useRedux';
+import {useAppDispatch} from 'hooks/useRedux';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import clock from 'assets/svgs/poll_time_active_icon.svg';
 import MomentLocaleUtils from 'react-day-picker/moment';
@@ -24,8 +24,7 @@ import calender_back_icon_inactive from 'assets/svgs/calender_back_icon_inactive
 import moment from 'moment';
 import {CustomCalendar} from './CustomCalendar';
 import {CustomClock} from './CustomClock';
-import {string} from 'yup';
-
+import {openModal} from 'store/modal.reducer';
 const themeDesign = {
   border: {
     light: 'solid 1px #dfe4ee',
@@ -78,9 +77,12 @@ type CreateReward = {
   tx: string;
   sig: string;
 };
+const {TON_ADDRESS, TOS_ADDRESS, WTON_ADDRESS,DOC_ADDRESS} = DEPLOYED;
+
 
 export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
   // const {data} = useAppSelector(selectModalType);
+  const dispatch = useAppDispatch();
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
@@ -94,17 +96,22 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
   const [endTime, setEndTime] = useState<number>(0);
   const [checkAllowed, setCheckAllowed] = useState<number>(0);
   const [selectedAddress, setSelectedAddress] = useState('');
+  const [tokeninfo, setTokeninfo] = useState([]);
+  const [rewardSymbol, setRewardSymbol] = useState('')
+  const [rewardAddress, setRewardAddress] = useState('')
   useEffect(() => {
-
-    const poolName = pools[0];
-    const poolNm = getPoolName(poolName.token0.symbol, poolName.token1.symbol);
-    setName(poolNm);
-    setSelectedAddress(poolName.id);
-  }, [pools]);
+    setSelectedAddress(pools[0].id)
+    if (tokeninfo.length !==0) {
+      setRewardSymbol(tokeninfo[1])
+      setRewardAddress(tokeninfo[0])
+    }
+   
+  }, [tokeninfo]);
 
   const onChangeSelectBoxPools = (e: any) => {
     const filterValue = e.target.value;
     const selectedPool = pools.filter((pool: Pool) => pool.id === filterValue);
+    
     const name = getPoolName(
       selectedPool[0].token0.symbol,
       selectedPool[0].token1.symbol,
@@ -115,6 +122,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
   const getPoolName = (token0: string, token1: string): string => {
     return `${token0} + ${token1}`;
   };
+  
   useEffect(() => {
     const ends = moment.unix(endTime);
     const endDates = moment(ends).set({
@@ -137,6 +145,12 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
     checkApproved(library, account, setCheckAllowed);
   }, [library, account, setCheckAllowed]);
 
+  useEffect(()=> {
+  
+    console.log('tokeninfo', tokeninfo);
+    
+    
+  }, [tokeninfo])
   return (
     <Box display={'flex'} justifyContent={'center'}>
       <Box w={'100%'} px={'15px'}>
@@ -218,6 +232,8 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             _focus={{
               border: themeDesign.border[colorMode],
             }}
+            readOnly={true}
+            value={rewardSymbol}
             color={themeDesign.font[colorMode]}
           />
           <Button
@@ -228,7 +244,15 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             ml={'10px'}
             fontSize="14px"
             _hover={{backgroundColor: 'blue.100'}}
-            // onClick={() => createRewardFunc(account ? account.toString() : '')}
+            onClick={() =>
+              dispatch(
+                openModal({
+                  type: 'search',
+                  data: {getTokenInfo: setTokeninfo
+                  },
+                }),
+              )
+            }
           >
             Search
           </Button>
@@ -277,6 +301,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
                 amount: amount,
                 userAddress: account,
                 setAlllowed: setCheckAllowed,
+                tokenAddress: rewardAddress
               })
             }>
             Approve
@@ -300,6 +325,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
                 endTime: endTime,
                 name: name,
                 setAlllowed: setCheckAllowed,
+                rewardToken: rewardAddress
               })
             }>
             Create

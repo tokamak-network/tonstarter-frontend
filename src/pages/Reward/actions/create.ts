@@ -19,7 +19,8 @@ type Create = {
   startTime: number,
   endTime: number,
   name: string,
-  setAlllowed: any
+  setAlllowed: any,
+  rewardToken: string
 };
 type CreateReward = {
   poolName: string;
@@ -36,7 +37,7 @@ type CreateReward = {
   tx: string;
   sig: string;
 };
-const { TOS_ADDRESS, UniswapStaker_Address } = DEPLOYED;
+const { TOS_ADDRESS,DOC_ADDRESS, TON_ADDRESS, UniswapStaker_Address } = DEPLOYED;
 
 const generateSig = async (account: string, key: any) => {
   const randomvalue = await getRandomKey(account);
@@ -65,7 +66,8 @@ const generateSig = async (account: string, key: any) => {
 
 
 export const create = async (args: Create) => {
-  const { library, amount, userAddress, poolAddress, startTime, endTime, name, setAlllowed } = args;
+  
+  const { library, amount, userAddress, poolAddress, startTime, endTime, name, setAlllowed, rewardToken } = args;
   if (userAddress === null || userAddress === undefined || library === undefined) {
     return;
   }
@@ -81,12 +83,14 @@ export const create = async (args: Create) => {
   const signer = getSigner(library, userAddress);
 
   const key = {
-    rewardToken: TOS_ADDRESS,
+    rewardToken:rewardToken,
     pool: poolAddress,
     startTime: startTime,
     endTime: endTime,
     refundee: userAddress,
   };
+  console.log('key', key);
+  console.log(weiAllocated);
   
   try {
     
@@ -102,13 +106,13 @@ export const create = async (args: Create) => {
       const arg: CreateReward = {
         poolName: name,
         poolAddress: poolAddress,
-        rewardToken: TOS_ADDRESS,
+        rewardToken: rewardToken,
         account: userAddress,
         incentiveKey: key,
         startTime: startTime,
         endTime: endTime,
         allocatedReward: weiAllocated.toString(),
-        numStakers: 3,
+        numStakers: 0,
         status: 'open',
         verified: true,
         tx: receipt,
@@ -121,6 +125,8 @@ export const create = async (args: Create) => {
     }
   } catch (err) {
     store.dispatch(setTxPending({ tx: false }));
+    console.log('err', err);
+    
     store.dispatch(
       //@ts-ignore
       openToast({

@@ -25,7 +25,7 @@ import * as NPMABI from 'services/abis/NonfungiblePositionManager.json';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import {utils, ethers} from 'ethers';
 import {soliditySha3} from 'web3-utils';
-import {refund} from '../actions'
+import {refund} from '../actions';
 
 type incentiveKey = {
   rewardToken: string;
@@ -66,6 +66,7 @@ const themeDesign = {
 type RewardProgramCardManageProps = {
   reward: Reward;
   selectedToken: number;
+  pageIndex: number
 };
 
 const {UniswapStaking_Address, UniswapStaker_Address} = DEPLOYED;
@@ -73,6 +74,7 @@ const {UniswapStaking_Address, UniswapStaker_Address} = DEPLOYED;
 export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
   reward,
   selectedToken,
+  pageIndex
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -82,7 +84,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
   const [dDay, setdDay] = useState<any>();
   const [tokenID, setTokenID] = useState<number>(7775);
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
-  const [refundableAmount, setRefundableAmount] = useState<number>(0);
+  const [refundableAmount, setRefundableAmount] = useState<string>('0');
   const [numStakers, setNumStakers] = useState<number>(0);
   const key = {
     rewardToken: reward.rewardToken,
@@ -99,7 +101,6 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
   );
 
   useEffect(() => {
-
     const now = moment().unix();
     const start = moment.unix(Number(reward.startTime)).startOf('day').unix();
     const end = moment.unix(Number(reward.endTime)).endOf('day').unix();
@@ -131,7 +132,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
       if (account === null || account === undefined || library === undefined) {
         return;
       }
-      
+
       const incentiveABI =
         'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)';
       const abicoder = ethers.utils.defaultAbiCoder;
@@ -140,12 +141,18 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
       const incentiveInfo = await uniswapStakerContract
         .connect(signer)
         .incentives(incentiveId);
-        setRefundableAmount(Number(incentiveInfo.totalRewardUnclaimed));
-        setNumStakers(Number(incentiveInfo.numberOfStakes));
+
+      setRefundableAmount(
+        incentiveInfo.totalRewardUnclaimed.toLocaleString('fullwide', {
+          useGrouping: false,
+        }),
+      );
+      setNumStakers(Number(incentiveInfo.numberOfStakes));
+      console.log('refundableAmount', refundableAmount);
     }
-   
+
     getIncentives();
-  }, [account, library, transactionType, blockNumber, tokenID]);
+  }, [account, library, transactionType, blockNumber, tokenID,pageIndex]);
 
   return (
     <Flex {...REWARD_STYLE.containerStyle({colorMode})} flexDir={'column'}>
@@ -187,7 +194,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
               ).toLocaleString(undefined, {
                 minimumFractionDigits: 2,
               })}{' '}
-              {checkTokenType(reward.rewardToken).name} /{' '} {numStakers}
+              {checkTokenType(reward.rewardToken).name} / {numStakers}
             </Text>
             <Flex flexDir={'row'}>
               <Text
@@ -297,15 +304,32 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
           ml={'10px'}
           fontSize="16px"
           _hover={{backgroundColor: 'none'}}
-          _disabled={colorMode==='light' ? {backgroundColor: 'gray.25', cursor: 'default', color: '#86929d'}: {backgroundColor: '#353535', cursor: 'default', color: '#838383'}}
-          disabled={(numStakers !==0 || refundableAmount === 0) || reward.endTime > moment().unix()}
-          onClick={()=> {refund({
-              library: library, 
+          _disabled={
+            colorMode === 'light'
+              ? {
+                  backgroundColor: 'gray.25',
+                  cursor: 'default',
+                  color: '#86929d',
+                }
+              : {
+                  backgroundColor: '#353535',
+                  cursor: 'default',
+                  color: '#838383',
+                }
+          }
+          disabled={
+            numStakers !== 0 ||
+            refundableAmount === '0' ||
+            reward.endTime > moment().unix()
+          }
+          onClick={() => {
+            refund({
+              library: library,
               userAddress: account,
-              key: key
-
-          })}}>
-        Refund
+              key: key,
+            });
+          }}>
+         Refund
         </Button>
       </Flex>
     </Flex>

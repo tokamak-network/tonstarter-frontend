@@ -27,6 +27,8 @@ import {approveStaking, stake, unstake} from '../actions';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import {utils, ethers} from 'ethers';
 import {soliditySha3} from 'web3-utils';
+import * as TOSABI from 'services/abis/TOS.json';
+
 type incentiveKey = {
   rewardToken: string;
   pool: string;
@@ -66,15 +68,19 @@ const themeDesign = {
 type RewardProgramCardProps = {
   reward: Reward;
   selectedToken: number;
+  selectedPool: string,
   sendKey: (key: any)=> void
+  pageIndex: number;
 };
 
-const {UniswapStaking_Address, UniswapStaker_Address} = DEPLOYED;
+const {TON_ADDRESS, UniswapStaking_Address, UniswapStaker_Address} = DEPLOYED;
 
 export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   reward,
   selectedToken,
+  selectedPool,
   sendKey,
+  pageIndex
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -87,11 +93,10 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   const [approved, setApproved] = useState<boolean>(false);
   const [myReward, setMyReward] = useState<number>(0);
   const [staked, setStaked] = useState<boolean>(false);
-  const [withdraw, setWithdraw] = useState<boolean>(false);
   const [buttonState, setButtonState] = useState<string>('Approve');
   const [tokenID, setTokenID] = useState<number>(7774);
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
-
+const [rewardSymbol, setRewardSymbol] = useState<string>('')
   const key = {
     rewardToken: reward.rewardToken,
     pool: reward.poolAddress,
@@ -105,6 +110,20 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     STAKERABI.abi,
     library,
   );
+useEffect(()=> {
+const getTokenFromContract = async (address: string) => {
+    if (account === null || account === undefined || library === undefined) {
+      return;
+    }
+    const signer = getSigner(library, account);
+    const contract = new Contract(address, TOSABI.abi, library);
+    const symbolContract = await contract.connect(signer).symbol();
+    setRewardSymbol(symbolContract);
+  } 
+
+  getTokenFromContract(reward.rewardToken)
+},[])
+  
 
   useEffect(() => {
     const now = moment().unix();
@@ -145,6 +164,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
         account,
         UniswapStaking_Address,
       );
+     
       setApproved(isApprovedForAll);
     }
     async function checkStaked() {
@@ -190,7 +210,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     checkStaked();
     getMyReward();
 
-  }, [account, library, transactionType, blockNumber, tokenID, approved]);
+  }, [account, library, transactionType, blockNumber, tokenID, approved, pageIndex, selectedPool]);
 
   useEffect(() => {
     const now = moment().unix();
@@ -198,19 +218,22 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
       setCanApprove(true);
       setButtonState('Approve');
     }
-    if (approved && now < reward.endTime && now > reward.startTime) {
+    else if (approved && now > reward.startTime && now < reward.endTime ) {
       setButtonState('Stake');
     }
-    if (staked && now < reward.endTime) {
+    else if (staked && now < reward.endTime) {
       setButtonState('In Progress');
     }
-    if (staked && now > reward.endTime) {
+    else if (staked && now > reward.endTime) {
       setButtonState('Unstake');
     }
-    if (!staked && now > reward.endTime) {
+     else if (!staked && now > reward.endTime) {
       setButtonState('Closed');
     }
-  }, [approved, staked, account]);
+    // else {
+    //   setButtonState('in progress');
+    // }
+  }, [approved, staked, account, pageIndex, library, transactionType, blockNumber, tokenID]);
 
   const buttonFunction = (buttonCase: string) => {
     if (buttonCase === 'Approve') {
@@ -411,7 +434,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
               })}
             </Text>
             <Text ml="2px" fontSize="13">
-              {checkTokenType(reward.rewardToken).name}
+              {rewardSymbol}
             </Text>
           </Box>
         </Box>

@@ -3,12 +3,13 @@ import EthSymbol from 'assets/tokens/ETH-symbol.svg';
 import TonSymbol from 'assets/tokens/TON-symbol.svg';
 import TosSymbol from 'assets/tokens/TOS-symbol.svg';
 
-const {TON_ADDRESS, TOS_ADDRESS, WTON_ADDRESS} = DEPLOYED
+const { TON_ADDRESS, TOS_ADDRESS, WTON_ADDRESS, DOC_ADDRESS } = DEPLOYED
 
 type EthAddressType = '0x0000000000000000000000000000000000000000';
 type TonAddressType = typeof TON_ADDRESS;
 type TosAddressType = typeof TOS_ADDRESS;
 type WtonAddressType = typeof WTON_ADDRESS;
+type DocAddressType = typeof DOC_ADDRESS;
 // type WethAddressType = '';
 
 // type TokenTypes = 'eth' | 'ton';
@@ -18,16 +19,18 @@ const tokenAddresses: {
   ton: TonAddressType;
   tos: TosAddressType;
   wton: WtonAddressType;
+  doc: DocAddressType;
 } = {
   eth: '0x0000000000000000000000000000000000000000',
   ton: TON_ADDRESS,
   tos: TOS_ADDRESS,
-  wton: WTON_ADDRESS.toLowerCase(),
+  wton: WTON_ADDRESS,
+  doc: DOC_ADDRESS
 };
 
 const tokenInfo = {
-  eth: {fullName: 'ethereum', name: 'ETH', symbol: EthSymbol, bg: '#383736', border: 'none'},
-  weth: {fullName: 'ethereum', name: 'ETH', symbol: EthSymbol, bg: '#383736', border: 'none'},
+  eth: { fullName: 'ethereum', name: 'ETH', symbol: EthSymbol, bg: '#383736', border: 'none' },
+  weth: { fullName: 'ethereum', name: 'ETH', symbol: EthSymbol, bg: '#383736', border: 'none' },
   ton: {
     fullName: 'tokamak-network',
     name: 'TON',
@@ -37,7 +40,7 @@ const tokenInfo = {
   },
   wton: {
     fullName: 'tokamak-network',
-    name: 'TON',
+    name: 'WTON',
     symbol: TonSymbol,
     bg: '#007aff',
     border: 'none',
@@ -45,6 +48,13 @@ const tokenInfo = {
   tos: {
     fullName: 'tonstarter',
     name: 'TOS',
+    symbol: TosSymbol,
+    bg: '#ffffff',
+    border: '1px solid #e7edf3',
+  },
+  doc: {
+    fullName: 'tonstarter',
+    name: 'DOC',
     symbol: TosSymbol,
     bg: '#ffffff',
     border: '1px solid #e7edf3',
@@ -57,12 +67,13 @@ export const getPoolName = (token0: string, token1: string): string => {
 
 export const checkTokenType = (
   payToken: EthAddressType | TonAddressType | TosAddressType | WtonAddressType,
-): any => {  
+): any => {
   const tokenType = payToken === tokenAddresses['eth'] ?
-            'eth' : payToken === tokenAddresses['ton'] ?
-            'ton' : payToken === tokenAddresses['tos'] ? 
-            'tos' :payToken === tokenAddresses['wton']? 
-            'wton': 'tos';
+    'eth' : payToken === tokenAddresses['ton'] ?
+      'ton' : payToken === tokenAddresses['tos'] ?
+        'tos' : payToken === tokenAddresses['wton'] ?
+          'wton' : payToken === tokenAddresses['doc'] ?
+          'doc' : 'tos';
 
   switch (tokenType) {
     case 'eth':
@@ -73,6 +84,8 @@ export const checkTokenType = (
       return tokenInfo[tokenType];
     case 'wton':
       return tokenInfo[tokenType];
+    case 'doc': 
+    return tokenInfo[tokenType];
     default:
       throw new Error(`There is no token type for ${tokenType}`);
   }
