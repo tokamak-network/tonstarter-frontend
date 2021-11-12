@@ -124,7 +124,7 @@ const getTokenFromContract = async (address: string) => {
   } 
 
   getTokenFromContract(reward.rewardToken)
-},[])
+},[account,library])
   
 
   useEffect(() => {

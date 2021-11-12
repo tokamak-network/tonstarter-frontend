@@ -26,6 +26,7 @@ import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import {utils, ethers} from 'ethers';
 import {soliditySha3} from 'web3-utils';
 import {refund} from '../actions';
+import * as TOSABI from 'services/abis/TOS.json';
 
 type incentiveKey = {
   rewardToken: string;
@@ -69,7 +70,7 @@ type RewardProgramCardManageProps = {
   pageIndex: number
 };
 
-const {UniswapStaking_Address, UniswapStaker_Address} = DEPLOYED;
+const {TON_ADDRESS, UniswapStaker_Address} = DEPLOYED;
 
 export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
   reward,
@@ -86,6 +87,8 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [refundableAmount, setRefundableAmount] = useState<string>('0');
   const [numStakers, setNumStakers] = useState<number>(0);
+  const [rewardSymbol, setRewardSymbol] = useState<string>('')
+
   const key = {
     rewardToken: reward.rewardToken,
     pool: reward.poolAddress,
@@ -99,7 +102,20 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
     STAKERABI.abi,
     library,
   );
-
+  useEffect(()=> {
+    const getTokenFromContract = async (address: string) => {
+        if (account === null || account === undefined || library === undefined) {
+          return;
+        }
+        const signer = getSigner(library, account);
+        const contract = new Contract(address, TOSABI.abi, library);
+        const symbolContract = await contract.connect(signer).symbol();
+        setRewardSymbol(symbolContract);
+      } 
+    
+      getTokenFromContract(reward.rewardToken)
+    },[account,library])
+      
   useEffect(() => {
     const now = moment().unix();
     const start = moment.unix(Number(reward.startTime)).startOf('day').unix();
@@ -292,7 +308,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
               })}
             </Text>
             <Text ml="2px" fontSize="13">
-              {checkTokenType(reward.rewardToken).name}
+            {rewardSymbol}
             </Text>
           </Box>
         </Box>
