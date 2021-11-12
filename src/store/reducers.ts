@@ -1,5 +1,6 @@
 import {combineReducers} from '@reduxjs/toolkit';
 import {stakeReducer} from 'pages/Staking/staking.reducer';
+import {rewardReducer} from 'pages/Reward/reward.reducer';
 import {daoReducer} from 'pages/Dao/dao.reducer';
 import {appReducer} from './app/app.reducer';
 import {toastReducer} from './app/toast.reducer';
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   starters: starterReducer.reducer,
   appConfig: appReducer.reducer,
   user: userReducer.reducer,
+  rewards: rewardReducer.reducer,
   toast: toastReducer.reducer,
   modal: modalReducer.reducer,
   table: tableReducer.reducer,

@@ -37,6 +37,7 @@ import {useModal} from 'hooks/useModal';
 import {
   usePositionByUserQuery,
   usePositionByContractQuery,
+  usePositionByPoolQuery
 } from 'store/data/generated';
 import ms from 'ms.macro';
 
@@ -109,14 +110,15 @@ export const PoolTable: FC<PoolTableProps> = ({
   const [stakingDisable, setStakingDisable] = useState(true);
 
   useEffect(() => {
+    
     async function positionPayload() {
       if (address) {
         const result = await fetchPositionPayload(library, address);
-
+        
         let stringResult: any = [];
         for (let i = 0; i < result?.positionData.length; i++) {
           stringResult.push(result?.positionData[i]?.positionid.toString());
-        }
+        }        
         const nowTime = moment().unix();
         nowTime > Number(result?.saleStartTime.toString()) &&
         nowTime < Number(result?.miningEndTime.toString())
@@ -135,7 +137,7 @@ export const PoolTable: FC<PoolTableProps> = ({
     }
     positionPayload();
   }, [data, transactionType, blockNumber, address, library]);
-
+  
   const position = usePositionByUserQuery(
     {address: account},
     {
@@ -149,6 +151,7 @@ export const PoolTable: FC<PoolTableProps> = ({
     },
   );
 
+
   const [positions, setPositions] = useState([]);
   useEffect(() => {
     function getPosition() {
@@ -157,7 +160,7 @@ export const PoolTable: FC<PoolTableProps> = ({
 
         const withStakedPosition = positionByContract.data.positions.concat(
           position.data.positions,
-        );
+        );        
         setPositions(withStakedPosition);
       }
     }
@@ -300,9 +303,11 @@ export const PoolTable: FC<PoolTableProps> = ({
             flexDirection="column">
             {page.map((row: any, i) => {
               const {id} = row.original;
+              
               const filteredPosition = positions.filter(
                 (row: any) => id === row.pool.id,
               );
+              
               prepareRow(row);
               return [
                 <chakra.tr
@@ -350,8 +355,7 @@ export const PoolTable: FC<PoolTableProps> = ({
                   {row.cells.map((cell: any, index: number) => {
                     const data = cell.row.original;
                     const type = cell.column.id;
-                    const {poolDayData} = data;
-
+                    const {poolDayData} = data;                    
                     const length = poolDayData.length - 1;
                     const poolName = getPoolName(
                       data.token0.symbol,

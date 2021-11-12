@@ -6,12 +6,14 @@ import {FLDstarter} from './FLDstarter';
 import {Staking} from './Staking';
 import {Pools} from './Pools';
 import {DAO} from './Dao/index';
+import {Reward} from './Reward';
 import {Starter} from './Starter/index';
 import {Switch, Route} from 'react-router-dom';
 import {useAppDispatch} from 'hooks/useRedux';
-import {fetchAppConfig} from 'store/app/app.reducer';
+// import {fetchAppConfig} from 'store/app/app.reducer';
 import {fetchUserInfo} from 'store/app/user.reducer';
 import {fetchStakes} from './Staking/staking.reducer';
+import { fetchRewards } from './Reward/reward.reducer';
 import {AirdropModal} from 'components/Airdrop/Index';
 import {fetchVaults} from './Staking/vault.reducer';
 import {fetchStarters} from './Starter/starter.reducer';
@@ -29,8 +31,9 @@ export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
 /*
 ###################
-###PHASE 2 OPEN####
-##STAKETONUPGRADE##
+###PHASE 2.5 OPEN##
+########DAO########
+###################
 ################### 
 */
 
@@ -64,6 +67,11 @@ export const Router: FC<RouterProps> = () => {
     );
     await dispatch(
       fetchStakes({
+        library,
+      }) as any,
+    );
+    await dispatch(
+      fetchRewards({
         library,
       }) as any,
     );
@@ -164,6 +172,8 @@ export const Router: FC<RouterProps> = () => {
           <Route exact path="/" component={FLDstarter} />
           <Route exact path="/staking" component={Staking} />
           <Route exact path="/pools" component={Pools} />
+          <Route exact path="/rewardProgram" component={Reward} />
+          {/* <Route exact path="/starter" component={Starter} /> */}
           <Route exact path="/starter" component={Starter} />
           <Route exact path="/dao" component={DAO} />
           <Route exact path="/admin" component={Admin} />

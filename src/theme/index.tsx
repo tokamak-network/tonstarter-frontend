@@ -63,6 +63,7 @@ const colors = {
     100: '#0070ED',
   },
   white: {
+    300: '#dee4ef',
     200: '#f3f4f1',
     100: '#FFFFFF',
   },
@@ -77,14 +78,94 @@ const colors = {
   },
 };
 
+interface REWARD_PROP {
+  colorMode: 'light' | 'dark';
+  fontSize?: number;
+}
+export const REWARD_STYLE = {
+  containerStyle: (props: REWARD_PROP & {isUserTier?: boolean}) => ({
+    w: 382,
+    h: 272,
+    px: 25,
+    pt: '20px',
+    pb: 25,
+    bg: props.colorMode === 'light' ? 'white.100' : '',
+    borderRadius: 15,
+    boxShadow: '0 2px 5px 0 rgba(61, 73, 93, 0.1)',
+    border: props.colorMode === 'light'
+      ? ''
+      : '1px solid #535353',
+    // _hover: {border: 'solid 1px #0070ed'},
+    // cursor: 'pointer',
+    fontFamily: fonts.fld,
+  }),
+  header: (props: REWARD_PROP) => ({
+    fontSize: props.fontSize || 32,
+    fontWeight: 600,
+    color: props.colorMode === 'light' ? 'gray.250' : 'white.100',
+  }),
+  mainText: (props: REWARD_PROP) => ({
+    fontSize: props.fontSize || 28,
+    fontWeight: 600,
+    color: props.colorMode === 'light' ? 'gray.375' : 'white.100',
+  }),
+  subText: (props: REWARD_PROP) => ({
+    fontSize: props.fontSize || 14,
+    fontWeight: 600,
+    color: props.colorMode === 'light' ? 'gray.150' : 'white.100',
+  }),
+  subTextBlack: (props: REWARD_PROP) => ({
+    fontSize: props.fontSize || 14,
+    fontWeight: 600,
+    color: props.colorMode === 'light' ? 'gray.125' : 'white.300',
+  }),
+  joinedText: (props: REWARD_PROP) => ({
+    fontSize: props.fontSize || 11,
+    fontWeight: 600,
+    color: props.colorMode === 'light' ? 'black.300' : 'white.300',
+  }),
+  progress: {
+    mainText: (props: REWARD_PROP) => ({
+      fontSize: props.fontSize || 15,
+      fontWeight: 600,
+      color: props.colorMode === 'light' ? 'gray.525' : 'white.100',
+    }),
+    subText: (props: REWARD_PROP) => ({
+      fontSize: props.fontSize || 12,
+      color: props.colorMode === 'light' ? 'gray.125' : 'gray.475',
+    }),
+    percent: () => ({
+      fontSize: 12,
+      color:'blue.100',
+    }),
+  },
+  btn: (props: REWARD_PROP & {isActive: boolean}) => ({
+    bg: '',
+    _hover: '',
+    p: 0,
+    textAlign: 'center',
+    verticalAlign: 'center',
+    fontSize: 17,
+    borderRadius: 0,
+    paddingBottom: props.isActive ? '' : '1px',
+    color: props.isActive ? '#0070ed' : '#90a5b9',
+    borderBottom: props.isActive ? '2px solid #0070ed' : '1px solid #c5d1d9',
+  }),
+  table: {
+    container: (props: REWARD_PROP & {isLast: boolean}) => ({
+      borderBottom:
+        props?.isLast === true
+          ? ''
+          : props.colorMode === 'light'
+          ? '1px solid #f4f6f8'
+          : '1px solid #323232',
+    }),
+  },
+};
 interface STATER_PROP {
   colorMode: 'light' | 'dark';
   fontSize?: number;
 }
-
-// props.isUserTier === true
-//   ? '1px solid #0070ED'
-
 export const STATER_STYLE = {
   containerStyle: (props: STATER_PROP & {isUserTier?: boolean}) => ({
     w: 378,
@@ -374,7 +455,7 @@ const theme = extendTheme({
           font: fonts.body,
           fontSize: 17,
           fontWeight: 'bold',
-          color: mode('gray.0', 'white.100')(props),
+          color: mode('blue.100', 'yellow.100')(props),
         },
         '.fld-text1': {
           fontFamily: props.theme.fonts.fld,
@@ -413,7 +494,8 @@ const theme = extendTheme({
   btnHover,
   btnStyle,
   headerMargin,
-  STATER_STYLE,
+  REWARD_STYLE,
+  STATER_STYLE
 });
 
 export default theme;

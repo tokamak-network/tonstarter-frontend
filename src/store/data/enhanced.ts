@@ -22,7 +22,10 @@ export const api = generatedApi.enhanceEndpoints({
     positionByContract: {
       providesTags: [CHAIN_TAG],
     },
+    positionByPool: {
+      providesTags: [CHAIN_TAG],
+    },
   },
 })
 
-export const { useAllV3TicksQuery, usePoolByUserQuery, usePositionByUserQuery, usePositionByContractQuery, useFeeTierDistributionQuery } = api
+export const { useAllV3TicksQuery, usePoolByUserQuery, usePositionByUserQuery, usePositionByContractQuery, usePositionByPoolQuery, useFeeTierDistributionQuery } = api

@@ -16,6 +16,7 @@ type CustomInputProp = {
   color?: string;
   br?: number;
   tokenName?: string;
+  fontSize? : string;
   value: any;
   setValue?: Dispatch<SetStateAction<any>>;
   numberOnly?: boolean;
@@ -26,19 +27,8 @@ type CustomInputProp = {
 export const CustomInput = (prop: CustomInputProp) => {
   const {colorMode} = useColorMode();
 
-  const {
-    w,
-    h,
-    border,
-    value,
-    setValue,
-    numberOnly,
-    br,
-    color,
-    tokenName,
-    maxBtn,
-    maxValue,
-  } = prop;
+  const {w, h, border, value, setValue, numberOnly, br, color, tokenName, fontSize} =
+    prop;
 
   useEffect(() => {
     if (setValue && value.length > 1 && value.startsWith('0')) {

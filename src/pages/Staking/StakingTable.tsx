@@ -39,6 +39,7 @@ import {
 } from './actions/stakeTONControl';
 import {useBlockNumber} from 'hooks/useBlock';
 import {CustomTooltip} from 'components/Tooltip';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 
 type StakingTableProps = {
   columns: Column[];
@@ -136,6 +137,7 @@ export const StakingTable: FC<StakingTableProps> = ({
   const theme = useTheme();
   const focusTarget = useRef<any>([]);
   const {blockNumber} = useBlockNumber();
+  const {library} = useActiveWeb3React();
 
   const {
     data: {contractAddress, index},
@@ -166,11 +168,13 @@ export const StakingTable: FC<StakingTableProps> = ({
   //withdraw&swapall btn able condition
   useEffect(() => {
     async function callIsWithdrawAndSwapAll() {
-      const res = await checkCanWithdrawLayr2All();
-      setIsWithdrawAndSwapAll(res || false);
+      if (library) {
+        const res = await checkCanWithdrawLayr2All(library);
+        setIsWithdrawAndSwapAll(res || false);
+      }
     }
     callIsWithdrawAndSwapAll();
-  }, [blockNumber]);
+  }, [blockNumber, library]);
 
   //refetch to update Total Staked, Earninger Per Ton after stake, unstake
   // const {
