@@ -10,7 +10,7 @@ export const InfraError = () => {
       alignContent="center"
       alignItems="center">
       <Text w="100%" textAlign="center" fontSize={'14px'} color="white.100">
-        <span style={{fontWeight: 'bold'}}>Notice!</span> Failed to index data
+        <span style={{fontWeight: 'bold'}}>Notice!</span> Failed to index datas
         from The Graph, Please try to connect later{' '}
         <span
           style={{
