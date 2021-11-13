@@ -109,9 +109,9 @@ export const Pools = () => {
           />
         </Box>
         <Box fontFamily={theme.fonts.roboto}>
-          {isLoading && error !== undefined ? (
+          {isLoading && error === undefined ? (
             ''
-          ) : error && data === undefined ? (
+          ) : error !== undefined || data === undefined ? (
             <InfraError />
           ) : (
             <PoolTable

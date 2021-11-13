@@ -8,7 +8,7 @@ import {
   CircularProgress,
   useColorMode,
   Text,
-  Tooltip,
+  // Tooltip,
 } from '@chakra-ui/react';
 import React from 'react';
 import {shortenAddress} from 'utils';
@@ -237,20 +237,21 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           style={{zIndex: 100}}>
           Staking
         </NavLink>
-        <Tooltip
+        {/* <Tooltip
           hasArrow
           placement="top"
           label="Maintainance in progress"
           color={theme.colors.white[100]}
-          bg={theme.colors.gray[375]}>
-          <NavLink
-            to="/pools"
-            className={match?.isExact ? 'link-match' : 'link'}
-            style={{zIndex: 100}}
-            onClick={(e: any) => e.preventDefault()}>
-            Pools
-          </NavLink>
-        </Tooltip>
+          bg={theme.colors.gray[375]}> */}
+        <NavLink
+          to="/pools"
+          className={match?.isExact ? 'link-match' : 'link'}
+          style={{zIndex: 100}}
+          // onClick={(e: any) => e.preventDefault()}
+        >
+          Pools
+        </NavLink>
+        {/* </Tooltip> */}
         <NavLink
           to="/dao"
           className={match?.isExact ? 'link-match' : 'link'}
