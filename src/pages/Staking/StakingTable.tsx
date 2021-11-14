@@ -10,7 +10,7 @@ import {
   chakra,
   Text,
   Flex,
-  IconButton,
+  // IconButton,
   Tooltip,
   Select,
   Box,
@@ -22,7 +22,7 @@ import {
   Button,
 } from '@chakra-ui/react';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
-import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
+// import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import './staking.css';
 import {checkTokenType} from 'utils/token';
 import {TriangleUpIcon, TriangleDownIcon} from '@chakra-ui/icons';
@@ -37,6 +37,7 @@ import {
   checkCanWithdrawLayr2All,
   stakeTonControl,
 } from './actions/stakeTONControl';
+import {isUnstakeL2All, requestUnstakingLayer2All} from './actions';
 import {useBlockNumber} from 'hooks/useBlock';
 import {CustomTooltip} from 'components/Tooltip';
 import {useActiveWeb3React} from 'hooks/useWeb3';
@@ -164,13 +165,17 @@ export const StakingTable: FC<StakingTableProps> = ({
 
   const [isWithdrawAndSwapAll, setIsWithdrawAndSwapAll] =
     useState<boolean>(false);
+  const [isUnstakeAll, setIsUnstakeAll] = useState<boolean>(false);
 
   //withdraw&swapall btn able condition
   useEffect(() => {
     async function callIsWithdrawAndSwapAll() {
       if (library) {
-        const res = await checkCanWithdrawLayr2All(library);
-        setIsWithdrawAndSwapAll(res || false);
+        const isWithdraw = await checkCanWithdrawLayr2All(library);
+        const isUnstakeAll = await isUnstakeL2All(library);
+
+        setIsWithdrawAndSwapAll(isWithdraw || false);
+        setIsUnstakeAll(isUnstakeAll || false);
       }
     }
     callIsWithdrawAndSwapAll();
@@ -501,6 +506,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                   {...(isWithdrawAndSwapAll
                     ? {...btnStyle.btnAble()}
                     : {...btnStyle.btnDisable({colorMode})})}
+                  w={'140.53px'}
                   isDisabled={!isWithdrawAndSwapAll}
                   fontSize={'14px'}
                   fontWeight={600}
@@ -508,6 +514,30 @@ export const StakingTable: FC<StakingTableProps> = ({
                   Withdraw & Swap
                 </Button>
               }></CustomTooltip>
+            <Box ml={'10px'}>
+              <CustomTooltip
+                toolTipW={245}
+                toolTipH={'50px'}
+                fontSize="12px"
+                msg={[
+                  'You can unstake #1~#3 seig TON',
+                  'thorough this function',
+                ]}
+                placement={'top'}
+                component={
+                  <Button
+                    {...(isUnstakeAll
+                      ? {...btnStyle.btnAble()}
+                      : {...btnStyle.btnDisable({colorMode})})}
+                    w={'140.53px'}
+                    isDisabled={!isUnstakeAll}
+                    fontSize={'14px'}
+                    fontWeight={600}
+                    onClick={() => requestUnstakingLayer2All()}>
+                    Unstake
+                  </Button>
+                }></CustomTooltip>
+            </Box>
           </Flex>
           {/* <Flex>
             <Tooltip label="Previous Page">

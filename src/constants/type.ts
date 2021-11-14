@@ -14,4 +14,6 @@ export type DEPLOYED_TYPE = {
   BasePool_Address: string;
   StakeTonControl_ADDRESS: string;
   LockTOSDividend_ADDRESS: string;
+  PublicSale_ADDRESS: string;
+  unstakeLayer2All: string;
 };

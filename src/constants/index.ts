@@ -64,6 +64,8 @@ const MAINNET_DEPLOYED = {
   BasePool_Address: '0x1c0ce9aaa0c12f53df3b4d8d77b82d6ad343b4e4',
   StakeTonControl_ADDRESS: '0xacdded49ac67ba9c87b1bbc5cb248b1bd7dc0f19',
   LockTOSDividend_ADDRESS: '',
+  PublicSale_ADDRESS: '',
+  unstakeLayer2All: '',
 };
 
 const RINKEBY_DEPLOYED = {
@@ -82,6 +84,8 @@ const RINKEBY_DEPLOYED = {
   BasePool_Address: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
   StakeTonControl_ADDRESS: '0xF049030A9D6faCbD6C76E08794CC751b1Dbaa072',
   LockTOSDividend_ADDRESS: '0xc162ca00f917FC4cBB56AC64e672D911FB6a02f5',
+  PublicSale_ADDRESS: '0x230f12eb4A37055dC0E11B3f7405c9EE94E71ee9',
+  unstakeLayer2All: '0xeeEa9CA7a496651577ff1FD353570F8B70580955',
 };
 
 export const DEPLOYED: DEPLOYED_TYPE =
