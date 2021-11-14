@@ -508,6 +508,29 @@ export const StakingTable: FC<StakingTableProps> = ({
                   Withdraw & Swap
                 </Button>
               }></CustomTooltip>
+            <Box ml={'10px'}>
+              <CustomTooltip
+                toolTipW={245}
+                toolTipH={'50px'}
+                fontSize="12px"
+                msg={[
+                  'You can unstake #1~#3 seig TON',
+                  'thorough this function',
+                ]}
+                placement={'top'}
+                component={
+                  <Button
+                    {...(isWithdrawAndSwapAll
+                      ? {...btnStyle.btnAble()}
+                      : {...btnStyle.btnDisable({colorMode})})}
+                    isDisabled={!isWithdrawAndSwapAll}
+                    fontSize={'14px'}
+                    fontWeight={600}
+                    onClick={() => stakeTonControl()}>
+                    Unstake
+                  </Button>
+                }></CustomTooltip>
+            </Box>
           </Flex>
           {/* <Flex>
             <Tooltip label="Previous Page">
