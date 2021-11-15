@@ -78,6 +78,18 @@ const distribute = async (args: I_CallContract & {amount: string}) => {
   }
 };
 
-const actions = {getERC20Approve, distribute};
+export const addPool = async () => {};
+
+export const editPool = async () => {};
+
+export const deletePool = async () => {};
+
+const actions = {
+  getERC20Approve,
+  distribute,
+  addPool,
+  editPool,
+  deletePool,
+};
 
 export default actions;

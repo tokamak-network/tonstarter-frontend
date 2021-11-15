@@ -118,3 +118,22 @@ export type ListingRewardTableData = {
   stakers: string;
   status: 'Waiting' | 'On progress' | 'Closed';
 };
+
+export type FetchReward = {
+  allocatedReward: string;
+  chainId: number;
+  endTime: number;
+  incentiveKey: {
+    endTime: number;
+    pool: string;
+    refundee: string;
+    rewardToken: string;
+    startTime: number;
+  };
+  numStakers: number;
+  poolAddress: string;
+  poolName: string;
+  rewardToken: string;
+  startTime: number;
+  status: string;
+};

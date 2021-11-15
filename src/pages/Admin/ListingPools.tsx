@@ -4,9 +4,10 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect, useMemo, useState} from 'react';
 import {ListPoolsTable} from './components/ListPoolsTable';
 import {DistributeModal} from './components/DistributeModal';
-import {ListingPoolsTableData} from './types';
+import {FetchReward, ListingPoolsTableData} from './types';
 import {CustomInput} from 'components/Basic';
 import {CustomButton} from 'components/Basic/CustomButton';
+import AdminActions from './actions';
 
 export const ListingPools = () => {
   const {account, library} = useActiveWeb3React();
@@ -21,19 +22,30 @@ export const ListingPools = () => {
   const [token0, setToken0] = useState<string>('');
   const [token1, setToken1] = useState<string>('');
 
+  const [loading, setLoading] = useState<boolean>(true);
+
   useEffect(() => {
     async function fetchProjectsData() {
-      const res = [
-        {
-          name: 'TOS-WTON',
-          address: '0xb2e518b841b0cb7124ddadcbb882bbced4337cbf',
-          rewardPrograms: 5,
-          action: {},
-        },
-      ];
-      if (res) {
-        return setProjects(res);
+      const rewardData = await AdminActions.getRewardData();
+
+      if (!rewardData) {
+        setProjects([]);
+        return setLoading(false);
       }
+
+      const filteredRewardData: ListingPoolsTableData[] = rewardData.map(
+        (data: FetchReward) => {
+          return {
+            name: data.poolName,
+            address: data.poolAddress,
+            rewardPrograms: 5,
+            action: {},
+          };
+        },
+      );
+
+      setProjects(filteredRewardData);
+      setLoading(false);
     }
     fetchProjectsData();
   }, [account, library]);
@@ -65,7 +77,7 @@ export const ListingPools = () => {
       ],
       [],
     ),
-    isLoading: false,
+    isLoading: loading,
   };
 
   const {data, columns, isLoading} = dummyData;

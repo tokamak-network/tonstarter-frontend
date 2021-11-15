@@ -45,7 +45,7 @@ export const ListPoolsTable: FC<ListTableProps> = ({
     canNextPage,
     pageOptions,
     page,
-    // nextPage,
+    nextPage,
     previousPage,
     setPageSize,
     state: {pageIndex, pageSize},
@@ -120,7 +120,7 @@ export const ListPoolsTable: FC<ListTableProps> = ({
             {...getTableBodyProps()}
             display="flex"
             flexDirection="column">
-            {page.map((row: any, i) => {
+            {page.map((row: any, i: number) => {
               prepareRow(row);
               return [
                 <chakra.tr
@@ -132,8 +132,10 @@ export const ListPoolsTable: FC<ListTableProps> = ({
                   ref={(el) => (focusTarget.current[i] = el)}
                   h={16}
                   key={i}
-                  borderBottomRadius={'10px'}
-                  mb={'20px'}
+                  borderBottomRadius={
+                    (i + 1) % 10 === 0 || page.length === i + 1 ? '10px' : ''
+                  }
+                  // mb={'20px'}
                   w="100%"
                   bg={colorMode === 'light' ? 'white.100' : 'black.200'}
                   border={colorMode === 'dark' ? '1px solid #373737' : ''}
@@ -279,7 +281,7 @@ export const ListPoolsTable: FC<ListTableProps> = ({
                     bg={colorMode === 'light' ? 'white.100' : 'none'}
                     borderRadius={4}
                     aria-label={'Next Page'}
-                    onClick={previousPage}
+                    onClick={nextPage}
                     isDisabled={!canNextPage}
                     size={'sm'}
                     ml={4}

@@ -32,9 +32,6 @@ export const DistributeModal = () => {
   const [tokenAddress, setTokenAddress] = useState<string>('');
   const [tokenAmount, setTokenAmount] = useState('');
 
-  console.log(data);
-  console.log(contractAddress);
-
   return (
     <Modal
       isOpen={data.modal === 'Admin_Distribute' ? true : false}
