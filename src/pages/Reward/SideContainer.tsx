@@ -63,7 +63,7 @@ export const SideContainer: FC<SideContainerProps> = ({
             .deposits(token.id);
           
           if (depositInfo.owner === account && depositInfo.numberOfStakes===0) {
-            stringResult.push(token)
+            stringResult.push(token.id)
           }
       }),
       );

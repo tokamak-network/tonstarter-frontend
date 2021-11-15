@@ -16,17 +16,16 @@ import {
 import {FC, useState, useEffect} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {useActiveWeb3React} from 'hooks/useWeb3';
-import {CustomInput} from 'components/Basic';
 import {checkTokenType} from 'utils/token';
 import {DEPLOYED} from 'constants/index';
 import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import {utils, ethers} from 'ethers';
-import {values} from 'lodash';
 import {claim, withdraw} from '../actions';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
+import {getTokenSymbol} from '../utils/getTokenSymbol';
 
 const {UniswapStaking_Address, UniswapStaker_Address, TOS_ADDRESS} = DEPLOYED;
 
@@ -73,21 +72,38 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
   const [pageOptions, setPageOptions] = useState<number>(0);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(6);
+  const [symbol, setSymbol] = useState<string>('');
   useEffect(() => {
-    const rewardTokens = [
-      ...Array.from(new Set(rewards.map((reward) => reward.rewardToken))),
-    ];
-    setTokenList(rewardTokens);
-    setSelectedToken(rewardTokens[0]);
-    getClaimable();
+    
+const getTokenList = async() => {
+  const rewardTokens = [
+    ...Array.from(new Set(rewards.map((reward) => reward.rewardToken))),
+  ];
+
+  let tokensArray: any = [];
+  await Promise.all(
+    rewardTokens.map(async (token) => {
+      const symbol = await getTokenFromContract(token);
+      tokensArray.push({
+        symbol,
+        token,
+      });
+    }),
+  );
+
+  setTokenList(tokensArray);
+  setSelectedToken(tokensArray[0].token);
+  setSymbol(tokensArray[0].symbol)
+  getClaimable(tokensArray[0].token);
+}  
+    getTokenList()
   }, [rewards, account, library, selectedToken, transactionType, blockNumber]);
 
-  const getClaimable = async () => {
+  const getClaimable = async (address: string) => {
     if (
       account === null ||
       account === undefined ||
-      library === undefined ||
-      selectedToken === undefined
+      library === undefined
     ) {
       return;
     }
@@ -101,13 +117,32 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
     const signer = getSigner(library, account);
     const claimable = await uniswapStakerContract
       .connect(signer)
-      .rewards(selectedToken, account);
+      .rewards(address, account);
     setClaimableAmount(Number(ethers.utils.formatEther(claimable.toString())));
   };
-  useEffect(() => {
-    // extend the pools array since there is only 1 pool now
 
-    const pagenumber = parseInt(
+  const getTokenFromContract = async (address: string) => {
+    const symbolContract = await getTokenSymbol(address, library, account);
+    return symbolContract;
+  };
+
+  // useEffect(() => {
+  //   const getToken = async () => {
+  //     const symbols = await getTokenFromContract(selectedToken);
+  //     setSymbol(symbols)
+  //   };
+  //   getToken();
+  // }, [selectedToken]);
+
+  const changeToken = (token: string) => {
+    const selected = tokenList.filter ((tok: any) => (tok.token === token))
+   setSymbol(selected[0].symbol)
+   getClaimable(selected[0].token)
+
+  }
+
+  useEffect(() => {
+   const pagenumber = parseInt(
       ((tokens.length - 1) / pageLimit + 1).toString(),
     );
     setPageOptions(pagenumber);
@@ -161,14 +196,15 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
             color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}
             fontSize={'12px'}
             onChange={(e) => {
-              setSelectedToken(e.target.value);
+             
+              changeToken(e.target.value);
             }}
             w={'120px'}>
-            {tokenList.map((token: string, index: number) => {
-              const tokenType = checkTokenType(token);
+            {tokenList.map((token: any, index: number) => {
+              // const tokenType = checkTokenType(token);
               return (
-                <option value={token} key={index}>
-                  {tokenType.name}
+                <option value={token.token} key={index}>
+                  {token.symbol}
                 </option>
               );
             })}
@@ -202,7 +238,7 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
               color={colorMode === 'light' ? '#3d495d' : '#f3f4f1'}
               fontWeight={'bold'}
               fontSize={'10px'}>
-              {checkTokenType(selectedToken).name}
+              {symbol}
             </Text>
           </Flex>
         </Flex>
@@ -257,7 +293,7 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
               fontWeight={'bold'}
               fontSize={'10px'}
               ml={'2px'}>
-              TOS
+              {symbol}
             </Text>
           </Flex>
         </Flex>
@@ -309,32 +345,35 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
           pt={'15px'}
           h={'81px'}
           alignItems={'center'}>
-          <Grid templateColumns="repeat(3, 1fr)" gap={'10px'}>
-            {getPaginatedData().map((token, index) => {
-              return (
-                <Flex
-                  key={index}
-                  onClick={() => {withdraw({
-                    library: library,
-                    userAddress: account,
-                    tokenID: token
-                  })
-                  }}
-                  background={'blue.500'}
-                  h="30px"
-                  px={'15px'}
-                  fontSize={'13px'}
-                  fontFamily={theme.fonts.roboto}
-                  fontWeight={'bold'}
-                  borderRadius="19px"
-                  justifyContent={'center'}
-                  alignItems={'center'}
-                  _hover={{cursor: 'pointer'}}>
-                  <Text color={'white.100'}>{token}</Text>
-                </Flex>
-              );
-            })}
-          </Grid>
+             {tokens.length !==0 ? (<Grid templateColumns="repeat(3, 1fr)" gap={'10px'}>
+           
+           {getPaginatedData().map((token, index) => {
+             return (
+               <Flex
+                 key={index}
+                 onClick={() => {
+                   withdraw({
+                     library: library,
+                     userAddress: account,
+                     tokenID: token,
+                   });
+                 }}
+                 background={'blue.500'}
+                 h="30px"
+                 px={'15px'}
+                 fontSize={'13px'}
+                 fontFamily={theme.fonts.roboto}
+                 fontWeight={'bold'}
+                 borderRadius="19px"
+                 justifyContent={'center'}
+                 alignItems={'center'}
+                 _hover={{cursor: 'pointer'}}>
+                 <Text color={'white.100'}>{token}</Text>
+               </Flex>
+             );
+           })}
+         </Grid>) : (<Text Text fontSize={'13px'}>You don't have withdrawable LP tokens</Text>)}
+          
         </Flex>
         <Flex
           flexDirection={'row'}

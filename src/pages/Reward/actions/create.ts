@@ -77,11 +77,11 @@ export const create = async (args: Create) => {
     library,
   );
 
-  const weiAllocated = ethers.utils.parseEther(amount.toString())
 
-  const tosContract = new Contract(TOS_ADDRESS, TOSABI.abi, library);
+  
+  const amountFotmatted = ethers.BigNumber.from(amount.toString())
   const signer = getSigner(library, userAddress);
-
+  console.log(amountFotmatted);
   const key = {
     rewardToken:rewardToken,
     pool: poolAddress,
@@ -93,7 +93,7 @@ export const create = async (args: Create) => {
     
     const receipt = await uniswapStakerContract
       .connect(signer)
-      .createIncentive(key, weiAllocated);
+      .createIncentive(key, amountFotmatted);
     store.dispatch(setTxPending({ tx: true }));
     await receipt.wait();
     
@@ -108,7 +108,7 @@ export const create = async (args: Create) => {
         incentiveKey: key,
         startTime: startTime,
         endTime: endTime,
-        allocatedReward: weiAllocated.toString(),
+        allocatedReward: amountFotmatted.toString(),
         numStakers: 0,
         status: 'open',
         verified: true,
