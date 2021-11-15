@@ -16,9 +16,7 @@ export const isUnstakeL2All = async (library: LibraryType) => {
     library,
   );
   const res = await STAKE_CONTROL_CONTRACT.canRequestUnstakingLayer2All();
-  console.log('testtesttest');
-  console.log(res);
-  return res;
+  return res[0];
 };
 
 export const requestUnstakingLayer2All = async () => {
