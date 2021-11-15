@@ -334,8 +334,6 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
                 rewardToken: rewardAddress,
               })
             }
-              
-             
             }>
             Create
           </Button>
