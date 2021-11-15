@@ -20,7 +20,7 @@ import {useAppSelector} from 'hooks/useRedux';
 import {selectTxType} from 'store/tx.reducer';
 import {useDispatch} from 'react-redux';
 import {openModal} from 'store/modal.reducer';
-
+import {Menu, MenuButton, MenuList, MenuItem} from '@chakra-ui/react';
 type HeaderProps = {
   walletopen: () => void;
   account: string | undefined | null;
@@ -218,28 +218,6 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
   );
 };
 
-const OpenPools = ({togglePools}: {togglePools: () => void}) => {
-  const match = useRouteMatch('/');
-  return (
-    <Box as={Flex} flexDir="column" zIndex={'10000'}>
-      <NavLink
-        to="/pools"
-        className={match?.isExact ? 'link-match' : 'link'}
-        style={{zIndex: 100}}
-        onClick={togglePools}>
-        Pools
-      </NavLink>
-      <NavLink
-        to="/rewardProgram"
-        className={match?.isExact ? 'link-match' : 'link'}
-        style={{zIndex: 100}}
-        onClick={togglePools}>
-        Reward Program
-      </NavLink>
-    </Box>
-  );
-};
-
 const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
   const [poolsOpen, setPoolsOpen] = React.useState(false);
 
@@ -266,18 +244,48 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           style={{zIndex: 100}}>
           Staking
         </NavLink>
-        <NavLink
-          style={{zIndex: 100}}
-          to="/"
-         
-          onClick={(e) => {
-            e.preventDefault();
-            poolsOpen ? setPoolsOpen(false) : setPoolsOpen(true);
-          }}>
-          <Text  className={(pools?.isExact || reward?.isExact) ? 'link-match' : 'link'}>
-            Pools
-          </Text>
-        </NavLink>
+         <Menu>
+          <MenuButton>
+            <Text className={match?.isExact ? 'link-match' : 'link'}>
+              Pools
+            </Text>
+          </MenuButton>
+          <MenuList
+            pos={'absolute'}
+            left={'-33px'}
+            top={'15px'}
+            minW={'182px'}
+            w={'182px'}
+            h={'74px'}
+            p={0}
+            fontSize={13}
+            background={'#ffffff'}>
+            <NavLink
+              to="/pools/pools"
+              activeStyle={{background: '#ffffff', color: '#1c1c1c'}}
+              style={{background: '#ffffff', color: '#1c1c1c'}}>
+              <MenuItem
+                _hover={{color: 'blue.100', bg: 'none'}}
+                w={'100%'}
+                h={'37px'}
+                _focus={{bg: '#ffffff'}}>
+                Pools
+              </MenuItem>
+            </NavLink>
+            <NavLink
+              to="/pools/rewardProgram"
+              activeStyle={{background: '#ffffff', color: '#1c1c1c'}}
+              style={{background: '#ffffff', color: '#1c1c1c'}}>
+              <MenuItem
+                _hover={{color: 'blue.100', bg: 'none'}}
+                w={'100%'}
+                h={'37px'}>
+               Reward Program
+              </MenuItem>
+            </NavLink>
+           
+          </MenuList>
+        </Menu>
         <NavLink
           to="/dao"
           className={match?.isExact ? 'link-match' : 'link'}
@@ -298,12 +306,6 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           label="Coming Soon"
           color={theme.colors.white[100]}
           bg={theme.colors.gray[375]}> */}
-        <NavLink
-          to="/dao"
-          className={match?.isExact ? 'link-match' : 'link'}
-          style={{zIndex: 100}}>
-          DAO
-        </NavLink>
         {/* </Tooltip> */}
         <NavLink
           to="/"
@@ -338,7 +340,6 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           Admin
         </NavLink>
       </Stack>
-      {poolsOpen ? <OpenPools togglePools={togglePools} /> : null}
     </Box>
   );
 };
