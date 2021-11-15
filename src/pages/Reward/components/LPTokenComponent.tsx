@@ -117,7 +117,7 @@ export const LPTokenComponent: FC<LPTokenComponentProps> = ({tokens}) => {
         alignItems={'center'}
       >
         {getPaginatedData().length ===0? (
-          <Text fontSize={'13px'}>You don't have any LP tokens</Text>
+          <Text fontSize={'13px'}>You don't have any LP tokens in this pool</Text>
         ): <Grid templateColumns="repeat(3, 1fr)" gap={'10px'}>
         {getPaginatedData().map((token: Token, index) => {
           return (

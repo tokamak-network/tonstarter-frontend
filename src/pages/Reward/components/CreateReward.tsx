@@ -25,6 +25,8 @@ import moment from 'moment';
 import {CustomCalendar} from './CustomCalendar';
 import {CustomClock} from './CustomClock';
 import {openModal} from 'store/modal.reducer';
+import {utils, ethers} from 'ethers';
+
 const themeDesign = {
   border: {
     light: 'solid 1px #dfe4ee',
@@ -61,7 +63,6 @@ type CreateRewardProps = {
   pools: Pool[];
 };
 
-
 type CreateReward = {
   poolName: string;
   poolAddress: string;
@@ -77,8 +78,7 @@ type CreateReward = {
   tx: string;
   sig: string;
 };
-const {TON_ADDRESS, TOS_ADDRESS, WTON_ADDRESS,DOC_ADDRESS} = DEPLOYED;
-
+const {TON_ADDRESS, TOS_ADDRESS, WTON_ADDRESS, DOC_ADDRESS} = DEPLOYED;
 
 export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
   // const {data} = useAppSelector(selectModalType);
@@ -97,21 +97,20 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
   const [checkAllowed, setCheckAllowed] = useState<number>(0);
   const [selectedAddress, setSelectedAddress] = useState('');
   const [tokeninfo, setTokeninfo] = useState([]);
-  const [rewardSymbol, setRewardSymbol] = useState('')
-  const [rewardAddress, setRewardAddress] = useState('')
+  const [rewardSymbol, setRewardSymbol] = useState('');
+  const [rewardAddress, setRewardAddress] = useState('');
   useEffect(() => {
-    setSelectedAddress(pools[0].id)
-    if (tokeninfo.length !==0) {
-      setRewardSymbol(tokeninfo[1])
-      setRewardAddress(tokeninfo[0])
+    setSelectedAddress(pools[0].id);
+    if (tokeninfo.length !== 0) {
+      setRewardSymbol(tokeninfo[1]);
+      setRewardAddress(tokeninfo[0]);
     }
-   
   }, [tokeninfo]);
 
   const onChangeSelectBoxPools = (e: any) => {
     const filterValue = e.target.value;
     const selectedPool = pools.filter((pool: Pool) => pool.id === filterValue);
-    
+
     const name = getPoolName(
       selectedPool[0].token0.symbol,
       selectedPool[0].token1.symbol,
@@ -122,7 +121,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
   const getPoolName = (token0: string, token1: string): string => {
     return `${token0} + ${token1}`;
   };
-  
+
   useEffect(() => {
     const ends = moment.unix(endTime);
     const endDates = moment(ends).set({
@@ -142,8 +141,19 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
   }, [startTimeArray, endTimeArray, endTime, startTime]);
 
   useEffect(() => {
-    checkApproved(library, account, setCheckAllowed);
-  }, [library, account, setCheckAllowed]);
+    const setApprovedAmount = async () => {
+      if (rewardAddress !== '') {
+        const approved = await checkApproved(
+          library,
+          account,
+          setCheckAllowed,
+          rewardAddress,
+        );
+        setAmount(Number(ethers.utils.formatEther(approved.toString())));
+      }
+    };
+    setApprovedAmount();
+  }, [library, account, setCheckAllowed, rewardAddress, tokeninfo]);
 
   return (
     <Box display={'flex'} justifyContent={'center'}>
@@ -242,12 +252,10 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
               dispatch(
                 openModal({
                   type: 'search',
-                  data: {getTokenInfo: setTokeninfo
-                  },
+                  data: {getTokenInfo: setTokeninfo},
                 }),
               )
-            }
-          >
+            }>
             Search
           </Button>
         </Flex>
@@ -264,7 +272,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             w={'190px'}
             border={themeDesign.border[colorMode]}
             fontSize={'13px'}
-            value={Number(amount)}
+            value={amount}
             onChange={(e) => {
               const {value} = e.target;
               setAmount(Number(value));
@@ -295,7 +303,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
                 amount: amount,
                 userAddress: account,
                 setAlllowed: setCheckAllowed,
-                tokenAddress: rewardAddress
+                tokenAddress: rewardAddress,
               })
             }>
             Approve
@@ -307,19 +315,19 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             bg={'blue.500'}
             color="white.100"
             fontSize="14px"
-            disabled={checkAllowed === 0}
+            disabled={Number(ethers.utils.formatEther(checkAllowed.toString())) === 0 ||amount > Number(ethers.utils.formatEther(checkAllowed.toString())) }
             _hover={{backgroundColor: 'blue.100'}}
             onClick={() =>
               create({
                 library: library,
-                amount: amount,
+                amount: checkAllowed,
                 userAddress: account,
                 poolAddress: selectedAddress,
                 startTime: startTime,
                 endTime: endTime,
                 name: name,
                 setAlllowed: setCheckAllowed,
-                rewardToken: rewardAddress
+                rewardToken: rewardAddress,
               })
             }>
             Create

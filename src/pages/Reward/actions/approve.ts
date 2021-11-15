@@ -5,9 +5,6 @@ import store from 'store';
 import {setTxPending} from 'store/tx.reducer';
 import {toastWithReceipt} from 'utils';
 import {openToast} from 'store/app/toast.reducer';
-import Web3 from 'web3';
-import BigNumber from 'bignumber.js';
-import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import * as TOSABI from 'services/abis/TOS.json';
 import {utils, ethers} from 'ethers';
 type Approve = { 
@@ -36,10 +33,11 @@ export const approve = async (args:Approve) => {
           .connect(signer)
           .approve(UniswapStaker_Address, weiAllocated);
         store.dispatch(setTxPending({tx: true}));
-        await receipt.wait();
+       
         if (receipt) {
           toastWithReceipt(receipt, setTxPending, 'Reward');
-          checkApproved(library, userAddress, setAlllowed);          
+          await receipt.wait();
+          checkApproved(library, userAddress, setAlllowed,tokenAddress );          
         }
       } catch (err) {
         store.dispatch(setTxPending({tx: false}));
@@ -59,15 +57,20 @@ export const approve = async (args:Approve) => {
 
 }
 
-export const checkApproved = async (library: any, userAddress: string | null | undefined, setAlllowed: any ) => {
+export const checkApproved = async (library: any, userAddress: string | null | undefined, setAlllowed: any, tokenAddress: string ) => {
+ 
+
+ console.log(tokenAddress);
+ 
   if (userAddress === null || userAddress === undefined || library === undefined) {
     return;
   }
-  const tosContract = new Contract(TOS_ADDRESS, TOSABI.abi, library);
+  const tosContract = new Contract(tokenAddress, TOSABI.abi, library);
   const signer = getSigner(library, userAddress);
   const allowAmount = await tosContract
         .connect(signer)
         .allowance(userAddress, UniswapStaker_Address);
   setAlllowed(parseInt(allowAmount))
+  return allowAmount;
         
 }

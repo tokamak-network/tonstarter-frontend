@@ -21,13 +21,11 @@ import moment from 'moment';
 import {DEPLOYED} from 'constants/index';
 import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
-import * as NPMABI from 'services/abis/NonfungiblePositionManager.json';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import {utils, ethers} from 'ethers';
 import {soliditySha3} from 'web3-utils';
 import {refund} from '../actions';
-import * as TOSABI from 'services/abis/TOS.json';
-
+import {getTokenSymbol} from '../utils/getTokenSymbol' 
 type incentiveKey = {
   rewardToken: string;
   pool: string;
@@ -104,12 +102,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
   );
   useEffect(()=> {
     const getTokenFromContract = async (address: string) => {
-        if (account === null || account === undefined || library === undefined) {
-          return;
-        }
-        const signer = getSigner(library, account);
-        const contract = new Contract(address, TOSABI.abi, library);
-        const symbolContract = await contract.connect(signer).symbol();
+       const symbolContract = await getTokenSymbol(address, library, account )
         setRewardSymbol(symbolContract);
       } 
     
@@ -164,7 +157,6 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
         }),
       );
       setNumStakers(Number(incentiveInfo.numberOfStakes));
-      console.log('refundableAmount', refundableAmount);
     }
 
     getIncentives();

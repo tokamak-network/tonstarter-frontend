@@ -2,7 +2,6 @@ import {FC, useState, useMemo, useEffect, useRef} from 'react';
 import {
   Text,
   Flex,
-  Select,
   Box,
   useTheme,
   useColorMode,
@@ -28,6 +27,7 @@ import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import {utils, ethers} from 'ethers';
 import {soliditySha3} from 'web3-utils';
 import * as TOSABI from 'services/abis/TOS.json';
+import {getTokenSymbol} from '../utils/getTokenSymbol' 
 
 type incentiveKey = {
   rewardToken: string;
@@ -113,15 +113,10 @@ const [rewardSymbol, setRewardSymbol] = useState<string>('')
 
   
 useEffect(()=> {
-const getTokenFromContract = async (address: string) => {
-    if (account === null || account === undefined || library === undefined) {
-      return;
-    }
-    const signer = getSigner(library, account);
-    const contract = new Contract(address, TOSABI.abi, library);
-    const symbolContract = await contract.connect(signer).symbol();
-    setRewardSymbol(symbolContract);
-  } 
+  const getTokenFromContract = async (address: string) => {
+    const symbolContract = await getTokenSymbol(address, library, account, )
+     setRewardSymbol(symbolContract);
+   } 
 
   getTokenFromContract(reward.rewardToken)
 },[account,library])
