@@ -18,19 +18,26 @@ type Stake = {
   rewardToken: string;
   poolAddress: string;
   refundee: string;
+  staked: boolean
 };
 
 const { NPM_Address, UniswapStaker_Address } = DEPLOYED;
 
 export const stake = async (args: Stake) => {
-  const { library, tokenid, userAddress, startTime, endTime, rewardToken, poolAddress, refundee } = args;
+  const { library, tokenid, userAddress, startTime, endTime, rewardToken, poolAddress, refundee, staked } = args;
   if (userAddress === null || userAddress === undefined) {
     return;
   }
 
 
   const NPM = new Contract(NPM_Address, NPMABI.abi, library);
+  const uniswapStakerContract = new Contract(
+    UniswapStaker_Address,
+    STAKERABI.abi,
+    library,
+  );
 
+  
   const signer = getSigner(library, userAddress);
   const key = {
     rewardToken: rewardToken,
@@ -43,13 +50,26 @@ export const stake = async (args: Stake) => {
   const incentiveKeyAbi = 'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)'
   const abicoder = ethers.utils.defaultAbiCoder;
   const data = abicoder.encode([incentiveKeyAbi], [key],);
+  const depositInfo = await uniswapStakerContract
+  .connect(signer)
+  .deposits(tokenid);
   try {
-    const receipt = await NPM.connect(signer).safeTransferFrom(userAddress, UniswapStaker_Address, tokenid, data);
-    store.dispatch(setTxPending({ tx: true }));
-    if (receipt) {
-      toastWithReceipt(receipt, setTxPending, 'Reward');
-      
+    if (depositInfo.owner.toLowerCase() !== userAddress.toLowerCase() ) {      
+      const receipt = await NPM.connect(signer).safeTransferFrom(userAddress, UniswapStaker_Address, tokenid, data);
+      store.dispatch(setTxPending({ tx: true }));
+      if (receipt) {
+        toastWithReceipt(receipt, setTxPending, 'Reward');    
+      }
     }
+    else {      
+      const receipt = await uniswapStakerContract.connect(signer).stakeToken(key, tokenid)
+      store.dispatch(setTxPending({ tx: true }));
+      if (receipt) {
+        toastWithReceipt(receipt, setTxPending, 'Reward');
+        
+      }
+    }
+    
   }
   catch (err) {
     store.dispatch(setTxPending({ tx: false }));

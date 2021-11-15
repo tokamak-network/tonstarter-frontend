@@ -272,6 +272,7 @@ export const Reward = () => {
                 .deposits(token.id);
 
               if (depositInfo.owner === account) {
+                
                 stringResult.push(token);
               }
             }),

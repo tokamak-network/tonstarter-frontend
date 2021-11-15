@@ -248,6 +248,7 @@ useEffect(()=> {
         rewardToken: reward.rewardToken,
         poolAddress: reward.poolAddress,
         refundee: reward.incentiveKey.refundee,
+        staked: staked
       });
       setTokenID(selectedToken);
     }
