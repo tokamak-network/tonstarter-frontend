@@ -220,7 +220,7 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
 
 const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
   const [poolsOpen, setPoolsOpen] = React.useState(false);
-
+  const {colorMode} = useColorMode();
   const theme = useTheme();
   const match = useRouteMatch('/');
   const pools = useRouteMatch('/pools');
@@ -259,23 +259,25 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
             h={'74px'}
             p={0}
             fontSize={13}
-            background={'#ffffff'}>
+            background={colorMode==='light'? '#ffffff':'#222222'}>
             <NavLink
               to="/pools/pools"
-              activeStyle={{background: '#ffffff', color: '#1c1c1c'}}
-              style={{background: '#ffffff', color: '#1c1c1c'}}>
+              activeStyle={{background: 'transparent',color: '#1c1c1c'}}
+              
+              style={{color: colorMode==='light'? '#1c1c1c': '#f3f4f1'}}>
               <MenuItem
                 _hover={{color: 'blue.100', bg: 'none'}}
                 w={'100%'}
                 h={'37px'}
-                _focus={{bg: '#ffffff'}}>
+                _focus={{background: 'transparent'}}
+                >
                 Pools
               </MenuItem>
             </NavLink>
             <NavLink
               to="/pools/rewardProgram"
-              activeStyle={{background: '#ffffff', color: '#1c1c1c'}}
-              style={{background: '#ffffff', color: '#1c1c1c'}}>
+              activeStyle={{background: 'transparent',color: '#1c1c1c'}}
+              style={{color: colorMode==='light'? '#1c1c1c': '#f3f4f1'}}>
               <MenuItem
                 _hover={{color: 'blue.100', bg: 'none'}}
                 w={'100%'}

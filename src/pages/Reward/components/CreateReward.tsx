@@ -317,7 +317,11 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             fontSize="14px"
             disabled={Number(ethers.utils.formatEther(checkAllowed.toString())) === 0 ||amount > Number(ethers.utils.formatEther(checkAllowed.toString())) }
             _hover={{backgroundColor: 'blue.100'}}
-            onClick={() =>
+            onClick={() => {
+              const now = moment().unix();
+              if (now > startTime ) {
+                return alert(`Please use select a start time smaller than now`);
+              }
               create({
                 library: library,
                 amount: checkAllowed,
@@ -329,6 +333,9 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
                 setAlllowed: setCheckAllowed,
                 rewardToken: rewardAddress,
               })
+            }
+              
+             
             }>
             Create
           </Button>
