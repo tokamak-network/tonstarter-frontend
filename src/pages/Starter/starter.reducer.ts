@@ -19,6 +19,7 @@ interface StarterState {
     upcomingData: AdminObject[];
     pastData: AdminObject[];
     myProjects: any[];
+    rawData: any[];
     // myProject: MyProject[];
   };
   loading: 'idle' | 'pending';
@@ -35,6 +36,7 @@ const initialState = {
     upcomingData: [],
     pastData: [],
     myProjects: [],
+    rawData: [],
   },
   loading: 'idle',
   error: null,
@@ -231,6 +233,7 @@ export const fetchStarters = createAsyncThunk(
         upcomingData,
         pastData,
         myProjects,
+        rawData: starterData,
       };
     } catch (e) {
       console.log(e);

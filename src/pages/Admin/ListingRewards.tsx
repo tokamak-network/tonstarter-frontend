@@ -3,51 +3,63 @@ import {PageHeader} from 'components/PageHeader';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect, useMemo, useState} from 'react';
 import {ListRewardTable} from './components/ListRewardTable';
-import {ListingRewardTableData} from './types';
+import {FetchReward, ListingRewardTableData} from './types';
+import AdminActions from './actions';
+import {convertTimeStamp} from 'utils/convertTIme';
+import moment from 'moment';
+import {convertNumber} from 'utils/number';
 
 export const ListingRewards = () => {
-  const theme = useTheme();
   const {account, library} = useActiveWeb3React();
   const [projects, setProjects] = useState<ListingRewardTableData[] | []>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     async function fetchProjectsData() {
-      const dummy: ListingRewardTableData[] = [
-        {
-          pool: 'WTON-TOS',
-          rewardToken: 'TOS',
-          incentiveKey: {
-            rewardToken: '0x73a54e5C054aA64C1AE7373C2B5474d8AFEa08bd',
-            pool: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
-            startTime: 1632716437,
-            endTime: 1632802837,
-            refundee: '0x3b9878Ef988B086F13E5788ecaB9A35E74082ED9',
-          },
-          start: '2021.09.01 20:00:00',
-          end: '2021.09.01 20:00:00',
-          allocatedReward: '10,000,000.00',
-          stakers: '10',
-          status: 'Waiting',
+      const rewardData = await AdminActions.getRewardData();
+
+      if (!rewardData) {
+        return setProjects([]);
+      }
+
+      const filteredRewardData: ListingRewardTableData[] = rewardData.map(
+        (data: FetchReward) => {
+          const {
+            poolName,
+            rewardToken,
+            incentiveKey,
+            startTime,
+            endTime,
+            allocatedReward,
+          } = data;
+
+          const convertedAllocatedReward = convertNumber({
+            amount: allocatedReward,
+            localeString: true,
+          });
+          const nowTimeStamp = moment().unix();
+          const status =
+            nowTimeStamp < startTime
+              ? 'Waiting'
+              : nowTimeStamp < endTime
+              ? 'On progress'
+              : 'Closed';
+
+          return {
+            pool: poolName,
+            rewardToken,
+            incentiveKey,
+            start: convertTimeStamp(startTime),
+            end: convertTimeStamp(endTime),
+            allocatedReward: convertedAllocatedReward || 'fail to load',
+            stakers: '10',
+            status,
+          };
         },
-        {
-          pool: 'WTON-TOS',
-          rewardToken: 'TOS',
-          incentiveKey: {
-            rewardToken: '0x73a54e5C054aA64C1AE7373C2B5474d8AFEa08bd',
-            pool: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
-            startTime: 1632716437,
-            endTime: 1632802837,
-            refundee: '0x3b9878Ef988B086F13E5788ecaB9A35E74082ED0',
-          },
-          start: '2021.09.01 20:00:00',
-          end: '2021.09.01 20:00:00',
-          allocatedReward: '10,000,000.00',
-          stakers: '10',
-          status: 'Waiting',
-        },
-      ];
-      setProjects(dummy);
+      );
+
+      setProjects(filteredRewardData);
+      setLoading(false);
     }
     fetchProjectsData();
   }, [account, library]);

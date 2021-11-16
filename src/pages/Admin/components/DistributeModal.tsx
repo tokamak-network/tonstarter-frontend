@@ -76,44 +76,45 @@ export const DistributeModal = () => {
             color={colorMode === 'light' ? 'black.300' : 'white.100'}>
             <Box d="flex" flexDir="column" mb={'24px'}>
               <Text mb={'9px'}>Token Address</Text>
-              <Box border={'1px solid #dfe4ee'}>
-                <CustomInput
-                  w={'290px'}
-                  h={'32px'}
-                  style={{fontSize: '12px', textAlign: 'left'}}
-                  value={tokenAddress}
-                  setValue={setTokenAddress}
-                  placeHolder={'Enter token address'}
-                  fontWeight={500}
-                  startWithZero={true}
-                  color={
-                    tokenAddress !== ''
-                      ? colorMode === 'light'
-                        ? 'gray.225'
-                        : 'white.100'
-                      : 'gray.175'
-                  }></CustomInput>
-              </Box>
+              <CustomInput
+                w={'290px'}
+                h={'32px'}
+                style={{fontSize: '12px', textAlign: 'left'}}
+                value={tokenAddress}
+                setValue={setTokenAddress}
+                placeHolder={'Enter token address'}
+                fontWeight={500}
+                startWithZero={true}
+                color={
+                  tokenAddress !== ''
+                    ? colorMode === 'light'
+                      ? 'gray.225'
+                      : 'white.100'
+                    : 'gray.175'
+                }></CustomInput>
             </Box>
             <Box d="flex" flexDir="column" mb={'29px'}>
               <Text mb={'9px'}>Token Amount</Text>
-              <Box border={'1px solid #dfe4ee'}>
-                <CustomInput
-                  w={'290px'}
-                  h={'32px'}
-                  style={{fontSize: '12px', textAlign: 'left'}}
-                  value={tokenAmount}
-                  setValue={setTokenAmount}
-                  placeHolder={'0.00'}
-                  fontWeight={500}
-                  color={
-                    tokenAmount !== ''
-                      ? colorMode === 'light'
-                        ? 'gray.225'
-                        : 'white.100'
-                      : 'gray.175'
-                  }></CustomInput>
-              </Box>
+              <CustomInput
+                w={'290px'}
+                h={'32px'}
+                border={'1px solid #dfe4ee'}
+                style={{
+                  fontSize: '12px',
+                  textAlign: 'left',
+                  border: '1px solid #dfe4ee',
+                }}
+                value={tokenAmount}
+                setValue={setTokenAmount}
+                placeHolder={'0.00'}
+                fontWeight={500}
+                color={
+                  tokenAmount !== ''
+                    ? colorMode === 'light'
+                      ? 'gray.225'
+                      : 'white.100'
+                    : 'gray.175'
+                }></CustomInput>
             </Box>
           </Flex>
 

@@ -190,6 +190,7 @@ export const ListRewardTable: FC<ListTableProps> = ({
                       <chakra.td
                         key={index}
                         m={0}
+                        wordBreak={'break-word'}
                         w={
                           type === 'pool'
                             ? '120px'

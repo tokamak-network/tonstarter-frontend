@@ -1,11 +1,15 @@
 import {Flex, Box, useColorMode, useTheme} from '@chakra-ui/react';
 import {useEffect, useState} from 'react';
-import {StepComponent} from '@Admin/types';
+import {AdminObject, StepComponent} from '@Admin/types';
 import {PageHeader} from 'components/PageHeader';
 import {AdminDetail} from './components/AdminDetail';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {LoadingComponent} from 'components/Loading';
+import {useLocation} from 'react-router-dom';
+import queryString from 'query-string';
+import {selectStarters} from '../Starter/starter.reducer';
+import {useAppSelector} from 'hooks/useRedux';
 
 const Steps: React.FC<StepComponent> = (props) => {
   const {stepName, currentStep} = props;
@@ -39,21 +43,39 @@ const Steps: React.FC<StepComponent> = (props) => {
 
 export const CreateProject = () => {
   const [currentStep, setCurrentStep] = useState(0);
+  const [existingData, setExistingData] = useState<AdminObject[] | []>([]);
   const theme = useTheme();
   const {library} = useActiveWeb3React();
+  const {search} = useLocation();
+  const {data: starterData} = useAppSelector(selectStarters);
 
   useEffect(() => {
-    if (!library) {
-      alert('Plase connect to the wallet');
+    if (search && starterData) {
+      const {rawData} = starterData;
+      const parsed = queryString.parse(search);
+      const projectName = Object.keys(parsed)[0];
+      const projectData = rawData.filter((data: AdminObject) => {
+        return data.name === projectName;
+      });
+      setExistingData(projectData || []);
     }
-  }, [library]);
+  }, [search, starterData]);
 
   if (!library) {
-    <Flex w={'100%'} h={'100vh'} alignItems="center" justifyContent="center">
-      <LoadingComponent></LoadingComponent>
-    </Flex>;
+    return (
+      <Flex w={'100%'} h={'100vh'} alignItems="center" justifyContent="center">
+        <LoadingComponent></LoadingComponent>
+      </Flex>
+    );
   }
 
+  if (!search) {
+    return (
+      <Flex w={'100%'} h={'100vh'} alignItems="center" justifyContent="center">
+        <LoadingComponent></LoadingComponent>
+      </Flex>
+    );
+  }
   return (
     <Flex mt={'72px'} flexDir="column" alignItems="center">
       <PageHeader
@@ -70,7 +92,8 @@ export const CreateProject = () => {
           stepName={['Project', 'Token', 'Sale', 'Layout']}
           currentStep={currentStep}
           setCurrentStep={setCurrentStep}
-          library={library}></AdminDetail>
+          library={library}
+          existingData={existingData}></AdminDetail>
       </Flex>
       <CustomButton
         w={'180px'}

@@ -157,7 +157,11 @@ export const CustomInput = (prop: CustomInputProp) => {
       value={value}
       onChange={(e: any) => (setValue ? setValue(e.target.value) : null)}
       _focus={{
-        borderWidth: 0,
+        border:
+          border || colorMode === 'light'
+            ? '1px solid #dfe4ee'
+            : '1px solid #424242',
+        borderWidth: 1,
       }}
       placeholder={placeHolder}
       {...style}

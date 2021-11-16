@@ -3,7 +3,7 @@ import {Contract} from '@ethersproject/contracts';
 import {LibraryType} from 'types';
 import {convertNumber} from 'utils/number';
 import {BigNumber} from 'ethers';
-import {fetchRewardsURL} from 'constants/index';
+import {fetchPoolsURL} from 'constants/index';
 import {FetchReward} from '@Admin/types';
 
 interface I_CallContract {
@@ -22,10 +22,12 @@ const getSaleAmount = async (args: I_CallContract) => {
 };
 
 const getRewardData = async (): Promise<FetchReward[] | undefined> => {
-  const rewardReq = await fetch(fetchRewardsURL)
+  const rewardReq = await fetch(fetchPoolsURL)
     .then((res) => res.json())
     .then((result) => result);
   const rewardData: FetchReward[] = await rewardReq.datas;
+
+  console.log(rewardReq);
 
   return rewardData || undefined;
 };

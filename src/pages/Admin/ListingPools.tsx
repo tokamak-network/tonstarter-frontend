@@ -21,6 +21,9 @@ export const ListingPools = () => {
   const [poolAddress, setPoolAddress] = useState<string>('');
   const [token0, setToken0] = useState<string>('');
   const [token1, setToken1] = useState<string>('');
+  const [token1Image, setToken1Image] = useState<string>('');
+  const [token2Image, setToken2Image] = useState<string>('');
+  const [fee, setFee] = useState<string>('');
 
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -138,7 +141,7 @@ export const ListingPools = () => {
               <CustomInput
                 value={token0}
                 setValue={setToken0}
-                placeHolder={'Input Pool Name'}
+                placeHolder={'Input Token0 Address'}
                 w={'310px'}
                 h={'32px'}
                 textAlign={'left'}
@@ -152,9 +155,9 @@ export const ListingPools = () => {
             <Flex alignItems="center" mb={'20px'}>
               <Text w={'85px'}>Token0 Image </Text>
               <CustomInput
-                value={token0}
-                setValue={setToken0}
-                placeHolder={'Input Pool Name'}
+                value={token1Image}
+                setValue={setToken1Image}
+                placeHolder={'Token0 Symbol Image URL'}
                 w={'310px'}
                 h={'32px'}
                 textAlign={'left'}
@@ -166,11 +169,11 @@ export const ListingPools = () => {
               />
             </Flex>
             <Flex alignItems="center">
-              <Text w={'85px'}>Pee </Text>
+              <Text w={'85px'}>Fee </Text>
               <CustomInput
-                value={token0}
-                setValue={setToken0}
-                placeHolder={'Input Pool Name'}
+                value={fee}
+                setValue={setFee}
+                placeHolder={'Input Fee number'}
                 w={'310px'}
                 h={'32px'}
                 textAlign={'left'}
@@ -193,7 +196,7 @@ export const ListingPools = () => {
               <CustomInput
                 value={poolAddress}
                 setValue={setPoolAddress}
-                placeHolder={'Input Pool Name'}
+                placeHolder={'Input Pool Address'}
                 w={'310px'}
                 h={'32px'}
                 br={4}
@@ -217,7 +220,7 @@ export const ListingPools = () => {
               <CustomInput
                 value={token1}
                 setValue={setToken1}
-                placeHolder={'Input Pool Name'}
+                placeHolder={'Input Token1 Address'}
                 w={'310px'}
                 h={'32px'}
                 textAlign={'left'}
@@ -231,9 +234,9 @@ export const ListingPools = () => {
             <Flex alignItems="center" mb={'51px'}>
               <Text w={'95px'}>Token1 Image </Text>
               <CustomInput
-                value={token0}
-                setValue={setToken0}
-                placeHolder={'Input Pool Name'}
+                value={token2Image}
+                setValue={setToken2Image}
+                placeHolder={'Token1 Symbol Image URL'}
                 w={'310px'}
                 h={'32px'}
                 textAlign={'left'}
@@ -250,7 +253,17 @@ export const ListingPools = () => {
             h={'84px'}
             text={'Add Pool'}
             style={{alignSelf: 'center'}}
-            func={() => console.log('test')}></CustomButton>
+            func={() =>
+              AdminActions.addPool({
+                poolName,
+                poolAddress,
+                token0,
+                token1,
+                token1Image,
+                token2Image,
+                fee,
+              })
+            }></CustomButton>
         </Box>
       </Flex>
       <Flex mt={'60px'} flexDir={'column'}>

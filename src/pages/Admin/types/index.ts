@@ -137,3 +137,13 @@ export type FetchReward = {
   startTime: number;
   status: string;
 };
+
+export type PoolData = {
+  poolName: string;
+  poolAddress: string;
+  token0: string;
+  token1: string;
+  token1Image: string;
+  token2Image: string;
+  fee: string;
+};

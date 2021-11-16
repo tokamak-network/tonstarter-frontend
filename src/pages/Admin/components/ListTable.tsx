@@ -25,6 +25,10 @@ import {CustomButton} from 'components/Basic/CustomButton';
 import {useDispatch} from 'react-redux';
 import {openModal} from 'store/modal.reducer';
 
+const Test = () => {
+  return <div>test</div>;
+};
+
 type ListTableProps = {
   columns: Column[];
   data: any[];
@@ -220,8 +224,7 @@ export const ListTable: FC<ListTableProps> = ({columns, data, isLoading}) => {
                             _hover={{
                               color: 'blue.100',
                             }}
-                            // href={`${appConfig.explorerLink}${contractAddress}`}
-                          >
+                            href={`/admin/createproject?${name}`}>
                             {name}
                           </Link>
                         )}

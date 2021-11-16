@@ -17,6 +17,7 @@ import {LibraryType} from 'types';
 
 type AdminDetailProp = StepComponent & {
   setCurrentStep: Dispatch<SetStateAction<number>>;
+  existingData: AdminObject[] | [];
   library: LibraryType;
 };
 
@@ -62,11 +63,13 @@ const initialValue: AdminObject = {
 };
 
 export const AdminDetail: React.FC<AdminDetailProp> = (props) => {
-  const {stepName, currentStep, setCurrentStep, library} = props;
+  const {stepName, currentStep, setCurrentStep, library, existingData} = props;
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
-  const [data, setData] = useState<AdminObject>(initialValue);
+  const [data, setData] = useState<AdminObject>(
+    existingData[0] || initialValue,
+  );
 
   const makeRequest = (formData: AdminObject) => {
     console.log('Form Submitted', formData);

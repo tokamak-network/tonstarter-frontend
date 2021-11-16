@@ -8,6 +8,8 @@ import {convertToWei} from 'utils/number';
 import store from 'store';
 import {openToast} from 'store/app/toast.reducer';
 import {DEPLOYED} from 'constants/index';
+import {createPool} from '../utils/createStarter';
+import {PoolData} from '@Admin/types';
 
 interface I_CallContract {
   account: string;
@@ -78,11 +80,46 @@ const distribute = async (args: I_CallContract & {amount: string}) => {
   }
 };
 
-export const addPool = async () => {};
+export const addPool = async (args: PoolData) => {
+  for (const [key, value] of Object.entries(args)) {
+    if (value === '' || value === undefined || value === null) {
+      return store.dispatch(
+        //@ts-ignore
+        openToast({
+          payload: {
+            status: 'error',
+            title: 'Fail to post',
+            description: `You need to fill ${key} field out.`,
+            duration: 5000,
+            isClosable: true,
+          },
+        }),
+      );
+    }
+    return createPool(args);
+  }
 
-export const editPool = async () => {};
+  try {
+  } catch (e) {
+    console.log(e);
+    store.dispatch(
+      //@ts-ignore
+      openToast({
+        payload: {
+          status: 'error',
+          title: 'Tx fail to send',
+          description: `something went wrong`,
+          duration: 5000,
+          isClosable: true,
+        },
+      }),
+    );
+  }
+};
 
-export const deletePool = async () => {};
+export const editPool = async (args: PoolData) => {};
+
+export const deletePool = async (args: PoolData) => {};
 
 const actions = {
   getERC20Approve,
