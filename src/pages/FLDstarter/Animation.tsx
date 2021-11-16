@@ -18,7 +18,7 @@ import Arrow from 'assets/svgs/select1_arrow_inactive.svg';
 import {Stake, selectStakes} from 'pages/Staking/staking.reducer';
 import {useAppSelector} from 'hooks/useRedux';
 import {DEPLOYED} from 'constants/index';
-import {usePoolByUserQuery} from 'store/data/enhanced';
+import {usePoolByUserQuery, usePoolByArrayQuery} from 'store/data/enhanced';
 import ms from 'ms.macro';
 
 export interface HomeProps extends HTMLAttributes<HTMLDivElement> {
@@ -314,6 +314,15 @@ export const Animation: React.FC<HomeProps> = () => {
       pollingInterval: ms`2m`,
     },
   );
+  const arr: any = [];
+  arr.push(BasePool_Address.toLowerCase())
+  const test = usePoolByArrayQuery(
+    {address: arr},
+    {
+      pollingInterval: ms`2m`,
+    },
+  )
+  console.log(test)
 
   useEffect(() => {
     if (basePool?.data?.pools) {

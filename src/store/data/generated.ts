@@ -4323,7 +4323,30 @@ export type PoolByUserQuery = (
   { __typename?: 'Query' }
   & { pools: Array<(
     { __typename?: 'Pool' }
-    & Pick<Pool, 'id' | 'liquidity' | 'tick'>
+    & Pick<Pool, 'id' | 'feeTier' | 'liquidity' | 'tick'>
+    & { token0: (
+      { __typename?: 'Token' }
+      & Pick<Token, 'id' | 'symbol'>
+    ), token1: (
+      { __typename?: 'Token' }
+      & Pick<Token, 'id' | 'symbol'>
+    ), poolDayData: Array<(
+      { __typename?: 'PoolDayData' }
+      & Pick<PoolDayData, 'id' | 'date' | 'volumeUSD' | 'feesUSD' | 'tvlUSD'>
+    )> }
+  )> }
+);
+
+export type PoolByArrayQueryVariables = Exact<{
+  address?: Maybe<Array<Scalars['ID']> | Scalars['ID']>;
+}>;
+
+
+export type PoolByArrayQuery = (
+  { __typename?: 'Query' }
+  & { pools: Array<(
+    { __typename?: 'Pool' }
+    & Pick<Pool, 'id' | 'feeTier' | 'liquidity' | 'tick'>
     & { token0: (
       { __typename?: 'Token' }
       & Pick<Token, 'id' | 'symbol'>
@@ -4349,7 +4372,7 @@ export type PositionByUserQuery = (
     & Pick<Position, 'id' | 'owner'>
     & { pool: (
       { __typename?: 'Pool' }
-      & Pick<Pool, 'id'>
+      & Pick<Pool, 'id' | 'feeTier'>
       & { token0: (
         { __typename?: 'Token' }
         & Pick<Token, 'id' | 'symbol'>
@@ -4373,7 +4396,7 @@ export type PositionByContractQuery = (
     & Pick<Position, 'id' | 'owner'>
     & { pool: (
       { __typename?: 'Pool' }
-      & Pick<Pool, 'id'>
+      & Pick<Pool, 'id' | 'feeTier'>
       & { token0: (
         { __typename?: 'Token' }
         & Pick<Token, 'id' | 'symbol'>
@@ -4397,7 +4420,7 @@ export type PositionByPoolQuery = (
     & Pick<Position, 'id' | 'owner'>
     & { pool: (
       { __typename?: 'Pool' }
-      & Pick<Pool, 'id'>
+      & Pick<Pool, 'id' | 'feeTier'>
       & { token0: (
         { __typename?: 'Token' }
         & Pick<Token, 'id' | 'symbol'>
@@ -4452,6 +4475,32 @@ export const PoolByUserDocument = `
     query poolByUser($address: ID!) {
   pools(where: {id: $address}) {
     id
+    feeTier
+    token0 {
+      id
+      symbol
+    }
+    token1 {
+      id
+      symbol
+    }
+    poolDayData {
+      id
+      date
+      volumeUSD
+      feesUSD
+      tvlUSD
+    }
+    liquidity
+    tick
+  }
+}
+    `;
+export const PoolByArrayDocument = `
+    query poolByArray($address: [ID!]) {
+  pools(where: {id_in: $address}) {
+    id
+    feeTier
     token0 {
       id
       symbol
@@ -4478,6 +4527,7 @@ export const PositionByUserDocument = `
     id
     pool {
       id
+      feeTier
       token0 {
         id
         symbol
@@ -4497,6 +4547,7 @@ export const PositionByContractDocument = `
     id
     pool {
       id
+      feeTier
       token0 {
         id
         symbol
@@ -4516,6 +4567,7 @@ export const PositionByPoolDocument = `
     id
     pool {
       id
+      feeTier
       token0 {
         id
         symbol
@@ -4565,6 +4617,9 @@ const injectedRtkApi = api.injectEndpoints({
     poolByUser: build.query<PoolByUserQuery, PoolByUserQueryVariables>({
       query: (variables) => ({ document: PoolByUserDocument, variables })
     }),
+    poolByArray: build.query<PoolByArrayQuery, PoolByArrayQueryVariables | void>({
+      query: (variables) => ({ document: PoolByArrayDocument, variables })
+    }),
     positionByUser: build.query<PositionByUserQuery, PositionByUserQueryVariables>({
       query: (variables) => ({ document: PositionByUserDocument, variables })
     }),
@@ -4581,5 +4636,5 @@ const injectedRtkApi = api.injectEndpoints({
 });
 
 export { injectedRtkApi as api };
-export const { useAllV3TicksQuery, useLazyAllV3TicksQuery, usePoolByUserQuery, useLazyPoolByUserQuery, usePositionByUserQuery, useLazyPositionByUserQuery, usePositionByContractQuery, useLazyPositionByContractQuery, usePositionByPoolQuery, useLazyPositionByPoolQuery, useFeeTierDistributionQuery, useLazyFeeTierDistributionQuery } = injectedRtkApi;
+export const { useAllV3TicksQuery, useLazyAllV3TicksQuery, usePoolByUserQuery, useLazyPoolByUserQuery, usePoolByArrayQuery, useLazyPoolByArrayQuery, usePositionByUserQuery, useLazyPositionByUserQuery, usePositionByContractQuery, useLazyPositionByContractQuery, usePositionByPoolQuery, useLazyPositionByPoolQuery, useFeeTierDistributionQuery, useLazyFeeTierDistributionQuery } = injectedRtkApi;
 

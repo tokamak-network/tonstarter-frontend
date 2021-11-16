@@ -36,8 +36,9 @@ export const api = createApi({
       query: ({ address }) => ({
         document: gql`
           query poolByUser($address: ID!) {
-            pools(where: {id: $address}) {
+            pools(where: { id: $address }) {
               id
+              feeTier
               token0 {
                 id
                 symbol
@@ -61,7 +62,39 @@ export const api = createApi({
         variables: {
           address,
         },
-      })
+      }),
+    }),
+    poolByArray: builder.query({
+      query: ({ address }) => ({
+        document: gql`
+          query poolByArray($address: [ID!]) {
+            pools(where: { id_in: $address }) {
+              id
+              feeTier
+              token0 {
+                id
+                symbol
+              }
+              token1 {
+                id
+                symbol
+              }
+              poolDayData {
+                id
+                date
+                volumeUSD
+                feesUSD
+                tvlUSD
+              }
+              liquidity
+              tick
+            }
+          }
+        `,
+        variables: {
+          address,
+        },
+      }),
     }),
     positionByUser: builder.query({
       query: ({ address }) => ({
@@ -71,6 +104,7 @@ export const api = createApi({
               id
               pool {
                 id
+                feeTier
                 token0 {
                   id
                   symbol
