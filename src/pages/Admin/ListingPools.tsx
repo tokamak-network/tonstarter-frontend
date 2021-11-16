@@ -228,7 +228,7 @@ export const ListingPools = () => {
                 }}
               />
             </Flex>
-            <Flex alignItems="center" mb={'26px'}>
+            <Flex alignItems="center" mb={'51px'}>
               <Text w={'95px'}>Token1 Image </Text>
               <CustomInput
                 value={token0}

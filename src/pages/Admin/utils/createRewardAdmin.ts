@@ -1,5 +1,5 @@
-import axios from 'axios';
-import {API_SERVER, DEFAULT_NETWORK} from 'constants/index';
+import {DEFAULT_NETWORK} from 'constants/index';
+import {instance} from './api';
 
 type CreateReward = {
   poolName: string;
@@ -16,14 +16,6 @@ type CreateReward = {
   tx: string;
   sig: string;
 };
-
-function createInstance() {
-  return axios.create({
-    baseURL: API_SERVER,
-  });
-}
-
-const instance = createInstance();
 
 export async function createReward(args: CreateReward) {
   let {
