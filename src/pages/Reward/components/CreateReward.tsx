@@ -107,19 +107,24 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
     }
   }, [tokeninfo]);
 
+  useEffect(()=> {
+    const pool = pools[0];
+    const token1 = pool.token0.symbol
+    const token2 = pool.token1.symbol
+    const name = getPoolName(token1, token2);
+    setName(name)
+  },[])
   const onChangeSelectBoxPools = (e: any) => {
     const filterValue = e.target.value;
     const selectedPool = pools.filter((pool: Pool) => pool.id === filterValue);
 
-    const name = getPoolName(
-      selectedPool[0].token0.symbol,
-      selectedPool[0].token1.symbol,
-    );
+    const name = `${selectedPool[0].token0.symbol} / ${selectedPool[0].token1.symbol}`
+    
     setName(name);
     setSelectedAddress(selectedPool[0].id);
   };
   const getPoolName = (token0: string, token1: string): string => {
-    return `${token0} + ${token1}`;
+    return `${token0} / ${token1}`;
   };
 
   useEffect(() => {
@@ -181,7 +186,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             onChange={onChangeSelectBoxPools}>
             {pools.map((item, index) => (
               <option value={item.id} key={index}>
-                {getPoolName(item.token0.symbol, item.token1.symbol)}
+                {`${item.token0.symbol} / ${item.token1.symbol}` }
               </option>
             ))}
           </Select>
@@ -295,7 +300,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             mb={'40px'}
             color="white.100"
             fontSize="14px"
-            disabled={amount === 0}
+            disabled={amount === 0 || amount <= Number(ethers.utils.formatEther(checkAllowed.toString())) }
             _hover={{backgroundColor: 'blue.100'}}
             onClick={() =>
               approve({

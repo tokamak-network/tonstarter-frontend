@@ -66,7 +66,6 @@ const generateSig = async (account: string, key: any) => {
 
 
 export const create = async (args: Create) => {
-  
   const { library, amount, userAddress, poolAddress, startTime, endTime, name, setAlllowed, rewardToken } = args;
   if (userAddress === null || userAddress === undefined || library === undefined) {
     return;
@@ -77,11 +76,9 @@ export const create = async (args: Create) => {
     library,
   );
 
-
-  
   const amountFotmatted = ethers.BigNumber.from(amount.toString())
   const signer = getSigner(library, userAddress);
-  console.log(amountFotmatted);
+
   const key = {
     rewardToken:rewardToken,
     pool: poolAddress,

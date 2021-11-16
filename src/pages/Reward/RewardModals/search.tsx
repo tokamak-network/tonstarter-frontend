@@ -59,7 +59,7 @@ export const SearchModal = () => {
   }, [address, symbol, decimal]);
 
   useEffect(() => {
-    const tokenList = [TON_ADDRESS, TOS_ADDRESS, WTON_ADDRESS, DOC_ADDRESS];
+    const tokenList = [TON_ADDRESS, TOS_ADDRESS, WTON_ADDRESS.toLowerCase(), DOC_ADDRESS];
     setTokenLists(tokenList);
   }, [data]);
 

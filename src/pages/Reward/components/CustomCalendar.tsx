@@ -60,11 +60,21 @@ export const CustomCalendar = (prop: CalendarProps) => {
   const tilesDisabled = ({activeStartDate, date, view}: any) => {
     const now = moment().startOf('day').unix();
     const formattedDate = moment(date).startOf('day').unix();
-
+    const nowTimeStamp = moment().unix();
+    const maxEndDate =  now+ 63072000
+    const maxStartDate = now+ 2592000
     if (view === 'month') {
       if (formattedDate < now) {
         return true;
-      } else if (
+      } 
+      
+      else if (calendarType === 'end' && formattedDate>maxEndDate && startTime !== 0) {
+        return true;
+      }
+      else if (calendarType === 'start' && formattedDate> maxStartDate) {
+        return true
+      }
+      else if (
         endTime !== 0 &&
         formattedDate > endTime &&
         calendarType === 'start'

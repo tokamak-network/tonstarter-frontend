@@ -2,7 +2,7 @@ import { DEPLOYED } from 'constants/index';
 import EthSymbol from 'assets/tokens/ETH-symbol.svg';
 import TonSymbol from 'assets/tokens/TON-symbol.svg';
 import TosSymbol from 'assets/tokens/TOS-symbol.svg';
-
+import DocSymbol from 'assets/tokens/DOC-symbol.png';
 const { TON_ADDRESS, TOS_ADDRESS, WTON_ADDRESS, DOC_ADDRESS } = DEPLOYED
 
 type EthAddressType = '0x0000000000000000000000000000000000000000';
@@ -24,7 +24,7 @@ const tokenAddresses: {
   eth: '0x0000000000000000000000000000000000000000',
   ton: TON_ADDRESS,
   tos: TOS_ADDRESS,
-  wton: WTON_ADDRESS,
+  wton: WTON_ADDRESS.toLowerCase(),
   doc: DOC_ADDRESS
 };
 
@@ -55,7 +55,7 @@ const tokenInfo = {
   doc: {
     fullName: 'tonstarter',
     name: 'DOC',
-    symbol: TosSymbol,
+    symbol: DocSymbol,
     bg: '#ffffff',
     border: '1px solid #e7edf3',
   }
@@ -74,7 +74,6 @@ export const checkTokenType = (
         'tos' : payToken === tokenAddresses['wton'] ?
           'wton' : payToken === tokenAddresses['doc'] ?
           'doc' : 'tos';
-
   switch (tokenType) {
     case 'eth':
       return tokenInfo[tokenType];

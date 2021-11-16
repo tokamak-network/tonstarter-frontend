@@ -352,10 +352,8 @@ export const Reward = () => {
                     getSelectedPool(e.target.value);
                   }}>
                   {pool.map((item: any, index) => {
-                    const poolName = getPoolName(
-                      item.token0.symbol,
-                      item.token1.symbol,
-                    );
+                    const poolName = `${item.token0.symbol} / ${item.token1.symbol}` 
+                 
                     return (
                       <option value={item.id} key={index}>
                         {poolName}

@@ -265,13 +265,12 @@ useEffect(()=> {
       });
     }
   };
-  
   return (
     <Flex {...REWARD_STYLE.containerStyle({colorMode})} flexDir={'column'}>
       <Flex flexDir={'row'} width={'100%'} alignItems={'center'} h={'50px'}>
         <Box>
           <Avatar
-            src={checkTokenType(reward.token0Address).symbol}
+            src={checkTokenType(reward.token0Address.toLowerCase()).symbol}
             backgroundColor={checkTokenType(reward.token0Address).bg}
             bg="transparent"
             color="#c7d1d8"
@@ -282,7 +281,7 @@ useEffect(()=> {
             zIndex={'100'}
           />
           <Avatar
-            src={checkTokenType(reward.token1Address).symbol}
+            src={checkTokenType(reward.token1Address.toLowerCase()).symbol}
             backgroundColor={checkTokenType(reward.token1Address).bg}
             bg="transparent"
             color="#c7d1d8"
