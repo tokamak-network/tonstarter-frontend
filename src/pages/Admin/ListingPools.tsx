@@ -100,7 +100,7 @@ export const ListingPools = () => {
         <Box
           {...bgStyle.containerStyle({colorMode})}
           w={'1100px'}
-          h={'134px'}
+          h={'230px'}
           d="flex"
           py={'25px'}
           pl={'30px'}
@@ -133,8 +133,40 @@ export const ListingPools = () => {
                 />
               </Box>
             </Flex>
-            <Flex alignItems="center">
+            <Flex alignItems="center" mb={'20px'}>
               <Text w={'85px'}>Token0 : </Text>
+              <CustomInput
+                value={token0}
+                setValue={setToken0}
+                placeHolder={'Input Pool Name'}
+                w={'310px'}
+                h={'32px'}
+                textAlign={'left'}
+                style={{
+                  fontSize: '13px',
+                  px: '15px',
+                  py: '7px',
+                }}
+              />
+            </Flex>
+            <Flex alignItems="center" mb={'20px'}>
+              <Text w={'85px'}>Token0 Image </Text>
+              <CustomInput
+                value={token0}
+                setValue={setToken0}
+                placeHolder={'Input Pool Name'}
+                w={'310px'}
+                h={'32px'}
+                textAlign={'left'}
+                style={{
+                  fontSize: '13px',
+                  px: '15px',
+                  py: '7px',
+                }}
+              />
+            </Flex>
+            <Flex alignItems="center">
+              <Text w={'85px'}>Pee </Text>
               <CustomInput
                 value={token0}
                 setValue={setToken0}
@@ -180,11 +212,27 @@ export const ListingPools = () => {
                 }}
               />
             </Flex>
-            <Flex alignItems="center">
+            <Flex alignItems="center" mb={'20px'}>
               <Text w={'95px'}>Token1 : </Text>
               <CustomInput
                 value={token1}
                 setValue={setToken1}
+                placeHolder={'Input Pool Name'}
+                w={'310px'}
+                h={'32px'}
+                textAlign={'left'}
+                style={{
+                  fontSize: '13px',
+                  px: '15px',
+                  py: '7px',
+                }}
+              />
+            </Flex>
+            <Flex alignItems="center" mb={'26px'}>
+              <Text w={'95px'}>Token1 Image </Text>
+              <CustomInput
+                value={token0}
+                setValue={setToken0}
                 placeHolder={'Input Pool Name'}
                 w={'310px'}
                 h={'32px'}
@@ -201,6 +249,7 @@ export const ListingPools = () => {
             w={'180px'}
             h={'84px'}
             text={'Add Pool'}
+            style={{alignSelf: 'center'}}
             func={() => console.log('test')}></CustomButton>
         </Box>
       </Flex>
