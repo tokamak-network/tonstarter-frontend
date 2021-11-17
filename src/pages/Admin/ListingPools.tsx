@@ -10,7 +10,7 @@ import {CustomButton} from 'components/Basic/CustomButton';
 import AdminActions from './actions';
 
 export const ListingPools = () => {
-  const {account, library} = useActiveWeb3React();
+  const {account, library, chainId} = useActiveWeb3React();
   const [projects, setProjects] = useState<ListingPoolsTableData[] | []>([]);
 
   const theme = useTheme();
@@ -21,8 +21,8 @@ export const ListingPools = () => {
   const [poolAddress, setPoolAddress] = useState<string>('');
   const [token0, setToken0] = useState<string>('');
   const [token1, setToken1] = useState<string>('');
+  const [token0Image, setToken0Image] = useState<string>('');
   const [token1Image, setToken1Image] = useState<string>('');
-  const [token2Image, setToken2Image] = useState<string>('');
   const [fee, setFee] = useState<string>('');
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -155,8 +155,8 @@ export const ListingPools = () => {
             <Flex alignItems="center" mb={'20px'}>
               <Text w={'85px'}>Token0 Image </Text>
               <CustomInput
-                value={token1Image}
-                setValue={setToken1Image}
+                value={token0Image}
+                setValue={setToken0Image}
                 placeHolder={'Token0 Symbol Image URL'}
                 w={'310px'}
                 h={'32px'}
@@ -234,8 +234,8 @@ export const ListingPools = () => {
             <Flex alignItems="center" mb={'51px'}>
               <Text w={'95px'}>Token1 Image </Text>
               <CustomInput
-                value={token2Image}
-                setValue={setToken2Image}
+                value={token1Image}
+                setValue={setToken1Image}
                 placeHolder={'Token1 Symbol Image URL'}
                 w={'310px'}
                 h={'32px'}
@@ -255,13 +255,13 @@ export const ListingPools = () => {
             style={{alignSelf: 'center'}}
             func={() =>
               AdminActions.addPool({
-                poolName,
+                chainId: 4,
                 poolAddress,
-                token0,
-                token1,
+                token0Address: token0,
+                token1Address: token1,
+                token0Image,
                 token1Image,
-                token2Image,
-                fee,
+                feeTier: Number(fee),
               })
             }></CustomButton>
         </Box>

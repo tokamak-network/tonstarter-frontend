@@ -28,6 +28,8 @@ export async function createStarter(args: AdminObject) {
 
 export async function createPool(args: PoolData) {
   try {
+    console.log('--args--');
+    console.log(args);
     const res = await instance.post(`/pool?chainId=${DEFAULT_NETWORK}`, {
       ...args,
     });
@@ -36,6 +38,7 @@ export async function createPool(args: PoolData) {
     } else {
       alert('failed');
     }
+    console.log(res);
     return res.data;
   } catch (e) {
     console.log(e);

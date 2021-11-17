@@ -9,7 +9,7 @@ import {
   AccordionPanel,
   AccordionIcon,
 } from '@chakra-ui/react';
-import {Dispatch, SetStateAction, useState} from 'react';
+import {Dispatch, SetStateAction, useState, useEffect} from 'react';
 import {AdminObject, StepComponent} from '@Admin/types';
 import {StepOne, StepThree, StepTwo} from './AdminStep';
 import {createStarter} from '../utils/createStarter';
@@ -68,7 +68,9 @@ export const AdminDetail: React.FC<AdminDetailProp> = (props) => {
   const theme = useTheme();
 
   const [data, setData] = useState<AdminObject>(
-    existingData[0] || initialValue,
+    existingData[0] !== undefined
+      ? {...existingData[0], fundingTokenType: 'TON'}
+      : initialValue,
   );
 
   const makeRequest = (formData: AdminObject) => {
@@ -91,6 +93,14 @@ export const AdminDetail: React.FC<AdminDetailProp> = (props) => {
   const handlePrevStep = () => {
     setCurrentStep((prev) => prev - 1);
   };
+
+  useEffect(() => {
+    if (existingData[0] !== undefined) {
+      console.log('existingData[0]');
+      console.log(existingData[0]);
+      setData({...existingData[0], fundingTokenType: 'TON'});
+    }
+  }, [existingData]);
 
   return (
     <Accordion

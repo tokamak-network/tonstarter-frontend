@@ -139,11 +139,11 @@ export type FetchReward = {
 };
 
 export type PoolData = {
-  poolName: string;
-  poolAddress: string;
-  token0: string;
-  token1: string;
-  token1Image: string;
-  token2Image: string;
-  fee: string;
+  chainId: number;
+  poolAddress: String;
+  token0Address: String;
+  token1Address: String;
+  token0Image: String;
+  token1Image: String;
+  feeTier: number;
 };

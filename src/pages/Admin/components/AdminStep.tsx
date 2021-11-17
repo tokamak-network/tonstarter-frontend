@@ -237,6 +237,9 @@ export const StepOne: React.FC<StepProp> = (props) => {
     ...obj,
   });
 
+  console.log('-check-');
+  console.log(data);
+
   return (
     <Formik
       validationSchema={stepOneValidationSchema}
