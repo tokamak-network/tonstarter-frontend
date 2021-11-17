@@ -29,11 +29,13 @@ import {Tab} from '../types';
 import {DEPLOYED} from 'constants/index';
 import * as TOSABI from 'services/abis/TOS.json';
 import {Contract} from '@ethersproject/contracts';
+import { selectBalance } from 'store/app/user.reducer';
 
 //   import {ModalTabs} from '../components/Tabs';
 const {TON_ADDRESS, TOS_ADDRESS, WTON_ADDRESS, DOC_ADDRESS} = DEPLOYED;
-
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 export const SearchModal = () => {
+  
   const {account, library} = useWeb3React();
   const theme = useTheme();
   const {colorMode} = useColorMode();
@@ -49,14 +51,15 @@ export const SearchModal = () => {
   const [tab, setTab] = useState<Tab>('Search');
   const [tokenLists, setTokenLists] = useState<any[]>([]);
   const [tokenInfo, setTokenInfo] = useState<(string | number)[]>([]);
+  const [balance, setBalance] = useState(0)
   const handleCloseModal = useCallback(() => {
     dispatch(closeModal());
   }, [dispatch]);
 
   useEffect(() => {
-    const tokenArray = [address, symbol, decimal];
+    const tokenArray = [address, symbol, decimal, balance];
     setTokenInfo(tokenArray);
-  }, [address, symbol, decimal]);
+  }, [address, symbol, decimal, balance]);
 
   useEffect(() => {
     const tokenList = [TON_ADDRESS, TOS_ADDRESS, WTON_ADDRESS.toLowerCase(), DOC_ADDRESS];
@@ -85,14 +88,17 @@ export const SearchModal = () => {
       if (account === null || account === undefined || library === undefined) {
         return;
       }
-      const signer = getSigner(library, account);
-      try {
-        const contract = new Contract(address, TOSABI.abi, library);
-        const symbolContract = await contract.connect(signer).symbol();
-        const decimalContract = await contract.connect(signer).decimals();
-        setDecimal(decimalContract);
-        setSymbol(symbolContract);
-      } catch (err) {}
+      if (address === ZERO_ADDRESS) {}
+      else {
+        const signer = getSigner(library, account);
+        try {
+          const contract = new Contract(address, TOSABI.abi, library);
+          const symbolContract = await contract.connect(signer).symbol();
+          const decimalContract = await contract.connect(signer).decimals();
+          setDecimal(decimalContract);
+          setSymbol(symbolContract);
+        } catch (err) {}
+      }
     }
     if (isAddress) {
       getTokenFromContract();
@@ -243,7 +249,7 @@ export const SearchModal = () => {
                       Symbol
                     </Text>
                     <Input
-                      maxlength="10"
+                      maxLength={10}
                       mb="24px"
                       fontSize={'12px'}
                       _focus={{

@@ -162,6 +162,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({
             fontFamily={theme.fonts.roboto}
             fontSize="14px"
             fontWeight="500"
+            disabled={position === ''}
             _hover={{backgroundColor: 'none'}}
             _disabled={
               colorMode === 'light'

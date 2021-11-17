@@ -320,16 +320,6 @@ export const Animation: React.FC<HomeProps> = () => {
       pollingInterval: ms`2m`,
     },
   );
-  const arr: any = [];
-  arr.push(BasePool_Address.toLowerCase())
-  arr.push(DOCPool_Address)
-  const test = usePositionByPoolQuery(
-    {pool_id: arr},
-    {
-      pollingInterval: ms`2m`,
-    },
-  );
-  console.log(test)
 
   useEffect(() => {
     if (basePool?.data?.pools) {

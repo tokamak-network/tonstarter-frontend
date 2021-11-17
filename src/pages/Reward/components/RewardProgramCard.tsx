@@ -210,11 +210,11 @@ useEffect(()=> {
 
   useEffect(() => {
     const now = moment().unix();
-    if (!approved && now > reward.startTime) {
+    if (!approved && now > reward.startTime && !staked) {
       setCanApprove(true);
       setButtonState('Approve');
     }
-    else if (approved && now > reward.startTime && now < reward.endTime ) {
+     if (approved && now > reward.startTime && now < reward.endTime ) {
       setButtonState('Stake');
     }
     else if (staked && now < reward.endTime) {
@@ -223,12 +223,12 @@ useEffect(()=> {
     else if (staked && now > reward.endTime) {
       setButtonState('Unstake');
     }
-     else if (!staked && now > reward.endTime) {
+     else if (now > reward.endTime) {
       setButtonState('Closed');
     }
-    // else {
-    //   setButtonState('in progress');
-    // }
+    else {
+      setButtonState('Waiting');
+    }
   }, [approved, staked, account, pageIndex, library, transactionType, blockNumber, selectedToken]);
 
   const buttonFunction = (buttonCase: string) => {
@@ -436,7 +436,7 @@ useEffect(()=> {
         </Box>
 
         <Flex flexDirection="row" justifyContent={'center'}>
-          {buttonState === 'Stake' && moment().unix() > reward.startTime && !staked ? (
+          {buttonState === 'Stake' && moment().unix() > reward.startTime && !staked && selectedToken !== 0 ? (
             <Box pb={'0px'}>
               <Checkbox mt={'5px'} onChange={() => sendKey(key)}></Checkbox>
             </Box>
@@ -454,7 +454,7 @@ useEffect(()=> {
             disabled={
               moment().unix() < reward.startTime ||
               buttonState === 'Closed' ||
-              buttonState === 'In Progress' ||  selectedToken === 0 
+              buttonState === 'In Progress' ||  selectedToken === 0 || (staked && buttonState === 'Stake')
             }>
             {buttonState}
           </Button>

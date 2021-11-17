@@ -30,6 +30,12 @@ import {CustomClock} from './CustomClock';
 import {openModal} from 'store/modal.reducer';
 import {utils, ethers} from 'ethers';
 import {ChevronDownIcon} from '@chakra-ui/icons';
+import * as ERC20 from 'services/abis/ERC20.json';
+import {getSigner} from 'utils/contract';
+import {Contract} from '@ethersproject/contracts';
+
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
+
 const themeDesign = {
   border: {
     light: 'solid 1px #dfe4ee',
@@ -105,6 +111,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
   const [rewardSymbol, setRewardSymbol] = useState('');
   const [rewardAddress, setRewardAddress] = useState('');
   const [created, setCreated] = useState(false);
+  const [balance,setBalance] = useState(0);
   useEffect(() => {
     setSelectedPool(pools[0]);
     setSelectedAddress(pools[0].id);
@@ -167,6 +174,30 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
     setApprovedAmount();
   }, [library, account, setCheckAllowed, checkAllowed, rewardAddress, tokeninfo]);
 
+  useEffect(() => {
+    async function getBalance () {
+      if (account === null || account === undefined || library === undefined) {
+        return;
+      }
+      if (rewardAddress === ZERO_ADDRESS) {}
+      else { 
+        if (account === null || account === undefined || library === undefined) {
+          return;
+        }
+        const signer = getSigner(library, account);
+        try {
+          const contract = new Contract(rewardAddress, ERC20.abi, library);
+          const balanceOf = await contract.connect(signer).balanceOf(account);
+          setBalance(Number(balanceOf))
+        } catch (err) {}
+
+      }
+    }
+
+    if (rewardAddress !== '') {
+      getBalance();
+    }
+  },[rewardAddress, checkAllowed, library, account, amount, tokeninfo])
   return (
     <Box display={'flex'} justifyContent={'center'}>
       <Box w={'100%'} px={'15px'}>
@@ -369,6 +400,9 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
               const now = moment().unix();
               if (now > startTime) {
                 return alert(`Please use select a start time smaller than now`);
+              }
+              else if (balance < checkAllowed) {
+                return alert(`You don't have enough ${rewardSymbol} balance`);
               }
               create({
                 library: library,

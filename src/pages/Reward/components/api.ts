@@ -58,8 +58,11 @@ export async function createReward(args: CreateReward) {
         tx: tx,
         sig: sig,
     });
+    console.log('res.data', res.data);
+    console.log('poolAddress', poolAddress);
     
     return res.data;
+    
 }
 
 export async function getRandomKey(from: string) {

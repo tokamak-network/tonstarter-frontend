@@ -10,6 +10,16 @@ import {
   FormControl,
   FormLabel,
   useTheme,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuItemOption,
+  MenuGroup,
+  MenuOptionGroup,
+  MenuIcon,
+  MenuCommand,
+  MenuDivider,
   Switch,
 } from '@chakra-ui/react';
 import {Fragment, useMemo, useEffect, useState} from 'react';
@@ -33,6 +43,7 @@ import {getSigner} from 'utils/contract';
 import {getPoolName, checkTokenType} from '../../utils/token';
 import {fetchPositionPayload} from '../Pools/utils/fetchPositionPayload';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
+import {ChevronDownIcon} from '@chakra-ui/icons';
 
 import {
   usePositionByUserQuery,
@@ -80,10 +91,28 @@ type Reward = {
   numStakers: Number;
   status: String;
 };
-
+const themeDesign = {
+  border: {
+    light: 'solid 1px #dfe4ee',
+    dark: 'solid 1px #535353',
+  },
+  font: {
+    light: 'black.300',
+    dark: 'gray.475',
+  },
+  tosFont: {
+    light: 'gray.250',
+    dark: 'black.100',
+  },
+  borderDashed: {
+    light: 'dashed 1px #dfe4ee',
+    dark: 'dashed 1px #535353',
+  },
+};
 export const Reward = () => {
   const {datas, loading} = useAppSelector(selectRewards);
   const theme = useTheme();
+  const {colorMode} = useColorMode();
   const {account, library} = useActiveWeb3React();
   const [selectedPool, setSelectedPool] = useState<Pool>();
   const [selectdPosition, setSelectdPosition] = useState<string>('');
@@ -98,16 +127,16 @@ export const Reward = () => {
   const [orderedData, setOrderedData] = useState<Reward[]>([]);
   const [order, setOrder] = useState<boolean | 'desc' | 'asc'>('desc');
 
-  const {isLoading, isError, error, isUninitialized, data} = usePoolByUserQuery(
-    {address: BasePool_Address?.toLowerCase()},
-    {pollingInterval: ms`2m`},
-  );
-  const dataddd = usePoolByUserQuery(
-    {address: DOCPool_Address},
-    {
-      pollingInterval: ms`2m`,
-    },
-  );
+  // const {isLoading, isError, error, isUninitialized, data} = usePoolByUserQuery(
+  //   {address: BasePool_Address?.toLowerCase()},
+  //   {pollingInterval: ms`2m`},
+  // );
+  // const dataddd = usePoolByUserQuery(
+  //   {address: DOCPool_Address},
+  //   {
+  //     pollingInterval: ms`2m`,
+  //   },
+  // );
   
   const arr: any = [];
   arr.push(BasePool_Address.toLowerCase())
@@ -118,6 +147,13 @@ export const Reward = () => {
       pollingInterval: ms`2m`,
     },
   )
+
+  const positionsByPool = usePositionByPoolQuery(
+    {pool_id: arr},
+    {
+      pollingInterval: ms`2m`,
+    },
+  );
 
   useEffect(() => {
     const filteredData = filterDatas();
@@ -182,20 +218,6 @@ export const Reward = () => {
     }
     positionPayload();
   }, [account, orderedData, library]);
-  
-  const positionPool1 = usePositionByPoolQuery(
-    {pool_id: [DOCPool_Address]},
-    {
-      pollingInterval: ms`2m`,
-    },
-  );
-
-  const positionPool2 = usePositionByPoolQuery(
-    {pool_id: [BasePool_Address]},
-    {
-      pollingInterval: ms`2m`,
-    },
-  );
 
   const position = usePositionByUserQuery(
     {address: account},
@@ -224,27 +246,18 @@ export const Reward = () => {
       if (
         position.data &&
         positionByContract.data &&
-        positionPool1.data &&
-        positionPool2.data
+        positionsByPool.data
       ) {
         position.refetch();
         if (selectedPool !== undefined) {
           const withStakedPosition = position.data.positions.filter(
             (position: any) => selectedPool.id === position.pool.id,
           );
-
-          const positionsOfContract1 = positionPool1.data.positions.filter(
+          const pols = positionsByPool.data.positions.filter(
             (position: any) =>
               position.owner === UniswapStaker_Address.toLowerCase(),
-          );
-          const positionsOfContract2 = positionPool2.data.positions.filter(
-            (position: any) =>
-              position.owner === UniswapStaker_Address.toLowerCase(),
-          );
-           const allPools = positionsOfContract1.concat(positionsOfContract2);
-
-           
-           const poolsFromSelected = allPools.filter((token:any)=> (
+          )
+           const poolsFromSelected = pols.filter((token:any)=> (
             token.pool.id === selectedPool.id
            ))           
            
@@ -255,10 +268,7 @@ export const Reward = () => {
           ) {
             return;
           }
-
           const signer = getSigner(library, account);
-
-         
           let stringResult: any = [];
 
           await Promise.all(
@@ -274,11 +284,9 @@ export const Reward = () => {
             }),
           );
           const allPos = withStakedPosition.concat(stringResult);
+          console.log('allPos', allPos);
           
           setPositions(allPos);
-          if (allPos.length !== 0) {
-            setSelectdPosition(allPos[0].id);
-          }
         }
         else {
           setPositions([]);
@@ -306,11 +314,11 @@ export const Reward = () => {
     setManageDatas(filtered);
   }, [orderedData, sortString, account, library]);
 
-  const getSelectedPool = (poolAddress: string) => {
+  const getSelectedPool = (e: any) => {    
+    const poolAddress =  e.target.value
     const selected: Pool[] = pool.filter((pool) => pool.id === poolAddress);
     setSelectedPool(selected[0]);
-
-    
+  
     if (poolAddress === '') {
       setOrderedData(datas);
     } else {
@@ -337,26 +345,54 @@ export const Reward = () => {
               flexDir={'row'}
               justifyContent={'space-between'}>
               <Flex alignItems={'center'}>
-                <Select
+                 <Menu isLazy>
+            <MenuButton
+            mr={'10px'}
+            border={themeDesign.border[colorMode]}
+            padding={'10px'}
+            borderRadius={'4px'}
+              h={'32px'}
+              color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}
+              fontSize={'12px'}
+              w={'157px'}>
+              <Text w={'100%'} display={'flex'} flexDir={'row'} alignItems={'center'} justifyContent={'space-between'}>
+                {selectedPool ===undefined? 'All Pools' : `${selectedPool.token0.symbol} / ${selectedPool.token1.symbol}    (${
+                    parseInt(selectedPool.feeTier) / 10000} %) `  }
+                <span>
+                 <ChevronDownIcon/>
+                </span>
+              </Text>
+            </MenuButton>
+            <MenuList zIndex={10000} m={'0px'} minWidth="157px" background={colorMode==='light'? '#ffffff': '#222222'}>
+            <MenuItem  onClick={getSelectedPool}
+               h={'30px'}
+               color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}
+               fontSize={'12px'}
+               w={'157px'}
+               m={'0px'}
+               value={''}
+               _hover={{background: 'transparent',color: 'blue.100'}}
+               _focus={{background: 'transparent'}}>All pools</MenuItem>
+              {pool.map((item, index) => (
+               
+               <MenuItem
+                  onClick={getSelectedPool}
+                  h={'30px'}
+                  color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}
+                  fontSize={'12px'}
                   w={'157px'}
-                  h={'32px'}
-                  color={'#86929d'}
-                  mr={'10px'}
-                  placeholder="Pools"
-                  fontSize={'13px'}
-                  onChange={(e) => {
-                    getSelectedPool(e.target.value);
-                  }}>
-                  {pool.map((item: any, index) => {
-                    const poolName = `${item.token0.symbol} / ${item.token1.symbol}` 
-                 
-                    return (
-                      <option value={item.id} key={index}>
-                        {poolName}
-                      </option>
-                    );
-                  })}
-                </Select>
+                  m={'0px'}
+                  value={item.id}
+                  _hover={{background: 'transparent',color: 'blue.100'}}
+                  _focus={{background: 'transparent'}}
+                  key={index}>
+                  {`${item.token0.symbol} / ${item.token1.symbol}    (${
+                    parseInt(item.feeTier) / 10000
+                  } %) `}
+                </MenuItem>
+              ))}
+            </MenuList>
+          </Menu>
                 <Select
                   w={'137px'}
                   h={'32px'}
@@ -412,10 +448,6 @@ export const Reward = () => {
                   onChange={changeSelect}>
                   <option value="start">Start Date</option>
                   <option value="end">End Date</option>
-                  {/* <option value="joined">Joined</option>
-                  <option value="stakeable">Stakeable</option>
-                  <option value="stakeable">Unstakable</option>
-                  <option value="claimable">Claimable</option> */}
                 </Select>
               </Flex>
             </Flex>
