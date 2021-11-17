@@ -3,7 +3,7 @@ import {PageHeader} from 'components/PageHeader';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect, useMemo, useState} from 'react';
 import {ListPoolsTable} from './components/ListPoolsTable';
-import {DistributeModal} from './components/DistributeModal';
+import {EditPoolModal} from './components/EditPoolModal';
 import {FetchReward, ListingPoolsTableData} from './types';
 import {CustomInput} from 'components/Basic';
 import {CustomButton} from 'components/Basic/CustomButton';
@@ -42,7 +42,6 @@ export const ListingPools = () => {
             name: data.poolName,
             address: data.poolAddress,
             rewardPrograms: 5,
-            action: {},
           };
         },
       );
@@ -254,8 +253,10 @@ export const ListingPools = () => {
             text={'Add Pool'}
             style={{alignSelf: 'center'}}
             func={() =>
+              chainId &&
               AdminActions.addPool({
-                chainId: 4,
+                chainId,
+                poolName,
                 poolAddress,
                 token0Address: token0,
                 token1Address: token1,
@@ -282,7 +283,7 @@ export const ListingPools = () => {
             isLoading={isLoading}></ListPoolsTable>
         )}
       </Flex>
-      <DistributeModal></DistributeModal>
+      <EditPoolModal></EditPoolModal>
     </Flex>
   );
 };

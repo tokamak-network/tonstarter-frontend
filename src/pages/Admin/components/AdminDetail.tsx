@@ -67,6 +67,9 @@ export const AdminDetail: React.FC<AdminDetailProp> = (props) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
+  console.log('existingData--');
+  console.log(existingData);
+
   const [data, setData] = useState<AdminObject>(
     existingData[0] !== undefined
       ? {...existingData[0], fundingTokenType: 'TON'}

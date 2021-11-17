@@ -8,7 +8,7 @@ import {convertToWei} from 'utils/number';
 import store from 'store';
 import {openToast} from 'store/app/toast.reducer';
 import {DEPLOYED} from 'constants/index';
-import {createPool} from '../utils/createStarter';
+import {createPool, delPool, putEditPool} from '../utils/createStarter';
 import {PoolData} from '@Admin/types';
 
 interface I_CallContract {
@@ -81,25 +81,24 @@ const distribute = async (args: I_CallContract & {amount: string}) => {
 };
 
 export const addPool = async (args: PoolData) => {
-  for (const [key, value] of Object.entries(args)) {
-    if (value === '' || value === undefined || value === null) {
-      return store.dispatch(
-        //@ts-ignore
-        openToast({
-          payload: {
-            status: 'error',
-            title: 'Fail to post',
-            description: `You need to fill ${key} field out.`,
-            duration: 5000,
-            isClosable: true,
-          },
-        }),
-      );
-    }
-    return createPool(args);
-  }
-
   try {
+    for (const [key, value] of Object.entries(args)) {
+      if (value === '' || value === undefined || value === null) {
+        return store.dispatch(
+          //@ts-ignore
+          openToast({
+            payload: {
+              status: 'error',
+              title: 'Fail to post',
+              description: `You need to fill ${key} field out.`,
+              duration: 5000,
+              isClosable: true,
+            },
+          }),
+        );
+      }
+      return createPool(args);
+    }
   } catch (e) {
     console.log(e);
     store.dispatch(
@@ -117,9 +116,82 @@ export const addPool = async (args: PoolData) => {
   }
 };
 
-export const editPool = async (args: PoolData) => {};
+export const editPool = async (args: PoolData) => {
+  console.log('--args--');
+  console.log(args);
+  try {
+    for (const [key, value] of Object.entries(args)) {
+      if (value === '' || value === undefined || value === null) {
+        return store.dispatch(
+          //@ts-ignore
+          openToast({
+            payload: {
+              status: 'error',
+              title: 'Fail to post',
+              description: `You need to fill ${key} field out.`,
+              duration: 5000,
+              isClosable: true,
+            },
+          }),
+        );
+      }
+      return putEditPool(args);
+    }
+  } catch (e) {
+    console.log(e);
+    store.dispatch(
+      //@ts-ignore
+      openToast({
+        payload: {
+          status: 'error',
+          title: 'Tx fail to send',
+          description: `something went wrong`,
+          duration: 5000,
+          isClosable: true,
+        },
+      }),
+    );
+  }
+};
 
-export const deletePool = async (args: PoolData) => {};
+export const deletePool = async (args: {
+  chainId: number;
+  poolAddress: string;
+}) => {
+  try {
+    for (const [key, value] of Object.entries(args)) {
+      if (value === '' || value === undefined || value === null) {
+        return store.dispatch(
+          //@ts-ignore
+          openToast({
+            payload: {
+              status: 'error',
+              title: 'Fail to post',
+              description: `You need to fill ${key} field out.`,
+              duration: 5000,
+              isClosable: true,
+            },
+          }),
+        );
+      }
+      return delPool(args);
+    }
+  } catch (e) {
+    console.log(e);
+    store.dispatch(
+      //@ts-ignore
+      openToast({
+        payload: {
+          status: 'error',
+          title: 'Tx fail to send',
+          description: `something went wrong`,
+          duration: 5000,
+          isClosable: true,
+        },
+      }),
+    );
+  }
+};
 
 const actions = {
   getERC20Approve,

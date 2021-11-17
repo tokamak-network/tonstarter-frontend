@@ -23,6 +23,9 @@ import {LoadingComponent} from 'components/Loading';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {useDispatch} from 'react-redux';
 import {openModal} from 'store/modal.reducer';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import {useModal} from 'hooks/useModal';
+import AdminActions from '../actions';
 
 type ListTableProps = {
   columns: Column[];
@@ -60,7 +63,8 @@ export const ListPoolsTable: FC<ListTableProps> = ({
   const theme = useTheme();
   const focusTarget = useRef<any>([]);
   const dispatch = useDispatch();
-
+  const {chainId} = useActiveWeb3React();
+  const {handleOpenConfirmModal} = useModal();
   if (isLoading === true || data.length === 0) {
     return (
       <Center>
@@ -143,8 +147,7 @@ export const ListPoolsTable: FC<ListTableProps> = ({
                   alignItems="center"
                   {...row.getRowProps()}>
                   {row.cells.map((cell: any, index: number) => {
-                    const {name, address, rewardPrograms, action} =
-                      cell.row.original;
+                    const {name, address, rewardPrograms} = cell.row.original;
                     const type = cell.column.id;
                     return (
                       <chakra.td
@@ -185,8 +188,10 @@ export const ListPoolsTable: FC<ListTableProps> = ({
                               func={() =>
                                 dispatch(
                                   openModal({
-                                    type: 'Admin_Distribute',
-                                    data: {},
+                                    type: 'Admin_EditPool',
+                                    data: {
+                                      originalData: cell.row.original,
+                                    },
                                   }),
                                 )
                               }></CustomButton>
@@ -201,12 +206,19 @@ export const ListPoolsTable: FC<ListTableProps> = ({
                                 color: '#2a72e5',
                               }}
                               func={() =>
-                                dispatch(
-                                  openModal({
-                                    type: 'Admin_Distribute',
-                                    data: {},
-                                  }),
-                                )
+                                chainId &&
+                                handleOpenConfirmModal({
+                                  type: 'confirm',
+                                  data: {
+                                    from: 'admin/poolDelete',
+                                    amount: {name, address},
+                                    action: () =>
+                                      AdminActions.deletePool({
+                                        chainId,
+                                        poolAddress: address,
+                                      }),
+                                  },
+                                })
                               }></CustomButton>
                           </Flex>
                         )}

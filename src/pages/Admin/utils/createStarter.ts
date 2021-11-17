@@ -38,7 +38,42 @@ export async function createPool(args: PoolData) {
     } else {
       alert('failed');
     }
-    console.log(res);
+    return res.data;
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export async function putEditPool(args: PoolData) {
+  console.log('--args--');
+  console.log(args);
+  try {
+    const res = await instance.put(`/pool?chainId=${DEFAULT_NETWORK}`, {
+      ...args,
+    });
+    if (res.status === 200) {
+      alert('success');
+    } else {
+      alert('failed');
+    }
+    return res.data;
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export async function delPool(args: {chainId: number; poolAddress: string}) {
+  console.log('--args--');
+  console.log(args);
+  try {
+    const res = await instance.delete(`/pool?chainId=${DEFAULT_NETWORK}`, {
+      data: {args},
+    });
+    if (res.status === 200) {
+      alert('success');
+    } else {
+      alert('failed');
+    }
     return res.data;
   } catch (e) {
     console.log(e);

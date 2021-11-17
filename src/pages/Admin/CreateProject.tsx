@@ -43,20 +43,24 @@ const Steps: React.FC<StepComponent> = (props) => {
 
 export const CreateProject = () => {
   const [currentStep, setCurrentStep] = useState(0);
-  const [existingData, setExistingData] = useState<AdminObject[] | []>([]);
+  const [existingData, setExistingData] = useState<AdminObject[] | undefined>(
+    undefined,
+  );
   const theme = useTheme();
   const {library} = useActiveWeb3React();
   const {search} = useLocation();
   const {data: starterData} = useAppSelector(selectStarters);
 
   useEffect(() => {
-    if (search && starterData) {
+    if (search && starterData.rawData) {
       const {rawData} = starterData;
       const parsed = queryString.parse(search);
       const projectName = Object.keys(parsed)[0];
       const projectData = rawData.filter((data: AdminObject) => {
         return data.name === projectName;
       });
+      console.log('projectData');
+      console.log(projectData);
       setExistingData(projectData || []);
     }
   }, [search, starterData]);
@@ -88,12 +92,14 @@ export const CreateProject = () => {
           currentStep={currentStep}></Steps>
       </Flex>
       <Flex mb={'50px'}>
-        <AdminDetail
-          stepName={['Project', 'Token', 'Sale', 'Layout']}
-          currentStep={currentStep}
-          setCurrentStep={setCurrentStep}
-          library={library}
-          existingData={existingData}></AdminDetail>
+        {existingData && (
+          <AdminDetail
+            stepName={['Project', 'Token', 'Sale', 'Layout']}
+            currentStep={currentStep}
+            setCurrentStep={setCurrentStep}
+            library={library}
+            existingData={existingData}></AdminDetail>
+        )}
       </Flex>
       <CustomButton
         w={'180px'}

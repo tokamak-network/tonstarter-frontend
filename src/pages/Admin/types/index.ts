@@ -99,7 +99,6 @@ export type ListingPoolsTableData = {
   name: string;
   address: string;
   rewardPrograms: number;
-  action: any;
 };
 
 export type ListingRewardTableData = {
@@ -140,6 +139,7 @@ export type FetchReward = {
 
 export type PoolData = {
   chainId: number;
+  poolName: string;
   poolAddress: String;
   token0Address: String;
   token1Address: String;
