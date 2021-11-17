@@ -436,7 +436,7 @@ useEffect(()=> {
         </Box>
 
         <Flex flexDirection="row" justifyContent={'center'}>
-          {buttonState === 'Stake' && moment().unix() > reward.startTime ? (
+          {buttonState === 'Stake' && moment().unix() > reward.startTime && !staked ? (
             <Box pb={'0px'}>
               <Checkbox mt={'5px'} onChange={() => sendKey(key)}></Checkbox>
             </Box>
@@ -454,7 +454,7 @@ useEffect(()=> {
             disabled={
               moment().unix() < reward.startTime ||
               buttonState === 'Closed' ||
-              buttonState === 'In Progress' ||  selectedToken === 0
+              buttonState === 'In Progress' ||  selectedToken === 0 
             }>
             {buttonState}
           </Button>

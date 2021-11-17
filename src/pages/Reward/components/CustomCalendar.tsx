@@ -39,10 +39,12 @@ type CalendarProps = {
   startTime: number;
   endTime: number;
   calendarType: string;
+  created: boolean;
+
 };
 
 export const CustomCalendar = (prop: CalendarProps) => {
-  const {setValue, startTime, endTime, calendarType} = prop;
+  const {setValue, startTime, endTime, calendarType, created} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const [showCalendar, setShowCalendar] = useState<boolean>(false);
@@ -92,6 +94,12 @@ export const CustomCalendar = (prop: CalendarProps) => {
       return false;
     }
   };
+
+  useEffect(() => {
+    if (created) {
+      setShowInputValue('');
+    }
+    }, [created])
   useEffect(() => {
     const hideCalendar = (ref: any) => {
       function handleClickOutside(event: any) {
@@ -177,6 +185,7 @@ export const CustomCalendar = (prop: CalendarProps) => {
           prevLabel={<img src={calender_back_icon_inactive} />}
           minDetail={'decade'}
           inputRef={refCalendar}
+          locale={'en-EN'}
           tileDisabled={tilesDisabled}
         />
       ) : null}

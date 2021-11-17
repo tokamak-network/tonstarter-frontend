@@ -223,9 +223,9 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const match = useRouteMatch('/');
-  const pools = useRouteMatch('/pools');
-  const reward = useRouteMatch('/rewardProgram');
-  const togglePools = () => setPoolsOpen(false);
+  const pools = useRouteMatch('/pools/pools');
+  const reward = useRouteMatch('/pools/rewardProgram');
+
 
   return (
     <Box
@@ -244,9 +244,21 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           style={{zIndex: 100}}>
           Staking
         </NavLink>
-         <Menu>
+        <Menu>
           <MenuButton>
-            <Text className={match?.isExact ? 'link-match' : 'link'}>
+            <Text
+             fontSize={17}
+             fontWeight= {'bold'}
+              color={
+                pools?.isExact || reward?.isExact
+                  ? colorMode === 'light'
+                    ? 'blue.100'
+                    : 'yellow.100'
+                  :match?.isExact ? colorMode === 'light'
+                  ? 'gray.0'
+                  : 'white.100'
+                  : colorMode ==='light'? 'gray.275' : 'white.100'
+              }>
               Pools
             </Text>
           </MenuButton>
@@ -259,33 +271,37 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
             h={'74px'}
             p={0}
             fontSize={13}
-            background={colorMode==='light'? '#ffffff':'#222222'}>
+            background={colorMode === 'light' ? '#ffffff' : '#222222'}>
             <NavLink
               to="/pools/pools"
-              activeStyle={{background: 'transparent',color: '#1c1c1c'}}
-              
-              style={{color: colorMode==='light'? '#1c1c1c': '#f3f4f1'}}>
+              activeStyle={{
+                background: 'transparent',
+                color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',
+              }}
+              color={colorMode === 'light' ? '#1c1c1c' : '#f3f4f1'}
+              style={{color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1'}}>
               <MenuItem
                 _hover={{color: 'blue.100', bg: 'none'}}
                 w={'100%'}
                 h={'37px'}
-                _focus={{background: 'transparent'}}
-                >
+                _focus={{background: 'transparent'}}>
                 Pools
               </MenuItem>
             </NavLink>
             <NavLink
               to="/pools/rewardProgram"
-              activeStyle={{background: 'transparent',color: '#1c1c1c'}}
-              style={{color: colorMode==='light'? '#1c1c1c': '#f3f4f1'}}>
+              activeStyle={{
+                background: 'transparent',
+                color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',
+              }}
+              style={{color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1'}}>
               <MenuItem
                 _hover={{color: 'blue.100', bg: 'none'}}
                 w={'100%'}
                 h={'37px'}>
-               Reward Program
+                Reward Program
               </MenuItem>
             </NavLink>
-           
           </MenuList>
         </Menu>
         <NavLink

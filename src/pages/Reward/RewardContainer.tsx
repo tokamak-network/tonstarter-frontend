@@ -75,7 +75,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({
       ((rewards.length - 1) / pageLimit + 1).toString(),
     );
     setPageOptions(pagenumber);
-  }, [rewards, pageLimit]);
+  }, [rewards, pageLimit, selectedPool]);
 
   const getPaginatedData = () => {
     const startIndex = pageIndex * pageLimit - pageLimit;

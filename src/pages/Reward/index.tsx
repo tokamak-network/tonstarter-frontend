@@ -38,6 +38,7 @@ import {
   usePositionByUserQuery,
   usePositionByContractQuery,
   usePositionByPoolQuery,
+  usePoolByArrayQuery
 } from 'store/data/generated';
 import {SideContainer} from './SideContainer';
 const {
@@ -47,6 +48,7 @@ const {
   UniswapStaker_Address,
 } = DEPLOYED;
 type Pool = {
+  feeTier: string;
   id: string;
   liquidity: string;
   poolDayData: [];
@@ -107,6 +109,16 @@ export const Reward = () => {
     },
   );
   
+  const arr: any = [];
+  arr.push(BasePool_Address.toLowerCase())
+  arr.push(DOCPool_Address)
+  const poolArr = usePoolByArrayQuery(
+    {address: arr},
+    {
+      pollingInterval: ms`2m`,
+    },
+  )
+
   useEffect(() => {
     const filteredData = filterDatas();
     setOrderedData(filteredData);
@@ -130,29 +142,13 @@ export const Reward = () => {
   };
 
   useEffect(() => {
-    function getPool() {
-      const secondPool = {...dataddd.data};
-      const secondpooldata = {...secondPool};
-      const allPools: any[] = [];
-      if (!isLoading && !dataddd.isLoading) {
-        allPools.push(data.pools[0]);
-        allPools.push(secondpooldata.pools[0]);
-      }
-      const poolArr = isLoading ? [] : allPools;
-      // setSelectedPool(poolArr[0]);
-      setPool(poolArr);
-    }
-    getPool();
+  setPool(poolArr.data?.pools)
   }, [
     account,
     transactionType,
     blockNumber,
-    isLoading,
-    isError,
-    isUninitialized,
-    error,
-    data,
-    dataddd,
+    poolArr
+    
   ]);
 
   useEffect(() => {
@@ -186,7 +182,7 @@ export const Reward = () => {
     }
     positionPayload();
   }, [account, orderedData, library]);
-
+  
   const positionPool1 = usePositionByPoolQuery(
     {pool_id: [DOCPool_Address]},
     {

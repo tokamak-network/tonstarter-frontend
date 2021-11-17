@@ -5,10 +5,11 @@ import {
   Box,
   useColorMode,
   useTheme,
-  Container,
-  Select,
-  Image,
   Input,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from '@chakra-ui/react';
 import {DEPLOYED} from 'constants/index';
 import {FC, useRef, useState, useEffect} from 'react';
@@ -19,6 +20,8 @@ import MomentLocaleUtils from 'react-day-picker/moment';
 import {approve, create, checkApproved} from '../actions';
 import Calendar from 'react-calendar';
 import '../css/Calendar.css';
+import arrow_light from 'assets/images/select1_arrow_inactive.png';
+import arrow_dark from 'assets/svgs/select1_arrow_inactive.svg'
 import calender_Forward_icon_inactive from 'assets/svgs/calender_Forward_icon_inactive.svg';
 import calender_back_icon_inactive from 'assets/svgs/calender_back_icon_inactive.svg';
 import moment from 'moment';
@@ -26,7 +29,7 @@ import {CustomCalendar} from './CustomCalendar';
 import {CustomClock} from './CustomClock';
 import {openModal} from 'store/modal.reducer';
 import {utils, ethers} from 'ethers';
-
+import {ChevronDownIcon} from '@chakra-ui/icons';
 const themeDesign = {
   border: {
     light: 'solid 1px #dfe4ee',
@@ -46,6 +49,7 @@ const themeDesign = {
   },
 };
 type Pool = {
+  feeTier: string;
   id: string;
   liquidity: string;
   poolDayData: [];
@@ -97,9 +101,12 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
   const [checkAllowed, setCheckAllowed] = useState<number>(0);
   const [selectedAddress, setSelectedAddress] = useState('');
   const [tokeninfo, setTokeninfo] = useState([]);
+  const [selectedPool, setSelectedPool] = useState<Pool>();
   const [rewardSymbol, setRewardSymbol] = useState('');
   const [rewardAddress, setRewardAddress] = useState('');
+  const [created, setCreated] = useState(false);
   useEffect(() => {
+    setSelectedPool(pools[0]);
     setSelectedAddress(pools[0].id);
     if (tokeninfo.length !== 0) {
       setRewardSymbol(tokeninfo[1]);
@@ -107,21 +114,21 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
     }
   }, [tokeninfo]);
 
-  useEffect(()=> {
+  useEffect(() => {
     const pool = pools[0];
-    const token1 = pool.token0.symbol
-    const token2 = pool.token1.symbol
+    const token1 = pool.token0.symbol;
+    const token2 = pool.token1.symbol;
     const name = getPoolName(token1, token2);
-    setName(name)
-  },[])
+    setName(name);
+  }, []);
   const onChangeSelectBoxPools = (e: any) => {
     const filterValue = e.target.value;
     const selectedPool = pools.filter((pool: Pool) => pool.id === filterValue);
+    const name = `${selectedPool[0].token0.symbol} / ${selectedPool[0].token1.symbol}`;
 
-    const name = `${selectedPool[0].token0.symbol} / ${selectedPool[0].token1.symbol}`
-    
     setName(name);
     setSelectedAddress(selectedPool[0].id);
+    setSelectedPool(selectedPool[0]);
   };
   const getPoolName = (token0: string, token1: string): string => {
     return `${token0} / ${token1}`;
@@ -158,7 +165,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
       }
     };
     setApprovedAmount();
-  }, [library, account, setCheckAllowed, rewardAddress, tokeninfo]);
+  }, [library, account, setCheckAllowed, checkAllowed, rewardAddress, tokeninfo]);
 
   return (
     <Box display={'flex'} justifyContent={'center'}>
@@ -178,18 +185,45 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             w={'64px'}>
             Pool
           </Text>
-          <Select
-            h={'30px'}
-            color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}
-            fontSize={'12px'}
-            w={'190px'}
-            onChange={onChangeSelectBoxPools}>
-            {pools.map((item, index) => (
-              <option value={item.id} key={index}>
-                {`${item.token0.symbol} / ${item.token1.symbol}` }
-              </option>
-            ))}
-          </Select>
+          <Menu isLazy>
+            <MenuButton
+            border={themeDesign.border[colorMode]}
+            padding={'10px'}
+            borderRadius={'4px'}
+              h={'30px'}
+              color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}
+              fontSize={'12px'}
+              w={'190px'}>
+              <Text w={'100%'} display={'flex'} flexDir={'row'} alignItems={'center'} justifyContent={'space-between'}>
+                {' '}
+                {`${selectedPool?.token0.symbol} / ${
+                  selectedPool?.token1.symbol
+                } (${parseInt(pools[0].feeTier) / 10000} %)`}
+                <span>
+                 <ChevronDownIcon/>
+                </span>
+              </Text>
+            </MenuButton>
+            <MenuList m={'0px'} minWidth="190px" background={colorMode==='light'? '#ffffff': '#222222'}>
+              {pools.map((item, index) => (
+                <MenuItem
+                  onClick={onChangeSelectBoxPools}
+                  h={'30px'}
+                  color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}
+                  fontSize={'12px'}
+                  w={'190px'}
+                  m={'0px'}
+                  value={item.id}
+                  _hover={{background: 'transparent',color: 'blue.100'}}
+                  _focus={{background: 'transparent'}}
+                  key={index}>
+                  {`${item.token0.symbol} / ${item.token1.symbol}    (${
+                    parseInt(item.feeTier) / 10000
+                  } %) `}
+                </MenuItem>
+              ))}
+            </MenuList>
+          </Menu>
         </Flex>
         <Flex alignItems={'center'} h={'45px'}>
           <Text
@@ -204,6 +238,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             startTime={startTime}
             endTime={endTime}
             calendarType={'start'}
+            created={created}
           />
           <CustomClock setTime={setStartTimeArray} />
         </Flex>
@@ -216,6 +251,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             End
           </Text>
           <CustomCalendar
+          created={created}
             setValue={setEndTime}
             startTime={startTime}
             endTime={endTime}
@@ -300,7 +336,11 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             mb={'40px'}
             color="white.100"
             fontSize="14px"
-            disabled={amount === 0 || amount <= Number(ethers.utils.formatEther(checkAllowed.toString())) }
+            disabled={
+              amount === 0 ||
+              amount <=
+                Number(ethers.utils.formatEther(checkAllowed.toString()))
+            }
             _hover={{backgroundColor: 'blue.100'}}
             onClick={() =>
               approve({
@@ -320,11 +360,14 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             bg={'blue.500'}
             color="white.100"
             fontSize="14px"
-            disabled={Number(ethers.utils.formatEther(checkAllowed.toString())) === 0 ||amount > Number(ethers.utils.formatEther(checkAllowed.toString())) }
+            disabled={
+              Number(ethers.utils.formatEther(checkAllowed.toString())) === 0 ||
+              amount > Number(ethers.utils.formatEther(checkAllowed.toString()))
+            }
             _hover={{backgroundColor: 'blue.100'}}
             onClick={() => {
               const now = moment().unix();
-              if (now > startTime ) {
+              if (now > startTime) {
                 return alert(`Please use select a start time smaller than now`);
               }
               create({
@@ -336,12 +379,13 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
                 endTime: endTime,
                 name: name,
                 setAlllowed: setCheckAllowed,
+                setEnd: setEndTime,
+                setStart: setStartTime,
                 rewardToken: rewardAddress,
-              })
-            }
-              
-             
-            }>
+                setRewardSymbol :setRewardSymbol,
+                setCreated: setCreated
+              });
+            }}>
             Create
           </Button>
         </Flex>

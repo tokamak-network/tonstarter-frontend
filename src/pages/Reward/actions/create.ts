@@ -20,7 +20,11 @@ type Create = {
   endTime: number,
   name: string,
   setAlllowed: any,
-  rewardToken: string
+  setEnd: any,
+  setStart: any,
+  setRewardSymbol: any,
+  rewardToken: string,
+  setCreated:any
 };
 type CreateReward = {
   poolName: string;
@@ -66,7 +70,7 @@ const generateSig = async (account: string, key: any) => {
 
 
 export const create = async (args: Create) => {
-  const { library, amount, userAddress, poolAddress, startTime, endTime, name, setAlllowed, rewardToken } = args;
+  const { library, amount, userAddress, poolAddress, startTime, endTime, name, setAlllowed, setEnd, setStart, rewardToken, setRewardSymbol, setCreated } = args;
   if (userAddress === null || userAddress === undefined || library === undefined) {
     return;
   }
@@ -74,8 +78,7 @@ export const create = async (args: Create) => {
     UniswapStaker_Address,
     STAKERABI.abi,
     library,
-  );
-
+  );  
   const amountFotmatted = ethers.BigNumber.from(amount.toString())
   const signer = getSigner(library, userAddress);
 
@@ -113,6 +116,10 @@ export const create = async (args: Create) => {
         sig: sig,
       };
       setAlllowed(0);
+      setEnd(0);
+      setStart(0);
+      setRewardSymbol('')
+      setCreated(true)
       const create = await createReward(arg);     
     }
   } catch (err) {

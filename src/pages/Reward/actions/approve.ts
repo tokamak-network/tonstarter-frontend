@@ -58,10 +58,6 @@ export const approve = async (args:Approve) => {
 }
 
 export const checkApproved = async (library: any, userAddress: string | null | undefined, setAlllowed: any, tokenAddress: string ) => {
- 
-
- console.log(tokenAddress);
- 
   if (userAddress === null || userAddress === undefined || library === undefined) {
     return;
   }
