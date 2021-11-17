@@ -4473,7 +4473,7 @@ export const AllV3TicksDocument = `
     `;
 export const PoolByUserDocument = `
     query poolByUser($address: ID!) {
-  pools(where: {id: $address}) {
+  pools(where: {id: $address}, first: 1000) {
     id
     feeTier
     token0 {
@@ -4498,7 +4498,7 @@ export const PoolByUserDocument = `
     `;
 export const PoolByArrayDocument = `
     query poolByArray($address: [ID!]) {
-  pools(where: {id_in: $address}) {
+  pools(where: {id_in: $address}, first: 1000) {
     id
     feeTier
     token0 {
@@ -4523,7 +4523,7 @@ export const PoolByArrayDocument = `
     `;
 export const PositionByUserDocument = `
     query positionByUser($address: Bytes!) {
-  positions(where: {owner: $address}) {
+  positions(where: {owner: $address}, first: 1000) {
     id
     pool {
       id
@@ -4543,7 +4543,7 @@ export const PositionByUserDocument = `
     `;
 export const PositionByContractDocument = `
     query positionByContract($id: [ID!]) {
-  positions(where: {id_in: $id}) {
+  positions(where: {id_in: $id}, first: 1000) {
     id
     pool {
       id
@@ -4563,7 +4563,7 @@ export const PositionByContractDocument = `
     `;
 export const PositionByPoolDocument = `
     query positionByPool($pool_id: [String!]) {
-  positions(where: {pool_in: $pool_id}) {
+  positions(where: {pool_in: $pool_id}, first: 1000) {
     id
     pool {
       id

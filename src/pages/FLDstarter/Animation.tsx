@@ -18,7 +18,7 @@ import Arrow from 'assets/svgs/select1_arrow_inactive.svg';
 import {Stake, selectStakes} from 'pages/Staking/staking.reducer';
 import {useAppSelector} from 'hooks/useRedux';
 import {DEPLOYED} from 'constants/index';
-import {usePoolByUserQuery, usePoolByArrayQuery} from 'store/data/enhanced';
+import {usePoolByUserQuery, usePositionByPoolQuery} from 'store/data/enhanced';
 import ms from 'ms.macro';
 
 export interface HomeProps extends HTMLAttributes<HTMLDivElement> {
@@ -307,7 +307,13 @@ export const Animation: React.FC<HomeProps> = () => {
   const {data} = useAppSelector(selectStakes);
 
   //GET Phase 2 Liquidity Info
-  const {BasePool_Address} = DEPLOYED;
+  // const {BasePool_Addres, DOCPool_Address} = DEPLOYED;
+  const {
+    UniswapStaking_Address,
+    DOCPool_Address,
+    BasePool_Address,
+    UniswapStaker_Address,
+  } = DEPLOYED;
   const basePool = usePoolByUserQuery(
     {address: BasePool_Address?.toLowerCase()},
     {
@@ -316,12 +322,13 @@ export const Animation: React.FC<HomeProps> = () => {
   );
   const arr: any = [];
   arr.push(BasePool_Address.toLowerCase())
-  const test = usePoolByArrayQuery(
-    {address: arr},
+  arr.push(DOCPool_Address)
+  const test = usePositionByPoolQuery(
+    {pool_id: arr},
     {
       pollingInterval: ms`2m`,
     },
-  )
+  );
   console.log(test)
 
   useEffect(() => {
