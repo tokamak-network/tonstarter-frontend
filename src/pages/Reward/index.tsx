@@ -49,7 +49,7 @@ import {
   usePositionByUserQuery,
   usePositionByContractQuery,
   usePositionByPoolQuery,
-  usePoolByArrayQuery
+  usePoolByArrayQuery,
 } from 'store/data/generated';
 import {SideContainer} from './SideContainer';
 const {
@@ -128,14 +128,14 @@ export const Reward = () => {
   const [order, setOrder] = useState<boolean | 'desc' | 'asc'>('desc');
 
   const arr: any = [];
-  arr.push(BasePool_Address.toLowerCase())
-  arr.push(DOCPool_Address)
+  arr.push(BasePool_Address.toLowerCase());
+  arr.push(DOCPool_Address);
   const poolArr = usePoolByArrayQuery(
     {address: arr},
     {
       pollingInterval: ms`2m`,
     },
-  )
+  );
 
   const positionsByPool = usePositionByPoolQuery(
     {pool_id: arr},
@@ -167,20 +167,14 @@ export const Reward = () => {
   };
 
   useEffect(() => {
-  setPool(poolArr.data?.pools)
-  }, [
-    account,
-    transactionType,
-    blockNumber,
-    poolArr
-    
-  ]);
+    setPool(poolArr.data?.pools);
+  }, [account, transactionType, blockNumber, poolArr]);
 
   useEffect(() => {
     async function positionPayload() {
       if (account) {
         const result = await fetchPositionPayload(library, account);
-        
+
         let stringResult: any = [];
         for (let i = 0; i < result?.positionData.length; i++) {
           stringResult.push(result?.positionData[i]?.positionid.toString());
@@ -232,11 +226,7 @@ export const Reward = () => {
         library,
       );
 
-      if (
-        position.data &&
-        positionByContract.data &&
-        positionsByPool.data
-      ) {
+      if (position.data && positionByContract.data && positionsByPool.data) {
         position.refetch();
         if (selectedPool !== undefined) {
           const withStakedPosition = position.data.positions.filter(
@@ -245,11 +235,11 @@ export const Reward = () => {
           const pols = positionsByPool.data.positions.filter(
             (position: any) =>
               position.owner === UniswapStaker_Address.toLowerCase(),
-          )
-           const poolsFromSelected = pols.filter((token:any)=> (
-            token.pool.id === selectedPool.id
-           ))           
-           
+          );
+          const poolsFromSelected = pols.filter(
+            (token: any) => token.pool.id === selectedPool.id,
+          );
+
           if (
             account === null ||
             account === undefined ||
@@ -267,15 +257,15 @@ export const Reward = () => {
                 .deposits(token.id);
 
               if (depositInfo.owner === account) {
-                
                 stringResult.push(token);
               }
             }),
           );
           const allPos = withStakedPosition.concat(stringResult);
+          console.log('allPos', allPos);
+
           setPositions(allPos);
-        }
-        else {
+        } else {
           setPositions([]);
         }
       }
@@ -301,20 +291,27 @@ export const Reward = () => {
     setManageDatas(filtered);
   }, [orderedData, sortString, account, library]);
 
-  const getSelectedPool = (e: any) => {    
-    const poolAddress =  e.target.value
+  const getSelectedPool = (e: any) => {
+    const poolAddress = e.target.value;
     const selected: Pool[] = pool.filter((pool) => pool.id === poolAddress);
     setSelectedPool(selected[0]);
-  
+    setSelectdPosition('');
+
     if (poolAddress === '') {
       setOrderedData(datas);
-      setSelectdPosition('')
+      setSelectdPosition('');
     } else {
       const selectedRewards = datas.filter(
         (data) => data.poolAddress === poolAddress,
       );
       setOrderedData(selectedRewards);
     }
+  };
+
+  const getSelectedPosition = (e: any) => {
+    const pos = e.target.value;
+    setSelectdPosition(pos);
+    console.log(pos);
   };
   return (
     <Fragment>
@@ -333,55 +330,69 @@ export const Reward = () => {
               flexDir={'row'}
               justifyContent={'space-between'}>
               <Flex alignItems={'center'}>
-                 <Menu isLazy>
-            <MenuButton
-            mr={'10px'}
-            border={themeDesign.border[colorMode]}
-            padding={'10px'}
-            borderRadius={'4px'}
-              h={'32px'}
-              color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}
-              fontSize={'12px'}
-              w={'157px'}>
-              <Text w={'100%'} display={'flex'} flexDir={'row'} alignItems={'center'} justifyContent={'space-between'}>
-                {selectedPool ===undefined? 'All Pools' : `${selectedPool.token0.symbol} / ${selectedPool.token1.symbol}    (${
-                    parseInt(selectedPool.feeTier) / 10000} %) `  }
-                <span>
-                 <ChevronDownIcon/>
-                </span>
-              </Text>
-            </MenuButton>
-            <MenuList zIndex={10000} m={'0px'} minWidth="157px" background={colorMode==='light'? '#ffffff': '#222222'}>
-            <MenuItem  onClick={getSelectedPool}
-               h={'30px'}
-               color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}
-               fontSize={'12px'}
-               w={'157px'}
-               m={'0px'}
-               value={''}
-               _hover={{background: 'transparent',color: 'blue.100'}}
-               _focus={{background: 'transparent'}}>All pools</MenuItem>
-              {pool.map((item, index) => (
-               
-               <MenuItem
-                  onClick={getSelectedPool}
-                  h={'30px'}
-                  color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}
-                  fontSize={'12px'}
-                  w={'157px'}
-                  m={'0px'}
-                  value={item.id}
-                  _hover={{background: 'transparent',color: 'blue.100'}}
-                  _focus={{background: 'transparent'}}
-                  key={index}>
-                  {`${item.token0.symbol} / ${item.token1.symbol}    (${
-                    parseInt(item.feeTier) / 10000
-                  } %) `}
-                </MenuItem>
-              ))}
-            </MenuList>
-          </Menu>
-                <Select
+                <Menu isLazy>
+                  <MenuButton
+                    mr={'10px'}
+                    border={themeDesign.border[colorMode]}
+                    padding={'10px'}
+                    borderRadius={'4px'}
+                    h={'32px'}
+                    color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}
+                    fontSize={'12px'}
+                    w={'157px'}>
+                    <Text
+                      w={'100%'}
+                      display={'flex'}
+                      flexDir={'row'}
+                      alignItems={'center'}
+                      justifyContent={'space-between'}>
+                      {selectedPool === undefined
+                        ? 'All Pools'
+                        : `${selectedPool.token0.symbol} / ${
+                            selectedPool.token1.symbol
+                          }    (${parseInt(selectedPool.feeTier) / 10000} %) `}
+                      <span>
+                        <ChevronDownIcon />
+                      </span>
+                    </Text>
+                  </MenuButton>
+                  <MenuList
+                    zIndex={10000}
+                    m={'0px'}
+                    minWidth="157px"
+                    background={colorMode === 'light' ? '#ffffff' : '#222222'}>
+                    <MenuItem
+                      onClick={getSelectedPool}
+                      h={'30px'}
+                      color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}
+                      fontSize={'12px'}
+                      w={'157px'}
+                      m={'0px'}
+                      value={''}
+                      _hover={{background: 'transparent', color: 'blue.100'}}
+                      _focus={{background: 'transparent'}}>
+                      All pools
+                    </MenuItem>
+                    {pool.map((item, index) => (
+                      <MenuItem
+                        onClick={getSelectedPool}
+                        h={'30px'}
+                        color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}
+                        fontSize={'12px'}
+                        w={'157px'}
+                        m={'0px'}
+                        value={item.id}
+                        _hover={{background: 'transparent', color: 'blue.100'}}
+                        _focus={{background: 'transparent'}}
+                        key={index}>
+                        {`${item.token0.symbol} / ${item.token1.symbol}    (${
+                          parseInt(item.feeTier) / 10000
+                        } %) `}
+                      </MenuItem>
+                    ))}
+                  </MenuList>
+                </Menu>
+                {/* <Select
                   w={'137px'}
                   h={'32px'}
                   color={'#86929d'}
@@ -397,7 +408,124 @@ export const Reward = () => {
                     </option>
                   )) : null
                 }
-                </Select>
+                </Select> */}
+                <Menu isLazy>
+                  <MenuButton
+                    mr={'10px'}
+                    border={themeDesign.border[colorMode]}
+                    padding={'10px'}
+                    borderRadius={'4px'}
+                    h={'32px'}
+                    color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}
+                    fontSize={'12px'}
+                    w={'157px'}>
+                    <Text
+                      w={'100%'}
+                      display={'flex'}
+                      flexDir={'row'}
+                      alignItems={'center'}
+                      justifyContent={'space-between'}>
+                      {selectdPosition === ''
+                        ? 'My LP tokens'
+                        : selectdPosition}
+                      <span>
+                        <ChevronDownIcon />
+                      </span>
+                    </Text>
+                  </MenuButton>
+                  {selectedPool === undefined ? (
+                    <MenuList
+                      zIndex={10000}
+                      m={'0px'}
+                      minWidth="157px"
+                      background={
+                        colorMode === 'light' ? '#ffffff' : '#222222'
+                      }>
+                      <MenuOptionGroup
+                       pl={'10px'}
+                        defaultValue="asc"
+                        title="My LP Tokens"
+                        type="radio"
+                        fontSize={'12px'}
+                        m={'0px'}
+                        w={'157px'}></MenuOptionGroup>
+                    </MenuList>
+                  ) : (
+                    <MenuList
+                      zIndex={10000}
+                      m={'0px'}
+                      minWidth="157px"
+                      background={
+                        colorMode === 'light' ? '#ffffff' : '#222222'
+                      }>
+                      <MenuOptionGroup
+                        defaultValue="asc"
+                        title="Not Staked"
+                        fontSize={'12px'}
+                        m={'0px'}
+                        pl={'10px'}
+                        w={'157px'}
+                        type="radio">
+                        {positions.map((item: any, index) => {
+                          if (item.owner === account?.toLowerCase()) {
+                            return (
+                              <MenuItem
+                                onClick={getSelectedPosition}
+                                h={'30px'}
+                                color={
+                                  colorMode === 'light' ? '#3e495c' : '#f3f4f1'
+                                }
+                                fontSize={'12px'}
+                                w={'157px'}
+                                m={'0px'}
+                                value={item.id}
+                                _hover={{
+                                  background: 'transparent',
+                                  color: 'blue.100',
+                                }}
+                                _focus={{background: 'transparent'}}
+                                key={index}>
+                                {item.id}
+                              </MenuItem>
+                            );
+                          }
+                        })}
+                      </MenuOptionGroup>
+                      <MenuOptionGroup
+                       pl={'10px'}
+                        m={'0px'}
+                        defaultValue="asc"
+                        title="Staked"
+                        type="radio">
+                        {positions.map((item: any, index) => {
+                          if (item.owner !== account?.toLowerCase()) {
+                            return (
+                              <MenuItem
+                                onClick={getSelectedPosition}
+                                h={'30px'}
+                                color={
+                                  colorMode === 'light' ? '#3e495c' : '#f3f4f1'
+                                }
+                                fontSize={'12px'}
+                                w={'157px'}
+                                m={'0px'}
+                                value={item.id}
+                                _hover={{
+                                  background: 'transparent',
+                                  color: 'blue.100',
+                                }}
+                                _focus={{background: 'transparent'}}
+                                key={index}>
+                                {item.id}
+                              </MenuItem>
+                            );
+                          }
+                        })}
+                      </MenuOptionGroup>
+                    </MenuList>
+                  )}
+                </Menu>
+
                 {positions.length === 0 ? (
                   <Text
                     textDecoration={'underline'}
