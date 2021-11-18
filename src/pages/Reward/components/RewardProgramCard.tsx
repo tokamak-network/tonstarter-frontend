@@ -226,7 +226,7 @@ useEffect(()=> {
      else if (now > reward.endTime) {
       setButtonState('Closed');
     }
-    else {
+    else if (approved && now < reward.startTime){
       setButtonState('Waiting');
     }
   }, [approved, staked, account, pageIndex, library, transactionType, blockNumber, selectedToken]);

@@ -124,7 +124,7 @@ export const LPTokenComponent: FC<LPTokenComponentProps> = ({tokens}) => {
             <Flex
               key={index}
               h="30px"
-              px={'15px'}
+              px={'10px'}
               fontSize={'13px'}
               fontFamily={theme.fonts.roboto}
               fontWeight={'bold'}
@@ -132,7 +132,7 @@ export const LPTokenComponent: FC<LPTokenComponentProps> = ({tokens}) => {
               justifyContent={'center'}
               alignItems={'center'}
               border={themeDesign.border[colorMode]}>
-              <Text color={'blue.500'}># {token.id}</Text>
+              <Text color={'blue.500'}>#{token.id}</Text>
             </Flex>
           );
         })}
