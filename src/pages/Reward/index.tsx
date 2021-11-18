@@ -311,7 +311,6 @@ export const Reward = () => {
   const getSelectedPosition = (e: any) => {
     const pos = e.target.value;
     setSelectdPosition(pos);
-    console.log(pos);
   };
   return (
     <Fragment>
@@ -392,23 +391,6 @@ export const Reward = () => {
                     ))}
                   </MenuList>
                 </Menu>
-                {/* <Select
-                  w={'137px'}
-                  h={'32px'}
-                  color={'#86929d'}
-                  fontSize={'13px'}
-                  placeholder="My LP tokens"
-                  onChange={(e) => {
-                    setSelectdPosition(e.target.value);
-                  }}>
-                  {selectedPool !==undefined ? 
-                  positions.map((item: any, index) => (
-                    <option value={item.id} key={index}>
-                      {item.id}
-                    </option>
-                  )) : null
-                }
-                </Select> */}
                 <Menu isLazy>
                   <MenuButton
                     mr={'10px'}
