@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 import {Dispatch, SetStateAction, useState, useEffect} from 'react';
 import {AdminObject, StepComponent} from '@Admin/types';
-import {StepOne, StepThree, StepTwo} from './AdminStep';
+import {StepOne, StepThree, StepTwo, StepFour} from './AdminStep';
 import {createStarter} from '../utils/createStarter';
 import {LibraryType} from 'types';
 
@@ -19,6 +19,7 @@ type AdminDetailProp = StepComponent & {
   setCurrentStep: Dispatch<SetStateAction<number>>;
   existingData: AdminObject[] | [];
   library: LibraryType;
+  setFinal: Dispatch<SetStateAction<boolean>>;
 };
 
 const initialValue: AdminObject = {
@@ -43,7 +44,6 @@ const initialValue: AdminObject = {
   projectFundingTokenRatio: 0,
   //step 3
   saleContractAddress: '',
-  vestingContractAddress: '',
   snapshot: 0,
   startAddWhiteTime: 0,
   endAddWhiteTime: 0,
@@ -51,11 +51,10 @@ const initialValue: AdminObject = {
   endExclusiveTime: 0,
   startDepositTime: 0,
   endDepositTime: 0,
-  startOpenSaleTime: 0,
-  endOpenSaleTime: 0,
   startClaimTime: 0,
   claimInterval: 0,
   claimPeriod: 0,
+  claimFirst: 0,
   //step 4
   position: 'upcoming',
   production: 'dev',
@@ -63,12 +62,18 @@ const initialValue: AdminObject = {
 };
 
 export const AdminDetail: React.FC<AdminDetailProp> = (props) => {
-  const {stepName, currentStep, setCurrentStep, library, existingData} = props;
+  const {
+    stepName,
+    currentStep,
+    setCurrentStep,
+    library,
+    existingData,
+    setFinal,
+  } = props;
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
-  console.log('existingData--');
-  console.log(existingData);
+  const [stepCount, setStepCount] = useState<number>(1);
 
   const [data, setData] = useState<AdminObject>(
     existingData[0] !== undefined
@@ -81,16 +86,20 @@ export const AdminDetail: React.FC<AdminDetailProp> = (props) => {
     // return createStarter(formData);
   };
 
-  const handleNextStep = (newData: any, final: boolean) => {
+  const handleNextStep = (newData: any, final: boolean, check: boolean) => {
     setData((prev) => ({...prev, ...newData}));
 
     if (final) {
       makeRequest(newData);
       return;
     }
-    console.log(data);
+    console.log('--new data--');
+    console.log(newData);
 
-    setCurrentStep((prev) => prev + 1);
+    setCurrentStep((prev) => {
+      setStepCount(stepCount + 1);
+      return prev + 1;
+    });
   };
 
   const handlePrevStep = () => {
@@ -118,16 +127,17 @@ export const AdminDetail: React.FC<AdminDetailProp> = (props) => {
         return (
           <AccordionItem
             border="none"
-            pl={'35px'}
-            pr={'30px'}
-            pt={'24px'}
-            isOpen={true}>
+            pt={'13.5px'}
+            pb={'13.5px'}
+            isOpen={true}
+            borderBottom={'1px solid #f4f6f8'}>
             <AccordionButton
+              pr={'30px'}
               _hover={{}}
-              borderBottom={'1px solid #f4f6f8'}
-              onClick={() => setCurrentStep(index)}>
+              onClick={() => stepCount > index && setCurrentStep(index)}>
               <Box
                 flex="2"
+                pl={'16px'}
                 textAlign="left"
                 fontSize={20}
                 fontWeight={600}
@@ -136,7 +146,7 @@ export const AdminDetail: React.FC<AdminDetailProp> = (props) => {
               </Box>
               <AccordionIcon />
             </AccordionButton>
-            <AccordionPanel>
+            <AccordionPanel pb={0} pr={'35px'} pl={'35px'}>
               {currentStep === 0 && (
                 <StepOne
                   data={data}
@@ -157,6 +167,15 @@ export const AdminDetail: React.FC<AdminDetailProp> = (props) => {
                   handleNextStep={handleNextStep}
                   handlePrevStep={handlePrevStep}
                   library={library}></StepThree>
+              )}
+              {currentStep === 3 && (
+                <StepFour
+                  data={data}
+                  lastStep={index - 1 === stepName.length}
+                  handleNextStep={handleNextStep}
+                  handlePrevStep={handlePrevStep}
+                  library={library}
+                  setFinal={setFinal}></StepFour>
               )}
             </AccordionPanel>
           </AccordionItem>

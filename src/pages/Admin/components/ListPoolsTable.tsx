@@ -214,7 +214,6 @@ export const ListPoolsTable: FC<ListTableProps> = ({
                                     amount: {name, address},
                                     action: () =>
                                       AdminActions.deletePool({
-                                        chainId,
                                         poolAddress: address,
                                       }),
                                   },

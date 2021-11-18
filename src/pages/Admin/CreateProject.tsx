@@ -10,6 +10,7 @@ import {useLocation} from 'react-router-dom';
 import queryString from 'query-string';
 import {selectStarters} from '../Starter/starter.reducer';
 import {useAppSelector} from 'hooks/useRedux';
+import tickIcon from 'assets/svgs/tick-icon.svg';
 
 const Steps: React.FC<StepComponent> = (props) => {
   const {stepName, currentStep} = props;
@@ -19,6 +20,7 @@ const Steps: React.FC<StepComponent> = (props) => {
     <Flex>
       {stepName.map((step: string, index: number) => {
         const isStep = currentStep === index;
+        const pastStep = currentStep > index;
         return (
           <Box d="flex" mr={'20px'} alignItems="center" fontSize={14}>
             <Flex
@@ -31,7 +33,12 @@ const Steps: React.FC<StepComponent> = (props) => {
               color={isStep ? 'white.100' : 'gray.575'}
               mr={'12px'}
               border={isStep ? '' : 'solid 1px #e6eaee'}>
-              <Box>{index + 1}</Box>
+              {/* {pastStep ? (<img src={tickIcon} alt={'tick_icon'}>)  :( <Box>{index + 1}</Box>)} */}
+              {pastStep ? (
+                <img src={tickIcon} alt={'tick_icon'} />
+              ) : (
+                <Box>{index + 1}</Box>
+              )}
             </Flex>
             <Box>{step}</Box>
           </Box>
@@ -43,9 +50,9 @@ const Steps: React.FC<StepComponent> = (props) => {
 
 export const CreateProject = () => {
   const [currentStep, setCurrentStep] = useState(0);
-  const [existingData, setExistingData] = useState<AdminObject[] | undefined>(
-    undefined,
-  );
+  const [existingData, setExistingData] = useState<AdminObject[] | []>([]);
+  const [final, setFinal] = useState<boolean>(false);
+
   const theme = useTheme();
   const {library} = useActiveWeb3React();
   const {search} = useLocation();
@@ -73,13 +80,6 @@ export const CreateProject = () => {
     );
   }
 
-  if (!search) {
-    return (
-      <Flex w={'100%'} h={'100vh'} alignItems="center" justifyContent="center">
-        <LoadingComponent></LoadingComponent>
-      </Flex>
-    );
-  }
   return (
     <Flex mt={'72px'} flexDir="column" alignItems="center">
       <PageHeader
@@ -92,24 +92,24 @@ export const CreateProject = () => {
           currentStep={currentStep}></Steps>
       </Flex>
       <Flex mb={'50px'}>
-        {existingData && (
-          <AdminDetail
-            stepName={['Project', 'Token', 'Sale', 'Layout']}
-            currentStep={currentStep}
-            setCurrentStep={setCurrentStep}
-            library={library}
-            existingData={existingData}></AdminDetail>
-        )}
+        <AdminDetail
+          stepName={['Project', 'Token', 'Sale', 'Layout']}
+          currentStep={currentStep}
+          setCurrentStep={setCurrentStep}
+          library={library}
+          existingData={existingData}
+          setFinal={setFinal}></AdminDetail>
       </Flex>
       <CustomButton
         w={'180px'}
         h={'45px'}
         text={'Project Save'}
-        isDisabled={true}
+        isDisabled={!final}
         style={{
           fontFamily: theme.fonts.roboto,
           fontWeight: 600,
-        }}></CustomButton>
+        }}
+        func={() => console.log('test')}></CustomButton>
     </Flex>
   );
 };

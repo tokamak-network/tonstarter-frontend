@@ -7,15 +7,36 @@ import {
   getIn,
 } from 'formik';
 import * as Yup from 'yup';
-import {Flex, Box, Text, Button} from '@chakra-ui/react';
+import {
+  Flex,
+  Box,
+  Text,
+  Button,
+  useTheme,
+  useColorMode,
+  Select,
+  Image,
+  Checkbox,
+} from '@chakra-ui/react';
 import {AdminObject} from '@Admin/types';
-import {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {LibraryType} from 'types';
 import {getTotalExpectSaleAmount} from '../utils/fetchContract';
 import {CustomTooltip} from 'components/Tooltip';
 import {convertTimeStamp} from 'utils/convertTIme';
 import WatchImg from 'assets/svgs/poll-time-active-icon.svg';
+import TONSymbol from 'assets/tokens/tokamak-1@3x.png';
+import EtherscanLink from 'assets/images/etherscan-shortcuts-inactive-icon@3x.png';
+import store from 'store';
+import {selectApp} from 'store/app/app.reducer';
+import {useAppSelector} from 'hooks/useRedux';
 
 type StepProp = {
   data: AdminObject;
@@ -36,6 +57,18 @@ const fieldStyle = {
   borderRadius: 4,
   paddingLeft: '15px',
   verticalTextAlign: 'center',
+};
+
+const Line = () => {
+  return (
+    <Box
+      w={'774px'}
+      pos={'absolute'}
+      h={'1px'}
+      top={0}
+      bg={'#f4f6f8'}
+      left={'-35px'}></Box>
+  );
 };
 
 const TimeSetting = (props: {timeStamp: number | ''}) => {
@@ -69,12 +102,6 @@ const CustomFieldWithTime = (props: {
   const {values} = useFormikContext();
   const fieldValue = getIn(values, name);
 
-  useEffect(() => {
-    console.log('--');
-    console.log(values);
-    console.log(fieldValue);
-  }, [values, fieldValue]);
-
   return (
     <Box d="flex">
       <Flex style={fieldWrap} flexDir="column" mb={'20px'} pos="relative">
@@ -101,7 +128,7 @@ const CustomFieldWithTime = (props: {
           style={{...fieldStyle, width: w || '327px', background: '#ffffff'}}
           name={name}
           value={
-            fieldValue === ''
+            fieldValue === 0
               ? ''
               : convertTimeStamp(Number(fieldValue), 'MM/DD/YYYY')
           }
@@ -194,6 +221,9 @@ const CustomField = (props: {
 
 export const StepOne: React.FC<StepProp> = (props) => {
   const {data, lastStep, handleNextStep} = props;
+  const {colorMode} = useColorMode();
+  const theme = useTheme();
+  const {btnStyle} = theme;
 
   const handleSubmit = (values: any) => {
     handleNextStep(values, lastStep);
@@ -237,64 +267,71 @@ export const StepOne: React.FC<StepProp> = (props) => {
     ...obj,
   });
 
-  console.log('-check-');
-  console.log(data);
-
   return (
     <Formik
       validationSchema={stepOneValidationSchema}
       initialValues={data}
+      validateOnMount={true}
       onSubmit={handleSubmit}>
-      {({isValid}) => (
-        <Form
-          style={{
-            display: 'flex',
-            width: '100%',
-            height: '520px',
-            position: 'relative',
-            justifyContent: 'space-between',
-          }}>
-          <Flex flexDir="column">
-            <CustomField name={'name'} title={'Name'}></CustomField>
-            <CustomTextAreaField
-              name={'description'}
-              title={'Description'}></CustomTextAreaField>
-            <CustomField
-              name={'image'}
-              title={'Upload Project Main Image'}></CustomField>
-            <CustomField
-              name={'adminAddress'}
-              title={'Admin address'}></CustomField>
-          </Flex>
-          <Flex flexDir="column">
-            <CustomField name={'website'}></CustomField>
-            <CustomField name={'telegram'}></CustomField>
-            <CustomField name={'medium'}></CustomField>
-            <CustomField name={'twitter'}></CustomField>
-            <CustomField name={'discord'}></CustomField>
-          </Flex>
-          <Button
-            pos="absolute"
-            bottom={'40px'}
-            type="submit"
-            alignSelf="center"
-            w={'150px'}
-            h={'38px'}
-            br={4}
-            bg={'blue.500'}
-            color={'white.100'}
-            disabled={!isValid}
-            _hover={{}}>
-            Next
-          </Button>
-        </Form>
-      )}
+      {({isValid, errors, isValidating}) => {
+        return (
+          <Form
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              width: '100%',
+              // height: '520px',
+              position: 'relative',
+              paddingTop: '40px',
+            }}>
+            <Line />
+            <Flex justifyContent="space-between">
+              <Flex flexDir="column">
+                <CustomField name={'name'} title={'Name'}></CustomField>
+                <CustomTextAreaField
+                  name={'description'}
+                  title={'Description'}></CustomTextAreaField>
+                <CustomField
+                  name={'image'}
+                  title={'Upload Project Main Image'}></CustomField>
+                <CustomField
+                  name={'adminAddress'}
+                  title={'Admin address'}></CustomField>
+              </Flex>
+              <Flex flexDir="column">
+                <CustomField name={'website'}></CustomField>
+                <CustomField name={'telegram'}></CustomField>
+                <CustomField name={'medium'}></CustomField>
+                <CustomField name={'twitter'}></CustomField>
+                <CustomField name={'discord'}></CustomField>
+              </Flex>
+            </Flex>
+            <Flex w={'100%'} justifyContent="center" mt={'20px'} mb={'40px'}>
+              <Button
+                {...(!isValid
+                  ? {...btnStyle.btnDisable({colorMode})}
+                  : {...btnStyle.btnAble()})}
+                type="submit"
+                w={'150px'}
+                h={'38px'}
+                br={4}
+                disabled={!isValid}
+                _hover={{}}>
+                Next
+              </Button>
+            </Flex>
+          </Form>
+        );
+      }}
     </Formik>
   );
 };
 
 export const StepTwo: React.FC<StepProp> = (props) => {
   const {data, lastStep, handleNextStep, handlePrevStep} = props;
+  const {colorMode} = useColorMode();
+  const theme = useTheme();
+  const {btnStyle} = theme;
 
   const handleSubmit = (values: any) => {
     handleNextStep(values, lastStep);
@@ -339,8 +376,6 @@ export const StepTwo: React.FC<StepProp> = (props) => {
     ...obj,
   });
 
-  console.log(stepOneValidationSchema);
-
   const titleStyle = {
     color: 'black.300',
     fontSize: 15,
@@ -348,134 +383,190 @@ export const StepTwo: React.FC<StepProp> = (props) => {
 
   return (
     <Formik
+      enableReinitialize={false}
       validationSchema={stepOneValidationSchema}
       initialValues={data}
+      validateOnMount={true}
       onSubmit={handleSubmit}>
-      {({isValid}) => (
-        <Form
-          style={{
-            display: 'flex',
-            width: '100%',
-            height: '850px',
-            position: 'relative',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-          }}>
-          <Flex flexDir="column">
-            <Flex
-              style={titleStyle}
-              alignItems="center"
-              mt={'40px'}
-              mb={'25px'}>
-              <span style={{fontSize: '4px'}}>○ </span>
-              <Text ml={'3px'}>Project Token</Text>
-            </Flex>
-            <Flex justifyContent="space-between">
-              <Flex flexDir="column">
-                <CustomField
-                  name={'tokenName'}
-                  title={'Token Name'}></CustomField>
-                <CustomField
-                  name={'tokenSymbol'}
-                  title={'Token Symbol'}></CustomField>
-                <CustomField
-                  name={'tokenAllocationAmount'}
-                  title={'Token Allocation Amount'}></CustomField>
+      {({isValid, setFieldValue, isValidating, values}) => {
+        console.log('--values--');
+        console.log(isValid);
+        console.log(values);
+
+        const {fundingTokenType, projectTokenRatio, projectFundingTokenRatio} =
+          values;
+
+        const checkTokenRatio =
+          projectTokenRatio === 0 || projectFundingTokenRatio === 0;
+
+        return (
+          <Form
+            style={{
+              display: 'flex',
+              // width: '120%',
+              // height: '800px',
+              position: 'relative',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              // borderTop: '1px solid #f4f6f8',
+            }}>
+            <Line />
+            <Flex flexDir="column">
+              <Flex
+                style={titleStyle}
+                alignItems="center"
+                mt={'40px'}
+                mb={'25px'}>
+                <span style={{fontSize: '4px'}}>○ </span>
+                <Text ml={'3px'}>Project Token</Text>
               </Flex>
-              <Flex flexDir="column">
-                <CustomField
-                  name={'tokenAddress'}
-                  title={'Token Address'}></CustomField>
-                <CustomField
-                  name={'tokenSymbolImage'}
-                  title={'Token Symbol Image'}></CustomField>
+              <Flex justifyContent="space-between">
+                <Flex flexDir="column">
+                  <CustomField
+                    name={'tokenName'}
+                    title={'Token Name'}></CustomField>
+                  <CustomField
+                    name={'tokenSymbol'}
+                    title={'Token Symbol'}></CustomField>
+                  <CustomField
+                    name={'tokenAllocationAmount'}
+                    title={'Token Allocation Amount'}></CustomField>
+                </Flex>
+                <Flex flexDir="column">
+                  <CustomField
+                    name={'tokenAddress'}
+                    title={'Token Address'}></CustomField>
+                  <CustomField
+                    name={'tokenSymbolImage'}
+                    title={'Token Symbol Image'}></CustomField>
+                </Flex>
               </Flex>
-            </Flex>
-            <Flex
-              style={titleStyle}
-              alignItems="center"
-              mt={'40px'}
-              mb={'25px'}>
-              <span style={{fontSize: '4px'}}>○ </span>
-              <Text ml={'3px'}>Funding Token</Text>
-            </Flex>
-            <Flex justifyContent="space-between">
-              <Flex flexDir="column">
-                <CustomField
-                  name={'fundingTokenType'}
-                  title={'Token Name'}></CustomField>
-                <CustomField
-                  name={'tokenFundRaisingTargetAmount'}
-                  title={'tokenFundRaisingTargetAmount'}></CustomField>
+              <Flex
+                style={titleStyle}
+                alignItems="center"
+                mt={'40px'}
+                mb={'25px'}>
+                <span style={{fontSize: '4px'}}>○ </span>
+                <Text ml={'3px'}>Funding Token</Text>
+              </Flex>
+              <Flex justifyContent="space-between">
+                <Flex flexDir="column">
+                  <Flex pos="relative" flexDir={'column'} mb={'10px'}>
+                    <Text style={fieldWrap} mb={'10px'}>
+                      Token Name
+                    </Text>
+                    <Flex
+                      pos="absolute"
+                      w={'26px'}
+                      h={'26px'}
+                      bottom={'3px'}
+                      left={'10px'}
+                      border={'1px solid #e7edf3'}
+                      borderRadius={25}
+                      alignItems="center"
+                      justifyContent="center">
+                      <img
+                        src={fundingTokenType === 'TON' ? TONSymbol : ''}
+                        alt={'TON_SYMBOL'}
+                        style={{
+                          width: '18.2px',
+                          height: '18.2px',
+                        }}
+                      />
+                    </Flex>
+                    <Select
+                      w={'200px'}
+                      h={'32px'}
+                      iconColor={'#dfe4ee'}
+                      fontSize={13}
+                      style={{paddingLeft: '43px', paddingTop: '3px'}}
+                      onChange={(e) => {
+                        const tokenType = e.target.value;
+                        setFieldValue('fundingTokenType', tokenType);
+                      }}>
+                      <option value="TON">TON</option>
+                    </Select>
+                  </Flex>
+
+                  <CustomField
+                    name={'tokenFundRaisingTargetAmount'}
+                    title={'Token Fund Rasing Target Amount'}></CustomField>
+                </Flex>
+                <Flex>
+                  <CustomField
+                    name={'tokenFundingRecipient'}
+                    title={'Funding Token Recipient'}></CustomField>
+                </Flex>
+              </Flex>
+              <Flex
+                style={titleStyle}
+                alignItems="center"
+                mt={'40px'}
+                mb={'25px'}>
+                <span style={{fontSize: '4px'}}>○ </span>
+                <Text ml={'3px'}>Token Price Ratio</Text>
               </Flex>
               <Flex>
                 <CustomField
-                  name={'tokenFundingRecipient'}
-                  title={'Funding Token Recipient'}></CustomField>
+                  name={'projectTokenRatio'}
+                  title={'Project Token'}
+                  w={'150px'}
+                  placeHolder={'0.00'}></CustomField>
+                <Text alignSelf="center" pt={'10px'} px={'11px'}>
+                  :
+                </Text>
+                <CustomField
+                  name={'projectFundingTokenRatio'}
+                  title={'Funding Token'}
+                  w={'150px'}
+                  placeHolder={'0.00'}></CustomField>
               </Flex>
             </Flex>
-            <Flex
-              style={titleStyle}
-              alignItems="center"
-              mt={'40px'}
-              mb={'25px'}>
-              <span style={{fontSize: '4px'}}>○ </span>
-              <Text ml={'3px'}>Token Price Ratio</Text>
-            </Flex>
-            <Flex>
-              <CustomField
-                name={'projectTokenRatio'}
-                title={'Project Token'}
-                w={'150px'}
-                placeHolder={'0.00'}></CustomField>
-              <Text alignSelf="center" pt={'10px'} px={'11px'}>
-                :
-              </Text>
-              <CustomField
-                name={'projectFundingTokenRatio'}
-                title={'Funding Token'}
-                w={'150px'}
-                placeHolder={'0.00'}></CustomField>
-            </Flex>
-          </Flex>
 
-          <Flex
-            pos="absolute"
-            bottom={'40px'}
-            alignItems="center"
-            justifyContent="center">
-            <Button
-              w={'150px'}
-              h={'38px'}
-              br={4}
-              bg={'blue.500'}
-              color={'white.100'}
-              mr={'12px'}
-              onClick={() => handlePrevStep()}
-              _hover={{}}>
-              Prev
-            </Button>
-            <Button
-              type="submit"
-              alignSelf="center"
-              w={'150px'}
-              h={'38px'}
-              br={4}
-              bg={'blue.500'}
-              color={'white.100'}
-              disabled={!isValid}
-              _hover={{}}>
-              Next
-            </Button>
-          </Flex>
-        </Form>
-      )}
+            <Flex
+              // pos="absolute"
+              w={'100%'}
+              mt={'30px'}
+              mb={'40px'}
+              // bottom={'35px'}
+              justifyContent="center">
+              <Button
+                w={'150px'}
+                h={'38px'}
+                br={4}
+                bg={'blue.500'}
+                color={'white.100'}
+                mr={'12px'}
+                onClick={() => handlePrevStep()}
+                _hover={{}}>
+                Prev
+              </Button>
+              <Button
+                {...(checkTokenRatio || !isValid
+                  ? {...btnStyle.btnDisable({colorMode})}
+                  : {...btnStyle.btnAble()})}
+                type="submit"
+                w={'150px'}
+                h={'38px'}
+                br={4}
+                disabled={checkTokenRatio || !isValid}
+                _hover={{}}>
+                Next
+              </Button>
+            </Flex>
+          </Form>
+        );
+      }}
     </Formik>
   );
 };
 
 export const StepThree: React.FC<StepProp> = (props) => {
-  const {lastStep, handleNextStep, handlePrevStep, library} = props;
+  const {data, lastStep, handleNextStep, handlePrevStep, library} = props;
+  const {colorMode} = useColorMode();
+  const theme = useTheme();
+  const {btnStyle} = theme;
+  // const {data: appConfig} = useAppSelector(selectApp);
 
   const [timeline, setTimeline] = useState<
     0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
@@ -484,21 +575,6 @@ export const StepThree: React.FC<StepProp> = (props) => {
   const handleSubmit = (values: any) => {
     handleNextStep(values, lastStep);
   };
-
-  const [data, setData] = useState({
-    saleContractAddress: '',
-    snapshot: '',
-    startAddWhiteTime: '',
-    endAddWhiteTime: '',
-    startExclusiveTime: '',
-    endExclusiveTime: '',
-    startDepositTime: '',
-    endDepositTime: '',
-    startClaimTime: '',
-    claimInterval: '',
-    claimPeriod: '',
-    claimFirst: '',
-  });
 
   const names = [
     'saleContractAddress',
@@ -512,6 +588,7 @@ export const StepThree: React.FC<StepProp> = (props) => {
     'startClaimTime',
     'claimInterval',
     'claimPeriod',
+    'claimFirst',
   ];
 
   const obj = {};
@@ -574,21 +651,30 @@ export const StepThree: React.FC<StepProp> = (props) => {
     paddingLeft: '1px',
   });
 
-  async function getFetch() {
-    const res = await getTotalExpectSaleAmount({
-      library,
-      address: '0x865200f8172bf55f99b53A8fa0E26988b94dfBbE',
-    });
-    if (res) {
-      console.log(res);
-      setData({...res, saleContractAddress: 'test'});
-      checkTimeLine(res);
-    }
-  }
+  const getFetch = useCallback(
+    (address, setFieldValue) => {
+      async function tryFetch(address: string, setFieldValue: any) {
+        const res = await getTotalExpectSaleAmount({
+          library,
+          address,
+        });
+        if (res) {
+          for (const [key, value] of Object.entries(res)) {
+            setFieldValue(key, value);
+          }
+          setFieldValue('saleContractAddress', address);
+          checkTimeLine(res);
+        }
+      }
+      console.log('--getFetch--');
+      if (address) {
+        tryFetch(address, setFieldValue);
+      }
+    },
+    [library],
+  );
 
   function checkTimeLine(data: any) {
-    console.log('data');
-    console.log(data);
     for (const [key, value] of Object.entries(data)) {
       if (key === 'snapshot' && value === '') {
         return setTimeline(1);
@@ -632,389 +718,587 @@ export const StepThree: React.FC<StepProp> = (props) => {
 
   return (
     <Formik
-      enableReinitialize
       validationSchema={stepOneValidationSchema}
       initialValues={data}
+      validateOnMount={true}
       onSubmit={handleSubmit}>
-      {({isValid}) => (
-        <Form
-          style={{
-            display: 'flex',
-            width: '100%',
-            height: '1300px',
-            position: 'relative',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-          }}>
-          <Flex flexDir="column">
-            <Flex>
-              <CustomField
-                name={'saleContractAddress'}
-                title={'Sale Contract Address'}
-                w={'300px'}></CustomField>
-              <Box d="flex" alignItems="center" ml={'10px'}>
-                <CustomButton
-                  w={'64px'}
-                  h={'32px'}
-                  style={{mt: '8px'}}
-                  text={'Query'}
-                  func={() => getFetch()}></CustomButton>
-              </Box>
-            </Flex>
-            <Flex mt={'15px'}>
-              <Flex flexDir="column" w={'380px'}>
-                <Flex style={titleStyle} alignItems="center" mb={'17px'}>
-                  <span style={{fontSize: '4px'}}>○ </span>
-                  <Text ml={'3px'}>Sale Timeline</Text>
-                </Flex>
-                <Flex pos="relative" w={'310px'}>
-                  <Flex flexDir="column" pos="absolute" left={'60px'}>
-                    <Box
-                      fontSize={'13px'}
-                      pt={'3px'}
-                      fontWeight={600}
-                      mb={'405px'}
-                      d="flex"
-                      justifyContent="center">
-                      <Text>Round 1</Text>
-                      <Box paddingTop={'1px'} pl={'5px'}>
-                        <CustomTooltip
-                          toolTipW={242}
-                          toolTipH={'64px'}
-                          fontSize="12px"
-                          msg={[
-                            `This is the sale period for sTOS holders.`,
-                            `sTOS holders can participate in the token`,
-                            `sale after registering on the white list.`,
-                          ]}
-                          placement={'top'}></CustomTooltip>
-                      </Box>
-                    </Box>
-                    <Box
-                      fontSize={'13px'}
-                      pt={'3px'}
-                      fontWeight={600}
-                      mb={'202px'}
-                      d="flex"
-                      justifyContent="center">
-                      <Text>Round 2</Text>
-                      <Box paddingTop={'1px'} pl={'5px'}>
-                        <CustomTooltip
-                          toolTipW={312}
-                          toolTipH={'96px'}
-                          fontSize="12px"
-                          msg={[
-                            `This is the period when anyone can`,
-                            `participate in the sale.`,
-                            `After deposit for tokens, you can purchase tokens.`,
-                            `Purchased tokens are locked up and can be withdrawn`,
-                            `sequentially during the vesting period.`,
-                          ]}
-                          placement={'top'}></CustomTooltip>
-                      </Box>
-                    </Box>
-                    <Box
-                      fontSize={'13px'}
-                      pt={'3px'}
-                      fontWeight={600}
-                      d="flex"
-                      justifyContent="center">
-                      <Text>Vesting</Text>
-                      <Box paddingTop={'1px'} pl={'5px'}>
-                        <CustomTooltip
-                          toolTipW={334}
-                          toolTipH={'64px'}
-                          fontSize="12px"
-                          msg={[
-                            `This is the period during which you can claim the tokens`,
-                            `allocated to you.`,
-                            `Tokens are unlocked sequentially during the vesting period.`,
-                          ]}
-                          placement={'top'}></CustomTooltip>
-                      </Box>
-                    </Box>
+      {({isValid, values, setFieldValue, isValidating, errors}) => {
+        const {saleContractAddress} = values;
+        return (
+          <Form
+            style={{
+              display: 'flex',
+              width: '100%',
+              // height: '1300px',
+              position: 'relative',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              paddingTop: '40px',
+            }}>
+            <Line />
+            <Flex flexDir="column">
+              <Flex>
+                <CustomField
+                  name={'saleContractAddress'}
+                  title={'Sale Contract Address'}
+                  w={'300px'}></CustomField>
+                <Box d="flex" alignItems="center" ml={'10px'}>
+                  <CustomButton
+                    w={'64px'}
+                    h={'32px'}
+                    style={{mt: '8px'}}
+                    text={'Query'}
+                    func={() =>
+                      getFetch(saleContractAddress, setFieldValue)
+                    }></CustomButton>
+                </Box>
+                <Image
+                  mt={2}
+                  ml={'5px'}
+                  alignSelf="center"
+                  src={EtherscanLink}
+                  alt={'Etherscan'}
+                  w={'24px'}
+                  h={'24px'}
+                  cursor={'pointer'}
+                  onClick={() => {
+                    window.open(
+                      `${
+                        store.getState().appConfig.data.explorerLink
+                      }${saleContractAddress}`,
+                    );
+                  }}></Image>
+              </Flex>
+              <Flex mt={'15px'}>
+                <Flex flexDir="column" w={'380px'}>
+                  <Flex style={titleStyle} alignItems="center" mb={'17px'}>
+                    <span style={{fontSize: '4px'}}>○ </span>
+                    <Text ml={'3px'}>Sale Timeline</Text>
                   </Flex>
-                  <Flex flexDir="column" pos="absolute" left={'190px'}>
-                    <Box
-                      fontSize={'13px'}
-                      pt={'3px'}
-                      h={'16px'}
-                      mb={'104px'}
-                      d="flex"
-                      justifyContent="center">
-                      <Text>Snpashot</Text>
-                      <Box paddingTop={'1px'} pl={'5px'}>
-                        <CustomTooltip
-                          toolTipW={220}
-                          toolTipH={'64px'}
-                          fontSize="12px"
-                          msg={[
-                            `The tier of participants is determined`,
-                            `based on the sTOS balance at this`,
-                            `point.`,
-                          ]}
-                          placement={'top'}></CustomTooltip>
-                      </Box>
-                    </Box>
-                    <Box fontSize={'13px'} pt={'3px'} h={'16px'} mb={'145px'}>
-                      <Text>Add Whitelist</Text>
-                    </Box>
-                    <Box fontSize={'13px'} pt={'3px'} h={'16px'} mb={'215px'}>
-                      <Text>Sale</Text>
-                    </Box>
-                    <Box fontSize={'13px'} pt={'3px'} h={'16px'} mb={'165px'}>
-                      <Text>Deposit</Text>
-                    </Box>
-                    <Box fontSize={'13px'} pt={'3px'}>
-                      <Text>Claim</Text>
-                    </Box>
-                  </Flex>
-                  <Flex justifyContent="center" w={'100%'}>
-                    <Flex zIndex={100} pl={0.5} flexDir="column">
+                  <Flex pos="relative" w={'310px'}>
+                    <Flex flexDir="column" pos="absolute" left={'60px'}>
                       <Box
-                        style={
-                          timeline < 1
-                            ? circleStyle
-                            : timeLineStyle({
-                                isTimeLine: timeline === 1,
-                              })
-                        }
-                        // color={false ? 'gray757' : 'white.100'}
-                        // bg={false ? 'white.100' : 'blue.100'}
-                        mb={'57px'}>
-                        <Text>1</Text>
+                        fontSize={'13px'}
+                        pt={'3px'}
+                        fontWeight={600}
+                        mb={'405px'}
+                        d="flex"
+                        justifyContent="center">
+                        <Text>Round 1</Text>
+                        <Box paddingTop={'1px'} pl={'5px'}>
+                          <CustomTooltip
+                            toolTipW={242}
+                            toolTipH={'64px'}
+                            fontSize="12px"
+                            msg={[
+                              `This is the sale period for sTOS holders.`,
+                              `sTOS holders can participate in the token`,
+                              `sale after registering on the white list.`,
+                            ]}
+                            placement={'top'}></CustomTooltip>
+                        </Box>
                       </Box>
                       <Box
-                        style={
-                          timeline < 2
-                            ? circleStyle
-                            : timeLineStyle({
-                                isTimeLine: timeline === 2,
-                              })
-                        }
-                        mb={'57px'}>
-                        <Text>2</Text>
+                        fontSize={'13px'}
+                        pt={'3px'}
+                        fontWeight={600}
+                        mb={'202px'}
+                        d="flex"
+                        justifyContent="center">
+                        <Text>Round 2</Text>
+                        <Box paddingTop={'1px'} pl={'5px'}>
+                          <CustomTooltip
+                            toolTipW={312}
+                            toolTipH={'96px'}
+                            fontSize="12px"
+                            msg={[
+                              `This is the period when anyone can`,
+                              `participate in the sale.`,
+                              `After deposit for tokens, you can purchase tokens.`,
+                              `Purchased tokens are locked up and can be withdrawn`,
+                              `sequentially during the vesting period.`,
+                            ]}
+                            placement={'top'}></CustomTooltip>
+                        </Box>
                       </Box>
                       <Box
-                        style={
-                          timeline < 3
-                            ? circleStyle
-                            : timeLineStyle({
-                                isTimeLine: timeline === 3,
-                              })
-                        }
-                        mb={'57px'}>
-                        <Text>3</Text>
-                      </Box>
-                      <Box
-                        style={
-                          timeline < 4
-                            ? circleStyle
-                            : timeLineStyle({
-                                isTimeLine: timeline === 4,
-                              })
-                        }
-                        mb={'57px'}>
-                        <Text>4</Text>
-                      </Box>
-                      <Box
-                        style={
-                          timeline < 5
-                            ? circleStyle
-                            : timeLineStyle({
-                                isTimeLine: timeline === 5,
-                              })
-                        }
-                        mb={'117px'}>
-                        <Text>5</Text>
-                      </Box>
-                      <Box
-                        style={
-                          timeline < 6
-                            ? circleStyle
-                            : timeLineStyle({
-                                isTimeLine: timeline === 6,
-                              })
-                        }
-                        mb={'57px'}>
-                        <Text>6</Text>
-                      </Box>
-                      <Box
-                        style={
-                          timeline < 7
-                            ? circleStyle
-                            : timeLineStyle({
-                                isTimeLine: timeline === 7,
-                              })
-                        }
-                        mb={'124px'}>
-                        <Text>7</Text>
-                      </Box>
-                      <Box
-                        style={
-                          timeline < 8
-                            ? circleStyle
-                            : timeLineStyle({
-                                isTimeLine: timeline === 8,
-                              })
-                        }>
-                        <Text>8</Text>
+                        fontSize={'13px'}
+                        pt={'3px'}
+                        fontWeight={600}
+                        d="flex"
+                        justifyContent="center">
+                        <Text>Vesting</Text>
+                        <Box paddingTop={'1px'} pl={'5px'}>
+                          <CustomTooltip
+                            toolTipW={334}
+                            toolTipH={'64px'}
+                            fontSize="12px"
+                            msg={[
+                              `This is the period during which you can claim the tokens`,
+                              `allocated to you.`,
+                              `Tokens are unlocked sequentially during the vesting period.`,
+                            ]}
+                            placement={'top'}></CustomTooltip>
+                        </Box>
                       </Box>
                     </Flex>
-                    <Flex></Flex>
+                    <Flex flexDir="column" pos="absolute" left={'190px'}>
+                      <Box
+                        fontSize={'13px'}
+                        pt={'3px'}
+                        h={'16px'}
+                        mb={'104px'}
+                        d="flex"
+                        justifyContent="center">
+                        <Text>Snpashot</Text>
+                        <Box paddingTop={'1px'} pl={'5px'}>
+                          <CustomTooltip
+                            toolTipW={220}
+                            toolTipH={'64px'}
+                            fontSize="12px"
+                            msg={[
+                              `The tier of participants is determined`,
+                              `based on the sTOS balance at this`,
+                              `point.`,
+                            ]}
+                            placement={'top'}></CustomTooltip>
+                        </Box>
+                      </Box>
+                      <Box fontSize={'13px'} pt={'3px'} h={'16px'} mb={'145px'}>
+                        <Text>Add Whitelist</Text>
+                      </Box>
+                      <Box fontSize={'13px'} pt={'3px'} h={'16px'} mb={'215px'}>
+                        <Text>Sale</Text>
+                      </Box>
+                      <Box fontSize={'13px'} pt={'3px'} h={'16px'} mb={'165px'}>
+                        <Text>Deposit</Text>
+                      </Box>
+                      <Box fontSize={'13px'} pt={'3px'}>
+                        <Text>Claim</Text>
+                      </Box>
+                    </Flex>
+                    <Flex justifyContent="center" w={'100%'}>
+                      <Flex zIndex={100} pl={0.5} flexDir="column">
+                        <Box
+                          style={
+                            timeline < 1
+                              ? circleStyle
+                              : timeLineStyle({
+                                  isTimeLine: timeline === 1,
+                                })
+                          }
+                          // color={false ? 'gray757' : 'white.100'}
+                          // bg={false ? 'white.100' : 'blue.100'}
+                          mb={'57px'}>
+                          <Text>1</Text>
+                        </Box>
+                        <Box
+                          style={
+                            timeline < 2
+                              ? circleStyle
+                              : timeLineStyle({
+                                  isTimeLine: timeline === 2,
+                                })
+                          }
+                          mb={'57px'}>
+                          <Text>2</Text>
+                        </Box>
+                        <Box
+                          style={
+                            timeline < 3
+                              ? circleStyle
+                              : timeLineStyle({
+                                  isTimeLine: timeline === 3,
+                                })
+                          }
+                          mb={'57px'}>
+                          <Text>3</Text>
+                        </Box>
+                        <Box
+                          style={
+                            timeline < 4
+                              ? circleStyle
+                              : timeLineStyle({
+                                  isTimeLine: timeline === 4,
+                                })
+                          }
+                          mb={'57px'}>
+                          <Text>4</Text>
+                        </Box>
+                        <Box
+                          style={
+                            timeline < 5
+                              ? circleStyle
+                              : timeLineStyle({
+                                  isTimeLine: timeline === 5,
+                                })
+                          }
+                          mb={'117px'}>
+                          <Text>5</Text>
+                        </Box>
+                        <Box
+                          style={
+                            timeline < 6
+                              ? circleStyle
+                              : timeLineStyle({
+                                  isTimeLine: timeline === 6,
+                                })
+                          }
+                          mb={'57px'}>
+                          <Text>6</Text>
+                        </Box>
+                        <Box
+                          style={
+                            timeline < 7
+                              ? circleStyle
+                              : timeLineStyle({
+                                  isTimeLine: timeline === 7,
+                                })
+                          }
+                          mb={'124px'}>
+                          <Text>7</Text>
+                        </Box>
+                        <Box
+                          style={
+                            timeline < 8
+                              ? circleStyle
+                              : timeLineStyle({
+                                  isTimeLine: timeline === 8,
+                                })
+                          }>
+                          <Text>8</Text>
+                        </Box>
+                      </Flex>
+                      <Flex></Flex>
+                    </Flex>
+                    <Box
+                      w={'4px'}
+                      h={'700px'}
+                      left={'50%'}
+                      bg={'#e7edf3'}
+                      borderRadius={100}
+                      pos={'absolute'}></Box>
+                    <Box
+                      w={'4px'}
+                      h={
+                        timeline === 0
+                          ? '0px'
+                          : timeline === 1
+                          ? '54px'
+                          : timeline === 2
+                          ? '135px'
+                          : timeline === 3
+                          ? '218px'
+                          : timeline === 4
+                          ? '298px'
+                          : timeline === 5
+                          ? '415px'
+                          : timeline === 6
+                          ? '520px'
+                          : timeline === 7
+                          ? '635px'
+                          : '700px'
+                      }
+                      left={'50%'}
+                      bg={'#0070ed'}
+                      borderRadius={100}
+                      pos={'absolute'}></Box>
                   </Flex>
-                  <Box
-                    w={'4px'}
-                    h={'700px'}
-                    left={'50%'}
-                    bg={'#e7edf3'}
-                    borderRadius={100}
-                    pos={'absolute'}></Box>
-                  <Box
-                    w={'4px'}
-                    h={
-                      timeline === 0
-                        ? '0px'
-                        : timeline === 1
-                        ? '54px'
-                        : timeline === 2
-                        ? '135px'
-                        : timeline === 3
-                        ? '218px'
-                        : timeline === 4
-                        ? '298px'
-                        : timeline === 5
-                        ? '415px'
-                        : timeline === 6
-                        ? '520px'
-                        : timeline === 7
-                        ? '635px'
-                        : '700px'
-                    }
-                    left={'50%'}
-                    bg={'#0070ed'}
-                    borderRadius={100}
-                    pos={'absolute'}></Box>
                 </Flex>
-              </Flex>
-              <Flex flexDir="column">
-                <Flex style={titleStyle} alignItems="center" mb={'20px'}>
-                  <Text>Round 1</Text>
+                <Flex flexDir="column">
+                  <Flex style={titleStyle} alignItems="center" mb={'20px'}>
+                    <Text>Round 1</Text>
+                  </Flex>
+                  <Box>
+                    <CustomFieldWithTime
+                      name={'snapshot'}
+                      title={'1. Snapshot Timestamp'}
+                      w={'200px'}
+                      placeHolder={'MM/DD/YYYY'}></CustomFieldWithTime>
+                  </Box>
+                  <Box>
+                    <CustomFieldWithTime
+                      name={'startAddWhiteTime'}
+                      title={'2. AddWhiltelist Start Time'}
+                      w={'200px'}
+                      placeHolder={'MM/DD/YYYY'}></CustomFieldWithTime>
+                  </Box>
+                  <Box>
+                    <CustomFieldWithTime
+                      name={'endAddWhiteTime'}
+                      title={'3. EndWhitelist End Time'}
+                      w={'200px'}
+                      placeHolder={'MM/DD/YYYY'}></CustomFieldWithTime>
+                  </Box>
+                  <Box>
+                    <CustomFieldWithTime
+                      name={'startExclusiveTime'}
+                      title={'4. Exclusive Start Time'}
+                      w={'200px'}
+                      placeHolder={'MM/DD/YYYY'}></CustomFieldWithTime>
+                  </Box>
+                  <Box>
+                    <CustomFieldWithTime
+                      name={'endExclusiveTime'}
+                      title={'5. Exclusive End Time'}
+                      w={'200px'}
+                      placeHolder={'MM/DD/YYYY'}></CustomFieldWithTime>
+                  </Box>
+                  <Flex
+                    style={titleStyle}
+                    alignItems="center"
+                    mt={'20px'}
+                    mb={'20px'}>
+                    <Text>Round 2</Text>
+                  </Flex>
+                  <Box>
+                    <CustomFieldWithTime
+                      name={'startDepositTime'}
+                      title={'6. Deposit Start Time'}
+                      w={'200px'}
+                      placeHolder={'MM/DD/YYYY'}></CustomFieldWithTime>
+                  </Box>
+                  <Box>
+                    <CustomFieldWithTime
+                      name={'endDepositTime'}
+                      title={'7. Deposit End Time'}
+                      w={'200px'}
+                      placeHolder={'MM/DD/YYYY'}></CustomFieldWithTime>
+                  </Box>
+                  <Flex
+                    style={titleStyle}
+                    alignItems="center"
+                    mt={'20px'}
+                    mb={'20px'}>
+                    <Text>Vesting</Text>
+                  </Flex>
+                  <Box>
+                    <CustomFieldWithTime
+                      name={'startClaimTime'}
+                      title={'8. Claim Start Time'}
+                      w={'200px'}
+                      placeHolder={'MM/DD/YYYY'}></CustomFieldWithTime>
+                  </Box>
+                  <Box>
+                    <CustomField
+                      name={'claimInterval'}
+                      title={'Claim Intervals (sec)'}
+                      w={'200px'}></CustomField>
+                  </Box>
+                  <Box>
+                    <CustomField
+                      name={'claimPeriod'}
+                      title={'Claim count'}
+                      w={'300px'}></CustomField>
+                  </Box>
+                  <Box>
+                    <CustomField
+                      name={'claimFirst'}
+                      title={'Percentage of claims in the first round'}
+                      w={'300px'}
+                      placeHolder={
+                        'input percentage of claims in the first round'
+                      }></CustomField>
+                  </Box>
                 </Flex>
-                <Box>
-                  <CustomFieldWithTime
-                    name={'snapshot'}
-                    title={'1. Snapshot Timestamp'}
-                    w={'200px'}
-                    placeHolder={'MM/DD/YYYY'}></CustomFieldWithTime>
-                </Box>
-                <Box>
-                  <CustomFieldWithTime
-                    name={'startAddWhiteTime'}
-                    title={'2. AddWhiltelist Start Time'}
-                    w={'200px'}
-                    placeHolder={'MM/DD/YYYY'}></CustomFieldWithTime>
-                </Box>
-                <Box>
-                  <CustomFieldWithTime
-                    name={'endAddWhiteTime'}
-                    title={'3. EndWhitelist End Time'}
-                    w={'200px'}
-                    placeHolder={'MM/DD/YYYY'}></CustomFieldWithTime>
-                </Box>
-                <Box>
-                  <CustomFieldWithTime
-                    name={'startExclusiveTime'}
-                    title={'4. Exclusive Start Time'}
-                    w={'200px'}
-                    placeHolder={'MM/DD/YYYY'}></CustomFieldWithTime>
-                </Box>
-                <Box>
-                  <CustomFieldWithTime
-                    name={'endExclusiveTime'}
-                    title={'5. Exclusive End Time'}
-                    w={'200px'}
-                    placeHolder={'MM/DD/YYYY'}></CustomFieldWithTime>
-                </Box>
-                <Flex
-                  style={titleStyle}
-                  alignItems="center"
-                  mt={'20px'}
-                  mb={'20px'}>
-                  <Text>Round 2</Text>
-                </Flex>
-                <Box>
-                  <CustomFieldWithTime
-                    name={'endExclusiveTime'}
-                    title={'6. Deposit Start Time'}
-                    w={'200px'}
-                    placeHolder={'MM/DD/YYYY'}></CustomFieldWithTime>
-                </Box>
-                <Box>
-                  <CustomFieldWithTime
-                    name={'endExclusiveTime'}
-                    title={'7. Deposit End Time'}
-                    w={'200px'}
-                    placeHolder={'MM/DD/YYYY'}></CustomFieldWithTime>
-                </Box>
-                <Flex
-                  style={titleStyle}
-                  alignItems="center"
-                  mt={'20px'}
-                  mb={'20px'}>
-                  <Text>Vesting</Text>
-                </Flex>
-                <Box>
-                  <CustomFieldWithTime
-                    name={'startClaimTime'}
-                    title={'8. Claim Start Time'}
-                    w={'200px'}
-                    placeHolder={'MM/DD/YYYY'}></CustomFieldWithTime>
-                </Box>
-                <Box>
-                  <CustomField
-                    name={'endExclusiveTime'}
-                    title={'Claim Intervals (sec)'}
-                    w={'200px'}></CustomField>
-                </Box>
-                <Box>
-                  <CustomField
-                    name={'endExclusiveTime'}
-                    title={'Claim count'}
-                    w={'300px'}></CustomField>
-                </Box>
-                <Box>
-                  <CustomField
-                    name={'endExclusiveTime'}
-                    title={'Percentage of claims in the first round'}
-                    w={'300px'}
-                    placeHolder={
-                      'input percentage of claims in the first round'
-                    }></CustomField>
-                </Box>
               </Flex>
             </Flex>
-          </Flex>
+            <Flex
+              // pos="absolute"
+              w={'100%'}
+              mt={'30px'}
+              mb={'40px'}
+              // bottom={'35px'}
+              justifyContent="center">
+              <Button
+                w={'150px'}
+                h={'38px'}
+                br={4}
+                bg={'blue.500'}
+                color={'white.100'}
+                mr={'12px'}
+                onClick={() => handlePrevStep()}
+                _hover={{}}>
+                Prev
+              </Button>
+              <Button
+                {...(!isValid
+                  ? {...btnStyle.btnDisable({colorMode})}
+                  : {...btnStyle.btnAble()})}
+                type="submit"
+                w={'150px'}
+                h={'38px'}
+                br={4}
+                disabled={!isValid}
+                _hover={{}}>
+                Next
+              </Button>
+            </Flex>
+          </Form>
+        );
+      }}
+    </Formik>
+  );
+};
 
-          <Flex
-            pos="absolute"
-            bottom={'40px'}
-            alignItems="center"
-            justifyContent="center">
-            <Button
-              w={'150px'}
-              h={'38px'}
-              br={4}
-              bg={'blue.500'}
-              color={'white.100'}
-              mr={'12px'}
-              onClick={() => handlePrevStep()}
-              _hover={{}}>
-              Prev
-            </Button>
-          </Flex>
-        </Form>
-      )}
+export const StepFour: React.FC<
+  StepProp & {
+    setFinal: Dispatch<SetStateAction<boolean>>;
+  }
+> = (props) => {
+  const {data, lastStep, handleNextStep, handlePrevStep, setFinal} = props;
+  const {colorMode} = useColorMode();
+  const theme = useTheme();
+  const {btnStyle} = theme;
+
+  const handleSubmit = (values: any) => {
+    handleNextStep(values, lastStep);
+  };
+
+  const names = [
+    'tokenName',
+    'tokenAddress',
+    'tokenSymbol',
+    'tokenSymbolImage',
+    'tokenAllocationAmount',
+    'tokenFundRaisingTargetAmount',
+    'fundingTokenType',
+    'tokenFundingRecipient',
+    'projectTokenRatio',
+    'projectFundingTokenRatio',
+  ];
+
+  const obj = {};
+
+  names.map((name: string) => {
+    //@ts-ignore
+    const nameType = typeof data[name];
+    // const isRequired =
+    //   name === 'name' || name === 'description' || name === 'adminAddress';
+    // if (!isRequired) {
+    //   return null;
+    // }
+    if (nameType === 'string') {
+      //@ts-ignore
+      return (obj[name] = Yup.string().required().label(name));
+    }
+    if (nameType === 'number') {
+      //@ts-ignore
+      return (obj[name] = Yup.number().required().label(name));
+    }
+    //@ts-ignore
+    return (obj[name] = Yup.boolean().required().label(name));
+  });
+
+  const stepOneValidationSchema = Yup.object({
+    ...obj,
+  });
+
+  const titleStyle = {
+    color: 'black.300',
+    fontSize: 15,
+  };
+
+  useEffect(() => {
+    setFinal(true);
+  }, []);
+
+  return (
+    <Formik
+      enableReinitialize={false}
+      validationSchema={stepOneValidationSchema}
+      initialValues={data}
+      validateOnMount={true}
+      onSubmit={handleSubmit}>
+      {({isValid, setFieldValue, isValidating, values}) => {
+        return (
+          <Form
+            style={{
+              display: 'flex',
+              // width: '120%',
+              // height: '800px',
+              position: 'relative',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              // borderTop: '1px solid #f4f6f8',
+            }}>
+            <Line />
+            <Flex mt={'40px'}>
+              <Flex flexDir={'column'} mr={'50px'}>
+                <Text style={fieldWrap} mb={'10px'}>
+                  Position
+                </Text>
+                <Select
+                  w={'200px'}
+                  h={'32px'}
+                  iconColor={'#dfe4ee'}
+                  fontSize={13}
+                  style={{paddingLeft: '15px', paddingTop: '3px'}}
+                  onChange={(e) => {
+                    const position = e.target.value;
+                    setFieldValue('position', position);
+                  }}>
+                  <option value="">None</option>
+                  <option value="upcoming">Upcoming</option>
+                  <option value="active">Active</option>
+                </Select>
+              </Flex>
+              <Flex flexDir={'column'} mr={'50px'}>
+                <Text style={fieldWrap} mb={'10px'}>
+                  Production
+                </Text>
+                <Select
+                  w={'200px'}
+                  h={'32px'}
+                  iconColor={'#dfe4ee'}
+                  fontSize={13}
+                  style={{paddingLeft: '15px', paddingTop: '3px'}}
+                  onChange={(e) => {
+                    const production = e.target.value;
+                    setFieldValue('production', production);
+                  }}>
+                  <option value="">None</option>
+                  <option value="dev">Dev</option>
+                  <option value="production">Production</option>
+                </Select>
+              </Flex>
+              <Flex flexDir={'column'} mr={'50px'}>
+                <Text style={fieldWrap} mb={'10px'}>
+                  Top Slide Exposure
+                </Text>
+                <Checkbox
+                  w={'18px'}
+                  h={'18px'}
+                  pt={'15px'}
+                  borderRadius={'4px'}
+                  onChange={(e) => {
+                    setFieldValue('topSlideExposure', e.target.checked);
+                  }}></Checkbox>
+              </Flex>
+            </Flex>
+
+            <Flex
+              // pos="absolute"
+              w={'100%'}
+              mt={'30px'}
+              mb={'40px'}
+              // bottom={'35px'}
+              justifyContent="center">
+              <Button
+                w={'150px'}
+                h={'38px'}
+                br={4}
+                bg={'blue.500'}
+                color={'white.100'}
+                mr={'12px'}
+                onClick={() => handlePrevStep()}
+                _hover={{}}>
+                Prev
+              </Button>
+            </Flex>
+          </Form>
+        );
+      }}
     </Formik>
   );
 };

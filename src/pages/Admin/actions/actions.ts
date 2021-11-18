@@ -154,10 +154,7 @@ export const editPool = async (args: PoolData) => {
   }
 };
 
-export const deletePool = async (args: {
-  chainId: number;
-  poolAddress: string;
-}) => {
+export const deletePool = async (args: {poolAddress: string}) => {
   try {
     for (const [key, value] of Object.entries(args)) {
       if (value === '' || value === undefined || value === null) {

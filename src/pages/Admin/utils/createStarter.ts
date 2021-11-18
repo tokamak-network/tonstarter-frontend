@@ -62,7 +62,7 @@ export async function putEditPool(args: PoolData) {
   }
 }
 
-export async function delPool(args: {chainId: number; poolAddress: string}) {
+export async function delPool(args: {poolAddress: string}) {
   console.log('--args--');
   console.log(args);
   try {

@@ -25,20 +25,21 @@ export async function getTotalExpectSaleAmount(args: I_CallContract) {
       PUBLICSALE_CONTRACT.claimFirst(),
     ]);
     const result = {
-      snapshot: res[0].toString(),
-      startAddWhiteTime: res[1].toString(),
-      endAddWhiteTime: res[2].toString(),
-      startExclusiveTime: res[3].toString(),
-      endExclusiveTime: res[4].toString(),
-      startDepositTime: res[5].toString(),
-      endDepositTime: res[6].toString(),
-      startClaimTime: res[7].toString(),
-      claimInterval: res[8].toString(),
-      claimPeriod: res[9].toString(),
-      claimFirst: res[10].toString(),
+      snapshot: Number(res[0].toString().replaceAll(',', '')),
+      startAddWhiteTime: Number(res[1].toString().replaceAll(',', '')),
+      endAddWhiteTime: Number(res[2].toString().replaceAll(',', '')),
+      startExclusiveTime: Number(res[3].toString().replaceAll(',', '')),
+      endExclusiveTime: Number(res[4].toString().replaceAll(',', '')),
+      startDepositTime: Number(res[5].toString().replaceAll(',', '')),
+      endDepositTime: Number(res[6].toString().replaceAll(',', '')),
+      startClaimTime: Number(res[7].toString().replaceAll(',', '')),
+      claimInterval: Number(res[8].toString().replaceAll(',', '')),
+      claimPeriod: Number(res[9].toString().replaceAll(',', '')),
+      claimFirst: Number(res[10].toString().replaceAll(',', '')),
     };
     return result;
   } catch (e) {
+    console.log(e);
     if (e) {
       alert('Invalid Contract Address');
     }
