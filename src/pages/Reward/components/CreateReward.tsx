@@ -411,7 +411,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             onClick={() => {
               const now = moment().unix();             
               if (now > startTime) {
-                return alert(`Please use select a start time smaller than now`);
+                return alert(`Please use select a start time greater than now`);
               }
               else if (balance < Number(ethers.utils.formatEther(checkAllowed.toLocaleString('fullwide', {
                 useGrouping: false,

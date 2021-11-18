@@ -214,7 +214,7 @@ useEffect(()=> {
       setCanApprove(true);
       setButtonState('Approve');
     }
-     if (approved && now > reward.startTime && now < reward.endTime ) {
+     if (approved && now > reward.startTime && now < reward.endTime && !staked) {
       setButtonState('Stake');
     }
     else if (staked && now < reward.endTime) {
