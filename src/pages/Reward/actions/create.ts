@@ -50,6 +50,8 @@ const generateSig = async (account: string, key: any) => {
   //@ts-ignore
   const web3 = new Web3(window.ethereum);
   if (randomvalue != null) {
+    console.log('key.rewardToken', key.rewardToken);
+    
     const randomBn = new BigNumber(randomvalue).toFixed(0);
     const soliditySha3 = await web3.utils.soliditySha3(
       { type: 'string', value: account },
@@ -79,7 +81,8 @@ export const create = async (args: Create) => {
     STAKERABI.abi,
     library,
   );  
-  const amountFotmatted = ethers.BigNumber.from(amount.toString())
+    
+  const amountFotmatted = ethers.utils.parseEther(amount.toString());
   const signer = getSigner(library, userAddress);
 
   const key = {

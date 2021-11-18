@@ -188,7 +188,13 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
         try {
           const contract = new Contract(rewardAddress, ERC20.abi, library);
           const balanceOf = await contract.connect(signer).balanceOf(account);
-          setBalance(Number(balanceOf))
+          // console.log('balanceOf',ethers.utils.formatEther(checkAllowed.toLocaleString('fullwide', {
+          //   useGrouping: false,
+          // }),));
+          setBalance(Number(ethers.utils.formatEther(balanceOf.toLocaleString('fullwide', {
+            useGrouping: false,
+          }),)) )
+         
         } catch (err) {}
 
       }
@@ -370,7 +376,9 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             disabled={
               amount === 0 ||
               amount <=
-                Number(ethers.utils.formatEther(checkAllowed.toString()))
+              Number(ethers.utils.formatEther(checkAllowed.toLocaleString('fullwide', {
+                useGrouping: false,
+              }),).toString())
             }
             _hover={{backgroundColor: 'blue.100'}}
             onClick={() =>
@@ -392,21 +400,27 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             color="white.100"
             fontSize="14px"
             disabled={
-              Number(ethers.utils.formatEther(checkAllowed.toString())) === 0 ||
-              amount > Number(ethers.utils.formatEther(checkAllowed.toString()))
+              Number(ethers.utils.formatEther(checkAllowed.toLocaleString('fullwide', {
+                useGrouping: false,
+              }),).toString()) === 0 ||
+              amount >  Number(ethers.utils.formatEther(checkAllowed.toLocaleString('fullwide', {
+                useGrouping: false,
+              }),).toString())
             }
             _hover={{backgroundColor: 'blue.100'}}
             onClick={() => {
-              const now = moment().unix();
+              const now = moment().unix();             
               if (now > startTime) {
                 return alert(`Please use select a start time smaller than now`);
               }
-              else if (balance < checkAllowed) {
+              else if (balance < Number(ethers.utils.formatEther(checkAllowed.toLocaleString('fullwide', {
+                useGrouping: false,
+              }),))) {
                 return alert(`You don't have enough ${rewardSymbol} balance`);
               }
               create({
                 library: library,
-                amount: checkAllowed,
+                amount: amount,
                 userAddress: account,
                 poolAddress: selectedAddress,
                 startTime: startTime,

@@ -127,17 +127,6 @@ export const Reward = () => {
   const [orderedData, setOrderedData] = useState<Reward[]>([]);
   const [order, setOrder] = useState<boolean | 'desc' | 'asc'>('desc');
 
-  // const {isLoading, isError, error, isUninitialized, data} = usePoolByUserQuery(
-  //   {address: BasePool_Address?.toLowerCase()},
-  //   {pollingInterval: ms`2m`},
-  // );
-  // const dataddd = usePoolByUserQuery(
-  //   {address: DOCPool_Address},
-  //   {
-  //     pollingInterval: ms`2m`,
-  //   },
-  // );
-  
   const arr: any = [];
   arr.push(BasePool_Address.toLowerCase())
   arr.push(DOCPool_Address)
@@ -284,8 +273,6 @@ export const Reward = () => {
             }),
           );
           const allPos = withStakedPosition.concat(stringResult);
-          console.log('allPos', allPos);
-          
           setPositions(allPos);
         }
         else {
@@ -321,6 +308,7 @@ export const Reward = () => {
   
     if (poolAddress === '') {
       setOrderedData(datas);
+      setSelectdPosition('')
     } else {
       const selectedRewards = datas.filter(
         (data) => data.poolAddress === poolAddress,

@@ -130,7 +130,10 @@ export const CustomCalendar = (prop: CalendarProps) => {
       color: 384919e;
     }
     .react-calendar__month-view__days__day--neighboringMonth { 
-      color: #c7d1d8;
+      color: #86929d;
+    }
+    .react-calendar__tile:disabled {
+      color: #c7d1d8
     }
     // .react-calendar__tile{
     //   color: #3d495d;
@@ -147,10 +150,13 @@ export const CustomCalendar = (prop: CalendarProps) => {
       color: #777777;
     }
     .react-calendar__month-view__days__day--neighboringMonth {
-      color: #3c3c3c;
+      color: #86929d;
     }
     .react-calendar__tile{
       color: 3dee4ef;
+    }
+    .react-calendar__tile:disabled {
+      color: #424242
     }`;
 
   return (
