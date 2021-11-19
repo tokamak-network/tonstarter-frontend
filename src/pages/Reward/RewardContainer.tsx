@@ -57,6 +57,7 @@ type Reward = {
   numStakers: Number;
   status: String;
 };
+const multipleStakeList: any = [];
 export const RewardContainer: FC<RewardContainerProps> = ({
   rewards,
   selectedPool,
@@ -90,8 +91,6 @@ export const RewardContainer: FC<RewardContainerProps> = ({
   const gotToPreviousPage = () => {
     setPageIndex(pageIndex - 1);
   };
-
-  const multipleStakeList: any = [];
 
   const stakeMultipleKeys = (key: any) => {
     if (
