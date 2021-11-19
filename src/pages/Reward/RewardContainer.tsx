@@ -68,7 +68,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(6);
   const {account, library} = useActiveWeb3React();
-  const [stakeList, setStakeList] = useState([]);
+
   const {colorMode} = useColorMode();
   const theme = useTheme();
   useEffect(() => {
@@ -78,6 +78,10 @@ export const RewardContainer: FC<RewardContainerProps> = ({
     setPageOptions(pagenumber);
   }, [rewards, pageLimit, selectedPool]);
 
+  useEffect(()=> {
+    setPageIndex(1)
+    
+  },[selectedPool])
   const getPaginatedData = () => {
     const startIndex = pageIndex * pageLimit - pageLimit;
     const endIndex = startIndex + pageLimit;
