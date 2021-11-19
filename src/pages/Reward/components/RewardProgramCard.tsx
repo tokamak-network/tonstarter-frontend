@@ -27,7 +27,7 @@ import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import {utils, ethers} from 'ethers';
 import {soliditySha3} from 'web3-utils';
 import * as TOSABI from 'services/abis/TOS.json';
-import {getTokenSymbol} from '../utils/getTokenSymbol' 
+import {getTokenSymbol} from '../utils/getTokenSymbol';
 
 type incentiveKey = {
   rewardToken: string;
@@ -68,9 +68,10 @@ const themeDesign = {
 type RewardProgramCardProps = {
   reward: Reward;
   selectedToken: number;
-  selectedPool: string,
-  sendKey: (key: any)=> void
+  selectedPool: string;
+  sendKey: (key: any) => void;
   pageIndex: number;
+  stakeList: any[];
 };
 
 const {TON_ADDRESS, UniswapStaking_Address, UniswapStaker_Address} = DEPLOYED;
@@ -80,7 +81,8 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   selectedToken,
   selectedPool,
   sendKey,
-  pageIndex
+  pageIndex,
+  stakeList,
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -94,9 +96,9 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   const [myReward, setMyReward] = useState<number>(0);
   const [staked, setStaked] = useState<boolean>(false);
   const [buttonState, setButtonState] = useState<string>('Approve');
-  const [tokenID, setTokenID] = useState<number>(7774);
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
-const [rewardSymbol, setRewardSymbol] = useState<string>('')
+  const [rewardSymbol, setRewardSymbol] = useState<string>('');
+  const [isSelected, setIsSelected] = useState<boolean>(false)
   const key = {
     rewardToken: reward.rewardToken,
     pool: reward.poolAddress,
@@ -110,17 +112,22 @@ const [rewardSymbol, setRewardSymbol] = useState<string>('')
     STAKERABI.abi,
     library,
   );
+  useEffect(()=> {
+    const selected = stakeList.filter(
+      (listkey: any) =>
+      JSON.stringify(listkey) === JSON.stringify(key)
+    ).length > 0
+    setIsSelected(selected)
+  },[stakeList,pageIndex])
 
-  
-useEffect(()=> {
-  const getTokenFromContract = async (address: string) => {
-    const symbolContract = await getTokenSymbol(address, library, account, )
-     setRewardSymbol(symbolContract);
-   } 
+  useEffect(() => {
+    const getTokenFromContract = async (address: string) => {
+      const symbolContract = await getTokenSymbol(address, library, account);
+      setRewardSymbol(symbolContract);
+    };
 
-  getTokenFromContract(reward.rewardToken)
-},[account,library])
-  
+    getTokenFromContract(reward.rewardToken);
+  }, [account, library]);
 
   useEffect(() => {
     const now = moment().unix();
@@ -161,7 +168,7 @@ useEffect(()=> {
         account,
         UniswapStaking_Address,
       );
-     
+
       setApproved(isApprovedForAll);
     }
     async function checkStaked() {
@@ -205,8 +212,16 @@ useEffect(()=> {
     checkApproved();
     checkStaked();
     getMyReward();
-
-  }, [account, library, transactionType, blockNumber, selectedToken, approved, pageIndex, selectedPool]);
+  }, [
+    account,
+    library,
+    transactionType,
+    blockNumber,
+    selectedToken,
+    approved,
+    pageIndex,
+    selectedPool,
+  ]);
 
   useEffect(() => {
     const now = moment().unix();
@@ -214,22 +229,27 @@ useEffect(()=> {
       setCanApprove(true);
       setButtonState('Approve');
     }
-     if (approved && now > reward.startTime && now < reward.endTime && !staked) {
+    if (approved && now > reward.startTime && now < reward.endTime && !staked) {
       setButtonState('Stake');
-    }
-    else if (staked && now < reward.endTime) {
+    } else if (staked && now < reward.endTime) {
       setButtonState('In Progress');
-    }
-    else if (staked && now > reward.endTime) {
+    } else if (staked && now > reward.endTime) {
       setButtonState('Unstake');
-    }
-     else if (now > reward.endTime) {
+    } else if (now > reward.endTime) {
       setButtonState('Closed');
-    }
-    else if (approved && now < reward.startTime){
+    } else if (approved && now < reward.startTime) {
       setButtonState('Waiting');
     }
-  }, [approved, staked, account, pageIndex, library, transactionType, blockNumber, selectedToken]);
+  }, [
+    approved,
+    staked,
+    account,
+    pageIndex,
+    library,
+    transactionType,
+    blockNumber,
+    selectedToken,
+  ]);
 
   const buttonFunction = (buttonCase: string) => {
     if (buttonCase === 'Approve') {
@@ -248,9 +268,8 @@ useEffect(()=> {
         rewardToken: reward.rewardToken,
         poolAddress: reward.poolAddress,
         refundee: reward.incentiveKey.refundee,
-        staked: staked
+        staked: staked,
       });
-      setTokenID(selectedToken);
     }
     if (buttonCase === 'Unstake') {
       unstake({
@@ -436,9 +455,17 @@ useEffect(()=> {
         </Box>
 
         <Flex flexDirection="row" justifyContent={'center'}>
-          {buttonState === 'Stake' && moment().unix() > reward.startTime && !staked && selectedToken !== 0 ? (
+          {buttonState === 'Stake' &&
+          moment().unix() > reward.startTime &&
+          !staked &&
+          selectedToken !== 0 ? (
             <Box pb={'0px'}>
-              <Checkbox mt={'5px'} onChange={() => sendKey(key)}></Checkbox>
+              <Checkbox
+                mt={'5px'}
+                isChecked={isSelected}
+                onChange={(e) =>{
+                  setIsSelected(e.target.checked)
+                   sendKey(key)}}></Checkbox>
             </Box>
           ) : null}
           <Button
@@ -449,12 +476,26 @@ useEffect(()=> {
             ml={'10px'}
             fontSize="16px"
             _hover={{backgroundColor: 'none'}}
-            _disabled={colorMode==='light' ? {backgroundColor: 'gray.25', cursor: 'default', color: '#86929d'}: {backgroundColor: '#353535', cursor: 'default', color: '#838383'}}
+            _disabled={
+              colorMode === 'light'
+                ? {
+                    backgroundColor: 'gray.25',
+                    cursor: 'default',
+                    color: '#86929d',
+                  }
+                : {
+                    backgroundColor: '#353535',
+                    cursor: 'default',
+                    color: '#838383',
+                  }
+            }
             onClick={() => buttonFunction(buttonState)}
             disabled={
               moment().unix() < reward.startTime ||
               buttonState === 'Closed' ||
-              buttonState === 'In Progress' ||  selectedToken === 0 || (staked && buttonState === 'Stake')
+              buttonState === 'In Progress' ||
+              selectedToken === 0 ||
+              (staked && buttonState === 'Stake')
             }>
             {buttonState}
           </Button>

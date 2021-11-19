@@ -262,8 +262,6 @@ export const Reward = () => {
             }),
           );
           const allPos = withStakedPosition.concat(stringResult);
-          console.log('allPos', allPos);
-
           setPositions(allPos);
         } else {
           setPositions([]);

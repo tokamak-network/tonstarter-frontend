@@ -96,8 +96,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({
     if (
       multipleStakeList.filter(
         (listkey: any) =>
-          listkey.startTime === key.startTime &&
-          listkey.endTime === key.endTime,
+        JSON.stringify(listkey) === JSON.stringify(key)
       ).length > 0
     ) {
       multipleStakeList.pop(key);
@@ -142,6 +141,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({
                 selectedPool={selectedPool?selectedPool.id:''}
                 sendKey={stakeMultipleKeys}
                 pageIndex={pageIndex}
+                stakeList={multipleStakeList}
               />
             );
           })}
