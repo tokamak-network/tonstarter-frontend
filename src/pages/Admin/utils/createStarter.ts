@@ -67,7 +67,7 @@ export async function delPool(args: {poolAddress: string}) {
   console.log(args);
   try {
     const res = await instance.delete(`/pool?chainId=${DEFAULT_NETWORK}`, {
-      data: {args},
+      data: {...args},
     });
     if (res.status === 200) {
       alert('success');
