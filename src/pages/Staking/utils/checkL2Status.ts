@@ -73,11 +73,19 @@ export async function checkL2Status(
     checkL2Unstake(CONTRACT_ADDRESS, library),
     checkL2Withdraw(CONTRACT_ADDRESS, library),
     checkL2Swap(CONTRACT_ADDRESS, library),
-  ]).then((res) => {
-    return {
-      canUnstake: res[0] || false,
-      canWithdraw: res[1] || false,
-      canSwap: res[2] || false,
-    };
-  });
+  ])
+    .then((res) => {
+      return {
+        canUnstake: res[0] || false,
+        canWithdraw: res[1] || false,
+        canSwap: res[2] || false,
+      };
+    })
+    .catch((e) => {
+      return {
+        canUnstake: false,
+        canWithdraw: false,
+        canSwap: false,
+      };
+    });
 }

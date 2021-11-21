@@ -6,6 +6,7 @@ import {fetchStakeURL} from 'constants/index';
 import {BASE_PROVIDER} from 'constants/index';
 import {Stake} from './types';
 import {checkL2Status} from './utils';
+
 interface StakeState {
   data: Stake[];
   loading: 'idle' | 'pending';
@@ -60,6 +61,8 @@ export const fetchStakes = createAsyncThunk(
             ? '10.' + stakePeriod
             : stakePeriod;
 
+        const L2status = await checkL2Status(stake.stakeContract, library);
+
         const stakeInfo: Partial<Stake> = {
           contractAddress: stake.stakeContract,
           name: stake.name,
@@ -86,7 +89,7 @@ export const fetchStakes = createAsyncThunk(
           vault: stake.vault,
           saleClosed,
           ept: getEarningPerTon(vaultsData, stake.vault, stake.endBlock),
-          L2status: checkL2Status(stake.stakeContract, library),
+          L2status,
         };
         projects.push(stakeInfo);
       }),

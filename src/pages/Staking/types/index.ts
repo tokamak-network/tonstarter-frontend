@@ -42,5 +42,5 @@ export type Stake = {
   miningEndTime: string | undefined;
   vault: string;
   ept: any;
-  L2status: Promise<L2Status>;
+  L2status: L2Status;
 };

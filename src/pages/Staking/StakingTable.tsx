@@ -10,7 +10,7 @@ import {
   chakra,
   Text,
   Flex,
-  // IconButton,
+  IconButton,
   Tooltip,
   Select,
   Box,
@@ -22,7 +22,7 @@ import {
   Button,
 } from '@chakra-ui/react';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
-// import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
+import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import './staking.css';
 import {checkTokenType} from 'utils/token';
 import {TriangleUpIcon, TriangleDownIcon} from '@chakra-ui/icons';
@@ -260,6 +260,9 @@ export const StakingTable: FC<StakingTableProps> = ({
     nextPage();
   };
 
+  console.log('--data--');
+  console.log(data);
+
   const onChangeSelectBox = (e: any) => {
     const filterValue = e.target.value;
     headerGroups[0].headers.map((e) => {
@@ -391,8 +394,16 @@ export const StakingTable: FC<StakingTableProps> = ({
                   alignItems="center"
                   {...row.getRowProps()}>
                   {row.cells.map((cell: any, index: number) => {
-                    const {token, status, name, period, stakeBalanceTON, ept} =
-                      cell.row.original;
+                    const {
+                      token,
+                      status,
+                      name,
+                      period,
+                      stakeBalanceTON,
+                      ept,
+                      L2status,
+                    } = cell.row.original;
+                    const {canSwap, canUnstake, canWithdraw} = L2status;
                     const type = cell.column.id;
                     const tokenType = checkTokenType(token);
                     return (
@@ -432,15 +443,21 @@ export const StakingTable: FC<StakingTableProps> = ({
                               ml="10px"
                               mr="12px"
                             />
-                            <Text>{name}</Text>
-                            <Flex>
-                              <GetL2Status
-                                sort={'canUnstake'}
-                                mr={'1px'}></GetL2Status>
-                              <GetL2Status
-                                sort={'canWithdraw'}
-                                mr={'1px'}></GetL2Status>
-                              <GetL2Status sort={'canSwap'}></GetL2Status>
+                            <Text w={'140px'}>{name}</Text>
+                            <Flex w={'62px'} ml={'35px'}>
+                              {canSwap && (
+                                <GetL2Status
+                                  sort={'canUnstake'}
+                                  mr={'1px'}></GetL2Status>
+                              )}
+                              {canUnstake && (
+                                <GetL2Status
+                                  sort={'canWithdraw'}
+                                  mr={'1px'}></GetL2Status>
+                              )}
+                              {canWithdraw && (
+                                <GetL2Status sort={'canSwap'}></GetL2Status>
+                              )}
                             </Flex>
                           </>
                         ) : (
@@ -599,98 +616,104 @@ export const StakingTable: FC<StakingTableProps> = ({
                 }></CustomTooltip>
             </Box>
           </Flex>
-          {/* <Flex>
-            <Tooltip label="Previous Page">
-              <IconButton
-                w={'24px'}
-                h={'24px'}
-                bg={colorMode === 'light' ? 'white.100' : 'none'}
-                border={
-                  colorMode === 'light'
-                    ? 'solid 1px #e6eaee'
-                    : 'solid 1px #424242'
-                }
-                color={colorMode === 'light' ? '#e6eaee' : '#424242'}
-                borderRadius={4}
-                aria-label={'Previous Page'}
-                onClick={goPrevPage}
-                isDisabled={!canPreviousPage}
-                size={'sm'}
-                mr={4}
-                _hover={{borderColor: '#2a72e5', color: '#2a72e5'}}
-                icon={<ChevronLeftIcon h={6} w={6} />}
-              />
-            </Tooltip>
-          </Flex> */}
-
-          {/* <Flex
-            alignItems="center"
-            p={0}
-            fontSize={'13px'}
-            fontFamily={theme.fonts.roboto}
-            color={colorMode === 'light' ? '#3a495f' : '#949494'}
-            pb={'3px'}>
-            Page{' '}
-            <Text fontWeight="bold" as="span" color={'blue.300'}>
-              {pageIndex + 1}
-            </Text>{' '}
-            of{' '}
-            <Text fontWeight="bold" as="span">
-              {pageOptions.length}
-            </Text>
-          </Flex> */}
-
-          {/* <Flex>
-            <Tooltip label="Next Page">
-              <Center>
+          {data.length > 10 && (
+            <Flex>
+              <Tooltip label="Previous Page">
                 <IconButton
                   w={'24px'}
                   h={'24px'}
+                  bg={colorMode === 'light' ? 'white.100' : 'none'}
                   border={
                     colorMode === 'light'
                       ? 'solid 1px #e6eaee'
                       : 'solid 1px #424242'
                   }
                   color={colorMode === 'light' ? '#e6eaee' : '#424242'}
-                  bg={colorMode === 'light' ? 'white.100' : 'none'}
                   borderRadius={4}
-                  aria-label={'Next Page'}
-                  onClick={goNextPage}
-                  isDisabled={!canNextPage}
+                  aria-label={'Previous Page'}
+                  onClick={goPrevPage}
+                  isDisabled={!canPreviousPage}
                   size={'sm'}
-                  ml={4}
-                  mr={'1.5625em'}
+                  mr={4}
                   _hover={{borderColor: '#2a72e5', color: '#2a72e5'}}
-                  icon={<ChevronRightIcon h={6} w={6} />}
+                  icon={<ChevronLeftIcon h={6} w={6} />}
                 />
-              </Center>
-            </Tooltip>
-            <Select
-              w={'117px'}
-              h={'32px'}
-              mr={1}
-              color={colorMode === 'light' ? ' #3e495c' : '#f3f4f1'}
-              bg={colorMode === 'light' ? 'white.100' : 'none'}
-              boxShadow={
-                colorMode === 'light'
-                  ? '0 1px 1px 0 rgba(96, 97, 112, 0.14)'
-                  : ''
-              }
-              border={colorMode === 'light' ? '' : 'solid 1px #424242'}
-              borderRadius={4}
-              size={'sm'}
-              value={pageSize}
+              </Tooltip>
+            </Flex>
+          )}
+
+          {data.length > 10 && (
+            <Flex
+              alignItems="center"
+              p={0}
+              fontSize={'13px'}
               fontFamily={theme.fonts.roboto}
-              onChange={(e) => {
-                setPageSize(Number(e.target.value));
-              }}>
-              {[10, 20, 30, 40, 50].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  Show {pageSize}
-                </option>
-              ))}
-            </Select>
-          </Flex> */}
+              color={colorMode === 'light' ? '#3a495f' : '#949494'}
+              pb={'3px'}>
+              Page{' '}
+              <Text fontWeight="bold" as="span" color={'blue.300'}>
+                {pageIndex + 1}
+              </Text>{' '}
+              of{' '}
+              <Text fontWeight="bold" as="span">
+                {pageOptions.length}
+              </Text>
+            </Flex>
+          )}
+
+          {data.length > 10 && (
+            <Flex>
+              <Tooltip label="Next Page">
+                <Center>
+                  <IconButton
+                    w={'24px'}
+                    h={'24px'}
+                    border={
+                      colorMode === 'light'
+                        ? 'solid 1px #e6eaee'
+                        : 'solid 1px #424242'
+                    }
+                    color={colorMode === 'light' ? '#e6eaee' : '#424242'}
+                    bg={colorMode === 'light' ? 'white.100' : 'none'}
+                    borderRadius={4}
+                    aria-label={'Next Page'}
+                    onClick={goNextPage}
+                    isDisabled={!canNextPage}
+                    size={'sm'}
+                    ml={4}
+                    mr={'1.5625em'}
+                    _hover={{borderColor: '#2a72e5', color: '#2a72e5'}}
+                    icon={<ChevronRightIcon h={6} w={6} />}
+                  />
+                </Center>
+              </Tooltip>
+              <Select
+                w={'117px'}
+                h={'32px'}
+                mr={1}
+                color={colorMode === 'light' ? ' #3e495c' : '#f3f4f1'}
+                bg={colorMode === 'light' ? 'white.100' : 'none'}
+                boxShadow={
+                  colorMode === 'light'
+                    ? '0 1px 1px 0 rgba(96, 97, 112, 0.14)'
+                    : ''
+                }
+                border={colorMode === 'light' ? '' : 'solid 1px #424242'}
+                borderRadius={4}
+                size={'sm'}
+                value={pageSize}
+                fontFamily={theme.fonts.roboto}
+                onChange={(e) => {
+                  setPageSize(Number(e.target.value));
+                }}>
+                {[10, 20, 30, 40, 50].map((pageSize) => (
+                  <option key={pageSize} value={pageSize}>
+                    Show {pageSize}
+                  </option>
+                ))}
+              </Select>
+            </Flex>
+          )}
         </Flex>
       </Box>
     </Flex>
