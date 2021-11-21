@@ -8,14 +8,12 @@ const {TokamakLayer2_ADDRESS} = DEPLOYED;
 
 export const fetchWithdrawPayload = async (
   library: any,
-  account: string,
   contractAddress: string,
 ) => {
   if (contractAddress && library) {
     try {
       const {requestNum, requestIndex} = await getWithdrawableInfo(
         library,
-        account,
         contractAddress,
       );
       const depositManager = getTokamakContract('DepositManager', library);
@@ -56,11 +54,7 @@ export const fetchWithdrawPayload = async (
   }
 };
 
-const getWithdrawableInfo = async (
-  library: any,
-  account: string,
-  contractAddress: string,
-) => {
+const getWithdrawableInfo = async (library: any, contractAddress: string) => {
   const depositManager = getTokamakContract('DepositManager', library);
   return Promise.all([
     depositManager.numPendingRequests(TokamakLayer2_ADDRESS, contractAddress),
