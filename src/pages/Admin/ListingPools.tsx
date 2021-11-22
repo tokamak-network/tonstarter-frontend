@@ -8,6 +8,7 @@ import {FetchReward, ListingPoolsTableData} from './types';
 import {CustomInput} from 'components/Basic';
 import {CustomButton} from 'components/Basic/CustomButton';
 import AdminActions from './actions';
+import {TokenImage} from './components/TokenImage';
 
 export const ListingPools = () => {
   const {account, library, chainId} = useActiveWeb3React();
@@ -102,9 +103,9 @@ export const ListingPools = () => {
         <Box
           {...bgStyle.containerStyle({colorMode})}
           w={'1100px'}
-          h={'230px'}
+          h={'250px'}
           d="flex"
-          py={'25px'}
+          // py={'25px'}
           pl={'30px'}
           pr={'24px'}
           color={'black.400'}
@@ -187,9 +188,11 @@ export const ListingPools = () => {
           <Box
             w={'394px'}
             d="flex"
-            justifyContent="center"
+            justifyContent="flex-start"
             flexDir="column"
-            mr={'20px'}>
+            mr={'20px'}
+            mt={'30px'}
+            pos="relative">
             <Flex alignItems="center" mb={'20px'}>
               <Text w={'95px'}>Pool Address</Text>
               <CustomInput
@@ -230,7 +233,7 @@ export const ListingPools = () => {
                 }}
               />
             </Flex>
-            <Flex alignItems="center" mb={'51px'}>
+            <Flex alignItems="center" mb={'13px'}>
               <Text w={'95px'}>Token1 Image </Text>
               <CustomInput
                 value={token1Image}
@@ -245,6 +248,16 @@ export const ListingPools = () => {
                   py: '7px',
                 }}
               />
+            </Flex>
+            <Flex>
+              <Box d="flex" alignItems="center">
+                <Text>Token0 Image preview</Text>
+                <TokenImage imageLink={token0Image} />
+              </Box>
+              <Box d="flex" alignItems="center">
+                <Text>Token1 Image preview</Text>
+                <TokenImage imageLink={token1Image} />
+              </Box>
             </Flex>
           </Box>
           <CustomButton

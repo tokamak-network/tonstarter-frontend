@@ -29,6 +29,11 @@ export const getClaimalbeList = async (
       library,
     );
 
+    console.log('--locktos dividend--');
+    const availableClaimList =
+      await LOCKTOS_DIVIDEND_CONTRACT.getAvailableClaims(account);
+    console.log(availableClaimList);
+
     //project tokens
     const res: ClaimList[] = await Promise.all(
       starterData.map(async (data: AdminObject) => {

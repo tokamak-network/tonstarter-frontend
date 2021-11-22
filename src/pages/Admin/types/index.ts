@@ -1,3 +1,5 @@
+type FundingTokenTypes = 'TON';
+
 export type StepOne = {
   name: string;
   description: string;
@@ -17,7 +19,7 @@ export type StepTwo = {
   tokenSymbolImage: any;
   tokenAllocationAmount: string;
   tokenFundRaisingTargetAmount: string;
-  fundingTokenType: 'TON';
+  fundingTokenType: FundingTokenTypes;
   tokenFundingRecipient: string;
   projectTokenRatio: number;
   projectFundingTokenRatio: number;
