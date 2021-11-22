@@ -114,8 +114,8 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
   const [errorStart, setErrorStart] = useState<boolean>(false);
   const [errorEnd, setErrorEnd] = useState<boolean>(false);
   useEffect(() => {
-    setSelectedPool(pools[0]);
-    setSelectedAddress(pools[0].id);
+    // setSelectedPool(pools[0]);
+    // setSelectedAddress(pools[0].id);
     if (tokeninfo.length !== 0) {
       setRewardSymbol(tokeninfo[1]);
       setRewardAddress(tokeninfo[0]);
@@ -126,6 +126,8 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
     const pool = pools[0];
     const token1 = pool.token0.symbol;
     const token2 = pool.token1.symbol;
+    setSelectedPool(pools[0]);
+    setSelectedAddress(pools[0].id);
     const name = getPoolName(token1, token2);
     setName(name);
   }, []);
@@ -160,11 +162,10 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
     setStartTime(startDates.unix());
   }, [startTimeArray, endTimeArray, endTime, startTime]);
 
-
   useEffect(() => {
     const maxStart = moment().unix() + 2592000;
     const maxEnd = startTime + 63072000;
-    
+
     if (startTime > maxStart) {
       setErrorStart(true);
     } else if (startTime <= maxStart) {
@@ -237,6 +238,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
       getBalance();
     }
   }, [rewardAddress, checkAllowed, library, account, amount, tokeninfo]);
+  
   return (
     <Box display={'flex'} justifyContent={'center'}>
       <Box w={'100%'} px={'15px'}>
@@ -402,6 +404,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             color={themeDesign.font[colorMode]}
           />
         </Flex>
+        {/* <Text>{selectedPool}</Text> */}
         <Flex
           mt={'27px'}
           justifyContent={'center'}
@@ -473,14 +476,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
               if (now > startTime) {
                 return alert(`Please use select a start time greater than now`);
               } else if (
-                balance <
-                Number(
-                  ethers.utils.formatEther(
-                    checkAllowed.toLocaleString('fullwide', {
-                      useGrouping: false,
-                    }),
-                  ),
-                )
+                balance < amount
               ) {
                 return alert(`You don't have enough ${rewardSymbol} balance`);
               }
