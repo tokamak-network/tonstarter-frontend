@@ -6,6 +6,7 @@ import {shortenAddress} from 'utils';
 import {useEffect} from 'react';
 import {useState} from 'react';
 import {useActiveWeb3React} from 'hooks/useWeb3';
+import {Claim} from './Claim';
 
 const themeDesign = {
   fontColorTitle: {
@@ -59,7 +60,7 @@ export const STOS = () => {
   return (
     <Flex
       w={420}
-      h={'430px'}
+      h={'486px'}
       p={0}
       pt="19.5px"
       px={'20px'}
@@ -107,13 +108,16 @@ export const STOS = () => {
           {address}
         </Text>
       </Flex>
-      <Box mb={'20px'}>
+      <Box mb={'29px'} h={'38px'}>
         <AvailableBalance></AvailableBalance>
       </Box>
-      <Box mb={'20px'}>
+      <Box mb={'29px'} h={'38px'}>
         <MyStaked></MyStaked>
       </Box>
-      <MySTOS></MySTOS>
+      <Box mb={'29px'} h={'38px'}>
+        <MySTOS></MySTOS>
+      </Box>
+      <Claim></Claim>
     </Flex>
   );
 };

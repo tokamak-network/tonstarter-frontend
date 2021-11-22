@@ -25,6 +25,8 @@ export const BASE_PROVIDER =
 export const fetchStakeURL = `${API_SERVER}/stakecontracts?chainId=${DEFAULT_NETWORK}`;
 export const fetchValutURL = `${API_SERVER}/vaults?chainId=${DEFAULT_NETWORK}`;
 export const fetchStarterURL = `${API_SERVER}/starter?chainId=${DEFAULT_NETWORK}`;
+export const fetchPoolsURL = `${API_SERVER}/pool?chainId=${DEFAULT_NETWORK}`;
+
 export const permitTOSAddress =
   REACT_APP_MODE === 'DEV' ? '0x865264b30eb29A2978b9503B8AfE2A2DDa33eD7E' : '';
 
@@ -63,7 +65,10 @@ const MAINNET_DEPLOYED = {
   NPM_Address: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
   BasePool_Address: '0x1c0ce9aaa0c12f53df3b4d8d77b82d6ad343b4e4',
   StakeTonControl_ADDRESS: '0xacdded49ac67ba9c87b1bbc5cb248b1bd7dc0f19',
+  LockTOSDividend_ADDRESS: '0x0f1174a204082c5e921015d6c785fe2b4aef8b17',
   PublicSale_ADDRESS: '',
+  unstakeLayer2All: '0xf9381fB7167FC3e81849aE82960144274D1553C2',
+  PowerTONSwapper_ADDRESS: '0xDE200f091a5CD840cD52Ece7406865607a25dF69',
 };
 
 const RINKEBY_DEPLOYED = {
@@ -78,10 +83,13 @@ const RINKEBY_DEPLOYED = {
   Airdrop_ADDRESS: '0xD958cD2d03aaEe169953780234848445504571E8',
   UniswapStaking_Address: '0x99b09c6CfF45C778a4F5fBF7a4EAD6c3DEBfdcBb',
   NPM_Address: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
-  LockTOS_ADDRESS: '0xecd5a04e6ae20da1b77db90fb33fb7a7a27784af',
+  LockTOS_ADDRESS: '0xc1AD56f88eF42e394a5f0739a8fF4984fE01689d',
   BasePool_Address: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
   StakeTonControl_ADDRESS: '0xF049030A9D6faCbD6C76E08794CC751b1Dbaa072',
+  LockTOSDividend_ADDRESS: '0x8d03488003d14b39d315e945080eDe04Da764a07',
   PublicSale_ADDRESS: '0x230f12eb4A37055dC0E11B3f7405c9EE94E71ee9',
+  unstakeLayer2All: '0xeeEa9CA7a496651577ff1FD353570F8B70580955',
+  PowerTONSwapper_ADDRESS: '',
 };
 
 export const DEPLOYED: DEPLOYED_TYPE =

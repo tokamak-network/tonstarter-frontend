@@ -13,5 +13,8 @@ export type DEPLOYED_TYPE = {
   NPM_Address: string;
   BasePool_Address: string;
   StakeTonControl_ADDRESS: string;
+  LockTOSDividend_ADDRESS: string;
   PublicSale_ADDRESS: string;
+  unstakeLayer2All: string;
+  PowerTONSwapper_ADDRESS: string;
 };

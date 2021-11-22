@@ -37,6 +37,12 @@ import {
   checkCanWithdrawLayr2All,
   stakeTonControl,
 } from './actions/stakeTONControl';
+import {
+  isUnstakeL2All,
+  requestUnstakingLayer2All,
+  isAblePowerTONSwap,
+  powerTONSwapper,
+} from './actions';
 import {useBlockNumber} from 'hooks/useBlock';
 import {CustomTooltip} from 'components/Tooltip';
 import {useActiveWeb3React} from 'hooks/useWeb3';
@@ -106,6 +112,47 @@ const getStatus = (
   );
 };
 
+const GetL2Status = ({
+  sort,
+  mr,
+  onlyImage,
+}: {
+  sort: 'canUnstake' | 'canWithdraw' | 'canSwap';
+  mr?: string;
+  onlyImage?: boolean;
+}) => {
+  const {colorMode} = useColorMode();
+
+  return (
+    <Flex alignItems="center" mr={mr}>
+      <Flex
+        w={'16px'}
+        h={'16px'}
+        bg={
+          sort === 'canUnstake'
+            ? 'blue.500'
+            : sort === 'canWithdraw'
+            ? 'green.100'
+            : 'orange.100'
+        }
+        mr={'7px'}
+        alignItems="center"
+        justifyContent="center"
+        color="white.100"
+        fontSize={12}>
+        {sort === 'canUnstake' && 'U'}
+        {sort === 'canWithdraw' && 'W'}
+        {sort === 'canSwap' && 'S'}
+      </Flex>
+      <Text fontSize={11} color={colorMode ? 'black.300' : 'white.100'}>
+        {sort === 'canUnstake' && onlyImage === false && 'Unstake from layer2'}
+        {sort === 'canWithdraw' && onlyImage === false && 'Withdraw'}
+        {sort === 'canSwap' && onlyImage === false && 'Swap'}
+      </Text>
+    </Flex>
+  );
+};
+
 export const StakingTable: FC<StakingTableProps> = ({
   columns,
   data,
@@ -164,13 +211,20 @@ export const StakingTable: FC<StakingTableProps> = ({
 
   const [isWithdrawAndSwapAll, setIsWithdrawAndSwapAll] =
     useState<boolean>(false);
+  const [isUnstakeAll, setIsUnstakeAll] = useState<boolean>(false);
+  const [isPowerTONSwap, setIsPowerTONSwap] = useState<boolean>(false);
 
   //withdraw&swapall btn able condition
   useEffect(() => {
     async function callIsWithdrawAndSwapAll() {
       if (library) {
-        const res = await checkCanWithdrawLayr2All(library);
-        setIsWithdrawAndSwapAll(res || false);
+        const isWithdraw = await checkCanWithdrawLayr2All(library);
+        const isUnstakeAll = await isUnstakeL2All(library);
+        const isPowerTONSwap = await isAblePowerTONSwap(library);
+
+        setIsWithdrawAndSwapAll(isWithdraw || false);
+        setIsUnstakeAll(isUnstakeAll || false);
+        setIsPowerTONSwap(isPowerTONSwap || false);
       }
     }
     callIsWithdrawAndSwapAll();
@@ -273,6 +327,15 @@ export const StakingTable: FC<StakingTableProps> = ({
           {getStatus('sale', colorMode)}
           {getStatus('start', colorMode)}
           {getStatus('end', colorMode)}
+          <GetL2Status
+            sort={'canUnstake'}
+            mr={'20px'}
+            onlyImage={false}></GetL2Status>
+          <GetL2Status
+            sort={'canWithdraw'}
+            mr={'20px'}
+            onlyImage={false}></GetL2Status>
+          <GetL2Status sort={'canSwap'} onlyImage={false}></GetL2Status>
         </Flex>
         <Select
           w={'137px'}
@@ -335,8 +398,17 @@ export const StakingTable: FC<StakingTableProps> = ({
                   alignItems="center"
                   {...row.getRowProps()}>
                   {row.cells.map((cell: any, index: number) => {
-                    const {token, status, name, period, stakeBalanceTON, ept} =
-                      cell.row.original;
+                    const {
+                      token,
+                      status,
+                      name,
+                      period,
+                      stakeBalanceTON,
+                      ept,
+                      L2status,
+                      saleClosed,
+                    } = cell.row.original;
+                    const {canSwap, canUnstake, canWithdraw} = L2status;
                     const type = cell.column.id;
                     const tokenType = checkTokenType(token);
                     return (
@@ -356,6 +428,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                             ? ''
                             : '200px'
                         }
+                        pr={0}
                         display="flex"
                         alignItems="center"
                         color={getTextColor(type, colorMode)}
@@ -376,7 +449,22 @@ export const StakingTable: FC<StakingTableProps> = ({
                               ml="10px"
                               mr="12px"
                             />
-                            <Text>{name}</Text>
+                            <Text w={'140px'}>{name}</Text>
+                            <Flex w={'120px'} justifyContent="flex-start">
+                              {canUnstake && (
+                                <GetL2Status
+                                  sort={'canUnstake'}
+                                  mr={'1px'}></GetL2Status>
+                              )}
+                              {canWithdraw && (
+                                <GetL2Status
+                                  sort={'canWithdraw'}
+                                  mr={'1px'}></GetL2Status>
+                              )}
+                              {canSwap === true && saleClosed === false && (
+                                <GetL2Status sort={'canSwap'}></GetL2Status>
+                              )}
+                            </Flex>
                           </>
                         ) : (
                           ''
@@ -501,6 +589,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                   {...(isWithdrawAndSwapAll
                     ? {...btnStyle.btnAble()}
                     : {...btnStyle.btnDisable({colorMode})})}
+                  w={'140.53px'}
                   isDisabled={!isWithdrawAndSwapAll}
                   fontSize={'14px'}
                   fontWeight={600}
@@ -508,99 +597,153 @@ export const StakingTable: FC<StakingTableProps> = ({
                   Withdraw & Swap
                 </Button>
               }></CustomTooltip>
+            <Box ml={'10px'}>
+              <CustomTooltip
+                toolTipW={245}
+                toolTipH={'50px'}
+                fontSize="12px"
+                msg={[
+                  'You can unstake #1~#3 seig TON',
+                  'thorough this function',
+                ]}
+                placement={'top'}
+                component={
+                  <Button
+                    {...(isUnstakeAll
+                      ? {...btnStyle.btnAble()}
+                      : {...btnStyle.btnDisable({colorMode})})}
+                    w={'140.53px'}
+                    isDisabled={!isUnstakeAll}
+                    fontSize={'14px'}
+                    fontWeight={600}
+                    onClick={() => requestUnstakingLayer2All()}>
+                    Unstake
+                  </Button>
+                }></CustomTooltip>
+            </Box>
+            {/* <Box ml={'10px'}>
+              <CustomTooltip
+                toolTipW={245}
+                toolTipH={'50px'}
+                fontSize="12px"
+                msg={[
+                  'You can swap Power TON to TOS',
+                  'thorough this function',
+                ]}
+                placement={'top'}
+                component={
+                  <Button
+                    {...(isPowerTONSwap
+                      ? {...btnStyle.btnAble()}
+                      : {...btnStyle.btnDisable({colorMode})})}
+                    w={'140.53px'}
+                    isDisabled={!isPowerTONSwap}
+                    fontSize={'14px'}
+                    fontWeight={600}
+                    onClick={() => powerTONSwapper()}>
+                    Power TON Swap
+                  </Button>
+                }></CustomTooltip>
+            </Box> */}
           </Flex>
-          {/* <Flex>
-            <Tooltip label="Previous Page">
-              <IconButton
-                w={'24px'}
-                h={'24px'}
-                bg={colorMode === 'light' ? 'white.100' : 'none'}
-                border={
-                  colorMode === 'light'
-                    ? 'solid 1px #e6eaee'
-                    : 'solid 1px #424242'
-                }
-                color={colorMode === 'light' ? '#e6eaee' : '#424242'}
-                borderRadius={4}
-                aria-label={'Previous Page'}
-                onClick={goPrevPage}
-                isDisabled={!canPreviousPage}
-                size={'sm'}
-                mr={4}
-                _hover={{borderColor: '#2a72e5', color: '#2a72e5'}}
-                icon={<ChevronLeftIcon h={6} w={6} />}
-              />
-            </Tooltip>
-          </Flex> */}
-
-          {/* <Flex
-            alignItems="center"
-            p={0}
-            fontSize={'13px'}
-            fontFamily={theme.fonts.roboto}
-            color={colorMode === 'light' ? '#3a495f' : '#949494'}
-            pb={'3px'}>
-            Page{' '}
-            <Text fontWeight="bold" as="span" color={'blue.300'}>
-              {pageIndex + 1}
-            </Text>{' '}
-            of{' '}
-            <Text fontWeight="bold" as="span">
-              {pageOptions.length}
-            </Text>
-          </Flex> */}
-
-          {/* <Flex>
-            <Tooltip label="Next Page">
-              <Center>
+          {data.length > 10 && (
+            <Flex>
+              <Tooltip label="Previous Page">
                 <IconButton
                   w={'24px'}
                   h={'24px'}
+                  bg={colorMode === 'light' ? 'white.100' : 'none'}
                   border={
                     colorMode === 'light'
                       ? 'solid 1px #e6eaee'
                       : 'solid 1px #424242'
                   }
                   color={colorMode === 'light' ? '#e6eaee' : '#424242'}
-                  bg={colorMode === 'light' ? 'white.100' : 'none'}
                   borderRadius={4}
-                  aria-label={'Next Page'}
-                  onClick={goNextPage}
-                  isDisabled={!canNextPage}
+                  aria-label={'Previous Page'}
+                  onClick={goPrevPage}
+                  isDisabled={!canPreviousPage}
                   size={'sm'}
-                  ml={4}
-                  mr={'1.5625em'}
+                  mr={4}
                   _hover={{borderColor: '#2a72e5', color: '#2a72e5'}}
-                  icon={<ChevronRightIcon h={6} w={6} />}
+                  icon={<ChevronLeftIcon h={6} w={6} />}
                 />
-              </Center>
-            </Tooltip>
-            <Select
-              w={'117px'}
-              h={'32px'}
-              mr={1}
-              color={colorMode === 'light' ? ' #3e495c' : '#f3f4f1'}
-              bg={colorMode === 'light' ? 'white.100' : 'none'}
-              boxShadow={
-                colorMode === 'light'
-                  ? '0 1px 1px 0 rgba(96, 97, 112, 0.14)'
-                  : ''
-              }
-              border={colorMode === 'light' ? '' : 'solid 1px #424242'}
-              borderRadius={4}
-              size={'sm'}
-              value={pageSize}
+              </Tooltip>
+            </Flex>
+          )}
+
+          {data.length > 10 && (
+            <Flex
+              alignItems="center"
+              p={0}
+              fontSize={'13px'}
               fontFamily={theme.fonts.roboto}
-              onChange={(e) => {
-                setPageSize(Number(e.target.value));
-              }}>
-              {[10, 20, 30, 40, 50].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  Show {pageSize}
-                </option>
-              ))}
-            </Select>
-          </Flex> */}
+              color={colorMode === 'light' ? '#3a495f' : '#949494'}
+              pb={'3px'}>
+              Page{' '}
+              <Text fontWeight="bold" as="span" color={'blue.300'}>
+                {pageIndex + 1}
+              </Text>{' '}
+              of{' '}
+              <Text fontWeight="bold" as="span">
+                {pageOptions.length}
+              </Text>
+            </Flex>
+          )}
+
+          {data.length > 10 && (
+            <Flex>
+              <Tooltip label="Next Page">
+                <Center>
+                  <IconButton
+                    w={'24px'}
+                    h={'24px'}
+                    border={
+                      colorMode === 'light'
+                        ? 'solid 1px #e6eaee'
+                        : 'solid 1px #424242'
+                    }
+                    color={colorMode === 'light' ? '#e6eaee' : '#424242'}
+                    bg={colorMode === 'light' ? 'white.100' : 'none'}
+                    borderRadius={4}
+                    aria-label={'Next Page'}
+                    onClick={goNextPage}
+                    isDisabled={!canNextPage}
+                    size={'sm'}
+                    ml={4}
+                    mr={'1.5625em'}
+                    _hover={{borderColor: '#2a72e5', color: '#2a72e5'}}
+                    icon={<ChevronRightIcon h={6} w={6} />}
+                  />
+                </Center>
+              </Tooltip>
+              <Select
+                w={'117px'}
+                h={'32px'}
+                mr={1}
+                color={colorMode === 'light' ? ' #3e495c' : '#f3f4f1'}
+                bg={colorMode === 'light' ? 'white.100' : 'none'}
+                boxShadow={
+                  colorMode === 'light'
+                    ? '0 1px 1px 0 rgba(96, 97, 112, 0.14)'
+                    : ''
+                }
+                border={colorMode === 'light' ? '' : 'solid 1px #424242'}
+                borderRadius={4}
+                size={'sm'}
+                value={pageSize}
+                fontFamily={theme.fonts.roboto}
+                onChange={(e) => {
+                  setPageSize(Number(e.target.value));
+                }}>
+                {[10, 20, 30, 40, 50].map((pageSize) => (
+                  <option key={pageSize} value={pageSize}>
+                    Show {pageSize}
+                  </option>
+                ))}
+              </Select>
+            </Flex>
+          )}
         </Flex>
       </Box>
     </Flex>

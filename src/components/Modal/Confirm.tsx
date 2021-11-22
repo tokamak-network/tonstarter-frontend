@@ -8,11 +8,13 @@ import {
   ModalContent,
   useTheme,
   useColorMode,
+  Link,
 } from '@chakra-ui/react';
 import {CloseIcon} from '@chakra-ui/icons';
 import {selectModalType} from 'store/modal.reducer';
 import {useAppSelector} from 'hooks/useRedux';
 import {useModal} from 'hooks/useModal';
+import {selectApp} from 'store/app/app.reducer';
 
 export const ConfirmModal = () => {
   const {sub} = useAppSelector(selectModalType);
@@ -20,6 +22,7 @@ export const ConfirmModal = () => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
   const {handleCloseConfirmModal} = useModal();
+  const {data: appConfig} = useAppSelector(selectApp);
 
   return (
     <Modal
@@ -70,6 +73,34 @@ export const ConfirmModal = () => {
               for next <strong>{period + ' weeks'}</strong>
               <Text>Are you sure you want to stake?</Text>
             </Text>
+          ) : from === 'admin/poolDelete' ? (
+            <Flex
+              flexDir="column"
+              fontSize="14px"
+              color="#818992"
+              px={8}
+              h={100}
+              mb="15px">
+              <Text>
+                Pool Name : <strong>{amount.name}</strong>
+              </Text>
+              <Text>Pool Address :</Text>
+              <Link
+                fontWeight={'bold'}
+                color={'blue.200'}
+                isExternal={true}
+                outline={'none'}
+                mb={'10px'}
+                _focus={{
+                  outline: 'none',
+                }}
+                href={`${appConfig.uniswapPoolLink}${amount.address}`}>
+                {amount.address}
+              </Link>
+              <Text>
+                Do you really want to <strong>delete</strong> this pool ?
+              </Text>
+            </Flex>
           ) : null}
           <Flex w="100%" alignItems="center" justifyContent="center">
             <Button

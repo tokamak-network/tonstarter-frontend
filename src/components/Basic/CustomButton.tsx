@@ -18,16 +18,18 @@ export const CustomButton = (prop: CustomButtonProp) => {
   const {btnStyle} = theme;
   return (
     <Button
-      _hover={{}}
       {...(isDisabled
         ? {...btnStyle.btnDisable({colorMode})}
         : {...btnStyle.btnAble()})}
       {...style}
+      _hover={{}}
       w={w || '150px'}
       h={h || '38px'}
       fontSize={fontSize || 14}
       isDisabled={isDisabled}
-      onClick={func}>
+      onClick={func}
+      textAlign={'center'}
+      lineHeight={h || '38px'}>
       {text}
     </Button>
   );

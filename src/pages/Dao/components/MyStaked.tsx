@@ -16,7 +16,9 @@ import {selectDao} from '../dao.reducer';
 
 export const MyStaked = () => {
   const dispatch = useAppDispatch();
-  const {data: stakeList} = (useAppSelector as any)(selectDao);
+  const {
+    data: {tosStakeList: stakeList},
+  } = (useAppSelector as any)(selectDao);
   const [balance, setbalance] = useState('-');
   const [isEnd, setIsEnd] = useState(true);
   const theme = useTheme();

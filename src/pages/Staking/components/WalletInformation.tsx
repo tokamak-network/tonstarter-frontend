@@ -13,7 +13,7 @@ import {
 import React, {FC, useState, useCallback} from 'react';
 import {AppDispatch} from 'store';
 import {openModal, ModalType} from 'store/modal.reducer';
-import {Stake} from '../staking.reducer';
+import {Stake} from 'pages/Staking/types';
 import {
   checkSaleClosed,
   checkIsUnstake,

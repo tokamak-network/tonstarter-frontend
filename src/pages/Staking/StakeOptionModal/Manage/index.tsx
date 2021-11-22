@@ -175,7 +175,6 @@ export const ManageModal = () => {
         } = result;
         const res_CanWithdralAmount = await fetchWithdrawPayload(
           library,
-          account,
           contractAddress,
         );
         const tosPrice = await fetchSwapPayload(library);

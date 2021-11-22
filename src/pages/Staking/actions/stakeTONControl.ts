@@ -29,16 +29,20 @@ export async function stakeTonControl() {
 }
 
 export async function checkCanWithdrawLayr2All(library: LibraryType) {
-  if (!library) {
-    return console.error('no library for view function');
+  try {
+    if (!library) {
+      return console.error('no library for view function');
+    }
+    const {StakeTonControl_ADDRESS} = DEPLOYED;
+    const StakeTonControl_CONTRACT = new Contract(
+      StakeTonControl_ADDRESS,
+      StakeTONControl.abi,
+      library,
+    );
+    const res = await StakeTonControl_CONTRACT.canWithdrawLayer2All();
+    return res.can;
+  } catch (e) {
+    return false;
   }
-  const {StakeTonControl_ADDRESS} = DEPLOYED;
-  const StakeTonControl_CONTRACT = new Contract(
-    StakeTonControl_ADDRESS,
-    StakeTONControl.abi,
-    library,
-  );
-  const res = await StakeTonControl_CONTRACT.canWithdrawLayer2All();
-  return res.can;
   //   return LockTOSContract.connect(signer).withdrawLayer2AllAndSwapAll();
 }

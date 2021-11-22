@@ -21,6 +21,11 @@ type CustomInputProp = {
   numberOnly?: boolean;
   maxBtn?: boolean;
   maxValue?: number;
+  placeHolder?: string;
+  style?: any;
+  fontWeight?: number;
+  startWithZero?: boolean;
+  textAlign?: string;
 };
 
 export const CustomInput = (prop: CustomInputProp) => {
@@ -38,13 +43,21 @@ export const CustomInput = (prop: CustomInputProp) => {
     tokenName,
     maxBtn,
     maxValue,
+    placeHolder,
+    style,
+    fontWeight,
+    startWithZero,
+    textAlign,
   } = prop;
 
   useEffect(() => {
     if (setValue && value.length > 1 && value.startsWith('0')) {
+      if (startWithZero === true) {
+        return;
+      }
       setValue(value.slice(1, value.legnth));
     }
-  }, [value, setValue]);
+  }, [value, setValue, startWithZero]);
 
   if (numberOnly) {
     return (
@@ -132,17 +145,26 @@ export const CustomInput = (prop: CustomInputProp) => {
   return (
     <Input
       variant={'outline'}
-      borderWidth={0}
-      border={border}
-      textAlign={'center'}
-      fontWeight={'bold'}
+      border={
+        border || colorMode === 'light'
+          ? '1px solid #dfe4ee'
+          : '1px solid #424242'
+      }
+      textAlign={textAlign || 'center'}
+      fontWeight={fontWeight || 'bold'}
       w={w}
       h={h}
       value={value}
       onChange={(e: any) => (setValue ? setValue(e.target.value) : null)}
       _focus={{
-        borderWidth: 0,
+        border:
+          border || colorMode === 'light'
+            ? '1px solid #dfe4ee'
+            : '1px solid #424242',
+        borderWidth: 1,
       }}
+      placeholder={placeHolder}
+      {...style}
     />
   );
 };

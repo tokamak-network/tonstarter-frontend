@@ -19,6 +19,7 @@ interface StarterState {
     upcomingData: AdminObject[];
     pastData: AdminObject[];
     myProjects: any[];
+    rawData: any[];
     // myProject: MyProject[];
   };
   loading: 'idle' | 'pending';
@@ -35,6 +36,7 @@ const initialState = {
     upcomingData: [],
     pastData: [],
     myProjects: [],
+    rawData: [],
   },
   loading: 'idle',
   error: null,
@@ -75,7 +77,7 @@ export const fetchStarters = createAsyncThunk(
         (data: AdminObject) => data.position === 'upcoming',
       );
       const pastData = matchData.filter(
-        (data: AdminObject) => data.endOpenSaleTime < nowTimeStamp,
+        (data: AdminObject) => data.endDepositTime < nowTimeStamp,
       );
 
       const myProjects = matchData.filter(
@@ -204,8 +206,8 @@ export const fetchStarters = createAsyncThunk(
         (data: AdminObject) => {
           return {
             name: data.name,
-            saleStart: moment.unix(data.startOpenSaleTime).format('YYYY.MM.DD'),
-            saleEnd: moment.unix(data.endOpenSaleTime).format('YYYY.MM.DD'),
+            saleStart: moment.unix(data.startDepositTime).format('YYYY.MM.DD'),
+            saleEnd: moment.unix(data.endDepositTime).format('YYYY.MM.DD'),
             tokenFundRaisingTargetAmount: data.tokenFundRaisingTargetAmount,
             saleContractAddress: data.saleContractAddress,
           };
@@ -216,8 +218,8 @@ export const fetchStarters = createAsyncThunk(
         (data: AdminObject) => {
           return {
             name: data.name,
-            saleStart: moment.unix(data.startOpenSaleTime).format('YYYY.MM.DD'),
-            saleEnd: moment.unix(data.endOpenSaleTime).format('YYYY.MM.DD'),
+            saleStart: moment.unix(data.startDepositTime).format('YYYY.MM.DD'),
+            saleEnd: moment.unix(data.endDepositTime).format('YYYY.MM.DD'),
             saleContractAddress: data.saleContractAddress,
           };
         },
@@ -231,6 +233,7 @@ export const fetchStarters = createAsyncThunk(
         upcomingData,
         pastData,
         myProjects,
+        rawData: starterData,
       };
     } catch (e) {
       console.log(e);

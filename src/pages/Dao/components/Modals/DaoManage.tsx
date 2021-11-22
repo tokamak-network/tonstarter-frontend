@@ -97,7 +97,9 @@ const themeDesign = {
 
 export const DaoManageModal = () => {
   const {data} = useAppSelector(selectModalType);
-  const {data: stakeList} = useAppSelector(selectDao);
+  const {
+    data: {tosStakeList: stakeList},
+  } = (useAppSelector as any)(selectDao);
 
   const [edit, setEdit] = useState(false);
   const [selectLockId, setSelectLockId] = useState('');

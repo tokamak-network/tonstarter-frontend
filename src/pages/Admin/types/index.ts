@@ -1,3 +1,5 @@
+type FundingTokenTypes = 'TON';
+
 export type StepOne = {
   name: string;
   description: string;
@@ -17,6 +19,7 @@ export type StepTwo = {
   tokenSymbolImage: any;
   tokenAllocationAmount: string;
   tokenFundRaisingTargetAmount: string;
+  fundingTokenType: FundingTokenTypes;
   tokenFundingRecipient: string;
   projectTokenRatio: number;
   projectFundingTokenRatio: number;
@@ -24,7 +27,6 @@ export type StepTwo = {
 
 export type StepThree = {
   saleContractAddress: string;
-  vestingContractAddress: string;
   snapshot: number;
   startAddWhiteTime: number;
   endAddWhiteTime: number;
@@ -32,11 +34,10 @@ export type StepThree = {
   endExclusiveTime: number;
   startDepositTime: number;
   endDepositTime: number;
-  startOpenSaleTime: number;
-  endOpenSaleTime: number;
   startClaimTime: number;
   claimInterval: number;
   claimPeriod: number;
+  claimFirst: number;
 };
 
 export type StepFour = {
@@ -75,3 +76,74 @@ export type StepsName = StepOneName &
   StepTwoName &
   StepThreeName &
   StepFourName;
+
+export type StepComponent = {
+  stepName: string[];
+  currentStep: number;
+};
+
+export type ListingTableData = {
+  contractAddress: string;
+  adminAddress: string;
+  name: string;
+  token: string;
+  saleStart: string;
+  saleEnd: string;
+  saleAmount: string;
+  fundingRaised: string;
+  status: string;
+  btn: any;
+};
+
+export type ListingPoolsTableData = {
+  name: string;
+  address: string;
+  rewardPrograms: number;
+};
+
+export type ListingRewardTableData = {
+  pool: string;
+  rewardToken: string;
+  incentiveKey: {
+    rewardToken: string;
+    pool: string;
+    startTime: number;
+    endTime: number;
+    refundee: string;
+  };
+  start: string;
+  end: string;
+  allocatedReward: string;
+  stakers: string;
+  status: 'Waiting' | 'On progress' | 'Closed';
+};
+
+export type FetchReward = {
+  allocatedReward: string;
+  chainId: number;
+  endTime: number;
+  incentiveKey: {
+    endTime: number;
+    pool: string;
+    refundee: string;
+    rewardToken: string;
+    startTime: number;
+  };
+  numStakers: number;
+  poolAddress: string;
+  poolName: string;
+  rewardToken: string;
+  startTime: number;
+  status: string;
+};
+
+export type PoolData = {
+  chainId: number;
+  poolName: string;
+  poolAddress: String;
+  token0Address: String;
+  token1Address: String;
+  token0Image: String;
+  token1Image: String;
+  feeTier: number;
+};

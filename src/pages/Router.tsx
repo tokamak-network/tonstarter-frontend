@@ -9,7 +9,7 @@ import {DAO} from './Dao/index';
 import {Starter} from './Starter/index';
 import {Switch, Route} from 'react-router-dom';
 import {useAppDispatch} from 'hooks/useRedux';
-// import {fetchAppConfig} from 'store/app/app.reducer';
+import {fetchAppConfig} from 'store/app/app.reducer';
 import {fetchUserInfo} from 'store/app/user.reducer';
 import {fetchStakes} from './Staking/staking.reducer';
 import {AirdropModal} from 'components/Airdrop/Index';
@@ -22,15 +22,20 @@ import {MobilePreOpen} from './PreOpen/Index';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {StarterDetail} from './Starter/StarterDetail';
-import {Admin} from './Admin';
+import {
+  CreateProject,
+  ListingProjects,
+  ListingPools,
+  ListingRewards,
+} from './Admin';
 import {useBlockNumber} from 'hooks/useBlock';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
 /*
 ###################
-###PHASE 3 TEST####
-########DAO########
+###PHASE 4 TEST####
+#######ADMIN#######
 ###################
 ################### 
 */
@@ -97,7 +102,7 @@ export const Router: FC<RouterProps> = () => {
       // const {signIn} = accountStorage;
 
       // // @ts-ignore
-      // dispatch(fetchAppConfig({chainId}));
+      dispatch(fetchAppConfig({chainId}));
 
       // if (signIn === false) {
       //   deactivate();
@@ -125,6 +130,8 @@ export const Router: FC<RouterProps> = () => {
     if (account && library) {
       // @ts-ignore
       dispatch(fetchUserInfo({account, library}));
+      // @ts-ignore
+      // dispatch(fetchAppConfig({chainId}));
     }
   }, [blockNumber, account, library]);
 
@@ -167,7 +174,11 @@ export const Router: FC<RouterProps> = () => {
           <Route exact path="/pools" component={Pools} />
           <Route exact path="/starter" component={Starter} />
           <Route exact path="/dao" component={DAO} />
-          <Route exact path="/admin" component={Admin} />
+          <Route exact path="/admin/createproject" component={CreateProject} />
+          <Route exact path="/admin/listproject" component={ListingProjects} />
+          <Route exact path="/admin/listpools" component={ListingPools} />
+          <Route exact path="/admin/listrewards" component={ListingRewards} />
+
           <Route exact path={`/starter/active/:id`} component={StarterDetail} />
           <Route
             exact
