@@ -185,6 +185,7 @@ export const ListRewardTable: FC<ListTableProps> = ({
                       stakers,
                       status,
                     } = cell.row.original;
+
                     const type = cell.column.id;
                     return (
                       <chakra.td

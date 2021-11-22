@@ -260,9 +260,6 @@ export const StakingTable: FC<StakingTableProps> = ({
     nextPage();
   };
 
-  console.log('--data--');
-  console.log(data);
-
   const onChangeSelectBox = (e: any) => {
     const filterValue = e.target.value;
     headerGroups[0].headers.map((e) => {
@@ -402,6 +399,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                       stakeBalanceTON,
                       ept,
                       L2status,
+                      saleClosed,
                     } = cell.row.original;
                     const {canSwap, canUnstake, canWithdraw} = L2status;
                     const type = cell.column.id;
@@ -423,6 +421,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                             ? ''
                             : '200px'
                         }
+                        pr={0}
                         display="flex"
                         alignItems="center"
                         color={getTextColor(type, colorMode)}
@@ -444,18 +443,18 @@ export const StakingTable: FC<StakingTableProps> = ({
                               mr="12px"
                             />
                             <Text w={'140px'}>{name}</Text>
-                            <Flex w={'62px'} ml={'35px'}>
-                              {canSwap && (
+                            <Flex w={'120px'} justifyContent="flex-start">
+                              {canUnstake && (
                                 <GetL2Status
                                   sort={'canUnstake'}
                                   mr={'1px'}></GetL2Status>
                               )}
-                              {canUnstake && (
+                              {canWithdraw && (
                                 <GetL2Status
                                   sort={'canWithdraw'}
                                   mr={'1px'}></GetL2Status>
                               )}
-                              {canWithdraw && (
+                              {canSwap === true && saleClosed === false && (
                                 <GetL2Status sort={'canSwap'}></GetL2Status>
                               )}
                             </Flex>
