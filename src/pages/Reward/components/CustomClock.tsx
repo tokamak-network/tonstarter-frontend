@@ -51,11 +51,11 @@ const themeDesign = {
 
 type ClockProps = {
   setTime: Dispatch<SetStateAction<any>>;
-
+  error: boolean
 };
 
 export const CustomClock = (props: ClockProps) => {
-  const {setTime} = props;
+  const {setTime, error} = props;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const [hours, setHours] = useState<number>(0);
@@ -83,9 +83,9 @@ export const CustomClock = (props: ClockProps) => {
       {({isOpen, onClose}) => (
         <>
           <PopoverTrigger>
-            <Flex>
+            <Flex ml={'6px'} border={error? '1px solid #f5424b': ''} p='2px' borderRadius='4px'>
               <Text
-                ml={'10px'}
+                
                 fontSize={'10px'}
                 color={colorMode === 'light' ? '#808992' : '#949494'}>
                 Time setting

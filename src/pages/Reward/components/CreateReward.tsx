@@ -21,7 +21,7 @@ import {approve, create, checkApproved} from '../actions';
 import Calendar from 'react-calendar';
 import '../css/Calendar.css';
 import arrow_light from 'assets/images/select1_arrow_inactive.png';
-import arrow_dark from 'assets/svgs/select1_arrow_inactive.svg'
+import arrow_dark from 'assets/svgs/select1_arrow_inactive.svg';
 import calender_Forward_icon_inactive from 'assets/svgs/calender_Forward_icon_inactive.svg';
 import calender_back_icon_inactive from 'assets/svgs/calender_back_icon_inactive.svg';
 import moment from 'moment';
@@ -34,7 +34,7 @@ import * as ERC20 from 'services/abis/ERC20.json';
 import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 
-const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 const themeDesign = {
   border: {
@@ -96,7 +96,6 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
-  const [claimableAmount, setClaimableAmount] = useState<Number>(100000.0);
   const [amount, setAmount] = useState<number>(0);
   const [name, setName] = useState<string>('');
   const [reward, setReward] = useState<Number>(0);
@@ -111,7 +110,9 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
   const [rewardSymbol, setRewardSymbol] = useState('');
   const [rewardAddress, setRewardAddress] = useState('');
   const [created, setCreated] = useState(false);
-  const [balance,setBalance] = useState(0);
+  const [balance, setBalance] = useState(0);
+  const [errorStart, setErrorStart] = useState<boolean>(false);
+  const [errorEnd, setErrorEnd] = useState<boolean>(false);
   useEffect(() => {
     setSelectedPool(pools[0]);
     setSelectedAddress(pools[0].id);
@@ -159,6 +160,23 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
     setStartTime(startDates.unix());
   }, [startTimeArray, endTimeArray, endTime, startTime]);
 
+
+  useEffect(() => {
+    const maxStart = moment().unix() + 2592000;
+    const maxEnd = startTime + 63072000;
+    
+    if (startTime > maxStart) {
+      setErrorStart(true);
+    } else if (startTime <= maxStart) {
+      setErrorStart(false);
+    }
+    if (endTime > maxEnd) {
+      setErrorEnd(true);
+    } else if (endTime <= maxEnd) {
+      setErrorEnd(false);
+    }
+  }, [startTime, endTime]);
+
   useEffect(() => {
     const setApprovedAmount = async () => {
       if (rewardAddress !== '') {
@@ -172,16 +190,27 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
       }
     };
     setApprovedAmount();
-  }, [library, account, setCheckAllowed, checkAllowed, rewardAddress, tokeninfo]);
+  }, [
+    library,
+    account,
+    setCheckAllowed,
+    checkAllowed,
+    rewardAddress,
+    tokeninfo,
+  ]);
 
   useEffect(() => {
-    async function getBalance () {
+    async function getBalance() {
       if (account === null || account === undefined || library === undefined) {
         return;
       }
-      if (rewardAddress === ZERO_ADDRESS) {}
-      else { 
-        if (account === null || account === undefined || library === undefined) {
+      if (rewardAddress === ZERO_ADDRESS) {
+      } else {
+        if (
+          account === null ||
+          account === undefined ||
+          library === undefined
+        ) {
           return;
         }
         const signer = getSigner(library, account);
@@ -191,19 +220,23 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
           // console.log('balanceOf',ethers.utils.formatEther(checkAllowed.toLocaleString('fullwide', {
           //   useGrouping: false,
           // }),));
-          setBalance(Number(ethers.utils.formatEther(balanceOf.toLocaleString('fullwide', {
-            useGrouping: false,
-          }),)) )
-         
+          setBalance(
+            Number(
+              ethers.utils.formatEther(
+                balanceOf.toLocaleString('fullwide', {
+                  useGrouping: false,
+                }),
+              ),
+            ),
+          );
         } catch (err) {}
-
       }
     }
 
     if (rewardAddress !== '') {
       getBalance();
     }
-  },[rewardAddress, checkAllowed, library, account, amount, tokeninfo])
+  }, [rewardAddress, checkAllowed, library, account, amount, tokeninfo]);
   return (
     <Box display={'flex'} justifyContent={'center'}>
       <Box w={'100%'} px={'15px'}>
@@ -224,24 +257,32 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
           </Text>
           <Menu isLazy>
             <MenuButton
-            border={themeDesign.border[colorMode]}
-            padding={'10px'}
-            borderRadius={'4px'}
+              border={themeDesign.border[colorMode]}
+              padding={'10px'}
+              borderRadius={'4px'}
               h={'30px'}
               color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}
               fontSize={'12px'}
               w={'190px'}>
-              <Text w={'100%'} display={'flex'} flexDir={'row'} alignItems={'center'} justifyContent={'space-between'}>
+              <Text
+                w={'100%'}
+                display={'flex'}
+                flexDir={'row'}
+                alignItems={'center'}
+                justifyContent={'space-between'}>
                 {' '}
                 {`${selectedPool?.token0.symbol} / ${
                   selectedPool?.token1.symbol
                 } (${parseInt(pools[0].feeTier) / 10000} %)`}
                 <span>
-                 <ChevronDownIcon/>
+                  <ChevronDownIcon />
                 </span>
               </Text>
             </MenuButton>
-            <MenuList m={'0px'} minWidth="190px" background={colorMode==='light'? '#ffffff': '#222222'}>
+            <MenuList
+              m={'0px'}
+              minWidth="190px"
+              background={colorMode === 'light' ? '#ffffff' : '#222222'}>
               {pools.map((item, index) => (
                 <MenuItem
                   onClick={onChangeSelectBoxPools}
@@ -251,7 +292,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
                   w={'190px'}
                   m={'0px'}
                   value={item.id}
-                  _hover={{background: 'transparent',color: 'blue.100'}}
+                  _hover={{background: 'transparent', color: 'blue.100'}}
                   _focus={{background: 'transparent'}}
                   key={index}>
                   {`${item.token0.symbol} / ${item.token1.symbol}    (${
@@ -277,7 +318,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             calendarType={'start'}
             created={created}
           />
-          <CustomClock setTime={setStartTimeArray} />
+          <CustomClock setTime={setStartTimeArray} error={errorStart} />
         </Flex>
         <Flex alignItems={'center'} h={'45px'}>
           <Text
@@ -288,13 +329,13 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             End
           </Text>
           <CustomCalendar
-          created={created}
+            created={created}
             setValue={setEndTime}
             startTime={startTime}
             endTime={endTime}
             calendarType={'end'}
           />
-          <CustomClock setTime={setEndTimeArray} />
+          <CustomClock setTime={setEndTimeArray} error={errorEnd} />
         </Flex>
         <Flex alignItems={'center'} h={'45px'}>
           <Text
@@ -376,9 +417,15 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             disabled={
               amount === 0 ||
               amount <=
-              Number(ethers.utils.formatEther(checkAllowed.toLocaleString('fullwide', {
-                useGrouping: false,
-              }),).toString())
+                Number(
+                  ethers.utils
+                    .formatEther(
+                      checkAllowed.toLocaleString('fullwide', {
+                        useGrouping: false,
+                      }),
+                    )
+                    .toString(),
+                )
             }
             _hover={{backgroundColor: 'blue.100'}}
             onClick={() =>
@@ -400,22 +447,41 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             color="white.100"
             fontSize="14px"
             disabled={
-              Number(ethers.utils.formatEther(checkAllowed.toLocaleString('fullwide', {
-                useGrouping: false,
-              }),).toString()) === 0 ||
-              amount >  Number(ethers.utils.formatEther(checkAllowed.toLocaleString('fullwide', {
-                useGrouping: false,
-              }),).toString())
+              Number(
+                ethers.utils
+                  .formatEther(
+                    checkAllowed.toLocaleString('fullwide', {
+                      useGrouping: false,
+                    }),
+                  )
+                  .toString(),
+              ) === 0 ||
+              amount >
+                Number(
+                  ethers.utils
+                    .formatEther(
+                      checkAllowed.toLocaleString('fullwide', {
+                        useGrouping: false,
+                      }),
+                    )
+                    .toString(),
+                )
             }
             _hover={{backgroundColor: 'blue.100'}}
             onClick={() => {
-              const now = moment().unix();             
+              const now = moment().unix();
               if (now > startTime) {
                 return alert(`Please use select a start time greater than now`);
-              }
-              else if (balance < Number(ethers.utils.formatEther(checkAllowed.toLocaleString('fullwide', {
-                useGrouping: false,
-              }),))) {
+              } else if (
+                balance <
+                Number(
+                  ethers.utils.formatEther(
+                    checkAllowed.toLocaleString('fullwide', {
+                      useGrouping: false,
+                    }),
+                  ),
+                )
+              ) {
                 return alert(`You don't have enough ${rewardSymbol} balance`);
               }
               create({
@@ -430,8 +496,8 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
                 setEnd: setEndTime,
                 setStart: setStartTime,
                 rewardToken: rewardAddress,
-                setRewardSymbol :setRewardSymbol,
-                setCreated: setCreated
+                setRewardSymbol: setRewardSymbol,
+                setCreated: setCreated,
               });
             }}>
             Create
