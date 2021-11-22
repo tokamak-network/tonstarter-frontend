@@ -105,7 +105,7 @@ export const REWARD_STYLE = {
     color: props.colorMode === 'light' ? 'gray.250' : 'white.100',
   }),
   mainText: (props: REWARD_PROP) => ({
-    fontSize: props.fontSize || 28,
+    fontSize: props.fontSize || 20,
     fontWeight: 600,
     color: props.colorMode === 'light' ? 'gray.375' : 'white.100',
   }),

@@ -441,7 +441,7 @@ export const Reward = () => {
                       <MenuOptionGroup
                         defaultValue="asc"
                         title="Not Staked"
-                        fontSize={'12px'}
+                        fontSize={'13px'}
                         m={'0px'}
                         pl={'10px'}
                         w={'157px'}
@@ -476,6 +476,7 @@ export const Reward = () => {
                         m={'0px'}
                         defaultValue="asc"
                         title="Staked"
+                        fontSize={'13px'}
                         type="radio">
                         {positions.map((item: any, index) => {
                           if (item.owner !== account?.toLowerCase()) {
