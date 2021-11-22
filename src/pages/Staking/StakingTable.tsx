@@ -37,11 +37,15 @@ import {
   checkCanWithdrawLayr2All,
   stakeTonControl,
 } from './actions/stakeTONControl';
-import {isUnstakeL2All, requestUnstakingLayer2All} from './actions';
+import {
+  isUnstakeL2All,
+  requestUnstakingLayer2All,
+  isAblePowerTONSwap,
+  powerTONSwapper,
+} from './actions';
 import {useBlockNumber} from 'hooks/useBlock';
 import {CustomTooltip} from 'components/Tooltip';
 import {useActiveWeb3React} from 'hooks/useWeb3';
-import {makeReference} from '@apollo/client';
 
 type StakingTableProps = {
   columns: Column[];
@@ -208,6 +212,7 @@ export const StakingTable: FC<StakingTableProps> = ({
   const [isWithdrawAndSwapAll, setIsWithdrawAndSwapAll] =
     useState<boolean>(false);
   const [isUnstakeAll, setIsUnstakeAll] = useState<boolean>(false);
+  const [isPowerTONSwap, setIsPowerTONSwap] = useState<boolean>(false);
 
   //withdraw&swapall btn able condition
   useEffect(() => {
@@ -215,9 +220,11 @@ export const StakingTable: FC<StakingTableProps> = ({
       if (library) {
         const isWithdraw = await checkCanWithdrawLayr2All(library);
         const isUnstakeAll = await isUnstakeL2All(library);
+        const isPowerTONSwap = await isAblePowerTONSwap(library);
 
         setIsWithdrawAndSwapAll(isWithdraw || false);
         setIsUnstakeAll(isUnstakeAll || false);
+        setIsPowerTONSwap(isPowerTONSwap || false);
       }
     }
     callIsWithdrawAndSwapAll();
@@ -614,6 +621,30 @@ export const StakingTable: FC<StakingTableProps> = ({
                   </Button>
                 }></CustomTooltip>
             </Box>
+            {/* <Box ml={'10px'}>
+              <CustomTooltip
+                toolTipW={245}
+                toolTipH={'50px'}
+                fontSize="12px"
+                msg={[
+                  'You can swap Power TON to TOS',
+                  'thorough this function',
+                ]}
+                placement={'top'}
+                component={
+                  <Button
+                    {...(isPowerTONSwap
+                      ? {...btnStyle.btnAble()}
+                      : {...btnStyle.btnDisable({colorMode})})}
+                    w={'140.53px'}
+                    isDisabled={!isPowerTONSwap}
+                    fontSize={'14px'}
+                    fontWeight={600}
+                    onClick={() => powerTONSwapper()}>
+                    Power TON Swap
+                  </Button>
+                }></CustomTooltip>
+            </Box> */}
           </Flex>
           {data.length > 10 && (
             <Flex>

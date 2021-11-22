@@ -251,11 +251,11 @@ export const ListingPools = () => {
             </Flex>
             <Flex>
               <Box d="flex" alignItems="center">
-                <Text>Token0 Image preview</Text>
+                <Text mr={'10px'}>Token0 Image preview</Text>
                 <TokenImage imageLink={token0Image} />
               </Box>
               <Box d="flex" alignItems="center">
-                <Text>Token1 Image preview</Text>
+                <Text mr={'10px'}>Token1 Image preview</Text>
                 <TokenImage imageLink={token1Image} />
               </Box>
             </Flex>

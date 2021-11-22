@@ -5,6 +5,7 @@ import * as StakeTON from 'services/abis/StakeTON.json';
 import {fetchWithdrawPayload} from '../StakeOptionModal/utils/fetchWithdrawPayload';
 import {getTokamakContract} from 'utils/contract';
 import {L2Status} from '../types';
+import {convertNumber} from 'utils/number';
 
 const {TokamakLayer2_ADDRESS} = DEPLOYED;
 
@@ -25,8 +26,14 @@ async function checkL2Unstake(
   }
   const canReqeustUnstaking =
     await STAKETON_CONTRACT.canTokamakRequestUnStaking(TokamakLayer2_ADDRESS);
+
+  const convertedUnstakeNum = convertNumber({
+    amount: canReqeustUnstaking,
+    type: 'ray',
+  });
+
   if (canReqeustUnstaking) {
-    return Number(canReqeustUnstaking.toString()) > 0 ? true : false;
+    return Number(convertedUnstakeNum) > 0 ? true : false;
   }
   return undefined;
 }

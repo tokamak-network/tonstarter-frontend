@@ -16,4 +16,5 @@ export type DEPLOYED_TYPE = {
   LockTOSDividend_ADDRESS: string;
   PublicSale_ADDRESS: string;
   unstakeLayer2All: string;
+  PowerTONSwapper_ADDRESS: string;
 };
