@@ -4,7 +4,7 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect, useMemo, useState} from 'react';
 import {ListPoolsTable} from './components/ListPoolsTable';
 import {EditPoolModal} from './components/EditPoolModal';
-import {FetchReward, ListingPoolsTableData} from './types';
+import {FetchPoolData} from './types';
 import {CustomInput} from 'components/Basic';
 import {CustomButton} from 'components/Basic/CustomButton';
 import AdminActions from './actions';
@@ -12,7 +12,7 @@ import {TokenImage} from './components/TokenImage';
 
 export const ListingPools = () => {
   const {account, library, chainId} = useActiveWeb3React();
-  const [projects, setProjects] = useState<ListingPoolsTableData[] | []>([]);
+  const [projects, setProjects] = useState<FetchPoolData[] | []>([]);
 
   const theme = useTheme();
   const {bgStyle} = theme;
@@ -30,31 +30,21 @@ export const ListingPools = () => {
 
   useEffect(() => {
     async function fetchProjectsData() {
-      const rewardData = await AdminActions.getRewardData();
+      const rewardData = await AdminActions.getPoolData();
 
       if (!rewardData) {
         setProjects([]);
         return setLoading(false);
       }
 
-      const filteredRewardData: ListingPoolsTableData[] = rewardData.map(
-        (data: FetchReward) => {
-          return {
-            name: data.poolName,
-            address: data.poolAddress,
-            rewardPrograms: 5,
-          };
-        },
-      );
-
-      setProjects(filteredRewardData);
+      setProjects(rewardData);
       setLoading(false);
     }
     fetchProjectsData();
   }, [account, library]);
 
   const dummyData: {
-    data: ListingPoolsTableData[];
+    data: FetchPoolData[];
     columns: any;
     isLoading: boolean;
   } = {
@@ -250,7 +240,7 @@ export const ListingPools = () => {
               />
             </Flex>
             <Flex>
-              <Box d="flex" alignItems="center">
+              <Box d="flex" alignItems="center" mr={'10px'}>
                 <Text mr={'10px'}>Token0 Image preview</Text>
                 <TokenImage imageLink={token0Image} />
               </Box>

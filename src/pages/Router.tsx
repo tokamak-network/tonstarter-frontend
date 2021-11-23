@@ -133,7 +133,7 @@ export const Router: FC<RouterProps> = () => {
       // @ts-ignore
       // dispatch(fetchAppConfig({chainId}));
     }
-  }, [blockNumber, account, library]);
+  }, [account, library]);
 
   useEffect(() => {
     //@ts-ignore

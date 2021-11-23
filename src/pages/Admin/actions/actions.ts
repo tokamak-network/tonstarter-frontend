@@ -97,8 +97,8 @@ export const addPool = async (args: PoolData) => {
           }),
         );
       }
-      return createPool(args);
     }
+    return createPool(args);
   } catch (e) {
     console.log(e);
     store.dispatch(

@@ -55,7 +55,7 @@ export const EditPoolModal = () => {
   const {data} = useAppSelector(selectModalType);
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const {account, library, chainId} = useActiveWeb3React();
+  const {chainId} = useActiveWeb3React();
   const {handleCloseModal} = useModal();
   const {btnStyle} = theme;
 
@@ -70,8 +70,23 @@ export const EditPoolModal = () => {
   const [fee, setFee] = useState<string>('');
 
   useEffect(() => {
-    if (data.data?.originalData?.address) {
-      setPoolAddress(data.data?.originalData?.address);
+    if (data.data?.originalData) {
+      const {
+        poolAddress,
+        poolName,
+        token0Address,
+        token1Address,
+        token0Image,
+        token1Image,
+        feeTier,
+      } = data.data?.originalData;
+      setPoolAddress(poolAddress || 'undefined');
+      setPoolName(poolName || 'undefined');
+      setToken0(token0Address || 'undefined');
+      setToken1(token1Address || 'undefined');
+      setToken0Image(token0Image || 'undefined');
+      setToken1Image(token1Image || 'undefined');
+      setFee(feeTier || '0');
     }
   }, [data]);
 

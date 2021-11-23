@@ -3,7 +3,7 @@ import {PageHeader} from 'components/PageHeader';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect, useMemo, useState} from 'react';
 import {ListRewardTable} from './components/ListRewardTable';
-import {FetchReward, ListingRewardTableData} from './types';
+import {RewardData, ListingRewardTableData} from './types';
 import AdminActions from './actions';
 import {convertTimeStamp} from 'utils/convertTIme';
 import moment from 'moment';
@@ -23,7 +23,7 @@ export const ListingRewards = () => {
       }
 
       const filteredRewardData: ListingRewardTableData[] = rewardData.map(
-        (data: FetchReward) => {
+        (data: RewardData) => {
           const {
             poolName,
             rewardToken,
