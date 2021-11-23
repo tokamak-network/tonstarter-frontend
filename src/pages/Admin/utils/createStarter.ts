@@ -26,6 +26,22 @@ export async function createStarter(args: AdminObject) {
   }
 }
 
+export async function putEditStarter(args: AdminObject) {
+  try {
+    const res = await instance.put(`/starter?chainId=${DEFAULT_NETWORK}`, {
+      ...args,
+    });
+    if (res.status === 200) {
+      alert('success');
+    } else {
+      alert('failed');
+    }
+    return res.data;
+  } catch (e) {
+    console.log(e);
+  }
+}
+
 export async function createPool(args: PoolData) {
   try {
     console.log('--args--');

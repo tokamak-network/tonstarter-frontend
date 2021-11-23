@@ -9,10 +9,11 @@ type CustomButtonProp = {
   func?: any;
   bg?: string;
   style?: any;
+  onSubmit?: any;
 };
 
 export const CustomButton = (prop: CustomButtonProp) => {
-  const {text, w, h, isDisabled, fontSize, func, style} = prop;
+  const {text, w, h, isDisabled, fontSize, func, style, onSubmit} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {btnStyle} = theme;
@@ -23,6 +24,7 @@ export const CustomButton = (prop: CustomButtonProp) => {
         : {...btnStyle.btnAble()})}
       {...style}
       _hover={{}}
+      onSubmit={onSubmit}
       w={w || '150px'}
       h={h || '38px'}
       fontSize={fontSize || 14}

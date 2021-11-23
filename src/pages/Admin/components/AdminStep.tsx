@@ -35,8 +35,7 @@ import WatchImg from 'assets/svgs/poll-time-active-icon.svg';
 import TONSymbol from 'assets/tokens/tokamak-1@3x.png';
 import EtherscanLink from 'assets/images/etherscan-shortcuts-inactive-icon@3x.png';
 import store from 'store';
-import {selectApp} from 'store/app/app.reducer';
-import {useAppSelector} from 'hooks/useRedux';
+import {TokenImage} from './TokenImage';
 
 type StepProp = {
   data: AdminObject;
@@ -44,6 +43,7 @@ type StepProp = {
   handleNextStep: Dispatch<SetStateAction<any>> | any;
   handlePrevStep?: Dispatch<SetStateAction<any>> | any;
   library?: LibraryType;
+  final: boolean;
 };
 
 const fieldWrap = {
@@ -68,6 +68,24 @@ const Line = () => {
       top={0}
       bg={'#f4f6f8'}
       left={'-35px'}></Box>
+  );
+};
+
+export const SubmitButton = (props: {final: boolean}) => {
+  const {final} = props;
+  const {submitForm} = useFormikContext();
+  const theme = useTheme();
+  return (
+    <CustomButton
+      w={'180px'}
+      h={'45px'}
+      text={'Project Save'}
+      isDisabled={!final}
+      style={{
+        fontFamily: theme.fonts.roboto,
+        fontWeight: 600,
+      }}
+      func={() => submitForm()}></CustomButton>
   );
 };
 
@@ -220,7 +238,7 @@ const CustomField = (props: {
 };
 
 export const StepOne: React.FC<StepProp> = (props) => {
-  const {data, lastStep, handleNextStep} = props;
+  const {data, lastStep, handleNextStep, final} = props;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {btnStyle} = theme;
@@ -269,6 +287,7 @@ export const StepOne: React.FC<StepProp> = (props) => {
 
   return (
     <Formik
+      enableReinitialize
       validationSchema={stepOneValidationSchema}
       initialValues={data}
       validateOnMount={true}
@@ -320,6 +339,14 @@ export const StepOne: React.FC<StepProp> = (props) => {
                 Next
               </Button>
             </Flex>
+            <Flex
+              pos="absolute"
+              w={'100%'}
+              bottom={'-330px'}
+              alignItems="center"
+              justifyContent="center">
+              <SubmitButton final={final}></SubmitButton>
+            </Flex>
           </Form>
         );
       }}
@@ -328,7 +355,7 @@ export const StepOne: React.FC<StepProp> = (props) => {
 };
 
 export const StepTwo: React.FC<StepProp> = (props) => {
-  const {data, lastStep, handleNextStep, handlePrevStep} = props;
+  const {data, lastStep, handleNextStep, handlePrevStep, final} = props;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {btnStyle} = theme;
@@ -383,18 +410,17 @@ export const StepTwo: React.FC<StepProp> = (props) => {
 
   return (
     <Formik
-      enableReinitialize={false}
+      enableReinitialize
       validationSchema={stepOneValidationSchema}
       initialValues={data}
-      validateOnMount={true}
       onSubmit={handleSubmit}>
-      {({isValid, setFieldValue, isValidating, values}) => {
-        console.log('--values--');
-        console.log(isValid);
-        console.log(values);
-
-        const {fundingTokenType, projectTokenRatio, projectFundingTokenRatio} =
-          values;
+      {({isValid, setFieldValue, isValidating, values, setValues}) => {
+        const {
+          fundingTokenType,
+          projectTokenRatio,
+          projectFundingTokenRatio,
+          tokenSymbolImage,
+        } = values;
 
         const checkTokenRatio =
           projectTokenRatio === 0 || projectFundingTokenRatio === 0;
@@ -436,9 +462,15 @@ export const StepTwo: React.FC<StepProp> = (props) => {
                   <CustomField
                     name={'tokenAddress'}
                     title={'Token Address'}></CustomField>
-                  <CustomField
-                    name={'tokenSymbolImage'}
-                    title={'Token Symbol Image'}></CustomField>
+                  <Box d="flex" pos="relative">
+                    <CustomField
+                      w={'185px'}
+                      name={'tokenSymbolImage'}
+                      title={'Token Symbol Image'}></CustomField>
+                    <Box mt={'15px'} ml={'10px'}>
+                      <TokenImage imageLink={tokenSymbolImage}></TokenImage>
+                    </Box>
+                  </Box>
                 </Flex>
               </Flex>
               <Flex
@@ -479,6 +511,7 @@ export const StepTwo: React.FC<StepProp> = (props) => {
                       h={'32px'}
                       iconColor={'#dfe4ee'}
                       fontSize={13}
+                      value={fundingTokenType}
                       style={{paddingLeft: '43px', paddingTop: '3px'}}
                       onChange={(e) => {
                         const tokenType = e.target.value;
@@ -554,6 +587,14 @@ export const StepTwo: React.FC<StepProp> = (props) => {
                 Next
               </Button>
             </Flex>
+            <Flex
+              pos="absolute"
+              w={'100%'}
+              bottom={'-255px'}
+              alignItems="center"
+              justifyContent="center">
+              <SubmitButton final={final}></SubmitButton>
+            </Flex>
           </Form>
         );
       }}
@@ -562,7 +603,8 @@ export const StepTwo: React.FC<StepProp> = (props) => {
 };
 
 export const StepThree: React.FC<StepProp> = (props) => {
-  const {data, lastStep, handleNextStep, handlePrevStep, library} = props;
+  const {data, lastStep, handleNextStep, handlePrevStep, library, final} =
+    props;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {btnStyle} = theme;
@@ -666,7 +708,6 @@ export const StepThree: React.FC<StepProp> = (props) => {
           checkTimeLine(res);
         }
       }
-      console.log('--getFetch--');
       if (address) {
         tryFetch(address, setFieldValue);
       }
@@ -1134,6 +1175,14 @@ export const StepThree: React.FC<StepProp> = (props) => {
                 Next
               </Button>
             </Flex>
+            <Flex
+              pos="absolute"
+              w={'100%'}
+              bottom={'-185px'}
+              alignItems="center"
+              justifyContent="center">
+              <SubmitButton final={final}></SubmitButton>
+            </Flex>
           </Form>
         );
       }}
@@ -1146,10 +1195,9 @@ export const StepFour: React.FC<
     setFinal: Dispatch<SetStateAction<boolean>>;
   }
 > = (props) => {
-  const {data, lastStep, handleNextStep, handlePrevStep, setFinal} = props;
+  const {data, lastStep, handleNextStep, handlePrevStep, setFinal, final} =
+    props;
   const {colorMode} = useColorMode();
-  const theme = useTheme();
-  const {btnStyle} = theme;
 
   const handleSubmit = (values: any) => {
     handleNextStep(values, lastStep);
@@ -1194,23 +1242,19 @@ export const StepFour: React.FC<
     ...obj,
   });
 
-  const titleStyle = {
-    color: 'black.300',
-    fontSize: 15,
-  };
-
   useEffect(() => {
     setFinal(true);
   }, []);
 
   return (
     <Formik
-      enableReinitialize={false}
+      enableReinitialize
       validationSchema={stepOneValidationSchema}
       initialValues={data}
       validateOnMount={true}
       onSubmit={handleSubmit}>
       {({isValid, setFieldValue, isValidating, values}) => {
+        const {position, production, topSlideExposure} = values;
         return (
           <Form
             style={{
@@ -1233,6 +1277,7 @@ export const StepFour: React.FC<
                   h={'32px'}
                   iconColor={'#dfe4ee'}
                   fontSize={13}
+                  value={position}
                   style={{paddingLeft: '15px', paddingTop: '3px'}}
                   onChange={(e) => {
                     const position = e.target.value;
@@ -1252,6 +1297,7 @@ export const StepFour: React.FC<
                   h={'32px'}
                   iconColor={'#dfe4ee'}
                   fontSize={13}
+                  value={production}
                   style={{paddingLeft: '15px', paddingTop: '3px'}}
                   onChange={(e) => {
                     const production = e.target.value;
@@ -1270,6 +1316,7 @@ export const StepFour: React.FC<
                   w={'18px'}
                   h={'18px'}
                   pt={'15px'}
+                  isChecked={topSlideExposure}
                   borderRadius={'4px'}
                   onChange={(e) => {
                     setFieldValue('topSlideExposure', e.target.checked);
@@ -1295,6 +1342,14 @@ export const StepFour: React.FC<
                 _hover={{}}>
                 Prev
               </Button>
+            </Flex>
+            <Flex
+              pos="absolute"
+              w={'100%'}
+              bottom={'-111px'}
+              alignItems="center"
+              justifyContent="center">
+              <SubmitButton final={final}></SubmitButton>
             </Flex>
           </Form>
         );

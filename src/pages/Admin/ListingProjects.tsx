@@ -23,29 +23,37 @@ export const ListingProjects = () => {
 
       const starterData = starterReq.datas;
       const nowTimeStamp = moment().unix();
-      const res = await Promise.all(
-        starterData.map(async (data: any) => {
-          if (data.adminAddress === account) {
-            const {
-              endAddWhiteTime,
-              endExclusiveTime,
-              endDepositTime,
-              saleContractAddress,
-            } = data;
-            const saleAmount = await AdminActions.getSaleAmount({
-              library,
-              address: saleContractAddress,
+
+      const adminAccount = '';
+
+      const filteredStarterData =
+        adminAccount === account
+          ? starterData
+          : starterData.filter((data: AdminObject) => {
+              return data.adminAddress === account;
             });
-            const checkStep =
-              endAddWhiteTime > nowTimeStamp
-                ? 'Whitelist'
-                : endExclusiveTime > nowTimeStamp
-                ? 'Public Round 1'
-                : endDepositTime > nowTimeStamp
-                ? 'Public Round 2'
-                : 'Claim';
-            return {...data, status: checkStep, saleAmount};
-          }
+
+      const res = await Promise.all(
+        filteredStarterData.map(async (data: any) => {
+          const {
+            endAddWhiteTime,
+            endExclusiveTime,
+            endDepositTime,
+            saleContractAddress,
+          } = data;
+          const saleAmount = await AdminActions.getSaleAmount({
+            library,
+            address: saleContractAddress,
+          });
+          const checkStep =
+            endAddWhiteTime > nowTimeStamp
+              ? 'Whitelist'
+              : endExclusiveTime > nowTimeStamp
+              ? 'Public Round 1'
+              : endDepositTime > nowTimeStamp
+              ? 'Public Round 2'
+              : 'Claim';
+          return {...data, status: checkStep, saleAmount};
         }),
       );
       if (res[0] !== undefined) {
@@ -59,7 +67,7 @@ export const ListingProjects = () => {
   }, [account, library]);
 
   const dummyData: {
-    data: AdminObject[];
+    data: any[];
     columns: any;
     isLoading: boolean;
   } = {
@@ -105,6 +113,8 @@ export const ListingProjects = () => {
   };
 
   const {data, columns, isLoading} = dummyData;
+
+  console.log(data);
 
   return (
     <Flex mt={'110px'} flexDir="column" alignItems="center">

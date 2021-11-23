@@ -8,8 +8,14 @@ import {convertToWei} from 'utils/number';
 import store from 'store';
 import {openToast} from 'store/app/toast.reducer';
 import {DEPLOYED} from 'constants/index';
-import {createPool, delPool, putEditPool} from '../utils/createStarter';
-import {PoolData} from '@Admin/types';
+import {
+  createStarter,
+  putEditStarter,
+  createPool,
+  delPool,
+  putEditPool,
+} from '../utils/createStarter';
+import {AdminObject, PoolData} from '@Admin/types';
 
 interface I_CallContract {
   account: string;
@@ -80,6 +86,92 @@ const distribute = async (args: I_CallContract & {amount: string}) => {
   }
 };
 
+export const addStarter = async (args: AdminObject) => {
+  console.log('--addStarter--');
+  console.log(args);
+  try {
+    // for (const [key, value] of Object.entries(args)) {
+    //   if (
+    //     value === '' ||
+    //     value === 0 ||
+    //     value === undefined ||
+    //     value === null
+    //   ) {
+    //     return store.dispatch(
+    //       //@ts-ignore
+    //       openToast({
+    //         payload: {
+    //           status: 'error',
+    //           title: 'Fail to post',
+    //           description: `You need to fill ${key} field out.`,
+    //           duration: 5000,
+    //           isClosable: true,
+    //         },
+    //       }),
+    //     );
+    //   }
+    // }
+    return createStarter(args);
+  } catch (e) {
+    console.log(e);
+    store.dispatch(
+      //@ts-ignore
+      openToast({
+        payload: {
+          status: 'error',
+          title: 'Tx fail to send',
+          description: `something went wrong`,
+          duration: 5000,
+          isClosable: true,
+        },
+      }),
+    );
+  }
+};
+
+export const editStarter = async (args: AdminObject) => {
+  console.log('--edit starter--');
+  console.log(args);
+  try {
+    // for (const [key, value] of Object.entries(args)) {
+    //   if (
+    //     value === '' ||
+    //     value === 0 ||
+    //     value === undefined ||
+    //     value === null
+    //   ) {
+    //     return store.dispatch(
+    //       //@ts-ignore
+    //       openToast({
+    //         payload: {
+    //           status: 'error',
+    //           title: 'Fail to post',
+    //           description: `You need to fill ${key} field out.`,
+    //           duration: 5000,
+    //           isClosable: true,
+    //         },
+    //       }),
+    //     );
+    //   }
+    // }
+    return putEditStarter(args);
+  } catch (e) {
+    console.log(e);
+    store.dispatch(
+      //@ts-ignore
+      openToast({
+        payload: {
+          status: 'error',
+          title: 'Tx fail to send',
+          description: `something went wrong`,
+          duration: 5000,
+          isClosable: true,
+        },
+      }),
+    );
+  }
+};
+
 export const addPool = async (args: PoolData) => {
   try {
     for (const [key, value] of Object.entries(args)) {
@@ -97,8 +189,8 @@ export const addPool = async (args: PoolData) => {
           }),
         );
       }
+      return createPool(args);
     }
-    return createPool(args);
   } catch (e) {
     console.log(e);
     store.dispatch(
@@ -193,6 +285,8 @@ export const deletePool = async (args: {poolAddress: string}) => {
 const actions = {
   getERC20Approve,
   distribute,
+  addStarter,
+  editStarter,
   addPool,
   editPool,
   deletePool,

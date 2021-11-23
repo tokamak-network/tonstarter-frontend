@@ -175,6 +175,7 @@ export const ListTable: FC<ListTableProps> = ({columns, data, isLoading}) => {
                   alignItems="center"
                   {...row.getRowProps()}>
                   {row.cells.map((cell: any, index: number) => {
+                    console.log(cell.row.original);
                     const {
                       name,
                       tokenName,
