@@ -99,18 +99,7 @@ export const getClaimalbeList = async (
     return res;
   } catch (e) {
     console.log(e);
-    store.dispatch(
-      //@ts-ignore
-      openToast({
-        payload: {
-          status: 'error',
-          title: 'Tx fail to send',
-          description: `something went wrong`,
-          duration: 5000,
-          isClosable: true,
-        },
-      }),
-    );
+    return undefined;
   }
 };
 
