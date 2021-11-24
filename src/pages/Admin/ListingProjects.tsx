@@ -26,12 +26,14 @@ export const ListingProjects = () => {
 
       const adminAccount = '';
 
-      const filteredStarterData =
-        adminAccount === account
-          ? starterData
-          : starterData.filter((data: AdminObject) => {
-              return data.adminAddress === account;
-            });
+      // const filteredStarterData =
+      //   adminAccount === account
+      //     ? starterData
+      //     : starterData.filter((data: AdminObject) => {
+      //         return data.adminAddress === account;
+      //     });
+
+      const filteredStarterData = starterData;
 
       const res = await Promise.all(
         filteredStarterData.map(async (data: any) => {

@@ -2,7 +2,6 @@ import {
   Flex,
   Box,
   useColorMode,
-  useTheme,
   Accordion,
   AccordionItem,
   AccordionButton,
@@ -12,11 +11,8 @@ import {
 import {Dispatch, SetStateAction, useState, useEffect} from 'react';
 import {AdminObject, StepComponent} from '@Admin/types';
 import {StepOne, StepThree, StepTwo, StepFour} from './AdminStep';
-import {createStarter} from '../utils/createStarter';
 import {LibraryType} from 'types';
-import {CustomButton} from 'components/Basic/CustomButton';
 import AdminActions from '../actions';
-import {Formik, useFormikContext} from 'formik';
 
 type AdminDetailProp = StepComponent & {
   setCurrentStep: Dispatch<SetStateAction<number>>;
@@ -84,12 +80,16 @@ export const AdminDetail: React.FC<AdminDetailProp> = (props) => {
   );
   const makeRequest = (formData: AdminObject) => {
     console.log('Form Submitted', formData);
+    if (existingData.length === 0) {
+      return AdminActions.addStarter(formData);
+    }
+    return AdminActions.editStarter(formData);
   };
 
-  const handleNextStep = (newData: any) => {
+  const handleNextStep = (newData: AdminObject, isFinal: boolean) => {
     setData((prev) => ({...prev, ...newData}));
 
-    if (final) {
+    if (isFinal) {
       return makeRequest(newData);
     }
 

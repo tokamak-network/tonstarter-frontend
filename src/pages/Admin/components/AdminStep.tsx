@@ -71,9 +71,12 @@ const Line = () => {
   );
 };
 
-export const SubmitButton = (props: {final: boolean}) => {
-  const {final} = props;
-  const {submitForm} = useFormikContext();
+export const SubmitButton = (props: {
+  final: boolean;
+  saveHandleSubmit: any;
+}) => {
+  const {final, saveHandleSubmit} = props;
+  const {values} = useFormikContext();
   const theme = useTheme();
   return (
     <CustomButton
@@ -85,7 +88,7 @@ export const SubmitButton = (props: {final: boolean}) => {
         fontFamily: theme.fonts.roboto,
         fontWeight: 600,
       }}
-      func={() => submitForm()}></CustomButton>
+      func={() => saveHandleSubmit(values)}></CustomButton>
   );
 };
 
@@ -243,8 +246,12 @@ export const StepOne: React.FC<StepProp> = (props) => {
   const theme = useTheme();
   const {btnStyle} = theme;
 
-  const handleSubmit = (values: any) => {
+  const handleSubmit = (values: AdminObject) => {
     handleNextStep(values, lastStep);
+  };
+
+  const saveHandleSubmit = (values: AdminObject) => {
+    handleNextStep(values, true);
   };
 
   const names = [
@@ -345,7 +352,9 @@ export const StepOne: React.FC<StepProp> = (props) => {
               bottom={'-330px'}
               alignItems="center"
               justifyContent="center">
-              <SubmitButton final={final}></SubmitButton>
+              <SubmitButton
+                final={final}
+                saveHandleSubmit={saveHandleSubmit}></SubmitButton>
             </Flex>
           </Form>
         );
@@ -362,6 +371,10 @@ export const StepTwo: React.FC<StepProp> = (props) => {
 
   const handleSubmit = (values: any) => {
     handleNextStep(values, lastStep);
+  };
+
+  const saveHandleSubmit = (values: AdminObject) => {
+    handleNextStep(values, true);
   };
 
   const names = [
@@ -593,7 +606,9 @@ export const StepTwo: React.FC<StepProp> = (props) => {
               bottom={'-255px'}
               alignItems="center"
               justifyContent="center">
-              <SubmitButton final={final}></SubmitButton>
+              <SubmitButton
+                final={final}
+                saveHandleSubmit={saveHandleSubmit}></SubmitButton>
             </Flex>
           </Form>
         );
@@ -616,6 +631,10 @@ export const StepThree: React.FC<StepProp> = (props) => {
 
   const handleSubmit = (values: any) => {
     handleNextStep(values, lastStep);
+  };
+
+  const saveHandleSubmit = (values: AdminObject) => {
+    handleNextStep(values, true);
   };
 
   const names = [
@@ -765,6 +784,7 @@ export const StepThree: React.FC<StepProp> = (props) => {
       onSubmit={handleSubmit}>
       {({isValid, values, setFieldValue, isValidating, errors}) => {
         const {saleContractAddress} = values;
+        // putExistingData(setFieldValue);
         return (
           <Form
             style={{
@@ -1181,7 +1201,9 @@ export const StepThree: React.FC<StepProp> = (props) => {
               bottom={'-185px'}
               alignItems="center"
               justifyContent="center">
-              <SubmitButton final={final}></SubmitButton>
+              <SubmitButton
+                final={final}
+                saveHandleSubmit={saveHandleSubmit}></SubmitButton>
             </Flex>
           </Form>
         );
@@ -1201,6 +1223,10 @@ export const StepFour: React.FC<
 
   const handleSubmit = (values: any) => {
     handleNextStep(values, lastStep);
+  };
+
+  const saveHandleSubmit = (values: AdminObject) => {
+    handleNextStep(values, true);
   };
 
   const names = [
@@ -1349,7 +1375,9 @@ export const StepFour: React.FC<
               bottom={'-111px'}
               alignItems="center"
               justifyContent="center">
-              <SubmitButton final={final}></SubmitButton>
+              <SubmitButton
+                final={final}
+                saveHandleSubmit={saveHandleSubmit}></SubmitButton>
             </Flex>
           </Form>
         );
