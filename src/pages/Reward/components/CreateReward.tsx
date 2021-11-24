@@ -223,7 +223,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
           // console.log('balanceOf',ethers.utils.formatEther(checkAllowed.toLocaleString('fullwide', {
           //   useGrouping: false,
           // }),));
-          if (rewardAddress === WTON_ADDRESS.toLocaleLowerCase()) {
+          if (rewardAddress === WTON_ADDRESS) {
             const convertedRes = convertNumber({
               amount: balanceOf,
               type: 'ray',
@@ -248,6 +248,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
       getBalance();
     }
   }, [rewardAddress, checkAllowed, library, account, amount, tokeninfo]);
+  console.log(balance);
   
   return (
     <Box display={'flex'} justifyContent={'center'}>
@@ -463,6 +464,15 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
                     tokenAddress: rewardAddress,
                   });
                 }
+              }
+              else {
+                approve({
+                  library: library,
+                  amount: amount,
+                  userAddress: account,
+                  setAlllowed: setCheckAllowed,
+                  tokenAddress: rewardAddress,
+                });
               }
             }}>
             Approve
