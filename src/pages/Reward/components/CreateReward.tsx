@@ -7,6 +7,7 @@ import {
   useTheme,
   Input,
   Menu,
+  Tooltip,
   MenuButton,
   MenuList,
   MenuItem,
@@ -33,6 +34,7 @@ import {ChevronDownIcon} from '@chakra-ui/icons';
 import * as ERC20 from 'services/abis/ERC20.json';
 import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
+import {convertNumber} from 'utils/number';
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -166,7 +168,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
     const maxStart = moment().unix() + 2592000;
     const maxEnd = startTime + 63072000;
 
-    if (startTime > maxStart) {
+    if (startTime > maxStart || (startTime < moment().unix() && startTimeArray.length !== 0) ) {
       setErrorStart(true);
     } else if (startTime <= maxStart) {
       setErrorStart(false);
@@ -176,7 +178,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
     } else if (endTime <= maxEnd) {
       setErrorEnd(false);
     }
-  }, [startTime, endTime]);
+  }, [startTime, endTime, startTimeArray]);
 
   useEffect(() => {
     const setApprovedAmount = async () => {
@@ -221,15 +223,23 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
           // console.log('balanceOf',ethers.utils.formatEther(checkAllowed.toLocaleString('fullwide', {
           //   useGrouping: false,
           // }),));
-          setBalance(
-            Number(
-              ethers.utils.formatEther(
-                balanceOf.toLocaleString('fullwide', {
-                  useGrouping: false,
-                }),
+          if (rewardAddress === WTON_ADDRESS.toLocaleLowerCase()) {
+            const convertedRes = convertNumber({
+              amount: balanceOf,
+              type: 'ray',
+            });
+            setBalance(Number(convertedRes));
+          } else {
+            setBalance(
+              Number(
+                ethers.utils.formatEther(
+                  balanceOf.toLocaleString('fullwide', {
+                    useGrouping: false,
+                  }),
+                ),
               ),
-            ),
-          );
+            );
+          }
         } catch (err) {}
       }
     }
@@ -320,7 +330,11 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             calendarType={'start'}
             created={created}
           />
+        
           <CustomClock setTime={setStartTimeArray} error={errorStart} />
+          <Tooltip isOpen={errorStart} placement="top" label="Start time should be within now and 30 days">
+            <Text></Text>
+          </Tooltip>
         </Flex>
         <Flex alignItems={'center'} h={'45px'}>
           <Text
@@ -338,6 +352,9 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             calendarType={'end'}
           />
           <CustomClock setTime={setEndTimeArray} error={errorEnd} />
+          <Tooltip isOpen={errorEnd} placement="top" label="End time should be less than 2 years from start time">
+            <Text></Text>
+          </Tooltip>
         </Flex>
         <Flex alignItems={'center'} h={'45px'}>
           <Text
@@ -431,15 +448,23 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
                 )
             }
             _hover={{backgroundColor: 'blue.100'}}
-            onClick={() =>
-              approve({
-                library: library,
-                amount: amount,
-                userAddress: account,
-                setAlllowed: setCheckAllowed,
-                tokenAddress: rewardAddress,
-              })
-            }>
+            onClick={() => {
+              if (amount > balance) {
+                if (
+                  window.confirm(
+                    `Even though you can approve this amount, you will not be able to create a reward with the same amount, since you don't have enough ${rewardSymbol} balance.`
+                  )
+                ) {
+                  approve({
+                    library: library,
+                    amount: amount,
+                    userAddress: account,
+                    setAlllowed: setCheckAllowed,
+                    tokenAddress: rewardAddress,
+                  });
+                }
+              }
+            }}>
             Approve
           </Button>
           <Button

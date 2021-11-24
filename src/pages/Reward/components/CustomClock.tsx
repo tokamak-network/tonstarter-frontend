@@ -66,17 +66,18 @@ export const CustomClock = (props: ClockProps) => {
 
   const setUp = (onClose: any) => {
     let hour;
-    if (meridiem ==='PM') {
+    if (meridiem === 'AM' && hours === 12) {
+      setTime([0, minutes, seconds]);
+    } else if (meridiem === 'PM' && hours === 12) {
+      setTime([hours, minutes, seconds]);
+    } else if (meridiem === 'PM' && hours !== 12) {
       hour = hours + 12;
-      setTime([hour, minutes, seconds])
-      onClose();
+      setTime([hour, minutes, seconds]);
+    } else {
+      setTime([hours, minutes, seconds]);
     }
-   else {
-    setTime([hours, minutes, seconds])
     onClose();
-   }
   };
-
 
   return (
     <Popover closeOnBlur={true} placement="bottom">
@@ -125,10 +126,10 @@ export const CustomClock = (props: ClockProps) => {
                 maxH={'37px'}
                 fontFamily={theme.fonts.roboto}
                 maxW={'48px'}
-                defaultValue={0}
+                defaultValue={1}
                 colorScheme={'gray'}
                 max={12}
-                min={0}
+                min={1}
                 mr={'10px'}
                 onChange={(value) => {
                   setHours(parseInt(value));

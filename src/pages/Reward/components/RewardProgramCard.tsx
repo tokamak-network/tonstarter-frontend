@@ -127,7 +127,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     };
 
     getTokenFromContract(reward.rewardToken);
-  }, [account, library]);
+  }, [account, library, pageIndex]);
 
   useEffect(() => {
     const now = moment().unix();
@@ -289,26 +289,27 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
       <Flex flexDir={'row'} width={'100%'} alignItems={'center'} h={'50px'}>
         <Box>
           <Avatar
-            src={checkTokenType(reward.token0Address.toLowerCase()).symbol}
-            backgroundColor={checkTokenType(reward.token0Address).bg}
-            bg="transparent"
-            color="#c7d1d8"
+            src={checkTokenType(reward.token0Address.toLowerCase(), colorMode).symbol}
+            bg={colorMode === 'light' ? '#ffffff' : '#222222'}
             name="T"
-            border={checkTokenType(reward.token0Address).border}
+            border={
+              colorMode === 'light' ? '1px solid #e7edf3' : '1px solid #3c3c3c'
+            }
             h="50px"
             w="50px"
             zIndex={'100'}
           />
           <Avatar
-            src={checkTokenType(reward.token1Address.toLowerCase()).symbol}
+            src={checkTokenType(reward.token1Address.toLowerCase(),colorMode).symbol}
             backgroundColor={checkTokenType(reward.token1Address).bg}
-            bg="transparent"
-            color="#c7d1d8"
+            bg={colorMode === 'light' ? '#ffffff' : '#222222'}
             name="T"
             h="50px"
+            border={
+              colorMode === 'light' ? '1px solid #e7edf3' : '1px solid #3c3c3c'
+            }
             w="50px"
             ml={'-7px'}
-            border={checkTokenType(reward.token1Address).border}
           />
         </Box>
         {staked ? (
@@ -375,7 +376,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
           ''
         )}
       </Flex>
-      <Flex mt={'15px'} alignItems={'center'} >
+      <Flex mt={'15px'} alignItems={'center'}>
         <Text {...REWARD_STYLE.mainText({colorMode})} mr={'10px'}>
           {reward.poolName}
         </Text>
@@ -385,27 +386,33 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
           </Text>
           <Flex>
             {/* <Box> */}
-              <Text {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 14})} lineHeight={1}>
-                {moment.unix(Number(reward.startTime)).format('YYYY.MM.DD')}
-              </Text>
-              <Text
-                {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 11})}
-                pb={'2px'}
-                pl={'2px'}>
-                ({moment.unix(Number(reward.startTime)).format('HH.mm.ss')}) 
-              </Text>
-              {/* </Box> */}
-              <Text mb={'5px'} lineHeight={1} px={'5px'}>~{' '}</Text>
-              {/* <Box> */}
-              <Text {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 14})} lineHeight={1}>
-                {moment.unix(Number(reward.endTime)).format('YYYY.MM.DD')}
-              </Text>
-              <Text
-                {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 11})}
-                pb={'2px'}
-                pl={'2px'}>
-                ({moment.unix(Number(reward.endTime)).format('HH.mm.ss')})
-              </Text>
+            <Text
+              {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 14})}
+              lineHeight={1}>
+              {moment.unix(Number(reward.startTime)).format('YYYY.MM.DD')}
+            </Text>
+            <Text
+              {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 11})}
+              pb={'2px'}
+              pl={'2px'}>
+              ({moment.unix(Number(reward.startTime)).format('HH.mm.ss')})
+            </Text>
+            {/* </Box> */}
+            <Text mb={'5px'} lineHeight={1} px={'5px'}>
+              ~{' '}
+            </Text>
+            {/* <Box> */}
+            <Text
+              {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 14})}
+              lineHeight={1}>
+              {moment.unix(Number(reward.endTime)).format('YYYY.MM.DD')}
+            </Text>
+            <Text
+              {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 11})}
+              pb={'2px'}
+              pl={'2px'}>
+              ({moment.unix(Number(reward.endTime)).format('HH.mm.ss')})
+            </Text>
             {/* </Box> */}
           </Flex>
         </Box>
@@ -448,33 +455,46 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
         flexDirection="row"
         alignItems={'center'}
         justifyContent={'space-between'}>
-        <Box>
-          <Text
-            {...REWARD_STYLE.mainText({
-              colorMode,
-              fontSize: 14,
-            })}>
-            Total Raise
-          </Text>
-          <Box d="flex" alignItems="baseline">
+        <Flex alignItems={'center'}>
+          <Box>
             <Text
               {...REWARD_STYLE.mainText({
                 colorMode,
-                fontSize: 20,
-              })}
-              lineHeight={'0.7'}>
-              {Number(
-                ethers.utils.formatEther(reward.allocatedReward.toString()),
-              ).toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-              })}
+                fontSize: 14,
+              })}>
+              Total Raise
             </Text>
-            <Text ml="2px" fontSize="13">
-              {rewardSymbol}
-            </Text>
+            <Box d="flex" alignItems="baseline">
+              <Text
+                {...REWARD_STYLE.mainText({
+                  colorMode,
+                  fontSize: 20,
+                })}
+                lineHeight={'0.7'}>
+                {Number(
+                  ethers.utils.formatEther(reward.allocatedReward.toString()),
+                ).toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                })}
+              </Text>
+              <Text ml="2px" fontSize="13">
+                {rewardSymbol}
+              </Text>
+            </Box>
           </Box>
-        </Box>
-
+          <Avatar
+          ml={'10px'}
+            src={checkTokenType(reward.rewardToken.toLowerCase(),colorMode).symbol}
+            bg={colorMode === 'light' ? '#ffffff' : '#222222'}
+            name="T"
+            border={
+              colorMode === 'light' ? '1px solid #e7edf3' : '1px solid #3c3c3c'
+            }
+            h="22px"
+            w="22px"
+            zIndex={'100'}
+          />
+        </Flex>
         <Flex flexDirection="row" justifyContent={'center'}>
           {buttonState === 'Stake' &&
           moment().unix() > reward.startTime &&

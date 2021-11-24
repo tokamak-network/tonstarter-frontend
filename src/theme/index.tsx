@@ -86,7 +86,7 @@ export const REWARD_STYLE = {
   containerStyle: (props: REWARD_PROP & {isUserTier?: boolean}) => ({
     w: 382,
     h: 272,
-    px: 25,
+    px: '20px',
     pt: '20px',
     pb: 25,
     bg: props.colorMode === 'light' ? 'white.100' : '',

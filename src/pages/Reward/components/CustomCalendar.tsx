@@ -174,6 +174,8 @@ export const CustomCalendar = (prop: CalendarProps) => {
         value={showInputValue}
         readOnly={true}
         h={30}
+        textAlign={'center'}
+        p={'5px'}
         placeholder={'MM/DD/YYYY'}
         border={'none'}
         _focus={{
