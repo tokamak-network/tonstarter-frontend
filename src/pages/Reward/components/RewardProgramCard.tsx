@@ -289,7 +289,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
       <Flex flexDir={'row'} width={'100%'} alignItems={'center'} h={'50px'}>
         <Box>
           <Avatar
-            src={checkTokenType(reward.token0Address.toLowerCase(), colorMode).symbol}
+            src={checkTokenType(ethers.utils.getAddress(reward.token0Address), colorMode).symbol}
             bg={colorMode === 'light' ? '#ffffff' : '#222222'}
             name="T"
             border={
@@ -300,8 +300,8 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
             zIndex={'100'}
           />
           <Avatar
-            src={checkTokenType(reward.token1Address.toLowerCase(),colorMode).symbol}
-            backgroundColor={checkTokenType(reward.token1Address).bg}
+            src={checkTokenType(ethers.utils.getAddress(reward.token1Address),colorMode).symbol}
+           
             bg={colorMode === 'light' ? '#ffffff' : '#222222'}
             name="T"
             h="50px"
@@ -337,7 +337,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
                 ).toLocaleString(undefined, {
                   minimumFractionDigits: 2,
                 })}{' '}
-                {checkTokenType(reward.rewardToken).name} /{' '}
+                {checkTokenType(ethers.utils.getAddress(reward.rewardToken)).name} /{' '}
                 {parseFloat(
                   (
                     (Number(ethers.utils.formatEther(myReward.toString())) *
@@ -484,7 +484,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
           </Box>
           <Avatar
           ml={'10px'}
-            src={checkTokenType(reward.rewardToken.toLowerCase(),colorMode).symbol}
+            src={checkTokenType(ethers.utils.getAddress(reward.rewardToken),colorMode).symbol}
             bg={colorMode === 'light' ? '#ffffff' : '#222222'}
             name="T"
             border={

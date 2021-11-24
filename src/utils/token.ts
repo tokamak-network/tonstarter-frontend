@@ -26,10 +26,10 @@ const tokenAddresses: {
   doc: DocAddressType;
 } = {
   eth: '0x0000000000000000000000000000000000000000',
-  ton: TON_ADDRESS.toLowerCase(),
-  tos: TOS_ADDRESS.toLowerCase(),
-  wton: WTON_ADDRESS.toLowerCase(),
-  doc: DOC_ADDRESS.toLowerCase()
+  ton: TON_ADDRESS,
+  tos: TOS_ADDRESS,
+  wton: WTON_ADDRESS,
+  doc: DOC_ADDRESS
 };
 
 const tokenInfo = {

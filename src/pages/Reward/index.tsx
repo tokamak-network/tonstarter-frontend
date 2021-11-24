@@ -12,6 +12,7 @@ import {
   useTheme,
   Menu,
   MenuButton,
+  Portal,
   MenuList,
   MenuItem,
   MenuItemOption,
@@ -136,6 +137,7 @@ export const Reward = () => {
       pollingInterval: ms`2m`,
     },
   );
+console.log(poolArr);
 
   const positionsByPool = usePositionByPoolQuery(
     {pool_id: arr},
@@ -307,6 +309,8 @@ export const Reward = () => {
   };
 
   const getSelectedPosition = (e: any) => {
+    console.log('hiii');
+
     const pos = e.target.value;
     setSelectdPosition(pos);
   };
@@ -389,7 +393,7 @@ export const Reward = () => {
                     ))}
                   </MenuList>
                 </Menu>
-                <Menu isLazy>
+                <Menu isLazy closeOnSelect={false}>
                   <MenuButton
                     mr={'10px'}
                     border={themeDesign.border[colorMode]}
@@ -422,7 +426,7 @@ export const Reward = () => {
                         colorMode === 'light' ? '#ffffff' : '#222222'
                       }>
                       <MenuOptionGroup
-                       pl={'10px'}
+                        pl={'10px'}
                         defaultValue="asc"
                         title="My LP Tokens"
                         type="radio"
@@ -434,76 +438,220 @@ export const Reward = () => {
                     <MenuList
                       zIndex={10000}
                       m={'0px'}
-                      minWidth="157px"
+                      minWidth="156px"
                       background={
                         colorMode === 'light' ? '#ffffff' : '#222222'
                       }>
-                      <MenuOptionGroup
-                        defaultValue="asc"
-                        title="Not Staked"
-                        fontSize={'13px'}
-                        m={'0px'}
-                        pl={'10px'}
-                        w={'157px'}
-                        type="radio">
-                        {positions.map((item: any, index) => {
-                          if (item.owner === account?.toLowerCase()) {
-                            return (
-                              <MenuItem
-                                onClick={getSelectedPosition}
-                                h={'30px'}
-                                color={
-                                  colorMode === 'light' ? '#3e495c' : '#f3f4f1'
+                      <MenuItem>
+                        <Menu isLazy>
+                          <MenuButton fontSize={'13px'}>
+                            All <ChevronDownIcon />
+                          </MenuButton>
+
+                          <MenuList
+                            zIndex={10000}
+                            ml={'-13px'}
+                            minWidth="156px"
+                            borderTop="none"
+                            boxShadow="none"
+                            borderTopRadius={0}
+                            background={
+                              colorMode === 'light' ? '#ffffff' : '#222222'
+                            }>
+                            {positions.map((item: any, index) => {
+                              return (
+                                <MenuItem
+                                  onClick={getSelectedPosition}
+                                  // onClick={() => alert("Kagebunshin")}
+                                  h={'30px'}
+                                  color={
+                                    colorMode === 'light'
+                                      ? '#3e495c'
+                                      : '#f3f4f1'
+                                  }
+                                  fontSize={'12px'}
+                                  w={'154px'}
+                                  m={'0px'}
+                                  value={item.id}
+                                  _hover={{
+                                    background: 'transparent',
+                                    color: 'blue.100',
+                                  }}
+                                  _focus={{background: 'transparent'}}
+                                  key={index}>
+                                  {item.id}
+                                </MenuItem>
+                              );
+                            })}
+                          </MenuList>
+                        </Menu>
+                      </MenuItem>
+                      <MenuItem>
+                        <Menu isLazy>
+                          <MenuButton fontSize={'13px'}>
+                            Staked <ChevronDownIcon />
+                          </MenuButton>
+
+                          <MenuList
+                            zIndex={10000}
+                            ml={'-14px'}
+                            minWidth="156px"
+                            borderTop="none"
+                            boxShadow="none"
+                            borderTopRadius={0}
+                            background={
+                              colorMode === 'light' ? '#ffffff' : '#222222'
+                            }>
+                            {positions.map((item: any, index) => {
+                              if (item.owner !== account?.toLowerCase()) {
+                              return (
+                                <MenuItem
+                                  onClick={getSelectedPosition}
+                                  // onClick={() => alert("Kagebunshin")}
+                                  h={'30px'}
+                                  color={
+                                    colorMode === 'light'
+                                      ? '#3e495c'
+                                      : '#f3f4f1'
+                                  }
+                                  fontSize={'12px'}
+                                  w={'154px'}
+                                  m={'0px'}
+                                  value={item.id}
+                                  _hover={{
+                                    background: 'transparent',
+                                    color: 'blue.100',
+                                  }}
+                                  _focus={{background: 'transparent'}}
+                                  key={index}>
+                                  {item.id}
+                                </MenuItem>
+                              );
                                 }
-                                fontSize={'12px'}
-                                w={'157px'}
-                                m={'0px'}
-                                value={item.id}
-                                _hover={{
-                                  background: 'transparent',
-                                  color: 'blue.100',
-                                }}
-                                _focus={{background: 'transparent'}}
-                                key={index}>
-                                {item.id}
-                              </MenuItem>
-                            );
-                          }
-                        })}
-                      </MenuOptionGroup>
-                      <MenuOptionGroup
-                       pl={'10px'}
-                        m={'0px'}
-                        defaultValue="asc"
-                        title="Staked"
-                        fontSize={'13px'}
-                        type="radio">
-                        {positions.map((item: any, index) => {
-                          if (item.owner !== account?.toLowerCase()) {
-                            return (
-                              <MenuItem
-                                onClick={getSelectedPosition}
-                                h={'30px'}
-                                color={
-                                  colorMode === 'light' ? '#3e495c' : '#f3f4f1'
+                            })}
+                          </MenuList>
+                        </Menu>
+                      </MenuItem>
+                      <MenuItem>
+                        <Menu isLazy>
+                          <MenuButton fontSize={'13px'}>
+                            Not Staked <ChevronDownIcon />
+                          </MenuButton>
+
+                          <MenuList
+                            zIndex={10000}
+                            ml={'-0.845rem'}
+                            minWidth="156px"
+                            borderTop="none"
+                            boxShadow="none"
+                            borderTopRadius={0}
+                            background={
+                              colorMode === 'light' ? '#ffffff' : '#222222'
+                            }>
+                            {positions.map((item: any, index) => {
+                               if (item.owner === account?.toLowerCase()) {
+                              return (
+                                <MenuItem
+                                  onClick={getSelectedPosition}
+                                  h={'30px'}
+                                  color={
+                                    colorMode === 'light'
+                                      ? '#3e495c'
+                                      : '#f3f4f1'
+                                  }
+                                  fontSize={'12px'}
+                                  w={'154px'}
+                                  m={'0px'}
+                                  value={item.id}
+                                  _hover={{
+                                    background: 'transparent',
+                                    color: 'blue.100',
+                                  }}
+                                  _focus={{background: 'transparent'}}
+                                  key={index}>
+                                  {item.id}
+                                </MenuItem>
+                              );
                                 }
-                                fontSize={'12px'}
-                                w={'157px'}
-                                m={'0px'}
-                                value={item.id}
-                                _hover={{
-                                  background: 'transparent',
-                                  color: 'blue.100',
-                                }}
-                                _focus={{background: 'transparent'}}
-                                key={index}>
-                                {item.id}
-                              </MenuItem>
-                            );
-                          }
-                        })}
-                      </MenuOptionGroup>
+                            })}
+                          </MenuList>
+                        </Menu>
+                      </MenuItem>
                     </MenuList>
+
+                    // <MenuList
+                    //   zIndex={10000}
+                    //   m={'0px'}
+                    //   minWidth="157px"
+                    //   background={
+                    //     colorMode === 'light' ? '#ffffff' : '#222222'
+                    //   }>
+                    //   <MenuOptionGroup
+                    //     defaultValue="asc"
+                    //     title="Not Staked"
+                    //     fontSize={'13px'}
+                    //     m={'0px'}
+                    //     pl={'10px'}
+                    //     w={'157px'}
+                    //     type="radio">
+                    //     {positions.map((item: any, index) => {
+                    //       if (item.owner === account?.toLowerCase()) {
+                    //         return (
+                    //           <MenuItem
+                    //             onClick={getSelectedPosition}
+                    //             h={'30px'}
+                    //             color={
+                    //               colorMode === 'light' ? '#3e495c' : '#f3f4f1'
+                    //             }
+                    //             fontSize={'12px'}
+                    //             w={'157px'}
+                    //             m={'0px'}
+                    //             value={item.id}
+                    //             _hover={{
+                    //               background: 'transparent',
+                    //               color: 'blue.100',
+                    //             }}
+                    //             _focus={{background: 'transparent'}}
+                    //             key={index}>
+                    //             {item.id}
+                    //           </MenuItem>
+                    //         );
+                    //       }
+                    //     })}
+                    //   </MenuOptionGroup>
+                    //   <MenuOptionGroup
+                    //    pl={'10px'}
+                    //     m={'0px'}
+                    //     defaultValue="asc"
+                    //     title="Staked"
+                    //     fontSize={'13px'}
+                    //     type="radio">
+                    //     {positions.map((item: any, index) => {
+                    //       if (item.owner !== account?.toLowerCase()) {
+                    //         return (
+                    //           <MenuItem
+                    //             onClick={getSelectedPosition}
+                    //             h={'30px'}
+                    //             color={
+                    //               colorMode === 'light' ? '#3e495c' : '#f3f4f1'
+                    //             }
+                    //             fontSize={'12px'}
+                    //             w={'157px'}
+                    //             m={'0px'}
+                    //             value={item.id}
+                    //             _hover={{
+                    //               background: 'transparent',
+                    //               color: 'blue.100',
+                    //             }}
+                    //             _focus={{background: 'transparent'}}
+                    //             key={index}>
+                    //             {item.id}
+                    //           </MenuItem>
+                    //         );
+                    //       }
+                    //     })}
+                    //   </MenuOptionGroup>
+                    // </MenuList>
                   )}
                 </Menu>
 

@@ -84,7 +84,10 @@ export const create = async (args: Create) => {
     
   const amountFotmatted = ethers.utils.parseEther(amount.toString());
   const signer = getSigner(library, userAddress);
-
+  console.log('poolAddress', poolAddress);
+  console.log('name', name);
+  
+  
   const key = {
     rewardToken:rewardToken,
     pool: poolAddress,

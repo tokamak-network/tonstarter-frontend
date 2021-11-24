@@ -62,7 +62,7 @@ export const SearchModal = () => {
   }, [address, symbol, decimal, balance]);
 
   useEffect(() => {
-    const tokenList = [TON_ADDRESS, TOS_ADDRESS, WTON_ADDRESS.toLowerCase(), DOC_ADDRESS];
+    const tokenList = [TON_ADDRESS, TOS_ADDRESS, WTON_ADDRESS, DOC_ADDRESS];
     setTokenLists(tokenList);
   }, [data]);
 
@@ -176,7 +176,7 @@ export const SearchModal = () => {
                   </Text>
                   <Flex flexDirection={'column'} >
                     {tokenLists.map((token: any, index: number) => {
-                      const detailedToken = checkTokenType(token);
+                      const detailedToken = checkTokenType(ethers.utils.getAddress(token), colorMode);
                       return (
                         <Flex
                         p={'5px'}
@@ -191,13 +191,12 @@ export const SearchModal = () => {
                           borderBottom={themeDesign.border[colorMode]}>
                           <Avatar
                             src={detailedToken.symbol}
-                            backgroundColor={detailedToken.bg}
-                            bg="transparent"
+                            bg={colorMode === 'light' ? '#ffffff' : '#222222'}
                             color="#c7d1d8"
                             name="T"
-                            border={detailedToken.border}
-                            h="26px"
-                            p={'2px'}
+                            border={
+                              colorMode === 'light' ? '1px solid #e7edf3' : '1px solid #3c3c3c'
+                            }                            h="26px"
                             w="26px"
                             zIndex={'100'}
                           />

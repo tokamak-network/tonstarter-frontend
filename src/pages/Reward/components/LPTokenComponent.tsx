@@ -14,8 +14,7 @@ import {
 } from '@chakra-ui/react';
 
 import {FC, useState, useEffect} from 'react';
-import {useActiveWeb3React} from 'hooks/useWeb3';
-import {checkTokenType} from 'utils/token';
+
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 
 type LPTokenComponentProps = {

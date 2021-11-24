@@ -16,7 +16,7 @@ import {FC, useState, useEffect} from 'react';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {checkTokenType} from 'utils/token';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
-
+import {utils, ethers} from 'ethers';
 const themeDesign = {
   border: {
     light: 'solid 1px #d7d9df',
@@ -118,28 +118,30 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
             px={'15px'}>
             <Box>
               <Avatar
-                src={checkTokenType(pool.token0.id).symbol}
-                backgroundColor={checkTokenType(pool.token0.id).bg}
-                bg="transparent"
+                src={checkTokenType(ethers.utils.getAddress(pool.token0.id), colorMode).symbol}
+                bg={colorMode === 'light' ? '#ffffff' : '#222222'}
                 color="#c7d1d8"
                 name="T"
-                border={checkTokenType(pool.token0.id).border}
+                border={
+                  colorMode === 'light' ? '1px solid #e7edf3' : '1px solid #3c3c3c'
+                }
                 h="26px"
-                p={'2px'}
+                // p={'2px'}
                 w="26px"
                 zIndex={'100'}
               />
               <Avatar
-                src={checkTokenType(pool.token1.id).symbol}
-                backgroundColor={checkTokenType(pool.token1.id).bg}
-                bg="transparent"
+                src={checkTokenType(ethers.utils.getAddress(pool.token1.id), colorMode).symbol}
+                bg={colorMode === 'light' ? '#ffffff' : '#222222'}
                 color="#c7d1d8"
                 name="T"
                 h="26px"
                 w="26px"
-                p={'2px'}
+                // p={'2px'}
                 ml={'-7px'}
-                border={checkTokenType(pool.token1.id).border}
+                border={
+                  colorMode === 'light' ? '1px solid #e7edf3' : '1px solid #3c3c3c'
+                }
               />
             </Box>
             <Text

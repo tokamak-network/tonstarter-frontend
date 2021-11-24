@@ -172,26 +172,27 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
         h={'50px'}>
         <Box>
           <Avatar
-            src={checkTokenType(reward.token0Address).symbol}
-            backgroundColor={checkTokenType(reward.token0Address).bg}
-            bg="transparent"
-            color="#c7d1d8"
+            src={checkTokenType(ethers.utils.getAddress(reward.token0Address), colorMode).symbol}
+            bg={colorMode === 'light' ? '#ffffff' : '#222222'}
             name="T"
-            border={checkTokenType(reward.token0Address).border}
+            border={
+              colorMode === 'light' ? '1px solid #e7edf3' : '1px solid #3c3c3c'
+            }
             h="50px"
             w="50px"
             zIndex={'100'}
           />
           <Avatar
-            src={checkTokenType(reward.token1Address).symbol}
-            backgroundColor={checkTokenType(reward.token1Address).bg}
-            bg="transparent"
-            color="#c7d1d8"
+            src={checkTokenType(ethers.utils.getAddress(reward.token1Address),colorMode).symbol}
+            bg={colorMode === 'light' ? '#ffffff' : '#222222'}
             name="T"
+            border={
+              colorMode === 'light' ? '1px solid #e7edf3' : '1px solid #3c3c3c'
+            }
             h="50px"
             w="50px"
+            zIndex={'100'}
             ml={'-7px'}
-            border={checkTokenType(reward.token1Address).border}
           />
         </Box>
         <Flex flexDir={'row'} alignItems={'center'}>
@@ -202,7 +203,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
               ).toLocaleString(undefined, {
                 minimumFractionDigits: 2,
               })}{' '}
-              {checkTokenType(reward.rewardToken).name} / {numStakers}
+              {checkTokenType(ethers.utils.getAddress(reward.rewardToken)).name} / {numStakers}
             </Text>
             <Flex flexDir={'row'}>
               <Text
@@ -299,6 +300,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
         flexDirection="row"
         alignItems={'center'}
         justifyContent={'space-between'}>
+           <Flex alignItems={'center'}>
         <Box>
           <Text
             {...REWARD_STYLE.mainText({
@@ -325,6 +327,19 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
             </Text>
           </Box>
         </Box>
+        <Avatar
+          ml={'10px'}
+            src={checkTokenType(ethers.utils.getAddress(reward.rewardToken),colorMode).symbol}
+            bg={colorMode === 'light' ? '#ffffff' : '#222222'}
+            name="T"
+            border={
+              colorMode === 'light' ? '1px solid #e7edf3' : '1px solid #3c3c3c'
+            }
+            h="22px"
+            w="22px"
+            zIndex={'100'}
+          />
+        </Flex>
         <Button
           w={'120px'}
           h={'33px'}
