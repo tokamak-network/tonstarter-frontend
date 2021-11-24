@@ -77,9 +77,9 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
     
 const getTokenList = async() => {
   const rewardTokens = [
-    ...Array.from(new Set(rewards.map((reward) => reward.rewardToken))),
+    ...Array.from(new Set(rewards.map((reward) => ethers.utils.getAddress(reward.rewardToken) ))),
   ];
-
+  
   let tokensArray: any = [];
   await Promise.all(
     rewardTokens.map(async (token) => {

@@ -478,7 +478,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
                 })}
               </Text>
               <Text ml="2px" fontSize="13">
-                {rewardSymbol}
+                {checkTokenType(ethers.utils.getAddress(reward.rewardToken),colorMode).name}
               </Text>
             </Box>
           </Box>

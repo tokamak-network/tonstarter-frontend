@@ -45,7 +45,8 @@ import {getPoolName, checkTokenType} from '../../utils/token';
 import {fetchPositionPayload} from '../Pools/utils/fetchPositionPayload';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import {ChevronDownIcon} from '@chakra-ui/icons';
-
+import {utils, ethers} from 'ethers';
+import {getTokenSymbol} from './utils/getTokenSymbol';
 import {
   usePositionByUserQuery,
   usePositionByContractQuery,
@@ -127,7 +128,10 @@ export const Reward = () => {
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [orderedData, setOrderedData] = useState<Reward[]>([]);
   const [order, setOrder] = useState<boolean | 'desc' | 'asc'>('desc');
-
+  const [tokenList, setTokenList] = useState<any[]>([]);
+  const [selectedToken, setSelectedToken] = useState<Token>()
+  const [filteredData, setFilteredData] = useState<Reward[]>([]);
+  const [filteredManageData, setFilteredManageData] = useState<Reward[]>([]);
   const arr: any = [];
   arr.push(BasePool_Address.toLowerCase());
   arr.push(DOCPool_Address);
@@ -137,7 +141,6 @@ export const Reward = () => {
       pollingInterval: ms`2m`,
     },
   );
-console.log(poolArr);
 
   const positionsByPool = usePositionByPoolQuery(
     {pool_id: arr},
@@ -149,6 +152,7 @@ console.log(poolArr);
   useEffect(() => {
     const filteredData = filterDatas();
     setOrderedData(filteredData);
+    setFilteredData(filteredData)
   }, [sortString, datas]);
 
   const changeSelect = (e: any) => {
@@ -289,31 +293,90 @@ console.log(poolArr);
       (data) => data.incentiveKey.refundee === account,
     );
     setManageDatas(filtered);
+    setFilteredManageData(filtered)
   }, [orderedData, sortString, account, library]);
 
   const getSelectedPool = (e: any) => {
     const poolAddress = e.target.value;
-    const selected: Pool[] = pool.filter((pool) => pool.id === poolAddress);
-    setSelectedPool(selected[0]);
+    const selected: Pool = pool.find((pool) => pool.id === poolAddress);
+    setSelectedPool(selected);
+    setSelectedToken(undefined)
     setSelectdPosition('');
 
     if (poolAddress === '') {
       setOrderedData(datas);
+      setFilteredData(datas)
       setSelectdPosition('');
     } else {
       const selectedRewards = datas.filter(
         (data) => data.poolAddress === poolAddress,
       );
       setOrderedData(selectedRewards);
+      setFilteredData(selectedRewards)
     }
   };
 
-  const getSelectedPosition = (e: any) => {
-    console.log('hiii');
+  const getSelectedReardToken = (e:any) => {
+    const tokenAddress = e.target.value
+    const rewardToken:Token = tokenList.find((token)=> token.token === tokenAddress)
+    setSelectedToken(rewardToken)
+    
+    if (tokenAddress !== '') {
+      const selectedManageRewards = manageDatas.filter((data: any) => ethers.utils.getAddress(data.rewardToken.toString())  === ethers.utils.getAddress(tokenAddress))
+      setFilteredManageData(selectedManageRewards)
+      if (orderedData.length === 0) {
+        const selectedRewards = datas.filter((data) => ethers.utils.getAddress(data.rewardToken.toString())  === ethers.utils.getAddress(tokenAddress))
+        setFilteredData(selectedRewards)
+        
+      }
+      else {
+        const selectedRewards = orderedData.filter((data) => ethers.utils.getAddress(data.rewardToken.toString())  === ethers.utils.getAddress(tokenAddress))
+        setFilteredData(selectedRewards)
+      }
 
+    }
+    else {
+      setFilteredData(datas)
+      setFilteredManageData(manageDatas)
+    }
+  }
+  const getSelectedPosition = (e: any) => {
     const pos = e.target.value;
     setSelectdPosition(pos);
   };
+  const getTokenFromContract = async (address: string) => {
+    const symbolContract = await getTokenSymbol(address, library, account);
+    return symbolContract;
+  };
+
+  useEffect(() => {
+    const getTokenList = async () => {
+      const rewardTokens = [
+        ...Array.from(
+          new Set(
+            datas.map((reward: any) =>
+              ethers.utils.getAddress(reward.rewardToken),
+            ),
+          ),
+        ),
+      ];
+
+      let tokensArray: any = [];
+      await Promise.all(
+        rewardTokens.map(async (token) => {
+          const symbol = await getTokenFromContract(token);
+          tokensArray.push({
+            symbol,
+            token,
+          });
+        }),
+      );
+      setTokenList(tokensArray);
+    };
+    getTokenList();
+  }, [datas, account, library, transactionType, blockNumber]);
+
+  
   return (
     <Fragment>
       <Head title={'Reward'} />
@@ -393,7 +456,65 @@ console.log(poolArr);
                     ))}
                   </MenuList>
                 </Menu>
-                <Menu isLazy closeOnSelect={false}>
+                <Menu isLazy>
+                  <MenuButton
+                    mr={'10px'}
+                    border={themeDesign.border[colorMode]}
+                    padding={'10px'}
+                    borderRadius={'4px'}
+                    h={'32px'}
+                    color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}
+                    fontSize={'12px'}
+                    w={'157px'}>
+                    <Text
+                      w={'100%'}
+                      display={'flex'}
+                      flexDir={'row'}
+                      alignItems={'center'}
+                      justifyContent={'space-between'}>
+                      {selectedToken === undefined
+                        ? 'Reward Tokens'
+                        : selectedToken.symbol}
+                      <span>
+                        <ChevronDownIcon />
+                      </span>
+                    </Text>
+                  </MenuButton>
+                  <MenuList
+                    zIndex={10000}
+                    m={'0px'}
+                    minWidth="157px"
+                    background={colorMode === 'light' ? '#ffffff' : '#222222'}>
+                    <MenuItem
+                      onClick={getSelectedReardToken}
+                      h={'30px'}
+                      color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}
+                      fontSize={'12px'}
+                      w={'157px'}
+                      m={'0px'}
+                      value={''}
+                      _hover={{background: 'transparent', color: 'blue.100'}}
+                      _focus={{background: 'transparent'}}>
+                      All reward tokens
+                    </MenuItem>
+                    {tokenList.map((item, index) => (
+                      <MenuItem
+                        onClick={getSelectedReardToken}
+                        h={'30px'}
+                        color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}
+                        fontSize={'12px'}
+                        w={'157px'}
+                        m={'0px'}
+                        value={item.token}
+                        _hover={{background: 'transparent', color: 'blue.100'}}
+                        _focus={{background: 'transparent'}}
+                        key={index}>
+                        {item.symbol}
+                      </MenuItem>
+                    ))}
+                  </MenuList>
+                </Menu>
+                <Menu isLazy>
                   <MenuButton
                     mr={'10px'}
                     border={themeDesign.border[colorMode]}
@@ -444,17 +565,22 @@ console.log(poolArr);
                       }>
                       <MenuItem>
                         <Menu isLazy>
-                          <MenuButton fontSize={'13px'}>
+                          <MenuButton
+                            minWidth={'90px'}
+                            textAlign={'left'}
+                            fontSize={'13px'}>
                             All <ChevronDownIcon />
                           </MenuButton>
 
                           <MenuList
                             zIndex={10000}
-                            ml={'-13px'}
-                            minWidth="156px"
+                            ml={'-0.845rem'}
+                            mr={'1px'}
+                            minWidth="155px"
                             borderTop="none"
                             boxShadow="none"
                             borderTopRadius={0}
+                            minHeight={'80px'}
                             background={
                               colorMode === 'light' ? '#ffffff' : '#222222'
                             }>
@@ -488,13 +614,18 @@ console.log(poolArr);
                       </MenuItem>
                       <MenuItem>
                         <Menu isLazy>
-                          <MenuButton fontSize={'13px'}>
+                          <MenuButton
+                            minWidth={'90px'}
+                            textAlign={'left'}
+                            fontSize={'13px'}>
                             Staked <ChevronDownIcon />
                           </MenuButton>
 
                           <MenuList
                             zIndex={10000}
-                            ml={'-14px'}
+                            minHeight={'80px'}
+                            ml={'-0.845rem'}
+                            mr={'1px'}
                             minWidth="156px"
                             borderTop="none"
                             boxShadow="none"
@@ -504,43 +635,48 @@ console.log(poolArr);
                             }>
                             {positions.map((item: any, index) => {
                               if (item.owner !== account?.toLowerCase()) {
-                              return (
-                                <MenuItem
-                                  onClick={getSelectedPosition}
-                                  // onClick={() => alert("Kagebunshin")}
-                                  h={'30px'}
-                                  color={
-                                    colorMode === 'light'
-                                      ? '#3e495c'
-                                      : '#f3f4f1'
-                                  }
-                                  fontSize={'12px'}
-                                  w={'154px'}
-                                  m={'0px'}
-                                  value={item.id}
-                                  _hover={{
-                                    background: 'transparent',
-                                    color: 'blue.100',
-                                  }}
-                                  _focus={{background: 'transparent'}}
-                                  key={index}>
-                                  {item.id}
-                                </MenuItem>
-                              );
-                                }
+                                return (
+                                  <MenuItem
+                                    onClick={getSelectedPosition}
+                                    // onClick={() => alert("Kagebunshin")}
+                                    h={'30px'}
+                                    color={
+                                      colorMode === 'light'
+                                        ? '#3e495c'
+                                        : '#f3f4f1'
+                                    }
+                                    fontSize={'12px'}
+                                    w={'153px'}
+                                    m={'0px'}
+                                    value={item.id}
+                                    _hover={{
+                                      background: 'transparent',
+                                      color: 'blue.100',
+                                    }}
+                                    _focus={{background: 'transparent'}}
+                                    key={index}>
+                                    {item.id}
+                                  </MenuItem>
+                                );
+                              }
                             })}
                           </MenuList>
                         </Menu>
                       </MenuItem>
                       <MenuItem>
                         <Menu isLazy>
-                          <MenuButton fontSize={'13px'}>
+                          <MenuButton
+                            minWidth={'90px'}
+                            textAlign={'left'}
+                            fontSize={'13px'}>
                             Not Staked <ChevronDownIcon />
                           </MenuButton>
 
                           <MenuList
                             zIndex={10000}
                             ml={'-0.845rem'}
+                            mr={'1px'}
+                            minHeight={'80px'}
                             minWidth="156px"
                             borderTop="none"
                             boxShadow="none"
@@ -549,30 +685,30 @@ console.log(poolArr);
                               colorMode === 'light' ? '#ffffff' : '#222222'
                             }>
                             {positions.map((item: any, index) => {
-                               if (item.owner === account?.toLowerCase()) {
-                              return (
-                                <MenuItem
-                                  onClick={getSelectedPosition}
-                                  h={'30px'}
-                                  color={
-                                    colorMode === 'light'
-                                      ? '#3e495c'
-                                      : '#f3f4f1'
-                                  }
-                                  fontSize={'12px'}
-                                  w={'154px'}
-                                  m={'0px'}
-                                  value={item.id}
-                                  _hover={{
-                                    background: 'transparent',
-                                    color: 'blue.100',
-                                  }}
-                                  _focus={{background: 'transparent'}}
-                                  key={index}>
-                                  {item.id}
-                                </MenuItem>
-                              );
-                                }
+                              if (item.owner === account?.toLowerCase()) {
+                                return (
+                                  <MenuItem
+                                    onClick={getSelectedPosition}
+                                    h={'30px'}
+                                    color={
+                                      colorMode === 'light'
+                                        ? '#3e495c'
+                                        : '#f3f4f1'
+                                    }
+                                    fontSize={'12px'}
+                                    w={'9.5rem'}
+                                    m={'0px'}
+                                    value={item.id}
+                                    _hover={{
+                                      background: 'transparent',
+                                      color: 'blue.100',
+                                    }}
+                                    _focus={{background: 'transparent'}}
+                                    key={index}>
+                                    {item.id}
+                                  </MenuItem>
+                                );
+                              }
                             })}
                           </MenuList>
                         </Menu>
@@ -699,7 +835,7 @@ console.log(poolArr);
             <Flex flexDir={'row'} mt={'30px'} justifyContent={'space-between'}>
               {selected === 'reward' ? (
                 <RewardContainer
-                  rewards={orderedData}
+                  rewards={filteredData}
                   position={selectdPosition}
                   selectedPool={selectedPool}
                   pools={pool}
@@ -708,7 +844,7 @@ console.log(poolArr);
                 <ManageContainer
                   position={selectdPosition}
                   selectedPool={selectedPool}
-                  rewards={manageDatas}
+                  rewards={filteredManageData}
                   pools={pool}
                 />
               )}
