@@ -65,7 +65,8 @@ const themeDesign = {
 type RewardProgramCardManageProps = {
   reward: Reward;
   selectedToken: number;
-  pageIndex: number
+  pageIndex: number;
+  sortString: string;
 };
 
 const {TON_ADDRESS, UniswapStaker_Address} = DEPLOYED;
@@ -73,7 +74,8 @@ const {TON_ADDRESS, UniswapStaker_Address} = DEPLOYED;
 export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
   reward,
   selectedToken,
-  pageIndex
+  pageIndex,
+  sortString
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -160,7 +162,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
     }
 
     getIncentives();
-  }, [account, library, transactionType, blockNumber, tokenID,pageIndex]);
+  }, [account, library, transactionType, blockNumber, tokenID,pageIndex, reward]);
 
   return (
     <Flex {...REWARD_STYLE.containerStyle({colorMode})} flexDir={'column'}>

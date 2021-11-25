@@ -37,14 +37,16 @@ type ManageContainerProps = {
   rewards: any[];
   position?: string;
   selectedPool?: Pool;
-  pools: Pool[]
+  pools: Pool[];
+  sortString: string
 };
 
 export const ManageContainer: FC<ManageContainerProps> = ({
   rewards,
   pools,
   position,
-  selectedPool
+  selectedPool,
+  sortString
 }) => {
 
   const [pageOptions, setPageOptions] = useState<number>(0);
@@ -63,7 +65,10 @@ export const ManageContainer: FC<ManageContainerProps> = ({
     const endIndex = startIndex + pageLimit;
     return rewards.slice(startIndex, endIndex);
   };
-
+  useEffect(()=> {
+    setPageIndex(1)
+    
+  },[selectedPool, sortString])
   const goToNextPage = () => {
     setPageIndex(pageIndex + 1);
   };
@@ -107,6 +112,7 @@ export const ManageContainer: FC<ManageContainerProps> = ({
                 reward={rewardProps}
                 selectedToken={Number(position)}
                 pageIndex={pageIndex}
+                sortString={sortString}
               />
             );
           })}

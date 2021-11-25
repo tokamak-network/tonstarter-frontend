@@ -783,6 +783,7 @@ export const Reward = () => {
                   selectedPool={selectedPool}
                   rewards={filteredManageData}
                   pools={pool}
+                  sortString={sortString}
                 />
               )}
               <SideContainer

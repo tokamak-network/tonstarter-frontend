@@ -223,17 +223,12 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     approved,
     pageIndex,
     selectedPool,
+    reward
   ]);
 
   useEffect(() => {
     const setButton = () => {
       const now = moment().unix();
-      console.log(sortString);
-      console.log('now < reward.startTime', now < reward.startTime);
-      // console.log(now> );
-      
-      
-    
       if (!approved && now > reward.startTime && !staked) {
         setCanApprove(true);
         setButtonState('Approve');

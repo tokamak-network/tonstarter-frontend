@@ -32,6 +32,7 @@ const {UniswapStaking_Address, UniswapStaker_Address, TOS_ADDRESS} = DEPLOYED;
 type ClaimRewardProps = {
   rewards: any[];
   tokens: any[];
+  
 };
 const themeDesign = {
   border: {
