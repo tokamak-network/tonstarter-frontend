@@ -10,6 +10,7 @@ import AdminActions from './actions';
 import moment from 'moment';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectTransactionType} from 'store/refetch.reducer';
+import {LoadingComponent} from 'components/Loading';
 
 export const ListingProjects = () => {
   const theme = useTheme();
@@ -68,7 +69,8 @@ export const ListingProjects = () => {
         setProjects(res);
         return setLoading(false);
       } else {
-        return setProjects([]);
+        setProjects([]);
+        return setLoading(false);
       }
     }
     fetchProjectsData();
@@ -131,13 +133,12 @@ export const ListingProjects = () => {
         }
       />
       <Flex mt={'60px'}>
-        {data.length > 0 ? (
+        {isLoading === true && <LoadingComponent></LoadingComponent>}
+        {data.length > 0 && isLoading === false && (
           <ListTable
             data={data}
             columns={columns}
             isLoading={isLoading}></ListTable>
-        ) : (
-          <div>no data for this account address</div>
         )}
       </Flex>
       <DistributeModal></DistributeModal>
