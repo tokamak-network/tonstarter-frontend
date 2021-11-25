@@ -41,7 +41,8 @@ type RewardContainerProps = {
   rewards: any[];
   position?: string;
   selectedPool?: Pool;
-  pools: any[]
+  pools: any[];
+  sortString: string
 };
 type Reward = {
   chainId: Number;
@@ -62,7 +63,8 @@ export const RewardContainer: FC<RewardContainerProps> = ({
   rewards,
   selectedPool,
   position,
-  pools
+  pools,
+  sortString
 }) => {
   const [pageOptions, setPageOptions] = useState<number>(0);
   const [pageIndex, setPageIndex] = useState<number>(1);
@@ -81,7 +83,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({
   useEffect(()=> {
     setPageIndex(1)
     
-  },[selectedPool])
+  },[selectedPool, sortString])
   const getPaginatedData = () => {
     const startIndex = pageIndex * pageLimit - pageLimit;
     const endIndex = startIndex + pageLimit;
@@ -146,6 +148,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({
                 sendKey={stakeMultipleKeys}
                 pageIndex={pageIndex}
                 stakeList={multipleStakeList}
+                sortString={sortString}
               />
             );
           })}

@@ -82,6 +82,43 @@ interface REWARD_PROP {
   colorMode: 'light' | 'dark';
   fontSize?: number;
 }
+interface MENU_PROPS {
+  colorMode: 'light' | 'dark';
+}
+export const MENU_STYLE = {
+buttonStyle: (props:MENU_PROPS) => ({
+  mr: '10px',
+  padding: '10px',
+  borderRadius: '4px',
+  h:'32px',
+  color: props.colorMode === 'light' ? '#3e495c' : '#f3f4f1',
+  fontSize:'12px',
+  w: '157px'
+}),
+buttonTextStyle: (props:MENU_PROPS) => ({
+  w:'100%',
+  display:'flex',
+  flexDir:'row',
+  alignItems:'center',
+  justifyContent:'space-between'
+}),
+menuListStyle: (props:MENU_PROPS) => ({
+  zIndex:10000,
+  m:'0px',
+  minWidth:"157px",
+  background: props.colorMode === 'light' ? '#ffffff' : '#222222'
+}),
+menuItemStyle: (props:MENU_PROPS) => ({
+  h:'30px',
+  color: props.colorMode === 'light' ? '#3e495c' : '#f3f4f1',
+  fontSize:'12px',
+  w:'157px',
+  m:'0px',
+  _hover:{background: 'transparent', color: 'blue.100'},
+   _focus:{background: 'transparent'}
+})
+}
+
 export const REWARD_STYLE = {
   containerStyle: (props: REWARD_PROP & {isUserTier?: boolean}) => ({
     w: 382,
@@ -495,7 +532,8 @@ const theme = extendTheme({
   btnStyle,
   headerMargin,
   REWARD_STYLE,
-  STATER_STYLE
+  STATER_STYLE,
+  MENU_STYLE
 });
 
 export default theme;

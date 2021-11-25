@@ -46,6 +46,7 @@ import {fetchPositionPayload} from '../Pools/utils/fetchPositionPayload';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import {ChevronDownIcon} from '@chakra-ui/icons';
 import {utils, ethers} from 'ethers';
+import moment from 'moment';
 import {getTokenSymbol} from './utils/getTokenSymbol';
 import {
   usePositionByUserQuery,
@@ -114,6 +115,7 @@ const themeDesign = {
 export const Reward = () => {
   const {datas, loading} = useAppSelector(selectRewards);
   const theme = useTheme();
+  const {MENU_STYLE} = theme;
   const {colorMode} = useColorMode();
   const {account, library} = useActiveWeb3React();
   const [selectedPool, setSelectedPool] = useState<Pool>();
@@ -129,7 +131,7 @@ export const Reward = () => {
   const [orderedData, setOrderedData] = useState<Reward[]>([]);
   const [order, setOrder] = useState<boolean | 'desc' | 'asc'>('desc');
   const [tokenList, setTokenList] = useState<any[]>([]);
-  const [selectedToken, setSelectedToken] = useState<Token>()
+  const [selectedToken, setSelectedToken] = useState<Token>();
   const [filteredData, setFilteredData] = useState<Reward[]>([]);
   const [filteredManageData, setFilteredManageData] = useState<Reward[]>([]);
   const arr: any = [];
@@ -152,7 +154,7 @@ export const Reward = () => {
   useEffect(() => {
     const filteredData = filterDatas();
     setOrderedData(filteredData);
-    setFilteredData(filteredData)
+    setFilteredData(filteredData);
   }, [sortString, datas]);
 
   const changeSelect = (e: any) => {
@@ -162,11 +164,23 @@ export const Reward = () => {
   };
 
   const filterDatas = () => {
+    const now = moment().unix();
     switch (sortString) {
-      case 'start':
+      case 'Start Date':
         return orderBy(datas, (data) => data.startTime, [order]);
-      case 'end':
+      case 'End Date':
         return orderBy(datas, (data) => data.endTime, [order]);
+      case 'In Progress':
+        const inProgress = datas.filter(
+          (data) => now > data.startTime && now < data.endTime,
+        );
+        return inProgress;
+      case 'Closed':
+        const closed = datas.filter((data) => now > data.endTime);
+        return closed;
+      case 'Waiting': 
+      const waiting = datas.filter((data) => now < data.startTime)
+      return waiting
       default:
         return datas;
     }
@@ -293,53 +307,63 @@ export const Reward = () => {
       (data) => data.incentiveKey.refundee === account,
     );
     setManageDatas(filtered);
-    setFilteredManageData(filtered)
+    setFilteredManageData(filtered);
   }, [orderedData, sortString, account, library]);
 
   const getSelectedPool = (e: any) => {
     const poolAddress = e.target.value;
     const selected: Pool = pool.find((pool) => pool.id === poolAddress);
     setSelectedPool(selected);
-    setSelectedToken(undefined)
+    setSelectedToken(undefined);
     setSelectdPosition('');
 
     if (poolAddress === '') {
       setOrderedData(datas);
-      setFilteredData(datas)
+      setFilteredData(datas);
       setSelectdPosition('');
     } else {
       const selectedRewards = datas.filter(
         (data) => data.poolAddress === poolAddress,
       );
       setOrderedData(selectedRewards);
-      setFilteredData(selectedRewards)
+      setFilteredData(selectedRewards);
     }
   };
 
-  const getSelectedReardToken = (e:any) => {
-    const tokenAddress = e.target.value
-    const rewardToken:Token = tokenList.find((token)=> token.token === tokenAddress)
-    setSelectedToken(rewardToken)
-    
-    if (tokenAddress !== '') {
-      const selectedManageRewards = manageDatas.filter((data: any) => ethers.utils.getAddress(data.rewardToken.toString())  === ethers.utils.getAddress(tokenAddress))
-      setFilteredManageData(selectedManageRewards)
-      if (orderedData.length === 0) {
-        const selectedRewards = datas.filter((data) => ethers.utils.getAddress(data.rewardToken.toString())  === ethers.utils.getAddress(tokenAddress))
-        setFilteredData(selectedRewards)
-        
-      }
-      else {
-        const selectedRewards = orderedData.filter((data) => ethers.utils.getAddress(data.rewardToken.toString())  === ethers.utils.getAddress(tokenAddress))
-        setFilteredData(selectedRewards)
-      }
+  const getSelectedReardToken = (e: any) => {
+    const tokenAddress = e.target.value;
+    const rewardToken: Token = tokenList.find(
+      (token) => token.token === tokenAddress,
+    );
+    setSelectedToken(rewardToken);
 
+    if (tokenAddress !== '') {
+      const selectedManageRewards = manageDatas.filter(
+        (data: any) =>
+          ethers.utils.getAddress(data.rewardToken.toString()) ===
+          ethers.utils.getAddress(tokenAddress),
+      );
+      setFilteredManageData(selectedManageRewards);
+      if (orderedData.length === 0) {
+        const selectedRewards = datas.filter(
+          (data) =>
+            ethers.utils.getAddress(data.rewardToken.toString()) ===
+            ethers.utils.getAddress(tokenAddress),
+        );
+        setFilteredData(selectedRewards);
+      } else {
+        const selectedRewards = orderedData.filter(
+          (data) =>
+            ethers.utils.getAddress(data.rewardToken.toString()) ===
+            ethers.utils.getAddress(tokenAddress),
+        );
+        setFilteredData(selectedRewards);
+      }
+    } else {
+      setFilteredData(datas);
+      setFilteredManageData(manageDatas);
     }
-    else {
-      setFilteredData(datas)
-      setFilteredManageData(manageDatas)
-    }
-  }
+  };
   const getSelectedPosition = (e: any) => {
     const pos = e.target.value;
     setSelectdPosition(pos);
@@ -376,7 +400,6 @@ export const Reward = () => {
     getTokenList();
   }, [datas, account, library, transactionType, blockNumber]);
 
-  
   return (
     <Fragment>
       <Head title={'Reward'} />
@@ -396,20 +419,11 @@ export const Reward = () => {
               <Flex alignItems={'center'}>
                 <Menu isLazy>
                   <MenuButton
-                    mr={'10px'}
                     border={themeDesign.border[colorMode]}
-                    padding={'10px'}
-                    borderRadius={'4px'}
-                    h={'32px'}
-                    color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}
-                    fontSize={'12px'}
-                    w={'157px'}>
+                    {...MENU_STYLE.buttonStyle({colorMode})}
+                    >
                     <Text
-                      w={'100%'}
-                      display={'flex'}
-                      flexDir={'row'}
-                      alignItems={'center'}
-                      justifyContent={'space-between'}>
+                     {...MENU_STYLE.buttonTextStyle({colorMode})}>
                       {selectedPool === undefined
                         ? 'All Pools'
                         : `${selectedPool.token0.symbol} / ${
@@ -421,33 +435,18 @@ export const Reward = () => {
                     </Text>
                   </MenuButton>
                   <MenuList
-                    zIndex={10000}
-                    m={'0px'}
-                    minWidth="157px"
-                    background={colorMode === 'light' ? '#ffffff' : '#222222'}>
+                     {...MENU_STYLE.menuListStyle({colorMode})}>
                     <MenuItem
                       onClick={getSelectedPool}
-                      h={'30px'}
-                      color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}
-                      fontSize={'12px'}
-                      w={'157px'}
-                      m={'0px'}
                       value={''}
-                      _hover={{background: 'transparent', color: 'blue.100'}}
-                      _focus={{background: 'transparent'}}>
+                      {...MENU_STYLE.menuItemStyle({colorMode})}>
                       All pools
                     </MenuItem>
                     {pool.map((item, index) => (
                       <MenuItem
                         onClick={getSelectedPool}
-                        h={'30px'}
-                        color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}
-                        fontSize={'12px'}
-                        w={'157px'}
-                        m={'0px'}
                         value={item.id}
-                        _hover={{background: 'transparent', color: 'blue.100'}}
-                        _focus={{background: 'transparent'}}
+                        {...MENU_STYLE.menuItemStyle({colorMode})}
                         key={index}>
                         {`${item.token0.symbol} / ${item.token1.symbol}    (${
                           parseInt(item.feeTier) / 10000
@@ -458,20 +457,10 @@ export const Reward = () => {
                 </Menu>
                 <Menu isLazy>
                   <MenuButton
-                    mr={'10px'}
                     border={themeDesign.border[colorMode]}
-                    padding={'10px'}
-                    borderRadius={'4px'}
-                    h={'32px'}
-                    color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}
-                    fontSize={'12px'}
-                    w={'157px'}>
+                    {...MENU_STYLE.buttonStyle({colorMode})}>
                     <Text
-                      w={'100%'}
-                      display={'flex'}
-                      flexDir={'row'}
-                      alignItems={'center'}
-                      justifyContent={'space-between'}>
+                      {...MENU_STYLE.buttonTextStyle({colorMode})}>
                       {selectedToken === undefined
                         ? 'Reward Tokens'
                         : selectedToken.symbol}
@@ -481,33 +470,18 @@ export const Reward = () => {
                     </Text>
                   </MenuButton>
                   <MenuList
-                    zIndex={10000}
-                    m={'0px'}
-                    minWidth="157px"
-                    background={colorMode === 'light' ? '#ffffff' : '#222222'}>
+                   {...MENU_STYLE.menuListStyle({colorMode})}>
                     <MenuItem
                       onClick={getSelectedReardToken}
-                      h={'30px'}
-                      color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}
-                      fontSize={'12px'}
-                      w={'157px'}
-                      m={'0px'}
                       value={''}
-                      _hover={{background: 'transparent', color: 'blue.100'}}
-                      _focus={{background: 'transparent'}}>
+                      {...MENU_STYLE.menuItemStyle({colorMode})}>
                       All reward tokens
                     </MenuItem>
                     {tokenList.map((item, index) => (
                       <MenuItem
                         onClick={getSelectedReardToken}
-                        h={'30px'}
-                        color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}
-                        fontSize={'12px'}
-                        w={'157px'}
-                        m={'0px'}
                         value={item.token}
-                        _hover={{background: 'transparent', color: 'blue.100'}}
-                        _focus={{background: 'transparent'}}
+                        {...MENU_STYLE.menuItemStyle({colorMode})}
                         key={index}>
                         {item.symbol}
                       </MenuItem>
@@ -516,20 +490,10 @@ export const Reward = () => {
                 </Menu>
                 <Menu isLazy>
                   <MenuButton
-                    mr={'10px'}
                     border={themeDesign.border[colorMode]}
-                    padding={'10px'}
-                    borderRadius={'4px'}
-                    h={'32px'}
-                    color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}
-                    fontSize={'12px'}
-                    w={'157px'}>
+                    {...MENU_STYLE.buttonStyle({colorMode})}>
                     <Text
-                      w={'100%'}
-                      display={'flex'}
-                      flexDir={'row'}
-                      alignItems={'center'}
-                      justifyContent={'space-between'}>
+                      {...MENU_STYLE.buttonTextStyle({colorMode})}>
                       {selectdPosition === ''
                         ? 'My LP tokens'
                         : selectdPosition}
@@ -540,12 +504,7 @@ export const Reward = () => {
                   </MenuButton>
                   {selectedPool === undefined ? (
                     <MenuList
-                      zIndex={10000}
-                      m={'0px'}
-                      minWidth="157px"
-                      background={
-                        colorMode === 'light' ? '#ffffff' : '#222222'
-                      }>
+                    {...MENU_STYLE.menuListStyle({colorMode})}>
                       <MenuOptionGroup
                         pl={'10px'}
                         defaultValue="asc"
@@ -557,12 +516,7 @@ export const Reward = () => {
                     </MenuList>
                   ) : (
                     <MenuList
-                      zIndex={10000}
-                      m={'0px'}
-                      minWidth="156px"
-                      background={
-                        colorMode === 'light' ? '#ffffff' : '#222222'
-                      }>
+                      {...MENU_STYLE.menuListStyle({colorMode})}>
                       <MenuItem>
                         <Menu isLazy>
                           <MenuButton
@@ -714,80 +668,6 @@ export const Reward = () => {
                         </Menu>
                       </MenuItem>
                     </MenuList>
-
-                    // <MenuList
-                    //   zIndex={10000}
-                    //   m={'0px'}
-                    //   minWidth="157px"
-                    //   background={
-                    //     colorMode === 'light' ? '#ffffff' : '#222222'
-                    //   }>
-                    //   <MenuOptionGroup
-                    //     defaultValue="asc"
-                    //     title="Not Staked"
-                    //     fontSize={'13px'}
-                    //     m={'0px'}
-                    //     pl={'10px'}
-                    //     w={'157px'}
-                    //     type="radio">
-                    //     {positions.map((item: any, index) => {
-                    //       if (item.owner === account?.toLowerCase()) {
-                    //         return (
-                    //           <MenuItem
-                    //             onClick={getSelectedPosition}
-                    //             h={'30px'}
-                    //             color={
-                    //               colorMode === 'light' ? '#3e495c' : '#f3f4f1'
-                    //             }
-                    //             fontSize={'12px'}
-                    //             w={'157px'}
-                    //             m={'0px'}
-                    //             value={item.id}
-                    //             _hover={{
-                    //               background: 'transparent',
-                    //               color: 'blue.100',
-                    //             }}
-                    //             _focus={{background: 'transparent'}}
-                    //             key={index}>
-                    //             {item.id}
-                    //           </MenuItem>
-                    //         );
-                    //       }
-                    //     })}
-                    //   </MenuOptionGroup>
-                    //   <MenuOptionGroup
-                    //    pl={'10px'}
-                    //     m={'0px'}
-                    //     defaultValue="asc"
-                    //     title="Staked"
-                    //     fontSize={'13px'}
-                    //     type="radio">
-                    //     {positions.map((item: any, index) => {
-                    //       if (item.owner !== account?.toLowerCase()) {
-                    //         return (
-                    //           <MenuItem
-                    //             onClick={getSelectedPosition}
-                    //             h={'30px'}
-                    //             color={
-                    //               colorMode === 'light' ? '#3e495c' : '#f3f4f1'
-                    //             }
-                    //             fontSize={'12px'}
-                    //             w={'157px'}
-                    //             m={'0px'}
-                    //             value={item.id}
-                    //             _hover={{
-                    //               background: 'transparent',
-                    //               color: 'blue.100',
-                    //             }}
-                    //             _focus={{background: 'transparent'}}
-                    //             key={index}>
-                    //             {item.id}
-                    //           </MenuItem>
-                    //         );
-                    //       }
-                    //     })}
-                    //   </MenuOptionGroup>
-                    // </MenuList>
                   )}
                 </Menu>
 
@@ -822,14 +702,70 @@ export const Reward = () => {
                     }
                   />
                 </FormControl>
-                <Select
+                <Menu isLazy>
+                  <MenuButton 
+                    border={themeDesign.border[colorMode]}
+                    {...MENU_STYLE.buttonStyle({colorMode})}
+                    minWidth='120px'
+                    >
+                       <Text
+                      {...MENU_STYLE.buttonTextStyle({colorMode})}>
+                    {sortString}
+                    <span>
+                      <ChevronDownIcon />
+                    </span>
+                  </Text></MenuButton>
+                  <MenuList
+                    {...MENU_STYLE.menuListStyle({colorMode})}
+                    minWidth='120px'>
+                    <MenuItem
+                      onClick={changeSelect}
+                      {...MENU_STYLE.menuItemStyle({colorMode})}
+                      value={'Start Date'}
+                      w='120px'
+                      >Start Date
+                    </MenuItem>
+                    <MenuItem
+                      onClick={changeSelect}
+                      {...MENU_STYLE.menuItemStyle({colorMode})}
+                      value={'End Date'}
+                      w='120px'
+                      >End Date
+                    </MenuItem>
+                    <MenuItem
+                      onClick={changeSelect}
+                      {...MENU_STYLE.menuItemStyle({colorMode})}
+                      value={'In Progress'}
+                      w='120px'
+                      >In Progress
+                    </MenuItem>
+                    <MenuItem
+                      onClick={changeSelect}
+                      {...MENU_STYLE.menuItemStyle({colorMode})}
+                      value={'Closed'}
+                      w='120px'
+                      >Closed
+                    </MenuItem>
+                    <MenuItem
+                      onClick={changeSelect}
+                      {...MENU_STYLE.menuItemStyle({colorMode})}
+                      value={'Waiting'}
+                      w='120px'
+                      >Waiting
+                    </MenuItem>
+                    </MenuList>
+                </Menu>
+                {/* <Select
                   h={'32px'}
                   color={'#86929d'}
                   fontSize={'13px'}
                   onChange={changeSelect}>
-                  <option value="start">Start Date</option>
-                  <option value="end">End Date</option>
-                </Select>
+                  <option value="Start Date">Start Date</option>
+                  <option value="End Date">End Date</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Closed">Closed</option>
+                  <option value="Waiting">Waiting</option>
+                </Select> */}
               </Flex>
             </Flex>
             <Flex flexDir={'row'} mt={'30px'} justifyContent={'space-between'}>
@@ -839,6 +775,7 @@ export const Reward = () => {
                   position={selectdPosition}
                   selectedPool={selectedPool}
                   pools={pool}
+                  sortString={sortString}
                 />
               ) : (
                 <ManageContainer

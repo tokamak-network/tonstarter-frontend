@@ -72,6 +72,7 @@ type RewardProgramCardProps = {
   sendKey: (key: any) => void;
   pageIndex: number;
   stakeList: any[];
+  sortString: string;
 };
 
 const {TON_ADDRESS, UniswapStaking_Address, UniswapStaker_Address} = DEPLOYED;
@@ -83,6 +84,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   sendKey,
   pageIndex,
   stakeList,
+  sortString,
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -224,23 +226,39 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   ]);
 
   useEffect(() => {
-    const now = moment().unix();
-    if (!approved && now > reward.startTime && !staked) {
-      setCanApprove(true);
-      setButtonState('Approve');
-    }
-    if (approved && now > reward.startTime && now < reward.endTime && !staked) {
-      setButtonState('Stake');
-    } else if (staked && now < reward.endTime) {
-      setButtonState('In Progress');
-    } else if (staked && now > reward.endTime) {
-      setButtonState('Unstake');
-    } else if (now > reward.endTime) {
-      setButtonState('Closed');
-    } else if (approved && now < reward.startTime) {
-      setButtonState('Waiting');
-    }
+    const setButton = () => {
+      const now = moment().unix();
+      console.log(sortString);
+      console.log('now < reward.startTime', now < reward.startTime);
+      // console.log(now> );
+      
+      
+    
+      if (!approved && now > reward.startTime && !staked) {
+        setCanApprove(true);
+        setButtonState('Approve');
+      }
+      if (
+        approved &&
+        now > reward.startTime &&
+        now < reward.endTime &&
+        !staked
+      ) {
+        setButtonState('Stake');
+      } else if (staked && now < reward.endTime) {
+        setButtonState('In Progress');
+      } else if (staked && now > reward.endTime) {
+        setButtonState('Unstake');
+      } else if (now > reward.endTime) {
+        setButtonState('Closed');
+      } else if (approved && now < reward.startTime) {
+        setButtonState('Waiting');
+      }
+    };
+    setButton();
   }, [
+    sortString,
+    reward,
     approved,
     staked,
     account,
@@ -289,7 +307,12 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
       <Flex flexDir={'row'} width={'100%'} alignItems={'center'} h={'50px'}>
         <Box>
           <Avatar
-            src={checkTokenType(ethers.utils.getAddress(reward.token0Address), colorMode).symbol}
+            src={
+              checkTokenType(
+                ethers.utils.getAddress(reward.token0Address),
+                colorMode,
+              ).symbol
+            }
             bg={colorMode === 'light' ? '#ffffff' : '#222222'}
             name="T"
             border={
@@ -300,8 +323,12 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
             zIndex={'100'}
           />
           <Avatar
-            src={checkTokenType(ethers.utils.getAddress(reward.token1Address),colorMode).symbol}
-           
+            src={
+              checkTokenType(
+                ethers.utils.getAddress(reward.token1Address),
+                colorMode,
+              ).symbol
+            }
             bg={colorMode === 'light' ? '#ffffff' : '#222222'}
             name="T"
             h="50px"
@@ -337,7 +364,11 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
                 ).toLocaleString(undefined, {
                   minimumFractionDigits: 2,
                 })}{' '}
-                {checkTokenType(ethers.utils.getAddress(reward.rewardToken)).name} /{' '}
+                {
+                  checkTokenType(ethers.utils.getAddress(reward.rewardToken))
+                    .name
+                }{' '}
+                /{' '}
                 {parseFloat(
                   (
                     (Number(ethers.utils.formatEther(myReward.toString())) *
@@ -478,13 +509,23 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
                 })}
               </Text>
               <Text ml="2px" fontSize="13">
-                {checkTokenType(ethers.utils.getAddress(reward.rewardToken),colorMode).name}
+                {
+                  checkTokenType(
+                    ethers.utils.getAddress(reward.rewardToken),
+                    colorMode,
+                  ).name
+                }
               </Text>
             </Box>
           </Box>
           <Avatar
-          ml={'10px'}
-            src={checkTokenType(ethers.utils.getAddress(reward.rewardToken),colorMode).symbol}
+            ml={'10px'}
+            src={
+              checkTokenType(
+                ethers.utils.getAddress(reward.rewardToken),
+                colorMode,
+              ).symbol
+            }
             bg={colorMode === 'light' ? '#ffffff' : '#222222'}
             name="T"
             border={
