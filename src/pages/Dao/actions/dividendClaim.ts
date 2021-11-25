@@ -23,7 +23,7 @@ export const getClaimalbeList = async (
   try {
     const {account, library} = args;
 
-    const {LockTOSDividend_ADDRESS, TON_ADDRESS, TOS_ADDRESS} = DEPLOYED;
+    const {LockTOSDividend_ADDRESS, TON_ADDRESS} = DEPLOYED;
     const LOCKTOS_DIVIDEND_CONTRACT = new Contract(
       LockTOSDividend_ADDRESS,
       LockTOSDividend.abi,

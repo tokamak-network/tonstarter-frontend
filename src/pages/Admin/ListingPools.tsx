@@ -136,6 +136,7 @@ export const ListingPools = () => {
                   h={'32px'}
                   br={4}
                   textAlign={'left'}
+                  startWithZero={true}
                   style={{
                     fontSize: '13px',
                     px: '15px',
@@ -150,6 +151,7 @@ export const ListingPools = () => {
                 value={token0}
                 setValue={setToken0}
                 placeHolder={'Input Token0 Address'}
+                startWithZero={true}
                 w={'310px'}
                 h={'32px'}
                 textAlign={'left'}
@@ -163,6 +165,7 @@ export const ListingPools = () => {
             <Flex alignItems="center" mb={'20px'}>
               <Text w={'85px'}>Token0 Image </Text>
               <CustomInput
+                startWithZero={true}
                 value={token0Image}
                 setValue={setToken0Image}
                 placeHolder={'Token0 Symbol Image URL'}
@@ -180,6 +183,7 @@ export const ListingPools = () => {
               <Text w={'85px'}>Fee </Text>
               <CustomInput
                 value={fee}
+                startWithZero={true}
                 setValue={setFee}
                 placeHolder={'Input Fee number'}
                 w={'310px'}
@@ -207,6 +211,7 @@ export const ListingPools = () => {
                 value={poolAddress}
                 setValue={setPoolAddress}
                 placeHolder={'Input Pool Address'}
+                startWithZero={true}
                 w={'310px'}
                 h={'32px'}
                 br={4}
@@ -231,6 +236,7 @@ export const ListingPools = () => {
                 value={token1}
                 setValue={setToken1}
                 placeHolder={'Input Token1 Address'}
+                startWithZero={true}
                 w={'310px'}
                 h={'32px'}
                 textAlign={'left'}
@@ -247,6 +253,7 @@ export const ListingPools = () => {
                 value={token1Image}
                 setValue={setToken1Image}
                 placeHolder={'Token1 Symbol Image URL'}
+                startWithZero={true}
                 w={'310px'}
                 h={'32px'}
                 textAlign={'left'}

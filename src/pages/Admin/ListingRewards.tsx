@@ -18,8 +18,6 @@ export const ListingRewards = () => {
     async function fetchProjectsData() {
       const rewardData = await AdminActions.getRewardData();
 
-      console.log(rewardData);
-
       if (!rewardData) {
         return setProjects([]);
       }
