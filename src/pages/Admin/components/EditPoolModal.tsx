@@ -122,7 +122,7 @@ export const EditPoolModal = () => {
               Edit Pool
             </Heading>
             <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
-              You can manage tokens
+              You can manage a pool
             </Text>
           </Box>
 
@@ -193,7 +193,7 @@ export const EditPoolModal = () => {
                   feeTier: Number(fee),
                 })
               }>
-              Edit
+              Save
             </Button>
             <Button
               {...btnStyle.btnAble()}
