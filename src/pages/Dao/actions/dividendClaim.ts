@@ -10,7 +10,7 @@ import {DEPLOYED} from 'constants/index';
 import {AdminObject} from '@Admin/types';
 import {ClaimList} from '@Dao/types';
 import {getTokenPrice} from 'utils/tokenPrice';
-import * as ERC20 from 'services/abis/ERC20.json';
+import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 
 interface I_CallContract {
   account: string;
@@ -46,12 +46,17 @@ export const getClaimalbeList = async (
         //     ? 'TOS'
         //     : '';
         const ERC20_CONTRACT = new Contract(tokenAddress, ERC20.abi, library);
-
-        const tokenName = await ERC20_CONTRACT.symbol();
+        const tokenSymbol = await ERC20_CONTRACT.symbol();
+        const tokenContractName = await ERC20_CONTRACT.name();
+        const tokenName =
+          tokenAddress === TON_ADDRESS
+            ? 'tokamak-network'
+            : tokenContractName.toLowerCase().replaceAll(' ', '');
         const amount = await LOCKTOS_DIVIDEND_CONTRACT.claimable(
           account,
           tokenAddress,
         );
+
         const claimAmount =
           convertNumber({
             amount: amount.toString(),
@@ -60,7 +65,7 @@ export const getClaimalbeList = async (
         const price = await getTokenPrice(tokenName);
         const obj = {
           name: `#${index + 1}`,
-          tokenName,
+          tokenName: tokenSymbol,
           claimAmount,
           price: price * Number(claimAmount.replaceAll(',', '')),
           tokenAddress,
