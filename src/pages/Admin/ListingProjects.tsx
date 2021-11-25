@@ -1,4 +1,4 @@
-import {Flex, Box, useColorMode, useTheme} from '@chakra-ui/react';
+import {Flex, useColorMode, useTheme} from '@chakra-ui/react';
 import {PageHeader} from 'components/PageHeader';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect, useMemo, useState} from 'react';
@@ -8,12 +8,18 @@ import {AdminObject, ListingTableData} from './types';
 import {fetchStarterURL} from 'constants/index';
 import AdminActions from './actions';
 import moment from 'moment';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectTransactionType} from 'store/refetch.reducer';
 
 export const ListingProjects = () => {
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
   const [projects, setProjects] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+
+  const {
+    data: {timeStamp},
+  } = useAppSelector(selectTransactionType);
 
   useEffect(() => {
     async function fetchProjectsData() {
@@ -66,7 +72,7 @@ export const ListingProjects = () => {
       }
     }
     fetchProjectsData();
-  }, [account, library]);
+  }, [account, library, timeStamp]);
 
   const dummyData: {
     data: any[];
@@ -115,8 +121,6 @@ export const ListingProjects = () => {
   };
 
   const {data, columns, isLoading} = dummyData;
-
-  console.log(data);
 
   return (
     <Flex mt={'110px'} flexDir="column" alignItems="center">

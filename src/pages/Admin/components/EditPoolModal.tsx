@@ -19,20 +19,22 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 import {CloseButton} from 'components/Modal';
 import {CustomInput} from 'components/Basic';
 import AdminActions from '../actions';
+import {TokenImage} from './TokenImage';
 
 const Container = (props: {
   title: string;
   value: any;
   setValue?: React.SetStateAction<any>;
+  w?: string;
 }) => {
   const {colorMode} = useColorMode();
-  const {title, value, setValue} = props;
+  const {title, value, setValue, w} = props;
 
   return (
     <Box d="flex" flexDir="column" mb={'24px'}>
       <Text mb={'9px'}>{title}</Text>
       <CustomInput
-        w={'290px'}
+        w={w || '290px'}
         h={'32px'}
         style={{fontSize: '12px', textAlign: 'left'}}
         value={value}
@@ -139,17 +141,29 @@ export const EditPoolModal = () => {
             />
             <Container title={'Pool Address'} value={poolAddress} />
             <Container title={'Token 0'} value={token0} setValue={setToken0} />
-            <Container
-              title={'Token 0 Image'}
-              value={token0Image}
-              setValue={setToken0Image}
-            />
+            <Flex justifyContent="space-between">
+              <Container
+                w={'230px'}
+                title={'Token 0 Image'}
+                value={token0Image}
+                setValue={setToken0Image}
+              />
+              <Box mt={'10px'}>
+                <TokenImage imageLink={token0Image}></TokenImage>
+              </Box>
+            </Flex>
             <Container title={'Token 1'} value={token1} setValue={setToken1} />
-            <Container
-              title={'Token 0 Image'}
-              value={token1Image}
-              setValue={setToken1Image}
-            />
+            <Flex justifyContent="space-between">
+              <Container
+                w={'230px'}
+                title={'Token 1 Image'}
+                value={token1Image}
+                setValue={setToken1Image}
+              />
+              <Box mt={'10px'}>
+                <TokenImage imageLink={token1Image}></TokenImage>
+              </Box>
+            </Flex>
             <Container title={'Fee'} value={fee} setValue={setFee} />
           </Flex>
 

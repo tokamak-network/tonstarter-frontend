@@ -776,6 +776,12 @@ export const StepThree: React.FC<StepProp> = (props) => {
     }
   }
 
+  useEffect(() => {
+    if (data) {
+      checkTimeLine(data);
+    }
+  }, [data]);
+
   return (
     <Formik
       validationSchema={stepOneValidationSchema}

@@ -4,7 +4,7 @@ import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import {setTx} from 'application';
 import {LibraryType} from 'types';
-import {convertToWei} from 'utils/number';
+import {convertNumber, convertToWei} from 'utils/number';
 import store from 'store';
 import {openToast} from 'store/app/toast.reducer';
 import {DEPLOYED} from 'constants/index';
@@ -83,6 +83,26 @@ const distribute = async (args: I_CallContract & {amount: string}) => {
         },
       }),
     );
+  }
+};
+
+export const checkApprove = async (args: I_CallContract): Promise<string> => {
+  try {
+    const {account, library, address} = args;
+    const {LockTOSDividend_ADDRESS} = DEPLOYED;
+
+    const ERC20_CONTRACT = new Contract(address, ERC20.abi, library);
+    const approvedAmount = await ERC20_CONTRACT.allowance(
+      account,
+      LockTOSDividend_ADDRESS,
+    );
+    const result = convertNumber({
+      amount: approvedAmount,
+    }) as string;
+    return result;
+  } catch (e) {
+    console.log(e);
+    return '0.00';
   }
 };
 
@@ -290,6 +310,7 @@ const actions = {
   addPool,
   editPool,
   deletePool,
+  checkApprove,
 };
 
 export default actions;

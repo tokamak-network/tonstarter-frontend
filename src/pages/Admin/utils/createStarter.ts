@@ -1,6 +1,9 @@
 import axios from 'axios';
 import {API_SERVER, DEFAULT_NETWORK} from 'constants/index';
 import {AdminObject, PoolData} from '@Admin/types';
+import {setTransaction} from 'store/refetch.reducer';
+import store from 'store';
+import moment from 'moment';
 
 function createInstance() {
   return axios.create({
@@ -33,6 +36,7 @@ export async function putEditStarter(args: AdminObject) {
     });
     if (res.status === 200) {
       alert('success');
+      dispatchToRefetch();
     } else {
       alert('failed');
     }
@@ -51,6 +55,7 @@ export async function createPool(args: PoolData) {
     });
     if (res.status === 200) {
       alert('success');
+      dispatchToRefetch({func: 'addPool'});
     } else {
       alert('failed');
     }
@@ -69,6 +74,7 @@ export async function putEditPool(args: PoolData) {
     });
     if (res.status === 200) {
       alert('success');
+      dispatchToRefetch();
     } else {
       alert('failed');
     }
@@ -87,6 +93,7 @@ export async function delPool(args: {poolAddress: string}) {
     });
     if (res.status === 200) {
       alert('success');
+      dispatchToRefetch();
     } else {
       alert('failed');
     }
@@ -95,3 +102,17 @@ export async function delPool(args: {poolAddress: string}) {
     console.log(e);
   }
 }
+
+const dispatchToRefetch = async (arg?: any) => {
+  const nowTimeStamp = moment().unix();
+  return store.dispatch(
+    setTransaction({
+      transactionType: 'Admin',
+      blockNumber: undefined,
+      data: {
+        timeStamp: nowTimeStamp,
+        ...arg,
+      },
+    }),
+  );
+};

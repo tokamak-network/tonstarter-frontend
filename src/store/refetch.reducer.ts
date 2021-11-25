@@ -1,7 +1,7 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from './reducers';
 
-type TsType = undefined | 'Staking' | 'Dao' | 'Pool';
+type TsType = undefined | 'Staking' | 'Dao' | 'Pool' | 'Admin';
 
 export type TxType = {
   transactionType: TsType;

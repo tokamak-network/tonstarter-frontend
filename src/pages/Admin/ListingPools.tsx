@@ -9,6 +9,8 @@ import {CustomInput} from 'components/Basic';
 import {CustomButton} from 'components/Basic/CustomButton';
 import AdminActions from './actions';
 import {TokenImage} from './components/TokenImage';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectTransactionType} from 'store/refetch.reducer';
 
 export const ListingPools = () => {
   const {account, library, chainId} = useActiveWeb3React();
@@ -28,6 +30,10 @@ export const ListingPools = () => {
 
   const [loading, setLoading] = useState<boolean>(true);
 
+  const {
+    data: {timeStamp, func},
+  } = useAppSelector(selectTransactionType);
+
   useEffect(() => {
     async function fetchProjectsData() {
       const rewardData = await AdminActions.getPoolData();
@@ -41,7 +47,19 @@ export const ListingPools = () => {
       setLoading(false);
     }
     fetchProjectsData();
-  }, [account, library]);
+  }, [account, library, timeStamp]);
+
+  useEffect(() => {
+    if (func === 'addPool') {
+      setPoolName('');
+      setPoolAddress('');
+      setToken0('');
+      setToken1('');
+      setToken0Image('');
+      setToken1Image('');
+      setFee('');
+    }
+  }, [timeStamp, func]);
 
   const dummyData: {
     data: FetchPoolData[];
