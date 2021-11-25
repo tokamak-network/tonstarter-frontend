@@ -170,7 +170,7 @@ export const Reward = () => {
         return orderBy(datas, (data) => data.startTime, [order]);
       case 'End Date':
         return orderBy(datas, (data) => data.endTime, [order]);
-      case 'In Progress':
+      case 'Started':
         const inProgress = datas.filter(
           (data) => now > data.startTime && now < data.endTime,
         );
@@ -735,9 +735,9 @@ export const Reward = () => {
                     <MenuItem
                       onClick={changeSelect}
                       {...MENU_STYLE.menuItemStyle({colorMode})}
-                      value={'In Progress'}
+                      value={'Started'}
                       w='120px'
-                      >In Progress
+                      >Started
                     </MenuItem>
                     <MenuItem
                       onClick={changeSelect}
