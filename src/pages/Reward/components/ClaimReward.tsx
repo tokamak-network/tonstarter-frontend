@@ -80,22 +80,24 @@ const getTokenList = async() => {
   const rewardTokens = [
     ...Array.from(new Set(rewards.map((reward) => ethers.utils.getAddress(reward.rewardToken) ))),
   ];
+  if (rewardTokens.length !==0) {
+    let tokensArray: any = [];
+    await Promise.all(
+      rewardTokens.map(async (token) => {
+        const symbol = await getTokenFromContract(token);
+        tokensArray.push({
+          symbol,
+          token,
+        });
+      }),
+    );
   
-  let tokensArray: any = [];
-  await Promise.all(
-    rewardTokens.map(async (token) => {
-      const symbol = await getTokenFromContract(token);
-      tokensArray.push({
-        symbol,
-        token,
-      });
-    }),
-  );
-
-  setTokenList(tokensArray);
-  setSelectedToken(tokensArray[0].token);
-  setSymbol(tokensArray[0].symbol)
-  getClaimable(tokensArray[0].token);
+    setTokenList(tokensArray);
+    setSelectedToken(tokensArray[0]?.token);
+    setSymbol(tokensArray[0]?.symbol)
+    getClaimable(tokensArray[0]?.token);
+  }
+ 
 }  
     getTokenList()
   }, [rewards, account, library, transactionType, blockNumber]);

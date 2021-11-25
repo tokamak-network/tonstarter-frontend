@@ -114,6 +114,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({
 
   return (
     <Flex justifyContent={'space-between'} mb="100px">
+      {rewards.length !==0? 
       <Flex flexWrap={'wrap'}>
         <Grid templateColumns="repeat(2, 1fr)" gap={30}>
           {getPaginatedData().map((reward: any, index) => {
@@ -288,6 +289,8 @@ export const RewardContainer: FC<RewardContainerProps> = ({
           </Flex>
         </Flex>
       </Flex>
+      :<Flex> <Text fontFamily={theme.fonts.fld} fontSize={'20px'}>There are no reward programs yet</Text> </Flex>}
+      
       <Flex>{/* <ClaimReward /> */}</Flex>
     </Flex>
   );

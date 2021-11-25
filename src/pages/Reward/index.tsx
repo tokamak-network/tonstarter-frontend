@@ -212,11 +212,11 @@ export const Reward = () => {
             signer,
           ).getUserStakedTokenIds(account);
         }
-        if (orderedData.length !== 0) {
+        
           setTimeout(() => {
             setIsPositionLoading(false);
           }, 1500);
-        }
+       
       }
     }
     positionPayload();
