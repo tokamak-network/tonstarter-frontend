@@ -93,7 +93,14 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
           localeString: true,
         });
         setUserTierAllocation(detailInfo.userTier === 0 ? '-' : res);
-        setAmountAvailable(convertedAvailableAmount || '0.00');
+
+        //temp
+        setAmountAvailable(
+          convertedAvailableAmount &&
+            Number(convertedAvailableAmount.replaceAll(',', '')) > 5.27
+            ? convertedAvailableAmount
+            : '0.00' || '0.00',
+        );
         setSaleAmount(sale || '0.00');
         setPayAmount(pay || '0.00');
       }
@@ -108,6 +115,13 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
       const ratio =
         saleInfo.projectFundingTokenRatio / saleInfo.projectTokenRatio;
       const result = Number(inputTonBalance) * ratio;
+      if (String(result).split('.')[1]?.length > 2) {
+        return setConvertedTokenBalance(
+          `${String(result).split('.')[0]}.${String(result)
+            .split('.')[1]
+            .slice(0, 2)}`,
+        );
+      }
       setConvertedTokenBalance(String(result));
     }
   }, [inputTonBalance, saleInfo, convertedTokenBalance]);
@@ -201,10 +215,10 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             maxValue={
               Number(userTonBalance.replaceAll(',', '')) <=
               Number(amountAvailable.replaceAll(',', '')) /
-                saleInfo?.projectFundingTokenRatio
+                activeProjectInfo?.tokenCalRatio
                 ? Number(userTonBalance.replaceAll(',', ''))
                 : Number(amountAvailable.replaceAll(',', '')) /
-                  saleInfo?.projectFundingTokenRatio
+                  activeProjectInfo?.tokenCalRatio
             }></CustomInput>
           <img
             src={ArrowIcon}
@@ -300,7 +314,9 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
         {isApprove === true ? (
           <CustomButton
             text={'Acquire'}
-            isDisabled={btnDisabled || Number(amountAvailable) <= 0}
+            isDisabled={
+              btnDisabled || Number(amountAvailable.replaceAll(',', '')) <= 0
+            }
             func={() =>
               account &&
               checkBalance(
@@ -317,7 +333,9 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
         ) : (
           <CustomButton
             text={'Approve'}
-            isDisabled={btnDisabled}
+            isDisabled={
+              btnDisabled || Number(amountAvailable.replaceAll(',', '')) < 10
+            }
             func={() =>
               account &&
               dispatch(

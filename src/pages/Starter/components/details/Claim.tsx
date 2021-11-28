@@ -74,18 +74,22 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
         const intervalNum = Number(interval.toString());
         const endPeriod = await PUBLICSALE_CONTRACT.claimPeriod();
         const endPeriodNum = Number(endPeriod.toString());
-        const period = diffTime / intervalNum + 1;
+        const period = parseInt(String(diffTime / intervalNum + 1));
 
         setPeriod(String(Math.floor(period)));
         setEndPeriod(endPeriod.toString());
 
-        if (period > endPeriodNum) {
+        if (period < endPeriodNum) {
           const nextVestingDate = startClaimTimeNum + intervalNum * period;
+
           setD_Day(nextVestingDate);
-          setVestingDay(convertTimeStamp(nextVestingDate));
+          setVestingDay(
+            convertTimeStamp(nextVestingDate, 'YYYY.MM.DD HH:mm:ss'),
+          );
         } else {
           const nextVestingDate =
             startClaimTimeNum + intervalNum * endPeriodNum;
+
           setD_Day(nextVestingDate);
           setVestingDay(convertTimeStamp(nextVestingDate));
         }
@@ -94,7 +98,7 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
     if (saleInfo && library && PUBLICSALE_CONTRACT) {
       getDate();
     }
-  }, [library, saleInfo, PUBLICSALE_CONTRACT, blockNumber]);
+  }, [library, saleInfo, PUBLICSALE_CONTRACT, blockNumber, d_Day]);
 
   useEffect(() => {
     async function getData() {
@@ -202,20 +206,23 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
             <Text {...detailSubTextStyle}>{openSale}</Text>
             <Text ml={'3px'}>{saleInfo?.tokenName}</Text>
           </Flex>
-          <Flex>
+          <Flex pos={'relative'}>
             <Text color={'gray.400'} mr={'3px'}>
               Next Vesting Date :{' '}
             </Text>
             <Text {...detailSubTextStyle} mr={'5px'}>
               {vestingDay}
             </Text>
-            <DetailCounter
+            {/* <DetailCounter
               style={{
                 color: colorMode === 'light' ? '#3d495d' : '#ffffff',
                 fontSize: '13px',
+                position: 'absolute',
+                right: -10,
+                widht: '100px',
               }}
-              date={d_Day * 1000}
-              claimStep={true}></DetailCounter>
+              date={1638691965}
+              claimStep={true}></DetailCounter> */}
           </Flex>
         </Box>
         <Box d="flex" fontSize={'13px'} justifyContent="space-between">

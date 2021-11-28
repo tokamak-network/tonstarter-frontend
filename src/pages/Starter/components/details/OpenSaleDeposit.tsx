@@ -44,6 +44,8 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
   const [userAllocate, setUserAllocate] = useState<string>('-');
   const [isApprove, setIsApprove] = useState<boolean>(false);
 
+  const [progress, setProgress] = useState('-');
+
   const {checkBalance} = useCheckBalance();
   const {blockNumber} = useBlockNumber();
 
@@ -138,6 +140,26 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
     setIsApprove(numApprovedBalance >= numInputTonBalance);
   }, [account, library, approvedAmount, inputBalance]);
 
+  useEffect(() => {
+    if (totalDeposit !== '-' && totalAllocation !== '-') {
+      const dd =
+        String(
+          (Number(totalDeposit.replaceAll(',', '')) /
+            (Number(totalAllocation.replaceAll(',', '')) / 527.5)) *
+            100,
+        ).split('.')[0] +
+        '.' +
+        String(
+          (Number(totalDeposit.replaceAll(',', '')) /
+            (Number(totalAllocation.replaceAll(',', '')) / 527.5)) *
+            100,
+        )
+          .split('.')[1]
+          .slice(0, 1);
+      setProgress(dd);
+    }
+  }, [totalDeposit, totalAllocation]);
+
   return (
     <Flex flexDir="column" pl={'45px'}>
       <Box d="flex" textAlign="center" alignItems="center" mb={'20px'}>
@@ -155,7 +177,7 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
         mb={'10px'}>
         Deposited Amount
       </Text>
-      <Box d="flex" alignItems="center" mb={'30px'}>
+      <Box d="flex" alignItems="center" mb={'20px'}>
         <Box mr={'10px'}>
           <CustomInput
             w={'220px'}
@@ -190,9 +212,25 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
         </Text>
       </Box>
       <Box d="flex" flexDir="column">
-        <Text {...STATER_STYLE.mainText({colorMode, fontSize: 14})}>
-          Details
-        </Text>
+        <Flex alignItems="center" pb={'5px'}>
+          <Text {...STATER_STYLE.mainText({colorMode, fontSize: 14})}>
+            Details
+          </Text>
+          <Box d="flex" fontSize={'20px'} ml={'15px'}>
+            <Flex w={'286px'} mr={'25px'} fontSize={'16px'}>
+              <Text color={'gray.400'}>(</Text>
+              <Text color={'blue.100'} mr={'3px'} ml={'4px'}>
+                Progress :{' '}
+              </Text>
+              <Text {...detailSubTextStyle} mr={'3px'}>
+                {progress}
+              </Text>
+              <Text color={'gray.400'} mr={'3px'}>
+                % )
+              </Text>
+            </Flex>
+          </Box>
+        </Flex>
         <Box d="flex" fontSize={'13px'}>
           <Flex w={'286px'} mr={'25px'}>
             <Text color={'gray.400'} mr={'3px'}>
@@ -257,6 +295,7 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
           </Flex>
         </Box>
       </Box>
+
       <Box mt={'27px'}>
         {isApprove === true ? (
           <CustomButton

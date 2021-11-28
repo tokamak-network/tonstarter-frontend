@@ -205,6 +205,13 @@ export const ManageModal = () => {
             return setSwapBalance('0.00');
           }
 
+          if (
+            Number(stakeContractBalanceTon.replaceAll(',', '')) >=
+            Number(totalStakedAmount.replaceAll(',', ''))
+          ) {
+            return setSwapBalance('0.00');
+          }
+
           setSwapBalance(stakeContractBalanceTon);
 
           //calculate swap balance
@@ -283,7 +290,8 @@ export const ManageModal = () => {
     };
 
     const btnDisableSwap = () => {
-      return Number(swapBalance) <= 0 || miningEndTime <= currentBlock
+      return Number(swapBalance.replaceAll(',', '')) <= 0 ||
+        miningEndTime <= currentBlock
         ? setSwapDisabled(true)
         : setSwapDisabled(false);
     };

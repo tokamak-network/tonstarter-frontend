@@ -8,6 +8,7 @@ import {
   CircularProgress,
   useColorMode,
   Text,
+  // Tooltip,
 } from '@chakra-ui/react';
 import React from 'react';
 import {shortenAddress} from 'utils';
@@ -243,12 +244,21 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           style={{zIndex: 100}}>
           Staking
         </NavLink>
+        {/* <Tooltip
+          hasArrow
+          placement="top"
+          label="Maintainance in progress"
+          color={theme.colors.white[100]}
+          bg={theme.colors.gray[375]}> */}
         <NavLink
           to="/pools"
           className={match?.isExact ? 'link-match' : 'link'}
-          style={{zIndex: 100}}>
+          style={{zIndex: 100}}
+          // onClick={(e: any) => e.preventDefault()}
+        >
           Pools
         </NavLink>
+        {/* </Tooltip> */}
         <NavLink
           to="/dao"
           className={match?.isExact ? 'link-match' : 'link'}
@@ -261,14 +271,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           style={{zIndex: 100}}>
           Starter
         </NavLink>
-        {/* <Tooltip
-          hasArrow
-          placement="top"
-          label="Coming Soon"
-          color={theme.colors.white[100]}
-          bg={theme.colors.gray[375]}> */}
 
-        {/* </Tooltip> */}
         <NavLink
           to="/"
           className={match?.isExact ? 'link-match' : 'link'}
@@ -308,10 +311,33 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
             top={'15px'}
             minW={'115px'}
             w={'115px'}
-            h={'112px'}
+            h={'148px'}
             p={0}
             fontSize={13}
             background={colorMode === 'light' ? '#ffffff' : 'transparent'}>
+            <NavLink
+              to="/"
+              activeStyle={{
+                background: colorMode === 'light' ? '#ffffff' : '',
+                color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',
+              }}
+              style={menuStyle.navLink}
+              onClick={(e) => {
+                e.preventDefault();
+                window.open(
+                  'https://medium.com/onther-tech/tonstarter-guide-en-kr-6b7cad5773f1',
+                );
+              }}>
+              <MenuItem
+                _hover={{color: 'blue.100', bg: 'none'}}
+                w={'100%'}
+                h={'37px'}
+                _focus={{
+                  bg: colorMode === 'light' ? '#ffffff' : 'transparent',
+                }}>
+                Staking
+              </MenuItem>
+            </NavLink>
             <NavLink
               to="/"
               activeStyle={{
@@ -345,7 +371,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
               onClick={(e) => {
                 e.preventDefault();
                 window.open(
-                  'https://www.notion.so/onther/Introduction-of-sTOS-c2893593615a49809dbeecd29548c630',
+                  'https://medium.com/onther-tech/introduction-of-stos-en-kr-56c12a5440e0',
                 );
               }}>
               <MenuItem
@@ -390,7 +416,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           style={{zIndex: 100}}>
           Admin
         </NavLink> */}
-        <Menu>
+        {/* <Menu>
           <MenuButton>
             <Text className={match?.isExact ? 'link-match' : 'link'}>
               Admin
@@ -452,7 +478,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
               </MenuItem>
             </NavLink>
           </MenuList>
-        </Menu>
+        </Menu> */}
       </Stack>
     </Box>
   );

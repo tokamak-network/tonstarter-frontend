@@ -30,10 +30,8 @@ export const getClaimalbeList = async (
       library,
     );
 
-    const availableClaimList =
-      await LOCKTOS_DIVIDEND_CONTRACT.getAvailableClaims(account);
-
-    const tokens = availableClaimList[0];
+    // const availableClaimList =
+    //   await LOCKTOS_DIVIDEND_CONTRACT.getAvailableClaims(account);
 
     //project tokens
     const res: ClaimList[] = await Promise.all(
@@ -76,6 +74,7 @@ export const getClaimalbeList = async (
     return res;
   } catch (e) {
     console.log(e);
+    return undefined;
   }
 };
 

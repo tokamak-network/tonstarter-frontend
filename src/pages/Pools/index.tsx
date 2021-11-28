@@ -18,6 +18,7 @@ import {DEPLOYED} from '../../constants/index';
 import {usePoolByUserQuery} from 'store/data/enhanced';
 import ms from 'ms.macro';
 import {useActiveWeb3React} from 'hooks/useWeb3';
+import {InfraError} from './components/InfraError';
 
 const {
   // TOS_ADDRESS,
@@ -81,7 +82,8 @@ export const Pools = () => {
     function getPool() {
       // const poolArr = basePool.loading ? [] : basePool.data.pools;
 
-      const poolArr = isLoading ? [] : data.pools;
+      const poolArr = isLoading || data === undefined ? [] : data.pools;
+
       setPool(poolArr);
     }
     getPool();
@@ -107,8 +109,10 @@ export const Pools = () => {
           />
         </Box>
         <Box fontFamily={theme.fonts.roboto}>
-          {isLoading ? (
+          {isLoading && error === undefined ? (
             ''
+          ) : error !== undefined || data === undefined ? (
+            <InfraError />
           ) : (
             <PoolTable
               data={pool}

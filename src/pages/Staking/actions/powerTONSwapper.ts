@@ -10,19 +10,24 @@ import {DEPLOYED} from 'constants/index';
 import {convertNumber} from 'utils/number';
 
 export const isAblePowerTONSwap = async (library: LibraryType) => {
-  if (!library) {
-    return console.error('no account or library');
-  }
-  const {WTON_ADDRESS, PowerTONSwapper_ADDRESS} = DEPLOYED;
+  try {
+    if (!library) {
+      return console.error('no account or library');
+    }
+    const {WTON_ADDRESS, PowerTONSwapper_ADDRESS} = DEPLOYED;
 
-  const STAKE_CONTROL_CONTRACT = new Contract(
-    WTON_ADDRESS,
-    WTONABI.abi,
-    library,
-  );
-  const res = await STAKE_CONTROL_CONTRACT.balanceOf(PowerTONSwapper_ADDRESS);
-  const convertedNum = convertNumber({amount: res.toString()});
-  return Number(convertedNum) > 0;
+    const STAKE_CONTROL_CONTRACT = new Contract(
+      WTON_ADDRESS,
+      WTONABI.abi,
+      library,
+    );
+    const res = await STAKE_CONTROL_CONTRACT.balanceOf(PowerTONSwapper_ADDRESS);
+    const convertedNum = convertNumber({amount: res.toString()});
+    return Number(convertedNum) > 0;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
 };
 
 export const powerTONSwapper = async () => {

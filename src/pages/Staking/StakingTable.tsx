@@ -38,7 +38,7 @@ import {
   stakeTonControl,
 } from './actions/stakeTONControl';
 import {
-  isUnstakeL2All,
+  // isUnstakeL2All,
   requestUnstakingLayer2All,
   isAblePowerTONSwap,
   powerTONSwapper,
@@ -144,7 +144,9 @@ const GetL2Status = ({
         {sort === 'canWithdraw' && 'W'}
         {sort === 'canSwap' && 'S'}
       </Flex>
-      <Text fontSize={11} color={colorMode ? 'black.300' : 'white.100'}>
+      <Text
+        fontSize={11}
+        color={colorMode === 'light' ? 'black.300' : 'white.100'}>
         {sort === 'canUnstake' && onlyImage === false && 'Unstake from layer2'}
         {sort === 'canWithdraw' && onlyImage === false && 'Withdraw'}
         {sort === 'canSwap' && onlyImage === false && 'Swap'}
@@ -219,16 +221,20 @@ export const StakingTable: FC<StakingTableProps> = ({
     async function callIsWithdrawAndSwapAll() {
       if (library) {
         const isWithdraw = await checkCanWithdrawLayr2All(library);
-        const isUnstakeAll = await isUnstakeL2All(library);
+        // const isUnstakeAll = await isUnstakeL2All(library);
         const isPowerTONSwap = await isAblePowerTONSwap(library);
 
+        const isUnstakeAll = data.filter(
+          (data) => data.L2status.canUnstake === true,
+        );
+
         setIsWithdrawAndSwapAll(isWithdraw || false);
-        setIsUnstakeAll(isUnstakeAll || false);
+        setIsUnstakeAll(isUnstakeAll.length > 0);
         setIsPowerTONSwap(isPowerTONSwap || false);
       }
     }
     callIsWithdrawAndSwapAll();
-  }, [blockNumber, library]);
+  }, [blockNumber, library, data]);
 
   //refetch to update Total Staked, Earninger Per Ton after stake, unstake
   // const {
@@ -621,7 +627,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                   </Button>
                 }></CustomTooltip>
             </Box>
-            {/* <Box ml={'10px'}>
+            <Box ml={'10px'}>
               <CustomTooltip
                 toolTipW={245}
                 toolTipH={'50px'}
@@ -644,7 +650,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                     Power TON Swap
                   </Button>
                 }></CustomTooltip>
-            </Box> */}
+            </Box>
           </Flex>
           {data.length > 10 && (
             <Flex>

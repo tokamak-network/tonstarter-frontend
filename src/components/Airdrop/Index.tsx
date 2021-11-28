@@ -226,7 +226,9 @@ export const AirdropModal = () => {
               // color="white.100"
               fontSize="14px"
               isDisabled={
-                airdropData === undefined || airdropData[0]?.myAmount === '0.00'
+                airdropData === undefined ||
+                airdropData[0]?.myAmount === '0.00' ||
+                balance === '0.00'
                   ? true
                   : false
               }
