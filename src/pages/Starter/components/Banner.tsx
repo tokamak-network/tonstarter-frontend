@@ -10,7 +10,6 @@ export const Banner = () => {
     <Flex
       pos="relative"
       w={'100%'}
-      h={'100vh'}
       // bgImage={bannerImg1X}
       // backgroundRepeat="no-repeat"
       // backgroundPosition="center"
@@ -28,7 +27,6 @@ export const Banner = () => {
         color="white.100"
         alignItems="center">
         <Text
-          mt={'90px'}
           mb={'32px'}
           fontFamily={TitilliumWeb}
           fontSize={16}

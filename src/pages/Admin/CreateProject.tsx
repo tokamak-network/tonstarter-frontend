@@ -3,7 +3,6 @@ import {useEffect, useState} from 'react';
 import {AdminObject, StepComponent} from '@Admin/types';
 import {PageHeader} from 'components/PageHeader';
 import {AdminDetail} from './components/AdminDetail';
-import {CustomButton} from 'components/Basic/CustomButton';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {LoadingComponent} from 'components/Loading';
 import {useLocation} from 'react-router-dom';
@@ -11,7 +10,6 @@ import queryString from 'query-string';
 import {selectStarters} from '../Starter/starter.reducer';
 import {useAppSelector} from 'hooks/useRedux';
 import tickIcon from 'assets/svgs/tick-icon.svg';
-import AdminActions from './actions';
 
 const Steps: React.FC<StepComponent> = (props) => {
   const {stepName, currentStep} = props;

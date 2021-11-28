@@ -1,3 +1,4 @@
+import {TokenImage} from '@Admin/components/TokenImage';
 import {
   Grid,
   GridItem,
@@ -6,9 +7,8 @@ import {
   useTheme,
   Text,
   Flex,
-  Avatar,
 } from '@chakra-ui/react';
-import {checkTokenType} from 'utils/token';
+import {UpcomingProjectType} from '@Starter/types';
 // import { useRouteMatch} from 'react-router-dom';
 
 type UpcomingProjectProp = {
@@ -33,23 +33,16 @@ export const UpcomingProject = (props: UpcomingProjectProp) => {
         Upcoming Projects
       </Text>
       <Grid templateColumns="repeat(3, 1fr)" gap={30}>
-        {upcomingProject.map((project) => {
-          const tokenType = checkTokenType(
-            '0x2be5e8c109e2197D077D13A82dAead6a9b3433C5',
-          );
+        {upcomingProject.map((project: UpcomingProjectType) => {
           return (
             // <Link to={`${url}/upcoming/${project.name}`}>
-            <GridItem {...STATER_STYLE.containerStyle({colorMode})} h={'235px'}>
+            <GridItem
+              {...STATER_STYLE.containerStyle({colorMode})}
+              h={'235px'}
+              _hover={{}}
+              cursor={{}}>
               <Flex justifyContent="space-between" mb={15}>
-                <Avatar
-                  src={tokenType.symbol}
-                  backgroundColor={tokenType.bg}
-                  bg="transparent"
-                  color="#c7d1d8"
-                  name="T"
-                  h="48px"
-                  w="48px"
-                />
+                <TokenImage imageLink={project.tokenImage}></TokenImage>
               </Flex>
               <Flex flexDir="column" mb={'25px'}>
                 <Text h={'36px'} {...STATER_STYLE.mainText({colorMode})}>
@@ -80,7 +73,7 @@ export const UpcomingProject = (props: UpcomingProjectProp) => {
                         colorMode,
                         fontSize: 20,
                       })}>
-                      10,000,000
+                      {project.tokenFundRaisingTargetAmount}
                     </Text>
                     <Text>TON</Text>
                   </Box>

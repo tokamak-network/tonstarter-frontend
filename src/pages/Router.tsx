@@ -179,13 +179,12 @@ export const Router: FC<RouterProps> = () => {
           <Route exact path="/admin/listpools" component={ListingPools} />
           <Route exact path="/admin/listrewards" component={ListingRewards} />
 
-          <Route exact path={`/starter/active/:id`} component={StarterDetail} />
-          <Route
+          <Route exact path={`/starter/:id`} component={StarterDetail} />
+          {/* <Route
             exact
             path={`/starter/upcoming/:id`}
             component={StarterDetail}
-          />
-          <Route exact path={`/starter/past/:id`} component={StarterDetail} />
+          /> */}
         </Switch>
       </div>
       <Footer />

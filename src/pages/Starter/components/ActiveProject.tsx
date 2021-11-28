@@ -42,7 +42,7 @@ export const ActiveProject = (props: any) => {
         Active Projects
       </Text>
       <Grid templateColumns="repeat(3, 1fr)" gap={30}>
-        {activeProject.map((project: any) => {
+        {activeProject.map((project: any, index: number) => {
           const tokenType = checkTokenType(
             '0x2be5e8c109e2197D077D13A82dAead6a9b3433C5',
           );
@@ -53,7 +53,9 @@ export const ActiveProject = (props: any) => {
           }
 
           return (
-            <Link to={`${url}/active/${project.name}`}>
+            <Link
+              to={`${url}/active/${project.name}`}
+              id={`active_link_${index}`}>
               <Box {...STATER_STYLE.containerStyle({colorMode})}>
                 <Flex justifyContent="space-between" mb={15}>
                   <Avatar

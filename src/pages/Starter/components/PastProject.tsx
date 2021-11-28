@@ -10,6 +10,7 @@ import {
 } from '@chakra-ui/react';
 import {checkTokenType} from 'utils/token';
 import {Link, useRouteMatch} from 'react-router-dom';
+import {TokenImage} from '@Admin/components/TokenImage';
 
 type PastProjectProp = {
   pastProject: any[];
@@ -32,23 +33,12 @@ export const PastProject = (props: PastProjectProp) => {
         Past Projects
       </Text>
       <Grid templateColumns="repeat(3, 1fr)" gap={30}>
-        {pastProject.map((project) => {
-          const tokenType = checkTokenType(
-            '0x2be5e8c109e2197D077D13A82dAead6a9b3433C5',
-          );
+        {pastProject.map((project, index) => {
           return (
-            <Link to={`${url}/past/${project.name}`}>
+            <Link to={`${url}/${project.name}`} id={`past_link_${index}`}>
               <Box {...STATER_STYLE.containerStyle({colorMode})} h={'259px'}>
                 <Flex justifyContent="space-between" mb={15}>
-                  <Avatar
-                    src={tokenType.symbol}
-                    backgroundColor={tokenType.bg}
-                    bg="transparent"
-                    color="#c7d1d8"
-                    name="T"
-                    h="48px"
-                    w="48px"
-                  />
+                  <TokenImage imageLink={project.tokenSymbolImage}></TokenImage>
                 </Flex>
                 <Flex flexDir="column" mb={'15px'}>
                   <Text h={'36px'} {...STATER_STYLE.mainText({colorMode})}>
@@ -94,7 +84,7 @@ export const PastProject = (props: PastProjectProp) => {
                       10,000
                     </Text>
                   </Box>
-                  <Box d="flex" flexDir="column">
+                  {/* <Box d="flex" flexDir="column">
                     <Text
                       {...STATER_STYLE.mainText({
                         colorMode,
@@ -114,7 +104,7 @@ export const PastProject = (props: PastProjectProp) => {
                         <Text>%</Text>
                       </Flex>
                     </Box>
-                  </Box>
+                  </Box> */}
                 </Flex>
                 <Box
                   d="flex"
@@ -155,14 +145,12 @@ export const PastProject = (props: PastProjectProp) => {
                     {...{
                       ...STATER_STYLE.subTextBlack({colorMode, fontSize: 12}),
                     }}>
-                    <Text mr={1}>$1</Text>
-                    <Text mr={1}>/</Text>
-                    <Text> $3</Text>
+                    <Text>100%</Text>
                   </Flex>
                 </Box>
                 <Box mb={'30px'}>
                   <Progress
-                    value={80}
+                    value={0}
                     borderRadius={10}
                     h={'6px'}
                     bg={'#2bb415'}></Progress>

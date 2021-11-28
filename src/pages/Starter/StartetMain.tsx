@@ -17,20 +17,20 @@ import {useBlockNumber} from 'hooks/useBlock';
 
 export const StarterMain = () => {
   const starterData = store.getState().starters.data;
-  const {chainId, account} = useActiveWeb3React();
+  const {chainId} = useActiveWeb3React();
   const [activeProject, setActiveProject] = useState<ActiveProjectType[]>([]);
   const [upcomingProject, setUpcomingProject] = useState<UpcomingProjectType[]>(
     [],
   );
   const [pastProject, setPastProject] = useState<PastProjectType[]>([]);
-  const [myProject, setMyProject] = useState<any[]>([]);
+  // const [myProject, setMyProject] = useState<any[]>([]);
   const [pending, setPending] = useState<boolean>(true);
   const {blockNumber} = useBlockNumber();
 
   useEffect(() => {
     if (starterData) {
-      const {activeProjects, upcomingProjects, pastProjects, myProjects} =
-        starterData;
+      // const { activeProjects, upcomingProjects, pastProjects, myProjects } =
+      const {activeProjects, upcomingProjects, pastProjects} = starterData;
       if (
         activeProjects.length > 0 ||
         upcomingProjects.length > 0 ||
@@ -39,33 +39,33 @@ export const StarterMain = () => {
         setActiveProject(activeProjects);
         setUpcomingProject(upcomingProjects);
         setPastProject(pastProjects);
-        setMyProject(myProjects);
+        // setMyProject(myProjects);
         setPending(false);
       }
     }
   }, [starterData, chainId, blockNumber]);
 
   return (
-    <Flex flexDir="column" w={'100%'} alignItems="center" h={'100vh'}>
+    <Flex flexDir="column" w={'100%'} alignItems="center">
       <Flex mb={'60px'} w={'100%'}>
         <Banner></Banner>
       </Flex>
-      {/* {pending === true ? (
+      {pending === true ? (
         <Center>
           <LoadingComponent />
         </Center>
       ) : null}
-      <Flex px={353} flexDir="column" alignItems="center" mt={'80px'}>
+      <Flex px={353} flexDir="column" alignItems="center">
         {activeProject.length > 0 && (
           <Box mb={'80px'}>
             <ActiveProject activeProject={activeProject}></ActiveProject>
           </Box>
         )}
-        {account && myProject.length > 0 && (
+        {/* {account && myProject.length > 0 && (
           <Box mb={'80px'}>
             <MyProject myProject={myProject}></MyProject>
           </Box>
-        )}
+        )} */}
         {upcomingProject.length > 0 && (
           <Box mb={'80px'}>
             <UpcomingProject
@@ -77,7 +77,7 @@ export const StarterMain = () => {
             <PastProject pastProject={pastProject}></PastProject>
           </Box>
         )}
-      </Flex> */}
+      </Flex>
     </Flex>
   );
 };

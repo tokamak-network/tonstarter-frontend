@@ -15,18 +15,17 @@ import {DetailCounter} from './Detail_Counter';
 
 type ClaimProps = {
   saleInfo: AdminObject;
-  activeProjectInfo: any;
 };
 
 export const Claim: React.FC<ClaimProps> = (prop) => {
-  const {saleInfo, activeProjectInfo} = prop;
+  const {saleInfo} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
   const {account, library} = useActiveWeb3React();
 
   const [inputTonBalance, setInputTonBalance] = useState<string>('0');
-  const [vestingDay, setVestingDay] = useState<string>('-');
+  const [vestingDay, setVestingDay] = useState<string | 'end'>('-');
   const [exclusiveSale, setExclusiveSale] = useState<string>('-');
   const [remainedAmount, setRemainedAmount] = useState<string>('-');
   const [openSale, setOpenSale] = useState<string>('-');

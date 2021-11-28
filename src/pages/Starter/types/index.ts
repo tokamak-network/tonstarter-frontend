@@ -3,6 +3,8 @@ export interface I_StarterProject {
   saleStart: string;
   saleEnd: string;
   saleContractAddress: string;
+  tokenImage: string;
+  tokenFundRaisingTargetAmount: number;
 }
 
 export type ActiveProjectType = I_StarterProject & {
@@ -23,9 +25,7 @@ export type ActiveProjectType = I_StarterProject & {
   };
 };
 
-export type UpcomingProjectType = I_StarterProject & {
-  tokenFundRaisingTargetAmount: number;
-};
+export type UpcomingProjectType = I_StarterProject & {};
 
 export type PastProjectType = I_StarterProject;
 
@@ -35,7 +35,7 @@ export type MyProject = {
   nextClaimableDate: number;
 };
 
-export type SaleStatus = 'whitelist' | 'exclusive' | 'deposit';
+export type SaleStatus = 'whitelist' | 'exclusive' | 'deposit' | 'claim';
 
 export type ProjectStatus = 'active' | 'upcoming' | 'past';
 export type Tier = 0 | 1 | 2 | 3 | 4;

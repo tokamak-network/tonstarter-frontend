@@ -21,12 +21,11 @@ import {openModal} from 'store/modal.reducer';
 type ExclusiveSalePartProps = {
   saleInfo: AdminObject;
   detailInfo: DetailInfo | undefined;
-  activeProjectInfo: any;
   approvedAmount: string;
 };
 
 export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
-  const {saleInfo, detailInfo, activeProjectInfo, approvedAmount} = prop;
+  const {saleInfo, detailInfo, approvedAmount} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
@@ -105,12 +104,13 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
   }, [account, library, PUBLICSALE_CONTRACT, detailInfo]);
 
   useEffect(() => {
-    if (activeProjectInfo) {
-      const ratio = activeProjectInfo.tokenCalRatio;
+    if (saleInfo) {
+      const ratio =
+        saleInfo.projectFundingTokenRatio / saleInfo.projectTokenRatio;
       const result = Number(inputTonBalance) * ratio;
       setConvertedTokenBalance(String(result));
     }
-  }, [inputTonBalance, activeProjectInfo, convertedTokenBalance]);
+  }, [inputTonBalance, saleInfo, convertedTokenBalance]);
 
   useEffect(() => {
     async function callUserBalance() {
@@ -128,25 +128,25 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
 
   useEffect(() => {
     async function getInfo() {
-      if (account && library && activeProjectInfo) {
+      if (account && library && saleInfo) {
         const whiteListInfo = await starterActions.isWhiteList({
           account,
           library,
-          address: activeProjectInfo.saleContractAddress,
+          address: saleInfo.saleContractAddress,
         });
         // const amount = await starterActions.isWhiteList({
         //   account,
         //   library,
-        //   address: activeProjectInfo.saleContractAddress,
+        //   address: saleInfo.saleContractAddress,
         // });
         setBtnDisabled(!whiteListInfo[0]);
         // setAmountAvailable();
       }
     }
-    if (account && library && activeProjectInfo) {
+    if (account && library && saleInfo) {
       getInfo();
     }
-  }, [account, library, activeProjectInfo]);
+  }, [account, library, saleInfo]);
 
   //check approve
   useEffect(() => {
@@ -164,9 +164,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
         <DetailCounter
           numberFontSize={'18px'}
           stringFontSize={'14px'}
-          date={
-            activeProjectInfo?.timeStamps.endExclusiveTime * 1000
-          }></DetailCounter>
+          date={saleInfo?.endExclusiveTime * 1000}></DetailCounter>
       </Box>
       <Box d="flex">
         <Text
@@ -250,15 +248,8 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
               Public Round 1 Period :{' '}
             </Text>
             <Text {...detailSubTextStyle}>
-              {convertTimeStamp(
-                activeProjectInfo?.timeStamps?.startAddWhiteTime,
-                'YYYY-MM-D',
-              )}{' '}
-              ~{' '}
-              {convertTimeStamp(
-                activeProjectInfo?.timeStamps?.endExclusiveTime,
-                'MM-D',
-              )}
+              {convertTimeStamp(saleInfo?.startAddWhiteTime, 'YYYY-MM-D')} ~{' '}
+              {convertTimeStamp(saleInfo?.endExclusiveTime, 'MM-D')}
             </Text>
           </Flex>
           <Flex w={'235px'}>
@@ -287,7 +278,9 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
               Ratio :{' '}
             </Text>
             <Text {...detailSubTextStyle}>
-              1 TON = {activeProjectInfo?.tokenCalRatio} {saleInfo?.tokenName}
+              1 {saleInfo.fundingTokenType} ={' '}
+              {saleInfo?.projectFundingTokenRatio / saleInfo?.projectTokenRatio}{' '}
+              {saleInfo?.tokenName}
             </Text>
           </Flex>
         </Box>
