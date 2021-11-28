@@ -215,10 +215,12 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             maxValue={
               Number(userTonBalance.replaceAll(',', '')) <=
               Number(amountAvailable.replaceAll(',', '')) /
-                activeProjectInfo?.tokenCalRatio
+                saleInfo?.projectFundingTokenRatio /
+                saleInfo?.projectTokenRatio
                 ? Number(userTonBalance.replaceAll(',', ''))
                 : Number(amountAvailable.replaceAll(',', '')) /
-                  activeProjectInfo?.tokenCalRatio
+                  saleInfo?.projectFundingTokenRatio /
+                  saleInfo?.projectTokenRatio
             }></CustomInput>
           <img
             src={ArrowIcon}

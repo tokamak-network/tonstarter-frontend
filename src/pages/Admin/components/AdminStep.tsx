@@ -735,41 +735,43 @@ export const StepThree: React.FC<StepProp> = (props) => {
   );
 
   function checkTimeLine(data: any) {
+    console.log('--data--');
+    console.log(data);
     for (const [key, value] of Object.entries(data)) {
-      if (key === 'snapshot' && value === '') {
+      if (key === 'snapshot' && value === 0) {
         return setTimeline(1);
       }
-      if (key === 'startAddWhiteTime' && value === '') {
+      if (key === 'startAddWhiteTime' && value === 0) {
         return setTimeline(2);
       }
-      if (key === 'endAddWhiteTime' && value === '') {
+      if (key === 'endAddWhiteTime' && value === 0) {
         return setTimeline(3);
       }
-      if (key === 'startExclusiveTime' && value === '') {
+      if (key === 'startExclusiveTime' && value === 0) {
         return setTimeline(4);
       }
-      if (key === 'endExclusiveTime' && value === '') {
+      if (key === 'endExclusiveTime' && value === 0) {
         return setTimeline(5);
       }
-      if (key === 'startDepositTime' && value === '') {
+      if (key === 'startDepositTime' && value === 0) {
         return setTimeline(6);
       }
-      if (key === 'endDepositTime' && value === '') {
+      if (key === 'endDepositTime' && value === 0) {
         return setTimeline(7);
       }
-      if (key === 'endDepositTime' && value === '') {
+      if (key === 'endDepositTime' && value === 0) {
         return setTimeline(7);
       }
-      if (key === 'startClaimTime' && value === '') {
+      if (key === 'startClaimTime' && value === 0) {
         return setTimeline(8);
       }
-      if (key === 'claimInterval' && value === '') {
+      if (key === 'claimInterval' && value === 0) {
         return setTimeline(8);
       }
-      if (key === 'claimPeriod' && value === '') {
+      if (key === 'claimPeriod' && value === 0) {
         return setTimeline(8);
       }
-      if (key === 'claimFirst' && value === '') {
+      if (key === 'claimFirst' && value === 0) {
         return setTimeline(8);
       }
       return setTimeline(9);
