@@ -1,4 +1,4 @@
-type FundingTokenTypes = 'TON';
+export type FundingTokenTypes = 'TON';
 
 export type StepOne = {
   name: string;

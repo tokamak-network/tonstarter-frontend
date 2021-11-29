@@ -15,6 +15,8 @@ const instance = createInstance();
 
 export async function createStarter(args: AdminObject) {
   try {
+    // /starter?chainId=${DEFAULT_NETWORK}
+    // 0xbef737d725993847c345647eba096500fdae71c6;
     const res = await instance.post(`/starter?chainId=${DEFAULT_NETWORK}`, {
       ...args,
     });
@@ -48,8 +50,6 @@ export async function putEditStarter(args: AdminObject) {
 
 export async function createPool(args: PoolData) {
   try {
-    console.log('--args--');
-    console.log(args);
     const res = await instance.post(`/pool?chainId=${DEFAULT_NETWORK}`, {
       ...args,
     });
@@ -66,8 +66,6 @@ export async function createPool(args: PoolData) {
 }
 
 export async function putEditPool(args: PoolData) {
-  console.log('--args--');
-  console.log(args);
   try {
     const res = await instance.put(`/pool?chainId=${DEFAULT_NETWORK}`, {
       ...args,

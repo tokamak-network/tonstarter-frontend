@@ -41,7 +41,7 @@ export const Banner = () => {
           fontFamily={poppins}
           lineHeight={1.14}
           mb={'20px'}>
-          <Text>DOOROPEN</Text>
+          <Text>Dragons of Midgard</Text>
           <Text>Coming soon</Text>
         </Flex>
         <Flex
@@ -51,8 +51,8 @@ export const Banner = () => {
           fontFamily={roboto}
           lineHeight={1.55}
           color={'lightgray'}>
-          <Text>First Metaverse NFT with</Text>
-          <Text>Virtual Human</Text>
+          <Text>Playable NFT Collectible PVP game set in the medieval era</Text>
+          <Text>in the kingdom of midgard</Text>
         </Flex>
         <Flex
           flexDir="column"
@@ -66,7 +66,7 @@ export const Banner = () => {
             text={'Website'}
             func={(e: any) => {
               e.preventDefault();
-              window.open('https://dooropen.space/');
+              window.open('https://dragonsofmidgard.com/');
             }}></CustomButton>
         </Flex>
       </Flex>

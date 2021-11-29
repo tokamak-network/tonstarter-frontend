@@ -44,16 +44,21 @@ export const ListingProjects = () => {
 
       const res = await Promise.all(
         filteredStarterData.map(async (data: any) => {
+          console.log('--data--');
+          console.log(data);
           const {
             endAddWhiteTime,
             endExclusiveTime,
             endDepositTime,
             saleContractAddress,
           } = data;
-          const saleAmount = await AdminActions.getSaleAmount({
-            library,
-            address: saleContractAddress,
-          });
+          const saleAmount =
+            data.name === 'DOOR OPEN'
+              ? await AdminActions.getSaleAmount({
+                  library,
+                  address: saleContractAddress,
+                })
+              : '';
           const checkStep =
             endAddWhiteTime > nowTimeStamp
               ? 'Whitelist'

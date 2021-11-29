@@ -1,15 +1,17 @@
+import {FundingTokenTypes} from '@Admin/types';
+
 export interface I_StarterProject {
   name: string;
   saleStart: string;
   saleEnd: string;
   saleContractAddress: string;
-  tokenImage: string;
-  tokenFundRaisingTargetAmount: number;
+  tokenSymbolImage: string;
+  tokenFundRaisingTargetAmount: string;
+  fundingTokenType: FundingTokenTypes;
 }
 
 export type ActiveProjectType = I_StarterProject & {
   isExclusive: boolean;
-  tokenFundRaisingTargetAmount: string;
   projectTokenRatio: number;
   projectFundingTokenRatio: number;
   timeStamps: {

@@ -7,12 +7,12 @@ import {
   useTheme,
   Text,
   Flex,
+  // Link,
 } from '@chakra-ui/react';
 import {UpcomingProjectType} from '@Starter/types';
-// import { useRouteMatch} from 'react-router-dom';
 
 type UpcomingProjectProp = {
-  upcomingProject: any[];
+  upcomingProject: UpcomingProjectType[];
 };
 
 export const UpcomingProject = (props: UpcomingProjectProp) => {
@@ -42,7 +42,7 @@ export const UpcomingProject = (props: UpcomingProjectProp) => {
               _hover={{}}
               cursor={{}}>
               <Flex justifyContent="space-between" mb={15}>
-                <TokenImage imageLink={project.tokenImage}></TokenImage>
+                <TokenImage imageLink={project.tokenSymbolImage}></TokenImage>
               </Flex>
               <Flex flexDir="column" mb={'25px'}>
                 <Text h={'36px'} {...STATER_STYLE.mainText({colorMode})}>
@@ -75,7 +75,7 @@ export const UpcomingProject = (props: UpcomingProjectProp) => {
                       })}>
                       {project.tokenFundRaisingTargetAmount}
                     </Text>
-                    <Text>TON</Text>
+                    <Text>{project.fundingTokenType}</Text>
                   </Box>
                 </Box>
                 <Box d="flex" flexDir="column">
@@ -92,7 +92,7 @@ export const UpcomingProject = (props: UpcomingProjectProp) => {
                       colorMode,
                       fontSize: 20,
                     })}>
-                    DeFI
+                    P2E
                   </Text>
                 </Box>
               </Flex>

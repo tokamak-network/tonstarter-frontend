@@ -155,8 +155,8 @@ export const fetchStarters = createAsyncThunk(
                 : moment.unix(data.startDepositTime).format('YYYY.MM.DD'),
             saleEnd:
               checkStep === 'whitelist' || checkStep === 'exclusive'
-                ? moment.unix(data.endExclusiveTime).format('YYYY.MM.DD')
-                : moment.unix(data.endDepositTime).format('YYYY.MM.DD'),
+                ? moment.unix(data.endExclusiveTime).format('MM.DD')
+                : moment.unix(data.endDepositTime).format('MM.DD'),
             isExclusive:
               checkStep === 'whitelist' || checkStep === 'exclusive'
                 ? true
@@ -187,13 +187,13 @@ export const fetchStarters = createAsyncThunk(
           return {
             name: data.name,
             saleStart: moment.unix(data.startDepositTime).format('YYYY.MM.DD'),
-            saleEnd: moment.unix(data.endDepositTime).format('YYYY.MM.DD'),
-            tokenFundRaisingTargetAmount: convertLocaleString(
-              data.tokenFundRaisingTargetAmount,
-              0,
-            ),
+            saleEnd: moment.unix(data.endDepositTime).format('MM.DD'),
+            tokenAllocationAmount: isNaN(parseFloat(data.tokenAllocationAmount))
+              ? data.tokenAllocationAmount
+              : convertLocaleString(data.tokenAllocationAmount, 0),
             saleContractAddress: data.saleContractAddress,
             tokenImage: data.tokenSymbolImage,
+            tokenFundRaisingTargetAmount: data.tokenFundRaisingTargetAmount,
           };
         },
       );
@@ -203,9 +203,11 @@ export const fetchStarters = createAsyncThunk(
           return {
             name: data.name,
             saleStart: moment.unix(data.startDepositTime).format('YYYY.MM.DD'),
-            saleEnd: moment.unix(data.endDepositTime).format('YYYY.MM.DD'),
+            saleEnd: moment.unix(data.endDepositTime).format('MM.DD'),
             saleContractAddress: data.saleContractAddress,
             tokenSymbolImage: data.tokenSymbolImage,
+            fundingTokenType: data.fundingTokenType,
+            tokenFundRaisingTargetAmount: data.tokenFundRaisingTargetAmount,
           };
         },
       );
