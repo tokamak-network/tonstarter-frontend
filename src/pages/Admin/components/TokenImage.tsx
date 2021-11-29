@@ -1,4 +1,4 @@
-import {Avatar, Flex, Text} from '@chakra-ui/react';
+import {Avatar, Flex, Text, useColorMode} from '@chakra-ui/react';
 import React from 'react';
 
 type TokenImageProps = {
@@ -6,6 +6,7 @@ type TokenImageProps = {
 };
 export const TokenImage: React.FC<TokenImageProps> = (props) => {
   const {imageLink} = props;
+  const {colorMode} = useColorMode();
 
   if (imageLink === '' || imageLink === undefined) {
     return (
@@ -29,7 +30,7 @@ export const TokenImage: React.FC<TokenImageProps> = (props) => {
       bg="transparent"
       color="#c7d1d8"
       name={'token_image'}
-      border={'1px solid #c7d1d8'}
+      border={colorMode === 'light' ? '1px solid #c7d1d8' : ''}
       borderRadius={25}
       h="50px"
       w="50px"
