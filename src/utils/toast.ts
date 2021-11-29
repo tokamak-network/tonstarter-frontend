@@ -3,6 +3,7 @@ import {openToast} from 'store/app/toast.reducer';
 import {setTransaction} from 'store/refetch.reducer';
 import store from '../store';
 import {fetchUserInfo} from '../store/app/user.reducer';
+import moment from 'moment';
 
 type SendToast = {
   type: 'success' | 'error';
@@ -47,6 +48,7 @@ export const toastWithReceipt = async (
   from?: string,
   actionType?: string,
 ) => {
+  const nowTimeStamp = moment().unix();
   try {
     store.dispatch(
       //@ts-ignore
@@ -102,6 +104,9 @@ export const toastWithReceipt = async (
               setTransaction({
                 transactionType: 'Reward',
                 blockNumber: receipt.blockNumber,
+                data: {
+                  timeStamp: nowTimeStamp,
+                },
               }),
             );
           }

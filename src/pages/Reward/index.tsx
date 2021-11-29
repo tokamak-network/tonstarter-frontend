@@ -153,7 +153,7 @@ export const Reward = () => {
   );
 
   const positionsByPool = usePositionByPoolQuery(
-    {pool_id: arr},
+    {pool_id: poolAddresses},
     {
       pollingInterval: ms`2m`,
     },
@@ -283,7 +283,7 @@ export const Reward = () => {
             (position: any) =>
               position.owner === UniswapStaker_Address.toLowerCase(),
           );
-          const poolsFromSelected = pols.filter(
+           const poolsFromSelected = pols.filter(
             (token: any) => token.pool.id === selectedPool.id,
           );
 
@@ -308,7 +308,8 @@ export const Reward = () => {
               }
             }),
           );
-          const allPos = withStakedPosition.concat(stringResult);
+                    
+          const allPos = withStakedPosition.concat(stringResult);          
           setPositions(allPos);
         } else {
           setPositions([]);
