@@ -46,7 +46,7 @@ import {fetchPositionPayload} from '../Pools/utils/fetchPositionPayload';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import {ChevronDownIcon} from '@chakra-ui/icons';
 import {utils, ethers} from 'ethers';
-import {incentiveKey} from './types'
+import {incentiveKey, Token, interfaceReward} from './types'
 
 import moment from 'moment';
 import views from './rewards';
@@ -75,23 +75,7 @@ type Pool = {
   token0Image: string;
   token1Image: string
 };
-type Token = {
-  id: string;
-  symbol: string;
-};
 
-type Reward = {
-  chainId: Number;
-  poolName: String;
-  poolAddress: String;
-  rewardToken: String;
-  incentiveKey: incentiveKey;
-  startTime: Number;
-  endTime: Number;
-  allocatedReward: String;
-  numStakers: Number;
-  status: String;
-};
 const themeDesign = {
   border: {
     light: 'solid 1px #dfe4ee',
@@ -111,7 +95,8 @@ const themeDesign = {
   },
 };
 export const Reward = () => {
-  const {datas, loading} = useAppSelector(selectRewards);
+  // const {datas, loading} = useAppSelector(selectRewards);
+  const [datas, setDatas] = useState<interfaceReward[] | []>([]);
   const theme = useTheme();
   const {MENU_STYLE} = theme;
   const {colorMode} = useColorMode();
@@ -122,7 +107,7 @@ export const Reward = () => {
   const [pool, setPool] = useState<any[]>([]);
   const [stakingPosition, setStakingPosition] = useState([]);
   const [poolsFromAPI, setPoolsFromAPI] = useState<any>([]);
-  const [manageDatas, setManageDatas] = useState<Reward[]>([]);
+  const [manageDatas, setManageDatas] = useState<interfaceReward[]>([]);
   const [isPositionLoading, setIsPositionLoading] = useState(true);
   const [sortString, setSortString] = useState<string>('start');
   const [poolAddresses, setPoolAddresses] = useState<string[]>([]);
@@ -130,22 +115,29 @@ export const Reward = () => {
     data: {timeStamp, func},
   } = useAppSelector(selectTransactionType);
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
-  const [orderedData, setOrderedData] = useState<Reward[]>([]);
+  const [orderedData, setOrderedData] = useState<interfaceReward[]>([]);
   const [order, setOrder] = useState<boolean | 'desc' | 'asc'>('desc');
   const [tokenList, setTokenList] = useState<any[]>([]);
   const [selectedToken, setSelectedToken] = useState<Token>();
-  const [filteredData, setFilteredData] = useState<Reward[]>([]);
-  const [filteredManageData, setFilteredManageData] = useState<Reward[]>([]);
+  const [filteredData, setFilteredData] = useState<interfaceReward[]>([]);
+  const [filteredManageData, setFilteredManageData] = useState<interfaceReward[]>([]);
 
   const arr: any = [];
   useEffect(() => {
     async function fetchProjectsData() {
       const poolsData: any = await views.getPoolData(library);
+      const rewardData = await views.getRewardData();
+      // console.log('rewardData', rewardData);
+      
       const poolArray: any = [];
       if (poolsData) {
         poolsData.map((pool: any) => {
           poolArray.push(pool.poolAddress);
         });
+      }
+
+      if (rewardData) {
+        setDatas(rewardData)
       }
       setPoolAddresses(poolArray);
       setPoolsFromAPI(poolsData);

@@ -1,5 +1,5 @@
 import {fetchPoolsURL, fetchRewardsURL} from 'constants/index';
-import {FetchPoolData,PoolData , incentiveKey, Reward} from './types/index'
+import {FetchPoolData,PoolData , incentiveKey, interfaceReward} from './types/index'
 import {getTokenSymbol} from './utils/getTokenSymbol';
 import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
@@ -17,7 +17,7 @@ const getPoolData = async (library: any): Promise<FetchPoolData[] | undefined> =
       const poolDatas = Promise.all(
         poolData.map(async (data: PoolData) => {
           const {poolAddress, token0Address, token1Address} = data;
-          const numRewardPrograms = rewardData?.filter((data: Reward) => {
+          const numRewardPrograms = rewardData?.filter((data: interfaceReward) => {
             return data.poolAddress === poolAddress;
           });          
           const token0Symbol = await getTokenFromContract(token0Address,library);
@@ -46,13 +46,18 @@ const getPoolData = async (library: any): Promise<FetchPoolData[] | undefined> =
 
 
 
-  const getRewardData = async (): Promise<Reward[] | undefined> => {
+  const getRewardData = async (): Promise<interfaceReward[] | undefined> => {
     const rewardReq = await fetch(fetchRewardsURL)
       .then((res) => res.json())
       .then((result) => result);
-    const rewardData: Reward[] = await rewardReq.datas;
+    const rewardData: interfaceReward[] = await rewardReq.datas;
   
-    return rewardData || undefined;
+    if (rewardData !== undefined) {
+      return rewardData
+    }
+    else {
+      return []
+    }
   };  
 
   const views = {getPoolData, getRewardData};

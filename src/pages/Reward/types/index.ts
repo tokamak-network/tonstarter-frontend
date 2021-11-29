@@ -15,6 +15,11 @@ export type PoolData = {
     numRewardPrograms: number;
   };
 
+  export type Token = {
+    id: string;
+  symbol: string;
+  }
+
   export type incentiveKey = {
     rewardToken: string,
     pool: string,
@@ -22,7 +27,7 @@ export type PoolData = {
     endTime: Number,
     refundee: string
   }
-  export type Reward = {
+  export type interfaceReward = {
       chainId: Number, 
       poolName: string,
       poolAddress: string,
@@ -35,7 +40,7 @@ export type PoolData = {
       status: string
   }
 
-  export type UpdatedRedward = Reward & {
+  export type UpdatedRedward = interfaceReward & {
     token0Address: string,
     token1Address: string; 
     token0Image: string;
