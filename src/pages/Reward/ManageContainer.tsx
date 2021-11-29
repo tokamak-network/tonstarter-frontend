@@ -28,6 +28,8 @@ type Pool = {
   tick: string;
   token0: Token;
   token1: Token;
+  token0Image: string;
+  token1Image: string
 };
 type Token = {
   id: string;
@@ -87,16 +89,20 @@ export const ManageContainer: FC<ManageContainerProps> = ({
           {getPaginatedData().map((reward: any, index) => {
             let token0;
             let token1;
-            const includedPool = pools.filter((pool) => pool.id === reward.poolAddress);
+            let token0Image;
+            let token1Image
+            const includedPool = pools.filter((pool: any) => pool.id === reward.poolAddress);
             token0 = includedPool[0].token0.id;
               token1 = includedPool[0].token1.id;
-           
-
+              token0Image = includedPool[0].token0Image;
+              token1Image = includedPool[0].token1Image;
             const rewardProps = {
               chainId: reward.chainId,
               poolName: reward.poolName,
               token0Address: token0,
               token1Address: token1,
+              token0Image: token0Image,
+              token1Image: token1Image,
               poolAddress: reward.poolAddress,
               rewardToken: reward.rewardToken,
               incentiveKey: reward.incentiveKey,

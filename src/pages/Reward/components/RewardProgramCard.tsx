@@ -28,29 +28,8 @@ import {utils, ethers} from 'ethers';
 import {soliditySha3} from 'web3-utils';
 import * as TOSABI from 'services/abis/TOS.json';
 import {getTokenSymbol} from '../utils/getTokenSymbol';
+import {UpdatedRedward} from '../types'
 
-type incentiveKey = {
-  rewardToken: string;
-  pool: string;
-  startTime: Number;
-  endTime: Number;
-  refundee: string;
-};
-
-type Reward = {
-  chainId: number;
-  poolName: string;
-  token0Address: string;
-  token1Address: string;
-  poolAddress: string;
-  rewardToken: string;
-  incentiveKey: incentiveKey;
-  startTime: Number;
-  endTime: Number;
-  allocatedReward: string;
-  numStakers: Number;
-  status: string;
-};
 const themeDesign = {
   border: {
     light: 'solid 1px #dfe4ee',
@@ -66,7 +45,7 @@ const themeDesign = {
   },
 };
 type RewardProgramCardProps = {
-  reward: Reward;
+  reward: UpdatedRedward;
   selectedToken: number;
   selectedPool: string;
   sendKey: (key: any) => void;
@@ -124,7 +103,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
 
   useEffect(() => {
     const getTokenFromContract = async (address: string) => {
-      const symbolContract = await getTokenSymbol(address, library, account);
+      const symbolContract = await getTokenSymbol(address, library);
       setRewardSymbol(symbolContract);
     };
 
@@ -302,12 +281,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
       <Flex flexDir={'row'} width={'100%'} alignItems={'center'} h={'50px'}>
         <Box>
           <Avatar
-            src={
-              checkTokenType(
-                ethers.utils.getAddress(reward.token0Address),
-                colorMode,
-              ).symbol
-            }
+            src={reward.token0Image}
             bg={colorMode === 'light' ? '#ffffff' : '#222222'}
             name="T"
             border={
@@ -319,10 +293,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
           />
           <Avatar
             src={
-              checkTokenType(
-                ethers.utils.getAddress(reward.token1Address),
-                colorMode,
-              ).symbol
+              reward.token1Image
             }
             bg={colorMode === 'light' ? '#ffffff' : '#222222'}
             name="T"

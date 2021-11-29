@@ -164,9 +164,7 @@ export const PositionTable: FC<PositionTableProps> = ({
     data: {contractAddress, index},
   } = useAppSelector(selectTableType);
 
-  useEffect(() => {
-    console.log('positions', positions);
-    
+  useEffect(() => {    
     if (index) {
       let loop = Math.floor(index / 10);
       while (loop) {

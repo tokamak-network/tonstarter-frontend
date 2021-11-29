@@ -125,7 +125,7 @@ const getTokenList = async() => {
   };
 
   const getTokenFromContract = async (address: string) => {
-    const symbolContract = await getTokenSymbol(address, library, account);
+    const symbolContract = await getTokenSymbol(address, library);
     return symbolContract;
   };
 

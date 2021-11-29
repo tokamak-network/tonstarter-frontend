@@ -26,28 +26,8 @@ import {utils, ethers} from 'ethers';
 import {soliditySha3} from 'web3-utils';
 import {refund} from '../actions';
 import {getTokenSymbol} from '../utils/getTokenSymbol' 
-type incentiveKey = {
-  rewardToken: string;
-  pool: string;
-  startTime: Number;
-  endTime: Number;
-  refundee: string;
-};
+import { UpdatedRedward} from '../types'
 
-type Reward = {
-  chainId: number;
-  poolName: string;
-  token0Address: string;
-  token1Address: string;
-  poolAddress: string;
-  rewardToken: string;
-  incentiveKey: incentiveKey;
-  startTime: Number;
-  endTime: Number;
-  allocatedReward: string;
-  numStakers: Number;
-  status: string;
-};
 const themeDesign = {
   border: {
     light: 'solid 1px #dfe4ee',
@@ -63,7 +43,7 @@ const themeDesign = {
   },
 };
 type RewardProgramCardManageProps = {
-  reward: Reward;
+  reward: UpdatedRedward;
   selectedToken: number;
   pageIndex: number;
   sortString: string;
@@ -104,7 +84,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
   );
   useEffect(()=> {
     const getTokenFromContract = async (address: string) => {
-       const symbolContract = await getTokenSymbol(address, library, account )
+       const symbolContract = await getTokenSymbol(address, library )
         setRewardSymbol(symbolContract);
       } 
     
@@ -174,7 +154,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
         h={'50px'}>
         <Box>
           <Avatar
-            src={checkTokenType(ethers.utils.getAddress(reward.token0Address), colorMode).symbol}
+            src={reward.token0Image}
             bg={colorMode === 'light' ? '#ffffff' : '#222222'}
             name="T"
             border={
@@ -185,7 +165,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
             zIndex={'100'}
           />
           <Avatar
-            src={checkTokenType(ethers.utils.getAddress(reward.token1Address),colorMode).symbol}
+            src={reward.token1Image}
             bg={colorMode === 'light' ? '#ffffff' : '#222222'}
             name="T"
             border={

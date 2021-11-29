@@ -46,7 +46,10 @@ import {fetchPositionPayload} from '../Pools/utils/fetchPositionPayload';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import {ChevronDownIcon} from '@chakra-ui/icons';
 import {utils, ethers} from 'ethers';
+import {incentiveKey} from './types'
+
 import moment from 'moment';
+import views from './rewards';
 import {getTokenSymbol} from './utils/getTokenSymbol';
 import {
   usePositionByUserQuery,
@@ -69,19 +72,14 @@ type Pool = {
   tick: string;
   token0: Token;
   token1: Token;
+  token0Image: string;
+  token1Image: string
 };
 type Token = {
   id: string;
   symbol: string;
 };
 
-type incentiveKey = {
-  rewardToken: string;
-  pool: string;
-  startTime: Number;
-  endTime: Number;
-  refundee: string;
-};
 type Reward = {
   chainId: Number;
   poolName: String;
@@ -123,10 +121,14 @@ export const Reward = () => {
   const [selected, setSelected] = useState('reward');
   const [pool, setPool] = useState<any[]>([]);
   const [stakingPosition, setStakingPosition] = useState([]);
-  const [positionData, setPositionData] = useState([]);
+  const [poolsFromAPI, setPoolsFromAPI] = useState<any>([]);
   const [manageDatas, setManageDatas] = useState<Reward[]>([]);
   const [isPositionLoading, setIsPositionLoading] = useState(true);
   const [sortString, setSortString] = useState<string>('start');
+  const [poolAddresses, setPoolAddresses] = useState<string[]>([]);
+  const {
+    data: {timeStamp, func},
+  } = useAppSelector(selectTransactionType);
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [orderedData, setOrderedData] = useState<Reward[]>([]);
   const [order, setOrder] = useState<boolean | 'desc' | 'asc'>('desc');
@@ -134,11 +136,25 @@ export const Reward = () => {
   const [selectedToken, setSelectedToken] = useState<Token>();
   const [filteredData, setFilteredData] = useState<Reward[]>([]);
   const [filteredManageData, setFilteredManageData] = useState<Reward[]>([]);
+
   const arr: any = [];
-  arr.push(BasePool_Address.toLowerCase());
-  arr.push(DOCPool_Address);
+  useEffect(() => {
+    async function fetchProjectsData() {
+      const poolsData: any = await views.getPoolData(library);
+      const poolArray: any = [];
+      if (poolsData) {
+        poolsData.map((pool: any) => {
+          poolArray.push(pool.poolAddress);
+        });
+      }
+      setPoolAddresses(poolArray);
+      setPoolsFromAPI(poolsData);
+    }
+    fetchProjectsData();
+  }, [account, library, timeStamp]);
+
   const poolArr = usePoolByArrayQuery(
-    {address: arr},
+    {address: poolAddresses},
     {
       pollingInterval: ms`2m`,
     },
@@ -178,16 +194,36 @@ export const Reward = () => {
       case 'Closed':
         const closed = datas.filter((data) => now > data.endTime);
         return closed;
-      case 'Waiting': 
-      const waiting = datas.filter((data) => now < data.startTime)
-      return waiting
+      case 'Waiting':
+        const waiting = datas.filter((data) => now < data.startTime);
+        return waiting;
       default:
         return datas;
     }
   };
 
   useEffect(() => {
-    setPool(poolArr.data?.pools);
+    const addPoolsInfo = () => {
+      const pols = poolArr.data?.pools;
+      if (pols !== undefined) {
+        const poooools = 
+          pols.map((data: any) => {
+            const poolFromApi = poolsFromAPI.find(
+              (pol: any) => pol.poolAddress === data.id,
+            );
+            const token0Image = poolFromApi.token0Image
+            const token1Image = poolFromApi.token1Image
+            return {
+              ...data,
+              token0Image: token0Image,
+              token1Image: token1Image
+            }
+          });
+          setPool(poooools);
+      }
+    };
+    addPoolsInfo();
+    
   }, [account, transactionType, blockNumber, poolArr]);
 
   useEffect(() => {
@@ -212,11 +248,10 @@ export const Reward = () => {
             signer,
           ).getUserStakedTokenIds(account);
         }
-        
-          setTimeout(() => {
-            setIsPositionLoading(false);
-          }, 1500);
-       
+
+        setTimeout(() => {
+          setIsPositionLoading(false);
+        }, 1500);
       }
     }
     positionPayload();
@@ -369,7 +404,7 @@ export const Reward = () => {
     setSelectdPosition(pos);
   };
   const getTokenFromContract = async (address: string) => {
-    const symbolContract = await getTokenSymbol(address, library, account);
+    const symbolContract = await getTokenSymbol(address, library);
     return symbolContract;
   };
 
@@ -420,10 +455,8 @@ export const Reward = () => {
                 <Menu isLazy>
                   <MenuButton
                     border={themeDesign.border[colorMode]}
-                    {...MENU_STYLE.buttonStyle({colorMode})}
-                    >
-                    <Text
-                     {...MENU_STYLE.buttonTextStyle({colorMode})}>
+                    {...MENU_STYLE.buttonStyle({colorMode})}>
+                    <Text {...MENU_STYLE.buttonTextStyle({colorMode})}>
                       {selectedPool === undefined
                         ? 'All Pools'
                         : `${selectedPool.token0.symbol} / ${
@@ -434,8 +467,7 @@ export const Reward = () => {
                       </span>
                     </Text>
                   </MenuButton>
-                  <MenuList
-                     {...MENU_STYLE.menuListStyle({colorMode})}>
+                  <MenuList {...MENU_STYLE.menuListStyle({colorMode})}>
                     <MenuItem
                       onClick={getSelectedPool}
                       value={''}
@@ -459,8 +491,7 @@ export const Reward = () => {
                   <MenuButton
                     border={themeDesign.border[colorMode]}
                     {...MENU_STYLE.buttonStyle({colorMode})}>
-                    <Text
-                      {...MENU_STYLE.buttonTextStyle({colorMode})}>
+                    <Text {...MENU_STYLE.buttonTextStyle({colorMode})}>
                       {selectedToken === undefined
                         ? 'Reward Tokens'
                         : selectedToken.symbol}
@@ -469,8 +500,7 @@ export const Reward = () => {
                       </span>
                     </Text>
                   </MenuButton>
-                  <MenuList
-                   {...MENU_STYLE.menuListStyle({colorMode})}>
+                  <MenuList {...MENU_STYLE.menuListStyle({colorMode})}>
                     <MenuItem
                       onClick={getSelectedReardToken}
                       value={''}
@@ -492,8 +522,7 @@ export const Reward = () => {
                   <MenuButton
                     border={themeDesign.border[colorMode]}
                     {...MENU_STYLE.buttonStyle({colorMode})}>
-                    <Text
-                      {...MENU_STYLE.buttonTextStyle({colorMode})}>
+                    <Text {...MENU_STYLE.buttonTextStyle({colorMode})}>
                       {selectdPosition === ''
                         ? 'My LP tokens'
                         : selectdPosition}
@@ -503,8 +532,7 @@ export const Reward = () => {
                     </Text>
                   </MenuButton>
                   {selectedPool === undefined ? (
-                    <MenuList
-                    {...MENU_STYLE.menuListStyle({colorMode})}>
+                    <MenuList {...MENU_STYLE.menuListStyle({colorMode})}>
                       <MenuOptionGroup
                         pl={'10px'}
                         defaultValue="asc"
@@ -515,8 +543,7 @@ export const Reward = () => {
                         w={'157px'}></MenuOptionGroup>
                     </MenuList>
                   ) : (
-                    <MenuList
-                      {...MENU_STYLE.menuListStyle({colorMode})}>
+                    <MenuList {...MENU_STYLE.menuListStyle({colorMode})}>
                       <MenuItem>
                         <Menu isLazy>
                           <MenuButton
@@ -703,69 +730,57 @@ export const Reward = () => {
                   />
                 </FormControl>
                 <Menu isLazy>
-                  <MenuButton 
+                  <MenuButton
                     border={themeDesign.border[colorMode]}
                     {...MENU_STYLE.buttonStyle({colorMode})}
-                    minWidth='120px'
-                    >
-                       <Text
-                      {...MENU_STYLE.buttonTextStyle({colorMode})}>
-                    {sortString}
-                    <span>
-                      <ChevronDownIcon />
-                    </span>
-                  </Text></MenuButton>
+                    minWidth="120px">
+                    <Text {...MENU_STYLE.buttonTextStyle({colorMode})}>
+                      {sortString}
+                      <span>
+                        <ChevronDownIcon />
+                      </span>
+                    </Text>
+                  </MenuButton>
                   <MenuList
                     {...MENU_STYLE.menuListStyle({colorMode})}
-                    minWidth='120px'>
+                    minWidth="120px">
                     <MenuItem
                       onClick={changeSelect}
                       {...MENU_STYLE.menuItemStyle({colorMode})}
                       value={'Start Date'}
-                      w='120px'
-                      >Start Date
+                      w="120px">
+                      Start Date
                     </MenuItem>
                     <MenuItem
                       onClick={changeSelect}
                       {...MENU_STYLE.menuItemStyle({colorMode})}
                       value={'End Date'}
-                      w='120px'
-                      >End Date
+                      w="120px">
+                      End Date
                     </MenuItem>
                     <MenuItem
                       onClick={changeSelect}
                       {...MENU_STYLE.menuItemStyle({colorMode})}
                       value={'Started'}
-                      w='120px'
-                      >Started
+                      w="120px">
+                      Started
                     </MenuItem>
                     <MenuItem
                       onClick={changeSelect}
                       {...MENU_STYLE.menuItemStyle({colorMode})}
                       value={'Closed'}
-                      w='120px'
-                      >Closed
+                      w="120px">
+                      Closed
                     </MenuItem>
                     <MenuItem
                       onClick={changeSelect}
                       {...MENU_STYLE.menuItemStyle({colorMode})}
                       value={'Waiting'}
-                      w='120px'
-                      >Waiting
+                      w="120px">
+                      Waiting
                     </MenuItem>
-                    </MenuList>
+                  </MenuList>
                 </Menu>
-                {/* <Select
-                  h={'32px'}
-                  color={'#86929d'}
-                  fontSize={'13px'}
-                  onChange={changeSelect}>
-                  <option value="Start Date">Start Date</option>
-                  <option value="End Date">End Date</option>
-                  <option value="In Progress">In Progress</option>
-                  <option value="Closed">Closed</option>
-                  <option value="Waiting">Waiting</option>
-                </Select> */}
               </Flex>
             </Flex>
             <Flex flexDir={'row'} mt={'30px'} justifyContent={'space-between'}>

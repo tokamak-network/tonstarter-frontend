@@ -247,9 +247,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
     if (rewardAddress !== '') {
       getBalance();
     }
-  }, [rewardAddress, checkAllowed, library, account, amount, tokeninfo]);
-  console.log(balance);
-  
+  }, [rewardAddress, checkAllowed, library, account, amount, tokeninfo]);  
   return (
     <Box display={'flex'} justifyContent={'center'}>
       <Box w={'100%'} px={'15px'}>
