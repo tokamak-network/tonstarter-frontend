@@ -57,7 +57,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(2);
   const [totalPAges, setTotalPages] = useState<number>(0);
-  useEffect(() => {  
+  useEffect(() => {   
     const pagenumber = parseInt(
       ((pools.length - 1) / pageLimit + 1).toString(),
     );
@@ -118,7 +118,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
             px={'15px'}>
             <Box>
               <Avatar
-                src={checkTokenType(ethers.utils.getAddress(pool.token0.id), colorMode).symbol}
+                src={pool.token1Image}
                 bg={colorMode === 'light' ? '#ffffff' : '#222222'}
                 color="#c7d1d8"
                 name="T"
@@ -131,7 +131,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
                 zIndex={'100'}
               />
               <Avatar
-                src={checkTokenType(ethers.utils.getAddress(pool.token1.id), colorMode).symbol}
+                src={pool.token0Image}
                 bg={colorMode === 'light' ? '#ffffff' : '#222222'}
                 color="#c7d1d8"
                 name="T"
