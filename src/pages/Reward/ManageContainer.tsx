@@ -55,6 +55,7 @@ export const ManageContainer: FC<ManageContainerProps> = ({
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(6);
   useEffect(() => {
+    setPageIndex(1)
     const pagenumber = parseInt(
       ((rewards.length - 1) / pageLimit + 1).toString(),
     );
@@ -70,7 +71,7 @@ export const ManageContainer: FC<ManageContainerProps> = ({
   useEffect(()=> {
     setPageIndex(1)
     
-  },[selectedPool, sortString])
+  },[selectedPool, sortString, pageLimit])
   const goToNextPage = () => {
     setPageIndex(pageIndex + 1);
   };
@@ -207,6 +208,7 @@ export const ManageContainer: FC<ManageContainerProps> = ({
                 value={pageLimit}
                 fontFamily={theme.fonts.roboto}
                 onChange={(e) => {
+                  setPageIndex(1)
                   setPageLimit(Number(e.target.value));
                 }}>
                 {[2, 4, 6, 8, 10, 12].map((pageSize) => (

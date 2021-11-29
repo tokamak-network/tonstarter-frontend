@@ -78,7 +78,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({
       ((rewards.length - 1) / pageLimit + 1).toString(),
     );
     setPageOptions(pagenumber);
-  }, [rewards, pageLimit, selectedPool]);
+  }, [rewards, pageLimit, selectedPool, pageLimit]);
 
   useEffect(() => {
     setPageIndex(1);
@@ -276,6 +276,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({
                   value={pageLimit}
                   fontFamily={theme.fonts.roboto}
                   onChange={(e) => {
+                    setPageIndex(1)
                     setPageLimit(Number(e.target.value));
                   }}>
                   {[2, 4, 6, 8, 10, 12].map((pageSize) => (
