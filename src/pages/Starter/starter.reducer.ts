@@ -194,6 +194,7 @@ export const fetchStarters = createAsyncThunk(
             saleContractAddress: data.saleContractAddress,
             tokenImage: data.tokenSymbolImage,
             tokenFundRaisingTargetAmount: data.tokenFundRaisingTargetAmount,
+            website: data.website,
           };
         },
       );

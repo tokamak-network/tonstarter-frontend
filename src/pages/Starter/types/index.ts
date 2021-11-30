@@ -27,7 +27,9 @@ export type ActiveProjectType = I_StarterProject & {
   };
 };
 
-export type UpcomingProjectType = I_StarterProject & {};
+export type UpcomingProjectType = I_StarterProject & {
+  website: string;
+};
 
 export type PastProjectType = I_StarterProject;
 

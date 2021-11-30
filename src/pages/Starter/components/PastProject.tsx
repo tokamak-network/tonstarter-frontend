@@ -85,7 +85,8 @@ const PastProjectContainer: React.FC<{
               {...STATER_STYLE.mainText({
                 colorMode,
                 fontSize: 14,
-              })}>
+              })}
+              color={colorMode === 'light' ? 'gray.125' : 'gray.475'}>
               Total Raise
             </Text>
             <Box d="flex" alignItems="baseline">
@@ -105,7 +106,8 @@ const PastProjectContainer: React.FC<{
               {...STATER_STYLE.mainText({
                 colorMode,
                 fontSize: 14,
-              })}>
+              })}
+              color={colorMode === 'light' ? 'gray.125' : 'gray.475'}>
               Participants
             </Text>
             <Text
@@ -146,7 +148,8 @@ const PastProjectContainer: React.FC<{
               {...STATER_STYLE.progress.mainText({
                 colorMode,
                 fontSize: 13,
-              })}>
+              })}
+              color={colorMode === 'light' ? 'gray.125' : 'gray.475'}>
               Public Sale
             </Text>
             <Box
@@ -160,7 +163,8 @@ const PastProjectContainer: React.FC<{
               {...STATER_STYLE.progress.mainText({
                 colorMode,
                 fontSize: 13,
-              })}>
+              })}
+              color={colorMode === 'light' ? 'gray.125' : 'gray.475'}>
               current
             </Text>
             <Box
@@ -173,7 +177,8 @@ const PastProjectContainer: React.FC<{
           <Flex
             {...{
               ...STATER_STYLE.subTextBlack({colorMode, fontSize: 12}),
-            }}>
+            }}
+            color={colorMode === 'light' ? 'gray.125' : 'gray.475'}>
             <Text>{progress + ' %' || 'XXX %'}</Text>
           </Flex>
         </Box>

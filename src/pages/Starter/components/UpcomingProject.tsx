@@ -7,9 +7,9 @@ import {
   useTheme,
   Text,
   Flex,
-  // Link,
 } from '@chakra-ui/react';
 import {UpcomingProjectType} from '@Starter/types';
+import DoMToken from 'assets/banner/DoM.png';
 
 type UpcomingProjectProp = {
   upcomingProject: UpcomingProjectType[];
@@ -35,25 +35,34 @@ export const UpcomingProject = (props: UpcomingProjectProp) => {
       <Grid templateColumns="repeat(3, 1fr)" gap={30}>
         {upcomingProject.map((project: UpcomingProjectType) => {
           return (
-            // <Link to={`${url}/upcoming/${project.name}`}>
             <GridItem
               {...STATER_STYLE.containerStyle({colorMode})}
               h={'235px'}
-              _hover={{}}
-              cursor={{}}>
+              cursor={'pointer'}
+              // _hover={{}}
+              onClick={(e) => {
+                e.preventDefault();
+                window.open(`${project.website}`);
+              }}>
               <Flex justifyContent="space-between" mb={15}>
-                <TokenImage imageLink={project.tokenSymbolImage}></TokenImage>
+                {/* <TokenImage imageLink={project.tokenSymbolImage}></TokenImage> */}
+                <TokenImage imageLink={DoMToken}></TokenImage>
               </Flex>
               <Flex flexDir="column" mb={'25px'}>
                 <Text h={'36px'} {...STATER_STYLE.mainText({colorMode})}>
-                  {project.name}
+                  {/* {project.name} */}
+                  Dragons of Midgard
                 </Text>
                 <Flex>
-                  <Text mr={2} {...STATER_STYLE.subText({colorMode})}>
+                  <Text
+                    mr={2}
+                    {...STATER_STYLE.subText({colorMode})}
+                    color={'gray.150'}>
                     Sale Date
                   </Text>
                   <Text {...STATER_STYLE.subTextBlack({colorMode})}>
-                    {project.saleStart} ~ {project.saleEnd}
+                    {/* {project.saleStart} ~ {project.saleEnd} */}
+                    2021.12.14. ~ 12.21.
                   </Text>
                 </Flex>
               </Flex>
@@ -63,7 +72,8 @@ export const UpcomingProject = (props: UpcomingProjectProp) => {
                     {...STATER_STYLE.mainText({
                       colorMode,
                       fontSize: 14,
-                    })}>
+                    })}
+                    color={colorMode === 'light' ? 'gray.125' : 'gray.475'}>
                     Total Raise
                   </Text>
                   <Box d="flex" alignItems="baseline">
@@ -83,7 +93,8 @@ export const UpcomingProject = (props: UpcomingProjectProp) => {
                     {...STATER_STYLE.mainText({
                       colorMode,
                       fontSize: 14,
-                    })}>
+                    })}
+                    color={colorMode === 'light' ? 'gray.125' : 'gray.475'}>
                     Sector
                   </Text>
                   <Text
@@ -97,7 +108,6 @@ export const UpcomingProject = (props: UpcomingProjectProp) => {
                 </Box>
               </Flex>
             </GridItem>
-            // </Link>
           );
         })}
       </Grid>

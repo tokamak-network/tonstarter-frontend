@@ -15,10 +15,12 @@ export const TokenImage: React.FC<TokenImageProps> = (props) => {
         h={'50px'}
         alignItems="center"
         justifyContent="center"
-        border={'1px solid #c7d1d8'}
+        border={
+          colorMode === 'light' ? '1px solid #c7d1d8' : 'solid 1px #323232'
+        }
         borderRadius={25}
         fontSize={14}
-        color={'#c7d1d8'}>
+        color={colorMode === 'light' ? 'gray.625' : 'gray.600'}>
         <Text>Image</Text>
       </Flex>
     );

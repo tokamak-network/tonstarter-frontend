@@ -31,6 +31,8 @@ const breakpoints = createBreakpoints({
 
 const colors = {
   gray: {
+    625: '#c7d1d8',
+    600: '#818181',
     575: '#848c98',
     550: '#e6eaee',
     525: '#3f536e',

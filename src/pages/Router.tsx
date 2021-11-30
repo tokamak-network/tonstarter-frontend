@@ -28,7 +28,6 @@ import {
   ListingPools,
   ListingRewards,
 } from './Admin';
-import {useBlockNumber} from 'hooks/useBlock';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -46,7 +45,6 @@ export const Router: FC<RouterProps> = () => {
   const {onOpen, isOpen: isModalOpen, onClose} = useDisclosure();
   // const {account, chainId, library, deactivate} = useWeb3React();
   const {account, chainId, library, deactivate} = useActiveWeb3React();
-  const {blockNumber} = useBlockNumber();
 
   //@ts-ignore
   // const accountStorage = JSON.parse(window.localStorage.getItem('account'));
