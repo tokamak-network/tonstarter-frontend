@@ -36,6 +36,10 @@ import TONSymbol from 'assets/tokens/tokamak-1@3x.png';
 import EtherscanLink from 'assets/images/etherscan-shortcuts-inactive-icon@3x.png';
 import store from 'store';
 import {TokenImage} from './TokenImage';
+import {CustomCalendar} from './CustomCalendar';
+import {CustomClock} from './CustomClock';
+import '../css/Calendar.css';
+import moment from 'moment';
 
 type StepProp = {
   data: AdminObject;
@@ -122,9 +126,21 @@ const CustomFieldWithTime = (props: {
 
   const {values} = useFormikContext();
   const fieldValue = getIn(values, name);
-
+  const [startTime, setStartTime] = useState<number>(0);
+  const [startTimeArray,setStartTimeArray] =  useState([]);
+  useEffect(() => {
+    const starts = moment.unix(startTime);
+    const startDates = moment(starts).set({
+      hour: startTimeArray[0],
+      minute: startTimeArray[1],
+      second: startTimeArray[2],
+    });
+    console.log('startDates', startDates);
+    
+    setStartTime(startDates.unix());
+  }, [startTimeArray, startTime]);
   return (
-    <Box d="flex">
+    <Box d="flex" >
       <Flex style={fieldWrap} flexDir="column" mb={'20px'} pos="relative">
         <Flex mb={'10px'}>
           <Text>{title || name}</Text>
@@ -144,22 +160,22 @@ const CustomFieldWithTime = (props: {
             )}
           />
         </Flex>
-        <Field
-          disabled={true}
-          style={{...fieldStyle, width: w || '327px', background: '#ffffff'}}
-          name={name}
-          value={
-            fieldValue === 0
-              ? ''
-              : convertTimeStamp(Number(fieldValue), 'MM/DD/YYYY')
-          }
-          placeHolder={placeHolder || `input ${name}`}
-        />
+        <Flex alignItems={'center'} h={'45px'}>
+        <CustomCalendar
+            setValue={setStartTime}
+            // startTime={startTime}
+            // endTime={endTime}
+            // calendarType={'start'}
+            // created={created}
+          />
+        
+          <CustomClock setTime={setStartTimeArray} />
+          </Flex>
       </Flex>
-      <TimeSetting
+      {/* <TimeSetting
         timeStamp={
           fieldValue === '' ? fieldValue : Number(fieldValue)
-        }></TimeSetting>
+        }></TimeSetting> */}
     </Box>
   );
 };
