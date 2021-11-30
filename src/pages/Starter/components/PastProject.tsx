@@ -53,13 +53,12 @@ const PastProjectContainer: React.FC<{
         amount: sum.toString(),
         localeString: true,
       });
+
       const progressNow =
-        (Number(convertedSum?.replaceAll(',', '')) /
-          Number(project.tokenFundRaisingTargetAmount.replaceAll(',', ''))) *
-        100;
+        (Number(convertedSum?.replaceAll(',', '')) / 28436) * 100;
       const participantsNum = await PUBLICSALE_CONTRACT?.totalUsers();
       setTotalRaise(convertedSum);
-      setProgress(progressNow);
+      setProgress(Math.ceil(progressNow));
       setParticipants(participantsNum.toString());
     }
     if (PUBLICSALE_CONTRACT && project) {
@@ -179,7 +178,7 @@ const PastProjectContainer: React.FC<{
               ...STATER_STYLE.subTextBlack({colorMode, fontSize: 12}),
             }}
             color={colorMode === 'light' ? 'gray.125' : 'gray.475'}>
-            <Text>{progress + ' %' || 'XXX %'}</Text>
+            <Text>{progress === undefined ? 'XXX %' : progress + ' %'}</Text>
           </Flex>
         </Box>
         <Box mb={'30px'}>
