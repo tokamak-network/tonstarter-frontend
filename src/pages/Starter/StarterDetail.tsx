@@ -29,7 +29,7 @@ import {BigNumber} from 'ethers';
 import {useBlockNumber} from 'hooks/useBlock';
 import {LoadingComponent} from 'components/Loading';
 import {useTime} from 'hooks/useTime';
-import {TokenImage} from '@Admin/components/TokenImage';
+import {TokenImage} from '../Admin/components/TokenImage';
 import {ApproveModal} from './components/ApproveModal';
 
 export const StarterDetail = () => {
