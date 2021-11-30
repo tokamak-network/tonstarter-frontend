@@ -8,7 +8,7 @@ import {
   Progress,
 } from '@chakra-ui/react';
 import {Link, useRouteMatch} from 'react-router-dom';
-import {TokenImage} from '@Admin/components/TokenImage';
+import {TokenImage} from '../../Admin/components/TokenImage';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {PastProjectType} from '@Starter/types';
 import {useEffect, useState} from 'react';

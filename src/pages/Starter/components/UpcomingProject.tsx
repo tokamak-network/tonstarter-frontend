@@ -1,4 +1,4 @@
-import {TokenImage} from '@Admin/components/TokenImage';
+import {TokenImage} from '../../Admin/components/TokenImage';
 import {
   Grid,
   GridItem,
