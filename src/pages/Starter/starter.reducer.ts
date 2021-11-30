@@ -9,6 +9,7 @@ import {
   PastProjectType,
   // MyProject,
 } from './types';
+import {convertLocaleString} from 'utils';
 // import starterActions from './actions';
 interface StarterState {
   data: {
@@ -62,22 +63,22 @@ export const fetchStarters = createAsyncThunk(
     const nowTimeStamp = moment().unix();
 
     // const matchData = starterData.filter((data: AdminObject) =>
-    //   chainId === 1
-    //     ? data.production === 'production'
-    //     : data.production === 'dev',
+    //  data.production === 'production'
     // );
 
     try {
       const matchData = starterData;
 
       const activeData = matchData.filter(
-        (data: AdminObject) => data.position === 'active',
+        (data: AdminObject) =>
+          data.position === 'active' && data.endDepositTime > nowTimeStamp,
       );
       const upcomingData = matchData.filter(
         (data: AdminObject) => data.position === 'upcoming',
       );
       const pastData = matchData.filter(
-        (data: AdminObject) => data.endDepositTime < nowTimeStamp,
+        (data: AdminObject) =>
+          data.position === 'active' && data.endDepositTime < nowTimeStamp,
       );
 
       const myProjects = matchData.filter(
@@ -87,27 +88,6 @@ export const fetchStarters = createAsyncThunk(
       const activeProjects = await Promise.all(
         activeData.map(async (data: AdminObject) => {
           const address = data.saleContractAddress;
-
-          // const totalRaise = library
-          //   ? await starterActions.getTotalRaise({
-          //       library,
-          //       address,
-          //     })
-          //   : 'XXX,XXX';
-          // const tokenInfo = library
-          //   ? await starterActions.getTokenInfo({
-          //       library,
-          //       address: data.tokenAddress,
-          //     })
-          //   : {totalSupply: 'XXX,XXX'};
-
-          // const tokenAllocation = library
-          //   ? await starterActions.getTokenAllocation({
-          //       library,
-          //       address,
-          //     })
-          //   : 'XXX,XXX';
-
           const nowTimeStamp = moment().unix();
 
           // const dummy = 1634804360;
@@ -175,8 +155,8 @@ export const fetchStarters = createAsyncThunk(
                 : moment.unix(data.startDepositTime).format('YYYY.MM.DD'),
             saleEnd:
               checkStep === 'whitelist' || checkStep === 'exclusive'
-                ? moment.unix(data.endExclusiveTime).format('YYYY.MM.DD')
-                : moment.unix(data.endDepositTime).format('YYYY.MM.DD'),
+                ? moment.unix(data.endExclusiveTime).format('MM.DD')
+                : moment.unix(data.endDepositTime).format('MM.DD'),
             isExclusive:
               checkStep === 'whitelist' || checkStep === 'exclusive'
                 ? true
@@ -202,14 +182,19 @@ export const fetchStarters = createAsyncThunk(
         }),
       );
 
-      const upcomingProjects: UpcomingProjectType = upcomingData.map(
+      const upcomingProjects: UpcomingProjectType[] = upcomingData.map(
         (data: AdminObject) => {
           return {
             name: data.name,
             saleStart: moment.unix(data.startDepositTime).format('YYYY.MM.DD'),
-            saleEnd: moment.unix(data.endDepositTime).format('YYYY.MM.DD'),
-            tokenFundRaisingTargetAmount: data.tokenFundRaisingTargetAmount,
+            saleEnd: moment.unix(data.endDepositTime).format('MM.DD'),
+            tokenAllocationAmount: isNaN(parseFloat(data.tokenAllocationAmount))
+              ? data.tokenAllocationAmount
+              : convertLocaleString(data.tokenAllocationAmount, 0),
             saleContractAddress: data.saleContractAddress,
+            tokenImage: data.tokenSymbolImage,
+            tokenFundRaisingTargetAmount: data.tokenFundRaisingTargetAmount,
+            website: data.website,
           };
         },
       );
@@ -219,8 +204,11 @@ export const fetchStarters = createAsyncThunk(
           return {
             name: data.name,
             saleStart: moment.unix(data.startDepositTime).format('YYYY.MM.DD'),
-            saleEnd: moment.unix(data.endDepositTime).format('YYYY.MM.DD'),
+            saleEnd: moment.unix(data.endDepositTime).format('MM.DD'),
             saleContractAddress: data.saleContractAddress,
+            tokenSymbolImage: data.tokenSymbolImage,
+            fundingTokenType: data.fundingTokenType,
+            tokenFundRaisingTargetAmount: data.tokenFundRaisingTargetAmount,
           };
         },
       );

@@ -2,7 +2,6 @@ import {
   Flex,
   Box,
   useColorMode,
-  useTheme,
   Accordion,
   AccordionItem,
   AccordionButton,
@@ -12,13 +11,14 @@ import {
 import {Dispatch, SetStateAction, useState, useEffect} from 'react';
 import {AdminObject, StepComponent} from '@Admin/types';
 import {StepOne, StepThree, StepTwo, StepFour} from './AdminStep';
-import {createStarter} from '../utils/createStarter';
 import {LibraryType} from 'types';
+import AdminActions from '../actions';
 
 type AdminDetailProp = StepComponent & {
   setCurrentStep: Dispatch<SetStateAction<number>>;
   existingData: AdminObject[] | [];
   library: LibraryType;
+  final: boolean;
   setFinal: Dispatch<SetStateAction<boolean>>;
 };
 
@@ -68,33 +68,30 @@ export const AdminDetail: React.FC<AdminDetailProp> = (props) => {
     setCurrentStep,
     library,
     existingData,
+    final,
     setFinal,
   } = props;
   const {colorMode} = useColorMode();
-  const theme = useTheme();
 
   const [stepCount, setStepCount] = useState<number>(1);
 
   const [data, setData] = useState<AdminObject>(
-    existingData[0] !== undefined
-      ? {...existingData[0], fundingTokenType: 'TON'}
-      : initialValue,
+    existingData[0] !== undefined ? {...existingData[0]} : initialValue,
   );
-
   const makeRequest = (formData: AdminObject) => {
     console.log('Form Submitted', formData);
-    // return createStarter(formData);
+    if (existingData.length === 0) {
+      return AdminActions.addStarter(formData);
+    }
+    return AdminActions.editStarter(formData);
   };
 
-  const handleNextStep = (newData: any, final: boolean, check: boolean) => {
+  const handleNextStep = (newData: AdminObject, isFinal: boolean) => {
     setData((prev) => ({...prev, ...newData}));
 
-    if (final) {
-      makeRequest(newData);
-      return;
+    if (isFinal) {
+      return makeRequest(newData);
     }
-    console.log('--new data--');
-    console.log(newData);
 
     setCurrentStep((prev) => {
       setStepCount(stepCount + 1);
@@ -108,79 +105,101 @@ export const AdminDetail: React.FC<AdminDetailProp> = (props) => {
 
   useEffect(() => {
     if (existingData[0] !== undefined) {
-      console.log('existingData[0]');
-      console.log(existingData[0]);
-      setData({...existingData[0], fundingTokenType: 'TON'});
+      setData({...existingData[0]});
+      setStepCount(4);
     }
   }, [existingData]);
 
   return (
-    <Accordion
-      w={'774px'}
-      borderRadius={15}
-      boxShadow={'0 2px 5px 0 rgba(61, 73, 93, 0.1)'}
-      border={colorMode === 'light' ? '' : '1px solid #535353'}
-      bg={colorMode === 'light' ? 'white.100' : ''}
-      defaultIndex={0}
-      index={currentStep}>
-      {stepName.map((step: string, index: number) => {
-        return (
-          <AccordionItem
-            border="none"
-            pt={'13.5px'}
-            pb={'13.5px'}
-            isOpen={true}
-            borderBottom={'1px solid #f4f6f8'}>
-            <AccordionButton
-              pr={'30px'}
-              _hover={{}}
-              onClick={() => stepCount > index && setCurrentStep(index)}>
-              <Box
-                flex="2"
-                pl={'16px'}
-                textAlign="left"
-                fontSize={20}
-                fontWeight={600}
-                color={currentStep === index ? 'blue.100' : 'black.300'}>
-                {step}
-              </Box>
-              <AccordionIcon />
-            </AccordionButton>
-            <AccordionPanel pb={0} pr={'35px'} pl={'35px'}>
-              {currentStep === 0 && (
-                <StepOne
-                  data={data}
-                  lastStep={index - 1 === stepName.length}
-                  handleNextStep={handleNextStep}></StepOne>
-              )}
-              {currentStep === 1 && (
-                <StepTwo
-                  data={data}
-                  lastStep={index - 1 === stepName.length}
-                  handleNextStep={handleNextStep}
-                  handlePrevStep={handlePrevStep}></StepTwo>
-              )}
-              {currentStep === 2 && (
-                <StepThree
-                  data={data}
-                  lastStep={index - 1 === stepName.length}
-                  handleNextStep={handleNextStep}
-                  handlePrevStep={handlePrevStep}
-                  library={library}></StepThree>
-              )}
-              {currentStep === 3 && (
-                <StepFour
-                  data={data}
-                  lastStep={index - 1 === stepName.length}
-                  handleNextStep={handleNextStep}
-                  handlePrevStep={handlePrevStep}
-                  library={library}
-                  setFinal={setFinal}></StepFour>
-              )}
-            </AccordionPanel>
-          </AccordionItem>
-        );
-      })}
-    </Accordion>
+    <Flex flexDir="column">
+      <Accordion
+        w={'774px'}
+        borderRadius={15}
+        boxShadow={'0 2px 5px 0 rgba(61, 73, 93, 0.1)'}
+        border={colorMode === 'light' ? '' : '1px solid #535353'}
+        bg={colorMode === 'light' ? 'white.100' : ''}
+        defaultIndex={0}
+        index={currentStep}>
+        {stepName.map((step: string, index: number) => {
+          return (
+            <AccordionItem
+              border="none"
+              pt={'13.5px'}
+              pb={'13.5px'}
+              isOpen={true}
+              borderBottom={'1px solid #f4f6f8'}>
+              <AccordionButton
+                pr={'30px'}
+                _hover={{}}
+                onClick={() => stepCount > index && setCurrentStep(index)}>
+                <Box
+                  flex="2"
+                  pl={'16px'}
+                  textAlign="left"
+                  fontSize={20}
+                  fontWeight={600}
+                  color={currentStep === index ? 'blue.100' : 'black.300'}>
+                  {step}
+                </Box>
+                <AccordionIcon />
+              </AccordionButton>
+              <AccordionPanel pb={0} pr={'35px'} pl={'35px'}>
+                {currentStep === 0 && (
+                  <StepOne
+                    data={data}
+                    lastStep={index - 1 === stepName.length}
+                    handleNextStep={handleNextStep}
+                    final={final}></StepOne>
+                )}
+                {currentStep === 1 && (
+                  <StepTwo
+                    data={data}
+                    lastStep={index - 1 === stepName.length}
+                    handleNextStep={handleNextStep}
+                    handlePrevStep={handlePrevStep}
+                    final={final}></StepTwo>
+                )}
+                {currentStep === 2 && (
+                  <StepThree
+                    data={data}
+                    lastStep={index - 1 === stepName.length}
+                    handleNextStep={handleNextStep}
+                    handlePrevStep={handlePrevStep}
+                    library={library}
+                    final={final}></StepThree>
+                )}
+                {currentStep === 3 && (
+                  <StepFour
+                    data={data}
+                    lastStep={index - 1 === stepName.length}
+                    handleNextStep={handleNextStep}
+                    handlePrevStep={handlePrevStep}
+                    library={library}
+                    setFinal={setFinal}
+                    final={final}></StepFour>
+                )}
+              </AccordionPanel>
+            </AccordionItem>
+          );
+        })}
+      </Accordion>
+      <Flex mt={'50px'} alignItems="center" justifyContent="center">
+        {/* <CustomButton
+          w={'180px'}
+          h={'45px'}
+          text={'Project Save'}
+          isDisabled={!final}
+          style={{
+            fontFamily: theme.fonts.roboto,
+            fontWeight: 600,
+          }}
+          func={() =>
+            existingData.length === 0
+              ? bodyData && AdminActions.addStarter(bodyData)
+              : bodyData && AdminActions.editStarter(bodyData)
+          }></CustomButton> */}
+        {/* <SubmitButton></SubmitButton> */}
+      </Flex>
+    </Flex>
   );
 };

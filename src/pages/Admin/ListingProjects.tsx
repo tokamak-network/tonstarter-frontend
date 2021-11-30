@@ -1,4 +1,4 @@
-import {Flex, Box, useColorMode, useTheme} from '@chakra-ui/react';
+import {Flex, useColorMode, useTheme} from '@chakra-ui/react';
 import {PageHeader} from 'components/PageHeader';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect, useMemo, useState} from 'react';
@@ -8,12 +8,19 @@ import {AdminObject, ListingTableData} from './types';
 import {fetchStarterURL} from 'constants/index';
 import AdminActions from './actions';
 import moment from 'moment';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectTransactionType} from 'store/refetch.reducer';
+import {LoadingComponent} from 'components/Loading';
 
 export const ListingProjects = () => {
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
   const [projects, setProjects] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+
+  const {
+    data: {timeStamp},
+  } = useAppSelector(selectTransactionType);
 
   useEffect(() => {
     async function fetchProjectsData() {
@@ -23,43 +30,59 @@ export const ListingProjects = () => {
 
       const starterData = starterReq.datas;
       const nowTimeStamp = moment().unix();
+
+      const adminAccount = '';
+
+      // const filteredStarterData =
+      //   adminAccount === account
+      //     ? starterData
+      //     : starterData.filter((data: AdminObject) => {
+      //         return data.adminAddress === account;
+      //     });
+
+      const filteredStarterData = starterData;
+
       const res = await Promise.all(
-        starterData.map(async (data: any) => {
-          if (data.adminAddress === account) {
-            const {
-              endAddWhiteTime,
-              endExclusiveTime,
-              endDepositTime,
-              saleContractAddress,
-            } = data;
-            const saleAmount = await AdminActions.getSaleAmount({
-              library,
-              address: saleContractAddress,
-            });
-            const checkStep =
-              endAddWhiteTime > nowTimeStamp
-                ? 'Whitelist'
-                : endExclusiveTime > nowTimeStamp
-                ? 'Public Round 1'
-                : endDepositTime > nowTimeStamp
-                ? 'Public Round 2'
-                : 'Claim';
-            return {...data, status: checkStep, saleAmount};
-          }
+        filteredStarterData.map(async (data: any) => {
+          console.log('--data--');
+          console.log(data);
+          const {
+            endAddWhiteTime,
+            endExclusiveTime,
+            endDepositTime,
+            saleContractAddress,
+          } = data;
+          const saleAmount =
+            data.name === 'DOOR OPEN'
+              ? await AdminActions.getSaleAmount({
+                  library,
+                  address: saleContractAddress,
+                })
+              : '';
+          const checkStep =
+            endAddWhiteTime > nowTimeStamp
+              ? 'Whitelist'
+              : endExclusiveTime > nowTimeStamp
+              ? 'Public Round 1'
+              : endDepositTime > nowTimeStamp
+              ? 'Public Round 2'
+              : 'Claim';
+          return {...data, status: checkStep, saleAmount};
         }),
       );
       if (res[0] !== undefined) {
         setProjects(res);
         return setLoading(false);
       } else {
-        return setProjects([]);
+        setProjects([]);
+        return setLoading(false);
       }
     }
     fetchProjectsData();
-  }, [account, library]);
+  }, [account, library, timeStamp]);
 
   const dummyData: {
-    data: AdminObject[];
+    data: any[];
     columns: any;
     isLoading: boolean;
   } = {
@@ -115,13 +138,12 @@ export const ListingProjects = () => {
         }
       />
       <Flex mt={'60px'}>
-        {data.length > 0 ? (
+        {isLoading === true && <LoadingComponent></LoadingComponent>}
+        {data.length > 0 && isLoading === false && (
           <ListTable
             data={data}
             columns={columns}
             isLoading={isLoading}></ListTable>
-        ) : (
-          <div>no data for this account address</div>
         )}
       </Flex>
       <DistributeModal></DistributeModal>

@@ -12,16 +12,14 @@ import {checkTokenType} from 'utils/token';
 import {Circle} from 'components/Circle';
 import {Link, useRouteMatch} from 'react-router-dom';
 import {ActiveProjectType} from '@Starter/types';
-import starterActions from '../actions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect, useState} from 'react';
-import moment from 'moment';
 
 type ActiveProjectProp = {
   activeProject: ActiveProjectType[];
 };
 
-export const ActiveProject = (props: any) => {
+export const ActiveProject = (props: ActiveProjectProp) => {
   const {activeProject} = props;
   const {colorMode} = useColorMode();
   const {library} = useActiveWeb3React();
@@ -31,7 +29,9 @@ export const ActiveProject = (props: any) => {
   const {STATER_STYLE} = theme;
   const {url} = match;
 
-  const [view, setView] = useState(false);
+  const [progress, setProgress] = useState<number | undefined>(undefined);
+
+  useEffect(() => {}, [library]);
 
   return (
     <Flex flexDir="column">
@@ -42,18 +42,15 @@ export const ActiveProject = (props: any) => {
         Active Projects
       </Text>
       <Grid templateColumns="repeat(3, 1fr)" gap={30}>
-        {activeProject.map((project: any) => {
+        {activeProject.map((project: any, index: number) => {
           const tokenType = checkTokenType(
             '0x2be5e8c109e2197D077D13A82dAead6a9b3433C5',
           );
-          const nowTimeStamp = moment().unix();
-
-          if (nowTimeStamp > project.timeStamps.endOpenSaleTime) {
-            return null;
-          }
 
           return (
-            <Link to={`${url}/active/${project.name}`}>
+            <Link
+              to={`${url}/active/${project.name}`}
+              id={`active_link_${index}`}>
               <Box {...STATER_STYLE.containerStyle({colorMode})}>
                 <Flex justifyContent="space-between" mb={15}>
                   <Avatar

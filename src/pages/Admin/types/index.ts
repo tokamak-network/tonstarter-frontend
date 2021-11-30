@@ -1,4 +1,4 @@
-type FundingTokenTypes = 'TON';
+export type FundingTokenTypes = 'TON';
 
 export type StepOne = {
   name: string;
@@ -118,7 +118,7 @@ export type ListingRewardTableData = {
   status: 'Waiting' | 'On progress' | 'Closed';
 };
 
-export type FetchReward = {
+export type RewardData = {
   allocatedReward: string;
   chainId: number;
   endTime: number;
@@ -146,4 +146,8 @@ export type PoolData = {
   token0Image: String;
   token1Image: String;
   feeTier: number;
+};
+
+export type FetchPoolData = PoolData & {
+  numRewardPrograms: number;
 };

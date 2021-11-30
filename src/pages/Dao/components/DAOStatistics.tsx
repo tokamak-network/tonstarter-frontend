@@ -66,7 +66,7 @@ export const DAOStatistics = () => {
   const getAverageLockTime = async () => {
     const totalEpoch = await LockTOSContract.cumulativeTOSAmount();
     const totalUser = await LockTOSContract.allHolders();
-    const avgWeek = totalEpoch.div(totalUser.length);
+    const avgWeek = totalEpoch.div(totalUser.length || '0');
     const convertedNum = convertNumber({
       amount: avgWeek.toString(),
       localeString: true,

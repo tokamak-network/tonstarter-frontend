@@ -8,11 +8,10 @@ import starterActions from '../../actions';
 
 type DetailTableProjectProps = {
   saleInfo: AdminObject;
-  activeProjectInfo: any;
 };
 
 export const DetailTableProject: React.FC<DetailTableProjectProps> = (prop) => {
-  const {saleInfo, activeProjectInfo} = prop;
+  const {saleInfo} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {library} = useWeb3React();
@@ -53,30 +52,24 @@ export const DetailTableProject: React.FC<DetailTableProjectProps> = (prop) => {
     {
       key: 'Public Round 1 Period',
       value: `${convertTimeStamp(
-        activeProjectInfo?.timeStamps.startAddWhiteTime,
+        saleInfo.startAddWhiteTime,
         'YYYY.MM.DD HH:mm',
-      )} ~ ${convertTimeStamp(
-        activeProjectInfo?.timeStamps.endExclusiveTime,
-        'MM.DD HH:mm',
-      )}`,
+      )} ~ ${convertTimeStamp(saleInfo?.endExclusiveTime, 'MM.DD HH:mm')}`,
     },
     {
       key: 'Public Round 2 Period',
       value: `${convertTimeStamp(
-        activeProjectInfo?.timeStamps.startDepositTime,
+        saleInfo.startDepositTime,
         'YYYY.MM.DD HH:mm',
-      )} ~ ${convertTimeStamp(
-        activeProjectInfo?.timeStamps.endDepositTime,
-        'MM.DD HH:mm',
-      )}`,
+      )} ~ ${convertTimeStamp(saleInfo.endDepositTime, 'MM.DD HH:mm')}`,
     },
     {
       key: 'Token Allocation',
-      value: `${activeProjectInfo?.tokenAllocation} ${activeProjectInfo.tokenName}`,
+      value: `${saleInfo?.tokenAllocationAmount || '0'} ${saleInfo.tokenName}`,
     },
     {
       key: 'Funding Crypto',
-      value: 'TON',
+      value: `${saleInfo?.fundingTokenType}`,
     },
   ];
 

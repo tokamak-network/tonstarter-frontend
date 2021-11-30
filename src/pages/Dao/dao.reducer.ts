@@ -4,7 +4,6 @@ import {LibraryType} from 'types/index';
 import {TosStakeList, ClaimList} from './types/index';
 import {getTosStakeList} from './utils/getTosStakeList';
 import {getClaimalbeList} from './actions';
-import {fetchStarterURL} from 'constants/index';
 
 interface TosStakeState {
   data: {
@@ -47,12 +46,7 @@ export const fetchTosStakes = createAsyncThunk(
     const tosStakeList = await getTosStakeList({account, library});
 
     //claim
-    const starterReq = await fetch(fetchStarterURL)
-      .then((res) => res.json())
-      .then((result) => result);
-
-    const starterData = starterReq.datas;
-    const claimList = await getClaimalbeList({account, library, starterData});
+    const claimList = await getClaimalbeList({account, library});
     return {tosStakeList, claimList: claimList || []};
   },
 );

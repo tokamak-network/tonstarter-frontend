@@ -28,7 +28,6 @@ import {
   ListingPools,
   ListingRewards,
 } from './Admin';
-import {useBlockNumber} from 'hooks/useBlock';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -46,7 +45,6 @@ export const Router: FC<RouterProps> = () => {
   const {onOpen, isOpen: isModalOpen, onClose} = useDisclosure();
   // const {account, chainId, library, deactivate} = useWeb3React();
   const {account, chainId, library, deactivate} = useActiveWeb3React();
-  const {blockNumber} = useBlockNumber();
 
   //@ts-ignore
   // const accountStorage = JSON.parse(window.localStorage.getItem('account'));
@@ -133,7 +131,7 @@ export const Router: FC<RouterProps> = () => {
       // @ts-ignore
       // dispatch(fetchAppConfig({chainId}));
     }
-  }, [blockNumber, account, library]);
+  }, [account, library]);
 
   useEffect(() => {
     //@ts-ignore
@@ -179,13 +177,12 @@ export const Router: FC<RouterProps> = () => {
           <Route exact path="/admin/listpools" component={ListingPools} />
           <Route exact path="/admin/listrewards" component={ListingRewards} />
 
-          <Route exact path={`/starter/active/:id`} component={StarterDetail} />
-          <Route
+          <Route exact path={`/starter/:id`} component={StarterDetail} />
+          {/* <Route
             exact
             path={`/starter/upcoming/:id`}
             component={StarterDetail}
-          />
-          <Route exact path={`/starter/past/:id`} component={StarterDetail} />
+          /> */}
         </Switch>
       </div>
       <Footer />

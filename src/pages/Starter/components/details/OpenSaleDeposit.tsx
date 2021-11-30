@@ -18,12 +18,11 @@ import {openModal} from 'store/modal.reducer';
 
 type OpenSaleDepositProps = {
   saleInfo: AdminObject;
-  activeProjectInfo: any;
   approvedAmount: string;
 };
 
 export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
-  const {saleInfo, activeProjectInfo, approvedAmount} = prop;
+  const {saleInfo, approvedAmount} = prop;
 
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -170,9 +169,7 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
         <DetailCounter
           numberFontSize={'18px'}
           stringFontSize={'14px'}
-          date={
-            activeProjectInfo?.timeStamps.endDepositTime * 1000
-          }></DetailCounter>
+          date={saleInfo?.endDepositTime * 1000}></DetailCounter>
       </Box>
       <Text
         {...STATER_STYLE.subText({colorMode})}
@@ -240,15 +237,8 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
               Sale Period :{' '}
             </Text>
             <Text {...detailSubTextStyle}>
-              {convertTimeStamp(
-                activeProjectInfo?.timeStamps?.startDepositTime,
-                'YYYY-MM-D',
-              )}{' '}
-              ~{' '}
-              {convertTimeStamp(
-                activeProjectInfo?.timeStamps?.endDepositTime,
-                'MM-D',
-              )}
+              {convertTimeStamp(saleInfo?.startDepositTime, 'YYYY-MM-D')} ~{' '}
+              {convertTimeStamp(saleInfo?.endDepositTime, 'MM-D')}
             </Text>
           </Flex>
           <Flex>

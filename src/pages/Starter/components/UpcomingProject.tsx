@@ -1,3 +1,4 @@
+import {TokenImage} from '../../Admin/components/TokenImage';
 import {
   Grid,
   GridItem,
@@ -6,13 +7,12 @@ import {
   useTheme,
   Text,
   Flex,
-  Avatar,
 } from '@chakra-ui/react';
-import {checkTokenType} from 'utils/token';
-// import { useRouteMatch} from 'react-router-dom';
+import {UpcomingProjectType} from '@Starter/types';
+import DoMToken from 'assets/banner/DoM.png';
 
 type UpcomingProjectProp = {
-  upcomingProject: any[];
+  upcomingProject: UpcomingProjectType[];
 };
 
 export const UpcomingProject = (props: UpcomingProjectProp) => {
@@ -33,34 +33,36 @@ export const UpcomingProject = (props: UpcomingProjectProp) => {
         Upcoming Projects
       </Text>
       <Grid templateColumns="repeat(3, 1fr)" gap={30}>
-        {upcomingProject.map((project) => {
-          const tokenType = checkTokenType(
-            '0x2be5e8c109e2197D077D13A82dAead6a9b3433C5',
-          );
+        {upcomingProject.map((project: UpcomingProjectType) => {
           return (
-            // <Link to={`${url}/upcoming/${project.name}`}>
-            <GridItem {...STATER_STYLE.containerStyle({colorMode})} h={'235px'}>
+            <GridItem
+              {...STATER_STYLE.containerStyle({colorMode})}
+              h={'235px'}
+              cursor={'pointer'}
+              // _hover={{}}
+              onClick={(e) => {
+                e.preventDefault();
+                window.open(`${project.website}`);
+              }}>
               <Flex justifyContent="space-between" mb={15}>
-                <Avatar
-                  src={tokenType.symbol}
-                  backgroundColor={tokenType.bg}
-                  bg="transparent"
-                  color="#c7d1d8"
-                  name="T"
-                  h="48px"
-                  w="48px"
-                />
+                {/* <TokenImage imageLink={project.tokenSymbolImage}></TokenImage> */}
+                <TokenImage imageLink={DoMToken}></TokenImage>
               </Flex>
               <Flex flexDir="column" mb={'25px'}>
                 <Text h={'36px'} {...STATER_STYLE.mainText({colorMode})}>
-                  {project.name}
+                  {/* {project.name} */}
+                  Dragons of Midgard
                 </Text>
                 <Flex>
-                  <Text mr={2} {...STATER_STYLE.subText({colorMode})}>
+                  <Text
+                    mr={2}
+                    {...STATER_STYLE.subText({colorMode})}
+                    color={'gray.150'}>
                     Sale Date
                   </Text>
                   <Text {...STATER_STYLE.subTextBlack({colorMode})}>
-                    {project.saleStart} ~ {project.saleEnd}
+                    {/* {project.saleStart} ~ {project.saleEnd} */}
+                    2021.12.14. ~ 12.21.
                   </Text>
                 </Flex>
               </Flex>
@@ -70,7 +72,8 @@ export const UpcomingProject = (props: UpcomingProjectProp) => {
                     {...STATER_STYLE.mainText({
                       colorMode,
                       fontSize: 14,
-                    })}>
+                    })}
+                    color={colorMode === 'light' ? 'gray.125' : 'gray.475'}>
                     Total Raise
                   </Text>
                   <Box d="flex" alignItems="baseline">
@@ -80,9 +83,9 @@ export const UpcomingProject = (props: UpcomingProjectProp) => {
                         colorMode,
                         fontSize: 20,
                       })}>
-                      10,000,000
+                      {project.tokenFundRaisingTargetAmount}
                     </Text>
-                    <Text>TON</Text>
+                    <Text>{project.fundingTokenType}</Text>
                   </Box>
                 </Box>
                 <Box d="flex" flexDir="column">
@@ -90,7 +93,8 @@ export const UpcomingProject = (props: UpcomingProjectProp) => {
                     {...STATER_STYLE.mainText({
                       colorMode,
                       fontSize: 14,
-                    })}>
+                    })}
+                    color={colorMode === 'light' ? 'gray.125' : 'gray.475'}>
                     Sector
                   </Text>
                   <Text
@@ -99,12 +103,11 @@ export const UpcomingProject = (props: UpcomingProjectProp) => {
                       colorMode,
                       fontSize: 20,
                     })}>
-                    DeFI
+                    P2E
                   </Text>
                 </Box>
               </Flex>
             </GridItem>
-            // </Link>
           );
         })}
       </Grid>

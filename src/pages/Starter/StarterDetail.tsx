@@ -3,13 +3,11 @@ import {
   useColorMode,
   useTheme,
   Flex,
-  Avatar,
   Text,
   Center,
 } from '@chakra-ui/react';
 import {useEffect, useState} from 'react';
-// import {useParams} from 'react-router-dom';
-import {checkTokenType} from 'utils/token';
+import {useParams} from 'react-router-dom';
 // import {ExclusiveSale} from './components/details/ExclusiveSale';
 import {WhiteList} from './components/details/WhiteList';
 // import {OpenSale} from './components/details/OpenSale';
@@ -23,7 +21,6 @@ import {ExclusiveSalePart} from './components/details/ExclusiveSalePart';
 import store from 'store';
 import {AdminObject} from '@Admin/types';
 import {Claim} from './components/details/Claim';
-// import {useUrl} from './hooks/useUrl';
 import {useCallContract} from 'hooks/useCallContract';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import starterActions from './actions';
@@ -32,60 +29,37 @@ import {BigNumber} from 'ethers';
 import {useBlockNumber} from 'hooks/useBlock';
 import {LoadingComponent} from 'components/Loading';
 import {useTime} from 'hooks/useTime';
-
-import DocSymbol from 'assets/tokens/DOC-symbol.png';
+import {TokenImage} from '../Admin/components/TokenImage';
+import {ApproveModal} from './components/ApproveModal';
 
 export const StarterDetail = () => {
-  // const {id}: {id: string} = useParams();
-  const id = 'DOOR OPEN';
+  const {id}: {id: string} = useParams();
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  // const {projectStatus} = useUrl();
 
   const starterData = store.getState().starters.data;
-
-  const {isPassed} = useTime(
-    starterData?.activeProjects[0].timeStamps.endDepositTime,
-  );
-  const {isPassed: isEndWhiteListTime} = useTime(
-    starterData?.activeProjects[0].timeStamps.endAddWhiteTime,
-  );
-  const {isPassed: isEndExclusiveTime} = useTime(
-    starterData?.activeProjects[0].timeStamps.endExclusiveTime,
-  );
-  const {isPassed: isEndDepositTIme} = useTime(
-    starterData?.activeProjects[0].timeStamps.endDepositTime,
-  );
-
-  const [projectStatus, setProject] = useState<'past' | 'active'>(
-    isPassed ? 'past' : 'active',
-  );
 
   const [activeStatus, setActiveStatus] = useState<SaleStatus | undefined>(
     undefined,
   );
   const [saleInfo, setSaleInfo] = useState<AdminObject | undefined>(undefined);
-  const [activeProjectInfo, setActiveProjectInfo] = useState<any | undefined>(
-    undefined,
-  );
-
   const [detailInfo, setDetailInfo] = useState<DetailInfo | undefined>(
     undefined,
   );
-
   const [approvedAmount, setApprovedAmount] = useState<string>('0');
-
   const {STATER_STYLE} = theme;
-  // const tokenType = checkTokenType(
-  //   '0x2be5e8c109e2197D077D13A82dAead6a9b3433C5',
-  // );
-
   const {account, library} = useActiveWeb3React();
 
+  const {isPassed: isEndWhiteListTime} = useTime(
+    saleInfo?.endAddWhiteTime || 0,
+  );
+  const {isPassed: isEndExclusiveTime} = useTime(
+    saleInfo?.endExclusiveTime || 0,
+  );
+  const {isPassed: isEndDepositTIme} = useTime(saleInfo?.endDepositTime || 0);
+
   const PUBLICSALE_CONTRACT = useCallContract(
-    starterData.activeData
-      .filter((data: AdminObject) => data.name === id)
-      .map((e: AdminObject) => e.saleContractAddress)[0],
+    saleInfo?.saleContractAddress || '',
     'PUBLIC_SALE',
   );
 
@@ -94,19 +68,17 @@ export const StarterDetail = () => {
   //check approve
   useEffect(() => {
     async function checkUserApprove() {
-      if (account && library) {
+      if (account && library && saleInfo) {
         const amount = await starterActions.checkApprove(
           account,
           library,
-          starterData.activeData
-            .filter((data: AdminObject) => data.name === id)
-            .map((e: AdminObject) => e.saleContractAddress)[0],
+          saleInfo.saleContractAddress,
         );
         setApprovedAmount(amount);
       }
     }
     checkUserApprove();
-  }, [account, library, id, starterData.activeData, blockNumber]);
+  }, [account, library, saleInfo, blockNumber]);
 
   useEffect(() => {
     async function getInfo() {
@@ -218,59 +190,35 @@ export const StarterDetail = () => {
   }, [account, library, PUBLICSALE_CONTRACT, saleInfo]);
 
   useEffect(() => {
-    async function getStatus() {
-      if (saleInfo) {
-        const {activeProjects} = starterData;
-
-        //@ts-ignore
-        const {step} = activeProjects.filter(
-          (data: any) => data.name === id,
-        )[0];
-
-        setActiveStatus(step);
-        setProject(isPassed ? 'past' : 'active');
-
-        setActiveProjectInfo(
-          activeProjects.filter((data: any) => data.name === id)[0],
-        );
-      }
+    if (saleInfo) {
+      setActiveStatus(
+        !isEndWhiteListTime
+          ? 'whitelist'
+          : !isEndExclusiveTime
+          ? 'exclusive'
+          : !isEndDepositTIme
+          ? 'deposit'
+          : 'claim',
+      );
     }
-    getStatus();
   }, [
     id,
-    starterData,
     library,
     saleInfo,
     isEndWhiteListTime,
     isEndExclusiveTime,
     isEndDepositTIme,
-    isPassed,
   ]);
 
   useEffect(() => {
-    const {activeData, pastData} = starterData;
-
-    if (projectStatus === 'active') {
-      const projectInfo = activeData.filter(
+    const {rawData} = starterData;
+    if (rawData) {
+      const projectInfo = rawData.filter(
         (data: AdminObject) => data.name === id,
       );
       return setSaleInfo(projectInfo[0]);
     }
-
-    // if (projectStatus === 'upcoming') {
-    //   const projectInfo = upcomingData.filter(
-    //     (data: AdminObject) => data.name === id,
-    //   );
-    //   return setSaleInfo(projectInfo[0]);
-    // }
-
-    if (projectStatus === 'past') {
-      const projectInfo = pastData.filter(
-        (data: AdminObject) => data.name === id,
-      );
-      return setSaleInfo(projectInfo[0]);
-    }
-  }, [starterData, id, projectStatus]);
+  }, [starterData, id]);
 
   if (!saleInfo) {
     return (
@@ -293,15 +241,7 @@ export const StarterDetail = () => {
           cursor="">
           <Box d="flex" flexDir="column" w={'562px'} pr={35} pos="relative">
             <Flex justifyContent="space-between" mb={15}>
-              <Avatar
-                src={DocSymbol}
-                // backgroundColor={tokenType.bg}
-                bg="transparent"
-                color="#c7d1d8"
-                name="T"
-                h="48px"
-                w="48px"
-              />
+              <TokenImage imageLink={saleInfo?.tokenSymbolImage} />
             </Flex>
             <Text {...STATER_STYLE.mainText({colorMode, fontSize: 34})}>
               {saleInfo?.name}
@@ -332,24 +272,21 @@ export const StarterDetail = () => {
             w={'1px'}
             bg={colorMode === 'light' ? '#f4f6f8' : '#323232'}
             boxShadow={'0 1px 1px 0 rgba(96, 97, 112, 0.16)'}></Box>
-          {projectStatus === 'active' && activeStatus === 'whitelist' && (
+          {activeStatus === 'whitelist' && (
             <WhiteList
               userTier={detailInfo?.userTier || 0}
-              activeProjectInfo={activeProjectInfo}
               saleInfo={saleInfo}
               detailInfo={detailInfo}></WhiteList>
           )}
-          {projectStatus === 'active' && activeStatus === 'exclusive' && (
+          {activeStatus === 'exclusive' && (
             <ExclusiveSalePart
               saleInfo={saleInfo}
               detailInfo={detailInfo}
-              activeProjectInfo={activeProjectInfo}
               approvedAmount={approvedAmount}></ExclusiveSalePart>
           )}
-          {projectStatus === 'active' && activeStatus === 'deposit' && (
+          {activeStatus === 'deposit' && (
             <OpenSaleDeposit
               saleInfo={saleInfo}
-              activeProjectInfo={activeProjectInfo}
               approvedAmount={approvedAmount}></OpenSaleDeposit>
           )}
           {/* {projectStatus === 'active' && activeStatus === 'openSale' && (
@@ -357,22 +294,18 @@ export const StarterDetail = () => {
               saleInfo={saleInfo}
               activeProjectInfo={activeProjectInfo}></OpenSaleAfterDeposit>
           )} */}
-          {projectStatus === 'past' && (
-            <Claim
-              saleInfo={saleInfo}
-              activeProjectInfo={activeProjectInfo}></Claim>
-          )}
+          {activeStatus === 'claim' && <Claim saleInfo={saleInfo}></Claim>}
         </Flex>
         <Flex>
           {activeStatus && (
             <DetailTable
               saleInfo={saleInfo}
               status={activeStatus}
-              detailInfo={detailInfo}
-              activeProjectInfo={activeProjectInfo}></DetailTable>
+              detailInfo={detailInfo}></DetailTable>
           )}
         </Flex>
       </Flex>
+      <ApproveModal></ApproveModal>
     </Flex>
   );
 };

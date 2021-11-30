@@ -4,15 +4,17 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect, useMemo, useState} from 'react';
 import {ListPoolsTable} from './components/ListPoolsTable';
 import {EditPoolModal} from './components/EditPoolModal';
-import {FetchReward, ListingPoolsTableData} from './types';
+import {FetchPoolData} from './types';
 import {CustomInput} from 'components/Basic';
 import {CustomButton} from 'components/Basic/CustomButton';
 import AdminActions from './actions';
 import {TokenImage} from './components/TokenImage';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectTransactionType} from 'store/refetch.reducer';
 
 export const ListingPools = () => {
   const {account, library, chainId} = useActiveWeb3React();
-  const [projects, setProjects] = useState<ListingPoolsTableData[] | []>([]);
+  const [projects, setProjects] = useState<FetchPoolData[] | []>([]);
 
   const theme = useTheme();
   const {bgStyle} = theme;
@@ -28,33 +30,39 @@ export const ListingPools = () => {
 
   const [loading, setLoading] = useState<boolean>(true);
 
+  const {
+    data: {timeStamp, func},
+  } = useAppSelector(selectTransactionType);
+
   useEffect(() => {
     async function fetchProjectsData() {
-      const rewardData = await AdminActions.getRewardData();
+      const rewardData = await AdminActions.getPoolData();
 
       if (!rewardData) {
         setProjects([]);
         return setLoading(false);
       }
 
-      const filteredRewardData: ListingPoolsTableData[] = rewardData.map(
-        (data: FetchReward) => {
-          return {
-            name: data.poolName,
-            address: data.poolAddress,
-            rewardPrograms: 5,
-          };
-        },
-      );
-
-      setProjects(filteredRewardData);
+      setProjects(rewardData);
       setLoading(false);
     }
     fetchProjectsData();
-  }, [account, library]);
+  }, [account, library, timeStamp]);
+
+  useEffect(() => {
+    if (func === 'addPool') {
+      setPoolName('');
+      setPoolAddress('');
+      setToken0('');
+      setToken1('');
+      setToken0Image('');
+      setToken1Image('');
+      setFee('');
+    }
+  }, [timeStamp, func]);
 
   const dummyData: {
-    data: ListingPoolsTableData[];
+    data: FetchPoolData[];
     columns: any;
     isLoading: boolean;
   } = {
@@ -128,6 +136,7 @@ export const ListingPools = () => {
                   h={'32px'}
                   br={4}
                   textAlign={'left'}
+                  startWithZero={true}
                   style={{
                     fontSize: '13px',
                     px: '15px',
@@ -142,6 +151,7 @@ export const ListingPools = () => {
                 value={token0}
                 setValue={setToken0}
                 placeHolder={'Input Token0 Address'}
+                startWithZero={true}
                 w={'310px'}
                 h={'32px'}
                 textAlign={'left'}
@@ -155,6 +165,7 @@ export const ListingPools = () => {
             <Flex alignItems="center" mb={'20px'}>
               <Text w={'85px'}>Token0 Image </Text>
               <CustomInput
+                startWithZero={true}
                 value={token0Image}
                 setValue={setToken0Image}
                 placeHolder={'Token0 Symbol Image URL'}
@@ -172,6 +183,7 @@ export const ListingPools = () => {
               <Text w={'85px'}>Fee </Text>
               <CustomInput
                 value={fee}
+                startWithZero={true}
                 setValue={setFee}
                 placeHolder={'Input Fee number'}
                 w={'310px'}
@@ -199,6 +211,7 @@ export const ListingPools = () => {
                 value={poolAddress}
                 setValue={setPoolAddress}
                 placeHolder={'Input Pool Address'}
+                startWithZero={true}
                 w={'310px'}
                 h={'32px'}
                 br={4}
@@ -223,6 +236,7 @@ export const ListingPools = () => {
                 value={token1}
                 setValue={setToken1}
                 placeHolder={'Input Token1 Address'}
+                startWithZero={true}
                 w={'310px'}
                 h={'32px'}
                 textAlign={'left'}
@@ -239,6 +253,7 @@ export const ListingPools = () => {
                 value={token1Image}
                 setValue={setToken1Image}
                 placeHolder={'Token1 Symbol Image URL'}
+                startWithZero={true}
                 w={'310px'}
                 h={'32px'}
                 textAlign={'left'}
@@ -250,7 +265,7 @@ export const ListingPools = () => {
               />
             </Flex>
             <Flex>
-              <Box d="flex" alignItems="center">
+              <Box d="flex" alignItems="center" mr={'10px'}>
                 <Text mr={'10px'}>Token0 Image preview</Text>
                 <TokenImage imageLink={token0Image} />
               </Box>

@@ -12,13 +12,12 @@ import {useTime} from 'hooks/useTime';
 
 type WhiteListProps = {
   userTier: Tier;
-  activeProjectInfo: any;
   detailInfo: DetailInfo | undefined;
   saleInfo: AdminObject;
 };
 
 export const WhiteList: React.FC<WhiteListProps> = (prop) => {
-  const {userTier, activeProjectInfo, detailInfo, saleInfo} = prop;
+  const {userTier, detailInfo, saleInfo} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
@@ -26,7 +25,7 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
 
   const {STATER_STYLE} = theme;
   const {blockNumber} = useBlockNumber();
-  const {isPassed} = useTime(activeProjectInfo?.timeStamps.startAddWhiteTime);
+  const {isPassed} = useTime(saleInfo?.startAddWhiteTime);
   const [userAllocation, setUserAllocation] = useState<string>(
     detailInfo
       ? detailInfo.tierAllocation[
@@ -37,11 +36,11 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
 
   useEffect(() => {
     async function getInfo() {
-      if (account && library && activeProjectInfo) {
+      if (account && library && saleInfo) {
         const whiteListInfo = await starterActions.isWhiteList({
           account,
           library,
-          address: activeProjectInfo.saleContractAddress,
+          address: saleInfo.saleContractAddress,
         });
         setIsWhiteList(whiteListInfo[0]);
         if (detailInfo) {
@@ -53,10 +52,10 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
         }
       }
     }
-    if (account && library && activeProjectInfo) {
+    if (account && library && saleInfo) {
       getInfo();
     }
-  }, [account, library, activeProjectInfo, blockNumber, detailInfo]);
+  }, [account, library, saleInfo, blockNumber, detailInfo]);
 
   const detailSubTextStyle = {
     color: colorMode === 'light' ? 'gray.250' : 'white.100',
@@ -81,23 +80,16 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
       </Text>
       <Box d="flex" {...STATER_STYLE.mainText({colorMode, fontSize: 34})}>
         <Text mr={'25px'} w={'244px'}>
-          {convertTimeStamp(activeProjectInfo?.timeStamps.startAddWhiteTime)} ~{' '}
-          {convertTimeStamp(
-            activeProjectInfo?.timeStamps.endExclusiveTime,
-            'MM.D',
-          )}
+          {convertTimeStamp(saleInfo?.startAddWhiteTime)} ~{' '}
+          {convertTimeStamp(saleInfo?.endExclusiveTime, 'MM.D')}
         </Text>
         <Box display={isPassed ? '' : 'none'} w={'255px'}>
           <DetailCounter
-            date={
-              activeProjectInfo?.timeStamps.endAddWhiteTime * 1000
-            }></DetailCounter>
+            date={saleInfo?.endAddWhiteTime * 1000}></DetailCounter>
         </Box>
         <Box display={isPassed ? 'none' : ''} w={'255px'}>
           <DetailCounter
-            date={
-              activeProjectInfo?.timeStamps.startAddWhiteTime * 1000
-            }></DetailCounter>
+            date={saleInfo?.startAddWhiteTime * 1000}></DetailCounter>
         </Box>
       </Box>
       {isPassed && (
@@ -134,7 +126,7 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
               starterActions.addWhiteList({
                 account,
                 library,
-                address: activeProjectInfo.saleContractAddress,
+                address: saleInfo.saleContractAddress,
               })
             }
             isDisabled={

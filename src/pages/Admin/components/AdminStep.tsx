@@ -35,8 +35,11 @@ import WatchImg from 'assets/svgs/poll-time-active-icon.svg';
 import TONSymbol from 'assets/tokens/tokamak-1@3x.png';
 import EtherscanLink from 'assets/images/etherscan-shortcuts-inactive-icon@3x.png';
 import store from 'store';
-import {selectApp} from 'store/app/app.reducer';
-import {useAppSelector} from 'hooks/useRedux';
+import {TokenImage} from './TokenImage';
+import {CustomCalendar} from './CustomCalendar';
+import {CustomClock} from './CustomClock';
+import '../css/Calendar.css';
+import moment from 'moment';
 
 type StepProp = {
   data: AdminObject;
@@ -44,6 +47,7 @@ type StepProp = {
   handleNextStep: Dispatch<SetStateAction<any>> | any;
   handlePrevStep?: Dispatch<SetStateAction<any>> | any;
   library?: LibraryType;
+  final: boolean;
 };
 
 const fieldWrap = {
@@ -68,6 +72,27 @@ const Line = () => {
       top={0}
       bg={'#f4f6f8'}
       left={'-35px'}></Box>
+  );
+};
+
+export const SubmitButton = (props: {
+  final: boolean;
+  saveHandleSubmit: any;
+}) => {
+  const {final, saveHandleSubmit} = props;
+  const {values} = useFormikContext();
+  const theme = useTheme();
+  return (
+    <CustomButton
+      w={'180px'}
+      h={'45px'}
+      text={'Project Save'}
+      isDisabled={!final}
+      style={{
+        fontFamily: theme.fonts.roboto,
+        fontWeight: 600,
+      }}
+      func={() => saveHandleSubmit(values)}></CustomButton>
   );
 };
 
@@ -101,9 +126,21 @@ const CustomFieldWithTime = (props: {
 
   const {values} = useFormikContext();
   const fieldValue = getIn(values, name);
-
+  const [startTime, setStartTime] = useState<number>(0);
+  const [startTimeArray,setStartTimeArray] =  useState([]);
+  useEffect(() => {
+    const starts = moment.unix(startTime);
+    const startDates = moment(starts).set({
+      hour: startTimeArray[0],
+      minute: startTimeArray[1],
+      second: startTimeArray[2],
+    });
+    console.log('startDates', startDates);
+    
+    setStartTime(startDates.unix());
+  }, [startTimeArray, startTime]);
   return (
-    <Box d="flex">
+    <Box d="flex" >
       <Flex style={fieldWrap} flexDir="column" mb={'20px'} pos="relative">
         <Flex mb={'10px'}>
           <Text>{title || name}</Text>
@@ -123,22 +160,22 @@ const CustomFieldWithTime = (props: {
             )}
           />
         </Flex>
-        <Field
-          disabled={true}
-          style={{...fieldStyle, width: w || '327px', background: '#ffffff'}}
-          name={name}
-          value={
-            fieldValue === 0
-              ? ''
-              : convertTimeStamp(Number(fieldValue), 'MM/DD/YYYY')
-          }
-          placeHolder={placeHolder || `input ${name}`}
-        />
+        <Flex alignItems={'center'} h={'45px'}>
+        <CustomCalendar
+            setValue={setStartTime}
+            // startTime={startTime}
+            // endTime={endTime}
+            // calendarType={'start'}
+            // created={created}
+          />
+        
+          <CustomClock setTime={setStartTimeArray} />
+          </Flex>
       </Flex>
-      <TimeSetting
+      {/* <TimeSetting
         timeStamp={
           fieldValue === '' ? fieldValue : Number(fieldValue)
-        }></TimeSetting>
+        }></TimeSetting> */}
     </Box>
   );
 };
@@ -220,13 +257,17 @@ const CustomField = (props: {
 };
 
 export const StepOne: React.FC<StepProp> = (props) => {
-  const {data, lastStep, handleNextStep} = props;
+  const {data, lastStep, handleNextStep, final} = props;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {btnStyle} = theme;
 
-  const handleSubmit = (values: any) => {
+  const handleSubmit = (values: AdminObject) => {
     handleNextStep(values, lastStep);
+  };
+
+  const saveHandleSubmit = (values: AdminObject) => {
+    handleNextStep(values, true);
   };
 
   const names = [
@@ -269,6 +310,7 @@ export const StepOne: React.FC<StepProp> = (props) => {
 
   return (
     <Formik
+      enableReinitialize
       validationSchema={stepOneValidationSchema}
       initialValues={data}
       validateOnMount={true}
@@ -320,6 +362,16 @@ export const StepOne: React.FC<StepProp> = (props) => {
                 Next
               </Button>
             </Flex>
+            <Flex
+              pos="absolute"
+              w={'100%'}
+              bottom={'-330px'}
+              alignItems="center"
+              justifyContent="center">
+              <SubmitButton
+                final={final}
+                saveHandleSubmit={saveHandleSubmit}></SubmitButton>
+            </Flex>
           </Form>
         );
       }}
@@ -328,13 +380,17 @@ export const StepOne: React.FC<StepProp> = (props) => {
 };
 
 export const StepTwo: React.FC<StepProp> = (props) => {
-  const {data, lastStep, handleNextStep, handlePrevStep} = props;
+  const {data, lastStep, handleNextStep, handlePrevStep, final} = props;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {btnStyle} = theme;
 
   const handleSubmit = (values: any) => {
     handleNextStep(values, lastStep);
+  };
+
+  const saveHandleSubmit = (values: AdminObject) => {
+    handleNextStep(values, true);
   };
 
   const names = [
@@ -383,18 +439,17 @@ export const StepTwo: React.FC<StepProp> = (props) => {
 
   return (
     <Formik
-      enableReinitialize={false}
+      enableReinitialize
       validationSchema={stepOneValidationSchema}
       initialValues={data}
-      validateOnMount={true}
       onSubmit={handleSubmit}>
-      {({isValid, setFieldValue, isValidating, values}) => {
-        console.log('--values--');
-        console.log(isValid);
-        console.log(values);
-
-        const {fundingTokenType, projectTokenRatio, projectFundingTokenRatio} =
-          values;
+      {({isValid, setFieldValue, isValidating, values, setValues}) => {
+        const {
+          fundingTokenType,
+          projectTokenRatio,
+          projectFundingTokenRatio,
+          tokenSymbolImage,
+        } = values;
 
         const checkTokenRatio =
           projectTokenRatio === 0 || projectFundingTokenRatio === 0;
@@ -436,9 +491,15 @@ export const StepTwo: React.FC<StepProp> = (props) => {
                   <CustomField
                     name={'tokenAddress'}
                     title={'Token Address'}></CustomField>
-                  <CustomField
-                    name={'tokenSymbolImage'}
-                    title={'Token Symbol Image'}></CustomField>
+                  <Box d="flex" pos="relative">
+                    <CustomField
+                      w={'185px'}
+                      name={'tokenSymbolImage'}
+                      title={'Token Symbol Image'}></CustomField>
+                    <Box mt={'15px'} ml={'10px'}>
+                      <TokenImage imageLink={tokenSymbolImage}></TokenImage>
+                    </Box>
+                  </Box>
                 </Flex>
               </Flex>
               <Flex
@@ -479,6 +540,7 @@ export const StepTwo: React.FC<StepProp> = (props) => {
                       h={'32px'}
                       iconColor={'#dfe4ee'}
                       fontSize={13}
+                      value={fundingTokenType}
                       style={{paddingLeft: '43px', paddingTop: '3px'}}
                       onChange={(e) => {
                         const tokenType = e.target.value;
@@ -554,6 +616,16 @@ export const StepTwo: React.FC<StepProp> = (props) => {
                 Next
               </Button>
             </Flex>
+            <Flex
+              pos="absolute"
+              w={'100%'}
+              bottom={'-255px'}
+              alignItems="center"
+              justifyContent="center">
+              <SubmitButton
+                final={final}
+                saveHandleSubmit={saveHandleSubmit}></SubmitButton>
+            </Flex>
           </Form>
         );
       }}
@@ -562,7 +634,8 @@ export const StepTwo: React.FC<StepProp> = (props) => {
 };
 
 export const StepThree: React.FC<StepProp> = (props) => {
-  const {data, lastStep, handleNextStep, handlePrevStep, library} = props;
+  const {data, lastStep, handleNextStep, handlePrevStep, library, final} =
+    props;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {btnStyle} = theme;
@@ -574,6 +647,10 @@ export const StepThree: React.FC<StepProp> = (props) => {
 
   const handleSubmit = (values: any) => {
     handleNextStep(values, lastStep);
+  };
+
+  const saveHandleSubmit = (values: AdminObject) => {
+    handleNextStep(values, true);
   };
 
   const names = [
@@ -666,7 +743,6 @@ export const StepThree: React.FC<StepProp> = (props) => {
           checkTimeLine(res);
         }
       }
-      console.log('--getFetch--');
       if (address) {
         tryFetch(address, setFieldValue);
       }
@@ -675,46 +751,54 @@ export const StepThree: React.FC<StepProp> = (props) => {
   );
 
   function checkTimeLine(data: any) {
+    console.log('--data--');
+    console.log(data);
     for (const [key, value] of Object.entries(data)) {
-      if (key === 'snapshot' && value === '') {
+      if (key === 'snapshot' && value === 0) {
         return setTimeline(1);
       }
-      if (key === 'startAddWhiteTime' && value === '') {
+      if (key === 'startAddWhiteTime' && value === 0) {
         return setTimeline(2);
       }
-      if (key === 'endAddWhiteTime' && value === '') {
+      if (key === 'endAddWhiteTime' && value === 0) {
         return setTimeline(3);
       }
-      if (key === 'startExclusiveTime' && value === '') {
+      if (key === 'startExclusiveTime' && value === 0) {
         return setTimeline(4);
       }
-      if (key === 'endExclusiveTime' && value === '') {
+      if (key === 'endExclusiveTime' && value === 0) {
         return setTimeline(5);
       }
-      if (key === 'startDepositTime' && value === '') {
+      if (key === 'startDepositTime' && value === 0) {
         return setTimeline(6);
       }
-      if (key === 'endDepositTime' && value === '') {
+      if (key === 'endDepositTime' && value === 0) {
         return setTimeline(7);
       }
-      if (key === 'endDepositTime' && value === '') {
+      if (key === 'endDepositTime' && value === 0) {
         return setTimeline(7);
       }
-      if (key === 'startClaimTime' && value === '') {
+      if (key === 'startClaimTime' && value === 0) {
         return setTimeline(8);
       }
-      if (key === 'claimInterval' && value === '') {
+      if (key === 'claimInterval' && value === 0) {
         return setTimeline(8);
       }
-      if (key === 'claimPeriod' && value === '') {
+      if (key === 'claimPeriod' && value === 0) {
         return setTimeline(8);
       }
-      if (key === 'claimFirst' && value === '') {
+      if (key === 'claimFirst' && value === 0) {
         return setTimeline(8);
       }
       return setTimeline(9);
     }
   }
+
+  useEffect(() => {
+    if (data) {
+      checkTimeLine(data);
+    }
+  }, [data]);
 
   return (
     <Formik
@@ -724,6 +808,7 @@ export const StepThree: React.FC<StepProp> = (props) => {
       onSubmit={handleSubmit}>
       {({isValid, values, setFieldValue, isValidating, errors}) => {
         const {saleContractAddress} = values;
+        // putExistingData(setFieldValue);
         return (
           <Form
             style={{
@@ -1134,6 +1219,16 @@ export const StepThree: React.FC<StepProp> = (props) => {
                 Next
               </Button>
             </Flex>
+            <Flex
+              pos="absolute"
+              w={'100%'}
+              bottom={'-185px'}
+              alignItems="center"
+              justifyContent="center">
+              <SubmitButton
+                final={final}
+                saveHandleSubmit={saveHandleSubmit}></SubmitButton>
+            </Flex>
           </Form>
         );
       }}
@@ -1146,13 +1241,16 @@ export const StepFour: React.FC<
     setFinal: Dispatch<SetStateAction<boolean>>;
   }
 > = (props) => {
-  const {data, lastStep, handleNextStep, handlePrevStep, setFinal} = props;
+  const {data, lastStep, handleNextStep, handlePrevStep, setFinal, final} =
+    props;
   const {colorMode} = useColorMode();
-  const theme = useTheme();
-  const {btnStyle} = theme;
 
   const handleSubmit = (values: any) => {
     handleNextStep(values, lastStep);
+  };
+
+  const saveHandleSubmit = (values: AdminObject) => {
+    handleNextStep(values, true);
   };
 
   const names = [
@@ -1194,23 +1292,19 @@ export const StepFour: React.FC<
     ...obj,
   });
 
-  const titleStyle = {
-    color: 'black.300',
-    fontSize: 15,
-  };
-
   useEffect(() => {
     setFinal(true);
   }, []);
 
   return (
     <Formik
-      enableReinitialize={false}
+      enableReinitialize
       validationSchema={stepOneValidationSchema}
       initialValues={data}
       validateOnMount={true}
       onSubmit={handleSubmit}>
       {({isValid, setFieldValue, isValidating, values}) => {
+        const {position, production, topSlideExposure} = values;
         return (
           <Form
             style={{
@@ -1233,6 +1327,7 @@ export const StepFour: React.FC<
                   h={'32px'}
                   iconColor={'#dfe4ee'}
                   fontSize={13}
+                  value={position}
                   style={{paddingLeft: '15px', paddingTop: '3px'}}
                   onChange={(e) => {
                     const position = e.target.value;
@@ -1252,6 +1347,7 @@ export const StepFour: React.FC<
                   h={'32px'}
                   iconColor={'#dfe4ee'}
                   fontSize={13}
+                  value={production}
                   style={{paddingLeft: '15px', paddingTop: '3px'}}
                   onChange={(e) => {
                     const production = e.target.value;
@@ -1270,6 +1366,7 @@ export const StepFour: React.FC<
                   w={'18px'}
                   h={'18px'}
                   pt={'15px'}
+                  isChecked={topSlideExposure}
                   borderRadius={'4px'}
                   onChange={(e) => {
                     setFieldValue('topSlideExposure', e.target.checked);
@@ -1295,6 +1392,16 @@ export const StepFour: React.FC<
                 _hover={{}}>
                 Prev
               </Button>
+            </Flex>
+            <Flex
+              pos="absolute"
+              w={'100%'}
+              bottom={'-111px'}
+              alignItems="center"
+              justifyContent="center">
+              <SubmitButton
+                final={final}
+                saveHandleSubmit={saveHandleSubmit}></SubmitButton>
             </Flex>
           </Form>
         );

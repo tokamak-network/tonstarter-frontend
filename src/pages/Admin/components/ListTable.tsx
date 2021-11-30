@@ -166,8 +166,10 @@ export const ListTable: FC<ListTableProps> = ({columns, data, isLoading}) => {
                   ref={(el) => (focusTarget.current[i] = el)}
                   h={16}
                   key={i}
-                  borderBottomRadius={'10px'}
-                  mb={'20px'}
+                  borderBottomRadius={
+                    (i + 1) % 10 === 0 || page.length === i + 1 ? '10px' : ''
+                  }
+                  // mb={'20px'}
                   w="100%"
                   bg={colorMode === 'light' ? 'white.100' : 'black.200'}
                   border={colorMode === 'dark' ? '1px solid #373737' : ''}

@@ -26,10 +26,11 @@ import {openModal} from 'store/modal.reducer';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useModal} from 'hooks/useModal';
 import AdminActions from '../actions';
+import {FetchPoolData} from '@Admin/types';
 
 type ListTableProps = {
   columns: Column[];
-  data: any[];
+  data: FetchPoolData[];
   isLoading: boolean;
 };
 
@@ -147,7 +148,11 @@ export const ListPoolsTable: FC<ListTableProps> = ({
                   alignItems="center"
                   {...row.getRowProps()}>
                   {row.cells.map((cell: any, index: number) => {
-                    const {name, address, rewardPrograms} = cell.row.original;
+                    const {
+                      poolName: name,
+                      poolAddress: address,
+                      numRewardPrograms: rewardPrograms,
+                    } = cell.row.original;
                     const type = cell.column.id;
                     return (
                       <chakra.td

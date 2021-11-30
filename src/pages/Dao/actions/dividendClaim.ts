@@ -10,6 +10,7 @@ import {DEPLOYED} from 'constants/index';
 import {AdminObject} from '@Admin/types';
 import {ClaimList} from '@Dao/types';
 import {getTokenPrice} from 'utils/tokenPrice';
+import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 
 interface I_CallContract {
   account: string;
@@ -17,29 +18,42 @@ interface I_CallContract {
 }
 
 export const getClaimalbeList = async (
-  args: I_CallContract & {starterData: AdminObject[]},
+  args: I_CallContract,
 ): Promise<ClaimList[] | undefined> => {
   try {
-    const {account, library, starterData} = args;
+    const {account, library} = args;
 
-    const {LockTOSDividend_ADDRESS, TON_ADDRESS, TOS_ADDRESS} = DEPLOYED;
+    const {LockTOSDividend_ADDRESS, TON_ADDRESS} = DEPLOYED;
     const LOCKTOS_DIVIDEND_CONTRACT = new Contract(
       LockTOSDividend_ADDRESS,
       LockTOSDividend.abi,
       library,
     );
 
-    // const availableClaimList =
-    //   await LOCKTOS_DIVIDEND_CONTRACT.getAvailableClaims(account);
+    const tokens = await LOCKTOS_DIVIDEND_CONTRACT.getAvailableClaims(account);
 
     //project tokens
     const res: ClaimList[] = await Promise.all(
-      starterData.map(async (data: AdminObject) => {
-        const {tokenAddress, name, tokenName} = data;
+      tokens.map(async (tokenAddress: string, index: number) => {
+        //https://api.coingecko.com/api/v3/coins/list
+        // const tokenName =
+        //   tokenAddress === TON_ADDRESS
+        //     ? 'TON'
+        //     : tokenAddress === TOS_ADDRESS
+        //     ? 'TOS'
+        //     : '';
+        const ERC20_CONTRACT = new Contract(tokenAddress, ERC20.abi, library);
+        const tokenSymbol = await ERC20_CONTRACT.symbol();
+        const tokenContractName = await ERC20_CONTRACT.name();
+        const tokenName =
+          tokenAddress === TON_ADDRESS
+            ? 'tokamak-network'
+            : tokenContractName.toLowerCase().replaceAll(' ', '');
         const amount = await LOCKTOS_DIVIDEND_CONTRACT.claimable(
           account,
           tokenAddress,
         );
+
         const claimAmount =
           convertNumber({
             amount: amount.toString(),
@@ -47,8 +61,8 @@ export const getClaimalbeList = async (
           }) || '0.00';
         const price = await getTokenPrice(tokenName);
         const obj = {
-          name,
-          tokenName,
+          name: `#${index + 1}`,
+          tokenName: tokenSymbol,
           claimAmount,
           price: price * Number(claimAmount.replaceAll(',', '')),
           tokenAddress,
@@ -56,46 +70,6 @@ export const getClaimalbeList = async (
         return obj;
       }),
     );
-
-    //TON,TOS
-    const claimAmount_TON = await LOCKTOS_DIVIDEND_CONTRACT.claimable(
-      account,
-      TON_ADDRESS,
-    );
-    const convertedClimAmount_TON =
-      convertNumber({
-        amount: claimAmount_TON.toString(),
-        localeString: true,
-      }) || '0.00';
-    const PRICE_TON = await getTokenPrice('tokamak-network');
-    const claimAmount_TOS = await LOCKTOS_DIVIDEND_CONTRACT.claimable(
-      account,
-      TOS_ADDRESS,
-    );
-    const convertedClimAmount_TOS =
-      convertNumber({
-        amount: claimAmount_TOS.toString(),
-        localeString: true,
-      }) || '0.00';
-    const PRICE_TOS = await getTokenPrice('tonstarter');
-
-    res.push(
-      {
-        name: 'TON',
-        tokenName: 'TON',
-        claimAmount: convertedClimAmount_TON,
-        price: PRICE_TON * Number(convertedClimAmount_TON.replaceAll(',', '')),
-        tokenAddress: TON_ADDRESS,
-      },
-      {
-        name: 'TOS',
-        tokenName: 'TOS',
-        claimAmount: convertedClimAmount_TOS,
-        price: PRICE_TOS * Number(convertedClimAmount_TOS.replaceAll(',', '')),
-        tokenAddress: TOS_ADDRESS,
-      },
-    );
-
     return res;
   } catch (e) {
     console.log(e);

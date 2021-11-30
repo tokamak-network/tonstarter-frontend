@@ -1,13 +1,17 @@
+import {FundingTokenTypes} from '@Admin/types';
+
 export interface I_StarterProject {
   name: string;
   saleStart: string;
   saleEnd: string;
   saleContractAddress: string;
+  tokenSymbolImage: string;
+  tokenFundRaisingTargetAmount: string;
+  fundingTokenType: FundingTokenTypes;
 }
 
 export type ActiveProjectType = I_StarterProject & {
   isExclusive: boolean;
-  tokenFundRaisingTargetAmount: string;
   projectTokenRatio: number;
   projectFundingTokenRatio: number;
   timeStamps: {
@@ -24,7 +28,7 @@ export type ActiveProjectType = I_StarterProject & {
 };
 
 export type UpcomingProjectType = I_StarterProject & {
-  tokenFundRaisingTargetAmount: number;
+  website: string;
 };
 
 export type PastProjectType = I_StarterProject;
@@ -35,7 +39,7 @@ export type MyProject = {
   nextClaimableDate: number;
 };
 
-export type SaleStatus = 'whitelist' | 'exclusive' | 'deposit';
+export type SaleStatus = 'whitelist' | 'exclusive' | 'deposit' | 'claim';
 
 export type ProjectStatus = 'active' | 'upcoming' | 'past';
 export type Tier = 0 | 1 | 2 | 3 | 4;

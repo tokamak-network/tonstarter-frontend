@@ -3,7 +3,6 @@ import {useEffect, useState} from 'react';
 import {AdminObject, StepComponent} from '@Admin/types';
 import {PageHeader} from 'components/PageHeader';
 import {AdminDetail} from './components/AdminDetail';
-import {CustomButton} from 'components/Basic/CustomButton';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {LoadingComponent} from 'components/Loading';
 import {useLocation} from 'react-router-dom';
@@ -15,12 +14,20 @@ import tickIcon from 'assets/svgs/tick-icon.svg';
 const Steps: React.FC<StepComponent> = (props) => {
   const {stepName, currentStep} = props;
   const {colorMode} = useColorMode();
+  const [maxStep, setStepMax] = useState(0);
+
+  useEffect(() => {
+    if (currentStep > maxStep) {
+      setStepMax(currentStep);
+    }
+  }, [currentStep, maxStep]);
 
   return (
     <Flex>
       {stepName.map((step: string, index: number) => {
         const isStep = currentStep === index;
-        const pastStep = currentStep > index;
+        const pastStep = currentStep > index || maxStep > index;
+
         return (
           <Box d="flex" mr={'20px'} alignItems="center" fontSize={14}>
             <Flex
@@ -34,7 +41,7 @@ const Steps: React.FC<StepComponent> = (props) => {
               mr={'12px'}
               border={isStep ? '' : 'solid 1px #e6eaee'}>
               {/* {pastStep ? (<img src={tickIcon} alt={'tick_icon'}>)  :( <Box>{index + 1}</Box>)} */}
-              {pastStep ? (
+              {pastStep && !isStep ? (
                 <img src={tickIcon} alt={'tick_icon'} />
               ) : (
                 <Box>{index + 1}</Box>
@@ -66,9 +73,15 @@ export const CreateProject = () => {
       const projectData = rawData.filter((data: AdminObject) => {
         return data.name === projectName;
       });
-      console.log('projectData');
-      console.log(projectData);
       setExistingData(projectData || []);
+      if (projectData && projectData.length > 0) {
+        setCurrentStep(4);
+        setFinal(true);
+      }
+    }
+
+    if (!search) {
+      setExistingData([]);
     }
   }, [search, starterData]);
 
@@ -98,9 +111,10 @@ export const CreateProject = () => {
           setCurrentStep={setCurrentStep}
           library={library}
           existingData={existingData}
+          final={final}
           setFinal={setFinal}></AdminDetail>
       </Flex>
-      <CustomButton
+      {/* <CustomButton
         w={'180px'}
         h={'45px'}
         text={'Project Save'}
@@ -109,7 +123,12 @@ export const CreateProject = () => {
           fontFamily: theme.fonts.roboto,
           fontWeight: 600,
         }}
-        func={() => console.log('test')}></CustomButton>
+        func={
+          () => console.log('go')
+          // existingData.length === 0
+          //   ? bodyData && AdminActions.addStarter(bodyData)
+          //   : bodyData && AdminActions.editStarter(bodyData)
+        }></CustomButton> */}
     </Flex>
   );
 };

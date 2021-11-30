@@ -19,20 +19,22 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 import {CloseButton} from 'components/Modal';
 import {CustomInput} from 'components/Basic';
 import AdminActions from '../actions';
+import {TokenImage} from './TokenImage';
 
 const Container = (props: {
   title: string;
   value: any;
   setValue?: React.SetStateAction<any>;
+  w?: string;
 }) => {
   const {colorMode} = useColorMode();
-  const {title, value, setValue} = props;
+  const {title, value, setValue, w} = props;
 
   return (
     <Box d="flex" flexDir="column" mb={'24px'}>
       <Text mb={'9px'}>{title}</Text>
       <CustomInput
-        w={'290px'}
+        w={w || '290px'}
         h={'32px'}
         style={{fontSize: '12px', textAlign: 'left'}}
         value={value}
@@ -55,7 +57,7 @@ export const EditPoolModal = () => {
   const {data} = useAppSelector(selectModalType);
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const {account, library, chainId} = useActiveWeb3React();
+  const {chainId} = useActiveWeb3React();
   const {handleCloseModal} = useModal();
   const {btnStyle} = theme;
 
@@ -70,8 +72,23 @@ export const EditPoolModal = () => {
   const [fee, setFee] = useState<string>('');
 
   useEffect(() => {
-    if (data.data?.originalData?.address) {
-      setPoolAddress(data.data?.originalData?.address);
+    if (data.data?.originalData) {
+      const {
+        poolAddress,
+        poolName,
+        token0Address,
+        token1Address,
+        token0Image,
+        token1Image,
+        feeTier,
+      } = data.data?.originalData;
+      setPoolAddress(poolAddress || 'undefined');
+      setPoolName(poolName || 'undefined');
+      setToken0(token0Address || 'undefined');
+      setToken1(token1Address || 'undefined');
+      setToken0Image(token0Image || 'undefined');
+      setToken1Image(token1Image || 'undefined');
+      setFee(feeTier || '0');
     }
   }, [data]);
 
@@ -105,7 +122,7 @@ export const EditPoolModal = () => {
               Edit Pool
             </Heading>
             <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
-              You can manage tokens
+              You can manage a pool
             </Text>
           </Box>
 
@@ -124,17 +141,29 @@ export const EditPoolModal = () => {
             />
             <Container title={'Pool Address'} value={poolAddress} />
             <Container title={'Token 0'} value={token0} setValue={setToken0} />
-            <Container
-              title={'Token 0 Image'}
-              value={token0Image}
-              setValue={setToken0Image}
-            />
+            <Flex justifyContent="space-between">
+              <Container
+                w={'230px'}
+                title={'Token 0 Image'}
+                value={token0Image}
+                setValue={setToken0Image}
+              />
+              <Box mt={'10px'}>
+                <TokenImage imageLink={token0Image}></TokenImage>
+              </Box>
+            </Flex>
             <Container title={'Token 1'} value={token1} setValue={setToken1} />
-            <Container
-              title={'Token 0 Image'}
-              value={token1Image}
-              setValue={setToken1Image}
-            />
+            <Flex justifyContent="space-between">
+              <Container
+                w={'230px'}
+                title={'Token 1 Image'}
+                value={token1Image}
+                setValue={setToken1Image}
+              />
+              <Box mt={'10px'}>
+                <TokenImage imageLink={token1Image}></TokenImage>
+              </Box>
+            </Flex>
             <Container title={'Fee'} value={fee} setValue={setFee} />
           </Flex>
 
@@ -164,7 +193,7 @@ export const EditPoolModal = () => {
                   feeTier: Number(fee),
                 })
               }>
-              Edit
+              Save
             </Button>
             <Button
               {...btnStyle.btnAble()}
