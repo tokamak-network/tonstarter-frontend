@@ -33,8 +33,8 @@ export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
 /*
 ###################
-###PHASE 4 TEST####
-#######ADMIN#######
+#####PHASE 4#######
+######STARTER######
 ###################
 ################### 
 */
@@ -48,11 +48,6 @@ export const Router: FC<RouterProps> = () => {
 
   //@ts-ignore
   // const accountStorage = JSON.parse(window.localStorage.getItem('account'));
-
-  // if (accountStorage === null) {
-  //   // console.log('go');
-  //   window.localStorage.setItem('account', JSON.stringify({signIn: false}));
-  // }
 
   const fetchToInitialize = async () => {
     await dispatch(
