@@ -60,8 +60,8 @@ export const STOS = () => {
   return (
     <Flex
       w={420}
-      // h={'486px'}
-      h={'430px'}
+      h={'486px'}
+      // h={'430px'}
       p={0}
       pt="19.5px"
       px={'20px'}
