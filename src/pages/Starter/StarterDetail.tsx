@@ -31,6 +31,7 @@ import {LoadingComponent} from 'components/Loading';
 import {useTime} from 'hooks/useTime';
 import {TokenImage} from '../Admin/components/TokenImage';
 import {ApproveModal} from './components/ApproveModal';
+import moment from 'moment';
 
 export const StarterDetail = () => {
   const {id}: {id: string} = useParams();
@@ -50,13 +51,13 @@ export const StarterDetail = () => {
   const {STATER_STYLE} = theme;
   const {account, library} = useActiveWeb3React();
 
-  const {isPassed: isEndWhiteListTime} = useTime(
-    saleInfo?.endAddWhiteTime || 0,
-  );
-  const {isPassed: isEndExclusiveTime} = useTime(
-    saleInfo?.endExclusiveTime || 0,
-  );
-  const {isPassed: isEndDepositTIme} = useTime(saleInfo?.endDepositTime || 0);
+  // const {isPassed: isEndWhiteListTime} = useTime(
+  //   saleInfo?.endAddWhiteTime || 0,
+  // );
+  // const {isPassed: isEndExclusiveTime} = useTime(
+  //   saleInfo?.endExclusiveTime || 0,
+  // );
+  // const {isPassed: isEndDepositTIme} = useTime(saleInfo?.endDepositTime || 0);
 
   const PUBLICSALE_CONTRACT = useCallContract(
     saleInfo?.saleContractAddress || '',
@@ -189,26 +190,25 @@ export const StarterDetail = () => {
     }
   }, [account, library, PUBLICSALE_CONTRACT, saleInfo]);
 
-  useEffect(() => {
-    if (saleInfo) {
-      setActiveStatus(
-        !isEndWhiteListTime
-          ? 'whitelist'
-          : !isEndExclusiveTime
-          ? 'exclusive'
-          : !isEndDepositTIme
-          ? 'deposit'
-          : 'claim',
-      );
-    }
-  }, [
-    id,
-    library,
-    saleInfo,
-    isEndWhiteListTime,
-    isEndExclusiveTime,
-    isEndDepositTIme,
-  ]);
+  // useEffect(() => {
+  //   console.log(
+  //     saleInfo?.endAddWhiteTime,
+  //     saleInfo?.endExclusiveTime,
+  //     saleInfo?.endDepositTime,
+  //   );
+  //   console.log(isEndWhiteListTime, isEndExclusiveTime, isEndDepositTIme);
+  //   if (saleInfo) {
+  //     setActiveStatus(
+  //       !isEndWhiteListTime
+  //         ? 'whitelist'
+  //         : !isEndExclusiveTime
+  //         ? 'exclusive'
+  //         : !isEndDepositTIme
+  //         ? 'deposit'
+  //         : 'claim',
+  //     );
+  //   }
+  // }, [id, library, saleInfo]);
 
   useEffect(() => {
     const {rawData} = starterData;
@@ -219,6 +219,28 @@ export const StarterDetail = () => {
       return setSaleInfo(projectInfo[0]);
     }
   }, [starterData, id]);
+
+  useEffect(() => {
+    setInterval(() => {
+      // const {endAddWhiteTime, endExclusiveTime, endDepositTime} = saleInfo;
+      const nowTimeStamp = moment().unix();
+      const endAddWhiteTime = nowTimeStamp + 600;
+      const endExclusiveTime = nowTimeStamp + 800;
+      const endDepositTime = nowTimeStamp + 120;
+
+      const checkStep =
+        endAddWhiteTime > nowTimeStamp
+          ? 'whitelist'
+          : endExclusiveTime > nowTimeStamp
+          ? 'exclusive'
+          : endDepositTime > nowTimeStamp
+          ? 'deposit'
+          : 'claim';
+      setActiveStatus(checkStep);
+    }, 1000);
+
+    /*eslint-disable*/
+  }, []);
 
   if (!saleInfo) {
     return (
@@ -296,14 +318,14 @@ export const StarterDetail = () => {
           )} */}
           {activeStatus === 'claim' && <Claim saleInfo={saleInfo}></Claim>}
         </Flex>
-        <Flex>
+        {/* <Flex>
           {activeStatus && (
             <DetailTable
               saleInfo={saleInfo}
               status={activeStatus}
               detailInfo={detailInfo}></DetailTable>
           )}
-        </Flex>
+        </Flex> */}
       </Flex>
       <ApproveModal></ApproveModal>
     </Flex>

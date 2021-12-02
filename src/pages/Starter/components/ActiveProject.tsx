@@ -48,9 +48,7 @@ export const ActiveProject = (props: ActiveProjectProp) => {
           );
 
           return (
-            <Link
-              to={`${url}/active/${project.name}`}
-              id={`active_link_${index}`}>
+            <Link to={`${url}/${project.name}`} id={`active_link_${index}`}>
               <Box {...STATER_STYLE.containerStyle({colorMode})}>
                 <Flex justifyContent="space-between" mb={15}>
                   <Avatar
