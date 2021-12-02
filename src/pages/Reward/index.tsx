@@ -126,9 +126,9 @@ export const Reward = () => {
   useEffect(() => {
     async function fetchProjectsData() {
       const poolsData: any = await views.getPoolData(library);
-      const rewardData = await views.getRewardData();
-      // console.log('rewardData', rewardData);
-      
+      const rewardData = await views.getRewardData(); 
+     
+      setPoolsFromAPI(poolsData);     
       const poolArray: any = [];
       if (poolsData) {
         poolsData.map((pool: any) => {
@@ -140,7 +140,7 @@ export const Reward = () => {
         setDatas(rewardData)
       }
       setPoolAddresses(poolArray);
-      setPoolsFromAPI(poolsData);
+      
     }
     fetchProjectsData();
   }, [account, library, timeStamp]);
@@ -200,11 +200,11 @@ export const Reward = () => {
       if (pols !== undefined) {
         const poooools = 
           pols.map((data: any) => {
-            const poolFromApi = poolsFromAPI.find(
+            const APIPool = poolsFromAPI.find(
               (pol: any) => pol.poolAddress === data.id,
-            );
-            const token0Image = poolFromApi.token0Image
-            const token1Image = poolFromApi.token1Image
+            );            
+            const token0Image = APIPool.token0Image
+            const token1Image = APIPool.token1Image
             return {
               ...data,
               token0Image: token0Image,
