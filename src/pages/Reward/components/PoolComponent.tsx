@@ -113,7 +113,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
             h={'73px'}
             borderBottom={themeDesign.border[colorMode]}
             flexDirection={'row'}
-            justifyContent={'space-between'}
+            
             alignItems={'center'}
             px={'15px'}>
             <Box>
@@ -147,6 +147,8 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
             <Text
               color={colorMode === 'light' ? 'gray.250' : 'white.100'}
               fontWeight={700}
+              w={'85px'}
+              ml={'7px'}
               fontFamily={theme.fonts.fld}
               fontSize={'17px'}>
               {pool.token0.symbol}+{pool.token1.symbol}
