@@ -115,10 +115,10 @@ export const STOS = () => {
       <Box mb={'29px'} h={'38px'}>
         <MyStaked></MyStaked>
       </Box>
-      {/* <Box mb={'29px'} h={'38px'}> */}
-      <MySTOS></MySTOS>
-      {/* </Box> */}
-      {/* <Claim></Claim> */}
+      <Box mb={'29px'} h={'38px'}>
+        <MySTOS></MySTOS>
+      </Box>
+      <Claim></Claim>
     </Flex>
   );
 };
