@@ -19,7 +19,9 @@ type StakingModal =
 type StarterModal = 'Starter_Approve';
 type AdminModal = 'Admin_Distribute' | 'Admin_EditPool';
 
-export type ModalType = StakingModal | DaoModal | StarterModal | AdminModal;
+type GeneralModal = 'calendar';
+type RewardModal = 'search';
+export type ModalType = StakingModal | DaoModal | GeneralModal| RewardModal| StarterModal | AdminModal;
 
 export type Modal = {
   modal?: ModalType;

@@ -2108,6 +2108,7 @@ export type Query = {
 export type QueryFactoryArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2118,12 +2119,14 @@ export type QueryFactoriesArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<Factory_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type QueryBundleArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2134,12 +2137,14 @@ export type QueryBundlesArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<Bundle_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type QueryTokenArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2150,12 +2155,14 @@ export type QueryTokensArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<Token_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type QueryPoolArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2166,12 +2173,14 @@ export type QueryPoolsArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<Pool_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type QueryTickArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2182,12 +2191,14 @@ export type QueryTicksArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<Tick_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type QueryPositionArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2198,12 +2209,14 @@ export type QueryPositionsArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<Position_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type QueryPositionSnapshotArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2214,12 +2227,14 @@ export type QueryPositionSnapshotsArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<PositionSnapshot_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type QueryTransactionArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2230,12 +2245,14 @@ export type QueryTransactionsArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<Transaction_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type QueryMintArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2246,12 +2263,14 @@ export type QueryMintsArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<Mint_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type QueryBurnArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2262,12 +2281,14 @@ export type QueryBurnsArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<Burn_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type QuerySwapArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2278,12 +2299,14 @@ export type QuerySwapsArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<Swap_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type QueryCollectArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2294,12 +2317,14 @@ export type QueryCollectsArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<Collect_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type QueryFlashArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2310,12 +2335,14 @@ export type QueryFlashesArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<Flash_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type QueryUniswapDayDataArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2326,12 +2353,14 @@ export type QueryUniswapDayDatasArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<UniswapDayData_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type QueryPoolDayDataArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2342,12 +2371,14 @@ export type QueryPoolDayDatasArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<PoolDayData_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type QueryPoolHourDataArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2358,12 +2389,14 @@ export type QueryPoolHourDatasArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<PoolHourData_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type QueryTickHourDataArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2374,12 +2407,14 @@ export type QueryTickHourDatasArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<TickHourData_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type QueryTickDayDataArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2390,12 +2425,14 @@ export type QueryTickDayDatasArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<TickDayData_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type QueryTokenDayDataArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2406,12 +2443,14 @@ export type QueryTokenDayDatasArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<TokenDayData_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type QueryTokenHourDataArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2422,6 +2461,7 @@ export type QueryTokenHourDatasArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<TokenHourData_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2479,6 +2519,7 @@ export type Subscription = {
 export type SubscriptionFactoryArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2489,12 +2530,14 @@ export type SubscriptionFactoriesArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<Factory_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type SubscriptionBundleArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2505,12 +2548,14 @@ export type SubscriptionBundlesArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<Bundle_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type SubscriptionTokenArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2521,12 +2566,14 @@ export type SubscriptionTokensArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<Token_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type SubscriptionPoolArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2537,12 +2584,14 @@ export type SubscriptionPoolsArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<Pool_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type SubscriptionTickArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2553,12 +2602,14 @@ export type SubscriptionTicksArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<Tick_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type SubscriptionPositionArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2569,12 +2620,14 @@ export type SubscriptionPositionsArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<Position_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type SubscriptionPositionSnapshotArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2585,12 +2638,14 @@ export type SubscriptionPositionSnapshotsArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<PositionSnapshot_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type SubscriptionTransactionArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2601,12 +2656,14 @@ export type SubscriptionTransactionsArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<Transaction_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type SubscriptionMintArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2617,12 +2674,14 @@ export type SubscriptionMintsArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<Mint_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type SubscriptionBurnArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2633,12 +2692,14 @@ export type SubscriptionBurnsArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<Burn_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type SubscriptionSwapArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2649,12 +2710,14 @@ export type SubscriptionSwapsArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<Swap_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type SubscriptionCollectArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2665,12 +2728,14 @@ export type SubscriptionCollectsArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<Collect_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type SubscriptionFlashArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2681,12 +2746,14 @@ export type SubscriptionFlashesArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<Flash_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type SubscriptionUniswapDayDataArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2697,12 +2764,14 @@ export type SubscriptionUniswapDayDatasArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<UniswapDayData_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type SubscriptionPoolDayDataArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2713,12 +2782,14 @@ export type SubscriptionPoolDayDatasArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<PoolDayData_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type SubscriptionPoolHourDataArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2729,12 +2800,14 @@ export type SubscriptionPoolHourDatasArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<PoolHourData_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type SubscriptionTickHourDataArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2745,12 +2818,14 @@ export type SubscriptionTickHourDatasArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<TickHourData_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type SubscriptionTickDayDataArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2761,12 +2836,14 @@ export type SubscriptionTickDayDatasArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<TickDayData_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type SubscriptionTokenDayDataArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2777,12 +2854,14 @@ export type SubscriptionTokenDayDatasArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<TokenDayData_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
 export type SubscriptionTokenHourDataArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -2793,6 +2872,7 @@ export type SubscriptionTokenHourDatasArgs = {
   orderDirection?: Maybe<OrderDirection>;
   where?: Maybe<TokenHourData_Filter>;
   block?: Maybe<Block_Height>;
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
@@ -4205,7 +4285,6 @@ export type _Meta_ = {
    * will be null if the _meta field has a block constraint that asks for
    * a block number. It will be filled if the _meta field has no block constraint
    * and therefore asks for the latest  block
-   *
    */
   block: _Block_;
   /** The deployment ID */
@@ -4227,28 +4306,131 @@ export type AllV3TicksQueryVariables = Exact<{
 }>;
 
 
-export type AllV3TicksQuery = { __typename?: 'Query', ticks: Array<{ __typename?: 'Tick', tickIdx: any, liquidityNet: any, price0: any, price1: any }> };
+export type AllV3TicksQuery = (
+  { __typename?: 'Query' }
+  & { ticks: Array<(
+    { __typename?: 'Tick' }
+    & Pick<Tick, 'tickIdx' | 'liquidityNet' | 'price0' | 'price1'>
+  )> }
+);
 
 export type PoolByUserQueryVariables = Exact<{
   address: Scalars['ID'];
 }>;
 
 
-export type PoolByUserQuery = { __typename?: 'Query', pools: Array<{ __typename?: 'Pool', id: string, liquidity: any, tick?: Maybe<any>, token0: { __typename?: 'Token', id: string, symbol: string }, token1: { __typename?: 'Token', id: string, symbol: string }, poolDayData: Array<{ __typename?: 'PoolDayData', id: string, date: number, volumeUSD: any, feesUSD: any, tvlUSD: any }> }> };
+export type PoolByUserQuery = (
+  { __typename?: 'Query' }
+  & { pools: Array<(
+    { __typename?: 'Pool' }
+    & Pick<Pool, 'id' | 'feeTier' | 'liquidity' | 'tick'>
+    & { token0: (
+      { __typename?: 'Token' }
+      & Pick<Token, 'id' | 'symbol'>
+    ), token1: (
+      { __typename?: 'Token' }
+      & Pick<Token, 'id' | 'symbol'>
+    ), poolDayData: Array<(
+      { __typename?: 'PoolDayData' }
+      & Pick<PoolDayData, 'id' | 'date' | 'volumeUSD' | 'feesUSD' | 'tvlUSD'>
+    )> }
+  )> }
+);
+
+export type PoolByArrayQueryVariables = Exact<{
+  address?: Maybe<Array<Scalars['ID']> | Scalars['ID']>;
+}>;
+
+
+export type PoolByArrayQuery = (
+  { __typename?: 'Query' }
+  & { pools: Array<(
+    { __typename?: 'Pool' }
+    & Pick<Pool, 'id' | 'feeTier' | 'liquidity' | 'tick'>
+    & { token0: (
+      { __typename?: 'Token' }
+      & Pick<Token, 'id' | 'symbol'>
+    ), token1: (
+      { __typename?: 'Token' }
+      & Pick<Token, 'id' | 'symbol'>
+    ), poolDayData: Array<(
+      { __typename?: 'PoolDayData' }
+      & Pick<PoolDayData, 'id' | 'date' | 'volumeUSD' | 'feesUSD' | 'tvlUSD'>
+    )> }
+  )> }
+);
 
 export type PositionByUserQueryVariables = Exact<{
   address: Scalars['Bytes'];
 }>;
 
 
-export type PositionByUserQuery = { __typename?: 'Query', positions: Array<{ __typename?: 'Position', id: string, owner: any, pool: { __typename?: 'Pool', id: string, token0: { __typename?: 'Token', id: string, symbol: string }, token1: { __typename?: 'Token', id: string, symbol: string } } }> };
+export type PositionByUserQuery = (
+  { __typename?: 'Query' }
+  & { positions: Array<(
+    { __typename?: 'Position' }
+    & Pick<Position, 'id' | 'owner'>
+    & { pool: (
+      { __typename?: 'Pool' }
+      & Pick<Pool, 'id' | 'feeTier'>
+      & { token0: (
+        { __typename?: 'Token' }
+        & Pick<Token, 'id' | 'symbol'>
+      ), token1: (
+        { __typename?: 'Token' }
+        & Pick<Token, 'id' | 'symbol'>
+      ) }
+    ) }
+  )> }
+);
 
 export type PositionByContractQueryVariables = Exact<{
   id?: Maybe<Array<Scalars['ID']> | Scalars['ID']>;
 }>;
 
 
-export type PositionByContractQuery = { __typename?: 'Query', positions: Array<{ __typename?: 'Position', id: string, owner: any, pool: { __typename?: 'Pool', id: string, token0: { __typename?: 'Token', id: string, symbol: string }, token1: { __typename?: 'Token', id: string, symbol: string } } }> };
+export type PositionByContractQuery = (
+  { __typename?: 'Query' }
+  & { positions: Array<(
+    { __typename?: 'Position' }
+    & Pick<Position, 'id' | 'owner'>
+    & { pool: (
+      { __typename?: 'Pool' }
+      & Pick<Pool, 'id' | 'feeTier'>
+      & { token0: (
+        { __typename?: 'Token' }
+        & Pick<Token, 'id' | 'symbol'>
+      ), token1: (
+        { __typename?: 'Token' }
+        & Pick<Token, 'id' | 'symbol'>
+      ) }
+    ) }
+  )> }
+);
+
+export type PositionByPoolQueryVariables = Exact<{
+  pool_id?: Maybe<Array<Scalars['String']> | Scalars['String']>;
+}>;
+
+
+export type PositionByPoolQuery = (
+  { __typename?: 'Query' }
+  & { positions: Array<(
+    { __typename?: 'Position' }
+    & Pick<Position, 'id' | 'owner'>
+    & { pool: (
+      { __typename?: 'Pool' }
+      & Pick<Pool, 'id' | 'feeTier'>
+      & { token0: (
+        { __typename?: 'Token' }
+        & Pick<Token, 'id' | 'symbol'>
+      ), token1: (
+        { __typename?: 'Token' }
+        & Pick<Token, 'id' | 'symbol'>
+      ) }
+    ) }
+  )> }
+);
 
 export type FeeTierDistributionQueryVariables = Exact<{
   token0: Scalars['String'];
@@ -4256,7 +4438,22 @@ export type FeeTierDistributionQueryVariables = Exact<{
 }>;
 
 
-export type FeeTierDistributionQuery = { __typename?: 'Query', _meta?: Maybe<{ __typename?: '_Meta_', block: { __typename?: '_Block_', number: number } }>, asToken0: Array<{ __typename?: 'Pool', feeTier: any, totalValueLockedToken0: any, totalValueLockedToken1: any }>, asToken1: Array<{ __typename?: 'Pool', feeTier: any, totalValueLockedToken0: any, totalValueLockedToken1: any }> };
+export type FeeTierDistributionQuery = (
+  { __typename?: 'Query' }
+  & { _meta?: Maybe<(
+    { __typename?: '_Meta_' }
+    & { block: (
+      { __typename?: '_Block_' }
+      & Pick<_Block_, 'number'>
+    ) }
+  )>, asToken0: Array<(
+    { __typename?: 'Pool' }
+    & Pick<Pool, 'feeTier' | 'totalValueLockedToken0' | 'totalValueLockedToken1'>
+  )>, asToken1: Array<(
+    { __typename?: 'Pool' }
+    & Pick<Pool, 'feeTier' | 'totalValueLockedToken0' | 'totalValueLockedToken1'>
+  )> }
+);
 
 
 export const AllV3TicksDocument = `
@@ -4276,8 +4473,34 @@ export const AllV3TicksDocument = `
     `;
 export const PoolByUserDocument = `
     query poolByUser($address: ID!) {
-  pools(where: {id: $address}) {
+  pools(where: {id: $address}, first: 1000) {
     id
+    feeTier
+    token0 {
+      id
+      symbol
+    }
+    token1 {
+      id
+      symbol
+    }
+    poolDayData {
+      id
+      date
+      volumeUSD
+      feesUSD
+      tvlUSD
+    }
+    liquidity
+    tick
+  }
+}
+    `;
+export const PoolByArrayDocument = `
+    query poolByArray($address: [ID!]) {
+  pools(where: {id_in: $address}, first: 1000) {
+    id
+    feeTier
     token0 {
       id
       symbol
@@ -4300,10 +4523,11 @@ export const PoolByUserDocument = `
     `;
 export const PositionByUserDocument = `
     query positionByUser($address: Bytes!) {
-  positions(where: {owner: $address}) {
+  positions(where: {owner: $address}, first: 1000) {
     id
     pool {
       id
+      feeTier
       token0 {
         id
         symbol
@@ -4319,10 +4543,31 @@ export const PositionByUserDocument = `
     `;
 export const PositionByContractDocument = `
     query positionByContract($id: [ID!]) {
-  positions(where: {id_in: $id}) {
+  positions(where: {id_in: $id}, first: 1000) {
     id
     pool {
       id
+      feeTier
+      token0 {
+        id
+        symbol
+      }
+      token1 {
+        id
+        symbol
+      }
+    }
+    owner
+  }
+}
+    `;
+export const PositionByPoolDocument = `
+    query positionByPool($pool_id: [String!]) {
+  positions(where: {pool_in: $pool_id}, first: 1000) {
+    id
+    pool {
+      id
+      feeTier
       token0 {
         id
         symbol
@@ -4372,11 +4617,17 @@ const injectedRtkApi = api.injectEndpoints({
     poolByUser: build.query<PoolByUserQuery, PoolByUserQueryVariables>({
       query: (variables) => ({ document: PoolByUserDocument, variables })
     }),
+    poolByArray: build.query<PoolByArrayQuery, PoolByArrayQueryVariables | void>({
+      query: (variables) => ({ document: PoolByArrayDocument, variables })
+    }),
     positionByUser: build.query<PositionByUserQuery, PositionByUserQueryVariables>({
       query: (variables) => ({ document: PositionByUserDocument, variables })
     }),
     positionByContract: build.query<PositionByContractQuery, PositionByContractQueryVariables | void>({
       query: (variables) => ({ document: PositionByContractDocument, variables })
+    }),
+    positionByPool: build.query<PositionByPoolQuery, PositionByPoolQueryVariables | void>({
+      query: (variables) => ({ document: PositionByPoolDocument, variables })
     }),
     feeTierDistribution: build.query<FeeTierDistributionQuery, FeeTierDistributionQueryVariables>({
       query: (variables) => ({ document: FeeTierDistributionDocument, variables })
@@ -4385,5 +4636,5 @@ const injectedRtkApi = api.injectEndpoints({
 });
 
 export { injectedRtkApi as api };
-export const { useAllV3TicksQuery, useLazyAllV3TicksQuery, usePoolByUserQuery, useLazyPoolByUserQuery, usePositionByUserQuery, useLazyPositionByUserQuery, usePositionByContractQuery, useLazyPositionByContractQuery, useFeeTierDistributionQuery, useLazyFeeTierDistributionQuery } = injectedRtkApi;
+export const { useAllV3TicksQuery, useLazyAllV3TicksQuery, usePoolByUserQuery, useLazyPoolByUserQuery, usePoolByArrayQuery, useLazyPoolByArrayQuery, usePositionByUserQuery, useLazyPositionByUserQuery, usePositionByContractQuery, useLazyPositionByContractQuery, usePositionByPoolQuery, useLazyPositionByPoolQuery, useFeeTierDistributionQuery, useLazyFeeTierDistributionQuery } = injectedRtkApi;
 

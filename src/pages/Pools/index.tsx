@@ -23,6 +23,7 @@ import {InfraError} from './components/InfraError';
 const {
   // TOS_ADDRESS,
   BasePool_Address,
+  UniswapStaking_Address
 } = DEPLOYED;
 
 export const Pools = () => {
@@ -72,6 +73,12 @@ export const Pools = () => {
       pollingInterval: ms`2m`,
     },
   );
+  // const { isLoading, isError, error, isUninitialized, data} = usePoolByUserQuery(
+  //   {address: UniswapStaking_Address?.toLowerCase()},
+  //   {
+  //     pollingInterval: ms`2m`,
+  //   },
+  // );
 
   // const tosPool = useQuery(GET_TOS_POOL, {
   //   variables: {address: [TOS_ADDRESS.toLowerCase()]}

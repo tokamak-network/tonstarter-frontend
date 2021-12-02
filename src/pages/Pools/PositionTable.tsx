@@ -164,7 +164,7 @@ export const PositionTable: FC<PositionTableProps> = ({
     data: {contractAddress, index},
   } = useAppSelector(selectTableType);
 
-  useEffect(() => {
+  useEffect(() => {    
     if (index) {
       let loop = Math.floor(index / 10);
       while (loop) {
@@ -266,6 +266,7 @@ export const PositionTable: FC<PositionTableProps> = ({
             </chakra.tr>
             {page.map((row: any, index: number) => {
               const {id, pool, owner} = row.original;
+              
               const poolName = getPoolName(
                 pool.token0.symbol,
                 pool.token1.symbol,

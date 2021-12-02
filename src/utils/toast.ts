@@ -3,6 +3,7 @@ import {openToast} from 'store/app/toast.reducer';
 import {setTransaction} from 'store/refetch.reducer';
 import store from '../store';
 import {fetchUserInfo} from '../store/app/user.reducer';
+import moment from 'moment';
 
 type SendToast = {
   type: 'success' | 'error';
@@ -47,13 +48,14 @@ export const toastWithReceipt = async (
   from?: string,
   actionType?: string,
 ) => {
+  const nowTimeStamp = moment().unix();
   try {
     store.dispatch(
       //@ts-ignore
       openToast({
         payload: {
           title: 'Success',
-          description: `Tx is being successfully pending!`,
+          description: `Tx is successfully pending!`,
           status: 'success',
           duration: 5000,
           isClosable: true,
@@ -94,6 +96,17 @@ export const toastWithReceipt = async (
               setTransaction({
                 transactionType: 'Pool',
                 blockNumber: receipt.blockNumber,
+              }),
+            );
+          }
+          if (from === 'Reward') {
+            return store.dispatch(
+              setTransaction({
+                transactionType: 'Reward',
+                blockNumber: receipt.blockNumber,
+                data: {
+                  timeStamp: nowTimeStamp,
+                },
               }),
             );
           }

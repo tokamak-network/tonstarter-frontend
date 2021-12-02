@@ -16,13 +16,19 @@ export const api = generatedApi.enhanceEndpoints({
     poolByUser: {
       providesTags: [CHAIN_TAG],
     },
+    poolByArray: {
+      providesTags: [CHAIN_TAG],
+    },
     positionByUser: {
       providesTags: [CHAIN_TAG],
     },
     positionByContract: {
       providesTags: [CHAIN_TAG],
     },
+    positionByPool: {
+      providesTags: [CHAIN_TAG],
+    },
   },
 })
 
-export const { useAllV3TicksQuery, usePoolByUserQuery, usePositionByUserQuery, usePositionByContractQuery, useFeeTierDistributionQuery } = api
+export const { useAllV3TicksQuery, usePoolByUserQuery, usePoolByArrayQuery, usePositionByUserQuery, usePositionByContractQuery, usePositionByPoolQuery, useFeeTierDistributionQuery } = api

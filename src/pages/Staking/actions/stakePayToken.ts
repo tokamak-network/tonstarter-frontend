@@ -156,7 +156,7 @@ const stakeEth = async (args: StakeTon) => {
     try {
       const receipt = await signer.sendTransaction(transactionRequest);
       store.dispatch(setTxPending({tx: true}));
-      alert(`Tx is being successfully pending!`);
+      alert(`Tx is successfully pending!`);
       if (receipt) {
         store.dispatch(setTxPending({tx: false}));
       }

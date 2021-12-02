@@ -11,6 +11,7 @@ import {
   // Tooltip,
 } from '@chakra-ui/react';
 import React from 'react';
+import {useEffect} from 'react';
 import {shortenAddress} from 'utils';
 import {ThemeSwitcher} from './ThemeSwitcher';
 import {NavLink, useRouteMatch} from 'react-router-dom';
@@ -21,7 +22,6 @@ import {selectTxType} from 'store/tx.reducer';
 import {useDispatch} from 'react-redux';
 import {openModal} from 'store/modal.reducer';
 import {Menu, MenuButton, MenuList, MenuItem} from '@chakra-ui/react';
-
 type HeaderProps = {
   walletopen: () => void;
   account: string | undefined | null;
@@ -37,6 +37,7 @@ export const Header: React.FC<HeaderProps> = (props) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const {colorMode} = useColorMode();
   const toggle = () => setIsOpen(!isOpen);
+
   const match = useRouteMatch('/');
 
   return (
@@ -226,6 +227,11 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
     colorMode === 'light'
       ? {navLink: {background: '#ffffff', color: '#1c1c1c'}}
       : {navLink: {background: 'transparent', color: '#f3f4f1'}};
+  const [poolsOpen, setPoolsOpen] = React.useState(false);
+  const theme = useTheme();
+  const pools = useRouteMatch('/pools/pools');
+  const reward = useRouteMatch('/pools/rewardProgram');
+
 
   return (
     <Box
@@ -244,34 +250,85 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           style={{zIndex: 100}}>
           Staking
         </NavLink>
-        {/* <Tooltip
-          hasArrow
-          placement="top"
-          label="Maintainance in progress"
-          color={theme.colors.white[100]}
-          bg={theme.colors.gray[375]}> */}
-        <NavLink
-          to="/pools"
-          className={match?.isExact ? 'link-match' : 'link'}
-          style={{zIndex: 100}}
-          // onClick={(e: any) => e.preventDefault()}
-        >
-          Pools
-        </NavLink>
-        {/* </Tooltip> */}
+        <Menu>
+          <MenuButton>
+            <Text
+             fontSize={17}
+             fontWeight= {'bold'}
+              color={
+                pools?.isExact || reward?.isExact
+                  ? colorMode === 'light'
+                    ? 'blue.100'
+                    : 'yellow.100'
+                  :match?.isExact ? colorMode === 'light'
+                  ? 'gray.0'
+                  : 'white.100'
+                  : colorMode ==='light'? 'gray.275' : 'white.100'
+              }>
+              Pools
+            </Text>
+          </MenuButton>
+          <MenuList
+            pos={'absolute'}
+            left={'-33px'}
+            top={'15px'}
+            minW={'182px'}
+            w={'182px'}
+            h={'74px'}
+            p={0}
+            fontSize={13}
+            background={colorMode === 'light' ? '#ffffff' : '#222222'}>
+            <NavLink
+              to="/pools/pools"
+              activeStyle={{
+                background: 'transparent',
+                color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',
+              }}
+              color={colorMode === 'light' ? '#1c1c1c' : '#f3f4f1'}
+              style={{color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1'}}>
+              <MenuItem
+                _hover={{color: 'blue.100', bg: 'none'}}
+                w={'100%'}
+                h={'37px'}
+                _focus={{background: 'transparent'}}>
+                Pools
+              </MenuItem>
+            </NavLink>
+            <NavLink
+              to="/pools/rewardProgram"
+              activeStyle={{
+                background: 'transparent',
+                color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',
+              }}
+              style={{color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1'}}>
+              <MenuItem
+                _hover={{color: 'blue.100', bg: 'none'}}
+                w={'100%'}
+                h={'37px'}>
+                Reward Program
+              </MenuItem>
+            </NavLink>
+          </MenuList>
+        </Menu>
         <NavLink
           to="/dao"
           className={match?.isExact ? 'link-match' : 'link'}
           style={{zIndex: 100}}>
           DAO
         </NavLink>
-        <NavLink
+        {/* <NavLink
           to="/starter"
           className={match?.isExact ? 'link-match' : 'link'}
           style={{zIndex: 100}}>
           Starter
-        </NavLink>
-
+        </NavLink> */}
+        {/* <Tooltip
+          hasArrow
+          placement="top"
+          label="Coming Soon"
+          color={theme.colors.white[100]}
+          bg={theme.colors.gray[375]}> */}
+        {/* </Tooltip> */}
         <NavLink
           to="/"
           className={match?.isExact ? 'link-match' : 'link'}
