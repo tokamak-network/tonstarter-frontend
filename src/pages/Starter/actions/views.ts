@@ -232,7 +232,7 @@ export async function getRefundAmount(args: CallContractWithAddress) {
   const userAmount = await PUBLICSALE_CONTRACT.usersOpen(docAmount);
   const userDepositAmount = userAmount.depositAmount;
 
-  console.log(docAmount, needTonAmount, userAmount);
+  // console.log(docAmount, needTonAmount, userAmount);
 
   // if (BigNumber.from(userDepositAmount).gt(needTonAmount)) {
   //   const num = BigNumber.from(userDepositAmount).sub(needTonAmount);

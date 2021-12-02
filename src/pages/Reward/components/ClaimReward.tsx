@@ -390,7 +390,7 @@ const getTokenList = async() => {
                </Flex>
              );
            })}
-         </Grid>) : (<Text Text fontSize={'13px'}>You don't have withdrawable LP tokens</Text>)}
+         </Grid>) : (<Text fontSize={'13px'}>You don't have withdrawable LP tokens</Text>)}
           
         </Flex>
         <Flex
