@@ -11,6 +11,8 @@ import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import * as TOSABI from 'services/abis/TOS.json';
 import { createReward, getRandomKey } from '../components/api';
 import {utils, ethers} from 'ethers';
+import moment from 'moment';
+
 type Create = {
   library: any;
   amount: number;
@@ -98,7 +100,9 @@ export const create = async (args: Create) => {
     await receipt.wait();
     
     if (receipt) {
-      toastWithReceipt(receipt, setTxPending, 'Reward');
+      const nowTimeStamp = moment().unix();
+
+      toastWithReceipt(receipt, setTxPending,'Reward', 'Reward', nowTimeStamp);
       const sig = await generateSig(userAddress.toLowerCase(), key);
       const arg: CreateReward = {
         poolName: name,

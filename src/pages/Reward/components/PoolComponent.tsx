@@ -160,7 +160,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
                 color={colorMode === 'light' ? 'gray.400' : 'gray.150'}>
                 Liquidity
               </Text>
-              <Text fontSize={'18px'}>
+              {pool.poolDayData[length].tvlUSD === '0'? (<Text fontSize={'11px'}>No current liquidity data</Text>) : (<Text fontSize={'18px'}>
                 {' '}
                 ${' '}
                 {Number(pool.poolDayData[length].tvlUSD).toLocaleString(
@@ -169,7 +169,9 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
                     minimumFractionDigits: 2,
                   },
                 )}
-              </Text>
+              </Text>)}
+
+              
               <Text
                 fontSize="10px"
                 color={colorMode === 'light' ? 'gray.400' : 'gray.150'}>

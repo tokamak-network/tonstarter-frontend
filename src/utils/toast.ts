@@ -47,8 +47,9 @@ export const toastWithReceipt = async (
   setTxPending: any,
   from?: string,
   actionType?: string,
+  nowTimeStamp?: any
 ) => {
-  const nowTimeStamp = moment().unix();
+  // const nowTimeStamp = moment().unix();
   try {
     store.dispatch(
       //@ts-ignore

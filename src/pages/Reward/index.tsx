@@ -143,7 +143,7 @@ export const Reward = () => {
       
     }
     fetchProjectsData();
-  }, [account, library, timeStamp]);
+  }, [account, library, timeStamp, selected]);
 
   const poolArr = usePoolByArrayQuery(
     {address: poolAddresses},
