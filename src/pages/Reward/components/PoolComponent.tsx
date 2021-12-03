@@ -151,7 +151,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
               ml={'7px'}
               fontFamily={theme.fonts.fld}
               fontSize={'17px'}>
-              {pool.token0.symbol}+{pool.token1.symbol}
+              {pool.token0.symbol}/{pool.token1.symbol}
             </Text>
             <Box fontFamily={theme.fonts.fld} fontWeight={700}>
               <Text

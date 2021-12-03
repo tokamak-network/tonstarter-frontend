@@ -366,9 +366,9 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
             pos={'absolute'}
             left={'-33px'}
             top={'15px'}
-            minW={'115px'}
-            w={'115px'}
-            h={'148px'}
+            minW={'125px'}
+            w={'125px'}
+            h={'200px'}
             p={0}
             fontSize={13}
             background={colorMode === 'light' ? '#ffffff' : 'transparent'}>
@@ -462,6 +462,29 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                   bg: colorMode === 'light' ? '#ffffff' : 'transparent',
                 }}>
                 Starter
+              </MenuItem>
+            </NavLink>
+            <NavLink
+              to="/"
+              activeStyle={{
+                background: colorMode === 'light' ? '#ffffff' : '',
+                color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',
+              }}
+              style={menuStyle.navLink}
+              onClick={(e) => {
+                e.preventDefault();
+                window.open(
+                  'https://medium.com/onther-tech/tonstarter-pools-reward-program-guide-en-kr-bef9ae274afd',
+                );
+              }}>
+              <MenuItem
+                _hover={{color: 'blue.100', bg: 'none'}}
+                w={'100%'}
+                h={'37px'}
+                _focus={{
+                  bg: colorMode === 'light' ? '#ffffff' : 'transparent',
+                }}>
+                RewardProgram
               </MenuItem>
             </NavLink>
           </MenuList>

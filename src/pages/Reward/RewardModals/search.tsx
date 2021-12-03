@@ -88,7 +88,10 @@ export const SearchModal = () => {
       if (account === null || account === undefined || library === undefined) {
         return;
       }
-      if (address === ZERO_ADDRESS) {}
+      if (address === ZERO_ADDRESS) {
+        setDecimal(18);
+        setSymbol('ETH');
+      }
       else {
         const signer = getSigner(library, account);
         try {
