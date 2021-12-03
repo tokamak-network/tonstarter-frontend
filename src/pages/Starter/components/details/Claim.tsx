@@ -33,6 +33,7 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
   const [endPeriod, setEndPeriod] = useState<string>('-');
   const [withdrawAmount, setWithdrawAmount] = useState<string>('0');
   const [d_Day, setD_Day] = useState<number>(0);
+  const [notRemained, setNotRemained] = useState<boolean>(true);
 
   const {blockNumber} = useBlockNumber();
 
@@ -112,6 +113,11 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
           0,
         );
 
+        const userClaim = await PUBLICSALE_CONTRACT.usersClaim(account);
+        const refundedAmount = BigNumber.from(userOpenSaleUserAmount[2]).eq(
+          userClaim.refundAmount,
+        );
+
         const ramainedAmount = BigNumber.from(totalClaim[1]).sub(
           usersClaim?.claimAmount,
         );
@@ -133,6 +139,7 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
           localeString: true,
         });
 
+        setNotRemained(refundedAmount);
         setExclusiveSale(convertedExSaleAmount || '0');
         setRemainedAmount(convertedRamainedAmount || '0');
         setOpenSale(convertedUsersOpen || '0');
@@ -253,7 +260,7 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
               address: saleInfo.saleContractAddress,
             })
           }></CustomButton>
-        {withdrawAmount === '0' || withdrawAmount === '0.00' ? null : (
+        {notRemained ? null : (
           <Flex
             flexDir="column"
             ml={'15px'}
