@@ -32,6 +32,7 @@ const {UniswapStaking_Address, UniswapStaker_Address, TOS_ADDRESS} = DEPLOYED;
 type ClaimRewardProps = {
   rewards: any[];
   tokens: any[];
+  
 };
 const themeDesign = {
   border: {
@@ -77,27 +78,29 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
     
 const getTokenList = async() => {
   const rewardTokens = [
-    ...Array.from(new Set(rewards.map((reward) => reward.rewardToken))),
+    ...Array.from(new Set(rewards.map((reward) => ethers.utils.getAddress(reward.rewardToken) ))),
   ];
-
-  let tokensArray: any = [];
-  await Promise.all(
-    rewardTokens.map(async (token) => {
-      const symbol = await getTokenFromContract(token);
-      tokensArray.push({
-        symbol,
-        token,
-      });
-    }),
-  );
-
-  setTokenList(tokensArray);
-  setSelectedToken(tokensArray[0].token);
-  setSymbol(tokensArray[0].symbol)
-  getClaimable(tokensArray[0].token);
+  if (rewardTokens.length !==0) {
+    let tokensArray: any = [];
+    await Promise.all(
+      rewardTokens.map(async (token) => {
+        const symbol = await getTokenFromContract(token);
+        tokensArray.push({
+          symbol,
+          token,
+        });
+      }),
+    );
+  
+    setTokenList(tokensArray);
+    setSelectedToken(tokensArray[0]?.token);
+    setSymbol(tokensArray[0]?.symbol)
+    getClaimable(tokensArray[0]?.token);
+  }
+ 
 }  
     getTokenList()
-  }, [rewards, account, library, selectedToken, transactionType, blockNumber]);
+  }, [rewards, account, library, transactionType, blockNumber]);
 
   const getClaimable = async (address: string) => {
     if (
@@ -122,7 +125,7 @@ const getTokenList = async() => {
   };
 
   const getTokenFromContract = async (address: string) => {
-    const symbolContract = await getTokenSymbol(address, library, account);
+    const symbolContract = await getTokenSymbol(address, library);
     return symbolContract;
   };
 
@@ -135,10 +138,11 @@ const getTokenList = async() => {
   // }, [selectedToken]);
 
   const changeToken = (token: string) => {
-    const selected = tokenList.filter ((tok: any) => (tok.token === token))
-   setSymbol(selected[0].symbol)
-   getClaimable(selected[0].token)
-
+    const selected = tokenList.find ((tok: any) => (ethers.utils.getAddress(tok.token) === ethers.utils.getAddress(token)))
+    
+   setSymbol(selected.symbol)
+   getClaimable(selected.token)
+   setSelectedToken(selected.token)
   }
 
   useEffect(() => {
@@ -242,7 +246,7 @@ const getTokenList = async() => {
             </Text>
           </Flex>
         </Flex>
-        <Flex alignItems={'center'} h={'45px'}>
+        {/* <Flex alignItems={'center'} h={'45px'}>
           <Text
             color={colorMode === 'light' ? '#808992' : '#949494'}
             fontWeight={'bold'}
@@ -296,7 +300,7 @@ const getTokenList = async() => {
               {symbol}
             </Text>
           </Flex>
-        </Flex>
+        </Flex> */}
         <Flex
           width={'100%'}
           justifyContent={'center'}
@@ -308,16 +312,30 @@ const getTokenList = async() => {
             fontSize="14px"
             _hover={{backgroundColor: 'blue.100'}}
             mb={'40px'}
+            _disabled={
+              colorMode === 'light'
+                ? {
+                    backgroundColor: 'gray.25',
+                    cursor: 'default',
+                    color: '#86929d',
+                  }
+                : {
+                    backgroundColor: '#353535',
+                    cursor: 'default',
+                    color: '#838383',
+                  }
+            }
+            disabled={claimableAmount ===0}
             mt={'20px'}
             onClick={() => {
-              if (Number(requestAmount) === 0) {
-                return alert(`Request amount cannot be 0`);
-              }
+              // if (Number(requestAmount) === 0) {
+              //   return alert(`Request amount cannot be 0`);
+              // }
 
               claim({
                 library: library,
                 userAddress: account,
-                amount: requestAmount,
+                amount: claimableAmount.toString(),
                 rewardToken: selectedToken,
               });
             }}>

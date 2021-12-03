@@ -51,11 +51,11 @@ const themeDesign = {
 
 type ClockProps = {
   setTime: Dispatch<SetStateAction<any>>;
-
+  error: boolean
 };
 
 export const CustomClock = (props: ClockProps) => {
-  const {setTime} = props;
+  const {setTime, error} = props;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const [hours, setHours] = useState<number>(0);
@@ -66,26 +66,27 @@ export const CustomClock = (props: ClockProps) => {
 
   const setUp = (onClose: any) => {
     let hour;
-    if (meridiem ==='PM') {
+    if (meridiem === 'AM' && hours === 12) {
+      setTime([0, minutes, seconds]);
+    } else if (meridiem === 'PM' && hours === 12) {
+      setTime([hours, minutes, seconds]);
+    } else if (meridiem === 'PM' && hours !== 12) {
       hour = hours + 12;
-      setTime([hour, minutes, seconds])
-      onClose();
+      setTime([hour, minutes, seconds]);
+    } else {
+      setTime([hours, minutes, seconds]);
     }
-   else {
-    setTime([hours, minutes, seconds])
     onClose();
-   }
   };
-
 
   return (
     <Popover closeOnBlur={true} placement="bottom">
       {({isOpen, onClose}) => (
         <>
           <PopoverTrigger>
-            <Flex>
+            <Flex ml={'6px'} border={error? '1px solid #f5424b': ''} p='2px' borderRadius='4px'>
               <Text
-                ml={'10px'}
+                
                 fontSize={'10px'}
                 color={colorMode === 'light' ? '#808992' : '#949494'}>
                 Time setting
@@ -125,10 +126,10 @@ export const CustomClock = (props: ClockProps) => {
                 maxH={'37px'}
                 fontFamily={theme.fonts.roboto}
                 maxW={'48px'}
-                defaultValue={0}
+                defaultValue={1}
                 colorScheme={'gray'}
                 max={12}
-                min={0}
+                min={1}
                 mr={'10px'}
                 onChange={(value) => {
                   setHours(parseInt(value));

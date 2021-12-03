@@ -62,7 +62,7 @@ export const SearchModal = () => {
   }, [address, symbol, decimal, balance]);
 
   useEffect(() => {
-    const tokenList = [TON_ADDRESS, TOS_ADDRESS, WTON_ADDRESS.toLowerCase(), DOC_ADDRESS];
+    const tokenList = [TON_ADDRESS, TOS_ADDRESS, WTON_ADDRESS, DOC_ADDRESS];
     setTokenLists(tokenList);
   }, [data]);
 
@@ -152,15 +152,15 @@ export const SearchModal = () => {
               colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
             }
             mb={'25px'}>
-            <Box pt={'15px'} mb="30px">
-              <CustomTabs
+            <Box mb="30px">
+              {/* <CustomTabs
                 w={'136px'}
                 h={'26px'}
                 list={tabList}
-                setValue={setTab}></CustomTabs>
+                setValue={setTab}></CustomTabs> */}
             </Box>
             <Box h="344px" m={'0 !important'}>
-              {tab === 'Search' ? (
+              {/* {tab === 'Search' ? ( */}
                 <Flex
                 
                   font={themeDesign.font[colorMode]}
@@ -169,14 +169,14 @@ export const SearchModal = () => {
                   flexDirection={'column'}>
                   <Text
                     color={colorMode === 'light' ? '#304156' : '#9d9ea5'}
-                    fontSize={'13px'}
-                    fontWeight="500"
+                    fontSize={'15px'}
+                    fontWeight="600"
                     mb="10px">
-                    Select Token
+                    Select a reward token
                   </Text>
                   <Flex flexDirection={'column'} >
                     {tokenLists.map((token: any, index: number) => {
-                      const detailedToken = checkTokenType(token);
+                      const detailedToken = checkTokenType(ethers.utils.getAddress(token), colorMode);
                       return (
                         <Flex
                         p={'5px'}
@@ -191,13 +191,12 @@ export const SearchModal = () => {
                           borderBottom={themeDesign.border[colorMode]}>
                           <Avatar
                             src={detailedToken.symbol}
-                            backgroundColor={detailedToken.bg}
-                            bg="transparent"
+                            bg={colorMode === 'light' ? '#ffffff' : '#222222'}
                             color="#c7d1d8"
                             name="T"
-                            border={detailedToken.border}
-                            h="26px"
-                            p={'2px'}
+                            border={
+                              colorMode === 'light' ? '1px solid #e7edf3' : '1px solid #3c3c3c'
+                            }                            h="26px"
                             w="26px"
                             zIndex={'100'}
                           />
@@ -215,7 +214,7 @@ export const SearchModal = () => {
                     })}
                   </Flex>
                 </Flex>
-              ) : (
+              {/* ) : (
                 <Flex
                   font={themeDesign.font[colorMode]}
                   fontSize={'13px'}
@@ -296,7 +295,7 @@ export const SearchModal = () => {
                     </NumberInput>
                   </Box>
                 </Flex>
-              )}
+              )} */}
             </Box>
           </Stack>
 

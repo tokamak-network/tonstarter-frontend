@@ -27,30 +27,9 @@ import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import {utils, ethers} from 'ethers';
 import {soliditySha3} from 'web3-utils';
 import * as TOSABI from 'services/abis/TOS.json';
-import {getTokenSymbol} from '../utils/getTokenSymbol' 
+import {getTokenSymbol} from '../utils/getTokenSymbol';
+import {UpdatedRedward} from '../types'
 
-type incentiveKey = {
-  rewardToken: string;
-  pool: string;
-  startTime: Number;
-  endTime: Number;
-  refundee: string;
-};
-
-type Reward = {
-  chainId: number;
-  poolName: string;
-  token0Address: string;
-  token1Address: string;
-  poolAddress: string;
-  rewardToken: string;
-  incentiveKey: incentiveKey;
-  startTime: Number;
-  endTime: Number;
-  allocatedReward: string;
-  numStakers: Number;
-  status: string;
-};
 const themeDesign = {
   border: {
     light: 'solid 1px #dfe4ee',
@@ -66,11 +45,13 @@ const themeDesign = {
   },
 };
 type RewardProgramCardProps = {
-  reward: Reward;
+  reward: UpdatedRedward;
   selectedToken: number;
-  selectedPool: string,
-  sendKey: (key: any)=> void
+  selectedPool: string;
+  sendKey: (key: any) => void;
   pageIndex: number;
+  stakeList: any[];
+  sortString: string;
 };
 
 const {TON_ADDRESS, UniswapStaking_Address, UniswapStaker_Address} = DEPLOYED;
@@ -80,7 +61,9 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   selectedToken,
   selectedPool,
   sendKey,
-  pageIndex
+  pageIndex,
+  stakeList,
+  sortString,
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -94,9 +77,9 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   const [myReward, setMyReward] = useState<number>(0);
   const [staked, setStaked] = useState<boolean>(false);
   const [buttonState, setButtonState] = useState<string>('Approve');
-  const [tokenID, setTokenID] = useState<number>(7774);
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
-const [rewardSymbol, setRewardSymbol] = useState<string>('')
+  const [rewardSymbol, setRewardSymbol] = useState<string>('');
+  const [isSelected, setIsSelected] = useState<boolean>(false);
   const key = {
     rewardToken: reward.rewardToken,
     pool: reward.poolAddress,
@@ -110,17 +93,22 @@ const [rewardSymbol, setRewardSymbol] = useState<string>('')
     STAKERABI.abi,
     library,
   );
+  useEffect(() => {
+    const selected =
+      stakeList.filter(
+        (listkey: any) => JSON.stringify(listkey) === JSON.stringify(key),
+      ).length > 0;
+    setIsSelected(selected);
+  }, [stakeList, pageIndex]);
 
-  
-useEffect(()=> {
-  const getTokenFromContract = async (address: string) => {
-    const symbolContract = await getTokenSymbol(address, library, account, )
-     setRewardSymbol(symbolContract);
-   } 
+  useEffect(() => {
+    const getTokenFromContract = async (address: string) => {
+      const symbolContract = await getTokenSymbol(address, library);
+      setRewardSymbol(symbolContract);
+    };
 
-  getTokenFromContract(reward.rewardToken)
-},[account,library])
-  
+    getTokenFromContract(reward.rewardToken);
+  }, [account, library, pageIndex]);
 
   useEffect(() => {
     const now = moment().unix();
@@ -161,7 +149,7 @@ useEffect(()=> {
         account,
         UniswapStaking_Address,
       );
-     
+
       setApproved(isApprovedForAll);
     }
     async function checkStaked() {
@@ -205,31 +193,55 @@ useEffect(()=> {
     checkApproved();
     checkStaked();
     getMyReward();
-
-  }, [account, library, transactionType, blockNumber, selectedToken, approved, pageIndex, selectedPool]);
+  }, [
+    account,
+    library,
+    transactionType,
+    blockNumber,
+    selectedToken,
+    approved,
+    pageIndex,
+    selectedPool,
+    reward
+  ]);
 
   useEffect(() => {
-    const now = moment().unix();
-    if (!approved && now > reward.startTime && !staked) {
-      setCanApprove(true);
-      setButtonState('Approve');
-    }
-     if (approved && now > reward.startTime && now < reward.endTime ) {
-      setButtonState('Stake');
-    }
-    else if (staked && now < reward.endTime) {
-      setButtonState('In Progress');
-    }
-    else if (staked && now > reward.endTime) {
-      setButtonState('Unstake');
-    }
-     else if (now > reward.endTime) {
-      setButtonState('Closed');
-    }
-    else {
-      setButtonState('Waiting');
-    }
-  }, [approved, staked, account, pageIndex, library, transactionType, blockNumber, selectedToken]);
+    const setButton = () => {
+      const now = moment().unix();
+      if (!approved && now > reward.startTime && !staked) {
+        setCanApprove(true);
+        setButtonState('Approve');
+      }
+      if (
+        approved &&
+        now > reward.startTime &&
+        now < reward.endTime &&
+        !staked
+      ) {
+        setButtonState('Stake');
+      } else if (staked && now < reward.endTime) {
+        setButtonState('In Progress');
+      } else if (staked && now > reward.endTime) {
+        setButtonState('Unstake');
+      } else if (now > reward.endTime) {
+        setButtonState('Closed');
+      } else if (approved && now < reward.startTime) {
+        setButtonState('Waiting');
+      }
+    };
+    setButton();
+  }, [
+    sortString,
+    reward,
+    approved,
+    staked,
+    account,
+    pageIndex,
+    library,
+    transactionType,
+    blockNumber,
+    selectedToken,
+  ]);
 
   const buttonFunction = (buttonCase: string) => {
     if (buttonCase === 'Approve') {
@@ -248,9 +260,8 @@ useEffect(()=> {
         rewardToken: reward.rewardToken,
         poolAddress: reward.poolAddress,
         refundee: reward.incentiveKey.refundee,
-        staked: staked
+        staked: staked,
       });
-      setTokenID(selectedToken);
     }
     if (buttonCase === 'Unstake') {
       unstake({
@@ -270,26 +281,28 @@ useEffect(()=> {
       <Flex flexDir={'row'} width={'100%'} alignItems={'center'} h={'50px'}>
         <Box>
           <Avatar
-            src={checkTokenType(reward.token0Address.toLowerCase()).symbol}
-            backgroundColor={checkTokenType(reward.token0Address).bg}
-            bg="transparent"
-            color="#c7d1d8"
+            src={reward.token0Image}
+            bg={colorMode === 'light' ? '#ffffff' : '#222222'}
             name="T"
-            border={checkTokenType(reward.token0Address).border}
+            border={
+              colorMode === 'light' ? '1px solid #e7edf3' : '1px solid #3c3c3c'
+            }
             h="50px"
             w="50px"
             zIndex={'100'}
           />
           <Avatar
-            src={checkTokenType(reward.token1Address.toLowerCase()).symbol}
-            backgroundColor={checkTokenType(reward.token1Address).bg}
-            bg="transparent"
-            color="#c7d1d8"
+            src={
+              reward.token1Image
+            }
+            bg={colorMode === 'light' ? '#ffffff' : '#222222'}
             name="T"
             h="50px"
+            border={
+              colorMode === 'light' ? '1px solid #e7edf3' : '1px solid #3c3c3c'
+            }
             w="50px"
             ml={'-7px'}
-            border={checkTokenType(reward.token1Address).border}
           />
         </Box>
         {staked ? (
@@ -317,7 +330,11 @@ useEffect(()=> {
                 ).toLocaleString(undefined, {
                   minimumFractionDigits: 2,
                 })}{' '}
-                {checkTokenType(reward.rewardToken).name} /{' '}
+                {
+                  checkTokenType(ethers.utils.getAddress(reward.rewardToken))
+                    .name
+                }{' '}
+                /{' '}
                 {parseFloat(
                   (
                     (Number(ethers.utils.formatEther(myReward.toString())) *
@@ -361,13 +378,40 @@ useEffect(()=> {
           {reward.poolName}
         </Text>
         <Box>
-          <Text {...REWARD_STYLE.subText({colorMode, fontSize: 12})}>
-            Reward Date
+          <Text {...REWARD_STYLE.subText({colorMode, fontSize: 14})}>
+            Reward Duration
           </Text>
-          <Text {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 14})}>
-            {moment.unix(Number(reward.startTime)).format('YYYY.MM.DD')} ~{' '}
-            {moment.unix(Number(reward.endTime)).format('YYYY.MM.DD')}
-          </Text>
+          <Flex>
+            {/* <Box> */}
+            <Text
+              {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 14})}
+              lineHeight={1}>
+              {moment.unix(Number(reward.startTime)).format('YYYY.MM.DD')}
+            </Text>
+            <Text
+              {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 11})}
+              pb={'2px'}
+              pl={'2px'}>
+              ({moment.unix(Number(reward.startTime)).format('HH.mm.ss')})
+            </Text>
+            {/* </Box> */}
+            <Text mb={'5px'} lineHeight={1} px={'5px'}>
+              ~{' '}
+            </Text>
+            {/* <Box> */}
+            <Text
+              {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 14})}
+              lineHeight={1}>
+              {moment.unix(Number(reward.endTime)).format('YYYY.MM.DD')}
+            </Text>
+            <Text
+              {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 11})}
+              pb={'2px'}
+              pl={'2px'}>
+              ({moment.unix(Number(reward.endTime)).format('HH.mm.ss')})
+            </Text>
+            {/* </Box> */}
+          </Flex>
         </Box>
       </Flex>
       <Flex mt={'24px'} flexDirection="row" justifyContent={'space-between'}>
@@ -408,37 +452,69 @@ useEffect(()=> {
         flexDirection="row"
         alignItems={'center'}
         justifyContent={'space-between'}>
-        <Box>
-          <Text
-            {...REWARD_STYLE.mainText({
-              colorMode,
-              fontSize: 14,
-            })}>
-            Total Raise
-          </Text>
-          <Box d="flex" alignItems="baseline">
+        <Flex alignItems={'center'}>
+          <Box>
             <Text
               {...REWARD_STYLE.mainText({
                 colorMode,
-                fontSize: 20,
-              })}
-              lineHeight={'0.7'}>
-              {Number(
-                ethers.utils.formatEther(reward.allocatedReward.toString()),
-              ).toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-              })}
+                fontSize: 14,
+              })}>
+              Total Raise
             </Text>
-            <Text ml="2px" fontSize="13">
-              {rewardSymbol}
-            </Text>
+            <Box d="flex" alignItems="baseline">
+              <Text
+                {...REWARD_STYLE.mainText({
+                  colorMode,
+                  fontSize: 20,
+                })}
+                lineHeight={'0.7'}>
+                {Number(
+                  ethers.utils.formatEther(reward.allocatedReward.toString()),
+                ).toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                })}
+              </Text>
+              <Text ml="2px" fontSize="13">
+                {
+                  checkTokenType(
+                    ethers.utils.getAddress(reward.rewardToken),
+                    colorMode,
+                  ).name
+                }
+              </Text>
+            </Box>
           </Box>
-        </Box>
-
+          <Avatar
+            ml={'10px'}
+            src={
+              checkTokenType(
+                ethers.utils.getAddress(reward.rewardToken),
+                colorMode,
+              ).symbol
+            }
+            bg={colorMode === 'light' ? '#ffffff' : '#222222'}
+            name="T"
+            border={
+              colorMode === 'light' ? '1px solid #e7edf3' : '1px solid #3c3c3c'
+            }
+            h="22px"
+            w="22px"
+            zIndex={'100'}
+          />
+        </Flex>
         <Flex flexDirection="row" justifyContent={'center'}>
-          {buttonState === 'Stake' && moment().unix() > reward.startTime && !staked && selectedToken !== 0 ? (
+          {buttonState === 'Stake' &&
+          moment().unix() > reward.startTime &&
+          !staked &&
+          selectedToken !== 0 ? (
             <Box pb={'0px'}>
-              <Checkbox mt={'5px'} onChange={() => sendKey(key)}></Checkbox>
+              <Checkbox
+                mt={'5px'}
+                isChecked={isSelected}
+                onChange={(e) => {
+                  setIsSelected(e.target.checked);
+                  sendKey(key);
+                }}></Checkbox>
             </Box>
           ) : null}
           <Button
@@ -449,12 +525,26 @@ useEffect(()=> {
             ml={'10px'}
             fontSize="16px"
             _hover={{backgroundColor: 'none'}}
-            _disabled={colorMode==='light' ? {backgroundColor: 'gray.25', cursor: 'default', color: '#86929d'}: {backgroundColor: '#353535', cursor: 'default', color: '#838383'}}
+            _disabled={
+              colorMode === 'light'
+                ? {
+                    backgroundColor: 'gray.25',
+                    cursor: 'default',
+                    color: '#86929d',
+                  }
+                : {
+                    backgroundColor: '#353535',
+                    cursor: 'default',
+                    color: '#838383',
+                  }
+            }
             onClick={() => buttonFunction(buttonState)}
             disabled={
               moment().unix() < reward.startTime ||
               buttonState === 'Closed' ||
-              buttonState === 'In Progress' ||  selectedToken === 0 || (staked && buttonState === 'Stake')
+              buttonState === 'In Progress' ||
+              selectedToken === 0 ||
+              (staked && buttonState === 'Stake')
             }>
             {buttonState}
           </Button>

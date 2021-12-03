@@ -2,29 +2,10 @@ import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {RootState} from 'store/reducers';
 import {fetchRewardsURL} from 'constants/index';
 import { any } from 'prop-types';
-
-type incentiveKey = {
-  rewardToken: string,
-  pool: string,
-  startTime: Number,
-  endTime: Number,
-  refundee: string
-}
-type Reward = {
-    chainId: Number, 
-    poolName: String,
-    poolAddress: String,
-    rewardToken: String,
-    incentiveKey: incentiveKey,
-    startTime: Number,
-    endTime: Number,
-    allocatedReward: String,
-    numStakers: Number,
-    status: String
-}
+import {interfaceReward} from './types'
 
 interface RewardState{ 
-    datas: Reward[];
+    datas: interfaceReward[];
     loading: 'idle' | 'pending';
     error: any;
     currentRequestId?: string;

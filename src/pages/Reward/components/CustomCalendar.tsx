@@ -63,7 +63,7 @@ export const CustomCalendar = (prop: CalendarProps) => {
     const now = moment().startOf('day').unix();
     const formattedDate = moment(date).startOf('day').unix();
     const nowTimeStamp = moment().unix();
-    const maxEndDate =  now+ 63072000
+    const maxEndDate =  startTime+ 63072000
     const maxStartDate = now+ 2592000
     if (view === 'month') {
       if (formattedDate < now) {
@@ -174,6 +174,8 @@ export const CustomCalendar = (prop: CalendarProps) => {
         value={showInputValue}
         readOnly={true}
         h={30}
+        textAlign={'center'}
+        p={'5px'}
         placeholder={'MM/DD/YYYY'}
         border={'none'}
         _focus={{

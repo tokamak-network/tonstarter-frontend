@@ -28,6 +28,8 @@ type Pool = {
   tick: string;
   token0: Token;
   token1: Token;
+  token0Image: string;
+  token1Image: string
 };
 type Token = {
   id: string;
@@ -37,20 +39,23 @@ type ManageContainerProps = {
   rewards: any[];
   position?: string;
   selectedPool?: Pool;
-  pools: Pool[]
+  pools: Pool[];
+  sortString: string
 };
 
 export const ManageContainer: FC<ManageContainerProps> = ({
   rewards,
   pools,
   position,
-  selectedPool
+  selectedPool,
+  sortString
 }) => {
 
   const [pageOptions, setPageOptions] = useState<number>(0);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(6);
   useEffect(() => {
+    setPageIndex(1)
     const pagenumber = parseInt(
       ((rewards.length - 1) / pageLimit + 1).toString(),
     );
@@ -63,7 +68,10 @@ export const ManageContainer: FC<ManageContainerProps> = ({
     const endIndex = startIndex + pageLimit;
     return rewards.slice(startIndex, endIndex);
   };
-
+  useEffect(()=> {
+    setPageIndex(1)
+    
+  },[selectedPool, sortString, pageLimit])
   const goToNextPage = () => {
     setPageIndex(pageIndex + 1);
   };
@@ -82,16 +90,20 @@ export const ManageContainer: FC<ManageContainerProps> = ({
           {getPaginatedData().map((reward: any, index) => {
             let token0;
             let token1;
-            const includedPool = pools.filter((pool) => pool.id === reward.poolAddress);
+            let token0Image;
+            let token1Image
+            const includedPool = pools.filter((pool: any) => pool.id === reward.poolAddress);
             token0 = includedPool[0].token0.id;
               token1 = includedPool[0].token1.id;
-           
-
+              token0Image = includedPool[0].token0Image;
+              token1Image = includedPool[0].token1Image;
             const rewardProps = {
               chainId: reward.chainId,
               poolName: reward.poolName,
               token0Address: token0,
               token1Address: token1,
+              token0Image: token0Image,
+              token1Image: token1Image,
               poolAddress: reward.poolAddress,
               rewardToken: reward.rewardToken,
               incentiveKey: reward.incentiveKey,
@@ -107,6 +119,7 @@ export const ManageContainer: FC<ManageContainerProps> = ({
                 reward={rewardProps}
                 selectedToken={Number(position)}
                 pageIndex={pageIndex}
+                sortString={sortString}
               />
             );
           })}
@@ -195,6 +208,7 @@ export const ManageContainer: FC<ManageContainerProps> = ({
                 value={pageLimit}
                 fontFamily={theme.fonts.roboto}
                 onChange={(e) => {
+                  setPageIndex(1)
                   setPageLimit(Number(e.target.value));
                 }}>
                 {[2, 4, 6, 8, 10, 12].map((pageSize) => (
