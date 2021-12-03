@@ -316,12 +316,12 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           style={{zIndex: 100}}>
           DAO
         </NavLink>
-        {/* <NavLink
+        <NavLink
           to="/starter"
           className={match?.isExact ? 'link-match' : 'link'}
           style={{zIndex: 100}}>
           Starter
-        </NavLink> */}
+        </NavLink>
         {/* <Tooltip
           hasArrow
           placement="top"
