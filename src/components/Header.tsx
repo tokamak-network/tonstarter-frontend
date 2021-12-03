@@ -11,7 +11,6 @@ import {
   // Tooltip,
 } from '@chakra-ui/react';
 import React from 'react';
-import {useEffect} from 'react';
 import {shortenAddress} from 'utils';
 import {ThemeSwitcher} from './ThemeSwitcher';
 import {NavLink, useRouteMatch} from 'react-router-dom';
@@ -227,11 +226,8 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
     colorMode === 'light'
       ? {navLink: {background: '#ffffff', color: '#1c1c1c'}}
       : {navLink: {background: 'transparent', color: '#f3f4f1'}};
-  const [poolsOpen, setPoolsOpen] = React.useState(false);
-  const theme = useTheme();
   const pools = useRouteMatch('/pools/pools');
   const reward = useRouteMatch('/pools/rewardProgram');
-
 
   return (
     <Box
@@ -253,17 +249,20 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
         <Menu>
           <MenuButton>
             <Text
-             fontSize={17}
-             fontWeight= {'bold'}
+              fontSize={17}
+              fontWeight={'bold'}
               color={
                 pools?.isExact || reward?.isExact
                   ? colorMode === 'light'
                     ? 'blue.100'
                     : 'yellow.100'
-                  :match?.isExact ? colorMode === 'light'
-                  ? 'gray.0'
+                  : match?.isExact
+                  ? colorMode === 'light'
+                    ? 'gray.0'
+                    : 'white.100'
+                  : colorMode === 'light'
+                  ? 'gray.275'
                   : 'white.100'
-                  : colorMode ==='light'? 'gray.275' : 'white.100'
               }>
               Pools
             </Text>
@@ -368,10 +367,10 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
             top={'15px'}
             minW={'125px'}
             w={'125px'}
-            h={'200px'}
+            h={'185px'}
             p={0}
             fontSize={13}
-            background={colorMode === 'light' ? '#ffffff' : 'transparent'}>
+            background={colorMode === 'light' ? '#ffffff' : '#222222'}>
             <NavLink
               to="/"
               activeStyle={{
