@@ -115,7 +115,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
             flexDirection={'row'}
             
             alignItems={'center'}
-            px={'15px'}>
+            px={'10px'}>
             <Box>
               <Avatar
                 src={pool.token1Image}
@@ -147,7 +147,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
             <Text
               color={colorMode === 'light' ? 'gray.250' : 'white.100'}
               fontWeight={700}
-              w={'85px'}
+              w={'95px'}
               ml={'7px'}
               fontFamily={theme.fonts.fld}
               fontSize={'17px'}>
