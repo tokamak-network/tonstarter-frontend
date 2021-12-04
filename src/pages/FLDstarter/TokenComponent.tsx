@@ -17,7 +17,7 @@ import {useAppDispatch} from 'hooks/useRedux';
 import {openModal} from 'store/modal.reducer';
 import store from 'store';
 import {useActiveWeb3React} from 'hooks/useWeb3';
-import {TokenImage} from '@Admin/components/TokenImage';
+import {TokenImage} from 'pages/Admin/components/TokenImage';
 import TON_SYMBOL from 'assets/tokens/TON_symbol_nobg.svg';
 
 type TokenComponentProps = {
