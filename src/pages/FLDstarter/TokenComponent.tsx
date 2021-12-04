@@ -5,7 +5,6 @@ import {
   Button,
   Container,
   useTheme,
-  Avatar,
   useColorMode,
 } from '@chakra-ui/react';
 import {useEffect, useCallback} from 'react';
@@ -18,6 +17,8 @@ import {useAppDispatch} from 'hooks/useRedux';
 import {openModal} from 'store/modal.reducer';
 import store from 'store';
 import {useActiveWeb3React} from 'hooks/useWeb3';
+import {TokenImage} from '@Admin/components/TokenImage';
+import TON_SYMBOL from 'assets/tokens/TON_symbol_nobg.svg';
 
 type TokenComponentProps = {
   data: any;
@@ -94,7 +95,8 @@ export const TokenComponent: FC<TokenComponentProps> = ({
       borderColor={theme.colors.gray[75]}
       p="4">
       <Flex direction={'row'} pos="relative">
-        <Avatar
+        <TokenImage imageLink={TON_SYMBOL}></TokenImage>
+        {/* <Avatar
           src={tokenType.symbol}
           backgroundColor={tokenType.bg}
           bg="transparent"
@@ -102,7 +104,7 @@ export const TokenComponent: FC<TokenComponentProps> = ({
           name="T"
           h="48px"
           w="48px"
-        />
+        /> */}
         <Flex direction={'column'} px={6}>
           <Text
             fontWeight={'bold'}
