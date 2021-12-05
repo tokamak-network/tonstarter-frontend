@@ -39,7 +39,7 @@ type CalendarProps = {
   startTime: number;
   endTime: number;
   calendarType: string;
-  created: boolean;
+  created: any;
 
 };
 
@@ -64,27 +64,27 @@ export const CustomCalendar = (prop: CalendarProps) => {
     const formattedDate = moment(date).startOf('day').unix();
     const nowTimeStamp = moment().unix();
     const maxEndDate =  startTime+ 63072000
-    const maxStartDate = now+ 2592000
+    const maxStartDate = now+ 2592000    
     if (view === 'month') {
-      if (formattedDate < now) {
+      if (formattedDate < now) {        
         return true;
       } 
       
-      else if (calendarType === 'end' && formattedDate>maxEndDate && startTime !== 0) {
+      else if (calendarType === 'end' && formattedDate>maxEndDate && startTime !== 0) {       
         return true;
       }
-      else if (calendarType === 'start' && formattedDate> maxStartDate) {
+      else if (calendarType === 'start' && formattedDate> maxStartDate) {        
         return true
       }
       else if (
         endTime !== 0 &&
         formattedDate > endTime &&
         calendarType === 'start'
-      ) {
+      ) {        
         return true;
       } 
 
-      else if (calendarType === 'end' &&  startTime !== 0 && formattedDate <startTime ) {
+      else if (calendarType === 'end' &&  startTime !== 0 && formattedDate <= startTime ) {        
         return true;
       }
       else {
@@ -95,7 +95,7 @@ export const CustomCalendar = (prop: CalendarProps) => {
     }
   };
 
-  useEffect(() => {
+  useEffect(() => {    
     if (created) {
       setShowInputValue('');
     }

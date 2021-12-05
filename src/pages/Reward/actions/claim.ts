@@ -11,7 +11,7 @@ import { utils, ethers } from 'ethers';
 type Claim = {
     library: any;
     userAddress: string | null | undefined;
-    amount: string;
+    amount: any;
     rewardToken: string;
 }
 const { UniswapStaker_Address } = DEPLOYED;
@@ -29,11 +29,10 @@ export const claim = async (args: Claim) => {
         UniswapStaker_Address,
         STAKERABI.abi,
         library,
-    );
-
-    const claimAmount = ethers.utils.parseEther(amount.toString())
+    );    
+    // const claimAmount = ethers.utils.parseEther(amount.toString())
     try {
-        const receipt = await uniswapStakerContract.connect(signer).claimReward(rewardToken, userAddress, claimAmount);
+        const receipt = await uniswapStakerContract.connect(signer).claimReward(rewardToken, userAddress, amount);
         store.dispatch(setTxPending({ tx: true }));
         if (receipt) {
             toastWithReceipt(receipt, setTxPending, 'Reward');

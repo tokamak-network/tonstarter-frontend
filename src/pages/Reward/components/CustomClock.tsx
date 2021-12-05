@@ -58,7 +58,7 @@ export const CustomClock = (props: ClockProps) => {
   const {setTime, error} = props;
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const [hours, setHours] = useState<number>(0);
+  const [hours, setHours] = useState<number>(1);
   const [minutes, setMinutes] = useState<number>(0);
   const [seconds, setSeconds] = useState<number>(0);
   const [meridiem, setMeridiem] = useState<string>('AM');

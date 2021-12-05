@@ -121,8 +121,9 @@ const getTokenList = async() => {
     const claimable = await uniswapStakerContract
       .connect(signer)
       .rewards(address, account);
-    setClaimableAmount(Number(ethers.utils.formatEther(claimable.toString())));
+    setClaimableAmount(claimable);
   };
+
 
   const getTokenFromContract = async (address: string) => {
     const symbolContract = await getTokenSymbol(address, library);
@@ -233,7 +234,7 @@ const getTokenList = async() => {
               textAlign="right"
               fontSize={'15px'}
               mr={'2px'}>
-              {Number(claimableAmount).toLocaleString(undefined, {
+              {Number(ethers.utils.formatEther(claimableAmount.toString())).toLocaleString(undefined, {
                 minimumFractionDigits: 2,
               })}
             </Text>
@@ -325,7 +326,9 @@ const getTokenList = async() => {
                     color: '#838383',
                   }
             }
-            disabled={claimableAmount ===0}
+            disabled={Number(ethers.utils.formatEther(claimableAmount.toString())).toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+            }) ==='0.00'}
             mt={'20px'}
             onClick={() => {
               // if (Number(requestAmount) === 0) {
@@ -335,7 +338,7 @@ const getTokenList = async() => {
               claim({
                 library: library,
                 userAddress: account,
-                amount: claimableAmount.toString(),
+                amount: claimableAmount,
                 rewardToken: selectedToken,
               });
             }}>

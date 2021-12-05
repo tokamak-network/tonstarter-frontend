@@ -111,9 +111,9 @@ export const Reward = () => {
   const [isPositionLoading, setIsPositionLoading] = useState(true);
   const [sortString, setSortString] = useState<string>('start');
   const [poolAddresses, setPoolAddresses] = useState<string[]>([]);
-  const {
-    data: {timeStamp, func},
-  } = useAppSelector(selectTransactionType);
+  // const {
+  //   data: {timeStamp, func},
+  // } = useAppSelector(selectTransactionType);
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [orderedData, setOrderedData] = useState<interfaceReward[]>([]);
   const [order, setOrder] = useState<boolean | 'desc' | 'asc'>('desc');
@@ -143,7 +143,7 @@ export const Reward = () => {
       
     }
     fetchProjectsData();
-  }, [account, library, timeStamp, selected]);
+  }, [account, library, selected]);
 
   const poolArr = usePoolByArrayQuery(
     {address: poolAddresses},
