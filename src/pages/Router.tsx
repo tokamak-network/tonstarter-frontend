@@ -13,7 +13,7 @@ import {useAppDispatch} from 'hooks/useRedux';
 import {fetchAppConfig} from 'store/app/app.reducer';
 import {fetchUserInfo} from 'store/app/user.reducer';
 import {fetchStakes} from './Staking/staking.reducer';
-import { fetchRewards } from './Reward/reward.reducer';
+import {fetchRewards} from './Reward/reward.reducer';
 import {AirdropModal} from 'components/Airdrop/Index';
 import {fetchVaults} from './Staking/vault.reducer';
 import {fetchStarters} from './Starter/starter.reducer';
@@ -36,7 +36,7 @@ export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 /*
 ###################
 #####PHASE 4#######
-######STARTER######
+##Code Obfuscation#
 ###################
 ################### 
 */
