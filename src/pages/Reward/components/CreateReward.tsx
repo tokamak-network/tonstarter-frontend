@@ -35,7 +35,7 @@ import * as ERC20 from 'services/abis/ERC20.json';
 import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import {convertNumber} from 'utils/number';
-
+import {shortenAddress} from 'utils';
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 const themeDesign = {
@@ -98,7 +98,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
-  const [amount, setAmount] = useState<number>(0);
+  const [amount, setAmount] = useState<string>('0');
   const [name, setName] = useState<string>('');
   const [reward, setReward] = useState<Number>(0);
   const [startTime, setStartTime] = useState<number>(0);
@@ -111,16 +111,21 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
   const [selectedPool, setSelectedPool] = useState<Pool>();
   const [rewardSymbol, setRewardSymbol] = useState('');
   const [rewardAddress, setRewardAddress] = useState('');
-  const [created, setCreated] = useState(false);
+  const [created, setCreated] = useState();
   const [balance, setBalance] = useState(0);
   const [errorStart, setErrorStart] = useState<boolean>(false);
   const [errorEnd, setErrorEnd] = useState<boolean>(false);
   useEffect(() => {
     // setSelectedPool(pools[0]);
-    // setSelectedAddress(pools[0].id);
+    // setSelectedAddress(pools[0].id);    
     if (tokeninfo.length !== 0) {
       setRewardSymbol(tokeninfo[1]);
       setRewardAddress(tokeninfo[0]);
+    }
+
+    else {
+      setRewardSymbol('')
+      setRewardAddress('')
     }
   }, [tokeninfo]);
 
@@ -153,14 +158,20 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
       minute: endTimeArray[1],
       second: endTimeArray[2],
     });
-    setEndTime(endDates.unix());
 
+  if (endDates.unix() < 0) {
+    setEndTime(0);
+  }
+  else {
+    setEndTime(endDates.unix());
+  } 
     const starts = moment.unix(startTime);
     const startDates = moment(starts).set({
       hour: startTimeArray[0],
       minute: startTimeArray[1],
       second: startTimeArray[2],
     });
+   
     setStartTime(startDates.unix());
   }, [startTimeArray, endTimeArray, endTime, startTime]);
 
@@ -181,16 +192,18 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
   }, [startTime, endTime, startTimeArray]);
 
   useEffect(() => {
-    const setApprovedAmount = async () => {
+    const setApprovedAmount = async () => {      
       if (rewardAddress !== '') {
         const approved = await checkApproved(
           library,
           account,
           setCheckAllowed,
           rewardAddress,
-        );
-        setAmount(Number(ethers.utils.formatEther(approved.toString())));
+        );        
+        setAmount(ethers.utils.formatEther(approved.toString()));
       }
+      else {setAmount('0.0')}
+      
     };
     setApprovedAmount();
   }, [
@@ -248,6 +261,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
       getBalance();
     }
   }, [rewardAddress, checkAllowed, library, account, amount, tokeninfo]);  
+  const parse = (val:string) => val.replace(/^\$/, '')
   return (
     <Box display={'flex'} justifyContent={'center'}>
       <Box w={'100%'} px={'15px'}>
@@ -412,7 +426,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             value={amount}
             onChange={(e) => {
               const {value} = e.target;
-              setAmount(Number(value));
+              setAmount(value.replace(/^0*([^0]\d*\.\d{1,2}).*/g, "$1"));
             }}
             _focus={{
               border: themeDesign.border[colorMode],
@@ -434,8 +448,8 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
             color="white.100"
             fontSize="14px"
             disabled={
-              amount === 0 ||
-              amount <=
+              amount === '0' ||
+              Number(amount) <=
                 Number(
                   ethers.utils
                     .formatEther(
@@ -444,11 +458,11 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
                       }),
                     )
                     .toString(),
-                )
+                ) || rewardAddress === ''
             }
             _hover={{backgroundColor: 'blue.100'}}
             onClick={() => {
-              if (amount > balance) {
+              if (Number(amount) > balance) {
                 if (
                   window.confirm(
                     `Even though you can approve this amount, you will not be able to create a reward with the same amount, since you don't have enough ${rewardSymbol} balance.`
@@ -492,7 +506,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
                   )
                   .toString(),
               ) === 0 ||
-              amount >
+              Number(amount) >
                 Number(
                   ethers.utils
                     .formatEther(
@@ -501,7 +515,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
                       }),
                     )
                     .toString(),
-                )
+                ) || Number(amount) === 0
             }
             _hover={{backgroundColor: 'blue.100'}}
             onClick={() => {
@@ -509,25 +523,41 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
               if (now > startTime) {
                 return alert(`Please use select a start time greater than now`);
               } else if (
-                balance < amount
+                balance < Number(amount)
               ) {
                 return alert(`You don't have enough ${rewardSymbol} balance`);
               }
-              create({
-                library: library,
-                amount: amount,
-                userAddress: account,
-                poolAddress: selectedAddress,
-                startTime: startTime,
-                endTime: endTime,
-                name: name,
-                setAlllowed: setCheckAllowed,
-                setEnd: setEndTime,
-                setStart: setStartTime,
-                rewardToken: rewardAddress,
-                setRewardSymbol: setRewardSymbol,
-                setCreated: setCreated,
-              });
+              if (
+                window.confirm(
+                  `Are you sure you want to create the following Reward Program? 
+                  Pool:  ${name}
+                  Start time: ${moment.unix(startTime).format('MM/DD/YYYY HH:mm:ss')}
+                  End time: ${moment.unix(endTime).format('MM/DD/YYYY HH:mm:ss')}
+                  Reward token: ${rewardSymbol}
+                  Reward amount: ${amount}
+                  Creator: ${account !== undefined && account !== null? shortenAddress(account) : ''}`
+
+                )) {
+                  create({
+                    library: library,
+                    amount: amount,
+                    userAddress: account,
+                    poolAddress: selectedAddress,
+                    startTime: startTime,
+                    endTime: endTime,
+                    name: name,
+                    setAlllowed: setCheckAllowed,
+                    setEnd: setEndTime,
+                    setEndArr: setEndTimeArray,
+                    setStart: setStartTime,
+                    setStartArr: setStartTimeArray,
+                    setRewardAddress: setRewardAddress,
+                    rewardToken: rewardAddress,
+                    setCreated: setCreated,
+                    setTokeninfo: setTokeninfo
+                  });
+                }
+              
             }}>
             Create
           </Button>

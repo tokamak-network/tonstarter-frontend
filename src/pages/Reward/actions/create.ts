@@ -15,7 +15,7 @@ import moment from 'moment';
 
 type Create = {
   library: any;
-  amount: number;
+  amount: string;
   userAddress: string | null | undefined;
   poolAddress: string;
   startTime: number,
@@ -23,10 +23,13 @@ type Create = {
   name: string,
   setAlllowed: any,
   setEnd: any,
+  setEndArr: any,
   setStart: any,
-  setRewardSymbol: any,
+  setStartArr: any,
+  setRewardAddress: any,
   rewardToken: string,
-  setCreated:any
+  setCreated:any,
+  setTokeninfo: any
 };
 type CreateReward = {
   poolName: string;
@@ -72,17 +75,16 @@ const generateSig = async (account: string, key: any) => {
 
 
 export const create = async (args: Create) => {
-  const { library, amount, userAddress, poolAddress, startTime, endTime, name, setAlllowed, setEnd, setStart, rewardToken, setRewardSymbol, setCreated } = args;
+  const { library, amount, userAddress, poolAddress, startTime, endTime, name, setAlllowed, setEnd, setEndArr, setStart, setStartArr, rewardToken, setRewardAddress, setCreated,setTokeninfo} = args;
   if (userAddress === null || userAddress === undefined || library === undefined) {
     return;
-  }
+  }  
   const uniswapStakerContract = new Contract(
     UniswapStaker_Address,
     STAKERABI.abi,
     library,
   );  
-    
-  const amountFotmatted = ethers.utils.parseEther(amount.toString());
+  const amountFotmatted = ethers.utils.parseEther(amount);
   const signer = getSigner(library, userAddress);
   const key = {
     rewardToken:rewardToken,
@@ -102,7 +104,7 @@ export const create = async (args: Create) => {
     if (receipt) {
       const nowTimeStamp = moment().unix();
 
-      toastWithReceipt(receipt, setTxPending,'Reward', 'Reward', nowTimeStamp);
+      toastWithReceipt(receipt, setTxPending,'Reward', 'Reward');
       const sig = await generateSig(userAddress.toLowerCase(), key);
       const arg: CreateReward = {
         poolName: name,
@@ -122,9 +124,12 @@ export const create = async (args: Create) => {
       setAlllowed(0);
       setEnd(0);
       setStart(0);
-      setRewardSymbol('')
-      setCreated(true)
-      const create = await createReward(arg);     
+      setEndArr([0,0,0]);
+      setStartArr([0,0,0]);
+      setRewardAddress('')
+      setCreated(receipt)
+      setTokeninfo([])
+      const create = await createReward(receipt);     
     }
   } catch (err) {
     store.dispatch(setTxPending({ tx: false }));

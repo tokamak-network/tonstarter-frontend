@@ -47,7 +47,6 @@ export const toastWithReceipt = async (
   setTxPending: any,
   from?: string,
   actionType?: string,
-  nowTimeStamp?: any
 ) => {
   // const nowTimeStamp = moment().unix();
   try {
@@ -105,9 +104,6 @@ export const toastWithReceipt = async (
               setTransaction({
                 transactionType: 'Reward',
                 blockNumber: receipt.blockNumber,
-                data: {
-                  timeStamp: nowTimeStamp,
-                },
               }),
             );
           }

@@ -9,7 +9,7 @@ import * as TOSABI from 'services/abis/TOS.json';
 import {utils, ethers} from 'ethers';
 type Approve = { 
     library: any;
-    amount: number;
+    amount: string;
     userAddress: string | null | undefined;
     setAlllowed: any;
     tokenAddress: string
@@ -22,10 +22,9 @@ export const approve = async (args:Approve) => {
     if (userAddress === null || userAddress === undefined || library === undefined) {
         return;
       }
-
       const contract = new Contract(tokenAddress, TOSABI.abi, library);
       // const totalReward = new BigNumber(Number(amount)).toString();
-      const weiAllocated = ethers.utils.parseEther(amount.toString())
+      const weiAllocated = ethers.utils.parseEther(amount)
       const signer = getSigner(library, userAddress);
       
       try {
