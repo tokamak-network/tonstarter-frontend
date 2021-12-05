@@ -94,10 +94,12 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
   useEffect(() => {
     const now = moment().unix();
     const start = moment.unix(Number(reward.startTime)).startOf('day').unix();
+    const nowDay = moment.unix(now).startOf('day').unix();
+
     const end = moment.unix(Number(reward.endTime)).endOf('day').unix();
     if (now < start) {
       const remainingDays = moment
-        .unix(now)
+        .unix(nowDay)
         .diff(moment.unix(Number(reward.startTime)), 'days');
       setdDay(remainingDays);
       setProgress(0);
@@ -289,7 +291,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
               colorMode,
               fontSize: 14,
             })}>
-            Total Raise
+            Total Reward
           </Text>
           <Box d="flex" alignItems="baseline">
             <Text
