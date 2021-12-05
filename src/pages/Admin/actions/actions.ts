@@ -107,8 +107,6 @@ export const checkApprove = async (args: I_CallContract): Promise<string> => {
 };
 
 export const addStarter = async (args: AdminObject) => {
-  console.log('--addStarter--');
-  console.log(args);
   try {
     // for (const [key, value] of Object.entries(args)) {
     //   if (
@@ -150,8 +148,6 @@ export const addStarter = async (args: AdminObject) => {
 };
 
 export const editStarter = async (args: AdminObject) => {
-  console.log('--edit starter--');
-  console.log(args);
   try {
     // for (const [key, value] of Object.entries(args)) {
     //   if (
@@ -229,8 +225,6 @@ export const addPool = async (args: PoolData) => {
 };
 
 export const editPool = async (args: PoolData) => {
-  console.log('--args--');
-  console.log(args);
   try {
     for (const [key, value] of Object.entries(args)) {
       if (value === '' || value === undefined || value === null) {

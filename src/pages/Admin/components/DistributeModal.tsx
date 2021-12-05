@@ -20,6 +20,7 @@ import {CloseButton} from 'components/Modal';
 import {CustomInput} from 'components/Basic';
 import AdminActions from '../actions';
 import moment from 'moment';
+import {useBlockNumber} from 'hooks/useBlock';
 
 export const DistributeModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -28,13 +29,14 @@ export const DistributeModal = () => {
   const {account, library} = useActiveWeb3React();
   const {handleCloseModal} = useModal();
   const {btnStyle} = theme;
-  const {contractAddress} = data.data;
 
   const [tokenAddress, setTokenAddress] = useState<string>('');
   const [tokenAmount, setTokenAmount] = useState('');
   const [allowance, setAllowance] = useState<string>('');
   const [ableDistribute, setAbleDistribute] = useState<boolean>(false);
   const [timeStamp, setTimeStamp] = useState<string>('');
+
+  const {blockNumber} = useBlockNumber();
 
   useEffect(() => {
     async function getAllowanceAmount() {
@@ -53,7 +55,7 @@ export const DistributeModal = () => {
     } else {
       setAllowance('0.00');
     }
-  }, [account, library, tokenAddress]);
+  }, [account, library, tokenAddress, blockNumber]);
 
   useEffect(() => {
     if (tokenAmount === '') {
@@ -72,18 +74,23 @@ export const DistributeModal = () => {
   }, [allowance, tokenAmount]);
 
   useEffect(() => {
+    //GET NEXT THUR
+    //Which is lock period for sTOS
+
     const dayINeed = 4; // for Thursday
-    const today = moment().isoWeekday();
-    const thisWed = moment().isoWeekday(dayINeed).format('YYYY-MM-DD');
+    // const today = moment().isoWeekday();
+    // const thisWed = moment().isoWeekday(dayINeed).format('YYYY-MM-DD');
     const nextWed = moment()
       .add(1, 'weeks')
       .isoWeekday(dayINeed)
       .format('YYYY-MM-DD');
-    if (today === dayINeed || today < dayINeed) {
-      return setTimeStamp(thisWed);
-    } else {
-      return setTimeStamp(nextWed);
-    }
+    // if (today === dayINeed || today < dayINeed) {
+    //   return setTimeStamp(thisWed);
+    // } else {
+    //   return setTimeStamp(nextWed);
+    // }
+
+    return setTimeStamp(nextWed);
   }, []);
 
   return (
@@ -116,10 +123,10 @@ export const DistributeModal = () => {
               fontFamily={theme.fonts.titil}
               color={colorMode === 'light' ? 'gray.250' : 'white.100'}
               textAlign={'center'}>
-              Reward Token
+              Airdrop Distribution
             </Heading>
             <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
-              You can manage reward tokens
+              You can manage airdrop tokens
             </Text>
           </Box>
 
@@ -196,7 +203,7 @@ export const DistributeModal = () => {
                 }></CustomInput>
             </Box>
             <Box d="flex" flexDir="column" mb={'29px'}>
-              <Text mb={'9px'}>Calculated Timestamp</Text>
+              <Text mb={'9px'}>Timestamp for distribution</Text>
               <CustomInput
                 w={'290px'}
                 h={'32px'}
