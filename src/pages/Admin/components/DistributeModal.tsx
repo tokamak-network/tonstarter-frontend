@@ -18,7 +18,7 @@ import {useModal} from 'hooks/useModal';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {CloseButton} from 'components/Modal';
 import {CustomInput} from 'components/Basic';
-import AdminActions from '../actions';
+import AdminActions from '@Admin/actions';
 import moment from 'moment';
 import {useBlockNumber} from 'hooks/useBlock';
 
