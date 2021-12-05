@@ -329,7 +329,7 @@ export const StakingTable: FC<StakingTableProps> = ({
 
   return (
     <Flex w="1100px" flexDir={'column'}>
-      <Flex justifyContent={'space-between'} mb={'23px'} ml={'16px'}>
+      <Flex justifyContent={'space-between'} mb={'23px'} ml={'17px'}>
         <Flex>
           {getStatus('sale', colorMode)}
           {getStatus('start', colorMode)}
