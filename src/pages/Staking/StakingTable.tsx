@@ -14,7 +14,6 @@ import {
   Tooltip,
   Select,
   Box,
-  Avatar,
   useColorMode,
   Center,
   useTheme,
@@ -46,6 +45,8 @@ import {
 import {useBlockNumber} from 'hooks/useBlock';
 import {CustomTooltip} from 'components/Tooltip';
 import {useActiveWeb3React} from 'hooks/useWeb3';
+import {TokenImage} from 'pages/Admin/components/TokenImage';
+import TON_SYMBOL from 'assets/tokens/TON_symbol_nobg.svg';
 
 type StakingTableProps = {
   columns: Column[];
@@ -328,11 +329,18 @@ export const StakingTable: FC<StakingTableProps> = ({
 
   return (
     <Flex w="1100px" flexDir={'column'}>
-      <Flex justifyContent={'space-between'} mb={'23px'}>
+      <Flex justifyContent={'space-between'} mb={'23px'} ml={'16px'}>
         <Flex>
           {getStatus('sale', colorMode)}
           {getStatus('start', colorMode)}
           {getStatus('end', colorMode)}
+          <Flex
+            color={'#c7d1d8'}
+            fontSize={'8px'}
+            mr={'20px'}
+            alignItems="center">
+            <Text>|</Text>
+          </Flex>
           <GetL2Status
             sort={'canUnstake'}
             mr={'20px'}
@@ -419,20 +427,19 @@ export const StakingTable: FC<StakingTableProps> = ({
                     const tokenType = checkTokenType(token);
                     return (
                       <chakra.td
-                        px={3}
                         py={3}
                         key={index}
                         m={0}
                         w={
                           type === 'name'
-                            ? '280px'
+                            ? '362px'
                             : type === 'period'
                             ? '150px'
                             : type === 'stakeBalanceTON'
-                            ? '200px'
+                            ? '230px'
                             : type === 'earning_per_ton'
-                            ? ''
-                            : '200px'
+                            ? '200px'
+                            : '10px'
                         }
                         pr={0}
                         display="flex"
@@ -444,19 +451,15 @@ export const StakingTable: FC<StakingTableProps> = ({
                         {type === 'name' ? getCircle(status) : ''}
                         {type === 'name' ? (
                           <>
-                            <Avatar
-                              src={tokenType.symbol}
-                              backgroundColor={tokenType.bg}
-                              bg="transparent"
-                              color="#c7d1d8"
-                              name="T"
-                              h="48px"
-                              w="48px"
-                              ml="10px"
-                              mr="12px"
-                            />
-                            <Text w={'140px'}>{name}</Text>
-                            <Flex w={'120px'} justifyContent="flex-start">
+                            <Box ml={'10px'} mr={'12px'}>
+                              <TokenImage imageLink={TON_SYMBOL}></TokenImage>
+                            </Box>
+                            <Text w={'176px'}>{name}</Text>
+                            <Flex
+                              justifyContent="flex-start"
+                              w={'80px'}
+                              pl={'13px'}
+                              mr={'20px'}>
                               {canUnstake && (
                                 <GetL2Status
                                   sort={'canUnstake'}
@@ -505,9 +508,9 @@ export const StakingTable: FC<StakingTableProps> = ({
                         )}
 
                         {type === 'earning_per_ton' ? (
-                          <>
+                          <Flex justifyContent={'space-around'} w={'100%'}>
                             <Text
-                              mr={2}
+                              w={'150px'}
                               color={
                                 colorMode === 'light' ? '#86929d' : '#949494'
                               }>
@@ -525,13 +528,15 @@ export const StakingTable: FC<StakingTableProps> = ({
                               bg={theme.colors.gray[375]}>
                               <Image src={tooltipIcon} />
                             </Tooltip>
-                          </>
+                          </Flex>
                         ) : (
                           ''
                         )}
-                        {type === 'expander'
-                          ? renderBtn(contractAddress, i)
-                          : null}
+                        {type === 'expander' ? (
+                          <Box ml={'115px'}>
+                            {renderBtn(contractAddress, i)}
+                          </Box>
+                        ) : null}
                         {/* {isLoading ? <Skeleton h={5} /> : cell.render('Cell')} */}
                       </chakra.td>
                     );
@@ -542,7 +547,6 @@ export const StakingTable: FC<StakingTableProps> = ({
                 isOpen === contractAddress ? (
                   <chakra.tr
                     boxShadow="0 1px 1px 0 rgba(96, 97, 112, 0.16)"
-                    w={'100%'}
                     h={'430px'}
                     key={i}
                     m={0}
