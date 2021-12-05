@@ -35,7 +35,7 @@ import * as ERC20 from 'services/abis/ERC20.json';
 import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import {convertNumber} from 'utils/number';
-
+import {shortenAddress} from 'utils';
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 const themeDesign = {
@@ -534,7 +534,8 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
                   Start time: ${moment.unix(startTime).format('MM/DD/YYYY HH:mm:ss')}
                   End time: ${moment.unix(endTime).format('MM/DD/YYYY HH:mm:ss')}
                   Reward token: ${rewardSymbol}
-                  Reward amount: ${amount}`
+                  Reward amount: ${amount}
+                  Creator: ${account !== undefined && account !== null? shortenAddress(account) : ''}`
 
                 )) {
                   create({
