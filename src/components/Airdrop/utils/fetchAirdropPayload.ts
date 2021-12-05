@@ -40,9 +40,7 @@ export const fetchAirdropPayload = async (account: string, library: any) => {
       }
       claimedAmount = await AirdropVault.userClaimedAmount(account);
     }
-  } catch (err) {
-    console.log(err);
-  }
+  } catch (err) {}
   return {
     roundInfo: roundInfo,
     claimedAmount: convertNumber({amount: claimedAmount}),

@@ -45,7 +45,7 @@ import {
 import {useBlockNumber} from 'hooks/useBlock';
 import {CustomTooltip} from 'components/Tooltip';
 import {useActiveWeb3React} from 'hooks/useWeb3';
-import {TokenImage} from 'pages/Admin/components/TokenImage';
+import {TokenImage} from '@Admin/components/TokenImage';
 import TON_SYMBOL from 'assets/tokens/TON_symbol_nobg.svg';
 
 type StakingTableProps = {
