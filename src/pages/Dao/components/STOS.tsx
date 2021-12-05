@@ -87,7 +87,7 @@ export const STOS = () => {
           fontFamily={theme.fonts.roboto}
           fontSize="0.750em"
           color="#86929d">
-          Staking TOS and get sTOS.
+          Stake TOS and get sTOS.
         </Text>
       </Flex>
       <Flex

@@ -62,7 +62,7 @@ export const UpcomingProject = (props: UpcomingProjectProp) => {
                   </Text>
                   <Text {...STATER_STYLE.subTextBlack({colorMode})}>
                     {/* {project.saleStart} ~ {project.saleEnd} */}
-                    2021.12.14. ~ 12.21.
+                    2021.12.14. ~ 12.22.
                   </Text>
                 </Flex>
               </Flex>

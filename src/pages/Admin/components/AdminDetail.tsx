@@ -79,7 +79,6 @@ export const AdminDetail: React.FC<AdminDetailProp> = (props) => {
     existingData[0] !== undefined ? {...existingData[0]} : initialValue,
   );
   const makeRequest = (formData: AdminObject) => {
-    console.log('Form Submitted', formData);
     if (existingData.length === 0) {
       return AdminActions.addStarter(formData);
     }

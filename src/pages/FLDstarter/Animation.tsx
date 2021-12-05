@@ -19,7 +19,7 @@ import {selectStakes} from 'pages/Staking/staking.reducer';
 import {Stake} from 'pages/Staking/types';
 import {useAppSelector} from 'hooks/useRedux';
 import {DEPLOYED} from 'constants/index';
-import {usePoolByUserQuery} from 'store/data/enhanced';
+import {usePoolByUserQuery, usePositionByPoolQuery} from 'store/data/enhanced';
 import ms from 'ms.macro';
 
 export interface HomeProps extends HTMLAttributes<HTMLDivElement> {
@@ -308,7 +308,13 @@ export const Animation: React.FC<HomeProps> = () => {
   const {data} = useAppSelector(selectStakes);
 
   //GET Phase 2 Liquidity Info
-  const {BasePool_Address} = DEPLOYED;
+  // const {BasePool_Addres, DOCPool_Address} = DEPLOYED;
+  const {
+    UniswapStaking_Address,
+    DOCPool_Address,
+    BasePool_Address,
+    UniswapStaker_Address,
+  } = DEPLOYED;
   const basePool = usePoolByUserQuery(
     {address: BasePool_Address?.toLowerCase()},
     {

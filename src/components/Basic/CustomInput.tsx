@@ -16,6 +16,7 @@ type CustomInputProp = {
   color?: string;
   br?: number;
   tokenName?: string;
+  fontSize? : string;
   value: any;
   setValue?: Dispatch<SetStateAction<any>>;
   numberOnly?: boolean;

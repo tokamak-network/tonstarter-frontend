@@ -127,7 +127,7 @@ const CustomFieldWithTime = (props: {
   const {values} = useFormikContext();
   const fieldValue = getIn(values, name);
   const [startTime, setStartTime] = useState<number>(0);
-  const [startTimeArray,setStartTimeArray] =  useState([]);
+  const [startTimeArray, setStartTimeArray] = useState([]);
   useEffect(() => {
     const starts = moment.unix(startTime);
     const startDates = moment(starts).set({
@@ -136,11 +136,11 @@ const CustomFieldWithTime = (props: {
       second: startTimeArray[2],
     });
     console.log('startDates', startDates);
-    
+
     setStartTime(startDates.unix());
   }, [startTimeArray, startTime]);
   return (
-    <Box d="flex" >
+    <Box d="flex">
       <Flex style={fieldWrap} flexDir="column" mb={'20px'} pos="relative">
         <Flex mb={'10px'}>
           <Text>{title || name}</Text>
@@ -161,16 +161,16 @@ const CustomFieldWithTime = (props: {
           />
         </Flex>
         <Flex alignItems={'center'} h={'45px'}>
-        <CustomCalendar
+          <CustomCalendar
             setValue={setStartTime}
             // startTime={startTime}
             // endTime={endTime}
             // calendarType={'start'}
             // created={created}
           />
-        
+
           <CustomClock setTime={setStartTimeArray} />
-          </Flex>
+        </Flex>
       </Flex>
       {/* <TimeSetting
         timeStamp={
@@ -751,8 +751,6 @@ export const StepThree: React.FC<StepProp> = (props) => {
   );
 
   function checkTimeLine(data: any) {
-    console.log('--data--');
-    console.log(data);
     for (const [key, value] of Object.entries(data)) {
       if (key === 'snapshot' && value === 0) {
         return setTimeline(1);

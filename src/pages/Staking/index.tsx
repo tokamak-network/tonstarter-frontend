@@ -15,7 +15,7 @@ import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import React, {Fragment, useCallback, useMemo} from 'react';
 import {shortenAddress} from 'utils';
 import {StakingTable} from './StakingTable';
-import {selectStakes} from './staking.reducer';
+import {fetchStakes, selectStakes} from './staking.reducer';
 import {selectApp} from 'store/app/app.reducer';
 import {PageHeader} from 'components/PageHeader';
 import {
@@ -37,6 +37,7 @@ import {useEffect} from 'react';
 import {LoadingDots} from 'components/Loader/LoadingDots';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {getEarnedTon} from './utils/getEarnedTon';
+import {fetchVaults} from './vault.reducer';
 
 type GetDateTimeType =
   | 'sale-start'
@@ -424,6 +425,26 @@ export const Staking = () => {
     [data, dispatch, appConfig.explorerLink],
   );
 
+  const {chainId, library} = useActiveWeb3React();
+  const [tableLoading, setTableLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    async function fetchStakeDatas() {
+      await dispatch(
+        fetchVaults({
+          chainId,
+        }) as any,
+      );
+      await dispatch(
+        fetchStakes({
+          library,
+        }) as any,
+      );
+      setTableLoading(false);
+    }
+    fetchStakeDatas();
+  }, [library]);
+
   return (
     <Fragment>
       <Head title={'Staking'} />
@@ -442,7 +463,7 @@ export const Staking = () => {
             renderDetail={renderRowSubComponent}
             columns={columns}
             data={data}
-            isLoading={loading === 'pending' ? true : false}
+            isLoading={tableLoading}
           />
         </Box>
       </Container>

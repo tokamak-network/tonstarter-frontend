@@ -83,8 +83,6 @@ export async function putEditPool(args: PoolData) {
 }
 
 export async function delPool(args: {poolAddress: string}) {
-  console.log('--args--');
-  console.log(args);
   try {
     const res = await instance.delete(`/pool?chainId=${DEFAULT_NETWORK}`, {
       data: {...args},

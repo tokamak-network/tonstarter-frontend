@@ -120,7 +120,7 @@ export const ManageModal = () => {
   //constant
 
   //getCurrentBlock
-  useEffect(() => {
+  useEffect(() => {    
     async function getCurrentBlock() {
       const currentBlock = await BASE_PROVIDER.getBlockNumber();
       setCurrentBlock(currentBlock);

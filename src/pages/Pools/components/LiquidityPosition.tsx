@@ -96,7 +96,8 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
 
   // const { miningAmount } = lpData;
 
-  useEffect(() => {
+  useEffect(() => {   
+ 
     async function getRange() {
       if (id && address && library) {
         const result = await rangePayload({library, id, address});
@@ -110,7 +111,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
       }
     }
 
-    async function setStakingBtn() {
+    async function setStakingBtn() {      
       const inRange = await getRange();
       if (
         address &&
@@ -165,7 +166,6 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
     library,
     owner,
   ]);
-
   const tooltipMsg = () => {
     return (
       <Flex flexDir="column" fontSize="12px" pt="6px" pl="5px" pr="5px">
