@@ -254,8 +254,7 @@ export const Reward = () => {
     {
       pollingInterval: ms`2m`,
     },
-  );
-
+  );  
   const positionByContract = usePositionByContractQuery(
     {id: stakingPosition},
     {
@@ -279,6 +278,7 @@ export const Reward = () => {
           const withStakedPosition = position.data.positions.filter(
             (position: any) => selectedPool.id === position.pool.id,
           );
+          
           const pols = positionsByPool.data.positions.filter(
             (position: any) =>
               position.owner === UniswapStaker_Address.toLowerCase(),
@@ -309,7 +309,7 @@ export const Reward = () => {
             }),
           );
                     
-          const allPos = withStakedPosition.concat(stringResult);          
+          const allPos = withStakedPosition.concat(stringResult);                    
           setPositions(allPos);
         } else {
           setPositions([]);
@@ -344,7 +344,7 @@ export const Reward = () => {
     setSelectedPool(selected);
     setSelectedToken(undefined);
     setSelectdPosition('');
-
+    setSelectedPoolCreated (selected)
     if (poolAddress === '') {
       setOrderedData(datas);
       setFilteredData(datas);
