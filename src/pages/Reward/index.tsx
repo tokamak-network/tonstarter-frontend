@@ -46,7 +46,7 @@ import {fetchPositionPayload} from '../Pools/utils/fetchPositionPayload';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import {ChevronDownIcon} from '@chakra-ui/icons';
 import {utils, ethers} from 'ethers';
-import {incentiveKey, Token, interfaceReward} from './types'
+import {incentiveKey, Token, interfaceReward, LPToken} from './types'
 
 import moment from 'moment';
 import views from './rewards';
@@ -76,6 +76,7 @@ type Pool = {
   token1Image: string
 };
 
+
 const themeDesign = {
   border: {
     light: 'solid 1px #dfe4ee',
@@ -102,7 +103,7 @@ export const Reward = () => {
   const {colorMode} = useColorMode();
   const {account, library} = useActiveWeb3React();
   const [selectedPool, setSelectedPool] = useState<Pool>();
-  const [selectdPosition, setSelectdPosition] = useState<string>('');
+  const [selectdPosition, setSelectdPosition] = useState<LPToken>();
   const [selected, setSelected] = useState('reward');
   const [pool, setPool] = useState<any[]>([]);
   const [stakingPosition, setStakingPosition] = useState([]);
@@ -255,8 +256,7 @@ export const Reward = () => {
     {
       pollingInterval: ms`2m`,
     },
-  );  
-  
+  );    
   const positionByContract = usePositionByContractQuery(
     {id: stakingPosition},
     {
@@ -264,7 +264,7 @@ export const Reward = () => {
     },
   );
 
-  const [positions, setPositions] = useState([]);
+  const [positions, setPositions] = useState<any[]>([]);
 
   useEffect(() => {
     async function getPosition() {
@@ -309,11 +309,48 @@ export const Reward = () => {
             }),
           );
                     
-          const allPos = withStakedPosition.concat(stringResult);                    
+          const allPos = withStakedPosition.concat(stringResult);                              
           setPositions(allPos);
-        } else {
+        } else if (selectedPool === undefined && account !== undefined && account !== null){
+          
+          let stringResult: any = [];
+          pool.map((pool:any) => {
+            const filtered = position.data.positions.filter((position:any) => position.pool.id === pool.id)
+            filtered.map((filteredPosition: any) => {
+              stringResult.push(filteredPosition)
+            })
+          })
+          const pols = positionsByPool.data.positions.filter(
+            (position: any) =>
+            ethers.utils.getAddress(position.owner) ===  ethers.utils.getAddress(UniswapStaker_Address.toLowerCase()) ||  ethers.utils.getAddress(position.owner) ===  ethers.utils.getAddress(account)
+          ); 
+          if (
+            account === null ||
+            account === undefined ||
+            library === undefined
+          ) {
+            return;
+          }
+          const signer = getSigner(library, account);
+
+          await Promise.all(
+            pols.map(async (token: any) => {
+              const depositInfo = await uniswapStakerContract
+                .connect(signer)
+                .deposits(token.id);
+
+              if (depositInfo.owner === account) {
+                stringResult.push(token);
+              }
+            }),
+          );
+          setPositions(stringResult)           
+        }
+
+        else {
           setPositions([]);
         }
+
       }
     }
     getPosition();
@@ -343,12 +380,12 @@ export const Reward = () => {
     const selected: Pool = pool.find((pool) => pool.id === poolAddress);
     setSelectedPool(selected);
     setSelectedToken(undefined);
-    setSelectdPosition('');
+    setSelectdPosition(undefined);
     setSelectedPoolCreated (selected)
     if (poolAddress === '') {
       setOrderedData(datas);
       setFilteredData(datas);
-      setSelectdPosition('');
+      setSelectdPosition(undefined);
     } else {
       const selectedRewards = datas.filter(
         (data) => data.poolAddress === poolAddress,
@@ -394,7 +431,8 @@ export const Reward = () => {
   };
   const getSelectedPosition = (e: any) => {
     const pos = e.target.value;
-    setSelectdPosition(pos);
+    const selectedLP: any = positions.find((position) =>  position.id === pos)    
+    setSelectdPosition(selectedLP);
   };
   const getTokenFromContract = async (address: string) => {
     const symbolContract = await getTokenSymbol(address, library);
@@ -513,29 +551,17 @@ export const Reward = () => {
                 </Menu>
                 <Menu isLazy>
                   <MenuButton
-                    border={themeDesign.border[colorMode]}
+                    border={'2px solid #2a72e5'}
                     {...MENU_STYLE.buttonStyle({colorMode})} >
                     <Text {...MENU_STYLE.buttonTextStyle({colorMode})}>
-                      {selectdPosition === ''
+                      {selectdPosition === undefined
                         ? 'My LP tokens'
-                        : selectdPosition}
+                        : selectdPosition.id}
                       <span>
                         <ChevronDownIcon />
                       </span>
                     </Text>
                   </MenuButton>
-                  {selectedPool === undefined ? (
-                    <MenuList {...MENU_STYLE.menuListStyle({colorMode})}>
-                      <MenuOptionGroup
-                        pl={'10px'}
-                        defaultValue="asc"
-                        title="My LP Tokens"
-                        type="radio"
-                        fontSize={'12px'}
-                        m={'0px'}
-                        w={'157px'}></MenuOptionGroup>
-                    </MenuList>
-                  ) : (
                     <MenuList {...MENU_STYLE.menuListStyle({colorMode})}>
                       <MenuItem>
                         <Menu isLazy>
@@ -597,7 +623,7 @@ export const Reward = () => {
 
                           <MenuList
                             zIndex={10000}
-                            minHeight={'80px'}
+                            minHeight={'50px'}
                             ml={'-0.845rem'}
                             mr={'1px'}
                             minWidth="156px"
@@ -650,7 +676,7 @@ export const Reward = () => {
                             zIndex={10000}
                             ml={'-0.845rem'}
                             mr={'1px'}
-                            minHeight={'80px'}
+                            minHeight={'100%'}
                             minWidth="156px"
                             borderTop="none"
                             boxShadow="none"
@@ -688,7 +714,7 @@ export const Reward = () => {
                         </Menu>
                       </MenuItem>
                     </MenuList>
-                  )}
+                
                 </Menu>
                 <Menu isLazy>
                   <MenuButton

@@ -16,6 +16,7 @@ import {getPoolName} from '../../utils/token';
 import {CreateReward} from './components/CreateReward';
 import {RewardProgramCardManage} from './components/RewardProgramCardManage';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
+// import { LPToken } from './types';
 
 import {
   chakra,
@@ -35,9 +36,14 @@ type Token = {
   id: string;
   symbol: string;
 };
+type LPToken = {
+  id: string;
+  owner:string;
+  pool: any
+}
 type ManageContainerProps = {
   rewards: any[];
-  position?: string;
+  position?: LPToken;
   selectedPool?: Pool;
   pools: Pool[];
   sortString: string
@@ -118,7 +124,6 @@ export const ManageContainer: FC<ManageContainerProps> = ({
               <RewardProgramCardManage
                 key={index}
                 reward={rewardProps}
-                selectedToken={Number(position)}
                 pageIndex={pageIndex}
                 sortString={sortString}
               />

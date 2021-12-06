@@ -29,7 +29,7 @@ import {soliditySha3} from 'web3-utils';
 import * as TOSABI from 'services/abis/TOS.json';
 import {getTokenSymbol} from '../utils/getTokenSymbol';
 import {UpdatedRedward} from '../types'
-
+import { LPToken } from '../types';
 const themeDesign = {
   border: {
     light: 'solid 1px #dfe4ee',
@@ -46,7 +46,7 @@ const themeDesign = {
 };
 type RewardProgramCardProps = {
   reward: UpdatedRedward;
-  selectedToken: number;
+  selectedToken?: LPToken;
   selectedPool: string;
   sendKey: (key: any) => void;
   pageIndex: number;
@@ -87,7 +87,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     endTime: reward.endTime,
     refundee: reward.incentiveKey.refundee,
   };
-
+  
   const uniswapStakerContract = new Contract(
     UniswapStaker_Address,
     STAKERABI.abi,
@@ -160,7 +160,8 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
       const signer = getSigner(library, account);
       const depositInfo = await uniswapStakerContract
         .connect(signer)
-        .deposits(selectedToken);
+        .deposits(Number(selectedToken?selectedToken.id: '0'));
+
       if (depositInfo.owner === account) {
         const incentiveABI =
           'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)';
@@ -170,9 +171,12 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
         );
         const stakeInfo = await uniswapStakerContract
           .connect(signer)
-          .stakes(selectedToken, incentiveId);
+          .stakes(Number(selectedToken?selectedToken.id: 0), incentiveId);
 
         stakeInfo.liquidity > 0 ? setStaked(true) : setStaked(false);
+      }
+      else {
+        setStaked(false)
       }
     }
 
@@ -185,7 +189,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
         try {
           const rewardInfo = await uniswapStakerContract
             .connect(signer)
-            .getRewardInfo(key, Number(selectedToken));
+            .getRewardInfo(key, Number(selectedToken?selectedToken.id: 0));
           const myReward = Number(rewardInfo.reward);
           setMyReward(myReward);
         } catch (err) {}
@@ -208,6 +212,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
 
   useEffect(() => {
     const setButton = () => {
+      
       const now = moment().unix();
       if (!approved && now > reward.startTime && !staked) {
         setCanApprove(true);
@@ -254,7 +259,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     if (buttonCase === 'Stake') {
       stake({
         library: library,
-        tokenid: selectedToken,
+        tokenid: Number(selectedToken?selectedToken.id:0),
         userAddress: account,
         startTime: reward.startTime,
         endTime: reward.endTime,
@@ -267,7 +272,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     if (buttonCase === 'Unstake') {
       unstake({
         library: library,
-        tokenid: selectedToken,
+        tokenid: Number(selectedToken?selectedToken.id:0),
         userAddress: account,
         startTime: reward.startTime,
         endTime: reward.endTime,
@@ -507,7 +512,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
           {buttonState === 'Stake' &&
           moment().unix() > reward.startTime &&
           !staked &&
-          selectedToken !== 0 ? (
+          Number(selectedToken?selectedToken.id: 0) !== 0 ? (
             <Box pb={'0px'}>
               <Checkbox
                 mt={'5px'}
@@ -544,7 +549,8 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
               moment().unix() < reward.startTime ||
               buttonState === 'Closed' ||
               buttonState === 'In Progress' ||
-              selectedToken === 0 ||
+              Number(selectedToken?selectedToken.id: 0) === 0 ||
+              reward.poolAddress !== (selectedToken?selectedToken.pool.id : '')||
               (staked && buttonState === 'Stake')
             }>
             {buttonState}

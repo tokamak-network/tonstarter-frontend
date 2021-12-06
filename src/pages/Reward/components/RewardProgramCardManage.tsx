@@ -44,7 +44,6 @@ const themeDesign = {
 };
 type RewardProgramCardManageProps = {
   reward: UpdatedRedward;
-  selectedToken: number;
   pageIndex: number;
   sortString: string;
 };
@@ -53,7 +52,6 @@ const {TON_ADDRESS, UniswapStaker_Address} = DEPLOYED;
 
 export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
   reward,
-  selectedToken,
   pageIndex,
   sortString
 }) => {
