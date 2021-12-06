@@ -129,7 +129,7 @@ export const create = async (args: Create) => {
       setRewardAddress('')
       setCreated(receipt)
       setTokeninfo([])
-      const create = await createReward(receipt);     
+      const create = await createReward(arg);     
     }
   } catch (err) {
     store.dispatch(setTxPending({ tx: false }));
