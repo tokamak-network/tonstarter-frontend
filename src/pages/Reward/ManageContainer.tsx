@@ -85,8 +85,9 @@ export const ManageContainer: FC<ManageContainerProps> = ({
 
   return (
     <Flex justifyContent={'space-between'}>
-      {rewards.length !==0? <Flex flexWrap={'wrap'}>
-        <Grid templateColumns="repeat(2, 1fr)" gap={30}>
+      {rewards.length !==0? 
+      <Box flexWrap={'wrap'}>
+        <Grid templateColumns="repeat(2, 1fr)" gap={30} h={'fit-content'}  mb={'30px'}>
           {getPaginatedData().map((reward: any, index) => {
             let token0;
             let token1;
@@ -220,7 +221,7 @@ export const ManageContainer: FC<ManageContainerProps> = ({
             </Flex>
           </Flex>
         </Flex>
-      </Flex> :<Flex> <Text fontFamily={theme.fonts.fld} fontSize={'20px'}>You don't have any reward programs to refund</Text> </Flex>}
+      </Box> :<Flex> <Text fontFamily={theme.fonts.fld} fontSize={'20px'}>You don't have any reward programs to refund</Text> </Flex>}
       
     </Flex>
   );

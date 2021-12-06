@@ -111,10 +111,10 @@ export const RewardContainer: FC<RewardContainerProps> = ({
   };
 
   return (
-    <Flex justifyContent={'space-between'} mb="100px">
+    <Flex justifyContent={'space-between'}>
       {rewards.length !== 0 ? (
-        <Flex flexWrap={'wrap'}>
-          <Grid templateColumns="repeat(2, 1fr)" gap={30}>
+        <Box flexWrap={'wrap'}>
+          <Grid templateColumns="repeat(2, 1fr)" gap={30} h={'fit-content'} mb={'30px'}>
             {getPaginatedData().map((reward: any, index) => {
               const includedPool = pools.find(
                 (pool) => pool.id === reward.poolAddress,
@@ -288,7 +288,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({
               </Flex>
             </Flex>
           </Flex>
-        </Flex>
+        </Box>
       ) : (
         <Flex>
           {' '}
