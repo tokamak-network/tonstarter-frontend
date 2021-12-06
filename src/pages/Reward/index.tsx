@@ -222,7 +222,8 @@ export const Reward = () => {
     async function positionPayload() {
       if (account) {
         const result = await fetchPositionPayload(library, account);
-
+        // console.log('result', result);
+        
         let stringResult: any = [];
         for (let i = 0; i < result?.positionData.length; i++) {
           stringResult.push(result?.positionData[i]?.positionid.toString());
@@ -255,6 +256,7 @@ export const Reward = () => {
       pollingInterval: ms`2m`,
     },
   );  
+  
   const positionByContract = usePositionByContractQuery(
     {id: stakingPosition},
     {
@@ -274,19 +276,17 @@ export const Reward = () => {
 
       if (position.data && positionByContract.data && positionsByPool.data) {
         position.refetch();
-        if (selectedPool !== undefined) {
+        if (selectedPool !== undefined && account !== undefined && account !== null) { 
           const withStakedPosition = position.data.positions.filter(
             (position: any) => selectedPool.id === position.pool.id,
           );
-          
           const pols = positionsByPool.data.positions.filter(
             (position: any) =>
-              position.owner === UniswapStaker_Address.toLowerCase(),
-          );
+            ethers.utils.getAddress(position.owner) ===  ethers.utils.getAddress(UniswapStaker_Address.toLowerCase()) ||  ethers.utils.getAddress(position.owner) ===  ethers.utils.getAddress(account)
+          );          
            const poolsFromSelected = pols.filter(
             (token: any) => token.pool.id === selectedPool.id,
-          );
-
+          );          
           if (
             account === null ||
             account === undefined ||
@@ -514,7 +514,7 @@ export const Reward = () => {
                 <Menu isLazy>
                   <MenuButton
                     border={themeDesign.border[colorMode]}
-                    {...MENU_STYLE.buttonStyle({colorMode})}>
+                    {...MENU_STYLE.buttonStyle({colorMode})} >
                     <Text {...MENU_STYLE.buttonTextStyle({colorMode})}>
                       {selectdPosition === ''
                         ? 'My LP tokens'
@@ -607,7 +607,7 @@ export const Reward = () => {
                             background={
                               colorMode === 'light' ? '#ffffff' : '#222222'
                             }>
-                            {positions.map((item: any, index) => {
+                            {positions.map((item: any, index) => {                              
                               if (item.owner !== account?.toLowerCase()) {
                                 return (
                                   <MenuItem

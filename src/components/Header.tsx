@@ -304,7 +304,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                 _hover={{color: 'blue.100', bg: 'none'}}
                 w={'100%'}
                 h={'37px'}>
-                Reward Program
+                Rewards Program
               </MenuItem>
             </NavLink>
           </MenuList>
