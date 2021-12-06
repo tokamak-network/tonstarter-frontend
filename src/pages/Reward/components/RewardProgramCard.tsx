@@ -171,25 +171,29 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
         );
         const stakeInfo = await uniswapStakerContract
           .connect(signer)
-          .stakes(Number(selectedToken?selectedToken.id: 0), incentiveId);
-
+          .stakes(Number(selectedToken?selectedToken.id: 0), incentiveId);          
         stakeInfo.liquidity > 0 ? setStaked(true) : setStaked(false);
+        getMyReward(stakeInfo.liquidity)
       }
       else {
         setStaked(false)
       }
     }
 
-    async function getMyReward() {
+    async function getMyReward(liquidity: any) {
       if (account === null || account === undefined || library === undefined) {
         return;
       }
-      if (staked) {
+      if (liquidity > 0) {
         const signer = getSigner(library, account);
         try {
+          console.log('selectedToken', selectedToken);
+          
           const rewardInfo = await uniswapStakerContract
             .connect(signer)
             .getRewardInfo(key, Number(selectedToken?selectedToken.id: 0));
+            console.log('rewardInfo', rewardInfo);
+            
           const myReward = Number(rewardInfo.reward);
           setMyReward(myReward);
         } catch (err) {}
@@ -197,7 +201,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     }
     checkApproved();
     checkStaked();
-    getMyReward();
+    
   }, [
     account,
     library,
