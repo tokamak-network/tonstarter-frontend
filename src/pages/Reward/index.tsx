@@ -60,9 +60,9 @@ import {
 import {SideContainer} from './SideContainer';
 const {
   UniswapStaking_Address,
-  DOCPool_Address,
-  BasePool_Address,
   UniswapStaker_Address,
+  WTON_ADDRESS,
+  TOS_ADDRESS
 } = DEPLOYED;
 type Pool = {
   feeTier: string;
@@ -121,7 +121,7 @@ export const Reward = () => {
   const [selectedToken, setSelectedToken] = useState<Token>();
   const [filteredData, setFilteredData] = useState<interfaceReward[]>([]);
   const [filteredManageData, setFilteredManageData] = useState<interfaceReward[]>([]);
-
+  const [selectedPoolCreate, setSelectedPoolCreated] = useState<Pool>();
   const arr: any = [];
   useEffect(() => {
     async function fetchProjectsData() {
@@ -742,8 +742,22 @@ export const Reward = () => {
                     </MenuItem>
                   </MenuList>
                 </Menu>
-               
-                  <Text
+                {selected === 'reward'?(
+                   <Text
+                   textDecoration={'underline'}
+                   pl={'20px'}
+                   cursor={'pointer'}
+                   color={'#0070ed'}
+                   fontSize={'13px'}
+                   onClick={(e) => {
+                     e.preventDefault();
+                     window.open(selectedPool === undefined? 
+                       `https://app.uniswap.org/#/add/${TOS_ADDRESS}/${WTON_ADDRESS}` :`https://app.uniswap.org/#/add/${selectedPool.token0.id}/${selectedPool.token1.id}/${selectedPool.feeTier}`,
+                     );
+                   }}>
+                   Create your {selectedPool === undefined? '' : `${selectedPool.token0.symbol} / ${selectedPool.token1.symbol}` } liquidity tokens here
+                 </Text>
+                ): ( <Text
                     textDecoration={'underline'}
                     pl={'20px'}
                     cursor={'pointer'}
@@ -751,13 +765,12 @@ export const Reward = () => {
                     fontSize={'13px'}
                     onClick={(e) => {
                       e.preventDefault();
-                      window.open(selectedPool === undefined? 
-                        `https://app.uniswap.org/#/add` :`https://app.uniswap.org/#/add/${selectedPool.token0.id}/${selectedPool.token1.id}/${selectedPool.feeTier}`,
+                      window.open(selectedPoolCreate === undefined? 
+                        `https://app.uniswap.org/#/add/${TOS_ADDRESS}/${WTON_ADDRESS}` :`https://app.uniswap.org/#/add/${selectedPoolCreate.token0.id}/${selectedPoolCreate.token1.id}/${selectedPoolCreate.feeTier}`,
                       );
                     }}>
-                    Create your {selectedPool === undefined? '' : `${selectedPool.token0.symbol} / ${selectedPool.token1.symbol}` } liquidity tokens here
-                  </Text>
-              
+                    Create your {selectedPoolCreate === undefined? '' : `${selectedPoolCreate.token0.symbol} / ${selectedPoolCreate.token1.symbol}` } liquidity tokens here
+                  </Text>)}
               </Flex>
               <Flex>
                 <FormControl display="flex" alignItems="center">
@@ -792,6 +805,7 @@ export const Reward = () => {
                   rewards={filteredManageData}
                   pools={pool}
                   sortString={sortString}
+                  
                 />
               )}
               <SideContainer
@@ -799,6 +813,7 @@ export const Reward = () => {
                 selected={selected}
                 rewards={datas}
                 LPTokens={positions}
+                setSelectedPoolCreated={setSelectedPoolCreated}
               />{' '}
             </Flex>
           </Box>

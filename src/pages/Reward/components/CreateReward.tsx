@@ -73,6 +73,7 @@ type Pool = {
 };
 type CreateRewardProps = {
   pools: Pool[];
+  setSelectedPoolCreated: any
 };
 
 type CreateReward = {
@@ -92,7 +93,7 @@ type CreateReward = {
 };
 const {TON_ADDRESS, TOS_ADDRESS, WTON_ADDRESS, DOC_ADDRESS} = DEPLOYED;
 
-export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
+export const CreateReward: FC<CreateRewardProps> = ({pools, setSelectedPoolCreated}) => {
   // const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
   const {colorMode} = useColorMode();
@@ -142,7 +143,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools}) => {
     const filterValue = e.target.value;
     const selectedPool = pools.filter((pool: Pool) => pool.id === filterValue);
     const name = `${selectedPool[0].token0.symbol} / ${selectedPool[0].token1.symbol}`;
-
+    setSelectedPoolCreated(selectedPool[0])
     setName(name);
     setSelectedAddress(selectedPool[0].id);
     setSelectedPool(selectedPool[0]);
