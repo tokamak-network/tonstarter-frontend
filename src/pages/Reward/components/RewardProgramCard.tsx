@@ -87,6 +87,8 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     endTime: reward.endTime,
     refundee: reward.incentiveKey.refundee,
   };
+ 
+  
   
   const uniswapStakerContract = new Contract(
     UniswapStaker_Address,
@@ -174,6 +176,10 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
           .stakes(Number(selectedToken?selectedToken.id: 0), incentiveId);          
         stakeInfo.liquidity > 0 ? setStaked(true) : setStaked(false);
         getMyReward(stakeInfo.liquidity)
+        setInterval(() => {
+          getMyReward(stakeInfo.liquidity)
+        },20000)
+       
       }
       else {
         setStaked(false)
@@ -183,7 +189,8 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     async function getMyReward(liquidity: any) {
       if (account === null || account === undefined || library === undefined) {
         return;
-      }
+      }     
+      
       if (liquidity > 0) {
         const signer = getSigner(library, account);
         try {
