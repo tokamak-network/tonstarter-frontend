@@ -187,13 +187,9 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
       if (liquidity > 0) {
         const signer = getSigner(library, account);
         try {
-          console.log('selectedToken', selectedToken);
-          
           const rewardInfo = await uniswapStakerContract
             .connect(signer)
-            .getRewardInfo(key, Number(selectedToken?selectedToken.id: 0));
-            console.log('rewardInfo', rewardInfo);
-            
+            .getRewardInfo(key, Number(selectedToken?selectedToken.id: 0));            
           const myReward = Number(rewardInfo.reward);
           setMyReward(myReward);
         } catch (err) {}
