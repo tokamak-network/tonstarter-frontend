@@ -124,13 +124,20 @@ export const LPTokenComponent: FC<LPTokenComponentProps> = ({tokens}) => {
               key={index}
               h="30px"
               px={'10px'}
+              cursor={'pointer'}
               fontSize={'13px'}
               fontFamily={theme.fonts.roboto}
               fontWeight={'bold'}
               borderRadius="19px"
               justifyContent={'center'}
               alignItems={'center'}
-              border={themeDesign.border[colorMode]}>
+              border={themeDesign.border[colorMode]}
+              onClick={(e) => {
+                e.preventDefault();
+                window.open(
+                  `https://app.uniswap.org/#/pool/${token.id}`,
+                );
+              }}>
               <Text color={'blue.500'}>#{token.id}</Text>
             </Flex>
           );

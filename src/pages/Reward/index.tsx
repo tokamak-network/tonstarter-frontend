@@ -109,14 +109,14 @@ export const Reward = () => {
   const [poolsFromAPI, setPoolsFromAPI] = useState<any>([]);
   const [manageDatas, setManageDatas] = useState<interfaceReward[]>([]);
   const [isPositionLoading, setIsPositionLoading] = useState(true);
-  const [sortString, setSortString] = useState<string>('start');
+  const [sortString, setSortString] = useState<string>('Start Date');
   const [poolAddresses, setPoolAddresses] = useState<string[]>([]);
   // const {
   //   data: {timeStamp, func},
   // } = useAppSelector(selectTransactionType);
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [orderedData, setOrderedData] = useState<interfaceReward[]>([]);
-  const [order, setOrder] = useState<boolean | 'desc' | 'asc'>('desc');
+  const [order, setOrder] = useState<boolean | 'desc' | 'asc'>('asc');
   const [tokenList, setTokenList] = useState<any[]>([]);
   const [selectedToken, setSelectedToken] = useState<Token>();
   const [filteredData, setFilteredData] = useState<interfaceReward[]>([]);
@@ -690,38 +690,6 @@ export const Reward = () => {
                     </MenuList>
                   )}
                 </Menu>
-
-                {positions.length === 0 ? (
-                  <Text
-                    textDecoration={'underline'}
-                    pl={'20px'}
-                    cursor={'pointer'}
-                    color={'#0070ed'}
-                    fontSize={'13px'}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      window.open(
-                        'https://app.uniswap.org/#/add/0x409c4D8cd5d2924b9bc5509230d16a61289c8153/0xc4A11aaf6ea915Ed7Ac194161d2fC9384F15bff2/3000',
-                      );
-                    }}>
-                    Create your liquidity tokens here
-                  </Text>
-                ) : null}
-              </Flex>
-              <Flex>
-                <FormControl display="flex" alignItems="center" mr={'45px'}>
-                  <FormLabel htmlFor="email-alerts" mb="0">
-                    Manage
-                  </FormLabel>
-                  <Switch
-                    colorScheme={'green'}
-                    onChange={() =>
-                      selected === 'reward'
-                        ? setSelected('manage')
-                        : setSelected('reward')
-                    }
-                  />
-                </FormControl>
                 <Menu isLazy>
                   <MenuButton
                     border={themeDesign.border[colorMode]}
@@ -774,6 +742,38 @@ export const Reward = () => {
                     </MenuItem>
                   </MenuList>
                 </Menu>
+               
+                  <Text
+                    textDecoration={'underline'}
+                    pl={'20px'}
+                    cursor={'pointer'}
+                    color={'#0070ed'}
+                    fontSize={'13px'}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.open(selectedPool === undefined? 
+                        `https://app.uniswap.org/#/add` :`https://app.uniswap.org/#/add/${selectedPool.token0.id}/${selectedPool.token1.id}/${selectedPool.feeTier}`,
+                      );
+                    }}>
+                    Create your {selectedPool === undefined? '' : `${selectedPool.token0.symbol} / ${selectedPool.token1.symbol}` } liquidity tokens here
+                  </Text>
+              
+              </Flex>
+              <Flex>
+                <FormControl display="flex" alignItems="center">
+                  <FormLabel htmlFor="email-alerts" mb="0">
+                    Manage
+                  </FormLabel>
+                  <Switch
+                    colorScheme={'green'}
+                    onChange={() =>
+                      selected === 'reward'
+                        ? setSelected('manage')
+                        : setSelected('reward')
+                    }
+                  />
+                </FormControl>
+               
               </Flex>
             </Flex>
             <Flex flexDir={'row'} mt={'30px'} justifyContent={'space-between'}>
