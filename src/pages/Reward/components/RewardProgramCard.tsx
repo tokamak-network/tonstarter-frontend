@@ -197,8 +197,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
           const rewardInfo = await uniswapStakerContract
             .connect(signer)
             .getRewardInfo(key, Number(selectedToken?selectedToken.id: 0));            
-          const myReward = Number(rewardInfo.reward);
-          setMyReward(myReward);
+          setMyReward(rewardInfo.reward);
         } catch (err) {}
       }
     }
@@ -339,7 +338,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
             <Box>
               <Text>
                 {Number(
-                  ethers.utils.formatEther(myReward.toString()),
+                  ethers.utils.formatEther(myReward),
                 ).toLocaleString(undefined, {
                   minimumFractionDigits: 2,
                 })}{' '}
@@ -350,7 +349,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
                 /{' '}
                 {parseFloat(
                   (
-                    (Number(ethers.utils.formatEther(myReward.toString())) *
+                    (Number(ethers.utils.formatEther(myReward)) *
                       100) /
                     Number(
                       ethers.utils.formatEther(

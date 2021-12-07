@@ -123,6 +123,8 @@ export const Reward = () => {
   const [filteredData, setFilteredData] = useState<interfaceReward[]>([]);
   const [filteredManageData, setFilteredManageData] = useState<interfaceReward[]>([]);
   const [selectedPoolCreate, setSelectedPoolCreated] = useState<Pool>();
+  const [positions, setPositions] = useState<any[]>([]);
+  
   const arr: any = [];
   useEffect(() => {
     async function fetchProjectsData() {
@@ -149,17 +151,17 @@ export const Reward = () => {
   const poolArr = usePoolByArrayQuery(
     {address: poolAddresses},
     {
-      pollingInterval: ms`2m`,
+      pollingInterval: ms`2s`,
     },
   );
 
   const positionsByPool = usePositionByPoolQuery(
     {pool_id: poolAddresses},
     {
-      pollingInterval: ms`2m`,
+      pollingInterval: 2000,
     },
   );
-
+  
   useEffect(() => {
     const filteredData = filterDatas();
     setOrderedData(filteredData);
@@ -256,18 +258,10 @@ export const Reward = () => {
   const position = usePositionByUserQuery(
     {address: account},
     {
-      pollingInterval: ms`2m`,
+      pollingInterval: 2000,
     },
   );    
-//   const positionByContract = usePositionByContractQuery(
-//     {id: stakingPosition},
-//     {
-//       pollingInterval: ms`2m`,
-//     },
-//   );
-// console.log('positionByContract',positionByContract);
-
-  const [positions, setPositions] = useState<any[]>([]);
+  
 
   useEffect(() => {
     async function getPosition() {
@@ -275,10 +269,12 @@ export const Reward = () => {
         UniswapStaker_Address,
         STAKERABI.abi,
         library,
-      );
-
+      );      
       if (position.data && positionsByPool.data) {
-        position.refetch();
+        setTimeout(() => {
+          position.refetch();
+        }, 1000);
+        
         if (selectedPool !== undefined && account !== undefined && account !== null) { 
           const withStakedPosition = position.data.positions.filter(
             (position: any) => selectedPool.id === position.pool.id,
@@ -373,6 +369,8 @@ export const Reward = () => {
     selectedPool,
     transactionType,
     blockNumber,
+    positionsByPool.isLoading,
+    positionsByPool.data,
     position.isLoading,
     position.data,
     account,
@@ -596,7 +594,7 @@ export const Reward = () => {
                             background={
                               colorMode === 'light' ? '#ffffff' : '#222222'
                             }>
-                            {positions.map((item: any, index) => {
+                            {positions.map((item: any, index) => {                              
                               return (
                                 <MenuItem
                                   onClick={getSelectedPosition}
