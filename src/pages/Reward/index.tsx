@@ -152,6 +152,7 @@ export const Reward = () => {
       pollingInterval: ms`2m`,
     },
   );
+console.log(poolArr);
 
   const positionsByPool = usePositionByPoolQuery(
     {pool_id: poolAddresses},
@@ -219,37 +220,39 @@ export const Reward = () => {
     
   }, [account, transactionType, blockNumber, poolArr]);
 
-  useEffect(() => {
-    async function positionPayload() {
-      if (account) {
-        const result = await fetchPositionPayload(library, account);
-        // console.log('result', result);
+  // useEffect(() => {
+  //   async function positionPayload() {
+  //     if (account) {
+  //       const result = await fetchPositionPayload(library, account);
+  //       // console.log('result', result);
         
-        let stringResult: any = [];
-        for (let i = 0; i < result?.positionData.length; i++) {
-          stringResult.push(result?.positionData[i]?.positionid.toString());
-        }
-        setStakingPosition(stringResult);
+  //       let stringResult: any = [];
+  //       for (let i = 0; i < result?.positionData.length; i++) {
+  //         stringResult.push(result?.positionData[i]?.positionid.toString());
+  //       }
+  //       console.log('stringResult', stringResult);
+        
+  //       setStakingPosition(stringResult);
 
-        const StakeUniswap = new Contract(
-          UniswapStaking_Address,
-          StakeUniswapABI.abi,
-          library,
-        );
-        if (library !== undefined) {
-          const signer = getSigner(library, account);
-          const positionIds = await StakeUniswap.connect(
-            signer,
-          ).getUserStakedTokenIds(account);
-        }
+  //       const StakeUniswap = new Contract(
+  //         UniswapStaking_Address,
+  //         StakeUniswapABI.abi,
+  //         library,
+  //       );
+  //       if (library !== undefined) {
+  //         const signer = getSigner(library, account);
+  //         const positionIds = await StakeUniswap.connect(
+  //           signer,
+  //         ).getUserStakedTokenIds(account);
+  //       }
 
-        setTimeout(() => {
-          setIsPositionLoading(false);
-        }, 1500);
-      }
-    }
-    positionPayload();
-  }, [account, orderedData, library]);
+  //       setTimeout(() => {
+  //         setIsPositionLoading(false);
+  //       }, 1500);
+  //     }
+  //   }
+  //   positionPayload();
+  // }, [account, orderedData, library, datas]);
 
   const position = usePositionByUserQuery(
     {address: account},
@@ -257,12 +260,13 @@ export const Reward = () => {
       pollingInterval: ms`2m`,
     },
   );    
-  const positionByContract = usePositionByContractQuery(
-    {id: stakingPosition},
-    {
-      pollingInterval: ms`2m`,
-    },
-  );
+//   const positionByContract = usePositionByContractQuery(
+//     {id: stakingPosition},
+//     {
+//       pollingInterval: ms`2m`,
+//     },
+//   );
+// console.log('positionByContract',positionByContract);
 
   const [positions, setPositions] = useState<any[]>([]);
 
@@ -274,7 +278,7 @@ export const Reward = () => {
         library,
       );
 
-      if (position.data && positionByContract.data && positionsByPool.data) {
+      if (position.data && positionsByPool.data) {
         position.refetch();
         if (selectedPool !== undefined && account !== undefined && account !== null) { 
           const withStakedPosition = position.data.positions.filter(
@@ -311,6 +315,9 @@ export const Reward = () => {
                     
           const allPos = withStakedPosition.concat(stringResult);                              
           setPositions(allPos);
+          setTimeout(() => {
+            setIsPositionLoading(false);
+          }, 1500);
         } else if (selectedPool === undefined && account !== undefined && account !== null){
           
           let stringResult: any = [];
@@ -344,27 +351,33 @@ export const Reward = () => {
               }
             }),
           );
-          setPositions(stringResult)           
+          setPositions(stringResult)    
+          setTimeout(() => {
+            setIsPositionLoading(false);
+          }, 1500);       
         }
 
         else {
+          setTimeout(() => {
+            setIsPositionLoading(false);
+          }, 1500);
           setPositions([]);
         }
-
+        
       }
     }
     getPosition();
     /*eslint-disable*/
   }, [
+    datas,
     pool,
     selectedPool,
     transactionType,
     blockNumber,
     position.isLoading,
-    positionByContract.isLoading,
     position.data,
-    positionByContract.data,
     account,
+    library
   ]);
 
   useEffect(() => {
