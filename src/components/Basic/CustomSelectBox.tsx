@@ -5,13 +5,14 @@ type CustomSelectBoxProp = {
   w: string;
   h: string;
   list: string[];
+  optionName?: string[];
   setValue: Dispatch<SetStateAction<any>>;
   titleValue?: string;
   fontSize?: string;
 };
 
 export const CustomSelectBox = (prop: CustomSelectBoxProp) => {
-  const {w, h, list, setValue, titleValue, fontSize} = prop;
+  const {w, h, list, setValue, titleValue, fontSize, optionName} = prop;
 
   return (
     <Select
@@ -27,8 +28,10 @@ export const CustomSelectBox = (prop: CustomSelectBoxProp) => {
           {titleValue}
         </option>
       ) : null}
-      {list.map((e: string) => {
-        return <option value={e}>{e}</option>;
+      {list.map((e: string, index: number) => {
+        return (
+          <option value={e}>{(optionName && optionName[index]) || e}</option>
+        );
       })}
     </Select>
   );
