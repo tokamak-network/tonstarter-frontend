@@ -140,7 +140,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     }
   }, [reward]);
 
-  useEffect(() => {
+  useEffect(() => {    
     async function checkApproved() {
       if (account === null || account === undefined || library === undefined) {
         return;
@@ -171,13 +171,18 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
         const incentiveId = soliditySha3(
           abicoder.encode([incentiveABI], [key]),
         );
+        
         const stakeInfo = await uniswapStakerContract
           .connect(signer)
-          .stakes(Number(selectedToken?selectedToken.id: 0), incentiveId);          
-        stakeInfo.liquidity > 0 ? setStaked(true) : setStaked(false);
-        getMyReward(stakeInfo.liquidity)
+          .stakes(Number(selectedToken?selectedToken.id: 0), incentiveId);  
+
+          const liquidity = Number(
+            ethers.utils.formatEther(stakeInfo.liquidity),
+          )                  
+        liquidity > 0 ? setStaked(true) : setStaked(false);
+        getMyReward(liquidity)
         setInterval(() => {
-          getMyReward(stakeInfo.liquidity)
+          getMyReward(liquidity)
         },20000)
        
       }
@@ -187,16 +192,17 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     }
 
     async function getMyReward(liquidity: any) {
+    
       if (account === null || account === undefined || library === undefined) {
         return;
       }     
       
-      if (liquidity > 0) {
+      if (liquidity > 0) {        
         const signer = getSigner(library, account);
         try {
           const rewardInfo = await uniswapStakerContract
             .connect(signer)
-            .getRewardInfo(key, Number(selectedToken?selectedToken.id: 0));            
+            .getRewardInfo(key, Number(selectedToken?selectedToken.id: 0));                        
           setMyReward(rewardInfo.reward);
         } catch (err) {}
       }
