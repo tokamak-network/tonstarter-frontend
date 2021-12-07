@@ -152,7 +152,6 @@ export const Reward = () => {
       pollingInterval: ms`2m`,
     },
   );
-console.log(poolArr);
 
   const positionsByPool = usePositionByPoolQuery(
     {pool_id: poolAddresses},
@@ -377,7 +376,7 @@ console.log(poolArr);
     position.isLoading,
     position.data,
     account,
-    library
+    library,orderedData
   ]);
 
   useEffect(() => {
