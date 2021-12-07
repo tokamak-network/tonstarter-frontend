@@ -271,9 +271,7 @@ export const Reward = () => {
         library,
       );      
       if (position.data && positionsByPool.data) {
-        setTimeout(() => {
-          position.refetch();
-        }, 1000);
+        position.refetch();
         
         if (selectedPool !== undefined && account !== undefined && account !== null) { 
           const withStakedPosition = position.data.positions.filter(

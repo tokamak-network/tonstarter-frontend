@@ -28,8 +28,8 @@ import {utils, ethers} from 'ethers';
 import {soliditySha3} from 'web3-utils';
 import * as TOSABI from 'services/abis/TOS.json';
 import {getTokenSymbol} from '../utils/getTokenSymbol';
-import {UpdatedRedward} from '../types'
-import { LPToken } from '../types';
+import {UpdatedRedward} from '../types';
+import {LPToken} from '../types';
 const themeDesign = {
   border: {
     light: 'solid 1px #dfe4ee',
@@ -87,9 +87,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     endTime: reward.endTime,
     refundee: reward.incentiveKey.refundee,
   };
- 
-  
-  
+
   const uniswapStakerContract = new Contract(
     UniswapStaker_Address,
     STAKERABI.abi,
@@ -140,7 +138,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     }
   }, [reward]);
 
-  useEffect(() => {    
+  useEffect(() => {
     async function checkApproved() {
       if (account === null || account === undefined || library === undefined) {
         return;
@@ -162,7 +160,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
       const signer = getSigner(library, account);
       const depositInfo = await uniswapStakerContract
         .connect(signer)
-        .deposits(Number(selectedToken?selectedToken.id: '0'));
+        .deposits(Number(selectedToken ? selectedToken.id : '0'));
 
       if (depositInfo.owner === account) {
         const incentiveABI =
@@ -171,41 +169,36 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
         const incentiveId = soliditySha3(
           abicoder.encode([incentiveABI], [key]),
         );
-        
+
         const stakeInfo = await uniswapStakerContract
           .connect(signer)
-          .stakes(Number(selectedToken?selectedToken.id: 0), incentiveId);  
+          .stakes(Number(selectedToken ? selectedToken.id : 0), incentiveId);
 
-          const liquidity = Number(
-            ethers.utils.formatEther(stakeInfo.liquidity),
-          )                  
+        const liquidity = Number(ethers.utils.formatEther(stakeInfo.liquidity));
         liquidity > 0 ? setStaked(true) : setStaked(false);
-        getMyReward(liquidity)
-       
-      }
-      else {
-        setStaked(false)
+        getMyReward(liquidity);
+      } else {
+        setStaked(false);
       }
     }
 
-    async function getMyReward(liquidity: any) {    
+    async function getMyReward(liquidity: any) {
       if (account === null || account === undefined || library === undefined) {
         return;
-      }     
-      
-      if (liquidity > 0) {        
+      }
+
+      if (liquidity > 0) {
         const signer = getSigner(library, account);
         try {
           const rewardInfo = await uniswapStakerContract
             .connect(signer)
-            .getRewardInfo(key, Number(selectedToken?selectedToken.id: 0));                        
+            .getRewardInfo(key, Number(selectedToken ? selectedToken.id : 0));
           setMyReward(rewardInfo.reward);
         } catch (err) {}
       }
     }
     checkApproved();
     checkStaked();
-    
   }, [
     account,
     library,
@@ -215,12 +208,32 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     approved,
     pageIndex,
     selectedPool,
-    reward
+    reward,
   ]);
+
+  const getReward = async () => {
+    if (account === null || account === undefined || library === undefined) {
+      return;
+    }
+    if (staked) {
+      const signer = getSigner(library, account);
+      try {
+        const rewardInfo = await uniswapStakerContract
+          .connect(signer)
+          .getRewardInfo(key, Number(selectedToken ? selectedToken.id : 0));
+        setMyReward(rewardInfo.reward);
+      } catch (err) {}
+    }
+   
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => getReward(), 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const setButton = () => {
-      
       const now = moment().unix();
       if (!approved && now > reward.startTime && !staked) {
         setCanApprove(true);
@@ -267,7 +280,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     if (buttonCase === 'Stake') {
       stake({
         library: library,
-        tokenid: Number(selectedToken?selectedToken.id:0),
+        tokenid: Number(selectedToken ? selectedToken.id : 0),
         userAddress: account,
         startTime: reward.startTime,
         endTime: reward.endTime,
@@ -280,7 +293,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     if (buttonCase === 'Unstake') {
       unstake({
         library: library,
-        tokenid: Number(selectedToken?selectedToken.id:0),
+        tokenid: Number(selectedToken ? selectedToken.id : 0),
         userAddress: account,
         startTime: reward.startTime,
         endTime: reward.endTime,
@@ -306,9 +319,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
             zIndex={'100'}
           />
           <Avatar
-            src={
-              reward.token1Image
-            }
+            src={reward.token1Image}
             bg={colorMode === 'light' ? '#ffffff' : '#222222'}
             name="T"
             h="50px"
@@ -339,11 +350,12 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
             </Text>
             <Box>
               <Text>
-                {Number(
-                  ethers.utils.formatEther(myReward),
-                ).toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                })}{' '}
+                {Number(ethers.utils.formatEther(myReward)).toLocaleString(
+                  undefined,
+                  {
+                    minimumFractionDigits: 2,
+                  },
+                )}{' '}
                 {
                   checkTokenType(ethers.utils.getAddress(reward.rewardToken))
                     .name
@@ -351,8 +363,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
                 /{' '}
                 {parseFloat(
                   (
-                    (Number(ethers.utils.formatEther(myReward)) *
-                      100) /
+                    (Number(ethers.utils.formatEther(myReward)) * 100) /
                     Number(
                       ethers.utils.formatEther(
                         reward.allocatedReward.toString(),
@@ -520,7 +531,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
           {buttonState === 'Stake' &&
           moment().unix() > reward.startTime &&
           !staked &&
-          Number(selectedToken?selectedToken.id: 0) !== 0 ? (
+          Number(selectedToken ? selectedToken.id : 0) !== 0 ? (
             <Box pb={'0px'}>
               <Checkbox
                 mt={'5px'}
@@ -557,8 +568,9 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
               moment().unix() < reward.startTime ||
               buttonState === 'Closed' ||
               buttonState === 'In Progress' ||
-              Number(selectedToken?selectedToken.id: 0) === 0 ||
-              reward.poolAddress !== (selectedToken?selectedToken.pool.id : '')||
+              Number(selectedToken ? selectedToken.id : 0) === 0 ||
+              reward.poolAddress !==
+                (selectedToken ? selectedToken.pool.id : '') ||
               (staked && buttonState === 'Stake')
             }>
             {buttonState}
