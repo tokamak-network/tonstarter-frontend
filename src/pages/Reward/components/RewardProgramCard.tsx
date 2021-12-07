@@ -180,9 +180,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
             ethers.utils.formatEther(stakeInfo.liquidity),
           )                  
         liquidity > 0 ? setStaked(true) : setStaked(false);
-        setInterval(() => {
-          getMyReward(liquidity)
-        },2000)
+        getMyReward(liquidity)
        
       }
       else {
