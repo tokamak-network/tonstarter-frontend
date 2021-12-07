@@ -78,17 +78,17 @@ export const DistributeModal = () => {
     //Which is lock period for sTOS
 
     const dayINeed = 4; // for Thursday
-    // const today = moment().isoWeekday();
-    // const thisWed = moment().isoWeekday(dayINeed).format('YYYY-MM-DD');
+    const today = moment().isoWeekday();
+    const thisWed = moment().isoWeekday(dayINeed).format('YYYY-MM-DD');
     const nextWed = moment()
       .add(1, 'weeks')
       .isoWeekday(dayINeed)
       .format('YYYY-MM-DD');
-    // if (today === dayINeed || today < dayINeed) {
-    //   return setTimeStamp(thisWed);
-    // } else {
-    //   return setTimeStamp(nextWed);
-    // }
+    if (today === dayINeed || today < dayINeed) {
+      return setTimeStamp(thisWed);
+    } else {
+      return setTimeStamp(nextWed);
+    }
 
     return setTimeStamp(nextWed);
   }, []);
