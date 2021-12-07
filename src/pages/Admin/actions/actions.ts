@@ -37,6 +37,7 @@ const getERC20Approve = async (args: I_CallContract & {amount: string}) => {
 
     return setTx(res);
   } catch (e) {
+    console.log(e);
     store.dispatch(
       //@ts-ignore
       openToast({

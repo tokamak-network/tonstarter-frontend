@@ -33,6 +33,8 @@ export const getClaimalbeList = async (
     const tokensArr = await LOCKTOS_DIVIDEND_CONTRACT.getAvailableClaims(
       account,
     );
+    console.log('--getclaim--');
+    console.log(tokensArr);
     const tokens = tokensArr[0];
 
     //project tokens
