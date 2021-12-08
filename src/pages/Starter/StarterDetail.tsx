@@ -317,14 +317,14 @@ export const StarterDetail = () => {
           )} */}
           {activeStatus === 'claim' && <Claim saleInfo={saleInfo}></Claim>}
         </Flex>
-        {/* <Flex>
+        <Flex>
           {activeStatus && (
             <DetailTable
               saleInfo={saleInfo}
               status={activeStatus}
               detailInfo={detailInfo}></DetailTable>
           )}
-        </Flex> */}
+        </Flex>
       </Flex>
       <ApproveModal></ApproveModal>
     </Flex>
