@@ -9,7 +9,7 @@ export const fetchPositionRangePayload = async (
   library: any,
   id: string,
   account: string,
-) => {     
+) => {         
     if (library === undefined || account === undefined) {
         return
     }
@@ -30,11 +30,15 @@ const getPositionRange = async (
   id: string,
 ) => {
   if (id && library !== undefined) {
+    
+      
     const StakeUniswap = new Contract(UniswapStaking_Address, StakeUniswapABI.abi, library);
     const NPM = new Contract(NPM_Address, NPMABI.abi, library);
     const getApproved = await NPM.isApprovedForAll(account, UniswapStaking_Address)
-    const positions = await NPM.positions(id) 
-    const poolSlot0 = await StakeUniswap.poolSlot0();    
+    const positions = await NPM.positions(id);
+    const poolSlot0 = await StakeUniswap.poolSlot0();   
+    
+     
     return {
       ...positions,
       ...poolSlot0,

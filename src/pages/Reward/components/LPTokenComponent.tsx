@@ -17,7 +17,7 @@ import {FC, useState, useEffect} from 'react';
 import {fetchPositionRangePayload} from '../utils/fetchPositionRangePayloads';
 import {utils, ethers} from 'ethers';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
-
+import {orderBy} from 'lodash';
 type LPTokenComponentProps = {
   tokens: any[];
 };
@@ -62,22 +62,18 @@ export const LPTokenComponent: FC<LPTokenComponentProps> = ({tokens}) => {
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(6);
   const {account: address, library} = useActiveWeb3React();
-  useEffect(() => {
-    async function getRangedssds() {
-      const res = await Promise.all(
-        tokens.map(async (data: any) => {
-          const rang = await getRange(Number(data.id));
-          return {...data, range: rang?.range, liquidity: rang?.res.liquidity};
-        }),
-      );
-      setAllTokens(res);
-    }
-    getRangedssds();
-  }, [tokens, address, library]);
+useEffect (() => {
+
+  const closed = tokens.filter((token: any) =>getStatus(token) === 'closed')
+  const open = tokens.filter((token: any) =>getStatus(token) === 'open')
+  const openOrdered = orderBy(open, (data) =>Number(data.id), ['desc']);
+  const closeOrdered = orderBy(closed, (data) =>Number(data.id), ['desc']);
+  const tokenList = openOrdered.concat(closeOrdered);
+  setAllTokens(tokenList);  
+  
+},[tokens, address, library])
 
   useEffect(() => {
-    // extend the pools array since there is only 1 pool now
-
     const pagenumber = parseInt(
       ((tokens.length - 1) / pageLimit + 1).toString(),
     );
@@ -109,26 +105,13 @@ export const LPTokenComponent: FC<LPTokenComponentProps> = ({tokens}) => {
     return group;
   };
 
-  const getRange = async (id: number) => {
-    const result = await rangePayload({library, id, address});
-    return result;
-  };
-  const rangePayload = async (args: any) => {
-    const {library, id, address} = args;
-    const result = await fetchPositionRangePayload(library, id, address);
-
-    return result;
-  };
-
   const getStatus = (token: any) => {
     const liquidity = Number(
       ethers.utils.formatEther(token.liquidity.toString()),
     );
-    if (liquidity > 0 && token.range) {
-      return 'ranged';
-    } else if (liquidity > 0 && !token.range) {
-      return 'out';
-    } else {
+    if (liquidity > 0 ) {
+      return 'open';
+    }  else {
       return 'closed';
     }
   };

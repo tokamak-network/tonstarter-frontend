@@ -126,7 +126,7 @@ const [staked, setstaked] = useState(true)
     <Flex justifyContent={'space-between'}>
       {rewards.length !== 0 ? (
         <Box flexWrap={'wrap'}>
-          <Grid templateColumns="repeat(2, 1fr)" gap={30} h={'fit-content'} mb={'30px'}>
+          <Grid templateColumns="repeat(2, 1fr)" gap={'30px'} h={'fit-content'} mb={'30px'}>
             {getPaginatedData().map((reward: any, index) => {
               const includedPool = pools.find(
                 (pool) => pool.id === reward.poolAddress,

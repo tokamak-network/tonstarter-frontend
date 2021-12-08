@@ -47,6 +47,7 @@ import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import {ChevronDownIcon} from '@chakra-ui/icons';
 import {utils, ethers} from 'ethers';
 import {incentiveKey, Token, interfaceReward, LPToken} from './types'
+import {fetchPositionRangePayload} from './utils/fetchPositionRangePayloads';
 
 import moment from 'moment';
 import views from './rewards';
@@ -154,7 +155,6 @@ export const Reward = () => {
       pollingInterval: ms`2s`,
     },
   );
-
   const positionsByPool = usePositionByPoolQuery(
     {pool_id: poolAddresses},
     {
@@ -269,7 +269,16 @@ export const Reward = () => {
         UniswapStaker_Address,
         STAKERABI.abi,
         library,
-      );      
+      );     
+      async function getRangedData(stringResult:any) {
+        const res = await Promise.all(
+          stringResult.map(async (data: any) => {
+            const rang = await getRange(Number(data.id));            
+            return {...data, range: rang?.range, liquidity: rang?.res.liquidity};
+          }),
+        );        
+        setPositions(res)    
+      } 
       if (position.data && positionsByPool.data) {
         position.refetch();
         
@@ -306,8 +315,8 @@ export const Reward = () => {
             }),
           );
                     
-          const allPos = withStakedPosition.concat(stringResult);                              
-          setPositions(allPos);
+          const allPos = withStakedPosition.concat(stringResult);  
+          await getRangedData(allPos);                            
           setTimeout(() => {
             setIsPositionLoading(false);
           }, 1500);
@@ -344,7 +353,11 @@ export const Reward = () => {
               }
             }),
           );
-          setPositions(stringResult)    
+
+        
+
+         await getRangedData(stringResult);
+
           setTimeout(() => {
             setIsPositionLoading(false);
           }, 1500);       
@@ -374,13 +387,28 @@ export const Reward = () => {
     account,
     library,orderedData
   ]);
+  const getRange = async (id: number) => {    
+    const result = await rangePayload({library, id, account});
+    return result;
+  };
+  const rangePayload = async (args: any) => {
+   
+    
+    const {library, id, address} = args;
+    if (account === undefined || library === undefined|| account == null ) {return}
+    const result = await fetchPositionRangePayload(library, id, account);    
+    return result;
+  };
 
   useEffect(() => {
-    const filtered = orderedData.filter(
-      (data) => data.incentiveKey.refundee === account,
-    );
-    setManageDatas(filtered);
-    setFilteredManageData(filtered);
+    if (account !== undefined && account !== null) {
+      const filtered = orderedData.filter(
+        (data) =>ethers.utils.getAddress(data.incentiveKey.refundee) ===ethers.utils.getAddress(account),
+      );
+      setManageDatas(filtered);
+      setFilteredManageData(filtered);
+    }
+   
   }, [orderedData, sortString, account, library]);
 
   const getSelectedPool = (e: any) => {
@@ -592,7 +620,7 @@ export const Reward = () => {
                             background={
                               colorMode === 'light' ? '#ffffff' : '#222222'
                             }>
-                            {positions.map((item: any, index) => {                              
+                            {positions.map((item: any, index) => {                                                                                          
                               return (
                                 <MenuItem
                                   onClick={getSelectedPosition}
