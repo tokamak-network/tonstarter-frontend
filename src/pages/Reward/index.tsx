@@ -128,6 +128,9 @@ export const Reward = () => {
   
   const arr: any = [];
   useEffect(() => {
+    setSelectdPosition(undefined)
+  },[account, library])
+  useEffect(() => {
     async function fetchProjectsData() {
       const poolsData: any = await views.getPoolData(library);
       const rewardData = await views.getRewardData(); 
@@ -221,47 +224,22 @@ export const Reward = () => {
     
   }, [account, transactionType, blockNumber, poolArr]);
 
-  // useEffect(() => {
-  //   async function positionPayload() {
-  //     if (account) {
-  //       const result = await fetchPositionPayload(library, account);
-  //       // console.log('result', result);
-        
-  //       let stringResult: any = [];
-  //       for (let i = 0; i < result?.positionData.length; i++) {
-  //         stringResult.push(result?.positionData[i]?.positionid.toString());
-  //       }
-  //       console.log('stringResult', stringResult);
-        
-  //       setStakingPosition(stringResult);
-
-  //       const StakeUniswap = new Contract(
-  //         UniswapStaking_Address,
-  //         StakeUniswapABI.abi,
-  //         library,
-  //       );
-  //       if (library !== undefined) {
-  //         const signer = getSigner(library, account);
-  //         const positionIds = await StakeUniswap.connect(
-  //           signer,
-  //         ).getUserStakedTokenIds(account);
-  //       }
-
-  //       setTimeout(() => {
-  //         setIsPositionLoading(false);
-  //       }, 1500);
-  //     }
-  //   }
-  //   positionPayload();
-  // }, [account, orderedData, library, datas]);
-
   const position = usePositionByUserQuery(
     {address: account},
     {
       pollingInterval: 2000,
     },
   );    
-  
+  const getStatus = (token: any) => {
+    const liquidity = Number(
+      ethers.utils.formatEther(token.liquidity.toString()),
+    );
+    if (liquidity > 0 ) {
+      return 'open';
+    }  else {
+      return 'closed';
+    }
+  };
 
   useEffect(() => {
     async function getPosition() {
@@ -276,8 +254,13 @@ export const Reward = () => {
             const rang = await getRange(Number(data.id));            
             return {...data, range: rang?.range, liquidity: rang?.res.liquidity};
           }),
-        );        
-        setPositions(res)    
+        );   
+        const closed = res.filter((token: any) =>getStatus(token) === 'closed')
+        const open = res.filter((token: any) =>getStatus(token) === 'open')
+        const openOrdered = orderBy(open, (data: any) =>Number(data.id), ['desc']);
+        const closeOrdered = orderBy(closed, (data: any) =>Number(data.id), ['desc']);
+        const tokenList = openOrdered.concat(closeOrdered);     
+        setPositions(tokenList)    
       } 
       if (position.data && positionsByPool.data) {
         position.refetch();
@@ -367,7 +350,8 @@ export const Reward = () => {
           setTimeout(() => {
             setIsPositionLoading(false);
           }, 1500);
-          setPositions([]);
+          setSelectdPosition(undefined)
+          
         }
         
       }
@@ -502,6 +486,7 @@ export const Reward = () => {
     getTokenList();
   }, [datas, account, library, transactionType, blockNumber]);
 
+ 
   return (
     <Fragment>
       <Head title={'Reward'} />
@@ -620,7 +605,8 @@ export const Reward = () => {
                             background={
                               colorMode === 'light' ? '#ffffff' : '#222222'
                             }>
-                            {positions.map((item: any, index) => {                                                                                          
+                            {positions.map((item: any, index) => {  
+                               const status = getStatus(item);                                                                                         
                               return (
                                 <MenuItem
                                   onClick={getSelectedPosition}
@@ -639,6 +625,7 @@ export const Reward = () => {
                                     background: 'transparent',
                                     color: 'blue.100',
                                   }}
+                                  textDecoration={status === 'closed' ?'line-through' : 'none'}
                                   _focus={{background: 'transparent'}}
                                   key={index}>
                                   {item.id}
@@ -671,6 +658,7 @@ export const Reward = () => {
                             }>
                             {positions.map((item: any, index) => {                              
                               if (item.owner !== account?.toLowerCase()) {
+                                const status = getStatus(item);      
                                 return (
                                   <MenuItem
                                     onClick={getSelectedPosition}
@@ -689,6 +677,7 @@ export const Reward = () => {
                                       background: 'transparent',
                                       color: 'blue.100',
                                     }}
+                                    textDecoration={status === 'closed' ?'line-through' : 'none'}
                                     _focus={{background: 'transparent'}}
                                     key={index}>
                                     {item.id}
@@ -721,6 +710,7 @@ export const Reward = () => {
                               colorMode === 'light' ? '#ffffff' : '#222222'
                             }>
                             {positions.map((item: any, index) => {
+                               const status = getStatus(item);      
                               if (item.owner === account?.toLowerCase()) {
                                 return (
                                   <MenuItem
@@ -734,6 +724,7 @@ export const Reward = () => {
                                     fontSize={'12px'}
                                     w={'9.5rem'}
                                     m={'0px'}
+                                    textDecoration={status === 'closed' ?'line-through' : 'none'}
                                     value={item.id}
                                     _hover={{
                                       background: 'transparent',
