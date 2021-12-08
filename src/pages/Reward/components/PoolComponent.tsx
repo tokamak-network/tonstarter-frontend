@@ -103,7 +103,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
         </Text>
       </Flex>
       {getPaginatedData().map((pool: any, index:number) => {
-        const length = pool.poolDayData.length - 1;      
+        const length = pool.hourData.length - 1;      
         const numRewards = rewards.filter(
           (reward) => reward.poolAddress === pool.id,
         ).length;
@@ -163,7 +163,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
               <Text fontSize={'18px'}>
                 {' '}
                 ${' '}
-                {Number(pool.poolDayData[length].tvlUSD).toLocaleString(
+                {Number(pool.hourData[length].tvlUSD).toLocaleString(
                   undefined,
                   {
                     minimumFractionDigits: 2,

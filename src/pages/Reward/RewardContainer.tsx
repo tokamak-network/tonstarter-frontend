@@ -28,7 +28,7 @@ import {number} from 'prop-types';
 type Pool = {
   id: string;
   liquidity: string;
-  poolDayData: [];
+  hourData: [];
   tick: string;
   token0: Token;
   token1: Token;
