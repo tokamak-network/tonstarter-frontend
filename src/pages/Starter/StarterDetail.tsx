@@ -222,11 +222,11 @@ export const StarterDetail = () => {
 
   useEffect(() => {
     setInterval(() => {
-      // const {endAddWhiteTime, endExclusiveTime, endDepositTime} = saleInfo;
+      if (!saleInfo) {
+        return;
+      }
+      const {endAddWhiteTime, endExclusiveTime, endDepositTime} = saleInfo;
       const nowTimeStamp = moment().unix();
-      const endAddWhiteTime = nowTimeStamp + 600;
-      const endExclusiveTime = nowTimeStamp + 800;
-      const endDepositTime = nowTimeStamp + 120;
 
       const checkStep =
         endAddWhiteTime > nowTimeStamp
@@ -238,9 +238,8 @@ export const StarterDetail = () => {
           : 'claim';
       setActiveStatus(checkStep);
     }, 1000);
-
     /*eslint-disable*/
-  }, []);
+  }, [saleInfo]);
 
   if (!saleInfo) {
     return (

@@ -37,6 +37,7 @@ export const getClaimalbeList = async (
     let claimableTokens = [];
     let isError = false;
     let i = 0;
+
     do {
       try {
         const tokenAddress = await LOCKTOS_DIVIDEND_CONTRACT.distributedTokens(
