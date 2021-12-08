@@ -4353,9 +4353,9 @@ export type PoolByArrayQuery = (
     ), token1: (
       { __typename?: 'Token' }
       & Pick<Token, 'id' | 'symbol'>
-    ), poolDayData: Array<(
-      { __typename?: 'PoolDayData' }
-      & Pick<PoolDayData, 'id' | 'date' | 'volumeUSD' | 'feesUSD' | 'tvlUSD'>
+    ), hourData: Array<(
+      { __typename?: 'PoolHourData' }
+      & Pick<PoolHourData, 'id' | 'periodStartUnix' | 'volumeUSD' | 'feesUSD' | 'tvlUSD'>
     )> }
   )> }
 );
@@ -4501,6 +4501,8 @@ export const PoolByArrayDocument = `
   pools(where: {id_in: $address}, first: 1000) {
     id
     feeTier
+    liquidity
+    tick
     token0 {
       id
       symbol

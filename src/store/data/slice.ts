@@ -71,6 +71,8 @@ export const api = createApi({
             pools(where: { id_in: $address }, first: 1000) {
               id
               feeTier
+              liquidity
+              tick
               token0 {
                 id
                 symbol
