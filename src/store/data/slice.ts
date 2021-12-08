@@ -70,12 +70,16 @@ export const api = createApi({
           query poolByArray($address: [ID!]) {
             pools(first:1000, where: {id_in: $address}) {
               id
-              createdAtBlockNumber
+              feeTier
+              liquidity
+              tick
               token0 {
                 id
+                symbol
               }
               token1 {
                 id
+                symbol
               }
               hourData: poolHourData(orderBy: periodStartUnix, orderDirection: desc) {
                 id
