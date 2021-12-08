@@ -58,7 +58,9 @@ export const fetchStarters = createAsyncThunk(
       .then((res) => res.json())
       .then((result) => result);
 
-    const starterData = starterReq.datas;
+    const starterData = starterReq.datas.filter(
+      (data: AdminObject) => data.production === 'production',
+    );
 
     const nowTimeStamp = moment().unix();
 
