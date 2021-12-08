@@ -23,6 +23,7 @@ export type Scalars = {
 export type Block_Height = {
   hash?: Maybe<Scalars['Bytes']>;
   number?: Maybe<Scalars['Int']>;
+  number_gte?: Maybe<Scalars['Int']>;
 };
 
 export type Bundle = {
@@ -869,7 +870,7 @@ export type Pool = {
   totalValueLockedUSDUntracked: Scalars['BigDecimal'];
   liquidityProviderCount: Scalars['BigInt'];
   poolHourData: Array<PoolHourData>;
-  poolDayData: Array<PoolDayData>;
+  hourData: Array<hourData>;
   mints: Array<Mint>;
   burns: Array<Burn>;
   swaps: Array<Swap>;
@@ -887,12 +888,12 @@ export type PoolPoolHourDataArgs = {
 };
 
 
-export type PoolPoolDayDataArgs = {
+export type PoolhourDataArgs = {
   skip?: Maybe<Scalars['Int']>;
   first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<PoolDayData_OrderBy>;
+  orderBy?: Maybe<hourData_OrderBy>;
   orderDirection?: Maybe<OrderDirection>;
-  where?: Maybe<PoolDayData_Filter>;
+  where?: Maybe<hourData_Filter>;
 };
 
 
@@ -940,8 +941,8 @@ export type PoolTicksArgs = {
   where?: Maybe<Tick_Filter>;
 };
 
-export type PoolDayData = {
-  __typename?: 'PoolDayData';
+export type hourData = {
+  __typename?: 'hourData';
   id: Scalars['ID'];
   date: Scalars['Int'];
   pool: Pool;
@@ -964,7 +965,7 @@ export type PoolDayData = {
   close: Scalars['BigDecimal'];
 };
 
-export type PoolDayData_Filter = {
+export type hourData_Filter = {
   id?: Maybe<Scalars['ID']>;
   id_not?: Maybe<Scalars['ID']>;
   id_gt?: Maybe<Scalars['ID']>;
@@ -1133,7 +1134,7 @@ export type PoolDayData_Filter = {
   close_not_in?: Maybe<Array<Scalars['BigDecimal']>>;
 };
 
-export enum PoolDayData_OrderBy {
+export enum hourData_OrderBy {
   Id = 'id',
   Date = 'date',
   Pool = 'pool',
@@ -1650,7 +1651,7 @@ export enum Pool_OrderBy {
   TotalValueLockedUsdUntracked = 'totalValueLockedUSDUntracked',
   LiquidityProviderCount = 'liquidityProviderCount',
   PoolHourData = 'poolHourData',
-  PoolDayData = 'poolDayData',
+  hourData = 'hourData',
   Mints = 'mints',
   Burns = 'burns',
   Swaps = 'swaps',
@@ -2088,8 +2089,8 @@ export type Query = {
   flashes: Array<Flash>;
   uniswapDayData?: Maybe<UniswapDayData>;
   uniswapDayDatas: Array<UniswapDayData>;
-  poolDayData?: Maybe<PoolDayData>;
-  poolDayDatas: Array<PoolDayData>;
+  hourData?: Maybe<hourData>;
+  hourDatas: Array<hourData>;
   poolHourData?: Maybe<PoolHourData>;
   poolHourDatas: Array<PoolHourData>;
   tickHourData?: Maybe<TickHourData>;
@@ -2357,19 +2358,19 @@ export type QueryUniswapDayDatasArgs = {
 };
 
 
-export type QueryPoolDayDataArgs = {
+export type QueryhourDataArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
-export type QueryPoolDayDatasArgs = {
+export type QueryhourDatasArgs = {
   skip?: Maybe<Scalars['Int']>;
   first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<PoolDayData_OrderBy>;
+  orderBy?: Maybe<hourData_OrderBy>;
   orderDirection?: Maybe<OrderDirection>;
-  where?: Maybe<PoolDayData_Filter>;
+  where?: Maybe<hourData_Filter>;
   block?: Maybe<Block_Height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
@@ -2499,8 +2500,8 @@ export type Subscription = {
   flashes: Array<Flash>;
   uniswapDayData?: Maybe<UniswapDayData>;
   uniswapDayDatas: Array<UniswapDayData>;
-  poolDayData?: Maybe<PoolDayData>;
-  poolDayDatas: Array<PoolDayData>;
+  hourData?: Maybe<hourData>;
+  hourDatas: Array<hourData>;
   poolHourData?: Maybe<PoolHourData>;
   poolHourDatas: Array<PoolHourData>;
   tickHourData?: Maybe<TickHourData>;
@@ -2768,19 +2769,19 @@ export type SubscriptionUniswapDayDatasArgs = {
 };
 
 
-export type SubscriptionPoolDayDataArgs = {
+export type SubscriptionhourDataArgs = {
   id: Scalars['ID'];
   block?: Maybe<Block_Height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
-export type SubscriptionPoolDayDatasArgs = {
+export type SubscriptionhourDatasArgs = {
   skip?: Maybe<Scalars['Int']>;
   first?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<PoolDayData_OrderBy>;
+  orderBy?: Maybe<hourData_OrderBy>;
   orderDirection?: Maybe<OrderDirection>;
-  where?: Maybe<PoolDayData_Filter>;
+  where?: Maybe<hourData_Filter>;
   block?: Maybe<Block_Height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
@@ -4330,9 +4331,9 @@ export type PoolByUserQuery = (
     ), token1: (
       { __typename?: 'Token' }
       & Pick<Token, 'id' | 'symbol'>
-    ), poolDayData: Array<(
-      { __typename?: 'PoolDayData' }
-      & Pick<PoolDayData, 'id' | 'date' | 'volumeUSD' | 'feesUSD' | 'tvlUSD'>
+    ), hourData: Array<(
+      { __typename?: 'hourData' }
+      & Pick<hourData, 'id' | 'date' | 'volumeUSD' | 'feesUSD' | 'tvlUSD'>
     )> }
   )> }
 );
@@ -4346,16 +4347,16 @@ export type PoolByArrayQuery = (
   { __typename?: 'Query' }
   & { pools: Array<(
     { __typename?: 'Pool' }
-    & Pick<Pool, 'id' | 'feeTier' | 'liquidity' | 'tick'>
+    & Pick<Pool, 'id' | 'createdAtBlockNumber'>
     & { token0: (
       { __typename?: 'Token' }
-      & Pick<Token, 'id' | 'symbol'>
+      & Pick<Token, 'id'>
     ), token1: (
       { __typename?: 'Token' }
-      & Pick<Token, 'id' | 'symbol'>
-    ), poolDayData: Array<(
-      { __typename?: 'PoolDayData' }
-      & Pick<PoolDayData, 'id' | 'date' | 'volumeUSD' | 'feesUSD' | 'tvlUSD'>
+      & Pick<Token, 'id'>
+    ), hourData: Array<(
+      { __typename?: 'PoolHourData' }
+      & Pick<PoolHourData, 'id' | 'periodStartUnix' | 'volumeUSD' | 'feesUSD' | 'tvlUSD'>
     )> }
   )> }
 );
@@ -4484,7 +4485,7 @@ export const PoolByUserDocument = `
       id
       symbol
     }
-    poolDayData {
+    hourData {
       id
       date
       volumeUSD
@@ -4498,26 +4499,22 @@ export const PoolByUserDocument = `
     `;
 export const PoolByArrayDocument = `
     query poolByArray($address: [ID!]) {
-  pools(where: {id_in: $address}, first: 1000) {
+  pools(first: 1000, where: {id_in: $address}) {
     id
-    feeTier
+    createdAtBlockNumber
     token0 {
       id
-      symbol
     }
     token1 {
       id
-      symbol
     }
-    poolDayData {
+    hourData: poolHourData(orderBy: periodStartUnix, orderDirection: desc) {
       id
-      date
+      periodStartUnix
       volumeUSD
       feesUSD
       tvlUSD
     }
-    liquidity
-    tick
   }
 }
     `;

@@ -69,7 +69,7 @@ type Pool = {
   feeTier: string;
   id: string;
   liquidity: string;
-  poolDayData: [];
+  hourData: [];
   tick: string;
   token0: Token;
   token1: Token;
@@ -158,6 +158,8 @@ export const Reward = () => {
       pollingInterval: ms`2s`,
     },
   );
+  console.log(poolArr)
+
   const positionsByPool = usePositionByPoolQuery(
     {pool_id: poolAddresses},
     {
