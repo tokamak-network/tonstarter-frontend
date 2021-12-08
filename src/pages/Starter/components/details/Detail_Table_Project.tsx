@@ -65,7 +65,11 @@ export const DetailTableProject: React.FC<DetailTableProjectProps> = (prop) => {
     },
     {
       key: 'Token Allocation',
-      value: `${saleInfo?.tokenAllocationAmount || '0'} ${saleInfo.tokenName}`,
+      value: `${
+        Number(saleInfo?.tokenAllocationAmount).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+        }) || '0'
+      } ${saleInfo.tokenName}`,
     },
     {
       key: 'Funding Crypto',
