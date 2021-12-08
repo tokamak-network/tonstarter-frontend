@@ -166,7 +166,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
                 {Number(pool.poolDayData[length].tvlUSD).toLocaleString(
                   undefined,
                   {
-                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
                   },
                 )}
               </Text>)}

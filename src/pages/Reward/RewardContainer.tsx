@@ -130,7 +130,7 @@ const [staked, setstaked] = useState(true)
             {getPaginatedData().map((reward: any, index) => {
               const includedPool = pools.find(
                 (pool) => pool.id === reward.poolAddress,
-              );
+              );              
               const token0 = includedPool.token0.id;
               const token1 = includedPool.token1.id;
               const token0Image = includedPool.token0Image;
@@ -161,6 +161,7 @@ const [staked, setstaked] = useState(true)
                   pageIndex={pageIndex}
                   stakeList={multipleStakeList}
                   sortString={sortString}
+                  includedPoolLiquidity={includedPool.liquidity}
                 />
               );
             })}

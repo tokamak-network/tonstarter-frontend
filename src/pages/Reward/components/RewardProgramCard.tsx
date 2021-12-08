@@ -47,11 +47,12 @@ const themeDesign = {
 type RewardProgramCardProps = {
   reward: UpdatedRedward;
   selectedToken?: LPToken;
-  selectedPool: string;
+  selectedPool?: string;
   sendKey: (key: any) => void;
   pageIndex: number;
   stakeList: any[];
   sortString: string;
+  includedPoolLiquidity: string;
 };
 
 const {TON_ADDRESS, UniswapStaking_Address, UniswapStaker_Address} = DEPLOYED;
@@ -64,6 +65,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   pageIndex,
   stakeList,
   sortString,
+  includedPoolLiquidity
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -87,7 +89,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     endTime: reward.endTime,
     refundee: reward.incentiveKey.refundee,
   };
-
+  
   const uniswapStakerContract = new Contract(
     UniswapStaker_Address,
     STAKERABI.abi,
@@ -330,7 +332,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
             ml={'-7px'}
           />
         </Box>
-        {staked ? (
+        {staked && selectedToken? (
           <Flex flexDir={'row'} alignItems={'center'}>
             <Box
               w={'8px'}
@@ -345,10 +347,10 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
                   fontSize: 11,
                 }),
               }}
-              mr={'30px'}>
+              mr={'25px'}>
               Joined
             </Text>
-            <Box>
+            <Box textAlign={'right'}>
               <Text>
                 {Number(ethers.utils.formatEther(myReward)).toLocaleString(
                   undefined,
@@ -363,13 +365,11 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
                 /{' '}
                 {parseFloat(
                   (
-                    (Number(ethers.utils.formatEther(myReward)) * 100) /
+                    (Number(ethers.utils.formatEther(selectedToken.liquidity)) * 100) /
                     Number(
-                      ethers.utils.formatEther(
-                        reward.allocatedReward.toString(),
-                      ),
+                      ethers.utils.formatEther(includedPoolLiquidity ),
                     )
-                  ).toFixed(4),
+                  ).toFixed(3),
                 )}
                 %
               </Text>
@@ -389,7 +389,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
                 </Tooltip>
 
                 <Text {...REWARD_STYLE.subText({colorMode, fontSize: 12})}>
-                  / My portion
+                  / My liquidity portion
                 </Text>
               </Flex>
             </Box>

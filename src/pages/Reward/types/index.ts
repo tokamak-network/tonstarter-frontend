@@ -52,5 +52,6 @@ export type PoolData = {
     owner:string;
     pool: {
       id: string
-    }
+    };
+    liquidity: string
   }
