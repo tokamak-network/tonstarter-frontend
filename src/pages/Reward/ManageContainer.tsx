@@ -25,7 +25,7 @@ import {
 type Pool = {
   id: string;
   liquidity: string;
-  hourData: [];
+  poolDayData: [];
   tick: string;
   token0: Token;
   token1: Token;

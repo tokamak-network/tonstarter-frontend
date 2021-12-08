@@ -333,8 +333,8 @@ export const Animation: React.FC<HomeProps> = () => {
         setLiquidity('0');
         return;
       }
-      const {hourData} = WTON_TOS_PAIR;
-      const lastestLiquidity = hourData[0].tvlUSD;
+      const {poolDayData} = WTON_TOS_PAIR;
+      const lastestLiquidity = poolDayData[poolDayData.length - 1].tvlUSD;
       const res = Number(lastestLiquidity).toLocaleString(undefined, {
         minimumFractionDigits: 2,
       });

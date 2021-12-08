@@ -60,7 +60,7 @@ type Pool = {
   feeTier: string;
   id: string;
   liquidity: string;
-  hourData: [];
+  poolDayData: [];
   tick: string;
   token0: {
     id: string;

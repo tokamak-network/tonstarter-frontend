@@ -47,7 +47,7 @@ export const api = createApi({
                 id
                 symbol
               }
-              hourData {
+              poolDayData {
                 id
                 date
                 volumeUSD
@@ -68,22 +68,26 @@ export const api = createApi({
       query: ({ address }) => ({
         document: gql`
           query poolByArray($address: [ID!]) {
-            pools(first:1000, where: {id_in: $address}) {
+            pools(where: { id_in: $address }, first: 1000) {
               id
-              createdAtBlockNumber
+              feeTier
               token0 {
                 id
+                symbol
               }
               token1 {
                 id
+                symbol
               }
-              hourData: poolHourData(orderBy: periodStartUnix, orderDirection: desc) {
+              poolDayData {
                 id
-                periodStartUnix
+                date
                 volumeUSD
                 feesUSD
                 tvlUSD
               }
+              liquidity
+              tick
             }
           }
         `,

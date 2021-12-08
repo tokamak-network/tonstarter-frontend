@@ -355,7 +355,8 @@ export const PoolTable: FC<PoolTableProps> = ({
                   {row.cells.map((cell: any, index: number) => {
                     const data = cell.row.original;
                     const type = cell.column.id;
-                    const {hourData} = data;
+                    const {poolDayData} = data;                    
+                    const length = poolDayData.length - 1;
                     const poolName = getPoolName(
                       data.token0.symbol,
                       data.token1.symbol,
@@ -422,7 +423,7 @@ export const PoolTable: FC<PoolTableProps> = ({
                             <Text>
                               ${' '}
                               {Number(
-                                hourData[0].tvlUSD,
+                                poolDayData[length].tvlUSD,
                               ).toLocaleString(undefined, {
                                 minimumFractionDigits: 2,
                               })}
@@ -443,7 +444,7 @@ export const PoolTable: FC<PoolTableProps> = ({
                             <Text>
                               ${' '}
                               {Number(
-                                hourData[0].volumeUSD,
+                                poolDayData[length].volumeUSD,
                               ).toLocaleString(undefined, {
                                 minimumFractionDigits: 2,
                               })}
@@ -464,7 +465,7 @@ export const PoolTable: FC<PoolTableProps> = ({
                             <Text>
                               ${' '}
                               {Number(
-                                hourData[0].feesUSD,
+                                poolDayData[length].feesUSD,
                               ).toLocaleString(undefined, {
                                 minimumFractionDigits: 2,
                               })}
