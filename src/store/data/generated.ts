@@ -1,3 +1,5 @@
+
+   
 import { api } from './slice';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -23,6 +25,7 @@ export type Scalars = {
 export type Block_Height = {
   hash?: Maybe<Scalars['Bytes']>;
   number?: Maybe<Scalars['Int']>;
+  number_gte?: Maybe<Scalars['Int']>;
 };
 
 export type Bundle = {
@@ -4498,7 +4501,7 @@ export const PoolByUserDocument = `
     `;
 export const PoolByArrayDocument = `
     query poolByArray($address: [ID!]) {
-  pools(where: {id_in: $address}, first: 1000) {
+  pools(first: 1000, where: {id_in: $address}) {
     id
     feeTier
     liquidity
@@ -4511,15 +4514,13 @@ export const PoolByArrayDocument = `
       id
       symbol
     }
-    poolDayData {
+    hourData: poolHourData(orderBy: periodStartUnix, orderDirection: desc) {
       id
-      date
+      periodStartUnix
       volumeUSD
       feesUSD
       tvlUSD
     }
-    liquidity
-    tick
   }
 }
     `;
@@ -4639,4 +4640,3 @@ const injectedRtkApi = api.injectEndpoints({
 
 export { injectedRtkApi as api };
 export const { useAllV3TicksQuery, useLazyAllV3TicksQuery, usePoolByUserQuery, useLazyPoolByUserQuery, usePoolByArrayQuery, useLazyPoolByArrayQuery, usePositionByUserQuery, useLazyPositionByUserQuery, usePositionByContractQuery, useLazyPositionByContractQuery, usePositionByPoolQuery, useLazyPositionByPoolQuery, useFeeTierDistributionQuery, useLazyFeeTierDistributionQuery } = injectedRtkApi;
-
