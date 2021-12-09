@@ -9,13 +9,14 @@ export const fetchPositionRangePayload = async (
   library: any,
   id: string,
   account: string,
+  tick: string
 ) => {         
     if (library === undefined || account === undefined) {
         return
     }
     const res = await getPositionRange(library, account, id);
-    const {tick, tickLower, tickUpper, approved} = res    
-    const range = (tick > tickLower && tick < tickUpper)
+    const { tickLower, tickUpper, approved} = res            
+    const range = (Number(tick) > tickLower && tick < tickUpper)
     return {
         res: res,
       range: range,
@@ -35,13 +36,10 @@ const getPositionRange = async (
     const StakeUniswap = new Contract(UniswapStaking_Address, StakeUniswapABI.abi, library);
     const NPM = new Contract(NPM_Address, NPMABI.abi, library);
     const getApproved = await NPM.isApprovedForAll(account, UniswapStaking_Address)
-    const positions = await NPM.positions(id);
-    const poolSlot0 = await StakeUniswap.poolSlot0();   
-    
+    const positions = await NPM.positions(id);    
      
     return {
       ...positions,
-      ...poolSlot0,
       approved: getApproved,
     }
   }

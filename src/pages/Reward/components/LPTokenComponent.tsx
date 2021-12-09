@@ -62,15 +62,17 @@ export const LPTokenComponent: FC<LPTokenComponentProps> = ({tokens}) => {
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(6);
   const {account: address, library} = useActiveWeb3React();
-useEffect (() => {  
-  const closed = tokens.filter((token: any) =>getStatus(token) === 'closed')
-  const open = tokens.filter((token: any) =>getStatus(token) !== 'closed' )
-  const openOrdered = orderBy(open, (data) =>Number(data.id), ['desc']);
-  const closeOrdered = orderBy(closed, (data) =>Number(data.id), ['desc']);
-  const tokenList = openOrdered.concat(closeOrdered);
-  setAllTokens(tokenList);  
+// useEffect (() => {  
+//   console.log(tokens);
   
-},[tokens, address, library])
+//   const closed = tokens.filter((token: any) =>getStatus(token) === 'closed')
+//   const open = tokens.filter((token: any) =>getStatus(token) !== 'closed' )
+//   const openOrdered = orderBy(open, (data) =>Number(data.id), ['desc']);
+//   const closeOrdered = orderBy(closed, (data) =>Number(data.id), ['desc']);
+//   const tokenList = openOrdered.concat(closeOrdered);
+//   setAllTokens(tokenList);  
+  
+// },[tokens, address, library])
 
   useEffect(() => {
     const pagenumber = parseInt(
@@ -82,7 +84,7 @@ useEffect (() => {
   const getPaginatedData = () => {
     const startIndex = pageIndex * pageLimit - pageLimit;
     const endIndex = startIndex + pageLimit;
-    return allTokens.slice(startIndex, endIndex);
+    return tokens.slice(startIndex, endIndex);
   };
 
   const goToNextPage = () => {
@@ -109,13 +111,13 @@ useEffect (() => {
       ethers.utils.formatEther(token.liquidity.toString()),
     );
     if (liquidity > 0 && token.range) {
-      return 'open';
-    } 
-    else if (liquidity > 0 && !token.range){ 
-      return 'out'
-    }
-     else {
-      return 'closed';
+      return 'openIn';
+    } else if (liquidity > 0 && !token.range) {
+      return 'openOut';
+    } else if (liquidity === 0 && token.range) {
+      return 'closedIn';
+    } else {
+      return 'closedOut';
     }
   };
   return (
@@ -159,13 +161,13 @@ useEffect (() => {
                   borderRadius="19px"
                   justifyContent={'center'}
                   alignItems={'center'}
-                  border={status === 'out'? '1px solid  #ff7800': themeDesign.border[colorMode]}
+                  border={(status === 'openOut' || status === 'closedOut')? '1px solid  #ff7800': themeDesign.border[colorMode]}
                  
                   onClick={(e) => {
                     e.preventDefault();
                     window.open(`https://app.uniswap.org/#/pool/${token.id}`);
                   }}>
-                  <Text  textDecoration={status === 'closed' ?'line-through' : 'none'} color={'blue.500'}>#{token.id}</Text>
+                  <Text  textDecoration={(status === 'closedIn' || status === 'closedOut') ?'line-through' : 'none'} color={'blue.500'}>#{token.id}</Text>
                 </Flex>
               );
             })}

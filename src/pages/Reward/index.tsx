@@ -158,16 +158,12 @@ export const Reward = () => {
       pollingInterval: ms`2s`,
     },
   );
-
-  console.log(poolArr);
-
   const positionsByPool = usePositionByPoolQuery(
     {pool_id: poolAddresses},
     {
       pollingInterval: 2000,
     },
   );
-
   useEffect(() => {
     const filteredData = filterDatas();
     setOrderedData(filteredData);
@@ -236,11 +232,13 @@ export const Reward = () => {
       ethers.utils.formatEther(token.liquidity.toString()),
     );
     if (liquidity > 0 && token.range) {
-      return 'open';
+      return 'openIn';
     } else if (liquidity > 0 && !token.range) {
-      return 'out';
+      return 'openOut';
+    } else if (liquidity === 0 && token.range) {
+      return 'closedIn';
     } else {
-      return 'closed';
+      return 'closedOut';
     }
   };
 
@@ -254,7 +252,12 @@ export const Reward = () => {
       async function getRangedData(stringResult: any) {
         const res = await Promise.all(
           stringResult.map(async (data: any) => {
-            const rang = await getRange(Number(data.id));
+            const includedPool = pool.find(
+              (pol: any) =>
+                ethers.utils.getAddress(pol.id) ===
+                ethers.utils.getAddress(data.pool.id),
+            );
+            const rang = await getRange(Number(data.id), includedPool.tick);
             return {
               ...data,
               range: rang?.range,
@@ -262,19 +265,40 @@ export const Reward = () => {
             };
           }),
         );
-        const closed = res.filter(
-          (token: any) => getStatus(token) === 'closed',
+        const closedIn = res.filter(
+          (token: any) => getStatus(token) === 'closedIn',
         );
-        const open = res.filter((token: any) => getStatus(token) !== 'closed');
-        const openOrdered = orderBy(open, (data: any) => Number(data.id), [
+        const closedOut = res.filter(
+          (token: any) => getStatus(token) === 'closedOut',
+        );
+
+        const openIn = res.filter(
+          (token: any) => getStatus(token) === 'openIn',
+        );
+        const openOut = res.filter(
+          (token: any) => getStatus(token) === 'openOut',
+        );
+
+        const openInOrdered = orderBy(openIn, (data: any) => Number(data.id), [
           'desc',
         ]);
-        const closeOrdered = orderBy(closed, (data: any) => Number(data.id), [
+        const openOutOrdered = orderBy(openOut, (data: any) => Number(data.id), [
           'desc',
         ]);
-        const tokenList = openOrdered.concat(closeOrdered);
+
+        const closedInOrdered = orderBy(closedIn, (data: any) => Number(data.id), [
+          'desc',
+        ]);
+        const closedOutOrdered = orderBy(closedOut, (data: any) => Number(data.id), [
+          'desc',
+        ]);
+
+        const open = openInOrdered.concat(openOutOrdered);
+        const close = closedInOrdered.concat(closedOutOrdered);
+        const tokenList = open.concat(close);
         setPositions(tokenList);
       }
+
       if (position.data && positionsByPool.data) {
         position.refetch();
 
@@ -394,16 +418,16 @@ export const Reward = () => {
     library,
     orderedData,
   ]);
-  const getRange = async (id: number) => {
-    const result = await rangePayload({library, id, account});
+  const getRange = async (id: number, tick: string) => {
+    const result = await rangePayload({library, id, account, tick});
     return result;
   };
   const rangePayload = async (args: any) => {
-    const {library, id, address} = args;
+    const {library, id, tick} = args;
     if (account === undefined || library === undefined || account == null) {
       return;
     }
-    const result = await fetchPositionRangePayload(library, id, account);
+    const result = await fetchPositionRangePayload(library, id, account, tick);
     return result;
   };
 
@@ -636,7 +660,7 @@ export const Reward = () => {
                                 // onClick={() => alert("Kagebunshin")}
                                 h={'30px'}
                                 color={
-                                  status === 'out'
+                                  (status === 'openOut' || status === 'closedOut')
                                     ? '#ff7800'
                                     : colorMode === 'light'
                                     ? '#3e495c'
@@ -651,7 +675,7 @@ export const Reward = () => {
                                   color: 'blue.100',
                                 }}
                                 textDecoration={
-                                  status === 'closed' ? 'line-through' : 'none'
+                                  (status === 'closedIn' || status === 'closedOut') ? 'line-through' : 'none'
                                 }
                                 _focus={{background: 'transparent'}}
                                 key={index}>
@@ -692,7 +716,7 @@ export const Reward = () => {
                                   // onClick={() => alert("Kagebunshin")}
                                   h={'30px'}
                                   color={
-                                    status === 'out'
+                                    (status === 'openOut' || status === 'closedOut')
                                       ? '#ff7800'
                                       : colorMode === 'light'
                                       ? '#3e495c'
@@ -707,7 +731,7 @@ export const Reward = () => {
                                     color: 'blue.100',
                                   }}
                                   textDecoration={
-                                    status === 'closed'
+                                    (status === 'closedIn' || status === 'closedOut') 
                                       ? 'line-through'
                                       : 'none'
                                   }
@@ -750,7 +774,7 @@ export const Reward = () => {
                                   onClick={getSelectedPosition}
                                   h={'30px'}
                                   color={
-                                    status === 'out'
+                                    (status === 'openOut' || status === 'closedOut')
                                       ? '#ff7800'
                                       : colorMode === 'light'
                                       ? '#3e495c'
@@ -760,7 +784,7 @@ export const Reward = () => {
                                   w={'9.5rem'}
                                   m={'0px'}
                                   textDecoration={
-                                    status === 'closed'
+                                    (status === 'closedIn' || status === 'closedOut') 
                                       ? 'line-through'
                                       : 'none'
                                   }
