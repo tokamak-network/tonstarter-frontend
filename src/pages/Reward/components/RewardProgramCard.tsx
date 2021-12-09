@@ -352,10 +352,11 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
             </Text>
             <Box textAlign={'right'}>
               <Text>
-                {Number(ethers.utils.formatEther(myReward)).toLocaleString(
+                
+                {Number(ethers.utils.formatEther(myReward)) < 0.005 ? '<0.00' :Number(ethers.utils.formatEther(myReward)).toLocaleString(
                   undefined,
                   {
-                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
                   },
                 )}{' '}
                 {

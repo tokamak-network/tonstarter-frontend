@@ -228,18 +228,21 @@ export const Reward = () => {
     },
   );
   const getStatus = (token: any) => {
-    const liquidity = Number(
-      ethers.utils.formatEther(token.liquidity.toString()),
-    );
-    if (liquidity > 0 && token.range) {
-      return 'openIn';
-    } else if (liquidity > 0 && !token.range) {
-      return 'openOut';
-    } else if (liquidity === 0 && token.range) {
-      return 'closedIn';
-    } else {
-      return 'closedOut';
+    if (token) {
+      const liquidity = Number(
+        ethers.utils.formatEther(token.liquidity.toString()),
+      );
+      if (liquidity > 0 && token.range) {
+        return 'openIn';
+      } else if (liquidity > 0 && !token.range) {
+        return 'openOut';
+      } else if (liquidity === 0 && token.range) {
+        return 'closedIn';
+      } else {
+        return 'closedOut';
+      }
     }
+  
   };
 
   useEffect(() => {
@@ -257,12 +260,15 @@ export const Reward = () => {
                 ethers.utils.getAddress(pol.id) ===
                 ethers.utils.getAddress(data.pool.id),
             );
-            const rang = await getRange(Number(data.id), includedPool.tick);
-            return {
-              ...data,
-              range: rang?.range,
-              liquidity: rang?.res.liquidity,
-            };
+            if (includedPool) {
+              const rang = await getRange(Number(data.id), includedPool.tick);
+              return {
+                ...data,
+                range: rang?.range,
+                liquidity: rang?.res.liquidity,
+              };
+            }
+           
           }),
         );
         const closedIn = res.filter(
@@ -544,7 +550,7 @@ export const Reward = () => {
             subtitle={'Stake Uniswap V3 liquidity tokens and receive rewards! '}
           />
         </Box>
-        {isPositionLoading !== true && account !== undefined ? (
+        {isPositionLoading !== true && account !== undefined && pool.length !==0 ? (
           <Box>
             <Flex
               fontFamily={theme.fonts.roboto}
