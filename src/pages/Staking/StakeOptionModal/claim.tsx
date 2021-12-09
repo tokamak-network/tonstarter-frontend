@@ -95,7 +95,7 @@ export const ClaimOptionModal = () => {
                     library,
                     stakeContractAddress: contractAddress,
                   }) 
-                 handleCloseModal();
+                  handleCloseModal();
                 }
               }}>
               Claim
