@@ -62,10 +62,9 @@ export const LPTokenComponent: FC<LPTokenComponentProps> = ({tokens}) => {
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(6);
   const {account: address, library} = useActiveWeb3React();
-useEffect (() => {
-
+useEffect (() => {  
   const closed = tokens.filter((token: any) =>getStatus(token) === 'closed')
-  const open = tokens.filter((token: any) =>getStatus(token) === 'open')
+  const open = tokens.filter((token: any) =>getStatus(token) !== 'closed' )
   const openOrdered = orderBy(open, (data) =>Number(data.id), ['desc']);
   const closeOrdered = orderBy(closed, (data) =>Number(data.id), ['desc']);
   const tokenList = openOrdered.concat(closeOrdered);
@@ -109,9 +108,13 @@ useEffect (() => {
     const liquidity = Number(
       ethers.utils.formatEther(token.liquidity.toString()),
     );
-    if (liquidity > 0 ) {
+    if (liquidity > 0 && token.range) {
       return 'open';
-    }  else {
+    } 
+    else if (liquidity > 0 && !token.range){ 
+      return 'out'
+    }
+     else {
       return 'closed';
     }
   };
@@ -156,7 +159,7 @@ useEffect (() => {
                   borderRadius="19px"
                   justifyContent={'center'}
                   alignItems={'center'}
-                  border={themeDesign.border[colorMode]}
+                  border={status === 'out'? '1px solid  #ff7800': themeDesign.border[colorMode]}
                  
                   onClick={(e) => {
                     e.preventDefault();

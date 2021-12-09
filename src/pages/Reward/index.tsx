@@ -46,7 +46,7 @@ import {fetchPositionPayload} from '../Pools/utils/fetchPositionPayload';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import {ChevronDownIcon} from '@chakra-ui/icons';
 import {utils, ethers} from 'ethers';
-import {incentiveKey, Token, interfaceReward, LPToken} from './types'
+import {incentiveKey, Token, interfaceReward, LPToken} from './types';
 import {fetchPositionRangePayload} from './utils/fetchPositionRangePayloads';
 
 import moment from 'moment';
@@ -63,7 +63,7 @@ const {
   UniswapStaking_Address,
   UniswapStaker_Address,
   WTON_ADDRESS,
-  TOS_ADDRESS
+  TOS_ADDRESS,
 } = DEPLOYED;
 type Pool = {
   feeTier: string;
@@ -74,9 +74,8 @@ type Pool = {
   token0: Token;
   token1: Token;
   token0Image: string;
-  token1Image: string
+  token1Image: string;
 };
-
 
 const themeDesign = {
   border: {
@@ -122,20 +121,22 @@ export const Reward = () => {
   const [tokenList, setTokenList] = useState<any[]>([]);
   const [selectedToken, setSelectedToken] = useState<Token>();
   const [filteredData, setFilteredData] = useState<interfaceReward[]>([]);
-  const [filteredManageData, setFilteredManageData] = useState<interfaceReward[]>([]);
+  const [filteredManageData, setFilteredManageData] = useState<
+    interfaceReward[]
+  >([]);
   const [selectedPoolCreate, setSelectedPoolCreated] = useState<Pool>();
   const [positions, setPositions] = useState<any[]>([]);
-  
+
   const arr: any = [];
   useEffect(() => {
-    setSelectdPosition(undefined)
-  },[account, library])
+    setSelectdPosition(undefined);
+  }, [account, library]);
   useEffect(() => {
     async function fetchProjectsData() {
       const poolsData: any = await views.getPoolData(library);
-      const rewardData = await views.getRewardData(); 
-     
-      setPoolsFromAPI(poolsData);     
+      const rewardData = await views.getRewardData();
+
+      setPoolsFromAPI(poolsData);
       const poolArray: any = [];
       if (poolsData) {
         poolsData.map((pool: any) => {
@@ -144,10 +145,9 @@ export const Reward = () => {
       }
 
       if (rewardData) {
-        setDatas(rewardData)
+        setDatas(rewardData);
       }
       setPoolAddresses(poolArray);
-      
     }
     fetchProjectsData();
   }, [account, library, selected]);
@@ -158,7 +158,8 @@ export const Reward = () => {
       pollingInterval: ms`2s`,
     },
   );
-  console.log(poolArr)
+
+  console.log(poolArr);
 
   const positionsByPool = usePositionByPoolQuery(
     {pool_id: poolAddresses},
@@ -166,7 +167,7 @@ export const Reward = () => {
       pollingInterval: 2000,
     },
   );
-  
+
   useEffect(() => {
     const filteredData = filterDatas();
     setOrderedData(filteredData);
@@ -206,24 +207,22 @@ export const Reward = () => {
     const addPoolsInfo = () => {
       const pols = poolArr.data?.pools;
       if (pols !== undefined) {
-        const poooools = 
-          pols.map((data: any) => {
-            const APIPool = poolsFromAPI.find(
-              (pol: any) => pol.poolAddress === data.id,
-            );            
-            const token0Image = APIPool.token0Image
-            const token1Image = APIPool.token1Image
-            return {
-              ...data,
-              token0Image: token0Image,
-              token1Image: token1Image
-            }
-          });
-          setPool(poooools);
+        const poooools = pols.map((data: any) => {
+          const APIPool = poolsFromAPI.find(
+            (pol: any) => pol.poolAddress === data.id,
+          );
+          const token0Image = APIPool.token0Image;
+          const token1Image = APIPool.token1Image;
+          return {
+            ...data,
+            token0Image: token0Image,
+            token1Image: token1Image,
+          };
+        });
+        setPool(poooools);
       }
     };
     addPoolsInfo();
-    
   }, [account, transactionType, blockNumber, poolArr]);
 
   const position = usePositionByUserQuery(
@@ -231,14 +230,16 @@ export const Reward = () => {
     {
       pollingInterval: 2000,
     },
-  );    
+  );
   const getStatus = (token: any) => {
     const liquidity = Number(
       ethers.utils.formatEther(token.liquidity.toString()),
     );
-    if (liquidity > 0 ) {
+    if (liquidity > 0 && token.range) {
       return 'open';
-    }  else {
+    } else if (liquidity > 0 && !token.range) {
+      return 'out';
+    } else {
       return 'closed';
     }
   };
@@ -249,35 +250,52 @@ export const Reward = () => {
         UniswapStaker_Address,
         STAKERABI.abi,
         library,
-      );     
-      async function getRangedData(stringResult:any) {
+      );
+      async function getRangedData(stringResult: any) {
         const res = await Promise.all(
           stringResult.map(async (data: any) => {
-            const rang = await getRange(Number(data.id));            
-            return {...data, range: rang?.range, liquidity: rang?.res.liquidity};
+            const rang = await getRange(Number(data.id));
+            return {
+              ...data,
+              range: rang?.range,
+              liquidity: rang?.res.liquidity,
+            };
           }),
-        );   
-        const closed = res.filter((token: any) =>getStatus(token) === 'closed')
-        const open = res.filter((token: any) =>getStatus(token) === 'open')
-        const openOrdered = orderBy(open, (data: any) =>Number(data.id), ['desc']);
-        const closeOrdered = orderBy(closed, (data: any) =>Number(data.id), ['desc']);
-        const tokenList = openOrdered.concat(closeOrdered);     
-        setPositions(tokenList)    
-      } 
+        );
+        const closed = res.filter(
+          (token: any) => getStatus(token) === 'closed',
+        );
+        const open = res.filter((token: any) => getStatus(token) !== 'closed');
+        const openOrdered = orderBy(open, (data: any) => Number(data.id), [
+          'desc',
+        ]);
+        const closeOrdered = orderBy(closed, (data: any) => Number(data.id), [
+          'desc',
+        ]);
+        const tokenList = openOrdered.concat(closeOrdered);
+        setPositions(tokenList);
+      }
       if (position.data && positionsByPool.data) {
         position.refetch();
-        
-        if (selectedPool !== undefined && account !== undefined && account !== null) { 
+
+        if (
+          selectedPool !== undefined &&
+          account !== undefined &&
+          account !== null
+        ) {
           const withStakedPosition = position.data.positions.filter(
             (position: any) => selectedPool.id === position.pool.id,
           );
           const pols = positionsByPool.data.positions.filter(
             (position: any) =>
-            ethers.utils.getAddress(position.owner) ===  ethers.utils.getAddress(UniswapStaker_Address.toLowerCase()) ||  ethers.utils.getAddress(position.owner) ===  ethers.utils.getAddress(account)
-          );          
-           const poolsFromSelected = pols.filter(
+              ethers.utils.getAddress(position.owner) ===
+                ethers.utils.getAddress(UniswapStaker_Address.toLowerCase()) ||
+              ethers.utils.getAddress(position.owner) ===
+                ethers.utils.getAddress(account),
+          );
+          const poolsFromSelected = pols.filter(
             (token: any) => token.pool.id === selectedPool.id,
-          );          
+          );
           if (
             account === null ||
             account === undefined ||
@@ -299,25 +317,33 @@ export const Reward = () => {
               }
             }),
           );
-                    
-          const allPos = withStakedPosition.concat(stringResult);  
-          await getRangedData(allPos);                            
+
+          const allPos = withStakedPosition.concat(stringResult);
+          await getRangedData(allPos);
           setTimeout(() => {
             setIsPositionLoading(false);
           }, 1500);
-        } else if (selectedPool === undefined && account !== undefined && account !== null){
-          
+        } else if (
+          selectedPool === undefined &&
+          account !== undefined &&
+          account !== null
+        ) {
           let stringResult: any = [];
-          pool.map((pool:any) => {
-            const filtered = position.data.positions.filter((position:any) => position.pool.id === pool.id)
+          pool.map((pool: any) => {
+            const filtered = position.data.positions.filter(
+              (position: any) => position.pool.id === pool.id,
+            );
             filtered.map((filteredPosition: any) => {
-              stringResult.push(filteredPosition)
-            })
-          })
+              stringResult.push(filteredPosition);
+            });
+          });
           const pols = positionsByPool.data.positions.filter(
             (position: any) =>
-            ethers.utils.getAddress(position.owner) ===  ethers.utils.getAddress(UniswapStaker_Address.toLowerCase()) ||  ethers.utils.getAddress(position.owner) ===  ethers.utils.getAddress(account)
-          ); 
+              ethers.utils.getAddress(position.owner) ===
+                ethers.utils.getAddress(UniswapStaker_Address.toLowerCase()) ||
+              ethers.utils.getAddress(position.owner) ===
+                ethers.utils.getAddress(account),
+          );
           if (
             account === null ||
             account === undefined ||
@@ -339,23 +365,17 @@ export const Reward = () => {
             }),
           );
 
-        
+          await getRangedData(stringResult);
 
-         await getRangedData(stringResult);
-
-          setTimeout(() => {
-            setIsPositionLoading(false);
-          }, 1500);       
-        }
-
-        else {
           setTimeout(() => {
             setIsPositionLoading(false);
           }, 1500);
-          setSelectdPosition(undefined)
-          
+        } else {
+          setTimeout(() => {
+            setIsPositionLoading(false);
+          }, 1500);
+          setSelectdPosition(undefined);
         }
-        
       }
     }
     getPosition();
@@ -371,30 +391,32 @@ export const Reward = () => {
     position.isLoading,
     position.data,
     account,
-    library,orderedData
+    library,
+    orderedData,
   ]);
-  const getRange = async (id: number) => {    
+  const getRange = async (id: number) => {
     const result = await rangePayload({library, id, account});
     return result;
   };
   const rangePayload = async (args: any) => {
-   
-    
     const {library, id, address} = args;
-    if (account === undefined || library === undefined|| account == null ) {return}
-    const result = await fetchPositionRangePayload(library, id, account);    
+    if (account === undefined || library === undefined || account == null) {
+      return;
+    }
+    const result = await fetchPositionRangePayload(library, id, account);
     return result;
   };
 
   useEffect(() => {
     if (account !== undefined && account !== null) {
       const filtered = orderedData.filter(
-        (data) =>ethers.utils.getAddress(data.incentiveKey.refundee) ===ethers.utils.getAddress(account),
+        (data) =>
+          ethers.utils.getAddress(data.incentiveKey.refundee) ===
+          ethers.utils.getAddress(account),
       );
       setManageDatas(filtered);
       setFilteredManageData(filtered);
     }
-   
   }, [orderedData, sortString, account, library]);
 
   const getSelectedPool = (e: any) => {
@@ -403,7 +425,7 @@ export const Reward = () => {
     setSelectedPool(selected);
     setSelectedToken(undefined);
     setSelectdPosition(undefined);
-    setSelectedPoolCreated (selected)
+    setSelectedPoolCreated(selected);
     if (poolAddress === '') {
       setOrderedData(datas);
       setFilteredData(datas);
@@ -453,7 +475,7 @@ export const Reward = () => {
   };
   const getSelectedPosition = (e: any) => {
     const pos = e.target.value;
-    const selectedLP: any = positions.find((position) =>  position.id === pos)    
+    const selectedLP: any = positions.find((position) => position.id === pos);
     setSelectdPosition(selectedLP);
   };
   const getTokenFromContract = async (address: string) => {
@@ -488,7 +510,6 @@ export const Reward = () => {
     getTokenList();
   }, [datas, account, library, transactionType, blockNumber]);
 
- 
   return (
     <Fragment>
       <Head title={'Reward'} />
@@ -575,7 +596,7 @@ export const Reward = () => {
                 <Menu isLazy>
                   <MenuButton
                     border={'2px solid #2a72e5'}
-                    {...MENU_STYLE.buttonStyle({colorMode})} >
+                    {...MENU_STYLE.buttonStyle({colorMode})}>
                     <Text {...MENU_STYLE.buttonTextStyle({colorMode})}>
                       {selectdPosition === undefined
                         ? 'My LP tokens'
@@ -585,165 +606,180 @@ export const Reward = () => {
                       </span>
                     </Text>
                   </MenuButton>
-                    <MenuList {...MENU_STYLE.menuListStyle({colorMode})}>
-                      <MenuItem>
-                        <Menu isLazy>
-                          <MenuButton
-                            minWidth={'90px'}
-                            textAlign={'left'}
-                            fontSize={'13px'}>
-                            All <ChevronDownIcon />
-                          </MenuButton>
+                  <MenuList {...MENU_STYLE.menuListStyle({colorMode})}>
+                    <MenuItem>
+                      <Menu isLazy>
+                        <MenuButton
+                          minWidth={'90px'}
+                          textAlign={'left'}
+                          fontSize={'13px'}>
+                          All <ChevronDownIcon />
+                        </MenuButton>
 
-                          <MenuList
-                            zIndex={10000}
-                            ml={'-0.845rem'}
-                            mr={'1px'}
-                            minWidth="155px"
-                            borderTop="none"
-                            boxShadow="none"
-                            borderTopRadius={0}
-                            minHeight={'80px'}
-                            background={
-                              colorMode === 'light' ? '#ffffff' : '#222222'
-                            }>
-                            {positions.map((item: any, index) => {  
-                               const status = getStatus(item);                                                                                         
+                        <MenuList
+                          zIndex={10000}
+                          ml={'-0.845rem'}
+                          mr={'1px'}
+                          minWidth="155px"
+                          borderTop="none"
+                          boxShadow="none"
+                          borderTopRadius={0}
+                          minHeight={'80px'}
+                          background={
+                            colorMode === 'light' ? '#ffffff' : '#222222'
+                          }>
+                          {positions.map((item: any, index) => {
+                            const status = getStatus(item);
+                            return (
+                              <MenuItem
+                                onClick={getSelectedPosition}
+                                // onClick={() => alert("Kagebunshin")}
+                                h={'30px'}
+                                color={
+                                  status === 'out'
+                                    ? '#ff7800'
+                                    : colorMode === 'light'
+                                    ? '#3e495c'
+                                    : '#f3f4f1'
+                                }
+                                fontSize={'12px'}
+                                w={'154px'}
+                                m={'0px'}
+                                value={item.id}
+                                _hover={{
+                                  background: 'transparent',
+                                  color: 'blue.100',
+                                }}
+                                textDecoration={
+                                  status === 'closed' ? 'line-through' : 'none'
+                                }
+                                _focus={{background: 'transparent'}}
+                                key={index}>
+                                {item.id}
+                              </MenuItem>
+                            );
+                          })}
+                        </MenuList>
+                      </Menu>
+                    </MenuItem>
+                    <MenuItem>
+                      <Menu isLazy>
+                        <MenuButton
+                          minWidth={'90px'}
+                          textAlign={'left'}
+                          fontSize={'13px'}>
+                          Staked <ChevronDownIcon />
+                        </MenuButton>
+
+                        <MenuList
+                          zIndex={10000}
+                          minHeight={'50px'}
+                          ml={'-0.845rem'}
+                          mr={'1px'}
+                          minWidth="156px"
+                          borderTop="none"
+                          boxShadow="none"
+                          borderTopRadius={0}
+                          background={
+                            colorMode === 'light' ? '#ffffff' : '#222222'
+                          }>
+                          {positions.map((item: any, index) => {
+                            if (item.owner !== account?.toLowerCase()) {
+                              const status = getStatus(item);
                               return (
                                 <MenuItem
                                   onClick={getSelectedPosition}
                                   // onClick={() => alert("Kagebunshin")}
                                   h={'30px'}
                                   color={
-                                    colorMode === 'light'
+                                    status === 'out'
+                                      ? '#ff7800'
+                                      : colorMode === 'light'
                                       ? '#3e495c'
                                       : '#f3f4f1'
                                   }
                                   fontSize={'12px'}
-                                  w={'154px'}
+                                  w={'153px'}
                                   m={'0px'}
                                   value={item.id}
                                   _hover={{
                                     background: 'transparent',
                                     color: 'blue.100',
                                   }}
-                                  textDecoration={status === 'closed' ?'line-through' : 'none'}
+                                  textDecoration={
+                                    status === 'closed'
+                                      ? 'line-through'
+                                      : 'none'
+                                  }
                                   _focus={{background: 'transparent'}}
                                   key={index}>
                                   {item.id}
                                 </MenuItem>
                               );
-                            })}
-                          </MenuList>
-                        </Menu>
-                      </MenuItem>
-                      <MenuItem>
-                        <Menu isLazy>
-                          <MenuButton
-                            minWidth={'90px'}
-                            textAlign={'left'}
-                            fontSize={'13px'}>
-                            Staked <ChevronDownIcon />
-                          </MenuButton>
+                            }
+                          })}
+                        </MenuList>
+                      </Menu>
+                    </MenuItem>
+                    <MenuItem>
+                      <Menu isLazy>
+                        <MenuButton
+                          minWidth={'90px'}
+                          textAlign={'left'}
+                          fontSize={'13px'}>
+                          Not Staked <ChevronDownIcon />
+                        </MenuButton>
 
-                          <MenuList
-                            zIndex={10000}
-                            minHeight={'50px'}
-                            ml={'-0.845rem'}
-                            mr={'1px'}
-                            minWidth="156px"
-                            borderTop="none"
-                            boxShadow="none"
-                            borderTopRadius={0}
-                            background={
-                              colorMode === 'light' ? '#ffffff' : '#222222'
-                            }>
-                            {positions.map((item: any, index) => {                              
-                              if (item.owner !== account?.toLowerCase()) {
-                                const status = getStatus(item);      
-                                return (
-                                  <MenuItem
-                                    onClick={getSelectedPosition}
-                                    // onClick={() => alert("Kagebunshin")}
-                                    h={'30px'}
-                                    color={
-                                      colorMode === 'light'
-                                        ? '#3e495c'
-                                        : '#f3f4f1'
-                                    }
-                                    fontSize={'12px'}
-                                    w={'153px'}
-                                    m={'0px'}
-                                    value={item.id}
-                                    _hover={{
-                                      background: 'transparent',
-                                      color: 'blue.100',
-                                    }}
-                                    textDecoration={status === 'closed' ?'line-through' : 'none'}
-                                    _focus={{background: 'transparent'}}
-                                    key={index}>
-                                    {item.id}
-                                  </MenuItem>
-                                );
-                              }
-                            })}
-                          </MenuList>
-                        </Menu>
-                      </MenuItem>
-                      <MenuItem>
-                        <Menu isLazy>
-                          <MenuButton
-                            minWidth={'90px'}
-                            textAlign={'left'}
-                            fontSize={'13px'}>
-                            Not Staked <ChevronDownIcon />
-                          </MenuButton>
-
-                          <MenuList
-                            zIndex={10000}
-                            ml={'-0.845rem'}
-                            mr={'1px'}
-                            minHeight={'100%'}
-                            minWidth="156px"
-                            borderTop="none"
-                            boxShadow="none"
-                            borderTopRadius={0}
-                            background={
-                              colorMode === 'light' ? '#ffffff' : '#222222'
-                            }>
-                            {positions.map((item: any, index) => {
-                               const status = getStatus(item);      
-                              if (item.owner === account?.toLowerCase()) {
-                                return (
-                                  <MenuItem
-                                    onClick={getSelectedPosition}
-                                    h={'30px'}
-                                    color={
-                                      colorMode === 'light'
-                                        ? '#3e495c'
-                                        : '#f3f4f1'
-                                    }
-                                    fontSize={'12px'}
-                                    w={'9.5rem'}
-                                    m={'0px'}
-                                    textDecoration={status === 'closed' ?'line-through' : 'none'}
-                                    value={item.id}
-                                    _hover={{
-                                      background: 'transparent',
-                                      color: 'blue.100',
-                                    }}
-                                    _focus={{background: 'transparent'}}
-                                    key={index}>
-                                    {item.id}
-                                  </MenuItem>
-                                );
-                              }
-                            })}
-                          </MenuList>
-                        </Menu>
-                      </MenuItem>
-                    </MenuList>
-                
+                        <MenuList
+                          zIndex={10000}
+                          ml={'-0.845rem'}
+                          mr={'1px'}
+                          minHeight={'100%'}
+                          minWidth="156px"
+                          borderTop="none"
+                          boxShadow="none"
+                          borderTopRadius={0}
+                          background={
+                            colorMode === 'light' ? '#ffffff' : '#222222'
+                          }>
+                          {positions.map((item: any, index) => {
+                            const status = getStatus(item);
+                            if (item.owner === account?.toLowerCase()) {
+                              return (
+                                <MenuItem
+                                  onClick={getSelectedPosition}
+                                  h={'30px'}
+                                  color={
+                                    status === 'out'
+                                      ? '#ff7800'
+                                      : colorMode === 'light'
+                                      ? '#3e495c'
+                                      : '#f3f4f1'
+                                  }
+                                  fontSize={'12px'}
+                                  w={'9.5rem'}
+                                  m={'0px'}
+                                  textDecoration={
+                                    status === 'closed'
+                                      ? 'line-through'
+                                      : 'none'
+                                  }
+                                  value={item.id}
+                                  _hover={{
+                                    background: 'transparent',
+                                    color: 'blue.100',
+                                  }}
+                                  _focus={{background: 'transparent'}}
+                                  key={index}>
+                                  {item.id}
+                                </MenuItem>
+                              );
+                            }
+                          })}
+                        </MenuList>
+                      </Menu>
+                    </MenuItem>
+                  </MenuList>
                 </Menu>
                 <Menu isLazy>
                   <MenuButton
@@ -797,22 +833,8 @@ export const Reward = () => {
                     </MenuItem>
                   </MenuList>
                 </Menu>
-                {selected === 'reward'?(
-                   <Text
-                   textDecoration={'underline'}
-                   pl={'20px'}
-                   cursor={'pointer'}
-                   color={'#0070ed'}
-                   fontSize={'13px'}
-                   onClick={(e) => {
-                     e.preventDefault();
-                     window.open(selectedPool === undefined? 
-                       `https://app.uniswap.org/#/add/${TOS_ADDRESS}/${WTON_ADDRESS}` :`https://app.uniswap.org/#/add/${selectedPool.token0.id}/${selectedPool.token1.id}/${selectedPool.feeTier}`,
-                     );
-                   }}>
-                   Create your {selectedPool === undefined? '' : `${selectedPool.token0.symbol} / ${selectedPool.token1.symbol}` } liquidity tokens here
-                 </Text>
-                ): ( <Text
+                {selected === 'reward' ? (
+                  <Text
                     textDecoration={'underline'}
                     pl={'20px'}
                     cursor={'pointer'}
@@ -820,12 +842,40 @@ export const Reward = () => {
                     fontSize={'13px'}
                     onClick={(e) => {
                       e.preventDefault();
-                      window.open(selectedPoolCreate === undefined? 
-                        `https://app.uniswap.org/#/add/${TOS_ADDRESS}/${WTON_ADDRESS}` :`https://app.uniswap.org/#/add/${selectedPoolCreate.token0.id}/${selectedPoolCreate.token1.id}/${selectedPoolCreate.feeTier}`,
+                      window.open(
+                        selectedPool === undefined
+                          ? `https://app.uniswap.org/#/add/${TOS_ADDRESS}/${WTON_ADDRESS}`
+                          : `https://app.uniswap.org/#/add/${selectedPool.token0.id}/${selectedPool.token1.id}/${selectedPool.feeTier}`,
                       );
                     }}>
-                    Create your {selectedPoolCreate === undefined? '' : `${selectedPoolCreate.token0.symbol} / ${selectedPoolCreate.token1.symbol}` } liquidity tokens here
-                  </Text>)}
+                    Create your{' '}
+                    {selectedPool === undefined
+                      ? ''
+                      : `${selectedPool.token0.symbol} / ${selectedPool.token1.symbol}`}{' '}
+                    liquidity tokens here
+                  </Text>
+                ) : (
+                  <Text
+                    textDecoration={'underline'}
+                    pl={'20px'}
+                    cursor={'pointer'}
+                    color={'#0070ed'}
+                    fontSize={'13px'}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.open(
+                        selectedPoolCreate === undefined
+                          ? `https://app.uniswap.org/#/add/${TOS_ADDRESS}/${WTON_ADDRESS}`
+                          : `https://app.uniswap.org/#/add/${selectedPoolCreate.token0.id}/${selectedPoolCreate.token1.id}/${selectedPoolCreate.feeTier}`,
+                      );
+                    }}>
+                    Create your{' '}
+                    {selectedPoolCreate === undefined
+                      ? ''
+                      : `${selectedPoolCreate.token0.symbol} / ${selectedPoolCreate.token1.symbol}`}{' '}
+                    liquidity tokens here
+                  </Text>
+                )}
               </Flex>
               <Flex>
                 <FormControl display="flex" alignItems="center">
@@ -841,7 +891,6 @@ export const Reward = () => {
                     }
                   />
                 </FormControl>
-               
               </Flex>
             </Flex>
             <Flex flexDir={'row'} mt={'30px'} justifyContent={'space-between'}>
@@ -860,7 +909,6 @@ export const Reward = () => {
                   rewards={filteredManageData}
                   pools={pool}
                   sortString={sortString}
-                  
                 />
               )}
               <SideContainer
