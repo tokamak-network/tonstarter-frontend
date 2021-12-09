@@ -4331,9 +4331,9 @@ export type PoolByUserQuery = (
     ), token1: (
       { __typename?: 'Token' }
       & Pick<Token, 'id' | 'symbol'>
-    ), poolDayData: Array<(
-      { __typename?: 'PoolDayData' }
-      & Pick<PoolDayData, 'id' | 'date' | 'volumeUSD' | 'feesUSD' | 'tvlUSD'>
+    ), hourData: Array<(
+      { __typename?: 'PoolHourData' }
+      & Pick<PoolHourData, 'id' | 'periodStartUnix' | 'volumeUSD' | 'feesUSD' | 'tvlUSD'>
     )> }
   )> }
 );
@@ -4485,9 +4485,9 @@ export const PoolByUserDocument = `
       id
       symbol
     }
-    poolDayData {
+    hourData: poolHourData(orderBy: periodStartUnix, orderDirection: desc) {
       id
-      date
+      periodStartUnix
       volumeUSD
       feesUSD
       tvlUSD

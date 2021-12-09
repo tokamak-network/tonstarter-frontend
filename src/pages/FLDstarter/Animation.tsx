@@ -320,7 +320,7 @@ export const Animation: React.FC<HomeProps> = () => {
       pollingInterval: ms`2m`,
     },
   );
-
+  console.log(basePool)
   useEffect(() => {
     if (basePool?.data?.pools) {
       const {
