@@ -95,7 +95,7 @@ const PastProjectContainer: React.FC<{
                   colorMode,
                   fontSize: 20,
                 })}>
-                {totalRaise || 'XX,XXX,XXX'}
+                {project.tokenFundRaisingTargetAmount}
               </Text>
               <Text>{project.fundingTokenType}</Text>
             </Box>
@@ -115,7 +115,7 @@ const PastProjectContainer: React.FC<{
                 colorMode,
                 fontSize: 20,
               })}>
-              {participants || 'XX,XXX'}
+              {participants}
             </Text>
           </Box>
           {/* <Box d="flex" flexDir="column">
