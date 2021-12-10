@@ -282,10 +282,10 @@ export const StarterDetail = () => {
               <DetailIcons
                 linkInfo={[
                   {sort: 'website', url: `${saleInfo?.website}`},
-                  {sort: 'telegram', url: `${saleInfo?.telegram}`},
-                  {sort: 'medium', url: `${saleInfo?.medium}`},
                   {sort: 'twitter', url: `${saleInfo?.twitter}`},
                   {sort: 'discord', url: `${saleInfo?.discord}`},
+                  {sort: 'telegram', url: `${saleInfo?.telegram}`},
+                  {sort: 'medium', url: `${saleInfo?.medium}`},
                 ]}></DetailIcons>
             </Box>
           </Box>
