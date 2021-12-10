@@ -149,8 +149,12 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
               fontWeight={700}
               w={'95px'}
               ml={'7px'}
+              cursor={'pointer'}
               fontFamily={theme.fonts.fld}
-              fontSize={'17px'}>
+              fontSize={'17px'} onClick={(e) => {
+                e.preventDefault();
+                window.open(`https://info.uniswap.org/#/pools/${pool.id}`);
+              }}>
               {pool.token0.symbol}/{pool.token1.symbol}
             </Text>
             <Box fontFamily={theme.fonts.fld} fontWeight={700}>

@@ -400,7 +400,10 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
         )}
       </Flex>
       <Flex mt={'15px'} alignItems={'center'}>
-        <Text {...REWARD_STYLE.mainText({colorMode})} mr={'10px'}>
+        <Text cursor={'pointer'} {...REWARD_STYLE.mainText({colorMode})}  mr={'10px'} onClick={(e) => {
+                    e.preventDefault();
+                    window.open(`https://info.uniswap.org/#/pools/${reward.poolAddress}`);
+                  }}>
           {reward.poolName}
         </Text>
         <Box>
