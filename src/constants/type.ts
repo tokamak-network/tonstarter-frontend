@@ -23,4 +23,5 @@ export type DEPLOYED_TYPE = {
   PublicSale_ADDRESS: string;
   unstakeLayer2All: string;
   PowerTONSwapper_ADDRESS: string;
+  DoMsaleContractAddress: string;
 };
