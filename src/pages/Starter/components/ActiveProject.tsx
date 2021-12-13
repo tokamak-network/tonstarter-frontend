@@ -14,41 +14,65 @@ import {Link, useRouteMatch} from 'react-router-dom';
 import {ActiveProjectType} from '@Starter/types';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect, useState} from 'react';
-
+import {useCallContract} from 'hooks/useCallContract';
+import {Contract} from '@ethersproject/contracts';
+import * as publicSale from 'services/abis/PublicSale.json';
+import {BigNumber} from 'ethers';
+import {convertNumber} from 'utils/number';
 type ActiveProjectProp = {
   activeProject: ActiveProjectType[];
 };
 
-export const ActiveProject = (props: ActiveProjectProp) => {
-  const {activeProject} = props;
+const ActiveProjectContainer: React.FC<{
+  project: ActiveProjectType;
+  index: number
+}> = (props) => {
+  const {project, index} = props;
   const {colorMode} = useColorMode();
-  const {library} = useActiveWeb3React();
   const theme = useTheme();
-  const match = useRouteMatch();
-
   const {STATER_STYLE} = theme;
+  const {library} = useActiveWeb3React();
+  const match = useRouteMatch();
   const {url} = match;
 
   const [progress, setProgress] = useState<number | undefined>(undefined);
+  const [totalRaise, setTotalRaise] = useState<string | undefined>(undefined);
+  const [participants, setParticipants] = useState<string | undefined>(
+    undefined,
+  );
 
-  useEffect(() => {}, [library]);
+  const PUBLICSALE_CONTRACT = useCallContract(
+    project.saleContractAddress || '',
+    'PUBLIC_SALE',
+  );
+  const tokenType = checkTokenType(
+    '0x2be5e8c109e2197D077D13A82dAead6a9b3433C5',
+  );
+  useEffect(() => {    
+    async function fetchContractData() {
+      const roundOneAmount =
+        await PUBLICSALE_CONTRACT?.totalExPurchasedAmount();
+      const roundTwoAmount = await PUBLICSALE_CONTRACT?.totalDepositAmount();
+      const sum = BigNumber.from(roundOneAmount).add(roundTwoAmount);
+      const convertedSum = convertNumber({
+        amount: sum.toString(),
+        localeString: true,
+      });
 
+      const progressNow =
+        (Number(convertedSum?.replaceAll(',', '')) / 28436) * 100;
+      const participantsNum = await PUBLICSALE_CONTRACT?.totalUsers();
+      setTotalRaise(convertedSum);
+      setProgress(Math.ceil(progressNow));
+      setParticipants(participantsNum.toString());
+    }
+    if (PUBLICSALE_CONTRACT && project) {
+      fetchContractData();
+    }
+  }, [library, project, PUBLICSALE_CONTRACT]);
+ 
   return (
-    <Flex flexDir="column">
-      <Text
-        {...STATER_STYLE.header({colorMode})}
-        alignSelf="center"
-        mb={'30px'}>
-        Active Projects
-      </Text>
-      <Grid templateColumns="repeat(3, 1fr)" gap={30}>
-        {activeProject.map((project: any, index: number) => {
-          const tokenType = checkTokenType(
-            '0x2be5e8c109e2197D077D13A82dAead6a9b3433C5',
-          );
-
-          return (
-            <Link to={`${url}/${project.name}`} id={`active_link_${index}`}>
+<Link to={`${url}/${project.name}`} id={`active_link_${index}`}>
               <Box {...STATER_STYLE.containerStyle({colorMode})}>
                 <Flex justifyContent="space-between" mb={15}>
                   <Avatar
@@ -108,13 +132,13 @@ export const ActiveProject = (props: ActiveProjectProp) => {
                     </Text>
                   </Flex>
                   <Flex>
-                    <Text>{project.totalRaise}</Text>
+                    <Text>{totalRaise? totalRaise: 'XX,XXX'}</Text>
                     <Text>/</Text>
                     <Text>{project.tokenFundRaisingTargetAmount}</Text>
                   </Flex>
                 </Box>
                 <Box mb={'30px'}>
-                  <Progress value={80} borderRadius={10} h={'6px'}></Progress>
+                  <Progress value={(Number(totalRaise?totalRaise: '0' )/Number(project.tokenFundRaisingTargetAmount))*100} borderRadius={10} h={'6px'}></Progress>
                 </Box>
                 <Flex justifyContent="space-between">
                   <Box d="flex" flexDir="column">
@@ -132,7 +156,7 @@ export const ActiveProject = (props: ActiveProjectProp) => {
                           colorMode,
                           fontSize: 20,
                         })}>
-                        10,000,000
+                       {totalRaise?totalRaise: 'XX,XXX.XX'}
                       </Text>
                       <Text>TON</Text>
                     </Box>
@@ -151,7 +175,7 @@ export const ActiveProject = (props: ActiveProjectProp) => {
                         colorMode,
                         fontSize: 20,
                       })}>
-                      10,000
+                     {participants? participants: 'XX'}
                     </Text>
                   </Box>
                   <Box d="flex" flexDir="column">
@@ -189,6 +213,34 @@ export const ActiveProject = (props: ActiveProjectProp) => {
                 </Flex>
               </Box>
             </Link>
+  )
+}
+
+export const ActiveProject = (props: ActiveProjectProp) => {
+  const {activeProject} = props;
+  const {colorMode} = useColorMode();
+  const theme = useTheme();
+  const match = useRouteMatch();
+
+  const {STATER_STYLE} = theme;
+  const {url} = match;
+
+  const [progress, setProgress] = useState<number | undefined>(undefined);
+
+  return (
+    <Flex flexDir="column">
+      <Text
+        {...STATER_STYLE.header({colorMode})}
+        alignSelf="center"
+        mb={'30px'}>
+        Active Projects
+      </Text>
+      <Grid templateColumns="repeat(3, 1fr)" gap={30}>
+        {activeProject.map((project, index) => {
+          return (
+            <ActiveProjectContainer
+            project={project}
+            index={index}></ActiveProjectContainer>
           );
         })}
       </Grid>
