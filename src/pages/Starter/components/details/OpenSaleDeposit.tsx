@@ -142,7 +142,13 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
 
   useEffect(() => {
     if (totalDeposit !== '-' && totalAllocation !== '-') {
-      const dd =
+
+      if (totalDeposit === '0.00') {
+        setProgress('0')
+      }
+
+      else {
+const dd =
         String(
           (Number(totalDeposit.replaceAll(',', '')) /
             (Number(totalAllocation.replaceAll(',', '')) / 527.5)) *
@@ -157,6 +163,8 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
           .split('.')[1]
           .slice(0, 1);
       setProgress(dd);
+      }
+      
     }
   }, [totalDeposit, totalAllocation]);
 
