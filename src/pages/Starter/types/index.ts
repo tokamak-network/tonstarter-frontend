@@ -25,7 +25,8 @@ export type ActiveProjectType = I_StarterProject & {
     startExclusiveTime: number;
     startOpenSaleTime: number;
   };
-  tokenName: string
+  tokenName: string;
+  tokenSymbolImage: string;
 };
 
 export type UpcomingProjectType = I_StarterProject & {
