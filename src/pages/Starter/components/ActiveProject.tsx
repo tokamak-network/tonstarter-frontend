@@ -119,7 +119,7 @@ const ActiveProjectContainer: React.FC<{
           </Text>
           <Flex>
             <Text mr={2} {...STATER_STYLE.subText({colorMode})}>
-              Sale Date
+              {step} Period
             </Text>
             <Text {...STATER_STYLE.subTextBlack({colorMode})}>
               {project.saleStart} ~ {project.saleEnd}
