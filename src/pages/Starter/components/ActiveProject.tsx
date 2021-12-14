@@ -83,8 +83,6 @@ const ActiveProjectContainer: React.FC<{
     setStep(checkStep);
   }, [project]);
 
-  console.log(project);
-
   return (
     <Link to={`${url}/${project.name}`} id={`active_link_${index}`}>
       <Box {...STATER_STYLE.containerStyle({colorMode})}>
