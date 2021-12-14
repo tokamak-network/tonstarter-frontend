@@ -46,3 +46,12 @@ export type PoolData = {
     token0Image: string;
   token1Image: string
   }
+
+  export type LPToken = {
+    id: string;
+    owner:string;
+    pool: {
+      id: string
+    };
+    liquidity: string
+  }

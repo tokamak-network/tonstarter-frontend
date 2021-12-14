@@ -145,7 +145,7 @@ export const bgStyle = {
 
 export const REWARD_STYLE = {
   containerStyle: (props: REWARD_PROP & {isUserTier?: boolean}) => ({
-    w: 382,
+    w: 390,
     h: 272,
     px: '20px',
     pt: '20px',

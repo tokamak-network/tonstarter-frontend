@@ -58,7 +58,9 @@ export const fetchStarters = createAsyncThunk(
       .then((res) => res.json())
       .then((result) => result);
 
-    const starterData = starterReq.datas;
+    const starterData = starterReq.datas.filter(
+      (data: AdminObject) => data.production === 'production',
+    );
 
     const nowTimeStamp = moment().unix();
 
@@ -149,12 +151,17 @@ export const fetchStarters = createAsyncThunk(
           return {
             name: data.name,
             tokenName: data.tokenName,
+            tokenSymbolImage: data.tokenSymbolImage,
             saleStart:
-              checkStep === 'whitelist' || checkStep === 'exclusive'
+              checkStep === 'whitelist'
+                ? moment.unix(data.startAddWhiteTime).format('YYYY.MM.DD')
+                : checkStep === 'exclusive'
                 ? moment.unix(data.startExclusiveTime).format('YYYY.MM.DD')
                 : moment.unix(data.startDepositTime).format('YYYY.MM.DD'),
             saleEnd:
-              checkStep === 'whitelist' || checkStep === 'exclusive'
+              checkStep === 'whitelist'
+                ? moment.unix(data.endAddWhiteTime).format('MM.DD')
+                : checkStep === 'exclusive'
                 ? moment.unix(data.endExclusiveTime).format('MM.DD')
                 : moment.unix(data.endDepositTime).format('MM.DD'),
             isExclusive:

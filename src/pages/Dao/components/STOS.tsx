@@ -61,8 +61,8 @@ export const STOS = () => {
   return (
     <Flex
       w={420}
-      h={'550px'}
-      // h={'430px'}
+      // h={'550px'}
+      h={'430px'}
       p={0}
       pt="19.5px"
       px={'20px'}
@@ -119,10 +119,10 @@ export const STOS = () => {
       <Box h={'68px'}>
         <MySTOS></MySTOS>
       </Box>
-      <Box h={'68px'}>
+      {/* <Box h={'68px'}>
         <Claim></Claim>
       </Box>
-      <Distribute></Distribute>
+      <Distribute></Distribute> */}
     </Flex>
   );
 };

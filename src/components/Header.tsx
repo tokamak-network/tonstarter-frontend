@@ -304,7 +304,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                 _hover={{color: 'blue.100', bg: 'none'}}
                 w={'100%'}
                 h={'37px'}>
-                Reward Program
+                Rewards Program
               </MenuItem>
             </NavLink>
           </MenuList>
@@ -489,7 +489,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           </MenuList>
         </Menu>
 
-        <Menu>
+        {/* <Menu>
           <MenuButton>
             <Text className={match?.isExact ? 'link-match' : 'link'}>
               Admin
@@ -551,7 +551,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
               </MenuItem>
             </NavLink>
           </MenuList>
-        </Menu>
+        </Menu> */}
       </Stack>
     </Box>
   );

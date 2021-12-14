@@ -103,7 +103,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
         </Text>
       </Flex>
       {getPaginatedData().map((pool: any, index:number) => {
-        const length = pool.poolDayData.length - 1;      
+        const length = pool.hourData.length - 1;      
         const numRewards = rewards.filter(
           (reward) => reward.poolAddress === pool.id,
         ).length;
@@ -149,8 +149,12 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
               fontWeight={700}
               w={'95px'}
               ml={'7px'}
+              cursor={'pointer'}
               fontFamily={theme.fonts.fld}
-              fontSize={'17px'}>
+              fontSize={'17px'} onClick={(e) => {
+                e.preventDefault();
+                window.open(`https://info.uniswap.org/#/pools/${pool.id}`);
+              }}>
               {pool.token0.symbol}/{pool.token1.symbol}
             </Text>
             <Box fontFamily={theme.fonts.fld} fontWeight={700}>
@@ -160,13 +164,13 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
                 color={colorMode === 'light' ? 'gray.400' : 'gray.150'}>
                 Liquidity
               </Text>
-              {pool.poolDayData[length].tvlUSD === '0'? (<Text fontSize={'11px'}>No current liquidity data</Text>) : (<Text fontSize={'18px'}>
+              {pool.hourData[0].tvlUSD === '0'? (<Text fontSize={'11px'}>No current liquidity data</Text>) : (<Text fontSize={'18px'}>
                 {' '}
                 ${' '}
-                {Number(pool.poolDayData[length].tvlUSD).toLocaleString(
+                {Number(pool.hourData[0].tvlUSD).toLocaleString(
                   undefined,
                   {
-                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
                   },
                 )}
               </Text>)}

@@ -46,7 +46,8 @@ import {fetchPositionPayload} from '../Pools/utils/fetchPositionPayload';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import {ChevronDownIcon} from '@chakra-ui/icons';
 import {utils, ethers} from 'ethers';
-import {incentiveKey, Token, interfaceReward} from './types'
+import {incentiveKey, Token, interfaceReward, LPToken} from './types';
+import {fetchPositionRangePayload} from './utils/fetchPositionRangePayloads';
 
 import moment from 'moment';
 import views from './rewards';
@@ -60,20 +61,20 @@ import {
 import {SideContainer} from './SideContainer';
 const {
   UniswapStaking_Address,
-  DOCPool_Address,
-  BasePool_Address,
   UniswapStaker_Address,
+  WTON_ADDRESS,
+  TOS_ADDRESS,
 } = DEPLOYED;
 type Pool = {
   feeTier: string;
   id: string;
   liquidity: string;
-  poolDayData: [];
+  hourData: [];
   tick: string;
   token0: Token;
   token1: Token;
   token0Image: string;
-  token1Image: string
+  token1Image: string;
 };
 
 const themeDesign = {
@@ -102,33 +103,40 @@ export const Reward = () => {
   const {colorMode} = useColorMode();
   const {account, library} = useActiveWeb3React();
   const [selectedPool, setSelectedPool] = useState<Pool>();
-  const [selectdPosition, setSelectdPosition] = useState<string>('');
+  const [selectdPosition, setSelectdPosition] = useState<LPToken>();
   const [selected, setSelected] = useState('reward');
   const [pool, setPool] = useState<any[]>([]);
   const [stakingPosition, setStakingPosition] = useState([]);
   const [poolsFromAPI, setPoolsFromAPI] = useState<any>([]);
   const [manageDatas, setManageDatas] = useState<interfaceReward[]>([]);
   const [isPositionLoading, setIsPositionLoading] = useState(true);
-  const [sortString, setSortString] = useState<string>('start');
+  const [sortString, setSortString] = useState<string>('Start Date');
   const [poolAddresses, setPoolAddresses] = useState<string[]>([]);
   // const {
   //   data: {timeStamp, func},
   // } = useAppSelector(selectTransactionType);
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [orderedData, setOrderedData] = useState<interfaceReward[]>([]);
-  const [order, setOrder] = useState<boolean | 'desc' | 'asc'>('desc');
+  const [order, setOrder] = useState<boolean | 'desc' | 'asc'>('asc');
   const [tokenList, setTokenList] = useState<any[]>([]);
   const [selectedToken, setSelectedToken] = useState<Token>();
   const [filteredData, setFilteredData] = useState<interfaceReward[]>([]);
-  const [filteredManageData, setFilteredManageData] = useState<interfaceReward[]>([]);
+  const [filteredManageData, setFilteredManageData] = useState<
+    interfaceReward[]
+  >([]);
+  const [selectedPoolCreate, setSelectedPoolCreated] = useState<Pool>();
+  const [positions, setPositions] = useState<any[]>([]);
 
   const arr: any = [];
   useEffect(() => {
+    setSelectdPosition(undefined);
+  }, [account, library]);
+  useEffect(() => {
     async function fetchProjectsData() {
       const poolsData: any = await views.getPoolData(library);
-      const rewardData = await views.getRewardData(); 
-     
-      setPoolsFromAPI(poolsData);     
+      const rewardData = await views.getRewardData();
+
+      setPoolsFromAPI(poolsData);
       const poolArray: any = [];
       if (poolsData) {
         poolsData.map((pool: any) => {
@@ -137,10 +145,9 @@ export const Reward = () => {
       }
 
       if (rewardData) {
-        setDatas(rewardData)
+        setDatas(rewardData);
       }
       setPoolAddresses(poolArray);
-      
     }
     fetchProjectsData();
   }, [account, library, selected]);
@@ -148,17 +155,15 @@ export const Reward = () => {
   const poolArr = usePoolByArrayQuery(
     {address: poolAddresses},
     {
-      pollingInterval: ms`2m`,
+      pollingInterval: ms`2s`,
     },
   );
-
   const positionsByPool = usePositionByPoolQuery(
     {pool_id: poolAddresses},
     {
-      pollingInterval: ms`2m`,
+      pollingInterval: 2000,
     },
   );
-
   useEffect(() => {
     const filteredData = filterDatas();
     setOrderedData(filteredData);
@@ -198,72 +203,47 @@ export const Reward = () => {
     const addPoolsInfo = () => {
       const pols = poolArr.data?.pools;
       if (pols !== undefined) {
-        const poooools = 
-          pols.map((data: any) => {
-            const APIPool = poolsFromAPI.find(
-              (pol: any) => pol.poolAddress === data.id,
-            );            
-            const token0Image = APIPool.token0Image
-            const token1Image = APIPool.token1Image
-            return {
-              ...data,
-              token0Image: token0Image,
-              token1Image: token1Image
-            }
-          });
-          setPool(poooools);
+        const poooools = pols.map((data: any) => {
+          const APIPool = poolsFromAPI.find(
+            (pol: any) => pol.poolAddress === data.id,
+          );
+          const token0Image = APIPool.token0Image;
+          const token1Image = APIPool.token1Image;
+          return {
+            ...data,
+            token0Image: token0Image,
+            token1Image: token1Image,
+          };
+        });
+        setPool(poooools);
       }
     };
     addPoolsInfo();
-    
   }, [account, transactionType, blockNumber, poolArr]);
-
-  useEffect(() => {
-    async function positionPayload() {
-      if (account) {
-        const result = await fetchPositionPayload(library, account);
-
-        let stringResult: any = [];
-        for (let i = 0; i < result?.positionData.length; i++) {
-          stringResult.push(result?.positionData[i]?.positionid.toString());
-        }
-        setStakingPosition(stringResult);
-
-        const StakeUniswap = new Contract(
-          UniswapStaking_Address,
-          StakeUniswapABI.abi,
-          library,
-        );
-        if (library !== undefined) {
-          const signer = getSigner(library, account);
-          const positionIds = await StakeUniswap.connect(
-            signer,
-          ).getUserStakedTokenIds(account);
-        }
-
-        setTimeout(() => {
-          setIsPositionLoading(false);
-        }, 1500);
-      }
-    }
-    positionPayload();
-  }, [account, orderedData, library]);
 
   const position = usePositionByUserQuery(
     {address: account},
     {
-      pollingInterval: ms`2m`,
+      pollingInterval: 2000,
     },
   );
-
-  const positionByContract = usePositionByContractQuery(
-    {id: stakingPosition},
-    {
-      pollingInterval: ms`2m`,
-    },
-  );
-
-  const [positions, setPositions] = useState([]);
+  const getStatus = (token: any) => {
+    if (token) {
+      const liquidity = Number(
+        ethers.utils.formatEther(token.liquidity.toString()),
+      );
+      if (liquidity > 0 && token.range) {
+        return 'openIn';
+      } else if (liquidity > 0 && !token.range) {
+        return 'openOut';
+      } else if (liquidity === 0 && token.range) {
+        return 'closedIn';
+      } else {
+        return 'closedOut';
+      }
+    }
+  
+  };
 
   useEffect(() => {
     async function getPosition() {
@@ -272,21 +252,80 @@ export const Reward = () => {
         STAKERABI.abi,
         library,
       );
+      async function getRangedData(stringResult: any) {
+        const res = await Promise.all(
+          stringResult.map(async (data: any) => {
+            const includedPool = pool.find(
+              (pol: any) =>
+                ethers.utils.getAddress(pol.id) ===
+                ethers.utils.getAddress(data.pool.id),
+            );
+            if (includedPool) {
+              const rang = await getRange(Number(data.id), includedPool.tick);
+              return {
+                ...data,
+                range: rang?.range,
+                liquidity: rang?.res.liquidity,
+              };
+            }
+           
+          }),
+        );
+        const closedIn = res.filter(
+          (token: any) => getStatus(token) === 'closedIn',
+        );
+        const closedOut = res.filter(
+          (token: any) => getStatus(token) === 'closedOut',
+        );
 
-      if (position.data && positionByContract.data && positionsByPool.data) {
+        const openIn = res.filter(
+          (token: any) => getStatus(token) === 'openIn',
+        );
+        const openOut = res.filter(
+          (token: any) => getStatus(token) === 'openOut',
+        );
+
+        const openInOrdered = orderBy(openIn, (data: any) => Number(data.id), [
+          'desc',
+        ]);
+        const openOutOrdered = orderBy(openOut, (data: any) => Number(data.id), [
+          'desc',
+        ]);
+
+        const closedInOrdered = orderBy(closedIn, (data: any) => Number(data.id), [
+          'desc',
+        ]);
+        const closedOutOrdered = orderBy(closedOut, (data: any) => Number(data.id), [
+          'desc',
+        ]);
+
+        const open = openInOrdered.concat(openOutOrdered);
+        const close = closedInOrdered.concat(closedOutOrdered);
+        const tokenList = open.concat(close);
+        setPositions(tokenList);
+      }
+
+      if (position.data && positionsByPool.data) {
         position.refetch();
-        if (selectedPool !== undefined) {
+
+        if (
+          selectedPool !== undefined &&
+          account !== undefined &&
+          account !== null
+        ) {
           const withStakedPosition = position.data.positions.filter(
             (position: any) => selectedPool.id === position.pool.id,
           );
           const pols = positionsByPool.data.positions.filter(
             (position: any) =>
-              position.owner === UniswapStaker_Address.toLowerCase(),
+              ethers.utils.getAddress(position.owner) ===
+                ethers.utils.getAddress(UniswapStaker_Address.toLowerCase()) ||
+              ethers.utils.getAddress(position.owner) ===
+                ethers.utils.getAddress(account),
           );
-           const poolsFromSelected = pols.filter(
+          const poolsFromSelected = pols.filter(
             (token: any) => token.pool.id === selectedPool.id,
           );
-
           if (
             account === null ||
             account === undefined ||
@@ -308,34 +347,106 @@ export const Reward = () => {
               }
             }),
           );
-                    
-          const allPos = withStakedPosition.concat(stringResult);          
-          setPositions(allPos);
+
+          const allPos = withStakedPosition.concat(stringResult);
+          await getRangedData(allPos);
+          setTimeout(() => {
+            setIsPositionLoading(false);
+          }, 1500);
+        } else if (
+          selectedPool === undefined &&
+          account !== undefined &&
+          account !== null
+        ) {
+          let stringResult: any = [];
+          pool.map((pool: any) => {
+            const filtered = position.data.positions.filter(
+              (position: any) => position.pool.id === pool.id,
+            );
+            filtered.map((filteredPosition: any) => {
+              stringResult.push(filteredPosition);
+            });
+          });
+          const pols = positionsByPool.data.positions.filter(
+            (position: any) =>
+              ethers.utils.getAddress(position.owner) ===
+                ethers.utils.getAddress(UniswapStaker_Address.toLowerCase()) ||
+              ethers.utils.getAddress(position.owner) ===
+                ethers.utils.getAddress(account),
+          );
+          if (
+            account === null ||
+            account === undefined ||
+            library === undefined
+          ) {
+            return;
+          }
+          const signer = getSigner(library, account);
+
+          await Promise.all(
+            pols.map(async (token: any) => {
+              const depositInfo = await uniswapStakerContract
+                .connect(signer)
+                .deposits(token.id);
+
+              if (depositInfo.owner === account) {
+                stringResult.push(token);
+              }
+            }),
+          );
+
+          await getRangedData(stringResult);
+
+          setTimeout(() => {
+            setIsPositionLoading(false);
+          }, 1500);
         } else {
-          setPositions([]);
+          setTimeout(() => {
+            setIsPositionLoading(false);
+          }, 1500);
+          setSelectdPosition(undefined);
         }
       }
     }
     getPosition();
     /*eslint-disable*/
   }, [
+    datas,
     pool,
     selectedPool,
     transactionType,
     blockNumber,
+    positionsByPool.isLoading,
+    positionsByPool.data,
     position.isLoading,
-    positionByContract.isLoading,
     position.data,
-    positionByContract.data,
     account,
+    library,
+    orderedData,
   ]);
+  const getRange = async (id: number, tick: string) => {
+    const result = await rangePayload({library, id, account, tick});
+    return result;
+  };
+  const rangePayload = async (args: any) => {
+    const {library, id, tick} = args;
+    if (account === undefined || library === undefined || account == null) {
+      return;
+    }
+    const result = await fetchPositionRangePayload(library, id, account, tick);
+    return result;
+  };
 
   useEffect(() => {
-    const filtered = orderedData.filter(
-      (data) => data.incentiveKey.refundee === account,
-    );
-    setManageDatas(filtered);
-    setFilteredManageData(filtered);
+    if (account !== undefined && account !== null) {
+      const filtered = orderedData.filter(
+        (data) =>
+          ethers.utils.getAddress(data.incentiveKey.refundee) ===
+          ethers.utils.getAddress(account),
+      );
+      setManageDatas(filtered);
+      setFilteredManageData(filtered);
+    }
   }, [orderedData, sortString, account, library]);
 
   const getSelectedPool = (e: any) => {
@@ -343,12 +454,12 @@ export const Reward = () => {
     const selected: Pool = pool.find((pool) => pool.id === poolAddress);
     setSelectedPool(selected);
     setSelectedToken(undefined);
-    setSelectdPosition('');
-
+    setSelectdPosition(undefined);
+    setSelectedPoolCreated(selected);
     if (poolAddress === '') {
       setOrderedData(datas);
       setFilteredData(datas);
-      setSelectdPosition('');
+      setSelectdPosition(undefined);
     } else {
       const selectedRewards = datas.filter(
         (data) => data.poolAddress === poolAddress,
@@ -394,7 +505,8 @@ export const Reward = () => {
   };
   const getSelectedPosition = (e: any) => {
     const pos = e.target.value;
-    setSelectdPosition(pos);
+    const selectedLP: any = positions.find((position) => position.id === pos);
+    setSelectdPosition(selectedLP);
   };
   const getTokenFromContract = async (address: string) => {
     const symbolContract = await getTokenSymbol(address, library);
@@ -438,7 +550,7 @@ export const Reward = () => {
             subtitle={'Stake Uniswap V3 liquidity tokens and receive rewards! '}
           />
         </Box>
-        {isPositionLoading !== true && account !== undefined ? (
+        {isPositionLoading !== true && account !== undefined && pool.length !==0 ? (
           <Box>
             <Flex
               fontFamily={theme.fonts.roboto}
@@ -513,65 +625,175 @@ export const Reward = () => {
                 </Menu>
                 <Menu isLazy>
                   <MenuButton
-                    border={themeDesign.border[colorMode]}
+                    border={'2px solid #2a72e5'}
                     {...MENU_STYLE.buttonStyle({colorMode})}>
                     <Text {...MENU_STYLE.buttonTextStyle({colorMode})}>
-                      {selectdPosition === ''
+                      {selectdPosition === undefined
                         ? 'My LP tokens'
-                        : selectdPosition}
+                        : selectdPosition.id}
                       <span>
                         <ChevronDownIcon />
                       </span>
                     </Text>
                   </MenuButton>
-                  {selectedPool === undefined ? (
-                    <MenuList {...MENU_STYLE.menuListStyle({colorMode})}>
-                      <MenuOptionGroup
-                        pl={'10px'}
-                        defaultValue="asc"
-                        title="My LP Tokens"
-                        type="radio"
-                        fontSize={'12px'}
-                        m={'0px'}
-                        w={'157px'}></MenuOptionGroup>
-                    </MenuList>
-                  ) : (
-                    <MenuList {...MENU_STYLE.menuListStyle({colorMode})}>
-                      <MenuItem>
-                        <Menu isLazy>
-                          <MenuButton
-                            minWidth={'90px'}
-                            textAlign={'left'}
-                            fontSize={'13px'}>
-                            All <ChevronDownIcon />
-                          </MenuButton>
+                  <MenuList {...MENU_STYLE.menuListStyle({colorMode})}>
+                    <MenuItem>
+                      <Menu isLazy>
+                        <MenuButton
+                          minWidth={'90px'}
+                          textAlign={'left'}
+                          fontSize={'13px'}>
+                          All <ChevronDownIcon />
+                        </MenuButton>
 
-                          <MenuList
-                            zIndex={10000}
-                            ml={'-0.845rem'}
-                            mr={'1px'}
-                            minWidth="155px"
-                            borderTop="none"
-                            boxShadow="none"
-                            borderTopRadius={0}
-                            minHeight={'80px'}
-                            background={
-                              colorMode === 'light' ? '#ffffff' : '#222222'
-                            }>
-                            {positions.map((item: any, index) => {
+                        <MenuList
+                          zIndex={10000}
+                          ml={'-0.845rem'}
+                          mr={'1px'}
+                          minWidth="155px"
+                          borderTop="none"
+                          boxShadow="none"
+                          borderTopRadius={0}
+                          minHeight={'80px'}
+                          background={
+                            colorMode === 'light' ? '#ffffff' : '#222222'
+                          }>
+                          {positions.map((item: any, index) => {
+                            const status = getStatus(item);
+                            return (
+                              <MenuItem
+                                onClick={getSelectedPosition}
+                                // onClick={() => alert("Kagebunshin")}
+                                h={'30px'}
+                                color={
+                                  (status === 'openOut' || status === 'closedOut')
+                                    ? '#ff7800'
+                                    : colorMode === 'light'
+                                    ? '#3e495c'
+                                    : '#f3f4f1'
+                                }
+                                fontSize={'12px'}
+                                w={'154px'}
+                                m={'0px'}
+                                value={item.id}
+                                _hover={{
+                                  background: 'transparent',
+                                  color: 'blue.100',
+                                }}
+                                textDecoration={
+                                  (status === 'closedIn' || status === 'closedOut') ? 'line-through' : 'none'
+                                }
+                                _focus={{background: 'transparent'}}
+                                key={index}>
+                                {item.id}
+                              </MenuItem>
+                            );
+                          })}
+                        </MenuList>
+                      </Menu>
+                    </MenuItem>
+                    <MenuItem>
+                      <Menu isLazy>
+                        <MenuButton
+                          minWidth={'90px'}
+                          textAlign={'left'}
+                          fontSize={'13px'}>
+                          Staked <ChevronDownIcon />
+                        </MenuButton>
+
+                        <MenuList
+                          zIndex={10000}
+                          minHeight={'50px'}
+                          ml={'-0.845rem'}
+                          mr={'1px'}
+                          minWidth="156px"
+                          borderTop="none"
+                          boxShadow="none"
+                          borderTopRadius={0}
+                          background={
+                            colorMode === 'light' ? '#ffffff' : '#222222'
+                          }>
+                          {positions.map((item: any, index) => {
+                            if (item.owner !== account?.toLowerCase()) {
+                              const status = getStatus(item);
                               return (
                                 <MenuItem
                                   onClick={getSelectedPosition}
                                   // onClick={() => alert("Kagebunshin")}
                                   h={'30px'}
                                   color={
-                                    colorMode === 'light'
+                                    (status === 'openOut' || status === 'closedOut')
+                                      ? '#ff7800'
+                                      : colorMode === 'light'
                                       ? '#3e495c'
                                       : '#f3f4f1'
                                   }
                                   fontSize={'12px'}
-                                  w={'154px'}
+                                  w={'153px'}
                                   m={'0px'}
+                                  value={item.id}
+                                  _hover={{
+                                    background: 'transparent',
+                                    color: 'blue.100',
+                                  }}
+                                  textDecoration={
+                                    (status === 'closedIn' || status === 'closedOut') 
+                                      ? 'line-through'
+                                      : 'none'
+                                  }
+                                  _focus={{background: 'transparent'}}
+                                  key={index}>
+                                  {item.id}
+                                </MenuItem>
+                              );
+                            }
+                          })}
+                        </MenuList>
+                      </Menu>
+                    </MenuItem>
+                    <MenuItem>
+                      <Menu isLazy>
+                        <MenuButton
+                          minWidth={'90px'}
+                          textAlign={'left'}
+                          fontSize={'13px'}>
+                          Not Staked <ChevronDownIcon />
+                        </MenuButton>
+
+                        <MenuList
+                          zIndex={10000}
+                          ml={'-0.845rem'}
+                          mr={'1px'}
+                          minHeight={'100%'}
+                          minWidth="156px"
+                          borderTop="none"
+                          boxShadow="none"
+                          borderTopRadius={0}
+                          background={
+                            colorMode === 'light' ? '#ffffff' : '#222222'
+                          }>
+                          {positions.map((item: any, index) => {
+                            const status = getStatus(item);
+                            if (item.owner === account?.toLowerCase()) {
+                              return (
+                                <MenuItem
+                                  onClick={getSelectedPosition}
+                                  h={'30px'}
+                                  color={
+                                    (status === 'openOut' || status === 'closedOut')
+                                      ? '#ff7800'
+                                      : colorMode === 'light'
+                                      ? '#3e495c'
+                                      : '#f3f4f1'
+                                  }
+                                  fontSize={'12px'}
+                                  w={'9.5rem'}
+                                  m={'0px'}
+                                  textDecoration={
+                                    (status === 'closedIn' || status === 'closedOut') 
+                                      ? 'line-through'
+                                      : 'none'
+                                  }
                                   value={item.id}
                                   _hover={{
                                     background: 'transparent',
@@ -582,146 +804,13 @@ export const Reward = () => {
                                   {item.id}
                                 </MenuItem>
                               );
-                            })}
-                          </MenuList>
-                        </Menu>
-                      </MenuItem>
-                      <MenuItem>
-                        <Menu isLazy>
-                          <MenuButton
-                            minWidth={'90px'}
-                            textAlign={'left'}
-                            fontSize={'13px'}>
-                            Staked <ChevronDownIcon />
-                          </MenuButton>
-
-                          <MenuList
-                            zIndex={10000}
-                            minHeight={'80px'}
-                            ml={'-0.845rem'}
-                            mr={'1px'}
-                            minWidth="156px"
-                            borderTop="none"
-                            boxShadow="none"
-                            borderTopRadius={0}
-                            background={
-                              colorMode === 'light' ? '#ffffff' : '#222222'
-                            }>
-                            {positions.map((item: any, index) => {
-                              if (item.owner !== account?.toLowerCase()) {
-                                return (
-                                  <MenuItem
-                                    onClick={getSelectedPosition}
-                                    // onClick={() => alert("Kagebunshin")}
-                                    h={'30px'}
-                                    color={
-                                      colorMode === 'light'
-                                        ? '#3e495c'
-                                        : '#f3f4f1'
-                                    }
-                                    fontSize={'12px'}
-                                    w={'153px'}
-                                    m={'0px'}
-                                    value={item.id}
-                                    _hover={{
-                                      background: 'transparent',
-                                      color: 'blue.100',
-                                    }}
-                                    _focus={{background: 'transparent'}}
-                                    key={index}>
-                                    {item.id}
-                                  </MenuItem>
-                                );
-                              }
-                            })}
-                          </MenuList>
-                        </Menu>
-                      </MenuItem>
-                      <MenuItem>
-                        <Menu isLazy>
-                          <MenuButton
-                            minWidth={'90px'}
-                            textAlign={'left'}
-                            fontSize={'13px'}>
-                            Not Staked <ChevronDownIcon />
-                          </MenuButton>
-
-                          <MenuList
-                            zIndex={10000}
-                            ml={'-0.845rem'}
-                            mr={'1px'}
-                            minHeight={'80px'}
-                            minWidth="156px"
-                            borderTop="none"
-                            boxShadow="none"
-                            borderTopRadius={0}
-                            background={
-                              colorMode === 'light' ? '#ffffff' : '#222222'
-                            }>
-                            {positions.map((item: any, index) => {
-                              if (item.owner === account?.toLowerCase()) {
-                                return (
-                                  <MenuItem
-                                    onClick={getSelectedPosition}
-                                    h={'30px'}
-                                    color={
-                                      colorMode === 'light'
-                                        ? '#3e495c'
-                                        : '#f3f4f1'
-                                    }
-                                    fontSize={'12px'}
-                                    w={'9.5rem'}
-                                    m={'0px'}
-                                    value={item.id}
-                                    _hover={{
-                                      background: 'transparent',
-                                      color: 'blue.100',
-                                    }}
-                                    _focus={{background: 'transparent'}}
-                                    key={index}>
-                                    {item.id}
-                                  </MenuItem>
-                                );
-                              }
-                            })}
-                          </MenuList>
-                        </Menu>
-                      </MenuItem>
-                    </MenuList>
-                  )}
+                            }
+                          })}
+                        </MenuList>
+                      </Menu>
+                    </MenuItem>
+                  </MenuList>
                 </Menu>
-
-                {positions.length === 0 ? (
-                  <Text
-                    textDecoration={'underline'}
-                    pl={'20px'}
-                    cursor={'pointer'}
-                    color={'#0070ed'}
-                    fontSize={'13px'}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      window.open(
-                        'https://app.uniswap.org/#/add/0x409c4D8cd5d2924b9bc5509230d16a61289c8153/0xc4A11aaf6ea915Ed7Ac194161d2fC9384F15bff2/3000',
-                      );
-                    }}>
-                    Create your liquidity tokens here
-                  </Text>
-                ) : null}
-              </Flex>
-              <Flex>
-                <FormControl display="flex" alignItems="center" mr={'45px'}>
-                  <FormLabel htmlFor="email-alerts" mb="0">
-                    Manage
-                  </FormLabel>
-                  <Switch
-                    colorScheme={'green'}
-                    onChange={() =>
-                      selected === 'reward'
-                        ? setSelected('manage')
-                        : setSelected('reward')
-                    }
-                  />
-                </FormControl>
                 <Menu isLazy>
                   <MenuButton
                     border={themeDesign.border[colorMode]}
@@ -774,6 +863,64 @@ export const Reward = () => {
                     </MenuItem>
                   </MenuList>
                 </Menu>
+                {selected === 'reward' ? (
+                  <Text
+                    textDecoration={'underline'}
+                    pl={'20px'}
+                    cursor={'pointer'}
+                    color={'#0070ed'}
+                    fontSize={'13px'}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.open(
+                        selectedPool === undefined
+                          ? `https://app.uniswap.org/#/add/${TOS_ADDRESS}/${WTON_ADDRESS}`
+                          : `https://app.uniswap.org/#/add/${selectedPool.token0.id}/${selectedPool.token1.id}/${selectedPool.feeTier}`,
+                      );
+                    }}>
+                    Create your{' '}
+                    {selectedPool === undefined
+                      ? ''
+                      : `${selectedPool.token0.symbol} / ${selectedPool.token1.symbol}`}{' '}
+                    liquidity tokens here
+                  </Text>
+                ) : (
+                  <Text
+                    textDecoration={'underline'}
+                    pl={'20px'}
+                    cursor={'pointer'}
+                    color={'#0070ed'}
+                    fontSize={'13px'}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.open(
+                        selectedPoolCreate === undefined
+                          ? `https://app.uniswap.org/#/add/${TOS_ADDRESS}/${WTON_ADDRESS}`
+                          : `https://app.uniswap.org/#/add/${selectedPoolCreate.token0.id}/${selectedPoolCreate.token1.id}/${selectedPoolCreate.feeTier}`,
+                      );
+                    }}>
+                    Create your{' '}
+                    {selectedPoolCreate === undefined
+                      ? ''
+                      : `${selectedPoolCreate.token0.symbol} / ${selectedPoolCreate.token1.symbol}`}{' '}
+                    liquidity tokens here
+                  </Text>
+                )}
+              </Flex>
+              <Flex>
+                <FormControl display="flex" alignItems="center">
+                  <FormLabel htmlFor="email-alerts" mb="0">
+                    Manage
+                  </FormLabel>
+                  <Switch
+                    colorScheme={'green'}
+                    onChange={() =>
+                      selected === 'reward'
+                        ? setSelected('manage')
+                        : setSelected('reward')
+                    }
+                  />
+                </FormControl>
               </Flex>
             </Flex>
             <Flex flexDir={'row'} mt={'30px'} justifyContent={'space-between'}>
@@ -799,6 +946,7 @@ export const Reward = () => {
                 selected={selected}
                 rewards={datas}
                 LPTokens={positions}
+                setSelectedPoolCreated={setSelectedPoolCreated}
               />{' '}
             </Flex>
           </Box>

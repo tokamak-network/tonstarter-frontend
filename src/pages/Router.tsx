@@ -24,12 +24,12 @@ import {MobilePreOpen} from './PreOpen/Index';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {StarterDetail} from './Starter/StarterDetail';
-import {
-  CreateProject,
-  ListingProjects,
-  ListingPools,
-  ListingRewards,
-} from './Admin';
+// import {
+//   CreateProject,
+//   ListingProjects,
+//   ListingPools,
+//   ListingRewards,
+// } from './Admin';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -176,10 +176,10 @@ export const Router: FC<RouterProps> = () => {
           {/* <Route exact path="/starter" component={Starter} /> */}
           <Route exact path="/starter" component={Starter} />
           <Route exact path="/dao" component={DAO} />
-          <Route exact path="/admin/createproject" component={CreateProject} />
+          {/* <Route exact path="/admin/createproject" component={CreateProject} />
           <Route exact path="/admin/listproject" component={ListingProjects} />
           <Route exact path="/admin/listpools" component={ListingPools} />
-          <Route exact path="/admin/listrewards" component={ListingRewards} />
+          <Route exact path="/admin/listrewards" component={ListingRewards} /> */}
 
           <Route exact path={`/starter/:id`} component={StarterDetail} />
           {/* <Route

@@ -19,16 +19,16 @@ import {RewardProgramCard} from './components/RewardProgramCard';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {stakeMultiple} from './actions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
+import { LPToken } from './types';
+import {getSigner} from 'utils/contract';
+import {DEPLOYED} from 'constants/index';
+import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
+import {Contract} from '@ethersproject/contracts';
 
-import {
-  chakra,
-  // useTheme
-} from '@chakra-ui/react';
-import {number} from 'prop-types';
 type Pool = {
   id: string;
   liquidity: string;
-  poolDayData: [];
+  hourData: [];
   tick: string;
   token0: Token;
   token1: Token;
@@ -39,25 +39,14 @@ type Token = {
 };
 type RewardContainerProps = {
   rewards: any[];
-  position?: string;
+  position?: LPToken;
   selectedPool?: Pool;
   pools: any[];
   sortString: string;
 };
-type Reward = {
-  chainId: Number;
-  poolName: String;
-  token1Address: string;
-  token2Address: string;
-  poolAddress: String;
-  rewardToken: String;
-  incentiveKey: Object;
-  startTime: Number;
-  endTime: Number;
-  allocatedReward: String;
-  numStakers: Number;
-  status: String;
-};
+const {UniswapStaker_Address} = DEPLOYED;
+
+
 const multipleStakeList: any = [];
 export const RewardContainer: FC<RewardContainerProps> = ({
   rewards,
@@ -70,7 +59,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(6);
   const {account, library} = useActiveWeb3React();
-
+const [staked, setstaked] = useState(true)
   const {colorMode} = useColorMode();
   const theme = useTheme();
   useEffect(() => {
@@ -110,15 +99,38 @@ export const RewardContainer: FC<RewardContainerProps> = ({
     return multipleStakeList;
   };
 
+  useEffect(() => {
+    async function checkStaked() {
+      if (account === null || account === undefined || library === undefined) {
+        return;
+      }
+      const uniswapStakerContract = new Contract(
+        UniswapStaker_Address,
+        STAKERABI.abi,
+        library,
+      );
+      const signer = getSigner(library, account);
+      const depositInfo = await uniswapStakerContract
+        .connect(signer)
+        .deposits(Number(position?position.id: '0'));        
+        if (depositInfo.owner.toLowerCase() === account.toLowerCase() ) {
+          setstaked(true)
+        } 
+        else {setstaked(false)}
+
+    }
+    checkStaked()
+  },[position])
+  
   return (
-    <Flex justifyContent={'space-between'} mb="100px">
+    <Flex justifyContent={'space-between'}>
       {rewards.length !== 0 ? (
-        <Flex flexWrap={'wrap'}>
-          <Grid templateColumns="repeat(2, 1fr)" gap={30}>
+        <Box flexWrap={'wrap'}>
+          <Grid templateColumns="repeat(2, 1fr)" gap={'30px'} h={'fit-content'} mb={'30px'}>
             {getPaginatedData().map((reward: any, index) => {
               const includedPool = pools.find(
                 (pool) => pool.id === reward.poolAddress,
-              );
+              );              
               const token0 = includedPool.token0.id;
               const token1 = includedPool.token1.id;
               const token0Image = includedPool.token0Image;
@@ -143,12 +155,13 @@ export const RewardContainer: FC<RewardContainerProps> = ({
                 <RewardProgramCard
                   key={index}
                   reward={rewardProps}
-                  selectedToken={Number(position)}
+                  selectedToken={(position)}
                   selectedPool={selectedPool ? selectedPool.id : ''}
                   sendKey={stakeMultipleKeys}
                   pageIndex={pageIndex}
                   stakeList={multipleStakeList}
                   sortString={sortString}
+                  includedPoolLiquidity={includedPool.liquidity}
                 />
               );
             })}
@@ -168,7 +181,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({
               fontFamily={theme.fonts.roboto}
               fontSize="14px"
               fontWeight="500"
-              disabled={position === ''}
+              disabled={position === undefined || staked}
               _hover={{backgroundColor: 'none'}}
               _disabled={
                 colorMode === 'light'
@@ -186,7 +199,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({
               onClick={() =>
                 stakeMultiple({
                   userAddress: account,
-                  tokenid: Number(position),
+                  tokenid: Number(position?.id),
                   library: library,
                   stakeKeyList: multipleStakeList,
                 })
@@ -288,7 +301,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({
               </Flex>
             </Flex>
           </Flex>
-        </Flex>
+        </Box>
       ) : (
         <Flex>
           {' '}

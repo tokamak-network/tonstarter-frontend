@@ -16,6 +16,7 @@ import {getPoolName} from '../../utils/token';
 import {CreateReward} from './components/CreateReward';
 import {RewardProgramCardManage} from './components/RewardProgramCardManage';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
+// import { LPToken } from './types';
 
 import {
   chakra,
@@ -24,7 +25,7 @@ import {
 type Pool = {
   id: string;
   liquidity: string;
-  poolDayData: [];
+  hourData: [];
   tick: string;
   token0: Token;
   token1: Token;
@@ -35,9 +36,14 @@ type Token = {
   id: string;
   symbol: string;
 };
+type LPToken = {
+  id: string;
+  owner:string;
+  pool: any
+}
 type ManageContainerProps = {
   rewards: any[];
-  position?: string;
+  position?: LPToken;
   selectedPool?: Pool;
   pools: Pool[];
   sortString: string
@@ -85,8 +91,9 @@ export const ManageContainer: FC<ManageContainerProps> = ({
 
   return (
     <Flex justifyContent={'space-between'}>
-      {rewards.length !==0? <Flex flexWrap={'wrap'}>
-        <Grid templateColumns="repeat(2, 1fr)" gap={30}>
+      {rewards.length !==0? 
+      <Box flexWrap={'wrap'}>
+        <Grid templateColumns="repeat(2, 1fr)" gap={30} h={'fit-content'}  mb={'30px'}>
           {getPaginatedData().map((reward: any, index) => {
             let token0;
             let token1;
@@ -117,7 +124,6 @@ export const ManageContainer: FC<ManageContainerProps> = ({
               <RewardProgramCardManage
                 key={index}
                 reward={rewardProps}
-                selectedToken={Number(position)}
                 pageIndex={pageIndex}
                 sortString={sortString}
               />
@@ -220,7 +226,7 @@ export const ManageContainer: FC<ManageContainerProps> = ({
             </Flex>
           </Flex>
         </Flex>
-      </Flex> :<Flex> <Text fontFamily={theme.fonts.fld} fontSize={'20px'}>You don't have any reward programs to refund</Text> </Flex>}
+      </Box> :<Flex> <Text fontFamily={theme.fonts.fld} fontSize={'20px'}>You don't have any reward programs to refund</Text> </Flex>}
       
     </Flex>
   );

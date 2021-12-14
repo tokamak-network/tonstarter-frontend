@@ -5,7 +5,6 @@ import {
   useTheme,
   Text,
   Flex,
-  Avatar,
   Progress,
 } from '@chakra-ui/react';
 import {checkTokenType} from 'utils/token';
@@ -15,11 +14,10 @@ import {ActiveProjectType} from '@Starter/types';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect, useState} from 'react';
 import {useCallContract} from 'hooks/useCallContract';
-import {Contract} from '@ethersproject/contracts';
-import * as publicSale from 'services/abis/PublicSale.json';
 import {BigNumber} from 'ethers';
 import {convertNumber} from 'utils/number';
 import moment from 'moment';
+import {TokenImage} from '@Admin/components/TokenImage';
 
 type ActiveProjectProp = {
   activeProject: ActiveProjectType[];
@@ -47,9 +45,6 @@ const ActiveProjectContainer: React.FC<{
   const PUBLICSALE_CONTRACT = useCallContract(
     project.saleContractAddress || '',
     'PUBLIC_SALE',
-  );
-  const tokenType = checkTokenType(
-    '0x2be5e8c109e2197D077D13A82dAead6a9b3433C5',
   );
 
   useEffect(() => {
@@ -99,15 +94,7 @@ const ActiveProjectContainer: React.FC<{
     <Link to={`${url}/${project.name}`} id={`active_link_${index}`}>
       <Box {...STATER_STYLE.containerStyle({colorMode})}>
         <Flex justifyContent="space-between" mb={15}>
-          <Avatar
-            src={tokenType.symbol}
-            backgroundColor={tokenType.bg}
-            bg="transparent"
-            color="#c7d1d8"
-            name="T"
-            h="48px"
-            w="48px"
-          />
+          <TokenImage imageLink={project.tokenSymbolImage}></TokenImage>
           <Flex alignItems="center">
             <Circle bg={'#f95359'}></Circle>
             <Text
@@ -128,7 +115,7 @@ const ActiveProjectContainer: React.FC<{
           </Text>
           <Flex>
             <Text mr={2} {...STATER_STYLE.subText({colorMode})}>
-              Sale Date
+              {step} Period
             </Text>
             <Text {...STATER_STYLE.subTextBlack({colorMode})}>
               {project.saleStart} ~ {project.saleEnd}
@@ -180,7 +167,7 @@ const ActiveProjectContainer: React.FC<{
                   colorMode,
                   fontSize: 20,
                 })}>
-                {totalRaise ? totalRaise : 'XX,XXX.XX'}
+                {totalRaise ? totalRaise : 'XX,XXX,XXX'}
               </Text>
               <Text>TON</Text>
             </Box>
@@ -199,7 +186,7 @@ const ActiveProjectContainer: React.FC<{
                 colorMode,
                 fontSize: 20,
               })}>
-              {participants ? participants : 'XX'}
+              {participants || 'XX,XXX'}
             </Text>
           </Box>
           <Box d="flex" flexDir="column">
@@ -246,12 +233,7 @@ export const ActiveProject = (props: ActiveProjectProp) => {
   const {activeProject} = props;
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const match = useRouteMatch();
-
   const {STATER_STYLE} = theme;
-  const {url} = match;
-
-  const [progress, setProgress] = useState<number | undefined>(undefined);
 
   return (
     <Flex flexDir="column">

@@ -12,11 +12,12 @@ import {
   IconButton,
   Tooltip,
 } from '@chakra-ui/react';
-
+import {useActiveWeb3React} from 'hooks/useWeb3';
 import {FC, useState, useEffect} from 'react';
-
+import {fetchPositionRangePayload} from '../utils/fetchPositionRangePayloads';
+import {utils, ethers} from 'ethers';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
-
+import {orderBy} from 'lodash';
 type LPTokenComponentProps = {
   tokens: any[];
 };
@@ -60,13 +61,24 @@ export const LPTokenComponent: FC<LPTokenComponentProps> = ({tokens}) => {
   const [pageOptions, setPageOptions] = useState<number>(0);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(6);
-  useEffect(() => {
-    // extend the pools array since there is only 1 pool now
+  const {account: address, library} = useActiveWeb3React();
+// useEffect (() => {  
+//   console.log(tokens);
+  
+//   const closed = tokens.filter((token: any) =>getStatus(token) === 'closed')
+//   const open = tokens.filter((token: any) =>getStatus(token) !== 'closed' )
+//   const openOrdered = orderBy(open, (data) =>Number(data.id), ['desc']);
+//   const closeOrdered = orderBy(closed, (data) =>Number(data.id), ['desc']);
+//   const tokenList = openOrdered.concat(closeOrdered);
+//   setAllTokens(tokenList);  
+  
+// },[tokens, address, library])
 
-      const pagenumber = parseInt(
-        ((tokens.length - 1) / pageLimit + 1).toString(),
-      );
-      setPageOptions(pagenumber);
+  useEffect(() => {
+    const pagenumber = parseInt(
+      ((tokens.length - 1) / pageLimit + 1).toString(),
+    );
+    setPageOptions(pagenumber);
   }, [tokens]);
 
   const getPaginatedData = () => {
@@ -93,6 +105,21 @@ export const LPTokenComponent: FC<LPTokenComponentProps> = ({tokens}) => {
     const group = new Array(5).fill(1).map((_, idx) => start + idx + 1);
     return group;
   };
+
+  const getStatus = (token: any) => {
+    const liquidity = Number(
+      ethers.utils.formatEther(token.liquidity.toString()),
+    );
+    if (liquidity > 0 && token.range) {
+      return 'openIn';
+    } else if (liquidity > 0 && !token.range) {
+      return 'openOut';
+    } else if (liquidity === 0 && token.range) {
+      return 'closedIn';
+    } else {
+      return 'closedOut';
+    }
+  };
   return (
     <Box>
       <Flex w={'100%'} borderBottom={themeDesign.border[colorMode]}>
@@ -113,38 +140,46 @@ export const LPTokenComponent: FC<LPTokenComponentProps> = ({tokens}) => {
         px={'20px'}
         pt={'15px'}
         h={'81px'}
-        alignItems={'center'}
-      >
-        {getPaginatedData().length ===0? (
-          <Text fontSize={'13px'}>You don't have any LP tokens in this pool</Text>
-        ): <Grid templateColumns="repeat(3, 1fr)" gap={'10px'}>
-        {getPaginatedData().map((token: Token, index) => {
-          return (
-            <Flex
-              key={index}
-              h="30px"
-              px={'10px'}
-              fontSize={'13px'}
-              fontFamily={theme.fonts.roboto}
-              fontWeight={'bold'}
-              borderRadius="19px"
-              justifyContent={'center'}
-              alignItems={'center'}
-              border={themeDesign.border[colorMode]}>
-              <Text color={'blue.500'}>#{token.id}</Text>
-            </Flex>
-          );
-        })}
-      </Grid>}
-        
+        alignItems={'center'}>
+        {getPaginatedData().length === 0 ? (
+          <Text fontSize={'13px'}>
+            You don't have any LP tokens in this pool
+          </Text>
+        ) : (
+          <Grid templateColumns="repeat(3, 1fr)" gap={'10px'}>
+            {getPaginatedData().map((token: any, index) => {
+             const status = getStatus(token);             
+              return (
+                <Flex
+                  key={index}
+                  h="30px"
+                  px={'10px'}
+                  cursor={'pointer'}
+                  fontSize={'13px'}
+                  fontFamily={theme.fonts.roboto}
+                  fontWeight={'bold'}
+                  borderRadius="19px"
+                  justifyContent={'center'}
+                  alignItems={'center'}
+                  border={(status === 'openOut' || status === 'closedOut')? '1px solid  #ff7800': themeDesign.border[colorMode]}
+                 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.open(`https://app.uniswap.org/#/pool/${token.id}`);
+                  }}>
+                  <Text  textDecoration={(status === 'closedIn' || status === 'closedOut') ?'line-through' : 'none'} color={'blue.500'}>#{token.id}</Text>
+                </Flex>
+              );
+            })}
+          </Grid>
+        )}
       </Flex>
       <Flex
         flexDirection={'row'}
         pb="30px"
         justifyContent={'center'}
         pt="19px"
-        mx="15px"
-       >
+        mx="15px">
         <Flex>
           <Tooltip label="Previous Page">
             <IconButton
@@ -173,7 +208,7 @@ export const LPTokenComponent: FC<LPTokenComponentProps> = ({tokens}) => {
           </Tooltip>
         </Flex>
         <Flex>
-          {getPaginationGroup().map((groupIndex: number, index:number) => {
+          {getPaginationGroup().map((groupIndex: number, index: number) => {
             const data = getPaginatedData().length;
             return (
               <Button

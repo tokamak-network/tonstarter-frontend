@@ -10,7 +10,7 @@ const poolParam = `
     id
     symbol
   }
-  poolDayData {
+  hourData {
     id
     date
     volumeUSD
