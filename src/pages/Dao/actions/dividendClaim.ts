@@ -50,9 +50,6 @@ export const getClaimalbeList = async (
       }
     } while (isError === false);
 
-    console.log('-claimableTokens-');
-    console.log(claimableTokens);
-
     const tokens = claimableTokens;
 
     //project tokens
