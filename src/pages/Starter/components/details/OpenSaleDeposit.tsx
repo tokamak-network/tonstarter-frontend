@@ -18,11 +18,10 @@ import {openModal} from 'store/modal.reducer';
 
 type OpenSaleDepositProps = {
   saleInfo: AdminObject;
-  approvedAmount: string;
 };
 
 export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
-  const {saleInfo, approvedAmount} = prop;
+  const {saleInfo} = prop;
 
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -134,37 +133,33 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
   }, [account, library, saleInfo, PUBLICSALE_CONTRACT, blockNumber]);
 
   //check approve
-  useEffect(() => {
-    const numInputTonBalance = Number(inputBalance.replaceAll(',', ''));
-    const numApprovedBalance = Number(approvedAmount.replaceAll(',', ''));
-    setIsApprove(numApprovedBalance >= numInputTonBalance);
-  }, [account, library, approvedAmount, inputBalance]);
+  // useEffect(() => {
+  //   const numInputTonBalance = Number(inputBalance.replaceAll(',', ''));
+  //   const numApprovedBalance = Number(approvedAmount.replaceAll(',', ''));
+  //   setIsApprove(numApprovedBalance >= numInputTonBalance);
+  // }, [account, library, approvedAmount, inputBalance]);
 
   useEffect(() => {
     if (totalDeposit !== '-' && totalAllocation !== '-') {
-
       if (totalDeposit === '0.00') {
-        setProgress('0')
+        setProgress('0');
+      } else {
+        const dd =
+          String(
+            (Number(totalDeposit.replaceAll(',', '')) /
+              (Number(totalAllocation.replaceAll(',', '')) / 527.5)) *
+              100,
+          ).split('.')[0] +
+          '.' +
+          String(
+            (Number(totalDeposit.replaceAll(',', '')) /
+              (Number(totalAllocation.replaceAll(',', '')) / 527.5)) *
+              100,
+          )
+            .split('.')[1]
+            .slice(0, 1);
+        setProgress(dd);
       }
-
-      else {
-const dd =
-        String(
-          (Number(totalDeposit.replaceAll(',', '')) /
-            (Number(totalAllocation.replaceAll(',', '')) / 527.5)) *
-            100,
-        ).split('.')[0] +
-        '.' +
-        String(
-          (Number(totalDeposit.replaceAll(',', '')) /
-            (Number(totalAllocation.replaceAll(',', '')) / 527.5)) *
-            100,
-        )
-          .split('.')[1]
-          .slice(0, 1);
-      setProgress(dd);
-      }
-      
     }
   }, [totalDeposit, totalAllocation]);
 

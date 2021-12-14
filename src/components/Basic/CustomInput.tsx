@@ -16,7 +16,7 @@ type CustomInputProp = {
   color?: string;
   br?: number;
   tokenName?: string;
-  fontSize? : string;
+  fontSize?: string;
   value: any;
   setValue?: Dispatch<SetStateAction<any>>;
   numberOnly?: boolean;
@@ -86,10 +86,13 @@ export const CustomInput = (prop: CustomInputProp) => {
           }
           return setValue ? setValue(value) : null;
         }}
-        pos="relative">
+        pos="relative"
+        {...style}>
         <Box
           pos="absolute"
-          left={`${value.length * 8 + 18.5}px`}
+          left={`${
+            value.length * 8 + 18.5 < 135 ? value.length * 8 + 18.5 : 135
+          }px`}
           h={'100%'}
           d="flex"
           pt={'2px'}
@@ -116,12 +119,12 @@ export const CustomInput = (prop: CustomInputProp) => {
               border: '1px solid #2a72e5',
             }}
             onClick={() => {
-              if (String(maxValue).split('.')[1]?.length > 2) {
-                const twoDecimalMaxValue = `${
-                  String(maxValue).split('.')[0]
-                }.${String(maxValue).split('.')[1].substring(0, 2)}`;
-                return setValue(twoDecimalMaxValue);
-              }
+              // if (String(maxValue).split('.')[1]?.length > 2) {
+              //   const twoDecimalMaxValue = `${
+              //     String(maxValue).split('.')[0]
+              //   }.${String(maxValue).split('.')[1].substring(0, 10)}`;
+              //   return setValue(twoDecimalMaxValue);
+              // }
               setValue(String(maxValue));
             }}>
             Max
@@ -132,9 +135,10 @@ export const CustomInput = (prop: CustomInputProp) => {
           //   e.target.style.color = '#3e495c';
           //   e.target.style.border = '1px solid #2a72e5';
           // }}
+          verticalAlign={'sub'}
           border="none"
           fontWeight={'bold'}
-          w={'100%'}
+          w={'160px'}
           h={'100%'}
           pl={'15px'}
           _focus={{

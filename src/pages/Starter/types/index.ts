@@ -1,4 +1,4 @@
-import {FundingTokenTypes} from '@Admin/types';
+import {AdminObject, FundingTokenTypes} from '@Admin/types';
 
 export interface I_StarterProject {
   name: string;
@@ -35,6 +35,8 @@ export type UpcomingProjectType = I_StarterProject & {
 };
 
 export type PastProjectType = I_StarterProject;
+
+export type SaleInfo = AdminObject & {tokenExRatio: number};
 
 export type MyProject = {
   name: string;

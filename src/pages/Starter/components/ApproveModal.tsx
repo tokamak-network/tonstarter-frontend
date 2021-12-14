@@ -18,6 +18,9 @@ import {useModal} from 'hooks/useModal';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {CloseButton} from 'components/Modal';
 import starterActions from '../actions';
+import {useERC20} from '@Starter/hooks/useERC20';
+import {ethers} from 'ethers';
+import {convertToRay, convertToWei} from 'utils/number';
 
 export const ApproveModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -26,7 +29,28 @@ export const ApproveModal = () => {
   const {account, library} = useActiveWeb3React();
   const {handleCloseModal} = useModal();
   const {btnStyle} = theme;
-  const {address, amount} = data.data;
+  const {address, amount, tokenType} = data.data;
+  const {
+    tonBalance,
+    wtonBalance,
+    tonAllowance,
+    wtonAllowance,
+    totalAllowance,
+    callTonApprove,
+    callWtonApprove,
+  } = useERC20(address);
+
+  const approval_TON_Amount = (): string => {
+    const ton = ethers.utils.formatEther(tonAllowance);
+    const totalApprove = Number(ton) + Number(amount);
+    return convertToWei(totalApprove.toString());
+  };
+
+  const approval_WTON_Amount = () => {
+    const wton = ethers.utils.formatUnits(wtonAllowance, 27);
+    const totalApprove = Number(wton) + Number(amount);
+    return convertToRay(totalApprove.toString());
+  };
 
   return (
     <Modal
@@ -71,7 +95,7 @@ export const ApproveModal = () => {
             color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
             <Text textAlign="center">
               'Approve All' means to get an approval of the amount which is
-              total supply of TON
+              total supply of {tokenType}
             </Text>
           </Flex>
 
@@ -105,10 +129,13 @@ export const ApproveModal = () => {
                     library,
                     address,
                     approveAll: false,
-                    amount,
+                    amount:
+                      tokenType === 'TON'
+                        ? (approval_TON_Amount as unknown as string)
+                        : (approval_WTON_Amount as unknown as string),
                   });
               }}>
-              Approve ({amount} TON)
+              Approve ({amount} {tokenType})
             </Button>
           </Box>
         </ModalBody>

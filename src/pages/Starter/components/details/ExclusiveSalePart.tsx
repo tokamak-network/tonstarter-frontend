@@ -4,28 +4,26 @@ import {CustomButton} from 'components/Basic/CustomButton';
 import {useEffect, useState} from 'react';
 import {DetailCounter} from './Detail_Counter';
 import ArrowIcon from 'assets/svgs/arrow_icon.svg';
-import {AdminObject} from '@Admin/types';
-import {getUserTonBalance} from 'client/getUserBalance';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {convertTimeStamp} from 'utils/convertTIme';
-import {DetailInfo} from '@Starter/types';
+import {DetailInfo, SaleInfo} from '@Starter/types';
 import {useCallContract} from 'hooks/useCallContract';
 import {convertNumber} from 'utils/number';
 import starterActions from '../../actions';
 import {useCheckBalance} from 'hooks/useCheckBalance';
-import {useBlockNumber} from 'hooks/useBlock';
 import {BigNumber} from 'ethers';
 import {useDispatch} from 'react-redux';
 import {openModal} from 'store/modal.reducer';
+import {useERC20} from '@Starter/hooks/useERC20';
 
 type ExclusiveSalePartProps = {
-  saleInfo: AdminObject;
+  saleInfo: SaleInfo;
   detailInfo: DetailInfo | undefined;
-  approvedAmount: string;
 };
 
 export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
-  const {saleInfo, detailInfo, approvedAmount} = prop;
+  const {saleInfo, detailInfo} = prop;
+  const {tokenExRatio} = saleInfo;
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
@@ -36,7 +34,6 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
     useState<string>('0');
 
   const [amountAvailable, setAmountAvailable] = useState<string>('-');
-  const [userTonBalance, setUserTonBalance] = useState<string>('-');
   const [userAllocation] = useState<string>(
     detailInfo
       ? detailInfo.tierAllocation[
@@ -51,13 +48,15 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
   const [isApprove, setIsApprove] = useState<boolean>(false);
 
   const {checkBalance} = useCheckBalance();
-  const {blockNumber} = useBlockNumber();
   const dispatch = useDispatch();
 
   const PUBLICSALE_CONTRACT = useCallContract(
     saleInfo.saleContractAddress,
     'PUBLIC_SALE',
   );
+
+  const {tonBalance, wtonBalance, tonAllowance, wtonAllowance, totalAllowance} =
+    useERC20(saleInfo.saleContractAddress);
 
   const {STATER_STYLE} = theme;
 
@@ -97,24 +96,29 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
         //temp
         setAmountAvailable(
           convertedAvailableAmount &&
-            Number(convertedAvailableAmount.replaceAll(',', '')) > 5.27
+            Number(convertedAvailableAmount.replaceAll(',', '')) > tokenExRatio
             ? convertedAvailableAmount
-            : '0.00' || '0.00',
+            : '0.00',
         );
         setSaleAmount(sale || '0.00');
         setPayAmount(pay || '0.00');
       }
     }
-    if (account && library && PUBLICSALE_CONTRACT) {
+    if (account && library && PUBLICSALE_CONTRACT && saleInfo) {
       getTierAllowcation();
     }
-  }, [account, library, PUBLICSALE_CONTRACT, detailInfo]);
+  }, [
+    account,
+    library,
+    PUBLICSALE_CONTRACT,
+    detailInfo,
+    saleInfo,
+    tokenExRatio,
+  ]);
 
   useEffect(() => {
     if (saleInfo) {
-      const ratio =
-        saleInfo.projectFundingTokenRatio / saleInfo.projectTokenRatio;
-      const result = Number(inputTonBalance) * ratio;
+      const result = Number(inputTonBalance) * tokenExRatio;
       if (String(result).split('.')[1]?.length > 2) {
         return setConvertedTokenBalance(
           `${String(result).split('.')[0]}.${String(result)
@@ -125,20 +129,6 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
       setConvertedTokenBalance(String(result));
     }
   }, [inputTonBalance, saleInfo, convertedTokenBalance]);
-
-  useEffect(() => {
-    async function callUserBalance() {
-      const tonBalance = await getUserTonBalance({
-        account,
-        library,
-        localeString: true,
-      });
-      return setUserTonBalance(tonBalance || '-');
-    }
-    if (account && library) {
-      callUserBalance();
-    }
-  }, [account, library, blockNumber]);
 
   useEffect(() => {
     async function getInfo() {
@@ -165,9 +155,8 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
   //check approve
   useEffect(() => {
     const numInputTonBalance = Number(inputTonBalance.replaceAll(',', ''));
-    const numApprovedBalance = Number(approvedAmount.replaceAll(',', ''));
-    setIsApprove(numApprovedBalance >= numInputTonBalance);
-  }, [account, library, approvedAmount, inputTonBalance]);
+    setIsApprove(totalAllowance >= numInputTonBalance);
+  }, [account, library, totalAllowance, inputTonBalance]);
 
   return (
     <Flex flexDir="column" pl={'45px'}>
@@ -192,7 +181,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
           {...STATER_STYLE.subText({colorMode: 'light'})}
           letterSpacing={'1.4px'}
           mb={'10px'}>
-          (Your balance : {userTonBalance} TON)
+          (Your balance : {tonBalance} TON, {wtonBalance} WTON)
         </Text>
       </Box>
       <Box d="flex" alignItems="center" mb={'30px'}>
@@ -213,14 +202,11 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             tokenName={'TON'}
             maxBtn={true}
             maxValue={
-              Number(userTonBalance.replaceAll(',', '')) <=
-              Number(amountAvailable.replaceAll(',', '')) /
-                saleInfo?.projectFundingTokenRatio /
-                saleInfo?.projectTokenRatio
-                ? Number(userTonBalance.replaceAll(',', ''))
-                : Number(amountAvailable.replaceAll(',', '')) /
-                  saleInfo?.projectFundingTokenRatio /
-                  saleInfo?.projectTokenRatio
+              // Number(tonBalance.replaceAll(',', '')) <=
+              // Number(amountAvailable.replaceAll(',', '')) / tokenExRatio
+              //   ? Number(tonBalance.replaceAll(',', ''))
+              //   :
+              Number(amountAvailable.replaceAll(',', '')) / tokenExRatio
             }></CustomInput>
           <img
             src={ArrowIcon}
@@ -294,8 +280,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
               Ratio :{' '}
             </Text>
             <Text {...detailSubTextStyle}>
-              1 {saleInfo.fundingTokenType} ={' '}
-              {saleInfo?.projectFundingTokenRatio / saleInfo?.projectTokenRatio}{' '}
+              1 {saleInfo.fundingTokenType} = {tokenExRatio}{' '}
               {saleInfo?.tokenName}
             </Text>
           </Flex>
@@ -312,7 +297,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
           </Flex>
         </Box>
       </Box>
-      <Box mt={'27px'}>
+      <Box mt={'27px'} h={'38px'} d="flex" alignItems="center">
         {isApprove === true ? (
           <CustomButton
             text={'Acquire'}
@@ -323,7 +308,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
               account &&
               checkBalance(
                 Number(inputTonBalance),
-                Number(userTonBalance.replaceAll(',', '')),
+                Number(tonBalance.replaceAll(',', '')),
               ) &&
               starterActions.participate({
                 account,
@@ -333,23 +318,63 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
               })
             }></CustomButton>
         ) : (
-          <CustomButton
-            text={'Approve'}
-            isDisabled={
-              btnDisabled || Number(amountAvailable.replaceAll(',', '')) < 10
-            }
-            func={() =>
-              account &&
-              dispatch(
-                openModal({
-                  type: 'Starter_Approve',
-                  data: {
-                    address: saleInfo.saleContractAddress,
-                    amount: inputTonBalance,
-                  },
-                }),
-              )
-            }></CustomButton>
+          <Flex alignItems="center">
+            <CustomButton
+              text={'TON Approve'}
+              isDisabled={
+                btnDisabled || Number(amountAvailable.replaceAll(',', '')) < 10
+              }
+              style={{marginRight: '12px'}}
+              func={() =>
+                account &&
+                dispatch(
+                  openModal({
+                    type: 'Starter_Approve',
+                    data: {
+                      address: saleInfo.saleContractAddress,
+                      amount: inputTonBalance,
+                      tokenType: 'TON',
+                    },
+                  }),
+                )
+              }></CustomButton>
+            <CustomButton
+              text={'WTON Approve'}
+              isDisabled={
+                btnDisabled || Number(amountAvailable.replaceAll(',', '')) < 10
+              }
+              func={() =>
+                account &&
+                dispatch(
+                  openModal({
+                    type: 'Starter_Approve',
+                    data: {
+                      address: saleInfo.saleContractAddress,
+                      amount: inputTonBalance,
+                      tokenType: 'WTON',
+                    },
+                  }),
+                )
+              }></CustomButton>
+            <Box
+              d="flex"
+              flexDir="column"
+              justifyContent="center"
+              ml={'15px'}
+              fontSize={13}>
+              <Text color={colorMode === 'light' ? 'gray.400' : 'gray.425'}>
+                The Approved Amount
+              </Text>
+              <Text color={colorMode === 'light' ? 'gray.250' : 'white.200'}>
+                {' '}
+                {tonAllowance} TON{' '}
+              </Text>
+              <Text color={colorMode === 'light' ? 'gray.250' : 'white.200'}>
+                {' '}
+                {wtonAllowance} WTON{' '}
+              </Text>
+            </Box>
+          </Flex>
         )}
       </Box>
     </Flex>

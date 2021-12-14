@@ -228,7 +228,14 @@ export const fetchStarters = createAsyncThunk(
         upcomingData,
         pastData,
         myProjects,
-        rawData: starterData,
+        rawData: starterData.map((projectData: AdminObject) => {
+          return {
+            ...projectData,
+            tokenExRatio:
+              projectData.projectFundingTokenRatio /
+              projectData.projectTokenRatio,
+          };
+        }),
       };
     } catch (e) {
       console.log(e);

@@ -5,7 +5,7 @@ import {DetailTableContainer} from './Detail_Table_Container';
 import {useWeb3React} from '@web3-react/core';
 import {useEffect, useState} from 'react';
 import starterActions from '../../actions';
-import { DEPLOYED } from 'constants/index';
+import {DEPLOYED} from 'constants/index';
 
 type DetailTableProjectProps = {
   saleInfo: AdminObject;
@@ -16,7 +16,7 @@ export const DetailTableProject: React.FC<DetailTableProjectProps> = (prop) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {library} = useWeb3React();
-  const {DoMsaleContractAddress}= DEPLOYED
+  const {DoMsaleContractAddress} = DEPLOYED;
 
   const {STATER_STYLE} = theme;
 
@@ -37,7 +37,7 @@ export const DetailTableProject: React.FC<DetailTableProjectProps> = (prop) => {
       getTotalSupply();
     }
   }, [library, saleInfo]);
-  
+
   const projectDetailTitle = 'Token Details';
   const projectDetailData = [
     {key: 'Name', value: `${saleInfo?.name}`},
@@ -69,13 +69,16 @@ export const DetailTableProject: React.FC<DetailTableProjectProps> = (prop) => {
       key: 'Token Allocation',
       value: `${
         Number(saleInfo?.tokenAllocationAmount).toLocaleString(undefined, {
-          minimumFractionDigits: 2,
+          minimumFractionDigits: 0,
         }) || '0'
       } ${saleInfo.tokenName}`,
     },
     {
       key: 'Funding Crypto',
-      value: DoMsaleContractAddress ===saleInfo?.saleContractAddress? 'TON / WTON' :   `${saleInfo?.fundingTokenType}`,
+      value:
+        DoMsaleContractAddress === saleInfo?.saleContractAddress
+          ? 'TON / WTON'
+          : `${saleInfo?.fundingTokenType}`,
     },
   ];
 
