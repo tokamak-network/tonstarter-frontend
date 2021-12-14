@@ -15,6 +15,7 @@ import {BigNumber} from 'ethers';
 import {useDispatch} from 'react-redux';
 import {openModal} from 'store/modal.reducer';
 import {useERC20} from '@Starter/hooks/useERC20';
+import useMaxValue from '@Starter/hooks/useMaxValue';
 
 type ExclusiveSalePartProps = {
   saleInfo: SaleInfo;
@@ -23,7 +24,14 @@ type ExclusiveSalePartProps = {
 
 export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
   const {saleInfo, detailInfo} = prop;
-  const {tokenExRatio} = saleInfo;
+  const {
+    tokenExRatio,
+    saleContractAddress,
+    fundingTokenType,
+    tokenName,
+    startAddWhiteTime,
+    endExclusiveTime,
+  } = saleInfo;
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
@@ -51,12 +59,19 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
   const dispatch = useDispatch();
 
   const PUBLICSALE_CONTRACT = useCallContract(
-    saleInfo.saleContractAddress,
+    saleContractAddress,
     'PUBLIC_SALE',
   );
 
   const {tonBalance, wtonBalance, tonAllowance, wtonAllowance, totalAllowance} =
-    useERC20(saleInfo.saleContractAddress);
+    useERC20(saleContractAddress);
+
+  const {maxValue} = useMaxValue({
+    tonBalance,
+    wtonBalance,
+    amountAvailable,
+    tokenExRatio,
+  });
 
   const {STATER_STYLE} = theme;
 
@@ -128,29 +143,29 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
       }
       setConvertedTokenBalance(String(result));
     }
-  }, [inputTonBalance, saleInfo, convertedTokenBalance]);
+  }, [inputTonBalance, saleInfo, convertedTokenBalance, tokenExRatio]);
 
   useEffect(() => {
     async function getInfo() {
-      if (account && library && saleInfo) {
+      if (account && library && saleContractAddress) {
         const whiteListInfo = await starterActions.isWhiteList({
           account,
           library,
-          address: saleInfo.saleContractAddress,
+          address: saleContractAddress,
         });
         // const amount = await starterActions.isWhiteList({
         //   account,
         //   library,
-        //   address: saleInfo.saleContractAddress,
+        //   address: saleContractAddress,
         // });
         setBtnDisabled(!whiteListInfo[0]);
         // setAmountAvailable();
       }
     }
-    if (account && library && saleInfo) {
+    if (account && library && saleContractAddress) {
       getInfo();
     }
-  }, [account, library, saleInfo]);
+  }, [account, library, saleContractAddress]);
 
   //check approve
   useEffect(() => {
@@ -167,7 +182,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
         <DetailCounter
           numberFontSize={'18px'}
           stringFontSize={'14px'}
-          date={saleInfo?.endExclusiveTime * 1000}></DetailCounter>
+          date={endExclusiveTime * 1000}></DetailCounter>
       </Box>
       <Box d="flex">
         <Text
@@ -201,13 +216,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             }
             tokenName={'TON'}
             maxBtn={true}
-            maxValue={
-              // Number(tonBalance.replaceAll(',', '')) <=
-              // Number(amountAvailable.replaceAll(',', '')) / tokenExRatio
-              //   ? Number(tonBalance.replaceAll(',', ''))
-              //   :
-              Number(amountAvailable.replaceAll(',', '')) / tokenExRatio
-            }></CustomInput>
+            maxValue={maxValue}></CustomInput>
           <img
             src={ArrowIcon}
             alt={'icon_arrow'}
@@ -230,13 +239,13 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
                   : 'white.100'
                 : 'gray.175'
             }
-            tokenName={saleInfo?.tokenName}></CustomInput>
+            tokenName={tokenName}></CustomInput>
           <Flex pos="absolute" right={0} top={10} fontSize={'13px'}>
             <Text color={'gray.400'} mr={'3px'}>
               Amount Available :{' '}
             </Text>
             <Text mr={'3px'}> {amountAvailable} </Text>
-            <Text>{saleInfo?.tokenName}</Text>
+            <Text>{tokenName}</Text>
           </Flex>
         </Box>
       </Box>
@@ -250,8 +259,8 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
               Public Round 1 Period :{' '}
             </Text>
             <Text {...detailSubTextStyle}>
-              {convertTimeStamp(saleInfo?.startAddWhiteTime, 'YYYY-MM-D')} ~{' '}
-              {convertTimeStamp(saleInfo?.endExclusiveTime, 'MM-D')}
+              {convertTimeStamp(startAddWhiteTime, 'YYYY-MM-D')} ~{' '}
+              {convertTimeStamp(endExclusiveTime, 'MM-D')}
             </Text>
           </Flex>
           <Flex w={'235px'}>
@@ -262,7 +271,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
               {' '}
               {btnDisabled === true ? '-' : userAllocation}{' '}
             </Text>
-            <Text>{saleInfo?.tokenName}</Text>
+            <Text>{tokenName}</Text>
           </Flex>
         </Box>
         <Box d="flex" fontSize={'13px'} justifyContent="space-between">
@@ -273,15 +282,14 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             <Text {...detailSubTextStyle} mr={'3px'}>
               {userTierAllocation}
             </Text>
-            <Text>{saleInfo?.tokenName}</Text>
+            <Text>{tokenName}</Text>
           </Flex>
           <Flex w={'235px'}>
             <Text color={'gray.400'} mr={'3px'}>
               Ratio :{' '}
             </Text>
             <Text {...detailSubTextStyle}>
-              1 {saleInfo.fundingTokenType} = {tokenExRatio}{' '}
-              {saleInfo?.tokenName}
+              1 {fundingTokenType} = {tokenExRatio} {tokenName}
             </Text>
           </Flex>
         </Box>
@@ -313,7 +321,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
               starterActions.participate({
                 account,
                 library,
-                address: saleInfo.saleContractAddress,
+                address: saleContractAddress,
                 amount: inputTonBalance,
               })
             }></CustomButton>
@@ -331,7 +339,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
                   openModal({
                     type: 'Starter_Approve',
                     data: {
-                      address: saleInfo.saleContractAddress,
+                      address: saleContractAddress,
                       amount: inputTonBalance,
                       tokenType: 'TON',
                     },
@@ -349,7 +357,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
                   openModal({
                     type: 'Starter_Approve',
                     data: {
-                      address: saleInfo.saleContractAddress,
+                      address: saleContractAddress,
                       amount: inputTonBalance,
                       tokenType: 'WTON',
                     },

@@ -5,7 +5,6 @@ import {DetailTableContainer} from './Detail_Table_Container';
 import {useWeb3React} from '@web3-react/core';
 import {useEffect, useState} from 'react';
 import starterActions from '../../actions';
-import {DEPLOYED} from 'constants/index';
 
 type DetailTableProjectProps = {
   saleInfo: AdminObject;
@@ -16,7 +15,6 @@ export const DetailTableProject: React.FC<DetailTableProjectProps> = (prop) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {library} = useWeb3React();
-  const {DoMsaleContractAddress} = DEPLOYED;
 
   const {STATER_STYLE} = theme;
 
@@ -76,7 +74,7 @@ export const DetailTableProject: React.FC<DetailTableProjectProps> = (prop) => {
     {
       key: 'Funding Crypto',
       value:
-        DoMsaleContractAddress === saleInfo?.saleContractAddress
+        `${saleInfo?.fundingTokenType}` === 'TON'
           ? 'TON / WTON'
           : `${saleInfo?.fundingTokenType}`,
     },

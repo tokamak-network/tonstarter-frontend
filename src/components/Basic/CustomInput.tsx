@@ -81,9 +81,6 @@ export const CustomInput = (prop: CustomInputProp) => {
           if (value === '' && setValue) {
             return setValue('0');
           }
-          if (value.length > 9) {
-            return null;
-          }
           return setValue ? setValue(value) : null;
         }}
         pos="relative"
