@@ -54,6 +54,8 @@ const ActiveProjectContainer: React.FC<{
 
   useEffect(() => {
     async function fetchContractData() {
+      const {step} = project;
+
       const roundOneAmount =
         await PUBLICSALE_CONTRACT?.totalExPurchasedAmount();
       const roundTwoAmount = await PUBLICSALE_CONTRACT?.totalDepositAmount();
@@ -65,7 +67,12 @@ const ActiveProjectContainer: React.FC<{
 
       const progressNow =
         (Number(convertedSum?.replaceAll(',', '')) / 28436) * 100;
-      const participantsNum = await PUBLICSALE_CONTRACT?.totalUsers();
+      const participantsNum =
+        step === 'whitelist'
+          ? await PUBLICSALE_CONTRACT?.totalWhitelists()
+          : step === 'exclusive'
+          ? await PUBLICSALE_CONTRACT?.totalRound1Users()
+          : await PUBLICSALE_CONTRACT?.totalRound2Users();
       setTotalRaise(convertedSum);
       setProgress(Math.ceil(progressNow));
       setParticipants(participantsNum.toString());
@@ -73,7 +80,7 @@ const ActiveProjectContainer: React.FC<{
     if (PUBLICSALE_CONTRACT && project) {
       fetchContractData();
     }
-  }, [library, project]);
+  }, [library, project, PUBLICSALE_CONTRACT]);
 
   useEffect(() => {
     const nowTimeStamp = moment().unix();
@@ -87,6 +94,7 @@ const ActiveProjectContainer: React.FC<{
         : 'Claim';
     setStep(checkStep);
   }, [project]);
+
   return (
     <Link to={`${url}/${project.name}`} id={`active_link_${index}`}>
       <Box {...STATER_STYLE.containerStyle({colorMode})}>

@@ -14,8 +14,9 @@ export type ActiveProjectType = I_StarterProject & {
   isExclusive: boolean;
   projectTokenRatio: number;
   projectFundingTokenRatio: number;
+  step: 'whitelist' | 'exclusive' | 'deposit' | 'past';
   timeStamps: {
-    checkStep: string;
+    checkStep: 'whitelist' | 'exclusive' | 'deposit' | 'past';
     endDepositTime: number;
     endExclusiveTime: number;
     endOpenSaleTime: number;
