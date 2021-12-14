@@ -12,15 +12,10 @@ import { utils, ethers } from 'ethers';
 const { NPM_Address, UniswapStaker_Address } = DEPLOYED;
 
 export const stakeMultiple = async (args: any) => {
-    const { library, tokenid, userAddress, stakeKeyList } = args;
+    const { library, tokenid, userAddress, stakeKeyList, unstakeKeyList } = args;
     if (userAddress === null || userAddress === undefined) {
         return;
     }
-
-    if (stakeKeyList.length === 0) {
-        return alert(`Please select rewards to stake`);
-    }
-
     const NPM = new Contract(NPM_Address, NPMABI.abi, library);
     const uniswapStakerContract = new Contract(
       UniswapStaker_Address,
@@ -29,7 +24,46 @@ export const stakeMultiple = async (args: any) => {
     );
     const signer = getSigner(library, userAddress);
 
-    const arrayData = stakeKeyList.map((key: any) => {
+    if (stakeKeyList.length === 0 ){      
+      const arrayData = unstakeKeyList.map((key: any) => {
+        const keyGenereated = { pool: key.pool,
+          startTime: key.startTime,
+          endTime: key.endTime,
+          rewardToken: key.rewardToken,
+          refundee: key.refundee
+        }
+      const data = uniswapStakerContract.interface.encodeFunctionData('unstakeToken', [keyGenereated, tokenid])
+      return data;
+    })    
+    try {
+      const receipt = await uniswapStakerContract.connect(signer).multicall(arrayData);
+      store.dispatch(setTxPending({ tx: true }));
+      if (receipt) {
+        toastWithReceipt(receipt, setTxPending, 'Reward');
+
+      }
+    }
+    catch (err) {
+      store.dispatch(setTxPending({ tx: false }));
+      console.log(err);
+      store.dispatch(
+        //@ts-ignore
+        openToast({
+          payload: {
+            status: 'error',
+            title: 'Tx fail to send',
+            description: `something went wrong`,
+            duration: 5000,
+            isClosable: true,
+          },
+        }),
+      );
+    }
+
+    }
+
+    else if (unstakeKeyList.length === 0) {      
+      const arrayData = stakeKeyList.map((key: any) => {
         const keyGenereated = { pool: key.pool,
           startTime: key.startTime,
           endTime: key.endTime,
@@ -39,35 +73,77 @@ export const stakeMultiple = async (args: any) => {
       const data = uniswapStakerContract.interface.encodeFunctionData('stakeToken', [keyGenereated, tokenid])
       return data;
     })
+    try {
+      const receipt = await uniswapStakerContract.connect(signer).multicall(arrayData);
+      store.dispatch(setTxPending({ tx: true }));
+      if (receipt) {
+        toastWithReceipt(receipt, setTxPending, 'Reward');
 
-    
-    // const incentiveKeyAbi = 'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)'
-    // const abicoder = ethers.utils.defaultAbiCoder;
+      }
+    }
+    catch (err) {
+      store.dispatch(setTxPending({ tx: false }));
+      console.log(err);
+      store.dispatch(
+        //@ts-ignore
+        openToast({
+          payload: {
+            status: 'error',
+            title: 'Tx fail to send',
+            description: `something went wrong`,
+            duration: 5000,
+            isClosable: true,
+          },
+        }),
+      );
+    }
 
-      // const data = abicoder.encode([`${incentiveKeyAbi}[]`], [arrayData]);
-      try {
-        const receipt = await uniswapStakerContract.connect(signer).multicall(arrayData);
-        store.dispatch(setTxPending({ tx: true }));
-        if (receipt) {
-          toastWithReceipt(receipt, setTxPending, 'Reward');
+    }
 
+    else {
+      const arrayDataUnstake = unstakeKeyList.map((key: any) => {
+        const keyGenereated = { pool: key.pool,
+          startTime: key.startTime,
+          endTime: key.endTime,
+          rewardToken: key.rewardToken,
+          refundee: key.refundee
         }
+      const dataUnstake = uniswapStakerContract.interface.encodeFunctionData('unstakeToken', [keyGenereated, tokenid])
+      return dataUnstake;
+    })
+    const arrayDataStake = stakeKeyList.map((key: any) => {
+      const keyGenereated = { pool: key.pool,
+        startTime: key.startTime,
+        endTime: key.endTime,
+        rewardToken: key.rewardToken,
+        refundee: key.refundee
       }
-      catch (err) {
-        store.dispatch(setTxPending({ tx: false }));
-        console.log(err);
-        store.dispatch(
-          //@ts-ignore
-          openToast({
-            payload: {
-              status: 'error',
-              title: 'Tx fail to send',
-              description: `something went wrong`,
-              duration: 5000,
-              isClosable: true,
-            },
-          }),
-        );
-      }
+    const dataStake = uniswapStakerContract.interface.encodeFunctionData('stakeToken', [keyGenereated, tokenid])
+    return dataStake;
+  })
+  try {
+    const receipt = await uniswapStakerContract.connect(signer).multicall(arrayDataUnstake.concat(arrayDataStake));
+    store.dispatch(setTxPending({ tx: true }));
+    if (receipt) {
+      toastWithReceipt(receipt, setTxPending, 'Reward');
 
+    }
+  }
+  catch (err) {
+    store.dispatch(setTxPending({ tx: false }));
+    console.log(err);
+    store.dispatch(
+      //@ts-ignore
+      openToast({
+        payload: {
+          status: 'error',
+          title: 'Tx fail to send',
+          description: `something went wrong`,
+          duration: 5000,
+          isClosable: true,
+        },
+      }),
+    );
+  }
+    }     
 }

@@ -19,7 +19,7 @@ import {RewardProgramCard} from './components/RewardProgramCard';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {stakeMultiple, unstakeMultiple} from './actions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
-import { LPToken } from './types';
+import {LPToken} from './types';
 import {getSigner} from 'utils/contract';
 import {DEPLOYED} from 'constants/index';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
@@ -46,7 +46,6 @@ type RewardContainerProps = {
 };
 const {UniswapStaker_Address} = DEPLOYED;
 
-
 const multipleStakeList: any = [];
 const multipleUnstakeList: any = [];
 export const RewardContainer: FC<RewardContainerProps> = ({
@@ -59,8 +58,10 @@ export const RewardContainer: FC<RewardContainerProps> = ({
   const [pageOptions, setPageOptions] = useState<number>(0);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(6);
+  const [unstakeNum, setUnstakeNum] = useState<number>(0);
+  const [stakeNum, setStakeNum] = useState<number>(0);
   const {account, library} = useActiveWeb3React();
-const [staked, setstaked] = useState(true)
+  const [staked, setstaked] = useState(true);
   const {colorMode} = useColorMode();
   const theme = useTheme();
   useEffect(() => {
@@ -97,19 +98,22 @@ const [staked, setstaked] = useState(true)
     } else {
       multipleStakeList.push(key);
     }
+    setStakeNum(multipleStakeList.length);
+
     return multipleStakeList;
   };
 
   const unstakeMultipleKeys = (key: any) => {
     if (
       multipleUnstakeList.filter(
-        (listkey: any) => JSON.stringify(listkey) === JSON.stringify(key)
+        (listkey: any) => JSON.stringify(listkey) === JSON.stringify(key),
       ).length > 0
     ) {
       multipleUnstakeList.pop(key);
     } else {
       multipleUnstakeList.push(key);
     }
+    setUnstakeNum(multipleUnstakeList.length);
     return multipleUnstakeList;
   };
 
@@ -126,25 +130,29 @@ const [staked, setstaked] = useState(true)
       const signer = getSigner(library, account);
       const depositInfo = await uniswapStakerContract
         .connect(signer)
-        .deposits(Number(position?position.id: '0'));        
-        if (depositInfo.owner.toLowerCase() === account.toLowerCase() ) {
-          setstaked(true)
-        } 
-        else {setstaked(false)}
-
+        .deposits(Number(position ? position.id : '0'));
+      if (depositInfo.owner.toLowerCase() === account.toLowerCase()) {
+        setstaked(true);
+      } else {
+        setstaked(false);
+      }
     }
-    checkStaked()
-  },[position])
-  
+    checkStaked();
+  }, [position]);
+
   return (
     <Flex justifyContent={'space-between'}>
       {rewards.length !== 0 ? (
         <Box flexWrap={'wrap'}>
-          <Grid templateColumns="repeat(2, 1fr)" gap={'30px'} h={'fit-content'} mb={'30px'}>
+          <Grid
+            templateColumns="repeat(2, 1fr)"
+            gap={'30px'}
+            h={'fit-content'}
+            mb={'30px'}>
             {getPaginatedData().map((reward: any, index) => {
               const includedPool = pools.find(
                 (pool) => pool.id === reward.poolAddress,
-              );              
+              );
               const token0 = includedPool.token0.id;
               const token1 = includedPool.token1.id;
               const token0Image = includedPool.token0Image;
@@ -169,7 +177,7 @@ const [staked, setstaked] = useState(true)
                 <RewardProgramCard
                   key={index}
                   reward={rewardProps}
-                  selectedToken={(position)}
+                  selectedToken={position}
                   selectedPool={selectedPool ? selectedPool.id : ''}
                   sendKey={stakeMultipleKeys}
                   sendUnstakeKey={unstakeMultipleKeys}
@@ -197,7 +205,11 @@ const [staked, setstaked] = useState(true)
               fontFamily={theme.fonts.roboto}
               fontSize="14px"
               fontWeight="500"
-              disabled={position === undefined}
+              disabled={
+                position === undefined ||
+                (unstakeNum === 0 &&
+                  stakeNum === 0)
+              }
               _hover={{backgroundColor: 'none'}}
               _disabled={
                 colorMode === 'light'
@@ -218,11 +230,12 @@ const [staked, setstaked] = useState(true)
                   tokenid: Number(position?.id),
                   library: library,
                   stakeKeyList: multipleStakeList,
+                  unstakeKeyList: multipleUnstakeList,
                 })
               }>
-              Stake Multiple
+             Multicall
             </Button>
-            <Button
+            {/* <Button
               w={'120px'}
               h={'33px'}
               bg={'blue.500'}
@@ -255,7 +268,7 @@ const [staked, setstaked] = useState(true)
                 })
               }>
               Unstake Multiple
-            </Button>
+            </Button> */}
             <Flex flexDirection={'row'} h={'25px'} alignItems={'center'}>
               <Flex>
                 <Tooltip label="Previous Page">
@@ -339,7 +352,7 @@ const [staked, setstaked] = useState(true)
                   value={pageLimit}
                   fontFamily={theme.fonts.roboto}
                   onChange={(e) => {
-                    setPageIndex(1)
+                    setPageIndex(1);
                     setPageLimit(Number(e.target.value));
                   }}>
                   {[2, 4, 6, 8, 10, 12].map((pageSize) => (
