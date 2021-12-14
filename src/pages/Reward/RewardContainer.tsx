@@ -17,7 +17,7 @@ import {getPoolName} from '../../utils/token';
 import {ClaimReward} from './components/ClaimReward';
 import {RewardProgramCard} from './components/RewardProgramCard';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
-import {stakeMultiple} from './actions';
+import {stakeMultiple, unstakeMultiple} from './actions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import { LPToken } from './types';
 import {getSigner} from 'utils/contract';
@@ -48,6 +48,7 @@ const {UniswapStaker_Address} = DEPLOYED;
 
 
 const multipleStakeList: any = [];
+const multipleUnstakeList: any = [];
 export const RewardContainer: FC<RewardContainerProps> = ({
   rewards,
   selectedPool,
@@ -97,6 +98,19 @@ const [staked, setstaked] = useState(true)
       multipleStakeList.push(key);
     }
     return multipleStakeList;
+  };
+
+  const unstakeMultipleKeys = (key: any) => {
+    if (
+      multipleUnstakeList.filter(
+        (listkey: any) => JSON.stringify(listkey) === JSON.stringify(key)
+      ).length > 0
+    ) {
+      multipleUnstakeList.pop(key);
+    } else {
+      multipleUnstakeList.push(key);
+    }
+    return multipleUnstakeList;
   };
 
   useEffect(() => {
@@ -158,8 +172,10 @@ const [staked, setstaked] = useState(true)
                   selectedToken={(position)}
                   selectedPool={selectedPool ? selectedPool.id : ''}
                   sendKey={stakeMultipleKeys}
+                  sendUnstakeKey={unstakeMultipleKeys}
                   pageIndex={pageIndex}
                   stakeList={multipleStakeList}
+                  unstakeList={multipleUnstakeList}
                   sortString={sortString}
                   includedPoolLiquidity={includedPool.liquidity}
                 />
@@ -205,6 +221,40 @@ const [staked, setstaked] = useState(true)
                 })
               }>
               Stake Multiple
+            </Button>
+            <Button
+              w={'120px'}
+              h={'33px'}
+              bg={'blue.500'}
+              color="white.100"
+              ml={'10px'}
+              fontFamily={theme.fonts.roboto}
+              fontSize="14px"
+              fontWeight="500"
+              disabled={position === undefined}
+              _hover={{backgroundColor: 'none'}}
+              _disabled={
+                colorMode === 'light'
+                  ? {
+                      backgroundColor: 'gray.25',
+                      cursor: 'default',
+                      color: '#86929d',
+                    }
+                  : {
+                      backgroundColor: '#353535',
+                      cursor: 'default',
+                      color: '#838383',
+                    }
+              }
+              onClick={() =>
+                unstakeMultiple({
+                  userAddress: account,
+                  tokenid: Number(position?.id),
+                  library: library,
+                  stakeKeyList: multipleUnstakeList,
+                })
+              }>
+              Unstake Multiple
             </Button>
             <Flex flexDirection={'row'} h={'25px'} alignItems={'center'}>
               <Flex>

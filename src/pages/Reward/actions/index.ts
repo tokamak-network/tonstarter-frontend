@@ -7,6 +7,7 @@ import {claim} from './claim';
 import { refund } from './refund';
 import {withdraw} from './withdraw';
 import {stakeMultiple} from './stakeMultiple'
+import {unstakeMultiple} from './unstakeMultiple'
 export {
     approve,
     checkApproved,
@@ -17,6 +18,7 @@ export {
     claim,
     refund,
     withdraw,
-    stakeMultiple
+    stakeMultiple,
+    unstakeMultiple
   };
   
