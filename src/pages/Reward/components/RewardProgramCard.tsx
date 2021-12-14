@@ -248,11 +248,13 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
         !staked
       ) {
         setButtonState('Stake');
-      } else if (staked && now < reward.endTime) {
-        setButtonState('In Progress');
-      } else if (staked && now > reward.endTime) {
+      } 
+      // else if (staked && now < reward.endTime) {
+      //   setButtonState('In Progress');
+      // } 
+      else if (staked) {
         setButtonState('Unstake');
-      } else if (now > reward.endTime) {
+      } else if (!staked && now > reward.endTime) {
         setButtonState('Closed');
       } else if (approved && now < reward.startTime) {
         setButtonState('Waiting');
