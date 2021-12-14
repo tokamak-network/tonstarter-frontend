@@ -49,9 +49,8 @@ const ActiveProjectContainer: React.FC<{
     'PUBLIC_SALE',
   );
   const tokenType = checkTokenType(
-    '0x2be5e8c109e2197D077D13A82dAead6a9b3433C5',
+    '0xaEC59E5b4f8DbF513e260500eA96EbA173F74149', colorMode
   );
-
   useEffect(() => {
     async function fetchContractData() {
       const roundOneAmount =
@@ -92,7 +91,7 @@ const ActiveProjectContainer: React.FC<{
       <Box {...STATER_STYLE.containerStyle({colorMode})}>
         <Flex justifyContent="space-between" mb={15}>
           <Avatar
-            src={tokenType.symbol}
+            src={'https://tonstarter-symbols.s3.ap-northeast-2.amazonaws.com/aura-logo-black-big.png'}
             backgroundColor={tokenType.bg}
             bg="transparent"
             color="#c7d1d8"
