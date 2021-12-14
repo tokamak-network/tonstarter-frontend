@@ -5,7 +5,6 @@ import {
   useTheme,
   Text,
   Flex,
-  Avatar,
   Progress,
 } from '@chakra-ui/react';
 import {checkTokenType} from 'utils/token';
@@ -15,7 +14,6 @@ import {ActiveProjectType} from '@Starter/types';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect, useState} from 'react';
 import {useCallContract} from 'hooks/useCallContract';
-import * as publicSale from 'services/abis/PublicSale.json';
 import {BigNumber} from 'ethers';
 import {convertNumber} from 'utils/number';
 import moment from 'moment';
@@ -48,10 +46,7 @@ const ActiveProjectContainer: React.FC<{
     project.saleContractAddress || '',
     'PUBLIC_SALE',
   );
-  const tokenType = checkTokenType(
-    '0xaEC59E5b4f8DbF513e260500eA96EbA173F74149',
-    colorMode,
-  );
+
   useEffect(() => {
     async function fetchContractData() {
       const roundOneAmount =
@@ -65,7 +60,7 @@ const ActiveProjectContainer: React.FC<{
 
       const progressNow =
         (Number(convertedSum?.replaceAll(',', '')) / 28436) * 100;
-      const participantsNum = await PUBLICSALE_CONTRACT?.totalUsers();
+      const participantsNum = await PUBLICSALE_CONTRACT?.totalWhitelists();
       setTotalRaise(convertedSum);
       setProgress(Math.ceil(progressNow));
       setParticipants(participantsNum.toString());
@@ -186,7 +181,7 @@ const ActiveProjectContainer: React.FC<{
                 colorMode,
                 fontSize: 20,
               })}>
-              {participants ? participants : 'XX,XXX'}
+              {participants || 'XX,XXX'}
             </Text>
           </Box>
           <Box d="flex" flexDir="column">
