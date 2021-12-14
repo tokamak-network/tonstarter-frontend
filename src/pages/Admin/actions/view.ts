@@ -12,13 +12,18 @@ interface I_CallContract {
 }
 
 const getSaleAmount = async (args: I_CallContract) => {
-  const {library, address} = args;
-  const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
-  const exSaleAmount = await PUBLICSALE_CONTRACT.totalExPurchasedAmount();
-  const openSaleAmount = await PUBLICSALE_CONTRACT.totalOpenPurchasedAmount();
-  const sum = BigNumber.from(exSaleAmount).add(openSaleAmount);
-  const res = convertNumber({amount: sum.toString(), localeString: true});
-  return res;
+  try {
+    const {library, address} = args;
+    const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
+    const exSaleAmount = await PUBLICSALE_CONTRACT.totalExPurchasedAmount();
+    const openSaleAmount = await PUBLICSALE_CONTRACT.totalOpenPurchasedAmount();
+    const sum = BigNumber.from(exSaleAmount).add(openSaleAmount);
+    const res = convertNumber({amount: sum.toString(), localeString: true});
+    return res;
+  } catch (e) {
+    console.log(e);
+    return '0.00';
+  }
 };
 
 const getPoolData = async (): Promise<FetchPoolData[] | undefined> => {

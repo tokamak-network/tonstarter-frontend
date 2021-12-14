@@ -28,10 +28,12 @@ const ClaimRecord = ({
   name,
   amount,
   tokenName,
+  index,
 }: {
   name: string;
   amount: string;
   tokenName: string;
+  index: number;
 }) => {
   const {colorMode} = useColorMode();
   return (
@@ -40,7 +42,7 @@ const ClaimRecord = ({
         <Text
           color={colorMode === 'light' ? 'gray.400' : 'gray.425'}
           fontSize={'13px'}>
-          {name}
+          {`#${index + 1}`}
         </Text>
         <Text
           color={colorMode === 'light' ? 'gray.250' : 'white.200'}
@@ -163,8 +165,9 @@ export const DaoClaim = (props: any) => {
                   style={{marginTop: '0', marginBottom: '20px'}}
                   justifyContent="center"
                   flexDir="column">
-                  {unstakeList.map((data: ClaimList) => (
+                  {unstakeList.map((data: ClaimList, index: number) => (
                     <ClaimRecord
+                      index={index}
                       name={data.name}
                       amount={data.claimAmount}
                       tokenName={data.tokenName}

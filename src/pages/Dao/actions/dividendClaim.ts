@@ -30,7 +30,30 @@ export const getClaimalbeList = async (
       library,
     );
 
-    const tokens = await LOCKTOS_DIVIDEND_CONTRACT.getAvailableClaims(account);
+    const tokensArr = await LOCKTOS_DIVIDEND_CONTRACT.getAvailableClaims(
+      account,
+    );
+
+    let claimableTokens = [];
+    let isError = false;
+    let i = 0;
+
+    do {
+      try {
+        const tokenAddress = await LOCKTOS_DIVIDEND_CONTRACT.distributedTokens(
+          i,
+        );
+        claimableTokens.push(tokenAddress);
+        i++;
+      } catch (e) {
+        isError = true;
+      }
+    } while (isError === false);
+
+    console.log('-claimableTokens-');
+    console.log(claimableTokens);
+
+    const tokens = claimableTokens;
 
     //project tokens
     const res: ClaimList[] = await Promise.all(

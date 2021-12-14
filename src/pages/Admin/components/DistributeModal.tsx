@@ -17,24 +17,28 @@ import {selectModalType} from 'store/modal.reducer';
 import {useModal} from 'hooks/useModal';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {CloseButton} from 'components/Modal';
-import {CustomInput} from 'components/Basic';
-import AdminActions from '../actions';
+import {CustomInput, CustomSelectBox} from 'components/Basic';
+import AdminActions from '@Admin/actions';
 import moment from 'moment';
+import {useBlockNumber} from 'hooks/useBlock';
+import {DEPLOYED} from 'constants/index';
 
 export const DistributeModal = () => {
+  const {TON_ADDRESS, WTON_ADDRESS, TOS_ADDRESS, DOC_ADDRESS} = DEPLOYED;
   const {data} = useAppSelector(selectModalType);
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
   const {handleCloseModal} = useModal();
   const {btnStyle} = theme;
-  const {contractAddress} = data.data;
 
-  const [tokenAddress, setTokenAddress] = useState<string>('');
+  const [tokenAddress, setTokenAddress] = useState<string>(TON_ADDRESS);
   const [tokenAmount, setTokenAmount] = useState('');
   const [allowance, setAllowance] = useState<string>('');
   const [ableDistribute, setAbleDistribute] = useState<boolean>(false);
   const [timeStamp, setTimeStamp] = useState<string>('');
+
+  const {blockNumber} = useBlockNumber();
 
   useEffect(() => {
     async function getAllowanceAmount() {
@@ -53,7 +57,7 @@ export const DistributeModal = () => {
     } else {
       setAllowance('0.00');
     }
-  }, [account, library, tokenAddress]);
+  }, [account, library, tokenAddress, blockNumber]);
 
   useEffect(() => {
     if (tokenAmount === '') {
@@ -72,6 +76,9 @@ export const DistributeModal = () => {
   }, [allowance, tokenAmount]);
 
   useEffect(() => {
+    //GET NEXT THUR
+    //Which is lock period for sTOS
+
     const dayINeed = 4; // for Thursday
     const today = moment().isoWeekday();
     const thisWed = moment().isoWeekday(dayINeed).format('YYYY-MM-DD');
@@ -84,14 +91,28 @@ export const DistributeModal = () => {
     } else {
       return setTimeStamp(nextWed);
     }
+
+    return setTimeStamp(nextWed);
   }, []);
+  const selectOptionValues = [
+    TON_ADDRESS,
+    WTON_ADDRESS,
+    TOS_ADDRESS,
+    DOC_ADDRESS,
+    'CUSTOM TOKEN',
+  ];
+  const selectOptionNames = ['TON', 'WTON', 'TOS', 'DOC', 'CUSTOM TOKEN'];
+
+  useEffect(() => {
+    if (tokenAddress === 'CUSTOM TOKEN') return setTokenAddress('');
+  }, [tokenAddress]);
 
   return (
     <Modal
       isOpen={data.modal === 'Admin_Distribute' ? true : false}
       isCentered
       onClose={() => {
-        setTokenAddress('');
+        setTokenAddress(TON_ADDRESS);
         setTokenAmount('');
         setAllowance('');
         handleCloseModal();
@@ -116,10 +137,10 @@ export const DistributeModal = () => {
               fontFamily={theme.fonts.titil}
               color={colorMode === 'light' ? 'gray.250' : 'white.100'}
               textAlign={'center'}>
-              Reward Token
+              Airdrop Distribution
             </Heading>
             <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
-              You can manage reward tokens
+              You can manage airdrop tokens
             </Text>
           </Box>
 
@@ -133,22 +154,37 @@ export const DistributeModal = () => {
             color={colorMode === 'light' ? 'black.300' : 'white.100'}>
             <Box d="flex" flexDir="column" mb={'24px'}>
               <Text mb={'9px'}>Token Address</Text>
-              <CustomInput
+              <CustomSelectBox
                 w={'290px'}
                 h={'32px'}
-                style={{fontSize: '12px', textAlign: 'left'}}
-                value={tokenAddress}
+                list={selectOptionValues}
+                optionName={selectOptionNames}
                 setValue={setTokenAddress}
-                placeHolder={'Enter token address'}
-                fontWeight={500}
-                startWithZero={true}
-                color={
-                  tokenAddress !== ''
-                    ? colorMode === 'light'
-                      ? 'gray.225'
-                      : 'white.100'
-                    : 'gray.175'
-                }></CustomInput>
+                fontSize={'12px'}></CustomSelectBox>
+              {[TON_ADDRESS, WTON_ADDRESS, TOS_ADDRESS, DOC_ADDRESS].indexOf(
+                tokenAddress,
+              ) === -1 && (
+                <CustomInput
+                  w={'290px'}
+                  h={'32px'}
+                  style={{
+                    fontSize: '12px',
+                    textAlign: 'left',
+                    marginTop: '10px',
+                  }}
+                  value={tokenAddress}
+                  setValue={setTokenAddress}
+                  placeHolder={'Enter token address'}
+                  fontWeight={500}
+                  startWithZero={true}
+                  color={
+                    tokenAddress !== 'CUSTOM TOKEN'
+                      ? colorMode === 'light'
+                        ? 'gray.225'
+                        : 'white.100'
+                      : 'gray.175'
+                  }></CustomInput>
+              )}
             </Box>
             <Box d="flex" flexDir="column" mb={'29px'}>
               <Text mb={'9px'}>Token Amount</Text>
@@ -196,7 +232,7 @@ export const DistributeModal = () => {
                 }></CustomInput>
             </Box>
             <Box d="flex" flexDir="column" mb={'29px'}>
-              <Text mb={'9px'}>Calculated Timestamp</Text>
+              <Text mb={'9px'}>Distribution Timestamp</Text>
               <CustomInput
                 w={'290px'}
                 h={'32px'}

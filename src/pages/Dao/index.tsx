@@ -22,6 +22,7 @@ import {fetchTosStakes} from './dao.reducer';
 import {useBlockNumber} from 'hooks/useBlock';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {Utility} from './components/Utility';
+import {DistributeModal} from 'pages/Admin/components/DistributeModal';
 
 export const DAO = () => {
   const theme = useTheme();
@@ -166,6 +167,7 @@ export const DAO = () => {
       <DaoUnstakeModal></DaoUnstakeModal>
       <DaoManageModal></DaoManageModal>
       <DaoClaim></DaoClaim>
+      <DistributeModal></DistributeModal>
     </Flex>
   );
 };

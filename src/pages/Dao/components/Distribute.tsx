@@ -10,16 +10,10 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect} from 'react';
 import {useState} from 'react';
 import {openModal} from 'store/modal.reducer';
-import {selectDao} from '../dao.reducer';
-import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {ClaimList} from '../types/index';
+import {useAppDispatch} from 'hooks/useRedux';
 
-export const Claim = () => {
+export const Distribute = () => {
   const dispatch = useAppDispatch();
-  const {
-    data: {claimList},
-  } = (useAppSelector as any)(selectDao);
-  const [balance, setbalance] = useState('-');
   const [btnDisabled, setBtnDisabled] = useState(true);
   const theme = useTheme();
   const {btnStyle, btnHover} = theme;
@@ -38,25 +32,9 @@ export const Claim = () => {
   };
 
   useEffect(() => {
-    const totalBalance = claimList.reduce((acc: any, cur: ClaimList) => {
-      return Number(acc) + cur.price;
-    }, 0);
-    setbalance(
-      totalBalance.toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-      }),
-    );
-    const isClaimAmount = claimList.filter((data: ClaimList) => {
-      return Number(data.claimAmount.replaceAll(',', '')) > 0;
-    });
-
-    if (isClaimAmount.length > 0) {
-      return setBtnDisabled(false);
-    }
-    return setBtnDisabled(true);
-
+    setBtnDisabled(!active);
     /*eslint-disable*/
-  }, [active, account, library, dispatch, claimList]);
+  }, [active, account, library]);
 
   return (
     <Flex
@@ -67,7 +45,7 @@ export const Claim = () => {
       <Box fontWeight={'bold'}>
         <Flex color={themeDesign.fontColor[colorMode]}>
           <Text fontSize={'1.250em'} mr="5px">
-            My Airdrop
+            Airdrop Distribution
           </Text>
         </Flex>
       </Box>
@@ -85,12 +63,12 @@ export const Claim = () => {
         onClick={() =>
           dispatch(
             openModal({
-              type: 'dao_claim',
-              data: {claimList, balance},
+              type: 'Admin_Distribute',
+              data: {},
             }),
           )
         }>
-        Claim
+        Distribute
       </Button>
     </Flex>
   );

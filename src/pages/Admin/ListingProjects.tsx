@@ -4,7 +4,6 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect, useMemo, useState} from 'react';
 import {ListTable} from './components/ListTable';
 import {DistributeModal} from './components/DistributeModal';
-import {AdminObject, ListingTableData} from './types';
 import {fetchStarterURL} from 'constants/index';
 import AdminActions from './actions';
 import moment from 'moment';
@@ -13,7 +12,6 @@ import {selectTransactionType} from 'store/refetch.reducer';
 import {LoadingComponent} from 'components/Loading';
 
 export const ListingProjects = () => {
-  const theme = useTheme();
   const {account, library} = useActiveWeb3React();
   const [projects, setProjects] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
