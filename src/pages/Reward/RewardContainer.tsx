@@ -181,7 +181,7 @@ const [staked, setstaked] = useState(true)
               fontFamily={theme.fonts.roboto}
               fontSize="14px"
               fontWeight="500"
-              disabled={position === undefined || staked}
+              disabled={position === undefined}
               _hover={{backgroundColor: 'none'}}
               _disabled={
                 colorMode === 'light'

@@ -22,25 +22,31 @@ export const stakeMultiple = async (args: any) => {
     }
 
     const NPM = new Contract(NPM_Address, NPMABI.abi, library);
-
+    const uniswapStakerContract = new Contract(
+      UniswapStaker_Address,
+      STAKERABI.abi,
+      library,
+    );
     const signer = getSigner(library, userAddress);
 
     const arrayData = stakeKeyList.map((key: any) => {
-        return {
-            pool: key.pool,
-            startTime: key.startTime,
-            endTime: key.endTime,
-            rewardToken: key.rewardToken,
-            refundee: key.refundee,
+        const keyGenereated = { pool: key.pool,
+          startTime: key.startTime,
+          endTime: key.endTime,
+          rewardToken: key.rewardToken,
+          refundee: key.refundee
         }
-           
-        })
-    const incentiveKeyAbi = 'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)'
-    const abicoder = ethers.utils.defaultAbiCoder;
+      const data = uniswapStakerContract.interface.encodeFunctionData('stakeToken', [keyGenereated, tokenid])
+      return data;
+    })
 
-      const data = abicoder.encode([`${incentiveKeyAbi}[]`], [arrayData]);
+    
+    // const incentiveKeyAbi = 'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)'
+    // const abicoder = ethers.utils.defaultAbiCoder;
+
+      // const data = abicoder.encode([`${incentiveKeyAbi}[]`], [arrayData]);
       try {
-        const receipt = await NPM.connect(signer).safeTransferFrom(userAddress, UniswapStaker_Address, tokenid, data);
+        const receipt = await uniswapStakerContract.connect(signer).multicall(arrayData);
         store.dispatch(setTxPending({ tx: true }));
         if (receipt) {
           toastWithReceipt(receipt, setTxPending, 'Reward');
