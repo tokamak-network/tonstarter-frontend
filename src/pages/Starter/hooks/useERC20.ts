@@ -113,12 +113,12 @@ export const useERC20 = (
     amount: string,
     approveAll?: boolean,
   ): Promise<void> => {
-    const wton = ethers.utils.formatUnits(
-      wtonAllowance.replaceAll('.', '').replaceAll(',', ''),
-      27,
-    );
-    const totalApprove = Number(wton) + Number(amount);
-    const approval_WTON_Amount = convertToRay(totalApprove.toString());
+    // const wton = ethers.utils.formatUnits(
+    //   wtonAllowance.replaceAll('.', '').replaceAll(',', ''),
+    //   27,
+    // );
+    // const totalApprove = Number(wton) + Number(amount);
+    const approval_WTON_Amount = convertToRay(amount.toString());
     const totallSupply = await WTON_CONTRACT?.totalSupply();
     const receipt = await WTON_CONTRACT?.increaseAllowance(
       SALE_CONTRACT,
