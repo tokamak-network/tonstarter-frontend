@@ -16,13 +16,19 @@ export const stakeMultiple = async (args: any) => {
   if (userAddress === null || userAddress === undefined) {
     return;
   }
+
   const NPM = new Contract(NPM_Address, NPMABI.abi, library);
   const uniswapStakerContract = new Contract(
     UniswapStaker_Address,
     STAKERABI.abi,
     library,
   );
+  
   const signer = getSigner(library, userAddress);
+  const depositInfo = await uniswapStakerContract
+  .connect(signer)
+  .deposits(tokenid);
+
 
   if (stakeKeyList.length === 0) {
     const arrayData = unstakeKeyList.map((key: any) => {
@@ -64,24 +70,63 @@ export const stakeMultiple = async (args: any) => {
   }
 
   else if (unstakeKeyList.length === 0) {
-    const arrayData = stakeKeyList.map((key: any) => {
-      const keyGenereated = {
-        pool: key.pool,
-        startTime: key.startTime,
-        endTime: key.endTime,
-        rewardToken: key.rewardToken,
-        refundee: key.refundee
-      }
-      const data = uniswapStakerContract.interface.encodeFunctionData('stakeToken', [keyGenereated, tokenid])
-      return data;
-    })
+    
     try {
-      const receipt = await uniswapStakerContract.connect(signer).multicall(arrayData);
-      store.dispatch(setTxPending({ tx: true }));
-      if (receipt) {
-        toastWithReceipt(receipt, setTxPending, 'Reward');
 
+      if (depositInfo.owner.toLowerCase() !== userAddress.toLowerCase()) {
+        // const arrayData = stakeKeyList.map((key: any) => {
+        //   const keyGenereated = {
+        //     pool: key.pool,
+        //     startTime: key.startTime,
+        //     endTime: key.endTime,
+        //     rewardToken: key.rewardToken,
+        //     refundee: key.refundee
+        //   }
+        //   const data = uniswapStakerContract.interface.encodeFunctionData('safeTransferFrom', [keyGenereated, tokenid])
+        //   return data;
+        // })
+        const arrayData = stakeKeyList.map((key: any) => {
+          return {
+              pool: key.pool,
+              startTime: key.startTime,
+              endTime: key.endTime,
+              rewardToken: key.rewardToken,
+              refundee: key.refundee,
+          }
+             
+          })
+      const incentiveKeyAbi = 'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)'
+      const abicoder = ethers.utils.defaultAbiCoder;
+  
+        const data = abicoder.encode([`${incentiveKeyAbi}[]`], [arrayData]);
+
+        const receipt = await NPM.connect(signer).safeTransferFrom(userAddress, UniswapStaker_Address, tokenid, data);
+        store.dispatch(setTxPending({ tx: true }));
+        if (receipt) {
+          toastWithReceipt(receipt, setTxPending, 'Reward');
+  
+        }
       }
+      else {
+        const arrayData = stakeKeyList.map((key: any) => {
+          const keyGenereated = {
+            pool: key.pool,
+            startTime: key.startTime,
+            endTime: key.endTime,
+            rewardToken: key.rewardToken,
+            refundee: key.refundee
+          }
+          const data = uniswapStakerContract.interface.encodeFunctionData('stakeToken', [keyGenereated, tokenid])
+          return data;
+        })
+        const receipt = await uniswapStakerContract.connect(signer).multicall(arrayData);
+        store.dispatch(setTxPending({ tx: true }));
+        if (receipt) {
+          toastWithReceipt(receipt, setTxPending, 'Reward');
+  
+        }
+      }
+     
     }
     catch (err) {
       store.dispatch(setTxPending({ tx: false }));
