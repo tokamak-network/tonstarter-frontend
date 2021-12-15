@@ -15,40 +15,20 @@ import React from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {useModal} from 'hooks/useModal';
-import {useActiveWeb3React} from 'hooks/useWeb3';
 import {CloseButton} from 'components/Modal';
-import starterActions from '../actions';
 import {useERC20} from '@Starter/hooks/useERC20';
-import {ethers} from 'ethers';
-import {convertToRay, convertToWei} from 'utils/number';
 
 export const ApproveModal = () => {
   const {data} = useAppSelector(selectModalType);
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const {account, library} = useActiveWeb3React();
   const {handleCloseModal} = useModal();
   const {btnStyle} = theme;
   const {address, amount, tokenType} = data.data;
-  const {
-    tonAllowance,
-    wtonAllowance,
-    totalAllowance,
-    callTonApprove,
-    callWtonApprove,
-  } = useERC20(address);
+  const {callTonApprove, callWtonApprove} = useERC20(address);
 
-  const approval_TON_Amount = (): string => {
-    const ton = ethers.utils.formatEther(tonAllowance);
-    const totalApprove = Number(ton) + Number(amount);
-    return convertToWei(totalApprove.toString());
-  };
-
-  const approval_WTON_Amount = () => {
-    const wton = ethers.utils.formatUnits(wtonAllowance, 27);
-    const totalApprove = Number(wton) + Number(amount);
-    return convertToRay(totalApprove.toString());
-  };
+  // const addNumAmount = Number(amount) + 0.01;
+  // const STR_AMOUNT = String(addNumAmount);
 
   return (
     <Modal
@@ -91,14 +71,23 @@ export const ApproveModal = () => {
             px={5}
             fontSize={15}
             color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-            <Text textAlign="center">
+            {/* <Text textAlign="center">
               'Approve All' means to get an approval of the amount which is
               total supply of {tokenType}
+            </Text> */}
+            <Text textAlign="center">You will get allowance</Text>
+            <Text textAlign="center">
+              {/* {Number(STR_AMOUNT).toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}{' '} */}
+              {amount}
+              {tokenType}
             </Text>
           </Flex>
 
           <Box as={Flex} flexDir="column" alignItems="center" pt={5}>
-            <Button
+            {/* <Button
               {...btnStyle.btnAble()}
               w={'150px'}
               fontSize="14px"
@@ -110,7 +99,7 @@ export const ApproveModal = () => {
                   : callWtonApprove(amount, true);
               }}>
               Approve All
-            </Button>
+            </Button> */}
             <Button
               {...btnStyle.btnAble()}
               w={'150px'}
@@ -121,7 +110,7 @@ export const ApproveModal = () => {
                   ? callTonApprove(amount)
                   : callWtonApprove(amount);
               }}>
-              Approve ({amount} {tokenType})
+              Approve
             </Button>
           </Box>
         </ModalBody>

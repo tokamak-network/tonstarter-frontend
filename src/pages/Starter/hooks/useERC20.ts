@@ -5,8 +5,8 @@ import {DEPLOYED} from 'constants/index';
 import {useContract} from 'hooks/useContract';
 import * as ERC20 from 'services/abis/ERC20.json';
 import {convertNumber, convertToRay, convertToWei} from 'utils/number';
-import {Contract} from '@ethersproject/contracts';
 import {ethers} from 'ethers';
+import {setTx} from 'application';
 
 export const useERC20 = (
   SALE_CONTRACT: string,
@@ -16,10 +16,14 @@ export const useERC20 = (
   tonAllowance: string;
   wtonAllowance: string;
   totalAllowance: number;
-  callTonApprove: (amount: string, approveAll?: boolean) => Promise<Contract>;
-  callWtonApprove: (amount: string, approveAll?: boolean) => Promise<Contract>;
+  originTonAllowance: string;
+  originWtonAllowance: string;
+  callTonApprove: (amount: string, approveAll?: boolean) => Promise<void>;
+  callWtonApprove: (amount: string, approveAll?: boolean) => Promise<void>;
+  callTonDecreaseAllowance: () => Promise<void>;
+  callWtonDecreaseAllowance: () => Promise<void>;
 } => {
-  const {account} = useActiveWeb3React();
+  const {account, library} = useActiveWeb3React();
   const {blockNumber} = useBlockNumber();
 
   const [tonBalance, setTonBalance] = useState<string>('0.00');
@@ -27,6 +31,8 @@ export const useERC20 = (
   const [tonAllowance, setTonAllowance] = useState<string>('0.00');
   const [wtonAllowance, setWTonAllowance] = useState<string>('0.00');
   const [totalAllowance, setTotalAllowance] = useState<number>(0);
+  const [originTonAllowance, setOriginTonAllowance] = useState<string>('0');
+  const [originWtonAllowance, setOriginWtonAllowance] = useState<string>('0');
 
   const {TON_ADDRESS, WTON_ADDRESS} = DEPLOYED;
 
@@ -64,39 +70,49 @@ export const useERC20 = (
         const totalAllowanceNum =
           Number(convertedNum.replaceAll(',', '')) +
           Number(convertedWtonNum.replaceAll(',', ''));
+
         setTonBalance(convertedTon);
         setWtonBalance(convertedWton);
         setTonAllowance(convertedNum);
         setWTonAllowance(convertedWtonNum);
         setTotalAllowance(totalAllowanceNum);
+        setOriginTonAllowance(allowance.toString());
+        setOriginWtonAllowance(wtonAllowance.toString());
       }
     }
     if (TON_CONTRACT && WTON_CONTRACT && SALE_CONTRACT && account) {
       fetchData();
     }
-  }, [TON_CONTRACT, WTON_CONTRACT, account, blockNumber, SALE_CONTRACT]);
+  }, [
+    TON_CONTRACT,
+    WTON_CONTRACT,
+    account,
+    library,
+    blockNumber,
+    SALE_CONTRACT,
+  ]);
 
   const callTonApprove = async (
     amount: string,
     approveAll?: boolean,
-  ): Promise<Contract> => {
-    const ton = ethers.utils.formatEther(
-      tonAllowance.replaceAll('.', '').replaceAll(',', ''),
-    );
-    const totalApprove = Number(ton) + Number(amount);
-    const approval_TON_Amount = convertToWei(totalApprove.toString());
+  ): Promise<void> => {
+    // const ton = ethers.utils.formatEther(
+    //   tonAllowance.replaceAll('.', '').replaceAll(',', ''),
+    // );
+    // const totalApprove = Number(ton) + Number(amount);
+    const approval_TON_Amount = convertToWei(amount.toString());
     const totallSupply = await TON_CONTRACT?.totalSupply();
-
-    return TON_CONTRACT?.approve(
+    const receipt = TON_CONTRACT?.increaseAllowance(
       SALE_CONTRACT,
       approveAll ? totallSupply : approval_TON_Amount,
     );
+    return setTx(receipt);
   };
 
   const callWtonApprove = async (
     amount: string,
     approveAll?: boolean,
-  ): Promise<Contract> => {
+  ): Promise<void> => {
     const wton = ethers.utils.formatUnits(
       wtonAllowance.replaceAll('.', '').replaceAll(',', ''),
       27,
@@ -104,11 +120,32 @@ export const useERC20 = (
     const totalApprove = Number(wton) + Number(amount);
     const approval_WTON_Amount = convertToRay(totalApprove.toString());
     const totallSupply = await WTON_CONTRACT?.totalSupply();
-
-    return WTON_CONTRACT?.approve(
+    const receipt = await WTON_CONTRACT?.increaseAllowance(
       SALE_CONTRACT,
       approveAll ? totallSupply : approval_WTON_Amount,
     );
+    return setTx(receipt);
+  };
+
+  const callTonDecreaseAllowance = async (): Promise<void> => {
+    const tonAllowance = await TON_CONTRACT?.allowance(account, SALE_CONTRACT);
+    const receipt = TON_CONTRACT?.decreaseAllowance(
+      SALE_CONTRACT,
+      tonAllowance,
+    );
+    return setTx(receipt);
+  };
+
+  const callWtonDecreaseAllowance = async (): Promise<void> => {
+    const wtonAllowance = await WTON_CONTRACT?.allowance(
+      account,
+      SALE_CONTRACT,
+    );
+    const receipt = WTON_CONTRACT?.decreaseAllowance(
+      SALE_CONTRACT,
+      wtonAllowance,
+    );
+    return setTx(receipt);
   };
 
   return {
@@ -117,7 +154,11 @@ export const useERC20 = (
     tonAllowance,
     wtonAllowance,
     totalAllowance,
+    originTonAllowance,
+    originWtonAllowance,
     callTonApprove,
     callWtonApprove,
+    callTonDecreaseAllowance,
+    callWtonDecreaseAllowance,
   };
 };

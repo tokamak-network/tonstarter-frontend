@@ -7,7 +7,6 @@ import {
   Flex,
   Progress,
 } from '@chakra-ui/react';
-import {checkTokenType} from 'utils/token';
 import {Circle} from 'components/Circle';
 import {Link, useRouteMatch} from 'react-router-dom';
 import {ActiveProjectType} from '@Starter/types';
@@ -83,9 +82,9 @@ const ActiveProjectContainer: React.FC<{
       project.timeStamps.endAddWhiteTime > nowTimeStamp
         ? 'Whitelisting'
         : project.timeStamps.endExclusiveTime > nowTimeStamp
-        ? 'Public Round1'
+        ? 'Public Round 1'
         : project.timeStamps.endDepositTime > nowTimeStamp
-        ? 'Public Round2'
+        ? 'Public Round 2'
         : 'Claim';
     setStep(checkStep);
   }, [project]);
@@ -115,7 +114,7 @@ const ActiveProjectContainer: React.FC<{
           </Text>
           <Flex>
             <Text mr={2} {...STATER_STYLE.subText({colorMode})}>
-              {step} Period
+              Sale Date
             </Text>
             <Text {...STATER_STYLE.subTextBlack({colorMode})}>
               {project.saleStart} ~ {project.saleEnd}
@@ -131,12 +130,13 @@ const ActiveProjectContainer: React.FC<{
               {...STATER_STYLE.progress.percent({
                 colorMode,
                 isZero: true,
-              })}>
-              0%
+              })}
+              color={'#0070ed'}>
+              {progress} %
             </Text>
           </Flex>
           <Flex>
-            <Text>{totalRaise ? totalRaise : 'XX,XXX'}</Text>
+            <Text>{totalRaise || 'XX,XXX'}</Text>
             <Text>/</Text>
             <Text>{project.tokenFundRaisingTargetAmount}</Text>
           </Flex>
@@ -144,7 +144,7 @@ const ActiveProjectContainer: React.FC<{
         <Box mb={'30px'}>
           <Progress
             value={
-              (Number(totalRaise ? totalRaise : '0') /
+              (Number(totalRaise || '0') /
                 Number(project.tokenFundRaisingTargetAmount)) *
               100
             }
