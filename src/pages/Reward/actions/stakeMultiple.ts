@@ -17,6 +17,9 @@ export const stakeMultiple = async (args: any) => {
     return;
   }
 
+  console.log('stakeKeyList', stakeKeyList);
+  console.log('unstakeKeyList', unstakeKeyList);
+  
   const NPM = new Contract(NPM_Address, NPMABI.abi, library);
   const uniswapStakerContract = new Contract(
     UniswapStaker_Address,

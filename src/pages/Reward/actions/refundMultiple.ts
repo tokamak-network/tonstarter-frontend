@@ -20,6 +20,9 @@ export const refundMultiple = async (args: any) => {
     if (refundKeyList.length === 0) {
         return alert(`Please select rewards to refund`);
     }
+
+    console.log('refundKeyList', refundKeyList);
+    
     const uniswapStakerContract = new Contract(
       UniswapStaker_Address,
       STAKERABI.abi,
