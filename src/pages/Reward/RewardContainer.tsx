@@ -12,6 +12,7 @@ import {
   useTheme,
   Center,
 } from '@chakra-ui/react';
+import {selectTransactionType} from 'store/refetch.reducer';
 import {useAppSelector} from 'hooks/useRedux';
 import {getPoolName} from '../../utils/token';
 import {ClaimReward} from './components/ClaimReward';
@@ -55,6 +56,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({
   pools,
   sortString,
 }) => {
+  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [pageOptions, setPageOptions] = useState<number>(0);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(6);
@@ -79,6 +81,14 @@ export const RewardContainer: FC<RewardContainerProps> = ({
     const endIndex = startIndex + pageLimit;
     return rewards.slice(startIndex, endIndex);
   };
+
+  useEffect (() => {
+    multipleStakeList.pop()
+    multipleUnstakeList.pop()
+    setStakeNum(0);
+    setUnstakeNum(0);
+
+  },[transactionType, blockNumber, multipleStakeList, multipleUnstakeList])
 
   const goToNextPage = () => {
     setPageIndex(pageIndex + 1);

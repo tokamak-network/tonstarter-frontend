@@ -9,13 +9,18 @@ import {
   Grid,
   IconButton,
   Tooltip,
+  Button,
   Center,
 } from '@chakra-ui/react';
+import {selectTransactionType} from 'store/refetch.reducer';
 import {useAppSelector} from 'hooks/useRedux';
 import {getPoolName} from '../../utils/token';
 import {CreateReward} from './components/CreateReward';
 import {RewardProgramCardManage} from './components/RewardProgramCardManage';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
+import { refundMultiple } from './actions';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+
 // import { LPToken } from './types';
 
 import {
@@ -49,6 +54,8 @@ type ManageContainerProps = {
   sortString: string
 };
 
+const multipleRefundList: any = [];
+
 export const ManageContainer: FC<ManageContainerProps> = ({
   rewards,
   pools,
@@ -56,10 +63,13 @@ export const ManageContainer: FC<ManageContainerProps> = ({
   selectedPool,
   sortString
 }) => {
-
+  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [pageOptions, setPageOptions] = useState<number>(0);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(6);
+  const [refundNum, setRefundNum] = useState<number>(0);
+  const {account, library} = useActiveWeb3React();
+
   useEffect(() => {
     setPageIndex(1)
     const pagenumber = parseInt(
@@ -74,6 +84,13 @@ export const ManageContainer: FC<ManageContainerProps> = ({
     const endIndex = startIndex + pageLimit;
     return rewards.slice(startIndex, endIndex);
   };
+
+  useEffect (() => {
+    multipleRefundList.pop()
+    setRefundNum(0);
+  },[transactionType, blockNumber, multipleRefundList ])
+
+  
   useEffect(()=> {
     setPageIndex(1)
     
@@ -89,6 +106,20 @@ export const ManageContainer: FC<ManageContainerProps> = ({
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
+  const refundMultipleKeys = (key : any) => {
+    if (
+      multipleRefundList.filter(
+        (listkey: any) => JSON.stringify(listkey) === JSON.stringify(key),
+      ).length > 0
+    ) {
+      multipleRefundList.pop(key);
+    } else {
+      multipleRefundList.push(key);
+    }
+    setRefundNum(multipleRefundList.length);
+
+    return multipleRefundList;
+  }
   return (
     <Flex justifyContent={'space-between'}>
       {rewards.length !==0? 
@@ -126,11 +157,48 @@ export const ManageContainer: FC<ManageContainerProps> = ({
                 reward={rewardProps}
                 pageIndex={pageIndex}
                 sortString={sortString}
+                sendKey={refundMultipleKeys}
+
               />
             );
           })}
         </Grid>
-        <Flex mt={'22px'} position={'relative'}>
+        <Flex mt={'22px'} position={'relative'} flexDir={'row'}
+            justifyContent={'space-between'}>
+        <Button
+              w={'120px'}
+              h={'33px'}
+              bg={'blue.500'}
+              color="white.100"
+              mr={'10px'}
+              fontFamily={theme.fonts.roboto}
+              fontSize="14px"
+              fontWeight="500"
+              disabled={ refundNum === 0}
+              _hover={{backgroundColor: 'none'}}
+              _disabled={
+                colorMode === 'light'
+                  ? {
+                      backgroundColor: 'gray.25',
+                      cursor: 'default',
+                      color: '#86929d',
+                    }
+                  : {
+                      backgroundColor: '#353535',
+                      cursor: 'default',
+                      color: '#838383',
+                    }
+              }
+              onClick={() =>
+                refundMultiple({
+                  userAddress: account,
+                  library: library,
+                  refundKeyList: multipleRefundList,
+                })
+              }
+              >
+             Multi Refund
+            </Button>
           <Flex flexDirection={'row'} h={'25px'} alignItems={'center'}>
             <Flex>
               <Tooltip label="Previous Page">
