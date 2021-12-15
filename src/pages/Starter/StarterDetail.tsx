@@ -40,7 +40,7 @@ export const StarterDetail = () => {
   const starterData = store.getState().starters.data;
 
   const [activeStatus, setActiveStatus] = useState<SaleStatus | undefined>(
-    'exclusive',
+    undefined,
   );
   const [saleInfo, setSaleInfo] = useState<SaleInfo | undefined>(undefined);
   const [detailInfo, setDetailInfo] = useState<DetailInfo | undefined>(
@@ -165,26 +165,6 @@ export const StarterDetail = () => {
     }
   }, [account, library, PUBLICSALE_CONTRACT, saleInfo, blockNumber]);
 
-  // useEffect(() => {
-  //   console.log(
-  //     saleInfo?.endAddWhiteTime,
-  //     saleInfo?.endExclusiveTime,
-  //     saleInfo?.endDepositTime,
-  //   );
-  //   console.log(isEndWhiteListTime, isEndExclusiveTime, isEndDepositTIme);
-  //   if (saleInfo) {
-  //     setActiveStatus(
-  //       !isEndWhiteListTime
-  //         ? 'whitelist'
-  //         : !isEndExclusiveTime
-  //         ? 'exclusive'
-  //         : !isEndDepositTIme
-  //         ? 'deposit'
-  //         : 'claim',
-  //     );
-  //   }
-  // }, [id, library, saleInfo]);
-
   useEffect(() => {
     const {rawData} = starterData;
     if (rawData) {
@@ -195,26 +175,26 @@ export const StarterDetail = () => {
     }
   }, [starterData, id]);
 
-  // useEffect(() => {
-  //   setInterval(() => {
-  //     if (!saleInfo) {
-  //       return;
-  //     }
-  //     const {endAddWhiteTime, endExclusiveTime, endDepositTime} = saleInfo;
-  //     const nowTimeStamp = moment().unix();
+  useEffect(() => {
+    setInterval(() => {
+      if (!saleInfo) {
+        return;
+      }
+      const {endAddWhiteTime, endExclusiveTime, endDepositTime} = saleInfo;
+      const nowTimeStamp = moment().unix();
 
-  //     const checkStep =
-  //       endAddWhiteTime > nowTimeStamp
-  //         ? 'whitelist'
-  //         : endExclusiveTime > nowTimeStamp
-  //         ? 'exclusive'
-  //         : endDepositTime > nowTimeStamp
-  //         ? 'deposit'
-  //         : 'claim';
-  //     setActiveStatus(checkStep);
-  //   }, 1000);
-  //   /*eslint-disable*/
-  // }, [saleInfo]);
+      const checkStep =
+        endAddWhiteTime > nowTimeStamp
+          ? 'whitelist'
+          : endExclusiveTime > nowTimeStamp
+          ? 'exclusive'
+          : endDepositTime > nowTimeStamp
+          ? 'deposit'
+          : 'claim';
+      setActiveStatus(checkStep);
+    }, 1000);
+    /*eslint-disable*/
+  }, [saleInfo]);
 
   if (!saleInfo) {
     return (
