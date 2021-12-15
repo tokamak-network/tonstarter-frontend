@@ -4,8 +4,9 @@ import {useBlockNumber} from 'hooks/useBlock';
 import {DEPLOYED} from 'constants/index';
 import {useContract} from 'hooks/useContract';
 import * as ERC20 from 'services/abis/ERC20.json';
-import {convertNumber} from 'utils/number';
+import {convertNumber, convertToRay, convertToWei} from 'utils/number';
 import {Contract} from '@ethersproject/contracts';
+import {ethers} from 'ethers';
 
 export const useERC20 = (
   SALE_CONTRACT: string,
@@ -15,8 +16,8 @@ export const useERC20 = (
   tonAllowance: string;
   wtonAllowance: string;
   totalAllowance: number;
-  callTonApprove: () => Contract;
-  callWtonApprove: () => Contract;
+  callTonApprove: (amount: string, approveAll?: boolean) => Promise<Contract>;
+  callWtonApprove: (amount: string, approveAll?: boolean) => Promise<Contract>;
 } => {
   const {account} = useActiveWeb3React();
   const {blockNumber} = useBlockNumber();
@@ -47,6 +48,7 @@ export const useERC20 = (
           localeString: true,
         }) as string;
         const convertedWton = convertNumber({
+          type: 'ray',
           amount: wtonBlanace.toString(),
           localeString: true,
         }) as string;
@@ -74,15 +76,48 @@ export const useERC20 = (
     }
   }, [TON_CONTRACT, WTON_CONTRACT, account, blockNumber, SALE_CONTRACT]);
 
+  const callTonApprove = async (
+    amount: string,
+    approveAll?: boolean,
+  ): Promise<Contract> => {
+    const ton = ethers.utils.formatEther(
+      tonAllowance.replaceAll('.', '').replaceAll(',', ''),
+    );
+    const totalApprove = Number(ton) + Number(amount);
+    const approval_TON_Amount = convertToWei(totalApprove.toString());
+    const totallSupply = await TON_CONTRACT?.totalSupply();
+
+    return TON_CONTRACT?.approve(
+      SALE_CONTRACT,
+      approveAll ? totallSupply : approval_TON_Amount,
+    );
+  };
+
+  const callWtonApprove = async (
+    amount: string,
+    approveAll?: boolean,
+  ): Promise<Contract> => {
+    const wton = ethers.utils.formatUnits(
+      wtonAllowance.replaceAll('.', '').replaceAll(',', ''),
+      27,
+    );
+    const totalApprove = Number(wton) + Number(amount);
+    const approval_WTON_Amount = convertToRay(totalApprove.toString());
+    const totallSupply = await WTON_CONTRACT?.totalSupply();
+
+    return WTON_CONTRACT?.approve(
+      SALE_CONTRACT,
+      approveAll ? totallSupply : approval_WTON_Amount,
+    );
+  };
+
   return {
     tonBalance,
     wtonBalance,
     tonAllowance,
     wtonAllowance,
     totalAllowance,
-    callTonApprove: () =>
-      TON_CONTRACT && TON_CONTRACT.allowance(account, SALE_CONTRACT),
-    callWtonApprove: () =>
-      WTON_CONTRACT && WTON_CONTRACT.allowance(account, SALE_CONTRACT),
+    callTonApprove,
+    callWtonApprove,
   };
 };

@@ -11,6 +11,8 @@ import {
 } from './types';
 import {convertLocaleString} from 'utils';
 // import starterActions from './actions';
+import {REACT_APP_MODE} from 'constants/index';
+
 interface StarterState {
   data: {
     activeProjects: ActiveProjectType[];
@@ -58,8 +60,8 @@ export const fetchStarters = createAsyncThunk(
       .then((res) => res.json())
       .then((result) => result);
 
-    const starterData = starterReq.datas.filter(
-      (data: AdminObject) => data.production === 'production',
+    const starterData = starterReq.datas.filter((data: AdminObject) =>
+      REACT_APP_MODE === 'PRODUCTION' ? data.production === 'production' : data,
     );
 
     const nowTimeStamp = moment().unix();

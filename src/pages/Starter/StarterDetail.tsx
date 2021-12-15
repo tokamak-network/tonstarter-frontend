@@ -253,7 +253,7 @@ export const StarterDetail = () => {
               mb={'11px'}>
               {saleInfo?.description}
             </Text>
-            <Box pos="absolute" bottom={'20px'}>
+            <Box pos="absolute" bottom={'11px'}>
               <DetailIcons
                 linkInfo={[
                   {sort: 'website', url: `${saleInfo?.website}`},

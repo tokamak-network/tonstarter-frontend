@@ -31,8 +31,6 @@ export const ApproveModal = () => {
   const {btnStyle} = theme;
   const {address, amount, tokenType} = data.data;
   const {
-    tonBalance,
-    wtonBalance,
     tonAllowance,
     wtonAllowance,
     totalAllowance,
@@ -107,13 +105,9 @@ export const ApproveModal = () => {
               mb={3}
               _hover={{}}
               onClick={() => {
-                account &&
-                  starterActions.getAllowance({
-                    account,
-                    library,
-                    address,
-                    approveAll: true,
-                  });
+                tokenType === 'TON'
+                  ? callTonApprove(amount, true)
+                  : callWtonApprove(amount, true);
               }}>
               Approve All
             </Button>
@@ -123,17 +117,9 @@ export const ApproveModal = () => {
               fontSize="14px"
               _hover={{}}
               onClick={() => {
-                account &&
-                  starterActions.getAllowance({
-                    account,
-                    library,
-                    address,
-                    approveAll: false,
-                    amount:
-                      tokenType === 'TON'
-                        ? (approval_TON_Amount as unknown as string)
-                        : (approval_WTON_Amount as unknown as string),
-                  });
+                tokenType === 'TON'
+                  ? callTonApprove(amount)
+                  : callWtonApprove(amount);
               }}>
               Approve ({amount} {tokenType})
             </Button>

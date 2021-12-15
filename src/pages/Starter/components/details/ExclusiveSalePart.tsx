@@ -329,9 +329,9 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
           <Flex alignItems="center">
             <CustomButton
               text={'TON Approve'}
-              isDisabled={
-                btnDisabled || Number(amountAvailable.replaceAll(',', '')) < 10
-              }
+              // isDisabled={
+              //   btnDisabled || Number(amountAvailable.replaceAll(',', '')) < 10
+              // }
               style={{marginRight: '12px'}}
               func={() =>
                 account &&
@@ -348,9 +348,9 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
               }></CustomButton>
             <CustomButton
               text={'WTON Approve'}
-              isDisabled={
-                btnDisabled || Number(amountAvailable.replaceAll(',', '')) < 10
-              }
+              // isDisabled={
+              //   btnDisabled || Number(amountAvailable.replaceAll(',', '')) < 10
+              // }
               func={() =>
                 account &&
                 dispatch(
