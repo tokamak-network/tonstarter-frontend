@@ -659,6 +659,8 @@ export const Reward = () => {
                             colorMode === 'light' ? '#ffffff' : '#222222'
                           }>
                           {positions.map((item: any, index) => {
+                            console.log(item);
+                            
                             const status = getStatus(item);
                             return (
                               <MenuItem
@@ -685,7 +687,7 @@ export const Reward = () => {
                                 }
                                 _focus={{background: 'transparent'}}
                                 key={index}>
-                                {item.id}
+                                {item.id} <Text ml={'8px'} fontSize={'9px'}> {item.pool.token0.symbol} / {item.pool.token1.symbol}</Text>
                               </MenuItem>
                             );
                           })}
@@ -743,7 +745,7 @@ export const Reward = () => {
                                   }
                                   _focus={{background: 'transparent'}}
                                   key={index}>
-                                  {item.id}
+                                  {item.id} <Text ml={'8px'} fontSize={'9px'}> {item.pool.token0.symbol} / {item.pool.token1.symbol}</Text>
                                 </MenuItem>
                               );
                             }
@@ -801,7 +803,7 @@ export const Reward = () => {
                                   }}
                                   _focus={{background: 'transparent'}}
                                   key={index}>
-                                  {item.id}
+                                  {item.id} <Text ml={'8px'} fontSize={'9px'}> {item.pool.token0.symbol} / {item.pool.token1.symbol}</Text>
                                 </MenuItem>
                               );
                             }
