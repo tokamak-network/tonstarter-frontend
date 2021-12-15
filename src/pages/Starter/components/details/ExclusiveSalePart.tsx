@@ -409,7 +409,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
                   : 'white.100'
                 : 'gray.175'
             }
-            tokenName={'TON'}
+            tokenName={wtonMode ? 'WTON' : 'TON'}
             maxBtn={true}
             maxValue={maxValue}></CustomInput>
           <img
@@ -509,12 +509,12 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
           wtonMode={wtonMode}></DepositContainer>
         <CustomButton
           w={'100px'}
-          text="ton dc"
+          text="ton initialize"
           style={{marginLeft: '5px', marginRight: '5px'}}
           func={() => callTonDecreaseAllowance()}></CustomButton>
         <CustomButton
           w={'100px'}
-          text="wton dc"
+          text="wton initialize"
           func={() => callWtonDecreaseAllowance()}></CustomButton>
         {/* {wtonMode === false ? } */}
         {/* {isApprove === true ? (
