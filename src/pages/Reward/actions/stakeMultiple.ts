@@ -17,9 +17,6 @@ export const stakeMultiple = async (args: any) => {
     return;
   }
 
-  console.log('stakeKeyList', stakeKeyList);
-  console.log('unstakeKeyList', unstakeKeyList);
-  
   const NPM = new Contract(NPM_Address, NPMABI.abi, library);
   const uniswapStakerContract = new Contract(
     UniswapStaker_Address,
@@ -34,6 +31,9 @@ export const stakeMultiple = async (args: any) => {
 
 
   if (stakeKeyList.length === 0) {
+    console.log('unstakeToken', 'stakeKeyList', stakeKeyList);
+    console.log('unstakeToken', 'unstakeKeyList', unstakeKeyList);
+    
     const arrayData = unstakeKeyList.map((key: any) => {
       const keyGenereated = {
         pool: key.pool,
@@ -75,8 +75,16 @@ export const stakeMultiple = async (args: any) => {
   else if (unstakeKeyList.length === 0) {
     
     try {
+    
+      
 
       if (depositInfo.owner.toLowerCase() !== userAddress.toLowerCase()) {
+        console.log(depositInfo.owner.toLowerCase());
+        console.log(userAddress.toLowerCase());
+        
+        console.log('safeTransferFrom', 'stakeKeyList', stakeKeyList);
+        console.log('safeTransferFrom', 'unstakeKeyList', unstakeKeyList);
+        
         // const arrayData = stakeKeyList.map((key: any) => {
         //   const keyGenereated = {
         //     pool: key.pool,
@@ -111,6 +119,14 @@ export const stakeMultiple = async (args: any) => {
         }
       }
       else {
+        console.log(depositInfo.owner.toLowerCase());
+        console.log(userAddress.toLowerCase());
+        
+        
+        console.log('stakeToken', 'stakeKeyList', stakeKeyList);
+        console.log('stakeToken', 'unstakeKeyList', unstakeKeyList);
+        
+   
         const arrayData = stakeKeyList.map((key: any) => {
           const keyGenereated = {
             pool: key.pool,
@@ -151,6 +167,8 @@ export const stakeMultiple = async (args: any) => {
   }
 
   else {
+    console.log('unstakeToken', 'stakeKeyList', stakeKeyList);
+    console.log('unstakeToken', 'unstakeKeyList', unstakeKeyList);
     const arrayDataUnstake = unstakeKeyList.map((key: any) => {
       const keyGenereated = {
         pool: key.pool,

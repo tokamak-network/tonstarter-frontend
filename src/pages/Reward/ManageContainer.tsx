@@ -117,7 +117,6 @@ export const ManageContainer: FC<ManageContainerProps> = ({
       multipleRefundList.push(key);
     }
     setRefundNum(multipleRefundList.length);
-
     return multipleRefundList;
   }
   return (

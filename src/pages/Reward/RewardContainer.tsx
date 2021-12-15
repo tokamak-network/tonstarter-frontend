@@ -88,7 +88,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({
     setStakeNum(0);
     setUnstakeNum(0);
 
-  },[transactionType, blockNumber, multipleStakeList, multipleUnstakeList])
+  },[transactionType, blockNumber, multipleStakeList, multipleUnstakeList,position])
 
   const goToNextPage = () => {
     setPageIndex(pageIndex + 1);
@@ -109,7 +109,8 @@ export const RewardContainer: FC<RewardContainerProps> = ({
       multipleStakeList.push(key);
     }
     setStakeNum(multipleStakeList.length);
-
+    console.log('multipleStakeList',multipleStakeList);
+    
     return multipleStakeList;
   };
 
@@ -123,6 +124,8 @@ export const RewardContainer: FC<RewardContainerProps> = ({
     } else {
       multipleUnstakeList.push(key);
     }
+    console.log('multipleUnstakeList', multipleUnstakeList);
+    
     setUnstakeNum(multipleUnstakeList.length);
     return multipleUnstakeList;
   };

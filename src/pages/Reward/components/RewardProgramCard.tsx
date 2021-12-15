@@ -100,6 +100,11 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     STAKERABI.abi,
     library,
   );
+
+  useEffect(() => {
+    setIsUnstakeselected(false);
+    setIsSelected(false);
+  },[selectedToken])
   useEffect(() => {
     const selected =
       stakeList.filter(
