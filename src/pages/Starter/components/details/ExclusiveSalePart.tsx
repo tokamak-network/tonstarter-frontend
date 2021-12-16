@@ -442,7 +442,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
                 : 'gray.175'
             }
             tokenName={wtonMode ? 'WTON' : 'TON'}
-            maxBtn={!isAlreadyBuy}
+            // maxBtn={!isAlreadyBuy}
             maxValue={wtonMode ? maxWTONValue : maxValue}></CustomInput>
           <img
             src={ArrowIcon}

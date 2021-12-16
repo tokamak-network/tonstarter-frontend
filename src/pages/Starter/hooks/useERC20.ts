@@ -101,7 +101,7 @@ export const useERC20 = (
     // const totalApprove = Number(ton) + Number(amount);
     const approval_TON_Amount = convertToWei(amount.toString());
     const totallSupply = await TON_CONTRACT?.totalSupply();
-    const receipt = TON_CONTRACT?.increaseAllowance(
+    const receipt = TON_CONTRACT?.approve(
       SALE_CONTRACT,
       approveAll ? totallSupply : approval_TON_Amount,
     );
@@ -119,7 +119,7 @@ export const useERC20 = (
     // const totalApprove = Number(wton) + Number(amount);
     const approval_WTON_Amount = convertToRay(amount.toString());
     const totallSupply = await WTON_CONTRACT?.totalSupply();
-    const receipt = await WTON_CONTRACT?.increaseAllowance(
+    const receipt = await WTON_CONTRACT?.approve(
       SALE_CONTRACT,
       approveAll ? totallSupply : approval_WTON_Amount,
     );
