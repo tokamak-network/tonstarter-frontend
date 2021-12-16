@@ -4,6 +4,8 @@ import {
   useTheme,
   Flex,
   Text,
+  FormControl,
+  FormLabel,
   Switch,
 } from '@chakra-ui/react';
 import {CustomInput} from 'components/Basic';
@@ -405,12 +407,17 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             date={endExclusiveTime * 1000}></DetailCounter>
         </Flex>
         <Flex pr={2.5}>
+        <FormControl display="flex" alignItems="center">
+        <FormLabel htmlFor="email-alerts" mb="0">
+                    WTON
+                  </FormLabel>
           <Switch
             onChange={() => {
               setWtonMode(!wtonMode);
             }}
             // defaultChecked={true}
             value={0}></Switch>
+            </FormControl>
         </Flex>
       </Box>
       <Box d="flex">
