@@ -74,45 +74,75 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
     // zena
     // const isBtnAble =
     //   btnDisabled || Number(amountAvailable.replaceAll(',', '')) <= 0;
-     const isBtnAble = !btnDisabled ;
+    const isBtnAble = !btnDisabled;
 
-      console.log('isBtnAble',isBtnAble);
-      console.log('btnDisabled',btnDisabled);
+    console.log('isBtnAble', isBtnAble);
+    console.log('btnDisabled', btnDisabled);
     //zena
-     setDepositBtnDisabled(btnDisabled);
-     // setDepositBtnDisabled(isBtnAble);
+    setDepositBtnDisabled(btnDisabled);
+    // setDepositBtnDisabled(isBtnAble);
   }, [btnDisabled, amountAvailable]);
 
-  console.log('isTonApprove: ',isTonApprove, "isWTonApprove",isWTonApprove );
-  console.log('originTonAllowance: ',originTonAllowance, "originWtonAllowance",originWtonAllowance );
-  console.log( "tonAllowance",tonAllowance, "wtonAllowance",wtonAllowance);
-  console.log('wtonBalance: ',wtonBalance, "tonBalance",tonBalance);
-  console.log('amountAvailable: ',amountAvailable );
+  console.log('isTonApprove: ', isTonApprove, 'isWTonApprove', isWTonApprove);
+  console.log(
+    'originTonAllowance: ',
+    originTonAllowance,
+    'originWtonAllowance',
+    originWtonAllowance,
+  );
+  console.log('tonAllowance', tonAllowance, 'wtonAllowance', wtonAllowance);
+  console.log('wtonBalance: ', wtonBalance, 'tonBalance', tonBalance);
+  console.log('amountAvailable: ', amountAvailable);
 
-  console.log('depositBtnDisabled: ',depositBtnDisabled, "inputTonBalance:",inputTonBalance.trim(),",");
-  console.log('btnDisabled: ',btnDisabled, "amountAvailable",amountAvailable);
-  console.log('!(depositBtnDisabled || tonBalance !== 0.00:) ', !(depositBtnDisabled || tonBalance !== '0.00'));
-  console.log('inputTonBalance !==0 ', inputTonBalance.trim() !== '0', !(depositBtnDisabled || tonBalance !== '0.00') && inputTonBalance.trim() === '0');
+  console.log(
+    'depositBtnDisabled: ',
+    depositBtnDisabled,
+    'inputTonBalance:',
+    inputTonBalance.trim(),
+    ',',
+  );
+  console.log('btnDisabled: ', btnDisabled, 'amountAvailable', amountAvailable);
+  console.log(
+    '!(depositBtnDisabled || tonBalance !== 0.00:) ',
+    !(depositBtnDisabled || tonBalance !== '0.00'),
+  );
+  console.log(
+    'inputTonBalance !==0 ',
+    inputTonBalance.trim() !== '0',
+    !(depositBtnDisabled || tonBalance !== '0.00') &&
+      inputTonBalance.trim() === '0',
+  );
 
-  let inputTonBalanceStr = inputTonBalance.replaceAll(' ','') ;
-  let inputTonBalanceWei = ethers.utils.parseUnits(inputTonBalanceStr, 18).toString();
-  console.log('inputTonBalanceWei',inputTonBalanceWei, inputTonBalanceWei === inputTonBalance);
+  let inputTonBalanceStr = inputTonBalance.replaceAll(' ', '');
+  let inputTonBalanceWei = ethers.utils
+    .parseUnits(inputTonBalanceStr, 18)
+    .toString();
+  console.log(
+    'inputTonBalanceWei',
+    inputTonBalanceWei,
+    inputTonBalanceWei === inputTonBalance,
+  );
 
   let inputBiggerThanZero = false;
-  if(ethers.utils.parseUnits(inputTonBalanceStr, 18).gt(ethers.BigNumber.from('0') ) ) inputBiggerThanZero=true;
-  console.log('inputBiggerThanZero',inputBiggerThanZero);
+  if (
+    ethers.utils
+      .parseUnits(inputTonBalanceStr, 18)
+      .gt(ethers.BigNumber.from('0'))
+  )
+    inputBiggerThanZero = true;
+  console.log('inputBiggerThanZero', inputBiggerThanZero);
 
   let tonApproveSameInput = false;
-  if(originTonAllowance === inputTonBalanceWei) tonApproveSameInput = true;
-  console.log('tonApproveSameInput',tonApproveSameInput);
+  if (originTonAllowance === inputTonBalanceWei) tonApproveSameInput = true;
+  console.log('tonApproveSameInput', tonApproveSameInput);
 
   let amountAvailableFlag = false;
-  if(amountAvailable.trim() !== '-') amountAvailableFlag =true;
+  if (amountAvailable.trim() !== '-') amountAvailableFlag = true;
 
   if (wtonMode === false) {
     return (
       <Flex alignItems="center" justifyContent="space-between">
-        {isTonApprove && tonApproveSameInput && inputBiggerThanZero? (
+        {isTonApprove && tonApproveSameInput && inputBiggerThanZero ? (
           <CustomButton
             text={'Acquire'}
             isDisabled={depositBtnDisabled}
@@ -132,7 +162,9 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
         ) : (
           <CustomButton
             text={'TON Approve'}
-            isDisabled={depositBtnDisabled || !inputBiggerThanZero || !amountAvailableFlag}
+            isDisabled={
+              depositBtnDisabled || !inputBiggerThanZero || !amountAvailableFlag
+            }
             style={{marginRight: '12px'}}
             func={() =>
               account &&
@@ -171,7 +203,10 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
       {isWTonApprove && tonAllowance === '0.00' ? (
         <CustomButton
           text={'Acquire (WTON)'}
-          isDisabled={inputTonBalance.trim() === '0' || !(depositBtnDisabled || tonBalance !== '0.00')}
+          isDisabled={
+            inputTonBalance.trim() === '0' ||
+            !(depositBtnDisabled || tonBalance !== '0.00')
+          }
           func={() =>
             account &&
             checkBalance(
@@ -551,85 +586,6 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
           w={'100px'}
           text="wton initialize"
           func={() => callWtonDecreaseAllowance()}></CustomButton>
-        {/* {wtonMode === false ? } */}
-        {/* {isApprove === true ? (
-          <CustomButton
-            text={'Acquire'}
-            isDisabled={
-              btnDisabled || Number(amountAvailable.replaceAll(',', '')) <= 0
-            }
-            func={() =>
-              account &&
-              checkBalance(
-                Number(inputTonBalance),
-                Number(tonBalance.replaceAll(',', '')),
-              ) &&
-              starterActions.participate({
-                account,
-                library,
-                address: saleContractAddress,
-                amount: inputTonBalance,
-              })
-            }></CustomButton>
-        ) : (
-          <Flex alignItems="center">
-            <CustomButton
-              text={'TON Approve'}
-              isDisabled={
-                btnDisabled || Number(amountAvailable.replaceAll(',', '')) < 10
-              }
-              style={{marginRight: '12px'}}
-              func={() =>
-                account &&
-                dispatch(
-                  openModal({
-                    type: 'Starter_Approve',
-                    data: {
-                      address: saleContractAddress,
-                      amount: inputTonBalance,
-                      tokenType: 'TON',
-                    },
-                  }),
-                )
-              }></CustomButton>
-            <CustomButton
-              text={'WTON Approve'}
-              isDisabled={
-                btnDisabled || Number(amountAvailable.replaceAll(',', '')) < 10
-              }
-              func={() =>
-                account &&
-                dispatch(
-                  openModal({
-                    type: 'Starter_Approve',
-                    data: {
-                      address: saleContractAddress,
-                      amount: inputTonBalance,
-                      tokenType: 'WTON',
-                    },
-                  }),
-                )
-              }></CustomButton>
-            <Box
-              d="flex"
-              flexDir="column"
-              justifyContent="center"
-              ml={'15px'}
-              fontSize={13}>
-              <Text color={colorMode === 'light' ? 'gray.400' : 'gray.425'}>
-                The Approved Amount
-              </Text>
-              <Text color={colorMode === 'light' ? 'gray.250' : 'white.200'}>
-                {' '}
-                {tonAllowance} TON{' '}
-              </Text>
-              <Text color={colorMode === 'light' ? 'gray.250' : 'white.200'}>
-                {' '}
-                {wtonAllowance} WTON{' '}
-              </Text>
-            </Box>
-          </Flex>
-        )} */}
       </Box>
     </Flex>
   );

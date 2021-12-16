@@ -5,7 +5,6 @@ import {DEPLOYED} from 'constants/index';
 import {useContract} from 'hooks/useContract';
 import * as ERC20 from 'services/abis/ERC20.json';
 import {convertNumber, convertToRay, convertToWei} from 'utils/number';
-import {ethers} from 'ethers';
 import {setTx} from 'application';
 
 export const useERC20 = (
