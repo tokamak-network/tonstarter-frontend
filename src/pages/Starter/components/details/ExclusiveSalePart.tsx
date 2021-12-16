@@ -123,7 +123,6 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
           <CustomButton
             text={'TON Approve'}
             isDisabled={depositBtnDisabled || !inputBiggerThanZero}
-            style={{marginRight: '12px'}}
             func={() =>
               account &&
               dispatch(
@@ -179,7 +178,6 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
         <CustomButton
           text={'Initialize TON Allowance'}
           isDisabled={depositBtnDisabled}
-          style={{marginRight: '12px'}}
           func={() => callTonDecreaseAllowance()}></CustomButton>
       ) : (
         <CustomButton
