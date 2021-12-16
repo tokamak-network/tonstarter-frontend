@@ -294,6 +294,7 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
     <Flex flexDir="column" pl={'45px'}>
       <Box
         d="flex"
+        w={'513px'}
         textAlign="center"
         alignItems="center"
         justifyContent="space-between"
