@@ -32,20 +32,18 @@ export const ClaimOptionModal = () => {
 
   const amount = async () => {
     if (data.data.id && account) {
-      const res = await fetchClaimablePayload(library, account, data.data.id);
-      const addedValue = res?.minable.add(res?.expected);
-      // console.log(minable.toString(), expected.toString(), addedValue.toString())
+      const res = await fetchClaimablePayload(library, account, data.data.id)
+      const addedValue = res?.minable.add(res?.expected)
       const expectedAmount = ethers.utils.formatUnits(addedValue, 18);
       setSwapable(Number(expectedAmount).toFixed(9));
     }
   };
 
-  // useEffect(() => {
-  //   amount()
-  // }, [dispatch])
-  amount();
+  amount()
 
-  const swapableAmount = swapable;
+  // console.log(swapable)
+  
+  const swapableAmount = swapable
 
   const handleCloseModal = useCallback(() => {
     dispatch(closeModal());

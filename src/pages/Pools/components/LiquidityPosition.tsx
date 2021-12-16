@@ -122,8 +122,8 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
     }
 
     function setSwapable () {
-      const claimed = lpData?.miningAmount;
-      const expected = lpData?.minableAmount;
+      const claimed = lpData?.miningId.miningAmount;
+      const expected = lpData?.expectedClaimable.miningAmount;
       if (claimed && expected) {
         const addedValue = claimed.add(expected)
         const expectedAmount = ethers.utils.formatUnits(addedValue, 18);

@@ -1,4 +1,4 @@
-import React, {FC, useState, useRef} from 'react';
+import {FC, useState, useRef} from 'react';
 import {
   Column,
   useExpanded,
@@ -28,7 +28,6 @@ import {selectTableType} from 'store/table.reducer';
 import {LoadingComponent} from 'components/Loading';
 import {chakra} from '@chakra-ui/react';
 import {getPoolName, checkTokenType} from '../../utils/token';
-import {convertNumber} from '../../utils/number';
 import {GET_POSITION, GET_POSITION_BY_ID} from './GraphQL/index';
 import {useQuery} from '@apollo/client';
 import {PositionTable} from './PositionTable';
@@ -297,6 +296,9 @@ export const PoolTable: FC<PoolTableProps> = ({
                   {...row.getRowProps()}>
                   {row.cells.map((cell: any, index: number) => {
                     const data = cell.row.original;
+                    const {poolDayData} = data
+                    // const poolData = data?.poolDayData;
+                    const length = poolDayData.length - 1
                     const type = cell.column.id;
                     const poolName = getPoolName(
                       data.token0.symbol,
@@ -355,9 +357,8 @@ export const PoolTable: FC<PoolTableProps> = ({
                             </Text>
                             <Text>
                               ${' '}
-                              {convertNumber({
-                                amount: data.liquidity,
-                                type: 'ray',
+                              {Number(poolDayData[length].tvlUSD).toLocaleString(undefined, {
+                                minimumFractionDigits: 2,
                               })}
                             </Text>
                           </>
@@ -375,7 +376,9 @@ export const PoolTable: FC<PoolTableProps> = ({
                             </Text>
                             <Text>
                               ${' '}
-                              {Number(data.poolDayData[0].volumeUSD).toFixed(2)}
+                              {Number(poolDayData[length].volumeUSD).toLocaleString(undefined, {
+                                minimumFractionDigits: 2,
+                              })}
                             </Text>
                           </>
                         ) : (
@@ -391,7 +394,9 @@ export const PoolTable: FC<PoolTableProps> = ({
                               Fees(24hrs)
                             </Text>
                             <Text>
-                              $ {Number(data.poolDayData[0].feesUSD).toFixed(2)}
+                              $ {Number(poolDayData[length].feesUSD).toLocaleString(undefined, {
+                                minimumFractionDigits: 2,
+                              })}
                             </Text>
                           </>
                         ) : (

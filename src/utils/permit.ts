@@ -75,17 +75,13 @@ export async function stakingPermit(
   if (!account || !library) {
     return;
   }
-
   //@ts-ignore
   const web3 = new Web3(window.ethereum);
-  // const signer = getSigner(library, account);
-
   const {UniswapStaking_Address, NPM_Address} = DEPLOYED;
 
   const NPMContract = new Contract(NPM_Address, NPMABI.abi, library);
   let position = await NPMContract.positions(tokenId);
-  // let nonce = await NPMContract.connect(signer).nonces(account);
-  // let owner = await NPMContract.ownerOf(tokenId);
+  
   //@ts-ignore
   let nonce = position.nonce.toString();
   nonce = parseInt(nonce);
