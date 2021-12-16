@@ -77,54 +77,16 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
     // zena
     // const isBtnAble =
     //   btnDisabled || Number(amountAvailable.replaceAll(',', '')) <= 0;
-    const isBtnAble = !btnDisabled;
 
-    console.log('isBtnAble', isBtnAble);
-    console.log('btnDisabled', btnDisabled);
     //zena
     setDepositBtnDisabled(btnDisabled);
     // setDepositBtnDisabled(isBtnAble);
   }, [btnDisabled, amountAvailable]);
 
-  console.log('isTonApprove: ', isTonApprove, 'isWTonApprove', isWTonApprove);
-  console.log(
-    'originTonAllowance: ',
-    originTonAllowance,
-    'originWtonAllowance',
-    originWtonAllowance,
-  );
-  console.log('tonAllowance', tonAllowance, 'wtonAllowance', wtonAllowance);
-  console.log('wtonBalance: ', wtonBalance, 'tonBalance', tonBalance);
-  console.log('amountAvailable: ', amountAvailable);
-
-  console.log(
-    'depositBtnDisabled: ',
-    depositBtnDisabled,
-    'inputTonBalance:',
-    inputTonBalance.trim(),
-    ',',
-  );
-  console.log('btnDisabled: ', btnDisabled, 'amountAvailable', amountAvailable);
-  console.log(
-    '!(depositBtnDisabled || tonBalance !== 0.00:) ',
-    !(depositBtnDisabled || tonBalance !== '0.00'),
-  );
-  console.log(
-    'inputTonBalance !==0 ',
-    inputTonBalance.trim() !== '0',
-    !(depositBtnDisabled || tonBalance !== '0.00') &&
-      inputTonBalance.trim() === '0',
-  );
-
   let inputTonBalanceStr = inputTonBalance.replaceAll(' ', '');
   let inputTonBalanceWei = ethers.utils
     .parseUnits(inputTonBalanceStr, 18)
     .toString();
-  console.log(
-    'inputTonBalanceWei',
-    inputTonBalanceWei,
-    inputTonBalanceWei === inputTonBalance,
-  );
 
   let inputBiggerThanZero = false;
   if (
@@ -133,16 +95,9 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
       .gt(ethers.BigNumber.from('0'))
   )
     inputBiggerThanZero = true;
-  console.log('inputBiggerThanZero', inputBiggerThanZero);
 
   let tonApproveSameInput = false;
   if (originTonAllowance === inputTonBalanceWei) tonApproveSameInput = true;
-  console.log('tonApproveSameInput', tonApproveSameInput);
-
-  let amountAvailableFlag = false;
-  if (amountAvailable.trim() !== '-' && amountAvailable.trim() !== '0.00')
-    amountAvailableFlag = true;
-  console.log('amountAvailableFlag', amountAvailableFlag, amountAvailable);
 
   if (wtonMode === false) {
     return (
@@ -307,17 +262,14 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
 
   const [wtonMode, setWtonMode] = useState<boolean>(false);
 
+  const [isAlreadyBuy, setIsAlreadyBuy] = useState<boolean>(false);
+
   const PUBLICSALE_CONTRACT = useCallContract(
     saleContractAddress,
     'PUBLIC_SALE',
   );
 
-  const {
-    tonBalance,
-    wtonBalance,
-    callTonDecreaseAllowance,
-    callWtonDecreaseAllowance,
-  } = useERC20(saleContractAddress);
+  const {tonBalance, wtonBalance} = useERC20(saleContractAddress);
 
   const {maxValue} = useMaxValue({
     tonBalance,
@@ -353,6 +305,9 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
           amount: payAmount.payAmount,
           localeString: true,
         });
+
+        setIsAlreadyBuy(Number(sale?.replaceAll(',', '')) > 0);
+
         const res =
           detailInfo.totalExpectSaleAmount[
             detailInfo.userTier !== 0 ? detailInfo.userTier : 1
@@ -490,7 +445,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
                 : 'gray.175'
             }
             tokenName={wtonMode ? 'WTON' : 'TON'}
-            maxBtn={true}
+            maxBtn={!isAlreadyBuy}
             maxValue={wtonMode ? maxWTONValue : maxValue}></CustomInput>
           <img
             src={ArrowIcon}
@@ -587,7 +542,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
           inputTonBalance={inputTonBalance}
           saleContractAddress={saleContractAddress}
           wtonMode={wtonMode}></DepositContainer>
-        <CustomButton
+        {/* <CustomButton
           w={'100px'}
           text="ton initialize"
           style={{marginLeft: '5px', marginRight: '5px'}}
@@ -595,7 +550,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
         <CustomButton
           w={'100px'}
           text="wton initialize"
-          func={() => callWtonDecreaseAllowance()}></CustomButton>
+          func={() => callWtonDecreaseAllowance()}></CustomButton> */}
       </Box>
     </Flex>
   );
