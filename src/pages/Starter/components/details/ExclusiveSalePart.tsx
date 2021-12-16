@@ -164,10 +164,7 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
       {isWTonApprove && tonAllowance === '0.00' ? (
         <CustomButton
           text={'Acquire (WTON)'}
-          isDisabled={
-            inputTonBalance.trim() === '0' ||
-            !(depositBtnDisabled || tonBalance !== '0.00')
-          }
+          isDisabled={depositBtnDisabled}
           func={() =>
             account &&
             checkBalance(
