@@ -105,7 +105,10 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
         {isTonApprove && inputBiggerThanZero ? (
           <CustomButton
             text={'Acquire'}
-            isDisabled={depositBtnDisabled}
+            isDisabled={
+              depositBtnDisabled ||
+              Number(inputTonBalance.replaceAll(',', '')) === 0
+            }
             func={() => {
               account &&
                 checkBalance(
@@ -122,7 +125,11 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
         ) : (
           <CustomButton
             text={'TON Approve'}
-            isDisabled={depositBtnDisabled || !inputBiggerThanZero}
+            isDisabled={
+              depositBtnDisabled ||
+              !inputBiggerThanZero ||
+              Number(inputTonBalance.replaceAll(',', '')) === 0
+            }
             func={() =>
               account &&
               dispatch(
@@ -160,7 +167,10 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
       {isWTonApprove && tonAllowance === '0.00' ? (
         <CustomButton
           text={'Acquire (WTON)'}
-          isDisabled={depositBtnDisabled}
+          isDisabled={
+            depositBtnDisabled ||
+            Number(inputTonBalance.replaceAll(',', '')) === 0
+          }
           func={() =>
             account &&
             checkBalance(
@@ -182,7 +192,10 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
       ) : (
         <CustomButton
           text={'WTON Approve'}
-          isDisabled={depositBtnDisabled}
+          isDisabled={
+            depositBtnDisabled ||
+            Number(inputTonBalance.replaceAll(',', '')) === 0
+          }
           func={() =>
             account &&
             dispatch(
@@ -254,7 +267,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
 
   const [wtonMode, setWtonMode] = useState<boolean>(false);
 
-  const [isAlreadyBuy, setIsAlreadyBuy] = useState<boolean>(false);
+  // const [isAlreadyBuy, setIsAlreadyBuy] = useState<boolean>(false);
 
   const PUBLICSALE_CONTRACT = useCallContract(
     saleContractAddress,
@@ -298,7 +311,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
           localeString: true,
         });
 
-        setIsAlreadyBuy(Number(sale?.replaceAll(',', '')) > 0);
+        // setIsAlreadyBuy(Number(sale?.replaceAll(',', '')) > 0);
 
         const res =
           detailInfo.totalExpectSaleAmount[
