@@ -165,6 +165,7 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
         <CustomButton
           text={'Acquire (WTON)'}
           isDisabled={depositBtnDisabled}
+          style={{marginRight: '12px'}}
           func={() =>
             account &&
             checkBalance(
@@ -259,8 +260,6 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
 
   const [wtonMode, setWtonMode] = useState<boolean>(false);
 
-  const [isAlreadyBuy, setIsAlreadyBuy] = useState<boolean>(false);
-
   const PUBLICSALE_CONTRACT = useCallContract(
     saleContractAddress,
     'PUBLIC_SALE',
@@ -303,7 +302,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
           localeString: true,
         });
 
-        setIsAlreadyBuy(Number(sale?.replaceAll(',', '')) > 0);
+        // setIsAlreadyBuy(Number(sale?.replaceAll(',', '')) > 0);
 
         const res =
           detailInfo.totalExpectSaleAmount[
