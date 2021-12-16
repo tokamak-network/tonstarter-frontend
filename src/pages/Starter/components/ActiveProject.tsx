@@ -13,7 +13,6 @@ import {ActiveProjectType} from '@Starter/types';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect, useState} from 'react';
 import {useCallContract} from 'hooks/useCallContract';
-import {BigNumber} from 'ethers';
 import {convertNumber} from 'utils/number';
 import moment from 'moment';
 import {TokenImage} from '@Admin/components/TokenImage';
@@ -34,7 +33,7 @@ const ActiveProjectContainer: React.FC<{
   const match = useRouteMatch();
   const {url} = match;
 
-  const [progress, setProgress] = useState<number | undefined>(undefined);
+  const [progress, setProgress] = useState<number>(0);
   const [totalRaise, setTotalRaise] = useState<string | undefined>(undefined);
   const [participants, setParticipants] = useState<string | undefined>(
     undefined,
