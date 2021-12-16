@@ -41,6 +41,9 @@ const ActiveProjectContainer: React.FC<{
   );
   const [step, setStep] = useState<string>('');
 
+  const [pro1, setPro1] = useState<string>('XXX,XXX');
+  const [pro2, setPro2] = useState<string>('XXX,XXX');
+
   const PUBLICSALE_CONTRACT = useCallContract(
     project.saleContractAddress || '',
     'PUBLIC_SALE',
@@ -53,20 +56,40 @@ const ActiveProjectContainer: React.FC<{
       const roundOneAmount =
         await PUBLICSALE_CONTRACT?.totalExPurchasedAmount();
       const roundTwoAmount = await PUBLICSALE_CONTRACT?.totalDepositAmount();
-      const sum = BigNumber.from(roundOneAmount).add(roundTwoAmount);
-      const convertedSum = convertNumber({
-        amount: sum.toString(),
+      // const sum = BigNumber.from(roundOneAmount).add(roundTwoAmount);
+
+      const totalExSaleAmount = await PUBLICSALE_CONTRACT?.totalExSaleAmount();
+      const totalExpectSaleAmount =
+        await PUBLICSALE_CONTRACT?.totalExpectSaleAmount();
+
+      const convertedSum = await convertNumber({
+        amount: roundOneAmount.toString(),
         localeString: true,
       });
 
       const progressNow =
-        (Number(convertedSum?.replaceAll(',', '')) / 28436) * 100;
+        (Number(totalExSaleAmount.toString()) /
+          Number(totalExpectSaleAmount.toString())) *
+        100;
       const participantsNum =
         step === 'whitelist'
           ? await PUBLICSALE_CONTRACT?.totalWhitelists()
           : step === 'exclusive'
           ? await PUBLICSALE_CONTRACT?.totalRound1Users()
           : await PUBLICSALE_CONTRACT?.totalRound2Users();
+
+      const convertedPro1 = (await convertNumber({
+        amount: totalExSaleAmount.toString(),
+        localeString: true,
+      })) as string;
+      const convertedPro2 = (await convertNumber({
+        amount: totalExpectSaleAmount.toString(),
+        localeString: true,
+      })) as string;
+
+      setPro1(convertedPro1 || 'XXX,XXX');
+      setPro2(convertedPro2 || 'XXX,XXX');
+
       setTotalRaise(convertedSum);
       setProgress(Math.ceil(progressNow));
       setParticipants(participantsNum.toString());
@@ -136,20 +159,13 @@ const ActiveProjectContainer: React.FC<{
             </Text>
           </Flex>
           <Flex>
-            <Text>{totalRaise || 'XX,XXX'}</Text>
+            <Text>{pro1 || 'XX,XXX'}</Text>
             <Text>/</Text>
-            <Text>{project.tokenFundRaisingTargetAmount}</Text>
+            <Text>{pro2 || 'XX.XXX'}</Text>
           </Flex>
         </Box>
         <Box mb={'30px'}>
-          <Progress
-            value={
-              (Number(totalRaise || '0') /
-                Number(project.tokenFundRaisingTargetAmount)) *
-              100
-            }
-            borderRadius={10}
-            h={'6px'}></Progress>
+          <Progress value={progress} borderRadius={10} h={'6px'}></Progress>
         </Box>
         <Flex justifyContent="space-between">
           <Box d="flex" flexDir="column">
