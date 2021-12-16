@@ -25,6 +25,7 @@ import {useDispatch} from 'react-redux';
 import {openModal} from 'store/modal.reducer';
 import {useERC20} from '@Starter/hooks/useERC20';
 import useMaxValue from '@Starter/hooks/useMaxValue';
+import useMaxWTONVaule from '@Starter/hooks/useMaxWTONVaule';
 
 type DepositContainerProp = {
   amountAvailable: string;
@@ -282,6 +283,11 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
 
   const {maxValue} = useMaxValue({
     tonBalance,
+    amountAvailable,
+    tokenExRatio,
+  });
+
+  const {maxWTONValue} = useMaxWTONVaule({
     wtonBalance,
     amountAvailable,
     tokenExRatio,
@@ -453,7 +459,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             }
             tokenName={wtonMode ? 'WTON' : 'TON'}
             maxBtn={true}
-            maxValue={maxValue}></CustomInput>
+            maxValue={wtonMode ? maxWTONValue : maxValue}></CustomInput>
           <img
             src={ArrowIcon}
             alt={'icon_arrow'}
