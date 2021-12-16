@@ -58,6 +58,11 @@ export const CustomInput = (prop: CustomInputProp) => {
       }
       setValue(value.slice(1, value.legnth));
     }
+    if (setValue && value.split('.')[1] !== undefined) {
+      return setValue(
+        `${value.split('.')[0]}.${value.split('.')[1].slice(0, 2)}`,
+      );
+    }
   }, [value, setValue, startWithZero]);
 
   if (numberOnly) {
