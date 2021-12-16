@@ -11,7 +11,6 @@ import {useCallContract} from 'hooks/useCallContract';
 import {BigNumber} from 'ethers';
 import {convertNumber} from 'utils/number';
 import {useBlockNumber} from 'hooks/useBlock';
-import {DetailCounter} from './Detail_Counter';
 
 type ClaimProps = {
   saleInfo: AdminObject;
