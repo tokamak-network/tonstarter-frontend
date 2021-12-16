@@ -122,10 +122,7 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
         ) : (
           <CustomButton
             text={'TON Approve'}
-            isDisabled={
-              depositBtnDisabled || !inputBiggerThanZero
-              // || !amountAvailableFlag
-            }
+            isDisabled={depositBtnDisabled || !inputBiggerThanZero}
             style={{marginRight: '12px'}}
             func={() =>
               account &&
@@ -404,6 +401,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             <Switch
               onChange={() => {
                 setWtonMode(!wtonMode);
+                setInputTonBalance('0');
               }}
               // defaultChecked={true}
               value={0}></Switch>
@@ -442,7 +440,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
                 : 'gray.175'
             }
             tokenName={wtonMode ? 'WTON' : 'TON'}
-            // maxBtn={!isAlreadyBuy}
+            maxBtn={true}
             maxValue={wtonMode ? maxWTONValue : maxValue}></CustomInput>
           <img
             src={ArrowIcon}
