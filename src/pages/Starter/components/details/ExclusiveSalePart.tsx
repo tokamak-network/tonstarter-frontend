@@ -4,6 +4,8 @@ import {
   useTheme,
   Flex,
   Text,
+  FormControl,
+  FormLabel,
   Switch,
 } from '@chakra-ui/react';
 import {CustomInput} from 'components/Basic';
@@ -23,6 +25,7 @@ import {useDispatch} from 'react-redux';
 import {openModal} from 'store/modal.reducer';
 import {useERC20} from '@Starter/hooks/useERC20';
 import useMaxValue from '@Starter/hooks/useMaxValue';
+import useMaxWTONVaule from '@Starter/hooks/useMaxWTONVaule';
 
 type DepositContainerProp = {
   amountAvailable: string;
@@ -137,7 +140,9 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
   console.log('tonApproveSameInput', tonApproveSameInput);
 
   let amountAvailableFlag = false;
-  if (amountAvailable.trim() !== '-') amountAvailableFlag = true;
+  if (amountAvailable.trim() !== '-' && amountAvailable.trim() !== '0.00')
+    amountAvailableFlag = true;
+  console.log('amountAvailableFlag', amountAvailableFlag, amountAvailable);
 
   if (wtonMode === false) {
     return (
@@ -315,6 +320,11 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
 
   const {maxValue} = useMaxValue({
     tonBalance,
+    amountAvailable,
+    tokenExRatio,
+  });
+
+  const {maxWTONValue} = useMaxWTONVaule({
     wtonBalance,
     amountAvailable,
     tokenExRatio,
@@ -440,12 +450,17 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             date={endExclusiveTime * 1000}></DetailCounter>
         </Flex>
         <Flex pr={2.5}>
-          <Switch
-            onChange={() => {
-              setWtonMode(!wtonMode);
-            }}
-            // defaultChecked={true}
-            value={0}></Switch>
+          <FormControl display="flex" alignItems="center">
+            <FormLabel htmlFor="email-alerts" mb="0">
+              WTON
+            </FormLabel>
+            <Switch
+              onChange={() => {
+                setWtonMode(!wtonMode);
+              }}
+              // defaultChecked={true}
+              value={0}></Switch>
+          </FormControl>
         </Flex>
       </Box>
       <Box d="flex">
@@ -481,7 +496,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             }
             tokenName={wtonMode ? 'WTON' : 'TON'}
             maxBtn={true}
-            maxValue={maxValue}></CustomInput>
+            maxValue={wtonMode ? maxWTONValue : maxValue}></CustomInput>
           <img
             src={ArrowIcon}
             alt={'icon_arrow'}

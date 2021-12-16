@@ -2,13 +2,12 @@ import {useEffect, useState} from 'react';
 
 type UseMaxValue = {
   tonBalance: string;
-  wtonBalance: string;
   amountAvailable: string;
   tokenExRatio: number;
 };
 
 const useMaxValue = (args: UseMaxValue): {maxValue: number} => {
-  const {tonBalance, wtonBalance, amountAvailable, tokenExRatio} = args;
+  const {tonBalance, amountAvailable, tokenExRatio} = args;
   const [maxValue, setMaxValue] = useState<number>(0);
 
   useEffect(() => {
@@ -16,8 +15,7 @@ const useMaxValue = (args: UseMaxValue): {maxValue: number} => {
       return;
     }
     const tokenSumBalance =
-      Number(tonBalance.replaceAll(',', '')) +
-      Number(wtonBalance.replaceAll(',', ''));
+      Number(tonBalance.replaceAll(',', ''))
     const availableProjectTokenBalance =
       Number(amountAvailable.replaceAll(',', '')) / tokenExRatio;
     const maxValue =
@@ -25,7 +23,7 @@ const useMaxValue = (args: UseMaxValue): {maxValue: number} => {
         ? tokenSumBalance
         : availableProjectTokenBalance;
     return setMaxValue(maxValue);
-  }, [tonBalance, wtonBalance, amountAvailable, tokenExRatio]);
+  }, [tonBalance, amountAvailable, tokenExRatio]);
 
   return {maxValue};
 };
