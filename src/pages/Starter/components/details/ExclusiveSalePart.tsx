@@ -168,7 +168,8 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
           <CustomButton
             text={'TON Approve'}
             isDisabled={
-              depositBtnDisabled || !inputBiggerThanZero || !amountAvailableFlag
+              depositBtnDisabled || !inputBiggerThanZero
+              // || !amountAvailableFlag
             }
             style={{marginRight: '12px'}}
             func={() =>
@@ -227,7 +228,7 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
           }></CustomButton>
       ) : tonAllowance !== '0.00' ? (
         <CustomButton
-          text={'TON Decrease Allowance'}
+          text={'Initialize TON Allowance'}
           isDisabled={depositBtnDisabled}
           style={{marginRight: '12px'}}
           func={() => callTonDecreaseAllowance()}></CustomButton>
@@ -410,18 +411,12 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
           library,
           address: saleContractAddress,
         });
-        // const amount = await starterActions.isWhiteList({
-        //   account,
-        //   library,
-        //   address: saleContractAddress,
-        // });
-
         //zena
-        // setBtnDisabled(
-        //   !whiteListInfo[0] ||
-        //     Number(amountAvailable.replaceAll(',', '')) < tokenExRatio,
-        // );
-        setBtnDisabled(false);
+        setBtnDisabled(
+          !whiteListInfo[0] ||
+            Number(amountAvailable.replaceAll(',', '')) < tokenExRatio,
+        );
+        // setBtnDisabled(false);
         // setAmountAvailable();
       }
     }
