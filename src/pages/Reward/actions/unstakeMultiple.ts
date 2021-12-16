@@ -20,8 +20,6 @@ export const unstakeMultiple = async (args: any) => {
     if (stakeKeyList.length === 0) {
         return alert(`Please select rewards to unstake`);
     }
-console.log(stakeKeyList);
-
     const NPM = new Contract(NPM_Address, NPMABI.abi, library);
     const uniswapStakerContract = new Contract(
       UniswapStaker_Address,

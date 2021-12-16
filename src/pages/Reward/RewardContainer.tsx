@@ -82,13 +82,18 @@ export const RewardContainer: FC<RewardContainerProps> = ({
     return rewards.slice(startIndex, endIndex);
   };
 
-  useEffect (() => {
-    multipleStakeList.pop()
-    multipleUnstakeList.pop()
+  useEffect(() => {
+    multipleStakeList.pop();
+    multipleUnstakeList.pop();
     setStakeNum(0);
     setUnstakeNum(0);
-
-  },[transactionType, blockNumber, multipleStakeList, multipleUnstakeList,position])
+  }, [
+    transactionType,
+    blockNumber,
+    multipleStakeList,
+    multipleUnstakeList,
+    position,
+  ]);
 
   const goToNextPage = () => {
     setPageIndex(pageIndex + 1);
@@ -99,33 +104,28 @@ export const RewardContainer: FC<RewardContainerProps> = ({
   };
 
   const stakeMultipleKeys = (key: any) => {
-    if (
-      multipleStakeList.filter(
-        (listkey: any) => JSON.stringify(listkey) === JSON.stringify(key),
-      ).length > 0
-    ) {
-      multipleStakeList.pop(key);
-    } else {
-      multipleStakeList.push(key);
-    }
+const keyFound = multipleStakeList.find( (listkey: any) => JSON.stringify(listkey) === JSON.stringify(key));
+const index = multipleStakeList.findIndex((key: any) => JSON.stringify(key) === JSON.stringify(keyFound));
+
+if (index > -1) {
+  multipleStakeList.splice(index,1)
+}
+else {
+  multipleStakeList.push(key);
+}
     setStakeNum(multipleStakeList.length);
-    console.log('multipleStakeList',multipleStakeList);
-    
     return multipleStakeList;
   };
 
   const unstakeMultipleKeys = (key: any) => {
-    if (
-      multipleUnstakeList.filter(
-        (listkey: any) => JSON.stringify(listkey) === JSON.stringify(key),
-      ).length > 0
-    ) {
-      multipleUnstakeList.pop(key);
-    } else {
+    const keyFound = multipleUnstakeList.find( (listkey: any) => JSON.stringify(listkey) === JSON.stringify(key));
+    const index = multipleUnstakeList.findIndex((key: any) => JSON.stringify(key) === JSON.stringify(keyFound));
+    if (index > -1) {
+      multipleUnstakeList.splice(index,1)
+    }
+    else {
       multipleUnstakeList.push(key);
     }
-    console.log('multipleUnstakeList', multipleUnstakeList);
-    
     setUnstakeNum(multipleUnstakeList.length);
     return multipleUnstakeList;
   };
@@ -219,9 +219,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({
               fontSize="14px"
               fontWeight="500"
               disabled={
-                position === undefined ||
-                (unstakeNum === 0 &&
-                  stakeNum === 0)
+                position === undefined || (unstakeNum === 0 && stakeNum === 0)
               }
               _hover={{backgroundColor: 'none'}}
               _disabled={
@@ -246,7 +244,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({
                   unstakeKeyList: multipleUnstakeList,
                 })
               }>
-             Multicall
+              Multicall
             </Button>
             {/* <Button
               w={'120px'}

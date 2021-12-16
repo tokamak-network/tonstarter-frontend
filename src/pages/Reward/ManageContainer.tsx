@@ -107,13 +107,12 @@ export const ManageContainer: FC<ManageContainerProps> = ({
   const theme = useTheme();
 
   const refundMultipleKeys = (key : any) => {
-    if (
-      multipleRefundList.filter(
-        (listkey: any) => JSON.stringify(listkey) === JSON.stringify(key),
-      ).length > 0
-    ) {
-      multipleRefundList.pop(key);
-    } else {
+    const keyFound = multipleRefundList.find( (listkey: any) => JSON.stringify(listkey) === JSON.stringify(key));
+    const index = multipleRefundList.findIndex((key: any) => JSON.stringify(key) === JSON.stringify(keyFound));
+    if (index > -1) {
+      multipleRefundList.splice(index,1)
+    }
+    else {
       multipleRefundList.push(key);
     }
     setRefundNum(multipleRefundList.length);
