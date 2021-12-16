@@ -121,7 +121,8 @@ const ActiveProjectContainer: React.FC<{
         <Flex justifyContent="space-between" mb={15}>
           <TokenImage imageLink={project.tokenSymbolImage}></TokenImage>
           <Flex alignItems="center">
-            <Circle bg={'#f95359'}></Circle>
+            <Circle
+              bg={step === 'Public Round 2' ? '#2ea2f8' : '#f95359'}></Circle>
             <Text
               {...{
                 ...STATER_STYLE.subTextBlack({
