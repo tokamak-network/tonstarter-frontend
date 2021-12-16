@@ -108,7 +108,9 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
   console.log('tonApproveSameInput',tonApproveSameInput);
 
   let amountAvailableFlag = false;
-  if(amountAvailable.trim() !== '-') amountAvailableFlag =true;
+  if(amountAvailable.trim() !== '-' && amountAvailable.trim() !== '0.00') amountAvailableFlag =true;
+  console.log('amountAvailableFlag',amountAvailableFlag, amountAvailable);
+
 
   if (wtonMode === false) {
     return (
@@ -133,7 +135,7 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
         ) : (
           <CustomButton
             text={'TON Approve'}
-            isDisabled={depositBtnDisabled || !inputBiggerThanZero || !amountAvailableFlag}
+            isDisabled={depositBtnDisabled || !inputBiggerThanZero || !amountAvailableFlag }
             style={{marginRight: '12px'}}
             func={() =>
               account &&
