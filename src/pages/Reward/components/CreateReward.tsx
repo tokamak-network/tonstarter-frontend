@@ -234,9 +234,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools, setSelectedPoolCreat
         try {
           const contract = new Contract(rewardAddress, ERC20.abi, library);
           const balanceOf = await contract.connect(signer).balanceOf(account);
-          // console.log('balanceOf',ethers.utils.formatEther(checkAllowed.toLocaleString('fullwide', {
-          //   useGrouping: false,
-          // }),));
+
           if (rewardAddress === WTON_ADDRESS) {
             const convertedRes = convertNumber({
               amount: balanceOf,

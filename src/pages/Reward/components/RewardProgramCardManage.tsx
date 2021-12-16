@@ -11,6 +11,7 @@ import {
   Tooltip,
   Button,
   Progress,
+  Checkbox
 } from '@chakra-ui/react';
 import {useAppSelector} from 'hooks/useRedux';
 import {checkTokenType} from 'utils/token';
@@ -46,6 +47,7 @@ type RewardProgramCardManageProps = {
   reward: UpdatedRedward;
   pageIndex: number;
   sortString: string;
+  sendKey: (key: any) => void;
 };
 
 const {TON_ADDRESS, UniswapStaker_Address} = DEPLOYED;
@@ -53,7 +55,8 @@ const {TON_ADDRESS, UniswapStaker_Address} = DEPLOYED;
 export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
   reward,
   pageIndex,
-  sortString
+  sortString,
+  sendKey
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -66,7 +69,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
   const [refundableAmount, setRefundableAmount] = useState<string>('0');
   const [numStakers, setNumStakers] = useState<number>(0);
   const [rewardSymbol, setRewardSymbol] = useState<string>('')
-
+const [isRefundSelected, setIsRefundSelected] = useState<boolean>(false);
   const key = {
     rewardToken: reward.rewardToken,
     pool: reward.poolAddress,
@@ -322,6 +325,17 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
             zIndex={'100'}
           />
         </Flex>
+        <Flex flexDirection="row" justifyContent={'center'}>
+          { (numStakers !== 0 ||
+            refundableAmount === '0' ||
+            reward.endTime > moment().unix()) ? null :  <Checkbox
+            mt={'5px'}
+            isChecked={isRefundSelected}
+            onChange={(e) => {
+              setIsRefundSelected(e.target.checked);
+              sendKey(key);
+            }}></Checkbox>}
+
         <Button
           w={'120px'}
           h={'33px'}
@@ -357,6 +371,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
           }}>
          Refund
         </Button>
+        </Flex>
       </Flex>
     </Flex>
   );

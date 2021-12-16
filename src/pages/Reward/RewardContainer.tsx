@@ -12,14 +12,15 @@ import {
   useTheme,
   Center,
 } from '@chakra-ui/react';
+import {selectTransactionType} from 'store/refetch.reducer';
 import {useAppSelector} from 'hooks/useRedux';
 import {getPoolName} from '../../utils/token';
 import {ClaimReward} from './components/ClaimReward';
 import {RewardProgramCard} from './components/RewardProgramCard';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
-import {stakeMultiple} from './actions';
+import {stakeMultiple, unstakeMultiple} from './actions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
-import { LPToken } from './types';
+import {LPToken} from './types';
 import {getSigner} from 'utils/contract';
 import {DEPLOYED} from 'constants/index';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
@@ -46,8 +47,8 @@ type RewardContainerProps = {
 };
 const {UniswapStaker_Address} = DEPLOYED;
 
-
 const multipleStakeList: any = [];
+const multipleUnstakeList: any = [];
 export const RewardContainer: FC<RewardContainerProps> = ({
   rewards,
   selectedPool,
@@ -55,11 +56,14 @@ export const RewardContainer: FC<RewardContainerProps> = ({
   pools,
   sortString,
 }) => {
+  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [pageOptions, setPageOptions] = useState<number>(0);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(6);
+  const [unstakeNum, setUnstakeNum] = useState<number>(0);
+  const [stakeNum, setStakeNum] = useState<number>(0);
   const {account, library} = useActiveWeb3React();
-const [staked, setstaked] = useState(true)
+  const [staked, setstaked] = useState(true);
   const {colorMode} = useColorMode();
   const theme = useTheme();
   useEffect(() => {
@@ -78,6 +82,19 @@ const [staked, setstaked] = useState(true)
     return rewards.slice(startIndex, endIndex);
   };
 
+  useEffect(() => {
+    multipleStakeList.pop();
+    multipleUnstakeList.pop();
+    setStakeNum(0);
+    setUnstakeNum(0);
+  }, [
+    transactionType,
+    blockNumber,
+    multipleStakeList,
+    multipleUnstakeList,
+    position,
+  ]);
+
   const goToNextPage = () => {
     setPageIndex(pageIndex + 1);
   };
@@ -87,16 +104,30 @@ const [staked, setstaked] = useState(true)
   };
 
   const stakeMultipleKeys = (key: any) => {
-    if (
-      multipleStakeList.filter(
-        (listkey: any) => JSON.stringify(listkey) === JSON.stringify(key),
-      ).length > 0
-    ) {
-      multipleStakeList.pop(key);
-    } else {
-      multipleStakeList.push(key);
-    }
+const keyFound = multipleStakeList.find( (listkey: any) => JSON.stringify(listkey) === JSON.stringify(key));
+const index = multipleStakeList.findIndex((key: any) => JSON.stringify(key) === JSON.stringify(keyFound));
+
+if (index > -1) {
+  multipleStakeList.splice(index,1)
+}
+else {
+  multipleStakeList.push(key);
+}
+    setStakeNum(multipleStakeList.length);
     return multipleStakeList;
+  };
+
+  const unstakeMultipleKeys = (key: any) => {
+    const keyFound = multipleUnstakeList.find( (listkey: any) => JSON.stringify(listkey) === JSON.stringify(key));
+    const index = multipleUnstakeList.findIndex((key: any) => JSON.stringify(key) === JSON.stringify(keyFound));
+    if (index > -1) {
+      multipleUnstakeList.splice(index,1)
+    }
+    else {
+      multipleUnstakeList.push(key);
+    }
+    setUnstakeNum(multipleUnstakeList.length);
+    return multipleUnstakeList;
   };
 
   useEffect(() => {
@@ -112,25 +143,29 @@ const [staked, setstaked] = useState(true)
       const signer = getSigner(library, account);
       const depositInfo = await uniswapStakerContract
         .connect(signer)
-        .deposits(Number(position?position.id: '0'));        
-        if (depositInfo.owner.toLowerCase() === account.toLowerCase() ) {
-          setstaked(true)
-        } 
-        else {setstaked(false)}
-
+        .deposits(Number(position ? position.id : '0'));
+      if (depositInfo.owner.toLowerCase() === account.toLowerCase()) {
+        setstaked(true);
+      } else {
+        setstaked(false);
+      }
     }
-    checkStaked()
-  },[position])
-  
+    checkStaked();
+  }, [position]);
+
   return (
     <Flex justifyContent={'space-between'}>
       {rewards.length !== 0 ? (
         <Box flexWrap={'wrap'}>
-          <Grid templateColumns="repeat(2, 1fr)" gap={'30px'} h={'fit-content'} mb={'30px'}>
+          <Grid
+            templateColumns="repeat(2, 1fr)"
+            gap={'30px'}
+            h={'fit-content'}
+            mb={'30px'}>
             {getPaginatedData().map((reward: any, index) => {
               const includedPool = pools.find(
                 (pool) => pool.id === reward.poolAddress,
-              );              
+              );
               const token0 = includedPool.token0.id;
               const token1 = includedPool.token1.id;
               const token0Image = includedPool.token0Image;
@@ -155,11 +190,13 @@ const [staked, setstaked] = useState(true)
                 <RewardProgramCard
                   key={index}
                   reward={rewardProps}
-                  selectedToken={(position)}
+                  selectedToken={position}
                   selectedPool={selectedPool ? selectedPool.id : ''}
                   sendKey={stakeMultipleKeys}
+                  sendUnstakeKey={unstakeMultipleKeys}
                   pageIndex={pageIndex}
                   stakeList={multipleStakeList}
+                  unstakeList={multipleUnstakeList}
                   sortString={sortString}
                   includedPoolLiquidity={includedPool.liquidity}
                 />
@@ -181,7 +218,9 @@ const [staked, setstaked] = useState(true)
               fontFamily={theme.fonts.roboto}
               fontSize="14px"
               fontWeight="500"
-              disabled={position === undefined || staked}
+              disabled={
+                position === undefined || (unstakeNum === 0 && stakeNum === 0)
+              }
               _hover={{backgroundColor: 'none'}}
               _disabled={
                 colorMode === 'light'
@@ -202,10 +241,45 @@ const [staked, setstaked] = useState(true)
                   tokenid: Number(position?.id),
                   library: library,
                   stakeKeyList: multipleStakeList,
+                  unstakeKeyList: multipleUnstakeList,
                 })
               }>
-              Stake Multiple
+              Multicall
             </Button>
+            {/* <Button
+              w={'120px'}
+              h={'33px'}
+              bg={'blue.500'}
+              color="white.100"
+              ml={'10px'}
+              fontFamily={theme.fonts.roboto}
+              fontSize="14px"
+              fontWeight="500"
+              disabled={position === undefined}
+              _hover={{backgroundColor: 'none'}}
+              _disabled={
+                colorMode === 'light'
+                  ? {
+                      backgroundColor: 'gray.25',
+                      cursor: 'default',
+                      color: '#86929d',
+                    }
+                  : {
+                      backgroundColor: '#353535',
+                      cursor: 'default',
+                      color: '#838383',
+                    }
+              }
+              onClick={() =>
+                unstakeMultiple({
+                  userAddress: account,
+                  tokenid: Number(position?.id),
+                  library: library,
+                  stakeKeyList: multipleUnstakeList,
+                })
+              }>
+              Unstake Multiple
+            </Button> */}
             <Flex flexDirection={'row'} h={'25px'} alignItems={'center'}>
               <Flex>
                 <Tooltip label="Previous Page">
@@ -289,7 +363,7 @@ const [staked, setstaked] = useState(true)
                   value={pageLimit}
                   fontFamily={theme.fonts.roboto}
                   onChange={(e) => {
-                    setPageIndex(1)
+                    setPageIndex(1);
                     setPageLimit(Number(e.target.value));
                   }}>
                   {[2, 4, 6, 8, 10, 12].map((pageSize) => (

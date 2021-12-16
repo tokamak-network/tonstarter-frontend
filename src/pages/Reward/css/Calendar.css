@@ -58,7 +58,7 @@
 }
 .react-calendar__navigation {
   height: 47px;
- 
+  display: flex;
   /* border-bottom: solid 1px #535353; */
   /* margin-bottom: 1em; */
 }

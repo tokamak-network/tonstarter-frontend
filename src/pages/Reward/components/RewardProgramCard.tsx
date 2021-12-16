@@ -49,8 +49,10 @@ type RewardProgramCardProps = {
   selectedToken?: LPToken;
   selectedPool?: string;
   sendKey: (key: any) => void;
+  sendUnstakeKey: (key: any) => void;
   pageIndex: number;
   stakeList: any[];
+  unstakeList: any[];
   sortString: string;
   includedPoolLiquidity: string;
 };
@@ -62,10 +64,12 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   selectedToken,
   selectedPool,
   sendKey,
+  sendUnstakeKey,
   pageIndex,
   stakeList,
+  unstakeList,
   sortString,
-  includedPoolLiquidity
+  includedPoolLiquidity,
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -82,6 +86,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [rewardSymbol, setRewardSymbol] = useState<string>('');
   const [isSelected, setIsSelected] = useState<boolean>(false);
+  const [isUnstakeSelected, setIsUnstakeselected] = useState<boolean>(false);
   const key = {
     rewardToken: reward.rewardToken,
     pool: reward.poolAddress,
@@ -89,12 +94,17 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     endTime: reward.endTime,
     refundee: reward.incentiveKey.refundee,
   };
-  
+
   const uniswapStakerContract = new Contract(
     UniswapStaker_Address,
     STAKERABI.abi,
     library,
   );
+
+  useEffect(() => {
+    setIsUnstakeselected(false);
+    setIsSelected(false);
+  },[selectedToken])
   useEffect(() => {
     const selected =
       stakeList.filter(
@@ -102,6 +112,14 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
       ).length > 0;
     setIsSelected(selected);
   }, [stakeList, pageIndex]);
+
+  useEffect(() => {
+    const selected =
+      unstakeList.filter(
+        (listkey: any) => JSON.stringify(listkey) === JSON.stringify(key),
+      ).length > 0;      
+    setIsUnstakeselected(selected);
+  }, [unstakeList, pageIndex]);
 
   useEffect(() => {
     const getTokenFromContract = async (address: string) => {
@@ -226,7 +244,6 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
         setMyReward(rewardInfo.reward);
       } catch (err) {}
     }
-   
   };
 
   useEffect(() => {
@@ -248,10 +265,10 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
         !staked
       ) {
         setButtonState('Stake');
-      } 
+      }
       // else if (staked && now < reward.endTime) {
       //   setButtonState('In Progress');
-      // } 
+      // }
       else if (staked) {
         setButtonState('Unstake');
       } else if (!staked && now > reward.endTime) {
@@ -334,7 +351,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
             ml={'-7px'}
           />
         </Box>
-        {staked && selectedToken? (
+        {staked && selectedToken ? (
           <Flex flexDir={'row'} alignItems={'center'}>
             <Box
               w={'8px'}
@@ -354,13 +371,14 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
             </Text>
             <Box textAlign={'right'}>
               <Text>
-                
-                {Number(ethers.utils.formatEther(myReward)) < 0.005 ? '<0.00' :Number(ethers.utils.formatEther(myReward)).toLocaleString(
-                  undefined,
-                  {
-                    maximumFractionDigits: 2,
-                  },
-                )}{' '}
+                {Number(ethers.utils.formatEther(myReward)) < 0.005
+                  ? '<0.00'
+                  : Number(ethers.utils.formatEther(myReward)).toLocaleString(
+                      undefined,
+                      {
+                        maximumFractionDigits: 2,
+                      },
+                    )}{' '}
                 {
                   checkTokenType(ethers.utils.getAddress(reward.rewardToken))
                     .name
@@ -368,10 +386,9 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
                 /{' '}
                 {parseFloat(
                   (
-                    (Number(ethers.utils.formatEther(selectedToken.liquidity)) * 100) /
-                    Number(
-                      ethers.utils.formatEther(includedPoolLiquidity ),
-                    )
+                    (Number(ethers.utils.formatEther(selectedToken.liquidity)) *
+                      100) /
+                    Number(ethers.utils.formatEther(includedPoolLiquidity))
                   ).toFixed(3),
                 )}
                 %
@@ -402,10 +419,16 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
         )}
       </Flex>
       <Flex mt={'15px'} alignItems={'center'}>
-        <Text cursor={'pointer'} {...REWARD_STYLE.mainText({colorMode})}  mr={'10px'} onClick={(e) => {
-                    e.preventDefault();
-                    window.open(`https://info.uniswap.org/#/pools/${reward.poolAddress}`);
-                  }}>
+        <Text
+          cursor={'pointer'}
+          {...REWARD_STYLE.mainText({colorMode})}
+          mr={'10px'}
+          onClick={(e) => {
+            e.preventDefault();
+            window.open(
+              `https://info.uniswap.org/#/pools/${reward.poolAddress}`,
+            );
+          }}>
           {reward.poolName}
         </Text>
         <Box>
@@ -545,6 +568,21 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
                 onChange={(e) => {
                   setIsSelected(e.target.checked);
                   sendKey(key);
+                }}></Checkbox>
+            </Box>
+          ) : null}
+
+          {buttonState === 'Unstake' &&
+          moment().unix() > reward.startTime &&
+          staked &&
+          Number(selectedToken ? selectedToken.id : 0) !== 0 ? (
+            <Box pb={'0px'}>
+              <Checkbox
+                mt={'5px'}
+                isChecked={isUnstakeSelected}
+                onChange={(e) => {
+                  setIsUnstakeselected(e.target.checked);
+                  sendUnstakeKey(key);
                 }}></Checkbox>
             </Box>
           ) : null}

@@ -84,9 +84,9 @@ export const CustomCalendar = (prop: CalendarProps) => {
         return true;
       } 
 
-      else if (calendarType === 'end' &&  startTime !== 0 && formattedDate <= startTime ) {        
-        return true;
-      }
+      // else if (calendarType === 'end' &&  startTime !== 0 && formattedDate <= startTime ) {        
+      //   return true;
+      // }
       else {
         return false;
       }
