@@ -18,7 +18,7 @@ import {useCallContract} from 'hooks/useCallContract';
 import {convertNumber} from 'utils/number';
 import starterActions from '../../actions';
 import {useCheckBalance} from 'hooks/useCheckBalance';
-import {BigNumber} from 'ethers';
+import {BigNumber, ethers} from 'ethers';
 import {useDispatch} from 'react-redux';
 import {openModal} from 'store/modal.reducer';
 import {useERC20} from '@Starter/hooks/useERC20';
@@ -71,16 +71,48 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
   }, [originTonAllowance, originWtonAllowance, inputTonBalance]);
 
   useEffect(() => {
-    const isBtnAble =
-      btnDisabled || Number(amountAvailable.replaceAll(',', '')) <= 0;
+    // zena
+    // const isBtnAble =
+    //   btnDisabled || Number(amountAvailable.replaceAll(',', '')) <= 0;
+     const isBtnAble = !btnDisabled ;
 
-    setDepositBtnDisabled(isBtnAble);
+      console.log('isBtnAble',isBtnAble);
+      console.log('btnDisabled',btnDisabled);
+    //zena
+     setDepositBtnDisabled(btnDisabled);
+     // setDepositBtnDisabled(isBtnAble);
   }, [btnDisabled, amountAvailable]);
+
+  console.log('isTonApprove: ',isTonApprove, "isWTonApprove",isWTonApprove );
+  console.log('originTonAllowance: ',originTonAllowance, "originWtonAllowance",originWtonAllowance );
+  console.log( "tonAllowance",tonAllowance, "wtonAllowance",wtonAllowance);
+  console.log('wtonBalance: ',wtonBalance, "tonBalance",tonBalance);
+  console.log('amountAvailable: ',amountAvailable );
+
+  console.log('depositBtnDisabled: ',depositBtnDisabled, "inputTonBalance:",inputTonBalance.trim(),",");
+  console.log('btnDisabled: ',btnDisabled, "amountAvailable",amountAvailable);
+  console.log('!(depositBtnDisabled || tonBalance !== 0.00:) ', !(depositBtnDisabled || tonBalance !== '0.00'));
+  console.log('inputTonBalance !==0 ', inputTonBalance.trim() !== '0', !(depositBtnDisabled || tonBalance !== '0.00') && inputTonBalance.trim() === '0');
+
+  let inputTonBalanceStr = inputTonBalance.replaceAll(' ','') ;
+  let inputTonBalanceWei = ethers.utils.parseUnits(inputTonBalanceStr, 18).toString();
+  console.log('inputTonBalanceWei',inputTonBalanceWei, inputTonBalanceWei === inputTonBalance);
+
+  let inputBiggerThanZero = false;
+  if(ethers.utils.parseUnits(inputTonBalanceStr, 18).gt(ethers.BigNumber.from('0') ) ) inputBiggerThanZero=true;
+  console.log('inputBiggerThanZero',inputBiggerThanZero);
+
+  let tonApproveSameInput = false;
+  if(originTonAllowance === inputTonBalanceWei) tonApproveSameInput = true;
+  console.log('tonApproveSameInput',tonApproveSameInput);
+
+  let amountAvailableFlag = false;
+  if(amountAvailable.trim() !== '-') amountAvailableFlag =true;
 
   if (wtonMode === false) {
     return (
       <Flex alignItems="center" justifyContent="space-between">
-        {isTonApprove ? (
+        {isTonApprove && tonApproveSameInput && inputBiggerThanZero? (
           <CustomButton
             text={'Acquire'}
             isDisabled={depositBtnDisabled}
@@ -100,7 +132,7 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
         ) : (
           <CustomButton
             text={'TON Approve'}
-            isDisabled={depositBtnDisabled}
+            isDisabled={depositBtnDisabled || !inputBiggerThanZero || !amountAvailableFlag}
             style={{marginRight: '12px'}}
             func={() =>
               account &&
@@ -139,7 +171,7 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
       {isWTonApprove && tonAllowance === '0.00' ? (
         <CustomButton
           text={'Acquire (WTON)'}
-          isDisabled={depositBtnDisabled || tonBalance !== '0.00'}
+          isDisabled={inputTonBalance.trim() === '0' || !(depositBtnDisabled || tonBalance !== '0.00')}
           func={() =>
             account &&
             checkBalance(
@@ -338,10 +370,13 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
         //   library,
         //   address: saleContractAddress,
         // });
-        setBtnDisabled(
-          !whiteListInfo[0] ||
-            Number(amountAvailable.replaceAll(',', '')) < tokenExRatio,
-        );
+
+        //zena
+        // setBtnDisabled(
+        //   !whiteListInfo[0] ||
+        //     Number(amountAvailable.replaceAll(',', '')) < tokenExRatio,
+        // );
+        setBtnDisabled(false);
         // setAmountAvailable();
       }
     }
