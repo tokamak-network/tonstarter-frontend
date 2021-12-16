@@ -84,9 +84,9 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
   }, [btnDisabled, amountAvailable]);
 
   let inputTonBalanceStr = inputTonBalance.replaceAll(' ', '');
-  let inputTonBalanceWei = ethers.utils
-    .parseUnits(inputTonBalanceStr, 18)
-    .toString();
+  // let inputTonBalanceWei = ethers.utils
+  //   .parseUnits(inputTonBalanceStr, 18)
+  //   .toString();
 
   let inputBiggerThanZero = false;
   if (
@@ -96,13 +96,13 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
   )
     inputBiggerThanZero = true;
 
-  let tonApproveSameInput = false;
-  if (originTonAllowance === inputTonBalanceWei) tonApproveSameInput = true;
+  // let tonApproveSameInput = false;
+  // if (originTonAllowance === inputTonBalanceWei) tonApproveSameInput = true;
 
   if (wtonMode === false) {
     return (
       <Flex alignItems="center" justifyContent="space-between">
-        {isTonApprove && tonApproveSameInput && inputBiggerThanZero ? (
+        {isTonApprove && inputBiggerThanZero ? (
           <CustomButton
             text={'Acquire'}
             isDisabled={depositBtnDisabled}
