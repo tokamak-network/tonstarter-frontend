@@ -39,13 +39,13 @@ export const StarterDetail = () => {
 
   const starterData = store.getState().starters.data;
 
-  // const [activeStatus, setActiveStatus] = useState<SaleStatus | undefined>(
-  //   undefined,
-  // );
-
   const [activeStatus, setActiveStatus] = useState<SaleStatus | undefined>(
-    'deposit',
+    undefined,
   );
+
+  // const [activeStatus, setActiveStatus] = useState<SaleStatus | undefined>(
+  //   'deposit',
+  // );
 
   const [saleInfo, setSaleInfo] = useState<SaleInfo | undefined>(undefined);
   const [detailInfo, setDetailInfo] = useState<DetailInfo | undefined>(
@@ -188,15 +188,15 @@ export const StarterDetail = () => {
       const {endAddWhiteTime, endExclusiveTime, endDepositTime} = saleInfo;
       const nowTimeStamp = moment().unix();
 
-      // const checkStep =
-      //   endAddWhiteTime > nowTimeStamp
-      //     ? 'whitelist'
-      //     : endExclusiveTime > nowTimeStamp
-      //     ? 'exclusive'
-      //     : endDepositTime > nowTimeStamp
-      //     ? 'deposit'
-      //     : 'claim';
-      // setActiveStatus(checkStep);
+      const checkStep =
+        endAddWhiteTime > nowTimeStamp
+          ? 'whitelist'
+          : endExclusiveTime > nowTimeStamp
+          ? 'exclusive'
+          : endDepositTime > nowTimeStamp
+          ? 'deposit'
+          : 'claim';
+      setActiveStatus(checkStep);
     }, 1000);
     /*eslint-disable*/
   }, [saleInfo]);

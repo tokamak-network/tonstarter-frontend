@@ -9,6 +9,7 @@ import {setTx} from 'application';
 
 export const useERC20 = (
   SALE_CONTRACT: string,
+  isRound?: boolean,
 ): {
   tonBalance: string;
   wtonBalance: string;
@@ -51,20 +52,24 @@ export const useERC20 = (
         const convertedTon = convertNumber({
           amount: tonBlanace.toString(),
           localeString: true,
+          round: false,
         }) as string;
         const convertedWton = convertNumber({
           type: 'ray',
           amount: wtonBlanace.toString(),
           localeString: true,
+          round: false,
         }) as string;
         const convertedNum = convertNumber({
           amount: allowance.toString(),
           localeString: true,
+          round: false,
         }) as string;
         const convertedWtonNum = convertNumber({
           type: 'ray',
           amount: wtonAllowance.toString(),
           localeString: true,
+          round: false,
         }) as string;
         const totalAllowanceNum =
           Number(convertedNum.replaceAll(',', '')) +
