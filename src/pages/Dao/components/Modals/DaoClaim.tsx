@@ -23,6 +23,9 @@ import {claimDividendPool} from '../../actions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {CloseButton} from 'components/Modal';
 import {ClaimList} from '@Dao/types';
+import {DEPLOYED} from 'constants/index';
+import * as LockTOSDividend from 'services/abis/LockTOSDividend.json';
+import {useContract} from 'hooks/useContract';
 
 const ClaimRecord = ({
   name,
@@ -66,6 +69,12 @@ export const DaoClaim = (props: any) => {
   const [unstakeList, setUnstakeList] = useState<ClaimList[] | []>([]);
   const [unstakeBalance, setUnstakeBalance] = useState('-');
   const [tokenList, setTokenList] = useState([]);
+
+  const {LockTOSDividend_ADDRESS} = DEPLOYED;
+  const DIVIDEND_CONTRACT = useContract(
+    LockTOSDividend_ADDRESS,
+    LockTOSDividend.abi,
+  );
 
   useEffect(() => {
     if (balance) {
@@ -187,11 +196,12 @@ export const DaoClaim = (props: any) => {
               _hover={{...theme.btnHover}}
               onClick={() => {
                 if (account && tokenList.length > 0) {
-                  claimDividendPool({
-                    account,
-                    library,
-                    tokenAddress: tokenList,
-                  });
+                  DIVIDEND_CONTRACT?.claimBatch(tokenList);
+                  // claimDividendPool({
+                  //   account,
+                  //   library,
+                  //   tokenAddress: tokenList,
+                  // });
                 }
               }}>
               Claim

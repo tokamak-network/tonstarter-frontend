@@ -1,6 +1,13 @@
-import {AdminObject} from '@Admin/types';
-import {Box, useColorMode, useTheme, Flex, Text} from '@chakra-ui/react';
-import {getUserTonBalance} from 'client/getUserBalance';
+import {
+  Box,
+  useColorMode,
+  useTheme,
+  Flex,
+  Text,
+  FormControl,
+  FormLabel,
+  Switch,
+} from '@chakra-ui/react';
 import {CustomInput} from 'components/Basic';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {useActiveWeb3React} from 'hooks/useWeb3';
@@ -11,42 +18,186 @@ import starterActions from '../../actions';
 import {useCheckBalance} from 'hooks/useCheckBalance';
 import {useCallContract} from 'hooks/useCallContract';
 import {convertNumber} from 'utils/number';
-import store from 'store';
 import {useBlockNumber} from 'hooks/useBlock';
 import {useDispatch} from 'react-redux';
 import {openModal} from 'store/modal.reducer';
+import {SaleInfo} from '@Starter/types';
+import {useERC20} from '@Starter/hooks/useERC20';
+import useValueCheck from '@Starter/hooks/useValueCheck';
+
+type DepositContainerProp = {
+  inputTonBalance: string;
+  saleContractAddress: string;
+  wtonMode: boolean;
+};
+
+const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
+  const {inputTonBalance, saleContractAddress, wtonMode} = prop;
+
+  const {account, library, active} = useActiveWeb3React();
+  const {checkBalance} = useCheckBalance();
+  const {
+    tonBalance,
+    wtonBalance,
+    tonAllowance,
+    wtonAllowance,
+    callTonDecreaseAllowance,
+  } = useERC20(saleContractAddress);
+  const dispatch = useDispatch();
+  const {colorMode} = useColorMode();
+
+  const {
+    isTonAllowanceZero,
+    isWtonAllowanceZero,
+    isInputTonMore,
+    isInputWtonMore,
+  } = useValueCheck(saleContractAddress, inputTonBalance);
+  const [depositBtnDisabled, setDepositBtnDisabled] = useState<boolean>(true);
+
+  useEffect(() => {
+    setDepositBtnDisabled(Number(inputTonBalance.replaceAll(',', '')) <= 0);
+  }, [inputTonBalance]);
+
+  if (wtonMode === false) {
+    return (
+      <Flex alignItems="center" justifyContent="space-between">
+        {!isTonAllowanceZero && !isInputTonMore ? (
+          <CustomButton
+            text={'Deposit'}
+            isDisabled={depositBtnDisabled}
+            func={() => {
+              account &&
+                checkBalance(
+                  Number(inputTonBalance),
+                  Number(tonBalance.replaceAll(',', '')),
+                ) &&
+                starterActions.deposit({
+                  address: saleContractAddress,
+                  account,
+                  library,
+                  amount: inputTonBalance,
+                });
+            }}></CustomButton>
+        ) : (
+          <CustomButton
+            text={'TON Approve'}
+            isDisabled={depositBtnDisabled}
+            func={() =>
+              account &&
+              dispatch(
+                openModal({
+                  type: 'Starter_Approve',
+                  data: {
+                    address: saleContractAddress,
+                    amount: inputTonBalance,
+                    tokenType: 'TON',
+                  },
+                }),
+              )
+            }></CustomButton>
+        )}
+        <Box
+          d="flex"
+          flexDir="column"
+          justifyContent="center"
+          ml={'15px'}
+          fontSize={13}>
+          <Text color={colorMode === 'light' ? 'gray.400' : 'gray.425'}>
+            The Approved Amount
+          </Text>
+          <Text color={colorMode === 'light' ? 'gray.250' : 'white.200'}>
+            {' '}
+            {tonAllowance} TON{' '}
+          </Text>
+        </Box>
+      </Flex>
+    );
+  }
+
+  return (
+    <Flex alignItems="center" justifyContent="space-between">
+      {!isWtonAllowanceZero && !isInputWtonMore ? (
+        <CustomButton
+          text={'Deposit (WTON)'}
+          isDisabled={depositBtnDisabled}
+          func={() =>
+            account &&
+            checkBalance(
+              Number(inputTonBalance),
+              Number(wtonBalance.replaceAll(',', '')),
+            ) &&
+            starterActions.deposit({
+              address: saleContractAddress,
+              account,
+              library,
+              amount: inputTonBalance,
+            })
+          }></CustomButton>
+      ) : !isTonAllowanceZero ? (
+        <CustomButton
+          text={'Initialize TON Allowance'}
+          isDisabled={!active}
+          func={() => callTonDecreaseAllowance()}></CustomButton>
+      ) : (
+        <CustomButton
+          text={'WTON Approve'}
+          isDisabled={depositBtnDisabled}
+          func={() =>
+            account &&
+            dispatch(
+              openModal({
+                type: 'Starter_Approve',
+                data: {
+                  address: saleContractAddress,
+                  amount: inputTonBalance,
+                  tokenType: 'WTON',
+                },
+              }),
+            )
+          }></CustomButton>
+      )}
+      <Box
+        d="flex"
+        flexDir="column"
+        justifyContent="center"
+        ml={'15px'}
+        fontSize={13}>
+        <Text color={colorMode === 'light' ? 'gray.400' : 'gray.425'}>
+          The Approved Amount
+        </Text>
+        <Text color={colorMode === 'light' ? 'gray.250' : 'white.200'}>
+          {' '}
+          {wtonAllowance} WTON{' '}
+        </Text>
+      </Box>
+    </Flex>
+  );
+};
 
 type OpenSaleDepositProps = {
-  saleInfo: AdminObject;
+  saleInfo: SaleInfo;
 };
 
 export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
   const {saleInfo} = prop;
-
+  const {tokenExRatio, saleContractAddress, endDepositTime, tokenName} =
+    saleInfo;
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
   const {account, library} = useActiveWeb3React();
-  const dispatch = useDispatch();
-
-  // const {
-  //   balance: {tonOrigin},
-  // } = store.getState().user?.data;
-
   const [inputBalance, setInputBalance] = useState<string>('0');
-  const [userTonBalance, setUserTonBalance] = useState<string>('-');
   const [totalAllocation, setTotalAllocation] = useState<string>('-');
   const [totalDeposit, setTotalDeposit] = useState<string>('-');
   const [yourDeposit, setYourDeposit] = useState<string>('-');
   const [userPayAmount, setYourPayAmount] = useState<string>('-');
   const [userSaleAmount, setUserSaleAmount] = useState<string>('-');
   const [userAllocate, setUserAllocate] = useState<string>('-');
-  const [isApprove, setIsApprove] = useState<boolean>(false);
-
+  const [wtonMode, setWtonMode] = useState<boolean>(false);
   const [progress, setProgress] = useState('-');
 
-  const {checkBalance} = useCheckBalance();
   const {blockNumber} = useBlockNumber();
+  const {tonBalance, wtonBalance} = useERC20(saleContractAddress);
 
   const {STATER_STYLE} = theme;
 
@@ -55,23 +206,9 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
   };
 
   const PUBLICSALE_CONTRACT = useCallContract(
-    saleInfo.saleContractAddress,
+    saleContractAddress,
     'PUBLIC_SALE',
   );
-
-  useEffect(() => {
-    async function callUserBalance() {
-      const tonBalance = await getUserTonBalance({
-        account,
-        library,
-        localeString: true,
-      });
-      return setUserTonBalance(tonBalance || '-');
-    }
-    if (account && library) {
-      callUserBalance();
-    }
-  }, [account, library, blockNumber]);
 
   //call view funcions
   useEffect(() => {
@@ -80,7 +217,7 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
 
       // ])
       if (account && library && saleInfo && PUBLICSALE_CONTRACT) {
-        const address = saleInfo.saleContractAddress;
+        const address = saleContractAddress;
         const res = await Promise.all([
           starterActions.getTotalExpectOpenSaleAmount({
             address,
@@ -130,49 +267,72 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
     if (account && library && saleInfo) {
       getData();
     }
-  }, [account, library, saleInfo, PUBLICSALE_CONTRACT, blockNumber]);
-
-  //check approve
-  // useEffect(() => {
-  //   const numInputTonBalance = Number(inputBalance.replaceAll(',', ''));
-  //   const numApprovedBalance = Number(approvedAmount.replaceAll(',', ''));
-  //   setIsApprove(numApprovedBalance >= numInputTonBalance);
-  // }, [account, library, approvedAmount, inputBalance]);
+  }, [
+    account,
+    library,
+    saleInfo,
+    PUBLICSALE_CONTRACT,
+    blockNumber,
+    saleContractAddress,
+  ]);
 
   useEffect(() => {
     if (totalDeposit !== '-' && totalAllocation !== '-') {
       if (totalDeposit === '0.00') {
         setProgress('0');
       } else {
-        const dd =
+        const percent =
           String(
             (Number(totalDeposit.replaceAll(',', '')) /
-              (Number(totalAllocation.replaceAll(',', '')) / 527.5)) *
+              (Number(totalAllocation.replaceAll(',', '')) / tokenExRatio)) *
               100,
           ).split('.')[0] +
           '.' +
           String(
             (Number(totalDeposit.replaceAll(',', '')) /
-              (Number(totalAllocation.replaceAll(',', '')) / 527.5)) *
+              (Number(totalAllocation.replaceAll(',', '')) / tokenExRatio)) *
               100,
           )
             .split('.')[1]
             .slice(0, 1);
-        setProgress(dd);
+        setProgress(percent);
       }
     }
-  }, [totalDeposit, totalAllocation]);
+  }, [totalDeposit, totalAllocation, tokenExRatio]);
 
   return (
     <Flex flexDir="column" pl={'45px'}>
-      <Box d="flex" textAlign="center" alignItems="center" mb={'20px'}>
-        <Text {...STATER_STYLE.mainText({colorMode, fontSize: 25})} mr={'20px'}>
-          Public Round 2
-        </Text>
-        <DetailCounter
-          numberFontSize={'18px'}
-          stringFontSize={'14px'}
-          date={saleInfo?.endDepositTime * 1000}></DetailCounter>
+      <Box
+        d="flex"
+        w={'513px'}
+        textAlign="center"
+        alignItems="center"
+        justifyContent="space-between"
+        mb={'20px'}>
+        <Flex alignItems="center">
+          <Text
+            {...STATER_STYLE.mainText({colorMode, fontSize: 25})}
+            mr={'20px'}>
+            Public Round 2
+          </Text>
+          <DetailCounter
+            numberFontSize={'18px'}
+            stringFontSize={'14px'}
+            date={endDepositTime * 1000}></DetailCounter>
+        </Flex>
+        <Flex pr={2.5}>
+          <FormControl display="flex" alignItems="center">
+            <FormLabel htmlFor="email-alerts" mb="0">
+              WTON
+            </FormLabel>
+            <Switch
+              onChange={() => {
+                setWtonMode(!wtonMode);
+                setInputBalance('0');
+              }}
+              value={0}></Switch>
+          </FormControl>
+        </Flex>
       </Box>
       <Text
         {...STATER_STYLE.subText({colorMode})}
@@ -196,8 +356,12 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
             value={inputBalance}
             setValue={setInputBalance}
             maxBtn={true}
-            maxValue={Number(userTonBalance.replaceAll(',', ''))}
-            tokenName={'TON'}></CustomInput>
+            maxValue={
+              wtonMode
+                ? Number(wtonBalance.replaceAll(',', ''))
+                : Number(tonBalance.replaceAll(',', ''))
+            }
+            tokenName={wtonMode ? 'WTON' : 'TON'}></CustomInput>
         </Box>
         <Text {...STATER_STYLE.mainText({colorMode, fontSize: 13})} mr={'3px'}>
           Your balance :{' '}
@@ -206,12 +370,12 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
           {...STATER_STYLE.mainText({colorMode, fontSize: 13})}
           color={'blue.100'}
           mr={'3px'}>
-          {userTonBalance}
+          {wtonMode ? wtonBalance : tonBalance}
         </Text>
         <Text
           {...STATER_STYLE.mainText({colorMode, fontSize: 13})}
           color={'blue.100'}>
-          TON
+          {wtonMode ? `WTON` : `TON`}
         </Text>
       </Box>
       <Box d="flex" flexDir="column">
@@ -219,7 +383,11 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
           <Text {...STATER_STYLE.mainText({colorMode, fontSize: 14})}>
             Details
           </Text>
-          <Box d="flex" fontSize={'20px'} ml={'15px'}>
+          <Box
+            d="flex"
+            fontSize={'20px'}
+            ml={'15px'}
+            justifyContent="space-between">
             <Flex w={'286px'} mr={'25px'} fontSize={'16px'}>
               <Text color={'gray.400'}>(</Text>
               <Text color={'blue.100'} mr={'3px'} ml={'4px'}>
@@ -282,7 +450,7 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
             <Text {...detailSubTextStyle} mr={'3px'}>
               {userPayAmount}
             </Text>
-            <Text mr={'3px'}>{saleInfo?.tokenName}</Text>
+            <Text mr={'3px'}>{tokenName}</Text>
             <Text color={'gray.400'} mr={'3px'}>
               ({userSaleAmount} TON)
             </Text>
@@ -294,20 +462,24 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
             <Text {...detailSubTextStyle} mr={'3px'}>
               {userAllocate}
             </Text>
-            <Text>{saleInfo?.tokenName}</Text>
+            <Text>{tokenName}</Text>
           </Flex>
         </Box>
       </Box>
 
-      <Box mt={'27px'}>
-        {isApprove === true ? (
+      <Box mt={'27px'} h={'38px'} d="flex" alignItems="center">
+        <DepositContainer
+          inputTonBalance={inputBalance}
+          saleContractAddress={saleContractAddress}
+          wtonMode={wtonMode}></DepositContainer>
+        {/* {isApprove === true ? (
           <CustomButton
             text={'Deposit'}
             isDisabled={
-              account === undefined ||
+               === undefined ||
               library === undefined ||
               inputBalance === '0'
-            }
+            }account
             func={() =>
               account &&
               checkBalance(
@@ -340,7 +512,7 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
                 }),
               )
             }></CustomButton>
-        )}
+        )} */}
       </Box>
     </Flex>
   );

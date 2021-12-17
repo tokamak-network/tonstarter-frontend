@@ -42,6 +42,11 @@ export const StarterDetail = () => {
   const [activeStatus, setActiveStatus] = useState<SaleStatus | undefined>(
     undefined,
   );
+
+  // const [activeStatus, setActiveStatus] = useState<SaleStatus | undefined>(
+  //   'deposit',
+  // );
+
   const [saleInfo, setSaleInfo] = useState<SaleInfo | undefined>(undefined);
   const [detailInfo, setDetailInfo] = useState<DetailInfo | undefined>(
     undefined,

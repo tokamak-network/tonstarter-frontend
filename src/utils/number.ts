@@ -49,10 +49,9 @@ function roundNumber(args: RoundFunc): string {
       ? Number(fixedNum).toLocaleString(undefined, {minimumFractionDigits: 2})
       : Number(res).toFixed(displayPoint);
   } else if (r_opt === 'down') {
-    const res = number.toFixed(r_maxDecimalDigits, Decimal.ROUND_DOWN);
-    const fixedNum = Number(res).toFixed(displayPoint);
+    const res = number.toFixed(displayPoint, Decimal.ROUND_DOWN);
     return localeString === true
-      ? Number(fixedNum).toLocaleString(undefined, {minimumFractionDigits: 2})
+      ? Number(res).toLocaleString(undefined, {minimumFractionDigits: 2})
       : Number(res).toFixed(displayPoint);
   }
   const res = number.toFixed(r_maxDecimalDigits, Decimal.ROUND_HALF_UP);
@@ -72,7 +71,7 @@ export function convertNumber(args: ConverNumberFunc): string | undefined {
     }
     const numAmount = BigNumber.from(amount);
     const numberType: string = type ? type : 'wei';
-    const optRound = round ? round : undefined;
+    const optRound = round ?? undefined;
     const decimalPoint: number = decimalPlaces ? decimalPlaces : 3;
     if (amount === undefined) {
       throw new Error(`amount is undefined`);

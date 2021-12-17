@@ -13,7 +13,6 @@ import {ActiveProjectType} from '@Starter/types';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect, useState} from 'react';
 import {useCallContract} from 'hooks/useCallContract';
-import {BigNumber} from 'ethers';
 import {convertNumber} from 'utils/number';
 import moment from 'moment';
 import {TokenImage} from '@Admin/components/TokenImage';
@@ -34,7 +33,7 @@ const ActiveProjectContainer: React.FC<{
   const match = useRouteMatch();
   const {url} = match;
 
-  const [progress, setProgress] = useState<number | undefined>(undefined);
+  const [progress, setProgress] = useState<number>(0);
   const [totalRaise, setTotalRaise] = useState<string | undefined>(undefined);
   const [participants, setParticipants] = useState<string | undefined>(
     undefined,
@@ -53,24 +52,18 @@ const ActiveProjectContainer: React.FC<{
     async function fetchContractData() {
       const {step} = project;
 
-      const roundOneAmount =
-        await PUBLICSALE_CONTRACT?.totalExPurchasedAmount();
-      const roundTwoAmount = await PUBLICSALE_CONTRACT?.totalDepositAmount();
-      // const sum = BigNumber.from(roundOneAmount).add(roundTwoAmount);
-
-      const totalExSaleAmount = await PUBLICSALE_CONTRACT?.totalExSaleAmount();
+      const totalRaise =
+        step === 'whitelist' || step === 'exclusive'
+          ? await PUBLICSALE_CONTRACT?.totalExPurchasedAmount()
+          : await PUBLICSALE_CONTRACT?.totalDepositAmount();
+      const totalExSaleAmount =
+        step === 'whitelist' || step === 'exclusive'
+          ? await PUBLICSALE_CONTRACT?.totalExSaleAmount()
+          : await PUBLICSALE_CONTRACT?.totalOpenSaleAmount();
       const totalExpectSaleAmount =
-        await PUBLICSALE_CONTRACT?.totalExpectSaleAmount();
-
-      const convertedSum = await convertNumber({
-        amount: roundOneAmount.toString(),
-        localeString: true,
-      });
-
-      const progressNow =
-        (Number(totalExSaleAmount.toString()) /
-          Number(totalExpectSaleAmount.toString())) *
-        100;
+        step === 'whitelist' || step === 'exclusive'
+          ? await PUBLICSALE_CONTRACT?.totalExpectSaleAmount()
+          : await PUBLICSALE_CONTRACT?.totalExpectOpenSaleAmountView();
       const participantsNum =
         step === 'whitelist'
           ? await PUBLICSALE_CONTRACT?.totalWhitelists()
@@ -78,6 +71,10 @@ const ActiveProjectContainer: React.FC<{
           ? await PUBLICSALE_CONTRACT?.totalRound1Users()
           : await PUBLICSALE_CONTRACT?.totalRound2Users();
 
+      const convertedTotalRaised = convertNumber({
+        amount: totalRaise.toString(),
+        localeString: true,
+      });
       const convertedPro1 = (await convertNumber({
         amount: totalExSaleAmount.toString(),
         localeString: true,
@@ -87,10 +84,15 @@ const ActiveProjectContainer: React.FC<{
         localeString: true,
       })) as string;
 
+      const progressNow =
+        (Number(totalExSaleAmount.toString()) /
+          Number(totalExpectSaleAmount.toString())) *
+        100;
+
       setPro1(convertedPro1 || 'XXX,XXX');
       setPro2(convertedPro2 || 'XXX,XXX');
 
-      setTotalRaise(convertedSum);
+      setTotalRaise(convertedTotalRaised);
       setProgress(Math.ceil(progressNow));
       setParticipants(participantsNum.toString());
     }
@@ -118,7 +120,8 @@ const ActiveProjectContainer: React.FC<{
         <Flex justifyContent="space-between" mb={15}>
           <TokenImage imageLink={project.tokenSymbolImage}></TokenImage>
           <Flex alignItems="center">
-            <Circle bg={'#f95359'}></Circle>
+            <Circle
+              bg={step === 'Public Round 2' ? '#2ea2f8' : '#f95359'}></Circle>
             <Text
               {...{
                 ...STATER_STYLE.subTextBlack({
@@ -183,7 +186,7 @@ const ActiveProjectContainer: React.FC<{
                   colorMode,
                   fontSize: 20,
                 })}>
-                {totalRaise ? totalRaise : 'XX,XXX,XXX'}
+                {totalRaise || 'XX,XXX,XXX'}
               </Text>
               <Text>TON</Text>
             </Box>
