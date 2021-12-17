@@ -36,8 +36,13 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
 
   const {account, library, active} = useActiveWeb3React();
   const {checkBalance} = useCheckBalance();
-  const {tonBalance, wtonBalance, tonAllowance, wtonAllowance} =
-    useERC20(saleContractAddress);
+  const {
+    tonBalance,
+    wtonBalance,
+    tonAllowance,
+    wtonAllowance,
+    callTonDecreaseAllowance,
+  } = useERC20(saleContractAddress);
   const dispatch = useDispatch();
   const {colorMode} = useColorMode();
 
@@ -76,7 +81,7 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
         ) : (
           <CustomButton
             text={'TON Approve'}
-            isDisabled={!active}
+            isDisabled={depositBtnDisabled}
             func={() =>
               account &&
               dispatch(
@@ -128,10 +133,15 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
               amount: inputTonBalance,
             })
           }></CustomButton>
+      ) : !isTonAllowanceZero ? (
+        <CustomButton
+          text={'Initialize TON Allowance'}
+          isDisabled={!active}
+          func={() => callTonDecreaseAllowance()}></CustomButton>
       ) : (
         <CustomButton
           text={'WTON Approve'}
-          isDisabled={!active}
+          isDisabled={depositBtnDisabled}
           func={() =>
             account &&
             dispatch(
