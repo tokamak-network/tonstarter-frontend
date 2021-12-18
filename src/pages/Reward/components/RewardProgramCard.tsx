@@ -99,8 +99,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     UniswapStaker_Address,
     STAKERABI.abi,
     library,
-  );
-
+  );  
   useEffect(() => {
     setIsUnstakeselected(false);
     setIsSelected(false);
@@ -560,7 +559,8 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
           {buttonState === 'Stake' &&
           moment().unix() > reward.startTime &&
           !staked &&
-          Number(selectedToken ? selectedToken.id : 0) !== 0 ? (
+          Number(selectedToken ? selectedToken.id : 0) !== 0  && ((selectedToken && buttonState === 'Stake')? selectedToken.range && Number(
+            ethers.utils.formatEther(selectedToken.liquidity))!== 0 : false)? (
             <Box pb={'0px'}>
               <Checkbox
                 mt={'5px'}
@@ -615,7 +615,8 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
               Number(selectedToken ? selectedToken.id : 0) === 0 ||
               reward.poolAddress !==
                 (selectedToken ? selectedToken.pool.id : '') ||
-              (staked && buttonState === 'Stake')
+              (staked && buttonState === 'Stake') || ((selectedToken && buttonState === 'Stake')? !selectedToken.range || Number(
+                ethers.utils.formatEther(selectedToken.liquidity))=== 0: false)
             }>
             {buttonState}
           </Button>

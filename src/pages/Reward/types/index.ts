@@ -53,5 +53,6 @@ export type PoolData = {
     pool: {
       id: string
     };
-    liquidity: string
+    liquidity: string;
+    range: boolean;
   }
