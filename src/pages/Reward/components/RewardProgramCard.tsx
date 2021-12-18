@@ -616,7 +616,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
               Number(selectedToken ? selectedToken.id : 0) === 0 ||
               reward.poolAddress !==
                 (selectedToken ? selectedToken.pool.id : '') ||
-              (staked && buttonState === 'Stake') || ((selectedToken && buttonState === 'Stake')? !selectedToken.range || Number(
+              (staked && buttonState === 'Stake') || ((selectedToken && buttonState !== 'Unstake')? !selectedToken.range || Number(
                 ethers.utils.formatEther(selectedToken.liquidity))=== 0: false)
             }>
             {buttonState}
