@@ -15,18 +15,20 @@ import React from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {useModal} from 'hooks/useModal';
-import {useActiveWeb3React} from 'hooks/useWeb3';
 import {CloseButton} from 'components/Modal';
-import starterActions from '../actions';
+import {useERC20} from '@Starter/hooks/useERC20';
 
 export const ApproveModal = () => {
   const {data} = useAppSelector(selectModalType);
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const {account, library} = useActiveWeb3React();
   const {handleCloseModal} = useModal();
   const {btnStyle} = theme;
-  const {address, amount} = data.data;
+  const {address, amount, tokenType} = data.data;
+  const {callTonApprove, callWtonApprove} = useERC20(address);
+
+  // const addNumAmount = Number(amount) + 0.01;
+  // const STR_AMOUNT = String(addNumAmount);
 
   return (
     <Modal
@@ -69,46 +71,46 @@ export const ApproveModal = () => {
             px={5}
             fontSize={15}
             color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-            <Text textAlign="center">
+            {/* <Text textAlign="center">
               'Approve All' means to get an approval of the amount which is
-              total supply of TON
+              total supply of {tokenType}
+            </Text> */}
+            <Text textAlign="center">You will get allowance</Text>
+            <Text textAlign="center">
+              {/* {Number(STR_AMOUNT).toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}{' '} */}
+              {amount}
+              {tokenType}
             </Text>
           </Flex>
 
           <Box as={Flex} flexDir="column" alignItems="center" pt={5}>
-            <Button
+            {/* <Button
               {...btnStyle.btnAble()}
               w={'150px'}
               fontSize="14px"
               mb={3}
               _hover={{}}
               onClick={() => {
-                account &&
-                  starterActions.getAllowance({
-                    account,
-                    library,
-                    address,
-                    approveAll: true,
-                  });
+                tokenType === 'TON'
+                  ? callTonApprove(amount, true)
+                  : callWtonApprove(amount, true);
               }}>
               Approve All
-            </Button>
+            </Button> */}
             <Button
               {...btnStyle.btnAble()}
               w={'150px'}
               fontSize="14px"
               _hover={{}}
               onClick={() => {
-                account &&
-                  starterActions.getAllowance({
-                    account,
-                    library,
-                    address,
-                    approveAll: false,
-                    amount,
-                  });
+                tokenType === 'TON'
+                  ? callTonApprove(amount)
+                  : callWtonApprove(amount);
               }}>
-              Approve ({amount} TON)
+              Approve
             </Button>
           </Box>
         </ModalBody>

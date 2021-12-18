@@ -21,7 +21,8 @@ export const participate = async (args: CallContractWithAmount) => {
     const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
     const signer = getSigner(library, account);
     const res = await PUBLICSALE_CONTRACT.connect(signer).exclusiveSale(
-      amount.length > 17 ? amount : convertToWei(amount),
+      // amount.length > 17 ? amount :
+      convertToWei(amount),
     );
     return setTx(res);
   } catch (e) {

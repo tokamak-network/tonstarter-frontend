@@ -47,7 +47,7 @@ export const Banner = () => {
           lineHeight={1.14}
           mb={'20px'}>
           <Text>Dragons of Midgard</Text>
-          <Text>Coming soon</Text>
+          {/* <Text>Coming soon</Text> */}
         </Flex>
         <Flex
           flexDir="column"

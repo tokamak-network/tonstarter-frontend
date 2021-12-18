@@ -7,7 +7,6 @@ import {convertNumber} from 'utils/number';
 import store from 'store';
 import {openToast} from 'store/app/toast.reducer';
 import {DEPLOYED} from 'constants/index';
-import {AdminObject} from '@Admin/types';
 import {ClaimList} from '@Dao/types';
 import {getTokenPrice} from 'utils/tokenPrice';
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
@@ -49,9 +48,6 @@ export const getClaimalbeList = async (
         isError = true;
       }
     } while (isError === false);
-
-    console.log('-claimableTokens-');
-    console.log(claimableTokens);
 
     const tokens = claimableTokens;
 

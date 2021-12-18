@@ -5,21 +5,17 @@ import {
   useTheme,
   Text,
   Flex,
-  Avatar,
   Progress,
 } from '@chakra-ui/react';
-import {checkTokenType} from 'utils/token';
 import {Circle} from 'components/Circle';
 import {Link, useRouteMatch} from 'react-router-dom';
 import {ActiveProjectType} from '@Starter/types';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect, useState} from 'react';
 import {useCallContract} from 'hooks/useCallContract';
-import {Contract} from '@ethersproject/contracts';
-import * as publicSale from 'services/abis/PublicSale.json';
-import {BigNumber} from 'ethers';
 import {convertNumber} from 'utils/number';
 import moment from 'moment';
+import {TokenImage} from '@Admin/components/TokenImage';
 
 type ActiveProjectProp = {
   activeProject: ActiveProjectType[];
@@ -37,42 +33,73 @@ const ActiveProjectContainer: React.FC<{
   const match = useRouteMatch();
   const {url} = match;
 
-  const [progress, setProgress] = useState<number | undefined>(undefined);
+  const [progress, setProgress] = useState<number>(0);
   const [totalRaise, setTotalRaise] = useState<string | undefined>(undefined);
   const [participants, setParticipants] = useState<string | undefined>(
     undefined,
   );
   const [step, setStep] = useState<string>('');
 
+  const [pro1, setPro1] = useState<string>('XXX,XXX');
+  const [pro2, setPro2] = useState<string>('XXX,XXX');
+
   const PUBLICSALE_CONTRACT = useCallContract(
     project.saleContractAddress || '',
     'PUBLIC_SALE',
   );
-  const tokenType = checkTokenType(
-    '0xaEC59E5b4f8DbF513e260500eA96EbA173F74149', colorMode
-  );
+
   useEffect(() => {
     async function fetchContractData() {
-      const roundOneAmount =
-        await PUBLICSALE_CONTRACT?.totalExPurchasedAmount();
-      const roundTwoAmount = await PUBLICSALE_CONTRACT?.totalDepositAmount();
-      const sum = BigNumber.from(roundOneAmount).add(roundTwoAmount);
-      const convertedSum = convertNumber({
-        amount: sum.toString(),
+      const {step} = project;
+
+      const totalRaise =
+        step === 'whitelist' || step === 'exclusive'
+          ? await PUBLICSALE_CONTRACT?.totalExPurchasedAmount()
+          : await PUBLICSALE_CONTRACT?.totalDepositAmount();
+      const totalExSaleAmount =
+        step === 'whitelist' || step === 'exclusive'
+          ? await PUBLICSALE_CONTRACT?.totalExSaleAmount()
+          : await PUBLICSALE_CONTRACT?.totalOpenSaleAmount();
+      const totalExpectSaleAmount =
+        step === 'whitelist' || step === 'exclusive'
+          ? await PUBLICSALE_CONTRACT?.totalExpectSaleAmount()
+          : await PUBLICSALE_CONTRACT?.totalExpectOpenSaleAmountView();
+      const participantsNum =
+        step === 'whitelist'
+          ? await PUBLICSALE_CONTRACT?.totalWhitelists()
+          : step === 'exclusive'
+          ? await PUBLICSALE_CONTRACT?.totalRound1Users()
+          : await PUBLICSALE_CONTRACT?.totalRound2Users();
+
+      const convertedTotalRaised = convertNumber({
+        amount: totalRaise.toString(),
         localeString: true,
       });
+      const convertedPro1 = (await convertNumber({
+        amount: totalExSaleAmount.toString(),
+        localeString: true,
+      })) as string;
+      const convertedPro2 = (await convertNumber({
+        amount: totalExpectSaleAmount.toString(),
+        localeString: true,
+      })) as string;
 
       const progressNow =
-        (Number(convertedSum?.replaceAll(',', '')) / 28436) * 100;
-      const participantsNum = await PUBLICSALE_CONTRACT?.totalUsers();
-      setTotalRaise(convertedSum);
+        (Number(totalExSaleAmount.toString()) /
+          Number(totalExpectSaleAmount.toString())) *
+        100;
+
+      setPro1(convertedPro1 || 'XXX,XXX');
+      setPro2(convertedPro2 || 'XXX,XXX');
+
+      setTotalRaise(convertedTotalRaised);
       setProgress(Math.ceil(progressNow));
       setParticipants(participantsNum.toString());
     }
     if (PUBLICSALE_CONTRACT && project) {
       fetchContractData();
     }
-  }, [library, project]);
+  }, [library, project, PUBLICSALE_CONTRACT]);
 
   useEffect(() => {
     const nowTimeStamp = moment().unix();
@@ -80,27 +107,21 @@ const ActiveProjectContainer: React.FC<{
       project.timeStamps.endAddWhiteTime > nowTimeStamp
         ? 'Whitelisting'
         : project.timeStamps.endExclusiveTime > nowTimeStamp
-        ? 'Public Round1'
+        ? 'Public Round 1'
         : project.timeStamps.endDepositTime > nowTimeStamp
-        ? 'Public Round2'
+        ? 'Public Round 2'
         : 'Claim';
     setStep(checkStep);
   }, [project]);
+
   return (
     <Link to={`${url}/${project.name}`} id={`active_link_${index}`}>
       <Box {...STATER_STYLE.containerStyle({colorMode})}>
         <Flex justifyContent="space-between" mb={15}>
-          <Avatar
-            src={'https://tonstarter-symbols.s3.ap-northeast-2.amazonaws.com/aura-logo-black-big.png'}
-            backgroundColor={tokenType.bg}
-            bg="transparent"
-            color="#c7d1d8"
-            name="T"
-            h="48px"
-            w="48px"
-          />
+          <TokenImage imageLink={project.tokenSymbolImage}></TokenImage>
           <Flex alignItems="center">
-            <Circle bg={'#f95359'}></Circle>
+            <Circle
+              bg={step === 'Public Round 2' ? '#2ea2f8' : '#f95359'}></Circle>
             <Text
               {...{
                 ...STATER_STYLE.subTextBlack({
@@ -135,25 +156,19 @@ const ActiveProjectContainer: React.FC<{
               {...STATER_STYLE.progress.percent({
                 colorMode,
                 isZero: true,
-              })}>
-              0%
+              })}
+              color={'#0070ed'}>
+              {progress} %
             </Text>
           </Flex>
           <Flex>
-            <Text>{totalRaise ? totalRaise : 'XX,XXX'}</Text>
+            <Text>{pro1 || 'XX,XXX'}</Text>
             <Text>/</Text>
-            <Text>{project.tokenFundRaisingTargetAmount}</Text>
+            <Text>{pro2 || 'XX.XXX'}</Text>
           </Flex>
         </Box>
         <Box mb={'30px'}>
-          <Progress
-            value={
-              (Number(totalRaise ? totalRaise : '0') /
-                Number(project.tokenFundRaisingTargetAmount)) *
-              100
-            }
-            borderRadius={10}
-            h={'6px'}></Progress>
+          <Progress value={progress} borderRadius={10} h={'6px'}></Progress>
         </Box>
         <Flex justifyContent="space-between">
           <Box d="flex" flexDir="column">
@@ -171,7 +186,7 @@ const ActiveProjectContainer: React.FC<{
                   colorMode,
                   fontSize: 20,
                 })}>
-                {totalRaise ? totalRaise : 'XX,XXX.XX'}
+                {totalRaise || 'XX,XXX,XXX'}
               </Text>
               <Text>TON</Text>
             </Box>
@@ -190,7 +205,7 @@ const ActiveProjectContainer: React.FC<{
                 colorMode,
                 fontSize: 20,
               })}>
-              {participants ? participants : 'XX'}
+              {participants || 'XX,XXX'}
             </Text>
           </Box>
           <Box d="flex" flexDir="column">
@@ -237,12 +252,7 @@ export const ActiveProject = (props: ActiveProjectProp) => {
   const {activeProject} = props;
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const match = useRouteMatch();
-
   const {STATER_STYLE} = theme;
-  const {url} = match;
-
-  const [progress, setProgress] = useState<number | undefined>(undefined);
 
   return (
     <Flex flexDir="column">

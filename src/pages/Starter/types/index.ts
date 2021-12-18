@@ -1,4 +1,4 @@
-import {FundingTokenTypes} from '@Admin/types';
+import {AdminObject, FundingTokenTypes} from '@Admin/types';
 
 export interface I_StarterProject {
   name: string;
@@ -14,8 +14,9 @@ export type ActiveProjectType = I_StarterProject & {
   isExclusive: boolean;
   projectTokenRatio: number;
   projectFundingTokenRatio: number;
+  step: 'whitelist' | 'exclusive' | 'deposit' | 'past';
   timeStamps: {
-    checkStep: string;
+    checkStep: 'whitelist' | 'exclusive' | 'deposit' | 'past';
     endDepositTime: number;
     endExclusiveTime: number;
     endOpenSaleTime: number;
@@ -25,7 +26,8 @@ export type ActiveProjectType = I_StarterProject & {
     startExclusiveTime: number;
     startOpenSaleTime: number;
   };
-  tokenName: string
+  tokenName: string;
+  tokenSymbolImage: string;
 };
 
 export type UpcomingProjectType = I_StarterProject & {
@@ -33,6 +35,8 @@ export type UpcomingProjectType = I_StarterProject & {
 };
 
 export type PastProjectType = I_StarterProject;
+
+export type SaleInfo = AdminObject & {tokenExRatio: number};
 
 export type MyProject = {
   name: string;

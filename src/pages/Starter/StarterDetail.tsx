@@ -14,7 +14,7 @@ import {WhiteList} from './components/details/WhiteList';
 // import {OpenSaleAfterDeposit} from './components/details/OpenSaleAfterDeposit';
 
 import {DetailIcons} from './components/details/Detail_Icons';
-import {SaleStatus, Tier, DetailInfo} from './types';
+import {SaleStatus, Tier, DetailInfo, SaleInfo} from './types';
 import {DetailTable} from './components/details/Detail_Table';
 import {OpenSaleDeposit} from './components/details/OpenSaleDeposit';
 import {ExclusiveSalePart} from './components/details/ExclusiveSalePart';
@@ -28,7 +28,6 @@ import {convertNumber} from 'utils/number';
 import {BigNumber} from 'ethers';
 import {useBlockNumber} from 'hooks/useBlock';
 import {LoadingComponent} from 'components/Loading';
-import {useTime} from 'hooks/useTime';
 import {TokenImage} from '../Admin/components/TokenImage';
 import {ApproveModal} from './components/ApproveModal';
 import moment from 'moment';
@@ -43,21 +42,17 @@ export const StarterDetail = () => {
   const [activeStatus, setActiveStatus] = useState<SaleStatus | undefined>(
     undefined,
   );
-  const [saleInfo, setSaleInfo] = useState<AdminObject | undefined>(undefined);
+
+  // const [activeStatus, setActiveStatus] = useState<SaleStatus | undefined>(
+  //   'deposit',
+  // );
+
+  const [saleInfo, setSaleInfo] = useState<SaleInfo | undefined>(undefined);
   const [detailInfo, setDetailInfo] = useState<DetailInfo | undefined>(
     undefined,
   );
-  const [approvedAmount, setApprovedAmount] = useState<string>('0');
   const {STATER_STYLE} = theme;
   const {account, library} = useActiveWeb3React();
-
-  // const {isPassed: isEndWhiteListTime} = useTime(
-  //   saleInfo?.endAddWhiteTime || 0,
-  // );
-  // const {isPassed: isEndExclusiveTime} = useTime(
-  //   saleInfo?.endExclusiveTime || 0,
-  // );
-  // const {isPassed: isEndDepositTIme} = useTime(saleInfo?.endDepositTime || 0);
 
   const PUBLICSALE_CONTRACT = useCallContract(
     saleInfo?.saleContractAddress || '',
@@ -65,21 +60,6 @@ export const StarterDetail = () => {
   );
 
   const {blockNumber} = useBlockNumber();
-
-  //check approve
-  useEffect(() => {
-    async function checkUserApprove() {
-      if (account && library && saleInfo) {
-        const amount = await starterActions.checkApprove(
-          account,
-          library,
-          saleInfo.saleContractAddress,
-        );
-        setApprovedAmount(amount);
-      }
-    }
-    checkUserApprove();
-  }, [account, library, saleInfo, blockNumber]);
 
   useEffect(() => {
     async function getInfo() {
@@ -188,27 +168,7 @@ export const StarterDetail = () => {
     if (account && library && PUBLICSALE_CONTRACT) {
       getInfo();
     }
-  }, [account, library, PUBLICSALE_CONTRACT, saleInfo]);
-
-  // useEffect(() => {
-  //   console.log(
-  //     saleInfo?.endAddWhiteTime,
-  //     saleInfo?.endExclusiveTime,
-  //     saleInfo?.endDepositTime,
-  //   );
-  //   console.log(isEndWhiteListTime, isEndExclusiveTime, isEndDepositTIme);
-  //   if (saleInfo) {
-  //     setActiveStatus(
-  //       !isEndWhiteListTime
-  //         ? 'whitelist'
-  //         : !isEndExclusiveTime
-  //         ? 'exclusive'
-  //         : !isEndDepositTIme
-  //         ? 'deposit'
-  //         : 'claim',
-  //     );
-  //   }
-  // }, [id, library, saleInfo]);
+  }, [account, library, PUBLICSALE_CONTRACT, saleInfo, blockNumber]);
 
   useEffect(() => {
     const {rawData} = starterData;
@@ -278,7 +238,7 @@ export const StarterDetail = () => {
               mb={'11px'}>
               {saleInfo?.description}
             </Text>
-            <Box pos="absolute" bottom={'20px'}>
+            <Box pos="absolute" bottom={'11px'}>
               <DetailIcons
                 linkInfo={[
                   {sort: 'website', url: `${saleInfo?.website}`},
@@ -302,13 +262,10 @@ export const StarterDetail = () => {
           {activeStatus === 'exclusive' && (
             <ExclusiveSalePart
               saleInfo={saleInfo}
-              detailInfo={detailInfo}
-              approvedAmount={approvedAmount}></ExclusiveSalePart>
+              detailInfo={detailInfo}></ExclusiveSalePart>
           )}
           {activeStatus === 'deposit' && (
-            <OpenSaleDeposit
-              saleInfo={saleInfo}
-              approvedAmount={approvedAmount}></OpenSaleDeposit>
+            <OpenSaleDeposit saleInfo={saleInfo}></OpenSaleDeposit>
           )}
           {/* {projectStatus === 'active' && activeStatus === 'openSale' && (
             <OpenSaleAfterDeposit
