@@ -558,7 +558,8 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
         <Flex flexDirection="row" justifyContent={'center'}>
           {buttonState === 'Stake' &&
           moment().unix() > reward.startTime &&
-          !staked &&
+          !staked && reward.poolAddress ===
+          (selectedToken ? selectedToken.pool.id : '') && 
           Number(selectedToken ? selectedToken.id : 0) !== 0  && ((selectedToken && buttonState === 'Stake')? selectedToken.range && Number(
             ethers.utils.formatEther(selectedToken.liquidity))!== 0 : false)? (
             <Box pb={'0px'}>
