@@ -85,12 +85,12 @@ export const Banner = () => {
               }}></CustomButton>
           </Flex>
           <Flex>
-            <CustomButton
+            {/* <CustomButton
               text={'Discord'}
               func={(e: any) => {
                 e.preventDefault();
                 window.open('https://dsc.gg/dragonsmidgard');
-              }}></CustomButton>
+              }}></CustomButton> */}
             <CustomButton
               style={{marginLeft: '10px'}}
               text={'Telegram(KR)'}
