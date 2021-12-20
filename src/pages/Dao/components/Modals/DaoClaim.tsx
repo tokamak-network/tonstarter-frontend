@@ -64,7 +64,7 @@ export const DaoClaim = (props: any) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {handleCloseModal} = useModal();
-  const {account, library} = useActiveWeb3React();
+  const {account} = useActiveWeb3React();
 
   const [unstakeList, setUnstakeList] = useState<ClaimList[] | []>([]);
   const [unstakeBalance, setUnstakeBalance] = useState('-');

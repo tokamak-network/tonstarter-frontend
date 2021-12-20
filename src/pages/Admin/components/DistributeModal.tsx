@@ -91,9 +91,8 @@ export const DistributeModal = () => {
     } else {
       return setTimeStamp(nextWed);
     }
-
-    return setTimeStamp(nextWed);
   }, []);
+
   const selectOptionValues = [
     TON_ADDRESS,
     WTON_ADDRESS,
