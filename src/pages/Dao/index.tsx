@@ -60,7 +60,7 @@ export const DAO = () => {
   }, [account, library, dispatch, blockNumber, chainId]);
 
   return (
-    <Flex>
+    <Flex mb={'105px'}>
       <Flex mt={theme.headerMargin.mt} w="100%" flexDir="column">
         <Flex justifyContent="center">
           <Flex w={572} mr={108} mt={'60px'} flexDir="column">
