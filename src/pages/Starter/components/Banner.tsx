@@ -1,4 +1,4 @@
-import {Flex, Text, useTheme} from '@chakra-ui/react';
+import {Flex, Text, useTheme, Grid} from '@chakra-ui/react';
 // import bannerImg1X from 'assets/images/starter/Background-img@2x.png';
 import {CustomButton} from 'components/Basic/CustomButton';
 import bannerImg1X from 'assets/banner/image2.png';
@@ -59,47 +59,44 @@ export const Banner = () => {
           <Text>Playable NFT Collectible PVP game set in the medieval era</Text>
           <Text>in the kingdom of midgard</Text>
         </Flex>
-        <Flex
-          alignItems="center"
-          fontSize={22}
-          fontFamily={roboto}
-          lineHeight={1.55}
-          color={'lightgray'}
+        <Grid
+          templateColumns="repeat(2, 1fr)"
+          gap={3}
+          // alignItems="center"
+          // fontSize={22}
+          // fontFamily={roboto}
+          // lineHeight={1.55}
+          // color={'lightgray'}
           mt={'34px'}
-          flexDir={'column'}>
-          <Flex mb={'10px'}>
-            <CustomButton
-              text={'Website'}
-              func={(e: any) => {
-                e.preventDefault();
-                window.open('https://dragonsofmidgard.com/');
-              }}></CustomButton>
-            <CustomButton
-              style={{marginLeft: '10px'}}
-              text={'White Paper'}
-              func={(e: any) => {
-                e.preventDefault();
-                window.open(
-                  'https://whitepaper.dragonsofmidgard.com/dragons-of-midgard/',
-                );
-              }}></CustomButton>
-          </Flex>
-          <Flex>
-            {/* <CustomButton
+          // flexDir={'column'}
+        >
+          <CustomButton
+            text={'Website'}
+            func={(e: any) => {
+              e.preventDefault();
+              window.open('https://dragonsofmidgard.com/');
+            }}></CustomButton>
+          <CustomButton
+            text={'White Paper'}
+            func={(e: any) => {
+              e.preventDefault();
+              window.open(
+                'https://whitepaper.dragonsofmidgard.com/dragons-of-midgard/',
+              );
+            }}></CustomButton>
+          {/* <CustomButton
               text={'Discord'}
               func={(e: any) => {
                 e.preventDefault();
                 window.open('https://dsc.gg/dragonsmidgard');
               }}></CustomButton> */}
-            <CustomButton
-              style={{marginLeft: '10px'}}
-              text={'Telegram(KR)'}
-              func={(e: any) => {
-                e.preventDefault();
-                window.open('https://t.me/DragonsofMidgardOfficialKR');
-              }}></CustomButton>
-          </Flex>
-        </Flex>
+          <CustomButton
+            text={'Telegram(KR)'}
+            func={(e: any) => {
+              e.preventDefault();
+              window.open('https://t.me/DragonsofMidgardOfficialKR');
+            }}></CustomButton>
+        </Grid>
       </Flex>
     </Flex>
   );
