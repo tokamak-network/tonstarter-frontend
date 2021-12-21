@@ -25,13 +25,15 @@ import {DEPLOYED} from 'constants/index';
 import * as PowerTONSwapperABI from 'services/abis/PowerTONSwapper.json';
 import * as WTONABI from 'services/abis/WTON.json';
 import {convertNumber} from 'utils/number';
+import {fetchSwapPayload} from '@Staking/StakeOptionModal/utils/fetchSwapPayload';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 
 export const PowerTonSwap = () => {
   const {data} = useAppSelector(selectModalType);
   const theme = useTheme();
   const {colorMode} = useColorMode();
-  const [value, setValue] = useState<string>('0');
-  const [swapValue, setSwapValue] = useState<string>('0');
+  const [value, setValue] = useState<string>('0.00');
+  const [swapValue, setSwapValue] = useState<string>('0.00');
 
   const {PowerTONSwapper_ADDRESS, WTON_ADDRESS} = DEPLOYED;
   const POWERTONSWAP_CONTRACT = useContract(
@@ -39,7 +41,7 @@ export const PowerTonSwap = () => {
     PowerTONSwapperABI.abi,
   );
   const STAKE_CONTROL_CONTRACT = useContract(WTON_ADDRESS, WTONABI.abi);
-
+  const {library} = useActiveWeb3React();
   const {handleCloseModal: closeModal} = useModal();
 
   const handleCloseModal = () => {
@@ -50,14 +52,24 @@ export const PowerTonSwap = () => {
 
   useEffect(() => {
     async function fetchData() {
-      const res = await STAKE_CONTROL_CONTRACT?.balanceOf(
-        PowerTONSwapper_ADDRESS,
-      );
-      const convertedNum = convertNumber({amount: res.toString()});
-      return setValue(convertedNum || 'fail to fetch data');
+      if (STAKE_CONTROL_CONTRACT && PowerTONSwapper_ADDRESS) {
+        const res = await STAKE_CONTROL_CONTRACT?.balanceOf(
+          PowerTONSwapper_ADDRESS,
+        );
+        const convertedNum = convertNumber({amount: res.toString()});
+        const tosPrice = await fetchSwapPayload(library);
+        const numSwapValue =
+          Number(tosPrice) * Number(convertedNum?.replaceAll(',', ''));
+        setSwapValue(
+          numSwapValue.toLocaleString(undefined, {
+            maximumFractionDigits: 2,
+          }) || 'fail to fetch data',
+        );
+        return setValue(convertedNum || 'fail to fetch data');
+      }
     }
     fetchData();
-  }, []);
+  }, [STAKE_CONTROL_CONTRACT, PowerTONSwapper_ADDRESS, library]);
 
   return (
     <Modal

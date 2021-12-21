@@ -207,6 +207,7 @@ export const DaoClaim = (props: any) => {
                     //   LockTOSDividend.abi,
                     //   LockTOSDividend_ADDRESS,
                     // );
+
                     // contract.methods
                     //   .claimBatch([
                     //     '0x709bef48982Bbfd6F2D4Be24660832665F53406C',

@@ -648,7 +648,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                       ? {...btnStyle.btnAble()}
                       : {...btnStyle.btnDisable({colorMode})})}
                     w={'140.53px'}
-                    // isDisabled={!isPowerTONSwap}
+                    isDisabled={!isPowerTONSwap}
                     fontSize={'14px'}
                     fontWeight={600}
                     onClick={() =>
