@@ -264,12 +264,12 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                   ? 'gray.275'
                   : 'white.100'
               }>
-              Pools
+              Rewards
             </Text>
           </MenuButton>
           <MenuList
             pos={'absolute'}
-            left={'-33px'}
+            left={'-22px'}
             top={'15px'}
             minW={'182px'}
             w={'182px'}
@@ -277,23 +277,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
             p={0}
             fontSize={13}
             background={colorMode === 'light' ? '#ffffff' : '#222222'}>
-            <NavLink
-              to="/pools/pools"
-              activeStyle={{
-                background: 'transparent',
-                color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',
-              }}
-              color={colorMode === 'light' ? '#1c1c1c' : '#f3f4f1'}
-              style={{color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1'}}>
-              <MenuItem
-                _hover={{color: 'blue.100', bg: 'none'}}
-                w={'100%'}
-                h={'37px'}
-                _focus={{background: 'transparent'}}>
-                Pools
-              </MenuItem>
-            </NavLink>
-            <NavLink
+              <NavLink
               to="/pools/rewardProgram"
               activeStyle={{
                 background: 'transparent',
@@ -307,6 +291,23 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                 Rewards Program
               </MenuItem>
             </NavLink>
+            <NavLink
+              to="/pools/pools"
+              activeStyle={{
+                background: 'transparent',
+                color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',
+              }}
+              color={colorMode === 'light' ? '#1c1c1c' : '#f3f4f1'}
+              style={{color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1'}}>
+              <MenuItem
+                _hover={{color: 'blue.100', bg: 'none'}}
+                w={'100%'}
+                h={'37px'}
+                _focus={{background: 'transparent'}}>
+                Pools (Closed)
+              </MenuItem>
+            </NavLink>
+            
           </MenuList>
         </Menu>
         <NavLink
