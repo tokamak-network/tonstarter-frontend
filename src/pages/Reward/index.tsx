@@ -110,7 +110,7 @@ export const Reward = () => {
   const [poolsFromAPI, setPoolsFromAPI] = useState<any>([]);
   const [manageDatas, setManageDatas] = useState<interfaceReward[]>([]);
   const [isPositionLoading, setIsPositionLoading] = useState(true);
-  const [sortString, setSortString] = useState<string>('Start Date');
+  const [sortString, setSortString] = useState<string>('Latest');
   const [poolAddresses, setPoolAddresses] = useState<string[]>([]);
   // const {
   //   data: {timeStamp, func},
@@ -194,8 +194,12 @@ export const Reward = () => {
       case 'Waiting':
         const waiting = datas.filter((data) => now < data.startTime);
         return waiting;
+        case 'Latest':
+          return datas.reverse();
+        case 'Oldest':
+        return datas.reverse();
       default:
-        return datas;
+        return datas.reverse();
     }
   };
 
@@ -658,7 +662,9 @@ export const Reward = () => {
                           background={
                             colorMode === 'light' ? '#ffffff' : '#222222'
                           }>
-                          {positions.map((item: any, index) => {                            
+                          {positions.map((item: any, index) => {
+                            console.log(item);
+                            
                             const status = getStatus(item);
                             return (
                               <MenuItem
@@ -826,6 +832,20 @@ export const Reward = () => {
                   <MenuList
                     {...MENU_STYLE.menuListStyle({colorMode})}
                     minWidth="120px">
+                      <MenuItem
+                      onClick={changeSelect}
+                      {...MENU_STYLE.menuItemStyle({colorMode})}
+                      value={'Latest'}
+                      w="120px">
+                    Latest
+                    </MenuItem>
+                    <MenuItem
+                      onClick={changeSelect}
+                      {...MENU_STYLE.menuItemStyle({colorMode})}
+                      value={'Oldest'}
+                      w="120px">
+                      Oldest
+                    </MenuItem>
                     <MenuItem
                       onClick={changeSelect}
                       {...MENU_STYLE.menuItemStyle({colorMode})}
