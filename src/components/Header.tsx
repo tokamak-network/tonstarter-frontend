@@ -278,7 +278,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
             fontSize={13}
             background={colorMode === 'light' ? '#ffffff' : '#222222'}>
               <NavLink
-              to="/pools/rewardProgram"
+              to="/reward/rewardProgram"
               activeStyle={{
                 background: 'transparent',
                 color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',
@@ -292,7 +292,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
               </MenuItem>
             </NavLink>
             <NavLink
-              to="/pools/pools"
+              to="/reward/pools"
               activeStyle={{
                 background: 'transparent',
                 color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',

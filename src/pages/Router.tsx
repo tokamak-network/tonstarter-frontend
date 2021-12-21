@@ -171,8 +171,8 @@ export const Router: FC<RouterProps> = () => {
         <Switch>
           <Route exact path="/" component={FLDstarter} />
           <Route exact path="/staking" component={Staking} />
-          <Route exact path="/pools/pools" component={Pools} />
-          <Route exact path="/pools/rewardProgram" component={Reward} />
+          <Route exact path="/reward/pools" component={Pools} />
+          <Route exact path="/reward/rewardProgram" component={Reward} />
           {/* <Route exact path="/starter" component={Starter} /> */}
           <Route exact path="/starter" component={Starter} />
           <Route exact path="/dao" component={DAO} />
