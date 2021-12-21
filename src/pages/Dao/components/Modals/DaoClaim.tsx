@@ -197,19 +197,21 @@ export const DaoClaim = (props: any) => {
               onClick={async () => {
                 if (account && tokenList.length > 0) {
                   try {
-                    // DIVIDEND_CONTRACT?.claimBatch(tokenList);
-                    const web3 = new Web3(Web3.givenProvider);
-                    //@ts-ignore
-                    const contract = new web3.eth.Contract(
-                      //@ts-ignore
-                      LockTOSDividend.abi,
-                      LockTOSDividend_ADDRESS,
-                    );
-                    contract.methods
-                      .claimBatch([
-                        '0x709bef48982Bbfd6F2D4Be24660832665F53406C',
-                      ])
-                      .send({from: account});
+                    console.log(DIVIDEND_CONTRACT);
+                    console.log(tokenList);
+                    DIVIDEND_CONTRACT?.claimBatch(tokenList);
+                    // const web3 = new Web3(Web3.givenProvider);
+                    // //@ts-ignore
+                    // const contract = new web3.eth.Contract(
+                    //   //@ts-ignore
+                    //   LockTOSDividend.abi,
+                    //   LockTOSDividend_ADDRESS,
+                    // );
+                    // contract.methods
+                    //   .claimBatch([
+                    //     '0x709bef48982Bbfd6F2D4Be24660832665F53406C',
+                    //   ])
+                    //   .send({from: account});
                     // const tx = {
                     //   // this could be provider.addresses[0] if it exists
                     //   from: account,
