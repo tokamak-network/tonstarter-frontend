@@ -40,8 +40,6 @@ export const AirdropList = () => {
     },
   };
 
-  const {LockTOS_ADDRESS, TOS_ADDRESS} = DEPLOYED;
-
   const fetchData = async () => {
     let claimableTokens = [];
     let isError = false;
@@ -60,8 +58,6 @@ export const AirdropList = () => {
     } while (isError === false);
 
     const tokens = claimableTokens;
-    console.log('--tokens--');
-    console.log(tokens);
     const nowTimeStamp = moment().unix();
     const result: {tokenName: string; amount: string}[] = await Promise.all(
       tokens.map(async (token: string) => {
