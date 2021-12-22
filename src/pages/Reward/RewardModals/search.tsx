@@ -61,7 +61,7 @@ export const SearchModal = () => {
     setTokenInfo(tokenArray);
   }, [address, symbol, decimal, balance]);
 
-  useEffect(() => {
+  useEffect(() => {    
     const tokenList = [TON_ADDRESS, TOS_ADDRESS, WTON_ADDRESS, DOC_ADDRESS, AURA_ADDRESS];
     setTokenLists(tokenList);
   }, [data]);
