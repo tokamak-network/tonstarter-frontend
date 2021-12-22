@@ -226,8 +226,8 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
     colorMode === 'light'
       ? {navLink: {background: '#ffffff', color: '#1c1c1c'}}
       : {navLink: {background: 'transparent', color: '#f3f4f1'}};
-  const pools = useRouteMatch('/pools/pools');
-  const reward = useRouteMatch('/pools/rewardProgram');
+  const pools = useRouteMatch('/rewards/pools');
+  const reward = useRouteMatch('/rewards/rewardProgram');
 
   return (
     <Box
@@ -277,7 +277,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
             p={0}
             fontSize={13}
             background={colorMode === 'light' ? '#ffffff' : '#222222'}>
-              <NavLink
+            <NavLink
               to="/rewards/rewardProgram"
               activeStyle={{
                 background: 'transparent',
@@ -307,7 +307,6 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                 Pools (Closed)
               </MenuItem>
             </NavLink>
-            
           </MenuList>
         </Menu>
         <NavLink
