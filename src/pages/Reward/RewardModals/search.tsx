@@ -32,7 +32,7 @@ import {Contract} from '@ethersproject/contracts';
 import { selectBalance } from 'store/app/user.reducer';
 
 //   import {ModalTabs} from '../components/Tabs';
-const {TON_ADDRESS, TOS_ADDRESS, WTON_ADDRESS, DOC_ADDRESS} = DEPLOYED;
+const {TON_ADDRESS, TOS_ADDRESS, WTON_ADDRESS, DOC_ADDRESS,AURA_ADDRESS} = DEPLOYED;
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 export const SearchModal = () => {
   
@@ -62,7 +62,7 @@ export const SearchModal = () => {
   }, [address, symbol, decimal, balance]);
 
   useEffect(() => {
-    const tokenList = [TON_ADDRESS, TOS_ADDRESS, WTON_ADDRESS, DOC_ADDRESS];
+    const tokenList = [TON_ADDRESS, TOS_ADDRESS, WTON_ADDRESS, DOC_ADDRESS, AURA_ADDRESS];
     setTokenLists(tokenList);
   }, [data]);
 

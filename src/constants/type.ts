@@ -4,6 +4,7 @@ export type DEPLOYED_TYPE = {
   DOC_ADDRESS: string;
   TOS_ADDRESS: string;
   WTON_ADDRESS: string;
+  AURA_ADDRESS: string;
   DepositManager_ADDRESS: string;
   SeigManager_ADDRESS: string;
   SwapProxy_ADDRESS: string;
