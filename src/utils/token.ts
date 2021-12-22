@@ -7,7 +7,7 @@ import WtonSymbol from 'assets/tokens/WTON_symbol.svg';
 import TonSymbolDark from 'assets/tokens/TON_symbolDark.svg';
 import TosSymbolDark from 'assets/tokens/TOS_symbolDark.svg';
 import DocSymbolDark from 'assets/tokens/DOC_symbolDark.svg';
-import AuraSymbol from 'assets/tokens/AURA-symbol.png';
+import AuraSymbol from 'assets/tokens/AURA_symbol.png';
 const { TON_ADDRESS, TOS_ADDRESS, WTON_ADDRESS, DOC_ADDRESS, AURA_ADDRESS } = DEPLOYED
 
 type EthAddressType = '0x0000000000000000000000000000000000000000';
@@ -129,6 +129,8 @@ export const checkTokenType = (
         'tos' : payToken === tokenAddresses['wton'] ?
           'wton' : payToken === tokenAddresses['doc'] ?
           'doc' : payToken === tokenAddresses['aura'] ? 'aura' : 'tos';
+console.log(payToken);
+          
           if (colorMode === 'dark') {
             switch (tokenType) {
               case 'eth':
