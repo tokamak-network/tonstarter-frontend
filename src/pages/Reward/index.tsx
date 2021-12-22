@@ -662,9 +662,7 @@ export const Reward = () => {
                           background={
                             colorMode === 'light' ? '#ffffff' : '#222222'
                           }>
-                          {positions.map((item: any, index) => {
-                            console.log(item);
-                            
+                          {positions.map((item: any, index) => {                            
                             const status = getStatus(item);
                             return (
                               <MenuItem
