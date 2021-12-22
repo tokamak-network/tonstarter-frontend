@@ -128,9 +128,7 @@ export const checkTokenType = (
       'ton' : payToken === tokenAddresses['tos'] ?
         'tos' : payToken === tokenAddresses['wton'] ?
           'wton' : payToken === tokenAddresses['doc'] ?
-          'doc' : payToken === tokenAddresses['aura'] ? 'aura' : 'tos';
-console.log(payToken);
-          
+          'doc' : payToken === tokenAddresses['aura'] ? 'aura' : 'tos';          
           if (colorMode === 'dark') {
             switch (tokenType) {
               case 'eth':
