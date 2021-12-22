@@ -203,7 +203,6 @@ export const fetchStarters = createAsyncThunk(
             saleContractAddress: data.saleContractAddress,
             tokenImage: data.tokenSymbolImage,
             tokenFundRaisingTargetAmount: data.tokenFundRaisingTargetAmount,
-            website: data.website,
           };
         },
       );
@@ -218,6 +217,8 @@ export const fetchStarters = createAsyncThunk(
             tokenSymbolImage: data.tokenSymbolImage,
             fundingTokenType: data.fundingTokenType,
             tokenFundRaisingTargetAmount: data.tokenFundRaisingTargetAmount,
+            tokenCalRatio:
+              data.projectFundingTokenRatio / data.projectTokenRatio,
           };
         },
       );
