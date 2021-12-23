@@ -287,7 +287,10 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
               <MenuItem
                 _hover={{color: 'blue.100', bg: 'none'}}
                 w={'100%'}
-                h={'37px'}>
+                h={'37px'}
+                _focus={{
+                  bg: colorMode === 'light' ? '#ffffff' : 'transparent',
+                }}>
                 Rewards Program
               </MenuItem>
             </NavLink>
