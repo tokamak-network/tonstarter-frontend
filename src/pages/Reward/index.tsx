@@ -1004,7 +1004,7 @@ export const Reward = () => {
                           }    (${parseInt(selectedPool.feeTier) / 10000} %)`}
                       , {selectedToeknType} {'Tokens'}
                     </Text>
-                    <RadioGroup>
+                    
                       <Flex direction="row" flexWrap={'wrap'}>
                         {selectedToeknType === 'All' ? (
                           positions.map((item: any, index) => {
@@ -1014,6 +1014,7 @@ export const Reward = () => {
                                 value={item.id}
                                 pr={'25px'}
                                 fontSize={'14px'}
+                                isChecked={Number(selectdPosition?.id) === Number(item.id) }
                                 pb={'14px'} onChange={getSelectedPosition}>
                                 <Text
                                   color={
@@ -1043,6 +1044,7 @@ export const Reward = () => {
                                 value={item.id}
                                 pr={'25px'}
                                 fontSize={'14px'}
+                                isChecked={Number(selectdPosition?.id) === Number(item.id) }
                                 pb={'14px'} onChange={getSelectedPosition}>
                                 <Text
                                   color={
@@ -1070,6 +1072,7 @@ export const Reward = () => {
                               value={item.id}
                               pr={'25px'}
                               fontSize={'14px'}
+                              isChecked={Number(selectdPosition?.id) === Number(item.id) }
                               pb={'14px'} onChange={getSelectedPosition}>
                               <Text
                                 color={
@@ -1092,7 +1095,7 @@ export const Reward = () => {
 
                             )}}))}
                       </Flex>
-                    </RadioGroup>
+                    
                   </Flex>
                   <RewardContainer
                     rewards={filteredData}
