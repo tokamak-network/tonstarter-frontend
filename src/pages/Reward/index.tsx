@@ -17,6 +17,7 @@ import {
   MenuItem,
   MenuItemOption,
   MenuGroup,
+  Button,
   MenuOptionGroup,
   MenuIcon,
   MenuCommand,
@@ -130,7 +131,7 @@ export const Reward = () => {
   >([]);
   const [selectedPoolCreate, setSelectedPoolCreated] = useState<Pool>();
   const [positions, setPositions] = useState<any[]>([]);
-  const [selectedToeknType, setSelectedTokenType] = useState<string>('All');
+  const [selectedToeknType, setSelectedTokenType] = useState<string>('');
 
   const arr: any = [];
   useEffect(() => {
@@ -639,6 +640,8 @@ export const Reward = () => {
                     ))}
                   </MenuList>
                 </Menu>
+                {/* <Button border={'2px solid #2a72e5'} bg={'transparent'} _hover={{bg:'none'}} _active={{bg:'none'}}
+                    {...MENU_STYLE.buttonStyle({colorMode})}></Button> */}
                 <Menu isLazy>
                   <MenuButton
                     border={'2px solid #2a72e5'}
@@ -872,54 +875,54 @@ export const Reward = () => {
                   </MenuButton>
                   <MenuList
                     {...MENU_STYLE.menuListStyle({colorMode})}
-                    minWidth="120px">
+                    minWidth="155px">
                     <MenuItem
                       onClick={changeSelect}
                       {...MENU_STYLE.menuItemStyle({colorMode})}
                       value={'Latest'}
-                      w="120px">
+                      w="155px">
                       Latest
                     </MenuItem>
                     <MenuItem
                       onClick={changeSelect}
                       {...MENU_STYLE.menuItemStyle({colorMode})}
                       value={'Oldest'}
-                      w="120px">
+                      w="155px">
                       Oldest
                     </MenuItem>
                     <MenuItem
                       onClick={changeSelect}
                       {...MENU_STYLE.menuItemStyle({colorMode})}
                       value={'Start Date'}
-                      w="120px">
+                      w="155px">
                       Start Date
                     </MenuItem>
                     <MenuItem
                       onClick={changeSelect}
                       {...MENU_STYLE.menuItemStyle({colorMode})}
                       value={'End Date'}
-                      w="120px">
+                      w="155px">
                       End Date
                     </MenuItem>
                     <MenuItem
                       onClick={changeSelect}
                       {...MENU_STYLE.menuItemStyle({colorMode})}
                       value={'Started'}
-                      w="120px">
+                      w="155px">
                       Started
                     </MenuItem>
                     <MenuItem
                       onClick={changeSelect}
                       {...MENU_STYLE.menuItemStyle({colorMode})}
                       value={'Closed'}
-                      w="120px">
+                      w="155px">
                       Closed
                     </MenuItem>
                     <MenuItem
                       onClick={changeSelect}
                       {...MENU_STYLE.menuItemStyle({colorMode})}
                       value={'Waiting'}
-                      w="120px">
+                      w="155px">
                       Waiting
                     </MenuItem>
                   </MenuList>
@@ -1016,6 +1019,7 @@ export const Reward = () => {
                                 fontSize={'14px'}
                                 isChecked={Number(selectdPosition?.id) === Number(item.id) }
                                 pb={'14px'} onChange={getSelectedPosition}>
+                                  <Flex alignItems={'baseline'}>
                                 <Text
                                   color={
                                     status === 'openOut' ||
@@ -1033,6 +1037,22 @@ export const Reward = () => {
                                   }>
                                   {item.id}
                                 </Text>
+                                <Text ml={'3px'} color={
+                                    status === 'openOut' ||
+                                    status === 'closedOut'
+                                      ? '#ff7800'
+                                      : colorMode === 'light'
+                                      ? '#3e495c'
+                                      : '#f3f4f1'
+                                  }
+                                  textDecoration={
+                                    status === 'closedIn' ||
+                                    status === 'closedOut'
+                                      ? 'line-through'
+                                      : 'none'
+                                  } fontSize={'11px'}> {item.pool.token0.symbol} /{' '}
+                                  {item.pool.token1.symbol}</Text>
+                                  </Flex>
                               </Radio>
                             );
                           })
@@ -1064,7 +1084,7 @@ export const Reward = () => {
                                   {item.id}
                                 </Text>
                               </Radio>)}})
-                        ): ( positions.map((item: any, index) => {
+                        ): selectedToeknType === 'Not Staked'?( positions.map((item: any, index) => {
                           const status = getStatus(item);
                           if (item.owner === account?.toLowerCase()) {
                             return (
@@ -1093,7 +1113,7 @@ export const Reward = () => {
                               </Text>
                             </Radio>
 
-                            )}}))}
+                            )}})) : null}
                       </Flex>
                     
                   </Flex>
