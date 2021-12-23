@@ -7,6 +7,7 @@ import {
   deposit,
   claim,
   depositWithdraw,
+  addToken,
 } from './actions';
 import {checkApprove, getAllowance} from './approve';
 import {
@@ -61,6 +62,7 @@ const actions = {
   getUserAllocate,
   getTokenInfo,
   getTokenAllocation,
+  addToken,
 };
 
 export default actions;
