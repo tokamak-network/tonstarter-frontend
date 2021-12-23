@@ -1066,6 +1066,7 @@ export const Reward = () => {
                                 fontSize={'14px'}
                                 isChecked={Number(selectdPosition?.id) === Number(item.id) }
                                 pb={'14px'} onChange={getSelectedPosition}>
+                               <Flex alignItems={'baseline'}>
                                 <Text
                                   color={
                                     status === 'openOut' ||
@@ -1083,6 +1084,22 @@ export const Reward = () => {
                                   }>
                                   {item.id}
                                 </Text>
+                                <Text ml={'3px'} color={
+                                    status === 'openOut' ||
+                                    status === 'closedOut'
+                                      ? '#ff7800'
+                                      : colorMode === 'light'
+                                      ? '#3e495c'
+                                      : '#f3f4f1'
+                                  }
+                                  textDecoration={
+                                    status === 'closedIn' ||
+                                    status === 'closedOut'
+                                      ? 'line-through'
+                                      : 'none'
+                                  } fontSize={'11px'}> {item.pool.token0.symbol} /{' '}
+                                  {item.pool.token1.symbol}</Text>
+                                  </Flex>
                               </Radio>)}})
                         ): selectedToeknType === 'Not Staked'?( positions.map((item: any, index) => {
                           const status = getStatus(item);
@@ -1094,23 +1111,40 @@ export const Reward = () => {
                               fontSize={'14px'}
                               isChecked={Number(selectdPosition?.id) === Number(item.id) }
                               pb={'14px'} onChange={getSelectedPosition}>
-                              <Text
-                                color={
-                                  status === 'openOut' ||
-                                  status === 'closedOut'
-                                    ? '#ff7800'
-                                    : colorMode === 'light'
-                                    ? '#3e495c'
-                                    : '#f3f4f1'
-                                }
-                                textDecoration={
-                                  status === 'closedIn' ||
-                                  status === 'closedOut'
-                                    ? 'line-through'
-                                    : 'none'
-                                }>
-                                {item.id}
-                              </Text>
+                            <Flex alignItems={'baseline'}>
+                                <Text
+                                  color={
+                                    status === 'openOut' ||
+                                    status === 'closedOut'
+                                      ? '#ff7800'
+                                      : colorMode === 'light'
+                                      ? '#3e495c'
+                                      : '#f3f4f1'
+                                  }
+                                  textDecoration={
+                                    status === 'closedIn' ||
+                                    status === 'closedOut'
+                                      ? 'line-through'
+                                      : 'none'
+                                  }>
+                                  {item.id}
+                                </Text>
+                                <Text ml={'3px'} color={
+                                    status === 'openOut' ||
+                                    status === 'closedOut'
+                                      ? '#ff7800'
+                                      : colorMode === 'light'
+                                      ? '#3e495c'
+                                      : '#f3f4f1'
+                                  }
+                                  textDecoration={
+                                    status === 'closedIn' ||
+                                    status === 'closedOut'
+                                      ? 'line-through'
+                                      : 'none'
+                                  } fontSize={'11px'}> {item.pool.token0.symbol} /{' '}
+                                  {item.pool.token1.symbol}</Text>
+                                  </Flex>
                             </Radio>
 
                             )}})) : null}
