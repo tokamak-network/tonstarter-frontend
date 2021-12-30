@@ -15,22 +15,30 @@ type Approve = {
     tokenAddress: string
 }
 
-const {TOS_ADDRESS, UniswapStaker_Address} = DEPLOYED;
+const {TOS_ADDRESS, UniswapStaker_Address, WTON_ADDRESS} = DEPLOYED;
 
 export const approve = async (args:Approve) => {
     const {library, amount, userAddress, setAlllowed, tokenAddress } = args;
     if (userAddress === null || userAddress === undefined || library === undefined) {
         return;
-      }
+      }      
       const contract = new Contract(tokenAddress, TOSABI.abi, library);
-      // const totalReward = new BigNumber(Number(amount)).toString();
-      const weiAllocated = ethers.utils.parseEther(amount)
+      let convertedAmount; 
+      if (ethers.utils.getAddress(tokenAddress) === ethers.utils.getAddress(WTON_ADDRESS)){
+        const rayAllocated = ethers.utils.parseUnits(amount, '27');
+        convertedAmount = rayAllocated;
+      }
+      else {
+        const weiAllocated = ethers.utils.parseEther(amount);
+        convertedAmount = weiAllocated
+    
+      }
       const signer = getSigner(library, userAddress);
       
       try {
         const receipt = await contract
           .connect(signer)
-          .approve(UniswapStaker_Address, weiAllocated);
+          .approve(UniswapStaker_Address, convertedAmount);
         store.dispatch(setTxPending({tx: true}));
        
         if (receipt) {

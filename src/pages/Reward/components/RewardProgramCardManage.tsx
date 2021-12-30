@@ -50,7 +50,7 @@ type RewardProgramCardManageProps = {
   sendKey: (key: any) => void;
 };
 
-const {TON_ADDRESS, UniswapStaker_Address} = DEPLOYED;
+const {WTON_ADDRESS,TON_ADDRESS, UniswapStaker_Address} = DEPLOYED;
 
 export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
   reward,
@@ -183,11 +183,18 @@ const [isRefundSelected, setIsRefundSelected] = useState<boolean>(false);
         <Flex flexDir={'row'} alignItems={'center'}>
           <Box>
             <Text textAlign={'right'}>
-              {Number(
-                ethers.utils.formatEther(refundableAmount.toString()),
-              ).toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-              })}{' '}
+              {ethers.utils.getAddress(reward.rewardToken) ===
+                ethers.utils.getAddress(WTON_ADDRESS)
+                  ? Number(ethers.utils.formatUnits(refundableAmount, 27)).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                  })
+                  : Number(
+                      ethers.utils.formatEther(
+                        refundableAmount.toString(),
+                      ),
+                    ).toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                    })}{' '}
               {checkTokenType(ethers.utils.getAddress(reward.rewardToken)).name} / {numStakers}
             </Text>
             <Flex flexDir={'row'}>
@@ -301,11 +308,18 @@ const [isRefundSelected, setIsRefundSelected] = useState<boolean>(false);
                 fontSize: 20,
               })}
               lineHeight={'0.7'}>
-              {Number(
-                ethers.utils.formatEther(reward.allocatedReward.toString()),
-              ).toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-              })}
+              {ethers.utils.getAddress(reward.rewardToken) ===
+                ethers.utils.getAddress(WTON_ADDRESS)
+                  ? Number(ethers.utils.formatUnits(reward.allocatedReward, 27)).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                  })
+                  : Number(
+                      ethers.utils.formatEther(
+                        reward.allocatedReward.toString(),
+                      ),
+                    ).toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                    })}
             </Text>
             <Text ml="2px" fontSize="13">
             {checkTokenType(ethers.utils.getAddress(reward.rewardToken),colorMode).name}

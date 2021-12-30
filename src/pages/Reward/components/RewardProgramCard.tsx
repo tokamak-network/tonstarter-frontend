@@ -30,6 +30,8 @@ import * as TOSABI from 'services/abis/TOS.json';
 import {getTokenSymbol} from '../utils/getTokenSymbol';
 import {UpdatedRedward} from '../types';
 import {LPToken} from '../types';
+import {convertNumber} from 'utils/number';
+
 const themeDesign = {
   border: {
     light: 'solid 1px #dfe4ee',
@@ -57,7 +59,12 @@ type RewardProgramCardProps = {
   includedPoolLiquidity: string;
 };
 
-const {TON_ADDRESS, UniswapStaking_Address, UniswapStaker_Address} = DEPLOYED;
+const {
+  WTON_ADDRESS,
+  TON_ADDRESS,
+  UniswapStaking_Address,
+  UniswapStaker_Address,
+} = DEPLOYED;
 
 export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   reward,
@@ -99,11 +106,11 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     UniswapStaker_Address,
     STAKERABI.abi,
     library,
-  );  
+  );
   useEffect(() => {
     setIsUnstakeselected(false);
     setIsSelected(false);
-  },[selectedToken])
+  }, [selectedToken]);
   useEffect(() => {
     const selected =
       stakeList.filter(
@@ -116,7 +123,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     const selected =
       unstakeList.filter(
         (listkey: any) => JSON.stringify(listkey) === JSON.stringify(key),
-      ).length > 0;      
+      ).length > 0;
     setIsUnstakeselected(selected);
   }, [unstakeList, pageIndex]);
 
@@ -521,11 +528,18 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
                   fontSize: 20,
                 })}
                 lineHeight={'0.7'}>
-                {Number(
-                  ethers.utils.formatEther(reward.allocatedReward.toString()),
-                ).toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                })}
+                {ethers.utils.getAddress(reward.rewardToken) ===
+                ethers.utils.getAddress(WTON_ADDRESS)
+                  ? Number(ethers.utils.formatUnits(reward.allocatedReward, 27)).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                  })
+                  : Number(
+                      ethers.utils.formatEther(
+                        reward.allocatedReward.toString(),
+                      ),
+                    ).toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                    })}
               </Text>
               <Text ml="2px" fontSize="13">
                 {
@@ -558,10 +572,13 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
         <Flex flexDirection="row" justifyContent={'center'}>
           {buttonState === 'Stake' &&
           moment().unix() > reward.startTime &&
-          !staked && reward.poolAddress ===
-          (selectedToken ? selectedToken.pool.id : '') && 
-          Number(selectedToken ? selectedToken.id : 0) !== 0  && ((selectedToken && buttonState === 'Stake')? selectedToken.range && Number(
-            ethers.utils.formatEther(selectedToken.liquidity))!== 0 : false)? (
+          !staked &&
+          reward.poolAddress === (selectedToken ? selectedToken.pool.id : '') &&
+          Number(selectedToken ? selectedToken.id : 0) !== 0 &&
+          (selectedToken && buttonState === 'Stake'
+            ? selectedToken.range &&
+              Number(ethers.utils.formatEther(selectedToken.liquidity)) !== 0
+            : false) ? (
             <Box pb={'0px'}>
               <Checkbox
                 mt={'5px'}
@@ -616,8 +633,12 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
               Number(selectedToken ? selectedToken.id : 0) === 0 ||
               reward.poolAddress !==
                 (selectedToken ? selectedToken.pool.id : '') ||
-              (staked && buttonState === 'Stake') || ((selectedToken && buttonState !== 'Unstake')? !selectedToken.range || Number(
-                ethers.utils.formatEther(selectedToken.liquidity))=== 0: false)
+              (staked && buttonState === 'Stake') ||
+              (selectedToken && buttonState !== 'Unstake'
+                ? !selectedToken.range ||
+                  Number(ethers.utils.formatEther(selectedToken.liquidity)) ===
+                    0
+                : false)
             }>
             {buttonState}
           </Button>

@@ -200,8 +200,11 @@ export const CreateReward: FC<CreateRewardProps> = ({pools, setSelectedPoolCreat
           account,
           setCheckAllowed,
           rewardAddress,
-        );        
-        setAmount(ethers.utils.formatEther(approved.toString()));
+        ); 
+             if (ethers.utils.getAddress(WTON_ADDRESS) === ethers.utils.getAddress(rewardAddress)) {
+              setAmount(ethers.utils.formatUnits(approved.toString(), 27))
+             }
+             else { setAmount(ethers.utils.formatEther(approved.toString()));}
       }
       else {setAmount('0.0')}
       
@@ -448,16 +451,19 @@ export const CreateReward: FC<CreateRewardProps> = ({pools, setSelectedPoolCreat
             fontSize="14px"
             disabled={
               amount === '0' ||
-              Number(amount) <=
-                Number(
-                  ethers.utils
-                    .formatEther(
-                      checkAllowed.toLocaleString('fullwide', {
-                        useGrouping: false,
-                      }),
-                    )
-                    .toString(),
-                ) || rewardAddress === ''
+              rewardAddress === '' ||
+              Number(amount) <= (rewardAddress !== ''? (ethers.utils.getAddress(rewardAddress) === ethers.utils.getAddress(WTON_ADDRESS)? Number(
+                ethers.utils.formatUnits(checkAllowed.toLocaleString('fullwide', {
+                  useGrouping: false,
+                }), 27)) : Number(
+                ethers.utils
+                  .formatEther(
+                    checkAllowed.toLocaleString('fullwide', {
+                      useGrouping: false,
+                    }),
+                  )
+                  .toString(),
+              ) ): 0) || rewardAddress === ''
             }
             _hover={{backgroundColor: 'blue.100'}}
             onClick={() => {
@@ -486,7 +492,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools, setSelectedPoolCreat
                 });
               }
             }}>
-            Approve
+          Approve
           </Button>
           <Button
             w={'100px'}
@@ -505,16 +511,19 @@ export const CreateReward: FC<CreateRewardProps> = ({pools, setSelectedPoolCreat
                   )
                   .toString(),
               ) === 0 ||
-              Number(amount) >
-                Number(
-                  ethers.utils
-                    .formatEther(
-                      checkAllowed.toLocaleString('fullwide', {
-                        useGrouping: false,
-                      }),
-                    )
-                    .toString(),
-                ) || Number(amount) === 0
+              Number(amount) >(rewardAddress !== ''? (ethers.utils.getAddress(rewardAddress) === ethers.utils.getAddress(WTON_ADDRESS)? Number(
+                ethers.utils.formatUnits(checkAllowed.toLocaleString('fullwide', {
+                  useGrouping: false,
+                }), 27)) : Number(
+                ethers.utils
+                  .formatEther(
+                    checkAllowed.toLocaleString('fullwide', {
+                      useGrouping: false,
+                    }),
+                  )
+                  .toString(),
+              ) ) : 0)
+                || Number(amount) === 0
             }
             _hover={{backgroundColor: 'blue.100'}}
             onClick={() => {

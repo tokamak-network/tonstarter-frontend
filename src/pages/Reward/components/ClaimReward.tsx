@@ -27,7 +27,7 @@ import {selectTransactionType} from 'store/refetch.reducer';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {getTokenSymbol} from '../utils/getTokenSymbol';
 
-const {UniswapStaking_Address, UniswapStaker_Address, TOS_ADDRESS} = DEPLOYED;
+const {WTON_ADDRESS, UniswapStaker_Address, TOS_ADDRESS} = DEPLOYED;
 
 type ClaimRewardProps = {
   rewards: any[];
@@ -234,9 +234,21 @@ const getTokenList = async() => {
               textAlign="right"
               fontSize={'15px'}
               mr={'2px'}>
-              {Number(ethers.utils.formatEther(claimableAmount.toString())).toLocaleString(undefined, {
+                {ethers.utils.getAddress(selectedToken) ===
+                ethers.utils.getAddress(WTON_ADDRESS)
+                  ? Number(ethers.utils.formatUnits(claimableAmount.toString(), 27)).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                  })
+                  : Number(
+                      ethers.utils.formatEther(
+                        claimableAmount.toString(),
+                      ),
+                    ).toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                    })}
+              {/* {Number(ethers.utils.formatEther(claimableAmount.toString())).toLocaleString(undefined, {
                 minimumFractionDigits: 2,
-              })}
+              })} */}
             </Text>
             <Text
               textAlign="right"
@@ -311,7 +323,7 @@ const getTokenList = async() => {
             bg={'blue.500'}
             color="white.100"
             fontSize="14px"
-            _hover={{backgroundColor: 'blue.100'}}
+            _hover={{backgroundColor: 'none'}}
             mb={'40px'}
             _disabled={
               colorMode === 'light'

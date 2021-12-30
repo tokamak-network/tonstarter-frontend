@@ -45,7 +45,7 @@ type CreateReward = {
   tx: string;
   sig: string;
 };
-const {TOS_ADDRESS, DOC_ADDRESS, TON_ADDRESS, UniswapStaker_Address} = DEPLOYED;
+const {WTON_ADDRESS, DOC_ADDRESS, TON_ADDRESS, UniswapStaker_Address} = DEPLOYED;
 
 const generateSig = async (account: string, key: any) => {
   const randomvalue = await getRandomKey(account);
@@ -103,7 +103,19 @@ export const create = async (args: Create) => {
     STAKERABI.abi,
     library,
   );
-  const amountFotmatted = ethers.utils.parseEther(amount);
+  // let amountFotmatted = ethers.utils.parseEther(amount);
+  let amountFotmatted 
+  if (ethers.utils.getAddress(rewardToken) === ethers.utils.getAddress(WTON_ADDRESS)){
+    const rayAllocated = ethers.utils.parseUnits(amount, '27');
+    amountFotmatted = rayAllocated;
+  }
+  else {
+    const weiAllocated = ethers.utils.parseEther(amount);
+    amountFotmatted = weiAllocated
+
+  }
+console.log('amountFotmatted', amountFotmatted);
+
   const signer = getSigner(library, userAddress);
   const key = {
     rewardToken: rewardToken,
