@@ -377,14 +377,21 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
             </Text>
             <Box textAlign={'right'}>
               <Text>
-                {Number(ethers.utils.formatEther(myReward)) < 0.005
+                {ethers.utils.getAddress(reward.rewardToken) === ethers.utils.getAddress(WTON_ADDRESS) ? (Number(ethers.utils.formatUnits(myReward, '27')) < 0.005
+                  ? '<0.00'
+                  : Number(ethers.utils.formatUnits(myReward, '27')).toLocaleString(
+                      undefined,
+                      {
+                        maximumFractionDigits: 2,
+                      },
+                    ))  : ( Number(ethers.utils.formatEther(myReward)) < 0.005
                   ? '<0.00'
                   : Number(ethers.utils.formatEther(myReward)).toLocaleString(
                       undefined,
                       {
                         maximumFractionDigits: 2,
                       },
-                    )}{' '}
+                    ))  }{' '}
                 {
                   checkTokenType(ethers.utils.getAddress(reward.rewardToken))
                     .name
