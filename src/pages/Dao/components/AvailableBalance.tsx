@@ -8,15 +8,11 @@ import {
 } from '@chakra-ui/react';
 import {getUserTosBalance} from 'client/getUserBalance';
 import {useAppDispatch} from 'hooks/useRedux';
-import {useEffect} from 'react';
-import {useState} from 'react';
-import {User} from 'store/app/user.reducer';
+import {useBlockNumber} from 'hooks/useBlock';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import {useState, useEffect} from 'react';
 import {openModal} from 'store/modal.reducer';
-
-type PropsType = {
-  userData: User;
-  signIn: boolean;
-};
+import {checkApprove, getAllowance} from '../actions/';
 
 const themeDesign = {
   fontColorTitle: {
@@ -29,28 +25,43 @@ const themeDesign = {
   },
 };
 
-export const AvailableBalance = (props: PropsType) => {
-  const {userData, signIn} = props;
+export const AvailableBalance = () => {
   const [balance, setbalance] = useState('-');
+  const [btnType, setBtnType] = useState<string>('-');
   const theme = useTheme();
   const {btnStyle, btnHover} = theme;
   const {colorMode} = useColorMode();
   const dispatch = useAppDispatch();
+  const {account, library, active} = useActiveWeb3React();
+  const {blockNumber} = useBlockNumber();
 
   useEffect(() => {
-    const {address, library} = userData;
     async function getTosBalance() {
-      const res = await getUserTosBalance(address, library);
-      if (res !== undefined) {
-        setbalance(res);
+      if (account) {
+        const res = await getUserTosBalance(account, library);
+        if (res !== undefined) {
+          setbalance(res);
+        }
       }
     }
-    if (signIn) {
+    if (account) {
       getTosBalance();
     } else {
       setbalance('-');
     }
-  }, [signIn, userData]);
+  }, [active, account, library, blockNumber, dispatch]);
+
+  //set btn condition
+  useEffect(() => {
+    async function checkApproved(account: string, library: any) {
+      const isApproved = await checkApprove(account, library);
+      setBtnType(isApproved === true ? 'Stake' : 'Approve');
+    }
+
+    if (account && library) {
+      checkApproved(account, library);
+    }
+  }, [active, account, library, blockNumber]);
 
   return (
     <Flex
@@ -73,25 +84,27 @@ export const AvailableBalance = (props: PropsType) => {
         </Flex>
       </Box>
       <Button
-        {...(signIn
-          ? {...btnStyle.btnAble()}
-          : {...btnStyle.btnDisable({colorMode})})}
+        {...(!active || (btnType === 'Stake' && balance === '0.00')
+          ? {...btnStyle.btnDisable({colorMode})}
+          : {...btnStyle.btnAble()})}
         w={'150px'}
         h="38px"
         p={0}
         fontSize={'14px'}
         fontWeight={400}
-        isDisabled={!signIn}
+        isDisabled={!active || (btnType === 'Stake' && balance === '0.00')}
         _hover={btnHover.backgroundColor}
         onClick={() =>
-          dispatch(
-            openModal({
-              type: 'dao_stake',
-              data: {userData, userTosBalance: balance},
-            }),
-          )
+          btnType === 'Approve' && account
+            ? getAllowance(account, library)
+            : dispatch(
+                openModal({
+                  type: 'dao_stake',
+                  data: {userTosBalance: balance},
+                }),
+              )
         }>
-        Stake
+        {btnType}
       </Button>
     </Flex>
   );

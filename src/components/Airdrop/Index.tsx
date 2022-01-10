@@ -10,7 +10,7 @@ import {
   Text,
   useColorMode,
   useTheme,
-  Wrap,
+  // Wrap,
   WrapItem,
   Button,
   Center,
@@ -19,10 +19,10 @@ import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {closeModal, selectModalType} from 'store/modal.reducer';
 import {claimAirdrop} from './actions';
 import {useState, useEffect} from 'react';
-import {Scrollbars} from 'react-custom-scrollbars-2';
+// import {Scrollbars} from 'react-custom-scrollbars-2';
 import {LoadingComponent} from 'components/Loading';
 import {fetchAirdropPayload} from './utils/fetchAirdropPayload';
-import {useUser} from 'hooks/useUser';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 
 type Round = {
   allocatedAmount: string;
@@ -69,11 +69,11 @@ export const AirdropModal = () => {
   const [airdropData, setAirdropData] = useState<AirDropList>(undefined);
   const [balance, setBalance] = useState<string | undefined>(undefined);
   const {data} = useAppSelector(selectModalType);
-  const {account, library} = useUser();
+  const {account, library, active} = useActiveWeb3React();
   const dispatch = useAppDispatch();
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const {modalStyle} = theme;
+  const {modalStyle, btnStyle} = theme;
 
   const availableAmount = (
     roundInfo: AirDropList,
@@ -87,18 +87,18 @@ export const AirdropModal = () => {
 
   useEffect(() => {
     async function callAirDropData() {
-      const res = await fetchAirdropPayload();
+      if (account === undefined || account === null) {
+        return;
+      }
+      const res = await fetchAirdropPayload(account, library);
+      if (res === undefined) {
+        return;
+      }
       const {roundInfo, claimedAmount, unclaimedAmount} = res;
-      // const info = await poolInfo
-      // .fetchMore({
-      //   query: GET_POOL_INFO
-      // })
-      // console.log(info.data)
-      // console.log(roundInfo)
       setAirdropData(roundInfo);
       availableAmount(roundInfo, claimedAmount, unclaimedAmount);
     }
-    if (account !== undefined) {
+    if (account !== undefined && library !== undefined) {
       callAirDropData();
     }
     /*eslint-disable*/
@@ -171,12 +171,16 @@ export const AirdropModal = () => {
               <Text fontSize="1.125em" fontWeight={500} mr={1}>
                 Genesis Airdrop{' '}
                 {airdropData !== undefined && airdropData[0]?.myAmount}
+                {airdropData !== undefined &&
+                airdropData[0]?.myAmount === undefined
+                  ? '0.00'
+                  : null}
               </Text>
               <Text fontSize="0.750em" alignSelf="flex-end" fontWeight="bold">
                 TOS
               </Text>
             </Flex>
-            {airdropData !== undefined && airdropData.length > 1 && (
+            {/* {airdropData !== undefined && airdropData.length > 1 && (
               <Scrollbars
                 style={{
                   width: '100%',
@@ -209,15 +213,25 @@ export const AirdropModal = () => {
                   ))}
                 </Wrap>
               </Scrollbars>
-            )}
+            )} */}
           </Stack>
           <Center mt="30px">
             <Button
+              {...(airdropData === undefined ||
+              airdropData[0]?.myAmount === '0.00'
+                ? {...btnStyle.btnDisable({colorMode})}
+                : {...btnStyle.btnAble()})}
               w={'150px'}
-              bg={'blue.500'}
-              color="white.100"
+              // bg={'blue.500'}
+              // color="white.100"
               fontSize="14px"
-              _hover={{backgroundColor: 'blue.100'}}
+              isDisabled={
+                airdropData === undefined ||
+                airdropData[0]?.myAmount === '0.00' ||
+                balance === '0.00'
+                  ? true
+                  : false
+              }
               onClick={() =>
                 claimAirdrop({
                   userAddress: account,

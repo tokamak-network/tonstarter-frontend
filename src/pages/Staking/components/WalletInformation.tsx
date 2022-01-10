@@ -13,14 +13,18 @@ import {
 import React, {FC, useState, useCallback} from 'react';
 import {AppDispatch} from 'store';
 import {openModal, ModalType} from 'store/modal.reducer';
-import {Stake} from '../staking.reducer';
-import {checkSaleClosed, fetchManageModalPayload} from '../utils';
+import {Stake} from 'pages/Staking/types';
+import {
+  checkSaleClosed,
+  checkIsUnstake,
+  fetchManageModalPayload,
+} from '../utils';
 import {LoadingComponent} from 'components/Loading';
 import {getUserBalance, getUserTonBalance} from 'client/getUserBalance';
 import {useEffect} from 'react';
 import {closeSale} from '../actions';
 import {LoadingDots} from 'components/Loader/LoadingDots';
-import {useUser} from 'hooks/useUser';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {useAppSelector} from 'hooks/useRedux';
 
@@ -35,7 +39,7 @@ export const WalletInformation: FC<WalletInformationProps> = ({
 }) => {
   const {colorMode} = useColorMode();
   const [loading, setLoading] = useState(false);
-  const {account, library} = useUser();
+  const {account, library} = useActiveWeb3React();
 
   //Balances
   const [userTonBalance, setUserTonBalance] = useState<string | undefined>(
@@ -58,11 +62,12 @@ export const WalletInformation: FC<WalletInformationProps> = ({
 
   useEffect(() => {
     async function checkSale() {
-      if (library) {
+      if (library && data.vault) {
         const res = await checkSaleClosed(data.vault, library);
         setSaleClosed(res);
       }
     }
+
     checkSale();
     /*eslint-disable*/
   }, [
@@ -96,11 +101,17 @@ export const WalletInformation: FC<WalletInformationProps> = ({
       : setStakeDisabled(false);
   };
 
-  const btnDisabledUnstake = () => {
+  const btnDisabledUnstake = async () => {
+    const res =
+      library && data.vault && account
+        ? await checkIsUnstake(data.contractAddress, account, library)
+        : null;
+
     return account === undefined ||
       stakeBalance === '0.00' ||
       stakeBalance === undefined ||
-      status !== 'end'
+      status !== 'end' ||
+      res
       ? setUnstakeDisabled(true)
       : setUnstakeDisabled(false);
   };
@@ -146,11 +157,19 @@ export const WalletInformation: FC<WalletInformationProps> = ({
   };
 
   const getWalletTonBalance = async () => {
+    if (!account || !library) {
+      return;
+    }
+
     const result = await getUserTonBalance({
-      account: account,
-      library: library,
+      account,
+      library,
     });
-    const userBalance = await getUserBalance(data.contractAddress);
+    const userBalance = await getUserBalance(
+      account,
+      library,
+      data.contractAddress,
+    );
 
     if (result && userBalance) {
       const trimNum = Number(result).toLocaleString(undefined, {
@@ -185,7 +204,14 @@ export const WalletInformation: FC<WalletInformationProps> = ({
             tosBalance,
           };
         } else if (modal === 'unstake') {
-          const payloadModal = await getUserBalance(data.contractAddress);
+          if (!account || !library) {
+            return;
+          }
+          const payloadModal = await getUserBalance(
+            account,
+            library,
+            data.contractAddress,
+          );
           payload = {
             ...data,
             totalStakedBalance: payloadModal?.totalStakedBalance,
@@ -193,6 +219,7 @@ export const WalletInformation: FC<WalletInformationProps> = ({
         } else {
           payload = {
             ...data,
+            userTonBalance,
           };
         }
       } catch (e) {
@@ -283,7 +310,7 @@ export const WalletInformation: FC<WalletInformationProps> = ({
                     })
                   : null
               }>
-              End Sale
+              {status === 'start' ? 'Manage' : 'End Sale'}
             </Button>
           ) : (
             <Button

@@ -7,28 +7,26 @@ import {
   useTheme,
 } from '@chakra-ui/react';
 import {getUserTOSStaked} from 'client/getUserBalance';
-import {useAppDispatch} from 'hooks/useRedux';
-import {useEffect} from 'react';
-import {useState} from 'react';
-import {User} from 'store/app/user.reducer';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import {useEffect, useState} from 'react';
 import {openModal} from 'store/modal.reducer';
+import {useBlockNumber} from 'hooks/useBlock';
+import {selectDao} from '../dao.reducer';
 
-type PropsType = {
-  userData: User;
-  signIn: boolean;
-  stakeList: any;
-  transactionType: string | undefined;
-  blockNumber: number | undefined;
-};
-
-export const MyStaked = (props: PropsType) => {
-  const {userData, signIn, stakeList, transactionType, blockNumber} = props;
+export const MyStaked = () => {
+  const dispatch = useAppDispatch();
+  const {
+    data: {tosStakeList: stakeList},
+  } = (useAppSelector as any)(selectDao);
   const [balance, setbalance] = useState('-');
   const [isEnd, setIsEnd] = useState(true);
   const theme = useTheme();
   const {btnStyle, btnHover} = theme;
   const {colorMode} = useColorMode();
-  const dispatch = useAppDispatch();
+  const {account, library, active} = useActiveWeb3React();
+  const {blockNumber} = useBlockNumber();
+
   const themeDesign = {
     fontColorTitle: {
       light: 'gray.400',
@@ -41,38 +39,25 @@ export const MyStaked = (props: PropsType) => {
   };
 
   useEffect(() => {
-    const {address, library} = userData;
     async function getTosBalance() {
-      const res = await getUserTOSStaked({account: address, library});
+      const res = await getUserTOSStaked({account, library});
       if (res !== undefined) {
         setbalance(res);
       }
     }
-    if (signIn) {
+    if (account) {
       getTosBalance();
+      setIsEnd(true);
       stakeList.map((stake: any) => {
-        if (stake.end === true) {
-          setIsEnd(false);
+        if (stake.end === true && stake.endTime > 0) {
+          return setIsEnd(false);
         }
+        return null;
       });
     } else {
       setbalance('-');
     }
-  }, [signIn, userData, stakeList]);
-
-  useEffect(() => {
-    const {address, library} = userData;
-    async function getTosBalance() {
-      const res = await getUserTOSStaked({account: address, library});
-      if (res !== undefined) {
-        setbalance(res);
-      }
-    }
-    if (transactionType === 'Dao') {
-      getTosBalance();
-    }
-    /*eslint-disable*/
-  }, [transactionType, blockNumber]);
+  }, [active, account, library, stakeList, dispatch, blockNumber]);
 
   return (
     <Flex
@@ -95,7 +80,7 @@ export const MyStaked = (props: PropsType) => {
         </Flex>
       </Box>
       <Button
-        {...(signIn && !isEnd
+        {...(active && !isEnd
           ? {...btnStyle.btnAble()}
           : {...btnStyle.btnDisable({colorMode})})}
         w={'150px'}
@@ -103,13 +88,13 @@ export const MyStaked = (props: PropsType) => {
         p={0}
         fontSize={'14px'}
         fontWeight={400}
-        isDisabled={!signIn || isEnd}
+        isDisabled={!active || isEnd}
         _hover={btnHover.backgroundColor}
         onClick={() =>
           dispatch(
             openModal({
               type: 'dao_unstake',
-              data: {userData, userTosBalance: balance},
+              data: {userTosBalance: balance, lockList: stakeList},
             }),
           )
         }>

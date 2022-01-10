@@ -84,3 +84,26 @@ export const getBlockNumber = async (chainId: '1' | '4' | undefined) => {
   const currentBlock = await provider.getBlockNumber();
   return currentBlock;
 };
+
+export const getUniswapPoolLink = async (id: string | number | undefined) => {
+  let link: string;
+  switch (id) {
+    case 1:
+      link = `https://info.uniswap.org/#/pools/`;
+      break;
+    case 3:
+      link = `https://info.uniswap.org/#/pools/`;
+      break;
+    case 4:
+      link = `https://info.uniswap.org/#/pools/`;
+      break;
+    case 42:
+      link = `https://info.uniswap.org/#/pools/`;
+      break;
+    default:
+      link = 'Unknown network';
+      break;
+  }
+
+  return link as string;
+};

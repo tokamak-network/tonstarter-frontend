@@ -15,17 +15,23 @@ import {
   Select,
   Tooltip,
   Image,
+  NumberInputField,
+  NumberInput,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, {useCallback} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {onKeyDown, useInput} from 'hooks/useInput';
 import {useModal} from 'hooks/useModal';
-import {useUser} from 'hooks/useUser';
-import {useToast} from 'hooks/useToast';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useState, useEffect, useRef} from 'react';
-import {stakeTOS} from '../utils/stakeTOS';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
+import {useCheckBalance} from 'hooks/useCheckBalance';
+import moment from 'moment';
+import Decimal from 'decimal.js';
+import {stakeTOS} from '../../actions';
+import {getConstants} from '../../utils';
+import {CloseButton} from 'components/Modal';
 
 type SelectPeriod = '1 month' | '6 months' | '1 year' | '3 years';
 
@@ -48,8 +54,13 @@ export const DaoStakeModal = () => {
   const {data} = useAppSelector(selectModalType);
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const {signIn, account, library} = useUser();
-  const {toastMsg} = useToast();
+  const {account, library} = useActiveWeb3React();
+  const {checkBalance} = useCheckBalance();
+
+  const [balance, setBalance] = useState('0');
+  const [btnDisable, setBtnDisable] = useState(true);
+  const [endDate, setEndDate] = useState('-');
+  const [reward, setReward] = useState('-');
 
   const [selectPeriod, setSelectPeriod] = useState<string | undefined>(
     undefined,
@@ -59,14 +70,14 @@ export const DaoStakeModal = () => {
     undefined,
   );
   const [isCustom, setIsCustom] = useState<boolean>(false);
+  const [oneWeek, setOneWeek] = useState(0);
+  const [maxPeriod, setMaxPeriod] = useState(0);
+
   const periods = ['1 month', '6 months', '1 year', '3 years'];
 
   const {btnStyle} = theme;
   const {value, setValue, onChange} = useInput('0');
   const {handleCloseModal, handleOpenConfirmModal} = useModal(setValue);
-  const keys = [undefined, '', '0', '0.', '0.0', '0.00'];
-  const btnDisabled =
-    keys.indexOf(value) !== -1 || dateValue === 0 ? true : false;
 
   const focusTarget = useRef<any>([]);
   const focusCustomTarget = useRef(null);
@@ -84,32 +95,94 @@ export const DaoStakeModal = () => {
   };
 
   useEffect(() => {
+    const setConstants = async () => {
+      const {epochUnit, maxTime} = await getConstants({library});
+      setOneWeek(epochUnit);
+      setMaxPeriod(maxTime);
+    };
+    if (library) {
+      setConstants();
+    }
+  }, [library]);
+
+  // set Estimated reward;
+  const getEstimatedReward = useCallback(
+    async (date: number) => {
+      if (
+        value !== '' &&
+        value !== '0' &&
+        value !== undefined &&
+        oneWeek > 0 &&
+        maxPeriod > 0
+      ) {
+        const numValue = Number(value.replaceAll(',', ''));
+        const avgProfit = numValue / maxPeriod;
+        const estimatedReward = avgProfit * (date - moment().unix());
+        const deciamlNum = new Decimal(estimatedReward);
+        const resultNum = deciamlNum.toFixed(3, Decimal.ROUND_HALF_UP);
+        const result = Number(resultNum).toFixed(2);
+        setReward(String(Number(result)));
+      }
+      return;
+    },
+    [value, maxPeriod, oneWeek],
+  );
+
+  //check btn able condition
+  useEffect(() => {
+    const keys = [undefined, '', '0', '0.', '0.0', '0.00'];
+    const btnDisabled =
+      keys.indexOf(value) !== -1 || dateValue === 0 ? true : false;
+    setBtnDisable(btnDisabled);
+  }, [value, dateValue]);
+
+  useEffect(() => {
+    setBalance(data?.data?.userTosBalance);
+  }, [data]);
+
+  //calculate estimated end date
+  useEffect(() => {
+    if (dateValue === 0) {
+      setReward('-');
+      return setEndDate('-');
+    }
+    const now = moment().unix();
+    const date = Math.floor((now + dateValue * oneWeek) / oneWeek) * oneWeek;
+
+    getEstimatedReward(date);
+    setEndDate(moment.unix(date).format('YYYY.MM.DD'));
+  }, [dateValue, value, getEstimatedReward, oneWeek, selectPeriod]);
+
+  useEffect(() => {
     if (selectPeriod === 'weeks' || selectPeriod === 'months') {
       if (selectPeriod === 'weeks') {
         setDateValue(Number(lockDateValue));
       }
       if (selectPeriod === 'months') {
-        setDateValue(Number(lockDateValue) * 4);
+        const weeksNum = moment.duration(lockDateValue, 'months').asWeeks();
+        // console.log(moment.duration(lockDateValue, 'months').);
+        setDateValue(Math.ceil(weeksNum));
       }
     }
     if (selectPeriod === '1 month') {
-      setDateValue(4);
+      const weeksNum = moment.duration(1, 'months').asWeeks();
+      setDateValue(Math.ceil(weeksNum));
     }
     if (selectPeriod === '6 months') {
-      setDateValue(24);
+      const weeksNum = moment.duration(6, 'months').asWeeks();
+      setDateValue(Math.ceil(weeksNum));
     }
     if (selectPeriod === '1 year') {
-      setDateValue(48);
+      const weeksNum = moment.duration(1, 'year').asWeeks();
+      setDateValue(Math.ceil(weeksNum));
     }
     if (selectPeriod === '3 years') {
-      setDateValue(144);
+      setDateValue(156);
     }
     // return setDateValue(select)
   }, [selectPeriod, lockDateValue]);
 
-  if (signIn === false || account === undefined) {
-    return <></>;
-  }
+  useEffect(() => {}, []);
 
   return (
     <Modal
@@ -117,6 +190,10 @@ export const DaoStakeModal = () => {
       isCentered
       onClose={() => {
         setIsCustom(false);
+        setDateValue(0);
+        setReward('-');
+        setReward('-');
+        setLockDateValue(undefined);
         handleCloseModal();
       }}>
       <ModalOverlay />
@@ -126,6 +203,7 @@ export const DaoStakeModal = () => {
         w="350px"
         pt="25px"
         pb="25px">
+        <CloseButton closeFunc={handleCloseModal}></CloseButton>
         <ModalBody p={0}>
           <Box
             pb={'1.250em'}
@@ -187,7 +265,7 @@ export const DaoStakeModal = () => {
               <Text
                 fontSize={'18px'}
                 color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                {data?.data?.userTosBalance} TOS
+                {balance} TOS
               </Text>
             </Box>
           </Stack>
@@ -250,7 +328,9 @@ export const DaoStakeModal = () => {
                   fontSize={'0.750em'}
                   _hover={{}}
                   onClick={() => {
+                    setDateValue(0);
                     setIsCustom(true);
+                    setSelectPeriod('months');
                     changeAllBorderColor();
                   }}>
                   Customized
@@ -261,7 +341,30 @@ export const DaoStakeModal = () => {
                   <Text fontSize={'0.750em'} color="gray.250" fontWeight={600}>
                     Customized
                   </Text>
-                  <Input
+                  <NumberInput
+                    w="132px"
+                    h="32px"
+                    value={lockDateValue}
+                    ref={focusCustomTarget}
+                    onChange={(value) =>
+                      value !== '-' && value !== '.'
+                        ? setLockDateValue(value)
+                        : null
+                    }
+                    onClick={() => changeAllBorderColor()}>
+                    <NumberInputField
+                      variant={'outline'}
+                      borderWidth={1}
+                      fontSize="12px"
+                      w={'100%'}
+                      h={'100%'}
+                      p={0}
+                      pl={15}
+                      _focus={{
+                        borderWidth: 0,
+                      }}></NumberInputField>
+                  </NumberInput>
+                  {/* <Input
                     w="132px"
                     h="32px"
                     ref={focusCustomTarget}
@@ -269,7 +372,7 @@ export const DaoStakeModal = () => {
                       const {value} = e.target;
                       setLockDateValue(value);
                     }}
-                    onClick={() => changeAllBorderColor()}></Input>
+                    onClick={() => changeAllBorderColor()}></Input> */}
                   <Select
                     w="100px"
                     h="32px"
@@ -278,38 +381,64 @@ export const DaoStakeModal = () => {
                       const type = e.target.value;
                       setSelectPeriod(type);
                     }}>
-                    <option value="" disabled selected hidden>
-                      Select
+                    <option value="months" selected>
+                      months
                     </option>
                     <option value="weeks">weeks</option>
-                    <option value="months">months</option>
+                    {/* <option value="months">months</option> */}
                   </Select>
                 </Flex>
               )}
-              <Flex flexDir="column" mt={'10px'}>
-                <Flex justifyContent="space-between">
-                  <Text>Estimated end date</Text>
-                  <Text>2021.12.31(KST)</Text>
-                  <Tooltip
-                    hasArrow
-                    placement="top"
-                    label="Lock up-period is calculated  based on every Monday 00: 00 UTC."
-                    color={theme.colors.white[100]}
-                    bg={theme.colors.gray[375]}>
-                    <Image src={tooltipIcon} />
-                  </Tooltip>
+              <Flex flexDir="column" mt={'14px'}>
+                <Flex
+                  justifyContent="space-between"
+                  alignItems="center"
+                  h="45px">
+                  <Flex>
+                    <Text fontSize="13px" color="gray.400" mr="5px">
+                      Estimated end date
+                    </Text>
+                    <Tooltip
+                      hasArrow
+                      placement="top"
+                      label="Lock up-period is calculated  based on every Thursday 00 : 00 UTC."
+                      color={theme.colors.white[100]}
+                      bg={theme.colors.gray[375]}>
+                      <Image src={tooltipIcon} />
+                    </Tooltip>
+                  </Flex>
+                  <Text
+                    fontSize="15px"
+                    color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+                    fontWeight={600}>
+                    {endDate === 'Invalid date' ? null : endDate} (KST)
+                  </Text>
                 </Flex>
-                <Flex justifyContent="space-between">
-                  <Text>Estimated reward</Text>
-                  <Text>1,000 sTOS</Text>
-                  <Tooltip
-                    hasArrow
-                    placement="top"
-                    label="This estimator could be change depending on the situation"
-                    color={theme.colors.white[100]}
-                    bg={theme.colors.gray[375]}>
-                    <Image src={tooltipIcon} />
-                  </Tooltip>
+                <Flex
+                  justifyContent="space-between"
+                  alignItems="center"
+                  h="45px">
+                  <Flex>
+                    <Text fontSize="13px" color="gray.400" mr="5px">
+                      Estimated amount
+                    </Text>
+                    <Tooltip
+                      hasArrow
+                      placement="top"
+                      label="This estimator could be change depending on the situation."
+                      color={theme.colors.white[100]}
+                      bg={theme.colors.gray[375]}>
+                      <Image src={tooltipIcon} />
+                    </Tooltip>
+                  </Flex>
+                  <Flex flexDir="row">
+                    <Text
+                      ml={2}
+                      color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+                      fontWeight={600}>
+                      {reward === 'NaN' ? null : reward} sTOS
+                    </Text>
+                  </Flex>
                 </Flex>
               </Flex>
             </Box>
@@ -317,42 +446,42 @@ export const DaoStakeModal = () => {
 
           <Box as={Flex} justifyContent={'center'}>
             <Button
-              {...(btnDisabled === true
+              {...(btnDisable === true
                 ? {...btnStyle.btnDisable({colorMode})}
                 : {...btnStyle.btnAble()})}
               w={'150px'}
               fontSize="14px"
-              _hover={btnDisabled ? {} : {...theme.btnHover}}
-              disabled={btnDisabled}
+              _hover={btnDisable ? {} : {...theme.btnHover}}
+              disabled={btnDisable}
               onClick={() => {
-                if (
-                  Number(value.replaceAll(',', '')) >
-                  Number(data?.data?.userTosBalance)
-                ) {
-                  return toastMsg({
-                    status: 'error',
-                    title: 'Error',
-                    description: 'Balance is not enough',
-                    duration: 5000,
-                    isClosable: true,
+                const isBalance = checkBalance(
+                  Number(value.replaceAll(',', '')),
+                  Number(balance),
+                );
+                if (isBalance && account) {
+                  handleOpenConfirmModal({
+                    type: 'confirm',
+                    data: {
+                      from: 'dao/stake',
+                      amount: value,
+                      period: dateValue,
+                      action: () => {
+                        setIsCustom(false);
+                        setDateValue(0);
+                        setReward('-');
+                        setReward('-');
+                        setLockDateValue(undefined);
+                        stakeTOS({
+                          account,
+                          library,
+                          amount: value.replaceAll(',', ''),
+                          period: dateValue,
+                          handleCloseModal: handleCloseModal(),
+                        });
+                      },
+                    },
                   });
                 }
-                handleOpenConfirmModal({
-                  type: 'confirm',
-                  data: {
-                    from: 'dao/stake',
-                    amount: value,
-                    period: dateValue,
-                    action: () =>
-                      stakeTOS({
-                        account,
-                        library,
-                        amount: value.replaceAll(',', ''),
-                        period: dateValue,
-                        handleCloseModal: handleCloseModal(),
-                      }),
-                  },
-                });
               }}>
               Stake
             </Button>

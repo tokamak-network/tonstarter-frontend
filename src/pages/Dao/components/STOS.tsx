@@ -5,11 +5,9 @@ import {MySTOS} from './MySTOS';
 import {shortenAddress} from 'utils';
 import {useEffect} from 'react';
 import {useState} from 'react';
-import {useAppSelector} from 'hooks/useRedux';
-import {selectUser} from 'store/app/user.reducer';
-import {useUser} from 'hooks/useUser';
-import {getTosStakeList} from './utils';
-import {selectTransactionType} from 'store/refetch.reducer';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+// import {Claim} from './Claim';
+// import {Distribute} from './Distribute';
 
 const themeDesign = {
   fontColorTitle: {
@@ -46,56 +44,24 @@ const themeDesign = {
   },
 };
 
-// type TosStakeList = [
-//   {
-//     lockId: string;
-//     periodWeeks: number;
-//     periodDays: number;
-//     end: boolean;
-//     lockedBalance: string;
-//   },
-// ];
-
 export const STOS = () => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
-  const {signIn, account, library} = useUser();
+  const {account, library} = useActiveWeb3React();
   const [address, setAddress] = useState('-');
-  const {data} = useAppSelector(selectUser);
-  const [stakeList, setStakeList] = useState<any[]>([]);
-  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
 
   useEffect(() => {
-    async function getStakeList() {
-      const res = await getTosStakeList({account, library});
-      if (res) {
-        setStakeList(res);
-      }
-    }
-    if (account !== undefined) {
+    if (account && library) {
       setAddress(shortenAddress(account));
-      getStakeList();
     } else {
       setAddress('-');
     }
   }, [account, library]);
 
-  useEffect(() => {
-    async function getStakeList() {
-      const res = await getTosStakeList({account, library});
-      if (res) {
-        setStakeList(res);
-      }
-    }
-    if (transactionType === 'Dao') {
-      getStakeList();
-    }
-    /*eslint-disable*/
-  }, [transactionType, blockNumber]);
-
   return (
     <Flex
       w={420}
+      // h={'550px'}
       h={'430px'}
       p={0}
       pt="19.5px"
@@ -121,7 +87,7 @@ export const STOS = () => {
           fontFamily={theme.fonts.roboto}
           fontSize="0.750em"
           color="#86929d">
-          Staking TOS and get sTOS.
+          Stake TOS and get sTOS.
         </Text>
       </Flex>
       <Flex
@@ -144,18 +110,19 @@ export const STOS = () => {
           {address}
         </Text>
       </Flex>
-      <Box mb={'20px'}>
-        <AvailableBalance signIn={signIn} userData={data}></AvailableBalance>
+      <Box h={'68px'}>
+        <AvailableBalance></AvailableBalance>
       </Box>
-      <Box mb={'20px'}>
-        <MyStaked
-          signIn={signIn}
-          userData={data}
-          stakeList={stakeList}
-          transactionType={transactionType}
-          blockNumber={blockNumber}></MyStaked>
+      <Box h={'68px'}>
+        <MyStaked></MyStaked>
       </Box>
-      <MySTOS signIn={signIn} userData={data} stakeList={stakeList}></MySTOS>
+      <Box h={'68px'}>
+        <MySTOS></MySTOS>
+      </Box>
+      {/* <Box h={'68px'}>
+        <Claim></Claim>
+      </Box>
+      <Distribute></Distribute> */}
     </Flex>
   );
 };

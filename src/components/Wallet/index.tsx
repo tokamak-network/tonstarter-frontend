@@ -273,8 +273,10 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
                         outline="none"
                         colorScheme="red"
                         onClick={() => {
+                          deactivate();
                           (connector as any).close();
-                          setAccountValue({signIn: false});
+
+                          // setAccountValue({signIn: false});
                         }}>
                         Disconnect
                       </Button>
@@ -287,12 +289,12 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
                         colorScheme="red"
                         onClick={() => {
                           deactivate();
-                          setAccountValue({signIn: false});
-                          const {address, library} = store.getState().user.data;
+                          // setAccountValue({signIn: false});
+                          const {account, library} = store.getState().user.data;
                           //@ts-ignore
                           store.dispatch(
                             //@ts-ignore
-                            fetchUserInfo({address, library, reset: true}),
+                            fetchUserInfo({account, library, reset: true}),
                           );
                         }}>
                         Disconnect

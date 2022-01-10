@@ -16,19 +16,19 @@ import {unstakeL2} from '../actions';
 import React from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
-import {useUser} from 'hooks/useUser';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal/CloseButton';
 
 export const UnStakeFromLayer2Modal = () => {
-  const {account, library} = useUser();
+  const {account, library} = useActiveWeb3React();
   const {sub} = useAppSelector(selectModalType);
   const theme = useTheme();
   const {colorMode} = useColorMode();
   const {handleCloseConfirmModal} = useModal();
 
   const {
-    data: {contractAddress, canUnstakedL2, unstakeAll},
+    data: {contractAddress, canUnstakedL2, unstakeAll, name},
   } = sub;
 
   const handleCloseModal = () => {
@@ -60,7 +60,7 @@ export const UnStakeFromLayer2Modal = () => {
               fontFamily={theme.fonts.titil}
               color={colorMode === 'light' ? 'gray.250' : 'white.100'}
               textAlign={'center'}>
-              Unstake From Tokamak
+              Unstake TON from the {name} Product
             </Heading>
             <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
               You can earn TON and POWER

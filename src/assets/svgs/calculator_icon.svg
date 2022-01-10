@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+    <defs>
+        <style>
+            .cls-2{fill:none;stroke:#fff;stroke-linecap:round;stroke-linejoin:round}.cls-3{fill:#fff}
+        </style>
+    </defs>
+    <g id="calculator_icon" transform="translate(-84 -84)">
+        <path id="Base" transform="translate(84 84)" style="fill:none" d="M0 0h24v24H0z"/>
+        <path id="사각형_124" data-name="사각형 124" class="cls-2" transform="translate(91.5 90)" d="M0 0h9v4.5H0z"/>
+        <rect id="사각형_125" data-name="사각형 125" class="cls-2" width="15" height="18" rx=".75" transform="translate(88.5 87)"/>
+        <circle id="타원_75" data-name="타원 75" class="cls-3" cx="1.125" cy="1.125" r="1.125" transform="translate(91.125 96.75)"/>
+        <circle id="타원_76" data-name="타원 76" class="cls-3" cx="1.125" cy="1.125" r="1.125" transform="translate(94.875 96.75)"/>
+        <circle id="타원_77" data-name="타원 77" class="cls-3" cx="1.125" cy="1.125" r="1.125" transform="translate(98.625 96.75)"/>
+        <circle id="타원_78" data-name="타원 78" class="cls-3" cx="1.125" cy="1.125" r="1.125" transform="translate(91.125 100.5)"/>
+        <circle id="타원_79" data-name="타원 79" class="cls-3" cx="1.125" cy="1.125" r="1.125" transform="translate(94.875 100.5)"/>
+        <circle id="타원_80" data-name="타원 80" class="cls-3" cx="1.125" cy="1.125" r="1.125" transform="translate(98.625 100.5)"/>
+    </g>
+</svg>

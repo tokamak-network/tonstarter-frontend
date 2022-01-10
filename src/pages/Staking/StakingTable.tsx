@@ -14,11 +14,11 @@ import {
   Tooltip,
   Select,
   Box,
-  Avatar,
   useColorMode,
   Center,
   useTheme,
   Image,
+  Button,
 } from '@chakra-ui/react';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
@@ -32,6 +32,21 @@ import {setTimeout} from 'timers';
 import {LoadingComponent} from 'components/Loading';
 // import {fetchStakeURL} from 'constants/index';
 // import {selectTransactionType} from 'store/refetch.reducer';
+import {
+  checkCanWithdrawLayr2All,
+  stakeTonControl,
+} from './actions/stakeTONControl';
+import {
+  // isUnstakeL2All,
+  requestUnstakingLayer2All,
+  isAblePowerTONSwap,
+  powerTONSwapper,
+} from './actions';
+import {useBlockNumber} from 'hooks/useBlock';
+import {CustomTooltip} from 'components/Tooltip';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import {TokenImage} from '@Admin/components/TokenImage';
+import TON_SYMBOL from 'assets/tokens/TON_symbol_nobg.svg';
 
 type StakingTableProps = {
   columns: Column[];
@@ -98,6 +113,49 @@ const getStatus = (
   );
 };
 
+const GetL2Status = ({
+  sort,
+  mr,
+  onlyImage,
+}: {
+  sort: 'canUnstake' | 'canWithdraw' | 'canSwap';
+  mr?: string;
+  onlyImage?: boolean;
+}) => {
+  const {colorMode} = useColorMode();
+
+  return (
+    <Flex alignItems="center" mr={mr}>
+      <Flex
+        w={'16px'}
+        h={'16px'}
+        bg={
+          sort === 'canUnstake'
+            ? 'blue.500'
+            : sort === 'canWithdraw'
+            ? 'green.100'
+            : 'orange.100'
+        }
+        mr={'7px'}
+        alignItems="center"
+        justifyContent="center"
+        color="white.100"
+        fontSize={12}>
+        {sort === 'canUnstake' && 'U'}
+        {sort === 'canWithdraw' && 'W'}
+        {sort === 'canSwap' && 'S'}
+      </Flex>
+      <Text
+        fontSize={11}
+        color={colorMode === 'light' ? 'black.300' : 'white.100'}>
+        {sort === 'canUnstake' && onlyImage === false && 'Unstake from layer2'}
+        {sort === 'canWithdraw' && onlyImage === false && 'Withdraw'}
+        {sort === 'canSwap' && onlyImage === false && 'Swap'}
+      </Text>
+    </Flex>
+  );
+};
+
 export const StakingTable: FC<StakingTableProps> = ({
   columns,
   data,
@@ -128,6 +186,8 @@ export const StakingTable: FC<StakingTableProps> = ({
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const focusTarget = useRef<any>([]);
+  const {blockNumber} = useBlockNumber();
+  const {library} = useActiveWeb3React();
 
   const {
     data: {contractAddress, index},
@@ -141,16 +201,41 @@ export const StakingTable: FC<StakingTableProps> = ({
         loop = loop - 1;
         if (loop === 0) {
           setTimeout(() => {
-            focusTarget.current[
+            focusTarget?.current[
               index - Math.floor(index / 10) * 10
-            ].scrollIntoView({
+            ]?.scrollIntoView({
               block: 'start',
             });
-          }, 200);
+          }, 100);
         }
       }
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const [isWithdrawAndSwapAll, setIsWithdrawAndSwapAll] =
+    useState<boolean>(false);
+  const [isUnstakeAll, setIsUnstakeAll] = useState<boolean>(false);
+  const [isPowerTONSwap, setIsPowerTONSwap] = useState<boolean>(false);
+
+  //withdraw&swapall btn able condition
+  useEffect(() => {
+    async function callIsWithdrawAndSwapAll() {
+      if (library) {
+        const isWithdraw = await checkCanWithdrawLayr2All(library);
+        // const isUnstakeAll = await isUnstakeL2All(library);
+        const isPowerTONSwap = await isAblePowerTONSwap(library);
+
+        const isUnstakeAll = data.filter(
+          (data) => data.L2status.canUnstake === true,
+        );
+
+        setIsWithdrawAndSwapAll(isWithdraw || false);
+        setIsUnstakeAll(isUnstakeAll.length > 0);
+        setIsPowerTONSwap(isPowerTONSwap || false);
+      }
+    }
+    callIsWithdrawAndSwapAll();
+  }, [blockNumber, library, data]);
 
   //refetch to update Total Staked, Earninger Per Ton after stake, unstake
   // const {
@@ -205,7 +290,7 @@ export const StakingTable: FC<StakingTableProps> = ({
   const clickOpen = (contractAddress: string, index: number) => {
     setIsOpen(contractAddress);
     setTimeout(() => {
-      focusTarget.current[index].scrollIntoView({
+      focusTarget?.current[index]?.scrollIntoView({
         behavior: 'smooth',
         block: 'start',
       });
@@ -240,13 +325,31 @@ export const StakingTable: FC<StakingTableProps> = ({
     );
   }
 
+  const {btnStyle} = theme;
+
   return (
     <Flex w="1100px" flexDir={'column'}>
-      <Flex justifyContent={'space-between'} mb={'23px'}>
+      <Flex justifyContent={'space-between'} mb={'23px'} ml={'17px'}>
         <Flex>
           {getStatus('sale', colorMode)}
           {getStatus('start', colorMode)}
           {getStatus('end', colorMode)}
+          <Flex
+            color={'#c7d1d8'}
+            fontSize={'8px'}
+            mr={'20px'}
+            alignItems="center">
+            <Text>|</Text>
+          </Flex>
+          <GetL2Status
+            sort={'canUnstake'}
+            mr={'20px'}
+            onlyImage={false}></GetL2Status>
+          <GetL2Status
+            sort={'canWithdraw'}
+            mr={'20px'}
+            onlyImage={false}></GetL2Status>
+          <GetL2Status sort={'canSwap'} onlyImage={false}></GetL2Status>
         </Flex>
         <Select
           w={'137px'}
@@ -309,27 +412,36 @@ export const StakingTable: FC<StakingTableProps> = ({
                   alignItems="center"
                   {...row.getRowProps()}>
                   {row.cells.map((cell: any, index: number) => {
-                    const {token, status, name, period, stakeBalanceTON, ept} =
-                      cell.row.original;
+                    const {
+                      token,
+                      status,
+                      name,
+                      period,
+                      stakeBalanceTON,
+                      ept,
+                      L2status,
+                      saleClosed,
+                    } = cell.row.original;
+                    const {canSwap, canUnstake, canWithdraw} = L2status;
                     const type = cell.column.id;
                     const tokenType = checkTokenType(token);
                     return (
                       <chakra.td
-                        px={3}
                         py={3}
                         key={index}
                         m={0}
                         w={
                           type === 'name'
-                            ? '280px'
+                            ? '362px'
                             : type === 'period'
                             ? '150px'
                             : type === 'stakeBalanceTON'
-                            ? '200px'
+                            ? '230px'
                             : type === 'earning_per_ton'
-                            ? ''
-                            : '200px'
+                            ? '200px'
+                            : '10px'
                         }
+                        pr={0}
                         display="flex"
                         alignItems="center"
                         color={getTextColor(type, colorMode)}
@@ -339,18 +451,29 @@ export const StakingTable: FC<StakingTableProps> = ({
                         {type === 'name' ? getCircle(status) : ''}
                         {type === 'name' ? (
                           <>
-                            <Avatar
-                              src={tokenType.symbol}
-                              backgroundColor={tokenType.bg}
-                              bg="transparent"
-                              color="#c7d1d8"
-                              name="T"
-                              h="48px"
-                              w="48px"
-                              ml="10px"
-                              mr="12px"
-                            />
-                            <Text>{name}</Text>
+                            <Box ml={'10px'} mr={'12px'}>
+                              <TokenImage imageLink={TON_SYMBOL}></TokenImage>
+                            </Box>
+                            <Text w={'176px'}>{name}</Text>
+                            <Flex
+                              justifyContent="flex-start"
+                              w={'80px'}
+                              pl={'13px'}
+                              mr={'20px'}>
+                              {canUnstake && (
+                                <GetL2Status
+                                  sort={'canUnstake'}
+                                  mr={'1px'}></GetL2Status>
+                              )}
+                              {canWithdraw && (
+                                <GetL2Status
+                                  sort={'canWithdraw'}
+                                  mr={'1px'}></GetL2Status>
+                              )}
+                              {canSwap === true && saleClosed === false && (
+                                <GetL2Status sort={'canSwap'}></GetL2Status>
+                              )}
+                            </Flex>
                           </>
                         ) : (
                           ''
@@ -385,9 +508,9 @@ export const StakingTable: FC<StakingTableProps> = ({
                         )}
 
                         {type === 'earning_per_ton' ? (
-                          <>
+                          <Flex justifyContent={'space-around'} w={'100%'}>
                             <Text
-                              mr={2}
+                              w={'150px'}
                               color={
                                 colorMode === 'light' ? '#86929d' : '#949494'
                               }>
@@ -405,13 +528,15 @@ export const StakingTable: FC<StakingTableProps> = ({
                               bg={theme.colors.gray[375]}>
                               <Image src={tooltipIcon} />
                             </Tooltip>
-                          </>
+                          </Flex>
                         ) : (
                           ''
                         )}
-                        {type === 'expander'
-                          ? renderBtn(contractAddress, i)
-                          : null}
+                        {type === 'expander' ? (
+                          <Box ml={'115px'}>
+                            {renderBtn(contractAddress, i)}
+                          </Box>
+                        ) : null}
                         {/* {isLoading ? <Skeleton h={5} /> : cell.render('Cell')} */}
                       </chakra.td>
                     );
@@ -422,7 +547,6 @@ export const StakingTable: FC<StakingTableProps> = ({
                 isOpen === contractAddress ? (
                   <chakra.tr
                     boxShadow="0 1px 1px 0 rgba(96, 97, 112, 0.16)"
-                    w={'100%'}
                     h={'430px'}
                     key={i}
                     m={0}
@@ -460,98 +584,176 @@ export const StakingTable: FC<StakingTableProps> = ({
       */}
         {/* PAGENATION FOR LATER */}
         <Flex justifyContent="flex-end" my={4} alignItems="center">
-          <Flex>
-            <Tooltip label="Previous Page">
-              <IconButton
-                w={'24px'}
-                h={'24px'}
-                bg={colorMode === 'light' ? 'white.100' : 'none'}
-                border={
-                  colorMode === 'light'
-                    ? 'solid 1px #e6eaee'
-                    : 'solid 1px #424242'
-                }
-                color={colorMode === 'light' ? '#e6eaee' : '#424242'}
-                borderRadius={4}
-                aria-label={'Previous Page'}
-                onClick={goPrevPage}
-                isDisabled={!canPreviousPage}
-                size={'sm'}
-                mr={4}
-                _hover={{borderColor: '#2a72e5', color: '#2a72e5'}}
-                icon={<ChevronLeftIcon h={6} w={6} />}
-              />
-            </Tooltip>
+          <Flex w={'100%'} r={'100%'}>
+            <CustomTooltip
+              toolTipW={245}
+              toolTipH={'50px'}
+              fontSize="12px"
+              msg={[
+                'You can withdraw&swap #1~#4 seig TON',
+                'thorough this function',
+              ]}
+              placement={'top'}
+              component={
+                <Button
+                  {...(isWithdrawAndSwapAll
+                    ? {...btnStyle.btnAble()}
+                    : {...btnStyle.btnDisable({colorMode})})}
+                  w={'140.53px'}
+                  isDisabled={!isWithdrawAndSwapAll}
+                  fontSize={'14px'}
+                  fontWeight={600}
+                  onClick={() => stakeTonControl()}>
+                  Withdraw & Swap
+                </Button>
+              }></CustomTooltip>
+            <Box ml={'10px'}>
+              <CustomTooltip
+                toolTipW={245}
+                toolTipH={'50px'}
+                fontSize="12px"
+                msg={[
+                  'You can unstake #1~#3 seig TON',
+                  'thorough this function',
+                ]}
+                placement={'top'}
+                component={
+                  <Button
+                    {...(isUnstakeAll
+                      ? {...btnStyle.btnAble()}
+                      : {...btnStyle.btnDisable({colorMode})})}
+                    w={'140.53px'}
+                    isDisabled={!isUnstakeAll}
+                    fontSize={'14px'}
+                    fontWeight={600}
+                    onClick={() => requestUnstakingLayer2All()}>
+                    Unstake
+                  </Button>
+                }></CustomTooltip>
+            </Box>
+            <Box ml={'10px'}>
+              <CustomTooltip
+                toolTipW={245}
+                toolTipH={'50px'}
+                fontSize="12px"
+                msg={[
+                  'You can swap Power TON to TOS',
+                  'thorough this function',
+                ]}
+                placement={'top'}
+                component={
+                  <Button
+                    {...(isPowerTONSwap
+                      ? {...btnStyle.btnAble()}
+                      : {...btnStyle.btnDisable({colorMode})})}
+                    w={'140.53px'}
+                    isDisabled={!isPowerTONSwap}
+                    fontSize={'14px'}
+                    fontWeight={600}
+                    onClick={() => powerTONSwapper()}>
+                    Power TON Swap
+                  </Button>
+                }></CustomTooltip>
+            </Box>
           </Flex>
-
-          <Flex
-            alignItems="center"
-            p={0}
-            fontSize={'13px'}
-            fontFamily={theme.fonts.roboto}
-            color={colorMode === 'light' ? '#3a495f' : '#949494'}
-            pb={'3px'}>
-            Page{' '}
-            <Text fontWeight="bold" as="span" color={'blue.300'}>
-              {pageIndex + 1}
-            </Text>{' '}
-            of{' '}
-            <Text fontWeight="bold" as="span">
-              {pageOptions.length}
-            </Text>
-          </Flex>
-
-          <Flex>
-            <Tooltip label="Next Page">
-              <Center>
+          {data.length > 10 && (
+            <Flex>
+              <Tooltip label="Previous Page">
                 <IconButton
                   w={'24px'}
                   h={'24px'}
+                  bg={colorMode === 'light' ? 'white.100' : 'none'}
                   border={
                     colorMode === 'light'
                       ? 'solid 1px #e6eaee'
                       : 'solid 1px #424242'
                   }
                   color={colorMode === 'light' ? '#e6eaee' : '#424242'}
-                  bg={colorMode === 'light' ? 'white.100' : 'none'}
                   borderRadius={4}
-                  aria-label={'Next Page'}
-                  onClick={goNextPage}
-                  isDisabled={!canNextPage}
+                  aria-label={'Previous Page'}
+                  onClick={goPrevPage}
+                  isDisabled={!canPreviousPage}
                   size={'sm'}
-                  ml={4}
-                  mr={'1.5625em'}
+                  mr={4}
                   _hover={{borderColor: '#2a72e5', color: '#2a72e5'}}
-                  icon={<ChevronRightIcon h={6} w={6} />}
+                  icon={<ChevronLeftIcon h={6} w={6} />}
                 />
-              </Center>
-            </Tooltip>
-            <Select
-              w={'117px'}
-              h={'32px'}
-              mr={1}
-              color={colorMode === 'light' ? ' #3e495c' : '#f3f4f1'}
-              bg={colorMode === 'light' ? 'white.100' : 'none'}
-              boxShadow={
-                colorMode === 'light'
-                  ? '0 1px 1px 0 rgba(96, 97, 112, 0.14)'
-                  : ''
-              }
-              border={colorMode === 'light' ? '' : 'solid 1px #424242'}
-              borderRadius={4}
-              size={'sm'}
-              value={pageSize}
+              </Tooltip>
+            </Flex>
+          )}
+
+          {data.length > 10 && (
+            <Flex
+              alignItems="center"
+              p={0}
+              fontSize={'13px'}
               fontFamily={theme.fonts.roboto}
-              onChange={(e) => {
-                setPageSize(Number(e.target.value));
-              }}>
-              {[10, 20, 30, 40, 50].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  Show {pageSize}
-                </option>
-              ))}
-            </Select>
-          </Flex>
+              color={colorMode === 'light' ? '#3a495f' : '#949494'}
+              pb={'3px'}>
+              Page{' '}
+              <Text fontWeight="bold" as="span" color={'blue.300'}>
+                {pageIndex + 1}
+              </Text>{' '}
+              of{' '}
+              <Text fontWeight="bold" as="span">
+                {pageOptions.length}
+              </Text>
+            </Flex>
+          )}
+
+          {data.length > 10 && (
+            <Flex>
+              <Tooltip label="Next Page">
+                <Center>
+                  <IconButton
+                    w={'24px'}
+                    h={'24px'}
+                    border={
+                      colorMode === 'light'
+                        ? 'solid 1px #e6eaee'
+                        : 'solid 1px #424242'
+                    }
+                    color={colorMode === 'light' ? '#e6eaee' : '#424242'}
+                    bg={colorMode === 'light' ? 'white.100' : 'none'}
+                    borderRadius={4}
+                    aria-label={'Next Page'}
+                    onClick={goNextPage}
+                    isDisabled={!canNextPage}
+                    size={'sm'}
+                    ml={4}
+                    mr={'1.5625em'}
+                    _hover={{borderColor: '#2a72e5', color: '#2a72e5'}}
+                    icon={<ChevronRightIcon h={6} w={6} />}
+                  />
+                </Center>
+              </Tooltip>
+              <Select
+                w={'117px'}
+                h={'32px'}
+                mr={1}
+                color={colorMode === 'light' ? ' #3e495c' : '#f3f4f1'}
+                bg={colorMode === 'light' ? 'white.100' : 'none'}
+                boxShadow={
+                  colorMode === 'light'
+                    ? '0 1px 1px 0 rgba(96, 97, 112, 0.14)'
+                    : ''
+                }
+                border={colorMode === 'light' ? '' : 'solid 1px #424242'}
+                borderRadius={4}
+                size={'sm'}
+                value={pageSize}
+                fontFamily={theme.fonts.roboto}
+                onChange={(e) => {
+                  setPageSize(Number(e.target.value));
+                }}>
+                {[10, 20, 30, 40, 50].map((pageSize) => (
+                  <option key={pageSize} value={pageSize}>
+                    Show {pageSize}
+                  </option>
+                ))}
+              </Select>
+            </Flex>
+          )}
         </Flex>
       </Box>
     </Flex>

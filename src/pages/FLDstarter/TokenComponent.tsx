@@ -5,7 +5,6 @@ import {
   Button,
   Container,
   useTheme,
-  Avatar,
   useColorMode,
 } from '@chakra-ui/react';
 import {useEffect, useCallback} from 'react';
@@ -17,6 +16,9 @@ import {openTable} from 'store/table.reducer';
 import {useAppDispatch} from 'hooks/useRedux';
 import {openModal} from 'store/modal.reducer';
 import store from 'store';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import {TokenImage} from 'pages/Admin/components/TokenImage';
+import TON_SYMBOL from 'assets/tokens/TON_symbol_nobg.svg';
 
 type TokenComponentProps = {
   data: any;
@@ -26,7 +28,6 @@ type TokenComponentProps = {
   token: TokenType;
   stakedAmount: string;
   contractAddress: string;
-  account: string | undefined;
   index: number;
   ept: string;
 };
@@ -39,7 +40,6 @@ export const TokenComponent: FC<TokenComponentProps> = ({
   token,
   stakedAmount,
   contractAddress,
-  account,
   index,
   ept,
 }) => {
@@ -49,6 +49,8 @@ export const TokenComponent: FC<TokenComponentProps> = ({
   const history = useHistory();
   const tokenType = checkTokenType(token);
   const [tokenPrice, setTokenPrice] = useState<string | undefined>('0');
+  const {account} = useActiveWeb3React();
+  const [isDisabled, setIsDisabled] = useState(false);
 
   useEffect(() => {
     async function getPrice() {
@@ -74,12 +76,15 @@ export const TokenComponent: FC<TokenComponentProps> = ({
     window.scrollTo(0, 350 + index * 69);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const isDisabled =
-    account === undefined ||
-    status !== 'sale' ||
-    data.fetchBlock < data.saleStartTime
-      ? true
-      : false;
+  useEffect(() => {
+    const isDisabled =
+      account === undefined ||
+      status !== 'sale' ||
+      data.fetchBlock < data.saleStartTime
+        ? true
+        : false;
+    setIsDisabled(isDisabled);
+  }, [account, data, status]);
 
   return (
     <Container
@@ -90,7 +95,8 @@ export const TokenComponent: FC<TokenComponentProps> = ({
       borderColor={theme.colors.gray[75]}
       p="4">
       <Flex direction={'row'} pos="relative">
-        <Avatar
+        <TokenImage imageLink={TON_SYMBOL}></TokenImage>
+        {/* <Avatar
           src={tokenType.symbol}
           backgroundColor={tokenType.bg}
           bg="transparent"
@@ -98,7 +104,7 @@ export const TokenComponent: FC<TokenComponentProps> = ({
           name="T"
           h="48px"
           w="48px"
-        />
+        /> */}
         <Flex direction={'column'} px={6}>
           <Text
             fontWeight={'bold'}

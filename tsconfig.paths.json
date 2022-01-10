@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@Staking/*": ["./pages/Staking/*"],
+      "@Pools/*": ["./pages/Pools/*"],
+      "@Starter/*": ["./pages/Starter/*"],
+      "@Dao/*": ["./pages/Dao/*"],
+      "@Admin/*": ["./pages/Admin/*"]
+    }
+  }
+}

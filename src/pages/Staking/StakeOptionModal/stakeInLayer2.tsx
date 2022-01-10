@@ -17,14 +17,15 @@ import React, {useCallback, useState} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {stakeL2} from '../actions';
-import {useUser} from 'hooks/useUser';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useModal} from 'hooks/useModal';
 import {useCheckBalance} from 'hooks/useCheckBalance';
 import {CloseButton} from 'components/Modal';
+import {convertToWei} from 'utils/number';
 
 export const StakeInLayer2Modal = () => {
   const {sub} = useAppSelector(selectModalType);
-  const {account, library} = useUser();
+  const {account, library} = useActiveWeb3React();
   const {balance, contractAddress, originalStakeBalance} = sub.data;
 
   const [value, setValue] = useState<number>(balance);
@@ -140,17 +141,19 @@ export const StakeInLayer2Modal = () => {
                     Number(value),
                     Number(balance),
                   );
+                  if (isBalance === false) {
+                    return;
+                  }
                   if (isBalance === true || 'balanceAll') {
                     stakeL2({
                       account,
                       library,
                       amount:
                         isBalance !== 'balanceAll'
-                          ? value.toString()
+                          ? convertToWei(value.toString())
                           : originalStakeBalance.toString(),
                       contractAddress,
                     });
-
                     handleCloseModal();
                   }
                 }

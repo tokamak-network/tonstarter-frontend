@@ -5,10 +5,10 @@ import {
   Stack,
   Image,
   useTheme,
-  Tooltip,
   CircularProgress,
   useColorMode,
   Text,
+  // Tooltip,
 } from '@chakra-ui/react';
 import React from 'react';
 import {shortenAddress} from 'utils';
@@ -20,7 +20,7 @@ import {useAppSelector} from 'hooks/useRedux';
 import {selectTxType} from 'store/tx.reducer';
 import {useDispatch} from 'react-redux';
 import {openModal} from 'store/modal.reducer';
-
+import {Menu, MenuButton, MenuList, MenuItem} from '@chakra-ui/react';
 type HeaderProps = {
   walletopen: () => void;
   account: string | undefined | null;
@@ -36,6 +36,7 @@ export const Header: React.FC<HeaderProps> = (props) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const {colorMode} = useColorMode();
   const toggle = () => setIsOpen(!isOpen);
+
   const match = useRouteMatch('/');
 
   return (
@@ -122,7 +123,6 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
         direction={['column', 'row', 'row', 'row']}
         pt={[4, 4, 0, 0]}>
         <Button
-          opacity={tx === true ? 0.5 : 1}
           border="solid 1px #d7d9df"
           color={
             colorMode === 'dark'
@@ -150,14 +150,30 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
           }
           zIndex={100}
           _hover={{}}>
-          {account ? shortenAddress(account) : 'Connect wallet'}
+          {account ? (
+            tx === true ? (
+              <Text
+                fontFamily={theme.fonts.roboto}
+                fontWeight={100}
+                fontSize={'14px'}
+                ml={'18px'}
+                pt={'1px'}>
+                Tx PENDING
+              </Text>
+            ) : (
+              shortenAddress(account)
+            )
+          ) : (
+            'Connect wallet'
+          )}
           {tx === true ? (
             <CircularProgress
               isIndeterminate
-              size={6}
+              size={4}
               zIndex={100}
               color="blue.500"
-              pos="absolute"></CircularProgress>
+              pos="absolute"
+              left={'14px'}></CircularProgress>
           ) : null}
         </Button>
         {account ? (
@@ -203,13 +219,21 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
 };
 
 const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
-  const theme = useTheme();
+  // const theme = useTheme();
   const match = useRouteMatch('/');
+  const {colorMode} = useColorMode();
+  const menuStyle =
+    colorMode === 'light'
+      ? {navLink: {background: '#ffffff', color: '#1c1c1c'}}
+      : {navLink: {background: 'transparent', color: '#f3f4f1'}};
+  const pools = useRouteMatch('/rewards/pools');
+  const reward = useRouteMatch('/rewards/rewardProgram');
+
   return (
     <Box
       display={{base: isOpen ? 'block' : 'none', md: 'block'}}
       flexBasis={{base: '100%', md: 'auto'}}
-      mx={100}>
+      ml={100}>
       <Stack
         spacing={8}
         align="center"
@@ -222,40 +246,91 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           style={{zIndex: 100}}>
           Staking
         </NavLink>
-        <Tooltip
-          hasArrow
-          placement="top"
-          color={theme.colors.white[100]}
-          bg={theme.colors.gray[375]}>
-          <NavLink
-            to="/pools"
-            className={match?.isExact ? 'link-match' : 'link'}
-            style={{zIndex: 100}}
-          >
-            Pools
-          </NavLink>
-        </Tooltip>
-
-        <Tooltip
-          hasArrow
-          placement="top"
-          label="Coming Soon"
-          color={theme.colors.white[100]}
-          bg={theme.colors.gray[375]}>
-          <NavLink
-            to="/starter"
-            className={match?.isExact ? 'link-match' : 'link'}
-            style={{zIndex: 100}}
-            onClick={(e) => e.preventDefault()}>
-            Starter
-          </NavLink>
-        </Tooltip>
+        <Menu>
+          <MenuButton>
+            <Text
+              fontSize={17}
+              fontWeight={'bold'}
+              color={
+                pools?.isExact || reward?.isExact
+                  ? colorMode === 'light'
+                    ? 'blue.100'
+                    : 'yellow.100'
+                  : match?.isExact
+                  ? colorMode === 'light'
+                    ? 'gray.0'
+                    : 'white.100'
+                  : colorMode === 'light'
+                  ? 'gray.275'
+                  : 'white.100'
+              }>
+              Rewards
+            </Text>
+          </MenuButton>
+          <MenuList
+            pos={'absolute'}
+            left={'-22px'}
+            top={'15px'}
+            minW={'182px'}
+            w={'182px'}
+            h={'74px'}
+            p={0}
+            fontSize={13}
+            background={colorMode === 'light' ? '#ffffff' : '#222222'}>
+            <NavLink
+              to="/rewards/rewardProgram"
+              activeStyle={{
+                background: 'transparent',
+                color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',
+              }}
+              style={{color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1'}}>
+              <MenuItem
+                _hover={{color: 'blue.100', bg: 'none'}}
+                w={'100%'}
+                h={'37px'}
+                _focus={{
+                  bg: colorMode === 'light' ? '#ffffff' : 'transparent',
+                }}>
+                Rewards Program
+              </MenuItem>
+            </NavLink>
+            <NavLink
+              to="/rewards/pools"
+              activeStyle={{
+                background: 'transparent',
+                color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',
+              }}
+              color={colorMode === 'light' ? '#1c1c1c' : '#f3f4f1'}
+              style={{color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1'}}>
+              <MenuItem
+                _hover={{color: 'blue.100', bg: 'none'}}
+                w={'100%'}
+                h={'37px'}
+                _focus={{background: 'transparent'}}>
+                Pools (Closed)
+              </MenuItem>
+            </NavLink>
+          </MenuList>
+        </Menu>
         <NavLink
           to="/dao"
           className={match?.isExact ? 'link-match' : 'link'}
           style={{zIndex: 100}}>
           DAO
         </NavLink>
+        <NavLink
+          to="/starter"
+          className={match?.isExact ? 'link-match' : 'link'}
+          style={{zIndex: 100}}>
+          Starter
+        </NavLink>
+        {/* <Tooltip
+          hasArrow
+          placement="top"
+          label="Coming Soon"
+          color={theme.colors.white[100]}
+          bg={theme.colors.gray[375]}> */}
+        {/* </Tooltip> */}
         <NavLink
           to="/"
           className={match?.isExact ? 'link-match' : 'link'}
@@ -270,18 +345,216 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
             WhitePaper
           </Text>
         </NavLink>
-        <NavLink
+        {/* <NavLink
           to="/"
           className={match?.isExact ? 'link-match' : 'link'}
           style={{zIndex: 100}}
           onClick={(e) => {
             e.preventDefault();
             window.open(
-              'https://medium.com/onther-tech/tonstarter-guide-en-kr-6b7cad5773f1',
+              'https://medium.com/onther-tech/wton-tos-lp-staking-reward-system-en-kr-881e57ec0568',
             );
           }}>
           <Text className={match?.isExact ? 'link-match' : 'link'}>Guide</Text>
-        </NavLink>
+        </NavLink> */}
+
+        <Menu>
+          <MenuButton>
+            <Text className={match?.isExact ? 'link-match' : 'link'}>
+              Guide
+            </Text>
+          </MenuButton>
+          <MenuList
+            pos={'absolute'}
+            left={'-33px'}
+            top={'15px'}
+            minW={'125px'}
+            w={'125px'}
+            h={'185px'}
+            p={0}
+            fontSize={13}
+            background={colorMode === 'light' ? '#ffffff' : '#222222'}>
+            <NavLink
+              to="/"
+              activeStyle={{
+                background: colorMode === 'light' ? '#ffffff' : '',
+                color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',
+              }}
+              style={menuStyle.navLink}
+              onClick={(e) => {
+                e.preventDefault();
+                window.open(
+                  'https://medium.com/onther-tech/tonstarter-guide-en-kr-6b7cad5773f1',
+                );
+              }}>
+              <MenuItem
+                _hover={{color: 'blue.100', bg: 'none'}}
+                w={'100%'}
+                h={'37px'}
+                _focus={{
+                  bg: colorMode === 'light' ? '#ffffff' : 'transparent',
+                }}>
+                Staking
+              </MenuItem>
+            </NavLink>
+            <NavLink
+              to="/"
+              activeStyle={{
+                background: colorMode === 'light' ? '#ffffff' : '',
+                color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',
+              }}
+              style={menuStyle.navLink}
+              onClick={(e) => {
+                e.preventDefault();
+                window.open(
+                  'https://medium.com/onther-tech/wton-tos-lp-staking-reward-system-en-kr-881e57ec0568',
+                );
+              }}>
+              <MenuItem
+                _hover={{color: 'blue.100', bg: 'none'}}
+                w={'100%'}
+                h={'37px'}
+                _focus={{
+                  bg: colorMode === 'light' ? '#ffffff' : 'transparent',
+                }}>
+                Pools Staking
+              </MenuItem>
+            </NavLink>
+            <NavLink
+              to="/"
+              activeStyle={{
+                background: colorMode === 'light' ? '#ffffff' : '',
+                color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',
+              }}
+              style={menuStyle.navLink}
+              onClick={(e) => {
+                e.preventDefault();
+                window.open(
+                  'https://medium.com/onther-tech/introduction-of-stos-en-kr-56c12a5440e0',
+                );
+              }}>
+              <MenuItem
+                _hover={{color: 'blue.100', bg: 'none'}}
+                w={'100%'}
+                h={'37px'}
+                _focus={{
+                  bg: colorMode === 'light' ? '#ffffff' : 'transparent',
+                }}>
+                DAO Staking
+              </MenuItem>
+            </NavLink>
+            <NavLink
+              to="/"
+              activeStyle={{
+                background: colorMode === 'light' ? '#ffffff' : '',
+                color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',
+              }}
+              style={menuStyle.navLink}
+              onClick={(e) => {
+                e.preventDefault();
+                window.open(
+                  'https://medium.com/onther-tech/tonstarter-phase-3-starter-guide-en-kr-ab97bb9e50fc',
+                );
+              }}>
+              <MenuItem
+                _hover={{color: 'blue.100', bg: 'none'}}
+                w={'100%'}
+                h={'37px'}
+                _focus={{
+                  bg: colorMode === 'light' ? '#ffffff' : 'transparent',
+                }}>
+                Starter
+              </MenuItem>
+            </NavLink>
+            <NavLink
+              to="/"
+              activeStyle={{
+                background: colorMode === 'light' ? '#ffffff' : '',
+                color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',
+              }}
+              style={menuStyle.navLink}
+              onClick={(e) => {
+                e.preventDefault();
+                window.open(
+                  'https://medium.com/onther-tech/tonstarter-pools-reward-program-guide-en-kr-bef9ae274afd',
+                );
+              }}>
+              <MenuItem
+                _hover={{color: 'blue.100', bg: 'none'}}
+                w={'100%'}
+                h={'37px'}
+                _focus={{
+                  bg: colorMode === 'light' ? '#ffffff' : 'transparent',
+                }}>
+                RewardProgram
+              </MenuItem>
+            </NavLink>
+          </MenuList>
+        </Menu>
+
+        {/* <Menu>
+          <MenuButton>
+            <Text className={match?.isExact ? 'link-match' : 'link'}>
+              Admin
+            </Text>
+          </MenuButton>
+          <MenuList
+            pos={'absolute'}
+            left={'-33px'}
+            top={'15px'}
+            minW={'182px'}
+            w={'182px'}
+            h={'148px'}
+            p={0}
+            fontSize={13}
+            background={'#ffffff'}>
+            <NavLink
+              to="/admin/createproject"
+              activeStyle={{background: '#ffffff', color: '#1c1c1c'}}
+              style={{background: '#ffffff', color: '#1c1c1c'}}>
+              <MenuItem
+                _hover={{color: 'blue.100', bg: 'none'}}
+                w={'100%'}
+                h={'37px'}
+                _focus={{bg: '#ffffff'}}>
+                Create Project
+              </MenuItem>
+            </NavLink>
+            <NavLink
+              to="/admin/listproject"
+              activeStyle={{background: '#ffffff', color: '#1c1c1c'}}
+              style={{background: '#ffffff', color: '#1c1c1c'}}>
+              <MenuItem
+                _hover={{color: 'blue.100', bg: 'none'}}
+                w={'100%'}
+                h={'37px'}>
+                Listing Projects
+              </MenuItem>
+            </NavLink>
+            <NavLink
+              to="/admin/listpools"
+              activeStyle={{background: '#ffffff', color: '#1c1c1c'}}
+              style={{background: '#ffffff', color: '#1c1c1c'}}>
+              <MenuItem
+                _hover={{color: 'blue.100', bg: 'none'}}
+                w={'100%'}
+                h={'37px'}>
+                Listing Pools for Reward
+              </MenuItem>
+            </NavLink>
+            <NavLink
+              to="/admin/listrewards"
+              activeStyle={{background: '#ffffff', color: '#1c1c1c'}}
+              style={{background: '#ffffff', color: '#1c1c1c'}}>
+              <MenuItem
+                _hover={{color: 'blue.100', bg: 'none'}}
+                w={'100%'}
+                h={'37px'}>
+                Listing Reward Programs
+              </MenuItem>
+            </NavLink>
+          </MenuList>
+        </Menu> */}
       </Stack>
     </Box>
   );

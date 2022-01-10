@@ -7,26 +7,26 @@ import {
   useTheme,
 } from '@chakra-ui/react';
 import {getUserSTOSBalance} from 'client/getUserBalance';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect} from 'react';
 import {useState} from 'react';
-import {useDispatch} from 'react-redux';
-import {User} from 'store/app/user.reducer';
 import {openModal} from 'store/modal.reducer';
+import {selectDao} from '../dao.reducer';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 
-type PropsType = {
-  userData: User;
-  signIn: boolean;
-  stakeList: any;
-};
-
-export const MySTOS = (props: PropsType) => {
-  const {userData, signIn, stakeList} = props;
-  const dispatch = useDispatch();
+export const MySTOS = () => {
+  const dispatch = useAppDispatch();
+  const {
+    data: {tosStakeList: stakeList},
+  } = (useAppSelector as any)(selectDao);
   const [balance, setbalance] = useState('-');
   const [btnDisabled, setBtnDisabled] = useState(true);
   const theme = useTheme();
   const {btnStyle, btnHover} = theme;
   const {colorMode} = useColorMode();
+  const {account, library, active} = useActiveWeb3React();
+  const filteredStakeList = stakeList.filter((e: any) => e.end === false);
+
   const themeDesign = {
     fontColorTitle: {
       light: 'gray.400',
@@ -39,22 +39,23 @@ export const MySTOS = (props: PropsType) => {
   };
 
   useEffect(() => {
-    const {address, library} = userData;
     async function getTosBalance() {
-      const res = await getUserSTOSBalance({account: address, library});
+      const res = await getUserSTOSBalance({account, library});
+      setBtnDisabled(true);
       if (res !== undefined) {
         setbalance(res);
-        if (stakeList.length !== 0) {
+        if (filteredStakeList.length !== 0) {
           setBtnDisabled(false);
         }
       }
     }
-    if (signIn) {
+    if (account) {
       getTosBalance();
     } else {
       setbalance('-');
     }
-  }, [signIn, userData, stakeList]);
+    /*eslint-disable*/
+  }, [active, account, library, dispatch, stakeList]);
 
   return (
     <Flex
@@ -77,7 +78,7 @@ export const MySTOS = (props: PropsType) => {
         </Flex>
       </Box>
       <Button
-        {...(signIn && !btnDisabled
+        {...(active && !btnDisabled
           ? {...btnStyle.btnAble()}
           : {...btnStyle.btnDisable({colorMode})})}
         w={'150px'}
@@ -85,13 +86,13 @@ export const MySTOS = (props: PropsType) => {
         p={0}
         fontSize={'14px'}
         fontWeight={400}
-        isDisabled={!signIn || btnDisabled}
+        isDisabled={!active || btnDisabled}
         _hover={btnHover.backgroundColor}
         onClick={() =>
           dispatch(
             openModal({
               type: 'dao_manage',
-              data: {userData, userTosBalance: balance, stakeList},
+              data: {userTosBalance: balance, stakeList: filteredStakeList},
             }),
           )
         }>

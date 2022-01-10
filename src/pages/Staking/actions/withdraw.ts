@@ -21,6 +21,27 @@ export const withdraw = async (args: Withdraw) => {
     return;
   }
   const StakeTONContract = new Contract(contractAddress, StakeTON.abi, library);
+
+  const canUnstaking = await StakeTONContract.canTokamakProcessUnStakingCount(
+    TokamakLayer2_ADDRESS,
+  );
+  const count = canUnstaking.count;
+  const amount = canUnstaking.amount;
+  if (count.toString() === '0' || amount.toString() === '0') {
+    return store.dispatch(
+      //@ts-ignore
+      openToast({
+        payload: {
+          status: 'error',
+          title: 'Tx fail to send',
+          description: `It has already been withdrawn`,
+          duration: 5000,
+          isClosable: true,
+        },
+      }),
+    );
+  }
+
   const signer = getSigner(library, userAddress);
   try {
     const receipt = await StakeTONContract.connect(

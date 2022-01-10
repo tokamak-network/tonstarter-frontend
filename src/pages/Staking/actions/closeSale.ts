@@ -23,6 +23,7 @@ export const closeSale = async (args: Endsale) => {
     StakeVault.abi,
     library,
   );
+
   const signer = getSigner(library, userAddress);
   try {
     const receipt = await stakeVault
@@ -30,11 +31,9 @@ export const closeSale = async (args: Endsale) => {
       ?.closeSale(vaultContractAddress);
     store.dispatch(setTxPending({tx: true}));
     if (receipt) {
-      toastWithReceipt(receipt, setTxPending, "Staking");
+      toastWithReceipt(receipt, setTxPending, 'Staking');
     }
   } catch (err) {
     store.dispatch(setTxPending({tx: false}));
-    console.log(err.message);
-    console.log(err);
   }
 };

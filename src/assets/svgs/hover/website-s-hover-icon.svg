@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20">
+    <defs>
+        <style>
+            .cls-2{fill:none;stroke:#0070ed;stroke-miterlimit:7.5}
+        </style>
+    </defs>
+    <g id="website-s-hover-icon" transform="translate(-86 -86)">
+        <path id="사각형_128" data-name="사각형 128" transform="translate(86 86)" style="fill:none" d="M0 0h20v20H0z"/>
+        <circle id="타원_82" data-name="타원 82" class="cls-2" cx="7.5" cy="7.5" r="7.5" transform="translate(88.5 88.5)"/>
+        <path id="선_6" data-name="선 6" transform="translate(88.5 96)" style="stroke-linecap:round;stroke-linejoin:round;stroke:#0070ed;fill:none" d="M0 0h15"/>
+        <ellipse id="타원_83" data-name="타원 83" class="cls-2" cx="3.125" cy="7.299" rx="3.125" ry="7.299" transform="translate(92.875 88.701)"/>
+    </g>
+</svg>

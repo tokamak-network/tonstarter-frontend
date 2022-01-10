@@ -28,7 +28,7 @@ export const WalletPending: FC<WalletPendingProps> = ({
             ml={2}
             onClick={() => {
               setPendingError(false);
-              setAccountValue({signIn: false});
+              // setAccountValue({signIn: false});
               connector && tryActivation(connector);
             }}>
             Try Again

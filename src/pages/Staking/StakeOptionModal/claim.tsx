@@ -15,12 +15,12 @@ import {
 import {claimReward} from '../actions';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
-import {useUser} from 'hooks/useUser';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal';
 
 export const ClaimOptionModal = () => {
-  const {account, library} = useUser();
+  const {account, library} = useActiveWeb3React();
   const theme = useTheme();
   const {colorMode} = useColorMode();
   const {handleCloseModal} = useModal();
@@ -94,7 +94,8 @@ export const ClaimOptionModal = () => {
                     account,
                     library,
                     stakeContractAddress: contractAddress,
-                  }) && handleCloseModal();
+                  }) 
+                  handleCloseModal();
                 }
               }}>
               Claim

@@ -1,19 +1,23 @@
 import {Contract} from '@ethersproject/contracts';
 import * as StakeTON from 'services/abis/StakeTON.json';
 import {getContract} from 'utils/contract';
-import store from 'store';
 import {convertNumber} from 'utils/number';
 import {BASE_PROVIDER, DEPLOYED} from 'constants/index';
 import * as ERC20 from 'services/abis/ERC20.json';
 import * as TOSABI from 'services/abis/TOS.json';
 import * as LockTOSABI from 'services/abis/LockTOS.json';
+import * as WTONABI from 'services/abis/WTON.json';
+
 import {BigNumber} from 'ethers';
+import {UserContract} from 'types/index';
 
 const {TON_ADDRESS, TOS_ADDRESS} = DEPLOYED;
 
-export const getUserBalance = async (contractAddress: any) => {
-  const user = store.getState().user.data;
-  const {address: account, library} = user;
+export const getUserBalance = async (
+  account: string,
+  library: any,
+  contractAddress: any,
+) => {
   if (account === undefined || null) {
     return;
   }
@@ -31,11 +35,33 @@ export const getUserBalance = async (contractAddress: any) => {
   return result;
 };
 
-export const getUserTonBalance = async ({account, library}: any) => {
-  const contract = getContract(TON_ADDRESS, ERC20.abi, library);
+export const getUserTonBalance = async ({
+  account,
+  library,
+  localeString,
+}: any) => {
+  const contract = new Contract(TON_ADDRESS, ERC20.abi, library);
+  const contractIserBalance = await contract.balanceOf(account);
+  const balance = convertNumber({
+    amount: String(contractIserBalance),
+    localeString: localeString || false,
+  });
+  return balance;
+};
+
+export const getUserTonOriginBalance = async ({account, library}: any) => {
+  const contract = new Contract(TON_ADDRESS, ERC20.abi, library);
   const contractIserBalance = await contract.balanceOf(account);
   const balance = convertNumber({amount: String(contractIserBalance)});
-  return balance;
+  return {ton: balance || '0', tonOrigin: contractIserBalance.toString()};
+};
+
+export const getUserWTONBalance = async ({account, library}: UserContract) => {
+  const {WTON_ADDRESS} = DEPLOYED;
+  const WTON_CONTRACT = new Contract(WTON_ADDRESS, WTONABI.abi, library);
+  const wtonBalance = await WTON_CONTRACT.balanceOf(account);
+  const convertedRes = convertNumber({amount: wtonBalance, type: 'ray'});
+  return {wton: convertedRes || '0', wtonOrigin: wtonBalance.toString()};
 };
 
 export const getUserTOSStaked = async ({account, library}: any) => {
@@ -45,27 +71,8 @@ export const getUserTOSStaked = async ({account, library}: any) => {
     LockTOSABI.abi,
     library,
   );
-  const tosStakeList = await LockTOSContract.locksOf(account);
-
-  if (tosStakeList.length === 0) {
-    return '0.00';
-  }
-
-  let totalStakeAmount = 0;
-
-  await Promise.all(
-    tosStakeList.map(async (stake: any, index: number) => {
-      const lockedBlanace = await LockTOSContract.lockedBalances(
-        account,
-        stake.toString(),
-      );
-      totalStakeAmount += Number(
-        convertNumber({amount: lockedBlanace.amount.toString()}),
-      );
-    }),
-  );
-
-  return String(totalStakeAmount);
+  const res = await LockTOSContract.totalLockedAmountOf(account);
+  return convertNumber({amount: res.toString(), localeString: true});
 };
 
 export const getUserSTOSBalance = async ({account, library}: any) => {
@@ -76,7 +83,7 @@ export const getUserSTOSBalance = async ({account, library}: any) => {
     library,
   );
   const res = await LockTOSContract.balanceOf(account);
-  return convertNumber({amount: res});
+  return convertNumber({amount: res, localeString: true});
 };
 
 const fetchUserData = async (
@@ -96,8 +103,20 @@ const fetchUserData = async (
 export const getUserTosBalance = async (account: string, library: any) => {
   const contract = getContract(TOS_ADDRESS, TOSABI.abi, library);
   const userTosBalance = await contract.balanceOf(account);
-  const balance = convertNumber({amount: String(userTosBalance)});
+  const balance = convertNumber({
+    amount: String(userTosBalance),
+    localeString: true,
+  });
   return balance;
+};
+
+export const getUserTossBalance = async ({account, library}: UserContract) => {
+  const contract = getContract(TOS_ADDRESS, TOSABI.abi, library);
+  const userTosBalance = await contract.balanceOf(account);
+  const convertedRes = convertNumber({
+    amount: String(userTosBalance),
+  });
+  return {tos: convertedRes || '0', tosOrigin: userTosBalance.toString()};
 };
 
 const getUserInfo = async (

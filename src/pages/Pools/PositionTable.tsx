@@ -3,25 +3,26 @@ import {useExpanded, usePagination, useTable, useSortBy} from 'react-table';
 import {
   Text,
   Flex,
-  IconButton,
-  Tooltip,
   Select,
   Box,
   useColorMode,
-  Center,
-  useTheme,
+  // Tooltip,
+  // IconButton,
+  // Center
 } from '@chakra-ui/react';
-import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
-import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+// import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
+import {useAppSelector} from 'hooks/useRedux';
 import {getPoolName} from '../../utils/token';
 import {selectTableType} from 'store/table.reducer';
-// import {LoadingComponent} from 'components/Loading';
-import {chakra} from '@chakra-ui/react';
+import {
+  chakra,
+  // useTheme
+} from '@chakra-ui/react';
 import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
-// import store from '../../store';
-// import {selectTransactionType} from 'store/refetch.reducer';
 import {LiquidityPosition} from './components/LiquidityPosition';
+// import { useAppDispatch } from '../../store/index';
+import './css/liquidityPosition.css';
 
 type PositionTableProps = {
   // columns: Column[];
@@ -32,19 +33,19 @@ type PositionTableProps = {
   // address: string;
 };
 
-const getTextColor = (type: string, colorMode: string) => {
-  if (colorMode === 'light') {
-    if (type === 'name') {
-      return '#304156';
-    }
-    return '#3a495f';
-  } else if (colorMode === 'dark') {
-    if (type === 'name') {
-      return 'white.100';
-    }
-    return '#f3f4f1';
-  }
-};
+// const getTextColor = (type: string, colorMode: string) => {
+//   if (colorMode === 'light') {
+//     if (type === 'name') {
+//       return '#304156';
+//     }
+//     return '#3a495f';
+//   } else if (colorMode === 'dark') {
+//     if (type === 'name') {
+//       return 'white.100';
+//     }
+//     return '#f3f4f1';
+//   }
+// };
 
 const getStatus = (
   type: 'staked' | 'not staked',
@@ -140,32 +141,31 @@ export const PositionTable: FC<PositionTableProps> = ({
     getTableBodyProps,
     headerGroups,
     visibleColumns,
-    canPreviousPage,
-    canNextPage,
-    pageOptions,
+    // canPreviousPage,
+    // canNextPage,
+    // pageOptions,
     page,
     nextPage,
     previousPage,
-    setPageSize,
-    state: {pageIndex, pageSize},
+    // setPageSize,
+    // state: {pageIndex, pageSize},
   } = useTable(
     {columns, data: positions, initialState: {pageIndex: 0}},
     useSortBy,
     useExpanded,
     usePagination,
   );
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   const {colorMode} = useColorMode();
-  const theme = useTheme();
+  // const theme = useTheme();
   const focusTarget = useRef<any>([]);
 
   const {
     data: {contractAddress, index},
   } = useAppSelector(selectTableType);
 
-  useEffect(() => {
+  useEffect(() => {    
     if (index) {
-      console.log(index)
       let loop = Math.floor(index / 10);
       while (loop) {
         nextPage();
@@ -183,10 +183,11 @@ export const PositionTable: FC<PositionTableProps> = ({
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  /*eslint-disable*/
   const [isOpen, setIsOpen] = useState(
     contractAddress === undefined ? '' : contractAddress,
   );
-  
+
   const goPrevPage = () => {
     setIsOpen('');
     previousPage();
@@ -223,21 +224,27 @@ export const PositionTable: FC<PositionTableProps> = ({
             display="flex"
             flexDirection="column">
             <chakra.tr
+              w={'100%'}
               h={'80px'}
               pb={'3px'}
               bg={colorMode === 'light' ? 'white.100' : ''}
-              border={colorMode === 'light' ? '' : 'solid 1px #373737'}
+              borderX={
+                colorMode === 'light'
+                  ? 'solid 1px #f4f6f8'
+                  : 'solid 1px #373737'
+              }
               borderTopWidth={0}>
               <chakra.td
                 display={'flex'}
-                justifyContent={'space-between'}
-                px={12}
-                pl={'54px'}
-                py={5}
-                w={'100%'}
-                margin={0}
-                colSpan={visibleColumns.length}>
-                <Flex>
+                alignItems="center"
+                justifyContent="space-between"
+                pt={'28px'}
+                w={'90%'}
+                ml={'50px'}
+                colSpan={visibleColumns.length}
+                // borderBottomWidth={1}
+              >
+                <Flex w={360}>
                   {getStatus('staked', colorMode)}
                   {getStatus('not staked', colorMode)}
                   <Text fontSize={'11px'} py={2} mr={3}>
@@ -247,16 +254,19 @@ export const PositionTable: FC<PositionTableProps> = ({
                   {getRangeStatus('not range', colorMode)}
                 </Flex>
                 <Select
+                  alignSelf="flex-end"
                   w={'137px'}
                   h={'32px'}
                   color={'#86929d'}
                   fontSize={'13px'}
                   placeholder="On sale Sort"
-                  onChange={onChangeSelectBox}></Select>
+                  onChange={onChangeSelectBox}
+                />
               </chakra.td>
             </chakra.tr>
-            {page.map((row: any, i) => {
+            {page.map((row: any, index: number) => {
               const {id, pool, owner} = row.original;
+              
               const poolName = getPoolName(
                 pool.token0.symbol,
                 pool.token1.symbol,
@@ -267,13 +277,14 @@ export const PositionTable: FC<PositionTableProps> = ({
               return [
                 <chakra.tr
                   w={'100%'}
-                  key={i}
+                  key={'pool_page_' + index}
                   // mt={2}
                   h={'80px'}
                   pb={'3px'}
                   bg={colorMode === 'light' ? 'white.100' : ''}
                   border={colorMode === 'light' ? '' : 'solid 1px #373737'}
-                  borderTopWidth={0}>
+                  borderTopWidth={1}
+                  borderBottomRadius={index === page.length - 1 ? 10 : ''}>
                   <chakra.td
                     display={'flex'}
                     w={'100%'}
@@ -294,9 +305,9 @@ export const PositionTable: FC<PositionTableProps> = ({
                 </chakra.tr>,
               ];
             })}
-            <chakra.tr
+            {/* <chakra.tr
               w={'100%'}
-              h={'80px'}
+              h={'50px'}
               // mt={-5}
               pt={'5px'}
               pr={9}
@@ -311,8 +322,8 @@ export const PositionTable: FC<PositionTableProps> = ({
                 w={'100%'}
                 margin={0}
                 justifyContent="flex-end"
-                colSpan={visibleColumns.length}>
-                <Flex justifyContent="flex-end" my={4} alignItems="center">
+                colSpan={visibleColumns.length}> */}
+            {/* <Flex justifyContent="flex-end" my={4} alignItems="center">
                   <Flex>
                     <Tooltip label="Previous Page">
                       <IconButton
@@ -351,13 +362,12 @@ export const PositionTable: FC<PositionTableProps> = ({
                             as="span"
                             color={pageIndex === page ? '#2a72e5' : '#94a5b7'}
                             mr={2}
-                            ml={2}
-                          >
-                            { page + 1 }
+                            ml={2}>
+                            {page + 1}
                           </Text>
                         </Text>
-                      </Flex>
-                    ]
+                      </Flex>,
+                    ];
                   })}
                   <Flex mr={'300px'}>
                     <Tooltip label="Next Page">
@@ -410,9 +420,9 @@ export const PositionTable: FC<PositionTableProps> = ({
                       </option>
                     ))}
                   </Select>
-                </Flex>
-              </chakra.td>
-            </chakra.tr>
+                </Flex> */}
+            {/* </chakra.td>
+            </chakra.tr> */}
           </chakra.tbody>
         </chakra.table>
       </Box>

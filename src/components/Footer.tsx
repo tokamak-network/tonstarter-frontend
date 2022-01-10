@@ -5,20 +5,22 @@ import {IconTelegram} from './Icons/IconTelegram';
 import {IconGithub} from './Icons/IconGithub';
 import {IconMedium} from './Icons/IconMedium';
 import {IconTwitter} from './Icons/IconTwitter';
+import {IconDiscord} from './Icons/IconDiscord';
+
 import {EmailIcon} from '@chakra-ui/icons';
 const socialLinks = [
   {
     title: 'Telegram',
     icon: IconTelegram,
-    href: 'https://t.me/TONStarter_ANN',
+    href: 'https://t.me/tokamak_network',
     isExternal: true,
   },
-  // {
-  //   title: 'Discord',
-  //   icon: DiscordIcon,
-  //   href: 'https://discord.gg/8wSpJKz',
-  //   isExternal: true,
-  // },
+  {
+    title: 'Discord',
+    icon: IconDiscord,
+    href: 'https://discord.gg/6wJ8HAA2nD',
+    isExternal: true,
+  },
   {
     title: 'GitHub',
     icon: IconGithub,
@@ -28,12 +30,11 @@ const socialLinks = [
   {
     title: 'Twitter',
     icon: IconTwitter,
-    href: 'https://twitter.com/tonstarter',
+    href: 'https://twitter.com/tokamak_network',
     isExternal: true,
   },
   {
     title: 'Medium',
-
     icon: IconMedium,
     href: 'https://medium.com/onther-tech/https-medium-com-onther-tech-tos/home',
     isExternal: true,

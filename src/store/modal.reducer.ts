@@ -1,7 +1,7 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from './reducers';
 
-type DaoModal = 'dao_stake' | 'dao_unstake' | 'dao_manage';
+type DaoModal = 'dao_stake' | 'dao_unstake' | 'dao_manage' | 'dao_claim';
 type StakingModal =
   | 'stake'
   | 'unstake'
@@ -14,9 +14,14 @@ type StakingModal =
   | 'airdrop'
   | 'stakePool'
   | 'unstakePool'
-  | 'claimPool';
+  | 'claimPool'
+  | 'pool_simulator';
+type StarterModal = 'Starter_Approve';
+type AdminModal = 'Admin_Distribute' | 'Admin_EditPool';
 
-export type ModalType = StakingModal | DaoModal;
+type GeneralModal = 'calendar';
+type RewardModal = 'search';
+export type ModalType = StakingModal | DaoModal | GeneralModal| RewardModal| StarterModal | AdminModal;
 
 export type Modal = {
   modal?: ModalType;

@@ -15,8 +15,12 @@ import {Scrollbars} from 'react-custom-scrollbars-2';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import TONStaterLogo from 'assets/svgs/ts_bi_c.svg';
 import Arrow from 'assets/svgs/select1_arrow_inactive.svg';
-import {Stake, selectStakes} from 'pages/Staking/staking.reducer';
+import {selectStakes} from 'pages/Staking/staking.reducer';
+import {Stake} from 'pages/Staking/types';
 import {useAppSelector} from 'hooks/useRedux';
+import {DEPLOYED} from 'constants/index';
+import {usePoolByUserQuery, usePositionByPoolQuery} from 'store/data/enhanced';
+import ms from 'ms.macro';
 
 export interface HomeProps extends HTMLAttributes<HTMLDivElement> {
   classes?: string;
@@ -299,8 +303,45 @@ export const Animation: React.FC<HomeProps> = () => {
   ]);
 
   const [totalStakedAmount, setTotalStakedAmount] = useState('');
+  const [liquidity, setLiquidity] = useState('');
 
   const {data} = useAppSelector(selectStakes);
+
+  //GET Phase 2 Liquidity Info
+  // const {BasePool_Addres, DOCPool_Address} = DEPLOYED;
+  const {
+    UniswapStaking_Address,
+    DOCPool_Address,
+    BasePool_Address,
+    UniswapStaker_Address,
+  } = DEPLOYED;
+  const basePool = usePoolByUserQuery(
+    {address: BasePool_Address?.toLowerCase()},
+    {
+      pollingInterval: ms`2m`,
+    },
+  );
+  useEffect(() => {
+    if (basePool?.data?.pools) {
+      const {
+        data: {pools},
+      } = basePool;
+      //GET WTON-PAIR WITH KEY 0
+      const WTON_TOS_PAIR = pools[0];
+      if (!WTON_TOS_PAIR) {
+        setLiquidity('0');
+        return;
+      }
+      const {hourData} = WTON_TOS_PAIR;
+      const lastestLiquidity = hourData[0].tvlUSD;
+      const res = Number(lastestLiquidity).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+      });
+      setLiquidity(
+        res.split('.')[0] + '.' + res.split('.')[1][0] + res.split('.')[1][1],
+      );
+    }
+  }, [basePool]);
 
   useEffect(() => {
     if (data) {
@@ -407,18 +448,25 @@ export const Animation: React.FC<HomeProps> = () => {
             color="white.100"
             fontWeight="semibold"
             fontSize={46}>
-            <div>
+            <div style={{position: 'absolute', bottom: '561px'}}>
               <Text>TON Starter</Text>
               <Text>Decentralized Launchpad</Text>
               <Text>Platform</Text>
             </div>
-            <div style={{position: 'absolute', bottom: '170px'}}>
+            <div style={{position: 'absolute', bottom: '302px'}}>
               <Text fontSize={'26px'} color={'#ffff07'} h={'25px'}>
-                Phase1 Total Staked
+                Phase 1 Total Staked
               </Text>
               <Text fontSize={'52px'} h={'60px'}>
-                {totalStakedAmount}
-                <span style={{fontSize: '26px'}}>TON</span>
+                {totalStakedAmount} <span style={{fontSize: '26px'}}>TON</span>
+              </Text>
+            </div>
+            <div style={{position: 'absolute', bottom: '193px'}}>
+              <Text fontSize={'26px'} color={'#ffff07'} h={'25px'}>
+                Phase 2 Total WTON-TOS liquidity
+              </Text>
+              <Text fontSize={'52px'} h={'60px'}>
+                {liquidity} <span style={{fontSize: '26px'}}>$</span>
               </Text>
             </div>
           </Container>

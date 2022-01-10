@@ -18,7 +18,7 @@ import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {useState, useEffect} from 'react';
 import {fetchStakedBalancePayload} from '../utils/fetchStakedBalancePayload';
-import {useUser} from 'hooks/useUser';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {checkSaleClosed} from 'pages/Staking/utils';
 import {BASE_PROVIDER, DEPLOYED} from 'constants/index';
@@ -29,11 +29,9 @@ import {fetchWithdrawPayload} from '../utils/fetchWithdrawPayload';
 import {convertNumber} from 'utils/number';
 import {Contract} from '@ethersproject/contracts';
 import * as StakeTON from 'services/abis/StakeTON.json';
-
-const seigFontColors = {
-  light: '#3d495d',
-  dark: '#f3f4f1',
-};
+import {fetchSwapPayload} from '../utils/fetchSwapPayload';
+import {fetchSwappedTosBalance} from '../utils/fetchSwappedTosBalance';
+import {getTokamakContract} from 'utils/contract';
 
 const tooltipMsg = () => {
   return (
@@ -47,6 +45,25 @@ const tooltipMsg = () => {
   );
 };
 
+const TooltipPendingMsg = (
+  currentBlock: number,
+  withdrawableBlock: string,
+  withdrawableAmount: string,
+) => {
+  return (
+    <Flex flexDir="column" fontSize="12px" pt="6px" pl="5px" pr="5px">
+      <Text textAlign="center">{withdrawableAmount} TON will be withdrawn</Text>
+      <Text textAlign="center">
+        at {withdrawableBlock} block (
+        {Number(withdrawableBlock) - currentBlock <= 0
+          ? 0
+          : Number(withdrawableBlock) - currentBlock}{' '}
+        left)
+      </Text>
+    </Flex>
+  );
+};
+
 export const ManageModal = () => {
   const {data} = useAppSelector(selectModalType);
   const {TokamakLayer2_ADDRESS} = DEPLOYED;
@@ -56,11 +73,11 @@ export const ManageModal = () => {
   const {btnStyle} = theme;
   const {colorMode} = useColorMode();
 
-  const {account, library} = useUser();
+  const {account, library} = useActiveWeb3React();
   const {handleOpenConfirmModal, handleCloseModal} = useModal();
 
   const {
-    data: {contractAddress, vault, globalWithdrawalDelay, miningEndTime},
+    data: {contractAddress, vault, globalWithdrawalDelay, miningEndTime, name},
   } = data;
 
   //Buttons
@@ -79,10 +96,11 @@ export const ManageModal = () => {
   const [swapBalance, setSwapBalance] = useState('0');
   const [seigBalance, setSeigBalance] = useState<string | undefined>('0');
   const [canWithdralAmount, setCanWithdralAmount] = useState(0);
+  const [swappedTosBalance, setSwappedTosBalance] = useState<string>('0');
 
   //original balances
   const [originalStakeBalance, setOriginalStakeBalance] = useState(0);
-  const [originalSwapBalance, setOriginalSwapBalance] = useState(0);
+  const [originalSwapBalance, setOriginalSwapBalance] = useState('0');
   const [currentTosPrice, setCurrentTosPrice] = useState<string | undefined>(
     '0',
   );
@@ -91,6 +109,10 @@ export const ManageModal = () => {
   const [saleClosed, setSaleClosed] = useState(true);
   const [currentBlock, setCurrentBlock] = useState<number>(99999999999999);
 
+  //for tooltip
+  const [withdrawableBlock, setWithdrawableBlock] = useState('0');
+  const [withdrawableAmount, setWithdrawableAmount] = useState('0');
+
   //Set
 
   //fetch status
@@ -98,13 +120,43 @@ export const ManageModal = () => {
   //constant
 
   //getCurrentBlock
-  useEffect(() => {
+  useEffect(() => {    
     async function getCurrentBlock() {
       const currentBlock = await BASE_PROVIDER.getBlockNumber();
       setCurrentBlock(currentBlock);
     }
     getCurrentBlock();
   }, [data, transactionType, blockNumber]);
+
+  //pending tooltip
+  useEffect(() => {
+    async function getWithdrawableBlock() {
+      const depositManager = getTokamakContract('DepositManager', library);
+      const requestedIndex = await depositManager.withdrawalRequestIndex(
+        DEPLOYED.TokamakLayer2_ADDRESS,
+        contractAddress,
+      );
+      const res = await depositManager.withdrawalRequest(
+        DEPLOYED.TokamakLayer2_ADDRESS,
+        contractAddress,
+        requestedIndex,
+      );
+      const convertedNum = convertNumber({amount: res.amount, type: 'ray'});
+      if (convertedNum) {
+        setWithdrawableBlock(res.withdrawableBlockNumber.toString());
+        setWithdrawableAmount(convertedNum);
+      }
+    }
+    if (pendingL2Balance !== '-' && pendingL2Balance !== '0.00')
+      getWithdrawableBlock();
+  }, [
+    contractAddress,
+    account,
+    blockNumber,
+    currentBlock,
+    library,
+    pendingL2Balance,
+  ]);
 
   useEffect(() => {
     async function getStakedBalance() {
@@ -119,42 +171,60 @@ export const ManageModal = () => {
           totalStakedAmountL2,
           totalPendingUnstakedAmountL2,
           stakeContractBalanceTon,
-          swapBalance,
           originalBalance,
         } = result;
         const res_CanWithdralAmount = await fetchWithdrawPayload(
           library,
-          account,
           contractAddress,
+        );
+        const tosPrice = await fetchSwapPayload(library);
+        const fetchedSwappedTosBalance = await fetchSwappedTosBalance(
+          contractAddress,
+          library,
         );
         if (
           totalStakedAmount &&
           totalStakedAmountL2 &&
           totalPendingUnstakedAmountL2 &&
           stakeContractBalanceTon &&
-          swapBalance &&
-          res_CanWithdralAmount
+          res_CanWithdralAmount &&
+          fetchedSwappedTosBalance
         ) {
           setAvailableBalance(stakeContractBalanceTon);
           setTotalStaked(totalStakedAmount);
           setStakdL2(totalStakedAmountL2);
           setPendingL2Balance(totalPendingUnstakedAmountL2);
           setCanWithdralAmount(Number(res_CanWithdralAmount.toString()));
+          setSwappedTosBalance(fetchedSwappedTosBalance);
           //set original balances
           setOriginalStakeBalance(originalBalance.stakeContractBalanceTon);
-          setOriginalSwapBalance(originalBalance.swapBalance);
-          setCurrentTosPrice(originalBalance.tosPrice);
+          setOriginalSwapBalance(originalBalance.stakeContractBalanceTonRay);
+          setCurrentTosPrice(tosPrice);
 
-          //calculate swap balance
-          if (Number(swapBalance) <= 0) {
+          if (miningEndTime <= currentBlock) {
             return setSwapBalance('0.00');
           }
-          if (Number(stakeContractBalanceTon) >= Number(swapBalance)) {
-            return setSwapBalance(swapBalance);
+
+          if (
+            Number(stakeContractBalanceTon.replaceAll(',', '')) >=
+            Number(totalStakedAmount.replaceAll(',', ''))
+          ) {
+            return setSwapBalance('0.00');
           }
-          if (Number(stakeContractBalanceTon) < Number(swapBalance)) {
-            return setSwapBalance(stakeContractBalanceTon);
-          }
+
+          setSwapBalance(stakeContractBalanceTon);
+
+          //calculate swap balance
+          // if (Number(convertedUnstakeNum) <= 0) {
+          //   return setSwapBalance('0.00');
+          // }
+          // if (Number(stakeContractBalanceTon) >= Number(convertedUnstakeNum)) {
+          //   //@ts-ignore
+          //   return setSwapBalance(stakeContractBalanceTon);
+          // }
+          // if (Number(stakeContractBalanceTon) < Number(swapBalance)) {
+          //   return setSwapBalance(stakeContractBalanceTon);
+          // }
         }
       }
     }
@@ -184,6 +254,7 @@ export const ManageModal = () => {
         StakeTON.abi,
         library,
       );
+
       const isUnstakeL2All =
         await StakeTONContract.canTokamakRequestUnStakingAll(
           TokamakLayer2_ADDRESS,
@@ -203,6 +274,10 @@ export const ManageModal = () => {
       setCanUntakdL2(convertedUnstakeNum);
       setSeigBalance(convertedUnstakeNum);
 
+      if (isUnstakeL2All) {
+        setCanUntakdL2(stakedL2);
+        return setUnstakeL2Disable(false);
+      }
       return Number(convertedUnstakeNum) <= 0
         ? setUnstakeL2Disable(true)
         : setUnstakeL2Disable(false);
@@ -215,7 +290,8 @@ export const ManageModal = () => {
     };
 
     const btnDisableSwap = () => {
-      return Number(swapBalance) <= 0 || miningEndTime <= currentBlock
+      return Number(swapBalance.replaceAll(',', '')) <= 0 ||
+        miningEndTime <= currentBlock
         ? setSwapDisabled(true)
         : setSwapDisabled(false);
     };
@@ -266,7 +342,7 @@ export const ManageModal = () => {
     setSwapBalance('0');
     setCanWithdralAmount(0);
     setOriginalStakeBalance(0);
-    setOriginalSwapBalance(0);
+    setOriginalSwapBalance('0');
     setSaleClosed(true);
     handleCloseModal();
   };
@@ -296,11 +372,12 @@ export const ManageModal = () => {
               fontWeight={'bold'}
               fontFamily={theme.fonts.titil}
               color={colorMode === 'light' ? 'gray.250' : 'white.100'}
-              textAlign={'center'}>
+              textAlign={'center'}
+              mb={'8px'}>
               Manage
             </Heading>
             <Text color="gray.175" fontSize={'0.750em'}>
-              You can manage tokens
+              You can manage {name} Product
             </Text>
           </Box>
 
@@ -364,9 +441,35 @@ export const ManageModal = () => {
                 </Text>
               </Flex>
               <Flex justifyContent="space-between" alignItems="center" h="55px">
-                <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
-                  Pending UnStaked in Layer 2
-                </Text>
+                <Flex>
+                  <Text
+                    color={'gray.400'}
+                    fontSize="13px"
+                    fontWeight={500}
+                    mr={1}>
+                    Pending UnStaked in Layer 2
+                  </Text>
+                  {pendingL2Balance === '-' ||
+                  Number(pendingL2Balance) <= 0 ? null : (
+                    <Tooltip
+                      hasArrow
+                      placement="top"
+                      label={TooltipPendingMsg(
+                        currentBlock,
+                        withdrawableBlock,
+                        withdrawableAmount,
+                      )}
+                      color={theme.colors.white[100]}
+                      bg={theme.colors.gray[375]}
+                      p={0}
+                      w="220px"
+                      h="50px"
+                      borderRadius={3}
+                      fontSize="12px">
+                      <img src={tooltipIcon} />
+                    </Tooltip>
+                  )}
+                </Flex>
                 <Text
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                   fontWeight={500}
@@ -402,6 +505,23 @@ export const ManageModal = () => {
                   fontWeight={500}
                   fontSize={'15px'}>
                   {swapBalance} TON
+                </Text>
+              </Flex>
+              <Flex justifyContent="space-between" alignItems="center" h="55px">
+                <Flex>
+                  <Text
+                    color={'gray.400'}
+                    fontSize="13px"
+                    fontWeight={500}
+                    mr="2px">
+                    Swapped TOS
+                  </Text>
+                </Flex>
+                <Text
+                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+                  fontWeight={500}
+                  fontSize={'15px'}>
+                  {swappedTosBalance} TOS
                 </Text>
               </Flex>
             </Box>
@@ -453,6 +573,7 @@ export const ManageModal = () => {
                     canUnstakedL2,
                     contractAddress,
                     unstakeAll,
+                    name,
                   },
                 })
               }>

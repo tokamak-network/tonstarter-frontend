@@ -1,16 +1,24 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
+import {
+  getUserTonOriginBalance,
+  getUserTossBalance,
+  getUserWTONBalance,
+} from 'client/getUserBalance';
 import {RootState} from 'store/reducers';
-import {getContract} from 'utils/contract';
-import * as ERC20 from 'services/abis/ERC20.json';
-import {DEPLOYED} from 'constants/index';
-import {convertNumber} from 'utils/number';
 
-// const {TON_ADDRESS} = DEPLOYED;
+type UserBalnace = {
+  wton: string;
+  wtonOrigin: string;
+  tos: string;
+  tosOrigin: string;
+  ton: string;
+  tonOrigin: string;
+};
 
 export type User = {
-  balance: string;
-  address: string;
+  account: string;
   library: any;
+  balance: UserBalnace;
   // tosBalance: string;
 };
 
@@ -22,9 +30,6 @@ interface IUser {
 }
 
 const initialState = {
-  data: {
-    balance: '0',
-  },
   loading: 'idle',
   error: null,
   currentRequestId: undefined,
@@ -33,7 +38,7 @@ const initialState = {
 export const fetchUserInfo = createAsyncThunk(
   'app/user',
   // @ts-ignore
-  async ({address, library, reset}, {requestId, getState}) => {
+  async ({account, library, reset}, {requestId, getState}) => {
     // @ts-ignore
     const {currentRequestId, loading} = getState().user;
     if (loading !== 'pending' || requestId !== currentRequestId) {
@@ -44,31 +49,14 @@ export const fetchUserInfo = createAsyncThunk(
       return initialState;
     }
 
-    // let tonBalance;
-    // let tosBalance;
-
-    const contract = getContract(DEPLOYED.TON_ADDRESS, ERC20.abi, library);
-    // const TOS = getTokamakContract('TOS');
-    // const TosBalance = await TOS.balanceOf(address);
-
-    // await Promise.all([
-    //   contract.balanceOf(address),
-    //   TOS.balanceOf(address),
-    // ]).then((res) => {
-    //   tonBalance = res[0];
-    //   tosBalance = res[1];
-    // });
-
-    const contractIserBalance = await contract.balanceOf(address);
-    const balance = convertNumber({amount: String(contractIserBalance)});
+    const WTON_BALANCE = await getUserWTONBalance({account, library});
+    const TOS_BALANCE = await getUserTossBalance({account, library});
+    const TON_BALANCE = await getUserTonOriginBalance({account, library});
 
     const user: User = {
-      address,
+      account,
       library,
-      //@ts-ignore
-      balance,
-      // balance: tonBalance !== undefined ? formatEther(tonBalance) : '0',
-      // tosBalance: tosBalance !== undefined ? formatEther(tosBalance) : '0',
+      balance: {...WTON_BALANCE, ...TOS_BALANCE, ...TON_BALANCE},
     };
 
     return user;

@@ -1,10 +1,7 @@
 import {getTokamakContract} from '../../../utils/contract';
 import {convertNumber} from '../../../utils/number';
-import store from 'store';
 
-export const fetchAirdropPayload = async () => {
-  const user = store.getState().user.data;
-  const {address: account, library} = user;
+export const fetchAirdropPayload = async (account: string, library: any) => {
   const AirdropVault = getTokamakContract('Airdrop', library);
   let roundInfo: any = [];
   let claimedAmount;
@@ -43,12 +40,12 @@ export const fetchAirdropPayload = async () => {
       }
       claimedAmount = await AirdropVault.userClaimedAmount(account);
     }
-  } catch (err) {
-    console.log(err);
-  }
+  } catch (err) {}
   return {
     roundInfo: roundInfo,
     claimedAmount: convertNumber({amount: claimedAmount}),
-    unclaimedAmount: convertNumber({amount: unclaimed.amount}),
+    unclaimedAmount: convertNumber({
+      amount: unclaimed === undefined ? undefined : unclaimed.amount,
+    }),
   };
 };

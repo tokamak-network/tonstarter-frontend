@@ -12,7 +12,6 @@ import {
   useTheme,
   useColorMode,
   WrapItem,
-  Wrap,
 } from '@chakra-ui/react';
 import React from 'react';
 import {useAppSelector} from 'hooks/useRedux';
@@ -20,8 +19,11 @@ import {selectModalType} from 'store/modal.reducer';
 import {useModal} from 'hooks/useModal';
 import {useEffect, useState} from 'react';
 import {Scrollbars} from 'react-custom-scrollbars-2';
+import {unstakeTOS} from '../../actions';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import {CloseButton} from 'components/Modal';
 
-const UnstakeRecord = ({number, amount}: {number: number; amount: any}) => {
+const UnstakeRecord = ({number, amount}: {number: number; amount: string}) => {
   const {colorMode} = useColorMode();
   return (
     <WrapItem w="100%" h="37px">
@@ -35,7 +37,7 @@ const UnstakeRecord = ({number, amount}: {number: number; amount: any}) => {
           color={colorMode === 'light' ? 'gray.250' : 'white.200'}
           fontSize={'15px'}
           fontWeight={600}>
-          {amount} sTOS
+          {amount} TOS
         </Text>
       </Flex>
     </WrapItem>
@@ -47,12 +49,31 @@ export const DaoUnstakeModal = (props: any) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {handleCloseModal} = useModal();
-  const [unstakeList, setUnstakeList] = useState<Number[]>([]);
+  const {account, library} = useActiveWeb3React();
+
+  const [unstakeList, setUnstakeList] = useState<[{}]>([{}]);
+  const [unstakeBalance, setUnstakeBalance] = useState('-');
 
   useEffect(() => {
-    const dummyData = [4000, 6000, 10000];
-    setUnstakeList(dummyData);
-  }, [setUnstakeList]);
+    const lockList = data?.data?.lockList;
+    if (lockList === undefined) {
+      return;
+    }
+    const unstakedList = lockList.filter(
+      (e: any) => e.end === true && e.endTime > 0,
+    );
+    const unstakedBalance = unstakedList.reduce((acc: any, cur: any) => {
+      return Number(acc) + Number(cur.lockedBalance.replaceAll(',', ''));
+    }, 0);
+    setUnstakeList(unstakedList);
+    // setUnstakeBalance(unstakedBalance.toFixed(2));
+    setUnstakeBalance(
+      Number(unstakedBalance).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+      }),
+    );
+    /*eslint-disable*/
+  }, [data]);
 
   return (
     <Modal
@@ -68,6 +89,7 @@ export const DaoUnstakeModal = (props: any) => {
         w="350px"
         pt="25px"
         pb="25px">
+        <CloseButton closeFunc={handleCloseModal}></CloseButton>
         <ModalBody p={0}>
           <Box
             pb={'1.250em'}
@@ -100,7 +122,7 @@ export const DaoUnstakeModal = (props: any) => {
                 fontSize={'26px'}
                 fontWeight={600}
                 color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                4000 TOS
+                {unstakeBalance} TOS
               </Text>
             </Box>
             <Text
@@ -109,7 +131,7 @@ export const DaoUnstakeModal = (props: any) => {
               color="gray.400">
               Detail
             </Text>
-            {unstakeList !== undefined && unstakeList.length > 1 && (
+            {unstakeList !== undefined && unstakeList.length > 0 && (
               <Scrollbars
                 style={{
                   width: '100%',
@@ -130,13 +152,18 @@ export const DaoUnstakeModal = (props: any) => {
                 renderThumbHorizontal={() => (
                   <div style={{background: 'black'}}></div>
                 )}>
-                <Wrap
-                  display="flex"
-                  style={{marginTop: '0', marginBottom: '20px'}}>
-                  {unstakeList.map((amount: any, index: number) => (
-                    <UnstakeRecord number={index} amount={amount} key={index} />
+                <Flex
+                  style={{marginTop: '0', marginBottom: '20px'}}
+                  justifyContent="center"
+                  flexDir="column">
+                  {unstakeList.map((unstake: any, index: number) => (
+                    <UnstakeRecord
+                      number={index}
+                      amount={unstake.lockedBalance}
+                      key={index}
+                    />
                   ))}
-                </Wrap>
+                </Flex>
               </Scrollbars>
             )}
           </Stack>
@@ -148,8 +175,16 @@ export const DaoUnstakeModal = (props: any) => {
               color="white.100"
               fontSize="14px"
               _hover={{...theme.btnHover}}
-              onClick={() => {}}>
-              Stake
+              onClick={() => {
+                if (account) {
+                  unstakeTOS({
+                    account,
+                    library,
+                    handleCloseModal: handleCloseModal(),
+                  });
+                }
+              }}>
+              Unstake
             </Button>
           </Box>
         </ModalBody>
