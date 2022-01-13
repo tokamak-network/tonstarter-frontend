@@ -117,6 +117,7 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
                   library,
                   address: saleContractAddress,
                   amount: inputTonBalance,
+                  tokenType: 'TON',
                 });
             }}></CustomButton>
         ) : (
@@ -173,6 +174,7 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
               library,
               address: saleContractAddress,
               amount: inputTonBalance,
+              tokenType: 'WTON',
             })
           }></CustomButton>
       ) : tonAllowance !== '0.00' ? (
