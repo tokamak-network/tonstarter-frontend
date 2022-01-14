@@ -104,15 +104,15 @@ export const RewardContainer: FC<RewardContainerProps> = ({
   };
 
   const stakeMultipleKeys = (key: any) => {
-const keyFound = multipleStakeList.find( (listkey: any) => JSON.stringify(listkey) === JSON.stringify(key));
-const index = multipleStakeList.findIndex((key: any) => JSON.stringify(key) === JSON.stringify(keyFound));
+    const keyFound = multipleStakeList.find( (listkey: any) => JSON.stringify(listkey) === JSON.stringify(key));
+    const index = multipleStakeList.findIndex((key: any) => JSON.stringify(key) === JSON.stringify(keyFound));
 
-if (index > -1) {
-  multipleStakeList.splice(index,1)
-}
-else {
-  multipleStakeList.push(key);
-}
+    if (index > -1) {
+      multipleStakeList.splice(index,1)
+    }
+    else {
+      multipleStakeList.push(key);
+    }
     setStakeNum(multipleStakeList.length);
     return multipleStakeList;
   };

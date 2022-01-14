@@ -16,7 +16,10 @@ import {FC, useState, useEffect} from 'react';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {checkTokenType} from 'utils/token';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
+import { getLiquidity } from '../utils/getLiquidity'
 import {utils, ethers} from 'ethers';
+import { DEPLOYED, fetchTosPriceURL } from '../../../constants/index';
+
 const themeDesign = {
   border: {
     light: 'solid 1px #d7d9df',
@@ -55,6 +58,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
   const [allPools, setAllPools] = useState<any[]>([]);
   const [pageOptions, setPageOptions] = useState<number>(0);
   const [pageIndex, setPageIndex] = useState<number>(1);
+  const [tosPrice, setTosPrice] = useState<number>(0);
   const [pageLimit, setPageLimit] = useState<number>(2);
   const [totalPAges, setTotalPages] = useState<number>(0);
   useEffect(() => {   
@@ -63,6 +67,16 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
     );
     setPageOptions(pagenumber);
   }, [pools]);
+
+  useEffect(() => {
+    async function getPrice () {
+      const tosPrices = await fetch(fetchTosPriceURL)
+        .then((res) => res.json())
+        .then((result) => result);
+      setTosPrice(tosPrices)
+    }
+    getPrice()
+  }, [])
 
   const getPaginatedData = () => {
     const startIndex = pageIndex * pageLimit - pageLimit;
@@ -107,6 +121,8 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
         const numRewards = rewards.filter(
           (reward) => reward.poolAddress === pool.id,
         ).length;
+
+        const liquidity = getLiquidity(pool, tosPrice)
         return (
           <Flex
           key={index}
@@ -164,18 +180,13 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
                 color={colorMode === 'light' ? 'gray.400' : 'gray.150'}>
                 Liquidity
               </Text>
-              {pool.hourData[0].tvlUSD === '0'? (<Text fontSize={'11px'}>No current liquidity data</Text>) : (<Text fontSize={'18px'}>
+              {liquidity !== 0 ? (
+              <Text fontSize={'18px'}>
                 {' '}
                 ${' '}
-                {Number(pool.hourData[0].tvlUSD).toLocaleString(
-                  undefined,
-                  {
-                    maximumFractionDigits: 2,
-                  },
-                )}
-              </Text>)}
-
-              
+                {liquidity.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+              </Text>
+              ) :(<Text fontSize={'11px'}>No current liquidity data</Text>)}
               <Text
                 fontSize="10px"
                 color={colorMode === 'light' ? 'gray.400' : 'gray.150'}>

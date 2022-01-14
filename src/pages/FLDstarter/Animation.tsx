@@ -19,8 +19,13 @@ import {selectStakes} from 'pages/Staking/staking.reducer';
 import {Stake} from 'pages/Staking/types';
 import {useAppSelector} from 'hooks/useRedux';
 import {DEPLOYED} from 'constants/index';
-import {usePoolByUserQuery, usePositionByPoolQuery} from 'store/data/enhanced';
+import {usePoolByUserQuery, usePoolByArrayQuery} from 'store/data/enhanced';
 import ms from 'ms.macro';
+import { fetchTosPriceURL } from '../../constants/index';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import views from '../Reward/rewards';
+import {selectTransactionType} from 'store/refetch.reducer';
+import { getLiquidity } from '../Reward/utils/getLiquidity';
 
 export interface HomeProps extends HTMLAttributes<HTMLDivElement> {
   classes?: string;
@@ -196,10 +201,27 @@ export const Animation: React.FC<HomeProps> = () => {
     lastPhase: 6,
     lastCircle: 7,
   });
+  const [tosPrice, setTosPrice] = useState<number>(0);
+  const {account, library} = useActiveWeb3React();
+  const [poolAddresses, setPoolAddresses] = useState<string[]>([]);
+  const [poolsFromAPI, setPoolsFromAPI] = useState<any>([]);
+  const [pool, setPool] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function getPrice () {
+      const tosPrices = await fetch(fetchTosPriceURL)
+        .then((res) => res.json())
+        .then((result) => result);
+      setTosPrice(tosPrices)
+    }
+    getPrice()
+  }, [])
+
   const verticalDots: number[] = [77, 221, 365, 509, 653, 797, 941];
 
   const bgColor = colorMode === 'light' ? 'blue.200' : 'black.200';
 
+  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const mainControls = useAnimation();
   const mainSubControls = useAnimation();
   const secondPhaseControls = useAnimation();
@@ -307,13 +329,25 @@ export const Animation: React.FC<HomeProps> = () => {
 
   const {data} = useAppSelector(selectStakes);
 
+  useEffect(() => {
+    async function fetchProjectsData() {
+      const poolsData: any = await views.getPoolData(library);
+      setPoolsFromAPI(poolsData);
+      const poolArray: any = [];
+      if (poolsData) {
+        poolsData.map((pool: any) => {
+          poolArray.push(pool.poolAddress);
+        });
+      }
+      setPoolAddresses(poolArray);
+    }
+    fetchProjectsData();
+  }, [account, library]);
+
   //GET Phase 2 Liquidity Info
   // const {BasePool_Addres, DOCPool_Address} = DEPLOYED;
   const {
-    UniswapStaking_Address,
-    DOCPool_Address,
     BasePool_Address,
-    UniswapStaker_Address,
   } = DEPLOYED;
   const basePool = usePoolByUserQuery(
     {address: BasePool_Address?.toLowerCase()},
@@ -321,27 +355,51 @@ export const Animation: React.FC<HomeProps> = () => {
       pollingInterval: ms`2m`,
     },
   );
+  const poolArr = usePoolByArrayQuery(
+    {address: poolAddresses},
+    {
+      pollingInterval: ms`2s`,
+    },
+  );
+
   useEffect(() => {
-    if (basePool?.data?.pools) {
-      const {
-        data: {pools},
-      } = basePool;
-      //GET WTON-PAIR WITH KEY 0
-      const WTON_TOS_PAIR = pools[0];
-      if (!WTON_TOS_PAIR) {
-        setLiquidity('0');
-        return;
+    const addPoolsInfo = () => {
+      const pols = poolArr.data?.pools;
+      if (pols !== undefined) {
+        const pools = pols.map((data: any) => {
+          const APIPool = poolsFromAPI.find(
+            (pol: any) => pol.poolAddress === data.id,
+          );
+          const token0Image = APIPool.token0Image;
+          const token1Image = APIPool.token1Image;
+          return {
+            ...data,
+            token0Image: token0Image,
+            token1Image: token1Image,
+          };
+        });
+        setPool(pools);
       }
-      const {hourData} = WTON_TOS_PAIR;
-      const lastestLiquidity = hourData[0].tvlUSD;
-      const res = Number(lastestLiquidity).toLocaleString(undefined, {
+    };
+    addPoolsInfo();
+  }, [account, transactionType, blockNumber, poolArr]);
+  console.log(pool)
+
+  useEffect(() => {
+    if (pool) {
+      let totalLiquidity = 0
+      for (const singlePool of pool) {
+        let singleLiquidity = getLiquidity(singlePool, tosPrice)
+        totalLiquidity = totalLiquidity + Number(singleLiquidity)
+      }
+      const res = Number(totalLiquidity).toLocaleString(undefined, {
         minimumFractionDigits: 2,
       });
       setLiquidity(
         res.split('.')[0] + '.' + res.split('.')[1][0] + res.split('.')[1][1],
       );
     }
-  }, [basePool]);
+  }, [pool]);
 
   useEffect(() => {
     if (data) {
@@ -463,10 +521,10 @@ export const Animation: React.FC<HomeProps> = () => {
             </div>
             <div style={{position: 'absolute', bottom: '193px'}}>
               <Text fontSize={'26px'} color={'#ffff07'} h={'25px'}>
-                Phase 2 Total WTON-TOS liquidity
+                Total liquidity
               </Text>
               <Text fontSize={'52px'} h={'60px'}>
-                {liquidity} <span style={{fontSize: '26px'}}>$</span>
+                <span style={{fontSize: '35px'}}>$</span> {liquidity}
               </Text>
             </div>
           </Container>
