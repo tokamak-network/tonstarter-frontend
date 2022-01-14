@@ -520,7 +520,7 @@ export const Animation: React.FC<HomeProps> = () => {
             </div>
             <div style={{position: 'absolute', bottom: '193px'}}>
               <Text fontSize={'26px'} color={'#ffff07'} h={'25px'}>
-                Total liquidity
+                Total Ecosystem Value Locked
               </Text>
               <Text fontSize={'52px'} h={'60px'}>
                 <span style={{fontSize: '35px'}}>$</span> {liquidity}
