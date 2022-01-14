@@ -383,7 +383,6 @@ export const Animation: React.FC<HomeProps> = () => {
     };
     addPoolsInfo();
   }, [account, transactionType, blockNumber, poolArr]);
-  console.log(pool)
 
   useEffect(() => {
     if (pool) {
