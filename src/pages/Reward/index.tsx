@@ -48,7 +48,7 @@ import {getSigner} from 'utils/contract';
 import {getPoolName, checkTokenType} from '../../utils/token';
 import {fetchPositionPayload} from '../Pools/utils/fetchPositionPayload';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
-import {ChevronDownIcon} from '@chakra-ui/icons';
+import {ChevronDownIcon, ChevronRightIcon} from '@chakra-ui/icons';
 import {utils, ethers} from 'ethers';
 import {incentiveKey, Token, interfaceReward, LPToken} from './types';
 import {fetchPositionRangePayload} from './utils/fetchPositionRangePayloads';
@@ -131,7 +131,7 @@ export const Reward = () => {
   >([]);
   const [selectedPoolCreate, setSelectedPoolCreated] = useState<Pool>();
   const [positions, setPositions] = useState<any[]>([]);
-  const [selectedToeknType, setSelectedTokenType] = useState<string>('');
+  const [selectedTokenType, setSelectedTokenType] = useState<string>('');
 
   const arr: any = [];
   useEffect(() => {
@@ -170,6 +170,7 @@ export const Reward = () => {
       pollingInterval: 2000,
     },
   );
+
   useEffect(() => {
     const filteredData = filterDatas();
     setOrderedData(filteredData);
@@ -318,7 +319,6 @@ export const Reward = () => {
         const tokenList = open.concat(close);
         setPositions(tokenList);
       }
-
       if (position.data && positionsByPool.data) {
         position.refetch();
 
@@ -658,205 +658,233 @@ export const Reward = () => {
                   <MenuList {...MENU_STYLE.menuListStyle({colorMode})}>
                     <MenuItem>
                       <Menu isLazy>
-                        <MenuButton
-                          minWidth={'90px'}
-                          textAlign={'left'}
-                          fontSize={'13px'}
-                          onClick={() => {
-                            setSelectedTokenType('All');
-                          }}>
-                          All <ChevronDownIcon />
-                        </MenuButton>
+                        {({isOpen}) => (
+                          <>
+                            <MenuButton
+                              minWidth={'90px'}
+                              textAlign={'left'}
+                              fontSize={'13px'}
+                              onClick={() => {
+                                setSelectedTokenType('All');
+                              }}>
+                              All{' '}
+                              {isOpen ? (
+                                <ChevronRightIcon />
+                              ) : (
+                                <ChevronDownIcon />
+                              )}
+                            </MenuButton>
 
-                        <MenuList
-                          zIndex={10000}
-                          ml={'-0.845rem'}
-                          mr={'1px'}
-                          minWidth="155px"
-                          borderTop="none"
-                          boxShadow="none"
-                          borderTopRadius={0}
-                          minHeight={'80px'}
-                          background={
-                            colorMode === 'light' ? '#ffffff' : '#222222'
-                          }>
-                          {positions.map((item: any, index) => {
-                            const status = getStatus(item);
-                            return (
-                              <MenuItem
-                                onClick={getSelectedPosition}
-                                // onClick={() => alert("Kagebunshin")}
-                                h={'30px'}
-                                color={
-                                  status === 'openOut' || status === 'closedOut'
-                                    ? '#ff7800'
-                                    : colorMode === 'light'
-                                    ? '#3e495c'
-                                    : '#f3f4f1'
-                                }
-                                fontSize={'12px'}
-                                w={'154px'}
-                                m={'0px'}
-                                value={item.id}
-                                _hover={{
-                                  background: 'transparent',
-                                  color: 'blue.100',
-                                }}
-                                textDecoration={
-                                  status === 'closedIn' ||
-                                  status === 'closedOut'
-                                    ? 'line-through'
-                                    : 'none'
-                                }
-                                _focus={{background: 'transparent'}}
-                                key={index}>
-                                {item.id}{' '}
-                                <Text ml={'8px'} fontSize={'9px'}>
-                                  {' '}
-                                  {item.pool.token0.symbol} /{' '}
-                                  {item.pool.token1.symbol}
-                                </Text>
-                              </MenuItem>
-                            );
-                          })}
-                        </MenuList>
+                            <MenuList
+                              zIndex={10000}
+                              ml={'-0.845rem'}
+                              mr={'1px'}
+                              minWidth="155px"
+                              borderTop="none"
+                              boxShadow="none"
+                              borderTopRadius={0}
+                              minHeight={'80px'}
+                              background={
+                                colorMode === 'light' ? '#ffffff' : '#222222'
+                              }>
+                              {positions.map((item: any, index) => {
+                                const status = getStatus(item);
+                                return (
+                                  <MenuItem
+                                    onClick={getSelectedPosition}
+                                    // onClick={() => alert("Kagebunshin")}
+                                    h={'30px'}
+                                    color={
+                                      status === 'openOut' ||
+                                      status === 'closedOut'
+                                        ? '#ff7800'
+                                        : colorMode === 'light'
+                                        ? '#3e495c'
+                                        : '#f3f4f1'
+                                    }
+                                    fontSize={'12px'}
+                                    w={'154px'}
+                                    m={'0px'}
+                                    value={item.id}
+                                    _hover={{
+                                      background: 'transparent',
+                                      color: 'blue.100',
+                                    }}
+                                    textDecoration={
+                                      status === 'closedIn' ||
+                                      status === 'closedOut'
+                                        ? 'line-through'
+                                        : 'none'
+                                    }
+                                    _focus={{background: 'transparent'}}
+                                    key={index}>
+                                    {item.id}{' '}
+                                    <Text ml={'8px'} fontSize={'9px'}>
+                                      {' '}
+                                      {item.pool.token0.symbol} /{' '}
+                                      {item.pool.token1.symbol}
+                                    </Text>
+                                  </MenuItem>
+                                );
+                              })}
+                            </MenuList>
+                          </>
+                        )}
                       </Menu>
                     </MenuItem>
                     <MenuItem>
                       <Menu isLazy>
-                        <MenuButton
-                          minWidth={'90px'}
-                          textAlign={'left'}
-                          fontSize={'13px'}
-                          onClick={() => {
-                            setSelectedTokenType('Staked');
-                          }}>
-                          Staked <ChevronDownIcon />
-                        </MenuButton>
+                        {({isOpen}) => (
+                          <>
+                            <MenuButton
+                              minWidth={'90px'}
+                              textAlign={'left'}
+                              fontSize={'13px'}
+                              onClick={() => {
+                                setSelectedTokenType('Staked');
+                              }}>
+                              Staked{' '}
+                              {isOpen ? (
+                                <ChevronRightIcon />
+                              ) : (
+                                <ChevronDownIcon />
+                              )}
+                            </MenuButton>
 
-                        <MenuList
-                          zIndex={10000}
-                          minHeight={'50px'}
-                          ml={'-0.845rem'}
-                          mr={'1px'}
-                          minWidth="156px"
-                          borderTop="none"
-                          boxShadow="none"
-                          borderTopRadius={0}
-                          background={
-                            colorMode === 'light' ? '#ffffff' : '#222222'
-                          }>
-                          {positions.map((item: any, index) => {
-                            if (item.owner !== account?.toLowerCase()) {
-                              const status = getStatus(item);
-                              return (
-                                <MenuItem
-                                  onClick={getSelectedPosition}
-                                  // onClick={() => alert("Kagebunshin")}
-                                  h={'30px'}
-                                  color={
-                                    status === 'openOut' ||
-                                    status === 'closedOut'
-                                      ? '#ff7800'
-                                      : colorMode === 'light'
-                                      ? '#3e495c'
-                                      : '#f3f4f1'
-                                  }
-                                  fontSize={'12px'}
-                                  w={'153px'}
-                                  m={'0px'}
-                                  value={item.id}
-                                  _hover={{
-                                    background: 'transparent',
-                                    color: 'blue.100',
-                                  }}
-                                  textDecoration={
-                                    status === 'closedIn' ||
-                                    status === 'closedOut'
-                                      ? 'line-through'
-                                      : 'none'
-                                  }
-                                  _focus={{background: 'transparent'}}
-                                  key={index}>
-                                  {item.id}{' '}
-                                  <Text ml={'8px'} fontSize={'9px'}>
-                                    {' '}
-                                    {item.pool.token0.symbol} /{' '}
-                                    {item.pool.token1.symbol}
-                                  </Text>
-                                </MenuItem>
-                              );
-                            }
-                          })}
-                        </MenuList>
+                            <MenuList
+                              zIndex={10000}
+                              minHeight={'50px'}
+                              ml={'-0.845rem'}
+                              mr={'1px'}
+                              minWidth="156px"
+                              borderTop="none"
+                              boxShadow="none"
+                              borderTopRadius={0}
+                              background={
+                                colorMode === 'light' ? '#ffffff' : '#222222'
+                              }>
+                              {positions.map((item: any, index) => {
+                                if (item.owner !== account?.toLowerCase()) {
+                                  const status = getStatus(item);
+                                  return (
+                                    <MenuItem
+                                      onClick={getSelectedPosition}
+                                      // onClick={() => alert("Kagebunshin")}
+                                      h={'30px'}
+                                      color={
+                                        status === 'openOut' ||
+                                        status === 'closedOut'
+                                          ? '#ff7800'
+                                          : colorMode === 'light'
+                                          ? '#3e495c'
+                                          : '#f3f4f1'
+                                      }
+                                      fontSize={'12px'}
+                                      w={'153px'}
+                                      m={'0px'}
+                                      value={item.id}
+                                      _hover={{
+                                        background: 'transparent',
+                                        color: 'blue.100',
+                                      }}
+                                      textDecoration={
+                                        status === 'closedIn' ||
+                                        status === 'closedOut'
+                                          ? 'line-through'
+                                          : 'none'
+                                      }
+                                      _focus={{background: 'transparent'}}
+                                      key={index}>
+                                      {item.id}{' '}
+                                      <Text ml={'8px'} fontSize={'9px'}>
+                                        {' '}
+                                        {item.pool.token0.symbol} /{' '}
+                                        {item.pool.token1.symbol}
+                                      </Text>
+                                    </MenuItem>
+                                  );
+                                }
+                              })}
+                            </MenuList>
+                          </>
+                        )}
                       </Menu>
                     </MenuItem>
                     <MenuItem>
                       <Menu isLazy>
-                        <MenuButton
-                          minWidth={'90px'}
-                          textAlign={'left'}
-                          fontSize={'13px'}
-                          onClick={() => {
-                            setSelectedTokenType('Not Staked');
-                          }}>
-                          Not Staked <ChevronDownIcon />
-                        </MenuButton>
+                        {({isOpen}) => (
+                          <>
+                            <MenuButton
+                              minWidth={'90px'}
+                              textAlign={'left'}
+                              fontSize={'13px'}
+                              onClick={() => {
+                                setSelectedTokenType('Not Staked');
+                              }}>
+                              Not Staked{' '}
+                              {isOpen ? (
+                                <ChevronRightIcon />
+                              ) : (
+                                <ChevronDownIcon />
+                              )}
+                            </MenuButton>
+                            <MenuList
+                              zIndex={10000}
+                              ml={'-0.845rem'}
+                              mr={'1px'}
+                              minHeight={'100%'}
+                              minWidth="156px"
+                              borderTop="none"
+                              boxShadow="none"
+                              borderTopRadius={0}
+                              background={
+                                colorMode === 'light' ? '#ffffff' : '#222222'
+                              }>
+                              {positions.map((item: any, index) => {
+                                const status = getStatus(item);
 
-                        <MenuList
-                          zIndex={10000}
-                          ml={'-0.845rem'}
-                          mr={'1px'}
-                          minHeight={'100%'}
-                          minWidth="156px"
-                          borderTop="none"
-                          boxShadow="none"
-                          borderTopRadius={0}
-                          background={
-                            colorMode === 'light' ? '#ffffff' : '#222222'
-                          }>
-                          {positions.map((item: any, index) => {
-                            const status = getStatus(item);
-                            if (item.owner === account?.toLowerCase()) {
-                              return (
-                                <MenuItem
-                                  onClick={getSelectedPosition}
-                                  h={'30px'}
-                                  color={
-                                    status === 'openOut' ||
-                                    status === 'closedOut'
-                                      ? '#ff7800'
-                                      : colorMode === 'light'
-                                      ? '#3e495c'
-                                      : '#f3f4f1'
-                                  }
-                                  fontSize={'12px'}
-                                  w={'9.5rem'}
-                                  m={'0px'}
-                                  textDecoration={
-                                    status === 'closedIn' ||
-                                    status === 'closedOut'
-                                      ? 'line-through'
-                                      : 'none'
-                                  }
-                                  value={item.id}
-                                  _hover={{
-                                    background: 'transparent',
-                                    color: 'blue.100',
-                                  }}
-                                  _focus={{background: 'transparent'}}
-                                  key={index}>
-                                  {item.id}{' '}
-                                  <Text ml={'8px'} fontSize={'9px'}>
-                                    {' '}
-                                    {item.pool.token0.symbol} /{' '}
-                                    {item.pool.token1.symbol}
-                                  </Text>
-                                </MenuItem>
-                              );
-                            }
-                          })}
-                        </MenuList>
+                                if (item.owner === account?.toLowerCase()) {
+                                  return (
+                                    <MenuItem
+                                      onClick={getSelectedPosition}
+                                      h={'30px'}
+                                      color={
+                                        status === 'openOut' ||
+                                        status === 'closedOut'
+                                          ? '#ff7800'
+                                          : colorMode === 'light'
+                                          ? '#3e495c'
+                                          : '#f3f4f1'
+                                      }
+                                      fontSize={'12px'}
+                                      w={'9.5rem'}
+                                      m={'0px'}
+                                      textDecoration={
+                                        status === 'closedIn' ||
+                                        status === 'closedOut'
+                                          ? 'line-through'
+                                          : 'none'
+                                      }
+                                      value={item.id}
+                                      _hover={{
+                                        background: 'transparent',
+                                        color: 'blue.100',
+                                      }}
+                                      _focus={{background: 'transparent'}}
+                                      key={index}>
+                                      {item.id}{' '}
+                                      <Text ml={'8px'} fontSize={'9px'}>
+                                        {' '}
+                                        {item.pool.token0.symbol} /{' '}
+                                        {item.pool.token1.symbol}
+                                      </Text>
+                                    </MenuItem>
+                                  );
+                                }
+                              })}
+                            </MenuList>
+                          </>
+                        )}
                       </Menu>
                     </MenuItem>
                   </MenuList>
@@ -1005,151 +1033,185 @@ export const Reward = () => {
                         : `${selectedPool.token0.symbol}/${
                             selectedPool.token1.symbol
                           }    (${parseInt(selectedPool.feeTier) / 10000} %)`}
-                      , {selectedToeknType} {'Tokens'}
+                      , {selectedTokenType} {'Tokens'}
                     </Text>
-                    
-                      <Flex direction="row" flexWrap={'wrap'}>
-                        {selectedToeknType === 'All' ? (
-                          positions.map((item: any, index) => {
+
+                    <Flex direction="row" flexWrap={'wrap'}>
+                      {selectedTokenType === 'All'
+                        ? positions.map((item: any, index) => {
                             const status = getStatus(item);
                             return (
                               <Radio
                                 value={item.id}
                                 pr={'25px'}
                                 fontSize={'14px'}
-                                isChecked={Number(selectdPosition?.id) === Number(item.id) }
-                                pb={'14px'} onChange={getSelectedPosition}>
-                                  <Flex alignItems={'baseline'}>
-                                <Text
-                                  color={
-                                    status === 'openOut' ||
-                                    status === 'closedOut'
-                                      ? '#ff7800'
-                                      : colorMode === 'light'
-                                      ? '#3e495c'
-                                      : '#f3f4f1'
-                                  }
-                                  textDecoration={
-                                    status === 'closedIn' ||
-                                    status === 'closedOut'
-                                      ? 'line-through'
-                                      : 'none'
-                                  }>
-                                  {item.id}
-                                </Text>
-                                <Text ml={'3px'} color={
-                                    status === 'openOut' ||
-                                    status === 'closedOut'
-                                      ? '#ff7800'
-                                      : colorMode === 'light'
-                                      ? '#3e495c'
-                                      : '#f3f4f1'
-                                  }
-                                  textDecoration={
-                                    status === 'closedIn' ||
-                                    status === 'closedOut'
-                                      ? 'line-through'
-                                      : 'none'
-                                  } fontSize={'11px'}> {item.pool.token0.symbol} /{' '}
-                                  {item.pool.token1.symbol}</Text>
-                                  </Flex>
+                                isChecked={
+                                  Number(selectdPosition?.id) ===
+                                  Number(item.id)
+                                }
+                                pb={'14px'}
+                                onChange={getSelectedPosition}>
+                                <Flex alignItems={'baseline'}>
+                                  <Text
+                                    color={
+                                      status === 'openOut' ||
+                                      status === 'closedOut'
+                                        ? '#ff7800'
+                                        : colorMode === 'light'
+                                        ? '#3e495c'
+                                        : '#f3f4f1'
+                                    }
+                                    textDecoration={
+                                      status === 'closedIn' ||
+                                      status === 'closedOut'
+                                        ? 'line-through'
+                                        : 'none'
+                                    }>
+                                    {item.id}
+                                  </Text>
+                                  <Text
+                                    ml={'3px'}
+                                    color={
+                                      status === 'openOut' ||
+                                      status === 'closedOut'
+                                        ? '#ff7800'
+                                        : colorMode === 'light'
+                                        ? '#3e495c'
+                                        : '#f3f4f1'
+                                    }
+                                    textDecoration={
+                                      status === 'closedIn' ||
+                                      status === 'closedOut'
+                                        ? 'line-through'
+                                        : 'none'
+                                    }
+                                    fontSize={'11px'}>
+                                    {' '}
+                                    {item.pool.token0.symbol} /{' '}
+                                    {item.pool.token1.symbol}
+                                  </Text>
+                                </Flex>
                               </Radio>
                             );
                           })
-                        ) : selectedToeknType === 'Staked'? (
-                          positions.map((item: any, index) => {
+                        : selectedTokenType === 'Staked'
+                        ? positions.map((item: any, index) => {
                             if (item.owner !== account?.toLowerCase()) {
                               const status = getStatus(item);
-                              return ( <Radio
-                                value={item.id}
-                                pr={'25px'}
-                                fontSize={'14px'}
-                                isChecked={Number(selectdPosition?.id) === Number(item.id) }
-                                pb={'14px'} onChange={getSelectedPosition}>
-                               <Flex alignItems={'baseline'}>
-                                <Text
-                                  color={
-                                    status === 'openOut' ||
-                                    status === 'closedOut'
-                                      ? '#ff7800'
-                                      : colorMode === 'light'
-                                      ? '#3e495c'
-                                      : '#f3f4f1'
+                              return (
+                                <Radio
+                                  value={item.id}
+                                  pr={'25px'}
+                                  fontSize={'14px'}
+                                  isChecked={
+                                    Number(selectdPosition?.id) ===
+                                    Number(item.id)
                                   }
-                                  textDecoration={
-                                    status === 'closedIn' ||
-                                    status === 'closedOut'
-                                      ? 'line-through'
-                                      : 'none'
-                                  }>
-                                  {item.id}
-                                </Text>
-                                <Text ml={'3px'} color={
-                                    status === 'openOut' ||
-                                    status === 'closedOut'
-                                      ? '#ff7800'
-                                      : colorMode === 'light'
-                                      ? '#3e495c'
-                                      : '#f3f4f1'
-                                  }
-                                  textDecoration={
-                                    status === 'closedIn' ||
-                                    status === 'closedOut'
-                                      ? 'line-through'
-                                      : 'none'
-                                  } fontSize={'11px'}> {item.pool.token0.symbol} /{' '}
-                                  {item.pool.token1.symbol}</Text>
+                                  pb={'14px'}
+                                  onChange={getSelectedPosition}>
+                                  <Flex alignItems={'baseline'}>
+                                    <Text
+                                      color={
+                                        status === 'openOut' ||
+                                        status === 'closedOut'
+                                          ? '#ff7800'
+                                          : colorMode === 'light'
+                                          ? '#3e495c'
+                                          : '#f3f4f1'
+                                      }
+                                      textDecoration={
+                                        status === 'closedIn' ||
+                                        status === 'closedOut'
+                                          ? 'line-through'
+                                          : 'none'
+                                      }>
+                                      {item.id}
+                                    </Text>
+                                    <Text
+                                      ml={'3px'}
+                                      color={
+                                        status === 'openOut' ||
+                                        status === 'closedOut'
+                                          ? '#ff7800'
+                                          : colorMode === 'light'
+                                          ? '#3e495c'
+                                          : '#f3f4f1'
+                                      }
+                                      textDecoration={
+                                        status === 'closedIn' ||
+                                        status === 'closedOut'
+                                          ? 'line-through'
+                                          : 'none'
+                                      }
+                                      fontSize={'11px'}>
+                                      {item.pool.token0.symbol} /{' '}
+                                      {item.pool.token1.symbol}
+                                    </Text>
                                   </Flex>
-                              </Radio>)}})
-                        ): selectedToeknType === 'Not Staked'?( positions.map((item: any, index) => {
-                          const status = getStatus(item);
-                          if (item.owner === account?.toLowerCase()) {
-                            return (
-                              <Radio
-                              value={item.id}
-                              pr={'25px'}
-                              fontSize={'14px'}
-                              isChecked={Number(selectdPosition?.id) === Number(item.id) }
-                              pb={'14px'} onChange={getSelectedPosition}>
-                            <Flex alignItems={'baseline'}>
-                                <Text
-                                  color={
-                                    status === 'openOut' ||
-                                    status === 'closedOut'
-                                      ? '#ff7800'
-                                      : colorMode === 'light'
-                                      ? '#3e495c'
-                                      : '#f3f4f1'
+                                </Radio>
+                              );
+                            }
+                          })
+                        : selectedTokenType === 'Not Staked'
+                        ? positions.map((item: any, index) => {
+                            const status = getStatus(item);
+                            if (item.owner === account?.toLowerCase()) {
+                              return (
+                                <Radio
+                                  value={item.id}
+                                  pr={'25px'}
+                                  fontSize={'14px'}
+                                  isChecked={
+                                    Number(selectdPosition?.id) ===
+                                    Number(item.id)
                                   }
-                                  textDecoration={
-                                    status === 'closedIn' ||
-                                    status === 'closedOut'
-                                      ? 'line-through'
-                                      : 'none'
-                                  }>
-                                  {item.id}
-                                </Text>
-                                <Text ml={'3px'} color={
-                                    status === 'openOut' ||
-                                    status === 'closedOut'
-                                      ? '#ff7800'
-                                      : colorMode === 'light'
-                                      ? '#3e495c'
-                                      : '#f3f4f1'
-                                  }
-                                  textDecoration={
-                                    status === 'closedIn' ||
-                                    status === 'closedOut'
-                                      ? 'line-through'
-                                      : 'none'
-                                  } fontSize={'11px'}> {item.pool.token0.symbol} /{' '}
-                                  {item.pool.token1.symbol}</Text>
+                                  pb={'14px'}
+                                  onChange={getSelectedPosition}>
+                                  <Flex alignItems={'baseline'}>
+                                    <Text
+                                      color={
+                                        status === 'openOut' ||
+                                        status === 'closedOut'
+                                          ? '#ff7800'
+                                          : colorMode === 'light'
+                                          ? '#3e495c'
+                                          : '#f3f4f1'
+                                      }
+                                      textDecoration={
+                                        status === 'closedIn' ||
+                                        status === 'closedOut'
+                                          ? 'line-through'
+                                          : 'none'
+                                      }>
+                                      {item.id}
+                                    </Text>
+                                    <Text
+                                      ml={'3px'}
+                                      color={
+                                        status === 'openOut' ||
+                                        status === 'closedOut'
+                                          ? '#ff7800'
+                                          : colorMode === 'light'
+                                          ? '#3e495c'
+                                          : '#f3f4f1'
+                                      }
+                                      textDecoration={
+                                        status === 'closedIn' ||
+                                        status === 'closedOut'
+                                          ? 'line-through'
+                                          : 'none'
+                                      }
+                                      fontSize={'11px'}>
+                                      {item.pool.token0.symbol} /{' '}
+                                      {item.pool.token1.symbol}
+                                    </Text>
                                   </Flex>
-                            </Radio>
-
-                            )}})) : null}
-                      </Flex>
-                    
+                                </Radio>
+                              );
+                            }
+                          })
+                        : null}
+                    </Flex>
                   </Flex>
                   <RewardContainer
                     rewards={filteredData}
