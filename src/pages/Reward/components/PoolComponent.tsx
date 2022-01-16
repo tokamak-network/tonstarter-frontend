@@ -19,6 +19,7 @@ import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import { getLiquidity } from '../utils/getLiquidity'
 import {utils, ethers} from 'ethers';
 import { DEPLOYED, fetchTosPriceURL } from '../../../constants/index';
+import moment from 'moment';
 
 const themeDesign = {
   border: {
@@ -117,12 +118,15 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
         </Text>
       </Flex>
       {getPaginatedData().map((pool: any, index:number) => {
-        const length = pool.hourData.length - 1;      
+        const length = pool.hourData.length - 1;    
+        const now = moment().unix()        
         const numRewards = rewards.filter(
           (reward) => reward.poolAddress === pool.id,
-        ).length;
-
-        const liquidity = getLiquidity(pool, tosPrice)
+        );
+       const open = numRewards.filter((reward) => reward.startTime < now && reward.endTime > now).length
+       const waiting = numRewards.filter((reward) => reward.startTime > now).length
+       const ended =  numRewards.filter((reward) => reward.endTime < now).length
+       const liquidity = getLiquidity(pool, tosPrice)
         return (
           <Flex
           key={index}
@@ -163,11 +167,11 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
             <Text
               color={colorMode === 'light' ? 'gray.250' : 'white.100'}
               fontWeight={700}
-              w={'95px'}
-              ml={'7px'}
+              w={'88px'}
+              ml={'5px'}
               cursor={'pointer'}
               fontFamily={theme.fonts.fld}
-              fontSize={'17px'} onClick={(e) => {
+              fontSize={'16px'} onClick={(e) => {
                 e.preventDefault();
                 window.open(`https://info.uniswap.org/#/pools/${pool.id}`);
               }}>
@@ -186,12 +190,31 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
                 ${' '}
                 {liquidity.toLocaleString(undefined, { maximumFractionDigits: 2 })}
               </Text>
-              ) :(<Text fontSize={'11px'}>No current liquidity data</Text>)}
+              ) :(
+              <Text fontSize={'11px'}>No current liquidity data</Text>)}
+              <Flex>  
               <Text
                 fontSize="10px"
                 color={colorMode === 'light' ? 'gray.400' : 'gray.150'}>
-                {numRewards} Reward Programs
+             Active
               </Text>
+              <Text fontSize="10px"
+                color={'#0070ed'} ml={'2px'}>{open}</Text>
+                 <Text
+                fontSize="10px"
+                color={colorMode === 'light' ? 'gray.400' : 'gray.150'}  ml={'2px'}>
+             / Waiting
+              </Text>
+              <Text fontSize="10px"
+                color={'#0070ed'} ml={'2px'}>{waiting}</Text>
+                 <Text
+                fontSize="10px"
+                color={colorMode === 'light' ? 'gray.400' : 'gray.150'}  ml={'2px'}>
+             / Ended
+              </Text>
+              <Text fontSize="10px"
+                color={'#0070ed'} ml={'2px'}>{ended}</Text>
+              </Flex>
             </Box>
           </Flex>
         );
