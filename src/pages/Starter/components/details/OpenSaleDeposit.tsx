@@ -19,11 +19,8 @@ import {useCheckBalance} from 'hooks/useCheckBalance';
 import {useCallContract} from 'hooks/useCallContract';
 import {convertNumber} from 'utils/number';
 import {useBlockNumber} from 'hooks/useBlock';
-import {useDispatch} from 'react-redux';
-import {openModal} from 'store/modal.reducer';
 import {SaleInfo} from '@Starter/types';
 import {useERC20} from '@Starter/hooks/useERC20';
-import useValueCheck from '@Starter/hooks/useValueCheck';
 
 type DepositContainerProp = {
   inputTonBalance: string;
@@ -34,24 +31,24 @@ type DepositContainerProp = {
 const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
   const {inputTonBalance, saleContractAddress, wtonMode} = prop;
 
-  const {account, library, active} = useActiveWeb3React();
+  const {account, library} = useActiveWeb3React();
   const {checkBalance} = useCheckBalance();
   const {
     tonBalance,
     wtonBalance,
-    tonAllowance,
-    wtonAllowance,
-    callTonDecreaseAllowance,
+    // tonAllowance,
+    // wtonAllowance,
+    // callTonDecreaseAllowance,
   } = useERC20(saleContractAddress);
-  const dispatch = useDispatch();
-  const {colorMode} = useColorMode();
 
-  const {
-    isTonAllowanceZero,
-    isWtonAllowanceZero,
-    isInputTonMore,
-    isInputWtonMore,
-  } = useValueCheck(saleContractAddress, inputTonBalance);
+  // const dispatch = useDispatch();
+  // const {colorMode} = useColorMode();
+
+  // const {isInputTonMore, isInputWtonMore} = useValueCheck(
+  //   saleContractAddress,
+  //   inputTonBalance,
+  // );
+
   const [depositBtnDisabled, setDepositBtnDisabled] = useState<boolean>(true);
 
   useEffect(() => {
@@ -61,43 +58,24 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
   if (wtonMode === false) {
     return (
       <Flex alignItems="center" justifyContent="space-between">
-        {!isTonAllowanceZero && !isInputTonMore ? (
-          <CustomButton
-            text={'Deposit'}
-            isDisabled={depositBtnDisabled}
-            func={() => {
-              account &&
-                checkBalance(
-                  Number(inputTonBalance),
-                  Number(tonBalance.replaceAll(',', '')),
-                ) &&
-                starterActions.deposit({
-                  address: saleContractAddress,
-                  account,
-                  library,
-                  amount: inputTonBalance,
-                  tokenType: 'TON',
-                });
-            }}></CustomButton>
-        ) : (
-          <CustomButton
-            text={'TON Approve'}
-            isDisabled={depositBtnDisabled}
-            func={() =>
-              account &&
-              dispatch(
-                openModal({
-                  type: 'Starter_Approve',
-                  data: {
-                    address: saleContractAddress,
-                    amount: inputTonBalance,
-                    tokenType: 'TON',
-                  },
-                }),
-              )
-            }></CustomButton>
-        )}
-        <Box
+        <CustomButton
+          text={'Deposit'}
+          isDisabled={depositBtnDisabled}
+          func={() => {
+            account &&
+              checkBalance(
+                Number(inputTonBalance),
+                Number(tonBalance.replaceAll(',', '')),
+              ) &&
+              starterActions.deposit({
+                address: saleContractAddress,
+                account,
+                library,
+                amount: inputTonBalance,
+                tokenType: 'TON',
+              });
+          }}></CustomButton>
+        {/* <Box
           d="flex"
           flexDir="column"
           justifyContent="center"
@@ -110,55 +88,31 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
             {' '}
             {tonAllowance} TON{' '}
           </Text>
-        </Box>
+        </Box> */}
       </Flex>
     );
   }
 
   return (
     <Flex alignItems="center" justifyContent="space-between">
-      {!isWtonAllowanceZero && !isInputWtonMore ? (
-        <CustomButton
-          text={'Deposit (WTON)'}
-          isDisabled={depositBtnDisabled}
-          func={() =>
-            account &&
-            checkBalance(
-              Number(inputTonBalance),
-              Number(wtonBalance.replaceAll(',', '')),
-            ) &&
-            starterActions.deposit({
-              address: saleContractAddress,
-              account,
-              library,
-              amount: inputTonBalance,
-              tokenType: 'WTON',
-            })
-          }></CustomButton>
-      ) : !isTonAllowanceZero ? (
-        <CustomButton
-          text={'Initialize TON Allowance'}
-          isDisabled={!active}
-          func={() => callTonDecreaseAllowance()}></CustomButton>
-      ) : (
-        <CustomButton
-          text={'WTON Approve'}
-          isDisabled={depositBtnDisabled}
-          func={() =>
-            account &&
-            dispatch(
-              openModal({
-                type: 'Starter_Approve',
-                data: {
-                  address: saleContractAddress,
-                  amount: inputTonBalance,
-                  tokenType: 'WTON',
-                },
-              }),
-            )
-          }></CustomButton>
-      )}
-      <Box
+      <CustomButton
+        text={'Deposit (WTON)'}
+        isDisabled={depositBtnDisabled}
+        func={() =>
+          account &&
+          checkBalance(
+            Number(inputTonBalance),
+            Number(wtonBalance.replaceAll(',', '')),
+          ) &&
+          starterActions.deposit({
+            address: saleContractAddress,
+            account,
+            library,
+            amount: inputTonBalance,
+            tokenType: 'WTON',
+          })
+        }></CustomButton>
+      {/* <Box
         d="flex"
         flexDir="column"
         justifyContent="center"
@@ -171,7 +125,7 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
           {' '}
           {wtonAllowance} WTON{' '}
         </Text>
-      </Box>
+      </Box> */}
     </Flex>
   );
 };

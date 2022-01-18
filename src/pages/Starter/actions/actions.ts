@@ -5,7 +5,7 @@ import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import {setTx} from 'application';
 import {LibraryType} from 'types';
-import {convertToWei} from 'utils/number';
+import {convertToRay, convertToWei} from 'utils/number';
 import store from 'store';
 import {openToast} from 'store/app/toast.reducer';
 import {DEPLOYED} from '../../../constants/index';
@@ -116,31 +116,33 @@ export const deposit = async (args: I_CallContract & {amount: string}) => {
   try {
     const {account, library, address, amount, tokenType} = args;
     const signer = getSigner(library, account);
+    const {TON_ADDRESS, WTON_ADDRESS} = DEPLOYED;
     // const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
     // const res = await PUBLICSALE_CONTRACT.connect(signer).deposit(
     //   amount.length > 17 ? amount : convertToWei(amount),
     // );
-    let contractAddress;
     let res;
+
     if (tokenType === 'TON') {
-      contractAddress = DEPLOYED.TON_ADDRESS;
-      const TON_CONTRACT = new Contract(address, TON.abi, library);
-      res = await TON_CONTRACT.connect(signer).deposit(
-        contractAddress,
-        {amount: convertToWei(amount)},
+      const TON_CONTRACT = new Contract(TON_ADDRESS, TON.abi, library);
+      const convertedAmount = convertToWei(amount);
+      res = await TON_CONTRACT.connect(signer).approveAndCall(
+        address,
+        convertedAmount,
         0,
       );
     } else if (tokenType === 'WTON') {
-      contractAddress = DEPLOYED.WTON_ADDRESS;
-      const WTON_CONTRACT = new Contract(address, WTON.abi, library);
-      res = await WTON_CONTRACT.connect(signer).deposit(
-        contractAddress,
-        {amount: convertToWei(amount)},
+      const WTON_CONTRACT = new Contract(WTON_ADDRESS, WTON.abi, library);
+      const convertedAmount = convertToRay(amount);
+      res = await WTON_CONTRACT.connect(signer).approveAndCall(
+        address,
+        convertedAmount,
         0,
       );
     }
     return setTx(res);
   } catch (e: any) {
+    console.log(e);
     // switch (e.message) {
     // case e.message.includes('end the depositTime'):
     store.dispatch(
