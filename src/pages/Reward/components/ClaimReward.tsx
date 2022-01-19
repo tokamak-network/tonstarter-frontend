@@ -86,6 +86,7 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(6);
   const [symbol, setSymbol] = useState<string>('');
+  const [claimTokenAddresses, setClaimTokenAddresses] = useState<any[]>([]);
   const [claimTokens, setClaimTokens] = useState<any[]>([]);
   const [claimButtonText, setClaimButtonText] = useState<string>('Claim');
 
@@ -203,18 +204,17 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
 
   const editClaimTokens = (e: any) => {
     const token = JSON.parse(e.target.value);
-    const newClaimTokens = claimTokens;
-    const index = claimTokens.indexOf(token.token);
+    let currentClaimTokenAddresses = claimTokenAddresses;
+    const index = claimTokenAddresses.indexOf(token.token);
     if (index === -1) {
-      newClaimTokens.push(token.token);
-      setClaimTokens(newClaimTokens);
-      // changeToken(token.token);
+      currentClaimTokenAddresses.push(token.token);
+      setClaimTokenAddresses(currentClaimTokenAddresses);
       if (token.amount !== '0.00') {
         setDisableClaimButton(false);
       }
     } else if (index > -1) {
-      newClaimTokens.splice(index, 1);
-      setClaimTokens(newClaimTokens);
+      currentClaimTokenAddresses.splice(index, 1);
+      setClaimTokenAddresses(currentClaimTokenAddresses);
     }
 
     let currentAmount = claimableAmount;
@@ -227,18 +227,27 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
   };
 
   useEffect(() => {
-    if (claimTokens.length <= 1) {
+    if (claimTokenAddresses.length <= 1) {
       setClaimButtonText('Claim');
-    } else if (claimTokens.length > 1) {
+    } else if (claimTokenAddresses.length > 1) {
       setClaimButtonText('Claim All Selected');
     }
 
-    if (claimableAmount === 0 || claimTokens.length === 0) {
+    if (claimableAmount === 0 || claimTokenAddresses.length === 0) {
       setDisableClaimButton(true);
     }
 
+    let claimableTokens: Token[] = [];
+    tokenList.forEach((token: any) => {
+      if (claimTokenAddresses.indexOf(token.token) !== -1) {
+        claimableTokens.push(token);
+      }
+    });
+
+    setClaimTokens(claimableTokens);
+
     // Not sure why this dependency needs ".length". Without it, the dependency won't trigger.
-  }, [claimTokens.length]);
+  }, [claimTokenAddresses.length]);
 
   const getPaginationGroup = () => {
     let start = Math.floor((pageIndex - 1) / 5) * 5;
@@ -278,6 +287,7 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
                       value={JSON.stringify(token)}
                       onChange={editClaimTokens}
                       colorScheme={'blue'}
+                      isDisabled={token.amount === '0.00'}
                       iconColor="white">
                       {token.symbol}
                     </Checkbox>
@@ -434,18 +444,18 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
             disabled={disableClaimButton}
             mt={'20px'}
             onClick={() => {
-              if (claimTokens.length === 1) {
+              if (claimTokenAddresses.length === 1) {
                 claim({
                   library: library,
                   userAddress: account,
                   amount: contractClaimable,
-                  rewardToken: claimTokens[0],
+                  rewardToken: claimTokenAddresses[0],
                 });
               } else {
                 claimMultiple({
                   library,
                   userAddress: account,
-                  tokenList: tokenList,
+                  claimTokens,
                 });
               }
             }}>

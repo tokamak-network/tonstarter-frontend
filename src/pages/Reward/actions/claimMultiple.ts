@@ -10,7 +10,7 @@ import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 const {UniswapStaker_Address} = DEPLOYED;
 
 export const claimMultiple = async (args: any) => {
-  const {library, userAddress, tokenList} = args;
+  const {library, userAddress, claimTokens} = args;
   if (userAddress === null || userAddress === undefined) {
     return;
   }
@@ -23,7 +23,7 @@ export const claimMultiple = async (args: any) => {
     library,
   );
 
-  const arrayData = tokenList.map((token: any) => {
+  const arrayData = claimTokens.map((token: any) => {
     const data = uniswapStakerContract.interface.encodeFunctionData(
       'claimReward',
       [token.token, userAddress, token.claimable],
