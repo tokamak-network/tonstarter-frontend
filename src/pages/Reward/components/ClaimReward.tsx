@@ -118,6 +118,7 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
           getClaimable(token, index);
         });
       }
+      setDisableClaimButton(true);
     };
     getTokenList();
   }, [rewards, account, library, transactionType, blockNumber]);
