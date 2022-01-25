@@ -118,6 +118,8 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
           getClaimable(token, index);
         });
       }
+      setClaimTokens([]);
+      setClaimTokenAddresses([]);
       setDisableClaimButton(true);
     };
     getTokenList();
@@ -209,14 +211,13 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
     const index = claimTokenAddresses.indexOf(token.token);
     if (index === -1) {
       currentClaimTokenAddresses.push(token.token);
-      setClaimTokenAddresses(currentClaimTokenAddresses);
       if (token.amount !== '0.00') {
         setDisableClaimButton(false);
       }
     } else if (index > -1) {
       currentClaimTokenAddresses.splice(index, 1);
-      setClaimTokenAddresses(currentClaimTokenAddresses);
     }
+    setClaimTokenAddresses(currentClaimTokenAddresses);
 
     let currentAmount = claimableAmount;
     if (index > -1) {
