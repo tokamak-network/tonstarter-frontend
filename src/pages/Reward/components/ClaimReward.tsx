@@ -209,33 +209,30 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
     const token = JSON.parse(e.target.value);
     let currentClaimTokenAddresses = claimTokenAddresses;
     const index = claimTokenAddresses.indexOf(token.token);
+    let currentAmount = claimableAmount;
+
     if (index === -1) {
       currentClaimTokenAddresses.push(token.token);
-      if (token.amount !== '0.00') {
-        setDisableClaimButton(false);
-      }
     } else if (index > -1) {
       currentClaimTokenAddresses.splice(index, 1);
     }
+    setDisableClaimButton(false);
     setClaimTokenAddresses(currentClaimTokenAddresses);
 
-    let currentAmount = claimableAmount;
     if (index > -1) {
       currentAmount -= Number(token.amount);
     } else {
       currentAmount += Number(token.amount);
     }
     setClaimableAmount(currentAmount);
-  };
 
-  useEffect(() => {
     if (claimTokenAddresses.length <= 1) {
       setClaimButtonText('Claim');
     } else if (claimTokenAddresses.length > 1) {
       setClaimButtonText('Claim All Selected');
     }
 
-    if (claimableAmount === 0 || claimTokenAddresses.length === 0) {
+    if (claimTokenAddresses.length === 0) {
       setDisableClaimButton(true);
     }
 
@@ -247,9 +244,7 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
     });
 
     setClaimTokens(claimableTokens);
-
-    // Not sure why this dependency needs ".length". Without it, the dependency won't trigger.
-  }, [claimTokenAddresses.length]);
+  };
 
   const getPaginationGroup = () => {
     let start = Math.floor((pageIndex - 1) / 5) * 5;
