@@ -40,7 +40,6 @@ export const unstakeLP = async (args: any) => {
         .stakes(Number(pool.id), incentiveId);
 
       if (incentiveInfo.liquidity._hex !== '0x00') {
-        console.log(incentiveInfo.liquidity);
         stakerIds.push(pool.id);
       }
     }),
