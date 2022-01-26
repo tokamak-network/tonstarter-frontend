@@ -69,6 +69,7 @@ const {
   WTON_ADDRESS,
   TOS_ADDRESS,
 } = DEPLOYED;
+
 type Pool = {
   feeTier: string;
   id: string;
@@ -164,6 +165,7 @@ export const Reward = () => {
       pollingInterval: ms`2s`,
     },
   );
+
   const positionsByPool = usePositionByPoolQuery(
     {pool_id: poolAddresses},
     {
@@ -1223,11 +1225,12 @@ export const Reward = () => {
                 </Box>
               ) : (
                 <ManageContainer
+                  rewards={filteredManageData}
                   position={selectdPosition}
                   selectedPool={selectedPool}
-                  rewards={filteredManageData}
                   pools={pool}
                   sortString={sortString}
+                  positionsByPool={positionsByPool}
                 />
               )}
               <SideContainer
