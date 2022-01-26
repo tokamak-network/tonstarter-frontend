@@ -7,11 +7,10 @@ import {toastWithReceipt} from 'utils';
 import {openToast} from 'store/app/toast.reducer';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import * as NPMABI from 'services/abis/NonfungiblePositionManager.json';
-import {utils, ethers, BigNumber} from 'ethers';
+import {utils, ethers} from 'ethers';
 import {soliditySha3} from 'web3-utils';
-import {convertNumber, convertToWei} from 'utils/number';
 
-const {NPM_Address, UniswapStaker_Address, WTON_ADDRESS} = DEPLOYED;
+const {UniswapStaker_Address} = DEPLOYED;
 
 export const unstakeLP = async (args: any) => {
   const {library, userAddress, key, stakedPools} = args;
@@ -19,7 +18,6 @@ export const unstakeLP = async (args: any) => {
     return;
   }
 
-  const NPM = new Contract(NPM_Address, NPMABI.abi, library);
   const uniswapStakerContract = new Contract(
     UniswapStaker_Address,
     STAKERABI.abi,
@@ -41,12 +39,8 @@ export const unstakeLP = async (args: any) => {
         .connect(signer)
         .stakes(Number(pool.id), incentiveId);
 
-      let amount = convertNumber({
-        amount: BigNumber.from(incentiveInfo.liquidity).toString(),
-        type: WTON_ADDRESS ? 'ray' : 'wei',
-      });
-
-      if (Number(amount) > 0) {
+      if (incentiveInfo.liquidity._hex !== '0x00') {
+        console.log(incentiveInfo.liquidity);
         stakerIds.push(pool.id);
       }
     }),
