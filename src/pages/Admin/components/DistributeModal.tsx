@@ -36,9 +36,14 @@ export const DistributeModal = () => {
   const [allowance, setAllowance] = useState<string>('');
   const [ableDistribute, setAbleDistribute] = useState<boolean>(false);
   const [timeStamp, setTimeStamp] = useState<string>('');
+  const [isRay, setIsRay] = useState<boolean>(false);
 
   const {blockNumber} = useBlockNumber();
   const {handleCloseModal} = useModal(setTokenAmount);
+
+  useEffect(() => {
+    setIsRay(tokenAddress === WTON_ADDRESS);
+  }, [tokenAddress, WTON_ADDRESS]);
 
   useEffect(() => {
     async function getAllowanceAmount() {
@@ -49,6 +54,7 @@ export const DistributeModal = () => {
         account,
         library,
         address: tokenAddress,
+        isRay,
       });
       setAllowance(allowanceAmount);
     }
@@ -57,7 +63,7 @@ export const DistributeModal = () => {
     } else {
       setAllowance('0.00');
     }
-  }, [account, library, tokenAddress, blockNumber]);
+  }, [account, library, tokenAddress, blockNumber, isRay]);
 
   useEffect(() => {
     if (tokenAmount === '') {
@@ -274,6 +280,7 @@ export const DistributeModal = () => {
                     library,
                     amount: tokenAmount,
                     address: tokenAddress,
+                    isRay: WTON_ADDRESS === tokenAddress,
                   });
               }}>
               Approve
@@ -293,6 +300,7 @@ export const DistributeModal = () => {
                     library,
                     amount: tokenAmount,
                     address: tokenAddress,
+                    isRay: WTON_ADDRESS === tokenAddress,
                   });
                 handleCloseModal();
               }}>
