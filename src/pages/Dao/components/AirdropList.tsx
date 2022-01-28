@@ -100,22 +100,19 @@ export const AirdropList = () => {
 
   return (
     <Flex justifyContent="space-around" w="100%" flexDir="column" mt="55px">
-      <Flex alignItems="end" mb="15px">
+      <Flex mb="15px" flexDir="column">
         <Text
           color={themeDesign.fontColor[colorMode]}
           fontSize={'1.250em'}
           fontWeight={'bold'}>
           Distributed List{' '}
         </Text>
-        {/* <Text color={'gray.400'} fontSize={'1.000em'} ml={1} pb={'1px'}>
+        <Text color={'gray.400'} fontSize={'1.000em'} ml={1} pb={'1px'}>
           {timeStamp} 00:00:00 (UTC)
-        </Text> */}
+        </Text>
       </Flex>
       <Flex justifyContent="space-between">
         <Box>
-          <Text color={'gray.400'} fontSize={'1.000em'}>
-            {timeStamp} 00:00:00 (UTC)
-          </Text>
           <Flex>
             {airdropList?.map((tokenInfo, index: number) => {
               if (tokenInfo.amount === '0.00') {
@@ -134,6 +131,7 @@ export const AirdropList = () => {
                       {tokenInfo.tokenName}
                     </span>
                   </Text>
+
                   {index < airdropList.length - 1 && (
                     <span
                       style={{

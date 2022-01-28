@@ -23,7 +23,6 @@ import {useBlockNumber} from 'hooks/useBlock';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {Utility} from './components/Utility';
 import {DistributeModal} from 'pages/Admin/components/DistributeModal';
-import {AirdropList} from '@Dao/components/AirdropList';
 
 export const DAO = () => {
   const theme = useTheme();
@@ -156,7 +155,6 @@ export const DAO = () => {
             </Flex>
             <Flex flexDir="column" w={636}>
               <DAOStatistics></DAOStatistics>
-              <AirdropList></AirdropList>
               <Utility></Utility>
             </Flex>
           </Flex>
