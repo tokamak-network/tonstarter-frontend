@@ -12,6 +12,8 @@ import {
   useTheme,
   useColorMode,
   WrapItem,
+  Checkbox,
+  CheckboxGroup,
 } from '@chakra-ui/react';
 import React from 'react';
 import {useAppSelector} from 'hooks/useRedux';
@@ -25,28 +27,30 @@ import {ClaimList} from '@Dao/types';
 import {DEPLOYED} from 'constants/index';
 import * as LockTOSDividend from 'services/abis/LockTOSDividend.json';
 import {useContract} from 'hooks/useContract';
-import Web3 from 'web3';
 
 const ClaimRecord = ({
   name,
   amount,
   tokenName,
+  tokenAddress,
   index,
 }: {
   name: string;
   amount: string;
   tokenName: string;
+  tokenAddress: string;
   index: number;
 }) => {
   const {colorMode} = useColorMode();
   return (
     <WrapItem w="100%" h="37px">
       <Flex w="100%" justifyContent="space-between" pl="1.875em" pr="1.875em">
-        <Text
-          color={colorMode === 'light' ? 'gray.400' : 'gray.425'}
-          fontSize={'13px'}>
-          {`#${index + 1}`}
-        </Text>
+        <Checkbox value={tokenAddress} mr={'10px'}></Checkbox>
+        {/* <Text
+            color={colorMode === 'light' ? 'gray.400' : 'gray.425'}
+            fontSize={'13px'}>
+            {`#${index + 1}`}
+          </Text> */}
         <Text
           color={colorMode === 'light' ? 'gray.250' : 'white.200'}
           fontSize={'15px'}
@@ -68,7 +72,7 @@ export const DaoClaim = (props: any) => {
 
   const [unstakeList, setUnstakeList] = useState<ClaimList[] | []>([]);
   const [unstakeBalance, setUnstakeBalance] = useState('-');
-  const [tokenList, setTokenList] = useState([]);
+  const [tokenList, setTokenList] = useState<string[] | []>([]);
 
   const {LockTOSDividend_ADDRESS} = DEPLOYED;
   const DIVIDEND_CONTRACT = useContract(
@@ -84,10 +88,6 @@ export const DaoClaim = (props: any) => {
       const list = claimList.filter(
         (data: ClaimList) => Number(data.claimAmount.replaceAll(',', '')) > 0,
       );
-      const tokenAddresses = list.map((data: ClaimList) => {
-        return data.tokenAddress;
-      });
-      setTokenList(tokenAddresses);
       setUnstakeList(list);
     }
     /*eslint-disable*/
@@ -174,14 +174,18 @@ export const DaoClaim = (props: any) => {
                   style={{marginTop: '0', marginBottom: '20px'}}
                   justifyContent="center"
                   flexDir="column">
-                  {unstakeList.map((data: ClaimList, index: number) => (
-                    <ClaimRecord
-                      index={index}
-                      name={data.name}
-                      amount={data.claimAmount}
-                      tokenName={data.tokenName}
-                    />
-                  ))}
+                  <CheckboxGroup
+                    onChange={(tokenList: string[]) => setTokenList(tokenList)}>
+                    {unstakeList.map((data: ClaimList, index: number) => (
+                      <ClaimRecord
+                        index={index}
+                        name={data.name}
+                        amount={data.claimAmount}
+                        tokenName={data.tokenName}
+                        tokenAddress={data.tokenAddress}
+                      />
+                    ))}
+                  </CheckboxGroup>
                 </Flex>
               </Scrollbars>
             )}
@@ -195,11 +199,13 @@ export const DaoClaim = (props: any) => {
               fontSize="14px"
               _hover={{...theme.btnHover}}
               onClick={async () => {
+                if (tokenList.length === 0) {
+                  return alert('You need to choose token(s)');
+                }
                 if (account && tokenList.length > 0) {
                   try {
-                    console.log(DIVIDEND_CONTRACT);
-                    console.log(tokenList);
                     DIVIDEND_CONTRACT?.claimBatch(tokenList);
+                    handleCloseModal();
                     // const web3 = new Web3(Web3.givenProvider);
                     // //@ts-ignore
                     // const contract = new web3.eth.Contract(
