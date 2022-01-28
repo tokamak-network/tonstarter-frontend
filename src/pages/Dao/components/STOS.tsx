@@ -16,6 +16,9 @@ import {convertNumber} from 'utils/number';
 import {Contract} from '@ethersproject/contracts';
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import {useBlockNumber} from 'hooks/useBlock';
+import {LoadingDots} from 'components/Loader/LoadingDots';
+
+type AirdropTokenList = {tokenName: string; amount: string}[];
 
 const themeDesign = {
   fontColorTitle: {
@@ -58,12 +61,9 @@ export const STOS = () => {
   const {colorMode} = useColorMode();
   const {account, library} = useActiveWeb3React();
   const [address, setAddress] = useState('-');
-  const [airdropList, setAirdropList] = useState<
-    {tokenName: string; amount: string}[] | undefined
-  >(undefined);
-  const [checkAirdropList, setCheckAirdropList] = useState<
-    boolean[] | undefined
-  >(undefined);
+  const [airdropList, setAirdropList] = useState<AirdropTokenList | undefined>(
+    undefined,
+  );
 
   const LOCKTOS_DIVIDEND_CONTRACT = useContract(
     LockTOSDividend_ADDRESS,
@@ -111,6 +111,7 @@ export const STOS = () => {
           amount: convertNumber({
             amount: tokenAmount.toString(),
             localeString: true,
+            type: tokenSymbol !== 'WTON' ? 'wei' : 'ray',
           }) as string,
         };
       }),
@@ -124,9 +125,21 @@ export const STOS = () => {
     /*eslint-disable*/
   }, [blockNumber]);
 
+  const [airdropExistingList, setAirdropExistingList] = useState<
+    AirdropTokenList | undefined
+  >(undefined);
+
+  const [loading, setLoading] = useState<boolean>(true);
+
   useEffect(() => {
-    const result = airdropList?.map((tokenInfo) => tokenInfo.amount === '0.00');
-    setCheckAirdropList(result || undefined);
+    let temp: {tokenName: string; amount: string}[] = [];
+    const result = airdropList?.map((tokenInfo) => {
+      if (tokenInfo.amount !== '0.00') {
+        temp.push(tokenInfo);
+      }
+    });
+    setAirdropExistingList(temp as AirdropTokenList);
+    setTimeout(() => setLoading(false), 2500);
   }, [airdropList]);
 
   return (
@@ -200,46 +213,23 @@ export const STOS = () => {
           fontSize="20px"
           fontWeight={600}
           color={themeDesign.fontAddressColor[colorMode]}>
-          {checkAirdropList?.indexOf(true) === 0 ? (
-            <Text fontSize="0.8em">There isn't any distributed token</Text>
+          {loading === true && <Box>...</Box>}
+          {loading === false && airdropExistingList?.length === 0 ? (
+            <Text fontSize="0.8em" h={'35px'}>
+              There isn't any distributed token
+            </Text>
           ) : (
-            <Text h={'24px'}></Text>
+            <Text h={'35px'}></Text>
           )}
-          {airdropList?.map((tokenInfo, index: number) => {
-            if (tokenInfo.amount === '0.00') {
-              return null;
-            }
-            return (
-              <Flex alignItems="center">
-                {index !== 0 && (
-                  <span
-                    style={{
-                      fontSize: '1em',
-                      marginLeft: '10px',
-                      textAlign: 'center',
-                      verticalAlign: 'center',
-                      lineHeight: '35px',
-                    }}>
-                    |
-                  </span>
-                )}
-                <Text
-                  fontFamily={theme.fonts.roboto}
-                  color={themeDesign.fontAddressColor[colorMode]}
-                  fontSize={'0.8em'}
-                  h={'35px'}
-                  textAlign="center"
-                  verticalAlign={'center'}
-                  lineHeight={'35px'}
-                  fontWeight={600}>
-                  {tokenInfo.amount}
-                  <span style={{marginLeft: '5px'}}>{tokenInfo.tokenName}</span>
-                </Text>
-                {/* {index < airdropList.length - 1 &&
-                  airdropList[index + 1].amount !== '0.00' && (
+          {loading === false &&
+            airdropExistingList?.map((tokenInfo, index: number) => {
+              return (
+                <Flex alignItems="center">
+                  {index !== 0 && (
                     <span
                       style={{
                         fontSize: '1em',
+                        marginLeft: '10px',
                         marginRight: '10px',
                         textAlign: 'center',
                         verticalAlign: 'center',
@@ -247,10 +237,24 @@ export const STOS = () => {
                       }}>
                       |
                     </span>
-                  )} */}
-              </Flex>
-            );
-          })}
+                  )}
+                  <Text
+                    fontFamily={theme.fonts.roboto}
+                    color={themeDesign.fontAddressColor[colorMode]}
+                    fontSize={'0.8em'}
+                    h={'35px'}
+                    textAlign="center"
+                    verticalAlign={'center'}
+                    lineHeight={'35px'}
+                    fontWeight={600}>
+                    {tokenInfo.amount}
+                    <span style={{marginLeft: '5px'}}>
+                      {tokenInfo.tokenName}
+                    </span>
+                  </Text>
+                </Flex>
+              );
+            })}
         </Flex>
       </Flex>
       <Box h={'68px'}>

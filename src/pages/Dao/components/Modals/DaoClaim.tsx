@@ -85,10 +85,7 @@ export const DaoClaim = (props: any) => {
       setUnstakeBalance(balance);
     }
     if (claimList) {
-      const list = claimList.filter(
-        (data: ClaimList) => Number(data.claimAmount.replaceAll(',', '')) > 0,
-      );
-      setUnstakeList(list);
+      setUnstakeList(claimList);
     }
     /*eslint-disable*/
   }, [data, balance, claimList]);
