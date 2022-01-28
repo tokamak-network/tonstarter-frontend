@@ -61,7 +61,9 @@ export const STOS = () => {
   const [airdropList, setAirdropList] = useState<
     {tokenName: string; amount: string}[] | undefined
   >(undefined);
-  const [timeStamp, setTimeStamp] = useState<string>('');
+  const [checkAirdropList, setCheckAirdropList] = useState<
+    boolean[] | undefined
+  >(undefined);
 
   const LOCKTOS_DIVIDEND_CONTRACT = useContract(
     LockTOSDividend_ADDRESS,
@@ -123,21 +125,9 @@ export const STOS = () => {
   }, [blockNumber]);
 
   useEffect(() => {
-    //GET NEXT THUR
-    //Which is lock period for sTOS
-    const dayINeed = 4; // for Thursday
-    const today = moment().isoWeekday();
-    const thisWed = moment().isoWeekday(dayINeed).format('YYYY-MM-DD');
-    const nextWed = moment()
-      .add(1, 'weeks')
-      .isoWeekday(dayINeed)
-      .format('YYYY-MM-DD');
-    if (today === dayINeed || today < dayINeed) {
-      return setTimeStamp(thisWed);
-    } else {
-      return setTimeStamp(nextWed);
-    }
-  }, []);
+    const result = airdropList?.map((tokenInfo) => tokenInfo.amount === '0.00');
+    setCheckAirdropList(result || undefined);
+  }, [airdropList]);
 
   return (
     <Flex
@@ -210,6 +200,11 @@ export const STOS = () => {
           fontSize="20px"
           fontWeight={600}
           color={themeDesign.fontAddressColor[colorMode]}>
+          {checkAirdropList?.indexOf(true) === 0 ? (
+            <Text fontSize="0.8em">There isn't any distributed token</Text>
+          ) : (
+            <Text h={'24px'}></Text>
+          )}
           {airdropList?.map((tokenInfo, index: number) => {
             if (tokenInfo.amount === '0.00') {
               return null;
@@ -230,7 +225,7 @@ export const STOS = () => {
                 )}
                 <Text
                   fontFamily={theme.fonts.roboto}
-                  color={themeDesign.fontColor[colorMode]}
+                  color={themeDesign.fontAddressColor[colorMode]}
                   fontSize={'0.8em'}
                   h={'35px'}
                   textAlign="center"

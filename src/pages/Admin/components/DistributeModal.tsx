@@ -29,7 +29,6 @@ export const DistributeModal = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
-  const {handleCloseModal} = useModal();
   const {btnStyle} = theme;
 
   const [tokenAddress, setTokenAddress] = useState<string>(TON_ADDRESS);
@@ -39,6 +38,7 @@ export const DistributeModal = () => {
   const [timeStamp, setTimeStamp] = useState<string>('');
 
   const {blockNumber} = useBlockNumber();
+  const {handleCloseModal} = useModal(setTokenAmount);
 
   useEffect(() => {
     async function getAllowanceAmount() {
@@ -294,6 +294,7 @@ export const DistributeModal = () => {
                     amount: tokenAmount,
                     address: tokenAddress,
                   });
+                handleCloseModal();
               }}>
               Distribute
             </Button>
