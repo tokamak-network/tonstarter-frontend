@@ -33,6 +33,9 @@ export const claimMultiple = async (args: any) => {
     }),
   );
 
+  console.log('--arrayData--');
+  console.log(arrayData);
+
   try {
     const receipt = await uniswapStakerContract
       .connect(signer)
