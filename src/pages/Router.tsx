@@ -30,6 +30,7 @@ import {
   ListingPools,
   ListingRewards,
 } from './Admin';
+import {fetchTosStakes} from '@Dao/dao.reducer';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -73,6 +74,15 @@ export const Router: FC<RouterProps> = () => {
         library,
       }) as any,
     );
+    if (account && chainId) {
+      await dispatch(
+        fetchTosStakes({
+          account,
+          library,
+          chainId,
+        }) as any,
+      );
+    }
   };
 
   useEffect(() => {

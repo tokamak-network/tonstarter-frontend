@@ -173,15 +173,20 @@ export const DaoClaim = (props: any) => {
                   flexDir="column">
                   <CheckboxGroup
                     onChange={(tokenList: string[]) => setTokenList(tokenList)}>
-                    {unstakeList.map((data: ClaimList, index: number) => (
-                      <ClaimRecord
-                        index={index}
-                        name={data.name}
-                        amount={data.claimAmount}
-                        tokenName={data.tokenName}
-                        tokenAddress={data.tokenAddress}
-                      />
-                    ))}
+                    {unstakeList.map((data: ClaimList, index: number) => {
+                      if (data.claimAmount === '0.00') {
+                        return;
+                      }
+                      return (
+                        <ClaimRecord
+                          index={index}
+                          name={data.name}
+                          amount={data.claimAmount}
+                          tokenName={data.tokenName}
+                          tokenAddress={data.tokenAddress}
+                        />
+                      );
+                    })}
                   </CheckboxGroup>
                 </Flex>
               </Scrollbars>
