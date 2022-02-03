@@ -77,7 +77,6 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
   const [claimableAmount, setClaimableAmount] = useState<number>(0);
-  const [contractClaimable, setContractClaimable] = useState<number>(0);
   // const [requestAmount, setRequestAmout] = useState<string>('0');
   const [tokenList, setTokenList] = useState<any[]>([]);
   const [disableClaimButton, setDisableClaimButton] = useState<boolean>(true);
@@ -121,6 +120,7 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
       setClaimTokens([]);
       setClaimTokenAddresses([]);
       setDisableClaimButton(true);
+      setClaimButtonText('Claim');
     };
     getTokenList();
   }, [rewards, account, library, transactionType, blockNumber]);
@@ -141,8 +141,7 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
       .connect(signer)
       .rewards(token.token, account);
 
-    setContractClaimable(claimable);
-
+    // format claimable amount to be readable in the tokenList.
     let claimableParsed =
       token.symbol === 'WTON'
         ? Number(
@@ -170,14 +169,6 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
     const symbolContract = await getTokenSymbol(address, library);
     return symbolContract;
   };
-
-  // const changeToken = (token: string) => {
-  //   const selected = tokenList.find(
-  //     (tok: any) =>
-  //       ethers.utils.getAddress(tok.token) === ethers.utils.getAddress(token),
-  //   );
-  //   setSymbol(selected.symbol);
-  // };
 
   useEffect(() => {
     const pagenumber = parseInt(
@@ -213,17 +204,14 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
 
     if (index === -1) {
       currentClaimTokenAddresses.push(token.token);
+      currentAmount += Number(token.amount);
     } else if (index > -1) {
       currentClaimTokenAddresses.splice(index, 1);
+      currentAmount -= Number(token.amount);
     }
+
     setDisableClaimButton(false);
     setClaimTokenAddresses(currentClaimTokenAddresses);
-
-    if (index > -1) {
-      currentAmount -= Number(token.amount);
-    } else {
-      currentAmount += Number(token.amount);
-    }
     setClaimableAmount(currentAmount);
 
     if (claimTokenAddresses.length <= 1) {
@@ -248,7 +236,6 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
 
   const getPaginationGroup = () => {
     let start = Math.floor((pageIndex - 1) / 5) * 5;
-
     const group = new Array(5).fill(1).map((_, idx) => start + idx + 1);
     return group;
   };
@@ -264,13 +251,6 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
           Claim
         </Text>
         <Flex alignItems={'center'} h={'125px'} mb={'1rem'}>
-          {/* <Text
-            color={colorMode === 'light' ? '#808992' : '#949494'}
-            fontWeight={'bold'}
-            fontSize={'13px'}
-            w={'134px'}>
-            Reward Token
-          </Text> */}
           <CheckboxGroup size={'sm'}>
             <Stack direction={['row', 'column']} w={'100%'}>
               {tokenList.map((token: any, index: number) => {
@@ -296,124 +276,7 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
               })}
             </Stack>
           </CheckboxGroup>
-          {/* <Select
-            h={'30px'}
-            color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}
-            fontSize={'12px'}
-            onChange={(e) => {
-              changeToken(e.target.value);
-            }}
-            w={'120px'}>
-            {tokenList.map((token: any, index: number) => {
-              // const tokenType = checkTokenType(token);
-              return (
-                <option value={token.token} key={index}>
-                  {token.symbol}
-                </option>
-              );
-            })}
-          </Select> */}
         </Flex>
-        {/* <Flex alignItems={'center'} h={'45px'}>
-          <Text
-            color={colorMode === 'light' ? '#808992' : '#949494'}
-            fontWeight={'bold'}
-            fontSize={'13px'}
-            w={'134px'}>
-            Claimable Amount
-          </Text>
-          <Flex
-            w={'121px'}
-            justifyContent="end"
-            display={'flex'}
-            alignItems={'baseline'}>
-            <Text
-              color={colorMode === 'light' ? '#3d495d' : '#f3f4f1'}
-              fontWeight={'bold'}
-              textAlign="right"
-              fontSize={'15px'}
-              mr={'2px'}>
-              {selectedTokens.indexOf(WTON_ADDRESS) > -1
-                ? // {ethers.utils.getAddress(selectedToken) ===
-                  // ethers.utils.getAddress(WTON_ADDRESS)
-                  Number(
-                    ethers.utils.formatUnits(claimableAmount.toString(), 27),
-                  ).toLocaleString(undefined, {
-                    minimumFractionDigits: 2,
-                  })
-                : Number(
-                    ethers.utils.formatEther(claimableAmount.toString()),
-                  ).toLocaleString(undefined, {
-                    minimumFractionDigits: 2,
-                  })}
-              {/* {Number(ethers.utils.formatEther(claimableAmount.toString())).toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-              })} 
-            </Text>
-            <Text
-              textAlign="right"
-              color={colorMode === 'light' ? '#3d495d' : '#f3f4f1'}
-              fontWeight={'bold'}
-              fontSize={'10px'}>
-              {symbol}
-            </Text>
-          </Flex>
-        </Flex> */}
-        {/* <Flex alignItems={'center'} h={'45px'}>
-          <Text
-            color={colorMode === 'light' ? '#808992' : '#949494'}
-            fontWeight={'bold'}
-            fontSize={'13px'}
-            w={'134px'}>
-            Request Amount
-          </Text>
-          <Flex
-            justifyContent={'center'}
-            w={'120px'}
-            alignItems={'center'}
-            h={'30px'}
-            border={themeDesign.border[colorMode]}
-            borderRadius={'4px'}
-            px={'10px'}>
-            <NumberInput
-              value={requestAmount}
-              max={claimableAmount}
-              onChange={(value) => {
-                setRequestAmout(value);
-              }}
-              borderColor={'transparent'}
-              _focus={{
-                borderColor: 'transparent',
-              }}
-              _active={{
-                borderColor: 'transparent',
-              }}
-              _hover={{
-                borderColor: 'transparent',
-              }}
-              focusBorderColor="transparent">
-              <NumberInputField
-                focusBorderColor="transparent"
-                pl={'0px'}
-                pr={'5px'}
-                fontSize={'13px'}
-                fontFamily={theme.fonts.roboto}
-                textAlign={'right'}
-                color={colorMode === 'light' ? '#86929d' : '#818181'}
-                _hover={{
-                  borderColor: 'transparent',
-                }}
-              />
-            </NumberInput>
-            <Text
-              color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}
-              fontWeight={'bold'}
-              fontSize={'10px'}
-              ml={'2px'}>
-              {symbol}
-            </Text>
-          </Flex>
-        </Flex> */}
         <Flex
           width={'100%'}
           justifyContent={'center'}
@@ -445,8 +308,7 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
                 claim({
                   library: library,
                   userAddress: account,
-                  amount: contractClaimable,
-                  rewardToken: claimTokenAddresses[0],
+                  rewardToken: claimTokens[0],
                 });
               } else {
                 claimMultiple({
@@ -548,7 +410,7 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
           </Flex>
           <Flex>
             {getPaginationGroup().map((groupIndex: number, index: number) => {
-              const data = getPaginatedData().length;
+              // const data = getPaginatedData().length;
               return (
                 <Button
                   h="24px"

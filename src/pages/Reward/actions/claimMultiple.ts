@@ -23,13 +23,15 @@ export const claimMultiple = async (args: any) => {
     library,
   );
 
-  const arrayData = claimTokens.map((token: any) => {
-    const data = uniswapStakerContract.interface.encodeFunctionData(
-      'claimReward',
-      [token.token, userAddress, token.claimable],
-    );
-    return data;
-  });
+  const arrayData = await Promise.all(
+    claimTokens.map((token: any) => {
+      const data = uniswapStakerContract.interface.encodeFunctionData(
+        'claimReward',
+        [token.token, userAddress, token.claimable],
+      );
+      return data;
+    }),
+  );
 
   try {
     const receipt = await uniswapStakerContract
