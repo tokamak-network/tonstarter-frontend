@@ -185,6 +185,7 @@ else {
                 allocatedReward: reward.allocatedReward,
                 numStakers: reward.numStakers,
                 status: reward.status,
+                index: reward.index
               };
               return (
                 <RewardProgramCard

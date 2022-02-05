@@ -142,7 +142,6 @@ export const Reward = () => {
     async function fetchProjectsData() {
       const poolsData: any = await views.getPoolData(library);
       const rewardData = await views.getRewardData();
-
       setPoolsFromAPI(poolsData);
       const poolArray: any = [];
       if (poolsData) {
@@ -152,6 +151,11 @@ export const Reward = () => {
       }
 
       if (rewardData) {
+        rewardData.map ((reward, index) => {
+          reward.index = index +1
+        })
+        console.log('rewardData', rewardData);
+        
         setDatas(rewardData);
       }
       setPoolAddresses(poolArray);

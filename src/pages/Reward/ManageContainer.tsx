@@ -145,38 +145,36 @@ export const ManageContainer: FC<ManageContainerProps> = ({
               token1 = includedPool[0].token1.id;
               token0Image = includedPool[0].token0Image;
               token1Image = includedPool[0].token1Image;
-              const rewardProps = {
-                chainId: reward.chainId,
-                poolName: reward.poolName,
-                token0Address: token0,
-                token1Address: token1,
-                token0Image: token0Image,
-                token1Image: token1Image,
-                poolAddress: reward.poolAddress,
-                rewardToken: reward.rewardToken,
-                incentiveKey: reward.incentiveKey,
-                startTime: reward.startTime,
-                endTime: reward.endTime,
-                allocatedReward: reward.allocatedReward,
-                numStakers: reward.numStakers,
-                status: reward.status,
-              };
-              return (
-                <RewardProgramCardManage
-                  key={index}
-                  reward={rewardProps}
-                  pageIndex={pageIndex}
-                  sortString={sortString}
-                  sendKey={refundMultipleKeys}
-                  stakedPools={stakedPools}
-                />
-              );
-            })}
-          </Grid>
-          <Flex
-            mt={'22px'}
-            position={'relative'}
-            flexDir={'row'}
+            const rewardProps = {
+              chainId: reward.chainId,
+              poolName: reward.poolName,
+              token0Address: token0,
+              token1Address: token1,
+              token0Image: token0Image,
+              token1Image: token1Image,
+              poolAddress: reward.poolAddress,
+              rewardToken: reward.rewardToken,
+              incentiveKey: reward.incentiveKey,
+              startTime: reward.startTime,
+              endTime: reward.endTime,
+              allocatedReward: reward.allocatedReward,
+              numStakers: reward.numStakers,
+              status: reward.status,
+              index: reward.index
+            };
+            return (
+              <RewardProgramCardManage
+                key={index}
+                reward={rewardProps}
+                pageIndex={pageIndex}
+                sortString={sortString}
+                sendKey={refundMultipleKeys}
+                stakedPools={stakedPools}
+              />
+            );
+          })}
+        </Grid>
+        <Flex mt={'22px'} position={'relative'} flexDir={'row'}
             justifyContent={'space-between'}>
             <Button
               w={'120px'}

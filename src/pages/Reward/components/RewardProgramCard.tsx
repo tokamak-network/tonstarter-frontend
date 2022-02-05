@@ -94,6 +94,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   const [rewardSymbol, setRewardSymbol] = useState<string>('');
   const [isSelected, setIsSelected] = useState<boolean>(false);
   const [isUnstakeSelected, setIsUnstakeselected] = useState<boolean>(false);
+  const [numStakers, setNumStakers] = useState<number>(0);
   const key = {
     rewardToken: reward.rewardToken,
     pool: reward.poolAddress,
@@ -236,7 +237,26 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     selectedPool,
     reward,
   ]);
+  useEffect(() => {
+    async function getIncentives() {
+      if (account === null || account === undefined || library === undefined) {
+        return;
+      }
 
+      const incentiveABI =
+        'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)';
+      const abicoder = ethers.utils.defaultAbiCoder;
+      const incentiveId = soliditySha3(abicoder.encode([incentiveABI], [key]));
+      const signer = getSigner(library, account);
+      const incentiveInfo = await uniswapStakerContract
+        .connect(signer)
+        .incentives(incentiveId);
+
+      setNumStakers(Number(incentiveInfo.numberOfStakes));
+    }
+
+    getIncentives();
+  }, [account, library, transactionType, blockNumber, selectedToken,pageIndex, reward]);
   const getReward = async () => {
     if (account === null || account === undefined || library === undefined) {
       return;
@@ -442,7 +462,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
               `https://info.uniswap.org/#/pools/${reward.poolAddress}`,
             );
           }}>
-          {reward.poolName}
+         #{reward.index} {reward.poolName}
         </Text>
         <Box>
           <Text {...REWARD_STYLE.subText({colorMode, fontSize: 14})}>
@@ -455,12 +475,12 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
               lineHeight={1}>
               {moment.unix(Number(reward.startTime)).format('YYYY.MM.DD')}
             </Text>
-            <Text
+            {/* <Text
               {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 11})}
               pb={'2px'}
               pl={'2px'}>
               ({moment.unix(Number(reward.startTime)).format('HH.mm.ss')})
-            </Text>
+            </Text> */}
             {/* </Box> */}
             <Text mb={'5px'} lineHeight={1} px={'5px'}>
               ~{' '}
@@ -471,18 +491,21 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
               lineHeight={1}>
               {moment.unix(Number(reward.endTime)).format('YYYY.MM.DD')}
             </Text>
-            <Text
+            {/* <Text
               {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 11})}
               pb={'2px'}
               pl={'2px'}>
               ({moment.unix(Number(reward.endTime)).format('HH.mm.ss')})
-            </Text>
+            </Text> */}
             {/* </Box> */}
           </Flex>
         </Box>
       </Flex>
       <Flex mt={'24px'} flexDirection="row" justifyContent={'space-between'}>
-        <Text {...REWARD_STYLE.progress.mainText({colorMode})}>Progress</Text>
+        <Flex alignItems={'center'}>
+        <Text {...REWARD_STYLE.progress.mainText({colorMode})}>Progress</Text><Text ml={'8px'} fontSize={'12px'} color={'#0070ed'}>{numStakers} Stakers</Text>
+        </Flex>
+      
         <Box d="flex" flexDir="row">
           <Text
             {...REWARD_STYLE.progress.subText({colorMode, fontSize: 12})}
@@ -512,7 +535,9 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
         </Box>
       </Flex>
       <Box mt={'5px'}>
+      
         <Progress value={progress} borderRadius={10} h={'6px'}></Progress>
+       
       </Box>
       <Flex
         mt={'30px'}

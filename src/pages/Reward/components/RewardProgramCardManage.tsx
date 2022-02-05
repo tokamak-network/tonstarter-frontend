@@ -235,7 +235,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
       </Flex>
       <Flex mt={'15px'} alignItems={'center'}>
         <Text {...REWARD_STYLE.mainText({colorMode})} mr={'10px'}>
-          {reward.poolName}
+        #{reward.index} {reward.poolName}
         </Text>
         <Box>
           <Text {...REWARD_STYLE.subText({colorMode, fontSize: 14})}>
@@ -243,33 +243,27 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
           </Text>
           <Flex>
             {/* <Box> */}
-            <Text
-              {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 14})}
-              lineHeight={1}>
-              {moment.unix(Number(reward.startTime)).format('YYYY.MM.DD')}
-            </Text>
-            <Text
-              {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 11})}
-              pb={'2px'}
-              pl={'2px'}>
-              ({moment.unix(Number(reward.startTime)).format('HH.mm.ss')})
-            </Text>
-            {/* </Box> */}
-            <Text mb={'5px'} lineHeight={1} px={'5px'}>
-              ~{' '}
-            </Text>
-            {/* <Box> */}
-            <Text
-              {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 14})}
-              lineHeight={1}>
-              {moment.unix(Number(reward.endTime)).format('YYYY.MM.DD')}
-            </Text>
-            <Text
-              {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 11})}
-              pb={'2px'}
-              pl={'2px'}>
-              ({moment.unix(Number(reward.endTime)).format('HH.mm.ss')})
-            </Text>
+              <Text {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 14})} lineHeight={1}>
+                {moment.unix(Number(reward.startTime)).format('YYYY.MM.DD')}
+              </Text>
+              {/* <Text
+                {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 11})}
+                pb={'2px'}
+                pl={'2px'}>
+                ({moment.unix(Number(reward.startTime)).format('HH.mm.ss')}) 
+              </Text> */}
+              {/* </Box> */}
+              <Text mb={'5px'} lineHeight={1} px={'5px'}>~{' '}</Text>
+              {/* <Box> */}
+              <Text {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 14})} lineHeight={1}>
+                {moment.unix(Number(reward.endTime)).format('YYYY.MM.DD')}
+              </Text>
+              {/* <Text
+                {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 11})}
+                pb={'2px'}
+                pl={'2px'}>
+                ({moment.unix(Number(reward.endTime)).format('HH.mm.ss')})
+              </Text> */}
             {/* </Box> */}
           </Flex>
         </Box>
