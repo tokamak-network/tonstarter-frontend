@@ -406,20 +406,24 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
                   }
             }
             disabled={
-              refundableAmount === '0' || reward.endTime > moment().unix()
+              refundableAmount === '0' ||
+              reward.endTime > moment().unix() ||
+              numStakers > 0
             }
-            onClick={() =>
-              numStakers === 0
-                ? refund({library: library, userAddress: account, key: key})
-                : unstakeLP({
-                    library: library,
-                    userAddress: account,
-                    key: key,
-                    reward: reward,
-                    stakedPools,
-                  })
+            onClick={
+              () => refund({library: library, userAddress: account, key: key})
+              // numStakers === 0
+              //   ? refund({library: library, userAddress: account, key: key})
+              //   : unstakeLP({
+              //       library: library,
+              //       userAddress: account,
+              //       key: key,
+              //       reward: reward,
+              //       stakedPools,
+              //     })
             }>
-            {numStakers > 0 ? 'Unstake LP' : 'Refund'}
+            {'Unstake LP'}
+            {/* {numStakers > 0 ? 'Unstake LP' : 'Refund'} */}
           </Button>
         </Flex>
       </Flex>
