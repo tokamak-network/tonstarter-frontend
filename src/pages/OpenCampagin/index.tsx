@@ -8,7 +8,6 @@ import {useEffect} from 'react';
 
 const OpenCampagin = () => {
   const theme = useTheme();
-  const queryClient = new QueryClient();
   const {account} = useActiveWeb3React();
 
   const {data, isLoading, error} = useQuery(
@@ -20,24 +19,23 @@ const OpenCampagin = () => {
   );
 
   useEffect(() => {
+    console.log('--data--');
     console.log(data);
   }, [data]);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <Flex mt={theme.headerMargin.mt} flexDir="column">
-        <Flex justifyContent={'center'} mb={50}>
-          <Button bg={'red.100'} color={'white.100'} _hover={{}}>
-            Save(server)
-          </Button>
-        </Flex>
-        <Flex>
-          <OpenStepOne></OpenStepOne>
-        </Flex>
-        <Flex></Flex>
-        <Flex></Flex>
+    <Flex mt={theme.headerMargin.mt} flexDir="column">
+      <Flex justifyContent={'center'} mb={50}>
+        <Button bg={'red.100'} color={'white.100'} _hover={{}}>
+          Save(server)
+        </Button>
       </Flex>
-    </QueryClientProvider>
+      <Flex>
+        <OpenStepOne></OpenStepOne>
+      </Flex>
+      <Flex></Flex>
+      <Flex></Flex>
+    </Flex>
   );
 };
 
