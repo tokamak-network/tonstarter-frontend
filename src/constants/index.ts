@@ -13,15 +13,22 @@ export const REACT_APP_MAINNET_API = process.env
   .REACT_APP_MAINNET_API as string;
 export const REACT_APP_DEV_API = process.env.REACT_APP_DEV_API as string;
 export const REACT_APP_LOCAL = process.env.REACT_APP_LOCAL as string;
+export const REACT_APP_MAINNET_OPENCAMPAGIN_API = process.env
+  .REACT_APP_MAINNET_OPENCAMPAGIN_API as string;
+export const REACT_APP_RINKEBY_OPENCAMPAGIN_API = process.env
+  .REACT_APP_RINKEBY_OPENCAMPAGIN_API as string;
+
 export const NetworkContextName = `${new Date().getTime()}-NETWORK`;
 export const DEFAULT_NETWORK = REACT_APP_MODE === 'DEV' ? 4 : 1;
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 export const API_SERVER =
   REACT_APP_MODE === 'DEV' ? REACT_APP_DEV_API : REACT_APP_MAINNET_API;
-// export const API_SERVER =
-//   REACT_APP_MODE === 'DEV' ? REACT_APP_LOCAL :
-//   REACT_APP_MODE === 'LOCAL' ? REACT_APP_LOCAL : REACT_APP_MAINNET_API;
+export const API_SERVER_OPENCAMPAGIN_SERVER =
+  REACT_APP_MODE === 'DEV'
+    ? REACT_APP_RINKEBY_OPENCAMPAGIN_API
+    : REACT_APP_MAINNET_OPENCAMPAGIN_API;
+
 export const BASE_PROVIDER =
   REACT_APP_MODE === 'DEV'
     ? ethers.getDefaultProvider('rinkeby')
@@ -31,6 +38,7 @@ export const fetchValutURL = `${API_SERVER}/vaults?chainId=${DEFAULT_NETWORK}`;
 export const fetchRewardsURL = `${API_SERVER}/reward?chainId=${DEFAULT_NETWORK}`;
 export const fetchStarterURL = `${API_SERVER}/starter?chainId=${DEFAULT_NETWORK}`;
 export const fetchPoolsURL = `${API_SERVER}/pool?chainId=${DEFAULT_NETWORK}`;
+export const fetchCampaginURL = `${API_SERVER_OPENCAMPAGIN_SERVER}/projects?chainId=${DEFAULT_NETWORK}`;
 
 export const permitTOSAddress =
   REACT_APP_MODE === 'DEV' ? '0x865264b30eb29A2978b9503B8AfE2A2DDa33eD7E' : '';

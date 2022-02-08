@@ -18,33 +18,37 @@ import {getLibrary} from 'utils';
 import {Toast} from 'components/Toast';
 import {ApolloProvider} from '@apollo/client';
 import {client} from 'client';
+import {QueryClient, QueryClientProvider} from 'react-query';
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName);
+const queryClient = new QueryClient();
 
 if (!!window.ethereum) {
   window.ethereum.autoRefreshOnNetworkChange = false;
 }
 
 ReactDOM.render(
-  <HelmetProvider>
-    <ApolloProvider client={client}>
-      {/* <I18nextProvider i18n={i18n}> */}
-      <Web3ReactProvider getLibrary={getLibrary}>
-        <Web3ProviderNetwork getLibrary={getLibrary}>
-          <ColorModeScript />
-          <Provider store={store}>
-            <ChakraProvider resetCSS theme={theme}>
-              <Toast></Toast>
-              <BrowserRouter>
-                <Router />
-              </BrowserRouter>
-            </ChakraProvider>
-          </Provider>
-        </Web3ProviderNetwork>
-      </Web3ReactProvider>
-      {/* </I18nextProvider> */}
-    </ApolloProvider>
-  </HelmetProvider>,
+  <QueryClientProvider client={queryClient}>
+    <HelmetProvider>
+      <ApolloProvider client={client}>
+        {/* <I18nextProvider i18n={i18n}> */}
+        <Web3ReactProvider getLibrary={getLibrary}>
+          <Web3ProviderNetwork getLibrary={getLibrary}>
+            <ColorModeScript />
+            <Provider store={store}>
+              <ChakraProvider resetCSS theme={theme}>
+                <Toast></Toast>
+                <BrowserRouter>
+                  <Router />
+                </BrowserRouter>
+              </ChakraProvider>
+            </Provider>
+          </Web3ProviderNetwork>
+        </Web3ReactProvider>
+        {/* </I18nextProvider> */}
+      </ApolloProvider>
+    </HelmetProvider>
+  </QueryClientProvider>,
   document.getElementById('root'),
 );
 
