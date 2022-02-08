@@ -321,13 +321,12 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           style={{zIndex: 100}}>
           Starter
         </NavLink>
-        {/* <Tooltip
-          hasArrow
-          placement="top"
-          label="Coming Soon"
-          color={theme.colors.white[100]}
-          bg={theme.colors.gray[375]}> */}
-        {/* </Tooltip> */}
+        <NavLink
+          to="/opencampagin"
+          className={match?.isExact ? 'link-match' : 'link'}
+          style={{zIndex: 100}}>
+          <Text className={match?.isExact ? 'link-match' : 'link'}>Launch</Text>
+        </NavLink>
         <NavLink
           to="/"
           className={match?.isExact ? 'link-match' : 'link'}
@@ -342,19 +341,6 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
             WhitePaper
           </Text>
         </NavLink>
-        {/* <NavLink
-          to="/"
-          className={match?.isExact ? 'link-match' : 'link'}
-          style={{zIndex: 100}}
-          onClick={(e) => {
-            e.preventDefault();
-            window.open(
-              'https://medium.com/onther-tech/wton-tos-lp-staking-reward-system-en-kr-881e57ec0568',
-            );
-          }}>
-          <Text className={match?.isExact ? 'link-match' : 'link'}>Guide</Text>
-        </NavLink> */}
-
         <Menu>
           <MenuButton>
             <Text className={match?.isExact ? 'link-match' : 'link'}>

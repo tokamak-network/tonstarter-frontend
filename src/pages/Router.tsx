@@ -31,6 +31,7 @@ import {
   ListingRewards,
 } from './Admin';
 import {fetchTosStakes} from '@Dao/dao.reducer';
+import OpenCampagin from './OpenCampagin';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -192,6 +193,7 @@ export const Router: FC<RouterProps> = () => {
           <Route exact path="/admin/listrewards" component={ListingRewards} />
 
           <Route exact path={`/starter/:id`} component={StarterDetail} />
+          <Route exact path={`/opencampagin`} component={OpenCampagin} />
           {/* <Route
             exact
             path={`/starter/upcoming/:id`}

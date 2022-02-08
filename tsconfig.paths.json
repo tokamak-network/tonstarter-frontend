@@ -5,7 +5,8 @@
       "@Pools/*": ["./pages/Pools/*"],
       "@Starter/*": ["./pages/Starter/*"],
       "@Dao/*": ["./pages/Dao/*"],
-      "@Admin/*": ["./pages/Admin/*"]
+      "@Admin/*": ["./pages/Admin/*"],
+      "@OpenCampagin/*": ["./pages/OpenCampagin/*"]
     }
   }
 }
