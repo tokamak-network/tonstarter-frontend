@@ -406,9 +406,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
                   }
             }
             disabled={
-              refundableAmount === '0' ||
-              reward.endTime > moment().unix() ||
-              numStakers > 0
+              refundableAmount === '0' || reward.endTime > moment().unix()
             }
             onClick={() =>
               numStakers === 0

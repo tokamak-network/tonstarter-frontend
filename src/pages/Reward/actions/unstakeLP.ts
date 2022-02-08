@@ -18,6 +18,8 @@ export const unstakeLP = async (args: any) => {
     return;
   }
 
+  console.log('args: ', args);
+
   const uniswapStakerContract = new Contract(
     UniswapStaker_Address,
     STAKERABI.abi,
@@ -45,18 +47,31 @@ export const unstakeLP = async (args: any) => {
     }),
   );
 
-  const arrayData = stakerIds.map((tokenid: any) => {
-    const data = uniswapStakerContract.interface.encodeFunctionData(
-      'unstakeToken',
-      [key, tokenid],
-    );
-    return data;
-  });
+  console.log('stakerIds: ', stakerIds);
+
+  const unstakeLpData = await Promise.all(
+    stakerIds.map((tokenid: any) => {
+      const data = uniswapStakerContract.interface.encodeFunctionData(
+        'unstakeToken',
+        [key, tokenid],
+      );
+      return data;
+    }),
+  );
+
+  const refundData = await uniswapStakerContract.interface.encodeFunctionData(
+    'endIncentive',
+    [key],
+  );
+
+  unstakeLpData.push(refundData);
+
+  console.log('unstakeLpData: ', unstakeLpData);
 
   try {
     const receipt = await uniswapStakerContract
       .connect(signer)
-      .multicall(arrayData);
+      .multicall(unstakeLpData);
     store.dispatch(setTxPending({tx: true}));
     if (receipt) {
       toastWithReceipt(receipt, setTxPending, 'Reward');
