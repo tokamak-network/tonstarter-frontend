@@ -115,7 +115,7 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
 
         setTimeout(() => {
           setTokenList(tokensArray);
-        }, 1500);
+        }, 2000);
 
         tokensArray.forEach((token: any, index: number) => {
           getClaimable(token, index);
@@ -166,7 +166,7 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
     tokenObj.claimable = claimable;
     let newTokenList = tokenList;
     newTokenList[index] = tokenObj;
-    setTokenList(newTokenList);
+    // setTokenList(newTokenList);
   };
 
   const getTokenFromContract = async (address: string) => {
