@@ -419,7 +419,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
                     stakedPools,
                   })
             }>
-            {numStakers > 0 ? 'Unstake LP' : 'Refund'}
+            {numStakers > 0 ? 'Unstake & Refund' : 'Refund'}
           </Button>
         </Flex>
       </Flex>
