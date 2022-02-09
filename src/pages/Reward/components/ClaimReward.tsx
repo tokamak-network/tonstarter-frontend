@@ -72,6 +72,16 @@ interface Token {
   claimable: any;
 }
 
+function compare(a: any, b: any) {
+  if (a.symbol < b.symbol) {
+    return -1;
+  }
+  if (a.symbol > b.symbol) {
+    return 1;
+  }
+  return 0;
+}
+
 export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
   // const {data} = useAppSelector(selectModalType);
   const {colorMode} = useColorMode();
@@ -113,9 +123,11 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
           }),
         );
 
+        const result = tokensArray.sort(compare);
+
         setTimeout(() => {
-          setTokenList(tokensArray);
-        }, 2000);
+          setTokenList(result);
+        }, 3000);
 
         tokensArray.forEach((token: any, index: number) => {
           getClaimable(token, index);
