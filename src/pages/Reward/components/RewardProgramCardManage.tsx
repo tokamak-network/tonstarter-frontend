@@ -387,44 +387,51 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
                 sendKey(key);
               }}></Checkbox>
           )}
-
-          <Button
-            w={'120px'}
-            h={'33px'}
-            bg={'blue.500'}
-            color="white.100"
-            ml={'10px'}
-            fontSize="16px"
-            _hover={{backgroundColor: 'none'}}
-            _disabled={
-              colorMode === 'light'
-                ? {
-                    backgroundColor: 'gray.25',
-                    cursor: 'default',
-                    color: '#86929d',
-                  }
-                : {
-                    backgroundColor: '#353535',
-                    cursor: 'default',
-                    color: '#838383',
-                  }
-            }
-            disabled={
-              refundableAmount === '0' || reward.endTime > moment().unix()
-            }
-            onClick={() =>
-              numStakers === 0
-                ? refund({library: library, userAddress: account, key: key})
-                : unstakeLP({
-                    library: library,
-                    userAddress: account,
-                    key: key,
-                    reward: reward,
-                    stakedPools,
-                  })
-            }>
-            Refund
-          </Button>
+          <Tooltip
+            hasArrow
+            placement="top"
+            label="If there are remaining stakers, the gas fee may be higher because refund and unstaking are executed at the same time.
+            If you do a refund later, the amount of the refund may decrease over time."
+            color={theme.colors.white[100]}
+            bg={theme.colors.gray[375]}>
+            <Button
+              w={'120px'}
+              h={'33px'}
+              bg={'blue.500'}
+              color="white.100"
+              ml={'10px'}
+              fontSize="16px"
+              _hover={{backgroundColor: 'none'}}
+              _disabled={
+                colorMode === 'light'
+                  ? {
+                      backgroundColor: 'gray.25',
+                      cursor: 'default',
+                      color: '#86929d',
+                    }
+                  : {
+                      backgroundColor: '#353535',
+                      cursor: 'default',
+                      color: '#838383',
+                    }
+              }
+              disabled={
+                refundableAmount === '0' || reward.endTime > moment().unix()
+              }
+              onClick={() =>
+                numStakers === 0
+                  ? refund({library: library, userAddress: account, key: key})
+                  : unstakeLP({
+                      library: library,
+                      userAddress: account,
+                      key: key,
+                      reward: reward,
+                      stakedPools,
+                    })
+              }>
+              Refund
+            </Button>
+          </Tooltip>
         </Flex>
       </Flex>
     </Flex>
