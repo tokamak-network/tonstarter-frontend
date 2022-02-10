@@ -208,52 +208,6 @@ export const DaoClaim = (props: any) => {
                   try {
                     DIVIDEND_CONTRACT?.claimBatch(tokenList);
                     handleCloseModal();
-                    // const web3 = new Web3(Web3.givenProvider);
-                    // //@ts-ignore
-                    // const contract = new web3.eth.Contract(
-                    //   //@ts-ignore
-                    //   LockTOSDividend.abi,
-                    //   LockTOSDividend_ADDRESS,
-                    // );
-
-                    // contract.methods
-                    //   .claimBatch([
-                    //     '0x709bef48982Bbfd6F2D4Be24660832665F53406C',
-                    //   ])
-                    //   .send({from: account});
-                    // const tx = {
-                    //   // this could be provider.addresses[0] if it exists
-                    //   from: account,
-                    //   // target address, this could be a smart contract address
-                    //   to: LockTOSDividend_ADDRESS,
-                    //   // optional if you want to specify the gas limit
-                    //   gas: 21000,
-                    //   // optional if you are invoking say a payable function
-                    //   // value: value,
-                    //   // this encodes the ABI of the method and the arguements
-                    //   data: contract.methods.claimBatch([
-                    //     '0x44d4F5d89E9296337b8c48a332B3b2fb2C190CD0',
-                    //   ]),
-                    // };
-                    // const signPromise = web3.eth.signTransaction(tx, tx.from);
-                    // signPromise.then((signedTx) => {
-                    // raw transaction string may be available in .raw or
-                    // .rawTransaction depending on which signTransaction
-                    // function was called
-                    //@ts-ignore
-                    // const sentTx = web3.eth.sendSignedTransaction(
-                    //   //@ts-ignore
-                    //   signedTx.raw || signedTx.rawTransaction,
-                    // );
-                    // });
-
-                    // contarct.methods.claimBatch(tokenList).send({from: account});
-                    // console.log(contarct.methods.claimBatch(tokenList));
-                    // claimDividendPool({
-                    //   account,
-                    //   library,
-                    //   tokenAddress: tokenList,
-                    // });
                   } catch (e) {
                     console.log(e);
                   } finally {

@@ -17,9 +17,6 @@ export type DEPLOYED_TYPE = {
   DOCPool_Address: string;
   StakeTonControl_ADDRESS: string;
   LockTOSDividend_ADDRESS: string;
-  LockTOSProxy_ADDRESS:string;
-  DividendPool_ADDRESS: string;
-  DividendPoolProxy_ADDRESS: string;
   PublicSale_ADDRESS: string;
   unstakeLayer2All: string;
   PowerTONSwapper_ADDRESS: string;
