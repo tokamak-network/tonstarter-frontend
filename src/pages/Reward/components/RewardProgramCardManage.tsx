@@ -235,7 +235,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
       </Flex>
       <Flex mt={'15px'} alignItems={'center'}>
         <Text {...REWARD_STYLE.mainText({colorMode})} mr={'10px'}>
-          #{reward.index} {reward.poolName}
+          {reward.poolName}
         </Text>
         <Box>
           <Text {...REWARD_STYLE.subText({colorMode, fontSize: 14})}>
@@ -248,12 +248,12 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
               lineHeight={1}>
               {moment.unix(Number(reward.startTime)).format('YYYY.MM.DD')}
             </Text>
-            {/* <Text
-                {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 11})}
-                pb={'2px'}
-                pl={'2px'}>
-                ({moment.unix(Number(reward.startTime)).format('HH.mm.ss')}) 
-              </Text> */}
+            <Text
+              {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 11})}
+              pb={'2px'}
+              pl={'2px'}>
+              ({moment.unix(Number(reward.startTime)).format('HH.mm.ss')})
+            </Text>
             {/* </Box> */}
             <Text mb={'5px'} lineHeight={1} px={'5px'}>
               ~{' '}
@@ -264,18 +264,22 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
               lineHeight={1}>
               {moment.unix(Number(reward.endTime)).format('YYYY.MM.DD')}
             </Text>
-            {/* <Text
-                {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 11})}
-                pb={'2px'}
-                pl={'2px'}>
-                ({moment.unix(Number(reward.endTime)).format('HH.mm.ss')})
-              </Text> */}
-            {/* </Box> */}
+            <Text
+              {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 11})}
+              pb={'2px'}
+              pl={'2px'}>
+              ({moment.unix(Number(reward.endTime)).format('HH.mm.ss')})
+            </Text>
           </Flex>
         </Box>
       </Flex>
       <Flex mt={'24px'} flexDirection="row" justifyContent={'space-between'}>
-        <Text {...REWARD_STYLE.progress.mainText({colorMode})}>Progress</Text>
+        <Flex alignItems={'center'}>
+          <Text {...REWARD_STYLE.progress.mainText({colorMode})}>Progress</Text>
+          <Text ml={'8px'} fontSize={'12px'} color={'#0070ed'}>
+            {numStakers} Stakers
+          </Text>
+        </Flex>
         <Box d="flex" flexDir="row">
           <Text
             {...REWARD_STYLE.progress.subText({colorMode, fontSize: 12})}
@@ -419,7 +423,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
                     stakedPools,
                   })
             }>
-            {numStakers > 0 ? 'Unstake & Refund' : 'Refund'}
+            Refund
           </Button>
         </Flex>
       </Flex>
