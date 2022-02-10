@@ -175,9 +175,12 @@ export const DistributeModal = () => {
             <Box d="flex" flexDir="column" mb={'24px'}>
               <Flex justifyContent={'space-between'}>
                 <Text mb={'9px'}>Token Address</Text>
-                <Text mb={'9px'}>
-                  Balance : {tokenBalance} {tokenSymbol}
-                </Text>
+                <Flex color={colorMode === 'light' ? 'black.300' : 'white.100'}>
+                  <Box color={'#86929d'} mr={'10px'}>
+                    Balance
+                  </Box>
+                  {tokenBalance} {tokenSymbol}
+                </Flex>
               </Flex>
               <CustomSelectBox
                 w={'290px'}
