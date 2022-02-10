@@ -18,8 +18,6 @@ export const unstakeLP = async (args: any) => {
     return;
   }
 
-  console.log('args: ', args);
-
   const uniswapStakerContract = new Contract(
     UniswapStaker_Address,
     STAKERABI.abi,
@@ -47,8 +45,6 @@ export const unstakeLP = async (args: any) => {
     }),
   );
 
-  console.log('stakerIds: ', stakerIds);
-
   const unstakeLpData = await Promise.all(
     stakerIds.map((tokenid: any) => {
       const data = uniswapStakerContract.interface.encodeFunctionData(
@@ -65,8 +61,6 @@ export const unstakeLP = async (args: any) => {
   );
 
   unstakeLpData.push(refundData);
-
-  console.log('unstakeLpData: ', unstakeLpData);
 
   try {
     const receipt = await uniswapStakerContract
