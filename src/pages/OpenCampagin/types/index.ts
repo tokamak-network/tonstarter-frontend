@@ -36,7 +36,7 @@ type Projects = {
 
 type ChainNumber = 1 | 4;
 
-type StepNumber = 1 | 2 | 3 | 4 | 5;
+type StepNumber = 1 | 2 | 3 | 4;
 
 export type {
   Projects,

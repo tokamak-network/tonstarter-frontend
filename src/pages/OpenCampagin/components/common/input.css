@@ -1,8 +1,20 @@
-.test {
+/* input 기본 스타일 초기화 */
+input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.input-light {
+  color: #3e495c;
+  border: 1px solid #dfe4ee !important;
+}
+
+.input-dark {
   color: red;
   border: 1px solid red !important;
 }
 
-.test:focus-visible {
-  border: 1px solid red !important;
+.input-err {
+  border: 1px solid #ff3b3b;
 }

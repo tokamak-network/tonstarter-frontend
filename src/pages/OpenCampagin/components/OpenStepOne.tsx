@@ -1,4 +1,4 @@
-import {Flex} from '@chakra-ui/react';
+import {Flex, useTheme} from '@chakra-ui/react';
 import {useEffect} from 'react';
 import type {Projects} from '@OpenCampagin/types';
 import InputComponent from '@OpenCampagin/components/common/InputComponent';
@@ -13,6 +13,9 @@ const filedNameList = [
 ];
 
 const OpenStepOne = () => {
+  const {theme} = useTheme();
+  console.log('-theme-');
+  console.log(theme);
   return (
     <Flex>
       <Flex>

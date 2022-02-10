@@ -1,11 +1,13 @@
 import {Box, Button, Flex} from '@chakra-ui/react';
-import {useCallback, useEffect, useMemo, useState} from 'react';
+import {useCallback, useState} from 'react';
 import OpenStepOne from '@OpenCampagin/components/OpenStepOne';
-import {Formik, Field, Form} from 'formik';
+import {Formik, Form} from 'formik';
 import useValues from './hooks/useValues';
-import type {Projects, StepNumber} from '@OpenCampagin/types';
+import type {StepNumber} from '@OpenCampagin/types';
 import {errors} from 'ethers';
 import * as Yup from 'yup';
+import {PageHeader} from 'components/PageHeader';
+import Steps from '@OpenCampagin/components/Steps';
 
 const MainScreen = () => {
   const [step, setStep] = useState<StepNumber>(1);
@@ -17,7 +19,7 @@ const MainScreen = () => {
       const prevStepNum =
         step - 1 > 0 ? ((step - 1) as StepNumber) : (step as StepNumber);
       const nextStepNum =
-        step + 1 < 6 ? ((step + 1) as StepNumber) : (step as StepNumber);
+        step + 1 < 5 ? ((step + 1) as StepNumber) : (step as StepNumber);
       setStep(isNext ? nextStepNum : prevStepNum);
     },
     [step],
@@ -42,18 +44,27 @@ const MainScreen = () => {
   };
 
   const SignupSchema = Yup.object().shape({
-    tokenName: Yup.string()
-      .min(2, 'Too Short!')
-      .max(70, 'Too Long!')
-      .required('Required'),
+    tokenName: Yup.string().required('Required'),
   });
 
   return (
     <Flex flexDir={'column'}>
+      <Flex alignItems={'center'} flexDir="column" mb={'20px'}>
+        <PageHeader
+          title={'Create Project'}
+          subtitle={'You can create  and manage projects.'}
+        />
+        <Flex mt={'50px'} mb={'20px'}>
+          <Steps
+            stepName={['Project&Token', 'Token Economy', 'Overview', 'Deploy']}
+            currentStep={step}></Steps>
+        </Flex>
+      </Flex>
       <Formik
         initialValues={initialValues}
         validationSchema={SignupSchema}
         validate={(values) => {
+          console.log(values);
           if (values.tokenName === '1') {
             console.log('error');
             return errors;

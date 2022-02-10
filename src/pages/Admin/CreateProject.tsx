@@ -13,7 +13,6 @@ import tickIcon from 'assets/svgs/tick-icon.svg';
 
 const Steps: React.FC<StepComponent> = (props) => {
   const {stepName, currentStep} = props;
-  const {colorMode} = useColorMode();
   const [maxStep, setStepMax] = useState(0);
 
   useEffect(() => {

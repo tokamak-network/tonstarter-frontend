@@ -17,7 +17,7 @@ const InputComponent = (props: InputComponentProps) => {
   const {colorMode} = useColorMode();
 
   return (
-    <Flex flexDir={'column'} fontSize={13}>
+    <Flex flexDir={'column'} fontSize={13} pos={'relative'}>
       <Text h={18} mb={2.5}>
         {name}
       </Text>
@@ -25,18 +25,33 @@ const InputComponent = (props: InputComponentProps) => {
         {(
           //@ts-ignore
           {field, meta: {touched, error}},
-        ) => (
-          <input
-            // //@ts-ignore
-            // border={errors[name] !== undefined && '1px solid red'}
-            className="test"
-            {...field}></input>
-        )}
+        ) => {
+          //@ts-ignore
+          const isError = errors[name] === undefined ? false : true;
+          return (
+            <Input
+              className={
+                isError
+                  ? 'input-err'
+                  : colorMode === 'light'
+                  ? 'input-light'
+                  : 'input-dark'
+              }
+              {...field}
+              id={name}
+              h={'32px'}
+              _focus={{}}
+              placeholder={`input ${name}`}></Input>
+          );
+        }}
       </Field>
-      <ErrorMessage
-        name={name}
-        render={(msg) => <Text color={'red.100'}>{msg}</Text>}></ErrorMessage>
-      {/* </Box> */}
+      <Box pos={'absolute'} right={0}>
+        <ErrorMessage
+          name={name}
+          render={(msg) => (
+            <Text color={'red.100'}>{`Invalid ${name}`}</Text>
+          )}></ErrorMessage>
+      </Box>
     </Flex>
   );
 };

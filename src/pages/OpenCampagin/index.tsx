@@ -7,7 +7,6 @@ import {useEffect} from 'react';
 import MainScreen from '@OpenCampagin/MainScreen';
 
 const OpenCampagin = () => {
-  const theme = useTheme();
   const {account} = useActiveWeb3React();
 
   const {data, isLoading, error} = useQuery(
@@ -24,7 +23,7 @@ const OpenCampagin = () => {
   }, [data]);
 
   return (
-    <Flex mt={theme.headerMargin.mt} flexDir="column">
+    <Flex flexDir="column">
       <Flex justifyContent={'center'} mb={50}>
         <Button bg={'red.100'} color={'white.100'} _hover={{}}>
           Save(server)

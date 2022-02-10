@@ -456,6 +456,12 @@ const modalStyle = {
   }),
 };
 
+const OpenCampaginDesign = {
+  box: {
+    boxShadow: '0 1px 1px 0 rgba(96, 97, 112, 0.16)',
+  },
+};
+
 const theme = extendTheme({
   styles: {
     global: (props) => {
@@ -560,6 +566,7 @@ const theme = extendTheme({
   STATER_STYLE,
   bgStyle,
   MENU_STYLE,
+  OpenCampaginDesign,
 });
 
 export default theme;
