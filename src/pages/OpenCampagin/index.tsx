@@ -1,10 +1,10 @@
 import {Flex, useTheme, Button} from '@chakra-ui/react';
-import {QueryClient, QueryClientProvider, useQuery} from 'react-query';
-import OpenStepOne from '@OpenCampagin/components/OpenStepOne';
+import {useQuery} from 'react-query';
 import axios from 'axios';
 import {fetchCampaginURL} from 'constants/index';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect} from 'react';
+import MainScreen from '@OpenCampagin/MainScreen';
 
 const OpenCampagin = () => {
   const theme = useTheme();
@@ -31,7 +31,7 @@ const OpenCampagin = () => {
         </Button>
       </Flex>
       <Flex>
-        <OpenStepOne></OpenStepOne>
+        <MainScreen></MainScreen>
       </Flex>
       <Flex></Flex>
       <Flex></Flex>

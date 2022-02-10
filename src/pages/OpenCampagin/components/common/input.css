@@ -1,0 +1,8 @@
+.test {
+  color: red;
+  border: 1px solid red !important;
+}
+
+.test:focus-visible {
+  border: 1px solid red !important;
+}
