@@ -48,8 +48,10 @@ const MainScreen = () => {
       .required('Required'),
   });
 
+  const [isDisable, setDisable] = useState<boolean>(true);
+
   return (
-    <Flex flexDir={'column'}>
+    <Flex flexDir={'column'} w={'100%'}>
       <Formik
         initialValues={initialValues}
         validationSchema={SignupSchema}
@@ -67,21 +69,33 @@ const MainScreen = () => {
         {({values, handleBlur, handleSubmit, isSubmitting, errors}) => {
           return (
             <Form onSubmit={handleSubmit}>
-              <StepComponent step={step} />
-              <Box mt={10}>
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  onClick={() => handleStep(false)}>
-                  Prev
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  onClick={() => handleStep(true)}>
-                  Next
-                </Button>
-              </Box>
+              <Flex flexDir={'column'} alignItems="center">
+                <StepComponent step={step} />
+                <Box mt={10} fontSize={14}>
+                  {step !== 1 && (
+                    <Button
+                      type="submit"
+                      w={'180px'}
+                      h={'35px'}
+                      bg={isDisable ? '#gray.25' : 'blue.500'}
+                      disabled={isDisable || isSubmitting}
+                      onClick={() => handleStep(false)}>
+                      Prev
+                    </Button>
+                  )}
+                  {step !== 4 && (
+                    <Button
+                      type="submit"
+                      w={'180px'}
+                      h={'35px'}
+                      bg={isDisable ? '#gray.25' : 'blue.500'}
+                      disabled={isDisable || isSubmitting}
+                      onClick={() => handleStep(true)}>
+                      Next
+                    </Button>
+                  )}
+                </Box>
+              </Flex>
             </Form>
           );
         }}

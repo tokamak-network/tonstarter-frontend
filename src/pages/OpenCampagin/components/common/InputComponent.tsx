@@ -11,13 +11,13 @@ const InputComponentStyle = {
   light: {},
 };
 
-const InputComponent = (props: InputComponentProps) => {
+const InputComponent: React.FC<InputComponentProps> = (props) => {
   const {name, placeHolder} = props;
   const {errors} = useFormikContext();
   const {colorMode} = useColorMode();
 
   return (
-    <Flex flexDir={'column'} fontSize={13}>
+    <Flex flexDir={'column'} fontSize={13} mb={'20px'}>
       <Text h={18} mb={2.5}>
         {name}
       </Text>

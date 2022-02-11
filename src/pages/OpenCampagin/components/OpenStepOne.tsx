@@ -1,7 +1,10 @@
-import {Flex} from '@chakra-ui/react';
+import {Flex, useTheme, Box, Grid, GridItem} from '@chakra-ui/react';
 import {useEffect} from 'react';
 import type {Projects} from '@OpenCampagin/types';
 import InputComponent from '@OpenCampagin/components/common/InputComponent';
+import StepTitle from '@OpenCampagin/components/common/StepTitle';
+import Line from '@OpenCampagin/components/common/Line';
+import MarkdownEditor from '@OpenCampagin/components/MarkdownEditor';
 
 const filedNameList = [
   'projectName',
@@ -9,22 +12,35 @@ const filedNameList = [
   'tokenName',
   'tokenSymbol',
   'totalSupply',
-  'ownerAddress',
 ];
 
 const OpenStepOne = () => {
+  const {theme} = useTheme();
   return (
-    <Flex>
-      <Flex>
-        {filedNameList.map((name: string) => {
+    <Flex p={'35px'} pt={'24px'} w={'774px'} bg={'white.100'} flexDir="column">
+      <Box mb={'23px'}>
+        <StepTitle title={'Project&Token'}></StepTitle>
+      </Box>
+      <Box>
+        <Line></Line>
+      </Box>
+      <Grid templateColumns="repeat(2, 1fr)">
+        {filedNameList.map((name: string, index: number) => {
           return (
-            <InputComponent
-              name={name}
-              placeHolder={`input ${name}`}
-              key={name}></InputComponent>
+            <GridItem
+              w={'327px'}
+              justifySelf={index % 2 !== 0 || index === 4 ? 'flex-end' : ''}>
+              <InputComponent
+                name={name}
+                placeHolder={`input ${name}`}
+                key={name}></InputComponent>
+            </GridItem>
           );
         })}
-      </Flex>
+      </Grid>
+      <Box>
+        <MarkdownEditor></MarkdownEditor>
+      </Box>
     </Flex>
   );
 };
