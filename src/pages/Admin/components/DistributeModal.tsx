@@ -113,9 +113,8 @@ export const DistributeModal = () => {
     if (tokenAddress === 'CUSTOM TOKEN') return setTokenAddress('');
   }, [tokenAddress]);
 
-  const {tokenBalance, tokenSymbol} = useERC20Token({
+  const {tokenBalance, tokenSymbol, tokenDecimals} = useERC20Token({
     tokenAddress: tokenAddress,
-    isRay: tokenAddress === WTON_ADDRESS,
   });
   const [isTokenBalanceExceed, setIsTokenBalanceExceed] =
     useState<boolean>(true);
@@ -326,7 +325,7 @@ export const DistributeModal = () => {
                     library,
                     amount: tokenAmount,
                     address: tokenAddress,
-                    isRay: WTON_ADDRESS === tokenAddress,
+                    isRay: tokenDecimals === 27,
                   });
                 handleCloseModal();
               }}>
