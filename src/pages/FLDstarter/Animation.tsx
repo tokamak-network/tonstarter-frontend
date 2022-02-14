@@ -309,12 +309,7 @@ export const Animation: React.FC<HomeProps> = () => {
 
   //GET Phase 2 Liquidity Info
   // const {BasePool_Addres, DOCPool_Address} = DEPLOYED;
-  const {
-    UniswapStaking_Address,
-    DOCPool_Address,
-    BasePool_Address,
-    UniswapStaker_Address,
-  } = DEPLOYED;
+  const {BasePool_Address} = DEPLOYED;
   const basePool = usePoolByUserQuery(
     {address: BasePool_Address?.toLowerCase()},
     {
