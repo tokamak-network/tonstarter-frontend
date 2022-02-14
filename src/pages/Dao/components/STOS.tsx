@@ -16,7 +16,7 @@ import {convertNumber} from 'utils/number';
 import {Contract} from '@ethersproject/contracts';
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import {useBlockNumber} from 'hooks/useBlock';
-import {LoadingDots} from 'components/Loader/LoadingDots';
+import useDate from '@Dao/hooks/useDate';
 
 type AirdropTokenList = {tokenName: string; amount: string}[];
 
@@ -131,6 +131,8 @@ export const STOS = () => {
 
   const [loading, setLoading] = useState<boolean>(true);
 
+  const {nextThu} = useDate({format: 'MMM.DD, YYYY'});
+
   useEffect(() => {
     let temp: {tokenName: string; amount: string}[] = [];
     const result = airdropList?.map((tokenInfo) => {
@@ -206,7 +208,7 @@ export const STOS = () => {
           Distributed List
         </Text>
         <Text color={'gray.400'} fontSize={'0.8em'} pb={'1px'}>
-          Next Thursday 00:00:00 (UTC)
+          Next(Thu.) {nextThu} 00:00:00 (UTC)
         </Text>
         <Flex
           fontFamily={theme.fonts.roboto}
