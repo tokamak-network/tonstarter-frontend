@@ -30,6 +30,7 @@ import {DEPLOYED} from 'constants/index';
 import * as LockTOSDividend from 'services/abis/LockTOSDividend.json';
 import {useContract} from 'hooks/useContract';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
+import {motion} from 'framer-motion';
 
 const ClaimRecord = ({
   name,
@@ -151,16 +152,28 @@ export const DaoClaim = (props: any) => {
                 mr={'10px'}>
                 Detail
               </Text>
-              <Tooltip
-                hasArrow
-                placement="top"
-                maxW={'170px'}
-                label="If you select more tokens, you would pay more gas fee."
-                color={theme.colors.white[100]}
-                bg={theme.colors.gray[375]}
-                style={{animation: 'fadeMe 2s'}}>
-                <Image src={tooltipIcon} />
-              </Tooltip>
+              <motion.div
+                initial={{
+                  opacity: 0,
+                }}
+                animate={{opacity: 1}}
+                transition={{repeat: 1, duration: 2}}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  paddingBottom: '2px',
+                }}>
+                <Tooltip
+                  hasArrow
+                  placement="top"
+                  maxW={'170px'}
+                  label="If you select more tokens, you would pay more gas fee."
+                  color={theme.colors.white[100]}
+                  bg={theme.colors.gray[375]}>
+                  <Image src={tooltipIcon} />
+                </Tooltip>
+              </motion.div>
             </Flex>
             {unstakeList !== undefined && unstakeList.length > 0 && (
               <Scrollbars

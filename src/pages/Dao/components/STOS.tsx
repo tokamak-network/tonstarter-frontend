@@ -266,7 +266,12 @@ export const STOS = () => {
       <Box h={'68px'}>
         <MySTOS></MySTOS>
       </Box>
-      <Box w={'100%'} h={'1px'} bg={'#e7edf3'} mt={'16px'} mb={'25px'}></Box>
+      <Box
+        w={'100%'}
+        h={'1px'}
+        bg={colorMode === 'light' ? '#e7edf3' : '#373737'}
+        mt={'16px'}
+        mb={'25px'}></Box>
       <Box h={'68px'}>
         <Claim></Claim>
       </Box>

@@ -19,7 +19,7 @@ import {selectStakes} from 'pages/Staking/staking.reducer';
 import {Stake} from 'pages/Staking/types';
 import {useAppSelector} from 'hooks/useRedux';
 import {DEPLOYED} from 'constants/index';
-import {usePoolByUserQuery, usePositionByPoolQuery} from 'store/data/enhanced';
+import {usePoolByUserQuery} from 'store/data/enhanced';
 import ms from 'ms.macro';
 
 export interface HomeProps extends HTMLAttributes<HTMLDivElement> {
