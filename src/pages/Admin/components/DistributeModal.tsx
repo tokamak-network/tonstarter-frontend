@@ -85,7 +85,6 @@ export const DistributeModal = () => {
   useEffect(() => {
     //GET NEXT THUR
     //Which is lock period for sTOS
-
     const dayINeed = 4; // for Thursday
     const today = moment().isoWeekday();
     const thisWed = moment().isoWeekday(dayINeed).format('YYYY-MM-DD');
@@ -93,7 +92,7 @@ export const DistributeModal = () => {
       .add(1, 'weeks')
       .isoWeekday(dayINeed)
       .format('YYYY-MM-DD');
-    if (today === dayINeed || today < dayINeed) {
+    if (today < dayINeed) {
       return setTimeStamp(thisWed);
     } else {
       return setTimeStamp(nextWed);

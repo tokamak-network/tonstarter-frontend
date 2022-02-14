@@ -14,6 +14,8 @@ import {
   WrapItem,
   Checkbox,
   CheckboxGroup,
+  Tooltip,
+  Image,
 } from '@chakra-ui/react';
 import React from 'react';
 import {useAppSelector} from 'hooks/useRedux';
@@ -27,6 +29,7 @@ import {ClaimList} from '@Dao/types';
 import {DEPLOYED} from 'constants/index';
 import * as LockTOSDividend from 'services/abis/LockTOSDividend.json';
 import {useContract} from 'hooks/useContract';
+import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 
 const ClaimRecord = ({
   name,
@@ -44,7 +47,7 @@ const ClaimRecord = ({
   const {colorMode} = useColorMode();
   return (
     <WrapItem w="100%" h="37px">
-      <Flex w="100%" justifyContent="space-between" pl="1.875em" pr="1.875em">
+      <Flex w="100%" pl="1.875em" pr="1.875em">
         <Checkbox value={tokenAddress} mr={'10px'}></Checkbox>
         {/* <Text
             color={colorMode === 'light' ? 'gray.400' : 'gray.425'}
@@ -140,12 +143,25 @@ export const DaoClaim = (props: any) => {
                 $ {unstakeBalance}
               </Text>
             </Box>
-            <Text
-              style={{marginTop: '0', marginBottom: '0.313em'}}
-              fontSize="0.750em"
-              color="gray.400">
-              Detail
-            </Text>
+            <Flex justifyContent={'center'}>
+              <Text
+                style={{marginTop: '0'}}
+                fontSize="0.750em"
+                color="gray.400"
+                mr={'10px'}>
+                Detail
+              </Text>
+              <Tooltip
+                hasArrow
+                placement="top"
+                maxW={'170px'}
+                label="If you select more tokens, you would pay more gas fee."
+                color={theme.colors.white[100]}
+                bg={theme.colors.gray[375]}
+                style={{animation: 'fadeMe 2s'}}>
+                <Image src={tooltipIcon} />
+              </Tooltip>
+            </Flex>
             {unstakeList !== undefined && unstakeList.length > 0 && (
               <Scrollbars
                 style={{
@@ -153,6 +169,7 @@ export const DaoClaim = (props: any) => {
                   height: '135px',
                   display: 'flex',
                   position: 'relative',
+                  marginTop: '10px',
                 }}
                 thumbSize={70}
                 renderThumbVertical={() => (
