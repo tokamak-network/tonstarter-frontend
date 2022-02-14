@@ -30,7 +30,6 @@ import {DEPLOYED} from 'constants/index';
 import * as LockTOSDividend from 'services/abis/LockTOSDividend.json';
 import {useContract} from 'hooks/useContract';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
-import {motion} from 'framer-motion';
 
 const ClaimRecord = ({
   name,
@@ -94,11 +93,22 @@ export const DaoClaim = (props: any) => {
     /*eslint-disable*/
   }, [data, balance, claimList]);
 
+  const [tooltipOpen, setTooltipOpen] = useState(true);
+
+  useEffect(() => {
+    if (tooltipOpen === true) {
+      setTimeout(() => {
+        setTooltipOpen(false);
+      }, 3000);
+    }
+  }, [tooltipOpen]);
+
   return (
     <Modal
       isOpen={data.modal === 'dao_claim' ? true : false}
       isCentered
       onClose={() => {
+        setTooltipOpen(true);
         handleCloseModal();
       }}>
       <ModalOverlay />
@@ -144,7 +154,7 @@ export const DaoClaim = (props: any) => {
                 $ {unstakeBalance}
               </Text>
             </Box>
-            <Flex justifyContent={'center'}>
+            <Flex justifyContent={'center'} h={'18px'}>
               <Text
                 style={{marginTop: '0'}}
                 fontSize="0.750em"
@@ -152,28 +162,57 @@ export const DaoClaim = (props: any) => {
                 mr={'10px'}>
                 Detail
               </Text>
-              <motion.div
-                initial={{
-                  opacity: 0,
-                }}
-                animate={{opacity: 1}}
-                transition={{repeat: 1, duration: 2}}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  paddingBottom: '2px',
-                }}>
+              <Flex>
                 <Tooltip
+                  isOpen={tooltipOpen}
+                  defaultIsOpen
+                  pos="relative"
+                  // style={{
+                  //   display: 'flex',
+                  //   alignItems: 'center',
+                  //   justifyContent: 'center',
+                  //   paddingBottom: '2px',
+                  // }}
+                  left={'-4px'}
                   hasArrow
                   placement="top"
-                  maxW={'170px'}
-                  label="If you select more tokens, you would pay more gas fee."
+                  maxW={'200px'}
+                  label={
+                    <Flex
+                      pos="absolute"
+                      left={'-80px'}
+                      top={'-45px'}
+                      w={'180px'}
+                      h={'50px'}
+                      bg={'#353c48'}
+                      color={''}
+                      flexDir="column"
+                      fontSize="12px"
+                      pt="6px"
+                      pl="5px"
+                      pr="5px"
+                      py="6px">
+                      If you select more tokens, you would pay more gas fee.
+                      {/* {msg.map((text: string) => (
+                        <Text textAlign="center" fontSize="12px">
+                          {text}
+                        </Text>
+                      ))} */}
+                    </Flex>
+                  }
                   color={theme.colors.white[100]}
                   bg={theme.colors.gray[375]}>
-                  <Image src={tooltipIcon} />
+                  <Image
+                    src={tooltipIcon}
+                    style={{paddingBottom: '2px'}}
+                    alt={
+                      'If you select more tokens, you would pay more gas fee.'
+                    }
+                    onMouseEnter={() => setTooltipOpen(true)}
+                    onMouseLeave={() => setTooltipOpen(false)}
+                  />
                 </Tooltip>
-              </motion.div>
+              </Flex>
             </Flex>
             {unstakeList !== undefined && unstakeList.length > 0 && (
               <Scrollbars
