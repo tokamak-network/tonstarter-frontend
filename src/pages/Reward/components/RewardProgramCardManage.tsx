@@ -376,8 +376,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
           />
         </Flex>
         <Flex flexDirection="row" justifyContent={'center'}>
-          {numStakers !== 0 ||
-          refundableAmount === '0' ||
+          {refundableAmount === '0' ||
           reward.endTime > moment().unix() ? null : (
             <Checkbox
               mt={'5px'}
