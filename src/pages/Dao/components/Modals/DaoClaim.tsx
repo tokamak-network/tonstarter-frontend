@@ -242,9 +242,10 @@ export const DaoClaim = (props: any) => {
                   flexDir="column">
                   <CheckboxGroup
                     onChange={(tokenList: string[]) => setTokenList(tokenList)}
-                    defaultValue={[
-                      Object.values(unstakeList[0])[4].toString(),
-                    ]}>
+                    // defaultValue={[
+                    //   Object.values(unstakeList[0])[4].toString(),
+                    // ]}
+                  >
                     {unstakeList.map((data: ClaimList, index: number) => {
                       if (data.claimAmount === '0.00') {
                         return;
