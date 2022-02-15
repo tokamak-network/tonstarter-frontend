@@ -20,6 +20,8 @@ import {RewardProgramCardManage} from './components/RewardProgramCardManage';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {refundMultiple} from './actions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
+import {DEPLOYED} from 'constants/index';
+import {ethers} from 'ethers';
 
 // import { LPToken } from './types';
 
@@ -71,10 +73,14 @@ export const ManageContainer: FC<ManageContainerProps> = ({
   const [pageLimit, setPageLimit] = useState<number>(6);
   const [refundNum, setRefundNum] = useState<number>(0);
   const {account, library} = useActiveWeb3React();
+  const {UniswapStaker_Address} = DEPLOYED;
 
-  let stakedPools = positionsByPool?.data?.positions?.filter(
-    (pool: any) => pool.owner === '0x1f98407aab862cddef78ed252d6f557aa5b0f00d',
-  );
+  let stakedPools = positionsByPool?.data?.positions?.filter((pool: any) => {
+    return (
+      ethers.utils.getAddress(pool.owner) ===
+      ethers.utils.getAddress(UniswapStaker_Address)
+    );
+  });
 
   useEffect(() => {
     setPageIndex(1);
@@ -145,36 +151,39 @@ export const ManageContainer: FC<ManageContainerProps> = ({
               token1 = includedPool[0].token1.id;
               token0Image = includedPool[0].token0Image;
               token1Image = includedPool[0].token1Image;
-            const rewardProps = {
-              chainId: reward.chainId,
-              poolName: reward.poolName,
-              token0Address: token0,
-              token1Address: token1,
-              token0Image: token0Image,
-              token1Image: token1Image,
-              poolAddress: reward.poolAddress,
-              rewardToken: reward.rewardToken,
-              incentiveKey: reward.incentiveKey,
-              startTime: reward.startTime,
-              endTime: reward.endTime,
-              allocatedReward: reward.allocatedReward,
-              numStakers: reward.numStakers,
-              status: reward.status,
-              index: reward.index
-            };
-            return (
-              <RewardProgramCardManage
-                key={index}
-                reward={rewardProps}
-                pageIndex={pageIndex}
-                sortString={sortString}
-                sendKey={refundMultipleKeys}
-                stakedPools={stakedPools}
-              />
-            );
-          })}
-        </Grid>
-        <Flex mt={'22px'} position={'relative'} flexDir={'row'}
+              const rewardProps = {
+                chainId: reward.chainId,
+                poolName: reward.poolName,
+                token0Address: token0,
+                token1Address: token1,
+                token0Image: token0Image,
+                token1Image: token1Image,
+                poolAddress: reward.poolAddress,
+                rewardToken: reward.rewardToken,
+                incentiveKey: reward.incentiveKey,
+                startTime: reward.startTime,
+                endTime: reward.endTime,
+                allocatedReward: reward.allocatedReward,
+                numStakers: reward.numStakers,
+                status: reward.status,
+                index: reward.index,
+              };
+              return (
+                <RewardProgramCardManage
+                  key={index}
+                  reward={rewardProps}
+                  pageIndex={pageIndex}
+                  sortString={sortString}
+                  sendKey={refundMultipleKeys}
+                  stakedPools={stakedPools}
+                />
+              );
+            })}
+          </Grid>
+          <Flex
+            mt={'22px'}
+            position={'relative'}
+            flexDir={'row'}
             justifyContent={'space-between'}>
             <Button
               w={'120px'}
@@ -205,6 +214,7 @@ export const ManageContainer: FC<ManageContainerProps> = ({
                   userAddress: account,
                   library: library,
                   refundKeyList: multipleRefundList,
+                  stakedPools: stakedPools,
                 })
               }>
               Multi Refund
