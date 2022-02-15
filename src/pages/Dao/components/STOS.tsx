@@ -272,20 +272,37 @@ export const STOS = () => {
               )}
               {loading === false &&
                 airdropExistingList?.map((tokenInfo, index: number) => {
+                  // const indexNum = Math.round(index + 1 / 2);
+                  // console.log(indexNum);
                   return (
-                    // <motion.div
-                    //   animate={index % 2 === 0 ? {translateY: '-18px'} : ''}
-                    //   transition={{
-                    //     duration: 1,
-                    //     delay: 3,
-                    //     ease: 'easeOut',
-                    //   }}
-                    //   style={{zIndex: 10, position: 'relative'}}>
-                    <GridItem
-                      display={
-                        index > 1 && viewAllTokens === false ? 'none' : 'block'
-                      }>
-                      {/* {index !== 0 && (
+                    <motion.div
+                      // animate={index % 2 === 0 ? {translateY: '-18px'} : ''}
+                      animate={{
+                        translateY: [
+                          '0px',
+                          '-35px',
+                          '-70px',
+                          '-105px',
+                          '-140px',
+                        ],
+                        opacity: index < 2 ? [1, 0, 0, 0] : [1, 1, 1, 0],
+                        // translateY: '-35px',
+                        // opacity: 1
+                      }}
+                      transition={{
+                        duration: 12,
+                        delay: 3,
+                        repeat: Infinity,
+                      }}
+                      style={{zIndex: 10, position: 'relative'}}>
+                      <GridItem
+                      // display={
+                      //   index > 1 && viewAllTokens === false
+                      //     ? 'none'
+                      //     : 'block'
+                      // }
+                      >
+                        {/* {index !== 0 && (
                       <span
                         style={{
                           fontSize: '1em',
@@ -299,22 +316,22 @@ export const STOS = () => {
                         |
                       </span>
                     )} */}
-                      <Text
-                        fontFamily={theme.fonts.roboto}
-                        color={themeDesign.fontAddressColor[colorMode]}
-                        fontSize={'0.8em'}
-                        h={'35px'}
-                        textAlign="center"
-                        verticalAlign={'center'}
-                        lineHeight={'35px'}
-                        fontWeight={600}>
-                        {tokenInfo.amount}
-                        <span style={{marginLeft: '5px'}}>
-                          {tokenInfo.tokenName}
-                        </span>
-                      </Text>
-                    </GridItem>
-                    // </motion.div>
+                        <Text
+                          fontFamily={theme.fonts.roboto}
+                          color={themeDesign.fontAddressColor[colorMode]}
+                          fontSize={'0.8em'}
+                          h={'35px'}
+                          textAlign="center"
+                          verticalAlign={'center'}
+                          lineHeight={'35px'}
+                          fontWeight={600}>
+                          {tokenInfo.amount}
+                          <span style={{marginLeft: '5px'}}>
+                            {tokenInfo.tokenName}
+                          </span>
+                        </Text>
+                      </GridItem>
+                    </motion.div>
                   );
                   // <GridItem>
                   //   <Text
