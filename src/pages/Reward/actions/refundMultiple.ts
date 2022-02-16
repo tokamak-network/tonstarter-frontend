@@ -35,25 +35,6 @@ export const refundMultiple = async (args: any) => {
   console.log('stakedPools: ', stakedPools);
   console.log('refundKeyList: ', refundKeyList);
 
-  let stakerIds: any[] = [];
-
-  // const arrayData = refundKeyList.map((key: any) => {
-  //   const keyGenereated = {
-  //     pool: key.pool,
-  //     startTime: key.startTime,
-  //     endTime: key.endTime,
-  //     rewardToken: key.rewardToken,
-  //     refundee: key.refundee,
-  //   };
-  //   const data = uniswapStakerContract.interface.encodeFunctionData(
-  //     'endIncentive',
-  //     [keyGenereated],
-  //   );
-  //   return data;
-  // });
-
-  // Below is returning an array of arrays. unstakeLP is already calling a multicall. Multicall cant be called with a structure of array of arrays.
-
   const arrayData = await Promise.all(
     refundKeyList.map(async (key: any) => {
       const keyGenerated = {
@@ -64,9 +45,9 @@ export const refundMultiple = async (args: any) => {
         refundee: key.refundee,
       };
 
-      const incentiveId = soliditySha3(abicoder.encode([incentiveABI], [key]));
+      let stakerIds: any[] = [];
 
-      console.log('incentiveId: ', incentiveId);
+      const incentiveId = soliditySha3(abicoder.encode([incentiveABI], [key]));
 
       await Promise.all(
         stakedPools.map(async (pool: any) => {
@@ -80,15 +61,14 @@ export const refundMultiple = async (args: any) => {
         }),
       );
 
-      console.log('stakerIds:', stakerIds);
-
       if (stakerIds.length > 0) {
         let data = await Promise.all(
           stakerIds.map(async (tokenid: any) => {
-            const data = uniswapStakerContract.interface.encodeFunctionData(
-              'unstakeToken',
-              [keyGenerated, tokenid],
-            );
+            const data =
+              await uniswapStakerContract.interface.encodeFunctionData(
+                'unstakeToken',
+                [keyGenerated, tokenid],
+              );
             return data;
           }),
         );
@@ -97,9 +77,8 @@ export const refundMultiple = async (args: any) => {
           'endIncentive',
           [keyGenerated],
         );
-        data.push(refundData);
 
-        console.log('data1:', data);
+        data.push(refundData);
         return data;
       } else {
         const refundData = uniswapStakerContract.interface.encodeFunctionData(
@@ -107,19 +86,19 @@ export const refundMultiple = async (args: any) => {
           [keyGenerated],
         );
 
-        console.log('data2:', refundData);
-
         return refundData;
       }
     }),
   );
 
   console.log('arrayData: ', arrayData);
+  console.log('flattenArrayData', arrayData.flat());
+  const flattenedArrayData = arrayData.flat();
 
   try {
     const receipt = await uniswapStakerContract
       .connect(signer)
-      .multicall(arrayData);
+      .multicall(flattenedArrayData);
     store.dispatch(setTxPending({tx: true}));
     if (receipt) {
       toastWithReceipt(receipt, setTxPending, 'Reward');
