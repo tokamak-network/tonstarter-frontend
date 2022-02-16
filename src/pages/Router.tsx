@@ -74,15 +74,6 @@ export const Router: FC<RouterProps> = () => {
         library,
       }) as any,
     );
-    if (account && chainId) {
-      await dispatch(
-        fetchTosStakes({
-          account,
-          library,
-          chainId,
-        }) as any,
-      );
-    }
   };
 
   useEffect(() => {

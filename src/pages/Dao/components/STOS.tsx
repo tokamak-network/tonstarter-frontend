@@ -6,7 +6,6 @@ import {
   Box,
   Grid,
   GridItem,
-  Image,
   Icon,
 } from '@chakra-ui/react';
 import {HamburgerIcon, CloseIcon} from '@chakra-ui/icons';
@@ -309,6 +308,7 @@ export const STOS = () => {
                   airdropExistingList?.map((tokenInfo, index: number) => {
                     return (
                       <motion.div
+                        key={`${index}_${tokenInfo}`}
                         animate={{
                           translateY: getTranslateY(
                             index,
