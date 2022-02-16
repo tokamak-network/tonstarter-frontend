@@ -27,13 +27,8 @@ import {Contract} from '@ethersproject/contracts';
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import {useBlockNumber} from 'hooks/useBlock';
 import useDate from '@Dao/hooks/useDate';
-import LIST_OPEN_IMAGE from 'assets/svgs/list-open_icon.svg';
-import LIST_OPEN_HOVER_IMAGE from 'assets/svgs/list-open_icon-hover.svg';
-import LIST_CLOSE_IMAGE from 'assets/svgs/list-close_icon.svg';
-import LIST_CLOSE_HOVER__IMAGE from 'assets/svgs/list-close_icon-hover.svg';
-import LIST_CLOSE_IMAGE_LIGHT from 'assets/svgs/list-close_icon_light.svg';
-
 import {motion} from 'framer-motion';
+import useAirdropList from '@Dao/hooks/useAirdropList';
 
 type AirdropTokenList = {tokenName: string; amount: string}[];
 
@@ -79,7 +74,6 @@ function getOpacity(index: number, arrLength: number): number[] {
     return indexNum + 1 >= i ? 1 : 0;
   });
   return result;
-  // return [0, 0, 1, 1];
 }
 
 function getTranslateY(index: number, arrLength: number): string[] {
@@ -99,9 +93,10 @@ export const STOS = () => {
   const {colorMode} = useColorMode();
   const {account, library} = useActiveWeb3React();
   const [address, setAddress] = useState('-');
-  const [airdropList, setAirdropList] = useState<AirdropTokenList | undefined>(
-    undefined,
-  );
+  // const [airdropList, setAirdropList] = useState<AirdropTokenList | undefined>(
+  //   undefined,
+  // );
+  const {airdropList} = useAirdropList();
   const [viewAllTokens, setViewAllTokens] = useState(false);
 
   const LOCKTOS_DIVIDEND_CONTRACT = useContract(
@@ -126,57 +121,57 @@ export const STOS = () => {
     }
   }, [account, library]);
 
-  const fetchData = async () => {
-    let claimableTokens = [];
-    let isError = false;
-    let i = 0;
+  // const fetchData = async () => {
+  //   let claimableTokens = [];
+  //   let isError = false;
+  //   let i = 0;
 
-    do {
-      try {
-        const tokenAddress = await LOCKTOS_DIVIDEND_CONTRACT?.distributedTokens(
-          i,
-        );
-        claimableTokens.push(tokenAddress);
-        i++;
-      } catch (e) {
-        isError = true;
-      }
-    } while (isError === false);
+  //   do {
+  //     try {
+  //       const tokenAddress = await LOCKTOS_DIVIDEND_CONTRACT?.distributedTokens(
+  //         i,
+  //       );
+  //       claimableTokens.push(tokenAddress);
+  //       i++;
+  //     } catch (e) {
+  //       isError = true;
+  //     }
+  //   } while (isError === false);
 
-    const tokens = claimableTokens;
-    const nowTimeStamp = moment().unix();
-    const result: {tokenName: string; amount: string}[] = await Promise.all(
-      tokens.map(async (token: string) => {
-        const tokenAmount = await LOCKTOS_DIVIDEND_CONTRACT?.tokensPerWeekAt(
-          token,
-          nowTimeStamp,
-        );
-        const ERC20_CONTRACT = new Contract(token, ERC20.abi, library);
-        const tokenSymbol = await ERC20_CONTRACT.symbol();
-        return {
-          tokenName: tokenSymbol,
-          amount: convertNumber({
-            amount: tokenAmount.toString(),
-            localeString: true,
-            type: tokenSymbol !== 'WTON' ? 'wei' : 'ray',
-          }) as string,
-        };
-      }),
-    );
+  //   const tokens = claimableTokens;
+  //   const nowTimeStamp = moment().unix();
+  //   const result: {tokenName: string; amount: string}[] = await Promise.all(
+  //     tokens.map(async (token: string) => {
+  //       const tokenAmount = await LOCKTOS_DIVIDEND_CONTRACT?.tokensPerWeekAt(
+  //         token,
+  //         nowTimeStamp,
+  //       );
+  //       const ERC20_CONTRACT = new Contract(token, ERC20.abi, library);
+  //       const tokenSymbol = await ERC20_CONTRACT.symbol();
+  //       return {
+  //         tokenName: tokenSymbol,
+  //         amount: convertNumber({
+  //           amount: tokenAmount.toString(),
+  //           localeString: true,
+  //           type: tokenSymbol !== 'WTON' ? 'wei' : 'ray',
+  //         }) as string,
+  //       };
+  //     }),
+  //   );
 
-    return setAirdropList(result);
-  };
+  //   return setAirdropList(result);
+  // };
 
-  useEffect(() => {
-    fetchData();
-    /*eslint-disable*/
-  }, [blockNumber]);
+  // useEffect(() => {
+  //   fetchData();
+  //   /*eslint-disable*/
+  // }, [blockNumber]);
 
   useEffect(() => {
     let temp: {tokenName: string; amount: string}[] = [];
-    const result = airdropList?.map((tokenInfo) => {
+    airdropList?.map((tokenInfo: any) => {
       if (tokenInfo.amount !== '0.00') {
-        temp.push(tokenInfo);
+        return temp.push(tokenInfo);
       }
     });
     setAirdropExistingList(temp);
