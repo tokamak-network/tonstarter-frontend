@@ -46,7 +46,7 @@ const ClaimRecord = ({
 }) => {
   const {colorMode} = useColorMode();
   return (
-    <WrapItem w="100%" h="37px">
+    <WrapItem w="100%" h="37px" key={`${index}_${name}`}>
       <Flex w="100%" pl="1.875em" pr="1.875em">
         <Checkbox value={tokenAddress} mr={'10px'}></Checkbox>
         {/* <Text

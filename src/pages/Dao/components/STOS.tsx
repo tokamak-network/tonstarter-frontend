@@ -75,13 +75,17 @@ const themeDesign = {
 function getOpacity(index: number, arrLength: number): number[] {
   const indexNum = Math.floor(index / 2);
   const rowNum = Math.round(arrLength / 2);
-  const result = Array.from({length: rowNum}, (v, i) => {
-    return indexNum >= i ? 1 : 0;
+  const result = Array.from({length: rowNum + 1}, (v, i) => {
+    return indexNum + 1 >= i ? 1 : 0;
   });
   return result;
+  // return [0, 0, 1, 1];
 }
 
 function getTranslateY(index: number, arrLength: number): string[] {
+  if (arrLength <= 2) {
+    return ['0px', '0px'];
+  }
   const rowNum = Math.round(arrLength / 2);
   const result = Array.from({length: rowNum + 1}, (v, i) =>
     i === 0 ? '0px' : `-${35 * i}px`,
@@ -105,6 +109,14 @@ export const STOS = () => {
     LockTOSDividendABI.abi,
   );
   const {blockNumber} = useBlockNumber();
+
+  const [airdropExistingList, setAirdropExistingList] = useState<
+    AirdropTokenList | undefined
+  >(undefined);
+
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const {nextThu} = useDate({format: 'MMM.DD, YYYY'});
 
   useEffect(() => {
     if (account && library) {
@@ -160,14 +172,6 @@ export const STOS = () => {
     /*eslint-disable*/
   }, [blockNumber]);
 
-  const [airdropExistingList, setAirdropExistingList] = useState<
-    AirdropTokenList | undefined
-  >(undefined);
-
-  const [loading, setLoading] = useState<boolean>(true);
-
-  const {nextThu} = useDate({format: 'MMM.DD, YYYY'});
-
   useEffect(() => {
     let temp: {tokenName: string; amount: string}[] = [];
     const result = airdropList?.map((tokenInfo) => {
@@ -175,7 +179,7 @@ export const STOS = () => {
         temp.push(tokenInfo);
       }
     });
-    setAirdropExistingList(temp as AirdropTokenList);
+    setAirdropExistingList(temp);
     setTimeout(() => setLoading(false), 2500);
   }, [airdropList]);
 
@@ -216,8 +220,10 @@ export const STOS = () => {
         flexDir="column"
         alignItems="center"
         justifyContent="center"
-        mt="30px"
-        mb="16px">
+        pt="30px"
+        pb="16px"
+        zIndex={1000}
+        bg={themeDesign.bg[colorMode]}>
         <Text
           fontSize={'0.938em'}
           fontWeight={600}
