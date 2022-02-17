@@ -69,10 +69,6 @@ const distribute = async (
     );
     const signer = getSigner(library, account);
     const numAmount = utils.parseUnits(amount, decimals);
-    console.log('----');
-    console.log(amount);
-    console.log(decimals);
-    console.log(numAmount.toString());
     const res = await LOCKTOS_DIVIDEND_CONTRACT.connect(signer).distribute(
       address,
       numAmount.toString(),

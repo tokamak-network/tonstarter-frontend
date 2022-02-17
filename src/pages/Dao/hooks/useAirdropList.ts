@@ -33,7 +33,6 @@ const useAirdropList = () => {
           try {
             const tokenAddress =
               await LOCKTOS_DIVIDEND_CONTRACT?.distributedTokens(i);
-            console.log(tokenAddress);
             claimableTokens.push(tokenAddress);
             if (tokenAddress === undefined) {
               break;
