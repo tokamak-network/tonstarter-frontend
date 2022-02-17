@@ -11,7 +11,7 @@ const InputComponentStyle = {
   light: {},
 };
 
-const InputComponent = (props: InputComponentProps) => {
+const InputComponent: React.FC<InputComponentProps> = (props) => {
   const {name, placeHolder} = props;
   const {errors} = useFormikContext();
   const {colorMode} = useColorMode();

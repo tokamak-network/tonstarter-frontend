@@ -135,8 +135,6 @@ const CustomFieldWithTime = (props: {
       minute: startTimeArray[1],
       second: startTimeArray[2],
     });
-    console.log('startDates', startDates);
-
     setStartTime(startDates.unix());
   }, [startTimeArray, startTime]);
   return (
