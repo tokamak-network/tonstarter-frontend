@@ -33,6 +33,7 @@ const useAirdropList = () => {
           try {
             const tokenAddress =
               await LOCKTOS_DIVIDEND_CONTRACT?.distributedTokens(i);
+            console.log(tokenAddress);
             claimableTokens.push(tokenAddress);
             if (tokenAddress === undefined) {
               break;
@@ -60,12 +61,15 @@ const useAirdropList = () => {
           );
           const ERC20_CONTRACT = new Contract(token, ERC20.abi, library);
           const tokenSymbol = await ERC20_CONTRACT.symbol();
+          const tokenDecimals = await ERC20_CONTRACT.decimals();
+
           return {
             tokenName: tokenSymbol,
             amount: convertNumber({
               amount: tokenAmount.toString(),
               localeString: true,
-              type: tokenSymbol !== 'WTON' ? 'wei' : 'ray',
+              type: 'custom',
+              decimalPoints: tokenDecimals,
             }) as string,
           };
         }),
