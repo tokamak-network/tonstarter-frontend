@@ -54,6 +54,8 @@ const useDividendPool = () => {
 
           const tokenSymbol = await ERC20_CONTRACT.symbol();
           const tokenContractName = await ERC20_CONTRACT.name();
+          const tokenDecimals = await ERC20_CONTRACT.decimals();
+
           const tokenName =
             tokenAddress === TON_ADDRESS
               ? 'tokamak-network'
@@ -67,7 +69,8 @@ const useDividendPool = () => {
             convertNumber({
               amount: amount.toString(),
               localeString: true,
-              type: tokenSymbol !== 'WTON' ? 'wei' : 'ray',
+              type: 'custom',
+              decimalPoints: tokenDecimals,
             }) || '0.00';
           const price = await getTokenPrice(tokenName);
           const obj = {

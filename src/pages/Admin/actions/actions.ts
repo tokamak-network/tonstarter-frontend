@@ -16,6 +16,7 @@ import {
   putEditPool,
 } from '../utils/createStarter';
 import {AdminObject, PoolData} from '@Admin/types';
+import {utils} from 'ethers';
 
 interface I_CallContract {
   account: string;
@@ -56,10 +57,10 @@ const getERC20Approve = async (
 };
 
 const distribute = async (
-  args: I_CallContract & {amount: string; isRay?: boolean},
+  args: I_CallContract & {amount: string; decimals: number},
 ) => {
   try {
-    const {account, library, amount, address, isRay} = args;
+    const {account, library, amount, address, decimals} = args;
     const {LockTOSDividend_ADDRESS} = DEPLOYED;
     const LOCKTOS_DIVIDEND_CONTRACT = new Contract(
       LockTOSDividend_ADDRESS,
@@ -67,10 +68,14 @@ const distribute = async (
       library,
     );
     const signer = getSigner(library, account);
-
+    const numAmount = utils.parseUnits(amount, decimals);
+    console.log('----');
+    console.log(amount);
+    console.log(decimals);
+    console.log(numAmount.toString());
     const res = await LOCKTOS_DIVIDEND_CONTRACT.connect(signer).distribute(
       address,
-      isRay === true ? convertToRay(amount) : convertToWei(amount),
+      numAmount.toString(),
     );
 
     return setTx(res);

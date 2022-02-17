@@ -18,14 +18,6 @@ import {useState} from 'react';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {Claim} from './Claim';
 import {Distribute} from './Distribute';
-import moment from 'moment';
-import {useContract} from 'hooks/useContract';
-import * as LockTOSDividendABI from 'services/abis/LockTOSDividend.json';
-import {DEPLOYED} from 'constants/index';
-import {convertNumber} from 'utils/number';
-import {Contract} from '@ethersproject/contracts';
-import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
-import {useBlockNumber} from 'hooks/useBlock';
 import useDate from '@Dao/hooks/useDate';
 import {motion} from 'framer-motion';
 import useAirdropList from '@Dao/hooks/useAirdropList';
@@ -89,22 +81,11 @@ function getTranslateY(index: number, arrLength: number): string[] {
 
 export const STOS = () => {
   const theme = useTheme();
-  const {LockTOSDividend_ADDRESS} = DEPLOYED;
   const {colorMode} = useColorMode();
   const {account, library} = useActiveWeb3React();
   const [address, setAddress] = useState('-');
-  // const [airdropList, setAirdropList] = useState<AirdropTokenList | undefined>(
-  //   undefined,
-  // );
   const {airdropList} = useAirdropList();
   const [viewAllTokens, setViewAllTokens] = useState(false);
-
-  const LOCKTOS_DIVIDEND_CONTRACT = useContract(
-    LockTOSDividend_ADDRESS,
-    LockTOSDividendABI.abi,
-  );
-  const {blockNumber} = useBlockNumber();
-
   const [airdropExistingList, setAirdropExistingList] = useState<
     AirdropTokenList | undefined
   >(undefined);
@@ -120,52 +101,6 @@ export const STOS = () => {
       setAddress('-');
     }
   }, [account, library]);
-
-  // const fetchData = async () => {
-  //   let claimableTokens = [];
-  //   let isError = false;
-  //   let i = 0;
-
-  //   do {
-  //     try {
-  //       const tokenAddress = await LOCKTOS_DIVIDEND_CONTRACT?.distributedTokens(
-  //         i,
-  //       );
-  //       claimableTokens.push(tokenAddress);
-  //       i++;
-  //     } catch (e) {
-  //       isError = true;
-  //     }
-  //   } while (isError === false);
-
-  //   const tokens = claimableTokens;
-  //   const nowTimeStamp = moment().unix();
-  //   const result: {tokenName: string; amount: string}[] = await Promise.all(
-  //     tokens.map(async (token: string) => {
-  //       const tokenAmount = await LOCKTOS_DIVIDEND_CONTRACT?.tokensPerWeekAt(
-  //         token,
-  //         nowTimeStamp,
-  //       );
-  //       const ERC20_CONTRACT = new Contract(token, ERC20.abi, library);
-  //       const tokenSymbol = await ERC20_CONTRACT.symbol();
-  //       return {
-  //         tokenName: tokenSymbol,
-  //         amount: convertNumber({
-  //           amount: tokenAmount.toString(),
-  //           localeString: true,
-  //           type: tokenSymbol !== 'WTON' ? 'wei' : 'ray',
-  //         }) as string,
-  //       };
-  //     }),
-  //   );
-
-  //   return setAirdropList(result);
-  // };
-
-  // useEffect(() => {
-  //   fetchData();
-  //   /*eslint-disable*/
-  // }, [blockNumber]);
 
   useEffect(() => {
     let temp: {tokenName: string; amount: string}[] = [];

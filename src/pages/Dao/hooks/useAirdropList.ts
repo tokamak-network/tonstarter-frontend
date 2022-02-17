@@ -51,9 +51,6 @@ const useAirdropList = () => {
       }
 
       const tokens = claimableTokens;
-      console.log('--tokens--');
-      console.log(tokens);
-
       const nowTimeStamp = moment().unix();
       const result: {tokenName: string; amount: string}[] = await Promise.all(
         tokens.map(async (token: string) => {

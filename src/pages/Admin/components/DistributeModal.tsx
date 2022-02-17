@@ -324,7 +324,7 @@ export const DistributeModal = () => {
                     library,
                     amount: tokenAmount,
                     address: tokenAddress,
-                    isRay: tokenDecimals === 27,
+                    decimals: tokenDecimals,
                   });
                 handleCloseModal();
               }}>

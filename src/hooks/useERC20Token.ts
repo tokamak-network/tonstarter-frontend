@@ -18,7 +18,7 @@ export const useERC20Token = (props: {
   const TOKEN_CONTRACT = useContract(tokenAddress, ERC20.abi);
 
   useEffect(() => {
-    async function fetchData() {
+    async function fetchUseERC20TokenData() {
       if (account && TOKEN_CONTRACT) {
         const balance = await TOKEN_CONTRACT.balanceOf(account);
         const symbol = await TOKEN_CONTRACT.symbol();
@@ -27,7 +27,8 @@ export const useERC20Token = (props: {
           amount: balance.toString(),
           localeString: true,
           round: false,
-          type: decimals === 27 ? 'ray' : 'wei',
+          type: 'custom',
+          decimalPoints: decimals,
         }) as string;
 
         setTokenBalance(convertedBalance);
@@ -36,7 +37,7 @@ export const useERC20Token = (props: {
       }
     }
     if (account && TOKEN_CONTRACT) {
-      fetchData();
+      fetchUseERC20TokenData();
     }
   }, [account, library, blockNumber, TOKEN_CONTRACT]);
 
