@@ -1,6 +1,6 @@
-import { DEPLOYED, fetchTosPriceURL } from '../../../constants/index';
+import {DEPLOYED, fetchTosPriceURL} from '../../../constants/index';
 
-const { TOS_ADDRESS } = DEPLOYED
+const {TOS_ADDRESS} = DEPLOYED;
 
 export const getLiquidity = (pool: any, tosPrice: number) => {
   const {
@@ -10,18 +10,31 @@ export const getLiquidity = (pool: any, tosPrice: number) => {
     totalValueLockedToken1,
     token0,
     token1,
-  } = pool
+  } = pool;
   let liquidity = 0;
-  if (token0.id === TOS_ADDRESS.toLowerCase() || token1.id === TOS_ADDRESS.toLowerCase()) { // check TOS related pool
-    const tosId = token0.id == TOS_ADDRESS.toLowerCase() ? 0 : 1
-    
-    const lockedTOSValue = tosId == 0 ? Number(totalValueLockedToken0) * tosPrice : Number(totalValueLockedToken1) * tosPrice
-    const lockedTokenPrice = tosId == 0 ?  Number(token0Price) * tosPrice : Number(token1Price) * tosPrice
-    
-    const lockedTokenValue = tosId == 0 ? Number(totalValueLockedToken1) * lockedTokenPrice : Number(totalValueLockedToken0) * lockedTokenPrice
-    liquidity = lockedTokenValue + lockedTOSValue
-    return liquidity
+  if (
+    token0.id === TOS_ADDRESS.toLowerCase() ||
+    token1.id === TOS_ADDRESS.toLowerCase()
+  ) {
+    // check TOS related pool
+    const tosId = token0.id == TOS_ADDRESS.toLowerCase() ? 0 : 1;
+
+    const lockedTOSValue =
+      tosId == 0
+        ? Number(totalValueLockedToken0) * tosPrice
+        : Number(totalValueLockedToken1) * tosPrice;
+    const lockedTokenPrice =
+      tosId == 0
+        ? Number(token0Price) * tosPrice
+        : Number(token1Price) * tosPrice;
+
+    const lockedTokenValue =
+      tosId == 0
+        ? Number(totalValueLockedToken1) * lockedTokenPrice
+        : Number(totalValueLockedToken0) * lockedTokenPrice;
+    if (lockedTokenValue) liquidity = lockedTokenValue + lockedTOSValue;
+    return liquidity > 100000000000 ? 0 : liquidity;
   } else {
-    return Number(pool.hourData[0].tvlUSD)
+    return Number(pool.hourData[0].tvlUSD);
   }
-}
+};

@@ -395,9 +395,6 @@ export const Animation: React.FC<HomeProps> = () => {
       const res = Number(totalLiquidity).toLocaleString(undefined, {
         minimumFractionDigits: 2,
       });
-      console.log('--res--');
-      console.log(totalLiquidity);
-      console.log(res);
       setLiquidity(
         res.split('.')[0] + '.' + res.split('.')[1][0] + res.split('.')[1][1],
       );

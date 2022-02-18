@@ -5,8 +5,6 @@ import {
   Box,
   useColorMode,
   useTheme,
-  Container,
-  Select,
   Avatar,
   IconButton,
   Tooltip,
@@ -14,11 +12,9 @@ import {
 
 import {FC, useState, useEffect} from 'react';
 import {useActiveWeb3React} from 'hooks/useWeb3';
-import {checkTokenType} from 'utils/token';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
-import { getLiquidity } from '../utils/getLiquidity'
-import {utils, ethers} from 'ethers';
-import { DEPLOYED, fetchTosPriceURL } from '../../../constants/index';
+import {getLiquidity} from '../utils/getLiquidity';
+import {fetchTosPriceURL} from '../../../constants/index';
 import moment from 'moment';
 
 const themeDesign = {
@@ -45,7 +41,7 @@ const themeDesign = {
   buttonColorInactive: {
     light: '#c9d1d8',
     dark: '#777777',
-  }
+  },
 };
 type PoolComponentProps = {
   pools: any[];
@@ -62,7 +58,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
   const [tosPrice, setTosPrice] = useState<number>(0);
   const [pageLimit, setPageLimit] = useState<number>(2);
   const [totalPAges, setTotalPages] = useState<number>(0);
-  useEffect(() => {   
+  useEffect(() => {
     const pagenumber = parseInt(
       ((pools.length - 1) / pageLimit + 1).toString(),
     );
@@ -70,14 +66,14 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
   }, [pools]);
 
   useEffect(() => {
-    async function getPrice () {
+    async function getPrice() {
       const tosPrices = await fetch(fetchTosPriceURL)
         .then((res) => res.json())
         .then((result) => result);
-      setTosPrice(tosPrices)
+      setTosPrice(tosPrices);
     }
-    getPrice()
-  }, [])
+    getPrice();
+  }, []);
 
   const getPaginatedData = () => {
     const startIndex = pageIndex * pageLimit - pageLimit;
@@ -107,7 +103,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
     <Box>
       <Flex w={'100%'} borderBottom={themeDesign.border[colorMode]}>
         <Text
-        fontFamily={theme.fonts.titil}
+          fontFamily={theme.fonts.titil}
           px={'15px'}
           mt="30px"
           fontSize="20px"
@@ -117,23 +113,28 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
           Pools
         </Text>
       </Flex>
-      {getPaginatedData().map((pool: any, index:number) => {
-        const length = pool.hourData.length - 1;    
-        const now = moment().unix()        
+      {getPaginatedData().map((pool: any, index: number) => {
+        const length = pool.hourData.length - 1;
+        const now = moment().unix();
         const numRewards = rewards.filter(
           (reward) => reward.poolAddress === pool.id,
         );
-       const open = numRewards.filter((reward) => reward.startTime < now && reward.endTime > now).length
-       const waiting = numRewards.filter((reward) => reward.startTime > now).length
-       const ended =  numRewards.filter((reward) => reward.endTime < now).length
-       const liquidity = getLiquidity(pool, tosPrice)
+        const open = numRewards.filter(
+          (reward) => reward.startTime < now && reward.endTime > now,
+        ).length;
+        const waiting = numRewards.filter(
+          (reward) => reward.startTime > now,
+        ).length;
+        const ended = numRewards.filter(
+          (reward) => reward.endTime < now,
+        ).length;
+        const liquidity = getLiquidity(pool, tosPrice);
         return (
           <Flex
-          key={index}
+            key={index}
             h={'73px'}
             borderBottom={themeDesign.border[colorMode]}
             flexDirection={'row'}
-            
             alignItems={'center'}
             px={'10px'}>
             <Box>
@@ -143,7 +144,9 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
                 color="#c7d1d8"
                 name="T"
                 border={
-                  colorMode === 'light' ? '1px solid #e7edf3' : '1px solid #3c3c3c'
+                  colorMode === 'light'
+                    ? '1px solid #e7edf3'
+                    : '1px solid #3c3c3c'
                 }
                 h="26px"
                 // p={'2px'}
@@ -160,7 +163,9 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
                 // p={'2px'}
                 ml={'-7px'}
                 border={
-                  colorMode === 'light' ? '1px solid #e7edf3' : '1px solid #3c3c3c'
+                  colorMode === 'light'
+                    ? '1px solid #e7edf3'
+                    : '1px solid #3c3c3c'
                 }
               />
             </Box>
@@ -171,7 +176,8 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
               ml={'5px'}
               cursor={'pointer'}
               fontFamily={theme.fonts.fld}
-              fontSize={'16px'} onClick={(e) => {
+              fontSize={'16px'}
+              onClick={(e) => {
                 e.preventDefault();
                 window.open(`https://info.uniswap.org/#/pools/${pool.id}`);
               }}>
@@ -185,49 +191,65 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
                 Liquidity
               </Text>
               {liquidity !== 0 ? (
-              <Text fontSize={'18px'}>
-                {' '}
-                ${' '}
-                {liquidity.toLocaleString(undefined, { maximumFractionDigits: 2 })}
-              </Text>
-              ) :(
-              <Text fontSize={'11px'}>No current liquidity data</Text>)}
-              <Flex>  
-              <Text
-                fontSize="10px"
-                color={colorMode === 'light' ? 'gray.400' : 'gray.150'}>
-             Active
-              </Text>
-              <Text fontSize="10px"
-                color={'#0070ed'} ml={'2px'}>{open}</Text>
-                 <Text
-                fontSize="10px"
-                color={colorMode === 'light' ? 'gray.400' : 'gray.150'}  ml={'2px'}>
-             / Waiting
-              </Text>
-              <Text fontSize="10px"
-                color={'#0070ed'} ml={'2px'}>{waiting}</Text>
-                 <Text
-                fontSize="10px"
-                color={colorMode === 'light' ? 'gray.400' : 'gray.150'}  ml={'2px'}>
-             / Ended
-              </Text>
-              <Text fontSize="10px"
-                color={'#0070ed'} ml={'2px'}>{ended}</Text>
+                <Text fontSize={'18px'}>
+                  {' '}
+                  ${' '}
+                  {liquidity.toLocaleString(undefined, {
+                    maximumFractionDigits: 2,
+                  })}
+                </Text>
+              ) : (
+                <Text fontSize={'11px'}>No current liquidity data</Text>
+              )}
+              <Flex>
+                <Text
+                  fontSize="10px"
+                  color={colorMode === 'light' ? 'gray.400' : 'gray.150'}>
+                  Active
+                </Text>
+                <Text fontSize="10px" color={'#0070ed'} ml={'2px'}>
+                  {open}
+                </Text>
+                <Text
+                  fontSize="10px"
+                  color={colorMode === 'light' ? 'gray.400' : 'gray.150'}
+                  ml={'2px'}>
+                  / Waiting
+                </Text>
+                <Text fontSize="10px" color={'#0070ed'} ml={'2px'}>
+                  {waiting}
+                </Text>
+                <Text
+                  fontSize="10px"
+                  color={colorMode === 'light' ? 'gray.400' : 'gray.150'}
+                  ml={'2px'}>
+                  / Ended
+                </Text>
+                <Text fontSize="10px" color={'#0070ed'} ml={'2px'}>
+                  {ended}
+                </Text>
               </Flex>
             </Box>
           </Flex>
         );
       })}
-      {getPaginatedData().length ===1 ?  <Flex
-            h={'73px'}
-            borderBottom={themeDesign.border[colorMode]}
-            flexDirection={'row'}
-            justifyContent={'space-between'}
-            alignItems={'center'}
-            px={'15px'}></Flex>: null}
-      <Flex flexDirection={'row'}  pb='30px' justifyContent={'center'}  pt='19px' mx='15px' borderBottom={themeDesign.borderDashed[colorMode]}>
-        <Flex >
+      {getPaginatedData().length === 1 ? (
+        <Flex
+          h={'73px'}
+          borderBottom={themeDesign.border[colorMode]}
+          flexDirection={'row'}
+          justifyContent={'space-between'}
+          alignItems={'center'}
+          px={'15px'}></Flex>
+      ) : null}
+      <Flex
+        flexDirection={'row'}
+        pb="30px"
+        justifyContent={'center'}
+        pt="19px"
+        mx="15px"
+        borderBottom={themeDesign.borderDashed[colorMode]}>
+        <Flex>
           <Tooltip label="Previous Page">
             <IconButton
               minW={'24px'}
@@ -246,28 +268,38 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
               size={'sm'}
               mr={4}
               _active={{background: 'transparent'}}
-              _hover={{borderColor: colorMode=== 'light'? '#3e495c' : '#2a72e5', color: colorMode=== 'light'? '#3e495c' : '#2a72e5'}}
+              _hover={{
+                borderColor: colorMode === 'light' ? '#3e495c' : '#2a72e5',
+                color: colorMode === 'light' ? '#3e495c' : '#2a72e5',
+              }}
               icon={<ChevronLeftIcon h={6} w={6} />}
             />
           </Tooltip>
         </Flex>
         <Flex>
-          {getPaginationGroup().map((groupIndex: number, index:number) => {
+          {getPaginationGroup().map((groupIndex: number, index: number) => {
             const data = getPaginatedData().length;
             return (
               <Button
-              key={index}
+                key={index}
                 h="24px"
                 minW="24px"
                 background="transparent"
                 fontFamily={theme.fonts.roboto}
-                fontSize='13px'
-                fontWeight='normal'
-                color={pageIndex===groupIndex? themeDesign.buttonColorActive[colorMode] : themeDesign.buttonColorInactive[colorMode]}
-                p='0px'
-               _hover={{background: 'transparent', color: themeDesign.buttonColorActive[colorMode] }}
-               _active={{background: 'transparent'}}
-               disabled={pageOptions < groupIndex}
+                fontSize="13px"
+                fontWeight="normal"
+                color={
+                  pageIndex === groupIndex
+                    ? themeDesign.buttonColorActive[colorMode]
+                    : themeDesign.buttonColorInactive[colorMode]
+                }
+                p="0px"
+                _hover={{
+                  background: 'transparent',
+                  color: themeDesign.buttonColorActive[colorMode],
+                }}
+                _active={{background: 'transparent'}}
+                disabled={pageOptions < groupIndex}
                 onClick={() => changePage(groupIndex)}>
                 {groupIndex}
               </Button>
@@ -277,7 +309,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
         <Flex>
           <Tooltip label="Next Page">
             <IconButton
-             minW={'24px'}
+              minW={'24px'}
               h={'24px'}
               border={
                 colorMode === 'light'
@@ -294,7 +326,10 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
               ml={4}
               mr={'1.5625em'}
               _active={{background: 'transparent'}}
-              _hover={{borderColor: colorMode=== 'light'? '#3e495c' : '#2a72e5', color: colorMode=== 'light'? '#3e495c' : '#2a72e5'}}
+              _hover={{
+                borderColor: colorMode === 'light' ? '#3e495c' : '#2a72e5',
+                color: colorMode === 'light' ? '#3e495c' : '#2a72e5',
+              }}
               icon={<ChevronRightIcon h={6} w={6} />}
             />
           </Tooltip>
