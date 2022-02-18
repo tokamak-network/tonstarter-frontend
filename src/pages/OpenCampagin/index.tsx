@@ -25,11 +25,11 @@ const OpenCampagin = () => {
   return (
     <Flex flexDir="column">
       <Flex justifyContent={'center'} mb={50}>
-        <Button bg={'red.100'} color={'white.100'} _hover={{}}>
+        <Button bg={'red.100'} color={'white.100'} mt={'148px'} _hover={{}}>
           Save(server)
         </Button>
       </Flex>
-      <Flex>
+      <Flex Flex justifyContent={'center'}>
         <MainScreen></MainScreen>
       </Flex>
       <Flex></Flex>

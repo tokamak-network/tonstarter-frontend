@@ -1,5 +1,49 @@
+import {Flex, useTheme, Box, Grid, GridItem} from '@chakra-ui/react';
+import {useEffect} from 'react';
+import type {Projects} from '@OpenCampagin/types';
+import InputComponent from '@OpenCampagin/components/common/InputComponent';
+import StepTitle from '@OpenCampagin/components/common/StepTitle';
+import Line from '@OpenCampagin/components/common/Line';
+import MarkdownEditor from '@OpenCampagin/components/MarkdownEditor';
+
+const filedNameList = [
+  'projectName',
+  'tokenName',
+  'owner',
+  'tokenSymbol',
+  'tokenSupply',
+];
+
 const OpenStepTwo = () => {
-  return <div></div>;
+  const {theme} = useTheme();
+  return (
+    <Flex p={'35px'} pt={'24px'} w={'774px'} bg={'white.100'} flexDir="column">
+      <Box mb={'23px'}>
+        <StepTitle title={'Token Economy'}></StepTitle>
+      </Box>
+      <Box mb={'40px'}>
+        <Line></Line>
+      </Box>
+      <Grid templateColumns="repeat(2, 1fr)" mb={'20px'}>
+        {filedNameList.map((name: string, index: number) => {
+          return (
+            <GridItem
+              w={'327px'}
+              mb={'20px'}
+              justifySelf={index % 2 !== 0 || index === 4 ? 'flex-end' : ''}>
+              <InputComponent
+                name={name}
+                placeHolder={`input ${name}`}
+                key={name}></InputComponent>
+            </GridItem>
+          );
+        })}
+      </Grid>
+      <Box>
+        <MarkdownEditor></MarkdownEditor>
+      </Box>
+    </Flex>
+  );
 };
 
 export default OpenStepTwo;

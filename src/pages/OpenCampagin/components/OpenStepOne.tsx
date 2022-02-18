@@ -8,10 +8,10 @@ import MarkdownEditor from '@OpenCampagin/components/MarkdownEditor';
 
 const filedNameList = [
   'projectName',
-  'description',
   'tokenName',
+  'owner',
   'tokenSymbol',
-  'totalSupply',
+  'tokenSupply',
 ];
 
 const OpenStepOne = () => {
@@ -21,14 +21,15 @@ const OpenStepOne = () => {
       <Box mb={'23px'}>
         <StepTitle title={'Project&Token'}></StepTitle>
       </Box>
-      <Box>
+      <Box mb={'40px'}>
         <Line></Line>
       </Box>
-      <Grid templateColumns="repeat(2, 1fr)">
+      <Grid templateColumns="repeat(2, 1fr)" mb={'20px'}>
         {filedNameList.map((name: string, index: number) => {
           return (
             <GridItem
               w={'327px'}
+              mb={'20px'}
               justifySelf={index % 2 !== 0 || index === 4 ? 'flex-end' : ''}>
               <InputComponent
                 name={name}

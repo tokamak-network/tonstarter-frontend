@@ -8,9 +8,10 @@ import {errors} from 'ethers';
 import * as Yup from 'yup';
 import {PageHeader} from 'components/PageHeader';
 import Steps from '@OpenCampagin/components/Steps';
+import OpenStepTwo from './components/OpenStepTwo';
 
 const MainScreen = () => {
-  const [step, setStep] = useState<StepNumber>(1);
+  const [step, setStep] = useState<StepNumber>(2);
 
   const {initialValues, setInitialValues} = useValues();
 
@@ -31,7 +32,7 @@ const MainScreen = () => {
       case 1:
         return <OpenStepOne></OpenStepOne>;
       case 2:
-        return <div>step2</div>;
+        return <OpenStepTwo></OpenStepTwo>;
       // case 3:
       //   break;
       // case 4:
