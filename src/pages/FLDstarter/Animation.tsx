@@ -21,11 +21,11 @@ import {useAppSelector} from 'hooks/useRedux';
 import {DEPLOYED} from 'constants/index';
 import {usePoolByUserQuery, usePoolByArrayQuery} from 'store/data/enhanced';
 import ms from 'ms.macro';
-import { fetchTosPriceURL } from '../../constants/index';
+import {fetchTosPriceURL} from '../../constants/index';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import views from '../Reward/rewards';
 import {selectTransactionType} from 'store/refetch.reducer';
-import { getLiquidity } from '../Reward/utils/getLiquidity';
+import {getLiquidity} from '../Reward/utils/getLiquidity';
 
 export interface HomeProps extends HTMLAttributes<HTMLDivElement> {
   classes?: string;
@@ -208,14 +208,14 @@ export const Animation: React.FC<HomeProps> = () => {
   const [pool, setPool] = useState<any[]>([]);
 
   useEffect(() => {
-    async function getPrice () {
+    async function getPrice() {
       const tosPrices = await fetch(fetchTosPriceURL)
         .then((res) => res.json())
         .then((result) => result);
-      setTosPrice(tosPrices)
+      setTosPrice(tosPrices);
     }
-    getPrice()
-  }, [])
+    getPrice();
+  }, []);
 
   const verticalDots: number[] = [77, 221, 365, 509, 653, 797, 941];
 
@@ -346,9 +346,7 @@ export const Animation: React.FC<HomeProps> = () => {
 
   //GET Phase 2 Liquidity Info
   // const {BasePool_Addres, DOCPool_Address} = DEPLOYED;
-  const {
-    BasePool_Address,
-  } = DEPLOYED;
+  const {BasePool_Address} = DEPLOYED;
   const basePool = usePoolByUserQuery(
     {address: BasePool_Address?.toLowerCase()},
     {
@@ -386,19 +384,25 @@ export const Animation: React.FC<HomeProps> = () => {
 
   useEffect(() => {
     if (pool) {
-      let totalLiquidity = 0
+      let totalLiquidity = 0;
       for (const singlePool of pool) {
-        let singleLiquidity = getLiquidity(singlePool, tosPrice)
-        totalLiquidity = totalLiquidity + Number(singleLiquidity)
+        let singleLiquidity = getLiquidity(singlePool, tosPrice);
+        totalLiquidity =
+          totalLiquidity <= 3
+            ? totalLiquidity + 3
+            : totalLiquidity + Number(singleLiquidity);
       }
       const res = Number(totalLiquidity).toLocaleString(undefined, {
         minimumFractionDigits: 2,
       });
+      console.log('--res--');
+      console.log(totalLiquidity);
+      console.log(res);
       setLiquidity(
         res.split('.')[0] + '.' + res.split('.')[1][0] + res.split('.')[1][1],
       );
     }
-  }, [pool]);
+  }, [pool, tosPrice]);
 
   useEffect(() => {
     if (data) {
