@@ -26,6 +26,7 @@ import {
   UnStakeFromLayer2Modal,
   WithdrawalOptionModal,
   SwapModal,
+  PowerTonSwap,
 } from './StakeOptionModal';
 import {WalletInformation} from './components/WalletInformation';
 import {ManageModal} from './StakeOptionModal/Manage/index';
@@ -475,6 +476,7 @@ export const Staking = () => {
       <UnStakeFromLayer2Modal />
       <WithdrawalOptionModal />
       <SwapModal />
+      <PowerTonSwap />
     </Fragment>
   );
 };

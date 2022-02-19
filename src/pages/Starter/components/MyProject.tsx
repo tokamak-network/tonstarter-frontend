@@ -8,14 +8,10 @@ import {
   Avatar,
 } from '@chakra-ui/react';
 import {checkTokenType} from 'utils/token';
-import {ActiveProjectType} from '@Starter/types';
 import starterActions from '../actions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect, useState} from 'react';
-import moment from 'moment';
 import {CustomButton} from 'components/Basic/CustomButton';
-import {useCallContract} from 'hooks/useCallContract';
-import {convertTimeStamp} from 'utils/convertTIme';
 
 type MyProjectProp = {
   myProject: any[];

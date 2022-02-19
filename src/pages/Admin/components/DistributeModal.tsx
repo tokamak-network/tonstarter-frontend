@@ -22,6 +22,7 @@ import AdminActions from '@Admin/actions';
 import moment from 'moment';
 import {useBlockNumber} from 'hooks/useBlock';
 import {DEPLOYED} from 'constants/index';
+import {useERC20Token} from 'hooks/useERC20Token';
 
 export const DistributeModal = () => {
   const {TON_ADDRESS, WTON_ADDRESS, TOS_ADDRESS, DOC_ADDRESS} = DEPLOYED;
@@ -29,7 +30,6 @@ export const DistributeModal = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
-  const {handleCloseModal} = useModal();
   const {btnStyle} = theme;
 
   const [tokenAddress, setTokenAddress] = useState<string>(TON_ADDRESS);
@@ -37,8 +37,14 @@ export const DistributeModal = () => {
   const [allowance, setAllowance] = useState<string>('');
   const [ableDistribute, setAbleDistribute] = useState<boolean>(false);
   const [timeStamp, setTimeStamp] = useState<string>('');
+  const [isRay, setIsRay] = useState<boolean>(false);
 
   const {blockNumber} = useBlockNumber();
+  const {handleCloseModal} = useModal(setTokenAmount);
+
+  useEffect(() => {
+    setIsRay(tokenAddress === WTON_ADDRESS);
+  }, [tokenAddress, WTON_ADDRESS]);
 
   useEffect(() => {
     async function getAllowanceAmount() {
@@ -49,6 +55,7 @@ export const DistributeModal = () => {
         account,
         library,
         address: tokenAddress,
+        isRay,
       });
       setAllowance(allowanceAmount);
     }
@@ -57,7 +64,7 @@ export const DistributeModal = () => {
     } else {
       setAllowance('0.00');
     }
-  }, [account, library, tokenAddress, blockNumber]);
+  }, [account, library, tokenAddress, blockNumber, isRay]);
 
   useEffect(() => {
     if (tokenAmount === '') {
@@ -78,7 +85,6 @@ export const DistributeModal = () => {
   useEffect(() => {
     //GET NEXT THUR
     //Which is lock period for sTOS
-
     const dayINeed = 4; // for Thursday
     const today = moment().isoWeekday();
     const thisWed = moment().isoWeekday(dayINeed).format('YYYY-MM-DD');
@@ -86,14 +92,13 @@ export const DistributeModal = () => {
       .add(1, 'weeks')
       .isoWeekday(dayINeed)
       .format('YYYY-MM-DD');
-    if (today === dayINeed || today < dayINeed) {
+    if (today < dayINeed) {
       return setTimeStamp(thisWed);
     } else {
       return setTimeStamp(nextWed);
     }
-
-    return setTimeStamp(nextWed);
   }, []);
+
   const selectOptionValues = [
     TON_ADDRESS,
     WTON_ADDRESS,
@@ -106,6 +111,19 @@ export const DistributeModal = () => {
   useEffect(() => {
     if (tokenAddress === 'CUSTOM TOKEN') return setTokenAddress('');
   }, [tokenAddress]);
+
+  const {tokenBalance, tokenSymbol, tokenDecimals} = useERC20Token({
+    tokenAddress: tokenAddress,
+  });
+  const [isTokenBalanceExceed, setIsTokenBalanceExceed] =
+    useState<boolean>(true);
+
+  useEffect(() => {
+    const checkedTokenBalanceExceed =
+      Number(tokenAmount.replaceAll(',', '')) >
+      Number(tokenBalance.replaceAll(',', ''));
+    return setIsTokenBalanceExceed(checkedTokenBalanceExceed);
+  }, [tokenAmount, tokenBalance]);
 
   return (
     <Modal
@@ -153,7 +171,15 @@ export const DistributeModal = () => {
             fontWeight={600}
             color={colorMode === 'light' ? 'black.300' : 'white.100'}>
             <Box d="flex" flexDir="column" mb={'24px'}>
-              <Text mb={'9px'}>Token Address</Text>
+              <Flex justifyContent={'space-between'}>
+                <Text mb={'9px'}>Token Address</Text>
+                <Flex color={colorMode === 'light' ? 'black.300' : 'white.100'}>
+                  <Box color={'#86929d'} mr={'10px'}>
+                    Balance
+                  </Box>
+                  {tokenBalance} {tokenSymbol}
+                </Flex>
+              </Flex>
               <CustomSelectBox
                 w={'290px'}
                 h={'32px'}
@@ -208,6 +234,9 @@ export const DistributeModal = () => {
                       : 'white.100'
                     : 'gray.175'
                 }></CustomInput>
+              {isTokenBalanceExceed && (
+                <Text color={'red.100'}>You don't have enough balance</Text>
+              )}
             </Box>
             <Box d="flex" flexDir="column" mb={'29px'}>
               <Text mb={'9px'}>Token Allowance Amount</Text>
@@ -275,6 +304,7 @@ export const DistributeModal = () => {
                     library,
                     amount: tokenAmount,
                     address: tokenAddress,
+                    isRay: WTON_ADDRESS === tokenAddress,
                   });
               }}>
               Approve
@@ -286,7 +316,7 @@ export const DistributeModal = () => {
               w={'150px'}
               fontSize="14px"
               _hover={{}}
-              isDisabled={!ableDistribute}
+              isDisabled={!ableDistribute || isTokenBalanceExceed}
               onClick={() => {
                 account &&
                   AdminActions.distribute({
@@ -294,7 +324,9 @@ export const DistributeModal = () => {
                     library,
                     amount: tokenAmount,
                     address: tokenAddress,
+                    decimals: tokenDecimals,
                   });
+                handleCloseModal();
               }}>
               Distribute
             </Button>

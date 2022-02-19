@@ -5,3 +5,4 @@ export {StakeInLayer2Modal} from './stakeInLayer2';
 export {WithdrawalOptionModal} from './withdraw';
 export {SwapModal} from './swap';
 export {UnStakeFromLayer2Modal} from './unstakeFromLayer2';
+export {PowerTonSwap} from './PowerTonSwap';

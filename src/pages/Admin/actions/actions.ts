@@ -4,7 +4,7 @@ import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import {setTx} from 'application';
 import {LibraryType} from 'types';
-import {convertNumber, convertToWei} from 'utils/number';
+import {convertNumber, convertToRay, convertToWei} from 'utils/number';
 import store from 'store';
 import {openToast} from 'store/app/toast.reducer';
 import {DEPLOYED} from 'constants/index';
@@ -16,6 +16,7 @@ import {
   putEditPool,
 } from '../utils/createStarter';
 import {AdminObject, PoolData} from '@Admin/types';
+import {utils} from 'ethers';
 
 interface I_CallContract {
   account: string;
@@ -23,16 +24,18 @@ interface I_CallContract {
   address: string;
 }
 
-const getERC20Approve = async (args: I_CallContract & {amount: string}) => {
+const getERC20Approve = async (
+  args: I_CallContract & {amount: string; isRay?: boolean},
+) => {
   try {
-    const {account, library, amount, address} = args;
+    const {account, library, amount, address, isRay} = args;
     const {LockTOSDividend_ADDRESS} = DEPLOYED;
 
     const ERC20_CONTRACT = new Contract(address, ERC20.abi, library);
     const signer = getSigner(library, account);
     const res = await ERC20_CONTRACT.connect(signer).approve(
       LockTOSDividend_ADDRESS,
-      convertToWei(amount),
+      isRay === true ? convertToRay(amount) : convertToWei(amount),
     );
 
     return setTx(res);
@@ -53,9 +56,11 @@ const getERC20Approve = async (args: I_CallContract & {amount: string}) => {
   }
 };
 
-const distribute = async (args: I_CallContract & {amount: string}) => {
+const distribute = async (
+  args: I_CallContract & {amount: string; decimals: number},
+) => {
   try {
-    const {account, library, amount, address} = args;
+    const {account, library, amount, address, decimals} = args;
     const {LockTOSDividend_ADDRESS} = DEPLOYED;
     const LOCKTOS_DIVIDEND_CONTRACT = new Contract(
       LockTOSDividend_ADDRESS,
@@ -63,10 +68,10 @@ const distribute = async (args: I_CallContract & {amount: string}) => {
       library,
     );
     const signer = getSigner(library, account);
-
+    const numAmount = utils.parseUnits(amount, decimals);
     const res = await LOCKTOS_DIVIDEND_CONTRACT.connect(signer).distribute(
       address,
-      convertToWei(amount),
+      numAmount.toString(),
     );
 
     return setTx(res);
@@ -87,9 +92,11 @@ const distribute = async (args: I_CallContract & {amount: string}) => {
   }
 };
 
-export const checkApprove = async (args: I_CallContract): Promise<string> => {
+export const checkApprove = async (
+  args: I_CallContract & {isRay?: boolean},
+): Promise<string> => {
   try {
-    const {account, library, address} = args;
+    const {account, library, address, isRay} = args;
     const {LockTOSDividend_ADDRESS} = DEPLOYED;
 
     const ERC20_CONTRACT = new Contract(address, ERC20.abi, library);
@@ -99,6 +106,8 @@ export const checkApprove = async (args: I_CallContract): Promise<string> => {
     );
     const result = convertNumber({
       amount: approvedAmount,
+      type: isRay ? 'ray' : 'wei',
+      localeString: true,
     }) as string;
     return result;
   } catch (e) {

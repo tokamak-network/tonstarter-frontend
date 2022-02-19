@@ -16,20 +16,12 @@ import {
   DaoManageModal,
   DaoClaim,
 } from './components/Modals';
-import {useEffect} from 'react';
-import {useAppDispatch} from 'hooks/useRedux';
-import {fetchTosStakes} from './dao.reducer';
-import {useBlockNumber} from 'hooks/useBlock';
-import {useActiveWeb3React} from 'hooks/useWeb3';
 import {Utility} from './components/Utility';
 import {DistributeModal} from 'pages/Admin/components/DistributeModal';
 
 export const DAO = () => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
-  const dispatch = useAppDispatch();
-  const {blockNumber} = useBlockNumber();
-  const {account, library, chainId} = useActiveWeb3React();
 
   const themeDesign = {
     fontColor: {
@@ -46,23 +38,11 @@ export const DAO = () => {
     },
   };
 
-  useEffect(() => {
-    if (account && library && chainId) {
-      dispatch(
-        fetchTosStakes({
-          account,
-          library,
-          chainId,
-        }) as any,
-      );
-    }
-  }, [account, library, dispatch, blockNumber, chainId]);
-
   return (
-    <Flex>
+    <Flex mb={'105px'}>
       <Flex mt={theme.headerMargin.mt} w="100%" flexDir="column">
         <Flex justifyContent="center">
-          <Flex w={572} mr={108} mt={'60px'} flexDir="column">
+          <Flex w={572} mr={158} mt={'60px'} flexDir="column">
             <Box mb={'45px'}>
               <Text
                 color={themeDesign.fontColor[colorMode]}
@@ -78,44 +58,7 @@ export const DAO = () => {
               </Text>
             </Box>
             <Flex>
-              <Container p={0} m={0} mr={120} mb="65px">
-                <Box mb="30px">
-                  <Text
-                    fontSize={'1.250em'}
-                    color={themeDesign.fontColor[colorMode]}
-                    mb={'10px'}
-                    fontWeight={600}>
-                    Forum
-                  </Text>
-                  <Text w="184px" fontSize={'1em'} color={'gray.400'}>
-                    Check and discuss latest proposals
-                  </Text>
-                </Box>
-                <Box
-                  w={150}
-                  h="38px"
-                  bg={themeDesign.bg[colorMode]}
-                  color={themeDesign.fontColor[colorMode]}
-                  borderRadius={4}
-                  border={themeDesign.border[colorMode]}
-                  fontSize="0.813em"
-                  fontWeight={600}
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
-                  px={15}
-                  cursor={'pointer'}
-                  _hover={{color: '#2a72e5', borderColor: '#2a72e5'}}>
-                  <Text
-                    onClick={(e: any) => {
-                      window.open(`https://forum.tonstarter.tokamak.network/`);
-                    }}>
-                    Go to forum
-                  </Text>
-                  <Image src={resources_icon}></Image>
-                </Box>
-              </Container>
-              <Container p={0} m={0}>
+              <Container p={0} m={0} display="flex">
                 <Box mb="30px">
                   <Text
                     fontSize={'1.250em'}
@@ -124,13 +67,15 @@ export const DAO = () => {
                     fontWeight={600}>
                     Governance
                   </Text>
-                  <Text w={188} fontSize={'1em'} color={'gray.400'}>
+                  <Text fontSize={'1em'} color={'gray.400'}>
                     Go vote and and be an owner of TONStarter
                   </Text>
                 </Box>
                 <Box
                   w={160}
                   h="38px"
+                  ml={'40px'}
+                  mt={'31px'}
                   bg={themeDesign.bg[colorMode]}
                   color={themeDesign.fontColor[colorMode]}
                   borderRadius={4}
