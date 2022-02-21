@@ -10,6 +10,17 @@ const initialObj: Projects['CreateProject'] = {
   ownerAddress: '',
   isTokenDeployed: false,
   isAllDeployed: false,
+  vaults: [
+    {
+      vaultName: 'Public',
+      vaultTokenAllocation: 0,
+      firstClaimTime: new Date(),
+      claimInterval: new Date(),
+      claimRound: 0,
+      adminAddress: '',
+      isMandatory: true,
+    },
+  ],
 };
 
 const useValues = () => {

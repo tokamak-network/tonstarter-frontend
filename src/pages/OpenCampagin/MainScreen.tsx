@@ -4,14 +4,14 @@ import OpenStepOne from '@OpenCampagin/components/OpenStepOne';
 import {Formik, Form} from 'formik';
 import useValues from './hooks/useValues';
 import type {StepNumber} from '@OpenCampagin/types';
+import ProjectSchema from '@OpenCampagin/utils/projectSchema';
 import {errors} from 'ethers';
-import * as Yup from 'yup';
 import {PageHeader} from 'components/PageHeader';
 import Steps from '@OpenCampagin/components/Steps';
 import OpenStepTwo from './components/OpenStepTwo';
 
 const MainScreen = () => {
-  const [step, setStep] = useState<StepNumber>(2);
+  const [step, setStep] = useState<StepNumber>(1);
 
   const {initialValues, setInitialValues} = useValues();
 
@@ -44,10 +44,6 @@ const MainScreen = () => {
     }
   };
 
-  const SignupSchema = Yup.object().shape({
-    tokenName: Yup.string().required('Required'),
-  });
-
   const [isDisable, setDisable] = useState<boolean>(true);
 
   return (
@@ -65,7 +61,7 @@ const MainScreen = () => {
       </Flex>
       <Formik
         initialValues={initialValues}
-        validationSchema={SignupSchema}
+        validationSchema={ProjectSchema}
         validate={(values) => {
           console.log(values);
           if (values.tokenName === '1') {
@@ -90,7 +86,8 @@ const MainScreen = () => {
                       w={'180px'}
                       h={'35px'}
                       bg={isDisable ? '#gray.25' : 'blue.500'}
-                      disabled={isDisable || isSubmitting}
+                      // disabled={isDisable || isSubmitting}
+                      disabled={isSubmitting}
                       onClick={() => handleStep(false)}>
                       Prev
                     </Button>
@@ -101,7 +98,8 @@ const MainScreen = () => {
                       w={'180px'}
                       h={'35px'}
                       bg={isDisable ? '#gray.25' : 'blue.500'}
-                      disabled={isDisable || isSubmitting}
+                      // disabled={isDisable || isSubmitting}
+                      disabled={isSubmitting}
                       onClick={() => handleStep(true)}>
                       Next
                     </Button>

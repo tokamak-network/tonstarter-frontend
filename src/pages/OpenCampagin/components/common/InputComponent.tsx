@@ -1,9 +1,12 @@
 import {Box, Flex, Input, Text, useColorMode} from '@chakra-ui/react';
 import {ErrorMessage, Field, useFormikContext} from 'formik';
 import './input.css';
+
 type InputComponentProps = {
   name: string;
   placeHolder: string;
+  nameDisplay?: boolean;
+  inputStyle?: {};
 };
 
 const InputComponentStyle = {
@@ -14,15 +17,19 @@ const InputComponentStyle = {
 };
 
 const InputComponent: React.FC<InputComponentProps> = (props) => {
-  const {name, placeHolder} = props;
+  const {name, placeHolder, nameDisplay, inputStyle} = props;
   const {errors} = useFormikContext();
   const {colorMode} = useColorMode();
 
   return (
     <Flex flexDir={'column'} fontSize={13} pos={'relative'}>
-      <Text h={18} mb={2.5} color={InputComponentStyle.color[colorMode]}>
-        {name}
-      </Text>
+      {nameDisplay === false ? (
+        <></>
+      ) : (
+        <Text h={18} mb={2.5} color={InputComponentStyle.color[colorMode]}>
+          {name}
+        </Text>
+      )}
       <Field name={name}>
         {(
           //@ts-ignore
@@ -43,7 +50,8 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
               id={name}
               h={'32px'}
               _focus={{}}
-              placeholder={`input ${name}`}></Input>
+              placeholder={`input ${name}`}
+              {...inputStyle}></Input>
           );
         }}
       </Field>

@@ -5,6 +5,7 @@ import InputComponent from '@OpenCampagin/components/common/InputComponent';
 import StepTitle from '@OpenCampagin/components/common/StepTitle';
 import Line from '@OpenCampagin/components/common/Line';
 import MarkdownEditor from '@OpenCampagin/components/MarkdownEditor';
+import Vaults from '@OpenCampagin/components/stepTwo/Vaults';
 
 const filedNameList = [
   'projectName',
@@ -17,31 +18,18 @@ const filedNameList = [
 const OpenStepTwo = () => {
   const {theme} = useTheme();
   return (
-    <Flex p={'35px'} pt={'24px'} w={'774px'} bg={'white.100'} flexDir="column">
+    <Flex p={'35px'} pt={'24px'} w={'1110px'} bg={'white.100'} flexDir="column">
       <Box mb={'23px'}>
-        <StepTitle title={'Token Economy'}></StepTitle>
+        <StepTitle title={'Token Economy'} isSaveButton={true}></StepTitle>
       </Box>
       <Box mb={'40px'}>
         <Line></Line>
       </Box>
-      <Grid templateColumns="repeat(2, 1fr)" mb={'20px'}>
-        {filedNameList.map((name: string, index: number) => {
-          return (
-            <GridItem
-              w={'327px'}
-              mb={'20px'}
-              justifySelf={index % 2 !== 0 || index === 4 ? 'flex-end' : ''}>
-              <InputComponent
-                name={name}
-                placeHolder={`input ${name}`}
-                key={name}></InputComponent>
-            </GridItem>
-          );
-        })}
-      </Grid>
-      <Box>
-        <MarkdownEditor></MarkdownEditor>
-      </Box>
+      <Flex flexDir={'column'}>
+        <Flex>
+          <Vaults></Vaults>
+        </Flex>
+      </Flex>
     </Flex>
   );
 };

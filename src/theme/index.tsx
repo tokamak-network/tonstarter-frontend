@@ -457,9 +457,14 @@ const modalStyle = {
 };
 
 const OpenCampaginDesign = {
-  box: {
-    boxShadow: '0 1px 1px 0 rgba(96, 97, 112, 0.16)',
-  },
+  border: (props: any) => ({
+    // boxShadow:
+    //   props.colorMode === 'light'
+    //     ? '0 1px 1px 0 rgba(96, 97, 112, 0.16)'
+    //     : '1px solid #373737',
+    border: props.colorMode === 'light' ? 'solid 1px #e6eaee' : '',
+    borderRadius: 10,
+  }),
 };
 
 const theme = extendTheme({

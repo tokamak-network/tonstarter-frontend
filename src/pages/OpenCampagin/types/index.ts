@@ -1,10 +1,11 @@
 interface Vault {
-  vaultName: String;
+  vaultName: string;
   vaultTokenAllocation: Number;
   firstClaimTime: Date;
   claimInterval: Date;
   claimRound: Number;
   adminAddress: string;
+  isMandatory: boolean;
 }
 
 type VaultCommon = Vault & {};
@@ -21,7 +22,9 @@ interface ProjectStep2 {
   totalSupply: String;
   ownerAddress: String;
 }
-interface ProjectStep3 {}
+interface ProjectStep3 {
+  vaults: [Vault: {}];
+}
 
 interface ProjectStep5 {
   isTokenDeployed: boolean;
@@ -46,4 +49,5 @@ export type {
   ProjectStep5,
   ChainNumber,
   StepNumber,
+  Vault,
 };

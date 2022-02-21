@@ -9,26 +9,21 @@ import MainScreen from '@OpenCampagin/MainScreen';
 const OpenCampagin = () => {
   const {account} = useActiveWeb3React();
 
-  const {data, isLoading, error} = useQuery(
-    ['test'],
-    () => axios.get(fetchCampaginURL),
-    {
-      enabled: !!account,
-    },
-  );
+  // const {data, isLoading, error} = useQuery(
+  //   ['test'],
+  //   () => axios.get(fetchCampaginURL),
+  //   {
+  //     enabled: !!account,
+  //   },
+  // );
 
-  useEffect(() => {
-    console.log('--data--');
-    console.log(data);
-  }, [data]);
+  // useEffect(() => {
+  //   console.log('--data--');
+  //   console.log(data);
+  // }, [data]);
 
   return (
-    <Flex flexDir="column">
-      <Flex justifyContent={'center'} mb={50}>
-        <Button bg={'red.100'} color={'white.100'} mt={'148px'} _hover={{}}>
-          Save(server)
-        </Button>
-      </Flex>
+    <Flex flexDir="column" mt={100}>
       <Flex Flex justifyContent={'center'}>
         <MainScreen></MainScreen>
       </Flex>
