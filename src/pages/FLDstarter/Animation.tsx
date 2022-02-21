@@ -21,7 +21,7 @@ import {useAppSelector} from 'hooks/useRedux';
 import {DEPLOYED} from 'constants/index';
 import {usePoolByUserQuery, usePoolByArrayQuery} from 'store/data/enhanced';
 import ms from 'ms.macro';
-import {fetchTosPriceURL} from '../../constants/index';
+import {fetchTosPriceURL, fetchEthPriceURL} from '../../constants/index';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import views from '../Reward/rewards';
 import {selectTransactionType} from 'store/refetch.reducer';
@@ -202,6 +202,7 @@ export const Animation: React.FC<HomeProps> = () => {
     lastCircle: 7,
   });
   const [tosPrice, setTosPrice] = useState<number>(0);
+  const [ethPrice, setEthPrice] = useState<number>(0);
   const {account, library} = useActiveWeb3React();
   const [poolAddresses, setPoolAddresses] = useState<string[]>([]);
   const [poolsFromAPI, setPoolsFromAPI] = useState<any>([]);
@@ -212,6 +213,12 @@ export const Animation: React.FC<HomeProps> = () => {
       const tosPrices = await fetch(fetchTosPriceURL)
         .then((res) => res.json())
         .then((result) => result);
+      
+      const ethPrices = await fetch(fetchEthPriceURL)
+        .then((res) => res.json())
+        .then((result) => result);
+
+      setEthPrice(ethPrices[0].current_price)
       setTosPrice(tosPrices);
     }
     getPrice();
@@ -386,7 +393,7 @@ export const Animation: React.FC<HomeProps> = () => {
     if (pool) {
       let totalLiquidity = 0;
       for (const singlePool of pool) {
-        let singleLiquidity = getLiquidity(singlePool, tosPrice);
+        let singleLiquidity = getLiquidity(singlePool, tosPrice, ethPrice);
         totalLiquidity =
           totalLiquidity <= 3
             ? totalLiquidity + 3

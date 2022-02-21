@@ -12,6 +12,7 @@ export const REACT_APP_RINKEBY_INFURA_API = process.env
 export const REACT_APP_MAINNET_API = process.env
   .REACT_APP_MAINNET_API as string;
 export const REACT_APP_TOS_PRICE = process.env.REACT_APP_TOS_PRICE as string;
+export const REACT_APP_ETH_PRICE = process.env.REACT_APP_ETH_PRICE as string;
 export const REACT_APP_DEV_API = process.env.REACT_APP_DEV_API as string;
 export const REACT_APP_LOCAL = process.env.REACT_APP_LOCAL as string;
 export const NetworkContextName = `${new Date().getTime()}-NETWORK`;
@@ -33,6 +34,7 @@ export const fetchRewardsURL = `${API_SERVER}/reward?chainId=${DEFAULT_NETWORK}`
 export const fetchStarterURL = `${API_SERVER}/starter?chainId=${DEFAULT_NETWORK}`;
 export const fetchPoolsURL = `${API_SERVER}/pool?chainId=${DEFAULT_NETWORK}`;
 export const fetchTosPriceURL = REACT_APP_TOS_PRICE;
+export const fetchEthPriceURL = REACT_APP_ETH_PRICE
 
 export const permitTOSAddress =
   REACT_APP_MODE === 'DEV' ? '0x865264b30eb29A2978b9503B8AfE2A2DDa33eD7E' : '';

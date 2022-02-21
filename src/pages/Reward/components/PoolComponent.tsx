@@ -14,7 +14,7 @@ import {FC, useState, useEffect} from 'react';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {getLiquidity} from '../utils/getLiquidity';
-import {fetchTosPriceURL} from '../../../constants/index';
+import {fetchTosPriceURL, fetchEthPriceURL} from '../../../constants/index';
 import moment from 'moment';
 
 const themeDesign = {
@@ -56,6 +56,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
   const [pageOptions, setPageOptions] = useState<number>(0);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [tosPrice, setTosPrice] = useState<number>(0);
+  const [ethPrice, setEthPrice] = useState<number>(0);
   const [pageLimit, setPageLimit] = useState<number>(2);
   const [totalPAges, setTotalPages] = useState<number>(0);
   useEffect(() => {
@@ -70,6 +71,15 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
       const tosPrices = await fetch(fetchTosPriceURL)
         .then((res) => res.json())
         .then((result) => result);
+      const ethPrices = await fetch(fetchEthPriceURL)
+        .then((res) => res.json())
+        .then(tokenDataList => {
+          const priceObject: { [key: string]: number } = {};
+          for (const tokenData of tokenDataList) {
+            priceObject[tokenData.id as string] = tokenData.current_price;
+          }
+          setEthPrice(priceObject.ethereum)
+        })
       setTosPrice(tosPrices);
     }
     getPrice();
@@ -128,7 +138,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
         const ended = numRewards.filter(
           (reward) => reward.endTime < now,
         ).length;
-        const liquidity = getLiquidity(pool, tosPrice);
+        const liquidity = getLiquidity(pool, tosPrice, ethPrice);
         return (
           <Flex
             key={index}
