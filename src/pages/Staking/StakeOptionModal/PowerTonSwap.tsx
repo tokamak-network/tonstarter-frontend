@@ -58,7 +58,7 @@ export const PowerTonSwap = () => {
         );
         const convertedNum = convertNumber({
           amount: res.toString(),
-          type: 'ray'
+          type: 'ray',
         });
         const tosPrice = await fetchSwapPayload(library);
         const numSwapValue =
