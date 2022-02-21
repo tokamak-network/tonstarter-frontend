@@ -25,7 +25,8 @@ import {DEPLOYED} from 'constants/index';
 import {useERC20Token} from 'hooks/useERC20Token';
 
 export const DistributeModal = () => {
-  const {TON_ADDRESS, WTON_ADDRESS, TOS_ADDRESS, DOC_ADDRESS} = DEPLOYED;
+  const {TON_ADDRESS, WTON_ADDRESS, TOS_ADDRESS, DOC_ADDRESS, AURA_ADDRESS} =
+    DEPLOYED;
   const {data} = useAppSelector(selectModalType);
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -104,9 +105,17 @@ export const DistributeModal = () => {
     WTON_ADDRESS,
     TOS_ADDRESS,
     DOC_ADDRESS,
+    AURA_ADDRESS,
     'CUSTOM TOKEN',
   ];
-  const selectOptionNames = ['TON', 'WTON', 'TOS', 'DOC', 'CUSTOM TOKEN'];
+  const selectOptionNames = [
+    'TON',
+    'WTON',
+    'TOS',
+    'DOC',
+    'AURA',
+    'CUSTOM TOKEN',
+  ];
 
   useEffect(() => {
     if (tokenAddress === 'CUSTOM TOKEN') return setTokenAddress('');
@@ -187,9 +196,13 @@ export const DistributeModal = () => {
                 optionName={selectOptionNames}
                 setValue={setTokenAddress}
                 fontSize={'12px'}></CustomSelectBox>
-              {[TON_ADDRESS, WTON_ADDRESS, TOS_ADDRESS, DOC_ADDRESS].indexOf(
-                tokenAddress,
-              ) === -1 && (
+              {[
+                TON_ADDRESS,
+                WTON_ADDRESS,
+                TOS_ADDRESS,
+                DOC_ADDRESS,
+                AURA_ADDRESS,
+              ].indexOf(tokenAddress) === -1 && (
                 <CustomInput
                   w={'290px'}
                   h={'32px'}
