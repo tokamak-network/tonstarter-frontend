@@ -56,7 +56,10 @@ export const PowerTonSwap = () => {
         const res = await STAKE_CONTROL_CONTRACT?.balanceOf(
           PowerTONSwapper_ADDRESS,
         );
-        const convertedNum = convertNumber({amount: res.toString()});
+        const convertedNum = convertNumber({
+          amount: res.toString(),
+          type: 'ray'
+        });
         const tosPrice = await fetchSwapPayload(library);
         const numSwapValue =
           Number(tosPrice) * Number(convertedNum?.replaceAll(',', ''));
