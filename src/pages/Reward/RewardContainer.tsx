@@ -50,8 +50,8 @@ type RewardContainerProps = {
 };
 const {UniswapStaker_Address} = DEPLOYED;
 
-const multipleStakeList: any = [];
-const multipleUnstakeList: any = [];
+let multipleStakeList: any = [];
+let multipleUnstakeList: any = [];
 export const RewardContainer: FC<RewardContainerProps> = ({
   rewards,
   selectedPool,
@@ -96,8 +96,8 @@ export const RewardContainer: FC<RewardContainerProps> = ({
   };
 
   useEffect(() => {
-    multipleStakeList.pop();
-    multipleUnstakeList.pop();
+    multipleStakeList = [];
+    multipleUnstakeList = [];
     setStakeNum(0);
     setUnstakeNum(0);
   }, [

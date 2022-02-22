@@ -78,15 +78,19 @@ export const stakeMultiple = async (args: any) => {
   } else if (unstakeKeyList.length === 0) {
     try {
       if (depositInfo.owner.toLowerCase() !== userAddress.toLowerCase()) {
-        const arrayData = stakeKeyList.map((key: any) => {
-          return {
-            pool: key.pool,
-            startTime: key.startTime,
-            endTime: key.endTime,
-            rewardToken: key.rewardToken,
-            refundee: key.refundee,
-          };
-        });
+        const arrayData = await Promise.all(
+          stakeKeyList.map((key: any) => {
+            return {
+              pool: key.pool,
+              startTime: key.startTime,
+              endTime: key.endTime,
+              rewardToken: key.rewardToken,
+              refundee: key.refundee,
+            };
+          }),
+        );
+
+        console.log('Refund arrayData: ', arrayData);
         const incentiveKeyAbi =
           'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)';
         const abicoder = ethers.utils.defaultAbiCoder;
