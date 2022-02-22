@@ -372,21 +372,21 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     <Flex
       {...REWARD_STYLE.containerStyle({colorMode})}
       flexDir={'column'}
-      onClick={() =>
-        dispatch(
-          openModal({
-            type: 'information',
-            data: {
-              reward,
-              // refundableAmount,
-              stakedPools,
-              key,
-              userAddress: account,
-              positions: LPTokens,
-            },
-          }),
-        )
-      }
+      // onClick={() =>
+      //   dispatch(
+      //     openModal({
+      //       type: 'information',
+      //       data: {
+      //         reward,
+      //         // refundableAmount,
+      //         stakedPools,
+      //         key,
+      //         userAddress: account,
+      //         positions: LPTokens,
+      //       },
+      //     }),
+      //   )
+      // }
       _hover={{
         border: '2px solid #0070ED',
         cursor: 'pointer',
