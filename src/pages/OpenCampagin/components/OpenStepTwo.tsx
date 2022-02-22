@@ -22,7 +22,7 @@ const OpenStepTwo = () => {
       <Box mb={'23px'}>
         <StepTitle title={'Token Economy'} isSaveButton={true}></StepTitle>
       </Box>
-      <Box mb={'40px'}>
+      <Box mb={'20px'}>
         <Line></Line>
       </Box>
       <Flex flexDir={'column'}>

@@ -6,6 +6,7 @@ import {
   useTheme,
   Image,
   Input,
+  Text,
 } from '@chakra-ui/react';
 import Line from '@OpenCampagin/components/common/Line';
 import StepTitle from '@OpenCampagin/components/common/StepTitle';
@@ -69,8 +70,10 @@ const Vaults = () => {
           w={'90px'}
           h={'32px'}
           bg={'none'}
-          border={'solid 1px #dfe4ee;'}
+          border={'solid 1px #2a72e5'}
+          color={'#2a72e5'}
           fontSize={13}
+          _hover={{}}
           onClick={() => {
             setFieldValue('vaults', [
               ...vaultsList,
@@ -92,7 +95,13 @@ const Vaults = () => {
         <Line></Line>
       </Box>
       <Box d="flex" h={'220px'} px={'15px'} justifyContent="space-between">
-        <Image cursor={'pointer'} src={arrowLeft} />
+        <Image
+          cursor={'pointer'}
+          src={arrowLeft}
+          w={'24px'}
+          h={'48px'}
+          alignSelf="center"
+        />
         <Flex w={'520px'} alignItems="center" mx={'15px'}>
           {vaultsList?.map((vault: Vault, index: number) => {
             const {vaultName, vaultTokenAllocation, isMandatory} = vault;
@@ -112,11 +121,53 @@ const Vaults = () => {
             );
           })}
         </Flex>
-        <Image cursor={'pointer'} src={arrowRight} />
+        <Image
+          cursor={'pointer'}
+          src={arrowRight}
+          w={'24px'}
+          h={'48px'}
+          alignSelf="center"
+        />
       </Box>
       <Box>
         <Line></Line>
       </Box>
+      <Flex h="68px" pl={'20px'}>
+        <Box
+          d="flex"
+          flexDir={'column'}
+          h={'100%'}
+          justifyContent="center"
+          mr={'122px'}>
+          <Text fontSize={13} color={'#808992'}>
+            Title
+          </Text>
+          <Text fontSize={15} color={'#304156'} fontWeight={600}>
+            10,000,000
+          </Text>
+        </Box>
+        <Box
+          d="flex"
+          flexDir={'column'}
+          h={'100%'}
+          justifyContent="center"
+          mr={'102px'}>
+          <Text fontSize={13} color={'#808992'}>
+            Title
+          </Text>
+          <Text fontSize={15} color={'#304156'} fontWeight={600}>
+            10,000,000
+          </Text>
+        </Box>
+        <Box d="flex" flexDir={'column'} h={'100%'} justifyContent="center">
+          <Text fontSize={13} color={'#808992'}>
+            Title
+          </Text>
+          <Text fontSize={15} color={'#304156'} fontWeight={600}>
+            10,000,000
+          </Text>
+        </Box>
+      </Flex>
     </Flex>
   );
 };

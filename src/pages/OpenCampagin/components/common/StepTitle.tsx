@@ -31,7 +31,7 @@ const StepTitle: React.FC<StepTitleProp> = (prop) => {
           bg={colorMode ? 'blue.500' : 'blue.500'}
           // disabled={isDisable || isSubmitting}
           onClick={() => console.log('save')}>
-          Next
+          Save
         </Button>
       )}
     </Flex>
