@@ -12,9 +12,10 @@ import {
   Button,
   Progress,
 } from '@chakra-ui/react';
-import {useAppSelector} from 'hooks/useRedux';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {checkTokenType} from 'utils/token';
 import {selectTransactionType} from 'store/refetch.reducer';
+import {openModal} from 'store/modal.reducer';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import moment from 'moment';
@@ -31,6 +32,7 @@ import {getTokenSymbol} from '../utils/getTokenSymbol';
 import {UpdatedRedward} from '../types';
 import {LPToken} from '../types';
 import {convertNumber} from 'utils/number';
+import {InformationModal} from '../RewardModals';
 
 const themeDesign = {
   border: {
@@ -49,7 +51,7 @@ const themeDesign = {
 type RewardProgramCardProps = {
   reward: UpdatedRedward;
   selectedToken?: LPToken;
-  selectedPool?: string;
+  selectedPool?: any;
   sendKey: (key: any) => void;
   sendUnstakeKey: (key: any) => void;
   pageIndex: number;
@@ -57,6 +59,8 @@ type RewardProgramCardProps = {
   unstakeList: any[];
   sortString: string;
   includedPoolLiquidity: string;
+  stakedPools: any;
+  LPTokens: any;
 };
 
 const {
@@ -77,6 +81,8 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   unstakeList,
   sortString,
   includedPoolLiquidity,
+  stakedPools,
+  LPTokens,
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -95,6 +101,8 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   const [isSelected, setIsSelected] = useState<boolean>(false);
   const [isUnstakeSelected, setIsUnstakeselected] = useState<boolean>(false);
   const [numStakers, setNumStakers] = useState<number>(0);
+  const dispatch = useAppDispatch();
+
   const key = {
     rewardToken: reward.rewardToken,
     pool: reward.poolAddress,
@@ -108,6 +116,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     STAKERABI.abi,
     library,
   );
+
   useEffect(() => {
     setIsUnstakeselected(false);
     setIsSelected(false);
@@ -254,9 +263,17 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
 
       setNumStakers(Number(incentiveInfo.numberOfStakes));
     }
-
     getIncentives();
-  }, [account, library, transactionType, blockNumber, selectedToken,pageIndex, reward]);
+  }, [
+    account,
+    library,
+    transactionType,
+    blockNumber,
+    selectedToken,
+    pageIndex,
+    reward,
+  ]);
+
   const getReward = async () => {
     if (account === null || account === undefined || library === undefined) {
       return;
@@ -350,8 +367,30 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
       });
     }
   };
+
   return (
-    <Flex {...REWARD_STYLE.containerStyle({colorMode})} flexDir={'column'}>
+    <Flex
+      {...REWARD_STYLE.containerStyle({colorMode})}
+      flexDir={'column'}
+      onClick={() =>
+        dispatch(
+          openModal({
+            type: 'information',
+            data: {
+              reward,
+              // refundableAmount,
+              stakedPools,
+              key,
+              userAddress: account,
+              positions: LPTokens,
+            },
+          }),
+        )
+      }
+      _hover={{
+        border: '2px solid #0070ED',
+        cursor: 'pointer',
+      }}>
       <Flex flexDir={'row'} width={'100%'} alignItems={'center'} h={'50px'}>
         <Box>
           <Avatar
@@ -397,21 +436,23 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
             </Text>
             <Box textAlign={'right'}>
               <Text>
-                {ethers.utils.getAddress(reward.rewardToken) === ethers.utils.getAddress(WTON_ADDRESS) ? (Number(ethers.utils.formatUnits(myReward, '27')) < 0.005
-                  ? '<0.00'
-                  : Number(ethers.utils.formatUnits(myReward, '27')).toLocaleString(
-                      undefined,
-                      {
+                {ethers.utils.getAddress(reward.rewardToken) ===
+                ethers.utils.getAddress(WTON_ADDRESS)
+                  ? Number(ethers.utils.formatUnits(myReward, '27')) < 0.005
+                    ? '<0.00'
+                    : Number(
+                        ethers.utils.formatUnits(myReward, '27'),
+                      ).toLocaleString(undefined, {
                         maximumFractionDigits: 2,
-                      },
-                    ))  : ( Number(ethers.utils.formatEther(myReward)) < 0.005
+                      })
+                  : Number(ethers.utils.formatEther(myReward)) < 0.005
                   ? '<0.00'
                   : Number(ethers.utils.formatEther(myReward)).toLocaleString(
                       undefined,
                       {
                         maximumFractionDigits: 2,
                       },
-                    ))  }{' '}
+                    )}{' '}
                 {
                   checkTokenType(ethers.utils.getAddress(reward.rewardToken))
                     .name
@@ -462,7 +503,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
               `https://info.uniswap.org/#/pools/${reward.poolAddress}`,
             );
           }}>
-         #{reward.index} {reward.poolName}
+          #{reward.index} {reward.poolName}
         </Text>
         <Box>
           <Text {...REWARD_STYLE.subText({colorMode, fontSize: 14})}>
@@ -503,9 +544,12 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
       </Flex>
       <Flex mt={'24px'} flexDirection="row" justifyContent={'space-between'}>
         <Flex alignItems={'center'}>
-        <Text {...REWARD_STYLE.progress.mainText({colorMode})}>Progress</Text><Text ml={'8px'} fontSize={'12px'} color={'#0070ed'}>{numStakers} Stakers</Text>
+          <Text {...REWARD_STYLE.progress.mainText({colorMode})}>Progress</Text>
+          <Text ml={'8px'} fontSize={'12px'} color={'#0070ed'}>
+            {numStakers} Stakers
+          </Text>
         </Flex>
-      
+
         <Box d="flex" flexDir="row">
           <Text
             {...REWARD_STYLE.progress.subText({colorMode, fontSize: 12})}
@@ -535,9 +579,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
         </Box>
       </Flex>
       <Box mt={'5px'}>
-      
         <Progress value={progress} borderRadius={10} h={'6px'}></Progress>
-       
       </Box>
       <Flex
         mt={'30px'}
@@ -562,9 +604,11 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
                 lineHeight={'0.7'}>
                 {ethers.utils.getAddress(reward.rewardToken) ===
                 ethers.utils.getAddress(WTON_ADDRESS)
-                  ? Number(ethers.utils.formatUnits(reward.allocatedReward, 27)).toLocaleString(undefined, {
-                    minimumFractionDigits: 2,
-                  })
+                  ? Number(
+                      ethers.utils.formatUnits(reward.allocatedReward, 27),
+                    ).toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                    })
                   : Number(
                       ethers.utils.formatEther(
                         reward.allocatedReward.toString(),
@@ -676,6 +720,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
           </Button>
         </Flex>
       </Flex>
+      <InformationModal />
     </Flex>
   );
 };

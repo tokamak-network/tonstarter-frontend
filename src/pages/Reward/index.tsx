@@ -151,11 +151,10 @@ export const Reward = () => {
       }
 
       if (rewardData) {
-        rewardData.map ((reward, index) => {
-          reward.index = index +1
-        })
-        console.log('rewardData', rewardData);
-        
+        rewardData.map((reward, index) => {
+          reward.index = index + 1;
+        });
+
         setDatas(rewardData);
       }
       setPoolAddresses(poolArray);
@@ -1225,6 +1224,8 @@ export const Reward = () => {
                     selectedPool={selectedPool}
                     pools={pool}
                     sortString={sortString}
+                    positionsByPool={positionsByPool}
+                    LPTokens={positions}
                   />
                 </Box>
               ) : (

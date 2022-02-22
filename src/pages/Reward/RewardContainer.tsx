@@ -25,6 +25,7 @@ import {getSigner} from 'utils/contract';
 import {DEPLOYED} from 'constants/index';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import {Contract} from '@ethersproject/contracts';
+import {ethers} from 'ethers';
 
 type Pool = {
   id: string;
@@ -44,6 +45,8 @@ type RewardContainerProps = {
   selectedPool?: Pool;
   pools: any[];
   sortString: string;
+  positionsByPool: any;
+  LPTokens: any;
 };
 const {UniswapStaker_Address} = DEPLOYED;
 
@@ -55,6 +58,8 @@ export const RewardContainer: FC<RewardContainerProps> = ({
   position,
   pools,
   sortString,
+  positionsByPool,
+  LPTokens,
 }) => {
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [pageOptions, setPageOptions] = useState<number>(0);
@@ -66,6 +71,14 @@ export const RewardContainer: FC<RewardContainerProps> = ({
   const [staked, setstaked] = useState(true);
   const {colorMode} = useColorMode();
   const theme = useTheme();
+
+  let stakedPools = positionsByPool?.data?.positions?.filter((pool: any) => {
+    return (
+      ethers.utils.getAddress(pool.owner) ===
+      ethers.utils.getAddress(UniswapStaker_Address)
+    );
+  });
+
   useEffect(() => {
     const pagenumber = parseInt(
       ((rewards.length - 1) / pageLimit + 1).toString(),
@@ -104,26 +117,32 @@ export const RewardContainer: FC<RewardContainerProps> = ({
   };
 
   const stakeMultipleKeys = (key: any) => {
-const keyFound = multipleStakeList.find( (listkey: any) => JSON.stringify(listkey) === JSON.stringify(key));
-const index = multipleStakeList.findIndex((key: any) => JSON.stringify(key) === JSON.stringify(keyFound));
+    const keyFound = multipleStakeList.find(
+      (listkey: any) => JSON.stringify(listkey) === JSON.stringify(key),
+    );
+    const index = multipleStakeList.findIndex(
+      (key: any) => JSON.stringify(key) === JSON.stringify(keyFound),
+    );
 
-if (index > -1) {
-  multipleStakeList.splice(index,1)
-}
-else {
-  multipleStakeList.push(key);
-}
+    if (index > -1) {
+      multipleStakeList.splice(index, 1);
+    } else {
+      multipleStakeList.push(key);
+    }
     setStakeNum(multipleStakeList.length);
     return multipleStakeList;
   };
 
   const unstakeMultipleKeys = (key: any) => {
-    const keyFound = multipleUnstakeList.find( (listkey: any) => JSON.stringify(listkey) === JSON.stringify(key));
-    const index = multipleUnstakeList.findIndex((key: any) => JSON.stringify(key) === JSON.stringify(keyFound));
+    const keyFound = multipleUnstakeList.find(
+      (listkey: any) => JSON.stringify(listkey) === JSON.stringify(key),
+    );
+    const index = multipleUnstakeList.findIndex(
+      (key: any) => JSON.stringify(key) === JSON.stringify(keyFound),
+    );
     if (index > -1) {
-      multipleUnstakeList.splice(index,1)
-    }
-    else {
+      multipleUnstakeList.splice(index, 1);
+    } else {
       multipleUnstakeList.push(key);
     }
     setUnstakeNum(multipleUnstakeList.length);
@@ -185,7 +204,7 @@ else {
                 allocatedReward: reward.allocatedReward,
                 numStakers: reward.numStakers,
                 status: reward.status,
-                index: reward.index
+                index: reward.index,
               };
               return (
                 <RewardProgramCard
@@ -200,6 +219,8 @@ else {
                   unstakeList={multipleUnstakeList}
                   sortString={sortString}
                   includedPoolLiquidity={includedPool.liquidity}
+                  stakedPools={stakedPools}
+                  LPTokens={LPTokens}
                 />
               );
             })}
