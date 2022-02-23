@@ -552,7 +552,5 @@ export const InformationModal = () => {
         </ModalFooter>
       </ModalContent>
     </Modal>
-  ) : (
-    <div>Loading Data...</div>
-  );
+  ) : null;
 };

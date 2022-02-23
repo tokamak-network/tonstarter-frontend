@@ -61,6 +61,7 @@ type RewardProgramCardProps = {
   includedPoolLiquidity: string;
   stakedPools: any;
   LPTokens: any;
+  getCheckedBoxes: (checkedBoxes: any) => any;
 };
 
 const {
@@ -83,6 +84,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   includedPoolLiquidity,
   stakedPools,
   LPTokens,
+  getCheckedBoxes,
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -101,7 +103,6 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   const [isSelected, setIsSelected] = useState<boolean>(false);
   const [isUnstakeSelected, setIsUnstakeselected] = useState<boolean>(false);
   const [numStakers, setNumStakers] = useState<number>(0);
-  const dispatch = useAppDispatch();
 
   const key = {
     rewardToken: reward.rewardToken,
@@ -372,21 +373,25 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     <Flex
       {...REWARD_STYLE.containerStyle({colorMode})}
       flexDir={'column'}
-      onClick={() =>
-        dispatch(
-          openModal({
-            type: 'information',
-            data: {
-              currentReward: reward,
-              // refundableAmount,
-              currentStakedPools: stakedPools,
-              currentKey: key,
-              currentUserAddress: account,
-              currentPositions: LPTokens,
-            },
-          }),
-        )
-      }
+      // onClick={(e: React.ChangeEvent<HTMLInputElement>) => {
+      //   console.log(e.target.type);
+      //   console.log('target id:', e.target.id);
+      //   console.log('e.target: ', e.target);
+      //   if (e.target.type !== 'checkbox')
+      //     dispatch(
+      //       openModal({
+      //         type: 'information',
+      //         data: {
+      //           currentReward: reward,
+      //           // refundableAmount,
+      //           currentStakedPools: stakedPools,
+      //           currentKey: key,
+      //           currentUserAddress: account,
+      //           currentPositions: LPTokens,
+      //         },
+      //       }),
+      //     );
+      // }}
       _hover={{
         border: '2px solid #0070ED',
         cursor: 'pointer',
@@ -658,11 +663,16 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
             <Box pb={'0px'}>
               <Checkbox
                 mt={'5px'}
+                zIndex={100}
                 isChecked={isSelected}
+                onClick={(e) => e.stopPropagation()}
                 onChange={(e) => {
+                  e.stopPropagation();
                   setIsSelected(e.target.checked);
                   sendKey(key);
-                }}></Checkbox>
+                  getCheckedBoxes(reward);
+                }}
+              />
             </Box>
           ) : null}
 
@@ -673,11 +683,16 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
             <Box pb={'0px'}>
               <Checkbox
                 mt={'5px'}
+                zIndex={100}
                 isChecked={isUnstakeSelected}
+                onClick={(e) => e.stopPropagation()}
                 onChange={(e) => {
+                  e.stopPropagation();
                   setIsUnstakeselected(e.target.checked);
                   sendUnstakeKey(key);
-                }}></Checkbox>
+                  getCheckedBoxes(reward);
+                }}
+              />
             </Box>
           ) : null}
           <Button

@@ -13,7 +13,7 @@ import {
   Center,
 } from '@chakra-ui/react';
 import {selectTransactionType} from 'store/refetch.reducer';
-import {useAppSelector} from 'hooks/useRedux';
+import {useAppSelector, useAppDispatch} from 'hooks/useRedux';
 import {getPoolName} from '../../utils/token';
 import {CreateReward} from './components/CreateReward';
 import {RewardProgramCardManage} from './components/RewardProgramCardManage';
@@ -22,6 +22,8 @@ import {refundMultiple} from './actions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {DEPLOYED} from 'constants/index';
 import {ethers} from 'ethers';
+import {ConfirmMulticallModal} from './RewardModals';
+import {openModal} from 'store/modal.reducer';
 
 // import { LPToken } from './types';
 
@@ -74,6 +76,7 @@ export const ManageContainer: FC<ManageContainerProps> = ({
   const [refundNum, setRefundNum] = useState<number>(0);
   const {account, library} = useActiveWeb3React();
   const {UniswapStaker_Address} = DEPLOYED;
+  const dispatch = useAppDispatch();
 
   let stakedPools = positionsByPool?.data?.positions?.filter((pool: any) => {
     return (
@@ -209,14 +212,26 @@ export const ManageContainer: FC<ManageContainerProps> = ({
                       color: '#838383',
                     }
               }
-              onClick={() =>
-                refundMultiple({
-                  userAddress: account,
-                  library: library,
-                  refundKeyList: multipleRefundList,
-                  stakedPools: stakedPools,
-                })
-              }>
+              onClick={() => {
+                dispatch(
+                  openModal({
+                    type: 'confirmMulticall',
+                    data: {
+                      userAddress: account,
+                      library: library,
+                      stakedPools,
+                      multipleRefundList: multipleRefundList,
+                    },
+                  }),
+                );
+                // () =>
+                // refundMultiple({
+                //   userAddress: account,
+                //   library: library,
+                //   refundKeyList: multipleRefundList,
+                //   stakedPools: stakedPools,
+                // })
+              }}>
               Multi Refund
             </Button>
             <Flex flexDirection={'row'} h={'25px'} alignItems={'center'}>
@@ -323,6 +338,7 @@ export const ManageContainer: FC<ManageContainerProps> = ({
           </Text>{' '}
         </Flex>
       )}
+      <ConfirmMulticallModal />
     </Flex>
   );
 };

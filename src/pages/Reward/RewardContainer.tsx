@@ -13,7 +13,7 @@ import {
   Center,
 } from '@chakra-ui/react';
 import {selectTransactionType} from 'store/refetch.reducer';
-import {useAppSelector} from 'hooks/useRedux';
+import {useAppSelector, useAppDispatch} from 'hooks/useRedux';
 import {getPoolName} from '../../utils/token';
 import {ClaimReward} from './components/ClaimReward';
 import {RewardProgramCard} from './components/RewardProgramCard';
@@ -26,6 +26,8 @@ import {DEPLOYED} from 'constants/index';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import {Contract} from '@ethersproject/contracts';
 import {ethers} from 'ethers';
+import {ConfirmMulticallModal} from './RewardModals';
+import {openModal} from 'store/modal.reducer';
 
 type Pool = {
   id: string;
@@ -71,6 +73,8 @@ export const RewardContainer: FC<RewardContainerProps> = ({
   const [staked, setstaked] = useState(true);
   const {colorMode} = useColorMode();
   const theme = useTheme();
+  const dispatch = useAppDispatch();
+  const [selectedRewards, setSelectedRewards] = useState<any[]>([]);
 
   let stakedPools = positionsByPool?.data?.positions?.filter((pool: any) => {
     return (
@@ -172,6 +176,25 @@ export const RewardContainer: FC<RewardContainerProps> = ({
     checkStaked();
   }, [position]);
 
+  const getCheckedBoxes = (checkedReward: any) => {
+    let tempRewards: any[] =
+      selectedRewards.length === 0 ? [] : selectedRewards;
+    const alreadyInArray = tempRewards.some(
+      (reward) => reward.index === checkedReward.index,
+    );
+    if (selectedRewards.length === 0) {
+      setSelectedRewards([checkedReward]);
+    } else if (alreadyInArray) {
+      let filteredArr = tempRewards.filter((reward: any) => {
+        return reward.index !== checkedReward.index;
+      });
+      setSelectedRewards(filteredArr);
+    } else {
+      tempRewards.push(checkedReward);
+      setSelectedRewards(tempRewards);
+    }
+  };
+
   return (
     <Flex justifyContent={'space-between'}>
       {rewards.length !== 0 ? (
@@ -221,6 +244,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({
                   includedPoolLiquidity={includedPool.liquidity}
                   stakedPools={stakedPools}
                   LPTokens={LPTokens}
+                  getCheckedBoxes={getCheckedBoxes}
                 />
               );
             })}
@@ -257,15 +281,29 @@ export const RewardContainer: FC<RewardContainerProps> = ({
                       color: '#838383',
                     }
               }
-              onClick={() =>
-                stakeMultiple({
-                  userAddress: account,
-                  tokenid: Number(position?.id),
-                  library: library,
-                  stakeKeyList: multipleStakeList,
-                  unstakeKeyList: multipleUnstakeList,
-                })
-              }>
+              onClick={() => {
+                dispatch(
+                  openModal({
+                    type: 'confirmMulticall',
+                    data: {
+                      stakeKeyList: multipleStakeList,
+                      unstakeKeyList: multipleUnstakeList,
+                      tokenid: Number(position?.id),
+                      userAddress: account,
+                      library: library,
+                      selectedRewards,
+                    },
+                  }),
+                );
+
+                // stakeMultiple({
+                //   userAddress: account,
+                //   tokenid: Number(position?.id),
+                //   library: library,
+                //   stakeKeyList: multipleStakeList,
+                //   unstakeKeyList: multipleUnstakeList,
+                // });
+              }}>
               Multicall
             </Button>
             {/* <Button
@@ -406,8 +444,8 @@ export const RewardContainer: FC<RewardContainerProps> = ({
           </Text>{' '}
         </Flex>
       )}
-
       <Flex>{/* <ClaimReward /> */}</Flex>
+      <ConfirmMulticallModal />;
     </Flex>
   );
 };

@@ -20,7 +20,7 @@ type StarterModal = 'Starter_Approve';
 type AdminModal = 'Admin_Distribute' | 'Admin_EditPool';
 
 type GeneralModal = 'calendar';
-type RewardModal = 'search' | 'information';
+type RewardModal = 'search' | 'information' | 'confirmMulticall';
 export type ModalType =
   | StakingModal
   | DaoModal

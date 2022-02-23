@@ -152,34 +152,41 @@ export const stakeMultiple = async (args: any) => {
       );
     }
   } else {
-    const arrayDataUnstake = unstakeKeyList.map((key: any) => {
-      const keyGenereated = {
-        pool: key.pool,
-        startTime: key.startTime,
-        endTime: key.endTime,
-        rewardToken: key.rewardToken,
-        refundee: key.refundee,
-      };
-      const dataUnstake = uniswapStakerContract.interface.encodeFunctionData(
-        'unstakeToken',
-        [keyGenereated, tokenid],
-      );
-      return dataUnstake;
-    });
-    const arrayDataStake = stakeKeyList.map((key: any) => {
-      const keyGenereated = {
-        pool: key.pool,
-        startTime: key.startTime,
-        endTime: key.endTime,
-        rewardToken: key.rewardToken,
-        refundee: key.refundee,
-      };
-      const dataStake = uniswapStakerContract.interface.encodeFunctionData(
-        'stakeToken',
-        [keyGenereated, tokenid],
-      );
-      return dataStake;
-    });
+    const arrayDataUnstake = await Promise.all(
+      unstakeKeyList.map((key: any) => {
+        const keyGenereated = {
+          pool: key.pool,
+          startTime: key.startTime,
+          endTime: key.endTime,
+          rewardToken: key.rewardToken,
+          refundee: key.refundee,
+        };
+        const dataUnstake = uniswapStakerContract.interface.encodeFunctionData(
+          'unstakeToken',
+          [keyGenereated, tokenid],
+        );
+        return dataUnstake;
+      }),
+    );
+    const arrayDataStake = await Promise.all(
+      stakeKeyList.map((key: any) => {
+        const keyGenereated = {
+          pool: key.pool,
+          startTime: key.startTime,
+          endTime: key.endTime,
+          rewardToken: key.rewardToken,
+          refundee: key.refundee,
+        };
+        const dataStake = uniswapStakerContract.interface.encodeFunctionData(
+          'stakeToken',
+          [keyGenereated, tokenid],
+        );
+        return dataStake;
+      }),
+    );
+    console.log('arrayDataUnstake: ', arrayDataUnstake);
+    console.log('arrayDataStake: ', arrayDataStake);
+
     try {
       const receipt = await uniswapStakerContract
         .connect(signer)
