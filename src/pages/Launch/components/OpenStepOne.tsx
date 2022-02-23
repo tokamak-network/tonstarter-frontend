@@ -1,10 +1,10 @@
 import {Flex, useTheme, Box, Grid, GridItem} from '@chakra-ui/react';
 import {useEffect} from 'react';
-import type {Projects} from '@OpenCampagin/types';
-import InputComponent from '@OpenCampagin/components/common/InputComponent';
-import StepTitle from '@OpenCampagin/components/common/StepTitle';
-import Line from '@OpenCampagin/components/common/Line';
-import MarkdownEditor from '@OpenCampagin/components/MarkdownEditor';
+import type {Projects} from '@Launch/types';
+import InputComponent from '@Launch/components/common/InputComponent';
+import StepTitle from '@Launch/components/common/StepTitle';
+import Line from '@Launch/components/common/Line';
+import MarkdownEditor from '@Launch/components/MarkdownEditor';
 
 const filedNameList = [
   'projectName',

@@ -1,5 +1,7 @@
+type VaultName = 'Public' | string;
+
 interface Vault {
-  vaultName: string;
+  vaultName: VaultName;
   vaultTokenAllocation: Number;
   firstClaimTime: Date;
   claimInterval: Date;
@@ -8,9 +10,19 @@ interface Vault {
   isMandatory: boolean;
 }
 
-type VaultCommon = Vault & {};
+interface VaultCommon {
+  claimRound: number;
+  claimTime: number;
+  claimTokenAllocation: number;
+}
 
-type VaultDao = Vault;
+type VaultDao = Vault & {params: VaultCommon[]};
+
+type VaultPublic = Vault & {params: VaultCommon[]};
+
+type VaultC = Vault & {params: VaultCommon[]};
+
+type VaultAny = VaultDao | VaultPublic | VaultC;
 
 interface ProjectStep1 {
   projectName: string;
@@ -23,7 +35,7 @@ interface ProjectStep2 {
   ownerAddress: String;
 }
 interface ProjectStep3 {
-  vaults: [Vault: {}];
+  vaults: [VaultPublic | VaultC | VaultDao];
 }
 
 interface ProjectStep5 {
@@ -50,4 +62,10 @@ export type {
   ChainNumber,
   StepNumber,
   Vault,
+  VaultDao,
+  VaultPublic,
+  VaultC,
+  VaultCommon,
+  VaultName,
+  VaultAny,
 };

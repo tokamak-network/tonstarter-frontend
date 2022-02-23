@@ -1,5 +1,5 @@
 import {Box, Flex, Text} from '@chakra-ui/react';
-import {Vault} from '@OpenCampagin/types';
+import {Vault} from '@Launch/types';
 import {useFormikContext} from 'formik';
 import {useState} from 'react';
 

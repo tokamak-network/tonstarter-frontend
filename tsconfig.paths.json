@@ -6,7 +6,7 @@
       "@Starter/*": ["./pages/Starter/*"],
       "@Dao/*": ["./pages/Dao/*"],
       "@Admin/*": ["./pages/Admin/*"],
-      "@OpenCampagin/*": ["./pages/OpenCampagin/*"]
+      "@Launch/*": ["./pages/Launch/*"]
     }
   }
 }

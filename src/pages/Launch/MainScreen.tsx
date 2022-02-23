@@ -1,19 +1,19 @@
-import {Box, Button, Flex} from '@chakra-ui/react';
+import {Box, Button, Flex, useTheme} from '@chakra-ui/react';
 import {useCallback, useState} from 'react';
-import OpenStepOne from '@OpenCampagin/components/OpenStepOne';
+import OpenStepOne from '@Launch/components/OpenStepOne';
 import {Formik, Form} from 'formik';
 import useValues from './hooks/useValues';
-import type {StepNumber} from '@OpenCampagin/types';
-import ProjectSchema from '@OpenCampagin/utils/projectSchema';
+import type {StepNumber} from '@Launch/types';
+import ProjectSchema from '@Launch/utils/projectSchema';
 import {errors} from 'ethers';
 import {PageHeader} from 'components/PageHeader';
-import Steps from '@OpenCampagin/components/Steps';
+import Steps from '@Launch/components/Steps';
 import OpenStepTwo from './components/OpenStepTwo';
 
 const MainScreen = () => {
   const [step, setStep] = useState<StepNumber>(1);
-
   const {initialValues, setInitialValues} = useValues();
+  const theme = useTheme();
 
   const handleStep = useCallback(
     (isNext: boolean) => {
@@ -77,7 +77,10 @@ const MainScreen = () => {
         {({values, handleBlur, handleSubmit, isSubmitting, errors}) => {
           return (
             <Form onSubmit={handleSubmit}>
-              <Flex flexDir={'column'} alignItems="center">
+              <Flex
+                flexDir={'column'}
+                alignItems="center"
+                fontFamily={theme.fonts.roboto}>
                 <StepComponent step={step} />
                 <Box mt={10} fontSize={14}>
                   {step !== 1 && (

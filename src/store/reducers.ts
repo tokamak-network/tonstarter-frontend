@@ -11,8 +11,9 @@ import {txReducer} from './tx.reducer';
 import {refetchReducer} from './refetch.reducer';
 import {vaultReducer} from 'pages/Staking/vault.reducer';
 import {starterReducer} from 'pages/Starter/starter.reducer';
-import mintV3 from './mint/v3/reducer'
-import { api as dataApi } from './data/slice'
+import {launchReducer} from '@Launch/launch.reducer';
+import mintV3 from './mint/v3/reducer';
+import {api as dataApi} from './data/slice';
 
 const rootReducer = combineReducers({
   stakes: stakeReducer.reducer,
@@ -29,6 +30,7 @@ const rootReducer = combineReducers({
   dao: daoReducer.reducer,
   mintV3: mintV3,
   [dataApi.reducerPath]: dataApi.reducer,
+  launch: launchReducer.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

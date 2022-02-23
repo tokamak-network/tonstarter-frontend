@@ -4,7 +4,7 @@ import axios from 'axios';
 import {fetchCampaginURL} from 'constants/index';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect} from 'react';
-import MainScreen from '@OpenCampagin/MainScreen';
+import MainScreen from '@Launch/MainScreen';
 
 const OpenCampagin = () => {
   const {account} = useActiveWeb3React();

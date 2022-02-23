@@ -31,7 +31,7 @@ import {
   ListingRewards,
 } from './Admin';
 import {fetchTosStakes} from '@Dao/dao.reducer';
-import OpenCampagin from './OpenCampagin';
+import OpenCampagin from '@Launch/index';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 

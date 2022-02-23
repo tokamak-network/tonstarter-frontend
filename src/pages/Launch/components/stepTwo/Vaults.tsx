@@ -8,14 +8,17 @@ import {
   Input,
   Text,
 } from '@chakra-ui/react';
-import Line from '@OpenCampagin/components/common/Line';
-import StepTitle from '@OpenCampagin/components/common/StepTitle';
+import Line from '@Launch/components/common/Line';
+import StepTitle from '@Launch/components/common/StepTitle';
 import arrowLeft from 'assets/svgs/arrow_left_normal_icon.svg';
 import arrowRight from 'assets/svgs/arrow_right_normal_icon.svg';
 import VaultCard from '../common/VaultCard';
 import {useFormikContext} from 'formik';
 import {useState} from 'react';
-import {Vault} from '@OpenCampagin/types';
+import {Vault} from '@Launch/types';
+import {useAppDispatch} from 'hooks/useRedux';
+import {changeVault, selectVault} from '@Launch/launch.reducer';
+import useValues from '@Launch/hooks/useValues';
 
 const Vaults = () => {
   const theme = useTheme();
@@ -26,10 +29,8 @@ const Vaults = () => {
   const [tokenAllocation, setTokenAllocation] = useState<string>('');
   //@ts-ignore
   const vaultsList = values.vaults;
-
-  //   const [vaultsList, setVaultsList] = useState([]);
-
-  console.log(vaultsList);
+  const dispatch = useAppDispatch();
+  const {initialVaultValue} = useValues();
 
   return (
     <Flex
@@ -78,13 +79,9 @@ const Vaults = () => {
             setFieldValue('vaults', [
               ...vaultsList,
               {
+                ...initialVaultValue,
                 vaultName: valutName,
                 vaultTokenAllocation: tokenAllocation,
-                firstClaimTime: new Date(),
-                claimInterval: new Date(),
-                claimRound: 0,
-                adminAddress: '',
-                isMandatory: false,
               },
             ]);
           }}>
@@ -109,7 +106,9 @@ const Vaults = () => {
               vaultTokenAllocation?.toString() || '0';
             const portion = (vaultTokenAllocation || 0 / 1200000).toString();
             return (
-              <Box mr={(index + 1) % 3 !== 0 ? '20px' : 0}>
+              <Box
+                mr={(index + 1) % 3 !== 0 ? '20px' : 0}
+                onClick={() => dispatch(changeVault({data: vaultName}))}>
                 <VaultCard
                   key={`${vaultName}_${vaultTokenAllocation}`}
                   status={vaultName === 'Public' ? 'public' : 'notPublic'}
