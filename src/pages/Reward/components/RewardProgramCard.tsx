@@ -377,12 +377,12 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
           openModal({
             type: 'information',
             data: {
-              reward,
+              currentReward: reward,
               // refundableAmount,
-              stakedPools,
-              key,
-              userAddress: account,
-              positions: LPTokens,
+              currentStakedPools: stakedPools,
+              currentKey: key,
+              currentUserAddress: account,
+              currentPositions: LPTokens,
             },
           }),
         )

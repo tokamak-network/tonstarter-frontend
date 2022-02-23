@@ -51,6 +51,7 @@ import {convertNumber} from 'utils/number';
 import {PieChart} from './../components/PieChart';
 import {useWeb3React} from '@web3-react/core';
 import {CloseButton} from 'components/Modal/CloseButton';
+import {useGraphQueries} from 'hooks/useGraphQueries';
 
 const {
   WTON_ADDRESS,
@@ -82,35 +83,49 @@ export const InformationModal = () => {
   const [key, setKey] = useState<any>();
   const [stakedPools, setStakedPools] = useState<any>();
   const [positions, setPositions] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  // const [isHandling, setIsHandling] = useState<boolean>(true);
 
   const handleCloseModal = useCallback(() => {
     dispatch(closeModal());
   }, [dispatch]);
 
   useEffect(() => {
-    const {
-      reward: currentReward,
-      //   refundableAmount: currentRefundableAmount,
-      stakedPools: currentStakedPools,
-      userAddress: currentUserAddress,
-      key: currentKey,
-      positions: currentPositions,
-    } = data?.data;
-    console.log('DATA: ', data.data);
+    async function fetchData() {
+      if (data?.data) {
+        const {
+          currentReward,
+          //   refundableAmount: currentRefundableAmount,
+          currentStakedPools,
+          currentUserAddress,
+          currentKey,
+          currentPositions,
+        } = data.data;
+        console.log('DATA: ', data.data);
 
-    setReward(currentReward);
-    // setRefundableAmount(currentRefundableAmount);
-    setUserAddress(currentUserAddress);
-    setKey(currentKey);
-    setStakedPools(currentStakedPools);
-    setPositions(currentPositions);
+        // setRefundableAmount(currentRefundableAmount);
+        setReward(currentReward);
+        setUserAddress(currentUserAddress);
+        setKey(currentKey);
+        setStakedPools(currentStakedPools);
+        setPositions(currentPositions);
 
-    if (key && userAddress && stakedPools && reward) {
-      //   getStakedPools();
-      //   console.log(key, userAddress, stakedPools, reward);
-      getIncentives(key, userAddress, stakedPools, positions);
+        // getPoolInfo(key.poolAddress);
+        // useQueryFunc(key.poolAddress);
+
+        if (key && userAddress && stakedPools && reward) {
+          //   getStakedPools();
+          //   console.log(key, userAddress, stakedPools, reward);
+          getIncentives(key, userAddress, stakedPools, positions);
+        }
+        // }
+        if (reward && userAddress && key && positions) {
+          setLoading(false);
+        }
+      }
     }
-    // }
+    fetchData();
   }, [data]);
 
   const getIncentives = async (
@@ -141,7 +156,7 @@ export const InformationModal = () => {
       .connect(signer)
       .incentives(incentiveId);
 
-    console.log('incentiveInfo: ', incentiveInfo);
+    // console.log('incentiveInfo: ', incentiveInfo);
 
     let tempStakerIds: any[] = [];
     await Promise.all(
@@ -149,6 +164,8 @@ export const InformationModal = () => {
         const incentiveInfo = await uniswapStakerContract
           .connect(signer)
           .stakes(Number(pool.id), incentiveId);
+
+        // console.log('incentiveInfo: ', incentiveInfo);
 
         if (incentiveInfo.liquidity._hex !== '0x00') {
           tempStakerIds.push({
@@ -210,32 +227,6 @@ export const InformationModal = () => {
     // console.log('diff: ', diff);
 
     return 'hello';
-
-    // return `${hours} HRS & ${minutes} `
-
-    // const now = moment().unix();
-    // const start = moment.unix(Number(startTime)).startOf('day').unix();
-    // const nowDay = moment.unix(now).startOf('day').unix();
-    // const end = moment.unix(Number(endTime)).endOf('day').unix();
-    // if (now < start) {
-    //   const remainingDays = moment
-    //     .unix(nowDay)
-    //     .diff(moment.unix(Number(startTime)), 'days');
-    //   return remainingDays;
-    // } else if (now > end) {
-    //   const totalDays = moment
-    //     .unix(Number(endTime))
-    //     .diff(moment.unix(Number(startTime)), 'days');
-    //   return totalDays;
-    //   // setProgress(100);
-    // } else {
-    //   // const totalDays = moment
-    //   //   .unix(Number(reward.endTime))
-    //   //   .diff(moment.unix(Number(reward.startTime)), 'days');
-    //   return moment.unix(now).diff(moment.unix(start), 'days');
-    //   // const progressCalc = (remainingDays / totalDays) * 100;
-    //   // setProgress(progressCalc);
-    // }
   };
 
   const formatAmount = (amount: any, token: any) => {
@@ -260,7 +251,7 @@ export const InformationModal = () => {
 
   // url for adding liquidity to tokens: https://app.uniswap.org/#/increase/0x73a54e5C054aA64C1AE7373C2B5474d8AFEa08bd/0xb109f4c20BDb494A63E32aA035257fBA0a4610A4/3000/13035?chain=rinkeby
 
-  return reward ? (
+  return !loading ? (
     <Modal
       isOpen={data.modal === 'information' ? true : false}
       onClose={handleCloseModal}
@@ -561,5 +552,7 @@ export const InformationModal = () => {
         </ModalFooter>
       </ModalContent>
     </Modal>
-  ) : null;
+  ) : (
+    <div>Loading Data...</div>
+  );
 };
