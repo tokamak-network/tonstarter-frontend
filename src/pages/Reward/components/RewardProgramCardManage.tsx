@@ -50,6 +50,7 @@ type RewardProgramCardManageProps = {
   sortString: string;
   sendKey: (key: any) => void;
   stakedPools: any[];
+  getCheckedBoxes: (checkedBoxes: any) => any;
 };
 
 const {WTON_ADDRESS, TON_ADDRESS, UniswapStaker_Address} = DEPLOYED;
@@ -60,6 +61,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
   sortString,
   sendKey,
   stakedPools,
+  getCheckedBoxes,
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -234,8 +236,8 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
         </Flex>
       </Flex>
       <Flex mt={'15px'} alignItems={'center'}>
-        <Text {...REWARD_STYLE.mainText({colorMode})} mr={'10px'}>
-          {reward.poolName}
+        <Text {...REWARD_STYLE.mainText({colorMode, fontSize: 19})} mr={'10px'}>
+          #{reward.index} {reward.poolName}
         </Text>
         <Box>
           <Text {...REWARD_STYLE.subText({colorMode, fontSize: 14})}>
@@ -252,7 +254,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
               {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 11})}
               pb={'2px'}
               pl={'2px'}>
-              ({moment.unix(Number(reward.startTime)).format('HH.mm.ss')})
+              ({moment.unix(Number(reward.startTime)).format('HH.mm')})
             </Text>
             {/* </Box> */}
             <Text mb={'5px'} lineHeight={1} px={'5px'}>
@@ -268,7 +270,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
               {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 11})}
               pb={'2px'}
               pl={'2px'}>
-              ({moment.unix(Number(reward.endTime)).format('HH.mm.ss')})
+              ({moment.unix(Number(reward.endTime)).format('HH.mm')})
             </Text>
           </Flex>
         </Box>
@@ -384,6 +386,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
               onChange={(e) => {
                 setIsRefundSelected(e.target.checked);
                 sendKey(key);
+                getCheckedBoxes(reward);
               }}
             />
           )}

@@ -59,7 +59,7 @@ type ManageContainerProps = {
   positionsByPool: any;
 };
 
-const multipleRefundList: any = [];
+let multipleRefundList: any = [];
 
 export const ManageContainer: FC<ManageContainerProps> = ({
   rewards,
@@ -74,6 +74,7 @@ export const ManageContainer: FC<ManageContainerProps> = ({
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(6);
   const [refundNum, setRefundNum] = useState<number>(0);
+  const [selectedRewards, setSelectedRewards] = useState<any[]>([]);
   const {account, library} = useActiveWeb3React();
   const {UniswapStaker_Address} = DEPLOYED;
   const dispatch = useAppDispatch();
@@ -100,7 +101,7 @@ export const ManageContainer: FC<ManageContainerProps> = ({
   };
 
   useEffect(() => {
-    multipleRefundList.pop();
+    multipleRefundList = [];
     setRefundNum(0);
   }, [transactionType, blockNumber, multipleRefundList]);
 
@@ -133,6 +134,26 @@ export const ManageContainer: FC<ManageContainerProps> = ({
     setRefundNum(multipleRefundList.length);
     return multipleRefundList;
   };
+
+  const getCheckedBoxes = (checkedReward: any) => {
+    let tempRewards: any[] =
+      selectedRewards.length === 0 ? [] : selectedRewards;
+    const alreadyInArray = tempRewards.some(
+      (reward) => reward.index === checkedReward.index,
+    );
+    if (selectedRewards.length === 0) {
+      setSelectedRewards([checkedReward]);
+    } else if (alreadyInArray) {
+      let filteredArr = tempRewards.filter((reward: any) => {
+        return reward.index !== checkedReward.index;
+      });
+      setSelectedRewards(filteredArr);
+    } else {
+      tempRewards.push(checkedReward);
+      setSelectedRewards(tempRewards);
+    }
+  };
+
   return (
     <Flex justifyContent={'space-between'}>
       {rewards.length !== 0 ? (
@@ -179,6 +200,7 @@ export const ManageContainer: FC<ManageContainerProps> = ({
                   sortString={sortString}
                   sendKey={refundMultipleKeys}
                   stakedPools={stakedPools}
+                  getCheckedBoxes={getCheckedBoxes}
                 />
               );
             })}
@@ -221,6 +243,7 @@ export const ManageContainer: FC<ManageContainerProps> = ({
                       library: library,
                       stakedPools,
                       multipleRefundList: multipleRefundList,
+                      selectedRewards,
                     },
                   }),
                 );

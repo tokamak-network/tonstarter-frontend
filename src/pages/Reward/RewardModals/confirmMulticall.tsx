@@ -110,7 +110,7 @@ export const ConfirmMulticallModal = () => {
 
   const confirmAction = () => {
     handleCloseModal();
-    if (currentMultipleRefundList.length === 0) {
+    if (!currentMultipleRefundList) {
       stakeMultiple({
         userAddress: currentAddress,
         tokenid: Number(currentToken),
@@ -128,7 +128,9 @@ export const ConfirmMulticallModal = () => {
     }
   };
 
-  return stakeList?.length > 0 || unstakeList?.length > 0 ? (
+  return stakeList?.length > 0 ||
+    unstakeList?.length > 0 ||
+    currentMultipleRefundList?.length > 0 ? (
     <Modal
       isOpen={data.modal === 'confirmMulticall' ? true : false}
       onClose={handleCloseModal}
@@ -139,7 +141,7 @@ export const ConfirmMulticallModal = () => {
         bg={colorMode === 'light' ? 'white.100' : 'black.200'}>
         <CloseButton closeFunc={handleCloseModal}></CloseButton>
         <ModalBody>
-          {stakeList.length > 0 && unstakeList.length === 0 ? (
+          {stakeList?.length > 0 && unstakeList?.length === 0 ? (
             <Box>
               <Box
                 display={'flex'}
@@ -152,7 +154,7 @@ export const ConfirmMulticallModal = () => {
                 The following reward programs will be affected:
               </Box>
             </Box>
-          ) : unstakeList.length > 0 && stakeList.length === 0 ? (
+          ) : unstakeList?.length > 0 && stakeList?.length === 0 ? (
             <Box>
               <Box
                 display={'flex'}
@@ -165,7 +167,7 @@ export const ConfirmMulticallModal = () => {
                 The following reward programs will be affected:
               </Box>
             </Box>
-          ) : unstakeList.length > 0 && stakeList.length > 0 ? (
+          ) : unstakeList?.length > 0 && stakeList?.length > 0 ? (
             <Box>
               <Box
                 display={'flex'}
@@ -174,6 +176,19 @@ export const ConfirmMulticallModal = () => {
                 Are you sure you want to stake {stakeList.length} token(s) and
                 unstake {unstakeList.length} token(s) using the LP token with ID{' '}
                 {currentToken}?
+              </Box>
+              <Box mt={'10px'}>
+                The following reward programs will be affected:
+              </Box>
+            </Box>
+          ) : currentMultipleRefundList?.length > 0 ? (
+            <Box>
+              <Box
+                display={'flex'}
+                justifyContent={'center'}
+                alignItems={'center'}>
+                Are you sure you want to refund{' '}
+                {currentMultipleRefundList.length} token(s)?
               </Box>
               <Box mt={'10px'}>
                 The following reward programs will be affected:
@@ -196,13 +211,13 @@ export const ConfirmMulticallModal = () => {
             colorScheme="gray"
             mr={3}
             onClick={handleCloseModal}
-            color={'white'}>
+            color={colorMode === 'light' ? 'black.200' : 'white'}>
             Cancel
           </Button>
           <Button
             colorScheme="blue"
             mr={3}
-            onClick={() => confirmAction}
+            onClick={confirmAction}
             color={'white'}>
             Confirm
           </Button>

@@ -500,7 +500,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
       <Flex mt={'15px'} alignItems={'center'}>
         <Text
           cursor={'pointer'}
-          {...REWARD_STYLE.mainText({colorMode})}
+          {...REWARD_STYLE.mainText({colorMode, fontSize: 19})}
           mr={'10px'}
           onClick={(e) => {
             e.preventDefault();
@@ -521,12 +521,12 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
               lineHeight={1}>
               {moment.unix(Number(reward.startTime)).format('YYYY.MM.DD')}
             </Text>
-            {/* <Text
+            <Text
               {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 11})}
               pb={'2px'}
               pl={'2px'}>
-              ({moment.unix(Number(reward.startTime)).format('HH.mm.ss')})
-            </Text> */}
+              ({moment.unix(Number(reward.startTime)).format('HH.mm')})
+            </Text>
             {/* </Box> */}
             <Text mb={'5px'} lineHeight={1} px={'5px'}>
               ~{' '}
@@ -537,12 +537,12 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
               lineHeight={1}>
               {moment.unix(Number(reward.endTime)).format('YYYY.MM.DD')}
             </Text>
-            {/* <Text
+            <Text
               {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 11})}
               pb={'2px'}
               pl={'2px'}>
-              ({moment.unix(Number(reward.endTime)).format('HH.mm.ss')})
-            </Text> */}
+              ({moment.unix(Number(reward.endTime)).format('HH.mm')})
+            </Text>
             {/* </Box> */}
           </Flex>
         </Box>
