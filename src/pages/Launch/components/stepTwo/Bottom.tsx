@@ -1,5 +1,6 @@
 import {Box, Flex, Text, useColorMode, useTheme} from '@chakra-ui/react';
 import StepTitle from '@Launch/components/common/StepTitle';
+import { VaultAny } from '@Launch/types';
 import {useFormikContext} from 'formik';
 import {useState} from 'react';
 
@@ -15,6 +16,8 @@ const Bottom = () => {
   //@ts-ignore
   const vaultsList = values.vaults;
   const [tableData, setTableData] = useState<[]>([]);
+
+  console.log(vaultsList)
 
   return (
     <Flex flexDir={'column'}>
@@ -38,8 +41,8 @@ const Bottom = () => {
             <Text w={'140px'} borderX={middleStyle.border}>
               Date time
             </Text>
-            {tableData.map((data: any) => (
-              <Text w={'120px'}>{data.valutName}</Text>
+            {vaultsList.map((vault: VaultAny) => (
+              <Text w={'120px'}>{vault.vaultName}</Text>
             ))}
           </Flex>
           {/* {tableData.map((data: BottomTable, index: number) => {

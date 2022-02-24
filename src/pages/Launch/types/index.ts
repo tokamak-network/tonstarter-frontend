@@ -35,7 +35,7 @@ interface ProjectStep2 {
   ownerAddress: String;
 }
 interface ProjectStep3 {
-  vaults: [VaultPublic | VaultC | VaultDao];
+  vaults: VaultAny[];
 }
 
 interface ProjectStep5 {

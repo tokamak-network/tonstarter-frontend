@@ -18,7 +18,6 @@ const Middle = () => {
   const theme = useTheme();
   const {OpenCampaginDesign} = theme;
   const {data} = useAppSelector(selectLaunch);
-
   const {values, setFieldValue} = useFormikContext();
   //@ts-ignore
   const vaultsList = values.vaults;
@@ -26,7 +25,7 @@ const Middle = () => {
 
   const {selectedVaultDetail} = useVaultSelector();
 
-  console.log(selectedVaultDetail);
+  console.log(vaultsList)
 
   return (
     <Flex flexDir={'column'}>
@@ -53,7 +52,7 @@ const Middle = () => {
             </Text>
             <Text w={'144px'}>Accumulated</Text>
           </Flex>
-          {selectedVaultDetail &&
+          {/* {selectedVaultDetail &&
             selectedVaultDetail.params.map((data: any, index: number) => {
               const {claimTime, claimTokenAllocation} = data;
               return (
@@ -65,7 +64,7 @@ const Middle = () => {
                   <Box d="flex" w={'197px'} justifyContent="center">
                     <Text mr={'2px'}>{`0${index + 1}`}</Text>
                     <Text fontSize={12} color={'#808992'}>
-                      {moment(claimTime).format('MM.DD.YYYY hh:mm:ss')}
+                      {moment.unix(claimTime).format('MM.DD.YYYY hh:mm:ss')}
                     </Text>
                   </Box>
                   <Text w={'197px'} borderX={middleStyle.border}>
@@ -74,7 +73,7 @@ const Middle = () => {
                   <Text w={'144px'}>{'1%'}</Text>
                 </Flex>
               );
-            })}
+            })} */}
         </Box>
       </Flex>
     </Flex>
