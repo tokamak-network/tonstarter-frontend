@@ -445,7 +445,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({
         </Flex>
       )}
       <Flex>{/* <ClaimReward /> */}</Flex>
-      <ConfirmMulticallModal />;
+      <ConfirmMulticallModal />
     </Flex>
   );
 };
