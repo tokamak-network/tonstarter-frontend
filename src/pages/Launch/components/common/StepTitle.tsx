@@ -1,4 +1,7 @@
 import {Button, Flex, useColorMode} from '@chakra-ui/react';
+import useValues from '@Launch/hooks/useValues';
+import saveProject from '@Launch/utils/saveProject';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 import {Box} from 'rebass';
 
 type StepTitleProp = {
@@ -11,6 +14,10 @@ type StepTitleProp = {
 const StepTitle: React.FC<StepTitleProp> = (prop) => {
   const {title, fontSize, isSaveButton, lineHeight} = prop;
   const {colorMode} = useColorMode();
+  const {account} = useActiveWeb3React();
+
+  const {initialValues} = useValues();
+
   return (
     <Flex
       justifyContent={'space-between'}
@@ -30,7 +37,7 @@ const StepTitle: React.FC<StepTitleProp> = (prop) => {
           _hover={{}}
           bg={colorMode ? 'blue.500' : 'blue.500'}
           // disabled={isDisable || isSubmitting}
-          onClick={() => console.log('save')}>
+          onClick={() => account && saveProject(initialValues, account)}>
           Save
         </Button>
       )}
