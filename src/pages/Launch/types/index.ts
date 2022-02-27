@@ -10,17 +10,19 @@ interface Vault {
   isMandatory: boolean;
 }
 
-interface VaultCommon {
+interface VaultSchedule {
   claimRound: number;
   claimTime: number;
   claimTokenAllocation: number;
 }
 
-type VaultDao = Vault & {params: VaultCommon[]};
+type VaultCommon = Vault & {params: VaultSchedule[]}
 
-type VaultPublic = Vault & {params: VaultCommon[]};
+type VaultDao = VaultCommon & {};
 
-type VaultC = Vault & {params: VaultCommon[]};
+type VaultPublic = VaultCommon& {};
+
+type VaultC = VaultCommon & {};
 
 type VaultAny = VaultDao | VaultPublic | VaultC;
 
