@@ -4,31 +4,6 @@ import moment from 'moment';
 
 const defaultParams = [
   {claimRound: 1, claimTime: moment().unix(), claimTokenAllocation: 0},
-  {
-    claimRound: 2,
-    claimTime: moment().add(30, 'days').unix(),
-    claimTokenAllocation: 0,
-  },
-  {
-    claimRound: 3,
-    claimTime: moment().add(60, 'days').unix(),
-    claimTokenAllocation: 0,
-  },
-  {
-    claimRound: 4,
-    claimTime: moment().add(90, 'days').unix(),
-    claimTokenAllocation: 0,
-  },
-  {
-    claimRound: 5,
-    claimTime: moment().add(120, 'days').unix(),
-    claimTokenAllocation: 0,
-  },
-  {
-    claimRound: 6,
-    claimTime: moment().add(150, 'days').unix(),
-    claimTokenAllocation: 0,
-  },
 ];
 
 const initialObj: Projects['CreateProject'] = {

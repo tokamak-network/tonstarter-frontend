@@ -27,23 +27,21 @@ type VaultAny = VaultDao | VaultPublic | VaultC;
 interface ProjectStep1 {
   projectName: string;
   description: string;
+  tokenName: string;
+  tokenSymbol: string;
+  totalSupply: string;
+  ownerAddress: string;
 }
 interface ProjectStep2 {
-  tokenName: String;
-  tokenSymbol: String;
-  totalSupply: String;
-  ownerAddress: String;
-}
-interface ProjectStep3 {
   vaults: VaultAny[];
 }
 
-interface ProjectStep5 {
+interface ProjectStep3 {
   isTokenDeployed: boolean;
   isAllDeployed: boolean;
 }
 
-type Project = ProjectStep1 & ProjectStep2 & ProjectStep3 & ProjectStep5;
+type Project = ProjectStep1 & ProjectStep2 & ProjectStep3;
 
 type Projects = {
   CreateProject: Project;
@@ -51,14 +49,13 @@ type Projects = {
 
 type ChainNumber = 1 | 4;
 
-type StepNumber = 1 | 2 | 3 | 4;
+type StepNumber = 1 | 2 | 3;
 
 export type {
   Projects,
   ProjectStep1,
   ProjectStep2,
   ProjectStep3,
-  ProjectStep5,
   ChainNumber,
   StepNumber,
   Vault,

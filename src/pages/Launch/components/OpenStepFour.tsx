@@ -3,7 +3,6 @@ import {DEPLOYED} from 'constants/index';
 import {useContract} from 'hooks/useContract';
 import {useEffect, useMemo, useState} from 'react';
 import * as ERC20_FACTORY_A_ABI from 'services/abis/ERC20AFactory.json';
-import type {ProjectStep2} from '@Launch/types';
 import {convertToWei} from 'utils/number';
 
 const OpenStepFour = () => {

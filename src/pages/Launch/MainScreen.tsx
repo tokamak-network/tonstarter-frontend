@@ -20,7 +20,7 @@ const MainScreen = () => {
       const prevStepNum =
         step - 1 > 0 ? ((step - 1) as StepNumber) : (step as StepNumber);
       const nextStepNum =
-        step + 1 < 5 ? ((step + 1) as StepNumber) : (step as StepNumber);
+        step + 1 < 4 ? ((step + 1) as StepNumber) : (step as StepNumber);
       setStep(isNext ? nextStepNum : prevStepNum);
     },
     [step],
@@ -34,10 +34,6 @@ const MainScreen = () => {
       case 2:
         return <OpenStepTwo></OpenStepTwo>;
       // case 3:
-      //   break;
-      // case 4:
-      //   break;
-      // case 5:
       //   break;
       default:
         return <div>no component for this step</div>;
@@ -55,7 +51,7 @@ const MainScreen = () => {
         />
         <Flex mt={'50px'} mb={'20px'}>
           <Steps
-            stepName={['Project&Token', 'Token Economy', 'Overview', 'Deploy']}
+            stepName={['Project&Token', 'Token Economy', 'Deploy']}
             currentStep={step}></Steps>
         </Flex>
       </Flex>
@@ -95,7 +91,7 @@ const MainScreen = () => {
                       Prev
                     </Button>
                   )}
-                  {step !== 4 && (
+                  {step !== 3 && (
                     <Button
                       type="submit"
                       w={'180px'}
