@@ -24,7 +24,7 @@ export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 export const API_SERVER =
   REACT_APP_MODE === 'DEV' ? REACT_APP_DEV_API : REACT_APP_MAINNET_API;
-export const API_SERVER_OPENCAMPAGIN_SERVER =
+export const API_SERVER_LAUNCH =
   REACT_APP_MODE === 'DEV'
     ? REACT_APP_RINKEBY_OPENCAMPAGIN_API
     : REACT_APP_MAINNET_OPENCAMPAGIN_API;
@@ -38,7 +38,7 @@ export const fetchValutURL = `${API_SERVER}/vaults?chainId=${DEFAULT_NETWORK}`;
 export const fetchRewardsURL = `${API_SERVER}/reward?chainId=${DEFAULT_NETWORK}`;
 export const fetchStarterURL = `${API_SERVER}/starter?chainId=${DEFAULT_NETWORK}`;
 export const fetchPoolsURL = `${API_SERVER}/pool?chainId=${DEFAULT_NETWORK}`;
-export const fetchCampaginURL = `${API_SERVER_OPENCAMPAGIN_SERVER}/projects?chainId=${DEFAULT_NETWORK}`;
+export const fetchCampaginURL = `${API_SERVER_LAUNCH}/projects?chainId=${DEFAULT_NETWORK}`;
 
 export const permitTOSAddress =
   REACT_APP_MODE === 'DEV' ? '0x865264b30eb29A2978b9503B8AfE2A2DDa33eD7E' : '';

@@ -5,9 +5,13 @@ import {fetchCampaginURL} from 'constants/index';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect} from 'react';
 import MainScreen from '@Launch/MainScreen';
+import useWeb3Token from '@Launch/hooks/useWeb3Token';
 
 const OpenCampagin = () => {
   const {account} = useActiveWeb3React();
+  const {web3Token} = useWeb3Token();
+
+  console.log(web3Token);
 
   // const {data, isLoading, error} = useQuery(
   //   ['test'],
