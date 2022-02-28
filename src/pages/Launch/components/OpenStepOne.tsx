@@ -24,13 +24,13 @@ const OpenStepOne = () => {
       <Box mb={'40px'}>
         <Line></Line>
       </Box>
-      <Grid templateColumns="repeat(2, 1fr)" mb={'20px'}>
+      <Grid templateColumns="repeat(2, 1fr)" rowGap={'20px'} columnGap={'50px'} mb={'20px'} >
         {filedNameList.map((name: string, index: number) => {
           return (
             <GridItem
               w={'327px'}
-              mb={'20px'}
-              justifySelf={index % 2 !== 0 || index === 4 ? 'flex-end' : ''}>
+              colStart={index === 4 ? 2 : 0}
+              >
               <InputComponent
                 name={name}
                 placeHolder={`input ${name}`}
