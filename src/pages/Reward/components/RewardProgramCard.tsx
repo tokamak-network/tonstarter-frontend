@@ -52,8 +52,8 @@ type RewardProgramCardProps = {
   reward: UpdatedRedward;
   selectedToken?: LPToken;
   selectedPool?: any;
-  sendKey: (key: any) => void;
-  sendUnstakeKey: (key: any) => void;
+  sendKey: (key: any) => any;
+  sendUnstakeKey: (key: any) => any;
   pageIndex: number;
   stakeList: any[];
   unstakeList: any[];

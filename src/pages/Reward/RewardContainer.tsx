@@ -52,8 +52,8 @@ type RewardContainerProps = {
 };
 const {UniswapStaker_Address} = DEPLOYED;
 
-let multipleStakeList: any = [];
-let multipleUnstakeList: any = [];
+// let multipleStakeList: any = [];
+// let multipleUnstakeList: any = [];
 export const RewardContainer: FC<RewardContainerProps> = ({
   rewards,
   selectedPool,
@@ -75,6 +75,8 @@ export const RewardContainer: FC<RewardContainerProps> = ({
   const theme = useTheme();
   const dispatch = useAppDispatch();
   const [selectedRewards, setSelectedRewards] = useState<any[]>([]);
+  const [multipleStakeList, setMultipleStakeList] = useState<any[]>([]);
+  const [multipleUnstakeList, setMultipleUnstakeList] = useState<any[]>([]);
 
   let stakedPools = positionsByPool?.data?.positions?.filter((pool: any) => {
     return (
@@ -99,62 +101,23 @@ export const RewardContainer: FC<RewardContainerProps> = ({
     return rewards.slice(startIndex, endIndex);
   };
 
-  useEffect(() => {
-    multipleStakeList = [];
-    multipleUnstakeList = [];
-    setStakeNum(0);
-    setUnstakeNum(0);
-  }, [
-    transactionType,
-    blockNumber,
-    multipleStakeList,
-    multipleUnstakeList,
-    position,
-  ]);
-
-  const goToNextPage = () => {
-    setPageIndex(pageIndex + 1);
-  };
-
-  const gotToPreviousPage = () => {
-    setPageIndex(pageIndex - 1);
-  };
-
-  const stakeMultipleKeys = (key: any) => {
-    const keyFound = multipleStakeList.find(
-      (listkey: any) => JSON.stringify(listkey) === JSON.stringify(key),
-    );
-    const index = multipleStakeList.findIndex(
-      (key: any) => JSON.stringify(key) === JSON.stringify(keyFound),
-    );
-
-    if (index > -1) {
-      multipleStakeList.splice(index, 1);
-    } else {
-      multipleStakeList.push(key);
-    }
-    setStakeNum(multipleStakeList.length);
-    return multipleStakeList;
-  };
-
-  const unstakeMultipleKeys = (key: any) => {
-    const keyFound = multipleUnstakeList.find(
-      (listkey: any) => JSON.stringify(listkey) === JSON.stringify(key),
-    );
-    const index = multipleUnstakeList.findIndex(
-      (key: any) => JSON.stringify(key) === JSON.stringify(keyFound),
-    );
-    if (index > -1) {
-      multipleUnstakeList.splice(index, 1);
-    } else {
-      multipleUnstakeList.push(key);
-    }
-    setUnstakeNum(multipleUnstakeList.length);
-    return multipleUnstakeList;
-  };
+  // useEffect(() => {
+  //   setStakeNum(0);
+  //   setUnstakeNum(0);
+  // }, [
+  //   transactionType,
+  //   blockNumber,
+  //   position,
+  // ]);
 
   useEffect(() => {
+    // This useEffect runs every time a user selects a new LP token to manage. Or if a txn has been submitted and completed
     async function checkStaked() {
+      setStakeNum(0);
+      setUnstakeNum(0);
+      setSelectedRewards([]);
+      setMultipleStakeList([]);
+      setMultipleUnstakeList([]);
       if (account === null || account === undefined || library === undefined) {
         return;
       }
@@ -174,7 +137,51 @@ export const RewardContainer: FC<RewardContainerProps> = ({
       }
     }
     checkStaked();
-  }, [position]);
+  }, [position, transactionType, blockNumber]);
+
+  const goToNextPage = () => {
+    setPageIndex(pageIndex + 1);
+  };
+
+  const gotToPreviousPage = () => {
+    setPageIndex(pageIndex - 1);
+  };
+
+  const stakeMultipleKeys = (key: any) => {
+    let copyArr = [...multipleStakeList];
+    const keyFound = copyArr.find((listkey: any) => {
+      return JSON.stringify(listkey) === JSON.stringify(key);
+    });
+
+    const index = copyArr.findIndex(
+      (key: any) => JSON.stringify(key) === JSON.stringify(keyFound),
+    );
+
+    if (index > -1) {
+      copyArr.splice(index, 1);
+    } else {
+      copyArr.push(key);
+    }
+    setMultipleStakeList(copyArr);
+    setStakeNum(copyArr.length);
+  };
+
+  const unstakeMultipleKeys = (key: any) => {
+    let copyArr = [...multipleUnstakeList];
+    const keyFound = multipleUnstakeList.find(
+      (listkey: any) => JSON.stringify(listkey) === JSON.stringify(key),
+    );
+    const index = multipleUnstakeList.findIndex(
+      (key: any) => JSON.stringify(key) === JSON.stringify(keyFound),
+    );
+    if (index > -1) {
+      copyArr.splice(index, 1);
+    } else {
+      copyArr.push(key);
+    }
+    setMultipleUnstakeList(copyArr);
+    setUnstakeNum(copyArr.length);
+  };
 
   const getCheckedBoxes = (checkedReward: any) => {
     let tempRewards: any[] =
@@ -190,8 +197,9 @@ export const RewardContainer: FC<RewardContainerProps> = ({
       });
       setSelectedRewards(filteredArr);
     } else {
-      tempRewards.push(checkedReward);
-      setSelectedRewards(tempRewards);
+      let copyRewards = Object.assign([], tempRewards);
+      copyRewards.push(checkedReward);
+      setSelectedRewards(copyRewards);
     }
   };
 
