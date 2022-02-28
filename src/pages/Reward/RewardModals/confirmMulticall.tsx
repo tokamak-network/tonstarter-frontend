@@ -31,6 +31,9 @@ import {CloseButton} from 'components/Modal/CloseButton';
 const {
   WTON_ADDRESS,
   TON_ADDRESS,
+  TOS_ADDRESS,
+  AURA_ADDRESS,
+  DOC_ADDRESS,
   UniswapStaking_Address,
   UniswapStaker_Address,
 } = DEPLOYED;
@@ -85,7 +88,6 @@ export const ConfirmMulticallModal = () => {
     } else if (unstakeKeyList?.length > 0) {
       setAction('unstake');
     }
-    // Also need to add refund and unstake/refund. Look at ManageContainer.tsx for multi refund button.
   }, [data]);
 
   //   const formatAmount = (amount: any, token: any) => {
@@ -197,8 +199,22 @@ export const ConfirmMulticallModal = () => {
           ) : null}
           {currentSelectedRewards.map((reward) => {
             return (
-              <Box>
-                #{reward.index} {reward.poolName}
+              <Box display={'flex'} justifyContent={'space-between'}>
+                <Box>
+                  #{reward.index} {reward.poolName}
+                </Box>
+                <Box>
+                  Reward Token:{' '}
+                  {reward.rewardToken === TOS_ADDRESS
+                    ? 'TOS'
+                    : reward.rewardToken === WTON_ADDRESS
+                    ? 'WTON'
+                    : reward.rewardToken === AURA_ADDRESS
+                    ? 'AURA'
+                    : reward.rewardToken === DOC_ADDRESS
+                    ? 'DOC'
+                    : 'TON'}
+                </Box>
               </Box>
             );
           })}
