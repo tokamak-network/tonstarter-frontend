@@ -59,7 +59,7 @@ type ManageContainerProps = {
   positionsByPool: any;
 };
 
-let multipleRefundList: any = [];
+// let multipleRefundList: any = [];
 
 export const ManageContainer: FC<ManageContainerProps> = ({
   rewards,
@@ -75,6 +75,7 @@ export const ManageContainer: FC<ManageContainerProps> = ({
   const [pageLimit, setPageLimit] = useState<number>(6);
   const [refundNum, setRefundNum] = useState<number>(0);
   const [selectedRewards, setSelectedRewards] = useState<any[]>([]);
+  const [multipleRefundList, setMultipleRefundList] = useState<any>([]);
   const {account, library} = useActiveWeb3React();
   const {UniswapStaker_Address} = DEPLOYED;
   const dispatch = useAppDispatch();
@@ -101,9 +102,10 @@ export const ManageContainer: FC<ManageContainerProps> = ({
   };
 
   useEffect(() => {
-    multipleRefundList = [];
+    setMultipleRefundList([]);
     setRefundNum(0);
-  }, [transactionType, blockNumber, multipleRefundList]);
+    setSelectedRewards([]);
+  }, [transactionType, blockNumber]);
 
   useEffect(() => {
     setPageIndex(1);
@@ -120,6 +122,7 @@ export const ManageContainer: FC<ManageContainerProps> = ({
   const theme = useTheme();
 
   const refundMultipleKeys = (key: any) => {
+    let copyArr = [...multipleRefundList];
     const keyFound = multipleRefundList.find(
       (listkey: any) => JSON.stringify(listkey) === JSON.stringify(key),
     );
@@ -127,12 +130,12 @@ export const ManageContainer: FC<ManageContainerProps> = ({
       (key: any) => JSON.stringify(key) === JSON.stringify(keyFound),
     );
     if (index > -1) {
-      multipleRefundList.splice(index, 1);
+      copyArr.splice(index, 1);
     } else {
-      multipleRefundList.push(key);
+      copyArr.push(key);
     }
-    setRefundNum(multipleRefundList.length);
-    return multipleRefundList;
+    setRefundNum(copyArr.length);
+    setMultipleRefundList(copyArr);
   };
 
   const getCheckedBoxes = (checkedReward: any) => {
@@ -149,8 +152,9 @@ export const ManageContainer: FC<ManageContainerProps> = ({
       });
       setSelectedRewards(filteredArr);
     } else {
-      tempRewards.push(checkedReward);
-      setSelectedRewards(tempRewards);
+      let copyRewards = Object.assign([], tempRewards);
+      copyRewards.push(checkedReward);
+      setSelectedRewards(copyRewards);
     }
   };
 

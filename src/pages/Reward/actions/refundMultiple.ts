@@ -62,6 +62,7 @@ export const refundMultiple = async (args: any) => {
       );
 
       if (stakerIds.length > 0) {
+        console.log('stakerIds in refund:', stakerIds);
         let data = await Promise.all(
           stakerIds.map(async (tokenid: any) => {
             const data =
@@ -72,6 +73,7 @@ export const refundMultiple = async (args: any) => {
             return data;
           }),
         );
+        console.log('In multi-refund & unstake.');
 
         const refundData = uniswapStakerContract.interface.encodeFunctionData(
           'endIncentive',
@@ -85,14 +87,14 @@ export const refundMultiple = async (args: any) => {
           'endIncentive',
           [keyGenerated],
         );
+        console.log('In multi-refund without unstaking');
 
         return refundData;
       }
     }),
   );
 
-  console.log('arrayData: ', arrayData);
-  console.log('flattenArrayData', arrayData.flat());
+  console.log('refund flattenedArrayData', arrayData.flat());
   const flattenedArrayData = arrayData.flat();
 
   try {
