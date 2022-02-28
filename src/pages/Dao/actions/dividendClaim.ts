@@ -69,9 +69,6 @@ export const getClaimalbeList = async (
           tokenAddress,
         );
 
-        console.log('amount--');
-        console.log(amount);
-
         const claimAmount =
           convertNumber({
             amount: amount.toString(),

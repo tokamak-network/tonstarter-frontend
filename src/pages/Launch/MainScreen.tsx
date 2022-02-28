@@ -1,5 +1,5 @@
 import {Box, Button, Flex, useTheme} from '@chakra-ui/react';
-import {useCallback, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import OpenStepOne from '@Launch/components/OpenStepOne';
 import {Formik, Form} from 'formik';
 import useValues from './hooks/useValues';
@@ -9,11 +9,31 @@ import {errors} from 'ethers';
 import {PageHeader} from 'components/PageHeader';
 import Steps from '@Launch/components/Steps';
 import OpenStepTwo from './components/OpenStepTwo';
+import {useRouteMatch} from 'react-router-dom';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectLaunch} from './launch.reducer';
 
 const MainScreen = () => {
   const [step, setStep] = useState<StepNumber>(1);
+  const [isDisable, setDisable] = useState<boolean>(true);
   const {initialValues, setInitialValues} = useValues();
   const theme = useTheme();
+  const match = useRouteMatch();
+  const {
+    //@ts-ignore
+    params: {id},
+  } = match;
+  const {
+    data: {projects},
+  } = useAppSelector(selectLaunch);
+
+  console.log('--gogo--');
+  console.log(id);
+  console.log(projects);
+
+  useEffect(() => {
+    console.log(projects);
+  }, [projects]);
 
   const handleStep = useCallback(
     (isNext: boolean) => {
@@ -40,10 +60,8 @@ const MainScreen = () => {
     }
   };
 
-  const [isDisable, setDisable] = useState<boolean>(true);
-
   return (
-    <Flex flexDir={'column'}>
+    <Flex flexDir={'column'} justifyContent={'center'} w={'100%'} mt={100}>
       <Flex alignItems={'center'} flexDir="column" mb={'20px'}>
         <PageHeader
           title={'Create Project'}
@@ -56,7 +74,7 @@ const MainScreen = () => {
         </Flex>
       </Flex>
       <Formik
-        initialValues={initialValues}
+        initialValues={id && projects ? projects[id] : initialValues}
         validationSchema={ProjectSchema}
         validate={(values) => {
           console.log(values);

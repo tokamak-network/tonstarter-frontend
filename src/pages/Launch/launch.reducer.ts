@@ -5,6 +5,7 @@ import {VaultName} from '@Launch/types';
 interface LaunchState {
   data: {
     selectedVault: VaultName;
+    projects: any;
   };
   loading: 'idle' | 'pending';
   error: any;
@@ -14,6 +15,7 @@ interface LaunchState {
 const initialState = {
   data: {
     selectedVault: 'Public',
+    projects: [],
   },
   loading: 'idle',
   error: null,
@@ -24,8 +26,12 @@ type VaultPayload = {
   data: VaultName;
 };
 
+type ProjectPayload = {
+  data: any;
+};
+
 export const selectVault = createAsyncThunk(
-  'lunch/selectVault',
+  'launch/selectVault',
   ({vaultName}: {vaultName: VaultName}, {requestId, getState}) => {
     const {currentRequestId, loading} = (getState as any)().dao;
 
@@ -43,6 +49,9 @@ export const launchReducer = createSlice({
   reducers: {
     changeVault: (state, {payload}: PayloadAction<VaultPayload>) => {
       state.data.selectedVault = payload.data;
+    },
+    fetchProjects: (state, {payload}: PayloadAction<ProjectPayload>) => {
+      state.data.projects = payload.data;
     },
   },
   extraReducers: {
@@ -72,4 +81,4 @@ export const launchReducer = createSlice({
 });
 // @ts-ignore
 export const selectLaunch = (state: RootState) => state.launch;
-export const {changeVault} = launchReducer.actions;
+export const {changeVault, fetchProjects} = launchReducer.actions;

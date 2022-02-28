@@ -17,7 +17,7 @@ import {useFormikContext} from 'formik';
 import {useState} from 'react';
 import {Vault} from '@Launch/types';
 import {useAppDispatch} from 'hooks/useRedux';
-import {changeVault, selectVault} from '@Launch/launch.reducer';
+import {changeVault} from '@Launch/launch.reducer';
 import useValues from '@Launch/hooks/useValues';
 
 const Vaults = () => {

@@ -1,9 +1,11 @@
 import {useState} from 'react';
-import type {Projects} from '@Launch/types';
+import type {Projects, VaultC} from '@Launch/types';
 import moment from 'moment';
 
+const nowTimeStamp = moment().unix();
+
 const defaultParams = [
-  {claimRound: 1, claimTime: moment().unix(), claimTokenAllocation: 0},
+  {claimRound: 1, claimTime: nowTimeStamp, claimTokenAllocation: 0},
 ];
 
 const initialObj: Projects['CreateProject'] = {
@@ -15,67 +17,76 @@ const initialObj: Projects['CreateProject'] = {
   ownerAddress: '',
   isTokenDeployed: false,
   isAllDeployed: false,
+  tokenAddress: '',
   vaults: [
     {
       vaultName: 'Public',
       vaultTokenAllocation: 0,
-      firstClaimTime: new Date(),
-      claimInterval: new Date(),
+      firstClaimTime: nowTimeStamp,
+      claimInterval: nowTimeStamp,
       claimRound: 0,
       adminAddress: '',
       isMandatory: true,
       params: defaultParams,
+      vaultAddress: undefined,
     },
     {
       vaultName: 'LP',
       vaultTokenAllocation: 0,
-      firstClaimTime: new Date(),
-      claimInterval: new Date(),
+      firstClaimTime: nowTimeStamp,
+      claimInterval: nowTimeStamp,
       claimRound: 0,
       adminAddress: '',
       isMandatory: true,
       params: defaultParams,
+      vaultAddress: undefined,
     },
     {
       vaultName: 'TON Staker',
       vaultTokenAllocation: 0,
-      firstClaimTime: new Date(),
-      claimInterval: new Date(),
+      firstClaimTime: nowTimeStamp,
+      claimInterval: nowTimeStamp,
       claimRound: 0,
       adminAddress: '',
       isMandatory: true,
       params: defaultParams,
+      vaultAddress: undefined,
     },
     {
       vaultName: 'TOS Staker',
       vaultTokenAllocation: 0,
-      firstClaimTime: new Date(),
-      claimInterval: new Date(),
+      firstClaimTime: nowTimeStamp,
+      claimInterval: nowTimeStamp,
       claimRound: 0,
       adminAddress: '',
       isMandatory: true,
       params: defaultParams,
+      vaultAddress: undefined,
     },
     {
       vaultName: 'WTON-TOS LP Reward',
       vaultTokenAllocation: 0,
-      firstClaimTime: new Date(),
-      claimInterval: new Date(),
+      firstClaimTime: nowTimeStamp,
+      claimInterval: nowTimeStamp,
       claimRound: 0,
       adminAddress: '',
       isMandatory: true,
       params: defaultParams,
+      vaultAddress: undefined,
     },
   ],
 };
 
-const initialVaultValue = {
-  firstClaimTime: new Date(),
-  claimInterval: new Date(),
+const initialVaultValue: VaultC = {
+  firstClaimTime: nowTimeStamp,
+  claimInterval: nowTimeStamp,
   claimRound: 0,
   adminAddress: '',
   isMandatory: false,
   params: defaultParams,
+  vaultName: '',
+  vaultTokenAllocation: 0,
+  vaultAddress: undefined,
 };
 
 const useValues = () => {

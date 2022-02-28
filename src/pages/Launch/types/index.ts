@@ -2,12 +2,13 @@ type VaultName = 'Public' | string;
 
 interface Vault {
   vaultName: VaultName;
-  vaultTokenAllocation: Number;
-  firstClaimTime: Date;
-  claimInterval: Date;
-  claimRound: Number;
+  vaultTokenAllocation: number;
+  firstClaimTime: number;
+  claimInterval: number;
+  claimRound: number;
   adminAddress: string;
   isMandatory: boolean;
+  vaultAddress: string | undefined;
 }
 
 interface VaultSchedule {
@@ -16,11 +17,11 @@ interface VaultSchedule {
   claimTokenAllocation: number;
 }
 
-type VaultCommon = Vault & {params: VaultSchedule[]}
+type VaultCommon = Vault & {params: VaultSchedule[]};
 
 type VaultDao = VaultCommon & {};
 
-type VaultPublic = VaultCommon& {};
+type VaultPublic = VaultCommon & {};
 
 type VaultC = VaultCommon & {};
 
@@ -41,6 +42,7 @@ interface ProjectStep2 {
 interface ProjectStep3 {
   isTokenDeployed: boolean;
   isAllDeployed: boolean;
+  tokenAddress: string;
 }
 
 type Project = ProjectStep1 & ProjectStep2 & ProjectStep3;
