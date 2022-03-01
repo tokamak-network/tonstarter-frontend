@@ -33,6 +33,7 @@ import {UpdatedRedward} from '../types';
 import {LPToken} from '../types';
 import {convertNumber} from 'utils/number';
 import {InformationModal} from '../RewardModals';
+import {useDispatch} from 'react-redux';
 
 const themeDesign = {
   border: {
@@ -103,6 +104,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   const [isSelected, setIsSelected] = useState<boolean>(false);
   const [isUnstakeSelected, setIsUnstakeselected] = useState<boolean>(false);
   const [numStakers, setNumStakers] = useState<number>(0);
+  const dispatch = useDispatch();
 
   const key = {
     rewardToken: reward.rewardToken,
@@ -373,25 +375,26 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     <Flex
       {...REWARD_STYLE.containerStyle({colorMode})}
       flexDir={'column'}
-      // onClick={(e: React.ChangeEvent<HTMLInputElement>) => {
-      //   console.log(e.target.type);
-      //   console.log('target id:', e.target.id);
-      //   console.log('e.target: ', e.target);
-      //   if (e.target.type !== 'checkbox')
-      //     dispatch(
-      //       openModal({
-      //         type: 'information',
-      //         data: {
-      //           currentReward: reward,
-      //           // refundableAmount,
-      //           currentStakedPools: stakedPools,
-      //           currentKey: key,
-      //           currentUserAddress: account,
-      //           currentPositions: LPTokens,
-      //         },
-      //       }),
-      //     );
-      // }}
+      onClick={(e: React.ChangeEvent<HTMLInputElement>) => {
+        // console.log(e.target.type);
+        // console.log('target id:', e.target.id);
+        // console.log('e.target: ', e.target);
+        // if (e.target.type !== 'checkbox') {
+        dispatch(
+          openModal({
+            type: 'information',
+            data: {
+              currentReward: reward,
+              // refundableAmount,
+              currentStakedPools: stakedPools,
+              currentKey: key,
+              currentUserAddress: account,
+              currentPositions: LPTokens,
+            },
+          }),
+        );
+        // }
+      }}
       _hover={{
         border: '2px solid #0070ED',
         cursor: 'pointer',
