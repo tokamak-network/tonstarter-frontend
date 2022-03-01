@@ -92,6 +92,10 @@ export const InformationModal = () => {
     dispatch(closeModal());
   }, [dispatch]);
 
+  // console.log('initial data: ', data);
+
+  console.log(data.data.currentReward.poolAddress);
+
   const GET_POOL_DATA = gql`{
           pool(id:${data?.data?.currentReward?.poolAddress}){
             id
@@ -120,40 +124,41 @@ export const InformationModal = () => {
   console.log('queryData: ', queryData);
 
   useEffect(() => {
-    async function fetchData() {
-      if (data?.data) {
-        const {
-          currentReward,
-          //   refundableAmount: currentRefundableAmount,
-          currentStakedPools,
-          currentUserAddress,
-          currentKey,
-          currentPositions,
-        } = data.data;
-        console.log('DATA: ', data.data);
+    // async function fetchData() {
+    // if (data?.data) {
+    const {
+      currentReward,
+      //   refundableAmount: currentRefundableAmount,
+      currentStakedPools,
+      currentUserAddress,
+      currentKey,
+      currentPositions,
+    } = data.data;
+    console.log('DATA: ', data.data);
 
-        // setRefundableAmount(currentRefundableAmount);
-        setReward(currentReward);
-        setUserAddress(currentUserAddress);
-        setKey(currentKey);
-        setStakedPools(currentStakedPools);
-        setPositions(currentPositions);
+    // setRefundableAmount(currentRefundableAmount);
+    setReward(currentReward);
+    setUserAddress(currentUserAddress);
+    setKey(currentKey);
+    setStakedPools(currentStakedPools);
+    setPositions(currentPositions);
 
-        // getPoolInfo(key.poolAddress);
-        // useQueryFunc(key.poolAddress);
+    // getPoolInfo(key.poolAddress);
+    // useQueryFunc(key.poolAddress);
 
-        if (key && userAddress && stakedPools && reward) {
-          //   getStakedPools();
-          //   console.log(key, userAddress, stakedPools, reward);
-          getIncentives(key, userAddress, stakedPools, positions);
-        }
-        // }
-        if (reward && userAddress && key && positions) {
-          setLoading(false);
-        }
-      }
+    if (key && userAddress && stakedPools && reward) {
+      //   getStakedPools();
+      //   console.log(key, userAddress, stakedPools, reward);
+      getIncentives(key, userAddress, stakedPools, positions);
     }
-    fetchData();
+    // }
+    if (reward && userAddress && key && positions) {
+      setLoading(false);
+    }
+
+    // }
+    // }
+    // fetchData();
   }, [data]);
 
   const getIncentives = async (
@@ -184,16 +189,12 @@ export const InformationModal = () => {
       .connect(signer)
       .incentives(incentiveId);
 
-    // console.log('incentiveInfo: ', incentiveInfo);
-
     let tempStakerIds: any[] = [];
     await Promise.all(
       stakedPools.map(async (pool: any) => {
         const incentiveInfo = await uniswapStakerContract
           .connect(signer)
           .stakes(Number(pool.id), incentiveId);
-
-        // console.log('incentiveInfo: ', incentiveInfo);
 
         if (incentiveInfo.liquidity._hex !== '0x00') {
           tempStakerIds.push({
@@ -209,7 +210,7 @@ export const InformationModal = () => {
       return userPositions.includes(position.token);
     });
 
-    console.log('tempStakerIds: ', tempStakerIds);
+    // console.log('tempStakerIds: ', tempStakerIds);
 
     setAllStakerIds(tempStakerIds);
     setUserStakerIds(filteredStakedPositions);
