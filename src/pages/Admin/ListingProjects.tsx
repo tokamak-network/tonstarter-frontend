@@ -42,8 +42,6 @@ export const ListingProjects = () => {
 
       const res = await Promise.all(
         filteredStarterData.map(async (data: any) => {
-          console.log('--data--');
-          console.log(data);
           const {
             endAddWhiteTime,
             endExclusiveTime,

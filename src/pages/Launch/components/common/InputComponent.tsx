@@ -20,6 +20,9 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
   const {name, placeHolder, nameDisplay, inputStyle} = props;
   const {errors} = useFormikContext();
   const {colorMode} = useColorMode();
+  const title = name
+    .split(/(?=[A-Z])/)
+    .map((e) => `${e.charAt(0).toUpperCase() + e.slice(1)} `);
 
   return (
     <Flex flexDir={'column'} fontSize={13} pos={'relative'}>
@@ -27,7 +30,7 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
         <></>
       ) : (
         <Text h={18} mb={2.5} color={InputComponentStyle.color[colorMode]}>
-          {name}
+          {title}
         </Text>
       )}
       <Field name={name}>

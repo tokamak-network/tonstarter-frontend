@@ -12,10 +12,8 @@ import {useAppDispatch} from 'hooks/useRedux';
 
 const OpenCampagin = () => {
   const {account} = useActiveWeb3React();
-  const {web3Token} = useWeb3Token();
+  // const {web3Token} = useWeb3Token();
   const dispatch = useAppDispatch();
-
-  console.log(web3Token);
 
   const [projectsData, setProjectsData] = useState<any>(undefined);
   const [originData, setOriginData] = useState<any>(undefined);
@@ -36,7 +34,6 @@ const OpenCampagin = () => {
   );
 
   useEffect(() => {
-    console.log('go');
     if (data) {
       const {data: datas} = data;
       dispatch(fetchProjects({data: datas}));
@@ -56,9 +53,9 @@ const OpenCampagin = () => {
   const match = useRouteMatch();
   const {url} = match;
 
-  if (isLoading) {
-    return <div>loading..</div>;
-  }
+  // if (isLoading) {
+  //   return <div>loading..</div>;
+  // }
   return (
     <Flex flexDir="column" mt={100} alignItems="center">
       <Text mb={'10px'}>All Projects</Text>

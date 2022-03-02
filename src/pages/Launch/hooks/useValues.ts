@@ -15,7 +15,8 @@ const initialObj: Projects['CreateProject'] = {
   tokenSymbol: '',
   totalSupply: '',
   ownerAddress: '',
-  isTokenDeployed: false,
+  owner: '',
+  isTokenDeployed: true,
   isAllDeployed: false,
   tokenAddress: '',
   vaults: [

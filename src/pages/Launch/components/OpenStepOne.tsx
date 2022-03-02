@@ -11,7 +11,7 @@ const filedNameList = [
   'tokenName',
   'owner',
   'tokenSymbol',
-  'tokenSupply',
+  'totalSupply',
 ];
 
 const OpenStepOne = () => {
@@ -24,13 +24,14 @@ const OpenStepOne = () => {
       <Box mb={'40px'}>
         <Line></Line>
       </Box>
-      <Grid templateColumns="repeat(2, 1fr)" rowGap={'20px'} columnGap={'50px'} mb={'20px'} >
+      <Grid
+        templateColumns="repeat(2, 1fr)"
+        rowGap={'20px'}
+        columnGap={'50px'}
+        mb={'20px'}>
         {filedNameList.map((name: string, index: number) => {
           return (
-            <GridItem
-              w={'327px'}
-              colStart={index === 4 ? 2 : 0}
-              >
+            <GridItem w={'327px'} colStart={index === 4 ? 2 : 0}>
               <InputComponent
                 name={name}
                 placeHolder={`input ${name}`}

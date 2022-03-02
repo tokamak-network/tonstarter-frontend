@@ -34,6 +34,7 @@ interface ProjectStep1 {
   tokenSymbol: string;
   totalSupply: string;
   ownerAddress: string;
+  owner: string;
 }
 interface ProjectStep2 {
   vaults: VaultAny[];

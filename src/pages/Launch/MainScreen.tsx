@@ -2,16 +2,17 @@ import {Box, Button, Flex, useTheme} from '@chakra-ui/react';
 import {useCallback, useEffect, useState} from 'react';
 import OpenStepOne from '@Launch/components/OpenStepOne';
 import {Formik, Form} from 'formik';
-import useValues from './hooks/useValues';
+import useValues from '@Launch/hooks/useValues';
 import type {StepNumber} from '@Launch/types';
 import ProjectSchema from '@Launch/utils/projectSchema';
 import {errors} from 'ethers';
 import {PageHeader} from 'components/PageHeader';
 import Steps from '@Launch/components/Steps';
-import OpenStepTwo from './components/OpenStepTwo';
+import OpenStepTwo from '@Launch/components/OpenStepTwo';
 import {useRouteMatch} from 'react-router-dom';
 import {useAppSelector} from 'hooks/useRedux';
-import {selectLaunch} from './launch.reducer';
+import {selectLaunch} from '@Launch/launch.reducer';
+import OpenStepThree from '@Launch/components/OpenStepThree';
 
 const MainScreen = () => {
   const [step, setStep] = useState<StepNumber>(1);
@@ -53,8 +54,8 @@ const MainScreen = () => {
         return <OpenStepOne></OpenStepOne>;
       case 2:
         return <OpenStepTwo></OpenStepTwo>;
-      // case 3:
-      //   break;
+      case 3:
+        return <OpenStepThree></OpenStepThree>;
       default:
         return <div>no component for this step</div>;
     }
@@ -101,10 +102,13 @@ const MainScreen = () => {
                     <Button
                       type="submit"
                       w={'180px'}
-                      h={'35px'}
-                      bg={isDisable ? '#gray.25' : 'blue.500'}
-                      // disabled={isDisable || isSubmitting}
+                      h={'45px'}
+                      bg={'blue.500'}
+                      fontSize={14}
+                      color={'white.100'}
+                      mr={'12px'}
                       disabled={isSubmitting}
+                      _hover={{}}
                       onClick={() => handleStep(false)}>
                       Prev
                     </Button>
@@ -113,10 +117,13 @@ const MainScreen = () => {
                     <Button
                       type="submit"
                       w={'180px'}
-                      h={'35px'}
+                      h={'45px'}
+                      fontSize={14}
+                      color={isDisable ? '#86929d' : 'white.100'}
                       bg={isDisable ? '#gray.25' : 'blue.500'}
                       // disabled={isDisable || isSubmitting}
                       disabled={isSubmitting}
+                      _hover={{}}
                       onClick={() => handleStep(true)}>
                       Next
                     </Button>
