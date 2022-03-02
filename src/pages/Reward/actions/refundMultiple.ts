@@ -32,9 +32,6 @@ export const refundMultiple = async (args: any) => {
     'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)';
   const abicoder = ethers.utils.defaultAbiCoder;
 
-  console.log('stakedPools: ', stakedPools);
-  console.log('refundKeyList: ', refundKeyList);
-
   const arrayData = await Promise.all(
     refundKeyList.map(async (key: any) => {
       const keyGenerated = {
@@ -62,7 +59,6 @@ export const refundMultiple = async (args: any) => {
       );
 
       if (stakerIds.length > 0) {
-        console.log('stakerIds in refund:', stakerIds);
         let data = await Promise.all(
           stakerIds.map(async (tokenid: any) => {
             const data =
@@ -73,7 +69,6 @@ export const refundMultiple = async (args: any) => {
             return data;
           }),
         );
-        console.log('In multi-refund & unstake.');
 
         const refundData = uniswapStakerContract.interface.encodeFunctionData(
           'endIncentive',
@@ -87,14 +82,12 @@ export const refundMultiple = async (args: any) => {
           'endIncentive',
           [keyGenerated],
         );
-        console.log('In multi-refund without unstaking');
 
         return refundData;
       }
     }),
   );
 
-  console.log('refund flattenedArrayData', arrayData.flat());
   const flattenedArrayData = arrayData.flat();
 
   try {

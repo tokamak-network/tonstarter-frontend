@@ -95,7 +95,7 @@ export const InformationModal = () => {
 
   // console.log('initial data: ', data);
 
-  console.log(data.data.currentReward.poolAddress);
+  // console.log(data.data.currentReward.poolAddress);
 
   // const GET_POOL_DATA = gql`{
   //         pool(id:${data?.data?.currentReward?.poolAddress}){
@@ -135,7 +135,7 @@ export const InformationModal = () => {
       currentKey,
       currentPositions,
     } = data.data;
-    console.log('DATA: ', data.data);
+    // console.log('DATA: ', data.data);
 
     // setRefundableAmount(currentRefundableAmount);
     setReward(currentReward);

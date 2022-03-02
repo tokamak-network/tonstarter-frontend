@@ -82,7 +82,6 @@ export const ConfirmMulticallModal = () => {
     setCurrentStakedPools(stakedPools);
     setCurrentMultipleRefundList(multipleRefundList);
 
-    console.log('DATA: ', data.data);
     if (stakeKeyList?.length > 0) {
       setAction('stake');
     } else if (unstakeKeyList?.length > 0) {
