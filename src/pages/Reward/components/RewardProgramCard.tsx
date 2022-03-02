@@ -34,6 +34,8 @@ import {LPToken} from '../types';
 import {convertNumber} from 'utils/number';
 import {InformationModal} from '../RewardModals';
 import {useDispatch} from 'react-redux';
+import {gql, useQuery} from '@apollo/client';
+import {rewardReducer} from '../reward.reducer';
 
 const themeDesign = {
   border: {
@@ -104,6 +106,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   const [isSelected, setIsSelected] = useState<boolean>(false);
   const [isUnstakeSelected, setIsUnstakeselected] = useState<boolean>(false);
   const [numStakers, setNumStakers] = useState<number>(0);
+  const [clickedReward, setClickedReward] = useState<boolean>(false);
   const dispatch = useDispatch();
 
   const key = {
@@ -119,6 +122,38 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     STAKERABI.abi,
     library,
   );
+
+  // console.log('reward: ', reward);
+  // console.log('reward.poolAddress: ', reward.poolAddress);
+
+  // const GET_POOL_DATA = gql`{
+  //         pool(id:${reward?.poolAddress}){
+  //           id
+  //           tick
+  //           liquidity
+  //           volumeUSD
+  //           volumeToken0
+  //           volumeToken1
+  //           token0Price
+  //           token1Price
+  //           totalValueLockedToken0
+  //           totalValueLockedToken1
+  //           txCount
+  //           totalValueLockedETH
+  //           totalValueLockedUSD
+  //           totalValueLockedUSDUntracked
+  //         }
+  //       }`;
+
+  // console.log('POOLDATA: ', GET_POOL_DATA);
+
+  // const {
+  //   loading: queryLodaing,
+  //   error,
+  //   data: queryData,
+  // } = useQuery(GET_POOL_DATA);
+  // console.log('queryLodaing: ', queryLodaing);
+  // console.log('queryData: ', queryData);
 
   useEffect(() => {
     setIsUnstakeselected(false);
@@ -375,26 +410,28 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     <Flex
       {...REWARD_STYLE.containerStyle({colorMode})}
       flexDir={'column'}
-      onClick={(e: React.ChangeEvent<HTMLInputElement>) => {
-        // console.log(e.target.type);
-        // console.log('target id:', e.target.id);
-        // console.log('e.target: ', e.target);
-        // if (e.target.type !== 'checkbox') {
-        dispatch(
-          openModal({
-            type: 'information',
-            data: {
-              currentReward: reward,
-              // refundableAmount,
-              currentStakedPools: stakedPools,
-              currentKey: key,
-              currentUserAddress: account,
-              currentPositions: LPTokens,
-            },
-          }),
-        );
-        // }
-      }}
+      // onClick={(e: React.ChangeEvent<HTMLInputElement>) => {
+      //   // console.log(e.target.type);
+      //   // console.log('target id:', e.target.id);
+      //   // console.log('e.target: ', e.target);
+      //   // if (e.target.type !== 'checkbox') {
+      //   dispatch(
+      //     openModal({
+      //       type: 'information',
+      //       data: {
+      //         currentReward: reward,
+      //         // refundableAmount,
+      //         currentStakedPools: stakedPools,
+      //         currentKey: key,
+      //         currentUserAddress: account,
+      //         currentPositions: LPTokens,
+      //         setClickedReward,
+      //       },
+      //     }),
+      //   );
+      //   setClickedReward(true);
+      //   // }
+      // }}
       _hover={{
         border: '2px solid #0070ED',
         cursor: 'pointer',
@@ -738,7 +775,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
           </Button>
         </Flex>
       </Flex>
-      <InformationModal />
+      {clickedReward ? <InformationModal /> : null}
     </Flex>
   );
 };

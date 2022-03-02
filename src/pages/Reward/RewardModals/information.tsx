@@ -89,6 +89,7 @@ export const InformationModal = () => {
   // const [isHandling, setIsHandling] = useState<boolean>(true);
 
   const handleCloseModal = useCallback(() => {
+    data.data.setClickedReward(false);
     dispatch(closeModal());
   }, [dispatch]);
 
@@ -96,32 +97,32 @@ export const InformationModal = () => {
 
   console.log(data.data.currentReward.poolAddress);
 
-  const GET_POOL_DATA = gql`{
-          pool(id:${data?.data?.currentReward?.poolAddress}){
-            id
-            tick
-            liquidity
-            volumeUSD
-            volumeToken0
-            volumeToken1
-            token0Price
-            token1Price
-            totalValueLockedToken0
-            totalValueLockedToken1
-            txCount
-            totalValueLockedETH
-            totalValueLockedUSD
-            totalValueLockedUSDUntracked
-          }
-        }`;
+  // const GET_POOL_DATA = gql`{
+  //         pool(id:${data?.data?.currentReward?.poolAddress}){
+  //           id
+  //           tick
+  //           liquidity
+  //           volumeUSD
+  //           volumeToken0
+  //           volumeToken1
+  //           token0Price
+  //           token1Price
+  //           totalValueLockedToken0
+  //           totalValueLockedToken1
+  //           txCount
+  //           totalValueLockedETH
+  //           totalValueLockedUSD
+  //           totalValueLockedUSDUntracked
+  //         }
+  //       }`;
 
-  const {
-    loading: queryLodaing,
-    error,
-    data: queryData,
-  } = useQuery(GET_POOL_DATA);
-  console.log('queryLodaing: ', queryLodaing);
-  console.log('queryData: ', queryData);
+  // const {
+  //   loading: queryLodaing,
+  //   error,
+  //   data: queryData,
+  // } = useQuery(GET_POOL_DATA);
+  // console.log('queryLodaing: ', queryLodaing);
+  // console.log('queryData: ', queryData);
 
   useEffect(() => {
     // async function fetchData() {
