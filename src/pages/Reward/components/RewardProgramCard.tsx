@@ -583,7 +583,11 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
             <Text
               {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 14})}
               lineHeight={1}>
-              {moment.unix(Number(reward.endTime)).format('YYYY.MM.DD')}
+              {/*If years are same for start and end times, remove the year from the end time. */}
+              {moment.unix(Number(reward.endTime)).format('YYYY') ===
+              moment.unix(Number(reward.startTime)).format('YYYY')
+                ? moment.unix(Number(reward.endTime)).format('MM.DD')
+                : moment.unix(Number(reward.endTime)).format('YYYY.MM.DD')}
             </Text>
             <Text
               {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 11})}
