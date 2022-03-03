@@ -415,21 +415,23 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
       //   // console.log('target id:', e.target.id);
       //   // console.log('e.target: ', e.target);
       //   // if (e.target.type !== 'checkbox') {
-      //   dispatch(
-      //     openModal({
-      //       type: 'information',
-      //       data: {
-      //         currentReward: reward,
-      //         // refundableAmount,
-      //         currentStakedPools: stakedPools,
-      //         currentKey: key,
-      //         currentUserAddress: account,
-      //         currentPositions: LPTokens,
-      //         setClickedReward,
-      //       },
-      //     }),
-      //   );
-      //   setClickedReward(true);
+      onClick={() => {
+        dispatch(
+          openModal({
+            type: 'information',
+            data: {
+              currentReward: reward,
+              // refundableAmount,
+              currentStakedPools: stakedPools,
+              currentKey: key,
+              currentUserAddress: account,
+              currentPositions: LPTokens,
+              setClickedReward,
+            },
+          }),
+        );
+        setClickedReward(true);
+      }}
       //   // }
       // }}
       _hover={{
@@ -784,7 +786,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
           </Button>
         </Flex>
       </Flex>
-      {clickedReward ? <InformationModal /> : null}
+      <InformationModal />
     </Flex>
   );
 };

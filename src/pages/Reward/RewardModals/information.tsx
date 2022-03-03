@@ -53,6 +53,7 @@ import {useWeb3React} from '@web3-react/core';
 import {CloseButton} from 'components/Modal/CloseButton';
 import {useGraphQueries} from 'hooks/useGraphQueries';
 import {gql, useQuery} from '@apollo/client';
+import {usePoolByArrayQuery} from 'store/data/generated';
 
 const {
   WTON_ADDRESS,
@@ -89,40 +90,28 @@ export const InformationModal = () => {
   // const [isHandling, setIsHandling] = useState<boolean>(true);
 
   const handleCloseModal = useCallback(() => {
-    data.data.setClickedReward(false);
     dispatch(closeModal());
   }, [dispatch]);
 
-  // console.log('initial data: ', data);
+  console.log('initial data: ', data);
 
-  // console.log(data.data.currentReward.poolAddress);
+  console.log(data?.data?.currentReward?.poolAddress);
 
-  // const GET_POOL_DATA = gql`{
-  //         pool(id:${data?.data?.currentReward?.poolAddress}){
-  //           id
-  //           tick
-  //           liquidity
-  //           volumeUSD
-  //           volumeToken0
-  //           volumeToken1
-  //           token0Price
-  //           token1Price
-  //           totalValueLockedToken0
-  //           totalValueLockedToken1
-  //           txCount
-  //           totalValueLockedETH
-  //           totalValueLockedUSD
-  //           totalValueLockedUSDUntracked
-  //         }
-  //       }`;
+  // const GET_POOL_DATA = gql`
+  //   query poolByArray($address: [${
+  //     data?.data?.currentReward?.poolAddress || undefined
+  //   }]) {
+  //     pools(first: 1000, where: {id_in: $address}) {
+  //       id
+  //     }
+  //   }
+  // `;
 
-  // const {
-  //   loading: queryLodaing,
-  //   error,
-  //   data: queryData,
-  // } = useQuery(GET_POOL_DATA);
+  const queryData = usePoolByArrayQuery({
+    address: data?.data?.currentReward?.poolAddress,
+  });
   // console.log('queryLodaing: ', queryLodaing);
-  // console.log('queryData: ', queryData);
+  console.log('queryData: ', queryData);
 
   useEffect(() => {
     // async function fetchData() {
@@ -160,7 +149,8 @@ export const InformationModal = () => {
     // }
     // }
     // fetchData();
-  }, [data]);
+    /*eslint-disable*/
+  }, [data, reward, positions, stakedPools, userAddress]);
 
   const getIncentives = async (
     key: any,
@@ -281,6 +271,9 @@ export const InformationModal = () => {
 
   // url for adding liquidity to tokens: https://app.uniswap.org/#/increase/0x73a54e5C054aA64C1AE7373C2B5474d8AFEa08bd/0xb109f4c20BDb494A63E32aA035257fBA0a4610A4/3000/13035?chain=rinkeby
 
+  if (!reward) {
+    return <></>;
+  }
   return !loading ? (
     <Modal
       isOpen={data.modal === 'information' ? true : false}
