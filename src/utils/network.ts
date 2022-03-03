@@ -3,7 +3,7 @@ import {ethers} from 'ethers';
 
 export const getNetworkDetails = async (provider: any, address: string) => {
   try {
-    let currentNetwork = await provider.getNetwork();
+    const currentNetwork = await provider.getNetwork();
     if (currentNetwork.chainId !== Number(DEFAULT_NETWORK)) {
       return {
         error: `Wrong network selected. Please make sure you are on ${await getNetworkName(

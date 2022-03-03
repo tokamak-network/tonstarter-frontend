@@ -15,8 +15,8 @@ type Unstake = {
     library: any;
     tokenid: number;
     userAddress: string | null | undefined;
-    startTime: Number,
-    endTime: Number,
+    startTime: number,
+    endTime: number,
     rewardToken: string;
     poolAddress: string;
     refundee: string;

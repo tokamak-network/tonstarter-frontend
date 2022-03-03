@@ -3,7 +3,7 @@ import {convertNumber} from '../../../utils/number';
 
 export const fetchAirdropPayload = async (account: string, library: any) => {
   const AirdropVault = getTokamakContract('Airdrop', library);
-  let roundInfo: any = [];
+  const roundInfo: any = [];
   let claimedAmount;
   let unclaimed;
   try {

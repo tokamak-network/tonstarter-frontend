@@ -44,7 +44,7 @@ const getEarningPerBlock = (vaults: VaultList) => {
       stakeInfos,
     } = vault;
     let acc = 0;
-    let period: any = {};
+    const period: any = {};
     const totalBlocks = stakeEndBlock - stakeStartBlock;
     const totalReward = convertNumber({
       amount: cap.toLocaleString('fullwide', {useGrouping: false}),

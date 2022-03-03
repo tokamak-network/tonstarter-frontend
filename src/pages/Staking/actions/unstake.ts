@@ -8,7 +8,7 @@ import {BASE_PROVIDER} from 'constants/index';
 
 type Unstake = {
   userAddress: string | null | undefined;
-  endTime: string | Number;
+  endTime: string | number;
   library: any;
   stakeContractAddress: string;
   mystaked: string;

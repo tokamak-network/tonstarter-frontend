@@ -23,20 +23,20 @@ export type PoolData = {
   export type incentiveKey = {
     rewardToken: string,
     pool: string,
-    startTime: Number,
-    endTime: Number,
+    startTime: number,
+    endTime: number,
     refundee: string
   }
   export type interfaceReward = {
-      chainId: Number, 
+      chainId: number, 
       poolName: string,
       poolAddress: string,
       rewardToken: string,
       incentiveKey: incentiveKey,
-      startTime: Number,
-      endTime: Number,
+      startTime: number,
+      endTime: number,
       allocatedReward: string,
-      numStakers: Number,
+      numStakers: number,
       status: string
   }
 

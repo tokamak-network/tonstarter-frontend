@@ -12,20 +12,20 @@ type StakeProps = {
   userAddress: string | null | undefined;
   amount: string;
   payToken: string;
-  saleStartTime: string | Number;
+  saleStartTime: string | number;
   library: any;
   stakeContractAddress: string;
-  miningStartTime: string | Number;
+  miningStartTime: string | number;
   handleCloseModal: any;
 };
 
 type StakeTon = {
   userAddress: string | null | undefined;
   amount: string;
-  saleStartTime: string | Number;
+  saleStartTime: string | number;
   library: any;
   stakeContractAddress: string;
-  miningStartTime: string | Number;
+  miningStartTime: string | number;
   handleCloseModal: any;
 };
 

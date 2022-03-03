@@ -140,11 +140,11 @@ export type RewardData = {
 export type PoolData = {
   chainId: number;
   poolName: string;
-  poolAddress: String;
-  token0Address: String;
-  token1Address: String;
-  token0Image: String;
-  token1Image: String;
+  poolAddress: string;
+  token0Address: string;
+  token1Address: string;
+  token0Image: string;
+  token1Image: string;
   feeTier: number;
 };
 

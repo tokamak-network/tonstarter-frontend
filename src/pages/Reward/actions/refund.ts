@@ -20,8 +20,8 @@ type Refund = {
 type Key = {
     rewardToken: string,
     pool: string,
-    startTime: Number,
-    endTime: Number,
+    startTime: number,
+    endTime: number,
     refundee: string
 }
 const { UniswapStaker_Address } = DEPLOYED;

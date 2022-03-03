@@ -25,7 +25,7 @@ export const fetchStakes = createAsyncThunk(
   'stakes/all',
   async ({library, reFetch}: any, {requestId, getState}) => {
     //result to dispatch data for Stakes store
-    let projects: any[] = [];
+    const projects: any[] = [];
 
     // @ts-ignore
     const {currentRequestId, loading} = getState().stakes;
@@ -45,7 +45,7 @@ export const fetchStakes = createAsyncThunk(
 
     await Promise.all(
       stakeList.map(async (stake: any, index: number) => {
-        let mystaked: string = '';
+        const mystaked = '';
 
         const status = await getStatus(stake, currentBlock);
         //@ts-ignore

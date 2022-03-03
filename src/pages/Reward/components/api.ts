@@ -26,7 +26,7 @@ function createInstance() {
 const instance = createInstance();
 
 export async function createReward(args: CreateReward) {
-    let {
+    const {
         poolName,
         poolAddress,
         rewardToken,

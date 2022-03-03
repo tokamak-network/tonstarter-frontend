@@ -13,6 +13,7 @@ import {useRouteMatch} from 'react-router-dom';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectLaunch} from '@Launch/launch.reducer';
 import OpenStepThree from '@Launch/components/OpenStepThree';
+import {toChecksumAddress} from 'web3-utils';
 
 const MainScreen = () => {
   const [step, setStep] = useState<StepNumber>(1);
@@ -62,7 +63,12 @@ const MainScreen = () => {
   };
 
   return (
-    <Flex flexDir={'column'} justifyContent={'center'} w={'100%'} mt={100}>
+    <Flex
+      flexDir={'column'}
+      justifyContent={'center'}
+      w={'100%'}
+      mt={100}
+      mb={'100px'}>
       <Flex alignItems={'center'} flexDir="column" mb={'20px'}>
         <PageHeader
           title={'Create Project'}
@@ -78,10 +84,13 @@ const MainScreen = () => {
         initialValues={id && projects ? projects[id] : initialValues}
         validationSchema={ProjectSchema}
         validate={(values) => {
-          console.log(values);
-          if (values.tokenName === '1') {
-            console.log('error');
-            return errors;
+          if (values.owner) {
+            try {
+              const result = toChecksumAddress(String(values.owner));
+              if (!result) {
+                return {tokenName: 'err'};
+              }
+            } catch (e) {}
           }
         }}
         onSubmit={async (data, {setSubmitting}) => {
@@ -97,7 +106,7 @@ const MainScreen = () => {
                 alignItems="center"
                 fontFamily={theme.fonts.roboto}>
                 <StepComponent step={step} />
-                <Box mt={10} fontSize={14}>
+                <Box mt={'50px'} fontSize={14}>
                   {step !== 1 && (
                     <Button
                       type="submit"

@@ -55,7 +55,10 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
           <Text fontSize={13} h={'18px'}>
             Vauts
           </Text>
-          <Text fontSize={12} h={'16px'} color={'#03c4c6'}>
+          <Text
+            fontSize={12}
+            h={'16px'}
+            color={vaultState === 'notReady' ? 'gray.400' : '#03c4c6'}>
             {vaultState === 'finished'
               ? 'Completed'
               : vaultState === 'ready'

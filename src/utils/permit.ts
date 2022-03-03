@@ -83,7 +83,7 @@ export async function stakingPermit(
   const {UniswapStaking_Address, NPM_Address} = DEPLOYED;
 
   const NPMContract = new Contract(NPM_Address, NPMABI.abi, library);
-  let position = await NPMContract.positions(tokenId);
+  const position = await NPMContract.positions(tokenId);
   // let nonce = await NPMContract.connect(signer).nonces(account);
   // let owner = await NPMContract.ownerOf(tokenId);
   //@ts-ignore
@@ -134,8 +134,8 @@ export async function stakingPermit(
       };
       //@ts-ignore
       msgParams = JSON.stringify(msgParams);
-      var params = [account, msgParams];
-      var method = 'eth_signTypedData_v4';
+      const params = [account, msgParams];
+      const method = 'eth_signTypedData_v4';
       //@ts-ignore
       return {method, params};
     },

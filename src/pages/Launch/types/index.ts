@@ -32,7 +32,7 @@ interface ProjectStep1 {
   description: string;
   tokenName: string;
   tokenSymbol: string;
-  totalSupply: string;
+  totalSupply: number;
   ownerAddress: string;
   owner: string;
 }

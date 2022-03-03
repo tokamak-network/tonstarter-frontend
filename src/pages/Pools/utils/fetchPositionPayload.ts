@@ -49,9 +49,9 @@ const getPositionInfo = async (library: any, account: string) => {
     const positionIds = await StakeUniswap.getUserStakedTokenIds(account);
     const startTime = await StakeUniswap.saleStartTime();
     const endTime = await StakeUniswap.miningEndTime();
-    let result: any = [];
+    const result: any = [];
     try {
-      for (let positionid of positionIds) {
+      for (const positionid of positionIds) {
         const currentTime = Date.now() / 1000;
         //@ts-ignore
         const now = parseInt(currentTime);

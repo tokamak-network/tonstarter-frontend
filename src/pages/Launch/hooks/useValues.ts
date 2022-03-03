@@ -13,10 +13,10 @@ const initialObj: Projects['CreateProject'] = {
   description: '',
   tokenName: '',
   tokenSymbol: '',
-  totalSupply: '',
+  totalSupply: 0,
   ownerAddress: '',
   owner: '',
-  isTokenDeployed: true,
+  isTokenDeployed: false,
   isAllDeployed: false,
   tokenAddress: '',
   vaults: [

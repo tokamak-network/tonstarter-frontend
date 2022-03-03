@@ -29,7 +29,7 @@ export const getClaimalbeList = async (
       library,
     );
 
-    let claimableTokens = [];
+    const claimableTokens = [];
     let isError = false;
     let i = 0;
 

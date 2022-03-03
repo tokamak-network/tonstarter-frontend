@@ -24,6 +24,8 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
     .split(/(?=[A-Z])/)
     .map((e) => `${e.charAt(0).toUpperCase() + e.slice(1)} `);
 
+  const titleTrimed = title.toString().replaceAll(',', '');
+
   return (
     <Flex flexDir={'column'} fontSize={13} pos={'relative'}>
       {nameDisplay === false ? (
@@ -49,11 +51,12 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
                   ? 'input-light'
                   : 'input-dark'
               }
+              fontSize={13}
               {...field}
               id={name}
               h={'32px'}
               _focus={{}}
-              placeholder={`input ${name}`}
+              placeholder={`Input ${titleTrimed}`}
               {...inputStyle}></Input>
           );
         }}
@@ -62,7 +65,7 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
         <ErrorMessage
           name={name}
           render={(msg) => (
-            <Text color={'red.100'}>{`Invalid ${name}`}</Text>
+            <Text color={'red.100'}>{`Invalid ${titleTrimed}`}</Text>
           )}></ErrorMessage>
       </Box>
     </Flex>

@@ -1,12 +1,12 @@
 import {BASE_PROVIDER} from 'constants/index';
 import {BigNumber} from 'ethers';
 import moment from 'moment';
-let provider = BASE_PROVIDER;
+const provider = BASE_PROVIDER;
 
 export const period = (startBlockNum: BigNumber, endBlockNum: BigNumber) => {
-  let startBlock = Number(startBlockNum);
-  let endBlock = Number(endBlockNum);
-  let seconds = (endBlock - startBlock) * 13.3;
+  const startBlock = Number(startBlockNum);
+  const endBlock = Number(endBlockNum);
+  const seconds = (endBlock - startBlock) * 13.3;
   const periodHumanized = moment.duration(seconds, 'seconds').humanize();
   return periodHumanized;
 };
@@ -21,7 +21,7 @@ export const formatStartTime = async (
     const timeStamp = block.timestamp;
     return moment.unix(timeStamp).format('MMM DD, YYYY HH:mm:ss');
   } else {
-    let seconds = (blockNumber - currentBlock) * 13.3;
+    const seconds = (blockNumber - currentBlock) * 13.3;
     const currentBlk = await provider.getBlock(currentBlock);
     const currentTimeStamp = currentBlk.timestamp;
     const timestamp = currentTimeStamp + seconds;
@@ -34,17 +34,17 @@ export const formatEndTime = async (
   endBlockNum: BigNumber,
   currentBlock: number,
 ) => {
-  let startB = Number(startBlockNum);
-  let endB = Number(endBlockNum);
+  const startB = Number(startBlockNum);
+  const endB = Number(endBlockNum);
   if (Number(currentBlock > endB)) {
     const endBlock = await provider.getBlock(endB);
     const timeStamp = endBlock.timestamp;
     return moment.unix(timeStamp).format('MMM DD, YYYY HH:mm:ss');
   } else {
-    let seconds = (endB - startB) * 13;
+    const seconds = (endB - startB) * 13;
     const currentBlk = await provider.getBlock(currentBlock);
     const currentTimeStamp = currentBlk.timestamp;
-    let seconds2 = (startB - currentBlock) * 13;
+    const seconds2 = (startB - currentBlock) * 13;
     const startTimeStamp = currentTimeStamp + seconds2;
     // const startBlock = await provider.getBlock(startB);
     // const startTimeStamp = startBlock.timestamp;

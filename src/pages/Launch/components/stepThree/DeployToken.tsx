@@ -6,6 +6,7 @@ import {
   useColorMode,
   Text,
   Button,
+  Link,
 } from '@chakra-ui/react';
 import {shortenAddress} from 'utils';
 import * as ERC20_FACTORY_A_ABI from 'services/abis/ERC20AFactory.json';
@@ -15,7 +16,8 @@ import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
 import {convertToWei} from 'utils/number';
 import {ethers} from 'ethers';
-import {useState} from 'react';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectApp} from 'store/app/app.reducer';
 
 const DeployToken = () => {
   const theme = useTheme();
@@ -26,18 +28,18 @@ const DeployToken = () => {
     ERC20AFACTORY_ADDRESS,
     ERC20_FACTORY_A_ABI.abi,
   );
+  // @ts-ignore
+  const {data: appConfig} = useAppSelector(selectApp);
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
-  const isTokenDeployed = values.isTokenDeployed;
+  const {isTokenDeployed, tokenName, totalSupply, tokenAddress} = values;
 
   async function deployToken() {
     try {
-      //@ts-ignore
       const {tokenName, tokenSymbol, totalSupply, owner} = values;
-      console.log(tokenName, tokenSymbol, totalSupply, owner);
       const tx = await ERC20_FACTORY_A?.create(
         tokenName,
         tokenSymbol,
-        convertToWei(totalSupply),
+        convertToWei(String(totalSupply)),
         owner,
       );
       const receipt = await tx.wait();
@@ -91,7 +93,7 @@ const DeployToken = () => {
           color={isTokenDeployed ? 'white.100' : 'black.300'}
           fontWeight={600}
           mb={'186px'}>
-          TON
+          {tokenName}
         </Text>
         <Box d="flex" flexDir={'column'} mb={'20px'}>
           <Text
@@ -101,13 +103,22 @@ const DeployToken = () => {
             h={'20px'}>
             Address
           </Text>
-          <Text
+          <Link
+            isExternal={true}
+            outline={'none'}
+            _focus={{
+              outline: 'none',
+            }}
+            _hover={{}}
+            href={`${appConfig.explorerLink}${tokenAddress}`}
             color={isTokenDeployed ? 'white.100' : 'gray.250'}
             fontSize={22}
+            w={'141px'}
             h={'29px'}
-            fontWeight={600}>
-            {shortenAddress('0x0000000000000000')}
-          </Text>
+            fontWeight={600}
+            borderBottom={'1px solid #fff'}>
+            {shortenAddress(tokenAddress)}
+          </Link>
         </Box>
         <Box d="flex" justifyContent={'space-between'}>
           <Flex flexDir={'column'}>
@@ -123,7 +134,7 @@ const DeployToken = () => {
               fontSize={22}
               h={'29px'}
               fontWeight={600}>
-              50,000,000
+              {totalSupply}
             </Text>
           </Flex>
           <Button
