@@ -170,30 +170,38 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
         alignItems={'center'}
         justifyContent={'space-between'}
         h={'50px'}>
-        <Box>
-          <Avatar
-            src={reward.token0Image}
-            bg={colorMode === 'light' ? '#ffffff' : '#222222'}
-            name="T"
-            border={
-              colorMode === 'light' ? '1px solid #e7edf3' : '1px solid #3c3c3c'
-            }
-            h="50px"
-            w="50px"
-            zIndex={'100'}
-          />
-          <Avatar
-            src={reward.token1Image}
-            bg={colorMode === 'light' ? '#ffffff' : '#222222'}
-            name="T"
-            border={
-              colorMode === 'light' ? '1px solid #e7edf3' : '1px solid #3c3c3c'
-            }
-            h="50px"
-            w="50px"
-            zIndex={'100'}
-            ml={'-7px'}
-          />
+        <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
+          <Box>
+            <Avatar
+              src={reward.token0Image}
+              bg={colorMode === 'light' ? '#ffffff' : '#222222'}
+              name="T"
+              border={
+                colorMode === 'light'
+                  ? '1px solid #e7edf3'
+                  : '1px solid #3c3c3c'
+              }
+              h="50px"
+              w="50px"
+              zIndex={'100'}
+            />
+            <Avatar
+              src={reward.token1Image}
+              bg={colorMode === 'light' ? '#ffffff' : '#222222'}
+              name="T"
+              h="50px"
+              border={
+                colorMode === 'light'
+                  ? '1px solid #e7edf3'
+                  : '1px solid #3c3c3c'
+              }
+              w="50px"
+              ml={'-7px'}
+            />
+          </Box>
+          <Text {...REWARD_STYLE.subText({colorMode, fontSize: 14})} mt={'2px'}>
+            {reward.poolName}
+          </Text>
         </Box>
         <Flex flexDir={'row'} alignItems={'center'}>
           <Box>
@@ -236,8 +244,8 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
         </Flex>
       </Flex>
       <Flex mt={'15px'} alignItems={'center'}>
-        <Text {...REWARD_STYLE.mainText({colorMode, fontSize: 19})} mr={'10px'}>
-          #{reward.index} {reward.poolName}
+        <Text {...REWARD_STYLE.mainText({colorMode, fontSize: 30})} mr={'10px'}>
+          #{reward.index}
         </Text>
         <Box>
           <Text {...REWARD_STYLE.subText({colorMode, fontSize: 14})}>
@@ -275,7 +283,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
           </Flex>
         </Box>
       </Flex>
-      <Flex mt={'24px'} flexDirection="row" justifyContent={'space-between'}>
+      <Flex mt={'20px'} flexDirection="row" justifyContent={'space-between'}>
         <Flex alignItems={'center'}>
           <Text {...REWARD_STYLE.progress.mainText({colorMode})}>Progress</Text>
           <Text ml={'8px'} fontSize={'12px'} color={'#0070ed'}>
