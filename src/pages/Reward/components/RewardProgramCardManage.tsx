@@ -51,6 +51,7 @@ type RewardProgramCardManageProps = {
   sendKey: (key: any) => void;
   stakedPools: any[];
   getCheckedBoxes: (checkedBoxes: any) => any;
+  selectedRewards: any;
 };
 
 const {WTON_ADDRESS, TON_ADDRESS, UniswapStaker_Address} = DEPLOYED;
@@ -62,6 +63,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
   sendKey,
   stakedPools,
   getCheckedBoxes,
+  selectedRewards,
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -74,7 +76,6 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
   const [refundableAmount, setRefundableAmount] = useState<string>('0');
   const [numStakers, setNumStakers] = useState<number>(0);
   const [rewardSymbol, setRewardSymbol] = useState<string>('');
-  const [isRefundSelected, setIsRefundSelected] = useState<boolean>(false);
 
   const key = {
     rewardToken: reward.rewardToken,
@@ -390,9 +391,10 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
           reward.endTime > moment().unix() ? null : (
             <Checkbox
               mt={'5px'}
-              isChecked={isRefundSelected}
-              onChange={(e) => {
-                setIsRefundSelected(e.target.checked);
+              isChecked={selectedRewards.some(
+                (selected: any) => selected.index === reward.index,
+              )}
+              onChange={() => {
                 sendKey(key);
                 getCheckedBoxes(reward);
               }}

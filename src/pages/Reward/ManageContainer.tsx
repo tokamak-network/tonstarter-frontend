@@ -205,6 +205,7 @@ export const ManageContainer: FC<ManageContainerProps> = ({
                   sendKey={refundMultipleKeys}
                   stakedPools={stakedPools}
                   getCheckedBoxes={getCheckedBoxes}
+                  selectedRewards={selectedRewards}
                 />
               );
             })}
