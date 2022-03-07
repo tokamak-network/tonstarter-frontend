@@ -94,6 +94,7 @@ export const SideContainer: FC<SideContainerProps> = ({
         )}
       </Box>
 
+
       <PoolComponent pools={pools} rewards={rewards} />
       <LPTokenComponent tokens={LPTokens} />
     </Box>

@@ -30,6 +30,7 @@ import {selectTransactionType} from 'store/refetch.reducer';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {getTokenSymbol} from '../utils/getTokenSymbol';
 import {claimMultiple} from '../actions/claimMultiple';
+import {useBlockNumber} from 'hooks/useBlock';
 
 const {WTON_ADDRESS, UniswapStaker_Address, TOS_ADDRESS} = DEPLOYED;
 
@@ -71,6 +72,16 @@ interface Token {
   claimable: any;
 }
 
+function compare(a: any, b: any) {
+  if (a.symbol < b.symbol) {
+    return -1;
+  }
+  if (a.symbol > b.symbol) {
+    return 1;
+  }
+  return 0;
+}
+
 export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
   // const {data} = useAppSelector(selectModalType);
   const {colorMode} = useColorMode();
@@ -80,7 +91,7 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
   // const [requestAmount, setRequestAmout] = useState<string>('0');
   const [tokenList, setTokenList] = useState<any[]>([]);
   const [disableClaimButton, setDisableClaimButton] = useState<boolean>(true);
-  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
+  const {blockNumber} = useBlockNumber();
   const [pageOptions, setPageOptions] = useState<number>(0);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(6);
@@ -156,7 +167,7 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
       setClaimButtonText('Claim');
     };
     getTokenList();
-  }, [rewards, account, library, transactionType, blockNumber]);
+  }, [rewards, account, library, blockNumber]);
 
   // const getClaimable = async (token: any, index: number) => {
   //   if (account === null || account === undefined || library === undefined) {

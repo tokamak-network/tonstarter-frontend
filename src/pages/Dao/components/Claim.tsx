@@ -10,15 +10,17 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect} from 'react';
 import {useState} from 'react';
 import {openModal} from 'store/modal.reducer';
-import {selectDao} from '../dao.reducer';
-import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+// import {selectDao} from '../dao.reducer';
+import {useAppDispatch} from 'hooks/useRedux';
 import {ClaimList} from '../types/index';
+import useDividendPool from '@Dao/hooks/useDividendPool';
 
 export const Claim = () => {
   const dispatch = useAppDispatch();
-  const {
-    data: {claimList},
-  } = (useAppSelector as any)(selectDao);
+  // const {
+  //   data: {claimList},
+  // } = (useAppSelector as any)(selectDao);
+  const {claimList} = useDividendPool();
   const [balance, setbalance] = useState('-');
   const [btnDisabled, setBtnDisabled] = useState(true);
   const theme = useTheme();
@@ -38,6 +40,7 @@ export const Claim = () => {
   };
 
   useEffect(() => {
+    //@ts-ignore
     const totalBalance = claimList.reduce((acc: any, cur: ClaimList) => {
       return Number(acc) + cur.price;
     }, 0);

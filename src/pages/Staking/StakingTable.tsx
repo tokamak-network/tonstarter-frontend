@@ -26,7 +26,7 @@ import './staking.css';
 import {checkTokenType} from 'utils/token';
 import {TriangleUpIcon, TriangleDownIcon} from '@chakra-ui/icons';
 import {selectTableType} from 'store/table.reducer';
-import {useAppSelector} from 'hooks/useRedux';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {useEffect} from 'react';
 import {setTimeout} from 'timers';
 import {LoadingComponent} from 'components/Loading';
@@ -40,13 +40,13 @@ import {
   // isUnstakeL2All,
   requestUnstakingLayer2All,
   isAblePowerTONSwap,
-  powerTONSwapper,
 } from './actions';
 import {useBlockNumber} from 'hooks/useBlock';
 import {CustomTooltip} from 'components/Tooltip';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {TokenImage} from '@Admin/components/TokenImage';
 import TON_SYMBOL from 'assets/tokens/TON_symbol_nobg.svg';
+import {openModal} from 'store/modal.reducer';
 
 type StakingTableProps = {
   columns: Column[];
@@ -317,6 +317,8 @@ export const StakingTable: FC<StakingTableProps> = ({
     );
   };
 
+  const dispatch = useAppDispatch();
+
   if (isLoading === true || data.length === 0) {
     return (
       <Center>
@@ -424,7 +426,6 @@ export const StakingTable: FC<StakingTableProps> = ({
                     } = cell.row.original;
                     const {canSwap, canUnstake, canWithdraw} = L2status;
                     const type = cell.column.id;
-                    const tokenType = checkTokenType(token);
                     return (
                       <chakra.td
                         py={3}
@@ -650,7 +651,9 @@ export const StakingTable: FC<StakingTableProps> = ({
                     isDisabled={!isPowerTONSwap}
                     fontSize={'14px'}
                     fontWeight={600}
-                    onClick={() => powerTONSwapper()}>
+                    onClick={() =>
+                      dispatch(openModal({type: 'powerTonSwap', data: {}}))
+                    }>
                     Power TON Swap
                   </Button>
                 }></CustomTooltip>

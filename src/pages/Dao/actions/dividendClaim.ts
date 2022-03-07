@@ -29,10 +29,6 @@ export const getClaimalbeList = async (
       library,
     );
 
-    const tokensArr = await LOCKTOS_DIVIDEND_CONTRACT.getAvailableClaims(
-      account,
-    );
-
     let claimableTokens = [];
     let isError = false;
     let i = 0;
@@ -45,6 +41,7 @@ export const getClaimalbeList = async (
         claimableTokens.push(tokenAddress);
         i++;
       } catch (e) {
+        console.log(e);
         isError = true;
       }
     } while (isError === false);
@@ -77,6 +74,7 @@ export const getClaimalbeList = async (
           convertNumber({
             amount: amount.toString(),
             localeString: true,
+            type: tokenSymbol !== 'WTON' ? 'wei' : 'ray',
           }) || '0.00';
         const price = await getTokenPrice(tokenName);
         const obj = {

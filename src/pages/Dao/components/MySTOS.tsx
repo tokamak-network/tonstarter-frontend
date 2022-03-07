@@ -11,14 +11,17 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect} from 'react';
 import {useState} from 'react';
 import {openModal} from 'store/modal.reducer';
-import {selectDao} from '../dao.reducer';
-import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+// import {selectDao} from '../dao.reducer';
+import {useAppDispatch} from 'hooks/useRedux';
+import useDaoData from '@Dao/hooks/useDaoData';
 
 export const MySTOS = () => {
   const dispatch = useAppDispatch();
-  const {
-    data: {tosStakeList: stakeList},
-  } = (useAppSelector as any)(selectDao);
+  // const {
+  //   data: {tosStakeList: stakeList},
+  // } = (useAppSelector as any)(selectDao);
+  const {tosStakeList: stakeList} = useDaoData();
+
   const [balance, setbalance] = useState('-');
   const [btnDisabled, setBtnDisabled] = useState(true);
   const theme = useTheme();

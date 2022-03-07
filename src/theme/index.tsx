@@ -87,6 +87,9 @@ const colors = {
   orange: {
     100: '#f7981c',
   },
+  red: {
+    100: '#ff3b3b',
+  },
 };
 
 interface REWARD_PROP {

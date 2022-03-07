@@ -74,6 +74,10 @@ export const api = createApi({
               feeTier
               liquidity
               tick
+              token0Price
+              token1Price
+              totalValueLockedToken0
+              totalValueLockedToken1
               token0 {
                 id
                 symbol
