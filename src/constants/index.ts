@@ -34,29 +34,12 @@ export const fetchRewardsURL = `${API_SERVER}/reward?chainId=${DEFAULT_NETWORK}&
 export const fetchStarterURL = `${API_SERVER}/starter?chainId=${DEFAULT_NETWORK}`;
 export const fetchPoolsURL = `${API_SERVER}/pool?chainId=${DEFAULT_NETWORK}`;
 export const fetchTosPriceURL = REACT_APP_TOS_PRICE;
-export const fetchEthPriceURL = REACT_APP_ETH_PRICE
+export const fetchEthPriceURL = REACT_APP_ETH_PRICE;
 
 export const permitTOSAddress =
   REACT_APP_MODE === 'DEV' ? '0x865264b30eb29A2978b9503B8AfE2A2DDa33eD7E' : '';
 
 export const TOKENS = tokens;
-
-//Old Ver
-// const MAINNET_DEPLOYED = {
-//   Stake1Proxy_ADDRESS: '0x5F60D1F8720336A76bfb05A0AFCBa471F9673D9f',
-//   TON_ADDRESS: '0x2be5e8c109e2197D077D13A82dAead6a9b3433C5',
-//   TOS_ADDRESS: '0x1b481bca7156E990E2d90d1EC556d929340E9fC3',
-//   WTON_ADDRESS: '0xc4A11aaf6ea915Ed7Ac194161d2fC9384F15bff2',
-//   DepositManager_ADDRESS: '0x56E465f654393fa48f007Ed7346105c7195CEe43',
-//   SeigManager_ADDRESS: '0x710936500aC59e8551331871Cbad3D33d5e0D909',
-//   SwapProxy_ADDRESS: '0x30e65B3A6e6868F044944Aa0e9C5d52F8dcb138d',
-//   TokamakLayer2_ADDRESS: '0x42ccf0769e87cb2952634f607df1c7d62e0bbc52',
-//   Airdrop_ADDRESS: '0x49108acF8c4fD9b70eCfC0804CfB84DE6EF475Ce',
-//   LockTOS_ADDRESS: '',
-//   UniswapStaking_Address: '0xC1349A9a33A0682804c390a3968e26E5a2366153',
-//   NPM_Address: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
-//   BasePool_Address: '0x1c0ce9aaa0c12f53df3b4d8d77b82d6ad343b4e4',
-// };
 
 // Now
 const MAINNET_DEPLOYED = {
