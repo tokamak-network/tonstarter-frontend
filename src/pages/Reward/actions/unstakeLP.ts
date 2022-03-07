@@ -45,18 +45,27 @@ export const unstakeLP = async (args: any) => {
     }),
   );
 
-  const arrayData = stakerIds.map((tokenid: any) => {
-    const data = uniswapStakerContract.interface.encodeFunctionData(
-      'unstakeToken',
-      [key, tokenid],
-    );
-    return data;
-  });
+  const unstakeLpData = await Promise.all(
+    stakerIds.map((tokenid: any) => {
+      const data = uniswapStakerContract.interface.encodeFunctionData(
+        'unstakeToken',
+        [key, tokenid],
+      );
+      return data;
+    }),
+  );
+
+  const refundData = await uniswapStakerContract.interface.encodeFunctionData(
+    'endIncentive',
+    [key],
+  );
+
+  unstakeLpData.push(refundData);
 
   try {
     const receipt = await uniswapStakerContract
       .connect(signer)
-      .multicall(arrayData);
+      .multicall(unstakeLpData);
     store.dispatch(setTxPending({tx: true}));
     if (receipt) {
       toastWithReceipt(receipt, setTxPending, 'Reward');

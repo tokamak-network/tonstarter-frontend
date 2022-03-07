@@ -37,7 +37,8 @@ export type PoolData = {
       endTime: Number,
       allocatedReward: string,
       numStakers: Number,
-      status: string
+      status: string,
+      index: number
   }
 
   export type UpdatedRedward = interfaceReward & {

@@ -13,13 +13,17 @@ import {
   Center,
 } from '@chakra-ui/react';
 import {selectTransactionType} from 'store/refetch.reducer';
-import {useAppSelector} from 'hooks/useRedux';
+import {useAppSelector, useAppDispatch} from 'hooks/useRedux';
 import {getPoolName} from '../../utils/token';
 import {CreateReward} from './components/CreateReward';
 import {RewardProgramCardManage} from './components/RewardProgramCardManage';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {refundMultiple} from './actions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
+import {DEPLOYED} from 'constants/index';
+import {ethers} from 'ethers';
+import {ConfirmMulticallModal} from './RewardModals';
+import {openModal} from 'store/modal.reducer';
 
 // import { LPToken } from './types';
 
@@ -55,7 +59,7 @@ type ManageContainerProps = {
   positionsByPool: any;
 };
 
-const multipleRefundList: any = [];
+// let multipleRefundList: any = [];
 
 export const ManageContainer: FC<ManageContainerProps> = ({
   rewards,
@@ -70,11 +74,18 @@ export const ManageContainer: FC<ManageContainerProps> = ({
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(6);
   const [refundNum, setRefundNum] = useState<number>(0);
+  const [selectedRewards, setSelectedRewards] = useState<any[]>([]);
+  const [multipleRefundList, setMultipleRefundList] = useState<any>([]);
   const {account, library} = useActiveWeb3React();
+  const {UniswapStaker_Address} = DEPLOYED;
+  const dispatch = useAppDispatch();
 
-  let stakedPools = positionsByPool?.data?.positions?.filter(
-    (pool: any) => pool.owner === '0x1f98407aab862cddef78ed252d6f557aa5b0f00d',
-  );
+  let stakedPools = positionsByPool?.data?.positions?.filter((pool: any) => {
+    return (
+      ethers.utils.getAddress(pool.owner) ===
+      ethers.utils.getAddress(UniswapStaker_Address)
+    );
+  });
 
   useEffect(() => {
     setPageIndex(1);
@@ -91,9 +102,10 @@ export const ManageContainer: FC<ManageContainerProps> = ({
   };
 
   useEffect(() => {
-    multipleRefundList.pop();
+    setMultipleRefundList([]);
     setRefundNum(0);
-  }, [transactionType, blockNumber, multipleRefundList]);
+    setSelectedRewards([]);
+  }, [transactionType, blockNumber]);
 
   useEffect(() => {
     setPageIndex(1);
@@ -110,6 +122,7 @@ export const ManageContainer: FC<ManageContainerProps> = ({
   const theme = useTheme();
 
   const refundMultipleKeys = (key: any) => {
+    let copyArr = [...multipleRefundList];
     const keyFound = multipleRefundList.find(
       (listkey: any) => JSON.stringify(listkey) === JSON.stringify(key),
     );
@@ -117,13 +130,34 @@ export const ManageContainer: FC<ManageContainerProps> = ({
       (key: any) => JSON.stringify(key) === JSON.stringify(keyFound),
     );
     if (index > -1) {
-      multipleRefundList.splice(index, 1);
+      copyArr.splice(index, 1);
     } else {
-      multipleRefundList.push(key);
+      copyArr.push(key);
     }
-    setRefundNum(multipleRefundList.length);
-    return multipleRefundList;
+    setRefundNum(copyArr.length);
+    setMultipleRefundList(copyArr);
   };
+
+  const getCheckedBoxes = (checkedReward: any) => {
+    let tempRewards: any[] =
+      selectedRewards.length === 0 ? [] : selectedRewards;
+    const alreadyInArray = tempRewards.some(
+      (reward) => reward.index === checkedReward.index,
+    );
+    if (selectedRewards.length === 0) {
+      setSelectedRewards([checkedReward]);
+    } else if (alreadyInArray) {
+      let filteredArr = tempRewards.filter((reward: any) => {
+        return reward.index !== checkedReward.index;
+      });
+      setSelectedRewards(filteredArr);
+    } else {
+      let copyRewards = Object.assign([], tempRewards);
+      copyRewards.push(checkedReward);
+      setSelectedRewards(copyRewards);
+    }
+  };
+
   return (
     <Flex justifyContent={'space-between'}>
       {rewards.length !== 0 ? (
@@ -160,6 +194,7 @@ export const ManageContainer: FC<ManageContainerProps> = ({
                 allocatedReward: reward.allocatedReward,
                 numStakers: reward.numStakers,
                 status: reward.status,
+                index: reward.index,
               };
               return (
                 <RewardProgramCardManage
@@ -169,6 +204,8 @@ export const ManageContainer: FC<ManageContainerProps> = ({
                   sortString={sortString}
                   sendKey={refundMultipleKeys}
                   stakedPools={stakedPools}
+                  getCheckedBoxes={getCheckedBoxes}
+                  selectedRewards={selectedRewards}
                 />
               );
             })}
@@ -202,13 +239,27 @@ export const ManageContainer: FC<ManageContainerProps> = ({
                       color: '#838383',
                     }
               }
-              onClick={() =>
-                refundMultiple({
-                  userAddress: account,
-                  library: library,
-                  refundKeyList: multipleRefundList,
-                })
-              }>
+              onClick={() => {
+                dispatch(
+                  openModal({
+                    type: 'confirmMulticall',
+                    data: {
+                      userAddress: account,
+                      library: library,
+                      stakedPools,
+                      multipleRefundList: multipleRefundList,
+                      selectedRewards,
+                    },
+                  }),
+                );
+                // () =>
+                // refundMultiple({
+                //   userAddress: account,
+                //   library: library,
+                //   refundKeyList: multipleRefundList,
+                //   stakedPools: stakedPools,
+                // })
+              }}>
               Multi Refund
             </Button>
             <Flex flexDirection={'row'} h={'25px'} alignItems={'center'}>
@@ -315,6 +366,7 @@ export const ManageContainer: FC<ManageContainerProps> = ({
           </Text>{' '}
         </Flex>
       )}
+      <ConfirmMulticallModal />
     </Flex>
   );
 };

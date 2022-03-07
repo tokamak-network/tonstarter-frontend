@@ -95,7 +95,7 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
   const [pageOptions, setPageOptions] = useState<number>(0);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(6);
-  const [symbol, setSymbol] = useState<string>('');
+  // const [symbol, setSymbol] = useState<string>('');
   const [claimTokenAddresses, setClaimTokenAddresses] = useState<any[]>([]);
   const [claimTokens, setClaimTokens] = useState<any[]>([]);
   const [claimButtonText, setClaimButtonText] = useState<string>('Claim');
@@ -112,25 +112,53 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
         ),
       ];
       if (rewardTokens.length !== 0) {
+        if (
+          account === null ||
+          account === undefined ||
+          library === undefined
+        ) {
+          return;
+        }
         let tokensArray: any = [];
+
         await Promise.all(
-          rewardTokens.map(async (token) => {
+          rewardTokens.map(async (token: any) => {
+            const uniswapStakerContract = new Contract(
+              UniswapStaker_Address,
+              STAKERABI.abi,
+              library,
+            );
+
+            const signer = getSigner(library, account);
+            let claimable = await uniswapStakerContract
+              .connect(signer)
+              .rewards(token, account);
+
             const symbol = await getTokenFromContract(token);
+
+            let amount =
+              symbol === 'WTON'
+                ? Number(
+                    ethers.utils.formatUnits(claimable.toString(), 27),
+                  ).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                  })
+                : Number(
+                    ethers.utils.formatEther(claimable.toString()),
+                  ).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                  });
+
             tokensArray.push({
               symbol,
               token,
+              amount,
+              claimable,
             });
           }),
-        );
-
-        const result = tokensArray.sort(compare);
-
-        setTimeout(() => {
-          setTokenList(result);
-        }, 3000);
-
-        tokensArray.forEach((token: any, index: number) => {
-          getClaimable(token, index);
+        ).then(() => {
+          tokensArray.sort((a: any, b: any) => (a.symbol > b.symbol ? 1 : -1));
+          setTokenList(tokensArray);
         });
       }
       setClaimTokens([]);
@@ -140,46 +168,6 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
     };
     getTokenList();
   }, [rewards, account, library, blockNumber]);
-
-  const getClaimable = async (token: any, index: number) => {
-    if (account === null || account === undefined || library === undefined) {
-      return;
-    }
-
-    const uniswapStakerContract = new Contract(
-      UniswapStaker_Address,
-      STAKERABI.abi,
-      library,
-    );
-
-    const signer = getSigner(library, account);
-    let claimable = await uniswapStakerContract
-      .connect(signer)
-      .rewards(token.token, account);
-
-    // format claimable amount to be readable in the tokenList.
-    let claimableParsed =
-      token.symbol === 'WTON'
-        ? Number(
-            ethers.utils.formatUnits(claimable.toString(), 27),
-          ).toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-          })
-        : Number(ethers.utils.formatEther(claimable.toString())).toLocaleString(
-            undefined,
-            {
-              minimumFractionDigits: 2,
-            },
-          );
-
-    // Adding claimable amt to each object in tokenList.
-    let tokenObj = token;
-    tokenObj.amount = claimableParsed;
-    tokenObj.claimable = claimable;
-    let newTokenList = tokenList;
-    newTokenList[index] = tokenObj;
-    // setTokenList(newTokenList);
-  };
 
   const getTokenFromContract = async (address: string) => {
     const symbolContract = await getTokenSymbol(address, library);

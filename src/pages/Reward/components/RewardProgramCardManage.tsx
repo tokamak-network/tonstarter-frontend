@@ -50,6 +50,8 @@ type RewardProgramCardManageProps = {
   sortString: string;
   sendKey: (key: any) => void;
   stakedPools: any[];
+  getCheckedBoxes: (checkedBoxes: any) => any;
+  selectedRewards: any;
 };
 
 const {WTON_ADDRESS, TON_ADDRESS, UniswapStaker_Address} = DEPLOYED;
@@ -60,6 +62,8 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
   sortString,
   sendKey,
   stakedPools,
+  getCheckedBoxes,
+  selectedRewards,
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -72,7 +76,6 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
   const [refundableAmount, setRefundableAmount] = useState<string>('0');
   const [numStakers, setNumStakers] = useState<number>(0);
   const [rewardSymbol, setRewardSymbol] = useState<string>('');
-  const [isRefundSelected, setIsRefundSelected] = useState<boolean>(false);
 
   const key = {
     rewardToken: reward.rewardToken,
@@ -168,30 +171,38 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
         alignItems={'center'}
         justifyContent={'space-between'}
         h={'50px'}>
-        <Box>
-          <Avatar
-            src={reward.token0Image}
-            bg={colorMode === 'light' ? '#ffffff' : '#222222'}
-            name="T"
-            border={
-              colorMode === 'light' ? '1px solid #e7edf3' : '1px solid #3c3c3c'
-            }
-            h="50px"
-            w="50px"
-            zIndex={'100'}
-          />
-          <Avatar
-            src={reward.token1Image}
-            bg={colorMode === 'light' ? '#ffffff' : '#222222'}
-            name="T"
-            border={
-              colorMode === 'light' ? '1px solid #e7edf3' : '1px solid #3c3c3c'
-            }
-            h="50px"
-            w="50px"
-            zIndex={'100'}
-            ml={'-7px'}
-          />
+        <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
+          <Box>
+            <Avatar
+              src={reward.token0Image}
+              bg={colorMode === 'light' ? '#ffffff' : '#222222'}
+              name="T"
+              border={
+                colorMode === 'light'
+                  ? '1px solid #e7edf3'
+                  : '1px solid #3c3c3c'
+              }
+              h="50px"
+              w="50px"
+              zIndex={'100'}
+            />
+            <Avatar
+              src={reward.token1Image}
+              bg={colorMode === 'light' ? '#ffffff' : '#222222'}
+              name="T"
+              h="50px"
+              border={
+                colorMode === 'light'
+                  ? '1px solid #e7edf3'
+                  : '1px solid #3c3c3c'
+              }
+              w="50px"
+              ml={'-7px'}
+            />
+          </Box>
+          <Text {...REWARD_STYLE.subText({colorMode, fontSize: 14})} mt={'2px'}>
+            {reward.poolName}
+          </Text>
         </Box>
         <Flex flexDir={'row'} alignItems={'center'}>
           <Box>
@@ -234,8 +245,8 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
         </Flex>
       </Flex>
       <Flex mt={'15px'} alignItems={'center'}>
-        <Text {...REWARD_STYLE.mainText({colorMode})} mr={'10px'}>
-          {reward.poolName}
+        <Text {...REWARD_STYLE.mainText({colorMode, fontSize: 30})} mr={'10px'}>
+          #{reward.index}
         </Text>
         <Box>
           <Text {...REWARD_STYLE.subText({colorMode, fontSize: 14})}>
@@ -252,7 +263,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
               {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 11})}
               pb={'2px'}
               pl={'2px'}>
-              ({moment.unix(Number(reward.startTime)).format('HH.mm.ss')})
+              ({moment.unix(Number(reward.startTime)).format('HH:mm')})
             </Text>
             {/* </Box> */}
             <Text mb={'5px'} lineHeight={1} px={'5px'}>
@@ -262,20 +273,27 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
             <Text
               {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 14})}
               lineHeight={1}>
-              {moment.unix(Number(reward.endTime)).format('YYYY.MM.DD')}
+              {moment.unix(Number(reward.endTime)).format('YYYY') ===
+              moment.unix(Number(reward.startTime)).format('YYYY')
+                ? moment.unix(Number(reward.endTime)).format('MM.DD')
+                : moment.unix(Number(reward.endTime)).format('YYYY.MM.DD')}
             </Text>
             <Text
               {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 11})}
               pb={'2px'}
               pl={'2px'}>
-              ({moment.unix(Number(reward.endTime)).format('HH.mm.ss')})
+              ({moment.unix(Number(reward.endTime)).format('HH:mm')})
             </Text>
-            {/* </Box> */}
           </Flex>
         </Box>
       </Flex>
-      <Flex mt={'24px'} flexDirection="row" justifyContent={'space-between'}>
-        <Text {...REWARD_STYLE.progress.mainText({colorMode})}>Progress</Text>
+      <Flex mt={'20px'} flexDirection="row" justifyContent={'space-between'}>
+        <Flex alignItems={'center'}>
+          <Text {...REWARD_STYLE.progress.mainText({colorMode})}>Progress</Text>
+          <Text ml={'8px'} fontSize={'12px'} color={'#0070ed'}>
+            {numStakers} Stakers
+          </Text>
+        </Flex>
         <Box d="flex" flexDir="row">
           <Text
             {...REWARD_STYLE.progress.subText({colorMode, fontSize: 12})}
@@ -372,59 +390,94 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
           />
         </Flex>
         <Flex flexDirection="row" justifyContent={'center'}>
-          {numStakers !== 0 ||
-          refundableAmount === '0' ||
+          {refundableAmount === '0' ||
           reward.endTime > moment().unix() ? null : (
             <Checkbox
               mt={'5px'}
-              isChecked={isRefundSelected}
-              onChange={(e) => {
-                setIsRefundSelected(e.target.checked);
+              isChecked={selectedRewards.some(
+                (selected: any) => selected.index === reward.index,
+              )}
+              onChange={() => {
                 sendKey(key);
-              }}></Checkbox>
+                getCheckedBoxes(reward);
+              }}
+            />
           )}
-
-          <Button
-            w={'120px'}
-            h={'33px'}
-            bg={'blue.500'}
-            color="white.100"
-            ml={'10px'}
-            fontSize="16px"
-            _hover={{backgroundColor: 'none'}}
-            _disabled={
-              colorMode === 'light'
-                ? {
-                    backgroundColor: 'gray.25',
-                    cursor: 'default',
-                    color: '#86929d',
-                  }
-                : {
-                    backgroundColor: '#353535',
-                    cursor: 'default',
-                    color: '#838383',
-                  }
-            }
-            disabled={
-              refundableAmount === '0' ||
-              reward.endTime > moment().unix() ||
-              numStakers > 0
-            }
-            onClick={
-              () => refund({library: library, userAddress: account, key: key})
-              // numStakers === 0
-              //   ? refund({library: library, userAddress: account, key: key})
-              //   : unstakeLP({
-              //       library: library,
-              //       userAddress: account,
-              //       key: key,
-              //       reward: reward,
-              //       stakedPools,
-              //     })
-            }>
-            {'Unstake'}
-            {/* {numStakers > 0 ? 'Unstake LP' : 'Refund'} */}
-          </Button>
+          {numStakers > 0 ? (
+            <Tooltip
+              hasArrow
+              placement="top"
+              label="There are still remaining stakers. The gas fee may be higher because refund and unstaking are executed at the same time.
+            If you do a refund later, the amount of the refund may decrease over time."
+              color={theme.colors.white[100]}
+              bg={theme.colors.gray[375]}>
+              <Button
+                w={'120px'}
+                h={'33px'}
+                bg={'blue.500'}
+                color="white.100"
+                ml={'10px'}
+                fontSize="16px"
+                _hover={{backgroundColor: 'none'}}
+                _disabled={
+                  colorMode === 'light'
+                    ? {
+                        backgroundColor: 'gray.25',
+                        cursor: 'default',
+                        color: '#86929d',
+                      }
+                    : {
+                        backgroundColor: '#353535',
+                        cursor: 'default',
+                        color: '#838383',
+                      }
+                }
+                disabled={
+                  refundableAmount === '0' || reward.endTime > moment().unix()
+                }
+                onClick={() =>
+                  unstakeLP({
+                    library: library,
+                    userAddress: account,
+                    key: key,
+                    reward: reward,
+                    stakedPools,
+                  })
+                }>
+                Refund
+              </Button>
+            </Tooltip>
+          ) : (
+            <Button
+              w={'120px'}
+              h={'33px'}
+              bg={'blue.500'}
+              color="white.100"
+              ml={'10px'}
+              fontSize="16px"
+              _hover={{backgroundColor: 'none'}}
+              _disabled={
+                colorMode === 'light'
+                  ? {
+                      backgroundColor: 'gray.25',
+                      cursor: 'default',
+                      color: '#86929d',
+                    }
+                  : {
+                      backgroundColor: '#353535',
+                      cursor: 'default',
+                      color: '#838383',
+                    }
+              }
+              disabled={
+                refundableAmount === '0' || reward.endTime > moment().unix()
+              }
+              onClick={() =>
+                refund({library: library, userAddress: account, key: key})
+              }>
+              Refund
+            </Button>
+          )}
         </Flex>
       </Flex>
     </Flex>

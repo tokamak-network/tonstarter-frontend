@@ -12,9 +12,10 @@ import {
   Button,
   Progress,
 } from '@chakra-ui/react';
-import {useAppSelector} from 'hooks/useRedux';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {checkTokenType} from 'utils/token';
 import {selectTransactionType} from 'store/refetch.reducer';
+import {openModal} from 'store/modal.reducer';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import moment from 'moment';
@@ -31,6 +32,10 @@ import {getTokenSymbol} from '../utils/getTokenSymbol';
 import {UpdatedRedward} from '../types';
 import {LPToken} from '../types';
 import {convertNumber} from 'utils/number';
+import {InformationModal} from '../RewardModals';
+import {useDispatch} from 'react-redux';
+import {gql, useQuery} from '@apollo/client';
+import {rewardReducer} from '../reward.reducer';
 
 const themeDesign = {
   border: {
@@ -49,14 +54,17 @@ const themeDesign = {
 type RewardProgramCardProps = {
   reward: UpdatedRedward;
   selectedToken?: LPToken;
-  selectedPool?: string;
-  sendKey: (key: any) => void;
-  sendUnstakeKey: (key: any) => void;
+  selectedPool?: any;
+  sendKey: (key: any) => any;
+  sendUnstakeKey: (key: any) => any;
   pageIndex: number;
   stakeList: any[];
   unstakeList: any[];
   sortString: string;
   includedPoolLiquidity: string;
+  stakedPools: any;
+  LPTokens: any;
+  getCheckedBoxes: (checkedBoxes: any) => any;
 };
 
 const {
@@ -77,6 +85,9 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   unstakeList,
   sortString,
   includedPoolLiquidity,
+  stakedPools,
+  LPTokens,
+  getCheckedBoxes,
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -94,6 +105,9 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   const [rewardSymbol, setRewardSymbol] = useState<string>('');
   const [isSelected, setIsSelected] = useState<boolean>(false);
   const [isUnstakeSelected, setIsUnstakeselected] = useState<boolean>(false);
+  const [numStakers, setNumStakers] = useState<number>(0);
+  const dispatch = useDispatch();
+
   const key = {
     rewardToken: reward.rewardToken,
     pool: reward.poolAddress,
@@ -107,6 +121,39 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     STAKERABI.abi,
     library,
   );
+
+  // console.log('reward: ', reward);
+  // console.log('reward.poolAddress: ', reward.poolAddress);
+
+  // const GET_POOL_DATA = gql`{
+  //         pool(id:${reward?.poolAddress}){
+  //           id
+  //           tick
+  //           liquidity
+  //           volumeUSD
+  //           volumeToken0
+  //           volumeToken1
+  //           token0Price
+  //           token1Price
+  //           totalValueLockedToken0
+  //           totalValueLockedToken1
+  //           txCount
+  //           totalValueLockedETH
+  //           totalValueLockedUSD
+  //           totalValueLockedUSDUntracked
+  //         }
+  //       }`;
+
+  // console.log('POOLDATA: ', GET_POOL_DATA);
+
+  // const {
+  //   loading: queryLodaing,
+  //   error,
+  //   data: queryData,
+  // } = useQuery(GET_POOL_DATA);
+  // console.log('queryLodaing: ', queryLodaing);
+  // console.log('queryData: ', queryData);
+
   useEffect(() => {
     setIsUnstakeselected(false);
     setIsSelected(false);
@@ -236,6 +283,33 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     selectedPool,
     reward,
   ]);
+  useEffect(() => {
+    async function getIncentives() {
+      if (account === null || account === undefined || library === undefined) {
+        return;
+      }
+
+      const incentiveABI =
+        'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)';
+      const abicoder = ethers.utils.defaultAbiCoder;
+      const incentiveId = soliditySha3(abicoder.encode([incentiveABI], [key]));
+      const signer = getSigner(library, account);
+      const incentiveInfo = await uniswapStakerContract
+        .connect(signer)
+        .incentives(incentiveId);
+
+      setNumStakers(Number(incentiveInfo.numberOfStakes));
+    }
+    getIncentives();
+  }, [
+    account,
+    library,
+    transactionType,
+    blockNumber,
+    selectedToken,
+    pageIndex,
+    reward,
+  ]);
 
   const getReward = async () => {
     if (account === null || account === undefined || library === undefined) {
@@ -330,32 +404,70 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
       });
     }
   };
+
   return (
-    <Flex {...REWARD_STYLE.containerStyle({colorMode})} flexDir={'column'}>
+    <Flex
+      {...REWARD_STYLE.containerStyle({colorMode})}
+      flexDir={'column'}
+      // onClick={(e: React.ChangeEvent<HTMLInputElement>) => {
+      //   // console.log(e.target.type);
+      //   // console.log('target id:', e.target.id);
+      //   // console.log('e.target: ', e.target);
+      //   // if (e.target.type !== 'checkbox') {
+      // onClick={() => {
+      //   dispatch(
+      //     openModal({
+      //       type: 'information',
+      //       data: {
+      //         currentReward: reward,
+      //         // refundableAmount,
+      //         currentStakedPools: stakedPools,
+      //         currentKey: key,
+      //         currentUserAddress: account,
+      //         currentPositions: LPTokens,
+      //       },
+      //     }),
+      //   );
+      // }}
+      //   // }
+      // }}
+      _hover={{
+        border: '2px solid #0070ED',
+        cursor: 'pointer',
+      }}>
       <Flex flexDir={'row'} width={'100%'} alignItems={'center'} h={'50px'}>
-        <Box>
-          <Avatar
-            src={reward.token0Image}
-            bg={colorMode === 'light' ? '#ffffff' : '#222222'}
-            name="T"
-            border={
-              colorMode === 'light' ? '1px solid #e7edf3' : '1px solid #3c3c3c'
-            }
-            h="50px"
-            w="50px"
-            zIndex={'100'}
-          />
-          <Avatar
-            src={reward.token1Image}
-            bg={colorMode === 'light' ? '#ffffff' : '#222222'}
-            name="T"
-            h="50px"
-            border={
-              colorMode === 'light' ? '1px solid #e7edf3' : '1px solid #3c3c3c'
-            }
-            w="50px"
-            ml={'-7px'}
-          />
+        <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
+          <Box>
+            <Avatar
+              src={reward.token0Image}
+              bg={colorMode === 'light' ? '#ffffff' : '#222222'}
+              name="T"
+              border={
+                colorMode === 'light'
+                  ? '1px solid #e7edf3'
+                  : '1px solid #3c3c3c'
+              }
+              h="50px"
+              w="50px"
+              zIndex={'100'}
+            />
+            <Avatar
+              src={reward.token1Image}
+              bg={colorMode === 'light' ? '#ffffff' : '#222222'}
+              name="T"
+              h="50px"
+              border={
+                colorMode === 'light'
+                  ? '1px solid #e7edf3'
+                  : '1px solid #3c3c3c'
+              }
+              w="50px"
+              ml={'-7px'}
+            />
+          </Box>
+          <Text {...REWARD_STYLE.subText({colorMode, fontSize: 14})} mt={'2px'}>
+            {reward.poolName}
+          </Text>
         </Box>
         {staked && selectedToken ? (
           <Flex flexDir={'row'} alignItems={'center'}>
@@ -377,21 +489,23 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
             </Text>
             <Box textAlign={'right'}>
               <Text>
-                {ethers.utils.getAddress(reward.rewardToken) === ethers.utils.getAddress(WTON_ADDRESS) ? (Number(ethers.utils.formatUnits(myReward, '27')) < 0.005
-                  ? '<0.00'
-                  : Number(ethers.utils.formatUnits(myReward, '27')).toLocaleString(
-                      undefined,
-                      {
+                {ethers.utils.getAddress(reward.rewardToken) ===
+                ethers.utils.getAddress(WTON_ADDRESS)
+                  ? Number(ethers.utils.formatUnits(myReward, '27')) < 0.005
+                    ? '<0.00'
+                    : Number(
+                        ethers.utils.formatUnits(myReward, '27'),
+                      ).toLocaleString(undefined, {
                         maximumFractionDigits: 2,
-                      },
-                    ))  : ( Number(ethers.utils.formatEther(myReward)) < 0.005
+                      })
+                  : Number(ethers.utils.formatEther(myReward)) < 0.005
                   ? '<0.00'
                   : Number(ethers.utils.formatEther(myReward)).toLocaleString(
                       undefined,
                       {
                         maximumFractionDigits: 2,
                       },
-                    ))  }{' '}
+                    )}{' '}
                 {
                   checkTokenType(ethers.utils.getAddress(reward.rewardToken))
                     .name
@@ -434,7 +548,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
       <Flex mt={'15px'} alignItems={'center'}>
         <Text
           cursor={'pointer'}
-          {...REWARD_STYLE.mainText({colorMode})}
+          {...REWARD_STYLE.mainText({colorMode, fontSize: 30})}
           mr={'10px'}
           onClick={(e) => {
             e.preventDefault();
@@ -442,7 +556,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
               `https://info.uniswap.org/#/pools/${reward.poolAddress}`,
             );
           }}>
-          {reward.poolName}
+          #{reward.index}
         </Text>
         <Box>
           <Text {...REWARD_STYLE.subText({colorMode, fontSize: 14})}>
@@ -459,7 +573,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
               {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 11})}
               pb={'2px'}
               pl={'2px'}>
-              ({moment.unix(Number(reward.startTime)).format('HH.mm.ss')})
+              ({moment.unix(Number(reward.startTime)).format('HH:mm')})
             </Text>
             {/* </Box> */}
             <Text mb={'5px'} lineHeight={1} px={'5px'}>
@@ -469,20 +583,30 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
             <Text
               {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 14})}
               lineHeight={1}>
-              {moment.unix(Number(reward.endTime)).format('YYYY.MM.DD')}
+              {/*If years are same for start and end times, remove the year from the end time. */}
+              {moment.unix(Number(reward.endTime)).format('YYYY') ===
+              moment.unix(Number(reward.startTime)).format('YYYY')
+                ? moment.unix(Number(reward.endTime)).format('MM.DD')
+                : moment.unix(Number(reward.endTime)).format('YYYY.MM.DD')}
             </Text>
             <Text
               {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 11})}
               pb={'2px'}
               pl={'2px'}>
-              ({moment.unix(Number(reward.endTime)).format('HH.mm.ss')})
+              ({moment.unix(Number(reward.endTime)).format('HH:mm')})
             </Text>
             {/* </Box> */}
           </Flex>
         </Box>
       </Flex>
       <Flex mt={'24px'} flexDirection="row" justifyContent={'space-between'}>
-        <Text {...REWARD_STYLE.progress.mainText({colorMode})}>Progress</Text>
+        <Flex alignItems={'center'}>
+          <Text {...REWARD_STYLE.progress.mainText({colorMode})}>Progress</Text>
+          <Text ml={'8px'} fontSize={'12px'} color={'#0070ed'}>
+            {numStakers} Stakers
+          </Text>
+        </Flex>
+
         <Box d="flex" flexDir="row">
           <Text
             {...REWARD_STYLE.progress.subText({colorMode, fontSize: 12})}
@@ -537,9 +661,11 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
                 lineHeight={'0.7'}>
                 {ethers.utils.getAddress(reward.rewardToken) ===
                 ethers.utils.getAddress(WTON_ADDRESS)
-                  ? Number(ethers.utils.formatUnits(reward.allocatedReward, 27)).toLocaleString(undefined, {
-                    minimumFractionDigits: 2,
-                  })
+                  ? Number(
+                      ethers.utils.formatUnits(reward.allocatedReward, 27),
+                    ).toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                    })
                   : Number(
                       ethers.utils.formatEther(
                         reward.allocatedReward.toString(),
@@ -589,11 +715,16 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
             <Box pb={'0px'}>
               <Checkbox
                 mt={'5px'}
+                zIndex={100}
                 isChecked={isSelected}
+                onClick={(e) => e.stopPropagation()}
                 onChange={(e) => {
+                  e.stopPropagation();
                   setIsSelected(e.target.checked);
                   sendKey(key);
-                }}></Checkbox>
+                  getCheckedBoxes(reward);
+                }}
+              />
             </Box>
           ) : null}
 
@@ -604,11 +735,16 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
             <Box pb={'0px'}>
               <Checkbox
                 mt={'5px'}
+                zIndex={100}
                 isChecked={isUnstakeSelected}
+                onClick={(e) => e.stopPropagation()}
                 onChange={(e) => {
+                  e.stopPropagation();
                   setIsUnstakeselected(e.target.checked);
                   sendUnstakeKey(key);
-                }}></Checkbox>
+                  getCheckedBoxes(reward);
+                }}
+              />
             </Box>
           ) : null}
           <Button
@@ -651,6 +787,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
           </Button>
         </Flex>
       </Flex>
+      <InformationModal />
     </Flex>
   );
 };

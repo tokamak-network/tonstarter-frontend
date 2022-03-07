@@ -13,7 +13,7 @@ import {
   Center,
 } from '@chakra-ui/react';
 import {selectTransactionType} from 'store/refetch.reducer';
-import {useAppSelector} from 'hooks/useRedux';
+import {useAppSelector, useAppDispatch} from 'hooks/useRedux';
 import {getPoolName} from '../../utils/token';
 import {ClaimReward} from './components/ClaimReward';
 import {RewardProgramCard} from './components/RewardProgramCard';
@@ -25,6 +25,9 @@ import {getSigner} from 'utils/contract';
 import {DEPLOYED} from 'constants/index';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import {Contract} from '@ethersproject/contracts';
+import {ethers} from 'ethers';
+import {ConfirmMulticallModal} from './RewardModals';
+import {openModal} from 'store/modal.reducer';
 
 type Pool = {
   id: string;
@@ -44,17 +47,21 @@ type RewardContainerProps = {
   selectedPool?: Pool;
   pools: any[];
   sortString: string;
+  positionsByPool: any;
+  LPTokens: any;
 };
 const {UniswapStaker_Address} = DEPLOYED;
 
-const multipleStakeList: any = [];
-const multipleUnstakeList: any = [];
+// let multipleStakeList: any = [];
+// let multipleUnstakeList: any = [];
 export const RewardContainer: FC<RewardContainerProps> = ({
   rewards,
   selectedPool,
   position,
   pools,
   sortString,
+  positionsByPool,
+  LPTokens,
 }) => {
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [pageOptions, setPageOptions] = useState<number>(0);
@@ -66,6 +73,18 @@ export const RewardContainer: FC<RewardContainerProps> = ({
   const [staked, setstaked] = useState(true);
   const {colorMode} = useColorMode();
   const theme = useTheme();
+  const dispatch = useAppDispatch();
+  const [selectedRewards, setSelectedRewards] = useState<any[]>([]);
+  const [multipleStakeList, setMultipleStakeList] = useState<any[]>([]);
+  const [multipleUnstakeList, setMultipleUnstakeList] = useState<any[]>([]);
+
+  let stakedPools = positionsByPool?.data?.positions?.filter((pool: any) => {
+    return (
+      ethers.utils.getAddress(pool.owner) ===
+      ethers.utils.getAddress(UniswapStaker_Address)
+    );
+  });
+
   useEffect(() => {
     const pagenumber = parseInt(
       ((rewards.length - 1) / pageLimit + 1).toString(),
@@ -83,55 +102,13 @@ export const RewardContainer: FC<RewardContainerProps> = ({
   };
 
   useEffect(() => {
-    multipleStakeList.pop();
-    multipleUnstakeList.pop();
-    setStakeNum(0);
-    setUnstakeNum(0);
-  }, [
-    transactionType,
-    blockNumber,
-    multipleStakeList,
-    multipleUnstakeList,
-    position,
-  ]);
-
-  const goToNextPage = () => {
-    setPageIndex(pageIndex + 1);
-  };
-
-  const gotToPreviousPage = () => {
-    setPageIndex(pageIndex - 1);
-  };
-
-  const stakeMultipleKeys = (key: any) => {
-    const keyFound = multipleStakeList.find( (listkey: any) => JSON.stringify(listkey) === JSON.stringify(key));
-    const index = multipleStakeList.findIndex((key: any) => JSON.stringify(key) === JSON.stringify(keyFound));
-
-    if (index > -1) {
-      multipleStakeList.splice(index,1)
-    }
-    else {
-      multipleStakeList.push(key);
-    }
-    setStakeNum(multipleStakeList.length);
-    return multipleStakeList;
-  };
-
-  const unstakeMultipleKeys = (key: any) => {
-    const keyFound = multipleUnstakeList.find( (listkey: any) => JSON.stringify(listkey) === JSON.stringify(key));
-    const index = multipleUnstakeList.findIndex((key: any) => JSON.stringify(key) === JSON.stringify(keyFound));
-    if (index > -1) {
-      multipleUnstakeList.splice(index,1)
-    }
-    else {
-      multipleUnstakeList.push(key);
-    }
-    setUnstakeNum(multipleUnstakeList.length);
-    return multipleUnstakeList;
-  };
-
-  useEffect(() => {
+    // This useEffect runs every time a user selects a new LP token to manage. Or if a txn has been submitted and completed
     async function checkStaked() {
+      setStakeNum(0);
+      setUnstakeNum(0);
+      setSelectedRewards([]);
+      setMultipleStakeList([]);
+      setMultipleUnstakeList([]);
       if (account === null || account === undefined || library === undefined) {
         return;
       }
@@ -151,7 +128,71 @@ export const RewardContainer: FC<RewardContainerProps> = ({
       }
     }
     checkStaked();
-  }, [position]);
+  }, [account, library, position, transactionType, blockNumber]);
+
+  const goToNextPage = () => {
+    setPageIndex(pageIndex + 1);
+  };
+
+  const gotToPreviousPage = () => {
+    setPageIndex(pageIndex - 1);
+  };
+
+  const stakeMultipleKeys = (key: any) => {
+    let copyArr = [...multipleStakeList];
+    const keyFound = copyArr.find((listkey: any) => {
+      return JSON.stringify(listkey) === JSON.stringify(key);
+    });
+
+    const index = copyArr.findIndex(
+      (key: any) => JSON.stringify(key) === JSON.stringify(keyFound),
+    );
+
+    if (index > -1) {
+      copyArr.splice(index, 1);
+    } else {
+      copyArr.push(key);
+    }
+    setMultipleStakeList(copyArr);
+    setStakeNum(copyArr.length);
+  };
+
+  const unstakeMultipleKeys = (key: any) => {
+    let copyArr = [...multipleUnstakeList];
+    const keyFound = multipleUnstakeList.find(
+      (listkey: any) => JSON.stringify(listkey) === JSON.stringify(key),
+    );
+    const index = multipleUnstakeList.findIndex(
+      (key: any) => JSON.stringify(key) === JSON.stringify(keyFound),
+    );
+    if (index > -1) {
+      copyArr.splice(index, 1);
+    } else {
+      copyArr.push(key);
+    }
+    setMultipleUnstakeList(copyArr);
+    setUnstakeNum(copyArr.length);
+  };
+
+  const getCheckedBoxes = (checkedReward: any) => {
+    let tempRewards: any[] =
+      selectedRewards.length === 0 ? [] : selectedRewards;
+    const alreadyInArray = tempRewards.some(
+      (reward) => reward.index === checkedReward.index,
+    );
+    if (selectedRewards.length === 0) {
+      setSelectedRewards([checkedReward]);
+    } else if (alreadyInArray) {
+      let filteredArr = tempRewards.filter((reward: any) => {
+        return reward.index !== checkedReward.index;
+      });
+      setSelectedRewards(filteredArr);
+    } else {
+      let copyRewards = Object.assign([], tempRewards);
+      copyRewards.push(checkedReward);
+      setSelectedRewards(copyRewards);
+    }
+  };
 
   return (
     <Flex justifyContent={'space-between'}>
@@ -185,6 +226,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({
                 allocatedReward: reward.allocatedReward,
                 numStakers: reward.numStakers,
                 status: reward.status,
+                index: reward.index,
               };
               return (
                 <RewardProgramCard
@@ -199,6 +241,9 @@ export const RewardContainer: FC<RewardContainerProps> = ({
                   unstakeList={multipleUnstakeList}
                   sortString={sortString}
                   includedPoolLiquidity={includedPool.liquidity}
+                  stakedPools={stakedPools}
+                  LPTokens={LPTokens}
+                  getCheckedBoxes={getCheckedBoxes}
                 />
               );
             })}
@@ -235,15 +280,29 @@ export const RewardContainer: FC<RewardContainerProps> = ({
                       color: '#838383',
                     }
               }
-              onClick={() =>
-                stakeMultiple({
-                  userAddress: account,
-                  tokenid: Number(position?.id),
-                  library: library,
-                  stakeKeyList: multipleStakeList,
-                  unstakeKeyList: multipleUnstakeList,
-                })
-              }>
+              onClick={() => {
+                dispatch(
+                  openModal({
+                    type: 'confirmMulticall',
+                    data: {
+                      stakeKeyList: multipleStakeList,
+                      unstakeKeyList: multipleUnstakeList,
+                      tokenid: Number(position?.id),
+                      userAddress: account,
+                      library: library,
+                      selectedRewards,
+                    },
+                  }),
+                );
+
+                // stakeMultiple({
+                //   userAddress: account,
+                //   tokenid: Number(position?.id),
+                //   library: library,
+                //   stakeKeyList: multipleStakeList,
+                //   unstakeKeyList: multipleUnstakeList,
+                // });
+              }}>
               Multicall
             </Button>
             {/* <Button
@@ -384,8 +443,8 @@ export const RewardContainer: FC<RewardContainerProps> = ({
           </Text>{' '}
         </Flex>
       )}
-
       <Flex>{/* <ClaimReward /> */}</Flex>
+      <ConfirmMulticallModal />
     </Flex>
   );
 };

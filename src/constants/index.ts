@@ -30,7 +30,7 @@ export const BASE_PROVIDER =
     : ethers.getDefaultProvider('mainnet');
 export const fetchStakeURL = `${API_SERVER}/stakecontracts?chainId=${DEFAULT_NETWORK}`;
 export const fetchValutURL = `${API_SERVER}/vaults?chainId=${DEFAULT_NETWORK}`;
-export const fetchRewardsURL = `${API_SERVER}/reward?chainId=${DEFAULT_NETWORK}`;
+export const fetchRewardsURL = `${API_SERVER}/reward?chainId=${DEFAULT_NETWORK}&pagesize=200`;
 export const fetchStarterURL = `${API_SERVER}/starter?chainId=${DEFAULT_NETWORK}`;
 export const fetchPoolsURL = `${API_SERVER}/pool?chainId=${DEFAULT_NETWORK}`;
 export const fetchTosPriceURL = REACT_APP_TOS_PRICE;
