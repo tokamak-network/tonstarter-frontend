@@ -5,7 +5,6 @@ import {Formik, Form} from 'formik';
 import useValues from '@Launch/hooks/useValues';
 import type {StepNumber} from '@Launch/types';
 import ProjectSchema from '@Launch/utils/projectSchema';
-import {errors} from 'ethers';
 import {PageHeader} from 'components/PageHeader';
 import Steps from '@Launch/components/Steps';
 import OpenStepTwo from '@Launch/components/OpenStepTwo';
@@ -15,9 +14,23 @@ import {selectLaunch} from '@Launch/launch.reducer';
 import OpenStepThree from '@Launch/components/OpenStepThree';
 import {toChecksumAddress} from 'web3-utils';
 
+const StepComponent = (props: {step: StepNumber}) => {
+  const {step} = props;
+  switch (step) {
+    case 1:
+      return <OpenStepOne></OpenStepOne>;
+    case 2:
+      return <OpenStepTwo></OpenStepTwo>;
+    case 3:
+      return <OpenStepThree></OpenStepThree>;
+    default:
+      return <div>no component for this step</div>;
+  }
+};
+
 const MainScreen = () => {
   const [step, setStep] = useState<StepNumber>(1);
-  const [isDisable, setDisable] = useState<boolean>(true);
+  const [isDisable, setDisable] = useState<boolean>(false);
   const {initialValues, setInitialValues} = useValues();
   const theme = useTheme();
   const match = useRouteMatch();
@@ -47,20 +60,6 @@ const MainScreen = () => {
     },
     [step],
   );
-
-  const StepComponent = (props: {step: StepNumber}) => {
-    const {step} = props;
-    switch (step) {
-      case 1:
-        return <OpenStepOne></OpenStepOne>;
-      case 2:
-        return <OpenStepTwo></OpenStepTwo>;
-      case 3:
-        return <OpenStepThree></OpenStepThree>;
-      default:
-        return <div>no component for this step</div>;
-    }
-  };
 
   return (
     <Flex

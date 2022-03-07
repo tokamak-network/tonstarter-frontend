@@ -17,7 +17,7 @@ interface VaultSchedule {
   claimTokenAllocation: number;
 }
 
-type VaultCommon = Vault & {params: VaultSchedule[]};
+type VaultCommon = Vault & {claim: VaultSchedule[]};
 
 type VaultDao = VaultCommon & {};
 
@@ -32,7 +32,7 @@ interface ProjectStep1 {
   description: string;
   tokenName: string;
   tokenSymbol: string;
-  totalSupply: number;
+  totalSupply: number | undefined;
   ownerAddress: string;
   owner: string;
 }

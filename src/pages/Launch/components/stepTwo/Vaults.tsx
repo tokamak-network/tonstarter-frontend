@@ -15,27 +15,29 @@ import arrowRight from 'assets/svgs/arrow_right_normal_icon.svg';
 import VaultCard from '../common/VaultCard';
 import {useFormikContext} from 'formik';
 import {useState} from 'react';
-import {Vault} from '@Launch/types';
+import {Projects, Vault} from '@Launch/types';
 import {useAppDispatch} from 'hooks/useRedux';
 import {changeVault} from '@Launch/launch.reducer';
 import useValues from '@Launch/hooks/useValues';
+import {motion} from 'framer-motion';
+import AddVaultCard from '@Launch/components/common/AddVaultCard';
 
 const Vaults = () => {
   const theme = useTheme();
   const {OpenCampaginDesign} = theme;
   const {colorMode} = useColorMode();
-  const {values, setFieldValue} = useFormikContext();
+  const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const [valutName, setVaultName] = useState<string>('');
   const [tokenAllocation, setTokenAllocation] = useState<string>('');
-  //@ts-ignore
   const vaultsList = values.vaults;
   const dispatch = useAppDispatch();
   const {initialVaultValue} = useValues();
+  const [transX, setTransX] = useState<number>(0);
 
   return (
     <Flex
       {...OpenCampaginDesign.border({colorMode})}
-      w={'600px'}
+      w={'1100px'}
       h={'336px'}
       bg={'white.100'}
       flexDir="column">
@@ -98,27 +100,35 @@ const Vaults = () => {
           w={'24px'}
           h={'48px'}
           alignSelf="center"
+          onClick={() => setTransX(transX - 50)}
         />
-        <Flex w={'520px'} alignItems="center" mx={'15px'}>
-          {vaultsList?.map((vault: Vault, index: number) => {
-            const {vaultName, vaultTokenAllocation, isMandatory} = vault;
-            const strVaultTokenAllocation =
-              vaultTokenAllocation?.toString() || '0';
-            const portion = (vaultTokenAllocation || 0 / 1200000).toString();
-            return (
-              <Box
-                mr={(index + 1) % 3 !== 0 ? '20px' : 0}
-                onClick={() => dispatch(changeVault({data: vaultName}))}>
-                <VaultCard
-                  key={`${vaultName}_${vaultTokenAllocation}`}
-                  status={vaultName === 'Public' ? 'public' : 'notPublic'}
-                  name={vaultName}
-                  tokenAllocation={strVaultTokenAllocation}
-                  portion={portion}
-                  isMandatory={isMandatory}></VaultCard>
-              </Box>
-            );
-          })}
+        <Flex w={'520px'} alignItems="center" mx={'15px'} overflow={'hidden'}>
+          <motion.div animate={{x: transX}} style={{display: 'flex'}}>
+            {vaultsList?.map((vault: Vault, index: number) => {
+              const {vaultName, vaultTokenAllocation, isMandatory} = vault;
+              const strVaultTokenAllocation =
+                vaultTokenAllocation?.toString() || '0';
+              const portion = (vaultTokenAllocation || 0 / 1200000).toString();
+              return (
+                <Box
+                  mr={(index + 1) % 3 !== 0 ? '20px' : 0}
+                  onClick={() => dispatch(changeVault({data: vaultName}))}>
+                  <VaultCard
+                    key={`${vaultName}_${vaultTokenAllocation}`}
+                    status={vaultName === 'Public' ? 'public' : 'notPublic'}
+                    name={vaultName}
+                    tokenAllocation={strVaultTokenAllocation}
+                    portion={portion}
+                    isMandatory={isMandatory}></VaultCard>
+                </Box>
+              );
+            })}
+            <Box
+            // onClick={() => dispatch(changeVault({ data: vaultName }))}
+            >
+              <AddVaultCard></AddVaultCard>
+            </Box>
+          </motion.div>
         </Flex>
         <Image
           cursor={'pointer'}
@@ -126,6 +136,7 @@ const Vaults = () => {
           w={'24px'}
           h={'48px'}
           alignSelf="center"
+          onClick={() => setTransX(transX + 50)}
         />
       </Box>
       <Box>

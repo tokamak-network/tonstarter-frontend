@@ -19,6 +19,7 @@ type StakingModal =
   | 'pool_simulator';
 type StarterModal = 'Starter_Approve';
 type AdminModal = 'Admin_Distribute' | 'Admin_EditPool';
+type LaunchModal = 'Launch_VaultProps' | 'Launch_CreateVault';
 
 type GeneralModal = 'calendar';
 type RewardModal = 'search';
@@ -28,7 +29,8 @@ export type ModalType =
   | GeneralModal
   | RewardModal
   | StarterModal
-  | AdminModal;
+  | AdminModal
+  | LaunchModal;
 
 export type Modal = {
   modal?: ModalType;

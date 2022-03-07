@@ -4,6 +4,7 @@ import Line from '@Launch/components/common/Line';
 import Vaults from '@Launch/components/stepTwo/Vaults';
 import Middle from '@Launch/components/stepTwo/Middle';
 import Bottom from '@Launch/components/stepTwo/Bottom';
+import LaunchVaultPropModal from './modals/VaultProps';
 
 const OpenStepTwo = () => {
   return (
@@ -31,6 +32,7 @@ const OpenStepTwo = () => {
       <Flex px={'24px'} pb={'35px'}>
         <Bottom></Bottom>
       </Flex>
+      <LaunchVaultPropModal></LaunchVaultPropModal>
     </Flex>
   );
 };
