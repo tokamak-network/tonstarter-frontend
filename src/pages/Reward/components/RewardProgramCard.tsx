@@ -573,7 +573,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
               {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 11})}
               pb={'2px'}
               pl={'2px'}>
-              ({moment.unix(Number(reward.startTime)).format('HH.mm')})
+              ({moment.unix(Number(reward.startTime)).format('HH:mm')})
             </Text>
             {/* </Box> */}
             <Text mb={'5px'} lineHeight={1} px={'5px'}>
@@ -593,7 +593,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
               {...REWARD_STYLE.subTextBlack({colorMode, fontSize: 11})}
               pb={'2px'}
               pl={'2px'}>
-              ({moment.unix(Number(reward.endTime)).format('HH.mm')})
+              ({moment.unix(Number(reward.endTime)).format('HH:mm')})
             </Text>
             {/* </Box> */}
           </Flex>
