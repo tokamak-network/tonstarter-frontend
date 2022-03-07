@@ -54,7 +54,6 @@ import {CloseButton} from 'components/Modal/CloseButton';
 import {useGraphQueries} from 'hooks/useGraphQueries';
 import {gql, useQuery} from '@apollo/client';
 import {usePoolByArrayQuery} from 'store/data/generated';
-
 const {
   WTON_ADDRESS,
   TON_ADDRESS,
@@ -93,9 +92,9 @@ export const InformationModal = () => {
     dispatch(closeModal());
   }, [dispatch]);
 
-  console.log('initial data: ', data);
+  // console.log('initial data: ', data);
 
-  console.log(data?.data?.currentReward?.poolAddress);
+  // console.log(data?.data?.currentReward?.poolAddress);
 
   // const GET_POOL_DATA = gql`
   //   query poolByArray($address: [${
@@ -107,11 +106,16 @@ export const InformationModal = () => {
   //   }
   // `;
 
-  const queryData = usePoolByArrayQuery({
-    address: data?.data?.currentReward?.poolAddress,
-  });
+  const queryData = usePoolByArrayQuery(
+    {
+      address: data?.data?.currentReward?.poolAddress,
+    },
+    // {
+    //   pollingInterval: ms`2s`,
+    // },
+  );
   // console.log('queryLodaing: ', queryLodaing);
-  console.log('queryData: ', queryData);
+  // console.log('queryData: ', queryData);
 
   useEffect(() => {
     // async function fetchData() {
