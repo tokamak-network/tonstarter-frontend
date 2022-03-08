@@ -18,15 +18,13 @@ import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {checkTokenType} from 'utils/token';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {closeModal, selectModalType, openModal} from 'store/modal.reducer';
-import {useActiveWeb3React} from 'hooks/useWeb3';
-import tooltipIcon from 'assets/svgs/input_question_icon.svg';
-import moment from 'moment';
 import {DEPLOYED} from 'constants/index';
 import {stakeMultiple, refundMultiple} from '../actions';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import {utils, ethers} from 'ethers';
 import {useWeb3React} from '@web3-react/core';
 import {CloseButton} from 'components/Modal/CloseButton';
+import {useERC20WithTokenList} from 'hooks/useERC20WithTokenList';
 
 const {
   WTON_ADDRESS,
@@ -89,26 +87,6 @@ export const ConfirmMulticallModal = () => {
     }
   }, [data]);
 
-  //   const formatAmount = (amount: any, token: any) => {
-  //     // Double check DOC address. Refundable amount seems broken.
-  //     if (token && amount) {
-  //       return ethers.utils.getAddress(token) ===
-  //         ethers.utils.getAddress(WTON_ADDRESS)
-  //         ? Number(ethers.utils.formatUnits(amount, 27)).toLocaleString(
-  //             undefined,
-  //             {
-  //               minimumFractionDigits: 2,
-  //             },
-  //           )
-  //         : Number(ethers.utils.formatEther(amount.toString())).toLocaleString(
-  //             undefined,
-  //             {
-  //               minimumFractionDigits: 2,
-  //             },
-  //           );
-  //     }
-  //   };
-
   const confirmAction = () => {
     handleCloseModal();
     if (!currentMultipleRefundList) {
@@ -128,6 +106,8 @@ export const ConfirmMulticallModal = () => {
       });
     }
   };
+
+  const updatedRewards = useERC20WithTokenList(currentSelectedRewards);
 
   return stakeList?.length > 0 ||
     unstakeList?.length > 0 ||
@@ -196,24 +176,13 @@ export const ConfirmMulticallModal = () => {
               </Box>
             </Box>
           ) : null}
-          {currentSelectedRewards.map((reward) => {
+          {updatedRewards.map((reward) => {
             return (
               <Box display={'flex'} justifyContent={'space-between'}>
                 <Box>
                   #{reward.index} {reward.poolName}
                 </Box>
-                <Box>
-                  Reward Token:{' '}
-                  {reward.rewardToken === TOS_ADDRESS
-                    ? 'TOS'
-                    : reward.rewardToken === WTON_ADDRESS
-                    ? 'WTON'
-                    : reward.rewardToken === AURA_ADDRESS
-                    ? 'AURA'
-                    : reward.rewardToken === DOC_ADDRESS
-                    ? 'DOC'
-                    : 'TON'}
-                </Box>
+                <Box>Reward Token: {reward.symbol}</Box>
               </Box>
             );
           })}
