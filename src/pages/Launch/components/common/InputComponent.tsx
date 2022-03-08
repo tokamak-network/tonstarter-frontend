@@ -17,7 +17,7 @@ const InputComponentStyle = {
 };
 
 const InputComponent: React.FC<InputComponentProps> = (props) => {
-  const {name, placeHolder, nameDisplay, inputStyle} = props;
+  const {name, nameDisplay, inputStyle} = props;
   const {errors} = useFormikContext();
   const {colorMode} = useColorMode();
   const title = name

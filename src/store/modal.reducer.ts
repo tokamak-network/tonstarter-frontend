@@ -19,7 +19,11 @@ type StakingModal =
   | 'pool_simulator';
 type StarterModal = 'Starter_Approve';
 type AdminModal = 'Admin_Distribute' | 'Admin_EditPool';
-type LaunchModal = 'Launch_VaultProps' | 'Launch_CreateVault';
+type LaunchModal =
+  | 'Launch_VaultProps'
+  | 'Launch_CreateVault'
+  | 'Launch_ConfirmToken'
+  | 'Launch_ConfirmVault';
 
 type GeneralModal = 'calendar';
 type RewardModal = 'search';

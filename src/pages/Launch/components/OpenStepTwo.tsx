@@ -5,6 +5,7 @@ import Vaults from '@Launch/components/stepTwo/Vaults';
 import Middle from '@Launch/components/stepTwo/Middle';
 import Bottom from '@Launch/components/stepTwo/Bottom';
 import LaunchVaultPropModal from './modals/VaultProps';
+import CreateVaultModal from './modals/CreateVault';
 
 const OpenStepTwo = () => {
   return (
@@ -33,6 +34,7 @@ const OpenStepTwo = () => {
         <Bottom></Bottom>
       </Flex>
       <LaunchVaultPropModal></LaunchVaultPropModal>
+      <CreateVaultModal></CreateVaultModal>
     </Flex>
   );
 };

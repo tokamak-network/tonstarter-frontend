@@ -69,7 +69,7 @@ export const AirdropModal = () => {
   const [airdropData, setAirdropData] = useState<AirDropList>(undefined);
   const [balance, setBalance] = useState<string | undefined>(undefined);
   const {data} = useAppSelector(selectModalType);
-  const {account, library, active} = useActiveWeb3React();
+  const {account, library} = useActiveWeb3React();
   const dispatch = useAppDispatch();
   const {colorMode} = useColorMode();
   const theme = useTheme();

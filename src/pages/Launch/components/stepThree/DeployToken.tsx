@@ -16,8 +16,9 @@ import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
 import {convertToWei} from 'utils/number';
 import {ethers} from 'ethers';
-import {useAppSelector} from 'hooks/useRedux';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {selectApp} from 'store/app/app.reducer';
+import {openModal} from 'store/modal.reducer';
 
 const DeployToken = () => {
   const theme = useTheme();
@@ -30,8 +31,11 @@ const DeployToken = () => {
   );
   // @ts-ignore
   const {data: appConfig} = useAppSelector(selectApp);
+  const dispatch = useAppDispatch();
+
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
-  const {isTokenDeployed, tokenName, totalSupply, tokenAddress} = values;
+  const {isTokenDeployed, tokenName, totalSupply, tokenAddress, tokenSymbol} =
+    values;
 
   async function deployToken() {
     try {
@@ -54,6 +58,7 @@ const DeployToken = () => {
       setFieldValue('isTokenDeployed', true);
     } catch (e) {
       console.log(e);
+      //need to add change states
     }
   }
 
@@ -149,7 +154,18 @@ const DeployToken = () => {
             fontWeight={500}
             _hover={{}}
             isDisabled={isTokenDeployed}
-            onClick={() => deployToken()}>
+            // onClick={() => deployToken()}
+            onClick={() => {
+              dispatch(
+                openModal({
+                  type: 'Launch_ConfirmToken',
+                  data: {
+                    tokenInfo: {tokenName, totalSupply, tokenSymbol},
+                    func: () => deployToken(),
+                  },
+                }),
+              );
+            }}>
             {isTokenDeployed ? 'Done' : 'Deploy'}
           </Button>
         </Box>

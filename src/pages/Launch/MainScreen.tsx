@@ -83,13 +83,17 @@ const MainScreen = () => {
         initialValues={id && projects ? projects[id] : initialValues}
         validationSchema={ProjectSchema}
         validate={(values) => {
+          console.log(values);
           if (values.owner) {
             try {
               const result = toChecksumAddress(String(values.owner));
               if (!result) {
-                return {tokenName: 'err'};
+                return {owner: 'err'};
               }
-            } catch (e) {}
+            } catch (e) {
+              // console.log(e);
+              return {owner: 'err'};
+            }
           }
         }}
         onSubmit={async (data, {setSubmitting}) => {

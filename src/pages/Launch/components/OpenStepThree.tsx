@@ -2,6 +2,8 @@ import {Flex, Box} from '@chakra-ui/react';
 import StepTitle from '@Launch/components/common/StepTitle';
 import Line from '@Launch/components/common/Line';
 import DeployContainer from '@Launch/components/stepThree/DeployContainer';
+import ConfirmTokenModal from './modals/ConfirmToken';
+import ConfirmVaultModal from './modals/ConfirmVault';
 
 const OpenStepThree = () => {
   return (
@@ -18,6 +20,8 @@ const OpenStepThree = () => {
         <Line></Line>
       </Box>
       <DeployContainer></DeployContainer>
+      <ConfirmTokenModal></ConfirmTokenModal>
+      <ConfirmVaultModal></ConfirmVaultModal>
     </Flex>
   );
 };
