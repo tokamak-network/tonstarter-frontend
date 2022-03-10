@@ -1,4 +1,4 @@
-import {Flex, useColorMode, useTheme, Input} from '@chakra-ui/react';
+import {Flex, useColorMode, Input} from '@chakra-ui/react';
 import {Dispatch, SetStateAction, useRef, useState, useEffect} from 'react';
 import Calendar from 'react-calendar';
 import '../css/Calendar.css';
@@ -29,10 +29,9 @@ type CalendarProps = {
   // created: boolean;
 };
 
-export const CustomCalendar = (prop: CalendarProps) => {
+const Calender = (prop: CalendarProps) => {
   const {setValue} = prop;
   const {colorMode} = useColorMode();
-  const theme = useTheme();
   const [showCalendar, setShowCalendar] = useState<boolean>(false);
   const [showInputValue, setShowInputValue] = useState<string>('');
   const refCalendar = useRef<HTMLInputElement>(null);
@@ -192,3 +191,5 @@ export const CustomCalendar = (prop: CalendarProps) => {
     </Flex>
   );
 };
+
+export default Calender;

@@ -11,21 +11,41 @@ import {
   useTheme,
   useColorMode,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, {useMemo} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal';
-import {useERC20} from '@Starter/hooks/useERC20';
+import {selectLaunch} from '@Launch/launch.reducer';
+import {PublicPropsSetting} from '@Launch/components/common/VaultPropsSetting';
 
 const LaunchVaultPropModal = () => {
   const {data} = useAppSelector(selectModalType);
+  const {
+    data: {selectedVault},
+  } = useAppSelector(selectLaunch);
+
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {handleCloseModal} = useModal();
   const {btnStyle} = theme;
-  const {address, amount, tokenType} = data.data;
-  const {callTonApprove, callWtonApprove} = useERC20(address);
+
+  const VaultSetting = useMemo(() => {
+    switch (selectedVault) {
+      case 'Public':
+        return <PublicPropsSetting></PublicPropsSetting>;
+      case 'LP':
+        return <Flex>go</Flex>;
+      case 'TON Staker':
+        return <Flex>go</Flex>;
+      case 'TOS Staker':
+        return <Flex>go</Flex>;
+      case 'WTON-TOS LP Reward':
+        return <Flex>go</Flex>;
+      default:
+        return <>no container for this vault :(</>;
+    }
+  }, [selectedVault]);
 
   return (
     <Modal
@@ -56,9 +76,6 @@ const LaunchVaultPropModal = () => {
               textAlign={'center'}>
               Starter
             </Heading>
-            <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
-              Approve
-            </Text>
           </Box>
 
           <Flex
@@ -68,19 +85,7 @@ const LaunchVaultPropModal = () => {
             px={5}
             fontSize={15}
             color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-            {/* <Text textAlign="center">
-              'Approve All' means to get an approval of the amount which is
-              total supply of {tokenType}
-            </Text> */}
-            <Text textAlign="center">You will get allowance</Text>
-            <Text textAlign="center">
-              {/* {Number(STR_AMOUNT).toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}{' '} */}
-              {amount}
-              {tokenType}
-            </Text>
+            {VaultSetting}
           </Flex>
 
           <Box as={Flex} flexDir="column" alignItems="center" pt={5}>
@@ -88,12 +93,7 @@ const LaunchVaultPropModal = () => {
               {...btnStyle.btnAble()}
               w={'150px'}
               fontSize="14px"
-              _hover={{}}
-              onClick={() => {
-                tokenType === 'TON'
-                  ? callTonApprove(amount)
-                  : callWtonApprove(amount);
-              }}>
+              _hover={{}}>
               Approve
             </Button>
           </Box>

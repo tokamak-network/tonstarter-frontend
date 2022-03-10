@@ -11,13 +11,16 @@ import {
   useTheme,
   useColorMode,
 } from '@chakra-ui/react';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal';
 import Line from '../common/Line';
 import {LoadingComponent} from 'components/Loading';
+import {useFormikContext} from 'formik';
+import {Projects} from '@Launch/types';
+import useTokenDeploy from '@Launch/hooks/useTokenDeploy';
 
 const ConfirmTokenModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -27,7 +30,20 @@ const ConfirmTokenModal = () => {
   const {btnStyle} = theme;
   const [deployStep, setDeployStep] = useState<
     'Ready' | 'Deploying' | 'Done' | 'Error'
-  >('Error');
+  >('Ready');
+  const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
+  const {isTokenDeployed, isTokenDeployedErr} = values;
+
+  console.log(values);
+
+  useEffect(() => {
+    if (isTokenDeployed === true) {
+      setDeployStep('Done');
+    }
+    if (isTokenDeployedErr === true) {
+      setDeployStep('Error');
+    }
+  }, [deployStep, values, isTokenDeployed, isTokenDeployedErr]);
 
   if (!data?.data?.tokenInfo) {
     return <></>;
@@ -39,6 +55,7 @@ const ConfirmTokenModal = () => {
   } = data.data;
 
   function closeModal() {
+    setFieldValue('isTokenDeployedErr', false);
     setDeployStep('Ready');
     handleCloseModal();
   }

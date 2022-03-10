@@ -1,13 +1,21 @@
-import {Box, Flex, Text, useColorMode, useTheme} from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Text,
+  useColorMode,
+  useTheme,
+} from '@chakra-ui/react';
 import StepTitle from '@Launch/components/common/StepTitle';
 import useVaultSelector from '@Launch/hooks/useVaultSelector';
 import {selectLaunch} from '@Launch/launch.reducer';
-import {Vault} from '@Launch/types';
+import {Projects, Vault} from '@Launch/types';
 import {useFormikContext} from 'formik';
 import {useAppSelector} from 'hooks/useRedux';
 import moment from 'moment';
 import {useEffect, useState} from 'react';
 import store from 'store';
+import {useModal} from 'hooks/useModal';
 
 const middleStyle = {
   border: 'solid 1px #eff1f6',
@@ -18,41 +26,42 @@ const Middle = () => {
   const theme = useTheme();
   const {OpenCampaginDesign} = theme;
   const {data} = useAppSelector(selectLaunch);
-  const {values, setFieldValue} = useFormikContext();
-  //@ts-ignore
+  const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const vaultsList = values.vaults;
   const [tableData, setTableData] = useState<[]>();
 
   const {selectedVaultDetail} = useVaultSelector();
+  const {openAnyModal} = useModal();
 
-  console.log(vaultsList)
+  console.log(vaultsList);
 
   return (
-    <Flex flexDir={'column'}>
-      <Box mb={'15px'}>
-        <StepTitle title={'Small Title'} fontSize={16}></StepTitle>
-      </Box>
-      <Box mb={'25px'}>Input Area</Box>
-      <Flex>
-        <Box
-          d="flex"
-          flexDir={'column'}
-          textAlign="center"
-          border={middleStyle.border}
-          lineHeight={'42px'}>
-          <Flex
-            h={'42px'}
-            fontSize={12}
-            color={'#3d495d'}
-            fontWeight={600}
-            borderBottom={middleStyle.border}>
-            <Text w={'197px'}>Claim</Text>
-            <Text w={'197px'} borderX={middleStyle.border}>
-              Token Allocation
-            </Text>
-            <Text w={'144px'}>Accumulated</Text>
-          </Flex>
-          {/* {selectedVaultDetail &&
+    <Flex justifyContent={'space-between'}>
+      <Flex flexDir={'column'}>
+        <Box mb={'15px'}>
+          <StepTitle title={'Small Title'} fontSize={16}></StepTitle>
+        </Box>
+        <Box mb={'25px'}>Input Area</Box>
+        <Flex>
+          <Box
+            d="flex"
+            flexDir={'column'}
+            textAlign="center"
+            border={middleStyle.border}
+            lineHeight={'42px'}>
+            <Flex
+              h={'42px'}
+              fontSize={12}
+              color={'#3d495d'}
+              fontWeight={600}
+              borderBottom={middleStyle.border}>
+              <Text w={'197px'}>Claim</Text>
+              <Text w={'197px'} borderX={middleStyle.border}>
+                Token Allocation
+              </Text>
+              <Text w={'144px'}>Accumulated</Text>
+            </Flex>
+            {/* {selectedVaultDetail &&
             selectedVaultDetail.params.map((data: any, index: number) => {
               const {claimTime, claimTokenAllocation} = data;
               return (
@@ -74,7 +83,14 @@ const Middle = () => {
                 </Flex>
               );
             })} */}
-        </Box>
+          </Box>
+        </Flex>
+      </Flex>
+      <Flex>
+        <Button
+          onClick={() => {
+            openAnyModal('Launch_VaultProps', {});
+          }}></Button>
       </Flex>
     </Flex>
   );

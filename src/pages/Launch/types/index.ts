@@ -1,4 +1,10 @@
-type VaultName = 'Public' | string;
+type VaultName =
+  | 'Public'
+  | 'LP'
+  | 'TON Staker'
+  | 'TOS Staker'
+  | 'WTON-TOS LP Reward'
+  | string;
 
 interface Vault {
   vaultName: VaultName;
@@ -44,6 +50,7 @@ interface ProjectStep3 {
   isTokenDeployed: boolean;
   isAllDeployed: boolean;
   tokenAddress: string;
+  isTokenDeployedErr: boolean;
 }
 
 type Project = ProjectStep1 & ProjectStep2 & ProjectStep3;

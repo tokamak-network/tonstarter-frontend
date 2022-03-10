@@ -19,6 +19,7 @@ import {ethers} from 'ethers';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {selectApp} from 'store/app/app.reducer';
 import {openModal} from 'store/modal.reducer';
+import useTokenDeploy from '@Launch/hooks/useTokenDeploy';
 
 const DeployToken = () => {
   const theme = useTheme();
@@ -36,6 +37,7 @@ const DeployToken = () => {
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const {isTokenDeployed, tokenName, totalSupply, tokenAddress, tokenSymbol} =
     values;
+  const {setError} = useTokenDeploy();
 
   async function deployToken() {
     try {
@@ -59,6 +61,7 @@ const DeployToken = () => {
     } catch (e) {
       console.log(e);
       //need to add change states
+      setFieldValue('isTokenDeployedErr', true);
     }
   }
 
@@ -118,7 +121,7 @@ const DeployToken = () => {
             href={`${appConfig.explorerLink}${tokenAddress}`}
             color={isTokenDeployed ? 'white.100' : 'gray.250'}
             fontSize={22}
-            w={'141px'}
+            w={'144px'}
             h={'29px'}
             fontWeight={600}
             borderBottom={'1px solid #fff'}>
