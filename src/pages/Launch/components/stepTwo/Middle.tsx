@@ -2,6 +2,8 @@ import {
   Box,
   Button,
   Flex,
+  Grid,
+  GridItem,
   Text,
   useColorMode,
   useTheme,
@@ -16,6 +18,7 @@ import moment from 'moment';
 import {useEffect, useState} from 'react';
 import store from 'store';
 import {useModal} from 'hooks/useModal';
+import {PublicProps} from '../common/VaultProps';
 
 const middleStyle = {
   border: 'solid 1px #eff1f6',
@@ -33,7 +36,8 @@ const Middle = () => {
   const {selectedVaultDetail} = useVaultSelector();
   const {openAnyModal} = useModal();
 
-  console.log(vaultsList);
+  console.log('--vaultsList--');
+  console.log(selectedVaultDetail);
 
   return (
     <Flex justifyContent={'space-between'}>
@@ -61,36 +65,43 @@ const Middle = () => {
               </Text>
               <Text w={'144px'}>Accumulated</Text>
             </Flex>
-            {/* {selectedVaultDetail &&
-            selectedVaultDetail.params.map((data: any, index: number) => {
-              const {claimTime, claimTokenAllocation} = data;
-              return (
-                <Flex
-                  h={'42px'}
-                  fontSize={13}
-                  color={'#3d495d'}
-                  bg={index % 2 === 0 ? '#fafbfc' : 'none'}>
-                  <Box d="flex" w={'197px'} justifyContent="center">
-                    <Text mr={'2px'}>{`0${index + 1}`}</Text>
-                    <Text fontSize={12} color={'#808992'}>
-                      {moment.unix(claimTime).format('MM.DD.YYYY hh:mm:ss')}
+            {selectedVaultDetail &&
+              selectedVaultDetail.claim.map((data: any, index: number) => {
+                const {claimTime, claimTokenAllocation} = data;
+                return (
+                  <Flex
+                    h={'42px'}
+                    pos={'relative'}
+                    fontSize={13}
+                    color={'#3d495d'}
+                    bg={index % 2 === 0 ? '#fafbfc' : 'none'}>
+                    <Box d="flex" w={'197px'} justifyContent="center">
+                      <Text mr={'2px'}>{`0${index + 1}`}</Text>
+                      <Text fontSize={12} color={'#808992'}>
+                        {moment.unix(claimTime).format('MM.DD.YYYY hh:mm:ss')}
+                      </Text>
+                    </Box>
+                    <Text w={'197px'} borderX={middleStyle.border}>
+                      {claimTokenAllocation}
                     </Text>
-                  </Box>
-                  <Text w={'197px'} borderX={middleStyle.border}>
-                    {claimTokenAllocation}
-                  </Text>
-                  <Text w={'144px'}>{'1%'}</Text>
-                </Flex>
-              );
-            })} */}
+                    <Text w={'144px'}>{'1%'}</Text>
+                    <Button pos={'absolute'} left={-75}>
+                      add
+                    </Button>
+                  </Flex>
+                );
+              })}
           </Box>
         </Flex>
       </Flex>
-      <Flex>
+      <Flex flexDir={'column'}>
         <Button
           onClick={() => {
             openAnyModal('Launch_VaultProps', {});
-          }}></Button>
+          }}>
+          Edit
+        </Button>
+        <PublicProps></PublicProps>
       </Flex>
     </Flex>
   );

@@ -20,6 +20,7 @@ type StakingModal =
 type StarterModal = 'Starter_Approve';
 type AdminModal = 'Admin_Distribute' | 'Admin_EditPool';
 type LaunchModal =
+  | 'Launch_VaultBasicSetting'
   | 'Launch_VaultProps'
   | 'Launch_CreateVault'
   | 'Launch_ConfirmToken'

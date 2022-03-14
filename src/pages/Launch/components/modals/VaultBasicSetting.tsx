@@ -19,9 +19,8 @@ import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal';
 import {Projects, VaultAny} from '@Launch/types';
 import {useFormikContext} from 'formik';
-import useValues from '@Launch/hooks/useValues';
 
-const CreateVaultModal = () => {
+const VaultBasicSetting = () => {
   const {data} = useAppSelector(selectModalType);
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -30,24 +29,47 @@ const CreateVaultModal = () => {
   const [nameVal, setNameVal] = useState('');
   const [tokenAllocatonVal, setTokenAllocatonVal] = useState(0);
   const [adminAddressVal, setAdminAddressVal] = useState('');
-  const {initialVaultValue} = useValues();
+
+  useEffect(() => {
+    if (data.data) {
+      const {
+        data: {name, tokenAllocation, adminAddress},
+      } = data;
+      setNameVal(name);
+      setTokenAllocatonVal(tokenAllocation);
+      setAdminAddressVal(adminAddress);
+    }
+  }, [data]);
+
+  if (!data.data) {
+    return null;
+  }
+
+  const {
+    data: {name, isMandatory},
+  } = data;
 
   function editVault() {
     const vaultsList = values.vaults;
-    setFieldValue('vaults', [
-      ...vaultsList,
-      {
-        ...initialVaultValue,
-        vaultName: nameVal,
-        vaultTokenAllocation: tokenAllocatonVal,
-        adminAddress: adminAddressVal,
-      },
-    ]);
+    setFieldValue(
+      'vaults',
+      vaultsList.map((vault: any) => {
+        if (vault.vaultName === name) {
+          return {
+            ...vault,
+            name: nameVal,
+            vaultTokenAllocation: tokenAllocatonVal,
+            adminAddress: adminAddressVal,
+          };
+        }
+        return vault;
+      }),
+    );
   }
 
   return (
     <Modal
-      isOpen={data.modal === 'Launch_CreateVault' ? true : false}
+      isOpen={data.modal === 'Launch_VaultBasicSetting' ? true : false}
       isCentered
       onClose={() => {
         handleCloseModal();
@@ -90,7 +112,9 @@ const CreateVaultModal = () => {
               <Text>Vault Name</Text>
               <Input
                 value={nameVal}
-                onChange={(e) => setNameVal(e.target.value)}></Input>
+                onChange={(e) =>
+                  isMandatory ? null : setNameVal(e.target.value)
+                }></Input>
             </Flex>
             <Flex>
               <Text>Token Allocation</Text>
@@ -117,4 +141,4 @@ const CreateVaultModal = () => {
   );
 };
 
-export default CreateVaultModal;
+export default VaultBasicSetting;

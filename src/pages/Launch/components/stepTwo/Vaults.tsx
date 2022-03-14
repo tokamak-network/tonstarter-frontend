@@ -105,7 +105,12 @@ const Vaults = () => {
         <Flex w={'520px'} alignItems="center" mx={'15px'} overflow={'hidden'}>
           <motion.div animate={{x: transX}} style={{display: 'flex'}}>
             {vaultsList?.map((vault: Vault, index: number) => {
-              const {vaultName, vaultTokenAllocation, isMandatory} = vault;
+              const {
+                vaultName,
+                vaultTokenAllocation,
+                isMandatory,
+                adminAddress,
+              } = vault;
               const strVaultTokenAllocation =
                 vaultTokenAllocation?.toString() || '0';
               const portion = (vaultTokenAllocation || 0 / 1200000).toString();
@@ -119,7 +124,8 @@ const Vaults = () => {
                     name={vaultName}
                     tokenAllocation={strVaultTokenAllocation}
                     portion={portion}
-                    isMandatory={isMandatory}></VaultCard>
+                    isMandatory={isMandatory}
+                    adminAddress={adminAddress}></VaultCard>
                 </Box>
               );
             })}

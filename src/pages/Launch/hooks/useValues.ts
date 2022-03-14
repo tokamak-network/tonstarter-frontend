@@ -20,6 +20,7 @@ const initialObj: Projects['CreateProject'] = {
   isTokenDeployedErr: false,
   isAllDeployed: false,
   tokenAddress: '',
+  projectTokenPrice: 0,
   vaults: [
     {
       vaultName: 'Public',
@@ -31,6 +32,28 @@ const initialObj: Projects['CreateProject'] = {
       isMandatory: true,
       claim: defaultParams,
       vaultAddress: undefined,
+      stosTier: {
+        oneTier: {
+          requiredStos: 0,
+          allocatedToken: 0,
+        },
+        twoTier: {
+          requiredStos: 0,
+          allocatedToken: 0,
+        },
+        threeTier: {
+          requiredStos: 0,
+          allocatedToken: 0,
+        },
+        fourTier: {
+          requiredStos: 0,
+          allocatedToken: 0,
+        },
+      },
+      whitelist: 0,
+      publicRound1: 0,
+      publicRound2: 0,
+      claimStart: 0,
     },
     {
       vaultName: 'LP',

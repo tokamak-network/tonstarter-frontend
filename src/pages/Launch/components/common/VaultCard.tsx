@@ -1,6 +1,7 @@
-import {Box, Flex, Text} from '@chakra-ui/react';
-import {Vault} from '@Launch/types';
+import {Box, Button, Flex, Text} from '@chakra-ui/react';
+import {Projects, Vault} from '@Launch/types';
 import {useFormikContext} from 'formik';
+import {useModal} from 'hooks/useModal';
 import {useState} from 'react';
 
 type VaultCardProps = {
@@ -9,15 +10,16 @@ type VaultCardProps = {
   tokenAllocation: string;
   portion: string;
   isMandatory: boolean;
+  adminAddress: string;
 };
 
 const VaultCard: React.FC<VaultCardProps> = (prop) => {
-  const {status, name, tokenAllocation, portion, isMandatory} = prop;
+  const {status, name, tokenAllocation, portion, isMandatory, adminAddress} =
+    prop;
   const [isHover, setIsHover] = useState<boolean>(false);
-  const {values, setFieldValue} = useFormikContext();
+  const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
 
   function removeVault() {
-    //@ts-ignore
     const vaultsList = values.vaults;
     setFieldValue(
       'vaults',
@@ -26,6 +28,7 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
       }),
     );
   }
+  const {openAnyModal} = useModal();
 
   return (
     <Flex
@@ -41,15 +44,28 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}>
       <Flex mb={'15px'} justifyContent="space-between" pr={'12px'}>
-        <Box
-          w={'20px'}
-          h={'20px'}
-          fontSize={14}
-          color="white.100"
-          bg={status === 'public' ? '#0070ed' : '#26c1c9'}
-          textAlign="center">
-          {name.substring(0, 1)}
-        </Box>
+        <Flex justifyContent={'space-between'} w={'100%'}>
+          <Box
+            w={'20px'}
+            h={'20px'}
+            fontSize={14}
+            color="white.100"
+            bg={status === 'public' ? '#0070ed' : '#26c1c9'}
+            textAlign="center">
+            {name.substring(0, 1)}
+          </Box>
+          <Button
+            onClick={() =>
+              openAnyModal('Launch_VaultBasicSetting', {
+                name,
+                tokenAllocation,
+                adminAddress,
+                isMandatory,
+              })
+            }>
+            Edit
+          </Button>
+        </Flex>
         {isHover && !isMandatory && (
           <Box
             w={'16px'}
