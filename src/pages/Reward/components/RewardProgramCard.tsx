@@ -106,6 +106,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   const [isSelected, setIsSelected] = useState<boolean>(false);
   const [isUnstakeSelected, setIsUnstakeselected] = useState<boolean>(false);
   const [numStakers, setNumStakers] = useState<number>(0);
+  const [openInfoModal, setOpenInfoModal] = useState<boolean>(false);
   const dispatch = useDispatch();
 
   const key = {
@@ -414,21 +415,22 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
       //   // console.log('target id:', e.target.id);
       //   // console.log('e.target: ', e.target);
       //   // if (e.target.type !== 'checkbox') {
-      // onClick={() => {
-      //   dispatch(
-      //     openModal({
-      //       type: 'information',
-      //       data: {
-      //         currentReward: reward,
-      //         // refundableAmount,
-      //         currentStakedPools: stakedPools,
-      //         currentKey: key,
-      //         currentUserAddress: account,
-      //         currentPositions: LPTokens,
-      //       },
-      //     }),
-      //   );
-      // }}
+      onClick={() => {
+        setOpenInfoModal(true);
+        dispatch(
+          openModal({
+            type: 'information',
+            data: {
+              currentReward: reward,
+              // refundableAmount,
+              currentStakedPools: stakedPools,
+              currentKey: key,
+              currentUserAddress: account,
+              currentPositions: LPTokens,
+            },
+          }),
+        );
+      }}
       //   // }
       // }}
       _hover={{
@@ -787,7 +789,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
           </Button>
         </Flex>
       </Flex>
-      <InformationModal />
+      {openInfoModal ? <InformationModal /> : null}
     </Flex>
   );
 };

@@ -1,72 +1,20 @@
 import React, {FC, useState, useEffect} from 'react';
 import {ResponsivePie} from '@nivo/pie';
+import {shortenAddress} from 'utils';
 
 type PieChartProps = {
   pieData: any;
 };
 
 export const PieChart: FC<PieChartProps> = ({pieData}) => {
-  console.log('pieData: ', pieData);
   const formattedData = pieData.map((data: any) => {
     return {
-      id: data.token,
-      label: data.token,
-      // label: data.owner,
-      value: Math.floor(Math.random() * (360 - 30 + 1) + 30),
+      id: shortenAddress(data.ownerAddress),
+      label: shortenAddress(data.ownerAddress),
+      value: Number(data.liquidityPercentage),
       color: `hsl(${Math.floor(Math.random() * (360 - 0 + 1) + 0)}, 70%, 50%)`,
     };
   });
-  console.log('formattedData: ', formattedData);
-  const pieDataTest = [
-    {
-      id: 'c',
-      label: 'c',
-      value: 20,
-      color: 'hsl(298, 70%, 50%)',
-    },
-    {
-      id: 'javascript',
-      label: 'javascript',
-      value: 129,
-      color: 'hsl(217, 70%, 50%)',
-    },
-    {
-      id: 'elixir',
-      label: 'elixir',
-      value: 507,
-      color: 'hsl(348, 70%, 50%)',
-    },
-    {
-      id: 'css',
-      label: 'css',
-      value: 574,
-      color: 'hsl(79, 70%, 50%)',
-    },
-    {
-      id: 'stylus',
-      label: 'stylus',
-      value: 123,
-      color: 'hsl(275, 70%, 50%)',
-    },
-    {
-      id: 'd',
-      label: 'stylus',
-      value: 222,
-      color: 'hsl(275, 70%, 50%)',
-    },
-    {
-      id: 'b',
-      label: 'stylus',
-      value: 111,
-      color: 'hsl(275, 70%, 50%)',
-    },
-    {
-      id: 'a',
-      label: 'stylus',
-      value: 53,
-      color: 'hsl(275, 70%, 50%)',
-    },
-  ];
 
   return (
     // make sure parent container have a defined height when using
