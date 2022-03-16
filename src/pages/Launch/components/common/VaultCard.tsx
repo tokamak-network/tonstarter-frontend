@@ -1,26 +1,24 @@
-import {Box, Button, Flex, Text} from '@chakra-ui/react';
-import {Projects, Vault} from '@Launch/types';
+import {Box, Button, Flex, Image, Text} from '@chakra-ui/react';
+import {Projects, Vault, VaultCommon} from '@Launch/types';
 import {useFormikContext} from 'formik';
 import {useModal} from 'hooks/useModal';
-import {useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
+import PencilIcon from 'assets/launch/pen_inactive_icon.png';
 
 type VaultCardProps = {
   status: 'public' | 'notPublic';
   name: string;
   tokenAllocation: string;
-  portion: string;
   isMandatory: boolean;
   adminAddress: string;
 };
 
 const VaultCard: React.FC<VaultCardProps> = (prop) => {
-  const {status, name, tokenAllocation, portion, isMandatory, adminAddress} =
-    prop;
+  const {status, name, tokenAllocation, isMandatory, adminAddress} = prop;
   const [isHover, setIsHover] = useState<boolean>(false);
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
-
+  const vaultsList = values.vaults;
   function removeVault() {
-    const vaultsList = values.vaults;
     setFieldValue(
       'vaults',
       vaultsList.filter((vault: Vault) => {
@@ -30,10 +28,20 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
   }
   const {openAnyModal} = useModal();
 
+  useMemo(() => {
+    const sumTotalToken = vaultsList.reduce((acc, cur) => {
+      const {vaultTokenAllocation} = cur;
+      return vaultTokenAllocation + acc;
+    }, 0);
+    setFieldValue('totalTokenAllocation', sumTotalToken);
+    return sumTotalToken;
+    /*eslint-disable*/
+  }, [vaultsList]);
+
   return (
     <Flex
       w={'150px'}
-      h={'172px'}
+      h={'196px'}
       flexDir={'column'}
       pl={'15px'}
       pt={'10px'}
@@ -54,7 +62,10 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
             textAlign="center">
             {name.substring(0, 1)}
           </Box>
-          <Button
+          <Image
+            src={PencilIcon}
+            alt={'vault_edit_button'}
+            cursor="pointer"
             onClick={() =>
               openAnyModal('Launch_VaultBasicSetting', {
                 name,
@@ -62,9 +73,7 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
                 adminAddress,
                 isMandatory,
               })
-            }>
-            Edit
-          </Button>
+            }></Image>
         </Flex>
         {isHover && !isMandatory && (
           <Box
@@ -78,13 +87,14 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
         )}
       </Flex>
       <Text
-        h={'26px'}
-        mb={'10px'}
-        fontSize={20}
+        h={'56px'}
+        // mb={'10px'}
+        fontSize={16}
+        fontWeight={'bold'}
         color={isHover ? 'white.100' : '#304156'}>
         {name}
       </Text>
-      <Flex flexDir={'column'}>
+      <Flex flexDir={'column'} mb={'8px'}>
         <Text h={'15px'} fontSize={11} color={isHover ? '#a8cbf8' : '#808992'}>
           Token Allocation
         </Text>
@@ -105,7 +115,13 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
           fontSize={15}
           color={isHover ? 'white.100' : '#3d495d'}
           fontWeight={600}>
-          {portion}
+          {(
+            (Number(tokenAllocation.replaceAll(',', '')) * 100) /
+            values.totalTokenAllocation
+          )
+            .toString()
+            .match(/^\d+(?:\.\d{0,2})?/)}{' '}
+          %
         </Text>
       </Flex>
     </Flex>

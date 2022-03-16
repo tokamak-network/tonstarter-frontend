@@ -19,6 +19,8 @@ import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal';
 import {Projects, VaultAny} from '@Launch/types';
 import {useFormikContext} from 'formik';
+import Line from '../common/Line';
+import {CustomButton} from 'components/Basic/CustomButton';
 
 const VaultBasicSetting = () => {
   const {data} = useAppSelector(selectModalType);
@@ -84,7 +86,7 @@ const VaultBasicSetting = () => {
         <CloseButton closeFunc={handleCloseModal}></CloseButton>
         <ModalBody p={0}>
           <Box
-            pb={'1.250em'}
+            py={'1.250em'}
             borderBottom={
               colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
             }>
@@ -94,7 +96,7 @@ const VaultBasicSetting = () => {
               fontFamily={theme.fonts.titil}
               color={colorMode === 'light' ? 'gray.250' : 'white.100'}
               textAlign={'center'}>
-              Vault Basic
+              Vault Resister
             </Heading>
             {/* <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
               Vault Basic
@@ -104,36 +106,60 @@ const VaultBasicSetting = () => {
           <Flex
             flexDir="column"
             alignItems="center"
-            mt={3}
-            px={5}
-            fontSize={15}
+            mt={'30px'}
+            pl={'35px'}
+            fontSize={13}
             color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-            <Flex>
-              <Text>Vault Name</Text>
+            <Flex w={'100%'} flexDir={'column'} mb={'24px'}>
+              <Text fontWeight={600} mb={'9px'}>
+                Vault Name
+              </Text>
               <Input
+                w={'290px'}
+                h={'32px'}
                 value={nameVal}
+                _focus={{}}
                 onChange={(e) =>
                   isMandatory ? null : setNameVal(e.target.value)
                 }></Input>
             </Flex>
-            <Flex>
-              <Text>Token Allocation</Text>
+            <Flex w={'100%'} flexDir={'column'} mb={'24px'}>
+              <Text fontWeight={600} mb={'9px'}>
+                Token Allocation
+              </Text>
               <Input
+                w={'290px'}
+                h={'32px'}
                 value={tokenAllocatonVal}
+                _focus={{}}
                 onChange={(e) =>
                   setTokenAllocatonVal(Number(e.target.value))
                 }></Input>
             </Flex>
-            <Flex>
-              <Text>Admin Address</Text>
+            <Flex w={'100%'} flexDir={'column'}>
+              <Text fontWeight={600} mb={'9px'}>
+                Admin Address
+              </Text>
               <Input
+                w={'290px'}
+                h={'32px'}
                 value={adminAddressVal}
+                _focus={{}}
                 onChange={(e) => setAdminAddressVal(e.target.value)}></Input>
             </Flex>
           </Flex>
 
+          <Box mt={'39px'} mb={'25px'} px={'15px'}>
+            <Line></Line>
+          </Box>
+
           <Box as={Flex} flexDir="column" alignItems="center" pt={5}>
-            <Button onClick={() => editVault()}>Edit</Button>
+            <CustomButton
+              text={'Edit'}
+              func={() => {
+                editVault();
+                handleCloseModal();
+              }}></CustomButton>
           </Box>
         </ModalBody>
       </ModalContent>

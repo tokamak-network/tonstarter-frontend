@@ -42,13 +42,13 @@ const MainScreen = () => {
     data: {projects},
   } = useAppSelector(selectLaunch);
 
-  console.log('--gogo--');
-  console.log(id);
-  console.log(projects);
+  // console.log('--gogo--');
+  // console.log(id);
+  // console.log(projects);
 
-  useEffect(() => {
-    console.log(projects);
-  }, [projects]);
+  // useEffect(() => {
+  //   console.log(projects);
+  // }, [projects]);
 
   const handleStep = useCallback(
     (isNext: boolean) => {

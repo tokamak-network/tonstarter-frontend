@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50">
+    <g style="fill:#e6eaee;stroke:#e6eaee;stroke-miterlimit:10">
+        <rect width="50" height="50" rx="25" style="stroke:none"/>
+        <rect x=".5" y=".5" width="49" height="49" rx="24.5" style="fill:none"/>
+    </g>
+    <path data-name="선 17" transform="translate(16 25.36)" style="stroke:#86929d;stroke-linecap:round;stroke-width:3px;fill:none" d="M0 0h18"/>
+    <path data-name="선 18" transform="translate(25.36 16)" style="stroke:#86929d;stroke-linecap:round;stroke-width:3px;fill:none" d="M0 0v18"/>
+</svg>

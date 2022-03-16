@@ -27,41 +27,40 @@ type VaultCommon = Vault & {claim: VaultSchedule[]};
 
 type VaultDao = VaultCommon & {};
 
-type VaultLiquidity = VaultCommon & {}
+type VaultLiquidity = VaultCommon & {};
 
-type VaultTON = VaultCommon & {}
+type VaultTON = VaultCommon & {};
 
-type VaultTOS = VaultCommon & {}
-
+type VaultTOS = VaultCommon & {};
 
 type VaultPublic = VaultCommon & {
   stosTier: {
     oneTier: {
       requiredStos: number;
       allocatedToken: number;
-    },
+    };
     twoTier: {
       requiredStos: number;
       allocatedToken: number;
-    },
+    };
     threeTier: {
       requiredStos: number;
       allocatedToken: number;
-    },
+    };
     fourTier: {
       requiredStos: number;
       allocatedToken: number;
-    },
-  },
-  whitelist: number,
-  publicRound1: number,
-  publicRound2: number,
-  claimStart: number
+    };
+  };
+  whitelist: number;
+  publicRound1: number;
+  publicRound2: number;
+  claimStart: number;
 };
 
 type VaultC = VaultCommon & {};
 
-type VaultAny = VaultDao |  VaultPublic | VaultC;
+type VaultAny = VaultDao | VaultPublic | VaultC;
 
 interface ProjectStep1 {
   projectName: string;
@@ -75,6 +74,7 @@ interface ProjectStep1 {
 interface ProjectStep2 {
   vaults: VaultAny[];
   projectTokenPrice: number;
+  totalTokenAllocation: number;
 }
 
 interface ProjectStep3 {
@@ -108,4 +108,5 @@ export type {
   VaultCommon,
   VaultName,
   VaultAny,
+  VaultSchedule,
 };

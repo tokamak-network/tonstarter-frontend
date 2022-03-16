@@ -21,6 +21,7 @@ const initialObj: Projects['CreateProject'] = {
   isAllDeployed: false,
   tokenAddress: '',
   projectTokenPrice: 0,
+  totalTokenAllocation: 0,
   vaults: [
     {
       vaultName: 'Public',
