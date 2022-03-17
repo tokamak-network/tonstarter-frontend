@@ -6,7 +6,6 @@ import {
   Box,
   Heading,
   Text,
-  Button,
   Flex,
   useTheme,
   useColorMode,
@@ -17,9 +16,9 @@ import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal';
-import {Projects, VaultAny} from '@Launch/types';
+import {Projects} from '@Launch/types';
 import {useFormikContext} from 'formik';
-import Line from '../common/Line';
+import Line from '@Launch/components/common/Line';
 import {CustomButton} from 'components/Basic/CustomButton';
 
 const VaultBasicSetting = () => {
@@ -98,9 +97,6 @@ const VaultBasicSetting = () => {
               textAlign={'center'}>
               Vault Resister
             </Heading>
-            {/* <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
-              Vault Basic
-            </Text> */}
           </Box>
 
           <Flex

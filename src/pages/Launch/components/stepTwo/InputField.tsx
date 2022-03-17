@@ -7,10 +7,11 @@ type InputFieldProp = {
   placeHolder?: string;
   fontSize: number;
   setValue: Dispatch<SetStateAction<any>>;
+  value?: any;
 };
 
 const InputField: React.FC<InputFieldProp> = (props) => {
-  const {w, h, fontSize, placeHolder, setValue} = props;
+  const {w, h, fontSize, placeHolder, setValue, value} = props;
   return (
     <Input
       w={`${w}px`}
@@ -18,6 +19,7 @@ const InputField: React.FC<InputFieldProp> = (props) => {
       fontSize={fontSize}
       placeholder={placeHolder}
       _focus={{}}
+      value={value}
       onChange={(e) => setValue(e.target.value)}></Input>
   );
 };

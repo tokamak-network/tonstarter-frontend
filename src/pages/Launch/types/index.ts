@@ -6,8 +6,18 @@ type VaultName =
   | 'WTON-TOS LP Reward'
   | string;
 
+type VaultType =
+  | 'Public'
+  | 'LP'
+  | 'TON Staker'
+  | 'TOS Staker'
+  | 'WTON-TOS LP Reward'
+  | 'DAO'
+  | 'C';
+
 interface Vault {
   vaultName: VaultName;
+  vaultType: VaultType;
   vaultTokenAllocation: number;
   firstClaimTime: number;
   claimInterval: number;
@@ -52,10 +62,19 @@ type VaultPublic = VaultCommon & {
       allocatedToken: number;
     };
   };
+  snapshot: number;
   whitelist: number;
+  whitelistEnd: number;
   publicRound1: number;
+  publicRound1End: number;
   publicRound2: number;
+  publicRound2End: number;
+  publicRound1Allocation: number;
+  publicRound2Allocation: number;
   claimStart: number;
+  tokenAllocationForLiquidity: number;
+  hardCap: number;
+  addressForReceiving: string;
 };
 
 type VaultC = VaultCommon & {};
@@ -94,6 +113,74 @@ type ChainNumber = 1 | 4;
 
 type StepNumber = 1 | 2 | 3;
 
+type PublicTokenColData = {
+  firstColData: [
+    {
+      title: 'Public Round 1';
+      content: string;
+      percent: number;
+    },
+    {
+      title: 'Public Round 2';
+      content: string;
+      percent: number;
+    },
+    {
+      title: 'Token Allocation for Liquidity Pool';
+      content: string;
+      percent: number;
+    },
+    {
+      title: 'Hard Cap';
+      content: string;
+    },
+    {
+      title: 'Address for receiving funds';
+      content: string;
+    },
+  ];
+  secondColData: [
+    {
+      title: 'Snapshot';
+      content: string;
+    },
+    {
+      title: 'Whitelist';
+      content: string;
+    },
+    {
+      title: 'Public Round 1';
+      content: string;
+    },
+    {
+      title: 'Public Round 2';
+      content: string;
+    },
+  ];
+  thirdColData: [
+    {
+      tier: '1';
+      requiredTos: number;
+      allocatedToken: number;
+    },
+    {
+      tier: '2';
+      requiredTos: number;
+      allocatedToken: number;
+    },
+    {
+      tier: '3';
+      requiredTos: number;
+      allocatedToken: number;
+    },
+    {
+      tier: '4';
+      requiredTos: number;
+      allocatedToken: number;
+    },
+  ];
+};
+
 export type {
   Projects,
   ProjectStep1,
@@ -109,4 +196,5 @@ export type {
   VaultName,
   VaultAny,
   VaultSchedule,
+  PublicTokenColData,
 };

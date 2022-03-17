@@ -25,6 +25,7 @@ const initialObj: Projects['CreateProject'] = {
   vaults: [
     {
       vaultName: 'Public',
+      vaultType: 'Public',
       vaultTokenAllocation: 0,
       firstClaimTime: nowTimeStamp,
       claimInterval: nowTimeStamp,
@@ -33,6 +34,9 @@ const initialObj: Projects['CreateProject'] = {
       isMandatory: true,
       claim: defaultParams,
       vaultAddress: undefined,
+      tokenAllocationForLiquidity: 0,
+      hardCap: 0,
+      addressForReceiving: '',
       stosTier: {
         oneTier: {
           requiredStos: 0,
@@ -51,13 +55,20 @@ const initialObj: Projects['CreateProject'] = {
           allocatedToken: 0,
         },
       },
+      snapshot: 0,
       whitelist: 0,
+      whitelistEnd: 0,
       publicRound1: 0,
+      publicRound1End: 0,
       publicRound2: 0,
+      publicRound2End: 0,
+      publicRound1Allocation: 0,
+      publicRound2Allocation: 0,
       claimStart: 0,
     },
     {
       vaultName: 'LP',
+      vaultType: 'LP',
       vaultTokenAllocation: 0,
       firstClaimTime: nowTimeStamp,
       claimInterval: nowTimeStamp,
@@ -69,6 +80,7 @@ const initialObj: Projects['CreateProject'] = {
     },
     {
       vaultName: 'TON Staker',
+      vaultType: 'TON Staker',
       vaultTokenAllocation: 0,
       firstClaimTime: nowTimeStamp,
       claimInterval: nowTimeStamp,
@@ -80,6 +92,7 @@ const initialObj: Projects['CreateProject'] = {
     },
     {
       vaultName: 'TOS Staker',
+      vaultType: 'TOS Staker',
       vaultTokenAllocation: 0,
       firstClaimTime: nowTimeStamp,
       claimInterval: nowTimeStamp,
@@ -91,6 +104,7 @@ const initialObj: Projects['CreateProject'] = {
     },
     {
       vaultName: 'WTON-TOS LP Reward',
+      vaultType: 'WTON-TOS LP Reward',
       vaultTokenAllocation: 0,
       firstClaimTime: nowTimeStamp,
       claimInterval: nowTimeStamp,
@@ -113,6 +127,7 @@ const initialVaultValue: VaultC = {
   vaultName: '',
   vaultTokenAllocation: 0,
   vaultAddress: undefined,
+  vaultType: 'C',
 };
 
 const useValues = () => {

@@ -37,6 +37,7 @@ const Middle = () => {
 
   const {selectedVaultDetail} = useVaultSelector();
   const {openAnyModal} = useModal();
+  const [isEdit, setIsEdit] = useState<boolean>(false);
 
   console.log('--vaultsList--');
   console.log(selectedVaultDetail);
@@ -52,10 +53,30 @@ const Middle = () => {
     <Flex flexDir={'column'} w={'100%'}>
       <Box d={'flex'} mb={'15px'} justifyContent="space-between">
         <StepTitle title={'Token Detail'} fontSize={16}></StepTitle>
-        <CustomButton w={'100px'} h={'32px'} text={'Edit'}></CustomButton>
+        {isEdit ? (
+          <Flex>
+            <CustomButton
+              w={'100px'}
+              h={'32px'}
+              text={'Confirm'}
+              style={{marginRight: '10px'}}
+              func={() => setIsEdit(false)}></CustomButton>
+            <CustomButton
+              w={'100px'}
+              h={'32px'}
+              text={'Cancel'}
+              func={() => setIsEdit(false)}></CustomButton>
+          </Flex>
+        ) : (
+          <CustomButton
+            w={'100px'}
+            h={'32px'}
+            text={'Edit'}
+            func={() => setIsEdit(true)}></CustomButton>
+        )}
       </Box>
       <Flex>
-        <TokenDetail></TokenDetail>
+        <TokenDetail isEdit={isEdit}></TokenDetail>
       </Flex>
       {/* <Flex>
         <Box
