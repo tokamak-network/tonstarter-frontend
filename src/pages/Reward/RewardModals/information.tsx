@@ -52,9 +52,11 @@ import {Scrollbars} from 'react-custom-scrollbars-2';
 import {PieChart} from './../components/PieChart';
 import {useWeb3React} from '@web3-react/core';
 import {CloseButton} from 'components/Modal/CloseButton';
-import {useGraphQueries} from 'hooks/useGraphQueries';
-import {gql, useQuery} from '@apollo/client';
+// import {useGraphQueries} from 'hooks/useGraphQueries';
+// import {gql, useQuery} from '@apollo/client';
 import {usePoolByArrayQuery} from 'store/data/generated';
+import axios from 'axios';
+
 const {
   WTON_ADDRESS,
   TON_ADDRESS,
@@ -88,8 +90,24 @@ export const InformationModal = () => {
   const [positions, setPositions] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [pieData, setPieData] = useState<any[]>([]);
+  const [recentActivity, setRecentActivity] = useState<any[]>([]);
 
   // const [isHandling, setIsHandling] = useState<boolean>(true);
+
+  const themeDesign = {
+    border: {
+      light: 'solid 1px #d7d9df',
+      dark: 'solid 1px #535353',
+    },
+    font: {
+      light: 'black.300',
+      dark: 'gray.475',
+    },
+    tosFont: {
+      light: 'gray.250',
+      dark: 'black.100',
+    },
+  };
 
   const handleCloseModal = useCallback(() => {
     dispatch(closeModal());
@@ -197,6 +215,17 @@ export const InformationModal = () => {
     let userPositions = positions.map((position: any) => {
       return position.id;
     });
+
+    const MYAPIKEY = '552K1B1Z2QVVBFKY8PDUX874XBG89U32QE';
+    axios
+      .get(
+        `https://api.etherscan.io/api?_limit=20&module=account&action=txlist&address=${positions[0].owner}&startblock=0&endblock=99999999&sort=asc&apikey=${MYAPIKEY}`,
+      )
+      .then((res) => {
+        console.log('LOOOOOK: ', res);
+        setRecentActivity(res.data);
+      })
+      .catch(console.error);
 
     const incentiveABI =
       'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)';
@@ -331,23 +360,36 @@ export const InformationModal = () => {
     return `${days}D ${formattedHoursMinutesSeconds}`;
   };
 
+  const formatNumberWithCommas = (num: number) => {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  };
+
   const formatAmount = (amount: any, token: any) => {
     // Double check DOC address. Refundable amount seems broken.
     if (token && amount) {
-      return ethers.utils.getAddress(token) ===
-        ethers.utils.getAddress(WTON_ADDRESS)
-        ? Number(ethers.utils.formatUnits(amount, 27)).toLocaleString(
-            undefined,
-            {
-              minimumFractionDigits: 2,
-            },
-          )
-        : Number(ethers.utils.formatEther(amount.toString())).toLocaleString(
-            undefined,
-            {
-              minimumFractionDigits: 2,
-            },
-          );
+      let formattedAmt =
+        ethers.utils.getAddress(token) === ethers.utils.getAddress(WTON_ADDRESS)
+          ? Number(ethers.utils.formatUnits(amount, 27)).toLocaleString(
+              undefined,
+              {
+                minimumFractionDigits: 0,
+              },
+            )
+          : Number(ethers.utils.formatEther(amount.toString())).toLocaleString(
+              undefined,
+              {
+                minimumFractionDigits: 0,
+              },
+            );
+      if (formattedAmt.includes(',')) {
+        const removeCommaString = formattedAmt.replace(',', '');
+        formattedAmt = removeCommaString;
+      }
+      const removeDecimalAmt = Number(
+        Math.floor(Number(formattedAmt)).toFixed(0),
+      );
+      const finalFormattedString = formatNumberWithCommas(removeDecimalAmt);
+      return finalFormattedString;
     }
   };
 
@@ -355,12 +397,14 @@ export const InformationModal = () => {
     // console.log('positions: ', positions);
     // console.log('library: ', library);
     // console.log('account: ', account);
+
     if (account) {
       const uniswapStakerContract = new Contract(
         UniswapStaker_Address,
         STAKERABI.abi,
         library,
       );
+
       // console.log('address: ', UniswapStaker_Address);
       // console.log('contract: ', uniswapStakerContract);
 
@@ -401,7 +445,7 @@ export const InformationModal = () => {
         height={'85vh'}
         overflowY={'auto'}
         overflowX={'hidden'}
-        fontFamily={theme.fonts.roboto}
+        fontFamily={theme.fonts.fld}
         bg={colorMode === 'light' ? 'white.100' : 'black.200'}>
         <Scrollbars
           style={{
@@ -411,7 +455,9 @@ export const InformationModal = () => {
           }}
           thumbSize={70}
           //renderThumbVertical / horizontal is where you change scrollbar styles.
-          renderThumbVertical={() => <div style={{background: '#fff'}}></div>}>
+          renderThumbVertical={() => (
+            <div style={{background: '#007aff'}}></div>
+          )}>
           <Box
             display={'flex'}
             justifyContent={'center'}
@@ -461,8 +507,8 @@ export const InformationModal = () => {
                 flexDirection={'column'}
                 alignItems={'center'}
                 justifyContent={'space-between'}>
-                <Text>Total Reward</Text>
-                <Text>
+                <Text color={themeDesign.font[colorMode]}>Total Reward</Text>
+                <Text fontSize={'20px'}>
                   {formatAmount(reward.allocatedReward, reward.rewardToken)}{' '}
                   {
                     checkTokenType(
@@ -477,8 +523,8 @@ export const InformationModal = () => {
                 flexDirection={'column'}
                 alignItems={'center'}
                 justifyContent={'space-between'}>
-                <Text>Accumulated LP</Text>
-                <Text>
+                <Text color={themeDesign.font[colorMode]}>Accumulated LP</Text>
+                <Text fontSize={'20px'}>
                   {formatAmount(reward.allocatedReward, reward.rewardToken)}{' '}
                   {
                     checkTokenType(
@@ -493,13 +539,18 @@ export const InformationModal = () => {
                 flexDirection={'column'}
                 alignItems={'center'}
                 justifyContent={'space-between'}>
-                <Text>Reward Period</Text>
-                <Flex flexDirection={'column'}>
+                <Text color={themeDesign.font[colorMode]}>Reward Period</Text>
+                <Flex flexDirection={'column'} alignItems={'center'}>
                   <Text fontSize={'12px'}>
-                    {moment.unix(Number(reward.startTime)).format('YYYY.MM.DD')}
+                    {moment
+                      .unix(Number(reward.startTime))
+                      .format('YYYY.MM.DD HH:MM:ss')}
                   </Text>
                   <Text fontSize={'12px'}>
-                    - {moment.unix(Number(reward.endTime)).format('YYYY.MM.DD')}
+                    -{' '}
+                    {moment
+                      .unix(Number(reward.endTime))
+                      .format('YYYY.MM.DD HH:MM:ss')}
                   </Text>
                 </Flex>
               </Box>
@@ -508,8 +559,8 @@ export const InformationModal = () => {
                 flexDirection={'column'}
                 alignItems={'center'}
                 justifyContent={'space-between'}>
-                <Text>Total Duration</Text>
-                <Text>
+                <Text color={themeDesign.font[colorMode]}>Total Duration</Text>
+                <Text fontSize={'20px'}>
                   {getTotalDuration(reward.startTime, reward.endTime)}
                 </Text>
               </Box>
@@ -518,8 +569,10 @@ export const InformationModal = () => {
                 flexDirection={'column'}
                 alignItems={'center'}
                 justifyContent={'space-between'}>
-                <Text>Number of Stakers</Text>
-                <Text>{rewardStakersInfo.length}</Text>
+                <Text color={themeDesign.font[colorMode]}>
+                  Number of Stakers
+                </Text>
+                <Text fontSize={'20px'}>{rewardStakersInfo.length}</Text>
                 {/* <Text>{reward.numStakers}</Text> */}
               </Box>
               <Box
@@ -527,9 +580,9 @@ export const InformationModal = () => {
                 flexDirection={'column'}
                 alignItems={'center'}
                 justifyContent={'space-between'}>
-                <Text>Status</Text>
+                <Text color={themeDesign.font[colorMode]}>Status</Text>
                 {/* This is always open. Something is wrong. */}
-                <Text>
+                <Text fontSize={'20px'}>
                   {reward.status.charAt(0).toUpperCase() +
                     reward.status.slice(1)}
                 </Text>
@@ -539,8 +592,10 @@ export const InformationModal = () => {
                 flexDirection={'column'}
                 alignItems={'center'}
                 justifyContent={'space-between'}>
-                <Text>Refundable Amount</Text>
-                <Text>
+                <Text color={themeDesign.font[colorMode]}>
+                  Refundable Amount
+                </Text>
+                <Text fontSize={'20px'}>
                   {formatAmount(refundableAmount, reward.rewardToken)}{' '}
                   {
                     checkTokenType(
@@ -632,7 +687,7 @@ export const InformationModal = () => {
                     thumbSize={70}
                     //renderThumbVertical / horizontal is where you change scrollbar styles.
                     renderThumbVertical={() => (
-                      <div style={{background: '#fff'}}></div>
+                      <div style={{background: '#007aff'}}></div>
                     )}>
                     <Heading
                       fontSize={'1em'}
