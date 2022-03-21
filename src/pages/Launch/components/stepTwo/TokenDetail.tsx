@@ -7,7 +7,7 @@ import {CustomInput} from 'components/Basic';
 import HoverImage from 'components/HoverImage';
 import {useFormikContext} from 'formik';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {useEffect, useMemo, useState} from 'react';
+import {useEffect, useMemo, useRef, useState} from 'react';
 import InputField from './InputField';
 import CalendarActiveImg from 'assets/launch/calendar-active-icon.svg';
 import CalendarInactiveImg from 'assets/launch/calendar-inactive-icon.svg';
@@ -52,6 +52,8 @@ const SubTitle = (props: {
   useEffect(() => {
     setInputVal(rightTitle.replaceAll(' TON', ''));
   }, [isEdit, rightTitle]);
+
+  const tokensRef = useRef();
 
   return (
     <Flex

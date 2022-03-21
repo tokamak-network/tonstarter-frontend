@@ -12,7 +12,7 @@ import {useRouteMatch} from 'react-router-dom';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectLaunch} from '@Launch/launch.reducer';
 import OpenStepThree from '@Launch/components/OpenStepThree';
-import {toChecksumAddress} from 'web3-utils';
+import validateFormikValues from '@Launch/utils/validate';
 
 const StepComponent = (props: {step: StepNumber}) => {
   const {step} = props;
@@ -83,18 +83,7 @@ const MainScreen = () => {
         initialValues={id && projects ? projects[id] : initialValues}
         validationSchema={ProjectSchema}
         validate={(values) => {
-          console.log(values);
-          if (values.owner) {
-            try {
-              const result = toChecksumAddress(String(values.owner));
-              if (!result) {
-                return {owner: 'err'};
-              }
-            } catch (e) {
-              // console.log(e);
-              return {owner: 'err'};
-            }
-          }
+          validateFormikValues(values);
         }}
         onSubmit={async (data, {setSubmitting}) => {
           setSubmitting(true);

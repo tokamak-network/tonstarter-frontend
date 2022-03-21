@@ -41,19 +41,20 @@ const useTokenDetail = () => {
           {
             title: 'Public Round 1',
             content: `${publicRound1Allocation} TON`,
-            percent: publicRound1Allocation / vaultTokenAllocation || 0,
+            percent: (publicRound1Allocation * 100) / vaultTokenAllocation || 0,
             formikName: 'publicRound1Allocation',
           },
           {
             title: 'Public Round 2',
             content: `${publicRound2Allocation} TON`,
-            percent: publicRound2Allocation / vaultTokenAllocation || 0,
+            percent: (publicRound2Allocation * 100) / vaultTokenAllocation || 0,
             formikName: 'publicRound2Allocation',
           },
           {
             title: 'Token Allocation for Liquidity Pool',
             content: `${tokenAllocationForLiquidity} TON`,
-            percent: tokenAllocationForLiquidity / vaultTokenAllocation || 0,
+            percent:
+              (tokenAllocationForLiquidity * 100) / vaultTokenAllocation || 0,
             formikName: 'tokenAllocationForLiquidity',
           },
           {

@@ -65,6 +65,7 @@ const initialObj: Projects['CreateProject'] = {
       publicRound1Allocation: 0,
       publicRound2Allocation: 0,
       claimStart: 0,
+      index: 0,
     },
     {
       vaultName: 'LP',
@@ -77,6 +78,7 @@ const initialObj: Projects['CreateProject'] = {
       isMandatory: true,
       claim: defaultParams,
       vaultAddress: undefined,
+      index: 1,
     },
     {
       vaultName: 'TON Staker',
@@ -89,6 +91,7 @@ const initialObj: Projects['CreateProject'] = {
       isMandatory: true,
       claim: defaultParams,
       vaultAddress: undefined,
+      index: 2,
     },
     {
       vaultName: 'TOS Staker',
@@ -101,6 +104,7 @@ const initialObj: Projects['CreateProject'] = {
       isMandatory: true,
       claim: defaultParams,
       vaultAddress: undefined,
+      index: 3,
     },
     {
       vaultName: 'WTON-TOS LP Reward',
@@ -113,6 +117,7 @@ const initialObj: Projects['CreateProject'] = {
       isMandatory: true,
       claim: defaultParams,
       vaultAddress: undefined,
+      index: 4,
     },
   ],
 };
@@ -128,6 +133,7 @@ const initialVaultValue: VaultC = {
   vaultTokenAllocation: 0,
   vaultAddress: undefined,
   vaultType: 'C',
+  index: 5,
 };
 
 const useValues = () => {

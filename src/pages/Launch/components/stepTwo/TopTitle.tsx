@@ -16,6 +16,7 @@ const TopTitle = () => {
           w={138}
           h={32}
           fontSize={13}
+          value={pricePerTon}
           setValue={setPricePerTon}></InputField>
         <Text fontSize={13} ml={'20px'} mr={'10px'}>
           1TOS ={' '}
@@ -24,6 +25,7 @@ const TopTitle = () => {
           w={138}
           h={32}
           fontSize={13}
+          value={pricePerTos}
           setValue={setPricePerTos}></InputField>
       </Flex>
     </Box>

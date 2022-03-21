@@ -25,6 +25,7 @@ interface Vault {
   adminAddress: string;
   isMandatory: boolean;
   vaultAddress: string | undefined;
+  index: number;
 }
 
 interface VaultSchedule {

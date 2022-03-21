@@ -10,10 +10,10 @@ import {
 } from '@chakra-ui/react';
 import StepTitle from '@Launch/components/common/StepTitle';
 import useVaultSelector from '@Launch/hooks/useVaultSelector';
-import {selectLaunch} from '@Launch/launch.reducer';
+import {saveTempVaultData, selectLaunch} from '@Launch/launch.reducer';
 import {Projects, Vault, VaultSchedule} from '@Launch/types';
 import {useFormikContext} from 'formik';
-import {useAppSelector} from 'hooks/useRedux';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import moment from 'moment';
 import {useEffect, useState} from 'react';
 import store from 'store';
@@ -39,8 +39,46 @@ const Middle = () => {
   const {openAnyModal} = useModal();
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
-  console.log('--vaultsList--');
-  console.log(selectedVaultDetail);
+  const dispatch = useAppDispatch();
+  const {
+    data: {tempVaultData, selectedVault},
+  } = useAppSelector(selectLaunch);
+
+  function dispatchFormikSetValue() {
+    // dispatch(
+    //   saveTempVaultData({
+    //     data: {},
+    //   }),
+    // );
+    const vaultsList = values.vaults;
+
+    console.log('--go--');
+    console.log(tempVaultData);
+
+    const thisVaultValue = vaultsList.filter((vault: Vault) => {
+      if (vault.vaultName === selectedVault) {
+        return vault;
+      }
+    });
+    const otherVaultValue = vaultsList.filter((vault: Vault) => {
+      if (vault.vaultName !== selectedVault) {
+        return vault;
+      }
+    });
+
+    setFieldValue(
+      'vaults',
+      [
+        ...otherVaultValue,
+        {
+          ...thisVaultValue[0],
+          ...tempVaultData,
+        },
+      ].sort((a, b) => {
+        return a.index > b.index ? 1 : b.index > a.index ? -1 : 0;
+      }),
+    );
+  }
 
   useEffect(() => {
     if (selectedVaultDetail) {
@@ -60,12 +98,22 @@ const Middle = () => {
               h={'32px'}
               text={'Confirm'}
               style={{marginRight: '10px'}}
-              func={() => setIsEdit(false)}></CustomButton>
+              func={() => {
+                setIsEdit(false);
+                dispatchFormikSetValue();
+              }}></CustomButton>
             <CustomButton
               w={'100px'}
               h={'32px'}
               text={'Cancel'}
-              func={() => setIsEdit(false)}></CustomButton>
+              func={() => {
+                setIsEdit(false);
+                dispatch(
+                  saveTempVaultData({
+                    data: {},
+                  }),
+                );
+              }}></CustomButton>
           </Flex>
         ) : (
           <CustomButton

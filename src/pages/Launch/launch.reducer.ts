@@ -1,13 +1,17 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from 'store/reducers';
 import {VaultName} from '@Launch/types';
-import {any} from 'prop-types';
 
 interface LaunchState {
   data: {
     selectedVault: VaultName;
     projects: any;
     tempVaultData: {};
+    err: {
+      tokenDetail: {
+        name: boolean;
+      };
+    };
   };
   loading: 'idle' | 'pending';
   error: any;
@@ -19,6 +23,9 @@ const initialState = {
     selectedVault: 'Public',
     projects: [],
     tempVaultData: {},
+    err: {
+      tokenDetail: {},
+    },
   },
   loading: 'idle',
   error: null,
@@ -59,6 +66,9 @@ export const launchReducer = createSlice({
     saveTempVaultData: (state, {payload}: PayloadAction<ProjectPayload>) => {
       state.data.tempVaultData = payload.data;
     },
+    setErr: (state, {payload}: PayloadAction<ProjectPayload>) => {
+      state.data.err = payload.data;
+    },
   },
   extraReducers: {
     [selectVault.pending.type]: (state, action) => {
@@ -87,5 +97,5 @@ export const launchReducer = createSlice({
 });
 // @ts-ignore
 export const selectLaunch = (state: RootState) => state.launch;
-export const {changeVault, fetchProjects, saveTempVaultData} =
+export const {changeVault, fetchProjects, saveTempVaultData, setErr} =
   launchReducer.actions;

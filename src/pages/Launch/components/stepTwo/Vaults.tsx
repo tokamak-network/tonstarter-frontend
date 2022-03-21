@@ -27,7 +27,7 @@ const Vaults = () => {
           w={'24px'}
           h={'48px'}
           alignSelf="center"
-          onClick={() => setTransX(transX - 165)}
+          onClick={() => setTransX(transX + 165)}
         />
         <Flex w={'100%'} alignItems="center" mx={'15px'} overflow={'hidden'}>
           <motion.div
@@ -70,7 +70,7 @@ const Vaults = () => {
           w={'24px'}
           h={'48px'}
           alignSelf="center"
-          onClick={() => setTransX(transX + 165)}
+          onClick={() => setTransX(transX - 165)}
         />
       </Box>
     </Flex>
