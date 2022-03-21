@@ -1,13 +1,16 @@
 import {Flex, Grid, GridItem, Text, useColorMode} from '@chakra-ui/react';
 import {useTheme} from '@emotion/react';
 import useTokenDetail from '@Launch/hooks/useTokenDetail';
-import {selectLaunch} from '@Launch/launch.reducer';
+import {saveTempVaultData, selectLaunch} from '@Launch/launch.reducer';
 import {Projects, PublicTokenColData, VaultCommon} from '@Launch/types';
 import {CustomInput} from 'components/Basic';
+import HoverImage from 'components/HoverImage';
 import {useFormikContext} from 'formik';
-import {useAppSelector} from 'hooks/useRedux';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {useEffect, useMemo, useState} from 'react';
 import InputField from './InputField';
+import CalendarActiveImg from 'assets/launch/calendar-active-icon.svg';
+import CalendarInactiveImg from 'assets/launch/calendar-inactive-icon.svg';
 
 const MainTitle = (props: {leftTitle: string; rightTitle: string}) => {
   const {leftTitle, rightTitle} = props;
@@ -32,8 +35,18 @@ const SubTitle = (props: {
   isLast?: boolean;
   percent?: number;
   isEdit: boolean;
+  isSecondColData?: boolean;
+  formikName: string;
 }) => {
-  const {leftTitle, rightTitle, isLast, percent, isEdit} = props;
+  const {
+    leftTitle,
+    rightTitle,
+    isLast,
+    percent,
+    isEdit,
+    isSecondColData,
+    formikName,
+  } = props;
   const [inputVal, setInputVal] = useState(rightTitle.replaceAll(' TON', ''));
 
   useEffect(() => {
@@ -54,12 +67,30 @@ const SubTitle = (props: {
       </Text>
 
       {isEdit ? (
-        <InputField
-          w={120}
-          h={32}
-          fontSize={13}
-          value={inputVal}
-          setValue={setInputVal}></InputField>
+        isSecondColData ? (
+          <Flex>
+            <Flex flexDir={'column'} textAlign={'right'} mr={'8px'}>
+              <Text>{rightTitle.split('~')[0]}</Text>
+              <Text>
+                {rightTitle.split('~')[1]
+                  ? `~ ${rightTitle.split('~')[1]}`
+                  : ''}
+              </Text>
+            </Flex>
+            <HoverImage
+              action={() => console.log('go')}
+              img={CalendarInactiveImg}
+              hoverImg={CalendarActiveImg}></HoverImage>
+          </Flex>
+        ) : (
+          <InputField
+            w={120}
+            h={32}
+            fontSize={13}
+            value={inputVal}
+            setValue={setInputVal}
+            formikName={formikName}></InputField>
+        )
       ) : rightTitle.includes('~') ? (
         <Flex flexDir={'column'} textAlign={'right'}>
           <Text>{rightTitle.split('~')[0]}</Text>
@@ -84,8 +115,15 @@ const STOSTier = (props: {
   requiredTos: number;
   allocatedToken: number;
   isLast?: boolean;
+  isEdit: boolean;
 }) => {
-  const {tier, requiredTos, allocatedToken, isLast} = props;
+  const {tier, requiredTos, allocatedToken, isLast, isEdit} = props;
+  const [inputVal, setInputVal] = useState(requiredTos);
+  const [inputVal2, setInputVal2] = useState(allocatedToken);
+
+  // useEffect(() => {
+  //   setInputVal(inputVal);
+  // }, [isEdit, props]);
 
   return (
     <Flex
@@ -97,8 +135,31 @@ const STOSTier = (props: {
       <Text color={'#7e8993'} w={'80px'}>
         {tier}
       </Text>
-      <Text w={'125px'}>{requiredTos}</Text>
-      <Text w={'137px'}>{allocatedToken}</Text>
+      {isEdit ? (
+        <>
+          <Flex w={'125px'} justifyContent="center">
+            <InputField
+              w={85}
+              h={32}
+              fontSize={13}
+              value={inputVal}
+              setValue={setInputVal}></InputField>
+          </Flex>
+          <Flex w={'137px'} justifyContent="center">
+            <InputField
+              w={85}
+              h={32}
+              fontSize={13}
+              value={inputVal2}
+              setValue={setInputVal2}></InputField>
+          </Flex>
+        </>
+      ) : (
+        <>
+          <Text w={'125px'}>{requiredTos}</Text>
+          <Text w={'137px'}>{allocatedToken}</Text>
+        </>
+      )}
     </Flex>
   );
 };
@@ -133,10 +194,15 @@ const PublicTokenDetail = (props: {
           rightTitle={`${publicVaultValue[0].vaultTokenAllocation} TON`}></MainTitle>
         {firstColData.map(
           (
-            data: {title: string; content: string; percent?: number},
+            data: {
+              title: string;
+              content: string;
+              percent?: number;
+              formikName: string;
+            },
             index: number,
           ) => {
-            const {title, content, percent} = data;
+            const {title, content, percent, formikName} = data;
             return (
               <SubTitle
                 key={title}
@@ -144,23 +210,28 @@ const PublicTokenDetail = (props: {
                 rightTitle={content}
                 isLast={index + 1 === firstColData.length}
                 percent={percent}
-                isEdit={isEdit}></SubTitle>
+                isEdit={isEdit}
+                formikName={formikName}></SubTitle>
             );
           },
         )}
       </GridItem>
       <GridItem borderX={'solid 1px #e6eaee'}>
         <MainTitle leftTitle="Schedule" rightTitle="KST"></MainTitle>
-        {secondColData.map((data: {title: string; content: string}) => {
-          const {title, content} = data;
-          return (
-            <SubTitle
-              key={title}
-              leftTitle={title}
-              rightTitle={content}
-              isEdit={isEdit}></SubTitle>
-          );
-        })}
+        {secondColData.map(
+          (data: {title: string; content: string; formikName: string}) => {
+            const {title, content, formikName} = data;
+            return (
+              <SubTitle
+                key={title}
+                leftTitle={title}
+                rightTitle={content}
+                isEdit={isEdit}
+                isSecondColData={true}
+                formikName={formikName}></SubTitle>
+            );
+          },
+        )}
       </GridItem>
       <GridItem>
         <MainTitle leftTitle="sTOS Tier" rightTitle=""></MainTitle>
@@ -184,7 +255,8 @@ const PublicTokenDetail = (props: {
               tier={tier}
               requiredTos={requiredTos}
               allocatedToken={allocatedToken}
-              isLast={index + 1 === thirdColData.length}></STOSTier>
+              isLast={index + 1 === thirdColData.length}
+              isEdit={isEdit}></STOSTier>
           );
         })}
       </GridItem>

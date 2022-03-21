@@ -6,7 +6,7 @@ const TopTitle = () => {
   const [pricePerTon, setPricePerTon] = useState('0');
   const [pricePerTos, setPricePerTos] = useState('0');
   return (
-    <Box px={'24px'} py={'23px'} pos="relative">
+    <Box px={'35px'} py={'23px'} pos="relative">
       <StepTitle title={'Vaults'} isSaveButton={true}></StepTitle>
       <Flex pos="absolute" left={'127px'} top={'22px'} alignItems="center">
         <Text fontSize={13} mr={'10px'}>

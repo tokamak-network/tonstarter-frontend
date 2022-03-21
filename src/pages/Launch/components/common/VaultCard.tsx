@@ -4,6 +4,8 @@ import {useFormikContext} from 'formik';
 import {useModal} from 'hooks/useModal';
 import {useEffect, useMemo, useState} from 'react';
 import PencilIcon from 'assets/launch/pen_inactive_icon.png';
+import {selectLaunch} from '@Launch/launch.reducer';
+import {useAppSelector} from 'hooks/useRedux';
 
 type VaultCardProps = {
   status: 'public' | 'notPublic';
@@ -16,6 +18,10 @@ type VaultCardProps = {
 const VaultCard: React.FC<VaultCardProps> = (prop) => {
   const {status, name, tokenAllocation, isMandatory, adminAddress} = prop;
   const [isHover, setIsHover] = useState<boolean>(false);
+  const [isSelected, setIsSelected] = useState<boolean>(false);
+  const {
+    data: {selectedVault},
+  } = useAppSelector(selectLaunch);
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const vaultsList = values.vaults;
   function removeVault() {
@@ -27,6 +33,15 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
     );
   }
   const {openAnyModal} = useModal();
+
+  useEffect(() => {
+    if (selectedVault === name) {
+      console.log(selectedVault);
+
+      return setIsSelected(true);
+    }
+    return setIsSelected(false);
+  }, [name, selectedVault]);
 
   useMemo(() => {
     const sumTotalToken = vaultsList.reduce((acc, cur) => {
@@ -46,9 +61,10 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
       pl={'15px'}
       pt={'10px'}
       boxShadow={' 0 2px 5px 0 rgba(61, 73, 93, 0.1)'}
-      _hover={{
-        bg: '#0070ed',
-      }}
+      // _hover={{
+      //   bg: '#0070ed',
+      // }}
+      bg={isSelected ? '#0070ed' : 'none'}
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}>
       <Flex mb={'15px'} justifyContent="space-between" pr={'12px'}>
@@ -91,29 +107,35 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
         // mb={'10px'}
         fontSize={16}
         fontWeight={'bold'}
-        color={isHover ? 'white.100' : '#304156'}>
+        color={isSelected ? 'white.100' : '#304156'}>
         {name}
       </Text>
       <Flex flexDir={'column'} mb={'8px'}>
-        <Text h={'15px'} fontSize={11} color={isHover ? '#a8cbf8' : '#808992'}>
+        <Text
+          h={'15px'}
+          fontSize={11}
+          color={isSelected ? '#a8cbf8' : '#808992'}>
           Token Allocation
         </Text>
         <Text
           h={'20px'}
           fontSize={15}
-          color={isHover ? 'white.100' : '#3d495d'}
+          color={isSelected ? 'white.100' : '#3d495d'}
           fontWeight={600}>
           {tokenAllocation}
         </Text>
       </Flex>
       <Flex flexDir={'column'}>
-        <Text h={'15px'} fontSize={11} color={isHover ? '#a8cbf8' : '#808992'}>
+        <Text
+          h={'15px'}
+          fontSize={11}
+          color={isSelected ? '#a8cbf8' : '#808992'}>
           Portion
         </Text>
         <Text
           h={'20px'}
           fontSize={15}
-          color={isHover ? 'white.100' : '#3d495d'}
+          color={isSelected ? 'white.100' : '#3d495d'}
           fontWeight={600}>
           {(
             (Number(tokenAllocation.replaceAll(',', '')) * 100) /

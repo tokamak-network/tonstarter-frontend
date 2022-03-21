@@ -119,42 +119,51 @@ type PublicTokenColData = {
       title: 'Public Round 1';
       content: string;
       percent: number;
+      formikName: string;
     },
     {
       title: 'Public Round 2';
       content: string;
       percent: number;
+      formikName: string;
     },
     {
       title: 'Token Allocation for Liquidity Pool';
       content: string;
       percent: number;
+      formikName: string;
     },
     {
       title: 'Hard Cap';
       content: string;
+      formikName: string;
     },
     {
       title: 'Address for receiving funds';
       content: string;
+      formikName: string;
     },
   ];
   secondColData: [
     {
       title: 'Snapshot';
       content: string;
+      formikName: string;
     },
     {
       title: 'Whitelist';
       content: string;
+      formikName: string;
     },
     {
       title: 'Public Round 1';
       content: string;
+      formikName: string;
     },
     {
       title: 'Public Round 2';
       content: string;
+      formikName: string;
     },
   ];
   thirdColData: [
@@ -162,21 +171,25 @@ type PublicTokenColData = {
       tier: '1';
       requiredTos: number;
       allocatedToken: number;
+      formikName: string;
     },
     {
       tier: '2';
       requiredTos: number;
       allocatedToken: number;
+      formikName: string;
     },
     {
       tier: '3';
       requiredTos: number;
       allocatedToken: number;
+      formikName: string;
     },
     {
       tier: '4';
       requiredTos: number;
       allocatedToken: number;
+      formikName: string;
     },
   ];
 };
