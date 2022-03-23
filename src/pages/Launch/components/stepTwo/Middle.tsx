@@ -1,22 +1,11 @@
-import {
-  Box,
-  Button,
-  Flex,
-  Grid,
-  GridItem,
-  Text,
-  useColorMode,
-  useTheme,
-} from '@chakra-ui/react';
+import {Box, Flex, useColorMode, useTheme} from '@chakra-ui/react';
 import StepTitle from '@Launch/components/common/StepTitle';
 import useVaultSelector from '@Launch/hooks/useVaultSelector';
 import {saveTempVaultData, selectLaunch} from '@Launch/launch.reducer';
 import {Projects, Vault, VaultSchedule} from '@Launch/types';
 import {useFormikContext} from 'formik';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import moment from 'moment';
 import {useEffect, useState} from 'react';
-import store from 'store';
 import {useModal} from 'hooks/useModal';
 import {PublicProps} from '../common/VaultProps';
 import {CustomButton} from 'components/Basic/CustomButton';
@@ -51,9 +40,6 @@ const Middle = () => {
     //   }),
     // );
     const vaultsList = values.vaults;
-
-    console.log('--go--');
-    console.log(tempVaultData);
 
     const thisVaultValue = vaultsList.filter((vault: Vault) => {
       if (vault.vaultName === selectedVault) {

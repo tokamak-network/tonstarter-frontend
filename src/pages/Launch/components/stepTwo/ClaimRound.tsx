@@ -1,24 +1,31 @@
-import {Box, Flex, Text, useColorMode, useTheme} from '@chakra-ui/react';
+import {Box, Flex, Input, Text, useColorMode, useTheme} from '@chakra-ui/react';
 import StepTitle from '@Launch/components/common/StepTitle';
-import {VaultAny} from '@Launch/types';
 import HoverImage from 'components/HoverImage';
 import {useFormikContext} from 'formik';
-import {useCallback, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import CalendarActiveImg from 'assets/launch/calendar-active-icon.svg';
 import CalendarInactiveImg from 'assets/launch/calendar-inactive-icon.svg';
 import PlusIconNormal from 'assets/launch/plus-icon-normal.svg';
 import PlusIconHover from 'assets/launch/plus-icon-hover.svg';
+import MinusIconNormal from 'assets/launch/minus-icon-normal.svg';
+import MinusIconHover from 'assets/launch/minus-icon-hover.svg';
+import {CustomButton} from 'components/Basic/CustomButton';
+import {CustomSelectBox} from 'components/Basic';
+import {Projects, VaultAny, VaultSchedule} from '@Launch/types';
+import useVaultSelector from '@Launch/hooks/useVaultSelector';
+import moment from 'moment';
+import {selectLaunch} from '@Launch/launch.reducer';
+import {useAppSelector} from 'hooks/useRedux';
 
 type ClaimRoundTable = {
   dateTime: number;
-  tokenAllocation: string;
-  accumulated: string;
+  tokenAllocation: number;
 };
 
 const defaultTableData = {
-  dateTime: 0,
-  tokenAllocation: '0',
-  accumulated: '0',
+  claimRound: 1,
+  claimTime: moment().unix(),
+  claimTokenAllocation: 0,
 };
 
 const middleStyle = {
@@ -29,21 +36,120 @@ const ClaimRound = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {OpenCampaginDesign} = theme;
-  const {values, setFieldValue} = useFormikContext();
-  //@ts-ignore
+  const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
+  // const {selectedVaultDetail} = useVaultSelector();
+
+  const {
+    data: {selectedVault},
+  } = useAppSelector(selectLaunch);
+  const [selectedVaultDetail, setSelectedVaultDetail] = useState([]);
   const vaultsList = values.vaults;
-  const [tableData, setTableData] = useState<ClaimRoundTable[]>([
-    defaultTableData,
-  ]);
+
+  useEffect(() => {
+    console.log('-go-');
+    vaultsList.filter((vaultData: VaultAny) => {
+      console.log(vaultData.vaultName, selectedVault);
+      if (vaultData.vaultName === selectedVault) {
+        console.log('go');
+        //@ts-ignore
+        return setSelectedVaultDetail(vaultData);
+      }
+    });
+  }, [selectedVault, vaultsList]);
+
+  const [selectedDay, setSelectedDay] = useState<'14' | '30' | '60'>('14');
+
+  const selectOptionValues = ['14', '30', '60'];
+  const selectOptionNames = ['14 Days', '30 Days', '60 Days'];
+
+  //@ts-ignore
+  const {claim} = selectedVaultDetail;
 
   const addRow = useCallback(() => {
-    setTableData([...tableData, defaultTableData]);
-  }, [tableData]);
+    if (selectedVaultDetail) {
+      //@ts-ignore
+      return setFieldValue(`vaults[${selectedVaultDetail.index}].claim`, [
+        ...claim,
+        defaultTableData,
+      ]);
+    }
+  }, [claim]);
+
+  const removeRow = useCallback(
+    (rowIndex) => {
+      if (selectedVaultDetail) {
+        const newTableData = claim.filter(
+          (data: ClaimRoundTable, index: number) => {
+            return index !== rowIndex;
+          },
+        );
+        return setFieldValue(
+          //@ts-ignore
+          `vaults[${selectedVaultDetail.index}].claim`,
+          newTableData,
+        );
+      }
+
+      // setTableData(newTableData);
+    },
+    [claim],
+  );
+
+  const setDate = useCallback(() => {
+    const claimValue: VaultSchedule[] = claim.map(
+      (data: ClaimRoundTable, index: number) => {
+        const nowTimeStamp = moment().add(30, 'days').unix();
+        return {
+          claimRound: index + 1,
+          claimTime: nowTimeStamp,
+          claimTokenAllocation: Number(data.tokenAllocation),
+        };
+      },
+    );
+    if (selectedVaultDetail) {
+      // setTableData(claimValue);
+      return setFieldValue(
+        //@ts-ignore
+        `vaults[${selectedVaultDetail.index}].claim`,
+        claimValue,
+      );
+    }
+  }, [claim]);
+
+  console.log('--values--');
+  console.log(values);
 
   return (
     <Flex flexDir={'column'}>
-      <Box mb={'15px'}>
+      <Box
+        mb={'15px'}
+        d="flex"
+        justifyContent={'space-between'}
+        alignItems="center">
         <StepTitle title={'Claim Round'} fontSize={16}></StepTitle>
+        <Flex>
+          <Text
+            fontSize={13}
+            color={'#304156'}
+            mr={'15px'}
+            textAlign="center"
+            lineHeight={'35px'}>
+            Interval
+          </Text>
+          <CustomSelectBox
+            w={'100px'}
+            h={'32px'}
+            list={selectOptionValues}
+            optionName={selectOptionNames}
+            setValue={setSelectedDay}
+            fontSize={'12px'}></CustomSelectBox>
+          <CustomButton
+            style={{marginLeft: '10px'}}
+            w={'100px'}
+            h={'32px'}
+            text={'Set All'}
+            func={() => setDate()}></CustomButton>
+        </Flex>
       </Box>
       <Flex>
         <Box
@@ -65,17 +171,19 @@ const ClaimRound = () => {
             </Text>
             <Text w={'90px'}>Function</Text>
           </Flex>
-          {tableData.map((data: ClaimRoundTable, index: number) => {
+          {claim?.map((data: VaultSchedule, index: number) => {
             return (
               <Flex h={'42px'} fontSize={12} color={'#3d495d'} fontWeight={600}>
-                <Text w={'90px'}>{`0${index + 1}`}</Text>
+                <Text w={'90px'}>
+                  {index > 8 ? `${index + 1}` : `0${index + 1}`}
+                </Text>
                 <Flex
                   w={'292px'}
                   borderX={middleStyle.border}
                   alignItems="center"
                   justifyContent={'center'}>
                   <Text mr={'5px'} color={'#3d495d'}>
-                    -
+                    {data.claimTime}
                   </Text>
                   <HoverImage
                     action={() => console.log('go')}
@@ -83,24 +191,96 @@ const ClaimRound = () => {
                     hoverImg={CalendarActiveImg}></HoverImage>
                 </Flex>
                 <Text w={'281px'} borderRight={middleStyle.border}>
-                  -
+                  <Input
+                    w={`120px`}
+                    h={`32px`}
+                    // focusBorderColor={isErr ? 'red.100' : '#dfe4ee'}
+                    fontSize={12}
+                    placeholder={''}
+                    value={data.claimTokenAllocation}
+                    onChange={(e) => {
+                      const {value} = e.target;
+                      setFieldValue(
+                        //@ts-ignore
+                        `vaults[${selectedVaultDetail.index}].claim[${index}]`,
+                        {...data, claimTokenAllocation: Number(value)},
+                      );
+                    }}></Input>
                 </Text>
                 <Text w={'281px'} borderRight={middleStyle.border}>
                   -
                 </Text>
                 <Flex w={'90px'} alignItems="center" justifyContent="center">
-                  <Flex
-                    w={'24px'}
-                    h={'24px'}
-                    alignItems="center"
-                    justifyContent="center"
-                    border={'1px solid #e6eaee'}
-                    bg={'white.100'}>
-                    <HoverImage
-                      action={() => addRow()}
-                      img={PlusIconNormal}
-                      hoverImg={PlusIconHover}></HoverImage>
-                  </Flex>
+                  {index === 0 ? (
+                    claim.length === 1 ? (
+                      <Flex
+                        w={'24px'}
+                        h={'24px'}
+                        alignItems="center"
+                        justifyContent="center"
+                        border={'1px solid #e6eaee'}
+                        bg={'white.100'}>
+                        <HoverImage
+                          action={() => addRow()}
+                          img={PlusIconNormal}
+                          hoverImg={PlusIconHover}></HoverImage>
+                      </Flex>
+                    ) : (
+                      <Flex
+                        w={'24px'}
+                        h={'24px'}
+                        alignItems="center"
+                        justifyContent="center"
+                        border={'1px solid #e6eaee'}
+                        bg={'white.100'}>
+                        <HoverImage
+                          action={() => removeRow(index)}
+                          img={MinusIconNormal}
+                          hoverImg={MinusIconHover}></HoverImage>
+                      </Flex>
+                    )
+                  ) : index + 1 !== claim.length ? (
+                    <Flex
+                      w={'24px'}
+                      h={'24px'}
+                      alignItems="center"
+                      justifyContent="center"
+                      border={'1px solid #e6eaee'}
+                      bg={'white.100'}>
+                      <HoverImage
+                        action={() => removeRow(index)}
+                        img={MinusIconNormal}
+                        hoverImg={MinusIconHover}></HoverImage>
+                    </Flex>
+                  ) : (
+                    <>
+                      <Flex
+                        w={'24px'}
+                        h={'24px'}
+                        alignItems="center"
+                        justifyContent="center"
+                        border={'1px solid #e6eaee'}
+                        bg={'white.100'}
+                        mr={'10px'}>
+                        <HoverImage
+                          action={() => removeRow(index)}
+                          img={MinusIconNormal}
+                          hoverImg={MinusIconHover}></HoverImage>
+                      </Flex>
+                      <Flex
+                        w={'24px'}
+                        h={'24px'}
+                        alignItems="center"
+                        justifyContent="center"
+                        border={'1px solid #e6eaee'}
+                        bg={'white.100'}>
+                        <HoverImage
+                          action={() => addRow()}
+                          img={PlusIconNormal}
+                          hoverImg={PlusIconHover}></HoverImage>
+                      </Flex>
+                    </>
+                  )}
                 </Flex>
               </Flex>
             );

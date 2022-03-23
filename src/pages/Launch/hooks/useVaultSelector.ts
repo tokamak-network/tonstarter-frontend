@@ -1,17 +1,17 @@
 import {selectLaunch} from '@Launch/launch.reducer';
-import {VaultAny} from '@Launch/types';
+import {Projects, VaultAny, VaultName, VaultPublic} from '@Launch/types';
 import {useFormikContext} from 'formik';
 import {useAppSelector} from 'hooks/useRedux';
 import {useEffect, useState} from 'react';
 
 function useVaultSelector(): {
-  selectedVaultDetail: VaultAny | undefined;
+  selectedVaultName: VaultName;
+  selectedVaultDetail: VaultAny | VaultPublic | undefined;
 } {
   const [selectedVaultDetail, setSelectedVaultDetail] = useState<
-    VaultAny | undefined
+    VaultAny | VaultPublic | undefined
   >(undefined);
-  const {values} = useFormikContext();
-  //@ts-ignore
+  const {values} = useFormikContext<Projects['CreateProject']>();
   const vaultsList = values.vaults;
   const {
     data: {selectedVault},
@@ -22,11 +22,13 @@ function useVaultSelector(): {
       if (vaultData.vaultName === selectedVault) {
         return setSelectedVaultDetail(vaultData);
       }
-      return undefined;
     });
   }, [selectedVault, vaultsList]);
 
-  return {selectedVaultDetail: selectedVaultDetail};
+  return {
+    selectedVaultName: selectedVault,
+    selectedVaultDetail: selectedVaultDetail,
+  };
 }
 
 export default useVaultSelector;
