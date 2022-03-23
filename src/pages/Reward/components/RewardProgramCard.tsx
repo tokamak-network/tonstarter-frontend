@@ -65,6 +65,7 @@ type RewardProgramCardProps = {
   stakedPools: any;
   LPTokens: any;
   getCheckedBoxes: (checkedBoxes: any) => any;
+  latestBlockNumber: number;
 };
 
 const {
@@ -88,6 +89,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   stakedPools,
   LPTokens,
   getCheckedBoxes,
+  latestBlockNumber,
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -427,6 +429,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
               currentKey: key,
               currentUserAddress: account,
               currentPositions: LPTokens,
+              currentBlockNumber: latestBlockNumber,
             },
           }),
         );

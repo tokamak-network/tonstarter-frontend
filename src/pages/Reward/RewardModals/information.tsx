@@ -28,6 +28,7 @@ import {
   Th,
   Td,
   TableCaption,
+  Link,
 } from '@chakra-ui/react';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {checkTokenType} from 'utils/token';
@@ -39,10 +40,8 @@ import moment from 'moment';
 import {DEPLOYED} from 'constants/index';
 import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
-import * as NPMABI from 'services/abis/NonfungiblePositionManager.json';
 import {approveStaking, stake, unstake} from '../actions';
-import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
-import {utils, ethers} from 'ethers';
+import {utils, ethers, BigNumber} from 'ethers';
 import {soliditySha3} from 'web3-utils';
 import {getTokenSymbol} from '../utils/getTokenSymbol';
 import {UpdatedRedward} from '../types';
@@ -52,10 +51,14 @@ import {Scrollbars} from 'react-custom-scrollbars-2';
 import {PieChart} from './../components/PieChart';
 import {useWeb3React} from '@web3-react/core';
 import {CloseButton} from 'components/Modal/CloseButton';
+import {useBlockNumber} from '../../../hooks/useBlock';
 // import {useGraphQueries} from 'hooks/useGraphQueries';
 // import {gql, useQuery} from '@apollo/client';
 import {usePoolByArrayQuery} from 'store/data/generated';
-import axios from 'axios';
+import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
+import * as UniswapV3PoolABI from 'services/abis/UniswapV3Pool.json';
+import {selectApp} from 'store/app/app.reducer';
+import Web3 from 'web3';
 
 const {
   WTON_ADDRESS,
@@ -63,6 +66,7 @@ const {
   UniswapStaking_Address,
   TOS_ADDRESS,
   UniswapStaker_Address,
+  BasePool_Address,
 } = DEPLOYED;
 
 export const InformationModal = () => {
@@ -90,9 +94,14 @@ export const InformationModal = () => {
   const [positions, setPositions] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [pieData, setPieData] = useState<any[]>([]);
-  const [recentActivity, setRecentActivity] = useState<any[]>([]);
+  const [blockNumber, setBlockNumber] = useState<number>(0);
+  const [recentActivityTable, setRecentActivityTable] = useState<any>();
+  const {data: appConfig} = useAppSelector(selectApp);
 
-  // const [isHandling, setIsHandling] = useState<boolean>(true);
+  //@ts-ignore
+  const web3 = new Web3(window.ethereum);
+
+  console.log('web3: ', web3);
 
   const themeDesign = {
     border: {
@@ -113,29 +122,6 @@ export const InformationModal = () => {
     dispatch(closeModal());
   }, [dispatch]);
 
-  // console.log(data?.data?.currentReward?.poolAddress);
-
-  // const GET_POOL_DATA = gql`
-  //   query poolByArray($address: [${
-  //     data?.data?.currentReward?.poolAddress || undefined
-  //   }]) {
-  //     pools(first: 1000, where: {id_in: $address}) {
-  //       id
-  //     }
-  //   }
-  // `;
-
-  const queryData = usePoolByArrayQuery(
-    {
-      address: data?.data?.currentReward?.poolAddress,
-    },
-    // {
-    //   pollingInterval: ms`2s`,
-    // },
-  );
-  // console.log('queryLodaing: ', queryLodaing);
-  // console.log('queryData: ', queryData);
-
   useEffect(() => {
     const {
       currentReward,
@@ -143,6 +129,7 @@ export const InformationModal = () => {
       currentUserAddress,
       currentKey,
       currentPositions,
+      currentBlockNumber,
     } = data.data;
     console.log('DATA: ', data.data);
 
@@ -151,31 +138,14 @@ export const InformationModal = () => {
     setKey(currentKey);
     setStakedPools(currentStakedPools);
     setPositions(currentPositions);
-
-    // getPoolInfo(key.poolAddress);
-    // useQueryFunc(key.poolAddress);
+    setBlockNumber(currentBlockNumber);
 
     if (key && userAddress && stakedPools && reward) {
-      getIncentives(key, userAddress, stakedPools, positions);
-      testCall(positions, key);
+      getIncentives(key, userAddress, stakedPools, positions, reward);
     }
     if (reward && userAddress && key && positions) {
       setLoading(false);
     }
-
-    if (currentPositions) {
-      // axios
-      //   .get(
-      //     `https://rinkeby.etherscan.io/address/${currentReward.rewardToken}`,
-      //   )
-      //   .then((res) => console.log(res.data));
-      getStatus(currentPositions);
-    }
-
-    // }
-    // }
-    // fetchData();
-    /*eslint-disable*/
   }, [data, reward]);
 
   const getStatus = (token: any) => {
@@ -202,35 +172,63 @@ export const InformationModal = () => {
     userAddress: string,
     stakedPools: any,
     positions: any,
+    reward: any,
   ) => {
     if (account === null || account === undefined || library === undefined) {
       return;
     }
+
     const uniswapStakerContract = new Contract(
       UniswapStaker_Address,
       STAKERABI.abi,
       library,
     );
 
+    // const UniswapV3PoolContract = new Contract(
+    //   BasePool_Address,
+    //   UniswapV3PoolABI.abi,
+    //   library,
+    // );
+
+    // console.log('v3POOL: ', UniswapV3PoolContract);
+    const eventFilter: any[] = [
+      uniswapStakerContract.filters.IncentiveCreated(
+        reward.rewardToken,
+        reward.poolAddress,
+      ),
+      uniswapStakerContract.filters.IncentiveEnded(null),
+      uniswapStakerContract.filters.TokenStaked(null, null),
+      uniswapStakerContract.filters.TokenUnstaked(null, null),
+    ];
+
+    const recentActivity = await uniswapStakerContract.queryFilter(
+      eventFilter as any,
+      blockNumber - 100000,
+      blockNumber,
+    );
+    console.log('recentActivity: ', recentActivity);
+    setRecentActivityTable(recentActivity);
+
     let userPositions = positions.map((position: any) => {
       return position.id;
     });
 
-    const MYAPIKEY = '552K1B1Z2QVVBFKY8PDUX874XBG89U32QE';
-    axios
-      .get(
-        `https://api.etherscan.io/api?_limit=20&module=account&action=txlist&address=${positions[0].owner}&startblock=0&endblock=99999999&sort=asc&apikey=${MYAPIKEY}`,
-      )
-      .then((res) => {
-        console.log('LOOOOOK: ', res);
-        setRecentActivity(res.data);
-      })
-      .catch(console.error);
+    // const MYAPIKEY = '552K1B1Z2QVVBFKY8PDUX874XBG89U32QE';
+    // axios
+    //   .get(
+    //     `https://api.etherscan.io/api?_limit=20&module=account&action=txlist&address=${positions[0].owner}&startblock=0&endblock=99999999&sort=asc&apikey=${MYAPIKEY}`,
+    //   )
+    //   .then((res) => {
+    //     console.log('LOOOOOK: ', res);
+    //     setRecentActivity(res.data);
+    //   })
+    //   .catch(console.error);
 
     const incentiveABI =
       'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)';
     const abicoder = ethers.utils.defaultAbiCoder;
     const incentiveId = soliditySha3(abicoder.encode([incentiveABI], [key]));
+    console.log('incentiveID: ', incentiveId);
     const signer = getSigner(library, account);
     const incentiveInfo = await uniswapStakerContract
       .connect(signer)
@@ -239,6 +237,7 @@ export const InformationModal = () => {
     let tempRewardStakerInfo: any[] = [];
     let tempRewardStakedIds: any[] = [];
     let tempPieData: any[] = [];
+    console.log('stakedPools: ', stakedPools);
     await Promise.all(
       stakedPools.map(async (pool: any) => {
         const incentiveInfo = await uniswapStakerContract
@@ -250,6 +249,9 @@ export const InformationModal = () => {
           .deposits(Number(pool.id));
 
         if (incentiveInfo.liquidity._hex !== '0x00') {
+          console.log('incentiveInfo: ', incentiveInfo);
+          console.log('depositInfo: ', depositInfo);
+
           tempRewardStakerInfo.push({
             token: pool.id,
             token0Address: reward.token0Address,
@@ -335,7 +337,7 @@ export const InformationModal = () => {
       },
     );
 
-    // console.log('rewardStakersInfo: ', tempRewardStakerInfo);
+    console.log('rewardStakersInfo: ', tempRewardStakerInfo);
     setPieData(tempPieData);
     setRewardStakersInfo(tempRewardStakerInfo);
     setUserStakerIds(filteredStakedPositions);
@@ -393,44 +395,58 @@ export const InformationModal = () => {
     }
   };
 
-  const testCall = async (positions: any, key: any) => {
-    // console.log('positions: ', positions);
-    // console.log('library: ', library);
-    // console.log('account: ', account);
+  const shortenAddress = (address: string) => {
+    let firstStr = address.substring(0, 4);
+    let lastStr = address.substring(address.length - 4, address.length);
+    let combined = `${firstStr}...${lastStr}`;
+    return combined;
+  };
 
-    if (account) {
-      const uniswapStakerContract = new Contract(
-        UniswapStaker_Address,
-        STAKERABI.abi,
-        library,
-      );
+  const convertDateFromBlockNumber = (blockNumber: number) => {
+    const innerFunction = async (blockNumber: number) => {
+      try {
+        let blockObj = await web3.eth.getBlock(blockNumber);
+        return moment
+          .unix(Number(blockObj.timestamp))
+          .format('MM/DD/YYYY HH:MM:ss');
+      } catch (err) {
+        console.log('err');
+      }
+    };
 
-      // console.log('address: ', UniswapStaker_Address);
-      // console.log('contract: ', uniswapStakerContract);
+    let result;
+    innerFunction(blockNumber).then((res) => {
+      result = res;
+      console.log('res: ', res);
+    });
+    console.log('result: ', result);
+    // let result = web3.eth
+    //   .getBlock(blockNumber)
+    //   .then((res) => getDateFromRes(res));
+    // console.log('result: ', result);
+    // return 'Mar 1';
 
-      //@ts-ignore
-      // const provider = new ethers.providers.Web3Provider(window.ethereum);
-      // console.log('provider: ', provider);
+    // let web3DateObj = await web3.eth.getBlock(blockNumber).then((res) => getDateFromRes(res));
+    // console.log('web3DateObj: ', web3DateObj);
+    // let convertedDate = moment
+    //   .unix(Number(web3DateObj.timestamp))
+    //   .format('MM/DD/YYYY HH:MM:ss');
+    // console.log('convertedDate: ', convertedDate);
 
-      // const logs = provider.getLogs({
-      //   address: address,
-      //   // topics: [“0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef”]
-      // });
+    // // let result;
+    // // let convertedDate = await web3.eth.getBlock(blockNumber).then((res) => {
+    // //   result = moment.unix(Number(res.timestamp)).format('MM/DD/YYYY HH:MM:ss');
+    // // });
+    // // console.log('convertedDate: ', convertedDate);
+    // // console.log('result: ', result);
 
-      // const filterTo = uniswapStakerContract.filters.Transfer(null, address);
-      // console.log('filterTo: ', filterTo);
-
-      const signer = getSigner(library, account);
-      let deposit = await uniswapStakerContract
-        .connect(signer)
-        .deposits(Number(positions[0].id));
-      // console.log('deposit: ', deposit);
-    }
+    // // return convertedDate;
+    return 'Mar 1, 2022 19:40:11';
   };
 
   // url for adding liquidity to tokens: https://app.uniswap.org/#/increase/0x73a54e5C054aA64C1AE7373C2B5474d8AFEa08bd/0xb109f4c20BDb494A63E32aA035257fBA0a4610A4/3000/13035?chain=rinkeby
 
-  if (!reward) {
+  if (!reward || !recentActivityTable) {
     return <></>;
   }
   return !loading ? (
@@ -439,6 +455,7 @@ export const InformationModal = () => {
       onClose={handleCloseModal}
       size={'6xl'}>
       {console.log('reward: ', reward)}
+      {console.log('recentActivityTable', recentActivityTable)}
 
       <ModalOverlay />
       <ModalContent
@@ -747,34 +764,54 @@ export const InformationModal = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                <Tr>
-                  <Td>inches</Td>
-                  <Td>yards</Td>
-                  <Td>yards</Td>
-                  <Td>millimetres (mm)</Td>
-                  <Td>25.4</Td>
-                </Tr>
-                <Tr>
-                  <Td>feet</Td>
-                  <Td>yards</Td>
-                  <Td>yards</Td>
-                  <Td>centimetres (cm)</Td>
-                  <Td>30.48</Td>
-                </Tr>
-                <Tr>
-                  <Td>yards</Td>
-                  <Td>yards</Td>
-                  <Td>yards</Td>
-                  <Td>metres (m)</Td>
-                  <Td>0.91444</Td>
-                </Tr>
-                <Tr>
-                  <Td>yards</Td>
-                  <Td>yards</Td>
-                  <Td>yards</Td>
-                  <Td>metres (m)</Td>
-                  <Td>0.91444</Td>
-                </Tr>
+                {recentActivityTable.map((txn: any) => {
+                  if (txn.event === 'IncentiveCreated') {
+                    console.log('BIGNUMBER: ', BigNumber.from(txn.args.reward));
+                  }
+                  return (
+                    <Tr>
+                      {txn.event === 'RewardClaimed' ? (
+                        <Td>
+                          <Link
+                            isExternal
+                            href={`${appConfig.explorerLink}${txn.args.to}`}>
+                            {shortenAddress(txn.args.to)}
+                          </Link>
+                        </Td>
+                      ) : txn.event === 'TokenUnstaked' ||
+                        txn.event === 'IncentiveEnded' ? (
+                        <Td>
+                          <Link
+                            isExternal
+                            href={`${appConfig.explorerLink}${txn.address}`}>
+                            {shortenAddress(txn.address)}
+                          </Link>
+                        </Td>
+                      ) : txn.event === 'TokenStaked' ||
+                        txn.event === 'IncentiveCreated' ? (
+                        <Td>
+                          <Link
+                            isExternal
+                            href={`${appConfig.explorerLink}${txn.args.refundee}`}>
+                            {shortenAddress(txn.args.refundee)}
+                          </Link>
+                        </Td>
+                      ) : (
+                        <Td>Error</Td>
+                      )}
+                      <Td>
+                        <Link
+                          isExternal
+                          href={`${appConfig.explorerTxnLink}${txn.transactionHash}`}>
+                          {txn.transactionHash}
+                        </Link>
+                      </Td>
+                      <Td>{txn.event}</Td>
+                      <Td>1000</Td>
+                      <Td>{convertDateFromBlockNumber(txn.blockNumber)}</Td>
+                    </Tr>
+                  );
+                })}
               </Tbody>
             </Table>
           </ModalBody>

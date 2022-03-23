@@ -28,6 +28,7 @@ import {Contract} from '@ethersproject/contracts';
 import {ethers} from 'ethers';
 import {ConfirmMulticallModal} from './RewardModals';
 import {openModal} from 'store/modal.reducer';
+import {useBlockNumber} from 'hooks/useBlock';
 
 type Pool = {
   id: string;
@@ -84,6 +85,9 @@ export const RewardContainer: FC<RewardContainerProps> = ({
       ethers.utils.getAddress(UniswapStaker_Address)
     );
   });
+
+  const blockNumberObj = useBlockNumber();
+  const latestBlockNumber = blockNumberObj.blockNumber;
 
   useEffect(() => {
     const pagenumber = parseInt(
@@ -253,6 +257,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({
                   stakedPools={stakedPools}
                   LPTokens={LPTokens}
                   getCheckedBoxes={getCheckedBoxes}
+                  latestBlockNumber={latestBlockNumber}
                 />
               );
             })}
