@@ -208,12 +208,12 @@ export const InformationModal = () => {
     );
     console.log('recentActivity: ', recentActivity);
     let recentActivityUpdated: any[] = [];
-    recentActivity.forEach((txn: any) => {
-      // Add formattedDate to each 'activity'
-      txn.formattedTxnDate = convertDateFromBlockNumber(txn.blockNumber);
+    recentActivity.forEach(async (txn: any) => {
+      // Add txnInfo to each 'activity'
+      txn.formattedTxnDate = await convertDateFromBlockNumber(txn.blockNumber);
 
       // Add the correct txn address from each 'activity'
-      let transactionInfo = txn
+      let transactionInfo = await txn
         .getTransaction()
         .then((res: any) => (txn.transactionInfo = res));
       console.log('transactionInfo: ', transactionInfo);
@@ -430,8 +430,8 @@ export const InformationModal = () => {
     return combined;
   };
 
-  const convertDateFromBlockNumber = async (blockNumber: number) => {
-    let formattedDate = await web3.eth
+  const convertDateFromBlockNumber = (blockNumber: number) => {
+    let formattedDate = web3.eth
       .getBlock(blockNumber)
       .then((res) =>
         moment.unix(Number(res.timestamp)).format('MM/DD/YYYY HH:MM:ss'),
@@ -768,40 +768,13 @@ export const InformationModal = () => {
 
                   return (
                     <Tr>
-                      {/* Token staked address isn't listed in the txn info object. Add TokenStaked functionality later. */}
-                      {/* <Td>
+                      <Td>
                         <Link
                           isExternal
-                          href={`${appConfig.explorerLink}${txn.transactionInfo.from}`}></Link>
-                      </Td> */}
-                      {txn.event === 'RewardClaimed' ? (
-                        <Td>
-                          <Link
-                            isExternal
-                            href={`${appConfig.explorerLink}${txn.args.to}`}>
-                            {shortenAddress(txn.args.to)}
-                          </Link>
-                        </Td>
-                      ) : txn.event === 'TokenUnstaked' ||
-                        txn.event === 'IncentiveEnded' ? (
-                        <Td>
-                          <Link
-                            isExternal
-                            href={`${appConfig.explorerLink}${txn.address}`}>
-                            {shortenAddress(txn.address)}
-                          </Link>
-                        </Td>
-                      ) : txn.event === 'IncentiveCreated' ? (
-                        <Td>
-                          <Link
-                            isExternal
-                            href={`${appConfig.explorerLink}${txn.args.refundee}`}>
-                            {shortenAddress(txn.args.refundee)}
-                          </Link>
-                        </Td>
-                      ) : (
-                        <Td>Error</Td>
-                      )}
+                          href={`${appConfig.explorerLink}${txn.transactionInfo.from}`}>
+                          {shortenAddress(txn.transactionInfo.from)}
+                        </Link>
+                      </Td>
                       <Td>
                         <Link
                           isExternal
