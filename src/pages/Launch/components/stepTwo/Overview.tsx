@@ -12,19 +12,24 @@ const Overview = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {OpenCampaginDesign} = theme;
-  const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
+  const {values} = useFormikContext<Projects['CreateProject']>();
   const vaultsList = values.vaults;
   const [tableData, setTableData] = useState<any>([]);
   const [totalColData, setTotalColData] = useState<any>([]);
+  const [columnLength, setColumnLength] = useState<any>([]);
 
-  console.log('--vaultsList--');
-  console.log(vaultsList);
   useEffect(() => {
     const claimData = vaultsList.map((vault: any) => {
       if (vault.claim) {
         return {name: vault.vaultName, claim: vault.claim};
       }
     });
+    let i = 0;
+    claimData.map((data: any) => {
+      return (i = data.claim.length > i ? data.claim.length : i);
+    });
+    console.log('i:', i);
+    setColumnLength(Array.from({length: i}, (v, i) => i));
     setTableData(claimData);
   }, [vaultsList]);
 
@@ -36,35 +41,20 @@ const Overview = () => {
       });
       return result;
     });
-    console.log('--totals--');
-    console.log(totals);
-
-    let arr = [];
-
-    console.log(totals.length);
-
+    const totalSum = [];
     for (let i = 0; i < totals.length; i++) {
-      const result = totals.filter((data: any) => {
-        console.log('--data--');
-        console.log(data);
+      let arr: any = [];
+      totals.filter((data: any) => {
         const dd = data.filter((d: number, index: number) => {
           if (i === index) {
             return d;
           }
         });
-        console.log('--dd--');
-        console.log(dd);
-        return dd;
+        arr.push(...dd);
       });
-      console.log('--result--');
-      console.log(result);
-      arr.push(result);
+      totalSum.push(arr);
     }
-
-    console.log('--arr--');
-    console.log(arr);
-
-    // setTotalColData(totals)
+    setTotalColData(totalSum);
   }, [tableData]);
 
   return (
@@ -85,6 +75,16 @@ const Overview = () => {
           borderBottom={middleStyle.border}
           w={'90px'}>
           <Text fontSize={12}>Round</Text>
+          {columnLength.map((data: any, index: number) => {
+            return (
+              <Text
+                borderX={middleStyle.border}
+                fontSize={13}
+                bg={index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'}>
+                {index > 9 ? index + 1 : `0${index + 1}`}
+              </Text>
+            );
+          })}
           <Text
             fontSize={13}
             marginTop={'auto'}
@@ -120,33 +120,34 @@ const Overview = () => {
             </Flex>
           );
         })}
-        {tableData.map((data: any, index: number) => {
-          const {name, claim} = data;
-          return (
-            <Flex
-              fontSize={12}
-              color={'#3d495d'}
-              flexDir={'column'}
-              fontWeight={600}
-              w={name.length > 10 ? '140px' : '120px'}
-              borderBottom={middleStyle.border}>
-              <Text fontSize={12}>{name}</Text>
-              {claim.map((claimData: any, index: number) => {
-                return (
-                  <Text
-                    borderX={middleStyle.border}
-                    fontSize={13}
-                    bg={index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'}>
-                    {claimData.claimTokenAllocation}
-                  </Text>
-                );
-              })}
-              <Text fontSize={13} marginTop={'auto'}>
+        <Flex
+          fontSize={12}
+          color={'#3d495d'}
+          flexDir={'column'}
+          fontWeight={600}
+          w={'120px'}
+          borderBottom={middleStyle.border}>
+          <Text fontSize={12}>Total</Text>
+          {totalColData.map((roundTotal: number[], index: number) => {
+            const sumWithInitial = roundTotal.reduce(
+              (previousValue, currentValue) => previousValue + currentValue,
+              0,
+            );
+            if (sumWithInitial !== 0) {
+              return (
+                <Text
+                  borderX={middleStyle.border}
+                  fontSize={13}
+                  bg={index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'}>
+                  {sumWithInitial}
+                </Text>
+              );
+            }
+          })}
+          {/* <Text fontSize={13} marginTop={'auto'}>
                 {name}
-              </Text>
-            </Flex>
-          );
-        })}
+              </Text> */}
+        </Flex>
       </Box>
     </Flex>
   );
