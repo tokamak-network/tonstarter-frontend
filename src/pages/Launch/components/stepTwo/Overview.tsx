@@ -38,6 +38,32 @@ const Overview = () => {
     });
     console.log('--totals--');
     console.log(totals);
+
+    let arr = [];
+
+    console.log(totals.length);
+
+    for (let i = 0; i < totals.length; i++) {
+      const result = totals.filter((data: any) => {
+        console.log('--data--');
+        console.log(data);
+        const dd = data.filter((d: number, index: number) => {
+          if (i === index) {
+            return d;
+          }
+        });
+        console.log('--dd--');
+        console.log(dd);
+        return dd;
+      });
+      console.log('--result--');
+      console.log(result);
+      arr.push(result);
+    }
+
+    console.log('--arr--');
+    console.log(arr);
+
     // setTotalColData(totals)
   }, [tableData]);
 
