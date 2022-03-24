@@ -207,7 +207,20 @@ export const InformationModal = () => {
       blockNumber,
     );
     console.log('recentActivity: ', recentActivity);
-    setRecentActivityTable(recentActivity);
+    let recentActivityUpdated: any[] = [];
+    recentActivity.forEach((txn: any) => {
+      // Add formattedDate to each 'activity'
+      txn.formattedTxnDate = convertDateFromBlockNumber(txn.blockNumber);
+
+      // Add the correct txn address from each 'activity'
+      let transactionInfo = txn
+        .getTransaction()
+        .then((res: any) => (txn.transactionInfo = res));
+      console.log('transactionInfo: ', transactionInfo);
+      recentActivityUpdated.push(txn);
+    });
+    console.log('recentActivityUpdated: ', recentActivityUpdated);
+    setRecentActivityTable(recentActivityUpdated);
 
     let userPositions = positions.map((position: any) => {
       return position.id;
@@ -392,6 +405,21 @@ export const InformationModal = () => {
       );
       const finalFormattedString = formatNumberWithCommas(removeDecimalAmt);
       return finalFormattedString;
+    } else if (amount && !token) {
+      let formattedAmt = Number(
+        ethers.utils.formatEther(amount.toString()),
+      ).toLocaleString(undefined, {
+        minimumFractionDigits: 0,
+      });
+      if (formattedAmt.includes(',')) {
+        const removeCommaString = formattedAmt.replace(',', '');
+        formattedAmt = removeCommaString;
+      }
+      const removeDecimalAmt = Number(
+        Math.floor(Number(formattedAmt)).toFixed(0),
+      );
+      const finalFormattedString = formatNumberWithCommas(removeDecimalAmt);
+      return finalFormattedString;
     }
   };
 
@@ -402,46 +430,17 @@ export const InformationModal = () => {
     return combined;
   };
 
-  const convertDateFromBlockNumber = (blockNumber: number) => {
-    const innerFunction = async (blockNumber: number) => {
-      try {
-        let blockObj = await web3.eth.getBlock(blockNumber);
-        return moment
-          .unix(Number(blockObj.timestamp))
-          .format('MM/DD/YYYY HH:MM:ss');
-      } catch (err) {
-        console.log('err');
-      }
-    };
+  const convertDateFromBlockNumber = async (blockNumber: number) => {
+    let formattedDate = await web3.eth
+      .getBlock(blockNumber)
+      .then((res) =>
+        moment.unix(Number(res.timestamp)).format('MM/DD/YYYY HH:MM:ss'),
+      );
 
-    let result;
-    innerFunction(blockNumber).then((res) => {
-      result = res;
-      console.log('res: ', res);
-    });
-    console.log('result: ', result);
-    // let result = web3.eth
-    //   .getBlock(blockNumber)
-    //   .then((res) => getDateFromRes(res));
-    // console.log('result: ', result);
-    // return 'Mar 1';
+    console.log('formattedDate: ', formattedDate);
 
-    // let web3DateObj = await web3.eth.getBlock(blockNumber).then((res) => getDateFromRes(res));
-    // console.log('web3DateObj: ', web3DateObj);
-    // let convertedDate = moment
-    //   .unix(Number(web3DateObj.timestamp))
-    //   .format('MM/DD/YYYY HH:MM:ss');
-    // console.log('convertedDate: ', convertedDate);
-
-    // // let result;
-    // // let convertedDate = await web3.eth.getBlock(blockNumber).then((res) => {
-    // //   result = moment.unix(Number(res.timestamp)).format('MM/DD/YYYY HH:MM:ss');
-    // // });
-    // // console.log('convertedDate: ', convertedDate);
-    // // console.log('result: ', result);
-
-    // // return convertedDate;
-    return 'Mar 1, 2022 19:40:11';
+    return formattedDate;
+    // return 'Mar 1, 2022 19:40:11';
   };
 
   // url for adding liquidity to tokens: https://app.uniswap.org/#/increase/0x73a54e5C054aA64C1AE7373C2B5474d8AFEa08bd/0xb109f4c20BDb494A63E32aA035257fBA0a4610A4/3000/13035?chain=rinkeby
@@ -765,11 +764,16 @@ export const InformationModal = () => {
               </Thead>
               <Tbody>
                 {recentActivityTable.map((txn: any) => {
-                  if (txn.event === 'IncentiveCreated') {
-                    console.log('BIGNUMBER: ', BigNumber.from(txn.args.reward));
-                  }
+                  console.log('txn: ', txn);
+
                   return (
                     <Tr>
+                      {/* Token staked address isn't listed in the txn info object. Add TokenStaked functionality later. */}
+                      {/* <Td>
+                        <Link
+                          isExternal
+                          href={`${appConfig.explorerLink}${txn.transactionInfo.from}`}></Link>
+                      </Td> */}
                       {txn.event === 'RewardClaimed' ? (
                         <Td>
                           <Link
@@ -787,8 +791,7 @@ export const InformationModal = () => {
                             {shortenAddress(txn.address)}
                           </Link>
                         </Td>
-                      ) : txn.event === 'TokenStaked' ||
-                        txn.event === 'IncentiveCreated' ? (
+                      ) : txn.event === 'IncentiveCreated' ? (
                         <Td>
                           <Link
                             isExternal
@@ -807,8 +810,18 @@ export const InformationModal = () => {
                         </Link>
                       </Td>
                       <Td>{txn.event}</Td>
-                      <Td>1000</Td>
-                      <Td>{convertDateFromBlockNumber(txn.blockNumber)}</Td>
+                      {txn.event === 'IncentiveCreated' ? (
+                        <Td>
+                          {formatAmount(txn.args.reward.toString(), null)}
+                        </Td>
+                      ) : txn.event === 'IncentiveEnded' ? (
+                        <Td>
+                          {formatAmount(txn.args.refund.toString(), null)}
+                        </Td>
+                      ) : (
+                        <Td>1000</Td>
+                      )}
+                      <Td>{txn.formattedTxnDate}</Td>
                     </Tr>
                   );
                 })}
