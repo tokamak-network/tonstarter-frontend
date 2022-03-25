@@ -37,7 +37,6 @@ const ClaimRound = () => {
   const theme = useTheme();
   const {OpenCampaginDesign} = theme;
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
-  // const {selectedVaultDetail} = useVaultSelector();
 
   const {
     data: {selectedVault},
@@ -46,11 +45,8 @@ const ClaimRound = () => {
   const vaultsList = values.vaults;
 
   useEffect(() => {
-    console.log('-go-');
     vaultsList.filter((vaultData: VaultAny) => {
-      console.log(vaultData.vaultName, selectedVault);
       if (vaultData.vaultName === selectedVault) {
-        console.log('go');
         //@ts-ignore
         return setSelectedVaultDetail(vaultData);
       }
@@ -96,16 +92,20 @@ const ClaimRound = () => {
   );
 
   const setDate = useCallback(() => {
+    console.log(claim);
     const claimValue: VaultSchedule[] = claim.map(
-      (data: ClaimRoundTable, index: number) => {
-        const nowTimeStamp = moment().add(30, 'days').unix();
+      (data: VaultSchedule, index: number) => {
+        const nowTimeStamp = moment()
+          .add((index + 1) * Number(selectedDay), 'days')
+          .unix();
         return {
           claimRound: index + 1,
           claimTime: nowTimeStamp,
-          claimTokenAllocation: Number(data.tokenAllocation),
+          claimTokenAllocation: data.claimTokenAllocation,
         };
       },
     );
+
     if (selectedVaultDetail) {
       // setTableData(claimValue);
       return setFieldValue(
@@ -114,10 +114,9 @@ const ClaimRound = () => {
         claimValue,
       );
     }
-  }, [claim]);
+  }, [claim, selectedDay]);
 
-  console.log('--values--');
-  console.log(values);
+  let tokenAcc = 0;
 
   return (
     <Flex flexDir={'column'}>
@@ -182,8 +181,8 @@ const ClaimRound = () => {
                   borderX={middleStyle.border}
                   alignItems="center"
                   justifyContent={'center'}>
-                  <Text mr={'5px'} color={'#3d495d'}>
-                    {data.claimTime}
+                  <Text mr={'5px'} color={'#3d495d'} fontSize={11}>
+                    {moment.unix(data.claimTime).format('YYYY.MM.DD hh:mm:ss')}
                   </Text>
                   <HoverImage
                     action={() => console.log('go')}
@@ -208,7 +207,7 @@ const ClaimRound = () => {
                     }}></Input>
                 </Text>
                 <Text w={'281px'} borderRight={middleStyle.border}>
-                  -
+                  {(tokenAcc += data.claimTokenAllocation)}
                 </Text>
                 <Flex w={'90px'} alignItems="center" justifyContent="center">
                   {index === 0 ? (

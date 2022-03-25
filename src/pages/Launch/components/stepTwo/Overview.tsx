@@ -42,7 +42,15 @@ const Overview = () => {
       return result;
     });
     const totalSum = [];
-    for (let i = 0; i < totals.length; i++) {
+    const indexOfLongestArray = totals.reduce(
+      (idx: any, arr: any) => (arr.length > totals[idx].length ? idx + 1 : idx),
+      0,
+    );
+
+    if (totals.length === 0) {
+      return;
+    }
+    for (let i = 0; i < totals[indexOfLongestArray].length; i++) {
       let arr: any = [];
       totals.filter((data: any) => {
         const dd = data.filter((d: number, index: number) => {
