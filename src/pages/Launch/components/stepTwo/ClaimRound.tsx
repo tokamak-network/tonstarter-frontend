@@ -24,8 +24,8 @@ type ClaimRoundTable = {
 
 const defaultTableData = {
   claimRound: 1,
-  claimTime: moment().unix(),
-  claimTokenAllocation: 0,
+  claimTime: undefined,
+  claimTokenAllocation: undefined,
 };
 
 const middleStyle = {

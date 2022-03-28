@@ -1,11 +1,8 @@
 import {useState} from 'react';
 import type {Projects, VaultC} from '@Launch/types';
-import moment from 'moment';
-
-const nowTimeStamp = moment().unix();
 
 const defaultParams = [
-  {claimRound: 1, claimTime: nowTimeStamp, claimTokenAllocation: 0},
+  {claimRound: 1, claimTime: undefined, claimTokenAllocation: undefined},
 ];
 
 const initialObj: Projects['CreateProject'] = {

@@ -57,10 +57,10 @@ const InputField: React.FC<InputFieldProp> = (props) => {
         hardCap: _hardCap,
       } = tempVaultData as any;
 
-      console.log(vaultObj);
-      console.log(formikName);
-      //@ts-ignore
-      console.log(vaultObj[formikName]);
+      // console.log(vaultObj);
+      // console.log(formikName);
+      // //@ts-ignore
+      // console.log(vaultObj[formikName]);
 
       //@ts-ignore
       const thisNameValue = vaultObj[formikName];
@@ -98,6 +98,9 @@ const InputField: React.FC<InputFieldProp> = (props) => {
       : stosTierLevel === 3
       ? 'threeTier'
       : 'fourTier';
+
+  console.log('--tempVaultData--');
+  console.log(tempVaultData);
 
   return (
     <Input

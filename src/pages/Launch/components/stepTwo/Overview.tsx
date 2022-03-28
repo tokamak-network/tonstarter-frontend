@@ -28,7 +28,6 @@ const Overview = () => {
     claimData.map((data: any) => {
       return (i = data.claim.length > i ? data.claim.length : i);
     });
-    console.log('i:', i);
     setColumnLength(Array.from({length: i}, (v, i) => i));
     setTableData(claimData);
   }, [vaultsList]);
@@ -118,9 +117,23 @@ const Overview = () => {
                     borderX={middleStyle.border}
                     fontSize={13}
                     bg={index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'}>
-                    {claimData.claimTokenAllocation}
+                    {claimData.claimTokenAllocation || '-'}
                   </Text>
                 );
+              })}
+              {columnLength.map((data: any, index: number) => {
+                if (claim[index] === undefined) {
+                  return (
+                    <Text
+                      borderX={middleStyle.border}
+                      fontSize={13}
+                      bg={
+                        index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'
+                      }>
+                      {'-'}
+                    </Text>
+                  );
+                }
               })}
               <Text fontSize={13} marginTop={'auto'}>
                 {name}

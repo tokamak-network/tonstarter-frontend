@@ -149,7 +149,7 @@ const STOSTier = (props: {
               value={inputVal}
               setValue={setInputVal}
               isStosTier={true}
-              formikName={'requiredTos'}
+              formikName={'requiredStos'}
               stosTierLevel={Number(tier) as 1 | 2 | 3 | 4}></InputField>
           </Flex>
           <Flex w={'137px'} justifyContent="center">

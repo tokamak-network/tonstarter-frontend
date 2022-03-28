@@ -36,6 +36,8 @@ const useTokenDetail = () => {
         vaultTokenAllocation,
         stosTier: {oneTier, twoTier, threeTier, fourTier},
       } = publicVault[0] as VaultPublic;
+      console.log('--stosTier--');
+      console.log(oneTier, twoTier, threeTier, fourTier);
       const datas: PublicTokenColData = {
         firstColData: [
           {
@@ -117,26 +119,26 @@ const useTokenDetail = () => {
         thirdColData: [
           {
             tier: '1',
-            requiredTos: oneTier.requiredStos,
-            allocatedToken: oneTier.allocatedToken,
+            requiredTos: oneTier?.requiredStos,
+            allocatedToken: oneTier?.allocatedToken,
             formikName: 'oneTier',
           },
           {
             tier: '2',
-            requiredTos: twoTier.requiredStos,
-            allocatedToken: twoTier.allocatedToken,
+            requiredTos: twoTier?.requiredStos,
+            allocatedToken: twoTier?.allocatedToken,
             formikName: 'twoTier',
           },
           {
             tier: '3',
-            requiredTos: threeTier.requiredStos,
-            allocatedToken: threeTier.allocatedToken,
+            requiredTos: threeTier?.requiredStos,
+            allocatedToken: threeTier?.allocatedToken,
             formikName: 'threeTier',
           },
           {
             tier: '4',
-            requiredTos: fourTier.requiredStos,
-            allocatedToken: fourTier.allocatedToken,
+            requiredTos: fourTier?.requiredStos,
+            allocatedToken: fourTier?.allocatedToken,
             formikName: 'fourTier',
           },
         ],

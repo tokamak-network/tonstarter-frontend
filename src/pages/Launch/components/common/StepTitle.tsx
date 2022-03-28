@@ -1,7 +1,8 @@
 import {Button, Flex, useColorMode} from '@chakra-ui/react';
-import useValues from '@Launch/hooks/useValues';
-import saveProject from '@Launch/utils/saveProject';
+import {saveProject, editProject} from '@Launch/utils/saveProject';
+import {useFormikContext} from 'formik';
 import {useActiveWeb3React} from 'hooks/useWeb3';
+import {useRouteMatch} from 'react-router';
 import {Box} from 'rebass';
 
 type StepTitleProp = {
@@ -15,8 +16,15 @@ const StepTitle: React.FC<StepTitleProp> = (prop) => {
   const {title, fontSize, isSaveButton, lineHeight} = prop;
   const {colorMode} = useColorMode();
   const {account} = useActiveWeb3React();
+  const {values} = useFormikContext();
+  const match = useRouteMatch();
+  const {url} = match;
 
-  const {initialValues} = useValues();
+  console.log(url);
+
+  const isExist = url.split('/')[2];
+
+  console.log(isExist);
 
   return (
     <Flex
@@ -37,7 +45,11 @@ const StepTitle: React.FC<StepTitleProp> = (prop) => {
           _hover={{}}
           bg={colorMode ? 'blue.500' : 'blue.500'}
           // disabled={isDisable || isSubmitting}
-          onClick={() => account && saveProject(initialValues, account)}>
+          onClick={() =>
+            account && isExist === 'createproject'
+              ? saveProject(values, account)
+              : editProject(values, account as string, isExist)
+          }>
           Save
         </Button>
       )}
