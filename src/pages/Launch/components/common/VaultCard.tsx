@@ -4,8 +4,10 @@ import {useFormikContext} from 'formik';
 import {useModal} from 'hooks/useModal';
 import {useEffect, useMemo, useState} from 'react';
 import PencilIcon from 'assets/launch/pen_inactive_icon.png';
+import PencilActiveIcon from 'assets/launch/pen-active-icon.svg';
 import {selectLaunch} from '@Launch/launch.reducer';
 import {useAppSelector} from 'hooks/useRedux';
+import HoverImage from 'components/HoverImage';
 
 type VaultCardProps = {
   status: 'public' | 'notPublic';
@@ -78,7 +80,20 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
             textAlign="center">
             {name.substring(0, 1)}
           </Box>
-          <Image
+
+          <HoverImage
+            img={PencilIcon}
+            hoverImg={PencilActiveIcon}
+            action={() =>
+              openAnyModal('Launch_VaultBasicSetting', {
+                name,
+                tokenAllocation,
+                adminAddress,
+                isMandatory,
+              })
+            }></HoverImage>
+
+          {/* <Image
             src={PencilIcon}
             alt={'vault_edit_button'}
             cursor="pointer"
@@ -89,7 +104,7 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
                 adminAddress,
                 isMandatory,
               })
-            }></Image>
+            }></Image> */}
         </Flex>
         {isHover && !isMandatory && (
           <Box

@@ -13,10 +13,22 @@ type InputFieldProp = {
   setValue: Dispatch<SetStateAction<any>>;
   value: any;
   formikName?: string;
+  isStosTier?: boolean;
+  stosTierLevel?: 1 | 2 | 3 | 4;
 };
 
 const InputField: React.FC<InputFieldProp> = (props) => {
-  const {w, h, fontSize, placeHolder, setValue, value, formikName} = props;
+  const {
+    w,
+    h,
+    fontSize,
+    placeHolder,
+    setValue,
+    value,
+    formikName,
+    isStosTier,
+    stosTierLevel,
+  } = props;
   const [isErr, setIsErr] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const {
@@ -78,6 +90,15 @@ const InputField: React.FC<InputFieldProp> = (props) => {
 
   const tokensRef = useRef([]);
 
+  const stosTier =
+    stosTierLevel === 1
+      ? 'oneTier'
+      : stosTierLevel === 2
+      ? 'twoTier'
+      : stosTierLevel === 3
+      ? 'threeTier'
+      : 'fourTier';
+
   return (
     <Input
       w={`${w}px`}
@@ -92,14 +113,25 @@ const InputField: React.FC<InputFieldProp> = (props) => {
       onChange={(e) => {
         setValue(e.target.value);
         if (formikName) {
-          dispatch(
-            saveTempVaultData({
-              data: {
-                ...tempVaultData,
-                [formikName]: e.target.value,
-              },
-            }),
-          );
+          !isStosTier
+            ? dispatch(
+                saveTempVaultData({
+                  data: {
+                    ...tempVaultData,
+                    [formikName]: e.target.value,
+                  },
+                }),
+              )
+            : dispatch(
+                saveTempVaultData({
+                  data: {
+                    ...tempVaultData,
+                    stosTier: {
+                      [stosTier]: {[formikName]: e.target.value},
+                    },
+                  },
+                }),
+              );
         }
       }}></Input>
   );

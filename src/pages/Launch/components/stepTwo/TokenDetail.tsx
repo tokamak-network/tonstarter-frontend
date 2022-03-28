@@ -31,9 +31,9 @@ const MainTitle = (props: {leftTitle: string; rightTitle: string}) => {
 
 const SubTitle = (props: {
   leftTitle: string;
-  rightTitle: string;
+  rightTitle: string | undefined;
   isLast?: boolean;
-  percent?: number;
+  percent?: number | undefined;
   isEdit: boolean;
   isSecondColData?: boolean;
   formikName: string;
@@ -47,10 +47,10 @@ const SubTitle = (props: {
     isSecondColData,
     formikName,
   } = props;
-  const [inputVal, setInputVal] = useState(rightTitle.replaceAll(' TON', ''));
+  const [inputVal, setInputVal] = useState(rightTitle?.replaceAll(' TON', ''));
 
   useEffect(() => {
-    setInputVal(rightTitle.replaceAll(' TON', ''));
+    setInputVal(rightTitle?.replaceAll(' TON', ''));
   }, [isEdit, rightTitle]);
 
   const tokensRef = useRef();
@@ -72,10 +72,10 @@ const SubTitle = (props: {
         isSecondColData ? (
           <Flex>
             <Flex flexDir={'column'} textAlign={'right'} mr={'8px'}>
-              <Text>{rightTitle.split('~')[0]}</Text>
+              <Text>{rightTitle?.split('~')[0] || '-'}</Text>
               <Text>
-                {rightTitle.split('~')[1]
-                  ? `~ ${rightTitle.split('~')[1]}`
+                {rightTitle?.split('~')[1]
+                  ? `~ ${rightTitle?.split('~')[1]}`
                   : ''}
               </Text>
             </Flex>
@@ -93,17 +93,19 @@ const SubTitle = (props: {
             setValue={setInputVal}
             formikName={formikName}></InputField>
         )
-      ) : rightTitle.includes('~') ? (
+      ) : rightTitle?.includes('~') ? (
         <Flex flexDir={'column'} textAlign={'right'}>
           <Text>{rightTitle.split('~')[0]}</Text>
           <Text>~ {rightTitle.split('~')[1]}</Text>
         </Flex>
       ) : (
         <Flex>
-          <Text textAlign={'right'}>{rightTitle}</Text>
+          <Text textAlign={'right'}>
+            {rightTitle?.includes('undefined') ? '-' : rightTitle || '-'}
+          </Text>
           {percent !== undefined && (
             <Text ml={'5px'} color={'#7e8993'} textAlign={'right'}>
-              {`(${percent}%)`}
+              {`(${percent || '-'}%)`}
             </Text>
           )}
         </Flex>
@@ -114,8 +116,8 @@ const SubTitle = (props: {
 
 const STOSTier = (props: {
   tier: string;
-  requiredTos: number;
-  allocatedToken: number;
+  requiredTos: number | undefined;
+  allocatedToken: number | undefined;
   isLast?: boolean;
   isEdit: boolean;
 }) => {
@@ -145,7 +147,10 @@ const STOSTier = (props: {
               h={32}
               fontSize={13}
               value={inputVal}
-              setValue={setInputVal}></InputField>
+              setValue={setInputVal}
+              isStosTier={true}
+              formikName={'requiredTos'}
+              stosTierLevel={Number(tier) as 1 | 2 | 3 | 4}></InputField>
           </Flex>
           <Flex w={'137px'} justifyContent="center">
             <InputField
@@ -153,13 +158,16 @@ const STOSTier = (props: {
               h={32}
               fontSize={13}
               value={inputVal2}
-              setValue={setInputVal2}></InputField>
+              setValue={setInputVal2}
+              isStosTier={true}
+              stosTierLevel={Number(tier) as 1 | 2 | 3 | 4}
+              formikName={'allocatedToken'}></InputField>
           </Flex>
         </>
       ) : (
         <>
-          <Text w={'125px'}>{requiredTos}</Text>
-          <Text w={'137px'}>{allocatedToken}</Text>
+          <Text w={'125px'}>{requiredTos || '-'}</Text>
+          <Text w={'137px'}>{allocatedToken || '-'}</Text>
         </>
       )}
     </Flex>
@@ -198,8 +206,8 @@ const PublicTokenDetail = (props: {
           (
             data: {
               title: string;
-              content: string;
-              percent?: number;
+              content: string | undefined;
+              percent?: number | undefined;
               formikName: string;
             },
             index: number,

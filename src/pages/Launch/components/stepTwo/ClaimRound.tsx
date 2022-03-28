@@ -182,7 +182,11 @@ const ClaimRound = () => {
                   alignItems="center"
                   justifyContent={'center'}>
                   <Text mr={'5px'} color={'#3d495d'} fontSize={11}>
-                    {moment.unix(data.claimTime).format('YYYY.MM.DD hh:mm:ss')}
+                    {data.claimTime === undefined
+                      ? '-'
+                      : moment
+                          .unix(data.claimTime)
+                          .format('YYYY.MM.DD hh:mm:ss')}
                   </Text>
                   <HoverImage
                     action={() => console.log('go')}
@@ -207,7 +211,9 @@ const ClaimRound = () => {
                     }}></Input>
                 </Text>
                 <Text w={'281px'} borderRight={middleStyle.border}>
-                  {(tokenAcc += data.claimTokenAllocation)}
+                  {data.claimTokenAllocation === undefined
+                    ? '-'
+                    : (tokenAcc += data.claimTokenAllocation)}
                 </Text>
                 <Flex w={'90px'} alignItems="center" justifyContent="center">
                   {index === 0 ? (

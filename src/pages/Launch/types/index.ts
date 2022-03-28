@@ -19,9 +19,6 @@ interface Vault {
   vaultName: VaultName;
   vaultType: VaultType;
   vaultTokenAllocation: number;
-  firstClaimTime: number;
-  claimInterval: number;
-  claimRound: number;
   adminAddress: string;
   isMandatory: boolean;
   vaultAddress: string | undefined;
@@ -29,9 +26,9 @@ interface Vault {
 }
 
 interface VaultSchedule {
-  claimRound: number;
-  claimTime: number;
-  claimTokenAllocation: number;
+  claimRound: number | undefined;
+  claimTime: number | undefined;
+  claimTokenAllocation: number | undefined;
 }
 
 type VaultCommon = Vault & {claim: VaultSchedule[]};
@@ -47,35 +44,35 @@ type VaultTOS = VaultCommon & {};
 type VaultPublic = VaultCommon & {
   stosTier: {
     oneTier: {
-      requiredStos: number;
-      allocatedToken: number;
+      requiredStos: number | undefined;
+      allocatedToken: number | undefined;
     };
     twoTier: {
-      requiredStos: number;
-      allocatedToken: number;
+      requiredStos: number | undefined;
+      allocatedToken: number | undefined;
     };
     threeTier: {
-      requiredStos: number;
-      allocatedToken: number;
+      requiredStos: number | undefined;
+      allocatedToken: number | undefined;
     };
     fourTier: {
-      requiredStos: number;
-      allocatedToken: number;
+      requiredStos: number | undefined;
+      allocatedToken: number | undefined;
     };
   };
-  snapshot: number;
-  whitelist: number;
-  whitelistEnd: number;
-  publicRound1: number;
-  publicRound1End: number;
-  publicRound2: number;
-  publicRound2End: number;
-  publicRound1Allocation: number;
-  publicRound2Allocation: number;
-  claimStart: number;
-  tokenAllocationForLiquidity: number;
-  hardCap: number;
-  addressForReceiving: string;
+  snapshot: number | undefined;
+  whitelist: number | undefined;
+  whitelistEnd: number | undefined;
+  publicRound1: number | undefined;
+  publicRound1End: number | undefined;
+  publicRound2: number | undefined;
+  publicRound2End: number | undefined;
+  publicRound1Allocation: number | undefined;
+  publicRound2Allocation: number | undefined;
+  claimStart: number | undefined;
+  tokenAllocationForLiquidity: number | undefined;
+  hardCap: number | undefined;
+  addressForReceiving: string | undefined;
 };
 
 type VaultC = VaultCommon & {};
@@ -118,30 +115,30 @@ type PublicTokenColData = {
   firstColData: [
     {
       title: 'Public Round 1';
-      content: string;
-      percent: number;
+      content: string | undefined;
+      percent: number | undefined;
       formikName: string;
     },
     {
       title: 'Public Round 2';
-      content: string;
-      percent: number;
+      content: string | undefined;
+      percent: number | undefined;
       formikName: string;
     },
     {
       title: 'Token Allocation for Liquidity Pool';
-      content: string;
-      percent: number;
+      content: string | undefined;
+      percent: number | undefined;
       formikName: string;
     },
     {
       title: 'Hard Cap';
-      content: string;
+      content: string | undefined;
       formikName: string;
     },
     {
       title: 'Address for receiving funds';
-      content: string;
+      content: string | undefined;
       formikName: string;
     },
   ];
@@ -170,26 +167,26 @@ type PublicTokenColData = {
   thirdColData: [
     {
       tier: '1';
-      requiredTos: number;
-      allocatedToken: number;
+      requiredTos: number | undefined;
+      allocatedToken: number | undefined;
       formikName: string;
     },
     {
       tier: '2';
-      requiredTos: number;
-      allocatedToken: number;
+      requiredTos: number | undefined;
+      allocatedToken: number | undefined;
       formikName: string;
     },
     {
       tier: '3';
-      requiredTos: number;
-      allocatedToken: number;
+      requiredTos: number | undefined;
+      allocatedToken: number | undefined;
       formikName: string;
     },
     {
       tier: '4';
-      requiredTos: number;
-      allocatedToken: number;
+      requiredTos: number | undefined;
+      allocatedToken: number | undefined;
       formikName: string;
     },
   ];

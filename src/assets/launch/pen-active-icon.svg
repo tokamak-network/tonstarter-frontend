@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+    <defs>
+        <clipPath id="qrorfaw8wa">
+            <path style="fill:none" d="M0 0h20v20H0z"/>
+        </clipPath>
+    </defs>
+    <g data-name="마스크 그룹 128" style="clip-path:url(#qrorfaw8wa)">
+        <path data-name="패스 264" d="M34.117 40.6h-3.492a.625.625 0 0 1-.625-.624v-3.492a.617.617 0 0 1 .18-.437l9.375-9.375a.625.625 0 0 1 .884-.007l.007.007 3.484 3.484a.625.625 0 0 1 .007.884l-.007.007-9.375 9.375a.617.617 0 0 1-.438.178z" transform="translate(-26.875 -23.726)" style="stroke:#fff;stroke-linecap:round;stroke-linejoin:round;fill:none"/>
+        <path data-name="선 11" transform="translate(10.625 5)" style="stroke:#fff;stroke-linecap:round;stroke-linejoin:round;fill:none" d="m0 0 4.375 4.375"/>
+        <path data-name="선 12" transform="translate(5.313 7.188)" style="stroke:#fff;stroke-linecap:round;stroke-linejoin:round;fill:none" d="M7.5 0 0 7.5"/>
+        <path data-name="선 13" transform="translate(3.164 12.539)" style="stroke:#fff;stroke-linecap:round;stroke-linejoin:round;fill:none" d="M4.297 4.297 0 0"/>
+    </g>
+</svg>

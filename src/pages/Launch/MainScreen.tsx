@@ -83,6 +83,8 @@ const MainScreen = () => {
         initialValues={id && projects ? projects[id] : initialValues}
         validationSchema={ProjectSchema}
         validate={(values) => {
+          console.log('--values--');
+          console.log(values);
           validateFormikValues(values);
         }}
         onSubmit={async (data, {setSubmitting}) => {

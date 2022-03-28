@@ -41,20 +41,29 @@ const useTokenDetail = () => {
           {
             title: 'Public Round 1',
             content: `${publicRound1Allocation} TON`,
-            percent: (publicRound1Allocation * 100) / vaultTokenAllocation || 0,
+            percent:
+              publicRound1Allocation === undefined
+                ? publicRound1Allocation
+                : (publicRound1Allocation * 100) / vaultTokenAllocation || 0,
             formikName: 'publicRound1Allocation',
           },
           {
             title: 'Public Round 2',
             content: `${publicRound2Allocation} TON`,
-            percent: (publicRound2Allocation * 100) / vaultTokenAllocation || 0,
+            percent:
+              publicRound2Allocation === undefined
+                ? publicRound2Allocation
+                : (publicRound2Allocation * 100) / vaultTokenAllocation || 0,
             formikName: 'publicRound2Allocation',
           },
           {
             title: 'Token Allocation for Liquidity Pool',
             content: `${tokenAllocationForLiquidity} TON`,
             percent:
-              (tokenAllocationForLiquidity * 100) / vaultTokenAllocation || 0,
+              tokenAllocationForLiquidity === undefined
+                ? tokenAllocationForLiquidity
+                : (tokenAllocationForLiquidity * 100) / vaultTokenAllocation ||
+                  0,
             formikName: 'tokenAllocationForLiquidity',
           },
           {
@@ -71,24 +80,36 @@ const useTokenDetail = () => {
         secondColData: [
           {
             title: 'Snapshot',
-            content: moment.unix(snapshot).format('YYYY.MM.DD hh:mm:ss'),
+            content:
+              snapshot === undefined
+                ? '-'
+                : moment.unix(snapshot).format('YYYY.MM.DD hh:mm:ss'),
             formikName: 'snapshot',
           },
           {
             title: 'Whitelist',
-            content: `${moment.unix(whitelist).format('YYYY.MM.DD hh:mm:ss')}
+            content:
+              whitelist === undefined || whitelistEnd === undefined
+                ? `- ~ -`
+                : `${moment.unix(whitelist).format('YYYY.MM.DD hh:mm:ss')}
               ~${moment.unix(whitelistEnd).format('MM.DD hh:mm:ss')}`,
             formikName: 'whitelist&whitelistEnd',
           },
           {
             title: 'Public Round 1',
-            content: `${moment.unix(publicRound1).format('YYYY.MM.DD hh:mm:ss')}
+            content:
+              publicRound1 === undefined || publicRound1End === undefined
+                ? `- ~ -`
+                : `${moment.unix(publicRound1).format('YYYY.MM.DD hh:mm:ss')}
               ~${moment.unix(publicRound1End).format('MM.DD hh:mm:ss')}`,
             formikName: 'publicRound1&publicRound1End',
           },
           {
             title: 'Public Round 2',
-            content: `${moment.unix(publicRound2).format('YYYY.MM.DD hh:mm:ss')}
+            content:
+              publicRound2 === undefined || publicRound2End === undefined
+                ? `- ~ -`
+                : `${moment.unix(publicRound2).format('YYYY.MM.DD hh:mm:ss')}
               ~${moment.unix(publicRound2End).format('MM.DD hh:mm:ss')}`,
             formikName: 'publicRound2&publicRound2End',
           },
