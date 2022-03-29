@@ -44,6 +44,7 @@ import {approveStaking, stake, unstake} from '../actions';
 import {utils, ethers, BigNumber} from 'ethers';
 import {soliditySha3} from 'web3-utils';
 import {getTokenSymbol} from '../utils/getTokenSymbol';
+import {fetchPositionRangePayloadModal} from '../utils/fetchPositionRangePayloads';
 import {UpdatedRedward} from '../types';
 import {LPToken} from '../types';
 import {convertNumber} from 'utils/number';
@@ -101,8 +102,6 @@ export const InformationModal = () => {
   //@ts-ignore
   const web3 = new Web3(window.ethereum);
 
-  console.log('web3: ', web3);
-
   const themeDesign = {
     border: {
       light: 'solid 1px #d7d9df',
@@ -122,6 +121,13 @@ export const InformationModal = () => {
     dispatch(closeModal());
   }, [dispatch]);
 
+  const rangePayload = async (args: any) => {
+    const {account, library, id} = args;
+    const result = await fetchPositionRangePayloadModal(library, id, account);
+
+    return result;
+  };
+
   useEffect(() => {
     const {
       currentReward,
@@ -131,7 +137,6 @@ export const InformationModal = () => {
       currentPositions,
       currentBlockNumber,
     } = data.data;
-    console.log('DATA: ', data.data);
 
     setReward(currentReward);
     setUserAddress(currentUserAddress);
@@ -184,73 +189,70 @@ export const InformationModal = () => {
       library,
     );
 
-    // const UniswapV3PoolContract = new Contract(
-    //   BasePool_Address,
-    //   UniswapV3PoolABI.abi,
-    //   library,
-    // );
-
-    // console.log('v3POOL: ', UniswapV3PoolContract);
-    const eventFilter: any[] = [
-      uniswapStakerContract.filters.IncentiveCreated(
-        reward.rewardToken,
-        reward.poolAddress,
-      ),
-      uniswapStakerContract.filters.IncentiveEnded(null),
-      uniswapStakerContract.filters.TokenStaked(null, null),
-      uniswapStakerContract.filters.TokenUnstaked(null, null),
-    ];
-
-    const recentActivity = await uniswapStakerContract.queryFilter(
-      eventFilter as any,
-      blockNumber - 100000,
-      blockNumber,
-    );
-    console.log('recentActivity: ', recentActivity);
-    let recentActivityUpdated: any[] = [];
-    recentActivity.forEach(async (txn: any) => {
-      // Add txnInfo to each 'activity'
-      txn.formattedTxnDate = await convertDateFromBlockNumber(txn.blockNumber);
-
-      // Add the correct txn address from each 'activity'
-      let transactionInfo = await txn
-        .getTransaction()
-        .then((res: any) => (txn.transactionInfo = res));
-      console.log('transactionInfo: ', transactionInfo);
-      recentActivityUpdated.push(txn);
-    });
-    console.log('recentActivityUpdated: ', recentActivityUpdated);
-    setRecentActivityTable(recentActivityUpdated);
-
-    let userPositions = positions.map((position: any) => {
-      return position.id;
-    });
-
-    // const MYAPIKEY = '552K1B1Z2QVVBFKY8PDUX874XBG89U32QE';
-    // axios
-    //   .get(
-    //     `https://api.etherscan.io/api?_limit=20&module=account&action=txlist&address=${positions[0].owner}&startblock=0&endblock=99999999&sort=asc&apikey=${MYAPIKEY}`,
-    //   )
-    //   .then((res) => {
-    //     console.log('LOOOOOK: ', res);
-    //     setRecentActivity(res.data);
-    //   })
-    //   .catch(console.error);
-
     const incentiveABI =
       'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)';
     const abicoder = ethers.utils.defaultAbiCoder;
     const incentiveId = soliditySha3(abicoder.encode([incentiveABI], [key]));
-    console.log('incentiveID: ', incentiveId);
     const signer = getSigner(library, account);
     const incentiveInfo = await uniswapStakerContract
       .connect(signer)
       .incentives(incentiveId);
 
+    console.log('incentiveId: ', incentiveId);
+
+    const eventFilter: any[] = [
+      uniswapStakerContract.filters.IncentiveCreated(
+        reward.rewardToken,
+        reward.poolAddress,
+      ),
+      uniswapStakerContract.filters.IncentiveEnded(incentiveId, null),
+      uniswapStakerContract.filters.TokenStaked(null, incentiveId, null),
+      uniswapStakerContract.filters.TokenUnstaked(null, incentiveId),
+    ];
+
+    const recentActivity = await uniswapStakerContract.queryFilter(
+      eventFilter as any,
+      blockNumber - 150000,
+      blockNumber,
+    );
+
+    // The UI will show an empty table until this is all done loading.
+    const txnTableData = await Promise.all(
+      recentActivity.map(async (txn: any) => {
+        // Add txnInfo to each 'activity'
+        txn.formattedTxnDate = await convertDateFromBlockNumber(
+          txn.blockNumber,
+        );
+
+        // Add unixTime to each 'activity'
+        txn.unixTime = await getUnixFromBlockNumber(txn.blockNumber);
+
+        // Add the correct txn address from each 'activity'
+        txn.transactionInfo = await txn
+          .getTransaction()
+          .then((res: any) => res);
+
+        txn.transactionReceipt = await txn
+          .getTransactionReceipt()
+          .then((res: any) => res);
+
+        // Split camelCased event string.
+        txn.event = txn.event.replace(/([a-z](?=[A-Z]))/g, '$1 ');
+
+        return txn;
+      }),
+    );
+
+    const sortedTxnTable = txnTableData.sort((a, b) => b.unixTime - a.unixTime);
+    setRecentActivityTable(sortedTxnTable);
+
+    let userPositions = positions.map((position: any) => {
+      return position.id;
+    });
+
     let tempRewardStakerInfo: any[] = [];
     let tempRewardStakedIds: any[] = [];
     let tempPieData: any[] = [];
-    console.log('stakedPools: ', stakedPools);
     await Promise.all(
       stakedPools.map(async (pool: any) => {
         const incentiveInfo = await uniswapStakerContract
@@ -262,10 +264,18 @@ export const InformationModal = () => {
           .deposits(Number(pool.id));
 
         if (incentiveInfo.liquidity._hex !== '0x00') {
-          console.log('incentiveInfo: ', incentiveInfo);
-          console.log('depositInfo: ', depositInfo);
+          // Need to get rangeInfo for the Range column in All Staked LP Tokens table
+          const rangeInfo: any = await rangePayload({
+            account,
+            library,
+            id: pool.id,
+          });
 
           tempRewardStakerInfo.push({
+            inRange: rangeInfo?.range,
+            tick: rangeInfo?.res?.tick,
+            tickLower: rangeInfo?.res?.tickLower,
+            tickUpper: rangeInfo?.res?.tickUpper,
             token: pool.id,
             token0Address: reward.token0Address,
             token1Address: reward.token1Address,
@@ -321,6 +331,10 @@ export const InformationModal = () => {
           ownerAddress: data.ownerAddress,
           stakeOwner: data.stakeOwner,
           poolId: data.poolId,
+          tick: data?.tick,
+          tickLower: data?.tickLower,
+          tickUpper: data?.tickUpper,
+          inRange: data?.inRange,
         };
       });
       const formattedPieData = tempPieData.map((data: any) => {
@@ -350,9 +364,11 @@ export const InformationModal = () => {
       },
     );
 
-    console.log('rewardStakersInfo: ', tempRewardStakerInfo);
     setPieData(tempPieData);
+
+    // tempRewardStakerInfo is the data for the All Staked LP Tokens table
     setRewardStakersInfo(tempRewardStakerInfo);
+
     setUserStakerIds(filteredStakedPositions);
 
     setRefundableAmount(
@@ -430,6 +446,14 @@ export const InformationModal = () => {
     return combined;
   };
 
+  const getUnixFromBlockNumber = async (blockNumber: number) => {
+    let unixTime = await web3.eth.getBlock(blockNumber).then((res) => {
+      return res.timestamp;
+    });
+
+    return unixTime;
+  };
+
   const convertDateFromBlockNumber = (blockNumber: number) => {
     let formattedDate = web3.eth
       .getBlock(blockNumber)
@@ -437,10 +461,7 @@ export const InformationModal = () => {
         moment.unix(Number(res.timestamp)).format('MM/DD/YYYY HH:MM:ss'),
       );
 
-    console.log('formattedDate: ', formattedDate);
-
     return formattedDate;
-    // return 'Mar 1, 2022 19:40:11';
   };
 
   // url for adding liquidity to tokens: https://app.uniswap.org/#/increase/0x73a54e5C054aA64C1AE7373C2B5474d8AFEa08bd/0xb109f4c20BDb494A63E32aA035257fBA0a4610A4/3000/13035?chain=rinkeby
@@ -453,9 +474,6 @@ export const InformationModal = () => {
       isOpen={data.modal === 'information' ? true : false}
       onClose={handleCloseModal}
       size={'6xl'}>
-      {console.log('reward: ', reward)}
-      {console.log('recentActivityTable', recentActivityTable)}
-
       <ModalOverlay />
       <ModalContent
         height={'85vh'}
@@ -505,9 +523,14 @@ export const InformationModal = () => {
               w="50px"
               ml={'-7px'}
             />
-            <Text fontWeight={'bold'} fontSize={'22px'} ml={'10px'}>
-              {reward.poolName}
-            </Text>
+            <Flex
+              alignItems={'baseline'}
+              fontWeight={'bold'}
+              fontSize={'28px'}
+              ml={'10px'}>
+              <Text mr={'5px'}>#{reward.index}</Text>
+              <Text>{reward.poolName}</Text>
+            </Flex>
           </Box>
           <Divider my={'10px'} />
           <Box
@@ -524,15 +547,22 @@ export const InformationModal = () => {
                 alignItems={'center'}
                 justifyContent={'space-between'}>
                 <Text color={themeDesign.font[colorMode]}>Total Reward</Text>
-                <Text fontSize={'20px'}>
-                  {formatAmount(reward.allocatedReward, reward.rewardToken)}{' '}
-                  {
-                    checkTokenType(
-                      ethers.utils.getAddress(reward.rewardToken),
-                      colorMode,
-                    ).name
-                  }
-                </Text>
+                <Flex
+                  display={'flex'}
+                  justifyContent={'space-between'}
+                  alignItems={'baseline'}>
+                  <Text fontSize={'20px'} mr={'5px'}>
+                    {formatAmount(reward.allocatedReward, reward.rewardToken)}{' '}
+                  </Text>
+                  <Text fontSize={'16px'}>
+                    {
+                      checkTokenType(
+                        ethers.utils.getAddress(reward.rewardToken),
+                        colorMode,
+                      ).name
+                    }
+                  </Text>
+                </Flex>
               </Box>
               <Box
                 display={'flex'}
@@ -540,15 +570,22 @@ export const InformationModal = () => {
                 alignItems={'center'}
                 justifyContent={'space-between'}>
                 <Text color={themeDesign.font[colorMode]}>Accumulated LP</Text>
-                <Text fontSize={'20px'}>
-                  {formatAmount(reward.allocatedReward, reward.rewardToken)}{' '}
-                  {
-                    checkTokenType(
-                      ethers.utils.getAddress(reward.rewardToken),
-                      colorMode,
-                    ).name
-                  }
-                </Text>
+                <Flex
+                  display={'flex'}
+                  justifyContent={'space-between'}
+                  alignItems={'baseline'}>
+                  <Text fontSize={'20px'} mr={'5px'}>
+                    {formatAmount(reward.allocatedReward, reward.rewardToken)}{' '}
+                  </Text>
+                  <Text fontSize={'16px'}>
+                    {
+                      checkTokenType(
+                        ethers.utils.getAddress(reward.rewardToken),
+                        colorMode,
+                      ).name
+                    }
+                  </Text>
+                </Flex>
               </Box>
               <Box
                 display={'flex'}
@@ -599,8 +636,10 @@ export const InformationModal = () => {
                 <Text color={themeDesign.font[colorMode]}>Status</Text>
                 {/* This is always open. Something is wrong. */}
                 <Text fontSize={'20px'}>
-                  {reward.status.charAt(0).toUpperCase() +
-                    reward.status.slice(1)}
+                  {reward.status === 'open' && reward.endTime > moment().unix()
+                    ? reward.status.charAt(0).toUpperCase() +
+                      reward.status.slice(1)
+                    : 'Closed'}
                 </Text>
               </Box>
               <Box
@@ -611,15 +650,22 @@ export const InformationModal = () => {
                 <Text color={themeDesign.font[colorMode]}>
                   Refundable Amount
                 </Text>
-                <Text fontSize={'20px'}>
-                  {formatAmount(refundableAmount, reward.rewardToken)}{' '}
-                  {
-                    checkTokenType(
-                      ethers.utils.getAddress(reward.rewardToken),
-                      colorMode,
-                    ).name
-                  }
-                </Text>
+                <Flex
+                  display={'flex'}
+                  justifyContent={'space-between'}
+                  alignItems={'baseline'}>
+                  <Text fontSize={'20px'} mr={'5px'}>
+                    {formatAmount(refundableAmount, reward.rewardToken)}{' '}
+                  </Text>
+                  <Text fontSize={'16px'}>
+                    {
+                      checkTokenType(
+                        ethers.utils.getAddress(reward.rewardToken),
+                        colorMode,
+                      ).name
+                    }
+                  </Text>
+                </Flex>
               </Box>
             </Grid>
 
@@ -646,18 +692,26 @@ export const InformationModal = () => {
                           `https://app.uniswap.org/#/increase/${token.token0Address}/${token.token1Address}/3000/${token.token}?chain=rinkeby`,
                         )
                       }
-                      background={'blue.500'}
                       h="30px"
                       px={'15px'}
                       mx={'7px'}
+                      style={{color: 'blue.500'}}
                       fontSize={'13px'}
                       fontFamily={theme.fonts.roboto}
                       fontWeight={'bold'}
+                      border="1px"
+                      color="blue.500"
+                      borderColor="#535353"
                       borderRadius="19px"
                       justifyContent={'center'}
                       alignItems={'center'}
-                      _hover={{cursor: 'pointer'}}>
-                      <Text color={'white.100'}>{token.token}</Text>
+                      _hover={{
+                        cursor: 'pointer',
+                        background: 'blue.500',
+                        color: 'white',
+                        border: 'none',
+                      }}>
+                      <Text>{token.token}</Text>
                     </Flex>
                   );
                 })}
@@ -725,11 +779,14 @@ export const InformationModal = () => {
                           return (
                             <Tr>
                               <Td>{info.id}</Td>
-                              <Td>true</Td>
+                              <Td>
+                                {info.inRange ? 'In Range' : 'Out of Range'}
+                              </Td>
                               <Td isNumeric>
                                 {Number(info.liquidityPercentage) === 0.1
                                   ? '< 0.10'
                                   : info.liquidityPercentage}
+                                %
                               </Td>
                             </Tr>
                           );
@@ -743,63 +800,82 @@ export const InformationModal = () => {
 
             <Divider my={'15px'} />
 
-            <Heading
-              fontSize={'1em'}
-              fontWeight={'extrabold'}
-              fontFamily={theme.fonts.titil}
-              mb={'15px'}
-              color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-              Recent Activity
-            </Heading>
-
-            <Table>
-              <Thead>
-                <Tr>
-                  <Th>Account Address</Th>
-                  <Th>TX hash</Th>
-                  <Th>Type</Th>
-                  <Th>Amount</Th>
-                  <Th>Date</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {recentActivityTable.map((txn: any) => {
-                  console.log('txn: ', txn);
-
-                  return (
+            <Box overflowY="auto" maxHeight="300px">
+              <Scrollbars
+                style={{
+                  display: 'flex',
+                  position: 'absolute',
+                  width: '96%',
+                  height: '350px',
+                  overflow: 'hidden',
+                }}
+                thumbSize={70}
+                //renderThumbVertical / horizontal is where you change scrollbar styles.
+                renderThumbVertical={() => (
+                  <div style={{background: '#007aff'}}></div>
+                )}>
+                <Heading
+                  fontSize={'1em'}
+                  fontWeight={'extrabold'}
+                  fontFamily={theme.fonts.titil}
+                  mb={'15px'}
+                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
+                  Recent Activity
+                </Heading>
+                <Table overflowY={'auto'} maxHeight={'200px'}>
+                  <Thead>
                     <Tr>
-                      <Td>
-                        <Link
-                          isExternal
-                          href={`${appConfig.explorerLink}${txn.transactionInfo.from}`}>
-                          {shortenAddress(txn.transactionInfo.from)}
-                        </Link>
-                      </Td>
-                      <Td>
-                        <Link
-                          isExternal
-                          href={`${appConfig.explorerTxnLink}${txn.transactionHash}`}>
-                          {txn.transactionHash}
-                        </Link>
-                      </Td>
-                      <Td>{txn.event}</Td>
-                      {txn.event === 'IncentiveCreated' ? (
-                        <Td>
-                          {formatAmount(txn.args.reward.toString(), null)}
-                        </Td>
-                      ) : txn.event === 'IncentiveEnded' ? (
-                        <Td>
-                          {formatAmount(txn.args.refund.toString(), null)}
-                        </Td>
-                      ) : (
-                        <Td>1000</Td>
-                      )}
-                      <Td>{txn.formattedTxnDate}</Td>
+                      <Th>Account Address</Th>
+                      <Th>TX hash</Th>
+                      <Th>Type</Th>
+                      <Th>Amount</Th>
+                      <Th>Date</Th>
                     </Tr>
-                  );
-                })}
-              </Tbody>
-            </Table>
+                  </Thead>
+                  <Tbody>
+                    {recentActivityTable.map((txn: any) => {
+                      return (
+                        <Tr>
+                          <Td>
+                            <Link
+                              isExternal
+                              _hover={{
+                                color: 'blue.500',
+                              }}
+                              href={`${appConfig.explorerLink}${txn.transactionInfo.from}`}>
+                              {shortenAddress(txn.transactionInfo.from)}
+                            </Link>
+                          </Td>
+                          <Td>
+                            <Link
+                              isExternal
+                              _hover={{
+                                color: 'blue.500',
+                              }}
+                              href={`${appConfig.explorerTxnLink}${txn.transactionHash}`}>
+                              {shortenAddress(txn.transactionHash)}
+                            </Link>
+                          </Td>
+                          <Td>{txn.event}</Td>
+                          {txn.event === 'Incentive Created' ? (
+                            <Td>
+                              {formatAmount(txn.args.reward.toString(), null)}
+                            </Td>
+                          ) : txn.event === 'Incentive Ended' ? (
+                            <Td>
+                              {formatAmount(txn.args.refund.toString(), null)}
+                            </Td>
+                          ) : (
+                            <Td>-</Td>
+                          )}
+                          <Td>{txn.formattedTxnDate}</Td>
+                        </Tr>
+                      );
+                    })}
+                  </Tbody>
+                </Table>
+              </Scrollbars>
+            </Box>
           </ModalBody>
 
           {/* <Divider /> */}

@@ -125,38 +125,6 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     library,
   );
 
-  // console.log('reward: ', reward);
-  // console.log('reward.poolAddress: ', reward.poolAddress);
-
-  // const GET_POOL_DATA = gql`{
-  //         pool(id:${reward?.poolAddress}){
-  //           id
-  //           tick
-  //           liquidity
-  //           volumeUSD
-  //           volumeToken0
-  //           volumeToken1
-  //           token0Price
-  //           token1Price
-  //           totalValueLockedToken0
-  //           totalValueLockedToken1
-  //           txCount
-  //           totalValueLockedETH
-  //           totalValueLockedUSD
-  //           totalValueLockedUSDUntracked
-  //         }
-  //       }`;
-
-  // console.log('POOLDATA: ', GET_POOL_DATA);
-
-  // const {
-  //   loading: queryLodaing,
-  //   error,
-  //   data: queryData,
-  // } = useQuery(GET_POOL_DATA);
-  // console.log('queryLodaing: ', queryLodaing);
-  // console.log('queryData: ', queryData);
-
   useEffect(() => {
     setIsUnstakeselected(false);
     setIsSelected(false);
@@ -722,9 +690,9 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
                 mt={'5px'}
                 zIndex={100}
                 isChecked={isSelected}
-                onClick={(e) => e.stopPropagation()}
+                onClick={(e) => e.preventDefault()}
                 onChange={(e) => {
-                  e.stopPropagation();
+                  e.preventDefault();
                   setIsSelected(e.target.checked);
                   sendKey(key);
                   getCheckedBoxes(reward);
@@ -742,9 +710,9 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
                 mt={'5px'}
                 zIndex={100}
                 isChecked={isUnstakeSelected}
-                onClick={(e) => e.stopPropagation()}
+                onClick={(e) => e.preventDefault()}
                 onChange={(e) => {
-                  e.stopPropagation();
+                  e.preventDefault();
                   setIsUnstakeselected(e.target.checked);
                   sendUnstakeKey(key);
                   getCheckedBoxes(reward);
