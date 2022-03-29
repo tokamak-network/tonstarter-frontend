@@ -99,8 +99,16 @@ const InputField: React.FC<InputFieldProp> = (props) => {
       ? 'threeTier'
       : 'fourTier';
 
-  console.log('--tempVaultData--');
-  console.log(tempVaultData);
+  let allocatedTokenData = '';
+  let requiredStosData = '';
+
+  //@ts-ignore
+  if (tempVaultData?.stosTier?.[stosTier]) {
+    //@ts-ignore
+    const {requiredStos, allocatedToken} = tempVaultData.stosTier?.[stosTier];
+    allocatedTokenData = allocatedToken;
+    requiredStosData = requiredStos;
+  }
 
   return (
     <Input
@@ -130,7 +138,18 @@ const InputField: React.FC<InputFieldProp> = (props) => {
                   data: {
                     ...tempVaultData,
                     stosTier: {
-                      [stosTier]: {[formikName]: e.target.value},
+                      //@ts-ignore
+                      ...tempVaultData.stosTier,
+                      [stosTier]: {
+                        // allocatedToken: '11',
+                        [formikName]: e.target.value,
+                        [formikName === 'requiredStos'
+                          ? 'allocatedToken'
+                          : 'requiredStos']:
+                          formikName === 'requiredStos'
+                            ? allocatedTokenData
+                            : requiredStosData,
+                      },
                     },
                   },
                 }),
