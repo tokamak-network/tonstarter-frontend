@@ -171,6 +171,12 @@ export const api = createApi({
                   symbol
                 }
               }
+              tickLower {
+                id
+              }
+              tickUpper {
+                id
+              }
               owner
             }
           }

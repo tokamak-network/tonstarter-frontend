@@ -13,10 +13,10 @@ import {
 import {FC, useState, useEffect} from 'react';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
-import {getLiquidity} from '../utils/getLiquidity';
 import {fetchTosPriceURL, fetchEthPriceURL} from '../../../constants/index';
+import {getPoolName, checkTokenType} from '../../../utils/token';
 import moment from 'moment';
-
+// import usePoolLiquidity from '../hooks/usePoolLiquidity'
 const themeDesign = {
   border: {
     light: 'solid 1px #d7d9df',
@@ -55,35 +55,14 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
   const [allPools, setAllPools] = useState<any[]>([]);
   const [pageOptions, setPageOptions] = useState<number>(0);
   const [pageIndex, setPageIndex] = useState<number>(1);
-  const [tosPrice, setTosPrice] = useState<number>(0);
-  const [ethPrice, setEthPrice] = useState<number>(0);
   const [pageLimit, setPageLimit] = useState<number>(2);
-  const [totalPAges, setTotalPages] = useState<number>(0);
+  
   useEffect(() => {
     const pagenumber = parseInt(
       ((pools.length - 1) / pageLimit + 1).toString(),
     );
     setPageOptions(pagenumber);
-  }, [pools]);
-
-  useEffect(() => {
-    async function getPrice() {
-      const tosPrices = await fetch(fetchTosPriceURL)
-        .then((res) => res.json())
-        .then((result) => result);
-      const ethPrices = await fetch(fetchEthPriceURL)
-        .then((res) => res.json())
-        .then(tokenDataList => {
-          const priceObject: { [key: string]: number } = {};
-          for (const tokenData of tokenDataList) {
-            priceObject[tokenData.id as string] = tokenData.current_price;
-          }
-          setEthPrice(priceObject.ethereum)
-        })
-      setTosPrice(tosPrices);
-    }
-    getPrice();
-  }, []);
+  }, [pageLimit, pools]);
 
   const getPaginatedData = () => {
     const startIndex = pageIndex * pageLimit - pageLimit;
@@ -124,11 +103,12 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
         </Text>
       </Flex>
       {getPaginatedData().map((pool: any, index: number) => {
-        const length = pool.hourData.length - 1;
+        // const length = pool.hourData.length - 1;
         const now = moment().unix();
         const numRewards = rewards.filter(
-          (reward) => reward.poolAddress === pool.id,
+          (reward) => reward.poolAddress === pool.address,
         );
+        console.log(pool)
         const open = numRewards.filter(
           (reward) => reward.startTime < now && reward.endTime > now,
         ).length;
@@ -138,7 +118,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
         const ended = numRewards.filter(
           (reward) => reward.endTime < now,
         ).length;
-        const liquidity = getLiquidity(pool, tosPrice, ethPrice);
+        const liquidity = pool.total;
         return (
           <Flex
             key={index}
@@ -149,7 +129,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
             px={'10px'}>
             <Box>
               <Avatar
-                src={pool.token1Image}
+                src={pool.token0Image.symbol}
                 bg={colorMode === 'light' ? '#ffffff' : '#222222'}
                 color="#c7d1d8"
                 name="T"
@@ -164,7 +144,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
                 zIndex={'100'}
               />
               <Avatar
-                src={pool.token0Image}
+                src={pool.token1Image.symbol}
                 bg={colorMode === 'light' ? '#ffffff' : '#222222'}
                 color="#c7d1d8"
                 name="T"
@@ -191,7 +171,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
                 e.preventDefault();
                 window.open(`https://info.uniswap.org/#/pools/${pool.id}`);
               }}>
-              {pool.token0.symbol}/{pool.token1.symbol}
+              {pool.pool_name}
             </Text>
             <Box fontFamily={theme.fonts.fld} fontWeight={700}>
               <Text

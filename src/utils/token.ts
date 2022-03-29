@@ -8,7 +8,7 @@ import TonSymbolDark from 'assets/tokens/TON_symbolDark.svg';
 import TosSymbolDark from 'assets/tokens/TOS_symbolDark.svg';
 import DocSymbolDark from 'assets/tokens/DOC_symbolDark.svg';
 import AuraSymbol from 'assets/tokens/AURA_symbol.png';
-const { TON_ADDRESS, TOS_ADDRESS, WTON_ADDRESS, DOC_ADDRESS, AURA_ADDRESS } = DEPLOYED
+const { TON_ADDRESS, TOS_ADDRESS, WTON_ADDRESS, DOC_ADDRESS, AURA_ADDRESS, ETH_ADDRESS } = DEPLOYED
 
 type EthAddressType = '0x0000000000000000000000000000000000000000';
 type TonAddressType = typeof TON_ADDRESS;
@@ -16,6 +16,7 @@ type TosAddressType = typeof TOS_ADDRESS;
 type WtonAddressType = typeof WTON_ADDRESS;
 type DocAddressType = typeof DOC_ADDRESS;
 type AuraAddressType = typeof AURA_ADDRESS;
+type WethAddressType = typeof ETH_ADDRESS
 
 // type WethAddressType = '';
 
@@ -28,6 +29,7 @@ const tokenAddresses: {
   wton: WtonAddressType;
   doc: DocAddressType;
   aura: AuraAddressType;
+  weth: WethAddressType;
 } = {
   eth: '0x0000000000000000000000000000000000000000',
   ton: TON_ADDRESS,
@@ -35,6 +37,7 @@ const tokenAddresses: {
   wton: WTON_ADDRESS,
   doc: DOC_ADDRESS,
   aura: AURA_ADDRESS,
+  weth: ETH_ADDRESS,
 };
 
 const tokenInfo = {
@@ -124,11 +127,63 @@ export const checkTokenType = (
   colorMode?: string
 ): any => {
   const tokenType = payToken === tokenAddresses['eth'] ?
-    'eth' : payToken === tokenAddresses['ton'] ?
-      'ton' : payToken === tokenAddresses['tos'] ?
-        'tos' : payToken === tokenAddresses['wton'] ?
-          'wton' : payToken === tokenAddresses['doc'] ?
-          'doc' : payToken === tokenAddresses['aura'] ? 'aura' : 'tos';          
+    'eth' : payToken === tokenAddresses['weth'] ?
+      'eth' : payToken === tokenAddresses['ton'] ?
+        'ton' : payToken === tokenAddresses['tos'] ?
+          'tos' : payToken === tokenAddresses['wton'] ?
+            'wton' : payToken === tokenAddresses['doc'] ?
+            'doc' : payToken === tokenAddresses['aura'] ? 'aura' : 'tos';   
+
+          if (colorMode === 'dark') {
+            switch (tokenType) {
+              case 'eth':
+                return tokenInfoDark[tokenType];
+              case 'ton':
+                return tokenInfoDark[tokenType];
+              case 'tos':
+                return tokenInfoDark[tokenType];
+              case 'wton':
+                return tokenInfoDark[tokenType];
+              case 'doc': 
+              return tokenInfoDark[tokenType];
+              case 'aura': 
+              return tokenInfoDark[tokenType];
+              default:
+                throw new Error(`There is no token type for ${tokenType}`);
+            }
+          }
+
+          else {
+            switch (tokenType) {
+              case 'eth':
+                return tokenInfo[tokenType];
+              case 'ton':
+                return tokenInfo[tokenType];
+              case 'tos':
+                return tokenInfo[tokenType];
+              case 'wton':
+                return tokenInfo[tokenType];
+              case 'doc': 
+              return tokenInfo[tokenType];
+              case 'aura': 
+              return tokenInfo[tokenType];
+              default:
+                throw new Error(`There is no token type for ${tokenType}`);
+            }
+          }
+  
+};
+
+export const checkLowerCaseTokenType = (
+  payToken: EthAddressType | TonAddressType | TosAddressType | WtonAddressType,
+  colorMode?: string
+): any => {
+  const tokenType = payToken === tokenAddresses['eth'].toLowerCase() ?
+    'eth' : payToken === tokenAddresses['ton'].toLowerCase() ?
+      'ton' : payToken === tokenAddresses['tos'].toLowerCase() ?
+        'tos' : payToken === tokenAddresses['wton'].toLowerCase() ?
+          'wton' : payToken === tokenAddresses['doc'].toLowerCase() ?
+          'doc' : payToken === tokenAddresses['aura'].toLowerCase() ? 'aura' : 'tos';          
           if (colorMode === 'dark') {
             switch (tokenType) {
               case 'eth':

@@ -25,7 +25,7 @@ import {fetchTosPriceURL, fetchEthPriceURL} from '../../constants/index';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import views from '../Reward/rewards';
 import {selectTransactionType} from 'store/refetch.reducer';
-import {getLiquidity} from '../Reward/utils/getLiquidity';
+// import {getLiquidity} from '../Reward/utils/getLiquidity';
 
 export interface HomeProps extends HTMLAttributes<HTMLDivElement> {
   classes?: string;
@@ -393,7 +393,8 @@ export const Animation: React.FC<HomeProps> = () => {
     if (pool) {
       let totalLiquidity = 0;
       for (const singlePool of pool) {
-        let singleLiquidity = getLiquidity(singlePool, tosPrice, ethPrice);
+        // let singleLiquidity = getLiquidity(singlePool, tosPrice, ethPrice);
+        let singleLiquidity = '0'
         totalLiquidity =
           totalLiquidity <= 3
             ? totalLiquidity + 3

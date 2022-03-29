@@ -23,6 +23,8 @@ import {Contract} from '@ethersproject/contracts';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {useAppSelector} from 'hooks/useRedux';
+import { fetchPoolPayload } from './utils/fetchPoolPayload';
+import { usePools } from './hooks/usePools';
 
 type SideContainerProps = {
   selected: string;
@@ -44,12 +46,26 @@ export const SideContainer: FC<SideContainerProps> = ({
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
   const [withdrawableTokens, setWithdrawableTokens] = useState<any[]>([]);
+  const [tvl, setTvl] = useState<any[]>([]);
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const uniswapStakerContract = new Contract(
     UniswapStaker_Address,
     STAKERABI.abi,
     library,
   );
+
+  // const poools = usePools()
+
+
+  useEffect(() => {
+    const getTVL = async () => {
+      if (library) {
+        const tvls = await fetchPoolPayload(library)
+        setTvl(tvls)
+      }
+    }
+    getTVL()
+  },[library])
 
   useEffect(() => {
     const getWithdrawable = async () => {
@@ -74,6 +90,7 @@ export const SideContainer: FC<SideContainerProps> = ({
     };
     getWithdrawable();
   },[LPTokens, account, library, transactionType, blockNumber])
+  console.log(pools)
   return (
     <Box
       display={'flex'}
@@ -95,7 +112,7 @@ export const SideContainer: FC<SideContainerProps> = ({
       </Box>
 
 
-      <PoolComponent pools={pools} rewards={rewards} />
+      <PoolComponent pools={tvl} rewards={rewards} />
       <LPTokenComponent tokens={LPTokens} />
     </Box>
   );
