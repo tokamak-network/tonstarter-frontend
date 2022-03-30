@@ -17,6 +17,7 @@ const initialObj: Projects['CreateProject'] = {
   isTokenDeployedErr: false,
   isAllDeployed: false,
   tokenAddress: '',
+  tosPrice: 0,
   projectTokenPrice: 0,
   totalTokenAllocation: 0,
   vaults: [
@@ -31,6 +32,7 @@ const initialObj: Projects['CreateProject'] = {
       tokenAllocationForLiquidity: undefined,
       hardCap: undefined,
       addressForReceiving: '',
+      isDeployed: false,
       stosTier: {
         oneTier: {
           requiredStos: undefined,
@@ -62,14 +64,15 @@ const initialObj: Projects['CreateProject'] = {
       index: 0,
     },
     {
-      vaultName: 'LP',
-      vaultType: 'LP',
+      vaultName: 'Initial Liquidity',
+      vaultType: 'Initial Liquidity',
       vaultTokenAllocation: 0,
       adminAddress: '',
       isMandatory: true,
       claim: defaultParams,
       vaultAddress: undefined,
       index: 1,
+      isDeployed: false,
     },
     {
       vaultName: 'TON Staker',
@@ -80,6 +83,7 @@ const initialObj: Projects['CreateProject'] = {
       claim: defaultParams,
       vaultAddress: undefined,
       index: 2,
+      isDeployed: false,
     },
     {
       vaultName: 'TOS Staker',
@@ -90,6 +94,7 @@ const initialObj: Projects['CreateProject'] = {
       claim: defaultParams,
       vaultAddress: undefined,
       index: 3,
+      isDeployed: false,
     },
     {
       vaultName: 'WTON-TOS LP Reward',
@@ -100,6 +105,7 @@ const initialObj: Projects['CreateProject'] = {
       claim: defaultParams,
       vaultAddress: undefined,
       index: 4,
+      isDeployed: false,
     },
   ],
 };
@@ -113,6 +119,7 @@ const initialVaultValue: VaultC = {
   vaultAddress: undefined,
   vaultType: 'C',
   index: 5,
+  isDeployed: false,
 };
 
 const useValues = () => {

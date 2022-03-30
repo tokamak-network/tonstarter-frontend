@@ -1,5 +1,5 @@
 import {selectLaunch} from '@Launch/launch.reducer';
-import {Projects, VaultAny, VaultName, VaultPublic} from '@Launch/types';
+import {Projects, Vault, VaultAny, VaultName, VaultPublic} from '@Launch/types';
 import {useFormikContext} from 'formik';
 import {useAppSelector} from 'hooks/useRedux';
 import {useEffect, useState} from 'react';

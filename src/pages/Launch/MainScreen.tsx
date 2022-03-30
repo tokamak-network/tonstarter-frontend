@@ -80,7 +80,9 @@ const MainScreen = () => {
         </Flex>
       </Flex>
       <Formik
-        initialValues={id && projects ? projects[id] : initialValues}
+        initialValues={
+          id && projects ? {...initialValues, ...projects[id]} : initialValues
+        }
         validationSchema={ProjectSchema}
         validate={(values) => {
           console.log('--values--');

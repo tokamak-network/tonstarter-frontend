@@ -1,6 +1,6 @@
 type VaultName =
   | 'Public'
-  | 'LP'
+  | 'Initial Liquidity'
   | 'TON Staker'
   | 'TOS Staker'
   | 'WTON-TOS LP Reward'
@@ -8,7 +8,7 @@ type VaultName =
 
 type VaultType =
   | 'Public'
-  | 'LP'
+  | 'Initial Liquidity'
   | 'TON Staker'
   | 'TOS Staker'
   | 'WTON-TOS LP Reward'
@@ -23,6 +23,7 @@ interface Vault {
   isMandatory: boolean;
   vaultAddress: string | undefined;
   index: number;
+  isDeployed: boolean;
 }
 
 interface VaultSchedule {
@@ -90,6 +91,7 @@ interface ProjectStep1 {
 }
 interface ProjectStep2 {
   vaults: VaultAny[];
+  tosPrice: number;
   projectTokenPrice: number;
   totalTokenAllocation: number;
 }
@@ -208,4 +210,5 @@ export type {
   VaultAny,
   VaultSchedule,
   PublicTokenColData,
+  VaultType,
 };

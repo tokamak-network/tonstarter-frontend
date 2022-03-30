@@ -1,18 +1,17 @@
 import {Flex, Grid, GridItem, Text, useColorMode} from '@chakra-ui/react';
 import {useTheme} from '@emotion/react';
 import useTokenDetail from '@Launch/hooks/useTokenDetail';
-import {saveTempVaultData, selectLaunch} from '@Launch/launch.reducer';
+import {selectLaunch} from '@Launch/launch.reducer';
 import {Projects, PublicTokenColData, VaultCommon} from '@Launch/types';
-import {CustomInput} from 'components/Basic';
 import HoverImage from 'components/HoverImage';
 import {useFormikContext} from 'formik';
-import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {useAppSelector} from 'hooks/useRedux';
 import {useEffect, useMemo, useRef, useState} from 'react';
 import InputField from './InputField';
 import CalendarActiveImg from 'assets/launch/calendar-active-icon.svg';
 import CalendarInactiveImg from 'assets/launch/calendar-inactive-icon.svg';
 
-const MainTitle = (props: {leftTitle: string; rightTitle: string}) => {
+export const MainTitle = (props: {leftTitle: string; rightTitle: string}) => {
   const {leftTitle, rightTitle} = props;
   return (
     <Flex
@@ -295,7 +294,7 @@ const TokenDetail = (props: {isEdit: boolean}) => {
         }
         return null;
       case 'LP':
-        return <Flex>go</Flex>;
+        return null;
       case 'TON Staker':
         return <Flex>go</Flex>;
       case 'TOS Staker':

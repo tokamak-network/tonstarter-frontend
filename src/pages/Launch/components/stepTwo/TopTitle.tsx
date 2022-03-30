@@ -1,10 +1,19 @@
 import {Flex, Box, Text} from '@chakra-ui/react';
 import StepTitle from '@Launch/components/common/StepTitle';
 import InputField from '@Launch/components/stepTwo/InputField';
-import {useState} from 'react';
+import {useFormikContext} from 'formik';
+import {useEffect, useState} from 'react';
 const TopTitle = () => {
   const [pricePerTon, setPricePerTon] = useState('0');
   const [pricePerTos, setPricePerTos] = useState('0');
+  const {setFieldValue} = useFormikContext();
+
+  useEffect(() => {
+    setFieldValue('projectTokenPrice', pricePerTon);
+    setFieldValue('tosPrice', pricePerTos);
+    /*eslint-disable*/
+  }, [pricePerTon, pricePerTos]);
+
   return (
     <Box px={'35px'} py={'23px'} pos="relative">
       <StepTitle title={'Vaults'} isSaveButton={true}></StepTitle>
