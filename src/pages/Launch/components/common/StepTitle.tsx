@@ -19,12 +19,7 @@ const StepTitle: React.FC<StepTitleProp> = (prop) => {
   const {values} = useFormikContext();
   const match = useRouteMatch();
   const {url} = match;
-
-  console.log(url);
-
   const isExist = url.split('/')[2];
-
-  console.log(isExist);
 
   return (
     <Flex

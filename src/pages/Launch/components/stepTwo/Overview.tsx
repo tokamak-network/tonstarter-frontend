@@ -165,9 +165,41 @@ const Overview = () => {
               );
             }
           })}
-          {/* <Text fontSize={13} marginTop={'auto'}>
-                {name}
-              </Text> */}
+        </Flex>
+        <Flex
+          fontSize={12}
+          color={'#3d495d'}
+          flexDir={'column'}
+          fontWeight={600}
+          w={'120px'}
+          borderBottom={middleStyle.border}>
+          <Text fontSize={12}>Accumulated</Text>
+          {totalColData.map((roundTotal: number[], index: number) => {
+            let sumNum = 0;
+            const totalAcc = totalColData
+              .map((roundTotal: number[], i: number) =>
+                i <= index ? roundTotal : [],
+              )
+              .map((data: number[]) => {
+                return data.reduce(
+                  (previousValue, currentValue) => previousValue + currentValue,
+                  0,
+                );
+              });
+            return (
+              <Text
+                borderX={middleStyle.border}
+                fontSize={13}
+                bg={index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'}>
+                {totalAcc.map((data: number, i: number) => {
+                  if (i <= index) {
+                    sumNum += data;
+                  }
+                })}
+                {sumNum}
+              </Text>
+            );
+          })}
         </Flex>
       </Box>
     </Flex>
