@@ -123,20 +123,22 @@ export const getPoolName = (token0: string, token1: string): string => {
 }
 
 export const checkTokenType = (
-  payToken: EthAddressType | TonAddressType | TosAddressType | WtonAddressType,
+  payToken: EthAddressType | TonAddressType | TosAddressType | WtonAddressType | WethAddressType,
   colorMode?: string
 ): any => {
   const tokenType = payToken === tokenAddresses['eth'] ?
     'eth' : payToken === tokenAddresses['weth'] ?
-      'eth' : payToken === tokenAddresses['ton'] ?
+      'weth' : payToken === tokenAddresses['ton'] ?
         'ton' : payToken === tokenAddresses['tos'] ?
           'tos' : payToken === tokenAddresses['wton'] ?
             'wton' : payToken === tokenAddresses['doc'] ?
-            'doc' : payToken === tokenAddresses['aura'] ? 'aura' : 'tos';   
+              'doc' : payToken === tokenAddresses['aura'] ? 'aura' : 'tos';   
 
           if (colorMode === 'dark') {
             switch (tokenType) {
               case 'eth':
+                return tokenInfoDark[tokenType];
+              case 'weth':
                 return tokenInfoDark[tokenType];
               case 'ton':
                 return tokenInfoDark[tokenType];
@@ -157,6 +159,8 @@ export const checkTokenType = (
             switch (tokenType) {
               case 'eth':
                 return tokenInfo[tokenType];
+              case 'weth':
+                return tokenInfo[tokenType];
               case 'ton':
                 return tokenInfo[tokenType];
               case 'tos':
@@ -164,29 +168,31 @@ export const checkTokenType = (
               case 'wton':
                 return tokenInfo[tokenType];
               case 'doc': 
-              return tokenInfo[tokenType];
+                return tokenInfo[tokenType];
               case 'aura': 
-              return tokenInfo[tokenType];
+                return tokenInfo[tokenType];
               default:
                 throw new Error(`There is no token type for ${tokenType}`);
             }
           }
-  
 };
 
 export const checkLowerCaseTokenType = (
-  payToken: EthAddressType | TonAddressType | TosAddressType | WtonAddressType,
+  payToken: EthAddressType | TonAddressType | TosAddressType | WtonAddressType | WethAddressType,
   colorMode?: string
 ): any => {
   const tokenType = payToken === tokenAddresses['eth'].toLowerCase() ?
-    'eth' : payToken === tokenAddresses['ton'].toLowerCase() ?
-      'ton' : payToken === tokenAddresses['tos'].toLowerCase() ?
-        'tos' : payToken === tokenAddresses['wton'].toLowerCase() ?
-          'wton' : payToken === tokenAddresses['doc'].toLowerCase() ?
-          'doc' : payToken === tokenAddresses['aura'].toLowerCase() ? 'aura' : 'tos';          
+    'eth' : payToken === tokenAddresses['weth'] ?
+      'weth' : payToken === tokenAddresses['ton'].toLowerCase() ?
+        'ton' : payToken === tokenAddresses['tos'].toLowerCase() ?
+          'tos' : payToken === tokenAddresses['wton'].toLowerCase() ?
+            'wton' : payToken === tokenAddresses['doc'].toLowerCase() ?
+            'doc' : payToken === tokenAddresses['aura'].toLowerCase() ? 'aura' : 'tos';          
           if (colorMode === 'dark') {
             switch (tokenType) {
               case 'eth':
+                return tokenInfoDark[tokenType];
+              case 'weth':
                 return tokenInfoDark[tokenType];
               case 'ton':
                 return tokenInfoDark[tokenType];
@@ -195,9 +201,9 @@ export const checkLowerCaseTokenType = (
               case 'wton':
                 return tokenInfoDark[tokenType];
               case 'doc': 
-              return tokenInfoDark[tokenType];
+                return tokenInfoDark[tokenType];
               case 'aura': 
-              return tokenInfoDark[tokenType];
+                return tokenInfoDark[tokenType];
               default:
                 throw new Error(`There is no token type for ${tokenType}`);
             }
@@ -207,6 +213,8 @@ export const checkLowerCaseTokenType = (
             switch (tokenType) {
               case 'eth':
                 return tokenInfo[tokenType];
+              case 'weth':
+                return tokenInfo[tokenType];
               case 'ton':
                 return tokenInfo[tokenType];
               case 'tos':
@@ -214,9 +222,9 @@ export const checkLowerCaseTokenType = (
               case 'wton':
                 return tokenInfo[tokenType];
               case 'doc': 
-              return tokenInfo[tokenType];
+                return tokenInfo[tokenType];
               case 'aura': 
-              return tokenInfo[tokenType];
+                return tokenInfo[tokenType];
               default:
                 throw new Error(`There is no token type for ${tokenType}`);
             }

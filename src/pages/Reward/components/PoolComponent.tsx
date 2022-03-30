@@ -11,12 +11,9 @@ import {
 } from '@chakra-ui/react';
 
 import {FC, useState, useEffect} from 'react';
-import {useActiveWeb3React} from 'hooks/useWeb3';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
-import {fetchTosPriceURL, fetchEthPriceURL} from '../../../constants/index';
-import {getPoolName, checkTokenType} from '../../../utils/token';
+import { checkLowerCaseTokenType } from '../../../utils/token';
 import moment from 'moment';
-// import usePoolLiquidity from '../hooks/usePoolLiquidity'
 const themeDesign = {
   border: {
     light: 'solid 1px #d7d9df',
@@ -51,8 +48,8 @@ type PoolComponentProps = {
 export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const {account, library} = useActiveWeb3React();
-  const [allPools, setAllPools] = useState<any[]>([]);
+  // const {account, library} = useActiveWeb3React();
+  // const [allPools, setAllPools] = useState<any[]>([]);
   const [pageOptions, setPageOptions] = useState<number>(0);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(2);
@@ -108,7 +105,6 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
         const numRewards = rewards.filter(
           (reward) => reward.poolAddress === pool.address,
         );
-        console.log(pool)
         const open = numRewards.filter(
           (reward) => reward.startTime < now && reward.endTime > now,
         ).length;
@@ -119,6 +115,10 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
           (reward) => reward.endTime < now,
         ).length;
         const liquidity = pool.total;
+
+        const token0Image = checkLowerCaseTokenType(pool.token0Address)
+        const token1Image = checkLowerCaseTokenType(pool.token1Address)
+        
         return (
           <Flex
             key={index}
@@ -129,8 +129,8 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
             px={'10px'}>
             <Box>
               <Avatar
-                src={pool.token0Image.symbol}
-                bg={colorMode === 'light' ? '#ffffff' : '#222222'}
+                src={token0Image.symbol}
+                bg={token0Image.bg}
                 color="#c7d1d8"
                 name="T"
                 border={
@@ -139,18 +139,18 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
                     : '1px solid #3c3c3c'
                 }
                 h="26px"
-                // p={'2px'}
+                p={token0Image.name==='ETH' ? '6px' : '0px'}
                 w="26px"
                 zIndex={'100'}
               />
               <Avatar
-                src={pool.token1Image.symbol}
-                bg={colorMode === 'light' ? '#ffffff' : '#222222'}
+                src={token1Image.symbol}
+                bg={token1Image.bg}
                 color="#c7d1d8"
                 name="T"
                 h="26px"
                 w="26px"
-                // p={'2px'}
+                p={token1Image.name==='ETH' ? '6px' : '0px'}
                 ml={'-7px'}
                 border={
                   colorMode === 'light'

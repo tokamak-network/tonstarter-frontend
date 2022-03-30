@@ -26,6 +26,7 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 import views from '../Reward/rewards';
 import {selectTransactionType} from 'store/refetch.reducer';
 // import {getLiquidity} from '../Reward/utils/getLiquidity';
+import { fetchPoolPayload } from 'pages/Reward/utils/fetchPoolPayload';
 
 export interface HomeProps extends HTMLAttributes<HTMLDivElement> {
   classes?: string;
@@ -201,28 +202,27 @@ export const Animation: React.FC<HomeProps> = () => {
     lastPhase: 6,
     lastCircle: 7,
   });
-  const [tosPrice, setTosPrice] = useState<number>(0);
-  const [ethPrice, setEthPrice] = useState<number>(0);
+  
   const {account, library} = useActiveWeb3React();
   const [poolAddresses, setPoolAddresses] = useState<string[]>([]);
   const [poolsFromAPI, setPoolsFromAPI] = useState<any>([]);
   const [pool, setPool] = useState<any[]>([]);
 
-  useEffect(() => {
-    async function getPrice() {
-      const tosPrices = await fetch(fetchTosPriceURL)
-        .then((res) => res.json())
-        .then((result) => result);
+  // useEffect(() => {
+  //   async function getPrice() {
+  //     const tosPrices = await fetch(fetchTosPriceURL)
+  //       .then((res) => res.json())
+  //       .then((result) => result);
       
-      const ethPrices = await fetch(fetchEthPriceURL)
-        .then((res) => res.json())
-        .then((result) => result);
+  //     const ethPrices = await fetch(fetchEthPriceURL)
+  //       .then((res) => res.json())
+  //       .then((result) => result);
 
-      setEthPrice(ethPrices[0].current_price)
-      setTosPrice(tosPrices);
-    }
-    getPrice();
-  }, []);
+  //     setEthPrice(ethPrices[0].current_price)
+  //     setTosPrice(tosPrices);
+  //   }
+  //   getPrice();
+  // }, []);
 
   const verticalDots: number[] = [77, 221, 365, 509, 653, 797, 941];
 
@@ -353,13 +353,13 @@ export const Animation: React.FC<HomeProps> = () => {
 
   //GET Phase 2 Liquidity Info
   // const {BasePool_Addres, DOCPool_Address} = DEPLOYED;
-  const {BasePool_Address} = DEPLOYED;
-  const basePool = usePoolByUserQuery(
-    {address: BasePool_Address?.toLowerCase()},
-    {
-      pollingInterval: ms`2m`,
-    },
-  );
+  // const {BasePool_Address} = DEPLOYED;
+  // const basePool = usePoolByUserQuery(
+  //   {address: BasePool_Address?.toLowerCase()},
+  //   {
+  //     pollingInterval: ms`2m`,
+  //   },
+  // );
   const poolArr = usePoolByArrayQuery(
     {address: poolAddresses},
     {
@@ -390,15 +390,11 @@ export const Animation: React.FC<HomeProps> = () => {
   }, [account, transactionType, blockNumber, poolArr]);
 
   useEffect(() => {
-    if (pool) {
+    async function calcLiquidity () {
       let totalLiquidity = 0;
-      for (const singlePool of pool) {
-        // let singleLiquidity = getLiquidity(singlePool, tosPrice, ethPrice);
-        let singleLiquidity = '0'
-        totalLiquidity =
-          totalLiquidity <= 3
-            ? totalLiquidity + 3
-            : totalLiquidity + Number(singleLiquidity);
+      const tvl = await fetchPoolPayload(library)
+      for (const liquidity of tvl) {
+        totalLiquidity = totalLiquidity + Number(liquidity.total)
       }
       const res = Number(totalLiquidity).toLocaleString(undefined, {
         minimumFractionDigits: 2,
@@ -407,7 +403,10 @@ export const Animation: React.FC<HomeProps> = () => {
         res.split('.')[0] + '.' + res.split('.')[1][0] + res.split('.')[1][1],
       );
     }
-  }, [pool, tosPrice]);
+    calcLiquidity()
+      
+    
+  }, [library, pool]);
 
   useEffect(() => {
     if (data) {

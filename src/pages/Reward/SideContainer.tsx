@@ -33,7 +33,7 @@ type SideContainerProps = {
   LPTokens: any[];
   setSelectedPoolCreated: any
 };
-const {UniswapStaking_Address, UniswapStaker_Address} = DEPLOYED;
+const { UniswapStaker_Address } = DEPLOYED;
 
 export const SideContainer: FC<SideContainerProps> = ({
   selected,
@@ -75,7 +75,7 @@ export const SideContainer: FC<SideContainerProps> = ({
       const signer = getSigner(library, account);
   
       let stringResult: any = [];
-    await Promise.all(LPTokens.map(async (token) => {
+      await Promise.all(LPTokens.map(async (token) => {
         const depositInfo = await uniswapStakerContract
             .connect(signer)
             .deposits(token.id);
@@ -90,7 +90,7 @@ export const SideContainer: FC<SideContainerProps> = ({
     };
     getWithdrawable();
   },[LPTokens, account, library, transactionType, blockNumber])
-  console.log(pools)
+
   return (
     <Box
       display={'flex'}

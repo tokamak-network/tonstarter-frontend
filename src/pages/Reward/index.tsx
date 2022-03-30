@@ -322,6 +322,7 @@ export const Reward = () => {
         const open = openInOrdered.concat(openOutOrdered);
         const close = closedInOrdered.concat(closedOutOrdered);
         const tokenList = open.concat(close);
+        console.log(tokenList)
         setPositions(tokenList);
       }
       if (position.data && positionsByPool.data) {
@@ -443,6 +444,7 @@ export const Reward = () => {
     library,
     orderedData,
   ]);
+
   const getRange = async (id: number, tick: string) => {
     const result = await rangePayload({library, id, account, tick});
     return result;
