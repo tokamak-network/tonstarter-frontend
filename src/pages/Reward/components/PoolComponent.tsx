@@ -169,7 +169,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
               fontSize={'16px'}
               onClick={(e) => {
                 e.preventDefault();
-                window.open(`https://info.uniswap.org/#/pools/${pool.id}`);
+                window.open(`https://info.uniswap.org/#/pools/${pool.pool_address}`);
               }}>
               {pool.pool_name}
             </Text>
