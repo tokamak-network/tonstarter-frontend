@@ -32,34 +32,26 @@ import {
 } from '@chakra-ui/react';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {checkTokenType} from 'utils/token';
-import {selectTransactionType} from 'store/refetch.reducer';
 import {closeModal, selectModalType, openModal} from 'store/modal.reducer';
-import {useActiveWeb3React} from 'hooks/useWeb3';
-import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import moment from 'moment';
 import {DEPLOYED} from 'constants/index';
 import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
-import {approveStaking, stake, unstake} from '../actions';
 import {utils, ethers, BigNumber} from 'ethers';
 import {soliditySha3} from 'web3-utils';
 import {getTokenSymbol} from '../utils/getTokenSymbol';
 import {fetchPositionRangePayloadModal} from '../utils/fetchPositionRangePayloads';
-import {UpdatedRedward} from '../types';
 import {LPToken} from '../types';
 import {convertNumber} from 'utils/number';
 import {Scrollbars} from 'react-custom-scrollbars-2';
 import {PieChart} from './../components/PieChart';
 import {useWeb3React} from '@web3-react/core';
 import {CloseButton} from 'components/Modal/CloseButton';
-import {useBlockNumber} from '../../../hooks/useBlock';
-// import {useGraphQueries} from 'hooks/useGraphQueries';
-// import {gql, useQuery} from '@apollo/client';
-import {usePoolByArrayQuery} from 'store/data/generated';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import * as UniswapV3PoolABI from 'services/abis/UniswapV3Pool.json';
 import {selectApp} from 'store/app/app.reducer';
 import Web3 from 'web3';
+import '../css/informationModal.css';
 
 const {
   WTON_ADDRESS,
@@ -747,135 +739,162 @@ export const InformationModal = () => {
                 display={'flex'}
                 flexDirection={'column'}
                 position={'relative'}>
-                <Box overflowY="auto" maxHeight="300px">
-                  <Scrollbars
-                    style={{
-                      width: '100%',
-                      display: 'flex',
-                      position: 'absolute',
-                    }}
-                    thumbSize={70}
-                    //renderThumbVertical / horizontal is where you change scrollbar styles.
-                    renderThumbVertical={() => (
-                      <div style={{background: '#007aff'}}></div>
-                    )}>
-                    <Heading
-                      fontSize={'1em'}
-                      fontFamily={theme.fonts.titil}
-                      mb={'15px'}
-                      color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                      All Staked LP Tokens
-                    </Heading>
-                    <Table>
-                      <Thead>
-                        <Tr>
-                          <Th>LP Token</Th>
-                          <Th>Range</Th>
-                          <Th isNumeric>Percentage</Th>
-                        </Tr>
-                      </Thead>
-                      <Tbody>
-                        {rewardStakersInfo.map((info: any) => {
-                          return (
-                            <Tr>
-                              <Td>{info.id}</Td>
-                              <Td>
-                                {info.inRange ? 'In Range' : 'Out of Range'}
-                              </Td>
-                              <Td isNumeric>
-                                {Number(info.liquidityPercentage) === 0.1
-                                  ? '< 0.10'
-                                  : info.liquidityPercentage}
-                                %
-                              </Td>
-                            </Tr>
-                          );
-                        })}
-                      </Tbody>
-                    </Table>
-                  </Scrollbars>
-                </Box>
+                <Heading
+                  fontSize={'1em'}
+                  fontFamily={theme.fonts.titil}
+                  mb={'15px'}
+                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
+                  All Staked LP Tokens
+                </Heading>
+
+                <Table>
+                  <Thead>
+                    <Tr>
+                      <Th>LP Token</Th>
+                      <Th>Range</Th>
+                      <Th isNumeric>Percentage</Th>
+                    </Tr>
+                  </Thead>
+
+                  <Tbody>
+                    <Scrollbars
+                      style={{
+                        width: '100%',
+                        position: 'absolute',
+                        height: '224px',
+                      }}
+                      thumbSize={70}
+                      //renderThumbVertical / horizontal is where you change scrollbar styles.
+                      renderThumbVertical={() => (
+                        <div style={{background: '#007aff'}}></div>
+                      )}>
+                      {rewardStakersInfo.map((info: any) => {
+                        return (
+                          <Tr
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              borderBottom: '1px solid #363636',
+                            }}>
+                            <Td
+                              style={{
+                                padding: '12px 24px',
+                                borderBottom: 'none',
+                              }}>
+                              {info.id}
+                            </Td>
+                            <Td
+                              style={{
+                                padding: '12px 24px',
+                                borderBottom: 'none',
+                              }}>
+                              {info.inRange ? 'In Range' : 'Out of Range'}
+                            </Td>
+                            <Td
+                              isNumeric
+                              style={{
+                                padding: '12px 24px',
+                                borderBottom: 'none',
+                              }}>
+                              {Number(info.liquidityPercentage) === 0.1
+                                ? '< 0.10'
+                                : info.liquidityPercentage}
+                              %
+                            </Td>
+                          </Tr>
+                        );
+                      })}
+                    </Scrollbars>
+                  </Tbody>
+                </Table>
               </Box>
             </Box>
 
             <Divider my={'15px'} />
 
-            <Box overflowY="auto" maxHeight="300px">
-              <Scrollbars
-                style={{
-                  display: 'flex',
-                  position: 'absolute',
-                  width: '96%',
-                  height: '350px',
-                  overflow: 'hidden',
-                }}
-                thumbSize={70}
-                //renderThumbVertical / horizontal is where you change scrollbar styles.
-                renderThumbVertical={() => (
-                  <div style={{background: '#007aff'}}></div>
-                )}>
-                <Heading
-                  fontSize={'1em'}
-                  fontWeight={'extrabold'}
-                  fontFamily={theme.fonts.titil}
-                  mb={'15px'}
-                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                  Recent Activity
-                </Heading>
-                <Table overflowY={'auto'} maxHeight={'200px'}>
-                  <Thead>
-                    <Tr>
-                      <Th>Account Address</Th>
-                      <Th>TX hash</Th>
-                      <Th>Type</Th>
-                      <Th>Amount</Th>
-                      <Th>Date</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {recentActivityTable.map((txn: any) => {
-                      return (
-                        <Tr>
+            <Heading
+              fontSize={'1em'}
+              fontWeight={'extrabold'}
+              fontFamily={theme.fonts.titil}
+              mb={'15px'}
+              color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
+              Recent Activity
+            </Heading>
+            <Table overflowY={'auto'} maxHeight={'200px'}>
+              <Thead>
+                <Tr
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}>
+                  <Th>Account Address</Th>
+                  <Th>TX hash</Th>
+                  <Th>Type</Th>
+                  <Th>Amount</Th>
+                  <Th>Date</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                <Scrollbars
+                  style={{
+                    position: 'absolute',
+                    width: '96%',
+                    height: '350px',
+                  }}
+                  thumbSize={70}
+                  //renderThumbVertical / horizontal is where you change scrollbar styles.
+                  renderThumbVertical={() => (
+                    <div style={{background: '#007aff'}}></div>
+                  )}>
+                  {recentActivityTable.map((txn: any) => {
+                    return (
+                      <Tr
+                        style={{
+                          borderBottom: '1px solid #363636',
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}>
+                        <Td>
+                          <Link
+                            isExternal
+                            _hover={{
+                              color: 'blue.500',
+                            }}
+                            href={`${appConfig.explorerLink}${txn.transactionInfo.from}`}>
+                            {shortenAddress(txn.transactionInfo.from)}
+                          </Link>
+                        </Td>
+                        <Td>
+                          <Link
+                            isExternal
+                            _hover={{
+                              color: 'blue.500',
+                            }}
+                            href={`${appConfig.explorerTxnLink}${txn.transactionHash}`}>
+                            {shortenAddress(txn.transactionHash)}
+                          </Link>
+                        </Td>
+                        <Td>{txn.event}</Td>
+                        {txn.event === 'Incentive Created' ? (
                           <Td>
-                            <Link
-                              isExternal
-                              _hover={{
-                                color: 'blue.500',
-                              }}
-                              href={`${appConfig.explorerLink}${txn.transactionInfo.from}`}>
-                              {shortenAddress(txn.transactionInfo.from)}
-                            </Link>
+                            {formatAmount(txn.args.reward.toString(), null)}
                           </Td>
+                        ) : txn.event === 'Incentive Ended' ? (
                           <Td>
-                            <Link
-                              isExternal
-                              _hover={{
-                                color: 'blue.500',
-                              }}
-                              href={`${appConfig.explorerTxnLink}${txn.transactionHash}`}>
-                              {shortenAddress(txn.transactionHash)}
-                            </Link>
+                            {formatAmount(txn.args.refund.toString(), null)}
                           </Td>
-                          <Td>{txn.event}</Td>
-                          {txn.event === 'Incentive Created' ? (
-                            <Td>
-                              {formatAmount(txn.args.reward.toString(), null)}
-                            </Td>
-                          ) : txn.event === 'Incentive Ended' ? (
-                            <Td>
-                              {formatAmount(txn.args.refund.toString(), null)}
-                            </Td>
-                          ) : (
-                            <Td>-</Td>
-                          )}
-                          <Td>{txn.formattedTxnDate}</Td>
-                        </Tr>
-                      );
-                    })}
-                  </Tbody>
-                </Table>
-              </Scrollbars>
-            </Box>
+                        ) : (
+                          <Td>-</Td>
+                        )}
+                        <Td>{txn.formattedTxnDate}</Td>
+                      </Tr>
+                    );
+                  })}
+                </Scrollbars>
+              </Tbody>
+            </Table>
           </ModalBody>
 
           {/* <Divider /> */}
