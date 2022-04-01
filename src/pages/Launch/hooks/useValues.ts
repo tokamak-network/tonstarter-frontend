@@ -33,6 +33,8 @@ const initialObj: Projects['CreateProject'] = {
       hardCap: undefined,
       addressForReceiving: '',
       isDeployed: false,
+      isSet: false,
+      isDeployedErr: false,
       stosTier: {
         oneTier: {
           requiredStos: undefined,
@@ -73,6 +75,8 @@ const initialObj: Projects['CreateProject'] = {
       vaultAddress: undefined,
       index: 1,
       isDeployed: false,
+      isSet: false,
+      isDeployedErr: false,
     },
     {
       vaultName: 'TON Staker',
@@ -84,6 +88,8 @@ const initialObj: Projects['CreateProject'] = {
       vaultAddress: undefined,
       index: 2,
       isDeployed: false,
+      isSet: false,
+      isDeployedErr: false,
     },
     {
       vaultName: 'TOS Staker',
@@ -95,6 +101,8 @@ const initialObj: Projects['CreateProject'] = {
       vaultAddress: undefined,
       index: 3,
       isDeployed: false,
+      isSet: false,
+      isDeployedErr: false,
     },
     {
       vaultName: 'WTON-TOS LP Reward',
@@ -106,6 +114,8 @@ const initialObj: Projects['CreateProject'] = {
       vaultAddress: undefined,
       index: 4,
       isDeployed: false,
+      isSet: false,
+      isDeployedErr: false,
     },
   ],
 };
@@ -120,6 +130,8 @@ const initialVaultValue: VaultC = {
   vaultType: 'C',
   index: 5,
   isDeployed: false,
+  isSet: false,
+  isDeployedErr: false,
 };
 
 const useValues = () => {

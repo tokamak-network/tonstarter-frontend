@@ -50,28 +50,33 @@ const ConfirmTokenModal = () => {
   >('Ready');
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const {vaults} = values;
-  const {vaultType, vaultName, func, infoList} = data.data;
+  const {vaultType, vaultName, func, infoList, close} = data.data;
 
   const {selectedVaultDetail} = useVaultSelector();
 
-  useEffect(() => {
-    if (selectedVaultDetail?.isDeployed === true) {
-      setDeployStep('Done');
-    }
-    // if (isTokenDeployedErr === true) {
-    //   setDeployStep('Error');
-    // }
-  }, [deployStep, values, selectedVaultDetail]);
+  console.log(deployStep);
 
-  console.log(data);
-  console.log(selectedVaultDetail);
+  useEffect(() => {
+    console.log(data.data.isSet);
+    console.log(selectedVaultDetail?.isSet);
+    if (
+      data.data.isSet === true
+        ? selectedVaultDetail?.isSet === true
+        : selectedVaultDetail?.isDeployed === true
+    ) {
+      // setDeployStep('Done');
+    }
+    if (selectedVaultDetail?.isDeployedErr === true) {
+      setDeployStep('Error');
+    }
+  }, [deployStep, values, selectedVaultDetail, data]);
 
   // if (!data?.data?.vaultName) {
   //   return null;
   // }
 
   function closeModal() {
-    setFieldValue('isTokenDeployedErr', false);
+    close();
     setDeployStep('Ready');
     handleCloseModal();
   }
@@ -213,7 +218,7 @@ const ConfirmTokenModal = () => {
         isOpen={data.modal === 'Launch_ConfirmVault' ? true : false}
         isCentered
         onClose={() => {
-          handleCloseModal();
+          closeModal();
         }}>
         <ModalOverlay />
         <ModalContent
@@ -222,7 +227,7 @@ const ConfirmTokenModal = () => {
           w="350px"
           pt="20px"
           pb="25px">
-          <CloseButton closeFunc={handleCloseModal}></CloseButton>
+          <CloseButton closeFunc={closeModal}></CloseButton>
           <ModalBody p={0}>
             <Flex
               pt={'56px'}
@@ -264,7 +269,7 @@ const ConfirmTokenModal = () => {
       isOpen={data.modal === 'Launch_ConfirmVault' ? true : false}
       isCentered
       onClose={() => {
-        handleCloseModal();
+        closeModal();
       }}>
       <ModalOverlay />
       <ModalContent
@@ -273,7 +278,7 @@ const ConfirmTokenModal = () => {
         w="350px"
         pt="20px"
         pb="25px">
-        <CloseButton closeFunc={handleCloseModal}></CloseButton>
+        <CloseButton closeFunc={closeModal}></CloseButton>
         <ModalBody p={0}>
           <Flex
             pt={'56px'}

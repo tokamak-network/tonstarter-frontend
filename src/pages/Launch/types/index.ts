@@ -24,6 +24,8 @@ interface Vault {
   vaultAddress: string | undefined;
   index: number;
   isDeployed: boolean;
+  isSet: boolean;
+  isDeployedErr: boolean;
 }
 
 interface VaultSchedule {

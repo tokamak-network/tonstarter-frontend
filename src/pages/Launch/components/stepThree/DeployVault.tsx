@@ -7,10 +7,10 @@ import {
   Text,
   Button,
 } from '@chakra-ui/react';
-import {Projects, VaultAny, VaultType} from '@Launch/types';
+import {Projects, Vault, VaultAny, VaultType} from '@Launch/types';
 import {DEPLOYED} from 'constants/index';
 import {useFormikContext} from 'formik';
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 import {LibraryType} from 'types';
 import {shortenAddress} from 'utils';
 import {Contract} from '@ethersproject/contracts';
@@ -22,6 +22,10 @@ import {selectApp} from 'store/app/app.reducer';
 import useVaultSelector from '@Launch/hooks/useVaultSelector';
 import {getSigner} from 'utils/contract';
 import {ethers} from 'ethers';
+import {useBlockNumber} from 'hooks/useBlock';
+import {useContract} from 'hooks/useContract';
+import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
+import {convertNumber, convertToWei} from 'utils/number';
 
 type DeployVaultProp = {
   vault: VaultAny;
@@ -65,39 +69,52 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const {account, library} = useActiveWeb3React();
   const [vaultState, setVaultState] = useState<
-    'notReady' | 'ready' | 'finished'
+    'notReady' | 'ready' | 'readyForToken' | 'readyForSet' | 'finished'
   >('notReady');
+  const [hasToken, setHasToken] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   // @ts-ignore
   const {data: appConfig} = useAppSelector(selectApp);
   const [infoList, setInfoList] = useState<
     {title: string; content: string | number}[] | []
   >([]);
-  const {selectedVaultDetail, selectedVaultName} = useVaultSelector();
+  const {selectedVaultName} = useVaultSelector();
+  const {blockNumber} = useBlockNumber();
 
+  const vaultsList = values.vaults;
+  const selectedVaultDetail = vaultsList.filter((vaultData: VaultAny) => {
+    if (vaultData.vaultName === vaultName) {
+      return vaultData;
+    }
+  })[0];
+
+  //setVaultState
   useEffect(() => {
     const isTokenDeployed = values.isTokenDeployed;
     const isLPDeployed = values.vaults[1].isDeployed;
-    const isVaultDeployed = false;
+    const isVaultDeployed = selectedVaultDetail?.isDeployed;
     const vaultDeployReady =
       vaultType === 'Initial Liquidity'
         ? isTokenDeployed && !isVaultDeployed
         : isTokenDeployed && isLPDeployed && !isVaultDeployed;
     setVaultState(
-      isTokenDeployed && isLPDeployed && isVaultDeployed
-        ? 'finished'
+      !vaultDeployReady && !isVaultDeployed
+        ? 'notReady'
         : vaultDeployReady
         ? 'ready'
-        : 'notReady',
+        : isVaultDeployed && !hasToken
+        ? 'readyForToken'
+        : isVaultDeployed && hasToken
+        ? 'readyForSet'
+        : 'finished',
     );
-  }, [values, vaultType]);
+  }, [values, vaultType, selectedVaultDetail, hasToken, blockNumber]);
 
   useEffect(() => {
     switch (vaultType) {
       case 'Initial Liquidity':
         //@ts-ignore
         // const {adminAddress} = selectedVaultDetail;
-        console.log(selectedVaultDetail);
         const info = [
           {
             title: 'adminAddress',
@@ -112,59 +129,152 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
     }
   }, [vaultType, selectedVaultDetail, values]);
 
-  const vaultDeploy = useCallback(async () => {
-    if (account && library) {
-      const vaultContract = getContract(vaultType, library);
-      const signer = getSigner(library, account);
+  const vaultDeploy = useCallback(
+    async () => {
+      if (account && library) {
+        const vaultContract = getContract(vaultType, library);
+        const signer = getSigner(library, account);
 
-      switch (vaultType) {
-        case 'Initial Liquidity':
-          console.log(
-            selectedVaultName,
-            values.tokenAddress,
-            selectedVaultDetail?.adminAddress,
-            1,
-            values.tosPrice,
-          );
-          const tx = await vaultContract
-            ?.connect(signer)
-            .create(
-              selectedVaultName,
-              values.tokenAddress,
-              selectedVaultDetail?.adminAddress,
-              1,
-              values.tosPrice,
-            );
-          const receipt = await tx.wait();
-          const {logs} = receipt;
-          console.log(logs);
+        try {
+          switch (vaultType) {
+            case 'Initial Liquidity':
+              // console.log(
+              //   selectedVaultName,
+              //   values.tokenAddress,
+              //   selectedVaultDetail?.adminAddress,
+              //   1,
+              //   values.tosPrice,
+              // );
+              const tx = await vaultContract
+                ?.connect(signer)
+                .create(
+                  selectedVaultName,
+                  values.tokenAddress,
+                  selectedVaultDetail?.adminAddress,
+                  1,
+                  values.tosPrice,
+                );
+              const receipt = await tx.wait();
+              const {logs} = receipt;
+              console.log(logs);
 
-          const iface = new ethers.utils.Interface(InitialLiquidityAbi.abi);
+              const iface = new ethers.utils.Interface(InitialLiquidityAbi.abi);
 
-          const result = iface.parseLog(logs[11]);
-          console.log(result);
-          const {args} = result;
+              const result = iface.parseLog(logs[11]);
+              const {args} = result;
+              setFieldValue(
+                `vaults[${selectedVaultDetail?.index}].vaultAddress`,
+                args[0],
+              );
+              setFieldValue(
+                `vaults[${selectedVaultDetail?.index}].isDeployed`,
+                true,
+              );
+              setVaultState('readyForToken');
+              break;
+            default:
+              break;
+          }
+        } catch (e) {
+          console.log(e);
           setFieldValue(
-            `vaults[${selectedVaultDetail?.index}].vaultAddress`,
-            args[0],
-          );
-          setFieldValue(
-            `vaults[${selectedVaultDetail?.index}].isDeployed`,
+            `vaults[${selectedVaultDetail?.index}].isDeployedErr`,
             true,
           );
-          break;
-        default:
-          break;
+        }
+      }
+    },
+    /*eslint-disable*/
+    [
+      vaultType,
+      account,
+      library,
+      selectedVaultDetail,
+      selectedVaultName,
+      values,
+    ],
+  );
+
+  const ERC20_CONTRACT = useContract(values?.tokenAddress, ERC20.abi);
+
+  useEffect(() => {
+    async function fetchContractBalance() {
+      if (
+        ERC20_CONTRACT &&
+        selectedVaultDetail?.vaultAddress &&
+        selectedVaultDetail?.isDeployed === true
+      ) {
+        const tokenBalance = await ERC20_CONTRACT.balanceOf(
+          selectedVaultDetail.vaultAddress,
+        );
+        if (tokenBalance && selectedVaultDetail.vaultTokenAllocation) {
+          console.log(selectedVaultDetail.vaultTokenAllocation);
+          console.log(Number(convertNumber({amount: tokenBalance.toString()})));
+          selectedVaultDetail.vaultTokenAllocation <=
+          Number(convertNumber({amount: tokenBalance.toString()}))
+            ? setHasToken(true)
+            : setHasToken(false);
+        }
       }
     }
-  }, [
-    vaultType,
-    account,
-    library,
-    selectedVaultDetail,
-    selectedVaultName,
-    values,
-  ]);
+    fetchContractBalance();
+  }, [blockNumber, ERC20_CONTRACT, selectedVaultDetail]);
+
+  const statusTitle = useMemo(() => {
+    switch (vaultState) {
+      case 'notReady':
+        return 'Status';
+      case 'ready':
+        return 'Ready to deploy';
+      case 'readyForToken':
+        return 'Wating for token';
+      case 'readyForSet':
+        return 'Ready to deploy (final)';
+      case 'finished':
+        return 'Completed';
+      default:
+        break;
+    }
+  }, [vaultState]);
+
+  const colorScheme = useMemo(() => {
+    switch (vaultState) {
+      case 'notReady':
+        return {
+          titleColor: 'gray.400',
+          bg: 'none',
+          btnBg: 'none',
+        };
+      case 'ready':
+        return {
+          titleColor: '#03c4c6',
+          bg: 'none',
+          btnBg: 'blue.500',
+        };
+      case 'readyForToken':
+        return {
+          titleColor: '#ff3b3b',
+          bg: 'none',
+          btnBg: 'blue.500',
+        };
+      case 'readyForSet':
+        return {
+          titleColor: '#0070ed',
+          bg: 'none',
+          btnBg: '#00c3c4',
+        };
+      case 'finished':
+        return {
+          titleColor: 'gray.400',
+          bg: '#26c1c9',
+          btnBg: 'none',
+        };
+      default:
+        return {
+          titleColor: '',
+        };
+    }
+  }, [vaultState]);
 
   return (
     <GridItem
@@ -182,15 +292,8 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
           <Text fontSize={13} h={'18px'}>
             Vauts
           </Text>
-          <Text
-            fontSize={12}
-            h={'16px'}
-            color={vaultState === 'notReady' ? 'gray.400' : '#03c4c6'}>
-            {vaultState === 'finished'
-              ? 'Completed'
-              : vaultState === 'ready'
-              ? 'Ready to deploy'
-              : 'Status'}
+          <Text fontSize={12} h={'16px'} color={colorScheme.titleColor}>
+            {statusTitle}
           </Text>
         </Box>
         <Text
@@ -229,28 +332,61 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
           <Button
             w={'100px'}
             h={'32px'}
-            bg={vaultState === 'ready' ? 'blue.500' : 'none'}
+            bg={colorScheme.btnBg}
             mt={'auto'}
-            color={vaultState === 'ready' ? 'white.100' : 'gray.175'}
+            color={vaultState !== 'notReady' ? 'white.100' : 'gray.175'}
             // color={'white.100'}
             border={vaultState === 'ready' ? '' : '1px solid #dfe4ee'}
-            isDisabled={vaultState !== 'ready' ? btnDisable : false}
+            isDisabled={
+              vaultState === 'notReady' || vaultState === 'finished'
+                ? btnDisable
+                : false
+            }
             fontSize={13}
             fontWeight={500}
             _hover={{}}
             onClick={() => {
-              dispatch(
-                openModal({
-                  type: 'Launch_ConfirmVault',
-                  data: {
-                    vaultName,
-                    infoList,
-                    func: () => vaultDeploy(),
-                  },
-                }),
-              );
+              vaultState === 'ready'
+                ? dispatch(
+                    openModal({
+                      type: 'Launch_ConfirmVault',
+                      data: {
+                        vaultName,
+                        infoList,
+                        func: () => vaultDeploy(),
+                        close: () =>
+                          setFieldValue(
+                            `vaults[${selectedVaultDetail?.index}].isDeployedErr`,
+                            false,
+                          ),
+                      },
+                    }),
+                  )
+                : vaultState === 'readyForToken'
+                ? ERC20_CONTRACT?.transfer(
+                    selectedVaultDetail.vaultAddress,
+                    convertToWei(
+                      selectedVaultDetail.vaultTokenAllocation.toString(),
+                    ),
+                  )
+                : dispatch(
+                    openModal({
+                      type: 'Launch_ConfirmVault',
+                      data: {
+                        vaultName,
+                        infoList,
+                        isSet: true,
+                        func: () => vaultDeploy(),
+                        close: () =>
+                          setFieldValue(
+                            `vaults[${selectedVaultDetail?.index}].isDeployedErr`,
+                            false,
+                          ),
+                      },
+                    }),
+                  );
             }}>
-            Deploy
+            {vaultState !== 'readyForToken' ? 'Deploy' : 'Send Token'}
           </Button>
         </Box>
       </Flex>
