@@ -73,6 +73,8 @@ const Middle = () => {
     }
   }, [selectedVaultDetail]);
 
+  const isDisable = selectedVaultDetail?.vaultType !== 'Public';
+
   return (
     <Flex flexDir={'column'} w={'100%'}>
       <Box d={'flex'} mb={'15px'} justifyContent="space-between">
@@ -106,7 +108,7 @@ const Middle = () => {
             w={'100px'}
             h={'32px'}
             text={'Edit'}
-            isDisabled={selectedVaultDetail?.vaultType === 'Initial Liquidity'}
+            isDisabled={isDisable}
             func={() => setIsEdit(true)}></CustomButton>
         )}
       </Box>

@@ -1,6 +1,8 @@
 import {Box, Flex, useColorMode, useTheme, Image} from '@chakra-ui/react';
 import arrowLeft from 'assets/svgs/arrow_left_normal_icon.svg';
+import arrowHoverLeft from 'assets/launch/arrow-left-hover-icon.svg';
 import arrowRight from 'assets/svgs/arrow_right_normal_icon.svg';
+import arrowHoverRight from 'assets/launch/arrow-right-hover-icon.svg';
 import VaultCard from '../common/VaultCard';
 import {useFormikContext} from 'formik';
 import {useState} from 'react';
@@ -9,6 +11,7 @@ import {useAppDispatch} from 'hooks/useRedux';
 import {changeVault} from '@Launch/launch.reducer';
 import {motion} from 'framer-motion';
 import AddVaultCard from '@Launch/components/common/AddVaultCard';
+import HoverImage from 'components/HoverImage';
 
 const Vaults = () => {
   const theme = useTheme();
@@ -17,18 +20,20 @@ const Vaults = () => {
   const vaultsList = values.vaults;
   const dispatch = useAppDispatch();
   const [transX, setTransX] = useState<number>(0);
+  const [flowIndex, setFlowIndex] = useState<number>(vaultsList.length);
 
   return (
     <Flex w={'100%'} bg={'white.100'} flexDir="column">
       <Box d="flex" h={'220px'} px={'15px'} justifyContent="space-between">
-        <Image
-          cursor={'pointer'}
-          src={arrowLeft}
-          w={'24px'}
-          h={'48px'}
-          alignSelf="center"
-          onClick={() => setTransX(transX + 165)}
-        />
+        <HoverImage
+          img={arrowLeft}
+          hoverImg={arrowHoverLeft}
+          action={() => {
+            if (flowIndex - vaultsList.length > 0) {
+              setTransX(transX + 165);
+              setFlowIndex(flowIndex - 1);
+            }
+          }}></HoverImage>
         <Flex w={'100%'} alignItems="center" mx={'15px'} overflow={'hidden'}>
           <motion.div
             animate={{x: transX}}
@@ -64,14 +69,23 @@ const Vaults = () => {
             </Box>
           </motion.div>
         </Flex>
-        <Image
+        <HoverImage
+          img={arrowRight}
+          hoverImg={arrowHoverRight}
+          action={() => {
+            if (flowIndex <= vaultsList.length) {
+              setTransX(transX - 165);
+              setFlowIndex(flowIndex + 1);
+            }
+          }}></HoverImage>
+        {/* <Image
           cursor={'pointer'}
           src={arrowRight}
           w={'24px'}
           h={'48px'}
           alignSelf="center"
           onClick={() => setTransX(transX - 165)}
-        />
+        /> */}
       </Box>
     </Flex>
   );
