@@ -3,10 +3,12 @@ import StepTitle from '@Launch/components/common/StepTitle';
 import InputField from '@Launch/components/stepTwo/InputField';
 import {useFormikContext} from 'formik';
 import {useEffect, useState} from 'react';
+import {Projects} from '@Launch/types';
+
 const TopTitle = () => {
-  const [pricePerTon, setPricePerTon] = useState('0');
-  const [pricePerTos, setPricePerTos] = useState('0');
-  const {setFieldValue} = useFormikContext();
+  const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
+  const [pricePerTon, setPricePerTon] = useState(values.projectTokenPrice);
+  const [pricePerTos, setPricePerTos] = useState(values.tosPrice);
 
   useEffect(() => {
     setFieldValue('projectTokenPrice', pricePerTon);
@@ -17,7 +19,7 @@ const TopTitle = () => {
   return (
     <Box px={'35px'} py={'23px'} pos="relative">
       <StepTitle title={'Vaults'} isSaveButton={true}></StepTitle>
-      <Flex pos="absolute" left={'127px'} top={'22px'} alignItems="center">
+      <Flex pos="absolute" left={'127px'} top={'27px'} alignItems="center">
         <Text fontSize={13} mr={'10px'}>
           Exchange Ratio 1TON ={' '}
         </Text>
