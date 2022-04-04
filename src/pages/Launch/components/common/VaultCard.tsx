@@ -8,6 +8,7 @@ import PencilActiveIcon from 'assets/launch/pen-active-icon.svg';
 import {selectLaunch} from '@Launch/launch.reducer';
 import {useAppSelector} from 'hooks/useRedux';
 import HoverImage from 'components/HoverImage';
+import commafy from 'utils/commafy';
 
 type VaultCardProps = {
   status: 'public' | 'notPublic';
@@ -137,7 +138,7 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
           fontSize={15}
           color={isSelected ? 'white.100' : '#3d495d'}
           fontWeight={600}>
-          {tokenAllocation}
+          {commafy(tokenAllocation)}
         </Text>
       </Flex>
       <Flex flexDir={'column'}>

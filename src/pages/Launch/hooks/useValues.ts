@@ -117,6 +117,19 @@ const initialObj: Projects['CreateProject'] = {
       isSet: false,
       isDeployedErr: false,
     },
+    {
+      vaultName: 'Liquidity Incentive',
+      vaultType: 'Liquidity Incentive',
+      vaultTokenAllocation: 0,
+      adminAddress: '',
+      isMandatory: true,
+      claim: defaultParams,
+      vaultAddress: undefined,
+      index: 5,
+      isDeployed: false,
+      isSet: false,
+      isDeployedErr: false,
+    },
   ],
 };
 

@@ -10,6 +10,8 @@ import {useEffect, useMemo, useRef, useState} from 'react';
 import InputField from './InputField';
 import CalendarActiveImg from 'assets/launch/calendar-active-icon.svg';
 import CalendarInactiveImg from 'assets/launch/calendar-inactive-icon.svg';
+import useVaultSelector from '@Launch/hooks/useVaultSelector';
+import commafy from 'utils/commafy';
 
 export const MainTitle = (props: {leftTitle: string; rightTitle: string}) => {
   const {leftTitle, rightTitle} = props;
@@ -104,7 +106,7 @@ const SubTitle = (props: {
           </Text>
           {percent !== undefined && (
             <Text ml={'5px'} color={'#7e8993'} textAlign={'right'}>
-              {`(${percent || '-'}%)`}
+              {`(${percent.toFixed(3).replace(/\.(\d\d)\d?$/, '.$1') || '-'}%)`}
             </Text>
           )}
         </Flex>
@@ -174,9 +176,9 @@ const STOSTier = (props: {
 };
 
 const PublicTokenDetail = (props: {
-  firstColData: PublicTokenColData['firstColData'];
-  secondColData: PublicTokenColData['secondColData'];
-  thirdColData: PublicTokenColData['thirdColData'];
+  firstColData: PublicTokenColData['firstColData'] | null;
+  secondColData: PublicTokenColData['secondColData'] | null;
+  thirdColData: PublicTokenColData['thirdColData'] | null;
   isEdit: boolean;
 }) => {
   const theme = useTheme();
@@ -187,9 +189,10 @@ const PublicTokenDetail = (props: {
   const {
     values: {vaults},
   } = useFormikContext<Projects['CreateProject']>();
-  const publicVaultValue = vaults.filter((vault: VaultCommon) => {
-    return vault.vaultName === 'Public';
-  });
+  // const publicVaultValue = vaults.filter((vault: VaultCommon) => {
+  //   return vault.vaultName === 'Public';
+  // });
+  const {selectedVaultDetail} = useVaultSelector();
 
   return (
     <Grid
@@ -200,8 +203,10 @@ const PublicTokenDetail = (props: {
       <GridItem>
         <MainTitle
           leftTitle="Token"
-          rightTitle={`${publicVaultValue[0].vaultTokenAllocation} TON`}></MainTitle>
-        {firstColData.map(
+          rightTitle={`${commafy(
+            selectedVaultDetail?.vaultTokenAllocation,
+          )} TON`}></MainTitle>
+        {firstColData?.map(
           (
             data: {
               title: string;
@@ -224,10 +229,21 @@ const PublicTokenDetail = (props: {
             );
           },
         )}
+        {firstColData === null && (
+          <Flex
+            alignItems={'center'}
+            justifyContent="center"
+            h={'60px'}
+            fontSize={13}
+            color={'#808992'}
+            fontWeight={600}>
+            <Text>There is no Token value.</Text>
+          </Flex>
+        )}
       </GridItem>
       <GridItem borderX={'solid 1px #e6eaee'}>
         <MainTitle leftTitle="Schedule" rightTitle="KST"></MainTitle>
-        {secondColData.map(
+        {secondColData?.map(
           (data: {title: string; content: string; formikName: string}) => {
             const {title, content, formikName} = data;
             return (
@@ -241,22 +257,35 @@ const PublicTokenDetail = (props: {
             );
           },
         )}
+        {secondColData === null && (
+          <Flex
+            alignItems={'center'}
+            justifyContent="center"
+            h={'60px'}
+            fontSize={13}
+            color={'#808992'}
+            fontWeight={600}>
+            <Text>There is no Schedule value.</Text>
+          </Flex>
+        )}
       </GridItem>
       <GridItem>
         <MainTitle leftTitle="sTOS Tier" rightTitle=""></MainTitle>
-        <Flex
-          h={'60px'}
-          alignItems="center"
-          textAlign={'center'}
-          borderBottom={'solid 1px #e6eaee'}
-          fontWeight={600}
-          color={'#7e8993'}
-          fontSize={13}>
-          <Text w={'80px'}>Tier</Text>
-          <Text w={'125px'}>Required TOS</Text>
-          <Text w={'137px'}>Allocated Token</Text>
-        </Flex>
-        {thirdColData.map((data: any, index: number) => {
+        {thirdColData && (
+          <Flex
+            h={'60px'}
+            alignItems="center"
+            textAlign={'center'}
+            borderBottom={'solid 1px #e6eaee'}
+            fontWeight={600}
+            color={'#7e8993'}
+            fontSize={13}>
+            <Text w={'80px'}>Tier</Text>
+            <Text w={'125px'}>Required TOS</Text>
+            <Text w={'137px'}>Allocated Token</Text>
+          </Flex>
+        )}
+        {thirdColData?.map((data: any, index: number) => {
           const {tier, requiredTos, allocatedToken} = data;
           return (
             <STOSTier
@@ -268,6 +297,17 @@ const PublicTokenDetail = (props: {
               isEdit={isEdit}></STOSTier>
           );
         })}
+        {thirdColData === null && (
+          <Flex
+            alignItems={'center'}
+            justifyContent="center"
+            h={'60px'}
+            fontSize={13}
+            color={'#808992'}
+            fontWeight={600}>
+            <Text>There is no sTOS Tier value.</Text>
+          </Flex>
+        )}
       </GridItem>
     </Grid>
   );
@@ -293,12 +333,30 @@ const TokenDetail = (props: {isEdit: boolean}) => {
           );
         }
         return null;
-      case 'LP':
-        return null;
+      case 'Initial Liquidity':
+        return (
+          <PublicTokenDetail
+            firstColData={null}
+            secondColData={null}
+            thirdColData={null}
+            isEdit={isEdit}></PublicTokenDetail>
+        );
       case 'TON Staker':
-        return <Flex>go</Flex>;
+        return (
+          <PublicTokenDetail
+            firstColData={null}
+            secondColData={null}
+            thirdColData={null}
+            isEdit={isEdit}></PublicTokenDetail>
+        );
       case 'TOS Staker':
-        return <Flex>go</Flex>;
+        return (
+          <PublicTokenDetail
+            firstColData={null}
+            secondColData={null}
+            thirdColData={null}
+            isEdit={isEdit}></PublicTokenDetail>
+        );
       case 'WTON-TOS LP Reward':
         return <Flex>go</Flex>;
       default:

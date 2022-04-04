@@ -163,6 +163,15 @@ const Overview = () => {
                   {sumWithInitial}
                 </Text>
               );
+            } else {
+              return (
+                <Text
+                  borderX={middleStyle.border}
+                  fontSize={13}
+                  bg={index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'}>
+                  -
+                </Text>
+              );
             }
           })}
         </Flex>
@@ -196,7 +205,7 @@ const Overview = () => {
                     sumNum += data;
                   }
                 })}
-                {sumNum}
+                {sumNum !== 0 ? sumNum : '-'}
               </Text>
             );
           })}
