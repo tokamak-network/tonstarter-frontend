@@ -10,14 +10,16 @@ import {
   Image,
   Input,
 } from '@chakra-ui/react';
-
+import HoverImage from 'components/HoverImage';
 import {FC, Dispatch, SetStateAction, useRef, useState, useEffect} from 'react';
 import Calendar from 'react-calendar';
-import '../css/Calendar.css';
+import '../css/CalendarLaunch.css';
 import calender_Forward_icon_inactive from 'assets/svgs/calender_Forward_icon_inactive.svg';
 import calender_back_icon_inactive from 'assets/svgs/calender_back_icon_inactive.svg';
 import moment from 'moment';
-
+import CalendarActiveImg from 'assets/launch/calendar-active-icon.svg';
+import CalendarInactiveImg from 'assets/launch/calendar-inactive-icon.svg';
+import { CustomClock } from './CustomClock';
 const themeDesign = {
   border: {
     light: 'solid 1px #dfe4ee',
@@ -45,12 +47,13 @@ export const CustomCalendar = (prop: CalendarProps) => {
   const {setValue, startTime, endTime, calendarType, created} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
+  
   const [showCalendar, setShowCalendar] = useState<boolean>(false);
   const [showInputValue, setShowInputValue] = useState<string>('');
-  const refCalendar = useRef<HTMLInputElement>(null);
-
+  const [startTimeArray, setStartTimeArray] = useState([]);
+  const [errorStart, setErrorStart] = useState<boolean>(false);
   const setInput = (date: any) => {
-    setShowCalendar(false);
+    // setShowCalendar(false);
     const dateSelected = Number(new Date(date));
     setValue(dateSelected / 1000);
     const dateFormatted = moment(date).format('MM/DD/YYYY');
@@ -66,25 +69,7 @@ export const CustomCalendar = (prop: CalendarProps) => {
     if (view === 'month') {
       if (formattedDate < now) {
         return true;
-      } else if (
-        calendarType === 'end' &&
-        formattedDate > maxEndDate &&
-        startTime !== 0
-      ) {
-        return true;
-      } else if (calendarType === 'start' && formattedDate > maxStartDate) {
-        return true;
-      } else if (
-        endTime !== 0 &&
-        formattedDate > endTime &&
-        calendarType === 'start'
-      ) {
-        return true;
       }
-
-      // else if (calendarType === 'end' &&  startTime !== 0  && formattedDate <= startTime ) {
-      //   return true;
-      // }
       else {
         return false;
       }
@@ -111,33 +96,11 @@ export const CustomCalendar = (prop: CalendarProps) => {
     }
   };
 
-  useEffect(() => {
-    if (created) {
-      setShowInputValue('');
-    }
-  }, [created]);
-  useEffect(() => {
-    const hideCalendar = (ref: any) => {
-      function handleClickOutside(event: any) {
-        if (ref.current && !ref.current.contains(event.target)) {
-          setShowCalendar(false);
-        }
-      }
-      // Bind the event listener
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => {
-        // Unbind the event listener on clean up
-        document.removeEventListener('mousedown', handleClickOutside);
-      };
-    };
-    hideCalendar(refCalendar);
-  }, [endTime, startTime]);
-
   const dayStyle =
     colorMode === 'light'
       ? `.react-calendar  {
       background-color: white;
-      box-shadow: 0 2px 4px 0 rgba(96, 97, 112, 0.14);
+     
     }
     .react-calendar__navigation {
       border-bottom: solid 1px #dfe3e9;
@@ -177,42 +140,21 @@ export const CustomCalendar = (prop: CalendarProps) => {
 
   return (
     <Flex
-      alignItems={'flex-start'}
-      border={themeDesign.border[colorMode]}
-      borderRadius={'4px'}
-      w={'100px'}
-      h={'30px'}
-      onClick={() => setShowCalendar(true)}
+      alignItems={'center'}
       display="flex"
-      justifyContent="end">
-      <Input
-        fontSize={13}
-        value={showInputValue}
-        readOnly={true}
-        h={30}
-        textAlign={'center'}
-        p={'5px'}
-        placeholder={'MM/DD/YYYY'}
-        border={'none'}
-        _focus={{
-          border: 'none',
-        }}
-        _active={{
-          border: 'none',
-        }}
-      />
+      justifyContent="end"
+      >
       <style>{dayStyle}</style>
-      {showCalendar ? (
+     
         <Calendar
           onChange={setInput}
           nextLabel={<img src={calender_Forward_icon_inactive} />}
           prevLabel={<img src={calender_back_icon_inactive} />}
           minDetail={'decade'}
-          inputRef={refCalendar}
           locale={'en-EN'}
           tileDisabled={tilesDisabled}
         />
-      ) : null}
+      
     </Flex>
   );
 };

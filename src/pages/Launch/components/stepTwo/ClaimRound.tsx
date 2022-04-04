@@ -16,7 +16,7 @@ import useVaultSelector from '@Launch/hooks/useVaultSelector';
 import moment from 'moment';
 import {selectLaunch} from '@Launch/launch.reducer';
 import {useAppSelector} from 'hooks/useRedux';
-
+import SingleCalendarPop from '../common/SingleCalendarPop'
 type ClaimRoundTable = {
   dateTime: number;
   tokenAllocation: number;
@@ -57,7 +57,12 @@ const ClaimRound = () => {
 
   const selectOptionValues = ['14', '30', '60'];
   const selectOptionNames = ['14 Days', '30 Days', '60 Days'];
-
+  const [startTime, setStartTime] = useState<number>(0);
+  const [startTimeArray, setStartTimeArray] = useState([]);
+  const [endTimeArray, setEndTimeArray] = useState([]);
+  const [endTime, setEndTime] = useState<number>(0);
+  const [created, setCreated] = useState();
+  const [show, setShow] = useState(false);
   //@ts-ignore
   const {claim} = selectedVaultDetail;
 
@@ -188,10 +193,12 @@ const ClaimRound = () => {
                           .unix(data.claimTime)
                           .format('YYYY.MM.DD hh:mm:ss')}
                   </Text>
-                  <HoverImage
-                    action={() => console.log('go')}
+                  {/* <HoverImage
+                    action={() => setShow(!show)}
                     img={CalendarInactiveImg}
-                    hoverImg={CalendarActiveImg}></HoverImage>
+                    hoverImg={CalendarActiveImg}
+                    ></HoverImage> */}
+                    <SingleCalendarPop></SingleCalendarPop>
                 </Flex>
                 <Text w={'281px'} borderRight={middleStyle.border}>
                   <Input
