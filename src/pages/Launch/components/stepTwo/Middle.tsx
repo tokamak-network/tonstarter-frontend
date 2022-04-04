@@ -106,6 +106,7 @@ const Middle = () => {
             w={'100px'}
             h={'32px'}
             text={'Edit'}
+            isDisabled={selectedVaultDetail?.vaultType === 'Initial Liquidity'}
             func={() => setIsEdit(true)}></CustomButton>
         )}
       </Box>
