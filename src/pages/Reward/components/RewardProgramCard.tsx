@@ -686,18 +686,19 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
               Number(ethers.utils.formatEther(selectedToken.liquidity)) !== 0
             : false) ? (
             <Box pb={'0px'}>
-              <Checkbox
-                mt={'5px'}
-                zIndex={100}
-                isChecked={isSelected}
-                onClick={(e) => e.preventDefault()}
-                onChange={(e) => {
-                  e.preventDefault();
-                  setIsSelected(e.target.checked);
-                  sendKey(key);
-                  getCheckedBoxes(reward);
-                }}
-              />
+              {/* the label tag is needed for e.stopPropagation to work. Can't put stopPropagation directly in the checkbox element. */}
+              <label onClick={(e: any) => e.stopPropagation()}>
+                <Checkbox
+                  mt={'5px'}
+                  zIndex={100}
+                  isChecked={isSelected}
+                  onChange={(e) => {
+                    setIsSelected(e.target.checked);
+                    sendKey(key);
+                    getCheckedBoxes(reward);
+                  }}
+                />
+              </label>
             </Box>
           ) : null}
 
@@ -706,18 +707,21 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
           staked &&
           Number(selectedToken ? selectedToken.id : 0) !== 0 ? (
             <Box pb={'0px'}>
-              <Checkbox
-                mt={'5px'}
-                zIndex={100}
-                isChecked={isUnstakeSelected}
-                onClick={(e) => e.preventDefault()}
-                onChange={(e) => {
-                  e.preventDefault();
-                  setIsUnstakeselected(e.target.checked);
-                  sendUnstakeKey(key);
-                  getCheckedBoxes(reward);
-                }}
-              />
+              {/* the label tag is needed for e.stopPropagation to work. Can't put stopPropagation directly in the checkbox element. */}
+              <label onClick={(e: any) => e.stopPropagation()}>
+                <Checkbox
+                  mt={'5px'}
+                  zIndex={100}
+                  isChecked={isUnstakeSelected}
+                  onClick={(e) => e.preventDefault()}
+                  onChange={(e) => {
+                    e.preventDefault();
+                    setIsUnstakeselected(e.target.checked);
+                    sendUnstakeKey(key);
+                    getCheckedBoxes(reward);
+                  }}
+                />
+              </label>
             </Box>
           ) : null}
           <Button
@@ -741,7 +745,10 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
                     color: '#838383',
                   }
             }
-            onClick={() => buttonFunction(buttonState)}
+            onClick={(e: any) => {
+              e.stopPropagation();
+              buttonFunction(buttonState);
+            }}
             disabled={
               moment().unix() < reward.startTime ||
               buttonState === 'Closed' ||

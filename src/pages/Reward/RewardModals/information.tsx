@@ -617,7 +617,7 @@ export const InformationModal = () => {
                 <Text color={themeDesign.font[colorMode]}>
                   Number of Stakers
                 </Text>
-                <Text fontSize={'20px'}>{rewardStakersInfo.length}</Text>
+                <Text fontSize={'20px'}>{pieData.length}</Text>
                 {/* <Text>{reward.numStakers}</Text> */}
               </Box>
               <Box
@@ -663,153 +663,168 @@ export const InformationModal = () => {
 
             <Divider my={'15px'} />
 
-            <Box display={'flex'}>
-              <Box width={'30%'}>
-                <Text fontFamily={theme.fonts.titil}>
-                  Increase liquidity of your LP tokens staked in this reward
-                  program
-                </Text>
-              </Box>
-              <Box
-                width={'70%'}
-                display={'flex'}
-                alignItems={'center'}
-                overflowX={'auto'}>
-                {userStakerIds?.map((token: any, index: any) => {
-                  return (
-                    <Flex
-                      key={index}
-                      onClick={() =>
-                        window.open(
-                          `https://app.uniswap.org/#/increase/${token.token0Address}/${token.token1Address}/3000/${token.token}?chain=rinkeby`,
-                        )
-                      }
-                      h="30px"
-                      px={'15px'}
-                      mx={'7px'}
-                      style={{color: 'blue.500'}}
-                      fontSize={'13px'}
-                      fontFamily={theme.fonts.roboto}
-                      fontWeight={'bold'}
-                      border="1px"
-                      color="blue.500"
-                      borderColor="#535353"
-                      borderRadius="19px"
-                      justifyContent={'center'}
-                      alignItems={'center'}
-                      _hover={{
-                        cursor: 'pointer',
-                        background: 'blue.500',
-                        color: 'white',
-                        border: 'none',
-                      }}>
-                      <Text>{token.token}</Text>
+            {rewardStakersInfo?.length > 0 ? (
+              <>
+                {userStakerIds?.length > 0 ? (
+                  <>
+                    <Box display={'flex'}>
+                      <Box width={'30%'}>
+                        <Text fontFamily={theme.fonts.titil}>
+                          Increase liquidity of your LP tokens staked in this
+                          reward program
+                        </Text>
+                      </Box>
+                      <Box
+                        width={'70%'}
+                        display={'flex'}
+                        alignItems={'center'}
+                        overflowX={'auto'}>
+                        {userStakerIds?.map((token: any, index: any) => {
+                          return (
+                            <Flex
+                              key={index}
+                              onClick={() =>
+                                window.open(
+                                  `https://app.uniswap.org/#/increase/${token.token0Address}/${token.token1Address}/3000/${token.token}?chain=rinkeby`,
+                                )
+                              }
+                              h="30px"
+                              px={'15px'}
+                              mx={'7px'}
+                              // style={{color: 'blue.500'}}
+                              fontSize={'13px'}
+                              fontFamily={theme.fonts.roboto}
+                              fontWeight={'bold'}
+                              border="1px"
+                              borderColor={
+                                colorMode === 'light' ? '#e7edf3' : '#535353'
+                              }
+                              borderRadius="19px"
+                              color="blue.500"
+                              justifyContent={'center'}
+                              alignItems={'center'}
+                              _hover={{
+                                cursor: 'pointer',
+                                background: 'blue.500',
+                                color: 'white',
+                                border: 'none',
+                              }}>
+                              <Text>{token.token}</Text>
+                            </Flex>
+                          );
+                        })}
+                      </Box>
+                    </Box>
+
+                    <Divider my={'15px'} />
+                  </>
+                ) : null}
+                <Heading
+                  fontSize={'1.2em'}
+                  fontWeight={'extrabold'}
+                  fontFamily={theme.fonts.titil}
+                  mb={'15px'}
+                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
+                  LP Composition
+                </Heading>
+
+                <Box display={'flex'}>
+                  <Box w={'50%'} display={'flex'} flexDirection={'column'}>
+                    <Heading
+                      fontSize={'1em'}
+                      fontFamily={theme.fonts.titil}
+                      mb={'15px'}
+                      color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
+                      Major Players
+                    </Heading>
+                    <Flex height={'250px'}>
+                      <PieChart pieData={pieData} />
                     </Flex>
-                  );
-                })}
-              </Box>
-            </Box>
+                  </Box>
+                  <Box
+                    w={'50%'}
+                    display={'flex'}
+                    flexDirection={'column'}
+                    position={'relative'}>
+                    <Heading
+                      fontSize={'1em'}
+                      fontFamily={theme.fonts.titil}
+                      mb={'15px'}
+                      color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
+                      All Staked LP Tokens
+                    </Heading>
 
-            <Divider my={'15px'} />
+                    <Table>
+                      <Thead>
+                        <Tr>
+                          <Th width={'33%'}>LP Token</Th>
+                          <Th width={'33%'}>Range</Th>
+                          <Th width={'33%'} isNumeric>
+                            Percentage
+                          </Th>
+                        </Tr>
+                      </Thead>
 
-            <Heading
-              fontSize={'1.2em'}
-              fontWeight={'extrabold'}
-              fontFamily={theme.fonts.titil}
-              mb={'15px'}
-              color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-              LP Composition
-            </Heading>
-
-            <Box display={'flex'}>
-              <Box w={'50%'} display={'flex'} flexDirection={'column'}>
-                <Heading
-                  fontSize={'1em'}
-                  fontFamily={theme.fonts.titil}
-                  mb={'15px'}
-                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                  Major Players
-                  <Flex height={'250px'}>
-                    <PieChart pieData={pieData} />
-                  </Flex>
-                </Heading>
-              </Box>
-              <Box
-                w={'50%'}
-                display={'flex'}
-                flexDirection={'column'}
-                position={'relative'}>
-                <Heading
-                  fontSize={'1em'}
-                  fontFamily={theme.fonts.titil}
-                  mb={'15px'}
-                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                  All Staked LP Tokens
-                </Heading>
-
-                <Table>
-                  <Thead>
-                    <Tr>
-                      <Th>LP Token</Th>
-                      <Th>Range</Th>
-                      <Th isNumeric>Percentage</Th>
-                    </Tr>
-                  </Thead>
-
-                  <Tbody>
-                    <Scrollbars
-                      style={{
-                        width: '100%',
-                        position: 'absolute',
-                        height: '224px',
-                      }}
-                      thumbSize={70}
-                      //renderThumbVertical / horizontal is where you change scrollbar styles.
-                      renderThumbVertical={() => (
-                        <div style={{background: '#007aff'}}></div>
-                      )}>
-                      {rewardStakersInfo.map((info: any) => {
-                        return (
-                          <Tr
-                            style={{
-                              display: 'flex',
-                              justifyContent: 'space-between',
-                              borderBottom: '1px solid #363636',
-                            }}>
-                            <Td
-                              style={{
-                                padding: '12px 24px',
-                                borderBottom: 'none',
-                              }}>
-                              {info.id}
-                            </Td>
-                            <Td
-                              style={{
-                                padding: '12px 24px',
-                                borderBottom: 'none',
-                              }}>
-                              {info.inRange ? 'In Range' : 'Out of Range'}
-                            </Td>
-                            <Td
-                              isNumeric
-                              style={{
-                                padding: '12px 24px',
-                                borderBottom: 'none',
-                              }}>
-                              {Number(info.liquidityPercentage) === 0.1
-                                ? '< 0.10'
-                                : info.liquidityPercentage}
-                              %
-                            </Td>
-                          </Tr>
-                        );
-                      })}
-                    </Scrollbars>
-                  </Tbody>
-                </Table>
-              </Box>
-            </Box>
-
+                      <Tbody>
+                        <Scrollbars
+                          style={{
+                            width: '100%',
+                            position: 'absolute',
+                            height: '224px',
+                          }}
+                          thumbSize={70}
+                          //renderThumbVertical / horizontal is where you change scrollbar styles.
+                          renderThumbVertical={() => (
+                            <div style={{background: '#007aff'}}></div>
+                          )}>
+                          {rewardStakersInfo.map((info: any) => {
+                            return (
+                              <Tr
+                                style={{
+                                  display: 'flex',
+                                  justifyContent: 'space-between',
+                                  borderBottom: themeDesign.border[colorMode],
+                                }}>
+                                <Td
+                                  width={'33%'}
+                                  style={{
+                                    padding: '12px 24px',
+                                    borderBottom: 'none',
+                                  }}>
+                                  {info.id}
+                                </Td>
+                                <Td
+                                  width={'33%'}
+                                  style={{
+                                    padding: '12px 24px',
+                                    borderBottom: 'none',
+                                  }}>
+                                  {info.inRange ? 'In Range' : 'Out of Range'}
+                                </Td>
+                                <Td
+                                  width={'33%'}
+                                  isNumeric
+                                  style={{
+                                    padding: '12px 24px',
+                                    borderBottom: 'none',
+                                  }}>
+                                  {Number(info.liquidityPercentage) === 0.1
+                                    ? '< 0.10'
+                                    : info.liquidityPercentage}
+                                  %
+                                </Td>
+                              </Tr>
+                            );
+                          })}
+                        </Scrollbars>
+                      </Tbody>
+                    </Table>
+                  </Box>
+                </Box>
+              </>
+            ) : (
+              <Flex justifyContent={'center'}>No Staker Info to Show...</Flex>
+            )}
             <Divider my={'15px'} />
 
             <Heading
@@ -828,11 +843,11 @@ export const InformationModal = () => {
                     justifyContent: 'space-between',
                     alignItems: 'center',
                   }}>
-                  <Th>Account Address</Th>
-                  <Th>TX hash</Th>
-                  <Th>Type</Th>
-                  <Th>Amount</Th>
-                  <Th>Date</Th>
+                  <Th width={'20%'}>Account Address</Th>
+                  <Th width={'20%'}>TX hash</Th>
+                  <Th width={'20%'}>Type</Th>
+                  <Th width={'20%'}>Amount</Th>
+                  <Th width={'20%'}>Date</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -851,12 +866,12 @@ export const InformationModal = () => {
                     return (
                       <Tr
                         style={{
-                          borderBottom: '1px solid #363636',
+                          borderBottom: themeDesign.border[colorMode],
                           display: 'flex',
                           justifyContent: 'space-between',
                           alignItems: 'center',
                         }}>
-                        <Td>
+                        <Td width={'20%'}>
                           <Link
                             isExternal
                             _hover={{
@@ -866,7 +881,7 @@ export const InformationModal = () => {
                             {shortenAddress(txn.transactionInfo.from)}
                           </Link>
                         </Td>
-                        <Td>
+                        <Td width={'20%'}>
                           <Link
                             isExternal
                             _hover={{
@@ -876,19 +891,19 @@ export const InformationModal = () => {
                             {shortenAddress(txn.transactionHash)}
                           </Link>
                         </Td>
-                        <Td>{txn.event}</Td>
+                        <Td width={'20%'}>{txn.event}</Td>
                         {txn.event === 'Incentive Created' ? (
-                          <Td>
+                          <Td width={'20%'}>
                             {formatAmount(txn.args.reward.toString(), null)}
                           </Td>
                         ) : txn.event === 'Incentive Ended' ? (
-                          <Td>
+                          <Td width={'20%'}>
                             {formatAmount(txn.args.refund.toString(), null)}
                           </Td>
                         ) : (
-                          <Td>-</Td>
+                          <Td width={'20%'}>-</Td>
                         )}
-                        <Td>{txn.formattedTxnDate}</Td>
+                        <Td width={'20%'}>{txn.formattedTxnDate}</Td>
                       </Tr>
                     );
                   })}

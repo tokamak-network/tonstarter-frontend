@@ -37,6 +37,16 @@ export const PieChart: FC<PieChartProps> = ({pieData}) => {
       colors={{
         scheme: 'category10',
       }}
+      tooltip={({datum: {id, value, color}}) => (
+        <div
+          style={{
+            padding: 5,
+            color,
+            background: '#222222',
+          }}>
+          {id}: {value}%
+        </div>
+      )}
       enableArcLinkLabels={false}
       enableArcLabels={false}
       arcLinkLabelsSkipAngle={10}
@@ -69,7 +79,7 @@ export const PieChart: FC<PieChartProps> = ({pieData}) => {
           itemTextColor: '#999',
           itemDirection: 'left-to-right',
           itemOpacity: 1,
-          symbolSize: 18,
+          symbolSize: 10,
           symbolShape: 'circle',
           // effects: [
           //   {
