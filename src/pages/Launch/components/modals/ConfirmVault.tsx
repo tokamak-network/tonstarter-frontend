@@ -10,6 +10,7 @@ import {
   Flex,
   useTheme,
   useColorMode,
+  Link,
 } from '@chakra-ui/react';
 import React, {useEffect, useState} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
@@ -21,10 +22,18 @@ import {LoadingComponent} from 'components/Loading';
 import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
 import useVaultSelector from '@Launch/hooks/useVaultSelector';
+import {shortenAddress} from 'utils';
+import {selectApp} from 'store/app/app.reducer';
 
-const InfoList = (props: {title: string; content: string}) => {
-  const {title, content} = props;
+const InfoList = (props: {
+  title: string;
+  content: string;
+  isHref?: boolean;
+}) => {
+  const {title, content, isHref} = props;
   const {colorMode} = useColorMode();
+  // @ts-ignore
+  const {data: appConfig} = useAppSelector(selectApp);
   return (
     <Box d="flex" h={'45px'} justifyContent={'space-between'} w={'100%'}>
       <Text
@@ -32,9 +41,23 @@ const InfoList = (props: {title: string; content: string}) => {
         color={colorMode === 'light' ? 'gray.400' : 'white.100'}>
         {title}
       </Text>
-      <Text color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-        {content}
-      </Text>
+      {isHref && content !== '-' ? (
+        <Link
+          isExternal={true}
+          href={`${appConfig.explorerLink}${content}`}
+          color={'blue.300'}
+          fontWeight={600}
+          outline={'none'}
+          _focus={{
+            outline: 'none',
+          }}>
+          {shortenAddress(content)}
+        </Link>
+      ) : (
+        <Text color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
+          {content}
+        </Text>
+      )}
     </Box>
   );
 };
@@ -48,26 +71,38 @@ const ConfirmTokenModal = () => {
   const [deployStep, setDeployStep] = useState<
     'Ready' | 'Deploying' | 'Done' | 'Error'
   >('Ready');
+  const [tab, setTab] = useState<1 | 2>(1);
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const {vaults} = values;
-  const {vaultType, vaultName, func, infoList, close} = data.data;
+  const {vaultType, vaultName, func, infoList, secondInfoList, close} =
+    data.data;
 
   const {selectedVaultDetail} = useVaultSelector();
 
   console.log(deployStep);
+  console.log(selectedVaultDetail);
 
   useEffect(() => {
     console.log(data.data.isSet);
     console.log(selectedVaultDetail?.isSet);
-    if (
-      data.data.isSet === true
-        ? selectedVaultDetail?.isSet === true
-        : selectedVaultDetail?.isDeployed === true
-    ) {
-      // setDeployStep('Done');
+    if (data.data.isSet === true) {
+      if (selectedVaultDetail?.isSet === true) {
+        return setDeployStep('Done');
+      }
+    } else {
+      if (selectedVaultDetail?.isDeployed === true) {
+        return setDeployStep('Done');
+      }
     }
+    // if (
+    //   data.data.isSet === true
+    //     ? selectedVaultDetail?.isSet === true
+    //     : selectedVaultDetail?.isDeployed === true
+    // ) {
+    //   setDeployStep('Done');
+    // }
     if (selectedVaultDetail?.isDeployedErr === true) {
-      setDeployStep('Error');
+      return setDeployStep('Error');
     }
   }, [deployStep, values, selectedVaultDetail, data]);
 
@@ -116,19 +151,96 @@ const ConfirmTokenModal = () => {
             </Box>
 
             <Flex
+              h={'26px'}
+              alignItems={'center'}
+              justifyContent={'center'}
+              mt={'15px'}>
+              <Box
+                w={'126px'}
+                h={'100%'}
+                border={tab === 1 ? '1px solid #2a72e5' : '1px solid #d7d9df'}
+                borderRightWidth={tab === 2 ? 0 : 1}
+                borderLeftRadius={4}
+                cursor={'pointer'}
+                fontSize={12}
+                color={tab === 1 ? '#2a72e5' : '#3d495d'}
+                textAlign="center"
+                lineHeight={'26px'}
+                onClick={() => setTab(1)}>
+                Vault & Claim
+              </Box>
+              <Box
+                w={'126px'}
+                h={'100%'}
+                border={tab === 2 ? '1px solid #2a72e5' : '1px solid #d7d9df'}
+                borderLeftWidth={tab === 1 ? 0 : 1}
+                borderRightRadius={4}
+                cursor={'pointer'}
+                fontSize={12}
+                color={tab === 2 ? '#2a72e5' : '#3d495d'}
+                textAlign="center"
+                lineHeight={'26px'}
+                onClick={() => setTab(2)}>
+                Sale
+              </Box>
+            </Flex>
+
+            <Flex
               flexDir="column"
               alignItems="center"
               mt={'30px'}
               px={'20px'}
               fontSize={15}
-              color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-              {infoList?.map((info: {title: string; content: string}) => {
-                return (
-                  <InfoList
-                    title={info.title}
-                    content={info.content}></InfoList>
-                );
-              })}
+              color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+              h={'297px'}
+              overflow={'auto'}>
+              {tab === 1 &&
+                infoList &&
+                Object.keys(infoList).map((key, i) => {
+                  return (
+                    <Flex flexDir={'column'} w={'100%'}>
+                      <Text
+                        color={'#304156'}
+                        fontSize={13}
+                        textAlign="center"
+                        mt={i !== 0 ? '30px' : 0}
+                        mb={'10px'}
+                        fontWeight={600}>
+                        {key}
+                      </Text>
+                      {infoList[key].map(
+                        (info: {
+                          title: string;
+                          content: string;
+                          isHref: boolean;
+                        }) => {
+                          console.log(info);
+                          if (info === undefined) {
+                            return null;
+                          }
+                          return (
+                            <InfoList
+                              title={info.title}
+                              content={info.content}
+                              isHref={info.isHref}></InfoList>
+                          );
+                        },
+                      )}
+                    </Flex>
+                  );
+                })}
+              {tab === 2 &&
+                secondInfoList &&
+                secondInfoList?.map(
+                  (info: {title: string; content: string}) => {
+                    return (
+                      <InfoList
+                        title={info.title}
+                        content={info.content}></InfoList>
+                    );
+                  },
+                )}
+
               <Flex
                 mt={'35px'}
                 flexDir={'column'}

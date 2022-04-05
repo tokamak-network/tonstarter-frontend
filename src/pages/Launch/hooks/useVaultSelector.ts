@@ -23,7 +23,7 @@ function useVaultSelector(): {
         return setSelectedVaultDetail(vaultData);
       }
     });
-  }, [selectedVault, vaultsList]);
+  }, [selectedVault, vaultsList, values]);
 
   return {
     selectedVaultName: selectedVault,

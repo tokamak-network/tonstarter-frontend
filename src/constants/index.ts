@@ -73,6 +73,10 @@ const MAINNET_DEPLOYED = {
   DoMsaleContractAddress: '0x3B75d3f628C29d357b484EA7d091faEd63419267',
   ERC20AFACTORY_ADDRESS: '',
   InitialLiquidityVault: '',
+  LiquidityIncentive: '',
+  pools: {
+    TOS_WTON_POOL: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
+  },
 };
 
 const RINKEBY_DEPLOYED = {
@@ -103,6 +107,10 @@ const RINKEBY_DEPLOYED = {
   DoMsaleContractAddress: '0xEb492922afa05D0D7704AD5c202f2ddCc386DA75',
   ERC20AFACTORY_ADDRESS: '0x99DAd7a43BCa91B6F3B319553e2985734Af347b2',
   InitialLiquidityVault: '0xBb3E39360Df9a024cbf4ABa28e0B8F4421e7525F',
+  LiquidityIncentive: '0x08cA986A37B28bD00E6fE09819538b3a4F768688',
+  pools: {
+    TOS_WTON_POOL: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
+  },
 };
 
 export const DEPLOYED: DEPLOYED_TYPE =

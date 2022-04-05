@@ -6,8 +6,9 @@ import {
   useColorMode,
   Text,
   Button,
+  Link,
 } from '@chakra-ui/react';
-import {Projects, Vault, VaultAny, VaultType} from '@Launch/types';
+import {Projects, Vault, VaultAny, VaultCommon, VaultType} from '@Launch/types';
 import {DEPLOYED} from 'constants/index';
 import {useFormikContext} from 'formik';
 import {useCallback, useEffect, useMemo, useState} from 'react';
@@ -25,7 +26,9 @@ import {ethers} from 'ethers';
 import {useBlockNumber} from 'hooks/useBlock';
 import {useContract} from 'hooks/useContract';
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
+import * as LiquidityIncentiveAbi from 'services/abis/LiquidityIncentiveAbi.json';
 import {convertNumber, convertToWei} from 'utils/number';
+import commafy from 'utils/commafy';
 
 type DeployVaultProp = {
   vault: VaultAny;
@@ -33,11 +36,7 @@ type DeployVaultProp = {
 
 function getContract(vaultType: VaultType, library: LibraryType) {
   switch (vaultType) {
-    case 'Public':
-      // const {} = DEPLOYED;
-      // const contract = new Contract(TON_ADDRESS, ERC20.abi, library);
-      break;
-    case 'Initial Liquidity':
+    case 'Public': {
       const {InitialLiquidityVault} = DEPLOYED;
       const contract = new Contract(
         InitialLiquidityVault,
@@ -45,6 +44,25 @@ function getContract(vaultType: VaultType, library: LibraryType) {
         library,
       );
       return contract;
+    }
+    case 'Initial Liquidity': {
+      const {InitialLiquidityVault} = DEPLOYED;
+      const contract = new Contract(
+        InitialLiquidityVault,
+        InitialLiquidityAbi.abi,
+        library,
+      );
+      return contract;
+    }
+    case 'Liquidity Incentive': {
+      const {LiquidityIncentive} = DEPLOYED;
+      const contract = new Contract(
+        LiquidityIncentive,
+        LiquidityIncentiveAbi.abi,
+        library,
+      );
+      return contract;
+    }
     case 'TON Staker':
       break;
     case 'TOS Staker':
@@ -76,7 +94,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
   // @ts-ignore
   const {data: appConfig} = useAppSelector(selectApp);
   const [infoList, setInfoList] = useState<
-    {title: string; content: string | number}[] | []
+    {Vault: {title: string; content: string | number; isHref?: boolean}[]} | []
   >([]);
   const {selectedVaultName} = useVaultSelector();
   const {blockNumber} = useBlockNumber();
@@ -112,20 +130,88 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
 
   useEffect(() => {
     switch (vaultType) {
-      case 'Initial Liquidity':
-        //@ts-ignore
-        // const {adminAddress} = selectedVaultDetail;
-        const info = [
-          {
-            title: 'adminAddress',
-            content: selectedVaultDetail?.adminAddress || '',
-          },
-          {
-            title: 'Token Price',
-            content: `1TOS : ${values?.tosPrice}${values?.tokenSymbol}` || '',
-          },
-        ];
-        setInfoList(info);
+      case 'Initial Liquidity': {
+        const info = {
+          Vault: [
+            {
+              title: 'adminAddress',
+              content: selectedVaultDetail?.adminAddress || '',
+            },
+            {
+              title: 'Token Price',
+              content: `1TOS : ${values?.tosPrice}${values?.tokenSymbol}` || '',
+            },
+          ],
+        };
+        return setInfoList(info);
+      }
+      case 'Public': {
+        const info = {
+          Vault: [
+            {
+              title: 'Vault Name',
+              content: selectedVaultDetail?.vaultName || '-',
+            },
+            {
+              title: 'Admin',
+              content: `${selectedVaultDetail?.adminAddress || '-'}`,
+              isHref: true,
+            },
+            {
+              title: 'Contract',
+              content: `${selectedVaultDetail?.vaultAddress || '-'}`,
+              isHref: true,
+            },
+            {
+              title: 'Token Allocation',
+              content: `${selectedVaultDetail?.vaultTokenAllocation || '-'}`,
+            },
+          ],
+          Claim: [
+            {
+              title: 'Vault Name',
+              content: selectedVaultDetail?.vaultName || '-',
+            },
+            {
+              title: 'Admin',
+              content: `${selectedVaultDetail?.adminAddress || '-'}`,
+              isHref: true,
+            },
+            {
+              title: 'Contract',
+              content: `${selectedVaultDetail?.vaultAddress || '-'}`,
+              isHref: true,
+            },
+            {
+              title: 'Token Allocation',
+              content: `${selectedVaultDetail?.vaultTokenAllocation || '-'}`,
+            },
+          ],
+          gogo: [
+            {
+              title: 'Vault Name',
+              content: selectedVaultDetail?.vaultName || '-',
+            },
+            {
+              title: 'Admin',
+              content: `${selectedVaultDetail?.adminAddress || '-'}`,
+              isHref: true,
+            },
+            {
+              title: 'Contract',
+              content: `${selectedVaultDetail?.vaultAddress || '-'}`,
+              isHref: true,
+            },
+            {
+              title: 'Token Allocation',
+              content: `${selectedVaultDetail?.vaultTokenAllocation || '-'}`,
+            },
+          ],
+        };
+        return setInfoList(info);
+      }
+      default:
+        break;
     }
   }, [vaultType, selectedVaultDetail, values]);
 
@@ -137,14 +223,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
 
         try {
           switch (vaultType) {
-            case 'Initial Liquidity':
-              // console.log(
-              //   selectedVaultName,
-              //   values.tokenAddress,
-              //   selectedVaultDetail?.adminAddress,
-              //   1,
-              //   values.tosPrice,
-              // );
+            case 'Initial Liquidity': {
               const tx = await vaultContract
                 ?.connect(signer)
                 .create(
@@ -156,7 +235,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 );
               const receipt = await tx.wait();
               const {logs} = receipt;
-              console.log(logs);
 
               const iface = new ethers.utils.Interface(InitialLiquidityAbi.abi);
 
@@ -172,6 +250,72 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               );
               setVaultState('readyForToken');
               break;
+            }
+            case 'Public': {
+              const tx = await vaultContract
+                ?.connect(signer)
+                .create(
+                  selectedVaultName,
+                  values.tokenAddress,
+                  selectedVaultDetail?.adminAddress,
+                  1,
+                  values.tosPrice,
+                );
+              const receipt = await tx.wait();
+              const {logs} = receipt;
+
+              const iface = new ethers.utils.Interface(InitialLiquidityAbi.abi);
+
+              const result = iface.parseLog(logs[11]);
+              const {args} = result;
+              setFieldValue(
+                `vaults[${selectedVaultDetail?.index}].vaultAddress`,
+                args[0],
+              );
+              setFieldValue(
+                `vaults[${selectedVaultDetail?.index}].isDeployed`,
+                true,
+              );
+              setVaultState('readyForToken');
+              break;
+            }
+            case 'Liquidity Incentive': {
+              // 0: name : string
+              // 1 : pool : address
+              // 2 : rewardToken : address
+              // 3 : _admin : address
+              const {
+                pools: {TOS_WTON_POOL},
+              } = DEPLOYED;
+              const tx = await vaultContract
+                ?.connect(signer)
+                .create(
+                  selectedVaultName,
+                  TOS_WTON_POOL,
+                  values.tokenAddress,
+                  selectedVaultDetail?.adminAddress,
+                );
+              const receipt = await tx.wait();
+              const {logs} = receipt;
+
+              const iface = new ethers.utils.Interface(
+                LiquidityIncentiveAbi.abi,
+              );
+
+              const result = iface.parseLog(logs[9]);
+              const {args} = result;
+
+              setFieldValue(
+                `vaults[${selectedVaultDetail?.index}].vaultAddress`,
+                args[0],
+              );
+              setFieldValue(
+                `vaults[${selectedVaultDetail?.index}].isDeployed`,
+                true,
+              );
+              setVaultState('readyForToken');
+              break;
+            }
             default:
               break;
           }
@@ -276,6 +420,10 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
     }
   }, [vaultState]);
 
+  const vaultAddress = values.vaults.filter(
+    (vault: VaultCommon) => vault.vaultName === vaultName,
+  )[0];
+
   return (
     <GridItem
       {...OpenCampaginDesign.border({colorMode})}
@@ -308,25 +456,34 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
           <Text fontSize={11} h={'15px'}>
             Address
           </Text>
-          <Text
+          <Link
+            isExternal={true}
+            outline={'none'}
+            _focus={{
+              outline: 'none',
+            }}
+            _hover={{}}
             color={vaultState === 'finished' ? 'white.100' : 'gray.250'}
             fontSize={15}
             h={'20px'}
-            fontWeight={600}>
-            {shortenAddress('0x0000000000000000')}
-          </Text>
+            fontWeight={600}
+            href={`${appConfig.explorerLink}${selectedVaultDetail?.vaultAddress}`}>
+            {selectedVaultDetail?.vaultAddress
+              ? shortenAddress(selectedVaultDetail.vaultAddress)
+              : '-'}
+          </Link>
         </Box>
         <Box d="flex" justifyContent={'space-between'}>
           <Flex flexDir={'column'}>
             <Text fontSize={11} h={'15px'}>
-              Total Supply
+              Token Allocation
             </Text>
             <Text
               color={vaultState === 'finished' ? 'white.100' : 'gray.250'}
               fontSize={15}
               h={'20px'}
               fontWeight={600}>
-              50,000,000
+              {commafy(selectedVaultDetail?.vaultTokenAllocation)}
             </Text>
           </Flex>
           <Button
