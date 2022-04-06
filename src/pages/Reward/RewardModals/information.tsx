@@ -93,6 +93,10 @@ export const InformationModal = () => {
 
   //@ts-ignore
   const web3 = new Web3(window.ethereum);
+  //@ts-ignore
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const Web3EthAbi = require('web3-eth-abi');
+  console.log('web3EthAbi: ', Web3EthAbi);
 
   const themeDesign = {
     border: {
@@ -110,6 +114,7 @@ export const InformationModal = () => {
   };
 
   const handleCloseModal = useCallback(() => {
+    console.log('close modal');
     dispatch(closeModal());
   }, [dispatch]);
 
@@ -190,8 +195,6 @@ export const InformationModal = () => {
       .connect(signer)
       .incentives(incentiveId);
 
-    console.log('incentiveId: ', incentiveId);
-
     const eventFilter: any[] = [
       uniswapStakerContract.filters.IncentiveCreated(
         reward.rewardToken,
@@ -202,41 +205,106 @@ export const InformationModal = () => {
       uniswapStakerContract.filters.TokenUnstaked(null, incentiveId),
     ];
 
+    console.log('eventFilter: ', eventFilter);
+
     const recentActivity = await uniswapStakerContract.queryFilter(
       eventFilter as any,
       blockNumber - 150000,
       blockNumber,
     );
 
+    console.log('recentActivity: ', recentActivity);
+
+    let filter = {
+      fromBlock: blockNumber - 150000,
+      toBlock: blockNumber,
+      address: UniswapStaker_Address,
+      topics: [
+        '0xa876344e28d4b5191ad03bc0d43f740e3695827ab0faccac739930b915ef8b02',
+        ethers.utils.hexZeroPad(key.rewardToken, 32),
+        ethers.utils.hexZeroPad(key.pool, 32),
+      ],
+    };
+
+    const testRes = await provider.getLogs(filter).then((res: any) => {
+      return res;
+    });
+    console.log('testRes:', testRes);
+
+    let stakerEvents = await getStakerEvents();
+    console.log('stakerEvents: ', stakerEvents);
+
     // The UI will show an empty table until this is all done loading.
-    const txnTableData = await Promise.all(
-      recentActivity.map(async (txn: any) => {
-        // Add txnInfo to each 'activity'
-        txn.formattedTxnDate = await convertDateFromBlockNumber(
-          txn.blockNumber,
-        );
+    // const txnTableData = await Promise.all(
+    //   recentActivity.map(async (txn: any) => {
+    //     // Add txnInfo to each 'activity'
+    //     txn.formattedTxnDate = await convertDateFromBlockNumber(
+    //       txn.blockNumber,
+    //     );
 
-        // Add unixTime to each 'activity'
-        txn.unixTime = await getUnixFromBlockNumber(txn.blockNumber);
+    //     // Add unixTime to each 'activity'
+    //     txn.unixTime = await getUnixFromBlockNumber(txn.blockNumber);
 
-        // Add the correct txn address from each 'activity'
-        txn.transactionInfo = await txn
-          .getTransaction()
-          .then((res: any) => res);
+    //     // Add the correct txn address from each 'activity'
+    //     txn.transactionInfo = await txn
+    //       .getTransaction()
+    //       .then((res: any) => res);
 
-        txn.transactionReceipt = await txn
-          .getTransactionReceipt()
-          .then((res: any) => res);
+    //     txn.transactionReceipt = await txn
+    //       .getTransactionReceipt()
+    //       .then((res: any) => res);
 
-        // Split camelCased event string.
-        txn.event = txn.event.replace(/([a-z](?=[A-Z]))/g, '$1 ');
+    //     // Split camelCased event string.
+    //     txn.event = txn.event.replace(/([a-z](?=[A-Z]))/g, '$1 ');
 
-        return txn;
-      }),
-    );
+    //     return txn;
+    //   }),
+    // );
 
-    const sortedTxnTable = txnTableData.sort((a, b) => b.unixTime - a.unixTime);
-    setRecentActivityTable(sortedTxnTable);
+    if (stakerEvents) {
+      const txnTableData = await Promise.all(
+        stakerEvents.map(async (txn: any) => {
+          console.log('txn: ', txn);
+          // Add txnInfo to each 'activity'
+          txn.formattedTxnDate = await convertDateFromBlockNumber(
+            txn.blockNumber,
+          );
+
+          // Add unixTime to each 'activity'
+          txn.unixTime = await getUnixFromBlockNumber(txn.blockNumber);
+
+          txn.transactionInfo = await provider.getTransaction(
+            txn.transactionHash,
+          );
+          txn.incentiveTxnReceiptInfo = await provider.getTransactionReceipt(
+            txn.transactionHash,
+          );
+
+          txn.from = txn?.transactionInfo?.from;
+
+          // Add the correct txn address from each 'activity'
+          // txn.transactionInfo = await txn
+          //   .getTransaction()
+          //   .then((res: any) => res);
+
+          // txn.transactionReceipt = await txn
+          //   .getTransactionReceipt()
+          //   .then((res: any) => res);
+
+          // // Split camelCased event string.
+          // txn.event = txn.event.replace(/([a-z](?=[A-Z]))/g, '$1 ');
+
+          return txn;
+        }),
+      );
+
+      console.log('txnTableData: ', txnTableData);
+
+      const sortedTxnTable = txnTableData.sort(
+        (a, b) => b.unixTime - a.unixTime,
+      );
+      setRecentActivityTable(sortedTxnTable);
+    }
 
     let userPositions = positions.map((position: any) => {
       return position.id;
@@ -346,8 +414,23 @@ export const InformationModal = () => {
         Number(a.liquidity) < Number(b.liquidity) ? 1 : -1,
       );
 
+      // Add tokens owned to each position holder for pie data key.
+      formattedData.forEach((token: any) => {
+        formattedPieData.forEach((pieOwner: any) => {
+          if (token.ownerAddress === pieOwner.ownerAddress) {
+            if (pieOwner.tokensOwned) {
+              pieOwner.tokensOwned.push(token.id);
+            } else {
+              pieOwner.tokensOwned = [token.id];
+            }
+          }
+        });
+      });
+
       tempRewardStakerInfo = formattedData;
       tempPieData = formattedPieData;
+      console.log('tempPieData:', tempPieData);
+      console.log('tempRewardStakerInfo:', tempRewardStakerInfo);
     });
 
     let filteredStakedPositions = tempRewardStakedIds.filter(
@@ -368,6 +451,93 @@ export const InformationModal = () => {
         useGrouping: false,
       }),
     );
+  };
+
+  const getStakerEvents = async () => {
+    if (account === null || account === undefined || library === undefined) {
+      return;
+    }
+
+    let stakerEventsResults = [];
+
+    const incentiveABI =
+      'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)';
+    const abicoder = ethers.utils.defaultAbiCoder;
+    const incentiveId = soliditySha3(abicoder.encode([incentiveABI], [key]));
+
+    console.log('incentiveId: ', incentiveId);
+    console.log('key: ', key);
+
+    // Incentive Created
+    let incentiveCreatedFilter = {
+      fromBlock: blockNumber - 150000,
+      toBlock: blockNumber,
+      address: UniswapStaker_Address,
+      topics: [
+        '0xa876344e28d4b5191ad03bc0d43f740e3695827ab0faccac739930b915ef8b02',
+        ethers.utils.hexZeroPad(key.rewardToken, 32),
+        ethers.utils.hexZeroPad(key.pool, 32),
+      ],
+    };
+
+    const incentiveCreatedRes = await provider
+      .getLogs(incentiveCreatedFilter)
+      .then((res: any) => res);
+
+    // Token Staked
+    let tokenStakedFilter = {
+      fromBlock: blockNumber - 1500000,
+      toBlock: blockNumber,
+      address: UniswapStaker_Address,
+      topics: [
+        ethers.utils.id('TokenStaked(uint256,bytes32,uint128)'),
+        null,
+        incentiveId,
+        null,
+      ],
+    };
+    const tokenStakedRes = await provider
+      .getLogs(tokenStakedFilter)
+      .then((res: any) => res);
+
+    // Token Unstaked
+    let tokenUnstakedFilter = {
+      fromBlock: blockNumber - 1500000,
+      toBlock: blockNumber,
+      address: UniswapStaker_Address,
+      topics: [
+        ethers.utils.id('TokenUnstaked(uint256,bytes32)'),
+        null,
+        incentiveId,
+      ],
+    };
+    const unstakeTokenRes = await provider
+      .getLogs(tokenUnstakedFilter)
+      .then((res) => res);
+
+    // Incentive Ended
+    let incentiveEndedFilter = {
+      fromBlock: blockNumber - 1500000,
+      toBlock: blockNumber,
+      address: UniswapStaker_Address,
+      topics: [
+        ethers.utils.id('IncentiveEnded(bytes32,uint256)'),
+        incentiveId,
+        null,
+      ],
+    };
+    const incentiveEndedRes = await provider
+      .getLogs(incentiveEndedFilter)
+      .then((res) => res);
+
+    stakerEventsResults.push(incentiveCreatedRes);
+    stakerEventsResults.push(tokenStakedRes);
+    stakerEventsResults.push(unstakeTokenRes);
+    stakerEventsResults.push(incentiveEndedRes);
+
+    console.log('stakerEventsResults:', stakerEventsResults);
+
+    return stakerEventsResults.flat();
   };
 
   const getTotalDuration = (startTime: any, endTime: any) => {
@@ -456,8 +626,6 @@ export const InformationModal = () => {
     return formattedDate;
   };
 
-  // url for adding liquidity to tokens: https://app.uniswap.org/#/increase/0x73a54e5C054aA64C1AE7373C2B5474d8AFEa08bd/0xb109f4c20BDb494A63E32aA035257fBA0a4610A4/3000/13035?chain=rinkeby
-
   if (!reward || !recentActivityTable) {
     return <></>;
   }
@@ -481,9 +649,7 @@ export const InformationModal = () => {
           }}
           thumbSize={70}
           //renderThumbVertical / horizontal is where you change scrollbar styles.
-          renderThumbVertical={() => (
-            <div style={{background: '#007aff'}}></div>
-          )}>
+          renderThumbVertical={() => <div style={{background: '#007aff'}} />}>
           <Box
             display={'flex'}
             justifyContent={'center'}
@@ -525,12 +691,8 @@ export const InformationModal = () => {
             </Flex>
           </Box>
           <Divider my={'10px'} />
-          <Box
-            display={'flex'}
-            justifyContent={'center'}
-            alignItems={'center'}></Box>
 
-          <CloseButton closeFunc={handleCloseModal}></CloseButton>
+          <CloseButton style={{zIndex: 1000}} closeFunc={handleCloseModal} />
           <ModalBody>
             <Grid templateColumns={'repeat(7, 1fr)'} px="5px" gap={'12px'}>
               <Box
@@ -709,7 +871,7 @@ export const InformationModal = () => {
                                 color: 'white',
                                 border: 'none',
                               }}>
-                              <Text>{token.token}</Text>
+                              <Text>#{token.token}</Text>
                             </Flex>
                           );
                         })}
@@ -737,6 +899,7 @@ export const InformationModal = () => {
                       color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
                       Major Players
                     </Heading>
+                    {console.log('pieData:', pieData)}
                     <Flex height={'250px'}>
                       <PieChart pieData={pieData} />
                     </Flex>
@@ -756,10 +919,23 @@ export const InformationModal = () => {
 
                     <Table>
                       <Thead>
-                        <Tr>
-                          <Th width={'33%'}>LP Token</Th>
-                          <Th width={'33%'}>Range</Th>
-                          <Th width={'33%'} isNumeric>
+                        <Tr borderBottom={themeDesign.border[colorMode]}>
+                          <Th
+                            width={'33%'}
+                            borderBottom={'none'}
+                            textAlign={'center'}>
+                            LP Token
+                          </Th>
+                          <Th
+                            width={'33%'}
+                            borderBottom={'none'}
+                            textAlign={'center'}>
+                            Range
+                          </Th>
+                          <Th
+                            width={'33%'}
+                            borderBottom={'none'}
+                            textAlign={'center'}>
                             Percentage
                           </Th>
                         </Tr>
@@ -790,6 +966,7 @@ export const InformationModal = () => {
                                   style={{
                                     padding: '12px 24px',
                                     borderBottom: 'none',
+                                    textAlign: 'center',
                                   }}>
                                   {info.id}
                                 </Td>
@@ -798,6 +975,7 @@ export const InformationModal = () => {
                                   style={{
                                     padding: '12px 24px',
                                     borderBottom: 'none',
+                                    textAlign: 'center',
                                   }}>
                                   {info.inRange ? 'In Range' : 'Out of Range'}
                                 </Td>
@@ -807,6 +985,7 @@ export const InformationModal = () => {
                                   style={{
                                     padding: '12px 24px',
                                     borderBottom: 'none',
+                                    textAlign: 'center',
                                   }}>
                                   {Number(info.liquidityPercentage) === 0.1
                                     ? '< 0.10'
@@ -838,16 +1017,27 @@ export const InformationModal = () => {
             <Table overflowY={'auto'} maxHeight={'200px'}>
               <Thead>
                 <Tr
+                  borderBottom={themeDesign.border[colorMode]}
                   style={{
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
                   }}>
-                  <Th width={'20%'}>Account Address</Th>
-                  <Th width={'20%'}>TX hash</Th>
-                  <Th width={'20%'}>Type</Th>
-                  <Th width={'20%'}>Amount</Th>
-                  <Th width={'20%'}>Date</Th>
+                  <Th width={'20%'} borderBottom={'none'} textAlign={'center'}>
+                    Account Address
+                  </Th>
+                  <Th width={'20%'} borderBottom={'none'} textAlign={'center'}>
+                    TX hash
+                  </Th>
+                  <Th width={'20%'} borderBottom={'none'} textAlign={'center'}>
+                    Type
+                  </Th>
+                  <Th width={'20%'} borderBottom={'none'} textAlign={'center'}>
+                    Amount
+                  </Th>
+                  <Th width={'20%'} borderBottom={'none'} textAlign={'center'}>
+                    Date
+                  </Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -863,6 +1053,7 @@ export const InformationModal = () => {
                     <div style={{background: '#007aff'}}></div>
                   )}>
                   {recentActivityTable.map((txn: any) => {
+                    console.log('txn: ', txn);
                     return (
                       <Tr
                         style={{
@@ -871,7 +1062,7 @@ export const InformationModal = () => {
                           justifyContent: 'space-between',
                           alignItems: 'center',
                         }}>
-                        <Td width={'20%'}>
+                        <Td width={'20%'} textAlign={'center'}>
                           <Link
                             isExternal
                             _hover={{
@@ -881,7 +1072,7 @@ export const InformationModal = () => {
                             {shortenAddress(txn.transactionInfo.from)}
                           </Link>
                         </Td>
-                        <Td width={'20%'}>
+                        <Td width={'20%'} textAlign={'center'}>
                           <Link
                             isExternal
                             _hover={{
@@ -891,19 +1082,25 @@ export const InformationModal = () => {
                             {shortenAddress(txn.transactionHash)}
                           </Link>
                         </Td>
-                        <Td width={'20%'}>{txn.event}</Td>
+                        <Td width={'20%'} textAlign={'center'}>
+                          {txn.event}
+                        </Td>
                         {txn.event === 'Incentive Created' ? (
-                          <Td width={'20%'}>
+                          <Td width={'20%'} textAlign={'center'}>
                             {formatAmount(txn.args.reward.toString(), null)}
                           </Td>
                         ) : txn.event === 'Incentive Ended' ? (
-                          <Td width={'20%'}>
+                          <Td width={'20%'} textAlign={'center'}>
                             {formatAmount(txn.args.refund.toString(), null)}
                           </Td>
                         ) : (
-                          <Td width={'20%'}>-</Td>
+                          <Td width={'20%'} textAlign={'center'}>
+                            -
+                          </Td>
                         )}
-                        <Td width={'20%'}>{txn.formattedTxnDate}</Td>
+                        <Td width={'20%'} textAlign={'center'}>
+                          {txn.formattedTxnDate}
+                        </Td>
                       </Tr>
                     );
                   })}

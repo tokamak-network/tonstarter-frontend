@@ -254,6 +254,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     selectedPool,
     reward,
   ]);
+
   useEffect(() => {
     async function getIncentives() {
       if (account === null || account === undefined || library === undefined) {

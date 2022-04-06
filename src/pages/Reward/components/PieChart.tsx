@@ -1,4 +1,5 @@
 import React, {FC, useState, useEffect} from 'react';
+import {useColorMode} from '@chakra-ui/react';
 import {ResponsivePie} from '@nivo/pie';
 import {shortenAddress} from 'utils';
 
@@ -7,14 +8,21 @@ type PieChartProps = {
 };
 
 export const PieChart: FC<PieChartProps> = ({pieData}) => {
+  const {colorMode} = useColorMode();
+
   const formattedData = pieData.map((data: any) => {
     return {
       id: shortenAddress(data.ownerAddress),
-      label: shortenAddress(data.ownerAddress),
+      label: `${shortenAddress(data.ownerAddress)} ${Number(
+        data.liquidityPercentage,
+      )}%`,
       value: Number(data.liquidityPercentage),
+      tokensOwned: data.tokensOwned,
       // color: `hsl(${Math.floor(Math.random() * (360 - 0 + 1) + 0)}, 70%, 50%)`,
     };
   });
+
+  console.log('formattedData: ', formattedData);
 
   return (
     // make sure parent container have a defined height when using
@@ -22,7 +30,6 @@ export const PieChart: FC<PieChartProps> = ({pieData}) => {
     // no chart will be rendered.
     // website examples showcase many properties,
     // you'll often use just a few of them.
-
     <ResponsivePie
       data={formattedData}
       padAngle={0.7}
@@ -37,14 +44,18 @@ export const PieChart: FC<PieChartProps> = ({pieData}) => {
       colors={{
         scheme: 'category10',
       }}
+      // Cannot add 'tokensOwned' field to datum. It won't read
       tooltip={({datum: {id, value, color}}) => (
         <div
           style={{
             padding: 5,
-            color,
             background: '#222222',
+            color: '#fff',
           }}>
-          {id}: {value}%
+          <div style={{display: 'flex'}}>
+            <p style={{marginRight: '5px'}}>{id}:</p>
+            <p style={{color}}>{value}%</p>
+          </div>
         </div>
       )}
       enableArcLinkLabels={false}
@@ -76,7 +87,7 @@ export const PieChart: FC<PieChartProps> = ({pieData}) => {
           itemsSpacing: 0,
           itemWidth: 100,
           itemHeight: 18,
-          itemTextColor: '#999',
+          itemTextColor: colorMode === 'dark' ? 'white' : 'black',
           itemDirection: 'left-to-right',
           itemOpacity: 1,
           symbolSize: 10,

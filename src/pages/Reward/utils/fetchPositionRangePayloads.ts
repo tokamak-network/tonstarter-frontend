@@ -29,14 +29,10 @@ export const fetchPositionRangePayloadModal = async (
   id: string,
   account: string,
 ) => {
-  console.log('library: ', library);
-  console.log('id: ', id);
-  console.log('account: ', account);
   if (library === undefined || account === undefined) {
     return;
   }
   const res = await getPositionRangeModal(library, account, id);
-  console.log('MODAL RESULT: ', res);
   const {tick, tickLower, tickUpper, approved} = res;
   const range = Number(tick) > tickLower && tick < tickUpper;
   return {
