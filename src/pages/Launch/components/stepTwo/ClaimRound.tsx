@@ -57,12 +57,7 @@ const ClaimRound = () => {
 
   const selectOptionValues = ['14', '30', '60'];
   const selectOptionNames = ['14 Days', '30 Days', '60 Days'];
-  const [startTime, setStartTime] = useState<number>(0);
-  const [startTimeArray, setStartTimeArray] = useState([]);
-  const [endTimeArray, setEndTimeArray] = useState([]);
-  const [endTime, setEndTime] = useState<number>(0);
-  const [created, setCreated] = useState();
-  const [show, setShow] = useState(false);
+  const [claimDate, setClaimDate] = useState<number>(0); 
   //@ts-ignore
   const {claim} = selectedVaultDetail;
 
@@ -198,7 +193,7 @@ const ClaimRound = () => {
                     img={CalendarInactiveImg}
                     hoverImg={CalendarActiveImg}
                     ></HoverImage> */}
-                    <SingleCalendarPop></SingleCalendarPop>
+                    <SingleCalendarPop setDate={setClaimDate}></SingleCalendarPop>
                 </Flex>
                 <Text w={'281px'} borderRight={middleStyle.border}>
                   <Input

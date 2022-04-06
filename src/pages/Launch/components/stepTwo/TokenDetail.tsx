@@ -10,7 +10,7 @@ import {useEffect, useMemo, useRef, useState} from 'react';
 import InputField from './InputField';
 import CalendarActiveImg from 'assets/launch/calendar-active-icon.svg';
 import CalendarInactiveImg from 'assets/launch/calendar-inactive-icon.svg';
-
+import DoubleCalendarPop from '../common/DoubleCalendarPop';
 export const MainTitle = (props: {leftTitle: string; rightTitle: string}) => {
   const {leftTitle, rightTitle} = props;
   return (
@@ -53,7 +53,13 @@ const SubTitle = (props: {
   }, [isEdit, rightTitle]);
 
   const tokensRef = useRef();
+  const [dateRange, setDateRange] = useState([]); 
 
+
+  useEffect(() => {
+    console.log(dateRange);
+    
+  },[dateRange])
   return (
     <Flex
       pl={'25px'}
@@ -78,10 +84,12 @@ const SubTitle = (props: {
                   : ''}
               </Text>
             </Flex>
-            <HoverImage
-              action={() => console.log('go')}
+            {/* <HoverImage
+              action={() => console.log('golaffhfå')}
               img={CalendarInactiveImg}
-              hoverImg={CalendarActiveImg}></HoverImage>
+              hoverImg={CalendarActiveImg}></HoverImage> */}
+              <DoubleCalendarPop setDate={setDateRange}></DoubleCalendarPop>
+              <Text>{dateRange[0]} {dateRange[1]}</Text>
           </Flex>
         ) : (
           <InputField

@@ -63,11 +63,11 @@ export const CustomClock = (props: ClockProps) => {
   const [meridiem, setMeridiem] = useState<string>('AM');
 
 
-  const setUp = (onClose: any) => {
+  const setUp = () => {
     let hour;
     if (meridiem === 'AM' && hours === 12) {
       setTime([0, minutes, seconds]);
-    } else if (meridiem === 'PM' && hours === 12) {
+    } else if (meridiem === 'PM' && hours === 12) {      
       setTime([hours, minutes, seconds]);
     } else if (meridiem === 'PM' && hours !== 12) {
       hour = hours + 12;
@@ -75,15 +75,18 @@ export const CustomClock = (props: ClockProps) => {
     } else {
       setTime([hours, minutes, seconds]);
     }
-    onClose();
   };
+
+useEffect(() => {
+  setUp();
+},[hours, minutes, seconds, meridiem])
 
   return (
   
 
           <Flex
           alignItems="center" justifyContent={'center'}
-            w={'300px'}
+            w={'298px'}
             borderTop={colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #535353'}
             borderBottom={colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #535353'}
             bg={colorMode === 'light' ? '#FFFFFF' : '#222222'}
