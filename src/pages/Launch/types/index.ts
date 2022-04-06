@@ -198,6 +198,10 @@ type PublicTokenColData = {
   ];
 };
 
+type Step3_InfoList = {
+  [Key: string]: {title: string; content: string | number; isHref?: boolean}[];
+};
+
 export type {
   Projects,
   ProjectStep1,
@@ -215,4 +219,5 @@ export type {
   VaultSchedule,
   PublicTokenColData,
   VaultType,
+  Step3_InfoList,
 };

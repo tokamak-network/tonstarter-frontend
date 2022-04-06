@@ -12,6 +12,7 @@ import CalendarActiveImg from 'assets/launch/calendar-active-icon.svg';
 import CalendarInactiveImg from 'assets/launch/calendar-inactive-icon.svg';
 import useVaultSelector from '@Launch/hooks/useVaultSelector';
 import commafy from 'utils/commafy';
+import {shortenAddress} from 'utils';
 
 export const MainTitle = (props: {leftTitle: string; rightTitle: string}) => {
   const {leftTitle, rightTitle} = props;
@@ -102,7 +103,11 @@ const SubTitle = (props: {
       ) : (
         <Flex>
           <Text textAlign={'right'}>
-            {rightTitle?.includes('undefined') ? '-' : rightTitle || '-'}
+            {rightTitle?.includes('undefined')
+              ? '-'
+              : rightTitle && rightTitle.length > 20
+              ? shortenAddress(rightTitle as string)
+              : rightTitle || '-'}
           </Text>
           {percent !== undefined && (
             <Text ml={'5px'} color={'#7e8993'} textAlign={'right'}>

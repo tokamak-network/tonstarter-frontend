@@ -24,6 +24,79 @@ import {Projects} from '@Launch/types';
 import useVaultSelector from '@Launch/hooks/useVaultSelector';
 import {shortenAddress} from 'utils';
 import {selectApp} from 'store/app/app.reducer';
+import {values} from 'lodash';
+
+const StosInfoList = (props: {
+  stosInfoList: {tier: number; requiredTos: number; allocationToken: number}[];
+}) => {
+  const {stosInfoList} = props;
+  const {colorMode} = useColorMode();
+  const {values} = useFormikContext<Projects['CreateProject']>();
+
+  return (
+    <Flex flexDir={'column'} textAlign="center">
+      <Text
+        color={'#304156'}
+        fontSize={13}
+        textAlign="center"
+        mt={'30px'}
+        mb={'10px'}
+        fontWeight={600}>
+        sTOS Tier
+      </Text>
+      <Flex
+        h={'35px'}
+        lineHeight={'35px'}
+        borderBottom={'1px solid #f4f6f8'}
+        fontSize={12}>
+        <Text
+          w={'70px'}
+          color={colorMode === 'light' ? 'gray.400' : 'white.100'}>
+          Tier
+        </Text>
+        <Text
+          w={'120px'}
+          color={colorMode === 'light' ? 'gray.400' : 'white.100'}>
+          Required TOS
+        </Text>
+        <Text
+          w={'160px'}
+          color={colorMode === 'light' ? 'gray.400' : 'white.100'}>
+          Allocated Token
+        </Text>
+      </Flex>
+      {stosInfoList.map(
+        (stosInfo: {
+          tier: number;
+          requiredTos: number;
+          allocationToken: number;
+        }) => (
+          <Flex
+            borderBottom={'1px solid #f4f6f8'}
+            h={'35px'}
+            lineHeight={'35px'}
+            fontSize={13}>
+            <Text
+              w={'70px'}
+              color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
+              0{stosInfo.tier}
+            </Text>
+            <Text
+              w={'120px'}
+              color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
+              {stosInfo.requiredTos} TOS
+            </Text>
+            <Text
+              w={'160px'}
+              color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
+              {stosInfo.allocationToken} {values.tokenName}
+            </Text>
+          </Flex>
+        ),
+      )}
+    </Flex>
+  );
+};
 
 const InfoList = (props: {
   title: string;
@@ -35,7 +108,12 @@ const InfoList = (props: {
   // @ts-ignore
   const {data: appConfig} = useAppSelector(selectApp);
   return (
-    <Box d="flex" h={'45px'} justifyContent={'space-between'} w={'100%'}>
+    <Box
+      d="flex"
+      h={'45px'}
+      justifyContent={'space-between'}
+      w={'100%'}
+      lineHeight={'45px'}>
       <Text
         fontSize={13}
         color={colorMode === 'light' ? 'gray.400' : 'white.100'}>
@@ -46,6 +124,7 @@ const InfoList = (props: {
           isExternal={true}
           href={`${appConfig.explorerLink}${content}`}
           color={'blue.300'}
+          fontSize={14}
           fontWeight={600}
           outline={'none'}
           _focus={{
@@ -54,7 +133,9 @@ const InfoList = (props: {
           {shortenAddress(content)}
         </Link>
       ) : (
-        <Text color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
+        <Text
+          color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+          fontSize={14}>
           {content}
         </Text>
       )}
@@ -74,17 +155,22 @@ const ConfirmTokenModal = () => {
   const [tab, setTab] = useState<1 | 2>(1);
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const {vaults} = values;
-  const {vaultType, vaultName, func, infoList, secondInfoList, close} =
-    data.data;
+  const {
+    vaultType,
+    vaultName,
+    func,
+    infoList,
+    secondInfoList,
+    stosTierList,
+    close,
+  } = data.data;
 
   const {selectedVaultDetail} = useVaultSelector();
 
-  console.log(deployStep);
-  console.log(selectedVaultDetail);
+  console.log('--STOSTIERLIST--');
+  console.log(stosTierList);
 
   useEffect(() => {
-    console.log(data.data.isSet);
-    console.log(selectedVaultDetail?.isSet);
     if (data.data.isSet === true) {
       if (selectedVaultDetail?.isSet === true) {
         return setDeployStep('Done');
@@ -231,16 +317,41 @@ const ConfirmTokenModal = () => {
                 })}
               {tab === 2 &&
                 secondInfoList &&
-                secondInfoList?.map(
-                  (info: {title: string; content: string}) => {
-                    return (
-                      <InfoList
-                        title={info.title}
-                        content={info.content}></InfoList>
-                    );
-                  },
-                )}
-
+                Object.keys(secondInfoList).map((key, i) => {
+                  return (
+                    <Flex flexDir={'column'} w={'100%'}>
+                      <Text
+                        color={'#304156'}
+                        fontSize={13}
+                        textAlign="center"
+                        mt={i !== 0 ? '30px' : 0}
+                        mb={'10px'}
+                        fontWeight={600}>
+                        {key}
+                      </Text>
+                      {secondInfoList[key].map(
+                        (info: {
+                          title: string;
+                          content: string;
+                          isHref: boolean;
+                        }) => {
+                          if (info === undefined) {
+                            return null;
+                          }
+                          return (
+                            <InfoList
+                              title={info.title}
+                              content={info.content}
+                              isHref={info.isHref}></InfoList>
+                          );
+                        },
+                      )}
+                    </Flex>
+                  );
+                })}
+              {tab === 2 && stosTierList && (
+                <StosInfoList stosInfoList={stosTierList}></StosInfoList>
+              )}
               <Flex
                 mt={'35px'}
                 flexDir={'column'}

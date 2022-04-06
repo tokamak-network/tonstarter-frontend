@@ -26,7 +26,11 @@ export type DEPLOYED_TYPE = {
   DoMsaleContractAddress: string;
   ERC20AFACTORY_ADDRESS: string;
   InitialLiquidityVault: string;
-  LiquidityIncentive: string;
+  LiquidityIncentiveVault: string;
+  PublicSaleVault: string;
+  TonStakerVault: string;
+  TosStakerVault: string;
+  LPrewardVault: string;
   pools: {
     TOS_WTON_POOL: string;
   };

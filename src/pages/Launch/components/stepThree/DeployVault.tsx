@@ -8,7 +8,14 @@ import {
   Button,
   Link,
 } from '@chakra-ui/react';
-import {Projects, Vault, VaultAny, VaultCommon, VaultType} from '@Launch/types';
+import {
+  Projects,
+  VaultAny,
+  VaultCommon,
+  VaultType,
+  VaultSchedule,
+  Step3_InfoList,
+} from '@Launch/types';
 import {DEPLOYED} from 'constants/index';
 import {useFormikContext} from 'formik';
 import {useCallback, useEffect, useMemo, useState} from 'react';
@@ -27,8 +34,10 @@ import {useBlockNumber} from 'hooks/useBlock';
 import {useContract} from 'hooks/useContract';
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import * as LiquidityIncentiveAbi from 'services/abis/LiquidityIncentiveAbi.json';
+import * as PublicSaleVaultAbi from 'services/abis/PublicSaleVault.json';
 import {convertNumber, convertToWei} from 'utils/number';
 import commafy from 'utils/commafy';
+import {convertTimeStamp} from 'utils/convertTIme';
 
 type DeployVaultProp = {
   vault: VaultAny;
@@ -37,10 +46,10 @@ type DeployVaultProp = {
 function getContract(vaultType: VaultType, library: LibraryType) {
   switch (vaultType) {
     case 'Public': {
-      const {InitialLiquidityVault} = DEPLOYED;
+      const {PublicSaleVault} = DEPLOYED;
       const contract = new Contract(
-        InitialLiquidityVault,
-        InitialLiquidityAbi.abi,
+        PublicSaleVault,
+        PublicSaleVaultAbi.abi,
         library,
       );
       return contract;
@@ -55,9 +64,9 @@ function getContract(vaultType: VaultType, library: LibraryType) {
       return contract;
     }
     case 'Liquidity Incentive': {
-      const {LiquidityIncentive} = DEPLOYED;
+      const {LiquidityIncentiveVault} = DEPLOYED;
       const contract = new Contract(
-        LiquidityIncentive,
+        LiquidityIncentiveVault,
         LiquidityIncentiveAbi.abi,
         library,
       );
@@ -93,8 +102,10 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
   const dispatch = useAppDispatch();
   // @ts-ignore
   const {data: appConfig} = useAppSelector(selectApp);
-  const [infoList, setInfoList] = useState<
-    {Vault: {title: string; content: string | number; isHref?: boolean}[]} | []
+  const [infoList, setInfoList] = useState<Step3_InfoList | []>([]);
+  const [infoList2, setInfoList2] = useState<Step3_InfoList | []>([]);
+  const [stosTierList, setStosTierList] = useState<
+    {tier: number; requiredTos: number; allocationToken: number}[] | []
   >([]);
   const {selectedVaultName} = useVaultSelector();
   const {blockNumber} = useBlockNumber();
@@ -111,18 +122,23 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
     const isTokenDeployed = values.isTokenDeployed;
     const isLPDeployed = values.vaults[1].isDeployed;
     const isVaultDeployed = selectedVaultDetail?.isDeployed;
+    const isSet = selectedVaultDetail?.isSet;
     const vaultDeployReady =
       vaultType === 'Initial Liquidity'
         ? isTokenDeployed && !isVaultDeployed
         : isTokenDeployed && isLPDeployed && !isVaultDeployed;
     setVaultState(
-      !vaultDeployReady && !isVaultDeployed
+      isSet
+        ? 'finished'
+        : !vaultDeployReady && !isVaultDeployed
         ? 'notReady'
         : vaultDeployReady
         ? 'ready'
         : isVaultDeployed && !hasToken
         ? 'readyForToken'
-        : isVaultDeployed && hasToken
+        : isVaultDeployed &&
+          hasToken &&
+          selectedVaultDetail?.vaultType !== 'Initial Liquidity'
         ? 'readyForSet'
         : 'finished',
     );
@@ -164,51 +180,115 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
             },
             {
               title: 'Token Allocation',
-              content: `${selectedVaultDetail?.vaultTokenAllocation || '-'}`,
+              content: `${
+                commafy(selectedVaultDetail?.vaultTokenAllocation) || '-'
+              } ${values.tokenName}`,
             },
           ],
           Claim: [
             {
-              title: 'Vault Name',
-              content: selectedVaultDetail?.vaultName || '-',
+              title: `Claim Round (${selectedVaultDetail.claim.length})`,
+              content: '',
+            },
+            ...selectedVaultDetail.claim.map(
+              (claimData: VaultSchedule, index: number) => {
+                return {
+                  title: `${index + 1} ${convertTimeStamp(
+                    claimData.claimTime as number,
+                    'DD.MM.YYYY hh:mm:ss',
+                  )}`,
+                  content: `${claimData.claimTokenAllocation} ${values.tokenName}`,
+                };
+              },
+            ),
+          ],
+        };
+        const info2 = {
+          Token: [
+            {
+              title: 'Token',
+              content: selectedVaultDetail?.vaultTokenAllocation || '-',
             },
             {
-              title: 'Admin',
-              content: `${selectedVaultDetail?.adminAddress || '-'}`,
-              isHref: true,
+              title: 'Public Round 1',
+              content: `${
+                //@ts-ignore
+                selectedVaultDetail?.publicRound1Allocation || '-'
+              }`,
             },
             {
-              title: 'Contract',
-              content: `${selectedVaultDetail?.vaultAddress || '-'}`,
-              isHref: true,
+              title: 'Public Round 2',
+              //@ts-ignore
+              content: `${selectedVaultDetail?.publicRound2Allocation || '-'}`,
             },
             {
-              title: 'Token Allocation',
-              content: `${selectedVaultDetail?.vaultTokenAllocation || '-'}`,
+              title: 'Token Price',
+              content: `${values.projectTokenPrice || '-'} ${
+                values.tokenName
+              } : 1 TON`,
             },
           ],
-          gogo: [
+          Schedule: [
             {
-              title: 'Vault Name',
-              content: selectedVaultDetail?.vaultName || '-',
+              title: 'Whitelist',
+              //@ts-ignore
+              content: selectedVaultDetail?.whitelist || '-',
             },
             {
-              title: 'Admin',
-              content: `${selectedVaultDetail?.adminAddress || '-'}`,
-              isHref: true,
+              title: 'Public Round 1',
+              content: `${
+                //@ts-ignore
+                selectedVaultDetail?.publicRound1 || '-'
+              }`,
             },
             {
-              title: 'Contract',
-              content: `${selectedVaultDetail?.vaultAddress || '-'}`,
-              isHref: true,
+              title: 'Public Round 2',
+              //@ts-ignore
+              content: `${selectedVaultDetail?.publicRound2 || '-'}`,
             },
             {
-              title: 'Token Allocation',
-              content: `${selectedVaultDetail?.vaultTokenAllocation || '-'}`,
+              title: 'Claim',
+              content: `${selectedVaultDetail?.claim[0].claimTime}`,
             },
           ],
         };
-        return setInfoList(info);
+        const stosInfo = [
+          {
+            tier: 1,
+            //@ts-ignore
+            requiredTos: selectedVaultDetail?.stosTier?.oneTier?.requiredStos,
+            allocationToken:
+              //@ts-ignore
+              selectedVaultDetail?.stosTier?.oneTier?.allocatedToken,
+          },
+          {
+            tier: 2,
+            //@ts-ignore
+            requiredTos: selectedVaultDetail?.stosTier?.twoTier?.requiredStos,
+            allocationToken:
+              //@ts-ignore
+              selectedVaultDetail?.stosTier?.twoTier?.allocatedToken,
+          },
+          {
+            tier: 3,
+            //@ts-ignore
+            requiredTos: selectedVaultDetail?.stosTier?.threeTier?.requiredStos,
+            allocationToken:
+              //@ts-ignore
+              selectedVaultDetail?.stosTier?.threeTier?.allocatedToken,
+          },
+          {
+            tier: 4,
+            //@ts-ignore
+            requiredTos: selectedVaultDetail?.stosTier?.fourTier?.requiredStos,
+            allocationToken:
+              //@ts-ignore
+              selectedVaultDetail?.stosTier?.fourTier?.allocatedToken,
+          },
+        ];
+        setInfoList(info);
+        setInfoList2(info2);
+        return setStosTierList(stosInfo);
       }
       default:
         break;
@@ -252,15 +332,47 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               break;
             }
             case 'Public': {
-              const tx = await vaultContract
-                ?.connect(signer)
-                .create(
-                  selectedVaultName,
-                  values.tokenAddress,
-                  selectedVaultDetail?.adminAddress,
-                  1,
-                  values.tosPrice,
+              // 0 : name : string
+              // 1 : owner : address
+              // 2 : saleAddresses[3] : [addr, addr, addr]
+              // [projectToken, receivingAddress, Initial Liquidity]
+              // 3 : index : uint256
+              const {InitialLiquidityVault} = DEPLOYED;
+              const InitialLiquidity_Contract = new Contract(
+                InitialLiquidityVault,
+                InitialLiquidityAbi.abi,
+                library,
+              );
+
+              const getTotalIndex = async () => {
+                const totalIndex =
+                  await InitialLiquidity_Contract.totalCreatedContracts();
+                return Number(totalIndex.toString());
+              };
+
+              const totalVaultIndex = await getTotalIndex();
+              let vaultIndex = 0;
+
+              for (let i = 0; i < totalVaultIndex; i++) {
+                const vault = await InitialLiquidity_Contract.createdContracts(
+                  i,
                 );
+                if (vault.contractAddress === values.vaults[1].adminAddress) {
+                  return (vaultIndex = i);
+                }
+              }
+              console.log(vaultIndex);
+              const tx = await vaultContract?.connect(signer).create(
+                selectedVaultDetail?.vaultName,
+                selectedVaultDetail?.adminAddress,
+                [
+                  values.tokenAddress,
+                  //@ts-ignore
+                  selectedVaultDetail?.addressForReceiving,
+                  values.vaults[1].vaultAddress,
+                ],
+                2,
+              );
               const receipt = await tx.wait();
               const {logs} = receipt;
 
@@ -409,7 +521,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
         };
       case 'finished':
         return {
-          titleColor: 'gray.400',
+          titleColor: 'white.100',
           bg: '#26c1c9',
           btnBg: 'none',
         };
@@ -510,6 +622,8 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                       data: {
                         vaultName,
                         infoList,
+                        secondInfoList: infoList2,
+                        stosTierList,
                         func: () => vaultDeploy(),
                         close: () =>
                           setFieldValue(
