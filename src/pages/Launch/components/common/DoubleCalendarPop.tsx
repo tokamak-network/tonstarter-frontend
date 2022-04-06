@@ -91,10 +91,10 @@ const DoubleCalendarPop: React.FC<calendarComponentProps> = ({setDate}) => {
       {({isOpen, onClose}) => (
         <>
           <PopoverTrigger>
-            <Image
+            <img
               src={image}
               onMouseEnter={() => setImage(CalendarActiveImg)}
-              onMouseOut={() => setImage(CalendarInactiveImg)}></Image>
+              onMouseOut={() => setImage(CalendarInactiveImg)} style={{cursor: 'pointer'}}></img>
           </PopoverTrigger>
           <PopoverContent
             h={'423px'}
