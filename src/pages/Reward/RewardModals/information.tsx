@@ -637,10 +637,10 @@ export const InformationModal = () => {
       <ModalOverlay />
       <ModalContent
         height={'85vh'}
-        overflowY={'auto'}
-        overflowX={'hidden'}
         fontFamily={theme.fonts.fld}
         bg={colorMode === 'light' ? 'white.100' : 'black.200'}>
+        <CloseButton closeFunc={handleCloseModal} />
+
         <Scrollbars
           style={{
             width: '100%',
@@ -692,7 +692,6 @@ export const InformationModal = () => {
           </Box>
           <Divider my={'10px'} />
 
-          <CloseButton style={{zIndex: 1000}} closeFunc={handleCloseModal} />
           <ModalBody>
             <Grid templateColumns={'repeat(7, 1fr)'} px="5px" gap={'12px'}>
               <Box

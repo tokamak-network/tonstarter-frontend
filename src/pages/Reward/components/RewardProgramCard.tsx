@@ -32,7 +32,6 @@ import {getTokenSymbol} from '../utils/getTokenSymbol';
 import {UpdatedRedward} from '../types';
 import {LPToken} from '../types';
 import {convertNumber} from 'utils/number';
-import {InformationModal} from '../RewardModals';
 import {useDispatch} from 'react-redux';
 import {gql, useQuery} from '@apollo/client';
 import {rewardReducer} from '../reward.reducer';
@@ -108,7 +107,6 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   const [isSelected, setIsSelected] = useState<boolean>(false);
   const [isUnstakeSelected, setIsUnstakeselected] = useState<boolean>(false);
   const [numStakers, setNumStakers] = useState<number>(0);
-  const [openInfoModal, setOpenInfoModal] = useState<boolean>(false);
   const dispatch = useDispatch();
 
   const key = {
@@ -387,7 +385,6 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
       //   // console.log('e.target: ', e.target);
       //   // if (e.target.type !== 'checkbox') {
       onClick={() => {
-        setOpenInfoModal(true);
         dispatch(
           openModal({
             type: 'information',
@@ -768,7 +765,6 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
           </Button>
         </Flex>
       </Flex>
-      {openInfoModal ? <InformationModal /> : null}
     </Flex>
   );
 };
