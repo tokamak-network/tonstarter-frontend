@@ -19,7 +19,7 @@ const OpenStepOne = () => {
   return (
     <Flex p={'35px'} pt={'24px'} w={'774px'} bg={'white.100'} flexDir="column">
       <Box mb={'23px'}>
-        <StepTitle title={'Project&Token'} isSaveButton={true}></StepTitle>
+        <StepTitle title={'Project & Token'} isSaveButton={true}></StepTitle>
       </Box>
       <Box mb={'40px'}>
         <Line></Line>
