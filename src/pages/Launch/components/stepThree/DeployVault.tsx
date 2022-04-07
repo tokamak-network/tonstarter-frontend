@@ -491,7 +491,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               setVaultState('readyForToken');
               break;
             }
-            case 'Liquidity Incentive': {
+            case 'WTON-TOS LP Reward': {
               // 0: name : string
               // 1 : pool : address
               // 2 : rewardToken : address
@@ -499,10 +499,11 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               const {
                 pools: {TOS_WTON_POOL},
               } = DEPLOYED;
+
               const tx = await vaultContract
                 ?.connect(signer)
                 .create(
-                  selectedVaultName,
+                  selectedVaultDetail?.vaultName,
                   TOS_WTON_POOL,
                   values.tokenAddress,
                   selectedVaultDetail?.adminAddress,
@@ -510,9 +511,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               const receipt = await tx.wait();
               const {logs} = receipt;
 
-              const iface = new ethers.utils.Interface(
-                LiquidityIncentiveAbi.abi,
-              );
+              const iface = new ethers.utils.Interface(LPrewardVaultAbi.abi);
 
               const result = iface.parseLog(logs[9]);
               const {args} = result;
@@ -702,6 +701,66 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               break;
             }
             case 'TON Staker': {
+              // 0: _totalAllocatedAmountme : uint256
+              // 1 : _claimCounts : uint256
+              // 2 : _claimTimes : uint256[]
+              // 3 : _claimAmounts : uint256[]
+              const claimTimesParam = selectedVaultDetail?.claim.map(
+                (claimData: VaultSchedule) => claimData.claimTime,
+              );
+              const claimAmountsParam = selectedVaultDetail?.claim.map(
+                (claimData: VaultSchedule) => claimData.claimTokenAllocation,
+              );
+              const tx = await vaultContract
+                ?.connect(signer)
+                .initialize(
+                  selectedVaultDetail?.vaultTokenAllocation,
+                  selectedVaultDetail?.claim.length,
+                  claimTimesParam,
+                  claimAmountsParam,
+                );
+              const receipt = await tx.wait();
+
+              if (receipt) {
+                setFieldValue(
+                  `vaults[${selectedVaultDetail?.index}].isSet`,
+                  true,
+                );
+                setVaultState('finished');
+              }
+              break;
+            }
+            case 'TOS Staker': {
+              // 0: _totalAllocatedAmountme : uint256
+              // 1 : _claimCounts : uint256
+              // 2 : _claimTimes : uint256[]
+              // 3 : _claimAmounts : uint256[]
+              const claimTimesParam = selectedVaultDetail?.claim.map(
+                (claimData: VaultSchedule) => claimData.claimTime,
+              );
+              const claimAmountsParam = selectedVaultDetail?.claim.map(
+                (claimData: VaultSchedule) => claimData.claimTokenAllocation,
+              );
+              const tx = await vaultContract
+                ?.connect(signer)
+                .initialize(
+                  selectedVaultDetail?.vaultTokenAllocation,
+                  selectedVaultDetail?.claim.length,
+                  claimTimesParam,
+                  claimAmountsParam,
+                );
+              const receipt = await tx.wait();
+
+              if (receipt) {
+                setFieldValue(
+                  `vaults[${selectedVaultDetail?.index}].isSet`,
+                  true,
+                );
+                setVaultState('finished');
+              }
+              break;
+            }
+            case 'WTON-TOS LP Reward': {
               // 0: _totalAllocatedAmountme : uint256
               // 1 : _claimCounts : uint256
               // 2 : _claimTimes : uint256[]
