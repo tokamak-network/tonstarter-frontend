@@ -18,7 +18,6 @@ import calender_Forward_icon_inactive from 'assets/svgs/calender_Forward_icon_in
 import calender_back_icon_inactive from 'assets/svgs/calender_back_icon_inactive.svg';
 import moment from 'moment';
 
-
 const themeDesign = {
   border: {
     light: 'solid 1px #dfe4ee',
@@ -40,7 +39,6 @@ type CalendarProps = {
   endTime: number;
   calendarType: string;
   created: any;
-
 };
 
 export const CustomCalendar = (prop: CalendarProps) => {
@@ -50,7 +48,7 @@ export const CustomCalendar = (prop: CalendarProps) => {
   const [showCalendar, setShowCalendar] = useState<boolean>(false);
   const [showInputValue, setShowInputValue] = useState<string>('');
   const refCalendar = useRef<HTMLInputElement>(null);
-  
+
   const setInput = (date: any) => {
     setShowCalendar(false);
     const dateSelected = Number(new Date(date));
@@ -63,43 +61,61 @@ export const CustomCalendar = (prop: CalendarProps) => {
     const now = moment().startOf('day').unix();
     const formattedDate = moment(date).startOf('day').unix();
     const nowTimeStamp = moment().unix();
-    const maxEndDate =  startTime+ 63072000
-    const maxStartDate = now+ 2592000    
+    const maxEndDate = startTime + 63072000;
+    const maxStartDate = now + 2592000;
     if (view === 'month') {
-      if (formattedDate < now) {        
+      if (formattedDate < now) {
         return true;
-      } 
-      
-      else if (calendarType === 'end' && formattedDate>maxEndDate && startTime !== 0) {       
+      } else if (
+        calendarType === 'end' &&
+        formattedDate > maxEndDate &&
+        startTime !== 0
+      ) {
         return true;
-      }
-      else if (calendarType === 'start' && formattedDate> maxStartDate) {        
-        return true
-      }
-      else if (
+      } else if (calendarType === 'start' && formattedDate > maxStartDate) {
+        return true;
+      } else if (
         endTime !== 0 &&
         formattedDate > endTime &&
         calendarType === 'start'
-      ) {        
+      ) {
         return true;
-      } 
+      }
 
-      // else if (calendarType === 'end' &&  startTime !== 0 && formattedDate <= startTime ) {        
+      // else if (calendarType === 'end' &&  startTime !== 0  && formattedDate <= startTime ) {
       //   return true;
       // }
       else {
         return false;
       }
+    } else if (view === 'year') {  
+      const dateFormatted = new Date(formattedDate*1000)
+      const monthFormatted = dateFormatted.getMonth();
+      const nowFormatted = new Date(now*1000);
+      const monthNow = nowFormatted.getMonth();
+      if (monthFormatted >= monthNow) {
+        return false;
+      } else {
+        return true;
+      }
     } else {
-      return false;
+      const dateFormatted = new Date(formattedDate*1000)
+      const yearFormatted = dateFormatted.getFullYear();
+      const nowFormatted = new Date(now*1000);
+      const yearNow = nowFormatted.getFullYear();
+      if (yearFormatted >= yearNow) {
+        return false;
+      } else {
+        return true;
+      }
     }
   };
 
-  useEffect(() => {    
+  useEffect(() => {
     if (created) {
       setShowInputValue('');
     }
-    }, [created])
+  }, [created]);
   useEffect(() => {
     const hideCalendar = (ref: any) => {
       function handleClickOutside(event: any) {

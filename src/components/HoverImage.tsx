@@ -2,7 +2,7 @@ import {Image} from '@chakra-ui/react';
 import {useState} from 'react';
 
 type HoverImageProp = {
-  action: () => void;
+  action?: () => void;
   img: string;
   hoverImg: string;
 };

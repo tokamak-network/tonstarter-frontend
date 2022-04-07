@@ -13,6 +13,8 @@ import CalendarInactiveImg from 'assets/launch/calendar-inactive-icon.svg';
 import useVaultSelector from '@Launch/hooks/useVaultSelector';
 import commafy from 'utils/commafy';
 import {shortenAddress} from 'utils';
+import DoubleCalendarPop from '../common/DoubleCalendarPop';
+import SingleCalendarPop from '../common/SingleCalendarPop';
 
 export const MainTitle = (props: {leftTitle: string; rightTitle: string}) => {
   const {leftTitle, rightTitle} = props;
@@ -56,6 +58,8 @@ const SubTitle = (props: {
   }, [isEdit, rightTitle]);
 
   const tokensRef = useRef();
+  const [dateRange, setDateRange] = useState([]);
+  const [claimDate, setClaimDate] = useState<number>(0);
 
   return (
     <Flex
@@ -81,10 +85,14 @@ const SubTitle = (props: {
                   : ''}
               </Text>
             </Flex>
-            <HoverImage
-              action={() => console.log('go')}
-              img={CalendarInactiveImg}
-              hoverImg={CalendarActiveImg}></HoverImage>
+            {rightTitle?.split('~')[1] ? (
+              <DoubleCalendarPop setDate={setDateRange}></DoubleCalendarPop>
+            ) : (
+              <SingleCalendarPop setDate={setClaimDate}></SingleCalendarPop>
+            )}
+            <Text>
+              {dateRange[0]} {dateRange[1]}
+            </Text>
           </Flex>
         ) : (
           <InputField
