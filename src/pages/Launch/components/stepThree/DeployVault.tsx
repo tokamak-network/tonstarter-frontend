@@ -15,6 +15,7 @@ import {
   VaultType,
   VaultSchedule,
   Step3_InfoList,
+  VaultPublic,
 } from '@Launch/types';
 import {DEPLOYED} from 'constants/index';
 import {useFormikContext} from 'formik';
@@ -35,6 +36,9 @@ import {useContract} from 'hooks/useContract';
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import * as LiquidityIncentiveAbi from 'services/abis/LiquidityIncentiveAbi.json';
 import * as PublicSaleVaultAbi from 'services/abis/PublicSaleVault.json';
+import * as TONStakerAbi from 'services/abis/TONStakerAbi.json';
+import * as TOSStakerAbi from 'services/abis/TOSStakerAbi.json';
+import * as LPrewardVaultAbi from 'services/abis/LPrewardVaultAbi.json';
 import {convertNumber, convertToWei} from 'utils/number';
 import commafy from 'utils/commafy';
 import {convertTimeStamp} from 'utils/convertTIme';
@@ -72,16 +76,43 @@ function getContract(vaultType: VaultType, library: LibraryType) {
       );
       return contract;
     }
-    case 'TON Staker':
-      break;
-    case 'TOS Staker':
-      break;
-    case 'WTON-TOS LP Reward':
-      break;
-    case 'DAO':
-      break;
-    case 'C':
-      break;
+    case 'TON Staker': {
+      const {TonStakerVault} = DEPLOYED;
+      const contract = new Contract(TonStakerVault, TONStakerAbi.abi, library);
+      return contract;
+    }
+    case 'TOS Staker': {
+      const {TosStakerVault} = DEPLOYED;
+      const contract = new Contract(TosStakerVault, TOSStakerAbi.abi, library);
+      return contract;
+    }
+    case 'WTON-TOS LP Reward': {
+      const {LPrewardVault} = DEPLOYED;
+      const contract = new Contract(
+        LPrewardVault,
+        LPrewardVaultAbi.abi,
+        library,
+      );
+      return contract;
+    }
+    case 'DAO': {
+      const {LPrewardVault} = DEPLOYED;
+      const contract = new Contract(
+        LPrewardVault,
+        LPrewardVaultAbi.abi,
+        library,
+      );
+      return contract;
+    }
+    case 'C': {
+      const {LPrewardVault} = DEPLOYED;
+      const contract = new Contract(
+        LPrewardVault,
+        LPrewardVaultAbi.abi,
+        library,
+      );
+      return contract;
+    }
     default:
       break;
   }
@@ -297,7 +328,10 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
 
   const vaultDeploy = useCallback(
     async () => {
-      if (account && library) {
+      console.log(selectedVaultDetail);
+      console.log(vaultState);
+
+      if (account && library && vaultState === 'ready') {
         const vaultContract = getContract(vaultType, library);
         const signer = getSigner(library, account);
 
@@ -347,21 +381,34 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               const getTotalIndex = async () => {
                 const totalIndex =
                   await InitialLiquidity_Contract.totalCreatedContracts();
+                console.log(totalIndex);
                 return Number(totalIndex.toString());
               };
 
               const totalVaultIndex = await getTotalIndex();
-              let vaultIndex = 0;
+              let valutIndex = totalVaultIndex;
 
-              for (let i = 0; i < totalVaultIndex; i++) {
-                const vault = await InitialLiquidity_Contract.createdContracts(
-                  i,
-                );
-                if (vault.contractAddress === values.vaults[1].adminAddress) {
-                  return (vaultIndex = i);
-                }
-              }
-              console.log(vaultIndex);
+              console.log('--totalVaultIndex--');
+              console.log(totalVaultIndex);
+
+              do {
+                valutIndex--;
+                try {
+                  const vault =
+                    await InitialLiquidity_Contract.createdContracts(
+                      valutIndex,
+                    );
+                  console.log(vault.contractAddress);
+                  console.log(values.vaults[1].vaultAddress);
+                  if (vault.contractAddress === values.vaults[1].vaultAddress) {
+                    break;
+                  }
+                } catch (e) {}
+              } while (valutIndex >= 0);
+
+              console.log('--valutIndex--');
+              console.log(valutIndex);
+
               const tx = await vaultContract?.connect(signer).create(
                 selectedVaultDetail?.vaultName,
                 selectedVaultDetail?.adminAddress,
@@ -371,14 +418,14 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                   selectedVaultDetail?.addressForReceiving,
                   values.vaults[1].vaultAddress,
                 ],
-                2,
+                valutIndex,
               );
               const receipt = await tx.wait();
               const {logs} = receipt;
 
-              const iface = new ethers.utils.Interface(InitialLiquidityAbi.abi);
+              const iface = new ethers.utils.Interface(PublicSaleVaultAbi.abi);
 
-              const result = iface.parseLog(logs[11]);
+              const result = iface.parseLog(logs[9]);
               const {args} = result;
               setFieldValue(
                 `vaults[${selectedVaultDetail?.index}].vaultAddress`,
@@ -439,6 +486,179 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
           );
         }
       }
+
+      if (account && library && vaultState === 'readyForSet') {
+        const vaultContract = getContract(vaultType, library);
+        const signer = getSigner(library, account);
+
+        try {
+          switch (vaultType) {
+            case 'Public': {
+              // 0 : _Tier : uint256[8]
+              // 1 : _amount : uint256[6]
+              // 2 : _time : uint256[8]
+              // 3 : _claimTimes : uint256[]
+              // 4 : _claimPercents : uint256[]
+              const PublicVaultData = selectedVaultDetail as VaultPublic;
+              // _Tier[0] : Tier1의 sTOS 기준
+              // _Tier[2] : Tier3의 sTOS 기준
+              // _Tier[1] : Tier2의 sTOS 기준
+              // _Tier[3] : Tier4의 sTOS 기준
+              // _Tier[4] : Tier1의 percent
+              // _Tier[5] : Tier2의 percent
+              // _Tier[6] : Tier3의 percent
+              // (Tier[4]~Tier[7]의 합은 10000)
+              // _Tier[7] : Tier4의 percent
+              const param0: number[] = [
+                PublicVaultData.stosTier.oneTier.allocatedToken as number,
+                PublicVaultData.stosTier.twoTier.allocatedToken as number,
+                PublicVaultData.stosTier.threeTier.allocatedToken as number,
+                PublicVaultData.stosTier.fourTier.allocatedToken as number,
+                2500,
+                2500,
+                2500,
+                2500,
+                // (PublicVaultData.stosTier.oneTier.requiredStos as number) * 100,
+                // (PublicVaultData.stosTier.twoTier.requiredStos as number) * 100,
+                // (PublicVaultData.stosTier.threeTier.requiredStos as number) *
+                //   100,
+                // (PublicVaultData.stosTier.fourTier.requiredStos as number) *
+                //   100,
+              ];
+              // _amount[0] : Round1에서의 토큰 판매수량
+              // _amount[1] : Round2에서의 토큰 판매수량
+              // _amount[2] : 판매토큰 가격
+              // _amount[3] : 톤 토큰 가격
+              // _amount[4] : hardhat수량(TON기준)
+              // _amount[5] : TON → TOS 변경 % (min ~ max)
+              const param1: number[] = [
+                PublicVaultData.publicRound1Allocation as number,
+                PublicVaultData.publicRound2Allocation as number,
+                (values.projectTokenPrice as number) * 100,
+                100,
+                PublicVaultData.hardCap as number,
+                5,
+              ];
+              // _time[0] : sTOS snapshot 시간
+              // _time[1] : 화이트리스트 시작시간
+              // _time[2] : 화이트리스트 마감시간
+              // _time[3] : round1 세일 시작시간
+              // _time[4] : round1 세일 마감시간
+              // _time[5] : round2 deposit 시작시간
+              // _time[6] : round2 deposit 마감시간
+              // _time[7] : 총 클레임 round 수
+              const param2: number[] = [
+                PublicVaultData.snapshot as number,
+                PublicVaultData.whitelist as number,
+                PublicVaultData.whitelistEnd as number,
+                PublicVaultData.publicRound1 as number,
+                PublicVaultData.publicRound1End as number,
+                PublicVaultData.publicRound2 as number,
+                PublicVaultData.publicRound2End as number,
+                PublicVaultData.claim.length,
+              ];
+              //_claimTimes[] : 클레임 시간 배열
+              const param3: number[] = PublicVaultData.claim.map(
+                (claimRound: VaultSchedule) => claimRound.claimTime,
+              ) as number[];
+              // _claimPercents[] : 클레임 percents 배열(claimPercents의 합은 100)
+              const {publicRound1Allocation, publicRound2Allocation} =
+                PublicVaultData;
+              const allTokenAllocation =
+                Number(publicRound1Allocation as number) +
+                Number(publicRound2Allocation as number);
+              console.log(allTokenAllocation);
+              //   (PublicVaultData.publicRound2Allocation as number)
+              const param4: number[] = PublicVaultData.claim.map(
+                (claimRound: VaultSchedule) =>
+                  ((claimRound.claimTokenAllocation as number) * 100) /
+                  allTokenAllocation,
+              ) as number[];
+
+              console.log(allTokenAllocation);
+              console.log('--params--');
+              console.log(param0, param1, param2, param3, param4);
+
+              const testParam2 = [
+                1659307252,
+                1669307252,
+                1679307252,
+                1689307252,
+                1699307252,
+                1709307252,
+                1719307252,
+                PublicVaultData.claim.length,
+              ];
+
+              const publicVaultSecondContract = new Contract(
+                PublicVaultData.vaultAddress as string,
+                PublicSaleVaultAbi.abi,
+                library,
+              );
+
+              console.log(publicVaultSecondContract);
+
+              const tx = await publicVaultSecondContract
+                ?.connect(signer)
+                .setAllsetting(param0, param1, testParam2, param3, param4);
+              const receipt = await tx.wait();
+              if (receipt) {
+                setFieldValue(
+                  `vaults[${selectedVaultDetail?.index}].isSet`,
+                  true,
+                );
+                setVaultState('finished');
+              }
+              break;
+            }
+            case 'Liquidity Incentive': {
+              // 0: name : string
+              // 1 : pool : address
+              // 2 : rewardToken : address
+              // 3 : _admin : address
+              const {
+                pools: {TOS_WTON_POOL},
+              } = DEPLOYED;
+              const tx = await vaultContract
+                ?.connect(signer)
+                .create(
+                  selectedVaultName,
+                  TOS_WTON_POOL,
+                  values.tokenAddress,
+                  selectedVaultDetail?.adminAddress,
+                );
+              const receipt = await tx.wait();
+              const {logs} = receipt;
+
+              const iface = new ethers.utils.Interface(
+                LiquidityIncentiveAbi.abi,
+              );
+
+              const result = iface.parseLog(logs[9]);
+              const {args} = result;
+
+              setFieldValue(
+                `vaults[${selectedVaultDetail?.index}].vaultAddress`,
+                args[0],
+              );
+              setFieldValue(
+                `vaults[${selectedVaultDetail?.index}].isDeployed`,
+                true,
+              );
+              setVaultState('readyForToken');
+              break;
+            }
+            default:
+              break;
+          }
+        } catch (e) {
+          console.log(e);
+          setFieldValue(
+            `vaults[${selectedVaultDetail?.index}].isDeployedErr`,
+            true,
+          );
+        }
+      }
     },
     /*eslint-disable*/
     [
@@ -448,6 +668,8 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
       selectedVaultDetail,
       selectedVaultName,
       values,
+      vaultState,
+      blockNumber,
     ],
   );
 
@@ -464,8 +686,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
           selectedVaultDetail.vaultAddress,
         );
         if (tokenBalance && selectedVaultDetail.vaultTokenAllocation) {
-          console.log(selectedVaultDetail.vaultTokenAllocation);
-          console.log(Number(convertNumber({amount: tokenBalance.toString()})));
           selectedVaultDetail.vaultTokenAllocation <=
           Number(convertNumber({amount: tokenBalance.toString()}))
             ? setHasToken(true)
@@ -646,7 +866,9 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                       data: {
                         vaultName,
                         infoList,
-                        isSet: true,
+                        secondInfoList: infoList2,
+                        stosTierList,
+                        isSetStep: true,
                         func: () => vaultDeploy(),
                         close: () =>
                           setFieldValue(

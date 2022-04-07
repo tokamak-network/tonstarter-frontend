@@ -167,26 +167,17 @@ const ConfirmTokenModal = () => {
 
   const {selectedVaultDetail} = useVaultSelector();
 
-  console.log('--STOSTIERLIST--');
-  console.log(stosTierList);
-
   useEffect(() => {
-    if (data.data.isSet === true) {
+    if (data.data.isSetStep === true) {
       if (selectedVaultDetail?.isSet === true) {
         return setDeployStep('Done');
       }
+      return setDeployStep('Ready');
     } else {
       if (selectedVaultDetail?.isDeployed === true) {
         return setDeployStep('Done');
       }
     }
-    // if (
-    //   data.data.isSet === true
-    //     ? selectedVaultDetail?.isSet === true
-    //     : selectedVaultDetail?.isDeployed === true
-    // ) {
-    //   setDeployStep('Done');
-    // }
     if (selectedVaultDetail?.isDeployedErr === true) {
       return setDeployStep('Error');
     }
@@ -300,7 +291,6 @@ const ConfirmTokenModal = () => {
                           content: string;
                           isHref: boolean;
                         }) => {
-                          console.log(info);
                           if (info === undefined) {
                             return null;
                           }
