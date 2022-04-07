@@ -381,15 +381,11 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               const getTotalIndex = async () => {
                 const totalIndex =
                   await InitialLiquidity_Contract.totalCreatedContracts();
-                console.log(totalIndex);
                 return Number(totalIndex.toString());
               };
 
               const totalVaultIndex = await getTotalIndex();
               let valutIndex = totalVaultIndex;
-
-              console.log('--totalVaultIndex--');
-              console.log(totalVaultIndex);
 
               do {
                 valutIndex--;
@@ -405,9 +401,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                   }
                 } catch (e) {}
               } while (valutIndex >= 0);
-
-              console.log('--valutIndex--');
-              console.log(valutIndex);
 
               const tx = await vaultContract?.connect(signer).create(
                 selectedVaultDetail?.vaultName,
@@ -427,6 +420,66 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
 
               const result = iface.parseLog(logs[9]);
               const {args} = result;
+              setFieldValue(
+                `vaults[${selectedVaultDetail?.index}].vaultAddress`,
+                args[0],
+              );
+              setFieldValue(
+                `vaults[${selectedVaultDetail?.index}].isDeployed`,
+                true,
+              );
+              setVaultState('readyForToken');
+              break;
+            }
+            case 'TON Staker': {
+              // 0: name : string
+              // 1: _token : address
+              // 2: _owner : address
+              const tx = await vaultContract
+                ?.connect(signer)
+                .create(
+                  selectedVaultDetail?.vaultName,
+                  values.tokenAddress,
+                  selectedVaultDetail?.adminAddress,
+                );
+              const receipt = await tx.wait();
+              const {logs} = receipt;
+
+              const iface = new ethers.utils.Interface(TONStakerAbi.abi);
+
+              const result = iface.parseLog(logs[9]);
+              const {args} = result;
+
+              setFieldValue(
+                `vaults[${selectedVaultDetail?.index}].vaultAddress`,
+                args[0],
+              );
+              setFieldValue(
+                `vaults[${selectedVaultDetail?.index}].isDeployed`,
+                true,
+              );
+              setVaultState('readyForToken');
+              break;
+            }
+            case 'TOS Staker': {
+              // 0: name : string
+              // 1: _token : address
+              // 2: _owner : address
+              const tx = await vaultContract
+                ?.connect(signer)
+                .create(
+                  selectedVaultDetail?.vaultName,
+                  values.tokenAddress,
+                  selectedVaultDetail?.adminAddress,
+                );
+              const receipt = await tx.wait();
+              const {logs} = receipt;
+
+              const iface = new ethers.utils.Interface(TOSStakerAbi.abi);
+
+              const result = iface.parseLog(logs[9]);
+              const {args} = result;
+
               setFieldValue(
                 `vaults[${selectedVaultDetail?.index}].vaultAddress`,
                 args[0],
@@ -646,6 +699,36 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 true,
               );
               setVaultState('readyForToken');
+              break;
+            }
+            case 'TON Staker': {
+              // 0: _totalAllocatedAmountme : uint256
+              // 1 : _claimCounts : uint256
+              // 2 : _claimTimes : uint256[]
+              // 3 : _claimAmounts : uint256[]
+              const claimTimesParam = selectedVaultDetail?.claim.map(
+                (claimData: VaultSchedule) => claimData.claimTime,
+              );
+              const claimAmountsParam = selectedVaultDetail?.claim.map(
+                (claimData: VaultSchedule) => claimData.claimTokenAllocation,
+              );
+              const tx = await vaultContract
+                ?.connect(signer)
+                .initialize(
+                  selectedVaultDetail?.vaultTokenAllocation,
+                  selectedVaultDetail?.claim.length,
+                  claimTimesParam,
+                  claimAmountsParam,
+                );
+              const receipt = await tx.wait();
+
+              if (receipt) {
+                setFieldValue(
+                  `vaults[${selectedVaultDetail?.index}].isSet`,
+                  true,
+                );
+                setVaultState('finished');
+              }
               break;
             }
             default:
