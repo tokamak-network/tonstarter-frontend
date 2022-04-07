@@ -52,6 +52,7 @@ const SubTitle = (props: {
     formikName,
   } = props;
   const [inputVal, setInputVal] = useState(rightTitle?.replaceAll(' TON', ''));
+  const {setFieldValue} = useFormikContext();
 
   useEffect(() => {
     setInputVal(rightTitle?.replaceAll(' TON', ''));
@@ -60,6 +61,41 @@ const SubTitle = (props: {
   const tokensRef = useRef();
   const [dateRange, setDateRange] = useState([]);
   const [claimDate, setClaimDate] = useState<number>(0);
+
+  console.log('---calender--');
+  console.log(dateRange);
+  console.log(claimDate);
+
+  useEffect(() => {
+    //Put timestamp
+    switch (
+      leftTitle as
+        | 'Snapshot'
+        | 'Whitelist'
+        | 'Public Round 1'
+        | 'Public Round 2'
+    ) {
+      case 'Snapshot': {
+        return setFieldValue('vaults[0].snapshot', claimDate);
+      }
+      case 'Whitelist': {
+        setFieldValue('vaults[0].whitelist', dateRange[0]);
+        return setFieldValue('vaults[0].whitelistEnd', dateRange[1]);
+      }
+      case 'Public Round 1': {
+        setFieldValue('vaults[0].publicRound1', dateRange[0]);
+        return setFieldValue('vaults[0].publicRound1End', dateRange[1]);
+      }
+      case 'Public Round 2': {
+        setFieldValue('vaults[0].publicRound2', dateRange[0]);
+        return setFieldValue('vaults[0].publicRound2End', dateRange[1]);
+      }
+      default:
+        break;
+    }
+    setFieldValue(`vaults[0].snapshot`, dateRange);
+    /*eslint-disable*/
+  }, [dateRange, claimDate, leftTitle]);
 
   return (
     <Flex
@@ -90,9 +126,6 @@ const SubTitle = (props: {
             ) : (
               <SingleCalendarPop setDate={setClaimDate}></SingleCalendarPop>
             )}
-            <Text>
-              {dateRange[0]} {dateRange[1]}
-            </Text>
           </Flex>
         ) : (
           <InputField
