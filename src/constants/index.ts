@@ -78,6 +78,8 @@ const MAINNET_DEPLOYED = {
   TonStakerVault: '',
   TosStakerVault: '',
   LPrewardVault: '',
+  TypeCVault: '',
+  DAOVault: '',
   pools: {
     TOS_WTON_POOL: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
   },
@@ -116,6 +118,8 @@ const RINKEBY_DEPLOYED = {
   TonStakerVault: '0x84799DF4346BfC1EF9945dbD831308930A48a4f9',
   TosStakerVault: '0x012f6a19544E35faE7f05993A90636157A886e86',
   LPrewardVault: '0x08cA986A37B28bD00E6fE09819538b3a4F768688',
+  TypeCVault: '0xb1bb7D524E8927B44E46A25CD8076DEf16bD5354',
+  DAOVault: '',
   pools: {
     TOS_WTON_POOL: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
   },

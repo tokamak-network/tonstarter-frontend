@@ -527,6 +527,38 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               setVaultState('readyForToken');
               break;
             }
+            case 'C': {
+              // 0: name : string
+              // 1: _token : address
+              // 2: _owner : address
+              const tx = await vaultContract
+                ?.connect(signer)
+                .create(
+                  selectedVaultDetail?.vaultName,
+                  values.tokenAddress,
+                  selectedVaultDetail?.adminAddress,
+                );
+              const receipt = await tx.wait();
+              const {logs} = receipt;
+
+              const iface = new ethers.utils.Interface(LPrewardVaultAbi.abi);
+
+              const result = iface.parseLog(logs[9]);
+              const {args} = result;
+
+              if (args) {
+                setFieldValue(
+                  `vaults[${selectedVaultDetail?.index}].vaultAddress`,
+                  args[0],
+                );
+                setFieldValue(
+                  `vaults[${selectedVaultDetail?.index}].isDeployed`,
+                  true,
+                );
+                setVaultState('readyForToken');
+              }
+              break;
+            }
             default:
               break;
           }
@@ -647,8 +679,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 PublicSaleVaultAbi.abi,
                 library,
               );
-
-              console.log(publicVaultSecondContract);
 
               const tx = await publicVaultSecondContract
                 ?.connect(signer)
@@ -790,10 +820,43 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               }
               break;
             }
+            case 'C': {
+              // 0: _totalAllocatedAmountme : uint256
+              // 1 : _claimCounts : uint256
+              // 2 : _claimTimes : uint256[]
+              // 3 : _claimAmounts : uint256[]
+              const claimTimesParam = selectedVaultDetail?.claim.map(
+                (claimData: VaultSchedule) => claimData.claimTime,
+              );
+              const claimAmountsParam = selectedVaultDetail?.claim.map(
+                (claimData: VaultSchedule) => claimData.claimTokenAllocation,
+              );
+              const tx = await vaultContract
+                ?.connect(signer)
+                .initialize(
+                  selectedVaultDetail?.vaultTokenAllocation,
+                  selectedVaultDetail?.claim.length,
+                  claimTimesParam,
+                  claimAmountsParam,
+                );
+              const receipt = await tx.wait();
+
+              if (receipt) {
+                setFieldValue(
+                  `vaults[${selectedVaultDetail?.index}].isSet`,
+                  true,
+                );
+                setVaultState('finished');
+              }
+              break;
+            }
             default:
               break;
           }
         } catch (e) {
+          console.log(
+            `******DEPLOY ERROR_${selectedVaultDetail.vaultName}******`,
+          );
           console.log(e);
           setFieldValue(
             `vaults[${selectedVaultDetail?.index}].isDeployedErr`,

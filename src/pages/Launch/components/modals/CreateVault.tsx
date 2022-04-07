@@ -12,7 +12,7 @@ import {
   useColorMode,
   Input,
 } from '@chakra-ui/react';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {useModal} from 'hooks/useModal';
@@ -46,6 +46,10 @@ const CreateVaultModal = () => {
       },
     ]);
   }
+
+  useEffect(() => {
+    //Handle it if input value type is char
+  }, [tokenAllocatonVal]);
 
   return (
     <Modal
