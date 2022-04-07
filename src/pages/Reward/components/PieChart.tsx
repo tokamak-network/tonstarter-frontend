@@ -34,7 +34,9 @@ export const PieChart: FC<PieChartProps> = ({pieData}) => {
       data={formattedData}
       padAngle={0.7}
       cornerRadius={3}
-      activeOuterRadiusOffset={8}
+      margin={{top: 3, bottom: 3}}
+      // This field will allow the pie slices to grow outside the circle.
+      activeOuterRadiusOffset={3}
       borderWidth={1}
       borderColor={{
         from: 'color',

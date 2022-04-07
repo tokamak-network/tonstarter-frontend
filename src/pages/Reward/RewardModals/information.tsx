@@ -195,43 +195,46 @@ export const InformationModal = () => {
       .connect(signer)
       .incentives(incentiveId);
 
-    const eventFilter: any[] = [
-      uniswapStakerContract.filters.IncentiveCreated(
-        reward.rewardToken,
-        reward.poolAddress,
-      ),
-      uniswapStakerContract.filters.IncentiveEnded(incentiveId, null),
+    const tokenStakedActivity = await uniswapStakerContract.queryFilter(
       uniswapStakerContract.filters.TokenStaked(null, incentiveId, null),
-      uniswapStakerContract.filters.TokenUnstaked(null, incentiveId),
-    ];
-
-    console.log('eventFilter: ', eventFilter);
-
-    const recentActivity = await uniswapStakerContract.queryFilter(
-      eventFilter as any,
       blockNumber - 150000,
       blockNumber,
     );
 
-    console.log('recentActivity: ', recentActivity);
+    const tokenUnstakedActivity = await uniswapStakerContract.queryFilter(
+      uniswapStakerContract.filters.TokenUnstaked(null, incentiveId),
+      blockNumber - 150000,
+      blockNumber,
+    );
 
-    let filter = {
-      fromBlock: blockNumber - 150000,
-      toBlock: blockNumber,
-      address: UniswapStaker_Address,
-      topics: [
-        '0xa876344e28d4b5191ad03bc0d43f740e3695827ab0faccac739930b915ef8b02',
-        ethers.utils.hexZeroPad(key.rewardToken, 32),
-        ethers.utils.hexZeroPad(key.pool, 32),
-      ],
-    };
+    const incentiveEndedActivity = await uniswapStakerContract.queryFilter(
+      uniswapStakerContract.filters.IncentiveEnded(incentiveId, null),
+      blockNumber - 150000,
+      blockNumber,
+    );
 
-    const testRes = await provider.getLogs(filter).then((res: any) => {
-      return res;
-    });
-    console.log('testRes:', testRes);
+    const incentiveCreatedActivity = await uniswapStakerContract.queryFilter(
+      uniswapStakerContract.filters.IncentiveCreated(
+        reward.rewardToken,
+        reward.poolAddress,
+      ),
+      blockNumber - 150000,
+      blockNumber,
+    );
 
-    let stakerEvents = await getStakerEvents();
+    console.log('tokenStakedActivity: ', tokenStakedActivity);
+    console.log('tokenUnstakedActivity: ', tokenUnstakedActivity);
+    console.log('incentiveEndedActivity: ', incentiveEndedActivity);
+    console.log('incentiveCreatedActivity: ', incentiveCreatedActivity);
+
+    let stakerEvents = [
+      tokenStakedActivity,
+      tokenUnstakedActivity,
+      incentiveCreatedActivity,
+      incentiveEndedActivity,
+    ].flat();
+
+    // let stakerEvents = await getStakerEvents();
     console.log('stakerEvents: ', stakerEvents);
 
     // The UI will show an empty table until this is all done loading.
@@ -253,9 +256,6 @@ export const InformationModal = () => {
     //     txn.transactionReceipt = await txn
     //       .getTransactionReceipt()
     //       .then((res: any) => res);
-
-    //     // Split camelCased event string.
-    //     txn.event = txn.event.replace(/([a-z](?=[A-Z]))/g, '$1 ');
 
     //     return txn;
     //   }),
@@ -282,17 +282,8 @@ export const InformationModal = () => {
 
           txn.from = txn?.transactionInfo?.from;
 
-          // Add the correct txn address from each 'activity'
-          // txn.transactionInfo = await txn
-          //   .getTransaction()
-          //   .then((res: any) => res);
-
-          // txn.transactionReceipt = await txn
-          //   .getTransactionReceipt()
-          //   .then((res: any) => res);
-
-          // // Split camelCased event string.
-          // txn.event = txn.event.replace(/([a-z](?=[A-Z]))/g, '$1 ');
+          // Split camelCased event string.
+          txn.event = txn.event.replace(/([a-z](?=[A-Z]))/g, '$1 ');
 
           return txn;
         }),
@@ -453,92 +444,95 @@ export const InformationModal = () => {
     );
   };
 
-  const getStakerEvents = async () => {
-    if (account === null || account === undefined || library === undefined) {
-      return;
-    }
+  // const getStakerEvents = async () => {
+  //   if (account === null || account === undefined || library === undefined) {
+  //     return;
+  //   }
 
-    let stakerEventsResults = [];
+  //   let stakerEventsResults = [];
 
-    const incentiveABI =
-      'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)';
-    const abicoder = ethers.utils.defaultAbiCoder;
-    const incentiveId = soliditySha3(abicoder.encode([incentiveABI], [key]));
+  //   const incentiveABI =
+  //     'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)';
+  //   const abicoder = ethers.utils.defaultAbiCoder;
+  //   const incentiveId = soliditySha3(abicoder.encode([incentiveABI], [key]));
 
-    console.log('incentiveId: ', incentiveId);
-    console.log('key: ', key);
+  //   console.log('incentiveId: ', incentiveId);
+  //   console.log('key: ', key);
 
-    // Incentive Created
-    let incentiveCreatedFilter = {
-      fromBlock: blockNumber - 150000,
-      toBlock: blockNumber,
-      address: UniswapStaker_Address,
-      topics: [
-        '0xa876344e28d4b5191ad03bc0d43f740e3695827ab0faccac739930b915ef8b02',
-        ethers.utils.hexZeroPad(key.rewardToken, 32),
-        ethers.utils.hexZeroPad(key.pool, 32),
-      ],
-    };
+  //   // Hard code add event name into each event object.
+  //   // Incentive Created
+  //   let incentiveCreatedFilter = {
+  //     fromBlock: blockNumber - 150000,
+  //     toBlock: blockNumber,
+  //     address: UniswapStaker_Address,
+  //     topics: [
+  //       '0xa876344e28d4b5191ad03bc0d43f740e3695827ab0faccac739930b915ef8b02',
+  //       ethers.utils.hexZeroPad(key.rewardToken, 32),
+  //       ethers.utils.hexZeroPad(key.pool, 32),
+  //     ],
+  //   };
 
-    const incentiveCreatedRes = await provider
-      .getLogs(incentiveCreatedFilter)
-      .then((res: any) => res);
+  //   const incentiveCreatedRes = await provider
+  //     .getLogs(incentiveCreatedFilter)
+  //     .then((res: any) => res);
 
-    // Token Staked
-    let tokenStakedFilter = {
-      fromBlock: blockNumber - 1500000,
-      toBlock: blockNumber,
-      address: UniswapStaker_Address,
-      topics: [
-        ethers.utils.id('TokenStaked(uint256,bytes32,uint128)'),
-        null,
-        incentiveId,
-        null,
-      ],
-    };
-    const tokenStakedRes = await provider
-      .getLogs(tokenStakedFilter)
-      .then((res: any) => res);
+  //   // Token Staked
+  //   let tokenStakedFilter = {
+  //     fromBlock: blockNumber - 1500000,
+  //     toBlock: blockNumber,
+  //     address: UniswapStaker_Address,
+  //     topics: [
+  //       ethers.utils.id('TokenStaked(uint256,bytes32,uint128)'),
+  //       null,
+  //       incentiveId,
+  //       null,
+  //     ],
+  //   };
+  //   const tokenStakedRes = await provider
+  //     .getLogs(tokenStakedFilter)
+  //     .then((res: any) => res);
 
-    // Token Unstaked
-    let tokenUnstakedFilter = {
-      fromBlock: blockNumber - 1500000,
-      toBlock: blockNumber,
-      address: UniswapStaker_Address,
-      topics: [
-        ethers.utils.id('TokenUnstaked(uint256,bytes32)'),
-        null,
-        incentiveId,
-      ],
-    };
-    const unstakeTokenRes = await provider
-      .getLogs(tokenUnstakedFilter)
-      .then((res) => res);
+  //   console.log('tokenStakedRes: ', tokenStakedRes);
 
-    // Incentive Ended
-    let incentiveEndedFilter = {
-      fromBlock: blockNumber - 1500000,
-      toBlock: blockNumber,
-      address: UniswapStaker_Address,
-      topics: [
-        ethers.utils.id('IncentiveEnded(bytes32,uint256)'),
-        incentiveId,
-        null,
-      ],
-    };
-    const incentiveEndedRes = await provider
-      .getLogs(incentiveEndedFilter)
-      .then((res) => res);
+  //   // Token Unstaked
+  //   let tokenUnstakedFilter = {
+  //     fromBlock: blockNumber - 1500000,
+  //     toBlock: blockNumber,
+  //     address: UniswapStaker_Address,
+  //     topics: [
+  //       ethers.utils.id('TokenUnstaked(uint256,bytes32)'),
+  //       null,
+  //       incentiveId,
+  //     ],
+  //   };
+  //   const unstakeTokenRes = await provider
+  //     .getLogs(tokenUnstakedFilter)
+  //     .then((res) => res);
 
-    stakerEventsResults.push(incentiveCreatedRes);
-    stakerEventsResults.push(tokenStakedRes);
-    stakerEventsResults.push(unstakeTokenRes);
-    stakerEventsResults.push(incentiveEndedRes);
+  //   // Incentive Ended
+  //   let incentiveEndedFilter = {
+  //     fromBlock: blockNumber - 1500000,
+  //     toBlock: blockNumber,
+  //     address: UniswapStaker_Address,
+  //     topics: [
+  //       ethers.utils.id('IncentiveEnded(bytes32,uint256)'),
+  //       incentiveId,
+  //       null,
+  //     ],
+  //   };
+  //   const incentiveEndedRes = await provider
+  //     .getLogs(incentiveEndedFilter)
+  //     .then((res) => res);
 
-    console.log('stakerEventsResults:', stakerEventsResults);
+  //   stakerEventsResults.push(incentiveCreatedRes);
+  //   stakerEventsResults.push(tokenStakedRes);
+  //   stakerEventsResults.push(unstakeTokenRes);
+  //   stakerEventsResults.push(incentiveEndedRes);
 
-    return stakerEventsResults.flat();
-  };
+  //   console.log('stakerEventsResults:', stakerEventsResults);
+
+  //   return stakerEventsResults.flat();
+  // };
 
   const getTotalDuration = (startTime: any, endTime: any) => {
     let unixStartTime = moment.unix(startTime);
