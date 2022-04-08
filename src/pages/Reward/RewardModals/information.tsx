@@ -65,6 +65,7 @@ export const InformationModal = () => {
   const [recentActivityTable, setRecentActivityTable] = useState<any>();
   const {data: appConfig} = useAppSelector(selectApp);
   const [network, setNetwork] = useState<string>('');
+  const [blockNumberFilter, setBlockNumberFilter] = useState<number>(150000);
 
   //@ts-ignore
   const web3 = new Web3(window.ethereum);
@@ -138,19 +139,19 @@ export const InformationModal = () => {
 
     const tokenStakedActivity = await uniswapStakerContract.queryFilter(
       uniswapStakerContract.filters.TokenStaked(null, incentiveId, null),
-      blockNumber - 150000,
+      blockNumber - blockNumberFilter,
       blockNumber,
     );
 
     const tokenUnstakedActivity = await uniswapStakerContract.queryFilter(
       uniswapStakerContract.filters.TokenUnstaked(null, incentiveId),
-      blockNumber - 150000,
+      blockNumber - blockNumberFilter,
       blockNumber,
     );
 
     const incentiveEndedActivity = await uniswapStakerContract.queryFilter(
       uniswapStakerContract.filters.IncentiveEnded(incentiveId, null),
-      blockNumber - 150000,
+      blockNumber - blockNumberFilter,
       blockNumber,
     );
 
@@ -159,9 +160,24 @@ export const InformationModal = () => {
         reward.rewardToken,
         reward.poolAddress,
       ),
-      blockNumber - 150000,
+      blockNumber - blockNumberFilter,
       blockNumber,
     );
+
+    // console.log('uniswapStakerContract:', uniswapStakerContract);
+
+    // // IncentiveCreated
+    // let filter = {
+    //   fromBlock: blockNumber - blockNumberFilter,
+    //   toBlock: blockNumber as number,
+    //   address: uniswapStakerContract.address,
+    //   topics: [
+    //     '0xa876344e28d4b5191ad03bc0d43f740e3695827ab0faccac739930b915ef8b02',
+    //     ethers.utils.hexZeroPad(reward.rewardToken, 32),
+    //     ethers.utils.hexZeroPad(reward.pool, 32),
+    //   ],
+    // };
+    // await provider.getLogs(filter).then((res: any) => console.log('res:', res));
 
     let stakerEvents = [
       tokenStakedActivity,

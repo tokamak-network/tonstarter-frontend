@@ -73,13 +73,13 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
         .then((result) => result);
       const ethPrices = await fetch(fetchEthPriceURL)
         .then((res) => res.json())
-        .then(tokenDataList => {
-          const priceObject: { [key: string]: number } = {};
+        .then((tokenDataList) => {
+          const priceObject: {[key: string]: number} = {};
           for (const tokenData of tokenDataList) {
             priceObject[tokenData.id as string] = tokenData.current_price;
           }
-          setEthPrice(priceObject.ethereum)
-        })
+          setEthPrice(priceObject.ethereum);
+        });
       setTosPrice(tosPrices);
     }
     getPrice();
@@ -182,7 +182,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
             <Text
               color={colorMode === 'light' ? 'gray.250' : 'white.100'}
               fontWeight={700}
-              w={'88px'}
+              w={'85px'}
               ml={'5px'}
               cursor={'pointer'}
               fontFamily={theme.fonts.fld}
@@ -191,17 +191,21 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
                 e.preventDefault();
                 window.open(`https://info.uniswap.org/#/pools/${pool.id}`);
               }}>
-              {pool.token0.symbol}/{pool.token1.symbol}
+              {pool.token0.symbol}+{pool.token1.symbol}
             </Text>
-            <Box fontFamily={theme.fonts.fld} fontWeight={700}>
+            <Box
+              fontFamily={theme.fonts.fld}
+              fontWeight={700}
+              width={'calc(100% - 140px)'}>
               <Text
                 fontWeight={700}
                 fontSize="11px"
+                textAlign={'right'}
                 color={colorMode === 'light' ? 'gray.400' : 'gray.150'}>
                 Liquidity
               </Text>
               {liquidity !== 0 ? (
-                <Text fontSize={'18px'}>
+                <Text fontSize={'18px'} textAlign={'right'}>
                   {' '}
                   ${' '}
                   {liquidity.toLocaleString(undefined, {
@@ -211,7 +215,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
               ) : (
                 <Text fontSize={'11px'}>No current liquidity data</Text>
               )}
-              <Flex>
+              <Flex justifyContent={'flex-start'} width={'135px'}>
                 <Text
                   fontSize="10px"
                   color={colorMode === 'light' ? 'gray.400' : 'gray.150'}>

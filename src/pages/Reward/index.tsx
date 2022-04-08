@@ -1237,6 +1237,7 @@ export const Reward = () => {
                   pools={pool}
                   sortString={sortString}
                   positionsByPool={positionsByPool}
+                  LPTokens={positions}
                 />
               )}
               <SideContainer

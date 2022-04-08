@@ -29,6 +29,8 @@ import {refund} from '../actions';
 import {getTokenSymbol} from '../utils/getTokenSymbol';
 import {UpdatedRedward} from '../types';
 import {unstakeLP} from '../actions/unstakeLP';
+import {useDispatch} from 'react-redux';
+import {openModal} from 'store/modal.reducer';
 
 const themeDesign = {
   border: {
@@ -52,6 +54,8 @@ type RewardProgramCardManageProps = {
   stakedPools: any[];
   getCheckedBoxes: (checkedBoxes: any) => any;
   selectedRewards: any;
+  LPTokens: any;
+  latestBlockNumber: number;
 };
 
 const {WTON_ADDRESS, TON_ADDRESS, UniswapStaker_Address} = DEPLOYED;
@@ -64,6 +68,8 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
   stakedPools,
   getCheckedBoxes,
   selectedRewards,
+  LPTokens,
+  latestBlockNumber,
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -76,6 +82,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
   const [refundableAmount, setRefundableAmount] = useState<string>('0');
   const [numStakers, setNumStakers] = useState<number>(0);
   const [rewardSymbol, setRewardSymbol] = useState<string>('');
+  const dispatch = useDispatch();
 
   const key = {
     rewardToken: reward.rewardToken,
@@ -164,7 +171,28 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
   ]);
 
   return (
-    <Flex {...REWARD_STYLE.containerStyle({colorMode})} flexDir={'column'}>
+    <Flex
+      {...REWARD_STYLE.containerStyle({colorMode})}
+      flexDir={'column'}
+      onClick={() => {
+        dispatch(
+          openModal({
+            type: 'information',
+            data: {
+              reward,
+              stakedPools,
+              key,
+              userAddress: account,
+              positions: LPTokens,
+              blockNumber: latestBlockNumber,
+            },
+          }),
+        );
+      }}
+      _hover={{
+        border: '2px solid #0070ED',
+        cursor: 'pointer',
+      }}>
       <Flex
         flexDir={'row'}
         width={'100%'}
@@ -392,16 +420,18 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
         <Flex flexDirection="row" justifyContent={'center'}>
           {refundableAmount === '0' ||
           reward.endTime > moment().unix() ? null : (
-            <Checkbox
-              mt={'5px'}
-              isChecked={selectedRewards.some(
-                (selected: any) => selected.index === reward.index,
-              )}
-              onChange={() => {
-                sendKey(key);
-                getCheckedBoxes(reward);
-              }}
-            />
+            <label onClick={(e: any) => e.stopPropagation()}>
+              <Checkbox
+                mt={'5px'}
+                isChecked={selectedRewards.some(
+                  (selected: any) => selected.index === reward.index,
+                )}
+                onChange={() => {
+                  sendKey(key);
+                  getCheckedBoxes(reward);
+                }}
+              />
+            </label>
           )}
           {numStakers > 0 ? (
             <Tooltip
@@ -435,15 +465,16 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
                 disabled={
                   refundableAmount === '0' || reward.endTime > moment().unix()
                 }
-                onClick={() =>
+                onClick={(e) => {
+                  e.stopPropagation();
                   unstakeLP({
                     library: library,
                     userAddress: account,
                     key: key,
                     reward: reward,
                     stakedPools,
-                  })
-                }>
+                  });
+                }}>
                 Refund
               </Button>
             </Tooltip>
@@ -472,9 +503,10 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
               disabled={
                 refundableAmount === '0' || reward.endTime > moment().unix()
               }
-              onClick={() =>
-                refund({library: library, userAddress: account, key: key})
-              }>
+              onClick={(e) => {
+                e.stopPropagation();
+                refund({library: library, userAddress: account, key: key});
+              }}>
               Refund
             </Button>
           )}
