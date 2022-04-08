@@ -64,17 +64,18 @@ const SingleCalendarPop: React.FC<calendarComponentProps> = ({setDate}) => {
   const [startTimeArray, setStartTimeArray] = useState([]);
 
   const createTime = (onClose: any) => {
-    const starts = moment.unix(startTime)
+    const starts = moment.unix(startTime);
     const startDates = moment(starts).set({
       hour: startTimeArray[0],
       minute: startTimeArray[1],
       second: startTimeArray[2],
     });
-   
+
     setStartTime(startDates.unix());
-    setDate(startDates.unix())
+    setDate(startDates.unix());
     onClose();
-  }
+  };
+
   return (
     <Popover closeOnBlur={true} placement="bottom">
       {({isOpen, onClose}) => (
@@ -83,12 +84,16 @@ const SingleCalendarPop: React.FC<calendarComponentProps> = ({setDate}) => {
             <img
               src={image}
               onMouseEnter={() => setImage(CalendarActiveImg)}
-              onMouseOut={() => setImage(CalendarInactiveImg)}  style={{cursor: 'pointer'}}></img>
+              onMouseOut={() => setImage(CalendarInactiveImg)}
+              style={{cursor: 'pointer'}}
+              alt={'calender_icon'}></img>
           </PopoverTrigger>
           <PopoverContent
             h={'423px'}
             w={'300px'}
-            border={colorMode === 'light' ? '1px solid #e6eaee' : '1px solid #535353'}
+            border={
+              colorMode === 'light' ? '1px solid #e6eaee' : '1px solid #535353'
+            }
             bg={colorMode === 'light' ? '#FFFFFF' : '#222222'}
             borderRadius={'4px'}
             _focus={
@@ -137,8 +142,7 @@ const SingleCalendarPop: React.FC<calendarComponentProps> = ({setDate}) => {
                   color={'#3a495f'}
                   //   disabled={isSubmitting}
                   _hover={{}}
-                    onClick={() => onClose()}
-                >
+                  onClick={() => onClose()}>
                   Cancel
                 </Button>
               </Flex>

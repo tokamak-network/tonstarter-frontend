@@ -1,5 +1,6 @@
 {
   "abi": [
+    {"inputs": [], "stateMutability": "nonpayable", "type": "constructor"},
     {
       "anonymous": false,
       "inputs": [
@@ -16,7 +17,7 @@
           "type": "string"
         }
       ],
-      "name": "CreatedRewardProgramVault",
+      "name": "CreatedPublicSaleProxy",
       "type": "event"
     },
     {
@@ -110,13 +111,6 @@
     },
     {
       "inputs": [],
-      "name": "CLAIMER_ROLE",
-      "outputs": [{"internalType": "bytes32", "name": "", "type": "bytes32"}],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
       "name": "DEFAULT_ADMIN_ROLE",
       "outputs": [{"internalType": "bytes32", "name": "", "type": "bytes32"}],
       "stateMutability": "view",
@@ -125,6 +119,13 @@
     {
       "inputs": [],
       "name": "MINTER_ROLE",
+      "outputs": [{"internalType": "bytes32", "name": "", "type": "bytes32"}],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "PROJECT_ADMIN_ROLE",
       "outputs": [{"internalType": "bytes32", "name": "", "type": "bytes32"}],
       "stateMutability": "view",
       "type": "function"
@@ -140,10 +141,27 @@
     },
     {
       "inputs": [
-        {"internalType": "string", "name": "_name", "type": "string"},
-        {"internalType": "address", "name": "pool", "type": "address"},
-        {"internalType": "address", "name": "rewardToken", "type": "address"},
-        {"internalType": "address", "name": "_admin", "type": "address"}
+        {
+          "internalType": "address[6]",
+          "name": "_basicAddress",
+          "type": "address[6]"
+        }
+      ],
+      "name": "basicSet",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {"internalType": "string", "name": "name", "type": "string"},
+        {"internalType": "address", "name": "_owner", "type": "address"},
+        {
+          "internalType": "address[3]",
+          "name": "saleAddresses",
+          "type": "address[3]"
+        },
+        {"internalType": "uint256", "name": "_index", "type": "uint256"}
       ],
       "name": "create",
       "outputs": [{"internalType": "address", "name": "", "type": "address"}],
@@ -186,6 +204,25 @@
       ],
       "name": "getRoleAdmin",
       "outputs": [{"internalType": "bytes32", "name": "", "type": "bytes32"}],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {"internalType": "bytes32", "name": "role", "type": "bytes32"},
+        {"internalType": "uint256", "name": "index", "type": "uint256"}
+      ],
+      "name": "getRoleMember",
+      "outputs": [{"internalType": "address", "name": "", "type": "address"}],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {"internalType": "bytes32", "name": "role", "type": "bytes32"}
+      ],
+      "name": "getRoleMemberCount",
+      "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
       "stateMutability": "view",
       "type": "function"
     },
@@ -240,6 +277,27 @@
       "type": "function"
     },
     {
+      "inputs": [],
+      "name": "maxTOS",
+      "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "minTOS",
+      "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "publicLogic",
+      "outputs": [{"internalType": "address", "name": "", "type": "address"}],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [
         {"internalType": "address", "name": "account", "type": "address"}
       ],
@@ -269,28 +327,27 @@
       "type": "function"
     },
     {
+      "inputs": [],
+      "name": "sTOSAddress",
+      "outputs": [{"internalType": "address", "name": "", "type": "address"}],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [
-        {"internalType": "address", "name": "addr", "type": "address"}
+        {"internalType": "address", "name": "_addr", "type": "address"}
       ],
-      "name": "setLogEventAddress",
+      "name": "setEventLog",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
       "inputs": [
-        {"internalType": "address", "name": "_logic", "type": "address"}
+        {"internalType": "uint256", "name": "_min", "type": "uint256"},
+        {"internalType": "uint256", "name": "_max", "type": "uint256"}
       ],
-      "name": "setLogic",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {"internalType": "address", "name": "_staker", "type": "address"}
-      ],
-      "name": "setStaker",
+      "name": "setMaxMin",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -306,30 +363,24 @@
     },
     {
       "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_waitStartSeconds",
-          "type": "uint256"
-        }
+        {"internalType": "address", "name": "_vaultFactory", "type": "address"}
       ],
-      "name": "setWaitStartSeconds",
+      "name": "setVault",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
       "inputs": [],
-      "name": "staker",
+      "name": "tonAddress",
       "outputs": [{"internalType": "address", "name": "", "type": "address"}],
       "stateMutability": "view",
       "type": "function"
     },
     {
-      "inputs": [
-        {"internalType": "bytes4", "name": "interfaceId", "type": "bytes4"}
-      ],
-      "name": "supportsInterface",
-      "outputs": [{"internalType": "bool", "name": "", "type": "bool"}],
+      "inputs": [],
+      "name": "tosAddress",
+      "outputs": [{"internalType": "address", "name": "", "type": "address"}],
       "stateMutability": "view",
       "type": "function"
     },
@@ -351,45 +402,29 @@
     },
     {
       "inputs": [],
+      "name": "uniRouterAddress",
+      "outputs": [{"internalType": "address", "name": "", "type": "address"}],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
       "name": "upgradeAdmin",
       "outputs": [{"internalType": "address", "name": "", "type": "address"}],
       "stateMutability": "view",
       "type": "function"
     },
     {
-      "inputs": [
-        {"internalType": "address", "name": "_contract", "type": "address"},
-        {"internalType": "bytes4[]", "name": "_selectors", "type": "bytes4[]"},
-        {"internalType": "address", "name": "_imp", "type": "address"}
-      ],
-      "name": "upgradeContractFunction",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {"internalType": "address", "name": "_contract", "type": "address"},
-        {"internalType": "address", "name": "_logic", "type": "address"},
-        {"internalType": "uint256", "name": "_index", "type": "uint256"},
-        {"internalType": "bool", "name": "_alive", "type": "bool"}
-      ],
-      "name": "upgradeContractLogic",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
       "inputs": [],
-      "name": "vaultLogic",
+      "name": "vaultFactory",
       "outputs": [{"internalType": "address", "name": "", "type": "address"}],
       "stateMutability": "view",
       "type": "function"
     },
     {
       "inputs": [],
-      "name": "waitStartSeconds",
-      "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+      "name": "wtonAddress",
+      "outputs": [{"internalType": "address", "name": "", "type": "address"}],
       "stateMutability": "view",
       "type": "function"
     }

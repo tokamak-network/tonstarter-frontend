@@ -2,7 +2,12 @@ import {Flex, Grid, GridItem, Text, useColorMode} from '@chakra-ui/react';
 import {useTheme} from '@emotion/react';
 import useTokenDetail from '@Launch/hooks/useTokenDetail';
 import {selectLaunch} from '@Launch/launch.reducer';
-import {Projects, PublicTokenColData, VaultCommon} from '@Launch/types';
+import {
+  Projects,
+  PublicTokenColData,
+  VaultCommon,
+  VaultPublic,
+} from '@Launch/types';
 import HoverImage from 'components/HoverImage';
 import {useFormikContext} from 'formik';
 import {useAppSelector} from 'hooks/useRedux';
@@ -15,6 +20,7 @@ import commafy from 'utils/commafy';
 import {shortenAddress} from 'utils';
 import DoubleCalendarPop from '../common/DoubleCalendarPop';
 import SingleCalendarPop from '../common/SingleCalendarPop';
+import {values} from 'lodash';
 
 export const MainTitle = (props: {leftTitle: string; rightTitle: string}) => {
   const {leftTitle, rightTitle} = props;
@@ -52,19 +58,45 @@ const SubTitle = (props: {
     formikName,
   } = props;
   const [inputVal, setInputVal] = useState(rightTitle?.replaceAll(' TON', ''));
-  const {setFieldValue} = useFormikContext();
-
+  const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
+  const {vaults} = values;
+  const publicVault = vaults[0] as VaultPublic;
   useEffect(() => {
     setInputVal(rightTitle?.replaceAll(' TON', ''));
   }, [isEdit, rightTitle]);
 
-  const tokensRef = useRef();
-  const [dateRange, setDateRange] = useState([]);
-  const [claimDate, setClaimDate] = useState<number>(0);
+  function getTimeStamp() {
+    switch (
+      leftTitle as
+        | 'Snapshot'
+        | 'Whitelist'
+        | 'Public Round 1'
+        | 'Public Round 2'
+    ) {
+      case 'Snapshot': {
+        return publicVault.snapshot;
+      }
+      case 'Whitelist': {
+        return [publicVault.whitelist, publicVault.whitelistEnd];
+      }
+      case 'Public Round 1': {
+        return [publicVault.publicRound1, publicVault.publicRound1End];
+      }
+      case 'Public Round 2': {
+        return [publicVault.publicRound2, publicVault.publicRound2End];
+      }
+      default:
+        return 0;
+    }
+  }
 
-  console.log('---calender--');
-  console.log(dateRange);
-  console.log(claimDate);
+  const tokensRef = useRef();
+  const [dateRange, setDateRange] = useState<number | undefined[]>(
+    getTimeStamp() as number | undefined[],
+  );
+  const [claimDate, setClaimDate] = useState<number | undefined>(
+    getTimeStamp() as number | undefined,
+  );
 
   useEffect(() => {
     //Put timestamp
@@ -79,21 +111,26 @@ const SubTitle = (props: {
         return setFieldValue('vaults[0].snapshot', claimDate);
       }
       case 'Whitelist': {
+        //@ts-ignore
         setFieldValue('vaults[0].whitelist', dateRange[0]);
+        //@ts-ignore
         return setFieldValue('vaults[0].whitelistEnd', dateRange[1]);
       }
       case 'Public Round 1': {
+        //@ts-ignore
         setFieldValue('vaults[0].publicRound1', dateRange[0]);
+        //@ts-ignore
         return setFieldValue('vaults[0].publicRound1End', dateRange[1]);
       }
       case 'Public Round 2': {
+        //@ts-ignore
         setFieldValue('vaults[0].publicRound2', dateRange[0]);
+        //@ts-ignore
         return setFieldValue('vaults[0].publicRound2End', dateRange[1]);
       }
       default:
         break;
     }
-    setFieldValue(`vaults[0].snapshot`, dateRange);
     /*eslint-disable*/
   }, [dateRange, claimDate, leftTitle]);
 
@@ -109,19 +146,20 @@ const SubTitle = (props: {
       <Text color={'#7e8993'} w={'101px'}>
         {leftTitle}
       </Text>
-
       {isEdit ? (
         isSecondColData ? (
           <Flex>
             <Flex flexDir={'column'} textAlign={'right'} mr={'8px'}>
               <Text>{rightTitle?.split('~')[0] || '-'}</Text>
-              <Text>
-                {rightTitle?.split('~')[1]
-                  ? `~ ${rightTitle?.split('~')[1]}`
-                  : ''}
-              </Text>
+              {leftTitle !== 'Snapshot' && (
+                <Text>
+                  {rightTitle?.split('~')[1] || '-'
+                    ? `~ ${rightTitle?.split('~')[1] || '-'}`
+                    : ''}
+                </Text>
+              )}
             </Flex>
-            {rightTitle?.split('~')[1] ? (
+            {leftTitle !== 'Snapshot' ? (
               <DoubleCalendarPop setDate={setDateRange}></DoubleCalendarPop>
             ) : (
               <SingleCalendarPop setDate={setClaimDate}></SingleCalendarPop>

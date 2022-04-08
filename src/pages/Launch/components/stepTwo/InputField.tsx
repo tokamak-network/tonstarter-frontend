@@ -141,7 +141,6 @@ const InputField: React.FC<InputFieldProp> = (props) => {
                       //@ts-ignore
                       ...tempVaultData.stosTier,
                       [stosTier]: {
-                        // allocatedToken: '11',
                         [formikName]: e.target.value,
                         [formikName === 'requiredStos'
                           ? 'allocatedToken'

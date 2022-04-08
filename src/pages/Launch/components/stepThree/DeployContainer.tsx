@@ -16,7 +16,6 @@ const DeployContainer = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    console.log('gogogo');
     // saveProject(values, account as string);
   }, [values, account]);
 

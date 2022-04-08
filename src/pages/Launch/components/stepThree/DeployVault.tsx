@@ -35,13 +35,18 @@ import {useBlockNumber} from 'hooks/useBlock';
 import {useContract} from 'hooks/useContract';
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import * as LiquidityIncentiveAbi from 'services/abis/LiquidityIncentiveAbi.json';
+import * as PublicSaleVaultCreateAbi from 'services/abis/PublicSaleVaultCreateAbi.json';
 import * as PublicSaleVaultAbi from 'services/abis/PublicSaleVault.json';
 import * as TONStakerAbi from 'services/abis/TONStakerAbi.json';
+import * as TONStakerInitializeAbi from 'services/abis/TONStakerInitializeAbi.json';
 import * as TOSStakerAbi from 'services/abis/TOSStakerAbi.json';
+import * as TOSStakerInitializeAbi from 'services/abis/TOSStakerInitializeAbi.json';
 import * as LPrewardVaultAbi from 'services/abis/LPrewardVaultAbi.json';
 import {convertNumber, convertToWei} from 'utils/number';
 import commafy from 'utils/commafy';
 import {convertTimeStamp} from 'utils/convertTIme';
+
+//Project
 
 type DeployVaultProp = {
   vault: VaultAny;
@@ -53,7 +58,7 @@ function getContract(vaultType: VaultType, library: LibraryType) {
       const {PublicSaleVault} = DEPLOYED;
       const contract = new Contract(
         PublicSaleVault,
-        PublicSaleVaultAbi.abi,
+        PublicSaleVaultCreateAbi.abi,
         library,
       );
       return contract;
@@ -394,8 +399,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                     await InitialLiquidity_Contract.createdContracts(
                       valutIndex,
                     );
-                  console.log(vault.contractAddress);
-                  console.log(values.vaults[1].vaultAddress);
                   if (vault.contractAddress === values.vaults[1].vaultAddress) {
                     break;
                   }
@@ -416,25 +419,32 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               const receipt = await tx.wait();
               const {logs} = receipt;
 
-              const iface = new ethers.utils.Interface(PublicSaleVaultAbi.abi);
+              const iface = new ethers.utils.Interface(
+                PublicSaleVaultCreateAbi.abi,
+              );
 
               const result = iface.parseLog(logs[9]);
               const {args} = result;
-              setFieldValue(
-                `vaults[${selectedVaultDetail?.index}].vaultAddress`,
-                args[0],
-              );
-              setFieldValue(
-                `vaults[${selectedVaultDetail?.index}].isDeployed`,
-                true,
-              );
-              setVaultState('readyForToken');
+
+              if (args) {
+                setFieldValue(
+                  `vaults[${selectedVaultDetail?.index}].vaultAddress`,
+                  args[0],
+                );
+                setFieldValue(
+                  `vaults[${selectedVaultDetail?.index}].isDeployed`,
+                  true,
+                );
+                setVaultState('readyForToken');
+              }
+
               break;
             }
             case 'TON Staker': {
               // 0: name : string
               // 1: _token : address
               // 2: _owner : address
+              console.log(vaultContract);
               const tx = await vaultContract
                 ?.connect(signer)
                 .create(
@@ -445,20 +455,24 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               const receipt = await tx.wait();
               const {logs} = receipt;
 
+              console.log(logs);
+
               const iface = new ethers.utils.Interface(TONStakerAbi.abi);
 
-              const result = iface.parseLog(logs[9]);
+              const result = iface.parseLog(logs[8]);
               const {args} = result;
 
-              setFieldValue(
-                `vaults[${selectedVaultDetail?.index}].vaultAddress`,
-                args[0],
-              );
-              setFieldValue(
-                `vaults[${selectedVaultDetail?.index}].isDeployed`,
-                true,
-              );
-              setVaultState('readyForToken');
+              if (args) {
+                setFieldValue(
+                  `vaults[${selectedVaultDetail?.index}].vaultAddress`,
+                  args[0],
+                );
+                setFieldValue(
+                  `vaults[${selectedVaultDetail?.index}].isDeployed`,
+                  true,
+                );
+                setVaultState('readyForToken');
+              }
               break;
             }
             case 'TOS Staker': {
@@ -477,7 +491,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
 
               const iface = new ethers.utils.Interface(TOSStakerAbi.abi);
 
-              const result = iface.parseLog(logs[9]);
+              const result = iface.parseLog(logs[8]);
               const {args} = result;
 
               setFieldValue(
@@ -659,20 +673,8 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                   allTokenAllocation,
               ) as number[];
 
-              console.log(allTokenAllocation);
               console.log('--params--');
               console.log(param0, param1, param2, param3, param4);
-
-              const testParam2 = [
-                1659307252,
-                1669307252,
-                1679307252,
-                1689307252,
-                1699307252,
-                1709307252,
-                1719307252,
-                PublicVaultData.claim.length,
-              ];
 
               const publicVaultSecondContract = new Contract(
                 PublicVaultData.vaultAddress as string,
@@ -682,7 +684,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
 
               const tx = await publicVaultSecondContract
                 ?.connect(signer)
-                .setAllsetting(param0, param1, testParam2, param3, param4);
+                .setAllsetting(param0, param1, param2, param3, param4);
               const receipt = await tx.wait();
               if (receipt) {
                 setFieldValue(
@@ -741,14 +743,19 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               const claimAmountsParam = selectedVaultDetail?.claim.map(
                 (claimData: VaultSchedule) => claimData.claimTokenAllocation,
               );
-              const tx = await vaultContract
-                ?.connect(signer)
-                .initialize(
-                  selectedVaultDetail?.vaultTokenAllocation,
-                  selectedVaultDetail?.claim.length,
-                  claimTimesParam,
-                  claimAmountsParam,
-                );
+              const TONStakerVaultSecondContract = new Contract(
+                selectedVaultDetail.vaultAddress as string,
+                TONStakerInitializeAbi.abi,
+                library,
+              );
+              const tx = await TONStakerVaultSecondContract?.connect(
+                signer,
+              ).initialize(
+                selectedVaultDetail?.vaultTokenAllocation,
+                selectedVaultDetail?.claim.length,
+                claimTimesParam,
+                claimAmountsParam,
+              );
               const receipt = await tx.wait();
 
               if (receipt) {
@@ -771,14 +778,19 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               const claimAmountsParam = selectedVaultDetail?.claim.map(
                 (claimData: VaultSchedule) => claimData.claimTokenAllocation,
               );
-              const tx = await vaultContract
-                ?.connect(signer)
-                .initialize(
-                  selectedVaultDetail?.vaultTokenAllocation,
-                  selectedVaultDetail?.claim.length,
-                  claimTimesParam,
-                  claimAmountsParam,
-                );
+              const TOSStakerVaultSecondContract = new Contract(
+                selectedVaultDetail?.vaultAddress as string,
+                TOSStakerInitializeAbi.abi,
+                library,
+              );
+              const tx = await TOSStakerVaultSecondContract?.connect(
+                signer,
+              ).initialize(
+                selectedVaultDetail?.vaultTokenAllocation,
+                selectedVaultDetail?.claim.length,
+                claimTimesParam,
+                claimAmountsParam,
+              );
               const receipt = await tx.wait();
 
               if (receipt) {

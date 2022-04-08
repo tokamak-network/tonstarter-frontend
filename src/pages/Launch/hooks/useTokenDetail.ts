@@ -36,7 +36,7 @@ const useTokenDetail = () => {
         vaultTokenAllocation,
         stosTier,
       } = publicVault[0] as VaultPublic;
-      console.log('--stosTier--');
+
       const datas: PublicTokenColData = {
         firstColData: [
           {
