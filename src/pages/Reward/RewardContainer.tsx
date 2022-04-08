@@ -53,8 +53,6 @@ type RewardContainerProps = {
 };
 const {UniswapStaker_Address} = DEPLOYED;
 
-// let multipleStakeList: any = [];
-// let multipleUnstakeList: any = [];
 export const RewardContainer: FC<RewardContainerProps> = ({
   rewards,
   selectedPool,
@@ -104,15 +102,6 @@ export const RewardContainer: FC<RewardContainerProps> = ({
     const endIndex = startIndex + pageLimit;
     return rewards.slice(startIndex, endIndex);
   };
-
-  // useEffect(() => {
-  //   setStakeNum(0);
-  //   setUnstakeNum(0);
-  // }, [
-  //   transactionType,
-  //   blockNumber,
-  //   position,
-  // ]);
 
   useEffect(() => {
     // This useEffect runs every time a user selects a new LP token to manage. Or if a txn has been submitted and completed

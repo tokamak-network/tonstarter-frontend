@@ -264,11 +264,49 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
       const abicoder = ethers.utils.defaultAbiCoder;
       const incentiveId = soliditySha3(abicoder.encode([incentiveABI], [key]));
       const signer = getSigner(library, account);
-      const incentiveInfo = await uniswapStakerContract
-        .connect(signer)
-        .incentives(incentiveId);
 
-      setNumStakers(Number(incentiveInfo.numberOfStakes));
+      let totalStakerInfo: any[] = [];
+      await Promise.all(
+        stakedPools.map(async (pool: any) => {
+          const incentiveInfo = await uniswapStakerContract
+            .connect(signer)
+            .stakes(Number(pool.id), incentiveId);
+
+          const depositInfo = await uniswapStakerContract
+            .connect(signer)
+            .deposits(Number(pool.id));
+
+          if (incentiveInfo.liquidity._hex !== '0x00') {
+            if (
+              totalStakerInfo.length > 0 &&
+              totalStakerInfo.some(
+                (data) => data.ownerAddress === depositInfo.owner,
+              )
+            ) {
+              let index = totalStakerInfo.findIndex(
+                (data: any) => data.ownerAddress === depositInfo.owner,
+              );
+              totalStakerInfo[index].liquidity += Number(
+                ethers.utils.formatEther(incentiveInfo.liquidity),
+              );
+            } else {
+              totalStakerInfo.push({
+                ownerAddress: depositInfo.owner,
+                liquidity: Number(
+                  ethers.utils.formatEther(incentiveInfo.liquidity),
+                ),
+              });
+            }
+          }
+        }),
+      ).then(() => {
+        const tempStakerInfo = totalStakerInfo.map((data: any) => {
+          return {
+            ownerAddress: data.ownerAddress,
+          };
+        });
+        setNumStakers(tempStakerInfo.length);
+      });
     }
     getIncentives();
   }, [
@@ -379,29 +417,21 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     <Flex
       {...REWARD_STYLE.containerStyle({colorMode})}
       flexDir={'column'}
-      // onClick={(e: React.ChangeEvent<HTMLInputElement>) => {
-      //   // console.log(e.target.type);
-      //   // console.log('target id:', e.target.id);
-      //   // console.log('e.target: ', e.target);
-      //   // if (e.target.type !== 'checkbox') {
       onClick={() => {
         dispatch(
           openModal({
             type: 'information',
             data: {
-              currentReward: reward,
-              // refundableAmount,
-              currentStakedPools: stakedPools,
-              currentKey: key,
-              currentUserAddress: account,
-              currentPositions: LPTokens,
-              currentBlockNumber: latestBlockNumber,
+              reward,
+              stakedPools,
+              key,
+              userAddress: account,
+              positions: LPTokens,
+              blockNumber: latestBlockNumber,
             },
           }),
         );
       }}
-      //   // }
-      // }}
       _hover={{
         border: '2px solid #0070ED',
         cursor: 'pointer',

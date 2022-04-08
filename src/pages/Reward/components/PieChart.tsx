@@ -22,8 +22,6 @@ export const PieChart: FC<PieChartProps> = ({pieData}) => {
     };
   });
 
-  console.log('formattedData: ', formattedData);
-
   return (
     // make sure parent container have a defined height when using
     // responsive component, otherwise height will be 0 and

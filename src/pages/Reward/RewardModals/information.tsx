@@ -1,4 +1,4 @@
-import {FC, useState, useMemo, useEffect, useRef, useCallback} from 'react';
+import {FC, useState, useEffect, useRef, useCallback} from 'react';
 import {
   Text,
   Flex,
@@ -6,50 +6,39 @@ import {
   useTheme,
   useColorMode,
   Avatar,
-  Image,
-  Tooltip,
-  Checkbox,
-  Button,
-  Progress,
   Heading,
   Modal,
   ModalOverlay,
   ModalContent,
-  ModalFooter,
   ModalBody,
-  ModalCloseButton,
   Divider,
   Grid,
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,
-  TableCaption,
   Link,
+  Center,
 } from '@chakra-ui/react';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {checkTokenType} from 'utils/token';
-import {closeModal, selectModalType, openModal} from 'store/modal.reducer';
+import {closeModal, selectModalType} from 'store/modal.reducer';
 import moment from 'moment';
 import {DEPLOYED} from 'constants/index';
 import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
-import {utils, ethers, BigNumber} from 'ethers';
+import {ethers} from 'ethers';
 import {soliditySha3} from 'web3-utils';
-import {getTokenSymbol} from '../utils/getTokenSymbol';
 import {fetchPositionRangePayloadModal} from '../utils/fetchPositionRangePayloads';
-import {LPToken} from '../types';
-import {convertNumber} from 'utils/number';
 import {Scrollbars} from 'react-custom-scrollbars-2';
 import {PieChart} from './../components/PieChart';
 import {useWeb3React} from '@web3-react/core';
 import {CloseButton} from 'components/Modal/CloseButton';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
-import * as UniswapV3PoolABI from 'services/abis/UniswapV3Pool.json';
 import {selectApp} from 'store/app/app.reducer';
+import {LoadingComponent} from 'components/Loading';
 import Web3 from 'web3';
 import '../css/informationModal.css';
 
@@ -68,35 +57,22 @@ export const InformationModal = () => {
   const {colorMode} = useColorMode();
   const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
-  const [address, setAddress] = useState<string>('');
-  const [symbol, setSymbol] = useState<string>('');
-  const [decimal, setDecimal] = useState<number>(0);
-  const [validAddress, setValidAddress] = useState<boolean>(false);
-  const focusTarget = useRef<any>([]);
-  const [tokenLists, setTokenLists] = useState<any[]>([]);
-  const [tokenInfo, setTokenInfo] = useState<(string | number)[]>([]);
-  const [balance, setBalance] = useState(0);
-  const [remainingTime, setRemainingTime] = useState<any>();
-  const [reward, setReward] = useState<any>();
   const [refundableAmount, setRefundableAmount] = useState<any>();
   const [rewardStakersInfo, setRewardStakersInfo] = useState<any[]>([]);
   const [userStakerIds, setUserStakerIds] = useState<any[]>([]);
-  const [userAddress, setUserAddress] = useState<string>('');
-  const [key, setKey] = useState<any>();
-  const [stakedPools, setStakedPools] = useState<any>();
-  const [positions, setPositions] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [pieData, setPieData] = useState<any[]>([]);
-  const [blockNumber, setBlockNumber] = useState<number>(0);
   const [recentActivityTable, setRecentActivityTable] = useState<any>();
   const {data: appConfig} = useAppSelector(selectApp);
+  const [network, setNetwork] = useState<string>('');
 
   //@ts-ignore
   const web3 = new Web3(window.ethereum);
   //@ts-ignore
   const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const Web3EthAbi = require('web3-eth-abi');
-  console.log('web3EthAbi: ', Web3EthAbi);
+
+  const {reward, stakedPools, userAddress, key, positions, blockNumber} =
+    data.data;
 
   const themeDesign = {
     border: {
@@ -114,7 +90,6 @@ export const InformationModal = () => {
   };
 
   const handleCloseModal = useCallback(() => {
-    console.log('close modal');
     dispatch(closeModal());
   }, [dispatch]);
 
@@ -126,50 +101,13 @@ export const InformationModal = () => {
   };
 
   useEffect(() => {
-    const {
-      currentReward,
-      currentStakedPools,
-      currentUserAddress,
-      currentKey,
-      currentPositions,
-      currentBlockNumber,
-    } = data.data;
-
-    setReward(currentReward);
-    setUserAddress(currentUserAddress);
-    setKey(currentKey);
-    setStakedPools(currentStakedPools);
-    setPositions(currentPositions);
-    setBlockNumber(currentBlockNumber);
-
     if (key && userAddress && stakedPools && reward) {
-      getIncentives(key, userAddress, stakedPools, positions, reward);
+      setLoading(true);
+      getModalData(key, userAddress, stakedPools, positions, reward);
     }
-    if (reward && userAddress && key && positions) {
-      setLoading(false);
-    }
-  }, [data, reward]);
+  }, [data]);
 
-  const getStatus = (token: any) => {
-    // console.log('token: ', token);
-    token.map((tok: any) => {
-      const liquidity = Number(
-        ethers.utils.formatEther(tok.liquidity.toString()),
-      );
-      // if (liquidity > 0 && token.range) {
-      //   return 'openIn';
-      // } else if (liquidity > 0 && !token.range) {
-      //   return 'openOut';
-      // } else if (liquidity === 0 && token.range) {
-      //   return 'closedIn';
-      // } else {
-      //   return 'closedOut';
-      // }
-      // console.log('liquidity: ', liquidity);
-    });
-  };
-
-  const getIncentives = async (
+  const getModalData = async (
     key: any,
     userAddress: string,
     stakedPools: any,
@@ -185,6 +123,9 @@ export const InformationModal = () => {
       STAKERABI.abi,
       library,
     );
+
+    const tempNetwork = await provider.getNetwork();
+    setNetwork(tempNetwork.name);
 
     const incentiveABI =
       'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)';
@@ -222,11 +163,6 @@ export const InformationModal = () => {
       blockNumber,
     );
 
-    console.log('tokenStakedActivity: ', tokenStakedActivity);
-    console.log('tokenUnstakedActivity: ', tokenUnstakedActivity);
-    console.log('incentiveEndedActivity: ', incentiveEndedActivity);
-    console.log('incentiveCreatedActivity: ', incentiveCreatedActivity);
-
     let stakerEvents = [
       tokenStakedActivity,
       tokenUnstakedActivity,
@@ -237,7 +173,6 @@ export const InformationModal = () => {
     if (stakerEvents) {
       const txnTableData = await Promise.all(
         stakerEvents.map(async (txn: any) => {
-          console.log('txn: ', txn);
           // Add txnInfo to each 'activity'
           txn.formattedTxnDate = await convertDateFromBlockNumber(
             txn.blockNumber,
@@ -261,8 +196,6 @@ export const InformationModal = () => {
           return txn;
         }),
       );
-
-      console.log('txnTableData: ', txnTableData);
 
       const sortedTxnTable = txnTableData.sort(
         (a, b) => b.unixTime - a.unixTime,
@@ -393,8 +326,6 @@ export const InformationModal = () => {
 
       tempRewardStakerInfo = formattedData;
       tempPieData = formattedPieData;
-      console.log('tempPieData:', tempPieData);
-      console.log('tempRewardStakerInfo:', tempRewardStakerInfo);
     });
 
     let filteredStakedPositions = tempRewardStakedIds.filter(
@@ -403,6 +334,7 @@ export const InformationModal = () => {
       },
     );
 
+    setLoading(false);
     setPieData(tempPieData);
 
     // tempRewardStakerInfo is the data for the All Staked LP Tokens table
@@ -517,7 +449,6 @@ export const InformationModal = () => {
         fontFamily={theme.fonts.fld}
         bg={colorMode === 'light' ? 'white.100' : 'black.200'}>
         <CloseButton closeFunc={handleCloseModal} />
-
         <Scrollbars
           style={{
             width: '100%',
@@ -656,7 +587,7 @@ export const InformationModal = () => {
                   Number of Stakers
                 </Text>
                 <Text fontSize={'20px'}>{pieData.length}</Text>
-                {/* <Text>{reward.numStakers}</Text> */}
+                {/* <Text fontSize={'20px'}>{reward.numStakers}</Text> */}
               </Box>
               <Box
                 display={'flex'}
@@ -664,7 +595,6 @@ export const InformationModal = () => {
                 alignItems={'center'}
                 justifyContent={'space-between'}>
                 <Text color={themeDesign.font[colorMode]}>Status</Text>
-                {/* This is always open. Something is wrong. */}
                 <Text fontSize={'20px'}>
                   {reward.status === 'open' && reward.endTime > moment().unix()
                     ? reward.status.charAt(0).toUpperCase() +
@@ -723,7 +653,13 @@ export const InformationModal = () => {
                               key={index}
                               onClick={() =>
                                 window.open(
-                                  `https://app.uniswap.org/#/increase/${token.token0Address}/${token.token1Address}/3000/${token.token}?chain=rinkeby`,
+                                  `https://app.uniswap.org/#/increase/${
+                                    token.token0Address
+                                  }/${token.token1Address}/3000/${token.token}${
+                                    network === 'rinkeby'
+                                      ? '?chain=rinkeby'
+                                      : ''
+                                  }`,
                                 )
                               }
                               h="30px"
@@ -775,7 +711,6 @@ export const InformationModal = () => {
                       color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
                       Major Players
                     </Heading>
-                    {console.log('pieData:', pieData)}
                     <Flex height={'250px'}>
                       <PieChart pieData={pieData} />
                     </Flex>
@@ -929,7 +864,6 @@ export const InformationModal = () => {
                     <div style={{background: '#007aff'}}></div>
                   )}>
                   {recentActivityTable.map((txn: any) => {
-                    console.log('txn: ', txn);
                     return (
                       <Tr
                         style={{
@@ -984,20 +918,32 @@ export const InformationModal = () => {
               </Tbody>
             </Table>
           </ModalBody>
-
-          {/* <Divider /> */}
-
-          {/* <ModalFooter display={'flex'} justifyContent={'center'}>
-          <Button
-            colorScheme="blue"
-            mr={3}
-            onClick={handleCloseModal}
-            color={'white'}>
-            Refund
-          </Button>
-        </ModalFooter> */}
         </Scrollbars>
       </ModalContent>
     </Modal>
-  ) : null;
+  ) : (
+    <Modal
+      isOpen={data.modal === 'information' ? true : false}
+      onClose={handleCloseModal}
+      size={'6xl'}>
+      <ModalOverlay />
+      <ModalContent
+        height={'85vh'}
+        fontFamily={theme.fonts.fld}
+        bg={colorMode === 'light' ? 'white.100' : 'black.200'}>
+        <Flex
+          pos="absolute"
+          w="100%"
+          h="100%"
+          alignItems="center"
+          justifyContent="center"
+          pb={25}
+          zIndex={100}>
+          <Center w="100%" h="100%">
+            <LoadingComponent></LoadingComponent>
+          </Center>
+        </Flex>{' '}
+      </ModalContent>
+    </Modal>
+  );
 };
