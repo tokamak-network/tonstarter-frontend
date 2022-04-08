@@ -85,8 +85,6 @@ const ClaimRound = () => {
           newTableData,
         );
       }
-
-      // setTableData(newTableData);
     },
     [claim],
   );
@@ -188,7 +186,11 @@ const ClaimRound = () => {
                           .unix(data.claimTime)
                           .format('YYYY.MM.DD hh:mm:ss')}
                   </Text>
-                  <SingleCalendarPop setDate={setClaimDate}></SingleCalendarPop>
+                  <SingleCalendarPop
+                    //@ts-ignore
+                    fieldValueKey={`vaults[${selectedVaultDetail.index}].claim[${index}]`}
+                    oldValues={data}
+                    valueKey={'claimTime'}></SingleCalendarPop>
                 </Flex>
                 <Text w={'281px'} borderRight={middleStyle.border}>
                   <Input

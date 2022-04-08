@@ -27,6 +27,7 @@ import {
   PopoverBody,
   Select,
   Button,
+  propNames,
 } from '@chakra-ui/react';
 import HoverImage from 'components/HoverImage';
 import CalendarActiveImg from 'assets/launch/calendar-active-icon.svg';
@@ -35,6 +36,8 @@ import {CustomCalendar} from './CustomCalendar';
 import {CustomClock} from './CustomClock';
 import '../css/CalendarLaunch.css';
 import moment from 'moment';
+import {useFormikContext} from 'formik';
+import {Projects} from '@Launch/types';
 const themeDesign = {
   border: {
     light: 'solid 1px #dfe4ee',
@@ -55,13 +58,23 @@ const themeDesign = {
 };
 
 type calendarComponentProps = {
-  setDate: Dispatch<SetStateAction<any>>;
+  setDate?: Dispatch<SetStateAction<any>>;
+  fieldValueKey?: string;
+  oldValues?: {};
+  valueKey?: any;
 };
-const SingleCalendarPop: React.FC<calendarComponentProps> = ({setDate}) => {
+const SingleCalendarPop: React.FC<calendarComponentProps> = ({
+  setDate,
+  fieldValueKey,
+  oldValues,
+  valueKey,
+}) => {
   const {colorMode} = useColorMode();
   const [image, setImage] = useState(CalendarInactiveImg);
   const [startTime, setStartTime] = useState<number>(0);
   const [startTimeArray, setStartTimeArray] = useState([]);
+
+  const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
 
   const createTime = (onClose: any) => {
     const starts = moment.unix(startTime);
@@ -72,7 +85,17 @@ const SingleCalendarPop: React.FC<calendarComponentProps> = ({setDate}) => {
     });
 
     setStartTime(startDates.unix());
-    setDate(startDates.unix());
+    if (fieldValueKey) {
+      console.log('fieldValueKey');
+      console.log(fieldValueKey);
+      const timeStamp = startDates.unix();
+      setFieldValue(fieldValueKey, {...oldValues, [valueKey]: timeStamp});
+      return onClose();
+    } else {
+      if (setDate) {
+        setDate(startDates.unix());
+      }
+    }
     onClose();
   };
 

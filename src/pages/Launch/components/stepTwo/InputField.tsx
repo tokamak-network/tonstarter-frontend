@@ -120,7 +120,7 @@ const InputField: React.FC<InputFieldProp> = (props) => {
       // _focus={{}}
       //@ts-ignore
       ref={(el) => (tokensRef.current[formikName] = el)}
-      value={value}
+      value={value === 'undefined' ? '' : value}
       onChange={(e) => {
         setValue(e.target.value);
         if (formikName) {
