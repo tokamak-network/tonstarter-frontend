@@ -46,8 +46,7 @@ export const PieChart: FC<PieChartProps> = ({pieData}) => {
       colors={{
         scheme: 'category10',
       }}
-      // Cannot add 'tokensOwned' field to datum. It won't read
-      tooltip={({datum: {id, value, color}}) => (
+      tooltip={({datum: data}) => (
         <div
           style={{
             padding: 5,
@@ -55,8 +54,15 @@ export const PieChart: FC<PieChartProps> = ({pieData}) => {
             color: '#fff',
           }}>
           <div style={{display: 'flex'}}>
-            <p style={{marginRight: '5px'}}>{id}:</p>
-            <p style={{color}}>{value}%</p>
+            <p style={{marginRight: '5px'}}>{data.id}:</p>
+            <p style={{color: data.color}}>{data.value}%</p>
+          </div>
+          <div>
+            <p>Token IDs Staked:</p>
+            {/*@ts-ignore*/}
+            {data?.data?.tokensOwned?.map((token: any) => {
+              return <p>{token}</p>;
+            })}
           </div>
         </div>
       )}
