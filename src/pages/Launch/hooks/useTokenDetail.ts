@@ -84,7 +84,7 @@ const useTokenDetail = () => {
             content:
               snapshot === undefined
                 ? '-'
-                : moment.unix(snapshot).format('YYYY.MM.DD hh:mm:ss'),
+                : moment.unix(snapshot).format('YYYY.MM.DD HH:mm:ss'),
             formikName: 'snapshot',
           },
           {
@@ -92,8 +92,8 @@ const useTokenDetail = () => {
             content:
               whitelist === undefined || whitelistEnd === undefined
                 ? `- ~ -`
-                : `${moment.unix(whitelist).format('YYYY.MM.DD hh:mm:ss')}
-              ~${moment.unix(whitelistEnd).format('MM.DD hh:mm:ss')}`,
+                : `${moment.unix(whitelist).format('YYYY.MM.DD HH:mm:ss')}
+              ~${moment.unix(whitelistEnd).format('MM.DD HH:mm:ss')}`,
             formikName: 'whitelist&whitelistEnd',
           },
           {
@@ -101,8 +101,8 @@ const useTokenDetail = () => {
             content:
               publicRound1 === undefined || publicRound1End === undefined
                 ? `- ~ -`
-                : `${moment.unix(publicRound1).format('YYYY.MM.DD hh:mm:ss')}
-              ~${moment.unix(publicRound1End).format('MM.DD hh:mm:ss')}`,
+                : `${moment.unix(publicRound1).format('YYYY.MM.DD HH:mm:ss')}
+              ~${moment.unix(publicRound1End).format('MM.DD HH:mm:ss')}`,
             formikName: 'publicRound1&publicRound1End',
           },
           {
@@ -110,8 +110,8 @@ const useTokenDetail = () => {
             content:
               publicRound2 === undefined || publicRound2End === undefined
                 ? `- ~ -`
-                : `${moment.unix(publicRound2).format('YYYY.MM.DD hh:mm:ss')}
-              ~${moment.unix(publicRound2End).format('MM.DD hh:mm:ss')}`,
+                : `${moment.unix(publicRound2).format('YYYY.MM.DD HH:mm:ss')}
+              ~${moment.unix(publicRound2End).format('MM.DD HH:mm:ss')}`,
             formikName: 'publicRound2&publicRound2End',
           },
         ],
