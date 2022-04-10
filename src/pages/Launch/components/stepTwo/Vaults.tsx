@@ -44,6 +44,7 @@ const Vaults = () => {
                 vaultTokenAllocation,
                 isMandatory,
                 adminAddress,
+                vaultType,
               } = vault;
               const strVaultTokenAllocation =
                 vaultTokenAllocation?.toString() || '0';
@@ -51,7 +52,9 @@ const Vaults = () => {
                 <Box
                   // mr={(index + 1) % 3 !== 0 ? '20px' : 0}
                   mr={'18px'}
-                  onClick={() => dispatch(changeVault({data: vaultName}))}>
+                  onClick={() =>
+                    dispatch(changeVault({data: vaultName, vaultType}))
+                  }>
                   <VaultCard
                     key={`${vaultName}_${vaultTokenAllocation}`}
                     status={vaultName === 'Public' ? 'public' : 'notPublic'}

@@ -12,6 +12,9 @@ import commafy from 'utils/commafy';
 import {shortenAddress} from 'utils';
 import DoubleCalendarPop from '../common/DoubleCalendarPop';
 import SingleCalendarPop from '../common/SingleCalendarPop';
+import {useContract} from 'hooks/useContract';
+import {DEPLOYED} from 'constants/index';
+import InitialLiquidityAbi from 'services/abis/Vault_InitialLiquidity.json';
 
 export const MainTitle = (props: {leftTitle: string; rightTitle: string}) => {
   const {leftTitle, rightTitle} = props;
@@ -258,7 +261,10 @@ const STOSTier = (props: {
 };
 
 const PublicTokenDetail = (props: {
-  firstColData: PublicTokenColData['firstColData'] | null;
+  firstColData:
+    | PublicTokenColData['firstColData']
+    | PublicTokenColData['liquidityColData']
+    | null;
   secondColData: PublicTokenColData['secondColData'] | null;
   thirdColData: PublicTokenColData['thirdColData'] | null;
   isEdit: boolean;
@@ -343,7 +349,11 @@ const PublicTokenDetail = (props: {
           <Flex
             alignItems={'center'}
             justifyContent="center"
-            h={'60px'}
+            h={
+              firstColData?.length !== undefined
+                ? `${firstColData.length * 60}px`
+                : '60px'
+            }
             fontSize={13}
             color={'#808992'}
             fontWeight={600}>
@@ -383,7 +393,11 @@ const PublicTokenDetail = (props: {
           <Flex
             alignItems={'center'}
             justifyContent="center"
-            h={'60px'}
+            h={
+              firstColData?.length !== undefined
+                ? `${firstColData.length * 60}px`
+                : '60px'
+            }
             fontSize={13}
             color={'#808992'}
             fontWeight={600}>
@@ -398,12 +412,17 @@ const PublicTokenDetail = (props: {
 const TokenDetail = (props: {isEdit: boolean}) => {
   const {isEdit} = props;
   const {
-    data: {selectedVault},
+    data: {selectedVaultType},
   } = useAppSelector(selectLaunch);
+  const {InitialLiquidityVault} = DEPLOYED;
+  const InitialLiquidity_CONTRACT = useContract(
+    InitialLiquidityVault,
+    InitialLiquidityAbi.abi,
+  );
 
   const {publicTokenColData} = useTokenDetail();
   const VaultTokenDetail = useMemo(() => {
-    switch (selectedVault) {
+    switch (selectedVaultType) {
       case 'Public':
         if (publicTokenColData) {
           return (
@@ -416,9 +435,21 @@ const TokenDetail = (props: {isEdit: boolean}) => {
         }
         return null;
       case 'Initial Liquidity':
+        const;
         return (
           <PublicTokenDetail
-            firstColData={null}
+            firstColData={[
+              {
+                title: 'Select Pair',
+                content: 'test',
+                formikName: 'tokenPair',
+              },
+              {
+                title: 'Pool Address\n(0.3% fee)',
+                content: 'test',
+                formikName: 'poolAddress',
+              },
+            ]}
             secondColData={null}
             thirdColData={null}
             isEdit={isEdit}></PublicTokenDetail>
@@ -440,28 +471,36 @@ const TokenDetail = (props: {isEdit: boolean}) => {
             isEdit={isEdit}></PublicTokenDetail>
         );
       case 'WTON-TOS LP Reward':
-        return <Flex>go</Flex>;
+        return (
+          <PublicTokenDetail
+            firstColData={null}
+            secondColData={null}
+            thirdColData={null}
+            isEdit={isEdit}></PublicTokenDetail>
+        );
+      case 'Liquidity Incentive':
+        return (
+          <PublicTokenDetail
+            firstColData={[
+              {
+                title: 'Select Pair',
+                content: 'test',
+                formikName: 'tokenPair',
+              },
+              {
+                title: 'Pool Address\n(0.3% fee)',
+                content: 'test',
+                formikName: 'poolAddress',
+              },
+            ]}
+            secondColData={null}
+            thirdColData={null}
+            isEdit={isEdit}></PublicTokenDetail>
+        );
       default:
         return <>no container for this vault :(</>;
     }
-  }, [selectedVault, isEdit, publicTokenColData]);
-
-  const VaultTokenDetailEdit = useMemo(() => {
-    switch (selectedVault) {
-      case 'Public':
-        return <Flex>public</Flex>;
-      case 'LP':
-        return <Flex>go</Flex>;
-      case 'TON Staker':
-        return <Flex>go</Flex>;
-      case 'TOS Staker':
-        return <Flex>go</Flex>;
-      case 'WTON-TOS LP Reward':
-        return <Flex>go</Flex>;
-      default:
-        return <>no container for this vault :(</>;
-    }
-  }, [selectedVault]);
+  }, [selectedVaultType, isEdit, publicTokenColData]);
 
   return VaultTokenDetail;
 

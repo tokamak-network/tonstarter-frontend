@@ -129,6 +129,8 @@ const initialObj: Projects['CreateProject'] = {
       isDeployed: false,
       isSet: false,
       isDeployedErr: false,
+      poolAddress: undefined,
+      tokenPair: undefined,
     },
   ],
 };

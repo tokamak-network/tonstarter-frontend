@@ -81,8 +81,12 @@ type VaultPublic = VaultCommon & {
 };
 
 type VaultC = VaultCommon & {};
+type LiquidityIncentiveVault = VaultCommon & {
+  poolAddress: string | undefined;
+  tokenPair: string | undefined;
+};
 
-type VaultAny = VaultDao | VaultPublic | VaultC;
+type VaultAny = VaultDao | VaultPublic | VaultC | LiquidityIncentiveVault;
 
 interface ProjectStep1 {
   projectName: string;
@@ -193,6 +197,18 @@ type PublicTokenColData = {
       tier: '4';
       requiredTos: number | undefined;
       allocatedToken: number | undefined;
+      formikName: string;
+    },
+  ];
+  liquidityColData?: [
+    {
+      title: 'Select Pair';
+      content: string | undefined;
+      formikName: string;
+    },
+    {
+      title: 'Pool Address\n(0.3% fee)';
+      content: string | undefined;
       formikName: string;
     },
   ];

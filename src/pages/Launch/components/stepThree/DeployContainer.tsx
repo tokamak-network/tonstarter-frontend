@@ -1,6 +1,6 @@
 import {Grid} from '@chakra-ui/react';
 import {changeVault} from '@Launch/launch.reducer';
-import {Projects, VaultAny} from '@Launch/types';
+import {Projects, VaultCommon} from '@Launch/types';
 import {saveProject} from '@Launch/utils/saveProject';
 import {useFormikContext} from 'formik';
 import {useAppDispatch} from 'hooks/useRedux';
@@ -22,9 +22,17 @@ const DeployContainer = () => {
   return (
     <Grid templateColumns="repeat(3, 1fr)" rowGap={'8px'} px={'35px'}>
       <DeployToken></DeployToken>
-      {vaultsList.map((vault: VaultAny) => {
+      {vaultsList.map((vault: VaultCommon) => {
         return (
-          <div onClick={() => dispatch(changeVault({data: vault.vaultName}))}>
+          <div
+            onClick={() =>
+              dispatch(
+                changeVault({
+                  data: vault.vaultType,
+                  vaultType: vault.vaultType,
+                }),
+              )
+            }>
             <DeployVault vault={vault}></DeployVault>
           </div>
         );

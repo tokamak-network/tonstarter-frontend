@@ -17,7 +17,7 @@ const useTokenDetail = () => {
 
   useEffect(() => {
     const publicVault = vaults.filter((vault: VaultCommon) => {
-      return vault.vaultName === 'Public';
+      return vault.vaultType === 'Public';
     });
     if (publicVault[0] as VaultPublic) {
       const {

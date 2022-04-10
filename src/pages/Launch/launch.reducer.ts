@@ -1,10 +1,11 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from 'store/reducers';
-import {VaultName} from '@Launch/types';
+import {VaultName, VaultType} from '@Launch/types';
 
 interface LaunchState {
   data: {
     selectedVault: VaultName;
+    selectedVaultType: VaultType;
     projects: any;
     tempVaultData: {};
     err: {
@@ -21,6 +22,7 @@ interface LaunchState {
 const initialState = {
   data: {
     selectedVault: 'Public',
+    selectedVaultType: 'Public',
     projects: [],
     tempVaultData: {},
     err: {
@@ -34,6 +36,7 @@ const initialState = {
 
 type VaultPayload = {
   data: VaultName;
+  vaultType: VaultType;
 };
 
 type ProjectPayload = {
@@ -59,6 +62,7 @@ export const launchReducer = createSlice({
   reducers: {
     changeVault: (state, {payload}: PayloadAction<VaultPayload>) => {
       state.data.selectedVault = payload.data;
+      state.data.selectedVaultType = payload.vaultType;
     },
     fetchProjects: (state, {payload}: PayloadAction<ProjectPayload>) => {
       state.data.projects = payload.data;
