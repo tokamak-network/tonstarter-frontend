@@ -2,19 +2,11 @@ import {Flex, Grid, GridItem, Text, useColorMode} from '@chakra-ui/react';
 import {useTheme} from '@emotion/react';
 import useTokenDetail from '@Launch/hooks/useTokenDetail';
 import {selectLaunch} from '@Launch/launch.reducer';
-import {
-  Projects,
-  PublicTokenColData,
-  VaultCommon,
-  VaultPublic,
-} from '@Launch/types';
-import HoverImage from 'components/HoverImage';
+import {Projects, PublicTokenColData, VaultPublic} from '@Launch/types';
 import {useFormikContext} from 'formik';
 import {useAppSelector} from 'hooks/useRedux';
-import {useEffect, useMemo, useRef, useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import InputField from './InputField';
-import CalendarActiveImg from 'assets/launch/calendar-active-icon.svg';
-import CalendarInactiveImg from 'assets/launch/calendar-inactive-icon.svg';
 import useVaultSelector from '@Launch/hooks/useVaultSelector';
 import commafy from 'utils/commafy';
 import {shortenAddress} from 'utils';

@@ -406,7 +406,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               } while (valutIndex >= 0);
 
               const tx = await vaultContract?.connect(signer).create(
-                selectedVaultDetail?.vaultName,
+                `${values.projectName}_${selectedVaultDetail?.vaultName}`,
                 selectedVaultDetail?.adminAddress,
                 [
                   values.tokenAddress,
@@ -448,7 +448,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               const tx = await vaultContract
                 ?.connect(signer)
                 .create(
-                  selectedVaultDetail?.vaultName,
+                  `${values.projectName}_${selectedVaultDetail?.vaultName}`,
                   values.tokenAddress,
                   selectedVaultDetail?.adminAddress,
                 );
@@ -482,7 +482,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               const tx = await vaultContract
                 ?.connect(signer)
                 .create(
-                  selectedVaultDetail?.vaultName,
+                  `${values.projectName}_${selectedVaultDetail?.vaultName}`,
                   values.tokenAddress,
                   selectedVaultDetail?.adminAddress,
                 );
@@ -517,7 +517,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               const tx = await vaultContract
                 ?.connect(signer)
                 .create(
-                  selectedVaultDetail?.vaultName,
+                  `${values.projectName}_${selectedVaultDetail?.vaultName}`,
                   TOS_WTON_POOL,
                   values.tokenAddress,
                   selectedVaultDetail?.adminAddress,
@@ -548,7 +548,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               const tx = await vaultContract
                 ?.connect(signer)
                 .create(
-                  selectedVaultDetail?.vaultName,
+                  `${values.projectName}_${selectedVaultDetail?.vaultName}`,
                   values.tokenAddress,
                   selectedVaultDetail?.adminAddress,
                 );

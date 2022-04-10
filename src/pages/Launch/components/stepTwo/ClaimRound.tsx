@@ -116,9 +116,6 @@ const ClaimRound = () => {
 
   let tokenAcc = 0;
 
-  console.log('--claim--');
-  console.log(claim);
-
   return (
     <Flex flexDir={'column'}>
       <Box
