@@ -90,12 +90,17 @@ const ClaimRound = () => {
   );
 
   const setDate = useCallback(() => {
-    console.log(claim);
     const claimValue: VaultSchedule[] = claim.map(
       (data: VaultSchedule, index: number) => {
-        const nowTimeStamp = moment()
-          .add((index + 1) * Number(selectedDay), 'days')
-          .unix();
+        //@ts-ignore
+        const refTimeStamp = selectedVaultDetail.claim[0].claimTime;
+        const nowTimeStamp =
+          index === 0
+            ? refTimeStamp
+            : moment
+                .unix(refTimeStamp)
+                .add(index * Number(selectedDay), 'days')
+                .unix();
         return {
           claimRound: index + 1,
           claimTime: nowTimeStamp,
@@ -145,6 +150,8 @@ const ClaimRound = () => {
             w={'100px'}
             h={'32px'}
             text={'Set All'}
+            //@ts-ignore
+            isDisabled={selectedVaultDetail.claim[0].claimTime === undefined}
             func={() => setDate()}></CustomButton>
         </Flex>
       </Box>
