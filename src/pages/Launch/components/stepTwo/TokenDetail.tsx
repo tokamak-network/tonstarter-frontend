@@ -20,7 +20,6 @@ import commafy from 'utils/commafy';
 import {shortenAddress} from 'utils';
 import DoubleCalendarPop from '../common/DoubleCalendarPop';
 import SingleCalendarPop from '../common/SingleCalendarPop';
-import {values} from 'lodash';
 
 export const MainTitle = (props: {leftTitle: string; rightTitle: string}) => {
   const {leftTitle, rightTitle} = props;
@@ -57,12 +56,17 @@ const SubTitle = (props: {
     isSecondColData,
     formikName,
   } = props;
-  const [inputVal, setInputVal] = useState(rightTitle?.replaceAll(' TON', ''));
+  const [inputVal, setInputVal] = useState<number | string>(
+    Number(rightTitle?.replaceAll(' TON', '')),
+  );
+  // leftTitle !== 'Address for receiving funds'
+  //               ? Number(inputVal)
+  //               :
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const {vaults} = values;
   const publicVault = vaults[0] as VaultPublic;
   useEffect(() => {
-    setInputVal(rightTitle?.replaceAll(' TON', ''));
+    setInputVal(rightTitle?.replaceAll(' TON', '') as string);
   }, [isEdit, rightTitle]);
 
   function getTimeStamp() {
@@ -90,7 +94,6 @@ const SubTitle = (props: {
     }
   }
 
-  const tokensRef = useRef();
   const [dateRange, setDateRange] = useState<number | undefined[]>(
     getTimeStamp() as number | undefined[],
   );
@@ -172,7 +175,10 @@ const SubTitle = (props: {
             fontSize={13}
             value={inputVal}
             setValue={setInputVal}
-            formikName={formikName}></InputField>
+            formikName={formikName}
+            numberOnly={
+              leftTitle !== 'Address for receiving funds'
+            }></InputField>
         )
       ) : rightTitle?.includes('~') ? (
         <Flex flexDir={'column'} textAlign={'right'}>

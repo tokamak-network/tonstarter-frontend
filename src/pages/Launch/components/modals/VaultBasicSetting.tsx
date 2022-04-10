@@ -128,9 +128,9 @@ const VaultBasicSetting = () => {
                 h={'32px'}
                 value={tokenAllocatonVal}
                 _focus={{}}
-                onChange={(e) =>
-                  setTokenAllocatonVal(Number(e.target.value))
-                }></Input>
+                onChange={(e) => {
+                  setTokenAllocatonVal(Number(e.target.value));
+                }}></Input>
             </Flex>
             <Flex w={'100%'} flexDir={'column'}>
               <Text fontWeight={600} mb={'9px'}>

@@ -116,6 +116,9 @@ const ClaimRound = () => {
 
   let tokenAcc = 0;
 
+  console.log('--claim--');
+  console.log(claim);
+
   return (
     <Flex flexDir={'column'}>
       <Box
@@ -199,13 +202,16 @@ const ClaimRound = () => {
                     // focusBorderColor={isErr ? 'red.100' : '#dfe4ee'}
                     fontSize={12}
                     placeholder={''}
-                    value={data.claimTokenAllocation}
+                    value={data.claimTokenAllocation || ''}
                     onChange={(e) => {
                       const {value} = e.target;
                       setFieldValue(
                         //@ts-ignore
                         `vaults[${selectedVaultDetail.index}].claim[${index}]`,
-                        {...data, claimTokenAllocation: Number(value)},
+                        {
+                          ...data,
+                          claimTokenAllocation: Number(value),
+                        },
                       );
                     }}></Input>
                 </Text>
@@ -216,33 +222,18 @@ const ClaimRound = () => {
                 </Text>
                 <Flex w={'90px'} alignItems="center" justifyContent="center">
                   {index === 0 ? (
-                    claim.length === 1 ? (
-                      <Flex
-                        w={'24px'}
-                        h={'24px'}
-                        alignItems="center"
-                        justifyContent="center"
-                        border={'1px solid #e6eaee'}
-                        bg={'white.100'}>
-                        <HoverImage
-                          action={() => addRow()}
-                          img={PlusIconNormal}
-                          hoverImg={PlusIconHover}></HoverImage>
-                      </Flex>
-                    ) : (
-                      <Flex
-                        w={'24px'}
-                        h={'24px'}
-                        alignItems="center"
-                        justifyContent="center"
-                        border={'1px solid #e6eaee'}
-                        bg={'white.100'}>
-                        <HoverImage
-                          action={() => removeRow(index)}
-                          img={MinusIconNormal}
-                          hoverImg={MinusIconHover}></HoverImage>
-                      </Flex>
-                    )
+                    <Flex
+                      w={'24px'}
+                      h={'24px'}
+                      alignItems="center"
+                      justifyContent="center"
+                      border={'1px solid #e6eaee'}
+                      bg={'white.100'}>
+                      <HoverImage
+                        action={() => addRow()}
+                        img={PlusIconNormal}
+                        hoverImg={PlusIconHover}></HoverImage>
+                    </Flex>
                   ) : index + 1 !== claim.length ? (
                     <Flex
                       w={'24px'}

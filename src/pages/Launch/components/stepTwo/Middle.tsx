@@ -70,6 +70,7 @@ const Middle = () => {
     if (selectedVaultDetail) {
       const {claim} = selectedVaultDetail;
       setTableData(claim);
+      setIsEdit(false);
     }
   }, [selectedVaultDetail]);
 

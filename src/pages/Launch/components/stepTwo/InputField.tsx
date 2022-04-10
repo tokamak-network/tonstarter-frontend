@@ -1,4 +1,4 @@
-import {Input} from '@chakra-ui/react';
+import {Input, NumberInput, NumberInputField} from '@chakra-ui/react';
 import {saveTempVaultData, selectLaunch} from '@Launch/launch.reducer';
 import {Projects, Vault, VaultPublic} from '@Launch/types';
 import {useFormikContext} from 'formik';
@@ -15,6 +15,7 @@ type InputFieldProp = {
   formikName?: string;
   isStosTier?: boolean;
   stosTierLevel?: 1 | 2 | 3 | 4;
+  numberOnly?: boolean;
 };
 
 const InputField: React.FC<InputFieldProp> = (props) => {
@@ -28,6 +29,7 @@ const InputField: React.FC<InputFieldProp> = (props) => {
     formikName,
     isStosTier,
     stosTierLevel,
+    numberOnly,
   } = props;
   const [isErr, setIsErr] = useState<boolean>(false);
   const dispatch = useAppDispatch();
@@ -110,6 +112,55 @@ const InputField: React.FC<InputFieldProp> = (props) => {
     requiredStosData = requiredStos;
   }
 
+  if (numberOnly) {
+    return (
+      <NumberInput>
+        <NumberInputField
+          w={`${w}px`}
+          h={`${h}px`}
+          focusBorderColor={isErr ? 'red.100' : '#dfe4ee'}
+          fontSize={fontSize}
+          placeholder={placeHolder}
+          value={value === 'undefined' ? '' : value}
+          onChange={(e) => {
+            setValue(e.target.value);
+            if (formikName) {
+              !isStosTier
+                ? dispatch(
+                    saveTempVaultData({
+                      data: {
+                        ...tempVaultData,
+                        [formikName]: Number(e.target.value),
+                      },
+                    }),
+                  )
+                : dispatch(
+                    saveTempVaultData({
+                      data: {
+                        ...tempVaultData,
+                        stosTier: {
+                          //@ts-ignore
+                          ...tempVaultData.stosTier,
+                          [stosTier]: {
+                            [formikName]: e.target.value,
+                            [formikName === 'requiredStos'
+                              ? 'allocatedToken'
+                              : 'requiredStos']:
+                              formikName === 'requiredStos'
+                                ? allocatedTokenData
+                                : requiredStosData,
+                          },
+                        },
+                      },
+                    }),
+                  );
+            }
+          }}
+        />
+      </NumberInput>
+    );
+  }
+
   return (
     <Input
       w={`${w}px`}
@@ -123,6 +174,7 @@ const InputField: React.FC<InputFieldProp> = (props) => {
       value={value === 'undefined' ? '' : value}
       onChange={(e) => {
         setValue(e.target.value);
+
         if (formikName) {
           !isStosTier
             ? dispatch(
