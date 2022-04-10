@@ -81,12 +81,12 @@ type VaultPublic = VaultCommon & {
 };
 
 type VaultC = VaultCommon & {};
-type LiquidityIncentiveVault = VaultCommon & {
+type VaultLiquidityIncentive = VaultCommon & {
   poolAddress: string | undefined;
   tokenPair: string | undefined;
 };
 
-type VaultAny = VaultDao | VaultPublic | VaultC | LiquidityIncentiveVault;
+type VaultAny = VaultDao | VaultPublic | VaultC | VaultLiquidityIncentive;
 
 interface ProjectStep1 {
   projectName: string;
@@ -236,4 +236,5 @@ export type {
   PublicTokenColData,
   VaultType,
   Step3_InfoList,
+  VaultLiquidityIncentive,
 };

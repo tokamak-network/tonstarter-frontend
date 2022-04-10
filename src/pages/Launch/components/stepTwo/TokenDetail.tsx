@@ -2,7 +2,13 @@ import {Flex, Grid, GridItem, Text, useColorMode} from '@chakra-ui/react';
 import {useTheme} from '@emotion/react';
 import useTokenDetail from '@Launch/hooks/useTokenDetail';
 import {selectLaunch} from '@Launch/launch.reducer';
-import {Projects, PublicTokenColData, VaultPublic} from '@Launch/types';
+import {
+  Projects,
+  PublicTokenColData,
+  VaultCommon,
+  VaultLiquidityIncentive,
+  VaultPublic,
+} from '@Launch/types';
 import {useFormikContext} from 'formik';
 import {useAppSelector} from 'hooks/useRedux';
 import {useEffect, useMemo, useState} from 'react';
@@ -14,7 +20,7 @@ import DoubleCalendarPop from '../common/DoubleCalendarPop';
 import SingleCalendarPop from '../common/SingleCalendarPop';
 import {useContract} from 'hooks/useContract';
 import {DEPLOYED} from 'constants/index';
-import InitialLiquidityAbi from 'services/abis/Vault_InitialLiquidity.json';
+import InitialLiquidityComputeAbi from 'services/abis/Vault_InitialLiquidityCompute.json';
 
 export const MainTitle = (props: {leftTitle: string; rightTitle: string}) => {
   const {leftTitle, rightTitle} = props;
@@ -52,7 +58,7 @@ const SubTitle = (props: {
     formikName,
   } = props;
   const [inputVal, setInputVal] = useState<number | string>(
-    Number(rightTitle?.replaceAll(' TON', '')),
+    String(rightTitle)?.replaceAll(' TON', ''),
   );
   // leftTitle !== 'Address for receiving funds'
   //               ? Number(inputVal)
@@ -60,8 +66,9 @@ const SubTitle = (props: {
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const {vaults} = values;
   const publicVault = vaults[0] as VaultPublic;
+  console.log(rightTitle);
   useEffect(() => {
-    setInputVal(rightTitle?.replaceAll(' TON', '') as string);
+    setInputVal(String(rightTitle)?.replaceAll(' TON', '') as string);
   }, [isEdit, rightTitle]);
 
   function getTimeStamp() {
@@ -175,15 +182,15 @@ const SubTitle = (props: {
               leftTitle !== 'Address for receiving funds'
             }></InputField>
         )
-      ) : rightTitle?.includes('~') ? (
+      ) : String(rightTitle)?.includes('~') ? (
         <Flex flexDir={'column'} textAlign={'right'}>
-          <Text>{rightTitle.split('~')[0]}</Text>
-          <Text>~ {rightTitle.split('~')[1]}</Text>
+          <Text>{String(rightTitle).split('~')[0]}</Text>
+          <Text>~ {String(rightTitle).split('~')[1]}</Text>
         </Flex>
       ) : (
         <Flex>
           <Text textAlign={'right'}>
-            {rightTitle?.includes('undefined')
+            {String(rightTitle)?.includes('undefined')
               ? '-'
               : rightTitle && rightTitle.length > 20
               ? shortenAddress(rightTitle as string)
@@ -412,13 +419,28 @@ const PublicTokenDetail = (props: {
 const TokenDetail = (props: {isEdit: boolean}) => {
   const {isEdit} = props;
   const {
-    data: {selectedVaultType},
+    data: {selectedVaultType, selectedVault},
   } = useAppSelector(selectLaunch);
   const {InitialLiquidityVault} = DEPLOYED;
   const InitialLiquidity_CONTRACT = useContract(
     InitialLiquidityVault,
-    InitialLiquidityAbi.abi,
+    InitialLiquidityComputeAbi.abi,
   );
+  const {TOS_ADDRESS} = DEPLOYED;
+  const {values} = useFormikContext<Projects['CreateProject']>();
+  const [poolAddress, setPoolAddress] = useState<string>('');
+
+  // useEffect(() => {
+  //   async function getPoolAddress() {
+  //     const poolAddress = await InitialLiquidity_CONTRACT?.computePoolAddress(
+  //       TOS_ADDRESS,
+  //       values.tokenAddress,
+  //       3000,
+  //     );
+  //     setPoolAddress(poolAddress);
+  //   }
+  //   getPoolAddress();
+  // }, [values.tokenAddress, TOS_ADDRESS]);
 
   const {publicTokenColData} = useTokenDetail();
   const VaultTokenDetail = useMemo(() => {
@@ -435,7 +457,6 @@ const TokenDetail = (props: {isEdit: boolean}) => {
         }
         return null;
       case 'Initial Liquidity':
-        const;
         return (
           <PublicTokenDetail
             firstColData={[
@@ -446,7 +467,7 @@ const TokenDetail = (props: {isEdit: boolean}) => {
               },
               {
                 title: 'Pool Address\n(0.3% fee)',
-                content: 'test',
+                content: poolAddress,
                 formikName: 'poolAddress',
               },
             ]}
@@ -479,17 +500,21 @@ const TokenDetail = (props: {isEdit: boolean}) => {
             isEdit={isEdit}></PublicTokenDetail>
         );
       case 'Liquidity Incentive':
+        const thisVault: VaultLiquidityIncentive = values.vaults.filter(
+          //@ts-ignore
+          (vault: VaultLiquidityIncentive) => vault.vaultName === selectedVault,
+        )[0] as VaultLiquidityIncentive;
         return (
           <PublicTokenDetail
             firstColData={[
               {
                 title: 'Select Pair',
-                content: 'test',
+                content: thisVault.tokenPair,
                 formikName: 'tokenPair',
               },
               {
                 title: 'Pool Address\n(0.3% fee)',
-                content: 'test',
+                content: thisVault.poolAddress,
                 formikName: 'poolAddress',
               },
             ]}
