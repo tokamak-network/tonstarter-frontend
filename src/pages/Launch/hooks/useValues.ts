@@ -123,7 +123,7 @@ const initialObj: Projects['CreateProject'] = {
       isDeployedErr: false,
     },
     {
-      vaultName: 'Liquidity Incentive for basic',
+      vaultName: 'Liquidity Incentive',
       vaultType: 'Liquidity Incentive',
       vaultTokenAllocation: 0,
       adminAddress: '',

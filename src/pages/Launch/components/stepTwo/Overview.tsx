@@ -3,6 +3,7 @@ import StepTitle from '@Launch/components/common/StepTitle';
 import {Projects, VaultAny} from '@Launch/types';
 import {useFormikContext} from 'formik';
 import {useEffect, useState} from 'react';
+import commafy from 'utils/commafy';
 
 const middleStyle = {
   border: 'solid 1px #eff1f6',
@@ -41,10 +42,13 @@ const Overview = () => {
       return result;
     });
     const totalSum = [];
-    const indexOfLongestArray = totals.reduce(
-      (idx: any, arr: any) => (arr.length > totals[idx].length ? idx + 1 : idx),
-      0,
-    );
+    // const indexOfLongestArray = totals.reduce(
+    //   (idx: any, arr: any) => (arr.length > totals[idx].length ? idx + 1 : idx),
+    //   0,
+    // );
+
+    const lengths = totals.map((a: any) => a.length);
+    const indexOfLongestArray = lengths.indexOf(Math.max(...lengths));
 
     if (totals.length === 0) {
       return;
@@ -64,6 +68,8 @@ const Overview = () => {
     setTotalColData(totalSum);
   }, [tableData]);
 
+  let sumColumn = 0;
+
   return (
     <Flex flexDir={'column'}>
       <Box mb={'15px'}>
@@ -81,12 +87,16 @@ const Overview = () => {
           fontWeight={600}
           borderBottom={middleStyle.border}
           w={'90px'}>
-          <Text fontSize={12}>Round</Text>
+          <Text fontSize={12} borderRight={middleStyle.border}>
+            Round
+          </Text>
           {columnLength.map((data: any, index: number) => {
             return (
               <Text
-                borderX={middleStyle.border}
+                borderTop={middleStyle.border}
+                borderRight={middleStyle.border}
                 fontSize={13}
+                h={'42px'}
                 bg={index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'}>
                 {index > 9 ? index + 1 : `0${index + 1}`}
               </Text>
@@ -96,7 +106,10 @@ const Overview = () => {
             fontSize={13}
             marginTop={'auto'}
             color={'#353c48'}
-            fontWeight={600}>
+            fontWeight={600}
+            borderTop={middleStyle.border}
+            borderRight={middleStyle.border}
+            bg={totalColData.length % 2 === 0 ? '#fafbfc' : '#ffffff'}>
             Sum
           </Text>
         </Flex>
@@ -108,16 +121,22 @@ const Overview = () => {
               color={'#3d495d'}
               flexDir={'column'}
               fontWeight={600}
-              w={name.length > 10 ? '140px' : '120px'}
-              borderBottom={middleStyle.border}>
-              <Text fontSize={12}>{name}</Text>
+              w={name.length > 10 ? '140px' : '120px'}>
+              <Text
+                fontSize={12}
+                borderBottom={middleStyle.border}
+                borderRight={middleStyle.border}>
+                {name}
+              </Text>
               {claim.map((claimData: any, index: number) => {
                 return (
                   <Text
-                    borderX={middleStyle.border}
+                    borderBottom={middleStyle.border}
+                    borderRight={middleStyle.border}
                     fontSize={13}
+                    h={'42px'}
                     bg={index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'}>
-                    {claimData.claimTokenAllocation || '-'}
+                    {commafy(claimData.claimTokenAllocation) || '-'}
                   </Text>
                 );
               })}
@@ -125,8 +144,10 @@ const Overview = () => {
                 if (claim[index] === undefined) {
                   return (
                     <Text
-                      borderX={middleStyle.border}
+                      borderBottom={middleStyle.border}
+                      borderRight={middleStyle.border}
                       fontSize={13}
+                      h={'42px'}
                       bg={
                         index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'
                       }>
@@ -135,8 +156,19 @@ const Overview = () => {
                   );
                 }
               })}
-              <Text fontSize={13} marginTop={'auto'}>
-                {name}
+              <Text
+                fontSize={13}
+                marginTop={'auto'}
+                borderRight={middleStyle.border}
+                bg={totalColData.length % 2 === 0 ? '#fafbfc' : '#ffffff'}>
+                {commafy(
+                  claim.reduce((acc: any, cur: any, index: number) => {
+                    if (cur?.claimTokenAllocation) {
+                      return acc + cur.claimTokenAllocation || 0;
+                    }
+                    return '-';
+                  }, 0),
+                )}
               </Text>
             </Flex>
           );
@@ -154,19 +186,67 @@ const Overview = () => {
               (previousValue, currentValue) => previousValue + currentValue,
               0,
             );
+
+            sumColumn += sumWithInitial;
+            if (index + 1 === totalColData.length) {
+              if (sumWithInitial !== 0) {
+                return (
+                  <>
+                    <Text
+                      borderTop={middleStyle.border}
+                      borderRight={middleStyle.border}
+                      h={'42px'}
+                      fontSize={13}
+                      bg={
+                        index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'
+                      }>
+                      {commafy(sumWithInitial)}
+                    </Text>
+                    <Text
+                      borderTop={middleStyle.border}
+                      borderRight={middleStyle.border}
+                      h={'42px'}
+                      fontSize={13}
+                      bg={
+                        index + 1 === 0 || (index + 1) % 2 === 0
+                          ? '#fafbfc'
+                          : '#ffffff'
+                      }>
+                      {commafy(sumColumn)}
+                    </Text>
+                  </>
+                );
+              } else {
+                return (
+                  <Text
+                    borderTop={middleStyle.border}
+                    borderRight={middleStyle.border}
+                    h={'42px'}
+                    fontSize={13}
+                    bg={index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'}>
+                    -
+                  </Text>
+                );
+              }
+            }
+
             if (sumWithInitial !== 0) {
               return (
                 <Text
-                  borderX={middleStyle.border}
+                  borderTop={middleStyle.border}
+                  borderRight={middleStyle.border}
+                  h={'42px'}
                   fontSize={13}
                   bg={index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'}>
-                  {sumWithInitial}
+                  {commafy(sumWithInitial)}
                 </Text>
               );
             } else {
               return (
                 <Text
-                  borderX={middleStyle.border}
+                  borderTop={middleStyle.border}
+                  borderRight={middleStyle.border}
+                  h={'42px'}
                   fontSize={13}
                   bg={index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'}>
                   -
@@ -185,6 +265,7 @@ const Overview = () => {
           <Text fontSize={12}>Accumulated</Text>
           {totalColData.map((roundTotal: number[], index: number) => {
             let sumNum = 0;
+
             const totalAcc = totalColData
               .map((roundTotal: number[], i: number) =>
                 i <= index ? roundTotal : [],
@@ -195,9 +276,44 @@ const Overview = () => {
                   0,
                 );
               });
+
+            if (index + 1 === totalColData.length) {
+              return (
+                <>
+                  <Text
+                    borderTop={middleStyle.border}
+                    borderRight={middleStyle.border}
+                    h={'42px'}
+                    fontSize={13}
+                    bg={index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'}>
+                    {totalAcc.map((data: number, i: number) => {
+                      if (i <= index) {
+                        sumNum += data;
+                      }
+                    })}
+                    {sumNum !== 0 ? commafy(sumNum) : '-'}
+                  </Text>
+                  <Text
+                    borderTop={middleStyle.border}
+                    borderRight={middleStyle.border}
+                    h={'42px'}
+                    fontSize={13}
+                    bg={
+                      index + 1 === 0 || (index + 1) % 2 === 0
+                        ? '#fafbfc'
+                        : '#ffffff'
+                    }>
+                    {sumNum !== 0 ? commafy(sumNum) : '-'}
+                  </Text>
+                </>
+              );
+            }
+
             return (
               <Text
-                borderX={middleStyle.border}
+                borderTop={middleStyle.border}
+                borderRight={middleStyle.border}
+                h={'42px'}
                 fontSize={13}
                 bg={index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'}>
                 {totalAcc.map((data: number, i: number) => {
@@ -205,7 +321,7 @@ const Overview = () => {
                     sumNum += data;
                   }
                 })}
-                {sumNum !== 0 ? sumNum : '-'}
+                {sumNum !== 0 ? commafy(sumNum) : '-'}
               </Text>
             );
           })}

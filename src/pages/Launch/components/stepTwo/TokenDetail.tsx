@@ -66,7 +66,6 @@ const SubTitle = (props: {
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const {vaults} = values;
   const publicVault = vaults[0] as VaultPublic;
-  console.log(rightTitle);
   useEffect(() => {
     setInputVal(String(rightTitle)?.replaceAll(' TON', '') as string);
   }, [isEdit, rightTitle]);
@@ -459,18 +458,22 @@ const TokenDetail = (props: {isEdit: boolean}) => {
           );
         }
         return null;
-      case 'Initial Liquidity':
+      case 'Initial Liquidity': {
+        const thisVault: VaultLiquidityIncentive = values.vaults.filter(
+          //@ts-ignore
+          (vault: VaultLiquidityIncentive) => vault.vaultName === selectedVault,
+        )[0] as VaultLiquidityIncentive;
         return (
           <PublicTokenDetail
             firstColData={[
               {
                 title: 'Select Pair',
-                content: 'test',
+                content: thisVault.tokenPair,
                 formikName: 'tokenPair',
               },
               {
                 title: 'Pool Address\n(0.3% fee)',
-                content: poolAddress,
+                content: thisVault.poolAddress,
                 formikName: 'poolAddress',
               },
             ]}
@@ -478,6 +481,7 @@ const TokenDetail = (props: {isEdit: boolean}) => {
             thirdColData={null}
             isEdit={isEdit}></PublicTokenDetail>
         );
+      }
       case 'TON Staker':
         return (
           <PublicTokenDetail
