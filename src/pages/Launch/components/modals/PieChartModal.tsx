@@ -53,7 +53,7 @@ useEffect(() => {
           <CloseButton closeFunc={handleCloseModal}></CloseButton>
           <ModalBody p={0}>
             <Box
-              p={'1.250em'}
+              pb={'1.250em'}
               borderBottom={
                 colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
               }>
