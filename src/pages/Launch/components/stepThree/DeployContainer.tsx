@@ -28,7 +28,7 @@ const DeployContainer = () => {
             onClick={() =>
               dispatch(
                 changeVault({
-                  data: vault.vaultType,
+                  data: vault.vaultName,
                   vaultType: vault.vaultType,
                 }),
               )

@@ -121,6 +121,8 @@ const ClaimRound = () => {
 
   let tokenAcc = 0;
 
+  console.log(selectedVaultDetail);
+
   return (
     <Flex flexDir={'column'}>
       <Box
@@ -203,6 +205,10 @@ const ClaimRound = () => {
                     valueKey={'claimTime'}></SingleCalendarPop>
                 </Flex>
                 <Text w={'281px'} borderRight={middleStyle.border}>
+                  {
+                    //@ts-ignore
+                    console.log(selectedVaultDetail.index)
+                  }
                   <Input
                     w={`120px`}
                     h={`32px`}

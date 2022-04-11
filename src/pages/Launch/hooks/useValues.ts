@@ -143,7 +143,7 @@ const initialVaultValue: VaultC = {
   vaultTokenAllocation: 0,
   vaultAddress: undefined,
   vaultType: 'C',
-  index: 5,
+  index: 9999,
   isDeployed: false,
   isSet: false,
   isDeployedErr: false,

@@ -50,6 +50,7 @@ const CreateVaultModal = () => {
         vaultName: nameVal,
         vaultTokenAllocation: tokenAllocatonVal,
         adminAddress: adminAddressVal,
+        index: vaultsList.length,
       },
     ]);
   }

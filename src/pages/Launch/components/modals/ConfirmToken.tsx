@@ -34,8 +34,6 @@ const ConfirmTokenModal = () => {
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const {isTokenDeployed, isTokenDeployedErr} = values;
 
-  console.log(values);
-
   useEffect(() => {
     if (isTokenDeployed === true) {
       setDeployStep('Done');

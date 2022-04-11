@@ -43,6 +43,8 @@ import * as TOSStakerAbi from 'services/abis/TOSStakerAbi.json';
 import * as TOSStakerInitializeAbi from 'services/abis/TOSStakerInitializeAbi.json';
 import * as LPrewardVaultAbi from 'services/abis/LPrewardVaultAbi.json';
 import * as LPRewardInitializeAbi from 'services/abis/LPRewardInitializeAbi.json';
+import * as VaultCFactoryAbi from 'services/abis/VaultCFactoryAbi.json';
+import * as VaultCLogicAbi from 'services/abis/VaultCLogicAbi.json';
 import {convertNumber, convertToWei} from 'utils/number';
 import commafy from 'utils/commafy';
 import {convertTimeStamp} from 'utils/convertTIme';
@@ -111,12 +113,8 @@ function getContract(vaultType: VaultType, library: LibraryType) {
       return contract;
     }
     case 'C': {
-      const {LPrewardVault} = DEPLOYED;
-      const contract = new Contract(
-        LPrewardVault,
-        LPrewardVaultAbi.abi,
-        library,
-      );
+      const {TypeCVault} = DEPLOYED;
+      const contract = new Contract(TypeCVault, VaultCFactoryAbi.abi, library);
       return contract;
     }
     default:
@@ -334,9 +332,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
 
   const vaultDeploy = useCallback(
     async () => {
-      console.log(selectedVaultDetail);
-      console.log(vaultState);
-
       if (account && library && vaultState === 'ready') {
         const vaultContract = getContract(vaultType, library);
         const signer = getSigner(library, account);
@@ -456,8 +451,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               const receipt = await tx.wait();
               const {logs} = receipt;
 
-              console.log(logs);
-
               const iface = new ethers.utils.Interface(TONStakerAbi.abi);
 
               const result = iface.parseLog(logs[8]);
@@ -542,14 +535,20 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               setVaultState('readyForToken');
               break;
             }
-            case 'C': {
+            case 'Liquidity Incentive': {
               // 0: name : string
-              // 1: _token : address
-              // 2: _owner : address
+              // 1 : pool : address
+              // 2 : rewardToken : address
+              // 3 : _admin : address
+              const {
+                pools: {TOS_WTON_POOL},
+              } = DEPLOYED;
+
               const tx = await vaultContract
                 ?.connect(signer)
                 .create(
                   `${values.projectName}_${selectedVaultDetail?.vaultName}`,
+                  TOS_WTON_POOL,
                   values.tokenAddress,
                   selectedVaultDetail?.adminAddress,
                 );
@@ -559,6 +558,36 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               const iface = new ethers.utils.Interface(LPrewardVaultAbi.abi);
 
               const result = iface.parseLog(logs[9]);
+              const {args} = result;
+
+              setFieldValue(
+                `vaults[${selectedVaultDetail?.index}].vaultAddress`,
+                args[0],
+              );
+              setFieldValue(
+                `vaults[${selectedVaultDetail?.index}].isDeployed`,
+                true,
+              );
+              setVaultState('readyForToken');
+              break;
+            }
+            case 'C': {
+              // 0: name : string
+              // 1: _token : address
+              // 2: _owner : address
+              const tx = await vaultContract
+                ?.connect(signer)
+                .createTypeC(
+                  `${values.projectName}_${selectedVaultDetail?.vaultName}`,
+                  values.tokenAddress,
+                  selectedVaultDetail?.adminAddress,
+                );
+              const receipt = await tx.wait();
+              const {logs} = receipt;
+
+              const iface = new ethers.utils.Interface(VaultCFactoryAbi.abi);
+
+              const result = iface.parseLog(logs[8]);
               const {args} = result;
 
               if (args) {
@@ -851,14 +880,21 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               const claimAmountsParam = selectedVaultDetail?.claim.map(
                 (claimData: VaultSchedule) => claimData.claimTokenAllocation,
               );
-              const tx = await vaultContract
-                ?.connect(signer)
-                .initialize(
-                  selectedVaultDetail?.vaultTokenAllocation,
-                  selectedVaultDetail?.claim.length,
-                  claimTimesParam,
-                  claimAmountsParam,
-                );
+
+              const TypeCVaultLogic_CONTRACT = new Contract(
+                selectedVaultDetail.vaultAddress as string,
+                VaultCLogicAbi.abi,
+                library,
+              );
+
+              const tx = await TypeCVaultLogic_CONTRACT?.connect(
+                signer,
+              ).initialize(
+                selectedVaultDetail?.vaultTokenAllocation,
+                selectedVaultDetail?.claim.length,
+                claimTimesParam,
+                claimAmountsParam,
+              );
               const receipt = await tx.wait();
 
               if (receipt) {

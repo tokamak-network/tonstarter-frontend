@@ -29,7 +29,7 @@ const Vaults = () => {
           img={arrowLeft}
           hoverImg={arrowHoverLeft}
           action={() => {
-            if (flowIndex - vaultsList.length > 0) {
+            if (flowIndex - vaultsList.length >= 0) {
               setTransX(transX + 165);
               setFlowIndex(flowIndex - 1);
             }

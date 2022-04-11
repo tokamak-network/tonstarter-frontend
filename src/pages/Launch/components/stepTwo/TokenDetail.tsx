@@ -501,6 +501,14 @@ const TokenDetail = (props: {isEdit: boolean}) => {
             thirdColData={null}
             isEdit={isEdit}></PublicTokenDetail>
         );
+      case 'C':
+        return (
+          <PublicTokenDetail
+            firstColData={null}
+            secondColData={null}
+            thirdColData={null}
+            isEdit={isEdit}></PublicTokenDetail>
+        );
       case 'Liquidity Incentive':
         const thisVault: VaultLiquidityIncentive = values.vaults.filter(
           //@ts-ignore
