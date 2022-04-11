@@ -1,9 +1,14 @@
 import {useState} from 'react';
 import type {Projects, VaultC} from '@Launch/types';
+import {DEPLOYED} from 'constants/index';
 
 const defaultParams = [
   {claimRound: 1, claimTime: undefined, claimTokenAllocation: undefined},
 ];
+
+const {
+  pools: {TOS_WTON_POOL},
+} = DEPLOYED;
 
 const initialObj: Projects['CreateProject'] = {
   projectName: '',
@@ -118,7 +123,7 @@ const initialObj: Projects['CreateProject'] = {
       isDeployedErr: false,
     },
     {
-      vaultName: 'Liquidity Incentive',
+      vaultName: 'Liquidity Incentive for basic',
       vaultType: 'Liquidity Incentive',
       vaultTokenAllocation: 0,
       adminAddress: '',
@@ -129,8 +134,8 @@ const initialObj: Projects['CreateProject'] = {
       isDeployed: false,
       isSet: false,
       isDeployedErr: false,
-      poolAddress: undefined,
-      tokenPair: undefined,
+      poolAddress: TOS_WTON_POOL,
+      tokenPair: 'WTON-TOS',
     },
   ],
 };

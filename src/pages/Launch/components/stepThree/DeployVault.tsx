@@ -46,6 +46,7 @@ import * as LPRewardInitializeAbi from 'services/abis/LPRewardInitializeAbi.json
 import * as VaultCFactoryAbi from 'services/abis/VaultCFactoryAbi.json';
 import * as VaultCLogicAbi from 'services/abis/VaultCLogicAbi.json';
 import * as DAOVaultAbi from 'services/abis/DAOVaultAbi.json';
+import VaultLPRewardLogicAbi from 'services/abis/VaultLPRewardLogicAbi.json';
 import {convertNumber, convertToWei} from 'utils/number';
 import commafy from 'utils/commafy';
 import {convertTimeStamp} from 'utils/convertTIme';
@@ -538,18 +539,17 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               // 1 : pool : address
               // 2 : rewardToken : address
               // 3 : _admin : address
-              const {
-                pools: {TOS_WTON_POOL},
-              } = DEPLOYED;
 
-              const tx = await vaultContract
-                ?.connect(signer)
-                .create(
-                  `${values.projectName}_${selectedVaultDetail?.vaultName}`,
-                  TOS_WTON_POOL,
-                  values.tokenAddress,
-                  selectedVaultDetail?.adminAddress,
-                );
+              console.log(selectedVaultDetail);
+
+              //@ts-ignore
+              const tx = await vaultContract?.connect(signer).create(
+                `${values.projectName}_${selectedVaultDetail?.vaultName}`,
+                //@ts-ignore
+                selectedVaultDetail.poolAddress,
+                values.tokenAddress,
+                selectedVaultDetail?.adminAddress,
+              );
               const receipt = await tx.wait();
               const {logs} = receipt;
 
@@ -757,40 +757,38 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               break;
             }
             case 'Liquidity Incentive': {
-              // 0: name : string
-              // 1 : pool : address
-              // 2 : rewardToken : address
-              // 3 : _admin : address
-              const {
-                pools: {TOS_WTON_POOL},
-              } = DEPLOYED;
-              const tx = await vaultContract
-                ?.connect(signer)
-                .create(
-                  selectedVaultName,
-                  TOS_WTON_POOL,
-                  values.tokenAddress,
-                  selectedVaultDetail?.adminAddress,
-                );
+              // 0: _totalAllocatedAmountme : uint256
+              // 1 : _claimCounts : uint256
+              // 2 : _claimTimes : uint256[]
+              // 3 : _claimAmounts : uint256[]
+              const claimTimesParam = selectedVaultDetail?.claim.map(
+                (claimData: VaultSchedule) => claimData.claimTime,
+              );
+              const claimAmountsParam = selectedVaultDetail?.claim.map(
+                (claimData: VaultSchedule) => claimData.claimTokenAllocation,
+              );
+              const LiquidityIncentiveInitialize_CONTRACT = new Contract(
+                selectedVaultDetail?.vaultAddress as string,
+                VaultLPRewardLogicAbi.abi,
+                library,
+              );
+              const tx = await LiquidityIncentiveInitialize_CONTRACT?.connect(
+                signer,
+              ).initialize(
+                selectedVaultDetail?.vaultTokenAllocation,
+                selectedVaultDetail?.claim.length,
+                claimTimesParam,
+                claimAmountsParam,
+              );
               const receipt = await tx.wait();
-              const {logs} = receipt;
 
-              const iface = new ethers.utils.Interface(
-                LiquidityIncentiveAbi.abi,
-              );
-
-              const result = iface.parseLog(logs[9]);
-              const {args} = result;
-
-              setFieldValue(
-                `vaults[${selectedVaultDetail?.index}].vaultAddress`,
-                args[0],
-              );
-              setFieldValue(
-                `vaults[${selectedVaultDetail?.index}].isDeployed`,
-                true,
-              );
-              setVaultState('readyForToken');
+              if (receipt) {
+                setFieldValue(
+                  `vaults[${selectedVaultDetail?.index}].isSet`,
+                  true,
+                );
+                setVaultState('finished');
+              }
               break;
             }
             case 'TON Staker': {

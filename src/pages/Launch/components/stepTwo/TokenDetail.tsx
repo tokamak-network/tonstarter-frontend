@@ -179,7 +179,8 @@ const SubTitle = (props: {
             setValue={setInputVal}
             formikName={formikName}
             numberOnly={
-              leftTitle !== 'Address for receiving funds'
+              leftTitle !== 'Address for receiving funds' &&
+              !leftTitle.includes('Pool Address')
             }></InputField>
         )
       ) : String(rightTitle)?.includes('~') ? (
@@ -527,12 +528,12 @@ const TokenDetail = (props: {isEdit: boolean}) => {
             firstColData={[
               {
                 title: 'Select Pair',
-                content: thisVault.tokenPair,
+                content: thisVault?.tokenPair || '-',
                 formikName: 'tokenPair',
               },
               {
                 title: 'Pool Address\n(0.3% fee)',
-                content: thisVault.poolAddress,
+                content: thisVault?.poolAddress || '-',
                 formikName: 'poolAddress',
               },
             ]}
