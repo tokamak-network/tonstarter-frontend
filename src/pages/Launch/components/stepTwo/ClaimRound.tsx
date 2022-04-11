@@ -151,7 +151,10 @@ const ClaimRound = () => {
             h={'32px'}
             text={'Set All'}
             //@ts-ignore
-            isDisabled={selectedVaultDetail.claim[0].claimTime === undefined}
+            // isDisabled={
+            //   selectedVaultDetail.claim[0].claimTime !== undefined && selectedVaultDetail
+            //     .claim[0].claimTime === undefined
+            // }
             func={() => setDate()}></CustomButton>
         </Flex>
       </Box>

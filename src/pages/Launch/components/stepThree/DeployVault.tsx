@@ -42,6 +42,7 @@ import * as TONStakerInitializeAbi from 'services/abis/TONStakerInitializeAbi.js
 import * as TOSStakerAbi from 'services/abis/TOSStakerAbi.json';
 import * as TOSStakerInitializeAbi from 'services/abis/TOSStakerInitializeAbi.json';
 import * as LPrewardVaultAbi from 'services/abis/LPrewardVaultAbi.json';
+import * as LPRewardInitializeAbi from 'services/abis/LPRewardInitializeAbi.json';
 import {convertNumber, convertToWei} from 'utils/number';
 import commafy from 'utils/commafy';
 import {convertTimeStamp} from 'utils/convertTIme';
@@ -813,14 +814,21 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               const claimAmountsParam = selectedVaultDetail?.claim.map(
                 (claimData: VaultSchedule) => claimData.claimTokenAllocation,
               );
-              const tx = await vaultContract
-                ?.connect(signer)
-                .initialize(
-                  selectedVaultDetail?.vaultTokenAllocation,
-                  selectedVaultDetail?.claim.length,
-                  claimTimesParam,
-                  claimAmountsParam,
-                );
+
+              const LPVaultSecondContract = new Contract(
+                selectedVaultDetail.vaultAddress as string,
+                LPRewardInitializeAbi.abi,
+                library,
+              );
+
+              const tx = await LPVaultSecondContract?.connect(
+                signer,
+              ).initialize(
+                selectedVaultDetail?.vaultTokenAllocation,
+                selectedVaultDetail?.claim.length,
+                claimTimesParam,
+                claimAmountsParam,
+              );
               const receipt = await tx.wait();
 
               if (receipt) {

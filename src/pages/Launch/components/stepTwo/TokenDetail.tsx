@@ -439,7 +439,9 @@ const TokenDetail = (props: {isEdit: boolean}) => {
   //     );
   //     setPoolAddress(poolAddress);
   //   }
-  //   getPoolAddress();
+  //   if (values.tokenAddress) {
+  //     getPoolAddress();
+  //   }
   // }, [values.tokenAddress, TOS_ADDRESS]);
 
   const {publicTokenColData} = useTokenDetail();
