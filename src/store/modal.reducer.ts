@@ -24,7 +24,8 @@ type LaunchModal =
   | 'Launch_VaultProps'
   | 'Launch_CreateVault'
   | 'Launch_ConfirmToken'
-  | 'Launch_ConfirmVault';
+  | 'Launch_ConfirmVault'
+  | 'Launch_PieChartModal';
 
 type GeneralModal = 'calendar';
 type RewardModal = 'search';

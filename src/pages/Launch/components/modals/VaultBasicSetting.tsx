@@ -95,7 +95,7 @@ const VaultBasicSetting = () => {
               fontFamily={theme.fonts.titil}
               color={colorMode === 'light' ? 'gray.250' : 'white.100'}
               textAlign={'center'}>
-              Vault Resister
+              Vault Register
             </Heading>
           </Box>
 

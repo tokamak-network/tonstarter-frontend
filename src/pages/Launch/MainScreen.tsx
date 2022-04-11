@@ -71,7 +71,7 @@ const MainScreen = () => {
       <Flex alignItems={'center'} flexDir="column" mb={'20px'}>
         <PageHeader
           title={'Create Project'}
-          subtitle={'You can create  and manage projects.'}
+          subtitle={'You can create and manage projects.'}
         />
         <Flex mt={'50px'} mb={'20px'}>
           <Steps

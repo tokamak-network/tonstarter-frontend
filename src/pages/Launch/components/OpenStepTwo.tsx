@@ -3,6 +3,7 @@ import Line from '@Launch/components/common/Line';
 import Vaults from '@Launch/components/stepTwo/Vaults';
 import Middle from '@Launch/components/stepTwo/Middle';
 import LaunchVaultPropModal from '@Launch/components/modals/VaultProps';
+import PieChartModal from '@Launch/components/modals/PieChartModal'
 import CreateVaultModal from '@Launch/components/modals/CreateVault';
 import VaultBasicSetting from '@Launch/components/modals/VaultBasicSetting';
 import TopTitle from '@Launch/components/stepTwo/TopTitle';
@@ -40,6 +41,7 @@ const OpenStepTwo = () => {
       <VaultBasicSetting></VaultBasicSetting>
       <LaunchVaultPropModal></LaunchVaultPropModal>
       <CreateVaultModal></CreateVaultModal>
+      <PieChartModal></PieChartModal>
     </Flex>
   );
 };
