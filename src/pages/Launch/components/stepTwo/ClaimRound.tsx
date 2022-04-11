@@ -180,119 +180,143 @@ const ClaimRound = () => {
             </Text>
             <Text w={'90px'}>Function</Text>
           </Flex>
-          {claim?.map((data: VaultSchedule, index: number) => {
-            return (
-              <Flex h={'42px'} fontSize={12} color={'#3d495d'} fontWeight={600}>
-                <Text w={'90px'}>
-                  {index > 8 ? `${index + 1}` : `0${index + 1}`}
+          {
+            //@ts-ignore
+            selectedVaultDetail.vaultType === 'Initial Liquidity' ||
+            //@ts-ignore
+            selectedVaultDetail.vaultType === 'DAO' ? (
+              <Flex
+                w={'100%'}
+                borderTop={middleStyle.border}
+                alignItems="center"
+                justifyContent={'center'}>
+                <Text fontSize={13} color={'#808992'} fontWeight={600}>
+                  There is no Claim value.
                 </Text>
-                <Flex
-                  w={'292px'}
-                  borderX={middleStyle.border}
-                  alignItems="center"
-                  justifyContent={'center'}>
-                  <Text mr={'5px'} color={'#3d495d'} fontSize={11}>
-                    {data.claimTime === undefined
-                      ? '-'
-                      : moment
-                          .unix(data.claimTime)
-                          .format('YYYY.MM.DD hh:mm:ss')}
-                  </Text>
-                  <SingleCalendarPop
-                    //@ts-ignore
-                    fieldValueKey={`vaults[${selectedVaultDetail.index}].claim[${index}]`}
-                    oldValues={data}
-                    valueKey={'claimTime'}></SingleCalendarPop>
-                </Flex>
-                <Text w={'281px'} borderRight={middleStyle.border}>
-                  {
-                    //@ts-ignore
-                    console.log(selectedVaultDetail.index)
-                  }
-                  <Input
-                    w={`120px`}
-                    h={`32px`}
-                    // focusBorderColor={isErr ? 'red.100' : '#dfe4ee'}
-                    fontSize={12}
-                    placeholder={''}
-                    value={data.claimTokenAllocation || ''}
-                    onChange={(e) => {
-                      const {value} = e.target;
-                      setFieldValue(
-                        //@ts-ignore
-                        `vaults[${selectedVaultDetail.index}].claim[${index}]`,
-                        {
-                          ...data,
-                          claimTokenAllocation: Number(value),
-                        },
-                      );
-                    }}></Input>
-                </Text>
-                <Text w={'281px'} borderRight={middleStyle.border}>
-                  {data.claimTokenAllocation === undefined
-                    ? '-'
-                    : (tokenAcc += data.claimTokenAllocation)}
-                </Text>
-                <Flex w={'90px'} alignItems="center" justifyContent="center">
-                  {index === 0 ? (
-                    <Flex
-                      w={'24px'}
-                      h={'24px'}
-                      alignItems="center"
-                      justifyContent="center"
-                      border={'1px solid #e6eaee'}
-                      bg={'white.100'}>
-                      <HoverImage
-                        action={() => addRow()}
-                        img={PlusIconNormal}
-                        hoverImg={PlusIconHover}></HoverImage>
-                    </Flex>
-                  ) : index + 1 !== claim.length ? (
-                    <Flex
-                      w={'24px'}
-                      h={'24px'}
-                      alignItems="center"
-                      justifyContent="center"
-                      border={'1px solid #e6eaee'}
-                      bg={'white.100'}>
-                      <HoverImage
-                        action={() => removeRow(index)}
-                        img={MinusIconNormal}
-                        hoverImg={MinusIconHover}></HoverImage>
-                    </Flex>
-                  ) : (
-                    <>
-                      <Flex
-                        w={'24px'}
-                        h={'24px'}
-                        alignItems="center"
-                        justifyContent="center"
-                        border={'1px solid #e6eaee'}
-                        bg={'white.100'}
-                        mr={'10px'}>
-                        <HoverImage
-                          action={() => removeRow(index)}
-                          img={MinusIconNormal}
-                          hoverImg={MinusIconHover}></HoverImage>
-                      </Flex>
-                      <Flex
-                        w={'24px'}
-                        h={'24px'}
-                        alignItems="center"
-                        justifyContent="center"
-                        border={'1px solid #e6eaee'}
-                        bg={'white.100'}>
-                        <HoverImage
-                          action={() => addRow()}
-                          img={PlusIconNormal}
-                          hoverImg={PlusIconHover}></HoverImage>
-                      </Flex>
-                    </>
-                  )}
-                </Flex>
               </Flex>
-            );
-          })}
+            ) : (
+              claim?.map((data: VaultSchedule, index: number) => {
+                return (
+                  <Flex
+                    h={'42px'}
+                    fontSize={12}
+                    color={'#3d495d'}
+                    fontWeight={600}>
+                    <Text w={'90px'}>
+                      {index > 8 ? `${index + 1}` : `0${index + 1}`}
+                    </Text>
+                    <Flex
+                      w={'292px'}
+                      borderX={middleStyle.border}
+                      alignItems="center"
+                      justifyContent={'center'}>
+                      <Text mr={'5px'} color={'#3d495d'} fontSize={11}>
+                        {data.claimTime === undefined
+                          ? '-'
+                          : moment
+                              .unix(data.claimTime)
+                              .format('YYYY.MM.DD hh:mm:ss')}
+                      </Text>
+                      <SingleCalendarPop
+                        //@ts-ignore
+                        fieldValueKey={`vaults[${selectedVaultDetail.index}].claim[${index}]`}
+                        oldValues={data}
+                        valueKey={'claimTime'}></SingleCalendarPop>
+                    </Flex>
+                    <Text w={'281px'} borderRight={middleStyle.border}>
+                      {
+                        //@ts-ignore
+                        console.log(selectedVaultDetail.index)
+                      }
+                      <Input
+                        w={`120px`}
+                        h={`32px`}
+                        // focusBorderColor={isErr ? 'red.100' : '#dfe4ee'}
+                        fontSize={12}
+                        placeholder={''}
+                        value={data.claimTokenAllocation || ''}
+                        onChange={(e) => {
+                          const {value} = e.target;
+                          setFieldValue(
+                            //@ts-ignore
+                            `vaults[${selectedVaultDetail.index}].claim[${index}]`,
+                            {
+                              ...data,
+                              claimTokenAllocation: Number(value),
+                            },
+                          );
+                        }}></Input>
+                    </Text>
+                    <Text w={'281px'} borderRight={middleStyle.border}>
+                      {data.claimTokenAllocation === undefined
+                        ? '-'
+                        : (tokenAcc += data.claimTokenAllocation)}
+                    </Text>
+                    <Flex
+                      w={'90px'}
+                      alignItems="center"
+                      justifyContent="center">
+                      {index === 0 ? (
+                        <Flex
+                          w={'24px'}
+                          h={'24px'}
+                          alignItems="center"
+                          justifyContent="center"
+                          border={'1px solid #e6eaee'}
+                          bg={'white.100'}>
+                          <HoverImage
+                            action={() => addRow()}
+                            img={PlusIconNormal}
+                            hoverImg={PlusIconHover}></HoverImage>
+                        </Flex>
+                      ) : index + 1 !== claim.length ? (
+                        <Flex
+                          w={'24px'}
+                          h={'24px'}
+                          alignItems="center"
+                          justifyContent="center"
+                          border={'1px solid #e6eaee'}
+                          bg={'white.100'}>
+                          <HoverImage
+                            action={() => removeRow(index)}
+                            img={MinusIconNormal}
+                            hoverImg={MinusIconHover}></HoverImage>
+                        </Flex>
+                      ) : (
+                        <>
+                          <Flex
+                            w={'24px'}
+                            h={'24px'}
+                            alignItems="center"
+                            justifyContent="center"
+                            border={'1px solid #e6eaee'}
+                            bg={'white.100'}
+                            mr={'10px'}>
+                            <HoverImage
+                              action={() => removeRow(index)}
+                              img={MinusIconNormal}
+                              hoverImg={MinusIconHover}></HoverImage>
+                          </Flex>
+                          <Flex
+                            w={'24px'}
+                            h={'24px'}
+                            alignItems="center"
+                            justifyContent="center"
+                            border={'1px solid #e6eaee'}
+                            bg={'white.100'}>
+                            <HoverImage
+                              action={() => addRow()}
+                              img={PlusIconNormal}
+                              hoverImg={PlusIconHover}></HoverImage>
+                          </Flex>
+                        </>
+                      )}
+                    </Flex>
+                  </Flex>
+                );
+              })
+            )
+          }
         </Box>
       </Flex>
     </Flex>

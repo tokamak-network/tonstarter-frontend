@@ -45,6 +45,7 @@ import * as LPrewardVaultAbi from 'services/abis/LPrewardVaultAbi.json';
 import * as LPRewardInitializeAbi from 'services/abis/LPRewardInitializeAbi.json';
 import * as VaultCFactoryAbi from 'services/abis/VaultCFactoryAbi.json';
 import * as VaultCLogicAbi from 'services/abis/VaultCLogicAbi.json';
+import * as DAOVaultAbi from 'services/abis/DAOVaultAbi.json';
 import {convertNumber, convertToWei} from 'utils/number';
 import commafy from 'utils/commafy';
 import {convertTimeStamp} from 'utils/convertTIme';
@@ -104,12 +105,8 @@ function getContract(vaultType: VaultType, library: LibraryType) {
       return contract;
     }
     case 'DAO': {
-      const {LPrewardVault} = DEPLOYED;
-      const contract = new Contract(
-        LPrewardVault,
-        LPrewardVaultAbi.abi,
-        library,
-      );
+      const {DAOVault} = DEPLOYED;
+      const contract = new Contract(DAOVault, DAOVaultAbi.abi, library);
       return contract;
     }
     case 'C': {
@@ -173,7 +170,8 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
         ? 'readyForToken'
         : isVaultDeployed &&
           hasToken &&
-          selectedVaultDetail?.vaultType !== 'Initial Liquidity'
+          selectedVaultDetail?.vaultType !== 'Initial Liquidity' &&
+          selectedVaultDetail?.vaultType !== 'DAO'
         ? 'readyForSet'
         : 'finished',
     );
@@ -586,6 +584,39 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               const {logs} = receipt;
 
               const iface = new ethers.utils.Interface(VaultCFactoryAbi.abi);
+
+              const result = iface.parseLog(logs[8]);
+              const {args} = result;
+
+              if (args) {
+                setFieldValue(
+                  `vaults[${selectedVaultDetail?.index}].vaultAddress`,
+                  args[0],
+                );
+                setFieldValue(
+                  `vaults[${selectedVaultDetail?.index}].isDeployed`,
+                  true,
+                );
+                setVaultState('readyForToken');
+              }
+              break;
+            }
+            case 'DAO': {
+              // 0: name : string
+              // 1: _token : address
+              // 2: _owner : address
+              console.log(vaultContract);
+              const tx = await vaultContract
+                ?.connect(signer)
+                .createTypeB(
+                  `${values.projectName}_${selectedVaultDetail?.vaultName}`,
+                  values.tokenAddress,
+                  selectedVaultDetail?.adminAddress,
+                );
+              const receipt = await tx.wait();
+              const {logs} = receipt;
+
+              const iface = new ethers.utils.Interface(DAOVaultAbi.abi);
 
               const result = iface.parseLog(logs[8]);
               const {args} = result;

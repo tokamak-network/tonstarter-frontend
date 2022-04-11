@@ -20,7 +20,7 @@ const Vaults = () => {
   const vaultsList = values.vaults;
   const dispatch = useAppDispatch();
   const [transX, setTransX] = useState<number>(0);
-  const [flowIndex, setFlowIndex] = useState<number>(vaultsList.length);
+  const [flowIndex, setFlowIndex] = useState<number>(6);
 
   return (
     <Flex w={'100%'} bg={'white.100'} flexDir="column">
@@ -76,6 +76,8 @@ const Vaults = () => {
           img={arrowRight}
           hoverImg={arrowHoverRight}
           action={() => {
+            console.log(flowIndex);
+            console.log(vaultsList.length);
             if (flowIndex <= vaultsList.length) {
               setTransX(transX - 165);
               setFlowIndex(flowIndex + 1);
