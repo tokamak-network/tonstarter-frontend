@@ -23,7 +23,7 @@ type PieChartProps = {
       return {
         id: data.vaultName,
         label: data.vaultName,
-        value: (data.vaultTokenAllocation/pieData.totalTokenAllocation)*100,
+        value:data.vaultTokenAllocation === 0? 0: (data.vaultTokenAllocation/pieData.totalTokenAllocation)*100,
         color: colors[index]
         };
     });
@@ -33,7 +33,7 @@ type PieChartProps = {
         data={formattedData}
         padAngle={0.7}
         cornerRadius={0}
-        margin={{ bottom:120 }}
+        margin={{ bottom:150, top:10 }}
         activeOuterRadiusOffset={3}
         borderWidth={1}
         borderColor={{
@@ -80,10 +80,10 @@ type PieChartProps = {
             anchor: 'left',
           direction: 'column',
           justify: false,
-          translateX: 20,
+          translateX: 25,
           translateY: 140,
           itemsSpacing: 0,
-          itemWidth: 60,
+          itemWidth: 120,
           itemHeight: 18,
           itemTextColor: colorMode === 'dark' ? 'white' : 'black',
           itemDirection: 'left-to-right',
@@ -100,10 +100,10 @@ type PieChartProps = {
             anchor: 'left',
           direction: 'column',
           justify: false,
-          translateX: 160,
+          translateX: 180,
           translateY: 140,
           itemsSpacing: 0,
-          itemWidth: 60,
+          itemWidth: 120,
           itemHeight: 18,
           itemTextColor: colorMode === 'dark' ? 'white' : 'black',
           itemDirection: 'left-to-right',

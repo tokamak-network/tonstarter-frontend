@@ -74,7 +74,7 @@ useEffect(() => {
             
               fontSize={13}
               color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-              <Flex w={'100%'} flexDir={'column'} height={'300px'} alignItems={'center'}>
+              <Flex w={'100%'} flexDir={'column'} height={'340px'} alignItems={'center'}>
         <PieChart pieData={values} />
               </Flex>
             </Flex>
