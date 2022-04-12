@@ -2,6 +2,7 @@ import React, {FC, useState, useEffect} from 'react';
 import {useColorMode} from '@chakra-ui/react';
 import {ResponsivePie} from '@nivo/pie';
 import {shortenAddress} from 'utils';
+import {Bluetooth} from 'react-feather';
 
 type PieChartProps = {
   pieData: any;
@@ -9,6 +10,82 @@ type PieChartProps = {
 
 export const PieChart: FC<PieChartProps> = ({pieData}) => {
   const {colorMode} = useColorMode();
+
+  // const testData = [
+  //   {
+  //     id: '123',
+  //     label: '123',
+  //     value: 10,
+  //     color: 'blue',
+  //   },
+  //   {
+  //     id: '124',
+  //     label: '124',
+  //     value: 10,
+  //     color: 'red',
+  //   },
+  //   {
+  //     id: '125',
+  //     label: '125',
+  //     value: 10,
+  //     color: 'yellow',
+  //   },
+  //   {
+  //     id: '126',
+  //     label: '126',
+  //     value: 10,
+  //     color: 'green',
+  //   },
+  //   {
+  //     id: '127',
+  //     label: '127',
+  //     value: 10,
+  //     color: 'gray',
+  //   },
+  //   {
+  //     id: '12311',
+  //     label: '12311',
+  //     value: 10,
+  //     color: 'purple',
+  //   },
+  //   {
+  //     id: '12723',
+  //     label: '12723',
+  //     value: 10,
+  //     color: 'orange',
+  //   },
+  //   {
+  //     id: '128',
+  //     label: '128',
+  //     value: 10,
+  //     color: '#f92',
+  //   },
+  //   {
+  //     id: '12332',
+  //     label: '12332',
+  //     value: 8,
+  //     color: '#65d',
+  //   },
+  //   {
+  //     id: '1239',
+  //     label: '1239',
+  //     value: 6,
+  //     color: '#ccc',
+  //   },
+  //   {
+  //     id: '12376',
+  //     label: '12376',
+  //     value: 4,
+  //     color: '#de4',
+  //   },
+  //   {
+  //     id: '12342',
+  //     label: '12342',
+  //     value: 2,
+  //     color: '#ba3',
+  //   },
+  // ];
+  let resArr: any[] = [];
 
   const formattedData = pieData.map((data: any) => {
     return {
@@ -21,6 +98,24 @@ export const PieChart: FC<PieChartProps> = ({pieData}) => {
       // color: `hsl(${Math.floor(Math.random() * (360 - 0 + 1) + 0)}, 70%, 50%)`,
     };
   });
+
+  if (formattedData.length >= 8) {
+    let remainingLiquidity = 0;
+    formattedData.forEach((data: any, idx: number) => {
+      if (idx <= 6) {
+        resArr.push(data);
+      } else {
+        remainingLiquidity += data.value;
+      }
+    });
+    resArr.push({
+      id: 'Other',
+      label: 'Other',
+      value: remainingLiquidity,
+    });
+  } else {
+    resArr = formattedData;
+  }
 
   return (
     // make sure parent container have a defined height when using
@@ -42,7 +137,7 @@ export const PieChart: FC<PieChartProps> = ({pieData}) => {
       }}
       // there are color scheme options using the nivo pie example. If you want custom colors add {{ datum: 'data.color' }} ~~ data.color will reference the formattedData object above.
       colors={{
-        scheme: 'category10',
+        scheme: 'set3',
       }}
       tooltip={({datum: data}) => (
         <div
@@ -54,13 +149,6 @@ export const PieChart: FC<PieChartProps> = ({pieData}) => {
           <div style={{display: 'flex'}}>
             <p style={{marginRight: '5px'}}>{data.id}:</p>
             <p style={{color: data.color}}>{data.value}%</p>
-          </div>
-          <div>
-            <p>Token IDs Staked:</p>
-            {/*@ts-ignore*/}
-            {data?.data?.tokensOwned?.map((token: any) => {
-              return <p>{token}</p>;
-            })}
           </div>
         </div>
       )}
