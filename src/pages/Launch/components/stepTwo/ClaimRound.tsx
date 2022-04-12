@@ -121,8 +121,6 @@ const ClaimRound = () => {
 
   let tokenAcc = 0;
 
-  console.log(selectedVaultDetail);
-
   return (
     <Flex flexDir={'column'}>
       <Box

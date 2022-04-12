@@ -1,7 +1,7 @@
 import {Flex, Grid, GridItem, Text, useColorMode} from '@chakra-ui/react';
 import {useTheme} from '@emotion/react';
 import useTokenDetail from '@Launch/hooks/useTokenDetail';
-import {selectLaunch} from '@Launch/launch.reducer';
+import {saveTempVaultData, selectLaunch} from '@Launch/launch.reducer';
 import {
   Projects,
   PublicTokenColData,
@@ -10,7 +10,7 @@ import {
   VaultPublic,
 } from '@Launch/types';
 import {useFormikContext} from 'formik';
-import {useAppSelector} from 'hooks/useRedux';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {useEffect, useMemo, useState} from 'react';
 import InputField from './InputField';
 import useVaultSelector from '@Launch/hooks/useVaultSelector';
@@ -21,6 +21,7 @@ import SingleCalendarPop from '../common/SingleCalendarPop';
 import {useContract} from 'hooks/useContract';
 import {DEPLOYED} from 'constants/index';
 import InitialLiquidityComputeAbi from 'services/abis/Vault_InitialLiquidityCompute.json';
+import {convertTimeStamp} from 'utils/convertTIme';
 
 export const MainTitle = (props: {leftTitle: string; rightTitle: string}) => {
   const {leftTitle, rightTitle} = props;
@@ -58,7 +59,8 @@ const SubTitle = (props: {
     formikName,
   } = props;
   const [inputVal, setInputVal] = useState<number | string>(
-    String(rightTitle)?.replaceAll(' TON', ''),
+    //@ts-ignore
+    Number(rightTitle?.replaceAll(' TON', '')),
   );
   // leftTitle !== 'Address for receiving funds'
   //               ? Number(inputVal)
@@ -66,9 +68,9 @@ const SubTitle = (props: {
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const {vaults} = values;
   const publicVault = vaults[0] as VaultPublic;
-  useEffect(() => {
-    setInputVal(String(rightTitle)?.replaceAll(' TON', '') as string);
-  }, [isEdit, rightTitle]);
+  // useEffect(() => {
+  //   setInputVal(String(rightTitle)?.replaceAll(' TON', '') as string);
+  // }, [isEdit, rightTitle]);
 
   function getTimeStamp() {
     switch (
@@ -102,6 +104,12 @@ const SubTitle = (props: {
     getTimeStamp() as number | undefined,
   );
 
+  const dispatch = useAppDispatch();
+  const {
+    data: {tempVaultData},
+  } = useAppSelector(selectLaunch);
+
+  //@ts-ignore
   useEffect(() => {
     //Put timestamp
     switch (
@@ -112,31 +120,102 @@ const SubTitle = (props: {
         | 'Public Round 2'
     ) {
       case 'Snapshot': {
-        return setFieldValue('vaults[0].snapshot', claimDate);
+        return dispatch(
+          saveTempVaultData({
+            data: {
+              ...tempVaultData,
+              snapshot: claimDate,
+            },
+          }),
+        );
+        // return setFieldValue('vaults[0].snapshot', claimDate);
       }
       case 'Whitelist': {
-        //@ts-ignore
-        setFieldValue('vaults[0].whitelist', dateRange[0]);
-        //@ts-ignore
-        return setFieldValue('vaults[0].whitelistEnd', dateRange[1]);
+        return dispatch(
+          saveTempVaultData({
+            data: {
+              ...tempVaultData,
+              //@ts-ignore
+              whitelist: dateRange[0],
+              //@ts-ignore
+              whitelistEnd: dateRange[1],
+            },
+          }),
+        );
+        //   setFieldValue('vaults[0].whitelist', dateRange[0]);
+        // //@ts-ignore
+        // return setFieldValue('vaults[0].whitelistEnd', dateRange[1]);
       }
       case 'Public Round 1': {
-        //@ts-ignore
-        setFieldValue('vaults[0].publicRound1', dateRange[0]);
-        //@ts-ignore
-        return setFieldValue('vaults[0].publicRound1End', dateRange[1]);
+        return dispatch(
+          saveTempVaultData({
+            data: {
+              ...tempVaultData,
+              //@ts-ignore
+              publicRound1: dateRange[0],
+              //@ts-ignore
+              publicRound1End: dateRange[1],
+            },
+          }),
+        );
+        // //@ts-ignore
+        // setFieldValue('vaults[0].publicRound1', dateRange[0]);
+        // //@ts-ignore
+        // return setFieldValue('vaults[0].publicRound1End', dateRange[1]);
       }
       case 'Public Round 2': {
-        //@ts-ignore
-        setFieldValue('vaults[0].publicRound2', dateRange[0]);
-        //@ts-ignore
-        return setFieldValue('vaults[0].publicRound2End', dateRange[1]);
+        return dispatch(
+          saveTempVaultData({
+            data: {
+              ...tempVaultData,
+              //@ts-ignore
+              publicRound2: dateRange[0],
+              //@ts-ignore
+              publicRound2End: dateRange[1],
+            },
+          }),
+        );
+        // //@ts-ignore
+        // setFieldValue('vaults[0].publicRound2', dateRange[0]);
+        // //@ts-ignore
+        // return setFieldValue('vaults[0].publicRound2End', dateRange[1]);
       }
       default:
         break;
     }
     /*eslint-disable*/
   }, [dateRange, claimDate, leftTitle]);
+
+  // console.log('--inputVal--');
+  // console.log(typeof inputVal);
+  // console.log(leftTitle);
+  // console.log(rightTitle);
+  // console.log(inputVal);
+
+  useEffect(() => {}, [tempVaultData]);
+
+  let tempValueKey = () => {
+    switch (leftTitle) {
+      case 'Snapshot':
+        return {key0: 'snapshot'};
+      case 'Whitelist':
+        return {
+          key0: 'whitelist',
+          key1: 'whitelistEnd',
+        };
+      case 'Public Round 1':
+        return {
+          key0: 'publicRound1',
+          key1: 'publicRound1End',
+        };
+      case 'Public Round 2':
+        return {
+          key0: 'publicRound2',
+          key1: 'publicRound2End',
+        };
+        defaut: break;
+    }
+  };
 
   return (
     <Flex
@@ -154,12 +233,31 @@ const SubTitle = (props: {
         isSecondColData ? (
           <Flex>
             <Flex flexDir={'column'} textAlign={'right'} mr={'8px'}>
-              <Text>{rightTitle?.split('~')[0] || '-'}</Text>
+              <Text>
+                {
+                  //@ts-ignore
+                  tempVaultData[tempValueKey()?.key0]
+                    ? convertTimeStamp(
+                        //@ts-ignore
+                        tempVaultData[tempValueKey()?.key0],
+                        'YYYY.MM.DD HH:mm:ss',
+                      )
+                    : rightTitle?.split('~')[0] || '-'
+                }
+              </Text>
+
               {leftTitle !== 'Snapshot' && (
                 <Text>
-                  {rightTitle?.split('~')[1] || '-'
-                    ? `~ ${rightTitle?.split('~')[1] || '-'}`
-                    : ''}
+                  {
+                    //@ts-ignore
+                    tempVaultData[tempValueKey()?.key1]
+                      ? `~ ${convertTimeStamp(
+                          //@ts-ignore
+                          tempVaultData[tempValueKey()?.key1],
+                          'MM.DD HH:mm:ss',
+                        )}`
+                      : `~ ${rightTitle?.split('~')[1]}` || '-'
+                  }
                 </Text>
               )}
             </Flex>
@@ -174,7 +272,7 @@ const SubTitle = (props: {
             w={120}
             h={32}
             fontSize={13}
-            value={inputVal}
+            value={Number(inputVal)}
             setValue={setInputVal}
             formikName={formikName}
             numberOnly={
