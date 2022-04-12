@@ -31,6 +31,8 @@ export type DEPLOYED_TYPE = {
   TonStakerVault: string;
   TosStakerVault: string;
   LPrewardVault: string;
+  TypeCVault: string;
+  DAOVault: string;
   pools: {
     TOS_WTON_POOL: string;
   };

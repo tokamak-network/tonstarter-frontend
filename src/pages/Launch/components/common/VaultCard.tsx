@@ -39,8 +39,6 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
 
   useEffect(() => {
     if (selectedVault === name) {
-      console.log(selectedVault);
-
       return setIsSelected(true);
     }
     return setIsSelected(false);

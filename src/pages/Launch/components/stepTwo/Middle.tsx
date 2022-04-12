@@ -70,10 +70,13 @@ const Middle = () => {
     if (selectedVaultDetail) {
       const {claim} = selectedVaultDetail;
       setTableData(claim);
+      setIsEdit(false);
     }
   }, [selectedVaultDetail]);
 
-  const isDisable = selectedVaultDetail?.vaultType !== 'Public';
+  const isDisable =
+    selectedVaultDetail?.vaultType !== 'Public' &&
+    selectedVaultDetail?.vaultType !== 'Liquidity Incentive';
 
   return (
     <Flex flexDir={'column'} w={'100%'}>

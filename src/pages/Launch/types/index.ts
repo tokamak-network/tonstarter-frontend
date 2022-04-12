@@ -81,8 +81,12 @@ type VaultPublic = VaultCommon & {
 };
 
 type VaultC = VaultCommon & {};
+type VaultLiquidityIncentive = VaultCommon & {
+  poolAddress: string | undefined;
+  tokenPair: string | undefined;
+};
 
-type VaultAny = VaultDao | VaultPublic | VaultC;
+type VaultAny = VaultDao | VaultPublic | VaultC | VaultLiquidityIncentive;
 
 interface ProjectStep1 {
   projectName: string;
@@ -196,6 +200,18 @@ type PublicTokenColData = {
       formikName: string;
     },
   ];
+  liquidityColData?: [
+    {
+      title: 'Select Pair';
+      content: string | undefined;
+      formikName: string;
+    },
+    {
+      title: 'Pool Address\n(0.3% fee)';
+      content: string | undefined;
+      formikName: string;
+    },
+  ];
 };
 
 type Step3_InfoList = {
@@ -220,4 +236,5 @@ export type {
   PublicTokenColData,
   VaultType,
   Step3_InfoList,
+  VaultLiquidityIncentive,
 };

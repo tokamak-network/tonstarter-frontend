@@ -2,17 +2,25 @@ import {Flex, Grid, GridItem, Text, useColorMode} from '@chakra-ui/react';
 import {useTheme} from '@emotion/react';
 import useTokenDetail from '@Launch/hooks/useTokenDetail';
 import {selectLaunch} from '@Launch/launch.reducer';
-import {Projects, PublicTokenColData, VaultCommon} from '@Launch/types';
-import HoverImage from 'components/HoverImage';
+import {
+  Projects,
+  PublicTokenColData,
+  VaultCommon,
+  VaultLiquidityIncentive,
+  VaultPublic,
+} from '@Launch/types';
 import {useFormikContext} from 'formik';
 import {useAppSelector} from 'hooks/useRedux';
-import {useEffect, useMemo, useRef, useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import InputField from './InputField';
-import CalendarActiveImg from 'assets/launch/calendar-active-icon.svg';
-import CalendarInactiveImg from 'assets/launch/calendar-inactive-icon.svg';
 import useVaultSelector from '@Launch/hooks/useVaultSelector';
 import commafy from 'utils/commafy';
 import {shortenAddress} from 'utils';
+import DoubleCalendarPop from '../common/DoubleCalendarPop';
+import SingleCalendarPop from '../common/SingleCalendarPop';
+import {useContract} from 'hooks/useContract';
+import {DEPLOYED} from 'constants/index';
+import InitialLiquidityComputeAbi from 'services/abis/Vault_InitialLiquidityCompute.json';
 
 export const MainTitle = (props: {leftTitle: string; rightTitle: string}) => {
   const {leftTitle, rightTitle} = props;
@@ -49,13 +57,86 @@ const SubTitle = (props: {
     isSecondColData,
     formikName,
   } = props;
-  const [inputVal, setInputVal] = useState(rightTitle?.replaceAll(' TON', ''));
-
+  const [inputVal, setInputVal] = useState<number | string>(
+    String(rightTitle)?.replaceAll(' TON', ''),
+  );
+  // leftTitle !== 'Address for receiving funds'
+  //               ? Number(inputVal)
+  //               :
+  const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
+  const {vaults} = values;
+  const publicVault = vaults[0] as VaultPublic;
   useEffect(() => {
-    setInputVal(rightTitle?.replaceAll(' TON', ''));
+    setInputVal(String(rightTitle)?.replaceAll(' TON', '') as string);
   }, [isEdit, rightTitle]);
 
-  const tokensRef = useRef();
+  function getTimeStamp() {
+    switch (
+      leftTitle as
+        | 'Snapshot'
+        | 'Whitelist'
+        | 'Public Round 1'
+        | 'Public Round 2'
+    ) {
+      case 'Snapshot': {
+        return publicVault.snapshot;
+      }
+      case 'Whitelist': {
+        return [publicVault.whitelist, publicVault.whitelistEnd];
+      }
+      case 'Public Round 1': {
+        return [publicVault.publicRound1, publicVault.publicRound1End];
+      }
+      case 'Public Round 2': {
+        return [publicVault.publicRound2, publicVault.publicRound2End];
+      }
+      default:
+        return 0;
+    }
+  }
+
+  const [dateRange, setDateRange] = useState<number | undefined[]>(
+    getTimeStamp() as number | undefined[],
+  );
+  const [claimDate, setClaimDate] = useState<number | undefined>(
+    getTimeStamp() as number | undefined,
+  );
+
+  useEffect(() => {
+    //Put timestamp
+    switch (
+      leftTitle as
+        | 'Snapshot'
+        | 'Whitelist'
+        | 'Public Round 1'
+        | 'Public Round 2'
+    ) {
+      case 'Snapshot': {
+        return setFieldValue('vaults[0].snapshot', claimDate);
+      }
+      case 'Whitelist': {
+        //@ts-ignore
+        setFieldValue('vaults[0].whitelist', dateRange[0]);
+        //@ts-ignore
+        return setFieldValue('vaults[0].whitelistEnd', dateRange[1]);
+      }
+      case 'Public Round 1': {
+        //@ts-ignore
+        setFieldValue('vaults[0].publicRound1', dateRange[0]);
+        //@ts-ignore
+        return setFieldValue('vaults[0].publicRound1End', dateRange[1]);
+      }
+      case 'Public Round 2': {
+        //@ts-ignore
+        setFieldValue('vaults[0].publicRound2', dateRange[0]);
+        //@ts-ignore
+        return setFieldValue('vaults[0].publicRound2End', dateRange[1]);
+      }
+      default:
+        break;
+    }
+    /*eslint-disable*/
+  }, [dateRange, claimDate, leftTitle]);
 
   return (
     <Flex
@@ -69,22 +150,24 @@ const SubTitle = (props: {
       <Text color={'#7e8993'} w={'101px'}>
         {leftTitle}
       </Text>
-
       {isEdit ? (
         isSecondColData ? (
           <Flex>
             <Flex flexDir={'column'} textAlign={'right'} mr={'8px'}>
               <Text>{rightTitle?.split('~')[0] || '-'}</Text>
-              <Text>
-                {rightTitle?.split('~')[1]
-                  ? `~ ${rightTitle?.split('~')[1]}`
-                  : ''}
-              </Text>
+              {leftTitle !== 'Snapshot' && (
+                <Text>
+                  {rightTitle?.split('~')[1] || '-'
+                    ? `~ ${rightTitle?.split('~')[1] || '-'}`
+                    : ''}
+                </Text>
+              )}
             </Flex>
-            <HoverImage
-              action={() => console.log('go')}
-              img={CalendarInactiveImg}
-              hoverImg={CalendarActiveImg}></HoverImage>
+            {leftTitle !== 'Snapshot' ? (
+              <DoubleCalendarPop setDate={setDateRange}></DoubleCalendarPop>
+            ) : (
+              <SingleCalendarPop setDate={setClaimDate}></SingleCalendarPop>
+            )}
           </Flex>
         ) : (
           <InputField
@@ -93,17 +176,21 @@ const SubTitle = (props: {
             fontSize={13}
             value={inputVal}
             setValue={setInputVal}
-            formikName={formikName}></InputField>
+            formikName={formikName}
+            numberOnly={
+              leftTitle !== 'Address for receiving funds' &&
+              !leftTitle.includes('Pool Address')
+            }></InputField>
         )
-      ) : rightTitle?.includes('~') ? (
+      ) : String(rightTitle)?.includes('~') ? (
         <Flex flexDir={'column'} textAlign={'right'}>
-          <Text>{rightTitle.split('~')[0]}</Text>
-          <Text>~ {rightTitle.split('~')[1]}</Text>
+          <Text>{String(rightTitle).split('~')[0]}</Text>
+          <Text>~ {String(rightTitle).split('~')[1]}</Text>
         </Flex>
       ) : (
         <Flex>
           <Text textAlign={'right'}>
-            {rightTitle?.includes('undefined')
+            {String(rightTitle)?.includes('undefined')
               ? '-'
               : rightTitle && rightTitle.length > 20
               ? shortenAddress(rightTitle as string)
@@ -181,7 +268,10 @@ const STOSTier = (props: {
 };
 
 const PublicTokenDetail = (props: {
-  firstColData: PublicTokenColData['firstColData'] | null;
+  firstColData:
+    | PublicTokenColData['firstColData']
+    | PublicTokenColData['liquidityColData']
+    | null;
   secondColData: PublicTokenColData['secondColData'] | null;
   thirdColData: PublicTokenColData['thirdColData'] | null;
   isEdit: boolean;
@@ -266,7 +356,11 @@ const PublicTokenDetail = (props: {
           <Flex
             alignItems={'center'}
             justifyContent="center"
-            h={'60px'}
+            h={
+              firstColData?.length !== undefined
+                ? `${firstColData.length * 60}px`
+                : '60px'
+            }
             fontSize={13}
             color={'#808992'}
             fontWeight={600}>
@@ -306,7 +400,11 @@ const PublicTokenDetail = (props: {
           <Flex
             alignItems={'center'}
             justifyContent="center"
-            h={'60px'}
+            h={
+              firstColData?.length !== undefined
+                ? `${firstColData.length * 60}px`
+                : '60px'
+            }
             fontSize={13}
             color={'#808992'}
             fontWeight={600}>
@@ -321,12 +419,34 @@ const PublicTokenDetail = (props: {
 const TokenDetail = (props: {isEdit: boolean}) => {
   const {isEdit} = props;
   const {
-    data: {selectedVault},
+    data: {selectedVaultType, selectedVault},
   } = useAppSelector(selectLaunch);
+  const {InitialLiquidityVault} = DEPLOYED;
+  const InitialLiquidity_CONTRACT = useContract(
+    InitialLiquidityVault,
+    InitialLiquidityComputeAbi.abi,
+  );
+  const {TOS_ADDRESS} = DEPLOYED;
+  const {values} = useFormikContext<Projects['CreateProject']>();
+  const [poolAddress, setPoolAddress] = useState<string>('');
+
+  // useEffect(() => {
+  //   async function getPoolAddress() {
+  //     const poolAddress = await InitialLiquidity_CONTRACT?.computePoolAddress(
+  //       TOS_ADDRESS,
+  //       values.tokenAddress,
+  //       3000,
+  //     );
+  //     setPoolAddress(poolAddress);
+  //   }
+  //   if (values.tokenAddress) {
+  //     getPoolAddress();
+  //   }
+  // }, [values.tokenAddress, TOS_ADDRESS]);
 
   const {publicTokenColData} = useTokenDetail();
   const VaultTokenDetail = useMemo(() => {
-    switch (selectedVault) {
+    switch (selectedVaultType) {
       case 'Public':
         if (publicTokenColData) {
           return (
@@ -338,14 +458,30 @@ const TokenDetail = (props: {isEdit: boolean}) => {
           );
         }
         return null;
-      case 'Initial Liquidity':
+      case 'Initial Liquidity': {
+        const thisVault: VaultLiquidityIncentive = values.vaults.filter(
+          //@ts-ignore
+          (vault: VaultLiquidityIncentive) => vault.vaultName === selectedVault,
+        )[0] as VaultLiquidityIncentive;
         return (
           <PublicTokenDetail
-            firstColData={null}
+            firstColData={[
+              {
+                title: 'Select Pair',
+                content: thisVault.tokenPair,
+                formikName: 'tokenPair',
+              },
+              {
+                title: 'Pool Address\n(0.3% fee)',
+                content: thisVault.poolAddress,
+                formikName: 'poolAddress',
+              },
+            ]}
             secondColData={null}
             thirdColData={null}
             isEdit={isEdit}></PublicTokenDetail>
         );
+      }
       case 'TON Staker':
         return (
           <PublicTokenDetail
@@ -363,28 +499,56 @@ const TokenDetail = (props: {isEdit: boolean}) => {
             isEdit={isEdit}></PublicTokenDetail>
         );
       case 'WTON-TOS LP Reward':
-        return <Flex>go</Flex>;
+        return (
+          <PublicTokenDetail
+            firstColData={null}
+            secondColData={null}
+            thirdColData={null}
+            isEdit={isEdit}></PublicTokenDetail>
+        );
+      case 'C':
+        return (
+          <PublicTokenDetail
+            firstColData={null}
+            secondColData={null}
+            thirdColData={null}
+            isEdit={isEdit}></PublicTokenDetail>
+        );
+      case 'DAO':
+        return (
+          <PublicTokenDetail
+            firstColData={null}
+            secondColData={null}
+            thirdColData={null}
+            isEdit={isEdit}></PublicTokenDetail>
+        );
+      case 'Liquidity Incentive':
+        const thisVault: VaultLiquidityIncentive = values.vaults.filter(
+          //@ts-ignore
+          (vault: VaultLiquidityIncentive) => vault.vaultName === selectedVault,
+        )[0] as VaultLiquidityIncentive;
+        return (
+          <PublicTokenDetail
+            firstColData={[
+              {
+                title: 'Select Pair',
+                content: thisVault?.tokenPair || '-',
+                formikName: 'tokenPair',
+              },
+              {
+                title: 'Pool Address\n(0.3% fee)',
+                content: thisVault?.poolAddress || '-',
+                formikName: 'poolAddress',
+              },
+            ]}
+            secondColData={null}
+            thirdColData={null}
+            isEdit={isEdit}></PublicTokenDetail>
+        );
       default:
         return <>no container for this vault :(</>;
     }
-  }, [selectedVault, isEdit, publicTokenColData]);
-
-  const VaultTokenDetailEdit = useMemo(() => {
-    switch (selectedVault) {
-      case 'Public':
-        return <Flex>public</Flex>;
-      case 'LP':
-        return <Flex>go</Flex>;
-      case 'TON Staker':
-        return <Flex>go</Flex>;
-      case 'TOS Staker':
-        return <Flex>go</Flex>;
-      case 'WTON-TOS LP Reward':
-        return <Flex>go</Flex>;
-      default:
-        return <>no container for this vault :(</>;
-    }
-  }, [selectedVault]);
+  }, [selectedVaultType, isEdit, publicTokenColData]);
 
   return VaultTokenDetail;
 

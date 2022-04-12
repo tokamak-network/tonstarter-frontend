@@ -20,7 +20,7 @@ const Vaults = () => {
   const vaultsList = values.vaults;
   const dispatch = useAppDispatch();
   const [transX, setTransX] = useState<number>(0);
-  const [flowIndex, setFlowIndex] = useState<number>(vaultsList.length);
+  const [flowIndex, setFlowIndex] = useState<number>(6);
 
   return (
     <Flex w={'100%'} bg={'white.100'} flexDir="column">
@@ -29,7 +29,7 @@ const Vaults = () => {
           img={arrowLeft}
           hoverImg={arrowHoverLeft}
           action={() => {
-            if (flowIndex - vaultsList.length > 0) {
+            if (flowIndex - vaultsList.length >= 0) {
               setTransX(transX + 165);
               setFlowIndex(flowIndex - 1);
             }
@@ -44,6 +44,7 @@ const Vaults = () => {
                 vaultTokenAllocation,
                 isMandatory,
                 adminAddress,
+                vaultType,
               } = vault;
               const strVaultTokenAllocation =
                 vaultTokenAllocation?.toString() || '0';
@@ -51,7 +52,9 @@ const Vaults = () => {
                 <Box
                   // mr={(index + 1) % 3 !== 0 ? '20px' : 0}
                   mr={'18px'}
-                  onClick={() => dispatch(changeVault({data: vaultName}))}>
+                  onClick={() =>
+                    dispatch(changeVault({data: vaultName, vaultType}))
+                  }>
                   <VaultCard
                     key={`${vaultName}_${vaultTokenAllocation}`}
                     status={vaultName === 'Public' ? 'public' : 'notPublic'}
@@ -73,6 +76,8 @@ const Vaults = () => {
           img={arrowRight}
           hoverImg={arrowHoverRight}
           action={() => {
+            console.log(flowIndex);
+            console.log(vaultsList.length);
             if (flowIndex <= vaultsList.length) {
               setTransX(transX - 165);
               setFlowIndex(flowIndex + 1);

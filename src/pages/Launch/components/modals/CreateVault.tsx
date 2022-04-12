@@ -12,7 +12,7 @@ import {
   useColorMode,
   Input,
 } from '@chakra-ui/react';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {useModal} from 'hooks/useModal';
@@ -22,6 +22,7 @@ import {useFormikContext} from 'formik';
 import useValues from '@Launch/hooks/useValues';
 import Line from '@Launch/components/common/Line';
 import {CustomButton} from 'components/Basic/CustomButton';
+import {CustomSelectBox} from 'components/Basic';
 
 const CreateVaultModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -33,6 +34,11 @@ const CreateVaultModal = () => {
   const [tokenAllocatonVal, setTokenAllocatonVal] = useState(0);
   const [adminAddressVal, setAdminAddressVal] = useState('');
   const {initialVaultValue} = useValues();
+  const selectOptionValues = ['C', 'DAO', 'Liquidity Incentive'];
+  const selectOptionNames = ['Custom', 'DAO', 'Liquidity Incentive'];
+  const [selectVaultType, setSelectVaultType] = useState<
+    'C' | 'DAO' | 'Liquidity Incentive'
+  >('C');
 
   function editVault() {
     const vaultsList = values.vaults;
@@ -40,12 +46,18 @@ const CreateVaultModal = () => {
       ...vaultsList,
       {
         ...initialVaultValue,
+        vaultType: selectVaultType,
         vaultName: nameVal,
         vaultTokenAllocation: tokenAllocatonVal,
         adminAddress: adminAddressVal,
+        index: vaultsList.length,
       },
     ]);
   }
+
+  useEffect(() => {
+    //Handle it if input value type is char
+  }, [tokenAllocatonVal]);
 
   return (
     <Modal
@@ -85,6 +97,18 @@ const CreateVaultModal = () => {
             pl={'35px'}
             fontSize={13}
             color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
+            <Flex w={'100%'} flexDir={'column'} mb={'24px'}>
+              <Text fontWeight={600} mb={'9px'}>
+                Vault Type
+              </Text>
+              <CustomSelectBox
+                w={'290px'}
+                h={'32px'}
+                list={selectOptionValues}
+                optionName={selectOptionNames}
+                setValue={setSelectVaultType}
+                fontSize={'12px'}></CustomSelectBox>
+            </Flex>
             <Flex w={'100%'} flexDir={'column'} mb={'24px'}>
               <Text fontWeight={600} mb={'9px'}>
                 Vault Name
