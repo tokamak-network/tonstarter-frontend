@@ -16,14 +16,16 @@ type VaultCardProps = {
   tokenAllocation: string;
   isMandatory: boolean;
   adminAddress: string;
+  vaultIndex: number;
 };
 
 const VaultCard: React.FC<VaultCardProps> = (prop) => {
-  const {status, name, tokenAllocation, isMandatory, adminAddress} = prop;
+  const {status, name, tokenAllocation, isMandatory, adminAddress, vaultIndex} =
+    prop;
   const [isHover, setIsHover] = useState<boolean>(false);
   const [isSelected, setIsSelected] = useState<boolean>(false);
   const {
-    data: {selectedVault},
+    data: {selectedVaultIndex},
   } = useAppSelector(selectLaunch);
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const vaultsList = values.vaults;
@@ -31,18 +33,18 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
     setFieldValue(
       'vaults',
       vaultsList.filter((vault: Vault) => {
-        return vault.vaultName !== name;
+        return vault.index !== vaultIndex;
       }),
     );
   }
   const {openAnyModal} = useModal();
 
   useEffect(() => {
-    if (selectedVault === name) {
+    if (selectedVaultIndex === vaultIndex) {
       return setIsSelected(true);
     }
     return setIsSelected(false);
-  }, [name, selectedVault]);
+  }, [vaultIndex, selectedVaultIndex]);
 
   useMemo(() => {
     const sumTotalToken = vaultsList.reduce((acc, cur) => {

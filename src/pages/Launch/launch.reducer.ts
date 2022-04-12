@@ -6,6 +6,7 @@ interface LaunchState {
   data: {
     selectedVault: VaultName;
     selectedVaultType: VaultType;
+    selectedVaultIndex: number | undefined;
     projects: any;
     tempVaultData: {};
     err: {
@@ -23,6 +24,7 @@ const initialState = {
   data: {
     selectedVault: 'Public',
     selectedVaultType: 'Public',
+    selectedVaultIndex: 0,
     projects: [],
     tempVaultData: {},
     err: {
@@ -37,6 +39,7 @@ const initialState = {
 type VaultPayload = {
   data: VaultName;
   vaultType: VaultType;
+  vaultIndex?: number | undefined;
 };
 
 type ProjectPayload = {
@@ -63,6 +66,7 @@ export const launchReducer = createSlice({
     changeVault: (state, {payload}: PayloadAction<VaultPayload>) => {
       state.data.selectedVault = payload.data;
       state.data.selectedVaultType = payload.vaultType;
+      state.data.selectedVaultIndex = payload.vaultIndex;
     },
     fetchProjects: (state, {payload}: PayloadAction<ProjectPayload>) => {
       state.data.projects = payload.data;

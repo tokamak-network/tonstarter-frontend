@@ -121,7 +121,7 @@ function getContract(vaultType: VaultType, library: LibraryType) {
 }
 
 const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
-  const {vaultName, vaultType} = vault;
+  const {vaultName, vaultType, index} = vault;
   const theme = useTheme();
   const {OpenCampaginDesign} = theme;
   const {colorMode} = useColorMode();
@@ -145,7 +145,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
 
   const vaultsList = values.vaults;
   const selectedVaultDetail = vaultsList.filter((vaultData: VaultAny) => {
-    if (vaultData.vaultName === vaultName) {
+    if (vaultData.index === index) {
       return vaultData;
     }
   })[0];
@@ -399,6 +399,18 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                   }
                 } catch (e) {}
               } while (valutIndex >= 0);
+
+              console.log(
+                `${values.projectName}_${selectedVaultDetail?.vaultName}`,
+                selectedVaultDetail?.adminAddress,
+                [
+                  values.tokenAddress,
+                  //@ts-ignore
+                  selectedVaultDetail?.addressForReceiving,
+                  values.vaults[1].vaultAddress,
+                ],
+                valutIndex,
+              );
 
               const tx = await vaultContract?.connect(signer).create(
                 `${values.projectName}_${selectedVaultDetail?.vaultName}`,

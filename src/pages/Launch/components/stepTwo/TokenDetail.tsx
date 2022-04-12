@@ -62,15 +62,12 @@ const SubTitle = (props: {
     //@ts-ignore
     Number(rightTitle?.replaceAll(' TON', '')),
   );
-  // leftTitle !== 'Address for receiving funds'
-  //               ? Number(inputVal)
-  //               :
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const {vaults} = values;
   const publicVault = vaults[0] as VaultPublic;
-  // useEffect(() => {
-  //   setInputVal(String(rightTitle)?.replaceAll(' TON', '') as string);
-  // }, [isEdit, rightTitle]);
+  useEffect(() => {
+    setInputVal(String(rightTitle)?.replaceAll(' TON', '') as string);
+  }, [isEdit, rightTitle]);
 
   function getTimeStamp() {
     switch (
@@ -272,7 +269,7 @@ const SubTitle = (props: {
             w={120}
             h={32}
             fontSize={13}
-            value={Number(inputVal)}
+            value={inputVal}
             setValue={setInputVal}
             formikName={formikName}
             // numberOnly={

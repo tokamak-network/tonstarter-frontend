@@ -29,10 +29,12 @@ const Vaults = () => {
           img={arrowLeft}
           hoverImg={arrowHoverLeft}
           action={() => {
-            if (flowIndex - vaultsList.length >= 0) {
-              setTransX(transX + 165);
-              setFlowIndex(flowIndex - 1);
-            }
+            // if (flowIndex - vaultsList.length >= 0) {
+            //   setTransX(transX + 165);
+            //   setFlowIndex(flowIndex - 1);
+            // }
+            setTransX(transX + 165);
+            setFlowIndex(flowIndex - 1);
           }}></HoverImage>
         <Flex w={'100%'} alignItems="center" mx={'15px'} overflow={'hidden'}>
           <motion.div
@@ -45,6 +47,7 @@ const Vaults = () => {
                 isMandatory,
                 adminAddress,
                 vaultType,
+                index: vaultIndex,
               } = vault;
               const strVaultTokenAllocation =
                 vaultTokenAllocation?.toString() || '0';
@@ -53,15 +56,27 @@ const Vaults = () => {
                   // mr={(index + 1) % 3 !== 0 ? '20px' : 0}
                   mr={'18px'}
                   onClick={() =>
-                    dispatch(changeVault({data: vaultName, vaultType}))
+                    dispatch(
+                      changeVault({
+                        data: vaultName,
+                        vaultType,
+                        vaultIndex,
+                      }),
+                    )
                   }>
                   <VaultCard
                     key={`${vaultName}_${vaultTokenAllocation}`}
                     status={vaultName === 'Public' ? 'public' : 'notPublic'}
-                    name={vaultName}
+                    name={
+                      vaultType === 'Liquidity Incentive' &&
+                      isMandatory === true
+                        ? `${values.tokenName}-TOS LP Reward`
+                        : vaultName
+                    }
                     tokenAllocation={strVaultTokenAllocation}
                     isMandatory={isMandatory}
-                    adminAddress={adminAddress}></VaultCard>
+                    adminAddress={adminAddress}
+                    vaultIndex={vaultIndex}></VaultCard>
                 </Box>
               );
             })}
@@ -76,12 +91,12 @@ const Vaults = () => {
           img={arrowRight}
           hoverImg={arrowHoverRight}
           action={() => {
-            console.log(flowIndex);
-            console.log(vaultsList.length);
-            if (flowIndex <= vaultsList.length) {
-              setTransX(transX - 165);
-              setFlowIndex(flowIndex + 1);
-            }
+            // if (flowIndex <= vaultsList.length) {
+            //   setTransX(transX - 165);
+            //   setFlowIndex(flowIndex + 1);
+            // }
+            setTransX(transX - 165);
+            setFlowIndex(flowIndex + 1);
           }}></HoverImage>
         {/* <Image
           cursor={'pointer'}
