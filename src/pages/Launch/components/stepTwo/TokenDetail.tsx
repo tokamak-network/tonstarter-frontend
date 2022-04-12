@@ -275,10 +275,11 @@ const SubTitle = (props: {
             value={Number(inputVal)}
             setValue={setInputVal}
             formikName={formikName}
-            numberOnly={
-              leftTitle !== 'Address for receiving funds' &&
-              !leftTitle.includes('Pool Address')
-            }></InputField>
+            // numberOnly={
+            //   leftTitle !== 'Address for receiving funds' &&
+            //   !leftTitle.includes('Pool Address')
+            // }
+          ></InputField>
         )
       ) : String(rightTitle)?.includes('~') ? (
         <Flex flexDir={'column'} textAlign={'right'}>
