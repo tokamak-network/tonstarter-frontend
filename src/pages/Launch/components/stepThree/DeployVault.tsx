@@ -352,7 +352,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
 
               const iface = new ethers.utils.Interface(InitialLiquidityAbi.abi);
 
-              const result = iface.parseLog(logs[11]);
+              const result = iface.parseLog(logs[logs.length - 1]);
               const {args} = result;
               setFieldValue(
                 `vaults[${selectedVaultDetail?.index}].vaultAddress`,
@@ -430,7 +430,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 PublicSaleVaultCreateAbi.abi,
               );
 
-              const result = iface.parseLog(logs[9]);
+              const result = iface.parseLog(logs[logs.length - 1]);
               const {args} = result;
 
               if (args) {
@@ -464,7 +464,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
 
               const iface = new ethers.utils.Interface(TONStakerAbi.abi);
 
-              const result = iface.parseLog(logs[8]);
+              const result = iface.parseLog(logs[logs.length - 1]);
               const {args} = result;
 
               if (args) {
@@ -496,7 +496,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
 
               const iface = new ethers.utils.Interface(TOSStakerAbi.abi);
 
-              const result = iface.parseLog(logs[8]);
+              const result = iface.parseLog(logs[logs.length - 1]);
               const {args} = result;
 
               setFieldValue(
@@ -567,7 +567,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
 
               const iface = new ethers.utils.Interface(LPrewardVaultAbi.abi);
 
-              const result = iface.parseLog(logs[9]);
+              const result = iface.parseLog(logs[logs.length - 1]);
               const {args} = result;
 
               setFieldValue(
@@ -597,7 +597,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
 
               const iface = new ethers.utils.Interface(VaultCFactoryAbi.abi);
 
-              const result = iface.parseLog(logs[8]);
+              const result = iface.parseLog(logs[logs.length - 1]);
               const {args} = result;
 
               if (args) {
@@ -630,7 +630,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
 
               const iface = new ethers.utils.Interface(DAOVaultAbi.abi);
 
-              const result = iface.parseLog(logs[8]);
+              const result = iface.parseLog(logs[logs.length - 1]);
               const {args} = result;
 
               if (args) {
@@ -738,7 +738,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               const allTokenAllocation =
                 Number(publicRound1Allocation as number) +
                 Number(publicRound2Allocation as number);
-              console.log(allTokenAllocation);
               //   (PublicVaultData.publicRound2Allocation as number)
               const param4: number[] = PublicVaultData.claim.map(
                 (claimRound: VaultSchedule) =>

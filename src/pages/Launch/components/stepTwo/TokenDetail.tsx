@@ -22,6 +22,7 @@ import {useContract} from 'hooks/useContract';
 import {DEPLOYED} from 'constants/index';
 import InitialLiquidityComputeAbi from 'services/abis/Vault_InitialLiquidityCompute.json';
 import {convertTimeStamp} from 'utils/convertTIme';
+import {values} from 'lodash';
 
 export const MainTitle = (props: {leftTitle: string; rightTitle: string}) => {
   const {leftTitle, rightTitle} = props;
@@ -60,14 +61,14 @@ const SubTitle = (props: {
   } = props;
   const [inputVal, setInputVal] = useState<number | string>(
     //@ts-ignore
-    Number(rightTitle?.replaceAll(' TON', '')),
+    rightTitle,
   );
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const {vaults} = values;
   const publicVault = vaults[0] as VaultPublic;
-  useEffect(() => {
-    setInputVal(String(rightTitle)?.replaceAll(' TON', '') as string);
-  }, [isEdit, rightTitle]);
+  // useEffect(() => {
+  //   setInputVal(String(rightTitle)?.replaceAll(' TON', '') as string);
+  // }, [isEdit, rightTitle]);
 
   function getTimeStamp() {
     switch (
@@ -125,7 +126,6 @@ const SubTitle = (props: {
             },
           }),
         );
-        // return setFieldValue('vaults[0].snapshot', claimDate);
       }
       case 'Whitelist': {
         return dispatch(
@@ -139,9 +139,6 @@ const SubTitle = (props: {
             },
           }),
         );
-        //   setFieldValue('vaults[0].whitelist', dateRange[0]);
-        // //@ts-ignore
-        // return setFieldValue('vaults[0].whitelistEnd', dateRange[1]);
       }
       case 'Public Round 1': {
         return dispatch(
@@ -155,10 +152,6 @@ const SubTitle = (props: {
             },
           }),
         );
-        // //@ts-ignore
-        // setFieldValue('vaults[0].publicRound1', dateRange[0]);
-        // //@ts-ignore
-        // return setFieldValue('vaults[0].publicRound1End', dateRange[1]);
       }
       case 'Public Round 2': {
         return dispatch(
@@ -172,24 +165,12 @@ const SubTitle = (props: {
             },
           }),
         );
-        // //@ts-ignore
-        // setFieldValue('vaults[0].publicRound2', dateRange[0]);
-        // //@ts-ignore
-        // return setFieldValue('vaults[0].publicRound2End', dateRange[1]);
       }
       default:
         break;
     }
     /*eslint-disable*/
   }, [dateRange, claimDate, leftTitle]);
-
-  // console.log('--inputVal--');
-  // console.log(typeof inputVal);
-  // console.log(leftTitle);
-  // console.log(rightTitle);
-  // console.log(inputVal);
-
-  useEffect(() => {}, [tempVaultData]);
 
   let tempValueKey = () => {
     switch (leftTitle) {
@@ -290,7 +271,9 @@ const SubTitle = (props: {
               ? '-'
               : rightTitle && rightTitle.length > 20
               ? shortenAddress(rightTitle as string)
-              : rightTitle || '-'}
+              : `${commafy(rightTitle)} ${
+                  leftTitle !== 'Hard Cap' ? values.tokenName : 'TON'
+                }` || '-'}
           </Text>
           {percent !== undefined && (
             <Text ml={'5px'} color={'#7e8993'} textAlign={'right'}>
@@ -355,8 +338,8 @@ const STOSTier = (props: {
         </>
       ) : (
         <>
-          <Text w={'125px'}>{requiredTos || '-'}</Text>
-          <Text w={'137px'}>{allocatedToken || '-'}</Text>
+          <Text w={'125px'}>{commafy(requiredTos) || '-'}</Text>
+          <Text w={'137px'}>{commafy(allocatedToken) || '-'}</Text>
         </>
       )}
     </Flex>
@@ -377,13 +360,12 @@ const PublicTokenDetail = (props: {
   const {OpenCampaginDesign} = theme;
   const {colorMode} = useColorMode();
   const {firstColData, secondColData, thirdColData, isEdit} = props;
-  const {
-    values: {vaults},
-  } = useFormikContext<Projects['CreateProject']>();
+  const {values} = useFormikContext<Projects['CreateProject']>();
   // const publicVaultValue = vaults.filter((vault: VaultCommon) => {
   //   return vault.vaultName === 'Public';
   // });
   const {selectedVaultDetail} = useVaultSelector();
+  const vaults = values.vaults;
 
   return (
     <Grid
@@ -394,9 +376,9 @@ const PublicTokenDetail = (props: {
       <GridItem>
         <MainTitle
           leftTitle="Token"
-          rightTitle={`${commafy(
-            selectedVaultDetail?.vaultTokenAllocation,
-          )} TON`}></MainTitle>
+          rightTitle={`${commafy(selectedVaultDetail?.vaultTokenAllocation)} ${
+            values.tokenName
+          }`}></MainTitle>
         {firstColData?.map(
           (
             data: {

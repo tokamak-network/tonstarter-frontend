@@ -17,6 +17,7 @@ import moment from 'moment';
 import {selectLaunch} from '@Launch/launch.reducer';
 import {useAppSelector} from 'hooks/useRedux';
 import SingleCalendarPop from '../common/SingleCalendarPop';
+import commafy from 'utils/commafy';
 type ClaimRoundTable = {
   dateTime: number;
   tokenAllocation: number;
@@ -244,7 +245,7 @@ const ClaimRound = () => {
                     <Text w={'281px'} borderRight={middleStyle.border}>
                       {data.claimTokenAllocation === undefined
                         ? '-'
-                        : (tokenAcc += data.claimTokenAllocation)}
+                        : commafy((tokenAcc += data.claimTokenAllocation))}
                     </Text>
                     <Flex
                       w={'90px'}

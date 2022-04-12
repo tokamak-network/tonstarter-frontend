@@ -41,7 +41,7 @@ const useTokenDetail = () => {
         firstColData: [
           {
             title: 'Public Round 1',
-            content: `${publicRound1Allocation} TON`,
+            content: `${publicRound1Allocation}`,
             percent:
               publicRound1Allocation === undefined
                 ? publicRound1Allocation
@@ -50,7 +50,7 @@ const useTokenDetail = () => {
           },
           {
             title: 'Public Round 2',
-            content: `${publicRound2Allocation} TON`,
+            content: `${publicRound2Allocation}`,
             percent:
               publicRound2Allocation === undefined
                 ? publicRound2Allocation
@@ -59,7 +59,7 @@ const useTokenDetail = () => {
           },
           {
             title: 'Token Allocation for Liquidity Pool',
-            content: `${tokenAllocationForLiquidity} TON`,
+            content: `${tokenAllocationForLiquidity}`,
             percent:
               tokenAllocationForLiquidity === undefined
                 ? tokenAllocationForLiquidity
@@ -69,7 +69,7 @@ const useTokenDetail = () => {
           },
           {
             title: 'Hard Cap',
-            content: `${hardCap} TON`,
+            content: `${hardCap}`,
             formikName: 'hardCap',
           },
           {
