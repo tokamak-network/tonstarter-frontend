@@ -1,72 +1,121 @@
 import React, {FC, useState, useEffect} from 'react';
+import {useColorMode} from '@chakra-ui/react';
 import {ResponsivePie} from '@nivo/pie';
+import {shortenAddress} from 'utils';
+import {Bluetooth} from 'react-feather';
 
 type PieChartProps = {
   pieData: any;
 };
 
 export const PieChart: FC<PieChartProps> = ({pieData}) => {
-  console.log('pieData: ', pieData);
+  const {colorMode} = useColorMode();
+
+  // const testData = [
+  //   {
+  //     id: '123',
+  //     label: '123',
+  //     value: 10,
+  //     color: 'blue',
+  //   },
+  //   {
+  //     id: '124',
+  //     label: '124',
+  //     value: 10,
+  //     color: 'red',
+  //   },
+  //   {
+  //     id: '125',
+  //     label: '125',
+  //     value: 10,
+  //     color: 'yellow',
+  //   },
+  //   {
+  //     id: '126',
+  //     label: '126',
+  //     value: 10,
+  //     color: 'green',
+  //   },
+  //   {
+  //     id: '127',
+  //     label: '127',
+  //     value: 10,
+  //     color: 'gray',
+  //   },
+  //   {
+  //     id: '12311',
+  //     label: '12311',
+  //     value: 10,
+  //     color: 'purple',
+  //   },
+  //   {
+  //     id: '12723',
+  //     label: '12723',
+  //     value: 10,
+  //     color: 'orange',
+  //   },
+  //   {
+  //     id: '128',
+  //     label: '128',
+  //     value: 10,
+  //     color: '#f92',
+  //   },
+  //   {
+  //     id: '12332',
+  //     label: '12332',
+  //     value: 8,
+  //     color: '#65d',
+  //   },
+  //   {
+  //     id: '1239',
+  //     label: '1239',
+  //     value: 6,
+  //     color: '#ccc',
+  //   },
+  //   {
+  //     id: '12376',
+  //     label: '12376',
+  //     value: 4,
+  //     color: '#de4',
+  //   },
+  //   {
+  //     id: '12342',
+  //     label: '12342',
+  //     value: 2,
+  //     color: '#ba3',
+  //   },
+  // ];
+  let resArr: any[] = [];
+
   const formattedData = pieData.map((data: any) => {
     return {
-      id: data.token,
-      label: data.token,
-      // label: data.owner,
-      value: Math.floor(Math.random() * (360 - 30 + 1) + 30),
-      color: `hsl(${Math.floor(Math.random() * (360 - 0 + 1) + 0)}, 70%, 50%)`,
+      id: shortenAddress(data.ownerAddress),
+      label: `${shortenAddress(data.ownerAddress)} ${Number(
+        data.liquidityPercentage,
+      )}%`,
+      value: Number(data.liquidityPercentage),
+      tokensOwned: data.tokensOwned,
+      // color: `hsl(${Math.floor(Math.random() * (360 - 0 + 1) + 0)}, 70%, 50%)`,
     };
   });
-  console.log('formattedData: ', formattedData);
-  const pieDataTest = [
-    {
-      id: 'c',
-      label: 'c',
-      value: 20,
-      color: 'hsl(298, 70%, 50%)',
-    },
-    {
-      id: 'javascript',
-      label: 'javascript',
-      value: 129,
-      color: 'hsl(217, 70%, 50%)',
-    },
-    {
-      id: 'elixir',
-      label: 'elixir',
-      value: 507,
-      color: 'hsl(348, 70%, 50%)',
-    },
-    {
-      id: 'css',
-      label: 'css',
-      value: 574,
-      color: 'hsl(79, 70%, 50%)',
-    },
-    {
-      id: 'stylus',
-      label: 'stylus',
-      value: 123,
-      color: 'hsl(275, 70%, 50%)',
-    },
-    {
-      id: 'd',
-      label: 'stylus',
-      value: 222,
-      color: 'hsl(275, 70%, 50%)',
-    },
-    {
-      id: 'b',
-      label: 'stylus',
-      value: 111,
-      color: 'hsl(275, 70%, 50%)',
-    },
-    {
-      id: 'a',
-      label: 'stylus',
-      value: 53,
-      color: 'hsl(275, 70%, 50%)',
-    },
-  ];
+
+  if (formattedData.length >= 8) {
+    let remainingLiquidity = 0;
+    formattedData.forEach((data: any, idx: number) => {
+      if (idx <= 6) {
+        resArr.push(data);
+      } else {
+        remainingLiquidity += data.value;
+      }
+    });
+    resArr.push({
+      id: 'Other',
+      label: 'Other',
+      value: remainingLiquidity,
+    });
+  } else {
+    resArr = formattedData;
+  }
 
   return (
     // make sure parent container have a defined height when using
@@ -74,18 +123,35 @@ export const PieChart: FC<PieChartProps> = ({pieData}) => {
     // no chart will be rendered.
     // website examples showcase many properties,
     // you'll often use just a few of them.
-
     <ResponsivePie
       data={formattedData}
-      // margin={{top: 40, right: 80, bottom: 80, left: 80}}
       padAngle={0.7}
       cornerRadius={3}
-      activeOuterRadiusOffset={8}
+      margin={{top: 3, bottom: 3}}
+      // This field will allow the pie slices to grow outside the circle.
+      activeOuterRadiusOffset={3}
       borderWidth={1}
       borderColor={{
         from: 'color',
         modifiers: [['darker', 0.2]],
       }}
+      // there are color scheme options using the nivo pie example. If you want custom colors add {{ datum: 'data.color' }} ~~ data.color will reference the formattedData object above.
+      colors={{
+        scheme: 'set3',
+      }}
+      tooltip={({datum: data}) => (
+        <div
+          style={{
+            padding: 5,
+            background: '#222222',
+            color: '#fff',
+          }}>
+          <div style={{display: 'flex'}}>
+            <p style={{marginRight: '5px'}}>{data.id}:</p>
+            <p style={{color: data.color}}>{data.value}%</p>
+          </div>
+        </div>
+      )}
       enableArcLinkLabels={false}
       enableArcLabels={false}
       arcLinkLabelsSkipAngle={10}
@@ -105,76 +171,6 @@ export const PieChart: FC<PieChartProps> = ({pieData}) => {
           },
         },
       }}
-      defs={[
-        {
-          id: 'dots',
-          type: 'patternDots',
-          background: 'inherit',
-          color: 'rgba(255, 255, 255, 0.3)',
-          size: 4,
-          padding: 1,
-          stagger: true,
-        },
-        {
-          id: 'lines',
-          type: 'patternLines',
-          background: 'inherit',
-          color: 'rgba(255, 255, 255, 0.3)',
-          rotation: -45,
-          lineWidth: 6,
-          spacing: 10,
-        },
-      ]}
-      fill={[
-        {
-          match: {
-            id: 'ruby',
-          },
-          id: 'dots',
-        },
-        {
-          match: {
-            id: 'c',
-          },
-          id: 'dots',
-        },
-        {
-          match: {
-            id: 'go',
-          },
-          id: 'dots',
-        },
-        {
-          match: {
-            id: 'python',
-          },
-          id: 'dots',
-        },
-        {
-          match: {
-            id: 'scala',
-          },
-          id: 'lines',
-        },
-        {
-          match: {
-            id: 'lisp',
-          },
-          id: 'lines',
-        },
-        {
-          match: {
-            id: 'elixir',
-          },
-          id: 'lines',
-        },
-        {
-          match: {
-            id: 'javascript',
-          },
-          id: 'lines',
-        },
-      ]}
       legends={[
         {
           anchor: 'left',
@@ -185,10 +181,10 @@ export const PieChart: FC<PieChartProps> = ({pieData}) => {
           itemsSpacing: 0,
           itemWidth: 100,
           itemHeight: 18,
-          itemTextColor: '#999',
+          itemTextColor: colorMode === 'dark' ? 'white' : 'black',
           itemDirection: 'left-to-right',
           itemOpacity: 1,
-          symbolSize: 18,
+          symbolSize: 10,
           symbolShape: 'circle',
           // effects: [
           //   {

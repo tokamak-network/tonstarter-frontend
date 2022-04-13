@@ -12,7 +12,7 @@ import {
 
 import {FC, useState, useEffect} from 'react';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
-import { checkLowerCaseTokenType } from '../../../utils/token';
+import {checkLowerCaseTokenType} from '../../../utils/token';
 import moment from 'moment';
 const themeDesign = {
   border: {
@@ -53,7 +53,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
   const [pageOptions, setPageOptions] = useState<number>(0);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(2);
-  
+
   useEffect(() => {
     const pagenumber = parseInt(
       ((pools.length - 1) / pageLimit + 1).toString(),
@@ -116,9 +116,9 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
         ).length;
         const liquidity = pool.total;
 
-        const token0Image = checkLowerCaseTokenType(pool.token0Address)
-        const token1Image = checkLowerCaseTokenType(pool.token1Address)
-        
+        const token0Image = checkLowerCaseTokenType(pool.token0Address);
+        const token1Image = checkLowerCaseTokenType(pool.token1Address);
+
         return (
           <Flex
             key={index}
@@ -139,7 +139,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
                     : '1px solid #3c3c3c'
                 }
                 h="26px"
-                p={token0Image.name==='ETH' ? '6px' : '0px'}
+                p={token0Image.name === 'ETH' ? '6px' : '0px'}
                 w="26px"
                 zIndex={'100'}
               />
@@ -150,7 +150,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
                 name="T"
                 h="26px"
                 w="26px"
-                p={token1Image.name==='ETH' ? '6px' : '0px'}
+                p={token1Image.name === 'ETH' ? '6px' : '0px'}
                 ml={'-7px'}
                 border={
                   colorMode === 'light'
@@ -162,26 +162,32 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
             <Text
               color={colorMode === 'light' ? 'gray.250' : 'white.100'}
               fontWeight={700}
-              w={'88px'}
+              w={'85px'}
               ml={'5px'}
               cursor={'pointer'}
               fontFamily={theme.fonts.fld}
               fontSize={'16px'}
               onClick={(e) => {
                 e.preventDefault();
-                window.open(`https://info.uniswap.org/#/pools/${pool.pool_address}`);
+                window.open(
+                  `https://info.uniswap.org/#/pools/${pool.pool_address}`,
+                );
               }}>
               {pool.pool_name}
             </Text>
-            <Box fontFamily={theme.fonts.fld} fontWeight={700}>
+            <Box
+              fontFamily={theme.fonts.fld}
+              fontWeight={700}
+              width={'calc(100% - 140px)'}>
               <Text
                 fontWeight={700}
                 fontSize="11px"
+                textAlign={'right'}
                 color={colorMode === 'light' ? 'gray.400' : 'gray.150'}>
                 Liquidity
               </Text>
               {liquidity !== 0 ? (
-                <Text fontSize={'18px'}>
+                <Text fontSize={'18px'} textAlign={'right'}>
                   {' '}
                   ${' '}
                   {liquidity.toLocaleString(undefined, {
@@ -191,7 +197,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
               ) : (
                 <Text fontSize={'11px'}>No current liquidity data</Text>
               )}
-              <Flex>
+              <Flex justifyContent={'flex-start'} width={'135px'}>
                 <Text
                   fontSize="10px"
                   color={colorMode === 'light' ? 'gray.400' : 'gray.150'}>

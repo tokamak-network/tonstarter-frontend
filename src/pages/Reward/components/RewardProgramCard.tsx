@@ -32,7 +32,6 @@ import {getTokenSymbol} from '../utils/getTokenSymbol';
 import {UpdatedRedward} from '../types';
 import {LPToken} from '../types';
 import {convertNumber} from 'utils/number';
-import {InformationModal} from '../RewardModals';
 import {useDispatch} from 'react-redux';
 import {gql, useQuery} from '@apollo/client';
 import {rewardReducer} from '../reward.reducer';
@@ -65,6 +64,7 @@ type RewardProgramCardProps = {
   stakedPools: any;
   LPTokens: any;
   getCheckedBoxes: (checkedBoxes: any) => any;
+  latestBlockNumber: number;
 };
 
 const {
@@ -88,6 +88,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   stakedPools,
   LPTokens,
   getCheckedBoxes,
+  latestBlockNumber,
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -121,38 +122,6 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     STAKERABI.abi,
     library,
   );
-
-  // console.log('reward: ', reward);
-  // console.log('reward.poolAddress: ', reward.poolAddress);
-
-  // const GET_POOL_DATA = gql`{
-  //         pool(id:${reward?.poolAddress}){
-  //           id
-  //           tick
-  //           liquidity
-  //           volumeUSD
-  //           volumeToken0
-  //           volumeToken1
-  //           token0Price
-  //           token1Price
-  //           totalValueLockedToken0
-  //           totalValueLockedToken1
-  //           txCount
-  //           totalValueLockedETH
-  //           totalValueLockedUSD
-  //           totalValueLockedUSDUntracked
-  //         }
-  //       }`;
-
-  // console.log('POOLDATA: ', GET_POOL_DATA);
-
-  // const {
-  //   loading: queryLodaing,
-  //   error,
-  //   data: queryData,
-  // } = useQuery(GET_POOL_DATA);
-  // console.log('queryLodaing: ', queryLodaing);
-  // console.log('queryData: ', queryData);
 
   useEffect(() => {
     setIsUnstakeselected(false);
@@ -283,6 +252,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     selectedPool,
     reward,
   ]);
+
   useEffect(() => {
     async function getIncentives() {
       if (account === null || account === undefined || library === undefined) {
@@ -294,11 +264,49 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
       const abicoder = ethers.utils.defaultAbiCoder;
       const incentiveId = soliditySha3(abicoder.encode([incentiveABI], [key]));
       const signer = getSigner(library, account);
-      const incentiveInfo = await uniswapStakerContract
-        .connect(signer)
-        .incentives(incentiveId);
 
-      setNumStakers(Number(incentiveInfo.numberOfStakes));
+      let totalStakerInfo: any[] = [];
+      await Promise.all(
+        stakedPools.map(async (pool: any) => {
+          const incentiveInfo = await uniswapStakerContract
+            .connect(signer)
+            .stakes(Number(pool.id), incentiveId);
+
+          const depositInfo = await uniswapStakerContract
+            .connect(signer)
+            .deposits(Number(pool.id));
+
+          if (incentiveInfo.liquidity._hex !== '0x00') {
+            if (
+              totalStakerInfo.length > 0 &&
+              totalStakerInfo.some(
+                (data) => data.ownerAddress === depositInfo.owner,
+              )
+            ) {
+              let index = totalStakerInfo.findIndex(
+                (data: any) => data.ownerAddress === depositInfo.owner,
+              );
+              totalStakerInfo[index].liquidity += Number(
+                ethers.utils.formatEther(incentiveInfo.liquidity),
+              );
+            } else {
+              totalStakerInfo.push({
+                ownerAddress: depositInfo.owner,
+                liquidity: Number(
+                  ethers.utils.formatEther(incentiveInfo.liquidity),
+                ),
+              });
+            }
+          }
+        }),
+      ).then(() => {
+        const tempStakerInfo = totalStakerInfo.map((data: any) => {
+          return {
+            ownerAddress: data.ownerAddress,
+          };
+        });
+        setNumStakers(tempStakerInfo.length);
+      });
     }
     getIncentives();
   }, [
@@ -409,28 +417,21 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     <Flex
       {...REWARD_STYLE.containerStyle({colorMode})}
       flexDir={'column'}
-      // onClick={(e: React.ChangeEvent<HTMLInputElement>) => {
-      //   // console.log(e.target.type);
-      //   // console.log('target id:', e.target.id);
-      //   // console.log('e.target: ', e.target);
-      //   // if (e.target.type !== 'checkbox') {
-      // onClick={() => {
-      //   dispatch(
-      //     openModal({
-      //       type: 'information',
-      //       data: {
-      //         currentReward: reward,
-      //         // refundableAmount,
-      //         currentStakedPools: stakedPools,
-      //         currentKey: key,
-      //         currentUserAddress: account,
-      //         currentPositions: LPTokens,
-      //       },
-      //     }),
-      //   );
-      // }}
-      //   // }
-      // }}
+      onClick={() => {
+        dispatch(
+          openModal({
+            type: 'information',
+            data: {
+              reward,
+              stakedPools,
+              key,
+              userAddress: account,
+              positions: LPTokens,
+              blockNumber: latestBlockNumber,
+            },
+          }),
+        );
+      }}
       _hover={{
         border: '2px solid #0070ED',
         cursor: 'pointer',
@@ -713,18 +714,19 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
               Number(ethers.utils.formatEther(selectedToken.liquidity)) !== 0
             : false) ? (
             <Box pb={'0px'}>
-              <Checkbox
-                mt={'5px'}
-                zIndex={100}
-                isChecked={isSelected}
-                onClick={(e) => e.stopPropagation()}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  setIsSelected(e.target.checked);
-                  sendKey(key);
-                  getCheckedBoxes(reward);
-                }}
-              />
+              {/* the label tag is needed for e.stopPropagation to work. Can't put stopPropagation directly in the checkbox element. */}
+              <label onClick={(e: any) => e.stopPropagation()}>
+                <Checkbox
+                  mt={'5px'}
+                  zIndex={100}
+                  isChecked={isSelected}
+                  onChange={(e) => {
+                    setIsSelected(e.target.checked);
+                    sendKey(key);
+                    getCheckedBoxes(reward);
+                  }}
+                />
+              </label>
             </Box>
           ) : null}
 
@@ -733,18 +735,21 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
           staked &&
           Number(selectedToken ? selectedToken.id : 0) !== 0 ? (
             <Box pb={'0px'}>
-              <Checkbox
-                mt={'5px'}
-                zIndex={100}
-                isChecked={isUnstakeSelected}
-                onClick={(e) => e.stopPropagation()}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  setIsUnstakeselected(e.target.checked);
-                  sendUnstakeKey(key);
-                  getCheckedBoxes(reward);
-                }}
-              />
+              {/* the label tag is needed for e.stopPropagation to work. Can't put stopPropagation directly in the checkbox element. */}
+              <label onClick={(e: any) => e.stopPropagation()}>
+                <Checkbox
+                  mt={'5px'}
+                  zIndex={100}
+                  isChecked={isUnstakeSelected}
+                  onClick={(e) => e.preventDefault()}
+                  onChange={(e) => {
+                    e.preventDefault();
+                    setIsUnstakeselected(e.target.checked);
+                    sendUnstakeKey(key);
+                    getCheckedBoxes(reward);
+                  }}
+                />
+              </label>
             </Box>
           ) : null}
           <Button
@@ -768,7 +773,10 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
                     color: '#838383',
                   }
             }
-            onClick={() => buttonFunction(buttonState)}
+            onClick={(e: any) => {
+              e.stopPropagation();
+              buttonFunction(buttonState);
+            }}
             disabled={
               moment().unix() < reward.startTime ||
               buttonState === 'Closed' ||
@@ -787,7 +795,6 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
           </Button>
         </Flex>
       </Flex>
-      <InformationModal />
     </Flex>
   );
 };

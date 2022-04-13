@@ -52,6 +52,7 @@ import {ChevronDownIcon, ChevronRightIcon} from '@chakra-ui/icons';
 import {utils, ethers} from 'ethers';
 import {incentiveKey, Token, interfaceReward, LPToken} from './types';
 import {fetchPositionRangePayload} from './utils/fetchPositionRangePayloads';
+import {InformationModal} from '../Reward/RewardModals/information';
 
 import moment from 'moment';
 import views from './rewards';
@@ -1238,6 +1239,7 @@ export const Reward = () => {
                   pools={pool}
                   sortString={sortString}
                   positionsByPool={positionsByPool}
+                  LPTokens={positions}
                 />
               )}
               <SideContainer
@@ -1256,6 +1258,7 @@ export const Reward = () => {
         )}
       </Container>
       <SearchModal />
+      <InformationModal />
     </Fragment>
   );
 };

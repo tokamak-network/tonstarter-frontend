@@ -24,6 +24,7 @@ import {DEPLOYED} from 'constants/index';
 import {ethers} from 'ethers';
 import {ConfirmMulticallModal} from './RewardModals';
 import {openModal} from 'store/modal.reducer';
+import {useBlockNumber} from 'hooks/useBlock';
 
 // import { LPToken } from './types';
 
@@ -57,6 +58,7 @@ type ManageContainerProps = {
   pools: Pool[];
   sortString: string;
   positionsByPool: any;
+  LPTokens: any;
 };
 
 // let multipleRefundList: any = [];
@@ -68,6 +70,7 @@ export const ManageContainer: FC<ManageContainerProps> = ({
   selectedPool,
   sortString,
   positionsByPool,
+  LPTokens,
 }) => {
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [pageOptions, setPageOptions] = useState<number>(0);
@@ -86,6 +89,9 @@ export const ManageContainer: FC<ManageContainerProps> = ({
       ethers.utils.getAddress(UniswapStaker_Address)
     );
   });
+
+  const blockNumberObj = useBlockNumber();
+  const latestBlockNumber = blockNumberObj.blockNumber;
 
   useEffect(() => {
     setPageIndex(1);
@@ -206,6 +212,8 @@ export const ManageContainer: FC<ManageContainerProps> = ({
                   stakedPools={stakedPools}
                   getCheckedBoxes={getCheckedBoxes}
                   selectedRewards={selectedRewards}
+                  LPTokens={LPTokens}
+                  latestBlockNumber={latestBlockNumber}
                 />
               );
             })}

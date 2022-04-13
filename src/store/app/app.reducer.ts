@@ -3,6 +3,7 @@ import {DEFAULT_NETWORK} from 'constants/index';
 import {RootState} from 'store/reducers';
 import {
   getExplorerLink,
+  getExplorerTxnLink,
   getNetworkName,
   getBlockNumber,
   getUniswapPoolLink,
@@ -10,6 +11,7 @@ import {
 
 export type AppConfig = {
   selectedNetwork: string;
+  explorerTxnLink: string;
   explorerLink: string;
   blockNumber: number;
   uniswapPoolLink: string;
@@ -43,6 +45,7 @@ export const fetchAppConfig = createAsyncThunk(
     }
 
     let appConfig: AppConfig = {
+      explorerTxnLink: await getExplorerTxnLink(chainId || DEFAULT_NETWORK),
       explorerLink: await getExplorerLink(chainId || DEFAULT_NETWORK),
       selectedNetwork: await getNetworkName(chainId || DEFAULT_NETWORK),
       blockNumber: await getBlockNumber(chainId || DEFAULT_NETWORK),
