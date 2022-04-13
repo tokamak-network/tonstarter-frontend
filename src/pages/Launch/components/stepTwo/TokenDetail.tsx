@@ -273,7 +273,7 @@ const SubTitle = (props: {
               ? shortenAddress(rightTitle as string)
               : String(leftTitle).includes('Pair') ||
                 String(leftTitle).includes('fee')
-              ? '-'
+              ? rightTitle || '-'
               : `${commafy(rightTitle)} ${
                   leftTitle !== 'Hard Cap' ? values.tokenName : 'TON'
                 }` || '-'}
@@ -500,7 +500,7 @@ const PublicTokenDetail = (props: {
 const TokenDetail = (props: {isEdit: boolean}) => {
   const {isEdit} = props;
   const {
-    data: {selectedVaultType, selectedVault},
+    data: {selectedVaultType, selectedVault, selectedVaultIndex},
   } = useAppSelector(selectLaunch);
   const {InitialLiquidityVault} = DEPLOYED;
   const InitialLiquidity_CONTRACT = useContract(
@@ -549,7 +549,7 @@ const TokenDetail = (props: {isEdit: boolean}) => {
             firstColData={[
               {
                 title: 'Select Pair',
-                content: thisVault.tokenPair,
+                content: `${values.tokenName}-TOS`,
                 formikName: 'tokenPair',
               },
               {
@@ -606,14 +606,21 @@ const TokenDetail = (props: {isEdit: boolean}) => {
       case 'Liquidity Incentive':
         const thisVault: VaultLiquidityIncentive = values.vaults.filter(
           //@ts-ignore
-          (vault: VaultLiquidityIncentive) => vault.vaultName === selectedVault,
+          (vault: VaultLiquidityIncentive) =>
+            vault.index === selectedVaultIndex,
         )[0] as VaultLiquidityIncentive;
+
+        console.log(thisVault.isMandatory);
+
         return (
           <PublicTokenDetail
             firstColData={[
               {
                 title: 'Select Pair',
-                content: thisVault?.tokenPair,
+                content:
+                  thisVault.isMandatory === true
+                    ? `${values.tokenName}-TOS`
+                    : thisVault?.tokenPair,
                 formikName: 'tokenPair',
               },
               {
@@ -629,7 +636,7 @@ const TokenDetail = (props: {isEdit: boolean}) => {
       default:
         return <>no container for this vault :(</>;
     }
-  }, [selectedVaultType, isEdit, publicTokenColData]);
+  }, [selectedVaultIndex, isEdit, publicTokenColData]);
 
   return VaultTokenDetail;
 

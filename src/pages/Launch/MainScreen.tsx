@@ -13,6 +13,7 @@ import {useAppSelector} from 'hooks/useRedux';
 import {selectLaunch} from '@Launch/launch.reducer';
 import OpenStepThree from '@Launch/components/OpenStepThree';
 import validateFormikValues from '@Launch/utils/validate';
+import {useHistory} from 'react-router-dom';
 
 const StepComponent = (props: {step: StepNumber}) => {
   const {step} = props;
@@ -49,6 +50,20 @@ const MainScreen = () => {
   // useEffect(() => {
   //   console.log(projects);
   // }, [projects]);
+
+  const [isBlocking, setIsBlocking] = useState(false);
+  let historyObj = useHistory();
+  console.log(historyObj);
+
+  useEffect(() => {
+    //@ts-ignore
+    const unBlock = historyObj.block((loc, action) => {
+      if (action === 'POP') {
+        return window.confirm('Are you sure you want to go back?');
+      }
+    });
+    return () => unBlock();
+  }, [isBlocking, historyObj]);
 
   const handleStep = useCallback(
     (isNext: boolean) => {
