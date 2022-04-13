@@ -438,6 +438,8 @@ export const InformationModal = () => {
 
     setUserStakerIds(filteredStakedPositions);
 
+    console.log('incentiveInfo:', incentiveInfo);
+
     setRefundableAmount(
       incentiveInfo.totalRewardUnclaimed.toLocaleString('fullwide', {
         useGrouping: false,
