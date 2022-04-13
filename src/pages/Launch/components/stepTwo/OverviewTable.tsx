@@ -188,6 +188,8 @@ const OverviewTable = () => {
 
             sumColumn += sumWithInitial;
             if (index + 1 === totalColData.length) {
+        
+              
               if (sumWithInitial !== 0) {
                 return (
                   <>
@@ -213,6 +215,7 @@ const OverviewTable = () => {
                 );
               } else {
                 return (
+                  <>
                   <Text
                     borderTop={middleStyle.border}
                     // borderRight={middleStyle.border}
@@ -223,6 +226,17 @@ const OverviewTable = () => {
                     bg={index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'}>
                     -
                   </Text>
+                  <Text
+                  // borderTop={middleStyle.border}
+                  // borderRight={middleStyle.border}
+                  // borderBottom={middleStyle.border}
+
+                  h={'43px'}
+                  fontSize={13}
+                  bg={index === 0 || index % 2 === 0 ? '#ffffff' : '#fafbfc'}>
+                  -
+                </Text>
+                </>
                 );
               }
             }
