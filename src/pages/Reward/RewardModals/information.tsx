@@ -69,7 +69,7 @@ export const InformationModal = () => {
   const [recentActivityTable, setRecentActivityTable] = useState<any>();
   const {data: appConfig} = useAppSelector(selectApp);
   const [network, setNetwork] = useState<string>('');
-  const [blockNumberFilter, setBlockNumberFilter] = useState<number>(150000);
+  const [blockNumberFilter, setBlockNumberFilter] = useState<number>(5000);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(5);
   const [pageOptions, setPageOptions] = useState<number>(0);
@@ -85,8 +85,6 @@ export const InformationModal = () => {
 
   const {reward, stakedPools, userAddress, key, positions, blockNumber} =
     data.data;
-
-  console.log('ALL DATA:', data.data);
 
   const themeDesign = {
     border: {
@@ -199,7 +197,7 @@ export const InformationModal = () => {
       blockNumber,
     );
 
-    const incentiveCreatedActivity = await uniswapStakerContract.queryFilter(
+    let incentiveCreatedActivity = await uniswapStakerContract.queryFilter(
       uniswapStakerContract.filters.IncentiveCreated(
         reward.rewardToken,
         reward.poolAddress,
@@ -208,45 +206,23 @@ export const InformationModal = () => {
       blockNumber,
     );
 
-    console.log(
-      'incentiveCreatedActivity (queryFilter): ',
-      incentiveCreatedActivity,
-    );
-
-    // IncentiveCreated
-    let filter = {
-      fromBlock: blockNumber - blockNumberFilter,
-      toBlock: blockNumber as number,
-      address: uniswapStakerContract.address,
-      topics: [
-        '0xa876344e28d4b5191ad03bc0d43f740e3695827ab0faccac739930b915ef8b02',
-        ethers.utils.hexZeroPad(reward.rewardToken, 32),
-        ethers.utils.hexZeroPad(reward.poolAddress, 32),
-      ],
-    };
-
-    const incentiveCreatedEvent = await provider
-      .getLogs(filter)
-      .then((res: any) => res);
-
-    console.log('incentiveCreatedEvent (getLogs):', incentiveCreatedEvent);
-
-    // let incentiveCreatedFilter = {
-    //   fromBlock: blockNumber - 150000,
-    //   toBlock: blockNumber,
-    //   address: UniswapStaker_Address,
-    //   topics: [
-    //     '0xa876344e28d4b5191ad03bc0d43f740e3695827ab0faccac739930b915ef8b02',
-    //     ethers.utils.hexZeroPad(key.rewardToken, 32),
-    //     ethers.utils.hexZeroPad(key.pool, 32),
-    //   ],
-    // };
-
-    // const incentiveCreatedRes = await provider
-    //   .getLogs(incentiveCreatedFilter)
-    //   .then((res: any) => res);
-
-    // console.log('incentiveCreatedRes:', incentiveCreatedRes);
+    if (incentiveCreatedActivity[0] !== undefined) {
+      //@ts-ignore
+      const decodedData = incentiveCreatedActivity[0].decode(
+        incentiveCreatedActivity[0].data,
+        incentiveCreatedActivity[0].topics,
+      );
+      const dataObj = {
+        endTime: Number(decodedData.endTime),
+        pool: decodedData.pool,
+        refundee: decodedData.refundee,
+        rewardToken: decodedData.rewardToken,
+        startTime: Number(decodedData.startTime),
+      };
+      if (JSON.stringify(dataObj) !== JSON.stringify(reward.incentiveKey)) {
+        incentiveCreatedActivity = [];
+      }
+    }
 
     let stakerEvents = [
       tokenStakedActivity,
@@ -425,10 +401,6 @@ export const InformationModal = () => {
           ethers.utils.getAddress(userAddress) &&
         tempRewardStakerInfo.some((reward) => reward.id === position.id),
     );
-
-    // console.log('userStakedPositions: ', userStakedPositions);
-    // console.log('positions: ', positions);
-    // console.log('positions tempRewardStakerInfo: ', tempRewardStakerInfo);
 
     if (userStakedPositions.length > 0) {
       let accumulatedRewardsInProgram = 0;
@@ -1091,192 +1063,214 @@ export const InformationModal = () => {
             )}
             <Divider my={'15px'} />
 
-            <Heading
-              fontSize={'1em'}
-              fontWeight={'extrabold'}
-              fontFamily={theme.fonts.titil}
-              mb={'15px'}
-              color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-              Recent Activity
-            </Heading>
-            <Table overflowY={'auto'} maxHeight={'200px'}>
-              <Thead>
-                <Tr
-                  borderBottom={themeDesign.border[colorMode]}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}>
-                  <Th width={'20%'} borderBottom={'none'} textAlign={'center'}>
-                    Account Address
-                  </Th>
-                  <Th width={'20%'} borderBottom={'none'} textAlign={'center'}>
-                    TX hash
-                  </Th>
-                  <Th width={'20%'} borderBottom={'none'} textAlign={'center'}>
-                    Type
-                  </Th>
-                  <Th width={'20%'} borderBottom={'none'} textAlign={'center'}>
-                    Amount
-                  </Th>
-                  <Th width={'20%'} borderBottom={'none'} textAlign={'center'}>
-                    Date
-                  </Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {getPaginatedActivityData().map((txn: any) => {
-                  return (
+            {getPaginatedActivityData().length < 1 ? (
+              <Flex justifyContent={'center'}>
+                No Recent Activity within the last {blockNumberFilter} blocks.
+              </Flex>
+            ) : (
+              <>
+                <Heading
+                  fontSize={'1em'}
+                  fontWeight={'extrabold'}
+                  fontFamily={theme.fonts.titil}
+                  mb={'15px'}
+                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
+                  Recent Activity
+                </Heading>
+                <Table overflowY={'auto'} maxHeight={'200px'}>
+                  <Thead>
                     <Tr
+                      borderBottom={themeDesign.border[colorMode]}
                       style={{
-                        borderBottom: themeDesign.border[colorMode],
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
                       }}>
-                      <Td width={'20%'} textAlign={'center'}>
-                        <Link
-                          isExternal
-                          _hover={{
-                            color: 'blue.500',
-                          }}
-                          href={`${appConfig.explorerLink}${txn.transactionInfo.from}`}>
-                          {shortenAddress(txn.transactionInfo.from)}
-                        </Link>
-                      </Td>
-                      <Td width={'20%'} textAlign={'center'}>
-                        <Link
-                          isExternal
-                          _hover={{
-                            color: 'blue.500',
-                          }}
-                          href={`${appConfig.explorerTxnLink}${txn.transactionHash}`}>
-                          {shortenAddress(txn.transactionHash)}
-                        </Link>
-                      </Td>
-                      <Td width={'20%'} textAlign={'center'}>
-                        {txn.event}
-                      </Td>
-                      {txn.event === 'Incentive Created'
-                        ? console.log('txn:', txn)
-                        : null}
-                      {txn.event === 'Incentive Created' ? (
-                        <Td width={'20%'} textAlign={'center'}>
-                          {formatAmount(txn.args.reward.toString(), null)}
-                        </Td>
-                      ) : txn.event === 'Incentive Ended' ? (
-                        <Td width={'20%'} textAlign={'center'}>
-                          {formatAmount(txn.args.refund.toString(), null)}
-                        </Td>
-                      ) : (
-                        <Td width={'20%'} textAlign={'center'}>
-                          -
-                        </Td>
-                      )}
-                      <Td width={'20%'} textAlign={'center'}>
-                        {txn.formattedTxnDate}
-                      </Td>
+                      <Th
+                        width={'20%'}
+                        borderBottom={'none'}
+                        textAlign={'center'}>
+                        Account Address
+                      </Th>
+                      <Th
+                        width={'20%'}
+                        borderBottom={'none'}
+                        textAlign={'center'}>
+                        TX hash
+                      </Th>
+                      <Th
+                        width={'20%'}
+                        borderBottom={'none'}
+                        textAlign={'center'}>
+                        Type
+                      </Th>
+                      <Th
+                        width={'20%'}
+                        borderBottom={'none'}
+                        textAlign={'center'}>
+                        Amount
+                      </Th>
+                      <Th
+                        width={'20%'}
+                        borderBottom={'none'}
+                        textAlign={'center'}>
+                        Date
+                      </Th>
                     </Tr>
-                  );
-                })}
-              </Tbody>
-            </Table>
-            <Flex
-              flexDirection={'row'}
-              pb="10px"
-              justifyContent={'center'}
-              pt="19px"
-              mx="15px">
-              <Flex>
-                <Tooltip label="Previous Page">
-                  <IconButton
-                    minW={'24px'}
-                    h={'24px'}
-                    bg={colorMode === 'light' ? 'white.100' : 'none'}
-                    border={
-                      colorMode === 'light'
-                        ? 'solid 1px #e6eaee'
-                        : 'solid 1px #424242'
-                    }
-                    color={colorMode === 'light' ? '#e6eaee' : '#424242'}
-                    borderRadius={4}
-                    aria-label={'Previous Page'}
-                    onClick={gotToPreviousActivityPage}
-                    isDisabled={activityPageIndex === 1}
-                    size={'sm'}
-                    mr={4}
-                    _active={{background: 'transparent'}}
-                    _hover={{
-                      borderColor:
-                        colorMode === 'light' ? '#3e495c' : '#2a72e5',
-                      color: colorMode === 'light' ? '#3e495c' : '#2a72e5',
-                    }}
-                    icon={<ChevronLeftIcon h={6} w={6} />}
-                  />
-                </Tooltip>
-              </Flex>
-              <Flex>
-                {getPaginationGroup().map(
-                  (groupActivityIndex: number, index: number) => {
-                    return (
-                      <Button
-                        h="24px"
-                        key={index}
-                        minW="24px"
-                        background="transparent"
-                        fontFamily={theme.fonts.roboto}
-                        fontSize="13px"
-                        fontWeight="normal"
-                        color={
-                          activityPageIndex === groupActivityIndex
-                            ? themeDesign.buttonColorActive[colorMode]
-                            : themeDesign.buttonColorInactive[colorMode]
+                  </Thead>
+                  <Tbody>
+                    {getPaginatedActivityData().map((txn: any) => {
+                      return (
+                        <Tr
+                          style={{
+                            borderBottom: themeDesign.border[colorMode],
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                          }}>
+                          <Td width={'20%'} textAlign={'center'}>
+                            <Link
+                              isExternal
+                              _hover={{
+                                color: 'blue.500',
+                              }}
+                              href={`${appConfig.explorerLink}${txn.transactionInfo.from}`}>
+                              {shortenAddress(txn.transactionInfo.from)}
+                            </Link>
+                          </Td>
+                          <Td width={'20%'} textAlign={'center'}>
+                            <Link
+                              isExternal
+                              _hover={{
+                                color: 'blue.500',
+                              }}
+                              href={`${appConfig.explorerTxnLink}${txn.transactionHash}`}>
+                              {shortenAddress(txn.transactionHash)}
+                            </Link>
+                          </Td>
+                          <Td width={'20%'} textAlign={'center'}>
+                            {txn.event}
+                          </Td>
+                          {txn.event === 'Incentive Created' ? (
+                            <Td width={'20%'} textAlign={'center'}>
+                              {formatAmount(txn.args.reward.toString(), null)}
+                            </Td>
+                          ) : txn.event === 'Incentive Ended' ? (
+                            <Td width={'20%'} textAlign={'center'}>
+                              {formatAmount(txn.args.refund.toString(), null)}
+                            </Td>
+                          ) : (
+                            <Td width={'20%'} textAlign={'center'}>
+                              -
+                            </Td>
+                          )}
+                          <Td width={'20%'} textAlign={'center'}>
+                            {txn.formattedTxnDate}
+                          </Td>
+                        </Tr>
+                      );
+                    })}
+                  </Tbody>
+                </Table>
+                <Flex
+                  flexDirection={'row'}
+                  pb="10px"
+                  justifyContent={'center'}
+                  pt="19px"
+                  mx="15px">
+                  <Flex>
+                    <Tooltip label="Previous Page">
+                      <IconButton
+                        minW={'24px'}
+                        h={'24px'}
+                        bg={colorMode === 'light' ? 'white.100' : 'none'}
+                        border={
+                          colorMode === 'light'
+                            ? 'solid 1px #e6eaee'
+                            : 'solid 1px #424242'
                         }
-                        p="0px"
-                        _hover={{
-                          background: 'transparent',
-                          color: themeDesign.buttonColorActive[colorMode],
-                        }}
+                        color={colorMode === 'light' ? '#e6eaee' : '#424242'}
+                        borderRadius={4}
+                        aria-label={'Previous Page'}
+                        onClick={gotToPreviousActivityPage}
+                        isDisabled={activityPageIndex === 1}
+                        size={'sm'}
+                        mr={4}
                         _active={{background: 'transparent'}}
-                        disabled={activityPageOptions < groupActivityIndex}
-                        onClick={() => changeActivityPage(groupActivityIndex)}>
-                        {groupActivityIndex}
-                      </Button>
-                    );
-                  },
-                )}
-              </Flex>
-              <Flex>
-                <Tooltip label="Next Page">
-                  <IconButton
-                    minW={'24px'}
-                    h={'24px'}
-                    border={
-                      colorMode === 'light'
-                        ? 'solid 1px #e6eaee'
-                        : 'solid 1px #424242'
-                    }
-                    color={colorMode === 'light' ? '#e6eaee' : '#424242'}
-                    bg={colorMode === 'light' ? 'white.100' : 'none'}
-                    borderRadius={4}
-                    aria-label={'Next Page'}
-                    onClick={goToNextActivityPage}
-                    isDisabled={activityPageIndex === activityPageOptions}
-                    size={'sm'}
-                    ml={4}
-                    mr={'1.5625em'}
-                    _active={{background: 'transparent'}}
-                    _hover={{
-                      borderColor:
-                        colorMode === 'light' ? '#3e495c' : '#2a72e5',
-                      color: colorMode === 'light' ? '#3e495c' : '#2a72e5',
-                    }}
-                    icon={<ChevronRightIcon h={6} w={6} />}
-                  />
-                </Tooltip>
-              </Flex>
-            </Flex>
+                        _hover={{
+                          borderColor:
+                            colorMode === 'light' ? '#3e495c' : '#2a72e5',
+                          color: colorMode === 'light' ? '#3e495c' : '#2a72e5',
+                        }}
+                        icon={<ChevronLeftIcon h={6} w={6} />}
+                      />
+                    </Tooltip>
+                  </Flex>
+                  <Flex>
+                    {getPaginationGroup().map(
+                      (groupActivityIndex: number, index: number) => {
+                        return (
+                          <Button
+                            h="24px"
+                            key={index}
+                            minW="24px"
+                            background="transparent"
+                            fontFamily={theme.fonts.roboto}
+                            fontSize="13px"
+                            fontWeight="normal"
+                            color={
+                              activityPageIndex === groupActivityIndex
+                                ? themeDesign.buttonColorActive[colorMode]
+                                : themeDesign.buttonColorInactive[colorMode]
+                            }
+                            p="0px"
+                            _hover={{
+                              background: 'transparent',
+                              color: themeDesign.buttonColorActive[colorMode],
+                            }}
+                            _active={{background: 'transparent'}}
+                            disabled={activityPageOptions < groupActivityIndex}
+                            onClick={() =>
+                              changeActivityPage(groupActivityIndex)
+                            }>
+                            {groupActivityIndex}
+                          </Button>
+                        );
+                      },
+                    )}
+                  </Flex>
+                  <Flex>
+                    <Tooltip label="Next Page">
+                      <IconButton
+                        minW={'24px'}
+                        h={'24px'}
+                        border={
+                          colorMode === 'light'
+                            ? 'solid 1px #e6eaee'
+                            : 'solid 1px #424242'
+                        }
+                        color={colorMode === 'light' ? '#e6eaee' : '#424242'}
+                        bg={colorMode === 'light' ? 'white.100' : 'none'}
+                        borderRadius={4}
+                        aria-label={'Next Page'}
+                        onClick={goToNextActivityPage}
+                        isDisabled={activityPageIndex === activityPageOptions}
+                        size={'sm'}
+                        ml={4}
+                        mr={'1.5625em'}
+                        _active={{background: 'transparent'}}
+                        _hover={{
+                          borderColor:
+                            colorMode === 'light' ? '#3e495c' : '#2a72e5',
+                          color: colorMode === 'light' ? '#3e495c' : '#2a72e5',
+                        }}
+                        icon={<ChevronRightIcon h={6} w={6} />}
+                      />
+                    </Tooltip>
+                  </Flex>
+                </Flex>
+              </>
+            )}
           </ModalBody>
         </Scrollbars>
       </ModalContent>
