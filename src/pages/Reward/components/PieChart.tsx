@@ -124,7 +124,7 @@ export const PieChart: FC<PieChartProps> = ({pieData}) => {
     // website examples showcase many properties,
     // you'll often use just a few of them.
     <ResponsivePie
-      data={formattedData}
+      data={resArr}
       padAngle={0.7}
       cornerRadius={3}
       margin={{top: 3, bottom: 3}}

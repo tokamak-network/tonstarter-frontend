@@ -482,7 +482,7 @@ export const InformationModal = () => {
               },
             );
       if (formattedAmt.includes(',')) {
-        const removeCommaString = formattedAmt.replace(',', '');
+        const removeCommaString = formattedAmt.replaceAll(',', '');
         formattedAmt = removeCommaString;
       }
       const removeDecimalAmt = Number(
