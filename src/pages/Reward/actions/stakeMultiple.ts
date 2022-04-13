@@ -29,9 +29,6 @@ export const stakeMultiple = async (args: any) => {
     .connect(signer)
     .deposits(tokenid);
 
-  console.log('stakeKeyList: ', stakeKeyList);
-  console.log('unstakeKeyList: ', unstakeKeyList);
-
   if (stakeKeyList.length === 0) {
     const arrayData = await Promise.all(
       unstakeKeyList.map((key: any) => {
@@ -50,7 +47,6 @@ export const stakeMultiple = async (args: any) => {
       }),
     );
 
-    console.log('Multicall Unstake arrayData: ', arrayData);
     try {
       const receipt = await uniswapStakerContract
         .connect(signer)
@@ -90,7 +86,6 @@ export const stakeMultiple = async (args: any) => {
           }),
         );
 
-        console.log('Refund arrayData: ', arrayData);
         const incentiveKeyAbi =
           'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)';
         const abicoder = ethers.utils.defaultAbiCoder;
@@ -124,8 +119,6 @@ export const stakeMultiple = async (args: any) => {
             return data;
           }),
         );
-
-        console.log('Multicall Stake arrayData: ', arrayData);
 
         const receipt = await uniswapStakerContract
           .connect(signer)
@@ -184,8 +177,6 @@ export const stakeMultiple = async (args: any) => {
         return dataStake;
       }),
     );
-    console.log('arrayDataUnstake: ', arrayDataUnstake);
-    console.log('arrayDataStake: ', arrayDataStake);
 
     try {
       const receipt = await uniswapStakerContract
