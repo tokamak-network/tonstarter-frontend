@@ -266,9 +266,14 @@ const SubTitle = (props: {
         </Flex>
       ) : (
         <Flex>
+          {console.log(rightTitle)}
           <Text textAlign={'right'}>
             {String(rightTitle)?.includes('undefined')
               ? '-'
+              : String(leftTitle).includes('Address')
+              ? String(rightTitle).length < 20
+                ? '-'
+                : shortenAddress(rightTitle as string)
               : rightTitle && rightTitle.length > 20
               ? shortenAddress(rightTitle as string)
               : String(leftTitle).includes('Pair') ||

@@ -51,9 +51,7 @@ const MainScreen = () => {
   //   console.log(projects);
   // }, [projects]);
 
-  const [isBlocking, setIsBlocking] = useState(false);
   let historyObj = useHistory();
-  console.log(historyObj);
 
   useEffect(() => {
     //@ts-ignore
@@ -63,7 +61,7 @@ const MainScreen = () => {
       }
     });
     return () => unBlock();
-  }, [isBlocking, historyObj]);
+  }, [historyObj]);
 
   const handleStep = useCallback(
     (isNext: boolean) => {
