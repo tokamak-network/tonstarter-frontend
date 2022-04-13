@@ -271,6 +271,9 @@ const SubTitle = (props: {
               ? '-'
               : rightTitle && rightTitle.length > 20
               ? shortenAddress(rightTitle as string)
+              : String(leftTitle).includes('Pair') ||
+                String(leftTitle).includes('fee')
+              ? '-'
               : `${commafy(rightTitle)} ${
                   leftTitle !== 'Hard Cap' ? values.tokenName : 'TON'
                 }` || '-'}
@@ -610,12 +613,12 @@ const TokenDetail = (props: {isEdit: boolean}) => {
             firstColData={[
               {
                 title: 'Select Pair',
-                content: thisVault?.tokenPair || '-',
+                content: thisVault?.tokenPair,
                 formikName: 'tokenPair',
               },
               {
                 title: 'Pool Address\n(0.3% fee)',
-                content: thisVault?.poolAddress || '-',
+                content: thisVault?.poolAddress,
                 formikName: 'poolAddress',
               },
             ]}

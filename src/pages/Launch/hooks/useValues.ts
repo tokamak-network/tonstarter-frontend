@@ -82,6 +82,8 @@ const initialObj: Projects['CreateProject'] = {
       isDeployed: false,
       isSet: false,
       isDeployedErr: false,
+      poolAddress: undefined,
+      tokenPair: undefined,
     },
     {
       vaultName: 'TON Staker',
@@ -121,6 +123,8 @@ const initialObj: Projects['CreateProject'] = {
       isDeployed: false,
       isSet: false,
       isDeployedErr: false,
+      poolAddress: TOS_WTON_POOL,
+      tokenPair: 'WTON-TOS',
     },
     {
       vaultName: 'Liquidity Incentive',
@@ -134,8 +138,8 @@ const initialObj: Projects['CreateProject'] = {
       isDeployed: false,
       isSet: false,
       isDeployedErr: false,
-      poolAddress: TOS_WTON_POOL,
-      tokenPair: 'WTON-TOS',
+      poolAddress: undefined,
+      tokenPair: undefined,
     },
   ],
 };

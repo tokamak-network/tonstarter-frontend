@@ -16,7 +16,7 @@ import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal';
-import {Projects} from '@Launch/types';
+import {Projects, VaultCommon} from '@Launch/types';
 import {useFormikContext} from 'formik';
 import Line from '@Launch/components/common/Line';
 import {CustomButton} from 'components/Basic/CustomButton';
@@ -47,15 +47,15 @@ const VaultBasicSetting = () => {
   }
 
   const {
-    data: {name, isMandatory},
+    data: {isMandatory, vaultIndex},
   } = data;
 
   function editVault() {
     const vaultsList = values.vaults;
     setFieldValue(
       'vaults',
-      vaultsList.map((vault: any) => {
-        if (vault.vaultName === name) {
+      vaultsList.map((vault: VaultCommon) => {
+        if (vault.index === vaultIndex) {
           return {
             ...vault,
             name: nameVal,

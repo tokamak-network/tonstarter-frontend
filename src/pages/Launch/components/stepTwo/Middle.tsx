@@ -75,8 +75,9 @@ const Middle = () => {
   }, [selectedVaultDetail]);
 
   const isDisable =
-    selectedVaultDetail?.vaultType !== 'Public' &&
-    selectedVaultDetail?.vaultType !== 'Liquidity Incentive';
+    selectedVaultDetail?.index === 5 ||
+    (selectedVaultDetail?.vaultType !== 'Public' &&
+      selectedVaultDetail?.vaultType !== 'Liquidity Incentive');
 
   return (
     <Flex flexDir={'column'} w={'100%'}>

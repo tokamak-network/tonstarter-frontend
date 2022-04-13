@@ -183,14 +183,10 @@ const ConfirmTokenModal = () => {
     }
   }, [deployStep, values, selectedVaultDetail, data]);
 
-  // if (!data?.data?.vaultName) {
-  //   return null;
-  // }
-
   function closeModal() {
-    close();
     setDeployStep('Ready');
     handleCloseModal();
+    close();
   }
 
   if (deployStep === 'Ready') {
@@ -454,7 +450,7 @@ const ConfirmTokenModal = () => {
                 color={'black.300'}
                 fontWeight={600}
                 textAlign={'center'}>
-                Waiting for completing to deploy your token
+                Comoleted to deploy your {vaultName} vault
               </Text>
               <Box w={'100%'} px={'15px'} mb={'25px'}>
                 <Line></Line>

@@ -400,18 +400,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 } catch (e) {}
               } while (valutIndex >= 0);
 
-              console.log(
-                `${values.projectName}_${selectedVaultDetail?.vaultName}`,
-                selectedVaultDetail?.adminAddress,
-                [
-                  values.tokenAddress,
-                  //@ts-ignore
-                  selectedVaultDetail?.addressForReceiving,
-                  values.vaults[1].vaultAddress,
-                ],
-                valutIndex,
-              );
-
               const tx = await vaultContract?.connect(signer).create(
                 `${values.projectName}_${selectedVaultDetail?.vaultName}`,
                 selectedVaultDetail?.adminAddress,
@@ -552,8 +540,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               // 2 : rewardToken : address
               // 3 : _admin : address
 
-              console.log(selectedVaultDetail);
-
               //@ts-ignore
               const tx = await vaultContract?.connect(signer).create(
                 `${values.projectName}_${selectedVaultDetail?.vaultName}`,
@@ -671,6 +657,10 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               // 3 : _claimTimes : uint256[]
               // 4 : _claimPercents : uint256[]
               const PublicVaultData = selectedVaultDetail as VaultPublic;
+              const publicRound1TokenAllocation =
+                PublicVaultData.publicRound1Allocation as number;
+
+              console.log(PublicVaultData);
               // _Tier[0] : Tier1의 sTOS 기준
               // _Tier[2] : Tier3의 sTOS 기준
               // _Tier[1] : Tier2의 sTOS 기준
@@ -681,20 +671,30 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               // (Tier[4]~Tier[7]의 합은 10000)
               // _Tier[7] : Tier4의 percent
               const param0: number[] = [
-                PublicVaultData.stosTier.oneTier.allocatedToken as number,
-                PublicVaultData.stosTier.twoTier.allocatedToken as number,
-                PublicVaultData.stosTier.threeTier.allocatedToken as number,
-                PublicVaultData.stosTier.fourTier.allocatedToken as number,
-                2500,
-                2500,
-                2500,
-                2500,
-                // (PublicVaultData.stosTier.oneTier.requiredStos as number) * 100,
-                // (PublicVaultData.stosTier.twoTier.requiredStos as number) * 100,
-                // (PublicVaultData.stosTier.threeTier.requiredStos as number) *
-                //   100,
-                // (PublicVaultData.stosTier.fourTier.requiredStos as number) *
-                //   100,
+                PublicVaultData.stosTier.oneTier.requiredStos as number,
+                PublicVaultData.stosTier.twoTier.requiredStos as number,
+                PublicVaultData.stosTier.threeTier.requiredStos as number,
+                PublicVaultData.stosTier.fourTier.requiredStos as number,
+                (Number(
+                  PublicVaultData.stosTier.oneTier.allocatedToken as number,
+                ) *
+                  10000) /
+                  publicRound1TokenAllocation,
+                (Number(
+                  PublicVaultData.stosTier.twoTier.allocatedToken as number,
+                ) *
+                  10000) /
+                  publicRound1TokenAllocation,
+                (Number(
+                  PublicVaultData.stosTier.threeTier.allocatedToken as number,
+                ) *
+                  10000) /
+                  publicRound1TokenAllocation,
+                (Number(
+                  PublicVaultData.stosTier.fourTier.allocatedToken as number,
+                ) *
+                  10000) /
+                  publicRound1TokenAllocation,
               ];
               // _amount[0] : Round1에서의 토큰 판매수량
               // _amount[1] : Round2에서의 토큰 판매수량
@@ -708,7 +708,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 (values.projectTokenPrice as number) * 100,
                 100,
                 PublicVaultData.hardCap as number,
-                5,
+                PublicVaultData.tokenAllocationForLiquidity as number,
               ];
               // _time[0] : sTOS snapshot 시간
               // _time[1] : 화이트리스트 시작시간

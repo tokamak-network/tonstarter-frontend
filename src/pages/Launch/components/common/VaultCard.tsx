@@ -91,6 +91,7 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
                 tokenAllocation,
                 adminAddress,
                 isMandatory,
+                vaultIndex,
               })
             }></HoverImage>
 
