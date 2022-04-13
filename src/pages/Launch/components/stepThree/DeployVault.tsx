@@ -23,7 +23,6 @@ import {useCallback, useEffect, useMemo, useState} from 'react';
 import {LibraryType} from 'types';
 import {shortenAddress} from 'utils';
 import {Contract} from '@ethersproject/contracts';
-import InitialLiquidityAbi from 'services/abis/Vault_InitialLiquidity.json';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {openModal} from 'store/modal.reducer';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
@@ -33,6 +32,8 @@ import {getSigner} from 'utils/contract';
 import {ethers} from 'ethers';
 import {useBlockNumber} from 'hooks/useBlock';
 import {useContract} from 'hooks/useContract';
+import InitialLiquidityAbi from 'services/abis/Vault_InitialLiquidity.json';
+import Vault_InitialLiquidityComputeAbi from 'services/abis/Vault_InitialLiquidityCompute.json';
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import * as LiquidityIncentiveAbi from 'services/abis/LiquidityIncentiveAbi.json';
 import * as PublicSaleVaultCreateAbi from 'services/abis/PublicSaleVaultCreateAbi.json';
@@ -539,12 +540,29 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               // 1 : pool : address
               // 2 : rewardToken : address
               // 3 : _admin : address
+              const {InitialLiquidityVault, TOS_ADDRESS} = DEPLOYED;
+              const InitialLiquidity_Contract = new Contract(
+                //@ts-ignore
+                values.vaults[1].vaultAddress,
+                Vault_InitialLiquidityComputeAbi.abi,
+                library,
+              );
+
+              const poolAddress =
+                await InitialLiquidity_Contract.computePoolAddress(
+                  values.tokenAddress,
+                  TOS_ADDRESS,
+                  3000,
+                );
 
               //@ts-ignore
               const tx = await vaultContract?.connect(signer).create(
                 `${values.projectName}_${selectedVaultDetail?.vaultName}`,
                 //@ts-ignore
-                selectedVaultDetail.poolAddress,
+                selectedVaultDetail.isMandatory === true
+                  ? poolAddress[0]
+                  : //@ts-ignore
+                    selectedVaultDetail.poolAddress,
                 values.tokenAddress,
                 selectedVaultDetail?.adminAddress,
               );

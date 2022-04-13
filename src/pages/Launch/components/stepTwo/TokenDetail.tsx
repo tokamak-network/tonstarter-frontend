@@ -623,7 +623,7 @@ const TokenDetail = (props: {isEdit: boolean}) => {
               {
                 title: 'Select Pair',
                 content:
-                  thisVault.isMandatory === true
+                  thisVault?.isMandatory === true
                     ? `${values.tokenName}-TOS`
                     : thisVault?.tokenPair,
                 formikName: 'tokenPair',
