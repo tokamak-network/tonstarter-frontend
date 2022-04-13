@@ -24,6 +24,7 @@ import {
   Tooltip,
   IconButton,
   Button,
+  AccordionIcon,
 } from '@chakra-ui/react';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
@@ -75,6 +76,7 @@ export const InformationModal = () => {
   const [activityPageIndex, setActivityPageIndex] = useState<number>(1);
   const [activityPageLimit, setActivityPageLimit] = useState<number>(5);
   const [activityPageOptions, setActivityPageOptions] = useState<number>(0);
+  const [accumulatedRewards, setAccumulatedRewards] = useState<string>('0');
 
   //@ts-ignore
   const web3 = new Web3(window.ethereum);
@@ -83,6 +85,8 @@ export const InformationModal = () => {
 
   const {reward, stakedPools, userAddress, key, positions, blockNumber} =
     data.data;
+
+  console.log('ALL DATA:', data.data);
 
   const themeDesign = {
     border: {
@@ -172,6 +176,7 @@ export const InformationModal = () => {
     const abicoder = ethers.utils.defaultAbiCoder;
     const incentiveId = soliditySha3(abicoder.encode([incentiveABI], [key]));
     const signer = getSigner(library, account);
+
     const incentiveInfo = await uniswapStakerContract
       .connect(signer)
       .incentives(incentiveId);
@@ -207,8 +212,6 @@ export const InformationModal = () => {
       'incentiveCreatedActivity (queryFilter): ',
       incentiveCreatedActivity,
     );
-
-    console.log('reward: ', reward);
 
     // IncentiveCreated
     let filter = {
@@ -415,6 +418,45 @@ export const InformationModal = () => {
         return userPositions.includes(position.token);
       },
     );
+
+    const userStakedPositions = await positions.filter(
+      (position: any) =>
+        ethers.utils.getAddress(position.owner) !==
+          ethers.utils.getAddress(userAddress) &&
+        tempRewardStakerInfo.some((reward) => reward.id === position.id),
+    );
+
+    // console.log('userStakedPositions: ', userStakedPositions);
+    // console.log('positions: ', positions);
+    // console.log('positions tempRewardStakerInfo: ', tempRewardStakerInfo);
+
+    if (userStakedPositions.length > 0) {
+      let accumulatedRewardsInProgram = 0;
+      await Promise.all(
+        userStakedPositions.map(async (position: any) => {
+          const mapInfo = await uniswapStakerContract
+            .connect(signer)
+            .getRewardInfo(key, Number(position.id));
+
+          accumulatedRewardsInProgram +=
+            ethers.utils.getAddress(reward.rewardToken) ===
+            ethers.utils.getAddress(WTON_ADDRESS)
+              ? Number(ethers.utils.formatUnits(mapInfo.reward, '27'))
+              : Number(ethers.utils.formatEther(mapInfo.reward));
+        }),
+      );
+
+      const formattedAccumulatedReward =
+        accumulatedRewardsInProgram < 0.01
+          ? '<0.01'
+          : accumulatedRewardsInProgram.toLocaleString(undefined, {
+              maximumFractionDigits: 2,
+            });
+
+      setAccumulatedRewards(formattedAccumulatedReward);
+    } else {
+      setAccumulatedRewards('0');
+    }
 
     setLoading(false);
     setPieData(tempPieData);
@@ -658,13 +700,12 @@ export const InformationModal = () => {
                 alignItems={'center'}
                 justifyContent={'space-between'}>
                 <Text color={themeDesign.font[colorMode]}>Accumulated LP</Text>
-                {console.log('reward accumulated LP:', reward)}
                 <Flex
                   display={'flex'}
                   justifyContent={'space-between'}
                   alignItems={'baseline'}>
                   <Text fontSize={'20px'} mr={'5px'}>
-                    {formatAmount(reward.allocatedReward, reward.rewardToken)}{' '}
+                    {accumulatedRewards}{' '}
                   </Text>
                   <Text fontSize={'16px'}>
                     {
