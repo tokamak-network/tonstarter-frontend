@@ -30,12 +30,6 @@ import {
     const {handleCloseModal} = useModal();
     const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   
-
-useEffect(() => {
-    console.log(values);
-    
-    
-},[values])
     return (
       <Modal
         isOpen={data.modal === 'Launch_PieChartModal' ? true : false}
