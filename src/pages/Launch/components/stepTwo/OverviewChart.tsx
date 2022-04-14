@@ -72,7 +72,7 @@ const OverviewChart = () => {
             legendOffset: -60,
             legendPosition: 'middle'
         }}
-        pointSize={10}
+        pointSize={1}
         pointColor={{ from:"color"}}
         pointBorderWidth={2}
         pointBorderColor={{ from: 'serieColor' }}
