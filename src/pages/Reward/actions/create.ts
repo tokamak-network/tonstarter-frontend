@@ -45,7 +45,8 @@ type CreateReward = {
   tx: string;
   sig: string;
 };
-const {WTON_ADDRESS, DOC_ADDRESS, TON_ADDRESS, UniswapStaker_Address} = DEPLOYED;
+const {WTON_ADDRESS, DOC_ADDRESS, TON_ADDRESS, UniswapStaker_Address} =
+  DEPLOYED;
 
 const generateSig = async (account: string, key: any) => {
   const randomvalue = await getRandomKey(account);
@@ -104,17 +105,17 @@ export const create = async (args: Create) => {
     library,
   );
   // let amountFotmatted = ethers.utils.parseEther(amount);
-  let amountFotmatted 
-  if (ethers.utils.getAddress(rewardToken) === ethers.utils.getAddress(WTON_ADDRESS)){
+  let amountFotmatted;
+  if (
+    ethers.utils.getAddress(rewardToken) ===
+    ethers.utils.getAddress(WTON_ADDRESS)
+  ) {
     const rayAllocated = ethers.utils.parseUnits(amount, '27');
     amountFotmatted = rayAllocated;
-  }
-  else {
+  } else {
     const weiAllocated = ethers.utils.parseEther(amount);
-    amountFotmatted = weiAllocated
-
+    amountFotmatted = weiAllocated;
   }
-console.log('amountFotmatted', amountFotmatted);
 
   const signer = getSigner(library, userAddress);
   const key = {

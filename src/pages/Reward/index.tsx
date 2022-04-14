@@ -323,7 +323,6 @@ export const Reward = () => {
         const open = openInOrdered.concat(openOutOrdered);
         const close = closedInOrdered.concat(closedOutOrdered);
         const tokenList = open.concat(close);
-        console.log(tokenList)
         setPositions(tokenList);
       }
       if (position.data && positionsByPool.data) {
