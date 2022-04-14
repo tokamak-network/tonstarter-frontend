@@ -22,7 +22,6 @@ import {useContract} from 'hooks/useContract';
 import {DEPLOYED} from 'constants/index';
 import InitialLiquidityComputeAbi from 'services/abis/Vault_InitialLiquidityCompute.json';
 import {convertTimeStamp} from 'utils/convertTIme';
-import {values} from 'lodash';
 
 export const MainTitle = (props: {leftTitle: string; rightTitle: string}) => {
   const {leftTitle, rightTitle} = props;
@@ -195,6 +194,23 @@ const SubTitle = (props: {
     }
   };
 
+  const displayRightTitle = (leftTitle: any, rightTitle: any) => {
+    switch (leftTitle) {
+      case 'Public Round 1':
+        return `${commafy(rightTitle)} ${values.tokenName}`;
+      case 'Public Round 2':
+        return `${commafy(rightTitle)} ${values.tokenName}`;
+      case 'Token Allocation for Liquidity Pool (5~10%)':
+        return `${rightTitle}`;
+      case 'Hard Cap':
+        return `${commafy(rightTitle)} TON`;
+      case 'Address for receiving funds':
+        return `${shortenAddress(rightTitle)}`;
+      default:
+        return rightTitle;
+    }
+  };
+
   return (
     <Flex
       pl={'25px'}
@@ -204,7 +220,9 @@ const SubTitle = (props: {
       justifyContent={'space-between'}
       borderBottom={isLast ? '' : 'solid 1px #e6eaee'}
       fontWeight={600}>
-      <Text color={'#7e8993'} w={'101px'}>
+      <Text
+        color={'#7e8993'}
+        w={!leftTitle.includes('or Liquidity Pool') ? '101px' : '201px'}>
         {leftTitle}
       </Text>
       {isEdit ? (
@@ -266,9 +284,8 @@ const SubTitle = (props: {
         </Flex>
       ) : (
         <Flex>
-          {console.log(rightTitle)}
           <Text textAlign={'right'}>
-            {String(rightTitle)?.includes('undefined')
+            {/* {String(rightTitle)?.includes('undefined')
               ? '-'
               : String(leftTitle).includes('Address')
               ? String(rightTitle).length < 20
@@ -281,7 +298,10 @@ const SubTitle = (props: {
               ? rightTitle || '-'
               : `${commafy(rightTitle)} ${
                   leftTitle !== 'Hard Cap' ? values.tokenName : 'TON'
-                }` || '-'}
+                }` || '-'} */}
+            {String(rightTitle)?.includes('undefined')
+              ? '-'
+              : displayRightTitle(leftTitle, rightTitle)}
           </Text>
           {percent !== undefined && (
             <Text ml={'5px'} color={'#7e8993'} textAlign={'right'}>
@@ -584,14 +604,29 @@ const TokenDetail = (props: {isEdit: boolean}) => {
             thirdColData={null}
             isEdit={isEdit}></PublicTokenDetail>
         );
-      case 'WTON-TOS LP Reward':
+      case 'WTON-TOS LP Reward': {
+        const {
+          pools: {TOS_WTON_POOL},
+        } = DEPLOYED;
         return (
           <PublicTokenDetail
-            firstColData={null}
+            firstColData={[
+              {
+                title: 'Select Pair',
+                content: 'WTON-TOS',
+                formikName: 'tokenPair',
+              },
+              {
+                title: 'Pool Address\n(0.3% fee)',
+                content: shortenAddress(TOS_WTON_POOL),
+                formikName: 'poolAddress',
+              },
+            ]}
             secondColData={null}
             thirdColData={null}
             isEdit={isEdit}></PublicTokenDetail>
         );
+      }
       case 'C':
         return (
           <PublicTokenDetail
@@ -614,8 +649,6 @@ const TokenDetail = (props: {isEdit: boolean}) => {
           (vault: VaultLiquidityIncentive) =>
             vault.index === selectedVaultIndex,
         )[0] as VaultLiquidityIncentive;
-
-        console.log(thisVault.isMandatory);
 
         return (
           <PublicTokenDetail

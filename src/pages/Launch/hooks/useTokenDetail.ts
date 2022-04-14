@@ -58,13 +58,8 @@ const useTokenDetail = () => {
             formikName: 'publicRound2Allocation',
           },
           {
-            title: 'Token Allocation for Liquidity Pool',
-            content: `${tokenAllocationForLiquidity}`,
-            percent:
-              tokenAllocationForLiquidity === undefined
-                ? tokenAllocationForLiquidity
-                : (tokenAllocationForLiquidity * 100) / vaultTokenAllocation ||
-                  0,
+            title: 'Token Allocation for Liquidity Pool (5~10%)',
+            content: `${tokenAllocationForLiquidity} %`,
             formikName: 'tokenAllocationForLiquidity',
           },
           {
