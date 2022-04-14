@@ -671,7 +671,7 @@ export const InformationModal = () => {
                 flexDirection={'column'}
                 alignItems={'center'}
                 justifyContent={'space-between'}>
-                <Text color={themeDesign.font[colorMode]}>
+                <Text color={themeDesign.font[colorMode]} textAlign={'center'}>
                   Accumulated Rewards
                 </Text>
                 <Flex
