@@ -1160,7 +1160,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
   }, [vaultState]);
 
   const vaultAddress = values.vaults.filter(
-    (vault: VaultCommon) => vault.vaultName === vaultName,
+    (vault: VaultCommon) => vault.index === index,
   )[0];
 
   return (
@@ -1189,7 +1189,9 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
           color={vaultState === 'finished' ? 'white.100' : 'black.300'}
           fontWeight={600}
           mb={'48px'}>
-          {vaultName}
+          {vaultType === 'Liquidity Incentive' && index === 5
+            ? `${values.tokenSymbol}-TOS LP Reward`
+            : vaultName}
         </Text>
         <Box d="flex" flexDir={'column'} mb={'12px'}>
           <Text fontSize={11} h={'15px'}>
@@ -1201,8 +1203,13 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
             _focus={{
               outline: 'none',
             }}
-            _hover={{}}
+            textDecoration={
+              selectedVaultDetail?.vaultAddress === undefined ? {} : 'underline'
+            }
             color={vaultState === 'finished' ? 'white.100' : 'gray.250'}
+            _hover={{
+              color: selectedVaultDetail?.vaultAddress ? '#0070ed' : {},
+            }}
             fontSize={15}
             h={'20px'}
             fontWeight={600}
@@ -1249,6 +1256,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                       data: {
                         vaultType,
                         vaultName,
+                        vaultIndex: index,
                         infoList,
                         secondInfoList: infoList2,
                         stosTierList,
@@ -1274,6 +1282,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                       data: {
                         vaultType,
                         vaultName,
+                        vaultIndex: index,
                         infoList,
                         secondInfoList: infoList2,
                         stosTierList,

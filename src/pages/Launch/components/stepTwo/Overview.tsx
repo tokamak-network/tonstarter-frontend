@@ -1,25 +1,13 @@
-import {
-  Box,
-  Flex,
-  Text,
-  useColorMode,
-  useTheme,
-  Button,
-} from '@chakra-ui/react';
+import {Box, Flex, useColorMode, useTheme, Button} from '@chakra-ui/react';
 import StepTitle from '@Launch/components/common/StepTitle';
-import {Projects, VaultAny} from '@Launch/types';
+import {Projects} from '@Launch/types';
 import {useFormikContext} from 'formik';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import OverviewTable from './OverviewTable';
 import OverviewChart from './OverviewChart';
-const middleStyle = {
-  border: 'solid 1px #eff1f6',
-};
 
 const Overview = () => {
-  const {colorMode} = useColorMode();
   const theme = useTheme();
-  const {values} = useFormikContext<Projects['CreateProject']>();
   const [showTable, setShowTable] = useState<boolean>(true);
   return (
     <Flex flexDir={'column'} width={'1040px'}>

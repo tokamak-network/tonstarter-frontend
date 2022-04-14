@@ -5,7 +5,6 @@ import {saveTempVaultData, selectLaunch} from '@Launch/launch.reducer';
 import {
   Projects,
   PublicTokenColData,
-  VaultCommon,
   VaultLiquidityIncentive,
   VaultPublic,
 } from '@Launch/types';
@@ -663,7 +662,9 @@ const TokenDetail = (props: {isEdit: boolean}) => {
               },
               {
                 title: 'Pool Address\n(0.3% fee)',
-                content: thisVault?.poolAddress,
+                content: thisVault?.poolAddress
+                  ? shortenAddress(thisVault?.poolAddress)
+                  : '-',
                 formikName: 'poolAddress',
               },
             ]}

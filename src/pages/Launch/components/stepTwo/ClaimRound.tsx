@@ -3,8 +3,6 @@ import StepTitle from '@Launch/components/common/StepTitle';
 import HoverImage from 'components/HoverImage';
 import {useFormikContext} from 'formik';
 import {useCallback, useEffect, useState} from 'react';
-import CalendarActiveImg from 'assets/launch/calendar-active-icon.svg';
-import CalendarInactiveImg from 'assets/launch/calendar-inactive-icon.svg';
 import PlusIconNormal from 'assets/launch/plus-icon-normal.svg';
 import PlusIconHover from 'assets/launch/plus-icon-hover.svg';
 import MinusIconNormal from 'assets/launch/minus-icon-normal.svg';
@@ -12,12 +10,13 @@ import MinusIconHover from 'assets/launch/minus-icon-hover.svg';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {CustomSelectBox} from 'components/Basic';
 import {Projects, VaultAny, VaultSchedule} from '@Launch/types';
-import useVaultSelector from '@Launch/hooks/useVaultSelector';
 import moment from 'moment';
 import {selectLaunch} from '@Launch/launch.reducer';
 import {useAppSelector} from 'hooks/useRedux';
 import SingleCalendarPop from '../common/SingleCalendarPop';
 import commafy from 'utils/commafy';
+import {useToast} from 'hooks/useToast';
+
 type ClaimRoundTable = {
   dateTime: number;
   tokenAllocation: number;
@@ -62,6 +61,8 @@ const ClaimRound = () => {
   //@ts-ignore
   const {claim} = selectedVaultDetail;
 
+  const {toastMsg} = useToast();
+
   const addRow = useCallback(() => {
     if (selectedVaultDetail) {
       //@ts-ignore
@@ -70,7 +71,8 @@ const ClaimRound = () => {
         defaultTableData,
       ]);
     }
-  }, [claim]);
+    /*eslint-disable*/
+  }, [claim, selectedVaultDetail]);
 
   const removeRow = useCallback(
     (rowIndex) => {
@@ -95,6 +97,15 @@ const ClaimRound = () => {
       (data: VaultSchedule, index: number) => {
         //@ts-ignore
         const refTimeStamp = selectedVaultDetail.claim[0].claimTime;
+        if (refTimeStamp === undefined) {
+          return toastMsg({
+            status: 'error',
+            title: 'Date Time Error',
+            description: 'First date time must be filled out',
+            duration: 3000,
+            isClosable: true,
+          });
+        }
         const nowTimeStamp =
           index === 0
             ? refTimeStamp
@@ -118,7 +129,8 @@ const ClaimRound = () => {
         claimValue,
       );
     }
-  }, [claim, selectedDay]);
+    /*eslint-disable*/
+  }, [claim, selectedDay, selectedVaultDetail]);
 
   let tokenAcc = 0;
 
@@ -214,7 +226,7 @@ const ClaimRound = () => {
                           ? '-'
                           : moment
                               .unix(data.claimTime)
-                              .format('YYYY.MM.DD hh:mm:ss')}
+                              .format('YYYY.MM.DD HH:mm:ss')}
                       </Text>
                       <SingleCalendarPop
                         //@ts-ignore

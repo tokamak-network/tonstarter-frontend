@@ -20,6 +20,7 @@ import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {selectApp} from 'store/app/app.reducer';
 import {openModal} from 'store/modal.reducer';
 import useTokenDeploy from '@Launch/hooks/useTokenDeploy';
+import commafy from 'utils/commafy';
 
 const DeployToken = () => {
   const theme = useTheme();
@@ -125,7 +126,7 @@ const DeployToken = () => {
             h={'29px'}
             fontWeight={600}
             borderBottom={'1px solid #fff'}>
-            {shortenAddress(tokenAddress)}
+            {tokenAddress ? shortenAddress(tokenAddress) : '-'}
           </Link>
         </Box>
         <Box d="flex" justifyContent={'space-between'}>
@@ -142,7 +143,7 @@ const DeployToken = () => {
               fontSize={22}
               h={'29px'}
               fontWeight={600}>
-              {totalSupply}
+              {commafy(totalSupply)}
             </Text>
           </Flex>
           <Button
