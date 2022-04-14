@@ -161,10 +161,13 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
       vaultType === 'Initial Liquidity'
         ? isTokenDeployed && !isVaultDeployed
         : isTokenDeployed && isLPDeployed && !isVaultDeployed;
+
+    if (isSet) {
+      return setVaultState('finished');
+    }
+
     setVaultState(
-      isSet
-        ? 'finished'
-        : !vaultDeployReady && !isVaultDeployed
+      !vaultDeployReady && !isVaultDeployed
         ? 'notReady'
         : vaultDeployReady
         ? 'ready'
