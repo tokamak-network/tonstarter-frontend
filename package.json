@@ -26,6 +26,7 @@
     "@graphql-codegen/typescript-operations": "^2.1.2",
     "@graphql-codegen/typescript-rtk-query": "^2.1.2",
     "@nivo/core": "^0.79.0",
+    "@nivo/line": "^0.79.1",
     "@nivo/pie": "^0.79.1",
     "@reduxjs/toolkit": "^1.6.1",
     "@types/ckeditor__ckeditor5-core": "^28.0.10",

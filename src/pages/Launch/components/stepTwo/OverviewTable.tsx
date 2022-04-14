@@ -101,13 +101,34 @@ const OverviewTable = () => {
           marginTop={'auto'}
           color={'#353c48'}
           fontWeight={600}
+          h={'50px'}
           borderTop={middleStyle.border}
           borderRight={middleStyle.border}
           bg={totalColData.length % 2 === 0 ? '#fafbfc' : '#ffffff'}>
           Sum
         </Text>
       </Flex>
-      <Flex maxW={'1040'} overflowX={'scroll'}>
+      <Flex
+        w={'2040px'}
+        overflowX={'auto'}
+        css={{
+          '&::-webkit-scrollbar': {
+            paddingTop: '5px',
+            height: '6px',
+          },
+          '::-webkit-scrollbar-track': {
+            background: 'transparent',
+            borderRadius: '4px',
+          },
+          '::-webkit-scrollbar-thumb': {
+            background: '#257eee',
+            borderRadius: '4px',    
+          },
+          // '::-webkit-scrollbar-track-piece': {
+          //   background: 'transparent',
+          //   width: '30px',
+          // },
+        }}>
         {tableData.map((data: any, index: number) => {
           const {name, claim} = data;
           return (
@@ -120,8 +141,7 @@ const OverviewTable = () => {
               <Text
                 fontSize={12}
                 borderBottom={middleStyle.border}
-                borderRight={middleStyle.border}
-                >
+                borderRight={middleStyle.border}>
                 {name}
               </Text>
               {claim.map((claimData: any, index: number) => {
@@ -146,8 +166,7 @@ const OverviewTable = () => {
                       h={'42px'}
                       bg={
                         index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'
-                      }
-                      >
+                      }>
                       {'-'}
                     </Text>
                   );
@@ -157,8 +176,7 @@ const OverviewTable = () => {
                 fontSize={13}
                 marginTop={middleStyle.border}
                 borderRight={middleStyle.border}
-                bg={totalColData.length % 2 === 0 ? '#fafbfc' : '#ffffff'}
-                >
+                bg={totalColData.length % 2 === 0 ? '#fafbfc' : '#ffffff'}>
                 {commafy(
                   claim.reduce((acc: any, cur: any, index: number) => {
                     if (cur?.claimTokenAllocation) {
@@ -177,7 +195,6 @@ const OverviewTable = () => {
           flexDir={'column'}
           fontWeight={600}
           minW={'120px'}
-          
           borderRight={middleStyle.border}>
           <Text fontSize={12}>Total</Text>
           {totalColData.map((roundTotal: number[], index: number) => {
@@ -188,18 +205,17 @@ const OverviewTable = () => {
 
             sumColumn += sumWithInitial;
             if (index + 1 === totalColData.length) {
-        
-              
               if (sumWithInitial !== 0) {
                 return (
                   <>
                     <Text
-                      borderTop={middleStyle.border} 
+                      borderTop={middleStyle.border}
                       // borderRight={middleStyle.border}
                       h={'42px'}
                       fontSize={13}
-                      bg={index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'}
-                      >
+                      bg={
+                        index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'
+                      }>
                       {commafy(sumWithInitial)}
                     </Text>
                     <Text
@@ -207,8 +223,9 @@ const OverviewTable = () => {
                       // borderRight={middleStyle.border}
                       h={'42px'}
                       fontSize={13}
-                      bg={index === 0 || index % 2 === 0 ? '#ffffff' : '#fafbfc'}
-                     >
+                      bg={
+                        index === 0 || index % 2 === 0 ? '#ffffff' : '#fafbfc'
+                      }>
                       {commafy(sumColumn)}
                     </Text>
                   </>
@@ -216,27 +233,30 @@ const OverviewTable = () => {
               } else {
                 return (
                   <>
-                  <Text
-                    borderTop={middleStyle.border}
-                    // borderRight={middleStyle.border}
-                    borderBottom={middleStyle.border}
+                    <Text
+                      borderTop={middleStyle.border}
+                      // borderRight={middleStyle.border}
+                      borderBottom={middleStyle.border}
+                      h={'43px'}
+                      fontSize={13}
+                      bg={
+                        index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'
+                      }>
+                      -
+                    </Text>
+                    <Text
+                      // borderTop={middleStyle.border}
+                      // borderRight={middleStyle.border}
+                      // borderBottom={middleStyle.border}
 
-                    h={'43px'}
-                    fontSize={13}
-                    bg={index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'}>
-                    -
-                  </Text>
-                  <Text
-                  // borderTop={middleStyle.border}
-                  // borderRight={middleStyle.border}
-                  // borderBottom={middleStyle.border}
-
-                  h={'43px'}
-                  fontSize={13}
-                  bg={index === 0 || index % 2 === 0 ? '#ffffff' : '#fafbfc'}>
-                  -
-                </Text>
-                </>
+                      h={'43px'}
+                      fontSize={13}
+                      bg={
+                        index === 0 || index % 2 === 0 ? '#ffffff' : '#fafbfc'
+                      }>
+                      -
+                    </Text>
+                  </>
                 );
               }
             }
@@ -264,7 +284,6 @@ const OverviewTable = () => {
                 </Text>
               );
             }
-           
           })}
         </Flex>
         <Flex
