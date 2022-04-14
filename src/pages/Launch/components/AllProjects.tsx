@@ -23,9 +23,6 @@ const AllProjects = () => {
       w={'100%'}
       mt={100}
       mb={'100px'}>
-      <Flex alignItems={'center'} flexDir="column" mb={'20px'}>
-        <PageHeader title={'Projects'} />
-      </Flex>
       <Box display={'flex'} justifyContent={'center'}>
         <Text>All Projects</Text>
       </Box>

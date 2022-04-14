@@ -81,50 +81,59 @@ const LaunchPage = () => {
         </Flex>
       </Flex>
 
-      <Box display={'flex'} justifyContent={'center'}>
-        <Button
-          w={'70px'}
-          h={'26px'}
-          bg={'transparent'}
-          border={'solid 1px #d7d9df'}
-          borderRadius={'3px 0px 0px 3px'}
-          fontSize={'12px'}
-          fontFamily={theme.fonts.roboto}
-          _hover={{background: 'transparent'}}
-          _active={{
-            background: 'transparent',
-            border: 'solid 1px #2a72e5',
-            color: '#2a72e5',
-          }}
-          onClick={() => {
-            setShowAllProjects(true);
-          }}
-          isActive={showAllProjects}>
-          All
-        </Button>
-        <Button
-          w={'70px'}
-          h={'26px'}
-          bg={'transparent'}
-          border={'solid 1px #d7d9df'}
-          borderRadius={'0px 3px 3px 0px'}
-          fontSize={'12px'}
-          _hover={{
-            background: 'transparent',
-            border: 'solid 1px #2a72e5',
-            color: '#2a72e5',
-          }}
-          _active={{
-            background: 'transparent',
-            border: 'solid 1px #2a72e5',
-            color: '#2a72e5',
-          }}
-          onClick={() => {
-            setShowAllProjects(false);
-          }}
-          isActive={!showAllProjects}>
-          My
-        </Button>
+      <Box
+        display={'flex'}
+        justifyContent={'center'}
+        flexDirection={'column'}
+        alignItems={'center'}>
+        <Flex alignItems={'center'} flexDir="column" mb={'20px'}>
+          <PageHeader title={'Projects'} />
+        </Flex>
+        <Flex>
+          <Button
+            w={'70px'}
+            h={'26px'}
+            bg={'transparent'}
+            border={'solid 1px #d7d9df'}
+            borderRadius={'3px 0px 0px 3px'}
+            fontSize={'12px'}
+            fontFamily={theme.fonts.roboto}
+            _hover={{background: 'transparent'}}
+            _active={{
+              background: 'transparent',
+              border: 'solid 1px #2a72e5',
+              color: '#2a72e5',
+            }}
+            onClick={() => {
+              setShowAllProjects(true);
+            }}
+            isActive={showAllProjects}>
+            All
+          </Button>
+          <Button
+            w={'70px'}
+            h={'26px'}
+            bg={'transparent'}
+            border={'solid 1px #d7d9df'}
+            borderRadius={'0px 3px 3px 0px'}
+            fontSize={'12px'}
+            _hover={{
+              background: 'transparent',
+              border: 'solid 1px #2a72e5',
+              color: '#2a72e5',
+            }}
+            _active={{
+              background: 'transparent',
+              border: 'solid 1px #2a72e5',
+              color: '#2a72e5',
+            }}
+            onClick={() => {
+              setShowAllProjects(false);
+            }}
+            isActive={!showAllProjects}>
+            My
+          </Button>
+        </Flex>
       </Box>
       {showAllProjects ? <AllProjects /> : <MyProjects />}
     </Flex>
