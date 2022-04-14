@@ -81,12 +81,12 @@ const InputField: React.FC<InputFieldProp> = (props) => {
       //       : Number(_hardCap || 0) - Number(thisNameValue) + Number(inputVal),
       //   );
 
-      const isOver = true;
+      // const isOver = true;
 
-      if (isOver) {
-        return setIsErr(true);
-      }
-      return setIsErr(false);
+      // if (isOver) {
+      //   return setIsErr(true);
+      // }
+      // return setIsErr(false);
     }
   }, [selectedVault, thisVaultValue, formikName, value, tempVaultData]);
 

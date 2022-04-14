@@ -59,7 +59,7 @@ const useTokenDetail = () => {
           },
           {
             title: 'Token Allocation for Liquidity Pool (5~10%)',
-            content: `${tokenAllocationForLiquidity} %`,
+            content: `${tokenAllocationForLiquidity}`,
             formikName: 'tokenAllocationForLiquidity',
           },
           {

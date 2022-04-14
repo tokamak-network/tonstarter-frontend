@@ -201,7 +201,7 @@ const SubTitle = (props: {
       case 'Public Round 2':
         return `${commafy(rightTitle)} ${values.tokenName}`;
       case 'Token Allocation for Liquidity Pool (5~10%)':
-        return `${rightTitle}`;
+        return `${rightTitle} %`;
       case 'Hard Cap':
         return `${commafy(rightTitle)} TON`;
       case 'Address for receiving funds':

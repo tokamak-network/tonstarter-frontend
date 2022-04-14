@@ -223,40 +223,43 @@ const ConfirmTokenModal = () => {
               </Heading>
             </Box>
 
-            <Flex
-              h={'26px'}
-              alignItems={'center'}
-              justifyContent={'center'}
-              mt={'15px'}>
-              <Box
-                w={'126px'}
-                h={'100%'}
-                border={tab === 1 ? '1px solid #2a72e5' : '1px solid #d7d9df'}
-                borderRightWidth={tab === 2 ? 0 : 1}
-                borderLeftRadius={4}
-                cursor={'pointer'}
-                fontSize={12}
-                color={tab === 1 ? '#2a72e5' : '#3d495d'}
-                textAlign="center"
-                lineHeight={'26px'}
-                onClick={() => setTab(1)}>
-                Vault & Claim
-              </Box>
-              <Box
-                w={'126px'}
-                h={'100%'}
-                border={tab === 2 ? '1px solid #2a72e5' : '1px solid #d7d9df'}
-                borderLeftWidth={tab === 1 ? 0 : 1}
-                borderRightRadius={4}
-                cursor={'pointer'}
-                fontSize={12}
-                color={tab === 2 ? '#2a72e5' : '#3d495d'}
-                textAlign="center"
-                lineHeight={'26px'}
-                onClick={() => setTab(2)}>
-                Sale
-              </Box>
-            </Flex>
+            {console.log(vaultType)}
+            {vaultType === 'Public' && (
+              <Flex
+                h={'26px'}
+                alignItems={'center'}
+                justifyContent={'center'}
+                mt={'15px'}>
+                <Box
+                  w={'126px'}
+                  h={'100%'}
+                  border={tab === 1 ? '1px solid #2a72e5' : '1px solid #d7d9df'}
+                  borderRightWidth={tab === 2 ? 0 : 1}
+                  borderLeftRadius={4}
+                  cursor={'pointer'}
+                  fontSize={12}
+                  color={tab === 1 ? '#2a72e5' : '#3d495d'}
+                  textAlign="center"
+                  lineHeight={'26px'}
+                  onClick={() => setTab(1)}>
+                  Vault & Claim
+                </Box>
+                <Box
+                  w={'126px'}
+                  h={'100%'}
+                  border={tab === 2 ? '1px solid #2a72e5' : '1px solid #d7d9df'}
+                  borderLeftWidth={tab === 1 ? 0 : 1}
+                  borderRightRadius={4}
+                  cursor={'pointer'}
+                  fontSize={12}
+                  color={tab === 2 ? '#2a72e5' : '#3d495d'}
+                  textAlign="center"
+                  lineHeight={'26px'}
+                  onClick={() => setTab(2)}>
+                  Sale
+                </Box>
+              </Flex>
+            )}
 
             <Flex
               flexDir="column"
@@ -351,10 +354,9 @@ const ConfirmTokenModal = () => {
                   Warning
                 </Text>
                 <Text fontSize={12} color={'gray.225'}>
-                  The team will create a TOS Reward Program (TOS) fund by buying
-                  $100 worth of TOS tokens on a daily basis. The fund will be
-                  used to reward to the contributors who have worked on the
-                  following categories:
+                  You won't be able to edit your project after it has been
+                  deployed. Double-check the content before you click the
+                  “Deploy” button.
                 </Text>
               </Flex>
             </Flex>
