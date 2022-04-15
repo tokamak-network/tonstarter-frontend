@@ -16,6 +16,7 @@ type InputFieldProp = {
   isStosTier?: boolean;
   stosTierLevel?: 1 | 2 | 3 | 4;
   numberOnly?: boolean;
+  inputRef?: any;
 };
 
 const InputField: React.FC<InputFieldProp> = (props) => {
@@ -30,6 +31,7 @@ const InputField: React.FC<InputFieldProp> = (props) => {
     isStosTier,
     stosTierLevel,
     numberOnly,
+    inputRef,
   } = props;
   const [isErr, setIsErr] = useState<boolean>(false);
   const dispatch = useAppDispatch();
@@ -89,8 +91,6 @@ const InputField: React.FC<InputFieldProp> = (props) => {
       // return setIsErr(false);
     }
   }, [selectedVault, thisVaultValue, formikName, value, tempVaultData]);
-
-  const tokensRef = useRef([]);
 
   const stosTier =
     stosTierLevel === 1
@@ -169,8 +169,15 @@ const InputField: React.FC<InputFieldProp> = (props) => {
       fontSize={fontSize}
       placeholder={placeHolder}
       // _focus={{}}
-      //@ts-ignore
-      ref={(el) => (tokensRef.current[formikName] = el)}
+      ref={(el) => {
+        if (inputRef && formikName) {
+          if (stosTierLevel) {
+            inputRef.current[`${formikName}_${stosTierLevel}`] = el;
+          }
+          // inputRef.current[index + 1] = el;
+          inputRef.current[formikName] = el;
+        }
+      }}
       value={value === 'undefined' ? '' : value}
       onChange={(e) => {
         setValue(e.target.value);

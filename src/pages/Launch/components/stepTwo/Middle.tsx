@@ -7,7 +7,6 @@ import {useFormikContext} from 'formik';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {useEffect, useState} from 'react';
 import {useModal} from 'hooks/useModal';
-import {PublicProps} from '../common/VaultProps';
 import {CustomButton} from 'components/Basic/CustomButton';
 import TokenDetail from './TokenDetail';
 

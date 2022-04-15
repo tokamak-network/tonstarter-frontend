@@ -81,7 +81,7 @@ const OverviewTable = () => {
         fontWeight={600}
         // borderBottom={middleStyle.border}
         w={'90px'}>
-        <Text fontSize={12} borderRight={middleStyle.border}>
+        <Text fontSize={12} borderRight={middleStyle.border} w={'90px'}>
           Round
         </Text>
         {columnLength.map((data: any, index: number) => {
@@ -122,7 +122,7 @@ const OverviewTable = () => {
           },
           '::-webkit-scrollbar-thumb': {
             background: '#257eee',
-            borderRadius: '4px',    
+            borderRadius: '4px',
           },
           // '::-webkit-scrollbar-track-piece': {
           //   background: 'transparent',
