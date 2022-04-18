@@ -1,17 +1,6 @@
-import {
-  Flex,
-  Text,
-  Button,
-  Box,
-  useColorMode,
-  useTheme,
-  Container,
-  Select,
-  Image,
-  Input,
-} from '@chakra-ui/react';
+import {Flex, useColorMode, Input} from '@chakra-ui/react';
 
-import {FC, Dispatch, SetStateAction, useRef, useState, useEffect} from 'react';
+import {Dispatch, SetStateAction, useRef, useState, useEffect} from 'react';
 import Calendar from 'react-calendar';
 import '../css/Calendar.css';
 import calender_Forward_icon_inactive from 'assets/svgs/calender_Forward_icon_inactive.svg';
@@ -44,7 +33,7 @@ type CalendarProps = {
 export const CustomCalendar = (prop: CalendarProps) => {
   const {setValue, startTime, endTime, calendarType, created} = prop;
   const {colorMode} = useColorMode();
-  const theme = useTheme();
+
   const [showCalendar, setShowCalendar] = useState<boolean>(false);
   const [showInputValue, setShowInputValue] = useState<string>('');
   const refCalendar = useRef<HTMLInputElement>(null);
@@ -88,10 +77,10 @@ export const CustomCalendar = (prop: CalendarProps) => {
       else {
         return false;
       }
-    } else if (view === 'year') {  
-      const dateFormatted = new Date(formattedDate*1000)
+    } else if (view === 'year') {
+      const dateFormatted = new Date(formattedDate * 1000);
       const monthFormatted = dateFormatted.getMonth();
-      const nowFormatted = new Date(now*1000);
+      const nowFormatted = new Date(now * 1000);
       const monthNow = nowFormatted.getMonth();
       if (monthFormatted >= monthNow) {
         return false;
@@ -99,9 +88,9 @@ export const CustomCalendar = (prop: CalendarProps) => {
         return true;
       }
     } else {
-      const dateFormatted = new Date(formattedDate*1000)
+      const dateFormatted = new Date(formattedDate * 1000);
       const yearFormatted = dateFormatted.getFullYear();
-      const nowFormatted = new Date(now*1000);
+      const nowFormatted = new Date(now * 1000);
       const yearNow = nowFormatted.getFullYear();
       if (yearFormatted >= yearNow) {
         return false;

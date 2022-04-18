@@ -1,4 +1,4 @@
-import {FC, useState, useMemo, useEffect, useRef} from 'react';
+import {FC, useState, useEffect} from 'react';
 import {
   Text,
   Flex,
@@ -24,9 +24,9 @@ import {Contract} from '@ethersproject/contracts';
 import * as NPMABI from 'services/abis/NonfungiblePositionManager.json';
 import {approveStaking, stake, unstake} from '../actions';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
-import {utils, ethers} from 'ethers';
+import { ethers} from 'ethers';
 import {soliditySha3} from 'web3-utils';
-import * as TOSABI from 'services/abis/TOS.json';
+// import * as TOSABI from 'services/abis/TOS.json';
 import {getTokenSymbol} from '../utils/getTokenSymbol';
 import {UpdatedRedward} from '../types';
 import {LPToken} from '../types';
@@ -57,7 +57,7 @@ type RewardProgramCardProps = {
   includedPoolLiquidity: string;
 };
 
-const {TON_ADDRESS, UniswapStaking_Address, UniswapStaker_Address} = DEPLOYED;
+const {UniswapStaker_Address} = DEPLOYED;
 
 export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   reward,

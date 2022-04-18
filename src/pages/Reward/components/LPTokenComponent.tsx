@@ -5,28 +5,25 @@ import {
   Box,
   useColorMode,
   useTheme,
-  Container,
-  Select,
   Grid,
-  Avatar,
   IconButton,
   Tooltip,
 } from '@chakra-ui/react';
-import {useActiveWeb3React} from 'hooks/useWeb3';
+// import {useActiveWeb3React} from 'hooks/useWeb3';
 import {FC, useState, useEffect} from 'react';
-import {fetchPositionRangePayload} from '../utils/fetchPositionRangePayloads';
-import {utils, ethers} from 'ethers';
+// import {fetchPositionRangePayload} from '../utils/fetchPositionRangePayloads';
+import { ethers} from 'ethers';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
-import {orderBy} from 'lodash';
+// import {orderBy} from 'lodash';
 type LPTokenComponentProps = {
   tokens: any[];
 };
 
-type Token = {
-  id: string;
-  owner: string;
-  pool: object;
-};
+// type Token = {
+//   id: string;
+//   owner: string;
+//   pool: object;
+// };
 const themeDesign = {
   border: {
     light: 'solid 1px #e7edf3',
@@ -57,11 +54,11 @@ const themeDesign = {
 export const LPTokenComponent: FC<LPTokenComponentProps> = ({tokens}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const [allTokens, setAllTokens] = useState<any[]>([]);
+  // const [allTokens, setAllTokens] = useState<any[]>([]);
   const [pageOptions, setPageOptions] = useState<number>(0);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(6);
-  const {account: address, library} = useActiveWeb3React();
+  // const {account: address, library} = useActiveWeb3React();
 // useEffect (() => {  
 //   console.log(tokens);
   

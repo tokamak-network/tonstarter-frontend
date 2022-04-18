@@ -1,4 +1,4 @@
-import {Flex, Box, useColorMode, useTheme} from '@chakra-ui/react';
+import {Flex, Box} from '@chakra-ui/react';
 import {useEffect, useState} from 'react';
 import {AdminObject, StepComponent} from '@Admin/types';
 import {PageHeader} from 'components/PageHeader';
@@ -59,7 +59,7 @@ export const CreateProject = () => {
   const [existingData, setExistingData] = useState<AdminObject[] | []>([]);
   const [final, setFinal] = useState<boolean>(false);
 
-  const theme = useTheme();
+  // const theme = useTheme();
   const {library} = useActiveWeb3React();
   const {search} = useLocation();
   const {data: starterData} = useAppSelector(selectStarters);

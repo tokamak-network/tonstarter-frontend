@@ -6,8 +6,6 @@ import {
   useColorMode,
   useTheme,
   Select,
-  NumberInput,
-  NumberInputField,
   Grid,
   IconButton,
   Tooltip,
@@ -16,18 +14,18 @@ import {
 import {FC, useState, useEffect} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {useActiveWeb3React} from 'hooks/useWeb3';
-import {checkTokenType} from 'utils/token';
+// import {checkTokenType} from 'utils/token';
 import {DEPLOYED} from 'constants/index';
 import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
-import {utils, ethers} from 'ethers';
+import { ethers} from 'ethers';
 import {claim, withdraw} from '../actions';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {getTokenSymbol} from '../utils/getTokenSymbol';
 
-const {UniswapStaking_Address, UniswapStaker_Address, TOS_ADDRESS} = DEPLOYED;
+const { UniswapStaker_Address, TOS_ADDRESS} = DEPLOYED;
 
 type ClaimRewardProps = {
   rewards: any[];
@@ -66,7 +64,7 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
   const [claimableAmount, setClaimableAmount] = useState<number>(0);
-  const [requestAmount, setRequestAmout] = useState<string>('0');
+  // const [requestAmount, setRequestAmout] = useState<string>('0');
   const [tokenList, setTokenList] = useState<any[]>([]);
   const [selectedToken, setSelectedToken] = useState<string>(TOS_ADDRESS);
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);

@@ -1,4 +1,4 @@
-import {Flex, useColorMode, useTheme} from '@chakra-ui/react';
+import {Flex} from '@chakra-ui/react';
 import {PageHeader} from 'components/PageHeader';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect, useMemo, useState} from 'react';

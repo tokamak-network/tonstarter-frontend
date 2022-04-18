@@ -3,7 +3,7 @@ import {Banner} from './components/Banner';
 import {ActiveProject} from './components/ActiveProject';
 import {PastProject} from './components/PastProject';
 import {UpcomingProject} from './components/UpcomingProject';
-import {MyProject} from './components/MyProject';
+// import {MyProject} from './components/MyProject';
 import {
   ActiveProjectType,
   UpcomingProjectType,

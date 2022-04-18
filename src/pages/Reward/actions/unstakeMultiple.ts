@@ -6,10 +6,10 @@ import { setTxPending } from 'store/tx.reducer';
 import { toastWithReceipt } from 'utils';
 import { openToast } from 'store/app/toast.reducer';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
-import * as NPMABI from 'services/abis/NonfungiblePositionManager.json';
-import { utils, ethers } from 'ethers';
+// import * as NPMABI from 'services/abis/NonfungiblePositionManager.json';
+// import { utils, ethers } from 'ethers';
 
-const { NPM_Address, UniswapStaker_Address } = DEPLOYED;
+const {  UniswapStaker_Address } = DEPLOYED;
 
 export const unstakeMultiple = async (args: any) => {
     const { library, tokenid, userAddress, stakeKeyList } = args;
@@ -20,7 +20,7 @@ export const unstakeMultiple = async (args: any) => {
     if (stakeKeyList.length === 0) {
         return alert(`Please select rewards to unstake`);
     }
-    const NPM = new Contract(NPM_Address, NPMABI.abi, library);
+    // const NPM = new Contract(NPM_Address, NPMABI.abi, library);
     const uniswapStakerContract = new Contract(
       UniswapStaker_Address,
       STAKERABI.abi,

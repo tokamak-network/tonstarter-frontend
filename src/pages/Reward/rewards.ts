@@ -1,10 +1,10 @@
 import {fetchPoolsURL, fetchRewardsURL} from 'constants/index';
-import {FetchPoolData,PoolData , incentiveKey, interfaceReward} from './types/index'
+import {FetchPoolData,PoolData , interfaceReward} from './types/index'
 import {getTokenSymbol} from './utils/getTokenSymbol';
-import {getSigner} from 'utils/contract';
-import {Contract} from '@ethersproject/contracts';
+// import {getSigner} from 'utils/contract';
+// import {Contract} from '@ethersproject/contracts';
 
-import * as ERC20 from 'services/abis/ERC20.json';
+// import * as ERC20 from 'services/abis/ERC20.json';
 
 const getPoolData = async (library: any): Promise<FetchPoolData[] | undefined> => {
     try {

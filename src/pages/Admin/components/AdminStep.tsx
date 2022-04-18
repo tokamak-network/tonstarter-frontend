@@ -1239,7 +1239,7 @@ export const StepFour: React.FC<
 > = (props) => {
   const {data, lastStep, handleNextStep, handlePrevStep, setFinal, final} =
     props;
-  const {colorMode} = useColorMode();
+  // const {colorMode} = useColorMode();
 
   const handleSubmit = (values: any) => {
     handleNextStep(values, lastStep);

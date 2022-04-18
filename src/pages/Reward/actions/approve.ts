@@ -15,7 +15,7 @@ type Approve = {
     tokenAddress: string
 }
 
-const {TOS_ADDRESS, UniswapStaker_Address} = DEPLOYED;
+const {UniswapStaker_Address} = DEPLOYED;
 
 export const approve = async (args:Approve) => {
     const {library, amount, userAddress, setAlllowed, tokenAddress } = args;
