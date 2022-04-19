@@ -22,7 +22,7 @@ const useMaxValue = (args: UseMaxValue): {maxValue: number} => {
         ? tokenSumBalance
         : availableProjectTokenBalance;
 
-    const x = Math.floor(maxValue * 1000) / 1000;
+    // const x = Math.floor(maxValue * 1000) / 1000;
 
     return setMaxValue(maxValue);
     // return setMaxValue(maxValue)

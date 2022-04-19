@@ -3,8 +3,6 @@ import {
   Box,
   Text,
   Flex,
-  Link,
-  Select,
   Center,
   useColorMode,
   FormControl,
@@ -12,41 +10,34 @@ import {
   useTheme,
   Menu,
   MenuButton,
-  Portal,
   MenuList,
   MenuItem,
-  MenuItemOption,
-  MenuGroup,
-  MenuOptionGroup,
-  MenuIcon,
-  MenuCommand,
-  MenuDivider,
   Switch,
 } from '@chakra-ui/react';
-import {Fragment, useMemo, useEffect, useState} from 'react';
+import {Fragment, useEffect, useState} from 'react';
 import {Head} from 'components/SEO';
 import {SearchModal} from './RewardModals';
 import {PageHeader} from 'components/PageHeader';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {ManageContainer} from './ManageContainer';
 import {RewardContainer} from './RewardContainer';
-import {selectRewards} from './reward.reducer';
+// import {selectRewards} from './reward.reducer';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectTransactionType} from 'store/refetch.reducer';
-import {usePoolByUserQuery} from 'store/data/enhanced';
+// import {usePoolByUserQuery} from 'store/data/enhanced';
 import {DEPLOYED} from '../../constants/index';
 import ms from 'ms.macro';
 import {Contract} from '@ethersproject/contracts';
 import {LoadingComponent} from 'components/Loading';
 import {orderBy} from 'lodash';
-import * as StakeUniswapABI from 'services/abis/StakeUniswapV3.json';
+// import * as StakeUniswapABI from 'services/abis/StakeUniswapV3.json';
 import {getSigner} from 'utils/contract';
-import {getPoolName, checkTokenType} from '../../utils/token';
-import {fetchPositionPayload} from '../Pools/utils/fetchPositionPayload';
+// import {getPoolName, checkTokenType} from '../../utils/token';
+// import {fetchPositionPayload} from '../Pools/utils/fetchPositionPayload';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import {ChevronDownIcon} from '@chakra-ui/icons';
-import {utils, ethers} from 'ethers';
-import {incentiveKey, Token, interfaceReward, LPToken} from './types';
+import { ethers} from 'ethers';
+import {Token, interfaceReward, LPToken} from './types';
 import {fetchPositionRangePayload} from './utils/fetchPositionRangePayloads';
 
 import moment from 'moment';
@@ -54,13 +45,11 @@ import views from './rewards';
 import {getTokenSymbol} from './utils/getTokenSymbol';
 import {
   usePositionByUserQuery,
-  usePositionByContractQuery,
   usePositionByPoolQuery,
   usePoolByArrayQuery,
 } from 'store/data/generated';
 import {SideContainer} from './SideContainer';
 const {
-  UniswapStaking_Address,
   UniswapStaker_Address,
   WTON_ADDRESS,
   TOS_ADDRESS,
@@ -106,7 +95,7 @@ export const Reward = () => {
   const [selectdPosition, setSelectdPosition] = useState<LPToken>();
   const [selected, setSelected] = useState('reward');
   const [pool, setPool] = useState<any[]>([]);
-  const [stakingPosition, setStakingPosition] = useState([]);
+  // const [stakingPosition, setStakingPosition] = useState([]);
   const [poolsFromAPI, setPoolsFromAPI] = useState<any>([]);
   const [manageDatas, setManageDatas] = useState<interfaceReward[]>([]);
   const [isPositionLoading, setIsPositionLoading] = useState(true);
@@ -127,7 +116,7 @@ export const Reward = () => {
   const [selectedPoolCreate, setSelectedPoolCreated] = useState<Pool>();
   const [positions, setPositions] = useState<any[]>([]);
 
-  const arr: any = [];
+  // const arr: any = [];
   useEffect(() => {
     setSelectdPosition(undefined);
   }, [account, library]);
@@ -242,7 +231,6 @@ export const Reward = () => {
         return 'closedOut';
       }
     }
-  
   };
 
   useEffect(() => {
@@ -268,7 +256,6 @@ export const Reward = () => {
                 liquidity: rang?.res.liquidity,
               };
             }
-           
           }),
         );
         const closedIn = res.filter(
@@ -288,16 +275,22 @@ export const Reward = () => {
         const openInOrdered = orderBy(openIn, (data: any) => Number(data.id), [
           'desc',
         ]);
-        const openOutOrdered = orderBy(openOut, (data: any) => Number(data.id), [
-          'desc',
-        ]);
+        const openOutOrdered = orderBy(
+          openOut,
+          (data: any) => Number(data.id),
+          ['desc'],
+        );
 
-        const closedInOrdered = orderBy(closedIn, (data: any) => Number(data.id), [
-          'desc',
-        ]);
-        const closedOutOrdered = orderBy(closedOut, (data: any) => Number(data.id), [
-          'desc',
-        ]);
+        const closedInOrdered = orderBy(
+          closedIn,
+          (data: any) => Number(data.id),
+          ['desc'],
+        );
+        const closedOutOrdered = orderBy(
+          closedOut,
+          (data: any) => Number(data.id),
+          ['desc'],
+        );
 
         const open = openInOrdered.concat(openOutOrdered);
         const close = closedInOrdered.concat(closedOutOrdered);
@@ -550,7 +543,9 @@ export const Reward = () => {
             subtitle={'Stake Uniswap V3 liquidity tokens and receive rewards! '}
           />
         </Box>
-        {isPositionLoading !== true && account !== undefined && pool.length !==0 ? (
+        {isPositionLoading !== true &&
+        account !== undefined &&
+        pool.length !== 0 ? (
           <Box>
             <Flex
               fontFamily={theme.fonts.roboto}
@@ -660,7 +655,7 @@ export const Reward = () => {
                           }>
                           {positions.map((item: any, index) => {
                             console.log(item);
-                            
+
                             const status = getStatus(item);
                             return (
                               <MenuItem
@@ -668,7 +663,7 @@ export const Reward = () => {
                                 // onClick={() => alert("Kagebunshin")}
                                 h={'30px'}
                                 color={
-                                  (status === 'openOut' || status === 'closedOut')
+                                  status === 'openOut' || status === 'closedOut'
                                     ? '#ff7800'
                                     : colorMode === 'light'
                                     ? '#3e495c'
@@ -683,11 +678,19 @@ export const Reward = () => {
                                   color: 'blue.100',
                                 }}
                                 textDecoration={
-                                  (status === 'closedIn' || status === 'closedOut') ? 'line-through' : 'none'
+                                  status === 'closedIn' ||
+                                  status === 'closedOut'
+                                    ? 'line-through'
+                                    : 'none'
                                 }
                                 _focus={{background: 'transparent'}}
                                 key={index}>
-                                {item.id} <Text ml={'8px'} fontSize={'9px'}> {item.pool.token0.symbol} / {item.pool.token1.symbol}</Text>
+                                {item.id}{' '}
+                                <Text ml={'8px'} fontSize={'9px'}>
+                                  {' '}
+                                  {item.pool.token0.symbol} /{' '}
+                                  {item.pool.token1.symbol}
+                                </Text>
                               </MenuItem>
                             );
                           })}
@@ -724,7 +727,8 @@ export const Reward = () => {
                                   // onClick={() => alert("Kagebunshin")}
                                   h={'30px'}
                                   color={
-                                    (status === 'openOut' || status === 'closedOut')
+                                    status === 'openOut' ||
+                                    status === 'closedOut'
                                       ? '#ff7800'
                                       : colorMode === 'light'
                                       ? '#3e495c'
@@ -739,13 +743,19 @@ export const Reward = () => {
                                     color: 'blue.100',
                                   }}
                                   textDecoration={
-                                    (status === 'closedIn' || status === 'closedOut') 
+                                    status === 'closedIn' ||
+                                    status === 'closedOut'
                                       ? 'line-through'
                                       : 'none'
                                   }
                                   _focus={{background: 'transparent'}}
                                   key={index}>
-                                  {item.id} <Text ml={'8px'} fontSize={'9px'}> {item.pool.token0.symbol} / {item.pool.token1.symbol}</Text>
+                                  {item.id}{' '}
+                                  <Text ml={'8px'} fontSize={'9px'}>
+                                    {' '}
+                                    {item.pool.token0.symbol} /{' '}
+                                    {item.pool.token1.symbol}
+                                  </Text>
                                 </MenuItem>
                               );
                             }
@@ -782,7 +792,8 @@ export const Reward = () => {
                                   onClick={getSelectedPosition}
                                   h={'30px'}
                                   color={
-                                    (status === 'openOut' || status === 'closedOut')
+                                    status === 'openOut' ||
+                                    status === 'closedOut'
                                       ? '#ff7800'
                                       : colorMode === 'light'
                                       ? '#3e495c'
@@ -792,7 +803,8 @@ export const Reward = () => {
                                   w={'9.5rem'}
                                   m={'0px'}
                                   textDecoration={
-                                    (status === 'closedIn' || status === 'closedOut') 
+                                    status === 'closedIn' ||
+                                    status === 'closedOut'
                                       ? 'line-through'
                                       : 'none'
                                   }
@@ -803,7 +815,12 @@ export const Reward = () => {
                                   }}
                                   _focus={{background: 'transparent'}}
                                   key={index}>
-                                  {item.id} <Text ml={'8px'} fontSize={'9px'}> {item.pool.token0.symbol} / {item.pool.token1.symbol}</Text>
+                                  {item.id}{' '}
+                                  <Text ml={'8px'} fontSize={'9px'}>
+                                    {' '}
+                                    {item.pool.token0.symbol} /{' '}
+                                    {item.pool.token1.symbol}
+                                  </Text>
                                 </MenuItem>
                               );
                             }

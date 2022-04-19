@@ -1,17 +1,12 @@
 import {
-  Flex,
-  Text,
-  Button,
+ 
   Box,
   useColorMode,
   useTheme,
-  Container,
-  Select,
-  Image,
-  Input,
+ 
 } from '@chakra-ui/react';
 
-import {FC, useRef, useState, useEffect} from 'react';
+import {FC, useState, useEffect} from 'react';
 import {PoolComponent} from './components/PoolComponent';
 import {ClaimReward} from './components/ClaimReward';
 import {CreateReward} from './components/CreateReward';
@@ -31,7 +26,7 @@ type SideContainerProps = {
   LPTokens: any[];
   setSelectedPoolCreated: any
 };
-const {UniswapStaking_Address, UniswapStaker_Address} = DEPLOYED;
+const { UniswapStaker_Address} = DEPLOYED;
 
 export const SideContainer: FC<SideContainerProps> = ({
   selected,
@@ -41,7 +36,7 @@ export const SideContainer: FC<SideContainerProps> = ({
   setSelectedPoolCreated
 }) => {
   const {colorMode} = useColorMode();
-  const theme = useTheme();
+ 
   const {account, library} = useActiveWeb3React();
   const [withdrawableTokens, setWithdrawableTokens] = useState<any[]>([]);
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);

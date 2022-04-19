@@ -32,7 +32,7 @@ type CalendarProps = {
 export const CustomCalendar = (prop: CalendarProps) => {
   const {setValue} = prop;
   const {colorMode} = useColorMode();
-  const theme = useTheme();
+  // const theme = useTheme();
   const [showCalendar, setShowCalendar] = useState<boolean>(false);
   const [showInputValue, setShowInputValue] = useState<string>('');
   const refCalendar = useRef<HTMLInputElement>(null);

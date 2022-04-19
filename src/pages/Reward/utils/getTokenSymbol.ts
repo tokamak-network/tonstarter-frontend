@@ -1,4 +1,4 @@
-import { getSigner } from 'utils/contract';
+// import { getSigner } from 'utils/contract';
 import { Contract } from '@ethersproject/contracts';
 import * as TOSABI from 'services/abis/TOS.json';
 
