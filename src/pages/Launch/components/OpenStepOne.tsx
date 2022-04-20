@@ -1,4 +1,6 @@
 import {Flex, useTheme, Box, Grid, GridItem} from '@chakra-ui/react';
+import {useEffect} from 'react';
+import type {Projects} from '@Launch/types';
 import InputComponent from '@Launch/components/common/InputComponent';
 import StepTitle from '@Launch/components/common/StepTitle';
 import Line from '@Launch/components/common/Line';
@@ -17,7 +19,7 @@ const OpenStepOne = () => {
   return (
     <Flex p={'35px'} pt={'24px'} w={'774px'} bg={'white.100'} flexDir="column">
       <Box mb={'23px'}>
-        <StepTitle title={'Project & Token'} isSaveButton={false}></StepTitle>
+        <StepTitle title={'Project & Token'} isSaveButton={true}></StepTitle>
       </Box>
       <Box mb={'40px'}>
         <Line></Line>
