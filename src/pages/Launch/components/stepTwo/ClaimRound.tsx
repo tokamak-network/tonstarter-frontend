@@ -1,8 +1,8 @@
 import {Box, Flex, Input, Text, useColorMode, useTheme} from '@chakra-ui/react';
 import StepTitle from '@Launch/components/common/StepTitle';
 import HoverImage from 'components/HoverImage';
-import {useFormikContext} from 'formik';
-import {useCallback, useEffect, useState} from 'react';
+import {useFormikContext, FastField} from 'formik';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 import PlusIconNormal from 'assets/launch/plus-icon-normal.svg';
 import PlusIconHover from 'assets/launch/plus-icon-hover.svg';
 import MinusIconNormal from 'assets/launch/minus-icon-normal.svg';
@@ -54,10 +54,13 @@ const ClaimRound = () => {
   }, [selectedVault, vaultsList]);
 
   const [selectedDay, setSelectedDay] = useState<'14' | '30' | '60'>('14');
-
   const selectOptionValues = ['14', '30', '60'];
   const selectOptionNames = ['14 Days', '30 Days', '60 Days'];
-  const [claimDate, setClaimDate] = useState<number>(0);
+
+  const [inputVals, setInputVals] = useState<undefined | VaultSchedule[]>(
+    undefined,
+  );
+
   //@ts-ignore
   const {claim} = selectedVaultDetail;
 
@@ -89,7 +92,7 @@ const ClaimRound = () => {
         );
       }
     },
-    [claim],
+    [claim, selectedVaultDetail],
   );
 
   const setDate = useCallback(() => {
@@ -131,6 +134,23 @@ const ClaimRound = () => {
     }
     /*eslint-disable*/
   }, [claim, selectedDay, selectedVaultDetail]);
+
+  const [test, setTest] = useState(true);
+
+  useEffect(() => {
+    if (claim && test === true) {
+      setInputVals(claim);
+      setTest(false);
+    }
+  }, [claim]);
+
+  useEffect(() => {
+    // return setFieldValue(
+    //   //@ts-ignore
+    //   `vaults[${selectedVaultDetail.index}].claim`,
+    //   inputVals,
+    // );
+  }, [inputVals]);
 
   let tokenAcc = 0;
 
@@ -241,10 +261,16 @@ const ClaimRound = () => {
                         // focusBorderColor={isErr ? 'red.100' : '#dfe4ee'}
                         fontSize={12}
                         placeholder={''}
-                        value={data.claimTokenAllocation || ''}
-                        onChange={(e) => {
+                        // value={data.claimTokenAllocation || ''}
+                        value={
+                          inputVals !== undefined &&
+                          inputVals[index].claimTokenAllocation !== undefined
+                            ? inputVals[index].claimTokenAllocation
+                            : ''
+                        }
+                        onBlur={(e) => {
                           const {value} = e.target;
-                          setFieldValue(
+                          return setFieldValue(
                             //@ts-ignore
                             `vaults[${selectedVaultDetail.index}].claim[${index}]`,
                             {
@@ -252,6 +278,18 @@ const ClaimRound = () => {
                               claimTokenAllocation: Number(value),
                             },
                           );
+                        }}
+                        onChange={(e) => {
+                          const {value} = e.target;
+                          if (inputVals) {
+                            let oldVals = [...inputVals];
+                            let item = {
+                              ...oldVals[index],
+                              claimTokenAllocation: Number(value),
+                            };
+                            oldVals[index] = item;
+                            return setInputVals(oldVals);
+                          }
                         }}></Input>
                     </Text>
                     <Text w={'281px'} borderRight={middleStyle.border}>

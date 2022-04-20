@@ -24,8 +24,12 @@ import InitialLiquidityComputeAbi from 'services/abis/Vault_InitialLiquidityComp
 import {convertTimeStamp} from 'utils/convertTIme';
 import {useToast} from 'hooks/useToast';
 
-export const MainTitle = (props: {leftTitle: string; rightTitle: string}) => {
-  const {leftTitle, rightTitle} = props;
+export const MainTitle = (props: {
+  leftTitle: string;
+  rightTitle: string;
+  subTitle?: string;
+}) => {
+  const {leftTitle, rightTitle, subTitle} = props;
   return (
     <Flex
       pl={'25px'}
@@ -36,7 +40,14 @@ export const MainTitle = (props: {leftTitle: string; rightTitle: string}) => {
       borderBottom={'solid 1px #e6eaee'}
       fontWeight={600}>
       <Text fontSize={14}>{leftTitle}</Text>
-      <Text>{rightTitle}</Text>
+      <Flex>
+        <Text>{rightTitle}</Text>
+        {subTitle && (
+          <Text ml={'5px'} color={'#7e8993'}>
+            {subTitle}
+          </Text>
+        )}
+      </Flex>
     </Flex>
   );
 };
@@ -264,19 +275,33 @@ const SubTitle = (props: {
             )}
           </Flex>
         ) : (
-          <InputField
-            w={120}
-            h={32}
-            fontSize={13}
-            value={inputVal}
-            setValue={setInputVal}
-            formikName={formikName}
-            inputRef={inputRef}
-            // numberOnly={
-            //   leftTitle !== 'Address for receiving funds' &&
-            //   !leftTitle.includes('Pool Address')
-            // }
-          ></InputField>
+          <Flex>
+            <InputField
+              w={120}
+              h={32}
+              fontSize={13}
+              value={inputVal}
+              setValue={setInputVal}
+              formikName={formikName}
+              inputRef={inputRef}
+              // numberOnly={
+              //   leftTitle !== 'Address for receiving funds' &&
+              //   !leftTitle.includes('Pool Address')
+              // }
+            ></InputField>
+            {percent !== undefined && (
+              <Text
+                ml={'5px'}
+                color={'#7e8993'}
+                textAlign={'center'}
+                lineHeight={'32px'}
+                fontWeight={100}>
+                {`(${
+                  percent.toFixed(3).replace(/\.(\d\d)\d?$/, '.$1') || '-'
+                }%)`}
+              </Text>
+            )}
+          </Flex>
         )
       ) : String(rightTitle)?.includes('~') ? (
         <Flex flexDir={'column'} textAlign={'right'}>
@@ -388,8 +413,6 @@ const PublicTokenDetail = (props: {
   const {
     data: {tempVaultData, selectedVaultType},
   } = useAppSelector(selectLaunch);
-
-  console.log(inputRef);
 
   const {toastMsg} = useToast();
 
@@ -508,7 +531,13 @@ const PublicTokenDetail = (props: {
           leftTitle="Token"
           rightTitle={`${commafy(selectedVaultDetail?.vaultTokenAllocation)} ${
             values.tokenName
-          }`}></MainTitle>
+          }`}
+          subTitle={`(${(
+            (Number(selectedVaultDetail?.vaultTokenAllocation) * 100) /
+            values.totalTokenAllocation
+          )
+            .toString()
+            .match(/^\d+(?:\.\d{0,2})?/)}%)`}></MainTitle>
         {firstColData?.map(
           (
             data: {
