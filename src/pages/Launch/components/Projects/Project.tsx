@@ -1,0 +1,104 @@
+import {FC, useState} from 'react';
+import {
+  Heading,
+  Flex,
+  Text,
+  Button,
+  Container,
+  useTheme,
+  useColorMode,
+} from '@chakra-ui/react';
+import {VaultComponent} from './VaultComponent';
+import {ProjectTokenComponent} from './ProjectTokenComponent';
+
+type ProjectProps = {
+  name: string;
+};
+
+export const Project: FC<ProjectProps> = ({name}) => {
+  const theme = useTheme();
+  const {colorMode} = useColorMode();
+  const [showVault, setShowVault] = useState<boolean>(false);
+
+  console.log('showVault', showVault);
+
+  return (
+    <Flex
+      w={'1100px'}
+      h={'542px'}
+      bg={colorMode === 'light' ? '#ffffff' : 'transparent'}
+      boxShadow={
+        colorMode === 'light' ? '0 1px 1px 0 rgba(96, 97, 112, 0.16)' : 'none'
+      }
+      pb={'50px'}
+      flexDir={'column'}
+      borderRadius={'10px'}
+      border={colorMode === 'light' ? 'none' : 'solid 1px #373737'}
+     >
+      <Flex borderBottom={colorMode === 'light' ? 'solid 1px #f4f6f8' : 'solid 1px #373737'}>
+        <Flex w={'1100px'} padding={'26px 25px 17px 35px'} justifyContent={'space-between'} flexDir={'row'}>
+        <Text
+          color={colorMode === 'light' ? '#304156' : '#ffffff'}
+          fontSize={'20px'}
+          fontWeight={'500'}>
+          {name}
+        </Text>
+        <Flex h={'38px'}>
+          <Button
+            w={'120px'}
+            justifyContent={'center'}
+            alignItems={'center'}
+            bg={'transparent'}
+            border={'solid 1px #d7d9df'}
+            borderRadius={'3px 0px 0px 3px'}
+            fontSize={'12px'}
+            isActive={!showVault}
+            fontFamily={theme.fonts.roboto}
+            _hover={{
+              background: 'transparent',
+              border: 'solid 1px #2a72e5',
+              color: '#ffffff',
+              cursor: 'pointer',
+            }}
+            _active={{
+              background: '#2a72e5',
+              border: 'solid 1px #2a72e5',
+              color: '#ffffff',
+            }}
+            onClick={() => {
+              setShowVault(false);
+            }}>
+            Project {'&'} Token
+          </Button>
+          <Button
+            justifyContent={'center'}
+            alignItems={'center'}
+            w={'120px'}
+            bg={'transparent'}
+            border={'solid 1px #d7d9df'}
+            borderRadius={'0px 3px 3px 0px'}
+            fontSize={'12px'}
+            isActive={showVault}
+            _hover={{
+              background: 'transparent',
+              border: 'solid 1px #2a72e5',
+              color: '#ffffff',
+              cursor: 'pointer',
+            }}
+            _active={{
+              background: '#2a72e5',
+              border: 'solid 1px #2a72e5',
+              color: '#ffffff',
+            }}
+            onClick={() => {
+              setShowVault(true);
+            }}>
+            Vault
+          </Button>
+        </Flex>
+        </Flex>
+      </Flex>
+      {showVault ? <VaultComponent/> : <ProjectTokenComponent/>}
+    </Flex>
+  );
+};
