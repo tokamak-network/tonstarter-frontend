@@ -337,10 +337,12 @@ const STOSTier = (props: {
   const {tier, requiredTos, allocatedToken, isLast, isEdit, inputRef} = props;
   const [inputVal, setInputVal] = useState(requiredTos);
   const [inputVal2, setInputVal2] = useState(allocatedToken);
+  const {values} = useFormikContext<Projects['CreateProject']>();
 
-  // useEffect(() => {
-  //   setInputVal(inputVal);
-  // }, [isEdit, props]);
+  //@ts-ignore
+  const publicRound1Allocation = values.vaults[0].publicRound1Allocation;
+  const percent =
+    (Number(allocatedToken) * 100) / Number(publicRound1Allocation);
 
   return (
     <Flex
@@ -377,12 +379,34 @@ const STOSTier = (props: {
               stosTierLevel={Number(tier) as 1 | 2 | 3 | 4}
               formikName={'allocatedToken'}
               inputRef={inputRef}></InputField>
+            <Text
+              mx={'5px'}
+              color={'#7e8993'}
+              textAlign={'center'}
+              lineHeight={'32px'}
+              fontWeight={100}>
+              {`(${percent.toFixed(3).replace(/\.(\d\d)\d?$/, '.$1') || '-'}%)`}
+            </Text>
           </Flex>
         </>
       ) : (
         <>
           <Text w={'125px'}>{commafy(requiredTos) || '-'}</Text>
-          <Text w={'137px'}>{commafy(allocatedToken) || '-'}</Text>
+          <Flex w={'137px'} justifyContent={'center'} alignItems={'center'}>
+            <Text>{commafy(allocatedToken) || '-'}</Text>
+            <Text
+              ml={'5px'}
+              color={'#7e8993'}
+              textAlign={'center'}
+              lineHeight={'32px'}
+              fontWeight={100}>
+              {`(${
+                Number(percent)
+                  .toFixed(3)
+                  .replace(/\.(\d\d)\d?$/, '.$1') || '-'
+              }%)`}
+            </Text>
+          </Flex>
         </>
       )}
     </Flex>

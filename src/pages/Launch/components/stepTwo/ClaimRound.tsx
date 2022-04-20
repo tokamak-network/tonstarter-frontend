@@ -2,7 +2,7 @@ import {Box, Flex, Input, Text, useColorMode, useTheme} from '@chakra-ui/react';
 import StepTitle from '@Launch/components/common/StepTitle';
 import HoverImage from 'components/HoverImage';
 import {useFormikContext, FastField} from 'formik';
-import {useCallback, useEffect, useMemo, useState} from 'react';
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import PlusIconNormal from 'assets/launch/plus-icon-normal.svg';
 import PlusIconHover from 'assets/launch/plus-icon-hover.svg';
 import MinusIconNormal from 'assets/launch/minus-icon-normal.svg';
@@ -60,11 +60,11 @@ const ClaimRound = () => {
   const [inputVals, setInputVals] = useState<undefined | VaultSchedule[]>(
     undefined,
   );
+  const {toastMsg} = useToast();
+  const inputRefs = useRef<any[]>([]);
 
   //@ts-ignore
   const {claim} = selectedVaultDetail;
-
-  const {toastMsg} = useToast();
 
   const addRow = useCallback(() => {
     if (selectedVaultDetail) {
@@ -145,14 +145,36 @@ const ClaimRound = () => {
   }, [claim]);
 
   useEffect(() => {
-    // return setFieldValue(
-    //   //@ts-ignore
-    //   `vaults[${selectedVaultDetail.index}].claim`,
-    //   inputVals,
-    // );
-  }, [inputVals]);
+    const errBorderStyle = '1px solid #ff3b3b';
+    const noErrBorderStyle = '1px solid #dfe4ee';
+    //@ts-ignore
+    const vaultTokenAllocation = selectedVaultDetail.vaultTokenAllocation;
+    const totalTokenInputs = inputRefs.current.reduce((acc, cur) => {
+      return acc + Number(cur.value);
+    }, 0);
+    console.log(totalTokenInputs, vaultTokenAllocation);
+    if (totalTokenInputs > vaultTokenAllocation) {
+      inputRefs.current.map((input: any) => {
+        input.style.border = errBorderStyle;
+      });
+      toastMsg({
+        title: 'Token Allocation to this vault is not enough',
+        description:
+          'You have to put more token or adjust token allocation for claim rounds',
+        duration: 2000,
+        isClosable: true,
+        status: 'error',
+      });
+    } else {
+      inputRefs.current.map((input: any) => {
+        input.style.border = noErrBorderStyle;
+      });
+    }
+  }, [inputRefs, inputVals]);
 
   let tokenAcc = 0;
+
+  console.log(inputRefs);
 
   return (
     <Flex flexDir={'column'}>
@@ -259,9 +281,10 @@ const ClaimRound = () => {
                         w={`120px`}
                         h={`32px`}
                         // focusBorderColor={isErr ? 'red.100' : '#dfe4ee'}
+                        ref={(el) => (inputRefs.current[index] = el)}
+                        _focus={{}}
                         fontSize={12}
                         placeholder={''}
-                        // value={data.claimTokenAllocation || ''}
                         value={
                           inputVals !== undefined &&
                           inputVals[index].claimTokenAllocation !== undefined
