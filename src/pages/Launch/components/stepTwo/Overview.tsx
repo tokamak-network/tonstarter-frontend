@@ -19,6 +19,7 @@ const Overview = () => {
             h={'26px'}
             bg={'transparent'}
             border={'solid 1px #d7d9df'}
+            borderRight={'none'}
             borderRadius={'3px 0px 0px 3px'}
             fontSize={'12px'}
             fontFamily={theme.fonts.roboto}
@@ -39,6 +40,7 @@ const Overview = () => {
             h={'26px'}
             bg={'transparent'}
             border={'solid 1px #d7d9df'}
+            borderLeft={'none'}
             borderRadius={'0px 3px 3px 0px'}
             fontSize={'12px'}
             _hover={{

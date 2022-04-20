@@ -152,7 +152,6 @@ const ClaimRound = () => {
     const totalTokenInputs = inputRefs.current.reduce((acc, cur) => {
       return acc + Number(cur.value);
     }, 0);
-    console.log(totalTokenInputs, vaultTokenAllocation);
     if (totalTokenInputs > vaultTokenAllocation) {
       inputRefs.current.map((input: any) => {
         input.style.border = errBorderStyle;
@@ -173,8 +172,6 @@ const ClaimRound = () => {
   }, [inputRefs, inputVals]);
 
   let tokenAcc = 0;
-
-  console.log(inputRefs);
 
   return (
     <Flex flexDir={'column'}>
