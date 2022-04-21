@@ -282,6 +282,7 @@ const ClaimRound = () => {
                         _focus={{}}
                         fontSize={12}
                         placeholder={''}
+                        textAlign={'center'}
                         value={
                           inputVals !== undefined &&
                           inputVals[index].claimTokenAllocation !== undefined

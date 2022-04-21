@@ -76,7 +76,7 @@ const SubTitle = (props: {
     //@ts-ignore
     rightTitle,
   );
-  const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
+  const {values} = useFormikContext<Projects['CreateProject']>();
   const {vaults} = values;
   const publicVault = vaults[0] as VaultPublic;
 
@@ -284,6 +284,7 @@ const SubTitle = (props: {
               setValue={setInputVal}
               formikName={formikName}
               inputRef={inputRef}
+              style={{textAlign: 'right'}}
               // numberOnly={
               //   leftTitle !== 'Address for receiving funds' &&
               //   !leftTitle.includes('Pool Address')
@@ -366,6 +367,7 @@ const STOSTier = (props: {
               isStosTier={true}
               formikName={'requiredStos'}
               stosTierLevel={Number(tier) as 1 | 2 | 3 | 4}
+              style={{textAlign: 'center'}}
               inputRef={inputRef}></InputField>
           </Flex>
           <Flex w={'137px'} justifyContent="center">
@@ -377,6 +379,7 @@ const STOSTier = (props: {
               setValue={setInputVal2}
               isStosTier={true}
               stosTierLevel={Number(tier) as 1 | 2 | 3 | 4}
+              style={{textAlign: 'right'}}
               formikName={'allocatedToken'}
               inputRef={inputRef}></InputField>
             <Text
