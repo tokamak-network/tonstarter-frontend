@@ -12,7 +12,7 @@ import {
 // import {useActiveWeb3React} from 'hooks/useWeb3';
 import {FC, useState, useEffect} from 'react';
 // import {fetchPositionRangePayload} from '../utils/fetchPositionRangePayloads';
-import { ethers} from 'ethers';
+import {ethers} from 'ethers';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 // import {orderBy} from 'lodash';
 type LPTokenComponentProps = {
@@ -59,17 +59,17 @@ export const LPTokenComponent: FC<LPTokenComponentProps> = ({tokens}) => {
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(6);
   // const {account: address, library} = useActiveWeb3React();
-// useEffect (() => {  
-//   console.log(tokens);
-  
-//   const closed = tokens.filter((token: any) =>getStatus(token) === 'closed')
-//   const open = tokens.filter((token: any) =>getStatus(token) !== 'closed' )
-//   const openOrdered = orderBy(open, (data) =>Number(data.id), ['desc']);
-//   const closeOrdered = orderBy(closed, (data) =>Number(data.id), ['desc']);
-//   const tokenList = openOrdered.concat(closeOrdered);
-//   setAllTokens(tokenList);  
-  
-// },[tokens, address, library])
+  // useEffect (() => {
+  //   console.log(tokens);
+
+  //   const closed = tokens.filter((token: any) =>getStatus(token) === 'closed')
+  //   const open = tokens.filter((token: any) =>getStatus(token) !== 'closed' )
+  //   const openOrdered = orderBy(open, (data) =>Number(data.id), ['desc']);
+  //   const closeOrdered = orderBy(closed, (data) =>Number(data.id), ['desc']);
+  //   const tokenList = openOrdered.concat(closeOrdered);
+  //   setAllTokens(tokenList);
+
+  // },[tokens, address, library])
 
   useEffect(() => {
     const pagenumber = parseInt(
@@ -145,7 +145,7 @@ export const LPTokenComponent: FC<LPTokenComponentProps> = ({tokens}) => {
         ) : (
           <Grid templateColumns="repeat(3, 1fr)" gap={'10px'}>
             {getPaginatedData().map((token: any, index) => {
-             const status = getStatus(token);             
+              const status = getStatus(token);
               return (
                 <Flex
                   key={index}
@@ -158,13 +158,24 @@ export const LPTokenComponent: FC<LPTokenComponentProps> = ({tokens}) => {
                   borderRadius="19px"
                   justifyContent={'center'}
                   alignItems={'center'}
-                  border={(status === 'openOut' || status === 'closedOut')? '1px solid  #ff7800': themeDesign.border[colorMode]}
-                 
+                  border={
+                    status === 'openOut' || status === 'closedOut'
+                      ? '1px solid  #ff7800'
+                      : themeDesign.border[colorMode]
+                  }
                   onClick={(e) => {
                     e.preventDefault();
                     window.open(`https://app.uniswap.org/#/pool/${token.id}`);
                   }}>
-                  <Text  textDecoration={(status === 'closedIn' || status === 'closedOut') ?'line-through' : 'none'} color={'blue.500'}>#{token.id}</Text>
+                  <Text
+                    textDecoration={
+                      status === 'closedIn' || status === 'closedOut'
+                        ? 'line-through'
+                        : 'none'
+                    }
+                    color={'blue.500'}>
+                    #{token.id}
+                  </Text>
                 </Flex>
               );
             })}

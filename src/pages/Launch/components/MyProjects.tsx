@@ -182,7 +182,6 @@ const MyProjects = () => {
       status: 'Not Deployed',
       action: 'Done',
     },
- 
   ];
 
   const dummyData: {

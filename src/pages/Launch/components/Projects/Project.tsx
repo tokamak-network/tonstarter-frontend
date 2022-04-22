@@ -25,7 +25,6 @@ export const Project: FC<ProjectProps> = ({name}) => {
   return (
     <Flex
       w={'1100px'}
-      h={'542px'}
       bg={colorMode === 'light' ? '#ffffff' : 'transparent'}
       boxShadow={
         colorMode === 'light' ? '0 1px 1px 0 rgba(96, 97, 112, 0.16)' : 'none'
