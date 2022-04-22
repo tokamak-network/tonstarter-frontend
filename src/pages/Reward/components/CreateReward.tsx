@@ -137,7 +137,7 @@ export const CreateReward: FC<CreateRewardProps> = ({
   useEffect(() => {
     const userDate = new Date();
     const sign = userDate.getTimezoneOffset() > 0 ? '-' : '+';
-    const offset = userDate.getTimezoneOffset() / 60;
+    const offset = Math.abs(userDate.getTimezoneOffset() / 60);
     const finalTimeZoneString = 'UTC' + sign + offset;
     setTimeZone(finalTimeZoneString);
   }, []);
