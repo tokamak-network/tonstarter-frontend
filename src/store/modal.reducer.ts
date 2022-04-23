@@ -27,6 +27,7 @@ type LaunchModal =
   | 'Launch_ConfirmVault'
   | 'Launch_PieChartModal'
   | 'Launch_CreateRewardProgram'
+  | 'Launch_Download'
 
 type GeneralModal = 'calendar';
 type RewardModal = 'search';
