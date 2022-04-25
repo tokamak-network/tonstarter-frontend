@@ -67,7 +67,7 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
       // _hover={{
       //   bg: '#0070ed',
       // }}
-      bg={isSelected ? '#0070ed' : 'none'}
+      bg={isSelected || isHover ? '#0070ed' : 'none'}
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}>
       <Flex mb={'15px'} justifyContent="space-between" pr={'12px'}>
@@ -110,6 +110,7 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
         </Flex>
         {isHover && !isMandatory && (
           <Box
+            ml={'10px'}
             w={'16px'}
             h={'16px'}
             color={'white.100'}
@@ -124,20 +125,20 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
         // mb={'10px'}
         fontSize={16}
         fontWeight={'bold'}
-        color={isSelected ? 'white.100' : '#304156'}>
+        color={isSelected || isHover ? 'white.100' : '#304156'}>
         {name}
       </Text>
       <Flex flexDir={'column'} mb={'8px'}>
         <Text
           h={'15px'}
           fontSize={11}
-          color={isSelected ? '#a8cbf8' : '#808992'}>
+          color={isSelected || isHover ? '#a8cbf8' : '#808992'}>
           Token Allocation
         </Text>
         <Text
           h={'20px'}
           fontSize={15}
-          color={isSelected ? 'white.100' : '#3d495d'}
+          color={isSelected || isHover ? 'white.100' : '#3d495d'}
           fontWeight={600}>
           {commafy(tokenAllocation)}
         </Text>
@@ -146,13 +147,13 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
         <Text
           h={'15px'}
           fontSize={11}
-          color={isSelected ? '#a8cbf8' : '#808992'}>
+          color={isSelected || isHover ? '#a8cbf8' : '#808992'}>
           Portion
         </Text>
         <Text
           h={'20px'}
           fontSize={15}
-          color={isSelected ? 'white.100' : '#3d495d'}
+          color={isSelected || isHover ? 'white.100' : '#3d495d'}
           fontWeight={600}>
           {(
             (Number(tokenAllocation.replaceAll(',', '')) * 100) /

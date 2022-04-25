@@ -1,7 +1,7 @@
 import {Box, Button, Flex, useTheme} from '@chakra-ui/react';
 import {useCallback, useEffect, useState} from 'react';
 import OpenStepOne from '@Launch/components/OpenStepOne';
-import {Formik, Form} from 'formik';
+import {Formik, Form, useFormikContext} from 'formik';
 import useValues from '@Launch/hooks/useValues';
 import type {StepNumber} from '@Launch/types';
 import ProjectSchema from '@Launch/utils/projectSchema';
@@ -14,6 +14,8 @@ import {selectLaunch} from '@Launch/launch.reducer';
 import OpenStepThree from '@Launch/components/OpenStepThree';
 import validateFormikValues from '@Launch/utils/validate';
 import {useHistory} from 'react-router-dom';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import {saveProject, editProject} from '@Launch/utils/saveProject';
 
 const StepComponent = (props: {step: StepNumber}) => {
   const {step} = props;
@@ -34,7 +36,10 @@ const MainScreen = () => {
   const [isDisable, setDisable] = useState<boolean>(false);
   const {initialValues, setInitialValues} = useValues();
   const theme = useTheme();
+  const {account} = useActiveWeb3React();
   const match = useRouteMatch();
+  const {url} = match;
+  const isExist = url.split('/')[2];
   const {
     //@ts-ignore
     params: {id},
@@ -113,38 +118,70 @@ const MainScreen = () => {
                 alignItems="center"
                 fontFamily={theme.fonts.roboto}>
                 <StepComponent step={step} />
-                <Box mt={'50px'} fontSize={14}>
-                  {step !== 1 && (
-                    <Button
-                      type="submit"
-                      w={'180px'}
-                      h={'45px'}
-                      bg={'blue.500'}
-                      fontSize={14}
-                      color={'white.100'}
-                      mr={'12px'}
-                      disabled={isSubmitting}
-                      _hover={{}}
-                      onClick={() => handleStep(false)}>
-                      Prev
-                    </Button>
-                  )}
-                  {step !== 3 && (
-                    <Button
-                      type="submit"
-                      w={'180px'}
-                      h={'45px'}
-                      fontSize={14}
-                      color={isDisable ? '#86929d' : 'white.100'}
-                      bg={isDisable ? '#gray.25' : 'blue.500'}
-                      // disabled={isDisable || isSubmitting}
-                      disabled={isSubmitting}
-                      _hover={{}}
-                      onClick={() => handleStep(true)}>
-                      Next
-                    </Button>
-                  )}
-                </Box>
+                <Flex mt={'50px'} fontSize={14} justifyContent="center">
+                  <Button
+                    w={'160px'}
+                    h={'45px'}
+                    bg={'#00c3c4'}
+                    color={'white.100'}
+                    _hover={{}}
+                    disabled={step === 3}
+                    mr={step === 1 ? '390px' : '558px'}
+                    onClick={() =>
+                      account && isExist === 'createproject'
+                        ? saveProject(values, account)
+                        : editProject(values, account as string, isExist)
+                    }>
+                    Save
+                  </Button>
+                  <Flex>
+                    {step !== 1 && (
+                      <Button
+                        type="submit"
+                        w={'160px'}
+                        h={'45px'}
+                        bg={'blue.500'}
+                        fontSize={14}
+                        color={'white.100'}
+                        mr={'12px'}
+                        disabled={isSubmitting}
+                        _hover={{}}
+                        onClick={() => handleStep(false)}>
+                        Prev
+                      </Button>
+                    )}
+                    {step !== 3 && (
+                      <Button
+                        type="submit"
+                        w={'160px'}
+                        h={'45px'}
+                        fontSize={14}
+                        color={isDisable ? '#86929d' : 'white.100'}
+                        bg={isDisable ? '#gray.25' : 'blue.500'}
+                        // disabled={isDisable || isSubmitting}
+                        disabled={isSubmitting}
+                        _hover={{}}
+                        onClick={() => handleStep(true)}>
+                        Next
+                      </Button>
+                    )}
+                    {step === 3 && (
+                      <Button
+                        type="submit"
+                        w={'160px'}
+                        h={'45px'}
+                        fontSize={14}
+                        color={isDisable ? '#86929d' : 'white.100'}
+                        bg={isDisable ? '#gray.25' : 'blue.500'}
+                        // disabled={isDisable || isSubmitting}
+                        disabled={isSubmitting}
+                        _hover={{}}
+                        onClick={() => handleStep(true)}>
+                        Confirm
+                      </Button>
+                    )}
+                  </Flex>
+                </Flex>
               </Flex>
             </Form>
           );
