@@ -1,7 +1,7 @@
-import {Box, Button, Flex, useTheme} from '@chakra-ui/react';
+import {Button, Flex, useTheme} from '@chakra-ui/react';
 import {useCallback, useEffect, useState} from 'react';
 import OpenStepOne from '@Launch/components/OpenStepOne';
-import {Formik, Form, useFormikContext} from 'formik';
+import {Formik, Form} from 'formik';
 import useValues from '@Launch/hooks/useValues';
 import type {StepNumber} from '@Launch/types';
 import ProjectSchema from '@Launch/utils/projectSchema';
