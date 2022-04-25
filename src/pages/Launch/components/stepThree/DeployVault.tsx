@@ -161,10 +161,13 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
       vaultType === 'Initial Liquidity'
         ? isTokenDeployed && !isVaultDeployed
         : isTokenDeployed && isLPDeployed && !isVaultDeployed;
+
+    if (isSet) {
+      return setVaultState('finished');
+    }
+
     setVaultState(
-      isSet
-        ? 'finished'
-        : !vaultDeployReady && !isVaultDeployed
+      !vaultDeployReady && !isVaultDeployed
         ? 'notReady'
         : vaultDeployReady
         ? 'ready'
@@ -185,8 +188,24 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
         const info = {
           Vault: [
             {
-              title: 'adminAddress',
-              content: selectedVaultDetail?.adminAddress || '',
+              title: 'Vault Name',
+              content: selectedVaultDetail?.vaultName || '-',
+            },
+            {
+              title: 'Admin',
+              content: `${selectedVaultDetail?.adminAddress || '-'}`,
+              isHref: true,
+            },
+            {
+              title: 'Contract',
+              content: `${selectedVaultDetail?.vaultAddress || '-'}`,
+              isHref: true,
+            },
+            {
+              title: 'Token Allocation',
+              content: `${
+                commafy(selectedVaultDetail?.vaultTokenAllocation) || '-'
+              } ${values.tokenName}`,
             },
             {
               title: 'Token Price',
@@ -232,7 +251,9 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                     claimData.claimTime as number,
                     'DD.MM.YYYY hh:mm:ss',
                   )}`,
-                  content: `${claimData.claimTokenAllocation} ${values.tokenName}`,
+                  content: `${commafy(claimData.claimTokenAllocation)} ${
+                    values.tokenName
+                  }`,
                 };
               },
             ),
@@ -242,19 +263,22 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
           Token: [
             {
               title: 'Token',
-              content: selectedVaultDetail?.vaultTokenAllocation || '-',
+              content:
+                commafy(selectedVaultDetail?.vaultTokenAllocation) || '-',
             },
             {
               title: 'Public Round 1',
               content: `${
                 //@ts-ignore
-                selectedVaultDetail?.publicRound1Allocation || '-'
+                commafy(selectedVaultDetail?.publicRound1Allocation) || '-'
               }`,
             },
             {
               title: 'Public Round 2',
-              //@ts-ignore
-              content: `${selectedVaultDetail?.publicRound2Allocation || '-'}`,
+              content: `${
+                //@ts-ignore
+                commafy(selectedVaultDetail?.publicRound2Allocation) || '-'
+              }`,
             },
             {
               title: 'Token Price',
@@ -266,67 +290,134 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
           Schedule: [
             {
               title: 'Whitelist',
-              //@ts-ignore
-              content: selectedVaultDetail?.whitelist || '-',
+              content:
+                `${convertTimeStamp(
+                  //@ts-ignore
+                  selectedVaultDetail?.whitelist as number,
+                  'DD.MM.YYYY hh:mm:ss',
+                )}` || '-',
             },
             {
               title: 'Public Round 1',
-              content: `${
-                //@ts-ignore
-                selectedVaultDetail?.publicRound1 || '-'
-              }`,
+              content:
+                `${convertTimeStamp(
+                  //@ts-ignore
+                  selectedVaultDetail?.publicRound1 as number,
+                  'DD.MM.YYYY hh:mm:ss',
+                )}` || '-',
             },
             {
               title: 'Public Round 2',
               //@ts-ignore
-              content: `${selectedVaultDetail?.publicRound2 || '-'}`,
+              content:
+                `${convertTimeStamp(
+                  //@ts-ignore
+                  selectedVaultDetail?.publicRound2 as number,
+                  'DD.MM.YYYY hh:mm:ss',
+                )}` || '-',
             },
             {
               title: 'Claim',
-              content: `${selectedVaultDetail?.claim[0].claimTime}`,
+              content:
+                `${convertTimeStamp(
+                  //@ts-ignore
+                  selectedVaultDetail?.claim[0] as number,
+                  'DD.MM.YYYY hh:mm:ss',
+                )}` || '-',
             },
           ],
         };
         const stosInfo = [
           {
             tier: 1,
-            //@ts-ignore
-            requiredTos: selectedVaultDetail?.stosTier?.oneTier?.requiredStos,
+            requiredTos:
+              //@ts-ignore
+              commafy(selectedVaultDetail?.stosTier?.oneTier?.requiredStos),
             allocationToken:
               //@ts-ignore
-              selectedVaultDetail?.stosTier?.oneTier?.allocatedToken,
+              commafy(selectedVaultDetail?.stosTier?.oneTier?.allocatedToken),
           },
           {
             tier: 2,
-            //@ts-ignore
-            requiredTos: selectedVaultDetail?.stosTier?.twoTier?.requiredStos,
+            requiredTos: commafy(
+              //@ts-ignore
+              selectedVaultDetail?.stosTier?.twoTier?.requiredStos,
+            ),
             allocationToken:
               //@ts-ignore
-              selectedVaultDetail?.stosTier?.twoTier?.allocatedToken,
+              commafy(selectedVaultDetail?.stosTier?.twoTier?.allocatedToken),
           },
           {
             tier: 3,
-            //@ts-ignore
-            requiredTos: selectedVaultDetail?.stosTier?.threeTier?.requiredStos,
+            requiredTos: commafy(
+              //@ts-ignore
+              selectedVaultDetail?.stosTier?.threeTier?.requiredStos,
+            ),
             allocationToken:
               //@ts-ignore
-              selectedVaultDetail?.stosTier?.threeTier?.allocatedToken,
+              commafy(selectedVaultDetail?.stosTier?.threeTier?.allocatedToken),
           },
           {
             tier: 4,
-            //@ts-ignore
-            requiredTos: selectedVaultDetail?.stosTier?.fourTier?.requiredStos,
+            requiredTos: commafy(
+              //@ts-ignore
+              selectedVaultDetail?.stosTier?.fourTier?.requiredStos,
+            ),
             allocationToken:
               //@ts-ignore
-              selectedVaultDetail?.stosTier?.fourTier?.allocatedToken,
+              commafy(selectedVaultDetail?.stosTier?.fourTier?.allocatedToken),
           },
         ];
         setInfoList(info);
         setInfoList2(info2);
+        //@ts-ignore
         return setStosTierList(stosInfo);
       }
       default:
-        break;
+        const info = {
+          Vault: [
+            {
+              title: 'Vault Name',
+              content: selectedVaultDetail?.vaultName || '-',
+            },
+            {
+              title: 'Admin',
+              content: `${selectedVaultDetail?.adminAddress || '-'}`,
+              isHref: true,
+            },
+            {
+              title: 'Contract',
+              content: `${selectedVaultDetail?.vaultAddress || '-'}`,
+              isHref: true,
+            },
+            {
+              title: 'Token Allocation',
+              content: `${
+                commafy(selectedVaultDetail?.vaultTokenAllocation) || '-'
+              } ${values.tokenName}`,
+            },
+          ],
+          Claim: [
+            {
+              title: `Claim Round (${selectedVaultDetail.claim.length})`,
+              content: '',
+            },
+            ...selectedVaultDetail.claim.map(
+              (claimData: VaultSchedule, index: number) => {
+                return {
+                  title: `${index + 1} ${convertTimeStamp(
+                    claimData.claimTime as number,
+                    'DD.MM.YYYY hh:mm:ss',
+                  )}`,
+                  content: `${commafy(claimData.claimTokenAllocation)} ${
+                    values.tokenName
+                  }`,
+                };
+              },
+            ),
+          ],
+        };
+        return setInfoList(info);
     }
   }, [vaultType, selectedVaultDetail, values]);
 
@@ -1072,7 +1163,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
   }, [vaultState]);
 
   const vaultAddress = values.vaults.filter(
-    (vault: VaultCommon) => vault.vaultName === vaultName,
+    (vault: VaultCommon) => vault.index === index,
   )[0];
 
   return (
@@ -1101,7 +1192,9 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
           color={vaultState === 'finished' ? 'white.100' : 'black.300'}
           fontWeight={600}
           mb={'48px'}>
-          {vaultName}
+          {vaultType === 'Liquidity Incentive' && index === 5
+            ? `${values.tokenSymbol}-TOS LP Reward`
+            : vaultName}
         </Text>
         <Box d="flex" flexDir={'column'} mb={'12px'}>
           <Text fontSize={11} h={'15px'}>
@@ -1113,8 +1206,13 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
             _focus={{
               outline: 'none',
             }}
-            _hover={{}}
+            textDecoration={
+              selectedVaultDetail?.vaultAddress === undefined ? {} : 'underline'
+            }
             color={vaultState === 'finished' ? 'white.100' : 'gray.250'}
+            _hover={{
+              color: selectedVaultDetail?.vaultAddress ? '#0070ed' : {},
+            }}
             fontSize={15}
             h={'20px'}
             fontWeight={600}
@@ -1159,7 +1257,9 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                     openModal({
                       type: 'Launch_ConfirmVault',
                       data: {
+                        vaultType,
                         vaultName,
+                        vaultIndex: index,
                         infoList,
                         secondInfoList: infoList2,
                         stosTierList,
@@ -1183,7 +1283,9 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                     openModal({
                       type: 'Launch_ConfirmVault',
                       data: {
+                        vaultType,
                         vaultName,
+                        vaultIndex: index,
                         infoList,
                         secondInfoList: infoList2,
                         stosTierList,

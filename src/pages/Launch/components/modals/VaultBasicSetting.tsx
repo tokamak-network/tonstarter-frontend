@@ -38,9 +38,9 @@ const VaultBasicSetting = () => {
       } = data;
       setNameVal(name);
       setTokenAllocatonVal(tokenAllocation);
-      setAdminAddressVal(adminAddress);
+      setAdminAddressVal(adminAddress !== '' ? adminAddress : values.owner);
     }
-  }, [data]);
+  }, [data, values.owner]);
 
   if (!data.data) {
     return null;

@@ -20,11 +20,9 @@ import {CloseButton} from 'components/Modal';
 import Line from '../common/Line';
 import {LoadingComponent} from 'components/Loading';
 import {useFormikContext} from 'formik';
-import {Projects} from '@Launch/types';
-import useVaultSelector from '@Launch/hooks/useVaultSelector';
+import {Projects, VaultCommon} from '@Launch/types';
 import {shortenAddress} from 'utils';
 import {selectApp} from 'store/app/app.reducer';
-import {values} from 'lodash';
 
 const StosInfoList = (props: {
   stosInfoList: {tier: number; requiredTos: number; allocationToken: number}[];
@@ -153,11 +151,12 @@ const ConfirmTokenModal = () => {
     'Ready' | 'Deploying' | 'Done' | 'Error'
   >('Ready');
   const [tab, setTab] = useState<1 | 2>(1);
-  const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
+  const {values} = useFormikContext<Projects['CreateProject']>();
   const {vaults} = values;
   const {
     vaultType,
     vaultName,
+    vaultIndex,
     func,
     infoList,
     secondInfoList,
@@ -165,23 +164,25 @@ const ConfirmTokenModal = () => {
     close,
   } = data.data;
 
-  const {selectedVaultDetail} = useVaultSelector();
+  const selectedVault = vaults.filter(
+    (vault: VaultCommon) => vault.index === vaultIndex,
+  )[0];
 
   useEffect(() => {
     if (data.data.isSetStep === true) {
-      if (selectedVaultDetail?.isSet === true) {
+      if (selectedVault?.isSet === true) {
         return setDeployStep('Done');
       }
-      return setDeployStep('Ready');
+      // return setDeployStep('Ready');
     } else {
-      if (selectedVaultDetail?.isDeployed === true) {
+      if (selectedVault?.isDeployed === true) {
         return setDeployStep('Done');
       }
     }
-    if (selectedVaultDetail?.isDeployedErr === true) {
+    if (selectedVault?.isDeployedErr === true) {
       return setDeployStep('Error');
     }
-  }, [deployStep, values, selectedVaultDetail, data]);
+  }, [deployStep, values, selectedVault, data]);
 
   function closeModal() {
     setDeployStep('Ready');
@@ -223,40 +224,42 @@ const ConfirmTokenModal = () => {
               </Heading>
             </Box>
 
-            <Flex
-              h={'26px'}
-              alignItems={'center'}
-              justifyContent={'center'}
-              mt={'15px'}>
-              <Box
-                w={'126px'}
-                h={'100%'}
-                border={tab === 1 ? '1px solid #2a72e5' : '1px solid #d7d9df'}
-                borderRightWidth={tab === 2 ? 0 : 1}
-                borderLeftRadius={4}
-                cursor={'pointer'}
-                fontSize={12}
-                color={tab === 1 ? '#2a72e5' : '#3d495d'}
-                textAlign="center"
-                lineHeight={'26px'}
-                onClick={() => setTab(1)}>
-                Vault & Claim
-              </Box>
-              <Box
-                w={'126px'}
-                h={'100%'}
-                border={tab === 2 ? '1px solid #2a72e5' : '1px solid #d7d9df'}
-                borderLeftWidth={tab === 1 ? 0 : 1}
-                borderRightRadius={4}
-                cursor={'pointer'}
-                fontSize={12}
-                color={tab === 2 ? '#2a72e5' : '#3d495d'}
-                textAlign="center"
-                lineHeight={'26px'}
-                onClick={() => setTab(2)}>
-                Sale
-              </Box>
-            </Flex>
+            {vaultType === 'Public' && (
+              <Flex
+                h={'26px'}
+                alignItems={'center'}
+                justifyContent={'center'}
+                mt={'15px'}>
+                <Box
+                  w={'126px'}
+                  h={'100%'}
+                  border={tab === 1 ? '1px solid #2a72e5' : '1px solid #d7d9df'}
+                  borderRightWidth={tab === 2 ? 0 : 1}
+                  borderLeftRadius={4}
+                  cursor={'pointer'}
+                  fontSize={12}
+                  color={tab === 1 ? '#2a72e5' : '#3d495d'}
+                  textAlign="center"
+                  lineHeight={'26px'}
+                  onClick={() => setTab(1)}>
+                  Vault & Claim
+                </Box>
+                <Box
+                  w={'126px'}
+                  h={'100%'}
+                  border={tab === 2 ? '1px solid #2a72e5' : '1px solid #d7d9df'}
+                  borderLeftWidth={tab === 1 ? 0 : 1}
+                  borderRightRadius={4}
+                  cursor={'pointer'}
+                  fontSize={12}
+                  color={tab === 2 ? '#2a72e5' : '#3d495d'}
+                  textAlign="center"
+                  lineHeight={'26px'}
+                  onClick={() => setTab(2)}>
+                  Sale
+                </Box>
+              </Flex>
+            )}
 
             <Flex
               flexDir="column"
@@ -351,10 +354,9 @@ const ConfirmTokenModal = () => {
                   Warning
                 </Text>
                 <Text fontSize={12} color={'gray.225'}>
-                  The team will create a TOS Reward Program (TOS) fund by buying
-                  $100 worth of TOS tokens on a daily basis. The fund will be
-                  used to reward to the contributors who have worked on the
-                  following categories:
+                  You won't be able to edit your project after it has been
+                  deployed. Double-check the content before you click the
+                  “Deploy” button.
                 </Text>
               </Flex>
             </Flex>
@@ -369,7 +371,11 @@ const ConfirmTokenModal = () => {
                 w={'150px'}
                 fontSize="14px"
                 _hover={{}}
-                onClick={() => func() && setDeployStep('Deploying')}>
+                onClick={() =>
+                  func() && data.data.isSetStep
+                    ? closeModal()
+                    : setDeployStep('Deploying')
+                }>
                 Deploy
               </Button>
             </Box>
@@ -412,7 +418,7 @@ const ConfirmTokenModal = () => {
                 color={'black.300'}
                 fontWeight={600}
                 textAlign={'center'}>
-                Waiting for completing to deploy your token
+                Waiting for completing to deploy {vaultName} vault
               </Text>
             </Flex>
           </ModalBody>
@@ -450,7 +456,7 @@ const ConfirmTokenModal = () => {
                 color={'black.300'}
                 fontWeight={600}
                 textAlign={'center'}>
-                Comoleted to deploy your {vaultName} vault
+                Completed to deploy your {vaultName} vault
               </Text>
               <Box w={'100%'} px={'15px'} mb={'25px'}>
                 <Line></Line>
@@ -501,7 +507,7 @@ const ConfirmTokenModal = () => {
               color={'black.300'}
               fontWeight={600}
               textAlign={'center'}>
-              Your token has been failed to deploy :(
+              It has been failed to deploy your {vaultName} vault :(
             </Text>
             <Box w={'100%'} px={'15px'} mb={'25px'}>
               <Line></Line>

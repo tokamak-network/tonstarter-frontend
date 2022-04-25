@@ -20,7 +20,7 @@ import Line from '../common/Line';
 import {LoadingComponent} from 'components/Loading';
 import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
-import useTokenDeploy from '@Launch/hooks/useTokenDeploy';
+import commafy from 'utils/commafy';
 
 const ConfirmTokenModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -138,7 +138,7 @@ const ConfirmTokenModal = () => {
                   Total Supply
                 </Text>
                 <Text color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                  {totalSupply}
+                  {commafy(totalSupply)}
                 </Text>
               </Box>
               <Flex

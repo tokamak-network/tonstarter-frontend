@@ -16,6 +16,8 @@ type InputFieldProp = {
   isStosTier?: boolean;
   stosTierLevel?: 1 | 2 | 3 | 4;
   numberOnly?: boolean;
+  inputRef?: any;
+  style?: {};
 };
 
 const InputField: React.FC<InputFieldProp> = (props) => {
@@ -30,67 +32,45 @@ const InputField: React.FC<InputFieldProp> = (props) => {
     isStosTier,
     stosTierLevel,
     numberOnly,
+    inputRef,
+    style,
   } = props;
-  const [isErr, setIsErr] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const {
-    data: {tempVaultData, selectedVault},
+    data: {tempVaultData},
   } = useAppSelector(selectLaunch);
   const {values} = useFormikContext<Projects['CreateProject']>();
   const vaultsList = values.vaults;
-  const thisVaultValue = vaultsList.filter((vault: Vault) => {
-    if (vault.vaultName === selectedVault) {
-      return vault;
-    }
-  });
+  // const thisVaultValue = vaultsList.filter((vault: Vault) => {
+  //   if (vault.vaultName === selectedVault) {
+  //     return vault;
+  //   }
+  // });
 
-  useEffect(() => {
-    if (selectedVault === 'Public' && formikName) {
-      const vaultObj = thisVaultValue[0] as VaultPublic;
-      const {
-        vaultTokenAllocation,
-        publicRound1Allocation,
-        publicRound2Allocation,
-        hardCap,
-      } = vaultObj;
-      const {
-        publicRound1Allocation: _publicRound1Allocation,
-        publicRound2Allocation: _publicRound2Allocation,
-        hardCap: _hardCap,
-      } = tempVaultData as any;
+  // useEffect(() => {
+  //   if (selectedVault === 'Public' && formikName) {
+  //     const vaultObj = thisVaultValue[0] as VaultPublic;
+  //     const {
+  //       vaultTokenAllocation,
+  //       publicRound1Allocation,
+  //       publicRound2Allocation,
+  //       hardCap,
+  //     } = vaultObj;
+  //     const {
+  //       publicRound1Allocation: _publicRound1Allocation,
+  //       publicRound2Allocation: _publicRound2Allocation,
+  //       hardCap: _hardCap,
+  //     } = tempVaultData as any;
 
-      // console.log(vaultObj);
-      // console.log(formikName);
-      // //@ts-ignore
-      // console.log(vaultObj[formikName]);
+  //     // console.log(vaultObj);
+  //     // console.log(formikName);
+  //     // //@ts-ignore
+  //     // console.log(vaultObj[formikName]);
 
-      //@ts-ignore
-      const thisNameValue = vaultObj[formikName];
+  //     //@ts-ignore
+  //     const thisNameValue = vaultObj[formikName];
 
-      // const isOver =
-      //   Number(vaultTokenAllocation) <
-      //   Number(
-      //     Number(publicRound1Allocation) !== 0
-      //       ? Number(publicRound1Allocation)
-      //       : Number(_publicRound1Allocation || 0) +
-      //           Number(publicRound2Allocation) !==
-      //         0
-      //       ? Number(publicRound2Allocation)
-      //       : Number(_publicRound2Allocation || 0) + Number(hardCap) !== 0
-      //       ? Number(hardCap)
-      //       : Number(_hardCap || 0) - Number(thisNameValue) + Number(inputVal),
-      //   );
-
-      const isOver = true;
-
-      if (isOver) {
-        return setIsErr(true);
-      }
-      return setIsErr(false);
-    }
-  }, [selectedVault, thisVaultValue, formikName, value, tempVaultData]);
-
-  const tokensRef = useRef([]);
+  // }, [selectedVault, thisVaultValue, formikName, value, tempVaultData]);
 
   const stosTier =
     stosTierLevel === 1
@@ -118,11 +98,12 @@ const InputField: React.FC<InputFieldProp> = (props) => {
         <NumberInputField
           w={`${w}px`}
           h={`${h}px`}
-          focusBorderColor={isErr ? 'red.100' : '#dfe4ee'}
+          focusBorderColor={'#dfe4ee'}
           fontSize={fontSize}
           placeholder={placeHolder}
           value={value === 'undefined' ? '' : value}
           onChange={(e) => {
+            //@ts-ignore
             setValue(e.target.value);
             if (formikName) {
               !isStosTier
@@ -165,16 +146,25 @@ const InputField: React.FC<InputFieldProp> = (props) => {
     <Input
       w={`${w}px`}
       h={`${h}px`}
-      focusBorderColor={isErr ? 'red.100' : '#dfe4ee'}
+      focusBorderColor={'#dfe4ee'}
       fontSize={fontSize}
       placeholder={placeHolder}
       // _focus={{}}
-      //@ts-ignore
-      ref={(el) => (tokensRef.current[formikName] = el)}
+      ref={(el) => {
+        if (inputRef && formikName) {
+          if (stosTierLevel) {
+            inputRef.current[`${formikName}_${stosTierLevel}`] = el;
+          }
+          // inputRef.current[index + 1] = el;
+          inputRef.current[formikName] = el;
+        }
+      }}
       value={value === 'undefined' ? '' : value}
+      style={style}
       onChange={(e) => {
         setValue(e.target.value);
-
+        const publicVaultValue = vaultsList[0] as VaultPublic;
+        const {stosTier: stosTierData} = publicVaultValue;
         if (formikName) {
           !isStosTier
             ? dispatch(
@@ -191,7 +181,7 @@ const InputField: React.FC<InputFieldProp> = (props) => {
                     ...tempVaultData,
                     stosTier: {
                       //@ts-ignore
-                      ...tempVaultData.stosTier,
+                      ...stosTierData,
                       [stosTier]: {
                         [formikName]: e.target.value,
                         [formikName === 'requiredStos'

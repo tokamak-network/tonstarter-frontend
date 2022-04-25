@@ -6,7 +6,6 @@ import {
   Box,
   Heading,
   Text,
-  Button,
   Flex,
   useTheme,
   useColorMode,
@@ -59,11 +58,18 @@ const CreateVaultModal = () => {
     //Handle it if input value type is char
   }, [tokenAllocatonVal]);
 
+  const closeModal = () => {
+    handleCloseModal();
+  };
+
   return (
     <Modal
       isOpen={data.modal === 'Launch_CreateVault' ? true : false}
       isCentered
       onClose={() => {
+        setNameVal('');
+        setTokenAllocatonVal(0);
+        setAdminAddressVal('');
         handleCloseModal();
       }}>
       <ModalOverlay />

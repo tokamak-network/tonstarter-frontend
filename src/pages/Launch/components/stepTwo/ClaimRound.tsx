@@ -1,10 +1,8 @@
 import {Box, Flex, Input, Text, useColorMode, useTheme} from '@chakra-ui/react';
 import StepTitle from '@Launch/components/common/StepTitle';
 import HoverImage from 'components/HoverImage';
-import {useFormikContext} from 'formik';
-import {useCallback, useEffect, useState} from 'react';
-import CalendarActiveImg from 'assets/launch/calendar-active-icon.svg';
-import CalendarInactiveImg from 'assets/launch/calendar-inactive-icon.svg';
+import {useFormikContext, FastField} from 'formik';
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import PlusIconNormal from 'assets/launch/plus-icon-normal.svg';
 import PlusIconHover from 'assets/launch/plus-icon-hover.svg';
 import MinusIconNormal from 'assets/launch/minus-icon-normal.svg';
@@ -12,12 +10,13 @@ import MinusIconHover from 'assets/launch/minus-icon-hover.svg';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {CustomSelectBox} from 'components/Basic';
 import {Projects, VaultAny, VaultSchedule} from '@Launch/types';
-import useVaultSelector from '@Launch/hooks/useVaultSelector';
 import moment from 'moment';
 import {selectLaunch} from '@Launch/launch.reducer';
 import {useAppSelector} from 'hooks/useRedux';
 import SingleCalendarPop from '../common/SingleCalendarPop';
 import commafy from 'utils/commafy';
+import {useToast} from 'hooks/useToast';
+
 type ClaimRoundTable = {
   dateTime: number;
   tokenAllocation: number;
@@ -55,10 +54,15 @@ const ClaimRound = () => {
   }, [selectedVault, vaultsList]);
 
   const [selectedDay, setSelectedDay] = useState<'14' | '30' | '60'>('14');
-
   const selectOptionValues = ['14', '30', '60'];
   const selectOptionNames = ['14 Days', '30 Days', '60 Days'];
-  const [claimDate, setClaimDate] = useState<number>(0);
+
+  const [inputVals, setInputVals] = useState<undefined | VaultSchedule[]>(
+    undefined,
+  );
+  const {toastMsg} = useToast();
+  const inputRefs = useRef<any[]>([]);
+
   //@ts-ignore
   const {claim} = selectedVaultDetail;
 
@@ -70,7 +74,8 @@ const ClaimRound = () => {
         defaultTableData,
       ]);
     }
-  }, [claim]);
+    /*eslint-disable*/
+  }, [claim, selectedVaultDetail]);
 
   const removeRow = useCallback(
     (rowIndex) => {
@@ -87,7 +92,7 @@ const ClaimRound = () => {
         );
       }
     },
-    [claim],
+    [claim, selectedVaultDetail],
   );
 
   const setDate = useCallback(() => {
@@ -95,6 +100,15 @@ const ClaimRound = () => {
       (data: VaultSchedule, index: number) => {
         //@ts-ignore
         const refTimeStamp = selectedVaultDetail.claim[0].claimTime;
+        if (refTimeStamp === undefined) {
+          return toastMsg({
+            status: 'error',
+            title: 'Date Time Error',
+            description: 'First date time must be filled out',
+            duration: 3000,
+            isClosable: true,
+          });
+        }
         const nowTimeStamp =
           index === 0
             ? refTimeStamp
@@ -118,7 +132,44 @@ const ClaimRound = () => {
         claimValue,
       );
     }
-  }, [claim, selectedDay]);
+    /*eslint-disable*/
+  }, [claim, selectedDay, selectedVaultDetail]);
+
+  const [test, setTest] = useState(true);
+
+  useEffect(() => {
+    if (claim && test === true) {
+      setInputVals(claim);
+      setTest(false);
+    }
+  }, [claim]);
+
+  useEffect(() => {
+    const errBorderStyle = '1px solid #ff3b3b';
+    const noErrBorderStyle = '1px solid #dfe4ee';
+    //@ts-ignore
+    const vaultTokenAllocation = selectedVaultDetail.vaultTokenAllocation;
+    const totalTokenInputs = inputRefs.current.reduce((acc, cur) => {
+      return acc + Number(cur.value);
+    }, 0);
+    if (totalTokenInputs > vaultTokenAllocation) {
+      inputRefs.current.map((input: any) => {
+        input.style.border = errBorderStyle;
+      });
+      toastMsg({
+        title: 'Token Allocation to this vault is not enough',
+        description:
+          'You have to put more token or adjust token allocation for claim rounds',
+        duration: 2000,
+        isClosable: true,
+        status: 'error',
+      });
+    } else {
+      inputRefs.current.map((input: any) => {
+        input.style.border = noErrBorderStyle;
+      });
+    }
+  }, [inputRefs, inputVals]);
 
   let tokenAcc = 0;
 
@@ -214,7 +265,7 @@ const ClaimRound = () => {
                           ? '-'
                           : moment
                               .unix(data.claimTime)
-                              .format('YYYY.MM.DD hh:mm:ss')}
+                              .format('YYYY.MM.DD HH:mm:ss')}
                       </Text>
                       <SingleCalendarPop
                         //@ts-ignore
@@ -227,12 +278,20 @@ const ClaimRound = () => {
                         w={`120px`}
                         h={`32px`}
                         // focusBorderColor={isErr ? 'red.100' : '#dfe4ee'}
+                        ref={(el) => (inputRefs.current[index] = el)}
+                        _focus={{}}
                         fontSize={12}
                         placeholder={''}
-                        value={data.claimTokenAllocation || ''}
-                        onChange={(e) => {
+                        textAlign={'center'}
+                        value={
+                          inputVals !== undefined &&
+                          inputVals[index].claimTokenAllocation !== undefined
+                            ? inputVals[index].claimTokenAllocation
+                            : ''
+                        }
+                        onBlur={(e) => {
                           const {value} = e.target;
-                          setFieldValue(
+                          return setFieldValue(
                             //@ts-ignore
                             `vaults[${selectedVaultDetail.index}].claim[${index}]`,
                             {
@@ -240,6 +299,18 @@ const ClaimRound = () => {
                               claimTokenAllocation: Number(value),
                             },
                           );
+                        }}
+                        onChange={(e) => {
+                          const {value} = e.target;
+                          if (inputVals) {
+                            let oldVals = [...inputVals];
+                            let item = {
+                              ...oldVals[index],
+                              claimTokenAllocation: Number(value),
+                            };
+                            oldVals[index] = item;
+                            return setInputVals(oldVals);
+                          }
                         }}></Input>
                     </Text>
                     <Text w={'281px'} borderRight={middleStyle.border}>
