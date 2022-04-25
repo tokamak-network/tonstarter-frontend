@@ -51,6 +51,8 @@ import VaultLPRewardLogicAbi from 'services/abis/VaultLPRewardLogicAbi.json';
 import {convertNumber, convertToWei} from 'utils/number';
 import commafy from 'utils/commafy';
 import {convertTimeStamp} from 'utils/convertTIme';
+import {selectLaunch} from '@Launch/launch.reducer';
+import {editProject, saveProject} from '@Launch/utils/saveProject';
 
 //Project
 
@@ -421,6 +423,18 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
     }
   }, [vaultType, selectedVaultDetail, values]);
 
+  const {
+    data: {hashKey},
+  } = useAppSelector(selectLaunch);
+
+  function saveData() {
+    setTimeout(() => {
+      hashKey === undefined
+        ? saveProject(values, account as string)
+        : editProject(values, account as string, hashKey);
+    }, 1000);
+  }
+
   const vaultDeploy = useCallback(
     async () => {
       if (account && library && vaultState === 'ready') {
@@ -455,6 +469,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 true,
               );
               setVaultState('readyForToken');
+              saveData();
               break;
             }
             case 'Public': {
@@ -524,7 +539,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 );
                 setVaultState('readyForToken');
               }
-
+              saveData();
               break;
             }
             case 'TON Staker': {
@@ -558,6 +573,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 );
                 setVaultState('readyForToken');
               }
+              saveData();
               break;
             }
             case 'TOS Staker': {
@@ -588,6 +604,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 true,
               );
               setVaultState('readyForToken');
+              saveData();
               break;
             }
             case 'WTON-TOS LP Reward': {
@@ -624,6 +641,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 true,
               );
               setVaultState('readyForToken');
+              saveData();
               break;
             }
             case 'Liquidity Incentive': {
@@ -631,7 +649,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               // 1 : pool : address
               // 2 : rewardToken : address
               // 3 : _admin : address
-              const {InitialLiquidityVault, TOS_ADDRESS} = DEPLOYED;
+              const {TOS_ADDRESS} = DEPLOYED;
               const InitialLiquidity_Contract = new Contract(
                 //@ts-ignore
                 values.vaults[1].vaultAddress,
@@ -674,6 +692,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 true,
               );
               setVaultState('readyForToken');
+              saveData();
               break;
             }
             case 'C': {
@@ -706,6 +725,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 );
                 setVaultState('readyForToken');
               }
+              saveData();
               break;
             }
             case 'DAO': {
@@ -739,6 +759,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 );
                 setVaultState('readyForToken');
               }
+              saveData();
               break;
             }
             default:
@@ -754,7 +775,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
       }
 
       if (account && library && vaultState === 'readyForSet') {
-        const vaultContract = getContract(vaultType, library);
         const signer = getSigner(library, account);
 
         try {
@@ -874,6 +894,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 );
                 setVaultState('finished');
               }
+              saveData();
               break;
             }
             case 'Liquidity Incentive': {
@@ -909,6 +930,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 );
                 setVaultState('finished');
               }
+              saveData();
               break;
             }
             case 'TON Staker': {
@@ -944,6 +966,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 );
                 setVaultState('finished');
               }
+              saveData();
               break;
             }
             case 'TOS Staker': {
@@ -979,6 +1002,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 );
                 setVaultState('finished');
               }
+              saveData();
               break;
             }
             case 'WTON-TOS LP Reward': {
@@ -1016,6 +1040,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 );
                 setVaultState('finished');
               }
+              saveData();
               break;
             }
             case 'C': {
@@ -1053,6 +1078,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 );
                 setVaultState('finished');
               }
+              saveData();
               break;
             }
             default:
