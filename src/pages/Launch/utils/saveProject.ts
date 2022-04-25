@@ -1,5 +1,7 @@
+import {setHashKey} from '@Launch/launch.reducer';
 import axios from 'axios';
 import {API_SERVER_LAUNCH, DEFAULT_NETWORK} from 'constants/index';
+import store from 'store';
 
 async function saveProject(data: any, account: string) {
   // const instance = axios.create({
@@ -8,7 +10,6 @@ async function saveProject(data: any, account: string) {
   //     account,
   //   },
   // });
-  console.log(data, account);
   const result = await axios
     .post(
       `${API_SERVER_LAUNCH}/projects?chainId=${DEFAULT_NETWORK}`,
@@ -20,7 +21,10 @@ async function saveProject(data: any, account: string) {
       },
     )
     .then((res) => {
-      console.log(res);
+      store.dispatch(
+        //@ts-ignore
+        setHashKey({data: res.data.hashKey}),
+      );
       if (res.status === 200) {
         return alert('success');
       } else {

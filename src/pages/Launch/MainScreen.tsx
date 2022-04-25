@@ -9,13 +9,14 @@ import {PageHeader} from 'components/PageHeader';
 import Steps from '@Launch/components/Steps';
 import OpenStepTwo from '@Launch/components/OpenStepTwo';
 import {useRouteMatch} from 'react-router-dom';
-import {useAppSelector} from 'hooks/useRedux';
-import {selectLaunch} from '@Launch/launch.reducer';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {selectLaunch, setHashKey} from '@Launch/launch.reducer';
 import OpenStepThree from '@Launch/components/OpenStepThree';
 import validateFormikValues from '@Launch/utils/validate';
 import {useHistory} from 'react-router-dom';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {saveProject, editProject} from '@Launch/utils/saveProject';
+import useWeb3Token from './hooks/useWeb3Token';
 
 const StepComponent = (props: {step: StepNumber}) => {
   const {step} = props;
@@ -37,24 +38,19 @@ const MainScreen = () => {
   const {initialValues, setInitialValues} = useValues();
   const theme = useTheme();
   const {account} = useActiveWeb3React();
+
   const match = useRouteMatch();
   const {url} = match;
   const isExist = url.split('/')[2];
+  const dispatch = useAppDispatch();
+
   const {
     //@ts-ignore
     params: {id},
   } = match;
   const {
-    data: {projects},
+    data: {projects, hashKey},
   } = useAppSelector(selectLaunch);
-
-  // console.log('--gogo--');
-  // console.log(id);
-  // console.log(projects);
-
-  // useEffect(() => {
-  //   console.log(projects);
-  // }, [projects]);
 
   let historyObj = useHistory();
 
@@ -68,6 +64,12 @@ const MainScreen = () => {
     return () => unBlock();
   }, [historyObj]);
 
+  useEffect(() => {
+    dispatch(
+      setHashKey({data: isExist === 'createproject' ? undefined : isExist}),
+    );
+  }, []);
+
   const handleStep = useCallback(
     (isNext: boolean) => {
       const prevStepNum =
@@ -78,6 +80,10 @@ const MainScreen = () => {
     },
     [step],
   );
+
+  const {web3Token} = useWeb3Token();
+
+  console.log(web3Token);
 
   return (
     <Flex
@@ -128,9 +134,15 @@ const MainScreen = () => {
                     disabled={step === 3}
                     mr={step === 1 ? '390px' : '558px'}
                     onClick={() =>
-                      account && isExist === 'createproject'
+                      account &&
+                      isExist === 'createproject' &&
+                      hashKey === undefined
                         ? saveProject(values, account)
-                        : editProject(values, account as string, isExist)
+                        : editProject(
+                            values,
+                            account as string,
+                            hashKey || isExist,
+                          )
                     }>
                     Save
                   </Button>
