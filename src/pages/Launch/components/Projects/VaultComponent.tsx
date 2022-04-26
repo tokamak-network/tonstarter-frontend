@@ -61,10 +61,11 @@ export const VaultComponent: FC<VaultComponent> = ({}) => {
           <Tab className="tab-block">Ton Staker</Tab>
           <Tab className="tab-block">Tos Starter</Tab>
           <Tab className="tab-block">Wton-Tos LP Reward</Tab>
+          <Tab className="tab-block">DAO</Tab>
         </TabList>
         {/* Chakra UI automatically maps the TabPanel tabIndex to the Tab. */}
         <TabPanels>
-          <TabPanel px={'1rem'}>
+          <TabPanel px={'0px'}>
             <PublicPage />
           </TabPanel>
           <TabPanel px={'1rem'}>
@@ -73,13 +74,13 @@ export const VaultComponent: FC<VaultComponent> = ({}) => {
           <TabPanel px={'1rem'}>
             <LiquidityIncentive />
           </TabPanel>
-          <TabPanel px={'1rem'}>
+          <TabPanel  px={'0px'}>
             <TonStaker />
           </TabPanel>
-          <TabPanel px={'1rem'}>
+          <TabPanel px={'0px'}>
             <TosStaker />
           </TabPanel>
-          <TabPanel px={'1rem'}>
+          <TabPanel>
             <WtonTosLpReward />
           </TabPanel>
           <TabPanel px={'1rem'}>
