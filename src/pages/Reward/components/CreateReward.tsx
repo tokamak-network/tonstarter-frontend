@@ -13,23 +13,23 @@ import {
   MenuItem,
 } from '@chakra-ui/react';
 import {DEPLOYED} from 'constants/index';
-import {FC, useRef, useState, useEffect} from 'react';
+import {FC,  useState, useEffect} from 'react';
 import {useAppDispatch} from 'hooks/useRedux';
 import {useActiveWeb3React} from 'hooks/useWeb3';
-import clock from 'assets/svgs/poll_time_active_icon.svg';
-import MomentLocaleUtils from 'react-day-picker/moment';
+// import clock from 'assets/svgs/poll_time_active_icon.svg';
+// import MomentLocaleUtils from 'react-day-picker/moment';
 import {approve, create, checkApproved} from '../actions';
-import Calendar from 'react-calendar';
+// import Calendar from 'react-calendar';
 import '../css/Calendar.css';
-import arrow_light from 'assets/images/select1_arrow_inactive.png';
-import arrow_dark from 'assets/svgs/select1_arrow_inactive.svg';
-import calender_Forward_icon_inactive from 'assets/svgs/calender_Forward_icon_inactive.svg';
-import calender_back_icon_inactive from 'assets/svgs/calender_back_icon_inactive.svg';
+// import arrow_light from 'assets/images/select1_arrow_inactive.png';
+// import arrow_dark from 'assets/svgs/select1_arrow_inactive.svg';
+// import calender_Forward_icon_inactive from 'assets/svgs/calender_Forward_icon_inactive.svg';
+// import calender_back_icon_inactive from 'assets/svgs/calender_back_icon_inactive.svg';
 import moment from 'moment';
 import {CustomCalendar} from './CustomCalendar';
 import {CustomClock} from './CustomClock';
 import {openModal} from 'store/modal.reducer';
-import {utils, ethers} from 'ethers';
+import { ethers} from 'ethers';
 import {ChevronDownIcon} from '@chakra-ui/icons';
 import * as ERC20 from 'services/abis/ERC20.json';
 import {getSigner} from 'utils/contract';
@@ -91,7 +91,7 @@ type CreateReward = {
   tx: string;
   sig: string;
 };
-const {TON_ADDRESS, TOS_ADDRESS, WTON_ADDRESS, DOC_ADDRESS} = DEPLOYED;
+const { WTON_ADDRESS} = DEPLOYED;
 
 export const CreateReward: FC<CreateRewardProps> = ({pools, setSelectedPoolCreated}) => {
   // const {data} = useAppSelector(selectModalType);

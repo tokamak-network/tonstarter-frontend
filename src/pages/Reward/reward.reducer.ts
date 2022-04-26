@@ -1,7 +1,6 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {RootState} from 'store/reducers';
 import {fetchRewardsURL} from 'constants/index';
-import { any } from 'prop-types';
 import {interfaceReward} from './types'
 
 interface RewardState{ 

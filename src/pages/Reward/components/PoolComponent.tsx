@@ -5,18 +5,16 @@ import {
   Box,
   useColorMode,
   useTheme,
-  Container,
-  Select,
   Avatar,
   IconButton,
   Tooltip,
 } from '@chakra-ui/react';
 
 import {FC, useState, useEffect} from 'react';
-import {useActiveWeb3React} from 'hooks/useWeb3';
-import {checkTokenType} from 'utils/token';
+// import {useActiveWeb3React} from 'hooks/useWeb3';
+// import {checkTokenType} from 'utils/token';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
-import {utils, ethers} from 'ethers';
+// import {utils, ethers} from 'ethers';
 const themeDesign = {
   border: {
     light: 'solid 1px #d7d9df',
@@ -51,12 +49,12 @@ type PoolComponentProps = {
 export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const {account, library} = useActiveWeb3React();
-  const [allPools, setAllPools] = useState<any[]>([]);
+  // const {account, library} = useActiveWeb3React();
+  // const [allPools, setAllPools] = useState<any[]>([]);
   const [pageOptions, setPageOptions] = useState<number>(0);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(2);
-  const [totalPAges, setTotalPages] = useState<number>(0);
+  // const [totalPAges, setTotalPages] = useState<number>(0);
   useEffect(() => {   
     const pagenumber = parseInt(
       ((pools.length - 1) / pageLimit + 1).toString(),
@@ -103,7 +101,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
         </Text>
       </Flex>
       {getPaginatedData().map((pool: any, index:number) => {
-        const length = pool.hourData.length - 1;      
+        // const length = pool.hourData.length - 1;      
         const numRewards = rewards.filter(
           (reward) => reward.poolAddress === pool.id,
         ).length;
@@ -219,7 +217,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
         </Flex>
         <Flex>
           {getPaginationGroup().map((groupIndex: number, index:number) => {
-            const data = getPaginatedData().length;
+            // const data = getPaginatedData().length;
             return (
               <Button
               key={index}

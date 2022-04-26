@@ -3,7 +3,7 @@ import {openToast} from 'store/app/toast.reducer';
 import {setTransaction} from 'store/refetch.reducer';
 import store from '../store';
 import {fetchUserInfo} from '../store/app/user.reducer';
-import moment from 'moment';
+// import moment from 'moment';
 
 type SendToast = {
   type: 'success' | 'error';

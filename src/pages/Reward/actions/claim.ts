@@ -6,7 +6,7 @@ import { setTxPending } from 'store/tx.reducer';
 import { toastWithReceipt } from 'utils';
 import { openToast } from 'store/app/toast.reducer';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
-import { utils, ethers } from 'ethers';
+// import { utils, ethers } from 'ethers';
 
 type Claim = {
     library: any;

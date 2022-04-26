@@ -1,4 +1,4 @@
-import { PoolDayData } from './generated';
+// import { PoolDayData } from './generated';
 import { BaseQueryApi, BaseQueryFn } from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { DocumentNode } from 'graphql'

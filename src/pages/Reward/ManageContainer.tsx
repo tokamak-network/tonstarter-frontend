@@ -1,4 +1,4 @@
-import {FC, useState, useMemo, useEffect, useRef} from 'react';
+import {FC, useState,useEffect} from 'react';
 import {
   Text,
   Flex,
@@ -14,8 +14,8 @@ import {
 } from '@chakra-ui/react';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {useAppSelector} from 'hooks/useRedux';
-import {getPoolName} from '../../utils/token';
-import {CreateReward} from './components/CreateReward';
+// import {getPoolName} from '../../utils/token';
+// import {CreateReward} from './components/CreateReward';
 import {RewardProgramCardManage} from './components/RewardProgramCardManage';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import { refundMultiple } from './actions';
@@ -23,10 +23,6 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 
 // import { LPToken } from './types';
 
-import {
-  chakra,
-  // useTheme
-} from '@chakra-ui/react';
 type Pool = {
   id: string;
   liquidity: string;

@@ -1,8 +1,8 @@
-import {FC, useState, useMemo, useEffect, useRef} from 'react';
+import {FC, useState, useEffect} from 'react';
 import {
   Text,
   Flex,
-  Select,
+
   Box,
   useTheme,
   useColorMode,
@@ -23,7 +23,7 @@ import {DEPLOYED} from 'constants/index';
 import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
-import {utils, ethers} from 'ethers';
+import { ethers} from 'ethers';
 import {soliditySha3} from 'web3-utils';
 import {refund} from '../actions';
 import {getTokenSymbol} from '../utils/getTokenSymbol' 
@@ -50,7 +50,7 @@ type RewardProgramCardManageProps = {
   sendKey: (key: any) => void;
 };
 
-const {TON_ADDRESS, UniswapStaker_Address} = DEPLOYED;
+const { UniswapStaker_Address} = DEPLOYED;
 
 export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
   reward,
@@ -64,7 +64,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
   const {account, library} = useActiveWeb3React();
   const [progress, setProgress] = useState<number>(0);
   const [dDay, setdDay] = useState<any>();
-  const [tokenID, setTokenID] = useState<number>(7775);
+  // const [tokenID, setTokenID] = useState<number>(7775);
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [refundableAmount, setRefundableAmount] = useState<string>('0');
   const [numStakers, setNumStakers] = useState<number>(0);
@@ -145,7 +145,7 @@ const [isRefundSelected, setIsRefundSelected] = useState<boolean>(false);
     }
 
     getIncentives();
-  }, [account, library, transactionType, blockNumber, tokenID,pageIndex, reward]);
+  }, [account, library, transactionType, blockNumber,pageIndex, reward]);
 
   return (
     <Flex {...REWARD_STYLE.containerStyle({colorMode})} flexDir={'column'}>

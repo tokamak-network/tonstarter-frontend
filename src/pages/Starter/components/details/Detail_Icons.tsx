@@ -1,4 +1,4 @@
-import {Flex, Link, Text, useColorMode} from '@chakra-ui/react';
+import {Flex, Text, useColorMode} from '@chakra-ui/react';
 import {Icons} from 'components/Icons/Icon';
 import {useState} from 'react';
 import {IconsSort} from 'types';

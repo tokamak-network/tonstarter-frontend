@@ -1,0 +1,12 @@
+.chart-cell {
+  height: 30px;
+  padding: 30px 20px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: 'roboto';
+  font-weight: bold;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #e6eaee;
+  display: flex;
+}

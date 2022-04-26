@@ -23,7 +23,7 @@ import {
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import './staking.css';
-import {checkTokenType} from 'utils/token';
+// import {checkTokenType} from 'utils/token';
 import {TriangleUpIcon, TriangleDownIcon} from '@chakra-ui/icons';
 import {selectTableType} from 'store/table.reducer';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';

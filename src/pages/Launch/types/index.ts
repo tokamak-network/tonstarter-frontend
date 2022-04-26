@@ -217,6 +217,18 @@ type Step3_InfoList = {
   [Key: string]: {title: string; content: string | number; isHref?: boolean}[];
 };
 
+interface I_StarterProject {
+  name: string;
+  saleStart: string;
+  saleEnd: string;
+  current: number;
+  tokenName: string;
+  tokenSymbol: string;
+  tokenSupply: string;
+}
+
+type ProjectCardType = I_StarterProject;
+
 export type {
   Projects,
   ProjectStep1,
@@ -236,4 +248,5 @@ export type {
   VaultType,
   Step3_InfoList,
   VaultLiquidityIncentive,
+  ProjectCardType,
 };

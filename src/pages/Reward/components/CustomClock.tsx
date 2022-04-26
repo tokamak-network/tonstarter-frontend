@@ -1,18 +1,16 @@
 import {
-  FC,
+ 
   Dispatch,
   SetStateAction,
   useState,
-  useMemo,
-  useEffect,
-  useRef,
+ 
 } from 'react';
 import React from 'react';
 import {
   Text,
   Flex,
   NumberInput,
-  Box,
+ 
   useTheme,
   useColorMode,
   NumberInputField,
@@ -22,14 +20,13 @@ import {
   NumberDecrementStepper,
   Popover,
   PopoverTrigger,
-  Portal,
+ 
   PopoverContent,
-  PopoverBody,
+ 
   Select,
   Button,
 } from '@chakra-ui/react';
 import clock from 'assets/svgs/poll_time_active_icon.svg';
-import moment from 'moment';
 const themeDesign = {
   border: {
     light: 'solid 1px #dfe4ee',

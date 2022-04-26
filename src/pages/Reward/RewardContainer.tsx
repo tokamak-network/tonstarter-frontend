@@ -1,4 +1,4 @@
-import {FC, useState, useMemo, useEffect, useRef} from 'react';
+import {FC, useState,useEffect} from 'react';
 import {
   Text,
   Grid,
@@ -14,11 +14,11 @@ import {
 } from '@chakra-ui/react';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {useAppSelector} from 'hooks/useRedux';
-import {getPoolName} from '../../utils/token';
-import {ClaimReward} from './components/ClaimReward';
+// import {getPoolName} from '../../utils/token';
+// import {ClaimReward} from './components/ClaimReward';
 import {RewardProgramCard} from './components/RewardProgramCard';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
-import {stakeMultiple, unstakeMultiple} from './actions';
+import {stakeMultiple} from './actions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {LPToken} from './types';
 import {getSigner} from 'utils/contract';

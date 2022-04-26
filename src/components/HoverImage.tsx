@@ -1,4 +1,4 @@
-import {Image} from '@chakra-ui/react';
+// import {Image} from '@chakra-ui/react';
 import {useState} from 'react';
 
 type HoverImageProp = {

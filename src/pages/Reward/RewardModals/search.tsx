@@ -11,10 +11,9 @@ import {
   Avatar,
   Stack,
   useTheme,
-  Input,
+
   useColorMode,
-  NumberInput,
-  NumberInputField,
+ 
 } from '@chakra-ui/react';
 import {useWeb3React} from '@web3-react/core';
 import {getSigner} from 'utils/contract';
@@ -24,12 +23,12 @@ import {closeModal, selectModalType} from 'store/modal.reducer';
 import {useCallback, useEffect, useState, useRef} from 'react';
 import {ethers} from 'ethers';
 import {CloseButton} from 'components/Modal/CloseButton';
-import {CustomTabs} from 'components/Basic/index';
+// import {CustomTabs} from 'components/Basic/index';
 import {Tab} from '../types';
 import {DEPLOYED} from 'constants/index';
 import * as TOSABI from 'services/abis/TOS.json';
 import {Contract} from '@ethersproject/contracts';
-import { selectBalance } from 'store/app/user.reducer';
+// import { selectBalance } from 'store/app/user.reducer';
 
 //   import {ModalTabs} from '../components/Tabs';
 const {TON_ADDRESS, TOS_ADDRESS, WTON_ADDRESS, DOC_ADDRESS} = DEPLOYED;
@@ -48,7 +47,7 @@ export const SearchModal = () => {
   //select tab
   const focusTarget = useRef<any>([]);
   const tabList: Tab[] = ['Search', 'Custom'];
-  const [tab, setTab] = useState<Tab>('Search');
+  // const [tab, setTab] = useState<Tab>('Search');
   const [tokenLists, setTokenLists] = useState<any[]>([]);
   const [tokenInfo, setTokenInfo] = useState<(string | number)[]>([]);
   const [balance, setBalance] = useState(0)

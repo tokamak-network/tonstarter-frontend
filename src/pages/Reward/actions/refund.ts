@@ -5,11 +5,11 @@ import store from 'store';
 import { setTxPending } from 'store/tx.reducer';
 import { toastWithReceipt } from 'utils';
 import { openToast } from 'store/app/toast.reducer';
-import Web3 from 'web3';
-import BigNumber from 'bignumber.js';
+// import Web3 from 'web3';
+// import BigNumber from 'bignumber.js';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
-import * as NPMABI from 'services/abis/NonfungiblePositionManager.json';
-import { utils, ethers } from 'ethers';
+// import * as NPMABI from 'services/abis/NonfungiblePositionManager.json';
+// import { utils, ethers } from 'ethers';
 
 type Refund = {
     library: any;

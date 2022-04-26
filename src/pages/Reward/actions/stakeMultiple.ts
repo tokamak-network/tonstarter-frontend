@@ -7,7 +7,7 @@ import { toastWithReceipt } from 'utils';
 import { openToast } from 'store/app/toast.reducer';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import * as NPMABI from 'services/abis/NonfungiblePositionManager.json';
-import { utils, ethers } from 'ethers';
+import {  ethers } from 'ethers';
 
 const { NPM_Address, UniswapStaker_Address } = DEPLOYED;
 

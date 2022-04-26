@@ -9,6 +9,7 @@ import useWeb3Token from '@Launch/hooks/useWeb3Token';
 import {Link, useRouteMatch} from 'react-router-dom';
 import {fetchProjects} from '@Launch/launch.reducer';
 import {useAppDispatch} from 'hooks/useRedux';
+import LaunchPage from '@Launch/LaunchPage';
 
 const OpenCampagin = () => {
   const {account} = useActiveWeb3React();
@@ -60,8 +61,7 @@ const OpenCampagin = () => {
   // }
 
   return (
-    <Flex flexDir="column" mt={100} alignItems="center">
-      <Text mb={'10px'}>All Projects</Text>
+    <Flex flexDir="column" mt={'40px'} alignItems="center">
       <Grid templateColumns="repeat(4, 1fr)" mb={'30px'}>
         {projectsData?.map((project: {name: string; key: string}) => (
           <Link to={`${url}/${project.key}`}>
@@ -78,14 +78,8 @@ const OpenCampagin = () => {
           </Link>
         ))}
       </Grid>
-      <Flex justifyContent={'center'} w={'100%'}>
-        <Link to={`${url}/createproject`}>
-          <Button bg={'blue.100'} color="white.100">
-            Create Project
-          </Button>
-        </Link>
-      </Flex>
       {/* <MainScreen></MainScreen> */}
+      <LaunchPage />
     </Flex>
   );
 };

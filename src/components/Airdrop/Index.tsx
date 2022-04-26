@@ -11,7 +11,7 @@ import {
   useColorMode,
   useTheme,
   // Wrap,
-  WrapItem,
+ 
   Button,
   Center,
 } from '@chakra-ui/react';
@@ -33,37 +33,37 @@ type Round = {
 
 type AirDropList = [Round] | undefined;
 
-const AirdropRecord = ({
-  roundNumber,
-  amount,
-}: {
-  roundNumber: any;
-  amount: any;
-}) => {
-  return (
-    <WrapItem w="100%" h="37px">
-      <Flex w="100%" justifyContent="space-between" pl="1.875em" pr="1.875em">
-        <Text>
-          {roundNumber - 1}
-          {checker(roundNumber)} Airdrop
-        </Text>
-        <Text>{amount} TOS</Text>
-      </Flex>
-    </WrapItem>
-  );
-};
+// const AirdropRecord = ({
+//   roundNumber,
+//   amount,
+// }: {
+//   roundNumber: any;
+//   amount: any;
+// }) => {
+//   return (
+//     <WrapItem w="100%" h="37px">
+//       <Flex w="100%" justifyContent="space-between" pl="1.875em" pr="1.875em">
+//         <Text>
+//           {roundNumber - 1}
+//           {checker(roundNumber)} Airdrop
+//         </Text>
+//         <Text>{amount} TOS</Text>
+//       </Flex>
+//     </WrapItem>
+//   );
+// };
 
-const checker = (roundNumber: any) => {
-  if (roundNumber === 2) {
-    return 'st';
-  } else if (roundNumber === 3) {
-    return 'nd';
-  } else if (roundNumber === 4) {
-    return 'rd';
-  } else {
-    return 'th';
-  }
-};
+// const checker = (roundNumber: any) => {
+//   if (roundNumber === 2) {
+//     return 'st';
+//   } else if (roundNumber === 3) {
+//     return 'nd';
+//   } else if (roundNumber === 4) {
+//     return 'rd';
+//   } else {
+//     return 'th';
+//   }
+// };
 
 export const AirdropModal = () => {
   const [airdropData, setAirdropData] = useState<AirDropList>(undefined);

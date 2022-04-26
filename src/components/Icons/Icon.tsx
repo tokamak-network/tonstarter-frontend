@@ -1,4 +1,4 @@
-import {Image} from '@chakra-ui/react';
+// import {Image} from '@chakra-ui/react';
 import websiteImg from 'assets/svgs/website-s-icon.svg';
 import discordImg from 'assets/svgs/discord-s-icon.svg';
 import telegramImg from 'assets/svgs/telegram-s-icon.svg';
@@ -12,7 +12,7 @@ import hover_twitterImg from 'assets/svgs/hover/twitter-s-hover-icon.svg';
 import hover_websiteImg from 'assets/svgs/hover/website-s-hover-icon.svg';
 
 import {IconsSort} from 'types';
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useState} from 'react';
 
 type IconsProp = {
   name: IconsSort;

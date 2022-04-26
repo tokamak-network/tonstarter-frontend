@@ -8,9 +8,9 @@ import { openToast } from 'store/app/toast.reducer';
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
-import * as TOSABI from 'services/abis/TOS.json';
+// import * as TOSABI from 'services/abis/TOS.json';
 import { createReward, getRandomKey } from '../components/api';
-import {utils, ethers} from 'ethers';
+import { ethers} from 'ethers';
 import moment from 'moment';
 
 type Create = {
@@ -46,7 +46,7 @@ type CreateReward = {
   tx: string;
   sig: string;
 };
-const { TOS_ADDRESS,DOC_ADDRESS, TON_ADDRESS, UniswapStaker_Address } = DEPLOYED;
+const {  UniswapStaker_Address } = DEPLOYED;
 
 const generateSig = async (account: string, key: any) => {
   const randomvalue = await getRandomKey(account);
@@ -102,7 +102,7 @@ export const create = async (args: Create) => {
     await receipt.wait();
     
     if (receipt) {
-      const nowTimeStamp = moment().unix();
+      // const nowTimeStamp = moment().unix();
 
       toastWithReceipt(receipt, setTxPending,'Reward', 'Reward');
       const sig = await generateSig(userAddress.toLowerCase(), key);
