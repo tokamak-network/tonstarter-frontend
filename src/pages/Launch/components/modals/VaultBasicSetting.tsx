@@ -129,6 +129,9 @@ const VaultBasicSetting = () => {
                 value={tokenAllocatonVal}
                 _focus={{}}
                 onChange={(e) => {
+                  if (isNaN(Number(e.target.value))) {
+                    return;
+                  }
                   setTokenAllocatonVal(Number(e.target.value));
                 }}></Input>
             </Flex>

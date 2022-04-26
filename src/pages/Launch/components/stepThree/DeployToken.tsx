@@ -24,6 +24,7 @@ import commafy from 'utils/commafy';
 import {editProject, saveProject} from '@Launch/utils/saveProject';
 import {selectLaunch} from '@Launch/launch.reducer';
 import {useActiveWeb3React} from 'hooks/useWeb3';
+import {useEffect} from 'react';
 
 const DeployToken = () => {
   const theme = useTheme();
@@ -65,11 +66,6 @@ const DeployToken = () => {
       //args[2] : token symbol
       setFieldValue('tokenAddress', args[0]);
       setFieldValue('isTokenDeployed', true);
-      setTimeout(() => {
-        hashKey === undefined
-          ? saveProject(values, account as string)
-          : editProject(values, account as string, hashKey);
-      }, 1000);
     } catch (e) {
       console.log(e);
       //need to add change states

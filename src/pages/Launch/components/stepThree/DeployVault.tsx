@@ -427,13 +427,14 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
     data: {hashKey},
   } = useAppSelector(selectLaunch);
 
-  function saveData() {
-    setTimeout(() => {
-      hashKey === undefined
-        ? saveProject(values, account as string)
-        : editProject(values, account as string, hashKey);
-    }, 1000);
-  }
+  // const saveData = useCallback(() => {
+  //   setTimeout(() => {
+  //     console.log(values);
+  //     hashKey === undefined
+  //       ? saveProject(values, account as string)
+  //       : editProject(values, account as string, hashKey);
+  //   }, 2000);
+  // }, [values, hashKey, account]);
 
   const vaultDeploy = useCallback(
     async () => {
@@ -469,7 +470,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 true,
               );
               setVaultState('readyForToken');
-              saveData();
               break;
             }
             case 'Public': {
@@ -539,7 +539,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 );
                 setVaultState('readyForToken');
               }
-              saveData();
               break;
             }
             case 'TON Staker': {
@@ -573,7 +572,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 );
                 setVaultState('readyForToken');
               }
-              saveData();
               break;
             }
             case 'TOS Staker': {
@@ -604,7 +602,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 true,
               );
               setVaultState('readyForToken');
-              saveData();
               break;
             }
             case 'WTON-TOS LP Reward': {
@@ -641,7 +638,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 true,
               );
               setVaultState('readyForToken');
-              saveData();
               break;
             }
             case 'Liquidity Incentive': {
@@ -692,7 +688,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 true,
               );
               setVaultState('readyForToken');
-              saveData();
               break;
             }
             case 'C': {
@@ -725,7 +720,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 );
                 setVaultState('readyForToken');
               }
-              saveData();
               break;
             }
             case 'DAO': {
@@ -759,7 +753,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 );
                 setVaultState('readyForToken');
               }
-              saveData();
               break;
             }
             default:
@@ -894,7 +887,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 );
                 setVaultState('finished');
               }
-              saveData();
               break;
             }
             case 'Liquidity Incentive': {
@@ -930,7 +922,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 );
                 setVaultState('finished');
               }
-              saveData();
               break;
             }
             case 'TON Staker': {
@@ -966,7 +957,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 );
                 setVaultState('finished');
               }
-              saveData();
               break;
             }
             case 'TOS Staker': {
@@ -1002,7 +992,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 );
                 setVaultState('finished');
               }
-              saveData();
               break;
             }
             case 'WTON-TOS LP Reward': {
@@ -1040,7 +1029,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 );
                 setVaultState('finished');
               }
-              saveData();
               break;
             }
             case 'C': {
@@ -1078,7 +1066,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 );
                 setVaultState('finished');
               }
-              saveData();
               break;
             }
             default:

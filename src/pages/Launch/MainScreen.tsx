@@ -85,6 +85,8 @@ const MainScreen = () => {
 
   console.log(web3Token);
 
+  const [oldData, setOldData] = useState();
+
   return (
     <Flex
       flexDir={'column'}
@@ -109,8 +111,14 @@ const MainScreen = () => {
         }
         validationSchema={ProjectSchema}
         validate={(values) => {
-          validateFormikValues(values);
           console.log(values);
+          validateFormikValues(values);
+          if (step === 3 && oldData !== values) {
+            setOldData(values);
+            hashKey === undefined
+              ? saveProject(values, account as string)
+              : editProject(values, account as string, hashKey);
+          }
         }}
         onSubmit={async (data, {setSubmitting}) => {
           setSubmitting(true);
@@ -137,11 +145,12 @@ const MainScreen = () => {
                       account &&
                       isExist === 'createproject' &&
                       hashKey === undefined
-                        ? saveProject(values, account)
+                        ? saveProject(values, account, true)
                         : editProject(
                             values,
                             account as string,
                             hashKey || isExist,
+                            true,
                           )
                     }>
                     Save
