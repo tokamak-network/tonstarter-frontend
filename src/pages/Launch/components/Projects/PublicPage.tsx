@@ -9,15 +9,15 @@ import {
   Button,
 } from '@chakra-ui/react';
 
+import {PublicPageTable} from './PublicPageTable';
+
 import '../css/PublicPage.css';
-import {useModal} from 'hooks/useModal';
 
 type PublicPage = {};
 
 export const PublicPage: FC<PublicPage> = ({}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const {openAnyModal} = useModal();
   const themeDesign = {
     border: {
       light: 'solid 1px #e7edf3',
@@ -151,10 +151,17 @@ export const PublicPage: FC<PublicPage> = ({}) => {
         </Flex>
       </Grid>
       <Flex w={'100%'} justifyContent={'center'} py={'2rem'}>
-        <Button bg="blue.500" px={'3rem'}   onClick={() => openAnyModal('Launch_Download', {})}>
+        <Button
+          className="button-style"
+          background={'none'}
+          px={'45px'}
+          py={'10px'}
+          // onClick={() => openAnyModal('Launch_Download', {})}
+        >
           Download
         </Button>
       </Flex>
+      <PublicPageTable />
     </Flex>
   );
 };

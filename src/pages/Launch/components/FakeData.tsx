@@ -126,3 +126,54 @@ export const launchGuideData = [
     link: 'https://google.com',
   },
 ];
+
+export const publicTableData = [
+  {
+    round: 1,
+    date: '2022.02.04 17:00:00',
+    allocation: 0.7,
+    accumulated: 0.5,
+  },
+  {
+    round: 2,
+    date: '2022.02.04 17:00:00',
+    allocation: 0.7,
+    accumulated: 0.5,
+  },
+  {
+    round: 3,
+    date: '2022.02.04 17:00:00',
+    allocation: 0.7,
+    accumulated: 0.5,
+  },
+  {
+    round: 4,
+    date: '2022.02.04 17:00:00',
+    allocation: 0.7,
+    accumulated: 0.5,
+  },
+  {
+    round: 5,
+    date: '2022.02.04 17:00:00',
+    allocation: 0.7,
+    accumulated: 0.5,
+  },
+  {
+    round: 6,
+    date: '2022.02.04 17:00:00',
+    allocation: 0.7,
+    accumulated: 0.5,
+  },
+  {
+    round: 7,
+    date: '2022.02.04 17:00:00',
+    allocation: 0.7,
+    accumulated: 0.5,
+  },
+  {
+    round: 8,
+    date: '2022.02.04 17:00:00',
+    allocation: 0.7,
+    accumulated: 0.5,
+  },
+];

@@ -7,6 +7,11 @@
   font-weight: bold;
   justify-content: space-between;
   align-items: center;
-  border: 1px solid #e6eaee;
+  border: 1px solid #373737;
   display: flex;
+}
+
+.button-style {
+  border: solid 1px #2a72e5;
+  color: #2a72e5;
 }
