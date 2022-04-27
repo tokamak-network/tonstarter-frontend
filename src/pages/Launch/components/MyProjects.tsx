@@ -28,9 +28,9 @@ const MyProjects = () => {
       saleDate: [1650007071, 1650259507],
       status: 'Listed on TONStarter',
       action: 'Edit',
-    }
+    },
   ];
-const {data, isLoading, error} = useQuery(
+  const {data, isLoading, error} = useQuery(
     ['test'],
     () =>
       axios.get(fetchCampaginURL, {
@@ -52,9 +52,7 @@ const {data, isLoading, error} = useQuery(
     if (data) {
       const {data: datas} = data;
       dispatch(fetchProjects({data: datas}));
-       const projs = Object.keys(datas).map((k) => {
-        console.log(datas[k].vaults[0].publicRound1);
-        
+      const projs = Object.keys(datas).map((k) => {
         return {
           key: k,
           name: datas[k].projectName,
@@ -62,19 +60,17 @@ const {data, isLoading, error} = useQuery(
           tokenSymbol: datas[k].tokenSymbol,
           totalSupply: datas[k].totalSupply,
           owner: datas[k].ownerAddress,
-          saleDate: [datas[k].vaults[0].whitelist, datas[k].vaults[0].publicRound2End],
+          saleDate: [
+            datas[k].vaults[0].whitelist,
+            datas[k].vaults[0].publicRound2End,
+          ],
           whiteList: datas[k].vaults[0].whitelist,
           public2End: datas[k].vaults[0].publicRound2End,
           status: datas[k].isAllDeployed,
         };
       });
-     
-      console.log('projs',projs);
-      const MyProjs = projs.filter(
-        (pro: any) => pro.owner === account,
-      );
-      console.log('MyProjs',MyProjs);
-      
+      const MyProjs = projs.filter((pro: any) => pro.owner === account);
+
       setProjectsData(MyProjs);
     }
   }, [data, dispatch]);
@@ -116,7 +112,7 @@ const {data, isLoading, error} = useQuery(
     ],
     [],
   );
-  
+
   return (
     <Flex
       flexDir={'row'}
@@ -133,7 +129,11 @@ const {data, isLoading, error} = useQuery(
           Owned Projects
         </Text>
         <Box mt={'20px'}>
-          <MyProjectTable data={projectsData} columns={columns} isLoading={isLoading} />
+          <MyProjectTable
+            data={projectsData}
+            columns={columns}
+            isLoading={isLoading}
+          />
         </Box>
       </Box>
     </Flex>

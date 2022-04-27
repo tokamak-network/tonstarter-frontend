@@ -49,8 +49,6 @@ const SingleCalendarPop: React.FC<calendarComponentProps> = ({
 
     setStartTime(startDates.unix());
     if (fieldValueKey) {
-      console.log('fieldValueKey');
-      console.log(fieldValueKey);
       const timeStamp = startDates.unix();
       setFieldValue(fieldValueKey, {...oldValues, [valueKey]: timeStamp});
       return onClose();

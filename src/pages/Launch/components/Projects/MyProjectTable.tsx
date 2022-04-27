@@ -137,8 +137,6 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
             display="flex"
             flexDirection="column">
             {page.map((row: any, i) => {
-              console.log('row',row);
-              
               prepareRow(row);
               return [
                 <chakra.tr
@@ -163,9 +161,7 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                   display="flex"
                   alignItems="center"
                   {...row.getRowProps()}>
-                  {row.cells.map((cell: any, index: number) => {
-                    console.log('cell', cell);
-                    
+                  {row.cells.map((cell: any, index: number) => {                    
                     const {
                       name,
                       tokenName,
@@ -176,7 +172,6 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                       action,
                       key
                     } = cell.row.original;
-
                     const type = cell.column.id;
                     return (
                       <chakra.td
@@ -211,7 +206,8 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                         textAlign="center"
                         {...cell.getCellProps()}>
                         {type === 'name' && (
-                          <Text textDecor={'underline'}>{name}</Text>
+                          status === true ? 
+                         <Link to={`${url}/project/${name}`}><Text _hover={{textDecor:'underline'}}>{name}</Text> </Link>:  <Text>{name}</Text>
                         )}
                         {type === 'tokenName' && tokenName}
                         {type === 'tokenSymbol' && tokenSymbol}
