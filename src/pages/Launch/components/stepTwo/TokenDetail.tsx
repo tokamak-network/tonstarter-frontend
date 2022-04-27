@@ -553,9 +553,6 @@ const PublicTokenDetail = (props: {
     }
   }, [selectedVaultType, tempVaultData, selectedVaultDetail]);
 
-  console.log(selectedVaultDetail);
-  console.log(values.totalTokenAllocation);
-
   return (
     <Grid
       {...OpenCampaginDesign.border({colorMode})}
