@@ -29,7 +29,7 @@ const ProjectCard: React.FC<{
   const match = useRouteMatch();
   const {url} = match;
 
-  const [progress, setProgress] = useState<number | undefined>(project.current);
+  const [progress, setProgress] = useState<number | undefined>();
   const [totalRaise, setTotalRaise] = useState<string | undefined>(undefined);
   const [participants, setParticipants] = useState<string | undefined>(
     undefined,
@@ -65,7 +65,7 @@ const ProjectCard: React.FC<{
   }, [library, project, PUBLICSALE_CONTRACT]);
 
   return (
-    <Link to={`${url}/${project.name}`} id={`past_link_${index}`}>
+    <Link to={`${url}/project/${project.data.projectName}`} id={`past_link_${index}`}>
       <Box {...STATER_STYLE.containerStyle({colorMode})} h={'275px'}>
         <Flex justifyContent="space-between" mb={'10px'}>
           <TokenImage></TokenImage>
@@ -76,7 +76,7 @@ const ProjectCard: React.FC<{
         </Flex>
         <Flex flexDir="column">
           <Text h={'36px'} {...STATER_STYLE.mainText({colorMode})}>
-            {project.name}
+            {project.data.projectName}
           </Text>
         </Flex>
         <Flex mb={'15px'}>
@@ -86,13 +86,14 @@ const ProjectCard: React.FC<{
             }}
             color={colorMode === 'light' ? 'gray.125' : 'gray.475'}
             mr={'8px'}>
-            Sale Date:
+            Sale Date: 
           </Text>
           <Text
             {...{
               ...STATER_STYLE.mainText({colorMode, fontSize: 12}),
             }}>
-            {project.saleStart} - {project.saleEnd}
+              {project.data.vaults[0].vaultName}
+            {/* {project.saleStart} - {project.saleEnd} */}
           </Text>
         </Flex>
 
@@ -144,9 +145,9 @@ const ProjectCard: React.FC<{
                   colorMode,
                   fontSize: 20,
                 })}>
-                {project.tokenName || 'NA'}
+                {project.data.tokenName || 'NA'}
               </Text>
-              <Text>{project.tokenName}</Text>
+              <Text>{}</Text>
             </Box>
           </Box>
           <Box d="flex" flexDir="column" w={'99px'}>
@@ -164,7 +165,7 @@ const ProjectCard: React.FC<{
                 colorMode,
                 fontSize: 20,
               })}>
-              {project.tokenSymbol || 'NA'}
+              {project.data.tokenSymbol ||'NA'}
             </Text>
           </Box>
           <Box d="flex" flexDir="column" w={'99px'}>
@@ -182,7 +183,7 @@ const ProjectCard: React.FC<{
                 colorMode,
                 fontSize: 20,
               })}>
-              {project.tokenSupply || 'NA'}
+              {'NA'}
             </Text>
           </Box>
         </Flex>

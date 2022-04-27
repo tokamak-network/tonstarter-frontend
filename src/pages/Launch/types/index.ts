@@ -1,3 +1,5 @@
+import { StringLocale } from "yup/lib/locale";
+
 type VaultName =
   | 'Public'
   | 'Initial Liquidity'
@@ -36,7 +38,7 @@ interface VaultSchedule {
   claimTokenAllocation: number | undefined;
 }
 
-type VaultCommon = Vault & {claim: VaultSchedule[]};
+type VaultCommon = Vault & { claim: VaultSchedule[] };
 
 type VaultDao = VaultCommon & {};
 
@@ -214,7 +216,7 @@ type PublicTokenColData = {
 };
 
 type Step3_InfoList = {
-  [Key: string]: {title: string; content: string | number; isHref?: boolean}[];
+  [Key: string]: { title: string; content: string | number; isHref?: boolean }[];
 };
 
 interface I_StarterProject {
@@ -227,7 +229,26 @@ interface I_StarterProject {
   tokenSupply: string;
 }
 
-type ProjectCardType = I_StarterProject;
+type ProjectCardType = {
+  data: {
+    description: string;
+    isAllDeployed: boolean;
+    isTokenDeployed: boolean;
+    isTokenDeployedErr: boolean;
+    owner: string;
+    ownerAddress: string;
+    projectName: string;
+    projectTokenPrice: number;
+    tokenAddress: string;
+    tokenName: string;
+    tokenSymbol: string;
+    tosPrice: number;
+    totalTokenAllocation: String;
+    vaults: VaultAny[];
+
+  },
+  k: string
+};
 
 export type {
   Projects,

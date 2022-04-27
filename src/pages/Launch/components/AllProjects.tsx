@@ -1,10 +1,8 @@
 import {
   Box,
-  Button,
   Flex,
   useTheme,
   Text,
-  Link,
   Grid,
   Heading,
   Select,
@@ -14,27 +12,73 @@ import {
   useColorMode,
 } from '@chakra-ui/react';
 import {useCallback, useEffect, useState} from 'react';
-import {PageHeader} from 'components/PageHeader';
+// import {PageHeader} from 'components/PageHeader';
 import {useRouteMatch} from 'react-router-dom';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectLaunch} from '@Launch/launch.reducer';
 import FeaturedProjects from '../components/FeaturedProjects';
 import ProjectCard from '../components/ProjectCard';
-import {allProjectsData} from './FakeData';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+// import {allProjectsData} from './FakeData';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import LaunchGuide from './LaunchGuide';
-
+import {fetchCampaginURL} from 'constants/index';
+import {useQuery} from 'react-query';
+import axios from 'axios';
+import {useAppDispatch} from 'hooks/useRedux';
+import {fetchProjects} from '@Launch/launch.reducer';
 const AllProjects = () => {
   const theme = useTheme();
   const match = useRouteMatch();
+  const {account} = useActiveWeb3React();
   const {colorMode} = useColorMode();
+  const dispatch = useAppDispatch();
+  const [projectsData, setProjectsData] = useState<any>([]);
   const {
     //@ts-ignore
     params: {id},
   } = match;
+
+  const {data, isLoading, error} = useQuery(
+    ['test'],
+    () =>
+      axios.get(fetchCampaginURL, {
+        headers: {
+          account,
+        },
+      }),
+    {
+      enabled: !!account,
+      //refetch every 10min
+      refetchInterval: 600000,
+    },
+  );
   const {
     data: {projects},
   } = useAppSelector(selectLaunch);
+
+  useEffect(() => {
+    if (data) {
+      const {data: datas} = data;
+      dispatch(fetchProjects({data: datas}));
+      setProjectsData(
+        Object.keys(datas).map((k) => {
+          return { key: k, data: datas[k]};
+        }),
+      );
+    }
+  }, [data, dispatch]);
+
+  // useEffect(() => {
+  //   if (projects) {
+  //     setProjectsData(
+  //       Object.keys(projects).map((k) => {
+  //         console.log(projects[k].projectName, k);
+  //         return {data: projects[k], key: k};
+  //       }),
+  //     );
+  //   }
+  // }, [projects]);
 
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(6);
@@ -42,15 +86,15 @@ const AllProjects = () => {
   const getPaginatedData = () => {
     const startIndex = pageIndex * pageLimit - pageLimit;
     const endIndex = startIndex + pageLimit;
-    return allProjectsData.slice(startIndex, endIndex);
+    return projectsData.slice(startIndex, endIndex);
   };
 
   useEffect(() => {
     const pagenumber = parseInt(
-      ((allProjectsData.length - 1) / pageLimit + 1).toString(),
+      ((projectsData.length - 1) / pageLimit + 1).toString(),
     );
     setPageOptions(pagenumber);
-  }, [allProjectsData, pageLimit, pageLimit]);
+  }, [projectsData, pageLimit, pageLimit]);
 
   const goToNextPage = () => {
     setPageIndex(pageIndex + 1);
@@ -71,7 +115,9 @@ const AllProjects = () => {
         </Box>
         <Flex justifyContent={'center'}>
           <Grid templateColumns="repeat(3, 1fr)" gap={30}>
-            {getPaginatedData().map((project, index) => {
+            {getPaginatedData().map((project: any, index: number) => {
+              console.log(project);
+              
               return <ProjectCard project={project} index={index} />;
             })}
           </Grid>

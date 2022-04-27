@@ -16,13 +16,14 @@ const LaunchPage = () => {
     //@ts-ignore
     params: {id},
   } = match;
-  const {
-    data: {projects},
-  } = useAppSelector(selectLaunch);
   const {url} = match;
-  // console.log('--gogo--');
-  // console.log(id);
-  // console.log(projects);
+  // const {
+  //   data: {projects},
+  // } = useAppSelector(selectLaunch);
+ 
+  // // console.log('--gogo--');
+  // // console.log(id);
+  // console.log('lakmi',projects);
 
   // useEffect(() => {
   //   console.log(projects);

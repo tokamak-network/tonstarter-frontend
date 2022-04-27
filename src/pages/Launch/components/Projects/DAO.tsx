@@ -1,4 +1,4 @@
-import {FC} from 'react';
+import {FC, useState} from 'react';
 import {
   Flex,
   Text,
@@ -7,6 +7,7 @@ import {
   useTheme,
   useColorMode,
   Button,
+  Input,
 } from '@chakra-ui/react';
 
 type DAO = {};
@@ -14,7 +15,7 @@ type DAO = {};
 export const DAO: FC<DAO> = ({}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
-
+  const [claimValue, setClaimValue] = useState(0);
   const themeDesign = {
     border: {
       light: 'solid 1px #e7edf3',
@@ -101,24 +102,34 @@ export const DAO: FC<DAO> = ({}) => {
             <Text
               fontSize={'15px'}
               color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-             Claim
+              Claim
             </Text>
           </GridItem>
           <GridItem
             className={'chart-cell'}
             fontFamily={theme.fonts.fld}
-            borderBottom={'none'}>
-            <Flex alignItems={'baseline'} fontWeight={'bold'}>
-              {' '}
+            borderBottom={'none'}
+            justifyContent={'flex-start'}>
+            <Flex
+              borderRadius={'4px'}
+              w={'240px'}
+              h={'32px'}
+              alignItems={'baseline'}
+              border={'1px solid #dfe4ee'}
+              mr={'15px'}
+              fontWeight={'bold'}>
+              <Input
+                border={'none'}
+                h={'32px'}
+                textAlign={'right'}
+                alignItems={'center'}
+                value={claimValue}
+                fontSize={'15px'}
+                _focus={{norder: 'none'}}
+                onChange={(e) => setClaimValue(Number(e.target.value))}></Input>
               <Text
-                mr={'3px'}
-                fontSize={'20px'}
-                color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-                10,000,000
-              </Text>{' '}
-              <Text
-                color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}
-                fontSize={'13px'}>
+                mr={'15px'}
+                color={colorMode === 'light' ? '#86929d' : '#818181'}>
                 TON
               </Text>
             </Flex>
@@ -134,18 +145,24 @@ export const DAO: FC<DAO> = ({}) => {
                 color: colorMode === 'light' ? '#86929d' : '#838383',
                 bg: colorMode === 'light' ? '#e9edf1' : '#353535',
               }}>
-           Claim
+              Claim
             </Button>
           </GridItem>
           <GridItem
             className={'chart-cell'}
             fontFamily={theme.fonts.fld}
-            borderBottomRightRadius={'4px'}>
-           
-           
-          </GridItem>
+            borderBottomRightRadius={'4px'}></GridItem>
         </Flex>
       </Grid>
+      <Flex
+        color={colorMode === 'light' ? '#9d9ea5' : '#7e8993'}
+        fontFamily={theme.fonts.fld}
+        justifyContent={'center'}
+       mt={'82px'}
+        alignItems={'center'}
+       >
+        There is no claim schedule
+      </Flex>
     </Flex>
   );
 };

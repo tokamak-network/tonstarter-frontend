@@ -29,7 +29,7 @@ const FeaturedProjects = () => {
       <Flex justifyContent={'center'}>
         <Grid templateColumns="repeat(3, 1fr)" gap={30}>
           {featuredProjectsData.map((project, index) => {
-            return <ProjectCard project={project} index={index} />;
+            return <Text>Featured project</Text>;
           })}
         </Grid>
       </Flex>

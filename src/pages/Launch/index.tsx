@@ -19,32 +19,32 @@ const OpenCampagin = () => {
   const [projectsData, setProjectsData] = useState<any>(undefined);
   const [originData, setOriginData] = useState<any>(undefined);
 
-  const {data, isLoading, error} = useQuery(
-    ['test'],
-    () =>
-      axios.get(fetchCampaginURL, {
-        headers: {
-          account,
-        },
-      }),
-    {
-      enabled: !!account,
-      //refetch every 10min
-      refetchInterval: 600000,
-    },
-  );
+  // const {data, isLoading, error} = useQuery(
+  //   ['test'],
+  //   () =>
+  //     axios.get(fetchCampaginURL, {
+  //       headers: {
+  //         account,
+  //       },
+  //     }),
+  //   {
+  //     enabled: !!account,
+  //     //refetch every 10min
+  //     refetchInterval: 600000,
+  //   },
+  // );
 
-  useEffect(() => {
-    if (data) {
-      const {data: datas} = data;
-      dispatch(fetchProjects({data: datas}));
-      setProjectsData(
-        Object.keys(datas).map((k) => {
-          return {name: datas[k].projectName, key: k};
-        }),
-      );
-    }
-  }, [data, dispatch]);
+  // useEffect(() => {
+  //   if (data) {
+  //     const {data: datas} = data;
+  //     dispatch(fetchProjects({data: datas}));
+  //     setProjectsData(
+  //       Object.keys(datas).map((k) => {
+  //         return {name: datas[k].projectName, key: k};
+  //       }),
+  //     );
+  //   }
+  // }, [data, dispatch]);
 
   // useEffect(() => {
   //   console.log('--data--');
@@ -60,23 +60,8 @@ const OpenCampagin = () => {
   //   return <div>loading..</div>;
   // }
   return (
-    <Flex flexDir="column" mt={'40px'} alignItems="center">
-      <Grid templateColumns="repeat(4, 1fr)" mb={'30px'}>
-        {projectsData?.map((project: {name: string; key: string}) => (
-          <Link to={`${url}/${project.key}`}>
-            <GridItem
-              w={'100px'}
-              h={'100px'}
-              mr={'10px'}
-              border={'1px solid #000'}
-              textAlign="center"
-              lineHeight={'100px'}
-              key={project.key}>
-              {project.name}
-            </GridItem>
-          </Link>
-        ))}
-      </Grid>
+    <Flex flexDir="column" mt={'78px'} alignItems="center">
+    
       {/* <MainScreen></MainScreen> */}
       <LaunchPage />
     </Flex>
