@@ -28,10 +28,6 @@ const defaultTableData = {
   claimTokenAllocation: undefined,
 };
 
-const middleStyle = {
-  border: 'solid 1px #eff1f6',
-};
-
 const ClaimRound = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -43,6 +39,10 @@ const ClaimRound = () => {
   } = useAppSelector(selectLaunch);
   const [selectedVaultDetail, setSelectedVaultDetail] = useState([]);
   const vaultsList = values.vaults;
+
+  const middleStyle = {
+    border: colorMode === 'light' ? 'solid 1px #eff1f6' : 'solid 1px #373737',
+  };
 
   useEffect(() => {
     vaultsList.filter((vaultData: VaultAny) => {
@@ -146,7 +146,8 @@ const ClaimRound = () => {
 
   useEffect(() => {
     const errBorderStyle = '1px solid #ff3b3b';
-    const noErrBorderStyle = '1px solid #dfe4ee';
+    const noErrBorderStyle =
+      colorMode === 'light' ? '1px solid #dfe4ee' : '1px solid #373737';
     //@ts-ignore
     const vaultTokenAllocation = selectedVaultDetail.vaultTokenAllocation;
     const totalTokenInputs = inputRefs.current.reduce((acc, cur) => {
@@ -217,7 +218,14 @@ const ClaimRound = () => {
           textAlign="center"
           border={middleStyle.border}
           lineHeight={'42px'}>
-          <Flex h={'42px'} fontSize={12} color={'#3d495d'} fontWeight={600}>
+          <Flex
+            h={'42px'}
+            fontSize={12}
+            color={colorMode === 'light' ? '#3d495d' : 'white.100'}
+            fontWeight={600}
+            borderBottom={
+              colorMode === 'light' ? '1px solid #eff1f6' : '1px solid #373737'
+            }>
             <Text w={'90px'}>Claim</Text>
             <Text w={'292px'} borderX={middleStyle.border}>
               Date time
@@ -250,7 +258,7 @@ const ClaimRound = () => {
                   <Flex
                     h={'42px'}
                     fontSize={12}
-                    color={'#3d495d'}
+                    color={colorMode === 'light' ? '#3d495d' : 'white.100'}
                     fontWeight={600}>
                     <Text w={'90px'}>
                       {index > 8 ? `${index + 1}` : `0${index + 1}`}
@@ -277,7 +285,6 @@ const ClaimRound = () => {
                       <Input
                         w={`120px`}
                         h={`32px`}
-                        // focusBorderColor={isErr ? 'red.100' : '#dfe4ee'}
                         ref={(el) => (inputRefs.current[index] = el)}
                         _focus={{}}
                         fontSize={12}
@@ -328,8 +335,12 @@ const ClaimRound = () => {
                           h={'24px'}
                           alignItems="center"
                           justifyContent="center"
-                          border={'1px solid #e6eaee'}
-                          bg={'white.100'}>
+                          border={
+                            colorMode === 'light'
+                              ? '1px solid #e6eaee'
+                              : '1px solid #373737'
+                          }
+                          bg={colorMode === 'light' ? 'white.100' : 'none'}>
                           <HoverImage
                             action={() => addRow()}
                             img={PlusIconNormal}
@@ -343,8 +354,12 @@ const ClaimRound = () => {
                           h={'24px'}
                           alignItems="center"
                           justifyContent="center"
-                          border={'1px solid #e6eaee'}
-                          bg={'white.100'}>
+                          border={
+                            colorMode === 'light'
+                              ? '1px solid #e6eaee'
+                              : '1px solid #373737'
+                          }
+                          bg={colorMode === 'light' ? 'white.100' : 'none'}>
                           <HoverImage
                             action={() => removeRow(index)}
                             img={MinusIconNormal}
@@ -357,8 +372,12 @@ const ClaimRound = () => {
                             h={'24px'}
                             alignItems="center"
                             justifyContent="center"
-                            border={'1px solid #e6eaee'}
-                            bg={'white.100'}
+                            border={
+                              colorMode === 'light'
+                                ? '1px solid #e6eaee'
+                                : '1px solid #373737'
+                            }
+                            bg={colorMode === 'light' ? 'white.100' : 'none'}
                             mr={'10px'}>
                             <HoverImage
                               action={() => removeRow(index)}
@@ -370,8 +389,12 @@ const ClaimRound = () => {
                             h={'24px'}
                             alignItems="center"
                             justifyContent="center"
-                            border={'1px solid #e6eaee'}
-                            bg={'white.100'}>
+                            border={
+                              colorMode === 'light'
+                                ? '1px solid #e6eaee'
+                                : '1px solid #373737'
+                            }
+                            bg={colorMode === 'light' ? 'white.100' : 'none'}>
                             <HoverImage
                               action={() => addRow()}
                               img={PlusIconNormal}

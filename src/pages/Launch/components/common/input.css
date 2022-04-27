@@ -11,8 +11,8 @@ input {
 }
 
 .input-dark {
-  color: red;
-  border: 1px solid red !important;
+  color: #818181;
+  border: 1px solid #424242 !important;
 }
 
 .input-err {

@@ -21,7 +21,6 @@ const ProjectCard: React.FC<{
   index: number;
 }> = (props) => {
   const {project, index} = props;
-  console.log('project: ', project);
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {STATER_STYLE} = theme;

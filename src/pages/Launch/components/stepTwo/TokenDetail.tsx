@@ -30,6 +30,7 @@ export const MainTitle = (props: {
   subTitle?: string;
 }) => {
   const {leftTitle, rightTitle, subTitle} = props;
+  const {colorMode} = useColorMode();
   return (
     <Flex
       pl={'25px'}
@@ -37,13 +38,17 @@ export const MainTitle = (props: {
       h={'60px'}
       alignItems="center"
       justifyContent={'space-between'}
-      borderBottom={'solid 1px #e6eaee'}
+      borderBottom={
+        colorMode === 'light' ? 'solid 1px #e6eaee' : 'solid 1px #323232'
+      }
       fontWeight={600}>
       <Text fontSize={14}>{leftTitle}</Text>
       <Flex>
         <Text>{rightTitle}</Text>
         {subTitle && (
-          <Text ml={'5px'} color={'#7e8993'}>
+          <Text
+            ml={'5px'}
+            color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
             {subTitle}
           </Text>
         )}
@@ -76,6 +81,7 @@ const SubTitle = (props: {
     //@ts-ignore
     rightTitle,
   );
+  const {colorMode} = useColorMode();
   const {values} = useFormikContext<Projects['CreateProject']>();
   const {vaults} = values;
   const publicVault = vaults[0] as VaultPublic;
@@ -216,7 +222,7 @@ const SubTitle = (props: {
       case 'Hard Cap':
         return `${commafy(rightTitle)} TON`;
       case 'Address for receiving funds':
-        return `${shortenAddress(rightTitle)}`;
+        return rightTitle ? `${shortenAddress(rightTitle)}` : '-';
       default:
         return rightTitle;
     }
@@ -229,7 +235,13 @@ const SubTitle = (props: {
       h={'60px'}
       alignItems="center"
       justifyContent={'space-between'}
-      borderBottom={isLast ? '' : 'solid 1px #e6eaee'}
+      borderBottom={
+        isLast
+          ? ''
+          : colorMode === 'light'
+          ? 'solid 1px #e6eaee'
+          : 'solid 1px #323232'
+      }
       fontWeight={600}>
       <Text
         color={'#7e8993'}
@@ -336,6 +348,7 @@ const STOSTier = (props: {
   inputRef: any;
 }) => {
   const {tier, requiredTos, allocatedToken, isLast, isEdit, inputRef} = props;
+  const {colorMode} = useColorMode();
   const [inputVal, setInputVal] = useState(requiredTos);
   const [inputVal2, setInputVal2] = useState(allocatedToken);
   const {values} = useFormikContext<Projects['CreateProject']>();
@@ -350,7 +363,13 @@ const STOSTier = (props: {
       h={'60px'}
       alignItems="center"
       textAlign={'center'}
-      borderBottom={isLast ? '' : 'solid 1px #e6eaee'}
+      borderBottom={
+        isLast
+          ? ''
+          : colorMode === 'light'
+          ? 'solid 1px #e6eaee'
+          : 'solid 1px #323232'
+      }
       fontWeight={600}>
       <Text color={'#7e8993'} w={'80px'}>
         {tier}
@@ -452,7 +471,8 @@ const PublicTokenDetail = (props: {
   //Input Value Validating
   useEffect(() => {
     const errBorderStyle = '1px solid #ff3b3b';
-    const noErrBorderStyle = '1px solid #dfe4ee';
+    const noErrBorderStyle =
+      colorMode === 'light' ? '1px solid #dfe4ee' : '1px solid #373737';
     const {current} = inputRef;
 
     switch (selectedVaultType as VaultType) {
@@ -611,7 +631,10 @@ const PublicTokenDetail = (props: {
           </Flex>
         )}
       </GridItem>
-      <GridItem borderX={'solid 1px #e6eaee'}>
+      <GridItem
+        borderX={
+          colorMode === 'light' ? 'solid 1px #e6eaee' : 'solid 1px #323232'
+        }>
         <MainTitle leftTitle="Schedule" rightTitle="KST"></MainTitle>
         {secondColData?.map(
           (data: {title: string; content: string; formikName: string}) => {
@@ -650,7 +673,9 @@ const PublicTokenDetail = (props: {
             h={'60px'}
             alignItems="center"
             textAlign={'center'}
-            borderBottom={'solid 1px #e6eaee'}
+            borderBottom={
+              colorMode === 'light' ? 'solid 1px #e6eaee' : 'solid 1px #323232'
+            }
             fontWeight={600}
             color={'#7e8993'}
             fontSize={13}>
@@ -705,22 +730,8 @@ const TokenDetail = (props: {isEdit: boolean}) => {
   const {TOS_ADDRESS} = DEPLOYED;
   const {values} = useFormikContext<Projects['CreateProject']>();
   const [poolAddress, setPoolAddress] = useState<string>('');
-
-  // useEffect(() => {
-  //   async function getPoolAddress() {
-  //     const poolAddress = await InitialLiquidity_CONTRACT?.computePoolAddress(
-  //       TOS_ADDRESS,
-  //       values.tokenAddress,
-  //       3000,
-  //     );
-  //     setPoolAddress(poolAddress);
-  //   }
-  //   if (values.tokenAddress) {
-  //     getPoolAddress();
-  //   }
-  // }, [values.tokenAddress, TOS_ADDRESS]);
-
   const {publicTokenColData} = useTokenDetail();
+
   const VaultTokenDetail = useMemo(() => {
     switch (selectedVaultType) {
       case 'Public':

@@ -1,4 +1,4 @@
-import {Box, Button, Flex, Image, Text} from '@chakra-ui/react';
+import {Box, Button, Flex, Image, Text, useColorMode} from '@chakra-ui/react';
 import {Projects, Vault, VaultCommon} from '@Launch/types';
 import {useFormikContext} from 'formik';
 import {useModal} from 'hooks/useModal';
@@ -29,6 +29,10 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
   } = useAppSelector(selectLaunch);
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const vaultsList = values.vaults;
+
+  const {openAnyModal} = useModal();
+  const {colorMode} = useColorMode();
+
   function removeVault() {
     setFieldValue(
       'vaults',
@@ -37,7 +41,6 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
       }),
     );
   }
-  const {openAnyModal} = useModal();
 
   useEffect(() => {
     if (selectedVaultIndex === vaultIndex) {
@@ -64,9 +67,8 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
       pl={'15px'}
       pt={'10px'}
       boxShadow={' 0 2px 5px 0 rgba(61, 73, 93, 0.1)'}
-      // _hover={{
-      //   bg: '#0070ed',
-      // }}
+      border={colorMode === 'light' ? '' : '1px solid #373737'}
+      borderRadius={colorMode === 'light' ? '' : '4px'}
       bg={isSelected || isHover ? '#0070ed' : 'none'}
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}>
@@ -81,7 +83,6 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
             textAlign="center">
             {name.substring(0, 1)}
           </Box>
-
           <HoverImage
             img={PencilIcon}
             hoverImg={PencilActiveIcon}
@@ -94,19 +95,6 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
                 vaultIndex,
               })
             }></HoverImage>
-
-          {/* <Image
-            src={PencilIcon}
-            alt={'vault_edit_button'}
-            cursor="pointer"
-            onClick={() =>
-              openAnyModal('Launch_VaultBasicSetting', {
-                name,
-                tokenAllocation,
-                adminAddress,
-                isMandatory,
-              })
-            }></Image> */}
         </Flex>
         {isHover && !isMandatory && (
           <Box
@@ -125,20 +113,38 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
         // mb={'10px'}
         fontSize={16}
         fontWeight={'bold'}
-        color={isSelected || isHover ? 'white.100' : '#304156'}>
+        color={
+          isSelected || isHover
+            ? 'white.100'
+            : colorMode === 'light'
+            ? '#304156'
+            : 'white.100'
+        }>
         {name}
       </Text>
       <Flex flexDir={'column'} mb={'8px'}>
         <Text
           h={'15px'}
           fontSize={11}
-          color={isSelected || isHover ? '#a8cbf8' : '#808992'}>
+          color={
+            isSelected || isHover
+              ? '#a8cbf8'
+              : colorMode === 'light'
+              ? '#808992'
+              : '#9d9ea5'
+          }>
           Token Allocation
         </Text>
         <Text
           h={'20px'}
           fontSize={15}
-          color={isSelected || isHover ? 'white.100' : '#3d495d'}
+          color={
+            isSelected || isHover
+              ? 'white.100'
+              : colorMode === 'light'
+              ? '#3d495d'
+              : 'white.100'
+          }
           fontWeight={600}>
           {commafy(tokenAllocation)}
         </Text>
@@ -147,13 +153,25 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
         <Text
           h={'15px'}
           fontSize={11}
-          color={isSelected || isHover ? '#a8cbf8' : '#808992'}>
+          color={
+            isSelected || isHover
+              ? '#a8cbf8'
+              : colorMode === 'light'
+              ? '#808992'
+              : '#9d9ea5'
+          }>
           Portion
         </Text>
         <Text
           h={'20px'}
           fontSize={15}
-          color={isSelected || isHover ? 'white.100' : '#3d495d'}
+          color={
+            isSelected || isHover
+              ? 'white.100'
+              : colorMode === 'light'
+              ? '#3d495d'
+              : 'white.100'
+          }
           fontWeight={600}>
           {(
             (Number(tokenAllocation.replaceAll(',', '')) * 100) /
