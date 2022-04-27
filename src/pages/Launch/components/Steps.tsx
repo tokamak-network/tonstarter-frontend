@@ -1,4 +1,4 @@
-import {Box, Flex} from '@chakra-ui/react';
+import {Box, Flex, useColorMode} from '@chakra-ui/react';
 import {useEffect, useState} from 'react';
 import tickIcon from 'assets/svgs/tick-icon.svg';
 import {StepComponent} from '@Admin/types';
@@ -6,6 +6,7 @@ import {StepComponent} from '@Admin/types';
 const Steps: React.FC<StepComponent> = (props) => {
   const {stepName, currentStep} = props;
   const [maxStep, setStepMax] = useState(0);
+  const {colorMode} = useColorMode();
 
   useEffect(() => {
     if (currentStep > maxStep) {
@@ -31,14 +32,32 @@ const Steps: React.FC<StepComponent> = (props) => {
               justifyContent="center"
               color={isStep ? 'white.100' : 'gray.575'}
               mr={'12px'}
-              border={isStep ? '' : 'solid 1px #e6eaee'}>
+              border={
+                isStep
+                  ? ''
+                  : colorMode === 'light'
+                  ? 'solid 1px #e6eaee'
+                  : 'solid 1px #373737'
+              }>
               {pastStep && !isStep ? (
                 <img src={tickIcon} alt={'tick_icon'} />
               ) : (
                 <Box>{indexNum}</Box>
               )}
             </Flex>
-            <Box>{step}</Box>
+            <Box
+              fontWeight={isStep ? 'bold' : ''}
+              color={
+                colorMode === 'light'
+                  ? isStep
+                    ? '#354052'
+                    : '#848c98'
+                  : isStep
+                  ? 'white.100'
+                  : '#848c98'
+              }>
+              {step}
+            </Box>
           </Box>
         );
       })}

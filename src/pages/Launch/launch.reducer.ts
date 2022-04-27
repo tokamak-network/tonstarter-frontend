@@ -9,6 +9,7 @@ interface LaunchState {
     selectedVaultIndex: number | undefined;
     projects: any;
     tempVaultData: {};
+    hashKey: string | undefined;
     err: {
       tokenDetail: {
         name: boolean;
@@ -27,6 +28,7 @@ const initialState = {
     selectedVaultIndex: 0,
     projects: [],
     tempVaultData: {},
+    hashKey: undefined,
     err: {
       tokenDetail: {},
     },
@@ -77,6 +79,9 @@ export const launchReducer = createSlice({
     setErr: (state, {payload}: PayloadAction<ProjectPayload>) => {
       state.data.err = payload.data;
     },
+    setHashKey: (state, {payload}: PayloadAction<ProjectPayload>) => {
+      state.data.hashKey = payload.data;
+    },
   },
   extraReducers: {
     [selectVault.pending.type]: (state, action) => {
@@ -105,5 +110,10 @@ export const launchReducer = createSlice({
 });
 // @ts-ignore
 export const selectLaunch = (state: RootState) => state.launch;
-export const {changeVault, fetchProjects, saveTempVaultData, setErr} =
-  launchReducer.actions;
+export const {
+  changeVault,
+  fetchProjects,
+  saveTempVaultData,
+  setErr,
+  setHashKey,
+} = launchReducer.actions;

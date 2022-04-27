@@ -21,6 +21,10 @@ import {selectApp} from 'store/app/app.reducer';
 import {openModal} from 'store/modal.reducer';
 import useTokenDeploy from '@Launch/hooks/useTokenDeploy';
 import commafy from 'utils/commafy';
+import {editProject, saveProject} from '@Launch/utils/saveProject';
+import {selectLaunch} from '@Launch/launch.reducer';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import {useEffect} from 'react';
 
 const DeployToken = () => {
   const theme = useTheme();
@@ -33,12 +37,15 @@ const DeployToken = () => {
   );
   // @ts-ignore
   const {data: appConfig} = useAppSelector(selectApp);
+  const {
+    data: {hashKey},
+  } = useAppSelector(selectLaunch);
   const dispatch = useAppDispatch();
 
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const {isTokenDeployed, tokenName, totalSupply, tokenAddress, tokenSymbol} =
     values;
-  const {setError} = useTokenDeploy();
+  const {account} = useActiveWeb3React();
 
   async function deployToken() {
     try {

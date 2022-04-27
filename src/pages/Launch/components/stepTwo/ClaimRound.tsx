@@ -285,7 +285,7 @@ const ClaimRound = () => {
                         textAlign={'center'}
                         value={
                           inputVals !== undefined &&
-                          inputVals[index].claimTokenAllocation !== undefined
+                          inputVals[index]?.claimTokenAllocation !== undefined
                             ? inputVals[index].claimTokenAllocation
                             : ''
                         }
@@ -322,7 +322,7 @@ const ClaimRound = () => {
                       w={'90px'}
                       alignItems="center"
                       justifyContent="center">
-                      {index === 0 ? (
+                      {index === 0 && claim.length === 1 ? (
                         <Flex
                           w={'24px'}
                           h={'24px'}
@@ -335,6 +335,8 @@ const ClaimRound = () => {
                             img={PlusIconNormal}
                             hoverImg={PlusIconHover}></HoverImage>
                         </Flex>
+                      ) : index === 0 && claim.length > 1 ? (
+                        <div></div>
                       ) : index + 1 !== claim.length ? (
                         <Flex
                           w={'24px'}

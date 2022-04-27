@@ -51,6 +51,8 @@ import VaultLPRewardLogicAbi from 'services/abis/VaultLPRewardLogicAbi.json';
 import {convertNumber, convertToWei} from 'utils/number';
 import commafy from 'utils/commafy';
 import {convertTimeStamp} from 'utils/convertTIme';
+import {selectLaunch} from '@Launch/launch.reducer';
+import {editProject, saveProject} from '@Launch/utils/saveProject';
 
 //Project
 
@@ -421,6 +423,19 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
     }
   }, [vaultType, selectedVaultDetail, values]);
 
+  const {
+    data: {hashKey},
+  } = useAppSelector(selectLaunch);
+
+  // const saveData = useCallback(() => {
+  //   setTimeout(() => {
+  //     console.log(values);
+  //     hashKey === undefined
+  //       ? saveProject(values, account as string)
+  //       : editProject(values, account as string, hashKey);
+  //   }, 2000);
+  // }, [values, hashKey, account]);
+
   const vaultDeploy = useCallback(
     async () => {
       if (account && library && vaultState === 'ready') {
@@ -524,7 +539,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 );
                 setVaultState('readyForToken');
               }
-
               break;
             }
             case 'TON Staker': {
@@ -631,7 +645,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               // 1 : pool : address
               // 2 : rewardToken : address
               // 3 : _admin : address
-              const {InitialLiquidityVault, TOS_ADDRESS} = DEPLOYED;
+              const {TOS_ADDRESS} = DEPLOYED;
               const InitialLiquidity_Contract = new Contract(
                 //@ts-ignore
                 values.vaults[1].vaultAddress,
@@ -754,7 +768,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
       }
 
       if (account && library && vaultState === 'readyForSet') {
-        const vaultContract = getContract(vaultType, library);
         const signer = getSigner(library, account);
 
         try {

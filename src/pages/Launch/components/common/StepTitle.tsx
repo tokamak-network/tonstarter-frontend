@@ -28,7 +28,10 @@ const StepTitle: React.FC<StepTitleProp> = (prop) => {
       textAlign="center"
       verticalAlign={'middle'}
       lineHeight={lineHeight || '36px'}>
-      <Box fontSize={fontSize || 20} color={'black.300'} fontWeight={600}>
+      <Box
+        fontSize={fontSize || 20}
+        color={colorMode === 'light' ? 'black.300' : 'white.100'}
+        fontWeight={600}>
         {title}
       </Box>
       {isSaveButton && (

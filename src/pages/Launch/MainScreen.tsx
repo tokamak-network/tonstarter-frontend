@@ -1,7 +1,7 @@
-import {Box, Button, Flex, useTheme} from '@chakra-ui/react';
+import {Button, Flex, useTheme} from '@chakra-ui/react';
 import {useCallback, useEffect, useState} from 'react';
 import OpenStepOne from '@Launch/components/OpenStepOne';
-import {Formik, Form, useFormikContext} from 'formik';
+import {Formik, Form} from 'formik';
 import useValues from '@Launch/hooks/useValues';
 import type {StepNumber} from '@Launch/types';
 import ProjectSchema from '@Launch/utils/projectSchema';
@@ -9,13 +9,14 @@ import {PageHeader} from 'components/PageHeader';
 import Steps from '@Launch/components/Steps';
 import OpenStepTwo from '@Launch/components/OpenStepTwo';
 import {useRouteMatch} from 'react-router-dom';
-import {useAppSelector} from 'hooks/useRedux';
-import {selectLaunch} from '@Launch/launch.reducer';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {selectLaunch, setHashKey} from '@Launch/launch.reducer';
 import OpenStepThree from '@Launch/components/OpenStepThree';
 import validateFormikValues from '@Launch/utils/validate';
 import {useHistory} from 'react-router-dom';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {saveProject, editProject} from '@Launch/utils/saveProject';
+import useWeb3Token from './hooks/useWeb3Token';
 
 const StepComponent = (props: {step: StepNumber}) => {
   const {step} = props;
@@ -37,24 +38,19 @@ const MainScreen = () => {
   const {initialValues, setInitialValues} = useValues();
   const theme = useTheme();
   const {account} = useActiveWeb3React();
+
   const match = useRouteMatch();
   const {url} = match;
   const isExist = url.split('/')[2];
+  const dispatch = useAppDispatch();
+
   const {
     //@ts-ignore
     params: {id},
   } = match;
   const {
-    data: {projects},
+    data: {projects, hashKey},
   } = useAppSelector(selectLaunch);
-
-  // console.log('--gogo--');
-  // console.log(id);
-  // console.log(projects);
-
-  // useEffect(() => {
-  //   console.log(projects);
-  // }, [projects]);
 
   let historyObj = useHistory();
 
@@ -68,6 +64,12 @@ const MainScreen = () => {
     return () => unBlock();
   }, [historyObj]);
 
+  useEffect(() => {
+    dispatch(
+      setHashKey({data: isExist === 'createproject' ? undefined : isExist}),
+    );
+  }, []);
+
   const handleStep = useCallback(
     (isNext: boolean) => {
       const prevStepNum =
@@ -78,6 +80,16 @@ const MainScreen = () => {
     },
     [step],
   );
+
+  const {web3Token} = useWeb3Token();
+
+  console.log(web3Token);
+
+  const [oldData, setOldData] = useState();
+
+  if (!account) {
+    return <div>You need to connect to the wallet</div>;
+  }
 
   return (
     <Flex
@@ -99,12 +111,20 @@ const MainScreen = () => {
       </Flex>
       <Formik
         initialValues={
-          id && projects ? {...initialValues, ...projects[id]} : initialValues
+          id && projects
+            ? {...initialValues, ...projects[id]}
+            : {...initialValues, ownerAddress: account}
         }
         validationSchema={ProjectSchema}
         validate={(values) => {
-          validateFormikValues(values);
           console.log(values);
+          validateFormikValues(values);
+          if (step === 3 && oldData !== values) {
+            setOldData(values);
+            hashKey === undefined
+              ? saveProject(values, account as string)
+              : editProject(values, account as string, hashKey);
+          }
         }}
         onSubmit={async (data, {setSubmitting}) => {
           setSubmitting(true);
@@ -128,9 +148,16 @@ const MainScreen = () => {
                     disabled={step === 3}
                     mr={step === 1 ? '390px' : '558px'}
                     onClick={() =>
-                      account && isExist === 'createproject'
-                        ? saveProject(values, account)
-                        : editProject(values, account as string, isExist)
+                      account &&
+                      isExist === 'createproject' &&
+                      hashKey === undefined
+                        ? saveProject(values, account, true)
+                        : editProject(
+                            values,
+                            account as string,
+                            hashKey || isExist,
+                            true,
+                          )
                     }>
                     Save
                   </Button>
