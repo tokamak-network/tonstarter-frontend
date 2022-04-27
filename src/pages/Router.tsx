@@ -33,7 +33,7 @@ import {
 import {fetchTosStakes} from '@Dao/dao.reducer';
 import OpenCampagin from '@Launch/index';
 import MainScreen from '@Launch/MainScreen';
-import ProjectScreen from '@Launch/ProjectScreen'
+import ProjectScreen from '@Launch/ProjectScreen';
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
 /*
@@ -200,8 +200,12 @@ export const Router: FC<RouterProps> = () => {
             path={`/opencampagin/createproject`}
             component={MainScreen}
           />
-          <Route exact path={`/opencampagin/project/:name`} component={ProjectScreen} />
-          <Route exact path={`/opencampagin/:id`} component={MainScreen} />
+          <Route
+            exact
+            path={`/opencampagin/project/:name`}
+            component={ProjectScreen}
+          />
+          <Route exact path={`/opencampagin/:id`} component={ProjectScreen} />
           {/* <Route
             exact
             path={`/starter/upcoming/:id`}
