@@ -70,6 +70,7 @@ const InputField: React.FC<InputFieldProp> = (props) => {
           h={`${h}px`}
           focusBorderColor={'#dfe4ee'}
           fontSize={fontSize}
+          _focus={{}}
           placeholder={placeHolder}
           value={value === 'undefined' ? '' : value}
           onChange={(e) => {
@@ -119,7 +120,7 @@ const InputField: React.FC<InputFieldProp> = (props) => {
       focusBorderColor={'#dfe4ee'}
       fontSize={fontSize}
       placeholder={placeHolder}
-      // _focus={{}}
+      _focus={{}}
       ref={(el) => {
         if (inputRef && formikName) {
           if (stosTierLevel) {
