@@ -2,13 +2,22 @@ import {Text, Flex, Box, useColorMode} from '@chakra-ui/react';
 
 import {FC, useRef} from 'react';
 import {useEffect, useMemo, useState} from 'react';
-
+import {useAppSelector} from 'hooks/useRedux';
+import {selectLaunch} from '@Launch/launch.reducer';
 import {MyProjectTable} from './Projects/MyProjectTable';
-
+import {fetchCampaginURL} from 'constants/index';
+import {useQuery} from 'react-query';
+import axios from 'axios';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import {useAppDispatch} from 'hooks/useRedux';
+import {fetchProjects} from '@Launch/launch.reducer';
 const MyProjects = () => {
   // const theme = useTheme();
   // const match = useRouteMatch();
   const {colorMode} = useColorMode();
+  const [projectsData, setProjectsData] = useState<any>([]);
+  const dispatch = useAppDispatch();
+  const {account} = useActiveWeb3React();
 
   const datalll = [
     {
@@ -19,214 +28,95 @@ const MyProjects = () => {
       saleDate: [1650007071, 1650259507],
       status: 'Listed on TONStarter',
       action: 'Edit',
-    },
-    {
-      name: 'where Heckles dies',
-      tokenName: 'Dragons Token',
-      tokenSymbol: 'DoM',
-      totalSupply: 1000000,
-      saleDate: [1650007071, 1650259507],
-      status: 'Deployed',
-      action: 'Listing on TONStarter',
-    },
-    {
-      name: 'with Pheobes husband',
-      tokenName: 'Dragons Token',
-      tokenSymbol: 'DoM',
-      totalSupply: 1000000,
-      saleDate: [1650007071, 1650259507],
-      status: 'Deployed',
-      action: 'Listing on TONStarter',
-    },
-    {
-      name: 'where Ross finds out',
-      tokenName: 'Dragons Token',
-      tokenSymbol: 'DoM',
-      totalSupply: 1000000,
-      saleDate: [1650007071, 1650259507],
-      status: 'Not Deployed',
-      action: 'Done',
-    },
-    {
-      name: 'with the baby on the bus',
-      tokenName: 'Dragons Token',
-      tokenSymbol: 'DoM',
-      totalSupply: 1000000,
-      saleDate: [1650007071, 1650259507],
-      status: 'Deployed',
-      action: 'Edit',
-    },
-    {
-      name: 'with the List',
-      tokenName: 'Dragons Token',
-      tokenSymbol: 'DoM',
-      totalSupply: 1000000,
-      saleDate: [1650007071, 1650259507],
-      status: 'Listed on TONStarter',
-      action: 'Edit',
-    },
-    {
-      name: 'Dragons of midgard',
-      tokenName: 'Dragons Token',
-      tokenSymbol: 'DoM',
-      totalSupply: 1000000,
-      saleDate: [1650007071, 1650259507],
-      status: 'Not Deployed',
-      action: 'Done',
-    },
-    {
-      name: 'Where Eddie Moves In',
-      tokenName: 'Dragons Token',
-      tokenSymbol: 'DoM',
-      totalSupply: 1000000,
-      saleDate: [1650007071, 1650259507],
-      status: 'Deployed',
-      action: 'Listing on TONStarter',
-    },
-    {
-      name: 'Dragons of midgard',
-      tokenName: 'Dragons Token',
-      tokenSymbol: 'DoM',
-      totalSupply: 1000000,
-      saleDate: [1650007071, 1650259507],
-      status: 'Listed on TONStarter',
-      action: 'Edit',
-    },
-    {
-      name: 'Where Rachel Quits',
-      tokenName: 'Dragons Token',
-      tokenSymbol: 'DoM',
-      totalSupply: 1000000,
-      saleDate: [1650007071, 1650259507],
-      status: 'Deployed',
-      action: 'Done',
-    },
-    {
-      name: 'at the Beach',
-      tokenName: 'Dragons Token',
-      tokenSymbol: 'DoM',
-      totalSupply: 1000000,
-      saleDate: [1650007071, 1650259507],
-      status: 'Deployed',
-      action: 'Edit',
-    },
-    {
-      name: 'with the Fake Party',
-      tokenName: 'Dragons Token',
-      tokenSymbol: 'DoM',
-      totalSupply: 1000000,
-      saleDate: [1650007071, 1650259507],
-      status: 'Listed on TONStarter',
-      action: 'Listing on TONStarter',
-    },
-    {
-      name: 'where Heckles dies',
-      tokenName: 'Dragons Token',
-      tokenSymbol: 'DoM',
-      totalSupply: 1000000,
-      saleDate: [1650007071, 1650259507],
-      status: 'Deployed',
-      action: 'Listing on TONStarter',
-    },
-    {
-      name: 'Dragons of midgard',
-      tokenName: 'Dragons Token',
-      tokenSymbol: 'DoM',
-      totalSupply: 1000000,
-      saleDate: [1650007071, 1650259507],
-      status: 'Listed on TONStarter',
-      action: 'Edit',
-    },
-    {
-      name: 'with Pheobes husband',
-      tokenName: 'Dragons Token',
-      tokenSymbol: 'DoM',
-      totalSupply: 1000000,
-      saleDate: [1650007071, 1650259507],
-      status: 'Deployed',
-      action: 'Listing on TONStarter',
-    },
-    {
-      name: 'where Ross finds out',
-      tokenName: 'Dragons Token',
-      tokenSymbol: 'DoM',
-      totalSupply: 1000000,
-      saleDate: [1650007071, 1650259507],
-      status: 'Not Deployed',
-      action: 'Done',
-    },
-    {
-      name: 'with the baby on the bus',
-      tokenName: 'Dragons Token',
-      tokenSymbol: 'DoM',
-      totalSupply: 1000000,
-      saleDate: [1650007071, 1650259507],
-      status: 'Deployed',
-      action: 'Edit',
-    },
-    {
-      name: 'with the List',
-      tokenName: 'Dragons Token',
-      tokenSymbol: 'DoM',
-      totalSupply: 1000000,
-      saleDate: [1650007071, 1650259507],
-      status: 'Listed on TONStarter',
-      action: 'Edit',
-    },
-    {
-      name: 'Dragons of midgard',
-      tokenName: 'Dragons Token',
-      tokenSymbol: 'DoM',
-      totalSupply: 1000000,
-      saleDate: [1650007071, 1650259507],
-      status: 'Not Deployed',
-      action: 'Done',
-    },
+    }
   ];
+const {data, isLoading, error} = useQuery(
+    ['test'],
+    () =>
+      axios.get(fetchCampaginURL, {
+        headers: {
+          account,
+        },
+      }),
+    {
+      enabled: !!account,
+      //refetch every 10min
+      refetchInterval: 600000,
+    },
+  );
+  const {
+    data: {projects},
+  } = useAppSelector(selectLaunch);
 
-  const dummyData: {
-    data: any;
-    columns: any;
-    isLoading: boolean;
-  } = {
-    data: datalll,
-    columns: useMemo(
-      () => [
-        {
-          Header: 'Project Name',
-          accessor: 'name',
-        },
-        {
-          Header: 'Token Name',
-          accessor: 'tokenName',
-        },
-        {
-          Header: 'Token Symbol',
-          accessor: 'tokenSymbol',
-        },
-        {
-          Header: 'Token Supply',
-          accessor: 'totalSupply',
-        },
-        {
-          Header: 'Sale Date',
-          accessor: 'saleDate',
-        },
-        {
-          Header: 'Status',
-          accessor: 'status',
-        },
-        {
-          Header: 'Action',
-          accessor: 'action',
-        },
-      ],
-      [],
-    ),
-    isLoading: false,
-  };
+  useEffect(() => {
+    if (data) {
+      const {data: datas} = data;
+      dispatch(fetchProjects({data: datas}));
+       const projs = Object.keys(datas).map((k) => {
+        console.log(datas[k].vaults[0].publicRound1);
+        
+        return {
+          key: k,
+          name: datas[k].projectName,
+          tokenName: datas[k].tokenName,
+          tokenSymbol: datas[k].tokenSymbol,
+          totalSupply: datas[k].totalSupply,
+          owner: datas[k].ownerAddress,
+          saleDate: [datas[k].vaults[0].whitelist, datas[k].vaults[0].publicRound2End],
+          whiteList: datas[k].vaults[0].whitelist,
+          public2End: datas[k].vaults[0].publicRound2End,
+          status: datas[k].isAllDeployed,
+        };
+      });
+     
+      console.log('projs',projs);
+      const MyProjs = projs.filter(
+        (pro: any) => pro.owner === account,
+      );
+      console.log('MyProjs',MyProjs);
+      
+      setProjectsData(MyProjs);
+    }
+  }, [data, dispatch]);
 
-  const {data, columns, isLoading} = dummyData;
+  const columns = useMemo(
+    () => [
+      {
+        Header: 'Project Name',
+        accessor: 'name',
+      },
+      {
+        Header: 'Token Name',
+        accessor: 'tokenName',
+      },
+      {
+        Header: 'Token Symbol',
+        accessor: 'tokenSymbol',
+      },
+      {
+        Header: 'Token Supply',
+        accessor: 'totalSupply',
+      },
+      {
+        Header: 'Sale Date',
+        accessor: 'saleDate',
+      },
+      {
+        Header: 'Status',
+        accessor: 'status',
+      },
+      {
+        Header: 'Action',
+        accessor: 'action',
+      },
+      // {
+      //   Header: 'Key',
+      //   accessor: 'key',
+      // },
+    ],
+    [],
+  );
+  
   return (
     <Flex
       flexDir={'row'}
@@ -243,7 +133,7 @@ const MyProjects = () => {
           Owned Projects
         </Text>
         <Box mt={'20px'}>
-          <MyProjectTable data={data} columns={columns} isLoading={isLoading} />
+          <MyProjectTable data={projectsData} columns={columns} isLoading={isLoading} />
         </Box>
       </Box>
     </Flex>

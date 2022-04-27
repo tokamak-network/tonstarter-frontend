@@ -12,7 +12,7 @@ import {
   Button,
 } from '@chakra-ui/react';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
-
+import {Link, useRouteMatch} from 'react-router-dom';
 import {FC, useRef} from 'react';
 // import {useCallback, useEffect, useMemo, useState} from 'react';
 // import {PageHeader} from 'components/PageHeader';
@@ -29,6 +29,7 @@ import {
   useTable,
   useSortBy,
 } from 'react-table';
+import {number} from 'prop-types';
 
 type MyProjectTableProps = {
   columns: Column[];
@@ -61,7 +62,8 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
     useExpanded,
     usePagination,
   );
-
+  const match = useRouteMatch();
+  const {url} = match;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const focusTarget = useRef<any>([]);
@@ -135,6 +137,8 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
             display="flex"
             flexDirection="column">
             {page.map((row: any, i) => {
+              console.log('row',row);
+              
               prepareRow(row);
               return [
                 <chakra.tr
@@ -160,6 +164,8 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                   alignItems="center"
                   {...row.getRowProps()}>
                   {row.cells.map((cell: any, index: number) => {
+                    console.log('cell', cell);
+                    
                     const {
                       name,
                       tokenName,
@@ -168,6 +174,7 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                       saleDate,
                       status,
                       action,
+                      key
                     } = cell.row.original;
 
                     const type = cell.column.id;
@@ -209,7 +216,7 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                         {type === 'tokenName' && tokenName}
                         {type === 'tokenSymbol' && tokenSymbol}
                         {type === 'totalSupply' &&
-                          totalSupply.toLocaleString(undefined, {
+                          Number(totalSupply).toLocaleString(undefined, {
                             minimumFractionDigits: 0,
                           })}
                         {type === 'saleDate' &&
@@ -218,9 +225,10 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                             .format('YYYY.MM.DD')} ~ ${moment
                             .unix(saleDate[1])
                             .format('YYYY.MM.DD')}`}
-                        {type === 'status' && status}
+                        {type === 'status' &&
+                          (status === true ? 'Deployed' : 'Not Deployed')}
                         {type === 'action' &&
-                          (action === 'Listing on TONStarter' ? (
+                          (status === true ? (
                             <Button
                               w={'136px'}
                               h={'25px'}
@@ -230,20 +238,35 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                               fontSize={'12px'}
                               _hover={{bg: '#257eee'}}
                               _active={{bg: '#257eee'}}>
-                              Listing on TONStarter
+                              List on TONStarter
                             </Button>
-                          ) :action === 'Edit' ? <Button
-                          w={'136px'}
-                          fontWeight={'normal'}
-                          h={'25px'}
-                          bg={'transparent'}
-                          color={'#2a72e5'}
-                          fontSize={'12px'}
-                          border={'solid 1px #2a72e5'}
-                          _hover={{bg: 'transparent'}}
-                          _active={{bg: 'transparent'}}>
-                          Edit
-                        </Button> :<Text w={'136px'}  h={'25px'} borderRadius={'4px'} bg={'#e9edf1'} justifyContent={'center'} alignItems={'center'} pt={'4px'}>Done</Text> )}
+                          ) : status === false ? (
+                            <Link to={`${url}/${key}`}>
+                              <Button
+                                w={'136px'}
+                                fontWeight={'normal'}
+                                h={'25px'}
+                                bg={'transparent'}
+                                color={'#2a72e5'}
+                                fontSize={'12px'}
+                                border={'solid 1px #2a72e5'}
+                                _hover={{bg: 'transparent'}}
+                                _active={{bg: 'transparent'}}>
+                                Edit
+                              </Button>
+                            </Link>
+                          ) : (
+                            <Text
+                              w={'136px'}
+                              h={'25px'}
+                              borderRadius={'4px'}
+                              bg={'#e9edf1'}
+                              justifyContent={'center'}
+                              alignItems={'center'}
+                              pt={'4px'}>
+                              Done
+                            </Text>
+                          ))}
                       </chakra.td>
                     );
                   })}
@@ -291,19 +314,19 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
               color={colorMode === 'light' ? '#3a495f' : '#949494'}
               pb={'3px'}>
               <Text flexShrink={0}>
-                  Page{' '}
-                  <Text fontWeight="bold" as="span" color={'blue.300'}>
-                    {pageIndex + 1}
-                  </Text>{' '}
-                  of{' '}
-                  <Text fontWeight="bold" as="span">
-                    {pageOptions.length}
-                  </Text>
+                Page{' '}
+                <Text fontWeight="bold" as="span" color={'blue.300'}>
+                  {pageIndex + 1}
+                </Text>{' '}
+                of{' '}
+                <Text fontWeight="bold" as="span">
+                  {pageOptions.length}
                 </Text>
+              </Text>
             </Flex>
 
             <Flex>
-            <Tooltip label="Next Page">
+              <Tooltip label="Next Page">
                 <Center>
                   <IconButton
                     w={'24px'}

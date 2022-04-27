@@ -243,6 +243,7 @@ type ProjectCardType = {
     tokenName: string;
     tokenSymbol: string;
     tosPrice: number;
+    totalSupply: number;
     totalTokenAllocation: String;
     vaults: VaultAny[];
 
