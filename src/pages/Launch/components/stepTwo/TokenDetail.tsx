@@ -388,7 +388,11 @@ const STOSTier = (props: {
               textAlign={'center'}
               lineHeight={'32px'}
               fontWeight={100}>
-              {`(${percent.toFixed(3).replace(/\.(\d\d)\d?$/, '.$1') || '-'}%)`}
+              {isNaN(percent)
+                ? '(- %)'
+                : `(${
+                    percent.toFixed(3).replace(/\.(\d\d)\d?$/, '.$1') || '-'
+                  }%)`}
             </Text>
           </Flex>
         </>
@@ -403,11 +407,13 @@ const STOSTier = (props: {
               textAlign={'center'}
               lineHeight={'32px'}
               fontWeight={100}>
-              {`(${
-                Number(percent)
-                  .toFixed(3)
-                  .replace(/\.(\d\d)\d?$/, '.$1') || '-'
-              }%)`}
+              {isNaN(percent)
+                ? '(- %)'
+                : `(${
+                    Number(percent)
+                      .toFixed(3)
+                      .replace(/\.(\d\d)\d?$/, '.$1') || '-'
+                  }%)`}
             </Text>
           </Flex>
         </>
@@ -547,6 +553,9 @@ const PublicTokenDetail = (props: {
     }
   }, [selectedVaultType, tempVaultData, selectedVaultDetail]);
 
+  console.log(selectedVaultDetail);
+  console.log(values.totalTokenAllocation);
+
   return (
     <Grid
       {...OpenCampaginDesign.border({colorMode})}
@@ -559,12 +568,16 @@ const PublicTokenDetail = (props: {
           rightTitle={`${commafy(selectedVaultDetail?.vaultTokenAllocation)} ${
             values.tokenName
           }`}
-          subTitle={`(${(
-            (Number(selectedVaultDetail?.vaultTokenAllocation) * 100) /
-            values.totalTokenAllocation
-          )
-            .toString()
-            .match(/^\d+(?:\.\d{0,2})?/)}%)`}></MainTitle>
+          subTitle={
+            selectedVaultDetail?.vaultTokenAllocation === 0
+              ? '-'
+              : `(${(
+                  (Number(selectedVaultDetail?.vaultTokenAllocation) * 100) /
+                  values.totalTokenAllocation
+                )
+                  .toString()
+                  .match(/^\d+(?:\.\d{0,2})?/)}%)`
+          }></MainTitle>
         {firstColData?.map(
           (
             data: {

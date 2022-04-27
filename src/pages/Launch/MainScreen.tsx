@@ -87,6 +87,10 @@ const MainScreen = () => {
 
   const [oldData, setOldData] = useState();
 
+  if (!account) {
+    return <div>You need to connect to the wallet</div>;
+  }
+
   return (
     <Flex
       flexDir={'column'}
@@ -107,7 +111,9 @@ const MainScreen = () => {
       </Flex>
       <Formik
         initialValues={
-          id && projects ? {...initialValues, ...projects[id]} : initialValues
+          id && projects
+            ? {...initialValues, ...projects[id]}
+            : {...initialValues, ownerAddress: account}
         }
         validationSchema={ProjectSchema}
         validate={(values) => {

@@ -1,4 +1,11 @@
-import {Flex, useTheme, Box, Grid, GridItem} from '@chakra-ui/react';
+import {
+  Flex,
+  useTheme,
+  Box,
+  Grid,
+  GridItem,
+  useColorMode,
+} from '@chakra-ui/react';
 import {useEffect} from 'react';
 import type {Projects} from '@Launch/types';
 import InputComponent from '@Launch/components/common/InputComponent';
@@ -16,8 +23,16 @@ const filedNameList = [
 
 const OpenStepOne = () => {
   const {theme} = useTheme();
+  const {colorMode} = useColorMode();
   return (
-    <Flex p={'35px'} pt={'24px'} w={'774px'} bg={'white.100'} flexDir="column">
+    <Flex
+      p={'35px'}
+      pt={'24px'}
+      w={'774px'}
+      bg={colorMode === 'light' ? 'white.100' : 'none'}
+      borderRadius={'10px'}
+      border={colorMode === 'light' ? '' : '1px solid #373737'}
+      flexDir="column">
       <Box mb={'23px'}>
         <StepTitle title={'Project & Token'} isSaveButton={false}></StepTitle>
       </Box>

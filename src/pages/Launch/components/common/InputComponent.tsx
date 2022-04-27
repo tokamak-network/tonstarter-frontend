@@ -12,7 +12,7 @@ type InputComponentProps = {
 const InputComponentStyle = {
   color: {
     light: '#2d3136',
-    dark: '#2d3136',
+    dark: '#f3f4f1',
   },
 };
 
