@@ -81,9 +81,7 @@ const MainScreen = () => {
     [step],
   );
 
-  const {web3Token} = useWeb3Token();
-
-  console.log(web3Token);
+  // const {web3Token} = useWeb3Token();
 
   const [oldData, setOldData] = useState();
 
