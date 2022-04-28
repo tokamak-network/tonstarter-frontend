@@ -205,7 +205,7 @@ export const Router: FC<RouterProps> = () => {
             path={`/opencampagin/project/:name`}
             component={ProjectScreen}
           />
-          <Route exact path={`/opencampagin/:id`} component={ProjectScreen} />
+          <Route exact path={`/opencampagin/:id`} component={MainScreen} />
           {/* <Route
             exact
             path={`/starter/upcoming/:id`}
