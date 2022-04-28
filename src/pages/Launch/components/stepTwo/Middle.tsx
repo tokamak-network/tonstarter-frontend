@@ -84,7 +84,10 @@ const Middle = () => {
               w={'100px'}
               h={'32px'}
               text={'Cancel'}
-              style={{bg: '#e9edf1', color: '#3a495f'}}
+              style={{
+                bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+                color: colorMode === 'light' ? '#3a495f' : '#f3f4f1',
+              }}
               func={() => {
                 setIsEdit(false);
                 dispatch(

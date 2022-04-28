@@ -1,17 +1,33 @@
 import {Box, Flex, Text, useColorMode, useTheme} from '@chakra-ui/react';
-import {Projects, VaultAny} from '@Launch/types';
+import {Projects} from '@Launch/types';
 import {useFormikContext} from 'formik';
 import {useEffect, useState} from 'react';
 import commafy from 'utils/commafy';
 
-const middleStyle = {
-  border: 'solid 1px #eff1f6',
+const overviewTableStyle = {
+  border: {
+    light: '1px solid #eff1f6',
+    dark: '1px solid #373737',
+  },
+  fontColor: {
+    light: '#3d495d',
+    dark: '#ffffff',
+  },
+  cellBgColor: {
+    light: {
+      odd: '#ffffff',
+      even: '#fafbfc',
+    },
+    dark: {
+      odd: '#222',
+      even: '#262626',
+    },
+  },
 };
 
 const OverviewTable = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const {OpenCampaginDesign} = theme;
   const {values} = useFormikContext<Projects['CreateProject']>();
   const vaultsList = values.vaults;
   const [tableData, setTableData] = useState<any>([]);
@@ -72,26 +88,33 @@ const OverviewTable = () => {
     <Box
       d="flex"
       textAlign="center"
-      border={middleStyle.border}
+      border={overviewTableStyle.border[colorMode]}
       lineHeight={'42px'}>
       <Flex
         fontSize={12}
-        color={'#3d495d'}
+        color={overviewTableStyle.fontColor[colorMode]}
         flexDir={'column'}
         fontWeight={600}
-        // borderBottom={middleStyle.border}
+        // borderBottom={overviewTableStyle.border[colorMode]}
         w={'90px'}>
-        <Text fontSize={12} borderRight={middleStyle.border} w={'90px'}>
+        <Text
+          fontSize={12}
+          borderRight={overviewTableStyle.border[colorMode]}
+          w={'90px'}>
           Round
         </Text>
         {columnLength.map((data: any, index: number) => {
           return (
             <Text
-              borderTop={middleStyle.border}
-              borderRight={middleStyle.border}
+              borderTop={overviewTableStyle.border[colorMode]}
+              borderRight={overviewTableStyle.border[colorMode]}
               fontSize={13}
               h={'42px'}
-              bg={index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'}>
+              bg={
+                index === 0 || index % 2 === 0
+                  ? overviewTableStyle.cellBgColor[colorMode].even
+                  : overviewTableStyle.cellBgColor[colorMode].odd
+              }>
               {index > 9 ? index + 1 : `0${index + 1}`}
             </Text>
           );
@@ -102,9 +125,13 @@ const OverviewTable = () => {
           color={'#353c48'}
           fontWeight={600}
           h={'50px'}
-          borderTop={middleStyle.border}
-          borderRight={middleStyle.border}
-          bg={totalColData.length % 2 === 0 ? '#fafbfc' : '#ffffff'}>
+          borderTop={overviewTableStyle.border[colorMode]}
+          borderRight={overviewTableStyle.border[colorMode]}
+          bg={
+            totalColData.length % 2 === 0
+              ? overviewTableStyle.cellBgColor[colorMode].even
+              : overviewTableStyle.cellBgColor[colorMode].odd
+          }>
           Sum
         </Text>
       </Flex>
@@ -134,24 +161,28 @@ const OverviewTable = () => {
           return (
             <Flex
               fontSize={12}
-              color={'#3d495d'}
+              color={overviewTableStyle.fontColor[colorMode]}
               flexDir={'column'}
               fontWeight={600}
               minW={name.length > 10 ? '140px' : '120px'}>
               <Text
                 fontSize={12}
-                borderBottom={middleStyle.border}
-                borderRight={middleStyle.border}>
+                borderBottom={overviewTableStyle.border[colorMode]}
+                borderRight={overviewTableStyle.border[colorMode]}>
                 {name}
               </Text>
               {claim.map((claimData: any, index: number) => {
                 return (
                   <Text
-                    borderBottom={middleStyle.border}
-                    borderRight={middleStyle.border}
+                    borderBottom={overviewTableStyle.border[colorMode]}
+                    borderRight={overviewTableStyle.border[colorMode]}
                     fontSize={13}
                     h={'42px'}
-                    bg={index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'}>
+                    bg={
+                      index === 0 || index % 2 === 0
+                        ? overviewTableStyle.cellBgColor[colorMode].even
+                        : overviewTableStyle.cellBgColor[colorMode].odd
+                    }>
                     {commafy(claimData.claimTokenAllocation) || '-'}
                   </Text>
                 );
@@ -160,8 +191,8 @@ const OverviewTable = () => {
                 if (claim[index] === undefined) {
                   return (
                     <Text
-                      borderBottom={middleStyle.border}
-                      borderRight={middleStyle.border}
+                      borderBottom={overviewTableStyle.border[colorMode]}
+                      borderRight={overviewTableStyle.border[colorMode]}
                       fontSize={13}
                       h={'42px'}
                       bg={
@@ -174,9 +205,13 @@ const OverviewTable = () => {
               })}
               <Text
                 fontSize={13}
-                marginTop={middleStyle.border}
-                borderRight={middleStyle.border}
-                bg={totalColData.length % 2 === 0 ? '#fafbfc' : '#ffffff'}>
+                marginTop={overviewTableStyle.border[colorMode]}
+                borderRight={overviewTableStyle.border[colorMode]}
+                bg={
+                  totalColData.length % 2 === 0
+                    ? overviewTableStyle.cellBgColor[colorMode].even
+                    : overviewTableStyle.cellBgColor[colorMode].odd
+                }>
                 {commafy(
                   claim.reduce((acc: any, cur: any, index: number) => {
                     if (cur?.claimTokenAllocation) {
@@ -191,11 +226,11 @@ const OverviewTable = () => {
         })}
         <Flex
           fontSize={12}
-          color={'#3d495d'}
+          color={overviewTableStyle.fontColor[colorMode]}
           flexDir={'column'}
           fontWeight={600}
           minW={'120px'}
-          borderRight={middleStyle.border}>
+          borderRight={overviewTableStyle.border[colorMode]}>
           <Text fontSize={12}>Total</Text>
           {totalColData.map((roundTotal: number[], index: number) => {
             const sumWithInitial = roundTotal.reduce(
@@ -209,22 +244,26 @@ const OverviewTable = () => {
                 return (
                   <>
                     <Text
-                      borderTop={middleStyle.border}
-                      // borderRight={middleStyle.border}
+                      borderTop={overviewTableStyle.border[colorMode]}
+                      // borderRight={overviewTableStyle.border[colorMode]}
                       h={'42px'}
                       fontSize={13}
                       bg={
-                        index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'
+                        index === 0 || index % 2 === 0
+                          ? overviewTableStyle.cellBgColor[colorMode].even
+                          : overviewTableStyle.cellBgColor[colorMode].odd
                       }>
                       {commafy(sumWithInitial)}
                     </Text>
                     <Text
-                      borderTop={middleStyle.border}
-                      // borderRight={middleStyle.border}
+                      borderTop={overviewTableStyle.border[colorMode]}
+                      // borderRight={overviewTableStyle.border[colorMode]}
                       h={'42px'}
                       fontSize={13}
                       bg={
-                        index === 0 || index % 2 === 0 ? '#ffffff' : '#fafbfc'
+                        index === 0 || index % 2 === 0
+                          ? overviewTableStyle.cellBgColor[colorMode].even
+                          : overviewTableStyle.cellBgColor[colorMode].odd
                       }>
                       {commafy(sumColumn)}
                     </Text>
@@ -234,25 +273,25 @@ const OverviewTable = () => {
                 return (
                   <>
                     <Text
-                      borderTop={middleStyle.border}
-                      // borderRight={middleStyle.border}
-                      borderBottom={middleStyle.border}
+                      borderTop={overviewTableStyle.border[colorMode]}
+                      // borderRight={overviewTableStyle.border[colorMode]}
+                      borderBottom={overviewTableStyle.border[colorMode]}
                       h={'43px'}
                       fontSize={13}
                       bg={
-                        index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'
+                        index === 0 || index % 2 === 0
+                          ? overviewTableStyle.cellBgColor[colorMode].even
+                          : overviewTableStyle.cellBgColor[colorMode].odd
                       }>
                       -
                     </Text>
                     <Text
-                      // borderTop={middleStyle.border}
-                      // borderRight={middleStyle.border}
-                      // borderBottom={middleStyle.border}
-
                       h={'43px'}
                       fontSize={13}
                       bg={
-                        index === 0 || index % 2 === 0 ? '#ffffff' : '#fafbfc'
+                        index === 0 || index % 2 === 0
+                          ? overviewTableStyle.cellBgColor[colorMode].even
+                          : overviewTableStyle.cellBgColor[colorMode].odd
                       }>
                       -
                     </Text>
@@ -264,22 +303,30 @@ const OverviewTable = () => {
             if (sumWithInitial !== 0) {
               return (
                 <Text
-                  borderTop={middleStyle.border}
-                  // borderRight={middleStyle.border}
+                  borderTop={overviewTableStyle.border[colorMode]}
+                  // borderRight={overviewTableStyle.border[colorMode]}
                   h={'42px'}
                   fontSize={13}
-                  bg={index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'}>
+                  bg={
+                    index === 0 || index % 2 === 0
+                      ? overviewTableStyle.cellBgColor[colorMode].even
+                      : overviewTableStyle.cellBgColor[colorMode].odd
+                  }>
                   {commafy(sumWithInitial)}
                 </Text>
               );
             } else {
               return (
                 <Text
-                  borderTop={middleStyle.border}
-                  // borderRight={middleStyle.border}
+                  borderTop={overviewTableStyle.border[colorMode]}
+                  // borderRight={overviewTableStyle.border[colorMode]}
                   h={'42px'}
                   fontSize={13}
-                  bg={index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'}>
+                  bg={
+                    index === 0 || index % 2 === 0
+                      ? overviewTableStyle.cellBgColor[colorMode].even
+                      : overviewTableStyle.cellBgColor[colorMode].odd
+                  }>
                   -
                 </Text>
               );
@@ -288,11 +335,11 @@ const OverviewTable = () => {
         </Flex>
         <Flex
           fontSize={12}
-          color={'#3d495d'}
+          color={overviewTableStyle.fontColor[colorMode]}
           flexDir={'column'}
           fontWeight={600}
           minW={'120px'}
-          // borderBottom={middleStyle.border}
+          // borderBottom={overviewTableStyle.border[colorMode]}
         >
           <Text fontSize={12}>Accumulated</Text>
           {totalColData.map((roundTotal: number[], index: number) => {
@@ -313,11 +360,15 @@ const OverviewTable = () => {
               return (
                 <>
                   <Text
-                    borderTop={middleStyle.border}
-                    // borderRight={middleStyle.border}
+                    borderTop={overviewTableStyle.border[colorMode]}
+                    // borderRight={overviewTableStyle.border[colorMode]}
                     h={'42px'}
                     fontSize={13}
-                    bg={index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'}>
+                    bg={
+                      index === 0 || index % 2 === 0
+                        ? overviewTableStyle.cellBgColor[colorMode].even
+                        : overviewTableStyle.cellBgColor[colorMode].odd
+                    }>
                     {totalAcc.map((data: number, i: number) => {
                       if (i <= index) {
                         sumNum += data;
@@ -326,14 +377,14 @@ const OverviewTable = () => {
                     {sumNum !== 0 ? commafy(sumNum) : '-'}
                   </Text>
                   <Text
-                    borderTop={middleStyle.border}
-                    // borderRight={middleStyle.border}
+                    borderTop={overviewTableStyle.border[colorMode]}
+                    // borderRight={overviewTableStyle.border[colorMode]}
                     h={'42px'}
                     fontSize={13}
                     bg={
                       index + 1 === 0 || (index + 1) % 2 === 0
-                        ? '#fafbfc'
-                        : '#ffffff'
+                        ? overviewTableStyle.cellBgColor[colorMode].even
+                        : overviewTableStyle.cellBgColor[colorMode].odd
                     }>
                     {sumNum !== 0 ? commafy(sumNum) : '-'}
                   </Text>
@@ -343,11 +394,15 @@ const OverviewTable = () => {
 
             return (
               <Text
-                borderTop={middleStyle.border}
-                // borderRight={middleStyle.border}
+                borderTop={overviewTableStyle.border[colorMode]}
+                // borderRight={overviewTableStyle.border[colorMode]}
                 h={'42px'}
                 fontSize={13}
-                bg={index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'}>
+                bg={
+                  index === 0 || index % 2 === 0
+                    ? overviewTableStyle.cellBgColor[colorMode].even
+                    : overviewTableStyle.cellBgColor[colorMode].odd
+                }>
                 {totalAcc.map((data: number, i: number) => {
                   if (i <= index) {
                     sumNum += data;

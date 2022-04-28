@@ -1,14 +1,21 @@
 import {Box, Flex, useColorMode, useTheme, Button} from '@chakra-ui/react';
 import StepTitle from '@Launch/components/common/StepTitle';
-import {Projects} from '@Launch/types';
-import {useFormikContext} from 'formik';
 import {useState} from 'react';
 import OverviewTable from './OverviewTable';
 import OverviewChart from './OverviewChart';
 
+const OverviewDesign = {
+  border: {
+    light: '1px solid #d7d9df',
+    dark: '1px solid #535353',
+  },
+};
+
 const Overview = () => {
   const theme = useTheme();
+  const {colorMode} = useColorMode();
   const [showTable, setShowTable] = useState<boolean>(true);
+
   return (
     <Flex flexDir={'column'} width={'1040px'}>
       <Flex mb={'15px'} justifyContent={'space-between'}>
@@ -18,7 +25,7 @@ const Overview = () => {
             w={'70px'}
             h={'26px'}
             bg={'transparent'}
-            border={'solid 1px #d7d9df'}
+            border={OverviewDesign.border[colorMode]}
             borderRight={'none'}
             borderRadius={'3px 0px 0px 3px'}
             fontSize={'12px'}
@@ -39,7 +46,7 @@ const Overview = () => {
             w={'70px'}
             h={'26px'}
             bg={'transparent'}
-            border={'solid 1px #d7d9df'}
+            border={OverviewDesign.border[colorMode]}
             borderLeft={'none'}
             borderRadius={'0px 3px 3px 0px'}
             fontSize={'12px'}
