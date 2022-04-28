@@ -1,12 +1,10 @@
-import {Flex, useTheme, Button, Grid, GridItem, Text} from '@chakra-ui/react';
+import {Flex} from '@chakra-ui/react';
 import {useQuery} from 'react-query';
 import axios from 'axios';
 import {fetchCampaginURL} from 'constants/index';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect, useState} from 'react';
-import MainScreen from '@Launch/MainScreen';
-import useWeb3Token from '@Launch/hooks/useWeb3Token';
-import {Link, useRouteMatch} from 'react-router-dom';
+import {useRouteMatch} from 'react-router-dom';
 import {fetchProjects} from '@Launch/launch.reducer';
 import {useAppDispatch} from 'hooks/useRedux';
 import LaunchPage from '@Launch/LaunchPage';
@@ -20,7 +18,7 @@ const OpenCampagin = () => {
   const [originData, setOriginData] = useState<any>(undefined);
 
   const {data, isLoading, error} = useQuery(
-    ['test'],
+    ['launchProjects'],
     () =>
       axios.get(fetchCampaginURL, {
         headers: {

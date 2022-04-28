@@ -106,7 +106,13 @@ const DeployToken = () => {
         <Text
           fontSize={60}
           h={'79px'}
-          color={isTokenDeployed ? 'white.100' : 'black.300'}
+          color={
+            isTokenDeployed
+              ? 'white.100'
+              : colorMode === 'light'
+              ? 'black.300'
+              : 'white.100'
+          }
           fontWeight={600}
           mb={'186px'}>
           {tokenName}
@@ -125,14 +131,24 @@ const DeployToken = () => {
             _focus={{
               outline: 'none',
             }}
-            _hover={{}}
+            _hover={{
+              color: isTokenDeployed ? '#0070ed' : {},
+            }}
             href={`${appConfig.explorerLink}${tokenAddress}`}
-            color={isTokenDeployed ? 'white.100' : 'gray.250'}
+            color={
+              isTokenDeployed
+                ? 'white.100'
+                : colorMode === 'light'
+                ? 'gray.250'
+                : 'white.100'
+            }
             fontSize={22}
             w={'144px'}
             h={'29px'}
             fontWeight={600}
-            borderBottom={'1px solid #fff'}>
+            textDecoration={isTokenDeployed ? 'underline' : {}}
+            // borderBottom={'1px solid #fff'}
+          >
             {tokenAddress ? shortenAddress(tokenAddress) : '-'}
           </Link>
         </Box>
@@ -146,7 +162,13 @@ const DeployToken = () => {
               Total Supply
             </Text>
             <Text
-              color={isTokenDeployed ? 'white.100' : 'gray.250'}
+              color={
+                isTokenDeployed
+                  ? 'white.100'
+                  : colorMode === 'light'
+                  ? 'gray.250'
+                  : 'white.100'
+              }
               fontSize={22}
               h={'29px'}
               fontWeight={600}>

@@ -35,7 +35,7 @@ const StepComponent = (props: {step: StepNumber}) => {
 const MainScreen = () => {
   const [step, setStep] = useState<StepNumber>(1);
   const [isDisable, setDisable] = useState<boolean>(false);
-  const {initialValues, setInitialValues} = useValues();
+  const {initialValues} = useValues();
   const theme = useTheme();
   const {account} = useActiveWeb3React();
 
@@ -107,6 +107,7 @@ const MainScreen = () => {
             currentStep={step}></Steps>
         </Flex>
       </Flex>
+      {console.log(id && projects)}
       <Formik
         initialValues={
           id && projects

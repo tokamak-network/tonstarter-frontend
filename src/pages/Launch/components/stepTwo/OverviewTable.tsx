@@ -122,7 +122,7 @@ const OverviewTable = () => {
         <Text
           fontSize={13}
           marginTop={'auto'}
-          color={'#353c48'}
+          color={colorMode === 'light' ? '#353c48' : 'white.100'}
           fontWeight={600}
           h={'50px'}
           borderTop={overviewTableStyle.border[colorMode]}

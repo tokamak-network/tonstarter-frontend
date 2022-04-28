@@ -28,6 +28,7 @@ type LaunchModal =
   | 'Launch_PieChartModal'
   | 'Launch_CreateRewardProgram'
   | 'Launch_Download'
+  | 'Launch_ConfirmTerms';
 
 type GeneralModal = 'calendar';
 type RewardModal = 'search';

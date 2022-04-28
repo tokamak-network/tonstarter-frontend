@@ -1193,7 +1193,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
       <Flex flexDir={'column'}>
         <Box d="flex" justifyContent={'space-between'}>
           <Text fontSize={13} h={'18px'}>
-            Vauts
+            Vaults
           </Text>
           <Text fontSize={12} h={'16px'} color={colorScheme.titleColor}>
             {statusTitle}
@@ -1202,7 +1202,13 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
         <Text
           fontSize={28}
           h={'37px'}
-          color={vaultState === 'finished' ? 'white.100' : 'black.300'}
+          color={
+            vaultState === 'finished'
+              ? 'white.100'
+              : colorMode === 'light'
+              ? 'black.300'
+              : 'white.100'
+          }
           fontWeight={600}
           mb={'48px'}>
           {vaultType === 'Liquidity Incentive' && index === 5
@@ -1222,7 +1228,13 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
             textDecoration={
               selectedVaultDetail?.vaultAddress === undefined ? {} : 'underline'
             }
-            color={vaultState === 'finished' ? 'white.100' : 'gray.250'}
+            color={
+              vaultState === 'finished'
+                ? 'white.100'
+                : colorMode === 'light'
+                ? 'gray.250'
+                : 'white.100'
+            }
             _hover={{
               color: selectedVaultDetail?.vaultAddress ? '#0070ed' : {},
             }}
@@ -1241,7 +1253,13 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               Token Allocation
             </Text>
             <Text
-              color={vaultState === 'finished' ? 'white.100' : 'gray.250'}
+              color={
+                vaultState === 'finished'
+                  ? 'white.100'
+                  : colorMode === 'light'
+                  ? 'gray.250'
+                  : 'white.100'
+              }
               fontSize={15}
               h={'20px'}
               fontWeight={600}>

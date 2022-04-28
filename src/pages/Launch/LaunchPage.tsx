@@ -1,12 +1,12 @@
 import {Box, Button, Flex, useTheme, Text} from '@chakra-ui/react';
-import {useCallback, useEffect, useState} from 'react';
+import {useState} from 'react';
 import {PageHeader} from 'components/PageHeader';
-import {Link,useRouteMatch} from 'react-router-dom';
-import {useAppSelector} from 'hooks/useRedux';
-import {selectLaunch} from '@Launch/launch.reducer';
+import {Link, useRouteMatch} from 'react-router-dom';
 import AllProjects from '@Launch/components/AllProjects';
 import MyProjects from '@Launch/components/MyProjects';
 import LaunchPageBackground from '../../assets/banner/LaunchPageBackground.png';
+import {useModal} from 'hooks/useModal';
+import ConfirmTermsModal from './components/modals/ConfirmTerms';
 
 const LaunchPage = () => {
   const [showAllProjects, setShowAllProjects] = useState<boolean>(true);
@@ -17,29 +17,8 @@ const LaunchPage = () => {
     params: {id},
   } = match;
   const {url} = match;
-  // const {
-  //   data: {projects},
-  // } = useAppSelector(selectLaunch);
- 
-  // // console.log('--gogo--');
-  // // console.log(id);
-  // console.log('lakmi',projects);
 
-  // useEffect(() => {
-  //   console.log(projects);
-  // }, [projects]);
-
-  //   let historyObj = useHistory();
-
-  //   useEffect(() => {
-  //     //@ts-ignore
-  //     const unBlock = historyObj.block((loc, action) => {
-  //       if (action === 'POP') {
-  //         return window.confirm('Are you sure you want to go back?');
-  //       }
-  //     });
-  //     return () => unBlock();
-  //   }, [historyObj]);
+  const {openAnyModal} = useModal();
 
   return (
     <Flex
@@ -76,11 +55,16 @@ const LaunchPage = () => {
             />
           </Flex>
           <Flex justifyContent={'center'} w={'100%'}>
-            <Link to={`${url}/createproject`}>
-              <Button bg={'blue.100'} color="white.100">
-                Create Project
-              </Button>
-            </Link>
+            {/* <Link to={`${url}/createproject`}> */}
+            <Button
+              bg={'blue.100'}
+              color="white.100"
+              onClick={() => {
+                openAnyModal('Launch_ConfirmTerms', {});
+              }}>
+              Create Project
+            </Button>
+            {/* </Link> */}
           </Flex>
         </Flex>
 
@@ -164,6 +148,7 @@ const LaunchPage = () => {
         </Flex>
       </Box>
       {showAllProjects ? <AllProjects /> : <MyProjects />}
+      <ConfirmTermsModal></ConfirmTermsModal>
     </Flex>
   );
 };
