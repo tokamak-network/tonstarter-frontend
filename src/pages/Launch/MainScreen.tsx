@@ -34,7 +34,8 @@ const StepComponent = (props: {step: StepNumber}) => {
 
 const MainScreen = () => {
   const [step, setStep] = useState<StepNumber>(1);
-  const [isDisable, setDisable] = useState<boolean>(false);
+  const [isDisable, setDisable] = useState<boolean>(true);
+  const [isDisableForStep2, setDisableForStep2] = useState<boolean>(true);
   const {initialValues} = useValues();
   const theme = useTheme();
   const {account} = useActiveWeb3React();
@@ -107,7 +108,6 @@ const MainScreen = () => {
             currentStep={step}></Steps>
         </Flex>
       </Flex>
-      {console.log(id && projects)}
       <Formik
         initialValues={
           id && projects
@@ -117,7 +117,7 @@ const MainScreen = () => {
         validationSchema={ProjectSchema}
         validate={(values) => {
           console.log(values);
-          validateFormikValues(values);
+          validateFormikValues(values, setDisable, setDisableForStep2);
           if (step === 3 && oldData !== values) {
             setOldData(values);
             hashKey === undefined
@@ -176,7 +176,7 @@ const MainScreen = () => {
                         Prev
                       </Button>
                     )}
-                    {step !== 3 && (
+                    {step === 1 && (
                       <Button
                         type="submit"
                         w={'160px'}
@@ -184,8 +184,21 @@ const MainScreen = () => {
                         fontSize={14}
                         color={isDisable ? '#86929d' : 'white.100'}
                         bg={isDisable ? '#gray.25' : 'blue.500'}
-                        // disabled={isDisable || isSubmitting}
-                        disabled={isSubmitting}
+                        disabled={isDisable}
+                        _hover={{}}
+                        onClick={() => handleStep(true)}>
+                        Next
+                      </Button>
+                    )}
+                    {step === 2 && (
+                      <Button
+                        type="submit"
+                        w={'160px'}
+                        h={'45px'}
+                        fontSize={14}
+                        color={isDisableForStep2 ? '#86929d' : 'white.100'}
+                        bg={isDisableForStep2 ? '#gray.25' : 'blue.500'}
+                        disabled={isDisableForStep2}
                         _hover={{}}
                         onClick={() => handleStep(true)}>
                         Next

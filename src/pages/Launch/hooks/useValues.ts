@@ -11,13 +11,13 @@ const {
 } = DEPLOYED;
 
 const initialObj: Projects['CreateProject'] = {
-  projectName: '',
-  description: '',
-  tokenName: '',
-  tokenSymbol: '',
+  projectName: undefined,
+  description: undefined,
+  tokenName: undefined,
+  tokenSymbol: undefined,
   totalSupply: undefined,
   ownerAddress: '',
-  owner: '',
+  owner: undefined,
   isTokenDeployed: false,
   isTokenDeployedErr: false,
   isAllDeployed: false,
