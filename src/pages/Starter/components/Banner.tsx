@@ -1,10 +1,10 @@
-import {Flex, Text, useTheme, Grid} from '@chakra-ui/react';
+import {Flex} from '@chakra-ui/react';
 import {CustomButton} from 'components/Basic/CustomButton';
 import bannerImg1X from 'assets/banner/Lyda.png';
 
 export const Banner = () => {
-  const theme = useTheme();
-  const {TitilliumWeb, roboto, poppins} = theme.fonts;
+  // const theme = useTheme();
+  // const {TitilliumWeb, roboto, poppins} = theme.fonts;
   return (
     <Flex
       pos="relative"
