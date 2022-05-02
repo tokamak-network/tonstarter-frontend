@@ -13,11 +13,16 @@ import {PublicPageTable} from './PublicPageTable';
 
 import '../css/PublicPage.css';
 
-type PublicPage = {};
+type PublicPage = {
+  vault: any
+};
 
-export const PublicPage: FC<PublicPage> = ({}) => {
+export const PublicPage: FC<PublicPage> = ({vault}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
+
+  console.log('vault',vault);
+  
   const themeDesign = {
     border: {
       light: 'solid 1px #e7edf3',

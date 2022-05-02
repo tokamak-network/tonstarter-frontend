@@ -167,7 +167,7 @@ const ProjectCard: React.FC<{
               {project.data.tokenSymbol ||'NA'}
             </Text>
           </Box>
-          <Box d="flex" flexDir="column" w={'99px'}>
+          <Box d="flex" flexDir="column" w={'105px'}>
             <Text
               {...STATER_STYLE.subTextBlack({
                 colorMode,

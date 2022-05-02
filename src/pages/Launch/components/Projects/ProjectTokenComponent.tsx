@@ -1,11 +1,18 @@
 import {FC} from 'react';
 import {Flex, Text, useTheme, useColorMode} from '@chakra-ui/react';
+import ReactMarkdown from 'react-markdown'
+import ReactQuill from 'react-quill';
+import {shortenAddress} from 'utils';
 
-type ProjectTokenProps = {};
+type ProjectTokenProps = {
+  project: any
+};
 
-export const ProjectTokenComponent: FC<ProjectTokenProps> = ({}) => {
+export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
+  console.log(project);
+  
   return (
     <Flex
       p={'25px 35px 25px 35px'}
@@ -23,7 +30,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({}) => {
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Project Name
             </Text>
-            <Text>Project Name</Text>
+            <Text>{project.projectName}</Text>
           </Flex>
           <Flex
             p={'0px 20px'}
@@ -35,7 +42,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({}) => {
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Owner
             </Text>
-            <Text>Project Name</Text>
+            <Text>{shortenAddress(project.owner)}</Text>
           </Flex>
           <Flex
             p={'0px 20px'}
@@ -62,42 +69,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({}) => {
             <Text>Project Name</Text>
           </Flex>
          
-          <Flex
-            p={'0px 20px'}
-            alignItems={'center'}
-            borderBottom={'1px solid #e6eaee'}
-            h={'60px'}
-            w={'100%'}
-            justifyContent={'space-between'}>
-            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
-            Project Main Image
-            </Text>
-            <Text>Project Name</Text>
-          </Flex>
-          <Flex
-            p={'0px 20px'}
-            alignItems={'center'}
-            borderBottom={'1px solid #e6eaee'}
-            h={'60px'}
-            w={'100%'}
-            justifyContent={'space-between'}>
-            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
-            Website
-            </Text>
-            <Text>Project Name</Text>
-          </Flex>
-          <Flex
-            p={'0px 20px'}
-            alignItems={'center'}
-            borderBottom={'1px solid #e6eaee'}
-            h={'60px'}
-            w={'100%'}
-            justifyContent={'space-between'}>
-            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
-            Medium
-            </Text>
-            <Text>Project Name</Text>
-          </Flex>
+        
           <Flex
             p={'0px 20px'}
             alignItems={'center'}
@@ -121,7 +93,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({}) => {
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Token Name
             </Text>
-            <Text>Project Name</Text>
+            <Text>{project.tokenName}</Text>
           </Flex>
           <Flex
             p={'0px 20px'}
@@ -133,7 +105,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({}) => {
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Token Symbol
             </Text>
-            <Text>Project Name</Text>
+            <Text>{project.tokenSymbol}</Text>
           </Flex>
           <Flex
             p={'0px 20px'}
@@ -145,7 +117,10 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({}) => {
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Token Exchange Rate
             </Text>
-            <Text>Project Name</Text>
+            <Flex flexDir={'column'}>
+            <Text>1 TON = {Number(project.projectTokenPrice)}{` ${project.tokenSymbol}`}</Text>
+            <Text>1 TOS = {Number(project.tosPrice)}{` ${project.tokenSymbol}`}</Text>
+            </Flex>
           </Flex>
           <Flex
             p={'0px 20px'}
@@ -157,44 +132,11 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({}) => {
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Token Supply
             </Text>
-            <Text>Project Name</Text>
+            <Text>{project.totalSupply? Number(project.totalSupply).toLocaleString(undefined, {
+        minimumFractionDigits: 0,
+      }): 'NA'}</Text>
           </Flex>
-          <Flex
-            p={'0px 20px'}
-            alignItems={'center'}
-            borderBottom={'1px solid #e6eaee'}
-            h={'60px'}
-            w={'100%'}
-            justifyContent={'space-between'}>
-            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
-             Token Symbol Image
-            </Text>
-            <Text>Project Name</Text>
-          </Flex>
-          <Flex
-            p={'0px 20px'}
-            alignItems={'center'}
-            borderBottom={'1px solid #e6eaee'}
-            h={'60px'}
-            w={'100%'}
-            justifyContent={'space-between'}>
-            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
-             Telegram
-            </Text>
-            <Text>Project Name</Text>
-          </Flex>
-          <Flex
-            p={'0px 20px'}
-            alignItems={'center'}
-            borderBottom={'1px solid #e6eaee'}
-            h={'60px'}
-            w={'100%'}
-            justifyContent={'space-between'}>
-            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
-             Discord
-            </Text>
-            <Text>Project Name</Text>
-          </Flex>
+         
         </Flex>
       </Flex>
       <Flex flexDir={'column'} mt={'50px'} justifyContent={'center'}>
@@ -206,15 +148,13 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({}) => {
           mb={'25px'}>
           Description
         </Text>
-        <Text color={colorMode === 'light' ? '#808992' : '#9d9ea5'}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum
-        </Text>
+        <ReactQuill
+     
+        // placeholder="Input the project description"
+        readOnly={true}
+        value={project.description}
+        theme={"bubble"}></ReactQuill>
+       
       </Flex>
     </Flex>
   );

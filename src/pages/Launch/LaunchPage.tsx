@@ -77,7 +77,7 @@ const LaunchPage = () => {
           </Flex>
           <Flex justifyContent={'center'} w={'100%'}>
             <Link to={`${url}/createproject`}>
-              <Button bg={'blue.100'} color="white.100">
+              <Button bg={'blue.100'} color="white.100" _hover={{bg:'#257eee'}}>
                 Create Project
               </Button>
             </Link>
@@ -89,22 +89,24 @@ const LaunchPage = () => {
           paddingX={'20%'}
           mb={'100px'}
           position={'absolute'}
-          bottom={'-20%'}
+          bottom={'-19.6%'}
           background={'rgba(7, 7, 10, .7)'}
           paddingY={'10px'}
           left={'50%'}
-          transform={'translateX(-50%)'}>
+          width={'100%'}
+          transform={'translateX(-50%)'}
+          fontFamily={theme.fonts.fld}>
           <Flex alignItems={'center'} flexDir="column" width={'300px'}>
             <Text color={'yellow'}>Total Staked</Text>
-            <Text>2,646,790.91 TON</Text>
+            <Text color={'#fff'}>2,646,790.91 TON</Text>
           </Flex>
           <Flex alignItems={'center'} flexDir="column" width={'300px'}>
             <Text color={'yellow'}>Total Value Locked</Text>
-            <Text>2,646,790.91 TON</Text>
+            <Text  color={'#fff'}>2,646,790.91 TON</Text>
           </Flex>
           <Flex alignItems={'center'} flexDir="column" width={'300px'}>
             <Text color={'yellow'}>Total Staked</Text>
-            <Text>2,646,790.91 TON</Text>
+            <Text color={'#fff'}>2,646,790.91 TON</Text>
           </Flex>
         </Flex>
       </Flex>

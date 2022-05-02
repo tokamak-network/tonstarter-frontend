@@ -20,15 +20,23 @@ const ProjectScreen = () => {
   const {url} = match;
   const isExist = url.split('/')[3];
   const dispatch = useAppDispatch();
-console.log('isExist',isExist);
+// console.log(window.location);
+
 const {
   //@ts-ignore
-  params: {id},
+  params: {name},
 } = match;
   const {
     data: {projects, hashKey},
   } = useAppSelector(selectLaunch);
-
+  
+  console.log('projects',projects);
+  useEffect(() => {
+    dispatch(
+      setHashKey({data: isExist === 'project' ? undefined : isExist}),
+    );
+  }, []);
+  const project = projects[name]
   return (
     <Flex
       flexDir={'column'}
@@ -42,7 +50,7 @@ const {
           subtitle={'Make Your Own Token and Create Token Economy'}
         />
         <Flex mt={'60px'} mb={'50px'}>
-          <Project name={'Project Name'} />
+          <Project project={project} />
         </Flex>
         <Button
           w={'180px'}
@@ -52,6 +60,7 @@ const {
           color={'white.100'}
         //   onClick={() => openAnyModal('Launch_CreateRewardProgram', {})}
         onClick={() => goBackToList()}
+        _hover={{bg:'#257eee'}}
           >
           Back to List
         </Button>

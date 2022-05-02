@@ -19,9 +19,11 @@ import {DAO} from './DAO';
 
 import '../css/VaultComponent.css';
 
-type VaultComponent = {};
+type VaultComponent = {
+  project: any
+};
 
-export const VaultComponent: FC<VaultComponent> = ({}) => {
+export const VaultComponent: FC<VaultComponent> = ({project}) => {
   const [tabIndex, setTabIndex] = useState(0);
 
   const themeDesign = {
@@ -66,7 +68,7 @@ export const VaultComponent: FC<VaultComponent> = ({}) => {
         {/* Chakra UI automatically maps the TabPanel tabIndex to the Tab. */}
         <TabPanels>
           <TabPanel px={'0px'}>
-            <PublicPage />
+            <PublicPage vault={project.vaults[0]} />
           </TabPanel>
           <TabPanel px={'1rem'}>
             <InitialLiquidity />
