@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import {VaultComponent} from './VaultComponent';
 import {ProjectTokenComponent} from './ProjectTokenComponent';
-import {ProjectCardType} from '../../types/index'
+import {ProjectCardType} from '../../types/index';
 import {useHistory} from 'react-router-dom';
 type ProjectProps = {
   project: any;
@@ -21,15 +21,14 @@ export const Project: FC<ProjectProps> = ({project}) => {
   const {colorMode} = useColorMode();
   const [showVault, setShowVault] = useState<boolean>(false);
 
-const name = 'Project Name';
+  const name = 'Project Name';
 
-
-window.onbeforeunload = function() { 
-  window.setTimeout(function () { 
-      window.location.href = '/opencampagin';
-  }, 0); 
-  window.onbeforeunload = null; // necessary to prevent infinite loop, that kills your browser 
-}
+  window.onbeforeunload = function () {
+    window.setTimeout(function () {
+      window.location.href = '/opencampaign';
+    }, 0);
+    window.onbeforeunload = null; // necessary to prevent infinite loop, that kills your browser
+  };
   return (
     <Flex
       w={'1100px'}
@@ -111,7 +110,11 @@ window.onbeforeunload = function() {
           </Flex>
         </Flex>
       </Flex>
-      {showVault ? <VaultComponent project={project}/> : <ProjectTokenComponent project={project} />}
+      {showVault ? (
+        <VaultComponent project={project} />
+      ) : (
+        <ProjectTokenComponent project={project} />
+      )}
     </Flex>
   );
 };

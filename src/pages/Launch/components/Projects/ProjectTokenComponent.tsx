@@ -1,18 +1,18 @@
 import {FC} from 'react';
 import {Flex, Text, useTheme, useColorMode} from '@chakra-ui/react';
-import ReactMarkdown from 'react-markdown'
+// import ReactMarkdown from 'react-markdown'
 import ReactQuill from 'react-quill';
 import {shortenAddress} from 'utils';
 
 type ProjectTokenProps = {
-  project: any
+  project: any;
 };
 
 export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
   console.log(project);
-  
+
   return (
     <Flex
       p={'25px 35px 25px 35px'}
@@ -52,7 +52,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             w={'100%'}
             justifyContent={'space-between'}>
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
-            Sale Price
+              Sale Price
             </Text>
             <Text>Project Name</Text>
           </Flex>
@@ -64,12 +64,11 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             w={'100%'}
             justifyContent={'space-between'}>
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
-             Current Price
+              Current Price
             </Text>
             <Text>Project Name</Text>
           </Flex>
-         
-        
+
           <Flex
             p={'0px 20px'}
             alignItems={'center'}
@@ -78,7 +77,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             w={'100%'}
             justifyContent={'space-between'}>
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
-            Twitter
+              Twitter
             </Text>
             <Text>Project Name</Text>
           </Flex>
@@ -118,8 +117,14 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
               Token Exchange Rate
             </Text>
             <Flex flexDir={'column'}>
-            <Text>1 TON = {Number(project.projectTokenPrice)}{` ${project.tokenSymbol}`}</Text>
-            <Text>1 TOS = {Number(project.tosPrice)}{` ${project.tokenSymbol}`}</Text>
+              <Text>
+                1 TON = {Number(project.projectTokenPrice)}
+                {` ${project.tokenSymbol}`}
+              </Text>
+              <Text>
+                1 TOS = {Number(project.tosPrice)}
+                {` ${project.tokenSymbol}`}
+              </Text>
             </Flex>
           </Flex>
           <Flex
@@ -132,11 +137,14 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Token Supply
             </Text>
-            <Text>{project.totalSupply? Number(project.totalSupply).toLocaleString(undefined, {
-        minimumFractionDigits: 0,
-      }): 'NA'}</Text>
+            <Text>
+              {project.totalSupply
+                ? Number(project.totalSupply).toLocaleString(undefined, {
+                    minimumFractionDigits: 0,
+                  })
+                : 'NA'}
+            </Text>
           </Flex>
-         
         </Flex>
       </Flex>
       <Flex flexDir={'column'} mt={'50px'} justifyContent={'center'}>
@@ -149,12 +157,10 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
           Description
         </Text>
         <ReactQuill
-     
-        // placeholder="Input the project description"
-        readOnly={true}
-        value={project.description}
-        theme={"bubble"}></ReactQuill>
-       
+          // placeholder="Input the project description"
+          readOnly={true}
+          value={project.description}
+          theme={'bubble'}></ReactQuill>
       </Flex>
     </Flex>
   );
