@@ -1,7 +1,9 @@
 import {Box, Flex, useColorMode, useTheme, Image} from '@chakra-ui/react';
 import arrowLeft from 'assets/svgs/arrow_left_normal_icon.svg';
+import arrowLeftDark from 'assets/launch/arrow-left-normal-icon.svg';
 import arrowHoverLeft from 'assets/launch/arrow-left-hover-icon.svg';
 import arrowRight from 'assets/svgs/arrow_right_normal_icon.svg';
+import arrowRightDark from 'assets/launch/arrow-right-normal-icon.svg';
 import arrowHoverRight from 'assets/launch/arrow-right-hover-icon.svg';
 import VaultCard from '../common/VaultCard';
 import {useFormikContext} from 'formik';
@@ -23,10 +25,13 @@ const Vaults = () => {
   const [flowIndex, setFlowIndex] = useState<number>(6);
 
   return (
-    <Flex w={'100%'} bg={'white.100'} flexDir="column">
+    <Flex
+      w={'100%'}
+      bg={colorMode === 'light' ? 'white.100' : 'none'}
+      flexDir="column">
       <Box d="flex" h={'220px'} px={'15px'} justifyContent="space-between">
         <HoverImage
-          img={arrowLeft}
+          img={colorMode === 'light' ? arrowLeft : arrowLeftDark}
           hoverImg={arrowHoverLeft}
           action={() => {
             // if (flowIndex - vaultsList.length >= 0) {
@@ -88,7 +93,7 @@ const Vaults = () => {
           </motion.div>
         </Flex>
         <HoverImage
-          img={arrowRight}
+          img={colorMode === 'light' ? arrowRight : arrowRightDark}
           hoverImg={arrowHoverRight}
           action={() => {
             // if (flowIndex <= vaultsList.length) {

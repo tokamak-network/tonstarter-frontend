@@ -20,7 +20,6 @@ export const Project: FC<ProjectProps> = ({name}) => {
   const {colorMode} = useColorMode();
   const [showVault, setShowVault] = useState<boolean>(false);
 
-  console.log('showVault', showVault);
 
   return (
     <Flex

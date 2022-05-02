@@ -21,7 +21,6 @@ const ProjectCard: React.FC<{
   index: number;
 }> = (props) => {
   const {project, index} = props;
-  console.log('project: ', project);
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {STATER_STYLE} = theme;
@@ -34,7 +33,7 @@ const ProjectCard: React.FC<{
   const [participants, setParticipants] = useState<string | undefined>(
     undefined,
   );
-
+  
   const PUBLICSALE_CONTRACT = useCallContract(
     // project.saleContractAddress ||
     '',
@@ -65,7 +64,7 @@ const ProjectCard: React.FC<{
   }, [library, project, PUBLICSALE_CONTRACT]);
 
   return (
-    <Link to={`${url}/project/${project.data.projectName}`} id={`past_link_${index}`}>
+    <Link to={`${url}/project/${project.key}`} id={`past_link_${index}`}>
       <Box {...STATER_STYLE.containerStyle({colorMode})} h={'275px'}>
         <Flex justifyContent="space-between" mb={'10px'}>
           <TokenImage></TokenImage>
@@ -183,7 +182,9 @@ const ProjectCard: React.FC<{
                 colorMode,
                 fontSize: 20,
               })}>
-              {'NA'}
+              {Number(project.data.totalSupply).toLocaleString(undefined, {
+                            minimumFractionDigits: 0,
+                          }) || 'NA'}
             </Text>
           </Box>
         </Flex>

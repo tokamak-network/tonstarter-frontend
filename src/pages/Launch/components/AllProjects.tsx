@@ -115,9 +115,8 @@ const AllProjects = () => {
         </Box>
         <Flex justifyContent={'center'}>
           <Grid templateColumns="repeat(3, 1fr)" gap={30}>
-            {getPaginatedData().map((project: any, index: number) => {
-              console.log(project);
-              
+            {getPaginatedData().map((project: any, index: number) => {  
+                          
               return <ProjectCard project={project} index={index} />;
             })}
           </Grid>

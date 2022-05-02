@@ -14,7 +14,6 @@ const Middle = () => {
   const theme = useTheme();
   const {OpenCampaginDesign} = theme;
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
-  const vaultsList = values.vaults;
   const [tableData, setTableData] = useState<VaultSchedule[]>([]);
 
   const {selectedVaultDetail} = useVaultSelector();
@@ -26,11 +25,6 @@ const Middle = () => {
   } = useAppSelector(selectLaunch);
 
   function dispatchFormikSetValue() {
-    // dispatch(
-    //   saveTempVaultData({
-    //     data: {},
-    //   }),
-    // );
     const vaultsList = values.vaults;
 
     const thisVaultValue = vaultsList.filter((vault: Vault) => {

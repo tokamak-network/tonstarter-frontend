@@ -6,6 +6,9 @@ import {Project} from './components/Projects/Project';
 import {useModal} from 'hooks/useModal';
 import CreateRewardsProgramModal from './components/modals/CreateRewardsProgram';
 import DownloadModal from './components/modals/Download';
+import {useRouteMatch} from 'react-router-dom';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {selectLaunch, setHashKey} from '@Launch/launch.reducer';
 const ProjectScreen = () => {
   const {openAnyModal} = useModal();
   const history = useHistory();
@@ -13,6 +16,19 @@ const ProjectScreen = () => {
   const goBackToList = useCallback(() => {
     history.push('/opencampagin');
   }, []);
+  const match = useRouteMatch();
+  const {url} = match;
+  const isExist = url.split('/')[3];
+  const dispatch = useAppDispatch();
+console.log('isExist',isExist);
+const {
+  //@ts-ignore
+  params: {id},
+} = match;
+  const {
+    data: {projects, hashKey},
+  } = useAppSelector(selectLaunch);
+
   return (
     <Flex
       flexDir={'column'}

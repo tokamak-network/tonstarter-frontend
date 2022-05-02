@@ -1,9 +1,9 @@
 import {Input, NumberInput, NumberInputField} from '@chakra-ui/react';
 import {saveTempVaultData, selectLaunch} from '@Launch/launch.reducer';
-import {Projects, Vault, VaultPublic} from '@Launch/types';
+import {Projects, VaultPublic} from '@Launch/types';
 import {useFormikContext} from 'formik';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {Dispatch, SetStateAction, useEffect, useRef, useState} from 'react';
+import {Dispatch, SetStateAction} from 'react';
 
 type InputFieldProp = {
   w: number;
@@ -41,36 +41,6 @@ const InputField: React.FC<InputFieldProp> = (props) => {
   } = useAppSelector(selectLaunch);
   const {values} = useFormikContext<Projects['CreateProject']>();
   const vaultsList = values.vaults;
-  // const thisVaultValue = vaultsList.filter((vault: Vault) => {
-  //   if (vault.vaultName === selectedVault) {
-  //     return vault;
-  //   }
-  // });
-
-  // useEffect(() => {
-  //   if (selectedVault === 'Public' && formikName) {
-  //     const vaultObj = thisVaultValue[0] as VaultPublic;
-  //     const {
-  //       vaultTokenAllocation,
-  //       publicRound1Allocation,
-  //       publicRound2Allocation,
-  //       hardCap,
-  //     } = vaultObj;
-  //     const {
-  //       publicRound1Allocation: _publicRound1Allocation,
-  //       publicRound2Allocation: _publicRound2Allocation,
-  //       hardCap: _hardCap,
-  //     } = tempVaultData as any;
-
-  //     // console.log(vaultObj);
-  //     // console.log(formikName);
-  //     // //@ts-ignore
-  //     // console.log(vaultObj[formikName]);
-
-  //     //@ts-ignore
-  //     const thisNameValue = vaultObj[formikName];
-
-  // }, [selectedVault, thisVaultValue, formikName, value, tempVaultData]);
 
   const stosTier =
     stosTierLevel === 1
@@ -100,6 +70,7 @@ const InputField: React.FC<InputFieldProp> = (props) => {
           h={`${h}px`}
           focusBorderColor={'#dfe4ee'}
           fontSize={fontSize}
+          _focus={{}}
           placeholder={placeHolder}
           value={value === 'undefined' ? '' : value}
           onChange={(e) => {
@@ -149,7 +120,7 @@ const InputField: React.FC<InputFieldProp> = (props) => {
       focusBorderColor={'#dfe4ee'}
       fontSize={fontSize}
       placeholder={placeHolder}
-      // _focus={{}}
+      _focus={{}}
       ref={(el) => {
         if (inputRef && formikName) {
           if (stosTierLevel) {
@@ -182,6 +153,8 @@ const InputField: React.FC<InputFieldProp> = (props) => {
                     stosTier: {
                       //@ts-ignore
                       ...stosTierData,
+                      //@ts-ignore
+                      ...tempVaultData.stosTier,
                       [stosTier]: {
                         [formikName]: e.target.value,
                         [formikName === 'requiredStos'

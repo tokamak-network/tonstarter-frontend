@@ -243,11 +243,11 @@ type ProjectCardType = {
     tokenName: string;
     tokenSymbol: string;
     tosPrice: number;
+    totalSupply: number;
     totalTokenAllocation: String;
     vaults: VaultAny[];
-
   },
-  k: string
+  key: string
 };
 
 export type {
