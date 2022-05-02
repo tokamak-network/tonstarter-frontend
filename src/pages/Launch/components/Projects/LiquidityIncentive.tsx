@@ -8,6 +8,7 @@ import {
   useColorMode,
   Button,
 } from '@chakra-ui/react';
+import {PublicPageTable} from './PublicPageTable';
 
 type LiquidityIncentive = {};
 
@@ -42,5 +43,72 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({}) => {
     },
   };
 
-  return <Text>Liquidity Incentive</Text>;
+  return (
+    <>
+      <Grid templateColumns="repeat(2, 1fr)" w={'100%'} mb={'30px'}>
+        <Flex flexDirection={'column'} w={'70%'}>
+          <GridItem className={'chart-cell'} fontSize={'16px'}>
+            <Text>Token</Text>
+            <Text>120,000,000 TON</Text>
+          </GridItem>
+          <GridItem className={'chart-cell'}>
+            <Text>Selected Pair</Text>
+            <Text>Token Symbol - TOS</Text>
+          </GridItem>
+          <GridItem className={'chart-cell'}>
+            <Text>Pool Address</Text>
+            <Text>0x1EO...8202</Text>
+          </GridItem>
+          <GridItem className={'chart-cell'}>
+            <Text>Vault Admin</Text>
+            <Text>0x1EO...8202</Text>
+          </GridItem>
+          <GridItem className={'chart-cell'}>
+            <Text>Vault Contract Address</Text>
+            <Text>0x1E0...8202</Text>{' '}
+          </GridItem>
+        </Flex>
+        <Flex flexDirection={'column'} ml={'-30%'}>
+          <GridItem className={'chart-cell'}>
+            <Text w={'25%'}>Liquidity Rewards Program Listed</Text>
+            <Flex w={'35%'} flexDirection={'column'} mr={'50px'}>
+              <Text>You can create rewards program on</Text>
+              <Text>Mar. 31, 2022 00:00:00 (KST)</Text>
+            </Flex>
+            <Button>Create</Button>
+          </GridItem>
+          <GridItem className={'chart-cell'}>
+            <Text w={'15%'}>#10</Text>
+            <Flex w={'40%'} flexDirection={'column'} mr={'50px'}>
+              <Text>Reward Duration</Text>
+              <Text>2021.03.09 13:25 - 2022.03.09 13:26</Text>
+            </Flex>
+            <Flex w={'25%'} flexDirection={'column'} mr={'25px'}>
+              <Text>Refundable Amount</Text>
+              <Text>10,000,000 TON</Text>
+            </Flex>
+            <Button>Refund</Button>
+          </GridItem>
+          <GridItem className={'chart-cell'} justifyContent={'flex-start'}>
+            <Text w={'15%'}>#10</Text>
+            <Flex flexDirection={'column'}>
+              <Text>Reward Duration</Text>
+              <Text>2021.03.09 13:25 - 2022.03.09 13:26</Text>
+            </Flex>
+          </GridItem>
+          <GridItem className={'chart-cell'} justifyContent={'flex-start'}>
+            <Text w={'15%'}>#10</Text>
+            <Flex flexDirection={'column'}>
+              <Text>Reward Duration</Text>
+              <Text>2021.03.09 13:25 - 2022.03.09 13:26</Text>
+            </Flex>
+          </GridItem>
+          <GridItem className={'chart-cell'} justifyContent={'center'}>
+            <Text>Pagination...</Text>
+          </GridItem>
+        </Flex>
+      </Grid>
+      <PublicPageTable />
+    </>
+  );
 };

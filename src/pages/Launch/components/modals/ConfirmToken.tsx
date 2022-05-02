@@ -304,7 +304,7 @@ const ConfirmTokenModal = () => {
               color={'black.300'}
               fontWeight={600}
               textAlign={'center'}>
-              Your token has been failed to deploy :(
+              Your token failed to deploy :(
             </Text>
             <Box w={'100%'} px={'15px'} mb={'25px'}>
               <Line></Line>
