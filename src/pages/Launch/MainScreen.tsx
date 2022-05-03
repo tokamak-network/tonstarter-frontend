@@ -3,7 +3,7 @@ import {useCallback, useEffect, useState} from 'react';
 import OpenStepOne from '@Launch/components/OpenStepOne';
 import {Formik, Form} from 'formik';
 import useValues from '@Launch/hooks/useValues';
-import type {StepNumber} from '@Launch/types';
+import type {StepNumber, VaultCommon} from '@Launch/types';
 import ProjectSchema from '@Launch/utils/projectSchema';
 import {PageHeader} from 'components/PageHeader';
 import Steps from '@Launch/components/Steps';
@@ -16,7 +16,6 @@ import validateFormikValues from '@Launch/utils/validate';
 import {useHistory} from 'react-router-dom';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {saveProject, editProject} from '@Launch/utils/saveProject';
-import useWeb3Token from './hooks/useWeb3Token';
 
 const StepComponent = (props: {step: StepNumber}) => {
   const {step} = props;
@@ -35,7 +34,8 @@ const StepComponent = (props: {step: StepNumber}) => {
 const MainScreen = () => {
   const [step, setStep] = useState<StepNumber>(1);
   const [isDisable, setDisable] = useState<boolean>(true);
-  const [isDisableForStep2, setDisableForStep2] = useState<boolean>(true);
+  const [isDisableForStep2, setDisableForStep2] = useState<boolean>(false);
+  const [isDisableForStep3, setDisableForStep3] = useState<boolean>(true);
   const {initialValues} = useValues();
   const theme = useTheme();
   const {account} = useActiveWeb3React();
@@ -124,6 +124,15 @@ const MainScreen = () => {
               ? saveProject(values, account as string)
               : editProject(values, account as string, hashKey);
           }
+          if (step === 3) {
+            const vaults = values.vaults;
+            const result = vaults.map((vault: VaultCommon) => {
+              return vault.isSet;
+            });
+            if (!result.includes(false)) {
+              setDisableForStep3(false);
+            }
+          }
         }}
         onSubmit={async (data, {setSubmitting}) => {
           setSubmitting(true);
@@ -210,10 +219,9 @@ const MainScreen = () => {
                         w={'160px'}
                         h={'45px'}
                         fontSize={14}
-                        color={isDisable ? '#86929d' : 'white.100'}
-                        bg={isDisable ? '#gray.25' : 'blue.500'}
-                        // disabled={isDisable || isSubmitting}
-                        disabled={isSubmitting}
+                        color={isDisableForStep3 ? '#86929d' : 'white.100'}
+                        bg={isDisableForStep3 ? '#gray.25' : 'blue.500'}
+                        disabled={isDisableForStep3}
                         _hover={{}}
                         onClick={() => handleStep(true)}>
                         Confirm
