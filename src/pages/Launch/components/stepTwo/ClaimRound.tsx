@@ -189,7 +189,7 @@ const ClaimRound = () => {
         <Flex>
           <Text
             fontSize={13}
-            color={'#304156'}
+            color={colorMode === 'light' ? '#304156' : 'white.100'}
             mr={'15px'}
             textAlign="center"
             lineHeight={'35px'}>
@@ -272,7 +272,10 @@ const ClaimRound = () => {
                       borderX={middleStyle.border}
                       alignItems="center"
                       justifyContent={'center'}>
-                      <Text mr={'5px'} color={'#3d495d'} fontSize={11}>
+                      <Text
+                        mr={'5px'}
+                        color={colorMode === 'light' ? '#3d495d' : 'white.100'}
+                        fontSize={11}>
                         {data.claimTime === undefined
                           ? '-'
                           : moment
