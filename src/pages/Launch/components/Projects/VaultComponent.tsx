@@ -70,7 +70,7 @@ export const VaultComponent: FC<VaultComponent> = ({project}) => {
         {/* Chakra UI automatically maps the TabPanel tabIndex to the Tab. */}
         <TabPanels>
           <TabPanel px={'0px'}>
-            <PublicPage vault={project.vaults[0]} project={project} />
+            <PublicPage vault={project.vaults[0]} tokenSymbol={project.tokenSymbol}/>
           </TabPanel>
           <TabPanel px={'1rem'}>
             <InitialLiquidity vault={project.vaults[1]} project={project} />
