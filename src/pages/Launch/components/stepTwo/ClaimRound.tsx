@@ -135,14 +135,14 @@ const ClaimRound = () => {
     /*eslint-disable*/
   }, [claim, selectedDay, selectedVaultDetail]);
 
-  const [test, setTest] = useState(true);
+  // const [test, setTest] = useState(true);
 
   useEffect(() => {
-    if (claim && test === true) {
+    if (claim) {
       setInputVals(claim);
-      setTest(false);
+      // setTest(false);
     }
-  }, [claim]);
+  }, [claim, selectedVaultDetail]);
 
   useEffect(() => {
     const errBorderStyle = '1px solid #ff3b3b';
@@ -151,7 +151,9 @@ const ClaimRound = () => {
     //@ts-ignore
     const vaultTokenAllocation = selectedVaultDetail.vaultTokenAllocation;
     const totalTokenInputs = inputRefs.current.reduce((acc, cur) => {
-      return acc + Number(cur.value);
+      if (cur) {
+        return acc + Number(cur.value);
+      }
     }, 0);
     if (totalTokenInputs > vaultTokenAllocation) {
       inputRefs.current.map((input: any) => {
@@ -167,7 +169,9 @@ const ClaimRound = () => {
       });
     } else {
       inputRefs.current.map((input: any) => {
-        input.style.border = noErrBorderStyle;
+        if (input) {
+          input.style.border = noErrBorderStyle;
+        }
       });
     }
   }, [inputRefs, inputVals]);
