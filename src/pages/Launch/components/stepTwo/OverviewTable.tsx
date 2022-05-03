@@ -196,7 +196,9 @@ const OverviewTable = () => {
                       fontSize={13}
                       h={'42px'}
                       bg={
-                        index === 0 || index % 2 === 0 ? '#fafbfc' : '#ffffff'
+                        index === 0 || index % 2 === 0
+                          ? overviewTableStyle.cellBgColor[colorMode].even
+                          : overviewTableStyle.cellBgColor[colorMode].odd
                       }>
                       {'-'}
                     </Text>
