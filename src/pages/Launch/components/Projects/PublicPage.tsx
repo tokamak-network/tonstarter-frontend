@@ -10,19 +10,30 @@ import {
 } from '@chakra-ui/react';
 
 import {PublicPageTable} from './PublicPageTable';
-
+import {shortenAddress} from 'utils';
+import momentTZ from 'moment-timezone';
 import '../css/PublicPage.css';
-
+import moment from 'moment';
+import commafy from 'utils/commafy';
 type PublicPage = {
-  vault: any
+  vault: any;
+  tokenSymbol: string;
 };
 
-export const PublicPage: FC<PublicPage> = ({vault}) => {
+export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
-
-  console.log('vault',vault);
+  const sTosTier = Object.keys(vault.stosTier).map((tier)=>{
+    const tierNum = tier==='oneTier'?1 : tier==='twoTier'? 2: tier==='threeTier'? 3:4
+    return {
+      tier: tierNum,
+      allocatedToken: vault.stosTier[tier].allocatedToken,
+      requiredStos: vault.stosTier[tier].requiredStos,
+    }
+  }).sort((a,b)=>a.tier-b.tier)
+  ;console.log('vault',vault);
   
+
   const themeDesign = {
     border: {
       light: 'solid 1px #e7edf3',
@@ -56,57 +67,89 @@ export const PublicPage: FC<PublicPage> = ({vault}) => {
         <Flex flexDirection={'column'}>
           <GridItem className={'chart-cell'} fontSize={'16px'}>
             <Text>Token</Text>
-            <Text>120,000,000 TON</Text>
+            <Text>
+              {Number(vault.vaultTokenAllocation).toLocaleString()}
+              {` `}
+              {tokenSymbol}
+            </Text>
           </GridItem>
           <GridItem className={'chart-cell'}>
             <Text>Public Round 1.</Text>
-            <Text>6,000,000 TON (50%)</Text>
+            <Text>
+              {` ${commafy(vault.publicRound1Allocation)} ${tokenSymbol} (${
+                (Number(vault.publicRound1Allocation) /
+                  Number(vault.vaultTokenAllocation)) *
+                100
+              }%)`}
+            </Text>
           </GridItem>
           <GridItem className={'chart-cell'}>
             <Text>Public Round 2.</Text>
-            <Text>6,000,000 TON (50%)</Text>
+            <Text>
+              {` ${commafy(vault.publicRound2Allocation)} ${tokenSymbol} (${
+                (Number(vault.publicRound2Allocation) /
+                  Number(vault.vaultTokenAllocation)) *
+                100
+              }%)`}
+            </Text>
           </GridItem>
           <GridItem className={'chart-cell'}>
-            <Text>Token Allocation for Liquidiy Pool</Text>
-            <Text>3,000,000 TON</Text>
+            <Text fontSize={'13px'} w={'100px'}>
+              Token Allocation for Liquidiy Pool
+            </Text>
+            <Text>{`${(
+              (Number(vault.vaultTokenAllocation) *
+                Number(vault.tokenAllocationForLiquidity)) /
+              100
+            ).toLocaleString()}  ${tokenSymbol} (${
+              vault.tokenAllocationForLiquidity
+            }%)`}</Text>
           </GridItem>
           <GridItem className={'chart-cell'}>
             <Text>Hard Cap</Text>
-            <Text>60,000,000 TON</Text>
+            <Text>{`${commafy(vault.hardCap)}  ${tokenSymbol}`}</Text>
           </GridItem>
           <GridItem className={'chart-cell'}>
             <Text>Addres for receiving funds</Text>
-            <Text>0x1E0...8202</Text>{' '}
+            <Text>{shortenAddress(vault.addressForReceiving)}</Text>
           </GridItem>
           <GridItem className={'chart-cell'}>
             <Text>Vault Admin Address</Text>
-            <Text>0x1E0...8202</Text>{' '}
+            <Text>{shortenAddress(vault.adminAddress)}</Text>
           </GridItem>
           <GridItem className={'chart-cell'}>
             <Text>Vault Contract Address</Text>
-            <Text>0x1E0...8202</Text>{' '}
+            <Text>{shortenAddress(vault.vaultAddress)}</Text>
           </GridItem>
         </Flex>
         <Flex flexDirection={'column'}>
           <GridItem className={'chart-cell'} fontSize={'16px'}>
             <Text>Schedule</Text>
-            <Text>KST</Text>
+            <Text>{momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()}</Text>
           </GridItem>
           <GridItem className={'chart-cell'}>
             <Text>Snapshot</Text>
-            <Text>2021.12.14 17:00:00</Text>
+            <Text>
+              {moment.unix(vault.snapshot).format('YYYY.MM.DD HH:mm:ss')}
+            </Text>
           </GridItem>
           <GridItem className={'chart-cell'}>
             <Text>Whitelist</Text>
-            <Text>2021.12.14 17:00:00</Text>
+            <Text>
+              {moment.unix(vault.whitelist).format('YYYY.MM.DD HH:mm:ss')}
+            </Text>
           </GridItem>
           <GridItem className={'chart-cell'}>
             <Text>Public Round 1.</Text>
-            <Text>2021.12.14 17:00:00</Text>
+            <Text>
+              {moment.unix(vault.publicRound1).format('YYYY.MM.DD HH:mm:ss')}
+            </Text>
           </GridItem>
           <GridItem className={'chart-cell'}>
             <Text>Public Round 2.</Text>
-            <Text>2021.12.14 17:00:00</Text>
+            <Text>
+              {moment.unix(vault.publicRound2).format('YYYY.MM.DD HH:mm:ss')}
+            </Text>
           </GridItem>
           <GridItem className={'chart-cell'}>
             <Text>{''}</Text>
@@ -127,32 +170,36 @@ export const PublicPage: FC<PublicPage> = ({vault}) => {
             <Text>Required TOS</Text>
             <Text>Allocated Token</Text>
           </GridItem>
-          <GridItem className={'chart-cell'}>
-            <Text>1</Text>
-            <Text>1,000</Text>
-            <Text>300,000 (50%)</Text>
-          </GridItem>
-          <GridItem className={'chart-cell'}>
-            <Text>2</Text>
-            <Text>1,000</Text>
-            <Text>300,000 (50%)</Text>
-          </GridItem>
-          <GridItem className={'chart-cell'}>
-            <Text>3</Text>
-            <Text>1,000</Text>
-            <Text>300,000 (50%)</Text>
-          </GridItem>
-          <GridItem className={'chart-cell'}>
-            <Text>4</Text>
-            <Text>1,000</Text>
-            <Text>300,000 (50%)</Text>
-          </GridItem>
-          <GridItem className={'chart-cell'}>
-            <Text>{''}</Text>
-          </GridItem>
-          <GridItem className={'chart-cell'}>
-            <Text>{''}</Text>
-          </GridItem>
+          {sTosTier?.map((data: any, index: number) => {
+            const {tier, requiredStos, allocatedToken} = data;
+            const publicRound1Allocation = vault.publicRound1Allocation;
+            const percent =
+              (Number(allocatedToken) * 100) / Number(publicRound1Allocation);
+
+            return (
+              <GridItem className={'chart-cell'}>
+                <Text>{tier? tier : index+1}</Text>
+                <Text>{commafy(requiredStos) || '-'}</Text>
+                <Flex justifyContent={'center'} alignItems={'center'}>
+            <Text>{commafy(allocatedToken) || '-'}</Text>
+            <Text
+              ml={'5px'}
+              color={'#7e8993'}
+              textAlign={'center'}
+              lineHeight={'32px'}
+              fontWeight={100}>
+              {isNaN(percent)
+                ? '(- %)'
+                : `(${
+                    Number(percent)
+                      .toFixed(3)
+                      .replace(/\.(\d\d)\d?$/, '.$1') || '-'
+                  }%)`}
+            </Text>
+            </Flex>
+              </GridItem>
+            );
+          })}
         </Flex>
       </Grid>
       <Flex w={'100%'} justifyContent={'center'} py={'2rem'}>
@@ -166,7 +213,7 @@ export const PublicPage: FC<PublicPage> = ({vault}) => {
           Download
         </Button>
       </Flex>
-      <PublicPageTable />
+      <PublicPageTable claim={vault.claim} />
     </Flex>
   );
 };

@@ -11,7 +11,6 @@ type ProjectTokenProps = {
 export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
-  console.log(project);
   
   return (
     <Flex

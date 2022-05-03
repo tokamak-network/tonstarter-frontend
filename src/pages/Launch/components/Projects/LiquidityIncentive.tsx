@@ -108,7 +108,7 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({}) => {
           </GridItem>
         </Flex>
       </Grid>
-      <PublicPageTable />
+      {/* <PublicPageTable /> */}
     </>
   );
 };
