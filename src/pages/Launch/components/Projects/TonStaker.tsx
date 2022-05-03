@@ -9,11 +9,18 @@ import {
   Button,
 } from '@chakra-ui/react';
 
-type TonStaker = {};
+import {shortenAddress} from 'utils/address';
 
-export const TonStaker: FC<TonStaker> = ({}) => {
+type TonStaker = {
+  vault: any;
+  project: any;
+};
+
+export const TonStaker: FC<TonStaker> = ({vault, project}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
+
+  console.log('tonstaker vault: ', vault);
 
   const themeDesign = {
     border: {
@@ -59,7 +66,9 @@ export const TonStaker: FC<TonStaker> = ({}) => {
               color={colorMode === 'light' ? '#353c48' : 'white.0'}>
               Token
             </Text>
-            <Text>120,000,000 TON</Text>
+            <Text>
+              {vault.vaultTokenAllocation} {project.tokenSymbol}
+            </Text>
           </GridItem>
           <GridItem
             className={'chart-cell'}
@@ -73,7 +82,7 @@ export const TonStaker: FC<TonStaker> = ({}) => {
               Vault Admin Address
             </Text>
             <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-              0x1E0…8202
+              {vault.adminAddress ? shortenAddress(vault.adminAddress) : 'N/A'}
             </Text>
           </GridItem>
           <GridItem
@@ -87,7 +96,7 @@ export const TonStaker: FC<TonStaker> = ({}) => {
               Vault Contract Address
             </Text>
             <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-              0x1E0…8202
+              {vault.vaultAddress ? shortenAddress(vault.vaultAddress) : 'N/A'}
             </Text>
           </GridItem>
         </Flex>

@@ -9,10 +9,14 @@ import {
   Button,
 } from '@chakra-ui/react';
 import {color} from 'd3';
+import {shortenAddress} from 'utils/address';
 
-type TosStaker = {};
+type TosStaker = {
+  vault: any;
+  project: any;
+};
 
-export const TosStaker: FC<TosStaker> = ({}) => {
+export const TosStaker: FC<TosStaker> = ({vault, project}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
@@ -60,7 +64,9 @@ export const TosStaker: FC<TosStaker> = ({}) => {
               color={colorMode === 'light' ? '#353c48' : 'white.0'}>
               Token
             </Text>
-            <Text>120,000,000 TON</Text>
+            <Text>
+              {vault.vaultTokenAllocation} {project.tokenSymbol}
+            </Text>
           </GridItem>
           <GridItem
             className={'chart-cell'}
@@ -74,7 +80,7 @@ export const TosStaker: FC<TosStaker> = ({}) => {
               Vault Admin Address
             </Text>
             <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-              0x1E0…8202
+              {vault.adminAddress ? shortenAddress(vault.adminAddress) : 'N/A'}
             </Text>
           </GridItem>
           <GridItem
@@ -88,7 +94,7 @@ export const TosStaker: FC<TosStaker> = ({}) => {
               Vault Contract Address
             </Text>
             <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-              0x1E0…8202
+              {vault.vaultAddress ? shortenAddress(vault.vaultAddress) : 'N/A'}
             </Text>
           </GridItem>
         </Flex>
@@ -143,8 +149,12 @@ export const TosStaker: FC<TosStaker> = ({}) => {
             fontFamily={theme.fonts.fld}
             borderBottomRightRadius={'4px'}>
             <Flex flexDir={'column'}>
-              <Text color={colorMode==='light'? '#9d9ea5':'#7e8993'}>You can distribute on</Text>
-              <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>Mar.31, 2022 21:00:00 (KST)</Text>
+              <Text color={colorMode === 'light' ? '#9d9ea5' : '#7e8993'}>
+                You can distribute on
+              </Text>
+              <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
+                Mar.31, 2022 21:00:00 (KST)
+              </Text>
             </Flex>
             <Button
               fontSize={'13px'}

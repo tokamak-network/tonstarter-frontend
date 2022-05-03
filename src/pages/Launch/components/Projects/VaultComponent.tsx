@@ -20,11 +20,13 @@ import {DAO} from './DAO';
 import '../css/VaultComponent.css';
 
 type VaultComponent = {
-  project: any
+  project: any;
 };
 
 export const VaultComponent: FC<VaultComponent> = ({project}) => {
   const [tabIndex, setTabIndex] = useState(0);
+
+  console.log('project: ', project);
 
   const themeDesign = {
     border: {
@@ -71,19 +73,19 @@ export const VaultComponent: FC<VaultComponent> = ({project}) => {
             <PublicPage vault={project.vaults[0]} tokenSymbol={project.tokenSymbol}/>
           </TabPanel>
           <TabPanel px={'1rem'}>
-            <InitialLiquidity />
+            <InitialLiquidity vault={project.vaults[1]} project={project} />
           </TabPanel>
           <TabPanel px={'1rem'}>
-            <LiquidityIncentive />
-          </TabPanel>
-          <TabPanel  px={'0px'}>
-            <TonStaker />
+            <LiquidityIncentive vault={project.vaults[5]} project={project} />
           </TabPanel>
           <TabPanel px={'0px'}>
-            <TosStaker />
+            <TonStaker vault={project.vaults[2]} project={project} />
+          </TabPanel>
+          <TabPanel px={'0px'}>
+            <TosStaker vault={project.vaults[3]} project={project} />
           </TabPanel>
           <TabPanel>
-            <WtonTosLpReward />
+            <WtonTosLpReward vault={project.vaults[4]} project={project} />
           </TabPanel>
           <TabPanel px={'1rem'}>
             <DAO />

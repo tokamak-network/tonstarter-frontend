@@ -9,11 +9,18 @@ import {
   Button,
 } from '@chakra-ui/react';
 
-type InitialLiquidity = {};
+import {shortenAddress} from 'utils/address';
 
-export const InitialLiquidity: FC<InitialLiquidity> = ({}) => {
+type InitialLiquidity = {
+  vault: any;
+  project: any;
+};
+
+export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
+
+  console.log('Initial Liquidity vault: ', vault);
 
   const themeDesign = {
     border: {
@@ -47,27 +54,33 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({}) => {
       <Flex flexDirection={'column'}>
         <GridItem className={'chart-cell'} fontSize={'16px'}>
           <Text>Token</Text>
-          <Text>120,000,000 TON</Text>
+          {/* Need to make TON changeable. */}
+          <Text>
+            {vault.vaultTokenAllocation} {project.tokenSymbol}
+          </Text>
         </GridItem>
         <GridItem className={'chart-cell'}>
           <Text>Price Range</Text>
+          {/* Need to make Full Range changeable. */}
           <Text>Full Range</Text>
         </GridItem>
         <GridItem className={'chart-cell'}>
           <Text>Selected Pair</Text>
-          <Text>Token Symbol - TOS</Text>
+          {/* Need to make Token Symbol - TOS changeable. */}
+          <Text> {project.tokenSymbol} - TOS</Text>
         </GridItem>
         <GridItem className={'chart-cell'}>
           <Text>Pool Address</Text>
-          <Text>0x1EO...8202</Text>
+          {/* Need a valid poolAddress */}
+          <Text>{shortenAddress(vault.vaultAddress)}</Text>
         </GridItem>
         <GridItem className={'chart-cell'}>
           <Text>Vault Admin</Text>
-          <Text>0x1EO...8202</Text>
+          <Text>{shortenAddress(vault.adminAddress)}</Text>
         </GridItem>
         <GridItem className={'chart-cell'}>
           <Text>Vault Contract Address</Text>
-          <Text>0x1E0...8202</Text>{' '}
+          <Text>{shortenAddress(vault.vaultAddress)}</Text>{' '}
         </GridItem>
       </Flex>
       <Flex flexDirection={'column'}>

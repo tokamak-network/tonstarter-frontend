@@ -10,11 +10,18 @@ import {
 } from '@chakra-ui/react';
 import {PublicPageTable} from './PublicPageTable';
 
-type LiquidityIncentive = {};
+import {shortenAddress} from 'utils/address';
 
-export const LiquidityIncentive: FC<LiquidityIncentive> = ({}) => {
+type LiquidityIncentive = {vault: any; project: any};
+
+export const LiquidityIncentive: FC<LiquidityIncentive> = ({
+  vault,
+  project,
+}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
+
+  console.log('vault: ', vault);
 
   const themeDesign = {
     border: {
@@ -49,23 +56,25 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({}) => {
         <Flex flexDirection={'column'} w={'70%'}>
           <GridItem className={'chart-cell'} fontSize={'16px'}>
             <Text>Token</Text>
-            <Text>120,000,000 TON</Text>
+            <Text>
+              {vault.vaultTokenAllocation} {project.tokenSymbol}
+            </Text>
           </GridItem>
           <GridItem className={'chart-cell'}>
             <Text>Selected Pair</Text>
-            <Text>Token Symbol - TOS</Text>
+            <Text> {project.tokenSymbol} - TOS</Text>
           </GridItem>
           <GridItem className={'chart-cell'}>
             <Text>Pool Address</Text>
-            <Text>0x1EO...8202</Text>
+            <Text>{vault.poolAddress || 'N/A'}</Text>
           </GridItem>
           <GridItem className={'chart-cell'}>
             <Text>Vault Admin</Text>
-            <Text>0x1EO...8202</Text>
+            <Text>{vault.adminAddress || 'N/A'}</Text>
           </GridItem>
           <GridItem className={'chart-cell'}>
             <Text>Vault Contract Address</Text>
-            <Text>0x1E0...8202</Text>{' '}
+            <Text>{vault.vaultAddress || 'N/A'}</Text>{' '}
           </GridItem>
         </Flex>
         <Flex flexDirection={'column'} ml={'-30%'}>

@@ -80,8 +80,7 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
                 (Number(vault.publicRound1Allocation) /
                   Number(vault.vaultTokenAllocation)) *
                 100
-              }%)`}
-            </Text>
+              }%)`}  </Text>
           </GridItem>
           <GridItem className={'chart-cell'}>
             <Text>Public Round 2.</Text>
