@@ -58,7 +58,7 @@ const OpenCampagin = () => {
   //   return <div>loading..</div>;
   // }
   return (
-    <Flex flexDir="column" mt={100} alignItems="center">
+    <Flex flexDir="column" mt={'78px'} alignItems="center">
       {/* <Grid templateColumns="repeat(4, 1fr)" mb={'30px'}>
         {projectsData?.map((project: {name: string; key: string}) => (
           <Link to={`${url}/${project.key}`}>

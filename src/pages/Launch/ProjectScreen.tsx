@@ -6,13 +6,35 @@ import {Project} from './components/Projects/Project';
 import {useModal} from 'hooks/useModal';
 import CreateRewardsProgramModal from './components/modals/CreateRewardsProgram';
 import DownloadModal from './components/modals/Download';
+import {useRouteMatch} from 'react-router-dom';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {selectLaunch, setHashKey} from '@Launch/launch.reducer';
 const ProjectScreen = () => {
   const {openAnyModal} = useModal();
   const history = useHistory();
 
   const goBackToList = useCallback(() => {
-    history.push('/opencampagin');
+    history.push('/opencampaign');
   }, []);
+  const match = useRouteMatch();
+  const {url} = match;
+  const isExist = url.split('/')[3];
+  const dispatch = useAppDispatch();
+  // console.log(window.location);
+
+  const {
+    //@ts-ignore
+    params: {name},
+  } = match;
+  const {
+    data: {projects, hashKey},
+  } = useAppSelector(selectLaunch);
+
+  console.log('projects', projects);
+  useEffect(() => {
+    dispatch(setHashKey({data: isExist === 'project' ? undefined : isExist}));
+  }, []);
+  const project = projects[name];
   return (
     <Flex
       flexDir={'column'}
@@ -26,7 +48,7 @@ const ProjectScreen = () => {
           subtitle={'Make Your Own Token and Create Token Economy'}
         />
         <Flex mt={'60px'} mb={'50px'}>
-          <Project name={'Project Name'} />
+          <Project project={project} />
         </Flex>
         <Button
           w={'180px'}
@@ -34,26 +56,26 @@ const ProjectScreen = () => {
           bg={'#257eee'}
           fontSize={'14px'}
           color={'white.100'}
-        //   onClick={() => openAnyModal('Launch_CreateRewardProgram', {})}
-        onClick={() => goBackToList()}
-          >
+          //   onClick={() => openAnyModal('Launch_CreateRewardProgram', {})}
+          onClick={() => goBackToList()}
+          _hover={{bg: '#257eee'}}>
           Back to List
         </Button>
         <Button
-        mt={'20px'}
+          mt={'20px'}
           w={'180px'}
           h={'45px'}
           bg={'#257eee'}
           fontSize={'14px'}
           color={'white.100'}
           onClick={() => openAnyModal('Launch_CreateRewardProgram', {})}
-        // onClick={() => goBackToList()}
-          >
+          // onClick={() => goBackToList()}
+        >
           Create Reward Program
         </Button>
       </Flex>
       <CreateRewardsProgramModal />
-      <DownloadModal/>
+      <DownloadModal />
     </Flex>
   );
 };

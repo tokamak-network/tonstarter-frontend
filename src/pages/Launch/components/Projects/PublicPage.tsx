@@ -12,12 +12,19 @@ import {
 import {PublicPageTable} from './PublicPageTable';
 
 import '../css/PublicPage.css';
+import {shortenAddress} from 'utils';
 
-type PublicPage = {};
+type PublicPage = {
+  vault: any;
+  project: any;
+};
 
-export const PublicPage: FC<PublicPage> = ({}) => {
+export const PublicPage: FC<PublicPage> = ({vault, project}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
+
+  console.log('vault', vault);
+
   const themeDesign = {
     border: {
       light: 'solid 1px #e7edf3',
@@ -51,15 +58,27 @@ export const PublicPage: FC<PublicPage> = ({}) => {
         <Flex flexDirection={'column'}>
           <GridItem className={'chart-cell'} fontSize={'16px'}>
             <Text>Token</Text>
-            <Text>120,000,000 TON</Text>
+            <Text>
+              {vault.vaultTokenAllocation} {project.tokenSymbol}
+            </Text>
           </GridItem>
           <GridItem className={'chart-cell'}>
             <Text>Public Round 1.</Text>
-            <Text>6,000,000 TON (50%)</Text>
+            <Text>
+              {vault.publicRound1Allocation
+                ? vault.publicRound1Allocation
+                : 'N/A'}{' '}
+              {project.tokenSymbol} (50%)
+            </Text>
           </GridItem>
           <GridItem className={'chart-cell'}>
             <Text>Public Round 2.</Text>
-            <Text>6,000,000 TON (50%)</Text>
+            <Text>
+              {vault.publicRound2Allocation
+                ? vault.publicRound2Allocation
+                : 'N/A'}{' '}
+              {project.tokenSymbol} (50%)
+            </Text>
           </GridItem>
           <GridItem className={'chart-cell'}>
             <Text>Token Allocation for Liquidiy Pool</Text>
@@ -67,19 +86,29 @@ export const PublicPage: FC<PublicPage> = ({}) => {
           </GridItem>
           <GridItem className={'chart-cell'}>
             <Text>Hard Cap</Text>
-            <Text>60,000,000 TON</Text>
+            <Text>
+              {vault.hardCap ? vault.hardCap : 'N/A'} {project.tokenSymbol}
+            </Text>
           </GridItem>
           <GridItem className={'chart-cell'}>
             <Text>Addres for receiving funds</Text>
-            <Text>0x1E0...8202</Text>{' '}
+            <Text>
+              {vault.addressForReceiving
+                ? shortenAddress(vault.addressForReceiving)
+                : 'N/A'}
+            </Text>{' '}
           </GridItem>
           <GridItem className={'chart-cell'}>
             <Text>Vault Admin Address</Text>
-            <Text>0x1E0...8202</Text>{' '}
+            <Text>
+              {vault.adminAddress ? shortenAddress(vault.adminAddress) : 'N/A'}
+            </Text>{' '}
           </GridItem>
           <GridItem className={'chart-cell'}>
             <Text>Vault Contract Address</Text>
-            <Text>0x1E0...8202</Text>{' '}
+            <Text>
+              {vault.vaultAddress ? shortenAddress(vault.vaultAddress) : 'N/A'}
+            </Text>{' '}
           </GridItem>
         </Flex>
         <Flex flexDirection={'column'}>

@@ -33,7 +33,7 @@ const ProjectCard: React.FC<{
   const [participants, setParticipants] = useState<string | undefined>(
     undefined,
   );
-
+  
   const PUBLICSALE_CONTRACT = useCallContract(
     // project.saleContractAddress ||
     '',
@@ -64,7 +64,7 @@ const ProjectCard: React.FC<{
   }, [library, project, PUBLICSALE_CONTRACT]);
 
   return (
-    <Link to={`${url}/project/${project.data.projectName}`} id={`past_link_${index}`}>
+    <Link to={`${url}/project/${project.key}`} id={`past_link_${index}`}>
       <Box {...STATER_STYLE.containerStyle({colorMode})} h={'275px'}>
         <Flex justifyContent="space-between" mb={'10px'}>
           <TokenImage></TokenImage>
@@ -167,7 +167,7 @@ const ProjectCard: React.FC<{
               {project.data.tokenSymbol ||'NA'}
             </Text>
           </Box>
-          <Box d="flex" flexDir="column" w={'99px'}>
+          <Box d="flex" flexDir="column" w={'105px'}>
             <Text
               {...STATER_STYLE.subTextBlack({
                 colorMode,
@@ -182,7 +182,9 @@ const ProjectCard: React.FC<{
                 colorMode,
                 fontSize: 20,
               })}>
-              {'NA'}
+              {Number(project.data.totalSupply).toLocaleString(undefined, {
+                            minimumFractionDigits: 0,
+                          }) || 'NA'}
             </Text>
           </Box>
         </Flex>

@@ -247,7 +247,7 @@ type ProjectCardType = {
     totalTokenAllocation: String;
     vaults: VaultAny[];
   };
-  k: string;
+  key: string;
 };
 
 export type {

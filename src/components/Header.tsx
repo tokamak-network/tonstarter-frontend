@@ -322,7 +322,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           Starter
         </NavLink>
         <NavLink
-          to="/opencampagin"
+          to="/opencampaign"
           className={match?.isExact ? 'link-match' : 'link'}
           style={{zIndex: 100}}>
           <Text className={match?.isExact ? 'link-match' : 'link'}>Launch</Text>

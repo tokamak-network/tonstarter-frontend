@@ -1,4 +1,4 @@
-import {FC, useState} from 'react';
+import {FC, useEffect, useState} from 'react';
 import {
   Heading,
   Flex,
@@ -10,17 +10,25 @@ import {
 } from '@chakra-ui/react';
 import {VaultComponent} from './VaultComponent';
 import {ProjectTokenComponent} from './ProjectTokenComponent';
-
+import {ProjectCardType} from '../../types/index';
+import {useHistory} from 'react-router-dom';
 type ProjectProps = {
-  name: string;
+  project: any;
 };
 
-export const Project: FC<ProjectProps> = ({name}) => {
+export const Project: FC<ProjectProps> = ({project}) => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
   const [showVault, setShowVault] = useState<boolean>(false);
 
+  const name = 'Project Name';
 
+  window.onbeforeunload = function () {
+    window.setTimeout(function () {
+      window.location.href = '/opencampaign';
+    }, 0);
+    window.onbeforeunload = null; // necessary to prevent infinite loop, that kills your browser
+  };
   return (
     <Flex
       w={'1100px'}
@@ -45,7 +53,7 @@ export const Project: FC<ProjectProps> = ({name}) => {
             color={colorMode === 'light' ? '#304156' : '#ffffff'}
             fontSize={'20px'}
             fontWeight={'500'}>
-            {name}
+            {project.projectName}
           </Text>
           <Flex h={'38px'}>
             <Button
@@ -102,7 +110,11 @@ export const Project: FC<ProjectProps> = ({name}) => {
           </Flex>
         </Flex>
       </Flex>
-      {showVault ? <VaultComponent /> : <ProjectTokenComponent />}
+      {showVault ? (
+        <VaultComponent project={project} />
+      ) : (
+        <ProjectTokenComponent project={project} />
+      )}
     </Flex>
   );
 };
