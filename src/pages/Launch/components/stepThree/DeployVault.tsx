@@ -185,6 +185,17 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
   }, [values, vaultType, selectedVaultDetail, hasToken, blockNumber]);
 
   useEffect(() => {
+    if (
+      hasToken &&
+      (selectedVaultDetail?.vaultType === 'Initial Liquidity' ||
+        selectedVaultDetail?.vaultType === 'DAO')
+    ) {
+      setFieldValue(`vaults[${selectedVaultDetail?.index}].isSet`, true);
+    }
+    /*eslint-disable*/
+  }, [hasToken, selectedVaultDetail]);
+
+  useEffect(() => {
     switch (vaultType) {
       case 'Initial Liquidity': {
         const info = {
