@@ -194,18 +194,14 @@ export const Router: FC<RouterProps> = () => {
           <Route exact path="/admin/listrewards" component={ListingRewards} />
 
           <Route exact path={`/starter/:id`} component={StarterDetail} />
-          <Route exact path={`/opencampaign`} component={OpenCampagin} />
+          <Route exact path={`/launch`} component={OpenCampagin} />
+          <Route exact path={`/launch/createproject`} component={MainScreen} />
           <Route
             exact
-            path={`/opencampaign/createproject`}
-            component={MainScreen}
-          />
-          <Route
-            exact
-            path={`/opencampaign/project/:name`}
+            path={`/launch/project/:name`}
             component={ProjectScreen}
           />
-          <Route exact path={`/opencampaign/:id`} component={MainScreen} />
+          <Route exact path={`/launch/:id`} component={MainScreen} />
           {/* <Route
             exact
             path={`/starter/upcoming/:id`}
