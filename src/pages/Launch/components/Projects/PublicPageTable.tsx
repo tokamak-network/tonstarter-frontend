@@ -56,7 +56,7 @@ export const PublicPageTable = (prop: PublicTableProps) => {
     });
     setTableData(claimData);
   }, []);
-  console.log(tableData);
+  // console.log(tableData);
 
   return (
     <Box

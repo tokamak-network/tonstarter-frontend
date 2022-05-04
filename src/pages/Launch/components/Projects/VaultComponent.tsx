@@ -26,7 +26,7 @@ type VaultComponent = {
 export const VaultComponent: FC<VaultComponent> = ({project}) => {
   const [tabIndex, setTabIndex] = useState(0);
 
-  console.log('project: ', project);
+  // console.log('project: ', project);
 
   const themeDesign = {
     border: {

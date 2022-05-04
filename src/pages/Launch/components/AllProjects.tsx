@@ -106,9 +106,9 @@ const AllProjects = () => {
 
   return (
     <Flex flexDir={'column'} justifyContent={'center'} w={'100%'} mb={'100px'}>
-      <FeaturedProjects />
+      {/* <FeaturedProjects /> */}
       <Box display={'flex'} justifyContent={'center'} flexDir={'column'}>
-        <Box display={'flex'} justifyContent={'center'} mb={'20px'}>
+        <Box display={'flex'} justifyContent={'center'} my={'20px'}>
           <Heading as="h2" fontSize={'2xl'}>
             All Projects
           </Heading>

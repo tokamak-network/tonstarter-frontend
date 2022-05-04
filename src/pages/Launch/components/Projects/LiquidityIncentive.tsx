@@ -11,6 +11,7 @@ import {
 import {PublicPageTable} from './PublicPageTable';
 
 import {shortenAddress} from 'utils/address';
+import commafy from 'utils/commafy';
 
 type LiquidityIncentive = {vault: any; project: any};
 
@@ -59,7 +60,7 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
             fontSize={'16px'}>
             <Text>Token</Text>
             <Text>
-              {vault.vaultTokenAllocation} {project.tokenSymbol}
+              {commafy(Number(vault.vaultTokenAllocation))} {project.tokenSymbol}
             </Text>
           </GridItem>
           <GridItem className={'chart-cell no-border-right no-border-bottom'}>
@@ -68,21 +69,15 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
           </GridItem>
           <GridItem className={'chart-cell no-border-right no-border-bottom'}>
             <Text>Pool Address</Text>
-            <Text>
-              {vault.poolAddress ? shortenAddress(vault.poolAddress) : 'N/A'}
-            </Text>
+            <Text>{vault.poolAddress? shortenAddress(vault.poolAddress) : 'N/A'}</Text>
           </GridItem>
           <GridItem className={'chart-cell no-border-right no-border-bottom'}>
             <Text>Vault Admin</Text>
-            <Text>
-              {vault.adminAddress ? shortenAddress(vault.adminAddress) : 'N/A'}
-            </Text>
+            <Text>{vault.adminAddress? shortenAddress(vault.adminAddress) : 'N/A'}</Text>
           </GridItem>
           <GridItem className={'chart-cell no-border-right'}>
             <Text>Vault Contract Address</Text>
-            <Text>
-              {vault.vaultAddress ? shortenAddress(vault.vaultAddress) : 'N/A'}
-            </Text>
+            <Text>{vault.vaultAddress? shortenAddress(vault.vaultAddress) : 'N/A'}</Text>{' '}
           </GridItem>
         </Flex>
         <Flex flexDirection={'column'} ml={'-40%'}>
@@ -149,7 +144,7 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
           </GridItem>
         </Flex>
       </Grid>
-      {/* <PublicPageTable /> */}
+      {vault.isDeployed? <PublicPageTable claim={vault.claim} />: <Text>There are no claim round values</Text> }
     </>
   );
 };

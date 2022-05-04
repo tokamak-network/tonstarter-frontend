@@ -10,6 +10,7 @@ import {
 } from '@chakra-ui/react';
 
 import {shortenAddress} from 'utils/address';
+import {PublicPageTable} from './PublicPageTable';
 
 type WtonTosLpReward = {vault: any; project: any};
 
@@ -143,7 +144,7 @@ export const WtonTosLpReward: FC<WtonTosLpReward> = ({vault, project}) => {
           </GridItem>
         </Flex>
       </Grid>
-      {/* <PublicPageTable /> */}
+      {vault.isDeployed? <PublicPageTable claim={vault.claim} />: <Text>There are no claim round values</Text> }
     </>
   );
 };

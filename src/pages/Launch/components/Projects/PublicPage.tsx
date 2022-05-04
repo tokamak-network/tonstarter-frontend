@@ -42,7 +42,7 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
         })
         .sort((a, b) => a.tier - b.tier)
     : [];
-  console.log('vault', vault);
+  // console.log('vault', vault);
 
   const themeDesign = {
     border: {

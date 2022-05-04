@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 
 import {shortenAddress} from 'utils/address';
-
+import commafy from 'utils/commafy';
 type InitialLiquidity = {
   vault: any;
   project: any;
@@ -20,7 +20,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
-  console.log('Initial Liquidity vault: ', vault);
+  // console.log('Initial Liquidity vault: ', vault);
 
   const themeDesign = {
     border: {
@@ -58,7 +58,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
           <Text>Token</Text>
           {/* Need to make TON changeable. */}
           <Text>
-            {vault.vaultTokenAllocation} {project.tokenSymbol}
+            {commafy(Number(vault.vaultTokenAllocation))} {project.tokenSymbol}
           </Text>
         </GridItem>
         <GridItem className={'chart-cell no-border-right no-border-bottom'}>

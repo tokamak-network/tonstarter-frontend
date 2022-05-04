@@ -50,7 +50,7 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
 
   return (
     <Flex flexDirection={'column'} w={'1030px'} p={'0px'}>
-      <Grid templateColumns="repeat(2, 1fr)" w={'100%'}>
+      <Grid templateColumns="repeat(2, 1fr)" w={'100%'}  mb={'30px'}>
         <Flex flexDirection={'column'}>
           <GridItem
             className={'chart-cell'}

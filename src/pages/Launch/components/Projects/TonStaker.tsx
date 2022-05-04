@@ -9,8 +9,8 @@ import {
   Button,
 } from '@chakra-ui/react';
 
-import {PublicPageTable} from './PublicPageTable';
 import {shortenAddress} from 'utils/address';
+import {PublicPageTable} from './PublicPageTable';
 
 type TonStaker = {
   vault: any;
@@ -21,7 +21,7 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
-  console.log('tonstaker vault: ', vault);
+  // console.log('tonstaker vault: ', vault);
 
   const themeDesign = {
     border: {
@@ -52,7 +52,7 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
 
   return (
     <Flex flexDirection={'column'} w={'1030px'} p={'0px'}>
-      <Grid templateColumns="repeat(2, 1fr)" w={'100%'}>
+      <Grid templateColumns="repeat(2, 1fr)" w={'100%'}  mb={'30px'}>
         <Flex flexDirection={'column'}>
           <GridItem
             className={'chart-cell'}
