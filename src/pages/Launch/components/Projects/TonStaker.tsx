@@ -9,6 +9,7 @@ import {
   Button,
 } from '@chakra-ui/react';
 
+import {PublicPageTable} from './PublicPageTable';
 import {shortenAddress} from 'utils/address';
 
 type TonStaker = {
@@ -137,8 +138,8 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
               w={'100px'}
               h={'32px'}
               bg={'#257eee'}
-              disabled={true}
               color={'#ffffff'}
+              disabled={false}
               _disabled={{
                 color: colorMode === 'light' ? '#86929d' : '#838383',
                 bg: colorMode === 'light' ? '#e9edf1' : '#353535',
@@ -163,7 +164,7 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
               w={'100px'}
               h={'32px'}
               bg={'#257eee'}
-              disabled={false}
+              disabled={true}
               color={'#ffffff'}
               _disabled={{
                 color: colorMode === 'light' ? '#86929d' : '#838383',
@@ -174,6 +175,18 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
           </GridItem>
         </Flex>
       </Grid>
+      {vault.isDeployed ? (
+        <PublicPageTable claim={vault.claim} />
+      ) : (
+        <Flex
+          justifyContent={'center'}
+          width={'100%'}
+          mt={'50px'}
+          color={colorMode === 'light' ? '#9d9ea5' : '#7e8993'}
+          fontFamily={theme.fonts.fld}>
+          There are no claim round values
+        </Flex>
+      )}
     </Flex>
   );
 };

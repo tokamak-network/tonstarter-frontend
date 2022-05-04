@@ -11,6 +11,22 @@
   display: flex;
 }
 
+.no-border-left {
+  border-left: 0px;
+}
+
+.no-border-right {
+  border-right: 0px;
+}
+
+.no-border-bottom {
+  border-bottom: 0px;
+}
+
+.no-border-top {
+  border-top: 0px;
+}
+
 .button-style {
   border: solid 1px #2a72e5;
   color: #2a72e5;
