@@ -13,15 +13,7 @@ const ProjectScreen = () => {
   const {openAnyModal} = useModal();
   const history = useHistory();
 
-  const goBackToList = useCallback(() => {
-    history.push('/opencampaign');
-  }, []);
   const match = useRouteMatch();
-  const {url} = match;
-  const isExist = url.split('/')[3];
-  const dispatch = useAppDispatch();
-  // console.log(window.location);
-
   const {
     //@ts-ignore
     params: {name},
@@ -30,11 +22,12 @@ const ProjectScreen = () => {
     data: {projects, hashKey},
   } = useAppSelector(selectLaunch);
 
-  console.log('projects', projects);
-  useEffect(() => {
-    dispatch(setHashKey({data: isExist === 'project' ? undefined : isExist}));
-  }, []);
   const project = projects[name];
+
+  const goBackToList = useCallback(() => {
+    history.push('/opencampaign');
+  }, []);
+
   return (
     <Flex
       flexDir={'column'}

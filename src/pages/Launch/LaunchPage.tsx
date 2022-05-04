@@ -1,7 +1,6 @@
 import {Box, Button, Flex, useTheme, Text} from '@chakra-ui/react';
 import {useState} from 'react';
 import {PageHeader} from 'components/PageHeader';
-import {Link, useRouteMatch} from 'react-router-dom';
 import AllProjects from '@Launch/components/AllProjects';
 import MyProjects from '@Launch/components/MyProjects';
 import LaunchPageBackground from '../../assets/banner/LaunchPageBackground.png';
@@ -11,13 +10,6 @@ import ConfirmTermsModal from './components/modals/ConfirmTerms';
 const LaunchPage = () => {
   const [showAllProjects, setShowAllProjects] = useState<boolean>(true);
   const theme = useTheme();
-  const match = useRouteMatch();
-  const {
-    //@ts-ignore
-    params: {id},
-  } = match;
-  const {url} = match;
-
   const {openAnyModal} = useModal();
 
   return (
