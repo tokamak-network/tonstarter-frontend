@@ -28,59 +28,39 @@ const TabComponent = (props: {project: any; vault: string; index: number}) => {
 
   switch (vault) {
     case 'Public':
-         return (
-    
-          <PublicPage
-            project={project}
-            vault={project.vaults[index]}></PublicPage>
-     
+      return (
+        <PublicPage
+          project={project}
+          vault={project.vaults[index]}></PublicPage>
       );
     case 'Initial Liquidity':
       return (
-    
-          <InitialLiquidity
-            project={project}
-            vault={project.vaults[index]}></InitialLiquidity>
-       
+        <InitialLiquidity
+          project={project}
+          vault={project.vaults[index]}></InitialLiquidity>
       );
     case 'TON Staker':
       return (
-    
-          <TonStaker
-            project={project}
-            vault={project.vaults[index]}></TonStaker>
-     
+        <TonStaker project={project} vault={project.vaults[index]}></TonStaker>
       );
     case 'TOS Staker':
       return (
-     
-          <TosStaker
-            project={project}
-            vault={project.vaults[index]}></TosStaker>
-      
+        <TosStaker project={project} vault={project.vaults[index]}></TosStaker>
       );
     case 'WTON-TOS LP Reward':
       return (
-      
-          <WtonTosLpReward
-            project={project}
-            vault={project.vaults[index]}></WtonTosLpReward>
-      
+        <WtonTosLpReward
+          project={project}
+          vault={project.vaults[index]}></WtonTosLpReward>
       );
     case 'Liquidity Incentive':
       return (
-     
-          <LiquidityIncentive
-            project={project}
-            vault={project.vaults[index]}></LiquidityIncentive>
-     
+        <LiquidityIncentive
+          project={project}
+          vault={project.vaults[index]}></LiquidityIncentive>
       );
     case 'DAO':
-      return (
-
-          <DAO project={project} vault={project.vaults[index]}></DAO>
-     
-      );
+      return <DAO project={project} vault={project.vaults[index]}></DAO>;
     default:
       return <div>no component for this step</div>;
   }
@@ -130,11 +110,11 @@ export const VaultComponent: FC<VaultComponent> = ({project}) => {
           {project.vaults.map((vault: any, index: number) => {
             return (
               <TabPanel px={'0px'}>
-              <TabComponent
-                project={project}
-                vault={vault.vaultType}
-                index={index}
-              />
+                <TabComponent
+                  project={project}
+                  vault={vault.vaultType}
+                  index={index}
+                />
               </TabPanel>
             );
           })}

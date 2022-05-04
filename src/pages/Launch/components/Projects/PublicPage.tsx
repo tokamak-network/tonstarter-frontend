@@ -46,8 +46,8 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
 
   const themeDesign = {
     border: {
-      light: 'solid 1px #e7edf3',
-      dark: 'solid 1px #535353',
+      light: 'solid 1px #e6eaee',
+      dark: 'solid 1px #373737',
     },
     font: {
       light: 'black.300',
@@ -76,7 +76,10 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
       <Grid templateColumns="repeat(3, 1fr)" w={'100%'}>
         <Flex flexDirection={'column'}>
           <GridItem
-            className={'chart-cell no-border-right no-border-bottom'}
+            border={themeDesign.border[colorMode]}
+            borderRight={'none'}
+            borderBottom={'none'}
+            className={'chart-cell'}
             fontSize={'16px'}
             justifyContent={'space-between'}>
             <Text>Token</Text>
@@ -93,11 +96,16 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
           {vault.isDeployed ? (
             <>
               <GridItem
-                className={'chart-cell no-border-right no-border-bottom'}
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                borderBottom={'none'}
+                className={'chart-cell'}
                 justifyContent={'space-between'}>
                 <Text>Public Round 1.</Text>
                 <Text>
-                  {` ${commafy(vault.publicRound1Allocation)} ${project.tokenSymbol} (${
+                  {` ${commafy(vault.publicRound1Allocation)} ${
+                    project.tokenSymbol
+                  } (${
                     (Number(vault.publicRound1Allocation) /
                       Number(vault.vaultTokenAllocation)) *
                     100
@@ -105,11 +113,16 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 </Text>
               </GridItem>
               <GridItem
-                className={'chart-cell no-border-right no-border-bottom'}
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                borderBottom={'none'}
+                className={'chart-cell'}
                 justifyContent={'space-between'}>
                 <Text>Public Round 2.</Text>
                 <Text>
-                  {` ${commafy(vault.publicRound2Allocation)} ${project.tokenSymbol} (${
+                  {` ${commafy(vault.publicRound2Allocation)} ${
+                    project.tokenSymbol
+                  } (${
                     (Number(vault.publicRound2Allocation) /
                       Number(vault.vaultTokenAllocation)) *
                     100
@@ -117,7 +130,10 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 </Text>
               </GridItem>
               <GridItem
-                className={'chart-cell no-border-right no-border-bottom'}
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                borderBottom={'none'}
+                className={'chart-cell'}
                 justifyContent={'space-between'}>
                 <Text fontSize={'13px'} w={'100px'}>
                   Token Allocation for Liquidiy Pool
@@ -131,25 +147,38 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 }%)`}</Text>
               </GridItem>
               <GridItem
-                className={'chart-cell no-border-right no-border-bottom'}
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                borderBottom={'none'}
+                className={'chart-cell'}
                 justifyContent={'space-between'}>
                 <Text>Hard Cap</Text>
-                <Text>{`${commafy(vault.hardCap)}  ${project.tokenSymbol}`}</Text>
+                <Text>{`${commafy(vault.hardCap)}  ${
+                  project.tokenSymbol
+                }`}</Text>
               </GridItem>
               <GridItem
-                className={'chart-cell no-border-right no-border-bottom'}
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                borderBottom={'none'}
+                className={'chart-cell'}
                 justifyContent={'space-between'}>
                 <Text>Addres for receiving funds</Text>
                 <Text>{shortenAddress(vault.addressForReceiving)}</Text>
               </GridItem>
               <GridItem
-                className={'chart-cell no-border-right no-border-bottom'}
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                borderBottom={'none'}
+                className={'chart-cell'}
                 justifyContent={'space-between'}>
                 <Text>Vault Admin Address</Text>
                 <Text>{shortenAddress(vault.adminAddress)}</Text>
               </GridItem>
               <GridItem
-                className={'chart-cell no-border-right'}
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                className={'chart-cell'}
                 justifyContent={'space-between'}>
                 <Text>Vault Contract Address</Text>
                 <Text>{shortenAddress(vault.vaultAddress)}</Text>
@@ -158,18 +187,22 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
           ) : (
             <>
               <GridItem
-                className={'chart-cell no-border-right no-border-bottom'}
-                fontSize={'16px'}
-                borderBottom={'none'}></GridItem>
+                border={themeDesign.border[colorMode]}
+                borderBottom={'none'}
+                borderRight={'none'}
+                className={'chart-cell'}
+                fontSize={'16px'}></GridItem>
               <GridItem
-                className={'chart-cell no-border-right no-border-bottom'}
+                borderLeft={themeDesign.border[colorMode]}
+                className={'chart-cell'}
                 fontSize={'16px'}
-                borderY={'none'}
                 justifyContent={'center'}>
                 <Flex>There are no token values</Flex>
               </GridItem>
               <GridItem
-                className={'chart-cell no-border-right'}
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                className={'chart-cell'}
                 fontSize={'16px'}
                 borderTop={'none'}></GridItem>
             </>
@@ -177,7 +210,10 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
         </Flex>
         <Flex flexDirection={'column'}>
           <GridItem
-            className={'chart-cell no-border-right no-border-bottom'}
+            border={themeDesign.border[colorMode]}
+            borderRight={'none'}
+            borderBottom={'none'}
+            className={'chart-cell'}
             fontSize={'16px'}
             justifyContent={'space-between'}>
             <Text>Schedule</Text>
@@ -192,7 +228,10 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
           {vault.isDeployed ? (
             <>
               <GridItem
-                className={'chart-cell no-border-right no-border-bottom'}
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                borderBottom={'none'}
+                className={'chart-cell'}
                 justifyContent={'space-between'}>
                 <Text>Snapshot</Text>
                 <Text>
@@ -200,7 +239,10 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 </Text>
               </GridItem>
               <GridItem
-                className={'chart-cell no-border-right no-border-bottom'}
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                borderBottom={'none'}
+                className={'chart-cell'}
                 justifyContent={'space-between'}>
                 <Text>Whitelist</Text>
                 <Text>
@@ -208,7 +250,10 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 </Text>
               </GridItem>
               <GridItem
-                className={'chart-cell no-border-right no-border-bottom'}
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                borderBottom={'none'}
+                className={'chart-cell'}
                 justifyContent={'space-between'}>
                 <Text>Public Round 1.</Text>
                 <Text>
@@ -218,7 +263,10 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 </Text>
               </GridItem>
               <GridItem
-                className={'chart-cell no-border-right no-border-bottom'}
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                borderBottom={'none'}
+                className={'chart-cell'}
                 justifyContent={'space-between'}>
                 <Text>Public Round 2.</Text>
                 <Text>
@@ -228,32 +276,47 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 </Text>
               </GridItem>
               <GridItem
-                className={'chart-cell no-border-right no-border-bottom'}>
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                borderBottom={'none'}
+                className={'chart-cell'}>
                 <Text>{''}</Text>
               </GridItem>
-              <GridItem className={'chart-cell no-border-bottom'}>
+              <GridItem
+                border={themeDesign.border[colorMode]}
+                borderBottom={'none'}
+                className={'chart-cell'}>
                 <Text>{''}</Text>
               </GridItem>
-              <GridItem className={'chart-cell'}>
+              <GridItem
+                border={themeDesign.border[colorMode]}
+                className={'chart-cell'}>
                 <Text>{''}</Text>
               </GridItem>
             </>
           ) : (
             <>
               <GridItem
-                className={'chart-cell no-border-right no-border-bottom'}
-                fontSize={'16px'}
-                borderBottom={'none'}></GridItem>
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                borderBottom={'none'}
+                className={'chart-cell'}
+                fontSize={'16px'}></GridItem>
               <GridItem
-                className={'chart-cell no-border-right no-border-bottom'}
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                className={'chart-cell'}
                 fontSize={'16px'}
                 borderY={'none'}
                 justifyContent={'center'}>
                 <Flex>There are no token values</Flex>
               </GridItem>
               <GridItem
-                className={'chart-cell no-border-right'}
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                className={'chart-cell'}
                 fontSize={'16px'}
+                paddingBottom={'32px'}
                 borderTop={'none'}></GridItem>
             </>
           )}
@@ -261,7 +324,9 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
         </Flex>
         <Flex flexDirection={'column'}>
           <GridItem
-            className={'chart-cell no-border-bottom'}
+            border={themeDesign.border[colorMode]}
+            borderBottom={'none'}
+            className={'chart-cell'}
             fontSize={'16px'}
             justifyContent={'space-between'}>
             <Text>sTOS Tier</Text>
@@ -270,7 +335,9 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
             <>
               {' '}
               <GridItem
-                className={'chart-cell no-border-bottom'}
+                border={themeDesign.border[colorMode]}
+                borderBottom={'none'}
+                className={'chart-cell'}
                 justifyContent={'space-between'}>
                 <Text>Tier</Text>
                 <Text>Required TOS</Text>
@@ -285,9 +352,9 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
 
                 return (
                   <GridItem
-                    className={`chart-cell ${
-                      index === sTosTier.length - 1 ? '' : 'no-border-bottom'
-                    }`}
+                    border={themeDesign.border[colorMode]}
+                    borderBottom={index === sTosTier.length - 1 ? '' : 'none'}
+                    className={'chart-cell'}
                     justifyContent={'space-between'}>
                     <Text>{tier ? tier : index + 1}</Text>
                     <Text>{commafy(requiredStos) || '-'}</Text>
@@ -315,10 +382,12 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
           ) : (
             <>
               <GridItem
+                border={themeDesign.border[colorMode]}
+                borderBottom={'none'}
                 className={'chart-cell'}
-                fontSize={'16px'}
-                borderBottom={'none'}></GridItem>
+                fontSize={'16px'}></GridItem>
               <GridItem
+                border={themeDesign.border[colorMode]}
                 className={'chart-cell'}
                 fontSize={'16px'}
                 borderY={'none'}
@@ -326,6 +395,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 <Flex>There are no token values</Flex>
               </GridItem>
               <GridItem
+                border={themeDesign.border[colorMode]}
                 className={'chart-cell'}
                 fontSize={'16px'}
                 borderTop={'none'}></GridItem>
@@ -358,8 +428,6 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
           There are no claim round values
         </Flex>
       )}
-      
-      </Flex>
-   
+    </Flex>
   );
 };

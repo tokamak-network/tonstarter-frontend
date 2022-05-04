@@ -24,8 +24,8 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
 
   const themeDesign = {
     border: {
-      light: 'solid 1px #e7edf3',
-      dark: 'solid 1px #535353',
+      light: 'solid 1px #e6eaee',
+      dark: 'solid 1px #373737',
     },
     font: {
       light: 'black.300',
@@ -53,6 +53,9 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
     <Grid templateColumns="repeat(2, 1fr)" w={'100%'}>
       <Flex flexDirection={'column'}>
         <GridItem
+          border={themeDesign.border[colorMode]}
+          borderRight={'none'}
+          borderBottom={'none'}
           className={'chart-cell no-border-right no-border-bottom'}
           fontSize={'16px'}>
           <Text>Token</Text>
@@ -61,38 +64,64 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
             {commafy(Number(vault.vaultTokenAllocation))} {project.tokenSymbol}
           </Text>
         </GridItem>
-        <GridItem className={'chart-cell no-border-right no-border-bottom'}>
+        <GridItem
+          border={themeDesign.border[colorMode]}
+          borderRight={'none'}
+          borderBottom={'none'}
+          className={'chart-cell no-border-right no-border-bottom'}>
           <Text>Price Range</Text>
           {/* Need to make Full Range changeable. */}
           <Text>Full Range</Text>
         </GridItem>
-        <GridItem className={'chart-cell no-border-right no-border-bottom'}>
+        <GridItem
+          border={themeDesign.border[colorMode]}
+          borderRight={'none'}
+          borderBottom={'none'}
+          className={'chart-cell no-border-right no-border-bottom'}>
           <Text>Selected Pair</Text>
           {/* Need to make Token Symbol - TOS changeable. */}
           <Text> {project.tokenSymbol} - TOS</Text>
         </GridItem>
-        <GridItem className={'chart-cell no-border-right no-border-bottom'}>
+        <GridItem
+          border={themeDesign.border[colorMode]}
+          borderRight={'none'}
+          borderBottom={'none'}
+          className={'chart-cell no-border-right no-border-bottom'}>
           <Text>Pool Address</Text>
           {/* Need a valid poolAddress */}
           <Text>{shortenAddress(vault.vaultAddress)}</Text>
         </GridItem>
-        <GridItem className={'chart-cell no-border-right no-border-bottom'}>
+        <GridItem
+          border={themeDesign.border[colorMode]}
+          borderRight={'none'}
+          borderBottom={'none'}
+          className={'chart-cell no-border-right no-border-bottom'}>
           <Text>Vault Admin</Text>
           <Text>{shortenAddress(vault.adminAddress)}</Text>
         </GridItem>
-        <GridItem className={'chart-cell no-border-right'}>
+        <GridItem
+          border={themeDesign.border[colorMode]}
+          borderRight={'none'}
+          className={'chart-cell no-border-right'}>
           <Text>Vault Contract Address</Text>
           <Text>{shortenAddress(vault.vaultAddress)}</Text>{' '}
         </GridItem>
       </Flex>
       <Flex flexDirection={'column'}>
-        <GridItem className={'chart-cell no-border-bottom'} fontSize={'16px'}>
+        <GridItem
+          border={themeDesign.border[colorMode]}
+          borderBottom={'none'}
+          className={'chart-cell no-border-bottom'}
+          fontSize={'16px'}>
           <Text>LP Token</Text>
           <Flex>
             <Text mr={'5px'}>ID</Text> <Text color={'#257eee'}>#562734</Text>
           </Flex>
         </GridItem>
-        <GridItem className={'chart-cell no-border-bottom'}>
+        <GridItem
+          border={themeDesign.border[colorMode]}
+          borderBottom={'none'}
+          className={'chart-cell no-border-bottom'}>
           <Text w={'25%'}>LP Token</Text>
           <Text w={'25%'} textAlign={'center'}>
             Project Token
@@ -104,7 +133,10 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
             Action
           </Text>
         </GridItem>
-        <GridItem className={'chart-cell no-border-bottom'}>
+        <GridItem
+          border={themeDesign.border[colorMode]}
+          borderBottom={'none'}
+          className={'chart-cell no-border-bottom'}>
           <Text>Increase Liquidity</Text>
           <Text>10,000,000</Text>
           <Text>10,000,000</Text>
@@ -118,7 +150,10 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
             Increase
           </Button>
         </GridItem>
-        <GridItem className={'chart-cell no-border-bottom'}>
+        <GridItem
+          border={themeDesign.border[colorMode]}
+          borderBottom={'none'}
+          className={'chart-cell no-border-bottom'}>
           <Text>Unclaimed Fees</Text>
           <Text>10,000,000</Text>
           <Text>10,000,000</Text>
@@ -132,10 +167,15 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
             Collect
           </Button>
         </GridItem>
-        <GridItem className={'chart-cell no-border-bottom'}>
+        <GridItem
+          border={themeDesign.border[colorMode]}
+          borderBottom={'none'}
+          className={'chart-cell no-border-bottom'}>
           <Text>{''}</Text>
         </GridItem>
-        <GridItem className={'chart-cell'}>
+        <GridItem
+          border={themeDesign.border[colorMode]}
+          className={'chart-cell'}>
           <Text>{''}</Text>
         </GridItem>
       </Flex>

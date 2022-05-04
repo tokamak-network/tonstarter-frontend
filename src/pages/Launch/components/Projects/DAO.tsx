@@ -19,8 +19,8 @@ export const DAO: FC<DAO> = ({vault, project}) => {
   const [claimValue, setClaimValue] = useState(0);
   const themeDesign = {
     border: {
-      light: 'solid 1px #e7edf3',
-      dark: 'solid 1px #535353',
+      light: 'solid 1px #e6eaee',
+      dark: 'solid 1px #373737',
     },
     font: {
       light: 'black.300',
@@ -83,7 +83,7 @@ export const DAO: FC<DAO> = ({vault, project}) => {
               Vault Admin Address
             </Text>
             <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-            {vault.adminAddress ? shortenAddress(vault.adminAddress) : 'N/A'}
+              {vault.adminAddress ? shortenAddress(vault.adminAddress) : 'N/A'}
             </Text>
           </GridItem>
           <GridItem
@@ -97,7 +97,7 @@ export const DAO: FC<DAO> = ({vault, project}) => {
               Vault Contract Address
             </Text>
             <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-            {vault.vaultAddress ? shortenAddress(vault.vaultAddress) : 'N/A'}
+              {vault.vaultAddress ? shortenAddress(vault.vaultAddress) : 'N/A'}
             </Text>
           </GridItem>
         </Flex>

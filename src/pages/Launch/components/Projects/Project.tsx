@@ -21,6 +21,13 @@ export const Project: FC<ProjectProps> = ({project}) => {
   const {colorMode} = useColorMode();
   const [showVault, setShowVault] = useState<boolean>(false);
 
+  const themeDesign = {
+    border: {
+      light: 'solid 1px #e6eaee',
+      dark: 'solid 1px #373737',
+    },
+  };
+
   const name = 'Project Name';
   console.log('project', project);
 
@@ -63,7 +70,8 @@ export const Project: FC<ProjectProps> = ({project}) => {
               justifyContent={'center'}
               alignItems={'center'}
               bg={'transparent'}
-              border={'solid 1px #d7d9df'}
+              border={themeDesign.border[colorMode]}
+              borderRight={'none'}
               borderRadius={'3px 0px 0px 3px'}
               fontSize={'12px'}
               isActive={!showVault}
@@ -89,7 +97,7 @@ export const Project: FC<ProjectProps> = ({project}) => {
               alignItems={'center'}
               w={'120px'}
               bg={'transparent'}
-              border={'solid 1px #d7d9df'}
+              border={themeDesign.border[colorMode]}
               borderRadius={'0px 3px 3px 0px'}
               fontSize={'12px'}
               isActive={showVault}

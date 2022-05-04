@@ -26,8 +26,8 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
 
   const themeDesign = {
     border: {
-      light: 'solid 1px #e7edf3',
-      dark: 'solid 1px #535353',
+      light: 'solid 1px #e6eaee',
+      dark: 'solid 1px #373737',
     },
     font: {
       light: 'black.300',
@@ -56,32 +56,60 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
       <Grid templateColumns="repeat(2, 1fr)" w={'100%'} mb={'30px'}>
         <Flex flexDirection={'column'} w={'60%'}>
           <GridItem
-            className={'chart-cell no-border-right no-border-bottom'}
-            fontSize={'16px'}>
+            className={'chart-cell'}
+            fontSize={'16px'}
+            border={themeDesign.border[colorMode]}
+            borderRight={'none'}
+            borderBottom={'none'}>
             <Text>Token</Text>
             <Text>
-              {commafy(Number(vault.vaultTokenAllocation))} {project.tokenSymbol}
+              {commafy(Number(vault.vaultTokenAllocation))}{' '}
+              {project.tokenSymbol}
             </Text>
           </GridItem>
-          <GridItem className={'chart-cell no-border-right no-border-bottom'}>
+          <GridItem
+            className={'chart-cell'}
+            border={themeDesign.border[colorMode]}
+            borderRight={'none'}
+            borderBottom={'none'}>
             <Text>Selected Pair</Text>
             <Text> {project.tokenSymbol} - TOS</Text>
           </GridItem>
-          <GridItem className={'chart-cell no-border-right no-border-bottom'}>
+          <GridItem
+            className={'chart-cell'}
+            border={themeDesign.border[colorMode]}
+            borderRight={'none'}
+            borderBottom={'none'}>
             <Text>Pool Address</Text>
-            <Text>{vault.poolAddress? shortenAddress(vault.poolAddress) : 'N/A'}</Text>
+            <Text>
+              {vault.poolAddress ? shortenAddress(vault.poolAddress) : 'N/A'}
+            </Text>
           </GridItem>
-          <GridItem className={'chart-cell no-border-right no-border-bottom'}>
+          <GridItem
+            className={'chart-cell'}
+            border={themeDesign.border[colorMode]}
+            borderRight={'none'}
+            borderBottom={'none'}>
             <Text>Vault Admin</Text>
-            <Text>{vault.adminAddress? shortenAddress(vault.adminAddress) : 'N/A'}</Text>
+            <Text>
+              {vault.adminAddress ? shortenAddress(vault.adminAddress) : 'N/A'}
+            </Text>
           </GridItem>
-          <GridItem className={'chart-cell no-border-right'}>
+          <GridItem
+            className={'chart-cell'}
+            border={themeDesign.border[colorMode]}
+            borderRight={'none'}>
             <Text>Vault Contract Address</Text>
-            <Text>{vault.vaultAddress? shortenAddress(vault.vaultAddress) : 'N/A'}</Text>{' '}
+            <Text>
+              {vault.vaultAddress ? shortenAddress(vault.vaultAddress) : 'N/A'}
+            </Text>{' '}
           </GridItem>
         </Flex>
         <Flex flexDirection={'column'} ml={'-40%'}>
-          <GridItem className={'chart-cell no-border-bottom'}>
+          <GridItem
+            className={'chart-cell'}
+            border={themeDesign.border[colorMode]}
+            borderBottom={'none'}>
             <Text w={'40%'}>Liquidity Rewards Program Listed</Text>
             <Flex w={'60%'} alignItems={'center'} justifyContent={'flex-end'}>
               <Flex flexDirection={'column'} mr={'20px'} textAlign={'right'}>
@@ -100,10 +128,13 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
               </Button>
             </Flex>
           </GridItem>
-          <GridItem className={'chart-cell no-border-bottom'}>
+          <GridItem
+            className={'chart-cell'}
+            border={themeDesign.border[colorMode]}
+            borderBottom={'none'}>
             <Text w={'15%'}>#10</Text>
             <Flex w={'40%'} flexDirection={'column'} mr={'50px'}>
-              <Text>Reward Duration</Text>
+              <Text color={'#7e8993'}>Reward Duration</Text>
               <Text>2021.03.09 13:25 - 2022.03.09 13:26</Text>
             </Flex>
             <Flex w={'25%'} flexDirection={'column'} mr={'20px'}>
@@ -122,29 +153,40 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
             </Button>
           </GridItem>
           <GridItem
-            className={'chart-cell no-border-bottom'}
-            justifyContent={'flex-start'}>
+            className={'chart-cell'}
+            justifyContent={'flex-start'}
+            border={themeDesign.border[colorMode]}
+            borderBottom={'none'}>
             <Text w={'15%'}>#10</Text>
             <Flex flexDirection={'column'}>
-              <Text>Reward Duration</Text>
+              <Text color={'#7e8993'}>Reward Duration</Text>
               <Text>2021.03.09 13:25 - 2022.03.09 13:26</Text>
             </Flex>
           </GridItem>
           <GridItem
-            className={'chart-cell no-border-bottom'}
-            justifyContent={'flex-start'}>
+            className={'chart-cell'}
+            justifyContent={'flex-start'}
+            border={themeDesign.border[colorMode]}
+            borderBottom={'none'}>
             <Text w={'15%'}>#10</Text>
             <Flex flexDirection={'column'}>
-              <Text>Reward Duration</Text>
+              <Text color={'#7e8993'}>Reward Duration</Text>
               <Text>2021.03.09 13:25 - 2022.03.09 13:26</Text>
             </Flex>
           </GridItem>
-          <GridItem className={'chart-cell'} justifyContent={'center'}>
+          <GridItem
+            className={'chart-cell'}
+            justifyContent={'center'}
+            border={themeDesign.border[colorMode]}>
             <Text>Pagination...</Text>
           </GridItem>
         </Flex>
       </Grid>
-      {vault.isDeployed? <PublicPageTable claim={vault.claim} />: <Text>There are no claim round values</Text> }
+      {vault.isDeployed ? (
+        <PublicPageTable claim={vault.claim} />
+      ) : (
+        <Text>There are no claim round values</Text>
+      )}
     </>
   );
 };

@@ -22,10 +22,36 @@ export const PublicPageTable = (prop: PublicTableProps) => {
   const {claim} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const {OpenCampaginDesign} = theme;
   //   const vaultsList = publicTableData;
   const [tableData, setTableData] = useState<any>(publicTableData);
   const [totalAllocation, setTotalAllocation] = useState<number>(0);
+
+  const themeDesign = {
+    border: {
+      light: 'solid 1px #e7edf3',
+      dark: 'solid 1px #535353',
+    },
+    font: {
+      light: 'black.300',
+      dark: 'gray.475',
+    },
+    tosFont: {
+      light: 'gray.250',
+      dark: 'black.100',
+    },
+    borderDashed: {
+      light: 'dashed 1px #dfe4ee',
+      dark: 'dashed 1px #535353',
+    },
+    buttonColorActive: {
+      light: 'gray.225',
+      dark: 'gray.0',
+    },
+    buttonColorInactive: {
+      light: '#c9d1d8',
+      dark: '#777777',
+    },
+  };
 
   useEffect(() => {
     let total = 0;
@@ -64,27 +90,27 @@ export const PublicPageTable = (prop: PublicTableProps) => {
       textAlign="center"
       lineHeight={'42px'}
       flexDirection={'column'}>
-      <Flex bg={colorMode==='dark'?'#222':'#ffffff'} justifyContent={'space-between'} width={'100%'}>
+      <Flex
+        bg={colorMode === 'dark' ? '#222' : '#ffffff'}
+        justifyContent={'space-between'}
+        width={'100%'}>
         <Text
-         height={'42px'}
+          height={'42px'}
           fontSize={13}
           w={'25%'}
           textAlign={'center'}
           fontWeight={'bold'}
-          border={'solid 1px #eff1f6'}
-         
-          borderRight={'none'}
-         >
+          border={themeDesign.border[colorMode]}
+          borderRight={'none'}>
           Round
         </Text>
         <Text
-        height={'42px'}
+          height={'42px'}
           fontSize={13}
           w={'25%'}
           textAlign={'center'}
           fontWeight={'bold'}
-          border={'solid 1px #eff1f6'}
-        
+          border={themeDesign.border[colorMode]}
           borderRight={'none'}>
           Date
         </Text>
@@ -94,8 +120,7 @@ export const PublicPageTable = (prop: PublicTableProps) => {
           w={'25%'}
           textAlign={'center'}
           fontWeight={'bold'}
-          border={'solid 1px #eff1f6'}
-        
+          border={themeDesign.border[colorMode]}
           borderRight={'none'}>
           Allocation
         </Text>
@@ -106,42 +131,52 @@ export const PublicPageTable = (prop: PublicTableProps) => {
           w={'25%'}
           textAlign={'center'}
           fontWeight={'bold'}
-          border={'solid 1px #eff1f6'}>
+          border={themeDesign.border[colorMode]}>
           Accumulated
         </Text>
       </Flex>
       {tableData.map((data: any, index: number) => {
         return (
           <Flex
-            bg={index % 2 === 0 ? colorMode==='dark'? '#262626' :'#fafbfc' : colorMode==='dark'? '#222' : '#fff' }
+            bg={
+              index % 2 === 0
+                ? colorMode === 'dark'
+                  ? '#262626'
+                  : '#fafbfc'
+                : colorMode === 'dark'
+                ? '#222'
+                : '#fff'
+            }
             justifyContent={'space-between'}
             width={'100%'}>
             <Text
-             height={'42px'}
+              height={'42px'}
               fontSize={13}
               w={'25%'}
               textAlign={'center'}
-              border={'solid 1px #eff1f6'}
+              border={themeDesign.border[colorMode]}
               borderTop={'none'}
               borderRight={'none'}>
               {data.claimRound}
             </Text>
             <Text
-             height={'42px'}
+              height={'42px'}
               fontSize={13}
               w={'25%'}
               textAlign={'center'}
-              border={'solid 1px #eff1f6'}
+              border={themeDesign.border[colorMode]}
               borderTop={'none'}
               borderRight={'none'}>
-              {data.claimTime === '-'? '-' :moment.unix(data.claimTime).format('YYYY.MM.DD HH:mm:ss')}
+              {data.claimTime === '-'
+                ? '-'
+                : moment.unix(data.claimTime).format('YYYY.MM.DD HH:mm:ss')}
             </Text>
             <Text
-             height={'42px'}
+              height={'42px'}
               fontSize={13}
               w={'25%'}
               textAlign={'center'}
-              border={'solid 1px #eff1f6'}
+              border={themeDesign.border[colorMode]}
               borderTop={'none'}
               borderRight={'none'}>
               {commafy(data.claimTokenAllocation)}
@@ -151,9 +186,8 @@ export const PublicPageTable = (prop: PublicTableProps) => {
               fontSize={13}
               w={'25%'}
               textAlign={'center'}
-              border={'solid 1px #eff1f6'}
-              borderTop={'none'}
-            >
+              border={themeDesign.border[colorMode]}
+              borderTop={'none'}>
               {commafy(data.accumulated)}
             </Text>
           </Flex>
