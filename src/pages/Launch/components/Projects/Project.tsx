@@ -22,7 +22,9 @@ export const Project: FC<ProjectProps> = ({project}) => {
   const [showVault, setShowVault] = useState<boolean>(false);
 
   const name = 'Project Name';
+  console.log('project', project);
 
+  window.scrollTo(0, 0);
   window.onbeforeunload = function () {
     window.setTimeout(function () {
       window.location.href = '/opencampaign';
