@@ -75,7 +75,10 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
     <Flex flexDirection={'column'}>
       <Grid templateColumns="repeat(3, 1fr)" w={'100%'}>
         <Flex flexDirection={'column'}>
-          <GridItem className={'chart-cell'} fontSize={'16px'} justifyContent={'space-between'}>
+          <GridItem
+            className={'chart-cell no-border-right no-border-bottom'}
+            fontSize={'16px'}
+            justifyContent={'space-between'}>
             <Text>Token</Text>
             {vault.isDeployed ? (
               <Text>
@@ -89,7 +92,9 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
           </GridItem>
           {vault.isDeployed ? (
             <>
-              <GridItem className={'chart-cell'} justifyContent={'space-between'}>
+              <GridItem
+                className={'chart-cell no-border-right no-border-bottom'}
+                justifyContent={'space-between'}>
                 <Text>Public Round 1.</Text>
                 <Text>
                   {` ${commafy(vault.publicRound1Allocation)} ${tokenSymbol} (${
@@ -99,7 +104,9 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
                   }%)`}{' '}
                 </Text>
               </GridItem>
-              <GridItem className={'chart-cell'} justifyContent={'space-between'}>
+              <GridItem
+                className={'chart-cell no-border-right no-border-bottom'}
+                justifyContent={'space-between'}>
                 <Text>Public Round 2.</Text>
                 <Text>
                   {` ${commafy(vault.publicRound2Allocation)} ${tokenSymbol} (${
@@ -109,7 +116,9 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
                   }%)`}
                 </Text>
               </GridItem>
-              <GridItem className={'chart-cell'} justifyContent={'space-between'}>
+              <GridItem
+                className={'chart-cell no-border-right no-border-bottom'}
+                justifyContent={'space-between'}>
                 <Text fontSize={'13px'} w={'100px'}>
                   Token Allocation for Liquidiy Pool
                 </Text>
@@ -121,38 +130,56 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
                   vault.tokenAllocationForLiquidity
                 }%)`}</Text>
               </GridItem>
-              <GridItem className={'chart-cell'} justifyContent={'space-between'}>
+              <GridItem
+                className={'chart-cell no-border-right no-border-bottom'}
+                justifyContent={'space-between'}>
                 <Text>Hard Cap</Text>
                 <Text>{`${commafy(vault.hardCap)}  ${tokenSymbol}`}</Text>
               </GridItem>
-              <GridItem className={'chart-cell'} justifyContent={'space-between'}>
+              <GridItem
+                className={'chart-cell no-border-right no-border-bottom'}
+                justifyContent={'space-between'}>
                 <Text>Addres for receiving funds</Text>
                 <Text>{shortenAddress(vault.addressForReceiving)}</Text>
               </GridItem>
-              <GridItem className={'chart-cell'} justifyContent={'space-between'}>
+              <GridItem
+                className={'chart-cell no-border-right no-border-bottom'}
+                justifyContent={'space-between'}>
                 <Text>Vault Admin Address</Text>
                 <Text>{shortenAddress(vault.adminAddress)}</Text>
               </GridItem>
-              <GridItem className={'chart-cell'} justifyContent={'space-between'}>
+              <GridItem
+                className={'chart-cell no-border-right'}
+                justifyContent={'space-between'}>
                 <Text>Vault Contract Address</Text>
                 <Text>{shortenAddress(vault.vaultAddress)}</Text>
               </GridItem>
             </>
-          ) : (<><GridItem className={'chart-cell'} fontSize={'16px'} borderBottom={'none'}>
-             
-            </GridItem>
-             <GridItem className={'chart-cell'} fontSize={'16px'} borderY={'none'} justifyContent={'center'}>
-             <Flex>There are no token values</Flex>
-           </GridItem>
-            <GridItem className={'chart-cell'} fontSize={'16px'} borderTop={'none'}>
-           
-          </GridItem>
-          </>
-
+          ) : (
+            <>
+              <GridItem
+                className={'chart-cell no-border-right no-border-bottom'}
+                fontSize={'16px'}
+                borderBottom={'none'}></GridItem>
+              <GridItem
+                className={'chart-cell no-border-right no-border-bottom'}
+                fontSize={'16px'}
+                borderY={'none'}
+                justifyContent={'center'}>
+                <Flex>There are no token values</Flex>
+              </GridItem>
+              <GridItem
+                className={'chart-cell no-border-right'}
+                fontSize={'16px'}
+                borderTop={'none'}></GridItem>
+            </>
           )}
         </Flex>
         <Flex flexDirection={'column'}>
-          <GridItem className={'chart-cell'} fontSize={'16px'} justifyContent={'space-between'}>
+          <GridItem
+            className={'chart-cell no-border-right no-border-bottom'}
+            fontSize={'16px'}
+            justifyContent={'space-between'}>
             <Text>Schedule</Text>
             {vault.isDeployed ? (
               <>
@@ -164,19 +191,25 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
           </GridItem>
           {vault.isDeployed ? (
             <>
-              <GridItem className={'chart-cell'} justifyContent={'space-between'}>
+              <GridItem
+                className={'chart-cell no-border-right no-border-bottom'}
+                justifyContent={'space-between'}>
                 <Text>Snapshot</Text>
                 <Text>
                   {moment.unix(vault.snapshot).format('YYYY.MM.DD HH:mm:ss')}
                 </Text>
               </GridItem>
-              <GridItem className={'chart-cell'} justifyContent={'space-between'}>
+              <GridItem
+                className={'chart-cell no-border-right no-border-bottom'}
+                justifyContent={'space-between'}>
                 <Text>Whitelist</Text>
                 <Text>
                   {moment.unix(vault.whitelist).format('YYYY.MM.DD HH:mm:ss')}
                 </Text>
               </GridItem>
-              <GridItem className={'chart-cell'} justifyContent={'space-between'}>
+              <GridItem
+                className={'chart-cell no-border-right no-border-bottom'}
+                justifyContent={'space-between'}>
                 <Text>Public Round 1.</Text>
                 <Text>
                   {moment
@@ -184,7 +217,9 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
                     .format('YYYY.MM.DD HH:mm:ss')}
                 </Text>
               </GridItem>
-              <GridItem className={'chart-cell'} justifyContent={'space-between'}>
+              <GridItem
+                className={'chart-cell no-border-right no-border-bottom'}
+                justifyContent={'space-between'}>
                 <Text>Public Round 2.</Text>
                 <Text>
                   {moment
@@ -192,10 +227,11 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
                     .format('YYYY.MM.DD HH:mm:ss')}
                 </Text>
               </GridItem>
-              <GridItem className={'chart-cell'} >
+              <GridItem
+                className={'chart-cell no-border-right no-border-bottom'}>
                 <Text>{''}</Text>
               </GridItem>
-              <GridItem className={'chart-cell'}>
+              <GridItem className={'chart-cell no-border-bottom'}>
                 <Text>{''}</Text>
               </GridItem>
               <GridItem className={'chart-cell'}>
@@ -203,27 +239,39 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
               </GridItem>
             </>
           ) : (
-            <><GridItem className={'chart-cell'} fontSize={'16px'} borderBottom={'none'}>
-             
-            </GridItem>
-             <GridItem className={'chart-cell'} fontSize={'16px'} borderY={'none'} justifyContent={'center'}>
-             <Flex>There are no token values</Flex>
-           </GridItem>
-            <GridItem className={'chart-cell'} fontSize={'16px'} borderTop={'none'}>
-           
-          </GridItem>
-          </>
+            <>
+              <GridItem
+                className={'chart-cell no-border-right no-border-bottom'}
+                fontSize={'16px'}
+                borderBottom={'none'}></GridItem>
+              <GridItem
+                className={'chart-cell no-border-right no-border-bottom'}
+                fontSize={'16px'}
+                borderY={'none'}
+                justifyContent={'center'}>
+                <Flex>There are no token values</Flex>
+              </GridItem>
+              <GridItem
+                className={'chart-cell no-border-right'}
+                fontSize={'16px'}
+                borderTop={'none'}></GridItem>
+            </>
           )}
           {/*  */}
         </Flex>
         <Flex flexDirection={'column'}>
-          <GridItem className={'chart-cell'} fontSize={'16px'} justifyContent={'space-between'}> 
+          <GridItem
+            className={'chart-cell no-border-bottom'}
+            fontSize={'16px'}
+            justifyContent={'space-between'}>
             <Text>sTOS Tier</Text>
           </GridItem>
           {vault.isDeployed ? (
             <>
               {' '}
-              <GridItem className={'chart-cell'} justifyContent={'space-between'}>
+              <GridItem
+                className={'chart-cell no-border-bottom'}
+                justifyContent={'space-between'}>
                 <Text>Tier</Text>
                 <Text>Required TOS</Text>
                 <Text>Allocated Token</Text>
@@ -236,7 +284,11 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
                   Number(publicRound1Allocation);
 
                 return (
-                  <GridItem className={'chart-cell'} justifyContent={'space-between'}>
+                  <GridItem
+                    className={`chart-cell ${
+                      index === sTosTier.length - 1 ? '' : 'no-border-bottom'
+                    }`}
+                    justifyContent={'space-between'}>
                     <Text>{tier ? tier : index + 1}</Text>
                     <Text>{commafy(requiredStos) || '-'}</Text>
                     <Flex justifyContent={'center'} alignItems={'center'}>
@@ -261,16 +313,23 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
               })}
             </>
           ) : (
-           <><GridItem className={'chart-cell'} fontSize={'16px'} borderBottom={'none'}>
-             
-            </GridItem>
-             <GridItem className={'chart-cell'} fontSize={'16px'} borderY={'none'} justifyContent={'center'}>
-             <Flex>There are no token values</Flex>
-           </GridItem>
-            <GridItem className={'chart-cell'} fontSize={'16px'} borderTop={'none'}>
-           
-          </GridItem>
-          </>
+            <>
+              <GridItem
+                className={'chart-cell'}
+                fontSize={'16px'}
+                borderBottom={'none'}></GridItem>
+              <GridItem
+                className={'chart-cell'}
+                fontSize={'16px'}
+                borderY={'none'}
+                justifyContent={'center'}>
+                <Flex>There are no token values</Flex>
+              </GridItem>
+              <GridItem
+                className={'chart-cell'}
+                fontSize={'16px'}
+                borderTop={'none'}></GridItem>
+            </>
           )}
         </Flex>
       </Grid>
@@ -286,8 +345,18 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
           Download
         </Button>
       </Flex>
-      {vault.isDeployed? <PublicPageTable claim={vault.claim} />: <Text>There are no claim round values</Text> }
-     
+      {vault.isDeployed ? (
+        <PublicPageTable claim={vault.claim} />
+      ) : (
+        <Flex
+          justifyContent={'center'}
+          width={'100%'}
+          mt={'50px'}
+          color={colorMode === 'light' ? '#9d9ea5' : '#7e8993'}
+          fontFamily={theme.fonts.fld}>
+          There are no claim round values
+        </Flex>
+      )}
     </Flex>
   );
 };

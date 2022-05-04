@@ -10,6 +10,7 @@ import {
 } from '@chakra-ui/react';
 import {color} from 'd3';
 import {shortenAddress} from 'utils/address';
+import {PublicPageTable} from './PublicPageTable';
 
 type TosStaker = {
   vault: any;
@@ -135,7 +136,7 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
               w={'100px'}
               h={'32px'}
               bg={'#257eee'}
-              disabled={true}
+              disabled={false}
               color={'#ffffff'}
               _disabled={{
                 color: colorMode === 'light' ? '#86929d' : '#838383',
@@ -161,7 +162,7 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
               w={'100px'}
               h={'32px'}
               bg={'#257eee'}
-              disabled={false}
+              disabled={true}
               color={'#ffffff'}
               _disabled={{
                 color: colorMode === 'light' ? '#86929d' : '#838383',
@@ -172,6 +173,18 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
           </GridItem>
         </Flex>
       </Grid>
+      {vault.isDeployed ? (
+        <PublicPageTable claim={vault.claim} />
+      ) : (
+        <Flex
+          justifyContent={'center'}
+          width={'100%'}
+          mt={'50px'}
+          color={colorMode === 'light' ? '#9d9ea5' : '#7e8993'}
+          fontFamily={theme.fonts.fld}>
+          There are no claim round values
+        </Flex>
+      )}
     </Flex>
   );
 };

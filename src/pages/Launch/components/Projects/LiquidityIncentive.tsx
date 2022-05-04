@@ -53,59 +53,91 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
   return (
     <>
       <Grid templateColumns="repeat(2, 1fr)" w={'100%'} mb={'30px'}>
-        <Flex flexDirection={'column'} w={'70%'}>
-          <GridItem className={'chart-cell'} fontSize={'16px'}>
+        <Flex flexDirection={'column'} w={'60%'}>
+          <GridItem
+            className={'chart-cell no-border-right no-border-bottom'}
+            fontSize={'16px'}>
             <Text>Token</Text>
             <Text>
               {vault.vaultTokenAllocation} {project.tokenSymbol}
             </Text>
           </GridItem>
-          <GridItem className={'chart-cell'}>
+          <GridItem className={'chart-cell no-border-right no-border-bottom'}>
             <Text>Selected Pair</Text>
             <Text> {project.tokenSymbol} - TOS</Text>
           </GridItem>
-          <GridItem className={'chart-cell'}>
+          <GridItem className={'chart-cell no-border-right no-border-bottom'}>
             <Text>Pool Address</Text>
-            <Text>{vault.poolAddress || 'N/A'}</Text>
+            <Text>
+              {vault.poolAddress ? shortenAddress(vault.poolAddress) : 'N/A'}
+            </Text>
           </GridItem>
-          <GridItem className={'chart-cell'}>
+          <GridItem className={'chart-cell no-border-right no-border-bottom'}>
             <Text>Vault Admin</Text>
-            <Text>{vault.adminAddress || 'N/A'}</Text>
+            <Text>
+              {vault.adminAddress ? shortenAddress(vault.adminAddress) : 'N/A'}
+            </Text>
           </GridItem>
-          <GridItem className={'chart-cell'}>
+          <GridItem className={'chart-cell no-border-right'}>
             <Text>Vault Contract Address</Text>
-            <Text>{vault.vaultAddress || 'N/A'}</Text>{' '}
+            <Text>
+              {vault.vaultAddress ? shortenAddress(vault.vaultAddress) : 'N/A'}
+            </Text>
           </GridItem>
         </Flex>
-        <Flex flexDirection={'column'} ml={'-30%'}>
-          <GridItem className={'chart-cell'}>
-            <Text w={'25%'}>Liquidity Rewards Program Listed</Text>
-            <Flex w={'35%'} flexDirection={'column'} mr={'50px'}>
-              <Text>You can create rewards program on</Text>
-              <Text>Mar. 31, 2022 00:00:00 (KST)</Text>
+        <Flex flexDirection={'column'} ml={'-40%'}>
+          <GridItem className={'chart-cell no-border-bottom'}>
+            <Text w={'40%'}>Liquidity Rewards Program Listed</Text>
+            <Flex w={'60%'} alignItems={'center'} justifyContent={'flex-end'}>
+              <Flex flexDirection={'column'} mr={'20px'} textAlign={'right'}>
+                <Text>You can create rewards program on</Text>
+                <Text>Mar. 31, 2022 00:00:00 (KST)</Text>
+              </Flex>
+              <Button
+                bg={'#257eee'}
+                fontSize={'12px'}
+                height={'40px'}
+                width={'120px'}
+                padding={'6px 12px'}
+                whiteSpace={'normal'}
+                color={'#fff'}>
+                Create Reward Program
+              </Button>
             </Flex>
-            <Button>Create</Button>
           </GridItem>
-          <GridItem className={'chart-cell'}>
+          <GridItem className={'chart-cell no-border-bottom'}>
             <Text w={'15%'}>#10</Text>
             <Flex w={'40%'} flexDirection={'column'} mr={'50px'}>
               <Text>Reward Duration</Text>
               <Text>2021.03.09 13:25 - 2022.03.09 13:26</Text>
             </Flex>
-            <Flex w={'25%'} flexDirection={'column'} mr={'25px'}>
+            <Flex w={'25%'} flexDirection={'column'} mr={'20px'}>
               <Text>Refundable Amount</Text>
               <Text>10,000,000 TON</Text>
             </Flex>
-            <Button>Refund</Button>
+            <Button
+              bg={'#257eee'}
+              fontSize={'12px'}
+              padding={'6px 41px 5px'}
+              height={'25px'}
+              borderRadius={'4px'}
+              width={'120px'}
+              color={'#fff'}>
+              Refund
+            </Button>
           </GridItem>
-          <GridItem className={'chart-cell'} justifyContent={'flex-start'}>
+          <GridItem
+            className={'chart-cell no-border-bottom'}
+            justifyContent={'flex-start'}>
             <Text w={'15%'}>#10</Text>
             <Flex flexDirection={'column'}>
               <Text>Reward Duration</Text>
               <Text>2021.03.09 13:25 - 2022.03.09 13:26</Text>
             </Flex>
           </GridItem>
-          <GridItem className={'chart-cell'} justifyContent={'flex-start'}>
+          <GridItem
+            className={'chart-cell no-border-bottom'}
+            justifyContent={'flex-start'}>
             <Text w={'15%'}>#10</Text>
             <Flex flexDirection={'column'}>
               <Text>Reward Duration</Text>

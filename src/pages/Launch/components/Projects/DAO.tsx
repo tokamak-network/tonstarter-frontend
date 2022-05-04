@@ -158,9 +158,8 @@ export const DAO: FC<DAO> = ({}) => {
         color={colorMode === 'light' ? '#9d9ea5' : '#7e8993'}
         fontFamily={theme.fonts.fld}
         justifyContent={'center'}
-       mt={'82px'}
-        alignItems={'center'}
-       >
+        mt={'82px'}
+        alignItems={'center'}>
         There is no claim schedule
       </Flex>
     </Flex>
