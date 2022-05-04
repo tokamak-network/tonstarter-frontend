@@ -67,9 +67,15 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
               color={colorMode === 'light' ? '#353c48' : 'white.0'}>
               Token
             </Text>
-            <Text>
-              {vault.vaultTokenAllocation} {project.tokenSymbol}
-            </Text>
+            {vault.isDeployed ? (
+              <Text>
+                {Number(vault.vaultTokenAllocation).toLocaleString()}
+                {` `}
+                {project.tokenSymbol}
+              </Text>
+            ) : (
+              <></>
+            )}
           </GridItem>
           <GridItem
             className={'chart-cell'}

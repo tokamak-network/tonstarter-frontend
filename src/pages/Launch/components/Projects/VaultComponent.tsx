@@ -23,6 +23,68 @@ type VaultComponent = {
   project: any;
 };
 
+const TabComponent = (props: {project: any; vault: string; index: number}) => {
+  const {project, vault, index} = props;
+
+  switch (vault) {
+    case 'Public':
+         return (
+    
+          <PublicPage
+            project={project}
+            vault={project.vaults[index]}></PublicPage>
+     
+      );
+    case 'Initial Liquidity':
+      return (
+    
+          <InitialLiquidity
+            project={project}
+            vault={project.vaults[index]}></InitialLiquidity>
+       
+      );
+    case 'TON Staker':
+      return (
+    
+          <TonStaker
+            project={project}
+            vault={project.vaults[index]}></TonStaker>
+     
+      );
+    case 'TOS Staker':
+      return (
+     
+          <TosStaker
+            project={project}
+            vault={project.vaults[index]}></TosStaker>
+      
+      );
+    case 'WTON-TOS LP Reward':
+      return (
+      
+          <WtonTosLpReward
+            project={project}
+            vault={project.vaults[index]}></WtonTosLpReward>
+      
+      );
+    case 'Liquidity Incentive':
+      return (
+     
+          <LiquidityIncentive
+            project={project}
+            vault={project.vaults[index]}></LiquidityIncentive>
+     
+      );
+    case 'DAO':
+      return (
+
+          <DAO project={project} vault={project.vaults[index]}></DAO>
+     
+      );
+    default:
+      return <div>no component for this step</div>;
+  }
+};
 export const VaultComponent: FC<VaultComponent> = ({project}) => {
   const [tabIndex, setTabIndex] = useState(0);
 
@@ -59,37 +121,23 @@ export const VaultComponent: FC<VaultComponent> = ({project}) => {
     <Flex p={'25px 35px 50px 35px'}>
       <Tabs w={'100%'} onChange={(index) => setTabIndex(index)}>
         <TabList>
-          <Tab className="tab-block">Public</Tab>
-          <Tab className="tab-block">Initial Liquidity</Tab>
-          <Tab className="tab-block">Liquidity Incentive</Tab>
-          <Tab className="tab-block">Ton Staker</Tab>
-          <Tab className="tab-block">Tos Starter</Tab>
-          <Tab className="tab-block">Wton-Tos LP Reward</Tab>
-          <Tab className="tab-block">DAO</Tab>
+          {project.vaults.map((vault: any, index: number) => {
+            return <Tab className="tab-block">{vault.vaultType}</Tab>;
+          })}
         </TabList>
         {/* Chakra UI automatically maps the TabPanel tabIndex to the Tab. */}
         <TabPanels>
-          <TabPanel px={'0px'}>
-            <PublicPage vault={project.vaults[0]} tokenSymbol={project.tokenSymbol}/>
-          </TabPanel>
-          <TabPanel px={'1rem'}>
-            <InitialLiquidity vault={project.vaults[1]} project={project} />
-          </TabPanel>
-          <TabPanel px={'1rem'}>
-            <LiquidityIncentive vault={project.vaults[5]} project={project} />
-          </TabPanel>
-          <TabPanel px={'0px'}>
-            <TonStaker vault={project.vaults[2]} project={project} />
-          </TabPanel>
-          <TabPanel px={'0px'}>
-            <TosStaker vault={project.vaults[3]} project={project} />
-          </TabPanel>
-          <TabPanel>
-            <WtonTosLpReward vault={project.vaults[4]} project={project} />
-          </TabPanel>
-          <TabPanel px={'1rem'}>
-            <DAO />
-          </TabPanel>
+          {project.vaults.map((vault: any, index: number) => {
+            return (
+              <TabPanel px={'0px'}>
+              <TabComponent
+                project={project}
+                vault={vault.vaultType}
+                index={index}
+              />
+              </TabPanel>
+            );
+          })}
         </TabPanels>
       </Tabs>
     </Flex>

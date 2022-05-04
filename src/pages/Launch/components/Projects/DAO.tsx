@@ -9,10 +9,11 @@ import {
   Button,
   Input,
 } from '@chakra-ui/react';
+import {shortenAddress} from 'utils/address';
+import {PublicPageTable} from './PublicPageTable';
+type DAO = {vault: any; project: any};
 
-type DAO = {};
-
-export const DAO: FC<DAO> = ({}) => {
+export const DAO: FC<DAO> = ({vault, project}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const [claimValue, setClaimValue] = useState(0);
@@ -60,7 +61,15 @@ export const DAO: FC<DAO> = ({}) => {
               color={colorMode === 'light' ? '#353c48' : 'white.0'}>
               Token
             </Text>
-            <Text>120,000,000 TON</Text>
+            {vault.isDeployed ? (
+              <Text>
+                {Number(vault.vaultTokenAllocation).toLocaleString()}
+                {` `}
+                {project.tokenSymbol}
+              </Text>
+            ) : (
+              <></>
+            )}
           </GridItem>
           <GridItem
             className={'chart-cell'}
@@ -69,12 +78,12 @@ export const DAO: FC<DAO> = ({}) => {
             borderBottom={'none'}>
             <Text
               fontSize={'13px'}
-              w={'66px'}
+              w={'96px'}
               color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Vault Admin Address
             </Text>
             <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-              0x1E0…8202
+            {vault.adminAddress ? shortenAddress(vault.adminAddress) : 'N/A'}
             </Text>
           </GridItem>
           <GridItem
@@ -83,12 +92,12 @@ export const DAO: FC<DAO> = ({}) => {
             borderBottomLeftRadius={'4px'}
             borderRight={'none'}>
             <Text
-              w={'81px'}
+              w={'96px'}
               color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Vault Contract Address
             </Text>
             <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-              0x1E0…8202
+            {vault.vaultAddress ? shortenAddress(vault.vaultAddress) : 'N/A'}
             </Text>
           </GridItem>
         </Flex>

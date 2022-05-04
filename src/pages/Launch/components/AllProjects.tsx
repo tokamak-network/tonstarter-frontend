@@ -61,24 +61,20 @@ const AllProjects = () => {
     if (data) {
       const {data: datas} = data;
       dispatch(fetchProjects({data: datas}));
-      setProjectsData(
-        Object.keys(datas).map((k) => {
-          return { key: k, data: datas[k]};
-        }),
+      const projects = Object.keys(datas).map((k) => {
+        const stat = datas[k].vaults.every((vault: any) => {
+          return vault.isSet === true;
+        });
+        return {key: k, data: datas[k], isSet: stat};
+      });
+
+      const filteredProjects = projects.filter(
+        (project: any) => project.isSet === true,
       );
+
+      setProjectsData(filteredProjects);
     }
   }, [data, dispatch]);
-
-  // useEffect(() => {
-  //   if (projects) {
-  //     setProjectsData(
-  //       Object.keys(projects).map((k) => {
-  //         console.log(projects[k].projectName, k);
-  //         return {data: projects[k], key: k};
-  //       }),
-  //     );
-  //   }
-  // }, [projects]);
 
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(6);
@@ -115,8 +111,7 @@ const AllProjects = () => {
         </Box>
         <Flex justifyContent={'center'}>
           <Grid templateColumns="repeat(3, 1fr)" gap={30}>
-            {getPaginatedData().map((project: any, index: number) => {  
-                          
+            {getPaginatedData().map((project: any, index: number) => {
               return <ProjectCard project={project} index={index} />;
             })}
           </Grid>

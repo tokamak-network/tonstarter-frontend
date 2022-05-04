@@ -17,10 +17,10 @@ import moment from 'moment';
 import commafy from 'utils/commafy';
 type PublicPage = {
   vault: any;
-  tokenSymbol: string;
+  project: any;
 };
 
-export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
+export const PublicPage: FC<PublicPage> = ({vault, project}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const sTosTier = vault.stosTier
@@ -84,7 +84,7 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
               <Text>
                 {Number(vault.vaultTokenAllocation).toLocaleString()}
                 {` `}
-                {tokenSymbol}
+                {project.tokenSymbol}
               </Text>
             ) : (
               <></>
@@ -97,7 +97,7 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
                 justifyContent={'space-between'}>
                 <Text>Public Round 1.</Text>
                 <Text>
-                  {` ${commafy(vault.publicRound1Allocation)} ${tokenSymbol} (${
+                  {` ${commafy(vault.publicRound1Allocation)} ${project.tokenSymbol} (${
                     (Number(vault.publicRound1Allocation) /
                       Number(vault.vaultTokenAllocation)) *
                     100
@@ -109,7 +109,7 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
                 justifyContent={'space-between'}>
                 <Text>Public Round 2.</Text>
                 <Text>
-                  {` ${commafy(vault.publicRound2Allocation)} ${tokenSymbol} (${
+                  {` ${commafy(vault.publicRound2Allocation)} ${project.tokenSymbol} (${
                     (Number(vault.publicRound2Allocation) /
                       Number(vault.vaultTokenAllocation)) *
                     100
@@ -126,7 +126,7 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
                   (Number(vault.vaultTokenAllocation) *
                     Number(vault.tokenAllocationForLiquidity)) /
                   100
-                ).toLocaleString()}  ${tokenSymbol} (${
+                ).toLocaleString()}  ${project.tokenSymbol} (${
                   vault.tokenAllocationForLiquidity
                 }%)`}</Text>
               </GridItem>
@@ -134,7 +134,7 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
                 className={'chart-cell no-border-right no-border-bottom'}
                 justifyContent={'space-between'}>
                 <Text>Hard Cap</Text>
-                <Text>{`${commafy(vault.hardCap)}  ${tokenSymbol}`}</Text>
+                <Text>{`${commafy(vault.hardCap)}  ${project.tokenSymbol}`}</Text>
               </GridItem>
               <GridItem
                 className={'chart-cell no-border-right no-border-bottom'}
@@ -333,7 +333,7 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
           )}
         </Flex>
       </Grid>
-      <Flex w={'100%'} justifyContent={'center'} py={'2rem'}>
+      {/* <Flex w={'100%'} justifyContent={'center'} py={'2rem'}>
         <Button
           className="button-style"
           background={'none'}
@@ -344,7 +344,8 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
         >
           Download
         </Button>
-      </Flex>
+      </Flex> */}
+      <Flex w={'100%'} justifyContent={'center'} py={'2rem'}></Flex>
       {vault.isDeployed ? (
         <PublicPageTable claim={vault.claim} />
       ) : (
@@ -357,6 +358,8 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
           There are no claim round values
         </Flex>
       )}
-    </Flex>
+      
+      </Flex>
+   
   );
 };
