@@ -61,8 +61,6 @@ function validateFormikValues(
     setDisable(false);
   }
 
-  console.log(step2FilledOut);
-
   // if (step1FilledOut.includes(false)) {
   //   setDisableForStep2(true);
   // } else {

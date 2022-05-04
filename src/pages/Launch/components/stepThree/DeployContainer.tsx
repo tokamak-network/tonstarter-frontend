@@ -1,4 +1,4 @@
-import {Grid} from '@chakra-ui/react';
+import {Grid, GridItem} from '@chakra-ui/react';
 import {changeVault} from '@Launch/launch.reducer';
 import {Projects, VaultCommon} from '@Launch/types';
 import {saveProject} from '@Launch/utils/saveProject';
@@ -23,6 +23,22 @@ const DeployContainer = () => {
     <Grid templateColumns="repeat(3, 1fr)" rowGap={'8px'} px={'35px'}>
       <DeployToken></DeployToken>
       {vaultsList.map((vault: VaultCommon) => {
+        if (vault.vaultType === 'Initial Liquidity') {
+          return (
+            <GridItem
+              rowStart={1}
+              onClick={() =>
+                dispatch(
+                  changeVault({
+                    data: vault.vaultName,
+                    vaultType: vault.vaultType,
+                  }),
+                )
+              }>
+              <DeployVault vault={vault}></DeployVault>
+            </GridItem>
+          );
+        }
         return (
           <div
             onClick={() =>

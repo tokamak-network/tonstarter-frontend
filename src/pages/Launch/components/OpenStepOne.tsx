@@ -1,13 +1,4 @@
-import {
-  Flex,
-  useTheme,
-  Box,
-  Grid,
-  GridItem,
-  useColorMode,
-} from '@chakra-ui/react';
-import {useEffect} from 'react';
-import type {Projects} from '@Launch/types';
+import {Flex, Box, Grid, GridItem, useColorMode} from '@chakra-ui/react';
 import InputComponent from '@Launch/components/common/InputComponent';
 import StepTitle from '@Launch/components/common/StepTitle';
 import Line from '@Launch/components/common/Line';
@@ -19,10 +10,17 @@ const filedNameList = [
   'owner',
   'tokenSymbol',
   'totalSupply',
+  // 'projectMainImage',
+  // 'tokenSymbolImage',
+  // 'website',
+  // 'totalSupply',
+  // 'medium',
+  // 'telegram',
+  // 'twitter',
+  // 'discord',
 ];
 
 const OpenStepOne = () => {
-  const {theme} = useTheme();
   const {colorMode} = useColorMode();
   return (
     <Flex

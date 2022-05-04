@@ -31,7 +31,7 @@ const CreateVaultModal = () => {
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const [nameVal, setNameVal] = useState('');
   const [tokenAllocatonVal, setTokenAllocatonVal] = useState(0);
-  const [adminAddressVal, setAdminAddressVal] = useState('');
+  const [adminAddressVal, setAdminAddressVal] = useState(values.owner);
   const {initialVaultValue} = useValues();
   const selectOptionValues = ['C', 'DAO', 'Liquidity Incentive'];
   const selectOptionNames = ['Custom', 'DAO', 'Liquidity Incentive'];
@@ -59,6 +59,10 @@ const CreateVaultModal = () => {
   }, [tokenAllocatonVal]);
 
   const closeModal = () => {
+    setSelectVaultType('C');
+    setNameVal('');
+    setTokenAllocatonVal(0);
+    setAdminAddressVal(values.owner);
     handleCloseModal();
   };
 
@@ -67,10 +71,7 @@ const CreateVaultModal = () => {
       isOpen={data.modal === 'Launch_CreateVault' ? true : false}
       isCentered
       onClose={() => {
-        setNameVal('');
-        setTokenAllocatonVal(0);
-        setAdminAddressVal('');
-        handleCloseModal();
+        closeModal();
       }}>
       <ModalOverlay />
       <ModalContent
@@ -79,7 +80,7 @@ const CreateVaultModal = () => {
         w="350px"
         pt="25px"
         pb="25px">
-        <CloseButton closeFunc={handleCloseModal}></CloseButton>
+        <CloseButton closeFunc={closeModal}></CloseButton>
         <ModalBody p={0}>
           <Box
             pb={'1.250em'}
@@ -161,7 +162,7 @@ const CreateVaultModal = () => {
               text={'Add'}
               func={() => {
                 editVault();
-                handleCloseModal();
+                closeModal();
               }}></CustomButton>
           </Box>
         </ModalBody>

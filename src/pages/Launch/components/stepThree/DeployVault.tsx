@@ -334,7 +334,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               content:
                 `${convertTimeStamp(
                   //@ts-ignore
-                  selectedVaultDetail?.claim[0] as number,
+                  selectedVaultDetail?.claim[0].claimTime as number,
                   'DD.MM.YYYY hh:mm:ss',
                 )}` || '-',
             },
