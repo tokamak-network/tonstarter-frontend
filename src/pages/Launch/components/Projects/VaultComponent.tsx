@@ -1,15 +1,5 @@
 import {FC, useState} from 'react';
-import {
-  Flex,
-  Box,
-  Text,
-  Tabs,
-  Tab,
-  TabList,
-  TabPanels,
-  TabPanel,
-  useColorMode,
-} from '@chakra-ui/react';
+import {Flex, Box, Text, useColorMode} from '@chakra-ui/react';
 import HoverImage from 'components/HoverImage';
 import arrowLeft from 'assets/svgs/arrow_left_normal_icon.svg';
 import arrowLeftDark from 'assets/launch/arrow-left-normal-icon.svg';
@@ -35,6 +25,7 @@ type VaultComponent = {
 
 const TabComponent = (props: {project: any; vault: string; index: number}) => {
   const {project, vault, index} = props;
+  console.log('project: ', project);
 
   switch (vault) {
     case 'Public':
@@ -79,19 +70,9 @@ export const VaultComponent: FC<VaultComponent> = ({project}) => {
   const [tabIndex, setTabIndex] = useState(0);
   const [transX, setTransX] = useState<number>(0);
   const [flowIndex, setFlowIndex] = useState<number>(6);
+  const [currentVault, setCurrentVault] = useState<string>('Public');
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
   const {colorMode} = useColorMode();
-
-  const tabList = [
-    'Public',
-    'Initial Liquidity',
-    'TON Staker',
-    'TOS Staker',
-    'WTON-TOS LP Reward',
-    'Liquidity Incentive',
-    'DAO',
-  ];
-
-  // console.log('project: ', project);
 
   const themeDesign = {
     border: {
@@ -120,15 +101,19 @@ export const VaultComponent: FC<VaultComponent> = ({project}) => {
     },
   };
 
+  const setVaultInfo = (vault: any, idx: number) => {
+    setCurrentVault(vault.vaultType);
+    setCurrentIndex(idx);
+  };
+
   return (
-    <Flex flexDirection={'column'}>
-      <Tabs w={'100%'} onChange={(index) => setTabIndex(index)}>
+    <Flex flexDirection={'column'} mx={'35px'}>
+      {/* <Tabs w={'100%'} onChange={(index) => setTabIndex(index)}>
         <TabList>
           {project.vaults.map((vault: any, index: number) => {
-            return <Tab className="tab-block">{vault.vaultType}</Tab>;
+            return <Tab className="tab-block">{vault.name}</Tab>;
           })}
         </TabList>
-        {/* Chakra UI automatically maps the TabPanel tabIndex to the Tab. */}
         <TabPanels>
           {project.vaults.map((vault: any, index: number) => {
             return (
@@ -142,31 +127,46 @@ export const VaultComponent: FC<VaultComponent> = ({project}) => {
             );
           })}
         </TabPanels>
-      </Tabs>
-      <Flex px={'15px'} justifyContent="space-between" alignItems={'center'}>
+      </Tabs> */}
+      <Flex
+        px={'15px'}
+        justifyContent="space-between"
+        alignItems={'center'}
+        h={'75px'}>
         <HoverImage
           img={colorMode === 'light' ? arrowLeft : arrowLeftDark}
           hoverImg={arrowHoverLeft}
+          additionalStyles={{height: '30px'}}
           action={() => {
             if (flowIndex - project.vaults.length > 0) {
-              setTransX(transX + 190);
+              setTransX(transX + 155);
               setFlowIndex(flowIndex - 1);
             }
-            // setTransX(transX + 165);
+            // setTransX(transX + 155);
             // setFlowIndex(flowIndex - 1);
           }}></HoverImage>
-        <Flex w={'100%'} alignItems="center" overflow={'hidden'}>
+        <Flex w={'100%'} alignItems="center" overflow={'hidden'} mx={'20px'}>
           <motion.div
             animate={{x: transX}}
             style={{display: 'flex', width: '100%'}}>
             {project?.vaults?.map((vault: any, index: number) => {
               return (
                 <Box
-                  width={'190px'}
+                  width={'155px'}
                   margin={'auto'}
-                  mr={'20px'}
+                  pb={'10px'}
                   textAlign={'center'}
-                  fontSize={'13px'}>
+                  fontSize={'13px'}
+                  style={
+                    currentIndex === index
+                      ? {
+                          borderBottom: '2px solid #2B71E4',
+                          color: '#2B71E4',
+                          cursor: 'pointer',
+                        }
+                      : {cursor: 'pointer', borderBottom: '2px solid #464646'}
+                  }
+                  onClick={() => setVaultInfo(vault, index)}>
                   {vault.name}
                 </Box>
               );
@@ -176,18 +176,24 @@ export const VaultComponent: FC<VaultComponent> = ({project}) => {
         <HoverImage
           img={colorMode === 'light' ? arrowRight : arrowRightDark}
           hoverImg={arrowHoverRight}
+          additionalStyles={{height: '30px'}}
           action={() => {
             if (
               flowIndex <= project.vaults.length &&
               flowIndex < flowIndex + 1
             ) {
-              setTransX(transX - 190);
+              setTransX(transX - 155);
               setFlowIndex(flowIndex + 1);
             }
-            // setTransX(transX - 165);
+            // setTransX(transX - 155);
             // setFlowIndex(flowIndex + 1);
           }}></HoverImage>
       </Flex>
+      <TabComponent
+        project={project}
+        vault={currentVault}
+        index={currentIndex}
+      />
     </Flex>
   );
 };

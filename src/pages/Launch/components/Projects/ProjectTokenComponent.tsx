@@ -2,7 +2,9 @@ import {FC} from 'react';
 import {Flex, Text, useTheme, useColorMode} from '@chakra-ui/react';
 // import ReactMarkdown from 'react-markdown'
 import ReactQuill from 'react-quill';
+
 import {shortenAddress} from 'utils';
+import 'react-quill/dist/quill.bubble.css';
 
 type ProjectTokenProps = {
   project: any;
@@ -11,18 +13,45 @@ type ProjectTokenProps = {
 export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
-  
+
+  const themeDesign = {
+    border: {
+      light: 'solid 1px #e6eaee',
+      dark: 'solid 1px #373737',
+    },
+    font: {
+      light: 'black.300',
+      dark: 'gray.475',
+    },
+    tosFont: {
+      light: 'gray.250',
+      dark: 'black.100',
+    },
+    borderDashed: {
+      light: 'dashed 1px #dfe4ee',
+      dark: 'dashed 1px #535353',
+    },
+    buttonColorActive: {
+      light: 'gray.225',
+      dark: '#fff',
+    },
+    buttonColorInactive: {
+      light: '#c9d1d8',
+      dark: '#777777',
+    },
+  };
+
   return (
     <Flex
       p={'25px 35px 25px 35px'}
       flexDir={'column'}
       fontFamily={theme.fonts.fld}
       fontSize={'15px'}>
-      <Flex flexDir={'row'} justifyContent={'space-between'}>
-        <Flex w={'498px'} h={'491px'} flexDir={'column'}>
+      <Flex flexDir={'row'} justifyContent={'space-between'} h={'450px'}>
+        <Flex w={'498px'} flexDir={'column'}>
           <Flex
             p={'0px 20px'}
-            borderBottom={'1px solid #e6eaee'}
+            borderBottom={themeDesign.border[colorMode]}
             h={'41px'}
             w={'100%'}
             justifyContent={'space-between'}>
@@ -34,7 +63,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
           <Flex
             p={'0px 20px'}
             alignItems={'center'}
-            borderBottom={'1px solid #e6eaee'}
+            borderBottom={themeDesign.border[colorMode]}
             h={'60px'}
             w={'100%'}
             justifyContent={'space-between'}>
@@ -46,7 +75,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
           <Flex
             p={'0px 20px'}
             alignItems={'center'}
-            borderBottom={'1px solid #e6eaee'}
+            borderBottom={themeDesign.border[colorMode]}
             h={'60px'}
             w={'100%'}
             justifyContent={'space-between'}>
@@ -58,7 +87,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
           <Flex
             p={'0px 20px'}
             alignItems={'center'}
-            borderBottom={'1px solid #e6eaee'}
+            borderBottom={themeDesign.border[colorMode]}
             h={'60px'}
             w={'100%'}
             justifyContent={'space-between'}>
@@ -67,25 +96,61 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             </Text>
             <Text>Project Name</Text>
           </Flex>
+          <Flex
+            p={'0px 20px'}
+            alignItems={'center'}
+            borderBottom={themeDesign.border[colorMode]}
+            h={'60px'}
+            w={'100%'}
+            justifyContent={'space-between'}>
+            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+              Project Main Image
+            </Text>
+            <Text>Image Link</Text>
+          </Flex>
+          <Flex
+            p={'0px 20px'}
+            alignItems={'center'}
+            borderBottom={themeDesign.border[colorMode]}
+            h={'60px'}
+            w={'100%'}
+            justifyContent={'space-between'}>
+            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+              Website
+            </Text>
+            <Text>www.tokamak.network</Text>
+          </Flex>
+          <Flex
+            p={'0px 20px'}
+            alignItems={'center'}
+            borderBottom={themeDesign.border[colorMode]}
+            h={'60px'}
+            w={'100%'}
+            justifyContent={'space-between'}>
+            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+              Medium
+            </Text>
+            <Text>medium.com/onther-tech</Text>
+          </Flex>
 
           <Flex
             p={'0px 20px'}
             alignItems={'center'}
-            borderBottom={'1px solid #e6eaee'}
+            borderBottom={themeDesign.border[colorMode]}
             h={'60px'}
             w={'100%'}
             justifyContent={'space-between'}>
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Twitter
             </Text>
-            <Text>Project Name</Text>
+            <Text>twitter.com/tokamak_network</Text>
           </Flex>
         </Flex>
-        <Flex w={'498px'} h={'491px'} flexDir={'column'}>
+        <Flex w={'498px'} flexDir={'column'}>
           <Flex
             p={'0px 20px'}
-            borderBottom={'1px solid #e6eaee'}
-            h={'41px'}
+            borderBottom={themeDesign.border[colorMode]}
+            h={'40px'}
             w={'100%'}
             justifyContent={'space-between'}>
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
@@ -96,8 +161,8 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
           <Flex
             p={'0px 20px'}
             alignItems={'center'}
-            borderBottom={'1px solid #e6eaee'}
-            h={'60px'}
+            borderBottom={themeDesign.border[colorMode]}
+            h={'58.5px'}
             w={'100%'}
             justifyContent={'space-between'}>
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
@@ -108,8 +173,8 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
           <Flex
             p={'0px 20px'}
             alignItems={'center'}
-            borderBottom={'1px solid #e6eaee'}
-            h={'60px'}
+            borderBottom={themeDesign.border[colorMode]}
+            h={'58.5px'}
             w={'100%'}
             justifyContent={'space-between'}>
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
@@ -129,8 +194,8 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
           <Flex
             p={'0px 20px'}
             alignItems={'center'}
-            borderBottom={'1px solid #e6eaee'}
-            h={'60px'}
+            borderBottom={themeDesign.border[colorMode]}
+            h={'58.5px'}
             w={'100%'}
             justifyContent={'space-between'}>
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
@@ -144,22 +209,60 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
                 : 'NA'}
             </Text>
           </Flex>
+          <Flex
+            p={'0px 20px'}
+            borderBottom={themeDesign.border[colorMode]}
+            h={'58.5px'}
+            w={'100%'}
+            justifyContent={'space-between'}
+            alignItems={'center'}>
+            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+              Token Symbol Image
+            </Text>
+            <Text>Image Link</Text>
+          </Flex>
+          <Flex
+            p={'0px 20px'}
+            borderBottom={themeDesign.border[colorMode]}
+            h={'58.5px'}
+            w={'100%'}
+            justifyContent={'space-between'}
+            alignItems={'center'}>
+            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+              Telegram
+            </Text>
+            <Text>t.me/tokamak_network</Text>
+          </Flex>
+          <Flex
+            p={'0px 20px'}
+            borderBottom={themeDesign.border[colorMode]}
+            h={'58.5px'}
+            w={'100%'}
+            justifyContent={'space-between'}
+            alignItems={'center'}>
+            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+              Discord
+            </Text>
+            <Text>discord.com/invite/...</Text>
+          </Flex>
         </Flex>
       </Flex>
       <Flex flexDir={'column'} mt={'50px'} justifyContent={'center'}>
         <Text
           textAlign={'center'}
-          fontSize={'17px'}
+          fontSize={'20px'}
           fontWeight={600}
           color={colorMode === 'light' ? '#353c48' : '#ffffff'}
-          mb={'25px'}>
+          mb={'15px'}>
           Description
         </Text>
         <ReactQuill
           // placeholder="Input the project description"
           readOnly={true}
           value={project.description}
-          theme={'bubble'}></ReactQuill>
+          theme={'bubble'}
+          style={{color: 'white !important'}}
+        />
       </Flex>
     </Flex>
   );
