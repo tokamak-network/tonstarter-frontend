@@ -1,4 +1,4 @@
-import {FC} from 'react';
+import {FC, useState} from 'react';
 import {
   Flex,
   Text,
@@ -7,8 +7,11 @@ import {
   useTheme,
   useColorMode,
   Button,
+  Tooltip,
+  IconButton,
 } from '@chakra-ui/react';
 
+import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {shortenAddress} from 'utils/address';
 import {PublicPageTable} from './PublicPageTable';
 import commafy from 'utils/commafy';
@@ -18,6 +21,9 @@ type WtonTosLpReward = {vault: any; project: any};
 export const WtonTosLpReward: FC<WtonTosLpReward> = ({vault, project}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
+  const [pageIndex, setPageIndex] = useState<number>(1);
+  const [pageLimit, setPageLimit] = useState<number>(5);
+  const [pageOptions, setPageOptions] = useState<number>(0);
 
   const themeDesign = {
     border: {
@@ -44,6 +50,42 @@ export const WtonTosLpReward: FC<WtonTosLpReward> = ({vault, project}) => {
       light: '#c9d1d8',
       dark: '#777777',
     },
+  };
+
+  const fakeData = [
+    {name: '1'},
+    {name: '2'},
+    {name: '3'},
+    {name: '4'},
+    {name: '5'},
+    {name: '6'},
+    {name: '7'},
+    {name: '8'},
+  ];
+
+  const getPaginatedData = () => {
+    const startIndex = pageIndex * pageLimit - pageLimit;
+    const endIndex = startIndex + pageLimit;
+    return fakeData.slice(startIndex, endIndex);
+  };
+
+  const goToNextPage = () => {
+    setPageIndex(pageIndex + 1);
+  };
+
+  const gotToPreviousPage = () => {
+    setPageIndex(pageIndex - 1);
+  };
+
+  const changePage = (pageNumber: number) => {
+    setPageIndex(pageNumber);
+    getPaginationGroup();
+  };
+
+  const getPaginationGroup = () => {
+    let start = Math.floor((pageIndex - 1) / 5) * 5;
+    const group = new Array(5).fill(1).map((_, idx) => start + idx + 1);
+    return group;
   };
 
   return (
@@ -209,7 +251,96 @@ export const WtonTosLpReward: FC<WtonTosLpReward> = ({vault, project}) => {
             className={'chart-cell'}
             justifyContent={'center'}
             border={themeDesign.border[colorMode]}>
-            <Text>Pagination...</Text>
+            <Flex flexDirection={'row'} justifyContent={'center'}>
+              <Flex>
+                <Tooltip label="Previous Page">
+                  <IconButton
+                    minW={'24px'}
+                    h={'24px'}
+                    bg={colorMode === 'light' ? 'white.100' : 'none'}
+                    border={
+                      colorMode === 'light'
+                        ? 'solid 1px #e6eaee'
+                        : 'solid 1px #424242'
+                    }
+                    color={colorMode === 'light' ? '#e6eaee' : '#424242'}
+                    borderRadius={4}
+                    aria-label={'Previous Page'}
+                    onClick={gotToPreviousPage}
+                    isDisabled={pageIndex === 1}
+                    size={'sm'}
+                    mr={4}
+                    _active={{background: 'transparent'}}
+                    _hover={{
+                      borderColor:
+                        colorMode === 'light' ? '#3e495c' : '#2a72e5',
+                      color: colorMode === 'light' ? '#3e495c' : '#2a72e5',
+                    }}
+                    icon={<ChevronLeftIcon h={6} w={6} />}
+                  />
+                </Tooltip>
+              </Flex>
+              <Flex>
+                {getPaginationGroup().map(
+                  (groupIndex: number, index: number) => {
+                    return (
+                      <Button
+                        h="24px"
+                        key={index}
+                        minW="24px"
+                        background="transparent"
+                        fontFamily={theme.fonts.roboto}
+                        fontSize="13px"
+                        fontWeight="normal"
+                        color={
+                          pageIndex === groupIndex
+                            ? themeDesign.buttonColorActive[colorMode]
+                            : themeDesign.buttonColorInactive[colorMode]
+                        }
+                        p="0px"
+                        _hover={{
+                          background: 'transparent',
+                          color: themeDesign.buttonColorActive[colorMode],
+                        }}
+                        _active={{background: 'transparent'}}
+                        // disabled={pageOptions < groupIndex}
+                        onClick={() => changePage(groupIndex)}>
+                        {groupIndex}
+                      </Button>
+                    );
+                  },
+                )}
+              </Flex>
+              <Flex>
+                <Tooltip label="Next Page">
+                  <IconButton
+                    minW={'24px'}
+                    h={'24px'}
+                    border={
+                      colorMode === 'light'
+                        ? 'solid 1px #e6eaee'
+                        : 'solid 1px #424242'
+                    }
+                    color={colorMode === 'light' ? '#e6eaee' : '#424242'}
+                    bg={colorMode === 'light' ? 'white.100' : 'none'}
+                    borderRadius={4}
+                    aria-label={'Next Page'}
+                    onClick={goToNextPage}
+                    isDisabled={pageIndex === pageOptions}
+                    size={'sm'}
+                    ml={4}
+                    mr={'1.5625em'}
+                    _active={{background: 'transparent'}}
+                    _hover={{
+                      borderColor:
+                        colorMode === 'light' ? '#3e495c' : '#2a72e5',
+                      color: colorMode === 'light' ? '#3e495c' : '#2a72e5',
+                    }}
+                    icon={<ChevronRightIcon h={6} w={6} />}
+                  />
+                </Tooltip>
+              </Flex>
+            </Flex>
           </GridItem>
         </Flex>
       </Grid>

@@ -101,16 +101,27 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 borderBottom={'none'}
                 className={'chart-cell'}
                 justifyContent={'space-between'}>
-                <Text>Public Round 1.</Text>
-                <Text>
-                  {` ${commafy(vault.publicRound1Allocation)} ${
-                    project.tokenSymbol
-                  } (${
-                    (Number(vault.publicRound1Allocation) /
-                      Number(vault.vaultTokenAllocation)) *
-                    100
-                  }%)`}{' '}
+                <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                  Public Round 1.
                 </Text>
+                <Flex>
+                  <Text mr={'5px'}>
+                    {` ${commafy(vault.publicRound1Allocation)} ${
+                      project.tokenSymbol
+                    }`}
+                  </Text>
+                  <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                    {`(${
+                      (
+                        (Number(vault.publicRound1Allocation) /
+                          Number(vault.vaultTokenAllocation)) *
+                        100
+                      )
+                        .toFixed(3)
+                        .replace(/\.(\d\d)\d?$/, '.$1') || '-'
+                    }%)`}
+                  </Text>
+                </Flex>
               </GridItem>
               <GridItem
                 border={themeDesign.border[colorMode]}
@@ -118,16 +129,27 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 borderBottom={'none'}
                 className={'chart-cell'}
                 justifyContent={'space-between'}>
-                <Text>Public Round 2.</Text>
-                <Text>
-                  {` ${commafy(vault.publicRound2Allocation)} ${
-                    project.tokenSymbol
-                  } (${
-                    (Number(vault.publicRound2Allocation) /
-                      Number(vault.vaultTokenAllocation)) *
-                    100
-                  }%)`}
+                <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                  Public Round 2.
                 </Text>
+                <Flex>
+                  <Text mr={'5px'}>
+                    {` ${commafy(vault.publicRound2Allocation)} ${
+                      project.tokenSymbol
+                    }`}
+                  </Text>
+                  <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                    {`(${
+                      (
+                        (Number(vault.publicRound2Allocation) /
+                          Number(vault.vaultTokenAllocation)) *
+                        100
+                      )
+                        .toFixed(3)
+                        .replace(/\.(\d\d)\d?$/, '.$1') || '-'
+                    }%)`}
+                  </Text>
+                </Flex>
               </GridItem>
               <GridItem
                 border={themeDesign.border[colorMode]}
@@ -135,16 +157,27 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 borderBottom={'none'}
                 className={'chart-cell'}
                 justifyContent={'space-between'}>
-                <Text fontSize={'13px'} w={'100px'}>
+                <Text
+                  fontSize={'13px'}
+                  w={'100px'}
+                  color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
                   Token Allocation for Liquidiy Pool
                 </Text>
-                <Text>{`${(
-                  (Number(vault.vaultTokenAllocation) *
-                    Number(vault.tokenAllocationForLiquidity)) /
-                  100
-                ).toLocaleString()}  ${project.tokenSymbol} (${
-                  vault.tokenAllocationForLiquidity
-                }%)`}</Text>
+                <Flex>
+                  <Text mr={'5px'}>
+                    {`${(
+                      (Number(vault.vaultTokenAllocation) *
+                        Number(vault.tokenAllocationForLiquidity)) /
+                      100
+                    ).toLocaleString()}  ${project.tokenSymbol}`}{' '}
+                  </Text>
+                  <Text
+                    color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>{`(${
+                    (vault.tokenAllocationForLiquidity * 1)
+                      .toFixed(3)
+                      .replace(/\.(\d\d)\d?$/, '.$1') || '-'
+                  }%)`}</Text>
+                </Flex>
               </GridItem>
               <GridItem
                 border={themeDesign.border[colorMode]}
@@ -152,7 +185,9 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 borderBottom={'none'}
                 className={'chart-cell'}
                 justifyContent={'space-between'}>
-                <Text>Hard Cap</Text>
+                <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                  Hard Cap
+                </Text>
                 <Text>{`${commafy(vault.hardCap)}  ${
                   project.tokenSymbol
                 }`}</Text>
@@ -163,7 +198,9 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 borderBottom={'none'}
                 className={'chart-cell'}
                 justifyContent={'space-between'}>
-                <Text>Addres for receiving funds</Text>
+                <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                  Addres for receiving funds
+                </Text>
                 <Text>{shortenAddress(vault.addressForReceiving)}</Text>
               </GridItem>
               <GridItem
@@ -172,7 +209,9 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 borderBottom={'none'}
                 className={'chart-cell'}
                 justifyContent={'space-between'}>
-                <Text>Vault Admin Address</Text>
+                <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                  Vault Admin Address
+                </Text>
                 <Text>{shortenAddress(vault.adminAddress)}</Text>
               </GridItem>
               <GridItem
@@ -180,7 +219,9 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 borderRight={'none'}
                 className={'chart-cell'}
                 justifyContent={'space-between'}>
-                <Text>Vault Contract Address</Text>
+                <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                  Vault Contract Address
+                </Text>
                 <Text>{shortenAddress(vault.vaultAddress)}</Text>
               </GridItem>
             </>
@@ -233,7 +274,9 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 borderBottom={'none'}
                 className={'chart-cell'}
                 justifyContent={'space-between'}>
-                <Text>Snapshot</Text>
+                <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                  Snapshot
+                </Text>
                 <Text>
                   {moment.unix(vault.snapshot).format('YYYY.MM.DD HH:mm:ss')}
                 </Text>
@@ -244,7 +287,9 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 borderBottom={'none'}
                 className={'chart-cell'}
                 justifyContent={'space-between'}>
-                <Text>Whitelist</Text>
+                <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                  Whitelist
+                </Text>
                 <Text>
                   {moment.unix(vault.whitelist).format('YYYY.MM.DD HH:mm:ss')}
                 </Text>
@@ -255,7 +300,9 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 borderBottom={'none'}
                 className={'chart-cell'}
                 justifyContent={'space-between'}>
-                <Text>Public Round 1.</Text>
+                <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                  Public Round 1.
+                </Text>
                 <Text>
                   {moment
                     .unix(vault.publicRound1)
@@ -268,7 +315,9 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 borderBottom={'none'}
                 className={'chart-cell'}
                 justifyContent={'space-between'}>
-                <Text>Public Round 2.</Text>
+                <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                  Public Round 2.
+                </Text>
                 <Text>
                   {moment
                     .unix(vault.publicRound2)

@@ -1,13 +1,23 @@
 import {FC, useState} from 'react';
 import {
   Flex,
+  Box,
   Text,
   Tabs,
   Tab,
   TabList,
   TabPanels,
   TabPanel,
+  useColorMode,
 } from '@chakra-ui/react';
+import HoverImage from 'components/HoverImage';
+import arrowLeft from 'assets/svgs/arrow_left_normal_icon.svg';
+import arrowLeftDark from 'assets/launch/arrow-left-normal-icon.svg';
+import arrowHoverLeft from 'assets/launch/arrow-left-hover-icon.svg';
+import arrowRight from 'assets/svgs/arrow_right_normal_icon.svg';
+import arrowRightDark from 'assets/launch/arrow-right-normal-icon.svg';
+import arrowHoverRight from 'assets/launch/arrow-right-hover-icon.svg';
+import {motion} from 'framer-motion';
 
 import {PublicPage} from './PublicPage';
 import {LiquidityIncentive} from './LiquidityIncentive';
@@ -67,6 +77,19 @@ const TabComponent = (props: {project: any; vault: string; index: number}) => {
 };
 export const VaultComponent: FC<VaultComponent> = ({project}) => {
   const [tabIndex, setTabIndex] = useState(0);
+  const [transX, setTransX] = useState<number>(0);
+  const [flowIndex, setFlowIndex] = useState<number>(6);
+  const {colorMode} = useColorMode();
+
+  const tabList = [
+    'Public',
+    'Initial Liquidity',
+    'TON Staker',
+    'TOS Staker',
+    'WTON-TOS LP Reward',
+    'Liquidity Incentive',
+    'DAO',
+  ];
 
   // console.log('project: ', project);
 
@@ -98,7 +121,7 @@ export const VaultComponent: FC<VaultComponent> = ({project}) => {
   };
 
   return (
-    <Flex p={'25px 35px 50px 35px'}>
+    <Flex flexDirection={'column'}>
       <Tabs w={'100%'} onChange={(index) => setTabIndex(index)}>
         <TabList>
           {project.vaults.map((vault: any, index: number) => {
@@ -120,6 +143,51 @@ export const VaultComponent: FC<VaultComponent> = ({project}) => {
           })}
         </TabPanels>
       </Tabs>
+      <Flex px={'15px'} justifyContent="space-between" alignItems={'center'}>
+        <HoverImage
+          img={colorMode === 'light' ? arrowLeft : arrowLeftDark}
+          hoverImg={arrowHoverLeft}
+          action={() => {
+            if (flowIndex - project.vaults.length > 0) {
+              setTransX(transX + 190);
+              setFlowIndex(flowIndex - 1);
+            }
+            // setTransX(transX + 165);
+            // setFlowIndex(flowIndex - 1);
+          }}></HoverImage>
+        <Flex w={'100%'} alignItems="center" overflow={'hidden'}>
+          <motion.div
+            animate={{x: transX}}
+            style={{display: 'flex', width: '100%'}}>
+            {project?.vaults?.map((vault: any, index: number) => {
+              return (
+                <Box
+                  width={'190px'}
+                  margin={'auto'}
+                  mr={'20px'}
+                  textAlign={'center'}
+                  fontSize={'13px'}>
+                  {vault.name}
+                </Box>
+              );
+            })}
+          </motion.div>
+        </Flex>
+        <HoverImage
+          img={colorMode === 'light' ? arrowRight : arrowRightDark}
+          hoverImg={arrowHoverRight}
+          action={() => {
+            if (
+              flowIndex <= project.vaults.length &&
+              flowIndex < flowIndex + 1
+            ) {
+              setTransX(transX - 190);
+              setFlowIndex(flowIndex + 1);
+            }
+            // setTransX(transX - 165);
+            // setFlowIndex(flowIndex + 1);
+          }}></HoverImage>
+      </Flex>
     </Flex>
   );
 };

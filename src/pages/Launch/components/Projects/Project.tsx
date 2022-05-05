@@ -62,7 +62,7 @@ export const Project: FC<ProjectProps> = ({project}) => {
             color={colorMode === 'light' ? '#304156' : '#ffffff'}
             fontSize={'20px'}
             fontWeight={'500'}>
-            {project.projectName}
+            {project?.projectName}
           </Text>
           <Flex h={'38px'}>
             <Button
