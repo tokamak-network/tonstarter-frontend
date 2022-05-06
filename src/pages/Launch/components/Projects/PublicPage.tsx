@@ -56,7 +56,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
       dark: 'gray.475',
     },
     tosFont: {
-      light: 'gray.250',
+      light: '#2a72e5',
       dark: 'black.100',
     },
     borderDashed: {
@@ -383,12 +383,14 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
               <GridItem
                 border={themeDesign.border[colorMode]}
                 borderBottom={'none'}
-                className={'chart-cell'}>
-                <Text fontFamily={theme.fonts.fld}>{''}</Text>
+                className={'chart-cell'}
+                mr={'-1px'}>
+
               </GridItem>
               <GridItem
                 border={themeDesign.border[colorMode]}
-                className={'chart-cell'}>
+                className={'chart-cell'}
+                mr={'-1px'}>
                 <Text fontFamily={theme.fonts.fld}>{''}</Text>
               </GridItem>
             </>
@@ -488,6 +490,15 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                     </Flex>
                   </GridItem>
                 );
+              })}
+              {[...Array(6-sTosTier.length)].map((e:any,i:number) =>{
+                return  <GridItem
+                  border={themeDesign.border[colorMode]}
+                  borderTop='none'
+                  borderLeft={'none'}
+                  className={'chart-cell'}>
+                  <Text fontFamily={theme.fonts.fld}>{''}</Text>
+                </GridItem>
               })}
             </>
           ) : (

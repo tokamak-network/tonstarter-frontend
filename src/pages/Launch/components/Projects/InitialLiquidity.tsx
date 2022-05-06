@@ -28,13 +28,13 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
   const theme = useTheme();
 
   const {account, library} = useActiveWeb3React();
- 
+
   const InitialLiquidityCompute = new Contract(
     vault.vaultAddress,
     InitialLiquidityComputeAbi.abi,
     library,
   );
-  
+
   useEffect(() => {
     async function getLPToken() {
       if (account === null || account === undefined || library === undefined) {
@@ -42,9 +42,9 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
       }
       const signer = getSigner(library, account);
       const LP = await InitialLiquidityCompute.connect(signer).lpToken();
-      console.log('LP',LP);
+      console.log('LP', LP);
     }
-    getLPToken()
+    getLPToken();
   }, [account, library]);
   // console.log('Initial Liquidity vault: ', vault);
 
@@ -58,7 +58,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
       dark: 'gray.475',
     },
     tosFont: {
-      light: 'gray.250',
+      light: '#2a72e5',
       dark: 'black.100',
     },
     borderDashed: {
