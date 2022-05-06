@@ -18,7 +18,7 @@ const MyProjects = () => {
   const [projectsData, setProjectsData] = useState<any>([]);
   const dispatch = useAppDispatch();
   const {account} = useActiveWeb3React();
-
+const [projectsForTable, setProjectsForTable]= useState<any>()
   const datalll = [
     {
       name: 'Dragons of midgard',
@@ -52,6 +52,7 @@ const MyProjects = () => {
     if (data) {
       const {data: datas} = data;
       dispatch(fetchProjects({data: datas}));
+      setProjectsForTable(datas)
       const projs = Object.keys(datas).map((k) => {
         const stat = datas[k].vaults.every((vault: any) => {
           return vault.isSet === true;
@@ -70,6 +71,7 @@ const MyProjects = () => {
           whiteList: datas[k].vaults[0].whitelist,
           public2End: datas[k].vaults[0].publicRound2End,
           status: stat,
+          project: datas[k]
         };
       });
       const MyProjs = projs.filter((pro: any) => pro.owner === account);
@@ -133,6 +135,7 @@ const MyProjects = () => {
         </Text>
         <Box mt={'20px'}>
           <MyProjectTable
+          projects={projectsForTable}
             data={projectsData}
             columns={columns}
             isLoading={isLoading}

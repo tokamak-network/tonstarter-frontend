@@ -180,7 +180,18 @@ export const WtonTosLpReward: FC<WtonTosLpReward> = ({vault, project}) => {
                 width={'120px'}
                 padding={'6px 12px'}
                 whiteSpace={'normal'}
-                color={'#fff'}>
+                color={'#fff'}
+                _hover={{
+                  background: 'transparent',
+                  border: 'solid 1px #2a72e5',
+                  color: themeDesign.tosFont[colorMode],
+                  cursor: 'pointer',
+                }}
+                _active={{
+                  background: '#2a72e5',
+                  border: 'solid 1px #2a72e5',
+                  color: '#fff',
+                }}>
                 Create Reward Program
               </Button>
             </Flex>
@@ -214,7 +225,18 @@ export const WtonTosLpReward: FC<WtonTosLpReward> = ({vault, project}) => {
               height={'25px'}
               borderRadius={'4px'}
               width={'120px'}
-              color={'#fff'}>
+              color={'#fff'}
+              _hover={{
+                background: 'transparent',
+                border: 'solid 1px #2a72e5',
+                color: themeDesign.tosFont[colorMode],
+                cursor: 'pointer',
+              }}
+              _active={{
+                background: '#2a72e5',
+                border: 'solid 1px #2a72e5',
+                color: '#fff',
+              }}>
               Refund
             </Button>
           </GridItem>

@@ -26,6 +26,10 @@ export const Project: FC<ProjectProps> = ({project}) => {
       light: 'solid 1px #e6eaee',
       dark: 'solid 1px #373737',
     },
+    font: {
+      light: 'black.300',
+      dark: 'gray.475',
+    },
   };
 
   const name = 'Project Name';
@@ -57,6 +61,7 @@ export const Project: FC<ProjectProps> = ({project}) => {
           w={'1100px'}
           padding={'26px 25px 17px 35px'}
           justifyContent={'space-between'}
+          alignItems={'center'}
           flexDir={'row'}>
           <Text
             color={colorMode === 'light' ? '#304156' : '#ffffff'}
@@ -79,13 +84,13 @@ export const Project: FC<ProjectProps> = ({project}) => {
               _hover={{
                 background: 'transparent',
                 border: 'solid 1px #2a72e5',
-                color: '#ffffff',
+                color: themeDesign.font[colorMode],
                 cursor: 'pointer',
               }}
               _active={{
                 background: '#2a72e5',
                 border: 'solid 1px #2a72e5',
-                color: '#ffffff',
+                color: '#fff',
               }}
               onClick={() => {
                 setShowVault(false);
@@ -105,7 +110,7 @@ export const Project: FC<ProjectProps> = ({project}) => {
               _hover={{
                 background: 'transparent',
                 border: 'solid 1px #2a72e5',
-                color: '#ffffff',
+                color: themeDesign.font[colorMode],
                 cursor: 'pointer',
               }}
               _active={{

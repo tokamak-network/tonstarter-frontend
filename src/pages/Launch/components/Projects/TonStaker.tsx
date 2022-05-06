@@ -1,4 +1,4 @@
-import {FC} from 'react';
+import {FC, useState, useEffect} from 'react';
 import {
   Flex,
   Text,
@@ -8,9 +8,17 @@ import {
   useColorMode,
   Button,
 } from '@chakra-ui/react';
-
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import {getSigner} from 'utils/contract';
 import {shortenAddress} from 'utils/address';
 import {PublicPageTable} from './PublicPageTable';
+import {Contract} from '@ethersproject/contracts';
+import * as TOSStakerAbi from 'services/abis/TOSStakerAbi.json';
+import {ethers} from 'ethers';
+import momentTZ from 'moment-timezone';
+import moment from 'moment';
+import * as TONStakerAbi from 'services/abis/TONStakerAbi.json';
+import * as TONStakerInitializeAbi from 'services/abis/TONStakerInitializeAbi.json';
 
 type TonStaker = {
   vault: any;
@@ -20,9 +28,38 @@ type TonStaker = {
 export const TonStaker: FC<TonStaker> = ({vault, project}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
-
+  const {account, library} = useActiveWeb3React();
+  const [distributable, setDistributable] = useState<number>(0);
+  const [claimTime, setClaimTime] = useState<number>(0);
+  const TONStaker = new Contract(
+    vault.vaultAddress,
+    TONStakerInitializeAbi.abi,
+    library,
+  );
   // console.log('tonstaker vault: ', vault);
 
+  useEffect(() => {
+    async function getLPToken() {
+      if (account === null || account === undefined || library === undefined) {
+        return;
+      }
+      const signer = getSigner(library, account);
+      const currentRound = await TONStaker.connect(signer).currentRound();
+      const amount = await TONStaker.connect(signer).calculClaimAmount(
+        currentRound,
+      );
+      const claimCounts = await TONStaker.connect(signer).totalClaimCounts();
+      const claimDate =
+        parseInt(currentRound) === 0
+          ? vault.claim[parseInt(currentRound)].claimTime
+          : vault.claim[parseInt(currentRound) - 1].claimTime;
+      const amountFormatted = parseInt(amount);
+      setClaimTime(claimDate);
+      setDistributable(amountFormatted);
+      console.log('currentRound', currentRound);
+    }
+    getLPToken();
+  }, [account, library]);
   const themeDesign = {
     border: {
       light: 'solid 1px #e6eaee',
@@ -135,12 +172,12 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
                 mr={'3px'}
                 fontSize={'20px'}
                 color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-                10,000,000
+                {distributable.toLocaleString()}
               </Text>{' '}
               <Text
                 color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}
                 fontSize={'13px'}>
-                TON
+                {project.tokenSymbol}
               </Text>
             </Flex>
 
@@ -154,6 +191,17 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
               _disabled={{
                 color: colorMode === 'light' ? '#86929d' : '#838383',
                 bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+              }}
+              _hover={{
+                background: 'transparent',
+                border: 'solid 1px #2a72e5',
+                color: themeDesign.tosFont[colorMode],
+                cursor: 'pointer',
+              }}
+              _active={{
+                background: '#2a72e5',
+                border: 'solid 1px #2a72e5',
+                color: '#fff',
               }}>
               Distribute
             </Button>
@@ -168,7 +216,8 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
                 You can distribute on
               </Text>
               <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-                Mar.31, 2022 21:00:00 (KST)
+                {moment.unix(claimTime).format('MMM, DD, yyyy HH:mm:ss')}{' '}
+                {momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()}
               </Text>
             </Flex>
             <Button
@@ -177,7 +226,18 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
               h={'32px'}
               bg={'#257eee'}
               disabled={true}
-              color={'#ffffff'}
+              color={'#fff'}
+              _hover={{
+                background: 'transparent',
+                border: 'solid 1px #2a72e5',
+                color: themeDesign.tosFont[colorMode],
+                cursor: 'pointer',
+              }}
+              _active={{
+                background: '#2a72e5',
+                border: 'solid 1px #2a72e5',
+                color: '#fff',
+              }}
               _disabled={{
                 color: colorMode === 'light' ? '#86929d' : '#838383',
                 bg: colorMode === 'light' ? '#e9edf1' : '#353535',

@@ -1,6 +1,14 @@
-import {Box, Button, Flex, useTheme, Text} from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  useTheme,
+  Text,
+  useColorMode,
+} from '@chakra-ui/react';
 import {useState} from 'react';
 import {PageHeader} from 'components/PageHeader';
+import {Link, useRouteMatch} from 'react-router-dom';
 import AllProjects from '@Launch/components/AllProjects';
 import MyProjects from '@Launch/components/MyProjects';
 import LaunchPageBackground from '../../assets/banner/LaunchPageBackground.png';
@@ -10,6 +18,41 @@ import ConfirmTermsModal from './components/modals/ConfirmTerms';
 const LaunchPage = () => {
   const [showAllProjects, setShowAllProjects] = useState<boolean>(true);
   const theme = useTheme();
+  const {colorMode} = useColorMode();
+  const match = useRouteMatch();
+  const {
+    //@ts-ignore
+    params: {id},
+  } = match;
+  const {url} = match;
+
+  const themeDesign = {
+    border: {
+      light: 'solid 1px #e6eaee',
+      dark: 'solid 1px #373737',
+    },
+    font: {
+      light: 'black.300',
+      dark: 'gray.475',
+    },
+    tosFont: {
+      light: 'gray.250',
+      dark: 'black.100',
+    },
+    borderDashed: {
+      light: 'dashed 1px #dfe4ee',
+      dark: 'dashed 1px #535353',
+    },
+    buttonColorActive: {
+      light: 'gray.225',
+      dark: 'gray.0',
+    },
+    buttonColorInactive: {
+      light: '#c9d1d8',
+      dark: '#777777',
+    },
+  };
+
   const {openAnyModal} = useModal();
 
   return (
@@ -43,14 +86,18 @@ const LaunchPage = () => {
           <Flex alignItems={'center'} flexDir="column" mb={'20px'}>
             <PageHeader
               title={'Launch'}
+              titleColor={'#fff'}
               subtitle={'Make your own token and create a token economy.'}
             />
           </Flex>
           <Flex justifyContent={'center'} w={'100%'}>
             {/* <Link to={`${url}/createproject`}> */}
             <Button
+              _hover={{background: 'whiteAlpha.300'}}
               bg={'blue.100'}
               color="white.100"
+              fontFamily={theme.fonts.roboto}
+              letterSpacing={'.35px'}
               onClick={() => {
                 openAnyModal('Launch_ConfirmTerms', {});
               }}>
@@ -72,15 +119,15 @@ const LaunchPage = () => {
           transform={'translateX(-50%)'}>
           <Flex alignItems={'center'} flexDir="column" width={'300px'}>
             <Text color={'yellow'}>Total Staked</Text>
-            <Text>2,646,790.91 TON</Text>
+            <Text color={'#fff'}>2,646,790.91 TON</Text>
           </Flex>
           <Flex alignItems={'center'} flexDir="column" width={'300px'}>
             <Text color={'yellow'}>Total Value Locked</Text>
-            <Text>2,646,790.91 TON</Text>
+            <Text color={'#fff'}>2,646,790.91 TON</Text>
           </Flex>
           <Flex alignItems={'center'} flexDir="column" width={'300px'}>
             <Text color={'yellow'}>Total Staked</Text>
-            <Text>2,646,790.91 TON</Text>
+            <Text color={'#fff'}>2,646,790.91 TON</Text>
           </Flex>
         </Flex>
       </Flex>
@@ -89,24 +136,30 @@ const LaunchPage = () => {
         display={'flex'}
         justifyContent={'center'}
         flexDirection={'column'}
-        alignItems={'center'}>
+        alignItems={'center'}
+        mb={'50px'}>
         <Flex alignItems={'center'} flexDir="column" mb={'20px'}>
           <PageHeader title={'Projects'} />
         </Flex>
         <Flex>
           <Button
-            w={'170px'}
-            h={'26px'}
+            w={'160px'}
+            h={'38px'}
             bg={'transparent'}
-            border={'solid 1px #d7d9df'}
+            border={themeDesign.border[colorMode]}
             borderRadius={'3px 0px 0px 3px'}
-            fontSize={'12px'}
-            fontFamily={theme.fonts.roboto}
-            _hover={{background: 'transparent'}}
-            _active={{
+            fontSize={'14px'}
+            fontFamily={theme.fonts.fld}
+            _hover={{
               background: 'transparent',
               border: 'solid 1px #2a72e5',
-              color: '#2a72e5',
+              color: '#ffffff',
+              cursor: 'pointer',
+            }}
+            _active={{
+              background: '#2a72e5',
+              border: 'solid 1px #2a72e5',
+              color: '#ffffff',
             }}
             onClick={() => {
               setShowAllProjects(true);
@@ -115,21 +168,23 @@ const LaunchPage = () => {
             All
           </Button>
           <Button
-            w={'170px'}
-            h={'26px'}
+            w={'160px'}
+            h={'38px'}
             bg={'transparent'}
-            border={'solid 1px #d7d9df'}
+            border={themeDesign.border[colorMode]}
             borderRadius={'0px 3px 3px 0px'}
-            fontSize={'12px'}
+            fontSize={'14px'}
+            fontFamily={theme.fonts.fld}
             _hover={{
               background: 'transparent',
               border: 'solid 1px #2a72e5',
-              color: '#2a72e5',
+              color: '#ffffff',
+              cursor: 'pointer',
             }}
             _active={{
-              background: 'transparent',
+              background: '#2a72e5',
               border: 'solid 1px #2a72e5',
-              color: '#2a72e5',
+              color: '#ffffff',
             }}
             onClick={() => {
               setShowAllProjects(false);

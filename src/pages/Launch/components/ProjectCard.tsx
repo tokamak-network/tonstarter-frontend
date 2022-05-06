@@ -15,9 +15,9 @@ import {useEffect, useState} from 'react';
 import {useCallContract} from 'hooks/useCallContract';
 import {BigNumber} from 'ethers';
 import {convertNumber} from 'utils/number';
-
+import moment from 'moment';
 const ProjectCard: React.FC<{
-  project: ProjectCardType;
+  project: any;
   index: number;
 }> = (props) => {
   const {project, index} = props;
@@ -29,16 +29,20 @@ const ProjectCard: React.FC<{
   const {url} = match;
 
   const [progress, setProgress] = useState<number | undefined>();
+  const [started, setStarted] = useState<string>('');
   const [totalRaise, setTotalRaise] = useState<string | undefined>(undefined);
   const [participants, setParticipants] = useState<string | undefined>(
     undefined,
   );
-  
   const PUBLICSALE_CONTRACT = useCallContract(
     // project.saleContractAddress ||
     '',
     'PUBLIC_SALE',
   );
+
+  console.log('projectproject', project);
+
+  const now = moment().unix();
 
   useEffect(() => {
     async function fetchContractData() {
@@ -63,14 +67,24 @@ const ProjectCard: React.FC<{
     }
   }, [library, project, PUBLICSALE_CONTRACT]);
 
+  useEffect(() => {
+    const status =
+      now < project.data.vaults[0].snapshot
+        ? 'Upcoming'
+        : now < project.data.vaults[0].publicRound2End
+        ? 'Started'
+        : 'Ended';
+
+        setStarted(status)
+  }, [now, project]);
   return (
     <Link to={`${url}/project/${project.key}`} id={`past_link_${index}`}>
       <Box {...STATER_STYLE.containerStyle({colorMode})} h={'275px'}>
         <Flex justifyContent="space-between" mb={'10px'}>
           <TokenImage></TokenImage>
           <Flex justifyContent={'space-between'} alignItems={'center'}>
-            <Box w={'7px'} h={'7px'} bg={'red'} borderRadius={10} mr={'8px'} />
-            <Text>Started</Text>
+            <Box w={'7px'} h={'7px'} bg={started === 'Upcoming'? '#2ea2f8':started === 'Started'? '#f95359': '#e9edf1' } borderRadius={10} mr={'8px'} />
+            <Text>{started}</Text>
           </Flex>
         </Flex>
         <Flex flexDir="column">
@@ -85,13 +99,13 @@ const ProjectCard: React.FC<{
             }}
             color={colorMode === 'light' ? 'gray.125' : 'gray.475'}
             mr={'8px'}>
-            Sale Date: 
+            Sale Date:
           </Text>
           <Text
             {...{
               ...STATER_STYLE.mainText({colorMode, fontSize: 12}),
             }}>
-              {project.data.vaults[0].vaultName}
+            {project.data.vaults[0].vaultName}
             {/* {project.saleStart} - {project.saleEnd} */}
           </Text>
         </Flex>
@@ -164,7 +178,7 @@ const ProjectCard: React.FC<{
                 colorMode,
                 fontSize: 20,
               })}>
-              {project.data.tokenSymbol ||'NA'}
+              {project.data.tokenSymbol || 'NA'}
             </Text>
           </Box>
           <Box d="flex" flexDir="column" w={'105px'}>
@@ -183,8 +197,8 @@ const ProjectCard: React.FC<{
                 fontSize: 20,
               })}>
               {Number(project.data.totalSupply).toLocaleString(undefined, {
-                            minimumFractionDigits: 0,
-                          }) || 'NA'}
+                minimumFractionDigits: 0,
+              }) || 'NA'}
             </Text>
           </Box>
         </Flex>

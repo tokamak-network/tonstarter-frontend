@@ -1,4 +1,4 @@
-import {Flex, Box, Text, Button} from '@chakra-ui/react';
+import {Flex, Box, Text, Button, useColorMode} from '@chakra-ui/react';
 import {useCallback, useEffect, useState} from 'react';
 import {useHistory} from 'react-router-dom';
 import {PageHeader} from 'components/PageHeader';
@@ -12,8 +12,17 @@ import {selectLaunch, setHashKey} from '@Launch/launch.reducer';
 const ProjectScreen = () => {
   const {openAnyModal} = useModal();
   const history = useHistory();
+  const {colorMode} = useColorMode();
 
+  const goBackToList = useCallback(() => {
+    history.push('/opencampaign');
+  }, []);
   const match = useRouteMatch();
+  const {url} = match;
+  const isExist = url.split('/')[3];
+  const dispatch = useAppDispatch();
+  // console.log(window.location);
+
   const {
     //@ts-ignore
     params: {name},
@@ -22,12 +31,38 @@ const ProjectScreen = () => {
     data: {projects, hashKey},
   } = useAppSelector(selectLaunch);
 
-  const project = projects[name];
+  const themeDesign = {
+    border: {
+      light: 'solid 1px #e6eaee',
+      dark: 'solid 1px #373737',
+    },
+    font: {
+      light: 'black.300',
+      dark: 'gray.475',
+    },
+    tosFont: {
+      light: 'gray.250',
+      dark: 'black.100',
+    },
+    borderDashed: {
+      light: 'dashed 1px #dfe4ee',
+      dark: 'dashed 1px #535353',
+    },
+    buttonColorActive: {
+      light: 'gray.225',
+      dark: 'gray.0',
+    },
+    buttonColorInactive: {
+      light: '#c9d1d8',
+      dark: '#777777',
+    },
+  };
 
-  const goBackToList = useCallback(() => {
-    history.push('/opencampaign');
+  console.log('projects', projects);
+  useEffect(() => {
+    dispatch(setHashKey({data: isExist === 'project' ? undefined : isExist}));
   }, []);
-
+  const project = projects[name];
   return (
     <Flex
       flexDir={'column'}
@@ -48,10 +83,20 @@ const ProjectScreen = () => {
           h={'45px'}
           bg={'#257eee'}
           fontSize={'14px'}
-          color={'white.100'}
+          color={'#fff'}
+          _hover={{
+            background: 'transparent',
+            border: 'solid 1px #2a72e5',
+            color: themeDesign.tosFont[colorMode],
+            cursor: 'pointer',
+          }}
+          _active={{
+            background: '#2a72e5',
+            border: 'solid 1px #2a72e5',
+            color: '#fff',
+          }}
           //   onClick={() => openAnyModal('Launch_CreateRewardProgram', {})}
-          onClick={() => goBackToList()}
-          _hover={{bg: '#257eee'}}>
+          onClick={() => goBackToList()}>
           Back to List
         </Button>
         <Button
@@ -60,7 +105,18 @@ const ProjectScreen = () => {
           h={'45px'}
           bg={'#257eee'}
           fontSize={'14px'}
-          color={'white.100'}
+          color={'#fff'}
+          _hover={{
+            background: 'transparent',
+            border: 'solid 1px #2a72e5',
+            color: themeDesign.tosFont[colorMode],
+            cursor: 'pointer',
+          }}
+          _active={{
+            background: '#2a72e5',
+            border: 'solid 1px #2a72e5',
+            color: '#fff',
+          }}
           onClick={() => openAnyModal('Launch_CreateRewardProgram', {})}
           // onClick={() => goBackToList()}
         >

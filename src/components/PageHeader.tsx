@@ -12,10 +12,12 @@ type HeadProps = {
   title?: string;
   subtitle?: string;
   secondSubTitle?: string;
+  titleColor?: string;
 };
 
 export const PageHeader: FC<HeadProps> = ({
   title,
+  titleColor,
   subtitle,
   secondSubTitle,
 }) => {
@@ -28,7 +30,13 @@ export const PageHeader: FC<HeadProps> = ({
           fontWeight={'bold'}
           fontSize={'38'}
           className={'page-title'}
-          color={colorMode === 'light' ? theme.colors.gray[250] : '#ffffff'}
+          color={
+            titleColor
+              ? titleColor
+              : colorMode === 'light'
+              ? theme.colors.gray[250]
+              : '#ffffff'
+          }
           fontFamily={theme.fonts.titil}
           mb="10px">
           {title}
