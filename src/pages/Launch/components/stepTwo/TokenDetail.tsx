@@ -23,6 +23,7 @@ import {DEPLOYED} from 'constants/index';
 import InitialLiquidityComputeAbi from 'services/abis/Vault_InitialLiquidityCompute.json';
 import {convertTimeStamp} from 'utils/convertTIme';
 import {useToast} from 'hooks/useToast';
+import {CustomTooltip} from 'components/Tooltip';
 
 export const MainTitle = (props: {
   leftTitle: string;
@@ -243,11 +244,26 @@ const SubTitle = (props: {
           : 'solid 1px #323232'
       }
       fontWeight={600}>
-      <Text
-        color={'#7e8993'}
-        w={!leftTitle.includes('or Liquidity Pool') ? '101px' : '201px'}>
-        {leftTitle}
-      </Text>
+      {leftTitle === 'Public Round 1' && !isSecondColData ? (
+        <Flex>
+          <Text w={'88px'} color={'#7e8993'}>
+            {leftTitle}
+          </Text>
+          <CustomTooltip
+            msg={[
+              'The sum of public round 1 and 2 must equal',
+              'the value of total token allocation.',
+            ]}
+            toolTipH="44px"
+            toolTipW={254}></CustomTooltip>
+        </Flex>
+      ) : (
+        <Text
+          color={'#7e8993'}
+          w={!leftTitle.includes('or Liquidity Pool') ? '101px' : '201px'}>
+          {leftTitle}
+        </Text>
+      )}
       {isEdit ? (
         isSecondColData ? (
           <Flex>

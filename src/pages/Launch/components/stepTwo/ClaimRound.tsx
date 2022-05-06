@@ -16,6 +16,7 @@ import {useAppSelector} from 'hooks/useRedux';
 import SingleCalendarPop from '../common/SingleCalendarPop';
 import commafy from 'utils/commafy';
 import {useToast} from 'hooks/useToast';
+import {CustomTooltip} from 'components/Tooltip';
 
 type ClaimRoundTable = {
   dateTime: number;
@@ -185,7 +186,18 @@ const ClaimRound = () => {
         d="flex"
         justifyContent={'space-between'}
         alignItems="center">
-        <StepTitle title={'Claim Round'} fontSize={16}></StepTitle>
+        <Flex>
+          <StepTitle title={'Claim Round'} fontSize={16}></StepTitle>
+          <Flex ml={'5px'}>
+            <CustomTooltip
+              msg={[
+                'The sum of public round 1 and 2 must equal',
+                'the value of total token allocation.',
+              ]}
+              toolTipH={'44px'}
+              toolTipW={254}></CustomTooltip>
+          </Flex>
+        </Flex>
         <Flex>
           <Text
             fontSize={13}
