@@ -25,6 +25,13 @@ const initialObj: Projects['CreateProject'] = {
   tosPrice: 0,
   projectTokenPrice: 0,
   totalTokenAllocation: 0,
+  projectMainImage: '',
+  tokenSymbolImage: '',
+  website: '',
+  medium: '',
+  telegram: '',
+  twitter: '',
+  discord: '',
   vaults: [
     {
       vaultName: 'Public',

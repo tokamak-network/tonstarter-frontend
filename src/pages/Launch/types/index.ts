@@ -1,5 +1,3 @@
-import {StringLocale} from 'yup/lib/locale';
-
 type VaultName =
   | 'Public'
   | 'Initial Liquidity'
@@ -98,6 +96,13 @@ interface ProjectStep1 {
   totalSupply: number | undefined;
   ownerAddress: string;
   owner: string | undefined;
+  projectMainImage: string;
+  tokenSymbolImage: string;
+  website: string;
+  medium: string;
+  telegram: string;
+  twitter: string;
+  discord: string;
 }
 interface ProjectStep2 {
   vaults: VaultAny[];
