@@ -1,5 +1,5 @@
 import {FC, useState} from 'react';
-import {Flex, Box, Text, useColorMode} from '@chakra-ui/react';
+import {Flex, Box, Text, useColorMode, useTheme} from '@chakra-ui/react';
 import HoverImage from 'components/HoverImage';
 import arrowLeft from 'assets/svgs/arrow_left_normal_icon.svg';
 import arrowLeftDark from 'assets/launch/arrow-left-normal-icon.svg';
@@ -73,6 +73,7 @@ export const VaultComponent: FC<VaultComponent> = ({project}) => {
   const [currentVault, setCurrentVault] = useState<string>('Public');
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const {colorMode} = useColorMode();
+  const theme = useTheme();
 
   const themeDesign = {
     border: {
@@ -155,6 +156,7 @@ export const VaultComponent: FC<VaultComponent> = ({project}) => {
                   pb={'10px'}
                   textAlign={'center'}
                   fontSize={'13px'}
+                  fontFamily={theme.fonts.fld}
                   style={
                     currentIndex === index
                       ? {
