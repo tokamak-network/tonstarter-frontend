@@ -29,7 +29,7 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
   const [distributable, setDistributable] = useState<number>(0);
-  const [claimTime, setClaimTime] = useState<number>(0)
+  const [claimTime, setClaimTime] = useState<number>(0);
   const TOSStaker = new Contract(
     vault.vaultAddress,
     TOSStakerInitializeAbi.abi,
@@ -44,12 +44,14 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
       const signer = getSigner(library, account);
       const currentRound = await TOSStaker.connect(signer).currentRound();
 
-      
       const amount = await TOSStaker.connect(signer).calculClaimAmount(
         currentRound,
       );
-      const claimCounts = await TOSStaker.connect(signer).totalClaimCounts();      
-      const claimDate = parseInt(currentRound) === 0? vault.claim[parseInt(currentRound)].claimTime:vault.claim[parseInt(currentRound)-1].claimTime ;
+      const claimCounts = await TOSStaker.connect(signer).totalClaimCounts();
+      const claimDate =
+        parseInt(currentRound) === 0
+          ? vault.claim[parseInt(currentRound)].claimTime
+          : vault.claim[parseInt(currentRound) - 1].claimTime;
       const amountFormatted = parseInt(amount);
       setClaimTime(claimDate);
       setDistributable(amountFormatted);
@@ -188,6 +190,17 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
               _disabled={{
                 color: colorMode === 'light' ? '#86929d' : '#838383',
                 bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+              }}
+              _hover={{
+                background: 'transparent',
+                border: 'solid 1px #2a72e5',
+                color: themeDesign.tosFont[colorMode],
+                cursor: 'pointer',
+              }}
+              _active={{
+                background: '#2a72e5',
+                border: 'solid 1px #2a72e5',
+                color: '#fff',
               }}>
               Distribute
             </Button>
@@ -202,10 +215,34 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
                 You can distribute on
               </Text>
               <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-             {moment.unix(claimTime).format('MMM, DD, yyyy HH:mm:ss')} {momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()}
+                {moment.unix(claimTime).format('MMM, DD, yyyy HH:mm:ss')}{' '}
+                {momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()}
               </Text>
             </Flex>
-          
+            <Button
+              fontSize={'13px'}
+              w={'100px'}
+              h={'32px'}
+              bg={'#257eee'}
+              disabled={true}
+              color={'#fff'}
+              _hover={{
+                background: 'transparent',
+                border: 'solid 1px #2a72e5',
+                color: themeDesign.tosFont[colorMode],
+                cursor: 'pointer',
+              }}
+              _active={{
+                background: '#2a72e5',
+                border: 'solid 1px #2a72e5',
+                color: '#fff',
+              }}
+              _disabled={{
+                color: colorMode === 'light' ? '#86929d' : '#838383',
+                bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+              }}>
+              Distribute
+            </Button>
           </GridItem>
         </Flex>
       </Grid>

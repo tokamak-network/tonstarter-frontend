@@ -197,7 +197,19 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
             height={'32px'}
             padding={'9px 24px 8px'}
             borderRadius={'4px'}
-            color={'#fff'}>
+            fontSize={'13px'}
+            color={'#fff'}
+            _hover={{
+              background: 'transparent',
+              border: 'solid 1px #2a72e5',
+              color: themeDesign.tosFont[colorMode],
+              cursor: 'pointer',
+            }}
+            _active={{
+              background: '#2a72e5',
+              border: 'solid 1px #2a72e5',
+              color: '#fff',
+            }}>
             Increase
           </Button>
         </GridItem>
@@ -214,7 +226,19 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
             height={'32px'}
             padding={'9px 24px 8px'}
             borderRadius={'4px'}
-            color={'#fff'}>
+            fontSize={'13px'}
+            color={'#fff'}
+            _hover={{
+              background: 'transparent',
+              border: 'solid 1px #2a72e5',
+              color: themeDesign.tosFont[colorMode],
+              cursor: 'pointer',
+            }}
+            _active={{
+              background: '#2a72e5',
+              border: 'solid 1px #2a72e5',
+              color: '#fff',
+            }}>
             Collect
           </Button>
         </GridItem>

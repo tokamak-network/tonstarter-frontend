@@ -138,12 +138,10 @@ export const VaultComponent: FC<VaultComponent> = ({project}) => {
           hoverImg={arrowHoverLeft}
           additionalStyles={{height: '30px'}}
           action={() => {
-            if (flowIndex - project.vaults.length > 0) {
+            if (flowIndex - project.vaults.length >= 0 || flowIndex > 6) {
               setTransX(transX + 155);
               setFlowIndex(flowIndex - 1);
             }
-            // setTransX(transX + 155);
-            // setFlowIndex(flowIndex - 1);
           }}></HoverImage>
         <Flex w={'100%'} alignItems="center" overflow={'hidden'} mx={'20px'}>
           <motion.div
@@ -152,7 +150,7 @@ export const VaultComponent: FC<VaultComponent> = ({project}) => {
             {project?.vaults?.map((vault: any, index: number) => {
               return (
                 <Box
-                  width={'155px'}
+                  minWidth={'155px'}
                   margin={'auto'}
                   pb={'10px'}
                   textAlign={'center'}
@@ -170,7 +168,7 @@ export const VaultComponent: FC<VaultComponent> = ({project}) => {
                         }
                   }
                   onClick={() => setVaultInfo(vault, index)}>
-                  {vault.name}
+                  {vault.vaultType}
                 </Box>
               );
             })}
@@ -181,10 +179,7 @@ export const VaultComponent: FC<VaultComponent> = ({project}) => {
           hoverImg={arrowHoverRight}
           additionalStyles={{height: '30px'}}
           action={() => {
-            if (
-              flowIndex <= project.vaults.length &&
-              flowIndex < flowIndex + 1
-            ) {
+            if (flowIndex < project.vaults.length) {
               setTransX(transX - 155);
               setFlowIndex(flowIndex + 1);
             }

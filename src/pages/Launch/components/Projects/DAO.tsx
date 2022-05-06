@@ -49,10 +49,11 @@ export const DAO: FC<DAO> = ({vault, project}) => {
       <Grid templateColumns="repeat(2, 1fr)" w={'100%'}>
         <Flex flexDirection={'column'}>
           <GridItem
-            className={'chart-cell'}
+            border={themeDesign.border[colorMode]}
             borderRight={'none'}
-            borderTopLeftRadius={'4px'}
             borderBottom={'none'}
+            className={'chart-cell'}
+            borderTopLeftRadius={'4px'}
             fontSize={'16px'}
             fontFamily={theme.fonts.fld}>
             <Text
@@ -72,10 +73,11 @@ export const DAO: FC<DAO> = ({vault, project}) => {
             )}
           </GridItem>
           <GridItem
-            className={'chart-cell'}
-            fontFamily={theme.fonts.fld}
+            border={themeDesign.border[colorMode]}
             borderRight={'none'}
-            borderBottom={'none'}>
+            borderBottom={'none'}
+            className={'chart-cell'}
+            fontFamily={theme.fonts.fld}>
             <Text
               fontSize={'13px'}
               w={'96px'}
@@ -87,10 +89,11 @@ export const DAO: FC<DAO> = ({vault, project}) => {
             </Text>
           </GridItem>
           <GridItem
+            border={themeDesign.border[colorMode]}
+            borderRight={'none'}
             className={'chart-cell'}
             fontFamily={theme.fonts.fld}
-            borderBottomLeftRadius={'4px'}
-            borderRight={'none'}>
+            borderBottomLeftRadius={'4px'}>
             <Text
               w={'96px'}
               color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
@@ -103,11 +106,12 @@ export const DAO: FC<DAO> = ({vault, project}) => {
         </Flex>
         <Flex flexDirection={'column'}>
           <GridItem
+            border={themeDesign.border[colorMode]}
+            borderBottom={'none'}
             className={'chart-cell'}
             fontSize={'16px'}
             fontFamily={theme.fonts.fld}
-            borderTopEndRadius={'4px'}
-            borderBottom={'none'}>
+            borderTopEndRadius={'4px'}>
             <Text
               fontSize={'15px'}
               color={colorMode === 'light' ? '#353c48' : 'white.0'}>
@@ -115,9 +119,10 @@ export const DAO: FC<DAO> = ({vault, project}) => {
             </Text>
           </GridItem>
           <GridItem
+            border={themeDesign.border[colorMode]}
+            borderBottom={'none'}
             className={'chart-cell'}
             fontFamily={theme.fonts.fld}
-            borderBottom={'none'}
             justifyContent={'flex-start'}>
             <Flex
               borderRadius={'4px'}
@@ -149,7 +154,18 @@ export const DAO: FC<DAO> = ({vault, project}) => {
               h={'32px'}
               bg={'#257eee'}
               disabled={false}
-              color={'#ffffff'}
+              color={'#fff'}
+              _hover={{
+                background: 'transparent',
+                border: 'solid 1px #2a72e5',
+                color: themeDesign.tosFont[colorMode],
+                cursor: 'pointer',
+              }}
+              _active={{
+                background: '#2a72e5',
+                border: 'solid 1px #2a72e5',
+                color: '#fff',
+              }}
               _disabled={{
                 color: colorMode === 'light' ? '#86929d' : '#838383',
                 bg: colorMode === 'light' ? '#e9edf1' : '#353535',
@@ -158,6 +174,7 @@ export const DAO: FC<DAO> = ({vault, project}) => {
             </Button>
           </GridItem>
           <GridItem
+            border={themeDesign.border[colorMode]}
             className={'chart-cell'}
             fontFamily={theme.fonts.fld}
             borderBottomRightRadius={'4px'}></GridItem>

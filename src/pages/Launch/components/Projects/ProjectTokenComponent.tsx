@@ -1,5 +1,5 @@
 import {FC} from 'react';
-import {Flex, Text, useTheme, useColorMode} from '@chakra-ui/react';
+import {Flex, Text, useTheme, useColorMode, Link} from '@chakra-ui/react';
 // import ReactMarkdown from 'react-markdown'
 import ReactQuill from 'react-quill';
 
@@ -131,7 +131,13 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Website
             </Text>
-            <Text>www.tokamak.network</Text>
+            <Link
+              color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+              _hover={{color: '#2a72e5'}}
+              isExternal
+              href={`https://tokamak.network/#/`}>
+              www.tokamak.network
+            </Link>
           </Flex>
           <Flex
             p={'0px 20px'}
@@ -143,7 +149,13 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Medium
             </Text>
-            <Text>medium.com/onther-tech</Text>
+            <Link
+              color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+              _hover={{color: '#2a72e5'}}
+              isExternal
+              href={`https://tokamak.network/#/`}>
+              medium.com/onther-tech
+            </Link>
           </Flex>
 
           <Flex
@@ -156,7 +168,13 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Twitter
             </Text>
-            <Text>twitter.com/tokamak_network</Text>
+            <Link
+              color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+              _hover={{color: '#2a72e5'}}
+              isExternal
+              href={`https://tokamak.network/#/`}>
+              twitter.com/tokamak_network
+            </Link>
           </Flex>
         </Flex>
         <Flex w={'498px'} flexDir={'column'}>
@@ -244,7 +262,13 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Telegram
             </Text>
-            <Text>t.me/tokamak_network</Text>
+            <Link
+              color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+              _hover={{color: '#2a72e5'}}
+              isExternal
+              href={`https://tokamak.network/#/`}>
+              t.me/tokamak_network
+            </Link>
           </Flex>
           <Flex
             p={'0px 20px'}
@@ -256,7 +280,13 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Discord
             </Text>
-            <Text>discord.com/invite/...</Text>
+            <Link
+              color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+              _hover={{color: '#2a72e5'}}
+              isExternal
+              href={`https://tokamak.network/#/`}>
+              discord.com/invite/...
+            </Link>
           </Flex>
         </Flex>
       </Flex>

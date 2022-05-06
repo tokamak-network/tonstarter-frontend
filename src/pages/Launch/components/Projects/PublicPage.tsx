@@ -6,14 +6,16 @@ import {
   GridItem,
   useTheme,
   useColorMode,
+  Tooltip,
   Button,
+  Image,
 } from '@chakra-ui/react';
-
 import {PublicPageTable} from './PublicPageTable';
 import {shortenAddress} from 'utils';
 import momentTZ from 'moment-timezone';
 import '../css/PublicPage.css';
 import moment from 'moment';
+import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import commafy from 'utils/commafy';
 type PublicPage = {
   vault: any;
@@ -300,11 +302,24 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 borderBottom={'none'}
                 className={'chart-cell'}
                 justifyContent={'space-between'}>
-                <Text
-                  fontFamily={theme.fonts.fld}
-                  color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
-                  Snapshot
-                </Text>
+                <Flex justifyContent={'flex-start'} alignItems={'center'}>
+                  <Text
+                    fontFamily={theme.fonts.fld}
+                    mr={'5px'}
+                    color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                    Snapshot
+                  </Text>
+                  <Tooltip
+                    label="Snapshot date must be set 1 week after Deployment completion"
+                    hasArrow
+                    placement="top"
+                    color={colorMode === 'light' ? '#e6eaee' : '#424242'}
+                    aria-label={'Tooltip'}
+                    textAlign={'center'}
+                    size={'xs'}>
+                    <Image src={tooltipIcon} />
+                  </Tooltip>
+                </Flex>
                 <Text fontFamily={theme.fonts.fld}>
                   {moment.unix(vault.snapshot).format('YYYY.MM.DD HH:mm:ss')}
                 </Text>
