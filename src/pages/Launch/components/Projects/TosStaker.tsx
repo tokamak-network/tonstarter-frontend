@@ -23,8 +23,8 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
 
   const themeDesign = {
     border: {
-      light: 'solid 1px #e7edf3',
-      dark: 'solid 1px #535353',
+      light: 'solid 1px #e6eaee',
+      dark: 'solid 1px #373737',
     },
     font: {
       light: 'black.300',
@@ -50,13 +50,14 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
 
   return (
     <Flex flexDirection={'column'} w={'1030px'} p={'0px'}>
-      <Grid templateColumns="repeat(2, 1fr)" w={'100%'}>
+      <Grid templateColumns="repeat(2, 1fr)" w={'100%'} mb={'30px'}>
         <Flex flexDirection={'column'}>
           <GridItem
-            className={'chart-cell'}
+            border={themeDesign.border[colorMode]}
             borderRight={'none'}
-            borderTopLeftRadius={'4px'}
             borderBottom={'none'}
+            className={'chart-cell'}
+            borderTopLeftRadius={'4px'}
             fontSize={'16px'}
             fontFamily={theme.fonts.fld}>
             <Text
@@ -65,15 +66,22 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
               color={colorMode === 'light' ? '#353c48' : 'white.0'}>
               Token
             </Text>
-            <Text>
-              {vault.vaultTokenAllocation} {project.tokenSymbol}
-            </Text>
+            {vault.isDeployed ? (
+              <Text>
+                {Number(vault.vaultTokenAllocation).toLocaleString()}
+                {` `}
+                {project.tokenSymbol}
+              </Text>
+            ) : (
+              <></>
+            )}
           </GridItem>
           <GridItem
-            className={'chart-cell'}
-            fontFamily={theme.fonts.fld}
+            border={themeDesign.border[colorMode]}
             borderRight={'none'}
-            borderBottom={'none'}>
+            borderBottom={'none'}
+            className={'chart-cell'}
+            fontFamily={theme.fonts.fld}>
             <Text
               fontSize={'13px'}
               w={'66px'}
@@ -85,10 +93,11 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
             </Text>
           </GridItem>
           <GridItem
+            border={themeDesign.border[colorMode]}
+            borderRight={'none'}
             className={'chart-cell'}
             fontFamily={theme.fonts.fld}
-            borderBottomLeftRadius={'4px'}
-            borderRight={'none'}>
+            borderBottomLeftRadius={'4px'}>
             <Text
               w={'81px'}
               color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
@@ -101,11 +110,12 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
         </Flex>
         <Flex flexDirection={'column'}>
           <GridItem
+            border={themeDesign.border[colorMode]}
+            borderBottom={'none'}
             className={'chart-cell'}
             fontSize={'16px'}
             fontFamily={theme.fonts.fld}
-            borderTopEndRadius={'4px'}
-            borderBottom={'none'}>
+            borderTopEndRadius={'4px'}>
             <Text
               fontSize={'15px'}
               color={colorMode === 'light' ? '#353c48' : 'white.0'}>
@@ -113,9 +123,10 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
             </Text>
           </GridItem>
           <GridItem
+            border={themeDesign.border[colorMode]}
+            borderBottom={'none'}
             className={'chart-cell'}
-            fontFamily={theme.fonts.fld}
-            borderBottom={'none'}>
+            fontFamily={theme.fonts.fld}>
             <Flex alignItems={'baseline'} fontWeight={'bold'}>
               {' '}
               <Text
@@ -146,6 +157,7 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
             </Button>
           </GridItem>
           <GridItem
+            border={themeDesign.border[colorMode]}
             className={'chart-cell'}
             fontFamily={theme.fonts.fld}
             borderBottomRightRadius={'4px'}>

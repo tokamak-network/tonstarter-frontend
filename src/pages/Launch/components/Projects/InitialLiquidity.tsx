@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 
 import {shortenAddress} from 'utils/address';
-
+import commafy from 'utils/commafy';
 type InitialLiquidity = {
   vault: any;
   project: any;
@@ -20,12 +20,12 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
-  console.log('Initial Liquidity vault: ', vault);
+  // console.log('Initial Liquidity vault: ', vault);
 
   const themeDesign = {
     border: {
-      light: 'solid 1px #e7edf3',
-      dark: 'solid 1px #535353',
+      light: 'solid 1px #e6eaee',
+      dark: 'solid 1px #373737',
     },
     font: {
       light: 'black.300',
@@ -53,61 +53,118 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
     <Grid templateColumns="repeat(2, 1fr)" w={'100%'}>
       <Flex flexDirection={'column'}>
         <GridItem
+          border={themeDesign.border[colorMode]}
+          borderRight={'none'}
+          borderBottom={'none'}
           className={'chart-cell no-border-right no-border-bottom'}
           fontSize={'16px'}>
-          <Text>Token</Text>
+          <Text fontFamily={theme.fonts.fld}>Token</Text>
           {/* Need to make TON changeable. */}
-          <Text>
-            {vault.vaultTokenAllocation} {project.tokenSymbol}
+          <Text fontFamily={theme.fonts.fld}>
+            {commafy(Number(vault.vaultTokenAllocation))} {project.tokenSymbol}
           </Text>
         </GridItem>
-        <GridItem className={'chart-cell no-border-right no-border-bottom'}>
-          <Text>Price Range</Text>
+        <GridItem
+          border={themeDesign.border[colorMode]}
+          borderRight={'none'}
+          borderBottom={'none'}
+          className={'chart-cell no-border-right no-border-bottom'}>
+          <Text fontFamily={theme.fonts.fld}>Price Range</Text>
           {/* Need to make Full Range changeable. */}
-          <Text>Full Range</Text>
+          <Text fontFamily={theme.fonts.fld}>Full Range</Text>
         </GridItem>
-        <GridItem className={'chart-cell no-border-right no-border-bottom'}>
-          <Text>Selected Pair</Text>
+        <GridItem
+          border={themeDesign.border[colorMode]}
+          borderRight={'none'}
+          borderBottom={'none'}
+          className={'chart-cell no-border-right no-border-bottom'}>
+          <Text fontFamily={theme.fonts.fld}>Selected Pair</Text>
           {/* Need to make Token Symbol - TOS changeable. */}
-          <Text> {project.tokenSymbol} - TOS</Text>
+          <Text fontFamily={theme.fonts.fld}> {project.tokenSymbol} - TOS</Text>
         </GridItem>
-        <GridItem className={'chart-cell no-border-right no-border-bottom'}>
-          <Text>Pool Address</Text>
+        <GridItem
+          border={themeDesign.border[colorMode]}
+          borderRight={'none'}
+          borderBottom={'none'}
+          className={'chart-cell no-border-right no-border-bottom'}>
+          <Text fontFamily={theme.fonts.fld}>Pool Address</Text>
           {/* Need a valid poolAddress */}
-          <Text>{shortenAddress(vault.vaultAddress)}</Text>
+          <Text fontFamily={theme.fonts.fld}>
+            {shortenAddress(vault.vaultAddress)}
+          </Text>
         </GridItem>
-        <GridItem className={'chart-cell no-border-right no-border-bottom'}>
-          <Text>Vault Admin</Text>
-          <Text>{shortenAddress(vault.adminAddress)}</Text>
+        <GridItem
+          border={themeDesign.border[colorMode]}
+          borderRight={'none'}
+          borderBottom={'none'}
+          className={'chart-cell no-border-right no-border-bottom'}>
+          <Text fontFamily={theme.fonts.fld}>Vault Admin</Text>
+          <Text fontFamily={theme.fonts.fld}>
+            {shortenAddress(vault.adminAddress)}
+          </Text>
         </GridItem>
-        <GridItem className={'chart-cell no-border-right'}>
-          <Text>Vault Contract Address</Text>
-          <Text>{shortenAddress(vault.vaultAddress)}</Text>{' '}
+        <GridItem
+          border={themeDesign.border[colorMode]}
+          borderRight={'none'}
+          className={'chart-cell no-border-right'}>
+          <Text fontFamily={theme.fonts.fld}>Vault Contract Address</Text>
+          <Text fontFamily={theme.fonts.fld}>
+            {shortenAddress(vault.vaultAddress)}
+          </Text>{' '}
         </GridItem>
       </Flex>
       <Flex flexDirection={'column'}>
-        <GridItem className={'chart-cell no-border-bottom'} fontSize={'16px'}>
-          <Text>LP Token</Text>
+        <GridItem
+          border={themeDesign.border[colorMode]}
+          borderBottom={'none'}
+          className={'chart-cell no-border-bottom'}
+          fontSize={'16px'}>
+          <Text fontFamily={theme.fonts.fld}>LP Token</Text>
           <Flex>
-            <Text mr={'5px'}>ID</Text> <Text color={'#257eee'}>#562734</Text>
+            <Text fontFamily={theme.fonts.fld} mr={'5px'}>
+              ID
+            </Text>{' '}
+            <Text fontFamily={theme.fonts.fld} color={'#257eee'}>
+              #562734
+            </Text>
           </Flex>
         </GridItem>
-        <GridItem className={'chart-cell no-border-bottom'}>
-          <Text w={'25%'}>LP Token</Text>
-          <Text w={'25%'} textAlign={'center'}>
+        <GridItem
+          border={themeDesign.border[colorMode]}
+          borderBottom={'none'}
+          className={'chart-cell no-border-bottom'}>
+          <Text fontFamily={theme.fonts.fld} w={'25%'} color={'#7e8993'}>
+            LP Token
+          </Text>
+          <Text
+            fontFamily={theme.fonts.fld}
+            w={'25%'}
+            color={'#7e8993'}
+            textAlign={'center'}>
             Project Token
           </Text>
-          <Text w={'25%'} textAlign={'center'}>
+          <Text
+            fontFamily={theme.fonts.fld}
+            w={'25%'}
+            color={'#7e8993'}
+            textAlign={'center'}>
             TOS
           </Text>
-          <Text w={'25%'} textAlign={'center'}>
+          <Text
+            fontFamily={theme.fonts.fld}
+            w={'25%'}
+            color={'#7e8993'}
+            textAlign={'center'}>
             Action
           </Text>
         </GridItem>
-        <GridItem className={'chart-cell no-border-bottom'}>
-          <Text>Increase Liquidity</Text>
-          <Text>10,000,000</Text>
-          <Text>10,000,000</Text>
+        <GridItem
+          border={themeDesign.border[colorMode]}
+          borderBottom={'none'}
+          className={'chart-cell no-border-bottom'}>
+          <Text fontFamily={theme.fonts.fld}>Increase Liquidity</Text>
+          <Text fontFamily={theme.fonts.fld}>10,000,000</Text>
+          <Text fontFamily={theme.fonts.fld}>10,000,000</Text>
           <Button
             w={'100px'}
             bg={'#257eee'}
@@ -118,10 +175,13 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
             Increase
           </Button>
         </GridItem>
-        <GridItem className={'chart-cell no-border-bottom'}>
-          <Text>Unclaimed Fees</Text>
-          <Text>10,000,000</Text>
-          <Text>10,000,000</Text>
+        <GridItem
+          border={themeDesign.border[colorMode]}
+          borderBottom={'none'}
+          className={'chart-cell no-border-bottom'}>
+          <Text fontFamily={theme.fonts.fld}>Unclaimed Fees</Text>
+          <Text fontFamily={theme.fonts.fld}>10,000,000</Text>
+          <Text fontFamily={theme.fonts.fld}>10,000,000</Text>
           <Button
             w={'100px'}
             bg={'#257eee'}
@@ -132,11 +192,16 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
             Collect
           </Button>
         </GridItem>
-        <GridItem className={'chart-cell no-border-bottom'}>
-          <Text>{''}</Text>
+        <GridItem
+          border={themeDesign.border[colorMode]}
+          borderBottom={'none'}
+          className={'chart-cell no-border-bottom'}>
+          <Text fontFamily={theme.fonts.fld}>{''}</Text>
         </GridItem>
-        <GridItem className={'chart-cell'}>
-          <Text>{''}</Text>
+        <GridItem
+          border={themeDesign.border[colorMode]}
+          className={'chart-cell'}>
+          <Text fontFamily={theme.fonts.fld}>{''}</Text>
         </GridItem>
       </Flex>
     </Grid>

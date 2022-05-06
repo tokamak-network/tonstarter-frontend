@@ -17,10 +17,10 @@ import moment from 'moment';
 import commafy from 'utils/commafy';
 type PublicPage = {
   vault: any;
-  tokenSymbol: string;
+  project: any;
 };
 
-export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
+export const PublicPage: FC<PublicPage> = ({vault, project}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const sTosTier = vault.stosTier
@@ -42,12 +42,12 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
         })
         .sort((a, b) => a.tier - b.tier)
     : [];
-  console.log('vault', vault);
+  // console.log('vault', vault);
 
   const themeDesign = {
     border: {
-      light: 'solid 1px #e7edf3',
-      dark: 'solid 1px #535353',
+      light: 'solid 1px #e6eaee',
+      dark: 'solid 1px #373737',
     },
     font: {
       light: 'black.300',
@@ -76,15 +76,18 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
       <Grid templateColumns="repeat(3, 1fr)" w={'100%'}>
         <Flex flexDirection={'column'}>
           <GridItem
-            className={'chart-cell no-border-right no-border-bottom'}
+            border={themeDesign.border[colorMode]}
+            borderRight={'none'}
+            borderBottom={'none'}
+            className={'chart-cell'}
             fontSize={'16px'}
             justifyContent={'space-between'}>
-            <Text>Token</Text>
+            <Text fontFamily={theme.fonts.fld}>Token</Text>
             {vault.isDeployed ? (
-              <Text>
+              <Text fontFamily={theme.fonts.fld}>
                 {Number(vault.vaultTokenAllocation).toLocaleString()}
                 {` `}
-                {tokenSymbol}
+                {project.tokenSymbol}
               </Text>
             ) : (
               <></>
@@ -93,83 +96,178 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
           {vault.isDeployed ? (
             <>
               <GridItem
-                className={'chart-cell no-border-right no-border-bottom'}
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                borderBottom={'none'}
+                className={'chart-cell'}
                 justifyContent={'space-between'}>
-                <Text>Public Round 1.</Text>
-                <Text>
-                  {` ${commafy(vault.publicRound1Allocation)} ${tokenSymbol} (${
-                    (Number(vault.publicRound1Allocation) /
-                      Number(vault.vaultTokenAllocation)) *
-                    100
-                  }%)`}{' '}
+                <Text
+                  fontFamily={theme.fonts.fld}
+                  color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                  Public Round 1.
                 </Text>
+                <Flex>
+                  <Text fontFamily={theme.fonts.fld} mr={'5px'}>
+                    {` ${commafy(vault.publicRound1Allocation)} ${
+                      project.tokenSymbol
+                    }`}
+                  </Text>
+                  <Text
+                    fontFamily={theme.fonts.fld}
+                    color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                    {`(${
+                      (
+                        (Number(vault.publicRound1Allocation) /
+                          Number(vault.vaultTokenAllocation)) *
+                        100
+                      )
+                        .toFixed(3)
+                        .replace(/\.(\d\d)\d?$/, '.$1') || '-'
+                    }%)`}
+                  </Text>
+                </Flex>
               </GridItem>
               <GridItem
-                className={'chart-cell no-border-right no-border-bottom'}
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                borderBottom={'none'}
+                className={'chart-cell'}
                 justifyContent={'space-between'}>
-                <Text>Public Round 2.</Text>
-                <Text>
-                  {` ${commafy(vault.publicRound2Allocation)} ${tokenSymbol} (${
-                    (Number(vault.publicRound2Allocation) /
-                      Number(vault.vaultTokenAllocation)) *
-                    100
-                  }%)`}
+                <Text
+                  fontFamily={theme.fonts.fld}
+                  color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                  Public Round 2.
                 </Text>
+                <Flex>
+                  <Text fontFamily={theme.fonts.fld} mr={'5px'}>
+                    {` ${commafy(vault.publicRound2Allocation)} ${
+                      project.tokenSymbol
+                    }`}
+                  </Text>
+                  <Text
+                    fontFamily={theme.fonts.fld}
+                    color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                    {`(${
+                      (
+                        (Number(vault.publicRound2Allocation) /
+                          Number(vault.vaultTokenAllocation)) *
+                        100
+                      )
+                        .toFixed(3)
+                        .replace(/\.(\d\d)\d?$/, '.$1') || '-'
+                    }%)`}
+                  </Text>
+                </Flex>
               </GridItem>
               <GridItem
-                className={'chart-cell no-border-right no-border-bottom'}
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                borderBottom={'none'}
+                className={'chart-cell'}
                 justifyContent={'space-between'}>
-                <Text fontSize={'13px'} w={'100px'}>
+                <Text
+                  fontFamily={theme.fonts.fld}
+                  fontSize={'13px'}
+                  w={'100px'}
+                  color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
                   Token Allocation for Liquidiy Pool
                 </Text>
-                <Text>{`${(
-                  (Number(vault.vaultTokenAllocation) *
-                    Number(vault.tokenAllocationForLiquidity)) /
-                  100
-                ).toLocaleString()}  ${tokenSymbol} (${
-                  vault.tokenAllocationForLiquidity
-                }%)`}</Text>
+                <Flex>
+                  <Text fontFamily={theme.fonts.fld} mr={'5px'}>
+                    {`${(
+                      (Number(vault.vaultTokenAllocation) *
+                        Number(vault.tokenAllocationForLiquidity)) /
+                      100
+                    ).toLocaleString()}  ${project.tokenSymbol}`}{' '}
+                  </Text>
+                  <Text
+                    fontFamily={theme.fonts.fld}
+                    color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>{`(${
+                    (vault.tokenAllocationForLiquidity * 1)
+                      .toFixed(3)
+                      .replace(/\.(\d\d)\d?$/, '.$1') || '-'
+                  }%)`}</Text>
+                </Flex>
               </GridItem>
               <GridItem
-                className={'chart-cell no-border-right no-border-bottom'}
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                borderBottom={'none'}
+                className={'chart-cell'}
                 justifyContent={'space-between'}>
-                <Text>Hard Cap</Text>
-                <Text>{`${commafy(vault.hardCap)}  ${tokenSymbol}`}</Text>
+                <Text
+                  fontFamily={theme.fonts.fld}
+                  color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                  Hard Cap
+                </Text>
+                <Text fontFamily={theme.fonts.fld}>{`${commafy(
+                  vault.hardCap,
+                )}  ${project.tokenSymbol}`}</Text>
               </GridItem>
               <GridItem
-                className={'chart-cell no-border-right no-border-bottom'}
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                borderBottom={'none'}
+                className={'chart-cell'}
                 justifyContent={'space-between'}>
-                <Text>Addres for receiving funds</Text>
-                <Text>{shortenAddress(vault.addressForReceiving)}</Text>
+                <Text
+                  fontFamily={theme.fonts.fld}
+                  color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                  Addres for receiving funds
+                </Text>
+                <Text fontFamily={theme.fonts.fld}>
+                  {shortenAddress(vault.addressForReceiving)}
+                </Text>
               </GridItem>
               <GridItem
-                className={'chart-cell no-border-right no-border-bottom'}
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                borderBottom={'none'}
+                className={'chart-cell'}
                 justifyContent={'space-between'}>
-                <Text>Vault Admin Address</Text>
-                <Text>{shortenAddress(vault.adminAddress)}</Text>
+                <Text
+                  fontFamily={theme.fonts.fld}
+                  color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                  Vault Admin Address
+                </Text>
+                <Text fontFamily={theme.fonts.fld}>
+                  {shortenAddress(vault.adminAddress)}
+                </Text>
               </GridItem>
               <GridItem
-                className={'chart-cell no-border-right'}
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                className={'chart-cell'}
                 justifyContent={'space-between'}>
-                <Text>Vault Contract Address</Text>
-                <Text>{shortenAddress(vault.vaultAddress)}</Text>
+                <Text
+                  fontFamily={theme.fonts.fld}
+                  color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                  Vault Contract Address
+                </Text>
+                <Text fontFamily={theme.fonts.fld}>
+                  {shortenAddress(vault.vaultAddress)}
+                </Text>
               </GridItem>
             </>
           ) : (
             <>
               <GridItem
-                className={'chart-cell no-border-right no-border-bottom'}
-                fontSize={'16px'}
-                borderBottom={'none'}></GridItem>
+                border={themeDesign.border[colorMode]}
+                borderBottom={'none'}
+                borderRight={'none'}
+                className={'chart-cell'}
+                fontSize={'16px'}></GridItem>
               <GridItem
-                className={'chart-cell no-border-right no-border-bottom'}
+                borderLeft={themeDesign.border[colorMode]}
+                className={'chart-cell'}
                 fontSize={'16px'}
-                borderY={'none'}
                 justifyContent={'center'}>
                 <Flex>There are no token values</Flex>
               </GridItem>
               <GridItem
-                className={'chart-cell no-border-right'}
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                className={'chart-cell'}
                 fontSize={'16px'}
                 borderTop={'none'}></GridItem>
             </>
@@ -177,13 +275,18 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
         </Flex>
         <Flex flexDirection={'column'}>
           <GridItem
-            className={'chart-cell no-border-right no-border-bottom'}
+            border={themeDesign.border[colorMode]}
+            borderRight={'none'}
+            borderBottom={'none'}
+            className={'chart-cell'}
             fontSize={'16px'}
             justifyContent={'space-between'}>
-            <Text>Schedule</Text>
+            <Text fontFamily={theme.fonts.fld}>Schedule</Text>
             {vault.isDeployed ? (
               <>
-                <Text>{momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()}</Text>
+                <Text fontFamily={theme.fonts.fld}>
+                  {momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()}
+                </Text>
               </>
             ) : (
               <></>
@@ -192,68 +295,111 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
           {vault.isDeployed ? (
             <>
               <GridItem
-                className={'chart-cell no-border-right no-border-bottom'}
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                borderBottom={'none'}
+                className={'chart-cell'}
                 justifyContent={'space-between'}>
-                <Text>Snapshot</Text>
-                <Text>
+                <Text
+                  fontFamily={theme.fonts.fld}
+                  color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                  Snapshot
+                </Text>
+                <Text fontFamily={theme.fonts.fld}>
                   {moment.unix(vault.snapshot).format('YYYY.MM.DD HH:mm:ss')}
                 </Text>
               </GridItem>
               <GridItem
-                className={'chart-cell no-border-right no-border-bottom'}
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                borderBottom={'none'}
+                className={'chart-cell'}
                 justifyContent={'space-between'}>
-                <Text>Whitelist</Text>
-                <Text>
+                <Text
+                  fontFamily={theme.fonts.fld}
+                  color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                  Whitelist
+                </Text>
+                <Text fontFamily={theme.fonts.fld}>
                   {moment.unix(vault.whitelist).format('YYYY.MM.DD HH:mm:ss')}
                 </Text>
               </GridItem>
               <GridItem
-                className={'chart-cell no-border-right no-border-bottom'}
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                borderBottom={'none'}
+                className={'chart-cell'}
                 justifyContent={'space-between'}>
-                <Text>Public Round 1.</Text>
-                <Text>
+                <Text
+                  fontFamily={theme.fonts.fld}
+                  color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                  Public Round 1.
+                </Text>
+                <Text fontFamily={theme.fonts.fld}>
                   {moment
                     .unix(vault.publicRound1)
                     .format('YYYY.MM.DD HH:mm:ss')}
                 </Text>
               </GridItem>
               <GridItem
-                className={'chart-cell no-border-right no-border-bottom'}
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                borderBottom={'none'}
+                className={'chart-cell'}
                 justifyContent={'space-between'}>
-                <Text>Public Round 2.</Text>
-                <Text>
+                <Text
+                  fontFamily={theme.fonts.fld}
+                  color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                  Public Round 2.
+                </Text>
+                <Text fontFamily={theme.fonts.fld}>
                   {moment
                     .unix(vault.publicRound2)
                     .format('YYYY.MM.DD HH:mm:ss')}
                 </Text>
               </GridItem>
               <GridItem
-                className={'chart-cell no-border-right no-border-bottom'}>
-                <Text>{''}</Text>
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                borderBottom={'none'}
+                className={'chart-cell'}>
+                <Text fontFamily={theme.fonts.fld}>{''}</Text>
               </GridItem>
-              <GridItem className={'chart-cell no-border-bottom'}>
-                <Text>{''}</Text>
+              <GridItem
+                border={themeDesign.border[colorMode]}
+                borderBottom={'none'}
+                className={'chart-cell'}>
+                <Text fontFamily={theme.fonts.fld}>{''}</Text>
               </GridItem>
-              <GridItem className={'chart-cell'}>
-                <Text>{''}</Text>
+              <GridItem
+                border={themeDesign.border[colorMode]}
+                className={'chart-cell'}>
+                <Text fontFamily={theme.fonts.fld}>{''}</Text>
               </GridItem>
             </>
           ) : (
             <>
               <GridItem
-                className={'chart-cell no-border-right no-border-bottom'}
-                fontSize={'16px'}
-                borderBottom={'none'}></GridItem>
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                borderBottom={'none'}
+                className={'chart-cell'}
+                fontSize={'16px'}></GridItem>
               <GridItem
-                className={'chart-cell no-border-right no-border-bottom'}
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                className={'chart-cell'}
                 fontSize={'16px'}
                 borderY={'none'}
                 justifyContent={'center'}>
                 <Flex>There are no token values</Flex>
               </GridItem>
               <GridItem
-                className={'chart-cell no-border-right'}
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                className={'chart-cell'}
                 fontSize={'16px'}
+                paddingBottom={'32px'}
                 borderTop={'none'}></GridItem>
             </>
           )}
@@ -261,20 +407,30 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
         </Flex>
         <Flex flexDirection={'column'}>
           <GridItem
-            className={'chart-cell no-border-bottom'}
+            border={themeDesign.border[colorMode]}
+            borderBottom={'none'}
+            className={'chart-cell'}
             fontSize={'16px'}
             justifyContent={'space-between'}>
-            <Text>sTOS Tier</Text>
+            <Text fontFamily={theme.fonts.fld}>sTOS Tier</Text>
           </GridItem>
           {vault.isDeployed ? (
             <>
               {' '}
               <GridItem
-                className={'chart-cell no-border-bottom'}
+                border={themeDesign.border[colorMode]}
+                borderBottom={'none'}
+                className={'chart-cell'}
                 justifyContent={'space-between'}>
-                <Text>Tier</Text>
-                <Text>Required TOS</Text>
-                <Text>Allocated Token</Text>
+                <Text fontFamily={theme.fonts.fld} color={'#7e8993'}>
+                  Tier
+                </Text>
+                <Text fontFamily={theme.fonts.fld} color={'#7e8993'}>
+                  Required TOS
+                </Text>
+                <Text fontFamily={theme.fonts.fld} color={'#7e8993'}>
+                  Allocated Token
+                </Text>
               </GridItem>
               {sTosTier?.map((data: any, index: number) => {
                 const {tier, requiredStos, allocatedToken} = data;
@@ -285,15 +441,22 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
 
                 return (
                   <GridItem
-                    className={`chart-cell ${
-                      index === sTosTier.length - 1 ? '' : 'no-border-bottom'
-                    }`}
+                    border={themeDesign.border[colorMode]}
+                    borderBottom={index === sTosTier.length - 1 ? '' : 'none'}
+                    className={'chart-cell'}
                     justifyContent={'space-between'}>
-                    <Text>{tier ? tier : index + 1}</Text>
-                    <Text>{commafy(requiredStos) || '-'}</Text>
+                    <Text fontFamily={theme.fonts.fld}>
+                      {tier ? tier : index + 1}
+                    </Text>
+                    <Text fontFamily={theme.fonts.fld}>
+                      {commafy(requiredStos) || '-'}
+                    </Text>
                     <Flex justifyContent={'center'} alignItems={'center'}>
-                      <Text>{commafy(allocatedToken) || '-'}</Text>
+                      <Text fontFamily={theme.fonts.fld}>
+                        {commafy(allocatedToken) || '-'}
+                      </Text>
                       <Text
+                        fontFamily={theme.fonts.fld}
                         ml={'5px'}
                         color={'#7e8993'}
                         textAlign={'center'}
@@ -315,10 +478,12 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
           ) : (
             <>
               <GridItem
+                border={themeDesign.border[colorMode]}
+                borderBottom={'none'}
                 className={'chart-cell'}
-                fontSize={'16px'}
-                borderBottom={'none'}></GridItem>
+                fontSize={'16px'}></GridItem>
               <GridItem
+                border={themeDesign.border[colorMode]}
                 className={'chart-cell'}
                 fontSize={'16px'}
                 borderY={'none'}
@@ -326,6 +491,7 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
                 <Flex>There are no token values</Flex>
               </GridItem>
               <GridItem
+                border={themeDesign.border[colorMode]}
                 className={'chart-cell'}
                 fontSize={'16px'}
                 borderTop={'none'}></GridItem>
@@ -333,7 +499,7 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
           )}
         </Flex>
       </Grid>
-      <Flex w={'100%'} justifyContent={'center'} py={'2rem'}>
+      {/* <Flex w={'100%'} justifyContent={'center'} py={'2rem'}>
         <Button
           className="button-style"
           background={'none'}
@@ -344,7 +510,8 @@ export const PublicPage: FC<PublicPage> = ({vault, tokenSymbol}) => {
         >
           Download
         </Button>
-      </Flex>
+      </Flex> */}
+      <Flex w={'100%'} justifyContent={'center'} py={'2rem'}></Flex>
       {vault.isDeployed ? (
         <PublicPageTable claim={vault.claim} />
       ) : (

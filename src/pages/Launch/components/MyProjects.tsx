@@ -53,6 +53,9 @@ const MyProjects = () => {
       const {data: datas} = data;
       dispatch(fetchProjects({data: datas}));
       const projs = Object.keys(datas).map((k) => {
+        const stat = datas[k].vaults.every((vault: any) => {
+          return vault.isSet === true;
+        });
         return {
           key: k,
           name: datas[k].projectName,
@@ -66,11 +69,11 @@ const MyProjects = () => {
           ],
           whiteList: datas[k].vaults[0].whitelist,
           public2End: datas[k].vaults[0].publicRound2End,
-          status: datas[k].isAllDeployed,
+          status: stat,
         };
       });
       const MyProjs = projs.filter((pro: any) => pro.owner === account);
-
+      
       setProjectsData(MyProjs);
     }
   }, [data, dispatch]);

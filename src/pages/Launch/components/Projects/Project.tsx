@@ -21,6 +21,13 @@ export const Project: FC<ProjectProps> = ({project}) => {
   const {colorMode} = useColorMode();
   const [showVault, setShowVault] = useState<boolean>(false);
 
+  const themeDesign = {
+    border: {
+      light: 'solid 1px #e6eaee',
+      dark: 'solid 1px #373737',
+    },
+  };
+
   const name = 'Project Name';
   console.log('project', project);
 
@@ -55,7 +62,7 @@ export const Project: FC<ProjectProps> = ({project}) => {
             color={colorMode === 'light' ? '#304156' : '#ffffff'}
             fontSize={'20px'}
             fontWeight={'500'}>
-            {project.projectName}
+            {project?.projectName}
           </Text>
           <Flex h={'38px'}>
             <Button
@@ -63,11 +70,12 @@ export const Project: FC<ProjectProps> = ({project}) => {
               justifyContent={'center'}
               alignItems={'center'}
               bg={'transparent'}
-              border={'solid 1px #d7d9df'}
+              border={themeDesign.border[colorMode]}
+              borderRight={'none'}
               borderRadius={'3px 0px 0px 3px'}
-              fontSize={'12px'}
+              fontSize={'14px'}
               isActive={!showVault}
-              fontFamily={theme.fonts.roboto}
+              fontFamily={theme.fonts.fld}
               _hover={{
                 background: 'transparent',
                 border: 'solid 1px #2a72e5',
@@ -89,10 +97,11 @@ export const Project: FC<ProjectProps> = ({project}) => {
               alignItems={'center'}
               w={'120px'}
               bg={'transparent'}
-              border={'solid 1px #d7d9df'}
+              border={themeDesign.border[colorMode]}
               borderRadius={'0px 3px 3px 0px'}
-              fontSize={'12px'}
+              fontSize={'14px'}
               isActive={showVault}
+              fontFamily={theme.fonts.fld}
               _hover={{
                 background: 'transparent',
                 border: 'solid 1px #2a72e5',

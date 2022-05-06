@@ -1,13 +1,13 @@
 import {FC, useState} from 'react';
-import {
-  Flex,
-  Text,
-  Tabs,
-  Tab,
-  TabList,
-  TabPanels,
-  TabPanel,
-} from '@chakra-ui/react';
+import {Flex, Box, Text, useColorMode} from '@chakra-ui/react';
+import HoverImage from 'components/HoverImage';
+import arrowLeft from 'assets/svgs/arrow_left_normal_icon.svg';
+import arrowLeftDark from 'assets/launch/arrow-left-normal-icon.svg';
+import arrowHoverLeft from 'assets/launch/arrow-left-hover-icon.svg';
+import arrowRight from 'assets/svgs/arrow_right_normal_icon.svg';
+import arrowRightDark from 'assets/launch/arrow-right-normal-icon.svg';
+import arrowHoverRight from 'assets/launch/arrow-right-hover-icon.svg';
+import {motion} from 'framer-motion';
 
 import {PublicPage} from './PublicPage';
 import {LiquidityIncentive} from './LiquidityIncentive';
@@ -23,15 +23,61 @@ type VaultComponent = {
   project: any;
 };
 
+const TabComponent = (props: {project: any; vault: string; index: number}) => {
+  const {project, vault, index} = props;
+  console.log('project: ', project);
+
+  switch (vault) {
+    case 'Public':
+      return (
+        <PublicPage
+          project={project}
+          vault={project.vaults[index]}></PublicPage>
+      );
+    case 'Initial Liquidity':
+      return (
+        <InitialLiquidity
+          project={project}
+          vault={project.vaults[index]}></InitialLiquidity>
+      );
+    case 'TON Staker':
+      return (
+        <TonStaker project={project} vault={project.vaults[index]}></TonStaker>
+      );
+    case 'TOS Staker':
+      return (
+        <TosStaker project={project} vault={project.vaults[index]}></TosStaker>
+      );
+    case 'WTON-TOS LP Reward':
+      return (
+        <WtonTosLpReward
+          project={project}
+          vault={project.vaults[index]}></WtonTosLpReward>
+      );
+    case 'Liquidity Incentive':
+      return (
+        <LiquidityIncentive
+          project={project}
+          vault={project.vaults[index]}></LiquidityIncentive>
+      );
+    case 'DAO':
+      return <DAO project={project} vault={project.vaults[index]}></DAO>;
+    default:
+      return <div>no component for this step</div>;
+  }
+};
 export const VaultComponent: FC<VaultComponent> = ({project}) => {
   const [tabIndex, setTabIndex] = useState(0);
-
-  console.log('project: ', project);
+  const [transX, setTransX] = useState<number>(0);
+  const [flowIndex, setFlowIndex] = useState<number>(6);
+  const [currentVault, setCurrentVault] = useState<string>('Public');
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const {colorMode} = useColorMode();
 
   const themeDesign = {
     border: {
-      light: 'solid 1px #e7edf3',
-      dark: 'solid 1px #535353',
+      light: 'solid 2px #e7edf3',
+      dark: 'solid 2px #535353',
     },
     font: {
       light: 'black.300',
@@ -55,43 +101,102 @@ export const VaultComponent: FC<VaultComponent> = ({project}) => {
     },
   };
 
+  const setVaultInfo = (vault: any, idx: number) => {
+    setCurrentVault(vault.vaultType);
+    setCurrentIndex(idx);
+  };
+
   return (
-    <Flex p={'25px 35px 50px 35px'}>
-      <Tabs w={'100%'} onChange={(index) => setTabIndex(index)}>
+    <Flex flexDirection={'column'} mx={'35px'}>
+      {/* <Tabs w={'100%'} onChange={(index) => setTabIndex(index)}>
         <TabList>
-          <Tab className="tab-block">Public</Tab>
-          <Tab className="tab-block">Initial Liquidity</Tab>
-          <Tab className="tab-block">Liquidity Incentive</Tab>
-          <Tab className="tab-block">Ton Staker</Tab>
-          <Tab className="tab-block">Tos Starter</Tab>
-          <Tab className="tab-block">Wton-Tos LP Reward</Tab>
-          <Tab className="tab-block">DAO</Tab>
+          {project.vaults.map((vault: any, index: number) => {
+            return <Tab className="tab-block">{vault.name}</Tab>;
+          })}
         </TabList>
-        {/* Chakra UI automatically maps the TabPanel tabIndex to the Tab. */}
         <TabPanels>
-          <TabPanel px={'0px'}>
-            <PublicPage vault={project.vaults[0]} tokenSymbol={project.tokenSymbol}/>
-          </TabPanel>
-          <TabPanel px={'1rem'}>
-            <InitialLiquidity vault={project.vaults[1]} project={project} />
-          </TabPanel>
-          <TabPanel px={'1rem'}>
-            <LiquidityIncentive vault={project.vaults[5]} project={project} />
-          </TabPanel>
-          <TabPanel px={'0px'}>
-            <TonStaker vault={project.vaults[2]} project={project} />
-          </TabPanel>
-          <TabPanel px={'0px'}>
-            <TosStaker vault={project.vaults[3]} project={project} />
-          </TabPanel>
-          <TabPanel>
-            <WtonTosLpReward vault={project.vaults[4]} project={project} />
-          </TabPanel>
-          <TabPanel px={'1rem'}>
-            <DAO />
-          </TabPanel>
+          {project.vaults.map((vault: any, index: number) => {
+            return (
+              <TabPanel px={'0px'}>
+                <TabComponent
+                  project={project}
+                  vault={vault.vaultType}
+                  index={index}
+                />
+              </TabPanel>
+            );
+          })}
         </TabPanels>
-      </Tabs>
+      </Tabs> */}
+      <Flex
+        px={'15px'}
+        justifyContent="space-between"
+        alignItems={'center'}
+        h={'75px'}>
+        <HoverImage
+          img={colorMode === 'light' ? arrowLeft : arrowLeftDark}
+          hoverImg={arrowHoverLeft}
+          additionalStyles={{height: '30px'}}
+          action={() => {
+            if (flowIndex - project.vaults.length > 0) {
+              setTransX(transX + 155);
+              setFlowIndex(flowIndex - 1);
+            }
+            // setTransX(transX + 155);
+            // setFlowIndex(flowIndex - 1);
+          }}></HoverImage>
+        <Flex w={'100%'} alignItems="center" overflow={'hidden'} mx={'20px'}>
+          <motion.div
+            animate={{x: transX}}
+            style={{display: 'flex', width: '100%'}}>
+            {project?.vaults?.map((vault: any, index: number) => {
+              return (
+                <Box
+                  width={'155px'}
+                  margin={'auto'}
+                  pb={'10px'}
+                  textAlign={'center'}
+                  fontSize={'13px'}
+                  style={
+                    currentIndex === index
+                      ? {
+                          borderBottom: '2px solid #2B71E4',
+                          color: '#2B71E4',
+                          cursor: 'pointer',
+                        }
+                      : {
+                          cursor: 'pointer',
+                          borderBottom: themeDesign.border[colorMode],
+                        }
+                  }
+                  onClick={() => setVaultInfo(vault, index)}>
+                  {vault.name}
+                </Box>
+              );
+            })}
+          </motion.div>
+        </Flex>
+        <HoverImage
+          img={colorMode === 'light' ? arrowRight : arrowRightDark}
+          hoverImg={arrowHoverRight}
+          additionalStyles={{height: '30px'}}
+          action={() => {
+            if (
+              flowIndex <= project.vaults.length &&
+              flowIndex < flowIndex + 1
+            ) {
+              setTransX(transX - 155);
+              setFlowIndex(flowIndex + 1);
+            }
+            // setTransX(transX - 155);
+            // setFlowIndex(flowIndex + 1);
+          }}></HoverImage>
+      </Flex>
+      <TabComponent
+        project={project}
+        vault={currentVault}
+        index={currentIndex}
+      />
     </Flex>
   );
 };
