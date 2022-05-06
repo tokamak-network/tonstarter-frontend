@@ -9,15 +9,14 @@ const filedNameList = [
   'tokenName',
   'owner',
   'tokenSymbol',
+  'projectMainImage',
+  'tokenSymbolImage',
+  'website',
   'totalSupply',
-  // 'projectMainImage',
-  // 'tokenSymbolImage',
-  // 'website',
-  // 'totalSupply',
-  // 'medium',
-  // 'telegram',
-  // 'twitter',
-  // 'discord',
+  'medium',
+  'telegram',
+  'twitter',
+  'discord',
 ];
 
 const OpenStepOne = () => {
@@ -44,7 +43,7 @@ const OpenStepOne = () => {
         mb={'20px'}>
         {filedNameList.map((name: string, index: number) => {
           return (
-            <GridItem w={'327px'} colStart={index === 4 ? 2 : 0}>
+            <GridItem w={'327px'}>
               <InputComponent
                 name={name}
                 placeHolder={`input ${name}`}
