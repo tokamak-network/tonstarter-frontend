@@ -220,30 +220,7 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
                 {momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()}
               </Text>
             </Flex>
-            <Button
-              fontSize={'13px'}
-              w={'100px'}
-              h={'32px'}
-              bg={'#257eee'}
-              disabled={true}
-              color={'#fff'}
-              _hover={{
-                background: 'transparent',
-                border: 'solid 1px #2a72e5',
-                color: themeDesign.tosFont[colorMode],
-                cursor: 'pointer',
-              }}
-              _active={{
-                background: '#2a72e5',
-                border: 'solid 1px #2a72e5',
-                color: '#fff',
-              }}
-              _disabled={{
-                color: colorMode === 'light' ? '#86929d' : '#838383',
-                bg: colorMode === 'light' ? '#e9edf1' : '#353535',
-              }}>
-              Distribute
-            </Button>
+           
           </GridItem>
         </Flex>
       </Grid>

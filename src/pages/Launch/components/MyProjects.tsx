@@ -75,6 +75,7 @@ const [projectsForTable, setProjectsForTable]= useState<any>()
         };
       });
       const MyProjs = projs.filter((pro: any) => pro.owner === account);
+      console.log('MyProjs',MyProjs);
       
       setProjectsData(MyProjs);
     }

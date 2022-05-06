@@ -95,7 +95,9 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
         ].map((title: string) => {
           return (
             <Text
-              border={colorMode === 'dark' ? '1px solid #373737' : ''}
+              borderTop={colorMode === 'dark' ? '1px solid #373737' : ''}
+              borderLeft={title === 'Name' ? colorMode === 'dark'?'1px solid #373737' : '':''}
+              borderRight={title === 'Action' ? colorMode === 'dark'?'1px solid #373737' : '':''}
               borderTopLeftRadius={title === 'Name' ? '10px' : ''}
               borderTopRightRadius={title === 'Action' ? '10px' : ''}
               textAlign={'center'}
@@ -164,7 +166,7 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                   //   mb={'20px'}
                   w="100%"
                   bg={colorMode === 'light' ? 'white.100' : 'black.200'}
-                  border={colorMode === 'dark' ? '1px solid #373737' : ''}
+                  borderX={colorMode === 'dark' ? '1px solid #373737' : ''}
                   display="flex"
                   alignItems="center"
                   {...row.getRowProps()}>
