@@ -11,9 +11,8 @@ import {
   IconButton,
 } from '@chakra-ui/react';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
-
 import {PublicPageTable} from './PublicPageTable';
-
+import {useModal} from 'hooks/useModal';
 import {shortenAddress} from 'utils/address';
 import commafy from 'utils/commafy';
 
@@ -24,6 +23,7 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
   project,
 }) => {
   const {colorMode} = useColorMode();
+  const {openAnyModal} = useModal();
   const theme = useTheme();
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(5);
@@ -197,7 +197,8 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
                   background: '#2a72e5',
                   border: 'solid 1px #2a72e5',
                   color: '#fff',
-                }}>
+                }}
+                onClick={() => openAnyModal('Launch_CreateRewardProgram', {})}>
                 Create Reward Program
               </Button>
             </Flex>

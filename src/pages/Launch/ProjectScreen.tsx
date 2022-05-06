@@ -99,29 +99,6 @@ const ProjectScreen = () => {
           onClick={() => goBackToList()}>
           Back to List
         </Button>
-        <Button
-          mt={'20px'}
-          w={'180px'}
-          h={'45px'}
-          bg={'#257eee'}
-          fontSize={'14px'}
-          color={'#fff'}
-          _hover={{
-            background: 'transparent',
-            border: 'solid 1px #2a72e5',
-            color: themeDesign.tosFont[colorMode],
-            cursor: 'pointer',
-          }}
-          _active={{
-            background: '#2a72e5',
-            border: 'solid 1px #2a72e5',
-            color: '#fff',
-          }}
-          onClick={() => openAnyModal('Launch_CreateRewardProgram', {})}
-          // onClick={() => goBackToList()}
-        >
-          Create Reward Program
-        </Button>
       </Flex>
       <CreateRewardsProgramModal />
       <DownloadModal />
