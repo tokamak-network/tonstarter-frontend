@@ -28,6 +28,7 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(5);
   const [pageOptions, setPageOptions] = useState<number>(0);
+  const [disableButton, setDisableButton] = useState<boolean>(true);
 
   console.log('vault: ', vault);
 
@@ -187,17 +188,31 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
                 padding={'6px 12px'}
                 whiteSpace={'normal'}
                 color={'#fff'}
-                _hover={{
-                  background: 'transparent',
-                  border: 'solid 1px #2a72e5',
-                  color: themeDesign.tosFont[colorMode],
-                  cursor: 'pointer',
+                isDisabled={disableButton}
+                _disabled={{
+                  color: colorMode === 'light' ? '#86929d' : '#838383',
+                  bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+                  cursor: 'not-allowed',
                 }}
-                _active={{
-                  background: '#2a72e5',
-                  border: 'solid 1px #2a72e5',
-                  color: '#fff',
-                }}
+                _hover={
+                  disableButton
+                    ? {}
+                    : {
+                        background: 'transparent',
+                        border: 'solid 1px #2a72e5',
+                        color: themeDesign.tosFont[colorMode],
+                        cursor: 'pointer',
+                      }
+                }
+                _active={
+                  disableButton
+                    ? {}
+                    : {
+                        background: '#2a72e5',
+                        border: 'solid 1px #2a72e5',
+                        color: '#fff',
+                      }
+                }
                 onClick={() => openAnyModal('Launch_CreateRewardProgram', {})}>
                 Create Reward Program
               </Button>
@@ -233,17 +248,32 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
               borderRadius={'4px'}
               width={'120px'}
               color={'#fff'}
-              _hover={{
-                background: 'transparent',
-                border: 'solid 1px #2a72e5',
-                color: themeDesign.tosFont[colorMode],
-                cursor: 'pointer',
+              // isDisabled={disableButton}
+              _disabled={{
+                color: colorMode === 'light' ? '#86929d' : '#838383',
+                bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+                cursor: 'not-allowed',
               }}
-              _active={{
-                background: '#2a72e5',
-                border: 'solid 1px #2a72e5',
-                color: '#fff',
-              }}>
+              _hover={
+                // I set !disableButton just for UI testing purposes. Revert to disableButton (or any condition) to disable _hover and _active styles.
+                !disableButton
+                  ? {}
+                  : {
+                      background: 'transparent',
+                      border: 'solid 1px #2a72e5',
+                      color: themeDesign.tosFont[colorMode],
+                      cursor: 'pointer',
+                    }
+              }
+              _active={
+                !disableButton
+                  ? {}
+                  : {
+                      background: '#2a72e5',
+                      border: 'solid 1px #2a72e5',
+                      color: '#fff',
+                    }
+              }>
               Refund
             </Button>
           </GridItem>

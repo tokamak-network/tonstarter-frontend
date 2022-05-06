@@ -78,8 +78,7 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
       }
       const signer = getSigner(library, account);
       const currentRound = await TOSStaker.connect(signer).currentRound();
-   
-      
+
       const amount = await TOSStaker.connect(signer).calculClaimAmount(
         currentRound,
       );
@@ -92,7 +91,7 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
       setDistributable(amountFormatted);
     }
     getLPToken();
-  }, [account, library,transactionType, blockNumber]);
+  }, [account, library, transactionType, blockNumber]);
 
   const themeDesign = {
     border: {
@@ -225,12 +224,11 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
               _disabled={{
                 color: colorMode === 'light' ? '#86929d' : '#838383',
                 bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+                cursor: 'not-allowed',
               }}
               _hover={
                 distributable <= 0
-                  ? {
-                    cursor: 'default',
-                  }
+                  ? {}
                   : {
                       background: 'transparent',
                       border: 'solid 1px #2a72e5',

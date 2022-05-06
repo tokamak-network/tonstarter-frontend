@@ -81,7 +81,7 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
       }
       const signer = getSigner(library, account);
       const currentRound = await TONStaker.connect(signer).currentRound();
-      console.log('currentRound',currentRound);
+      console.log('currentRound', currentRound);
 
       const amount = await TONStaker.connect(signer).calculClaimAmount(
         currentRound,
@@ -95,7 +95,7 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
       setDistributable(amountFormatted);
     }
     getLPToken();
-  }, [account, library,transactionType, blockNumber]);
+  }, [account, library, transactionType, blockNumber]);
   const themeDesign = {
     border: {
       light: 'solid 1px #e6eaee',
@@ -218,37 +218,36 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
             </Flex>
 
             <Button
-             fontSize={'13px'}
-             w={'100px'}
-             h={'32px'}
-             bg={'#257eee'}
-             color={'#ffffff'}
-             isDisabled={distributable <= 0}
-             _disabled={{
-               color: colorMode === 'light' ? '#86929d' : '#838383',
-               bg: colorMode === 'light' ? '#e9edf1' : '#353535',
-             }}
-             _hover={
-               distributable <= 0
-                 ? {
-                  cursor: 'default',
-                 }
-                 : {
-                     background: 'transparent',
-                     border: 'solid 1px #2a72e5',
-                     color: themeDesign.tosFont[colorMode],
-                     cursor: 'pointer',
-                   }
-             }
-             _active={
-               distributable <= 0
-                 ? {}
-                 : {
-                     background: '#2a72e5',
-                     border: 'solid 1px #2a72e5',
-                     color: '#fff',
-                   }
-             }
+              fontSize={'13px'}
+              w={'100px'}
+              h={'32px'}
+              bg={'#257eee'}
+              color={'#ffffff'}
+              isDisabled={distributable <= 0}
+              _disabled={{
+                color: colorMode === 'light' ? '#86929d' : '#838383',
+                bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+                cursor: 'not-allowed',
+              }}
+              _hover={
+                distributable <= 0
+                  ? {}
+                  : {
+                      background: 'transparent',
+                      border: 'solid 1px #2a72e5',
+                      color: themeDesign.tosFont[colorMode],
+                      cursor: 'pointer',
+                    }
+              }
+              _active={
+                distributable <= 0
+                  ? {}
+                  : {
+                      background: '#2a72e5',
+                      border: 'solid 1px #2a72e5',
+                      color: '#fff',
+                    }
+              }
               onClick={() => distribute()}>
               Distribute
             </Button>
