@@ -133,16 +133,28 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
           border={themeDesign.border[colorMode]}
           borderBottom={'none'}
           className={'chart-cell no-border-bottom'}>
-          <Text fontFamily={theme.fonts.fld} w={'25%'}>
+          <Text fontFamily={theme.fonts.fld} w={'25%'} color={'#7e8993'}>
             LP Token
           </Text>
-          <Text fontFamily={theme.fonts.fld} w={'25%'} textAlign={'center'}>
+          <Text
+            fontFamily={theme.fonts.fld}
+            w={'25%'}
+            color={'#7e8993'}
+            textAlign={'center'}>
             Project Token
           </Text>
-          <Text fontFamily={theme.fonts.fld} w={'25%'} textAlign={'center'}>
+          <Text
+            fontFamily={theme.fonts.fld}
+            w={'25%'}
+            color={'#7e8993'}
+            textAlign={'center'}>
             TOS
           </Text>
-          <Text fontFamily={theme.fonts.fld} w={'25%'} textAlign={'center'}>
+          <Text
+            fontFamily={theme.fonts.fld}
+            w={'25%'}
+            color={'#7e8993'}
+            textAlign={'center'}>
             Action
           </Text>
         </GridItem>

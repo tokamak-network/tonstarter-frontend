@@ -422,9 +422,15 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 borderBottom={'none'}
                 className={'chart-cell'}
                 justifyContent={'space-between'}>
-                <Text fontFamily={theme.fonts.fld}>Tier</Text>
-                <Text fontFamily={theme.fonts.fld}>Required TOS</Text>
-                <Text fontFamily={theme.fonts.fld}>Allocated Token</Text>
+                <Text fontFamily={theme.fonts.fld} color={'#7e8993'}>
+                  Tier
+                </Text>
+                <Text fontFamily={theme.fonts.fld} color={'#7e8993'}>
+                  Required TOS
+                </Text>
+                <Text fontFamily={theme.fonts.fld} color={'#7e8993'}>
+                  Allocated Token
+                </Text>
               </GridItem>
               {sTosTier?.map((data: any, index: number) => {
                 const {tier, requiredStos, allocatedToken} = data;
