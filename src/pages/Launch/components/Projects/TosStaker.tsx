@@ -78,7 +78,7 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
       }
       const signer = getSigner(library, account);
       const currentRound = await TOSStaker.connect(signer).currentRound();
-      console.log('currentRound',currentRound);
+   
       
       const amount = await TOSStaker.connect(signer).calculClaimAmount(
         currentRound,
