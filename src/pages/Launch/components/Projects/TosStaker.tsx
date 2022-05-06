@@ -221,22 +221,32 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
               h={'32px'}
               bg={'#257eee'}
               color={'#ffffff'}
-              disabled={distributable <= 0}
+              isDisabled={distributable <= 0}
               _disabled={{
                 color: colorMode === 'light' ? '#86929d' : '#838383',
                 bg: colorMode === 'light' ? '#e9edf1' : '#353535',
               }}
-              _hover={{
-                background: 'transparent',
-                border: 'solid 1px #2a72e5',
-                color: themeDesign.tosFont[colorMode],
-                cursor: 'pointer',
-              }}
-              _active={{
-                background: '#2a72e5',
-                border: 'solid 1px #2a72e5',
-                color: '#fff',
-              }}
+              _hover={
+                distributable <= 0
+                  ? {
+                    cursor: 'default',
+                  }
+                  : {
+                      background: 'transparent',
+                      border: 'solid 1px #2a72e5',
+                      color: themeDesign.tosFont[colorMode],
+                      cursor: 'pointer',
+                    }
+              }
+              _active={
+                distributable <= 0
+                  ? {}
+                  : {
+                      background: '#2a72e5',
+                      border: 'solid 1px #2a72e5',
+                      color: '#fff',
+                    }
+              }
               onClick={() => distribute()}>
               Distribute
             </Button>
