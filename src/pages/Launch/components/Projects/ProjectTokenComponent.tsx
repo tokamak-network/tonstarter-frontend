@@ -14,6 +14,19 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
 
+  const modules = {
+    toolbar: [
+      [{header: [1, 2, 3, 4, 5, 6, false]}],
+      ['bold', 'italic', 'underline', 'strike'],
+
+      ['blockquote', 'code-block'],
+      [{list: 'ordered'}, {list: 'bullet'}],
+      [{indent: '-1'}, {indent: '+1'}, {align: []}],
+      ['link', 'image', 'video'],
+      ['clean'],
+    ], // options here
+  };
+
   const themeDesign = {
     border: {
       light: 'solid 1px #e6eaee',
@@ -259,6 +272,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
         <ReactQuill
           // placeholder="Input the project description"
           readOnly={true}
+          modules={modules}
           value={project.description}
           theme={'bubble'}
           style={{color: 'white !important'}}

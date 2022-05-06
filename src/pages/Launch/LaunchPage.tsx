@@ -1,4 +1,11 @@
-import {Box, Button, Flex, useTheme, Text} from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  useTheme,
+  Text,
+  useColorMode,
+} from '@chakra-ui/react';
 import {useState} from 'react';
 import {PageHeader} from 'components/PageHeader';
 import {Link, useRouteMatch} from 'react-router-dom';
@@ -11,12 +18,40 @@ import ConfirmTermsModal from './components/modals/ConfirmTerms';
 const LaunchPage = () => {
   const [showAllProjects, setShowAllProjects] = useState<boolean>(true);
   const theme = useTheme();
+  const {colorMode} = useColorMode();
   const match = useRouteMatch();
   const {
     //@ts-ignore
     params: {id},
   } = match;
   const {url} = match;
+
+  const themeDesign = {
+    border: {
+      light: 'solid 1px #e6eaee',
+      dark: 'solid 1px #373737',
+    },
+    font: {
+      light: 'black.300',
+      dark: 'gray.475',
+    },
+    tosFont: {
+      light: 'gray.250',
+      dark: 'black.100',
+    },
+    borderDashed: {
+      light: 'dashed 1px #dfe4ee',
+      dark: 'dashed 1px #535353',
+    },
+    buttonColorActive: {
+      light: 'gray.225',
+      dark: 'gray.0',
+    },
+    buttonColorInactive: {
+      light: '#c9d1d8',
+      dark: '#777777',
+    },
+  };
 
   const {openAnyModal} = useModal();
 
@@ -103,18 +138,23 @@ const LaunchPage = () => {
         </Flex>
         <Flex>
           <Button
-            w={'170px'}
-            h={'26px'}
+            w={'160px'}
+            h={'38px'}
             bg={'transparent'}
-            border={'solid 1px #d7d9df'}
+            border={themeDesign.border[colorMode]}
             borderRadius={'3px 0px 0px 3px'}
-            fontSize={'12px'}
-            fontFamily={theme.fonts.roboto}
-            _hover={{background: 'transparent'}}
-            _active={{
+            fontSize={'14px'}
+            fontFamily={theme.fonts.fld}
+            _hover={{
               background: 'transparent',
               border: 'solid 1px #2a72e5',
-              color: '#2a72e5',
+              color: '#ffffff',
+              cursor: 'pointer',
+            }}
+            _active={{
+              background: '#2a72e5',
+              border: 'solid 1px #2a72e5',
+              color: '#ffffff',
             }}
             onClick={() => {
               setShowAllProjects(true);
@@ -123,21 +163,23 @@ const LaunchPage = () => {
             All
           </Button>
           <Button
-            w={'170px'}
-            h={'26px'}
+            w={'160px'}
+            h={'38px'}
             bg={'transparent'}
-            border={'solid 1px #d7d9df'}
+            border={themeDesign.border[colorMode]}
             borderRadius={'0px 3px 3px 0px'}
-            fontSize={'12px'}
+            fontSize={'14px'}
+            fontFamily={theme.fonts.fld}
             _hover={{
               background: 'transparent',
               border: 'solid 1px #2a72e5',
-              color: '#2a72e5',
+              color: '#ffffff',
+              cursor: 'pointer',
             }}
             _active={{
-              background: 'transparent',
+              background: '#2a72e5',
               border: 'solid 1px #2a72e5',
-              color: '#2a72e5',
+              color: '#ffffff',
             }}
             onClick={() => {
               setShowAllProjects(false);
