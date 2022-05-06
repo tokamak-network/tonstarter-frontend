@@ -57,6 +57,7 @@ export const Project: FC<ProjectProps> = ({project}) => {
           w={'1100px'}
           padding={'26px 25px 17px 35px'}
           justifyContent={'space-between'}
+          alignItems={'center'}
           flexDir={'row'}>
           <Text
             color={colorMode === 'light' ? '#304156' : '#ffffff'}
