@@ -86,14 +86,18 @@ const LaunchPage = () => {
           <Flex alignItems={'center'} flexDir="column" mb={'20px'}>
             <PageHeader
               title={'Launch'}
+              titleColor={'#fff'}
               subtitle={'Make your own token and create a token economy.'}
             />
           </Flex>
           <Flex justifyContent={'center'} w={'100%'}>
             {/* <Link to={`${url}/createproject`}> */}
             <Button
+              _hover={{background: 'whiteAlpha.300'}}
               bg={'blue.100'}
               color="white.100"
+              fontFamily={theme.fonts.roboto}
+              letterSpacing={'.35px'}
               onClick={() => {
                 openAnyModal('Launch_ConfirmTerms', {});
               }}>
@@ -115,15 +119,15 @@ const LaunchPage = () => {
           transform={'translateX(-50%)'}>
           <Flex alignItems={'center'} flexDir="column" width={'300px'}>
             <Text color={'yellow'}>Total Staked</Text>
-            <Text>2,646,790.91 TON</Text>
+            <Text color={'#fff'}>2,646,790.91 TON</Text>
           </Flex>
           <Flex alignItems={'center'} flexDir="column" width={'300px'}>
             <Text color={'yellow'}>Total Value Locked</Text>
-            <Text>2,646,790.91 TON</Text>
+            <Text color={'#fff'}>2,646,790.91 TON</Text>
           </Flex>
           <Flex alignItems={'center'} flexDir="column" width={'300px'}>
             <Text color={'yellow'}>Total Staked</Text>
-            <Text>2,646,790.91 TON</Text>
+            <Text color={'#fff'}>2,646,790.91 TON</Text>
           </Flex>
         </Flex>
       </Flex>
