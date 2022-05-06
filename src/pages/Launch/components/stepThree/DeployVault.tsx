@@ -254,7 +254,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
           ],
           Claim: [
             {
-              title: `Claim Round (${selectedVaultDetail.claim.length})`,
+              title: `Claim Round (${selectedVaultDetail?.claim?.length})`,
               content: '',
             },
             ...selectedVaultDetail.claim.map(
@@ -386,6 +386,60 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
         //@ts-ignore
         return setStosTierList(stosInfo);
       }
+      case 'DAO': {
+        const info = {
+          Vault: [
+            {
+              title: 'Vault Name',
+              content: selectedVaultDetail?.vaultName || '-',
+            },
+            {
+              title: 'Admin',
+              content: `${selectedVaultDetail?.adminAddress || '-'}`,
+              isHref: true,
+            },
+            {
+              title: 'Contract',
+              content: `${selectedVaultDetail?.vaultAddress || '-'}`,
+              isHref: true,
+            },
+            {
+              title: 'Token Allocation',
+              content: `${
+                commafy(selectedVaultDetail?.vaultTokenAllocation) || '-'
+              } ${values.tokenName}`,
+            },
+          ],
+        };
+        return setInfoList(info);
+      }
+      case 'Initial Liquidity': {
+        const info = {
+          Vault: [
+            {
+              title: 'Vault Name',
+              content: selectedVaultDetail?.vaultName || '-',
+            },
+            {
+              title: 'Admin',
+              content: `${selectedVaultDetail?.adminAddress || '-'}`,
+              isHref: true,
+            },
+            {
+              title: 'Contract',
+              content: `${selectedVaultDetail?.vaultAddress || '-'}`,
+              isHref: true,
+            },
+            {
+              title: 'Token Allocation',
+              content: `${
+                commafy(selectedVaultDetail?.vaultTokenAllocation) || '-'
+              } ${values.tokenName}`,
+            },
+          ],
+        };
+        return setInfoList(info);
+      }
       default:
         const info = {
           Vault: [
@@ -412,7 +466,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
           ],
           Claim: [
             {
-              title: `Claim Round (${selectedVaultDetail.claim.length})`,
+              title: `Claim Round (${selectedVaultDetail?.claim?.length})`,
               content: '',
             },
             ...selectedVaultDetail.claim.map(
@@ -835,12 +889,13 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               // _amount[3] : 톤 토큰 가격
               // _amount[4] : hardhat수량(TON기준)
               // _amount[5] : TON → TOS 변경 % (min ~ max)
-              const param1: number[] = [
+              const hardCapWei = convertToWei(String(PublicVaultData.hardCap));
+              const param1: any[] = [
                 PublicVaultData.publicRound1Allocation as number,
                 PublicVaultData.publicRound2Allocation as number,
                 (values.projectTokenPrice as number) * 100,
                 100,
-                PublicVaultData.hardCap as number,
+                hardCapWei,
                 PublicVaultData.tokenAllocationForLiquidity as number,
               ];
               // _time[0] : sTOS snapshot 시간
@@ -1023,10 +1078,16 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 library,
               );
 
+              const test = convertToWei(
+                String(selectedVaultDetail?.vaultTokenAllocation),
+              );
+
+              console.log(test);
+
               const tx = await LPVaultSecondContract?.connect(
                 signer,
               ).initialize(
-                selectedVaultDetail?.vaultTokenAllocation,
+                test,
                 selectedVaultDetail?.claim.length,
                 claimTimesParam,
                 claimAmountsParam,

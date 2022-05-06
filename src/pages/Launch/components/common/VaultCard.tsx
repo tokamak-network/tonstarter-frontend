@@ -81,7 +81,7 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
             color="white.100"
             bg={status === 'public' ? '#0070ed' : '#26c1c9'}
             textAlign="center">
-            {name.substring(0, 1)}
+            {name?.substring(0, 1)}
           </Box>
           <HoverImage
             img={PencilIcon}
