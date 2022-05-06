@@ -73,9 +73,9 @@ export const Project: FC<ProjectProps> = ({project}) => {
               border={themeDesign.border[colorMode]}
               borderRight={'none'}
               borderRadius={'3px 0px 0px 3px'}
-              fontSize={'12px'}
+              fontSize={'14px'}
               isActive={!showVault}
-              fontFamily={theme.fonts.roboto}
+              fontFamily={theme.fonts.fld}
               _hover={{
                 background: 'transparent',
                 border: 'solid 1px #2a72e5',
@@ -99,8 +99,9 @@ export const Project: FC<ProjectProps> = ({project}) => {
               bg={'transparent'}
               border={themeDesign.border[colorMode]}
               borderRadius={'0px 3px 3px 0px'}
-              fontSize={'12px'}
+              fontSize={'14px'}
               isActive={showVault}
+              fontFamily={theme.fonts.fld}
               _hover={{
                 background: 'transparent',
                 border: 'solid 1px #2a72e5',

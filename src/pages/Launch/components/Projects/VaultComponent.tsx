@@ -76,8 +76,8 @@ export const VaultComponent: FC<VaultComponent> = ({project}) => {
 
   const themeDesign = {
     border: {
-      light: 'solid 1px #e7edf3',
-      dark: 'solid 1px #535353',
+      light: 'solid 2px #e7edf3',
+      dark: 'solid 2px #535353',
     },
     font: {
       light: 'black.300',
@@ -164,7 +164,10 @@ export const VaultComponent: FC<VaultComponent> = ({project}) => {
                           color: '#2B71E4',
                           cursor: 'pointer',
                         }
-                      : {cursor: 'pointer', borderBottom: '2px solid #464646'}
+                      : {
+                          cursor: 'pointer',
+                          borderBottom: themeDesign.border[colorMode],
+                        }
                   }
                   onClick={() => setVaultInfo(vault, index)}>
                   {vault.name}
