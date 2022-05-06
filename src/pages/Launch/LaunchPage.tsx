@@ -132,7 +132,8 @@ const LaunchPage = () => {
         display={'flex'}
         justifyContent={'center'}
         flexDirection={'column'}
-        alignItems={'center'}>
+        alignItems={'center'}
+        mb={'50px'}>
         <Flex alignItems={'center'} flexDir="column" mb={'20px'}>
           <PageHeader title={'Projects'} />
         </Flex>
