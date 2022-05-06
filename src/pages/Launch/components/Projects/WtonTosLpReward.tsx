@@ -10,9 +10,9 @@ import {
   Tooltip,
   IconButton,
 } from '@chakra-ui/react';
-
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {shortenAddress} from 'utils/address';
+import {useModal} from 'hooks/useModal';
 import {PublicPageTable} from './PublicPageTable';
 import commafy from 'utils/commafy';
 
@@ -20,6 +20,7 @@ type WtonTosLpReward = {vault: any; project: any};
 
 export const WtonTosLpReward: FC<WtonTosLpReward> = ({vault, project}) => {
   const {colorMode} = useColorMode();
+  const {openAnyModal} = useModal();
   const theme = useTheme();
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(5);
@@ -181,6 +182,7 @@ export const WtonTosLpReward: FC<WtonTosLpReward> = ({vault, project}) => {
                 padding={'6px 12px'}
                 whiteSpace={'normal'}
                 color={'#fff'}
+                onClick={() => openAnyModal('Launch_CreateRewardProgram', {})}
                 _hover={{
                   background: 'transparent',
                   border: 'solid 1px #2a72e5',

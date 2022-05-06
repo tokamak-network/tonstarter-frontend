@@ -129,18 +129,14 @@ export const VaultComponent: FC<VaultComponent> = ({project}) => {
           })}
         </TabPanels>
       </Tabs> */}
-      <Flex
-        px={'15px'}
-        justifyContent="space-between"
-        alignItems={'center'}
-        h={'75px'}>
+      <Flex justifyContent="space-between" alignItems={'center'} h={'75px'}>
         <HoverImage
           img={colorMode === 'light' ? arrowLeft : arrowLeftDark}
           hoverImg={arrowHoverLeft}
           additionalStyles={{height: '30px'}}
           action={() => {
             if (flowIndex - project.vaults.length >= 0 || flowIndex > 6) {
-              setTransX(transX + 155);
+              setTransX(transX + 160);
               setFlowIndex(flowIndex - 1);
             }
           }}></HoverImage>
@@ -151,7 +147,7 @@ export const VaultComponent: FC<VaultComponent> = ({project}) => {
             {project?.vaults?.map((vault: any, index: number) => {
               return (
                 <Box
-                  minWidth={'155px'}
+                  minWidth={'160px'}
                   margin={'auto'}
                   pb={'10px'}
                   textAlign={'center'}
@@ -182,10 +178,10 @@ export const VaultComponent: FC<VaultComponent> = ({project}) => {
           additionalStyles={{height: '30px'}}
           action={() => {
             if (flowIndex < project.vaults.length) {
-              setTransX(transX - 155);
+              setTransX(transX - 160);
               setFlowIndex(flowIndex + 1);
             }
-            // setTransX(transX - 155);
+            // setTransX(transX - 160);
             // setFlowIndex(flowIndex + 1);
           }}></HoverImage>
       </Flex>
