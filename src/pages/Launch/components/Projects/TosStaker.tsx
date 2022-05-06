@@ -18,7 +18,12 @@ import {ethers} from 'ethers';
 import momentTZ from 'moment-timezone';
 import moment from 'moment';
 import * as TOSStakerInitializeAbi from 'services/abis/TOSStakerInitializeAbi.json';
-
+import store from 'store';
+import {toastWithReceipt} from 'utils';
+import {setTxPending} from 'store/tx.reducer';
+import {openToast} from 'store/app/toast.reducer';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectTransactionType} from 'store/refetch.reducer';
 type TosStaker = {
   vault: any;
   project: any;
@@ -30,11 +35,41 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
   const {account, library} = useActiveWeb3React();
   const [distributable, setDistributable] = useState<number>(0);
   const [claimTime, setClaimTime] = useState<number>(0);
+  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
+
   const TOSStaker = new Contract(
     vault.vaultAddress,
     TOSStakerInitializeAbi.abi,
     library,
   );
+  async function distribute() {
+    if (account === null || account === undefined || library === undefined) {
+      return;
+    }
+    const signer = getSigner(library, account);
+    try {
+      const receipt = await TOSStaker.connect(signer).claim();
+      store.dispatch(setTxPending({tx: true}));
+      if (receipt) {
+        toastWithReceipt(receipt, setTxPending, 'Launch');
+        await receipt.wait();
+      }
+    } catch (e) {
+      store.dispatch(setTxPending({tx: false}));
+      store.dispatch(
+        //@ts-ignore
+        openToast({
+          payload: {
+            status: 'error',
+            title: 'Tx fail to send',
+            description: `something went wrong`,
+            duration: 5000,
+            isClosable: true,
+          },
+        }),
+      );
+    }
+  }
 
   useEffect(() => {
     async function getLPToken() {
@@ -43,11 +78,11 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
       }
       const signer = getSigner(library, account);
       const currentRound = await TOSStaker.connect(signer).currentRound();
-
+      console.log('currentRound',currentRound);
+      
       const amount = await TOSStaker.connect(signer).calculClaimAmount(
         currentRound,
       );
-      const claimCounts = await TOSStaker.connect(signer).totalClaimCounts();
       const claimDate =
         parseInt(currentRound) === 0
           ? vault.claim[parseInt(currentRound)].claimTime
@@ -57,7 +92,7 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
       setDistributable(amountFormatted);
     }
     getLPToken();
-  }, [account, library]);
+  }, [account, library,transactionType, blockNumber]);
 
   const themeDesign = {
     border: {
@@ -201,7 +236,8 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
                 background: '#2a72e5',
                 border: 'solid 1px #2a72e5',
                 color: '#fff',
-              }}>
+              }}
+              onClick={() => distribute()}>
               Distribute
             </Button>
           </GridItem>
@@ -219,30 +255,6 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
                 {momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()}
               </Text>
             </Flex>
-            <Button
-              fontSize={'13px'}
-              w={'100px'}
-              h={'32px'}
-              bg={'#257eee'}
-              disabled={true}
-              color={'#fff'}
-              _hover={{
-                background: 'transparent',
-                border: 'solid 1px #2a72e5',
-                color: themeDesign.tosFont[colorMode],
-                cursor: 'pointer',
-              }}
-              _active={{
-                background: '#2a72e5',
-                border: 'solid 1px #2a72e5',
-                color: '#fff',
-              }}
-              _disabled={{
-                color: colorMode === 'light' ? '#86929d' : '#838383',
-                bg: colorMode === 'light' ? '#e9edf1' : '#353535',
-              }}>
-              Distribute
-            </Button>
           </GridItem>
         </Flex>
       </Grid>

@@ -107,6 +107,14 @@ export const toastWithReceipt = async (
               }),
             );
           }
+          if (from === 'Launch') {
+            return store.dispatch(
+              setTransaction({
+                transactionType: 'Launch',
+                blockNumber: receipt.blockNumber,
+              }),
+            );
+          }
         }
       })
       .catch((e: any) => console.log(e));

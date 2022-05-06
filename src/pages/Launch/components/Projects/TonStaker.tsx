@@ -19,6 +19,12 @@ import momentTZ from 'moment-timezone';
 import moment from 'moment';
 import * as TONStakerAbi from 'services/abis/TONStakerAbi.json';
 import * as TONStakerInitializeAbi from 'services/abis/TONStakerInitializeAbi.json';
+import store from 'store';
+import {toastWithReceipt} from 'utils';
+import {setTxPending} from 'store/tx.reducer';
+import {openToast} from 'store/app/toast.reducer';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectTransactionType} from 'store/refetch.reducer';
 
 type TonStaker = {
   vault: any;
@@ -31,12 +37,42 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
   const {account, library} = useActiveWeb3React();
   const [distributable, setDistributable] = useState<number>(0);
   const [claimTime, setClaimTime] = useState<number>(0);
+  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const TONStaker = new Contract(
     vault.vaultAddress,
     TONStakerInitializeAbi.abi,
     library,
   );
   // console.log('tonstaker vault: ', vault);
+
+  async function distribute() {
+    if (account === null || account === undefined || library === undefined) {
+      return;
+    }
+    const signer = getSigner(library, account);
+    try {
+      const receipt = await TONStaker.connect(signer).claim();
+      store.dispatch(setTxPending({tx: true}));
+      if (receipt) {
+        toastWithReceipt(receipt, setTxPending, 'Launch');
+        await receipt.wait();
+      }
+    } catch (e) {
+      store.dispatch(setTxPending({tx: false}));
+      store.dispatch(
+        //@ts-ignore
+        openToast({
+          payload: {
+            status: 'error',
+            title: 'Tx fail to send',
+            description: `something went wrong`,
+            duration: 5000,
+            isClosable: true,
+          },
+        }),
+      );
+    }
+  }
 
   useEffect(() => {
     async function getLPToken() {
@@ -45,10 +81,11 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
       }
       const signer = getSigner(library, account);
       const currentRound = await TONStaker.connect(signer).currentRound();
+      console.log('currentRound',currentRound);
+
       const amount = await TONStaker.connect(signer).calculClaimAmount(
         currentRound,
       );
-      const claimCounts = await TONStaker.connect(signer).totalClaimCounts();
       const claimDate =
         parseInt(currentRound) === 0
           ? vault.claim[parseInt(currentRound)].claimTime
@@ -56,10 +93,9 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
       const amountFormatted = parseInt(amount);
       setClaimTime(claimDate);
       setDistributable(amountFormatted);
-      console.log('currentRound', currentRound);
     }
     getLPToken();
-  }, [account, library]);
+  }, [account, library,transactionType, blockNumber]);
   const themeDesign = {
     border: {
       light: 'solid 1px #e6eaee',
@@ -187,7 +223,7 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
               h={'32px'}
               bg={'#257eee'}
               color={'#ffffff'}
-              disabled={false}
+              disabled={distributable <= 0}
               _disabled={{
                 color: colorMode === 'light' ? '#86929d' : '#838383',
                 bg: colorMode === 'light' ? '#e9edf1' : '#353535',
@@ -202,7 +238,8 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
                 background: '#2a72e5',
                 border: 'solid 1px #2a72e5',
                 color: '#fff',
-              }}>
+              }}
+              onClick={() => distribute()}>
               Distribute
             </Button>
           </GridItem>
@@ -220,7 +257,6 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
                 {momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()}
               </Text>
             </Flex>
-           
           </GridItem>
         </Flex>
       </Grid>
