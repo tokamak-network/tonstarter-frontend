@@ -18,7 +18,7 @@ const MyProjects = () => {
   const [projectsData, setProjectsData] = useState<any>([]);
   const dispatch = useAppDispatch();
   const {account} = useActiveWeb3React();
-
+const [projectsForTable, setProjectsForTable]= useState<any>()
   const datalll = [
     {
       name: 'Dragons of midgard',
@@ -52,6 +52,7 @@ const MyProjects = () => {
     if (data) {
       const {data: datas} = data;
       dispatch(fetchProjects({data: datas}));
+      setProjectsForTable(datas)
       const projs = Object.keys(datas).map((k) => {
         const stat = datas[k].vaults.every((vault: any) => {
           return vault.isSet === true;
@@ -133,6 +134,7 @@ const MyProjects = () => {
         </Text>
         <Box mt={'20px'}>
           <MyProjectTable
+          projects={projectsForTable}
             data={projectsData}
             columns={columns}
             isLoading={isLoading}

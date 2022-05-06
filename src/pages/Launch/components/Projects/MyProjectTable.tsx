@@ -35,12 +35,14 @@ type MyProjectTableProps = {
   columns: Column[];
   data: any;
   isLoading: boolean;
+  projects: any;
 };
 
 export const MyProjectTable: FC<MyProjectTableProps> = ({
   columns,
   data,
   isLoading,
+  projects,
 }) => {
   const {
     getTableProps,

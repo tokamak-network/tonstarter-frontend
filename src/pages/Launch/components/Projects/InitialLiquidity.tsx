@@ -1,4 +1,4 @@
-import {FC} from 'react';
+import {FC, useEffect} from 'react';
 import {
   Flex,
   Text,
@@ -8,9 +8,16 @@ import {
   useColorMode,
   Button,
 } from '@chakra-ui/react';
-
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import * as LiquidityIncentiveAbi from 'services/abis/LiquidityIncentiveAbi.json';
+import {DEPLOYED} from 'constants/index';
+import {Contract} from '@ethersproject/contracts';
+import InitialLiquidityAbi from 'services/abis/Vault_InitialLiquidity.json';
 import {shortenAddress} from 'utils/address';
 import commafy from 'utils/commafy';
+import {getSigner} from 'utils/contract';
+import InitialLiquidityComputeAbi from 'services/abis/Vault_InitialLiquidityCompute.json';
+
 type InitialLiquidity = {
   vault: any;
   project: any;
@@ -20,6 +27,25 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
+  const {account, library} = useActiveWeb3React();
+ 
+  const InitialLiquidityCompute = new Contract(
+    vault.vaultAddress,
+    InitialLiquidityComputeAbi.abi,
+    library,
+  );
+  
+  useEffect(() => {
+    async function getLPToken() {
+      if (account === null || account === undefined || library === undefined) {
+        return;
+      }
+      const signer = getSigner(library, account);
+      const LP = await InitialLiquidityCompute.connect(signer).lpToken();
+      console.log('LP',LP);
+    }
+    getLPToken()
+  }, [account, library]);
   // console.log('Initial Liquidity vault: ', vault);
 
   const themeDesign = {

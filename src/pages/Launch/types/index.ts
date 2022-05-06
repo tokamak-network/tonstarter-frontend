@@ -88,7 +88,7 @@ type VaultLiquidityIncentive = VaultCommon & {
   tokenPair: string | undefined;
 };
 
-type VaultAny = VaultDao | VaultPublic | VaultC | VaultLiquidityIncentive;
+type VaultAny =  VaultPublic |VaultDao | VaultC | VaultLiquidityIncentive;
 
 interface ProjectStep1 {
   projectName: string | undefined;
