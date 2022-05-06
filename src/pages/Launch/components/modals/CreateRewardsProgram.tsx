@@ -23,7 +23,7 @@ import useValues from '@Launch/hooks/useValues';
 import Line from '@Launch/components/common/Line';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {CustomSelectBox} from 'components/Basic';
-import { color } from 'd3';
+import {color} from 'd3';
 
 const CreateRewardsProgramModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -33,6 +33,33 @@ const CreateRewardsProgramModal = () => {
   const [selectVaultType, setSelectVaultType] = useState<
     'C' | 'DAO' | 'Liquidity Incentive'
   >('C');
+
+  const themeDesign = {
+    border: {
+      light: 'solid 1px #e6eaee',
+      dark: 'solid 1px #373737',
+    },
+    font: {
+      light: 'black.300',
+      dark: 'gray.475',
+    },
+    tosFont: {
+      light: '#2a72e5',
+      dark: 'black.100',
+    },
+    borderDashed: {
+      light: 'dashed 1px #dfe4ee',
+      dark: 'dashed 1px #535353',
+    },
+    buttonColorActive: {
+      light: 'gray.225',
+      dark: 'gray.0',
+    },
+    buttonColorInactive: {
+      light: '#c9d1d8',
+      dark: '#777777',
+    },
+  };
 
   return (
     <Modal
@@ -144,15 +171,23 @@ const CreateRewardsProgramModal = () => {
               fontSize={'14px'}
               w="150px"
               h="38px"
-              color={colorMode==='light'? '#3e495c': '#ffffff'}
+              color={colorMode === 'light' ? '#3e495c' : '#ffffff'}
               bg={'transparent'}
-              _hover={{bg: 'transparent'}}
-              border={
-                colorMode === 'light'
-                  ? '1px solid #dfe4ee'
-                  : '1px solid #535353'
-              }
-              onClick={()=> handleCloseModal()}>
+              alignItems={'center'}
+              border={themeDesign.border[colorMode]}
+              fontFamily={theme.fonts.fld}
+              _hover={{
+                background: 'transparent',
+                border: 'solid 1px #2a72e5',
+                color: themeDesign.font[colorMode],
+                cursor: 'pointer',
+              }}
+              _active={{
+                background: '#2a72e5',
+                border: 'solid 1px #2a72e5',
+                color: '#fff',
+              }}
+              onClick={() => handleCloseModal()}>
               Cancel
             </Button>
             <Button
@@ -161,7 +196,17 @@ const CreateRewardsProgramModal = () => {
               h="38px"
               bg={'#257eee'}
               color={'#ffffff'}
-              _hover={{bg: '#257eee'}}>
+              _hover={{
+                background: 'transparent',
+                border: 'solid 1px #2a72e5',
+                color: themeDesign.tosFont[colorMode],
+                cursor: 'pointer',
+              }}
+              _active={{
+                background: '#2a72e5',
+                border: 'solid 1px #2a72e5',
+                color: '#fff',
+              }}>
               Confirm
             </Button>
           </Box>
