@@ -35,7 +35,7 @@ export const WtonTosLpReward: FC<WtonTosLpReward> = ({vault, project}) => {
       dark: 'gray.475',
     },
     tosFont: {
-      light: 'gray.250',
+      light: '#2a72e5',
       dark: 'black.100',
     },
     borderDashed: {

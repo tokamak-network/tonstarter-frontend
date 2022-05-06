@@ -74,7 +74,7 @@ const LaunchPage = () => {
         <img
           alt={'banner-img'}
           src={LaunchPageBackground}
-          style={{height: '510px'}}
+          style={{height: '520px'}}
         />
         <Flex
           position={'absolute'}
@@ -112,22 +112,26 @@ const LaunchPage = () => {
           paddingX={'20%'}
           mb={'100px'}
           position={'absolute'}
-          bottom={'-20%'}
+          bottom={'-21%'}
           background={'rgba(7, 7, 10, .7)'}
           paddingY={'10px'}
           left={'50%'}
           transform={'translateX(-50%)'}>
-          <Flex alignItems={'center'} flexDir="column" width={'300px'}>
-            <Text color={'yellow'}>Total Staked</Text>
-            <Text color={'#fff'}>2,646,790.91 TON</Text>
+          <Flex
+            alignItems={'center'}
+            flexDir="column"
+            width={'550px'}
+            fontFamily={theme.fonts.fld}>
+            <Text color={'yellow'}>Raised Capital</Text>
+            <Text color={'#fff'}>$2,646,790.91</Text>
           </Flex>
-          <Flex alignItems={'center'} flexDir="column" width={'300px'}>
-            <Text color={'yellow'}>Total Value Locked</Text>
-            <Text color={'#fff'}>2,646,790.91 TON</Text>
-          </Flex>
-          <Flex alignItems={'center'} flexDir="column" width={'300px'}>
-            <Text color={'yellow'}>Total Staked</Text>
-            <Text color={'#fff'}>2,646,790.91 TON</Text>
+          <Flex
+            alignItems={'center'}
+            flexDir="column"
+            width={'550px'}
+            fontFamily={theme.fonts.fld}>
+            <Text color={'yellow'}>TOS pairs (in Uniswap)</Text>
+            <Text color={'#fff'}>50,000</Text>
           </Flex>
         </Flex>
       </Flex>
@@ -150,16 +154,17 @@ const LaunchPage = () => {
             borderRadius={'3px 0px 0px 3px'}
             fontSize={'14px'}
             fontFamily={theme.fonts.fld}
+            color={themeDesign.tosFont[colorMode]}
             _hover={{
               background: 'transparent',
               border: 'solid 1px #2a72e5',
-              color: '#ffffff',
+              color: themeDesign.tosFont[colorMode],
               cursor: 'pointer',
             }}
             _active={{
               background: '#2a72e5',
               border: 'solid 1px #2a72e5',
-              color: '#ffffff',
+              color: '#fff',
             }}
             onClick={() => {
               setShowAllProjects(true);
@@ -175,16 +180,17 @@ const LaunchPage = () => {
             borderRadius={'0px 3px 3px 0px'}
             fontSize={'14px'}
             fontFamily={theme.fonts.fld}
+            color={themeDesign.tosFont[colorMode]}
             _hover={{
               background: 'transparent',
               border: 'solid 1px #2a72e5',
-              color: '#ffffff',
+              color: themeDesign.tosFont[colorMode],
               cursor: 'pointer',
             }}
             _active={{
               background: '#2a72e5',
               border: 'solid 1px #2a72e5',
-              color: '#ffffff',
+              color: '#fff',
             }}
             onClick={() => {
               setShowAllProjects(false);
