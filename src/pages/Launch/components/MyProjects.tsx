@@ -71,6 +71,7 @@ const [projectsForTable, setProjectsForTable]= useState<any>()
           whiteList: datas[k].vaults[0].whitelist,
           public2End: datas[k].vaults[0].publicRound2End,
           status: stat,
+          project: datas[k]
         };
       });
       const MyProjs = projs.filter((pro: any) => pro.owner === account);

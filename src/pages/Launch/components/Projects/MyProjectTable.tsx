@@ -76,6 +76,11 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
       </Flex>
     );
   }
+
+  const printProject = (project: any) => {
+    console.log(project);
+    
+  }
   return (
     <Flex w="1102px" flexDir={'column'}>
       <Flex>
@@ -172,7 +177,8 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                       saleDate,
                       status,
                       action,
-                      key
+                      key,
+                      project
                     } = cell.row.original;
                     const type = cell.column.id;
                     return (
@@ -235,7 +241,8 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                               fontWeight={'normal'}
                               fontSize={'12px'}
                               _hover={{bg: '#257eee'}}
-                              _active={{bg: '#257eee'}}>
+                              _active={{bg: '#257eee'}}
+                              onClick={()=> printProject(project)}>
                               List on TONStarter
                             </Button>
                           ) : status === false ? (
