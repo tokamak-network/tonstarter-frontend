@@ -25,8 +25,6 @@ type VaultComponent = {
 
 const TabComponent = (props: {project: any; vault: string; index: number}) => {
   const {project, vault, index} = props;
-  console.log('project: ', project);
-
   switch (vault) {
     case 'Public':
       return (

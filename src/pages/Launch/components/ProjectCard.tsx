@@ -39,9 +39,6 @@ const ProjectCard: React.FC<{
     '',
     'PUBLIC_SALE',
   );
-
-  console.log('projectproject', project);
-
   const now = moment().unix();
 
   useEffect(() => {

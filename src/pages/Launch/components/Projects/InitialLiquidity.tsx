@@ -17,7 +17,10 @@ import {shortenAddress} from 'utils/address';
 import commafy from 'utils/commafy';
 import {getSigner} from 'utils/contract';
 import InitialLiquidityComputeAbi from 'services/abis/Vault_InitialLiquidityCompute.json';
-
+import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
+import {convertNumber} from 'utils/number';
+import {ethers} from 'ethers';
+const {TOS_ADDRESS} = DEPLOYED;
 type InitialLiquidity = {
   vault: any;
   project: any;
@@ -29,13 +32,17 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
   const [disableButton, setDisableButton] = useState<boolean>(true);
 
   const {account, library} = useActiveWeb3React();
-
+  const [tosBalance, setTosBalance] = useState<string>('');
+  const [projTokenBalance, setProjTokenBalance] = useState<string>('');
   const InitialLiquidityCompute = new Contract(
     vault.vaultAddress,
     InitialLiquidityComputeAbi.abi,
     library,
   );
 
+  const TOS = new Contract(TOS_ADDRESS, ERC20.abi, library);
+
+  const projectToken = new Contract(project.tokenAddress, ERC20.abi, library);
   useEffect(() => {
     async function getLPToken() {
       if (account === null || account === undefined || library === undefined) {
@@ -43,7 +50,11 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
       }
       const signer = getSigner(library, account);
       const LP = await InitialLiquidityCompute.connect(signer).lpToken();
-      console.log('LP', LP);
+
+      const tosBal = await TOS.balanceOf(vault.vaultAddress);
+      const tokBalance = await projectToken.balanceOf(vault.vaultAddress);
+      setTosBalance(ethers.utils.formatEther(tosBal))
+      setProjTokenBalance(ethers.utils.formatEther(tokBalance))
     }
     getLPToken();
   }, [account, library]);
@@ -190,8 +201,8 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
           borderBottom={'none'}
           className={'chart-cell no-border-bottom'}>
           <Text fontFamily={theme.fonts.fld}>Increase Liquidity</Text>
-          <Text fontFamily={theme.fonts.fld}>10,000,000</Text>
-          <Text fontFamily={theme.fonts.fld}>10,000,000</Text>
+          <Text fontFamily={theme.fonts.fld}>{commafy(Number(projTokenBalance))}</Text>
+          <Text fontFamily={theme.fonts.fld}>{commafy(Number(tosBalance))}</Text>
           <Button
             w={'100px'}
             bg={'#257eee'}
@@ -206,6 +217,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
               bg: colorMode === 'light' ? '#e9edf1' : '#353535',
               cursor: 'not-allowed',
             }}
+            disabled={(Number(projTokenBalance)!==0) || (Number(tosBalance)!==0)}
             _hover={
               // I set !disableButton just for UI testing purposes. Revert to disableButton (or any condition) to disable _hover and _active styles.
               !disableButton
@@ -225,7 +237,8 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
                     border: 'solid 1px #2a72e5',
                     color: '#fff',
                   }
-            }>
+            }
+           >
             Increase
           </Button>
         </GridItem>
