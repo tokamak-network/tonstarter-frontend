@@ -17,6 +17,8 @@ export const DAO: FC<DAO> = ({vault, project}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const [claimValue, setClaimValue] = useState(0);
+  const [disableButton, setDisableButton] = useState<boolean>(true);
+
   const themeDesign = {
     border: {
       light: 'solid 1px #e6eaee',
@@ -153,23 +155,32 @@ export const DAO: FC<DAO> = ({vault, project}) => {
               w={'100px'}
               h={'32px'}
               bg={'#257eee'}
-              disabled={false}
+              disabled={disableButton}
               color={'#fff'}
-              _hover={{
-                background: 'transparent',
-                border: 'solid 1px #2a72e5',
-                color: themeDesign.tosFont[colorMode],
-                cursor: 'pointer',
-              }}
-              _active={{
-                background: '#2a72e5',
-                border: 'solid 1px #2a72e5',
-                color: '#fff',
-              }}
               _disabled={{
                 color: colorMode === 'light' ? '#86929d' : '#838383',
                 bg: colorMode === 'light' ? '#e9edf1' : '#353535',
-              }}>
+                cursor: 'not-allowed',
+              }}
+              _hover={
+                disableButton
+                  ? {}
+                  : {
+                      background: 'transparent',
+                      border: 'solid 1px #2a72e5',
+                      color: themeDesign.tosFont[colorMode],
+                      cursor: 'pointer',
+                    }
+              }
+              _active={
+                disableButton
+                  ? {}
+                  : {
+                      background: '#2a72e5',
+                      border: 'solid 1px #2a72e5',
+                      color: '#fff',
+                    }
+              }>
               Claim
             </Button>
           </GridItem>

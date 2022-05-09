@@ -26,6 +26,33 @@ const DownloadModal = () => {
   const {handleCloseModal} = useModal();
   const participantList = [];
   const [selectedValue, setSelectedValue] = useState<string>('Option 1');
+
+  const themeDesign = {
+    border: {
+      light: 'solid 1px #e6eaee',
+      dark: 'solid 1px #373737',
+    },
+    font: {
+      light: 'black.300',
+      dark: 'gray.475',
+    },
+    tosFont: {
+      light: '#2a72e5',
+      dark: 'black.100',
+    },
+    borderDashed: {
+      light: 'dashed 1px #dfe4ee',
+      dark: 'dashed 1px #535353',
+    },
+    buttonColorActive: {
+      light: 'gray.225',
+      dark: 'gray.0',
+    },
+    buttonColorInactive: {
+      light: '#c9d1d8',
+      dark: '#777777',
+    },
+  };
   return (
     <Modal
       isOpen={data.modal === 'Launch_Download' ? true : false}
@@ -81,10 +108,18 @@ const DownloadModal = () => {
               <option value="option2">Option 2</option>
               <option value="option3">Option 3</option>
             </Select>
-            <Text mb={'5px'} fontSize={'13px'}>Participants List</Text>
-            <Checkbox fontWeight={'bold'} fontSize={'14px'} h={'45px'}>Whitelisted</Checkbox>
-            <Checkbox fontWeight={600} fontSize={'14px'} h={'45px'}>Public Round 1</Checkbox>
-            <Checkbox fontWeight={600} fontSize={'14px'} h={'45px'}>Public Round 2</Checkbox>
+            <Text mb={'5px'} fontSize={'13px'}>
+              Participants List
+            </Text>
+            <Checkbox fontWeight={'bold'} fontSize={'14px'} h={'45px'}>
+              Whitelisted
+            </Checkbox>
+            <Checkbox fontWeight={600} fontSize={'14px'} h={'45px'}>
+              Public Round 1
+            </Checkbox>
+            <Checkbox fontWeight={600} fontSize={'14px'} h={'45px'}>
+              Public Round 2
+            </Checkbox>
           </Flex>
 
           <Box
@@ -107,12 +142,20 @@ const DownloadModal = () => {
               h="38px"
               color={colorMode === 'light' ? '#3e495c' : '#ffffff'}
               bg={'transparent'}
-              _hover={{bg: 'transparent'}}
-              border={
-                colorMode === 'light'
-                  ? '1px solid #dfe4ee'
-                  : '1px solid #535353'
-              }
+              alignItems={'center'}
+              border={themeDesign.border[colorMode]}
+              fontFamily={theme.fonts.fld}
+              _hover={{
+                background: 'transparent',
+                border: 'solid 1px #2a72e5',
+                color: themeDesign.font[colorMode],
+                cursor: 'pointer',
+              }}
+              _active={{
+                background: '#2a72e5',
+                border: 'solid 1px #2a72e5',
+                color: '#fff',
+              }}
               onClick={() => handleCloseModal()}>
               Cancel
             </Button>
@@ -122,7 +165,17 @@ const DownloadModal = () => {
               h="38px"
               bg={'#257eee'}
               color={'#ffffff'}
-              _hover={{bg: '#257eee'}}>
+              _hover={{
+                background: 'transparent',
+                border: 'solid 1px #2a72e5',
+                color: themeDesign.tosFont[colorMode],
+                cursor: 'pointer',
+              }}
+              _active={{
+                background: '#2a72e5',
+                border: 'solid 1px #2a72e5',
+                color: '#fff',
+              }}>
               Download
             </Button>
           </Box>
