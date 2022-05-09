@@ -58,7 +58,6 @@ const ProjectScreen = () => {
     },
   };
 
-  console.log('projects', projects);
   useEffect(() => {
     dispatch(setHashKey({data: isExist === 'project' ? undefined : isExist}));
   }, []);

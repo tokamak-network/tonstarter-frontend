@@ -36,7 +36,7 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
   const [distributable, setDistributable] = useState<number>(0);
   const [claimTime, setClaimTime] = useState<number>(0);
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
-
+  const [distributeDisable, setDistributeDisable] = useState<boolean>(true);
   const TOSStaker = new Contract(
     vault.vaultAddress,
     TOSStakerInitializeAbi.abi,
@@ -78,17 +78,27 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
       }
       const signer = getSigner(library, account);
       const currentRound = await TOSStaker.connect(signer).currentRound();
-
+      const nowClaimRound = await TOSStaker.connect(signer).nowClaimRound();
+      console.log('nowClaimRound', nowClaimRound);
+      console.log('currentRound', currentRound);
       const amount = await TOSStaker.connect(signer).calculClaimAmount(
         currentRound,
       );
-      const claimDate =
-        parseInt(currentRound) === 0
-          ? vault.claim[parseInt(currentRound)].claimTime
-          : vault.claim[parseInt(currentRound) - 1].claimTime;
+      const disabled = Number(nowClaimRound) >= Number(currentRound);
+      const claimDate = await TOSStaker.connect(signer).claimTimes(0);
       const amountFormatted = parseInt(amount);
-      setClaimTime(claimDate);
+      // setClaimTime(claimDate);
       setDistributable(amountFormatted);
+      setDistributeDisable(disabled);
+      const thursday = 4;
+      const currentDay = moment.unix(claimDate).isoWeekday();
+      if (currentDay < thursday) {
+        setClaimTime(moment.unix(claimDate).isoWeekday(thursday).unix());
+      } else {
+        setClaimTime(
+          moment.unix(claimDate).add(1, 'weeks').isoWeekday(thursday).unix(),
+        );
+      }
     }
     getLPToken();
   }, [account, library, transactionType, blockNumber]);

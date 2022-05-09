@@ -38,6 +38,7 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
   const [distributable, setDistributable] = useState<number>(0);
   const [claimTime, setClaimTime] = useState<number>(0);
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
+  const [distributeDisable, setDistributeDisable] = useState<boolean>(true);
   const TONStaker = new Contract(
     vault.vaultAddress,
     TONStakerInitializeAbi.abi,
@@ -81,17 +82,16 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
       }
       const signer = getSigner(library, account);
       const currentRound = await TONStaker.connect(signer).currentRound();
-      console.log('currentRound', currentRound);
-
       const amount = await TONStaker.connect(signer).calculClaimAmount(
         currentRound,
       );
-      const claimDate =
-        parseInt(currentRound) === 0
-          ? vault.claim[parseInt(currentRound)].claimTime
-          : vault.claim[parseInt(currentRound) - 1].claimTime;
+      const nowClaimRound = await TONStaker.connect(signer).nowClaimRound()
+      const disabled = Number(nowClaimRound) >= Number(currentRound);
+
+      const claimdDate = await TONStaker.connect(signer).claimTimes(0);    
+      setDistributeDisable(disabled)
       const amountFormatted = parseInt(amount);
-      setClaimTime(claimDate);
+      setClaimTime(claimdDate);
       setDistributable(amountFormatted);
     }
     getLPToken();
@@ -223,14 +223,14 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
               h={'32px'}
               bg={'#257eee'}
               color={'#ffffff'}
-              isDisabled={distributable <= 0}
+              isDisabled={distributeDisable}
               _disabled={{
                 color: colorMode === 'light' ? '#86929d' : '#838383',
                 bg: colorMode === 'light' ? '#e9edf1' : '#353535',
                 cursor: 'not-allowed',
               }}
               _hover={
-                distributable <= 0
+                distributeDisable
                   ? {}
                   : {
                       background: 'transparent',
@@ -240,7 +240,7 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
                     }
               }
               _active={
-                distributable <= 0
+                distributeDisable
                   ? {}
                   : {
                       background: '#2a72e5',
@@ -258,13 +258,14 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
             fontFamily={theme.fonts.fld}
             borderBottomRightRadius={'4px'}>
             <Flex flexDir={'column'}>
-              <Text color={colorMode === 'light' ? '#9d9ea5' : '#7e8993'}>
+              {!distributeDisable ? <> <Text color={colorMode === 'light' ? '#9d9ea5' : '#7e8993'}>
                 You can distribute on
               </Text>
               <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
                 {moment.unix(claimTime).format('MMM, DD, yyyy HH:mm:ss')}{' '}
                 {momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()}
-              </Text>
+              </Text></>: <></>}
+             
             </Flex>
           </GridItem>
         </Flex>
