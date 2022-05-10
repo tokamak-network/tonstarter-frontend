@@ -30,6 +30,7 @@ import {
   useSortBy,
 } from 'react-table';
 import {number} from 'prop-types';
+import saveToAdmin from '@Launch/utils/saveToAdmin';
 
 type MyProjectTableProps = {
   columns: Column[];
@@ -77,10 +78,6 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
     );
   }
 
-  const printProject = (project: any) => {
-    console.log(project);
-    
-  }
   return (
     <Flex w="1102px" flexDir={'column'}>
       <Flex>
@@ -170,7 +167,7 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                   display="flex"
                   alignItems="center"
                   {...row.getRowProps()}>
-                  {row.cells.map((cell: any, index: number) => {                    
+                  {row.cells.map((cell: any, index: number) => {
                     const {
                       name,
                       tokenName,
@@ -180,7 +177,7 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                       status,
                       action,
                       key,
-                      project
+                      project,
                     } = cell.row.original;
                     const type = cell.column.id;
                     return (
@@ -215,10 +212,16 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                         p={0}
                         textAlign="center"
                         {...cell.getCellProps()}>
-                        {type === 'name' && (
-                          status === true ? 
-                         <Link to={`${url}/project/${name}`}><Text _hover={{textDecor:'underline'}}>{name}</Text> </Link>:  <Text>{name}</Text>
-                        )}
+                        {type === 'name' &&
+                          (status === true ? (
+                            <Link to={`${url}/project/${name}`}>
+                              <Text _hover={{textDecor: 'underline'}}>
+                                {name}
+                              </Text>{' '}
+                            </Link>
+                          ) : (
+                            <Text>{name}</Text>
+                          ))}
                         {type === 'tokenName' && tokenName}
                         {type === 'tokenSymbol' && tokenSymbol}
                         {type === 'totalSupply' &&
@@ -234,22 +237,20 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                         {type === 'status' &&
                           (status === true ? 'Deployed' : 'Not Deployed')}
                         {type === 'action' &&
-                          (
-                            // status === true ? (
-                          //   <Button
-                          //     w={'136px'}
-                          //     h={'25px'}
-                          //     bg={'#257eee'}
-                          //     color={'#ffffff'}
-                          //     fontWeight={'normal'}
-                          //     fontSize={'12px'}
-                          //     _hover={{bg: '#257eee'}}
-                          //     _active={{bg: '#257eee'}}
-                          //     onClick={()=> printProject(project)}>
-                          //     List on TONStarter
-                          //   </Button>
-                          // ) :
-                           status === true ? (
+                          (status === true ? (
+                            <Button
+                              w={'136px'}
+                              h={'25px'}
+                              bg={'#257eee'}
+                              color={'#ffffff'}
+                              fontWeight={'normal'}
+                              fontSize={'12px'}
+                              _hover={{bg: '#257eee'}}
+                              _active={{bg: '#257eee'}}
+                              onClick={() => saveToAdmin(project)}>
+                              List on TONStarter
+                            </Button>
+                          ) : status === false ? (
                             <Link to={`${url}/${key}`}>
                               <Button
                                 w={'136px'}

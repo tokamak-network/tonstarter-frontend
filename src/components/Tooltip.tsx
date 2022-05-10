@@ -10,6 +10,7 @@ type CustomTooltipProp = {
   fontSize?: string;
   placement?: Placement;
   children?: React.ReactNode;
+  style?: {};
 };
 
 const tooltipMsg = (msg: CustomTooltipProp['msg']) => {
@@ -25,7 +26,7 @@ const tooltipMsg = (msg: CustomTooltipProp['msg']) => {
 };
 
 export const CustomTooltip = (prop: CustomTooltipProp) => {
-  const {component, toolTipW, toolTipH, msg, fontSize, placement} = prop;
+  const {component, toolTipW, toolTipH, msg, fontSize, placement, style} = prop;
   const theme = useTheme();
 
   return (
@@ -40,7 +41,8 @@ export const CustomTooltip = (prop: CustomTooltipProp) => {
       bg={theme.colors.gray[375]}
       p={0}
       borderRadius={3}
-      fontSize={fontSize || '12px'}>
+      fontSize={fontSize || '12px'}
+      {...style}>
       {component || <img src={tooltipIcon} alt="tooltip icon" />}
     </Tooltip>
   );

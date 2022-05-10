@@ -187,6 +187,7 @@ const ConfirmTokenModal = () => {
   function closeModal() {
     setDeployStep('Ready');
     handleCloseModal();
+    setTab(1);
     close();
   }
 

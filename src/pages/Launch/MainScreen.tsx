@@ -8,15 +8,13 @@ import ProjectSchema from '@Launch/utils/projectSchema';
 import {PageHeader} from 'components/PageHeader';
 import Steps from '@Launch/components/Steps';
 import OpenStepTwo from '@Launch/components/OpenStepTwo';
-import {useRouteMatch} from 'react-router-dom';
+import {useRouteMatch, useHistory} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {selectLaunch, setHashKey} from '@Launch/launch.reducer';
 import OpenStepThree from '@Launch/components/OpenStepThree';
 import validateFormikValues from '@Launch/utils/validate';
-import {useHistory} from 'react-router-dom';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {saveProject, editProject} from '@Launch/utils/saveProject';
-
 const StepComponent = (props: {step: StepNumber}) => {
   const {step} = props;
   switch (step) {
@@ -43,8 +41,8 @@ const MainScreen = () => {
   const match = useRouteMatch();
   const {url} = match;
   const isExist = url.split('/')[2];
-  const dispatch = useAppDispatch();
 
+  const dispatch = useAppDispatch();
   const {
     //@ts-ignore
     params: {id},
@@ -54,6 +52,10 @@ const MainScreen = () => {
   } = useAppSelector(selectLaunch);
 
   let historyObj = useHistory();
+
+  const handleOnCofirm = useCallback(() => {
+    historyObj.push('/launch');
+  }, [historyObj]);
 
   useEffect(() => {
     //@ts-ignore
@@ -223,7 +225,9 @@ const MainScreen = () => {
                         bg={isDisableForStep3 ? '#gray.25' : 'blue.500'}
                         disabled={isDisableForStep3}
                         _hover={{}}
-                        onClick={() => handleStep(true)}>
+                        onClick={() => {
+                          handleOnCofirm();
+                        }}>
                         Confirm
                       </Button>
                     )}
