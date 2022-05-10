@@ -567,7 +567,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                     await InitialLiquidity_Contract.createdContracts(
                       valutIndex,
                     );
-                  console.log(vault.contractAddress);
+                  console.log(vault);
                   console.log(values.vaults[1].vaultAddress);
                   if (vault.contractAddress === values.vaults[1].vaultAddress) {
                     break;

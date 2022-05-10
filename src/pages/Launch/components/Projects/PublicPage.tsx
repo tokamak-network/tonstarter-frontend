@@ -146,6 +146,7 @@ useEffect(() => {
             border={themeDesign.border[colorMode]}
             borderRight={'none'}
             borderBottom={'none'}
+            borderTopLeftRadius={'4px'}
             className={'chart-cell'}
             fontSize={'16px'}
             justifyContent={'space-between'}>
@@ -271,21 +272,7 @@ useEffect(() => {
                   vault.hardCap,
                 )}  ${project.tokenSymbol}`}</Text>
               </GridItem>
-              <GridItem
-                border={themeDesign.border[colorMode]}
-                borderRight={'none'}
-                borderBottom={'none'}
-                className={'chart-cell'}
-                justifyContent={'space-between'}>
-                <Text
-                  fontFamily={theme.fonts.fld}
-                  color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
-                  Addres for receiving funds
-                </Text>
-                <Text fontFamily={theme.fonts.fld}>
-                  {shortenAddress(vault.addressForReceiving)}
-                </Text>
-              </GridItem>
+             
               <GridItem
                 border={themeDesign.border[colorMode]}
                 borderRight={'none'}
@@ -305,6 +292,7 @@ useEffect(() => {
                 border={themeDesign.border[colorMode]}
                 borderRight={'none'}
                 className={'chart-cell'}
+                borderBottom={'none'}
                 justifyContent={'space-between'}>
                 <Text
                   fontFamily={theme.fonts.fld}
@@ -314,6 +302,63 @@ useEffect(() => {
                 <Text fontFamily={theme.fonts.fld}>
                   {shortenAddress(vault.vaultAddress)}
                 </Text>
+              </GridItem>
+              <GridItem
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+               borderBottomLeftRadius={'4px'}
+                className={'chart-cell'}
+                h={now >= vault.publicRound2 ?'95px': ''}
+                justifyContent={'space-between'}>
+                  <Flex flexDir={'column'}>
+                    <Flex w={'273px'} justifyContent={'space-between'}>
+                <Text
+                  fontFamily={theme.fonts.fld}
+                  color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                  Address for receiving funds
+                </Text>
+                <Text fontFamily={theme.fonts.fld}>
+                  {shortenAddress(vault.addressForReceiving)}
+                </Text>
+                </Flex>
+                {now >= vault.publicRound2 ? <>
+                    <Button
+                  fontSize={'11px'}
+                  w={'273px'}
+                  h={'25px'}
+                  mt={'5px'}
+                  bg={'#257eee'}
+                  color={'#ffffff'}
+                  isDisabled={!isAdmin}
+                  _disabled={{
+                    color: colorMode === 'light' ? '#86929d' : '#838383',
+                    bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+                    cursor: 'not-allowed',
+                  }}
+                  _hover={
+                    !isAdmin
+                      ? {}
+                      : {
+                          background: 'transparent',
+                          border: 'solid 1px #2a72e5',
+                          color: themeDesign.tosFont[colorMode],
+                          cursor: 'pointer',
+                        }
+                  }
+                  _active={
+                    !isAdmin
+                      ? {}
+                      : {
+                          background: '#2a72e5',
+                          border: 'solid 1px #2a72e5',
+                          color: '#fff',
+                        }
+                  }
+                  
+                  onClick={() => sendTOS()}>
+                Send TOS to Initial Liquidity Vault & Receive Funds
+                </Button></>: <></>}
+                </Flex>
               </GridItem>
             </>
           ) : (
@@ -443,44 +488,6 @@ useEffect(() => {
                 borderRight={'none'}
                 borderBottom={'none'}
                 className={'chart-cell'}>
-                  {now >= vault.publicRound2 ? <>
-                    <Button
-                  fontSize={'13px'}
-                  w={'200px'}
-                  h={'42px'}
-                  bg={'#257eee'}
-                  color={'#ffffff'}
-                  isDisabled={!isAdmin}
-                  _disabled={{
-                    color: colorMode === 'light' ? '#86929d' : '#838383',
-                    bg: colorMode === 'light' ? '#e9edf1' : '#353535',
-                    cursor: 'not-allowed',
-                  }}
-                  _hover={
-                    !isAdmin
-                      ? {}
-                      : {
-                          background: 'transparent',
-                          border: 'solid 1px #2a72e5',
-                          color: themeDesign.tosFont[colorMode],
-                          cursor: 'pointer',
-                        }
-                  }
-                  _active={
-                    !isAdmin
-                      ? {}
-                      : {
-                          background: '#2a72e5',
-                          border: 'solid 1px #2a72e5',
-                          color: '#fff',
-                        }
-                  }
-                  wordBreak={'break-word'}
-                  whiteSpace={'normal'}
-                  onClick={() => sendTOS()}>
-                 Send TOS to Initial Liquidity Vault & Receive Funds
-                </Button></>: <></>}
-               
               </GridItem>
               <GridItem
                 border={themeDesign.border[colorMode]}
@@ -490,7 +497,8 @@ useEffect(() => {
               <GridItem
                 border={themeDesign.border[colorMode]}
                 className={'chart-cell'}
-                mr={'-1px'}>
+                mr={'-1px'}
+                h={now >= vault.publicRound2 ?'95px': ''}>
                 <Text fontFamily={theme.fonts.fld}>{''}</Text>
               </GridItem>
             </>
@@ -526,6 +534,8 @@ useEffect(() => {
           <GridItem
             border={themeDesign.border[colorMode]}
             borderBottom={'none'}
+            borderTopRadius={'4px'}
+
             className={'chart-cell'}
             fontSize={'16px'}
             justifyContent={'space-between'}>
@@ -595,7 +605,10 @@ useEffect(() => {
                 return (
                   <GridItem
                     border={themeDesign.border[colorMode]}
+                    key={i}
+                    borderBottomRightRadius={i===(6 - sTosTier.length-1)? '4px': 'none'}
                     borderTop="none"
+                    h={now >= vault.publicRound2 ? i===(6 - sTosTier.length-1)?'94px': '': ''}
                     borderLeft={'none'}
                     className={'chart-cell'}>
                     <Text fontFamily={theme.fonts.fld}>{''}</Text>
@@ -622,7 +635,8 @@ useEffect(() => {
                 border={themeDesign.border[colorMode]}
                 className={'chart-cell'}
                 fontSize={'16px'}
-                borderTop={'none'}></GridItem>
+                borderTop={'none'}
+                ></GridItem>
             </>
           )}
         </Flex>

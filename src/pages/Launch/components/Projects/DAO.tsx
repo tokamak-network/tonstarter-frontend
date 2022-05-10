@@ -163,7 +163,7 @@ async function claim() {
             </Text>
             {vault.isDeployed ? (
               <Text>
-                {Number(projTokenBalance).toLocaleString()}
+                {Number(vault.vaultTokenAllocation).toLocaleString()}
                 {` `}
                 {project.tokenSymbol}
               </Text>
@@ -226,7 +226,7 @@ async function claim() {
                 className={'chart-cell'}
                 fontFamily={theme.fonts.fld}
                 justifyContent={'flex-start'}>
-                <Text mr={'10px'}>Amount</Text>
+                <Text mr={'38px'} w={'58px'}>Claim Amount</Text>
                 <Flex
                   borderRadius={'4px'}
                   w={'240px'}
@@ -247,7 +247,7 @@ async function claim() {
                       setClaimValue(Number(e.target.value))
                     }></Input>
                   {vault.isDeployed ? (
-                    <Text
+                    <Text 
                       mr={'15px'}
                       color={colorMode === 'light' ? '#86929d' : '#818181'}>
                       {project.tokenSymbol}
@@ -256,6 +256,15 @@ async function claim() {
                     <></>
                   )}
                 </Flex>
+                <Flex flexDir={'row'} fontSize={'11px'}>Balance : {vault.isDeployed ? (
+              <Text ml={'2px'} color={'#0070ed'}>
+                {Number(projTokenBalance).toLocaleString()}
+                {` `}
+                {project.tokenSymbol}
+              </Text>
+            ) : (
+              <></>
+            )}</Flex>
               </GridItem>
               <GridItem
                 border={themeDesign.border[colorMode]}
@@ -263,7 +272,7 @@ async function claim() {
                 fontFamily={theme.fonts.fld}
                 justifyContent={'flex-start'}
                 borderBottomRightRadius={'4px'}>
-                <Text mr={'10px'}>Address</Text>
+                <Text mr={'38px'} w={'58px'}>Address</Text>
                 <Flex
                   borderRadius={'4px'}
                   w={'240px'}
@@ -275,6 +284,7 @@ async function claim() {
                   <Input
                     border={'none'}
                     h={'32px'}
+                    w={'240px'}
                     textAlign={'right'}
                     alignItems={'center'}
                     value={claimAddress}

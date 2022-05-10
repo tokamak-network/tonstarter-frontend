@@ -37,6 +37,8 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
   const {account, library} = useActiveWeb3React();
   const [distributable, setDistributable] = useState<number>(0);
   const [claimTime, setClaimTime] = useState<number>(0);
+  const [showDate, setShowDate] = useState<boolean>(false)
+
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [distributeDisable, setDistributeDisable] = useState<boolean>(true);
   const TONStaker = new Contract(
@@ -45,7 +47,28 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
     library,
   );
   // console.log('tonstaker vault: ', vault);
-
+  useEffect(() => {
+    async function getLPToken() {
+      if (account === null || account === undefined || library === undefined) {
+        return;
+      }
+      const now = moment().unix();
+      const signer = getSigner(library, account);
+      const currentRound = await TONStaker.connect(signer).currentRound();
+      const nowClaimRound = await TONStaker.connect(signer).nowClaimRound()
+      const amount = await TONStaker.connect(signer).calculClaimAmount(
+        currentRound,
+      );
+      const totalClaimCount = await TONStaker.connect(signer).totalClaimCounts();
+      setDistributeDisable(Number(nowClaimRound) >= Number(currentRound))
+      const disabled = Number(nowClaimRound) >= Number(currentRound);
+      const claimDate = Number(currentRound) === Number(totalClaimCount)? await TONStaker.connect(signer).claimTimes(Number(currentRound)-1) :  await TONStaker.connect(signer).claimTimes(currentRound);      const amountFormatted = parseInt(amount);
+      setShowDate(amountFormatted === 0  && Number(claimDate) > now);
+      setClaimTime(claimDate);
+      setDistributable(amountFormatted);
+    }
+    getLPToken();
+  }, [account, library, transactionType, blockNumber]);
   async function distribute() {
     if (account === null || account === undefined || library === undefined) {
       return;
@@ -75,27 +98,7 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
     }
   }
 
-  useEffect(() => {
-    async function getLPToken() {
-      if (account === null || account === undefined || library === undefined) {
-        return;
-      }
-      const signer = getSigner(library, account);
-      const currentRound = await TONStaker.connect(signer).currentRound();
-      const amount = await TONStaker.connect(signer).calculClaimAmount(
-        currentRound,
-      );
-      const nowClaimRound = await TONStaker.connect(signer).nowClaimRound()
-      const disabled = Number(nowClaimRound) >= Number(currentRound);
 
-      const claimdDate = await TONStaker.connect(signer).claimTimes(0);    
-      setDistributeDisable(disabled)
-      const amountFormatted = parseInt(amount);
-      setClaimTime(claimdDate);
-      setDistributable(amountFormatted);
-    }
-    getLPToken();
-  }, [account, library, transactionType, blockNumber]);
   const themeDesign = {
     border: {
       light: 'solid 1px #e6eaee',
@@ -258,7 +261,7 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
             fontFamily={theme.fonts.fld}
             borderBottomRightRadius={'4px'}>
             <Flex flexDir={'column'}>
-              {!distributeDisable ? <> <Text color={colorMode === 'light' ? '#9d9ea5' : '#7e8993'}>
+              {showDate ? <> <Text color={colorMode === 'light' ? '#9d9ea5' : '#7e8993'}>
                 You can distribute on
               </Text>
               <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>

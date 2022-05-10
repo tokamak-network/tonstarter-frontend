@@ -43,8 +43,7 @@ export const Custom: FC<Custom> = ({vault, project}) => {
   const [distributeDisable, setDistributeDisable] = useState<boolean>(true);
   const vaultC = new Contract(vault.vaultAddress, VaultCLogicAbi.abi, library);
   const [claimAddress, setClaimAddress] = useState<string>('');
-
-  // console.log('tonstaker vault: ', vault);
+  const [showDate, setShowDate] = useState<boolean>(false);
 
   async function claim() {
     if (account === null || account === undefined || library === undefined) {
@@ -80,21 +79,28 @@ export const Custom: FC<Custom> = ({vault, project}) => {
       if (account === null || account === undefined || library === undefined) {
         return;
       }
+      const now = moment().unix();
       const signer = getSigner(library, account);
       const currentRound = await vaultC.connect(signer).currentRound();
-      const amount = await vaultC.connect(signer).calcalClaimAmount(currentRound);
-      const nowClaimRound = await vaultC.connect(signer).nowClaimRound()
-      //   const disabled = Number(nowClaimRound) >= Number(currentRound);
-    const claimCounts = await vaultC.connect(signer).totalClaimCounts();
-    console.log('claimCounts', claimCounts);
-    
-        // const claimdDate = await vaultC.connect(signer).claimTimes(0);
-        console.log(nowClaimRound);
-        
-      //   setDistributeDisable(disabled)
-      //   const amountFormatted = parseInt(amount);
-      //   setClaimTime(claimdDate);
-      //   setDistributable(amountFormatted);
+      const amount = await vaultC
+        .connect(signer)
+        .calcalClaimAmount(currentRound);
+      console.log('amount', amount);
+
+      const nowClaimRound = await vaultC.connect(signer).nowClaimRound();
+      const disabled = Number(nowClaimRound) >= Number(currentRound);
+      const claimCounts = await vaultC.connect(signer).totalClaimCounts();
+
+      // const claimDate = await vaultC.connect(signer).claimTimes(currentRound);
+      const claimDate =
+      Number(currentRound) === Number(claimCounts)
+        ? await vaultC.connect(signer).claimTimes(Number(currentRound) - 1)
+        : await vaultC.connect(signer).claimTimes(currentRound);
+      setDistributeDisable(Number(nowClaimRound) >= Number(currentRound) || !ethers.utils.isAddress(claimAddress));
+      const amountFormatted = parseInt(amount);
+      setShowDate(amountFormatted === 0 && Number(claimDate) > now);
+      setClaimTime(claimDate);
+      setDistributable(amountFormatted);
     }
     getLPToken();
   }, [account, library, transactionType, blockNumber]);
@@ -174,8 +180,7 @@ export const Custom: FC<Custom> = ({vault, project}) => {
             borderRight={'none'}
             className={'chart-cell'}
             fontFamily={theme.fonts.fld}
-            borderBottom={'none'}
-           >
+            borderBottom={'none'}>
             <Text
               w={'81px'}
               color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
@@ -190,9 +195,7 @@ export const Custom: FC<Custom> = ({vault, project}) => {
             borderRight={'none'}
             className={'chart-cell'}
             fontFamily={theme.fonts.fld}
-            borderBottomLeftRadius={'4px'}>
-           
-          </GridItem>
+            borderBottomLeftRadius={'4px'}></GridItem>
         </Flex>
         <Flex flexDirection={'column'}>
           <GridItem
@@ -229,41 +232,38 @@ export const Custom: FC<Custom> = ({vault, project}) => {
             </Flex>
           </GridItem>
           <GridItem
-                border={themeDesign.border[colorMode]}
-                className={'chart-cell'}
-                fontFamily={theme.fonts.fld}
-                justifyContent={'flex-start'}
-                borderBottom={'none'}
-               >
-                <Text mr={'10px'}>Address</Text>
-                <Flex
-                  borderRadius={'4px'}
-                  w={'240px'}
-                  h={'32px'}
-                  alignItems={'baseline'}
-                  border={'1px solid #dfe4ee'}
-                  mr={'15px'}
-                  fontWeight={'bold'}>
-                  <Input
-                    border={'none'}
-                    h={'32px'}
-                    textAlign={'right'}
-                    alignItems={'center'}
-                    value={claimAddress}
-                    isInvalid={!ethers.utils.isAddress(claimAddress)}
-                    fontSize={'15px'}
-                    _focus={{norder: 'none'}}
-                    _invalid={{
-                      height: '32px',
-                      marginTop: '-1px',
-                      border: '1px solid red',
-                      borderRadius: '4px',
-                    }}
-                    onChange={(e: any) =>
-                      setClaimAddress(e.target.value)
-                    }></Input>
-                </Flex>
-                <Button
+            border={themeDesign.border[colorMode]}
+            className={'chart-cell'}
+            fontFamily={theme.fonts.fld}
+            justifyContent={'flex-start'}
+            borderBottom={'none'}>
+            <Text mr={'10px'}>Address</Text>
+            <Flex
+              borderRadius={'4px'}
+              w={'240px'}
+              h={'32px'}
+              alignItems={'baseline'}
+              border={'1px solid #dfe4ee'}
+              mr={'15px'}
+              fontWeight={'bold'}>
+              <Input
+                border={'none'}
+                h={'32px'}
+                textAlign={'right'}
+                alignItems={'center'}
+                value={claimAddress}
+                isInvalid={!ethers.utils.isAddress(claimAddress)}
+                fontSize={'15px'}
+                _focus={{norder: 'none'}}
+                _invalid={{
+                  height: '32px',
+                  marginTop: '-1px',
+                  border: '1px solid red',
+                  borderRadius: '4px',
+                }}
+                onChange={(e: any) => setClaimAddress(e.target.value)}></Input>
+            </Flex>
+            <Button
               fontSize={'13px'}
               w={'100px'}
               h={'32px'}
@@ -297,14 +297,14 @@ export const Custom: FC<Custom> = ({vault, project}) => {
               onClick={() => claim()}>
               Claim
             </Button>
-              </GridItem>
+          </GridItem>
           <GridItem
             border={themeDesign.border[colorMode]}
             className={'chart-cell'}
             fontFamily={theme.fonts.fld}
             borderBottomRightRadius={'4px'}>
             <Flex flexDir={'column'}>
-              {!distributeDisable ? (
+              {showDate ? (
                 <>
                   {' '}
                   <Text color={colorMode === 'light' ? '#9d9ea5' : '#7e8993'}>

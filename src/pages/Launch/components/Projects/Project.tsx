@@ -38,7 +38,7 @@ export const Project: FC<ProjectProps> = ({project}) => {
   window.scrollTo(0, 0);
   window.onbeforeunload = function () {
     window.setTimeout(function () {
-      window.location.href = '/opencampaign';
+      window.location.href = '/launch';
     }, 0);
     window.onbeforeunload = null; // necessary to prevent infinite loop, that kills your browser
   };

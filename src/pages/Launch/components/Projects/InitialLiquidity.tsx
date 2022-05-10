@@ -40,8 +40,6 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
   const [disableButton, setDisableButton] = useState<boolean>(true);
   const [tosBalance, setTosBalance] = useState<string>('');
   const [projTokenBalance, setProjTokenBalance] = useState<string>('');
-  const [min, setMin] = useState<number>(0);
-  const [max, setMax] = useState<number>(0);
   const InitialLiquidityCompute = new Contract(
     vault.vaultAddress,
     InitialLiquidityComputeAbi.abi,
@@ -61,14 +59,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
 
       const tosBal = await TOS.balanceOf(vault.vaultAddress);
       const tokBalance = await projectToken.balanceOf(vault.vaultAddress);
-      const minTick = await InitialLiquidityCompute.connect(
-        signer,
-      ).getMinTick();
-      const maxTick = await InitialLiquidityCompute.connect(
-        signer,
-      ).getMaxTick();
-      setMax(maxTick);
-      setMin(minTick);
+     
       setTosBalance(ethers.utils.formatEther(tosBal));
       setProjTokenBalance(ethers.utils.formatEther(tokBalance));
     }
@@ -154,7 +145,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
           <Text fontFamily={theme.fonts.fld}>Price Range</Text>
           {/* Need to make Full Range changeable. */}
           <Text fontFamily={theme.fonts.fld}>
-            {min} ~ {max}
+           Full Range
           </Text>
         </GridItem>
         <GridItem

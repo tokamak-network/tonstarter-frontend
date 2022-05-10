@@ -37,6 +37,7 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
   const [claimTime, setClaimTime] = useState<number>(0);
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [distributeDisable, setDistributeDisable] = useState<boolean>(true);
+  const [showDate, setShowDate] = useState<boolean>(false);
   const TOSStaker = new Contract(
     vault.vaultAddress,
     TOSStakerInitializeAbi.abi,
@@ -76,19 +77,26 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
       if (account === null || account === undefined || library === undefined) {
         return;
       }
+      const now = moment().unix();
       const signer = getSigner(library, account);
       const currentRound = await TOSStaker.connect(signer).currentRound();
       const nowClaimRound = await TOSStaker.connect(signer).nowClaimRound();
-      console.log('nowClaimRound', nowClaimRound);
-      console.log('currentRound', currentRound);
       const amount = await TOSStaker.connect(signer).calculClaimAmount(
         currentRound,
       );
-      console.log(currentRound, amount);
+      const totalClaimCount = await TOSStaker.connect(
+        signer,
+      ).totalClaimCounts();
+
+      setDistributeDisable(Number(nowClaimRound) >= Number(currentRound));
       const disabled = Number(nowClaimRound) >= Number(currentRound);
-      const claimDate = await TOSStaker.connect(signer).claimTimes(0);
+      const claimDate =
+        Number(currentRound) === Number(totalClaimCount)
+          ? await TOSStaker.connect(signer).claimTimes(Number(currentRound) - 1)
+          : await TOSStaker.connect(signer).claimTimes(currentRound);
       const amountFormatted = parseInt(amount);
-      // setClaimTime(claimDate);
+      
+      setShowDate(amountFormatted === 0  && Number(claimDate) > now);
       setDistributable(amountFormatted);
       setDistributeDisable(disabled);
       setClaimTime(claimDate);
@@ -257,15 +265,21 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
             className={'chart-cell'}
             fontFamily={theme.fonts.fld}
             borderBottomRightRadius={'4px'}>
-            <Flex flexDir={'column'}>
-              <Text color={colorMode === 'light' ? '#9d9ea5' : '#7e8993'}>
-                You can distribute on
-              </Text>
-              <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-                {moment.unix(claimTime).format('MMM, DD, yyyy HH:mm:ss')}{' '}
-                {momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()}
-              </Text>
-            </Flex>
+            {showDate === true? (
+              <>
+                <Flex flexDir={'column'}>
+                  <Text color={colorMode === 'light' ? '#9d9ea5' : '#7e8993'}>
+                    You can distribute on
+                  </Text>
+                  <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
+                    {moment.unix(claimTime).format('MMM, DD, yyyy HH:mm:ss')}{' '}
+                    {momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()}
+                  </Text>
+                </Flex>
+              </>
+            ) : (
+              <></>
+            )}
           </GridItem>
         </Flex>
       </Grid>
