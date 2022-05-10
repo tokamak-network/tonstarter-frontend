@@ -1,4 +1,4 @@
-import {FC} from 'react';
+import {FC, useState,useEffect} from 'react';
 import {
   Flex,
   Text,
@@ -17,6 +17,17 @@ import '../css/PublicPage.css';
 import moment from 'moment';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import commafy from 'utils/commafy';
+import * as PublicSaleVaultAbi from 'services/abis/PublicSaleVault.json';
+import store from 'store';
+import {toastWithReceipt} from 'utils';
+import {setTxPending} from 'store/tx.reducer';
+import {openToast} from 'store/app/toast.reducer';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectTransactionType} from 'store/refetch.reducer';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import {getSigner} from 'utils/contract';
+import {Contract} from '@ethersproject/contracts';
+import {ethers} from 'ethers'
 type PublicPage = {
   vault: any;
   project: any;
@@ -25,6 +36,12 @@ type PublicPage = {
 export const PublicPage: FC<PublicPage> = ({vault, project}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
+  const [buttonDisable, setButtonDisable] = useState<boolean>(false);
+  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
+  const {account, library} = useActiveWeb3React();
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+
+  const now = moment().unix()
   const sTosTier = vault.stosTier
     ? Object.keys(vault.stosTier)
         .map((tier) => {
@@ -45,7 +62,55 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
         .sort((a, b) => a.tier - b.tier)
     : [];
   // console.log('vault', vault);
+const PublicSaleVaul = new Contract(
+  vault.vaultAddress, 
+  PublicSaleVaultAbi.abi, 
+  library
+)  
+useEffect(() => {
+  if (account !== undefined && account !== null) {
+    if (
+      ethers.utils.getAddress(account) ===
+      ethers.utils.getAddress(project.owner)
+    ) {
+      setIsAdmin(true);
+    } else {
+      setIsAdmin(false);
+    }
+  } else {
+    setIsAdmin(false);
+  }
+}, [account, project]);
 
+  const sendTOS = async() => {
+    if (account === null || account === undefined || library === undefined) {
+      return;
+    }
+    const signer = getSigner(library, account);
+    try{
+      const receipt = await PublicSaleVaul.connect(signer).depositWithdraw();
+      store.dispatch(setTxPending({tx: true}));
+      if (receipt) {
+        toastWithReceipt(receipt, setTxPending, 'Launch');
+        await receipt.wait();
+      }
+    }
+    catch (e) {
+      store.dispatch(setTxPending({tx: false}));
+      store.dispatch(
+        //@ts-ignore
+        openToast({
+          payload: {
+            status: 'error',
+            title: 'Tx fail to send',
+            description: `something went wrong`,
+            duration: 5000,
+            isClosable: true,
+          },
+        }),
+      );
+    }
+  }
   const themeDesign = {
     border: {
       light: 'solid 1px #e6eaee',
@@ -378,15 +443,50 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 borderRight={'none'}
                 borderBottom={'none'}
                 className={'chart-cell'}>
-                <Text fontFamily={theme.fonts.fld}>{''}</Text>
+                  {now >= vault.publicRound2 ? <>
+                    <Button
+                  fontSize={'13px'}
+                  w={'200px'}
+                  h={'42px'}
+                  bg={'#257eee'}
+                  color={'#ffffff'}
+                  isDisabled={!isAdmin}
+                  _disabled={{
+                    color: colorMode === 'light' ? '#86929d' : '#838383',
+                    bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+                    cursor: 'not-allowed',
+                  }}
+                  _hover={
+                    !isAdmin
+                      ? {}
+                      : {
+                          background: 'transparent',
+                          border: 'solid 1px #2a72e5',
+                          color: themeDesign.tosFont[colorMode],
+                          cursor: 'pointer',
+                        }
+                  }
+                  _active={
+                    !isAdmin
+                      ? {}
+                      : {
+                          background: '#2a72e5',
+                          border: 'solid 1px #2a72e5',
+                          color: '#fff',
+                        }
+                  }
+                  wordBreak={'break-word'}
+                  whiteSpace={'normal'}
+                  onClick={() => sendTOS()}>
+                 Send TOS to Initial Liquidity Vault & Receive Funds
+                </Button></>: <></>}
+               
               </GridItem>
               <GridItem
                 border={themeDesign.border[colorMode]}
                 borderBottom={'none'}
                 className={'chart-cell'}
-                mr={'-1px'}>
-
-              </GridItem>
+                mr={'-1px'}></GridItem>
               <GridItem
                 border={themeDesign.border[colorMode]}
                 className={'chart-cell'}
@@ -491,14 +591,16 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                   </GridItem>
                 );
               })}
-              {[...Array(6-sTosTier.length)].map((e:any,i:number) =>{
-                return  <GridItem
-                  border={themeDesign.border[colorMode]}
-                  borderTop='none'
-                  borderLeft={'none'}
-                  className={'chart-cell'}>
-                  <Text fontFamily={theme.fonts.fld}>{''}</Text>
-                </GridItem>
+              {[...Array(6 - sTosTier.length)].map((e: any, i: number) => {
+                return (
+                  <GridItem
+                    border={themeDesign.border[colorMode]}
+                    borderTop="none"
+                    borderLeft={'none'}
+                    className={'chart-cell'}>
+                    <Text fontFamily={theme.fonts.fld}>{''}</Text>
+                  </GridItem>
+                );
               })}
             </>
           ) : (

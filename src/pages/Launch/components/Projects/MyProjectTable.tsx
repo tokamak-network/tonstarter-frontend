@@ -234,20 +234,22 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                         {type === 'status' &&
                           (status === true ? 'Deployed' : 'Not Deployed')}
                         {type === 'action' &&
-                          (status === true ? (
-                            <Button
-                              w={'136px'}
-                              h={'25px'}
-                              bg={'#257eee'}
-                              color={'#ffffff'}
-                              fontWeight={'normal'}
-                              fontSize={'12px'}
-                              _hover={{bg: '#257eee'}}
-                              _active={{bg: '#257eee'}}
-                              onClick={()=> printProject(project)}>
-                              List on TONStarter
-                            </Button>
-                          ) : status === false ? (
+                          (
+                            // status === true ? (
+                          //   <Button
+                          //     w={'136px'}
+                          //     h={'25px'}
+                          //     bg={'#257eee'}
+                          //     color={'#ffffff'}
+                          //     fontWeight={'normal'}
+                          //     fontSize={'12px'}
+                          //     _hover={{bg: '#257eee'}}
+                          //     _active={{bg: '#257eee'}}
+                          //     onClick={()=> printProject(project)}>
+                          //     List on TONStarter
+                          //   </Button>
+                          // ) :
+                           status === true ? (
                             <Link to={`${url}/${key}`}>
                               <Button
                                 w={'136px'}

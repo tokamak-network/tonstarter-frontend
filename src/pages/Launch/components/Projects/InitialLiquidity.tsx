@@ -20,6 +20,12 @@ import InitialLiquidityComputeAbi from 'services/abis/Vault_InitialLiquidityComp
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import {convertNumber} from 'utils/number';
 import {ethers} from 'ethers';
+import store from 'store';
+import {toastWithReceipt} from 'utils';
+import {setTxPending} from 'store/tx.reducer';
+import {openToast} from 'store/app/toast.reducer';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectTransactionType} from 'store/refetch.reducer';
 const {TOS_ADDRESS} = DEPLOYED;
 type InitialLiquidity = {
   vault: any;
@@ -29,11 +35,13 @@ type InitialLiquidity = {
 export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const [disableButton, setDisableButton] = useState<boolean>(true);
-
+  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const {account, library} = useActiveWeb3React();
+  const [disableButton, setDisableButton] = useState<boolean>(true);
   const [tosBalance, setTosBalance] = useState<string>('');
   const [projTokenBalance, setProjTokenBalance] = useState<string>('');
+  const [min, setMin] = useState<number>(0);
+  const [max, setMax] = useState<number>(0);
   const InitialLiquidityCompute = new Contract(
     vault.vaultAddress,
     InitialLiquidityComputeAbi.abi,
@@ -53,12 +61,48 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
 
       const tosBal = await TOS.balanceOf(vault.vaultAddress);
       const tokBalance = await projectToken.balanceOf(vault.vaultAddress);
-      setTosBalance(ethers.utils.formatEther(tosBal))
-      setProjTokenBalance(ethers.utils.formatEther(tokBalance))
+      const minTick = await InitialLiquidityCompute.connect(
+        signer,
+      ).getMinTick();
+      const maxTick = await InitialLiquidityCompute.connect(
+        signer,
+      ).getMaxTick();
+      setMax(maxTick);
+      setMin(minTick);
+      setTosBalance(ethers.utils.formatEther(tosBal));
+      setProjTokenBalance(ethers.utils.formatEther(tokBalance));
     }
     getLPToken();
   }, [account, library]);
   // console.log('Initial Liquidity vault: ', vault);
+  const mint = async () => {
+    if (account === null || account === undefined || library === undefined) {
+      return;
+    }
+    const signer = getSigner(library, account);
+    try {
+      const receipt = await InitialLiquidityCompute.connect(signer).mint();
+      store.dispatch(setTxPending({tx: true}));
+      if (receipt) {
+        toastWithReceipt(receipt, setTxPending, 'Launch');
+        await receipt.wait();
+      }
+    } catch (e) {
+      store.dispatch(setTxPending({tx: false}));
+      store.dispatch(
+        //@ts-ignore
+        openToast({
+          payload: {
+            status: 'error',
+            title: 'Tx fail to send',
+            description: `something went wrong`,
+            duration: 5000,
+            isClosable: true,
+          },
+        }),
+      );
+    }
+  };
 
   const themeDesign = {
     border: {
@@ -109,7 +153,9 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
           className={'chart-cell no-border-right no-border-bottom'}>
           <Text fontFamily={theme.fonts.fld}>Price Range</Text>
           {/* Need to make Full Range changeable. */}
-          <Text fontFamily={theme.fonts.fld}>Full Range</Text>
+          <Text fontFamily={theme.fonts.fld}>
+            {min} ~ {max}
+          </Text>
         </GridItem>
         <GridItem
           border={themeDesign.border[colorMode]}
@@ -201,8 +247,12 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
           borderBottom={'none'}
           className={'chart-cell no-border-bottom'}>
           <Text fontFamily={theme.fonts.fld}>Increase Liquidity</Text>
-          <Text fontFamily={theme.fonts.fld}>{commafy(Number(projTokenBalance))}</Text>
-          <Text fontFamily={theme.fonts.fld}>{commafy(Number(tosBalance))}</Text>
+          <Text fontFamily={theme.fonts.fld}>
+            {commafy(Number(projTokenBalance))}
+          </Text>
+          <Text fontFamily={theme.fonts.fld}>
+            {commafy(Number(tosBalance))}
+          </Text>
           <Button
             w={'100px'}
             bg={'#257eee'}
@@ -217,7 +267,9 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
               bg: colorMode === 'light' ? '#e9edf1' : '#353535',
               cursor: 'not-allowed',
             }}
-            disabled={(Number(projTokenBalance)!==0) || (Number(tosBalance)!==0)}
+            disabled={
+              Number(projTokenBalance) !== 0 || Number(tosBalance) !== 0
+            }
             _hover={
               // I set !disableButton just for UI testing purposes. Revert to disableButton (or any condition) to disable _hover and _active styles.
               !disableButton
@@ -237,8 +289,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
                     border: 'solid 1px #2a72e5',
                     color: '#fff',
                   }
-            }
-           >
+            }>
             Increase
           </Button>
         </GridItem>

@@ -36,6 +36,7 @@ export const DAO: FC<DAO> = ({vault, project}) => {
   const [claimAddress, setClaimAddress] = useState<string>('');
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const projectToken = new Contract(project.tokenAddress, ERC20.abi, library);
+  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
 
   const typeBVault = new Contract(
     vault.vaultAddress, 
@@ -50,9 +51,11 @@ export const DAO: FC<DAO> = ({vault, project}) => {
       const signer = getSigner(library, account);
       const tokBalance = await projectToken.balanceOf(vault.vaultAddress);
       setProjTokenBalance(ethers.utils.formatEther(tokBalance));
+      console.log(ethers.utils.formatEther(tokBalance));
+      
     }
     getBalance();
-  }, []);
+  }, [transactionType, blockNumber]);
 
   useEffect(() => {
     if (
@@ -98,8 +101,6 @@ async function claim() {
     }
   }
   catch (e) {
-    console.log(e);
-    
     store.dispatch(setTxPending({tx: false}));
     store.dispatch(
       //@ts-ignore

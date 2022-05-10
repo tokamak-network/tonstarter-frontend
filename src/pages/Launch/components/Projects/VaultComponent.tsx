@@ -15,6 +15,7 @@ import {InitialLiquidity} from './InitialLiquidity';
 import {TonStaker} from './TonStaker';
 import {TosStaker} from './TosStaker';
 import {WtonTosLpReward} from './WtonTosLpReward';
+import { Custom } from './Custom';
 import {DAO} from './DAO';
 
 import '../css/VaultComponent.css';
@@ -60,6 +61,9 @@ const TabComponent = (props: {project: any; vault: string; index: number}) => {
       );
     case 'DAO':
       return <DAO project={project} vault={project.vaults[index]}></DAO>;
+    
+    case 'C': 
+    return <Custom project={project} vault={project.vaults[index]}></Custom>
     default:
       return <div>no component for this step</div>;
   }
@@ -164,7 +168,7 @@ export const VaultComponent: FC<VaultComponent> = ({project}) => {
                         }
                   }
                   onClick={() => setVaultInfo(vault, index)}>
-                  {vault.vaultType}
+                  {vault.vaultName}
                 </Box>
               );
             })}

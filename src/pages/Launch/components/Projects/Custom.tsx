@@ -1,8 +1,9 @@
-import {FC, useEffect, useState} from 'react';
+import {FC, useState, useEffect} from 'react';
 import {
   Flex,
   Text,
   Grid,
+  Input,
   GridItem,
   useTheme,
   useColorMode,
@@ -17,19 +18,22 @@ import * as TOSStakerAbi from 'services/abis/TOSStakerAbi.json';
 import {ethers} from 'ethers';
 import momentTZ from 'moment-timezone';
 import moment from 'moment';
-import * as TOSStakerInitializeAbi from 'services/abis/TOSStakerInitializeAbi.json';
+import * as TONStakerAbi from 'services/abis/TONStakerAbi.json';
+import * as TONStakerInitializeAbi from 'services/abis/TONStakerInitializeAbi.json';
+import * as VaultCLogicAbi from 'services/abis/VaultCLogicAbi.json';
 import store from 'store';
 import {toastWithReceipt} from 'utils';
 import {setTxPending} from 'store/tx.reducer';
 import {openToast} from 'store/app/toast.reducer';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectTransactionType} from 'store/refetch.reducer';
-type TosStaker = {
+
+type Custom = {
   vault: any;
   project: any;
 };
 
-export const TosStaker: FC<TosStaker> = ({vault, project}) => {
+export const Custom: FC<Custom> = ({vault, project}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
@@ -37,18 +41,18 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
   const [claimTime, setClaimTime] = useState<number>(0);
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [distributeDisable, setDistributeDisable] = useState<boolean>(true);
-  const TOSStaker = new Contract(
-    vault.vaultAddress,
-    TOSStakerInitializeAbi.abi,
-    library,
-  );
-  async function distribute() {
+  const vaultC = new Contract(vault.vaultAddress, VaultCLogicAbi.abi, library);
+  const [claimAddress, setClaimAddress] = useState<string>('');
+
+  // console.log('tonstaker vault: ', vault);
+
+  async function claim() {
     if (account === null || account === undefined || library === undefined) {
       return;
     }
     const signer = getSigner(library, account);
     try {
-      const receipt = await TOSStaker.connect(signer).claim();
+      const receipt = await vaultC.connect(signer).claim(claimAddress);
       store.dispatch(setTxPending({tx: true}));
       if (receipt) {
         toastWithReceipt(receipt, setTxPending, 'Launch');
@@ -77,25 +81,23 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
         return;
       }
       const signer = getSigner(library, account);
-      const currentRound = await TOSStaker.connect(signer).currentRound();
-      const nowClaimRound = await TOSStaker.connect(signer).nowClaimRound();
-      console.log('nowClaimRound', nowClaimRound);
-      console.log('currentRound', currentRound);
-      const amount = await TOSStaker.connect(signer).calculClaimAmount(
-        currentRound,
-      );
-      console.log(currentRound, amount);
-      const disabled = Number(nowClaimRound) >= Number(currentRound);
-      const claimDate = await TOSStaker.connect(signer).claimTimes(0);
-      const amountFormatted = parseInt(amount);
-      // setClaimTime(claimDate);
-      setDistributable(amountFormatted);
-      setDistributeDisable(disabled);
-      setClaimTime(claimDate);
+      const currentRound = await vaultC.connect(signer).currentRound();
+      const amount = await vaultC.connect(signer).calcalClaimAmount(currentRound);
+      const nowClaimRound = await vaultC.connect(signer).nowClaimRound()
+      //   const disabled = Number(nowClaimRound) >= Number(currentRound);
+    const claimCounts = await vaultC.connect(signer).totalClaimCounts();
+    console.log('claimCounts', claimCounts);
+    
+        // const claimdDate = await vaultC.connect(signer).claimTimes(0);
+        console.log(nowClaimRound);
+        
+      //   setDistributeDisable(disabled)
+      //   const amountFormatted = parseInt(amount);
+      //   setClaimTime(claimdDate);
+      //   setDistributable(amountFormatted);
     }
     getLPToken();
   }, [account, library, transactionType, blockNumber]);
-
   const themeDesign = {
     border: {
       light: 'solid 1px #e6eaee',
@@ -172,7 +174,8 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
             borderRight={'none'}
             className={'chart-cell'}
             fontFamily={theme.fonts.fld}
-            borderBottomLeftRadius={'4px'}>
+            borderBottom={'none'}
+           >
             <Text
               w={'81px'}
               color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
@@ -181,6 +184,14 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
             <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
               {vault.vaultAddress ? shortenAddress(vault.vaultAddress) : 'N/A'}
             </Text>
+          </GridItem>
+          <GridItem
+            border={themeDesign.border[colorMode]}
+            borderRight={'none'}
+            className={'chart-cell'}
+            fontFamily={theme.fonts.fld}
+            borderBottomLeftRadius={'4px'}>
+           
           </GridItem>
         </Flex>
         <Flex flexDirection={'column'}>
@@ -194,7 +205,7 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
             <Text
               fontSize={'15px'}
               color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-              Distribute
+              Claim
             </Text>
           </GridItem>
           <GridItem
@@ -216,8 +227,43 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
                 {project.tokenSymbol}
               </Text>
             </Flex>
-
-            <Button
+          </GridItem>
+          <GridItem
+                border={themeDesign.border[colorMode]}
+                className={'chart-cell'}
+                fontFamily={theme.fonts.fld}
+                justifyContent={'flex-start'}
+                borderBottom={'none'}
+               >
+                <Text mr={'10px'}>Address</Text>
+                <Flex
+                  borderRadius={'4px'}
+                  w={'240px'}
+                  h={'32px'}
+                  alignItems={'baseline'}
+                  border={'1px solid #dfe4ee'}
+                  mr={'15px'}
+                  fontWeight={'bold'}>
+                  <Input
+                    border={'none'}
+                    h={'32px'}
+                    textAlign={'right'}
+                    alignItems={'center'}
+                    value={claimAddress}
+                    isInvalid={!ethers.utils.isAddress(claimAddress)}
+                    fontSize={'15px'}
+                    _focus={{norder: 'none'}}
+                    _invalid={{
+                      height: '32px',
+                      marginTop: '-1px',
+                      border: '1px solid red',
+                      borderRadius: '4px',
+                    }}
+                    onChange={(e: any) =>
+                      setClaimAddress(e.target.value)
+                    }></Input>
+                </Flex>
+                <Button
               fontSize={'13px'}
               w={'100px'}
               h={'32px'}
@@ -248,23 +294,30 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
                       color: '#fff',
                     }
               }
-              onClick={() => distribute()}>
-              Distribute
+              onClick={() => claim()}>
+              Claim
             </Button>
-          </GridItem>
+              </GridItem>
           <GridItem
             border={themeDesign.border[colorMode]}
             className={'chart-cell'}
             fontFamily={theme.fonts.fld}
             borderBottomRightRadius={'4px'}>
             <Flex flexDir={'column'}>
-              <Text color={colorMode === 'light' ? '#9d9ea5' : '#7e8993'}>
-                You can distribute on
-              </Text>
-              <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-                {moment.unix(claimTime).format('MMM, DD, yyyy HH:mm:ss')}{' '}
-                {momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()}
-              </Text>
+              {!distributeDisable ? (
+                <>
+                  {' '}
+                  <Text color={colorMode === 'light' ? '#9d9ea5' : '#7e8993'}>
+                    You can claim on
+                  </Text>
+                  <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
+                    {moment.unix(claimTime).format('MMM, DD, yyyy HH:mm:ss')}{' '}
+                    {momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()}
+                  </Text>
+                </>
+              ) : (
+                <></>
+              )}
             </Flex>
           </GridItem>
         </Flex>
