@@ -36,4 +36,5 @@ export type DEPLOYED_TYPE = {
   pools: {
     TOS_WTON_POOL: string;
   };
+  UniswapV3Factory: string;
 };

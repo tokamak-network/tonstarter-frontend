@@ -597,7 +597,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                   Tier
                 </Text>
                 <Text fontFamily={theme.fonts.fld} color={'#7e8993'}>
-                  Required TOS
+                  Required sTOS
                 </Text>
                 <Text fontFamily={theme.fonts.fld} color={'#7e8993'}>
                   Allocated Token
