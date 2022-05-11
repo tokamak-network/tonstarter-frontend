@@ -18,6 +18,7 @@ const Middle = () => {
 
   const {selectedVaultDetail} = useVaultSelector();
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [isConfirm, setIsConfirm] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
   const {
@@ -76,6 +77,7 @@ const Middle = () => {
               h={'32px'}
               text={'Confirm'}
               style={{marginRight: '10px'}}
+              isDisabled={isConfirm}
               func={() => {
                 setIsEdit(false);
                 dispatchFormikSetValue();
@@ -107,7 +109,7 @@ const Middle = () => {
         )}
       </Box>
       <Flex>
-        <TokenDetail isEdit={isEdit}></TokenDetail>
+        <TokenDetail isEdit={isEdit} setIsConfirm={setIsConfirm}></TokenDetail>
       </Flex>
     </Flex>
   );

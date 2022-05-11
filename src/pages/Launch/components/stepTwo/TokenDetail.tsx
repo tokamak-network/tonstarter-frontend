@@ -11,7 +11,13 @@ import {
 } from '@Launch/types';
 import {useFormikContext} from 'formik';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, {
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import InputField from './InputField';
 import useVaultSelector from '@Launch/hooks/useVaultSelector';
 import commafy from 'utils/commafy';
@@ -24,6 +30,7 @@ import InitialLiquidityComputeAbi from 'services/abis/Vault_InitialLiquidityComp
 import {convertTimeStamp} from 'utils/convertTIme';
 import {useToast} from 'hooks/useToast';
 import {CustomTooltip} from 'components/Tooltip';
+import {stosMinimumRequirements} from '@Launch/const';
 
 export const MainTitle = (props: {
   leftTitle: string;
@@ -465,12 +472,14 @@ const PublicTokenDetail = (props: {
   secondColData: PublicTokenColData['secondColData'] | null;
   thirdColData: PublicTokenColData['thirdColData'] | null;
   isEdit: boolean;
+  setIsConfirm: React.Dispatch<SetStateAction<boolean>>;
 }) => {
   const theme = useTheme();
   //@ts-ignore
   const {OpenCampaginDesign} = theme;
   const {colorMode} = useColorMode();
-  const {firstColData, secondColData, thirdColData, isEdit} = props;
+  const {firstColData, secondColData, thirdColData, isEdit, setIsConfirm} =
+    props;
   const {values} = useFormikContext<Projects['CreateProject']>();
   // const publicVaultValue = vaults.filter((vault: VaultCommon) => {
   //   return vault.vaultName === 'Public';
@@ -547,6 +556,66 @@ const PublicTokenDetail = (props: {
               pr1TokenNum >
             0;
 
+          if (requiredStos_1_num < stosMinimumRequirements.tier1) {
+            requiredStos_1.style.border = errBorderStyle;
+            toastMsg({
+              title: 'sTOS minimum Requirement',
+              description: '1Tier needs at least 600sTOS',
+              duration: 2000,
+              isClosable: true,
+              status: 'error',
+            });
+            setIsConfirm(true);
+          } else {
+            requiredStos_1.style.border = noErrBorderStyle;
+            setIsConfirm(false);
+          }
+
+          if (requiredStos_2_num < stosMinimumRequirements.tier2) {
+            requiredStos_2.style.border = errBorderStyle;
+            toastMsg({
+              title: 'sTOS minimum Requirement',
+              description: '1Tier needs at least 600sTOS',
+              duration: 2000,
+              isClosable: true,
+              status: 'error',
+            });
+            setIsConfirm(true);
+          } else {
+            requiredStos_2.style.border = noErrBorderStyle;
+            setIsConfirm(false);
+          }
+
+          if (requiredStos_3_num < stosMinimumRequirements.tier3) {
+            requiredStos_3.style.border = errBorderStyle;
+            toastMsg({
+              title: 'sTOS minimum Requirement',
+              description: '1Tier needs at least 600sTOS',
+              duration: 2000,
+              isClosable: true,
+              status: 'error',
+            });
+            setIsConfirm(true);
+          } else {
+            requiredStos_3.style.border = noErrBorderStyle;
+            setIsConfirm(false);
+          }
+
+          if (requiredStos_4_num < stosMinimumRequirements.tier4) {
+            requiredStos_4.style.border = errBorderStyle;
+            toastMsg({
+              title: 'sTOS minimum Requirement',
+              description: '1Tier needs at least 600sTOS',
+              duration: 2000,
+              isClosable: true,
+              status: 'error',
+            });
+            setIsConfirm(true);
+          } else {
+            requiredStos_4.style.border = noErrBorderStyle;
+            setIsConfirm(false);
+          }
+
           if (tokenIsOver) {
             publicRound1Allocation.style.border = errBorderStyle;
             publicRound2Allocation.style.border = errBorderStyle;
@@ -559,10 +628,11 @@ const PublicTokenDetail = (props: {
               isClosable: true,
               status: 'error',
             });
-            return;
+            return setIsConfirm(true);
           } else {
             publicRound1Allocation.style.border = noErrBorderStyle;
             publicRound2Allocation.style.border = noErrBorderStyle;
+            setIsConfirm(false);
           }
           if (stosTokenAllocationOver) {
             allocatedToken_1.style.border = errBorderStyle;
@@ -578,11 +648,13 @@ const PublicTokenDetail = (props: {
               isClosable: true,
               status: 'error',
             });
+            return setIsConfirm(true);
           } else {
             allocatedToken_1.style.border = noErrBorderStyle;
             allocatedToken_2.style.border = noErrBorderStyle;
             allocatedToken_3.style.border = noErrBorderStyle;
             allocatedToken_4.style.border = noErrBorderStyle;
+            setIsConfirm(false);
           }
         }
       }
@@ -733,8 +805,11 @@ const PublicTokenDetail = (props: {
   );
 };
 
-const TokenDetail = (props: {isEdit: boolean}) => {
-  const {isEdit} = props;
+const TokenDetail = (props: {
+  isEdit: boolean;
+  setIsConfirm: React.Dispatch<SetStateAction<boolean>>;
+}) => {
+  const {isEdit, setIsConfirm} = props;
   const {
     data: {selectedVaultType, selectedVault, selectedVaultIndex},
   } = useAppSelector(selectLaunch);
@@ -757,7 +832,8 @@ const TokenDetail = (props: {isEdit: boolean}) => {
               firstColData={publicTokenColData.firstColData}
               secondColData={publicTokenColData.secondColData}
               thirdColData={publicTokenColData.thirdColData}
-              isEdit={isEdit}></PublicTokenDetail>
+              isEdit={isEdit}
+              setIsConfirm={setIsConfirm}></PublicTokenDetail>
           );
         }
         return null;
@@ -782,7 +858,8 @@ const TokenDetail = (props: {isEdit: boolean}) => {
             ]}
             secondColData={null}
             thirdColData={null}
-            isEdit={isEdit}></PublicTokenDetail>
+            isEdit={isEdit}
+            setIsConfirm={setIsConfirm}></PublicTokenDetail>
         );
       }
       case 'TON Staker':
@@ -791,7 +868,8 @@ const TokenDetail = (props: {isEdit: boolean}) => {
             firstColData={null}
             secondColData={null}
             thirdColData={null}
-            isEdit={isEdit}></PublicTokenDetail>
+            isEdit={isEdit}
+            setIsConfirm={setIsConfirm}></PublicTokenDetail>
         );
       case 'TOS Staker':
         return (
@@ -799,7 +877,8 @@ const TokenDetail = (props: {isEdit: boolean}) => {
             firstColData={null}
             secondColData={null}
             thirdColData={null}
-            isEdit={isEdit}></PublicTokenDetail>
+            isEdit={isEdit}
+            setIsConfirm={setIsConfirm}></PublicTokenDetail>
         );
       case 'WTON-TOS LP Reward': {
         const {
@@ -821,7 +900,8 @@ const TokenDetail = (props: {isEdit: boolean}) => {
             ]}
             secondColData={null}
             thirdColData={null}
-            isEdit={isEdit}></PublicTokenDetail>
+            isEdit={isEdit}
+            setIsConfirm={setIsConfirm}></PublicTokenDetail>
         );
       }
       case 'C':
@@ -830,7 +910,8 @@ const TokenDetail = (props: {isEdit: boolean}) => {
             firstColData={null}
             secondColData={null}
             thirdColData={null}
-            isEdit={isEdit}></PublicTokenDetail>
+            isEdit={isEdit}
+            setIsConfirm={setIsConfirm}></PublicTokenDetail>
         );
       case 'DAO':
         return (
@@ -838,7 +919,8 @@ const TokenDetail = (props: {isEdit: boolean}) => {
             firstColData={null}
             secondColData={null}
             thirdColData={null}
-            isEdit={isEdit}></PublicTokenDetail>
+            isEdit={isEdit}
+            setIsConfirm={setIsConfirm}></PublicTokenDetail>
         );
       case 'Liquidity Incentive':
         const thisVault: VaultLiquidityIncentive = values.vaults.filter(
@@ -868,7 +950,8 @@ const TokenDetail = (props: {isEdit: boolean}) => {
             ]}
             secondColData={null}
             thirdColData={null}
-            isEdit={isEdit}></PublicTokenDetail>
+            isEdit={isEdit}
+            setIsConfirm={setIsConfirm}></PublicTokenDetail>
         );
       default:
         return <>no container for this vault :(</>;

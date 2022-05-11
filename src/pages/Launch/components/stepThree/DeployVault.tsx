@@ -557,7 +557,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               };
 
               const totalVaultIndex = await getTotalIndex();
-              console.log(totalVaultIndex);
               let valutIndex = totalVaultIndex;
 
               do {
@@ -574,8 +573,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                   }
                 } catch (e) {}
               } while (valutIndex >= 0);
-
-              console.log(valutIndex);
 
               const tx = await vaultContract?.connect(signer).create(
                 `${values.projectName}_${selectedVaultDetail?.vaultName}`,

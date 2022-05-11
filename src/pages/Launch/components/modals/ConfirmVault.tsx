@@ -55,7 +55,7 @@ const StosInfoList = (props: {
         <Text
           w={'120px'}
           color={colorMode === 'light' ? 'gray.400' : 'white.100'}>
-          Required TOS
+          Required sTOS
         </Text>
         <Text
           w={'160px'}

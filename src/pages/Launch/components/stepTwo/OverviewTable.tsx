@@ -169,7 +169,9 @@ const OverviewTable = () => {
                 fontSize={12}
                 borderBottom={overviewTableStyle.border[colorMode]}
                 borderRight={overviewTableStyle.border[colorMode]}>
-                {name}
+                {name === 'Liquidity Incentive'
+                  ? `${values.tokenName}-TOS LP Reward`
+                  : name}
               </Text>
               {claim.map((claimData: any, index: number) => {
                 return (

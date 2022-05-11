@@ -133,9 +133,34 @@ const InputField: React.FC<InputFieldProp> = (props) => {
       value={value === 'undefined' ? '' : value}
       style={style}
       onChange={(e) => {
+        // if (isStosTier) {
+        //   const targetValue = Number(e.target.value);
+        //   if (stosTierLevel === 1) {
+        //     if (targetValue < 600) {
+        //       return;
+        //     }
+        //   }
+        //   if (stosTierLevel === 2) {
+        //     if (targetValue < 1200) {
+        //       return;
+        //     }
+        //   }
+        //   if (stosTierLevel === 3) {
+        //     if (targetValue < 2200) {
+        //       return;
+        //     }
+        //   }
+        //   if (stosTierLevel === 4) {
+        //     if (targetValue < 4000) {
+        //       return;
+        //     }
+        //   }
+        // }
+
         setValue(e.target.value);
         const publicVaultValue = vaultsList[0] as VaultPublic;
         const {stosTier: stosTierData} = publicVaultValue;
+
         if (formikName) {
           !isStosTier
             ? dispatch(
