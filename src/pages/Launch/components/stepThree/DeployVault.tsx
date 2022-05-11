@@ -889,10 +889,16 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               // _amount[3] : 톤 토큰 가격
               // _amount[4] : hardhat수량(TON기준)
               // _amount[5] : TON → TOS 변경 % (min ~ max)
+              const publicRound1AllocationWei = convertToWei(
+                String(PublicVaultData.publicRound1Allocation),
+              );
+              const publicRound2AllocationWei = convertToWei(
+                String(PublicVaultData.publicRound2Allocation),
+              );
               const hardCapWei = convertToWei(String(PublicVaultData.hardCap));
               const param1: any[] = [
-                PublicVaultData.publicRound1Allocation as number,
-                PublicVaultData.publicRound2Allocation as number,
+                publicRound1AllocationWei,
+                publicRound2AllocationWei,
                 (values.projectTokenPrice as number) * 100,
                 100,
                 hardCapWei,
@@ -964,7 +970,12 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 (claimData: VaultSchedule) => claimData.claimTime,
               );
               const claimAmountsParam = selectedVaultDetail?.claim.map(
-                (claimData: VaultSchedule) => claimData.claimTokenAllocation,
+                (claimData: VaultSchedule) => {
+                  const claimTokenAllocationWei = convertToWei(
+                    String(claimData.claimTokenAllocation),
+                  );
+                  return claimTokenAllocationWei;
+                },
               );
               const LiquidityIncentiveInitialize_CONTRACT = new Contract(
                 selectedVaultDetail?.vaultAddress as string,
@@ -999,7 +1010,12 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 (claimData: VaultSchedule) => claimData.claimTime,
               );
               const claimAmountsParam = selectedVaultDetail?.claim.map(
-                (claimData: VaultSchedule) => claimData.claimTokenAllocation,
+                (claimData: VaultSchedule) => {
+                  const claimTokenAllocationWei = convertToWei(
+                    String(claimData.claimTokenAllocation),
+                  );
+                  return claimTokenAllocationWei;
+                },
               );
               const TONStakerVaultSecondContract = new Contract(
                 selectedVaultDetail.vaultAddress as string,
