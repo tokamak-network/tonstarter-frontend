@@ -26,6 +26,7 @@ import {setTxPending} from 'store/tx.reducer';
 import {openToast} from 'store/app/toast.reducer';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectTransactionType} from 'store/refetch.reducer';
+import {BASE_PROVIDER} from 'constants/index';
 
 type TonStaker = {
   vault: any;
@@ -39,6 +40,7 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
   const [distributable, setDistributable] = useState<number>(0);
   const [claimTime, setClaimTime] = useState<number>(0);
   const [showDate, setShowDate] = useState<boolean>(false);
+  const network = BASE_PROVIDER._network.name;
 
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [distributeDisable, setDistributeDisable] = useState<boolean>(true);
@@ -175,8 +177,10 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
             <Link
               isExternal
               href={
-                vault.adminAddress
+                vault.adminAddress && network === 'rinkeby'
                   ? `https://rinkeby.etherscan.io/address/${vault.adminAddress}`
+                  : vault.adminAddress && network !== 'rinkeby'
+                  ? `https://etherscan.io/address/${vault.adminAddress}`
                   : ''
               }
               color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
@@ -199,8 +203,10 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
             <Link
               isExternal
               href={
-                vault.vaultAddress
+                vault.vaultAddress && network === 'rinkeby'
                   ? `https://rinkeby.etherscan.io/address/${vault.vaultAddress}`
+                  : vault.vaultAddress && network !== 'rinkeby'
+                  ? `https://etherscan.io/address/${vault.vaultAddress}`
                   : ''
               }
               color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}

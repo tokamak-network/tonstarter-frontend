@@ -4,6 +4,8 @@ import {Flex, Text, useTheme, useColorMode, Link} from '@chakra-ui/react';
 import ReactQuill from 'react-quill';
 
 import {shortenAddress} from 'utils';
+import {BASE_PROVIDER} from 'constants/index';
+
 import 'react-quill/dist/quill.bubble.css';
 
 type ProjectTokenProps = {
@@ -13,6 +15,7 @@ type ProjectTokenProps = {
 export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
+  const network = BASE_PROVIDER._network.name;
 
   const modules = {
     toolbar: [
@@ -86,11 +89,12 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             <Link
               isExternal
               href={
-                project.owner
+                project.owner && network === 'rinkeby'
                   ? `https://rinkeby.etherscan.io/address/${project.owner}`
+                  : project.owner && network !== 'rinkeby'
+                  ? `https://etherscan.io/address/${project.owner}`
                   : ''
               }
-              color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
               _hover={{color: '#2a72e5'}}>
               {project.owner ? shortenAddress(project.owner) : 'NA'}
             </Link>

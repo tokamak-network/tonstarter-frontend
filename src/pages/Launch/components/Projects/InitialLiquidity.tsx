@@ -7,6 +7,7 @@ import {
   useTheme,
   useColorMode,
   Button,
+  Link,
 } from '@chakra-ui/react';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import * as LiquidityIncentiveAbi from 'services/abis/LiquidityIncentiveAbi.json';
@@ -26,6 +27,7 @@ import {setTxPending} from 'store/tx.reducer';
 import {openToast} from 'store/app/toast.reducer';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectTransactionType} from 'store/refetch.reducer';
+import {BASE_PROVIDER} from 'constants/index';
 const {TOS_ADDRESS} = DEPLOYED;
 type InitialLiquidity = {
   vault: any;
@@ -40,6 +42,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
   const [disableButton, setDisableButton] = useState<boolean>(true);
   const [tosBalance, setTosBalance] = useState<string>('');
   const [projTokenBalance, setProjTokenBalance] = useState<string>('');
+  const network = BASE_PROVIDER._network.name;
   const InitialLiquidityCompute = new Contract(
     vault.vaultAddress,
     InitialLiquidityComputeAbi.abi,
@@ -59,7 +62,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
 
       const tosBal = await TOS.balanceOf(vault.vaultAddress);
       const tokBalance = await projectToken.balanceOf(vault.vaultAddress);
-     
+
       setTosBalance(ethers.utils.formatEther(tosBal));
       setProjTokenBalance(ethers.utils.formatEther(tokBalance));
     }
@@ -144,9 +147,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
           className={'chart-cell no-border-right no-border-bottom'}>
           <Text fontFamily={theme.fonts.fld}>Price Range</Text>
           {/* Need to make Full Range changeable. */}
-          <Text fontFamily={theme.fonts.fld}>
-           Full Range
-          </Text>
+          <Text fontFamily={theme.fonts.fld}>Full Range</Text>
         </GridItem>
         <GridItem
           border={themeDesign.border[colorMode]}
@@ -164,9 +165,19 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
           className={'chart-cell no-border-right no-border-bottom'}>
           <Text fontFamily={theme.fonts.fld}>Pool Address</Text>
           {/* Need a valid poolAddress */}
-          <Text fontFamily={theme.fonts.fld}>
-            {shortenAddress(vault.vaultAddress)}
-          </Text>
+          <Link
+            isExternal
+            href={
+              vault.poolAddress && network === 'rinkeby'
+                ? `https://rinkeby.etherscan.io/address/${vault.poolAddress}`
+                : vault.poolAddress && network !== 'rinkeby'
+                ? `https://etherscan.io/address/${vault.poolAddress}`
+                : ''
+            }
+            _hover={{color: '#2a72e5'}}
+            fontFamily={theme.fonts.fld}>
+            {vault.poolAddress ? shortenAddress(vault.poolAddress) : 'NA'}
+          </Link>
         </GridItem>
         <GridItem
           border={themeDesign.border[colorMode]}
@@ -174,9 +185,19 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
           borderBottom={'none'}
           className={'chart-cell no-border-right no-border-bottom'}>
           <Text fontFamily={theme.fonts.fld}>Vault Admin</Text>
-          <Text fontFamily={theme.fonts.fld}>
-            {shortenAddress(vault.adminAddress)}
-          </Text>
+          <Link
+            isExternal
+            href={
+              vault.adminAddress && network === 'rinkeby'
+                ? `https://rinkeby.etherscan.io/address/${vault.adminAddress}`
+                : vault.adminAddress && network !== 'rinkeby'
+                ? `https://etherscan.io/address/${vault.adminAddress}`
+                : ''
+            }
+            _hover={{color: '#2a72e5'}}
+            fontFamily={theme.fonts.fld}>
+            {vault.adminAddress ? shortenAddress(vault.adminAddress) : 'NA'}
+          </Link>
         </GridItem>
         <GridItem
           border={themeDesign.border[colorMode]}
@@ -184,7 +205,19 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
           className={'chart-cell no-border-right'}>
           <Text fontFamily={theme.fonts.fld}>Vault Contract Address</Text>
           <Text fontFamily={theme.fonts.fld}>
-            {shortenAddress(vault.vaultAddress)}
+            <Link
+              isExternal
+              href={
+                vault.vaultAddress && network === 'rinkeby'
+                  ? `https://rinkeby.etherscan.io/address/${vault.vaultAddress}`
+                  : vault.vaultAddress && network !== 'rinkeby'
+                  ? `https://etherscan.io/address/${vault.vaultAddress}`
+                  : ''
+              }
+              _hover={{color: '#2a72e5'}}
+              fontFamily={theme.fonts.fld}>
+              {vault.vaultAddress ? shortenAddress(vault.vaultAddress) : 'NA'}
+            </Link>
           </Text>{' '}
         </GridItem>
       </Flex>

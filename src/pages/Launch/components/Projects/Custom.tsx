@@ -28,6 +28,7 @@ import {setTxPending} from 'store/tx.reducer';
 import {openToast} from 'store/app/toast.reducer';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectTransactionType} from 'store/refetch.reducer';
+import {BASE_PROVIDER} from 'constants/index';
 
 type Custom = {
   vault: any;
@@ -45,6 +46,7 @@ export const Custom: FC<Custom> = ({vault, project}) => {
   const vaultC = new Contract(vault.vaultAddress, VaultCLogicAbi.abi, library);
   const [claimAddress, setClaimAddress] = useState<string>('');
   const [showDate, setShowDate] = useState<boolean>(false);
+  const network = BASE_PROVIDER._network.name;
 
   async function claim() {
     if (account === null || account === undefined || library === undefined) {
@@ -178,8 +180,10 @@ export const Custom: FC<Custom> = ({vault, project}) => {
             <Link
               isExternal
               href={
-                vault.adminAddress
+                vault.adminAddress && network === 'rinkeby'
                   ? `https://rinkeby.etherscan.io/address/${vault.adminAddress}`
+                  : vault.adminAddress && network !== 'rinkeby'
+                  ? `https://etherscan.io/address/${vault.adminAddress}`
                   : ''
               }
               color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
@@ -202,8 +206,10 @@ export const Custom: FC<Custom> = ({vault, project}) => {
             <Link
               isExternal
               href={
-                vault.vaultAddress
+                vault.vaultAddress && network === 'rinkeby'
                   ? `https://rinkeby.etherscan.io/address/${vault.vaultAddress}`
+                  : vault.vaultAddress && network !== 'rinkeby'
+                  ? `https://etherscan.io/address/${vault.vaultAddress}`
                   : ''
               }
               color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}

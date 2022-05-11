@@ -9,12 +9,14 @@ import {
   Button,
   Tooltip,
   IconButton,
+  Link,
 } from '@chakra-ui/react';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {shortenAddress} from 'utils/address';
 import {useModal} from 'hooks/useModal';
 import {PublicPageTable} from './PublicPageTable';
 import commafy from 'utils/commafy';
+import {BASE_PROVIDER} from 'constants/index';
 
 type WtonTosLpReward = {vault: any; project: any};
 
@@ -26,6 +28,7 @@ export const WtonTosLpReward: FC<WtonTosLpReward> = ({vault, project}) => {
   const [pageLimit, setPageLimit] = useState<number>(5);
   const [pageOptions, setPageOptions] = useState<number>(0);
   const [disableButton, setDisableButton] = useState<boolean>(true);
+  const network = BASE_PROVIDER._network.name;
 
   const themeDesign = {
     border: {
@@ -133,9 +136,20 @@ export const WtonTosLpReward: FC<WtonTosLpReward> = ({vault, project}) => {
             borderBottom={'none'}
             fontSize={'13px'}>
             <Text>Pool Address</Text>
-            <Text>
-              {vault.poolAddress ? shortenAddress(vault.poolAddress) : 'N/A'}
-            </Text>
+            <Link
+              isExternal
+              href={
+                vault.poolAddress && network === 'rinkeby'
+                  ? `https://rinkeby.etherscan.io/address/${vault.poolAddress}`
+                  : vault.poolAddress && network !== 'rinkeby'
+                  ? `https://etherscan.io/address/${vault.poolAddress}`
+                  : ''
+              }
+              color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+              _hover={{color: '#2a72e5'}}
+              fontFamily={theme.fonts.fld}>
+              {vault.poolAddress ? shortenAddress(vault.poolAddress) : 'NA'}
+            </Link>
           </GridItem>
           <GridItem
             fontFamily={theme.fonts.fld}
@@ -145,9 +159,20 @@ export const WtonTosLpReward: FC<WtonTosLpReward> = ({vault, project}) => {
             borderBottom={'none'}
             fontSize={'13px'}>
             <Text>Vault Admin</Text>
-            <Text>
-              {vault.adminAddress ? shortenAddress(vault.adminAddress) : 'N/A'}
-            </Text>
+            <Link
+              isExternal
+              href={
+                vault.adminAddress && network === 'rinkeby'
+                  ? `https://rinkeby.etherscan.io/address/${vault.adminAddress}`
+                  : vault.adminAddress && network !== 'rinkeby'
+                  ? `https://etherscan.io/address/${vault.adminAddress}`
+                  : ''
+              }
+              color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+              _hover={{color: '#2a72e5'}}
+              fontFamily={theme.fonts.fld}>
+              {vault.adminAddress ? shortenAddress(vault.adminAddress) : 'NA'}
+            </Link>
           </GridItem>
           <GridItem
             fontFamily={theme.fonts.fld}
@@ -156,9 +181,20 @@ export const WtonTosLpReward: FC<WtonTosLpReward> = ({vault, project}) => {
             borderRight={'none'}
             fontSize={'13px'}>
             <Text>Vault Contract Address</Text>
-            <Text>
-              {vault.vaultAddress ? shortenAddress(vault.vaultAddress) : 'N/A'}
-            </Text>{' '}
+            <Link
+              isExternal
+              href={
+                vault.vaultAddress && network === 'rinkeby'
+                  ? `https://rinkeby.etherscan.io/address/${vault.vaultAddress}`
+                  : vault.vaultAddress && network !== 'rinkeby'
+                  ? `https://etherscan.io/address/${vault.vaultAddress}`
+                  : ''
+              }
+              color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+              _hover={{color: '#2a72e5'}}
+              fontFamily={theme.fonts.fld}>
+              {vault.vaultAddress ? shortenAddress(vault.vaultAddress) : 'NA'}
+            </Link>
           </GridItem>
         </Flex>
         <Flex flexDirection={'column'} ml={'-40%'}>

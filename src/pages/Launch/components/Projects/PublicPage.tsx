@@ -29,6 +29,7 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import {ethers} from 'ethers';
+import {BASE_PROVIDER} from 'constants/index';
 type PublicPage = {
   vault: any;
   project: any;
@@ -41,6 +42,8 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const {account, library} = useActiveWeb3React();
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
+
+  const network = BASE_PROVIDER._network.name;
 
   const now = moment().unix();
   const sTosTier = vault.stosTier
@@ -287,8 +290,10 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 <Link
                   isExternal
                   href={
-                    vault.adminAddress
+                    vault.adminAddress && network === 'rinkeby'
                       ? `https://rinkeby.etherscan.io/address/${vault.adminAddress}`
+                      : vault.adminAddress && network !== 'rinkeby'
+                      ? `https://etherscan.io/address/${vault.adminAddress}`
                       : ''
                   }
                   color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
@@ -313,8 +318,10 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 <Link
                   isExternal
                   href={
-                    vault.vaultAddress
+                    vault.vaultAddress && network === 'rinkeby'
                       ? `https://rinkeby.etherscan.io/address/${vault.vaultAddress}`
+                      : vault.vaultAddress && network !== 'rinkeby'
+                      ? `https://etherscan.io/address/${vault.vaultAddress}`
                       : ''
                   }
                   color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
@@ -342,8 +349,10 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                     <Link
                       isExternal
                       href={
-                        vault.addressForReceiving
+                        vault.addressForReceiving && network === 'rinkeby'
                           ? `https://rinkeby.etherscan.io/address/${vault.addressForReceiving}`
+                          : vault.addressForReceiving && network !== 'rinkeby'
+                          ? `https://etherscan.io/address/${vault.addressForReceiving}`
                           : ''
                       }
                       color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
