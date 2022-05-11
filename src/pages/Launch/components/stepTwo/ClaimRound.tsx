@@ -317,6 +317,7 @@ const ClaimRound = () => {
                         }
                         onBlur={(e) => {
                           const {value} = e.target;
+
                           return setFieldValue(
                             //@ts-ignore
                             `vaults[${selectedVaultDetail.index}].claim[${index}]`,
@@ -328,6 +329,11 @@ const ClaimRound = () => {
                         }}
                         onChange={(e) => {
                           const {value} = e.target;
+
+                          if (isNaN(Number(value))) {
+                            return;
+                          }
+
                           if (inputVals) {
                             let oldVals = [...inputVals];
                             let item = {

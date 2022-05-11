@@ -380,6 +380,12 @@ const STOSTier = (props: {
   const publicRound1Allocation = values.vaults[0].publicRound1Allocation;
   const percent =
     (Number(allocatedToken) * 100) / Number(publicRound1Allocation);
+  const [percentVal, setPercentVal] = useState(percent);
+
+  useEffect(() => {
+    const percent = (Number(inputVal2) * 100) / Number(publicRound1Allocation);
+    setPercentVal(percent);
+  }, [inputVal2]);
 
   return (
     <Flex
@@ -430,10 +436,10 @@ const STOSTier = (props: {
               textAlign={'center'}
               lineHeight={'32px'}
               fontWeight={100}>
-              {isNaN(percent)
+              {isNaN(percentVal)
                 ? '(- %)'
                 : `(${
-                    percent.toFixed(3).replace(/\.(\d\d)\d?$/, '.$1') || '-'
+                    percentVal.toFixed(3).replace(/\.(\d\d)\d?$/, '.$1') || '-'
                   }%)`}
             </Text>
           </Flex>
