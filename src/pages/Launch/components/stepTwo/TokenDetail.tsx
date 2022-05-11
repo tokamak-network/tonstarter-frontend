@@ -129,7 +129,7 @@ const SubTitle = (props: {
 
   const dispatch = useAppDispatch();
   const {
-    data: {tempVaultData},
+    data: {tempVaultData, selectedVaultIndex},
   } = useAppSelector(selectLaunch);
 
   //@ts-ignore
@@ -237,6 +237,46 @@ const SubTitle = (props: {
     }
   };
 
+  const RightInputComponent = useMemo(() => {
+    switch (leftTitle) {
+      case 'Token Allocation for Liquidity Pool (5~10%)':
+        return (
+          <NumberInputStep
+            valueProp={inputVal}
+            formikName={formikName}></NumberInputStep>
+        );
+      case 'Select Pair':
+        return <Text>{inputVal}</Text>;
+      case 'Pool Address\n(0.3% fee)':
+        if (selectedVaultIndex && selectedVaultIndex < 6) {
+          return <Text>{inputVal}</Text>;
+        }
+        return (
+          <InputField
+            w={120}
+            h={32}
+            fontSize={13}
+            value={inputVal}
+            setValue={setInputVal}
+            formikName={formikName}
+            inputRef={inputRef}
+            style={{textAlign: 'right'}}></InputField>
+        );
+      default:
+        return (
+          <InputField
+            w={120}
+            h={32}
+            fontSize={13}
+            value={inputVal}
+            setValue={setInputVal}
+            formikName={formikName}
+            inputRef={inputRef}
+            style={{textAlign: 'right'}}></InputField>
+        );
+    }
+  }, [inputVal]);
+
   return (
     <Flex
       pl={'25px'}
@@ -327,26 +367,7 @@ const SubTitle = (props: {
           </Flex>
         ) : (
           <Flex>
-            {leftTitle !== 'Token Allocation for Liquidity Pool (5~10%)' ? (
-              <InputField
-                w={120}
-                h={32}
-                fontSize={13}
-                value={inputVal}
-                setValue={setInputVal}
-                formikName={formikName}
-                inputRef={inputRef}
-                style={{textAlign: 'right'}}
-                // numberOnly={
-                //   leftTitle !== 'Address for receiving funds' &&
-                //   !leftTitle.includes('Pool Address')
-                // }
-              ></InputField>
-            ) : (
-              <NumberInputStep
-                valueProp={inputVal}
-                formikName={formikName}></NumberInputStep>
-            )}
+            {RightInputComponent}
             {percent !== undefined && (
               <Text
                 ml={'5px'}
@@ -496,6 +517,7 @@ const PublicTokenDetail = (props: {
   firstColData:
     | PublicTokenColData['firstColData']
     | PublicTokenColData['liquidityColData']
+    | PublicTokenColData['initialLiquidityColData']
     | null;
   secondColData: PublicTokenColData['secondColData'] | null;
   thirdColData: PublicTokenColData['thirdColData'] | null;
@@ -882,6 +904,11 @@ const TokenDetail = (props: {
                 title: 'Pool Address\n(0.3% fee)',
                 content: thisVault.poolAddress,
                 formikName: 'poolAddress',
+              },
+              {
+                title: 'Exchange Ratio 1 TOS',
+                content: String(values.tosPrice),
+                formikName: 'tosPrice',
               },
             ]}
             secondColData={null}

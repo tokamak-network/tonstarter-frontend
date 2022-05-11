@@ -39,18 +39,35 @@ const Middle = () => {
       }
     });
 
-    setFieldValue(
-      'vaults',
-      [
-        ...otherVaultValue,
-        {
-          ...thisVaultValue[0],
-          ...tempVaultData,
-        },
-      ].sort((a, b) => {
-        return a.index > b.index ? 1 : b.index > a.index ? -1 : 0;
-      }),
-    );
+    if ('tosPrice' in tempVaultData) {
+      //@ts-ignore
+      setFieldValue('tosPrice', tempVaultData.tosPrice);
+      setFieldValue(
+        'vaults',
+        [
+          ...otherVaultValue,
+          {
+            ...thisVaultValue[0],
+            ...(tempVaultData as Object),
+          },
+        ].sort((a, b) => {
+          return a.index > b.index ? 1 : b.index > a.index ? -1 : 0;
+        }),
+      );
+    } else {
+      setFieldValue(
+        'vaults',
+        [
+          ...otherVaultValue,
+          {
+            ...thisVaultValue[0],
+            ...tempVaultData,
+          },
+        ].sort((a, b) => {
+          return a.index > b.index ? 1 : b.index > a.index ? -1 : 0;
+        }),
+      );
+    }
   }
 
   useEffect(() => {
@@ -64,7 +81,8 @@ const Middle = () => {
   const isDisable =
     selectedVaultDetail?.index === 5 ||
     (selectedVaultDetail?.vaultType !== 'Public' &&
-      selectedVaultDetail?.vaultType !== 'Liquidity Incentive');
+      selectedVaultDetail?.vaultType !== 'Liquidity Incentive' &&
+      selectedVaultDetail?.vaultType !== 'Initial Liquidity');
 
   return (
     <Flex flexDir={'column'} w={'100%'}>

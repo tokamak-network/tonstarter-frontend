@@ -77,35 +77,37 @@ const InputField: React.FC<InputFieldProp> = (props) => {
             //@ts-ignore
             setValue(e.target.value);
             if (formikName) {
-              !isStosTier
-                ? dispatch(
-                    saveTempVaultData({
-                      data: {
-                        ...tempVaultData,
-                        [formikName]: Number(e.target.value),
+              if (!isStosTier) {
+                return dispatch(
+                  saveTempVaultData({
+                    data: {
+                      ...tempVaultData,
+                      [formikName]: Number(e.target.value),
+                    },
+                  }),
+                );
+              }
+
+              dispatch(
+                saveTempVaultData({
+                  data: {
+                    ...tempVaultData,
+                    stosTier: {
+                      //@ts-ignore
+                      ...tempVaultData.stosTier,
+                      [stosTier]: {
+                        [formikName]: e.target.value,
+                        [formikName === 'requiredStos'
+                          ? 'allocatedToken'
+                          : 'requiredStos']:
+                          formikName === 'requiredStos'
+                            ? allocatedTokenData
+                            : requiredStosData,
                       },
-                    }),
-                  )
-                : dispatch(
-                    saveTempVaultData({
-                      data: {
-                        ...tempVaultData,
-                        stosTier: {
-                          //@ts-ignore
-                          ...tempVaultData.stosTier,
-                          [stosTier]: {
-                            [formikName]: e.target.value,
-                            [formikName === 'requiredStos'
-                              ? 'allocatedToken'
-                              : 'requiredStos']:
-                              formikName === 'requiredStos'
-                                ? allocatedTokenData
-                                : requiredStosData,
-                          },
-                        },
-                      },
-                    }),
-                  );
+                    },
+                  },
+                }),
+              );
             }
           }}
         />
