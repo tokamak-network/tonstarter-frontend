@@ -31,6 +31,7 @@ import {convertTimeStamp} from 'utils/convertTIme';
 import {useToast} from 'hooks/useToast';
 import {CustomTooltip} from 'components/Tooltip';
 import {stosMinimumRequirements} from '@Launch/const';
+import {NumberInputStep} from './NumberInputField';
 
 export const MainTitle = (props: {
   leftTitle: string;
@@ -311,20 +312,26 @@ const SubTitle = (props: {
           </Flex>
         ) : (
           <Flex>
-            <InputField
-              w={120}
-              h={32}
-              fontSize={13}
-              value={inputVal}
-              setValue={setInputVal}
-              formikName={formikName}
-              inputRef={inputRef}
-              style={{textAlign: 'right'}}
-              // numberOnly={
-              //   leftTitle !== 'Address for receiving funds' &&
-              //   !leftTitle.includes('Pool Address')
-              // }
-            ></InputField>
+            {leftTitle !== 'Token Allocation for Liquidity Pool (5~10%)' ? (
+              <InputField
+                w={120}
+                h={32}
+                fontSize={13}
+                value={inputVal}
+                setValue={setInputVal}
+                formikName={formikName}
+                inputRef={inputRef}
+                style={{textAlign: 'right'}}
+                // numberOnly={
+                //   leftTitle !== 'Address for receiving funds' &&
+                //   !leftTitle.includes('Pool Address')
+                // }
+              ></InputField>
+            ) : (
+              <NumberInputStep
+                valueProp={inputVal}
+                formikName={formikName}></NumberInputStep>
+            )}
             {percent !== undefined && (
               <Text
                 ml={'5px'}
