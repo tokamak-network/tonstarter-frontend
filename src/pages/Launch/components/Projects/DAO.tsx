@@ -8,6 +8,7 @@ import {
   useColorMode,
   Button,
   Input,
+  Link,
 } from '@chakra-ui/react';
 import {shortenAddress} from 'utils/address';
 import {PublicPageTable} from './PublicPageTable';
@@ -39,10 +40,10 @@ export const DAO: FC<DAO> = ({vault, project}) => {
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
 
   const typeBVault = new Contract(
-    vault.vaultAddress, 
+    vault.vaultAddress,
     TypeBVaultABI.abi,
-    library
-  )
+    library,
+  );
   useEffect(() => {
     async function getBalance() {
       if (account === null || account === undefined || library === undefined) {
@@ -52,7 +53,6 @@ export const DAO: FC<DAO> = ({vault, project}) => {
       const tokBalance = await projectToken.balanceOf(vault.vaultAddress);
       setProjTokenBalance(ethers.utils.formatEther(tokBalance));
       console.log(ethers.utils.formatEther(tokBalance));
-      
     }
     getBalance();
   }, [transactionType, blockNumber]);
@@ -84,38 +84,38 @@ export const DAO: FC<DAO> = ({vault, project}) => {
     }
   }, [account, project]);
 
+  async function claim() {
+    if (account === null || account === undefined || library === undefined) {
+      return;
+    }
+    const signer = getSigner(library, account);
 
-async function claim() {
-  if (account === null || account === undefined || library === undefined) {
-    return;
-  }
-  const signer = getSigner(library, account);
-
-  try {
-    const fotmattedAmount = ethers.utils.parseEther(claimValue.toString());
-    const receipt = await typeBVault.connect(signer).claim(claimAddress, fotmattedAmount);
-    store.dispatch(setTxPending({tx: true}));
-    if (receipt) {
-      toastWithReceipt(receipt, setTxPending, 'Launch');
-      await receipt.wait();
+    try {
+      const fotmattedAmount = ethers.utils.parseEther(claimValue.toString());
+      const receipt = await typeBVault
+        .connect(signer)
+        .claim(claimAddress, fotmattedAmount);
+      store.dispatch(setTxPending({tx: true}));
+      if (receipt) {
+        toastWithReceipt(receipt, setTxPending, 'Launch');
+        await receipt.wait();
+      }
+    } catch (e) {
+      store.dispatch(setTxPending({tx: false}));
+      store.dispatch(
+        //@ts-ignore
+        openToast({
+          payload: {
+            status: 'error',
+            title: 'Tx fail to send',
+            description: `something went wrong`,
+            duration: 5000,
+            isClosable: true,
+          },
+        }),
+      );
     }
   }
-  catch (e) {
-    store.dispatch(setTxPending({tx: false}));
-    store.dispatch(
-      //@ts-ignore
-      openToast({
-        payload: {
-          status: 'error',
-          title: 'Tx fail to send',
-          description: `something went wrong`,
-          duration: 5000,
-          isClosable: true,
-        },
-      }),
-    );
-  }
-}
   const themeDesign = {
     border: {
       light: 'solid 1px #e6eaee',
@@ -183,9 +183,18 @@ async function claim() {
               color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Vault Admin Address
             </Text>
-            <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-              {vault.adminAddress ? shortenAddress(vault.adminAddress) : 'N/A'}
-            </Text>
+            <Link
+              isExternal
+              href={
+                vault.adminAddress
+                  ? `https://rinkeby.etherscan.io/address/${vault.adminAddress}`
+                  : ''
+              }
+              color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+              _hover={{color: '#2a72e5'}}
+              fontFamily={theme.fonts.fld}>
+              {vault.adminAddress ? shortenAddress(vault.adminAddress) : 'NA'}
+            </Link>
           </GridItem>
           <GridItem
             border={themeDesign.border[colorMode]}
@@ -198,9 +207,18 @@ async function claim() {
               color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Vault Contract Address
             </Text>
-            <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-              {vault.vaultAddress ? shortenAddress(vault.vaultAddress) : 'N/A'}
-            </Text>
+            <Link
+              isExternal
+              href={
+                vault.vaultAddress
+                  ? `https://rinkeby.etherscan.io/address/${vault.vaultAddress}`
+                  : ''
+              }
+              color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+              _hover={{color: '#2a72e5'}}
+              fontFamily={theme.fonts.fld}>
+              {vault.vaultAddress ? shortenAddress(vault.vaultAddress) : 'NA'}
+            </Link>
           </GridItem>
         </Flex>
         <Flex flexDirection={'column'}>
@@ -226,7 +244,9 @@ async function claim() {
                 className={'chart-cell'}
                 fontFamily={theme.fonts.fld}
                 justifyContent={'flex-start'}>
-                <Text mr={'38px'} w={'58px'}>Claim Amount</Text>
+                <Text mr={'38px'} w={'58px'}>
+                  Claim Amount
+                </Text>
                 <Flex
                   borderRadius={'4px'}
                   w={'240px'}
@@ -247,7 +267,7 @@ async function claim() {
                       setClaimValue(Number(e.target.value))
                     }></Input>
                   {vault.isDeployed ? (
-                    <Text 
+                    <Text
                       mr={'15px'}
                       color={colorMode === 'light' ? '#86929d' : '#818181'}>
                       {project.tokenSymbol}
@@ -256,15 +276,18 @@ async function claim() {
                     <></>
                   )}
                 </Flex>
-                <Flex flexDir={'row'} fontSize={'11px'}>Balance : {vault.isDeployed ? (
-              <Text ml={'2px'} color={'#0070ed'}>
-                {Number(projTokenBalance).toLocaleString()}
-                {` `}
-                {project.tokenSymbol}
-              </Text>
-            ) : (
-              <></>
-            )}</Flex>
+                <Flex flexDir={'row'} fontSize={'11px'}>
+                  Balance :{' '}
+                  {vault.isDeployed ? (
+                    <Text ml={'2px'} color={'#0070ed'}>
+                      {Number(projTokenBalance).toLocaleString()}
+                      {` `}
+                      {project.tokenSymbol}
+                    </Text>
+                  ) : (
+                    <></>
+                  )}
+                </Flex>
               </GridItem>
               <GridItem
                 border={themeDesign.border[colorMode]}
@@ -272,7 +295,9 @@ async function claim() {
                 fontFamily={theme.fonts.fld}
                 justifyContent={'flex-start'}
                 borderBottomRightRadius={'4px'}>
-                <Text mr={'38px'} w={'58px'}>Address</Text>
+                <Text mr={'38px'} w={'58px'}>
+                  Address
+                </Text>
                 <Flex
                   borderRadius={'4px'}
                   w={'240px'}
@@ -332,7 +357,7 @@ async function claim() {
                           color: '#fff',
                         }
                   }
-                  onClick={()=>claim()}>
+                  onClick={() => claim()}>
                   Claim
                 </Button>
               </GridItem>

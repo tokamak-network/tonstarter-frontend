@@ -8,6 +8,7 @@ import {
   useTheme,
   useColorMode,
   Button,
+  Link,
 } from '@chakra-ui/react';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {getSigner} from 'utils/contract';
@@ -93,10 +94,13 @@ export const Custom: FC<Custom> = ({vault, project}) => {
 
       // const claimDate = await vaultC.connect(signer).claimTimes(currentRound);
       const claimDate =
-      Number(currentRound) === Number(claimCounts)
-        ? await vaultC.connect(signer).claimTimes(Number(currentRound) - 1)
-        : await vaultC.connect(signer).claimTimes(currentRound);
-      setDistributeDisable(Number(nowClaimRound) >= Number(currentRound) || !ethers.utils.isAddress(claimAddress));
+        Number(currentRound) === Number(claimCounts)
+          ? await vaultC.connect(signer).claimTimes(Number(currentRound) - 1)
+          : await vaultC.connect(signer).claimTimes(currentRound);
+      setDistributeDisable(
+        Number(nowClaimRound) >= Number(currentRound) ||
+          !ethers.utils.isAddress(claimAddress),
+      );
       const amountFormatted = parseInt(amount);
       setShowDate(amountFormatted === 0 && Number(claimDate) > now);
       setClaimTime(claimDate);
@@ -171,9 +175,18 @@ export const Custom: FC<Custom> = ({vault, project}) => {
               color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Vault Admin Address
             </Text>
-            <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-              {vault.adminAddress ? shortenAddress(vault.adminAddress) : 'N/A'}
-            </Text>
+            <Link
+              isExternal
+              href={
+                vault.adminAddress
+                  ? `https://rinkeby.etherscan.io/address/${vault.adminAddress}`
+                  : ''
+              }
+              color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+              _hover={{color: '#2a72e5'}}
+              fontFamily={theme.fonts.fld}>
+              {vault.adminAddress ? shortenAddress(vault.adminAddress) : 'NA'}
+            </Link>
           </GridItem>
           <GridItem
             border={themeDesign.border[colorMode]}
@@ -186,9 +199,18 @@ export const Custom: FC<Custom> = ({vault, project}) => {
               color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Vault Contract Address
             </Text>
-            <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-              {vault.vaultAddress ? shortenAddress(vault.vaultAddress) : 'N/A'}
-            </Text>
+            <Link
+              isExternal
+              href={
+                vault.vaultAddress
+                  ? `https://rinkeby.etherscan.io/address/${vault.vaultAddress}`
+                  : ''
+              }
+              color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+              _hover={{color: '#2a72e5'}}
+              fontFamily={theme.fonts.fld}>
+              {vault.vaultAddress ? shortenAddress(vault.vaultAddress) : 'NA'}
+            </Link>
           </GridItem>
           <GridItem
             border={themeDesign.border[colorMode]}

@@ -83,7 +83,17 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Owner
             </Text>
-            <Text>{shortenAddress(project.owner)}</Text>
+            <Link
+              isExternal
+              href={
+                project.owner
+                  ? `https://rinkeby.etherscan.io/address/${project.owner}`
+                  : ''
+              }
+              color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+              _hover={{color: '#2a72e5'}}>
+              {project.owner ? shortenAddress(project.owner) : 'NA'}
+            </Link>
           </Flex>
           <Flex
             p={'0px 20px'}
@@ -119,10 +129,12 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Project Main Image
             </Text>
-            <Link  isExternal
-              href={project.projectMainImage? project.projectMainImage: ''} color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+            <Link
+              isExternal
+              href={project.projectMainImage ? project.projectMainImage : ''}
+              color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
               _hover={{color: '#2a72e5'}}>
-            {project.projectMainImage? 'Image Link' : 'NA'}
+              {project.projectMainImage ? 'Image Link' : 'NA'}
             </Link>
           </Flex>
           <Flex
@@ -139,8 +151,8 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
               color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
               _hover={{color: '#2a72e5'}}
               isExternal
-              href={project.website? project.website: ''}>
-            {project.website? project.website: 'NA'}
+              href={project.website ? project.website : ''}>
+              {project.website ? project.website : 'NA'}
             </Link>
           </Flex>
           <Flex
@@ -157,8 +169,8 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
               color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
               _hover={{color: '#2a72e5'}}
               isExternal
-              href={project.medium? project.medium: ''}>
-              {project.medium? project.medium: 'NA'}
+              href={project.medium ? project.medium : ''}>
+              {project.medium ? project.medium : 'NA'}
             </Link>
           </Flex>
 
@@ -176,8 +188,8 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
               color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
               _hover={{color: '#2a72e5'}}
               isExternal
-              href={project.twitter? project.twitter: ''}>
-              {project.twitter? project.twitter: 'NA'}
+              href={project.twitter ? project.twitter : ''}>
+              {project.twitter ? project.twitter : 'NA'}
             </Link>
           </Flex>
         </Flex>
@@ -258,8 +270,8 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
               color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
               _hover={{color: '#2a72e5'}}
               isExternal
-              href={project.tokenSymbolImage? project.tokenSymbolImage: ''}>
-              {project.tokenSymbolImage? 'Image Link': 'NA'}
+              href={project.tokenSymbolImage ? project.tokenSymbolImage : ''}>
+              {project.tokenSymbolImage ? 'Image Link' : 'NA'}
             </Link>
           </Flex>
           <Flex
@@ -276,8 +288,8 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
               color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
               _hover={{color: '#2a72e5'}}
               isExternal
-              href={project.telegram? project.telegram: ''}>
-              {project.telegram? project.telegram: 'NA'}
+              href={project.telegram ? project.telegram : ''}>
+              {project.telegram ? project.telegram : 'NA'}
             </Link>
           </Flex>
           <Flex
@@ -294,8 +306,8 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
               color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
               _hover={{color: '#2a72e5'}}
               isExternal
-              href={project.discord? project.discord: ''}>
-              {project.discord? project.discord: 'NA'}
+              href={project.discord ? project.discord : ''}>
+              {project.discord ? project.discord : 'NA'}
             </Link>
           </Flex>
         </Flex>

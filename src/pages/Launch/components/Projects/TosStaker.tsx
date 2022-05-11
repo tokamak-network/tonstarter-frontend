@@ -7,6 +7,7 @@ import {
   useTheme,
   useColorMode,
   Button,
+  Link,
 } from '@chakra-ui/react';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {getSigner} from 'utils/contract';
@@ -95,8 +96,8 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
           ? await TOSStaker.connect(signer).claimTimes(Number(currentRound) - 1)
           : await TOSStaker.connect(signer).claimTimes(currentRound);
       const amountFormatted = parseInt(amount);
-      
-      setShowDate(amountFormatted === 0  && Number(claimDate) > now);
+
+      setShowDate(amountFormatted === 0 && Number(claimDate) > now);
       setDistributable(amountFormatted);
       setDistributeDisable(disabled);
       setClaimTime(claimDate);
@@ -171,9 +172,18 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
               color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Vault Admin Address
             </Text>
-            <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-              {vault.adminAddress ? shortenAddress(vault.adminAddress) : 'N/A'}
-            </Text>
+            <Link
+              isExternal
+              href={
+                vault.adminAddress
+                  ? `https://rinkeby.etherscan.io/address/${vault.adminAddress}`
+                  : ''
+              }
+              color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+              _hover={{color: '#2a72e5'}}
+              fontFamily={theme.fonts.fld}>
+              {vault.adminAddress ? shortenAddress(vault.adminAddress) : 'NA'}
+            </Link>
           </GridItem>
           <GridItem
             border={themeDesign.border[colorMode]}
@@ -186,9 +196,18 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
               color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Vault Contract Address
             </Text>
-            <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-              {vault.vaultAddress ? shortenAddress(vault.vaultAddress) : 'N/A'}
-            </Text>
+            <Link
+              isExternal
+              href={
+                vault.vaultAddress
+                  ? `https://rinkeby.etherscan.io/address/${vault.vaultAddress}`
+                  : ''
+              }
+              color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+              _hover={{color: '#2a72e5'}}
+              fontFamily={theme.fonts.fld}>
+              {vault.vaultAddress ? shortenAddress(vault.vaultAddress) : 'NA'}
+            </Link>
           </GridItem>
         </Flex>
         <Flex flexDirection={'column'}>
@@ -265,7 +284,7 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
             className={'chart-cell'}
             fontFamily={theme.fonts.fld}
             borderBottomRightRadius={'4px'}>
-            {showDate === true? (
+            {showDate === true ? (
               <>
                 <Flex flexDir={'column'}>
                   <Text color={colorMode === 'light' ? '#9d9ea5' : '#7e8993'}>
