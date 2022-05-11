@@ -1050,7 +1050,12 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 (claimData: VaultSchedule) => claimData.claimTime,
               );
               const claimAmountsParam = selectedVaultDetail?.claim.map(
-                (claimData: VaultSchedule) => claimData.claimTokenAllocation,
+                (claimData: VaultSchedule) => {
+                  const claimTokenAllocationWei = convertToWei(
+                    String(claimData.claimTokenAllocation),
+                  );
+                  return claimTokenAllocationWei;
+                },
               );
               const TOSStakerVaultSecondContract = new Contract(
                 selectedVaultDetail?.vaultAddress as string,
@@ -1131,7 +1136,12 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 (claimData: VaultSchedule) => claimData.claimTime,
               );
               const claimAmountsParam = selectedVaultDetail?.claim.map(
-                (claimData: VaultSchedule) => claimData.claimTokenAllocation,
+                (claimData: VaultSchedule) => {
+                  const claimTokenAllocationWei = convertToWei(
+                    String(claimData.claimTokenAllocation),
+                  );
+                  return claimTokenAllocationWei;
+                },
               );
 
               const TypeCVaultLogic_CONTRACT = new Contract(
