@@ -10,6 +10,8 @@ import {
 } from '@chakra-ui/react';
 import {UpcomingProjectType} from '@Starter/types';
 import DoMToken from 'assets/banner/DoM.png';
+import commafy from 'utils/commafy';
+import {convertTimeStamp} from 'utils/convertTIme';
 
 type UpcomingProjectProp = {
   upcomingProject: UpcomingProjectType[];
@@ -45,13 +47,11 @@ export const UpcomingProject = (props: UpcomingProjectProp) => {
                 window.open(`${project.website}`);
               }}>
               <Flex justifyContent="space-between" mb={15}>
-                {/* <TokenImage imageLink={project.tokenSymbolImage}></TokenImage> */}
-                <TokenImage imageLink={DoMToken}></TokenImage>
+                <TokenImage imageLink={project.tokenSymbolImage}></TokenImage>
               </Flex>
               <Flex flexDir="column" mb={'25px'}>
                 <Text h={'36px'} {...STATER_STYLE.mainText({colorMode})}>
-                  {/* {project.name} */}
-                  Dragons of Midgard
+                  {project.name}
                 </Text>
                 <Flex>
                   <Text
@@ -61,8 +61,7 @@ export const UpcomingProject = (props: UpcomingProjectProp) => {
                     Sale Date
                   </Text>
                   <Text {...STATER_STYLE.subTextBlack({colorMode})}>
-                    {/* {project.saleStart} ~ {project.saleEnd} */}
-                    2021.12.14. ~ 12.22.
+                    {project.saleStart} ~ {project.saleEnd}
                   </Text>
                 </Flex>
               </Flex>
@@ -83,9 +82,8 @@ export const UpcomingProject = (props: UpcomingProjectProp) => {
                         colorMode,
                         fontSize: 20,
                       })}>
-                      {project.tokenFundRaisingTargetAmount}
+                      {commafy(project.tokenFundRaisingTargetAmount)}
                     </Text>
-                    <Text>{project.fundingTokenType}</Text>
                   </Box>
                 </Box>
                 <Box d="flex" flexDir="column">

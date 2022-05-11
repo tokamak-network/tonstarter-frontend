@@ -75,14 +75,14 @@ export const fetchStarters = createAsyncThunk(
 
       const activeData = matchData.filter(
         (data: AdminObject) =>
-          data.position === 'active' && data.endDepositTime > nowTimeStamp,
+          data.endDepositTime > nowTimeStamp &&
+          data.startAddWhiteTime < nowTimeStamp,
       );
       const upcomingData = matchData.filter(
-        (data: AdminObject) => data.position === 'upcoming',
+        (data: AdminObject) => data.snapshot < nowTimeStamp,
       );
       const pastData = matchData.filter(
-        (data: AdminObject) =>
-          data.position === 'active' && data.endDepositTime < nowTimeStamp,
+        (data: AdminObject) => data.endDepositTime < nowTimeStamp,
       );
 
       const myProjects = matchData.filter(
@@ -234,8 +234,8 @@ export const fetchStarters = createAsyncThunk(
           return {
             ...projectData,
             tokenExRatio:
-              projectData.projectFundingTokenRatio /
-              projectData.projectTokenRatio,
+              projectData.projectTokenRatio /
+              projectData.projectFundingTokenRatio,
           };
         }),
       };

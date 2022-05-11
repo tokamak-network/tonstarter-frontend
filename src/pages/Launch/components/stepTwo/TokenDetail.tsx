@@ -263,7 +263,22 @@ const SubTitle = (props: {
               'the value of total token allocation.',
             ]}
             toolTipH="44px"
-            toolTipW={254}></CustomTooltip>
+            toolTipW={254}
+            placement={'top'}></CustomTooltip>
+        </Flex>
+      ) : leftTitle === 'Hard Cap' && !isSecondColData ? (
+        <Flex>
+          <Text color={'#7e8993'} mr={'5px'}>
+            {leftTitle}
+          </Text>
+          <CustomTooltip
+            msg={[
+              'Hard cap is fundraising target amount to be ',
+              'achieved in the value of total token allocation.',
+            ]}
+            toolTipH="44px"
+            toolTipW={254}
+            placement={'top'}></CustomTooltip>
         </Flex>
       ) : (
         <Text

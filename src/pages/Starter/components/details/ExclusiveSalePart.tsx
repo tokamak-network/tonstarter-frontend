@@ -168,7 +168,6 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
   } = saleInfo;
   const {colorMode} = useColorMode();
   const theme = useTheme();
-
   const {account, library} = useActiveWeb3React();
 
   const [inputTonBalance, setInputTonBalance] = useState<string>('0');

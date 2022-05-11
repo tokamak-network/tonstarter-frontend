@@ -14,6 +14,9 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
   const {colorMode} = useColorMode();
   const {library} = useWeb3React();
 
+  console.log('--detailInfo--');
+  console.log(detailInfo);
+
   const theme = useTheme();
 
   const {STATER_STYLE} = theme;

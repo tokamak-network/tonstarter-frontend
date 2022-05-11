@@ -89,6 +89,7 @@ export const StarterDetail = () => {
           PUBLICSALE_CONTRACT.tiersExAccount(4),
           PUBLICSALE_CONTRACT.snapshot(),
         ]);
+
         setDetailInfo({
           userTier: Number(res[0].toString()) as Tier,
           totalExpectSaleAmount: {

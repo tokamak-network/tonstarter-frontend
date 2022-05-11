@@ -223,8 +223,7 @@ const ActiveProjectContainer: React.FC<{
                     colorMode,
                     fontSize: 20,
                   })}>
-                  {Number(project.projectTokenRatio) /
-                    Number(project.projectTokenRatio)}
+                  {project.projectFundingTokenRatio}
                 </Text>
                 <Text>TON</Text>
               </Flex>
@@ -235,8 +234,8 @@ const ActiveProjectContainer: React.FC<{
                     colorMode,
                     fontSize: 20,
                   })}>
-                  {Number(project.projectFundingTokenRatio) /
-                    Number(project.projectTokenRatio)}
+                  {Number(project.projectTokenRatio) /
+                    Number(project.projectFundingTokenRatio)}
                 </Text>
                 <Text>{project.tokenName}</Text>
               </Flex>

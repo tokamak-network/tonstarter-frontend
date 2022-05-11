@@ -52,7 +52,6 @@ import {convertNumber, convertToWei} from 'utils/number';
 import commafy from 'utils/commafy';
 import {convertTimeStamp} from 'utils/convertTIme';
 import {selectLaunch} from '@Launch/launch.reducer';
-import {editProject, saveProject} from '@Launch/utils/saveProject';
 
 //Project
 
@@ -857,11 +856,25 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               // _Tier[6] : Tier3의 percent
               // (Tier[4]~Tier[7]의 합은 10000)
               // _Tier[7] : Tier4의 percent
-              const param0: number[] = [
-                PublicVaultData.stosTier.oneTier.requiredStos as number,
-                PublicVaultData.stosTier.twoTier.requiredStos as number,
-                PublicVaultData.stosTier.threeTier.requiredStos as number,
-                PublicVaultData.stosTier.fourTier.requiredStos as number,
+
+              const tier1RequiredStosWei = convertToWei(
+                String(PublicVaultData.stosTier.oneTier.requiredStos),
+              );
+              const tier2RequiredStosWei = convertToWei(
+                String(PublicVaultData.stosTier.twoTier.requiredStos),
+              );
+              const tier3RequiredStosWei = convertToWei(
+                String(PublicVaultData.stosTier.threeTier.requiredStos),
+              );
+              const tier4RequiredStosWei = convertToWei(
+                String(PublicVaultData.stosTier.fourTier.requiredStos),
+              );
+
+              const param0: any[] = [
+                tier1RequiredStosWei,
+                tier2RequiredStosWei,
+                tier3RequiredStosWei,
+                tier4RequiredStosWei,
                 (Number(
                   PublicVaultData.stosTier.oneTier.allocatedToken as number,
                 ) *
