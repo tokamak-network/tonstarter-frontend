@@ -3,6 +3,7 @@ import {
   Flex,
   Text,
   Grid,
+  Input,
   GridItem,
   useTheme,
   useColorMode,
@@ -20,6 +21,7 @@ import momentTZ from 'moment-timezone';
 import moment from 'moment';
 import * as TONStakerAbi from 'services/abis/TONStakerAbi.json';
 import * as TONStakerInitializeAbi from 'services/abis/TONStakerInitializeAbi.json';
+import * as VaultCLogicAbi from 'services/abis/VaultCLogicAbi.json';
 import store from 'store';
 import {toastWithReceipt} from 'utils';
 import {setTxPending} from 'store/tx.reducer';
@@ -28,63 +30,31 @@ import {useAppSelector} from 'hooks/useRedux';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {BASE_PROVIDER} from 'constants/index';
 
-type TonStaker = {
+type Custom = {
   vault: any;
   project: any;
 };
 
-export const TonStaker: FC<TonStaker> = ({vault, project}) => {
+export const Custom: FC<Custom> = ({vault, project}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
   const [distributable, setDistributable] = useState<number>(0);
   const [claimTime, setClaimTime] = useState<number>(0);
+  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
+  const [distributeDisable, setDistributeDisable] = useState<boolean>(true);
+  const vaultC = new Contract(vault.vaultAddress, VaultCLogicAbi.abi, library);
+  const [claimAddress, setClaimAddress] = useState<string>('');
   const [showDate, setShowDate] = useState<boolean>(false);
   const network = BASE_PROVIDER._network.name;
 
-  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
-  const [distributeDisable, setDistributeDisable] = useState<boolean>(true);
-  const TONStaker = new Contract(
-    vault.vaultAddress,
-    TONStakerInitializeAbi.abi,
-    library,
-  );
-  // console.log('tonstaker vault: ', vault);
-  useEffect(() => {
-    async function getLPToken() {
-      if (account === null || account === undefined || library === undefined) {
-        return;
-      }
-      const now = moment().unix();
-      const signer = getSigner(library, account);
-      const currentRound = await TONStaker.connect(signer).currentRound();
-      const nowClaimRound = await TONStaker.connect(signer).nowClaimRound();
-      const amount = await TONStaker.connect(signer).calculClaimAmount(
-        currentRound,
-      );
-      const totalClaimCount = await TONStaker.connect(
-        signer,
-      ).totalClaimCounts();
-      setDistributeDisable(Number(nowClaimRound) >= Number(currentRound));
-      const disabled = Number(nowClaimRound) >= Number(currentRound);
-      const claimDate =
-        Number(currentRound) === Number(totalClaimCount)
-          ? await TONStaker.connect(signer).claimTimes(Number(currentRound) - 1)
-          : await TONStaker.connect(signer).claimTimes(currentRound);
-      const amountFormatted = parseInt(amount);
-      setShowDate(amountFormatted === 0 && Number(claimDate) > now);
-      setClaimTime(claimDate);
-      setDistributable(amountFormatted);
-    }
-    getLPToken();
-  }, [account, library, transactionType, blockNumber]);
-  async function distribute() {
+  async function claim() {
     if (account === null || account === undefined || library === undefined) {
       return;
     }
     const signer = getSigner(library, account);
     try {
-      const receipt = await TONStaker.connect(signer).claim();
+      const receipt = await vaultC.connect(signer).claim(claimAddress);
       store.dispatch(setTxPending({tx: true}));
       if (receipt) {
         toastWithReceipt(receipt, setTxPending, 'Launch');
@@ -107,6 +77,39 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
     }
   }
 
+  useEffect(() => {
+    async function getLPToken() {
+      if (account === null || account === undefined || library === undefined) {
+        return;
+      }
+      const now = moment().unix();
+      const signer = getSigner(library, account);
+      const currentRound = await vaultC.connect(signer).currentRound();
+      const amount = await vaultC
+        .connect(signer)
+        .calcalClaimAmount(currentRound);
+      console.log('amount', amount);
+
+      const nowClaimRound = await vaultC.connect(signer).nowClaimRound();
+      const disabled = Number(nowClaimRound) >= Number(currentRound);
+      const claimCounts = await vaultC.connect(signer).totalClaimCounts();
+
+      // const claimDate = await vaultC.connect(signer).claimTimes(currentRound);
+      const claimDate =
+        Number(currentRound) === Number(claimCounts)
+          ? await vaultC.connect(signer).claimTimes(Number(currentRound) - 1)
+          : await vaultC.connect(signer).claimTimes(currentRound);
+      setDistributeDisable(
+        Number(nowClaimRound) >= Number(currentRound) ||
+          !ethers.utils.isAddress(claimAddress),
+      );
+      const amountFormatted = parseInt(amount);
+      setShowDate(amountFormatted === 0 && Number(claimDate) > now);
+      setClaimTime(claimDate);
+      setDistributable(amountFormatted);
+    }
+    getLPToken();
+  }, [account, library, transactionType, blockNumber]);
   const themeDesign = {
     border: {
       light: 'solid 1px #e6eaee',
@@ -194,7 +197,7 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
             borderRight={'none'}
             className={'chart-cell'}
             fontFamily={theme.fonts.fld}
-            borderBottomLeftRadius={'4px'}>
+            borderBottom={'none'}>
             <Text
               w={'81px'}
               color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
@@ -215,6 +218,12 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
               {vault.vaultAddress ? shortenAddress(vault.vaultAddress) : 'NA'}
             </Link>
           </GridItem>
+          <GridItem
+            border={themeDesign.border[colorMode]}
+            borderRight={'none'}
+            className={'chart-cell'}
+            fontFamily={theme.fonts.fld}
+            borderBottomLeftRadius={'4px'}></GridItem>
         </Flex>
         <Flex flexDirection={'column'}>
           <GridItem
@@ -227,7 +236,7 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
             <Text
               fontSize={'15px'}
               color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-              Distribute
+              Claim
             </Text>
           </GridItem>
           <GridItem
@@ -249,7 +258,39 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
                 {project.tokenSymbol}
               </Text>
             </Flex>
-
+          </GridItem>
+          <GridItem
+            border={themeDesign.border[colorMode]}
+            className={'chart-cell'}
+            fontFamily={theme.fonts.fld}
+            justifyContent={'flex-start'}
+            borderBottom={'none'}>
+            <Text mr={'10px'}>Address</Text>
+            <Flex
+              borderRadius={'4px'}
+              w={'240px'}
+              h={'32px'}
+              alignItems={'baseline'}
+              border={'1px solid #dfe4ee'}
+              mr={'15px'}
+              fontWeight={'bold'}>
+              <Input
+                border={'none'}
+                h={'32px'}
+                textAlign={'right'}
+                alignItems={'center'}
+                value={claimAddress}
+                isInvalid={!ethers.utils.isAddress(claimAddress)}
+                fontSize={'15px'}
+                _focus={{norder: 'none'}}
+                _invalid={{
+                  height: '32px',
+                  marginTop: '-1px',
+                  border: '1px solid red',
+                  borderRadius: '4px',
+                }}
+                onChange={(e: any) => setClaimAddress(e.target.value)}></Input>
+            </Flex>
             <Button
               fontSize={'13px'}
               w={'100px'}
@@ -281,8 +322,8 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
                       color: '#fff',
                     }
               }
-              onClick={() => distribute()}>
-              Distribute
+              onClick={() => claim()}>
+              Claim
             </Button>
           </GridItem>
           <GridItem
@@ -295,7 +336,7 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
                 <>
                   {' '}
                   <Text color={colorMode === 'light' ? '#9d9ea5' : '#7e8993'}>
-                    You can distribute on
+                    You can claim on
                   </Text>
                   <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
                     {moment.unix(claimTime).format('MMM, DD, yyyy HH:mm:ss')}{' '}

@@ -7,6 +7,7 @@ import {
   useTheme,
   useColorMode,
   Button,
+  Link,
 } from '@chakra-ui/react';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {getSigner} from 'utils/contract';
@@ -24,6 +25,7 @@ import {setTxPending} from 'store/tx.reducer';
 import {openToast} from 'store/app/toast.reducer';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectTransactionType} from 'store/refetch.reducer';
+import {BASE_PROVIDER} from 'constants/index';
 type TosStaker = {
   vault: any;
   project: any;
@@ -36,7 +38,9 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
   const [distributable, setDistributable] = useState<number>(0);
   const [claimTime, setClaimTime] = useState<number>(0);
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
-
+  const [distributeDisable, setDistributeDisable] = useState<boolean>(true);
+  const [showDate, setShowDate] = useState<boolean>(false);
+  const network = BASE_PROVIDER._network.name;
   const TOSStaker = new Contract(
     vault.vaultAddress,
     TOSStakerInitializeAbi.abi,
@@ -76,19 +80,29 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
       if (account === null || account === undefined || library === undefined) {
         return;
       }
+      const now = moment().unix();
       const signer = getSigner(library, account);
       const currentRound = await TOSStaker.connect(signer).currentRound();
-
+      const nowClaimRound = await TOSStaker.connect(signer).nowClaimRound();
       const amount = await TOSStaker.connect(signer).calculClaimAmount(
         currentRound,
       );
+      const totalClaimCount = await TOSStaker.connect(
+        signer,
+      ).totalClaimCounts();
+
+      setDistributeDisable(Number(nowClaimRound) >= Number(currentRound));
+      const disabled = Number(nowClaimRound) >= Number(currentRound);
       const claimDate =
-        parseInt(currentRound) === 0
-          ? vault.claim[parseInt(currentRound)].claimTime
-          : vault.claim[parseInt(currentRound) - 1].claimTime;
+        Number(currentRound) === Number(totalClaimCount)
+          ? await TOSStaker.connect(signer).claimTimes(Number(currentRound) - 1)
+          : await TOSStaker.connect(signer).claimTimes(currentRound);
       const amountFormatted = parseInt(amount);
-      setClaimTime(claimDate);
+
+      setShowDate(amountFormatted === 0 && Number(claimDate) > now);
       setDistributable(amountFormatted);
+      setDistributeDisable(disabled);
+      setClaimTime(claimDate);
     }
     getLPToken();
   }, [account, library, transactionType, blockNumber]);
@@ -160,9 +174,20 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
               color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Vault Admin Address
             </Text>
-            <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-              {vault.adminAddress ? shortenAddress(vault.adminAddress) : 'N/A'}
-            </Text>
+            <Link
+              isExternal
+              href={
+                vault.adminAddress && network === 'rinkeby'
+                  ? `https://rinkeby.etherscan.io/address/${vault.adminAddress}`
+                  : vault.adminAddress && network !== 'rinkeby'
+                  ? `https://etherscan.io/address/${vault.adminAddress}`
+                  : ''
+              }
+              color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+              _hover={{color: '#2a72e5'}}
+              fontFamily={theme.fonts.fld}>
+              {vault.adminAddress ? shortenAddress(vault.adminAddress) : 'NA'}
+            </Link>
           </GridItem>
           <GridItem
             border={themeDesign.border[colorMode]}
@@ -175,9 +200,20 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
               color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Vault Contract Address
             </Text>
-            <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-              {vault.vaultAddress ? shortenAddress(vault.vaultAddress) : 'N/A'}
-            </Text>
+            <Link
+              isExternal
+              href={
+                vault.vaultAddress && network === 'rinkeby'
+                  ? `https://rinkeby.etherscan.io/address/${vault.vaultAddress}`
+                  : vault.vaultAddress && network !== 'rinkeby'
+                  ? `https://etherscan.io/address/${vault.vaultAddress}`
+                  : ''
+              }
+              color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+              _hover={{color: '#2a72e5'}}
+              fontFamily={theme.fonts.fld}>
+              {vault.vaultAddress ? shortenAddress(vault.vaultAddress) : 'NA'}
+            </Link>
           </GridItem>
         </Flex>
         <Flex flexDirection={'column'}>
@@ -220,14 +256,14 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
               h={'32px'}
               bg={'#257eee'}
               color={'#ffffff'}
-              isDisabled={distributable <= 0}
+              isDisabled={distributeDisable}
               _disabled={{
                 color: colorMode === 'light' ? '#86929d' : '#838383',
                 bg: colorMode === 'light' ? '#e9edf1' : '#353535',
                 cursor: 'not-allowed',
               }}
               _hover={
-                distributable <= 0
+                distributeDisable
                   ? {}
                   : {
                       background: 'transparent',
@@ -237,7 +273,7 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
                     }
               }
               _active={
-                distributable <= 0
+                distributeDisable
                   ? {}
                   : {
                       background: '#2a72e5',
@@ -254,15 +290,21 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
             className={'chart-cell'}
             fontFamily={theme.fonts.fld}
             borderBottomRightRadius={'4px'}>
-            <Flex flexDir={'column'}>
-              <Text color={colorMode === 'light' ? '#9d9ea5' : '#7e8993'}>
-                You can distribute on
-              </Text>
-              <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-                {moment.unix(claimTime).format('MMM, DD, yyyy HH:mm:ss')}{' '}
-                {momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()}
-              </Text>
-            </Flex>
+            {showDate === true ? (
+              <>
+                <Flex flexDir={'column'}>
+                  <Text color={colorMode === 'light' ? '#9d9ea5' : '#7e8993'}>
+                    You can distribute on
+                  </Text>
+                  <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
+                    {moment.unix(claimTime).format('MMM, DD, yyyy HH:mm:ss')}{' '}
+                    {momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()}
+                  </Text>
+                </Flex>
+              </>
+            ) : (
+              <></>
+            )}
           </GridItem>
         </Flex>
       </Grid>

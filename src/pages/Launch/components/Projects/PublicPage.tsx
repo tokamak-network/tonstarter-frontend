@@ -1,4 +1,4 @@
-import {FC} from 'react';
+import {FC, useState, useEffect} from 'react';
 import {
   Flex,
   Text,
@@ -7,6 +7,7 @@ import {
   useTheme,
   useColorMode,
   Tooltip,
+  Link,
   Button,
   Image,
 } from '@chakra-ui/react';
@@ -17,6 +18,18 @@ import '../css/PublicPage.css';
 import moment from 'moment';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import commafy from 'utils/commafy';
+import * as PublicSaleVaultAbi from 'services/abis/PublicSaleVault.json';
+import store from 'store';
+import {toastWithReceipt} from 'utils';
+import {setTxPending} from 'store/tx.reducer';
+import {openToast} from 'store/app/toast.reducer';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectTransactionType} from 'store/refetch.reducer';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import {getSigner} from 'utils/contract';
+import {Contract} from '@ethersproject/contracts';
+import {ethers} from 'ethers';
+import {BASE_PROVIDER} from 'constants/index';
 type PublicPage = {
   vault: any;
   project: any;
@@ -25,6 +38,14 @@ type PublicPage = {
 export const PublicPage: FC<PublicPage> = ({vault, project}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
+  const [buttonDisable, setButtonDisable] = useState<boolean>(false);
+  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
+  const {account, library} = useActiveWeb3React();
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+
+  const network = BASE_PROVIDER._network.name;
+
+  const now = moment().unix();
   const sTosTier = vault.stosTier
     ? Object.keys(vault.stosTier)
         .map((tier) => {
@@ -45,7 +66,54 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
         .sort((a, b) => a.tier - b.tier)
     : [];
   // console.log('vault', vault);
+  const PublicSaleVaul = new Contract(
+    vault.vaultAddress,
+    PublicSaleVaultAbi.abi,
+    library,
+  );
+  useEffect(() => {
+    if (account !== undefined && account !== null) {
+      if (
+        ethers.utils.getAddress(account) ===
+        ethers.utils.getAddress(project.owner)
+      ) {
+        setIsAdmin(true);
+      } else {
+        setIsAdmin(false);
+      }
+    } else {
+      setIsAdmin(false);
+    }
+  }, [account, project]);
 
+  const sendTOS = async () => {
+    if (account === null || account === undefined || library === undefined) {
+      return;
+    }
+    const signer = getSigner(library, account);
+    try {
+      const receipt = await PublicSaleVaul.connect(signer).depositWithdraw();
+      store.dispatch(setTxPending({tx: true}));
+      if (receipt) {
+        toastWithReceipt(receipt, setTxPending, 'Launch');
+        await receipt.wait();
+      }
+    } catch (e) {
+      store.dispatch(setTxPending({tx: false}));
+      store.dispatch(
+        //@ts-ignore
+        openToast({
+          payload: {
+            status: 'error',
+            title: 'Tx fail to send',
+            description: `something went wrong`,
+            duration: 5000,
+            isClosable: true,
+          },
+        }),
+      );
+    }
+  };
   const themeDesign = {
     border: {
       light: 'solid 1px #e6eaee',
@@ -81,6 +149,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
             border={themeDesign.border[colorMode]}
             borderRight={'none'}
             borderBottom={'none'}
+            borderTopLeftRadius={'4px'}
             className={'chart-cell'}
             fontSize={'16px'}
             justifyContent={'space-between'}>
@@ -206,21 +275,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                   vault.hardCap,
                 )}  ${project.tokenSymbol}`}</Text>
               </GridItem>
-              <GridItem
-                border={themeDesign.border[colorMode]}
-                borderRight={'none'}
-                borderBottom={'none'}
-                className={'chart-cell'}
-                justifyContent={'space-between'}>
-                <Text
-                  fontFamily={theme.fonts.fld}
-                  color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
-                  Addres for receiving funds
-                </Text>
-                <Text fontFamily={theme.fonts.fld}>
-                  {shortenAddress(vault.addressForReceiving)}
-                </Text>
-              </GridItem>
+
               <GridItem
                 border={themeDesign.border[colorMode]}
                 borderRight={'none'}
@@ -232,23 +287,124 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                   color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
                   Vault Admin Address
                 </Text>
-                <Text fontFamily={theme.fonts.fld}>
-                  {shortenAddress(vault.adminAddress)}
-                </Text>
+                <Link
+                  isExternal
+                  href={
+                    vault.adminAddress && network === 'rinkeby'
+                      ? `https://rinkeby.etherscan.io/address/${vault.adminAddress}`
+                      : vault.adminAddress && network !== 'rinkeby'
+                      ? `https://etherscan.io/address/${vault.adminAddress}`
+                      : ''
+                  }
+                  color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+                  _hover={{color: '#2a72e5'}}
+                  fontFamily={theme.fonts.fld}>
+                  {vault.adminAddress
+                    ? shortenAddress(vault.adminAddress)
+                    : 'NA'}
+                </Link>
               </GridItem>
               <GridItem
                 border={themeDesign.border[colorMode]}
                 borderRight={'none'}
                 className={'chart-cell'}
+                borderBottom={'none'}
                 justifyContent={'space-between'}>
                 <Text
                   fontFamily={theme.fonts.fld}
                   color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
                   Vault Contract Address
                 </Text>
-                <Text fontFamily={theme.fonts.fld}>
-                  {shortenAddress(vault.vaultAddress)}
-                </Text>
+                <Link
+                  isExternal
+                  href={
+                    vault.vaultAddress && network === 'rinkeby'
+                      ? `https://rinkeby.etherscan.io/address/${vault.vaultAddress}`
+                      : vault.vaultAddress && network !== 'rinkeby'
+                      ? `https://etherscan.io/address/${vault.vaultAddress}`
+                      : ''
+                  }
+                  color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+                  _hover={{color: '#2a72e5'}}
+                  fontFamily={theme.fonts.fld}>
+                  {vault.vaultAddress
+                    ? shortenAddress(vault.vaultAddress)
+                    : 'NA'}
+                </Link>
+              </GridItem>
+              <GridItem
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                borderBottomLeftRadius={'4px'}
+                className={'chart-cell'}
+                h={now >= vault.publicRound2 ? '95px' : ''}
+                justifyContent={'space-between'}>
+                <Flex flexDir={'column'}>
+                  <Flex w={'273px'} justifyContent={'space-between'}>
+                    <Text
+                      fontFamily={theme.fonts.fld}
+                      color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                      Address for receiving funds
+                    </Text>
+                    <Link
+                      isExternal
+                      href={
+                        vault.addressForReceiving && network === 'rinkeby'
+                          ? `https://rinkeby.etherscan.io/address/${vault.addressForReceiving}`
+                          : vault.addressForReceiving && network !== 'rinkeby'
+                          ? `https://etherscan.io/address/${vault.addressForReceiving}`
+                          : ''
+                      }
+                      color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+                      _hover={{color: '#2a72e5'}}
+                      fontFamily={theme.fonts.fld}>
+                      {vault.addressForReceiving
+                        ? shortenAddress(vault.addressForReceiving)
+                        : 'NA'}
+                    </Link>
+                  </Flex>
+                  {now >= vault.publicRound2 ? (
+                    <>
+                      <Button
+                        fontSize={'11px'}
+                        w={'273px'}
+                        h={'25px'}
+                        mt={'5px'}
+                        bg={'#257eee'}
+                        color={'#ffffff'}
+                        isDisabled={!isAdmin}
+                        _disabled={{
+                          color: colorMode === 'light' ? '#86929d' : '#838383',
+                          bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+                          cursor: 'not-allowed',
+                        }}
+                        _hover={
+                          !isAdmin
+                            ? {}
+                            : {
+                                background: 'transparent',
+                                border: 'solid 1px #2a72e5',
+                                color: themeDesign.tosFont[colorMode],
+                                cursor: 'pointer',
+                              }
+                        }
+                        _active={
+                          !isAdmin
+                            ? {}
+                            : {
+                                background: '#2a72e5',
+                                border: 'solid 1px #2a72e5',
+                                color: '#fff',
+                              }
+                        }
+                        onClick={() => sendTOS()}>
+                        Send TOS to Initial Liquidity Vault & Receive Funds
+                      </Button>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </Flex>
               </GridItem>
             </>
           ) : (
@@ -377,20 +533,17 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 border={themeDesign.border[colorMode]}
                 borderRight={'none'}
                 borderBottom={'none'}
-                className={'chart-cell'}>
-                <Text fontFamily={theme.fonts.fld}>{''}</Text>
-              </GridItem>
+                className={'chart-cell'}></GridItem>
               <GridItem
                 border={themeDesign.border[colorMode]}
                 borderBottom={'none'}
                 className={'chart-cell'}
-                mr={'-1px'}>
-
-              </GridItem>
+                mr={'-1px'}></GridItem>
               <GridItem
                 border={themeDesign.border[colorMode]}
                 className={'chart-cell'}
-                mr={'-1px'}>
+                mr={'-1px'}
+                h={now >= vault.publicRound2 ? '95px' : ''}>
                 <Text fontFamily={theme.fonts.fld}>{''}</Text>
               </GridItem>
             </>
@@ -426,6 +579,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
           <GridItem
             border={themeDesign.border[colorMode]}
             borderBottom={'none'}
+            borderTopRadius={'4px'}
             className={'chart-cell'}
             fontSize={'16px'}
             justifyContent={'space-between'}>
@@ -443,7 +597,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                   Tier
                 </Text>
                 <Text fontFamily={theme.fonts.fld} color={'#7e8993'}>
-                  Required TOS
+                  Required sTOS
                 </Text>
                 <Text fontFamily={theme.fonts.fld} color={'#7e8993'}>
                   Allocated Token
@@ -491,14 +645,27 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                   </GridItem>
                 );
               })}
-              {[...Array(6-sTosTier.length)].map((e:any,i:number) =>{
-                return  <GridItem
-                  border={themeDesign.border[colorMode]}
-                  borderTop='none'
-                  borderLeft={'none'}
-                  className={'chart-cell'}>
-                  <Text fontFamily={theme.fonts.fld}>{''}</Text>
-                </GridItem>
+              {[...Array(6 - sTosTier.length)].map((e: any, i: number) => {
+                return (
+                  <GridItem
+                    border={themeDesign.border[colorMode]}
+                    key={i}
+                    borderBottomRightRadius={
+                      i === 6 - sTosTier.length - 1 ? '4px' : 'none'
+                    }
+                    borderTop="none"
+                    h={
+                      now >= vault.publicRound2
+                        ? i === 6 - sTosTier.length - 1
+                          ? '94px'
+                          : ''
+                        : ''
+                    }
+                    borderLeft={'none'}
+                    className={'chart-cell'}>
+                    <Text fontFamily={theme.fonts.fld}>{''}</Text>
+                  </GridItem>
+                );
               })}
             </>
           ) : (

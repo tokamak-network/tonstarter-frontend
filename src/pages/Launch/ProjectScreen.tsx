@@ -15,7 +15,7 @@ const ProjectScreen = () => {
   const {colorMode} = useColorMode();
 
   const goBackToList = useCallback(() => {
-    history.push('/opencampaign');
+    history.push('/launch');
   }, []);
   const match = useRouteMatch();
   const {url} = match;
@@ -58,7 +58,6 @@ const ProjectScreen = () => {
     },
   };
 
-  console.log('projects', projects);
   useEffect(() => {
     dispatch(setHashKey({data: isExist === 'project' ? undefined : isExist}));
   }, []);

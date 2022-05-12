@@ -7,6 +7,7 @@ import {
   useTheme,
   useColorMode,
   Button,
+  Link,
 } from '@chakra-ui/react';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import * as LiquidityIncentiveAbi from 'services/abis/LiquidityIncentiveAbi.json';
@@ -17,25 +18,75 @@ import {shortenAddress} from 'utils/address';
 import commafy from 'utils/commafy';
 import {getSigner} from 'utils/contract';
 import InitialLiquidityComputeAbi from 'services/abis/Vault_InitialLiquidityCompute.json';
+import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
+import * as UniswapV3FactoryABI from 'services/abis/UniswapV3Factory.json'
+import {convertNumber} from 'utils/number';
+import {ethers} from 'ethers';
+import store from 'store';
+import {toastWithReceipt} from 'utils';
+import {setTxPending} from 'store/tx.reducer';
+import {openToast} from 'store/app/toast.reducer';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectTransactionType} from 'store/refetch.reducer';
+import {BASE_PROVIDER} from 'constants/index';
+import Fraction from 'fraction.js'
 
+// var Fraction = require('fraction.js');
+const {TOS_ADDRESS, UniswapV3Factory} = DEPLOYED;
 type InitialLiquidity = {
   vault: any;
   project: any;
 };
 
+type Condition1 = {
+  themeDesign: any;
+  projTokenBalance: string;
+  tosBalance: string;
+};
+
+type Condition2 = {
+  themeDesign: any;
+  projTokenBalance: string;
+  tosBalance: string;
+  project: any;
+  isAdmin: boolean
+};
+type Condition3 = {
+  themeDesign: any;
+  projTokenBalance: string;
+  tosBalance: string;
+  project: any;
+  isAdmin: boolean
+};
+type Condition4 = {
+  themeDesign: any;
+  projTokenBalance: string;
+  tosBalance: string;
+  project: any;
+  isAdmin: boolean
+};
 export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const [disableButton, setDisableButton] = useState<boolean>(true);
-
+  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const {account, library} = useActiveWeb3React();
-
+  const [disableButton, setDisableButton] = useState<boolean>(true);
+  const [tosBalance, setTosBalance] = useState<string>('');
+  const [projTokenBalance, setProjTokenBalance] = useState<string>('');
+  const [isPool, setIsPool] = useState<boolean>(false);
+  const [isLpToken, setIsLpToken] =useState<boolean>(true);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const network = BASE_PROVIDER._network.name;
   const InitialLiquidityCompute = new Contract(
     vault.vaultAddress,
     InitialLiquidityComputeAbi.abi,
     library,
   );
+  const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
+  const TOS = new Contract(TOS_ADDRESS, ERC20.abi, library);
+const UniswapV3Fact = new Contract(UniswapV3Factory, UniswapV3FactoryABI.abi, library);
+  const projectToken = new Contract(project.tokenAddress, ERC20.abi, library);
   useEffect(() => {
     async function getLPToken() {
       if (account === null || account === undefined || library === undefined) {
@@ -43,11 +94,62 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
       }
       const signer = getSigner(library, account);
       const LP = await InitialLiquidityCompute.connect(signer).lpToken();
-      console.log('LP', LP);
+
+      const tosBal = await TOS.balanceOf(vault.vaultAddress);
+      const tokBalance = await projectToken.balanceOf(vault.vaultAddress);
+      const TOSBal = ethers.utils.formatEther(tosBal);
+      setTosBalance('2000');
+      setProjTokenBalance(ethers.utils.formatEther(tokBalance));
+      const getPool = await UniswapV3Fact.connect(signer).getPool(TOS_ADDRESS, project.tokenAddress, 3000);
+      // setIsPool(getPool===ZERO_ADDRESS? false: true)
+        setIsPool( false)
     }
     getLPToken();
   }, [account, library]);
-  // console.log('Initial Liquidity vault: ', vault);
+ 
+  useEffect(() => {
+    if (account !== undefined && account !== null) {
+      if (
+        ethers.utils.getAddress(account) ===
+        ethers.utils.getAddress(project.owner)
+      ) {
+        setIsAdmin(true);
+      } else {
+        setIsAdmin(false);
+      }
+    } else {
+      setIsAdmin(false);
+    }
+  }, [account, project]);
+
+  const mint = async () => {
+    if (account === null || account === undefined || library === undefined) {
+      return;
+    }
+    const signer = getSigner(library, account);
+    try {
+      const receipt = await InitialLiquidityCompute.connect(signer).mint();
+      store.dispatch(setTxPending({tx: true}));
+      if (receipt) {
+        toastWithReceipt(receipt, setTxPending, 'Launch');
+        await receipt.wait();
+      }
+    } catch (e) {
+      store.dispatch(setTxPending({tx: false}));
+      store.dispatch(
+        //@ts-ignore
+        openToast({
+          payload: {
+            status: 'error',
+            title: 'Tx fail to send',
+            description: `something went wrong`,
+            duration: 5000,
+            isClosable: true,
+          },
+        }),
+      );
+    }
+  };
 
   const themeDesign = {
     border: {
@@ -116,9 +218,19 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
           className={'chart-cell no-border-right no-border-bottom'}>
           <Text fontFamily={theme.fonts.fld}>Pool Address</Text>
           {/* Need a valid poolAddress */}
-          <Text fontFamily={theme.fonts.fld}>
-            {shortenAddress(vault.vaultAddress)}
-          </Text>
+          <Link
+            isExternal
+            href={
+              vault.poolAddress && network === 'rinkeby'
+                ? `https://rinkeby.etherscan.io/address/${vault.poolAddress}`
+                : vault.poolAddress && network !== 'rinkeby'
+                ? `https://etherscan.io/address/${vault.poolAddress}`
+                : ''
+            }
+            _hover={{color: '#2a72e5'}}
+            fontFamily={theme.fonts.fld}>
+            {vault.poolAddress ? shortenAddress(vault.poolAddress) : 'NA'}
+          </Link>
         </GridItem>
         <GridItem
           border={themeDesign.border[colorMode]}
@@ -126,9 +238,19 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
           borderBottom={'none'}
           className={'chart-cell no-border-right no-border-bottom'}>
           <Text fontFamily={theme.fonts.fld}>Vault Admin</Text>
-          <Text fontFamily={theme.fonts.fld}>
-            {shortenAddress(vault.adminAddress)}
-          </Text>
+          <Link
+            isExternal
+            href={
+              vault.adminAddress && network === 'rinkeby'
+                ? `https://rinkeby.etherscan.io/address/${vault.adminAddress}`
+                : vault.adminAddress && network !== 'rinkeby'
+                ? `https://etherscan.io/address/${vault.adminAddress}`
+                : ''
+            }
+            _hover={{color: '#2a72e5'}}
+            fontFamily={theme.fonts.fld}>
+            {vault.adminAddress ? shortenAddress(vault.adminAddress) : 'NA'}
+          </Link>
         </GridItem>
         <GridItem
           border={themeDesign.border[colorMode]}
@@ -136,154 +258,647 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
           className={'chart-cell no-border-right'}>
           <Text fontFamily={theme.fonts.fld}>Vault Contract Address</Text>
           <Text fontFamily={theme.fonts.fld}>
-            {shortenAddress(vault.vaultAddress)}
+            <Link
+              isExternal
+              href={
+                vault.vaultAddress && network === 'rinkeby'
+                  ? `https://rinkeby.etherscan.io/address/${vault.vaultAddress}`
+                  : vault.vaultAddress && network !== 'rinkeby'
+                  ? `https://etherscan.io/address/${vault.vaultAddress}`
+                  : ''
+              }
+              _hover={{color: '#2a72e5'}}
+              fontFamily={theme.fonts.fld}>
+              {vault.vaultAddress ? shortenAddress(vault.vaultAddress) : 'NA'}
+            </Link>
           </Text>{' '}
         </GridItem>
       </Flex>
-      <Flex flexDirection={'column'}>
-        <GridItem
-          border={themeDesign.border[colorMode]}
-          borderBottom={'none'}
-          className={'chart-cell no-border-bottom'}
-          fontSize={'16px'}>
-          <Text fontFamily={theme.fonts.fld}>LP Token</Text>
-          <Flex>
-            <Text fontFamily={theme.fonts.fld} mr={'5px'}>
-              ID
-            </Text>{' '}
-            <Text fontFamily={theme.fonts.fld} color={'#257eee'}>
-              #562734
-            </Text>
-          </Flex>
-        </GridItem>
-        <GridItem
-          border={themeDesign.border[colorMode]}
-          borderBottom={'none'}
-          className={'chart-cell no-border-bottom'}>
-          <Text fontFamily={theme.fonts.fld} w={'25%'} color={'#7e8993'}>
-            LP Token
-          </Text>
-          <Text
-            fontFamily={theme.fonts.fld}
-            w={'25%'}
-            color={'#7e8993'}
-            textAlign={'center'}>
-            Project Token
-          </Text>
-          <Text
-            fontFamily={theme.fonts.fld}
-            w={'25%'}
-            color={'#7e8993'}
-            textAlign={'center'}>
-            TOS
-          </Text>
-          <Text
-            fontFamily={theme.fonts.fld}
-            w={'25%'}
-            color={'#7e8993'}
-            textAlign={'center'}>
-            Action
-          </Text>
-        </GridItem>
-        <GridItem
-          border={themeDesign.border[colorMode]}
-          borderBottom={'none'}
-          className={'chart-cell no-border-bottom'}>
-          <Text fontFamily={theme.fonts.fld}>Increase Liquidity</Text>
-          <Text fontFamily={theme.fonts.fld}>10,000,000</Text>
-          <Text fontFamily={theme.fonts.fld}>10,000,000</Text>
-          <Button
-            w={'100px'}
-            bg={'#257eee'}
-            height={'32px'}
-            padding={'9px 24px 8px'}
-            borderRadius={'4px'}
-            fontSize={'13px'}
-            color={'#fff'}
-            // isDisabled={disableButton}
-            _disabled={{
-              color: colorMode === 'light' ? '#86929d' : '#838383',
-              bg: colorMode === 'light' ? '#e9edf1' : '#353535',
-              cursor: 'not-allowed',
-            }}
-            _hover={
-              // I set !disableButton just for UI testing purposes. Revert to disableButton (or any condition) to disable _hover and _active styles.
-              !disableButton
-                ? {}
-                : {
-                    background: 'transparent',
-                    border: 'solid 1px #2a72e5',
-                    color: themeDesign.tosFont[colorMode],
-                    cursor: 'pointer',
-                  }
-            }
-            _active={
-              !disableButton
-                ? {}
-                : {
-                    background: '#2a72e5',
-                    border: 'solid 1px #2a72e5',
-                    color: '#fff',
-                  }
-            }>
-            Increase
-          </Button>
-        </GridItem>
-        <GridItem
-          border={themeDesign.border[colorMode]}
-          borderBottom={'none'}
-          className={'chart-cell no-border-bottom'}>
-          <Text fontFamily={theme.fonts.fld}>Unclaimed Fees</Text>
-          <Text fontFamily={theme.fonts.fld}>10,000,000</Text>
-          <Text fontFamily={theme.fonts.fld}>10,000,000</Text>
-          <Button
-            w={'100px'}
-            bg={'#257eee'}
-            height={'32px'}
-            padding={'9px 24px 8px'}
-            borderRadius={'4px'}
-            fontSize={'13px'}
-            color={'#fff'}
-            isDisabled={disableButton}
-            _disabled={{
-              color: colorMode === 'light' ? '#86929d' : '#838383',
-              bg: colorMode === 'light' ? '#e9edf1' : '#353535',
-              cursor: 'not-allowed',
-            }}
-            _hover={
-              disableButton
-                ? {}
-                : {
-                    background: 'transparent',
-                    border: 'solid 1px #2a72e5',
-                    color: themeDesign.tosFont[colorMode],
-                    cursor: 'pointer',
-                  }
-            }
-            _active={
-              disableButton
-                ? {}
-                : {
-                    background: '#2a72e5',
-                    border: 'solid 1px #2a72e5',
-                    color: '#fff',
-                  }
-            }>
-            Collect
-          </Button>
-        </GridItem>
-        <GridItem
-          border={themeDesign.border[colorMode]}
-          borderBottom={'none'}
-          className={'chart-cell no-border-bottom'}>
-          <Text fontFamily={theme.fonts.fld}>{''}</Text>
-        </GridItem>
-        <GridItem
-          border={themeDesign.border[colorMode]}
-          className={'chart-cell'}>
-          <Text fontFamily={theme.fonts.fld}>{''}</Text>
-        </GridItem>
-      </Flex>
+      {Number(tosBalance) === 0 ? (
+        <Condition1
+          themeDesign={themeDesign}
+          projTokenBalance={projTokenBalance}
+          tosBalance={tosBalance}
+        />
+      ) : (isPool? isLpToken? <Condition4
+        themeDesign={themeDesign}
+        projTokenBalance={projTokenBalance}
+        tosBalance={tosBalance}
+        project={project}
+        isAdmin={isAdmin}
+      />: <Condition3
+        themeDesign={themeDesign}
+        projTokenBalance={projTokenBalance}
+        tosBalance={tosBalance}
+        project={project}
+        isAdmin={isAdmin}
+      />:
+        <Condition2
+          themeDesign={themeDesign}
+          projTokenBalance={projTokenBalance}
+          tosBalance={tosBalance}
+          project={project}
+          isAdmin={isAdmin}
+        />
+      )}
     </Grid>
   );
 };
+
+export const Condition1: React.FC<Condition1> = ({
+  themeDesign,
+  projTokenBalance,
+  tosBalance,
+}) => {
+  const {colorMode} = useColorMode();
+  const theme = useTheme();
+  return (
+    <Flex flexDirection={'column'}>
+      <GridItem
+        border={themeDesign.border[colorMode]}
+        borderBottom={'none'}
+        className={'chart-cell no-border-bottom'}
+        fontSize={'16px'}>
+        <Text fontFamily={theme.fonts.fld}>LP Token</Text>
+        <Text
+          fontSize={'12px'}
+          mr={'5px'}
+          color={colorMode === 'light' ? '#7e8993' : ''}>
+          Please send TOS from Public sale Vault to Initial Liquidity vault
+        </Text>
+      </GridItem>
+      <GridItem
+        border={themeDesign.border[colorMode]}
+        borderBottom={'none'}
+        className={'chart-cell no-border-bottom'}>
+        <Text w={'29.2%'} fontFamily={theme.fonts.fld} color={'#7e8993'}>
+          LP Token
+        </Text>
+        <Text
+          fontFamily={theme.fonts.fld}
+          w={'35.4%'}
+          color={'#7e8993'}
+          textAlign={'center'}>
+          Project Token
+        </Text>
+        <Text
+          fontFamily={theme.fonts.fld}
+          w={'35.4%'}
+          color={'#7e8993'}
+          textAlign={'center'}>
+          TOS
+        </Text>
+      </GridItem>
+      <GridItem
+        border={themeDesign.border[colorMode]}
+        borderBottom={'none'}
+        className={'chart-cell no-border-bottom'}>
+        <Text
+          color={colorMode === 'light' ? '#7e8993' : ''}
+          fontFamily={theme.fonts.fld}
+          w={'29.2%'}>
+          Amount in Initial Liquidity Vault
+        </Text>
+        <Text textAlign={'center'} w={'35.4%'} fontFamily={theme.fonts.fld}>
+          {commafy(Number(projTokenBalance))}
+        </Text>
+        <Text textAlign={'center'} w={'35.4%'} fontFamily={theme.fonts.fld}>
+          {commafy(Number(tosBalance))}
+        </Text>
+      </GridItem>
+      <GridItem
+        border={themeDesign.border[colorMode]}
+        borderBottom={'none'}
+        className={'chart-cell no-border-bottom'}>
+        <Text fontFamily={theme.fonts.fld}>{''}</Text>
+      </GridItem>
+      <GridItem
+        border={themeDesign.border[colorMode]}
+        className={'chart-cell'}
+        borderBottom={'none'}>
+        <Text fontFamily={theme.fonts.fld}>{''}</Text>
+      </GridItem>
+      <GridItem
+        border={themeDesign.border[colorMode]}
+        className={'chart-cell no-border-bottom'}>
+        <Text fontFamily={theme.fonts.fld}>{''}</Text>
+      </GridItem>
+    </Flex>
+  );
+};
+
+export const Condition2: React.FC<Condition2> = ({
+  themeDesign,
+  projTokenBalance,
+  tosBalance,
+  project,
+  isAdmin
+}) => {
+  const {colorMode} = useColorMode();
+  const theme = useTheme();
+  
+  const {account, library} = useActiveWeb3React();
+  const bn = require("bignumber.js");
+  useEffect(() => {
+    getRatio()
+  }, [account, project]);
+
+  const encodePriceSqrt = (reserve1:number, reserve0:number) =>{
+    return new bn(reserve1.toString())
+    .div(reserve0.toString())
+    .sqrt()
+    .multipliedBy(new bn(2).pow(96))
+    .integerValue(3)
+    .toFixed();
+  }
+  const createPool = async() => {
+    
+  }
+  const getRatio = () => {
+    const decimal  = Number(project.projectTokenPrice)/10;
+    const x = new Fraction(decimal);
+  return [x.n, x.d]
+  }
+  return (
+    <Flex flexDirection={'column'}>
+      <GridItem
+        border={themeDesign.border[colorMode]}
+        borderBottom={'none'}
+        className={'chart-cell no-border-bottom'}
+        fontSize={'16px'}>
+        <Text fontFamily={theme.fonts.fld}>LP Token</Text>
+        <Button
+          fontSize={'12px'}
+          w={'152px'}
+          h={'40px'}
+          mt={'5px'}
+          bg={'#257eee'}
+          color={'#ffffff'}
+          isDisabled={!isAdmin}
+          _disabled={{
+            color: colorMode === 'light' ? '#86929d' : '#838383',
+            bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+            cursor: 'not-allowed',
+          }}
+          _hover={
+            !isAdmin
+              ? {}
+              : {
+                  background: 'transparent',
+                  border: 'solid 1px #2a72e5',
+                  color: themeDesign.tosFont[colorMode],
+                  cursor: 'pointer',
+                  width: '152px',
+                  whiteSpace:'normal'
+                }
+          }
+          _focus={
+            !isAdmin
+              ? {}
+              : {
+                  background: '#2a72e5',
+                  border: 'solid 1px #2a72e5',
+                  color: '#fff',
+                  width: '152px',
+                  whiteSpace:'normal'
+                }
+                
+          }
+          _active={
+            !isAdmin
+              ? {}
+              : {
+                  background: '#2a72e5',
+                  border: 'solid 1px #2a72e5',
+                  color: '#fff',
+                  width: '152px',
+                  whiteSpace:'normal'
+                }
+              }
+          whiteSpace={'normal'}>
+          Approve to Create Pool & Set Initial Price
+        </Button>
+      </GridItem>
+      <GridItem
+        border={themeDesign.border[colorMode]}
+        borderBottom={'none'}
+        className={'chart-cell no-border-bottom'}>
+        <Text w={'29.2%'} fontFamily={theme.fonts.fld} color={'#7e8993'}>
+          LP Token
+        </Text>
+        <Text
+          fontFamily={theme.fonts.fld}
+          w={'35.4%'}
+          color={'#7e8993'}
+          textAlign={'center'}>
+          Project Token
+        </Text>
+        <Text
+          fontFamily={theme.fonts.fld}
+          w={'35.4%'}
+          color={'#7e8993'}
+          textAlign={'center'}>
+          TOS
+        </Text>
+      </GridItem>
+      <GridItem
+        border={themeDesign.border[colorMode]}
+        borderBottom={'none'}
+        className={'chart-cell no-border-bottom'}>
+        <Text
+          color={colorMode === 'light' ? '#7e8993' : ''}
+          fontFamily={theme.fonts.fld}
+          w={'29.2%'}>
+          Amount in Initial Liquidity Vault
+        </Text>
+        <Text textAlign={'center'} w={'35.4%'} fontFamily={theme.fonts.fld}>
+          {commafy(Number(projTokenBalance))}
+        </Text>
+        <Text textAlign={'center'} w={'35.4%'} fontFamily={theme.fonts.fld}>
+          {commafy(Number(tosBalance))}
+        </Text>
+      </GridItem>
+      <GridItem
+        border={themeDesign.border[colorMode]}
+        h={'184px'}
+        className={'chart-cell no-border-bottom'}>
+        <Flex
+          mt={'15px'}
+          fontFamily={theme.fonts.fld}
+          alignItems={'flex-start'}
+          flexDir={'column'}
+          h={'184px'}>
+          <Text fontSize={'14px'} color={colorMode==='light'? '#353c48':'#ffffff'}>Details</Text>
+          <Flex mt={'6px'}>
+            <Text fontSize={'13px'} color={colorMode==='light'? '#808992':'#949494'}>Exchange Ratio : </Text>
+            <Text fontSize={'13px'} color={colorMode==='light'? '#3d495d':'#f3f4f1'} ml={'3px'}> {getRatio()[0]} {project.tokenSymbol} = {getRatio()[1]} TOS</Text>
+          </Flex>
+          <Flex mt={'6px'}>
+            <Text fontSize={'13px'} color={colorMode==='light'? '#808992':'#949494'}>Set Price : </Text>
+            <Text fontSize={'13px'} color={colorMode==='light'? '#3d495d':'#f3f4f1'} ml={'3px'}> {encodePriceSqrt(getRatio()[0], getRatio()[1])} {project.tokenSymbol}  per TOS</Text>
+          </Flex>
+        </Flex>
+      </GridItem>
+    </Flex>
+  );
+};
+
+export const Condition3: React.FC<Condition3> = ({
+  themeDesign,
+  projTokenBalance,
+  tosBalance,
+  project,
+  isAdmin
+}) => {
+  const {colorMode} = useColorMode();
+  const theme = useTheme();
+ 
+  const {account, library} = useActiveWeb3React();
+  const bn = require("bignumber.js");
+  useEffect(() => {
+    getRatio()
+  }, [account, project]);
+
+  const encodePriceSqrt = (reserve1:number, reserve0:number) =>{
+    return new bn(reserve1.toString())
+    .div(reserve0.toString())
+    .sqrt()
+    .multipliedBy(new bn(2).pow(96))
+    .integerValue(3)
+    .toFixed();
+  }
+  
+  const getRatio = () => {
+    const decimal  = Number(project.projectTokenPrice)/10;
+    const x = new Fraction(decimal);
+  return [x.n, x.d]
+  }
+  return (
+    <Flex flexDirection={'column'}>
+      <GridItem
+        border={themeDesign.border[colorMode]}
+        borderBottom={'none'}
+        className={'chart-cell no-border-bottom'}
+        fontSize={'16px'}>
+        <Text fontFamily={theme.fonts.fld}>LP Token</Text>
+        <Button
+          fontSize={'12px'}
+          w={'150px'}
+          h={'32px'}
+          mt={'5px'}
+          bg={'#257eee'}
+          color={'#ffffff'}
+          isDisabled={!isAdmin}
+          _disabled={{
+            color: colorMode === 'light' ? '#86929d' : '#838383',
+            bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+            cursor: 'not-allowed',
+          }}
+          _hover={
+            !isAdmin
+              ? {}
+              : {
+                  background: 'transparent',
+                  border: 'solid 1px #2a72e5',
+                  color: themeDesign.tosFont[colorMode],
+                  cursor: 'pointer',
+              
+                  whiteSpace:'normal'
+                }
+          }
+          _focus={
+            !isAdmin
+              ? {}
+              : {
+                  background: '#2a72e5',
+                  border: 'solid 1px #2a72e5',
+                  color: '#fff',
+                 
+                  whiteSpace:'normal'
+                }
+                
+          }
+          _active={
+            !isAdmin
+              ? {}
+              : {
+                  background: '#2a72e5',
+                  border: 'solid 1px #2a72e5',
+                  color: '#fff',
+                 
+                  whiteSpace:'normal'
+                }
+              }
+          whiteSpace={'normal'}>
+         Mint Lp Token
+        </Button>
+      </GridItem>
+      <GridItem
+        border={themeDesign.border[colorMode]}
+        borderBottom={'none'}
+        className={'chart-cell no-border-bottom'}>
+        <Text w={'29.2%'} fontFamily={theme.fonts.fld} color={'#7e8993'}>
+          LP Token
+        </Text>
+        <Text
+          fontFamily={theme.fonts.fld}
+          w={'35.4%'}
+          color={'#7e8993'}
+          textAlign={'center'}>
+          Project Token
+        </Text>
+        <Text
+          fontFamily={theme.fonts.fld}
+          w={'35.4%'}
+          color={'#7e8993'}
+          textAlign={'center'}>
+          TOS
+        </Text>
+      </GridItem>
+      <GridItem
+        border={themeDesign.border[colorMode]}
+        borderBottom={'none'}
+        className={'chart-cell no-border-bottom'}>
+        <Text
+          color={colorMode === 'light' ? '#7e8993' : ''}
+          fontFamily={theme.fonts.fld}
+          w={'29.2%'}>
+          Amount in Initial Liquidity Vault
+        </Text>
+        <Text textAlign={'center'} w={'35.4%'} fontFamily={theme.fonts.fld}>
+          {commafy(Number(projTokenBalance))}
+        </Text>
+        <Text textAlign={'center'} w={'35.4%'} fontFamily={theme.fonts.fld}>
+          {commafy(Number(tosBalance))}
+        </Text>
+      </GridItem>
+      <GridItem
+        border={themeDesign.border[colorMode]}
+        h={'184px'}
+        className={'chart-cell no-border-bottom'}>
+        <Flex
+          mt={'15px'}
+          fontFamily={theme.fonts.fld}
+          alignItems={'flex-start'}
+          flexDir={'column'}
+          h={'184px'}>
+          <Text fontSize={'14px'} color={colorMode==='light'? '#353c48':'#ffffff'}>Details</Text>
+          <Flex mt={'6px'}>
+            <Text fontSize={'13px'} color={colorMode==='light'? '#808992':'#949494'}>Exchange Ratio : </Text>
+            <Text fontSize={'13px'} color={colorMode==='light'? '#3d495d':'#f3f4f1'} ml={'3px'}> {getRatio()[0]} {project.tokenSymbol} = {getRatio()[1]} TOS</Text>
+          </Flex>
+          <Flex mt={'6px'}>
+            <Text fontSize={'13px'} color={colorMode==='light'? '#808992':'#949494'}>Set Price : </Text>
+            <Text fontSize={'13px'} color={colorMode==='light'? '#3d495d':'#f3f4f1'} ml={'3px'}> {encodePriceSqrt(getRatio()[0], getRatio()[1])} {project.tokenSymbol}  per TOS</Text>
+          </Flex>
+        </Flex>
+      </GridItem>
+    </Flex>
+  );
+};
+
+export const Condition4: React.FC<Condition4> = ({
+  themeDesign,
+  projTokenBalance,
+  tosBalance,
+  project,
+  isAdmin
+}) => {
+  const {colorMode} = useColorMode();
+  const theme = useTheme();
+  const {account, library} = useActiveWeb3React();
+  const bn = require("bignumber.js");
+  return (
+    <Flex flexDirection={'column'}>
+      <GridItem
+        border={themeDesign.border[colorMode]}
+        borderBottom={'none'}
+        className={'chart-cell no-border-bottom'}
+        fontSize={'16px'}>
+        <Text fontFamily={theme.fonts.fld}>LP Token</Text>
+      
+      </GridItem>
+      <GridItem
+        px={'0px'}
+        border={themeDesign.border[colorMode]}
+        borderBottom={'none'}
+        className={'chart-cell no-border-bottom'}>
+        <Text w={'22.6%'} fontFamily={theme.fonts.fld} color={'#7e8993'}  textAlign={'center'}>
+          LP Token
+        </Text>
+        <Text
+          fontFamily={theme.fonts.fld}
+          w={'24.1%'}
+          color={'#7e8993'}
+          textAlign={'center'}>
+          Project Token
+        </Text>
+        <Text
+          fontFamily={theme.fonts.fld}
+          w={'24.1%'}
+          color={'#7e8993'}
+          textAlign={'center'}>
+          TOS
+        </Text>
+        <Text
+          fontFamily={theme.fonts.fld}
+          w={'29.2%'}
+          color={'#7e8993'}
+          textAlign={'center'}>
+          Action
+        </Text>
+      </GridItem>
+      <GridItem
+        border={themeDesign.border[colorMode]}
+        borderBottom={'none'}
+        px={'0px'}
+       
+        className={'chart-cell no-border-bottom'}>
+          <Flex justifyContent={'center'} w={'24.1%'}>
+          <Text
+          w={'47px'}
+          color={colorMode === 'light' ? '#7e8993' : ''}
+          fontFamily={theme.fonts.fld}
+         
+         >
+         Increase Liquidity
+        </Text>
+          </Flex>
+       
+        <Text textAlign={'center'}  w={'24.1%'}fontFamily={theme.fonts.fld}>
+          {commafy(Number(projTokenBalance))}
+        </Text>
+        <Text textAlign={'center'}  w={'24.1%'}fontFamily={theme.fonts.fld}>
+          {commafy(Number(tosBalance))}
+        </Text>
+        <Flex justifyContent={'center'} alignContent={'center'} w={'29.2%'}>
+        <Button fontSize={'12px'}
+          w={'100px'}
+          h={'32px'}
+          bg={'#257eee'}
+          color={'#ffffff'}
+          isDisabled={!isAdmin}
+          _disabled={{
+            color: colorMode === 'light' ? '#86929d' : '#838383',
+            bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+            cursor: 'not-allowed',
+          }}
+          _hover={
+            !isAdmin
+              ? {}
+              : {
+                  background: 'transparent',
+                  border: 'solid 1px #2a72e5',
+                  color: themeDesign.tosFont[colorMode],
+                  cursor: 'pointer',
+                  whiteSpace:'normal'
+                }
+          }
+          _focus={
+            !isAdmin
+              ? {}
+              : {
+                  background: '#2a72e5',
+                  border: 'solid 1px #2a72e5',
+                  color: '#fff',
+                }
+                
+          }
+          _active={
+            !isAdmin
+              ? {}
+              : {
+                  background: '#2a72e5',
+                  border: 'solid 1px #2a72e5',
+                  color: '#fff',
+                }
+              }>Increase</Button>
+        </Flex>
+      
+      </GridItem>
+      <GridItem
+        border={themeDesign.border[colorMode]}
+        borderBottom={'none'}
+        px={'0px'}
+       
+        className={'chart-cell no-border-bottom'}>
+          <Flex justifyContent={'center'} w={'24.1%'}>
+          <Text
+          w={'56px'}
+          color={colorMode === 'light' ? '#7e8993' : ''}
+          fontFamily={theme.fonts.fld}
+         
+         >
+       Unclaimed fees
+        </Text>
+          </Flex>
+       
+        <Text textAlign={'center'}  w={'24.1%'}fontFamily={theme.fonts.fld}>
+          {commafy(Number(projTokenBalance))}
+        </Text>
+        <Text textAlign={'center'}  w={'24.1%'}fontFamily={theme.fonts.fld}>
+          {commafy(Number(tosBalance))}
+        </Text>
+        <Flex justifyContent={'center'} alignContent={'center'} w={'29.2%'}>
+        <Button fontSize={'12px'}
+          w={'100px'}
+          h={'32px'}
+          bg={'#257eee'}
+          color={'#ffffff'}
+          isDisabled={!isAdmin}
+          _disabled={{
+            color: colorMode === 'light' ? '#86929d' : '#838383',
+            bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+            cursor: 'not-allowed',
+          }}
+          _hover={
+            !isAdmin
+              ? {}
+              : {
+                  background: 'transparent',
+                  border: 'solid 1px #2a72e5',
+                  color: themeDesign.tosFont[colorMode],
+                  cursor: 'pointer',
+                  whiteSpace:'normal'
+                }
+          }
+          _focus={
+            !isAdmin
+              ? {}
+              : {
+                  background: '#2a72e5',
+                  border: 'solid 1px #2a72e5',
+                  color: '#fff',
+                }
+                
+          }
+          _active={
+            !isAdmin
+              ? {}
+              : {
+                  background: '#2a72e5',
+                  border: 'solid 1px #2a72e5',
+                  color: '#fff',
+                }
+              }>Collect</Button>
+        </Flex>
+      
+      </GridItem>
+      <GridItem
+        border={themeDesign.border[colorMode]}
+        h={'123px'}
+        className={'chart-cell no-border-bottom'}>
+        <Flex
+          mt={'15px'}
+          fontFamily={theme.fonts.fld}
+          alignItems={'flex-start'}
+          flexDir={'column'}
+          h={'121px'}>
+         
+        </Flex>
+      </GridItem>
+    </Flex>
+  );
+};
+
+
