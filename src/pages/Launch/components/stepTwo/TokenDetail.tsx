@@ -906,7 +906,7 @@ const TokenDetail = (props: {
                 formikName: 'poolAddress',
               },
               {
-                title: 'Exchange Ratio 1 TOS',
+                title: 'Exchange Ratio\n1 TOS',
                 content: String(values.tosPrice),
                 formikName: 'tosPrice',
               },

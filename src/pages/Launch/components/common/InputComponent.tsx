@@ -1,4 +1,5 @@
 import {Box, Flex, Input, Text, useColorMode} from '@chakra-ui/react';
+import {Projects} from '@Launch/types';
 import {ErrorMessage, Field, useFormikContext} from 'formik';
 import './input.css';
 
@@ -19,7 +20,7 @@ const InputComponentStyle = {
 
 const InputComponent: React.FC<InputComponentProps> = (props) => {
   const {name, nameDisplay, inputStyle, requirement} = props;
-  const {errors} = useFormikContext();
+  const {errors, values} = useFormikContext<Projects['CreateProject']>();
   const {colorMode} = useColorMode();
   const title = name
     .split(/(?=[A-Z])/)
@@ -27,16 +28,27 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
 
   const titleTrimed = title.toString().replaceAll(',', '');
 
+  //@ts-ignore
+  console.log(errors[name]);
+
   return (
     <Flex flexDir={'column'} fontSize={13} pos={'relative'}>
       {nameDisplay === false ? (
         <></>
       ) : (
-        <Flex>
-          <Text h={18} mb={2.5} color={InputComponentStyle.color[colorMode]}>
-            {title}
-          </Text>
-          {requirement && <Text ml={'5px'}>*</Text>}
+        <Flex justifyContent={'space-between'}>
+          <Flex>
+            <Text h={18} mb={2.5} color={InputComponentStyle.color[colorMode]}>
+              {title}
+            </Text>
+            {requirement && <Text ml={'5px'}>*</Text>}
+          </Flex>
+          {name === 'projectName' && (
+            <Text color={'#86929d'} fontSize={10}>
+              {values.projectName && 20 - values.projectName?.length} characters
+              remaining
+            </Text>
+          )}
         </Flex>
       )}
       <Field name={name}>
@@ -55,6 +67,7 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
                   ? 'input-light'
                   : 'input-dark'
               }
+              maxLength={name === 'projectName' ? 20 : 'none'}
               fontSize={13}
               {...field}
               id={name}
@@ -65,7 +78,12 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
           );
         }}
       </Field>
-      <Box pos={'absolute'} right={0}>
+      <Box
+        pos={'absolute'}
+        right={0}
+        w={'50%'}
+        bg={colorMode === 'light' ? 'white.100' : '#222222'}
+        textAlign={'right'}>
         <ErrorMessage
           name={name}
           render={(msg) => (

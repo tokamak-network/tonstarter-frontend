@@ -230,7 +230,7 @@ type PublicTokenColData = {
       formikName: string;
     },
     {
-      title: 'Exchange Ratio 1 TOS';
+      title: 'Exchange Ratio\n1 TOS';
       content: string | undefined;
       formikName: string;
     },
