@@ -7,6 +7,7 @@ type InputComponentProps = {
   placeHolder: string;
   nameDisplay?: boolean;
   inputStyle?: {};
+  requirement?: boolean;
 };
 
 const InputComponentStyle = {
@@ -17,7 +18,7 @@ const InputComponentStyle = {
 };
 
 const InputComponent: React.FC<InputComponentProps> = (props) => {
-  const {name, nameDisplay, inputStyle} = props;
+  const {name, nameDisplay, inputStyle, requirement} = props;
   const {errors} = useFormikContext();
   const {colorMode} = useColorMode();
   const title = name
@@ -31,9 +32,12 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
       {nameDisplay === false ? (
         <></>
       ) : (
-        <Text h={18} mb={2.5} color={InputComponentStyle.color[colorMode]}>
-          {title}
-        </Text>
+        <Flex>
+          <Text h={18} mb={2.5} color={InputComponentStyle.color[colorMode]}>
+            {title}
+          </Text>
+          {requirement && <Text ml={'5px'}>*</Text>}
+        </Flex>
       )}
       <Field name={name}>
         {(

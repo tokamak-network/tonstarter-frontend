@@ -27,7 +27,6 @@ const OpenCampagin = () => {
       }),
     {
       enabled: !!account,
-      //refetch every 10min
       refetchInterval: 600000,
     },
   );

@@ -93,8 +93,20 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
           return (
             <Text
               borderTop={colorMode === 'dark' ? '1px solid #373737' : ''}
-              borderLeft={title === 'Name' ? colorMode === 'dark'?'1px solid #373737' : '':''}
-              borderRight={title === 'Action' ? colorMode === 'dark'?'1px solid #373737' : '':''}
+              borderLeft={
+                title === 'Name'
+                  ? colorMode === 'dark'
+                    ? '1px solid #373737'
+                    : ''
+                  : ''
+              }
+              borderRight={
+                title === 'Action'
+                  ? colorMode === 'dark'
+                    ? '1px solid #373737'
+                    : ''
+                  : ''
+              }
               borderTopLeftRadius={title === 'Name' ? '10px' : ''}
               borderTopRightRadius={title === 'Action' ? '10px' : ''}
               textAlign={'center'}
@@ -247,7 +259,7 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                               fontSize={'12px'}
                               _hover={{bg: '#257eee'}}
                               _active={{bg: '#257eee'}}
-                              onClick={() => saveToAdmin(project)}>
+                              onClick={() => saveToAdmin(project, key)}>
                               List on TONStarter
                             </Button>
                           ) : status === false ? (

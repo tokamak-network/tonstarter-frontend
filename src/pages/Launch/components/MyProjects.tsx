@@ -18,7 +18,7 @@ const MyProjects = () => {
   const [projectsData, setProjectsData] = useState<any>([]);
   const dispatch = useAppDispatch();
   const {account} = useActiveWeb3React();
-const [projectsForTable, setProjectsForTable]= useState<any>()
+  const [projectsForTable, setProjectsForTable] = useState<any>();
   const datalll = [
     {
       name: 'Dragons of midgard',
@@ -52,7 +52,7 @@ const [projectsForTable, setProjectsForTable]= useState<any>()
     if (data) {
       const {data: datas} = data;
       dispatch(fetchProjects({data: datas}));
-      setProjectsForTable(datas)
+      setProjectsForTable(datas);
       const projs = Object.keys(datas).map((k) => {
         const stat = datas[k].vaults.every((vault: any) => {
           return vault.isSet === true;
@@ -71,15 +71,15 @@ const [projectsForTable, setProjectsForTable]= useState<any>()
           whiteList: datas[k].vaults[0].whitelist,
           public2End: datas[k].vaults[0].publicRound2End,
           status: stat,
-          project: datas[k]
+          project: datas[k],
         };
       });
       const MyProjs = projs.filter((pro: any) => pro.owner === account);
-      console.log('MyProjs',MyProjs);
-      
+      console.log('MyProjs', MyProjs);
+
       setProjectsData(MyProjs);
     }
-  }, [data, dispatch]);
+  }, [data, dispatch, account]);
 
   const columns = useMemo(
     () => [
@@ -136,7 +136,7 @@ const [projectsForTable, setProjectsForTable]= useState<any>()
         </Text>
         <Box mt={'20px'}>
           <MyProjectTable
-          projects={projectsForTable}
+            projects={projectsForTable}
             data={projectsData}
             columns={columns}
             isLoading={isLoading}

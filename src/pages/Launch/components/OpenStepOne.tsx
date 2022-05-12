@@ -5,18 +5,18 @@ import Line from '@Launch/components/common/Line';
 import MarkdownEditor from '@Launch/components/MarkdownEditor';
 
 const filedNameList = [
-  'projectName',
-  'tokenName',
-  'owner',
-  'tokenSymbol',
-  'projectMainImage',
-  'tokenSymbolImage',
-  'website',
-  'totalSupply',
-  'medium',
-  'telegram',
-  'twitter',
-  'discord',
+  {title: 'projectName', requirement: true},
+  {title: 'tokenName', requirement: true},
+  {title: 'owner', requirement: true},
+  {title: 'tokenSymbol', requirement: true},
+  {title: 'sector', requirement: true},
+  {title: 'tokenSymbolImage', requirement: false},
+  {title: 'website', requirement: false},
+  {title: 'totalSupply', requirement: true},
+  {title: 'medium', requirement: false},
+  {title: 'telegram', requirement: false},
+  {title: 'twitter', requirement: false},
+  {title: 'discord', requirement: false},
 ];
 
 const OpenStepOne = () => {
@@ -41,16 +41,19 @@ const OpenStepOne = () => {
         rowGap={'20px'}
         columnGap={'50px'}
         mb={'20px'}>
-        {filedNameList.map((name: string, index: number) => {
-          return (
-            <GridItem w={'327px'}>
-              <InputComponent
-                name={name}
-                placeHolder={`input ${name}`}
-                key={name}></InputComponent>
-            </GridItem>
-          );
-        })}
+        {filedNameList.map(
+          (fieldName: {title: string; requirement: boolean}, index: number) => {
+            return (
+              <GridItem w={'327px'}>
+                <InputComponent
+                  name={fieldName.title}
+                  placeHolder={`input ${fieldName.title}`}
+                  key={fieldName.title}
+                  requirement={fieldName.requirement}></InputComponent>
+              </GridItem>
+            );
+          },
+        )}
       </Grid>
       <Box>
         <MarkdownEditor></MarkdownEditor>

@@ -14,6 +14,7 @@ function validateFormikValues(
     'tokenSymbol',
     'totalSupply',
     'owner',
+    'sector',
   ];
 
   const step1FilledOut = step1.map((e: any) => {

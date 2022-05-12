@@ -96,7 +96,7 @@ interface ProjectStep1 {
   totalSupply: number | undefined;
   ownerAddress: string;
   owner: string | undefined;
-  projectMainImage: string;
+  sector: string;
   tokenSymbolImage: string;
   website: string;
   medium: string;

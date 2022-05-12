@@ -9,7 +9,8 @@ export type StepOne = {
   medium: string;
   twitter: string;
   discord: string;
-  image: any;
+  sector: string;
+  image?: any;
 };
 
 export type StepTwo = {

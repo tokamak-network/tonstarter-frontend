@@ -2,7 +2,16 @@ import {Projects, VaultPublic} from '@Launch/types';
 import {AdminObject} from '@Admin/types';
 import {createStarter} from '@Admin/utils/createStarter';
 
-async function saveToAdmin(projectData: Projects['CreateProject']) {
+async function saveToAdmin(
+  projectData: Projects['CreateProject'],
+  projectKey: string,
+) {
+  if (projectKey === undefined || projectKey === null) {
+    return alert(
+      'This project has no project hashkey. Please ask to Admin about this problem.',
+    );
+  }
+
   const {
     projectName,
     description,
@@ -12,7 +21,7 @@ async function saveToAdmin(projectData: Projects['CreateProject']) {
     medium,
     twitter,
     discord,
-    projectMainImage,
+    sector,
     tokenName,
     tokenAddress,
     tokenSymbol,
@@ -23,7 +32,7 @@ async function saveToAdmin(projectData: Projects['CreateProject']) {
   } = projectData;
   const publicVault = vaults[0] as VaultPublic;
 
-  const adminData: AdminObject = {
+  const adminData: AdminObject & {projectKey: string} = {
     name: projectName!,
     description: description!,
     adminAddress: ownerAddress,
@@ -32,7 +41,7 @@ async function saveToAdmin(projectData: Projects['CreateProject']) {
     medium: medium,
     twitter: twitter,
     discord: discord,
-    image: projectMainImage,
+    sector,
     tokenName: tokenName!,
     tokenAddress: tokenAddress!,
     tokenSymbol: tokenSymbol!,
@@ -61,6 +70,7 @@ async function saveToAdmin(projectData: Projects['CreateProject']) {
     //    position: 'active' | 'upcoming' | '',
     //    production: 'dev' | 'production' | '',
     topSlideExposure: false,
+    projectKey,
   };
   return createStarter(adminData);
 }
