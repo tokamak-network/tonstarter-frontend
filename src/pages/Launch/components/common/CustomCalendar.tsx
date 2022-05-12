@@ -59,7 +59,7 @@ export const CustomCalendar = (prop: CalendarProps) => {
         if (formattedDate < now) {
           return true;
         }
-      else if (calendarType === 'end' &&  startTime !== 0  && formattedDate <= startTime ) {
+      else if (calendarType === 'end' &&  startTime !== 0  && moment(date).unix() < startTime ) {
         return true;
       }
         else {
