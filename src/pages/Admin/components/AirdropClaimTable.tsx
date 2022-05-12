@@ -1,22 +1,25 @@
 import {FC, useRef} from 'react';
 import {
-  Column,
-  useExpanded,
-  usePagination,
-  useTable,
-  useSortBy,
-} from 'react-table';
-import {
-  chakra,
   Text,
   Flex,
   Select,
   Box,
   useColorMode,
-  IconButton,
   Center,
   useTheme,
-  Tooltip,
+  Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  TableContainer,
+  Grid,
+  GridItem,
+  Heading,
+  Button,
 } from '@chakra-ui/react';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {LoadingComponent} from 'components/Loading';
@@ -28,310 +31,304 @@ import {useModal} from 'hooks/useModal';
 import AdminActions from '../actions';
 import {FetchPoolData} from '@Admin/types';
 
-// type ListTableProps = {
-//   columns: Column[];
-//   data: FetchPoolData[];
-//   isLoading: boolean;
-// };
-
-export const AirdropClaimTable = ({columns, data, isLoading}) => {
-  const {
-    getTableProps,
-    getTableBodyProps,
-    // headerGroups,
-    prepareRow,
-    // visibleColumns,
-    canPreviousPage,
-    canNextPage,
-    pageOptions,
-    page,
-    nextPage,
-    previousPage,
-    setPageSize,
-    state: {pageIndex, pageSize},
-  } = useTable(
-    {columns, data, initialState: {pageIndex: 0}},
-    useSortBy,
-    useExpanded,
-    usePagination,
-  );
-
+export const AirdropClaimTable = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const focusTarget = useRef<any>([]);
-  const dispatch = useDispatch();
-  const {chainId} = useActiveWeb3React();
-  const {handleOpenConfirmModal} = useModal();
-  if (isLoading === true || data.length === 0) {
-    return (
-      <Center>
-        <LoadingComponent />
-      </Center>
-    );
-  }
+
+  const themeDesign = {
+    fontColorTitle: {
+      light: 'gray.250',
+      dark: 'white.100',
+    },
+    border: {
+      light: 'solid 1px #e6eaee',
+      dark: 'solid 1px #373737',
+    },
+    font: {
+      light: 'black.300',
+      dark: 'gray.475',
+    },
+    tosFont: {
+      light: '#2a72e5',
+      dark: '#2a72e5',
+    },
+    borderTos: {
+      light: 'dashed 1px #dfe4ee',
+      dark: 'solid 1px #2a72e5',
+    },
+    buttonColorActive: {
+      light: 'gray.225',
+      dark: 'gray.0',
+    },
+    buttonColorInactive: {
+      light: '#c9d1d8',
+      dark: '#777777',
+    },
+  };
 
   return (
-    <Flex w="1100px" flexDir={'column'}>
-      <Flex
-        borderTopRadius={'10px'}
-        boxShadow={
-          colorMode === 'light' ? '0 1px 1px 0 rgba(96, 97, 112, 0.16)' : ''
-        }>
-        {['Name', 'Address', 'Number of reward programs', 'Actions'].map(
-          (title: string) => {
-            return (
-              <Text
-                border={colorMode === 'dark' ? '1px solid #373737' : ''}
-                borderTopLeftRadius={title === 'Name' ? '10px' : ''}
-                borderTopRightRadius={title === 'Actions' ? '10px' : ''}
-                textAlign={'center'}
-                lineHeight={'45px'}
-                fontSize={'12px'}
-                fontWeight={'bold'}
-                h={'45px'}
-                bg={colorMode === 'light' ? 'white.100' : 'black.200'}
-                w={
-                  title === 'Name'
-                    ? '200px'
-                    : title === 'Address'
-                    ? '454px'
-                    : title === 'Number of reward programs'
-                    ? '220px'
-                    : '226px'
-                }
-                borderBottom={
-                  colorMode === 'light'
-                    ? '1px solid #f4f6f8'
-                    : '1px solid #323232'
-                }>
-                {title}
-              </Text>
-            );
-          },
-        )}
+    <Flex flexDirection={'column'} w={'976px'} p={'0px'} mt={'50px'}>
+      <Flex alignItems={'center'} justifyContent={'space-between'} mb={'20px'}>
+        <Heading size="md" mr={'10px'}>
+          Token List
+        </Heading>
+        <Button
+          color={themeDesign.tosFont[colorMode]}
+          border={themeDesign.borderTos[colorMode]}
+          height={'32px'}
+          width={'100px'}
+          padding={'9px 23px 8px'}
+          borderRadius={'4px'}
+          fontSize={'13px'}
+          fontFamily={theme.fonts.roboto}
+          background={'transparent'}
+          _hover={{background: 'transparent'}}>
+          Claim All
+        </Button>
       </Flex>
-      <Box overflowX={'auto'}>
-        <chakra.table
-          width={'full'}
-          variant="simple"
-          {...getTableProps()}
-          display="flex"
-          flexDirection="column">
-          <chakra.tbody
-            {...getTableBodyProps()}
-            display="flex"
-            flexDirection="column">
-            {page.map((row: any, i: number) => {
-              prepareRow(row);
-              return [
-                <chakra.tr
-                  boxShadow={
-                    colorMode === 'light'
-                      ? '0 1px 1px 0 rgba(96, 97, 112, 0.16)'
-                      : ''
-                  }
-                  ref={(el) => (focusTarget.current[i] = el)}
-                  h={16}
-                  key={i}
-                  borderBottomRadius={
-                    (i + 1) % 10 === 0 || page.length === i + 1 ? '10px' : ''
-                  }
-                  // mb={'20px'}
-                  w="100%"
-                  bg={colorMode === 'light' ? 'white.100' : 'black.200'}
-                  border={colorMode === 'dark' ? '1px solid #373737' : ''}
-                  display="flex"
-                  alignItems="center"
-                  {...row.getRowProps()}>
-                  {row.cells.map((cell: any, index: number) => {
-                    const {
-                      poolName: name,
-                      poolAddress: address,
-                      numRewardPrograms: rewardPrograms,
-                    } = cell.row.original;
-                    const type = cell.column.id;
-                    return (
-                      <chakra.td
-                        key={index}
-                        m={0}
-                        w={
-                          type === 'name'
-                            ? '200px'
-                            : type === 'address'
-                            ? '454px'
-                            : type === 'rewardPrograms'
-                            ? '220px'
-                            : '226px'
-                        }
-                        h={'55px'}
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        fontSize={'12px'}
-                        fontWeight={500}
-                        p={0}
-                        textAlign="center"
-                        {...cell.getCellProps()}>
-                        {type === 'name' && name}
-                        {type === 'address' && address}
-                        {type === 'rewardPrograms' && rewardPrograms}
-                        {type === 'action' && (
-                          <Flex
-                            w={'100%'}
-                            justifyContent="space-between"
-                            px={'30px'}
-                            py={'15px'}>
-                            <CustomButton
-                              text={'Edit'}
-                              w={'78px'}
-                              h={'25px'}
-                              fontSize={12}
-                              func={() =>
-                                dispatch(
-                                  openModal({
-                                    type: 'Admin_EditPool',
-                                    data: {
-                                      originalData: cell.row.original,
-                                    },
-                                  }),
-                                )
-                              }></CustomButton>
-                            <CustomButton
-                              text={'Delete'}
-                              w={'78px'}
-                              h={'25px'}
-                              fontSize={12}
-                              style={{
-                                border: 'solid 1px #2a72e5',
-                                background: '#ffffff',
-                                color: '#2a72e5',
-                              }}
-                              func={() =>
-                                chainId &&
-                                handleOpenConfirmModal({
-                                  type: 'confirm',
-                                  data: {
-                                    from: 'admin/poolDelete',
-                                    amount: {name, address},
-                                    action: () =>
-                                      AdminActions.deletePool({
-                                        poolAddress: address,
-                                      }),
-                                  },
-                                })
-                              }></CustomButton>
-                          </Flex>
-                        )}
-                      </chakra.td>
-                    );
-                  })}
-                </chakra.tr>,
-              ];
-            })}
-          </chakra.tbody>
-        </chakra.table>
-        {/* 
-        Pagination can be built however you'd like. 
-        This is just a very basic UI implementation:
-      */}
-        {/* PAGENATION FOR LATER */}
-        {data.length > 10 && (
-          <Flex justifyContent="flex-end" my={4} alignItems="center">
-            <Flex>
-              <Tooltip label="Previous Page">
-                <IconButton
-                  w={'24px'}
-                  h={'24px'}
-                  bg={colorMode === 'light' ? 'white.100' : 'none'}
-                  border={
-                    colorMode === 'light'
-                      ? 'solid 1px #e6eaee'
-                      : 'solid 1px #424242'
-                  }
-                  color={colorMode === 'light' ? '#e6eaee' : '#424242'}
-                  borderRadius={4}
-                  aria-label={'Previous Page'}
-                  onClick={previousPage}
-                  isDisabled={!canPreviousPage}
-                  size={'sm'}
-                  mr={4}
-                  _hover={{borderColor: '#2a72e5', color: '#2a72e5'}}
-                  icon={<ChevronLeftIcon h={6} w={6} />}
-                />
-              </Tooltip>
-            </Flex>
+      <Grid templateColumns="repeat(1, 1fr)" w={'100%'} mb={'30px'}>
+        <GridItem
+          border={themeDesign.border[colorMode]}
+          className={'chart-cell'}
+          borderTopLeftRadius={'4px'}
+          borderBottom={'none'}
+          fontSize={'16px'}
+          fontFamily={theme.fonts.fld}>
+          <Text minWidth={'20%'} textAlign={'center'}>
+            Checkbox
+          </Text>
+          <Text minWidth={'20%'} textAlign={'center'}>
+            Token Symbol
+          </Text>
+          <Text minWidth={'20%'} textAlign={'center'}>
+            Amount
+          </Text>
+          <Text
+            fontSize={'15px'}
+            fontWeight={'bolder'}
+            color={colorMode === 'light' ? '#353c48' : 'white.0'}
+            minWidth={'40%'}
+            textAlign={'center'}>
+            Action
+          </Text>
+        </GridItem>
 
-            <Flex
-              alignItems="center"
-              p={0}
-              fontSize={'13px'}
-              fontFamily={theme.fonts.roboto}
-              color={colorMode === 'light' ? '#3a495f' : '#949494'}
-              pb={'3px'}>
-              Page{' '}
-              <Text fontWeight="bold" as="span" color={'blue.300'}>
-                {pageIndex + 1}
-              </Text>{' '}
-              of{' '}
-              <Text fontWeight="bold" as="span">
-                {pageOptions.length}
-              </Text>
-            </Flex>
-
-            <Flex>
-              <Tooltip label="Next Page">
-                <Center>
-                  <IconButton
-                    w={'24px'}
-                    h={'24px'}
-                    border={
-                      colorMode === 'light'
-                        ? 'solid 1px #e6eaee'
-                        : 'solid 1px #424242'
-                    }
-                    color={colorMode === 'light' ? '#e6eaee' : '#424242'}
-                    bg={colorMode === 'light' ? 'white.100' : 'none'}
-                    borderRadius={4}
-                    aria-label={'Next Page'}
-                    onClick={nextPage}
-                    isDisabled={!canNextPage}
-                    size={'sm'}
-                    ml={4}
-                    mr={'1.5625em'}
-                    _hover={{borderColor: '#2a72e5', color: '#2a72e5'}}
-                    icon={<ChevronRightIcon h={6} w={6} />}
-                  />
-                </Center>
-              </Tooltip>
-              <Select
-                w={'117px'}
-                h={'32px'}
-                mr={1}
-                color={colorMode === 'light' ? ' #3e495c' : '#f3f4f1'}
-                bg={colorMode === 'light' ? 'white.100' : 'none'}
-                boxShadow={
-                  colorMode === 'light'
-                    ? '0 1px 1px 0 rgba(96, 97, 112, 0.14)'
-                    : ''
-                }
-                border={colorMode === 'light' ? '' : 'solid 1px #424242'}
-                borderRadius={4}
-                size={'sm'}
-                value={pageSize}
-                fontFamily={theme.fonts.roboto}
-                onChange={(e) => {
-                  setPageSize(Number(e.target.value));
-                }}>
-                {[10, 20, 30, 40, 50].map((pageSize) => (
-                  <option key={pageSize} value={pageSize}>
-                    Show {pageSize}
-                  </option>
-                ))}
-              </Select>
-            </Flex>
+        <GridItem
+          border={themeDesign.border[colorMode]}
+          borderBottom={'none'}
+          className={'chart-cell'}
+          fontSize={'16px'}
+          fontFamily={theme.fonts.fld}
+          d={'flex'}
+          justifyContent={'center'}>
+          <Text minWidth={'20%'} textAlign={'center'}>
+            Checkbox
+          </Text>
+          <Text
+            fontSize={'15px'}
+            color={colorMode === 'light' ? '#353c48' : 'white.0'}
+            minWidth={'20%'}
+            textAlign={'center'}>
+            TOS Holder
+          </Text>
+          <Text
+            fontSize={'15px'}
+            color={colorMode === 'light' ? '#353c48' : 'white.0'}
+            minWidth={'20%'}
+            textAlign={'center'}>
+            DOC
+          </Text>
+          <Flex minWidth={'40%'} justifyContent={'center'}>
+            <Button
+              w={'160px'}
+              h={'38px'}
+              bg={'transparent'}
+              border={themeDesign.border[colorMode]}
+              borderRadius={'3px 0px 0px 3px'}
+              fontSize={'14px'}
+              fontFamily={theme.fonts.fld}
+              color={themeDesign.fontColorTitle[colorMode]}
+              _hover={{
+                background: 'transparent',
+                border: 'solid 1px #2a72e5',
+                color: themeDesign.fontColorTitle[colorMode],
+                cursor: 'pointer',
+              }}
+              _active={{
+                background: '#2a72e5',
+                border: 'solid 1px #2a72e5',
+                color: '#fff',
+              }}>
+              Airdrop Claim
+            </Button>
           </Flex>
-        )}
-      </Box>
+        </GridItem>
+        <GridItem
+          border={themeDesign.border[colorMode]}
+          borderBottom={'none'}
+          className={'chart-cell'}
+          fontSize={'16px'}
+          fontFamily={theme.fonts.fld}
+          d={'flex'}
+          justifyContent={'center'}>
+          <Text minWidth={'20%'} textAlign={'center'}>
+            Checkbox
+          </Text>
+          <Text
+            fontSize={'15px'}
+            color={colorMode === 'light' ? '#353c48' : 'white.0'}
+            minWidth={'20%'}
+            textAlign={'center'}>
+            TOS Holder
+          </Text>
+          <Text
+            fontSize={'15px'}
+            color={colorMode === 'light' ? '#353c48' : 'white.0'}
+            minWidth={'20%'}
+            textAlign={'center'}>
+            DOC
+          </Text>
+          <Flex minWidth={'40%'} justifyContent={'center'}>
+            <Button
+              w={'160px'}
+              h={'38px'}
+              bg={'transparent'}
+              border={themeDesign.border[colorMode]}
+              borderRadius={'3px 0px 0px 3px'}
+              fontSize={'14px'}
+              fontFamily={theme.fonts.fld}
+              color={themeDesign.fontColorTitle[colorMode]}
+              _hover={{
+                background: 'transparent',
+                border: 'solid 1px #2a72e5',
+                color: themeDesign.fontColorTitle[colorMode],
+                cursor: 'pointer',
+              }}
+              _active={{
+                background: '#2a72e5',
+                border: 'solid 1px #2a72e5',
+                color: '#fff',
+              }}>
+              Airdrop Claim
+            </Button>
+          </Flex>
+        </GridItem>
+        <GridItem
+          border={themeDesign.border[colorMode]}
+          borderBottom={'none'}
+          className={'chart-cell'}
+          fontSize={'16px'}
+          fontFamily={theme.fonts.fld}
+          d={'flex'}
+          justifyContent={'center'}>
+          <Text minWidth={'20%'} textAlign={'center'}>
+            Checkbox
+          </Text>
+          <Text
+            fontSize={'15px'}
+            color={colorMode === 'light' ? '#353c48' : 'white.0'}
+            minWidth={'20%'}
+            textAlign={'center'}>
+            TOS Holder
+          </Text>
+          <Text
+            fontSize={'15px'}
+            color={colorMode === 'light' ? '#353c48' : 'white.0'}
+            minWidth={'20%'}
+            textAlign={'center'}>
+            DOC
+          </Text>
+          <Flex minWidth={'40%'} justifyContent={'center'}>
+            <Button
+              w={'160px'}
+              h={'38px'}
+              bg={'transparent'}
+              border={themeDesign.border[colorMode]}
+              borderRadius={'3px 0px 0px 3px'}
+              fontSize={'14px'}
+              fontFamily={theme.fonts.fld}
+              color={themeDesign.fontColorTitle[colorMode]}
+              _hover={{
+                background: 'transparent',
+                border: 'solid 1px #2a72e5',
+                color: themeDesign.fontColorTitle[colorMode],
+                cursor: 'pointer',
+              }}
+              _active={{
+                background: '#2a72e5',
+                border: 'solid 1px #2a72e5',
+                color: '#fff',
+              }}>
+              Airdrop Claim
+            </Button>
+          </Flex>
+        </GridItem>
+        <GridItem
+          border={themeDesign.border[colorMode]}
+          borderBottomLeftRadius={'4px'}
+          borderBottomRightRadius={'4px'}
+          className={'chart-cell'}
+          fontSize={'16px'}
+          fontFamily={theme.fonts.fld}
+          d={'flex'}
+          justifyContent={'center'}>
+          <Text minWidth={'20%'} textAlign={'center'}>
+            Checkbox
+          </Text>
+          <Text
+            fontSize={'15px'}
+            color={colorMode === 'light' ? '#353c48' : 'white.0'}
+            minWidth={'20%'}
+            textAlign={'center'}>
+            TOS Holder
+          </Text>
+          <Text
+            fontSize={'15px'}
+            color={colorMode === 'light' ? '#353c48' : 'white.0'}
+            minWidth={'20%'}
+            textAlign={'center'}>
+            DOC
+          </Text>
+          <Flex minWidth={'40%'} justifyContent={'center'}>
+            <Button
+              w={'160px'}
+              h={'38px'}
+              bg={'transparent'}
+              border={themeDesign.border[colorMode]}
+              borderRadius={'3px 0px 0px 3px'}
+              fontSize={'14px'}
+              fontFamily={theme.fonts.fld}
+              color={themeDesign.fontColorTitle[colorMode]}
+              _hover={{
+                background: 'transparent',
+                border: 'solid 1px #2a72e5',
+                color: themeDesign.fontColorTitle[colorMode],
+                cursor: 'pointer',
+              }}
+              _active={{
+                background: '#2a72e5',
+                border: 'solid 1px #2a72e5',
+                color: '#fff',
+              }}>
+              Airdrop Claim
+            </Button>
+          </Flex>
+        </GridItem>
+        {/* <GridItem
+          border={themeDesign.border[colorMode]}
+          className={'chart-cell'}
+          fontFamily={theme.fonts.fld}
+          borderBottomRightRadius={'4px'}>
+          <Flex flexDir={'column'}>
+            <Text color={colorMode === 'light' ? '#9d9ea5' : '#7e8993'}>
+              You can distribute on
+            </Text>
+            <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
+              10:00
+            </Text>
+          </Flex>
+        </GridItem> */}
+      </Grid>
     </Flex>
   );
 };
