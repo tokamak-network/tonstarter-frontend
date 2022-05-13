@@ -23,12 +23,14 @@ type calendarComponentProps = {
   fieldValueKey?: string;
   oldValues?: {};
   valueKey?: any;
+
 };
 const SingleCalendarPop: React.FC<calendarComponentProps> = ({
   setDate,
   fieldValueKey,
   oldValues,
   valueKey,
+
 }) => {
   const {colorMode} = useColorMode();
   const [image, setImage] = useState(
@@ -108,8 +110,9 @@ const SingleCalendarPop: React.FC<calendarComponentProps> = ({
             <Flex flexDir={'column'} justifyContent={'center'}>
               <CustomCalendar
                 setValue={setStartTime}
-                startTime={startTime}></CustomCalendar>
-              <CustomClock setTime={setStartTimeArray}></CustomClock>
+                startTime={startTime}
+                ></CustomCalendar>
+              <CustomClock setTime={setStartTimeArray} calendarType={'start'} startTime={startTime}></CustomClock>
               <Flex alignItems={'center'} justifyContent={'center'} p={'15px'}>
                 <Button
                   type="submit"

@@ -36,20 +36,27 @@ type CalendarProps = {
   startTime: number;
   endTime?: number;
   calendarType?: string;
+ 
 };
 
 export const CustomCalendar = (prop: CalendarProps) => {
   const {setValue, startTime, endTime, calendarType} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  
-  const [showInputValue, setShowInputValue] = useState<string>('');
+  const [calVal, setCalVal] = useState(0);
+    
   const setInput = (date: any) => {
     const dateSelected = Number(new Date(date));
+    setCalVal(dateSelected / 1000)
     setValue(dateSelected / 1000);
-    const dateFormatted = moment(date).format('MM/DD/YYYY');
-    setShowInputValue(dateFormatted);
+
   };
+  useEffect(()=>{    
+    if(calendarType === 'end' && startTime > calVal) {      
+      setInput(new Date(0))
+    }
+    
+  },[startTime,endTime])
 
   const tilesDisabled = ({date, view}: any) => {
     const now = moment().startOf('day').unix();
@@ -137,7 +144,8 @@ export const CustomCalendar = (prop: CalendarProps) => {
       color: #86929d;
     }
     .react-calendar__tile:disabled {
-      color: #c7d1d8
+      color: #c7d1d8;
+      background: transparent
     }
     // .react-calendar__tile{
     //   color: #3d495d;
@@ -160,7 +168,8 @@ export const CustomCalendar = (prop: CalendarProps) => {
       color: 3dee4ef;
     }
     .react-calendar__tile:disabled {
-      color: #424242
+      color: #424242;
+      background: transparent
     }`;
 
   return (
@@ -178,7 +187,8 @@ export const CustomCalendar = (prop: CalendarProps) => {
           minDetail={'decade'}
           locale={'en-EN'}
           tileDisabled={tilesDisabled}
-        />
+          
+           />
       
     </Flex>
   );
