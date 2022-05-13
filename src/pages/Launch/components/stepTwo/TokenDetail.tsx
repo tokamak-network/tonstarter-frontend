@@ -39,6 +39,7 @@ import {useToast} from 'hooks/useToast';
 import {CustomTooltip} from 'components/Tooltip';
 import {stosMinimumRequirements} from '@Launch/const';
 import {NumberInputStep} from './NumberInputField';
+import momentTZ from 'moment-timezone';
 
 export const MainTitle = (props: {
   leftTitle: string;
@@ -101,6 +102,11 @@ const SubTitle = (props: {
   const {values} = useFormikContext<Projects['CreateProject']>();
   const {vaults} = values;
   const publicVault = vaults[0] as VaultPublic;
+
+  useEffect(() => {
+    //@ts-ignore
+    setInputVal(rightTitle);
+  }, [rightTitle, isEdit]);
 
   function getTimeStamp() {
     switch (
@@ -453,6 +459,11 @@ const STOSTier = (props: {
     setPercentVal(percent);
   }, [inputVal2]);
 
+  useEffect(() => {
+    setInputVal(requiredTos);
+    setInputVal2(allocatedToken);
+  }, [isEdit]);
+
   return (
     <Flex
       h={'60px'}
@@ -796,7 +807,11 @@ const PublicTokenDetail = (props: {
         borderX={
           colorMode === 'light' ? 'solid 1px #e6eaee' : 'solid 1px #323232'
         }>
-        <MainTitle leftTitle="Schedule" rightTitle="KST"></MainTitle>
+        <MainTitle
+          leftTitle="Schedule"
+          rightTitle={`UTC ${momentTZ
+            .tz(momentTZ.tz.guess())
+            .zoneAbbr()}`}></MainTitle>
         {secondColData?.map(
           (data: {title: string; content: string; formikName: string}) => {
             const {title, content, formikName} = data;
@@ -895,6 +910,9 @@ const TokenDetail = (props: {
   const {values} = useFormikContext<Projects['CreateProject']>();
   const [poolAddress, setPoolAddress] = useState<string>('');
   const {publicTokenColData} = useTokenDetail();
+  const {
+    data: {tempVaultData},
+  } = useAppSelector(selectLaunch);
 
   const VaultTokenDetail = useMemo(() => {
     switch (selectedVaultType) {
@@ -1034,7 +1052,7 @@ const TokenDetail = (props: {
       default:
         return <>no container for this vault :(</>;
     }
-  }, [selectedVaultIndex, isEdit, publicTokenColData]);
+  }, [selectedVaultIndex, isEdit, publicTokenColData, tempVaultData]);
 
   return VaultTokenDetail;
 

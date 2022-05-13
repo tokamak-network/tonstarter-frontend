@@ -140,7 +140,7 @@ const useTokenDetail = () => {
       //@ts-ignore
       setPublicVaultValue(datas);
     }
-  }, [vaults]);
+  }, [values, vaults]);
 
   return {publicTokenColData};
 };
