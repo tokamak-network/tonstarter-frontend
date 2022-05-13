@@ -870,7 +870,7 @@ const PublicTokenDetail = (props: {
             color={'#7e8993'}
             fontSize={13}>
             <Text w={'80px'}>Tier</Text>
-            <Text w={'125px'}>Required TOS</Text>
+            <Text w={'125px'}>Required sTOS</Text>
             <Text w={'137px'}>Allocated Token</Text>
           </Flex>
         )}
