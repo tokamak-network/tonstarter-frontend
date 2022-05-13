@@ -291,6 +291,19 @@ const SubTitle = (props: {
             </Flex>
           </Tooltip>
         );
+      case 'Hard Cap':
+        return (
+          <InputField
+            w={120}
+            h={32}
+            fontSize={13}
+            value={inputVal}
+            setValue={setInputVal}
+            formikName={formikName}
+            inputRef={inputRef}
+            style={{textAlign: 'right'}}
+            tokenSymbol={'TON'}></InputField>
+        );
       default:
         return (
           <InputField
@@ -301,7 +314,8 @@ const SubTitle = (props: {
             setValue={setInputVal}
             formikName={formikName}
             inputRef={inputRef}
-            style={{textAlign: 'right'}}></InputField>
+            style={{textAlign: 'right'}}
+            tokenSymbol={values.tokenSymbol}></InputField>
         );
     }
   }, [inputVal]);
