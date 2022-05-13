@@ -325,7 +325,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           to="/launch"
           className={match?.isExact ? 'link-match' : 'link'}
           style={{zIndex: 100}}>
-          <Text className={match?.isExact ? 'link-match' : 'link'}>Launch</Text>
+          Launch
         </NavLink>
         <NavLink
           to="/"
