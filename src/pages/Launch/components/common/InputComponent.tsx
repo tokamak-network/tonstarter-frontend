@@ -41,7 +41,11 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
             <Text h={18} mb={2.5} color={InputComponentStyle.color[colorMode]}>
               {title}
             </Text>
-            {requirement && <Text ml={'5px'}>*</Text>}
+            {requirement && (
+              <Text ml={'5px'} color={'#FF3B3B'}>
+                *
+              </Text>
+            )}
           </Flex>
           {name === 'projectName' && (
             <Text color={'#86929d'} fontSize={10}>

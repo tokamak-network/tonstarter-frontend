@@ -368,7 +368,11 @@ const ClaimRound = () => {
                             }
                           }}></Input>
                         <InputRightElement h={'42px'} mr={'2px'}>
-                          <Flex fontSize={13} color={'#3e495c'}>
+                          <Flex
+                            fontSize={13}
+                            color={
+                              colorMode === 'light' ? '#3e495c' : '#ffffff'
+                            }>
                             <Text>{values.tokenSymbol}</Text>
                           </Flex>
                         </InputRightElement>

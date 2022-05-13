@@ -6,6 +6,7 @@ import {
   NumberInput,
   NumberInputField,
   Text,
+  useColorMode,
 } from '@chakra-ui/react';
 import {saveTempVaultData, selectLaunch} from '@Launch/launch.reducer';
 import {Projects, VaultPublic} from '@Launch/types';
@@ -51,6 +52,7 @@ const InputField: React.FC<InputFieldProp> = (props) => {
   } = useAppSelector(selectLaunch);
   const {values} = useFormikContext<Projects['CreateProject']>();
   const vaultsList = values.vaults;
+  const {colorMode} = useColorMode();
 
   const stosTier =
     stosTierLevel === 1
@@ -210,7 +212,9 @@ const InputField: React.FC<InputFieldProp> = (props) => {
         }}></Input>
       {tokenSymbol && (
         <InputRightElement h={'32px'} mr={'2px'}>
-          <Flex fontSize={13} color={'#3e495c'}>
+          <Flex
+            fontSize={13}
+            color={colorMode === 'light' ? '#3e495c' : '#ffffff'}>
             <Text>{tokenSymbol}</Text>
           </Flex>
         </InputRightElement>
