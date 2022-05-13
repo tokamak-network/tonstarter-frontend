@@ -1,4 +1,11 @@
-import {Flex, Grid, GridItem, Text, useColorMode} from '@chakra-ui/react';
+import {
+  Flex,
+  Grid,
+  GridItem,
+  Text,
+  Tooltip,
+  useColorMode,
+} from '@chakra-ui/react';
 import {useTheme} from '@emotion/react';
 import useTokenDetail from '@Launch/hooks/useTokenDetail';
 import {saveTempVaultData, selectLaunch} from '@Launch/launch.reducer';
@@ -261,6 +268,22 @@ const SubTitle = (props: {
             formikName={formikName}
             inputRef={inputRef}
             style={{textAlign: 'right'}}></InputField>
+        );
+      case 'Address for receiving funds':
+        return (
+          <Tooltip label={inputVal} placement={'top'}>
+            <Flex>
+              <InputField
+                w={120}
+                h={32}
+                fontSize={13}
+                value={inputVal}
+                setValue={setInputVal}
+                formikName={formikName}
+                inputRef={inputRef}
+                style={{textAlign: 'right'}}></InputField>
+            </Flex>
+          </Tooltip>
         );
       default:
         return (

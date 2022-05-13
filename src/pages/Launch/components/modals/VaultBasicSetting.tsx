@@ -140,6 +140,9 @@ const VaultBasicSetting = () => {
                 Admin Address
               </Text>
               <Input
+                fontSize={11}
+                padding={0}
+                paddingLeft={'11px'}
                 w={'290px'}
                 h={'32px'}
                 value={adminAddressVal}
