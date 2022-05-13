@@ -611,7 +611,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               // 0: name : string
               // 1: _token : address
               // 2: _owner : address
-              console.log(vaultContract);
               const tx = await vaultContract
                 ?.connect(signer)
                 .create(
@@ -990,6 +989,9 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                   return claimTokenAllocationWei;
                 },
               );
+              const vaultTokenAllocationWei = convertToWei(
+                String(selectedVaultDetail?.vaultTokenAllocation),
+              );
               const LiquidityIncentiveInitialize_CONTRACT = new Contract(
                 selectedVaultDetail?.vaultAddress as string,
                 VaultLPRewardLogicAbi.abi,
@@ -998,7 +1000,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               const tx = await LiquidityIncentiveInitialize_CONTRACT?.connect(
                 signer,
               ).initialize(
-                selectedVaultDetail?.vaultTokenAllocation,
+                vaultTokenAllocationWei,
                 selectedVaultDetail?.claim.length,
                 claimTimesParam,
                 claimAmountsParam,
@@ -1030,6 +1032,11 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                   return claimTokenAllocationWei;
                 },
               );
+              console.log(claimTimesParam);
+              console.log(claimAmountsParam);
+              const vaultTokenAllocationWei = convertToWei(
+                String(selectedVaultDetail.vaultTokenAllocation),
+              );
               const TONStakerVaultSecondContract = new Contract(
                 selectedVaultDetail.vaultAddress as string,
                 TONStakerInitializeAbi.abi,
@@ -1038,7 +1045,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               const tx = await TONStakerVaultSecondContract?.connect(
                 signer,
               ).initialize(
-                selectedVaultDetail?.vaultTokenAllocation,
+                vaultTokenAllocationWei,
                 selectedVaultDetail?.claim.length,
                 claimTimesParam,
                 claimAmountsParam,
@@ -1070,6 +1077,9 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                   return claimTokenAllocationWei;
                 },
               );
+              const vaultTokenAllocationWei = convertToWei(
+                String(selectedVaultDetail?.vaultTokenAllocation),
+              );
               const TOSStakerVaultSecondContract = new Contract(
                 selectedVaultDetail?.vaultAddress as string,
                 TOSStakerInitializeAbi.abi,
@@ -1078,7 +1088,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               const tx = await TOSStakerVaultSecondContract?.connect(
                 signer,
               ).initialize(
-                selectedVaultDetail?.vaultTokenAllocation,
+                vaultTokenAllocationWei,
                 selectedVaultDetail?.claim.length,
                 claimTimesParam,
                 claimAmountsParam,
@@ -1156,6 +1166,9 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                   return claimTokenAllocationWei;
                 },
               );
+              const vaultTokenAllocationWei = convertToWei(
+                String(selectedVaultDetail?.vaultTokenAllocation),
+              );
 
               const TypeCVaultLogic_CONTRACT = new Contract(
                 selectedVaultDetail.vaultAddress as string,
@@ -1166,7 +1179,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               const tx = await TypeCVaultLogic_CONTRACT?.connect(
                 signer,
               ).initialize(
-                selectedVaultDetail?.vaultTokenAllocation,
+                vaultTokenAllocationWei,
                 selectedVaultDetail?.claim.length,
                 claimTimesParam,
                 claimAmountsParam,

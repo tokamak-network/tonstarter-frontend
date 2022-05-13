@@ -76,8 +76,7 @@ export const fetchStarters = createAsyncThunk(
       console.log(matchData);
 
       const activeData = matchData.filter(
-        (data: AdminObject) =>
-          data.endDepositTime > nowTimeStamp && data.snapshot < nowTimeStamp,
+        (data: AdminObject) => data.endDepositTime > nowTimeStamp,
       );
       const upcomingData = matchData.filter(
         (data: AdminObject) => data.snapshot > nowTimeStamp,

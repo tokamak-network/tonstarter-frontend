@@ -217,7 +217,7 @@ export const StarterDetail = () => {
           {...STATER_STYLE.containerStyle({colorMode})}
           w={'100%'}
           h={'367px'}
-          px={35}
+          pl={'35px'}
           py={'30px'}
           _hover={''}
           cursor="">

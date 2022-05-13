@@ -19,12 +19,9 @@ import {ethers} from 'ethers';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {selectApp} from 'store/app/app.reducer';
 import {openModal} from 'store/modal.reducer';
-import useTokenDeploy from '@Launch/hooks/useTokenDeploy';
 import commafy from 'utils/commafy';
-import {editProject, saveProject} from '@Launch/utils/saveProject';
 import {selectLaunch} from '@Launch/launch.reducer';
 import {useActiveWeb3React} from 'hooks/useWeb3';
-import {useEffect} from 'react';
 
 const DeployToken = () => {
   const theme = useTheme();
