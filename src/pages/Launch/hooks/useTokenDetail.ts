@@ -63,7 +63,7 @@ const useTokenDetail = () => {
             formikName: 'tokenAllocationForLiquidity',
           },
           {
-            title: 'Hard Cap',
+            title: `Fund Raising Target Amount`,
             content: `${hardCap}`,
             formikName: 'hardCap',
           },

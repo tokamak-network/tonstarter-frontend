@@ -241,7 +241,7 @@ const SubTitle = (props: {
         return `${commafy(rightTitle)} ${values.tokenName}`;
       case 'Token Allocation for Liquidity Pool (5~10%)':
         return `${rightTitle} %`;
-      case 'Hard Cap':
+      case 'Fund Raising Target Amount':
         return `${commafy(rightTitle)} TON`;
       case 'Address for receiving funds':
         return rightTitle ? `${shortenAddress(rightTitle)}` : '-';
@@ -291,7 +291,7 @@ const SubTitle = (props: {
             </Flex>
           </Tooltip>
         );
-      case 'Hard Cap':
+      case 'Fund Raising Target Amount':
         return (
           <InputField
             w={120}
@@ -349,7 +349,7 @@ const SubTitle = (props: {
             toolTipW={254}
             placement={'top'}></CustomTooltip>
         </Flex>
-      ) : leftTitle === 'Hard Cap' && !isSecondColData ? (
+      ) : leftTitle === 'Fund Raising\nTarget Amount' && !isSecondColData ? (
         <Flex>
           <Text color={'#7e8993'} mr={'5px'}>
             {leftTitle}

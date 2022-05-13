@@ -148,7 +148,7 @@ type PublicTokenColData = {
       formikName: string;
     },
     {
-      title: 'Hard Cap';
+      title: 'Fund Raising Target Amount';
       content: string | undefined;
       formikName: string;
     },
