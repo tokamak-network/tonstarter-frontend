@@ -76,7 +76,7 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
         const endPeriodNum = Number(endPeriod.toString());
         const period = parseInt(String(diffTime / intervalNum + 1));
 
-        setPeriod(String(Math.floor(period)));
+        setPeriod(isNaN(period) ? '0' : String(Math.floor(period)));
         setEndPeriod(endPeriod.toString());
 
         if (period < endPeriodNum) {
@@ -91,7 +91,12 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
             startClaimTimeNum + intervalNum * endPeriodNum;
 
           setD_Day(nextVestingDate);
-          setVestingDay(convertTimeStamp(nextVestingDate));
+
+          if (nextVestingDate === 0) {
+            return setVestingDay('-');
+          } else {
+            setVestingDay(convertTimeStamp(nextVestingDate));
+          }
         }
       }
     }
@@ -238,6 +243,7 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
             </Text>
             <Text {...detailSubTextStyle}>
               {Number(period) > Number(endPeriod) ? endPeriod : period}
+              {console.log(Number(period), console.log(Number(endPeriod)))}
             </Text>
             <Text mx={'3px'}>/</Text>
             <Text>{endPeriod}</Text>
