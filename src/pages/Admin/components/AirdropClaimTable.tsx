@@ -13,7 +13,6 @@ import {
   Heading,
   Button,
 } from '@chakra-ui/react';
-import {AirdropClaimModal} from './AirdropClaimModal';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {LoadingComponent} from 'components/Loading';
 import {CustomButton} from 'components/Basic/CustomButton';

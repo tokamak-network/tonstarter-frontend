@@ -11,6 +11,7 @@ import {convertNumber} from 'utils/number';
 import {DistributeTable} from './components/DistributeTable';
 import {AirdropClaimTable} from './components/AirdropClaimTable';
 import {AirdropClaimModal} from './components/AirdropClaimModal';
+import {AirdropDistributeModal} from './components/AirdropDistributeModal';
 
 export const MyAirdrop = () => {
   const {account, library} = useActiveWeb3React();
@@ -252,6 +253,7 @@ export const MyAirdrop = () => {
       </Flex>
       {distributeButton ? <DistributeTable /> : <AirdropClaimTable />}
       <AirdropClaimModal></AirdropClaimModal>
+      <AirdropDistributeModal></AirdropDistributeModal>
     </Flex>
   );
 };

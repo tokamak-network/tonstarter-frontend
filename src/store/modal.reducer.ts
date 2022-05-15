@@ -19,7 +19,7 @@ type StakingModal =
   | 'pool_simulator';
 type StarterModal = 'Starter_Approve';
 type AdminModal = 'Admin_Distribute' | 'Admin_EditPool';
-type AirdropClaimModal = 'Airdrop_Claim';
+type AirdropModal = 'Airdrop_Claim' | 'Airdrop_Distribute';
 type LaunchModal =
   | 'Launch_VaultBasicSetting'
   | 'Launch_VaultProps'
@@ -40,7 +40,7 @@ export type ModalType =
   | RewardModal
   | StarterModal
   | AdminModal
-  | AirdropClaimModal
+  | AirdropModal
   | LaunchModal;
 
 export type Modal = {

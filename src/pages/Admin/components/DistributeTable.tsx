@@ -34,6 +34,7 @@ import {FetchPoolData} from '@Admin/types';
 export const DistributeTable = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
+  const dispatch = useDispatch();
 
   const themeDesign = {
     border: {
@@ -81,7 +82,17 @@ export const DistributeTable = () => {
           fontSize={'13px'}
           fontFamily={theme.fonts.roboto}
           background={'transparent'}
-          _hover={{background: 'transparent'}}>
+          _hover={{background: 'transparent'}}
+          onClick={() =>
+            dispatch(
+              openModal({
+                type: 'Airdrop_Distribute',
+                data: {
+                  test: 'data',
+                },
+              }),
+            )
+          }>
           Distribute
         </Button>
       </Flex>
