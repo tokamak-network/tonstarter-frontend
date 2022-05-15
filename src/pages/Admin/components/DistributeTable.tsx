@@ -82,7 +82,7 @@ export const DistributeTable = () => {
           fontFamily={theme.fonts.roboto}
           background={'transparent'}
           _hover={{background: 'transparent'}}>
-          Claim All
+          Distribute
         </Button>
       </Flex>
       <Grid templateColumns="repeat(1, 1fr)" w={'100%'} mb={'30px'}>

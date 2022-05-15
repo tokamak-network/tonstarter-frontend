@@ -10,6 +10,7 @@ import moment from 'moment';
 import {convertNumber} from 'utils/number';
 import {DistributeTable} from './components/DistributeTable';
 import {AirdropClaimTable} from './components/AirdropClaimTable';
+import {AirdropClaimModal} from './components/AirdropClaimModal';
 
 export const MyAirdrop = () => {
   const {account, library} = useActiveWeb3React();
@@ -199,11 +200,11 @@ export const MyAirdrop = () => {
         <Button
           w={'160px'}
           h={'38px'}
-          bg={'transparent'}
           border={themeDesign.border[colorMode]}
           borderRadius={'3px 0px 0px 3px'}
           fontSize={'14px'}
           fontFamily={theme.fonts.fld}
+          bg={'transparent'}
           color={themeDesign.fontColorTitle[colorMode]}
           _hover={{
             background: 'transparent',
@@ -250,6 +251,7 @@ export const MyAirdrop = () => {
         </Button>
       </Flex>
       {distributeButton ? <DistributeTable /> : <AirdropClaimTable />}
+      <AirdropClaimModal></AirdropClaimModal>
     </Flex>
   );
 };

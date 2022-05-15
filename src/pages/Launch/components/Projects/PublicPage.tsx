@@ -384,9 +384,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 border={themeDesign.border[colorMode]}
                 borderBottom={'none'}
                 className={'chart-cell'}
-                mr={'-1px'}>
-
-              </GridItem>
+                mr={'-1px'}></GridItem>
               <GridItem
                 border={themeDesign.border[colorMode]}
                 className={'chart-cell'}
@@ -491,14 +489,16 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                   </GridItem>
                 );
               })}
-              {[...Array(6-sTosTier.length)].map((e:any,i:number) =>{
-                return  <GridItem
-                  border={themeDesign.border[colorMode]}
-                  borderTop='none'
-                  borderLeft={'none'}
-                  className={'chart-cell'}>
-                  <Text fontFamily={theme.fonts.fld}>{''}</Text>
-                </GridItem>
+              {[...Array(6 - sTosTier.length)].map((e: any, i: number) => {
+                return (
+                  <GridItem
+                    border={themeDesign.border[colorMode]}
+                    borderTop="none"
+                    borderLeft={'none'}
+                    className={'chart-cell'}>
+                    <Text fontFamily={theme.fonts.fld}>{''}</Text>
+                  </GridItem>
+                );
               })}
             </>
           ) : (

@@ -1,4 +1,4 @@
-import {FC, useRef} from 'react';
+import {FC, useRef, useState, useEffect} from 'react';
 import {
   Text,
   Flex,
@@ -7,20 +7,13 @@ import {
   useColorMode,
   Center,
   useTheme,
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  TableCaption,
-  TableContainer,
+  Checkbox,
   Grid,
   GridItem,
   Heading,
   Button,
 } from '@chakra-ui/react';
+import {AirdropClaimModal} from './AirdropClaimModal';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {LoadingComponent} from 'components/Loading';
 import {CustomButton} from 'components/Basic/CustomButton';
@@ -32,8 +25,35 @@ import AdminActions from '../actions';
 import {FetchPoolData} from '@Admin/types';
 
 export const AirdropClaimTable = () => {
+  const dummyData = [
+    {
+      id: '1',
+      tokenSymbol: 'TON',
+    },
+    {
+      id: '2',
+      tokenSymbol: 'TOS',
+    },
+    {
+      id: '3',
+      tokenSymbol: 'DOC',
+    },
+    {
+      id: '4',
+      tokenSymbol: 'WTON',
+    },
+  ];
+
   const {colorMode} = useColorMode();
   const theme = useTheme();
+  const [isCheckAll, setIsCheckAll] = useState<boolean>(false);
+  const [isCheck, setIsCheck] = useState<any[]>([]);
+  const [list, setList] = useState<any[]>(dummyData);
+  const dispatch = useDispatch();
+
+  //   useEffect(() => {
+  //     setList(dummyData);
+  //   }, [list]);
 
   const themeDesign = {
     fontColorTitle: {
@@ -66,6 +86,22 @@ export const AirdropClaimTable = () => {
     },
   };
 
+  const handleSelectAll = (e: any) => {
+    setIsCheckAll(!isCheckAll);
+    setIsCheck(list.map((li) => li.id));
+    if (isCheckAll) {
+      setIsCheck([]);
+    }
+  };
+
+  const handleClick = (e: any) => {
+    const {id, checked} = e.target;
+    setIsCheck([...isCheck, id]);
+    if (!checked) {
+      setIsCheck(isCheck.filter((item) => item !== id));
+    }
+  };
+
   return (
     <Flex flexDirection={'column'} w={'976px'} p={'0px'} mt={'50px'}>
       <Flex alignItems={'center'} justifyContent={'space-between'} mb={'20px'}>
@@ -82,6 +118,16 @@ export const AirdropClaimTable = () => {
           fontSize={'13px'}
           fontFamily={theme.fonts.roboto}
           background={'transparent'}
+          onClick={() =>
+            dispatch(
+              openModal({
+                type: 'Airdrop_Claim',
+                data: {
+                  test: 'data',
+                },
+              }),
+            )
+          }
           _hover={{background: 'transparent'}}>
           Claim All
         </Button>
@@ -94,9 +140,15 @@ export const AirdropClaimTable = () => {
           borderBottom={'none'}
           fontSize={'16px'}
           fontFamily={theme.fonts.fld}>
-          <Text minWidth={'20%'} textAlign={'center'}>
-            Checkbox
-          </Text>
+          <Checkbox
+            minWidth={'20%'}
+            fontWeight={'bold'}
+            fontSize={'14px'}
+            h={'45px'}
+            left={'9%'}
+            onChange={handleSelectAll}
+          />
+
           <Text minWidth={'20%'} textAlign={'center'}>
             Token Symbol
           </Text>
@@ -113,7 +165,69 @@ export const AirdropClaimTable = () => {
           </Text>
         </GridItem>
 
-        <GridItem
+        {dummyData.map((data: any, index: number) => {
+          const {id, tokenSymbol} = data;
+          return (
+            <GridItem
+              border={themeDesign.border[colorMode]}
+              borderBottom={index === dummyData.length - 1 ? '' : 'none'}
+              className={'chart-cell'}
+              fontSize={'16px'}
+              fontFamily={theme.fonts.fld}
+              d={'flex'}
+              justifyContent={'center'}>
+              <Checkbox
+                key={id}
+                type="checkbox"
+                name={tokenSymbol}
+                id={id}
+                onChange={handleClick}
+                isChecked={isCheck.includes(id)}
+                minWidth={'20%'}
+                fontWeight={'bold'}
+                fontSize={'14px'}
+                h={'45px'}
+                left={'9%'}
+              />
+              <Text
+                fontSize={'15px'}
+                color={colorMode === 'light' ? '#353c48' : 'white.0'}
+                minWidth={'20%'}
+                textAlign={'center'}>
+                TOS Holder
+              </Text>
+              <Text
+                fontSize={'15px'}
+                color={colorMode === 'light' ? '#353c48' : 'white.0'}
+                minWidth={'20%'}
+                textAlign={'center'}>
+                {tokenSymbol}
+              </Text>
+              <Flex minWidth={'40%'} justifyContent={'center'}>
+                <Button
+                  w={'160px'}
+                  h={'38px'}
+                  border={'solid 1px #2a72e5'}
+                  borderRadius={'3px'}
+                  fontSize={'14px'}
+                  fontFamily={theme.fonts.fld}
+                  bg={'#2a72e5'}
+                  color={'#fff'}
+                  _hover={{
+                    background: 'transparent',
+                    border: 'solid 1px #2a72e5',
+                    color: themeDesign.fontColorTitle[colorMode],
+                    cursor: 'pointer',
+                  }}
+                  _active={{}}>
+                  Claim
+                </Button>
+              </Flex>
+            </GridItem>
+          );
+        })}
+
+        {/* <GridItem
           border={themeDesign.border[colorMode]}
           borderBottom={'none'}
           className={'chart-cell'}
@@ -121,9 +235,14 @@ export const AirdropClaimTable = () => {
           fontFamily={theme.fonts.fld}
           d={'flex'}
           justifyContent={'center'}>
-          <Text minWidth={'20%'} textAlign={'center'}>
-            Checkbox
-          </Text>
+          <Checkbox
+            minWidth={'20%'}
+            fontWeight={'bold'}
+            fontSize={'14px'}
+            h={'45px'}
+            left={'9%'}
+            onChange={() => console.log('hello')}
+          />
           <Text
             fontSize={'15px'}
             color={colorMode === 'light' ? '#353c48' : 'white.0'}
@@ -171,59 +290,14 @@ export const AirdropClaimTable = () => {
           fontFamily={theme.fonts.fld}
           d={'flex'}
           justifyContent={'center'}>
-          <Text minWidth={'20%'} textAlign={'center'}>
-            Checkbox
-          </Text>
-          <Text
-            fontSize={'15px'}
-            color={colorMode === 'light' ? '#353c48' : 'white.0'}
+          <Checkbox
             minWidth={'20%'}
-            textAlign={'center'}>
-            TOS Holder
-          </Text>
-          <Text
-            fontSize={'15px'}
-            color={colorMode === 'light' ? '#353c48' : 'white.0'}
-            minWidth={'20%'}
-            textAlign={'center'}>
-            DOC
-          </Text>
-          <Flex minWidth={'40%'} justifyContent={'center'}>
-            <Button
-              w={'160px'}
-              h={'38px'}
-              bg={'transparent'}
-              border={themeDesign.border[colorMode]}
-              borderRadius={'3px 0px 0px 3px'}
-              fontSize={'14px'}
-              fontFamily={theme.fonts.fld}
-              color={themeDesign.fontColorTitle[colorMode]}
-              _hover={{
-                background: 'transparent',
-                border: 'solid 1px #2a72e5',
-                color: themeDesign.fontColorTitle[colorMode],
-                cursor: 'pointer',
-              }}
-              _active={{
-                background: '#2a72e5',
-                border: 'solid 1px #2a72e5',
-                color: '#fff',
-              }}>
-              Airdrop Claim
-            </Button>
-          </Flex>
-        </GridItem>
-        <GridItem
-          border={themeDesign.border[colorMode]}
-          borderBottom={'none'}
-          className={'chart-cell'}
-          fontSize={'16px'}
-          fontFamily={theme.fonts.fld}
-          d={'flex'}
-          justifyContent={'center'}>
-          <Text minWidth={'20%'} textAlign={'center'}>
-            Checkbox
-          </Text>
+            fontWeight={'bold'}
+            fontSize={'14px'}
+            h={'45px'}
+            left={'9%'}
+            onChange={() => console.log('hello')}
+          />
           <Text
             fontSize={'15px'}
             color={colorMode === 'light' ? '#353c48' : 'white.0'}
@@ -272,9 +346,14 @@ export const AirdropClaimTable = () => {
           fontFamily={theme.fonts.fld}
           d={'flex'}
           justifyContent={'center'}>
-          <Text minWidth={'20%'} textAlign={'center'}>
-            Checkbox
-          </Text>
+          <Checkbox
+            minWidth={'20%'}
+            fontWeight={'bold'}
+            fontSize={'14px'}
+            h={'45px'}
+            left={'9%'}
+            onChange={() => console.log('hello')}
+          />
           <Text
             fontSize={'15px'}
             color={colorMode === 'light' ? '#353c48' : 'white.0'}
@@ -313,7 +392,8 @@ export const AirdropClaimTable = () => {
               Airdrop Claim
             </Button>
           </Flex>
-        </GridItem>
+        </GridItem> */}
+
         {/* <GridItem
           border={themeDesign.border[colorMode]}
           className={'chart-cell'}
