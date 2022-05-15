@@ -349,10 +349,10 @@ const SubTitle = (props: {
             toolTipW={254}
             placement={'top'}></CustomTooltip>
         </Flex>
-      ) : leftTitle === 'Fund Raising\nTarget Amount' && !isSecondColData ? (
+      ) : leftTitle === 'Fund Raising Target Amount' && !isSecondColData ? (
         <Flex>
           <Text color={'#7e8993'} mr={'5px'}>
-            {leftTitle}
+            Fund Raising <br /> Target Amount
           </Text>
           <CustomTooltip
             msg={[

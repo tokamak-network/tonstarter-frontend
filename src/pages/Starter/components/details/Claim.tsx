@@ -172,7 +172,7 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
             w={'220px'}
             h={'32px'}
             numberOnly={true}
-            value={`${inputTonBalance} ${saleInfo?.tokenName}`}
+            value={`${inputTonBalance} ${saleInfo?.tokenSymbol}`}
             color={
               Number(inputTonBalance) > 0
                 ? colorMode === 'light'
@@ -194,14 +194,14 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
               Public Round 1 :{' '}
             </Text>
             <Text {...detailSubTextStyle}>{exclusiveSale}</Text>
-            <Text ml={'3px'}>{saleInfo?.tokenName}</Text>
+            <Text ml={'3px'}>{saleInfo?.tokenSymbol}</Text>
           </Flex>
           <Flex>
             <Text color={'gray.400'} mr={'3px'}>
               Remained Amount :{' '}
             </Text>
             <Text> {remainedAmount}</Text>
-            <Text ml={'3px'}>{saleInfo?.tokenName}</Text>
+            <Text ml={'3px'}>{saleInfo?.tokenSymbol}</Text>
           </Flex>
         </Box>
         <Box d="flex" fontSize={'13px'}>
@@ -210,7 +210,7 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
               Public Round 2 :{' '}
             </Text>
             <Text {...detailSubTextStyle}>{openSale}</Text>
-            <Text ml={'3px'}>{saleInfo?.tokenName}</Text>
+            <Text ml={'3px'}>{saleInfo?.tokenSymbol}</Text>
           </Flex>
           <Flex pos={'relative'}>
             <Text color={'gray.400'} mr={'3px'}>

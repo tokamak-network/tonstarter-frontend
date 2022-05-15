@@ -169,10 +169,10 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
   //call view funcions
   useEffect(() => {
     async function getData() {
-      // const res = await Promise.all([
-
-      // ])
       if (account && library && saleInfo && PUBLICSALE_CONTRACT) {
+        const test = await PUBLICSALE_CONTRACT.usersEx(account);
+        console.log('--test--');
+        console.log(test);
         const address = saleContractAddress;
         const res = await Promise.all([
           starterActions.getTotalExpectOpenSaleAmount({
@@ -195,6 +195,9 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
             address,
           }),
         ]);
+
+        console.log('--res--');
+        console.log(res);
 
         if (res) {
           //@ts-ignore
@@ -375,7 +378,7 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
             <Text {...detailSubTextStyle} mr={'3px'}>
               {totalAllocation}
             </Text>
-            <Text>{saleInfo?.tokenName}</Text>
+            <Text>{saleInfo?.tokenSymbol}</Text>
           </Flex>
         </Box>
         <Box d="flex" fontSize={'13px'}>

@@ -261,7 +261,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 return {
                   title: `${index + 1} ${convertTimeStamp(
                     claimData.claimTime as number,
-                    'DD.MM.YYYY hh:mm:ss',
+                    'DD.MM.YYYY HH:mm:ss',
                   )}`,
                   content: `${commafy(claimData.claimTokenAllocation)} ${
                     values.tokenName
@@ -306,7 +306,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 `${convertTimeStamp(
                   //@ts-ignore
                   selectedVaultDetail?.whitelist as number,
-                  'DD.MM.YYYY hh:mm:ss',
+                  'DD.MM.YYYY HH:mm:ss',
                 )}` || '-',
             },
             {
@@ -315,7 +315,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 `${convertTimeStamp(
                   //@ts-ignore
                   selectedVaultDetail?.publicRound1 as number,
-                  'DD.MM.YYYY hh:mm:ss',
+                  'DD.MM.YYYY HH:mm:ss',
                 )}` || '-',
             },
             {
@@ -325,7 +325,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 `${convertTimeStamp(
                   //@ts-ignore
                   selectedVaultDetail?.publicRound2 as number,
-                  'DD.MM.YYYY hh:mm:ss',
+                  'DD.MM.YYYY HH:mm:ss',
                 )}` || '-',
             },
             {
@@ -334,7 +334,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 `${convertTimeStamp(
                   //@ts-ignore
                   selectedVaultDetail?.claim[0].claimTime as number,
-                  'DD.MM.YYYY hh:mm:ss',
+                  'DD.MM.YYYY HH:mm:ss',
                 )}` || '-',
             },
           ],
@@ -473,7 +473,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 return {
                   title: `${index + 1} ${convertTimeStamp(
                     claimData.claimTime as number,
-                    'DD.MM.YYYY hh:mm:ss',
+                    'DD.MM.YYYY HH:mm:ss',
                   )}`,
                   content: `${commafy(claimData.claimTokenAllocation)} ${
                     values.tokenName
