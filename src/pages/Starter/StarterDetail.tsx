@@ -197,8 +197,8 @@ export const StarterDetail = () => {
           : endDepositTime > nowTimeStamp
           ? 'deposit'
           : 'claim';
-      // setActiveStatus(checkStep);
-      setActiveStatus('deposit');
+      //ActiveStatusTest
+      setActiveStatus(checkStep);
     }, 1000);
     /*eslint-disable*/
   }, [saleInfo]);

@@ -26,7 +26,6 @@ async function saveToAdmin(
     tokenAddress,
     tokenSymbol,
     tokenSymbolImage,
-    totalTokenAllocation,
     vaults,
     projectTokenPrice,
   } = projectData;
@@ -46,7 +45,7 @@ async function saveToAdmin(
     tokenAddress: tokenAddress!,
     tokenSymbol: tokenSymbol!,
     tokenSymbolImage: tokenSymbolImage!,
-    tokenAllocationAmount: String(totalTokenAllocation)!,
+    tokenAllocationAmount: String(publicVault.vaultTokenAllocation)!,
     tokenFundRaisingTargetAmount: String(publicVault.hardCap)!,
     fundingTokenType: 'TON',
     tokenFundingRecipient: publicVault.addressForReceiving!,

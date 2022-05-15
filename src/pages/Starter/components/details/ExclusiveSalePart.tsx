@@ -163,6 +163,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
     saleContractAddress,
     fundingTokenType,
     tokenName,
+    tokenSymbol,
     startAddWhiteTime,
     endExclusiveTime,
   } = saleInfo;
@@ -395,13 +396,13 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
                   : 'white.100'
                 : 'gray.175'
             }
-            tokenName={tokenName}></CustomInput>
+            tokenName={tokenSymbol}></CustomInput>
           <Flex pos="absolute" right={0} top={10} fontSize={'13px'}>
             <Text color={'gray.400'} mr={'3px'}>
               Amount Available :{' '}
             </Text>
             <Text mr={'3px'}> {amountAvailable} </Text>
-            <Text>{tokenName}</Text>
+            <Text>{tokenSymbol}</Text>
           </Flex>
         </Box>
       </Box>
@@ -427,7 +428,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
               {' '}
               {btnDisabled === true ? '-' : userAllocation}{' '}
             </Text>
-            <Text>{tokenName}</Text>
+            <Text>{tokenSymbol}</Text>
           </Flex>
         </Box>
         <Box d="flex" fontSize={'13px'} justifyContent="space-between">
@@ -438,14 +439,14 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             <Text {...detailSubTextStyle} mr={'3px'}>
               {userTierAllocation}
             </Text>
-            <Text>{tokenName}</Text>
+            <Text>{tokenSymbol}</Text>
           </Flex>
           <Flex w={'235px'}>
             <Text color={'gray.400'} mr={'3px'}>
               Ratio :{' '}
             </Text>
             <Text {...detailSubTextStyle}>
-              1 {fundingTokenType} = {tokenExRatio} {tokenName}
+              1 {fundingTokenType} = {tokenExRatio} {tokenSymbol}
             </Text>
           </Flex>
         </Box>
