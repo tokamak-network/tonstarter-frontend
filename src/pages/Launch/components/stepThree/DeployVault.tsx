@@ -515,8 +515,8 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                   selectedVaultName,
                   values.tokenAddress,
                   selectedVaultDetail?.adminAddress,
-                  1,
-                  values.tosPrice,
+                  100,
+                  values.tosPrice * 100,
                 );
               const receipt = await tx.wait();
               const {logs} = receipt;
