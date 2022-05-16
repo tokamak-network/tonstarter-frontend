@@ -206,7 +206,9 @@ const CreateRewardsProgramModal = () => {
                 background: '#2a72e5',
                 border: 'solid 1px #2a72e5',
                 color: '#fff',
-              }}>
+              }}
+              onClick={()=> data.data.createReward()}
+              >
               Confirm
             </Button>
           </Box>
