@@ -116,7 +116,7 @@ const MainScreen = () => {
             ? {...initialValues, ...projects[id]}
             : {...initialValues, ownerAddress: account}
         }
-        // validationSchema={ProjectSchema}
+        validationSchema={ProjectSchema}
         validate={(values) => {
           console.log(values);
           validateFormikValues(values, setDisable, setDisableForStep2);
@@ -141,6 +141,11 @@ const MainScreen = () => {
           setSubmitting(false);
         }}>
         {({values, handleBlur, handleSubmit, isSubmitting, errors}) => {
+          if (Object.keys(errors).length !== 0) {
+            setDisable(true);
+          } else {
+            setDisable(false);
+          }
           return (
             <Form onSubmit={handleSubmit}>
               <Flex

@@ -28,8 +28,8 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
 
   const titleTrimed = title.toString().replaceAll(',', '');
 
-  // //@ts-ignore
-  // console.log(errors[name]);
+  //@ts-ignore
+  console.log(errors[name]);
 
   return (
     <Flex flexDir={'column'} fontSize={13} pos={'relative'}>
