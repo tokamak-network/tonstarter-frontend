@@ -116,7 +116,7 @@ const MainScreen = () => {
             ? {...initialValues, ...projects[id]}
             : {...initialValues, ownerAddress: account}
         }
-        validationSchema={ProjectSchema}
+        // validationSchema={ProjectSchema}
         validate={(values) => {
           console.log(values);
           validateFormikValues(values, setDisable, setDisableForStep2);

@@ -71,8 +71,6 @@ function validateFormikValues(
   if (values.owner) {
     try {
       const result = toChecksumAddress(String(values.owner));
-      console.log('--values.owner--');
-      console.log(result);
       if (!result) {
         return {owner: 'err'};
       }
