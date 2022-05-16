@@ -1,4 +1,4 @@
-import {Projects, VaultSchedule} from '@Launch/types';
+import {Projects} from '@Launch/types';
 import {Dispatch, SetStateAction} from 'react';
 import {toChecksumAddress} from 'web3-utils';
 
@@ -71,6 +71,8 @@ function validateFormikValues(
   if (values.owner) {
     try {
       const result = toChecksumAddress(String(values.owner));
+      console.log('--values.owner--');
+      console.log(result);
       if (!result) {
         return {owner: 'err'};
       }

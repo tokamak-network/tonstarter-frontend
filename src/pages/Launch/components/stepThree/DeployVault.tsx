@@ -911,8 +911,8 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               const param1: any[] = [
                 publicRound1AllocationWei,
                 publicRound2AllocationWei,
-                (values.projectTokenPrice as number) * 100,
                 100,
+                (values.projectTokenPrice as number) * 100,
                 hardCapWei,
                 PublicVaultData.tokenAllocationForLiquidity as number,
               ];
