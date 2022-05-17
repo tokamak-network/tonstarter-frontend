@@ -523,6 +523,8 @@ const STOSTier = (props: {
               inputRef={inputRef}></InputField>
             <Text
               mx={'5px'}
+              w={'33px'}
+              maxW={'33px'}
               color={'#7e8993'}
               textAlign={'center'}
               lineHeight={'32px'}
@@ -532,7 +534,9 @@ const STOSTier = (props: {
                 : // : `(${
                   //     percentVal.toFixed(3).replace(/\.(\d\d)\d?$/, '.$1') || '-'
                   // }%)`}
-                  `(${String(percentVal).split('.')[0]}%)`}
+                  `(${
+                    percentVal > 100 ? '-' : String(percentVal).split('.')[0]
+                  }%)`}
             </Text>
           </Flex>
         </>
