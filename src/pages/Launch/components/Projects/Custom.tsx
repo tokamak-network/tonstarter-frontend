@@ -88,7 +88,7 @@ export const Custom: FC<Custom> = ({vault, project}) => {
       const amount = await vaultC
         .connect(signer)
         .calcalClaimAmount(currentRound);
-      console.log('amount', amount);
+
 
       const nowClaimRound = await vaultC.connect(signer).nowClaimRound();
       const disabled = Number(nowClaimRound) >= Number(currentRound);
@@ -103,7 +103,7 @@ export const Custom: FC<Custom> = ({vault, project}) => {
         Number(nowClaimRound) >= Number(currentRound) ||
           !ethers.utils.isAddress(claimAddress),
       );
-      const amountFormatted = parseInt(amount);
+      const amountFormatted = parseInt(ethers.utils.formatEther(amount));
       setShowDate(amountFormatted === 0 && Number(claimDate) > now);
       setClaimTime(claimDate);
       setDistributable(amountFormatted);

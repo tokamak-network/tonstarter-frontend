@@ -1,4 +1,4 @@
-import {FC, useState} from 'react';
+import {FC, useEffect, useState} from 'react';
 import {
   Flex,
   Text,
@@ -17,7 +17,19 @@ import {useModal} from 'hooks/useModal';
 import {shortenAddress} from 'utils/address';
 import commafy from 'utils/commafy';
 import {BASE_PROVIDER} from 'constants/index';
-
+import VaultLPRewardLogicAbi from 'services/abis/VaultLPRewardLogicAbi.json';
+import {ethers} from 'ethers';
+import store from 'store';
+import {toastWithReceipt} from 'utils';
+import {setTxPending} from 'store/tx.reducer';
+import {openToast} from 'store/app/toast.reducer';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectTransactionType} from 'store/refetch.reducer';
+import {Contract} from '@ethersproject/contracts';
+import {getSigner} from 'utils/contract';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import moment from 'moment';
+import momentTZ from 'moment-timezone';
 type LiquidityIncentive = {vault: any; project: any};
 
 export const LiquidityIncentive: FC<LiquidityIncentive> = ({
@@ -32,9 +44,20 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
   const [pageOptions, setPageOptions] = useState<number>(0);
   const [disableButton, setDisableButton] = useState<boolean>(true);
   const network = BASE_PROVIDER._network.name;
+  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
+  const {account, library} = useActiveWeb3React();
+  const [distributable, setDistributable] = useState<number>(0);
+  const [claimTime, setClaimTime] = useState<number>(0);
+  const [showDate, setShowDate] = useState<boolean>(false);
+  const [distributeDisable, setDistributeDisable] = useState<boolean>(true);
 
-  console.log('vault: ', vault);
-
+  const VaultLPReward = new Contract(
+    vault.vaultAddress,
+    VaultLPRewardLogicAbi.abi,
+    library,
+  );
+  console.log(VaultLPReward);
+  
   const themeDesign = {
     border: {
       light: 'solid 1px #e6eaee',
@@ -61,6 +84,68 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
       dark: '#777777',
     },
   };
+
+
+  useEffect(() => {
+    async function getLPToken() {
+      if (account === null || account === undefined || library === undefined) {
+        return;
+      }
+      const now = moment().unix();
+      const signer = getSigner(library, account);
+      const currentRound = await VaultLPReward.connect(signer).currentRound();
+      const nowClaimRound = await VaultLPReward.connect(signer).nowClaimRound();
+      const amount = await VaultLPReward.connect(signer).claimAmounts(
+        currentRound,
+      );
+      const totalClaimCount = await VaultLPReward.connect(
+        signer,
+      ).totalClaimCounts();
+      setDistributeDisable(Number(nowClaimRound) >= Number(currentRound));
+      const disabled = Number(nowClaimRound) >= Number(currentRound);
+      const claimDate =
+        Number(currentRound) === Number(totalClaimCount)
+          ? await VaultLPReward.connect(signer).claimTimes(
+              Number(currentRound) - 1,
+            )
+          : await VaultLPReward.connect(signer).claimTimes(currentRound);
+      const amountFormatted = parseInt(amount);
+      setShowDate(amountFormatted === 0 && Number(claimDate) > now);
+      setClaimTime(claimDate);
+      setDistributable(amountFormatted);
+    }
+    getLPToken();
+  }, [account, library, transactionType, blockNumber]);
+
+
+const createReward = async() => {
+  if (account === null || account === undefined || library === undefined) {
+    return;
+  }
+  const signer = getSigner(library, account);
+  try {
+    const receipt = await VaultLPReward.connect(signer).createProgram();
+    store.dispatch(setTxPending({tx: true}));
+    if (receipt) {
+      toastWithReceipt(receipt, setTxPending, 'Launch');
+      await receipt.wait();
+    }
+  } catch (e) {
+    store.dispatch(setTxPending({tx: false}));
+    store.dispatch(
+      //@ts-ignore
+      openToast({
+        payload: {
+          status: 'error',
+          title: 'Tx fail to send',
+          description: `something went wrong`,
+          duration: 5000,
+          isClosable: true,
+        },
+      }),
+    );
+  }
+}
 
   const fakeData = [
     {name: '1'},
@@ -214,7 +299,8 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
             <Flex w={'70%'} alignItems={'center'} justifyContent={'flex-end'}>
               <Flex flexDirection={'column'} mr={'20px'} textAlign={'right'}>
                 <Text color={'#7e8993'}>You can create rewards program on</Text>
-                <Text fontSize={'14px'}>Mar. 31, 2022 00:00:00 (KST)</Text>
+                <Text fontSize={'14px'}>  {moment.unix(claimTime).format('MMM. DD, yyyy HH:mm:ss')}{' '}
+                    ({momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()})</Text>
               </Flex>
               <Button
                 bg={'#257eee'}
@@ -224,7 +310,7 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
                 padding={'6px 12px'}
                 whiteSpace={'normal'}
                 color={'#fff'}
-                isDisabled={disableButton}
+                isDisabled={distributeDisable}
                 _disabled={{
                   color: colorMode === 'light' ? '#86929d' : '#838383',
                   bg: colorMode === 'light' ? '#e9edf1' : '#353535',
@@ -249,7 +335,9 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
                         color: '#fff',
                       }
                 }
-                onClick={() => openAnyModal('Launch_CreateRewardProgram', {})}>
+                onClick={() => openAnyModal('Launch_CreateRewardProgram', {
+                  createReward
+                })}>
                 Create Reward Program
               </Button>
             </Flex>
@@ -271,9 +359,9 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
               <Text color={'#7e8993'}>Refundable Amount</Text>
               <Flex alignItems={'baseline'}>
                 <Text mr={'3px'} fontSize={'16px'}>
-                  10,000,000
+                {distributable.toLocaleString()}
                 </Text>{' '}
-                <Text>TON</Text>
+                <Text> {project.tokenSymbol}</Text>
               </Flex>
             </Flex>
             <Button

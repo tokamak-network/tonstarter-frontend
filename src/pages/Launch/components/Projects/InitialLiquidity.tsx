@@ -1,4 +1,4 @@
-import {FC, useEffect, useState} from 'react';
+import {FC, useEffect, useState, Dispatch, SetStateAction} from 'react';
 import {
   Flex,
   Text,
@@ -20,6 +20,7 @@ import {getSigner} from 'utils/contract';
 import InitialLiquidityComputeAbi from 'services/abis/Vault_InitialLiquidityCompute.json';
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import * as UniswapV3FactoryABI from 'services/abis/UniswapV3Factory.json'
+import * as NPMABI from 'services/abis/NonfungiblePositionManager.json';
 import {convertNumber} from 'utils/number';
 import {ethers} from 'ethers';
 import store from 'store';
@@ -32,7 +33,7 @@ import {BASE_PROVIDER} from 'constants/index';
 import Fraction from 'fraction.js'
 
 // var Fraction = require('fraction.js');
-const {TOS_ADDRESS, UniswapV3Factory} = DEPLOYED;
+const {TOS_ADDRESS, UniswapV3Factory,NPM_Address} = DEPLOYED;
 type InitialLiquidity = {
   vault: any;
   project: any;
@@ -49,21 +50,28 @@ type Condition2 = {
   projTokenBalance: string;
   tosBalance: string;
   project: any;
-  isAdmin: boolean
+  isAdmin: boolean;
+  InitialLiquidityCompute: any
 };
 type Condition3 = {
   themeDesign: any;
   projTokenBalance: string;
   tosBalance: string;
   project: any;
-  isAdmin: boolean
+  isAdmin: boolean;
+  InitialLiquidityCompute: any;
+  mint: Dispatch<SetStateAction<any>>;
 };
 type Condition4 = {
   themeDesign: any;
   projTokenBalance: string;
   tosBalance: string;
   project: any;
-  isAdmin: boolean
+  isAdmin: boolean;
+  LPToken: Number;
+  mint:Dispatch<SetStateAction<any>>;
+  collect:Dispatch<SetStateAction<any>>;
+  npm: any
 };
 export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
   const {colorMode} = useColorMode();
@@ -74,7 +82,8 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
   const [tosBalance, setTosBalance] = useState<string>('');
   const [projTokenBalance, setProjTokenBalance] = useState<string>('');
   const [isPool, setIsPool] = useState<boolean>(false);
-  const [isLpToken, setIsLpToken] =useState<boolean>(true);
+  const [isLpToken, setIsLpToken] =useState<boolean>(false);
+  const [LPToken, setLPToken] = useState<Number>(0)
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const network = BASE_PROVIDER._network.name;
   const InitialLiquidityCompute = new Contract(
@@ -87,6 +96,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
   const TOS = new Contract(TOS_ADDRESS, ERC20.abi, library);
 const UniswapV3Fact = new Contract(UniswapV3Factory, UniswapV3FactoryABI.abi, library);
   const projectToken = new Contract(project.tokenAddress, ERC20.abi, library);
+  const NPM = new Contract(NPM_Address, NPMABI.abi,library)
   useEffect(() => {
     async function getLPToken() {
       if (account === null || account === undefined || library === undefined) {
@@ -98,14 +108,17 @@ const UniswapV3Fact = new Contract(UniswapV3Factory, UniswapV3FactoryABI.abi, li
       const tosBal = await TOS.balanceOf(vault.vaultAddress);
       const tokBalance = await projectToken.balanceOf(vault.vaultAddress);
       const TOSBal = ethers.utils.formatEther(tosBal);
-      setTosBalance('2000');
+      setTosBalance(TOSBal);
       setProjTokenBalance(ethers.utils.formatEther(tokBalance));
-      const getPool = await UniswapV3Fact.connect(signer).getPool(TOS_ADDRESS, project.tokenAddress, 3000);
-      // setIsPool(getPool===ZERO_ADDRESS? false: true)
-        setIsPool( false)
+      const getPool = await UniswapV3Fact.connect(signer).getPool(TOS_ADDRESS, project.tokenAddress, 3000);     
+      setIsPool(getPool===ZERO_ADDRESS? false: true)
+      setIsLpToken(Number(LP)===0? false: true)
+      // setIsLpToken(true)
+      setLPToken(Number(LP));
+        // setIsPool( f)
     }
     getLPToken();
-  }, [account, library]);
+  }, [account, library,transactionType, blockNumber]);
  
   useEffect(() => {
     if (account !== undefined && account !== null) {
@@ -129,6 +142,34 @@ const UniswapV3Fact = new Contract(UniswapV3Factory, UniswapV3FactoryABI.abi, li
     const signer = getSigner(library, account);
     try {
       const receipt = await InitialLiquidityCompute.connect(signer).mint();
+      store.dispatch(setTxPending({tx: true}));
+      if (receipt) {
+        toastWithReceipt(receipt, setTxPending, 'Launch');
+        await receipt.wait();
+      }
+    } catch (e) {
+      store.dispatch(setTxPending({tx: false}));
+      store.dispatch(
+        //@ts-ignore
+        openToast({
+          payload: {
+            status: 'error',
+            title: 'Tx fail to send',
+            description: `something went wrong`,
+            duration: 5000,
+            isClosable: true,
+          },
+        }),
+      );
+    }
+  };
+  const collect = async () => {
+    if (account === null || account === undefined || library === undefined) {
+      return;
+    }
+    const signer = getSigner(library, account);
+    try {
+      const receipt = await InitialLiquidityCompute.connect(signer).collect();
       store.dispatch(setTxPending({tx: true}));
       if (receipt) {
         toastWithReceipt(receipt, setTxPending, 'Launch');
@@ -286,12 +327,19 @@ const UniswapV3Fact = new Contract(UniswapV3Factory, UniswapV3FactoryABI.abi, li
         tosBalance={tosBalance}
         project={project}
         isAdmin={isAdmin}
+        LPToken={LPToken}
+        mint={mint}
+        collect={collect}
+        npm={NPM}
+
       />: <Condition3
         themeDesign={themeDesign}
         projTokenBalance={projTokenBalance}
         tosBalance={tosBalance}
         project={project}
         isAdmin={isAdmin}
+        InitialLiquidityCompute={InitialLiquidityCompute}
+        mint={mint}
       />:
         <Condition2
           themeDesign={themeDesign}
@@ -299,6 +347,7 @@ const UniswapV3Fact = new Contract(UniswapV3Factory, UniswapV3FactoryABI.abi, li
           tosBalance={tosBalance}
           project={project}
           isAdmin={isAdmin}
+          InitialLiquidityCompute={InitialLiquidityCompute}
         />
       )}
     </Grid>
@@ -392,7 +441,8 @@ export const Condition2: React.FC<Condition2> = ({
   projTokenBalance,
   tosBalance,
   project,
-  isAdmin
+  isAdmin,
+  InitialLiquidityCompute
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -412,10 +462,41 @@ export const Condition2: React.FC<Condition2> = ({
     .toFixed();
   }
   const createPool = async() => {
+    if (account === null || account === undefined || library === undefined) {
+      return;
+    }
+    const signer = getSigner(library, account);
+
+    const computePoolAddress = await InitialLiquidityCompute.connect(signer).computePoolAddress(TOS_ADDRESS, project.tokenAddress, 3000);
+    console.log('computePoolAddress',computePoolAddress);
     
+    try {
+      const receipt = await InitialLiquidityCompute.connect(signer).setInitialPriceAndCreatePool(getRatio()[0],getRatio()[1], encodePriceSqrt(getRatio()[0], getRatio()[1]))
+      store.dispatch(setTxPending({tx: true}));
+      if (receipt) {
+        toastWithReceipt(receipt, setTxPending, 'Launch');
+        await receipt.wait();
+      }
+    }
+    catch (e) {
+      store.dispatch(setTxPending({tx: false}));
+      store.dispatch(
+        //@ts-ignore
+        openToast({
+          payload: {
+            status: 'error',
+            title: 'Tx fail to send',
+            description: `something went wrong`,
+            duration: 5000,
+            isClosable: true,
+          },
+        }),
+      );
+    }
+   
   }
   const getRatio = () => {
-    const decimal  = Number(project.projectTokenPrice)/10;
+    const decimal  = Number(project.projectTokenPrice);
     const x = new Fraction(decimal);
   return [x.n, x.d]
   }
@@ -475,7 +556,8 @@ export const Condition2: React.FC<Condition2> = ({
                   whiteSpace:'normal'
                 }
               }
-          whiteSpace={'normal'}>
+          whiteSpace={'normal'}
+          onClick={()=>createPool()}>
           Approve to Create Pool & Set Initial Price
         </Button>
       </GridItem>
@@ -531,12 +613,9 @@ export const Condition2: React.FC<Condition2> = ({
           <Text fontSize={'14px'} color={colorMode==='light'? '#353c48':'#ffffff'}>Details</Text>
           <Flex mt={'6px'}>
             <Text fontSize={'13px'} color={colorMode==='light'? '#808992':'#949494'}>Exchange Ratio : </Text>
-            <Text fontSize={'13px'} color={colorMode==='light'? '#3d495d':'#f3f4f1'} ml={'3px'}> {getRatio()[0]} {project.tokenSymbol} = {getRatio()[1]} TOS</Text>
+            <Text fontSize={'13px'} color={colorMode==='light'? '#3d495d':'#f3f4f1'} ml={'3px'}> 1 TOS = {project.tosPrice}{' '}{project.tokenSymbol}</Text>
           </Flex>
-          <Flex mt={'6px'}>
-            <Text fontSize={'13px'} color={colorMode==='light'? '#808992':'#949494'}>Set Price : </Text>
-            <Text fontSize={'13px'} color={colorMode==='light'? '#3d495d':'#f3f4f1'} ml={'3px'}> {encodePriceSqrt(getRatio()[0], getRatio()[1])} {project.tokenSymbol}  per TOS</Text>
-          </Flex>
+         
         </Flex>
       </GridItem>
     </Flex>
@@ -548,7 +627,9 @@ export const Condition3: React.FC<Condition3> = ({
   projTokenBalance,
   tosBalance,
   project,
-  isAdmin
+  isAdmin,
+  InitialLiquidityCompute,
+  mint
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -573,6 +654,9 @@ export const Condition3: React.FC<Condition3> = ({
     const x = new Fraction(decimal);
   return [x.n, x.d]
   }
+
+
+ 
   return (
     <Flex flexDirection={'column'}>
       <GridItem
@@ -629,7 +713,7 @@ export const Condition3: React.FC<Condition3> = ({
                   whiteSpace:'normal'
                 }
               }
-          whiteSpace={'normal'}>
+          whiteSpace={'normal'} onClick={mint}>
          Mint Lp Token
         </Button>
       </GridItem>
@@ -685,11 +769,7 @@ export const Condition3: React.FC<Condition3> = ({
           <Text fontSize={'14px'} color={colorMode==='light'? '#353c48':'#ffffff'}>Details</Text>
           <Flex mt={'6px'}>
             <Text fontSize={'13px'} color={colorMode==='light'? '#808992':'#949494'}>Exchange Ratio : </Text>
-            <Text fontSize={'13px'} color={colorMode==='light'? '#3d495d':'#f3f4f1'} ml={'3px'}> {getRatio()[0]} {project.tokenSymbol} = {getRatio()[1]} TOS</Text>
-          </Flex>
-          <Flex mt={'6px'}>
-            <Text fontSize={'13px'} color={colorMode==='light'? '#808992':'#949494'}>Set Price : </Text>
-            <Text fontSize={'13px'} color={colorMode==='light'? '#3d495d':'#f3f4f1'} ml={'3px'}> {encodePriceSqrt(getRatio()[0], getRatio()[1])} {project.tokenSymbol}  per TOS</Text>
+            <Text fontSize={'13px'} color={colorMode==='light'? '#3d495d':'#f3f4f1'} ml={'3px'}> 1 TOS = {project.tosPrice}{project.tokenSymbol}</Text>
           </Flex>
         </Flex>
       </GridItem>
@@ -702,21 +782,46 @@ export const Condition4: React.FC<Condition4> = ({
   projTokenBalance,
   tosBalance,
   project,
-  isAdmin
+  isAdmin,
+  LPToken,
+  mint, 
+  collect,
+  npm
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
   const bn = require("bignumber.js");
+  const [unclaimedTOS, setUnclaimedTOS] = useState<string>('0')
+  const [unclaimedProjTok, setUnclaimedProjTok] = useState<string>('0')
+  useEffect(() => {
+    async function getTokenInfo() {
+      if (account === null || account === undefined || library === undefined) {
+        return;
+      }
+      const signer = getSigner(library, account);
+      const data = await npm.connect(signer).positions(LPToken);
+      setUnclaimedTOS(ethers.utils.formatEther(data.tokensOwed0))
+      setUnclaimedProjTok(ethers.utils.formatEther(data.tokensOwed1))
+      console.log(data);
+    }
+  
+     
+    getTokenInfo()
+   
+  },[account, project, LPToken])
+
   return (
     <Flex flexDirection={'column'}>
       <GridItem
+      fontFamily={theme.fonts.fld}
         border={themeDesign.border[colorMode]}
         borderBottom={'none'}
         className={'chart-cell no-border-bottom'}
         fontSize={'16px'}>
         <Text fontFamily={theme.fonts.fld}>LP Token</Text>
-      
+        <Flex fontSize={'15px'}><Text mr={'5px'} color={colorMode==='light'? '#7e8993': '#9d9ea5'} >ID</Text>
+        <Text color={'#257eee'}>#{LPToken}</Text></Flex>
       </GridItem>
       <GridItem
         px={'0px'}
@@ -726,6 +831,7 @@ export const Condition4: React.FC<Condition4> = ({
         <Text w={'22.6%'} fontFamily={theme.fonts.fld} color={'#7e8993'}  textAlign={'center'}>
           LP Token
         </Text>
+       
         <Text
           fontFamily={theme.fonts.fld}
           w={'24.1%'}
@@ -777,7 +883,7 @@ export const Condition4: React.FC<Condition4> = ({
           h={'32px'}
           bg={'#257eee'}
           color={'#ffffff'}
-          isDisabled={!isAdmin}
+          isDisabled={!isAdmin || Number(tosBalance) ===0 || Number(projTokenBalance) ===0}
           _disabled={{
             color: colorMode === 'light' ? '#86929d' : '#838383',
             bg: colorMode === 'light' ? '#e9edf1' : '#353535',
@@ -812,7 +918,8 @@ export const Condition4: React.FC<Condition4> = ({
                   border: 'solid 1px #2a72e5',
                   color: '#fff',
                 }
-              }>Increase</Button>
+              }
+              onClick={mint}>Increase</Button>
         </Flex>
       
       </GridItem>
@@ -834,10 +941,10 @@ export const Condition4: React.FC<Condition4> = ({
           </Flex>
        
         <Text textAlign={'center'}  w={'24.1%'}fontFamily={theme.fonts.fld}>
-          {commafy(Number(projTokenBalance))}
+          {commafy(Number(unclaimedProjTok))}
         </Text>
         <Text textAlign={'center'}  w={'24.1%'}fontFamily={theme.fonts.fld}>
-          {commafy(Number(tosBalance))}
+          {commafy(Number(unclaimedTOS))}
         </Text>
         <Flex justifyContent={'center'} alignContent={'center'} w={'29.2%'}>
         <Button fontSize={'12px'}
@@ -845,7 +952,7 @@ export const Condition4: React.FC<Condition4> = ({
           h={'32px'}
           bg={'#257eee'}
           color={'#ffffff'}
-          isDisabled={!isAdmin}
+          isDisabled={!isAdmin|| Number(unclaimedProjTok)===0 || Number(unclaimedTOS)===0}
           _disabled={{
             color: colorMode === 'light' ? '#86929d' : '#838383',
             bg: colorMode === 'light' ? '#e9edf1' : '#353535',
@@ -880,7 +987,9 @@ export const Condition4: React.FC<Condition4> = ({
                   border: 'solid 1px #2a72e5',
                   color: '#fff',
                 }
-              }>Collect</Button>
+              }
+              onClick={collect}
+              >Collect</Button>
         </Flex>
       
       </GridItem>
