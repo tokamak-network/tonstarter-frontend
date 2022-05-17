@@ -64,6 +64,18 @@ export const getUserWTONBalance = async ({account, library}: UserContract) => {
   return {wton: convertedRes || '0', wtonOrigin: wtonBalance.toString()};
 };
 
+export const getUserTONStaked = async ({account, library}: any) => {
+  console.log('DEPLOYED:', DEPLOYED);
+  // const {LockTON_ADDRESS} = DEPLOYED;
+  // const LockTOSContract = new Contract(
+  //   LockTOS_ADDRESS,
+  //   LockTOSABI.abi,
+  //   library,
+  // );
+  // const res = await LockTOSContract.totalLockedAmountOf(account);
+  // return convertNumber({amount: res.toString(), localeString: true});
+};
+
 export const getUserTOSStaked = async ({account, library}: any) => {
   const {LockTOS_ADDRESS} = DEPLOYED;
   const LockTOSContract = new Contract(

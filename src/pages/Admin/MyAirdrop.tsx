@@ -1,10 +1,13 @@
+import {useEffect, useMemo, useState} from 'react';
+import {selectDao} from '../Dao/dao.reducer';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {Flex, Text, Button, useTheme, useColorMode} from '@chakra-ui/react';
 import {PageHeader} from 'components/PageHeader';
 import {useActiveWeb3React} from 'hooks/useWeb3';
-import {useEffect, useMemo, useState} from 'react';
 import {ListRewardTable} from './components/ListRewardTable';
 import {RewardData, ListingRewardTableData} from './types';
 import AdminActions from './actions';
+import {shortenAddress} from 'utils';
 import {convertTimeStamp} from 'utils/convertTIme';
 import moment from 'moment';
 import {convertNumber} from 'utils/number';
@@ -12,13 +15,28 @@ import {DistributeTable} from './components/DistributeTable';
 import {AirdropClaimTable} from './components/AirdropClaimTable';
 import {AirdropClaimModal} from './components/AirdropClaimModal';
 import {AirdropDistributeModal} from './components/AirdropDistributeModal';
+import {
+  getUserTOSStaked,
+  getUserSTOSBalance,
+  getUserTONStaked,
+} from 'client/getUserBalance';
 
 export const MyAirdrop = () => {
   const {account, library} = useActiveWeb3React();
+  const [address, setAddress] = useState<string>('');
   const [projects, setProjects] = useState<ListingRewardTableData[] | []>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [distributeButton, setDistributeButton] = useState<boolean>(false);
+  const [userStakedTos, setUserStakedTos] = useState('-');
+  const [userStakedSTos, setUserStakedSTos] = useState('-');
+  const [isEnd, setIsEnd] = useState(true);
+  const {
+    data: {tosStakeList: stakeList},
+  } = (useAppSelector as any)(selectDao);
+  const filteredStakeList = stakeList.filter((e: any) => e.end === false);
+
   const {colorMode} = useColorMode();
+
   const theme = useTheme();
 
   const themeDesign = {
@@ -56,55 +74,54 @@ export const MyAirdrop = () => {
     },
   };
 
-  //   useEffect(() => {
-  //     async function fetchProjectsData() {
-  //       const rewardData = await AdminActions.getRewardData();
+  // Get account address and shorten it
+  useEffect(() => {
+    getUserTONStaked({account, library});
+    if (account && library) {
+      setAddress(shortenAddress(account));
+    } else {
+      setAddress('-');
+    }
+  }, [account, library]);
 
-  //       if (!rewardData) {
-  //         return setProjects([]);
-  //       }
+  // Get TOS balance
+  useEffect(() => {
+    async function getTosBalance() {
+      const res = await getUserTOSStaked({account, library});
+      console.log('res: ', res);
+      if (res !== undefined) {
+        setUserStakedTos(res);
+      }
+    }
+    if (account) {
+      getTosBalance();
+      setIsEnd(true);
+      stakeList.map((stake: any) => {
+        if (stake.end === true && stake.endTime > 0) {
+          return setIsEnd(false);
+        }
+        return null;
+      });
+    } else {
+      setUserStakedTos('-');
+    }
+  }, [account, library, stakeList]);
 
-  //       const filteredRewardData: ListingRewardTableData[] = rewardData.map(
-  //         (data: RewardData) => {
-  //           const {
-  //             poolName,
-  //             rewardToken,
-  //             incentiveKey,
-  //             startTime,
-  //             endTime,
-  //             allocatedReward,
-  //           } = data;
-
-  //           const convertedAllocatedReward = convertNumber({
-  //             amount: allocatedReward,
-  //             localeString: true,
-  //           });
-  //           const nowTimeStamp = moment().unix();
-  //           const status =
-  //             nowTimeStamp < startTime
-  //               ? 'Waiting'
-  //               : nowTimeStamp < endTime
-  //               ? 'On progress'
-  //               : 'Closed';
-
-  //           return {
-  //             pool: poolName,
-  //             rewardToken,
-  //             incentiveKey,
-  //             start: convertTimeStamp(startTime),
-  //             end: convertTimeStamp(endTime),
-  //             allocatedReward: convertedAllocatedReward || 'fail to load',
-  //             stakers: '10',
-  //             status,
-  //           };
-  //         },
-  //       );
-
-  //       setProjects(filteredRewardData);
-  //       setLoading(false);
-  //     }
-  //     fetchProjectsData();
-  //   }, [account, library]);
+  // Get sTOS balance
+  useEffect(() => {
+    async function getSTosBalance() {
+      const res = await getUserSTOSBalance({account, library});
+      if (res !== undefined) {
+        setUserStakedSTos(res);
+      }
+    }
+    if (account) {
+      getSTosBalance();
+    } else {
+      setUserStakedSTos('-');
+    }
+    /*eslint-disable*/
+  }, [account, library, stakeList]);
 
   return (
     <Flex mt={'110px'} flexDir="column" alignItems="center">
@@ -134,7 +151,7 @@ export const MyAirdrop = () => {
             fontWeight={'bold'}
             fontSize={'20px'}
             color={themeDesign.fontColorTitle[colorMode]}>
-            Ox9B21...d938
+            {address}
           </Text>
         </Flex>
         <Flex
@@ -174,7 +191,7 @@ export const MyAirdrop = () => {
             fontWeight={'bold'}
             fontSize={'20px'}
             color={themeDesign.fontColorTitle[colorMode]}>
-            1,000.00 TOS
+            {userStakedTos} TOS
           </Text>
         </Flex>
         <Flex
@@ -193,7 +210,7 @@ export const MyAirdrop = () => {
             fontWeight={'bold'}
             fontSize={'20px'}
             color={themeDesign.fontColorTitle[colorMode]}>
-            2.35 sTOS
+            {userStakedSTos} sTOS
           </Text>
         </Flex>
       </Flex>

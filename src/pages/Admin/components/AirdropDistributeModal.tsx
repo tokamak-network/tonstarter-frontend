@@ -33,6 +33,8 @@ export const AirdropDistributeModal = () => {
   const {btnStyle} = theme;
 
   const [tokenAddress, setTokenAddress] = useState<string>(TON_ADDRESS);
+  const [distributeToValue, setDistributeToValue] =
+    useState<string>('TON Holder');
   const [tokenAmount, setTokenAmount] = useState('');
   const [allowance, setAllowance] = useState<string>('');
   const [ableDistribute, setAbleDistribute] = useState<boolean>(false);
@@ -107,6 +109,11 @@ export const AirdropDistributeModal = () => {
     DOC_ADDRESS,
     'CUSTOM TOKEN',
   ];
+  const selectDistributeOptionValues = [
+    'TON Holder',
+    'TOS Holder',
+    'sTOS Holder',
+  ];
   const selectOptionNames = ['TON', 'WTON', 'TOS', 'DOC', 'CUSTOM TOKEN'];
 
   useEffect(() => {
@@ -177,34 +184,10 @@ export const AirdropDistributeModal = () => {
               <CustomSelectBox
                 w={'290px'}
                 h={'32px'}
-                list={selectOptionValues}
-                optionName={selectOptionNames}
-                setValue={setTokenAddress}
+                list={selectDistributeOptionValues}
+                optionName={selectDistributeOptionValues}
+                setValue={setDistributeToValue}
                 fontSize={'12px'}></CustomSelectBox>
-              {[TON_ADDRESS, WTON_ADDRESS, TOS_ADDRESS, DOC_ADDRESS].indexOf(
-                tokenAddress,
-              ) === -1 && (
-                <CustomInput
-                  w={'290px'}
-                  h={'32px'}
-                  style={{
-                    fontSize: '12px',
-                    textAlign: 'left',
-                    marginTop: '10px',
-                  }}
-                  value={tokenAddress}
-                  setValue={setTokenAddress}
-                  placeHolder={'Enter token address'}
-                  fontWeight={500}
-                  startWithZero={true}
-                  color={
-                    tokenAddress !== 'CUSTOM TOKEN'
-                      ? colorMode === 'light'
-                        ? 'gray.225'
-                        : 'white.100'
-                      : 'gray.175'
-                  }></CustomInput>
-              )}
             </Box>
             <Box d="flex" flexDir="column" mb={'24px'}>
               <Flex justifyContent={'space-between'}>

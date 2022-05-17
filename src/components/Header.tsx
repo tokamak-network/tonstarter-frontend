@@ -208,7 +208,7 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
                 : 'white.100'
             }
             onClick={() =>
-              (window.location.pathname = `${match?.path}admin/myairdrop`)
+              (window.location.pathname = `${match?.path}myairdrop`)
             }
             fontWeight={500}
             fontSize={'15px'}

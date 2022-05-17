@@ -193,14 +193,14 @@ export const AirdropClaimTable = () => {
                 color={colorMode === 'light' ? '#353c48' : 'white.0'}
                 minWidth={'20%'}
                 textAlign={'center'}>
-                TOS Holder
+                {tokenSymbol}
               </Text>
               <Text
                 fontSize={'15px'}
                 color={colorMode === 'light' ? '#353c48' : 'white.0'}
                 minWidth={'20%'}
                 textAlign={'center'}>
-                {tokenSymbol}
+                1,000,000
               </Text>
               <Flex minWidth={'40%'} justifyContent={'center'}>
                 <Button
