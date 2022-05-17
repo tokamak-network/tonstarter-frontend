@@ -364,11 +364,31 @@ const SubTitle = (props: {
             placement={'top'}></CustomTooltip>
         </Flex>
       ) : (
-        <Text
-          color={'#7e8993'}
-          w={!leftTitle.includes('or Liquidity Pool') ? '101px' : '201px'}>
-          {leftTitle}
-        </Text>
+        <Flex pos={'relative'}>
+          <Text
+            color={'#7e8993'}
+            w={!leftTitle.includes('or Liquidity Pool') ? '101px' : '201px'}>
+            {leftTitle}
+          </Text>
+          {leftTitle === 'Snapshot' && (
+            <Flex
+              right={'20px'}
+              pos="absolute"
+              h={'100%'}
+              alignItems="center"
+              justifyContent={'center'}>
+              <CustomTooltip
+                toolTipW={232}
+                toolTipH={'44px'}
+                msg={[
+                  'Snapshot date must be set 1 week after',
+                  'Deployment completion',
+                ]}
+                placement={'top'}
+                important={true}></CustomTooltip>
+            </Flex>
+          )}
+        </Flex>
       )}
       {isEdit ? (
         isSecondColData ? (

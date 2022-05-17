@@ -71,6 +71,7 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
                   ? 'input-light'
                   : 'input-dark'
               }
+              borderRadius={4}
               maxLength={name === 'projectName' ? 20 : 'none'}
               fontSize={13}
               {...field}
