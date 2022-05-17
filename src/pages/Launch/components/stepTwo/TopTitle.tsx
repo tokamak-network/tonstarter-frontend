@@ -43,7 +43,9 @@ const TopTitle = () => {
           h={32}
           fontSize={13}
           value={pricePerTon}
-          setValue={setPricePerTon}></InputField>
+          setValue={setPricePerTon}
+          tokenSymbol={values.tokenSymbol}
+          decimalLimit={true}></InputField>
       </Flex>
     </Box>
   );

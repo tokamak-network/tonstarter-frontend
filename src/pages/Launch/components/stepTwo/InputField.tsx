@@ -28,6 +28,7 @@ type InputFieldProp = {
   inputRef?: any;
   style?: {};
   tokenSymbol?: string;
+  decimalLimit?: boolean;
 };
 
 const InputField: React.FC<InputFieldProp> = (props) => {
@@ -45,6 +46,7 @@ const InputField: React.FC<InputFieldProp> = (props) => {
     inputRef,
     style,
     tokenSymbol,
+    decimalLimit,
   } = props;
   const dispatch = useAppDispatch();
   const {
@@ -128,7 +130,12 @@ const InputField: React.FC<InputFieldProp> = (props) => {
   }
 
   return (
-    <InputGroup display={'flex'} alignItems="center" justifyContent={'center'}>
+    <InputGroup
+      display={'flex'}
+      alignItems="center"
+      justifyContent={'center'}
+      w={`${w}px`}
+      h={`${h}px`}>
       <Input
         w={`${w}px`}
         h={`${h}px`}
@@ -172,6 +179,13 @@ const InputField: React.FC<InputFieldProp> = (props) => {
           //   }
           // }
 
+          if (
+            decimalLimit &&
+            e.target.value.split('.')[1] &&
+            e.target.value.split('.')[1].length > 2
+          ) {
+            return alert('You can only put 2 decimal points.');
+          }
           setValue(e.target.value);
           const publicVaultValue = vaultsList[0] as VaultPublic;
           const {stosTier: stosTierData} = publicVaultValue;

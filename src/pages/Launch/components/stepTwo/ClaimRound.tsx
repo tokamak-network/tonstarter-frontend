@@ -260,7 +260,7 @@ const ClaimRound = () => {
               Date time
             </Text>
             <Text w={'281px'} borderRight={middleStyle.border}>
-              Token Allocation
+              Token Allocation ({values.tokenSymbol})
             </Text>
             <Text w={'281px'} borderRight={middleStyle.border}>
               Accumulated
@@ -367,7 +367,7 @@ const ClaimRound = () => {
                               return setInputVals(oldVals);
                             }
                           }}></Input>
-                        <InputRightElement h={'42px'} mr={'2px'}>
+                        {/* <InputRightElement h={'42px'} mr={'2px'}>
                           <Flex
                             fontSize={13}
                             color={
@@ -375,7 +375,7 @@ const ClaimRound = () => {
                             }>
                             <Text>{values.tokenSymbol}</Text>
                           </Flex>
-                        </InputRightElement>
+                        </InputRightElement> */}
                       </InputGroup>
                     </Flex>
                     <Text w={'281px'} borderRight={middleStyle.border}>
