@@ -1,4 +1,4 @@
-import {Text, Flex, Box, useColorMode} from '@chakra-ui/react';
+import {Text, Flex, Box, useColorMode, useTheme} from '@chakra-ui/react';
 
 import {FC, useRef} from 'react';
 import {useEffect, useMemo, useState} from 'react';
@@ -12,7 +12,7 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useAppDispatch} from 'hooks/useRedux';
 import {fetchProjects} from '@Launch/launch.reducer';
 const MyProjects = () => {
-  // const theme = useTheme();
+  const theme = useTheme();
   // const match = useRouteMatch();
   const {colorMode} = useColorMode();
   const [projectsData, setProjectsData] = useState<any>([]);
@@ -131,6 +131,7 @@ const MyProjects = () => {
           ml={'30px'}
           fontSize={'20px'}
           fontWeight={600}
+          fontFamily={theme.fonts.roboto}
           color={colorMode === 'light' ? '#304156' : 'white.100'}>
           Owned Projects
         </Text>

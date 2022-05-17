@@ -74,7 +74,12 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Project Name
             </Text>
-            <Text>{project?.projectName}</Text>
+            <Text
+              fontFamily={theme.fonts.fld}
+              fontSize={'15px'}
+              fontWeight={'bold'}>
+              {project?.projectName}
+            </Text>
           </Flex>
           <Flex
             p={'0px 20px'}

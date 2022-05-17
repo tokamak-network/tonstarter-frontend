@@ -113,6 +113,7 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
               lineHeight={'45px'}
               fontSize={'12px'}
               fontWeight={'bold'}
+              fontFamily={theme.fonts.fld}
               h={'45px'}
               color={colorMode === 'light' ? '#3a495f' : 'white.100'}
               bg={colorMode === 'light' ? 'white.100' : 'black.200'}
