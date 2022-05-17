@@ -22,6 +22,7 @@ import useValues from '@Launch/hooks/useValues';
 import Line from '@Launch/components/common/Line';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {CustomSelectBox} from 'components/Basic';
+import {useToast} from 'hooks/useToast';
 
 const CreateVaultModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -38,6 +39,9 @@ const CreateVaultModal = () => {
   const [selectVaultType, setSelectVaultType] = useState<
     'C' | 'DAO' | 'Liquidity Incentive'
   >('C');
+  const [btnDisable, setBtnDisable] = useState<boolean>(false);
+
+  const {toastMsg} = useToast();
 
   function editVault() {
     const vaultsList = values.vaults;
@@ -55,8 +59,31 @@ const CreateVaultModal = () => {
   }
 
   useEffect(() => {
-    //Handle it if input value type is char
-  }, [tokenAllocatonVal]);
+    if (nameVal === undefined) {
+      return;
+    }
+    const totalAllocation = values.vaults.reduce((acc, cur) => {
+      if (cur.vaultName === nameVal.replaceAll('*', '').replaceAll(' ', '')) {
+        return acc;
+      }
+      return acc + cur.vaultTokenAllocation;
+    }, 0);
+    if (
+      values.totalSupply &&
+      totalAllocation + Number(tokenAllocatonVal) > values.totalSupply
+    ) {
+      setBtnDisable(true);
+      toastMsg({
+        title: 'Token allocation is over total supply amount',
+        description: 'The sum of token allocation has reached the total supply',
+        duration: 2000,
+        status: 'error',
+        isClosable: true,
+      });
+    } else {
+      setBtnDisable(false);
+    }
+  }, [tokenAllocatonVal, nameVal, values, toastMsg]);
 
   const closeModal = () => {
     setSelectVaultType('C');
@@ -166,6 +193,7 @@ const CreateVaultModal = () => {
           <Box as={Flex} flexDir="column" alignItems="center" pt={5}>
             <CustomButton
               text={'Add'}
+              isDisabled={btnDisable}
               func={() => {
                 editVault();
                 closeModal();
