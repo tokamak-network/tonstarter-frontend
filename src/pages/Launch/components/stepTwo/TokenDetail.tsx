@@ -529,9 +529,10 @@ const STOSTier = (props: {
               fontWeight={100}>
               {isNaN(percentVal)
                 ? '(- %)'
-                : `(${
-                    percentVal.toFixed(3).replace(/\.(\d\d)\d?$/, '.$1') || '-'
-                  }%)`}
+                : // : `(${
+                  //     percentVal.toFixed(3).replace(/\.(\d\d)\d?$/, '.$1') || '-'
+                  // }%)`}
+                  `(${String(percentVal).split('.')[0]}%)`}
             </Text>
           </Flex>
         </>

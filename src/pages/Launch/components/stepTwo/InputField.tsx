@@ -128,7 +128,7 @@ const InputField: React.FC<InputFieldProp> = (props) => {
   }
 
   return (
-    <InputGroup>
+    <InputGroup display={'flex'} alignItems="center" justifyContent={'center'}>
       <Input
         w={`${w}px`}
         h={`${h}px`}

@@ -25,7 +25,7 @@ const OpenStepTwo = () => {
       <Box
         w={'100%'}
         bg={isEdit ? 'white.100' : 'none'}
-        zIndex={100}
+        zIndex={5}
         opacity={isEdit ? 0.5 : 1}
         pointerEvents={isEdit ? 'none' : 'all'}>
         <TopTitle></TopTitle>
@@ -46,7 +46,7 @@ const OpenStepTwo = () => {
       <Box
         w={'100%'}
         bg={isEdit ? 'white.100' : 'none'}
-        zIndex={100}
+        zIndex={5}
         opacity={isEdit ? 0.5 : 1}
         pointerEvents={isEdit ? 'none' : 'all'}>
         <Box my={'25px'}>
