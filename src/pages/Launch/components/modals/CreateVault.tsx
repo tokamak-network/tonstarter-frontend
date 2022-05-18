@@ -152,7 +152,12 @@ const CreateVaultModal = () => {
                 h={'32px'}
                 value={nameVal}
                 _focus={{}}
-                onChange={(e) => setNameVal(e.target.value)}></Input>
+                onChange={(e) => {
+                  if (e.target.value.length > 18) {
+                    return;
+                  }
+                  setNameVal(e.target.value);
+                }}></Input>
             </Flex>
             <Flex w={'100%'} flexDir={'column'} mb={'24px'}>
               <Text fontWeight={600} mb={'9px'}>

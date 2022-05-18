@@ -119,6 +119,7 @@ export const fetchStarters = createAsyncThunk(
             endExclusiveTime,
             startDepositTime,
             endDepositTime,
+            snapshot,
           } = data;
 
           const checkStep =
@@ -137,6 +138,7 @@ export const fetchStarters = createAsyncThunk(
             endExclusiveTime,
             startDepositTime,
             endDepositTime,
+            snapshot,
             checkStep,
           };
 

@@ -245,15 +245,25 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
             (Number(totalDeposit.replaceAll(',', '')) /
               (Number(totalAllocation.replaceAll(',', '')) / tokenExRatio)) *
               100,
-          ).split('.')[0] +
-          '.' +
+          ).split('.')[0] ||
           String(
             (Number(totalDeposit.replaceAll(',', '')) /
               (Number(totalAllocation.replaceAll(',', '')) / tokenExRatio)) *
               100,
-          )
-            .split('.')[1]
-            .slice(0, 1);
+          ) +
+            '.' +
+            String(
+              (Number(totalDeposit.replaceAll(',', '')) /
+                (Number(totalAllocation.replaceAll(',', '')) / tokenExRatio)) *
+                100,
+            )
+              .split('.')[1]
+              .slice(0, 1) ||
+          String(
+            (Number(totalDeposit.replaceAll(',', '')) /
+              (Number(totalAllocation.replaceAll(',', '')) / tokenExRatio)) *
+              100,
+          );
         setProgress(percent);
       }
     }
