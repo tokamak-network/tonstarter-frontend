@@ -18,6 +18,19 @@ const InputComponentStyle = {
   },
 };
 
+const getMaxLength = (name: string) => {
+  switch (name) {
+    case 'projectName':
+      return 20;
+    case 'tokenSymbol':
+      return 8;
+    case 'tokenName':
+      return 8;
+    default:
+      return 'none';
+  }
+};
+
 const InputComponent: React.FC<InputComponentProps> = (props) => {
   const {name, nameDisplay, inputStyle, requirement} = props;
   const {errors, values} = useFormikContext<Projects['CreateProject']>();
@@ -28,8 +41,8 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
 
   const titleTrimed = title.toString().replaceAll(',', '');
 
-  //@ts-ignore
-  console.log(errors[name]);
+  // //@ts-ignore
+  // console.log(errors[name]);
 
   return (
     <Flex flexDir={'column'} fontSize={13} pos={'relative'}>
@@ -72,7 +85,7 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
                   : 'input-dark'
               }
               borderRadius={4}
-              maxLength={name === 'projectName' ? 20 : 'none'}
+              maxLength={getMaxLength(name)}
               fontSize={13}
               {...field}
               id={name}

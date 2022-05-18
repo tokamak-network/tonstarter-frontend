@@ -471,11 +471,22 @@ const SubTitle = (props: {
         </Flex>
       ) : (
         <Flex>
-          <Text textAlign={'right'}>
-            {String(rightTitle)?.includes('undefined')
-              ? '-'
-              : displayRightTitle(leftTitle, rightTitle)}
-          </Text>
+          {leftTitle === 'Address for receiving funds' ? (
+            <Tooltip label={rightTitle} placement={'top'}>
+              <Text textAlign={'right'}>
+                {String(rightTitle)?.includes('undefined')
+                  ? '-'
+                  : displayRightTitle(leftTitle, rightTitle)}
+              </Text>
+            </Tooltip>
+          ) : (
+            <Text textAlign={'right'}>
+              {String(rightTitle)?.includes('undefined')
+                ? '-'
+                : displayRightTitle(leftTitle, rightTitle)}
+            </Text>
+          )}
+
           {percent !== undefined && (
             <Text ml={'5px'} color={'#7e8993'} textAlign={'right'}>
               {`(${percent.toFixed(3).replace(/\.(\d\d)\d?$/, '.$1') || '-'}%)`}
