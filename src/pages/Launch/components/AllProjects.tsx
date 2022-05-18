@@ -104,10 +104,14 @@ const AllProjects = () => {
     <Flex flexDir={'column'} justifyContent={'center'} w={'100%'} mb={'100px'}>
       {/* <FeaturedProjects /> */}
       <Box display={'flex'} justifyContent={'center'} flexDir={'column'}>
-        <Box display={'flex'} justifyContent={'center'} my={'20px'}>
-          <Heading as="h2" fontSize={'2xl'}>
+        <Box display={'flex'} justifyContent={'center'} mt={'20px'} mb={'35px'}>
+          <Text
+            fontSize={'32px'}
+            fontWeight={'bold'}
+            fontFamily={theme.fonts.titil}
+            color={colorMode === 'dark' ? '#fff' : '#3d495d'}>
             All Projects
-          </Heading>
+          </Text>
         </Box>
         <Flex justifyContent={'center'}>
           <Grid templateColumns="repeat(3, 1fr)" gap={30}>

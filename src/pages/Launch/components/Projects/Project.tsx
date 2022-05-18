@@ -23,7 +23,7 @@ export const Project: FC<ProjectProps> = ({project}) => {
 
   const themeDesign = {
     border: {
-      light: 'solid 1px #e6eaee',
+      light: 'solid 1px #d7d9df',
       dark: 'solid 1px #373737',
     },
     font: {
@@ -33,7 +33,6 @@ export const Project: FC<ProjectProps> = ({project}) => {
   };
 
   const name = 'Project Name';
-  console.log('project', project);
 
   window.scrollTo(0, 0);
   window.onbeforeunload = function () {
@@ -66,7 +65,8 @@ export const Project: FC<ProjectProps> = ({project}) => {
           <Text
             color={colorMode === 'light' ? '#304156' : '#ffffff'}
             fontSize={'20px'}
-            fontWeight={'500'}>
+            fontFamily={theme.fonts.roboto}
+            fontWeight={'bold'}>
             {project?.projectName}
           </Text>
           <Flex h={'38px'}>
@@ -75,6 +75,7 @@ export const Project: FC<ProjectProps> = ({project}) => {
               justifyContent={'center'}
               alignItems={'center'}
               bg={'transparent'}
+              color={colorMode === 'dark' ? '#fff' : '#3d495d'}
               border={themeDesign.border[colorMode]}
               borderRight={'none'}
               borderRadius={'3px 0px 0px 3px'}
@@ -102,6 +103,7 @@ export const Project: FC<ProjectProps> = ({project}) => {
               alignItems={'center'}
               w={'120px'}
               bg={'transparent'}
+              color={colorMode === 'dark' ? '#fff' : '#3d495d'}
               border={themeDesign.border[colorMode]}
               borderRadius={'0px 3px 3px 0px'}
               fontSize={'14px'}

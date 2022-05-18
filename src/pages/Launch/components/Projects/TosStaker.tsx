@@ -97,7 +97,7 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
         Number(currentRound) === Number(totalClaimCount)
           ? await TOSStaker.connect(signer).claimTimes(Number(currentRound) - 1)
           : await TOSStaker.connect(signer).claimTimes(currentRound);
-      const amountFormatted = parseInt(amount);
+      const amountFormatted = parseInt(ethers.utils.formatEther(amount));
 
       setShowDate(amountFormatted === 0 && Number(claimDate) > now);
       setDistributable(amountFormatted);

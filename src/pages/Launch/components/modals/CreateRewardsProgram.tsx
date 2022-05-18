@@ -23,16 +23,19 @@ import useValues from '@Launch/hooks/useValues';
 import Line from '@Launch/components/common/Line';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {CustomSelectBox} from 'components/Basic';
-import {color} from 'd3';
+import moment from 'moment';
 
 const CreateRewardsProgramModal = () => {
   const {data} = useAppSelector(selectModalType);
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {handleCloseModal} = useModal();
+  const [distributable, setDistributable] = useState<number>(0);
+  const [programDuration, setProgramDuration] = useState<any[]>([0,0]);
   const [selectVaultType, setSelectVaultType] = useState<
     'C' | 'DAO' | 'Liquidity Incentive'
   >('C');
+  const [proj, setProj] = useState<any>();
 
   const themeDesign = {
     border: {
@@ -61,6 +64,16 @@ const CreateRewardsProgramModal = () => {
     },
   };
 
+  useEffect(() => {
+    if (data.data) {
+      const {
+        data: {project, distributable, duration},
+      } = data;
+      setProj(project);
+      setDistributable(distributable);
+      setProgramDuration(duration);
+    }
+  }, [data]);
   return (
     <Modal
       isOpen={data.modal === 'Launch_CreateRewardProgram' ? true : false}
@@ -112,7 +125,12 @@ const CreateRewardsProgramModal = () => {
               <Text
                 w={'103px'}
                 color={colorMode === 'light' ? '#3d495d' : '#f3f4f1'}>
-                2022.03.09 20:00 ~04.04 17:00
+                {' '}
+                {programDuration
+                  ? moment.unix(programDuration[0]).format('YYYY.MM.DD HH:mm')
+                  : 0} {'~'} {programDuration
+                    ? moment.unix(programDuration[1]).format('MM.DD HH:mm')
+                    : 0}
               </Text>
             </Flex>
             <Flex
@@ -129,7 +147,7 @@ const CreateRewardsProgramModal = () => {
               <Text
                 w={'103px'}
                 color={colorMode === 'light' ? '#3d495d' : '#f3f4f1'}>
-                TON
+                {proj?.tokenSymbol}
               </Text>
             </Flex>
             <Flex
@@ -146,9 +164,9 @@ const CreateRewardsProgramModal = () => {
               <Text
                 w={'103px'}
                 color={colorMode === 'light' ? '#3d495d' : '#f3f4f1'}>
-                {(20000000).toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                })}
+                {distributable === undefined
+                  ? 0
+                  : distributable.toLocaleString()}
               </Text>
             </Flex>
           </Flex>
@@ -207,8 +225,7 @@ const CreateRewardsProgramModal = () => {
                 border: 'solid 1px #2a72e5',
                 color: '#fff',
               }}
-              onClick={()=> data.data.createReward()}
-              >
+              onClick={() => data?.data?.createRewardFirst()}>
               Confirm
             </Button>
           </Box>
