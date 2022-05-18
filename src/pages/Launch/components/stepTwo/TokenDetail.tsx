@@ -430,14 +430,14 @@ const SubTitle = (props: {
                   leftTitle === 'Whitelist'
                     ? tempVaultData.snapshot
                       ? tempVaultData.snapshot + 1
-                      : publicVault.snapshot || 0
+                      : publicVault.snapshot || moment().unix()
                     : leftTitle === 'Public Round 1'
                     ? tempVaultData.whitelistEnd
                       ? tempVaultData.whitelistEnd + 1
-                      : publicVault.whitelistEnd || 0
+                      : publicVault.whitelistEnd || moment().unix()
                     : tempVaultData.publicRound1
                     ? tempVaultData.publicRound1 + 1
-                    : publicVault.publicRound1 || 0
+                    : publicVault.publicRound1 || moment().unix()
                 }></DoubleCalendarPop>
             ) : (
               <SingleCalendarPop
