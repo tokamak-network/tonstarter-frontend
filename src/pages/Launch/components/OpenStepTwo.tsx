@@ -9,11 +9,15 @@ import VaultBasicSetting from '@Launch/components/modals/VaultBasicSetting';
 import TopTitle from '@Launch/components/stepTwo/TopTitle';
 import ClaimRound from '@Launch/components/stepTwo/ClaimRound';
 import Overview from '@Launch/components/stepTwo/Overview';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 
 const OpenStepTwo = () => {
   const {colorMode} = useColorMode();
   const [isEdit, setIsEdit] = useState<boolean>(false);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <Flex
