@@ -8,7 +8,7 @@ import {
 } from '@chakra-ui/react';
 import {useState} from 'react';
 import {PageHeader} from 'components/PageHeader';
-import {Link, useRouteMatch} from 'react-router-dom';
+import {useRouteMatch} from 'react-router-dom';
 import AllProjects from '@Launch/components/AllProjects';
 import MyProjects from '@Launch/components/MyProjects';
 import LaunchPageBackground from '../../assets/banner/LaunchPageBackground.png';
@@ -104,7 +104,9 @@ const LaunchPage = () => {
               height={'38px'}
               padding={'12px 28px 10px'}
               onClick={() => {
-                openAnyModal('Launch_ConfirmTerms', {});
+                openAnyModal('Launch_ConfirmTerms', {
+                  from: 'launch',
+                });
               }}>
               Create Project
             </Button>
