@@ -33,6 +33,7 @@ export type DEPLOYED_TYPE = {
   LPrewardVault: string;
   TypeCVault: string;
   DAOVault: string;
+  AutoCoinageSnapshot2_ADDRESS: string;
   pools: {
     TOS_WTON_POOL: string;
   };

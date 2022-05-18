@@ -72,7 +72,7 @@ export const AirdropClaimTable = () => {
       dark: '#2a72e5',
     },
     borderTos: {
-      light: 'dashed 1px #dfe4ee',
+      light: 'solid 1px #dfe4ee',
       dark: 'solid 1px #2a72e5',
     },
     buttonColorActive: {

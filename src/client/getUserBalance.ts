@@ -7,11 +7,13 @@ import * as ERC20 from 'services/abis/ERC20.json';
 import * as TOSABI from 'services/abis/TOS.json';
 import * as LockTOSABI from 'services/abis/LockTOS.json';
 import * as WTONABI from 'services/abis/WTON.json';
+import * as AUTOCOINAGESNAPSHOT2ABI from 'services/abis/AutoCoinageSnapshot2.json';
 
+import {ethers} from 'ethers';
 import {BigNumber} from 'ethers';
 import {UserContract} from 'types/index';
 
-const {TON_ADDRESS, TOS_ADDRESS} = DEPLOYED;
+const {TON_ADDRESS, TOS_ADDRESS, AutoCoinageSnapshot2_ADDRESS} = DEPLOYED;
 
 export const getUserBalance = async (
   account: string,
@@ -49,6 +51,20 @@ export const getUserTonBalance = async ({
   return balance;
 };
 
+export const getUserStakedTonBalance = async ({account, library}: any) => {
+  const contract = new Contract(
+    AutoCoinageSnapshot2_ADDRESS,
+    AUTOCOINAGESNAPSHOT2ABI.abi,
+    library,
+  );
+  const totalSupply = await contract.balanceOf(account);
+  const formattedNumber = ethers.utils.formatEther(totalSupply);
+  console.log('formattedNumber: ', formattedNumber);
+  return formattedNumber;
+  // const balance = convertNumber({amount: String(contractIserBalance)});
+  // return {ton: balance || '0', tonOrigin: contractIserBalance.toString()};
+};
+
 export const getUserTonOriginBalance = async ({account, library}: any) => {
   const contract = new Contract(TON_ADDRESS, ERC20.abi, library);
   const contractIserBalance = await contract.balanceOf(account);
@@ -62,18 +78,6 @@ export const getUserWTONBalance = async ({account, library}: UserContract) => {
   const wtonBalance = await WTON_CONTRACT.balanceOf(account);
   const convertedRes = convertNumber({amount: wtonBalance, type: 'ray'});
   return {wton: convertedRes || '0', wtonOrigin: wtonBalance.toString()};
-};
-
-export const getUserTONStaked = async ({account, library}: any) => {
-  console.log('DEPLOYED:', DEPLOYED);
-  // const {LockTON_ADDRESS} = DEPLOYED;
-  // const LockTOSContract = new Contract(
-  //   LockTOS_ADDRESS,
-  //   LockTOSABI.abi,
-  //   library,
-  // );
-  // const res = await LockTOSContract.totalLockedAmountOf(account);
-  // return convertNumber({amount: res.toString(), localeString: true});
 };
 
 export const getUserTOSStaked = async ({account, library}: any) => {

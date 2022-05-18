@@ -18,7 +18,7 @@ import {AirdropDistributeModal} from './components/AirdropDistributeModal';
 import {
   getUserTOSStaked,
   getUserSTOSBalance,
-  getUserTONStaked,
+  getUserStakedTonBalance,
 } from 'client/getUserBalance';
 
 export const MyAirdrop = () => {
@@ -28,6 +28,7 @@ export const MyAirdrop = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [distributeButton, setDistributeButton] = useState<boolean>(false);
   const [userStakedTos, setUserStakedTos] = useState('-');
+  const [userStakedTon, setUserStakedTon] = useState('-');
   const [userStakedSTos, setUserStakedSTos] = useState('-');
   const [isEnd, setIsEnd] = useState(true);
   const {
@@ -76,7 +77,6 @@ export const MyAirdrop = () => {
 
   // Get account address and shorten it
   useEffect(() => {
-    getUserTONStaked({account, library});
     if (account && library) {
       setAddress(shortenAddress(account));
     } else {
@@ -119,6 +119,22 @@ export const MyAirdrop = () => {
       getSTosBalance();
     } else {
       setUserStakedSTos('-');
+    }
+    /*eslint-disable*/
+  }, [account, library, stakeList]);
+
+  // Get TON balance
+  useEffect(() => {
+    async function getStakedTonBalance() {
+      const res = await getUserStakedTonBalance({account, library});
+      if (res !== undefined) {
+        setUserStakedTon(res);
+      }
+    }
+    if (account) {
+      getStakedTonBalance();
+    } else {
+      setUserStakedTon('-');
     }
     /*eslint-disable*/
   }, [account, library, stakeList]);
@@ -171,7 +187,7 @@ export const MyAirdrop = () => {
             fontWeight={'bold'}
             fontSize={'20px'}
             color={themeDesign.fontColorTitle[colorMode]}>
-            1,000.00 TON
+            {userStakedTon} TON
           </Text>
         </Flex>
         <Flex
