@@ -543,8 +543,7 @@ const STOSTier = (props: {
               inputRef={inputRef}></InputField>
             <Text
               mx={'5px'}
-              w={'33px'}
-              maxW={'33px'}
+              maxW={'34px'}
               color={'#7e8993'}
               textAlign={'center'}
               lineHeight={'32px'}
@@ -688,7 +687,7 @@ const PublicTokenDetail = (props: {
               isClosable: true,
               status: 'error',
             });
-            setIsConfirm(true);
+            return setIsConfirm(true);
           } else {
             requiredStos_1.style.border = noErrBorderStyle;
             setIsConfirm(false);
@@ -698,12 +697,12 @@ const PublicTokenDetail = (props: {
             requiredStos_2.style.border = errBorderStyle;
             toastMsg({
               title: 'sTOS minimum Requirement',
-              description: '1Tier needs at least 600sTOS',
+              description: '2Tier needs at least 1200sTOS',
               duration: 2000,
               isClosable: true,
               status: 'error',
             });
-            setIsConfirm(true);
+            return setIsConfirm(true);
           } else {
             requiredStos_2.style.border = noErrBorderStyle;
             setIsConfirm(false);
@@ -713,12 +712,12 @@ const PublicTokenDetail = (props: {
             requiredStos_3.style.border = errBorderStyle;
             toastMsg({
               title: 'sTOS minimum Requirement',
-              description: '1Tier needs at least 600sTOS',
+              description: '3Tier needs at least 2200sTOS',
               duration: 2000,
               isClosable: true,
               status: 'error',
             });
-            setIsConfirm(true);
+            return setIsConfirm(true);
           } else {
             requiredStos_3.style.border = noErrBorderStyle;
             setIsConfirm(false);
@@ -728,12 +727,12 @@ const PublicTokenDetail = (props: {
             requiredStos_4.style.border = errBorderStyle;
             toastMsg({
               title: 'sTOS minimum Requirement',
-              description: '1Tier needs at least 600sTOS',
+              description: '4Tier needs at least 6000sTOS',
               duration: 2000,
               isClosable: true,
               status: 'error',
             });
-            setIsConfirm(true);
+            return setIsConfirm(true);
           } else {
             requiredStos_4.style.border = noErrBorderStyle;
             setIsConfirm(false);
