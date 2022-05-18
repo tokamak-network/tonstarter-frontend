@@ -54,16 +54,30 @@ type ClockProps = {
   startTime: number;
   endTime?: number;
   calendarType: string;
+  startTimeCap?: number;
 };
 
 export const CustomClock = (props: ClockProps) => {
-  const {setTime, startTime, endTime, calendarType} = props;
+  const {setTime, startTime, endTime, calendarType, startTimeCap} = props;
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const [hours, setHours] = useState<number>(1);
-  const [minutes, setMinutes] = useState<number>(0);
-  const [seconds, setSeconds] = useState<number>(0);
-  const [meridiem, setMeridiem] = useState<string>('AM');
+  const hr = startTimeCap !== undefined ? moment.unix(startTimeCap).hours() : 1;
+  const minu =
+    startTimeCap !== undefined ? moment.unix(startTimeCap).minutes() : 0;
+  const sec =
+    startTimeCap !== undefined ? moment.unix(startTimeCap).seconds() : 0;
+
+
+
+  const [hours, setHours] = useState<number>(hr > 12 ? hr - 12 : hr);
+  const [minutes, setMinutes] = useState<number>(minu);
+  const [seconds, setSeconds] = useState<number>(sec);
+  const [meridiem, setMeridiem] = useState<string>(hr > 12 ? 'PM' : 'AM');
+  useEffect(()=>{
+    setHours(hr > 12 ? hr - 12 : hr)
+    setMinutes(minu)
+    setSeconds(sec)
+  },[startTimeCap])  
 
   const setUp = () => {
     let hour;
@@ -81,7 +95,7 @@ export const CustomClock = (props: ClockProps) => {
 
   useEffect(() => {
     setUp();
-  }, [hours, minutes, seconds, meridiem]);
+  }, [hours, minutes, seconds, meridiem, startTimeCap]);
 
   return (
     <Flex
@@ -110,6 +124,7 @@ export const CustomClock = (props: ClockProps) => {
           max={12}
           min={1}
           mr={'10px'}
+          value={hours}
           onChange={(value) => {
             setHours(parseInt(value));
           }}
@@ -157,6 +172,7 @@ export const CustomClock = (props: ClockProps) => {
           max={59}
           min={0}
           mr={'10px'}
+          value={minutes}
           borderColor={'transparent'}
           _focus={{
             borderColor: 'transparent',
@@ -242,8 +258,19 @@ export const CustomClock = (props: ClockProps) => {
           onChange={(e) => {
             setMeridiem(e.target.value);
           }}>
-          <option>AM</option>
-          <option>PM</option>
+          {meridiem === 'AM' ? (
+            <>
+              {' '}
+              <option>AM</option>
+              <option>PM</option>
+            </>
+          ) : (
+            <>
+              {' '}
+              <option>PM</option>
+              <option>AM</option>
+            </>
+          )}
         </Select>
       </Flex>
     </Flex>
