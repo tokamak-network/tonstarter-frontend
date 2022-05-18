@@ -33,7 +33,6 @@ export const Project: FC<ProjectProps> = ({project}) => {
   };
 
   const name = 'Project Name';
-  console.log('project', project);
 
   window.scrollTo(0, 0);
   window.onbeforeunload = function () {

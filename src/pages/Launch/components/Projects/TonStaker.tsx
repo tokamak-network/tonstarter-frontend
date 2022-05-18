@@ -71,7 +71,7 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
         Number(currentRound) === Number(totalClaimCount)
           ? await TONStaker.connect(signer).claimTimes(Number(currentRound) - 1)
           : await TONStaker.connect(signer).claimTimes(currentRound);
-      const amountFormatted = parseInt(amount);
+      const amountFormatted = parseInt(ethers.utils.formatEther(amount));
       setShowDate(amountFormatted === 0 && Number(claimDate) > now);
       setClaimTime(claimDate);
       setDistributable(amountFormatted);
@@ -86,10 +86,20 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
     try {
       const receipt = await TONStaker.connect(signer).claim();
       store.dispatch(setTxPending({tx: true}));
+      console.log(receipt);
       if (receipt) {
         toastWithReceipt(receipt, setTxPending, 'Launch');
-        await receipt.wait();
+       const blah =  await receipt.wait();
+       const blockNum = blah.blockNumber;
+       const block = await BASE_PROVIDER.getBlock(blockNum);
+       const timeStamp = block.timestamp;
+       const startTime = Number(timeStamp)
+       console.log(startTime, startTime+60);
+       
+
+       
       }
+
     } catch (e) {
       store.dispatch(setTxPending({tx: false}));
       store.dispatch(

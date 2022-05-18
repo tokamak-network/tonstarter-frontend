@@ -103,19 +103,19 @@ const UniswapV3Fact = new Contract(UniswapV3Factory, UniswapV3FactoryABI.abi, li
         return;
       }
       const signer = getSigner(library, account);
-      const LP = await InitialLiquidityCompute.connect(signer).lpToken();
+      const LP = await InitialLiquidityCompute.lpToken();
 
       const tosBal = await TOS.balanceOf(vault.vaultAddress);
       const tokBalance = await projectToken.balanceOf(vault.vaultAddress);
       const TOSBal = ethers.utils.formatEther(tosBal);
       setTosBalance(TOSBal);
       setProjTokenBalance(ethers.utils.formatEther(tokBalance));
-      const getPool = await UniswapV3Fact.connect(signer).getPool(TOS_ADDRESS, project.tokenAddress, 3000);     
+      const getPool = await UniswapV3Fact.getPool(TOS_ADDRESS, project.tokenAddress, 3000);     
+     console.log('getPool',getPool);
+     
       setIsPool(getPool===ZERO_ADDRESS? false: true)
       setIsLpToken(Number(LP)===0? false: true)
-      // setIsLpToken(true)
       setLPToken(Number(LP));
-        // setIsPool( f)
     }
     getLPToken();
   }, [account, library,transactionType, blockNumber]);
@@ -467,9 +467,7 @@ export const Condition2: React.FC<Condition2> = ({
     }
     const signer = getSigner(library, account);
 
-    const computePoolAddress = await InitialLiquidityCompute.connect(signer).computePoolAddress(TOS_ADDRESS, project.tokenAddress, 3000);
-    console.log('computePoolAddress',computePoolAddress);
-    
+    const computePoolAddress = await InitialLiquidityCompute.connect(signer).computePoolAddress(TOS_ADDRESS, project.tokenAddress, 3000);    
     try {
       const receipt = await InitialLiquidityCompute.connect(signer).setInitialPriceAndCreatePool(getRatio()[0],getRatio()[1], encodePriceSqrt(getRatio()[0], getRatio()[1]))
       store.dispatch(setTxPending({tx: true}));

@@ -16,7 +16,6 @@ import {PublicPageTable} from './PublicPageTable';
 import {useModal} from 'hooks/useModal';
 import {shortenAddress} from 'utils/address';
 import commafy from 'utils/commafy';
-import {BASE_PROVIDER} from 'constants/index';
 import VaultLPRewardLogicAbi from 'services/abis/VaultLPRewardLogicAbi.json';
 import {ethers} from 'ethers';
 import store from 'store';
@@ -30,6 +29,13 @@ import {getSigner} from 'utils/contract';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import moment from 'moment';
 import momentTZ from 'moment-timezone';
+import {DEPLOYED,BASE_PROVIDER} from 'constants/index';
+import * as UniswapV3FactoryABI from 'services/abis/UniswapV3Factory.json';
+import { createReward, getRandomKey } from 'pages/Reward/components/api';
+import BigNumber from 'bignumber.js';
+import Web3 from 'web3';
+const provider = BASE_PROVIDER;
+const {TOS_ADDRESS, UniswapV3Factory, NPM_Address} = DEPLOYED;
 type LiquidityIncentive = {vault: any; project: any};
 
 export const LiquidityIncentive: FC<LiquidityIncentive> = ({
@@ -50,14 +56,13 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
   const [claimTime, setClaimTime] = useState<number>(0);
   const [showDate, setShowDate] = useState<boolean>(false);
   const [distributeDisable, setDistributeDisable] = useState<boolean>(true);
-
+  const [duration, setDuration] = useState<any[]>([0,0]);
+  const [pool, setPool]=useState<string>('')
   const VaultLPReward = new Contract(
     vault.vaultAddress,
     VaultLPRewardLogicAbi.abi,
     library,
   );
-  console.log(VaultLPReward);
-  
   const themeDesign = {
     border: {
       light: 'solid 1px #e6eaee',
@@ -85,6 +90,11 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
     },
   };
 
+  const UniswapV3Fact = new Contract(
+    UniswapV3Factory,
+    UniswapV3FactoryABI.abi,
+    library,
+  );
 
   useEffect(() => {
     async function getLPToken() {
@@ -92,24 +102,34 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
         return;
       }
       const now = moment().unix();
-      const signer = getSigner(library, account);
-      const currentRound = await VaultLPReward.connect(signer).currentRound();
-      const nowClaimRound = await VaultLPReward.connect(signer).nowClaimRound();
-      const amount = await VaultLPReward.connect(signer).claimAmounts(
+      const currentRound = await VaultLPReward.currentRound();
+      const nowClaimRound = await VaultLPReward.nowClaimRound();
+      console.log(currentRound, 'currentRound');
+      console.log(nowClaimRound, 'nowClaimRound');
+      const available = await VaultLPReward.availableUseAmount(currentRound);
+      const amountFormatted = parseInt(ethers.utils.formatEther(available));
+      console.log(amountFormatted);
+      console.log(vault.vaultAddress);
+      
+      const getProgramDuration = await VaultLPReward.getProgramDuration(
         currentRound,
       );
-      const totalClaimCount = await VaultLPReward.connect(
-        signer,
-      ).totalClaimCounts();
-      setDistributeDisable(Number(nowClaimRound) >= Number(currentRound));
+
+      const claimDate = await VaultLPReward.claimTimes(nowClaimRound);
+      const endTime = Number(claimDate) + Number(getProgramDuration);
+      const durat = [Number(claimDate), endTime];
+      
+      setDuration(durat);
+      const getPool = await UniswapV3Fact.getPool(
+        TOS_ADDRESS,
+        project.tokenAddress,
+        3000,
+      );
+      console.log('getPool',getPool);
+      
+      setPool(getPool)
+      setDistributeDisable(false);
       const disabled = Number(nowClaimRound) >= Number(currentRound);
-      const claimDate =
-        Number(currentRound) === Number(totalClaimCount)
-          ? await VaultLPReward.connect(signer).claimTimes(
-              Number(currentRound) - 1,
-            )
-          : await VaultLPReward.connect(signer).claimTimes(currentRound);
-      const amountFormatted = parseInt(amount);
       setShowDate(amountFormatted === 0 && Number(claimDate) > now);
       setClaimTime(claimDate);
       setDistributable(amountFormatted);
@@ -117,35 +137,95 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
     getLPToken();
   }, [account, library, transactionType, blockNumber]);
 
-
-const createReward = async() => {
-  if (account === null || account === undefined || library === undefined) {
-    return;
-  }
-  const signer = getSigner(library, account);
-  try {
-    const receipt = await VaultLPReward.connect(signer).createProgram();
-    store.dispatch(setTxPending({tx: true}));
-    if (receipt) {
-      toastWithReceipt(receipt, setTxPending, 'Launch');
-      await receipt.wait();
-    }
-  } catch (e) {
-    store.dispatch(setTxPending({tx: false}));
-    store.dispatch(
+  const generateSig = async (account: string, key: any) => {
+    const randomvalue = await getRandomKey(account);
+    // const pool = '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf';
+  
+    //@ts-ignore
+    const web3 = new Web3(window.ethereum);
+    if (randomvalue != null) {    
+      const randomBn = new BigNumber(randomvalue).toFixed(0);
+      const soliditySha3 = await web3.utils.soliditySha3(
+        { type: 'string', value: account },
+        { type: 'uint256', value: randomBn },
+        { type: 'string', value: key.rewardToken },
+        { type: 'string', value: key.pool },
+        { type: 'uint256', value: key.startTime },
+        { type: 'uint256', value: key.endTime },
+      );
       //@ts-ignore
-      openToast({
-        payload: {
-          status: 'error',
-          title: 'Tx fail to send',
-          description: `something went wrong`,
-          duration: 5000,
-          isClosable: true,
-        },
-      }),
-    );
-  }
-}
+      const sig = await web3.eth.personal.sign(soliditySha3, account, '');
+  
+      return sig;
+    } else {
+      return '';
+    }
+  };
+
+  
+  const createRewardFirst = async () => {
+    if (account === null || account === undefined || library === undefined) {
+      return;
+    }
+    const signer = getSigner(library, account);
+    
+    try {
+      const receipt = await VaultLPReward.connect(signer).createProgram();
+      store.dispatch(setTxPending({tx: true}));
+      if (receipt) {
+        toastWithReceipt(receipt, setTxPending, 'Launch');
+       const res =  await receipt.wait();
+       const blockNum = res.blockNumber;
+       const block = await provider.getBlock(blockNum);
+       const timeStamp = block.timestamp;
+       const startTime = Number(timeStamp)+60;
+       const endTime = duration[1]
+       const poolAddress = pool;
+       const rewardToken = project.tokenAddress;
+       const refundee =   vault.vaultAddress;
+       const allocatedReward =ethers.utils.parseEther(distributable.toString());
+       const poolName = `TOS / ${project.tokenSymbol}`;
+       const key = {
+        rewardToken:rewardToken,
+        pool: poolAddress,
+        startTime: startTime,
+        endTime: endTime,
+        refundee: refundee,
+       }
+       const sig = await generateSig(refundee.toLowerCase(), key);
+       const arg = {
+        poolName: poolName,
+        poolAddress: poolAddress,
+        rewardToken: rewardToken,
+        account: refundee,
+        incentiveKey: key,
+        startTime: startTime,
+        endTime: endTime,
+        allocatedReward: allocatedReward.toString(),
+        numStakers: 0,
+        status: 'open',
+        verified: true,
+        tx: receipt,
+        sig: sig,
+       }
+       const create = await createReward(arg);    
+      }
+    } catch (e) {
+      store.dispatch(setTxPending({tx: false}));
+      store.dispatch(
+        //@ts-ignore
+        openToast({
+          payload: {
+            status: 'error',
+            title: 'Tx fail to send',
+            description: `something went wrong`,
+            duration: 5000,
+            isClosable: true,
+          },
+        }),
+      );
+    }
+  };
 
   const fakeData = [
     {name: '1'},
@@ -299,8 +379,11 @@ const createReward = async() => {
             <Flex w={'70%'} alignItems={'center'} justifyContent={'flex-end'}>
               <Flex flexDirection={'column'} mr={'20px'} textAlign={'right'}>
                 <Text color={'#7e8993'}>You can create rewards program on</Text>
-                <Text fontSize={'14px'}>  {moment.unix(claimTime).format('MMM. DD, yyyy HH:mm:ss')}{' '}
-                    ({momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()})</Text>
+                <Text fontSize={'14px'}>
+                  {' '}
+                  {moment.unix(claimTime).format('MMM. DD, yyyy HH:mm:ss')} (
+                  {momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()})
+                </Text>
               </Flex>
               <Button
                 bg={'#257eee'}
@@ -335,9 +418,14 @@ const createReward = async() => {
                         color: '#fff',
                       }
                 }
-                onClick={() => openAnyModal('Launch_CreateRewardProgram', {
-                  createReward
-                })}>
+                onClick={() =>
+                  openAnyModal('Launch_CreateRewardProgram', {
+                    createRewardFirst,
+                    project,
+                    distributable,
+                    duration
+                  })
+                }>
                 Create Reward Program
               </Button>
             </Flex>
@@ -359,7 +447,7 @@ const createReward = async() => {
               <Text color={'#7e8993'}>Refundable Amount</Text>
               <Flex alignItems={'baseline'}>
                 <Text mr={'3px'} fontSize={'16px'}>
-                {distributable.toLocaleString()}
+                  {distributable.toLocaleString()}
                 </Text>{' '}
                 <Text> {project.tokenSymbol}</Text>
               </Flex>

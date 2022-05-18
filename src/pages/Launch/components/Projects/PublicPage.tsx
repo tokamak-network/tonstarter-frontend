@@ -94,6 +94,8 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
     try {
       const receipt = await PublicSaleVaul.connect(signer).depositWithdraw();
       store.dispatch(setTxPending({tx: true}));
+     
+      
       if (receipt) {
         toastWithReceipt(receipt, setTxPending, 'Launch');
         await receipt.wait();

@@ -35,8 +35,7 @@ const ProjectCard: React.FC<{
     undefined,
   );
   const PUBLICSALE_CONTRACT = useCallContract(
-    // project.saleContractAddress ||
-    '',
+    project.data.vaults[0].vaultAddress,
     'PUBLIC_SALE',
   );
   const now = moment().unix();
@@ -51,14 +50,14 @@ const ProjectCard: React.FC<{
         amount: sum.toString(),
         localeString: true,
       });
-
       const progressNow =
-        (Number(convertedSum?.replaceAll(',', '')) / 28436) * 100;
-      const participantsNum = await PUBLICSALE_CONTRACT?.totalUsers();
+        (Number(convertedSum?.replaceAll(',', '')) /
+          Number(project.data.vaults[0].hardCap)) *
+        100;
       setTotalRaise(convertedSum);
       setProgress(Math.ceil(progressNow));
-      setParticipants(participantsNum.toString());
     }
+
     if (PUBLICSALE_CONTRACT && project) {
       fetchContractData();
     }
@@ -78,7 +77,7 @@ const ProjectCard: React.FC<{
     <Link to={`${url}/project/${project.key}`} id={`past_link_${index}`}>
       <Box {...STATER_STYLE.containerStyle({colorMode})} h={'285px'}>
         <Flex justifyContent="space-between" mb={'10px'}>
-          <TokenImage></TokenImage>
+          <TokenImage imageLink={project.data.tokenSymbolImage}></TokenImage>
           <Flex justifyContent={'space-between'} alignItems={'center'}>
             <Box
               w={'7px'}
@@ -149,7 +148,7 @@ const ProjectCard: React.FC<{
         </Box>
         <Box mb={'30px'}>
           <Progress
-            value={progress ? (100 - progress < 0 ? 0 : 100 - progress) : 50}
+            value={progress ? progress: 50}
             borderRadius={10}
             h={'6px'}
             bg={colorMode === 'light' ? '#e7edf3' : '#353d48'}
