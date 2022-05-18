@@ -15,7 +15,7 @@ import {InitialLiquidity} from './InitialLiquidity';
 import {TonStaker} from './TonStaker';
 import {TosStaker} from './TosStaker';
 import {WtonTosLpReward} from './WtonTosLpReward';
-import { Custom } from './Custom';
+import {Custom} from './Custom';
 import {DAO} from './DAO';
 
 import '../css/VaultComponent.css';
@@ -61,9 +61,9 @@ const TabComponent = (props: {project: any; vault: string; index: number}) => {
       );
     case 'DAO':
       return <DAO project={project} vault={project.vaults[index]}></DAO>;
-    
-    case 'C': 
-    return <Custom project={project} vault={project.vaults[index]}></Custom>
+
+    case 'C':
+      return <Custom project={project} vault={project.vaults[index]}></Custom>;
     default:
       return <div>no component for this step</div>;
   }
@@ -79,12 +79,12 @@ export const VaultComponent: FC<VaultComponent> = ({project}) => {
 
   const themeDesign = {
     border: {
-      light: 'solid 2px #e7edf3',
-      dark: 'solid 2px #535353',
+      light: 'solid 1px #e7edf3',
+      dark: 'solid 1px #535353',
     },
     font: {
-      light: 'black.300',
-      dark: 'gray.475',
+      light: '#90a5b9',
+      dark: '#9d9ea5',
     },
     tosFont: {
       light: 'gray.250',
@@ -153,13 +153,14 @@ export const VaultComponent: FC<VaultComponent> = ({project}) => {
                   margin={'auto'}
                   pb={'10px'}
                   textAlign={'center'}
-                  fontSize={'13px'}
+                  fontSize={'14px'}
+                  color={themeDesign.font[colorMode]}
                   fontFamily={theme.fonts.fld}
                   style={
                     currentIndex === index
                       ? {
-                          borderBottom: '2px solid #2B71E4',
-                          color: '#2B71E4',
+                          borderBottom: '1px solid #2a72e5',
+                          color: '#2a72e5',
                           cursor: 'pointer',
                         }
                       : {

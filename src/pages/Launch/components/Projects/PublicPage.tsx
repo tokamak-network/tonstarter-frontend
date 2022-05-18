@@ -94,8 +94,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
     try {
       const receipt = await PublicSaleVaul.connect(signer).depositWithdraw();
       store.dispatch(setTxPending({tx: true}));
-     
-      
+
       if (receipt) {
         toastWithReceipt(receipt, setTxPending, 'Launch');
         await receipt.wait();
@@ -141,6 +140,10 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
       light: '#c9d1d8',
       dark: '#777777',
     },
+    headerFont: {
+      light: '#353c48',
+      dark: '#fff',
+    },
   };
 
   return (
@@ -155,9 +158,18 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
             className={'chart-cell'}
             fontSize={'16px'}
             justifyContent={'space-between'}>
-            <Text fontFamily={theme.fonts.fld}>Token</Text>
+            <Text
+              fontFamily={theme.fonts.fld}
+              fontSize={'15px'}
+              color={themeDesign.headerFont[colorMode]}>
+              Token
+            </Text>
             {vault.isDeployed ? (
-              <Text fontFamily={theme.fonts.fld}>
+              <Text
+                fontFamily={theme.fonts.fld}
+                fontSize={'15px'}
+                color={themeDesign.headerFont[colorMode]}
+                letterSpacing={'1.3px'}>
                 {Number(vault.vaultTokenAllocation).toLocaleString()}
                 {` `}
                 {project.tokenSymbol}
@@ -441,10 +453,18 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
             className={'chart-cell'}
             fontSize={'16px'}
             justifyContent={'space-between'}>
-            <Text fontFamily={theme.fonts.fld}>Schedule</Text>
+            <Text
+              fontFamily={theme.fonts.fld}
+              fontSize={'15px'}
+              color={themeDesign.headerFont[colorMode]}>
+              Schedule
+            </Text>
             {vault.isDeployed ? (
               <>
-                <Text fontFamily={theme.fonts.fld}>
+                <Text
+                  fontFamily={theme.fonts.fld}
+                  fontSize={'15px'}
+                  color={themeDesign.headerFont[colorMode]}>
                   {momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()}
                 </Text>
               </>
@@ -581,11 +601,16 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
           <GridItem
             border={themeDesign.border[colorMode]}
             borderBottom={'none'}
-            borderTopRadius={'4px'}
+            borderTopRightRadius={'4px'}
             className={'chart-cell'}
             fontSize={'16px'}
             justifyContent={'space-between'}>
-            <Text fontFamily={theme.fonts.fld}>sTOS Tier</Text>
+            <Text
+              fontFamily={theme.fonts.fld}
+              fontSize={'15px'}
+              color={themeDesign.headerFont[colorMode]}>
+              sTOS Tier
+            </Text>
           </GridItem>
           {vault.isDeployed ? (
             <>

@@ -89,17 +89,13 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
       console.log(receipt);
       if (receipt) {
         toastWithReceipt(receipt, setTxPending, 'Launch');
-       const blah =  await receipt.wait();
-       const blockNum = blah.blockNumber;
-       const block = await BASE_PROVIDER.getBlock(blockNum);
-       const timeStamp = block.timestamp;
-       const startTime = Number(timeStamp)
-       console.log(startTime, startTime+60);
-       
-
-       
+        const blah = await receipt.wait();
+        const blockNum = blah.blockNumber;
+        const block = await BASE_PROVIDER.getBlock(blockNum);
+        const timeStamp = block.timestamp;
+        const startTime = Number(timeStamp);
+        console.log(startTime, startTime + 60);
       }
-
     } catch (e) {
       store.dispatch(setTxPending({tx: false}));
       store.dispatch(
@@ -142,6 +138,10 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
       light: '#c9d1d8',
       dark: '#777777',
     },
+    headerFont: {
+      light: '#353c48',
+      dark: '#fff',
+    },
   };
 
   return (
@@ -157,13 +157,18 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
             fontSize={'16px'}
             fontFamily={theme.fonts.fld}>
             <Text
+              fontFamily={theme.fonts.fld}
               fontSize={'15px'}
-              fontWeight={'bolder'}
-              color={colorMode === 'light' ? '#353c48' : 'white.0'}>
+              color={themeDesign.headerFont[colorMode]}
+              letterSpacing={'1.5px'}>
               Token
             </Text>
             {vault.isDeployed ? (
-              <Text>
+              <Text
+                fontFamily={theme.fonts.fld}
+                fontSize={'15px'}
+                color={themeDesign.headerFont[colorMode]}
+                letterSpacing={'1.3px'}>
                 {Number(vault.vaultTokenAllocation).toLocaleString()}
                 {` `}
                 {project.tokenSymbol}
@@ -193,7 +198,7 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
                   ? `https://etherscan.io/address/${vault.adminAddress}`
                   : ''
               }
-              color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+              color={colorMode === 'light' ? '#353c48' : '#fff'}
               _hover={{color: '#2a72e5'}}
               fontFamily={theme.fonts.fld}>
               {vault.adminAddress ? shortenAddress(vault.adminAddress) : 'NA'}
@@ -219,7 +224,7 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
                   ? `https://etherscan.io/address/${vault.vaultAddress}`
                   : ''
               }
-              color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+              color={colorMode === 'light' ? '#353c48' : '#fff'}
               _hover={{color: '#2a72e5'}}
               fontFamily={theme.fonts.fld}>
               {vault.vaultAddress ? shortenAddress(vault.vaultAddress) : 'NA'}
@@ -235,8 +240,10 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
             fontFamily={theme.fonts.fld}
             borderTopEndRadius={'4px'}>
             <Text
+              fontFamily={theme.fonts.fld}
               fontSize={'15px'}
-              color={colorMode === 'light' ? '#353c48' : 'white.0'}>
+              color={themeDesign.headerFont[colorMode]}
+              letterSpacing={'1.5px'}>
               Distribute
             </Text>
           </GridItem>
@@ -304,10 +311,14 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
               {showDate ? (
                 <>
                   {' '}
-                  <Text color={colorMode === 'light' ? '#9d9ea5' : '#7e8993'}>
+                  <Text
+                    color={colorMode === 'light' ? '#9d9ea5' : '#7e8993'}
+                    fontSize={'11px'}>
                     You can distribute on
                   </Text>
-                  <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
+                  <Text
+                    color={colorMode === 'light' ? '#353c48' : 'white.0'}
+                    fontSize={'15px'}>
                     {moment.unix(claimTime).format('MMM, DD, yyyy HH:mm:ss')}{' '}
                     {momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()}
                   </Text>

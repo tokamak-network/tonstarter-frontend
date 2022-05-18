@@ -119,12 +119,7 @@ const MyProjects = () => {
   );
 
   return (
-    <Flex
-      flexDir={'row'}
-      alignSelf="center"
-      w={'1102px'}
-      h={'100%'}
-      mt={'30px'}>
+    <Flex flexDir={'row'} alignSelf="center" w={'1102px'} h={'100%'}>
       <Box display={'flex'} flexDir={'column'}>
         <Text
           ml={'30px'}

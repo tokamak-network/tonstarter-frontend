@@ -19,7 +19,7 @@ import commafy from 'utils/commafy';
 import {getSigner} from 'utils/contract';
 import InitialLiquidityComputeAbi from 'services/abis/Vault_InitialLiquidityCompute.json';
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
-import * as UniswapV3FactoryABI from 'services/abis/UniswapV3Factory.json'
+import * as UniswapV3FactoryABI from 'services/abis/UniswapV3Factory.json';
 import * as NPMABI from 'services/abis/NonfungiblePositionManager.json';
 import {convertNumber} from 'utils/number';
 import {ethers} from 'ethers';
@@ -30,10 +30,10 @@ import {openToast} from 'store/app/toast.reducer';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {BASE_PROVIDER} from 'constants/index';
-import Fraction from 'fraction.js'
+import Fraction from 'fraction.js';
 
 // var Fraction = require('fraction.js');
-const {TOS_ADDRESS, UniswapV3Factory,NPM_Address} = DEPLOYED;
+const {TOS_ADDRESS, UniswapV3Factory, NPM_Address} = DEPLOYED;
 type InitialLiquidity = {
   vault: any;
   project: any;
@@ -51,7 +51,7 @@ type Condition2 = {
   tosBalance: string;
   project: any;
   isAdmin: boolean;
-  InitialLiquidityCompute: any
+  InitialLiquidityCompute: any;
 };
 type Condition3 = {
   themeDesign: any;
@@ -69,9 +69,9 @@ type Condition4 = {
   project: any;
   isAdmin: boolean;
   LPToken: Number;
-  mint:Dispatch<SetStateAction<any>>;
-  collect:Dispatch<SetStateAction<any>>;
-  npm: any
+  mint: Dispatch<SetStateAction<any>>;
+  collect: Dispatch<SetStateAction<any>>;
+  npm: any;
 };
 export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
   const {colorMode} = useColorMode();
@@ -82,8 +82,8 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
   const [tosBalance, setTosBalance] = useState<string>('');
   const [projTokenBalance, setProjTokenBalance] = useState<string>('');
   const [isPool, setIsPool] = useState<boolean>(false);
-  const [isLpToken, setIsLpToken] =useState<boolean>(false);
-  const [LPToken, setLPToken] = useState<Number>(0)
+  const [isLpToken, setIsLpToken] = useState<boolean>(false);
+  const [LPToken, setLPToken] = useState<Number>(0);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const network = BASE_PROVIDER._network.name;
   const InitialLiquidityCompute = new Contract(
@@ -91,12 +91,16 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
     InitialLiquidityComputeAbi.abi,
     library,
   );
-  const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
+  const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
   const TOS = new Contract(TOS_ADDRESS, ERC20.abi, library);
-const UniswapV3Fact = new Contract(UniswapV3Factory, UniswapV3FactoryABI.abi, library);
+  const UniswapV3Fact = new Contract(
+    UniswapV3Factory,
+    UniswapV3FactoryABI.abi,
+    library,
+  );
   const projectToken = new Contract(project.tokenAddress, ERC20.abi, library);
-  const NPM = new Contract(NPM_Address, NPMABI.abi,library)
+  const NPM = new Contract(NPM_Address, NPMABI.abi, library);
   useEffect(() => {
     async function getLPToken() {
       if (account === null || account === undefined || library === undefined) {
@@ -110,16 +114,20 @@ const UniswapV3Fact = new Contract(UniswapV3Factory, UniswapV3FactoryABI.abi, li
       const TOSBal = ethers.utils.formatEther(tosBal);
       setTosBalance(TOSBal);
       setProjTokenBalance(ethers.utils.formatEther(tokBalance));
-      const getPool = await UniswapV3Fact.getPool(TOS_ADDRESS, project.tokenAddress, 3000);     
-     console.log('getPool',getPool);
-     
-      setIsPool(getPool===ZERO_ADDRESS? false: true)
-      setIsLpToken(Number(LP)===0? false: true)
+      const getPool = await UniswapV3Fact.getPool(
+        TOS_ADDRESS,
+        project.tokenAddress,
+        3000,
+      );
+      console.log('getPool', getPool);
+
+      setIsPool(getPool === ZERO_ADDRESS ? false : true);
+      setIsLpToken(Number(LP) === 0 ? false : true);
       setLPToken(Number(LP));
     }
     getLPToken();
-  }, [account, library,transactionType, blockNumber]);
- 
+  }, [account, library, transactionType, blockNumber]);
+
   useEffect(() => {
     if (account !== undefined && account !== null) {
       if (
@@ -217,6 +225,10 @@ const UniswapV3Fact = new Contract(UniswapV3Factory, UniswapV3FactoryABI.abi, li
       light: '#c9d1d8',
       dark: '#777777',
     },
+    headerFont: {
+      light: '#353c48',
+      dark: '#fff',
+    },
   };
 
   return (
@@ -228,9 +240,19 @@ const UniswapV3Fact = new Contract(UniswapV3Factory, UniswapV3FactoryABI.abi, li
           borderBottom={'none'}
           className={'chart-cell no-border-right no-border-bottom'}
           fontSize={'16px'}>
-          <Text fontFamily={theme.fonts.fld}>Token</Text>
+          <Text
+            fontFamily={theme.fonts.fld}
+            fontSize={'15px'}
+            color={themeDesign.headerFont[colorMode]}
+            letterSpacing={'1.5px'}>
+            Token
+          </Text>
           {/* Need to make TON changeable. */}
-          <Text fontFamily={theme.fonts.fld}>
+          <Text
+            fontFamily={theme.fonts.fld}
+            fontSize={'15px'}
+            color={themeDesign.headerFont[colorMode]}
+            letterSpacing={'1.3px'}>
             {commafy(Number(vault.vaultTokenAllocation))} {project.tokenSymbol}
           </Text>
         </GridItem>
@@ -321,26 +343,31 @@ const UniswapV3Fact = new Contract(UniswapV3Factory, UniswapV3FactoryABI.abi, li
           projTokenBalance={projTokenBalance}
           tosBalance={tosBalance}
         />
-      ) : (isPool? isLpToken? <Condition4
-        themeDesign={themeDesign}
-        projTokenBalance={projTokenBalance}
-        tosBalance={tosBalance}
-        project={project}
-        isAdmin={isAdmin}
-        LPToken={LPToken}
-        mint={mint}
-        collect={collect}
-        npm={NPM}
-
-      />: <Condition3
-        themeDesign={themeDesign}
-        projTokenBalance={projTokenBalance}
-        tosBalance={tosBalance}
-        project={project}
-        isAdmin={isAdmin}
-        InitialLiquidityCompute={InitialLiquidityCompute}
-        mint={mint}
-      />:
+      ) : isPool ? (
+        isLpToken ? (
+          <Condition4
+            themeDesign={themeDesign}
+            projTokenBalance={projTokenBalance}
+            tosBalance={tosBalance}
+            project={project}
+            isAdmin={isAdmin}
+            LPToken={LPToken}
+            mint={mint}
+            collect={collect}
+            npm={NPM}
+          />
+        ) : (
+          <Condition3
+            themeDesign={themeDesign}
+            projTokenBalance={projTokenBalance}
+            tosBalance={tosBalance}
+            project={project}
+            isAdmin={isAdmin}
+            InitialLiquidityCompute={InitialLiquidityCompute}
+            mint={mint}
+          />
+        )
+      ) : (
         <Condition2
           themeDesign={themeDesign}
           projTokenBalance={projTokenBalance}
@@ -368,7 +395,13 @@ export const Condition1: React.FC<Condition1> = ({
         borderBottom={'none'}
         className={'chart-cell no-border-bottom'}
         fontSize={'16px'}>
-        <Text fontFamily={theme.fonts.fld}>LP Token</Text>
+        <Text
+          fontFamily={theme.fonts.fld}
+          fontSize={'15px'}
+          color={themeDesign.headerFont[colorMode]}
+          letterSpacing={'1.5px'}>
+          LP Token
+        </Text>
         <Text
           fontSize={'12px'}
           mr={'5px'}
@@ -408,10 +441,20 @@ export const Condition1: React.FC<Condition1> = ({
           w={'29.2%'}>
           Amount in Initial Liquidity Vault
         </Text>
-        <Text textAlign={'center'} w={'35.4%'} fontFamily={theme.fonts.fld}>
+        <Text
+          textAlign={'center'}
+          w={'35.4%'}
+          fontFamily={theme.fonts.fld}
+          fontSize={'14px'}
+          letterSpacing={'0.14px'}>
           {commafy(Number(projTokenBalance))}
         </Text>
-        <Text textAlign={'center'} w={'35.4%'} fontFamily={theme.fonts.fld}>
+        <Text
+          textAlign={'center'}
+          w={'35.4%'}
+          fontFamily={theme.fonts.fld}
+          fontSize={'14px'}
+          letterSpacing={'0.14px'}>
           {commafy(Number(tosBalance))}
         </Text>
       </GridItem>
@@ -442,41 +485,48 @@ export const Condition2: React.FC<Condition2> = ({
   tosBalance,
   project,
   isAdmin,
-  InitialLiquidityCompute
+  InitialLiquidityCompute,
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  
+
   const {account, library} = useActiveWeb3React();
-  const bn = require("bignumber.js");
+  const bn = require('bignumber.js');
   useEffect(() => {
-    getRatio()
+    getRatio();
   }, [account, project]);
 
-  const encodePriceSqrt = (reserve1:number, reserve0:number) =>{
+  const encodePriceSqrt = (reserve1: number, reserve0: number) => {
     return new bn(reserve1.toString())
-    .div(reserve0.toString())
-    .sqrt()
-    .multipliedBy(new bn(2).pow(96))
-    .integerValue(3)
-    .toFixed();
-  }
-  const createPool = async() => {
+      .div(reserve0.toString())
+      .sqrt()
+      .multipliedBy(new bn(2).pow(96))
+      .integerValue(3)
+      .toFixed();
+  };
+  const createPool = async () => {
     if (account === null || account === undefined || library === undefined) {
       return;
     }
     const signer = getSigner(library, account);
 
-    const computePoolAddress = await InitialLiquidityCompute.connect(signer).computePoolAddress(TOS_ADDRESS, project.tokenAddress, 3000);    
+    const computePoolAddress = await InitialLiquidityCompute.connect(
+      signer,
+    ).computePoolAddress(TOS_ADDRESS, project.tokenAddress, 3000);
     try {
-      const receipt = await InitialLiquidityCompute.connect(signer).setInitialPriceAndCreatePool(getRatio()[0],getRatio()[1], encodePriceSqrt(getRatio()[0], getRatio()[1]))
+      const receipt = await InitialLiquidityCompute.connect(
+        signer,
+      ).setInitialPriceAndCreatePool(
+        getRatio()[0],
+        getRatio()[1],
+        encodePriceSqrt(getRatio()[0], getRatio()[1]),
+      );
       store.dispatch(setTxPending({tx: true}));
       if (receipt) {
         toastWithReceipt(receipt, setTxPending, 'Launch');
         await receipt.wait();
       }
-    }
-    catch (e) {
+    } catch (e) {
       store.dispatch(setTxPending({tx: false}));
       store.dispatch(
         //@ts-ignore
@@ -491,13 +541,12 @@ export const Condition2: React.FC<Condition2> = ({
         }),
       );
     }
-   
-  }
+  };
   const getRatio = () => {
-    const decimal  = Number(project.projectTokenPrice);
+    const decimal = Number(project.projectTokenPrice);
     const x = new Fraction(decimal);
-  return [x.n, x.d]
-  }
+    return [x.n, x.d];
+  };
   return (
     <Flex flexDirection={'column'}>
       <GridItem
@@ -528,7 +577,7 @@ export const Condition2: React.FC<Condition2> = ({
                   color: themeDesign.tosFont[colorMode],
                   cursor: 'pointer',
                   width: '152px',
-                  whiteSpace:'normal'
+                  whiteSpace: 'normal',
                 }
           }
           _focus={
@@ -539,9 +588,8 @@ export const Condition2: React.FC<Condition2> = ({
                   border: 'solid 1px #2a72e5',
                   color: '#fff',
                   width: '152px',
-                  whiteSpace:'normal'
+                  whiteSpace: 'normal',
                 }
-                
           }
           _active={
             !isAdmin
@@ -551,11 +599,11 @@ export const Condition2: React.FC<Condition2> = ({
                   border: 'solid 1px #2a72e5',
                   color: '#fff',
                   width: '152px',
-                  whiteSpace:'normal'
+                  whiteSpace: 'normal',
                 }
-              }
+          }
           whiteSpace={'normal'}
-          onClick={()=>createPool()}>
+          onClick={() => createPool()}>
           Approve to Create Pool & Set Initial Price
         </Button>
       </GridItem>
@@ -608,12 +656,25 @@ export const Condition2: React.FC<Condition2> = ({
           alignItems={'flex-start'}
           flexDir={'column'}
           h={'184px'}>
-          <Text fontSize={'14px'} color={colorMode==='light'? '#353c48':'#ffffff'}>Details</Text>
+          <Text
+            fontSize={'14px'}
+            color={colorMode === 'light' ? '#353c48' : '#ffffff'}>
+            Details
+          </Text>
           <Flex mt={'6px'}>
-            <Text fontSize={'13px'} color={colorMode==='light'? '#808992':'#949494'}>Exchange Ratio : </Text>
-            <Text fontSize={'13px'} color={colorMode==='light'? '#3d495d':'#f3f4f1'} ml={'3px'}> 1 TOS = {project.tosPrice}{' '}{project.tokenSymbol}</Text>
+            <Text
+              fontSize={'13px'}
+              color={colorMode === 'light' ? '#808992' : '#949494'}>
+              Exchange Ratio :{' '}
+            </Text>
+            <Text
+              fontSize={'13px'}
+              color={colorMode === 'light' ? '#3d495d' : '#f3f4f1'}
+              ml={'3px'}>
+              {' '}
+              1 TOS = {project.tosPrice} {project.tokenSymbol}
+            </Text>
           </Flex>
-         
         </Flex>
       </GridItem>
     </Flex>
@@ -627,34 +688,32 @@ export const Condition3: React.FC<Condition3> = ({
   project,
   isAdmin,
   InitialLiquidityCompute,
-  mint
+  mint,
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
- 
+
   const {account, library} = useActiveWeb3React();
-  const bn = require("bignumber.js");
+  const bn = require('bignumber.js');
   useEffect(() => {
-    getRatio()
+    getRatio();
   }, [account, project]);
 
-  const encodePriceSqrt = (reserve1:number, reserve0:number) =>{
+  const encodePriceSqrt = (reserve1: number, reserve0: number) => {
     return new bn(reserve1.toString())
-    .div(reserve0.toString())
-    .sqrt()
-    .multipliedBy(new bn(2).pow(96))
-    .integerValue(3)
-    .toFixed();
-  }
-  
+      .div(reserve0.toString())
+      .sqrt()
+      .multipliedBy(new bn(2).pow(96))
+      .integerValue(3)
+      .toFixed();
+  };
+
   const getRatio = () => {
-    const decimal  = Number(project.projectTokenPrice)/10;
+    const decimal = Number(project.projectTokenPrice) / 10;
     const x = new Fraction(decimal);
-  return [x.n, x.d]
-  }
+    return [x.n, x.d];
+  };
 
-
- 
   return (
     <Flex flexDirection={'column'}>
       <GridItem
@@ -684,8 +743,8 @@ export const Condition3: React.FC<Condition3> = ({
                   border: 'solid 1px #2a72e5',
                   color: themeDesign.tosFont[colorMode],
                   cursor: 'pointer',
-              
-                  whiteSpace:'normal'
+
+                  whiteSpace: 'normal',
                 }
           }
           _focus={
@@ -695,10 +754,9 @@ export const Condition3: React.FC<Condition3> = ({
                   background: '#2a72e5',
                   border: 'solid 1px #2a72e5',
                   color: '#fff',
-                 
-                  whiteSpace:'normal'
+
+                  whiteSpace: 'normal',
                 }
-                
           }
           _active={
             !isAdmin
@@ -707,12 +765,13 @@ export const Condition3: React.FC<Condition3> = ({
                   background: '#2a72e5',
                   border: 'solid 1px #2a72e5',
                   color: '#fff',
-                 
-                  whiteSpace:'normal'
+
+                  whiteSpace: 'normal',
                 }
-              }
-          whiteSpace={'normal'} onClick={mint}>
-         Mint Lp Token
+          }
+          whiteSpace={'normal'}
+          onClick={mint}>
+          Mint Lp Token
         </Button>
       </GridItem>
       <GridItem
@@ -764,10 +823,25 @@ export const Condition3: React.FC<Condition3> = ({
           alignItems={'flex-start'}
           flexDir={'column'}
           h={'184px'}>
-          <Text fontSize={'14px'} color={colorMode==='light'? '#353c48':'#ffffff'}>Details</Text>
+          <Text
+            fontSize={'14px'}
+            color={colorMode === 'light' ? '#353c48' : '#ffffff'}>
+            Details
+          </Text>
           <Flex mt={'6px'}>
-            <Text fontSize={'13px'} color={colorMode==='light'? '#808992':'#949494'}>Exchange Ratio : </Text>
-            <Text fontSize={'13px'} color={colorMode==='light'? '#3d495d':'#f3f4f1'} ml={'3px'}> 1 TOS = {project.tosPrice}{project.tokenSymbol}</Text>
+            <Text
+              fontSize={'13px'}
+              color={colorMode === 'light' ? '#808992' : '#949494'}>
+              Exchange Ratio :{' '}
+            </Text>
+            <Text
+              fontSize={'13px'}
+              color={colorMode === 'light' ? '#3d495d' : '#f3f4f1'}
+              ml={'3px'}>
+              {' '}
+              1 TOS = {project.tosPrice}
+              {project.tokenSymbol}
+            </Text>
           </Flex>
         </Flex>
       </GridItem>
@@ -782,16 +856,16 @@ export const Condition4: React.FC<Condition4> = ({
   project,
   isAdmin,
   LPToken,
-  mint, 
+  mint,
   collect,
-  npm
+  npm,
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
-  const bn = require("bignumber.js");
-  const [unclaimedTOS, setUnclaimedTOS] = useState<string>('0')
-  const [unclaimedProjTok, setUnclaimedProjTok] = useState<string>('0')
+  const bn = require('bignumber.js');
+  const [unclaimedTOS, setUnclaimedTOS] = useState<string>('0');
+  const [unclaimedProjTok, setUnclaimedProjTok] = useState<string>('0');
   useEffect(() => {
     async function getTokenInfo() {
       if (account === null || account === undefined || library === undefined) {
@@ -799,37 +873,45 @@ export const Condition4: React.FC<Condition4> = ({
       }
       const signer = getSigner(library, account);
       const data = await npm.connect(signer).positions(LPToken);
-      setUnclaimedTOS(ethers.utils.formatEther(data.tokensOwed0))
-      setUnclaimedProjTok(ethers.utils.formatEther(data.tokensOwed1))
+      setUnclaimedTOS(ethers.utils.formatEther(data.tokensOwed0));
+      setUnclaimedProjTok(ethers.utils.formatEther(data.tokensOwed1));
       console.log(data);
     }
-  
-     
-    getTokenInfo()
-   
-  },[account, project, LPToken])
+
+    getTokenInfo();
+  }, [account, project, LPToken]);
 
   return (
     <Flex flexDirection={'column'}>
       <GridItem
-      fontFamily={theme.fonts.fld}
+        fontFamily={theme.fonts.fld}
         border={themeDesign.border[colorMode]}
         borderBottom={'none'}
         className={'chart-cell no-border-bottom'}
         fontSize={'16px'}>
         <Text fontFamily={theme.fonts.fld}>LP Token</Text>
-        <Flex fontSize={'15px'}><Text mr={'5px'} color={colorMode==='light'? '#7e8993': '#9d9ea5'} >ID</Text>
-        <Text color={'#257eee'}>#{LPToken}</Text></Flex>
+        <Flex fontSize={'15px'}>
+          <Text
+            mr={'5px'}
+            color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+            ID
+          </Text>
+          <Text color={'#257eee'}>#{LPToken}</Text>
+        </Flex>
       </GridItem>
       <GridItem
         px={'0px'}
         border={themeDesign.border[colorMode]}
         borderBottom={'none'}
         className={'chart-cell no-border-bottom'}>
-        <Text w={'22.6%'} fontFamily={theme.fonts.fld} color={'#7e8993'}  textAlign={'center'}>
+        <Text
+          w={'22.6%'}
+          fontFamily={theme.fonts.fld}
+          color={'#7e8993'}
+          textAlign={'center'}>
           LP Token
         </Text>
-       
+
         <Text
           fontFamily={theme.fonts.fld}
           w={'24.1%'}
@@ -856,140 +938,143 @@ export const Condition4: React.FC<Condition4> = ({
         border={themeDesign.border[colorMode]}
         borderBottom={'none'}
         px={'0px'}
-       
         className={'chart-cell no-border-bottom'}>
-          <Flex justifyContent={'center'} w={'24.1%'}>
+        <Flex justifyContent={'center'} w={'24.1%'}>
           <Text
-          w={'47px'}
-          color={colorMode === 'light' ? '#7e8993' : ''}
-          fontFamily={theme.fonts.fld}
-         
-         >
-         Increase Liquidity
-        </Text>
-          </Flex>
-       
-        <Text textAlign={'center'}  w={'24.1%'}fontFamily={theme.fonts.fld}>
+            w={'47px'}
+            color={colorMode === 'light' ? '#7e8993' : ''}
+            fontFamily={theme.fonts.fld}>
+            Increase Liquidity
+          </Text>
+        </Flex>
+
+        <Text textAlign={'center'} w={'24.1%'} fontFamily={theme.fonts.fld}>
           {commafy(Number(projTokenBalance))}
         </Text>
-        <Text textAlign={'center'}  w={'24.1%'}fontFamily={theme.fonts.fld}>
+        <Text textAlign={'center'} w={'24.1%'} fontFamily={theme.fonts.fld}>
           {commafy(Number(tosBalance))}
         </Text>
         <Flex justifyContent={'center'} alignContent={'center'} w={'29.2%'}>
-        <Button fontSize={'12px'}
-          w={'100px'}
-          h={'32px'}
-          bg={'#257eee'}
-          color={'#ffffff'}
-          isDisabled={!isAdmin || Number(tosBalance) ===0 || Number(projTokenBalance) ===0}
-          _disabled={{
-            color: colorMode === 'light' ? '#86929d' : '#838383',
-            bg: colorMode === 'light' ? '#e9edf1' : '#353535',
-            cursor: 'not-allowed',
-          }}
-          _hover={
-            !isAdmin
-              ? {}
-              : {
-                  background: 'transparent',
-                  border: 'solid 1px #2a72e5',
-                  color: themeDesign.tosFont[colorMode],
-                  cursor: 'pointer',
-                  whiteSpace:'normal'
-                }
-          }
-          _focus={
-            !isAdmin
-              ? {}
-              : {
-                  background: '#2a72e5',
-                  border: 'solid 1px #2a72e5',
-                  color: '#fff',
-                }
-                
-          }
-          _active={
-            !isAdmin
-              ? {}
-              : {
-                  background: '#2a72e5',
-                  border: 'solid 1px #2a72e5',
-                  color: '#fff',
-                }
-              }
-              onClick={mint}>Increase</Button>
+          <Button
+            fontSize={'12px'}
+            w={'100px'}
+            h={'32px'}
+            bg={'#257eee'}
+            color={'#ffffff'}
+            isDisabled={
+              !isAdmin ||
+              Number(tosBalance) === 0 ||
+              Number(projTokenBalance) === 0
+            }
+            _disabled={{
+              color: colorMode === 'light' ? '#86929d' : '#838383',
+              bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+              cursor: 'not-allowed',
+            }}
+            _hover={
+              !isAdmin
+                ? {}
+                : {
+                    background: 'transparent',
+                    border: 'solid 1px #2a72e5',
+                    color: themeDesign.tosFont[colorMode],
+                    cursor: 'pointer',
+                    whiteSpace: 'normal',
+                  }
+            }
+            _focus={
+              !isAdmin
+                ? {}
+                : {
+                    background: '#2a72e5',
+                    border: 'solid 1px #2a72e5',
+                    color: '#fff',
+                  }
+            }
+            _active={
+              !isAdmin
+                ? {}
+                : {
+                    background: '#2a72e5',
+                    border: 'solid 1px #2a72e5',
+                    color: '#fff',
+                  }
+            }
+            onClick={mint}>
+            Increase
+          </Button>
         </Flex>
-      
       </GridItem>
       <GridItem
         border={themeDesign.border[colorMode]}
         borderBottom={'none'}
         px={'0px'}
-       
         className={'chart-cell no-border-bottom'}>
-          <Flex justifyContent={'center'} w={'24.1%'}>
+        <Flex justifyContent={'center'} w={'24.1%'}>
           <Text
-          w={'56px'}
-          color={colorMode === 'light' ? '#7e8993' : ''}
-          fontFamily={theme.fonts.fld}
-         
-         >
-       Unclaimed fees
-        </Text>
-          </Flex>
-       
-        <Text textAlign={'center'}  w={'24.1%'}fontFamily={theme.fonts.fld}>
+            w={'56px'}
+            color={colorMode === 'light' ? '#7e8993' : ''}
+            fontFamily={theme.fonts.fld}>
+            Unclaimed fees
+          </Text>
+        </Flex>
+
+        <Text textAlign={'center'} w={'24.1%'} fontFamily={theme.fonts.fld}>
           {commafy(Number(unclaimedProjTok))}
         </Text>
-        <Text textAlign={'center'}  w={'24.1%'}fontFamily={theme.fonts.fld}>
+        <Text textAlign={'center'} w={'24.1%'} fontFamily={theme.fonts.fld}>
           {commafy(Number(unclaimedTOS))}
         </Text>
         <Flex justifyContent={'center'} alignContent={'center'} w={'29.2%'}>
-        <Button fontSize={'12px'}
-          w={'100px'}
-          h={'32px'}
-          bg={'#257eee'}
-          color={'#ffffff'}
-          isDisabled={!isAdmin|| Number(unclaimedProjTok)===0 || Number(unclaimedTOS)===0}
-          _disabled={{
-            color: colorMode === 'light' ? '#86929d' : '#838383',
-            bg: colorMode === 'light' ? '#e9edf1' : '#353535',
-            cursor: 'not-allowed',
-          }}
-          _hover={
-            !isAdmin
-              ? {}
-              : {
-                  background: 'transparent',
-                  border: 'solid 1px #2a72e5',
-                  color: themeDesign.tosFont[colorMode],
-                  cursor: 'pointer',
-                  whiteSpace:'normal'
-                }
-          }
-          _focus={
-            !isAdmin
-              ? {}
-              : {
-                  background: '#2a72e5',
-                  border: 'solid 1px #2a72e5',
-                  color: '#fff',
-                }
-                
-          }
-          _active={
-            !isAdmin
-              ? {}
-              : {
-                  background: '#2a72e5',
-                  border: 'solid 1px #2a72e5',
-                  color: '#fff',
-                }
-              }
-              onClick={collect}
-              >Collect</Button>
+          <Button
+            fontSize={'12px'}
+            w={'100px'}
+            h={'32px'}
+            bg={'#257eee'}
+            color={'#ffffff'}
+            isDisabled={
+              !isAdmin ||
+              Number(unclaimedProjTok) === 0 ||
+              Number(unclaimedTOS) === 0
+            }
+            _disabled={{
+              color: colorMode === 'light' ? '#86929d' : '#838383',
+              bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+              cursor: 'not-allowed',
+            }}
+            _hover={
+              !isAdmin
+                ? {}
+                : {
+                    background: 'transparent',
+                    border: 'solid 1px #2a72e5',
+                    color: themeDesign.tosFont[colorMode],
+                    cursor: 'pointer',
+                    whiteSpace: 'normal',
+                  }
+            }
+            _focus={
+              !isAdmin
+                ? {}
+                : {
+                    background: '#2a72e5',
+                    border: 'solid 1px #2a72e5',
+                    color: '#fff',
+                  }
+            }
+            _active={
+              !isAdmin
+                ? {}
+                : {
+                    background: '#2a72e5',
+                    border: 'solid 1px #2a72e5',
+                    color: '#fff',
+                  }
+            }
+            onClick={collect}>
+            Collect
+          </Button>
         </Flex>
-      
       </GridItem>
       <GridItem
         border={themeDesign.border[colorMode]}
@@ -1000,12 +1085,8 @@ export const Condition4: React.FC<Condition4> = ({
           fontFamily={theme.fonts.fld}
           alignItems={'flex-start'}
           flexDir={'column'}
-          h={'121px'}>
-         
-        </Flex>
+          h={'121px'}></Flex>
       </GridItem>
     </Flex>
   );
 };
-
-

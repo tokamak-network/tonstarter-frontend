@@ -86,7 +86,7 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
           'Token Name',
           'Token Symbol',
           'Token Supply',
-          'Sale Duration',
+          'Sale Date',
           'Status',
           'Action',
         ].map((title: string) => {
@@ -119,19 +119,19 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
               bg={colorMode === 'light' ? 'white.100' : 'black.200'}
               w={
                 title === 'Name'
-                  ? '150px'
+                  ? '137px'
                   : title === 'Token Name'
-                  ? '110px'
+                  ? '113px'
                   : title === 'Token Symbol'
-                  ? '110px'
+                  ? '118px'
                   : title === 'Token Supply'
+                  ? '130px'
+                  : title === 'Sale Date'
                   ? '150px'
-                  : title === 'Sale Duration'
-                  ? '190px'
                   : title === 'Status'
-                  ? '190px'
+                  ? '140px'
                   : title === 'Action'
-                  ? '205px'
+                  ? '312px'
                   : '110px'
               }
               borderBottom={
@@ -200,19 +200,19 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                         wordBreak={'break-word'}
                         w={
                           type === 'name'
-                            ? '150px'
+                            ? '137px'
                             : type === 'tokenName'
-                            ? '110px'
+                            ? '113px'
                             : type === 'tokenSymbol'
-                            ? '110px'
+                            ? '118px'
                             : type === 'totalSupply'
-                            ? '150px'
+                            ? '130px'
                             : type === 'saleDate'
-                            ? '190px'
+                            ? '150px'
                             : type === 'status'
-                            ? '190px'
+                            ? '140px'
                             : type === 'action'
-                            ? '200px'
+                            ? '310px'
                             : '110px'
                         }
                         h={'55px'}
