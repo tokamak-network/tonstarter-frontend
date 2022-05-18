@@ -28,9 +28,9 @@ const OpenStepTwo = () => {
       flexDir="column">
       <Box
         w={'100%'}
-        bg={isEdit ? 'white.100' : 'none'}
+        bg={isEdit ? (colorMode === 'light' ? 'white.100' : '#222222') : 'none'}
         zIndex={5}
-        opacity={isEdit ? 0.5 : 1}
+        opacity={isEdit ? (colorMode === 'light' ? 0.25 : 0.05) : 1}
         pointerEvents={isEdit ? 'none' : 'all'}>
         <TopTitle></TopTitle>
         <Box mb={'20px'}>
@@ -39,23 +39,23 @@ const OpenStepTwo = () => {
         <Flex flexDir={'column'}>
           <Vaults></Vaults>
         </Flex>
-        <Box my={'25px'}>
-          <Line></Line>
-        </Box>
+      </Box>
+      <Box my={'25px'}>
+        <Line></Line>
       </Box>
       <Flex px={'35px'}>
         <Middle isEdit={isEdit} setIsEdit={setIsEdit}></Middle>
       </Flex>
 
+      <Box my={'25px'}>
+        <Line></Line>
+      </Box>
       <Box
         w={'100%'}
-        bg={isEdit ? 'white.100' : 'none'}
+        bg={isEdit ? (colorMode === 'light' ? 'white.100' : '#222222') : 'none'}
         zIndex={5}
-        opacity={isEdit ? 0.5 : 1}
+        opacity={isEdit ? (colorMode === 'light' ? 0.25 : 0.05) : 1}
         pointerEvents={isEdit ? 'none' : 'all'}>
-        <Box my={'25px'}>
-          <Line></Line>
-        </Box>
         <Flex px={'35px'}>
           <ClaimRound></ClaimRound>
         </Flex>

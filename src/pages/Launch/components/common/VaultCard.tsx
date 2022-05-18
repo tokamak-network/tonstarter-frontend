@@ -91,7 +91,7 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
           </Box>
           <HoverImage
             img={PencilIcon}
-            hoverImg={PencilActiveIcon}
+            hoverImg={PencilIcon}
             action={() =>
               openAnyModal('Launch_VaultBasicSetting', {
                 name,
