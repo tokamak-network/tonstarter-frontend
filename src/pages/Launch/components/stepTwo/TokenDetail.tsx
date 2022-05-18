@@ -40,6 +40,7 @@ import {CustomTooltip} from 'components/Tooltip';
 import {stosMinimumRequirements} from '@Launch/const';
 import {NumberInputStep} from './NumberInputField';
 import momentTZ from 'moment-timezone';
+import moment from 'moment';
 
 export const MainTitle = (props: {
   leftTitle: string;
@@ -423,9 +424,27 @@ const SubTitle = (props: {
               )}
             </Flex>
             {leftTitle !== 'Snapshot' ? (
-              <DoubleCalendarPop setDate={setDateRange} startTimeCap={0}></DoubleCalendarPop>
+              <DoubleCalendarPop
+                setDate={setDateRange}
+                startTimeCap={
+                  leftTitle === 'Whitelist'
+                    ? tempVaultData.snapshot
+                      ? tempVaultData.snapshot + 1
+                      : publicVault.snapshot || 0
+                    : leftTitle === 'Public Round 1'
+                    ? tempVaultData.whitelistEnd
+                      ? tempVaultData.whitelistEnd + 1
+                      : publicVault.whitelistEnd || 0
+                    : tempVaultData.publicRound1
+                    ? tempVaultData.publicRound1 + 1
+                    : publicVault.publicRound1 || 0
+                }></DoubleCalendarPop>
             ) : (
-              <SingleCalendarPop setDate={setClaimDate} startTimeCap={0}></SingleCalendarPop>
+              <SingleCalendarPop
+                setDate={setClaimDate}
+                startTimeCap={moment()
+                  .add(8, 'days')
+                  .unix()}></SingleCalendarPop>
             )}
           </Flex>
         ) : (

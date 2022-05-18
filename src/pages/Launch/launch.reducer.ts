@@ -8,7 +8,7 @@ interface LaunchState {
     selectedVaultType: VaultType;
     selectedVaultIndex: number | undefined;
     projects: any;
-    tempVaultData: {};
+    tempVaultData: any;
     hashKey: string | undefined;
     err: {
       tokenDetail: {
