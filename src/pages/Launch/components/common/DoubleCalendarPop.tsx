@@ -18,8 +18,9 @@ import moment from 'moment';
 
 type calendarComponentProps = {
   setDate: Dispatch<SetStateAction<any>>;
+  startTimeCap?: number
 };
-const DoubleCalendarPop: React.FC<calendarComponentProps> = ({setDate}) => {
+const DoubleCalendarPop: React.FC<calendarComponentProps> = ({setDate,startTimeCap}) => {
   const {colorMode} = useColorMode();
   const [image, setImage] = useState(
     colorMode === 'light' ? CalendarInactiveImg : CalendarInactiveImgDark,
