@@ -423,9 +423,9 @@ const SubTitle = (props: {
               )}
             </Flex>
             {leftTitle !== 'Snapshot' ? (
-              <DoubleCalendarPop setDate={setDateRange}></DoubleCalendarPop>
+              <DoubleCalendarPop setDate={setDateRange} startTimeCap={0}></DoubleCalendarPop>
             ) : (
-              <SingleCalendarPop setDate={setClaimDate}></SingleCalendarPop>
+              <SingleCalendarPop setDate={setClaimDate} startTimeCap={0}></SingleCalendarPop>
             )}
           </Flex>
         ) : (

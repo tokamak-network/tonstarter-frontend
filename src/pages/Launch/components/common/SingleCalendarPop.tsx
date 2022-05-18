@@ -23,6 +23,7 @@ type calendarComponentProps = {
   fieldValueKey?: string;
   oldValues?: {};
   valueKey?: any;
+  startTimeCap?: number;
 
 };
 const SingleCalendarPop: React.FC<calendarComponentProps> = ({
