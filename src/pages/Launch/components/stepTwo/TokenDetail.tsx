@@ -442,9 +442,8 @@ const SubTitle = (props: {
             ) : (
               <SingleCalendarPop
                 setDate={setClaimDate}
-                startTimeCap={moment()
-                  .add(8, 'days')
-                  .unix()}></SingleCalendarPop>
+                // startTimeCap={moment().add(8, 'days').unix()}
+                startTimeCap={moment().unix()}></SingleCalendarPop>
             )}
           </Flex>
         ) : (
