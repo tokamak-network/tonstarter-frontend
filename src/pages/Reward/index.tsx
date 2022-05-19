@@ -137,7 +137,7 @@ export const Reward = () => {
   useEffect(() => {
     async function fetchProjectsData() {
       const poolsData: any = await views.getPoolData(library);
-      const rewardData = await views.getRewardData();
+      const rewardData = await views.getRewardData();      
       setPoolsFromAPI(poolsData);
       const poolArray: any = [];
       if (poolsData) {
@@ -153,18 +153,21 @@ export const Reward = () => {
 
         setDatas(rewardData);
       }
+      
       setPoolAddresses(poolArray);
     }
     fetchProjectsData();
   }, [account, library, selected]);
+
+  
 
   const poolArr = usePoolByArrayQuery(
     {address: poolAddresses},
     {
       pollingInterval: ms`2s`,
     },
-  );
-
+  );  
+    
   const positionsByPool = usePositionByPoolQuery(
     {pool_id: poolAddresses},
     {
@@ -213,7 +216,7 @@ export const Reward = () => {
 
   useEffect(() => {
     const addPoolsInfo = () => {
-      const pols = poolArr.data?.pools;
+      const pols = poolArr.data?.pools;      
       if (pols !== undefined) {
         const poooools = pols.map((data: any) => {
           const APIPool = poolsFromAPI.find(
@@ -227,6 +230,7 @@ export const Reward = () => {
             token1Image: token1Image,
           };
         });
+        
         setPool(poooools);
       }
     };
@@ -660,78 +664,65 @@ export const Reward = () => {
                   <MenuList {...MENU_STYLE.menuListStyle({colorMode})}>
                     <MenuItem>
                       <Menu isLazy>
-                        {({isOpen}) => (
-                          <>
-                            <MenuButton
-                              minWidth={'90px'}
-                              textAlign={'left'}
-                              fontSize={'13px'}
-                              onClick={() => {
-                                setSelectedTokenType('All');
-                              }}>
-                              All{' '}
-                              {isOpen ? (
-                                <ChevronRightIcon />
-                              ) : (
-                                <ChevronDownIcon />
-                              )}
-                            </MenuButton>
+                        <MenuButton
+                          minWidth={'90px'}
+                          textAlign={'left'}
+                          fontSize={'13px'}>
+                          All <ChevronDownIcon />
+                        </MenuButton>
 
-                            <MenuList
-                              zIndex={10000}
-                              ml={'-0.845rem'}
-                              mr={'1px'}
-                              minWidth="155px"
-                              borderTop="none"
-                              boxShadow="none"
-                              borderTopRadius={0}
-                              minHeight={'80px'}
-                              background={
-                                colorMode === 'light' ? '#ffffff' : '#222222'
-                              }>
-                              {positions.map((item: any, index) => {
-                                const status = getStatus(item);
-                                return (
-                                  <MenuItem
-                                    onClick={getSelectedPosition}
-                                    // onClick={() => alert("Kagebunshin")}
-                                    h={'30px'}
-                                    color={
-                                      status === 'openOut' ||
-                                      status === 'closedOut'
-                                        ? '#ff7800'
-                                        : colorMode === 'light'
-                                        ? '#3e495c'
-                                        : '#f3f4f1'
-                                    }
-                                    fontSize={'12px'}
-                                    w={'154px'}
-                                    m={'0px'}
-                                    value={item.id}
-                                    _hover={{
-                                      background: 'transparent',
-                                      color: 'blue.100',
-                                    }}
-                                    textDecoration={
-                                      status === 'closedIn' ||
-                                      status === 'closedOut'
-                                        ? 'line-through'
-                                        : 'none'
-                                    }
-                                    _focus={{background: 'transparent'}}
-                                    key={index}>
-                                    {item.id}{' '}
-                                    <Text ml={'8px'} fontSize={'9px'}>
-                                      {' '}
-                                      {item.pool.token0.symbol} /{' '}
-                                      {item.pool.token1.symbol}
-                                    </Text>
-                                  </MenuItem>
-                                );
-                              })}
-                            </MenuList>
-                          </>
-                        )}
+                        <MenuList
+                          zIndex={10000}
+                          ml={'-0.845rem'}
+                          mr={'1px'}
+                          minWidth="155px"
+                          borderTop="none"
+                          boxShadow="none"
+                          borderTopRadius={0}
+                          minHeight={'80px'}
+                          background={
+                            colorMode === 'light' ? '#ffffff' : '#222222'
+                          }>
+                          {positions.map((item: any, index) => {
+                            const status = getStatus(item);
+                            return (
+                              <MenuItem
+                                onClick={getSelectedPosition}
+                                // onClick={() => alert("Kagebunshin")}
+                                h={'30px'}
+                                color={
+                                  status === 'openOut' || status === 'closedOut'
+                                    ? '#ff7800'
+                                    : colorMode === 'light'
+                                    ? '#3e495c'
+                                    : '#f3f4f1'
+                                }
+                                fontSize={'12px'}
+                                w={'154px'}
+                                m={'0px'}
+                                value={item.id}
+                                _hover={{
+                                  background: 'transparent',
+                                  color: 'blue.100',
+                                }}
+                                textDecoration={
+                                  status === 'closedIn' ||
+                                  status === 'closedOut'
+                                    ? 'line-through'
+                                    : 'none'
+                                }
+                                _focus={{background: 'transparent'}}
+                                key={index}>
+                                {item.id}{' '}
+                                <Text ml={'8px'} fontSize={'9px'}>
+                                  {' '}
+                                  {item.pool.token0.symbol} /{' '}
+                                  {item.pool.token1.symbol}
+                                </Text>
+                              </MenuItem>
+                            );
+                          })}
+                        </MenuList>
                       </Menu>
                     </MenuItem>
                     <MenuItem>

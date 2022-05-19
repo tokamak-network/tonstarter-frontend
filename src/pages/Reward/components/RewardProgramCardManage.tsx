@@ -165,7 +165,6 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
     library,
     transactionType,
     blockNumber,
-    tokenID,
     pageIndex,
     reward,
   ]);

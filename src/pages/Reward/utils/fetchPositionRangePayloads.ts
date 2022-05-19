@@ -1,5 +1,5 @@
 import {Contract} from '@ethersproject/contracts';
-// import * as StakeUniswapABI from 'services/abis/StakeUniswapV3.json';
+import * as StakeUniswapABI from 'services/abis/StakeUniswapV3.json';
 import * as NPMABI from 'services/abis/NonfungiblePositionManager.json';
 import {DEPLOYED} from 'constants/index';
 
