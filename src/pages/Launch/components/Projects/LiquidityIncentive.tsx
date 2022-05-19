@@ -34,6 +34,7 @@ import * as UniswapV3FactoryABI from 'services/abis/UniswapV3Factory.json';
 import { createReward, getRandomKey } from 'pages/Reward/components/api';
 import BigNumber from 'bignumber.js';
 import Web3 from 'web3';
+import {addPool} from 'pages/Admin/actions/actions';
 const provider = BASE_PROVIDER;
 const {TOS_ADDRESS, UniswapV3Factory, NPM_Address} = DEPLOYED;
 type LiquidityIncentive = {vault: any; project: any};
@@ -51,13 +52,14 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
   const [disableButton, setDisableButton] = useState<boolean>(true);
   const network = BASE_PROVIDER._network.name;
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
-  const {account, library} = useActiveWeb3React();
+  const {account, library,chainId} = useActiveWeb3React();
   const [distributable, setDistributable] = useState<number>(0);
   const [claimTime, setClaimTime] = useState<number>(0);
   const [showDate, setShowDate] = useState<boolean>(false);
   const [distributeDisable, setDistributeDisable] = useState<boolean>(true);
   const [duration, setDuration] = useState<any[]>([0,0]);
-  const [pool, setPool]=useState<string>('')
+  const [pool, setPool]=useState<string>('');
+  const [endTime, setEndTime] = useState<number>(0)
   const VaultLPReward = new Contract(
     vault.vaultAddress,
     VaultLPRewardLogicAbi.abi,
@@ -104,13 +106,9 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
       const now = moment().unix();
       const currentRound = await VaultLPReward.currentRound();
       const nowClaimRound = await VaultLPReward.nowClaimRound();
-      console.log(currentRound, 'currentRound');
-      console.log(nowClaimRound, 'nowClaimRound');
+      const totalClaimCount = await VaultLPReward.totalClaimCounts();
       const available = await VaultLPReward.availableUseAmount(currentRound);
       const amountFormatted = parseInt(ethers.utils.formatEther(available));
-      console.log(amountFormatted);
-      console.log(vault.vaultAddress);
-      
       const getProgramDuration = await VaultLPReward.getProgramDuration(
         currentRound,
       );
@@ -118,15 +116,13 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
       const claimDate = await VaultLPReward.claimTimes(nowClaimRound);
       const endTime = Number(claimDate) + Number(getProgramDuration);
       const durat = [Number(claimDate), endTime];
-      
+      setEndTime(Number(getProgramDuration))
       setDuration(durat);
       const getPool = await UniswapV3Fact.getPool(
         TOS_ADDRESS,
         project.tokenAddress,
         3000,
-      );
-      console.log('getPool',getPool);
-      
+      );      
       setPool(getPool)
       setDistributeDisable(false);
       const disabled = Number(nowClaimRound) >= Number(currentRound);
@@ -140,6 +136,7 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
   const generateSig = async (account: string, key: any) => {
     const randomvalue = await getRandomKey(account);
     // const pool = '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf';
+  console.log(randomvalue);
   
     //@ts-ignore
     const web3 = new Web3(window.ethereum);
@@ -161,14 +158,13 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
       return '';
     }
   };
-
   
   const createRewardFirst = async () => {
     if (account === null || account === undefined || library === undefined) {
       return;
     }
     const signer = getSigner(library, account);
-    
+  
     try {
       const receipt = await VaultLPReward.connect(signer).createProgram();
       store.dispatch(setTxPending({tx: true}));
@@ -179,7 +175,7 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
        const block = await provider.getBlock(blockNum);
        const timeStamp = block.timestamp;
        const startTime = Number(timeStamp)+60;
-       const endTime = duration[1]
+       const endTimestamp = endTime
        const poolAddress = pool;
        const rewardToken = project.tokenAddress;
        const refundee =   vault.vaultAddress;
@@ -189,18 +185,22 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
         rewardToken:rewardToken,
         pool: poolAddress,
         startTime: startTime,
-        endTime: endTime,
+        endTime: startTime +endTime,
         refundee: refundee,
        }
-       const sig = await generateSig(refundee.toLowerCase(), key);
+       console.log('key',key);
+       
+       const sig = await generateSig(account.toLowerCase(), key);
+       console.log('sig',sig);
+       
        const arg = {
         poolName: poolName,
         poolAddress: poolAddress,
         rewardToken: rewardToken,
-        account: refundee,
+        account: account.toLowerCase(),
         incentiveKey: key,
         startTime: startTime,
-        endTime: endTime,
+        endTime: startTime +endTime,
         allocatedReward: allocatedReward.toString(),
         numStakers: 0,
         status: 'open',
@@ -208,7 +208,9 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
         tx: receipt,
         sig: sig,
        }
-       const create = await createReward(arg);    
+       const create = await createReward(arg);   
+       console.log('create',create);
+        
       }
     } catch (e) {
       store.dispatch(setTxPending({tx: false}));
@@ -393,7 +395,7 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
                 padding={'6px 12px'}
                 whiteSpace={'normal'}
                 color={'#fff'}
-                isDisabled={distributeDisable}
+                isDisabled={distributeDisable }
                 _disabled={{
                   color: colorMode === 'light' ? '#86929d' : '#838383',
                   bg: colorMode === 'light' ? '#e9edf1' : '#353535',

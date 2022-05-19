@@ -31,7 +31,7 @@ import {useAppSelector} from 'hooks/useRedux';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {BASE_PROVIDER} from 'constants/index';
 import Fraction from 'fraction.js';
-
+import {addPool} from 'pages/Admin/actions/actions';
 // var Fraction = require('fraction.js');
 const {TOS_ADDRESS, UniswapV3Factory, NPM_Address} = DEPLOYED;
 type InitialLiquidity = {
@@ -77,7 +77,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
-  const {account, library} = useActiveWeb3React();
+  const {account, library,chainId} = useActiveWeb3React();
   const [disableButton, setDisableButton] = useState<boolean>(true);
   const [tosBalance, setTosBalance] = useState<string>('');
   const [projTokenBalance, setProjTokenBalance] = useState<string>('');
@@ -119,10 +119,11 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
         project.tokenAddress,
         3000,
       );
-      console.log('getPool', getPool);
-
       setIsPool(getPool === ZERO_ADDRESS ? false : true);
+      // setIsPool(false)
       setIsLpToken(Number(LP) === 0 ? false : true);
+     
+      
       setLPToken(Number(LP));
     }
     getLPToken();
@@ -455,7 +456,7 @@ export const Condition1: React.FC<Condition1> = ({
           fontFamily={theme.fonts.fld}
           fontSize={'14px'}
           letterSpacing={'0.14px'}>
-          {commafy(Number(tosBalance))}
+          {(Number(tosBalance).toLocaleString())}
         </Text>
       </GridItem>
       <GridItem
@@ -490,7 +491,7 @@ export const Condition2: React.FC<Condition2> = ({
   const {colorMode} = useColorMode();
   const theme = useTheme();
 
-  const {account, library} = useActiveWeb3React();
+  const {account, library, chainId} = useActiveWeb3React();
   const bn = require('bignumber.js');
   useEffect(() => {
     getRatio();
@@ -512,7 +513,8 @@ export const Condition2: React.FC<Condition2> = ({
 
     const computePoolAddress = await InitialLiquidityCompute.connect(
       signer,
-    ).computePoolAddress(TOS_ADDRESS, project.tokenAddress, 3000);
+    ).computePoolAddress(TOS_ADDRESS, project.tokenAddress, 3000);    
+   
     try {
       const receipt = await InitialLiquidityCompute.connect(
         signer,
@@ -525,6 +527,18 @@ export const Condition2: React.FC<Condition2> = ({
       if (receipt) {
         toastWithReceipt(receipt, setTxPending, 'Launch');
         await receipt.wait();
+        if ( chainId) {
+          const createPoo = addPool({
+            chainId: chainId,
+            poolName:  `TOS / ${project.tokenSymbol}`,
+            poolAddress: computePoolAddress[0],
+            token0Address: TOS_ADDRESS,
+            token1Address: project.tokenAddress,
+            token0Image: 'https://tonstarter-symbols.s3.ap-northeast-2.amazonaws.com/tos-symbol%403x.png',
+            token1Image: project.tokenSymbolImage,
+            feeTier: 3000
+          })
+         }
       }
     } catch (e) {
       store.dispatch(setTxPending({tx: false}));
@@ -866,16 +880,19 @@ export const Condition4: React.FC<Condition4> = ({
   const bn = require('bignumber.js');
   const [unclaimedTOS, setUnclaimedTOS] = useState<string>('0');
   const [unclaimedProjTok, setUnclaimedProjTok] = useState<string>('0');
+  
   useEffect(() => {
     async function getTokenInfo() {
       if (account === null || account === undefined || library === undefined) {
         return;
       }
       const signer = getSigner(library, account);
-      const data = await npm.connect(signer).positions(LPToken);
-      setUnclaimedTOS(ethers.utils.formatEther(data.tokensOwed0));
-      setUnclaimedProjTok(ethers.utils.formatEther(data.tokensOwed1));
-      console.log(data);
+      if (LPToken !== 0) {
+        const data = await npm.connect(signer).positions(LPToken);
+        setUnclaimedTOS(ethers.utils.formatEther(data.tokensOwed0));
+        setUnclaimedProjTok(ethers.utils.formatEther(data.tokensOwed1));
+      }
+   
     }
 
     getTokenInfo();

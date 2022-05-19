@@ -43,6 +43,8 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
   const {account, library} = useActiveWeb3React();
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
+  const [hardcap, setHardcap] = useState<number>(0)
+
   const network = BASE_PROVIDER._network.name;
 
   const now = moment().unix();
@@ -85,6 +87,17 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
       setIsAdmin(false);
     }
   }, [account, project]);
+
+  useEffect(()=> {
+    async function getHardCap() {
+      if (account === null || account === undefined || library === undefined) {
+        return;
+      }
+      const hardCapCalc = await PublicSaleVaul.hardcapCalcul();
+      setHardcap(Number(hardCapCalc))
+    } 
+    getHardCap()
+  },[])
 
   const sendTOS = async () => {
     if (account === null || account === undefined || library === undefined) {
@@ -287,7 +300,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 </Text>
                 <Text fontFamily={theme.fonts.fld}>{`${commafy(
                   vault.hardCap,
-                )}  ${project.tokenSymbol}`}</Text>
+                )}  TON`}</Text>
               </GridItem>
 
               <GridItem
@@ -386,7 +399,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                         mt={'5px'}
                         bg={'#257eee'}
                         color={'#ffffff'}
-                        isDisabled={!isAdmin}
+                        // isDisabled={!isAdmin || vault.publicRound2End > moment().unix() || hardcap !== 0}
                         _disabled={{
                           color: colorMode === 'light' ? '#86929d' : '#838383',
                           bg: colorMode === 'light' ? '#e9edf1' : '#353535',

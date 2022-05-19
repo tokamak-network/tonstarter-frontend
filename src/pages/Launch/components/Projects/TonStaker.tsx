@@ -62,9 +62,7 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
       const amount = await TONStaker.connect(signer).calculClaimAmount(
         currentRound,
       );
-      const totalClaimCount = await TONStaker.connect(
-        signer,
-      ).totalClaimCounts();
+      const totalClaimCount = await TONStaker.totalClaimCounts();
       setDistributeDisable(Number(nowClaimRound) >= Number(currentRound));
       const disabled = Number(nowClaimRound) >= Number(currentRound);
       const claimDate =
