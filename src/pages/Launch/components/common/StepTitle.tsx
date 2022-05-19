@@ -30,7 +30,7 @@ const StepTitle: React.FC<StepTitleProp> = (prop) => {
       lineHeight={lineHeight || '36px'}>
       <Box
         fontSize={fontSize || 20}
-        color={colorMode === 'light' ? 'black.300' : 'white.100'}
+        color={colorMode === 'light' ? '#304156' : 'white.100'}
         fontWeight={600}>
         {title}
       </Box>

@@ -57,7 +57,6 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
       if (PUBLICSALE_CONTRACT && account) {
         const isOver = await PUBLICSALE_CONTRACT.hardcapCalcul();
         if (Number(isOver.toString()) === 0) {
-          console.log('go');
           const usersExAmount = await PUBLICSALE_CONTRACT.usersEx(account);
           const usersOpenAmount = await PUBLICSALE_CONTRACT.usersOpen(account);
           const hardCap = await PUBLICSALE_CONTRACT.hardCap();

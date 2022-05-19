@@ -39,8 +39,10 @@ const OpenStepOne = () => {
       <Box mb={'23px'}>
         <StepTitle title={'Project & Token'} isSaveButton={false}></StepTitle>
       </Box>
-      <Box mb={'40px'}>
-        <Line></Line>
+      <Box mb={'40px'} pos="relative">
+        <Box w={'774px'} pos="absolute" left={'-35px'}>
+          <Line></Line>
+        </Box>
       </Box>
       <Grid
         templateColumns="repeat(2, 1fr)"
