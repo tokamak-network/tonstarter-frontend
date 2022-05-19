@@ -69,6 +69,29 @@ export const getExplorerLink = async (id: string | number | undefined) => {
   return link as string;
 };
 
+export const getExplorerTxnLink = async (id: string | number | undefined) => {
+  let link: string;
+  switch (id) {
+    case 1:
+      link = `https://etherscan.io/tx/`;
+      break;
+    case 3:
+      link = `https://ropsten.etherscan.io/tx/`;
+      break;
+    case 4:
+      link = `https://rinkeby.etherscan.io/tx/`;
+      break;
+    case 42:
+      link = `https://kovan.etherscan.io/tx/`;
+      break;
+    default:
+      link = 'Unknown network';
+      break;
+  }
+
+  return link as string;
+};
+
 export const getBlockNumber = async (chainId: '1' | '4' | undefined) => {
   const providerNet = {
     1: 'main',

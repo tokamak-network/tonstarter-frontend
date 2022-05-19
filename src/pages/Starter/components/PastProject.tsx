@@ -54,8 +54,21 @@ const PastProjectContainer: React.FC<{
         localeString: true,
       });
 
+      const roundOneTarget = await PUBLICSALE_CONTRACT?.totalExpectSaleAmount();
+      const roundTwoTarget =
+        await PUBLICSALE_CONTRACT?.totalExpectOpenSaleAmount();
+
+      const sumTarget = BigNumber.from(roundOneTarget).add(roundTwoTarget);
+      const convertedSumTarget = convertNumber({
+        amount: sumTarget.toString(),
+        localeString: true,
+      });
+
+      const head =
+        Number(convertedSumTarget?.replaceAll(',', '')) / project.tokenCalRatio;
+
       const progressNow =
-        (Number(convertedSum?.replaceAll(',', '')) / 28436) * 100;
+        (Number(convertedSum?.replaceAll(',', '')) / head) * 100;
       const participantsNum = await PUBLICSALE_CONTRACT?.totalUsers();
       setTotalRaise(convertedSum);
       setProgress(Math.ceil(progressNow));

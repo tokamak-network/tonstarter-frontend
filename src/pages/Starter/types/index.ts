@@ -35,7 +35,9 @@ export type UpcomingProjectType = I_StarterProject & {
   website: string;
 };
 
-export type PastProjectType = I_StarterProject;
+export type PastProjectType = I_StarterProject & {
+  tokenCalRatio: number;
+};
 
 export type SaleInfo = AdminObject & {tokenExRatio: number};
 

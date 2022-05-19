@@ -226,8 +226,8 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
     colorMode === 'light'
       ? {navLink: {background: '#ffffff', color: '#1c1c1c'}}
       : {navLink: {background: 'transparent', color: '#f3f4f1'}};
-  const pools = useRouteMatch('/pools/pools');
-  const reward = useRouteMatch('/pools/rewardProgram');
+  const pools = useRouteMatch('/rewards/pools');
+  const reward = useRouteMatch('/rewards/rewardProgram');
 
   return (
     <Box
@@ -264,12 +264,12 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                   ? 'gray.275'
                   : 'white.100'
               }>
-              Pools
+              Rewards
             </Text>
           </MenuButton>
           <MenuList
             pos={'absolute'}
-            left={'-33px'}
+            left={'-22px'}
             top={'15px'}
             minW={'182px'}
             w={'182px'}
@@ -278,7 +278,24 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
             fontSize={13}
             background={colorMode === 'light' ? '#ffffff' : '#222222'}>
             <NavLink
-              to="/pools/pools"
+              to="/rewards/rewardProgram"
+              activeStyle={{
+                background: 'transparent',
+                color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',
+              }}
+              style={{color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1'}}>
+              <MenuItem
+                _hover={{color: 'blue.100', bg: 'none'}}
+                w={'100%'}
+                h={'37px'}
+                _focus={{
+                  bg: colorMode === 'light' ? '#ffffff' : 'transparent',
+                }}>
+                Rewards Program
+              </MenuItem>
+            </NavLink>
+            <NavLink
+              to="/rewards/pools"
               activeStyle={{
                 background: 'transparent',
                 color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',
@@ -290,21 +307,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                 w={'100%'}
                 h={'37px'}
                 _focus={{background: 'transparent'}}>
-                Pools
-              </MenuItem>
-            </NavLink>
-            <NavLink
-              to="/pools/rewardProgram"
-              activeStyle={{
-                background: 'transparent',
-                color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',
-              }}
-              style={{color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1'}}>
-              <MenuItem
-                _hover={{color: 'blue.100', bg: 'none'}}
-                w={'100%'}
-                h={'37px'}>
-                Rewards Program
+                Pools (Closed)
               </MenuItem>
             </NavLink>
           </MenuList>
@@ -475,7 +478,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           </MenuList>
         </Menu>
 
-        <Menu>
+        {/* <Menu>
           <MenuButton>
             <Text className={match?.isExact ? 'link-match' : 'link'}>
               Admin
@@ -537,7 +540,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
               </MenuItem>
             </NavLink>
           </MenuList>
-        </Menu>
+        </Menu> */}
       </Stack>
     </Box>
   );

@@ -48,18 +48,18 @@ const themeDesign = {
 
 type ClockProps = {
   setTime: Dispatch<SetStateAction<any>>;
-  error: boolean
+  error: boolean;
+  timeZone: string;
 };
 
 export const CustomClock = (props: ClockProps) => {
-  const {setTime, error} = props;
+  const {setTime, error, timeZone} = props;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const [hours, setHours] = useState<number>(1);
   const [minutes, setMinutes] = useState<number>(0);
   const [seconds, setSeconds] = useState<number>(0);
   const [meridiem, setMeridiem] = useState<string>('AM');
-
 
   const setUp = (onClose: any) => {
     let hour;
@@ -81,12 +81,15 @@ export const CustomClock = (props: ClockProps) => {
       {({isOpen, onClose}) => (
         <>
           <PopoverTrigger>
-            <Flex ml={'6px'} border={error? '1px solid #f5424b': ''} p='2px' borderRadius='4px'>
+            <Flex
+              ml={'6px'}
+              border={error ? '1px solid #f5424b' : ''}
+              p="2px"
+              borderRadius="4px">
               <Text
-                
                 fontSize={'10px'}
                 color={colorMode === 'light' ? '#808992' : '#949494'}>
-                Time setting
+                ({timeZone})
               </Text>
               <Image ml={'5px'} src={clock} alt="clock" />
             </Flex>
@@ -257,7 +260,7 @@ export const CustomClock = (props: ClockProps) => {
                 color={themeDesign.select[colorMode]}
                 mr={'10px'}
                 onChange={(e) => {
-                  setMeridiem(e.target.value)
+                  setMeridiem(e.target.value);
                 }}>
                 <option>AM</option>
                 <option>PM</option>

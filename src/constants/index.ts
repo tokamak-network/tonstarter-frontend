@@ -11,6 +11,8 @@ export const REACT_APP_RINKEBY_INFURA_API = process.env
   .REACT_APP_RINKEBY_INFURA_API as string;
 export const REACT_APP_MAINNET_API = process.env
   .REACT_APP_MAINNET_API as string;
+export const REACT_APP_TOS_PRICE = process.env.REACT_APP_TOS_PRICE as string;
+export const REACT_APP_ETH_PRICE = process.env.REACT_APP_ETH_PRICE as string;
 export const REACT_APP_DEV_API = process.env.REACT_APP_DEV_API as string;
 export const REACT_APP_LOCAL = process.env.REACT_APP_LOCAL as string;
 export const REACT_APP_MAINNET_OPENCAMPAGIN_API = process.env
@@ -35,10 +37,12 @@ export const BASE_PROVIDER =
     : ethers.getDefaultProvider('mainnet');
 export const fetchStakeURL = `${API_SERVER}/stakecontracts?chainId=${DEFAULT_NETWORK}`;
 export const fetchValutURL = `${API_SERVER}/vaults?chainId=${DEFAULT_NETWORK}`;
-export const fetchRewardsURL = `${API_SERVER}/reward?chainId=${DEFAULT_NETWORK}`;
+export const fetchRewardsURL = `${API_SERVER}/reward?chainId=${DEFAULT_NETWORK}&pagesize=200`;
 export const fetchStarterURL = `${API_SERVER}/starter?chainId=${DEFAULT_NETWORK}`;
 export const fetchPoolsURL = `${API_SERVER}/pool?chainId=${DEFAULT_NETWORK}`;
 export const fetchCampaginURL = `${API_SERVER_LAUNCH}/projects?chainId=${DEFAULT_NETWORK}`;
+export const fetchTosPriceURL = REACT_APP_TOS_PRICE;
+export const fetchEthPriceURL = REACT_APP_ETH_PRICE;
 
 export const permitTOSAddress =
   REACT_APP_MODE === 'DEV' ? '0x865264b30eb29A2978b9503B8AfE2A2DDa33eD7E' : '';
@@ -50,7 +54,9 @@ const MAINNET_DEPLOYED = {
   TON_ADDRESS: '0x2be5e8c109e2197D077D13A82dAead6a9b3433C5',
   TOS_ADDRESS: '0x409c4D8cd5d2924b9bc5509230d16a61289c8153',
   WTON_ADDRESS: '0xc4A11aaf6ea915Ed7Ac194161d2fC9384F15bff2',
+  AURA_ADDRESS: '0xaEC59E5b4f8DbF513e260500eA96EbA173F74149',
   DOC_ADDRESS: '0x0e498afce58dE8651B983F136256fA3b8d9703bc',
+  ETH_ADDRESS: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
   DepositManager_ADDRESS: '0x56E465f654393fa48f007Ed7346105c7195CEe43',
   SeigManager_ADDRESS: '0x710936500aC59e8551331871Cbad3D33d5e0D909',
   SwapProxy_ADDRESS: '0x30e65B3A6e6868F044944Aa0e9C5d52F8dcb138d',
@@ -64,9 +70,6 @@ const MAINNET_DEPLOYED = {
   DOCPool_Address: '0x369bca127b8858108536b71528ab3befa1deb6fc',
   StakeTonControl_ADDRESS: '0xacdded49ac67ba9c87b1bbc5cb248b1bd7dc0f19',
   LockTOSDividend_ADDRESS: '0x17332F84Cc0bbaD551Cd16675F406A0a2c55E28C',
-  LockTOSProxy_ADDRESS: '',
-  DividendPool_ADDRESS: '',
-  DividendPoolProxy_ADDRESS: '',
   PublicSale_ADDRESS: '',
   unstakeLayer2All: '0xf9381fB7167FC3e81849aE82960144274D1553C2',
   PowerTONSwapper_ADDRESS: '0xDE200f091a5CD840cD52Ece7406865607a25dF69',
@@ -78,12 +81,21 @@ const MAINNET_DEPLOYED = {
   TonStakerVault: '',
   TosStakerVault: '',
   LPrewardVault: '',
+  LockTOSProxy_ADDRESS:'',
   TypeCVault: '',
   DAOVault: '',
+  DividendPool_ADDRESS:'', 
+  DividendPoolProxy_ADDRESS:'',
   pools: {
     TOS_WTON_POOL: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
   },
   UniswapV3Factory: '0x1F98431c8aD98523631AE4a59f267346ea31F984',
+  ETH_WTON_Address: '0xC29271E3a68A7647Fd1399298Ef18FeCA3879F59',
+  TOS_WTON_Address: '0x1c0cE9aAA0c12f53Df3B4d8d77B82D6Ad343b4E4',
+  TOS_ETH_Address: '0x2AD99c938471770DA0cD60E08eaf29EbfF67a92A',
+  DOC_TOS_Address: '0x369Bca127B8858108536B71528AB3bEfa1DEb6Fc',
+  TOS_AURA_Address: '0xBdDD3a50Bd2AFd27aED05Cc9FE1c8D67fCAA3218',
+  DOC_ETH_Address: '0xDA3CC73170aA5Bb7C0a9588e7690299df568d53D',
 };
 
 const RINKEBY_DEPLOYED = {
@@ -92,6 +104,8 @@ const RINKEBY_DEPLOYED = {
   TOS_ADDRESS: '0x73a54e5C054aA64C1AE7373C2B5474d8AFEa08bd',
   DOC_ADDRESS: '0xb109f4c20BDb494A63E32aA035257fBA0a4610A4',
   WTON_ADDRESS: '0x709bef48982Bbfd6F2D4Be24660832665F53406C',
+  AURA_ADDRESS: '0x14f9C438dD5008b1c269659AA3234cBcB431a844',
+  ETH_ADDRESS: '',
   DepositManager_ADDRESS: '0x57F5CD759A5652A697D539F1D9333ba38C615FC2',
   SeigManager_ADDRESS: '0x957DaC3D3C4B82088A4939BE9A8063e20cB2efBE',
   SwapProxy_ADDRESS: '0x8032d21F59CDB42C9c94a3A41524D4CCF0Cae96c',
@@ -107,7 +121,7 @@ const RINKEBY_DEPLOYED = {
   DividendPool_ADDRESS: '',
   DividendPoolProxy_ADDRESS: '',
   StakeTonControl_ADDRESS: '0xF049030A9D6faCbD6C76E08794CC751b1Dbaa072',
-  LockTOSDividend_ADDRESS: '0x3dE5e554a8E0fc8B5D0cf97bBdb5788D0Ba36E25',
+  LockTOSDividend_ADDRESS: '0xA1E633C746DA99dceB42D65A59D3e4B5672a6bA1',
   PublicSale_ADDRESS: '0x230f12eb4A37055dC0E11B3f7405c9EE94E71ee9',
   unstakeLayer2All: '0xeeEa9CA7a496651577ff1FD353570F8B70580955',
   PowerTONSwapper_ADDRESS: '',
@@ -125,6 +139,12 @@ const RINKEBY_DEPLOYED = {
     TOS_WTON_POOL: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
   },
   UniswapV3Factory: '0x1F98431c8aD98523631AE4a59f267346ea31F984',
+  ETH_WTON_Address: '',
+  TOS_WTON_Address: '',
+  TOS_ETH_Address: '',
+  DOC_TOS_Address: '',
+  TOS_AURA_Address: '',
+  DOC_ETH_Address: '',
 };
 
 export const DEPLOYED: DEPLOYED_TYPE =

@@ -31,7 +31,7 @@ type LaunchModal =
   | 'Launch_ConfirmTerms';
 
 type GeneralModal = 'calendar';
-type RewardModal = 'search';
+type RewardModal = 'search' | 'information' | 'confirmMulticall';
 export type ModalType =
   | StakingModal
   | DaoModal

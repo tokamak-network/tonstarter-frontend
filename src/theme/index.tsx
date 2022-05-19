@@ -119,14 +119,14 @@ export const MENU_STYLE = {
   menuListStyle: (props: MENU_PROPS) => ({
     zIndex: 10000,
     m: '0px',
-    minWidth: '157px',
+    minWidth: '155px',
     background: props.colorMode === 'light' ? '#ffffff' : '#222222',
   }),
   menuItemStyle: (props: MENU_PROPS) => ({
     h: '30px',
     color: props.colorMode === 'light' ? '#3e495c' : '#f3f4f1',
     fontSize: '12px',
-    w: '157px',
+    w: '155px',
     m: '0px',
     _hover: {background: 'transparent', color: 'blue.100'},
     _focus: {background: 'transparent'},
