@@ -25,6 +25,7 @@ export type ActiveProjectType = I_StarterProject & {
     startDepositTime: number;
     startExclusiveTime: number;
     startOpenSaleTime: number;
+    snapshot: number;
   };
   tokenName: string;
   tokenSymbolImage: string;

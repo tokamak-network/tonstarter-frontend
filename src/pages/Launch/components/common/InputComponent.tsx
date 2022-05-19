@@ -18,6 +18,19 @@ const InputComponentStyle = {
   },
 };
 
+const getMaxLength = (name: string) => {
+  switch (name) {
+    case 'projectName':
+      return 20;
+    case 'tokenSymbol':
+      return 8;
+    case 'tokenName':
+      return 8;
+    default:
+      return 'none';
+  }
+};
+
 const InputComponent: React.FC<InputComponentProps> = (props) => {
   const {name, nameDisplay, inputStyle, requirement} = props;
   const {errors, values} = useFormikContext<Projects['CreateProject']>();
@@ -71,7 +84,8 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
                   ? 'input-light'
                   : 'input-dark'
               }
-              maxLength={name === 'projectName' ? 20 : 'none'}
+              borderRadius={4}
+              maxLength={getMaxLength(name)}
               fontSize={13}
               {...field}
               id={name}

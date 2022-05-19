@@ -47,9 +47,6 @@ export const DetailTableProject: React.FC<DetailTableProjectProps> = (prop) => {
     },
   ];
 
-  console.log('--saleInfo--');
-  console.log(saleInfo);
-
   const projectDetailTitle2 = 'IDO Details';
   const projectDetailData2 = [
     {

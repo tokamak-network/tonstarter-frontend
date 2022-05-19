@@ -3,7 +3,6 @@ import {
   Flex,
   Input,
   InputGroup,
-  InputRightElement,
   Text,
   useColorMode,
   useTheme,
@@ -246,6 +245,7 @@ const ClaimRound = () => {
           flexDir={'column'}
           textAlign="center"
           border={middleStyle.border}
+          borderBottomWidth={0}
           lineHeight={'42px'}>
           <Flex
             h={'42px'}
@@ -260,7 +260,7 @@ const ClaimRound = () => {
               Date time
             </Text>
             <Text w={'281px'} borderRight={middleStyle.border}>
-              Token Allocation
+              Token Allocation ({values.tokenSymbol})
             </Text>
             <Text w={'281px'} borderRight={middleStyle.border}>
               Accumulated
@@ -288,13 +288,21 @@ const ClaimRound = () => {
                     h={'42px'}
                     fontSize={12}
                     color={colorMode === 'light' ? '#3d495d' : 'white.100'}
-                    fontWeight={600}>
-                    <Text w={'90px'}>
+                    fontWeight={600}
+                    bg={
+                      colorMode === 'light'
+                        ? index % 2 === 0
+                          ? 'none'
+                          : '#fafbfc'
+                        : 'none'
+                    }>
+                    <Text w={'90px'} borderBottom={middleStyle.border}>
                       {index > 8 ? `${index + 1}` : `0${index + 1}`}
                     </Text>
                     <Flex
                       w={'292px'}
                       borderX={middleStyle.border}
+                      borderBottom={middleStyle.border}
                       alignItems="center"
                       justifyContent={'center'}>
                       <Text
@@ -317,7 +325,8 @@ const ClaimRound = () => {
                       w={'281px'}
                       alignItems="center"
                       justifyContent={'center'}
-                      borderRight={middleStyle.border}>
+                      borderRight={middleStyle.border}
+                      borderBottom={middleStyle.border}>
                       <InputGroup>
                         <Input
                           h={`42px`}
@@ -331,6 +340,7 @@ const ClaimRound = () => {
                           fontSize={12}
                           placeholder={''}
                           borderRadius={0}
+                          borderWidth={0}
                           textAlign={'center'}
                           value={
                             inputVals !== undefined &&
@@ -367,7 +377,7 @@ const ClaimRound = () => {
                               return setInputVals(oldVals);
                             }
                           }}></Input>
-                        <InputRightElement h={'42px'} mr={'2px'}>
+                        {/* <InputRightElement h={'42px'} mr={'2px'}>
                           <Flex
                             fontSize={13}
                             color={
@@ -375,10 +385,13 @@ const ClaimRound = () => {
                             }>
                             <Text>{values.tokenSymbol}</Text>
                           </Flex>
-                        </InputRightElement>
+                        </InputRightElement> */}
                       </InputGroup>
                     </Flex>
-                    <Text w={'281px'} borderRight={middleStyle.border}>
+                    <Text
+                      w={'281px'}
+                      borderRight={middleStyle.border}
+                      borderBottom={middleStyle.border}>
                       {data.claimTokenAllocation === undefined
                         ? '-'
                         : commafy((tokenAcc += data.claimTokenAllocation))}
@@ -386,7 +399,8 @@ const ClaimRound = () => {
                     <Flex
                       w={'90px'}
                       alignItems="center"
-                      justifyContent="center">
+                      justifyContent="center"
+                      borderBottom={middleStyle.border}>
                       {index === 0 && claim.length === 1 ? (
                         <Flex
                           w={'24px'}

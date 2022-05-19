@@ -141,6 +141,11 @@ const MainScreen = () => {
           setSubmitting(false);
         }}>
         {({values, handleBlur, handleSubmit, isSubmitting, errors}) => {
+          if (Object.keys(errors).length !== 0) {
+            setDisable(true);
+          } else {
+            setDisable(false);
+          }
           return (
             <Form onSubmit={handleSubmit}>
               <Flex
@@ -153,7 +158,9 @@ const MainScreen = () => {
                     w={'160px'}
                     h={'45px'}
                     bg={'#00c3c4'}
+                    borderRadius={4}
                     color={'white.100'}
+                    fontSize={14}
                     _hover={{}}
                     disabled={step === 3}
                     mr={step === 1 ? '390px' : '558px'}
@@ -183,6 +190,7 @@ const MainScreen = () => {
                         mr={'12px'}
                         disabled={isSubmitting}
                         _hover={{}}
+                        borderRadius={4}
                         onClick={() => handleStep(false)}>
                         Prev
                       </Button>
@@ -197,6 +205,7 @@ const MainScreen = () => {
                         bg={isDisable ? '#gray.25' : 'blue.500'}
                         disabled={isDisable}
                         _hover={{}}
+                        borderRadius={4}
                         onClick={() => handleStep(true)}>
                         Next
                       </Button>
@@ -211,6 +220,7 @@ const MainScreen = () => {
                         bg={isDisableForStep2 ? '#gray.25' : 'blue.500'}
                         disabled={isDisableForStep2}
                         _hover={{}}
+                        borderRadius={4}
                         onClick={() => handleStep(true)}>
                         Next
                       </Button>
@@ -225,6 +235,7 @@ const MainScreen = () => {
                         bg={isDisableForStep3 ? '#gray.25' : 'blue.500'}
                         disabled={isDisableForStep3}
                         _hover={{}}
+                        borderRadius={4}
                         onClick={() => {
                           handleOnCofirm();
                         }}>

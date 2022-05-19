@@ -40,6 +40,7 @@ import {CustomTooltip} from 'components/Tooltip';
 import {stosMinimumRequirements} from '@Launch/const';
 import {NumberInputStep} from './NumberInputField';
 import momentTZ from 'moment-timezone';
+import moment from 'moment';
 
 export const MainTitle = (props: {
   leftTitle: string;
@@ -364,11 +365,31 @@ const SubTitle = (props: {
             placement={'top'}></CustomTooltip>
         </Flex>
       ) : (
-        <Text
-          color={'#7e8993'}
-          w={!leftTitle.includes('or Liquidity Pool') ? '101px' : '201px'}>
-          {leftTitle}
-        </Text>
+        <Flex pos={'relative'}>
+          <Text
+            color={'#7e8993'}
+            w={!leftTitle.includes('or Liquidity Pool') ? '101px' : '201px'}>
+            {leftTitle}
+          </Text>
+          {leftTitle === 'Snapshot' && (
+            <Flex
+              right={'20px'}
+              pos="absolute"
+              h={'100%'}
+              alignItems="center"
+              justifyContent={'center'}>
+              <CustomTooltip
+                toolTipW={232}
+                toolTipH={'44px'}
+                msg={[
+                  'Snapshot date must be set 1 week after',
+                  'Deployment completion',
+                ]}
+                placement={'top'}
+                important={true}></CustomTooltip>
+            </Flex>
+          )}
+        </Flex>
       )}
       {isEdit ? (
         isSecondColData ? (
@@ -403,9 +424,26 @@ const SubTitle = (props: {
               )}
             </Flex>
             {leftTitle !== 'Snapshot' ? (
-              <DoubleCalendarPop setDate={setDateRange}></DoubleCalendarPop>
+              <DoubleCalendarPop
+                setDate={setDateRange}
+                startTimeCap={
+                  leftTitle === 'Whitelist'
+                    ? tempVaultData.snapshot
+                      ? tempVaultData.snapshot + 1
+                      : publicVault.snapshot || moment().unix()
+                    : leftTitle === 'Public Round 1'
+                    ? tempVaultData.whitelistEnd
+                      ? tempVaultData.whitelistEnd + 1
+                      : publicVault.whitelistEnd || moment().unix()
+                    : tempVaultData.publicRound1
+                    ? tempVaultData.publicRound1 + 1
+                    : publicVault.publicRound1 || moment().unix()
+                }></DoubleCalendarPop>
             ) : (
-              <SingleCalendarPop setDate={setClaimDate}></SingleCalendarPop>
+              <SingleCalendarPop
+                setDate={setClaimDate}
+                // startTimeCap={moment().add(8, 'days').unix()}
+                startTimeCap={moment().unix()}></SingleCalendarPop>
             )}
           </Flex>
         ) : (
@@ -432,11 +470,22 @@ const SubTitle = (props: {
         </Flex>
       ) : (
         <Flex>
-          <Text textAlign={'right'}>
-            {String(rightTitle)?.includes('undefined')
-              ? '-'
-              : displayRightTitle(leftTitle, rightTitle)}
-          </Text>
+          {leftTitle === 'Address for receiving funds' ? (
+            <Tooltip label={rightTitle} placement={'top'}>
+              <Text textAlign={'right'}>
+                {String(rightTitle)?.includes('undefined')
+                  ? '-'
+                  : displayRightTitle(leftTitle, rightTitle)}
+              </Text>
+            </Tooltip>
+          ) : (
+            <Text textAlign={'right'}>
+              {String(rightTitle)?.includes('undefined')
+                ? '-'
+                : displayRightTitle(leftTitle, rightTitle)}
+            </Text>
+          )}
+
           {percent !== undefined && (
             <Text ml={'5px'} color={'#7e8993'} textAlign={'right'}>
               {`(${percent.toFixed(3).replace(/\.(\d\d)\d?$/, '.$1') || '-'}%)`}
@@ -523,14 +572,18 @@ const STOSTier = (props: {
               inputRef={inputRef}></InputField>
             <Text
               mx={'5px'}
+              maxW={'34px'}
               color={'#7e8993'}
               textAlign={'center'}
               lineHeight={'32px'}
               fontWeight={100}>
               {isNaN(percentVal)
                 ? '(- %)'
-                : `(${
-                    percentVal.toFixed(3).replace(/\.(\d\d)\d?$/, '.$1') || '-'
+                : // : `(${
+                  //     percentVal.toFixed(3).replace(/\.(\d\d)\d?$/, '.$1') || '-'
+                  // }%)`}
+                  `(${
+                    percentVal > 100 ? '-' : String(percentVal).split('.')[0]
                   }%)`}
             </Text>
           </Flex>
@@ -663,7 +716,7 @@ const PublicTokenDetail = (props: {
               isClosable: true,
               status: 'error',
             });
-            setIsConfirm(true);
+            return setIsConfirm(true);
           } else {
             requiredStos_1.style.border = noErrBorderStyle;
             setIsConfirm(false);
@@ -673,12 +726,12 @@ const PublicTokenDetail = (props: {
             requiredStos_2.style.border = errBorderStyle;
             toastMsg({
               title: 'sTOS minimum Requirement',
-              description: '1Tier needs at least 600sTOS',
+              description: '2Tier needs at least 1200sTOS',
               duration: 2000,
               isClosable: true,
               status: 'error',
             });
-            setIsConfirm(true);
+            return setIsConfirm(true);
           } else {
             requiredStos_2.style.border = noErrBorderStyle;
             setIsConfirm(false);
@@ -688,12 +741,12 @@ const PublicTokenDetail = (props: {
             requiredStos_3.style.border = errBorderStyle;
             toastMsg({
               title: 'sTOS minimum Requirement',
-              description: '1Tier needs at least 600sTOS',
+              description: '3Tier needs at least 2200sTOS',
               duration: 2000,
               isClosable: true,
               status: 'error',
             });
-            setIsConfirm(true);
+            return setIsConfirm(true);
           } else {
             requiredStos_3.style.border = noErrBorderStyle;
             setIsConfirm(false);
@@ -703,12 +756,12 @@ const PublicTokenDetail = (props: {
             requiredStos_4.style.border = errBorderStyle;
             toastMsg({
               title: 'sTOS minimum Requirement',
-              description: '1Tier needs at least 600sTOS',
+              description: '4Tier needs at least 6000sTOS',
               duration: 2000,
               isClosable: true,
               status: 'error',
             });
-            setIsConfirm(true);
+            return setIsConfirm(true);
           } else {
             requiredStos_4.style.border = noErrBorderStyle;
             setIsConfirm(false);

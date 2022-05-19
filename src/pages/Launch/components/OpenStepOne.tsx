@@ -3,6 +3,7 @@ import InputComponent from '@Launch/components/common/InputComponent';
 import StepTitle from '@Launch/components/common/StepTitle';
 import Line from '@Launch/components/common/Line';
 import MarkdownEditor from '@Launch/components/MarkdownEditor';
+import {useEffect} from 'react';
 
 const filedNameList = [
   {title: 'projectName', requirement: true},
@@ -21,6 +22,11 @@ const filedNameList = [
 
 const OpenStepOne = () => {
   const {colorMode} = useColorMode();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <Flex
       p={'35px'}

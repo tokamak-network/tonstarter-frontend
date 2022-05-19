@@ -9,7 +9,13 @@ import {useEffect, useState} from 'react';
 import {CustomButton} from 'components/Basic/CustomButton';
 import TokenDetail from './TokenDetail';
 
-const Middle = () => {
+type MiddleProps = {
+  isEdit: boolean;
+  setIsEdit: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const Middle: React.FC<MiddleProps> = (props) => {
+  const {isEdit, setIsEdit} = props;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {OpenCampaginDesign} = theme;
@@ -17,7 +23,6 @@ const Middle = () => {
   const [tableData, setTableData] = useState<VaultSchedule[]>([]);
 
   const {selectedVaultDetail} = useVaultSelector();
-  const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isConfirm, setIsConfirm] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();

@@ -104,7 +104,9 @@ const ActiveProjectContainer: React.FC<{
   useEffect(() => {
     const nowTimeStamp = moment().unix();
     const checkStep =
-      project.timeStamps.endAddWhiteTime > nowTimeStamp
+      project.timeStamps.snapshot > nowTimeStamp
+        ? 'Snapshot Soon'
+        : project.timeStamps.endAddWhiteTime > nowTimeStamp
         ? 'Whitelisting'
         : project.timeStamps.endExclusiveTime > nowTimeStamp
         ? 'Public Round 1'

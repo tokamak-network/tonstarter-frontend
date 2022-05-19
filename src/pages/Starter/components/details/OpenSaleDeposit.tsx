@@ -21,6 +21,7 @@ import {convertNumber} from 'utils/number';
 import {useBlockNumber} from 'hooks/useBlock';
 import {SaleInfo} from '@Starter/types';
 import {useERC20} from '@Starter/hooks/useERC20';
+import {useModal} from 'hooks/useModal';
 
 type DepositContainerProp = {
   inputTonBalance: string;
@@ -40,6 +41,7 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
     // wtonAllowance,
     // callTonDecreaseAllowance,
   } = useERC20(saleContractAddress);
+  const {openAnyModal} = useModal();
 
   // const dispatch = useDispatch();
   // const {colorMode} = useColorMode();
@@ -67,12 +69,16 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
                 Number(inputTonBalance),
                 Number(tonBalance.replaceAll(',', '')),
               ) &&
-              starterActions.deposit({
-                address: saleContractAddress,
-                account,
-                library,
-                amount: inputTonBalance,
-                tokenType: 'TON',
+              openAnyModal('Launch_ConfirmTerms', {
+                from: 'starter',
+                func: () =>
+                  starterActions.deposit({
+                    address: saleContractAddress,
+                    account,
+                    library,
+                    amount: inputTonBalance,
+                    tokenType: 'TON',
+                  }),
               });
           }}></CustomButton>
         {/* <Box
@@ -104,12 +110,16 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
             Number(inputTonBalance),
             Number(wtonBalance.replaceAll(',', '')),
           ) &&
-          starterActions.deposit({
-            address: saleContractAddress,
-            account,
-            library,
-            amount: inputTonBalance,
-            tokenType: 'WTON',
+          openAnyModal('Launch_ConfirmTerms', {
+            from: 'starter',
+            func: () =>
+              starterActions.deposit({
+                address: saleContractAddress,
+                account,
+                library,
+                amount: inputTonBalance,
+                tokenType: 'TON',
+              }),
           })
         }></CustomButton>
       {/* <Box
@@ -245,15 +255,25 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
             (Number(totalDeposit.replaceAll(',', '')) /
               (Number(totalAllocation.replaceAll(',', '')) / tokenExRatio)) *
               100,
-          ).split('.')[0] +
-          '.' +
+          ).split('.')[0] ||
           String(
             (Number(totalDeposit.replaceAll(',', '')) /
               (Number(totalAllocation.replaceAll(',', '')) / tokenExRatio)) *
               100,
-          )
-            .split('.')[1]
-            .slice(0, 1);
+          ) +
+            '.' +
+            String(
+              (Number(totalDeposit.replaceAll(',', '')) /
+                (Number(totalAllocation.replaceAll(',', '')) / tokenExRatio)) *
+                100,
+            )
+              .split('.')[1]
+              .slice(0, 1) ||
+          String(
+            (Number(totalDeposit.replaceAll(',', '')) /
+              (Number(totalAllocation.replaceAll(',', '')) / tokenExRatio)) *
+              100,
+          );
         setProgress(percent);
       }
     }

@@ -31,6 +31,7 @@ import {LoadingComponent} from 'components/Loading';
 import {TokenImage} from '../Admin/components/TokenImage';
 import {ApproveModal} from './components/ApproveModal';
 import moment from 'moment';
+import ConfirmTermsModal from '@Launch/components/modals/ConfirmTerms';
 
 export const StarterDetail = () => {
   const {id}: {id: string} = useParams();
@@ -286,6 +287,7 @@ export const StarterDetail = () => {
         </Flex>
       </Flex>
       <ApproveModal></ApproveModal>
+      <ConfirmTermsModal></ConfirmTermsModal>
     </Flex>
   );
 };

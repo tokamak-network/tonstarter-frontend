@@ -20,6 +20,7 @@ import {Projects, VaultCommon} from '@Launch/types';
 import {useFormikContext} from 'formik';
 import Line from '@Launch/components/common/Line';
 import {CustomButton} from 'components/Basic/CustomButton';
+import {useToast} from 'hooks/useToast';
 
 const VaultBasicSetting = () => {
   const {data} = useAppSelector(selectModalType);
@@ -30,6 +31,9 @@ const VaultBasicSetting = () => {
   const [nameVal, setNameVal] = useState('');
   const [tokenAllocatonVal, setTokenAllocatonVal] = useState(0);
   const [adminAddressVal, setAdminAddressVal] = useState('');
+  const [btnDisable, setBtnDisable] = useState<boolean>(false);
+
+  const {toastMsg} = useToast();
 
   useEffect(() => {
     if (data.data) {
@@ -41,6 +45,33 @@ const VaultBasicSetting = () => {
       setAdminAddressVal(adminAddress !== '' ? adminAddress : values.owner);
     }
   }, [data, values.owner]);
+
+  useEffect(() => {
+    if (nameVal === undefined) {
+      return;
+    }
+    const totalAllocation = values.vaults.reduce((acc, cur) => {
+      if (cur.vaultName === nameVal.replaceAll('*', '').replaceAll(' ', '')) {
+        return acc;
+      }
+      return acc + cur.vaultTokenAllocation;
+    }, 0);
+    if (
+      values.totalSupply &&
+      totalAllocation + Number(tokenAllocatonVal) > values.totalSupply
+    ) {
+      setBtnDisable(true);
+      toastMsg({
+        title: 'Token allocation is over total supply amount',
+        description: 'The sum of token allocation has reached the total supply',
+        duration: 2000,
+        status: 'error',
+        isClosable: true,
+      });
+    } else {
+      setBtnDisable(false);
+    }
+  }, [tokenAllocatonVal, nameVal, values, toastMsg]);
 
   if (!data.data) {
     return null;
@@ -158,6 +189,7 @@ const VaultBasicSetting = () => {
           <Box as={Flex} flexDir="column" alignItems="center" pt={5}>
             <CustomButton
               text={'Edit'}
+              isDisabled={btnDisable}
               func={() => {
                 editVault();
                 handleCloseModal();

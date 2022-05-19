@@ -68,19 +68,17 @@ function validateFormikValues(
   //   setDisableForStep2(false);
   // }
 
-  if (values.owner) {
-    try {
-      const result = toChecksumAddress(String(values.owner));
-      console.log('--values.owner--');
-      console.log(result);
-      if (!result) {
-        return {owner: 'err'};
-      }
-    } catch (e) {
-      // console.log(e);
-      return {owner: 'err'};
-    }
-  }
+  // if (values.owner) {
+  //   try {
+  //     const result = toChecksumAddress(String(values.owner));
+  //     if (!result) {
+  //       return {owner: 'err'};
+  //     }
+  //   } catch (e) {
+  //     // console.log(e);
+  //     return {owner: 'err'};
+  //   }
+  // }
 }
 
 export default validateFormikValues;
