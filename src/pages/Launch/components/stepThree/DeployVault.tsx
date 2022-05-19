@@ -691,7 +691,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
 
               const iface = new ethers.utils.Interface(LPrewardVaultAbi.abi);
 
-              const result = iface.parseLog(logs[9]);
+              const result = iface.parseLog(logs.length-1f);
               const {args} = result;
 
               setFieldValue(
