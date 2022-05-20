@@ -30,6 +30,7 @@ import {
   ListingPools,
   ListingRewards,
 } from './Admin';
+import {MyAirdrop} from './Admin/MyAirdrop';
 import {fetchTosStakes} from '@Dao/dao.reducer';
 import OpenCampagin from '@Launch/index';
 import MainScreen from '@Launch/MainScreen';
@@ -191,6 +192,7 @@ export const Router: FC<RouterProps> = () => {
           <Route exact path="/admin/listproject" component={ListingProjects} />
           <Route exact path="/admin/listpools" component={ListingPools} />
           <Route exact path="/admin/listrewards" component={ListingRewards} />
+          <Route exact path="/myairdrop" component={MyAirdrop} />
 
           <Route exact path={`/starter/:id`} component={StarterDetail} />
           <Route exact path={`/launch`} component={OpenCampagin} />

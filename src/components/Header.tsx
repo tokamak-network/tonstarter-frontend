@@ -21,6 +21,7 @@ import {selectTxType} from 'store/tx.reducer';
 import {useDispatch} from 'react-redux';
 import {openModal} from 'store/modal.reducer';
 import {Menu, MenuButton, MenuList, MenuItem} from '@chakra-ui/react';
+
 type HeaderProps = {
   walletopen: () => void;
   account: string | undefined | null;
@@ -38,6 +39,8 @@ export const Header: React.FC<HeaderProps> = (props) => {
   const toggle = () => setIsOpen(!isOpen);
 
   const match = useRouteMatch('/');
+
+  console.log('match: ', match);
 
   return (
     <NavBarContainer {...props}>
@@ -204,7 +207,9 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
                 ? 'white.100'
                 : 'white.100'
             }
-            onClick={airdropModalOpen}
+            onClick={() =>
+              (window.location.pathname = `${match?.path}myairdrop`)
+            }
             fontWeight={500}
             fontSize={'15px'}
             _hover={{}}
