@@ -42,6 +42,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const {account, library} = useActiveWeb3React();
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
+const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
 
   const [hardcap, setHardcap] = useState<number>(0)
 
@@ -86,7 +87,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
     } else {
       setIsAdmin(false);
     }
-  }, [account, project]);
+  }, [account, project, vault.vaultAddress,transactionType, blockNumber]);
 
   useEffect(()=> {
     async function getHardCap() {
@@ -94,10 +95,14 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
         return;
       }
       const hardCapCalc = await PublicSaleVaul.hardcapCalcul();
+      const adminWithdraw = await PublicSaleVaul.adminWithdraw(); 
+      console.log(adminWithdraw);
+           
+      setFundWithdrew(adminWithdraw)
       setHardcap(Number(hardCapCalc))
     } 
     getHardCap()
-  },[])
+  },[account, project,vault.vaultAddress,transactionType, blockNumber])
 
   const sendTOS = async () => {
     if (account === null || account === undefined || library === undefined) {
@@ -178,15 +183,21 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
               Token
             </Text>
             {vault.isDeployed ? (
-              <Text
-                fontFamily={theme.fonts.fld}
-                fontSize={'15px'}
-                color={themeDesign.headerFont[colorMode]}
-                letterSpacing={'1.3px'}>
-                {Number(vault.vaultTokenAllocation).toLocaleString()}
-                {` `}
+              <Flex>
+              <Text letterSpacing={'1.3px'} fontSize={'13px'} mr={'5px'}>
+                {commafy(Number(vault.vaultTokenAllocation))}{' '}
                 {project.tokenSymbol}
               </Text>
+              <Text letterSpacing={'1.3px'} fontSize={'13px'} color={'#7e8993'}>
+                {(
+                  (vault.vaultTokenAllocation / project.totalTokenAllocation) *
+                  100
+                )
+                  .toString()
+                  .match(/^\d+(?:\.\d{0,2})?/)}
+                %
+              </Text>
+            </Flex>
             ) : (
               <></>
             )}
@@ -399,7 +410,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                         mt={'5px'}
                         bg={'#257eee'}
                         color={'#ffffff'}
-                        // isDisabled={!isAdmin || vault.publicRound2End > moment().unix() || hardcap !== 0}
+                        isDisabled={!isAdmin || vault.publicRound2End > moment().unix() || hardcap === 0}
                         _disabled={{
                           color: colorMode === 'light' ? '#86929d' : '#838383',
                           bg: colorMode === 'light' ? '#e9edf1' : '#353535',
@@ -426,6 +437,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                         }
                         onClick={() => sendTOS()}>
                         Send TOS to Initial Liquidity Vault & Receive Funds
+                      
                       </Button>
                     </>
                   ) : (

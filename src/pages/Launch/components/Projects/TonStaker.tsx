@@ -16,6 +16,7 @@ import {PublicPageTable} from './PublicPageTable';
 import {Contract} from '@ethersproject/contracts';
 import * as TOSStakerAbi from 'services/abis/TOSStakerAbi.json';
 import {ethers} from 'ethers';
+import commafy from 'utils/commafy';
 import momentTZ from 'moment-timezone';
 import moment from 'moment';
 import * as TONStakerAbi from 'services/abis/TONStakerAbi.json';
@@ -162,15 +163,15 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
               Token
             </Text>
             {vault.isDeployed ? (
-              <Text
-                fontFamily={theme.fonts.fld}
-                fontSize={'15px'}
-                color={themeDesign.headerFont[colorMode]}
-                letterSpacing={'1.3px'}>
-                {Number(vault.vaultTokenAllocation).toLocaleString()}
-                {` `}
+              <Flex>
+              <Text letterSpacing={'1.3px'} fontSize={'13px'} mr={'5px'}>
+                {commafy(Number(vault.vaultTokenAllocation))}{' '}
                 {project.tokenSymbol}
               </Text>
+              <Text letterSpacing={'1.3px'} fontSize={'13px'} color={'#7e8993'}>
+               {((vault.vaultTokenAllocation/project.totalTokenAllocation)*100).toString()
+            .match(/^\d+(?:\.\d{0,2})?/)}%</Text>
+            </Flex>
             ) : (
               <></>
             )}

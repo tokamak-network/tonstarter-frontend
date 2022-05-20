@@ -249,13 +249,18 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
             Token
           </Text>
           {/* Need to make TON changeable. */}
+          <Flex alignItems={'center'}>
           <Text
             fontFamily={theme.fonts.fld}
-            fontSize={'15px'}
+            fontSize={'13px'}
             color={themeDesign.headerFont[colorMode]}
-            letterSpacing={'1.3px'}>
+            letterSpacing={'1.3px'} mr={'5px'}>
             {commafy(Number(vault.vaultTokenAllocation))} {project.tokenSymbol}
           </Text>
+          <Text letterSpacing={'1.3px'} fontSize={'13px'} color={'#7e8993'}>
+               {((vault.vaultTokenAllocation/project.totalTokenAllocation)*100).toString()
+            .match(/^\d+(?:\.\d{0,2})?/)}%</Text>
+        </Flex>
         </GridItem>
         <GridItem
           border={themeDesign.border[colorMode]}

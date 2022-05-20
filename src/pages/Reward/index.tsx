@@ -167,14 +167,15 @@ export const Reward = () => {
       pollingInterval: ms`2s`,
     },
   );  
-    
+  
+
   const positionsByPool = usePositionByPoolQuery(
     {pool_id: poolAddresses},
     {
       pollingInterval: 2000,
     },
   );
-
+  
   useEffect(() => {
     const filteredData = filterDatas();
     setOrderedData(filteredData);
