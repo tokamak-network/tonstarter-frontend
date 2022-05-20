@@ -20,6 +20,7 @@ const ProjectSchema = Yup.object().shape({
       }
     }),
   tokenSymbol: Yup.string().required('Required').max(8),
+  tokenSymbolImage: Yup.string().url(),
   totalSupply: Yup.number().required('Required'),
   website: Yup.string().url(),
   medium: Yup.string().url(),

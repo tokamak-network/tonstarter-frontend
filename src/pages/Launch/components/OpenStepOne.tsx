@@ -4,6 +4,9 @@ import StepTitle from '@Launch/components/common/StepTitle';
 import Line from '@Launch/components/common/Line';
 import MarkdownEditor from '@Launch/components/MarkdownEditor';
 import {useEffect} from 'react';
+import {TokenImage} from '@Admin/components/TokenImage';
+import {useFormikContext} from 'formik';
+import {Projects} from '@Launch/types';
 
 const filedNameList = [
   {title: 'projectName', requirement: true},
@@ -22,6 +25,7 @@ const filedNameList = [
 
 const OpenStepOne = () => {
   const {colorMode} = useColorMode();
+  const {values} = useFormikContext<Projects['CreateProject']>();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -51,6 +55,24 @@ const OpenStepOne = () => {
         mb={'20px'}>
         {filedNameList.map(
           (fieldName: {title: string; requirement: boolean}, index: number) => {
+            console.log(fieldName);
+            if (fieldName.title === 'tokenSymbolImage') {
+              return (
+                <Flex w={'327px'}>
+                  <Box w={'280px'}>
+                    <InputComponent
+                      name={fieldName.title}
+                      placeHolder={`input ${fieldName.title}`}
+                      key={fieldName.title}
+                      requirement={fieldName.requirement}></InputComponent>
+                  </Box>
+                  <Box mt={'11px'} ml={'10px'}>
+                    <TokenImage
+                      imageLink={values.tokenSymbolImage}></TokenImage>
+                  </Box>
+                </Flex>
+              );
+            }
             return (
               <GridItem w={'327px'}>
                 <InputComponent
