@@ -96,6 +96,7 @@ const MAINNET_DEPLOYED = {
   DOC_TOS_Address: '0x369Bca127B8858108536B71528AB3bEfa1DEb6Fc',
   TOS_AURA_Address: '0xBdDD3a50Bd2AFd27aED05Cc9FE1c8D67fCAA3218',
   DOC_ETH_Address: '0xDA3CC73170aA5Bb7C0a9588e7690299df568d53D',
+  ProjectTokenProxy: ''
 };
 
 const RINKEBY_DEPLOYED = {
@@ -145,6 +146,7 @@ const RINKEBY_DEPLOYED = {
   DOC_TOS_Address: '',
   TOS_AURA_Address: '',
   DOC_ETH_Address: '',
+  ProjectTokenProxy: '0x48683aC8ab065A113323BdB5738a267D7FF7F0d6'
 };
 
 export const DEPLOYED: DEPLOYED_TYPE =

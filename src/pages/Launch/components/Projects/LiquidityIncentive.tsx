@@ -161,7 +161,6 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
         return;
       }
       const signer = getSigner(library, account);
-      const poolsData: any = await views.getPoolData(library);
       const rewardData = await views.getRewardData();
       if (rewardData) {
         const res = await Promise.all(

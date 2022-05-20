@@ -225,7 +225,8 @@ const CreateRewardsProgramModal = () => {
                 border: 'solid 1px #2a72e5',
                 color: '#fff',
               }}
-              onClick={() => data?.data?.createRewardFirst()}>
+              onClick={() => {data?.data?.createRewardFirst()
+                handleCloseModal()}}>
               Confirm
             </Button>
           </Box>

@@ -44,5 +44,6 @@ export type DEPLOYED_TYPE = {
   TOS_ETH_Address:string;
   DOC_TOS_Address:string;
   TOS_AURA_Address:string;
-  DOC_ETH_Address:string
+  DOC_ETH_Address:string;
+  ProjectTokenProxy:string;
 };

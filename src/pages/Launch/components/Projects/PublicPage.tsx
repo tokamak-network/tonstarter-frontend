@@ -96,8 +96,7 @@ const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
       }
       const hardCapCalc = await PublicSaleVaul.hardcapCalcul();
       const adminWithdraw = await PublicSaleVaul.adminWithdraw(); 
-      console.log(adminWithdraw);
-           
+      
       setFundWithdrew(adminWithdraw)
       setHardcap(Number(hardCapCalc))
     } 
@@ -410,7 +409,7 @@ const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
                         mt={'5px'}
                         bg={'#257eee'}
                         color={'#ffffff'}
-                        isDisabled={!isAdmin || vault.publicRound2End > moment().unix() || hardcap === 0}
+                        isDisabled={!isAdmin || vault.publicRound2End > moment().unix() || hardcap === 0 || fundWithdrew=== true}
                         _disabled={{
                           color: colorMode === 'light' ? '#86929d' : '#838383',
                           bg: colorMode === 'light' ? '#e9edf1' : '#353535',

@@ -461,7 +461,9 @@ export const Condition1: React.FC<Condition1> = ({
           fontFamily={theme.fonts.fld}
           fontSize={'14px'}
           letterSpacing={'0.14px'}>
-          {(Number(tosBalance).toLocaleString())}
+          {(Number(tosBalance).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+      }))}
         </Text>
       </GridItem>
       <GridItem
@@ -662,7 +664,9 @@ export const Condition2: React.FC<Condition2> = ({
           {commafy(Number(projTokenBalance))}
         </Text>
         <Text textAlign={'center'} w={'35.4%'} fontFamily={theme.fonts.fld}>
-          {commafy(Number(tosBalance))}
+          {Number(tosBalance).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+      })}
         </Text>
       </GridItem>
       <GridItem
@@ -829,7 +833,9 @@ export const Condition3: React.FC<Condition3> = ({
           {commafy(Number(projTokenBalance))}
         </Text>
         <Text textAlign={'center'} w={'35.4%'} fontFamily={theme.fonts.fld}>
-          {commafy(Number(tosBalance))}
+          {Number(tosBalance).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+      })}
         </Text>
       </GridItem>
       <GridItem

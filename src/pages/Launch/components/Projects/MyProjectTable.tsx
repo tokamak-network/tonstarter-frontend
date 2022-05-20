@@ -11,6 +11,12 @@ import {
   Tooltip,
   Button,
 } from '@chakra-ui/react';
+import store from 'store';
+import {toastWithReceipt} from 'utils';
+import {setTxPending} from 'store/tx.reducer';
+import {openToast} from 'store/app/toast.reducer';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectTransactionType} from 'store/refetch.reducer';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {Link, useRouteMatch} from 'react-router-dom';
 import {FC, useRef} from 'react';
@@ -31,6 +37,12 @@ import {
 } from 'react-table';
 import {number} from 'prop-types';
 import saveToAdmin from '@Launch/utils/saveToAdmin';
+import {Contract} from '@ethersproject/contracts';
+import {getSigner} from 'utils/contract';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import {DEPLOYED, BASE_PROVIDER} from 'constants/index';
+import * as ProjectTokenABI from 'services/abis/ProjectToken.json'
+const {ProjectTokenProxy} = DEPLOYED
 
 type MyProjectTableProps = {
   columns: Column[];
@@ -69,7 +81,59 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
   const {url} = match;
   const {colorMode} = useColorMode();
   const theme = useTheme();
+  const {account, library, chainId} = useActiveWeb3React();
+
   const focusTarget = useRef<any>([]);
+  const ProjectToken = new Contract(
+    ProjectTokenProxy, ProjectTokenABI.abi, library
+  )
+
+  const mintNFT = async(project:any) => {
+    if (account === null || account === undefined || library === undefined) {
+      return;
+    }
+    
+const tokenURI = {
+  'name': project.projectName,
+  'description': project.description,
+  'external_url': project.website,
+  'image': project.tokenSymbolImage,
+  'attributes': project.vaults.map((vault:any)=>{
+    return {
+      'trait_type': vault.vaultName,
+      'value': vault.vaultAddress
+    }
+  })
+}
+const stringURI = JSON.stringify(tokenURI);
+console.log(`${stringURI}`);
+
+
+    const signer = getSigner(library, account);
+    try{
+      const receipt = await ProjectToken.connect(signer).mint(`${stringURI}`);
+      store.dispatch(setTxPending({tx: true}));
+      if (receipt) {
+        toastWithReceipt(receipt, setTxPending, 'Launch');
+      }
+    }
+    catch (e) {
+      store.dispatch(setTxPending({tx: false}));
+      store.dispatch(
+        //@ts-ignore
+        openToast({
+          payload: {
+            status: 'error',
+            title: 'Tx fail to send',
+            description: `something went wrong`,
+            duration: 5000,
+            isClosable: true,
+          },
+        }),
+      );
+    }
+  }
+
   if (isLoading === true || data.length === 0) {
     return (
       <Flex>
@@ -191,6 +255,7 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                       action,
                       key,
                       project,
+                      listed
                     } = cell.row.original;
                     const type = cell.column.id;
                     return (
@@ -248,22 +313,61 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                             .unix(saleDate[1])
                             .format('YYYY.MM.DD')}`}
                         {type === 'status' &&
-                          (status === true ? 'Deployed' : 'Not Deployed')}
+                          (status === true ? listed === true? 'Listed on Tonstarter': 'Deployed' : 'Not Deployed')}
                         {type === 'action' &&
-                          (status === true ? (
-                            <Button
-                              w={'136px'}
-                              h={'25px'}
-                              bg={'#257eee'}
-                              color={'#ffffff'}
-                              fontWeight={'normal'}
-                              fontSize={'12px'}
-                              _hover={{bg: '#257eee'}}
-                              _active={{bg: '#257eee'}}
-                              onClick={() => saveToAdmin(project, key)}>
-                              List on TONStarter
-                            </Button>
-                          ) : status === false ? (
+                          (status === true ? listed === true? (
+                            <Flex>
+                            <Text
+                            w={'136px'}
+                            h={'25px'}
+                            borderRadius={'4px'}
+                            bg={colorMode === 'light'? '#e9edf1': '#353535'}
+                            justifyContent={'center'}
+                            alignItems={'center'}
+                            pt={'4px'}
+                            mr={'10px'}>
+                            Done
+                          </Text>
+                          <Button
+                            w={'136px'}
+                            h={'25px'}
+                            bg={'#257eee'}
+                            color={'#ffffff'}
+                            fontWeight={'normal'}
+                            fontSize={'12px'}
+                            _hover={{bg: '#257eee'}}
+                            _active={{bg: '#257eee'}}
+                            onClick={() => mintNFT(project)}>
+                            Mint Project NFT
+                          </Button>
+                          </Flex>
+                          ) :
+                          (<Flex> <Button
+                            w={'136px'}
+                            h={'25px'}
+                            bg={'#257eee'}
+                            color={'#ffffff'}
+                            fontWeight={'normal'}
+                            fontSize={'12px'}
+                            _hover={{bg: '#257eee'}}
+                            _active={{bg: '#257eee'}}
+                            mr={'10px'}
+                            onClick={() => saveToAdmin(project, key)}>
+                            List on TONStarter
+                          </Button>
+                          <Button
+                            w={'136px'}
+                            h={'25px'}
+                            bg={'#257eee'}
+                            color={'#ffffff'}
+                            fontWeight={'normal'}
+                            fontSize={'12px'}
+                            _hover={{bg: '#257eee'}}
+                            _active={{bg: '#257eee'}}
+                            onClick={() => mintNFT(project)}>
+                            Mint Project NFT
+                          </Button>
+                          </Flex>) :
                             <Link to={`${url}/${key}`}>
                               <Button
                                 w={'136px'}
@@ -278,18 +382,7 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                                 Edit
                               </Button>
                             </Link>
-                          ) : (
-                            <Text
-                              w={'136px'}
-                              h={'25px'}
-                              borderRadius={'4px'}
-                              bg={'#e9edf1'}
-                              justifyContent={'center'}
-                              alignItems={'center'}
-                              pt={'4px'}>
-                              Done
-                            </Text>
-                          ))}
+                          ) }
                       </chakra.td>
                     );
                   })}
