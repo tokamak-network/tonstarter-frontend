@@ -48,7 +48,6 @@ export const Router: FC<RouterProps> = () => {
   const dispatch = useAppDispatch();
   const [walletState, setWalletState] = useState<string>('');
   const {onOpen, isOpen: isModalOpen, onClose} = useDisclosure();
-  // const {account, chainId, library, deactivate} = useWeb3React();
   const {account, chainId, library, deactivate} = useActiveWeb3React();
 
   //@ts-ignore

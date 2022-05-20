@@ -14,6 +14,8 @@ import MyProjects from '@Launch/components/MyProjects';
 import LaunchPageBackground from '../../assets/banner/LaunchPageBackground.png';
 import {useModal} from 'hooks/useModal';
 import ConfirmTermsModal from './components/modals/ConfirmTerms';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import {injected} from 'connectors';
 
 const LaunchPage = () => {
   const [showAllProjects, setShowAllProjects] = useState<boolean>(true);
@@ -25,6 +27,7 @@ const LaunchPage = () => {
     params: {id},
   } = match;
   const {url} = match;
+  const {active, activate, connector} = useActiveWeb3React();
 
   const themeDesign = {
     border: {
@@ -104,6 +107,12 @@ const LaunchPage = () => {
               height={'38px'}
               padding={'12px 28px 10px'}
               onClick={() => {
+                if (!window.web3) {
+                  return window.open('https://metamask.io/download/');
+                }
+                if (!active) {
+                  return activate(injected);
+                }
                 openAnyModal('Launch_ConfirmTerms', {
                   from: 'launch',
                 });
