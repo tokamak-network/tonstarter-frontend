@@ -423,7 +423,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools, setSelectedPoolCreat
             border={themeDesign.border[colorMode]}
             fontSize={'13px'}
             value={amount}
-            onChange={(e) => {
+            onChange={(e: { target: { value: any; }; }) => {
               const {value} = e.target;
               setAmount(value.replace(/^0*([^0]\d*\.\d{1,2}).*/g, "$1"));
             }}

@@ -124,12 +124,11 @@ export const Reward = () => {
     async function fetchProjectsData() {
       const poolsData: any = await views.getPoolData(library);
       const rewardData = await views.getRewardData();
-
       setPoolsFromAPI(poolsData);
       const poolArray: any = [];
       if (poolsData) {
         poolsData.map((pool: any) => {
-          poolArray.push(pool.poolAddress);
+          poolArray.push(pool.poolAddress.toLowerCase());
         });
       }
 
@@ -194,7 +193,7 @@ export const Reward = () => {
       if (pols !== undefined) {
         const poooools = pols.map((data: any) => {
           const APIPool = poolsFromAPI.find(
-            (pol: any) => pol.poolAddress === data.id,
+            (pol: any) => pol.poolAddress.toLowerCase() === data.id.toLowerCase(),
           );
           const token0Image = APIPool.token0Image;
           const token1Image = APIPool.token1Image;
@@ -654,7 +653,6 @@ export const Reward = () => {
                             colorMode === 'light' ? '#ffffff' : '#222222'
                           }>
                           {positions.map((item: any, index) => {
-                            console.log(item);
 
                             const status = getStatus(item);
                             return (
@@ -889,7 +887,7 @@ export const Reward = () => {
                     cursor={'pointer'}
                     color={'#0070ed'}
                     fontSize={'13px'}
-                    onClick={(e) => {
+                    onClick={(e: any) => {
                       e.preventDefault();
                       window.open(
                         selectedPool === undefined
@@ -910,7 +908,7 @@ export const Reward = () => {
                     cursor={'pointer'}
                     color={'#0070ed'}
                     fontSize={'13px'}
-                    onClick={(e) => {
+                    onClick={(e: { preventDefault: () => void; }) => {
                       e.preventDefault();
                       window.open(
                         selectedPoolCreate === undefined
