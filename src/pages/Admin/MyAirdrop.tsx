@@ -58,16 +58,20 @@ export const MyAirdrop = () => {
       dark: '#9d9ea5',
     },
     bg: {
-      light: 'white.100',
+      light: '#fff',
       dark: 'black.200',
     },
     border: {
-      light: 'solid 1px #f4f6f8',
-      dark: 'solid 1px #373737',
+      light: 'solid 1px #d7d9df',
+      dark: 'solid 1px rgba(96, 97, 112, 0.16)',
     },
     borderRight: {
       light: 'solid 1px #f4f6f8',
-      dark: 'solid 1px #363636',
+      dark: 'solid 1px #323232',
+    },
+    headerBorder: {
+      light: 'none',
+      dark: 'solid 1px #535353',
     },
     fontAddressColor: {
       light: 'black.300',
@@ -88,7 +92,6 @@ export const MyAirdrop = () => {
   useEffect(() => {
     async function getTosBalance() {
       const res = await getUserTOSStaked({account, library});
-      console.log('res: ', res);
       if (res !== undefined) {
         setUserStakedTos(res);
       }
@@ -147,9 +150,13 @@ export const MyAirdrop = () => {
       />
       <Flex
         my={'60px'}
+        bg={themeDesign.bg[colorMode]}
         p={'15px 35px'}
         borderRadius={'10px'}
-        border={themeDesign.borderRight[colorMode]}>
+        height={'90px'}
+        border={themeDesign.headerBorder[colorMode]}
+        style={{backdropFilter: 'blur(8px)'}}
+        boxShadow={'0 1px 1px 0 rgba(96, 97, 112, 0.16)'}>
         <Flex
           flexDir="column"
           alignItems="center"
@@ -157,7 +164,7 @@ export const MyAirdrop = () => {
           borderRight={themeDesign.borderRight[colorMode]}
           px="55px">
           <Text
-            fontSize="0.750em"
+            fontSize={'13px'}
             color="#86929d"
             fontFamily={theme.fonts.roboto}>
             Address
@@ -177,18 +184,28 @@ export const MyAirdrop = () => {
           borderRight={themeDesign.borderRight[colorMode]}
           px="55px">
           <Text
-            fontSize="0.750em"
+            fontSize={'13px'}
             color="#86929d"
             fontFamily={theme.fonts.roboto}>
             My Staked TON
           </Text>
-          <Text
-            fontFamily={theme.fonts.roboto}
-            fontWeight={'bold'}
-            fontSize={'20px'}
-            color={themeDesign.fontColorTitle[colorMode]}>
-            {userStakedTon} TON
-          </Text>
+          <Flex alignItems={'baseline'}>
+            <Text
+              fontFamily={theme.fonts.roboto}
+              fontWeight={'bold'}
+              fontSize={'20px'}
+              mr={'4px'}
+              color={themeDesign.fontColorTitle[colorMode]}>
+              {userStakedTon}
+            </Text>
+            <Text
+              fontFamily={theme.fonts.roboto}
+              fontSize={'13px'}
+              color={themeDesign.fontColorTitle[colorMode]}
+              fontWeight={'bold'}>
+              TON
+            </Text>
+          </Flex>
         </Flex>
         <Flex
           flexDir="column"
@@ -197,18 +214,28 @@ export const MyAirdrop = () => {
           borderRight={themeDesign.borderRight[colorMode]}
           px="55px">
           <Text
-            fontSize="0.750em"
+            fontSize={'13px'}
             color="#86929d"
             fontFamily={theme.fonts.roboto}>
             My Staked TOS
           </Text>
-          <Text
-            fontFamily={theme.fonts.roboto}
-            fontWeight={'bold'}
-            fontSize={'20px'}
-            color={themeDesign.fontColorTitle[colorMode]}>
-            {userStakedTos} TOS
-          </Text>
+          <Flex alignItems={'baseline'}>
+            <Text
+              fontFamily={theme.fonts.roboto}
+              fontWeight={'bold'}
+              fontSize={'20px'}
+              mr={'4px'}
+              color={themeDesign.fontColorTitle[colorMode]}>
+              {userStakedTos}
+            </Text>
+            <Text
+              fontFamily={theme.fonts.roboto}
+              fontWeight={'bold'}
+              fontSize={'13px'}
+              color={themeDesign.fontColorTitle[colorMode]}>
+              TOS
+            </Text>
+          </Flex>
         </Flex>
         <Flex
           flexDir="column"
@@ -216,18 +243,28 @@ export const MyAirdrop = () => {
           justifyContent="center"
           px="55px">
           <Text
-            fontSize="0.750em"
+            fontSize={'13px'}
             color="#86929d"
             fontFamily={theme.fonts.roboto}>
             My sTOS
           </Text>
-          <Text
-            fontFamily={theme.fonts.roboto}
-            fontWeight={'bold'}
-            fontSize={'20px'}
-            color={themeDesign.fontColorTitle[colorMode]}>
-            {userStakedSTos} sTOS
-          </Text>
+          <Flex alignItems={'baseline'}>
+            <Text
+              fontFamily={theme.fonts.roboto}
+              fontWeight={'bold'}
+              fontSize={'20px'}
+              mr={'4px'}
+              color={themeDesign.fontColorTitle[colorMode]}>
+              {userStakedSTos}
+            </Text>
+            <Text
+              fontFamily={theme.fonts.roboto}
+              fontWeight={'bold'}
+              fontSize={'13px'}
+              color={themeDesign.fontColorTitle[colorMode]}>
+              sTOS
+            </Text>
+          </Flex>
         </Flex>
       </Flex>
       <Flex>

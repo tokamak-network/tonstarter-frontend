@@ -66,7 +66,7 @@ export const AirdropDistributeModal = () => {
     } else {
       setAllowance('0.00');
     }
-  }, [account, library, tokenAddress, blockNumber, isRay]);
+  }, [account, library, tokenAddress, isRay]);
 
   useEffect(() => {
     if (tokenAmount === '') {
@@ -133,6 +133,56 @@ export const AirdropDistributeModal = () => {
       Number(tokenBalance.replaceAll(',', ''));
     return setIsTokenBalanceExceed(checkedTokenBalanceExceed);
   }, [tokenAmount, tokenBalance]);
+
+  useEffect(() => {
+    console.log('distributeToValue: ', distributeToValue);
+  }, [distributeToValue]);
+
+  const distributeAction = () => {
+    if (!account) {
+      return;
+    }
+    if (distributeToValue !== 'TON Holder') {
+      AdminActions.distributeTOS({
+        account,
+        library,
+        amount: tokenAmount,
+        address: tokenAddress,
+        isRay: WTON_ADDRESS === tokenAddress,
+      });
+    } else if (distributeToValue === 'TON Holder') {
+      AdminActions.distributeTON({
+        account,
+        library,
+        amount: tokenAmount,
+        address: tokenAddress,
+        isRay: WTON_ADDRESS === tokenAddress,
+      });
+    }
+  };
+
+  const approveAction = () => {
+    if (!account) {
+      return;
+    }
+    if (distributeToValue === 'TON Holder') {
+      AdminActions.getERC20ApproveTON({
+        account,
+        library,
+        amount: tokenAmount,
+        address: tokenAddress,
+        isRay: WTON_ADDRESS === tokenAddress,
+      });
+    } else if (distributeToValue !== 'TON Holder') {
+      AdminActions.getERC20ApproveTOS({
+        account,
+        library,
+        amount: tokenAmount,
+        address: tokenAddress,
+        isRay: WTON_ADDRESS === tokenAddress,
+      });
+    }
+  };
 
   return (
     <Modal
@@ -266,6 +316,7 @@ export const AirdropDistributeModal = () => {
                   border: '1px solid #dfe4ee',
                 }}
                 value={allowance}
+                setValue={setAllowance}
                 placeHolder={'0.00'}
                 fontWeight={500}
                 color={
@@ -313,16 +364,7 @@ export const AirdropDistributeModal = () => {
               w={'150px'}
               fontSize="14px"
               _hover={{}}
-              onClick={() => {
-                account &&
-                  AdminActions.getERC20Approve({
-                    account,
-                    library,
-                    amount: tokenAmount,
-                    address: tokenAddress,
-                    isRay: WTON_ADDRESS === tokenAddress,
-                  });
-              }}>
+              onClick={approveAction}>
               Approve
             </Button>
             <Button
@@ -334,14 +376,7 @@ export const AirdropDistributeModal = () => {
               _hover={{}}
               isDisabled={!ableDistribute || isTokenBalanceExceed}
               onClick={() => {
-                account &&
-                  AdminActions.distribute({
-                    account,
-                    library,
-                    amount: tokenAmount,
-                    address: tokenAddress,
-                    isRay: WTON_ADDRESS === tokenAddress,
-                  });
+                distributeAction();
                 handleCloseModal();
               }}>
               Distribute
