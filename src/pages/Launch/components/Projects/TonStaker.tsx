@@ -16,6 +16,7 @@ import {PublicPageTable} from './PublicPageTable';
 import {Contract} from '@ethersproject/contracts';
 import * as TOSStakerAbi from 'services/abis/TOSStakerAbi.json';
 import {ethers} from 'ethers';
+import commafy from 'utils/commafy';
 import momentTZ from 'moment-timezone';
 import moment from 'moment';
 import * as TONStakerAbi from 'services/abis/TONStakerAbi.json';
@@ -49,7 +50,6 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
     TONStakerInitializeAbi.abi,
     library,
   );
-  // console.log('tonstaker vault: ', vault);
   useEffect(() => {
     async function getLPToken() {
       if (account === null || account === undefined || library === undefined) {
@@ -62,9 +62,7 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
       const amount = await TONStaker.connect(signer).calculClaimAmount(
         currentRound,
       );
-      const totalClaimCount = await TONStaker.connect(
-        signer,
-      ).totalClaimCounts();
+      const totalClaimCount = await TONStaker.totalClaimCounts();
       setDistributeDisable(Number(nowClaimRound) >= Number(currentRound));
       const disabled = Number(nowClaimRound) >= Number(currentRound);
       const claimDate =
@@ -86,20 +84,15 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
     try {
       const receipt = await TONStaker.connect(signer).claim();
       store.dispatch(setTxPending({tx: true}));
-      console.log(receipt);
+ 
       if (receipt) {
         toastWithReceipt(receipt, setTxPending, 'Launch');
-       const blah =  await receipt.wait();
-       const blockNum = blah.blockNumber;
-       const block = await BASE_PROVIDER.getBlock(blockNum);
-       const timeStamp = block.timestamp;
-       const startTime = Number(timeStamp)
-       console.log(startTime, startTime+60);
-       
-
-       
+        const blah = await receipt.wait();
+        const blockNum = blah.blockNumber;
+        const block = await BASE_PROVIDER.getBlock(blockNum);
+        const timeStamp = block.timestamp;
+        const startTime = Number(timeStamp);
       }
-
     } catch (e) {
       store.dispatch(setTxPending({tx: false}));
       store.dispatch(
@@ -142,6 +135,10 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
       light: '#c9d1d8',
       dark: '#777777',
     },
+    headerFont: {
+      light: '#353c48',
+      dark: '#fff',
+    },
   };
 
   return (
@@ -157,17 +154,22 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
             fontSize={'16px'}
             fontFamily={theme.fonts.fld}>
             <Text
+              fontFamily={theme.fonts.fld}
               fontSize={'15px'}
-              fontWeight={'bolder'}
-              color={colorMode === 'light' ? '#353c48' : 'white.0'}>
+              color={themeDesign.headerFont[colorMode]}
+              letterSpacing={'1.5px'}>
               Token
             </Text>
             {vault.isDeployed ? (
-              <Text>
-                {Number(vault.vaultTokenAllocation).toLocaleString()}
-                {` `}
+              <Flex>
+              <Text letterSpacing={'1.3px'} fontSize={'13px'} mr={'5px'}>
+                {commafy(Number(vault.vaultTokenAllocation))}{' '}
                 {project.tokenSymbol}
               </Text>
+              <Text letterSpacing={'1.3px'} fontSize={'13px'} color={'#7e8993'}>
+               {((vault.vaultTokenAllocation/project.totalTokenAllocation)*100).toString()
+            .match(/^\d+(?:\.\d{0,2})?/)}%</Text>
+            </Flex>
             ) : (
               <></>
             )}
@@ -193,7 +195,7 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
                   ? `https://etherscan.io/address/${vault.adminAddress}`
                   : ''
               }
-              color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+              color={colorMode === 'light' ? '#353c48' : '#fff'}
               _hover={{color: '#2a72e5'}}
               fontFamily={theme.fonts.fld}>
               {vault.adminAddress ? shortenAddress(vault.adminAddress) : 'NA'}
@@ -219,7 +221,7 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
                   ? `https://etherscan.io/address/${vault.vaultAddress}`
                   : ''
               }
-              color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+              color={colorMode === 'light' ? '#353c48' : '#fff'}
               _hover={{color: '#2a72e5'}}
               fontFamily={theme.fonts.fld}>
               {vault.vaultAddress ? shortenAddress(vault.vaultAddress) : 'NA'}
@@ -235,8 +237,10 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
             fontFamily={theme.fonts.fld}
             borderTopEndRadius={'4px'}>
             <Text
+              fontFamily={theme.fonts.fld}
               fontSize={'15px'}
-              color={colorMode === 'light' ? '#353c48' : 'white.0'}>
+              color={themeDesign.headerFont[colorMode]}
+              letterSpacing={'1.5px'}>
               Distribute
             </Text>
           </GridItem>
@@ -304,10 +308,14 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
               {showDate ? (
                 <>
                   {' '}
-                  <Text color={colorMode === 'light' ? '#9d9ea5' : '#7e8993'}>
+                  <Text
+                    color={colorMode === 'light' ? '#9d9ea5' : '#7e8993'}
+                    fontSize={'11px'}>
                     You can distribute on
                   </Text>
-                  <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
+                  <Text
+                    color={colorMode === 'light' ? '#353c48' : 'white.0'}
+                    fontSize={'15px'}>
                     {moment.unix(claimTime).format('MMM, DD, yyyy HH:mm:ss')}{' '}
                     {momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()}
                   </Text>

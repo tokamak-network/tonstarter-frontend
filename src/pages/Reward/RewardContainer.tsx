@@ -25,7 +25,7 @@ import {getSigner} from 'utils/contract';
 import {DEPLOYED} from 'constants/index';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import {Contract} from '@ethersproject/contracts';
-
+import {ethers} from 'ethers';
 type Pool = {
   id: string;
   liquidity: string;
@@ -164,7 +164,7 @@ else {
             mb={'30px'}>
             {getPaginatedData().map((reward: any, index) => {
               const includedPool = pools.find(
-                (pool) => pool.id === reward.poolAddress,
+                (pool) => ethers.utils.getAddress(pool.id) === ethers.utils.getAddress(reward.poolAddress),
               );
               const token0 = includedPool.token0.id;
               const token1 = includedPool.token1.id;

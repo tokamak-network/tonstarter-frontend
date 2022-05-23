@@ -54,7 +54,6 @@ export const DAO: FC<DAO> = ({vault, project}) => {
       const signer = getSigner(library, account);
       const tokBalance = await projectToken.balanceOf(vault.vaultAddress);
       setProjTokenBalance(ethers.utils.formatEther(tokBalance));
-      console.log(ethers.utils.formatEther(tokBalance));
     }
     getBalance();
   }, [transactionType, blockNumber]);
@@ -164,11 +163,16 @@ export const DAO: FC<DAO> = ({vault, project}) => {
               Token
             </Text>
             {vault.isDeployed ? (
-              <Text>
-                {Number(vault.vaultTokenAllocation).toLocaleString()}
-                {` `}
-                {project.tokenSymbol}
-              </Text>
+               <Flex>
+               <Text>
+                 {Number(vault.vaultTokenAllocation).toLocaleString()}
+                 {` `}
+                 {project.tokenSymbol}
+               </Text>
+               <Text letterSpacing={'1.3px'} fontSize={'13px'} color={'#7e8993'}>
+                {((vault.vaultTokenAllocation/project.totalTokenAllocation)*100).toString()
+             .match(/^\d+(?:\.\d{0,2})?/)}%</Text>
+               </Flex>
             ) : (
               <></>
             )}

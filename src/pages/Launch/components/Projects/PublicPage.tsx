@@ -42,6 +42,9 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const {account, library} = useActiveWeb3React();
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
+const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
+
+  const [hardcap, setHardcap] = useState<number>(0)
 
   const network = BASE_PROVIDER._network.name;
 
@@ -84,7 +87,21 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
     } else {
       setIsAdmin(false);
     }
-  }, [account, project]);
+  }, [account, project, vault.vaultAddress,transactionType, blockNumber]);
+
+  useEffect(()=> {
+    async function getHardCap() {
+      if (account === null || account === undefined || library === undefined) {
+        return;
+      }
+      const hardCapCalc = await PublicSaleVaul.hardcapCalcul();
+      const adminWithdraw = await PublicSaleVaul.adminWithdraw(); 
+      
+      setFundWithdrew(adminWithdraw)
+      setHardcap(Number(hardCapCalc))
+    } 
+    getHardCap()
+  },[account, project,vault.vaultAddress,transactionType, blockNumber])
 
   const sendTOS = async () => {
     if (account === null || account === undefined || library === undefined) {
@@ -140,6 +157,10 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
       light: '#c9d1d8',
       dark: '#777777',
     },
+    headerFont: {
+      light: '#353c48',
+      dark: '#fff',
+    },
   };
 
   return (
@@ -154,13 +175,28 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
             className={'chart-cell'}
             fontSize={'16px'}
             justifyContent={'space-between'}>
-            <Text fontFamily={theme.fonts.fld}>Token</Text>
+            <Text
+              fontFamily={theme.fonts.fld}
+              fontSize={'15px'}
+              color={themeDesign.headerFont[colorMode]}>
+              Token
+            </Text>
             {vault.isDeployed ? (
-              <Text fontFamily={theme.fonts.fld}>
-                {Number(vault.vaultTokenAllocation).toLocaleString()}
-                {` `}
+              <Flex>
+              <Text letterSpacing={'1.3px'} fontSize={'13px'} mr={'5px'}>
+                {commafy(Number(vault.vaultTokenAllocation))}{' '}
                 {project.tokenSymbol}
               </Text>
+              <Text letterSpacing={'1.3px'} fontSize={'13px'} color={'#7e8993'}>
+                {(
+                  (vault.vaultTokenAllocation / project.totalTokenAllocation) *
+                  100
+                )
+                  .toString()
+                  .match(/^\d+(?:\.\d{0,2})?/)}
+                %
+              </Text>
+            </Flex>
             ) : (
               <></>
             )}
@@ -274,7 +310,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 </Text>
                 <Text fontFamily={theme.fonts.fld}>{`${commafy(
                   vault.hardCap,
-                )}  ${project.tokenSymbol}`}</Text>
+                )}  TON`}</Text>
               </GridItem>
 
               <GridItem
@@ -373,7 +409,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                         mt={'5px'}
                         bg={'#257eee'}
                         color={'#ffffff'}
-                        isDisabled={!isAdmin}
+                        isDisabled={!isAdmin || vault.publicRound2End > moment().unix() || hardcap === 0 || fundWithdrew=== true}
                         _disabled={{
                           color: colorMode === 'light' ? '#86929d' : '#838383',
                           bg: colorMode === 'light' ? '#e9edf1' : '#353535',
@@ -400,6 +436,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                         }
                         onClick={() => sendTOS()}>
                         Send TOS to Initial Liquidity Vault & Receive Funds
+                      
                       </Button>
                     </>
                   ) : (
@@ -440,10 +477,18 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
             className={'chart-cell'}
             fontSize={'16px'}
             justifyContent={'space-between'}>
-            <Text fontFamily={theme.fonts.fld}>Schedule</Text>
+            <Text
+              fontFamily={theme.fonts.fld}
+              fontSize={'15px'}
+              color={themeDesign.headerFont[colorMode]}>
+              Schedule
+            </Text>
             {vault.isDeployed ? (
               <>
-                <Text fontFamily={theme.fonts.fld}>
+                <Text
+                  fontFamily={theme.fonts.fld}
+                  fontSize={'15px'}
+                  color={themeDesign.headerFont[colorMode]}>
                   {momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()}
                 </Text>
               </>
@@ -580,11 +625,16 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
           <GridItem
             border={themeDesign.border[colorMode]}
             borderBottom={'none'}
-            borderTopRadius={'4px'}
+            borderTopRightRadius={'4px'}
             className={'chart-cell'}
             fontSize={'16px'}
             justifyContent={'space-between'}>
-            <Text fontFamily={theme.fonts.fld}>sTOS Tier</Text>
+            <Text
+              fontFamily={theme.fonts.fld}
+              fontSize={'15px'}
+              color={themeDesign.headerFont[colorMode]}>
+              sTOS Tier
+            </Text>
           </GridItem>
           {vault.isDeployed ? (
             <>

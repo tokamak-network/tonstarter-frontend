@@ -86,6 +86,7 @@ const MAINNET_DEPLOYED = {
     TOS_WTON_POOL: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
   },
   UniswapV3Factory: '0x1F98431c8aD98523631AE4a59f267346ea31F984',
+  ProjectTokenProxy: ''
 };
 
 const RINKEBY_DEPLOYED = {
@@ -129,6 +130,7 @@ const RINKEBY_DEPLOYED = {
     TOS_WTON_POOL: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
   },
   UniswapV3Factory: '0x1F98431c8aD98523631AE4a59f267346ea31F984',
+  ProjectTokenProxy: '0x48683aC8ab065A113323BdB5738a267D7FF7F0d6'
 };
 
 export const DEPLOYED: DEPLOYED_TYPE =
