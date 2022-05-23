@@ -140,10 +140,6 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
       light: '#c9d1d8',
       dark: '#777777',
     },
-    headerFont: {
-      light: '#353c48',
-      dark: '#fff',
-    },
   };
 
   return (
@@ -447,13 +443,8 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
             <Text fontFamily={theme.fonts.fld}>Schedule</Text>
             {vault.isDeployed ? (
               <>
-                <Text
-                  fontFamily={theme.fonts.fld}
-                  fontSize={'15px'}
-                  color={themeDesign.headerFont[colorMode]}>
-                {`UTC ${momentTZ
-            .tz(momentTZ.tz.guess())
-            .format('Z')}`}
+                <Text fontFamily={theme.fonts.fld}>
+                  {momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()}
                 </Text>
               </>
             ) : (
