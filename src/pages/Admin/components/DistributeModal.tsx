@@ -298,7 +298,7 @@ export const DistributeModal = () => {
               _hover={{}}
               onClick={() => {
                 account &&
-                  AdminActions.getERC20Approve({
+                  AdminActions.getERC20ApproveTOS({
                     account,
                     library,
                     amount: tokenAmount,
@@ -318,7 +318,7 @@ export const DistributeModal = () => {
               isDisabled={!ableDistribute || isTokenBalanceExceed}
               onClick={() => {
                 account &&
-                  AdminActions.distribute({
+                  AdminActions.distributeTOS({
                     account,
                     library,
                     amount: tokenAmount,

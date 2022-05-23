@@ -1,4 +1,4 @@
-import {FC, useRef} from 'react';
+import {FC, useRef, useEffect, useState} from 'react';
 import {
   Text,
   Flex,
@@ -21,7 +21,8 @@ import {
   GridItem,
   Grid,
 } from '@chakra-ui/react';
-import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
+import {getSigner} from 'utils/contract';
+import {Contract} from '@ethersproject/contracts';
 import {LoadingComponent} from 'components/Loading';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {useDispatch} from 'react-redux';
@@ -30,11 +31,21 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useModal} from 'hooks/useModal';
 import AdminActions from '../actions';
 import {FetchPoolData} from '@Admin/types';
+import moment from 'moment';
+import {useBlockNumber} from 'hooks/useBlock';
+import {DEPLOYED} from 'constants/index';
+import {useERC20Token} from 'hooks/useERC20Token';
+import {convertNumber, convertToRay, convertToWei} from 'utils/number';
+import * as ERC20 from 'services/abis/ERC20.json';
 
 export const DistributeTable = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const dispatch = useDispatch();
+  const {account, library} = useActiveWeb3React();
+
+  const [timeStamp, setTimeStamp] = useState<string>('');
+  const [distributions, setDistributions] = useState<any[]>([]);
 
   const themeDesign = {
     border: {
@@ -50,7 +61,7 @@ export const DistributeTable = () => {
       dark: '#2a72e5',
     },
     borderTos: {
-      light: 'dashed 1px #dfe4ee',
+      light: 'solid 1px #2a72e5',
       dark: 'solid 1px #2a72e5',
     },
     buttonColorActive: {
@@ -61,16 +72,70 @@ export const DistributeTable = () => {
       light: '#c9d1d8',
       dark: '#777777',
     },
+    scheduleColor: {
+      light: '#808992',
+      dark: '#9d9ea5',
+    },
+    dateColor: {
+      light: '#353c48',
+      dark: '#f3f4f1',
+    },
   };
+
+  useEffect(() => {
+    const getDistributions = async () => {
+      // Get all distributed tokens for the week...
+      // Get address of what? All the tokens?
+      if (library && account) {
+        const {TokenDividendProxyPool_ADDRESS} = DEPLOYED;
+        // const ERC20_CONTRACT = new Contract(address, ERC20.abi, library);
+        const signer = getSigner(library, account);
+
+        // const res = await ERC20_CONTRACT.connect(signer).approve(
+        //   TokenDividendProxyPool_ADDRESS,
+        //   isRay === true ? convertToRay(amount) : convertToWei(amount),
+        //   );
+      }
+    };
+    getDistributions();
+  });
+
+  useEffect(() => {
+    //GET NEXT THUR
+    const dayINeed = 4; // for Thursday
+    const today = moment().isoWeekday();
+    const thisWed = moment().isoWeekday(dayINeed).format('YYYY-MM-DD');
+    const nextWed = moment().add(1, 'weeks').isoWeekday(dayINeed).format('LL');
+    if (today === dayINeed || today < dayINeed) {
+      return setTimeStamp(thisWed);
+    } else {
+      return setTimeStamp(nextWed);
+    }
+  }, []);
 
   return (
     <Flex flexDirection={'column'} w={'976px'} p={'0px'} mt={'50px'}>
       <Flex alignItems={'center'} justifyContent={'space-between'} mb={'20px'}>
-        <Flex>
+        <Flex alignItems={'baseline'}>
           <Heading size="md" mr={'10px'}>
             Token List
           </Heading>
-          <Text> schedule: Next(Thu.) Apr.07, 2022 00:00:00 (UTC) </Text>
+          <Flex>
+            <Text
+              fontFamily={theme.fonts.roboto}
+              fontSize={'13px'}
+              color={themeDesign.scheduleColor[colorMode]}
+              mr={'3px'}>
+              schedule:
+            </Text>
+            <Text
+              fontFamily={theme.fonts.roboto}
+              fontSize={'13px'}
+              color={themeDesign.dateColor[colorMode]}>
+              {' '}
+              Next(Thu.) {timeStamp} 00:00:00 (UTC)
+            </Text>
+          </Flex>
         </Flex>
         <Button
           color={themeDesign.tosFont[colorMode]}
@@ -96,152 +161,164 @@ export const DistributeTable = () => {
           Distribute
         </Button>
       </Flex>
-      <Grid templateColumns="repeat(1, 1fr)" w={'100%'} mb={'30px'}>
-        <GridItem
-          border={themeDesign.border[colorMode]}
-          className={'chart-cell'}
-          borderTopLeftRadius={'4px'}
-          borderBottom={'none'}
+      {distributions.length === 0 ? (
+        <Flex
+          justifyContent={'center'}
+          alignItems={'center'}
+          w={'100%'}
+          py={'30px'}
+          fontFamily={theme.fonts.fld}
           fontSize={'16px'}
-          fontFamily={theme.fonts.fld}>
-          <Text
-            fontSize={'15px'}
-            fontWeight={'bolder'}
-            color={colorMode === 'light' ? '#353c48' : 'white.0'}
-            minWidth={'33%'}
-            textAlign={'center'}>
-            Distribute To
-          </Text>
-          <Text minWidth={'33%'} textAlign={'center'}>
-            Token Symbol
-          </Text>
-          <Text minWidth={'33%'} textAlign={'center'}>
-            Amount
-          </Text>
-        </GridItem>
+          borderY={themeDesign.border[colorMode]}>
+          <Text>No distributions scheduled this round.</Text>
+        </Flex>
+      ) : (
+        <Grid templateColumns="repeat(1, 1fr)" w={'100%'} mb={'30px'}>
+          <GridItem
+            border={themeDesign.border[colorMode]}
+            className={'chart-cell'}
+            borderTopLeftRadius={'4px'}
+            borderBottom={'none'}
+            fontSize={'16px'}
+            fontFamily={theme.fonts.fld}>
+            <Text
+              fontSize={'15px'}
+              fontWeight={'bolder'}
+              color={colorMode === 'light' ? '#353c48' : 'white.0'}
+              minWidth={'33%'}
+              textAlign={'center'}>
+              Distribute To
+            </Text>
+            <Text minWidth={'33%'} textAlign={'center'}>
+              Token Symbol
+            </Text>
+            <Text minWidth={'33%'} textAlign={'center'}>
+              Amount
+            </Text>
+          </GridItem>
 
-        <GridItem
-          border={themeDesign.border[colorMode]}
-          borderBottom={'none'}
-          className={'chart-cell'}
-          fontSize={'16px'}
-          fontFamily={theme.fonts.fld}
-          d={'flex'}
-          justifyContent={'center'}>
-          <Text
-            fontSize={'15px'}
-            color={colorMode === 'light' ? '#353c48' : 'white.0'}
-            minWidth={'33%'}
-            textAlign={'center'}>
-            TOS Holder
-          </Text>
-          <Text
-            fontSize={'15px'}
-            color={colorMode === 'light' ? '#353c48' : 'white.0'}
-            minWidth={'33%'}
-            textAlign={'center'}>
-            DOC
-          </Text>
-          <Text
-            fontSize={'15px'}
-            color={colorMode === 'light' ? '#353c48' : 'white.0'}
-            minWidth={'33%'}
-            textAlign={'center'}>
-            1,000,000
-          </Text>
-        </GridItem>
-        <GridItem
-          border={themeDesign.border[colorMode]}
-          borderBottom={'none'}
-          className={'chart-cell'}
-          fontSize={'16px'}
-          fontFamily={theme.fonts.fld}
-          d={'flex'}
-          justifyContent={'center'}>
-          <Text
-            fontSize={'15px'}
-            color={colorMode === 'light' ? '#353c48' : 'white.0'}
-            minWidth={'33%'}
-            textAlign={'center'}>
-            TOS Holder
-          </Text>
-          <Text
-            fontSize={'15px'}
-            color={colorMode === 'light' ? '#353c48' : 'white.0'}
-            minWidth={'33%'}
-            textAlign={'center'}>
-            DOC
-          </Text>
-          <Text
-            fontSize={'15px'}
-            color={colorMode === 'light' ? '#353c48' : 'white.0'}
-            minWidth={'33%'}
-            textAlign={'center'}>
-            1,000,000
-          </Text>
-        </GridItem>
-        <GridItem
-          border={themeDesign.border[colorMode]}
-          borderBottom={'none'}
-          className={'chart-cell'}
-          fontSize={'16px'}
-          fontFamily={theme.fonts.fld}
-          d={'flex'}
-          justifyContent={'center'}>
-          <Text
-            fontSize={'15px'}
-            color={colorMode === 'light' ? '#353c48' : 'white.0'}
-            minWidth={'33%'}
-            textAlign={'center'}>
-            TOS Holder
-          </Text>
-          <Text
-            fontSize={'15px'}
-            color={colorMode === 'light' ? '#353c48' : 'white.0'}
-            minWidth={'33%'}
-            textAlign={'center'}>
-            DOC
-          </Text>
-          <Text
-            fontSize={'15px'}
-            color={colorMode === 'light' ? '#353c48' : 'white.0'}
-            minWidth={'33%'}
-            textAlign={'center'}>
-            1,000,000
-          </Text>
-        </GridItem>
-        <GridItem
-          border={themeDesign.border[colorMode]}
-          borderBottomLeftRadius={'4px'}
-          borderBottomRightRadius={'4px'}
-          className={'chart-cell'}
-          fontSize={'16px'}
-          fontFamily={theme.fonts.fld}
-          d={'flex'}
-          justifyContent={'center'}>
-          <Text
-            fontSize={'15px'}
-            color={colorMode === 'light' ? '#353c48' : 'white.0'}
-            minWidth={'33%'}
-            textAlign={'center'}>
-            TOS Holder
-          </Text>
-          <Text
-            fontSize={'15px'}
-            color={colorMode === 'light' ? '#353c48' : 'white.0'}
-            minWidth={'33%'}
-            textAlign={'center'}>
-            DOC
-          </Text>
-          <Text
-            fontSize={'15px'}
-            color={colorMode === 'light' ? '#353c48' : 'white.0'}
-            minWidth={'33%'}
-            textAlign={'center'}>
-            1,000,000
-          </Text>
-        </GridItem>
-        {/* <GridItem
+          <GridItem
+            border={themeDesign.border[colorMode]}
+            borderBottom={'none'}
+            className={'chart-cell'}
+            fontSize={'16px'}
+            fontFamily={theme.fonts.fld}
+            d={'flex'}
+            justifyContent={'center'}>
+            <Text
+              fontSize={'15px'}
+              color={colorMode === 'light' ? '#353c48' : 'white.0'}
+              minWidth={'33%'}
+              textAlign={'center'}>
+              TOS Holder
+            </Text>
+            <Text
+              fontSize={'15px'}
+              color={colorMode === 'light' ? '#353c48' : 'white.0'}
+              minWidth={'33%'}
+              textAlign={'center'}>
+              DOC
+            </Text>
+            <Text
+              fontSize={'15px'}
+              color={colorMode === 'light' ? '#353c48' : 'white.0'}
+              minWidth={'33%'}
+              textAlign={'center'}>
+              1,000,000
+            </Text>
+          </GridItem>
+          <GridItem
+            border={themeDesign.border[colorMode]}
+            borderBottom={'none'}
+            className={'chart-cell'}
+            fontSize={'16px'}
+            fontFamily={theme.fonts.fld}
+            d={'flex'}
+            justifyContent={'center'}>
+            <Text
+              fontSize={'15px'}
+              color={colorMode === 'light' ? '#353c48' : 'white.0'}
+              minWidth={'33%'}
+              textAlign={'center'}>
+              TOS Holder
+            </Text>
+            <Text
+              fontSize={'15px'}
+              color={colorMode === 'light' ? '#353c48' : 'white.0'}
+              minWidth={'33%'}
+              textAlign={'center'}>
+              DOC
+            </Text>
+            <Text
+              fontSize={'15px'}
+              color={colorMode === 'light' ? '#353c48' : 'white.0'}
+              minWidth={'33%'}
+              textAlign={'center'}>
+              1,000,000
+            </Text>
+          </GridItem>
+          <GridItem
+            border={themeDesign.border[colorMode]}
+            borderBottom={'none'}
+            className={'chart-cell'}
+            fontSize={'16px'}
+            fontFamily={theme.fonts.fld}
+            d={'flex'}
+            justifyContent={'center'}>
+            <Text
+              fontSize={'15px'}
+              color={colorMode === 'light' ? '#353c48' : 'white.0'}
+              minWidth={'33%'}
+              textAlign={'center'}>
+              TOS Holder
+            </Text>
+            <Text
+              fontSize={'15px'}
+              color={colorMode === 'light' ? '#353c48' : 'white.0'}
+              minWidth={'33%'}
+              textAlign={'center'}>
+              DOC
+            </Text>
+            <Text
+              fontSize={'15px'}
+              color={colorMode === 'light' ? '#353c48' : 'white.0'}
+              minWidth={'33%'}
+              textAlign={'center'}>
+              1,000,000
+            </Text>
+          </GridItem>
+          <GridItem
+            border={themeDesign.border[colorMode]}
+            borderBottomLeftRadius={'4px'}
+            borderBottomRightRadius={'4px'}
+            className={'chart-cell'}
+            fontSize={'16px'}
+            fontFamily={theme.fonts.fld}
+            d={'flex'}
+            justifyContent={'center'}>
+            <Text
+              fontSize={'15px'}
+              color={colorMode === 'light' ? '#353c48' : 'white.0'}
+              minWidth={'33%'}
+              textAlign={'center'}>
+              TOS Holder
+            </Text>
+            <Text
+              fontSize={'15px'}
+              color={colorMode === 'light' ? '#353c48' : 'white.0'}
+              minWidth={'33%'}
+              textAlign={'center'}>
+              DOC
+            </Text>
+            <Text
+              fontSize={'15px'}
+              color={colorMode === 'light' ? '#353c48' : 'white.0'}
+              minWidth={'33%'}
+              textAlign={'center'}>
+              1,000,000
+            </Text>
+          </GridItem>
+          {/* <GridItem
           border={themeDesign.border[colorMode]}
           className={'chart-cell'}
           fontFamily={theme.fonts.fld}
@@ -255,7 +332,8 @@ export const DistributeTable = () => {
             </Text>
           </Flex>
         </GridItem> */}
-      </Grid>
+        </Grid>
+      )}
     </Flex>
   );
 };

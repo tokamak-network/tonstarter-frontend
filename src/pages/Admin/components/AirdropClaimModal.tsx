@@ -43,6 +43,10 @@ export const AirdropClaimModal = () => {
   const {blockNumber} = useBlockNumber();
   const {handleCloseModal} = useModal(setTokenAmount);
 
+  const {tokenSymbol, genesisAirdropBalance} = data?.data;
+
+  console.log('data: ', data);
+
   const themeDesign = {
     fontColorTitle: {
       light: 'gray.250',
@@ -145,19 +149,19 @@ export const AirdropClaimModal = () => {
     if (tokenAddress === 'CUSTOM TOKEN') return setTokenAddress('');
   }, [tokenAddress]);
 
-  const {tokenBalance, tokenSymbol} = useERC20Token({
-    tokenAddress: tokenAddress,
-    isRay: tokenAddress === WTON_ADDRESS,
-  });
-  const [isTokenBalanceExceed, setIsTokenBalanceExceed] =
-    useState<boolean>(true);
+  // const {tokenBalance, tokenSymbol} = useERC20Token({
+  //   tokenAddress: tokenAddress,
+  //   isRay: tokenAddress === WTON_ADDRESS,
+  // });
+  // const [isTokenBalanceExceed, setIsTokenBalanceExceed] =
+  //   useState<boolean>(true);
 
-  useEffect(() => {
-    const checkedTokenBalanceExceed =
-      Number(tokenAmount.replaceAll(',', '')) >
-      Number(tokenBalance.replaceAll(',', ''));
-    return setIsTokenBalanceExceed(checkedTokenBalanceExceed);
-  }, [tokenAmount, tokenBalance]);
+  // useEffect(() => {
+  //   const checkedTokenBalanceExceed =
+  //     Number(tokenAmount.replaceAll(',', '')) >
+  //     Number(tokenBalance.replaceAll(',', ''));
+  //   return setIsTokenBalanceExceed(checkedTokenBalanceExceed);
+  // }, [tokenAmount, tokenBalance]);
 
   return (
     <Modal
@@ -220,37 +224,43 @@ export const AirdropClaimModal = () => {
                   2,000.00
                 </Text>
                 <Text fontSize={'13px'} fontFamily={theme.fonts.roboto}>
-                  TON
+                  {tokenSymbol}
                 </Text>
               </Flex>
             </Box>
-            <Box d="flex" mb={'29px'}>
-              <Checkbox mr={'10px'} />
-              <Text mr={'4px'} fontSize={'15px'}>
-                100 TOS
-              </Text>
-              <Text color={'#949494'} fontSize={'15px'}>
-                (Genesis Airdrop)
-              </Text>
-            </Box>
-            <Box d="flex" mb={'29px'}>
-              <Checkbox mr={'10px'} />
-              <Text mr={'4px'} fontSize={'15px'}>
-                100 TOS
-              </Text>
-              <Text color={'#949494'} fontSize={'15px'}>
-                (DAO Airdrop)
-              </Text>
-            </Box>
-            <Box d="flex" mb={'29px'}>
-              <Checkbox mr={'10px'} />
-              <Text mr={'4px'} fontSize={'15px'}>
-                100 TOS
-              </Text>
-              <Text color={'#949494'} fontSize={'15px'}>
-                (TON Staker)
-              </Text>
-            </Box>
+            {tokenSymbol === 'TOS' && (
+              <Box d="flex" mb={'29px'}>
+                <Checkbox mr={'10px'} />
+                <Text mr={'4px'} fontSize={'15px'}>
+                  {data?.data?.genesisAirdropBalance || '0.00'} TOS
+                </Text>
+                <Text color={'#949494'} fontSize={'15px'}>
+                  (Genesis Airdrop)
+                </Text>
+              </Box>
+            )}
+            {tokenSymbol === 'sTOS' && (
+              <Box d="flex" mb={'29px'}>
+                <Checkbox mr={'10px'} />
+                <Text mr={'4px'} fontSize={'15px'}>
+                  100 {tokenSymbol}
+                </Text>
+                <Text color={'#949494'} fontSize={'15px'}>
+                  (DAO Airdrop)
+                </Text>
+              </Box>
+            )}
+            {tokenSymbol === 'TON' && (
+              <Box d="flex" mb={'29px'}>
+                <Checkbox mr={'10px'} />
+                <Text mr={'4px'} fontSize={'15px'}>
+                  100 {tokenSymbol}
+                </Text>
+                <Text color={'#949494'} fontSize={'15px'}>
+                  (TON Staker)
+                </Text>
+              </Box>
+            )}
           </Flex>
 
           <Box
@@ -280,7 +290,7 @@ export const AirdropClaimModal = () => {
               _hover={{}}
               onClick={() => {
                 account &&
-                  AdminActions.getERC20Approve({
+                  AdminActions.getERC20ApproveTOS({
                     account,
                     library,
                     amount: tokenAmount,
