@@ -25,8 +25,7 @@ import {DEPLOYED} from 'constants/index';
 import {useERC20Token} from 'hooks/useERC20Token';
 
 export const DistributeModal = () => {
-  const {TON_ADDRESS, WTON_ADDRESS, TOS_ADDRESS, DOC_ADDRESS, AURA_ADDRESS} =
-    DEPLOYED;
+  const {TON_ADDRESS, WTON_ADDRESS, TOS_ADDRESS, DOC_ADDRESS} = DEPLOYED;
   const {data} = useAppSelector(selectModalType);
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -86,6 +85,7 @@ export const DistributeModal = () => {
   useEffect(() => {
     //GET NEXT THUR
     //Which is lock period for sTOS
+
     const dayINeed = 4; // for Thursday
     const today = moment().isoWeekday();
     const thisWed = moment().isoWeekday(dayINeed).format('YYYY-MM-DD');
@@ -93,7 +93,7 @@ export const DistributeModal = () => {
       .add(1, 'weeks')
       .isoWeekday(dayINeed)
       .format('YYYY-MM-DD');
-    if (today < dayINeed) {
+    if (today === dayINeed || today < dayINeed) {
       return setTimeStamp(thisWed);
     } else {
       return setTimeStamp(nextWed);
@@ -105,24 +105,17 @@ export const DistributeModal = () => {
     WTON_ADDRESS,
     TOS_ADDRESS,
     DOC_ADDRESS,
-    AURA_ADDRESS,
     'CUSTOM TOKEN',
   ];
-  const selectOptionNames = [
-    'TON',
-    'WTON',
-    'TOS',
-    'DOC',
-    'AURA',
-    'CUSTOM TOKEN',
-  ];
+  const selectOptionNames = ['TON', 'WTON', 'TOS', 'DOC', 'CUSTOM TOKEN'];
 
   useEffect(() => {
     if (tokenAddress === 'CUSTOM TOKEN') return setTokenAddress('');
   }, [tokenAddress]);
 
-  const {tokenBalance, tokenSymbol, tokenDecimals} = useERC20Token({
+  const {tokenBalance, tokenSymbol} = useERC20Token({
     tokenAddress: tokenAddress,
+    isRay: tokenAddress === WTON_ADDRESS,
   });
   const [isTokenBalanceExceed, setIsTokenBalanceExceed] =
     useState<boolean>(true);
@@ -182,12 +175,9 @@ export const DistributeModal = () => {
             <Box d="flex" flexDir="column" mb={'24px'}>
               <Flex justifyContent={'space-between'}>
                 <Text mb={'9px'}>Token Address</Text>
-                <Flex color={colorMode === 'light' ? 'black.300' : 'white.100'}>
-                  <Box color={'#86929d'} mr={'10px'}>
-                    Balance
-                  </Box>
-                  {tokenBalance} {tokenSymbol}
-                </Flex>
+                <Text mb={'9px'}>
+                  Balance : {tokenBalance} {tokenSymbol}
+                </Text>
               </Flex>
               <CustomSelectBox
                 w={'290px'}
@@ -196,13 +186,9 @@ export const DistributeModal = () => {
                 optionName={selectOptionNames}
                 setValue={setTokenAddress}
                 fontSize={'12px'}></CustomSelectBox>
-              {[
-                TON_ADDRESS,
-                WTON_ADDRESS,
-                TOS_ADDRESS,
-                DOC_ADDRESS,
-                AURA_ADDRESS,
-              ].indexOf(tokenAddress) === -1 && (
+              {[TON_ADDRESS, WTON_ADDRESS, TOS_ADDRESS, DOC_ADDRESS].indexOf(
+                tokenAddress,
+              ) === -1 && (
                 <CustomInput
                   w={'290px'}
                   h={'32px'}
@@ -312,7 +298,7 @@ export const DistributeModal = () => {
               _hover={{}}
               onClick={() => {
                 account &&
-                  AdminActions.getERC20Approve({
+                  AdminActions.getERC20ApproveTOS({
                     account,
                     library,
                     amount: tokenAmount,
@@ -332,12 +318,12 @@ export const DistributeModal = () => {
               isDisabled={!ableDistribute || isTokenBalanceExceed}
               onClick={() => {
                 account &&
-                  AdminActions.distribute({
+                  AdminActions.distributeTOS({
                     account,
                     library,
                     amount: tokenAmount,
                     address: tokenAddress,
-                    decimals: tokenDecimals,
+                    isRay: WTON_ADDRESS === tokenAddress,
                   });
                 handleCloseModal();
               }}>

@@ -1,5 +1,6 @@
 import * as ERC20 from 'services/abis/ERC20.json';
 import * as LockTOSDividend from 'services/abis/LockTOSDividend.json';
+import * as TokenDividendProxyPool from 'services/abis/TokenDividendProxyPool.json';
 import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import {setTx} from 'application';
@@ -16,7 +17,6 @@ import {
   putEditPool,
 } from '../utils/createStarter';
 import {AdminObject, PoolData} from '@Admin/types';
-import {utils} from 'ethers';
 
 interface I_CallContract {
   account: string;
@@ -24,7 +24,7 @@ interface I_CallContract {
   address: string;
 }
 
-const getERC20Approve = async (
+const getERC20ApproveTOS = async (
   args: I_CallContract & {amount: string; isRay?: boolean},
 ) => {
   try {
@@ -56,11 +56,43 @@ const getERC20Approve = async (
   }
 };
 
-const distribute = async (
-  args: I_CallContract & {amount: string; decimals: number},
+const getERC20ApproveTON = async (
+  args: I_CallContract & {amount: string; isRay?: boolean},
 ) => {
   try {
-    const {account, library, amount, address, decimals} = args;
+    const {account, library, amount, address, isRay} = args;
+    const {TokenDividendProxyPool_ADDRESS} = DEPLOYED;
+    const ERC20_CONTRACT = new Contract(address, ERC20.abi, library);
+    const signer = getSigner(library, account);
+
+    const res = await ERC20_CONTRACT.connect(signer).approve(
+      TokenDividendProxyPool_ADDRESS,
+      isRay === true ? convertToRay(amount) : convertToWei(amount),
+    );
+
+    return setTx(res);
+  } catch (e) {
+    console.log(e);
+    store.dispatch(
+      //@ts-ignore
+      openToast({
+        payload: {
+          status: 'error',
+          title: 'Tx fail to send',
+          description: `something went wrong`,
+          duration: 5000,
+          isClosable: true,
+        },
+      }),
+    );
+  }
+};
+
+const distributeTOS = async (
+  args: I_CallContract & {amount: string; isRay?: boolean},
+) => {
+  try {
+    const {account, library, amount, address, isRay} = args;
     const {LockTOSDividend_ADDRESS} = DEPLOYED;
     const LOCKTOS_DIVIDEND_CONTRACT = new Contract(
       LockTOSDividend_ADDRESS,
@@ -68,11 +100,55 @@ const distribute = async (
       library,
     );
     const signer = getSigner(library, account);
-    const numAmount = utils.parseUnits(amount, decimals);
+
+    console.log('LOCKTOS_DIVIDEND_CONTRACT', LOCKTOS_DIVIDEND_CONTRACT);
+
     const res = await LOCKTOS_DIVIDEND_CONTRACT.connect(signer).distribute(
       address,
-      numAmount.toString(),
+      isRay === true ? convertToRay(amount) : convertToWei(amount),
     );
+
+    console.log('res', res);
+
+    return setTx(res);
+  } catch (e) {
+    console.log(e);
+    store.dispatch(
+      //@ts-ignore
+      openToast({
+        payload: {
+          status: 'error',
+          title: 'Tx fail to send',
+          description: `something went wrong`,
+          duration: 5000,
+          isClosable: true,
+        },
+      }),
+    );
+  }
+};
+
+const distributeTON = async (
+  args: I_CallContract & {amount: string; isRay?: boolean},
+) => {
+  try {
+    const {account, library, amount, address, isRay} = args;
+    const {TokenDividendProxyPool_ADDRESS} = DEPLOYED;
+    const TOKEN_DIVIDEND_PROXY_CONTRACT = new Contract(
+      TokenDividendProxyPool_ADDRESS,
+      TokenDividendProxyPool.abi,
+      library,
+    );
+    const signer = getSigner(library, account);
+
+    console.log('TOKEN_DIVIDEND_PROXY_CONTRACT', TOKEN_DIVIDEND_PROXY_CONTRACT);
+
+    const res = await TOKEN_DIVIDEND_PROXY_CONTRACT.connect(signer).distribute(
+      address,
+      isRay === true ? convertToRay(amount) : convertToWei(amount),
+    );
+
+    console.log('res', res);
 
     return setTx(res);
   } catch (e) {
@@ -307,8 +383,10 @@ export const deletePool = async (args: {poolAddress: string}) => {
 };
 
 const actions = {
-  getERC20Approve,
-  distribute,
+  getERC20ApproveTOS,
+  getERC20ApproveTON,
+  distributeTOS,
+  distributeTON,
   addStarter,
   editStarter,
   addPool,

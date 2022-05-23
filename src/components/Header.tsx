@@ -293,7 +293,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                 w={'100%'}
                 h={'37px'}
                 _focus={{background: 'transparent'}}>
-                Pools
+              Reward Program
               </MenuItem>
             </NavLink>
             <NavLink

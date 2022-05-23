@@ -142,7 +142,7 @@ export const Reward = () => {
       const poolArray: any = [];
       if (poolsData) {
         poolsData.map((pool: any) => {
-          poolArray.push(pool.poolAddress);
+          poolArray.push(pool.poolAddress.toLowerCase());
         });
       }
 
@@ -217,7 +217,7 @@ export const Reward = () => {
       if (pols !== undefined) {
         const poooools = pols.map((data: any) => {
           const APIPool = poolsFromAPI.find(
-            (pol: any) => pol.poolAddress === data.id,
+            (pol: any) => ethers.utils.getAddress(pol.poolAddress) === ethers.utils.getAddress(data.id),
           );
           const token0Image = APIPool.token0Image;
           const token1Image = APIPool.token1Image;
