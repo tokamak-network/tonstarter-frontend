@@ -106,8 +106,6 @@ const tokenURI = {
   })
 }
 const stringURI = JSON.stringify(tokenURI);
-console.log(`${stringURI}`);
-
 
     const signer = getSigner(library, account);
     try{

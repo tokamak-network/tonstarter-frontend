@@ -28,7 +28,6 @@ export const usePools = () => {
         setLiquidity(liquiditys);
         setSlot0(slot0s);
         setFee(fees)
-        console.log(slot0.sqrtPriceX96)
         v.pool = 
           slot0 && liquidity && fee
             ? new Pool(

@@ -24,7 +24,6 @@ const OverviewChart = () => {
 
   
   const formattedData = values.vaults.map ((data:any, index:any) => {
-      console.log(index);
       return {
           id: data.vaultName,
           color: colors[index],

@@ -207,7 +207,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({
             mb={'30px'}>
             {getPaginatedData().map((reward: any, index) => {
               const includedPool = pools.find(
-                (pool) => pool.id === reward.poolAddress,
+                (pool) => ethers.utils.getAddress(pool.id) === ethers.utils.getAddress(reward.poolAddress),
               );
               const token0 = includedPool.token0.id;
               const token1 = includedPool.token1.id;

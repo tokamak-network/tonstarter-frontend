@@ -179,7 +179,7 @@ export const WtonTosLpReward: FC<WtonTosLpReward> = ({vault, project}) => {
               'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)';
                 
             const incentiveId = soliditySha3(abicoder.encode([incentiveABI], [key]));   
-                   console.log('incentiveId',incentiveId);
+                  //  console.log('incentiveId',incentiveId);
                    
             const incentiveInfo = await uniswapStakerContract
             .connect(signer)
@@ -517,7 +517,7 @@ export const WtonTosLpReward: FC<WtonTosLpReward> = ({vault, project}) => {
            
           </GridItem>
           {getPaginatedData().map((reward: any, index:number)=> {
-            console.log('reward',reward);
+            // console.log('reward',reward);
             return  <GridItem
             fontFamily={theme.fonts.fld}
             className={'chart-cell'}

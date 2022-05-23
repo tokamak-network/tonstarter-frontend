@@ -54,7 +54,7 @@ export const DAO: FC<DAO> = ({vault, project}) => {
       const signer = getSigner(library, account);
       const tokBalance = await projectToken.balanceOf(vault.vaultAddress);
       setProjTokenBalance(ethers.utils.formatEther(tokBalance));
-      console.log(ethers.utils.formatEther(tokBalance));
+      // console.log(ethers.utils.formatEther(tokBalance));
     }
     getBalance();
   }, [transactionType, blockNumber]);
