@@ -1,7 +1,7 @@
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import {RootState} from 'store/reducers';
-import {fetchStarterURL} from 'constants/index';
-import {AdminObject} from '@Admin/types';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { RootState } from 'store/reducers';
+import { fetchStarterURL } from 'constants/index';
+import { AdminObject } from '@Admin/types';
 import moment from 'moment';
 import {
   ActiveProjectType,
@@ -9,9 +9,9 @@ import {
   PastProjectType,
   // MyProject,
 } from './types';
-import {convertLocaleString} from 'utils';
+import { convertLocaleString } from 'utils';
 // import starterActions from './actions';
-import {REACT_APP_MODE} from 'constants/index';
+import { REACT_APP_MODE } from 'constants/index';
 
 interface StarterState {
   data: {
@@ -49,9 +49,9 @@ const initialState = {
 export const fetchStarters = createAsyncThunk(
   'app/starters',
   // @ts-ignore
-  async ({chainId, library}: any, {requestId, getState}) => {
+  async ({ chainId, library }: any, { requestId, getState }) => {
     //@ts-ignore
-    const {currentRequestId, loading} = getState().starters;
+    const { currentRequestId, loading } = getState().starters;
     if (loading !== 'pending' || requestId !== currentRequestId) {
       return;
     }
@@ -128,10 +128,10 @@ export const fetchStarters = createAsyncThunk(
             endAddWhiteTime > nowTimeStamp
               ? 'whitelist'
               : endExclusiveTime > nowTimeStamp
-              ? 'exclusive'
-              : endDepositTime > nowTimeStamp
-              ? 'deposit'
-              : 'past';
+                ? 'exclusive'
+                : endDepositTime > nowTimeStamp
+                  ? 'deposit'
+                  : 'past';
 
           const timeStamps = {
             startAddWhiteTime,
@@ -162,14 +162,14 @@ export const fetchStarters = createAsyncThunk(
               checkStep === 'whitelist'
                 ? moment.unix(data.startAddWhiteTime).format('YYYY.MM.DD')
                 : checkStep === 'exclusive'
-                ? moment.unix(data.startExclusiveTime).format('YYYY.MM.DD')
-                : moment.unix(data.startDepositTime).format('YYYY.MM.DD'),
+                  ? moment.unix(data.startExclusiveTime).format('YYYY.MM.DD')
+                  : moment.unix(data.startDepositTime).format('YYYY.MM.DD'),
             saleEnd:
               checkStep === 'whitelist'
                 ? moment.unix(data.endAddWhiteTime).format('MM.DD')
                 : checkStep === 'exclusive'
-                ? moment.unix(data.endExclusiveTime).format('MM.DD')
-                : moment.unix(data.endDepositTime).format('MM.DD'),
+                  ? moment.unix(data.endExclusiveTime).format('MM.DD')
+                  : moment.unix(data.endDepositTime).format('MM.DD'),
             isExclusive:
               checkStep === 'whitelist' || checkStep === 'exclusive'
                 ? true
@@ -207,7 +207,7 @@ export const fetchStarters = createAsyncThunk(
             saleContractAddress: data.saleContractAddress,
             tokenImage: data.tokenSymbolImage,
             tokenFundRaisingTargetAmount: data.tokenFundRaisingTargetAmount,
-            website: data.website,
+
           };
         },
       );
@@ -222,6 +222,7 @@ export const fetchStarters = createAsyncThunk(
             tokenSymbolImage: data.tokenSymbolImage,
             fundingTokenType: data.fundingTokenType,
             tokenFundRaisingTargetAmount: data.tokenFundRaisingTargetAmount,
+            tokenCalRatio:data.projectFundingTokenRatio / data.projectTokenRatio,
           };
         },
       );
@@ -261,7 +262,7 @@ export const starterReducer = createSlice({
       }
     },
     [fetchStarters.fulfilled.type]: (state, action) => {
-      const {requestId} = action.meta;
+      const { requestId } = action.meta;
       if (state.loading === 'pending' && state.currentRequestId === requestId) {
         state.loading = 'idle';
         state.data = action.payload;
@@ -269,7 +270,7 @@ export const starterReducer = createSlice({
       }
     },
     [fetchStarters.rejected.type]: (state, action) => {
-      const {requestId} = action.meta;
+      const { requestId } = action.meta;
       if (state.loading === 'pending' && state.currentRequestId === requestId) {
         state.loading = 'idle';
         state.error = action.error;

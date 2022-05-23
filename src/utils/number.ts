@@ -11,11 +11,12 @@ type RoundFunc = {
 };
 
 type ConverNumberFunc = {
-  type?: 'ray' | 'wei';
+  type?: 'ray' | 'wei' | 'custom';
   amount: string;
   round?: boolean;
   decimalPlaces?: number;
   localeString?: boolean;
+  decimalPoints?: number;
 };
 
 //temp
@@ -63,7 +64,7 @@ function roundNumber(args: RoundFunc): string {
 
 export function convertNumber(args: ConverNumberFunc): string | undefined {
   try {
-    const {type, amount, round, decimalPlaces, localeString} = args;
+    const {type, amount, round, decimalPlaces, localeString, decimalPoints} =args;
     const utils = ethers.utils;
 
     if (amount === '0' || amount === undefined || amount === '') {
@@ -118,6 +119,23 @@ export function convertNumber(args: ConverNumberFunc): string | undefined {
         }
         return roundNumber({
           r_amount: rayAmountStr,
+          r_maxDecimalDigits: decimalPoint,
+          r_opt: 'down',
+          localeString,
+        });
+        case 'custom':
+        const customAmount = utils.formatUnits(numAmount, decimalPoints);
+        const customAmountStr: string = customAmount.toString();
+        if (optRound === true) {
+          return roundNumber({
+            r_amount: customAmountStr,
+            r_maxDecimalDigits: decimalPoint,
+            r_opt: 'up',
+            localeString,
+          });
+        }
+        return roundNumber({
+          r_amount: customAmountStr,
           r_maxDecimalDigits: decimalPoint,
           r_opt: 'down',
           localeString,

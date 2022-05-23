@@ -1,8 +1,11 @@
-import {Box, useColorMode, useTheme, Flex, Text} from '@chakra-ui/react';
+import {Box, useColorMode, useTheme, Flex, Text, Image} from '@chakra-ui/react';
+import {addToken} from '@Starter/actions/actions';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import MetamaskImg from 'assets/images/starter/metamask_icon@3x.png';
 
 type DetailTableContainerProp = {
   title: string;
-  data: {key: string; value: string}[];
+  data: {key: string; value: string; image?: string}[];
   breakPoint: number;
   w?: number;
   itemPx?: string;
@@ -16,8 +19,8 @@ export const DetailTableContainer = (prop: DetailTableContainerProp) => {
   const {title, data, breakPoint, w, itemPx, itemPy, isUserTier} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
-
   const {STATER_STYLE} = theme;
+  const {account, library} = useActiveWeb3React();
 
   return (
     <Box
@@ -52,9 +55,30 @@ export const DetailTableContainer = (prop: DetailTableContainerProp) => {
             <Text {...STATER_STYLE.mainText({colorMode, fontSize})}>
               {item.key}
             </Text>
-            <Text {...STATER_STYLE.mainText({colorMode, fontSize})}>
-              {item.value}
-            </Text>
+
+            {item.key === 'Contract' ? (
+              <Flex>
+                <Text {...STATER_STYLE.mainText({colorMode, fontSize})} mr={2}>
+                  {item.value}
+                </Text>
+                <Image
+                  src={MetamaskImg}
+                  w={25}
+                  h={'24px'}
+                  cursor={'pointer'}
+                  onClick={() =>
+                    account &&
+                    library &&
+                    item.image &&
+                    addToken(item.value, library, item.image)
+                  }
+                />
+              </Flex>
+            ) : (
+              <Text {...STATER_STYLE.mainText({colorMode, fontSize})}>
+                {item.value}
+              </Text>
+            )}
           </Flex>
         );
       })}
