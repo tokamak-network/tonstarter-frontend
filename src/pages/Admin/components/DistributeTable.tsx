@@ -43,9 +43,11 @@ export const DistributeTable = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const {account, library} = useActiveWeb3React();
+  const {TON_ADDRESS, WTON_ADDRESS, TOS_ADDRESS, DOC_ADDRESS} = DEPLOYED;
 
   const [timeStamp, setTimeStamp] = useState<string>('');
   const [distributions, setDistributions] = useState<any[]>([]);
+  const [distributedTosAmount, setDistributedTosAmount] = useState<any>();
 
   const themeDesign = {
     border: {
@@ -83,22 +85,23 @@ export const DistributeTable = () => {
   };
 
   useEffect(() => {
-    const getDistributions = async () => {
-      // Get all distributed tokens for the week...
-      // Get address of what? All the tokens?
-      if (library && account) {
-        const {TokenDividendProxyPool_ADDRESS} = DEPLOYED;
-        // const ERC20_CONTRACT = new Contract(address, ERC20.abi, library);
-        const signer = getSigner(library, account);
-
-        // const res = await ERC20_CONTRACT.connect(signer).approve(
-        //   TokenDividendProxyPool_ADDRESS,
-        //   isRay === true ? convertToRay(amount) : convertToWei(amount),
-        //   );
+    async function getDistributedTosAmount() {
+      if (!account) {
+        return;
       }
-    };
-    getDistributions();
-  });
+      const distributedTosAmt = await AdminActions.getDistributedTosAmount({
+        account,
+        library,
+      });
+      console.log('distributedTosAmt: ', distributedTosAmount);
+      setDistributedTosAmount(distributedTosAmt);
+    }
+    if (account) {
+      getDistributedTosAmount();
+    } else {
+      setDistributedTosAmount('0.00');
+    }
+  }, [account, library]);
 
   useEffect(() => {
     //GET NEXT THUR

@@ -43,7 +43,7 @@ export const AirdropClaimModal = () => {
   const {blockNumber} = useBlockNumber();
   const {handleCloseModal} = useModal(setTokenAmount);
 
-  const {tokenSymbol, genesisAirdropBalance} = data?.data;
+  const {tokenSymbol, genesisAirdropBalance, amount} = data?.data;
 
   console.log('data: ', data);
 
@@ -221,7 +221,7 @@ export const AirdropClaimModal = () => {
                   fontSize={'35px'}
                   mr={'3px'}
                   fontFamily={theme.fonts.roboto}>
-                  2,000.00
+                  {amount}
                 </Text>
                 <Text fontSize={'13px'} fontFamily={theme.fonts.roboto}>
                   {tokenSymbol}

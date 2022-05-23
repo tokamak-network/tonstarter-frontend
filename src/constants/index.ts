@@ -115,7 +115,7 @@ const RINKEBY_DEPLOYED = {
   DoMsaleContractAddress: '0xEb492922afa05D0D7704AD5c202f2ddCc386DA75',
   ERC20AFACTORY_ADDRESS: '0xf5aa83caAEb10E258d8A790eb3FD61a7B16B116E',
   AutoCoinageSnapshot2_ADDRESS: '0x4d27f37d46f9a7d4ce7ec635b47413cbd6793e0c',
-  TokenDividendProxyPool_ADDRESS: '0x9d88de4c13081855d880c36fe5fa6d11effa5528',
+  TokenDividendProxyPool_ADDRESS: '0x9aCb022B3A8a334618f5cea15A046C10FEE1352f',
   // proxy pool direct address: '0x9d88de4c13081855d880c36fe5fa6d11effa5528',
   InitialLiquidityVault: '0x8eAF51C81E599c40D3d0Cc3A216519A62C8c0d1c',
   LiquidityIncentiveVault: '0xB0bDa619E28779486aC2BFb5225a0D635365f835',

@@ -32,6 +32,7 @@ import * as LockTOSDividendABI from 'services/abis/LockTOSDividend.json';
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import {fetchAirdropPayload} from '../../../components/Airdrop/utils/fetchAirdropPayload';
 import * as TOKENDIVIDENDPOOLPROXY from 'services/abis/TokenDividendProxyPool.json';
+import {ethers} from 'ethers';
 
 type Round = {
   allocatedAmount: string;
@@ -49,7 +50,7 @@ export const AirdropClaimTable = () => {
   const theme = useTheme();
   const [isCheckAll, setIsCheckAll] = useState<boolean>(false);
   const [isCheck, setIsCheck] = useState<any[]>([]);
-  const [airdropData, setAirdropData] = useState<AirDropList>(undefined);
+  const [airdropData, setAirdropData] = useState<any[]>([]);
   const [genesisAirdropBalance, setGenesisAirdropBalance] = useState<
     string | undefined
   >(undefined);
@@ -62,6 +63,7 @@ export const AirdropClaimTable = () => {
     LockTOSDividend_ADDRESS,
     LockTOSDividendABI.abi,
   );
+
   const TOKEN_DIVIDEND_PROXY_POOL_CONTRACT = new Contract(
     TokenDividendProxyPool_ADDRESS,
     TOKENDIVIDENDPOOLPROXY.abi,
@@ -111,12 +113,28 @@ export const AirdropClaimTable = () => {
       );
       console.log('res: ', res);
 
-      // if (res === undefined) {
-      //   return;
-      // }
-      // const {roundInfo, claimedAmount, unclaimedAmount} = res;
-      // console.log('res: ', res);
-      // setAirdropData(roundInfo);
+      if (res === undefined) {
+        return;
+      }
+      const {claimableAmounts, claimableTokens} = res;
+      let claimableArr: any[] = [];
+      if (claimableAmounts && claimableTokens) {
+        claimableAmounts.forEach(async (amount: any, idx: number) => {
+          const ERC20_CONTRACT = new Contract(
+            claimableTokens[idx],
+            ERC20.abi,
+            library,
+          );
+          let tokenSymbol = await ERC20_CONTRACT.symbol();
+          claimableArr.push({
+            address: claimableTokens[idx],
+            amount: amount,
+            tokenSymbol: tokenSymbol,
+            id: idx,
+          });
+        });
+      }
+      setAirdropData(claimableArr);
       // availableGenesisAmount(roundInfo, claimedAmount, unclaimedAmount);
     }
     if (account !== undefined && library !== undefined) {
@@ -125,25 +143,25 @@ export const AirdropClaimTable = () => {
     /*eslint-disable*/
   }, [account]);
 
-  useEffect(() => {
-    async function callAirDropData() {
-      if (account === undefined || account === null) {
-        return;
-      }
-      const res = await fetchAirdropPayload(account, library);
-      if (res === undefined) {
-        return;
-      }
-      const {roundInfo, claimedAmount, unclaimedAmount} = res;
-      console.log('res: ', res);
-      setAirdropData(roundInfo);
-      availableGenesisAmount(roundInfo, claimedAmount, unclaimedAmount);
-    }
-    if (account !== undefined && library !== undefined) {
-      callAirDropData();
-    }
-    /*eslint-disable*/
-  }, [account]);
+  // useEffect(() => {
+  //   async function callAirDropData() {
+  //     if (account === undefined || account === null) {
+  //       return;
+  //     }
+  //     const res = await fetchAirdropPayload(account, library);
+  //     if (res === undefined) {
+  //       return;
+  //     }
+  //     const {roundInfo, claimedAmount, unclaimedAmount} = res;
+  //     console.log('res: ', res);
+  //     setAirdropData(roundInfo);
+  //     availableGenesisAmount(roundInfo, claimedAmount, unclaimedAmount);
+  //   }
+  //   if (account !== undefined && library !== undefined) {
+  //     callAirDropData();
+  //   }
+  //   /*eslint-disable*/
+  // }, [account]);
 
   const availableGenesisAmount = (
     roundInfo: AirDropList,
@@ -330,8 +348,11 @@ export const AirdropClaimTable = () => {
       {console.log('genesisAirdropBalance: ', genesisAirdropBalance)}
       {console.log('airdropList: ', airdropList)}
 
-      {dummyData.map((data: any, index: number) => {
-        const {id, tokenSymbol} = data;
+      {airdropData.map((data: any, index: number) => {
+        const {id, address, amount, tokenSymbol} = data;
+        const formattedAmt = Number(ethers.utils.formatEther(amount)).toFixed(
+          2,
+        );
         return (
           <Grid
             templateColumns="repeat(1, 1fr)"
@@ -352,7 +373,7 @@ export const AirdropClaimTable = () => {
                   name={tokenSymbol}
                   id={id}
                   onChange={handleClick}
-                  isChecked={isCheck.includes(id)}
+                  isChecked={isCheck.includes(index)}
                   fontWeight={'bold'}
                   fontSize={'14px'}
                   h={'45px'}
@@ -371,7 +392,7 @@ export const AirdropClaimTable = () => {
                 color={colorMode === 'light' ? '#353c48' : 'white.0'}
                 minWidth={'35%'}
                 textAlign={'center'}>
-                1,000,000
+                {formattedAmt}
               </Text>
               <Flex minWidth={'20%'} justifyContent={'center'}>
                 <Button
@@ -398,6 +419,7 @@ export const AirdropClaimTable = () => {
                         data: {
                           genesisAirdropBalance: genesisAirdropBalance,
                           tokenSymbol: tokenSymbol,
+                          amount: formattedAmt,
                         },
                       }),
                     )
