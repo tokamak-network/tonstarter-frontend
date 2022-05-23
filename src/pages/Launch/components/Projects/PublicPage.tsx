@@ -489,7 +489,9 @@ const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
                   fontFamily={theme.fonts.fld}
                   fontSize={'15px'}
                   color={themeDesign.headerFont[colorMode]}>
-                  {momentTZ.tz(momentTZ.tz.guess()).format('Z')}
+                {`UTC ${momentTZ
+            .tz(momentTZ.tz.guess())
+            .format('Z')}`}
                 </Text>
               </>
             ) : (
