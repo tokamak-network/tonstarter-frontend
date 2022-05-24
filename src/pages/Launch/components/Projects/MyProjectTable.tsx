@@ -3,7 +3,6 @@ import {
   Text,
   Flex,
   Select,
-  Link,
   Box,
   useColorMode,
   IconButton,
@@ -19,9 +18,9 @@ import {openToast} from 'store/app/toast.reducer';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
-import { useRouteMatch} from 'react-router-dom';
+import {Link, useRouteMatch} from 'react-router-dom';
 import {FC, useEffect, useRef} from 'react';
-import useQuill from 'react-quill';
+import {LoadingComponent} from 'components/Loading';
 import moment from 'moment';
 import {
   Column,
@@ -35,7 +34,7 @@ import saveToAdmin from '@Launch/utils/saveToAdmin';
 import {Contract} from '@ethersproject/contracts';
 import {getSigner} from 'utils/contract';
 import {useActiveWeb3React} from 'hooks/useWeb3';
-import {DEPLOYED, BASE_PROVIDER,OPENSEA} from 'constants/index';
+import {DEPLOYED, BASE_PROVIDER, OPENSEA} from 'constants/index';
 import * as ProjectTokenABI from 'services/abis/ProjectToken.json';
 const {ProjectTokenProxy} = DEPLOYED;
 type MyProjectTableProps = {
@@ -85,8 +84,6 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
     library,
   );
 
-  console.log('isLoading', isLoading);
-  
   useEffect(() => {
     async function getNFTInfo() {
       if (account === null || account === undefined || library === undefined) {
@@ -94,12 +91,12 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
       }
 
       const tokensOfOwner = await ProjectToken.tokensOfOwner(account);
-      const uris = await Promise.all(tokensOfOwner.map(async (token: any) => {
-        const uriObj = await ProjectToken.tokenURIValue(token);
-        return {...token,uriObj };
-      }),
+      const uris = await Promise.all(
+        tokensOfOwner.map(async (token: any) => {
+          const uriObj = await ProjectToken.tokenURIValue(token);
+          return {...token, uriObj};
+        }),
       );
-      
     }
     getNFTInfo();
   }, [transactionType, blockNumber, projects, data]);
@@ -147,14 +144,26 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
     }
   };
 
-  if (isLoading === true || data.length === 0) {
+  //data.length === 0
+  if (isLoading === true) {
     return (
-      <Flex>
-        <Text>Loading</Text>
+      <Flex w="1102px" justifyContent={'center'} alignItems={'center'}>
+        <LoadingComponent></LoadingComponent>
+      </Flex>
+    );
+  } else if (data.length === 0) {
+    return (
+      <Flex
+        w="1102px"
+        justifyContent={'center'}
+        alignItems={'center'}
+        h={'100px'}
+        fontFamily={theme.fonts.roboto}
+        fontSize={'16px'}>
+        <Text>There are no owned projects</Text>
       </Flex>
     );
   }
-
   return (
     <Flex w="1102px" flexDir={'column'}>
       <Flex>
@@ -269,7 +278,7 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                       key,
                       project,
                       listed,
-                      tokenID
+                      tokenID,
                     } = cell.row.original;
                     const type = cell.column.id;
                     return (
@@ -351,35 +360,39 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                                   mr={'10px'}>
                                   Done
                                 </Text>
-                                {tokenID !== null?  <Link
-                                  w={'136px'}
-                                  h={'25px'}
-                                  bg={'#257eee'}
-                                  borderRadius={'4px'}
-                                  color={'#ffffff'}
-                                  fontWeight={'normal'}
-                                  fontSize={'12px'}
-                                  _hover={{bg: '#257eee'}}
-                                  _active={{bg: '#257eee'}}
-                                  target={'blank'}
-                                  pt={'4px'}
-                                  alignItems={'center'}
-                                  href={`${OPENSEA}${Number(tokenID)}`}>
-                                  
-                                  See Project NFT
-                                </Link>: <Button
-                                  w={'136px'}
-                                  h={'25px'}
-                                  bg={'#257eee'}
-                                  color={'#ffffff'}
-                                  fontWeight={'normal'}
-                                  fontSize={'12px'}
-                                  _hover={{bg: '#257eee'}}
-                                  _active={{bg: '#257eee'}}
-                                  onClick={() => mintNFT(project)}>
-                                  Mint Project NFT
-                                </Button>}
-                               
+                                {tokenID !== null ? (
+                                  <a
+                                    target={'blank'}
+                                    href={`${OPENSEA}${Number(tokenID)}`}>
+                                    <Button
+                                      w={'136px'}
+                                      h={'25px'}
+                                      bg={'#257eee'}
+                                      borderRadius={'4px'}
+                                      color={'#ffffff'}
+                                      fontWeight={'normal'}
+                                      fontSize={'12px'}
+                                      _hover={{bg: '#257eee'}}
+                                      _active={{bg: '#257eee'}}
+                                      pt={'4px'}
+                                      alignItems={'center'}>
+                                      See Project NFT
+                                    </Button>
+                                  </a>
+                                ) : (
+                                  <Button
+                                    w={'136px'}
+                                    h={'25px'}
+                                    bg={'#257eee'}
+                                    color={'#ffffff'}
+                                    fontWeight={'normal'}
+                                    fontSize={'12px'}
+                                    _hover={{bg: '#257eee'}}
+                                    _active={{bg: '#257eee'}}
+                                    onClick={() => mintNFT(project)}>
+                                    Mint Project NFT
+                                  </Button>
+                                )}
                               </Flex>
                             ) : (
                               <Flex>
