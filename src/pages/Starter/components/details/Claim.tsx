@@ -28,8 +28,8 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
   const [exclusiveSale, setExclusiveSale] = useState<string>('-');
   const [remainedAmount, setRemainedAmount] = useState<string>('-');
   const [openSale, setOpenSale] = useState<string>('-');
-  const [period, setPeriod] = useState<string>('-');
-  const [endPeriod, setEndPeriod] = useState<string>('-');
+  const [thisRound, setThisRound] = useState<string>('-');
+  const [endRound, setEndRound] = useState<string>('-');
   const [withdrawAmount, setWithdrawAmount] = useState<string>('0');
   const [d_Day, setD_Day] = useState<number>(0);
   const [notRemained, setNotRemained] = useState<boolean>(true);
@@ -118,37 +118,38 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
   useEffect(() => {
     async function getDate() {
       if (PUBLICSALE_CONTRACT) {
-        const startClaimTime = await PUBLICSALE_CONTRACT.startClaimTime();
-        const startClaimTimeNum = Number(startClaimTime.toString());
         const nowTime = moment().unix();
-        const diffTime = nowTime - startClaimTimeNum;
-        const interval = await PUBLICSALE_CONTRACT.claimInterval();
-        const intervalNum = Number(interval.toString());
-        const endPeriod = await PUBLICSALE_CONTRACT.claimPeriod();
-        const endPeriodNum = Number(endPeriod.toString());
-        const period = parseInt(String(diffTime / intervalNum + 1));
+        const totalRound = await PUBLICSALE_CONTRACT.totalClaimCounts();
+        const totalRoundNum = Number(totalRound.toString()) - 1;
 
-        setPeriod(isNaN(period) ? '0' : String(Math.floor(period)));
-        setEndPeriod(endPeriod.toString());
+        let isEnd = false;
+        let roundStart = 0;
+        let vestingTimeStamp = 0;
 
-        if (period < endPeriodNum) {
-          const nextVestingDate = startClaimTimeNum + intervalNum * period;
-
-          setD_Day(nextVestingDate);
-          setVestingDay(
-            convertTimeStamp(nextVestingDate, 'YYYY.MM.DD HH:mm:ss'),
-          );
-        } else {
-          const nextVestingDate =
-            startClaimTimeNum + intervalNum * endPeriodNum;
-
-          setD_Day(nextVestingDate);
-
-          if (nextVestingDate === 0) {
-            return setVestingDay('-');
-          } else {
-            setVestingDay(convertTimeStamp(nextVestingDate));
+        while (totalRoundNum + 1 > roundStart) {
+          const claimTime = await PUBLICSALE_CONTRACT.claimTimes(roundStart);
+          const claimTimeStamp = Number(claimTime.toString());
+          if (claimTimeStamp > nowTime) {
+            console.log(claimTimeStamp, nowTime);
+            vestingTimeStamp = claimTimeStamp;
+            break;
           }
+          if (totalRoundNum === roundStart) {
+            isEnd = true;
+            break;
+          }
+          roundStart++;
+        }
+
+        setEndRound(String(totalRoundNum + 1));
+        setThisRound(String(roundStart + 1));
+
+        //currentRound() == totalClaimCounts();
+
+        if (isEnd) {
+          return setVestingDay('-');
+        } else {
+          setVestingDay(convertTimeStamp(vestingTimeStamp));
         }
       }
     }
@@ -392,11 +393,9 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
             <Text color={'gray.400'} mr={'3px'}>
               Withdraw Claims :{' '}
             </Text>
-            <Text {...detailSubTextStyle}>
-              {Number(period) > Number(endPeriod) ? endPeriod : period}
-            </Text>
+            <Text {...detailSubTextStyle}>{thisRound}</Text>
             <Text mx={'3px'}>/</Text>
-            <Text>{endPeriod}</Text>
+            <Text>{endRound}</Text>
           </Flex>
         </Box>
       </Box>

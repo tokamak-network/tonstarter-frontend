@@ -155,6 +155,8 @@ const MainScreen = () => {
                 <StepComponent step={step} />
                 <Flex mt={'50px'} fontSize={14} justifyContent="center">
                   <Button
+                    type="submit"
+                    isDisabled={isSubmitting}
                     w={'160px'}
                     h={'45px'}
                     bg={'#00c3c4'}
