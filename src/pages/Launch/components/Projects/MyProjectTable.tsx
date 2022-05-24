@@ -85,6 +85,8 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
     library,
   );
 
+  console.log('isLoading', isLoading);
+  
   useEffect(() => {
     async function getNFTInfo() {
       if (account === null || account === undefined || library === undefined) {
