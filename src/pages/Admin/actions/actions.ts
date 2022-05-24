@@ -24,6 +24,11 @@ interface I_CallContract {
   address: string;
 }
 
+interface I_CallContract2 {
+  account: string;
+  library: LibraryType;
+}
+
 const getERC20ApproveTOS = async (
   args: I_CallContract & {amount: string; isRay?: boolean},
 ) => {
@@ -150,6 +155,77 @@ const distributeTON = async (
 
     console.log('res', res);
 
+    return setTx(res);
+  } catch (e) {
+    console.log(e);
+    store.dispatch(
+      //@ts-ignore
+      openToast({
+        payload: {
+          status: 'error',
+          title: 'Tx fail to send',
+          description: `something went wrong`,
+          duration: 5000,
+          isClosable: true,
+        },
+      }),
+    );
+  }
+};
+
+const getDistributedTosAmount = async (args: I_CallContract2) => {
+  try {
+    const {account, library} = args;
+    const {LockTOSDividend_ADDRESS, TON_ADDRESS} = DEPLOYED;
+    const LOCKTOS_DIVIDEND_CONTRACT = new Contract(
+      LockTOSDividend_ADDRESS,
+      LockTOSDividend.abi,
+      library,
+    );
+    const signer = getSigner(library, account);
+
+    const res = await LOCKTOS_DIVIDEND_CONTRACT.connect(signer).distributions(
+      TON_ADDRESS,
+    );
+
+    console.log('res', res);
+
+    // return setTx(res);
+  } catch (e) {
+    console.log(e);
+    store.dispatch(
+      //@ts-ignore
+      openToast({
+        payload: {
+          status: 'error',
+          title: 'Tx fail to send',
+          description: `something went wrong`,
+          duration: 5000,
+          isClosable: true,
+        },
+      }),
+    );
+  }
+};
+
+export const claimToken = async (args: I_CallContract) => {
+  try {
+    const {account, library, address} = args;
+    const {TokenDividendProxyPool_ADDRESS} = DEPLOYED;
+    const TOKEN_DIVIDEND_PROXY_CONTRACT = new Contract(
+      TokenDividendProxyPool_ADDRESS,
+      TokenDividendProxyPool.abi,
+      library,
+    );
+
+    if (account === undefined || account === null || library === undefined) {
+      return;
+    }
+    const signer = getSigner(library, account);
+
+    const res = await TOKEN_DIVIDEND_PROXY_CONTRACT.connect(signer).claim(
+      address,
+    );
     return setTx(res);
   } catch (e) {
     console.log(e);
@@ -387,6 +463,8 @@ const actions = {
   getERC20ApproveTON,
   distributeTOS,
   distributeTON,
+  getDistributedTosAmount,
+  claimToken,
   addStarter,
   editStarter,
   addPool,

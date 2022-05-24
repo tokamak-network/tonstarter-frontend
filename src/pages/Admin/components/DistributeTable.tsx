@@ -2,50 +2,32 @@ import {FC, useRef, useEffect, useState} from 'react';
 import {
   Text,
   Flex,
-  Select,
-  Box,
   useColorMode,
-  Center,
   useTheme,
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  TableCaption,
-  TableContainer,
   Button,
   Heading,
   GridItem,
   Grid,
 } from '@chakra-ui/react';
-import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import {LoadingComponent} from 'components/Loading';
-import {CustomButton} from 'components/Basic/CustomButton';
 import {useDispatch} from 'react-redux';
 import {openModal} from 'store/modal.reducer';
 import {useActiveWeb3React} from 'hooks/useWeb3';
-import {useModal} from 'hooks/useModal';
 import AdminActions from '../actions';
-import {FetchPoolData} from '@Admin/types';
 import moment from 'moment';
-import {useBlockNumber} from 'hooks/useBlock';
 import {DEPLOYED} from 'constants/index';
-import {useERC20Token} from 'hooks/useERC20Token';
-import {convertNumber, convertToRay, convertToWei} from 'utils/number';
-import * as ERC20 from 'services/abis/ERC20.json';
 
 export const DistributeTable = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const dispatch = useDispatch();
   const {account, library} = useActiveWeb3React();
+  const {TON_ADDRESS, WTON_ADDRESS, TOS_ADDRESS, DOC_ADDRESS} = DEPLOYED;
 
   const [timeStamp, setTimeStamp] = useState<string>('');
   const [distributions, setDistributions] = useState<any[]>([]);
+  const [distributedTosAmount, setDistributedTosAmount] = useState<any>();
 
   const themeDesign = {
     border: {
@@ -83,22 +65,23 @@ export const DistributeTable = () => {
   };
 
   useEffect(() => {
-    const getDistributions = async () => {
-      // Get all distributed tokens for the week...
-      // Get address of what? All the tokens?
-      if (library && account) {
-        const {TokenDividendProxyPool_ADDRESS} = DEPLOYED;
-        // const ERC20_CONTRACT = new Contract(address, ERC20.abi, library);
-        const signer = getSigner(library, account);
-
-        // const res = await ERC20_CONTRACT.connect(signer).approve(
-        //   TokenDividendProxyPool_ADDRESS,
-        //   isRay === true ? convertToRay(amount) : convertToWei(amount),
-        //   );
+    async function getDistributedTosAmount() {
+      if (!account) {
+        return;
       }
-    };
-    getDistributions();
-  });
+      const distributedTosAmt = await AdminActions.getDistributedTosAmount({
+        account,
+        library,
+      });
+      console.log('distributedTosAmt: ', distributedTosAmount);
+      setDistributedTosAmount(distributedTosAmt);
+    }
+    if (account) {
+      getDistributedTosAmount();
+    } else {
+      setDistributedTosAmount('0.00');
+    }
+  }, [account, library]);
 
   useEffect(() => {
     //GET NEXT THUR
@@ -318,20 +301,6 @@ export const DistributeTable = () => {
               1,000,000
             </Text>
           </GridItem>
-          {/* <GridItem
-          border={themeDesign.border[colorMode]}
-          className={'chart-cell'}
-          fontFamily={theme.fonts.fld}
-          borderBottomRightRadius={'4px'}>
-          <Flex flexDir={'column'}>
-            <Text color={colorMode === 'light' ? '#9d9ea5' : '#7e8993'}>
-              You can distribute on
-            </Text>
-            <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-              10:00
-            </Text>
-          </Flex>
-        </GridItem> */}
         </Grid>
       )}
     </Flex>
