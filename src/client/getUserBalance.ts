@@ -58,9 +58,9 @@ export const getUserStakedTonBalance = async ({account, library}: any) => {
     library,
   );
   const totalSupply = await contract.balanceOf(account);
-  const formattedNumber = Number(ethers.utils.formatEther(totalSupply)).toFixed(
-    2,
-  );
+  const formattedNumber = Number(
+    ethers.utils.formatUnits(totalSupply, 27),
+  ).toFixed(2);
   return formattedNumber;
   // const balance = convertNumber({amount: String(contractIserBalance)});
   // return {ton: balance || '0', tonOrigin: contractIserBalance.toString()};

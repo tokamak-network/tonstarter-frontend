@@ -29,6 +29,12 @@ interface I_CallContract2 {
   library: LibraryType;
 }
 
+interface I_CallContract3 {
+  account: string;
+  library: LibraryType;
+  addresses: any;
+}
+
 const getERC20ApproveTOS = async (
   args: I_CallContract & {amount: string; isRay?: boolean},
 ) => {
@@ -225,6 +231,42 @@ export const claimToken = async (args: I_CallContract) => {
 
     const res = await TOKEN_DIVIDEND_PROXY_CONTRACT.connect(signer).claim(
       address,
+    );
+    return setTx(res);
+  } catch (e) {
+    console.log(e);
+    store.dispatch(
+      //@ts-ignore
+      openToast({
+        payload: {
+          status: 'error',
+          title: 'Tx fail to send',
+          description: `something went wrong`,
+          duration: 5000,
+          isClosable: true,
+        },
+      }),
+    );
+  }
+};
+
+export const claimMultipleTokens = async (args: I_CallContract3) => {
+  try {
+    const {account, library, addresses} = args;
+    const {TokenDividendProxyPool_ADDRESS} = DEPLOYED;
+    const TOKEN_DIVIDEND_PROXY_CONTRACT = new Contract(
+      TokenDividendProxyPool_ADDRESS,
+      TokenDividendProxyPool.abi,
+      library,
+    );
+
+    if (account === undefined || account === null || library === undefined) {
+      return;
+    }
+    const signer = getSigner(library, account);
+
+    const res = await TOKEN_DIVIDEND_PROXY_CONTRACT.connect(signer).claimBatch(
+      addresses,
     );
     return setTx(res);
   } catch (e) {
@@ -465,6 +507,7 @@ const actions = {
   distributeTON,
   getDistributedTosAmount,
   claimToken,
+  claimMultipleTokens,
   addStarter,
   editStarter,
   addPool,
