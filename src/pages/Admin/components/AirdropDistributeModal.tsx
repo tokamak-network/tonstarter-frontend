@@ -134,10 +134,6 @@ export const AirdropDistributeModal = () => {
     return setIsTokenBalanceExceed(checkedTokenBalanceExceed);
   }, [tokenAmount, tokenBalance]);
 
-  useEffect(() => {
-    console.log('distributeToValue: ', distributeToValue);
-  }, [distributeToValue]);
-
   const distributeAction = () => {
     if (!account) {
       return;
@@ -316,7 +312,6 @@ export const AirdropDistributeModal = () => {
                   border: '1px solid #dfe4ee',
                 }}
                 value={allowance}
-                setValue={setAllowance}
                 placeHolder={'0.00'}
                 fontWeight={500}
                 color={
