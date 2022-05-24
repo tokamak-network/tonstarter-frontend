@@ -2,41 +2,21 @@ import {FC, useRef, useEffect, useState} from 'react';
 import {
   Text,
   Flex,
-  Select,
-  Box,
   useColorMode,
-  Center,
   useTheme,
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  TableCaption,
-  TableContainer,
   Button,
   Heading,
   GridItem,
   Grid,
 } from '@chakra-ui/react';
-import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import {LoadingComponent} from 'components/Loading';
-import {CustomButton} from 'components/Basic/CustomButton';
 import {useDispatch} from 'react-redux';
 import {openModal} from 'store/modal.reducer';
 import {useActiveWeb3React} from 'hooks/useWeb3';
-import {useModal} from 'hooks/useModal';
 import AdminActions from '../actions';
-import {FetchPoolData} from '@Admin/types';
 import moment from 'moment';
-import {useBlockNumber} from 'hooks/useBlock';
 import {DEPLOYED} from 'constants/index';
-import {useERC20Token} from 'hooks/useERC20Token';
-import {convertNumber, convertToRay, convertToWei} from 'utils/number';
-import * as ERC20 from 'services/abis/ERC20.json';
 
 export const DistributeTable = () => {
   const {colorMode} = useColorMode();
@@ -321,20 +301,6 @@ export const DistributeTable = () => {
               1,000,000
             </Text>
           </GridItem>
-          {/* <GridItem
-          border={themeDesign.border[colorMode]}
-          className={'chart-cell'}
-          fontFamily={theme.fonts.fld}
-          borderBottomRightRadius={'4px'}>
-          <Flex flexDir={'column'}>
-            <Text color={colorMode === 'light' ? '#9d9ea5' : '#7e8993'}>
-              You can distribute on
-            </Text>
-            <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-              10:00
-            </Text>
-          </Flex>
-        </GridItem> */}
         </Grid>
       )}
     </Flex>

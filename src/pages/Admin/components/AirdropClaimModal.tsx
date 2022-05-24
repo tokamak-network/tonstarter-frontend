@@ -12,38 +12,53 @@ import {
   useColorMode,
   Checkbox,
 } from '@chakra-ui/react';
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {useModal} from 'hooks/useModal';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {CloseButton} from 'components/Modal';
-import {CustomInput, CustomSelectBox} from 'components/Basic';
+import {getSigner} from 'utils/contract';
 import AdminActions from '@Admin/actions';
 import moment from 'moment';
 import {useBlockNumber} from 'hooks/useBlock';
 import {DEPLOYED} from 'constants/index';
 import {useERC20Token} from 'hooks/useERC20Token';
+import {Contract} from '@ethersproject/contracts';
+import * as TOKENDIVIDENDPOOLPROXY from 'services/abis/TokenDividendProxyPool.json';
 
 export const AirdropClaimModal = () => {
-  const {TON_ADDRESS, WTON_ADDRESS, TOS_ADDRESS, DOC_ADDRESS} = DEPLOYED;
+  const {
+    TON_ADDRESS,
+    WTON_ADDRESS,
+    TOS_ADDRESS,
+    DOC_ADDRESS,
+    TokenDividendProxyPool_ADDRESS,
+  } = DEPLOYED;
+
   const {data} = useAppSelector(selectModalType);
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
   const {btnStyle} = theme;
 
-  const [tokenAddress, setTokenAddress] = useState<string>(TON_ADDRESS);
+  // const [tokenAddress, setTokenAddress] = useState<string>(TON_ADDRESS);
   const [tokenAmount, setTokenAmount] = useState('');
   const [allowance, setAllowance] = useState<string>('');
   const [ableDistribute, setAbleDistribute] = useState<boolean>(false);
   const [timeStamp, setTimeStamp] = useState<string>('');
   const [isRay, setIsRay] = useState<boolean>(false);
 
+  const TOKEN_DIVIDEND_PROXY_POOL_CONTRACT = new Contract(
+    TokenDividendProxyPool_ADDRESS,
+    TOKENDIVIDENDPOOLPROXY.abi,
+    library,
+  );
+
   const {blockNumber} = useBlockNumber();
   const {handleCloseModal} = useModal(setTokenAmount);
 
-  const {tokenSymbol, genesisAirdropBalance, amount} = data?.data;
+  const {tokenSymbol, tokenAddress, genesisAirdropBalance, amount} = data?.data;
 
   console.log('data: ', data);
 
@@ -63,6 +78,18 @@ export const AirdropClaimModal = () => {
     tosFont: {
       light: '#2a72e5',
       dark: '#2a72e5',
+    },
+    cancelFont: {
+      light: '#3e495c',
+      dark: '#fff',
+    },
+    cancelBg: {
+      light: '#fff',
+      dark: '#222',
+    },
+    cancelBorder: {
+      light: 'solid 1px #dfe4ee',
+      dark: 'solid 1px #535353',
     },
     borderTos: {
       light: 'dashed 1px #dfe4ee',
@@ -136,18 +163,17 @@ export const AirdropClaimModal = () => {
     }
   }, []);
 
-  const selectOptionValues = [
-    TON_ADDRESS,
-    WTON_ADDRESS,
-    TOS_ADDRESS,
-    DOC_ADDRESS,
-    'CUSTOM TOKEN',
-  ];
-  const selectOptionNames = ['TON', 'WTON', 'TOS', 'DOC', 'CUSTOM TOKEN'];
+  const claimToken = async (tokenAddress: string) => {
+    if (account === undefined || account === null || library === undefined) {
+      return;
+    }
+    const signer = getSigner(library, account);
 
-  useEffect(() => {
-    if (tokenAddress === 'CUSTOM TOKEN') return setTokenAddress('');
-  }, [tokenAddress]);
+    const res = await TOKEN_DIVIDEND_PROXY_POOL_CONTRACT.connect(signer).claim(
+      tokenAddress,
+    );
+    console.log('claimToken res: ', res);
+  };
 
   // const {tokenBalance, tokenSymbol} = useERC20Token({
   //   tokenAddress: tokenAddress,
@@ -168,7 +194,6 @@ export const AirdropClaimModal = () => {
       isOpen={data.modal === 'Airdrop_Claim' ? true : false}
       isCentered
       onClose={() => {
-        setTokenAddress(TON_ADDRESS);
         setTokenAmount('');
         setAllowance('');
         handleCloseModal();
@@ -278,7 +303,9 @@ export const AirdropClaimModal = () => {
               w={'150px'}
               fontSize="14px"
               fontFamily={theme.fonts.roboto}
-              color={'#fff'}
+              color={themeDesign.cancelFont[colorMode]}
+              bg={themeDesign.cancelBg[colorMode]}
+              border={themeDesign.cancelBorder[colorMode]}
               _hover={{}}
               onClick={handleCloseModal}>
               Cancel
@@ -290,13 +317,12 @@ export const AirdropClaimModal = () => {
               _hover={{}}
               onClick={() => {
                 account &&
-                  AdminActions.getERC20ApproveTOS({
+                  AdminActions.claimToken({
                     account,
                     library,
-                    amount: tokenAmount,
                     address: tokenAddress,
-                    isRay: WTON_ADDRESS === tokenAddress,
                   });
+                handleCloseModal();
               }}>
               Claim
             </Button>
