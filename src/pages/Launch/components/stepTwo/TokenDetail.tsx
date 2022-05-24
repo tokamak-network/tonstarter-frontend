@@ -435,15 +435,17 @@ const SubTitle = (props: {
                     ? tempVaultData.whitelistEnd
                       ? tempVaultData.whitelistEnd + 1
                       : publicVault.whitelistEnd || moment().unix()
-                    : tempVaultData.publicRound1
-                    ? tempVaultData.publicRound1 + 1
-                    : publicVault.publicRound1 || moment().unix()
+                    : tempVaultData.publicRound1End
+                    ? tempVaultData.publicRound1End + 1
+                    : publicVault.publicRound1End || moment().unix()
                 }></DoubleCalendarPop>
             ) : (
               <SingleCalendarPop
                 setDate={setClaimDate}
                 // startTimeCap={moment().add(8, 'days').unix()}
-                startTimeCap={moment().unix()}></SingleCalendarPop>
+                startTimeCap={moment()
+                  .add('11', 'minutes')
+                  .unix()}></SingleCalendarPop>
             )}
           </Flex>
         ) : (
