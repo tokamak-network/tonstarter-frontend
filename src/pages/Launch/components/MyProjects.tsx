@@ -13,6 +13,11 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useAppDispatch} from 'hooks/useRedux';
 import {fetchProjects} from '@Launch/launch.reducer';
 import {DEPLOYED, BASE_PROVIDER} from 'constants/index';
+import {Contract} from '@ethersproject/contracts';
+import {getSigner} from 'utils/contract';
+import * as ProjectTokenABI from 'services/abis/ProjectToken.json';
+import {selectTransactionType} from 'store/refetch.reducer';
+
 const MyProjects = () => {
   const theme = useTheme();
   // const match = useRouteMatch();
@@ -22,7 +27,9 @@ const MyProjects = () => {
   const {account, library, chainId} = useActiveWeb3React();
   const [projectsForTable, setProjectsForTable] = useState<any>();
   const starterData = store.getState().starters.data;
-
+  const {ProjectTokenProxy} = DEPLOYED;
+  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
+  const [uriArray, setUriArray] = useState<any[]>([]);
   const {data, isLoading, error} = useQuery(
     ['test'],
     () =>
@@ -41,18 +48,66 @@ const MyProjects = () => {
     data: {projects},
   } = useAppSelector(selectLaunch);
 
+  const ProjectToken = new Contract(
+    ProjectTokenProxy,
+    ProjectTokenABI.abi,
+    library,
+  );
+  useEffect(() => {
+    async function getNFTInfo() {
+      if (account === null || account === undefined || library === undefined) {
+        return;
+      }
+
+      const tokensOfOwner = await ProjectToken.tokensOfOwner(account);
+      const uris = await Promise.all(
+        tokensOfOwner.map(async (token: any) => {
+          const uriObj = await ProjectToken.tokenURIValue(token);
+          return {...token, uriObj};
+        }),
+      );      
+      setUriArray(uris);
+    }
+    getNFTInfo();
+  }, [transactionType, blockNumber, projects, data]);
   useEffect(() => {
     if (data) {
       const {data: datas} = data;
       dispatch(fetchProjects({data: datas}));
       setProjectsForTable(datas);
       const projs = Object.keys(datas).map((k) => {
-        const listed = starterData.rawData.some(el => el.projectKey === k);
-        
-        
+        const listed = starterData.rawData.some((el) => el.projectKey === k);
         const stat = datas[k].vaults.every((vault: any) => {
           return vault.isSet === true;
         });
+        const div = document.createElement('div');
+        div.innerHTML = datas[k].description;
+        const projectURIUnformatted = {
+          name: datas[k].projectName,
+          description: div.textContent,
+          external_url: datas[k].website,
+          image: datas[k].tokenSymbolImage,
+          attributes: datas[k].vaults.map((vault: any) => {
+            return {
+              trait_type: vault.vaultName,
+              value: vault.vaultAddress,
+            };
+          }),
+        };
+        
+        const projectURIFormatted = `${JSON.stringify(projectURIUnformatted)}`;
+      const tokenInArray = uriArray.filter((uri) => 
+        uri.uriObj === projectURIFormatted
+      )
+
+      let tokenID;
+    
+      if (tokenInArray.length !== 0) {
+        tokenID = tokenInArray[0]._hex
+      }
+      else {
+        tokenID = null
+      }
         return {
           key: k,
           name: datas[k].projectName,
@@ -68,7 +123,8 @@ const MyProjects = () => {
           public2End: datas[k].vaults[0].publicRound2End,
           status: stat,
           project: datas[k],
-          listed: listed
+          listed: listed,
+          tokenID:tokenID
         };
       });
       const MyProjs = projs.filter((pro: any) => pro.owner === account);

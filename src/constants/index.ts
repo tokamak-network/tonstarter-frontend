@@ -34,6 +34,8 @@ export const BASE_PROVIDER =
   REACT_APP_MODE === 'DEV'
     ? ethers.getDefaultProvider('rinkeby')
     : ethers.getDefaultProvider('mainnet');
+
+export const OPENSEA = REACT_APP_MODE === 'DEV' ? 'https://testnets.opensea.io/assets/rinkeby/0x48683ac8ab065a113323bdb5738a267d7ff7f0d6/' : 'https://opensea.io/assets/ethereum/'
 export const fetchStakeURL = `${API_SERVER}/stakecontracts?chainId=${DEFAULT_NETWORK}`;
 export const fetchValutURL = `${API_SERVER}/vaults?chainId=${DEFAULT_NETWORK}`;
 export const fetchRewardsURL = `${API_SERVER}/reward?chainId=${DEFAULT_NETWORK}&pagesize=200`;
