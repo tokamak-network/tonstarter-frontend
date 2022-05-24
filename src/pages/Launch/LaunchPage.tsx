@@ -88,14 +88,14 @@ const LaunchPage = () => {
           transform={'translateX(-50%)'}>
           <Flex alignItems={'center'} flexDir="column" mb={'20px'}>
             <Text
-              fontColor={'#fff'}
+              color={'#fff'}
               fontSize={'72px'}
               fontWeight={'bold'}
               fontFamily={theme.fonts.poppins}>
               Launch
             </Text>
             <Text
-              fontColor={'#fff'}
+              color={'#fff'}
               fontFamily={theme.fonts.roboto}
               fontSize={'22px'}>
               Make Your Own Token and Create a Token Economy.
