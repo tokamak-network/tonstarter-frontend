@@ -171,7 +171,14 @@ const LaunchPage = () => {
         alignItems={'center'}
         mt={'60px'}>
         <Flex alignItems={'center'} flexDir="column">
-          <PageHeader title={'Projects'} />
+          <Text
+            fontSize={'32px'}
+            color={colorMode === 'light' ? '#3d495d' : '#fff'}
+            fontFamily={theme.fonts.titil}
+            fontWeight={'bold'}>
+            {' '}
+            Projects
+          </Text>
         </Flex>
         <Flex mt={'40px'} mb={'30px'}>
           <Button
