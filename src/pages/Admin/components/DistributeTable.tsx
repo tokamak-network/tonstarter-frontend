@@ -17,17 +17,37 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 import AdminActions from '../actions';
 import moment from 'moment';
 import {DEPLOYED} from 'constants/index';
+import {useContract} from 'hooks/useContract';
+import {convertNumber} from 'utils/number';
+import * as LockTOSDividendABI from 'services/abis/LockTOSDividend.json';
+import * as ERC20 from 'services/abis/ERC20.json';
+
+// type AirdropTokenList = {tokenName: string; amount: string}[];
 
 export const DistributeTable = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const dispatch = useDispatch();
   const {account, library} = useActiveWeb3React();
-  const {TON_ADDRESS, WTON_ADDRESS, TOS_ADDRESS, DOC_ADDRESS} = DEPLOYED;
+  const {
+    TON_ADDRESS,
+    WTON_ADDRESS,
+    TOS_ADDRESS,
+    DOC_ADDRESS,
+    LockTOSDividend_ADDRESS,
+  } = DEPLOYED;
 
   const [timeStamp, setTimeStamp] = useState<string>('');
   const [distributions, setDistributions] = useState<any[]>([]);
   const [distributedTosAmount, setDistributedTosAmount] = useState<any>();
+  // const [airdropList, setAirdropList] = useState<AirdropTokenList | undefined>(
+  //   undefined,
+  // );
+
+  const LOCKTOS_DIVIDEND_CONTRACT = useContract(
+    LockTOSDividend_ADDRESS,
+    LockTOSDividendABI.abi,
+  );
 
   const themeDesign = {
     border: {
@@ -95,6 +115,47 @@ export const DistributeTable = () => {
       return setTimeStamp(nextWed);
     }
   }, []);
+
+  // const fetchData = async () => {
+  //   let claimableTokens = [];
+  //   let isError = false;
+  //   let i = 0;
+
+  //   do {
+  //     try {
+  //       const tokenAddress = await LOCKTOS_DIVIDEND_CONTRACT?.distributedTokens(
+  //         i,
+  //       );
+  //       claimableTokens.push(tokenAddress);
+  //       i++;
+  //     } catch (e) {
+  //       isError = true;
+  //     }
+  //   } while (isError === false);
+
+  //   const tokens = claimableTokens;
+  //   const nowTimeStamp = moment().unix();
+  //   const result: {tokenName: string; amount: string}[] = await Promise.all(
+  //     tokens.map(async (token: string) => {
+  //       const tokenAmount = await LOCKTOS_DIVIDEND_CONTRACT?.tokensPerWeekAt(
+  //         token,
+  //         nowTimeStamp,
+  //       );
+  //       const ERC20_CONTRACT = new Contract(token, ERC20.abi, library);
+  //       const tokenSymbol = await ERC20_CONTRACT.symbol();
+  //       return {
+  //         tokenName: tokenSymbol,
+  //         amount: convertNumber({
+  //           amount: tokenAmount.toString(),
+  //           localeString: true,
+  //           type: tokenSymbol !== 'WTON' ? 'wei' : 'ray',
+  //         }) as string,
+  //       };
+  //     }),
+  //   );
+
+  //   return setAirdropList(result);
+  // };
 
   return (
     <Flex flexDirection={'column'} w={'976px'} p={'0px'} mt={'50px'}>
