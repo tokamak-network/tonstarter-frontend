@@ -12,7 +12,7 @@ import {useParams} from 'react-router-dom';
 import {WhiteList} from './components/details/WhiteList';
 // import {OpenSale} from './components/details/OpenSale';
 // import {OpenSaleAfterDeposit} from './components/details/OpenSaleAfterDeposit';
-
+import ReactQuill from 'react-quill';
 import {DetailIcons} from './components/details/Detail_Icons';
 import {SaleStatus, Tier, DetailInfo, SaleInfo} from './types';
 import {DetailTable} from './components/details/Detail_Table';
@@ -32,6 +32,7 @@ import {TokenImage} from '../Admin/components/TokenImage';
 import {ApproveModal} from './components/ApproveModal';
 import moment from 'moment';
 import ConfirmTermsModal from '@Launch/components/modals/ConfirmTerms';
+import 'react-quill/dist/quill.bubble.css';
 
 export const StarterDetail = () => {
   const {id}: {id: string} = useParams();
@@ -204,6 +205,15 @@ export const StarterDetail = () => {
     /*eslint-disable*/
   }, [saleInfo]);
 
+  // const div = document.createElement('div');
+  // div.innerHTML = saleInfo?.description
+
+
+  if (saleInfo) {
+     const div = document.createElement('div');
+  div.innerHTML = saleInfo.description
+}
+
   if (!saleInfo) {
     return (
       <Center mt={'100px'}>
@@ -236,13 +246,22 @@ export const StarterDetail = () => {
               mb={'14px'}>
               DESCRIPTION
             </Text>
-            <Text
+            {/* <Text
               {...STATER_STYLE.subText({colorMode, fontSize: 15})}
               mb={'11px'}>
               {saleInfo?.description}
-            </Text>
-            <Box pos="absolute" bottom={'11px'}>
-              <DetailIcons
+            </Text> */}
+<Flex ml={'-15px'}>
+<ReactQuill
+          // placeholder="Input the project description"
+          readOnly={true}
+          value={saleInfo.description}
+          theme={'bubble'}
+          style={{color: 'white !important'}}
+        />
+        </Flex>
+            <Box pos="absolute" bottom={'11px'} >
+              <DetailIcons 
                 linkInfo={[
                   {sort: 'website', url: `${saleInfo?.website}`},
                   {sort: 'twitter', url: `${saleInfo?.twitter}`},
