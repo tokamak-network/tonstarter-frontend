@@ -35,7 +35,10 @@ export const BASE_PROVIDER =
     ? ethers.getDefaultProvider('rinkeby')
     : ethers.getDefaultProvider('mainnet');
 
-export const OPENSEA = REACT_APP_MODE === 'DEV' ? 'https://testnets.opensea.io/assets/rinkeby/0x48683ac8ab065a113323bdb5738a267d7ff7f0d6/' : 'https://opensea.io/assets/ethereum/'
+export const OPENSEA =
+  REACT_APP_MODE === 'DEV'
+    ? 'https://testnets.opensea.io/assets/rinkeby/0x48683ac8ab065a113323bdb5738a267d7ff7f0d6/'
+    : 'https://opensea.io/assets/ethereum/';
 export const fetchStakeURL = `${API_SERVER}/stakecontracts?chainId=${DEFAULT_NETWORK}`;
 export const fetchValutURL = `${API_SERVER}/vaults?chainId=${DEFAULT_NETWORK}`;
 export const fetchRewardsURL = `${API_SERVER}/reward?chainId=${DEFAULT_NETWORK}&pagesize=200`;
@@ -129,7 +132,7 @@ const RINKEBY_DEPLOYED = {
   unstakeLayer2All: '0xeeEa9CA7a496651577ff1FD353570F8B70580955',
   PowerTONSwapper_ADDRESS: '',
   DoMsaleContractAddress: '0xEb492922afa05D0D7704AD5c202f2ddCc386DA75',
-  ERC20AFACTORY_ADDRESS: '0xf5aa83caAEb10E258d8A790eb3FD61a7B16B116E',
+  ERC20AFACTORY_ADDRESS: '0x58e6815aBEa00Ef6fc823899625F1D8ae98a5348',
   InitialLiquidityVault: '0x98B792CEF9a23b4CB7530E06c8fD821FdB2fBF44',
   LiquidityIncentiveVault: '0xF934A22aCF2E7169793DD1B565E5A5Ea3FDE515D',
   AutoCoinageSnapshot2_ADDRESS: '0xa441fc0670be48284e1d2f3b2a72c017b5dbaade',
