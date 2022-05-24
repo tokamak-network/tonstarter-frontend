@@ -70,9 +70,14 @@ const InputField: React.FC<InputFieldProp> = (props) => {
 
   //@ts-ignore
   if (tempVaultData?.stosTier?.[stosTier]) {
+    console.log('-go---');
+    console.log(tempVaultData);
     //@ts-ignore
     const {requiredStos, allocatedToken} = tempVaultData.stosTier?.[stosTier];
     allocatedTokenData = allocatedToken;
+    // if (requiredStos === '') {
+    //   return (requiredStosData = '600');
+    // }
     requiredStosData = requiredStos;
   }
 
@@ -106,18 +111,17 @@ const InputField: React.FC<InputFieldProp> = (props) => {
                 saveTempVaultData({
                   data: {
                     ...tempVaultData,
-                    stosTier: {
-                      //@ts-ignore
-                      ...tempVaultData.stosTier,
-                      [stosTier]: {
-                        [formikName]: e.target.value,
-                        [formikName === 'requiredStos'
-                          ? 'allocatedToken'
-                          : 'requiredStos']:
-                          formikName === 'requiredStos'
-                            ? allocatedTokenData
-                            : requiredStosData,
-                      },
+
+                    //@ts-ignore
+                    ...tempVaultData.stosTier,
+                    [stosTier]: {
+                      [formikName]: e.target.value,
+                      [formikName === 'requiredStos'
+                        ? 'allocatedToken'
+                        : 'requiredStos']:
+                        formikName === 'requiredStos'
+                          ? allocatedTokenData
+                          : requiredStosData,
                     },
                   },
                 }),
@@ -189,6 +193,10 @@ const InputField: React.FC<InputFieldProp> = (props) => {
           setValue(e.target.value);
           const publicVaultValue = vaultsList[0] as VaultPublic;
           const {stosTier: stosTierData} = publicVaultValue;
+
+          console.log('?');
+          console.log(stosTierData);
+          console.log(tempVaultData);
 
           if (formikName) {
             !isStosTier

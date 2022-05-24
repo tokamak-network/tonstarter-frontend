@@ -2,7 +2,7 @@ import {toChecksumAddress} from 'web3-utils';
 import * as Yup from 'yup';
 
 const ProjectSchema = Yup.object().shape({
-  tokenName: Yup.string().required('Required').max(8),
+  tokenName: Yup.string().required('Required').max(15),
   projectName: Yup.string().required('Required'),
   owner: Yup.string()
     .required('Required')
