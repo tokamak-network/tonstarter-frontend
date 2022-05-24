@@ -34,6 +34,8 @@ export const BASE_PROVIDER =
   REACT_APP_MODE === 'DEV'
     ? ethers.getDefaultProvider('rinkeby')
     : ethers.getDefaultProvider('mainnet');
+
+export const OPENSEA = REACT_APP_MODE === 'DEV' ? 'https://testnets.opensea.io/assets/rinkeby/0x48683ac8ab065a113323bdb5738a267d7ff7f0d6/' : 'https://opensea.io/assets/ethereum/'
 export const fetchStakeURL = `${API_SERVER}/stakecontracts?chainId=${DEFAULT_NETWORK}`;
 export const fetchValutURL = `${API_SERVER}/vaults?chainId=${DEFAULT_NETWORK}`;
 export const fetchRewardsURL = `${API_SERVER}/reward?chainId=${DEFAULT_NETWORK}&pagesize=200`;
@@ -89,11 +91,11 @@ const MAINNET_DEPLOYED = {
   pools: {
     TOS_WTON_POOL: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
     ETH_WTON_Address: '0xC29271E3a68A7647Fd1399298Ef18FeCA3879F59',
-  TOS_WTON_Address: '0x1c0cE9aAA0c12f53Df3B4d8d77B82D6Ad343b4E4',
-  TOS_ETH_Address: '0x2AD99c938471770DA0cD60E08eaf29EbfF67a92A',
-  DOC_TOS_Address: '0x369Bca127B8858108536B71528AB3bEfa1DEb6Fc',
-  TOS_AURA_Address: '0xBdDD3a50Bd2AFd27aED05Cc9FE1c8D67fCAA3218',
-  DOC_ETH_Address: '0xDA3CC73170aA5Bb7C0a9588e7690299df568d53D',
+    TOS_WTON_Address: '0x1c0cE9aAA0c12f53Df3B4d8d77B82D6Ad343b4E4',
+    TOS_ETH_Address: '0x2AD99c938471770DA0cD60E08eaf29EbfF67a92A',
+    DOC_TOS_Address: '0x369Bca127B8858108536B71528AB3bEfa1DEb6Fc',
+    TOS_AURA_Address: '0xBdDD3a50Bd2AFd27aED05Cc9FE1c8D67fCAA3218',
+    DOC_ETH_Address: '0xDA3CC73170aA5Bb7C0a9588e7690299df568d53D',
   },
   UniswapV3Factory: '0x1F98431c8aD98523631AE4a59f267346ea31F984',
   ProjectTokenProxy: ''
