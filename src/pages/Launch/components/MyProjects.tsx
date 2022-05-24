@@ -30,6 +30,7 @@ const MyProjects = () => {
   const {ProjectTokenProxy} = DEPLOYED;
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [uriArray, setUriArray] = useState<any[]>([]);
+  const [isProcessing, setIsProcessing] = useState<boolean>(true);
   const {data, isLoading, error} = useQuery(
     ['test'],
     () =>
@@ -53,85 +54,103 @@ const MyProjects = () => {
     ProjectTokenABI.abi,
     library,
   );
-  useEffect(() => {
-    async function getNFTInfo() {
-      if (account === null || account === undefined || library === undefined) {
-        return;
-      }
-
-      const tokensOfOwner = await ProjectToken.tokensOfOwner(account);
-      const uris = await Promise.all(
-        tokensOfOwner.map(async (token: any) => {
-          const uriObj = await ProjectToken.tokenURIValue(token);
-          return {...token, uriObj};
-        }),
-      );      
-      setUriArray(uris);
-    }
-    getNFTInfo();
-  }, [transactionType, blockNumber, projects, data]);
-  useEffect(() => {
-    if (data) {
-      const {data: datas} = data;
-      dispatch(fetchProjects({data: datas}));
-      setProjectsForTable(datas);
-      const projs = Object.keys(datas).map((k) => {
-        const listed = starterData.rawData.some((el) => el.projectKey === k);
-        const stat = datas[k].vaults.every((vault: any) => {
-          return vault.isSet === true;
-        });
-        const div = document.createElement('div');
-        div.innerHTML = datas[k].description;
-        const projectURIUnformatted = {
-          name: datas[k].projectName,
-          description: div.textContent,
-          external_url: datas[k].website,
-          image: datas[k].tokenSymbolImage,
-          attributes: datas[k].vaults.map((vault: any) => {
-            return {
-              trait_type: vault.vaultName,
-              value: vault.vaultAddress,
-            };
-          }),
-        };
+  // async function getNFTInfo() {
+  //   if (account === null || account === undefined || library === undefined) {
+  //     return;
+  //   }
+  //   if (data) {     
+  //   setUriArray(uris);
+  //   if (uris) {
+  //     setTimeout(() => {
+  //       setIsProcessing(false);
+  //       console.log('uriArraydwd',uriArray);
         
-        const projectURIFormatted = `${JSON.stringify(projectURIUnformatted)}`;
-      const tokenInArray = uriArray.filter((uri) => 
-        uri.uriObj === projectURIFormatted
-      )
+  //     }, 2500);
+  //   }
+  //   }
+  // }
 
-      let tokenID;
-    
-      if (tokenInArray.length !== 0) {
-        tokenID = tokenInArray[0]._hex
-      }
-      else {
-        tokenID = null
-      }
-        return {
-          key: k,
-          name: datas[k].projectName,
-          tokenName: datas[k].tokenName,
-          tokenSymbol: datas[k].tokenSymbol,
-          totalSupply: datas[k].totalSupply,
-          owner: datas[k].ownerAddress,
-          saleDate: [
-            datas[k].vaults[0].whitelist,
-            datas[k].vaults[0].publicRound2End,
-          ],
-          whiteList: datas[k].vaults[0].whitelist,
-          public2End: datas[k].vaults[0].publicRound2End,
-          status: stat,
-          project: datas[k],
-          listed: listed,
-          tokenID:tokenID
-        };
-      });
-      const MyProjs = projs.filter((pro: any) => pro.owner === account);
+  // useEffect(() => {
+  //   getNFTInfo()
+  // }, [data, dispatch, account,transactionType, blockNumber, library, projects]);
 
-      setProjectsData(MyProjs);
+
+  useEffect(() => {
+    async function getData () {
+      if (data) {
+      if (account === null || account === undefined || library === undefined) {
+          return;
+        }
+        const tokensOfOwner = await ProjectToken.tokensOfOwner(account);
+        const uris = await Promise.all(
+          tokensOfOwner.map(async (token: any) => {
+            const uriObj = await ProjectToken.tokenURIValue(token);
+            return {...token, uriObj};
+          }),
+        ); 
+
+        const {data: datas} = data;
+        dispatch(fetchProjects({data: datas}));
+        setProjectsForTable(datas);
+        const projs = Object.keys(datas).map((k) => {
+          const listed = starterData.rawData.some((el) => el.projectKey === k);
+          const stat = datas[k].vaults.every((vault: any) => {
+            return vault.isSet === true;
+          });
+          const div = document.createElement('div');
+          div.innerHTML = datas[k].description;
+          const projectURIUnformatted = {
+            name: datas[k].projectName,
+            description: div.textContent,
+            external_url: datas[k].website,
+            image: datas[k].tokenSymbolImage,
+            attributes: datas[k].vaults.map((vault: any) => {
+              return {
+                trait_type: vault.vaultName,
+                value: vault.vaultAddress,
+              };
+            }),
+          };
+          
+          const projectURIFormatted = `${JSON.stringify(projectURIUnformatted)}`;
+        const tokenInArray:any = uris.filter((uri:any) => 
+          uri.uriObj === projectURIFormatted
+        )
+        let tokenID;
+        
+        if (tokenInArray.length !== 0) {
+          tokenID = tokenInArray[0]._hex
+        }
+        else {
+          tokenID = null
+        }
+          return {
+            key: k,
+            name: datas[k].projectName,
+            tokenName: datas[k].tokenName,
+            tokenSymbol: datas[k].tokenSymbol,
+            totalSupply: datas[k].totalSupply,
+            owner: datas[k].ownerAddress,
+            saleDate: [
+              datas[k].vaults[0].whitelist,
+              datas[k].vaults[0].publicRound2End,
+            ],
+            whiteList: datas[k].vaults[0].whitelist,
+            public2End: datas[k].vaults[0].publicRound2End,
+            status: stat,
+            project: datas[k],
+            listed: listed,
+            tokenID:tokenID
+          };
+        });
+        const MyProjs = projs.filter((pro: any) => pro.owner === account);
+  
+        setProjectsData(MyProjs);
+        setIsProcessing(isProcessing && isLoading)
+      }
     }
-  }, [data, dispatch, account]);
+    getData()
+  }, [data, dispatch, account,transactionType, blockNumber, library]);
 
   const columns = useMemo(
     () => [
@@ -187,7 +206,7 @@ const MyProjects = () => {
             projects={projectsForTable}
             data={projectsData}
             columns={columns}
-            isLoading={isLoading}
+            isLoading={isProcessing}
           />
         </Box>
       </Box>
