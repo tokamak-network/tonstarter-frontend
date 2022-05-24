@@ -64,6 +64,10 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
             await PUBLICSALE_CONTRACT.totalExPurchasedAmount();
           const totalDepositAmount =
             await PUBLICSALE_CONTRACT.totalDepositAmount();
+
+          //check if a user already get refund or not
+          const usersClaim = await PUBLICSALE_CONTRACT.usersClaim(account);
+
           const totalRaisedWei =
             BigNumber.from(totalExAmount).add(totalDepositAmount);
           const refundAmountWei = BigNumber.from(usersExAmount.payAmount).add(
@@ -81,7 +85,9 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
             amount: totalRaisedWei.toString(),
             localeString: true,
           });
-          setRefundAmount(reundAmount as string);
+          setRefundAmount(
+            usersClaim.exec === true ? '0' : (reundAmount as string),
+          );
           setHardCapAmount(hardCapAmount as string);
           setTotalRaisedAmount(totalRaisedAmount as string);
           setIsOverHardcap(false);
@@ -283,7 +289,7 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
         <Box mt={'29px'} d="flex">
           <CustomButton
             text={'Refund'}
-            isDisabled={Number(inputTonBalance) <= 0}
+            isDisabled={Number(refundAmount) <= 0}
             style={{
               mr: '12px',
             }}
