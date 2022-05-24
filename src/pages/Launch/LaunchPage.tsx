@@ -87,11 +87,19 @@ const LaunchPage = () => {
           left={'50%'}
           transform={'translateX(-50%)'}>
           <Flex alignItems={'center'} flexDir="column" mb={'20px'}>
-            <PageHeader
-              title={'Launch'}
-              titleColor={'#fff'}
-              subtitle={'Make Your Own Token and Create a Token Economy.'}
-            />
+            <Text
+              fontColor={'#fff'}
+              fontSize={'72px'}
+              fontWeight={'bold'}
+              fontFamily={theme.fonts.poppins}>
+              Launch
+            </Text>
+            <Text
+              fontColor={'#fff'}
+              fontFamily={theme.fonts.roboto}
+              fontSize={'22px'}>
+              Make Your Own Token and Create a Token Economy.
+            </Text>
           </Flex>
           <Flex justifyContent={'center'} w={'100%'}>
             {/* <Link to={`${url}/createproject`}> */}
