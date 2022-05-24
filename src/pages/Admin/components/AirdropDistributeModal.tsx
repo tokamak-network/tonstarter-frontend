@@ -11,7 +11,7 @@ import {
   useTheme,
   useColorMode,
 } from '@chakra-ui/react';
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {useModal} from 'hooks/useModal';
