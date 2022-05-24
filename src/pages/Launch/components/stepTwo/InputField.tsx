@@ -75,10 +75,11 @@ const InputField: React.FC<InputFieldProp> = (props) => {
     //@ts-ignore
     const {requiredStos, allocatedToken} = tempVaultData.stosTier?.[stosTier];
     allocatedTokenData = allocatedToken;
-    // if (requiredStos === '') {
-    //   return (requiredStosData = '600');
-    // }
-    requiredStosData = requiredStos;
+    if (requiredStos === '') {
+      requiredStosData = '600';
+    } else {
+      requiredStosData = requiredStos;
+    }
   }
 
   if (numberOnly) {
