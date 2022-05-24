@@ -22,6 +22,7 @@ import useValues from '@Launch/hooks/useValues';
 import Line from '@Launch/components/common/Line';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {CustomSelectBox} from 'components/Basic';
+import {useToast} from 'hooks/useToast';
 
 const CreateVaultModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -38,6 +39,9 @@ const CreateVaultModal = () => {
   const [selectVaultType, setSelectVaultType] = useState<
     'C' | 'DAO' | 'Liquidity Incentive'
   >('C');
+  const [btnDisable, setBtnDisable] = useState<boolean>(false);
+
+  const {toastMsg} = useToast();
 
   function editVault() {
     const vaultsList = values.vaults;
@@ -55,8 +59,31 @@ const CreateVaultModal = () => {
   }
 
   useEffect(() => {
-    //Handle it if input value type is char
-  }, [tokenAllocatonVal]);
+    if (nameVal === undefined) {
+      return;
+    }
+    const totalAllocation = values.vaults.reduce((acc, cur) => {
+      if (cur.vaultName === nameVal.replaceAll('*', '').replaceAll(' ', '')) {
+        return acc;
+      }
+      return acc + cur.vaultTokenAllocation;
+    }, 0);
+    if (
+      values.totalSupply &&
+      totalAllocation + Number(tokenAllocatonVal) > values.totalSupply
+    ) {
+      setBtnDisable(true);
+      toastMsg({
+        title: 'Token allocation is over total supply amount',
+        description: 'The sum of token allocation has reached the total supply',
+        duration: 2000,
+        status: 'error',
+        isClosable: true,
+      });
+    } else {
+      setBtnDisable(false);
+    }
+  }, [tokenAllocatonVal, nameVal, values, toastMsg]);
 
   const closeModal = () => {
     setSelectVaultType('C');
@@ -125,7 +152,12 @@ const CreateVaultModal = () => {
                 h={'32px'}
                 value={nameVal}
                 _focus={{}}
-                onChange={(e) => setNameVal(e.target.value)}></Input>
+                onChange={(e) => {
+                  if (e.target.value.length > 18) {
+                    return;
+                  }
+                  setNameVal(e.target.value);
+                }}></Input>
             </Flex>
             <Flex w={'100%'} flexDir={'column'} mb={'24px'}>
               <Text fontWeight={600} mb={'9px'}>
@@ -136,15 +168,21 @@ const CreateVaultModal = () => {
                 h={'32px'}
                 value={tokenAllocatonVal}
                 _focus={{}}
-                onChange={(e) =>
-                  setTokenAllocatonVal(Number(e.target.value))
-                }></Input>
+                onChange={(e) => {
+                  if (isNaN(Number(e.target.value))) {
+                    return;
+                  }
+                  setTokenAllocatonVal(Number(e.target.value));
+                }}></Input>
             </Flex>
             <Flex w={'100%'} flexDir={'column'}>
               <Text fontWeight={600} mb={'9px'}>
                 Admin Address
               </Text>
               <Input
+                fontSize={11}
+                padding={0}
+                paddingLeft={'11px'}
                 w={'290px'}
                 h={'32px'}
                 value={adminAddressVal}
@@ -160,6 +198,7 @@ const CreateVaultModal = () => {
           <Box as={Flex} flexDir="column" alignItems="center" pt={5}>
             <CustomButton
               text={'Add'}
+              isDisabled={btnDisable}
               func={() => {
                 editVault();
                 closeModal();

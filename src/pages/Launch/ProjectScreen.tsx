@@ -1,4 +1,11 @@
-import {Flex, Box, Text, Button, useColorMode} from '@chakra-ui/react';
+import {
+  Flex,
+  Box,
+  Text,
+  Button,
+  useColorMode,
+  useTheme,
+} from '@chakra-ui/react';
 import {useCallback, useEffect, useState} from 'react';
 import {useHistory} from 'react-router-dom';
 import {PageHeader} from 'components/PageHeader';
@@ -13,9 +20,10 @@ const ProjectScreen = () => {
   const {openAnyModal} = useModal();
   const history = useHistory();
   const {colorMode} = useColorMode();
+  const theme = useTheme();
 
   const goBackToList = useCallback(() => {
-    history.push('/opencampaign');
+    history.push('/launch');
   }, []);
   const match = useRouteMatch();
   const {url} = match;
@@ -58,7 +66,6 @@ const ProjectScreen = () => {
     },
   };
 
-  console.log('projects', projects);
   useEffect(() => {
     dispatch(setHashKey({data: isExist === 'project' ? undefined : isExist}));
   }, []);
@@ -71,10 +78,16 @@ const ProjectScreen = () => {
       mt={100}
       mb={'100px'}>
       <Flex alignItems={'center'} flexDir="column" mb={'20px'}>
-        <PageHeader
-          title={'Project'}
-          subtitle={'Make Your Own Token and Create Token Economy'}
-        />
+        <Text
+          color={colorMode === 'dark' ? '#fff' : '#3d495d'}
+          fontFamily={theme.fonts.titil}
+          fontSize={'38px'}
+          mb={'10px'}>
+          Project
+        </Text>
+        <Text color={'#808992'}>
+          Make Your Own Token and Create Token Economy
+        </Text>
         <Flex mt={'60px'} mb={'50px'}>
           <Project project={project} />
         </Flex>

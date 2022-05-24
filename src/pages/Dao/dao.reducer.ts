@@ -43,11 +43,13 @@ export const fetchTosStakes = createAsyncThunk(
       return;
     }
     //tos stake
-    const tosStakeList = await getTosStakeList({account, library});
+    // const tosStakeList = await getTosStakeList({account, library});
 
     //claim
-    const claimList = await getClaimalbeList({account, library});
-    return {tosStakeList, claimList: claimList || []};
+    // const claimList = await getClaimalbeList({account, library});
+    // return {tosStakeList, claimList: claimList || []};
+
+    return {tosStakeList: [], claimList: []};
   },
 );
 

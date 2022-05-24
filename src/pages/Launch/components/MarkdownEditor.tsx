@@ -32,7 +32,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProp> = () => {
   return (
     <Flex flexDir={'column'} fontSize={13}>
       <Text h={18} mb={2.5}>
-        Description
+        Description *
       </Text>
 
       <ReactQuill

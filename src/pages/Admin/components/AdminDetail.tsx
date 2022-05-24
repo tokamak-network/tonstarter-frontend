@@ -42,6 +42,7 @@ const initialValue: AdminObject = {
   tokenFundingRecipient: '',
   projectTokenRatio: 0,
   projectFundingTokenRatio: 0,
+  sector: '',
   //step 3
   saleContractAddress: '',
   snapshot: 0,

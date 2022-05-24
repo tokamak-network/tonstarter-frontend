@@ -8,12 +8,14 @@ import {
 } from '@chakra-ui/react';
 import {useState} from 'react';
 import {PageHeader} from 'components/PageHeader';
-import {Link, useRouteMatch} from 'react-router-dom';
+import {useRouteMatch} from 'react-router-dom';
 import AllProjects from '@Launch/components/AllProjects';
 import MyProjects from '@Launch/components/MyProjects';
 import LaunchPageBackground from '../../assets/banner/LaunchPageBackground.png';
 import {useModal} from 'hooks/useModal';
 import ConfirmTermsModal from './components/modals/ConfirmTerms';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import {injected} from 'connectors';
 
 const LaunchPage = () => {
   const [showAllProjects, setShowAllProjects] = useState<boolean>(true);
@@ -25,6 +27,7 @@ const LaunchPage = () => {
     params: {id},
   } = match;
   const {url} = match;
+  const {active, activate, connector} = useActiveWeb3React();
 
   const themeDesign = {
     border: {
@@ -87,7 +90,7 @@ const LaunchPage = () => {
             <PageHeader
               title={'Launch'}
               titleColor={'#fff'}
-              subtitle={'Make your own token and create a token economy.'}
+              subtitle={'Make Your Own Token and Create a Token Economy.'}
             />
           </Flex>
           <Flex justifyContent={'center'} w={'100%'}>
@@ -95,11 +98,24 @@ const LaunchPage = () => {
             <Button
               _hover={{background: 'whiteAlpha.300'}}
               bg={'blue.100'}
+              mt={'10px'}
               color="white.100"
               fontFamily={theme.fonts.roboto}
               letterSpacing={'.35px'}
+              fontSize={'14px'}
+              width={'150px'}
+              height={'38px'}
+              padding={'12px 28px 10px'}
               onClick={() => {
-                openAnyModal('Launch_ConfirmTerms', {});
+                if (!window.web3) {
+                  return window.open('https://metamask.io/download/');
+                }
+                if (!active) {
+                  return activate(injected);
+                }
+                openAnyModal('Launch_ConfirmTerms', {
+                  from: 'launch',
+                });
               }}>
               Create Project
             </Button>
@@ -109,29 +125,33 @@ const LaunchPage = () => {
 
         <Flex
           justifyContent={'space-between'}
-          paddingX={'20%'}
           mb={'100px'}
           position={'absolute'}
           bottom={'-21%'}
           background={'rgba(7, 7, 10, .7)'}
+          paddingX={'400px'}
           paddingY={'10px'}
           left={'50%'}
           transform={'translateX(-50%)'}>
           <Flex
             alignItems={'center'}
             flexDir="column"
-            width={'550px'}
+            width={'400px'}
             fontFamily={theme.fonts.fld}>
             <Text color={'yellow'}>Raised Capital</Text>
-            <Text color={'#fff'}>$2,646,790.91</Text>
+            <Text color={'#fff'} fontSize={'24px'}>
+              $2,646,790.91
+            </Text>
           </Flex>
           <Flex
             alignItems={'center'}
             flexDir="column"
-            width={'550px'}
+            width={'400px'}
             fontFamily={theme.fonts.fld}>
             <Text color={'yellow'}>TOS pairs (in Uniswap)</Text>
-            <Text color={'#fff'}>50,000</Text>
+            <Text color={'#fff'} fontSize={'24px'}>
+              50,000
+            </Text>
           </Flex>
         </Flex>
       </Flex>
@@ -141,11 +161,11 @@ const LaunchPage = () => {
         justifyContent={'center'}
         flexDirection={'column'}
         alignItems={'center'}
-        mb={'50px'}>
-        <Flex alignItems={'center'} flexDir="column" mb={'20px'}>
+        mt={'60px'}>
+        <Flex alignItems={'center'} flexDir="column">
           <PageHeader title={'Projects'} />
         </Flex>
-        <Flex>
+        <Flex mt={'40px'} mb={'30px'}>
           <Button
             w={'160px'}
             h={'38px'}

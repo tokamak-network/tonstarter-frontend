@@ -112,17 +112,18 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
     }
 
     async function setStakingBtn() {      
-      const inRange = await getRange();
-      if (
-        address &&
-        owner === address.toLowerCase() &&
-        !stakingDisable &&
-        inRange
-      ) {
-        setStakingBtnDisable(false);
-      } else {
-        setStakingBtnDisable(true);
-      }
+      // const inRange = await getRange();
+      // if (
+      //   address &&
+      //   owner === address.toLowerCase() &&
+      //   !stakingDisable &&
+      //   inRange
+      // ) {
+      //   setStakingBtnDisable(false);
+      // } else {
+      //   setStakingBtnDisable(true);
+      // }
+      setStakingBtnDisable(true)
     }
 
     async function setUnStakingBtn() {
@@ -272,7 +273,7 @@ export const LiquidityPosition: FC<LiquidityPositionProps> = ({
                 {...(stakingBtnDisable
                   ? {...btnStyle.btnDisable({colorMode})}
                   : {...btnStyle.btnAble()})}
-                isDisabled={stakingBtnDisable}
+                isDisabled={true}
                 onClick={() =>
                   stake({
                     tokenId: id,

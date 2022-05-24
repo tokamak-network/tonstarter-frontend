@@ -31,6 +31,7 @@ import {LoadingComponent} from 'components/Loading';
 import {TokenImage} from '../Admin/components/TokenImage';
 import {ApproveModal} from './components/ApproveModal';
 import moment from 'moment';
+import ConfirmTermsModal from '@Launch/components/modals/ConfirmTerms';
 
 export const StarterDetail = () => {
   const {id}: {id: string} = useParams();
@@ -89,6 +90,7 @@ export const StarterDetail = () => {
           PUBLICSALE_CONTRACT.tiersExAccount(4),
           PUBLICSALE_CONTRACT.snapshot(),
         ]);
+
         setDetailInfo({
           userTier: Number(res[0].toString()) as Tier,
           totalExpectSaleAmount: {
@@ -196,6 +198,7 @@ export const StarterDetail = () => {
           : endDepositTime > nowTimeStamp
           ? 'deposit'
           : 'claim';
+      //ActiveStatusTest
       setActiveStatus(checkStep);
     }, 1000);
     /*eslint-disable*/
@@ -216,7 +219,7 @@ export const StarterDetail = () => {
           {...STATER_STYLE.containerStyle({colorMode})}
           w={'100%'}
           h={'367px'}
-          px={35}
+          pl={'35px'}
           py={'30px'}
           _hover={''}
           cursor="">
@@ -284,6 +287,7 @@ export const StarterDetail = () => {
         </Flex>
       </Flex>
       <ApproveModal></ApproveModal>
+      <ConfirmTermsModal></ConfirmTermsModal>
     </Flex>
   );
 };

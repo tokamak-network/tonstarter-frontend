@@ -27,7 +27,6 @@ const OpenCampagin = () => {
       }),
     {
       enabled: !!account,
-      //refetch every 10min
       refetchInterval: 600000,
     },
   );
@@ -44,11 +43,6 @@ const OpenCampagin = () => {
     }
   }, [data, dispatch]);
 
-  // useEffect(() => {
-  //   console.log('--data--');
-  //   console.log(data);
-  // }, [data]);
-
   const match = useRouteMatch();
   const {url} = match;
 
@@ -59,23 +53,6 @@ const OpenCampagin = () => {
   // }
   return (
     <Flex flexDir="column" mt={'78px'} alignItems="center">
-      {/* <Grid templateColumns="repeat(4, 1fr)" mb={'30px'}>
-        {projectsData?.map((project: {name: string; key: string}) => (
-          <Link to={`${url}/${project.key}`}>
-            <GridItem
-              w={'100px'}
-              h={'100px'}
-              mr={'10px'}
-              border={'1px solid #000'}
-              textAlign="center"
-              lineHeight={'100px'}
-              key={project.key}>
-              {project.name}
-            </GridItem>
-          </Link>
-        ))}
-      </Grid> */}
-      {/* <MainScreen></MainScreen> */}
       <LaunchPage />
     </Flex>
   );

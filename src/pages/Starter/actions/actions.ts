@@ -9,6 +9,7 @@ import {convertToRay, convertToWei} from 'utils/number';
 import store from 'store';
 import {openToast} from 'store/app/toast.reducer';
 import {DEPLOYED} from '../../../constants/index';
+import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 
 interface I_CallContract {
   account: string;
@@ -18,7 +19,36 @@ interface I_CallContract {
 }
 
 type CallContractWithAmount = I_CallContract & {amount: string};
-
+export const addToken = async (
+  tokenAddress: string,
+  library: LibraryType,
+  tokenImage: string,
+) => {
+  const ERC20_CONTRACT = new Contract(tokenAddress, ERC20.abi, library);
+  const tokenSymbol = await ERC20_CONTRACT.symbol();
+  const tokenDecimals = await ERC20_CONTRACT.decimals();
+  try {
+    // wasAdded is a boolean. Like any RPC method, an error may be thrown.
+    //@ts-ignore
+    const wasAdded = await window?.ethereum?.request({
+      method: 'wallet_watchAsset',
+      params: {
+        type: 'ERC20', // Initially only supports ERC20, but eventually more!
+        options: {
+          address: tokenAddress, // The address that the token is at.
+          symbol: tokenSymbol, // A ticker symbol or shorthand, up to 5 chars.
+          decimals: tokenDecimals, // The number of decimals in the token
+          image: tokenImage, // A string url of the token logo
+        },
+      },
+    });
+    if (wasAdded) {
+    } else {
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
 export const participate = async (args: CallContractWithAmount) => {
   try {
     const {account, library, amount, address, tokenType} = args;

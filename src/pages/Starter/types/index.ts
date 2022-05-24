@@ -25,6 +25,7 @@ export type ActiveProjectType = I_StarterProject & {
     startDepositTime: number;
     startExclusiveTime: number;
     startOpenSaleTime: number;
+    snapshot: number;
   };
   tokenName: string;
   tokenSymbolImage: string;
@@ -34,7 +35,9 @@ export type UpcomingProjectType = I_StarterProject & {
   website: string;
 };
 
-export type PastProjectType = I_StarterProject;
+export type PastProjectType = I_StarterProject & {
+  tokenCalRatio: number;
+};
 
 export type SaleInfo = AdminObject & {tokenExRatio: number};
 

@@ -2,7 +2,16 @@ import {Projects, VaultPublic} from '@Launch/types';
 import {AdminObject} from '@Admin/types';
 import {createStarter} from '@Admin/utils/createStarter';
 
-async function saveToAdmin(projectData: Projects['CreateProject']) {
+async function saveToAdmin(
+  projectData: Projects['CreateProject'],
+  projectKey: string,
+) {
+  if (projectKey === undefined || projectKey === null) {
+    return alert(
+      'This project has no project hashkey. Please ask to Admin about this problem.',
+    );
+  }
+
   const {
     projectName,
     description,
@@ -12,18 +21,17 @@ async function saveToAdmin(projectData: Projects['CreateProject']) {
     medium,
     twitter,
     discord,
-    projectMainImage,
+    sector,
     tokenName,
     tokenAddress,
     tokenSymbol,
     tokenSymbolImage,
-    totalTokenAllocation,
     vaults,
     projectTokenPrice,
   } = projectData;
   const publicVault = vaults[0] as VaultPublic;
 
-  const adminData: AdminObject = {
+  const adminData: AdminObject & {projectKey: string} = {
     name: projectName!,
     description: description!,
     adminAddress: ownerAddress,
@@ -32,12 +40,12 @@ async function saveToAdmin(projectData: Projects['CreateProject']) {
     medium: medium,
     twitter: twitter,
     discord: discord,
-    image: projectMainImage,
+    sector,
     tokenName: tokenName!,
     tokenAddress: tokenAddress!,
     tokenSymbol: tokenSymbol!,
     tokenSymbolImage: tokenSymbolImage!,
-    tokenAllocationAmount: String(totalTokenAllocation)!,
+    tokenAllocationAmount: String(publicVault.vaultTokenAllocation)!,
     tokenFundRaisingTargetAmount: String(publicVault.hardCap)!,
     fundingTokenType: 'TON',
     tokenFundingRecipient: publicVault.addressForReceiving!,
@@ -52,8 +60,9 @@ async function saveToAdmin(projectData: Projects['CreateProject']) {
     startDepositTime: publicVault.publicRound2!,
     endDepositTime: publicVault.publicRound2End!,
     startClaimTime: publicVault.claim[0].claimTime!,
-    claimInterval:
-      publicVault.claim[1].claimTime! - publicVault.claim[0].claimTime!,
+    claimInterval: publicVault.claim[1].claimTime
+      ? publicVault.claim[1].claimTime! - publicVault.claim[0].claimTime!
+      : 0,
     claimPeriod: publicVault.claim.length,
     claimFirst: publicVault.claim[0].claimTokenAllocation!,
     position: 'upcoming',
@@ -61,6 +70,7 @@ async function saveToAdmin(projectData: Projects['CreateProject']) {
     //    position: 'active' | 'upcoming' | '',
     //    production: 'dev' | 'production' | '',
     topSlideExposure: false,
+    projectKey,
   };
   return createStarter(adminData);
 }

@@ -318,7 +318,7 @@ export const Simulator = () => {
             </Flex>
             <Flex>
               <Box w={340} h={'166px'}>
-                <LiquidityChartRangeInput
+                {/* <LiquidityChartRangeInput
                   currencyA={baseCurrency ?? undefined}
                   currencyB={quoteCurrency ?? undefined}
                   feeAmount={feeAmount}
@@ -337,7 +337,7 @@ export const Simulator = () => {
                   onLeftRangeInput={onLeftRangeInput}
                   onRightRangeInput={onRightRangeInput}
                   interactive={!false}
-                />
+                /> */}
               </Box>
               <Flex flexDir="column" ml={'20px'} pt={'23px'}>
                 {/* <Flex

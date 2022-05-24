@@ -1,4 +1,13 @@
-import {Input, NumberInput, NumberInputField} from '@chakra-ui/react';
+import {
+  Flex,
+  Input,
+  InputGroup,
+  InputRightElement,
+  NumberInput,
+  NumberInputField,
+  Text,
+  useColorMode,
+} from '@chakra-ui/react';
 import {saveTempVaultData, selectLaunch} from '@Launch/launch.reducer';
 import {Projects, VaultPublic} from '@Launch/types';
 import {useFormikContext} from 'formik';
@@ -18,6 +27,8 @@ type InputFieldProp = {
   numberOnly?: boolean;
   inputRef?: any;
   style?: {};
+  tokenSymbol?: string;
+  decimalLimit?: boolean;
 };
 
 const InputField: React.FC<InputFieldProp> = (props) => {
@@ -34,6 +45,8 @@ const InputField: React.FC<InputFieldProp> = (props) => {
     numberOnly,
     inputRef,
     style,
+    tokenSymbol,
+    decimalLimit,
   } = props;
   const dispatch = useAppDispatch();
   const {
@@ -41,6 +54,7 @@ const InputField: React.FC<InputFieldProp> = (props) => {
   } = useAppSelector(selectLaunch);
   const {values} = useFormikContext<Projects['CreateProject']>();
   const vaultsList = values.vaults;
+  const {colorMode} = useColorMode();
 
   const stosTier =
     stosTierLevel === 1
@@ -77,82 +91,22 @@ const InputField: React.FC<InputFieldProp> = (props) => {
             //@ts-ignore
             setValue(e.target.value);
             if (formikName) {
-              !isStosTier
-                ? dispatch(
-                    saveTempVaultData({
-                      data: {
-                        ...tempVaultData,
-                        [formikName]: Number(e.target.value),
-                      },
-                    }),
-                  )
-                : dispatch(
-                    saveTempVaultData({
-                      data: {
-                        ...tempVaultData,
-                        stosTier: {
-                          //@ts-ignore
-                          ...tempVaultData.stosTier,
-                          [stosTier]: {
-                            [formikName]: e.target.value,
-                            [formikName === 'requiredStos'
-                              ? 'allocatedToken'
-                              : 'requiredStos']:
-                              formikName === 'requiredStos'
-                                ? allocatedTokenData
-                                : requiredStosData,
-                          },
-                        },
-                      },
-                    }),
-                  );
-            }
-          }}
-        />
-      </NumberInput>
-    );
-  }
+              if (!isStosTier) {
+                return dispatch(
+                  saveTempVaultData({
+                    data: {
+                      ...tempVaultData,
+                      [formikName]: Number(e.target.value),
+                    },
+                  }),
+                );
+              }
 
-  return (
-    <Input
-      w={`${w}px`}
-      h={`${h}px`}
-      focusBorderColor={'#dfe4ee'}
-      fontSize={fontSize}
-      placeholder={placeHolder}
-      _focus={{}}
-      ref={(el) => {
-        if (inputRef && formikName) {
-          if (stosTierLevel) {
-            inputRef.current[`${formikName}_${stosTierLevel}`] = el;
-          }
-          // inputRef.current[index + 1] = el;
-          inputRef.current[formikName] = el;
-        }
-      }}
-      value={value === 'undefined' ? '' : value}
-      style={style}
-      onChange={(e) => {
-        setValue(e.target.value);
-        const publicVaultValue = vaultsList[0] as VaultPublic;
-        const {stosTier: stosTierData} = publicVaultValue;
-        if (formikName) {
-          !isStosTier
-            ? dispatch(
-                saveTempVaultData({
-                  data: {
-                    ...tempVaultData,
-                    [formikName]: e.target.value,
-                  },
-                }),
-              )
-            : dispatch(
+              dispatch(
                 saveTempVaultData({
                   data: {
                     ...tempVaultData,
                     stosTier: {
-                      //@ts-ignore
-                      ...stosTierData,
                       //@ts-ignore
                       ...tempVaultData.stosTier,
                       [stosTier]: {
@@ -168,8 +122,118 @@ const InputField: React.FC<InputFieldProp> = (props) => {
                   },
                 }),
               );
-        }
-      }}></Input>
+            }
+          }}
+        />
+      </NumberInput>
+    );
+  }
+
+  return (
+    <InputGroup
+      display={'flex'}
+      alignItems="center"
+      justifyContent={'center'}
+      w={`${w}px`}
+      h={`${h}px`}>
+      <Input
+        w={`${w}px`}
+        h={`${h}px`}
+        focusBorderColor={'#dfe4ee'}
+        fontSize={fontSize}
+        placeholder={placeHolder}
+        _focus={{}}
+        ref={(el) => {
+          if (inputRef && formikName) {
+            if (stosTierLevel) {
+              inputRef.current[`${formikName}_${stosTierLevel}`] = el;
+            }
+            // inputRef.current[index + 1] = el;
+            inputRef.current[formikName] = el;
+          }
+        }}
+        value={value === 'undefined' ? '' : value}
+        style={style}
+        onChange={(e) => {
+          // if (isStosTier) {
+          //   const targetValue = Number(e.target.value);
+          //   if (stosTierLevel === 1) {
+          //     if (targetValue < 600) {
+          //       return;
+          //     }
+          //   }
+          //   if (stosTierLevel === 2) {
+          //     if (targetValue < 1200) {
+          //       return;
+          //     }
+          //   }
+          //   if (stosTierLevel === 3) {
+          //     if (targetValue < 2200) {
+          //       return;
+          //     }
+          //   }
+          //   if (stosTierLevel === 4) {
+          //     if (targetValue < 4000) {
+          //       return;
+          //     }
+          //   }
+          // }
+
+          if (
+            decimalLimit &&
+            e.target.value.split('.')[1] &&
+            e.target.value.split('.')[1].length > 2
+          ) {
+            return alert('You can only put 2 decimal points.');
+          }
+          setValue(e.target.value);
+          const publicVaultValue = vaultsList[0] as VaultPublic;
+          const {stosTier: stosTierData} = publicVaultValue;
+
+          if (formikName) {
+            !isStosTier
+              ? dispatch(
+                  saveTempVaultData({
+                    data: {
+                      ...tempVaultData,
+                      [formikName]: e.target.value,
+                    },
+                  }),
+                )
+              : dispatch(
+                  saveTempVaultData({
+                    data: {
+                      ...tempVaultData,
+                      stosTier: {
+                        //@ts-ignore
+                        ...stosTierData,
+                        //@ts-ignore
+                        ...tempVaultData.stosTier,
+                        [stosTier]: {
+                          [formikName]: e.target.value,
+                          [formikName === 'requiredStos'
+                            ? 'allocatedToken'
+                            : 'requiredStos']:
+                            formikName === 'requiredStos'
+                              ? allocatedTokenData
+                              : requiredStosData,
+                        },
+                      },
+                    },
+                  }),
+                );
+          }
+        }}></Input>
+      {tokenSymbol && (
+        <InputRightElement h={'32px'} mr={'2px'}>
+          <Flex
+            fontSize={13}
+            color={colorMode === 'light' ? '#3e495c' : '#ffffff'}>
+            <Text>{tokenSymbol}</Text>
+          </Flex>
+        </InputRightElement>
+      )}
+    </InputGroup>
   );
 };
 

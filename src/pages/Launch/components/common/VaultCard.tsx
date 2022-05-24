@@ -1,5 +1,5 @@
-import {Box, Button, Flex, Image, Text, useColorMode} from '@chakra-ui/react';
-import {Projects, Vault, VaultCommon} from '@Launch/types';
+import {Box, Flex, Text, useColorMode} from '@chakra-ui/react';
+import {Projects, Vault} from '@Launch/types';
 import {useFormikContext} from 'formik';
 import {useModal} from 'hooks/useModal';
 import {useEffect, useMemo, useState} from 'react';
@@ -67,9 +67,15 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
       pl={'15px'}
       pt={'10px'}
       boxShadow={' 0 2px 5px 0 rgba(61, 73, 93, 0.1)'}
-      border={colorMode === 'light' ? '' : '1px solid #373737'}
+      border={
+        isHover
+          ? '1px solid #0070ed'
+          : colorMode === 'light'
+          ? ''
+          : '1px solid #373737'
+      }
       borderRadius={colorMode === 'light' ? '' : '4px'}
-      bg={isSelected || isHover ? '#0070ed' : 'none'}
+      bg={isSelected ? '#0070ed' : 'none'}
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}>
       <Flex mb={'15px'} justifyContent="space-between" pr={'12px'}>
@@ -85,7 +91,7 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
           </Box>
           <HoverImage
             img={PencilIcon}
-            hoverImg={PencilActiveIcon}
+            hoverImg={PencilIcon}
             action={() =>
               openAnyModal('Launch_VaultBasicSetting', {
                 name,
@@ -114,7 +120,7 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
         fontSize={16}
         fontWeight={'bold'}
         color={
-          isSelected || isHover
+          isSelected
             ? 'white.100'
             : colorMode === 'light'
             ? '#304156'
@@ -127,7 +133,7 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
           h={'15px'}
           fontSize={11}
           color={
-            isSelected || isHover
+            isSelected
               ? '#a8cbf8'
               : colorMode === 'light'
               ? '#808992'
@@ -139,7 +145,7 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
           h={'20px'}
           fontSize={15}
           color={
-            isSelected || isHover
+            isSelected
               ? 'white.100'
               : colorMode === 'light'
               ? '#3d495d'
@@ -154,7 +160,7 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
           h={'15px'}
           fontSize={11}
           color={
-            isSelected || isHover
+            isSelected
               ? '#a8cbf8'
               : colorMode === 'light'
               ? '#808992'
@@ -166,7 +172,7 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
           h={'20px'}
           fontSize={15}
           color={
-            isSelected || isHover
+            isSelected
               ? 'white.100'
               : colorMode === 'light'
               ? '#3d495d'

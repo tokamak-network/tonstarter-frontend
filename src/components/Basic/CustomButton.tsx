@@ -24,6 +24,7 @@ export const CustomButton = (prop: CustomButtonProp) => {
         : {...btnStyle.btnAble()})}
       {...style}
       _hover={{}}
+      _active={{}}
       onSubmit={onSubmit}
       w={w || '150px'}
       h={h || '38px'}

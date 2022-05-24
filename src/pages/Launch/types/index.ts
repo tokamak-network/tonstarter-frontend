@@ -86,7 +86,7 @@ type VaultLiquidityIncentive = VaultCommon & {
   tokenPair: string | undefined;
 };
 
-type VaultAny =  VaultPublic |VaultDao | VaultC | VaultLiquidityIncentive;
+type VaultAny = VaultPublic | VaultDao | VaultC | VaultLiquidityIncentive;
 
 interface ProjectStep1 {
   projectName: string | undefined;
@@ -96,7 +96,7 @@ interface ProjectStep1 {
   totalSupply: number | undefined;
   ownerAddress: string;
   owner: string | undefined;
-  projectMainImage: string;
+  sector: string;
   tokenSymbolImage: string;
   website: string;
   medium: string;
@@ -148,7 +148,7 @@ type PublicTokenColData = {
       formikName: string;
     },
     {
-      title: 'Hard Cap';
+      title: 'Fund Raising Target Amount';
       content: string | undefined;
       formikName: string;
     },
@@ -214,6 +214,23 @@ type PublicTokenColData = {
     },
     {
       title: 'Pool Address\n(0.3% fee)';
+      content: string | undefined;
+      formikName: string;
+    },
+  ];
+  initialLiquidityColData?: [
+    {
+      title: 'Select Pair';
+      content: string | undefined;
+      formikName: string;
+    },
+    {
+      title: 'Pool Address\n(0.3% fee)';
+      content: string | undefined;
+      formikName: string;
+    },
+    {
+      title: 'Exchange Ratio\n1 TOS';
       content: string | undefined;
       formikName: string;
     },

@@ -1,4 +1,4 @@
-import {Dispatch, SetStateAction, useState} from 'react';
+import {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import React from 'react';
 import {
   Flex,
@@ -18,17 +18,20 @@ import moment from 'moment';
 
 type calendarComponentProps = {
   setDate: Dispatch<SetStateAction<any>>;
+  startTimeCap: number
 };
-const DoubleCalendarPop: React.FC<calendarComponentProps> = ({setDate}) => {
+const DoubleCalendarPop: React.FC<calendarComponentProps> = ({setDate,startTimeCap}) => {
   const {colorMode} = useColorMode();
   const [image, setImage] = useState(
     colorMode === 'light' ? CalendarInactiveImg : CalendarInactiveImgDark,
   );
   const [startTime, setStartTime] = useState<number>(0);
-  const [startTimeArray, setStartTimeArray] = useState([]);
+  const [startTimeArray, setStartTimeArray] = useState<any[]>([]);
   const [endTime, setEndTime] = useState<number>(0);
-  const [endTimeArray, setEndTimeArray] = useState([]);
+  const [endTimeArray, setEndTimeArray] = useState<any[]>([]);
+  const [buttonDisable, setButtonDisable] = useState<boolean>();
 
+  
   const createTime = (onClose: any) => {
     const starts = moment.unix(startTime);
     const startDates = moment(starts).set({
@@ -45,11 +48,32 @@ const DoubleCalendarPop: React.FC<calendarComponentProps> = ({setDate}) => {
       minute: endTimeArray[1],
       second: endTimeArray[2],
     });
-
     setEndTime(endDates.unix());
     setDate([startDates.unix(), endDates.unix()]);
     onClose();
   };
+
+  useEffect(() => {
+    const starts = moment.unix(startTime);
+    const startDates = moment(starts).set({
+      hour: startTimeArray[0],
+      minute: startTimeArray[1],
+      second: startTimeArray[2],
+    });
+    const tempStart = startDates.unix();
+    const ends = moment.unix(endTime);
+    const endDates = moment(ends).set({
+      hour: endTimeArray[0],
+      minute: endTimeArray[1],
+      second: endTimeArray[2],
+    });
+    const tempEnd = endDates.unix();
+
+    const now = moment().unix();
+    tempStart === tempEnd || tempEnd < now || tempStart < now || tempEnd< tempStart || tempStart < startTimeCap
+      ? setButtonDisable(true)
+      : setButtonDisable(false);
+  }, [startTime, startTimeArray, endTime, endTimeArray]);
   return (
     <Popover closeOnBlur={true} placement="bottom">
       {({isOpen, onClose}) => (
@@ -106,15 +130,24 @@ const DoubleCalendarPop: React.FC<calendarComponentProps> = ({setDate}) => {
                   }>
                   <CustomCalendar
                     setValue={setStartTime}
-                    startTime={startTime}></CustomCalendar>
-                  <CustomClock setTime={setStartTimeArray}></CustomClock>
+                    startTime={startTime} startTimeCap={startTimeCap}></CustomCalendar>
+                  <CustomClock
+                    setTime={setStartTimeArray}
+                    calendarType={'start'}
+                    startTime={startTime}
+                    endTime={endTime} startTimeCap={startTimeCap}></CustomClock>
                 </Flex>
                 <Flex flexDir={'column'}>
                   <CustomCalendar
                     setValue={setEndTime}
                     startTime={startTime}
-                    calendarType={'end'}></CustomCalendar>
-                  <CustomClock setTime={setEndTimeArray}></CustomClock>
+                    calendarType={'end'}
+                    endTime={endTime} startTimeCap={startTimeCap}></CustomCalendar>
+                  <CustomClock
+                    calendarType={'end'}
+                    setTime={setEndTimeArray}
+                    startTime={startTime}
+                    endTime={endTime} startTimeCap={startTimeCap}></CustomClock>
                 </Flex>
               </Flex>
               <Flex></Flex>
@@ -127,7 +160,8 @@ const DoubleCalendarPop: React.FC<calendarComponentProps> = ({setDate}) => {
                   fontSize={14}
                   color={'white.100'}
                   mr={'12px'}
-                  //   disabled={isSubmitting}
+                  _hover={{}}
+                  disabled={endTime === 0 || buttonDisable }
                   onClick={() => createTime(onClose)}>
                   Set up
                 </Button>

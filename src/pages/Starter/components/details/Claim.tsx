@@ -33,6 +33,10 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
   const [withdrawAmount, setWithdrawAmount] = useState<string>('0');
   const [d_Day, setD_Day] = useState<number>(0);
   const [notRemained, setNotRemained] = useState<boolean>(true);
+  const [isOverHardcap, setIsOverHardcap] = useState<boolean>(false);
+  const [refundAmount, setRefundAmount] = useState<string>('0');
+  const [hardCapAmount, setHardCapAmount] = useState<string>('-');
+  const [totalRaisedAmount, setTotalRaisedAmount] = useState<string>('-');
 
   const {blockNumber} = useBlockNumber();
 
@@ -46,6 +50,48 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
   const detailSubTextStyle = {
     color: colorMode === 'light' ? 'gray.250' : 'white.100',
   };
+
+  //To check this project has got funding over hardcap or not
+  useEffect(() => {
+    async function checkHardCap() {
+      if (PUBLICSALE_CONTRACT && account) {
+        const isOver = await PUBLICSALE_CONTRACT.hardcapCalcul();
+        if (Number(isOver.toString()) === 0) {
+          const usersExAmount = await PUBLICSALE_CONTRACT.usersEx(account);
+          const usersOpenAmount = await PUBLICSALE_CONTRACT.usersOpen(account);
+          const hardCap = await PUBLICSALE_CONTRACT.hardCap();
+          const totalExAmount =
+            await PUBLICSALE_CONTRACT.totalExPurchasedAmount();
+          const totalDepositAmount =
+            await PUBLICSALE_CONTRACT.totalDepositAmount();
+          const totalRaisedWei =
+            BigNumber.from(totalExAmount).add(totalDepositAmount);
+          const refundAmountWei = BigNumber.from(usersExAmount.payAmount).add(
+            usersOpenAmount.depositAmount,
+          );
+          const reundAmount = convertNumber({
+            amount: refundAmountWei.toString(),
+            localeString: true,
+          });
+          const hardCapAmount = convertNumber({
+            amount: hardCap.toString(),
+            localeString: true,
+          });
+          const totalRaisedAmount = convertNumber({
+            amount: totalRaisedWei.toString(),
+            localeString: true,
+          });
+          setRefundAmount(reundAmount as string);
+          setHardCapAmount(hardCapAmount as string);
+          setTotalRaisedAmount(totalRaisedAmount as string);
+          setIsOverHardcap(false);
+        } else {
+          setIsOverHardcap(true);
+        }
+      }
+    }
+    checkHardCap();
+  }, [PUBLICSALE_CONTRACT, account]);
 
   useEffect(() => {
     async function getData() {
@@ -76,7 +122,7 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
         const endPeriodNum = Number(endPeriod.toString());
         const period = parseInt(String(diffTime / intervalNum + 1));
 
-        setPeriod(String(Math.floor(period)));
+        setPeriod(isNaN(period) ? '0' : String(Math.floor(period)));
         setEndPeriod(endPeriod.toString());
 
         if (period < endPeriodNum) {
@@ -91,7 +137,12 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
             startClaimTimeNum + intervalNum * endPeriodNum;
 
           setD_Day(nextVestingDate);
-          setVestingDay(convertTimeStamp(nextVestingDate));
+
+          if (nextVestingDate === 0) {
+            return setVestingDay('-');
+          } else {
+            setVestingDay(convertTimeStamp(nextVestingDate));
+          }
         }
       }
     }
@@ -150,6 +201,105 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
     }
   }, [account, PUBLICSALE_CONTRACT, blockNumber]);
 
+  if (isOverHardcap === false) {
+    return (
+      <Flex flexDir="column" pl={'45px'}>
+        <Box d="flex" textAlign="center" alignItems="center" mb={'20px'}>
+          <Text
+            {...STATER_STYLE.mainText({colorMode, fontSize: 25})}
+            mr={'20px'}>
+            Refund
+          </Text>
+        </Box>
+        <Box d="flex">
+          <Text
+            color={colorMode === 'light' ? 'gray.375' : 'white.100'}
+            fontSize={14}
+            letterSpacing={'1.4px'}
+            mb={'10px'}>
+            Available to Refund
+          </Text>
+        </Box>
+        <Box d="flex" alignItems="center" mb={'30px'}>
+          <Box d="flex" mr={'10px'} alignItems="center">
+            <CustomInput
+              w={'220px'}
+              h={'32px'}
+              numberOnly={true}
+              value={`${refundAmount} ${'TON'}`}
+              color={
+                Number(refundAmount) > 0
+                  ? colorMode === 'light'
+                    ? 'gray.225'
+                    : 'white.100'
+                  : 'gray.175'
+              }
+              // tokenName={`${saleInfo?.tokenName}`}
+            ></CustomInput>
+          </Box>
+        </Box>
+        <Box d="flex" flexDir="column" w={'495px'}>
+          <Text {...STATER_STYLE.mainText({colorMode, fontSize: 14})}>
+            Details
+          </Text>
+          <Box d="flex" fontSize={'13px'}>
+            <Flex w={'226px'}>
+              <Text color={'gray.400'} mr={'3px'}>
+                Public Round 1 :{' '}
+              </Text>
+              <Text {...detailSubTextStyle}>{exclusiveSale}</Text>
+              <Text ml={'3px'}>{saleInfo?.tokenSymbol}</Text>
+            </Flex>
+            <Flex>
+              <Text color={'gray.400'} mr={'3px'}>
+                Hard Cap :{' '}
+              </Text>
+              <Text> {hardCapAmount}</Text>
+              <Text ml={'3px'}>{'TON'}</Text>
+            </Flex>
+          </Box>
+          <Box d="flex" fontSize={'13px'}>
+            <Flex w={'226px'}>
+              <Text color={'gray.400'} mr={'3px'}>
+                Public Round 2 :{' '}
+              </Text>
+              <Text {...detailSubTextStyle}>{openSale}</Text>
+              <Text ml={'3px'}>{saleInfo?.tokenSymbol}</Text>
+            </Flex>
+            <Flex pos={'relative'}>
+              <Text color={'gray.400'} mr={'3px'}>
+                Funding Raised :{' '}
+              </Text>
+              <Text {...detailSubTextStyle} mr={'5px'}>
+                {totalRaisedAmount} TON
+              </Text>
+            </Flex>
+          </Box>
+          <Box d="flex" fontSize={'13px'} color={'#0070ed'}>
+            <Text w={'226px'}>Hard Cap is not reached</Text>
+            <Text>You can refund your funding crypto</Text>
+          </Box>
+        </Box>
+        <Box mt={'29px'} d="flex">
+          <CustomButton
+            text={'Refund'}
+            isDisabled={Number(inputTonBalance) <= 0}
+            style={{
+              mr: '12px',
+            }}
+            func={() =>
+              account &&
+              starterActions.claim({
+                account,
+                library,
+                address: saleInfo.saleContractAddress,
+              })
+            }></CustomButton>
+        </Box>
+      </Flex>
+    );
+  }
+
   return (
     <Flex flexDir="column" pl={'45px'}>
       <Box d="flex" textAlign="center" alignItems="center" mb={'20px'}>
@@ -172,7 +322,7 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
             w={'220px'}
             h={'32px'}
             numberOnly={true}
-            value={`${inputTonBalance} ${saleInfo?.tokenName}`}
+            value={`${inputTonBalance} ${saleInfo?.tokenSymbol}`}
             color={
               Number(inputTonBalance) > 0
                 ? colorMode === 'light'
@@ -194,14 +344,14 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
               Public Round 1 :{' '}
             </Text>
             <Text {...detailSubTextStyle}>{exclusiveSale}</Text>
-            <Text ml={'3px'}>{saleInfo?.tokenName}</Text>
+            <Text ml={'3px'}>{saleInfo?.tokenSymbol}</Text>
           </Flex>
           <Flex>
             <Text color={'gray.400'} mr={'3px'}>
               Remained Amount :{' '}
             </Text>
             <Text> {remainedAmount}</Text>
-            <Text ml={'3px'}>{saleInfo?.tokenName}</Text>
+            <Text ml={'3px'}>{saleInfo?.tokenSymbol}</Text>
           </Flex>
         </Box>
         <Box d="flex" fontSize={'13px'}>
@@ -210,7 +360,7 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
               Public Round 2 :{' '}
             </Text>
             <Text {...detailSubTextStyle}>{openSale}</Text>
-            <Text ml={'3px'}>{saleInfo?.tokenName}</Text>
+            <Text ml={'3px'}>{saleInfo?.tokenSymbol}</Text>
           </Flex>
           <Flex pos={'relative'}>
             <Text color={'gray.400'} mr={'3px'}>

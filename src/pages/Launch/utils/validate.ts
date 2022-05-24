@@ -1,4 +1,4 @@
-import {Projects, VaultSchedule} from '@Launch/types';
+import {Projects} from '@Launch/types';
 import {Dispatch, SetStateAction} from 'react';
 import {toChecksumAddress} from 'web3-utils';
 
@@ -14,6 +14,7 @@ function validateFormikValues(
     'tokenSymbol',
     'totalSupply',
     'owner',
+    'sector',
   ];
 
   const step1FilledOut = step1.map((e: any) => {
@@ -67,17 +68,17 @@ function validateFormikValues(
   //   setDisableForStep2(false);
   // }
 
-  if (values.owner) {
-    try {
-      const result = toChecksumAddress(String(values.owner));
-      if (!result) {
-        return {owner: 'err'};
-      }
-    } catch (e) {
-      // console.log(e);
-      return {owner: 'err'};
-    }
-  }
+  // if (values.owner) {
+  //   try {
+  //     const result = toChecksumAddress(String(values.owner));
+  //     if (!result) {
+  //       return {owner: 'err'};
+  //     }
+  //   } catch (e) {
+  //     // console.log(e);
+  //     return {owner: 'err'};
+  //   }
+  // }
 }
 
 export default validateFormikValues;

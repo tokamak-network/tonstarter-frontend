@@ -9,8 +9,8 @@ import VaultCard from '../common/VaultCard';
 import {useFormikContext} from 'formik';
 import {useState} from 'react';
 import {Projects, Vault} from '@Launch/types';
-import {useAppDispatch} from 'hooks/useRedux';
-import {changeVault} from '@Launch/launch.reducer';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {changeVault, selectLaunch} from '@Launch/launch.reducer';
 import {motion} from 'framer-motion';
 import AddVaultCard from '@Launch/components/common/AddVaultCard';
 import HoverImage from 'components/HoverImage';
@@ -23,6 +23,9 @@ const Vaults = () => {
   const dispatch = useAppDispatch();
   const [transX, setTransX] = useState<number>(0);
   const [flowIndex, setFlowIndex] = useState<number>(6);
+  const {
+    data: {selectedVaultIndex},
+  } = useAppSelector(selectLaunch);
 
   return (
     <Flex
@@ -75,7 +78,9 @@ const Vaults = () => {
                     name={
                       vaultType === 'Liquidity Incentive' &&
                       isMandatory === true
-                        ? `${values.tokenName}-TOS LP Reward`
+                        ? `${values.tokenName}-TOS LP Reward *`
+                        : isMandatory === true
+                        ? `${vaultName} *`
                         : vaultName
                     }
                     tokenAllocation={strVaultTokenAllocation}
@@ -111,6 +116,23 @@ const Vaults = () => {
           alignSelf="center"
           onClick={() => setTransX(transX - 165)}
         /> */}
+      </Box>
+      <Box
+        d="flex"
+        alignItems={'center'}
+        justifyContent="center"
+        mt={'25px'}
+        mb={'4px'}>
+        {vaultsList?.map((vault: Vault, index: number) => {
+          return (
+            <Box
+              w={'8px'}
+              h={'8px'}
+              borderRadius={25}
+              bg={selectedVaultIndex === index ? 'blue.100' : '#dfe4ee'}
+              mr={'8px'}></Box>
+          );
+        })}
       </Box>
     </Flex>
   );

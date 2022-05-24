@@ -3,24 +3,34 @@ import InputComponent from '@Launch/components/common/InputComponent';
 import StepTitle from '@Launch/components/common/StepTitle';
 import Line from '@Launch/components/common/Line';
 import MarkdownEditor from '@Launch/components/MarkdownEditor';
+import {useEffect} from 'react';
+import {TokenImage} from '@Admin/components/TokenImage';
+import {useFormikContext} from 'formik';
+import {Projects} from '@Launch/types';
 
 const filedNameList = [
-  'projectName',
-  'tokenName',
-  'owner',
-  'tokenSymbol',
-  'projectMainImage',
-  'tokenSymbolImage',
-  'website',
-  'totalSupply',
-  'medium',
-  'telegram',
-  'twitter',
-  'discord',
+  {title: 'projectName', requirement: true},
+  {title: 'tokenName', requirement: true},
+  {title: 'owner', requirement: true},
+  {title: 'tokenSymbol', requirement: true},
+  {title: 'sector', requirement: true},
+  {title: 'tokenSymbolImage', requirement: false},
+  {title: 'website', requirement: false},
+  {title: 'totalSupply', requirement: true},
+  {title: 'medium', requirement: false},
+  {title: 'telegram', requirement: false},
+  {title: 'twitter', requirement: false},
+  {title: 'discord', requirement: false},
 ];
 
 const OpenStepOne = () => {
   const {colorMode} = useColorMode();
+  const {values} = useFormikContext<Projects['CreateProject']>();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <Flex
       p={'35px'}
@@ -33,24 +43,47 @@ const OpenStepOne = () => {
       <Box mb={'23px'}>
         <StepTitle title={'Project & Token'} isSaveButton={false}></StepTitle>
       </Box>
-      <Box mb={'40px'}>
-        <Line></Line>
+      <Box mb={'40px'} pos="relative">
+        <Box w={'774px'} pos="absolute" left={'-35px'}>
+          <Line></Line>
+        </Box>
       </Box>
       <Grid
         templateColumns="repeat(2, 1fr)"
         rowGap={'20px'}
         columnGap={'50px'}
         mb={'20px'}>
-        {filedNameList.map((name: string, index: number) => {
-          return (
-            <GridItem w={'327px'}>
-              <InputComponent
-                name={name}
-                placeHolder={`input ${name}`}
-                key={name}></InputComponent>
-            </GridItem>
-          );
-        })}
+        {filedNameList.map(
+          (fieldName: {title: string; requirement: boolean}, index: number) => {
+            console.log(fieldName);
+            if (fieldName.title === 'tokenSymbolImage') {
+              return (
+                <Flex w={'327px'}>
+                  <Box w={'280px'}>
+                    <InputComponent
+                      name={fieldName.title}
+                      placeHolder={`input ${fieldName.title}`}
+                      key={fieldName.title}
+                      requirement={fieldName.requirement}></InputComponent>
+                  </Box>
+                  <Box mt={'11px'} ml={'10px'}>
+                    <TokenImage
+                      imageLink={values.tokenSymbolImage}></TokenImage>
+                  </Box>
+                </Flex>
+              );
+            }
+            return (
+              <GridItem w={'327px'}>
+                <InputComponent
+                  name={fieldName.title}
+                  placeHolder={`input ${fieldName.title}`}
+                  key={fieldName.title}
+                  requirement={fieldName.requirement}></InputComponent>
+              </GridItem>
+            );
+          },
+        )}
       </Grid>
       <Box>
         <MarkdownEditor></MarkdownEditor>

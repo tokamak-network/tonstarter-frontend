@@ -9,7 +9,13 @@ import {useEffect, useState} from 'react';
 import {CustomButton} from 'components/Basic/CustomButton';
 import TokenDetail from './TokenDetail';
 
-const Middle = () => {
+type MiddleProps = {
+  isEdit: boolean;
+  setIsEdit: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const Middle: React.FC<MiddleProps> = (props) => {
+  const {isEdit, setIsEdit} = props;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {OpenCampaginDesign} = theme;
@@ -17,7 +23,7 @@ const Middle = () => {
   const [tableData, setTableData] = useState<VaultSchedule[]>([]);
 
   const {selectedVaultDetail} = useVaultSelector();
-  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [isConfirm, setIsConfirm] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
   const {
@@ -38,18 +44,35 @@ const Middle = () => {
       }
     });
 
-    setFieldValue(
-      'vaults',
-      [
-        ...otherVaultValue,
-        {
-          ...thisVaultValue[0],
-          ...tempVaultData,
-        },
-      ].sort((a, b) => {
-        return a.index > b.index ? 1 : b.index > a.index ? -1 : 0;
-      }),
-    );
+    if ('tosPrice' in tempVaultData) {
+      //@ts-ignore
+      setFieldValue('tosPrice', tempVaultData.tosPrice);
+      setFieldValue(
+        'vaults',
+        [
+          ...otherVaultValue,
+          {
+            ...thisVaultValue[0],
+            ...(tempVaultData as Object),
+          },
+        ].sort((a, b) => {
+          return a.index > b.index ? 1 : b.index > a.index ? -1 : 0;
+        }),
+      );
+    } else {
+      setFieldValue(
+        'vaults',
+        [
+          ...otherVaultValue,
+          {
+            ...thisVaultValue[0],
+            ...tempVaultData,
+          },
+        ].sort((a, b) => {
+          return a.index > b.index ? 1 : b.index > a.index ? -1 : 0;
+        }),
+      );
+    }
   }
 
   useEffect(() => {
@@ -63,7 +86,8 @@ const Middle = () => {
   const isDisable =
     selectedVaultDetail?.index === 5 ||
     (selectedVaultDetail?.vaultType !== 'Public' &&
-      selectedVaultDetail?.vaultType !== 'Liquidity Incentive');
+      selectedVaultDetail?.vaultType !== 'Liquidity Incentive' &&
+      selectedVaultDetail?.vaultType !== 'Initial Liquidity');
 
   return (
     <Flex flexDir={'column'} w={'100%'}>
@@ -76,6 +100,7 @@ const Middle = () => {
               h={'32px'}
               text={'Confirm'}
               style={{marginRight: '10px'}}
+              isDisabled={isConfirm}
               func={() => {
                 setIsEdit(false);
                 dispatchFormikSetValue();
@@ -107,7 +132,7 @@ const Middle = () => {
         )}
       </Box>
       <Flex>
-        <TokenDetail isEdit={isEdit}></TokenDetail>
+        <TokenDetail isEdit={isEdit} setIsConfirm={setIsConfirm}></TokenDetail>
       </Flex>
     </Flex>
   );

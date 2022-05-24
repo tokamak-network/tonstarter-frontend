@@ -4,9 +4,15 @@ import Line from '@Launch/components/common/Line';
 import DeployContainer from '@Launch/components/stepThree/DeployContainer';
 import ConfirmTokenModal from './modals/ConfirmToken';
 import ConfirmVaultModal from './modals/ConfirmVault';
+import {useEffect} from 'react';
 
 const OpenStepThree = () => {
   const {colorMode} = useColorMode();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <Flex
       pt={'24px'}

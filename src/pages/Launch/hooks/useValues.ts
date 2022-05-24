@@ -1,6 +1,7 @@
 import {useState} from 'react';
 import type {Projects, VaultC} from '@Launch/types';
 import {DEPLOYED} from 'constants/index';
+import {stosMinimumRequirements} from '@Launch/const';
 
 const defaultParams = [
   {claimRound: 1, claimTime: undefined, claimTokenAllocation: undefined},
@@ -25,7 +26,7 @@ const initialObj: Projects['CreateProject'] = {
   tosPrice: 0,
   projectTokenPrice: 0,
   totalTokenAllocation: 0,
-  projectMainImage: '',
+  sector: '',
   tokenSymbolImage: '',
   website: '',
   medium: '',
@@ -41,7 +42,7 @@ const initialObj: Projects['CreateProject'] = {
       isMandatory: true,
       claim: defaultParams,
       vaultAddress: undefined,
-      tokenAllocationForLiquidity: undefined,
+      tokenAllocationForLiquidity: 5,
       hardCap: undefined,
       addressForReceiving: '',
       isDeployed: false,
@@ -49,19 +50,19 @@ const initialObj: Projects['CreateProject'] = {
       isDeployedErr: false,
       stosTier: {
         oneTier: {
-          requiredStos: undefined,
+          requiredStos: stosMinimumRequirements.tier1,
           allocatedToken: undefined,
         },
         twoTier: {
-          requiredStos: undefined,
+          requiredStos: stosMinimumRequirements.tier2,
           allocatedToken: undefined,
         },
         threeTier: {
-          requiredStos: undefined,
+          requiredStos: stosMinimumRequirements.tier3,
           allocatedToken: undefined,
         },
         fourTier: {
-          requiredStos: undefined,
+          requiredStos: stosMinimumRequirements.tier4,
           allocatedToken: undefined,
         },
       },

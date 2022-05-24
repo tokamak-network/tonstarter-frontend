@@ -63,7 +63,7 @@ const useTokenDetail = () => {
             formikName: 'tokenAllocationForLiquidity',
           },
           {
-            title: 'Hard Cap',
+            title: `Fund Raising Target Amount`,
             content: `${hardCap}`,
             formikName: 'hardCap',
           },
@@ -140,7 +140,7 @@ const useTokenDetail = () => {
       //@ts-ignore
       setPublicVaultValue(datas);
     }
-  }, [vaults]);
+  }, [values, vaults]);
 
   return {publicTokenColData};
 };

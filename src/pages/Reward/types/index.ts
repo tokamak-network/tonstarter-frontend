@@ -36,8 +36,9 @@ export type PoolData = {
       startTime: number,
       endTime: number,
       allocatedReward: string,
-      numStakers: number,
-      status: string
+      numStakers: Number,
+      status: string,
+      index: number
   }
 
   export type UpdatedRedward = interfaceReward & {
@@ -53,5 +54,6 @@ export type PoolData = {
     pool: {
       id: string
     };
-    liquidity: string
+    liquidity: string;
+    range: boolean;
   }

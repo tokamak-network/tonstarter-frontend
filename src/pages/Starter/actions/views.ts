@@ -128,14 +128,20 @@ export async function getTotalDepositAmount(args: I_CallContract) {
 }
 
 export async function getUserDeposit(args: I_CallContract & {account: string}) {
-  const {library, address, account} = args;
-  const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
-  const res = await PUBLICSALE_CONTRACT.usersOpen(account);
-  const convertedNum = convertNumber({
-    amount: res.depositAmount.toString(),
-    localeString: true,
-  });
-  return convertedNum;
+  try {
+    const {library, address, account} = args;
+    const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
+    // const res = await PUBLICSALE_CONTRACT.usersOpen(account);
+    //@ts-ignore
+    const res = await PUBLICSALE_CONTRACT['usersOpen(address)'](account);
+    const convertedNum = convertNumber({
+      amount: res.depositAmount.toString(),
+      localeString: true,
+    });
+    return convertedNum;
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 export async function getCalculClaimAmount(

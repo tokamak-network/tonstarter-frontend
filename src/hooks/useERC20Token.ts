@@ -8,35 +8,39 @@ import {convertNumber} from 'utils/number';
 export const useERC20Token = (props: {
   tokenAddress: string;
   isRay?: boolean;
-}): {tokenBalance: string; tokenSymbol: string} => {
-  const {tokenAddress, isRay} = props;
+}): {tokenBalance: string; tokenSymbol: string; tokenDecimals: number} => {
+  const {tokenAddress} = props;
   const {account, library} = useActiveWeb3React();
   const {blockNumber} = useBlockNumber();
 
   const [tokenBalance, setTokenBalance] = useState<string>('0.00');
   const [tokenSymbol, setTokenSymbol] = useState<string>('');
+  const [tokenDecimals, setTokenDecimals] = useState<number>(0);
   const TOKEN_CONTRACT = useContract(tokenAddress, ERC20.abi);
 
   useEffect(() => {
-    async function fetchData() {
+    async function fetchUseERC20TokenData() {
       if (account && TOKEN_CONTRACT) {
         const balance = await TOKEN_CONTRACT.balanceOf(account);
         const symbol = await TOKEN_CONTRACT.symbol();
+        const decimals = await TOKEN_CONTRACT.decimals();
         const convertedBalance = convertNumber({
           amount: balance.toString(),
           localeString: true,
           round: false,
-          type: isRay ? 'ray' : 'wei',
+          type: 'custom',
+          decimalPoints: decimals,
         }) as string;
 
         setTokenBalance(convertedBalance);
         setTokenSymbol(symbol);
+        setTokenDecimals(decimals);
       }
     }
     if (account && TOKEN_CONTRACT) {
-      fetchData();
+      fetchUseERC20TokenData();
     }
-  }, [account, library, blockNumber, TOKEN_CONTRACT, isRay]);
+  }, [account, library, blockNumber, TOKEN_CONTRACT]);
 
-  return {tokenBalance, tokenSymbol};
+  return {tokenBalance, tokenSymbol, tokenDecimals};
 };

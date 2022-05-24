@@ -1,8 +1,16 @@
-import {Box, Flex, Input, Text, useColorMode, useTheme} from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Input,
+  InputGroup,
+  Text,
+  useColorMode,
+  useTheme,
+} from '@chakra-ui/react';
 import StepTitle from '@Launch/components/common/StepTitle';
 import HoverImage from 'components/HoverImage';
-import {useFormikContext, FastField} from 'formik';
-import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {useFormikContext} from 'formik';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import PlusIconNormal from 'assets/launch/plus-icon-normal.svg';
 import PlusIconHover from 'assets/launch/plus-icon-hover.svg';
 import MinusIconNormal from 'assets/launch/minus-icon-normal.svg';
@@ -17,6 +25,7 @@ import SingleCalendarPop from '../common/SingleCalendarPop';
 import commafy from 'utils/commafy';
 import {useToast} from 'hooks/useToast';
 import {CustomTooltip} from 'components/Tooltip';
+import '@Launch/components/css/claimRound.css';
 
 type ClaimRoundTable = {
   dateTime: number;
@@ -145,10 +154,11 @@ const ClaimRound = () => {
     }
   }, [claim, selectedVaultDetail]);
 
+  const [isErr, setIsErr] = useState(false);
+
   useEffect(() => {
     const errBorderStyle = '1px solid #ff3b3b';
-    const noErrBorderStyle =
-      colorMode === 'light' ? '1px solid #dfe4ee' : '1px solid #373737';
+    const noErrBorderStyle = colorMode === 'light' ? null : null;
     //@ts-ignore
     const vaultTokenAllocation = selectedVaultDetail.vaultTokenAllocation;
     const totalTokenInputs = inputRefs.current.reduce((acc, cur) => {
@@ -160,6 +170,7 @@ const ClaimRound = () => {
       inputRefs.current.map((input: any) => {
         input.style.border = errBorderStyle;
       });
+      setIsErr(true);
       toastMsg({
         title: 'Token Allocation to this vault is not enough',
         description:
@@ -174,6 +185,7 @@ const ClaimRound = () => {
           input.style.border = noErrBorderStyle;
         }
       });
+      setIsErr(false);
     }
   }, [inputRefs, inputVals]);
 
@@ -233,6 +245,7 @@ const ClaimRound = () => {
           flexDir={'column'}
           textAlign="center"
           border={middleStyle.border}
+          borderBottomWidth={0}
           lineHeight={'42px'}>
           <Flex
             h={'42px'}
@@ -247,7 +260,7 @@ const ClaimRound = () => {
               Date time
             </Text>
             <Text w={'281px'} borderRight={middleStyle.border}>
-              Token Allocation
+              Token Allocation ({values.tokenSymbol})
             </Text>
             <Text w={'281px'} borderRight={middleStyle.border}>
               Accumulated
@@ -275,13 +288,21 @@ const ClaimRound = () => {
                     h={'42px'}
                     fontSize={12}
                     color={colorMode === 'light' ? '#3d495d' : 'white.100'}
-                    fontWeight={600}>
-                    <Text w={'90px'}>
+                    fontWeight={600}
+                    bg={
+                      colorMode === 'light'
+                        ? index % 2 === 0
+                          ? 'none'
+                          : '#fafbfc'
+                        : 'none'
+                    }>
+                    <Text w={'90px'} borderBottom={middleStyle.border}>
                       {index > 8 ? `${index + 1}` : `0${index + 1}`}
                     </Text>
                     <Flex
                       w={'292px'}
                       borderX={middleStyle.border}
+                      borderBottom={middleStyle.border}
                       alignItems="center"
                       justifyContent={'center'}>
                       <Text
@@ -300,46 +321,77 @@ const ClaimRound = () => {
                         oldValues={data}
                         valueKey={'claimTime'}></SingleCalendarPop>
                     </Flex>
-                    <Text w={'281px'} borderRight={middleStyle.border}>
-                      <Input
-                        w={`120px`}
-                        h={`32px`}
-                        ref={(el) => (inputRefs.current[index] = el)}
-                        _focus={{}}
-                        fontSize={12}
-                        placeholder={''}
-                        textAlign={'center'}
-                        value={
-                          inputVals !== undefined &&
-                          inputVals[index]?.claimTokenAllocation !== undefined
-                            ? inputVals[index].claimTokenAllocation
-                            : ''
-                        }
-                        onBlur={(e) => {
-                          const {value} = e.target;
-                          return setFieldValue(
-                            //@ts-ignore
-                            `vaults[${selectedVaultDetail.index}].claim[${index}]`,
-                            {
-                              ...data,
-                              claimTokenAllocation: Number(value),
-                            },
-                          );
-                        }}
-                        onChange={(e) => {
-                          const {value} = e.target;
-                          if (inputVals) {
-                            let oldVals = [...inputVals];
-                            let item = {
-                              ...oldVals[index],
-                              claimTokenAllocation: Number(value),
-                            };
-                            oldVals[index] = item;
-                            return setInputVals(oldVals);
+                    <Flex
+                      w={'281px'}
+                      alignItems="center"
+                      justifyContent={'center'}
+                      borderRight={middleStyle.border}
+                      borderBottom={middleStyle.border}>
+                      <InputGroup>
+                        <Input
+                          h={`42px`}
+                          ref={(el) => (inputRefs.current[index] = el)}
+                          _hover={{borderWidth: '1px', borderColor: '#257eee'}}
+                          _focus={
+                            isErr
+                              ? {}
+                              : {borderWidth: '1px', borderColor: '#257eee'}
                           }
-                        }}></Input>
-                    </Text>
-                    <Text w={'281px'} borderRight={middleStyle.border}>
+                          fontSize={12}
+                          placeholder={''}
+                          borderRadius={0}
+                          borderWidth={0}
+                          textAlign={'center'}
+                          value={
+                            inputVals !== undefined &&
+                            inputVals[index]?.claimTokenAllocation !== undefined
+                              ? inputVals[index].claimTokenAllocation
+                              : ''
+                          }
+                          onBlur={(e) => {
+                            const {value} = e.target;
+
+                            return setFieldValue(
+                              //@ts-ignore
+                              `vaults[${selectedVaultDetail.index}].claim[${index}]`,
+                              {
+                                ...data,
+                                claimTokenAllocation: Number(value),
+                              },
+                            );
+                          }}
+                          onChange={(e) => {
+                            const {value} = e.target;
+
+                            if (isNaN(Number(value))) {
+                              return;
+                            }
+
+                            if (inputVals) {
+                              let oldVals = [...inputVals];
+                              let item = {
+                                ...oldVals[index],
+                                claimTokenAllocation: Number(value),
+                              };
+                              oldVals[index] = item;
+                              return setInputVals(oldVals);
+                            }
+                          }}></Input>
+                        {/* <InputRightElement h={'42px'} mr={'2px'}>
+                          <Flex
+                            fontSize={13}
+                            color={
+                              colorMode === 'light' ? '#3e495c' : '#ffffff'
+                            }>
+                            <Text>{values.tokenSymbol}</Text>
+                          </Flex>
+                        </InputRightElement> */}
+                      </InputGroup>
+                    </Flex>
+                    <Text
+                      w={'281px'}
+                      borderRight={middleStyle.border}
+                      borderBottom={middleStyle.border}>
                       {data.claimTokenAllocation === undefined
                         ? '-'
                         : commafy((tokenAcc += data.claimTokenAllocation))}
@@ -347,7 +399,8 @@ const ClaimRound = () => {
                     <Flex
                       w={'90px'}
                       alignItems="center"
-                      justifyContent="center">
+                      justifyContent="center"
+                      borderBottom={middleStyle.border}>
                       {index === 0 && claim.length === 1 ? (
                         <Flex
                           w={'24px'}
