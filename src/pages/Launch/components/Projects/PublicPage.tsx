@@ -95,9 +95,7 @@ const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
         return;
       }
       const hardCapCalc = await PublicSaleVaul.hardcapCalcul();
-      const adminWithdraw = await PublicSaleVaul.adminWithdraw(); 
-      console.log('adminWithdraw',adminWithdraw);
-      
+      const adminWithdraw = await PublicSaleVaul.adminWithdraw();       
       setFundWithdrew(adminWithdraw)
       setHardcap(Number(hardCapCalc))
     } 

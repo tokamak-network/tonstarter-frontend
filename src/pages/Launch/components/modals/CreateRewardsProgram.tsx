@@ -127,7 +127,7 @@ const CreateRewardsProgramModal = () => {
                 color={colorMode === 'light' ? '#3d495d' : '#f3f4f1'}>
                 {' '}
                 {programDuration
-                  ? moment.unix(programDuration[0]).format('YYYY.MM.DD HH:mm')
+                  ? (moment.unix(moment().unix()+60)).format('YYYY.MM.DD HH:mm')
                   : 0} {'~'} {programDuration
                     ? moment.unix(programDuration[1]).format('MM.DD HH:mm')
                     : 0}

@@ -16,9 +16,11 @@ import {useModal} from 'hooks/useModal';
 import ConfirmTermsModal from './components/modals/ConfirmTerms';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {injected} from 'connectors';
-import { data } from 'make';
 
-const LaunchPage = ({data:[]}) => {
+type LaunchProps = {
+  numPairs: Number
+}
+const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
   const [showAllProjects, setShowAllProjects] = useState<boolean>(true);
   const theme = useTheme();
   const {colorMode} = useColorMode();
@@ -151,7 +153,7 @@ const LaunchPage = ({data:[]}) => {
             fontFamily={theme.fonts.fld}>
             <Text color={'yellow'}>TOS pairs (in Uniswap)</Text>
             <Text color={'#fff'} fontSize={'24px'}>
-             {data.length + 2}
+             {numPairs}
             </Text>
           </Flex>
         </Flex>
