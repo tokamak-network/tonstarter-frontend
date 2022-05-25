@@ -82,7 +82,7 @@ export const AirdropClaimTable = () => {
         await Promise.all(
           claimableTokens.map(async (tokenAddress: string, idx: number) => {
             const ERC20_CONTRACT = new Contract(
-              claimableTokens[idx],
+              tokenAddress,
               ERC20.abi,
               library,
             );

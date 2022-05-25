@@ -20,8 +20,10 @@ import {DEPLOYED} from 'constants/index';
 import {useContract} from 'hooks/useContract';
 import {convertNumber} from 'utils/number';
 import * as LockTOSDividendABI from 'services/abis/LockTOSDividend.json';
-import * as ERC20 from 'services/abis/ERC20.json';
+import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
+import * as TokenDividendProxyPool from 'services/abis/TokenDividendProxyPool.json';
 import useAirdropList from '@Dao/hooks/useAirdropList';
+import {ethers} from 'ethers';
 
 // type AirdropTokenList = {tokenName: string; amount: string}[];
 
@@ -40,6 +42,7 @@ export const DistributeTable = () => {
 
   const [timeStamp, setTimeStamp] = useState<string>('');
   const [distributions, setDistributions] = useState<any[]>([]);
+  const [allDistributedTokens, setAllDistributedTokens] = useState<any[]>([]);
   const [distributedTosAmount, setDistributedTosAmount] = useState<any>();
   const [distributedTonAmount, setDistributedTonAmount] = useState<any>();
   const {airdropList} = useAirdropList();
@@ -58,11 +61,6 @@ export const DistributeTable = () => {
   // const [airdropList, setAirdropList] = useState<AirdropTokenList | undefined>(
   //   undefined,
   // );
-
-  const LOCKTOS_DIVIDEND_CONTRACT = useContract(
-    LockTOSDividend_ADDRESS,
-    LockTOSDividendABI.abi,
-  );
 
   const themeDesign = {
     border: {
@@ -98,6 +96,81 @@ export const DistributeTable = () => {
       dark: '#f3f4f1',
     },
   };
+
+  useEffect(() => {
+    async function getAllDistributedTokens() {
+      if (!account) {
+        return;
+      }
+
+      const {LockTOSDividend_ADDRESS, TokenDividendProxyPool_ADDRESS} =
+        DEPLOYED;
+
+      const TOKEN_DIVIDEND_PROXY_CONTRACT = new Contract(
+        TokenDividendProxyPool_ADDRESS,
+        TokenDividendProxyPool.abi,
+        library,
+      );
+
+      const LOCKTOS_DIVIDEND_CONTRACT = new Contract(
+        LockTOSDividend_ADDRESS,
+        LockTOSDividendABI.abi,
+        library,
+      );
+
+      let distributedTokens: any[] = [];
+      let distribuedTokenInfo: any[] = [];
+      let undefinedToken = false;
+      let index = 0;
+
+      try {
+        while (!undefinedToken) {
+          let tempToken = await TOKEN_DIVIDEND_PROXY_CONTRACT.distributedTokens(
+            index,
+          );
+          distributedTokens.push(tempToken);
+          index++;
+        }
+      } catch (e) {
+        undefinedToken = true;
+      }
+
+      if (distributedTokens.length > 0) {
+        await Promise.all(
+          distributedTokens.map(async (tokenAddress: string) => {
+            const ERC20_CONTRACT = new Contract(
+              tokenAddress,
+              ERC20.abi,
+              library,
+            );
+            let tokenSymbol = await ERC20_CONTRACT.symbol();
+            let tonHolderAmount =
+              await TOKEN_DIVIDEND_PROXY_CONTRACT.distributions(tokenAddress);
+            let tosHolderAmount = await LOCKTOS_DIVIDEND_CONTRACT.distributions(
+              tokenAddress,
+            );
+            let formattedTonAmount = ethers.utils.formatEther(
+              tonHolderAmount.totalDistribution,
+            );
+
+            let formattedTosAmount = ethers.utils.formatEther(
+              tosHolderAmount.totalDistribution,
+            );
+
+            distribuedTokenInfo.push({
+              symbol: tokenSymbol,
+              address: tokenAddress,
+              tonHolderAmount: Number(formattedTonAmount).toFixed(2),
+              tosHolderAmount: Number(formattedTosAmount).toFixed(2),
+            });
+          }),
+        );
+      }
+      console.log('distribuedTokenInfo: ', distribuedTokenInfo);
+      setAllDistributedTokens(distribuedTokenInfo);
+    }
+    getAllDistributedTokens();
+  }, [account, library]);
 
   useEffect(() => {
     async function getDistributedTosAmount() {
@@ -143,53 +216,18 @@ export const DistributeTable = () => {
     const today = moment().isoWeekday();
     const thisWed = moment().isoWeekday(dayINeed).format('YYYY-MM-DD');
     const nextWed = moment().add(1, 'weeks').isoWeekday(dayINeed).format('LL');
+    console.log('thisWed', moment().isoWeekday(dayINeed).format('X'));
+    console.log(
+      'nextWed',
+      moment().add(1, 'weeks').isoWeekday(dayINeed).format('X'),
+    );
+
     if (today === dayINeed || today < dayINeed) {
       return setTimeStamp(thisWed);
     } else {
       return setTimeStamp(nextWed);
     }
   }, []);
-
-  // const fetchData = async () => {
-  //   let claimableTokens = [];
-  //   let isError = false;
-  //   let i = 0;
-
-  //   do {
-  //     try {
-  //       const tokenAddress = await LOCKTOS_DIVIDEND_CONTRACT?.distributedTokens(
-  //         i,
-  //       );
-  //       claimableTokens.push(tokenAddress);
-  //       i++;
-  //     } catch (e) {
-  //       isError = true;
-  //     }
-  //   } while (isError === false);
-
-  //   const tokens = claimableTokens;
-  //   const nowTimeStamp = moment().unix();
-  //   const result: {tokenName: string; amount: string}[] = await Promise.all(
-  //     tokens.map(async (token: string) => {
-  //       const tokenAmount = await LOCKTOS_DIVIDEND_CONTRACT?.tokensPerWeekAt(
-  //         token,
-  //         nowTimeStamp,
-  //       );
-  //       const ERC20_CONTRACT = new Contract(token, ERC20.abi, library);
-  //       const tokenSymbol = await ERC20_CONTRACT.symbol();
-  //       return {
-  //         tokenName: tokenSymbol,
-  //         amount: convertNumber({
-  //           amount: tokenAmount.toString(),
-  //           localeString: true,
-  //           type: tokenSymbol !== 'WTON' ? 'wei' : 'ray',
-  //         }) as string,
-  //       };
-  //     }),
-  //   );
-
-  //   return setAirdropList(result);
-  // };
 
   return (
     <Flex flexDirection={'column'} w={'976px'} p={'0px'} mt={'50px'}>
@@ -239,7 +277,7 @@ export const DistributeTable = () => {
           Distribute
         </Button>
       </Flex>
-      {distributions.length === 0 ? (
+      {allDistributedTokens.length === 0 ? (
         <Flex
           justifyContent={'center'}
           alignItems={'center'}
@@ -274,8 +312,83 @@ export const DistributeTable = () => {
               Amount
             </Text>
           </GridItem>
+          {allDistributedTokens.map((token: any, index: number) => {
+            console.log('token: ', token);
+            return (
+              <GridItem
+                border={themeDesign.border[colorMode]}
+                borderBottom={
+                  index === allDistributedTokens?.length - 1 ? '' : 'none'
+                }
+                className={'chart-cell'}
+                fontSize={'16px'}
+                fontFamily={theme.fonts.fld}
+                d={'flex'}
+                justifyContent={'center'}>
+                <Text
+                  fontSize={'15px'}
+                  color={colorMode === 'light' ? '#353c48' : 'white.0'}
+                  minWidth={'33%'}
+                  textAlign={'center'}>
+                  TON Holder
+                </Text>
+                <Text
+                  fontSize={'15px'}
+                  color={colorMode === 'light' ? '#353c48' : 'white.0'}
+                  minWidth={'33%'}
+                  textAlign={'center'}>
+                  {token.symbol}
+                </Text>
+                <Text
+                  fontSize={'15px'}
+                  color={colorMode === 'light' ? '#353c48' : 'white.0'}
+                  minWidth={'33%'}
+                  textAlign={'center'}>
+                  {token.tonHolderAmount}
+                </Text>
+              </GridItem>
+            );
+          })}
+          {allDistributedTokens.map((token: any, index: number) => {
+            if (token.tosHolderAmount > 0) {
+              return (
+                <GridItem
+                  border={themeDesign.border[colorMode]}
+                  borderBottom={
+                    index === allDistributedTokens?.length - 1 ? '' : 'none'
+                  }
+                  className={'chart-cell'}
+                  fontSize={'16px'}
+                  fontFamily={theme.fonts.fld}
+                  d={'flex'}
+                  justifyContent={'center'}>
+                  <Text
+                    fontSize={'15px'}
+                    color={colorMode === 'light' ? '#353c48' : 'white.0'}
+                    minWidth={'33%'}
+                    textAlign={'center'}>
+                    TOS Holder
+                  </Text>
+                  <Text
+                    fontSize={'15px'}
+                    color={colorMode === 'light' ? '#353c48' : 'white.0'}
+                    minWidth={'33%'}
+                    textAlign={'center'}>
+                    {token.symbol}
+                  </Text>
+                  <Text
+                    fontSize={'15px'}
+                    color={colorMode === 'light' ? '#353c48' : 'white.0'}
+                    minWidth={'33%'}
+                    textAlign={'center'}>
+                    {token.tosHolderAmount}
+                  </Text>
+                </GridItem>
+              );
+            }
+          })}
 
-          <GridItem
+          {/* <GridItem
             border={themeDesign.border[colorMode]}
             borderBottom={'none'}
             className={'chart-cell'}
@@ -395,7 +508,7 @@ export const DistributeTable = () => {
               textAlign={'center'}>
               1,000,000
             </Text>
-          </GridItem>
+          </GridItem> */}
         </Grid>
       )}
     </Flex>

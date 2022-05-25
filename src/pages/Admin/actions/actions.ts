@@ -4,10 +4,12 @@ import * as TokenDividendProxyPool from 'services/abis/TokenDividendProxyPool.js
 import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import {setTx} from 'application';
+import {setTxPending} from 'store/tx.reducer';
 import {LibraryType} from 'types';
 import {convertNumber, convertToRay, convertToWei} from 'utils/number';
 import store from 'store';
 import {openToast} from 'store/app/toast.reducer';
+import {toastWithReceipt} from 'utils';
 import {DEPLOYED} from 'constants/index';
 import {ethers} from 'ethers';
 import {
@@ -50,7 +52,10 @@ const getERC20ApproveTOS = async (
       isRay === true ? convertToRay(amount) : convertToWei(amount),
     );
 
-    return setTx(res);
+    store.dispatch(setTxPending({tx: true}));
+    if (res) {
+      toastWithReceipt(res, setTxPending, 'Airdrop');
+    }
   } catch (e) {
     console.log(e);
     store.dispatch(
@@ -82,7 +87,10 @@ const getERC20ApproveTON = async (
       isRay === true ? convertToRay(amount) : convertToWei(amount),
     );
 
-    return setTx(res);
+    store.dispatch(setTxPending({tx: true}));
+    if (res) {
+      toastWithReceipt(res, setTxPending, 'Airdrop');
+    }
   } catch (e) {
     console.log(e);
     store.dispatch(
@@ -246,10 +254,7 @@ const getDistributedTonAmount = async (args: I_CallContract2) => {
       signer,
     ).distributions(TON_ADDRESS);
 
-    console.log(
-      'getDistributedTonAmount: ',
-      ethers.utils.formatEther(res2.lastBalance),
-    );
+    console.log('getDistributedTonAmount: ', res2);
     //14000
 
     // return setTx(res);
