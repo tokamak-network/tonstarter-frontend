@@ -96,6 +96,7 @@ const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
       }
       const hardCapCalc = await PublicSaleVaul.hardcapCalcul();
       const adminWithdraw = await PublicSaleVaul.adminWithdraw(); 
+      console.log('adminWithdraw',adminWithdraw);
       
       setFundWithdrew(adminWithdraw)
       setHardcap(Number(hardCapCalc))
@@ -416,7 +417,17 @@ const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
                           cursor: 'not-allowed',
                         }}
                         _hover={
-                          !isAdmin
+                          vault.publicRound2End > moment().unix() || hardcap === 0 || fundWithdrew=== true
+                            ? {}
+                            : {
+                                background: 'transparent',
+                                border: 'solid 1px #2a72e5',
+                                color: themeDesign.tosFont[colorMode],
+                                cursor: 'pointer',
+                              }
+                        }
+                        _focus={
+                          vault.publicRound2End > moment().unix() || hardcap === 0 || fundWithdrew=== true
                             ? {}
                             : {
                                 background: 'transparent',
@@ -426,7 +437,7 @@ const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
                               }
                         }
                         _active={
-                          !isAdmin
+                          vault.publicRound2End > moment().unix() || hardcap === 0 || fundWithdrew=== true
                             ? {}
                             : {
                                 background: '#2a72e5',

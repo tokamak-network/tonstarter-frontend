@@ -16,8 +16,9 @@ import {useModal} from 'hooks/useModal';
 import ConfirmTermsModal from './components/modals/ConfirmTerms';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {injected} from 'connectors';
+import { data } from 'make';
 
-const LaunchPage = () => {
+const LaunchPage = ({data:[]}) => {
   const [showAllProjects, setShowAllProjects] = useState<boolean>(true);
   const theme = useTheme();
   const {colorMode} = useColorMode();
@@ -150,7 +151,7 @@ const LaunchPage = () => {
             fontFamily={theme.fonts.fld}>
             <Text color={'yellow'}>TOS pairs (in Uniswap)</Text>
             <Text color={'#fff'} fontSize={'24px'}>
-              50,000
+             {data.length + 2}
             </Text>
           </Flex>
         </Flex>

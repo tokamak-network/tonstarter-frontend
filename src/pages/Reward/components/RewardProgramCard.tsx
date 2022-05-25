@@ -71,8 +71,6 @@ type RewardProgramCardProps = {
 
 const {
   WTON_ADDRESS,
-  TON_ADDRESS,
-  UniswapStaking_Address,
   UniswapStaker_Address,
 } = DEPLOYED;
 
@@ -205,6 +203,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
         account,
         UniswapStaking_Address,
       );
+console.log('isApprovedForAll',isApprovedForAll);
 
       setApproved(isApprovedForAll);
     }

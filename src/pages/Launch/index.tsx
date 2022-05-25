@@ -47,13 +47,13 @@ const OpenCampagin = () => {
   const {url} = match;
 
   //test
-
+  
   // if (isLoading) {
   //   return <div>loading..</div>;
   // }
   return (
     <Flex flexDir="column" mt={'78px'} alignItems="center">
-      <LaunchPage />
+      <LaunchPage  data={projectsData}/>
     </Flex>
   );
 };

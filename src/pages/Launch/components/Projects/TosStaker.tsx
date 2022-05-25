@@ -60,6 +60,8 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
         await receipt.wait();
       }
     } catch (e) {
+      console.log(e);
+      
       store.dispatch(setTxPending({tx: false}));
       store.dispatch(
         //@ts-ignore

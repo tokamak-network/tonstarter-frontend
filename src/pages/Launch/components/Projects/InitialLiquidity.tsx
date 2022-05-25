@@ -125,8 +125,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
       setCreatedPool(getPool === ZERO_ADDRESS ? '':getPool)
       // setIsPool(false)
       setIsLpToken(Number(LP) === 0 ? false : true);
-     
-      
+      console.log(Number(LP));
       setLPToken(Number(LP));
     }
     getLPToken();
@@ -346,7 +345,17 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
           </Text>{' '}
         </GridItem>
       </Flex>
-      {Number(tosBalance) === 0 ? (
+      {Number(tosBalance) === 0 ? isPool && isLpToken ?  <Condition4
+            themeDesign={themeDesign}
+            projTokenBalance={projTokenBalance}
+            tosBalance={tosBalance}
+            project={project}
+            isAdmin={isAdmin}
+            LPToken={LPToken}
+            mint={mint}
+            collect={collect}
+            npm={NPM}
+          /> : (
         <Condition1
           themeDesign={themeDesign}
           projTokenBalance={projTokenBalance}
@@ -980,10 +989,14 @@ export const Condition4: React.FC<Condition4> = ({
         </Flex>
 
         <Text textAlign={'center'} w={'24.1%'} fontFamily={theme.fonts.fld}>
-          {commafy(Number(projTokenBalance))}
+          {Number(projTokenBalance).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+      })}
         </Text>
         <Text textAlign={'center'} w={'24.1%'} fontFamily={theme.fonts.fld}>
-          {commafy(Number(tosBalance))}
+          {Number(tosBalance).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+      })}
         </Text>
         <Flex justifyContent={'center'} alignContent={'center'} w={'29.2%'}>
           <Button
@@ -1051,10 +1064,14 @@ export const Condition4: React.FC<Condition4> = ({
         </Flex>
 
         <Text textAlign={'center'} w={'24.1%'} fontFamily={theme.fonts.fld}>
-          {commafy(Number(unclaimedProjTok))}
+          {Number(unclaimedProjTok).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+      })}
         </Text>
         <Text textAlign={'center'} w={'24.1%'} fontFamily={theme.fonts.fld}>
-          {commafy(Number(unclaimedTOS))}
+          {Number(unclaimedTOS).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+      })}
         </Text>
         <Flex justifyContent={'center'} alignContent={'center'} w={'29.2%'}>
           <Button
