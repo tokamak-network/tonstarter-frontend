@@ -53,20 +53,30 @@ export const AirdropDistributeModal = () => {
       if (!account) {
         return;
       }
-      const allowanceAmount = await AdminActions.checkApprove({
-        account,
-        library,
-        address: tokenAddress,
-        isRay,
-      });
-      setAllowance(allowanceAmount);
+      if (distributeToValue === 'TON Holder') {
+        const allowanceAmount = await AdminActions.checkApproveTON({
+          account,
+          library,
+          address: tokenAddress,
+          isRay,
+        });
+        setAllowance(allowanceAmount);
+      } else {
+        const allowanceAmount = await AdminActions.checkApprove({
+          account,
+          library,
+          address: tokenAddress,
+          isRay,
+        });
+        setAllowance(allowanceAmount);
+      }
     }
     if (account && tokenAddress !== '') {
       getAllowanceAmount();
     } else {
       setAllowance('0.00');
     }
-  }, [account, library, tokenAddress, isRay]);
+  }, [account, library, tokenAddress, isRay, distributeToValue]);
 
   useEffect(() => {
     if (tokenAmount === '') {
@@ -111,7 +121,7 @@ export const AirdropDistributeModal = () => {
   ];
   const selectDistributeOptionValues = [
     'TON Holder',
-    'TOS Holder',
+    // 'TOS Holder',
     'sTOS Holder',
   ];
   const selectOptionNames = ['TON', 'WTON', 'TOS', 'DOC', 'CUSTOM TOKEN'];

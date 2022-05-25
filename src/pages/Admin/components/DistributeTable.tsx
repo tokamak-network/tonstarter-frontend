@@ -21,6 +21,7 @@ import {useContract} from 'hooks/useContract';
 import {convertNumber} from 'utils/number';
 import * as LockTOSDividendABI from 'services/abis/LockTOSDividend.json';
 import * as ERC20 from 'services/abis/ERC20.json';
+import useAirdropList from '@Dao/hooks/useAirdropList';
 
 // type AirdropTokenList = {tokenName: string; amount: string}[];
 
@@ -40,6 +41,20 @@ export const DistributeTable = () => {
   const [timeStamp, setTimeStamp] = useState<string>('');
   const [distributions, setDistributions] = useState<any[]>([]);
   const [distributedTosAmount, setDistributedTosAmount] = useState<any>();
+  const [distributedTonAmount, setDistributedTonAmount] = useState<any>();
+  const {airdropList} = useAirdropList();
+
+  useEffect(() => {
+    let temp: {tokenName: string; amount: string}[] = [];
+    airdropList?.map((tokenInfo: any) => {
+      if (tokenInfo.amount !== '0.00') {
+        return temp.push(tokenInfo);
+      }
+    });
+    console.log('temp: ', temp);
+    console.log('temp airdropList: ', airdropList);
+  }, [airdropList]);
+
   // const [airdropList, setAirdropList] = useState<AirdropTokenList | undefined>(
   //   undefined,
   // );
@@ -100,6 +115,25 @@ export const DistributeTable = () => {
       getDistributedTosAmount();
     } else {
       setDistributedTosAmount('0.00');
+    }
+  }, [account, library]);
+
+  useEffect(() => {
+    async function getDistributedTonAmount() {
+      if (!account) {
+        return;
+      }
+      const distributedTosAmt = await AdminActions.getDistributedTonAmount({
+        account,
+        library,
+      });
+      console.log('distributedTosAmt: ', distributedTosAmount);
+      setDistributedTonAmount(distributedTosAmt);
+    }
+    if (account) {
+      getDistributedTonAmount();
+    } else {
+      setDistributedTonAmount('0.00');
     }
   }, [account, library]);
 

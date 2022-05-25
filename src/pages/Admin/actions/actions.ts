@@ -9,6 +9,7 @@ import {convertNumber, convertToRay, convertToWei} from 'utils/number';
 import store from 'store';
 import {openToast} from 'store/app/toast.reducer';
 import {DEPLOYED} from 'constants/index';
+import {ethers} from 'ethers';
 import {
   createStarter,
   putEditStarter,
@@ -27,6 +28,12 @@ interface I_CallContract {
 interface I_CallContract2 {
   account: string;
   library: LibraryType;
+}
+
+interface I_CallContract3 {
+  account: string;
+  library: LibraryType;
+  addresses: any;
 }
 
 const getERC20ApproveTOS = async (
@@ -97,6 +104,7 @@ const distributeTOS = async (
   args: I_CallContract & {amount: string; isRay?: boolean},
 ) => {
   try {
+    console.log('in distributeTOS');
     const {account, library, amount, address, isRay} = args;
     const {LockTOSDividend_ADDRESS} = DEPLOYED;
     const LOCKTOS_DIVIDEND_CONTRACT = new Contract(
@@ -113,7 +121,7 @@ const distributeTOS = async (
       isRay === true ? convertToRay(amount) : convertToWei(amount),
     );
 
-    console.log('res', res);
+    console.log('distributeTOS res', res);
 
     return setTx(res);
   } catch (e) {
@@ -137,6 +145,7 @@ const distributeTON = async (
   args: I_CallContract & {amount: string; isRay?: boolean},
 ) => {
   try {
+    console.log('in distributeTON');
     const {account, library, amount, address, isRay} = args;
     const {TokenDividendProxyPool_ADDRESS} = DEPLOYED;
     const TOKEN_DIVIDEND_PROXY_CONTRACT = new Contract(
@@ -153,7 +162,7 @@ const distributeTON = async (
       isRay === true ? convertToRay(amount) : convertToWei(amount),
     );
 
-    console.log('res', res);
+    console.log('distributeTON res', res);
 
     return setTx(res);
   } catch (e) {
@@ -177,18 +186,71 @@ const getDistributedTosAmount = async (args: I_CallContract2) => {
   try {
     const {account, library} = args;
     const {LockTOSDividend_ADDRESS, TON_ADDRESS} = DEPLOYED;
+
     const LOCKTOS_DIVIDEND_CONTRACT = new Contract(
       LockTOSDividend_ADDRESS,
       LockTOSDividend.abi,
       library,
     );
+
     const signer = getSigner(library, account);
 
     const res = await LOCKTOS_DIVIDEND_CONTRACT.connect(signer).distributions(
       TON_ADDRESS,
     );
 
-    console.log('res', res);
+    console.log(
+      'getDistributedTosAmount: ',
+      ethers.utils.formatEther(res.totalDistribution),
+    );
+    //17425 - adds when I distribute to TOS Holders
+
+    // return setTx(res);
+  } catch (e) {
+    console.log(e);
+    store.dispatch(
+      //@ts-ignore
+      openToast({
+        payload: {
+          status: 'error',
+          title: 'Tx fail to send',
+          description: `something went wrong`,
+          duration: 5000,
+          isClosable: true,
+        },
+      }),
+    );
+  }
+};
+
+const getDistributedTonAmount = async (args: I_CallContract2) => {
+  try {
+    const {account, library} = args;
+    const {TON_ADDRESS, TokenDividendProxyPool_ADDRESS} = DEPLOYED;
+
+    const TOKEN_DIVIDEND_PROXY_CONTRACT = new Contract(
+      TokenDividendProxyPool_ADDRESS,
+      TokenDividendProxyPool.abi,
+      library,
+    );
+
+    const signer = getSigner(library, account);
+
+    const res = await TOKEN_DIVIDEND_PROXY_CONTRACT.connect(
+      signer,
+    ).totalDistribution(TON_ADDRESS);
+
+    console.log('totalDistribution: ', ethers.utils.formatEther(res));
+
+    const res2 = await TOKEN_DIVIDEND_PROXY_CONTRACT.connect(
+      signer,
+    ).distributions(TON_ADDRESS);
+
+    console.log(
+      'getDistributedTonAmount: ',
+      ethers.utils.formatEther(res2.lastBalance),
+    );
+    //14000
 
     // return setTx(res);
   } catch (e) {
@@ -244,6 +306,42 @@ export const claimToken = async (args: I_CallContract) => {
   }
 };
 
+export const claimMultipleTokens = async (args: I_CallContract3) => {
+  try {
+    const {account, library, addresses} = args;
+    const {TokenDividendProxyPool_ADDRESS} = DEPLOYED;
+    const TOKEN_DIVIDEND_PROXY_CONTRACT = new Contract(
+      TokenDividendProxyPool_ADDRESS,
+      TokenDividendProxyPool.abi,
+      library,
+    );
+
+    if (account === undefined || account === null || library === undefined) {
+      return;
+    }
+    const signer = getSigner(library, account);
+
+    const res = await TOKEN_DIVIDEND_PROXY_CONTRACT.connect(signer).claimBatch(
+      addresses,
+    );
+    return setTx(res);
+  } catch (e) {
+    console.log(e);
+    store.dispatch(
+      //@ts-ignore
+      openToast({
+        payload: {
+          status: 'error',
+          title: 'Tx fail to send',
+          description: `something went wrong`,
+          duration: 5000,
+          isClosable: true,
+        },
+      }),
+    );
+  }
+};
+
 export const checkApprove = async (
   args: I_CallContract & {isRay?: boolean},
 ): Promise<string> => {
@@ -255,6 +353,30 @@ export const checkApprove = async (
     const approvedAmount = await ERC20_CONTRACT.allowance(
       account,
       LockTOSDividend_ADDRESS,
+    );
+    const result = convertNumber({
+      amount: approvedAmount,
+      type: isRay ? 'ray' : 'wei',
+      localeString: true,
+    }) as string;
+    return result;
+  } catch (e) {
+    console.log(e);
+    return '0.00';
+  }
+};
+
+export const checkApproveTON = async (
+  args: I_CallContract & {isRay?: boolean},
+): Promise<string> => {
+  try {
+    const {account, library, address, isRay} = args;
+    const {TokenDividendProxyPool_ADDRESS} = DEPLOYED;
+
+    const ERC20_CONTRACT = new Contract(address, ERC20.abi, library);
+    const approvedAmount = await ERC20_CONTRACT.allowance(
+      account,
+      TokenDividendProxyPool_ADDRESS,
     );
     const result = convertNumber({
       amount: approvedAmount,
@@ -464,13 +586,16 @@ const actions = {
   distributeTOS,
   distributeTON,
   getDistributedTosAmount,
+  getDistributedTonAmount,
   claimToken,
+  claimMultipleTokens,
   addStarter,
   editStarter,
   addPool,
   editPool,
   deletePool,
   checkApprove,
+  checkApproveTON,
 };
 
 export default actions;

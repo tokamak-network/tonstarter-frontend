@@ -17,6 +17,7 @@ import {useContract} from 'hooks/useContract';
 import {DEPLOYED} from 'constants/index';
 import {Contract} from '@ethersproject/contracts';
 import moment from 'moment';
+import AdminActions from '@Admin/actions';
 import {useBlockNumber} from 'hooks/useBlock';
 import {convertNumber} from 'utils/number';
 import * as LockTOSDividendABI from 'services/abis/LockTOSDividend.json';
@@ -43,6 +44,7 @@ export const AirdropClaimTable = () => {
   const [loadingData, setLoadingData] = useState<boolean>(true);
   const [isCheck, setIsCheck] = useState<any[]>([]);
   const [airdropData, setAirdropData] = useState<any[]>([]);
+  const [checkedTokenAddresses, setCheckedTokenAddresses] = useState<any[]>([]);
   const [genesisAirdropBalance, setGenesisAirdropBalance] = useState<
     string | undefined
   >(undefined);
@@ -217,21 +219,29 @@ export const AirdropClaimTable = () => {
   const handleSelectAll = (e: any) => {
     setIsCheckAll(!isCheckAll);
     setIsCheck(airdropData.map((data) => String(data.id)));
+    setCheckedTokenAddresses(airdropData.map((data) => data.address));
+
     if (isCheckAll) {
       setIsCheck([]);
+      setCheckedTokenAddresses([]);
     }
-    console.log('isCheck selectAll: ', isCheck);
   };
 
   const handleClick = (e: any) => {
-    const {id, checked} = e.target;
-    console.log('e.target: ', e.target);
-    console.log('e.target.checked: ', checked);
-    console.log('isCheck: ', isCheck);
+    const {id, checked, value} = e.target;
+    let tempCheckedAddresses = checkedTokenAddresses;
     setIsCheck([...isCheck, id]);
     if (!checked) {
       setIsCheck(isCheck.filter((item) => item !== id));
     }
+    if (!checkedTokenAddresses.includes(value)) {
+      tempCheckedAddresses.push(value);
+    } else if (checkedTokenAddresses.includes(value)) {
+      tempCheckedAddresses = tempCheckedAddresses.filter(
+        (address) => address !== value,
+      );
+    }
+    setCheckedTokenAddresses(tempCheckedAddresses);
   };
 
   return (
@@ -258,16 +268,15 @@ export const AirdropClaimTable = () => {
           fontSize={'13px'}
           fontFamily={theme.fonts.roboto}
           background={'transparent'}
-          // onClick={() =>
-          //   dispatch(
-          //     openModal({
-          //       type: 'Airdrop_Claim',
-          //       data: {
-          //         test: 'data',
-          //       },
-          //     }),
-          //   )
-          // }
+          disabled={checkedTokenAddresses.length < 1}
+          onClick={() => {
+            account &&
+              AdminActions.claimMultipleTokens({
+                account,
+                library,
+                addresses: checkedTokenAddresses,
+              });
+          }}
           _hover={{background: 'transparent'}}>
           Claim All
         </Button>
@@ -311,10 +320,6 @@ export const AirdropClaimTable = () => {
         </GridItem>
       </Grid>
 
-      {console.log('airdropData: ', airdropData)}
-      {console.log('genesisAirdropBalance: ', genesisAirdropBalance)}
-      {console.log('airdropList: ', airdropList)}
-
       {loadingData || !airdropData ? (
         <Flex
           alignItems={'center'}
@@ -354,6 +359,7 @@ export const AirdropClaimTable = () => {
                     fontSize={'14px'}
                     h={'45px'}
                     left={'5%'}
+                    value={address}
                   />
                 </Flex>
                 <Text
