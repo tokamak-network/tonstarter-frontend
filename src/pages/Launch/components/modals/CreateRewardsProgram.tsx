@@ -214,13 +214,15 @@ const CreateRewardsProgramModal = () => {
               h="38px"
               bg={'#257eee'}
               color={'#ffffff'}
-              _hover={{
+              disabled={distributable === 0}
+              _hover={ distributable === 0? {} :{
                 background: 'transparent',
                 border: 'solid 1px #2a72e5',
                 color: themeDesign.tosFont[colorMode],
                 cursor: 'pointer',
               }}
-              _active={{
+
+              _active={distributable === 0? {} :{
                 background: '#2a72e5',
                 border: 'solid 1px #2a72e5',
                 color: '#fff',

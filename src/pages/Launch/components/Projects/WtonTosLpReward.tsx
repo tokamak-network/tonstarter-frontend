@@ -161,41 +161,41 @@ export const WtonTosLpReward: FC<WtonTosLpReward> = ({vault, project}) => {
     getLPToken();
   }, [account, library, transactionType, blockNumber, vault.vaultAddress]);
 
-  useEffect(() => {
-    async function fetchProjectsData() {
-             if (account === null || account === undefined || library === undefined) {
-                return;
-              }
-            const signer = getSigner(library, account);
-      const poolsData: any = await views.getPoolData(library);
-      const rewardData = await views.getRewardData();
-      if (rewardData) {
-        const res = await Promise.all (
-          rewardData.map(async (reward:any, index) => {
-            reward.index = index + 1;
-            const key = reward.incentiveKey;  
-              const abicoder = ethers.utils.defaultAbiCoder;   
-              const incentiveABI =
-              'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)';
-                
-            const incentiveId = soliditySha3(abicoder.encode([incentiveABI], [key]));   
-                   
-            const incentiveInfo = await uniswapStakerContract
-            .connect(signer)
-            .incentives(incentiveId);
-            reward.unclaimed =incentiveInfo.totalRewardUnclaimed
-            return {...reward}
-          })
-        )
+  async function fetchProjectsData() {
+    if (account === null || account === undefined || library === undefined) {
+       return;
+     }
+   const signer = getSigner(library, account);
+const poolsData: any = await views.getPoolData(library);
+const rewardData = await views.getRewardData();
+if (rewardData) {
+const res = await Promise.all (
+ rewardData.map(async (reward:any, index) => {
+   reward.index = index + 1;
+   const key = reward.incentiveKey;  
+     const abicoder = ethers.utils.defaultAbiCoder;   
+     const incentiveABI =
+     'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)';
        
-        const filtered = rewardData.filter((reward: any) => 
-          ethers.utils.getAddress(reward.incentiveKey.refundee) ===
-            ethers.utils.getAddress(vault.vaultAddress)
-        );
-        
-        setDatas(filtered);
-      }
-    }
+   const incentiveId = soliditySha3(abicoder.encode([incentiveABI], [key]));   
+          
+   const incentiveInfo = await uniswapStakerContract
+   .connect(signer)
+   .incentives(incentiveId);
+   reward.unclaimed =incentiveInfo.totalRewardUnclaimed
+   return {...reward}
+ })
+)
+
+const filtered = rewardData.filter((reward: any) => 
+ ethers.utils.getAddress(reward.incentiveKey.refundee) ===
+   ethers.utils.getAddress(vault.vaultAddress)
+);
+
+setDatas(filtered);
+}
+}
+  useEffect(() => {
     fetchProjectsData();
   }, [account, library, vault.vaultAddress, transactionType, blockNumber]);
 
@@ -272,6 +272,11 @@ export const WtonTosLpReward: FC<WtonTosLpReward> = ({vault, project}) => {
           sig: sig,
         };
         const create = await createReward(arg);
+        if (create.success === true) {
+          console.log('hhhh');
+          
+          fetchProjectsData()
+        }
       }
     } catch (e) {
       store.dispatch(setTxPending({tx: false}));
@@ -477,7 +482,7 @@ export const WtonTosLpReward: FC<WtonTosLpReward> = ({vault, project}) => {
                   padding={'6px 12px'}
                   whiteSpace={'normal'}
                   color={'#fff'}
-                  isDisabled={distributeDisable}
+                  isDisabled={moment().unix() > duration[1]}
                   _disabled={{
                     color: colorMode === 'light' ? '#86929d' : '#838383',
                     bg: colorMode === 'light' ? '#e9edf1' : '#353535',

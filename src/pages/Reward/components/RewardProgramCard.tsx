@@ -35,6 +35,8 @@ import {convertNumber} from 'utils/number';
 import {useDispatch} from 'react-redux';
 import {gql, useQuery} from '@apollo/client';
 import {rewardReducer} from '../reward.reducer';
+import {useContract} from 'hooks/useContract';
+import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 
 const themeDesign = {
   border: {
@@ -107,6 +109,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   const [isSelected, setIsSelected] = useState<boolean>(false);
   const [isUnstakeSelected, setIsUnstakeselected] = useState<boolean>(false);
   const [numStakers, setNumStakers] = useState<number>(0);
+  const TOKEN_CONTRACT = useContract(reward.rewardToken, ERC20.abi);
   const dispatch = useDispatch();
 
   const key = {
@@ -122,6 +125,16 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     STAKERABI.abi,
     library,
   );
+
+  // useEffect(()=> {
+  //   async function getRewardToken() {
+  //     if (account && TOKEN_CONTRACT) {
+  //       const symbol = await TOKEN_CONTRACT.symbol();
+  //       setRewardSymbol(symbol)
+  //     }
+  //   }
+  //   getRewardToken()
+  // },[account,reward ])
 
   useEffect(() => {
     setIsUnstakeselected(false);
@@ -676,23 +689,13 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
                     })}
               </Text>
               <Text ml="2px" fontSize="13">
-                {
-                  checkTokenType(
-                    ethers.utils.getAddress(reward.rewardToken),
-                    colorMode,
-                  ).name
-                }
+                {TOKEN_CONTRACT !== null? rewardSymbol: ''}
               </Text>
             </Box>
           </Box>
           <Avatar
             ml={'10px'}
-            src={
-              checkTokenType(
-                ethers.utils.getAddress(reward.rewardToken),
-                colorMode,
-              ).symbol
-            }
+            src={reward.token1Image}
             bg={colorMode === 'light' ? '#ffffff' : '#222222'}
             name="T"
             border={

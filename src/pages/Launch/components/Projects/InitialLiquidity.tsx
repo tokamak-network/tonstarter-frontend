@@ -32,6 +32,7 @@ import {selectTransactionType} from 'store/refetch.reducer';
 import {BASE_PROVIDER} from 'constants/index';
 import Fraction from 'fraction.js';
 import {addPool} from 'pages/Admin/actions/actions';
+import { ZERO_ADDRESS } from 'constants/misc';
 // var Fraction = require('fraction.js');
 const {TOS_ADDRESS, UniswapV3Factory, NPM_Address} = DEPLOYED;
 type InitialLiquidity = {
@@ -85,6 +86,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
   const [isLpToken, setIsLpToken] = useState<boolean>(false);
   const [LPToken, setLPToken] = useState<Number>(0);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [createdPool, setCreatedPool] = useState<string>('')
   const network = BASE_PROVIDER._network.name;
   const InitialLiquidityCompute = new Contract(
     vault.vaultAddress,
@@ -120,6 +122,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
         3000,
       );
       setIsPool(getPool === ZERO_ADDRESS ? false : true);
+      setCreatedPool(getPool === ZERO_ADDRESS ? '':getPool)
       // setIsPool(false)
       setIsLpToken(Number(LP) === 0 ? false : true);
      
@@ -291,14 +294,14 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
             isExternal
             href={
               vault.poolAddress && network === 'rinkeby'
-                ? `https://rinkeby.etherscan.io/address/${vault.poolAddress}`
+                ? `https://rinkeby.etherscan.io/address/${createdPool}`
                 : vault.poolAddress && network !== 'rinkeby'
-                ? `https://etherscan.io/address/${vault.poolAddress}`
+                ? `https://etherscan.io/address/${createdPool}`
                 : ''
             }
             _hover={{color: '#2a72e5'}}
             fontFamily={theme.fonts.fld}>
-            {vault.poolAddress ? shortenAddress(vault.poolAddress) : 'NA'}
+            {createdPool !== '' ? shortenAddress(createdPool) : 'NA'}
           </Link>
         </GridItem>
         <GridItem
@@ -453,7 +456,9 @@ export const Condition1: React.FC<Condition1> = ({
           fontFamily={theme.fonts.fld}
           fontSize={'14px'}
           letterSpacing={'0.14px'}>
-          {commafy(Number(projTokenBalance))}
+          {(Number(projTokenBalance)).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+      })}
         </Text>
         <Text
           textAlign={'center'}
@@ -661,7 +666,9 @@ export const Condition2: React.FC<Condition2> = ({
           Amount in Initial Liquidity Vault
         </Text>
         <Text textAlign={'center'} w={'35.4%'} fontFamily={theme.fonts.fld}>
-          {commafy(Number(projTokenBalance))}
+          {(Number(projTokenBalance)).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+      })}
         </Text>
         <Text textAlign={'center'} w={'35.4%'} fontFamily={theme.fonts.fld}>
           {Number(tosBalance).toLocaleString(undefined, {
@@ -752,16 +759,14 @@ export const Condition3: React.FC<Condition3> = ({
           mt={'5px'}
           bg={'#257eee'}
           color={'#ffffff'}
-          isDisabled={!isAdmin}
+          // isDisabled={createdPool === ZERO_ADDRESS}
           _disabled={{
             color: colorMode === 'light' ? '#86929d' : '#838383',
             bg: colorMode === 'light' ? '#e9edf1' : '#353535',
             cursor: 'not-allowed',
           }}
           _hover={
-            !isAdmin
-              ? {}
-              : {
+           {
                   background: 'transparent',
                   border: 'solid 1px #2a72e5',
                   color: themeDesign.tosFont[colorMode],
@@ -771,9 +776,7 @@ export const Condition3: React.FC<Condition3> = ({
                 }
           }
           _focus={
-            !isAdmin
-              ? {}
-              : {
+             {
                   background: '#2a72e5',
                   border: 'solid 1px #2a72e5',
                   color: '#fff',
@@ -782,9 +785,7 @@ export const Condition3: React.FC<Condition3> = ({
                 }
           }
           _active={
-            !isAdmin
-              ? {}
-              : {
+             {
                   background: '#2a72e5',
                   border: 'solid 1px #2a72e5',
                   color: '#fff',
@@ -830,7 +831,9 @@ export const Condition3: React.FC<Condition3> = ({
           Amount in Initial Liquidity Vault
         </Text>
         <Text textAlign={'center'} w={'35.4%'} fontFamily={theme.fonts.fld}>
-          {commafy(Number(projTokenBalance))}
+          {(Number(projTokenBalance)).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+      })}
         </Text>
         <Text textAlign={'center'} w={'35.4%'} fontFamily={theme.fonts.fld}>
           {Number(tosBalance).toLocaleString(undefined, {

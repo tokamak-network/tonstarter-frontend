@@ -208,11 +208,10 @@ export const StarterDetail = () => {
   // const div = document.createElement('div');
   // div.innerHTML = saleInfo?.description
 
-
   if (saleInfo) {
-     const div = document.createElement('div');
-  div.innerHTML = saleInfo.description
-}
+    const div = document.createElement('div');
+    div.innerHTML = saleInfo.description;
+  }
 
   if (!saleInfo) {
     return (
@@ -251,17 +250,17 @@ export const StarterDetail = () => {
               mb={'11px'}>
               {saleInfo?.description}
             </Text> */}
-<Flex ml={'-15px'}>
-<ReactQuill
-          // placeholder="Input the project description"
-          readOnly={true}
-          value={saleInfo.description}
-          theme={'bubble'}
-          style={{color: 'white !important'}}
-        />
-        </Flex>
-            <Box pos="absolute" bottom={'11px'} >
-              <DetailIcons 
+            <Flex ml={'-15px'}>
+              <ReactQuill
+                // placeholder="Input the project description"
+                readOnly={true}
+                value={saleInfo.description}
+                theme={'bubble'}
+                style={{color: 'white !important'}}
+              />
+            </Flex>
+            <Box pos="absolute" bottom={'11px'}>
+              <DetailIcons
                 linkInfo={[
                   {sort: 'website', url: `${saleInfo?.website}`},
                   {sort: 'twitter', url: `${saleInfo?.twitter}`},

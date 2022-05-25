@@ -74,7 +74,7 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
   const [endTime, setEndTime] = useState<number>(0);
   const [poolsFromAPI, setPoolsFromAPI] = useState<any>([]);
   const [datas, setDatas] = useState<interfaceReward[] | []>([]);
-
+  const zero_address = '0x0000000000000000000000000000000000000000';
   const VaultLPReward = new Contract(
     vault.vaultAddress,
     VaultLPRewardLogicAbi.abi,
@@ -139,6 +139,7 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
       const endTime = Number(claimDate) + Number(getProgramDuration);
       const durat = [Number(claimDate), endTime];
       setEndTime(Number(getProgramDuration));
+
       setDuration(durat);
       const getPool = await UniswapV3Fact.getPool(
         TOS_ADDRESS,
@@ -155,42 +156,42 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
     getLPToken();
   }, [account, library, transactionType, blockNumber, vault.vaultAddress]);
 
-  useEffect(() => {
-    async function fetchProjectsData() {
-      if (account === null || account === undefined || library === undefined) {
-        return;
-      }
-      const signer = getSigner(library, account);
-      const rewardData = await views.getRewardData();
-      if (rewardData) {
-        const res = await Promise.all(
-          rewardData.map(async (reward: any, index) => {
-            reward.index = index + 1;
-            const key = reward.incentiveKey;
-            const abicoder = ethers.utils.defaultAbiCoder;
-            const incentiveABI =
-              'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)';
-
-            const incentiveId = soliditySha3(
-              abicoder.encode([incentiveABI], [key]),
-            );
-            const incentiveInfo = await uniswapStakerContract
-              .connect(signer)
-              .incentives(incentiveId);
-            reward.unclaimed = incentiveInfo.totalRewardUnclaimed;
-            return {...reward};
-          }),
-        );
-
-        const filtered = rewardData.filter(
-          (reward: any) =>
-            ethers.utils.getAddress(reward.incentiveKey.refundee) ===
-            ethers.utils.getAddress(vault.vaultAddress),
-        );
-
-        setDatas(filtered);
-      }
+  async function fetchProjectsData() {
+    if (account === null || account === undefined || library === undefined) {
+      return;
     }
+    const signer = getSigner(library, account);
+    const rewardData = await views.getRewardData();
+    if (rewardData) {
+      const res = await Promise.all(
+        rewardData.map(async (reward: any, index) => {
+          reward.index = index + 1;
+          const key = reward.incentiveKey;
+          const abicoder = ethers.utils.defaultAbiCoder;
+          const incentiveABI =
+            'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)';
+
+          const incentiveId = soliditySha3(
+            abicoder.encode([incentiveABI], [key]),
+          );
+          const incentiveInfo = await uniswapStakerContract
+            .connect(signer)
+            .incentives(incentiveId);
+          reward.unclaimed = incentiveInfo.totalRewardUnclaimed;
+          return {...reward};
+        }),
+      );
+
+      const filtered = rewardData.filter(
+        (reward: any) =>
+          ethers.utils.getAddress(reward.incentiveKey.refundee) ===
+          ethers.utils.getAddress(vault.vaultAddress),
+      );
+
+      setDatas(filtered);
+    }
+  }
+  useEffect(() => {
     fetchProjectsData();
   }, [account, library, vault.vaultAddress, transactionType, blockNumber]);
 
@@ -266,8 +267,13 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
           sig: sig,
         };
         const create = await createReward(arg);
+        if (create.success === true) {
+          fetchProjectsData()
+        }
       }
     } catch (e) {
+      console.log(e);
+
       store.dispatch(setTxPending({tx: false}));
       store.dispatch(
         //@ts-ignore
@@ -478,7 +484,7 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
                   padding={'6px 12px'}
                   whiteSpace={'normal'}
                   color={'#fff'}
-                  isDisabled={distributeDisable}
+                  isDisabled={distributeDisable || pool === zero_address || moment().unix() > duration[1]}
                   _disabled={{
                     color: colorMode === 'light' ? '#86929d' : '#838383',
                     bg: colorMode === 'light' ? '#e9edf1' : '#353535',

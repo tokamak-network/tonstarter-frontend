@@ -467,7 +467,12 @@ export const Reward = () => {
 
   const getSelectedPool = (e: any) => {
     const poolAddress = e.target.value;
-    const selected: Pool = pool.find((pool) => pool.id === poolAddress);
+    console.log(poolAddress);
+    console.log(pool);
+    
+    const selected: Pool = pool.find((pool) => ethers.utils.getAddress(pool.id) === ethers.utils.getAddress(poolAddress));
+    console.log('selected',selected);
+    
     setSelectedPool(selected);
     setSelectedToken(undefined);
     setSelectdPosition(undefined);
@@ -479,7 +484,7 @@ export const Reward = () => {
       setSelectdPosition(undefined);
     } else {
       const selectedRewards = datas.filter(
-        (data) => data.poolAddress === poolAddress,
+        (data) => ethers.utils.getAddress(data.poolAddress) === ethers.utils.getAddress(poolAddress),
       );
       setOrderedData(selectedRewards);
       setFilteredData(selectedRewards);

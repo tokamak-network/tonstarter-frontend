@@ -148,7 +148,7 @@ const ProjectCard: React.FC<{
         </Box>
         <Box mb={'30px'}>
           <Progress
-            value={progress ? progress: 50}
+            value={progress ? progress: 0}
             borderRadius={10}
             h={'6px'}
             bg={colorMode === 'light' ? '#e7edf3' : '#353d48'}

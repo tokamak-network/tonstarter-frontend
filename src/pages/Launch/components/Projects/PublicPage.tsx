@@ -409,7 +409,7 @@ const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
                         mt={'5px'}
                         bg={'#257eee'}
                         color={'#ffffff'}
-                        isDisabled={!isAdmin || vault.publicRound2End > moment().unix() || hardcap === 0 || fundWithdrew=== true}
+                        isDisabled={ vault.publicRound2End > moment().unix() || hardcap === 0 || fundWithdrew=== true}
                         _disabled={{
                           color: colorMode === 'light' ? '#86929d' : '#838383',
                           bg: colorMode === 'light' ? '#e9edf1' : '#353535',

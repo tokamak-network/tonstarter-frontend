@@ -172,7 +172,7 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
           'Token Name',
           'Token Symbol',
           'Token Supply',
-          'Sale Date',
+          'Sale Period',
           'Status',
           'Action',
         ].map((title: string) => {
