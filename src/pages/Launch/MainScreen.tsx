@@ -15,6 +15,7 @@ import OpenStepThree from '@Launch/components/OpenStepThree';
 import validateFormikValues from '@Launch/utils/validate';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {saveProject, editProject} from '@Launch/utils/saveProject';
+
 const StepComponent = (props: {step: StepNumber}) => {
   const {step} = props;
   switch (step) {
@@ -92,6 +93,27 @@ const MainScreen = () => {
     return <div>You need to connect to the wallet</div>;
   }
 
+  if (projects[id]?.ownerAddress !== account) {
+    return (
+      <Flex
+        flexDir={'column'}
+        justifyContent={'center'}
+        w={'100%'}
+        mt={100}
+        mb={'100px'}>
+        <Flex alignItems={'center'} flexDir="column" mb={'20px'}>
+          <PageHeader
+            title={'Create Project'}
+            subtitle={'You can create and manage projects.'}
+          />
+          <Flex alignItems={'center'} justifyContent="center" mt={'100px'}>
+            This account is not owner address of this project.
+          </Flex>
+        </Flex>
+      </Flex>
+    );
+  }
+
   return (
     <Flex
       flexDir={'column'}
@@ -118,7 +140,6 @@ const MainScreen = () => {
         }
         validationSchema={ProjectSchema}
         validate={(values) => {
-          console.log(values);
           validateFormikValues(values, setDisable, setDisableForStep2);
           if (step === 3 && oldData !== values) {
             setOldData(values);

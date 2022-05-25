@@ -206,9 +206,6 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
           }),
         ]);
 
-        console.log('--res--');
-        console.log(res);
-
         if (res) {
           //@ts-ignore
           setTotalAllocation(res[0]);
