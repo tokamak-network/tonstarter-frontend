@@ -257,11 +257,10 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
         <Flex alignItems={'center'} h={'140px'} mb={'1rem'}>
           <Scrollbars
             style={{
-              width: '100%',
               height: '135px',
               display: 'flex',
               position: 'relative',
-              marginTop: '10px',
+             
             }}
             thumbSize={70}
             renderThumbVertical={() => (

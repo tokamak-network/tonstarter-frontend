@@ -552,7 +552,7 @@ setDatas(filtered);
               borderRadius={'4px'}
               width={'120px'}
               color={'#fff'}
-              isDisabled={Number(reward.unclaimed)===0}
+              isDisabled={Number(reward.unclaimed)===0 || moment().unix() < reward.endTime}
               _disabled={{
                 color: colorMode === 'light' ? '#86929d' : '#838383',
                 bg: colorMode === 'light' ? '#e9edf1' : '#353535',

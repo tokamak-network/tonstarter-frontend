@@ -258,7 +258,7 @@ export const CustomClock = (props: ClockProps) => {
           onChange={(e) => {
             setMeridiem(e.target.value);
           }}>
-          {meridiem === 'AM' ? (
+          {hr < 12  ? (
             <>
               {' '}
               <option>AM</option>
