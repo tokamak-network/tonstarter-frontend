@@ -9,48 +9,46 @@ import {
   Heading,
   Grid,
 } from '@chakra-ui/react';
-import {useCallback, useEffect, useState} from 'react';
-import {PageHeader} from 'components/PageHeader';
-import {useRouteMatch} from 'react-router-dom';
-import {useAppSelector} from 'hooks/useRedux';
-import {selectLaunch} from '@Launch/launch.reducer';
-import ProjectCard from '../components/ProjectCard';
 // import {launchGuideData} from '../components/FakeData';
-import LaunchGuideA from 'assets/launch/guide/GuideA.png';
-import LaunchGuideB from 'assets/launch/guide/GuideB.png';
-import LaunchGuideC from 'assets/launch/guide/GuideC.png';
-import {IconTelegram} from 'components/Icons/IconTelegram';
-import {IconGithub} from 'components/Icons/IconGithub';
-import {IconMedium} from 'components/Icons/IconMedium';
-import {IconTwitter} from 'components/Icons/IconTwitter';
-import {IconDiscord} from 'components/Icons/IconDiscord';
-import {IconYoutube} from 'components/Icons/IconYoutube';
+// import LaunchGuideA from 'assets/launch/guide/GuideA.png';
+import CreateProjectGuide from 'assets/launch/guide/CreateProjectGuide.png';
+// import LaunchGuideB from 'assets/launch/guide/GuideB.png';
+// import LaunchGuideC from 'assets/launch/guide/GuideC.png';
+// import {IconTelegram} from 'components/Icons/IconTelegram';
+// import {IconGithub} from 'components/Icons/IconGithub';
+// import {IconMedium} from 'components/Icons/IconMedium';
+// import {IconTwitter} from 'components/Icons/IconTwitter';
+// import {IconDiscord} from 'components/Icons/IconDiscord';
+// import {IconYoutube} from 'components/Icons/IconYoutube';
+import {LaunchMedium} from 'components/Icons/LaunchMedium'
 const LaunchGuide = () => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
   const launchGuideData = [
+    // {
+    //   title: 'What is Open Campaign?',
+    //   link: 'https://google.com',
+    //   src: LaunchGuideA,
+    //   socialName: 'Youtube',
+    //   socialIcon: IconYoutube,
+    // },
+    // {
+    //   title: 'How to Create Projects?',
+    //   link: 'https://google.com',
+    //   src: LaunchGuideB,
+    //   socialName: 'Youtube',
+    //   socialIcon: IconYoutube,
+    // },
     {
-      title: 'What is Open Campaign?',
+      title: 'TONStarter Launch Create Project Guide',
       link: 'https://google.com',
-      src: LaunchGuideA,
-      socialName: 'Youtube',
-      socialIcon: IconYoutube,
-    },
-    {
-      title: 'How to Create Projects?',
-      link: 'https://google.com',
-      src: LaunchGuideB,
-      socialName: 'Youtube',
-      socialIcon: IconYoutube,
-    },
-    {
-      title: 'What are the Differences?',
-      link: 'https://google.com',
-      src: LaunchGuideC,
+      src: CreateProjectGuide,
       socialName: 'Medium',
-      socialIcon: IconMedium,
+      socialIcon: LaunchMedium,
     },
   ];
+
+
   return (
     <Flex flexDir={'column'} justifyContent={'center'} w={'100%'} my={'50px'}>
       <Box display={'flex'} justifyContent={'center'} mb={'20px'}>
@@ -81,7 +79,8 @@ const LaunchGuide = () => {
                   {guide.title}
                 </Text>
                 <Flex flexDir={'row'}>
-                  <guide.socialIcon color={'#7e8993'} />
+                  {' '}
+                  <guide.socialIcon color={'#c7d1d8'} />
                   <Text ml={'5px'} fontSize={'13px'} color={'#7e8993'}>
                     {guide.socialName}
                   </Text>
