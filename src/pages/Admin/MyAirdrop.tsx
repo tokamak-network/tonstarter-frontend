@@ -11,7 +11,7 @@ import {shortenAddress} from 'utils';
 import {convertTimeStamp} from 'utils/convertTIme';
 import moment from 'moment';
 import {convertNumber} from 'utils/number';
-import {DistributeTable} from './components/DistributeTable';
+import {AirdropDistributeTable} from './components/AirdropDistributeTable';
 import {AirdropClaimTable} from './components/AirdropClaimTable';
 import {AirdropClaimModal} from './components/AirdropClaimModal';
 import {AirdropDistributeModal} from './components/AirdropDistributeModal';
@@ -321,7 +321,7 @@ export const MyAirdrop = () => {
           Distribute
         </Button>
       </Flex>
-      {distributeButton ? <DistributeTable /> : <AirdropClaimTable />}
+      {distributeButton ? <AirdropDistributeTable /> : <AirdropClaimTable />}
       <AirdropClaimModal></AirdropClaimModal>
       <AirdropDistributeModal></AirdropDistributeModal>
     </Flex>

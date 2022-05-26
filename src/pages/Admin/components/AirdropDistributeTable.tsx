@@ -24,10 +24,11 @@ import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import * as TokenDividendProxyPool from 'services/abis/TokenDividendProxyPool.json';
 import useAirdropList from '@Dao/hooks/useAirdropList';
 import {ethers} from 'ethers';
+import commafy from 'utils/commafy';
 
 // type AirdropTokenList = {tokenName: string; amount: string}[];
 
-export const DistributeTable = () => {
+export const AirdropDistributeTable = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -61,10 +62,6 @@ export const DistributeTable = () => {
     console.log('temp: ', temp);
     console.log('temp airdropList: ', airdropList);
   }, [airdropList]);
-
-  // const [airdropList, setAirdropList] = useState<AirdropTokenList | undefined>(
-  //   undefined,
-  // );
 
   const themeDesign = {
     border: {
@@ -383,6 +380,7 @@ export const DistributeTable = () => {
               Amount
             </Text>
           </GridItem>
+          {console.log('distributedTonTokens: ', distributedTonTokens)}
           {distributedTonTokens.map((token: any, index: number) => {
             if (token.tonHolderAmount > 0) {
               return (
@@ -395,35 +393,37 @@ export const DistributeTable = () => {
                       : 'none'
                   }
                   className={'chart-cell'}
-                  fontSize={'16px'}
-                  fontFamily={theme.fonts.fld}
                   d={'flex'}
                   justifyContent={'center'}>
                   <Text
-                    fontSize={'15px'}
-                    color={colorMode === 'light' ? '#353c48' : 'white.0'}
+                    fontSize={'12px'}
+                    color={colorMode === 'light' ? '#353c48' : '#fff'}
                     minWidth={'33%'}
-                    textAlign={'center'}>
+                    textAlign={'center'}
+                    fontFamily={theme.fonts.roboto}>
                     TON Holder
                   </Text>
                   <Text
-                    fontSize={'15px'}
-                    color={colorMode === 'light' ? '#353c48' : 'white.0'}
+                    fontSize={'12px'}
+                    color={colorMode === 'light' ? '#353c48' : '#fff'}
                     minWidth={'33%'}
-                    textAlign={'center'}>
+                    textAlign={'center'}
+                    fontFamily={theme.fonts.roboto}>
                     {token.symbol}
                   </Text>
                   <Text
-                    fontSize={'15px'}
-                    color={colorMode === 'light' ? '#353c48' : 'white.0'}
+                    fontSize={'12px'}
+                    color={colorMode === 'light' ? '#353c48' : '#fff'}
                     minWidth={'33%'}
-                    textAlign={'center'}>
-                    {token.tonHolderAmount}
+                    textAlign={'center'}
+                    fontFamily={theme.fonts.roboto}>
+                    {commafy(token.tonHolderAmount)}
                   </Text>
                 </GridItem>
               );
             }
           })}
+          {console.log('distributedTosTokens: ', distributedTosTokens)}
           {distributedTosTokens.map((token: any, index: number) => {
             if (token.tosHolderAmount > 0) {
               return (
@@ -438,25 +438,28 @@ export const DistributeTable = () => {
                   d={'flex'}
                   justifyContent={'center'}>
                   <Text
-                    fontSize={'15px'}
+                    fontSize={'12px'}
+                    fontFamily={theme.fonts.roboto}
                     color={colorMode === 'light' ? '#353c48' : 'white.0'}
                     minWidth={'33%'}
                     textAlign={'center'}>
                     sTOS Holder
                   </Text>
                   <Text
-                    fontSize={'15px'}
+                    fontSize={'12px'}
+                    fontFamily={theme.fonts.roboto}
                     color={colorMode === 'light' ? '#353c48' : 'white.0'}
                     minWidth={'33%'}
                     textAlign={'center'}>
                     {token.symbol}
                   </Text>
                   <Text
-                    fontSize={'15px'}
+                    fontSize={'12px'}
+                    fontFamily={theme.fonts.roboto}
                     color={colorMode === 'light' ? '#353c48' : 'white.0'}
                     minWidth={'33%'}
                     textAlign={'center'}>
-                    {token.tosHolderAmount}
+                    {commafy(token.tosHolderAmount)}
                   </Text>
                 </GridItem>
               );

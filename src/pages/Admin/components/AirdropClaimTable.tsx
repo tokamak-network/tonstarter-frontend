@@ -25,7 +25,8 @@ import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import {fetchAirdropPayload} from '../../../components/Airdrop/utils/fetchAirdropPayload';
 import * as TOKENDIVIDENDPOOLPROXY from 'services/abis/TokenDividendProxyPool.json';
 import {ethers} from 'ethers';
-import {TonStaker} from '@Launch/components/Projects/TonStaker';
+import commafy from 'utils/commafy';
+import {getClaimalbeList} from '../../Dao/actions';
 
 type Round = {
   allocatedAmount: string;
@@ -68,6 +69,17 @@ export const AirdropClaimTable = () => {
   );
 
   useEffect(() => {
+    async function getClaimableList() {
+      if (account === undefined || account === null) {
+        return;
+      }
+      const claimList = await getClaimalbeList({account, library});
+      console.log('claimList: ', claimList);
+    }
+    getClaimableList();
+  }, [account, library]);
+
+  useEffect(() => {
     async function getClaimableAirdropTonAmounts() {
       if (account === undefined || account === null) {
         return;
@@ -84,8 +96,14 @@ export const AirdropClaimTable = () => {
       }
 
       const {claimableAmounts, claimableTokens} = tonRes;
+      console.log('claimableAmounts TON: ', claimableAmounts);
+      console.log('claimableTokens TON: ', claimableTokens);
+
       const tosClaimableAmounts = tosRes.claimableAmounts;
       const tosClaimableTokens = tosRes.tosClaimableTokens;
+
+      console.log('claimableAmounts TOS: ', tosClaimableAmounts);
+      console.log('claimableTokens TOS: ', tosClaimableTokens);
 
       let claimableArr: any[] = [];
       if (claimableAmounts.length > 0 && claimableTokens) {
@@ -353,8 +371,6 @@ export const AirdropClaimTable = () => {
               border={themeDesign.border[colorMode]}
               borderBottom={index === airdropData?.length - 1 ? '' : 'none'}
               className={'chart-cell'}
-              fontSize={'16px'}
-              fontFamily={theme.fonts.fld}
               d={'flex'}
               justifyContent={'center'}>
               <Flex minWidth={'10%'}>
@@ -373,18 +389,20 @@ export const AirdropClaimTable = () => {
                 />
               </Flex>
               <Text
-                fontSize={'15px'}
-                color={colorMode === 'light' ? '#353c48' : 'white.0'}
+                fontSize={'13px'}
+                fontFamily={theme.fonts.roboto}
+                color={colorMode === 'light' ? '#353c48' : '#fff'}
                 minWidth={'35%'}
                 textAlign={'center'}>
                 {tokenSymbol}
               </Text>
               <Text
-                fontSize={'15px'}
-                color={colorMode === 'light' ? '#353c48' : 'white.0'}
+                fontSize={'13px'}
+                fontFamily={theme.fonts.roboto}
+                color={colorMode === 'light' ? '#353c48' : '#fff'}
                 minWidth={'35%'}
                 textAlign={'center'}>
-                {formattedAmt}
+                {commafy(formattedAmt)}
               </Text>
               <Flex minWidth={'20%'} justifyContent={'center'}>
                 <Button
@@ -393,8 +411,9 @@ export const AirdropClaimTable = () => {
                   p={'7px 33px'}
                   border={'solid 1px #2a72e5'}
                   borderRadius={'3px'}
-                  fontSize={'14px'}
-                  fontFamily={theme.fonts.fld}
+                  fontSize={'13px'}
+                  fontFamily={theme.fonts.roboto}
+                  letterSpacing={'.33px'}
                   bg={'#2a72e5'}
                   color={'#fff'}
                   _hover={{
