@@ -170,18 +170,6 @@ export const AirdropClaimModal = () => {
     }
   }, []);
 
-  const claimToken = async (tokenAddress: string) => {
-    if (account === undefined || account === null || library === undefined) {
-      return;
-    }
-    const signer = getSigner(library, account);
-
-    const res = await TOKEN_DIVIDEND_PROXY_POOL_CONTRACT.connect(signer).claim(
-      tokenAddress,
-    );
-    console.log('claimToken res: ', res);
-  };
-
   return (
     <Modal
       isOpen={data.modal === 'Airdrop_Claim' ? true : false}
