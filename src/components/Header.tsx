@@ -370,6 +370,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                 h={'32px'}
                 fontWeight={600}
                 p={0}
+                fontFamily={theme.fonts.openSans}
                 pl={'5px'}
                 _focus={{
                   bg: colorMode === 'light' ? '#ffffff' : 'transparent',
@@ -384,6 +385,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
               h={'32px'}
               mt={'5px'}
               pl={'5px'}
+              fontFamily={theme.fonts.openSans}
               lineHeight={'32px'}>
               Guide
             </Text>
@@ -403,6 +405,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                 }}>
                 <MenuItem
                   _hover={{color: 'blue.100', bg: 'none'}}
+                  fontFamily={theme.fonts.openSans}
                   w={'100%'}
                   h={'32px'}
                   p={0}
@@ -428,6 +431,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                 }}>
                 <MenuItem
                   _hover={{color: 'blue.100', bg: 'none'}}
+                  fontFamily={theme.fonts.openSans}
                   w={'100%'}
                   h={'32px'}
                   p={0}
@@ -453,6 +457,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                 }}>
                 <MenuItem
                   _hover={{color: 'blue.100', bg: 'none'}}
+                  fontFamily={theme.fonts.openSans}
                   w={'100%'}
                   h={'32px'}
                   p={0}
@@ -478,6 +483,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                 }}>
                 <MenuItem
                   _hover={{color: 'blue.100', bg: 'none'}}
+                  fontFamily={theme.fonts.openSans}
                   w={'100%'}
                   h={'32px'}
                   p={0}
@@ -503,6 +509,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                 }}>
                 <MenuItem
                   _hover={{color: 'blue.100', bg: 'none'}}
+                  fontFamily={theme.fonts.openSans}
                   w={'100%'}
                   h={'32px'}
                   p={0}
@@ -528,6 +535,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                 }}>
                 <MenuItem
                   _hover={{color: 'blue.100', bg: 'none'}}
+                  fontFamily={theme.fonts.openSans}
                   w={'100%'}
                   h={'32px'}
                   p={0}
