@@ -4,6 +4,8 @@ export type DEPLOYED_TYPE = {
   DOC_ADDRESS: string;
   TOS_ADDRESS: string;
   WTON_ADDRESS: string;
+  AURA_ADDRESS: string;
+  ETH_ADDRESS: string;
   DepositManager_ADDRESS: string;
   SeigManager_ADDRESS: string;
   SwapProxy_ADDRESS: string;
@@ -37,4 +39,11 @@ export type DEPLOYED_TYPE = {
     TOS_WTON_POOL: string;
   };
   UniswapV3Factory: string;
+  ETH_WTON_Address:string;
+  TOS_WTON_Address:string;
+  TOS_ETH_Address:string;
+  DOC_TOS_Address:string;
+  TOS_AURA_Address:string;
+  DOC_ETH_Address:string;
+  ProjectTokenProxy:string;
 };

@@ -1,6 +1,7 @@
 import {
   Container,
   Box,
+  Text,
   // useColorMode,
   useTheme,
 } from '@chakra-ui/react';
@@ -23,7 +24,7 @@ import {InfraError} from './components/InfraError';
 const {
   // TOS_ADDRESS,
   BasePool_Address,
-  UniswapStaking_Address
+  UniswapStaking_Address,
 } = DEPLOYED;
 
 export const Pools = () => {
@@ -109,11 +110,26 @@ export const Pools = () => {
     <Fragment>
       <Head title={'Pools'} />
       <Container maxW={'6xl'}>
-        <Box py={20}>
+        <Box pt={20} pb={10}>
           <PageHeader
             title={'Pools'}
             subtitle={'Add liquidity into TOS ecosystem and earn reward'}
           />
+        </Box>
+        <Box
+          mb={10}
+          p={'20px'}
+          border={'solid 1px #2a72e5'}
+          borderRadius={'13px'}>
+          <Text pb={5} fontSize={'14px'} color={'#ff3b3b'} fontWeight={'bold'}>
+            Important Notice
+          </Text>
+          <Text fontSize={'13px'}>
+            As of December 21, 2021, TONStarter Pools page will be integrated
+            into the reward program, and the service will be terminated. Those
+            who have already provided LP to the Pools page, please unstake your
+            LP and withdraw them to use it in the Reward Program.
+          </Text>
         </Box>
         <Box fontFamily={theme.fonts.roboto}>
           {isLoading && error === undefined ? (

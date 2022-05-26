@@ -18,6 +18,7 @@ import * as TOSStakerAbi from 'services/abis/TOSStakerAbi.json';
 import {ethers} from 'ethers';
 import momentTZ from 'moment-timezone';
 import moment from 'moment';
+import commafy from 'utils/commafy';
 import * as TOSStakerInitializeAbi from 'services/abis/TOSStakerInitializeAbi.json';
 import store from 'store';
 import {toastWithReceipt} from 'utils';
@@ -153,11 +154,15 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
               Token
             </Text>
             {vault.isDeployed ? (
-              <Text>
-                {Number(vault.vaultTokenAllocation).toLocaleString()}
-                {` `}
+              <Flex>
+              <Text letterSpacing={'1.3px'} fontSize={'13px'} mr={'5px'}>
+                {commafy(Number(vault.vaultTokenAllocation))}{' '}
                 {project.tokenSymbol}
               </Text>
+              <Text letterSpacing={'1.3px'} fontSize={'13px'} color={'#7e8993'}>
+               {((vault.vaultTokenAllocation/project.totalTokenAllocation)*100).toString()
+            .match(/^\d+(?:\.\d{0,2})?/)}%</Text>
+            </Flex>
             ) : (
               <></>
             )}

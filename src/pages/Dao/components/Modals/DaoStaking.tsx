@@ -297,7 +297,7 @@ export const DaoStakeModal = () => {
                     w={'80px'}
                     h="100%"
                     id={period}
-                    kye={index}
+                    key={`${index}_${period}`}
                     ref={(el) => (focusTarget.current[index] = el)}
                     borderTop={themeDesign.border[colorMode]}
                     borderBottom={themeDesign.border[colorMode]}

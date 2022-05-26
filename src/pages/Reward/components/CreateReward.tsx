@@ -73,7 +73,7 @@ type Pool = {
 };
 type CreateRewardProps = {
   pools: Pool[];
-  setSelectedPoolCreated: any
+  setSelectedPoolCreated: any;
 };
 
 type CreateReward = {
@@ -93,7 +93,10 @@ type CreateReward = {
 };
 const { WTON_ADDRESS} = DEPLOYED;
 
-export const CreateReward: FC<CreateRewardProps> = ({pools, setSelectedPoolCreated}) => {
+export const CreateReward: FC<CreateRewardProps> = ({
+  pools,
+  setSelectedPoolCreated,
+}) => {
   // const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
   const {colorMode} = useColorMode();
@@ -116,19 +119,28 @@ export const CreateReward: FC<CreateRewardProps> = ({pools, setSelectedPoolCreat
   const [balance, setBalance] = useState(0);
   const [errorStart, setErrorStart] = useState<boolean>(false);
   const [errorEnd, setErrorEnd] = useState<boolean>(false);
+  const [timeZone, setTimeZone] = useState<string>('');
+
   useEffect(() => {
     // setSelectedPool(pools[0]);
-    // setSelectedAddress(pools[0].id);    
+    // setSelectedAddress(pools[0].id);
     if (tokeninfo.length !== 0) {
       setRewardSymbol(tokeninfo[1]);
       setRewardAddress(tokeninfo[0]);
-    }
-
-    else {
-      setRewardSymbol('')
-      setRewardAddress('')
+    } else {
+      setRewardSymbol('');
+      setRewardAddress('');
     }
   }, [tokeninfo]);
+
+  // get user's timezone to pass into CustomClock
+  useEffect(() => {
+    const userDate = new Date();
+    const sign = userDate.getTimezoneOffset() > 0 ? '-' : '+';
+    const offset = Math.abs(userDate.getTimezoneOffset() / 60);
+    const finalTimeZoneString = 'UTC' + sign + offset;
+    setTimeZone(finalTimeZoneString);
+  }, []);
 
   useEffect(() => {
     const pool = pools[0];
@@ -143,7 +155,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools, setSelectedPoolCreat
     const filterValue = e.target.value;
     const selectedPool = pools.filter((pool: Pool) => pool.id === filterValue);
     const name = `${selectedPool[0].token0.symbol} / ${selectedPool[0].token1.symbol}`;
-    setSelectedPoolCreated(selectedPool[0])
+    setSelectedPoolCreated(selectedPool[0]);
     setName(name);
     setSelectedAddress(selectedPool[0].id);
     setSelectedPool(selectedPool[0]);
@@ -160,19 +172,18 @@ export const CreateReward: FC<CreateRewardProps> = ({pools, setSelectedPoolCreat
       second: endTimeArray[2],
     });
 
-  if (endDates.unix() < 0) {
-    setEndTime(0);
-  }
-  else {
-    setEndTime(endDates.unix());
-  } 
+    if (endDates.unix() < 0) {
+      setEndTime(0);
+    } else {
+      setEndTime(endDates.unix());
+    }
     const starts = moment.unix(startTime);
     const startDates = moment(starts).set({
       hour: startTimeArray[0],
       minute: startTimeArray[1],
       second: startTimeArray[2],
     });
-   
+
     setStartTime(startDates.unix());
   }, [startTimeArray, endTimeArray, endTime, startTime]);
 
@@ -180,7 +191,10 @@ export const CreateReward: FC<CreateRewardProps> = ({pools, setSelectedPoolCreat
     const maxStart = moment().unix() + 2592000;
     const maxEnd = startTime + 63072000;
 
-    if (startTime > maxStart || (startTime < moment().unix() && startTimeArray.length !== 0) ) {
+    if (
+      startTime > maxStart ||
+      (startTime < moment().unix() && startTimeArray.length !== 0)
+    ) {
       setErrorStart(true);
     } else if (startTime <= maxStart) {
       setErrorStart(false);
@@ -193,18 +207,25 @@ export const CreateReward: FC<CreateRewardProps> = ({pools, setSelectedPoolCreat
   }, [startTime, endTime, startTimeArray]);
 
   useEffect(() => {
-    const setApprovedAmount = async () => {      
+    const setApprovedAmount = async () => {
       if (rewardAddress !== '') {
         const approved = await checkApproved(
           library,
           account,
           setCheckAllowed,
           rewardAddress,
-        );        
-        setAmount(ethers.utils.formatEther(approved.toString()));
+        );
+        if (
+          ethers.utils.getAddress(WTON_ADDRESS) ===
+          ethers.utils.getAddress(rewardAddress)
+        ) {
+          setAmount(ethers.utils.formatUnits(approved.toString(), 27));
+        } else {
+          setAmount(ethers.utils.formatEther(approved.toString()));
+        }
+      } else {
+        setAmount('0.0');
       }
-      else {setAmount('0.0')}
-      
     };
     setApprovedAmount();
   }, [
@@ -259,8 +280,8 @@ export const CreateReward: FC<CreateRewardProps> = ({pools, setSelectedPoolCreat
     if (rewardAddress !== '') {
       getBalance();
     }
-  }, [rewardAddress, checkAllowed, library, account, amount, tokeninfo]);  
-  const parse = (val:string) => val.replace(/^\$/, '')
+  }, [rewardAddress, checkAllowed, library, account, amount, tokeninfo]);
+  const parse = (val: string) => val.replace(/^\$/, '');
   return (
     <Box display={'flex'} justifyContent={'center'}>
       <Box w={'100%'} px={'15px'}>
@@ -342,9 +363,16 @@ export const CreateReward: FC<CreateRewardProps> = ({pools, setSelectedPoolCreat
             calendarType={'start'}
             created={created}
           />
-        
-          <CustomClock setTime={setStartTimeArray} error={errorStart} />
-          <Tooltip isOpen={errorStart} placement="top" label="Start time should be within now and 30 days">
+
+          <CustomClock
+            setTime={setStartTimeArray}
+            error={errorStart}
+            timeZone={timeZone}
+          />
+          <Tooltip
+            isOpen={errorStart}
+            placement="top"
+            label="Start time should be within now and 30 days">
             <Text></Text>
           </Tooltip>
         </Flex>
@@ -363,8 +391,15 @@ export const CreateReward: FC<CreateRewardProps> = ({pools, setSelectedPoolCreat
             endTime={endTime}
             calendarType={'end'}
           />
-          <CustomClock setTime={setEndTimeArray} error={errorEnd} />
-          <Tooltip isOpen={errorEnd} placement="top" label="End time should be less than 2 years from start time">
+          <CustomClock
+            setTime={setEndTimeArray}
+            error={errorEnd}
+            timeZone={timeZone}
+          />
+          <Tooltip
+            isOpen={errorEnd}
+            placement="top"
+            label="End time should be less than 2 years from start time">
             <Text></Text>
           </Tooltip>
         </Flex>
@@ -425,7 +460,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools, setSelectedPoolCreat
             value={amount}
             onChange={(e: { target: { value: any; }; }) => {
               const {value} = e.target;
-              setAmount(value.replace(/^0*([^0]\d*\.\d{1,2}).*/g, "$1"));
+              setAmount(value.replace(/^0*([^0]\d*\.\d{1,2}).*/g, '$1'));
             }}
             _focus={{
               border: themeDesign.border[colorMode],
@@ -448,23 +483,37 @@ export const CreateReward: FC<CreateRewardProps> = ({pools, setSelectedPoolCreat
             fontSize="14px"
             disabled={
               amount === '0' ||
+              rewardAddress === '' ||
               Number(amount) <=
-                Number(
-                  ethers.utils
-                    .formatEther(
-                      checkAllowed.toLocaleString('fullwide', {
-                        useGrouping: false,
-                      }),
-                    )
-                    .toString(),
-                ) || rewardAddress === ''
+                (rewardAddress !== ''
+                  ? ethers.utils.getAddress(rewardAddress) ===
+                    ethers.utils.getAddress(WTON_ADDRESS)
+                    ? Number(
+                        ethers.utils.formatUnits(
+                          checkAllowed.toLocaleString('fullwide', {
+                            useGrouping: false,
+                          }),
+                          27,
+                        ),
+                      )
+                    : Number(
+                        ethers.utils
+                          .formatEther(
+                            checkAllowed.toLocaleString('fullwide', {
+                              useGrouping: false,
+                            }),
+                          )
+                          .toString(),
+                      )
+                  : 0) ||
+              rewardAddress === ''
             }
             _hover={{backgroundColor: 'blue.100'}}
             onClick={() => {
               if (Number(amount) > balance) {
                 if (
                   window.confirm(
-                    `Even though you can approve this amount, you will not be able to create a reward with the same amount, since you don't have enough ${rewardSymbol} balance.`
+                    `Even though you can approve this amount, you will not be able to create a reward with the same amount, since you don't have enough ${rewardSymbol} balance.`,
                   )
                 ) {
                   approve({
@@ -475,8 +524,7 @@ export const CreateReward: FC<CreateRewardProps> = ({pools, setSelectedPoolCreat
                     tokenAddress: rewardAddress,
                   });
                 }
-              }
-              else {
+              } else {
                 approve({
                   library: library,
                   amount: amount,
@@ -506,57 +554,75 @@ export const CreateReward: FC<CreateRewardProps> = ({pools, setSelectedPoolCreat
                   .toString(),
               ) === 0 ||
               Number(amount) >
-                Number(
-                  ethers.utils
-                    .formatEther(
-                      checkAllowed.toLocaleString('fullwide', {
-                        useGrouping: false,
-                      }),
-                    )
-                    .toString(),
-                ) || Number(amount) === 0
+                (rewardAddress !== ''
+                  ? ethers.utils.getAddress(rewardAddress) ===
+                    ethers.utils.getAddress(WTON_ADDRESS)
+                    ? Number(
+                        ethers.utils.formatUnits(
+                          checkAllowed.toLocaleString('fullwide', {
+                            useGrouping: false,
+                          }),
+                          27,
+                        ),
+                      )
+                    : Number(
+                        ethers.utils
+                          .formatEther(
+                            checkAllowed.toLocaleString('fullwide', {
+                              useGrouping: false,
+                            }),
+                          )
+                          .toString(),
+                      )
+                  : 0) ||
+              Number(amount) === 0
             }
             _hover={{backgroundColor: 'blue.100'}}
             onClick={() => {
               const now = moment().unix();
               if (now > startTime) {
                 return alert(`Please use select a start time greater than now`);
-              } else if (
-                balance < Number(amount)
-              ) {
+              } else if (balance < Number(amount)) {
                 return alert(`You don't have enough ${rewardSymbol} balance`);
               }
               if (
                 window.confirm(
                   `Are you sure you want to create the following Reward Program? 
                   Pool:  ${name}
-                  Start time: ${moment.unix(startTime).format('MM/DD/YYYY HH:mm:ss')}
-                  End time: ${moment.unix(endTime).format('MM/DD/YYYY HH:mm:ss')}
+                  Start time: ${moment
+                    .unix(startTime)
+                    .format('MM/DD/YYYY HH:mm:ss')}
+                  End time: ${moment
+                    .unix(endTime)
+                    .format('MM/DD/YYYY HH:mm:ss')}
                   Reward token: ${rewardSymbol}
                   Reward amount: ${amount}
-                  Creator: ${account !== undefined && account !== null? shortenAddress(account) : ''}`
-
-                )) {
-                  create({
-                    library: library,
-                    amount: amount,
-                    userAddress: account,
-                    poolAddress: selectedAddress,
-                    startTime: startTime,
-                    endTime: endTime,
-                    name: name,
-                    setAlllowed: setCheckAllowed,
-                    setEnd: setEndTime,
-                    setEndArr: setEndTimeArray,
-                    setStart: setStartTime,
-                    setStartArr: setStartTimeArray,
-                    setRewardAddress: setRewardAddress,
-                    rewardToken: rewardAddress,
-                    setCreated: setCreated,
-                    setTokeninfo: setTokeninfo
-                  });
-                }
-              
+                  Creator: ${
+                    account !== undefined && account !== null
+                      ? shortenAddress(account)
+                      : ''
+                  }`,
+                )
+              ) {
+                create({
+                  library: library,
+                  amount: amount,
+                  userAddress: account,
+                  poolAddress: selectedAddress,
+                  startTime: startTime,
+                  endTime: endTime,
+                  name: name,
+                  setAlllowed: setCheckAllowed,
+                  setEnd: setEndTime,
+                  setEndArr: setEndTimeArray,
+                  setStart: setStartTime,
+                  setStartArr: setStartTimeArray,
+                  setRewardAddress: setRewardAddress,
+                  rewardToken: rewardAddress,
+                  setCreated: setCreated,
+                  setTokeninfo: setTokeninfo,
+                });
+              }
             }}>
             Create
           </Button>

@@ -7,18 +7,20 @@ import {
   useTheme,
 } from '@chakra-ui/react';
 import {getUserTOSStaked} from 'client/getUserBalance';
-import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {useAppDispatch} from 'hooks/useRedux';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect, useState} from 'react';
 import {openModal} from 'store/modal.reducer';
 import {useBlockNumber} from 'hooks/useBlock';
-import {selectDao} from '../dao.reducer';
+// import {selectDao} from '../dao.reducer';
+import useDaoData from '@Dao/hooks/useDaoData';
 
 export const MyStaked = () => {
   const dispatch = useAppDispatch();
-  const {
-    data: {tosStakeList: stakeList},
-  } = (useAppSelector as any)(selectDao);
+  // const {
+  //   data: {tosStakeList: stakeList},
+  // } = (useAppSelector as any)(selectDao);
+  const {tosStakeList: stakeList} = useDaoData();
   const [balance, setbalance] = useState('-');
   const [isEnd, setIsEnd] = useState(true);
   const theme = useTheme();
@@ -57,7 +59,7 @@ export const MyStaked = () => {
     } else {
       setbalance('-');
     }
-  }, [active, account, library, stakeList, dispatch, blockNumber]);
+  }, [active, account, library, stakeList, blockNumber]);
 
   return (
     <Flex

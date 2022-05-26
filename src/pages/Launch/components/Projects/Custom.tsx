@@ -156,11 +156,16 @@ export const Custom: FC<Custom> = ({vault, project}) => {
               Token
             </Text>
             {vault.isDeployed ? (
+              <Flex>
               <Text>
                 {Number(vault.vaultTokenAllocation).toLocaleString()}
                 {` `}
                 {project.tokenSymbol}
               </Text>
+              <Text letterSpacing={'1.3px'} fontSize={'13px'} color={'#7e8993'}>
+               {((vault.vaultTokenAllocation/project.totalTokenAllocation)*100).toString()
+            .match(/^\d+(?:\.\d{0,2})?/)}%</Text>
+              </Flex>
             ) : (
               <></>
             )}

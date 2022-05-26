@@ -41,6 +41,7 @@ export const getClaimalbeList = async (
         claimableTokens.push(tokenAddress);
         i++;
       } catch (e) {
+        console.log(e);
         isError = true;
       }
     } while (isError === false);

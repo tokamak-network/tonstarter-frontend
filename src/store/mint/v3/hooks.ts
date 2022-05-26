@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {BIG_INT_ZERO} from '../../../constants/misc';
 import {getTickToPrice} from 'utils/getTickToPrice';
 import JSBI from 'jsbi';

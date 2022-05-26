@@ -26,15 +26,15 @@ import {useRef} from 'react';
 import {getUserTosBalance} from 'client/getUserBalance';
 import {selectUser} from 'store/app/user.reducer';
 import {increaseAmount, extendPeriod} from '../../actions';
-import {selectDao} from 'pages/Dao/dao.reducer';
 import {TosStakeList} from '../../types/index';
 import {selectModalType} from 'store/modal.reducer';
 import {CustomTooltip} from 'components/Tooltip';
 import {useBlockNumber} from 'hooks/useBlock';
-import {getConstants, getMonth} from 'pages/Dao/utils';
+import {getConstants} from 'pages/Dao/utils';
 import moment from 'moment';
 import {useToast} from 'hooks/useToast';
 import {CloseButton} from 'components/Modal';
+import useDaoData from '@Dao/hooks/useDaoData';
 
 interface Stake {
   lockId: string;
@@ -97,9 +97,10 @@ const themeDesign = {
 
 export const DaoManageModal = () => {
   const {data} = useAppSelector(selectModalType);
-  const {
-    data: {tosStakeList: stakeList},
-  } = (useAppSelector as any)(selectDao);
+  // const {
+  //   data: {tosStakeList: stakeList},
+  // } = (useAppSelector as any)(selectDao);
+  const {tosStakeList: stakeList} = useDaoData();
 
   const [edit, setEdit] = useState(false);
   const [selectLockId, setSelectLockId] = useState('');
