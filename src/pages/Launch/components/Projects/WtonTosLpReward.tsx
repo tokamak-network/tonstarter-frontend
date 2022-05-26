@@ -273,7 +273,6 @@ setDatas(filtered);
         };
         const create = await createReward(arg);
         if (create.success === true) {
-          console.log('hhhh');
           
           fetchProjectsData()
         }
