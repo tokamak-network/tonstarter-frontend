@@ -62,7 +62,7 @@ export const PublicPageTable = (prop: PublicTableProps) => {
     setTotalAllocation(roundedTotal);
     const claimData = claim.map((claimRound: any, index: number) => {
       return {
-        claimRound: claimRound.claimRound,
+        claimRound: (index+1).toString(),
         claimTime: claimRound.claimTime,
         claimTokenAllocation: claimRound.claimTokenAllocation,
         accumulated: claimRound.claimTokenAllocation,
