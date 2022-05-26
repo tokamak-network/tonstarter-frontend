@@ -523,7 +523,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                 onClick={(e) => {
                   e.preventDefault();
                   window.open(
-                    'https://medium.com/onther-tech/tonstarter-launch-create-project-user-guide-en-kr-350e026de429',
+                    'https://medium.com/onther-tech/tonstarter-launch-create-project-user-guide-en-kr-82f2ae05c673',
                   );
                 }}>
                 <MenuItem
