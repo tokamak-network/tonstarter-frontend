@@ -131,7 +131,10 @@ const distributeTOS = async (
 
     console.log('distributeTOS res', res);
 
-    return setTx(res);
+    store.dispatch(setTxPending({tx: true}));
+    if (res) {
+      toastWithReceipt(res, setTxPending, 'Airdrop');
+    }
   } catch (e) {
     console.log(e);
     store.dispatch(
@@ -172,7 +175,10 @@ const distributeTON = async (
 
     console.log('distributeTON res', res);
 
-    return setTx(res);
+    store.dispatch(setTxPending({tx: true}));
+    if (res) {
+      toastWithReceipt(res, setTxPending, 'Airdrop');
+    }
   } catch (e) {
     console.log(e);
     store.dispatch(
@@ -293,7 +299,10 @@ export const claimToken = async (args: I_CallContract) => {
     const res = await TOKEN_DIVIDEND_PROXY_CONTRACT.connect(signer).claim(
       address,
     );
-    return setTx(res);
+    store.dispatch(setTxPending({tx: true}));
+    if (res) {
+      toastWithReceipt(res, setTxPending, 'Airdrop');
+    }
   } catch (e) {
     console.log(e);
     store.dispatch(
@@ -329,7 +338,10 @@ export const claimMultipleTokens = async (args: I_CallContract3) => {
     const res = await TOKEN_DIVIDEND_PROXY_CONTRACT.connect(signer).claimBatch(
       addresses,
     );
-    return setTx(res);
+    store.dispatch(setTxPending({tx: true}));
+    if (res) {
+      toastWithReceipt(res, setTxPending, 'Airdrop');
+    }
   } catch (e) {
     console.log(e);
     store.dispatch(

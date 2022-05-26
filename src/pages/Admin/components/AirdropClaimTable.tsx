@@ -54,9 +54,11 @@ export const AirdropClaimTable = () => {
   >(undefined);
   const dispatch = useDispatch();
   const {LockTOSDividend_ADDRESS, TokenDividendProxyPool_ADDRESS} = DEPLOYED;
-  const LOCKTOS_DIVIDEND_CONTRACT = useContract(
+
+  const LOCKTOS_DIVIDEND_CONTRACT = new Contract(
     LockTOSDividend_ADDRESS,
     LockTOSDividendABI.abi,
+    library,
   );
 
   const TOKEN_DIVIDEND_PROXY_POOL_CONTRACT = new Contract(
@@ -73,8 +75,9 @@ export const AirdropClaimTable = () => {
       const tonRes =
         await TOKEN_DIVIDEND_PROXY_POOL_CONTRACT.getAvailableClaims(account);
 
-      const tosRes =
-        await TOKEN_DIVIDEND_PROXY_POOL_CONTRACT.getAvailableClaims(account);
+      const tosRes = await LOCKTOS_DIVIDEND_CONTRACT.getAvailableClaims(
+        account,
+      );
 
       if (tonRes === undefined && tosRes === undefined) {
         return;
@@ -252,7 +255,15 @@ export const AirdropClaimTable = () => {
     setCheckedTokenAddresses(tempCheckedAddresses);
   };
 
-  return (
+  return loadingData || !airdropData ? (
+    <Flex
+      alignItems={'center'}
+      mt={'50px'}
+      justifyContent={'center'}
+      w={'100%'}>
+      <LoadingComponent />
+    </Flex>
+  ) : (
     <Flex flexDirection={'column'} w={'976px'} p={'0px'} mt={'50px'}>
       <Flex alignItems={'center'} justifyContent={'space-between'} mb={'20px'}>
         <Text
@@ -328,103 +339,93 @@ export const AirdropClaimTable = () => {
         </GridItem>
       </Grid>
 
-      {loadingData || !airdropData ? (
-        <Flex
-          alignItems={'center'}
-          mt={'50px'}
-          justifyContent={'center'}
-          w={'100%'}>
-          <LoadingComponent />
-        </Flex>
-      ) : (
-        airdropData.map((data: any, index: number) => {
-          const {id, address, amount, tokenSymbol, tonStaker, tosStaker} = data;
-          const formattedAmt = Number(ethers.utils.formatEther(amount)).toFixed(
-            2,
-          );
-          return (
-            <Grid
-              templateColumns="repeat(1, 1fr)"
-              w={'100%'}
-              bg={themeDesign.bg[colorMode]}>
-              <GridItem
-                border={themeDesign.border[colorMode]}
-                borderBottom={index === airdropData?.length - 1 ? '' : 'none'}
-                className={'chart-cell'}
-                fontSize={'16px'}
-                fontFamily={theme.fonts.fld}
-                d={'flex'}
-                justifyContent={'center'}>
-                <Flex minWidth={'10%'}>
-                  <Checkbox
-                    key={id}
-                    type="checkbox"
-                    name={tokenSymbol}
-                    id={id}
-                    onChange={handleClick}
-                    isChecked={isCheck.includes(String(index))}
-                    fontWeight={'bold'}
-                    fontSize={'14px'}
-                    h={'45px'}
-                    left={'5%'}
-                    value={address}
-                  />
-                </Flex>
-                <Text
-                  fontSize={'15px'}
-                  color={colorMode === 'light' ? '#353c48' : 'white.0'}
-                  minWidth={'35%'}
-                  textAlign={'center'}>
-                  {tokenSymbol}
-                </Text>
-                <Text
-                  fontSize={'15px'}
-                  color={colorMode === 'light' ? '#353c48' : 'white.0'}
-                  minWidth={'35%'}
-                  textAlign={'center'}>
-                  {formattedAmt}
-                </Text>
-                <Flex minWidth={'20%'} justifyContent={'center'}>
-                  <Button
-                    w={'100px'}
-                    h={'38px'}
-                    p={'7px 33px'}
-                    border={'solid 1px #2a72e5'}
-                    borderRadius={'3px'}
-                    fontSize={'14px'}
-                    fontFamily={theme.fonts.fld}
-                    bg={'#2a72e5'}
-                    color={'#fff'}
-                    _hover={{
-                      background: 'transparent',
-                      border: 'solid 1px #2a72e5',
-                      color: themeDesign.fontColorTitle[colorMode],
-                      cursor: 'pointer',
-                    }}
-                    _active={{}}
-                    onClick={() =>
-                      dispatch(
-                        openModal({
-                          type: 'Airdrop_Claim',
-                          data: {
-                            genesisAirdropBalance: genesisAirdropBalance,
-                            tokenSymbol: tokenSymbol,
-                            tokenAddress: address,
-                            amount: formattedAmt,
-                            tonStaker: tonStaker,
-                            tosStaker: tosStaker,
-                          },
-                        }),
-                      )
-                    }>
-                    Claim
-                  </Button>
-                </Flex>
-              </GridItem>
-            </Grid>
-          );
-        })
-      )}
+      {airdropData.map((data: any, index: number) => {
+        const {id, address, amount, tokenSymbol, tonStaker, tosStaker} = data;
+        const formattedAmt = Number(ethers.utils.formatEther(amount)).toFixed(
+          2,
+        );
+        return (
+          <Grid
+            templateColumns="repeat(1, 1fr)"
+            w={'100%'}
+            bg={themeDesign.bg[colorMode]}>
+            <GridItem
+              border={themeDesign.border[colorMode]}
+              borderBottom={index === airdropData?.length - 1 ? '' : 'none'}
+              className={'chart-cell'}
+              fontSize={'16px'}
+              fontFamily={theme.fonts.fld}
+              d={'flex'}
+              justifyContent={'center'}>
+              <Flex minWidth={'10%'}>
+                <Checkbox
+                  key={id}
+                  type="checkbox"
+                  name={tokenSymbol}
+                  id={id}
+                  onChange={handleClick}
+                  isChecked={isCheck.includes(String(index))}
+                  fontWeight={'bold'}
+                  fontSize={'14px'}
+                  h={'45px'}
+                  left={'5%'}
+                  value={address}
+                />
+              </Flex>
+              <Text
+                fontSize={'15px'}
+                color={colorMode === 'light' ? '#353c48' : 'white.0'}
+                minWidth={'35%'}
+                textAlign={'center'}>
+                {tokenSymbol}
+              </Text>
+              <Text
+                fontSize={'15px'}
+                color={colorMode === 'light' ? '#353c48' : 'white.0'}
+                minWidth={'35%'}
+                textAlign={'center'}>
+                {formattedAmt}
+              </Text>
+              <Flex minWidth={'20%'} justifyContent={'center'}>
+                <Button
+                  w={'100px'}
+                  h={'38px'}
+                  p={'7px 33px'}
+                  border={'solid 1px #2a72e5'}
+                  borderRadius={'3px'}
+                  fontSize={'14px'}
+                  fontFamily={theme.fonts.fld}
+                  bg={'#2a72e5'}
+                  color={'#fff'}
+                  _hover={{
+                    background: 'transparent',
+                    border: 'solid 1px #2a72e5',
+                    color: themeDesign.fontColorTitle[colorMode],
+                    cursor: 'pointer',
+                  }}
+                  _active={{}}
+                  onClick={() =>
+                    dispatch(
+                      openModal({
+                        type: 'Airdrop_Claim',
+                        data: {
+                          genesisAirdropBalance: genesisAirdropBalance,
+                          tokenSymbol: tokenSymbol,
+                          tokenAddress: address,
+                          amount: formattedAmt,
+                          tonStaker: tonStaker,
+                          tosStaker: tosStaker,
+                        },
+                      }),
+                    )
+                  }>
+                  Claim
+                </Button>
+              </Flex>
+            </GridItem>
+          </Grid>
+        );
+      })}
     </Flex>
   );
 };

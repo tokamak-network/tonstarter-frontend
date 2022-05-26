@@ -48,6 +48,10 @@ export const AirdropClaimModal = () => {
   const [ableDistribute, setAbleDistribute] = useState<boolean>(false);
   const [timeStamp, setTimeStamp] = useState<string>('');
   const [isRay, setIsRay] = useState<boolean>(false);
+  const [tonStakerCheckbox, setTonStakerCheckbox] = useState<string>('0');
+  const [sTosStakerCheckbox, setSTosStakerCheckbox] = useState<string>('0');
+  const [genesisCheckbox, setGenesisCheckbox] = useState<string>('0');
+  const [totalAmount, setTotalAmount] = useState<string>('0');
 
   const TOKEN_DIVIDEND_PROXY_POOL_CONTRACT = new Contract(
     TokenDividendProxyPool_ADDRESS,
@@ -170,6 +174,39 @@ export const AirdropClaimModal = () => {
     }
   }, []);
 
+  useEffect(() => {
+    let tempTotal =
+      Number(tonStakerCheckbox) +
+      Number(sTosStakerCheckbox) +
+      Number(genesisCheckbox);
+
+    setTotalAmount(String(tempTotal));
+  }, [tonStakerCheckbox, sTosStakerCheckbox, genesisCheckbox]);
+
+  const updateTonStakerCheckbox = () => {
+    if (tonStakerCheckbox === '0') {
+      setTonStakerCheckbox(amount);
+    } else {
+      setTonStakerCheckbox('0');
+    }
+  };
+
+  const updateSTosStakerCheckbox = () => {
+    if (sTosStakerCheckbox === '0') {
+      setSTosStakerCheckbox(amount);
+    } else {
+      setSTosStakerCheckbox('0');
+    }
+  };
+
+  const updateGenesisAirdropCheckbox = () => {
+    if (genesisCheckbox === '0') {
+      setGenesisCheckbox(amount);
+    } else {
+      setGenesisCheckbox('0');
+    }
+  };
+
   return (
     <Modal
       isOpen={data.modal === 'Airdrop_Claim' ? true : false}
@@ -227,7 +264,7 @@ export const AirdropClaimModal = () => {
                   fontSize={'35px'}
                   mr={'3px'}
                   fontFamily={theme.fonts.roboto}>
-                  {amount}
+                  {totalAmount}
                 </Text>
                 <Text fontSize={'13px'} fontFamily={theme.fonts.roboto}>
                   {tokenSymbol}
@@ -247,7 +284,7 @@ export const AirdropClaimModal = () => {
             )}
             {tosStaker && (
               <Box d="flex" mb={'29px'}>
-                <Checkbox mr={'10px'} />
+                <Checkbox mr={'10px'} onChange={updateSTosStakerCheckbox} />
                 <Text mr={'4px'} fontSize={'15px'}>
                   {amount} {tokenSymbol}
                 </Text>
@@ -258,7 +295,7 @@ export const AirdropClaimModal = () => {
             )}
             {tonStaker && (
               <Box d="flex" mb={'29px'}>
-                <Checkbox mr={'10px'} />
+                <Checkbox mr={'10px'} onChange={updateTonStakerCheckbox} />
                 <Text mr={'4px'} fontSize={'15px'}>
                   {amount} {tokenSymbol}
                 </Text>
