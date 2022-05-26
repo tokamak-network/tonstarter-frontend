@@ -126,14 +126,16 @@ const MyProjects = () => {
         }
           return {
             key: k,
-            name: datas[k].projectName,
-            tokenName: datas[k].tokenName,
-            tokenSymbol: datas[k].tokenSymbol,
-            totalSupply: datas[k].totalSupply,
+            name: datas[k].projectName? datas[k].projectName : '-',
+            tokenName: datas[k].tokenName? datas[k].tokenName: '-',
+            tokenSymbol: datas[k].tokenSymbol? datas[k].tokenSymbol: '-',
+            totalSupply: datas[k].totalSupply?Number(datas[k].totalSupply).toLocaleString(undefined, {
+              minimumFractionDigits: 0,
+            })  : '-',
             owner: datas[k].ownerAddress,
             saleDate: [
-              datas[k].vaults[0].whitelist,
-              datas[k].vaults[0].publicRound2End,
+              datas[k].vaults[0].whitelist?datas[k].vaults[0].whitelist:0,
+              datas[k].vaults[0].publicRound2End?datas[k].vaults[0].publicRound2End:0,
             ],
             whiteList: datas[k].vaults[0].whitelist,
             public2End: datas[k].vaults[0].publicRound2End,

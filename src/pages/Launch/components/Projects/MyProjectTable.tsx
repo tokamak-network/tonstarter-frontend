@@ -327,15 +327,13 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                         {type === 'tokenName' && tokenName}
                         {type === 'tokenSymbol' && tokenSymbol}
                         {type === 'totalSupply' &&
-                          Number(totalSupply).toLocaleString(undefined, {
-                            minimumFractionDigits: 0,
-                          })}
+                         totalSupply}
                         {type === 'saleDate' &&
-                          `${moment
+                          `${saleDate[0] !==0?moment
                             .unix(saleDate[0])
-                            .format('YYYY.MM.DD')} ~ ${moment
-                            .unix(saleDate[1])
-                            .format('YYYY.MM.DD')}`}
+                            .format('YYYY.MM.DD').concat('~').concat(moment
+                              .unix(saleDate[1])
+                              .format('YYYY.MM.DD')): '-'} `}
                         {type === 'status' &&
                           (status === true
                             ? listed === true
