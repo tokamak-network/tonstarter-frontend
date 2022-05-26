@@ -18,8 +18,8 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 import {injected} from 'connectors';
 
 type LaunchProps = {
-  numPairs: Number
-}
+  numPairs: Number;
+};
 const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
   const [showAllProjects, setShowAllProjects] = useState<boolean>(true);
   const theme = useTheme();
@@ -107,7 +107,7 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
           <Flex justifyContent={'center'} w={'100%'}>
             {/* <Link to={`${url}/createproject`}> */}
             <Button
-              _hover={{background: 'whiteAlpha.300'}}
+              _hover={{}}
               bg={'blue.100'}
               mt={'10px'}
               color="white.100"
@@ -161,7 +161,7 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
             fontFamily={theme.fonts.fld}>
             <Text color={'yellow'}>TOS pairs (in Uniswap)</Text>
             <Text color={'#fff'} fontSize={'24px'}>
-             {numPairs}
+              {numPairs}
             </Text>
           </Flex>
         </Flex>
