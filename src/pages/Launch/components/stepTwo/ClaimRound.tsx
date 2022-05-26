@@ -322,7 +322,15 @@ const ClaimRound = () => {
                         //@ts-ignore
                         fieldValueKey={`vaults[${selectedVaultDetail.index}].claim[${index}]`}
                         oldValues={data}
-                        valueKey={'claimTime'}></SingleCalendarPop>
+                        valueKey={'claimTime'}
+                        // startTimeCap={
+                        //   index === 0 ?
+                        //     //@ts-ignore
+                        //       Number(`${vaults[0].publidRound2End}` as number
+                        //     : //@ts-ignore
+                        //       `vaults[${selectedVaultDetail.index}].claim[${index - 1}].claimTime`
+                        // }
+                      ></SingleCalendarPop>
                     </Flex>
                     <Flex
                       w={'281px'}
