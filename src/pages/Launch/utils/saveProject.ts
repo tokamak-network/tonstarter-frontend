@@ -11,7 +11,7 @@ async function saveProject(data: any, account: string, modal?: boolean) {
   // const localStorage = window.localStorage;
   // const hasToken = localStorage.getItem('web3Token')
 
-  // const token = await getWeb3Token();
+  const token = await getWeb3Token();
 
   const result = await axios
     .post(
@@ -20,6 +20,7 @@ async function saveProject(data: any, account: string, modal?: boolean) {
       {
         headers: {
           account,
+          Authorization: token,
         },
       },
     )
@@ -48,6 +49,9 @@ async function editProject(
   modal?: boolean,
 ) {
   console.log(data, account, uid);
+  const token = await getWeb3Token();
+  console.log(token);
+
   const result = await axios
     .put(
       `${API_SERVER_LAUNCH}/projects?chainId=${DEFAULT_NETWORK}`,
@@ -56,6 +60,7 @@ async function editProject(
         headers: {
           account,
           uid,
+          Authorization: token,
         },
       },
     )
