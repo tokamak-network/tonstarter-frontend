@@ -42,9 +42,13 @@ export const DistributeTable = () => {
 
   const [timeStamp, setTimeStamp] = useState<string>('');
   const [distributions, setDistributions] = useState<any[]>([]);
-  const [allDistributedTokens, setAllDistributedTokens] = useState<any[]>([]);
+  const [distributedTonTokens, setDistributedTonTokens] = useState<any[]>([]);
+  const [distributedTosTokens, setDistributedTosTokens] = useState<any[]>([]);
+
   const [distributedTosAmount, setDistributedTosAmount] = useState<any>();
   const [distributedTonAmount, setDistributedTonAmount] = useState<any>();
+  const [loadingData, setLoadingData] = useState<boolean>(true);
+
   const {airdropList} = useAirdropList();
 
   useEffect(() => {
@@ -98,13 +102,12 @@ export const DistributeTable = () => {
   };
 
   useEffect(() => {
-    async function getAllDistributedTokens() {
+    async function getAllTonDistributedTokens() {
       if (!account) {
         return;
       }
 
-      const {LockTOSDividend_ADDRESS, TokenDividendProxyPool_ADDRESS} =
-        DEPLOYED;
+      const {TokenDividendProxyPool_ADDRESS} = DEPLOYED;
 
       const TOKEN_DIVIDEND_PROXY_CONTRACT = new Contract(
         TokenDividendProxyPool_ADDRESS,
@@ -112,14 +115,8 @@ export const DistributeTable = () => {
         library,
       );
 
-      const LOCKTOS_DIVIDEND_CONTRACT = new Contract(
-        LockTOSDividend_ADDRESS,
-        LockTOSDividendABI.abi,
-        library,
-      );
-
       let distributedTokens: any[] = [];
-      let distribuedTokenInfo: any[] = [];
+      let distributedTokenInfo: any[] = [];
       let undefinedToken = false;
       let index = 0;
 
@@ -146,30 +143,96 @@ export const DistributeTable = () => {
             let tokenSymbol = await ERC20_CONTRACT.symbol();
             let tonHolderAmount =
               await TOKEN_DIVIDEND_PROXY_CONTRACT.distributions(tokenAddress);
-            let tosHolderAmount = await LOCKTOS_DIVIDEND_CONTRACT.distributions(
-              tokenAddress,
-            );
-            let formattedTonAmount = ethers.utils.formatEther(
-              tonHolderAmount.totalDistribution,
-            );
 
-            let formattedTosAmount = ethers.utils.formatEther(
-              tosHolderAmount.totalDistribution,
-            );
+            let formattedTonAmount =
+              tokenAddress === WTON_ADDRESS
+                ? convertNumber({
+                    amount: tonHolderAmount.totalDistribution,
+                    type: 'ray',
+                  })
+                : ethers.utils.formatEther(tonHolderAmount.totalDistribution);
 
-            distribuedTokenInfo.push({
+            distributedTokenInfo.push({
               symbol: tokenSymbol,
               address: tokenAddress,
               tonHolderAmount: Number(formattedTonAmount).toFixed(2),
+            });
+          }),
+        );
+      }
+      console.log('distributedTokenInfo TON: ', distributedTokenInfo);
+      setDistributedTonTokens(distributedTokenInfo);
+      setLoadingData(false);
+    }
+    getAllTonDistributedTokens();
+  }, [account, library]);
+
+  useEffect(() => {
+    async function getAllTosDistributedTokens() {
+      if (!account) {
+        return;
+      }
+
+      const {LockTOSDividend_ADDRESS} = DEPLOYED;
+
+      const LOCKTOS_DIVIDEND_CONTRACT = new Contract(
+        LockTOSDividend_ADDRESS,
+        LockTOSDividendABI.abi,
+        library,
+      );
+
+      let distributedTokens: any[] = [];
+      let distributedTokenTosInfo: any[] = [];
+      let undefinedToken = false;
+      let index = 0;
+
+      try {
+        while (!undefinedToken) {
+          let tempToken = await LOCKTOS_DIVIDEND_CONTRACT.distributedTokens(
+            index,
+          );
+          distributedTokens.push(tempToken);
+          index++;
+        }
+      } catch (e) {
+        undefinedToken = true;
+      }
+
+      if (distributedTokens.length > 0) {
+        await Promise.all(
+          distributedTokens.map(async (tokenAddress: string) => {
+            const ERC20_CONTRACT = new Contract(
+              tokenAddress,
+              ERC20.abi,
+              library,
+            );
+            let tokenSymbol = await ERC20_CONTRACT.symbol();
+
+            let tosHolderAmount = await LOCKTOS_DIVIDEND_CONTRACT.distributions(
+              tokenAddress,
+            );
+
+            let formattedTosAmount =
+              tokenAddress === WTON_ADDRESS
+                ? convertNumber({
+                    amount: tosHolderAmount.totalDistribution,
+                    type: 'ray',
+                  })
+                : ethers.utils.formatEther(tosHolderAmount.totalDistribution);
+
+            distributedTokenTosInfo.push({
+              symbol: tokenSymbol,
+              address: tokenAddress,
               tosHolderAmount: Number(formattedTosAmount).toFixed(2),
             });
           }),
         );
       }
-      console.log('distribuedTokenInfo: ', distribuedTokenInfo);
-      setAllDistributedTokens(distribuedTokenInfo);
+      console.log('distributedTokenTosInfo TOS: ', distributedTokenTosInfo);
+      setDistributedTosTokens(distributedTokenTosInfo);
+      setLoadingData(false);
     }
-    getAllDistributedTokens();
+    getAllTosDistributedTokens();
   }, [account, library]);
 
   useEffect(() => {
@@ -229,7 +292,15 @@ export const DistributeTable = () => {
     }
   }, []);
 
-  return (
+  return loadingData ? (
+    <Flex
+      alignItems={'center'}
+      mt={'50px'}
+      justifyContent={'center'}
+      w={'100%'}>
+      <LoadingComponent />
+    </Flex>
+  ) : (
     <Flex flexDirection={'column'} w={'976px'} p={'0px'} mt={'50px'}>
       <Flex alignItems={'center'} justifyContent={'space-between'} mb={'20px'}>
         <Flex alignItems={'baseline'}>
@@ -277,7 +348,7 @@ export const DistributeTable = () => {
           Distribute
         </Button>
       </Flex>
-      {allDistributedTokens.length === 0 ? (
+      {distributedTonTokens.length === 0 ? (
         <Flex
           justifyContent={'center'}
           alignItems={'center'}
@@ -312,50 +383,16 @@ export const DistributeTable = () => {
               Amount
             </Text>
           </GridItem>
-          {allDistributedTokens.map((token: any, index: number) => {
-            console.log('token: ', token);
-            return (
-              <GridItem
-                border={themeDesign.border[colorMode]}
-                borderBottom={
-                  index === allDistributedTokens?.length - 1 ? '' : 'none'
-                }
-                className={'chart-cell'}
-                fontSize={'16px'}
-                fontFamily={theme.fonts.fld}
-                d={'flex'}
-                justifyContent={'center'}>
-                <Text
-                  fontSize={'15px'}
-                  color={colorMode === 'light' ? '#353c48' : 'white.0'}
-                  minWidth={'33%'}
-                  textAlign={'center'}>
-                  TON Holder
-                </Text>
-                <Text
-                  fontSize={'15px'}
-                  color={colorMode === 'light' ? '#353c48' : 'white.0'}
-                  minWidth={'33%'}
-                  textAlign={'center'}>
-                  {token.symbol}
-                </Text>
-                <Text
-                  fontSize={'15px'}
-                  color={colorMode === 'light' ? '#353c48' : 'white.0'}
-                  minWidth={'33%'}
-                  textAlign={'center'}>
-                  {token.tonHolderAmount}
-                </Text>
-              </GridItem>
-            );
-          })}
-          {allDistributedTokens.map((token: any, index: number) => {
-            if (token.tosHolderAmount > 0) {
+          {distributedTonTokens.map((token: any, index: number) => {
+            if (token.tonHolderAmount > 0) {
               return (
                 <GridItem
                   border={themeDesign.border[colorMode]}
                   borderBottom={
-                    index === allDistributedTokens?.length - 1 ? '' : 'none'
+                    index === distributedTonTokens?.length - 1 ||
+                    distributedTosTokens.length > 0
+                      ? ''
+                      : 'none'
                   }
                   className={'chart-cell'}
                   fontSize={'16px'}
@@ -367,7 +404,45 @@ export const DistributeTable = () => {
                     color={colorMode === 'light' ? '#353c48' : 'white.0'}
                     minWidth={'33%'}
                     textAlign={'center'}>
-                    TOS Holder
+                    TON Holder
+                  </Text>
+                  <Text
+                    fontSize={'15px'}
+                    color={colorMode === 'light' ? '#353c48' : 'white.0'}
+                    minWidth={'33%'}
+                    textAlign={'center'}>
+                    {token.symbol}
+                  </Text>
+                  <Text
+                    fontSize={'15px'}
+                    color={colorMode === 'light' ? '#353c48' : 'white.0'}
+                    minWidth={'33%'}
+                    textAlign={'center'}>
+                    {token.tonHolderAmount}
+                  </Text>
+                </GridItem>
+              );
+            }
+          })}
+          {distributedTosTokens.map((token: any, index: number) => {
+            if (token.tosHolderAmount > 0) {
+              return (
+                <GridItem
+                  border={themeDesign.border[colorMode]}
+                  borderBottom={
+                    index === distributedTosTokens?.length - 1 ? '' : 'none'
+                  }
+                  className={'chart-cell'}
+                  fontSize={'16px'}
+                  fontFamily={theme.fonts.fld}
+                  d={'flex'}
+                  justifyContent={'center'}>
+                  <Text
+                    fontSize={'15px'}
+                    color={colorMode === 'light' ? '#353c48' : 'white.0'}
+                    minWidth={'33%'}
+                    textAlign={'center'}>
+                    sTOS Holder
                   </Text>
                   <Text
                     fontSize={'15px'}
@@ -387,128 +462,6 @@ export const DistributeTable = () => {
               );
             }
           })}
-
-          {/* <GridItem
-            border={themeDesign.border[colorMode]}
-            borderBottom={'none'}
-            className={'chart-cell'}
-            fontSize={'16px'}
-            fontFamily={theme.fonts.fld}
-            d={'flex'}
-            justifyContent={'center'}>
-            <Text
-              fontSize={'15px'}
-              color={colorMode === 'light' ? '#353c48' : 'white.0'}
-              minWidth={'33%'}
-              textAlign={'center'}>
-              TOS Holder
-            </Text>
-            <Text
-              fontSize={'15px'}
-              color={colorMode === 'light' ? '#353c48' : 'white.0'}
-              minWidth={'33%'}
-              textAlign={'center'}>
-              DOC
-            </Text>
-            <Text
-              fontSize={'15px'}
-              color={colorMode === 'light' ? '#353c48' : 'white.0'}
-              minWidth={'33%'}
-              textAlign={'center'}>
-              1,000,000
-            </Text>
-          </GridItem>
-          <GridItem
-            border={themeDesign.border[colorMode]}
-            borderBottom={'none'}
-            className={'chart-cell'}
-            fontSize={'16px'}
-            fontFamily={theme.fonts.fld}
-            d={'flex'}
-            justifyContent={'center'}>
-            <Text
-              fontSize={'15px'}
-              color={colorMode === 'light' ? '#353c48' : 'white.0'}
-              minWidth={'33%'}
-              textAlign={'center'}>
-              TOS Holder
-            </Text>
-            <Text
-              fontSize={'15px'}
-              color={colorMode === 'light' ? '#353c48' : 'white.0'}
-              minWidth={'33%'}
-              textAlign={'center'}>
-              DOC
-            </Text>
-            <Text
-              fontSize={'15px'}
-              color={colorMode === 'light' ? '#353c48' : 'white.0'}
-              minWidth={'33%'}
-              textAlign={'center'}>
-              1,000,000
-            </Text>
-          </GridItem>
-          <GridItem
-            border={themeDesign.border[colorMode]}
-            borderBottom={'none'}
-            className={'chart-cell'}
-            fontSize={'16px'}
-            fontFamily={theme.fonts.fld}
-            d={'flex'}
-            justifyContent={'center'}>
-            <Text
-              fontSize={'15px'}
-              color={colorMode === 'light' ? '#353c48' : 'white.0'}
-              minWidth={'33%'}
-              textAlign={'center'}>
-              TOS Holder
-            </Text>
-            <Text
-              fontSize={'15px'}
-              color={colorMode === 'light' ? '#353c48' : 'white.0'}
-              minWidth={'33%'}
-              textAlign={'center'}>
-              DOC
-            </Text>
-            <Text
-              fontSize={'15px'}
-              color={colorMode === 'light' ? '#353c48' : 'white.0'}
-              minWidth={'33%'}
-              textAlign={'center'}>
-              1,000,000
-            </Text>
-          </GridItem>
-          <GridItem
-            border={themeDesign.border[colorMode]}
-            borderBottomLeftRadius={'4px'}
-            borderBottomRightRadius={'4px'}
-            className={'chart-cell'}
-            fontSize={'16px'}
-            fontFamily={theme.fonts.fld}
-            d={'flex'}
-            justifyContent={'center'}>
-            <Text
-              fontSize={'15px'}
-              color={colorMode === 'light' ? '#353c48' : 'white.0'}
-              minWidth={'33%'}
-              textAlign={'center'}>
-              TOS Holder
-            </Text>
-            <Text
-              fontSize={'15px'}
-              color={colorMode === 'light' ? '#353c48' : 'white.0'}
-              minWidth={'33%'}
-              textAlign={'center'}>
-              DOC
-            </Text>
-            <Text
-              fontSize={'15px'}
-              color={colorMode === 'light' ? '#353c48' : 'white.0'}
-              minWidth={'33%'}
-              textAlign={'center'}>
-              1,000,000
-            </Text>
-          </GridItem> */}
         </Grid>
       )}
     </Flex>

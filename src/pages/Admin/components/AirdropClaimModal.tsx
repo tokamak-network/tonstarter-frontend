@@ -58,7 +58,14 @@ export const AirdropClaimModal = () => {
   const {blockNumber} = useBlockNumber();
   const {handleCloseModal} = useModal(setTokenAmount);
 
-  const {tokenSymbol, tokenAddress, genesisAirdropBalance, amount} = data?.data;
+  const {
+    tokenSymbol,
+    tokenAddress,
+    genesisAirdropBalance,
+    amount,
+    tonStaker,
+    tosStaker,
+  } = data?.data;
 
   console.log('data: ', data);
 
@@ -175,20 +182,6 @@ export const AirdropClaimModal = () => {
     console.log('claimToken res: ', res);
   };
 
-  // const {tokenBalance, tokenSymbol} = useERC20Token({
-  //   tokenAddress: tokenAddress,
-  //   isRay: tokenAddress === WTON_ADDRESS,
-  // });
-  // const [isTokenBalanceExceed, setIsTokenBalanceExceed] =
-  //   useState<boolean>(true);
-
-  // useEffect(() => {
-  //   const checkedTokenBalanceExceed =
-  //     Number(tokenAmount.replaceAll(',', '')) >
-  //     Number(tokenBalance.replaceAll(',', ''));
-  //   return setIsTokenBalanceExceed(checkedTokenBalanceExceed);
-  // }, [tokenAmount, tokenBalance]);
-
   return (
     <Modal
       isOpen={data.modal === 'Airdrop_Claim' ? true : false}
@@ -264,22 +257,22 @@ export const AirdropClaimModal = () => {
                 </Text>
               </Box>
             )}
-            {tokenSymbol === 'sTOS' && (
+            {tosStaker && (
               <Box d="flex" mb={'29px'}>
                 <Checkbox mr={'10px'} />
                 <Text mr={'4px'} fontSize={'15px'}>
-                  100 {tokenSymbol}
+                  {amount} {tokenSymbol}
                 </Text>
                 <Text color={'#949494'} fontSize={'15px'}>
-                  (DAO Airdrop)
+                  (sTOS Staker)
                 </Text>
               </Box>
             )}
-            {tokenSymbol === 'TON' && (
+            {tonStaker && (
               <Box d="flex" mb={'29px'}>
                 <Checkbox mr={'10px'} />
                 <Text mr={'4px'} fontSize={'15px'}>
-                  100 {tokenSymbol}
+                  {amount} {tokenSymbol}
                 </Text>
                 <Text color={'#949494'} fontSize={'15px'}>
                   (TON Staker)

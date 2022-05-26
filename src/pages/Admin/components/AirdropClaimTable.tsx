@@ -25,6 +25,7 @@ import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import {fetchAirdropPayload} from '../../../components/Airdrop/utils/fetchAirdropPayload';
 import * as TOKENDIVIDENDPOOLPROXY from 'services/abis/TokenDividendProxyPool.json';
 import {ethers} from 'ethers';
+import {TonStaker} from '@Launch/components/Projects/TonStaker';
 
 type Round = {
   allocatedAmount: string;
@@ -65,18 +66,24 @@ export const AirdropClaimTable = () => {
   );
 
   useEffect(() => {
-    async function getClaimableAirdropAmounts() {
+    async function getClaimableAirdropTonAmounts() {
       if (account === undefined || account === null) {
         return;
       }
-      const res = await TOKEN_DIVIDEND_PROXY_POOL_CONTRACT.getAvailableClaims(
-        account,
-      );
+      const tonRes =
+        await TOKEN_DIVIDEND_PROXY_POOL_CONTRACT.getAvailableClaims(account);
 
-      if (res === undefined) {
+      const tosRes =
+        await TOKEN_DIVIDEND_PROXY_POOL_CONTRACT.getAvailableClaims(account);
+
+      if (tonRes === undefined && tosRes === undefined) {
         return;
       }
-      const {claimableAmounts, claimableTokens} = res;
+
+      const {claimableAmounts, claimableTokens} = tonRes;
+      const tosClaimableAmounts = tosRes.claimableAmounts;
+      const tosClaimableTokens = tosRes.tosClaimableTokens;
+
       let claimableArr: any[] = [];
       if (claimableAmounts.length > 0 && claimableTokens) {
         await Promise.all(
@@ -92,41 +99,42 @@ export const AirdropClaimTable = () => {
               amount: claimableAmounts[idx],
               tokenSymbol: tokenSymbol,
               id: idx,
+              tonStaker: true,
+            });
+          }),
+        );
+      }
+      if (tosClaimableAmounts.length > 0 && tosClaimableTokens) {
+        await Promise.all(
+          tosClaimableTokens.map(async (tokenAddress: string, idx: number) => {
+            const ERC20_CONTRACT = new Contract(
+              tokenAddress,
+              ERC20.abi,
+              library,
+            );
+            let tokenSymbol = await ERC20_CONTRACT.symbol();
+            claimableArr.push({
+              address: tokenAddress,
+              amount: tosClaimableAmounts[idx],
+              tokenSymbol: tokenSymbol,
+              id: idx,
+              tosStaker: true,
             });
           }),
         );
       }
 
       const sortedArr = claimableArr.sort((a, b) => a.id - b.id);
+      console.log('sortedArr: ', sortedArr);
       setLoadingData(false);
       setAirdropData(sortedArr);
       // availableGenesisAmount(roundInfo, claimedAmount, unclaimedAmount);
     }
     if (account !== undefined && library !== undefined) {
-      getClaimableAirdropAmounts();
+      getClaimableAirdropTonAmounts();
     }
     /*eslint-disable*/
   }, [account]);
-
-  // useEffect(() => {
-  //   async function callAirDropData() {
-  //     if (account === undefined || account === null) {
-  //       return;
-  //     }
-  //     const res = await fetchAirdropPayload(account, library);
-  //     if (res === undefined) {
-  //       return;
-  //     }
-  //     const {roundInfo, claimedAmount, unclaimedAmount} = res;
-  //     console.log('res: ', res);
-  //     setAirdropData(roundInfo);
-  //     availableGenesisAmount(roundInfo, claimedAmount, unclaimedAmount);
-  //   }
-  //   if (account !== undefined && library !== undefined) {
-  //     callAirDropData();
-  //   }
-  //   /*eslint-disable*/
-  // }, [account]);
 
   const availableGenesisAmount = (
     roundInfo: AirDropList,
@@ -330,7 +338,7 @@ export const AirdropClaimTable = () => {
         </Flex>
       ) : (
         airdropData.map((data: any, index: number) => {
-          const {id, address, amount, tokenSymbol} = data;
+          const {id, address, amount, tokenSymbol, tonStaker, tosStaker} = data;
           const formattedAmt = Number(ethers.utils.formatEther(amount)).toFixed(
             2,
           );
@@ -403,6 +411,8 @@ export const AirdropClaimTable = () => {
                             tokenSymbol: tokenSymbol,
                             tokenAddress: address,
                             amount: formattedAmt,
+                            tonStaker: tonStaker,
+                            tosStaker: tosStaker,
                           },
                         }),
                       )
