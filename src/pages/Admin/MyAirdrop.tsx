@@ -20,6 +20,7 @@ import {
   getUserSTOSBalance,
   getUserStakedTonBalance,
 } from 'client/getUserBalance';
+import commafy from 'utils/commafy';
 
 export const MyAirdrop = () => {
   const {account, library} = useActiveWeb3React();
@@ -196,7 +197,7 @@ export const MyAirdrop = () => {
               fontSize={'20px'}
               mr={'4px'}
               color={themeDesign.fontColorTitle[colorMode]}>
-              {userStakedTon}
+              {commafy(userStakedTon)}
             </Text>
             <Text
               fontFamily={theme.fonts.roboto}
@@ -226,7 +227,7 @@ export const MyAirdrop = () => {
               fontSize={'20px'}
               mr={'4px'}
               color={themeDesign.fontColorTitle[colorMode]}>
-              {userStakedTos}
+              {commafy(userStakedTos)}
             </Text>
             <Text
               fontFamily={theme.fonts.roboto}
@@ -255,7 +256,7 @@ export const MyAirdrop = () => {
               fontSize={'20px'}
               mr={'4px'}
               color={themeDesign.fontColorTitle[colorMode]}>
-              {userStakedSTos}
+              {commafy(userStakedSTos)}
             </Text>
             <Text
               fontFamily={theme.fonts.roboto}
