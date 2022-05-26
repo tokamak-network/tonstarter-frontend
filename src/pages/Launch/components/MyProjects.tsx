@@ -54,27 +54,6 @@ const MyProjects = () => {
     ProjectTokenABI.abi,
     library,
   );
-  // async function getNFTInfo() {
-  //   if (account === null || account === undefined || library === undefined) {
-  //     return;
-  //   }
-  //   if (data) {     
-  //   setUriArray(uris);
-  //   if (uris) {
-  //     setTimeout(() => {
-  //       setIsProcessing(false);
-  //       console.log('uriArraydwd',uriArray);
-        
-  //     }, 2500);
-  //   }
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   getNFTInfo()
-  // }, [data, dispatch, account,transactionType, blockNumber, library, projects]);
-
-
   useEffect(() => {
     async function getData () {
       if (data) {
