@@ -90,11 +90,19 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
           left={'50%'}
           transform={'translateX(-50%)'}>
           <Flex alignItems={'center'} flexDir="column" mb={'20px'}>
-            <PageHeader
-              title={'Launch'}
-              titleColor={'#fff'}
-              subtitle={'Make Your Own Token and Create a Token Economy.'}
-            />
+            <Text
+              color={'#fff'}
+              fontSize={'72px'}
+              fontWeight={'bold'}
+              fontFamily={theme.fonts.poppins}>
+              Launch
+            </Text>
+            <Text
+              color={'#fff'}
+              fontFamily={theme.fonts.roboto}
+              fontSize={'22px'}>
+              Make Your Own Token and Create a Token Economy.
+            </Text>
           </Flex>
           <Flex justifyContent={'center'} w={'100%'}>
             {/* <Link to={`${url}/createproject`}> */}
@@ -166,7 +174,14 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
         alignItems={'center'}
         mt={'60px'}>
         <Flex alignItems={'center'} flexDir="column">
-          <PageHeader title={'Projects'} />
+          <Text
+            fontSize={'32px'}
+            color={colorMode === 'light' ? '#3d495d' : '#fff'}
+            fontFamily={theme.fonts.titil}
+            fontWeight={'bold'}>
+            {' '}
+            Projects
+          </Text>
         </Flex>
         <Flex mt={'40px'} mb={'30px'}>
           <Button
