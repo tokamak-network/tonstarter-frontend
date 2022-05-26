@@ -343,7 +343,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
             left={'-33px'}
             top={'15px'}
             minW={'125px'}
-            w={'125px'}
+            w={'162px'}
             h={'277px'}
             pt={'5px'}
             pb={'5px'}
@@ -510,7 +510,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                   _focus={{
                     bg: colorMode === 'light' ? '#ffffff' : 'transparent',
                   }}>
-                  RewardProgram
+                  Rewards Program
                 </MenuItem>
               </NavLink>
               <NavLink
