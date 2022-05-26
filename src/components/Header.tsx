@@ -542,7 +542,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           </MenuList>
         </Menu>
 
-        <Menu>
+        {/* <Menu>
           <MenuButton>
             <Text className={match?.isExact ? 'link-match' : 'link'}>
               Admin
@@ -604,7 +604,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
               </MenuItem>
             </NavLink>
           </MenuList>
-        </Menu>
+        </Menu> */}
       </Stack>
     </Box>
   );

@@ -97,7 +97,7 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
       }
     }
     checkHardCap();
-  }, [PUBLICSALE_CONTRACT, account]);
+  }, [PUBLICSALE_CONTRACT, account, saleInfo]);
 
   useEffect(() => {
     async function getData() {
