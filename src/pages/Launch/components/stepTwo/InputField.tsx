@@ -193,9 +193,9 @@ const InputField: React.FC<InputFieldProp> = (props) => {
           const publicVaultValue = vaultsList[0] as VaultPublic;
           const {stosTier: stosTierData} = publicVaultValue;
 
-          console.log('?');
-          console.log(stosTierData);
-          console.log(tempVaultData);
+          // console.log('?');
+          // console.log(stosTierData);
+          // console.log(tempVaultData);
 
           if (formikName) {
             !isStosTier

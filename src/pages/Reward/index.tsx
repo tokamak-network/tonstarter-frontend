@@ -467,11 +467,11 @@ export const Reward = () => {
 
   const getSelectedPool = (e: any) => {
     const poolAddress = e.target.value;
-    console.log(poolAddress);
-    console.log(pool);
+    // console.log(poolAddress);
+    // console.log(pool);
     
     const selected: Pool = pool.find((pool) => ethers.utils.getAddress(pool.id) === ethers.utils.getAddress(poolAddress));
-    console.log('selected',selected);
+    // console.log('selected',selected);
     
     setSelectedPool(selected);
     setSelectedToken(undefined);

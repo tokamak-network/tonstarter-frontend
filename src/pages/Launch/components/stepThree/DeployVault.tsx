@@ -949,8 +949,8 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                   allTokenAllocation,
               ) as number[];
 
-              console.log('--params--');
-              console.log(param0, param1, param2, param3, param4);
+              // console.log('--params--');
+              // console.log(param0, param1, param2, param3, param4);
 
               const publicVaultSecondContract = new Contract(
                 PublicVaultData.vaultAddress as string,
@@ -1030,8 +1030,8 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                   return claimTokenAllocationWei;
                 },
               );
-              console.log(claimTimesParam);
-              console.log(claimAmountsParam);
+              // console.log(claimTimesParam);
+              // console.log(claimAmountsParam);
               const vaultTokenAllocationWei = convertToWei(
                 String(selectedVaultDetail.vaultTokenAllocation),
               );
