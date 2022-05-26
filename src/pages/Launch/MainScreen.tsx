@@ -225,12 +225,23 @@ const MainScreen = () => {
                         h={'45px'}
                         fontSize={14}
                         color={isDisable ? '#86929d' : 'white.100'}
-                        bg={isDisable ? '#gray.25' : 'blue.500'}
+                        bg={isDisable ? 'gray.25' : 'blue.500'}
                         disabled={isDisable}
                         _hover={{}}
                         borderRadius={4}
-                        onClick={() => handleStep(true)}>
-                        Next
+                        onClick={() => {
+                          account &&
+                          isExist === 'createproject' &&
+                          hashKey === undefined
+                            ? saveProject(values, account)
+                            : editProject(
+                                values,
+                                account as string,
+                                hashKey || isExist,
+                              );
+                          handleStep(true);
+                        }}>
+                        Save & Next
                       </Button>
                     )}
                     {step === 2 && (
@@ -240,12 +251,23 @@ const MainScreen = () => {
                         h={'45px'}
                         fontSize={14}
                         color={isDisableForStep2 ? '#86929d' : 'white.100'}
-                        bg={isDisableForStep2 ? '#gray.25' : 'blue.500'}
+                        bg={isDisableForStep2 ? 'gray.25' : 'blue.500'}
                         disabled={isDisableForStep2}
                         _hover={{}}
                         borderRadius={4}
-                        onClick={() => handleStep(true)}>
-                        Next
+                        onClick={() => {
+                          account &&
+                          isExist === 'createproject' &&
+                          hashKey === undefined
+                            ? saveProject(values, account)
+                            : editProject(
+                                values,
+                                account as string,
+                                hashKey || isExist,
+                              );
+                          handleStep(true);
+                        }}>
+                        Save & Next
                       </Button>
                     )}
                     {step === 3 && (

@@ -24,8 +24,6 @@ async function saveProject(data: any, account: string, modal?: boolean) {
       },
     )
     .then((res) => {
-      console.log('--save project--');
-      console.log(res);
       store.dispatch(
         //@ts-ignore
         setHashKey({data: res.data.hashKey}),
@@ -47,7 +45,6 @@ async function editProject(
   uid: string,
   modal?: boolean,
 ) {
-  console.log(data, account, uid);
   const result = await axios
     .put(
       `${API_SERVER_LAUNCH}/projects?chainId=${DEFAULT_NETWORK}`,
@@ -60,8 +57,6 @@ async function editProject(
       },
     )
     .then((res) => {
-      console.log('--edit project--');
-      console.log(res);
       if (res.status === 200) {
         if (modal === true) {
           return alert('success');
