@@ -20,7 +20,7 @@ import CreateProjectGuide from 'assets/launch/guide/CreateProjectGuide.png';
 // import {IconTwitter} from 'components/Icons/IconTwitter';
 // import {IconDiscord} from 'components/Icons/IconDiscord';
 // import {IconYoutube} from 'components/Icons/IconYoutube';
-import {LaunchMedium} from 'components/Icons/LaunchMedium'
+import {LaunchMedium} from 'components/Icons/LaunchMedium';
 const LaunchGuide = () => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
@@ -41,13 +41,12 @@ const LaunchGuide = () => {
     // },
     {
       title: 'TONStarter Launch Create Project Guide',
-      link: 'https://google.com',
+      link: 'https://medium.com/onther-tech/tonstarter-launch-create-project-user-guide-en-kr-350e026de429',
       src: CreateProjectGuide,
       socialName: 'Medium',
       socialIcon: LaunchMedium,
     },
   ];
-
 
   return (
     <Flex flexDir={'column'} justifyContent={'center'} w={'100%'} my={'50px'}>
