@@ -880,7 +880,7 @@ const PublicTokenDetail = (props: {
           leftTitle="Schedule"
           rightTitle={`UTC ${momentTZ
             .tz(momentTZ.tz.guess())
-            .zoneAbbr()}`}></MainTitle>
+            .format('Z')}`}></MainTitle>
         {secondColData?.map(
           (data: {title: string; content: string; formikName: string}) => {
             const {title, content, formikName} = data;

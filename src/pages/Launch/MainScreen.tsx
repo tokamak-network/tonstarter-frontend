@@ -93,7 +93,7 @@ const MainScreen = () => {
     return <div>You need to connect to the wallet</div>;
   }
 
-  if (projects[id]?.ownerAddress !== account) {
+  if (projects[id] && projects[id]?.ownerAddress !== account) {
     return (
       <Flex
         flexDir={'column'}

@@ -76,6 +76,9 @@ const ClaimRound = () => {
   //@ts-ignore
   const {claim} = selectedVaultDetail;
 
+  console.log('--selectedVaultDetail--');
+  console.log(selectedVaultDetail);
+
   const addRow = useCallback(() => {
     if (selectedVaultDetail) {
       //@ts-ignore
