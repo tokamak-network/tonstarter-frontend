@@ -25,6 +25,52 @@ const MarkdownEditor: React.FC<MarkdownEditorProp> = () => {
     ], // options here
   };
 
+  const markdownStyles =
+    colorMode === 'light'
+      ? `.ql-toolbar.ql-snow {
+    border: 1px solid #dfe4ee;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom: none
+  }
+  .ql-toolbar.ql-snow + .ql-container.ql-snow {
+    border: 1px solid #dfe4ee;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+  }
+ 
+  `
+      : `
+      .ql-toolbar.ql-snow {
+        border: 1px solid #424242;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+        border-bottom: none
+      }
+      .ql-toolbar.ql-snow + .ql-container.ql-snow {
+        border: 1px solid #424242;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+      }
+      .ql-snow .ql-fill, .ql-snow .ql-stroke.ql-fill {
+        stroke: #f3f4f1;
+        stroke-width:1;
+      }
+      .ql-snow .ql-even{
+        stroke: #f3f4f1;
+        stroke-width:1;
+      }
+      .ql-snow .ql-stroke {
+        stroke: #f3f4f1;
+        stroke-width:1;
+      }
+      .ql-picker-label {
+        color: white
+      }
+      .ql-editor ql-blank{
+        color: #f3f4f1
+      }
+      `;
   useEffect(() => {
     setFieldValue('description', test);
   }, [test]);
@@ -34,11 +80,13 @@ const MarkdownEditor: React.FC<MarkdownEditorProp> = () => {
       <Text h={18} mb={2.5}>
         Description *
       </Text>
-
+      <style>{markdownStyles}</style>
       <ReactQuill
         modules={modules}
         placeholder="Input the project description"
         onChange={setTest}
+        style={{borderColor: '#dfe4ee'}}
+        theme="snow"
         value={test}></ReactQuill>
     </Flex>
   );

@@ -44,6 +44,7 @@ type MyProjectTableProps = {
   projects: any;
 };
 
+
 export const MyProjectTable: FC<MyProjectTableProps> = ({
   columns,
   data,
@@ -147,14 +148,14 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
   //data.length === 0
   if (isLoading === true) {
     return (
-      <Flex w="1102px" justifyContent={'center'} alignItems={'center'}>
+      <Flex w="1102px" position={'absolute'} justifyContent={'center'} alignItems={'center'}>
         <LoadingComponent></LoadingComponent>
       </Flex>
     );
   } else if (data.length === 0) {
     return (
       <Flex
-        w="1920px"
+       
         justifyContent={'center'}
         alignItems={'center'}
         h={'100px'}

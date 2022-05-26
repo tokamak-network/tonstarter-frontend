@@ -4,6 +4,7 @@ import {useEffect, useState} from 'react';
 import commafy from 'utils/commafy';
 import {publicTableData} from '../FakeData';
 import moment from 'moment';
+
 const middleStyle = {
   border: 'solid 1px #eff1f6',
 };
