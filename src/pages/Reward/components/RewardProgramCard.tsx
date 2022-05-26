@@ -203,8 +203,6 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
         account,
         UniswapStaking_Address,
       );
-console.log('isApprovedForAll',isApprovedForAll);
-
       setApproved(isApprovedForAll);
     }
     async function checkStaked() {
