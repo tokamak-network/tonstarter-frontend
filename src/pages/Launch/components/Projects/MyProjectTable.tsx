@@ -154,7 +154,7 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
   } else if (data.length === 0) {
     return (
       <Flex
-        w="1102px"
+        w="1920px"
         justifyContent={'center'}
         alignItems={'center'}
         h={'100px'}
@@ -212,12 +212,12 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                   ? '118px'
                   : title === 'Token Supply'
                   ? '130px'
-                  : title === 'Sale Date'
+                  : title === 'Sale Period'
                   ? '150px'
                   : title === 'Status'
                   ? '140px'
                   : title === 'Action'
-                  ? '312px'
+                  ? '314px'
                   : '110px'
               }
               borderBottom={
@@ -300,7 +300,7 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                             : type === 'status'
                             ? '140px'
                             : type === 'action'
-                            ? '310px'
+                            ? '314px'
                             : '110px'
                         }
                         h={'55px'}
