@@ -266,7 +266,7 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
             </Flex>
             <Flex>
               <Text color={'gray.400'} mr={'3px'}>
-                Hard Cap :{' '}
+                Minimum Fundraising Amount :{' '}
               </Text>
               <Text> {hardCapAmount}</Text>
               <Text ml={'3px'}>{'TON'}</Text>
@@ -290,7 +290,7 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
             </Flex>
           </Box>
           <Box d="flex" fontSize={'13px'} color={'#0070ed'}>
-            <Text w={'226px'}>Hard Cap is not reached</Text>
+            <Text w={'226px'}>Minimum Fundraising Amount is not reached</Text>
             <Text>You can refund your funding crypto</Text>
           </Box>
         </Box>
