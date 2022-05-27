@@ -234,6 +234,29 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             w={'100%'}
             justifyContent={'space-between'}>
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+              Token Address
+            </Text>
+            <Link
+              isExternal
+              href={
+                project.owner && network === 'rinkeby'
+                  ? `https://rinkeby.etherscan.io/address/${project.tokenAddress}`
+                  : project.owner && network !== 'rinkeby'
+                  ? `https://etherscan.io/address/${project.tokenAddress}`
+                  : ''
+              }
+              _hover={{color: '#2a72e5'}}>
+              {project.tokenAddress ? shortenAddress(project.tokenAddress) : 'NA'}
+            </Link>
+          </Flex>
+          <Flex
+            p={'0px 20px'}
+            alignItems={'center'}
+            borderBottom={themeDesign.border[colorMode]}
+            h={'58.5px'}
+            w={'100%'}
+            justifyContent={'space-between'}>
+            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Token Exchange Rate
             </Text>
             <Flex flexDir={'column'}>
