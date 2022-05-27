@@ -137,7 +137,6 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
           const claimTime = await PUBLICSALE_CONTRACT.claimTimes(roundStart);
           const claimTimeStamp = Number(claimTime.toString());
           if (claimTimeStamp > nowTime) {
-            console.log(claimTimeStamp, nowTime);
             vestingTimeStamp = claimTimeStamp;
             break;
           }

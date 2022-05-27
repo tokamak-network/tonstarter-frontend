@@ -150,6 +150,7 @@ export async function getCalculClaimAmount(
   const {library, address, account} = args;
   const PUBLICSALE_CONTRACT = new Contract(address, publicSale.abi, library);
   const res = await PUBLICSALE_CONTRACT.calculClaimAmount(account, 0);
+
   const convertedNum = convertNumber({
     amount: res[0].toString() || '0',
   });
