@@ -358,10 +358,11 @@ const SubTitle = (props: {
           </Text>
           <CustomTooltip
             msg={[
-              'Hard cap is fundraising target amount to be ',
-              'achieved in the value of total token allocation.',
+              'Minimum Fundraising Amount is fundraising',
+              ' target amount to be achieved in the value',
+              'of total token allocation.',
             ]}
-            toolTipH="44px"
+            toolTipH="66px"
             toolTipW={254}
             placement={'top'}></CustomTooltip>
         </Flex>
