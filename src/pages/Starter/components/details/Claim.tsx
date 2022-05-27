@@ -182,7 +182,7 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
           userClaim.refundAmount,
         );
 
-        const ramainedAmount = BigNumber.from(totalClaim[1]).sub(
+        const ramainedAmount = BigNumber.from(totalClaim[2]).sub(
           usersClaim?.claimAmount,
         );
 
