@@ -1,4 +1,4 @@
-import {FC, useRef, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {
   Text,
   Flex,
@@ -17,7 +17,6 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 import AdminActions from '../actions';
 import moment from 'moment';
 import {DEPLOYED} from 'constants/index';
-import {useContract} from 'hooks/useContract';
 import {convertNumber} from 'utils/number';
 import * as LockTOSDividendABI from 'services/abis/LockTOSDividend.json';
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
@@ -33,21 +32,14 @@ export const AirdropDistributeTable = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const {account, library} = useActiveWeb3React();
-  const {
-    TON_ADDRESS,
-    WTON_ADDRESS,
-    TOS_ADDRESS,
-    DOC_ADDRESS,
-    LockTOSDividend_ADDRESS,
-  } = DEPLOYED;
+  const {WTON_ADDRESS, LockTOSDividend_ADDRESS} = DEPLOYED;
 
   const [timeStamp, setTimeStamp] = useState<string>('');
-  const [distributions, setDistributions] = useState<any[]>([]);
   const [distributedTonTokens, setDistributedTonTokens] = useState<any[]>([]);
   const [distributedTosTokens, setDistributedTosTokens] = useState<any[]>([]);
 
-  const [distributedTosAmount, setDistributedTosAmount] = useState<any>();
-  const [distributedTonAmount, setDistributedTonAmount] = useState<any>();
+  // const [distributedTosAmount, setDistributedTosAmount] = useState<any>();
+  // const [distributedTonAmount, setDistributedTonAmount] = useState<any>();
   const [loadingData, setLoadingData] = useState<boolean>(true);
 
   const {airdropList} = useAirdropList();
@@ -158,7 +150,10 @@ export const AirdropDistributeTable = () => {
         );
       }
       console.log('distributedTokenInfo TON: ', distributedTokenInfo);
-      setDistributedTonTokens(distributedTokenInfo);
+      const filteredTonTokenList = distributedTokenInfo.filter(
+        (token) => token.tonHolderAmount !== '0.00',
+      );
+      setDistributedTonTokens(filteredTonTokenList);
       setLoadingData(false);
     }
     getAllTonDistributedTokens();
@@ -226,49 +221,53 @@ export const AirdropDistributeTable = () => {
         );
       }
       console.log('distributedTokenTosInfo TOS: ', distributedTokenTosInfo);
-      setDistributedTosTokens(distributedTokenTosInfo);
+      const filteredTosTokenList = distributedTokenTosInfo.filter(
+        (token) => token.tosHolderAmount !== '0.00',
+      );
+
+      setDistributedTosTokens(filteredTosTokenList);
       setLoadingData(false);
     }
     getAllTosDistributedTokens();
   }, [account, library]);
 
-  useEffect(() => {
-    async function getDistributedTosAmount() {
-      if (!account) {
-        return;
-      }
-      const distributedTosAmt = await AdminActions.getDistributedTosAmount({
-        account,
-        library,
-      });
-      console.log('distributedTosAmt: ', distributedTosAmount);
-      setDistributedTosAmount(distributedTosAmt);
-    }
-    if (account) {
-      getDistributedTosAmount();
-    } else {
-      setDistributedTosAmount('0.00');
-    }
-  }, [account, library]);
+  // useEffect(() => {
+  //   async function getDistributedTosAmount() {
+  //     if (!account) {
+  //       return;
+  //     }
+  //     const distributedTosAmt = await AdminActions.getDistributedTosAmount({
+  //       account,
+  //       library,
+  //     });
+  //     console.log('distributedTosAmt: ', distributedTosAmount);
+  //     setDistributedTosAmount(distributedTosAmt);
+  //   }
+  //   if (account) {
+  //     getDistributedTosAmount();
+  //   } else {
+  //     setDistributedTosAmount('0.00');
+  //   }
+  // }, [account, library]);
 
-  useEffect(() => {
-    async function getDistributedTonAmount() {
-      if (!account) {
-        return;
-      }
-      const distributedTosAmt = await AdminActions.getDistributedTonAmount({
-        account,
-        library,
-      });
-      console.log('distributedTosAmt: ', distributedTosAmount);
-      setDistributedTonAmount(distributedTosAmt);
-    }
-    if (account) {
-      getDistributedTonAmount();
-    } else {
-      setDistributedTonAmount('0.00');
-    }
-  }, [account, library]);
+  // useEffect(() => {
+  //   async function getDistributedTonAmount() {
+  //     if (!account) {
+  //       return;
+  //     }
+  //     const distributedTonAmt = await AdminActions.getDistributedTonAmount({
+  //       account,
+  //       library,
+  //     });
+  //     console.log('distributedTonAmt: ', distributedTonAmount);
+  //     setDistributedTonAmount(distributedTonAmt);
+  //   }
+  //   if (account) {
+  //     getDistributedTonAmount();
+  //   } else {
+  //     setDistributedTonAmount('0.00');
+  //   }
+  // }, [account, library]);
 
   useEffect(() => {
     //GET NEXT THUR
@@ -382,88 +381,83 @@ export const AirdropDistributeTable = () => {
           </GridItem>
           {console.log('distributedTonTokens: ', distributedTonTokens)}
           {distributedTonTokens.map((token: any, index: number) => {
-            if (token.tonHolderAmount > 0) {
-              return (
-                <GridItem
-                  border={themeDesign.border[colorMode]}
-                  borderBottom={
-                    index === distributedTonTokens?.length - 1 ||
-                    distributedTosTokens.length > 0
-                      ? ''
-                      : 'none'
-                  }
-                  className={'chart-cell'}
-                  d={'flex'}
-                  justifyContent={'center'}>
-                  <Text
-                    fontSize={'12px'}
-                    color={colorMode === 'light' ? '#353c48' : '#fff'}
-                    minWidth={'33%'}
-                    textAlign={'center'}
-                    fontFamily={theme.fonts.roboto}>
-                    TON Holder
-                  </Text>
-                  <Text
-                    fontSize={'12px'}
-                    color={colorMode === 'light' ? '#353c48' : '#fff'}
-                    minWidth={'33%'}
-                    textAlign={'center'}
-                    fontFamily={theme.fonts.roboto}>
-                    {token.symbol}
-                  </Text>
-                  <Text
-                    fontSize={'12px'}
-                    color={colorMode === 'light' ? '#353c48' : '#fff'}
-                    minWidth={'33%'}
-                    textAlign={'center'}
-                    fontFamily={theme.fonts.roboto}>
-                    {commafy(token.tonHolderAmount)}
-                  </Text>
-                </GridItem>
-              );
-            }
+            return (
+              <GridItem
+                border={themeDesign.border[colorMode]}
+                borderBottom={
+                  index === distributedTonTokens?.length - 1 ||
+                  distributedTosTokens.length > 0
+                    ? ''
+                    : 'none'
+                }
+                className={'chart-cell'}
+                d={'flex'}
+                justifyContent={'center'}>
+                <Text
+                  fontSize={'12px'}
+                  color={colorMode === 'light' ? '#353c48' : '#fff'}
+                  minWidth={'33%'}
+                  textAlign={'center'}
+                  fontFamily={theme.fonts.roboto}>
+                  TON Holder
+                </Text>
+                <Text
+                  fontSize={'12px'}
+                  color={colorMode === 'light' ? '#353c48' : '#fff'}
+                  minWidth={'33%'}
+                  textAlign={'center'}
+                  fontFamily={theme.fonts.roboto}>
+                  {token.symbol}
+                </Text>
+                <Text
+                  fontSize={'12px'}
+                  color={colorMode === 'light' ? '#353c48' : '#fff'}
+                  minWidth={'33%'}
+                  textAlign={'center'}
+                  fontFamily={theme.fonts.roboto}>
+                  {commafy(token.tonHolderAmount)}
+                </Text>
+              </GridItem>
+            );
           })}
-          {console.log('distributedTosTokens: ', distributedTosTokens)}
           {distributedTosTokens.map((token: any, index: number) => {
-            if (token.tosHolderAmount > 0) {
-              return (
-                <GridItem
-                  border={themeDesign.border[colorMode]}
-                  borderBottom={
-                    index === distributedTosTokens?.length - 1 ? '' : 'none'
-                  }
-                  className={'chart-cell'}
-                  fontSize={'16px'}
-                  fontFamily={theme.fonts.fld}
-                  d={'flex'}
-                  justifyContent={'center'}>
-                  <Text
-                    fontSize={'12px'}
-                    fontFamily={theme.fonts.roboto}
-                    color={colorMode === 'light' ? '#353c48' : 'white.0'}
-                    minWidth={'33%'}
-                    textAlign={'center'}>
-                    sTOS Holder
-                  </Text>
-                  <Text
-                    fontSize={'12px'}
-                    fontFamily={theme.fonts.roboto}
-                    color={colorMode === 'light' ? '#353c48' : 'white.0'}
-                    minWidth={'33%'}
-                    textAlign={'center'}>
-                    {token.symbol}
-                  </Text>
-                  <Text
-                    fontSize={'12px'}
-                    fontFamily={theme.fonts.roboto}
-                    color={colorMode === 'light' ? '#353c48' : 'white.0'}
-                    minWidth={'33%'}
-                    textAlign={'center'}>
-                    {commafy(token.tosHolderAmount)}
-                  </Text>
-                </GridItem>
-              );
-            }
+            return (
+              <GridItem
+                border={themeDesign.border[colorMode]}
+                borderBottom={
+                  index === distributedTosTokens?.length - 1 ? '' : 'none'
+                }
+                className={'chart-cell'}
+                fontSize={'16px'}
+                fontFamily={theme.fonts.fld}
+                d={'flex'}
+                justifyContent={'center'}>
+                <Text
+                  fontSize={'12px'}
+                  fontFamily={theme.fonts.roboto}
+                  color={colorMode === 'light' ? '#353c48' : 'white.0'}
+                  minWidth={'33%'}
+                  textAlign={'center'}>
+                  sTOS Holder
+                </Text>
+                <Text
+                  fontSize={'12px'}
+                  fontFamily={theme.fonts.roboto}
+                  color={colorMode === 'light' ? '#353c48' : 'white.0'}
+                  minWidth={'33%'}
+                  textAlign={'center'}>
+                  {token.symbol}
+                </Text>
+                <Text
+                  fontSize={'12px'}
+                  fontFamily={theme.fonts.roboto}
+                  color={colorMode === 'light' ? '#353c48' : 'white.0'}
+                  minWidth={'33%'}
+                  textAlign={'center'}>
+                  {commafy(token.tosHolderAmount)}
+                </Text>
+              </GridItem>
+            );
           })}
         </Grid>
       )}

@@ -200,10 +200,10 @@ export const AirdropClaimModal = () => {
   };
 
   const updateGenesisAirdropCheckbox = () => {
-    if (genesisCheckbox === '0') {
+    if (genesisCheckbox === '0.00') {
       setGenesisCheckbox(amount);
     } else {
-      setGenesisCheckbox('0');
+      setGenesisCheckbox('0.00');
     }
   };
 
@@ -273,9 +273,9 @@ export const AirdropClaimModal = () => {
             </Box>
             {tokenSymbol === 'TOS' && (
               <Box d="flex" mb={'29px'}>
-                <Checkbox mr={'10px'} />
+                <Checkbox mr={'10px'} onChange={updateGenesisAirdropCheckbox} />
                 <Text mr={'4px'} fontSize={'15px'}>
-                  {data?.data?.genesisAirdropBalance || '0.00'} TOS
+                  {genesisAirdropBalance || '0.00'} TOS
                 </Text>
                 <Text color={'#949494'} fontSize={'15px'}>
                   (Genesis Airdrop)

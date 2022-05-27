@@ -133,11 +133,13 @@ export const AirdropClaimTable = () => {
         }
       }
 
-      const sortedArr = claimableArr.sort((a, b) => a.id - b.id);
+      let filteredAirdropData = claimableArr.filter(
+        (data) => data.amount !== '0.00',
+      );
+      const sortedArr = filteredAirdropData.sort((a, b) => a.id - b.id);
       console.log('sortedArr: ', sortedArr);
       setLoadingData(false);
       setAirdropData(sortedArr);
-      // availableGenesisAmount(roundInfo, claimedAmount, unclaimedAmount);
     }
     if (account !== undefined && library !== undefined) {
       getClaimableAirdropTonAmounts();
@@ -151,52 +153,28 @@ export const AirdropClaimTable = () => {
     unclaimedAmount: string | undefined,
   ) => {
     if (roundInfo !== undefined && claimedAmount !== undefined) {
-      return setGenesisAirdropBalance(unclaimedAmount);
+      return setGenesisAirdropBalance(roundInfo[0].myAmount);
     }
   };
 
-  // const fetchData = async () => {
-  //   let claimableTokens = [];
-  //   let isError = false;
-  //   let i = 0;
-
-  //   console.log('isError: ', isError);
-
-  //   do {
-  //     try {
-  //       const tokenAddress = await LOCKTOS_DIVIDEND_CONTRACT?.distributedTokens(
-  //         i,
-  //       );
-  //       claimableTokens.push(tokenAddress);
-  //       i++;
-  //     } catch (e) {
-  //       isError = true;
-  //     }
-  //   } while (isError === false);
-
-  //   const tokens = claimableTokens;
-  //   const nowTimeStamp = moment().unix();
-  //   const result: {tokenName: string; amount: string}[] = await Promise.all(
-  //     tokens.map(async (token: string) => {
-  //       const tokenAmount = await LOCKTOS_DIVIDEND_CONTRACT?.tokensPerWeekAt(
-  //         token,
-  //         nowTimeStamp,
-  //       );
-  //       const ERC20_CONTRACT = new Contract(token, ERC20.abi, library);
-  //       const tokenSymbol = await ERC20_CONTRACT.symbol();
-  //       return {
-  //         tokenName: tokenSymbol,
-  //         amount: convertNumber({amount: tokenAmount.toString()}) as string,
-  //       };
-  //     }),
-  //   );
-  //   return setAirdropList(result);
-  // };
-
-  // useEffect(() => {
-  //   fetchData();
-  //   /*eslint-disable*/
-  // }, [blockNumber]);
+  useEffect(() => {
+    async function callAirDropData() {
+      if (account === undefined || account === null) {
+        return;
+      }
+      const res = await fetchAirdropPayload(account, library);
+      if (res === undefined) {
+        return;
+      }
+      const {roundInfo, claimedAmount, unclaimedAmount} = res;
+      console.log('res: ', res);
+      availableGenesisAmount(roundInfo, claimedAmount, unclaimedAmount);
+    }
+    if (account !== undefined && library !== undefined) {
+      callAirDropData();
+    }
+    /*eslint-disable*/
+  }, [account]);
 
   const themeDesign = {
     fontColorTitle: {
@@ -345,96 +323,96 @@ export const AirdropClaimTable = () => {
         </GridItem>
       </Grid>
 
+      {console.log('airdropData: ', airdropData)}
+
       {airdropData.map((data: any, index: number) => {
         const {id, address, amount, tokenSymbol, tonStaker, tosStaker} = data;
         const formattedAmt = tonStaker
           ? Number(ethers.utils.formatEther(amount)).toFixed(2)
           : amount;
 
-        if (Number(formattedAmt) > 0) {
-          return (
-            <Grid
-              templateColumns="repeat(1, 1fr)"
-              w={'100%'}
-              bg={themeDesign.bg[colorMode]}>
-              <GridItem
-                border={themeDesign.border[colorMode]}
-                borderBottom={index === airdropData?.length - 1 ? '' : 'none'}
-                className={'chart-cell'}
-                d={'flex'}
-                justifyContent={'center'}>
-                <Flex minWidth={'10%'}>
-                  <Checkbox
-                    key={id}
-                    type="checkbox"
-                    name={tokenSymbol}
-                    id={id}
-                    onChange={handleClick}
-                    isChecked={isCheck.includes(String(index))}
-                    fontWeight={'bold'}
-                    fontSize={'14px'}
-                    h={'45px'}
-                    left={'5%'}
-                    value={address}
-                  />
-                </Flex>
-                <Text
+        return (
+          <Grid
+            templateColumns="repeat(1, 1fr)"
+            w={'100%'}
+            bg={themeDesign.bg[colorMode]}>
+            <GridItem
+              border={themeDesign.border[colorMode]}
+              borderBottom={index === airdropData?.length - 1 ? '' : 'none'}
+              className={'chart-cell'}
+              d={'flex'}
+              justifyContent={'center'}>
+              <Flex minWidth={'10%'}>
+                <Checkbox
+                  key={id}
+                  type="checkbox"
+                  name={tokenSymbol}
+                  id={id}
+                  onChange={handleClick}
+                  isChecked={isCheck.includes(String(index))}
+                  fontWeight={'bold'}
+                  fontSize={'14px'}
+                  h={'45px'}
+                  left={'5%'}
+                  value={address}
+                />
+              </Flex>
+              <Text
+                fontSize={'13px'}
+                fontFamily={theme.fonts.roboto}
+                color={colorMode === 'light' ? '#353c48' : '#fff'}
+                minWidth={'35%'}
+                textAlign={'center'}>
+                {tokenSymbol}
+              </Text>
+              <Text
+                fontSize={'13px'}
+                fontFamily={theme.fonts.roboto}
+                color={colorMode === 'light' ? '#353c48' : '#fff'}
+                minWidth={'35%'}
+                textAlign={'center'}>
+                {commafy(formattedAmt)}
+              </Text>
+              <Flex minWidth={'20%'} justifyContent={'center'}>
+                <Button
+                  w={'100px'}
+                  h={'38px'}
+                  p={'7px 33px'}
+                  border={'solid 1px #2a72e5'}
+                  borderRadius={'3px'}
                   fontSize={'13px'}
                   fontFamily={theme.fonts.roboto}
-                  color={colorMode === 'light' ? '#353c48' : '#fff'}
-                  minWidth={'35%'}
-                  textAlign={'center'}>
-                  {tokenSymbol}
-                </Text>
-                <Text
-                  fontSize={'13px'}
-                  fontFamily={theme.fonts.roboto}
-                  color={colorMode === 'light' ? '#353c48' : '#fff'}
-                  minWidth={'35%'}
-                  textAlign={'center'}>
-                  {commafy(formattedAmt)}
-                </Text>
-                <Flex minWidth={'20%'} justifyContent={'center'}>
-                  <Button
-                    w={'100px'}
-                    h={'38px'}
-                    p={'7px 33px'}
-                    border={'solid 1px #2a72e5'}
-                    borderRadius={'3px'}
-                    fontSize={'13px'}
-                    fontFamily={theme.fonts.roboto}
-                    letterSpacing={'.33px'}
-                    bg={'#2a72e5'}
-                    color={'#fff'}
-                    _hover={{
-                      background: 'transparent',
-                      border: 'solid 1px #2a72e5',
-                      color: themeDesign.fontColorTitle[colorMode],
-                      cursor: 'pointer',
-                    }}
-                    _active={{}}
-                    onClick={() =>
-                      dispatch(
-                        openModal({
-                          type: 'Airdrop_Claim',
-                          data: {
-                            genesisAirdropBalance: genesisAirdropBalance,
-                            tokenSymbol: tokenSymbol,
-                            tokenAddress: address,
-                            amount: formattedAmt,
-                            tonStaker: tonStaker,
-                            tosStaker: tosStaker,
-                          },
-                        }),
-                      )
-                    }>
-                    Claim
-                  </Button>
-                </Flex>
-              </GridItem>
-            </Grid>
-          );
-        }
+                  letterSpacing={'.33px'}
+                  bg={'#2a72e5'}
+                  color={'#fff'}
+                  _hover={{
+                    background: 'transparent',
+                    border: 'solid 1px #2a72e5',
+                    color: themeDesign.fontColorTitle[colorMode],
+                    cursor: 'pointer',
+                  }}
+                  _active={{}}
+                  onClick={() =>
+                    dispatch(
+                      openModal({
+                        type: 'Airdrop_Claim',
+                        data: {
+                          genesisAirdropBalance: genesisAirdropBalance,
+                          tokenSymbol: tokenSymbol,
+                          tokenAddress: address,
+                          amount: formattedAmt,
+                          tonStaker: tonStaker,
+                          tosStaker: tosStaker,
+                        },
+                      }),
+                    )
+                  }>
+                  Claim
+                </Button>
+              </Flex>
+            </GridItem>
+          </Grid>
+        );
       })}
     </Flex>
   );

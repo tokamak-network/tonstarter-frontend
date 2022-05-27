@@ -196,90 +196,93 @@ const distributeTON = async (
   }
 };
 
-const getDistributedTosAmount = async (args: I_CallContract2) => {
-  try {
-    const {account, library} = args;
-    const {LockTOSDividend_ADDRESS, TON_ADDRESS} = DEPLOYED;
+// const getDistributedTosAmount = async (args: I_CallContract2) => {
+//   try {
+//     const {account, library} = args;
+//     const {LockTOSDividend_ADDRESS, TOS_ADDRESS} = DEPLOYED;
 
-    const LOCKTOS_DIVIDEND_CONTRACT = new Contract(
-      LockTOSDividend_ADDRESS,
-      LockTOSDividend.abi,
-      library,
-    );
+//     const LOCKTOS_DIVIDEND_CONTRACT = new Contract(
+//       LockTOSDividend_ADDRESS,
+//       LockTOSDividend.abi,
+//       library,
+//     );
 
-    const signer = getSigner(library, account);
+//     const signer = getSigner(library, account);
 
-    const res = await LOCKTOS_DIVIDEND_CONTRACT.connect(signer).distributions(
-      TON_ADDRESS,
-    );
+//     const res = await LOCKTOS_DIVIDEND_CONTRACT.connect(signer).distributions(
+//       TOS_ADDRESS,
+//     );
 
-    console.log(
-      'getDistributedTosAmount: ',
-      ethers.utils.formatEther(res.totalDistribution),
-    );
-    //17425 - adds when I distribute to TOS Holders
+//     console.log(
+//       'getDistributedTosAmount: ',
+//       ethers.utils.formatEther(res.totalDistribution),
+//     );
+//     //17425 - adds when I distribute to TOS Holders
+//     return res;
 
-    // return setTx(res);
-  } catch (e) {
-    console.log(e);
-    store.dispatch(
-      //@ts-ignore
-      openToast({
-        payload: {
-          status: 'error',
-          title: 'Tx fail to send',
-          description: `something went wrong`,
-          duration: 5000,
-          isClosable: true,
-        },
-      }),
-    );
-  }
-};
+//     // return setTx(res);
+//   } catch (e) {
+//     console.log(e);
+//     store.dispatch(
+//       //@ts-ignore
+//       openToast({
+//         payload: {
+//           status: 'error',
+//           title: 'Tx fail to send',
+//           description: `something went wrong`,
+//           duration: 5000,
+//           isClosable: true,
+//         },
+//       }),
+//     );
+//   }
+// };
 
-const getDistributedTonAmount = async (args: I_CallContract2) => {
-  try {
-    const {account, library} = args;
-    const {TON_ADDRESS, TokenDividendProxyPool_ADDRESS} = DEPLOYED;
+// const getDistributedTonAmount = async (args: I_CallContract2) => {
+//   try {
+//     const {account, library} = args;
+//     const {TON_ADDRESS, TokenDividendProxyPool_ADDRESS} = DEPLOYED;
 
-    const TOKEN_DIVIDEND_PROXY_CONTRACT = new Contract(
-      TokenDividendProxyPool_ADDRESS,
-      TokenDividendProxyPool.abi,
-      library,
-    );
+//     const TOKEN_DIVIDEND_PROXY_CONTRACT = new Contract(
+//       TokenDividendProxyPool_ADDRESS,
+//       TokenDividendProxyPool.abi,
+//       library,
+//     );
 
-    const signer = getSigner(library, account);
+//     const signer = getSigner(library, account);
 
-    const res = await TOKEN_DIVIDEND_PROXY_CONTRACT.connect(
-      signer,
-    ).totalDistribution(TON_ADDRESS);
+//     const res = await TOKEN_DIVIDEND_PROXY_CONTRACT.connect(
+//       signer,
+//     ).totalDistribution(TON_ADDRESS);
 
-    console.log('totalDistribution: ', ethers.utils.formatEther(res));
+//     console.log('totalDistribution: ', ethers.utils.formatEther(res));
 
-    const res2 = await TOKEN_DIVIDEND_PROXY_CONTRACT.connect(
-      signer,
-    ).distributions(TON_ADDRESS);
+//     const res2 = await TOKEN_DIVIDEND_PROXY_CONTRACT.connect(
+//       signer,
+//     ).distributions(TON_ADDRESS);
 
-    console.log('getDistributedTonAmount: ', res2);
-    //14000
+//     console.log('getDistributedTonAmount: ', res2);
+//     //14000
 
-    // return setTx(res);
-  } catch (e) {
-    console.log(e);
-    store.dispatch(
-      //@ts-ignore
-      openToast({
-        payload: {
-          status: 'error',
-          title: 'Tx fail to send',
-          description: `something went wrong`,
-          duration: 5000,
-          isClosable: true,
-        },
-      }),
-    );
-  }
-};
+//     return res;
+
+//     // return setTx(res);
+//   } catch (e) {
+//     console.log(e);
+//     store.dispatch(
+//       //@ts-ignore
+//       openToast({
+//         payload: {
+//           status: 'error',
+//           title: 'Tx fail to send',
+//           description: `something went wrong`,
+//           duration: 5000,
+//           isClosable: true,
+//         },
+//       }),
+//     );
+//   }
+// };
 
 export const claimToken = async (args: I_CallContract) => {
   try {
@@ -602,8 +605,6 @@ const actions = {
   getERC20ApproveTON,
   distributeTOS,
   distributeTON,
-  getDistributedTosAmount,
-  getDistributedTonAmount,
   claimToken,
   claimMultipleTokens,
   addStarter,
