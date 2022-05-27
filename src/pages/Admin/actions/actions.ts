@@ -26,13 +26,7 @@ interface I_CallContract {
   library: LibraryType;
   address: string;
 }
-
 interface I_CallContract2 {
-  account: string;
-  library: LibraryType;
-}
-
-interface I_CallContract3 {
   account: string;
   library: LibraryType;
   addresses: any;
@@ -112,7 +106,6 @@ const distributeTOS = async (
   args: I_CallContract & {amount: string; isRay?: boolean},
 ) => {
   try {
-    console.log('in distributeTOS');
     const {account, library, amount, address, isRay} = args;
     const {LockTOSDividend_ADDRESS} = DEPLOYED;
     const LOCKTOS_DIVIDEND_CONTRACT = new Contract(
@@ -122,14 +115,10 @@ const distributeTOS = async (
     );
     const signer = getSigner(library, account);
 
-    console.log('LOCKTOS_DIVIDEND_CONTRACT', LOCKTOS_DIVIDEND_CONTRACT);
-
     const res = await LOCKTOS_DIVIDEND_CONTRACT.connect(signer).distribute(
       address,
       isRay === true ? convertToRay(amount) : convertToWei(amount),
     );
-
-    console.log('distributeTOS res', res);
 
     store.dispatch(setTxPending({tx: true}));
     if (res) {
@@ -156,7 +145,6 @@ const distributeTON = async (
   args: I_CallContract & {amount: string; isRay?: boolean},
 ) => {
   try {
-    console.log('in distributeTON');
     const {account, library, amount, address, isRay} = args;
     const {TokenDividendProxyPool_ADDRESS} = DEPLOYED;
     const TOKEN_DIVIDEND_PROXY_CONTRACT = new Contract(
@@ -166,14 +154,10 @@ const distributeTON = async (
     );
     const signer = getSigner(library, account);
 
-    console.log('TOKEN_DIVIDEND_PROXY_CONTRACT', TOKEN_DIVIDEND_PROXY_CONTRACT);
-
     const res = await TOKEN_DIVIDEND_PROXY_CONTRACT.connect(signer).distribute(
       address,
       isRay === true ? convertToRay(amount) : convertToWei(amount),
     );
-
-    console.log('distributeTON res', res);
 
     store.dispatch(setTxPending({tx: true}));
     if (res) {
@@ -284,13 +268,25 @@ const distributeTON = async (
 //   }
 // };
 
-export const claimToken = async (args: I_CallContract) => {
+export const claimToken = async (
+  args: I_CallContract & {tonStaker?: boolean; tosStaker?: boolean},
+) => {
   try {
-    const {account, library, address} = args;
-    const {TokenDividendProxyPool_ADDRESS} = DEPLOYED;
+    const {account, library, address, tonStaker, tosStaker} = args;
+    const {TokenDividendProxyPool_ADDRESS, LockTOSDividend_ADDRESS} = DEPLOYED;
+
+    console.log('tonStaker claimToken: ', tonStaker);
+    console.log('tosStaker claimToken', tosStaker);
+
     const TOKEN_DIVIDEND_PROXY_CONTRACT = new Contract(
       TokenDividendProxyPool_ADDRESS,
       TokenDividendProxyPool.abi,
+      library,
+    );
+
+    const LOCKTOS_DIVIDEND_CONTRACT = new Contract(
+      LockTOSDividend_ADDRESS,
+      LockTOSDividend.abi,
       library,
     );
 
@@ -299,12 +295,24 @@ export const claimToken = async (args: I_CallContract) => {
     }
     const signer = getSigner(library, account);
 
-    const res = await TOKEN_DIVIDEND_PROXY_CONTRACT.connect(signer).claim(
-      address,
-    );
-    store.dispatch(setTxPending({tx: true}));
-    if (res) {
-      toastWithReceipt(res, setTxPending, 'Airdrop');
+    if (tonStaker && !tosStaker) {
+      const res = await TOKEN_DIVIDEND_PROXY_CONTRACT.connect(signer).claim(
+        address,
+      );
+      store.dispatch(setTxPending({tx: true}));
+      if (res) {
+        toastWithReceipt(res, setTxPending, 'Airdrop');
+      }
+    } else if (tosStaker && !tonStaker) {
+      const res = await LOCKTOS_DIVIDEND_CONTRACT.connect(signer).claim(
+        address,
+      );
+      store.dispatch(setTxPending({tx: true}));
+      if (res) {
+        toastWithReceipt(res, setTxPending, 'Airdrop');
+      }
+    } else {
+      console.log('CLAIM TOKEN ERROR');
     }
   } catch (e) {
     console.log(e);
@@ -323,13 +331,22 @@ export const claimToken = async (args: I_CallContract) => {
   }
 };
 
-export const claimMultipleTokens = async (args: I_CallContract3) => {
+export const claimMultipleTokens = async (args: I_CallContract2) => {
   try {
     const {account, library, addresses} = args;
-    const {TokenDividendProxyPool_ADDRESS} = DEPLOYED;
+    const {TokenDividendProxyPool_ADDRESS, LockTOSDividend_ADDRESS} = DEPLOYED;
+
+    console.log('claimMultiple tokens: ', addresses);
+
     const TOKEN_DIVIDEND_PROXY_CONTRACT = new Contract(
       TokenDividendProxyPool_ADDRESS,
       TokenDividendProxyPool.abi,
+      library,
+    );
+
+    const LOCKTOS_DIVIDEND_CONTRACT = new Contract(
+      LockTOSDividend_ADDRESS,
+      LockTOSDividend.abi,
       library,
     );
 
@@ -338,13 +355,13 @@ export const claimMultipleTokens = async (args: I_CallContract3) => {
     }
     const signer = getSigner(library, account);
 
-    const res = await TOKEN_DIVIDEND_PROXY_CONTRACT.connect(signer).claimBatch(
-      addresses,
-    );
-    store.dispatch(setTxPending({tx: true}));
-    if (res) {
-      toastWithReceipt(res, setTxPending, 'Airdrop');
-    }
+    // const res = await TOKEN_DIVIDEND_PROXY_CONTRACT.connect(signer).claimBatch(
+    //   tokens,
+    // );
+    // store.dispatch(setTxPending({tx: true}));
+    // if (res) {
+    //   toastWithReceipt(res, setTxPending, 'Airdrop');
+    // }
   } catch (e) {
     console.log(e);
     store.dispatch(

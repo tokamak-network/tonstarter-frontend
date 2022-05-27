@@ -265,7 +265,7 @@ export const AirdropClaimTable = () => {
           color={themeDesign.tosFont[colorMode]}
           border={themeDesign.borderTos[colorMode]}
           height={'32px'}
-          width={'100px'}
+          width={'120px'}
           padding={'9px 23px 8px'}
           borderRadius={'4px'}
           fontSize={'13px'}
@@ -281,7 +281,7 @@ export const AirdropClaimTable = () => {
               });
           }}
           _hover={{background: 'transparent'}}>
-          Claim All
+          Claim Selected
         </Button>
       </Flex>
       <Grid
@@ -327,6 +327,7 @@ export const AirdropClaimTable = () => {
 
       {airdropData.map((data: any, index: number) => {
         const {id, address, amount, tokenSymbol, tonStaker, tosStaker} = data;
+        console.log('handleClick data 2: ', data);
         const formattedAmt = tonStaker
           ? Number(ethers.utils.formatEther(amount)).toFixed(2)
           : amount;

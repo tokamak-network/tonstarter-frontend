@@ -52,6 +52,7 @@ export const AirdropClaimModal = () => {
   const [sTosStakerCheckbox, setSTosStakerCheckbox] = useState<string>('0');
   const [genesisCheckbox, setGenesisCheckbox] = useState<string>('0');
   const [totalAmount, setTotalAmount] = useState<string>('0');
+  const [isClaimDisabled, setIsClaimDisabled] = useState<boolean>(true);
 
   const TOKEN_DIVIDEND_PROXY_POOL_CONTRACT = new Contract(
     TokenDividendProxyPool_ADDRESS,
@@ -186,25 +187,41 @@ export const AirdropClaimModal = () => {
   const updateTonStakerCheckbox = () => {
     if (tonStakerCheckbox === '0') {
       setTonStakerCheckbox(amount);
+      setIsClaimDisabled(false);
     } else {
       setTonStakerCheckbox('0');
+      setIsClaimDisabled(true);
     }
   };
 
   const updateSTosStakerCheckbox = () => {
     if (sTosStakerCheckbox === '0') {
       setSTosStakerCheckbox(amount);
+      setIsClaimDisabled(false);
     } else {
       setSTosStakerCheckbox('0');
+      setIsClaimDisabled(true);
     }
   };
 
   const updateGenesisAirdropCheckbox = () => {
     if (genesisCheckbox === '0.00') {
       setGenesisCheckbox(amount);
+      setIsClaimDisabled(false);
     } else {
       setGenesisCheckbox('0.00');
+      setIsClaimDisabled(true);
     }
+  };
+
+  const closeModal = () => {
+    setTokenAmount('');
+    setGenesisCheckbox('0.00');
+    setSTosStakerCheckbox('0');
+    setTonStakerCheckbox('0');
+    setIsClaimDisabled(true);
+    setAllowance('');
+    handleCloseModal();
   };
 
   return (
@@ -212,9 +229,7 @@ export const AirdropClaimModal = () => {
       isOpen={data.modal === 'Airdrop_Claim' ? true : false}
       isCentered
       onClose={() => {
-        setTokenAmount('');
-        setAllowance('');
-        handleCloseModal();
+        closeModal();
       }}>
       <ModalOverlay />
       <ModalContent
@@ -223,7 +238,7 @@ export const AirdropClaimModal = () => {
         w="350px"
         pt="25px"
         pb="25px">
-        <CloseButton closeFunc={handleCloseModal}></CloseButton>
+        <CloseButton closeFunc={closeModal}></CloseButton>
         <ModalBody p={0}>
           <Box
             pb={'1.250em'}
@@ -325,13 +340,16 @@ export const AirdropClaimModal = () => {
               bg={themeDesign.cancelBg[colorMode]}
               border={themeDesign.cancelBorder[colorMode]}
               _hover={{}}
-              onClick={handleCloseModal}>
+              onClick={() => {
+                closeModal();
+              }}>
               Cancel
             </Button>
             <Button
               {...btnStyle.btnAble()}
               w={'150px'}
               fontSize="14px"
+              disabled={isClaimDisabled}
               _hover={{}}
               onClick={() => {
                 account &&
@@ -339,8 +357,10 @@ export const AirdropClaimModal = () => {
                     account,
                     library,
                     address: tokenAddress,
+                    tonStaker: tonStaker,
+                    tosStaker: tosStaker,
                   });
-                handleCloseModal();
+                closeModal();
               }}>
               Claim
             </Button>

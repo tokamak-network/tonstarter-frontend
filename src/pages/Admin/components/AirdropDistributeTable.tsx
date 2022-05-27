@@ -379,8 +379,7 @@ export const AirdropDistributeTable = () => {
               Amount
             </Text>
           </GridItem>
-          {console.log('distributedTonTokens: ', distributedTonTokens)}
-          {distributedTonTokens.map((token: any, index: number) => {
+          {/* {distributedTonTokens.map((token: any, index: number) => {
             return (
               <GridItem
                 border={themeDesign.border[colorMode]}
@@ -419,7 +418,7 @@ export const AirdropDistributeTable = () => {
                 </Text>
               </GridItem>
             );
-          })}
+          })} */}
           {distributedTosTokens.map((token: any, index: number) => {
             return (
               <GridItem

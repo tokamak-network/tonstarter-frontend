@@ -214,7 +214,7 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
               fontSize={'15px'}
               _hover={{}}
               _active={{backgroundColor: 'none'}}>
-              Airdrop Claim
+              My Airdrop
             </Button>
           </NavLink>
         ) : null}
