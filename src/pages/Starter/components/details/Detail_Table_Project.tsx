@@ -40,11 +40,7 @@ export const DetailTableProject: React.FC<DetailTableProjectProps> = (prop) => {
   const projectDetailData = [
     {key: 'Name', value: `${saleInfo?.name}`},
     {key: 'Symbol', value: `${saleInfo?.tokenSymbol}`},
-    {
-      key: 'Contract',
-      value: `${saleInfo?.tokenAddress}`,
-      image: `${saleInfo?.tokenSymbolImage}`,
-    },
+    {key: 'Contract', value: `${saleInfo?.tokenAddress}`},
     {
       key: 'Total Supply',
       value: `${totalSupply}`,

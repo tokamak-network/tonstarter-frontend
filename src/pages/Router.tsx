@@ -30,6 +30,7 @@ import {
   ListingPools,
   ListingRewards,
 } from './Admin';
+import {MyAirdrop} from './Admin/MyAirdrop';
 import {fetchTosStakes} from '@Dao/dao.reducer';
 import OpenCampagin from '@Launch/index';
 import MainScreen from '@Launch/MainScreen';
@@ -48,7 +49,6 @@ export const Router: FC<RouterProps> = () => {
   const dispatch = useAppDispatch();
   const [walletState, setWalletState] = useState<string>('');
   const {onOpen, isOpen: isModalOpen, onClose} = useDisclosure();
-  // const {account, chainId, library, deactivate} = useWeb3React();
   const {account, chainId, library, deactivate} = useActiveWeb3React();
 
   //@ts-ignore
@@ -76,6 +76,15 @@ export const Router: FC<RouterProps> = () => {
         library,
       }) as any,
     );
+    if (account && chainId) {
+      await dispatch(
+        fetchTosStakes({
+          account,
+          library,
+          chainId,
+        }) as any,
+      );
+    }
   };
 
   useEffect(() => {
@@ -174,15 +183,16 @@ export const Router: FC<RouterProps> = () => {
         <Switch>
           <Route exact path="/" component={FLDstarter} />
           <Route exact path="/staking" component={Staking} />
-          <Route exact path="/rewards/pools" component={Pools} />
+          <Route exact path="/rewards/pools" component={Pools} />	
           <Route exact path="/rewards/rewardProgram" component={Reward} />
           {/* <Route exact path="/starter" component={Starter} /> */}
           <Route exact path="/starter" component={Starter} />
           <Route exact path="/dao" component={DAO} />
-          {/* <Route exact path="/admin/createproject" component={CreateProject} />
+          <Route exact path="/admin/createproject" component={CreateProject} />
           <Route exact path="/admin/listproject" component={ListingProjects} />
           <Route exact path="/admin/listpools" component={ListingPools} />
-          <Route exact path="/admin/listrewards" component={ListingRewards} /> */}
+          <Route exact path="/admin/listrewards" component={ListingRewards} />
+          <Route exact path="/myairdrop" component={MyAirdrop} />
 
           <Route exact path={`/starter/:id`} component={StarterDetail} />
           <Route exact path={`/launch`} component={OpenCampagin} />

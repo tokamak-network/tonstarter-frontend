@@ -17,7 +17,6 @@ type WtonAddressType = typeof WTON_ADDRESS;
 type DocAddressType = typeof DOC_ADDRESS;
 type AuraAddressType = typeof AURA_ADDRESS;
 type WethAddressType = typeof ETH_ADDRESS
-
 // type WethAddressType = '';
 
 // type TokenTypes = 'eth' | 'ton';
@@ -70,14 +69,13 @@ const tokenInfo = {
     symbol: DocSymbol,
     bg: '#ffffff',
     border: '1px solid #e7edf3',
-  },
+    },
   aura: {
     fullName: 'aura',
     name: 'AURA',
     symbol: AuraSymbol,
     bg: '#ffffff',
-    border: '1px solid #e7edf3',
-  }
+    border: '1px solid #e7edf3',}
 };
 const tokenInfoDark = {
   eth: { fullName: 'ethereum', name: 'ETH', symbol: EthSymbol, bg: '#383736', border: 'none' },
@@ -123,22 +121,18 @@ export const getPoolName = (token0: string, token1: string): string => {
 }
 
 export const checkTokenType = (
-  payToken: EthAddressType | TonAddressType | TosAddressType | WtonAddressType | WethAddressType,
+  payToken: EthAddressType | TonAddressType | TosAddressType | WtonAddressType,
   colorMode?: string
 ): any => {
   const tokenType = payToken === tokenAddresses['eth'] ?
-    'eth' : payToken === tokenAddresses['weth'] ?
-      'weth' : payToken === tokenAddresses['ton'] ?
-        'ton' : payToken === tokenAddresses['tos'] ?
-          'tos' : payToken === tokenAddresses['wton'] ?
-            'wton' : payToken === tokenAddresses['doc'] ?
-              'doc' : payToken === tokenAddresses['aura'] ? 'aura' : 'tos';   
-
+    'eth' : payToken === tokenAddresses['ton'] ?
+      'ton' : payToken === tokenAddresses['tos'] ?
+        'tos' : payToken === tokenAddresses['wton'] ?
+          'wton' : payToken === tokenAddresses['doc'] ?
+          'doc' : 'tos';
           if (colorMode === 'dark') {
             switch (tokenType) {
               case 'eth':
-                return tokenInfoDark[tokenType];
-              case 'weth':
                 return tokenInfoDark[tokenType];
               case 'ton':
                 return tokenInfoDark[tokenType];
@@ -147,8 +141,6 @@ export const checkTokenType = (
               case 'wton':
                 return tokenInfoDark[tokenType];
               case 'doc': 
-              return tokenInfoDark[tokenType];
-              case 'aura': 
               return tokenInfoDark[tokenType];
               default:
                 throw new Error(`There is no token type for ${tokenType}`);
@@ -159,8 +151,6 @@ export const checkTokenType = (
             switch (tokenType) {
               case 'eth':
                 return tokenInfo[tokenType];
-              case 'weth':
-                return tokenInfo[tokenType];
               case 'ton':
                 return tokenInfo[tokenType];
               case 'tos':
@@ -168,15 +158,13 @@ export const checkTokenType = (
               case 'wton':
                 return tokenInfo[tokenType];
               case 'doc': 
-                return tokenInfo[tokenType];
-              case 'aura': 
-                return tokenInfo[tokenType];
+              return tokenInfo[tokenType];
               default:
                 throw new Error(`There is no token type for ${tokenType}`);
             }
           }
+  
 };
-
 export const checkLowerCaseTokenType = (
   payToken: EthAddressType | TonAddressType | TosAddressType | WtonAddressType | WethAddressType,
   colorMode?: string

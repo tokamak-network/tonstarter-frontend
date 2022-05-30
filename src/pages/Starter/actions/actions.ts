@@ -10,6 +10,7 @@ import store from 'store';
 import {openToast} from 'store/app/toast.reducer';
 import {DEPLOYED} from '../../../constants/index';
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
+
 interface I_CallContract {
   account: string;
   library: LibraryType;
@@ -18,7 +19,6 @@ interface I_CallContract {
 }
 
 type CallContractWithAmount = I_CallContract & {amount: string};
-
 export const addToken = async (
   tokenAddress: string,
   library: LibraryType,
@@ -42,7 +42,6 @@ export const addToken = async (
         },
       },
     });
-
     if (wasAdded) {
     } else {
     }
@@ -50,7 +49,6 @@ export const addToken = async (
     console.log(error);
   }
 };
-
 export const participate = async (args: CallContractWithAmount) => {
   try {
     const {account, library, amount, address, tokenType} = args;

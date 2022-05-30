@@ -97,8 +97,6 @@ const ProjectScreen = () => {
           bg={'#257eee'}
           fontSize={'14px'}
           color={'#fff'}
-          borderRadius={'4px'}
-          fontFamily={theme.fonts.roboto}
           _hover={{
             background: 'transparent',
             border: 'solid 1px #2a72e5',

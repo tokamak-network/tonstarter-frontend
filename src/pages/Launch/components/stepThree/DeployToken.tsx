@@ -56,7 +56,7 @@ const DeployToken = () => {
       const receipt = await tx.wait();
       const {logs} = receipt;
       const iface = new ethers.utils.Interface(ERC20_FACTORY_A_ABI.abi);
-      const result = iface.parseLog(logs[10]);
+      const result = iface.parseLog(logs[logs.length - 1]);
       const {args} = result;
       //args[0] : token address
       //args[1] : token name

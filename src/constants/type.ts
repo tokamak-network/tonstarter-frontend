@@ -35,15 +35,17 @@ export type DEPLOYED_TYPE = {
   LPrewardVault: string;
   TypeCVault: string;
   DAOVault: string;
+  AutoCoinageSnapshot2_ADDRESS: string;
+  TokenDividendProxyPool_ADDRESS: string;
   pools: {
     TOS_WTON_POOL: string;
-  };
-  UniswapV3Factory: string;
-  ETH_WTON_Address:string;
+    ETH_WTON_Address:string;
   TOS_WTON_Address:string;
   TOS_ETH_Address:string;
   DOC_TOS_Address:string;
   TOS_AURA_Address:string;
-  DOC_ETH_Address:string;
-  ProjectTokenProxy:string;
+  DOC_ETH_Address:string
+  };
+  UniswapV3Factory: string;
+  ProjectTokenProxy: string;
 };

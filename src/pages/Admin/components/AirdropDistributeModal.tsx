@@ -24,7 +24,7 @@ import {useBlockNumber} from 'hooks/useBlock';
 import {DEPLOYED} from 'constants/index';
 import {useERC20Token} from 'hooks/useERC20Token';
 
-export const DistributeModal = () => {
+export const AirdropDistributeModal = () => {
   const {TON_ADDRESS, WTON_ADDRESS, TOS_ADDRESS, DOC_ADDRESS} = DEPLOYED;
   const {data} = useAppSelector(selectModalType);
   const {colorMode} = useColorMode();
@@ -33,6 +33,8 @@ export const DistributeModal = () => {
   const {btnStyle} = theme;
 
   const [tokenAddress, setTokenAddress] = useState<string>(TON_ADDRESS);
+  const [distributeToValue, setDistributeToValue] =
+    useState<string>('TON Holder');
   const [tokenAmount, setTokenAmount] = useState('');
   const [allowance, setAllowance] = useState<string>('');
   const [ableDistribute, setAbleDistribute] = useState<boolean>(false);
@@ -64,7 +66,7 @@ export const DistributeModal = () => {
     } else {
       setAllowance('0.00');
     }
-  }, [account, library, tokenAddress, blockNumber, isRay]);
+  }, [account, library, tokenAddress, isRay]);
 
   useEffect(() => {
     if (tokenAmount === '') {
@@ -107,6 +109,11 @@ export const DistributeModal = () => {
     DOC_ADDRESS,
     'CUSTOM TOKEN',
   ];
+  const selectDistributeOptionValues = [
+    'TON Holder',
+    'TOS Holder',
+    'sTOS Holder',
+  ];
   const selectOptionNames = ['TON', 'WTON', 'TOS', 'DOC', 'CUSTOM TOKEN'];
 
   useEffect(() => {
@@ -127,9 +134,59 @@ export const DistributeModal = () => {
     return setIsTokenBalanceExceed(checkedTokenBalanceExceed);
   }, [tokenAmount, tokenBalance]);
 
+  useEffect(() => {
+    console.log('distributeToValue: ', distributeToValue);
+  }, [distributeToValue]);
+
+  const distributeAction = () => {
+    if (!account) {
+      return;
+    }
+    if (distributeToValue !== 'TON Holder') {
+      AdminActions.distributeTOS({
+        account,
+        library,
+        amount: tokenAmount,
+        address: tokenAddress,
+        isRay: WTON_ADDRESS === tokenAddress,
+      });
+    } else if (distributeToValue === 'TON Holder') {
+      AdminActions.distributeTON({
+        account,
+        library,
+        amount: tokenAmount,
+        address: tokenAddress,
+        isRay: WTON_ADDRESS === tokenAddress,
+      });
+    }
+  };
+
+  const approveAction = () => {
+    if (!account) {
+      return;
+    }
+    if (distributeToValue === 'TON Holder') {
+      AdminActions.getERC20ApproveTON({
+        account,
+        library,
+        amount: tokenAmount,
+        address: tokenAddress,
+        isRay: WTON_ADDRESS === tokenAddress,
+      });
+    } else if (distributeToValue !== 'TON Holder') {
+      AdminActions.getERC20ApproveTOS({
+        account,
+        library,
+        amount: tokenAmount,
+        address: tokenAddress,
+        isRay: WTON_ADDRESS === tokenAddress,
+      });
+    }
+  };
+
   return (
     <Modal
-      isOpen={data.modal === 'Admin_Distribute' ? true : false}
+      isOpen={data.modal === 'Airdrop_Distribute' ? true : false}
       isCentered
       onClose={() => {
         setTokenAddress(TON_ADDRESS);
@@ -172,6 +229,16 @@ export const DistributeModal = () => {
             fontSize={'13px'}
             fontWeight={600}
             color={colorMode === 'light' ? 'black.300' : 'white.100'}>
+            <Box d="flex" flexDir="column" mb={'24px'}>
+              <Text mb={'9px'}>Distribute To</Text>
+              <CustomSelectBox
+                w={'290px'}
+                h={'32px'}
+                list={selectDistributeOptionValues}
+                optionName={selectDistributeOptionValues}
+                setValue={setDistributeToValue}
+                fontSize={'12px'}></CustomSelectBox>
+            </Box>
             <Box d="flex" flexDir="column" mb={'24px'}>
               <Flex justifyContent={'space-between'}>
                 <Text mb={'9px'}>Token Address</Text>
@@ -249,6 +316,7 @@ export const DistributeModal = () => {
                   border: '1px solid #dfe4ee',
                 }}
                 value={allowance}
+                setValue={setAllowance}
                 placeHolder={'0.00'}
                 fontWeight={500}
                 color={
@@ -296,16 +364,7 @@ export const DistributeModal = () => {
               w={'150px'}
               fontSize="14px"
               _hover={{}}
-              onClick={() => {
-                account &&
-                  AdminActions.getERC20ApproveTOS({
-                    account,
-                    library,
-                    amount: tokenAmount,
-                    address: tokenAddress,
-                    isRay: WTON_ADDRESS === tokenAddress,
-                  });
-              }}>
+              onClick={approveAction}>
               Approve
             </Button>
             <Button
@@ -317,14 +376,7 @@ export const DistributeModal = () => {
               _hover={{}}
               isDisabled={!ableDistribute || isTokenBalanceExceed}
               onClick={() => {
-                account &&
-                  AdminActions.distributeTOS({
-                    account,
-                    library,
-                    amount: tokenAmount,
-                    address: tokenAddress,
-                    isRay: WTON_ADDRESS === tokenAddress,
-                  });
+                distributeAction();
                 handleCloseModal();
               }}>
               Distribute

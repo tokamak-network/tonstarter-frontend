@@ -59,11 +59,11 @@ const ActiveProjectContainer: React.FC<{
       const totalExSaleAmount =
         step === 'whitelist' || step === 'exclusive'
           ? await PUBLICSALE_CONTRACT?.totalExSaleAmount()
-          : await PUBLICSALE_CONTRACT?.totalDepositAmount();
+          : await PUBLICSALE_CONTRACT?.totalOpenSaleAmount();
       const totalExpectSaleAmount =
         step === 'whitelist' || step === 'exclusive'
           ? await PUBLICSALE_CONTRACT?.totalExpectSaleAmount()
-          : await PUBLICSALE_CONTRACT?.totalOpenPurchasedAmount();
+          : await PUBLICSALE_CONTRACT?.totalExpectOpenSaleAmountView();
       const participantsNum =
         step === 'whitelist'
           ? await PUBLICSALE_CONTRACT?.totalWhitelists()

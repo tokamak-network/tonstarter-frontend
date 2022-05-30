@@ -21,6 +21,7 @@ import {selectTxType} from 'store/tx.reducer';
 import {useDispatch} from 'react-redux';
 import {openModal} from 'store/modal.reducer';
 import {Menu, MenuButton, MenuList, MenuItem} from '@chakra-ui/react';
+
 type HeaderProps = {
   walletopen: () => void;
   account: string | undefined | null;
@@ -204,7 +205,9 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
                 ? 'white.100'
                 : 'white.100'
             }
-            onClick={airdropModalOpen}
+            onClick={() =>
+              (window.location.pathname = `${match?.path}myairdrop`)
+            }
             fontWeight={500}
             fontSize={'15px'}
             _hover={{}}
@@ -283,15 +286,14 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                 background: 'transparent',
                 color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',
               }}
+              color={colorMode === 'light' ? '#1c1c1c' : '#f3f4f1'}
               style={{color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1'}}>
               <MenuItem
                 _hover={{color: 'blue.100', bg: 'none'}}
                 w={'100%'}
                 h={'37px'}
-                _focus={{
-                  bg: colorMode === 'light' ? '#ffffff' : 'transparent',
-                }}>
-                Rewards Program
+                _focus={{background: 'transparent'}}>
+              Reward Program
               </MenuItem>
             </NavLink>
             <NavLink
@@ -306,7 +308,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                 _hover={{color: 'blue.100', bg: 'none'}}
                 w={'100%'}
                 h={'37px'}
-                _focus={{background: 'transparent'}}>
+                focus={{background: 'transparent'}}>
                 Pools (Closed)
               </MenuItem>
             </NavLink>
@@ -478,7 +480,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           </MenuList>
         </Menu>
 
-        {/* <Menu>
+        <Menu>
           <MenuButton>
             <Text className={match?.isExact ? 'link-match' : 'link'}>
               Admin
@@ -540,7 +542,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
               </MenuItem>
             </NavLink>
           </MenuList>
-        </Menu> */}
+        </Menu>
       </Stack>
     </Box>
   );

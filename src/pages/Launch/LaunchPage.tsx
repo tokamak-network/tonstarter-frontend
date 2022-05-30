@@ -14,6 +14,8 @@ import MyProjects from '@Launch/components/MyProjects';
 import LaunchPageBackground from '../../assets/banner/LaunchPageBackground.png';
 import {useModal} from 'hooks/useModal';
 import ConfirmTermsModal from './components/modals/ConfirmTerms';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import {injected} from 'connectors';
 
 const LaunchPage = () => {
   const [showAllProjects, setShowAllProjects] = useState<boolean>(true);
@@ -25,6 +27,7 @@ const LaunchPage = () => {
     params: {id},
   } = match;
   const {url} = match;
+  const {active, activate, connector} = useActiveWeb3React();
 
   const themeDesign = {
     border: {
@@ -84,11 +87,19 @@ const LaunchPage = () => {
           left={'50%'}
           transform={'translateX(-50%)'}>
           <Flex alignItems={'center'} flexDir="column" mb={'20px'}>
-            <PageHeader
-              title={'Launch'}
-              titleColor={'#fff'}
-              subtitle={'Make Your Own Token and Create a Token Economy.'}
-            />
+            <Text
+              color={'#fff'}
+              fontSize={'72px'}
+              fontWeight={'bold'}
+              fontFamily={theme.fonts.poppins}>
+              Launch
+            </Text>
+            <Text
+              color={'#fff'}
+              fontFamily={theme.fonts.roboto}
+              fontSize={'22px'}>
+              Make Your Own Token and Create a Token Economy.
+            </Text>
           </Flex>
           <Flex justifyContent={'center'} w={'100%'}>
             {/* <Link to={`${url}/createproject`}> */}
@@ -104,6 +115,12 @@ const LaunchPage = () => {
               height={'38px'}
               padding={'12px 28px 10px'}
               onClick={() => {
+                if (!window.web3) {
+                  return window.open('https://metamask.io/download/');
+                }
+                if (!active) {
+                  return activate(injected);
+                }
                 openAnyModal('Launch_ConfirmTerms', {
                   from: 'launch',
                 });
@@ -154,7 +171,14 @@ const LaunchPage = () => {
         alignItems={'center'}
         mt={'60px'}>
         <Flex alignItems={'center'} flexDir="column">
-          <PageHeader title={'Projects'} />
+          <Text
+            fontSize={'32px'}
+            color={colorMode === 'light' ? '#3d495d' : '#fff'}
+            fontFamily={theme.fonts.titil}
+            fontWeight={'bold'}>
+            {' '}
+            Projects
+          </Text>
         </Flex>
         <Flex mt={'40px'} mb={'30px'}>
           <Button

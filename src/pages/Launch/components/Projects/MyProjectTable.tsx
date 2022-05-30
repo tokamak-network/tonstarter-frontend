@@ -106,9 +106,6 @@ const tokenURI = {
   })
 }
 const stringURI = JSON.stringify(tokenURI);
-console.log(`${stringURI}`);
-
-
     const signer = getSigner(library, account);
     try{
       const receipt = await ProjectToken.connect(signer).mint(`${stringURI}`);

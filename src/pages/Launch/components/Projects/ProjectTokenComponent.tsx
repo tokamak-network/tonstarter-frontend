@@ -324,8 +324,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
       <Flex flexDir={'column'} mt={'50px'} justifyContent={'center'}>
         <Text
           textAlign={'center'}
-          fontSize={'17px'}
-          fontFamily={theme.fonts.fld}
+          fontSize={'20px'}
           fontWeight={600}
           color={colorMode === 'light' ? '#353c48' : '#ffffff'}
           mb={'15px'}>

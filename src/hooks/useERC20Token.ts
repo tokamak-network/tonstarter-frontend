@@ -7,6 +7,7 @@ import {convertNumber} from 'utils/number';
 
 export const useERC20Token = (props: {
   tokenAddress: string;
+  isRay?: boolean;
 }): {tokenBalance: string; tokenSymbol: string; tokenDecimals: number} => {
   const {tokenAddress} = props;
   const {account, library} = useActiveWeb3React();

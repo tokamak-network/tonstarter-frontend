@@ -271,7 +271,6 @@ export const SearchModal = () => {
                     <Text pl="5px" pb="9px">
                       Decimals
                     </Text>
-
                     <NumberInput
                       mb="24px"
                       fontSize={'12px'}

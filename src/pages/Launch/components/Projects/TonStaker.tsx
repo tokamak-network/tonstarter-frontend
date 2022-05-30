@@ -50,7 +50,6 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
     TONStakerInitializeAbi.abi,
     library,
   );
-  // console.log('tonstaker vault: ', vault);
   useEffect(() => {
     async function getLPToken() {
       if (account === null || account === undefined || library === undefined) {
@@ -85,7 +84,7 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
     try {
       const receipt = await TONStaker.connect(signer).claim();
       store.dispatch(setTxPending({tx: true}));
-      console.log(receipt);
+ 
       if (receipt) {
         toastWithReceipt(receipt, setTxPending, 'Launch');
         const blah = await receipt.wait();
@@ -93,7 +92,6 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
         const block = await BASE_PROVIDER.getBlock(blockNum);
         const timeStamp = block.timestamp;
         const startTime = Number(timeStamp);
-        console.log(startTime, startTime + 60);
       }
     } catch (e) {
       store.dispatch(setTxPending({tx: false}));

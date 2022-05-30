@@ -46,7 +46,6 @@ const ZOOM_LEVELS: Record<FeeAmount, ZoomLevels> = {
 const ChartWrapper = styled.div`
   margin-top: 10px;
   position: relative;
-
   justify-content: center;
   align-content: center;
 `;

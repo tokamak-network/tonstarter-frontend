@@ -51,10 +51,6 @@ export const PublicPageTable = (prop: PublicTableProps) => {
       light: '#c9d1d8',
       dark: '#777777',
     },
-    tableCellText: {
-      light: '#3d495d',
-      dark: '#f3f4f1',
-    },
   };
 
   useEffect(() => {
@@ -100,36 +96,30 @@ export const PublicPageTable = (prop: PublicTableProps) => {
         width={'100%'}>
         <Text
           height={'42px'}
-          fontSize={'12px'}
+          fontSize={13}
           w={'25%'}
-          letterSpacing={'0.12px'}
           textAlign={'center'}
           fontWeight={'bold'}
-          fontFamily={theme.fonts.roboto}
           border={themeDesign.border[colorMode]}
           borderRight={'none'}>
           Round
         </Text>
         <Text
           height={'42px'}
-          fontSize={'12px'}
+          fontSize={13}
           w={'25%'}
-          letterSpacing={'0.12px'}
           textAlign={'center'}
           fontWeight={'bold'}
-          fontFamily={theme.fonts.roboto}
           border={themeDesign.border[colorMode]}
           borderRight={'none'}>
           Date
         </Text>
         <Text
           height={'42px'}
-          fontSize={'12px'}
+          fontSize={13}
           w={'25%'}
-          letterSpacing={'0.12px'}
           textAlign={'center'}
           fontWeight={'bold'}
-          fontFamily={theme.fonts.roboto}
           border={themeDesign.border[colorMode]}
           borderRight={'none'}>
           Allocation
@@ -137,12 +127,10 @@ export const PublicPageTable = (prop: PublicTableProps) => {
         <Text
           // border={'solid 1px #373737'
           height={'42px'}
-          fontSize={'12px'}
+          fontSize={13}
           w={'25%'}
-          letterSpacing={'0.12px'}
           textAlign={'center'}
           fontWeight={'bold'}
-          fontFamily={theme.fonts.roboto}
           border={themeDesign.border[colorMode]}>
           Accumulated
         </Text>
@@ -165,9 +153,6 @@ export const PublicPageTable = (prop: PublicTableProps) => {
               height={'42px'}
               fontSize={13}
               w={'25%'}
-              letterSpacing={'.13px'}
-              color={themeDesign.tableCellText[colorMode]}
-              fontFamily={theme.fonts.roboto}
               textAlign={'center'}
               border={themeDesign.border[colorMode]}
               borderTop={'none'}
@@ -178,9 +163,6 @@ export const PublicPageTable = (prop: PublicTableProps) => {
               height={'42px'}
               fontSize={13}
               w={'25%'}
-              letterSpacing={'.13px'}
-              color={themeDesign.tableCellText[colorMode]}
-              fontFamily={theme.fonts.roboto}
               textAlign={'center'}
               border={themeDesign.border[colorMode]}
               borderTop={'none'}
@@ -193,9 +175,6 @@ export const PublicPageTable = (prop: PublicTableProps) => {
               height={'42px'}
               fontSize={13}
               w={'25%'}
-              letterSpacing={'.13px'}
-              color={themeDesign.tableCellText[colorMode]}
-              fontFamily={theme.fonts.roboto}
               textAlign={'center'}
               border={themeDesign.border[colorMode]}
               borderTop={'none'}
@@ -206,9 +185,6 @@ export const PublicPageTable = (prop: PublicTableProps) => {
               height={'42px'}
               fontSize={13}
               w={'25%'}
-              letterSpacing={'.13px'}
-              color={themeDesign.tableCellText[colorMode]}
-              fontFamily={theme.fonts.roboto}
               textAlign={'center'}
               border={themeDesign.border[colorMode]}
               borderTop={'none'}>

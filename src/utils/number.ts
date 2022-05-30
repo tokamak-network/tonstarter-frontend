@@ -64,8 +64,7 @@ function roundNumber(args: RoundFunc): string {
 
 export function convertNumber(args: ConverNumberFunc): string | undefined {
   try {
-    const {type, amount, round, decimalPlaces, localeString, decimalPoints} =
-      args;
+    const {type, amount, round, decimalPlaces, localeString, decimalPoints} =args;
     const utils = ethers.utils;
 
     if (amount === '0' || amount === undefined || amount === '') {
@@ -124,7 +123,7 @@ export function convertNumber(args: ConverNumberFunc): string | undefined {
           r_opt: 'down',
           localeString,
         });
-      case 'custom':
+        case 'custom':
         const customAmount = utils.formatUnits(numAmount, decimalPoints);
         const customAmountStr: string = customAmount.toString();
         if (optRound === true) {

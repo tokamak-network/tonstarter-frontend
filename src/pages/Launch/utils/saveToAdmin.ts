@@ -60,7 +60,7 @@ async function saveToAdmin(
     startDepositTime: publicVault.publicRound2!,
     endDepositTime: publicVault.publicRound2End!,
     startClaimTime: publicVault.claim[0].claimTime!,
-    claimInterval: publicVault.claim[1]
+    claimInterval: publicVault.claim[1].claimTime
       ? publicVault.claim[1].claimTime! - publicVault.claim[0].claimTime!
       : 0,
     claimPeriod: publicVault.claim.length,

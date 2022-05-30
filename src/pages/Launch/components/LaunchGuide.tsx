@@ -77,18 +77,12 @@ const LaunchGuide = () => {
                 <Text
                   fontFamily={theme.fonts.fld}
                   fontSize={'20px'}
-                  color={colorMode === 'light' ? '#7e8993' : '#fff'}
                   mt={'20px'}>
                   {guide.title}
                 </Text>
                 <Flex flexDir={'row'}>
-                  <guide.socialIcon
-                    color={colorMode === 'light' ? '#7e8993' : '#fff'}
-                  />
-                  <Text
-                    ml={'5px'}
-                    fontSize={'13px'}
-                    color={colorMode === 'light' ? '#7e8993' : '#fff'}>
+                  <guide.socialIcon color={'#7e8993'} />
+                  <Text ml={'5px'} fontSize={'13px'} color={'#7e8993'}>
                     {guide.socialName}
                   </Text>
                 </Flex>

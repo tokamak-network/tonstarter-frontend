@@ -19,6 +19,7 @@ type StakingModal =
   | 'pool_simulator';
 type StarterModal = 'Starter_Approve';
 type AdminModal = 'Admin_Distribute' | 'Admin_EditPool';
+type AirdropModal = 'Airdrop_Claim' | 'Airdrop_Distribute';
 type LaunchModal =
   | 'Launch_VaultBasicSetting'
   | 'Launch_VaultProps'
@@ -31,7 +32,7 @@ type LaunchModal =
   | 'Launch_ConfirmTerms';
 
 type GeneralModal = 'calendar';
-type RewardModal = 'search' | 'information' | 'confirmMulticall';
+type RewardModal = 'search'| 'information' | 'confirmMulticall';;
 export type ModalType =
   | StakingModal
   | DaoModal
@@ -39,6 +40,7 @@ export type ModalType =
   | RewardModal
   | StarterModal
   | AdminModal
+  | AirdropModal
   | LaunchModal;
 
 export type Modal = {

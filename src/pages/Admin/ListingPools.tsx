@@ -90,6 +90,7 @@ export const ListingPools = () => {
     ),
     isLoading: loading,
   };
+
   const {data, columns, isLoading} = dummyData;
 
   return (
