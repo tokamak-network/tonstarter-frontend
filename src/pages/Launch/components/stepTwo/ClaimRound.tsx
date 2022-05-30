@@ -73,8 +73,14 @@ const ClaimRound = () => {
   const {toastMsg} = useToast();
   const inputRefs = useRef<any[]>([]);
 
+  const [claimInfo, setClaimInfo] = useState<any>();
+
   //@ts-ignore
   const {claim} = selectedVaultDetail;
+
+  useEffect(() => {
+    setClaimInfo(claim);
+  }, [claim, selectedVaultDetail]);
 
   const addRow = useCallback(() => {
     if (selectedVaultDetail) {
@@ -319,7 +325,16 @@ const ClaimRound = () => {
                         //@ts-ignore
                         fieldValueKey={`vaults[${selectedVaultDetail.index}].claim[${index}]`}
                         oldValues={data}
-                        valueKey={'claimTime'}></SingleCalendarPop>
+                        valueKey={'claimTime'}
+                        startTimeCap={
+                          index === 0
+                            ? //@ts-ignore
+                              vaultsList[0].publicRound2End ||
+                              moment().add(9, 'days').unix()
+                            : (claimInfo !== undefined &&
+                                Number(claimInfo[index - 1]?.claimTime)) ||
+                              0
+                        }></SingleCalendarPop>
                     </Flex>
                     <Flex
                       w={'281px'}

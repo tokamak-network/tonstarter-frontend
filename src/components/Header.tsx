@@ -21,6 +21,8 @@ import {selectTxType} from 'store/tx.reducer';
 import {useDispatch} from 'react-redux';
 import {openModal} from 'store/modal.reducer';
 import {Menu, MenuButton, MenuList, MenuItem} from '@chakra-ui/react';
+import Line from '@Launch/components/common/Line';
+import theme from 'theme';
 
 type HeaderProps = {
   walletopen: () => void;
@@ -205,8 +207,9 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
                 ? 'white.100'
                 : 'white.100'
             }
-            onClick={() =>
-              (window.location.pathname = `${match?.path}myairdrop`)
+            onClick={
+              () => {}
+              // (window.location.pathname = `${match?.path}myairdrop`)
             }
             fontWeight={500}
             fontSize={'15px'}
@@ -293,7 +296,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                 w={'100%'}
                 h={'37px'}
                 _focus={{background: 'transparent'}}>
-              Reward Program
+                Reward Program
               </MenuItem>
             </NavLink>
             <NavLink
@@ -332,35 +335,22 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           style={{zIndex: 100}}>
           Launch
         </NavLink>
-        <NavLink
-          to="/"
-          className={match?.isExact ? 'link-match' : 'link'}
-          style={{zIndex: 100}}
-          onClick={(e) => {
-            e.preventDefault();
-            window.open(
-              'https://github.com/Onther-Tech/tonstarter-docs/blob/main/whitepaper/TONStarter%20Whitepaper.md',
-            );
-          }}>
-          <Text className={match?.isExact ? 'link-match' : 'link'}>
-            WhitePaper
-          </Text>
-        </NavLink>
         <Menu>
           <MenuButton>
-            <Text className={match?.isExact ? 'link-match' : 'link'}>
-              Guide
-            </Text>
+            <Text className={match?.isExact ? 'link-match' : 'link'}>Docs</Text>
           </MenuButton>
           <MenuList
             pos={'absolute'}
             left={'-33px'}
             top={'15px'}
             minW={'125px'}
-            w={'125px'}
-            h={'185px'}
-            p={0}
+            w={'162px'}
+            h={'277px'}
+            pt={'5px'}
+            pb={'5px'}
+            px={'10px'}
             fontSize={13}
+            fontFamily={theme.fonts.openSans}
             background={colorMode === 'light' ? '#ffffff' : '#222222'}>
             <NavLink
               to="/"
@@ -372,115 +362,196 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
               onClick={(e) => {
                 e.preventDefault();
                 window.open(
-                  'https://medium.com/onther-tech/tonstarter-guide-en-kr-6b7cad5773f1',
+                  'https://github.com/Onther-Tech/tonstarter-docs/blob/main/whitepaper/TONStarter%20Whitepaper.md',
                 );
               }}>
               <MenuItem
                 _hover={{color: 'blue.100', bg: 'none'}}
                 w={'100%'}
-                h={'37px'}
+                h={'32px'}
+                fontWeight={600}
+                p={0}
+                fontFamily={theme.fonts.openSans}
+                pl={'5px'}
                 _focus={{
                   bg: colorMode === 'light' ? '#ffffff' : 'transparent',
                 }}>
-                Staking
+                Whitepaper
               </MenuItem>
             </NavLink>
-            <NavLink
-              to="/"
-              activeStyle={{
-                background: colorMode === 'light' ? '#ffffff' : '',
-                color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',
-              }}
-              style={menuStyle.navLink}
-              onClick={(e) => {
-                e.preventDefault();
-                window.open(
-                  'https://medium.com/onther-tech/wton-tos-lp-staking-reward-system-en-kr-881e57ec0568',
-                );
-              }}>
-              <MenuItem
-                _hover={{color: 'blue.100', bg: 'none'}}
-                w={'100%'}
-                h={'37px'}
-                _focus={{
-                  bg: colorMode === 'light' ? '#ffffff' : 'transparent',
+            <Line></Line>
+            <Text
+              fontWeight={600}
+              fontSize={13}
+              h={'32px'}
+              mt={'5px'}
+              pl={'5px'}
+              fontFamily={theme.fonts.openSans}
+              lineHeight={'32px'}>
+              Guide
+            </Text>
+            <Box>
+              <NavLink
+                to="/"
+                activeStyle={{
+                  background: colorMode === 'light' ? '#ffffff' : '',
+                  color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',
+                }}
+                style={menuStyle.navLink}
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.open(
+                    'https://medium.com/onther-tech/tonstarter-guide-en-kr-6b7cad5773f1',
+                  );
                 }}>
-                Pools Staking
-              </MenuItem>
-            </NavLink>
-            <NavLink
-              to="/"
-              activeStyle={{
-                background: colorMode === 'light' ? '#ffffff' : '',
-                color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',
-              }}
-              style={menuStyle.navLink}
-              onClick={(e) => {
-                e.preventDefault();
-                window.open(
-                  'https://medium.com/onther-tech/introduction-of-stos-en-kr-56c12a5440e0',
-                );
-              }}>
-              <MenuItem
-                _hover={{color: 'blue.100', bg: 'none'}}
-                w={'100%'}
-                h={'37px'}
-                _focus={{
-                  bg: colorMode === 'light' ? '#ffffff' : 'transparent',
+                <MenuItem
+                  _hover={{color: 'blue.100', bg: 'none'}}
+                  fontFamily={theme.fonts.openSans}
+                  w={'100%'}
+                  h={'32px'}
+                  p={0}
+                  pl={'15px'}
+                  _focus={{
+                    bg: colorMode === 'light' ? '#ffffff' : 'transparent',
+                  }}>
+                  Staking
+                </MenuItem>
+              </NavLink>
+              <NavLink
+                to="/"
+                activeStyle={{
+                  background: colorMode === 'light' ? '#ffffff' : '',
+                  color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',
+                }}
+                style={menuStyle.navLink}
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.open(
+                    'https://medium.com/onther-tech/wton-tos-lp-staking-reward-system-en-kr-881e57ec0568',
+                  );
                 }}>
-                DAO Staking
-              </MenuItem>
-            </NavLink>
-            <NavLink
-              to="/"
-              activeStyle={{
-                background: colorMode === 'light' ? '#ffffff' : '',
-                color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',
-              }}
-              style={menuStyle.navLink}
-              onClick={(e) => {
-                e.preventDefault();
-                window.open(
-                  'https://medium.com/onther-tech/tonstarter-phase-3-starter-guide-en-kr-ab97bb9e50fc',
-                );
-              }}>
-              <MenuItem
-                _hover={{color: 'blue.100', bg: 'none'}}
-                w={'100%'}
-                h={'37px'}
-                _focus={{
-                  bg: colorMode === 'light' ? '#ffffff' : 'transparent',
+                <MenuItem
+                  _hover={{color: 'blue.100', bg: 'none'}}
+                  fontFamily={theme.fonts.openSans}
+                  w={'100%'}
+                  h={'32px'}
+                  p={0}
+                  pl={'15px'}
+                  _focus={{
+                    bg: colorMode === 'light' ? '#ffffff' : 'transparent',
+                  }}>
+                  Pools Staking
+                </MenuItem>
+              </NavLink>
+              <NavLink
+                to="/"
+                activeStyle={{
+                  background: colorMode === 'light' ? '#ffffff' : '',
+                  color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',
+                }}
+                style={menuStyle.navLink}
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.open(
+                    'https://medium.com/onther-tech/introduction-of-stos-en-kr-56c12a5440e0',
+                  );
                 }}>
-                Starter
-              </MenuItem>
-            </NavLink>
-            <NavLink
-              to="/"
-              activeStyle={{
-                background: colorMode === 'light' ? '#ffffff' : '',
-                color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',
-              }}
-              style={menuStyle.navLink}
-              onClick={(e) => {
-                e.preventDefault();
-                window.open(
-                  'https://medium.com/onther-tech/tonstarter-pools-reward-program-guide-en-kr-bef9ae274afd',
-                );
-              }}>
-              <MenuItem
-                _hover={{color: 'blue.100', bg: 'none'}}
-                w={'100%'}
-                h={'37px'}
-                _focus={{
-                  bg: colorMode === 'light' ? '#ffffff' : 'transparent',
+                <MenuItem
+                  _hover={{color: 'blue.100', bg: 'none'}}
+                  fontFamily={theme.fonts.openSans}
+                  w={'100%'}
+                  h={'32px'}
+                  p={0}
+                  pl={'15px'}
+                  _focus={{
+                    bg: colorMode === 'light' ? '#ffffff' : 'transparent',
+                  }}>
+                  DAO Staking
+                </MenuItem>
+              </NavLink>
+              <NavLink
+                to="/"
+                activeStyle={{
+                  background: colorMode === 'light' ? '#ffffff' : '',
+                  color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',
+                }}
+                style={menuStyle.navLink}
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.open(
+                    'https://medium.com/onther-tech/tonstarter-phase-3-starter-guide-en-kr-ab97bb9e50fc',
+                  );
                 }}>
-                RewardProgram
-              </MenuItem>
-            </NavLink>
+                <MenuItem
+                  _hover={{color: 'blue.100', bg: 'none'}}
+                  fontFamily={theme.fonts.openSans}
+                  w={'100%'}
+                  h={'32px'}
+                  p={0}
+                  pl={'15px'}
+                  _focus={{
+                    bg: colorMode === 'light' ? '#ffffff' : 'transparent',
+                  }}>
+                  Starter
+                </MenuItem>
+              </NavLink>
+              <NavLink
+                to="/"
+                activeStyle={{
+                  background: colorMode === 'light' ? '#ffffff' : '',
+                  color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',
+                }}
+                style={menuStyle.navLink}
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.open(
+                    'https://medium.com/onther-tech/tonstarter-pools-reward-program-guide-en-kr-bef9ae274afd',
+                  );
+                }}>
+                <MenuItem
+                  _hover={{color: 'blue.100', bg: 'none'}}
+                  fontFamily={theme.fonts.openSans}
+                  w={'100%'}
+                  h={'32px'}
+                  p={0}
+                  pl={'15px'}
+                  _focus={{
+                    bg: colorMode === 'light' ? '#ffffff' : 'transparent',
+                  }}>
+                  Rewards Program
+                </MenuItem>
+              </NavLink>
+              <NavLink
+                to="/"
+                activeStyle={{
+                  background: colorMode === 'light' ? '#ffffff' : '',
+                  color: colorMode === 'light' ? '#1c1c1c' : '#f3f4f1',
+                }}
+                style={menuStyle.navLink}
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.open(
+                    'https://medium.com/onther-tech/tonstarter-launch-create-project-user-guide-en-kr-82f2ae05c673',
+                  );
+                }}>
+                <MenuItem
+                  _hover={{color: 'blue.100', bg: 'none'}}
+                  fontFamily={theme.fonts.openSans}
+                  w={'100%'}
+                  h={'32px'}
+                  p={0}
+                  pl={'15px'}
+                  _focus={{
+                    bg: colorMode === 'light' ? '#ffffff' : 'transparent',
+                  }}>
+                  Launch
+                </MenuItem>
+              </NavLink>
+            </Box>
           </MenuList>
         </Menu>
 
-        <Menu>
+        {/* <Menu>
           <MenuButton>
             <Text className={match?.isExact ? 'link-match' : 'link'}>
               Admin
@@ -542,7 +613,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
               </MenuItem>
             </NavLink>
           </MenuList>
-        </Menu>
+        </Menu> */}
       </Stack>
     </Box>
   );

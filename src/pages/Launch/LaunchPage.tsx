@@ -18,8 +18,8 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 import {injected} from 'connectors';
 
 type LaunchProps = {
-  numPairs: Number
-}
+  numPairs: Number;
+};
 const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
   const [showAllProjects, setShowAllProjects] = useState<boolean>(true);
   const theme = useTheme();
@@ -90,22 +90,32 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
           left={'50%'}
           transform={'translateX(-50%)'}>
           <Flex alignItems={'center'} flexDir="column" mb={'20px'}>
-            <PageHeader
-              title={'Launch'}
-              titleColor={'#fff'}
-              subtitle={'Make Your Own Token and Create a Token Economy.'}
-            />
+            <Text
+              color={'#fff'}
+              fontSize={'72px'}
+              fontWeight={'bold'}
+              fontFamily={theme.fonts.poppins}>
+              Launch
+            </Text>
+            <Text
+              color={'#fff'}
+              fontFamily={theme.fonts.roboto}
+              fontSize={'22px'}
+              opacity={0.8}>
+              Make Your Own Token and Create a Token Economy.
+            </Text>
           </Flex>
           <Flex justifyContent={'center'} w={'100%'}>
             {/* <Link to={`${url}/createproject`}> */}
             <Button
-              _hover={{background: 'whiteAlpha.300'}}
+              _hover={{}}
               bg={'blue.100'}
               mt={'10px'}
               color="white.100"
               fontFamily={theme.fonts.roboto}
               letterSpacing={'.35px'}
               fontSize={'14px'}
+              borderRadius={'4px'}
               width={'150px'}
               height={'38px'}
               padding={'12px 28px 10px'}
@@ -153,7 +163,7 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
             fontFamily={theme.fonts.fld}>
             <Text color={'yellow'}>TOS pairs (in Uniswap)</Text>
             <Text color={'#fff'} fontSize={'24px'}>
-             {numPairs}
+              {numPairs}
             </Text>
           </Flex>
         </Flex>
@@ -166,7 +176,14 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
         alignItems={'center'}
         mt={'60px'}>
         <Flex alignItems={'center'} flexDir="column">
-          <PageHeader title={'Projects'} />
+          <Text
+            fontSize={'32px'}
+            color={colorMode === 'light' ? '#3d495d' : '#fff'}
+            fontFamily={theme.fonts.titil}
+            fontWeight={'bold'}>
+            {' '}
+            Projects
+          </Text>
         </Flex>
         <Flex mt={'40px'} mb={'30px'}>
           <Button

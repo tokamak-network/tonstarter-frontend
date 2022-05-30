@@ -61,7 +61,7 @@ const OpenCampagin = () => {
   // }
   return (
     <Flex flexDir="column" mt={'78px'} alignItems="center">
-      <LaunchPage numPairs={numProjects+2}/>
+      <LaunchPage numPairs={numProjects+4}/>
     </Flex>
   );
 };

@@ -242,7 +242,7 @@ const SubTitle = (props: {
         return `${commafy(rightTitle)} ${values.tokenName}`;
       case 'Token Allocation for Liquidity Pool (5~10%)':
         return `${rightTitle} %`;
-      case 'Fund Raising Target Amount':
+      case 'Minimum Fundraising Amount':
         return `${commafy(rightTitle)} TON`;
       case 'Address for receiving funds':
         return rightTitle ? `${shortenAddress(rightTitle)}` : '-';
@@ -292,7 +292,7 @@ const SubTitle = (props: {
             </Flex>
           </Tooltip>
         );
-      case 'Fund Raising Target Amount':
+      case 'Minimum Fundraising Amount':
         return (
           <InputField
             w={120}
@@ -350,10 +350,11 @@ const SubTitle = (props: {
             toolTipW={254}
             placement={'top'}></CustomTooltip>
         </Flex>
-      ) : leftTitle === 'Fund Raising Target Amount' && !isSecondColData ? (
+      ) : leftTitle === 'Minimum Fundraising Amount' && !isSecondColData ? (
         <Flex>
           <Text color={'#7e8993'} mr={'5px'}>
-            Fund Raising <br /> Target Amount
+            Minimum Fundraising <br />
+            Amount
           </Text>
           <CustomTooltip
             msg={[
@@ -442,10 +443,13 @@ const SubTitle = (props: {
             ) : (
               <SingleCalendarPop
                 setDate={setClaimDate}
-                // startTimeCap={moment().add(8, 'days').unix()}
-                startTimeCap={moment()
-                  .add('11', 'minutes')
-                  .unix()}></SingleCalendarPop>
+                //Mainnet env
+                startTimeCap={moment().add(8, 'days').unix()}
+                //Testnet env
+                // startTimeCap={moment()
+                //   .add('11', 'minutes')
+                //     .unix()}
+              ></SingleCalendarPop>
             )}
           </Flex>
         ) : (
@@ -880,7 +884,7 @@ const PublicTokenDetail = (props: {
           leftTitle="Schedule"
           rightTitle={`UTC ${momentTZ
             .tz(momentTZ.tz.guess())
-            .zoneAbbr()}`}></MainTitle>
+            .format('Z')}`}></MainTitle>
         {secondColData?.map(
           (data: {title: string; content: string; formikName: string}) => {
             const {title, content, formikName} = data;

@@ -10,8 +10,8 @@ const VaultPropTitle = (props: {title: string}) => {
 const PublicProps = () => {
   const vaultName: VaultName = 'Public';
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
-  console.log('--go--');
-  console.log(values);
+  // console.log('--go--');
+  // console.log(values);
   //@ts-ignore
   const publicVaultValue: VaultPublic = values.vaults[0];
   const {whitelist, publicRound1, publicRound2, claimStart, stosTier} =

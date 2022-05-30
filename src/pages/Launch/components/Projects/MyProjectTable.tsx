@@ -147,14 +147,17 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
   //data.length === 0
   if (isLoading === true) {
     return (
-      <Flex w="1102px" justifyContent={'center'} alignItems={'center'}>
+      <Flex
+        w="1102px"
+        position={'absolute'}
+        justifyContent={'center'}
+        alignItems={'center'}>
         <LoadingComponent></LoadingComponent>
       </Flex>
     );
   } else if (data.length === 0) {
     return (
       <Flex
-        w="1102px"
         justifyContent={'center'}
         alignItems={'center'}
         h={'100px'}
@@ -212,12 +215,12 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                   ? '118px'
                   : title === 'Token Supply'
                   ? '130px'
-                  : title === 'Sale Date'
+                  : title === 'Sale Period'
                   ? '150px'
                   : title === 'Status'
                   ? '140px'
                   : title === 'Action'
-                  ? '312px'
+                  ? '314px'
                   : '110px'
               }
               borderBottom={
@@ -300,7 +303,7 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                             : type === 'status'
                             ? '140px'
                             : type === 'action'
-                            ? '310px'
+                            ? '314px'
                             : '110px'
                         }
                         h={'55px'}
@@ -325,23 +328,129 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                           ))}
                         {type === 'tokenName' && tokenName}
                         {type === 'tokenSymbol' && tokenSymbol}
-                        {type === 'totalSupply' &&
-                          Number(totalSupply).toLocaleString(undefined, {
-                            minimumFractionDigits: 0,
-                          })}
+                        {type === 'totalSupply' && totalSupply}
                         {type === 'saleDate' &&
-                          `${moment
-                            .unix(saleDate[0])
-                            .format('YYYY.MM.DD')} ~ ${moment
-                            .unix(saleDate[1])
-                            .format('YYYY.MM.DD')}`}
+                          `${
+                            saleDate[0] !== 0
+                              ? moment
+                                  .unix(saleDate[0])
+                                  .format('YYYY.MM.DD')
+                                  .concat('~')
+                                  .concat(
+                                    moment
+                                      .unix(saleDate[1])
+                                      .format('YYYY.MM.DD'),
+                                  )
+                              : '-'
+                          } `}
                         {type === 'status' &&
                           (status === true
                             ? listed === true
                               ? 'Listed on Tonstarter'
                               : 'Deployed'
                             : 'Not Deployed')}
-                        {type === 'action' &&
+                        {type === 'action' && (
+                          <Flex
+                            w={'312px'}
+                            justifyContent={'center'}
+                            gap={'10px'}>
+                            <Link to={`${url}/${key}`}>
+                              <Button
+                                fontWeight={'normal'}
+                                w={'90px'}
+                                h={'40px'}
+                                mx={'5px'}
+                                bg={'transparent'}
+                                color={'#2a72e5'}
+                                fontSize={'12px'}
+                                border={'solid 1px #2a72e5'}
+                                _hover={{bg: 'transparent'}}
+                                _active={{bg: 'transparent'}}>
+                                Edit
+                              </Button>
+                            </Link>
+                            {status === true ? (
+                              listed === true ? (
+                                tokenID !== null ? (
+                                  <a
+                                    target={'blank'}
+                                    href={`${OPENSEA}${Number(tokenID)}`}>
+                                    <Button
+                                      w={'90px'}
+                                      h={'40px'}
+                                      mx={'5px'}
+                                      bg={'#257eee'}
+                                      borderRadius={'4px'}
+                                      color={'#ffffff'}
+                                      fontWeight={'normal'}
+                                      fontSize={'12px'}
+                                      _hover={{bg: '#257eee'}}
+                                      _active={{bg: '#257eee'}}
+                                      px={'10px'}
+                                      whiteSpace={'normal'}
+                                      alignItems={'center'}>
+                                      See Project NFT
+                                    </Button>
+                                  </a>
+                                ) : (
+                                  <Button
+                                    w={'90px'}
+                                    h={'40px'}
+                                    mx={'5px'}
+                                    px={'10px'}
+                                    whiteSpace={'normal'}
+                                    bg={'#257eee'}
+                                    color={'#ffffff'}
+                                    fontWeight={'normal'}
+                                    fontSize={'12px'}
+                                    _hover={{bg: '#257eee'}}
+                                    _active={{bg: '#257eee'}}
+                                    onClick={() => mintNFT(project)}>
+                                    Mint Project NFT
+                                  </Button>
+                                )
+                              ) : (
+                                <Flex>
+                                  {' '}
+                                  <Button
+                                    w={'90px'}
+                                    h={'40px'}
+                                    mx={'5px'}
+                                    bg={'#257eee'}
+                                    color={'#ffffff'}
+                                    fontWeight={'normal'}
+                                    fontSize={'12px'}
+                                    _hover={{bg: '#257eee'}}
+                                    _active={{bg: '#257eee'}}
+                            
+                                    px={'9px'}
+                                    whiteSpace={'normal'}
+                                    onClick={() => saveToAdmin(project, key)}>
+                                    List on TONStarter
+                                  </Button>
+                                  <Button
+                                    w={'90px'}
+                                    h={'40px'}
+                                    mx={'5px'}
+                                    bg={'#257eee'}
+                                    px={'10px'}
+                                    whiteSpace={'normal'}
+                                    color={'#ffffff'}
+                                    fontWeight={'normal'}
+                                    fontSize={'12px'}
+                                    _hover={{bg: '#257eee'}}
+                                    _active={{bg: '#257eee'}}
+                                    onClick={() => mintNFT(project)}>
+                                    Mint Project NFT
+                                  </Button>
+                                </Flex>
+                              )
+                            ) : (
+                              <></>
+                            )}
+                          </Flex>
+                        )}
+                        {/* {type === 'action' &&
                           (status === true ? (
                             listed === true ? (
                               <Flex>
@@ -439,7 +548,7 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                                 Edit
                               </Button>
                             </Link>
-                          ))}
+                          ))} */}
                       </chakra.td>
                     );
                   })}

@@ -55,7 +55,6 @@ const OpenStepOne = () => {
         mb={'20px'}>
         {filedNameList.map(
           (fieldName: {title: string; requirement: boolean}, index: number) => {
-            console.log(fieldName);
             if (fieldName.title === 'tokenSymbolImage') {
               return (
                 <Flex w={'327px'}>

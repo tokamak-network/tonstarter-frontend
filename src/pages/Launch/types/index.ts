@@ -148,7 +148,7 @@ type PublicTokenColData = {
       formikName: string;
     },
     {
-      title: 'Fund Raising Target Amount';
+      title: 'Minimum Fundraising Amount';
       content: string | undefined;
       formikName: string;
     },

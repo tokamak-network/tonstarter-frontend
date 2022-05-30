@@ -33,7 +33,7 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
   const [withdrawAmount, setWithdrawAmount] = useState<string>('0');
   const [d_Day, setD_Day] = useState<number>(0);
   const [notRemained, setNotRemained] = useState<boolean>(true);
-  const [isOverHardcap, setIsOverHardcap] = useState<boolean>(false);
+  const [isOverHardcap, setIsOverHardcap] = useState<boolean>(true);
   const [refundAmount, setRefundAmount] = useState<string>('0');
   const [hardCapAmount, setHardCapAmount] = useState<string>('-');
   const [totalRaisedAmount, setTotalRaisedAmount] = useState<string>('-');
@@ -56,7 +56,14 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
     async function checkHardCap() {
       if (PUBLICSALE_CONTRACT && account) {
         const isOver = await PUBLICSALE_CONTRACT.hardcapCalcul();
+
         if (Number(isOver.toString()) === 0) {
+          if (
+            saleInfo.name === 'DOOR OPEN' ||
+            saleInfo.name === 'Dragons of Midgard'
+          ) {
+            return setIsOverHardcap(true);
+          }
           const usersExAmount = await PUBLICSALE_CONTRACT.usersEx(account);
           const usersOpenAmount = await PUBLICSALE_CONTRACT.usersOpen(account);
           const hardCap = await PUBLICSALE_CONTRACT.hardCap();
@@ -97,7 +104,7 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
       }
     }
     checkHardCap();
-  }, [PUBLICSALE_CONTRACT, account]);
+  }, [PUBLICSALE_CONTRACT, account, saleInfo]);
 
   useEffect(() => {
     async function getData() {
@@ -175,7 +182,7 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
           userClaim.refundAmount,
         );
 
-        const ramainedAmount = BigNumber.from(totalClaim[1]).sub(
+        const ramainedAmount = BigNumber.from(totalClaim[2]).sub(
           usersClaim?.claimAmount,
         );
 

@@ -125,7 +125,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
       setCreatedPool(getPool === ZERO_ADDRESS ? '':getPool)
       // setIsPool(false)
       setIsLpToken(Number(LP) === 0 ? false : true);
-      console.log(Number(LP));
+      // console.log(Number(LP));
       setLPToken(Number(LP));
     }
     getLPToken();

@@ -408,7 +408,7 @@ const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
                         mt={'5px'}
                         bg={'#257eee'}
                         color={'#ffffff'}
-                        isDisabled={ vault.publicRound2End > moment().unix() || hardcap === 0 || fundWithdrew=== true}
+                        isDisabled={vault.publicRound2End > moment().unix() || hardcap === 0 || fundWithdrew=== true}
                         _disabled={{
                           color: colorMode === 'light' ? '#86929d' : '#838383',
                           bg: colorMode === 'light' ? '#e9edf1' : '#353535',
@@ -498,7 +498,7 @@ const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
                   fontFamily={theme.fonts.fld}
                   fontSize={'15px'}
                   color={themeDesign.headerFont[colorMode]}>
-                  {momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()}
+                UTC  {momentTZ.tz(momentTZ.tz.guess()).format('Z')} 
                 </Text>
               </>
             ) : (
