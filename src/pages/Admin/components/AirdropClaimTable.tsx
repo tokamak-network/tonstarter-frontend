@@ -277,7 +277,7 @@ export const AirdropClaimTable = () => {
               AdminActions.claimMultipleTokens({
                 account,
                 library,
-                addresses: checkedTokenAddresses,
+                data: checkedTokenAddresses,
               });
           }}
           _hover={{background: 'transparent'}}>
@@ -355,7 +355,7 @@ export const AirdropClaimTable = () => {
                   fontSize={'14px'}
                   h={'45px'}
                   left={'5%'}
-                  value={address}
+                  value={JSON.stringify(data)}
                 />
               </Flex>
               <Text

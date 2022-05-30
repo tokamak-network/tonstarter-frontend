@@ -1,7 +1,14 @@
 import {useEffect, useMemo, useState} from 'react';
 import {selectDao} from '../Dao/dao.reducer';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {Flex, Text, Button, useTheme, useColorMode} from '@chakra-ui/react';
+import {
+  Flex,
+  Text,
+  Button,
+  Link,
+  useTheme,
+  useColorMode,
+} from '@chakra-ui/react';
 import {PageHeader} from 'components/PageHeader';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {ListRewardTable} from './components/ListRewardTable';
@@ -21,10 +28,12 @@ import {
   getUserStakedTonBalance,
 } from 'client/getUserBalance';
 import commafy from 'utils/commafy';
+import {BASE_PROVIDER} from 'constants/index';
 
 export const MyAirdrop = () => {
   const {account, library} = useActiveWeb3React();
   const [address, setAddress] = useState<string>('');
+  const [fullAddress, setFullAddress] = useState<string>('');
   const [projects, setProjects] = useState<ListingRewardTableData[] | []>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [distributeButton, setDistributeButton] = useState<boolean>(false);
@@ -36,6 +45,7 @@ export const MyAirdrop = () => {
     data: {tosStakeList: stakeList},
   } = (useAppSelector as any)(selectDao);
   const filteredStakeList = stakeList.filter((e: any) => e.end === false);
+  const network = BASE_PROVIDER._network.name;
 
   const {colorMode} = useColorMode();
 
@@ -84,6 +94,7 @@ export const MyAirdrop = () => {
   useEffect(() => {
     if (account && library) {
       setAddress(shortenAddress(account));
+      setFullAddress(account);
     } else {
       setAddress('-');
     }
@@ -164,19 +175,32 @@ export const MyAirdrop = () => {
           justifyContent="center"
           borderRight={themeDesign.borderRight[colorMode]}
           px="55px">
-          <Text
-            fontSize={'13px'}
-            color="#86929d"
-            fontFamily={theme.fonts.roboto}>
-            Address
-          </Text>
-          <Text
-            fontFamily={theme.fonts.roboto}
-            fontWeight={'bold'}
-            fontSize={'20px'}
-            color={themeDesign.fontColorTitle[colorMode]}>
-            {address}
-          </Text>
+          <Link
+            isExternal
+            _hover={{textDecoration: 'none'}}
+            href={
+              network === 'rinkeby'
+                ? `https://rinkeby.etherscan.io/address/${fullAddress}`
+                : network !== 'rinkeby'
+                ? `https://etherscan.io/address/${fullAddress}`
+                : ''
+            }>
+            <Flex flexDir="column" alignItems="center" justifyContent="center">
+              <Text
+                fontSize={'13px'}
+                color="#86929d"
+                fontFamily={theme.fonts.roboto}>
+                Address
+              </Text>
+              <Text
+                fontFamily={theme.fonts.roboto}
+                fontWeight={'bold'}
+                fontSize={'20px'}
+                color={themeDesign.fontColorTitle[colorMode]}>
+                {address}
+              </Text>
+            </Flex>
+          </Link>
         </Flex>
         <Flex
           flexDir="column"
@@ -184,29 +208,33 @@ export const MyAirdrop = () => {
           justifyContent="center"
           borderRight={themeDesign.borderRight[colorMode]}
           px="55px">
-          <Text
-            fontSize={'13px'}
-            color="#86929d"
-            fontFamily={theme.fonts.roboto}>
-            My Staked TON
-          </Text>
-          <Flex alignItems={'baseline'}>
-            <Text
-              fontFamily={theme.fonts.roboto}
-              fontWeight={'bold'}
-              fontSize={'20px'}
-              mr={'4px'}
-              color={themeDesign.fontColorTitle[colorMode]}>
-              {commafy(userStakedTon)}
-            </Text>
-            <Text
-              fontFamily={theme.fonts.roboto}
-              fontSize={'13px'}
-              color={themeDesign.fontColorTitle[colorMode]}
-              fontWeight={'bold'}>
-              TON
-            </Text>
-          </Flex>
+          <Link isExternal _hover={{textDecoration: 'none'}} href="/dao">
+            <Flex flexDir="column" alignItems="center" justifyContent="center">
+              <Text
+                fontSize={'13px'}
+                color="#86929d"
+                fontFamily={theme.fonts.roboto}>
+                My Staked TON
+              </Text>
+              <Flex alignItems={'baseline'}>
+                <Text
+                  fontFamily={theme.fonts.roboto}
+                  fontWeight={'bold'}
+                  fontSize={'20px'}
+                  mr={'4px'}
+                  color={themeDesign.fontColorTitle[colorMode]}>
+                  {commafy(userStakedTon)}
+                </Text>
+                <Text
+                  fontFamily={theme.fonts.roboto}
+                  fontSize={'13px'}
+                  color={themeDesign.fontColorTitle[colorMode]}
+                  fontWeight={'bold'}>
+                  TON
+                </Text>
+              </Flex>
+            </Flex>
+          </Link>
         </Flex>
         <Flex
           flexDir="column"
@@ -214,58 +242,75 @@ export const MyAirdrop = () => {
           justifyContent="center"
           borderRight={themeDesign.borderRight[colorMode]}
           px="55px">
-          <Text
-            fontSize={'13px'}
-            color="#86929d"
-            fontFamily={theme.fonts.roboto}>
-            My Staked TOS
-          </Text>
-          <Flex alignItems={'baseline'}>
-            <Text
-              fontFamily={theme.fonts.roboto}
-              fontWeight={'bold'}
-              fontSize={'20px'}
-              mr={'4px'}
-              color={themeDesign.fontColorTitle[colorMode]}>
-              {commafy(userStakedTos)}
-            </Text>
-            <Text
-              fontFamily={theme.fonts.roboto}
-              fontWeight={'bold'}
-              fontSize={'13px'}
-              color={themeDesign.fontColorTitle[colorMode]}>
-              TOS
-            </Text>
-          </Flex>
+          <Link isExternal _hover={{textDecoration: 'none'}} href="/dao">
+            <Flex flexDir="column" alignItems="center" justifyContent="center">
+              <Text
+                fontSize={'13px'}
+                color="#86929d"
+                fontFamily={theme.fonts.roboto}>
+                My Staked TOS
+              </Text>
+              <Flex alignItems={'baseline'}>
+                <Text
+                  fontFamily={theme.fonts.roboto}
+                  fontWeight={'bold'}
+                  fontSize={'20px'}
+                  mr={'4px'}
+                  color={themeDesign.fontColorTitle[colorMode]}>
+                  {commafy(userStakedTos)}
+                </Text>
+                <Text
+                  fontFamily={theme.fonts.roboto}
+                  fontWeight={'bold'}
+                  fontSize={'13px'}
+                  color={themeDesign.fontColorTitle[colorMode]}>
+                  TOS
+                </Text>
+              </Flex>
+            </Flex>
+          </Link>
         </Flex>
         <Flex
           flexDir="column"
           alignItems="center"
           justifyContent="center"
           px="55px">
-          <Text
-            fontSize={'13px'}
-            color="#86929d"
-            fontFamily={theme.fonts.roboto}>
-            My sTOS
-          </Text>
-          <Flex alignItems={'baseline'}>
-            <Text
-              fontFamily={theme.fonts.roboto}
-              fontWeight={'bold'}
-              fontSize={'20px'}
-              mr={'4px'}
-              color={themeDesign.fontColorTitle[colorMode]}>
-              {commafy(userStakedSTos)}
-            </Text>
-            <Text
-              fontFamily={theme.fonts.roboto}
-              fontWeight={'bold'}
-              fontSize={'13px'}
-              color={themeDesign.fontColorTitle[colorMode]}>
-              sTOS
-            </Text>
-          </Flex>
+          <Link
+            isExternal
+            _hover={{textDecoration: 'none'}}
+            href={
+              network !== 'rinkeby'
+                ? 'https://simple.staking.tokamak.network/'
+                : network === 'rinkeby'
+                ? 'https://rinkeby.simple.staking.tokamak.network/'
+                : ''
+            }>
+            <Flex flexDir="column" alignItems="center" justifyContent="center">
+              <Text
+                fontSize={'13px'}
+                color="#86929d"
+                fontFamily={theme.fonts.roboto}>
+                My sTOS
+              </Text>
+              <Flex alignItems={'baseline'}>
+                <Text
+                  fontFamily={theme.fonts.roboto}
+                  fontWeight={'bold'}
+                  fontSize={'20px'}
+                  mr={'4px'}
+                  color={themeDesign.fontColorTitle[colorMode]}>
+                  {commafy(userStakedSTos)}
+                </Text>
+                <Text
+                  fontFamily={theme.fonts.roboto}
+                  fontWeight={'bold'}
+                  fontSize={'13px'}
+                  color={themeDesign.fontColorTitle[colorMode]}>
+                  sTOS
+                </Text>
+              </Flex>
+            </Flex>
+          </Link>
         </Flex>
       </Flex>
       <Flex>

@@ -8,6 +8,8 @@ import {
   Heading,
   GridItem,
   Grid,
+  Tooltip,
+  Image,
 } from '@chakra-ui/react';
 import {Contract} from '@ethersproject/contracts';
 import {LoadingComponent} from 'components/Loading';
@@ -24,6 +26,7 @@ import * as TokenDividendProxyPool from 'services/abis/TokenDividendProxyPool.js
 import useAirdropList from '@Dao/hooks/useAirdropList';
 import {ethers} from 'ethers';
 import commafy from 'utils/commafy';
+import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 
 // type AirdropTokenList = {tokenName: string; amount: string}[];
 
@@ -303,7 +306,7 @@ export const AirdropDistributeTable = () => {
           <Heading size="md" mr={'10px'}>
             Token List
           </Heading>
-          <Flex>
+          <Flex mr={'3px'}>
             <Text
               fontFamily={theme.fonts.roboto}
               fontSize={'13px'}
@@ -319,6 +322,14 @@ export const AirdropDistributeTable = () => {
               Next(Thu.) {timeStamp} 00:00:00 (UTC)
             </Text>
           </Flex>
+          <Tooltip
+            hasArrow
+            placement="top"
+            label="sTOS Holder distributions follow the schedule displayed, whereas TON Holder distributions happen immediately."
+            color={theme.colors.white[100]}
+            bg={theme.colors.gray[375]}>
+            <Image src={tooltipIcon} />
+          </Tooltip>
         </Flex>
         <Button
           color={themeDesign.tosFont[colorMode]}

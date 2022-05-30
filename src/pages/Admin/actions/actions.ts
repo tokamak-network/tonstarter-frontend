@@ -29,7 +29,7 @@ interface I_CallContract {
 interface I_CallContract2 {
   account: string;
   library: LibraryType;
-  addresses: any;
+  data: any;
 }
 
 const getERC20ApproveTOS = async (
@@ -333,10 +333,15 @@ export const claimToken = async (
 
 export const claimMultipleTokens = async (args: I_CallContract2) => {
   try {
-    const {account, library, addresses} = args;
+    const {account, library, data} = args;
     const {TokenDividendProxyPool_ADDRESS, LockTOSDividend_ADDRESS} = DEPLOYED;
 
-    console.log('claimMultiple tokens: ', addresses);
+    let parsedData = data.map((data: any) => {
+      return JSON.parse(data);
+    });
+
+    const sTosArray = parsedData.filter((data: any) => data.tosStaker === true);
+    const sTonArray = parsedData.filter((data: any) => data.tonStaker === true);
 
     const TOKEN_DIVIDEND_PROXY_CONTRACT = new Contract(
       TokenDividendProxyPool_ADDRESS,
@@ -355,13 +360,29 @@ export const claimMultipleTokens = async (args: I_CallContract2) => {
     }
     const signer = getSigner(library, account);
 
-    // const res = await TOKEN_DIVIDEND_PROXY_CONTRACT.connect(signer).claimBatch(
-    //   tokens,
-    // );
-    // store.dispatch(setTxPending({tx: true}));
-    // if (res) {
-    //   toastWithReceipt(res, setTxPending, 'Airdrop');
-    // }
+    if (sTonArray.length > 0) {
+      const sTonAddresses = sTonArray.map((data: any) => data.address);
+      console.log('sTonAddresses: ', sTonAddresses);
+      const res = await TOKEN_DIVIDEND_PROXY_CONTRACT.connect(
+        signer,
+      ).claimBatch(sTonAddresses);
+      store.dispatch(setTxPending({tx: true}));
+      if (res) {
+        toastWithReceipt(res, setTxPending, 'Airdrop');
+      }
+    }
+
+    if (sTosArray.length > 0) {
+      const sTosAddresses = sTosArray.map((data: any) => data.address);
+      console.log('sTosAddresses: ', sTosAddresses);
+      const res = await LOCKTOS_DIVIDEND_CONTRACT.connect(signer).claimBatch(
+        sTosAddresses,
+      );
+      store.dispatch(setTxPending({tx: true}));
+      if (res) {
+        toastWithReceipt(res, setTxPending, 'Airdrop');
+      }
+    }
   } catch (e) {
     console.log(e);
     store.dispatch(
