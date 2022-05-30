@@ -23,6 +23,7 @@ const Vaults = () => {
   const dispatch = useAppDispatch();
   const [transX, setTransX] = useState<number>(0);
   const [flowIndex, setFlowIndex] = useState<number>(6);
+  const [leftIndex, setLeftIndex] = useState<number>(0);
   const {
     data: {selectedVaultIndex},
   } = useAppSelector(selectLaunch);
@@ -37,14 +38,20 @@ const Vaults = () => {
           img={colorMode === 'light' ? arrowLeft : arrowLeftDark}
           hoverImg={arrowHoverLeft}
           action={() => {
-            // if (flowIndex - vaultsList.length >= 0) {
-            //   setTransX(transX + 165);
-            //   setFlowIndex(flowIndex - 1);
-            // }
-            setTransX(transX + 165);
-            setFlowIndex(flowIndex - 1);
+            if (leftIndex !== 0) {
+              setTransX(transX + 165);
+              setFlowIndex(flowIndex - 1);
+              setLeftIndex(leftIndex - 1);
+            }
+            // setTransX(transX + 165);
+            // setFlowIndex(flowIndex - 1);
           }}></HoverImage>
-        <Flex w={'100%'} alignItems="center" mx={'15px'} overflow={'hidden'}>
+        <Flex
+          w={'100%'}
+          alignItems="center"
+          mx={'10px'}
+          px={'5px'}
+          overflow={'hidden'}>
           <motion.div
             animate={{x: transX}}
             style={{display: 'flex', width: '100%'}}>
@@ -101,12 +108,13 @@ const Vaults = () => {
           img={colorMode === 'light' ? arrowRight : arrowRightDark}
           hoverImg={arrowHoverRight}
           action={() => {
-            // if (flowIndex <= vaultsList.length) {
-            //   setTransX(transX - 165);
-            //   setFlowIndex(flowIndex + 1);
-            // }
-            setTransX(transX - 165);
-            setFlowIndex(flowIndex + 1);
+            if (flowIndex <= vaultsList.length) {
+              setTransX(transX - 165);
+              setFlowIndex(flowIndex + 1);
+              setLeftIndex(leftIndex + 1);
+            }
+            // setTransX(transX - 165);
+            // setFlowIndex(flowIndex + 1);
           }}></HoverImage>
         {/* <Image
           cursor={'pointer'}
@@ -124,13 +132,32 @@ const Vaults = () => {
         mt={'25px'}
         mb={'4px'}>
         {vaultsList?.map((vault: Vault, index: number) => {
+          const {
+            vaultName,
+
+            vaultType,
+            index: vaultIndex,
+          } = vault;
           return (
             <Box
               w={'8px'}
               h={'8px'}
               borderRadius={25}
               bg={selectedVaultIndex === index ? 'blue.100' : '#dfe4ee'}
-              mr={'8px'}></Box>
+              mr={'8px'}
+              _hover={{cursor: 'pointer'}}
+              onClick={() => {
+                console.log(transX);
+                
+                // setTransX(transX - 165);
+                dispatch(
+                  changeVault({
+                    data: vaultName,
+                    vaultType,
+                    vaultIndex,
+                  }),
+                );
+              }}></Box>
           );
         })}
       </Box>
