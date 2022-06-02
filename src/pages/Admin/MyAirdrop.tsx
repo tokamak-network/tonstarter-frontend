@@ -20,7 +20,6 @@ import moment from 'moment';
 import {convertNumber} from 'utils/number';
 import {AirdropDistributeTable} from './components/AirdropDistributeTable';
 import {AirdropClaimTable} from './components/AirdropClaimTable';
-import {AirdropClaimModal} from './components/AirdropClaimModal';
 import {AirdropDistributeModal} from './components/AirdropDistributeModal';
 import {
   getUserTOSStaked,
@@ -368,7 +367,6 @@ export const MyAirdrop = () => {
         </Button>
       </Flex>
       {distributeButton ? <AirdropDistributeTable /> : <AirdropClaimTable />}
-      <AirdropClaimModal></AirdropClaimModal>
       <AirdropDistributeModal></AirdropDistributeModal>
     </Flex>
   );

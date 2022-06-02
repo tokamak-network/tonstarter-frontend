@@ -8,7 +8,7 @@ import {openToast} from 'store/app/toast.reducer';
 type AirdropClaimProps = {
   userAddress: string | null | undefined;
   library: any;
-  handleCloseModal: any;
+  handleCloseModal?: any;
 };
 
 export const claimAirdrop = async (args: AirdropClaimProps) => {

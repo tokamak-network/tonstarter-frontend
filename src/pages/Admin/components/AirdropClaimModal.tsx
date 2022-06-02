@@ -28,13 +28,7 @@ import {Contract} from '@ethersproject/contracts';
 import * as TOKENDIVIDENDPOOLPROXY from 'services/abis/TokenDividendProxyPool.json';
 
 export const AirdropClaimModal = () => {
-  const {
-    TON_ADDRESS,
-    WTON_ADDRESS,
-    TOS_ADDRESS,
-    DOC_ADDRESS,
-    TokenDividendProxyPool_ADDRESS,
-  } = DEPLOYED;
+  const {WTON_ADDRESS, TokenDividendProxyPool_ADDRESS} = DEPLOYED;
 
   const {data} = useAppSelector(selectModalType);
   const {colorMode} = useColorMode();
