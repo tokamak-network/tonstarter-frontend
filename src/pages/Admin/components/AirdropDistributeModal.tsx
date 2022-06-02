@@ -23,6 +23,7 @@ import moment from 'moment';
 import {useBlockNumber} from 'hooks/useBlock';
 import {DEPLOYED} from 'constants/index';
 import {useERC20Token} from 'hooks/useERC20Token';
+import {selectTransactionType} from 'store/refetch.reducer';
 
 export const AirdropDistributeModal = () => {
   const {TON_ADDRESS, WTON_ADDRESS, TOS_ADDRESS, DOC_ADDRESS} = DEPLOYED;
@@ -31,7 +32,6 @@ export const AirdropDistributeModal = () => {
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
   const {btnStyle} = theme;
-
   const [tokenAddress, setTokenAddress] = useState<string>(TON_ADDRESS);
   const [distributeToValue, setDistributeToValue] =
     useState<string>('TON Holder');
@@ -40,8 +40,8 @@ export const AirdropDistributeModal = () => {
   const [ableDistribute, setAbleDistribute] = useState<boolean>(false);
   const [timeStamp, setTimeStamp] = useState<string>('');
   const [isRay, setIsRay] = useState<boolean>(false);
+  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
 
-  const {blockNumber} = useBlockNumber();
   const {handleCloseModal} = useModal(setTokenAmount);
 
   useEffect(() => {
@@ -76,7 +76,15 @@ export const AirdropDistributeModal = () => {
     } else {
       setAllowance('0.00');
     }
-  }, [account, library, tokenAddress, isRay, distributeToValue]);
+  }, [
+    account,
+    library,
+    tokenAddress,
+    isRay,
+    distributeToValue,
+    transactionType,
+    blockNumber,
+  ]);
 
   useEffect(() => {
     if (tokenAmount === '') {
