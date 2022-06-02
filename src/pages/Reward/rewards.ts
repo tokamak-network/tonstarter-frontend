@@ -1,5 +1,5 @@
-import {fetchPoolsURL, fetchRewardsURL} from 'constants/index';
-import {FetchPoolData,PoolData , interfaceReward} from './types/index'
+import {fetchPoolsURL, fetchRewardsURL, fetchTokensURL} from 'constants/index';
+import {FetchPoolData, PoolData, TokensData, interfaceReward} from './types/index'
 import {getTokenSymbol} from './utils/getTokenSymbol';
 // import {getSigner} from 'utils/contract';
 // import {Contract} from '@ethersproject/contracts';
@@ -44,6 +44,42 @@ const getPoolData = async (library: any): Promise<FetchPoolData[] | undefined> =
     return symbolContract;
   };
 
+  const getTokensData = async (): Promise<TokensData[] | undefined> => {
+    try {
+      const tokensReq = await fetch(fetchTokensURL)
+        .then((res) => res.json())
+        .then((result) => result)
+      const tokensData: TokensData[] = await tokensReq.datas;
+
+      if (tokensData !== undefined) {
+        return tokensData
+      } else {
+        return []
+      }
+    } catch (e) {
+      console.log(e)
+      return undefined
+    }
+  }
+
+  const getPoolDataWithoutReward = async (): Promise<PoolData[] | undefined> => {
+    try {
+      const poolReq = await fetch(fetchPoolsURL)
+        .then((res) => res.json())
+        .then((result) => result)
+      const poolData: PoolData[] = await poolReq.datas;
+
+      if (poolData !== undefined) {
+        return poolData
+      } else {
+        return []
+      }
+    } catch (e) {
+      console.log(e)
+      return undefined
+    }
+  }
+
 
 
   const getRewardData = async (): Promise<interfaceReward[] | undefined> => {
@@ -60,6 +96,6 @@ const getPoolData = async (library: any): Promise<FetchPoolData[] | undefined> =
     }
   };  
 
-  const views = {getPoolData, getRewardData};
+  const views = {getPoolData, getRewardData, getTokensData, getPoolDataWithoutReward};
 
 export default views;

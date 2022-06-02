@@ -137,6 +137,7 @@ export const Reward = () => {
   useEffect(() => {
     async function fetchProjectsData() {
       const poolsData: any = await views.getPoolData(library);
+      console.log(poolsData)
       const rewardData = await views.getRewardData();
       setPoolsFromAPI(poolsData);
       const poolArray: any = [];
