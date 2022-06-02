@@ -6,6 +6,7 @@ import { CurrencyAmount, BigintIsh } from "@uniswap/sdk-core";
 // import { Tokens, getPools } from "./uniswap";
 import { checkLowerCaseTokenType } from "utils/token";
 import { log } from "console";
+import { parseEther } from "ethers/lib/utils";
 import views from "../rewards";
 import {Contract} from '@ethersproject/contracts';
 import { Token } from "@uniswap/sdk-core";
@@ -60,92 +61,105 @@ export const fetchPoolPayload = async (library: any) => {
     }
     console.log(Tokens)
     for (const i in Pools) {
-      const pool = Pools[i];
-      console.log(pool)
-      const poolContract = new Contract(
-        pool.poolAddress,
-        UniswapV3Pool.abi,
-        library
-      );
-
-      const slot0 = await poolContract.slot0()
-      const fee = await poolContract.fee()
-      const liquidity = await poolContract.liquidity()
-
-      const token0 = Tokens?.find(t => t.tokenAddress.toLowerCase() === pool.token0Address.toLowerCase())
-      const token1 = Tokens?.find(t => t.tokenAddress.toLowerCase() === pool.token1Address.toLowerCase())
-      if (token0 && token1) {
-        const Token0 = new Token(
-          1,
-          token0.token.address,
-          token0.token.decimals,
-          token0.token.symbol,
-          token0.token.name
-        )
-
-        const Token1 = new Token(
-          1,
-          token1.token.address,
-          token1.token.decimals,
-          token1.token.symbol,
-          token1.token.name
-        )
-        const poolObject = new Pool(
-          Token0,
-          Token1,
-          fee,
-          slot0.sqrtPriceX96.toString(),
-          liquidity.toString(),
-          slot0.tick
-        )
-         
-        // @ts-ignore
-        let sumAmount0 = new CurrencyAmount(
-          Token0,
-          0
-        );
-        //@ts-ignore
-        let sumAmount1 = new CurrencyAmount(
-          Token1,
-          0
+      try {
+        const pool = Pools[i];
+        
+        // console.log(pool)
+        const poolContract = new Contract(
+          pool.poolAddress,
+          UniswapV3Pool.abi,
+          library
         );
 
-        for (const positionData of positionDataList[i]) {
+        const slot0 = await poolContract.slot0()
+        const fee = await poolContract.fee()
+        const liquidity = await poolContract.liquidity()
+
+        const token0 = Tokens?.find(t => t.tokenAddress.toLowerCase() === pool.token0Address.toLowerCase())
+        const token1 = Tokens?.find(t => t.tokenAddress.toLowerCase() === pool.token1Address.toLowerCase())
+        if (token0 && token1) {
+          const Token0 = new Token(
+            1,
+            token0.token.address,
+            token0.token.decimals,
+            token0.token.symbol,
+            token0.token.name
+          )
+
+          const Token1 = new Token(
+            1,
+            token1.token.address,
+            token1.token.decimals,
+            token1.token.symbol,
+            token1.token.name
+          )
+          const poolObject = new Pool(
+            Token0,
+            Token1,
+            fee,
+            slot0.sqrtPriceX96.toString(),
+            liquidity.toString(),
+            slot0.tick
+          )
+          
+          // @ts-ignore
+          let sumAmount0 = new CurrencyAmount(
+            Token0,
+            0
+          );
           //@ts-ignore
-          const positionInstance = new Position({
-            pool: poolObject,
-            liquidity: Number(positionData.liquidity),
-            tickLower: Number(positionData.tickLower.tickIdx),
-            tickUpper: Number(positionData.tickUpper.tickIdx),
-          });
-
-          sumAmount0 = sumAmount0.add(positionInstance.amount0);
-          sumAmount1 = sumAmount1.add(positionInstance.amount1);
-        }
-        const sumAmount0_N = new BigNumber(sumAmount0.toExact());
-        const sumAmount1_N = new BigNumber(sumAmount1.toExact());
-        // const Token_Price = await getTokenPrice()
-        console.log(pool.token0Price)
-        const total = sumAmount0_N
-          .multipliedBy(pool.token0Price)
-          .plus(
-            sumAmount1_N.multipliedBy(pool.token1Price)
+          let sumAmount1 = new CurrencyAmount(
+            Token1,
+            0
           );
 
-        tvl.push({
-          pool_name: pool.poolName,
-          pool_address: pool.poolAddress,
-          token0Address: token0?.tokenAddress,
-          token1Address: token1?.tokenAddress,
-          sumAmount0,
-          token0_usd: pool.token0Price,
-          sumAmount1,
-          token1_usd: pool.token1Price,
-          total: Number(total.toString()),
-        });
+          for (const positionData of positionDataList[i]) {
+            //@ts-ignore
+            const positionInstance = new Position({
+              pool: poolObject,
+              liquidity: Number(positionData.liquidity),
+              tickLower: Number(positionData.tickLower.tickIdx),
+              tickUpper: Number(positionData.tickUpper.tickIdx),
+            });
+
+            sumAmount0 = sumAmount0.add(positionInstance.amount0);
+            sumAmount1 = sumAmount1.add(positionInstance.amount1);
+          }
+          const sumAmount0_N = new BigNumber(sumAmount0.toExact());
+          const sumAmount1_N = new BigNumber(sumAmount1.toExact());
+          // const Token_Price = await getTokenPrice()
+          console.log(pool.poolName)
+          console.log(pool.token0Price)
+          console.log(sumAmount0_N.toString())
+          console.log(sumAmount0_N.multipliedBy(pool.token0Price))
+          console.log(pool.token1Price)
+          console.log(parseEther(sumAmount1_N.toString()).toString())
+          console.log(sumAmount1_N.multipliedBy(pool.token1Price))
+          console.log('')
+          const total = sumAmount0_N
+            .multipliedBy(pool.token0Price)
+            .plus(
+              sumAmount1_N.multipliedBy(pool.token1Price)
+            );
+
+          tvl.push({
+            pool_name: pool.poolName,
+            pool_address: pool.poolAddress,
+            token0Address: token0?.tokenAddress,
+            token1Address: token1?.tokenAddress,
+            sumAmount0,
+            token0_usd: pool.token0Price,
+            sumAmount1,
+            token1_usd: pool.token1Price,
+            total: Number(total.toString()),
+          });
+        
+        }
+      } catch (e) {
+        console.log(e)
       }
-      return tvl
     }
+    return tvl
     
   }
 }
