@@ -63,6 +63,14 @@ export async function createReward(args: CreateReward) {
     
 }
 
+export async function createToken(address: string) {
+    const res = await instance.post(`/tokens?chainId=${DEFAULT_NETWORK}`, {
+        tokenAddress: address
+    })
+
+    return res.data;
+}
+
 export async function getRandomKey(from: string) {
     const res = await instance.post('/randomkey', {
         account: from,

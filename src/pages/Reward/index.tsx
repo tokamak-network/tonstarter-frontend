@@ -137,6 +137,7 @@ export const Reward = () => {
   useEffect(() => {
     async function fetchProjectsData() {
       const poolsData: any = await views.getPoolData(library);
+      console.log(poolsData)
       const rewardData = await views.getRewardData();
       setPoolsFromAPI(poolsData);
       const poolArray: any = [];
@@ -969,7 +970,7 @@ export const Reward = () => {
                     cursor={'pointer'}
                     color={'#0070ed'}
                     fontSize={'13px'}
-                    onClick={(e) => {
+                    onClick={(e: any) => {
                       e.preventDefault();
                       window.open(
                         selectedPool === undefined
@@ -990,7 +991,7 @@ export const Reward = () => {
                     cursor={'pointer'}
                     color={'#0070ed'}
                     fontSize={'13px'}
-                    onClick={(e) => {
+                    onClick={(e: { preventDefault: () => void; }) => {
                       e.preventDefault();
                       window.open(
                         selectedPoolCreate === undefined
