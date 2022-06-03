@@ -52,8 +52,8 @@ export const MyAirdrop = () => {
 
   const themeDesign = {
     fontColorTitle: {
-      light: 'gray.250',
-      dark: 'white.100',
+      light: '#304156',
+      dark: '#fff',
     },
     fontColor: {
       light: 'gray.250',
@@ -318,7 +318,7 @@ export const MyAirdrop = () => {
           h={'38px'}
           border={themeDesign.border[colorMode]}
           borderRadius={'3px 0px 0px 3px'}
-          fontSize={'14px'}
+          fontSize={'15px'}
           fontFamily={theme.fonts.fld}
           bg={'transparent'}
           color={themeDesign.fontColorTitle[colorMode]}
@@ -345,7 +345,7 @@ export const MyAirdrop = () => {
           bg={'transparent'}
           border={themeDesign.border[colorMode]}
           borderRadius={'0px 3px 3px 0px'}
-          fontSize={'14px'}
+          fontSize={'15px'}
           fontFamily={theme.fonts.fld}
           color={themeDesign.fontColorTitle[colorMode]}
           _hover={{
