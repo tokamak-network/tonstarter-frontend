@@ -18,7 +18,8 @@ const HoverImage: React.FC<HoverImageProp> = (props) => {
       alt={img}
       style={{cursor: 'pointer', ...additionalStyles}}
       onMouseEnter={() => setIsHover(true)}
-      onMouseLeave={() => setIsHover(false)}></img>
+      onMouseLeave={() => setIsHover(false)}
+      ></img>
   );
 };
 
