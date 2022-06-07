@@ -71,6 +71,14 @@ export async function createToken(tokenAddress: string, tokenImage: string) {
   return res.data;
 }
 
+export async function editToken(tokenAddress:string, tokenImage: string) {
+  const res = await instance.put(`/tokens?chainId=${DEFAULT_NETWORK}`, {
+    tokenAddress,
+    tokenImage,
+  })
+  
+}
+
 export async function getRandomKey(from: string) {
   const res = await instance.post('/randomkey', {
     account: from,

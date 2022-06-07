@@ -1253,6 +1253,7 @@ export const Reward = () => {
                 selected={selected}
                 rewards={datas}
                 LPTokens={positions}
+                tokens={tokensFromAPI}
                 setSelectedPoolCreated={setSelectedPoolCreated}
               />{' '}
             </Flex>

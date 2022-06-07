@@ -14,7 +14,7 @@ import {FC, useState, useEffect} from 'react';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {checkLowerCaseTokenType} from '../../../utils/token';
 import moment from 'moment';
-import { ethers } from 'ethers';
+import {ethers} from 'ethers';
 const themeDesign = {
   border: {
     light: 'solid 1px #d7d9df',
@@ -44,9 +44,14 @@ const themeDesign = {
 type PoolComponentProps = {
   pools: any[];
   rewards: any[];
+  tokens: any[];
 };
 
-export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
+export const PoolComponent: FC<PoolComponentProps> = ({
+  pools,
+  rewards,
+  tokens,
+}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   // const {account, library} = useActiveWeb3React();
@@ -102,10 +107,12 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
       </Flex>
       {getPaginatedData().map((pool: any, index: number) => {
         // const length = pool.hourData.length - 1;
-      
+
         const now = moment().unix();
         const numRewards = rewards.filter(
-          (reward) => ethers.utils.getAddress(reward.poolAddress) === ethers.utils.getAddress(pool.pool_address),
+          (reward) =>
+            ethers.utils.getAddress(reward.poolAddress) ===
+            ethers.utils.getAddress(pool.pool_address),
         );
         const open = numRewards.filter(
           (reward) => reward.startTime < now && reward.endTime > now,
@@ -117,10 +124,20 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
           (reward) => reward.endTime < now,
         ).length;
         const liquidity = pool.total;
-
+        const token0 = tokens.find(
+          (token) =>
+            ethers.utils.getAddress(pool.token0Address) ===
+            ethers.utils.getAddress(token.tokenAddress),
+        );
+        const token1 = tokens.find(
+          (token) =>
+            ethers.utils.getAddress(pool.token1Address) ===
+            ethers.utils.getAddress(token.tokenAddress),
+        );
         const token0Image = checkLowerCaseTokenType(pool.token0Address);
         const token1Image = checkLowerCaseTokenType(pool.token1Address);
-
+        const tok0Image = token0.tokenImage;
+        const tok1Image = token1.tokenImage;
         return (
           <Flex
             key={index}
@@ -131,7 +148,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
             px={'10px'}>
             <Box>
               <Avatar
-                src={token0Image.symbol}
+                src={tok0Image}
                 bg={token0Image.bg}
                 color="#c7d1d8"
                 name="T"
@@ -143,10 +160,10 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
                 h="26px"
                 p={token0Image.name === 'ETH' ? '6px' : '0px'}
                 w="26px"
-                zIndex={'100'}
+               
               />
               <Avatar
-                src={token1Image.symbol}
+                src={tok1Image}
                 bg={token1Image.bg}
                 color="#c7d1d8"
                 name="T"
@@ -154,6 +171,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
                 w="26px"
                 p={token1Image.name === 'ETH' ? '6px' : '0px'}
                 ml={'-7px'}
+                zIndex={'100'}
                 border={
                   colorMode === 'light'
                     ? '1px solid #e7edf3'
