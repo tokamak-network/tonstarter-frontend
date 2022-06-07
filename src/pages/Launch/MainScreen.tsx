@@ -241,7 +241,7 @@ const MainScreen = () => {
                               );
                           handleStep(true);
                         }}>
-                        Save & Next
+                        Save & Continue
                       </Button>
                     )}
                     {step === 2 && (
@@ -267,7 +267,7 @@ const MainScreen = () => {
                               );
                           handleStep(true);
                         }}>
-                        Save & Next
+                        Save & Continue
                       </Button>
                     )}
                     {step === 3 && (
