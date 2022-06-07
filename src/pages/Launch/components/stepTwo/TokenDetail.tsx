@@ -445,7 +445,7 @@ const SubTitle = (props: {
               <SingleCalendarPop
                 setDate={setClaimDate}
                 //Mainnet env
-                startTimeCap={moment().add(8, 'days').unix()}
+                startTimeCap={moment().add(1, 'days').unix()}
                 //Testnet env
                 // startTimeCap={moment()
                 //   .add('11', 'minutes')

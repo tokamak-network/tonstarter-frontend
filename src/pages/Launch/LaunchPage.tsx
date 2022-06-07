@@ -134,13 +134,12 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
             </Button>
             {/* </Link> */}
           </Flex>
-        </Flex>
-
-        <Flex
+          <Flex
           justifyContent={'space-between'}
-          mb={'100px'}
+          // mb={'100px'}
           position={'absolute'}
-          bottom={'-21%'}
+          top='140%'
+          // bottom={'-21%'}
           background={'rgba(7, 7, 10, .7)'}
           paddingX={'400px'}
           paddingY={'10px'}
@@ -167,6 +166,9 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
             </Text>
           </Flex>
         </Flex>
+        </Flex>
+
+       
       </Flex>
 
       <Box
