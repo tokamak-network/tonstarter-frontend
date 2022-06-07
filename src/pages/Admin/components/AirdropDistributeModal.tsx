@@ -8,6 +8,8 @@ import {
   Text,
   Button,
   Flex,
+  Tooltip,
+  Image,
   useTheme,
   useColorMode,
 } from '@chakra-ui/react';
@@ -24,6 +26,7 @@ import {useBlockNumber} from 'hooks/useBlock';
 import {DEPLOYED} from 'constants/index';
 import {useERC20Token} from 'hooks/useERC20Token';
 import {selectTransactionType} from 'store/refetch.reducer';
+import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 
 export const AirdropDistributeModal = () => {
   const {TON_ADDRESS, WTON_ADDRESS, TOS_ADDRESS, DOC_ADDRESS} = DEPLOYED;
@@ -244,7 +247,17 @@ export const AirdropDistributeModal = () => {
             fontWeight={600}
             color={colorMode === 'light' ? 'black.300' : 'white.100'}>
             <Box d="flex" flexDir="column" mb={'24px'}>
-              <Text mb={'9px'}>Distribute To</Text>
+              <Flex alignItems={'center'} mb={'9px'}>
+                <Text mr={'7px'}>Distribute To</Text>
+                <Tooltip
+                  hasArrow
+                  placement="top"
+                  label="sTOS Holder distributions follow the timestamp displayed, whereas TON Holder distributions happen immediately."
+                  color={theme.colors.white[100]}
+                  bg={theme.colors.gray[375]}>
+                  <Image src={tooltipIcon} />
+                </Tooltip>
+              </Flex>
               <CustomSelectBox
                 w={'290px'}
                 h={'32px'}
