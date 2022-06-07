@@ -301,9 +301,9 @@ export const AirdropDistributeTable = () => {
     </Flex>
   ) : (
     <Flex flexDirection={'column'} w={'976px'} p={'0px'} mt={'50px'}>
-      <Flex alignItems={'center'} justifyContent={'space-between'} mb={'20px'}>
-        <Flex alignItems={'baseline'}>
-          <Heading size="md" mr={'10px'}>
+      <Flex alignItems={'end'} justifyContent={'space-between'} mb={'20px'}>
+        <Flex alignItems={'baseline'} flexDirection={'column'} ml={'14px'}>
+          <Heading size="md" mb={'26px'}>
             Token List
           </Heading>
           <Flex mr={'3px'}>
@@ -317,19 +317,20 @@ export const AirdropDistributeTable = () => {
             <Text
               fontFamily={theme.fonts.roboto}
               fontSize={'13px'}
+              mr={'7px'}
               color={themeDesign.dateColor[colorMode]}>
               {' '}
               Next(Thu.) {timeStamp} 00:00:00 (UTC)
             </Text>
+            <Tooltip
+              hasArrow
+              placement="top"
+              label="sTOS Holder distributions follow the schedule displayed, whereas TON Holder distributions happen immediately."
+              color={theme.colors.white[100]}
+              bg={theme.colors.gray[375]}>
+              <Image src={tooltipIcon} />
+            </Tooltip>
           </Flex>
-          <Tooltip
-            hasArrow
-            placement="top"
-            label="sTOS Holder distributions follow the schedule displayed, whereas TON Holder distributions happen immediately."
-            color={theme.colors.white[100]}
-            bg={theme.colors.gray[375]}>
-            <Image src={tooltipIcon} />
-          </Tooltip>
         </Flex>
         <Button
           color={themeDesign.tosFont[colorMode]}
@@ -341,7 +342,7 @@ export const AirdropDistributeTable = () => {
           fontSize={'13px'}
           fontFamily={theme.fonts.roboto}
           background={'transparent'}
-          _hover={{background: 'transparent'}}
+          // _hover={{background: 'transparent'}}
           onClick={() =>
             dispatch(
               openModal({
@@ -374,19 +375,21 @@ export const AirdropDistributeTable = () => {
             borderTopLeftRadius={'4px'}
             borderBottom={'none'}
             fontSize={'16px'}
+            padding={'16px 35px'}
+            height={'45px'}
             fontFamily={theme.fonts.fld}>
             <Text
-              fontSize={'15px'}
+              fontSize={'12px'}
               fontWeight={'bolder'}
               color={colorMode === 'light' ? '#353c48' : 'white.0'}
               minWidth={'33%'}
               textAlign={'center'}>
               Distribute To
             </Text>
-            <Text minWidth={'33%'} textAlign={'center'}>
+            <Text minWidth={'33%'} textAlign={'center'} fontSize={'12px'}>
               Token Symbol
             </Text>
-            <Text minWidth={'33%'} textAlign={'center'}>
+            <Text minWidth={'33%'} textAlign={'center'} fontSize={'12px'}>
               Amount
             </Text>
           </GridItem>
