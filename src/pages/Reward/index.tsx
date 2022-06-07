@@ -129,7 +129,7 @@ export const Reward = () => {
   const [selectedPoolCreate, setSelectedPoolCreated] = useState<Pool>();
   const [positions, setPositions] = useState<any[]>([]);
   const [selectedTokenType, setSelectedTokenType] = useState<string>('');
-
+ const [tokensFromAPI, setTokensFromAPI] = useState<any[]>([])
   // const arr: any = [];
   useEffect(() => {
     setSelectdPosition(undefined);
@@ -137,9 +137,10 @@ export const Reward = () => {
   useEffect(() => {
     async function fetchProjectsData() {
       const poolsData: any = await views.getPoolData(library);
-      console.log(poolsData)
+      const tokens = await views.getTokensData()
       const rewardData = await views.getRewardData();
       setPoolsFromAPI(poolsData);
+     
       const poolArray: any = [];
       if (poolsData) {
         poolsData.map((pool: any) => {
@@ -153,6 +154,9 @@ export const Reward = () => {
         });
 
         setDatas(rewardData);
+      }
+      if (tokens) {
+        setTokensFromAPI(tokens)
       }
       setPoolAddresses(poolArray);
     }
@@ -1229,6 +1233,7 @@ export const Reward = () => {
                     sortString={sortString}
                     positionsByPool={positionsByPool}
                     LPTokens={positions}
+                    tokens={tokensFromAPI}
                   />
                 </Box>
               ) : (
@@ -1240,6 +1245,7 @@ export const Reward = () => {
                   sortString={sortString}
                   positionsByPool={positionsByPool}
                   LPTokens={positions}
+                  tokens={tokensFromAPI}
                 />
               )}
               <SideContainer

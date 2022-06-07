@@ -692,7 +692,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
           </Box>
           <Avatar
             ml={'10px'}
-            src={reward.token1Image}
+            src={reward.rewardTokenSymbolImage !== ''? reward.rewardTokenSymbolImage : "" }
             bg={colorMode === 'light' ? '#ffffff' : '#222222'}
             name="T"
             border={

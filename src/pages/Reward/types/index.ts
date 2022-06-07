@@ -68,7 +68,8 @@ export type UpdatedRedward = interfaceReward & {
   token0Address: string,
   token1Address: string; 
   token0Image: string;
-token1Image: string
+token1Image: string;
+rewardTokenSymbolImage: string;
 }
 
 export type LPToken = {
