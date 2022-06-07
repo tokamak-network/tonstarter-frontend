@@ -790,9 +790,9 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
         </Button>
       </Flex> */}
       <Flex w={'100%'} justifyContent={'center'} py={'2rem'}></Flex>
-      <Button w="125px" id="downloadAnchorElem" onClick={() => download()}>
+      {/* <Button w="125px" id="downloadAnchorElem" onClick={() => download()}>
         Download
-      </Button>
+      </Button> */}
       {vault.isDeployed ? (
         <PublicPageTable claim={vault.claim} />
       ) : (
