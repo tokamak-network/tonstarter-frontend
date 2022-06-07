@@ -37,6 +37,7 @@ type Pool = {
   token1: Token;
   token0Image: string;
   token1Image: string;
+ 
 };
 type Token = {
   id: string;
@@ -55,6 +56,7 @@ type ManageContainerProps = {
   sortString: string;
   positionsByPool: any;
   LPTokens: any;
+  tokens: any[];
 };
 
 // let multipleRefundList: any = [];
@@ -67,6 +69,7 @@ export const ManageContainer: FC<ManageContainerProps> = ({
   sortString,
   positionsByPool,
   LPTokens,
+  tokens
 }) => {
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [pageOptions, setPageOptions] = useState<number>(0);
@@ -177,6 +180,8 @@ export const ManageContainer: FC<ManageContainerProps> = ({
               const includedPool = pools.filter(
                 (pool: any) => pool.id === reward.poolAddress,
               );
+              const token = tokens.find((token)=> ethers.utils.getAddress(reward.rewardToken) === ethers.utils.getAddress(token.tokenAddress));
+              const symbolImage = token?.tokenImage !== undefined? token?.tokenImage: ''     
               token0 = includedPool[0].token0.id;
               token1 = includedPool[0].token1.id;
               token0Image = includedPool[0].token0Image;
@@ -197,6 +202,7 @@ export const ManageContainer: FC<ManageContainerProps> = ({
                 numStakers: reward.numStakers,
                 status: reward.status,
                 index: reward.index,
+                rewardTokenSymbolImage:symbolImage,
               };
               return (
                 <RewardProgramCardManage

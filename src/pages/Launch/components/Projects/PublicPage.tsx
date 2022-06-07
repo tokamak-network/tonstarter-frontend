@@ -42,9 +42,9 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const {account, library} = useActiveWeb3React();
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
-const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
+  const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
 
-  const [hardcap, setHardcap] = useState<number>(0)
+  const [hardcap, setHardcap] = useState<number>(0);
 
   const network = BASE_PROVIDER._network.name;
 
@@ -87,20 +87,20 @@ const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
     } else {
       setIsAdmin(false);
     }
-  }, [account, project, vault.vaultAddress,transactionType, blockNumber]);
+  }, [account, project, vault.vaultAddress, transactionType, blockNumber]);
 
-  useEffect(()=> {
+  useEffect(() => {
     async function getHardCap() {
       if (account === null || account === undefined || library === undefined) {
         return;
       }
       const hardCapCalc = await PublicSaleVaul.hardcapCalcul();
-      const adminWithdraw = await PublicSaleVaul.adminWithdraw();       
-      setFundWithdrew(adminWithdraw)
-      setHardcap(Number(hardCapCalc))
-    } 
-    getHardCap()
-  },[account, project,vault.vaultAddress,transactionType, blockNumber])
+      const adminWithdraw = await PublicSaleVaul.adminWithdraw();
+      setFundWithdrew(adminWithdraw);
+      setHardcap(Number(hardCapCalc));
+    }
+    getHardCap();
+  }, [account, project, vault.vaultAddress, transactionType, blockNumber]);
 
   const sendTOS = async () => {
     if (account === null || account === undefined || library === undefined) {
@@ -130,6 +130,18 @@ const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
         }),
       );
     }
+  };
+  const download = () => {
+    const datastr =
+      'data:text/json;charset=utf-8,' +
+      encodeURIComponent(JSON.stringify(project));
+
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute('href', datastr);
+    downloadAnchorNode.setAttribute('download', 'exportName' + '.csv');
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
   };
   const themeDesign = {
     border: {
@@ -182,20 +194,24 @@ const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
             </Text>
             {vault.isDeployed ? (
               <Flex>
-              <Text letterSpacing={'1.3px'} fontSize={'13px'} mr={'5px'}>
-                {commafy(Number(vault.vaultTokenAllocation))}{' '}
-                {project.tokenSymbol}
-              </Text>
-              <Text letterSpacing={'1.3px'} fontSize={'13px'} color={'#7e8993'}>
-                {(
-                  (vault.vaultTokenAllocation / project.totalTokenAllocation) *
-                  100
-                )
-                  .toString()
-                  .match(/^\d+(?:\.\d{0,2})?/)}
-                %
-              </Text>
-            </Flex>
+                <Text letterSpacing={'1.3px'} fontSize={'13px'} mr={'5px'}>
+                  {commafy(Number(vault.vaultTokenAllocation))}{' '}
+                  {project.tokenSymbol}
+                </Text>
+                <Text
+                  letterSpacing={'1.3px'}
+                  fontSize={'13px'}
+                  color={'#7e8993'}>
+                  {(
+                    (vault.vaultTokenAllocation /
+                      project.totalTokenAllocation) *
+                    100
+                  )
+                    .toString()
+                    .match(/^\d+(?:\.\d{0,2})?/)}
+                  %
+                </Text>
+              </Flex>
             ) : (
               <></>
             )}
@@ -408,14 +424,20 @@ const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
                         mt={'5px'}
                         bg={'#257eee'}
                         color={'#ffffff'}
-                        isDisabled={vault.publicRound2End > moment().unix() || hardcap === 0 || fundWithdrew=== true}
+                        isDisabled={
+                          vault.publicRound2End > moment().unix() ||
+                          hardcap === 0 ||
+                          fundWithdrew === true
+                        }
                         _disabled={{
                           color: colorMode === 'light' ? '#86929d' : '#838383',
                           bg: colorMode === 'light' ? '#e9edf1' : '#353535',
                           cursor: 'not-allowed',
                         }}
                         _hover={
-                          vault.publicRound2End > moment().unix() || hardcap === 0 || fundWithdrew=== true
+                          vault.publicRound2End > moment().unix() ||
+                          hardcap === 0 ||
+                          fundWithdrew === true
                             ? {}
                             : {
                                 background: 'transparent',
@@ -425,7 +447,9 @@ const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
                               }
                         }
                         _focus={
-                          vault.publicRound2End > moment().unix() || hardcap === 0 || fundWithdrew=== true
+                          vault.publicRound2End > moment().unix() ||
+                          hardcap === 0 ||
+                          fundWithdrew === true
                             ? {}
                             : {
                                 background: 'transparent',
@@ -435,7 +459,9 @@ const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
                               }
                         }
                         _active={
-                          vault.publicRound2End > moment().unix() || hardcap === 0 || fundWithdrew=== true
+                          vault.publicRound2End > moment().unix() ||
+                          hardcap === 0 ||
+                          fundWithdrew === true
                             ? {}
                             : {
                                 background: '#2a72e5',
@@ -445,7 +471,6 @@ const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
                         }
                         onClick={() => sendTOS()}>
                         Send TOS to Initial Liquidity Vault & Receive Funds
-                      
                       </Button>
                     </>
                   ) : (
@@ -498,7 +523,7 @@ const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
                   fontFamily={theme.fonts.fld}
                   fontSize={'15px'}
                   color={themeDesign.headerFont[colorMode]}>
-                UTC  {momentTZ.tz(momentTZ.tz.guess()).format('Z')} 
+                  UTC {momentTZ.tz(momentTZ.tz.guess()).format('Z')}
                 </Text>
               </>
             ) : (
@@ -765,6 +790,9 @@ const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
         </Button>
       </Flex> */}
       <Flex w={'100%'} justifyContent={'center'} py={'2rem'}></Flex>
+      <Button w="125px" id="downloadAnchorElem" onClick={() => download()}>
+        Download
+      </Button>
       {vault.isDeployed ? (
         <PublicPageTable claim={vault.claim} />
       ) : (

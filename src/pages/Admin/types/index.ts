@@ -143,7 +143,9 @@ export type PoolData = {
   poolName: string;
   poolAddress: string;
   token0Address: string;
+  // token0Price: string;
   token1Address: string;
+  // token1Price: string
   token0Image: string;
   token1Image: string;
   feeTier: number;

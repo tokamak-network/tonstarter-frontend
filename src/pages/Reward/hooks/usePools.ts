@@ -4,6 +4,8 @@ import { useActiveWeb3React } from 'hooks/useWeb3';
 import { Pools, Tokens } from "../utils/uniswap";
 import { useEffect, useState } from 'react';
 import {Contract} from '@ethersproject/contracts';
+import views from "../rewards";
+
 
 
 export const usePools = () => {
@@ -15,20 +17,22 @@ export const usePools = () => {
 
   useEffect(() => {
     async function getPools() {   
+      const poolsData: any = await views.getPoolData(library);
+      
       const promises = []
-      for (const v of Pools) {
+      for (const v of poolsData) {
         const poolContract = new Contract(
-          v.address,
+          v.poolAddress,
           UniswapV3Pool.abi,
           library
         );
         const liquiditys = await poolContract.liquidity()
         const slot0s = await poolContract.slot0()
         const fees = await poolContract.fee()
+
         setLiquidity(liquiditys);
         setSlot0(slot0s);
         setFee(fees)
-        console.log(slot0.sqrtPriceX96)
         v.pool = 
           slot0 && liquidity && fee
             ? new Pool(

@@ -14,6 +14,7 @@ import {FC, useState, useEffect} from 'react';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {checkLowerCaseTokenType} from '../../../utils/token';
 import moment from 'moment';
+import { ethers } from 'ethers';
 const themeDesign = {
   border: {
     light: 'solid 1px #d7d9df',
@@ -101,9 +102,10 @@ export const PoolComponent: FC<PoolComponentProps> = ({pools, rewards}) => {
       </Flex>
       {getPaginatedData().map((pool: any, index: number) => {
         // const length = pool.hourData.length - 1;
+      
         const now = moment().unix();
         const numRewards = rewards.filter(
-          (reward) => reward.poolAddress === pool.address,
+          (reward) => ethers.utils.getAddress(reward.poolAddress) === ethers.utils.getAddress(pool.pool_address),
         );
         const open = numRewards.filter(
           (reward) => reward.startTime < now && reward.endTime > now,

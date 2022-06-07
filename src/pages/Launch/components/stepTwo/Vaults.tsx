@@ -68,7 +68,7 @@ const Vaults = () => {
       <Box d="flex" h={'239px'} px={'15px'} justifyContent="center">
         <Flex w={'100%'} alignItems="center" justifyContent={'center'} mx={'10px'} px={'5px'}>
           <style>{sliderStyles}</style>
-       <Flex h={'196px'}  position={'relative'} top={'-17px'} mr={'16px'}>
+       <Flex h={'196px'} w={'87px'} position={'relative'} top={'-17px'} mr={'16px'}>
           <HoverImage
             img={colorMode === 'light' ? arrowLeft : arrowLeftDark}
             hoverImg={arrowHoverLeft}
@@ -140,7 +140,7 @@ const Vaults = () => {
                 </SwiperSlide>,
               )}
           </Swiper>
-          <Flex h={'196px'} position={'relative'} top={'-17px'} ml={'16px'}>
+          <Flex h={'196px'} w={'87px'} position={'relative'} top={'-17px'} ml={'16px'} >
 
           <HoverImage
             img={colorMode === 'light' ? arrowRight : arrowRightDark}
