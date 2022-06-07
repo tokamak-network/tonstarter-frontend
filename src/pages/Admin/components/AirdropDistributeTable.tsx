@@ -54,8 +54,6 @@ export const AirdropDistributeTable = () => {
         return temp.push(tokenInfo);
       }
     });
-    console.log('temp: ', temp);
-    console.log('temp airdropList: ', airdropList);
   }, [airdropList]);
 
   const themeDesign = {
@@ -152,7 +150,6 @@ export const AirdropDistributeTable = () => {
           }),
         );
       }
-      console.log('distributedTokenInfo TON: ', distributedTokenInfo);
       const filteredTonTokenList = distributedTokenInfo.filter(
         (token) => token.tonHolderAmount !== '0.00',
       );
@@ -223,7 +220,6 @@ export const AirdropDistributeTable = () => {
           }),
         );
       }
-      console.log('distributedTokenTosInfo TOS: ', distributedTokenTosInfo);
       const filteredTosTokenList = distributedTokenTosInfo.filter(
         (token) => token.tosHolderAmount !== '0.00',
       );
@@ -278,11 +274,6 @@ export const AirdropDistributeTable = () => {
     const today = moment().isoWeekday();
     const thisWed = moment().isoWeekday(dayINeed).format('YYYY-MM-DD');
     const nextWed = moment().add(1, 'weeks').isoWeekday(dayINeed).format('LL');
-    console.log('thisWed', moment().isoWeekday(dayINeed).format('X'));
-    console.log(
-      'nextWed',
-      moment().add(1, 'weeks').isoWeekday(dayINeed).format('X'),
-    );
 
     if (today === dayINeed || today < dayINeed) {
       return setTimeStamp(thisWed);

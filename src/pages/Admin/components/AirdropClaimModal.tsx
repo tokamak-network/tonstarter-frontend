@@ -66,8 +66,6 @@ export const AirdropClaimModal = () => {
     tosStaker,
   } = data?.data;
 
-  console.log('data: ', data);
-
   const themeDesign = {
     fontColorTitle: {
       light: 'gray.250',

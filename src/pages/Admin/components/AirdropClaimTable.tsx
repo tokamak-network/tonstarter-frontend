@@ -172,7 +172,7 @@ export const AirdropClaimTable = () => {
     unclaimedAmount: string | undefined,
   ) => {
     if (roundInfo !== undefined && claimedAmount !== undefined) {
-      return setGenesisAirdropBalance(roundInfo[0].myAmount);
+      setGenesisAirdropBalance(roundInfo?.[0]?.myAmount);
     }
   };
 
@@ -186,7 +186,6 @@ export const AirdropClaimTable = () => {
         return;
       }
       const {roundInfo, claimedAmount, unclaimedAmount} = res;
-      console.log('res: ', res);
       availableGenesisAmount(roundInfo, claimedAmount, unclaimedAmount);
     }
     if (account !== undefined && library !== undefined) {
