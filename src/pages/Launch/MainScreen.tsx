@@ -180,12 +180,12 @@ const MainScreen = () => {
                     isDisabled={isSubmitting}
                     w={'160px'}
                     h={'45px'}
-                    bg={'#00c3c4'}
                     borderRadius={4}
-                    color={'white.100'}
                     fontSize={14}
                     _hover={{}}
-                    disabled={step === 3}
+                    bg={isDisable ? 'gray.25' : '#00c3c4'}
+                    color={isDisable ? '#86929d' : 'white.100'}
+                    disabled={step === 3 || (step === 1 && isDisable)}
                     mr={step === 1 ? '390px' : '558px'}
                     onClick={() =>
                       account &&

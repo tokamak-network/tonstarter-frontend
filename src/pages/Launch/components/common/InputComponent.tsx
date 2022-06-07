@@ -39,10 +39,20 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
     .split(/(?=[A-Z])/)
     .map((e) => `${e.charAt(0).toUpperCase() + e.slice(1)} `);
 
-  const titleTrimed = title.toString().replaceAll(',', '');
+  const getTitleTried = () => {
+    const titleTrimed = title.toString().replaceAll(',', '');
+    switch (titleTrimed) {
+      case 'Owner ':
+        return 'Account Address';
+      default:
+        return titleTrimed;
+    }
+  };
 
   // //@ts-ignore
   // console.log(errors[name]);
+
+  const titleTrimed = getTitleTried();
 
   return (
     <Flex flexDir={'column'} fontSize={13} pos={'relative'}>
