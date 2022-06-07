@@ -14,6 +14,7 @@ import {IconTopArrow} from 'components/Icons/IconTopArrow';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectStakes} from '../Staking/staking.reducer';
 import {LoadingComponent} from 'components/Loading';
+import ConfirmTermsModal from '@Launch/components/modals/ConfirmTerms';
 
 export const FLDstarter = () => {
   // const [selected, setSelected] = useState<string>('hi');
@@ -62,6 +63,7 @@ export const FLDstarter = () => {
           </Button>
         </Flex>
       </Stack>
+      <ConfirmTermsModal></ConfirmTermsModal>
     </Fragment>
   );
 };
