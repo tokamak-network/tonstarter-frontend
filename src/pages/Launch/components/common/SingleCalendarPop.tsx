@@ -69,7 +69,7 @@ const SingleCalendarPop: React.FC<calendarComponentProps> = ({
 
   useEffect(() => {
     create(); 
-  },[startTimeArray])
+  },[startTimeArray,startTime])
   return (
     <Popover closeOnBlur={true} placement="bottom">
       {({isOpen, onClose}) => (
