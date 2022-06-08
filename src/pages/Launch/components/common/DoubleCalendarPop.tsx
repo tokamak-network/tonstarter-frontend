@@ -18,12 +18,9 @@ import moment from 'moment';
 
 type calendarComponentProps = {
   setDate: Dispatch<SetStateAction<any>>;
-  startTimeCap: number;
+  startTimeCap: number
 };
-const DoubleCalendarPop: React.FC<calendarComponentProps> = ({
-  setDate,
-  startTimeCap,
-}) => {
+const DoubleCalendarPop: React.FC<calendarComponentProps> = ({setDate,startTimeCap}) => {
   const {colorMode} = useColorMode();
   const [image, setImage] = useState(
     colorMode === 'light' ? CalendarInactiveImg : CalendarInactiveImgDark,
@@ -34,6 +31,7 @@ const DoubleCalendarPop: React.FC<calendarComponentProps> = ({
   const [endTimeArray, setEndTimeArray] = useState<any[]>([]);
   const [buttonDisable, setButtonDisable] = useState<boolean>();
 
+  
   const createTime = (onClose: any) => {
     const starts = moment.unix(startTime);
     const startDates = moment(starts).set({
@@ -43,7 +41,6 @@ const DoubleCalendarPop: React.FC<calendarComponentProps> = ({
     });
 
     setStartTime(startDates.unix());
-
     const ends = moment.unix(endTime);
     const endDates = moment(ends).set({
       hour: endTimeArray[0],
@@ -56,7 +53,8 @@ const DoubleCalendarPop: React.FC<calendarComponentProps> = ({
   };
 
   useEffect(() => {
-    const starts = moment.unix(startTime);    
+    const starts = moment.unix(startTime);
+    
     const startDates = moment(starts).set({
       hour: startTimeArray[0],
       minute: startTimeArray[1],
@@ -75,12 +73,11 @@ const DoubleCalendarPop: React.FC<calendarComponentProps> = ({
     const tempEnd = endDates.unix();
 
     const now = moment().unix();
-    
+   
     tempStart === tempEnd || tempEnd < now || tempStart < now || tempEnd< tempStart || tempStart < startTimeCap
       ? setButtonDisable(true)
       : setButtonDisable(false);
-  }, [startTime, startTimeArray, endTime, endTimeArray, startTimeCap]);
-
+  }, [startTime, startTimeArray, endTime, endTimeArray]);
   return (
     <Popover closeOnBlur={true} placement="bottom">
       {({isOpen, onClose}) => (
@@ -137,28 +134,24 @@ const DoubleCalendarPop: React.FC<calendarComponentProps> = ({
                   }>
                   <CustomCalendar
                     setValue={setStartTime}
-                    startTime={startTime}
-                    startTimeCap={startTimeCap}></CustomCalendar>
+                    startTime={startTime} startTimeCap={startTimeCap}></CustomCalendar>
                   <CustomClock
                     setTime={setStartTimeArray}
                     calendarType={'start'}
                     startTime={startTime}
-                    endTime={endTime}
-                    startTimeCap={startTimeCap}></CustomClock>
+                    endTime={endTime} startTimeCap={startTimeCap}></CustomClock>
                 </Flex>
                 <Flex flexDir={'column'}>
                   <CustomCalendar
                     setValue={setEndTime}
                     startTime={startTime}
                     calendarType={'end'}
-                    endTime={endTime}
-                    startTimeCap={startTimeCap}></CustomCalendar>
+                    endTime={endTime} startTimeCap={startTimeCap}></CustomCalendar>
                   <CustomClock
                     calendarType={'end'}
                     setTime={setEndTimeArray}
                     startTime={startTime}
-                    endTime={endTime}
-                    startTimeCap={startTimeCap}></CustomClock>
+                    endTime={endTime} startTimeCap={startTimeCap}></CustomClock>
                 </Flex>
               </Flex>
               <Flex></Flex>
@@ -172,7 +165,7 @@ const DoubleCalendarPop: React.FC<calendarComponentProps> = ({
                   color={'white.100'}
                   mr={'12px'}
                   _hover={{}}
-                  disabled={endTime === 0 || buttonDisable}
+                  disabled={endTime === 0 || buttonDisable }
                   onClick={() => createTime(onClose)}>
                   Set up
                 </Button>
