@@ -2,6 +2,7 @@ import {
   Flex,
   Grid,
   GridItem,
+  Select,
   Text,
   Tooltip,
   useColorMode,
@@ -41,6 +42,7 @@ import {stosMinimumRequirements} from '@Launch/const';
 import {NumberInputStep} from './NumberInputField';
 import momentTZ from 'moment-timezone';
 import moment from 'moment';
+import SelectPair from './TokenDetails/SelectPair';
 
 export const MainTitle = (props: {
   leftTitle: string;
@@ -248,6 +250,8 @@ const SubTitle = (props: {
         return `${commafy(rightTitle)} TON`;
       case 'Address for receiving funds':
         return rightTitle ? `${shortenAddress(rightTitle)}` : '-';
+      case 'custom LP':
+        return <></>;
       default:
         return rightTitle;
     }
@@ -263,6 +267,7 @@ const SubTitle = (props: {
         );
       case 'Select Pair':
         return <Text>{inputVal}</Text>;
+      // return <SelectPair></SelectPair>;
       case 'Pool Address\n(0.3% fee)':
         if (selectedVaultIndex && selectedVaultIndex < 6) {
           return <Text>{inputVal}</Text>;
@@ -357,8 +362,8 @@ const SubTitle = (props: {
       ) : leftTitle === 'Minimum Fundraising Amount' && !isSecondColData ? (
         <Flex>
           <Text color={'#7e8993'} mr={'5px'}>
-            Minimum Fundraising <br />
-            Amount
+            Minimum Fund- <br />
+            raising Amount
           </Text>
           <CustomTooltip
             msg={[
@@ -369,6 +374,13 @@ const SubTitle = (props: {
             toolTipH="66px"
             toolTipW={254}
             placement={'top'}></CustomTooltip>
+        </Flex>
+      ) : leftTitle === 'Exchange Ratio\n1 TOS' ? (
+        <Flex>
+          <Text color={'#7e8993'} mr={'5px'}>
+            Exchange Ratio
+            <br />1 TOS
+          </Text>
         </Flex>
       ) : (
         <Flex pos={'relative'}>

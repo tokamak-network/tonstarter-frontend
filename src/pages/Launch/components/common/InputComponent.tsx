@@ -85,6 +85,30 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
         ) => {
           //@ts-ignore
           const isError = errors[name] === undefined ? false : true;
+
+          if (name === 'sector') {
+            return (
+              <select
+                style={{
+                  height: '32px',
+                  border: '1px solid #dfe4ee',
+                  borderRadius: '4px',
+                  paddingLeft: '16px',
+                  paddingRight: '16px',
+                }}>
+                <option>DeFi</option>
+                <option>Exchange</option>
+                <option>P2E</option>
+                <option>M2E</option>
+                <option>Stable</option>
+                <option>Social</option>
+                <option>Collectible</option>
+                <option>Marketplace</option>
+                <option>Custom</option>
+              </select>
+            );
+          }
+
           return (
             <Input
               className={
