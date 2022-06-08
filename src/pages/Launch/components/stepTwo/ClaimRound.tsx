@@ -116,15 +116,15 @@ const ClaimRound = () => {
       (data: VaultSchedule, index: number) => {
         //@ts-ignore
         const refTimeStamp = selectedVaultDetail.claim[0].claimTime;
-        if (refTimeStamp === undefined) {
-          return toastMsg({
-            status: 'error',
-            title: 'Date Time Error',
-            description: 'First date time must be filled out',
-            duration: 3000,
-            isClosable: true,
-          });
-        }
+        // if (refTimeStamp === undefined) {
+        //   return toastMsg({
+        //     status: 'error',
+        //     title: 'Date Time Error',
+        //     description: 'First date time must be filled out',
+        //     duration: 3000,
+        //     isClosable: true,
+        //   });
+        // }
         const nowTimeStamp =
           index === 0
             ? refTimeStamp
@@ -132,10 +132,40 @@ const ClaimRound = () => {
                 .unix(refTimeStamp)
                 .add(index * Number(selectedDay), 'days')
                 .unix();
+        // return {
+        //   claimRound: index + 1,
+        //   claimTime: nowTimeStamp,
+        //   claimTokenAllocation: data.claimTokenAllocation,
+        // };
+
+        //@ts-ignore
+        const test = selectedVaultDetail.vaultTokenAllocation / claim.length;
+        let result;
+        if (test.toString().split('.')[1]) {
+          console.log('go');
+          result =
+            test.toString().split('.')[0] +
+            '.' +
+            test.toString().split('.')[1].slice(0, 2);
+          console.log(result);
+        } else {
+          result = test;
+        }
+
+        console.log({
+          claimRound: index + 1,
+          claimTime: nowTimeStamp,
+          claimTokenAllocation:
+            //@ts-ignore
+            test,
+        });
+
         return {
           claimRound: index + 1,
           claimTime: nowTimeStamp,
-          claimTokenAllocation: data.claimTokenAllocation,
+          claimTokenAllocation:
+            //@ts-ignore
+            Number(result),
         };
       },
     );
