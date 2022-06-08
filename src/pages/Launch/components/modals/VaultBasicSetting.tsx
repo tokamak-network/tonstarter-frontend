@@ -61,10 +61,11 @@ const VaultBasicSetting = () => {
       }
       return acc + cur.vaultTokenAllocation;
     }, 0);
+
     if (
       values.totalSupply &&
       totalAllocation + Number(tokenAllocatonVal) - Number(tokenAllocation) >
-        values.totalSupply
+        Number(values.totalSupply)
     ) {
       setBtnDisable(true);
       toastMsg({
@@ -75,9 +76,18 @@ const VaultBasicSetting = () => {
         isClosable: true,
       });
     } else {
+      // if (
+      //   totalAllocation +
+      //     Number(tokenAllocatonVal) -
+      //     Number(tokenAllocation) -
+      //     Number(values.totalSupply) ===
+      //   0
+      // ) {
+      //   return setBtnDisable(true);
+      // }
       setBtnDisable(false);
     }
-  }, [tokenAllocatonVal, nameVal, values, toastMsg]);
+  }, [tokenAllocatonVal, nameVal, values, toastMsg, tokenAllocation]);
 
   if (!data.data) {
     return null;
