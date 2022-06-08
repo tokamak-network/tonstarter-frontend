@@ -415,8 +415,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                         : 'NA'}
                     </Link>
                   </Flex>
-                  {now >= vault.publicRound2 ? (
-                    <>
+                 
                       <Button
                         fontSize={'11px'}
                         w={'273px'}
@@ -472,10 +471,8 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                         onClick={() => sendTOS()}>
                         Send TOS to Initial Liquidity Vault & Receive Funds
                       </Button>
-                    </>
-                  ) : (
-                    <></>
-                  )}
+                  
+                 
                 </Flex>
               </GridItem>
             </>

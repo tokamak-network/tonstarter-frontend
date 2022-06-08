@@ -114,7 +114,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Sale Price
             </Text>
-            <Text>Project Name</Text>
+            <Text>NA</Text>
           </Flex>
           <Flex
             p={'0px 20px'}
@@ -126,7 +126,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Current Price
             </Text>
-            <Text>Project Name</Text>
+            <Text>NA</Text>
           </Flex>
           <Flex
             p={'0px 20px'}
