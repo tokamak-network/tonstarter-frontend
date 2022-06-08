@@ -84,6 +84,7 @@ const SubTitle = (props: {
   isSecondColData?: boolean;
   formikName: string;
   inputRef?: any;
+  setOnBlur?: React.Dispatch<React.SetStateAction<any>>;
 }) => {
   const {
     leftTitle,
@@ -94,6 +95,7 @@ const SubTitle = (props: {
     isSecondColData,
     formikName,
     inputRef,
+    setOnBlur,
   } = props;
   const [inputVal, setInputVal] = useState<number | string>(
     //@ts-ignore
@@ -274,7 +276,8 @@ const SubTitle = (props: {
             setValue={setInputVal}
             formikName={formikName}
             inputRef={inputRef}
-            style={{textAlign: 'right'}}></InputField>
+            style={{textAlign: 'right'}}
+            setOnBlur={setOnBlur}></InputField>
         );
       case 'Address for receiving funds':
         return (
@@ -313,6 +316,7 @@ const SubTitle = (props: {
             fontSize={13}
             value={inputVal}
             setValue={setInputVal}
+            setOnBlur={setOnBlur}
             formikName={formikName}
             inputRef={inputRef}
             style={{textAlign: 'right'}}
@@ -650,6 +654,7 @@ const PublicTokenDetail = (props: {
   } = useAppSelector(selectLaunch);
 
   const {toastMsg} = useToast();
+  const [onBlur, setOnBlur] = useState(false);
 
   //Input Value Validating
   useEffect(() => {
@@ -657,6 +662,13 @@ const PublicTokenDetail = (props: {
     const noErrBorderStyle =
       colorMode === 'light' ? '1px solid #dfe4ee' : '1px solid #373737';
     const {current} = inputRef;
+
+    console.log('--onBlur--');
+    console.log(onBlur);
+
+    if (onBlur === false) {
+      return;
+    }
 
     switch (selectedVaultType as VaultType) {
       //Switch for each vault type
@@ -817,7 +829,7 @@ const PublicTokenDetail = (props: {
         }
       }
     }
-  }, [selectedVaultType, tempVaultData, selectedVaultDetail]);
+  }, [selectedVaultType, tempVaultData, selectedVaultDetail, onBlur]);
 
   return (
     <Grid
@@ -854,6 +866,7 @@ const PublicTokenDetail = (props: {
             const {title, content, percent, formikName} = data;
             return (
               <SubTitle
+                setOnBlur={setOnBlur}
                 key={title}
                 leftTitle={title}
                 rightTitle={content}
