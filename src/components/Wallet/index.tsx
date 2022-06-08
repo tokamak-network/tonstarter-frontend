@@ -128,9 +128,6 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
     setWalletView(WALLET_VIEWS.PENDING);
     setAccountValue({signIn: true});
 
-    console.log('gogogo');
-    console.log(connector);
-
     try {
       connector &&
         activate(connector, undefined, true).catch((error) => {
@@ -204,9 +201,6 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
         }
         return null;
       }
-
-      console.log('--option--');
-      console.log(option);
 
       // overwrite injected when needed
       if (option.connector === injected) {
