@@ -449,7 +449,7 @@ const SubTitle = (props: {
               <SingleCalendarPop
                 setDate={setClaimDate}
                 //Mainnet env
-                startTimeCap={moment().add(1, 'days').unix()}
+                startTimeCap={moment().add(12, 'hours').unix()}
                 //Testnet env
                 // startTimeCap={moment()
                 //   .add('11', 'minutes')
@@ -662,9 +662,6 @@ const PublicTokenDetail = (props: {
     const noErrBorderStyle =
       colorMode === 'light' ? '1px solid #dfe4ee' : '1px solid #373737';
     const {current} = inputRef;
-
-    console.log('--onBlur--');
-    console.log(onBlur);
 
     if (onBlur === false) {
       return;
