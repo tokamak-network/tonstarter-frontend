@@ -88,6 +88,15 @@ const ClaimRound = () => {
       return setFieldValue(`vaults[${selectedVaultDetail.index}].claim`, [
         ...claim,
         defaultTableData,
+        defaultTableData,
+        defaultTableData,
+        defaultTableData,
+        defaultTableData,
+        defaultTableData,
+        defaultTableData,
+        defaultTableData,
+        defaultTableData,
+        defaultTableData,
       ]);
     }
     /*eslint-disable*/
