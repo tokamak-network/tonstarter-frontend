@@ -136,15 +136,15 @@ const ClaimRound = () => {
       (data: VaultSchedule, index: number) => {
         //@ts-ignore
         const refTimeStamp = selectedVaultDetail.claim[0].claimTime;
-        // if (refTimeStamp === undefined) {
-        //   return toastMsg({
-        //     status: 'error',
-        //     title: 'Date Time Error',
-        //     description: 'First date time must be filled out',
-        //     duration: 3000,
-        //     isClosable: true,
-        //   });
-        // }
+        if (refTimeStamp === undefined) {
+          return toastMsg({
+            status: 'error',
+            title: 'Date Time Error',
+            description: 'First date time must be filled out',
+            duration: 3000,
+            isClosable: true,
+          });
+        }
         const nowTimeStamp =
           index === 0
             ? refTimeStamp
@@ -152,37 +152,43 @@ const ClaimRound = () => {
                 .unix(refTimeStamp)
                 .add(index * Number(selectedDay), 'days')
                 .unix();
-        // return {
-        //   claimRound: index + 1,
-        //   claimTime: nowTimeStamp,
-        //   claimTokenAllocation: data.claimTokenAllocation,
-        // };
+        return {
+          claimRound: index + 1,
+          claimTime: nowTimeStamp,
+          claimTokenAllocation: data.claimTokenAllocation,
+        };
+      },
+    );
 
+    if (selectedVaultDetail) {
+      // setTableData(claimValue);
+      return setFieldValue(
+        //@ts-ignore
+        `vaults[${selectedVaultDetail.index}].claim`,
+        claimValue,
+      );
+    }
+    /*eslint-disable*/
+  }, [claim, selectedDay, selectedVaultDetail]);
+
+  const setAmount = useCallback(() => {
+    const claimValue: VaultSchedule[] = claim.map(
+      (data: VaultSchedule, index: number) => {
         //@ts-ignore
         const test = selectedVaultDetail.vaultTokenAllocation / claim.length;
         let result;
         if (test.toString().split('.')[1]) {
-          console.log('go');
           result =
             test.toString().split('.')[0] +
             '.' +
             test.toString().split('.')[1].slice(0, 2);
-          console.log(result);
         } else {
           result = test;
         }
 
-        console.log({
-          claimRound: index + 1,
-          claimTime: nowTimeStamp,
-          claimTokenAllocation:
-            //@ts-ignore
-            test,
-        });
-
         return {
           claimRound: index + 1,
-          claimTime: nowTimeStamp,
+          claimTime: data.claimTime,
           claimTokenAllocation:
             //@ts-ignore
             Number(result),
@@ -200,8 +206,6 @@ const ClaimRound = () => {
     }
     /*eslint-disable*/
   }, [claim, selectedDay, selectedVaultDetail]);
-
-  // const [test, setTest] = useState(true);
 
   useEffect(() => {
     if (claim) {
@@ -286,13 +290,24 @@ const ClaimRound = () => {
             style={{marginLeft: '10px'}}
             w={'100px'}
             h={'32px'}
-            text={'Set All'}
+            text={'Set Date'}
             //@ts-ignore
             // isDisabled={
             //   selectedVaultDetail.claim[0].claimTime !== undefined && selectedVaultDetail
             //     .claim[0].claimTime === undefined
             // }
             func={() => setDate()}></CustomButton>
+          <CustomButton
+            style={{marginLeft: '10px'}}
+            w={'100px'}
+            h={'32px'}
+            text={'Set Amount'}
+            //@ts-ignore
+            // isDisabled={
+            //   selectedVaultDetail.claim[0].claimTime !== undefined && selectedVaultDetail
+            //     .claim[0].claimTime === undefined
+            // }
+            func={() => setAmount()}></CustomButton>
         </Flex>
       </Box>
       <Flex>
