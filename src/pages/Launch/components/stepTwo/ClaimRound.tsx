@@ -88,6 +88,17 @@ const ClaimRound = () => {
       return setFieldValue(`vaults[${selectedVaultDetail.index}].claim`, [
         ...claim,
         defaultTableData,
+      ]);
+    }
+    /*eslint-disable*/
+  }, [claim, selectedVaultDetail]);
+
+  const add10Row = useCallback(() => {
+    if (selectedVaultDetail) {
+      //@ts-ignore
+      return setFieldValue(`vaults[${selectedVaultDetail.index}].claim`, [
+        ...claim,
+        defaultTableData,
         defaultTableData,
         defaultTableData,
         defaultTableData,
@@ -523,6 +534,23 @@ const ClaimRound = () => {
                             bg={colorMode === 'light' ? 'white.100' : 'none'}>
                             <HoverImage
                               action={() => addRow()}
+                              img={PlusIconNormal}
+                              hoverImg={PlusIconHover}></HoverImage>
+                          </Flex>
+                          <Flex
+                            w={'24px'}
+                            h={'24px'}
+                            alignItems="center"
+                            justifyContent="center"
+                            border={
+                              colorMode === 'light'
+                                ? '1px solid #e6eaee'
+                                : '1px solid #373737'
+                            }
+                            ml={'10px'}
+                            bg={'gray.100'}>
+                            <HoverImage
+                              action={() => add10Row()}
                               img={PlusIconNormal}
                               hoverImg={PlusIconHover}></HoverImage>
                           </Flex>
