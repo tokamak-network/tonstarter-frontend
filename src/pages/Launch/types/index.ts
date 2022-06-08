@@ -143,7 +143,7 @@ type PublicTokenColData = {
       formikName: string;
     },
     {
-      title: 'Token Allocation for Liquidity Pool (5~10%)';
+      title: 'Token Allocation for Liquidity Pool (5~50%)';
       content: string | undefined;
       formikName: string;
     },

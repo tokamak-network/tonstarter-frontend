@@ -244,7 +244,7 @@ const SubTitle = (props: {
         return `${commafy(rightTitle)} ${values.tokenName}`;
       case 'Public Round 2':
         return `${commafy(rightTitle)} ${values.tokenName}`;
-      case 'Token Allocation for Liquidity Pool (5~10%)':
+      case 'Token Allocation for Liquidity Pool (5~50%)':
         return `${rightTitle} %`;
       case 'Minimum Fundraising Amount':
         return `${commafy(rightTitle)} TON`;
@@ -259,7 +259,7 @@ const SubTitle = (props: {
 
   const RightInputComponent = useMemo(() => {
     switch (leftTitle) {
-      case 'Token Allocation for Liquidity Pool (5~10%)':
+      case 'Token Allocation for Liquidity Pool (5~50%)':
         return (
           <NumberInputStep
             valueProp={inputVal}
