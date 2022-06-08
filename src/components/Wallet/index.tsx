@@ -20,7 +20,7 @@ import {shortenAddress} from 'utils';
 import {SUPPORTED_WALLETS} from 'constants/index';
 import {isMobile} from 'react-device-detect';
 import {WalletOption} from 'components/Wallet/Option';
-import {injected, walletconnect, walletlink} from 'connectors';
+import {injected, trazorConnector, walletconnect, walletlink} from 'connectors';
 import {WalletPending} from 'components/Wallet/Pending';
 import usePrevious from 'hooks/usePrevious';
 import {useEagerConnect, useInactiveListener} from 'hooks/useWeb3';
@@ -128,14 +128,25 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
     setWalletView(WALLET_VIEWS.PENDING);
     setAccountValue({signIn: true});
 
-    connector &&
-      activate(connector, undefined, true).catch((error) => {
-        if (error instanceof UnsupportedChainIdError) {
-          activate(connector); // a little janky...can't use setError because the connector isn't set
-        } else {
-          setPendingError(true);
-        }
-      });
+    console.log('gogogo');
+    console.log(connector);
+
+    try {
+      connector &&
+        activate(connector, undefined, true).catch((error) => {
+          if (error instanceof UnsupportedChainIdError) {
+            try {
+              console.log('**connected error**');
+              console.log(error);
+              activate(connector); // a little janky...can't use setError because the connector isn't set
+            } catch {
+              activate(trazorConnector);
+            }
+          } else {
+            setPendingError(true);
+          }
+        });
+    } catch {}
   };
 
   function formatConnectorName() {
@@ -193,6 +204,9 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
         }
         return null;
       }
+
+      console.log('--option--');
+      console.log(option);
 
       // overwrite injected when needed
       if (option.connector === injected) {
