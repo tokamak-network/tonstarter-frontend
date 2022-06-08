@@ -415,12 +415,14 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                         : 'NA'}
                     </Link>
                   </Flex>
-                 
+                  
+                   
+                  <Flex alignItems={'center'}  mt={'5px'}>
                       <Button
                         fontSize={'11px'}
                         w={'273px'}
                         h={'25px'}
-                        mt={'5px'}
+                       mr={'2px'}
                         bg={'#257eee'}
                         color={'#ffffff'}
                         isDisabled={
@@ -471,8 +473,17 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                         onClick={() => sendTOS()}>
                         Send TOS to Initial Liquidity Vault & Receive Funds
                       </Button>
-                  
-                 
+                      <Tooltip  label="It is only possible to send TOS after the end of Public Round 2"
+                    hasArrow
+                   
+                    placement="top"
+                    color={colorMode === 'light' ? '#e6eaee' : '#424242'}
+                    aria-label={'Tooltip'}
+                    textAlign={'center'}
+                    size={'xs'}>
+                    <Image src={tooltipIcon} />
+                      </Tooltip>
+                     </Flex>
                 </Flex>
               </GridItem>
             </>
