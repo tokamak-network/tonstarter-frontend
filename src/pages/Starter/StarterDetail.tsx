@@ -50,6 +50,7 @@ export const StarterDetail = () => {
   // );
 
   const [saleInfo, setSaleInfo] = useState<SaleInfo | undefined>(undefined);
+  const [descript, setDescript] = useState<string | null>('')
   const [detailInfo, setDetailInfo] = useState<DetailInfo | undefined>(
     undefined,
   );
@@ -183,6 +184,24 @@ export const StarterDetail = () => {
     }
   }, [starterData, id]);
 
+useEffect(()=> {
+  if (saleInfo){
+    const div = document.createElement('div');
+    div.innerHTML = saleInfo.description;
+    const sttt = div.textContent;
+    let str;
+   if (sttt && sttt.length > 300) {
+     str = sttt.substring(0, 299) + '...' 
+   }
+  else {
+    str = sttt
+   }
+   setDescript(str)
+  }
+  
+
+},[saleInfo])
+
   useEffect(() => {
     setInterval(() => {
       if (!saleInfo) {
@@ -254,7 +273,7 @@ export const StarterDetail = () => {
               <ReactQuill
                 // placeholder="Input the project description"
                 readOnly={true}
-                value={saleInfo.description}
+                value={descript? descript : ''}
                 theme={'bubble'}
                 style={{color: 'white !important'}}
               />
