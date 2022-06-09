@@ -188,7 +188,7 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
           );
 
           const ramainedAmount = BigNumber.from(totalClaim[isOld ? 0 : 2]).sub(
-            usersClaim?.claimAmount,
+            usersClaim[1],
           );
 
           const convertedExSaleAmount = convertNumber({
