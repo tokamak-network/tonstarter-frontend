@@ -711,6 +711,7 @@ export const AirdropClaimTable = () => {
           templateColumns="repeat(1, 1fr)"
           w={'100%'}
           bg={themeDesign.bg[colorMode]}>
+          {console.log('genesisAirdropBalance: ', genesisAirdropBalance)}
           <GridItem
             border={themeDesign.border[colorMode]}
             className={'chart-cell'}
