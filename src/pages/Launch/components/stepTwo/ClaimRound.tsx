@@ -93,6 +93,26 @@ const ClaimRound = () => {
     /*eslint-disable*/
   }, [claim, selectedVaultDetail]);
 
+  const add10Row = useCallback(() => {
+    if (selectedVaultDetail) {
+      //@ts-ignore
+      return setFieldValue(`vaults[${selectedVaultDetail.index}].claim`, [
+        ...claim,
+        defaultTableData,
+        defaultTableData,
+        defaultTableData,
+        defaultTableData,
+        defaultTableData,
+        defaultTableData,
+        defaultTableData,
+        defaultTableData,
+        defaultTableData,
+        defaultTableData,
+      ]);
+    }
+    /*eslint-disable*/
+  }, [claim, selectedVaultDetail]);
+
   const removeRow = useCallback(
     (rowIndex) => {
       if (selectedVaultDetail) {
@@ -151,7 +171,41 @@ const ClaimRound = () => {
     /*eslint-disable*/
   }, [claim, selectedDay, selectedVaultDetail]);
 
-  // const [test, setTest] = useState(true);
+  const setAmount = useCallback(() => {
+    const claimValue: VaultSchedule[] = claim.map(
+      (data: VaultSchedule, index: number) => {
+        //@ts-ignore
+        const test = selectedVaultDetail.vaultTokenAllocation / claim.length;
+        let result;
+        if (test.toString().split('.')[1]) {
+          result =
+            test.toString().split('.')[0] +
+            '.' +
+            test.toString().split('.')[1].slice(0, 2);
+        } else {
+          result = test;
+        }
+
+        return {
+          claimRound: index + 1,
+          claimTime: data.claimTime,
+          claimTokenAllocation:
+            //@ts-ignore
+            Number(result),
+        };
+      },
+    );
+
+    if (selectedVaultDetail) {
+      // setTableData(claimValue);
+      return setFieldValue(
+        //@ts-ignore
+        `vaults[${selectedVaultDetail.index}].claim`,
+        claimValue,
+      );
+    }
+    /*eslint-disable*/
+  }, [claim, selectedDay, selectedVaultDetail]);
 
   useEffect(() => {
     if (claim) {
@@ -236,13 +290,24 @@ const ClaimRound = () => {
             style={{marginLeft: '10px'}}
             w={'100px'}
             h={'32px'}
-            text={'Set All'}
+            text={'Set Date'}
             //@ts-ignore
             // isDisabled={
             //   selectedVaultDetail.claim[0].claimTime !== undefined && selectedVaultDetail
             //     .claim[0].claimTime === undefined
             // }
             func={() => setDate()}></CustomButton>
+          <CustomButton
+            style={{marginLeft: '10px'}}
+            w={'100px'}
+            h={'32px'}
+            text={'Set Amount'}
+            //@ts-ignore
+            // isDisabled={
+            //   selectedVaultDetail.claim[0].claimTime !== undefined && selectedVaultDetail
+            //     .claim[0].claimTime === undefined
+            // }
+            func={() => setAmount()}></CustomButton>
         </Flex>
       </Box>
       <Flex>
@@ -484,6 +549,23 @@ const ClaimRound = () => {
                             bg={colorMode === 'light' ? 'white.100' : 'none'}>
                             <HoverImage
                               action={() => addRow()}
+                              img={PlusIconNormal}
+                              hoverImg={PlusIconHover}></HoverImage>
+                          </Flex>
+                          <Flex
+                            w={'24px'}
+                            h={'24px'}
+                            alignItems="center"
+                            justifyContent="center"
+                            border={
+                              colorMode === 'light'
+                                ? '1px solid #e6eaee'
+                                : '1px solid #373737'
+                            }
+                            ml={'10px'}
+                            bg={'gray.100'}>
+                            <HoverImage
+                              action={() => add10Row()}
                               img={PlusIconNormal}
                               hoverImg={PlusIconHover}></HoverImage>
                           </Flex>
