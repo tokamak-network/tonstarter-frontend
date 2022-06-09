@@ -410,7 +410,7 @@ const ClaimRound = () => {
                       <InputGroup>
                         <Input
                           h={`42px`}
-                          ref={(el) => (inputRefs.current[index] = el)}
+                          // ref={(el) => (inputRefs.current[index] = el)}
                           _hover={{borderWidth: '1px', borderColor: '#257eee'}}
                           _focus={
                             isErr
