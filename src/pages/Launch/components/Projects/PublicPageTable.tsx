@@ -82,7 +82,7 @@ export const PublicPageTable = (prop: PublicTableProps) => {
       accumulated: claimData[claimData.length - 1].accumulated,
     });
     setTableData(claimData);
-  }, []);
+  }, [claim]);
   // console.log(tableData);
 
   return (
