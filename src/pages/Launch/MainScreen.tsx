@@ -140,6 +140,7 @@ const MainScreen = () => {
         }
         validationSchema={ProjectSchema}
         validate={(values) => {
+          console.log('****useFormik value****');
           console.log(values);
           validateFormikValues(values, setDisable, setDisableForStep2);
           if (step === 3 && oldData !== values) {
