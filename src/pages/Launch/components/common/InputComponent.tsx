@@ -1,4 +1,4 @@
-import {Box, Flex, Input, Text, useColorMode} from '@chakra-ui/react';
+import {Box, Flex, Input, Select, Text, useColorMode} from '@chakra-ui/react';
 import {Projects} from '@Launch/types';
 import {ErrorMessage, Field, useFormikContext} from 'formik';
 import './input.css';
@@ -39,10 +39,20 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
     .split(/(?=[A-Z])/)
     .map((e) => `${e.charAt(0).toUpperCase() + e.slice(1)} `);
 
-  const titleTrimed = title.toString().replaceAll(',', '');
+  const getTitleTried = () => {
+    const titleTrimed = title.toString().replaceAll(',', '');
+    switch (titleTrimed) {
+      case 'Owner ':
+        return 'Account Address';
+      default:
+        return titleTrimed;
+    }
+  };
 
   // //@ts-ignore
   // console.log(errors[name]);
+
+  const titleTrimed = getTitleTried();
 
   return (
     <Flex flexDir={'column'} fontSize={13} pos={'relative'}>
@@ -75,6 +85,32 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
         ) => {
           //@ts-ignore
           const isError = errors[name] === undefined ? false : true;
+
+          // if (name === 'sector') {
+          //   return (
+          //     <Select
+          //       style={{
+          //         height: '32px',
+          //         border: '1px solid #dfe4ee',
+          //         borderRadius: '4px',
+          //         paddingLeft: '16px',
+          //         paddingRight: '16px',
+          //       }}
+          //       fontSize={13}
+          //       color={'#86929d'}>
+          //       <option>DeFi</option>
+          //       <option>Exchange</option>
+          //       <option>P2E</option>
+          //       <option>M2E</option>
+          //       <option>Stable</option>
+          //       <option>Social</option>
+          //       <option>Collectible</option>
+          //       <option>Marketplace</option>
+          //       <option>Custom</option>
+          //     </Select>
+          //   );
+          // }
+
           return (
             <Input
               className={

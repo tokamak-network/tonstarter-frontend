@@ -23,6 +23,7 @@ import Line from '@Launch/components/common/Line';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {CustomSelectBox} from 'components/Basic';
 import {useToast} from 'hooks/useToast';
+import useTokenAllocation from '@Launch/hooks/useTokenAllocation';
 
 const CreateVaultModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -40,6 +41,7 @@ const CreateVaultModal = () => {
     'C' | 'DAO' | 'Liquidity Incentive'
   >('C');
   const [btnDisable, setBtnDisable] = useState<boolean>(false);
+  const {remaindToken} = useTokenAllocation();
 
   const {toastMsg} = useToast();
 
@@ -81,6 +83,13 @@ const CreateVaultModal = () => {
         isClosable: true,
       });
     } else {
+      if (
+        values.totalSupply &&
+        totalAllocation + Number(tokenAllocatonVal) ===
+          Number(values.totalSupply)
+      ) {
+        return setBtnDisable(true);
+      }
       setBtnDisable(false);
     }
   }, [tokenAllocatonVal, nameVal, values, toastMsg]);
@@ -128,7 +137,8 @@ const CreateVaultModal = () => {
             flexDir="column"
             alignItems="center"
             mt={'30px'}
-            pl={'35px'}
+            pl={'30px'}
+            pr={'30px'}
             fontSize={13}
             color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
             <Flex w={'100%'} flexDir={'column'} mb={'24px'}>
@@ -160,9 +170,14 @@ const CreateVaultModal = () => {
                 }}></Input>
             </Flex>
             <Flex w={'100%'} flexDir={'column'} mb={'24px'}>
-              <Text fontWeight={600} mb={'9px'}>
-                Token Allocation
-              </Text>
+              <Flex justifyContent={'space-between'}>
+                <Text fontWeight={600} mb={'9px'}>
+                  Token Allocation
+                </Text>
+                <Text fontSize={11} color={'#2a72e5'}>
+                  Remained : {remaindToken}
+                </Text>
+              </Flex>
               <Input
                 w={'290px'}
                 h={'32px'}
@@ -187,7 +202,10 @@ const CreateVaultModal = () => {
                 h={'32px'}
                 value={adminAddressVal}
                 _focus={{}}
-                onChange={(e) => setAdminAddressVal(e.target.value)}></Input>
+                hover={'none'}
+                cursor={'none'}
+                // onChange={(e) => setAdminAddressVal(e.target.value)}
+              ></Input>
             </Flex>
           </Flex>
 

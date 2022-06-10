@@ -5,6 +5,7 @@ import {useFormikContext} from 'formik';
 import {useEffect, useState} from 'react';
 import {Projects} from '@Launch/types';
 import {useModal} from 'hooks/useModal';
+import useTokenAllocation from '@Launch/hooks/useTokenAllocation';
 
 const TopTitle = () => {
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
@@ -17,22 +18,34 @@ const TopTitle = () => {
   }, [pricePerTon]);
 
   const {openAnyModal} = useModal();
+  const {remaindToken, totalSupply} = useTokenAllocation();
 
   return (
     <Box px={'35px'} py={'23px'} pos="relative">
       <Flex justifyContent={'space-between'}>
         <StepTitle title={'Vaults'} isSaveButton={false}></StepTitle>
-        <Button
-          w={'120px'}
-          h={'38px'}
-          fontSize={14}
-          color={'white.100'}
-          _hover={{}}
-          // disabled={isDisable || isSubmitting}
-          bg={'blue.500'}
-          onClick={() => openAnyModal('Launch_PieChartModal', {})}>
-          View Chart
-        </Button>
+        <Flex>
+          <Flex alignItems={'center'} fontSize={12} mr={'25px'}>
+            <Text color={'#3a495f'}>Total</Text>
+            <Text color={'#86929d'}> / </Text>
+            <Text color={'#2a72e5'}>Remained</Text>
+            <Text color={'#86929d'}> : </Text>
+            <Text color={'#3a495f'}>{totalSupply}</Text>
+            <Text color={'#86929d'}> / </Text>
+            <Text color={'#2a72e5'}>{remaindToken}</Text>
+          </Flex>
+          <Button
+            w={'120px'}
+            h={'38px'}
+            fontSize={14}
+            color={'white.100'}
+            _hover={{}}
+            // disabled={isDisable || isSubmitting}
+            bg={'blue.500'}
+            onClick={() => openAnyModal('Launch_PieChartModal', {})}>
+            View Chart
+          </Button>
+        </Flex>
       </Flex>
       <Flex pos="absolute" left={'127px'} top={'27px'} alignItems="center">
         <Text fontSize={13} mr={'10px'}>

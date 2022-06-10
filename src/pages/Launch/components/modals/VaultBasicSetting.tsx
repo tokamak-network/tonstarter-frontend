@@ -21,6 +21,7 @@ import {useFormikContext} from 'formik';
 import Line from '@Launch/components/common/Line';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {useToast} from 'hooks/useToast';
+import useTokenAllocation from '@Launch/hooks/useTokenAllocation';
 
 const VaultBasicSetting = () => {
   const {data} = useAppSelector(selectModalType);
@@ -32,8 +33,12 @@ const VaultBasicSetting = () => {
   const [tokenAllocatonVal, setTokenAllocatonVal] = useState(0);
   const [adminAddressVal, setAdminAddressVal] = useState('');
   const [btnDisable, setBtnDisable] = useState<boolean>(false);
+  const {remaindToken} = useTokenAllocation();
 
   const {toastMsg} = useToast();
+  const {
+    data: {tokenAllocation},
+  } = data;
 
   useEffect(() => {
     if (data.data) {
@@ -56,9 +61,11 @@ const VaultBasicSetting = () => {
       }
       return acc + cur.vaultTokenAllocation;
     }, 0);
+
     if (
       values.totalSupply &&
-      totalAllocation + Number(tokenAllocatonVal) > values.totalSupply
+      totalAllocation + Number(tokenAllocatonVal) - Number(tokenAllocation) >
+        Number(values.totalSupply)
     ) {
       setBtnDisable(true);
       toastMsg({
@@ -69,9 +76,18 @@ const VaultBasicSetting = () => {
         isClosable: true,
       });
     } else {
+      // if (
+      //   totalAllocation +
+      //     Number(tokenAllocatonVal) -
+      //     Number(tokenAllocation) -
+      //     Number(values.totalSupply) ===
+      //   0
+      // ) {
+      //   return setBtnDisable(true);
+      // }
       setBtnDisable(false);
     }
-  }, [tokenAllocatonVal, nameVal, values, toastMsg]);
+  }, [tokenAllocatonVal, nameVal, values, toastMsg, tokenAllocation]);
 
   if (!data.data) {
     return null;
@@ -134,7 +150,8 @@ const VaultBasicSetting = () => {
             flexDir="column"
             alignItems="center"
             mt={'30px'}
-            pl={'35px'}
+            pl={'30px'}
+            pr={'30px'}
             fontSize={13}
             color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
             <Flex w={'100%'} flexDir={'column'} mb={'24px'}>
@@ -146,14 +163,23 @@ const VaultBasicSetting = () => {
                 h={'32px'}
                 value={nameVal}
                 _focus={{}}
-                onChange={(e) =>
-                  isMandatory ? null : setNameVal(e.target.value)
-                }></Input>
+                hover={'none'}
+                cursor={'none'}
+
+                // onChange={(e) =>
+                //   isMandatory ? null : setNameVal(e.target.value)
+                // }>
+              ></Input>
             </Flex>
             <Flex w={'100%'} flexDir={'column'} mb={'24px'}>
-              <Text fontWeight={600} mb={'9px'}>
-                Token Allocation
-              </Text>
+              <Flex justifyContent={'space-between'}>
+                <Text fontWeight={600} mb={'9px'}>
+                  Token Allocation
+                </Text>
+                <Text fontSize={11} color={'#2a72e5'}>
+                  Remained : {remaindToken}
+                </Text>
+              </Flex>
               <Input
                 w={'290px'}
                 h={'32px'}
@@ -178,7 +204,10 @@ const VaultBasicSetting = () => {
                 h={'32px'}
                 value={adminAddressVal}
                 _focus={{}}
-                onChange={(e) => setAdminAddressVal(e.target.value)}></Input>
+                hover={'none'}
+                cursor={'none'}
+                // onChange={(e) => setAdminAddressVal(e.target.value)}></Input>
+              ></Input>
             </Flex>
           </Flex>
 

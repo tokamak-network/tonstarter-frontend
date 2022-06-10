@@ -41,7 +41,6 @@ const DoubleCalendarPop: React.FC<calendarComponentProps> = ({setDate,startTimeC
     });
 
     setStartTime(startDates.unix());
-
     const ends = moment.unix(endTime);
     const endDates = moment(ends).set({
       hour: endTimeArray[0],
@@ -55,6 +54,7 @@ const DoubleCalendarPop: React.FC<calendarComponentProps> = ({setDate,startTimeC
 
   useEffect(() => {
     const starts = moment.unix(startTime);
+    
     const startDates = moment(starts).set({
       hour: startTimeArray[0],
       minute: startTimeArray[1],
@@ -62,14 +62,18 @@ const DoubleCalendarPop: React.FC<calendarComponentProps> = ({setDate,startTimeC
     });
     const tempStart = startDates.unix();
     const ends = moment.unix(endTime);
+    
     const endDates = moment(ends).set({
       hour: endTimeArray[0],
       minute: endTimeArray[1],
       second: endTimeArray[2],
     });
+   
+    
     const tempEnd = endDates.unix();
 
     const now = moment().unix();
+   
     tempStart === tempEnd || tempEnd < now || tempStart < now || tempEnd< tempStart || tempStart < startTimeCap
       ? setButtonDisable(true)
       : setButtonDisable(false);

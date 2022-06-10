@@ -57,6 +57,7 @@ const AllProjects = () => {
     data: {projects},
   } = useAppSelector(selectLaunch);
 
+  
   useEffect(() => {
     if (data) {
       const {data: datas} = data;
@@ -114,11 +115,12 @@ const AllProjects = () => {
           </Text>
         </Box>
         <Flex justifyContent={'center'}>
-          <Grid templateColumns="repeat(3, 1fr)" gap={30}>
+          {projectsData.length !==0?  <Grid templateColumns="repeat(3, 1fr)" gap={30}>
             {getPaginatedData().map((project: any, index: number) => {
               return <ProjectCard project={project} index={index} />;
             })}
-          </Grid>
+          </Grid> : <Text  fontFamily={theme.fonts.roboto} fontSize={'16px'}>There are no projects currently</Text>}
+         
         </Flex>
         <Flex
           flexDirection={'row'}

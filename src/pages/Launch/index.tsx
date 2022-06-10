@@ -16,6 +16,7 @@ const OpenCampagin = () => {
 
   const [projectsData, setProjectsData] = useState<any>(undefined);
   const [originData, setOriginData] = useState<any>(undefined);
+  const [numProjects, setNumProjects] = useState<number>(0);
 
   const {data, isLoading, error} = useQuery(
     ['launchProjects'],
@@ -35,11 +36,18 @@ const OpenCampagin = () => {
     if (data) {
       const {data: datas} = data;
       dispatch(fetchProjects({data: datas}));
-      setProjectsData(
-        Object.keys(datas).map((k) => {
-          return {name: datas[k].projectName, key: k};
-        }),
+      const projects = Object.keys(datas).map((k) => {
+        const stat = datas[k].vaults.every((vault: any) => {
+          return vault.isSet === true;
+        });
+        return {name: datas[k].projectName, key: k,isSet: stat}
+      })
+      const filteredProjects = projects.filter(
+        (project: any) => project.isSet === true,
       );
+
+      setNumProjects(filteredProjects.length)
+      setProjectsData(projects);
     }
   }, [data, dispatch]);
 
@@ -47,13 +55,13 @@ const OpenCampagin = () => {
   const {url} = match;
 
   //test
-
+  
   // if (isLoading) {
   //   return <div>loading..</div>;
   // }
   return (
     <Flex flexDir="column" mt={'78px'} alignItems="center">
-      <LaunchPage />
+      <LaunchPage numPairs={numProjects+4}/>
     </Flex>
   );
 };

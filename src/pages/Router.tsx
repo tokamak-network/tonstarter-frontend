@@ -188,10 +188,6 @@ export const Router: FC<RouterProps> = () => {
           {/* <Route exact path="/starter" component={Starter} /> */}
           <Route exact path="/starter" component={Starter} />
           <Route exact path="/dao" component={DAO} />
-          <Route exact path="/admin/createproject" component={CreateProject} />
-          <Route exact path="/admin/listproject" component={ListingProjects} />
-          <Route exact path="/admin/listpools" component={ListingPools} />
-          <Route exact path="/admin/listrewards" component={ListingRewards} />
           <Route exact path="/myairdrop" component={MyAirdrop} />
 
           <Route exact path={`/starter/:id`} component={StarterDetail} />

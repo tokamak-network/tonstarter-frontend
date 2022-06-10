@@ -129,7 +129,7 @@ export const Reward = () => {
   const [selectedPoolCreate, setSelectedPoolCreated] = useState<Pool>();
   const [positions, setPositions] = useState<any[]>([]);
   const [selectedTokenType, setSelectedTokenType] = useState<string>('');
-
+ const [tokensFromAPI, setTokensFromAPI] = useState<any[]>([])
   // const arr: any = [];
   useEffect(() => {
     setSelectdPosition(undefined);
@@ -137,8 +137,10 @@ export const Reward = () => {
   useEffect(() => {
     async function fetchProjectsData() {
       const poolsData: any = await views.getPoolData(library);
+      const tokens = await views.getTokensData()
       const rewardData = await views.getRewardData();
       setPoolsFromAPI(poolsData);
+     
       const poolArray: any = [];
       if (poolsData) {
         poolsData.map((pool: any) => {
@@ -152,6 +154,9 @@ export const Reward = () => {
         });
 
         setDatas(rewardData);
+      }
+      if (tokens) {
+        setTokensFromAPI(tokens)
       }
       setPoolAddresses(poolArray);
     }
@@ -467,7 +472,12 @@ export const Reward = () => {
 
   const getSelectedPool = (e: any) => {
     const poolAddress = e.target.value;
-    const selected: Pool = pool.find((pool) => pool.id === poolAddress);
+    // console.log(poolAddress);
+    // console.log(pool);
+    
+    const selected: Pool = pool.find((pool) => ethers.utils.getAddress(pool.id) === ethers.utils.getAddress(poolAddress));
+    // console.log('selected',selected);
+    
     setSelectedPool(selected);
     setSelectedToken(undefined);
     setSelectdPosition(undefined);
@@ -479,7 +489,7 @@ export const Reward = () => {
       setSelectdPosition(undefined);
     } else {
       const selectedRewards = datas.filter(
-        (data) => data.poolAddress === poolAddress,
+        (data) => ethers.utils.getAddress(data.poolAddress) === ethers.utils.getAddress(poolAddress),
       );
       setOrderedData(selectedRewards);
       setFilteredData(selectedRewards);
@@ -964,7 +974,7 @@ export const Reward = () => {
                     cursor={'pointer'}
                     color={'#0070ed'}
                     fontSize={'13px'}
-                    onClick={(e) => {
+                    onClick={(e: any) => {
                       e.preventDefault();
                       window.open(
                         selectedPool === undefined
@@ -985,7 +995,7 @@ export const Reward = () => {
                     cursor={'pointer'}
                     color={'#0070ed'}
                     fontSize={'13px'}
-                    onClick={(e) => {
+                    onClick={(e: { preventDefault: () => void; }) => {
                       e.preventDefault();
                       window.open(
                         selectedPoolCreate === undefined
@@ -1223,6 +1233,7 @@ export const Reward = () => {
                     sortString={sortString}
                     positionsByPool={positionsByPool}
                     LPTokens={positions}
+                    tokens={tokensFromAPI}
                   />
                 </Box>
               ) : (
@@ -1234,6 +1245,7 @@ export const Reward = () => {
                   sortString={sortString}
                   positionsByPool={positionsByPool}
                   LPTokens={positions}
+                  tokens={tokensFromAPI}
                 />
               )}
               <SideContainer
@@ -1241,6 +1253,7 @@ export const Reward = () => {
                 selected={selected}
                 rewards={datas}
                 LPTokens={positions}
+                tokens={tokensFromAPI}
                 setSelectedPoolCreated={setSelectedPoolCreated}
               />{' '}
             </Flex>

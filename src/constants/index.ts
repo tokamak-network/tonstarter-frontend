@@ -34,11 +34,17 @@ export const BASE_PROVIDER =
   REACT_APP_MODE === 'DEV'
     ? ethers.getDefaultProvider('rinkeby')
     : ethers.getDefaultProvider('mainnet');
+
+export const OPENSEA =
+  REACT_APP_MODE === 'DEV'
+    ? 'https://testnets.opensea.io/assets/rinkeby/0x48683ac8ab065a113323bdb5738a267d7ff7f0d6/'
+    : 'https://opensea.io/assets/ethereum/';
 export const fetchStakeURL = `${API_SERVER}/stakecontracts?chainId=${DEFAULT_NETWORK}`;
 export const fetchValutURL = `${API_SERVER}/vaults?chainId=${DEFAULT_NETWORK}`;
 export const fetchRewardsURL = `${API_SERVER}/reward?chainId=${DEFAULT_NETWORK}&pagesize=200`;
 export const fetchStarterURL = `${API_SERVER}/starter?chainId=${DEFAULT_NETWORK}`;
 export const fetchPoolsURL = `${API_SERVER}/pool?chainId=${DEFAULT_NETWORK}`;
+export const fetchTokensURL = `${API_SERVER}/tokens?chainId=${DEFAULT_NETWORK}`;
 export const fetchCampaginURL = `${API_SERVER_LAUNCH}/projects?chainId=${DEFAULT_NETWORK}`;
 export const fetchTosPriceURL = REACT_APP_TOS_PRICE;
 export const fetchEthPriceURL = REACT_APP_ETH_PRICE;
@@ -63,6 +69,7 @@ const MAINNET_DEPLOYED = {
   LockTOS_ADDRESS: '0x69b4A202Fa4039B42ab23ADB725aA7b1e9EEBD79',
   UniswapStaking_Address: '0xC1349A9a33A0682804c390a3968e26E5a2366153',
   UniswapStaker_Address: '0x1f98407aaB862CdDeF78Ed252D6f557aA5b0f00d',
+  UniswapStakerV3_address: '0xe34139463bA50bD61336E0c446Bd8C0867c6fE65',
   NPM_Address: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
   BasePool_Address: '0x1c0ce9aaa0c12f53df3b4d8d77b82d6ad343b4e4',
   DOCPool_Address: '0x369bca127b8858108536b71528ab3befa1deb6fc',
@@ -75,17 +82,17 @@ const MAINNET_DEPLOYED = {
   unstakeLayer2All: '0xf9381fB7167FC3e81849aE82960144274D1553C2',
   PowerTONSwapper_ADDRESS: '0xDE200f091a5CD840cD52Ece7406865607a25dF69',
   DoMsaleContractAddress: '0x3B75d3f628C29d357b484EA7d091faEd63419267',
-  ERC20AFACTORY_ADDRESS: '',
+  ERC20AFACTORY_ADDRESS: '0x230539fB72e7eeA8Bb037cA0556Fa9b0060A5d10',
   AutoCoinageSnapshot2_ADDRESS: '0x85Ca9f611C363065252EA9462c90743922767b55',
   TokenDividendProxyPool_ADDRESS: '0x06245F89576536E9cF844C5804a8ad1CCeDb2642',
-  InitialLiquidityVault: '',
-  LiquidityIncentiveVault: '',
-  PublicSaleVault: '',
-  TonStakerVault: '',
-  TosStakerVault: '',
-  LPrewardVault: '',
-  TypeCVault: '',
-  DAOVault: '',
+  InitialLiquidityVault: '0xcf9A97F0CBBc2eB588E3e4301773d13267616F10',
+  LiquidityIncentiveVault: '0x793A17A27E298071b918D40556Ed2efC6dE4E00E',
+  PublicSaleVault: '0xD9822E155c36Fc4E8CB396444096FffE1560769C',
+  TonStakerVault: '0x607b67214818f2acc8eEAE8b60E6579dad210298',
+  TosStakerVault: '0x0744905Fe3D6b56026AE9b21458c98A5B6397904',
+  LPrewardVault: '0x793A17A27E298071b918D40556Ed2efC6dE4E00E',
+  TypeCVault: '0x00065b639A3Fcc65db399a8CeF8c33327CcfE158',
+  DAOVault: '0xA93f236E939E01Ff33563F9879D9A99b60D7788B',
   pools: {
     TOS_WTON_POOL: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
     ETH_WTON_Address: '0xC29271E3a68A7647Fd1399298Ef18FeCA3879F59',
@@ -96,7 +103,7 @@ const MAINNET_DEPLOYED = {
     DOC_ETH_Address: '0xDA3CC73170aA5Bb7C0a9588e7690299df568d53D',
   },
   UniswapV3Factory: '0x1F98431c8aD98523631AE4a59f267346ea31F984',
-  ProjectTokenProxy: '',
+  ProjectTokenProxy: '0x96D366bBE6B83D895D2AFd0BC0139b9089486055',
 };
 
 const RINKEBY_DEPLOYED = {
@@ -114,6 +121,7 @@ const RINKEBY_DEPLOYED = {
   Airdrop_ADDRESS: '0xD958cD2d03aaEe169953780234848445504571E8',
   UniswapStaking_Address: '0x99b09c6CfF45C778a4F5fBF7a4EAD6c3DEBfdcBb',
   UniswapStaker_Address: '0x1f98407aaB862CdDeF78Ed252D6f557aA5b0f00d',
+  UniswapStakerV3_address: '0xe34139463bA50bD61336E0c446Bd8C0867c6fE65',
   NPM_Address: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
   LockTOS_ADDRESS: '0x5adc7de3a0B4A4797f02C3E99265cd7391437568',
   DOCPool_Address: '0x831a1f01ce17b6123a7d1ea65c26783539747d6d',
@@ -127,7 +135,7 @@ const RINKEBY_DEPLOYED = {
   unstakeLayer2All: '0xeeEa9CA7a496651577ff1FD353570F8B70580955',
   PowerTONSwapper_ADDRESS: '',
   DoMsaleContractAddress: '0xEb492922afa05D0D7704AD5c202f2ddCc386DA75',
-  ERC20AFACTORY_ADDRESS: '0xf5aa83caAEb10E258d8A790eb3FD61a7B16B116E',
+  ERC20AFACTORY_ADDRESS: '0x58e6815aBEa00Ef6fc823899625F1D8ae98a5348',
   InitialLiquidityVault: '0x98B792CEF9a23b4CB7530E06c8fD821FdB2fBF44',
   LiquidityIncentiveVault: '0xF934A22aCF2E7169793DD1B565E5A5Ea3FDE515D',
   AutoCoinageSnapshot2_ADDRESS: '0xa441fc0670be48284e1d2f3b2a72c017b5dbaade',

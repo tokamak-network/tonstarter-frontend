@@ -15,6 +15,7 @@ import OpenStepThree from '@Launch/components/OpenStepThree';
 import validateFormikValues from '@Launch/utils/validate';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {saveProject, editProject} from '@Launch/utils/saveProject';
+
 const StepComponent = (props: {step: StepNumber}) => {
   const {step} = props;
   switch (step) {
@@ -92,6 +93,27 @@ const MainScreen = () => {
     return <div>You need to connect to the wallet</div>;
   }
 
+  if (projects[id] && projects[id]?.ownerAddress !== account) {
+    return (
+      <Flex
+        flexDir={'column'}
+        justifyContent={'center'}
+        w={'100%'}
+        mt={100}
+        mb={'100px'}>
+        <Flex alignItems={'center'} flexDir="column" mb={'20px'}>
+          <PageHeader
+            title={'Create Project'}
+            subtitle={'You can create and manage projects.'}
+          />
+          <Flex alignItems={'center'} justifyContent="center" mt={'100px'}>
+            This account is not owner address of this project.
+          </Flex>
+        </Flex>
+      </Flex>
+    );
+  }
+
   return (
     <Flex
       flexDir={'column'}
@@ -118,7 +140,6 @@ const MainScreen = () => {
         }
         validationSchema={ProjectSchema}
         validate={(values) => {
-          console.log(values);
           validateFormikValues(values, setDisable, setDisableForStep2);
           if (step === 3 && oldData !== values) {
             setOldData(values);
@@ -155,14 +176,16 @@ const MainScreen = () => {
                 <StepComponent step={step} />
                 <Flex mt={'50px'} fontSize={14} justifyContent="center">
                   <Button
+                    type="submit"
+                    isDisabled={isSubmitting}
                     w={'160px'}
                     h={'45px'}
-                    bg={'#00c3c4'}
                     borderRadius={4}
-                    color={'white.100'}
                     fontSize={14}
                     _hover={{}}
-                    disabled={step === 3}
+                    bg={isDisable ? 'gray.25' : '#00c3c4'}
+                    color={isDisable ? '#86929d' : 'white.100'}
+                    disabled={step === 3 || (step === 1 && isDisable)}
                     mr={step === 1 ? '390px' : '558px'}
                     onClick={() =>
                       account &&
@@ -202,12 +225,23 @@ const MainScreen = () => {
                         h={'45px'}
                         fontSize={14}
                         color={isDisable ? '#86929d' : 'white.100'}
-                        bg={isDisable ? '#gray.25' : 'blue.500'}
+                        bg={isDisable ? 'gray.25' : 'blue.500'}
                         disabled={isDisable}
                         _hover={{}}
                         borderRadius={4}
-                        onClick={() => handleStep(true)}>
-                        Next
+                        onClick={() => {
+                          account &&
+                          isExist === 'createproject' &&
+                          hashKey === undefined
+                            ? saveProject(values, account)
+                            : editProject(
+                                values,
+                                account as string,
+                                hashKey || isExist,
+                              );
+                          handleStep(true);
+                        }}>
+                        Save & Continue
                       </Button>
                     )}
                     {step === 2 && (
@@ -217,12 +251,23 @@ const MainScreen = () => {
                         h={'45px'}
                         fontSize={14}
                         color={isDisableForStep2 ? '#86929d' : 'white.100'}
-                        bg={isDisableForStep2 ? '#gray.25' : 'blue.500'}
+                        bg={isDisableForStep2 ? 'gray.25' : 'blue.500'}
                         disabled={isDisableForStep2}
                         _hover={{}}
                         borderRadius={4}
-                        onClick={() => handleStep(true)}>
-                        Next
+                        onClick={() => {
+                          account &&
+                          isExist === 'createproject' &&
+                          hashKey === undefined
+                            ? saveProject(values, account)
+                            : editProject(
+                                values,
+                                account as string,
+                                hashKey || isExist,
+                              );
+                          handleStep(true);
+                        }}>
+                        Save & Continue
                       </Button>
                     )}
                     {step === 3 && (

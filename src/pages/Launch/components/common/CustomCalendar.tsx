@@ -47,17 +47,19 @@ export const CustomCalendar = (prop: CalendarProps) => {
   const [calVal, setCalVal] = useState(0);
     
   const setInput = (date: any) => {
-    const dateSelected = Number(new Date(date));
+    const dateSelected = Number(new Date(date));    
     setCalVal(dateSelected / 1000)
     setValue(dateSelected / 1000);
 
   };
-  useEffect(()=>{    
-    if(calendarType === 'end' && startTime > calVal) {      
-      setInput(new Date(0))
-    }
+  // useEffect(()=>{  
+  //   console.log('calVal',calVal);
+      
+  //   if(calendarType === 'end' && startTime > calVal) {      
+  //     setInput(new Date(0))
+  //   }
     
-  },[startTime,endTime])
+  // },[startTime,endTime])
   
   const tilesDisabled = ({date, view}: any) => {
     const now = moment().startOf('day').unix();
@@ -66,9 +68,11 @@ export const CustomCalendar = (prop: CalendarProps) => {
     if (calendarType !== undefined) {
       if (view === 'month') {
         if (formattedDate < startCap) {
+       
+          
           return true;
         }
-      else if (calendarType === 'end' &&  startTime !== 0  && moment(date).unix() < startTime ) {
+      else if (calendarType === 'end' &&  startTime !== 0  && formattedDate <  moment.unix(startTime).startOf('day').unix()  ) { 
         return true;
       }
         else {

@@ -4,6 +4,7 @@ import {useEffect, useState} from 'react';
 import commafy from 'utils/commafy';
 import {publicTableData} from '../FakeData';
 import moment from 'moment';
+
 const middleStyle = {
   border: 'solid 1px #eff1f6',
 };
@@ -62,7 +63,7 @@ export const PublicPageTable = (prop: PublicTableProps) => {
     setTotalAllocation(roundedTotal);
     const claimData = claim.map((claimRound: any, index: number) => {
       return {
-        claimRound: claimRound.claimRound,
+        claimRound: (index+1).toString(),
         claimTime: claimRound.claimTime,
         claimTokenAllocation: claimRound.claimTokenAllocation,
         accumulated: claimRound.claimTokenAllocation,

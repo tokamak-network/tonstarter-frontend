@@ -2,6 +2,7 @@ import {
   Flex,
   Grid,
   GridItem,
+  Select,
   Text,
   Tooltip,
   useColorMode,
@@ -41,6 +42,7 @@ import {stosMinimumRequirements} from '@Launch/const';
 import {NumberInputStep} from './NumberInputField';
 import momentTZ from 'moment-timezone';
 import moment from 'moment';
+import SelectPair from './TokenDetails/SelectPair';
 
 export const MainTitle = (props: {
   leftTitle: string;
@@ -84,6 +86,7 @@ const SubTitle = (props: {
   isSecondColData?: boolean;
   formikName: string;
   inputRef?: any;
+  setOnBlur?: React.Dispatch<React.SetStateAction<any>>;
 }) => {
   const {
     leftTitle,
@@ -94,6 +97,7 @@ const SubTitle = (props: {
     isSecondColData,
     formikName,
     inputRef,
+    setOnBlur,
   } = props;
   const [inputVal, setInputVal] = useState<number | string>(
     //@ts-ignore
@@ -242,10 +246,12 @@ const SubTitle = (props: {
         return `${commafy(rightTitle)} ${values.tokenName}`;
       case 'Token Allocation for Liquidity Pool (5~10%)':
         return `${rightTitle} %`;
-      case 'Fund Raising Target Amount':
+      case 'Minimum Fundraising Amount':
         return `${commafy(rightTitle)} TON`;
       case 'Address for receiving funds':
         return rightTitle ? `${shortenAddress(rightTitle)}` : '-';
+      case 'custom LP':
+        return <></>;
       default:
         return rightTitle;
     }
@@ -261,6 +267,7 @@ const SubTitle = (props: {
         );
       case 'Select Pair':
         return <Text>{inputVal}</Text>;
+      // return <SelectPair></SelectPair>;
       case 'Pool Address\n(0.3% fee)':
         if (selectedVaultIndex && selectedVaultIndex < 6) {
           return <Text>{inputVal}</Text>;
@@ -274,7 +281,8 @@ const SubTitle = (props: {
             setValue={setInputVal}
             formikName={formikName}
             inputRef={inputRef}
-            style={{textAlign: 'right'}}></InputField>
+            style={{textAlign: 'right'}}
+            setOnBlur={setOnBlur}></InputField>
         );
       case 'Address for receiving funds':
         return (
@@ -292,7 +300,7 @@ const SubTitle = (props: {
             </Flex>
           </Tooltip>
         );
-      case 'Fund Raising Target Amount':
+      case 'Minimum Fundraising Amount':
         return (
           <InputField
             w={120}
@@ -313,6 +321,7 @@ const SubTitle = (props: {
             fontSize={13}
             value={inputVal}
             setValue={setInputVal}
+            setOnBlur={setOnBlur}
             formikName={formikName}
             inputRef={inputRef}
             style={{textAlign: 'right'}}
@@ -350,19 +359,28 @@ const SubTitle = (props: {
             toolTipW={254}
             placement={'top'}></CustomTooltip>
         </Flex>
-      ) : leftTitle === 'Fund Raising Target Amount' && !isSecondColData ? (
+      ) : leftTitle === 'Minimum Fundraising Amount' && !isSecondColData ? (
         <Flex>
           <Text color={'#7e8993'} mr={'5px'}>
-            Fund Raising <br /> Target Amount
+            Minimum Fund- <br />
+            raising Amount
           </Text>
           <CustomTooltip
             msg={[
-              'Hard cap is fundraising target amount to be ',
-              'achieved in the value of total token allocation.',
+              'Minimum Fundraising Amount is fundraising',
+              ' target amount to be achieved in the value',
+              'of total token allocation.',
             ]}
-            toolTipH="44px"
+            toolTipH="66px"
             toolTipW={254}
             placement={'top'}></CustomTooltip>
+        </Flex>
+      ) : leftTitle === 'Exchange Ratio\n1 TOS' ? (
+        <Flex>
+          <Text color={'#7e8993'} mr={'5px'}>
+            Exchange Ratio
+            <br />1 TOS
+          </Text>
         </Flex>
       ) : (
         <Flex pos={'relative'}>
@@ -435,15 +453,20 @@ const SubTitle = (props: {
                     ? tempVaultData.whitelistEnd
                       ? tempVaultData.whitelistEnd + 1
                       : publicVault.whitelistEnd || moment().unix()
-                    : tempVaultData.publicRound1
-                    ? tempVaultData.publicRound1 + 1
-                    : publicVault.publicRound1 || moment().unix()
+                    : tempVaultData.publicRound1End
+                    ? tempVaultData.publicRound1End + 1
+                    : publicVault.publicRound1End || moment().unix()
                 }></DoubleCalendarPop>
             ) : (
               <SingleCalendarPop
                 setDate={setClaimDate}
-                // startTimeCap={moment().add(8, 'days').unix()}
-                startTimeCap={moment().unix()}></SingleCalendarPop>
+                //Mainnet env
+                startTimeCap={moment().add(12, 'hours').unix()}
+                //Testnet env
+                // startTimeCap={moment()
+                //   .add('11', 'minutes')
+                //     .unix()}
+              ></SingleCalendarPop>
             )}
           </Flex>
         ) : (
@@ -643,6 +666,7 @@ const PublicTokenDetail = (props: {
   } = useAppSelector(selectLaunch);
 
   const {toastMsg} = useToast();
+  const [onBlur, setOnBlur] = useState(false);
 
   //Input Value Validating
   useEffect(() => {
@@ -650,6 +674,10 @@ const PublicTokenDetail = (props: {
     const noErrBorderStyle =
       colorMode === 'light' ? '1px solid #dfe4ee' : '1px solid #373737';
     const {current} = inputRef;
+
+    if (onBlur === false) {
+      return;
+    }
 
     switch (selectedVaultType as VaultType) {
       //Switch for each vault type
@@ -810,7 +838,7 @@ const PublicTokenDetail = (props: {
         }
       }
     }
-  }, [selectedVaultType, tempVaultData, selectedVaultDetail]);
+  }, [selectedVaultType, tempVaultData, selectedVaultDetail, onBlur]);
 
   return (
     <Grid
@@ -847,6 +875,7 @@ const PublicTokenDetail = (props: {
             const {title, content, percent, formikName} = data;
             return (
               <SubTitle
+                setOnBlur={setOnBlur}
                 key={title}
                 leftTitle={title}
                 rightTitle={content}
@@ -878,7 +907,7 @@ const PublicTokenDetail = (props: {
           leftTitle="Schedule"
           rightTitle={`UTC ${momentTZ
             .tz(momentTZ.tz.guess())
-            .zoneAbbr()}`}></MainTitle>
+            .format('Z')}`}></MainTitle>
         {secondColData?.map(
           (data: {title: string; content: string; formikName: string}) => {
             const {title, content, formikName} = data;

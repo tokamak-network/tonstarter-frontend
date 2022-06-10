@@ -65,23 +65,22 @@ export const CustomClock = (props: ClockProps) => {
   const minu =
     startTimeCap !== undefined ? moment.unix(startTimeCap).minutes() : 0;
   const sec =
-    startTimeCap !== undefined ? moment.unix(startTimeCap).seconds() : 0;
-
-
-
-  const [hours, setHours] = useState<number>(hr > 12 ? hr - 12 : hr);
+    startTimeCap !== undefined ? moment.unix(startTimeCap).seconds() : 0;    
+  const [hours, setHours] = useState<number>(hr > 12 ? hr - 12 : hr === 0? 12: hr);
   const [minutes, setMinutes] = useState<number>(minu);
   const [seconds, setSeconds] = useState<number>(sec);
-  const [meridiem, setMeridiem] = useState<string>(hr > 12 ? 'PM' : 'AM');
+  const [meridiem, setMeridiem] = useState<string>(hr >= 12 ? 'PM' : 'AM');
   useEffect(()=>{
-    setHours(hr > 12 ? hr - 12 : hr)
+    setHours(hr > 12 ? hr - 12 : hr === 0? 12: hr)
     setMinutes(minu)
     setSeconds(sec)
+    setMeridiem(hr >= 12 ? 'PM' : 'AM')
   },[startTimeCap])  
 
+  
   const setUp = () => {
     let hour;
-    if (meridiem === 'AM' && hours === 12) {
+    if (meridiem === 'AM' && hours === 12) {  
       setTime([0, minutes, seconds]);
     } else if (meridiem === 'PM' && hours === 12) {
       setTime([hours, minutes, seconds]);
@@ -95,6 +94,7 @@ export const CustomClock = (props: ClockProps) => {
 
   useEffect(() => {
     setUp();
+    
   }, [hours, minutes, seconds, meridiem, startTimeCap]);
 
   return (
@@ -258,7 +258,7 @@ export const CustomClock = (props: ClockProps) => {
           onChange={(e) => {
             setMeridiem(e.target.value);
           }}>
-          {meridiem === 'AM' ? (
+          {hr < 12  ? (
             <>
               {' '}
               <option>AM</option>

@@ -54,14 +54,15 @@ export const stake = async (args: Stake) => {
   .connect(signer)
   .deposits(tokenid);
   try {
-    if (depositInfo.owner.toLowerCase() !== userAddress.toLowerCase() ) {      
+    if (depositInfo.owner.toLowerCase() !== userAddress.toLowerCase() ) {            
       const receipt = await NPM.connect(signer).safeTransferFrom(userAddress, UniswapStaker_Address, tokenid, data);
       store.dispatch(setTxPending({ tx: true }));
       if (receipt) {
         toastWithReceipt(receipt, setTxPending, 'Reward');    
       }
     }
-    else {      
+    else {     
+      
       const receipt = await uniswapStakerContract.connect(signer).stakeToken(key, tokenid)
       store.dispatch(setTxPending({ tx: true }));
       if (receipt) {
@@ -72,6 +73,8 @@ export const stake = async (args: Stake) => {
     
   }
   catch (err) {
+    console.log(err);
+    
     store.dispatch(setTxPending({ tx: false }));
     store.dispatch(
       //@ts-ignore

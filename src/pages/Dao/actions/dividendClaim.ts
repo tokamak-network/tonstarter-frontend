@@ -51,13 +51,6 @@ export const getClaimalbeList = async (
     //project tokens
     const res: ClaimList[] = await Promise.all(
       tokens.map(async (tokenAddress: string, index: number) => {
-        //https://api.coingecko.com/api/v3/coins/list
-        // const tokenName =
-        //   tokenAddress === TON_ADDRESS
-        //     ? 'TON'
-        //     : tokenAddress === TOS_ADDRESS
-        //     ? 'TOS'
-        //     : '';
         const ERC20_CONTRACT = new Contract(tokenAddress, ERC20.abi, library);
         const tokenSymbol = await ERC20_CONTRACT.symbol();
         const tokenContractName = await ERC20_CONTRACT.name();

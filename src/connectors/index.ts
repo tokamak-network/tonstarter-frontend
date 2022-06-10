@@ -2,13 +2,14 @@ import {InjectedConnector} from '@web3-react/injected-connector';
 import {NetworkConnector} from '@web3-react/network-connector';
 import {WalletConnectConnector} from '@web3-react/walletconnect-connector';
 import {WalletLinkConnector} from '@web3-react/walletlink-connector';
+import {TrezorConnector} from '@web3-react/trezor-connector';
 
 // import {REACT_APP_MAINNET_INFURA_API, REACT_APP_RINKEBY_INFURA_API} from 'constants/index';
 
 const POLLING_INTERVAL = 12000;
 const RPC_URLS = {
-  1: "https://mainnet.infura.io/v3/34448178b25e4fbda6d80f4da62afba2",
-  4: "https://rinkeby.infura.io/v3/34448178b25e4fbda6d80f4da62afba2",
+  1: 'https://mainnet.infura.io/v3/34448178b25e4fbda6d80f4da62afba2',
+  4: 'https://rinkeby.infura.io/v3/34448178b25e4fbda6d80f4da62afba2',
 };
 
 export const network = new NetworkConnector({
@@ -32,6 +33,14 @@ const newWalletLink = () =>
 
 export const injected = new InjectedConnector({
   supportedChainIds: [1, 3, 4],
+});
+
+export const trazorConnector = new TrezorConnector({
+  chainId: 1,
+  url: RPC_URLS[1],
+  pollingInterval: POLLING_INTERVAL,
+  manifestEmail: 'ale.s@onther.io',
+  manifestAppUrl: 'http://localhost:3000',
 });
 
 // Fixes https://github.com/NoahZinsmeister/web3-react/issues/124

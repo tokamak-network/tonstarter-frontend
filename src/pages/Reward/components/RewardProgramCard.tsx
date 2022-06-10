@@ -35,6 +35,8 @@ import {convertNumber} from 'utils/number';
 import {useDispatch} from 'react-redux';
 import {gql, useQuery} from '@apollo/client';
 import {rewardReducer} from '../reward.reducer';
+import {useContract} from 'hooks/useContract';
+import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 
 const themeDesign = {
   border: {
@@ -69,8 +71,6 @@ type RewardProgramCardProps = {
 
 const {
   WTON_ADDRESS,
-  TON_ADDRESS,
-  UniswapStaking_Address,
   UniswapStaker_Address,
 } = DEPLOYED;
 
@@ -107,6 +107,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   const [isSelected, setIsSelected] = useState<boolean>(false);
   const [isUnstakeSelected, setIsUnstakeselected] = useState<boolean>(false);
   const [numStakers, setNumStakers] = useState<number>(0);
+  const TOKEN_CONTRACT = useContract(reward.rewardToken, ERC20.abi);
   const dispatch = useDispatch();
 
   const key = {
@@ -122,6 +123,16 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     STAKERABI.abi,
     library,
   );
+
+  // useEffect(()=> {
+  //   async function getRewardToken() {
+  //     if (account && TOKEN_CONTRACT) {
+  //       const symbol = await TOKEN_CONTRACT.symbol();
+  //       setRewardSymbol(symbol)
+  //     }
+  //   }
+  //   getRewardToken()
+  // },[account,reward ])
 
   useEffect(() => {
     setIsUnstakeselected(false);
@@ -192,7 +203,6 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
         account,
         UniswapStaking_Address,
       );
-
       setApproved(isApprovedForAll);
     }
     async function checkStaked() {
@@ -413,6 +423,11 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     }
   };
 
+
+  const setInitials = () => {
+    const initial = rewardSymbol.toString()
+    return initial;
+  }
   return (
     <Flex
       {...REWARD_STYLE.containerStyle({colorMode})}
@@ -676,25 +691,16 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
                     })}
               </Text>
               <Text ml="2px" fontSize="13">
-                {
-                  checkTokenType(
-                    ethers.utils.getAddress(reward.rewardToken),
-                    colorMode,
-                  ).name
-                }
+                {TOKEN_CONTRACT !== null? rewardSymbol: ''}
               </Text>
             </Box>
           </Box>
           <Avatar
             ml={'10px'}
-            src={
-              checkTokenType(
-                ethers.utils.getAddress(reward.rewardToken),
-                colorMode,
-              ).symbol
-            }
+           name='TOKEN_CONTRACT !== null? rewardSymbol: ``'
+            src={reward.rewardTokenSymbolImage !== ''? reward.rewardTokenSymbolImage : 'T' }
             bg={colorMode === 'light' ? '#ffffff' : '#222222'}
-            name="T"
+            getInitials={()=>setInitials()}
             border={
               colorMode === 'light' ? '1px solid #e7edf3' : '1px solid #3c3c3c'
             }

@@ -16,7 +16,7 @@ const VaultPropInput = (props: {placeHolder: string; filedName: string}) => {
 const PublicPropsSetting = () => {
   const vaultName: VaultName = 'Public';
   const {values, setFieldValue} = useFormikContext();
-  console.log(values);
+  // console.log(values);
 
   return (
     <Flex flexDir={'column'} w={'100%'}>

@@ -114,7 +114,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Sale Price
             </Text>
-            <Text>Project Name</Text>
+            <Text>NA</Text>
           </Flex>
           <Flex
             p={'0px 20px'}
@@ -126,7 +126,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Current Price
             </Text>
-            <Text>Project Name</Text>
+            <Text>NA</Text>
           </Flex>
           <Flex
             p={'0px 20px'}
@@ -225,6 +225,29 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
               Token Symbol
             </Text>
             <Text>{project.tokenSymbol}</Text>
+          </Flex>
+          <Flex
+            p={'0px 20px'}
+            alignItems={'center'}
+            borderBottom={themeDesign.border[colorMode]}
+            h={'58.5px'}
+            w={'100%'}
+            justifyContent={'space-between'}>
+            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+              Token Address
+            </Text>
+            <Link
+              isExternal
+              href={
+                project.owner && network === 'rinkeby'
+                  ? `https://rinkeby.etherscan.io/address/${project.tokenAddress}`
+                  : project.owner && network !== 'rinkeby'
+                  ? `https://etherscan.io/address/${project.tokenAddress}`
+                  : ''
+              }
+              _hover={{color: '#2a72e5'}}>
+              {project.tokenAddress ? shortenAddress(project.tokenAddress) : 'NA'}
+            </Link>
           </Flex>
           <Flex
             p={'0px 20px'}

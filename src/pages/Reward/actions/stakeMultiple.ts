@@ -111,7 +111,7 @@ export const stakeMultiple = async (args: any) => {
               endTime: key.endTime,
               rewardToken: key.rewardToken,
               refundee: key.refundee,
-            };
+            };            
             const data = uniswapStakerContract.interface.encodeFunctionData(
               'stakeToken',
               [keyGenereated, tokenid],

@@ -29,6 +29,7 @@ import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {getTokenSymbol} from '../utils/getTokenSymbol';
 import {claimMultiple} from '../actions/claimMultiple';
 import {useBlockNumber} from 'hooks/useBlock';
+import {Scrollbars} from 'react-custom-scrollbars-2';
 
 const {WTON_ADDRESS, UniswapStaker_Address, TOS_ADDRESS} = DEPLOYED;
 
@@ -252,33 +253,53 @@ export const ClaimReward: FC<ClaimRewardProps> = ({rewards, tokens}) => {
           mb={'18px'}>
           Claim
         </Text>
-        <Flex alignItems={'center'} h={'125px'} mb={'1rem'}>
-          <CheckboxGroup size={'sm'}>
-            <Stack direction={['row', 'column']} w={'100%'}>
-              {tokenList.map((token: any, index: number) => {
-                return (
-                  <Flex
-                    alignItems={'center'}
-                    justifyContent={'space-between'}
-                    w={'100%'}
-                    key={index}>
-                    <Checkbox
-                      value={JSON.stringify(token)}
-                      onChange={editClaimTokens}
-                      colorScheme={'blue'}
-                      isDisabled={token.amount === '0.00'}
-                      iconColor="white">
-                      {token.symbol}
-                    </Checkbox>
-                    <Text fontSize={'15px'}>
-                      {token.amount} {token.symbol}
-                    </Text>
-                  </Flex>
-                );
-              })}
-            </Stack>
-          </CheckboxGroup>
+
+        <Flex alignItems={'center'} h={'140px'} mb={'1rem'}>
+          <Scrollbars
+            style={{
+              height: '135px',
+              display: 'flex',
+              position: 'relative',
+             
+            }}
+            thumbSize={70}
+            renderThumbVertical={() => (
+              <div
+                style={{
+                  background: '#007aff',
+                  position: 'relative',
+                  right: '-2px',
+                  borderRadius: '3px',
+                }}></div>
+            )}>
+            <CheckboxGroup size={'sm'}>
+              <Stack direction={['row', 'column']} w={'92%'}>
+                {tokenList.map((token: any, index: number) => {
+                  return (
+                    <Flex
+                      alignItems={'center'}
+                      justifyContent={'space-between'}
+                      w={'100%'}
+                      key={index}>
+                      <Checkbox
+                        value={JSON.stringify(token)}
+                        onChange={editClaimTokens}
+                        colorScheme={'blue'}
+                        isDisabled={token.amount === '0.00'}
+                        iconColor="white">
+                        {token.symbol}
+                      </Checkbox>
+                      <Text fontSize={'15px'}>
+                        {token.amount} {token.symbol}
+                      </Text>
+                    </Flex>
+                  );
+                })}
+              </Stack>
+            </CheckboxGroup>
+          </Scrollbars>
         </Flex>
+
         <Flex
           width={'100%'}
           justifyContent={'center'}

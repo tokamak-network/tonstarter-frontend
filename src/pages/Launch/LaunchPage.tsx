@@ -17,7 +17,10 @@ import ConfirmTermsModal from './components/modals/ConfirmTerms';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {injected} from 'connectors';
 
-const LaunchPage = () => {
+type LaunchProps = {
+  numPairs: Number;
+};
+const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
   const [showAllProjects, setShowAllProjects] = useState<boolean>(true);
   const theme = useTheme();
   const {colorMode} = useColorMode();
@@ -87,22 +90,32 @@ const LaunchPage = () => {
           left={'50%'}
           transform={'translateX(-50%)'}>
           <Flex alignItems={'center'} flexDir="column" mb={'20px'}>
-            <PageHeader
-              title={'Launch'}
-              titleColor={'#fff'}
-              subtitle={'Make Your Own Token and Create a Token Economy.'}
-            />
+            <Text
+              color={'#fff'}
+              fontSize={'72px'}
+              fontWeight={'bold'}
+              fontFamily={theme.fonts.poppins}>
+              Launch
+            </Text>
+            <Text
+              color={'#fff'}
+              fontFamily={theme.fonts.roboto}
+              fontSize={'22px'}
+              opacity={0.8}>
+              Make Your Own Token and Create a Token Economy.
+            </Text>
           </Flex>
           <Flex justifyContent={'center'} w={'100%'}>
             {/* <Link to={`${url}/createproject`}> */}
             <Button
-              _hover={{background: 'whiteAlpha.300'}}
+              _hover={{}}
               bg={'blue.100'}
               mt={'10px'}
               color="white.100"
               fontFamily={theme.fonts.roboto}
               letterSpacing={'.35px'}
               fontSize={'14px'}
+              borderRadius={'4px'}
               width={'150px'}
               height={'38px'}
               padding={'12px 28px 10px'}
@@ -121,13 +134,12 @@ const LaunchPage = () => {
             </Button>
             {/* </Link> */}
           </Flex>
-        </Flex>
-
-        <Flex
+          <Flex
           justifyContent={'space-between'}
-          mb={'100px'}
+          // mb={'100px'}
           position={'absolute'}
-          bottom={'-21%'}
+          top='140%'
+          // bottom={'-21%'}
           background={'rgba(7, 7, 10, .7)'}
           paddingX={'400px'}
           paddingY={'10px'}
@@ -150,10 +162,13 @@ const LaunchPage = () => {
             fontFamily={theme.fonts.fld}>
             <Text color={'yellow'}>TOS pairs (in Uniswap)</Text>
             <Text color={'#fff'} fontSize={'24px'}>
-              50,000
+              {numPairs}
             </Text>
           </Flex>
         </Flex>
+        </Flex>
+
+       
       </Flex>
 
       <Box
@@ -163,7 +178,14 @@ const LaunchPage = () => {
         alignItems={'center'}
         mt={'60px'}>
         <Flex alignItems={'center'} flexDir="column">
-          <PageHeader title={'Projects'} />
+          <Text
+            fontSize={'32px'}
+            color={colorMode === 'light' ? '#3d495d' : '#fff'}
+            fontFamily={theme.fonts.titil}
+            fontWeight={'bold'}>
+            {' '}
+            Projects
+          </Text>
         </Flex>
         <Flex mt={'40px'} mb={'30px'}>
           <Button
@@ -219,6 +241,7 @@ const LaunchPage = () => {
             My
           </Button>
         </Flex>
+
       </Box>
       {showAllProjects ? <AllProjects /> : <MyProjects />}
       <ConfirmTermsModal></ConfirmTermsModal>

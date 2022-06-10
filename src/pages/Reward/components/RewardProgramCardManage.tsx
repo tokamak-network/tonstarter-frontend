@@ -31,6 +31,8 @@ import {UpdatedRedward} from '../types';
 import {unstakeLP} from '../actions/unstakeLP';
 import {useDispatch} from 'react-redux';
 import {openModal} from 'store/modal.reducer';
+import {useContract} from 'hooks/useContract';
+import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 
 const themeDesign = {
   border: {
@@ -83,6 +85,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
   const [numStakers, setNumStakers] = useState<number>(0);
   const [rewardSymbol, setRewardSymbol] = useState<string>('');
   const dispatch = useDispatch();
+  const TOKEN_CONTRACT = useContract(reward.rewardToken, ERC20.abi);
 
   const key = {
     rewardToken: reward.rewardToken,
@@ -389,23 +392,13 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
                     })}
               </Text>
               <Text ml="2px" fontSize="13">
-                {
-                  checkTokenType(
-                    ethers.utils.getAddress(reward.rewardToken),
-                    colorMode,
-                  ).name
-                }
+              {TOKEN_CONTRACT !== null? rewardSymbol: ''}
               </Text>
             </Box>
           </Box>
           <Avatar
             ml={'10px'}
-            src={
-              checkTokenType(
-                ethers.utils.getAddress(reward.rewardToken),
-                colorMode,
-              ).symbol
-            }
+            src={reward.rewardTokenSymbolImage !== ''? reward.rewardTokenSymbolImage : "" }
             bg={colorMode === 'light' ? '#ffffff' : '#222222'}
             name="T"
             border={

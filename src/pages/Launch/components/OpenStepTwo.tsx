@@ -31,7 +31,8 @@ const OpenStepTwo = () => {
         bg={isEdit ? (colorMode === 'light' ? 'white.100' : '#222222') : 'none'}
         zIndex={5}
         opacity={isEdit ? (colorMode === 'light' ? 0.25 : 0.05) : 1}
-        pointerEvents={isEdit ? 'none' : 'all'}>
+        pointerEvents={isEdit ? 'none' : 'all'}
+        >
         <TopTitle></TopTitle>
         <Box mb={'20px'}>
           <Line></Line>

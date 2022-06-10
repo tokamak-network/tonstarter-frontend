@@ -73,6 +73,8 @@ const ProjectCard: React.FC<{
 
     setStarted(status);
   }, [now, project]);
+
+
   return (
     <Link to={`${url}/project/${project.key}`} id={`past_link_${index}`}>
       <Box {...STATER_STYLE.containerStyle({colorMode})} h={'285px'}>
@@ -118,7 +120,14 @@ const ProjectCard: React.FC<{
               ...STATER_STYLE.mainText({colorMode, fontSize: 12}),
             }}
             fontSize={'14px'}>
-            {project.data.vaults[0].vaultName}
+            {/* {project.data.vaults[0].vaultName} */}
+            {moment
+              .unix(project.data.vaults[0].publicRound1)
+              .format('YYYY.MM.DD')}{' '}
+            {`~`}{' '}
+            {moment
+              .unix(project.data.vaults[0].publicRound2)
+              .format('YYYY.MM.DD')}
             {/* {project.saleStart} - {project.saleEnd} */}
           </Text>
         </Flex>
@@ -148,7 +157,7 @@ const ProjectCard: React.FC<{
         </Box>
         <Box mb={'30px'}>
           <Progress
-            value={progress ? progress: 50}
+            value={progress ? progress : 0}
             borderRadius={10}
             h={'6px'}
             bg={colorMode === 'light' ? '#e7edf3' : '#353d48'}
