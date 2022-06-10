@@ -102,14 +102,18 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
               })
             }></HoverImage>
         </Flex>
-        {isHover && !isMandatory && (
+        {isHover && !isMandatory && isSelected && (
           <Box
             ml={'10px'}
             w={'16px'}
             h={'16px'}
             color={'white.100'}
             cursor="pointer"
-            onClick={() => removeVault()}>
+            onClick={() => {
+              if (window.confirm('Do you really want to remove this vault?')) {
+                removeVault();
+              }
+            }}>
             X
           </Box>
         )}
@@ -181,7 +185,7 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
           fontWeight={600}>
           {(
             (Number(tokenAllocation.replaceAll(',', '')) * 100) /
-            values.totalTokenAllocation
+            values.totalSupply!
           )
             .toString()
             .match(/^\d+(?:\.\d{0,2})?/)}{' '}
