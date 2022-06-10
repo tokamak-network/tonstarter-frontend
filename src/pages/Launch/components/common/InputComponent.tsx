@@ -31,6 +31,23 @@ const getMaxLength = (name: string) => {
   }
 };
 
+const getPlaceHolder = (name: string) => {
+  switch (name) {
+    case 'Website ':
+      return 'https://tonstarter.tokamak.network';
+    case 'Medium ':
+      return 'https://medium.com/onther-tech';
+    case 'Telegram ':
+      return 'https://t.me/tokamak_network';
+    case 'Twitter ':
+      return 'https://twitter.com/tokamak_network';
+    case 'Discord ':
+      return 'https://dsc.gg/dragonsmidgard';
+    default:
+      return `Input ${name}`;
+  }
+};
+
 const InputComponent: React.FC<InputComponentProps> = (props) => {
   const {name, nameDisplay, inputStyle, requirement} = props;
   const {errors, values} = useFormikContext<Projects['CreateProject']>();
@@ -72,8 +89,8 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
           </Flex>
           {name === 'projectName' && (
             <Text color={'#86929d'} fontSize={10}>
-              {values.projectName && 20 - values.projectName?.length} characters
-              remaining
+              {(values.projectName && 20 - values.projectName?.length) || 20}{' '}
+              characters remaining
             </Text>
           )}
         </Flex>
@@ -86,6 +103,7 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
           //@ts-ignore
           const isError = errors[name] === undefined ? false : true;
 
+          //selectBox feedback
           // if (name === 'sector') {
           //   return (
           //     <Select
@@ -127,7 +145,7 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
               id={name}
               h={'32px'}
               _focus={{}}
-              placeholder={`Input ${titleTrimed}`}
+              placeholder={`${getPlaceHolder(titleTrimed)}`}
               {...inputStyle}></Input>
           );
         }}
