@@ -35,7 +35,7 @@ const NumberInputStep: React.FC<NumberInputStepProps> = ({
       defaultValue={valueProp}
       step={1}
       min={5}
-      max={10}
+      max={50}
       onChange={(e: any) => {
         dispatch(
           saveTempVaultData({

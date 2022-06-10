@@ -1,6 +1,7 @@
 import {Box, useColorMode, useTheme, Flex, Button} from '@chakra-ui/react';
 import {useState} from 'react';
 import {DetailTableProject} from './Detail_Table_Project';
+import { Detail_Table_Description } from './Detail_Table_Description';
 import {DetailTableTier} from './Detail_Table_Tier';
 import {DetailInfo, SaleStatus} from '@Starter/types';
 import {AdminObject} from '@Admin/types';
@@ -15,7 +16,7 @@ export const DetailTable = (prop: DetailTableProp) => {
   const {status, saleInfo, detailInfo} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const [selectDetail, setSelectDetail] = useState<boolean>(true);
+  const [selectDetail, setSelectDetail] = useState<string>('Project Details');
 
   const {STATER_STYLE} = theme;
 
@@ -24,24 +25,31 @@ export const DetailTable = (prop: DetailTableProp) => {
       <Flex fontFamily={theme.fonts.fld} flexDir="column" w={'100%'}>
         <Box>
           <Button
-            {...STATER_STYLE.btn({colorMode, isActive: selectDetail})}
+            {...STATER_STYLE.btn({colorMode, isActive: selectDetail === 'Project Details'})}
             w={160}
             h={'70px'}
-            onClick={() => setSelectDetail(true)}>
+            onClick={() => setSelectDetail('Project Details')}>
             Project Details
           </Button>
           <Button
-            {...STATER_STYLE.btn({colorMode, isActive: !selectDetail})}
+            {...STATER_STYLE.btn({colorMode, isActive: selectDetail === 'Tier Details'})}
             w={160}
             h={'70px'}
-            onClick={() => setSelectDetail(false)}>
+            onClick={() => setSelectDetail('Tier Details')}>
             Tier Details
+          </Button>
+          <Button
+            {...STATER_STYLE.btn({colorMode, isActive: selectDetail === 'Description'})}
+            w={160}
+            h={'70px'}
+            onClick={() => setSelectDetail('Description')}>
+          Description
           </Button>
         </Box>
         <Box d="flex" flexDir="column" pt={'35px'}>
-          {selectDetail === true ? (
+          {selectDetail === 'Project Details' ? (
             <DetailTableProject saleInfo={saleInfo}></DetailTableProject>
-          ) : (
+          ):selectDetail === 'Description' ? (<Detail_Table_Description saleInfo={saleInfo}></Detail_Table_Description>)  : (
             <DetailTableTier
               status={status}
               detailInfo={detailInfo}></DetailTableTier>
@@ -55,24 +63,31 @@ export const DetailTable = (prop: DetailTableProp) => {
     <Flex fontFamily={theme.fonts.fld} flexDir="column" w={'100%'}>
       <Box>
         <Button
-          {...STATER_STYLE.btn({colorMode, isActive: selectDetail})}
+          {...STATER_STYLE.btn({colorMode, isActive: selectDetail === 'Project Details'})}
           w={160}
           h={'70px'}
-          onClick={() => setSelectDetail(true)}>
+          onClick={() => setSelectDetail('Project Details')}>
           Project Details
         </Button>
         <Button
-          {...STATER_STYLE.btn({colorMode, isActive: !selectDetail})}
+          {...STATER_STYLE.btn({colorMode, isActive: selectDetail === 'Tier Details'})}
           w={160}
           h={'70px'}
-          onClick={() => setSelectDetail(false)}>
+          onClick={() => setSelectDetail('Tier Details')}>
           Tier Details
+        </Button>
+        <Button
+          {...STATER_STYLE.btn({colorMode, isActive: selectDetail === 'Description'})}
+          w={160}
+          h={'70px'}
+          onClick={() => setSelectDetail('Description')}>
+         Description
         </Button>
       </Box>
       <Box d="flex" flexDir="column" pt={'35px'}>
-        {selectDetail === true ? (
+        {selectDetail === 'Project Details' ? (
           <DetailTableProject saleInfo={saleInfo}></DetailTableProject>
-        ) : (
+        ) :selectDetail === 'Description' ? (<Detail_Table_Description saleInfo={saleInfo}></Detail_Table_Description>) : (
           <DetailTableTier
             status={status}
             detailInfo={detailInfo}></DetailTableTier>
@@ -81,3 +96,5 @@ export const DetailTable = (prop: DetailTableProp) => {
     </Flex>
   );
 };
+
+//Detail_Table_Description

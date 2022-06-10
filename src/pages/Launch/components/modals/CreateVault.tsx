@@ -83,13 +83,13 @@ const CreateVaultModal = () => {
         isClosable: true,
       });
     } else {
-      if (
-        values.totalSupply &&
-        totalAllocation + Number(tokenAllocatonVal) ===
-          Number(values.totalSupply)
-      ) {
-        return setBtnDisable(true);
-      }
+      // if (
+      //   values.totalSupply &&
+      //   totalAllocation + Number(tokenAllocatonVal) ===
+      //     Number(values.totalSupply)
+      // ) {
+      //   return setBtnDisable(true);
+      // }
       setBtnDisable(false);
     }
   }, [tokenAllocatonVal, nameVal, values, toastMsg]);
