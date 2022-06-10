@@ -32,8 +32,6 @@ const getMaxLength = (name: string) => {
 };
 
 const getPlaceHolder = (name: string) => {
-  console.log('--');
-  console.log(name);
   switch (name) {
     case 'Website ':
       return 'https://tonstarter.tokamak.network';
