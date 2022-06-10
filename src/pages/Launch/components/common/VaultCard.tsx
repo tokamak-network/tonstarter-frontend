@@ -102,7 +102,7 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
               })
             }></HoverImage>
         </Flex>
-        {isHover && !isMandatory && (
+        {isHover && !isMandatory && isSelected && (
           <Box
             ml={'10px'}
             w={'16px'}
