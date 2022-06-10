@@ -79,7 +79,9 @@ export const Custom: FC<Custom> = ({vault, project}) => {
 
   useEffect(() => {
     async function getLPToken() {
+      
       if (account === null || account === undefined || library === undefined) {
+        
         return;
       }
       const now = moment().unix();
@@ -90,7 +92,7 @@ export const Custom: FC<Custom> = ({vault, project}) => {
         .calcalClaimAmount(currentRound);
 
       const nowClaimRound = await vaultC.connect(signer).nowClaimRound();
-
+      
       const disabled = Number(nowClaimRound) >= Number(currentRound);
       const claimCounts = await vaultC.connect(signer).totalClaimCounts();
 
@@ -102,13 +104,13 @@ export const Custom: FC<Custom> = ({vault, project}) => {
 
       setDistributeDisable(Number(nowClaimRound) >= Number(currentRound));
       const amountFormatted = parseInt(ethers.utils.formatEther(amount));
-
+      
       setShowDate(amountFormatted === 0 && Number(claimDate) > now);
       setClaimTime(claimDate);
       setDistributable(amountFormatted);
     }
     getLPToken();
-  }, [account, library, transactionType, blockNumber, vault.vaultAddress]);
+  }, [account, library, transactionType, blockNumber,vault.vaultAddress]);
   const themeDesign = {
     border: {
       light: 'solid 1px #e6eaee',
