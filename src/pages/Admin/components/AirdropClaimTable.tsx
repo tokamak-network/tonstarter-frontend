@@ -28,6 +28,8 @@ import * as TOKENDIVIDENDPOOLPROXY from 'services/abis/TokenDividendProxyPool.js
 import {ethers} from 'ethers';
 import commafy from 'utils/commafy';
 import {getClaimalbeList} from '../../Dao/actions';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectTransactionType} from 'store/refetch.reducer';
 
 type Round = {
   allocatedAmount: string;
@@ -39,7 +41,6 @@ type Round = {
 type AirDropList = [Round] | undefined;
 
 export const AirdropClaimTable = () => {
-  const {blockNumber} = useBlockNumber();
   const {account, library} = useActiveWeb3React();
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -50,6 +51,7 @@ export const AirdropClaimTable = () => {
   const [airdropData, setAirdropData] = useState<any[]>([]);
   const [checkedTokenAddresses, setCheckedTokenAddresses] = useState<any[]>([]);
   const [radioValue, setRadioValue] = useState<string>('Genesis Airdrop');
+  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [tonStakerAirdropTokens, setTonStakerAirdropTokens] = useState<any[]>(
     [],
   );
@@ -57,7 +59,7 @@ export const AirdropClaimTable = () => {
 
   const [genesisAirdropBalance, setGenesisAirdropBalance] = useState<
     string | undefined
-  >(undefined);
+  >('');
   const dispatch = useDispatch();
   const {LockTOSDividend_ADDRESS, TokenDividendProxyPool_ADDRESS} = DEPLOYED;
 
@@ -164,7 +166,7 @@ export const AirdropClaimTable = () => {
       getClaimableAirdropTonAmounts();
     }
     /*eslint-disable*/
-  }, [account]);
+  }, [account, transactionType, blockNumber]);
 
   const availableGenesisAmount = (
     roundInfo: AirDropList,
@@ -172,7 +174,7 @@ export const AirdropClaimTable = () => {
     unclaimedAmount: string | undefined,
   ) => {
     if (roundInfo !== undefined && claimedAmount !== undefined) {
-      setGenesisAirdropBalance(roundInfo?.[0]?.myAmount);
+      setGenesisAirdropBalance(unclaimedAmount);
     }
   };
 
@@ -192,7 +194,7 @@ export const AirdropClaimTable = () => {
       callAirDropData();
     }
     /*eslint-disable*/
-  }, [account]);
+  }, [account, transactionType, blockNumber]);
 
   const themeDesign = {
     fontColorTitle: {
@@ -509,7 +511,8 @@ export const AirdropClaimTable = () => {
             </Text>
           </GridItem>
         </Grid>
-      ) : radioValue === 'Genesis Airdrop' && daoAirdropTokens.length === 0 ? (
+      ) : radioValue === 'Genesis Airdrop' &&
+        Number(genesisAirdropBalance) === 0 ? (
         <Flex
           justifyContent={'center'}
           my={'20px'}
@@ -711,7 +714,6 @@ export const AirdropClaimTable = () => {
           templateColumns="repeat(1, 1fr)"
           w={'100%'}
           bg={themeDesign.bg[colorMode]}>
-          {console.log('genesisAirdropBalance: ', genesisAirdropBalance)}
           <GridItem
             border={themeDesign.border[colorMode]}
             className={'chart-cell'}
