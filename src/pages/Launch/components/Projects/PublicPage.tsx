@@ -575,12 +575,14 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 className={'chart-cell'}
                 justifyContent={'space-between'}>
                 <Text
-                  fontFamily={theme.fonts.fld}
+                  fontFamily={theme.fonts.fld} 
                   color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
                   Whitelist
                 </Text>
-                <Text fontFamily={theme.fonts.fld}>
-                  {moment.unix(vault.whitelist).format('YYYY.MM.DD HH:mm:ss')}
+                <Text fontFamily={theme.fonts.fld} w={'100px'} textAlign={'right'}>
+                  {moment.unix(vault.whitelist).format('YYYY.MM.DD HH:mm:ss')}  {`~`} {moment
+                      .unix(vault.whitelistEnd)
+                      .format('MM.DD HH:mm:ss')}
                 </Text>
               </GridItem>
               <GridItem
@@ -594,10 +596,12 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                   color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
                   Public Round 1.
                 </Text>
-                <Text fontFamily={theme.fonts.fld}>
+                <Text fontFamily={theme.fonts.fld} w={'100px'} textAlign={'right'}>
                   {moment
                     .unix(vault.publicRound1)
-                    .format('YYYY.MM.DD HH:mm:ss')}
+                    .format('YYYY.MM.DD HH:mm:ss')}  {`~`} {moment
+                      .unix(vault.publicRound1End)
+                      .format('MM.DD HH:mm:ss')}
                 </Text>
               </GridItem>
               <GridItem
@@ -611,10 +615,12 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                   color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
                   Public Round 2.
                 </Text>
-                <Text fontFamily={theme.fonts.fld}>
+                <Text fontFamily={theme.fonts.fld} w={'100px'} textAlign={'right'}>
                   {moment
                     .unix(vault.publicRound2)
-                    .format('YYYY.MM.DD HH:mm:ss')}
+                    .format('YYYY.MM.DD HH:mm:ss')}  {`~`} {moment
+                      .unix(vault.publicRound2End)
+                      .format('MM.DD HH:mm:ss')}
                 </Text>
               </GridItem>
               <GridItem
