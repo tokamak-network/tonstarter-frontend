@@ -124,6 +124,7 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
       }
       return true;
     });
+
     setPendingWallet(connector); // set wallet for pending view
     setWalletView(WALLET_VIEWS.PENDING);
     setAccountValue({signIn: true});
@@ -133,11 +134,9 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
         activate(connector, undefined, true).catch((error) => {
           if (error instanceof UnsupportedChainIdError) {
             try {
-              console.log('**connected error**');
-              console.log(error);
               activate(connector); // a little janky...can't use setError because the connector isn't set
             } catch {
-              activate(trazorConnector);
+              // activate(trazorConnector);
             }
           } else {
             setPendingError(true);
