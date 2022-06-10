@@ -109,7 +109,11 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
             h={'16px'}
             color={'white.100'}
             cursor="pointer"
-            onClick={() => removeVault()}>
+            onClick={() => {
+              if (window.confirm('Do you really want to remove this vault?')) {
+                removeVault();
+              }
+            }}>
             X
           </Box>
         )}
