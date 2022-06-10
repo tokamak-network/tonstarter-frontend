@@ -357,7 +357,8 @@ const ConfirmTokenModal = () => {
                 <Text fontSize={12} color={'gray.225'}>
                   You won't be able to edit your project after it has been
                   deployed or initialized. Double-check the content before you
-                  click the “Deploy” button.
+                  click the {data.data.isSetStep ? `"Initialize"` : `“Deploy”`}{' '}
+                  button.
                 </Text>
               </Flex>
             </Flex>
