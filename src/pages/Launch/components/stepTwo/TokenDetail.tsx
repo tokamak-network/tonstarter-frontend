@@ -330,6 +330,108 @@ const SubTitle = (props: {
     }
   }, [inputVal]);
 
+  const LeftTitleComponent = () => {
+    switch (leftTitle) {
+      case 'Public Round 1':
+        return (
+          <Flex>
+            <Text w={'88px'} color={'#7e8993'}>
+              {leftTitle}
+            </Text>
+            <CustomTooltip
+              msg={[
+                'The sum of public round 1 and 2 must equal',
+                'the value of total token allocation.',
+              ]}
+              toolTipH="44px"
+              toolTipW={254}
+              placement={'top'}></CustomTooltip>
+          </Flex>
+        );
+      case 'Minimum Fundraising Amount':
+        return (
+          <Flex>
+            <Text color={'#7e8993'} mr={'5px'}>
+              Minimum Fund- <br />
+              raising Amount
+            </Text>
+            <CustomTooltip
+              msg={[
+                'Minimum Fund Raising Amount is the minimum amount',
+                'of money you want to achieve through a public sale.',
+                'A project is considered a failure if it is not achieved.',
+                'If it fails, the investor can recover the amount.',
+                '<br />',
+                'Enterable from zero, but sufficient funding considering',
+                'a certain percentage(5~10%) is delivered',
+                'to the Initial Liquidity Vault after the public sale.',
+              ]}
+              toolTipH="154px"
+              toolTipW={322}
+              placement={'top'}
+              style={{
+                fontSize: 12,
+              }}></CustomTooltip>
+          </Flex>
+        );
+      case 'Exchange Ratio\n1 TOS':
+        return (
+          <Flex>
+            <Text color={'#7e8993'} mr={'5px'}>
+              Exchange Ratio
+              <br />1 TOS
+            </Text>
+          </Flex>
+        );
+      case 'Snapshot':
+        return (
+          <Flex pos={'relative'}>
+            <Text
+              color={'#7e8993'}
+              w={!leftTitle.includes('or Liquidity Pool') ? '101px' : '201px'}>
+              {leftTitle}
+            </Text>
+            <Flex
+              right={'20px'}
+              pos="absolute"
+              h={'100%'}
+              alignItems="center"
+              justifyContent={'center'}>
+              <CustomTooltip
+                toolTipW={322}
+                toolTipH={'224px'}
+                msg={[
+                  'Snapshot is a stage to identify if users have met the',
+                  'requirements to participate in Public Round 1',
+                  'and to determine the users’ tier. Requirements for each',
+                  'project’s Public Round 1 may vary.',
+                  'Based on this snapshot, tiers for sTOS holders are',
+                  'determined, and the higher the tier, the more project',
+                  'tokens allocated.',
+                  'Once the snapshot is taken, no matter how much sTOS',
+                  'a user has, their tier cannot be changed.',
+                  '<br />',
+                  '!*Snapshot date must be set 1 week after Deployment',
+                  '!completion',
+                ]}
+                placement={'top'}
+                important={true}></CustomTooltip>
+            </Flex>
+          </Flex>
+        );
+      default:
+        return (
+          <Flex pos={'relative'}>
+            <Text
+              color={'#7e8993'}
+              w={!leftTitle.includes('or Liquidity Pool') ? '101px' : '201px'}>
+              {leftTitle}
+            </Text>
+          </Flex>
+        );
+    }
+  };
+
   return (
     <Flex
       pl={'25px'}
@@ -345,70 +447,7 @@ const SubTitle = (props: {
           : 'solid 1px #323232'
       }
       fontWeight={600}>
-      {leftTitle === 'Public Round 1' && !isSecondColData ? (
-        <Flex>
-          <Text w={'88px'} color={'#7e8993'}>
-            {leftTitle}
-          </Text>
-          <CustomTooltip
-            msg={[
-              'The sum of public round 1 and 2 must equal',
-              'the value of total token allocation.',
-            ]}
-            toolTipH="44px"
-            toolTipW={254}
-            placement={'top'}></CustomTooltip>
-        </Flex>
-      ) : leftTitle === 'Minimum Fundraising Amount' && !isSecondColData ? (
-        <Flex>
-          <Text color={'#7e8993'} mr={'5px'}>
-            Minimum Fund- <br />
-            raising Amount
-          </Text>
-          <CustomTooltip
-            msg={[
-              'Minimum Fundraising Amount is fundraising',
-              ' target amount to be achieved in the value',
-              'of total token allocation.',
-            ]}
-            toolTipH="66px"
-            toolTipW={254}
-            placement={'top'}></CustomTooltip>
-        </Flex>
-      ) : leftTitle === 'Exchange Ratio\n1 TOS' ? (
-        <Flex>
-          <Text color={'#7e8993'} mr={'5px'}>
-            Exchange Ratio
-            <br />1 TOS
-          </Text>
-        </Flex>
-      ) : (
-        <Flex pos={'relative'}>
-          <Text
-            color={'#7e8993'}
-            w={!leftTitle.includes('or Liquidity Pool') ? '101px' : '201px'}>
-            {leftTitle}
-          </Text>
-          {leftTitle === 'Snapshot' && (
-            <Flex
-              right={'20px'}
-              pos="absolute"
-              h={'100%'}
-              alignItems="center"
-              justifyContent={'center'}>
-              <CustomTooltip
-                toolTipW={232}
-                toolTipH={'44px'}
-                msg={[
-                  'Snapshot date must be set 1 week after',
-                  'Deployment completion',
-                ]}
-                placement={'top'}
-                important={true}></CustomTooltip>
-            </Flex>
-          )}
-        </Flex>
-      )}
+      <LeftTitleComponent></LeftTitleComponent>
       {isEdit ? (
         isSecondColData ? (
           <Flex>

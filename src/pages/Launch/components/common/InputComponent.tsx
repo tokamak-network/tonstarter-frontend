@@ -91,8 +91,8 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
           </Flex>
           {name === 'projectName' && (
             <Text color={'#86929d'} fontSize={10}>
-              {values.projectName && 20 - values.projectName?.length} characters
-              remaining
+              {(values.projectName && 20 - values.projectName?.length) || 20}{' '}
+              characters remaining
             </Text>
           )}
         </Flex>
