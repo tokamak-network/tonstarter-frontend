@@ -123,7 +123,7 @@ export const Project: FC<ProjectProps> = ({project}) => {
               onClick={() => {
                 setShowVault(true);
               }}>
-              Vault
+              Vaults
             </Button>
           </Flex>
         </Flex>
