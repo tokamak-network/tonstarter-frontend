@@ -356,8 +356,8 @@ const ConfirmTokenModal = () => {
                 </Text>
                 <Text fontSize={12} color={'gray.225'}>
                   You won't be able to edit your project after it has been
-                  deployed. Double-check the content before you click the
-                  “Deploy” button.
+                  deployed or initialized. Double-check the content before you
+                  click the “Deploy” button.
                 </Text>
               </Flex>
             </Flex>
@@ -377,7 +377,7 @@ const ConfirmTokenModal = () => {
                     ? closeModal()
                     : setDeployStep('Deploying')
                 }>
-                Deploy
+                {data.data.isSetStep ? 'Initialize' : 'Deploy'}
               </Button>
             </Box>
           </ModalBody>
