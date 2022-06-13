@@ -525,7 +525,9 @@ export const AirdropClaimTable = () => {
               bg={themeDesign.bg[colorMode]}>
               <GridItem
                 border={themeDesign.border[colorMode]}
-                borderBottom={index === airdropData?.length - 1 ? '' : 'none'}
+                borderBottom={
+                  index === tonStakerAirdropTokens?.length - 1 ? '' : 'none'
+                }
                 className={'chart-cell'}
                 d={'flex'}
                 justifyContent={'center'}>
@@ -611,7 +613,9 @@ export const AirdropClaimTable = () => {
               bg={themeDesign.bg[colorMode]}>
               <GridItem
                 border={themeDesign.border[colorMode]}
-                borderBottom={index === airdropData?.length - 1 ? '' : 'none'}
+                borderBottom={
+                  index === daoAirdropTokens?.length - 1 ? '' : 'none'
+                }
                 className={'chart-cell'}
                 d={'flex'}
                 justifyContent={'center'}>
