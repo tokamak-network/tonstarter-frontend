@@ -44,6 +44,7 @@ async function editProject(
   account: string,
   uid: string,
   modal?: boolean,
+  web3Token: string,
 ) {
   const result = await axios
     .put(
@@ -53,6 +54,7 @@ async function editProject(
         headers: {
           account,
           uid,
+          auth,
         },
       },
     )

@@ -15,6 +15,7 @@ import OpenStepThree from '@Launch/components/OpenStepThree';
 import validateFormikValues from '@Launch/utils/validate';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {saveProject, editProject} from '@Launch/utils/saveProject';
+import useWeb3Token from './hooks/useWeb3Token';
 
 const StepComponent = (props: {step: StepNumber}) => {
   const {step} = props;
@@ -85,7 +86,7 @@ const MainScreen = () => {
     [step],
   );
 
-  // const {web3Token} = useWeb3Token();
+  const {storageWeb3Token} = useWeb3Token();
 
   const [oldData, setOldData] = useState();
 
@@ -199,6 +200,7 @@ const MainScreen = () => {
                             account as string,
                             hashKey || isExist,
                             true,
+                            storageWeb3Token,
                           )
                     }>
                     Save
@@ -240,6 +242,8 @@ const MainScreen = () => {
                                 values,
                                 account as string,
                                 hashKey || isExist,
+                                true,
+                                storageWeb3Token,
                               );
                           handleStep(true);
                         }}>
@@ -266,6 +270,8 @@ const MainScreen = () => {
                                 values,
                                 account as string,
                                 hashKey || isExist,
+                                true,
+                                storageWeb3Token,
                               );
                           handleStep(true);
                         }}>
