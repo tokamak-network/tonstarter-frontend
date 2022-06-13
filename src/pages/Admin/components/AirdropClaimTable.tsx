@@ -15,12 +15,10 @@ import {
 } from '@chakra-ui/react';
 import {LoadingComponent} from 'components/Loading';
 import {claimAirdrop} from '../../../components/Airdrop/actions';
-import {useDispatch} from 'react-redux';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {DEPLOYED} from 'constants/index';
 import {Contract} from '@ethersproject/contracts';
 import AdminActions from '@Admin/actions';
-import {useBlockNumber} from 'hooks/useBlock';
 import * as LockTOSDividendABI from 'services/abis/LockTOSDividend.json';
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import {fetchAirdropPayload} from '../../../components/Airdrop/utils/fetchAirdropPayload';
@@ -60,7 +58,6 @@ export const AirdropClaimTable = () => {
   const [genesisAirdropBalance, setGenesisAirdropBalance] = useState<
     string | undefined
   >('');
-  const dispatch = useDispatch();
   const {LockTOSDividend_ADDRESS, TokenDividendProxyPool_ADDRESS} = DEPLOYED;
 
   const LOCKTOS_DIVIDEND_CONTRACT = new Contract(
