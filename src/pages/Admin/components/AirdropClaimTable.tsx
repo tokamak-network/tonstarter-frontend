@@ -450,29 +450,8 @@ export const AirdropClaimTable = () => {
             </Text>
           </GridItem>
         </Grid>
-      ) : radioValue === 'DAO Airdrop' && daoAirdropTokens.length === 0 ? (
-        <Flex
-          justifyContent={'center'}
-          my={'20px'}
-          width={'100%'}
-          height={'200px'}
-          padding={'90px 100px'}
-          borderRadius={'10px'}
-          border={
-            colorMode === 'light' ? 'solid 1px #fff' : 'solid 1px #373737'
-          }
-          style={{backdropFilter: 'blur(8px)'}}
-          boxShadow={'0 1px 1px 0 rgba(96, 97, 112, 0.16)'}
-          backgroundColor={colorMode === 'light' ? '#fff' : '#222'}>
-          <Text
-            fontFamily={theme.fonts.fld}
-            color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}
-            fontWeight={'bold'}
-            fontSize={'15px'}>
-            There aren't any distributed tokens
-          </Text>
-        </Flex>
-      ) : radioValue === 'Genesis Airdrop' && daoAirdropTokens.length > 0 ? (
+      ) : radioValue === 'Genesis Airdrop' &&
+        Number(genesisAirdropBalance) > 0 ? (
         <Grid
           templateColumns="repeat(1, 1fr)"
           w={'100%'}
@@ -511,8 +490,7 @@ export const AirdropClaimTable = () => {
             </Text>
           </GridItem>
         </Grid>
-      ) : radioValue === 'Genesis Airdrop' &&
-        Number(genesisAirdropBalance) === 0 ? (
+      ) : (
         <Flex
           justifyContent={'center'}
           my={'20px'}
@@ -534,7 +512,7 @@ export const AirdropClaimTable = () => {
             There aren't any distributed tokens
           </Text>
         </Flex>
-      ) : null}
+      )}
 
       {radioValue === 'TON Staker' && tonStakerAirdropTokens.length > 0 ? (
         tonStakerAirdropTokens.map((data: any, index: number) => {
