@@ -7,6 +7,7 @@ import {shortenAddress} from 'utils';
 import {BASE_PROVIDER} from 'constants/index';
 
 import 'react-quill/dist/quill.bubble.css';
+import { important } from 'polished';
 
 type ProjectTokenProps = {
   project: any;
@@ -25,11 +26,23 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
       ['blockquote', 'code-block'],
       [{list: 'ordered'}, {list: 'bullet'}],
       [{indent: '-1'}, {indent: '+1'}, {align: []}],
-      ['link', 'image', 'video'],
+      ['link', 'image', 'video', 'color'],
       ['clean'],
     ], // options here
   };
 
+  const quillStyle = colorMode=== 'light'? 
+  `.ql-editor span {
+      color: #000000 !important
+  }
+  .ql-bubble .ql-editor a {
+    color: #2a72e5 !important
+  }` : `.ql-editor span {
+    color: #ffffff !important
+}
+.ql-bubble .ql-editor a {
+  color: #2a72e5 !important
+}`
   const themeDesign = {
     border: {
       light: 'solid 1px #e6eaee',
@@ -353,13 +366,14 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
           mb={'15px'}>
           Description
         </Text>
+        <style>{quillStyle}</style>
         <ReactQuill
           // placeholder="Input the project description"
           readOnly={true}
           modules={modules}
           value={project.description}
           theme={'bubble'}
-          style={{color: 'white !important'}}
+          style={{color: '#ffffff !important'}}
         />
       </Flex>
     </Flex>

@@ -240,6 +240,18 @@ useEffect(()=> {
     );
   }
 
+  const quillStyle = colorMode=== 'light'? 
+  `.ql-editor span {
+      color: #000000 !important
+  }
+  .ql-bubble .ql-editor a {
+    color: #2a72e5 !important
+  }` : `.ql-editor span {
+    color: #ffffff !important
+}
+.ql-bubble .ql-editor a {
+  color: #2a72e5 !important
+}`
   return (
     <Flex mt={'122px'} w={'100%'} justifyContent="center" mb={'100px'}>
       <Flex w="1194px" flexDir="column" mb={'10px'}>
@@ -270,6 +282,7 @@ useEffect(()=> {
               {saleInfo?.description}
             </Text> */}
             <Flex ml={'-15px'}>
+            <style>{quillStyle}</style>
               <ReactQuill
                 // placeholder="Input the project description"
                 readOnly={true}
