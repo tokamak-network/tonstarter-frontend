@@ -50,6 +50,7 @@ type RewardContainerProps = {
   sortString: string;
   positionsByPool: any;
   LPTokens: any;
+  tokens: any[];
 };
 const {UniswapStaker_Address} = DEPLOYED;
 
@@ -61,6 +62,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({
   sortString,
   positionsByPool,
   LPTokens,
+  tokens
 }) => {
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [pageOptions, setPageOptions] = useState<number>(0);
@@ -209,6 +211,9 @@ export const RewardContainer: FC<RewardContainerProps> = ({
               const includedPool = pools.find(
                 (pool) => ethers.utils.getAddress(pool.id) === ethers.utils.getAddress(reward.poolAddress),
               );
+
+              const token = tokens.find((token)=> ethers.utils.getAddress(reward.rewardToken) === ethers.utils.getAddress(token.tokenAddress));
+              const symbolImage = token?.tokenImage !== undefined? token?.tokenImage: ''              
               const token0 = includedPool.token0.id;
               const token1 = includedPool.token1.id;
               const token0Image = includedPool.token0Image;
@@ -229,6 +234,7 @@ export const RewardContainer: FC<RewardContainerProps> = ({
                 numStakers: reward.numStakers,
                 status: reward.status,
                 index: reward.index,
+                rewardTokenSymbolImage: symbolImage,
               };
               return (
                 <RewardProgramCard

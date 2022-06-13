@@ -8,6 +8,7 @@ import {IconTwitter} from './Icons/IconTwitter';
 import {IconDiscord} from './Icons/IconDiscord';
 
 import {EmailIcon} from '@chakra-ui/icons';
+import {useModal} from 'hooks/useModal';
 const socialLinks = [
   {
     title: 'Telegram',
@@ -68,6 +69,7 @@ const SocialLinks: React.FC<SocialLinkProps> = ({colorMode}) => {
 export const Footer = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
+  const {openAnyModal} = useModal();
 
   const bgColor = colorMode === 'light' ? 'gray.50' : 'black.200';
   return (
@@ -81,7 +83,11 @@ export const Footer = () => {
           flexGrow={2}
           direction={{base: 'column', md: 'row'}}
           alignItems={'center'}>
-          <Box mr={{base: 0, md: 5}}>
+          <Box
+            d="flex"
+            justifyContent={'center'}
+            alignItems={'center'}
+            mr={{base: 0, md: 5}}>
             <Text
               color={colorMode === 'light' ? 'gray.225' : 'white.100'}
               fontWeight={600}
@@ -91,7 +97,12 @@ export const Footer = () => {
               ONTHER PTE.LTD
             </Text>
           </Box>
-          <Box mr={3} py={{base: 4, md: 0}}>
+          <Box
+            d="flex"
+            justifyContent={'center'}
+            alignItems={'center'}
+            mr={3}
+            py={{base: 4, md: 0}}>
             <Text
               color={colorMode === 'light' ? 'gray.175' : 'white.100'}
               fontSize={13}
@@ -100,19 +111,40 @@ export const Footer = () => {
               111 SOMERSET ROAD #06-07O 111 SOMERSET SINGAPORE 238164
             </Text>
           </Box>
-          <Box mr={{base: 0, md: 3}}>
+          <Box
+            d="flex"
+            justifyContent={'center'}
+            alignItems={'center'}
+            mr={{base: 0, md: 3}}>
             <EmailIcon
               color={
                 colorMode === 'light' ? '#84919e' : 'white.100'
               }></EmailIcon>
           </Box>
-          <Box justifyContent={'center'} alignItems={'center'}>
+          <Box d="flex" justifyContent={'center'} alignItems={'center'}>
             <Text
               color={colorMode === 'light' ? 'gray.250' : 'white.100'}
               fontSize={13}
               fontFamily={theme.fonts.body}
               fontWeight={'normal'}>
               hello@tokamak.network
+            </Text>
+          </Box>
+          <Box d="flex" justifyContent={'center'} alignItems={'center'}>
+            <Text
+              color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+              fontSize={13}
+              fontFamily={theme.fonts.body}
+              fontWeight={'normal'}
+              as="u"
+              ml={'20px'}
+              cursor={'pointer'}
+              onClick={() =>
+                openAnyModal('Launch_ConfirmTerms', {
+                  from: 'main',
+                })
+              }>
+              Terms of Use
             </Text>
           </Box>
         </Flex>

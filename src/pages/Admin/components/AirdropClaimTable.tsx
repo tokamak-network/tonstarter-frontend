@@ -280,17 +280,15 @@ export const AirdropClaimTable = () => {
         fontSize={'20px'}
         fontFamily={theme.fonts.roboto}
         color={themeDesign.font[colorMode]}
-        ml={'20px'}
-        height={'32px'}
-        width={'150px'}
-        fontWeight={'500'}
-        padding={'3px 23px 8px'}>
+        ml={'14px'}
+        mb={'15px'}
+        fontWeight={'500'}>
         Token List
       </Text>
-      <Flex alignItems={'center'} justifyContent={'space-between'} mb={'20px'}>
+      <Flex alignItems={'end'} justifyContent={'space-between'} mb={'20px'}>
         <Flex>
           <Text
-            ml={'43px'}
+            ml={'14px'}
             fontSize={'16px'}
             fontFamily={theme.fonts.fld}
             color={themeDesign.font[colorMode]}>
@@ -298,16 +296,23 @@ export const AirdropClaimTable = () => {
           </Text>
           <RadioGroup onChange={setRadioValue} value={radioValue}>
             <Stack direction="row">
-              <Box mx={'20px'} fontFamily={theme.fonts.roboto}>
-                <Radio value="Genesis Airdrop">Genesis Airdrop</Radio>
+              <Box mx={'20px'} display={'flex'}>
+                <Radio value="Genesis Airdrop" size={'md'} mr={'5px'} />
+                <Text fontFamily={theme.fonts.roboto} fontSize={'14px'}>
+                  Genesis Airdrop
+                </Text>
               </Box>
-              <Box mx={'20px'} fontFamily={theme.fonts.roboto}>
-                <Radio value="DAO Airdrop">DAO Airdrop</Radio>
+              <Box mx={'20px'} display={'flex'}>
+                <Radio value="DAO Airdrop" size={'md'} mr={'5px'} />
+                <Text fontFamily={theme.fonts.roboto} fontSize={'14px'}>
+                  DAO Airdrop
+                </Text>
               </Box>
-              <Box mx={'20px'} fontFamily={theme.fonts.roboto}>
-                <Radio value="TON Staker" ml={'20px'}>
+              <Box mx={'20px'} display={'flex'}>
+                <Radio value="TON Staker" size={'md'} ml={'20px'} mr={'5px'} />
+                <Text fontFamily={theme.fonts.roboto} fontSize={'14px'}>
                   TON Staker
-                </Radio>
+                </Text>
               </Box>
             </Stack>
           </RadioGroup>
@@ -323,6 +328,7 @@ export const AirdropClaimTable = () => {
           fontFamily={theme.fonts.roboto}
           background={'transparent'}
           disabled={checkedTokenAddresses.length < 1}
+          // _hover={{background: 'transparent'}}
           onClick={() => {
             account &&
               AdminActions.claimMultipleTokens({
@@ -335,8 +341,7 @@ export const AirdropClaimTable = () => {
             setCheckedTokenAddresses([]);
             setIsCheckAll(false);
             setCheckedAllBoxes(false);
-          }}
-          _hover={{background: 'transparent'}}>
+          }}>
           Claim Selected
         </Button>
       </Flex>
@@ -353,26 +358,28 @@ export const AirdropClaimTable = () => {
             borderTopRightRadius={'6px'}
             borderBottom={'none'}
             fontSize={'16px'}
+            padding={'20px 35px'}
             fontFamily={theme.fonts.fld}>
             <Flex minWidth={'10%'}>
               <Checkbox
-                fontWeight={'bold'}
-                fontSize={'14px'}
-                h={'45px'}
+                // fontWeight={'bold'}
+                // fontSize={'14px'}
+                // h={'45px'}
+                iconSize="18px"
                 left={'5%'}
                 onChange={handleSelectAll}
                 isChecked={checkedAllBoxes}
               />
             </Flex>
 
-            <Text minWidth={'35%'} textAlign={'center'}>
+            <Text minWidth={'35%'} textAlign={'center'} fontSize={'12px'}>
               Token Symbol
             </Text>
-            <Text minWidth={'35%'} textAlign={'center'}>
+            <Text minWidth={'35%'} textAlign={'center'} fontSize={'12px'}>
               Amount
             </Text>
             <Text
-              fontSize={'15px'}
+              fontSize={'12px'}
               fontWeight={'bolder'}
               color={colorMode === 'light' ? '#353c48' : 'white.0'}
               minWidth={'20%'}
@@ -385,7 +392,7 @@ export const AirdropClaimTable = () => {
         <Flex
           justifyContent={'center'}
           my={'20px'}
-          width={'1100px'}
+          width={'100%'}
           height={'200px'}
           padding={'90px 100px'}
           borderRadius={'10px'}
@@ -420,7 +427,7 @@ export const AirdropClaimTable = () => {
               <Checkbox
                 fontWeight={'bold'}
                 fontSize={'14px'}
-                h={'45px'}
+                iconSize="18px"
                 left={'5%'}
                 onChange={handleSelectAll}
               />
@@ -446,7 +453,7 @@ export const AirdropClaimTable = () => {
         <Flex
           justifyContent={'center'}
           my={'20px'}
-          width={'1100px'}
+          width={'100%'}
           height={'200px'}
           padding={'90px 100px'}
           borderRadius={'10px'}
@@ -481,7 +488,7 @@ export const AirdropClaimTable = () => {
               <Checkbox
                 fontWeight={'bold'}
                 fontSize={'14px'}
-                h={'45px'}
+                iconSize="18px"
                 left={'5%'}
                 onChange={handleSelectAll}
               />
@@ -507,7 +514,7 @@ export const AirdropClaimTable = () => {
         <Flex
           justifyContent={'center'}
           my={'20px'}
-          width={'1100px'}
+          width={'100%'}
           height={'200px'}
           padding={'90px 100px'}
           borderRadius={'10px'}
@@ -555,7 +562,7 @@ export const AirdropClaimTable = () => {
                     isChecked={isCheck.includes(String(index))}
                     fontWeight={'bold'}
                     fontSize={'14px'}
-                    h={'45px'}
+                    iconSize="18px"
                     left={'5%'}
                     value={address}
                   />
@@ -588,6 +595,7 @@ export const AirdropClaimTable = () => {
                     letterSpacing={'.33px'}
                     bg={'#2a72e5'}
                     color={'#fff'}
+                    height={'32px'}
                     _hover={{
                       background: 'transparent',
                       border: 'solid 1px #2a72e5',
@@ -640,7 +648,7 @@ export const AirdropClaimTable = () => {
                     isChecked={isCheck.includes(String(index))}
                     fontWeight={'bold'}
                     fontSize={'14px'}
-                    h={'45px'}
+                    iconSize="18px"
                     left={'5%'}
                     value={address}
                   />
@@ -673,6 +681,7 @@ export const AirdropClaimTable = () => {
                     letterSpacing={'.33px'}
                     bg={'#2a72e5'}
                     color={'#fff'}
+                    height={'32px'}
                     _hover={{
                       background: 'transparent',
                       border: 'solid 1px #2a72e5',
@@ -718,7 +727,7 @@ export const AirdropClaimTable = () => {
                 isChecked={isCheck.includes('Genesis')}
                 fontWeight={'bold'}
                 fontSize={'14px'}
-                h={'45px'}
+                iconSize="18px"
                 left={'5%'}
                 value={'Genesis'}
               />
@@ -751,6 +760,7 @@ export const AirdropClaimTable = () => {
                 letterSpacing={'.33px'}
                 bg={'#2a72e5'}
                 color={'#fff'}
+                height={'32px'}
                 _hover={{
                   background: 'transparent',
                   border: 'solid 1px #2a72e5',

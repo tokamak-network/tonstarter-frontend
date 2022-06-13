@@ -215,7 +215,7 @@ const ConfirmTokenModal = () => {
                 color={'black.300'}
                 fontWeight={600}
                 textAlign={'center'}>
-                Waiting for completing to deploy your token
+                Waiting to complete deploying your token
               </Text>
             </Flex>
           </ModalBody>
@@ -253,7 +253,7 @@ const ConfirmTokenModal = () => {
                 color={'black.300'}
                 fontWeight={600}
                 textAlign={'center'}>
-                Waiting for completing to deploy your token
+                Waiting to complete deploying your token
               </Text>
               <Box w={'100%'} px={'15px'} mb={'25px'}>
                 <Line></Line>

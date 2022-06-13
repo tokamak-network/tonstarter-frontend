@@ -180,7 +180,9 @@ export const PublicPageTable = (prop: PublicTableProps) => {
               border={themeDesign.border[colorMode]}
               borderTop={'none'}
               borderRight={'none'}>
-              {commafy(data.claimTokenAllocation)}
+              {Number(data.claimTokenAllocation).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+      })}
             </Text>
             <Text
               height={'42px'}
@@ -189,7 +191,9 @@ export const PublicPageTable = (prop: PublicTableProps) => {
               textAlign={'center'}
               border={themeDesign.border[colorMode]}
               borderTop={'none'}>
-              {commafy(data.accumulated)}
+              {Number(data.accumulated).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+      })}
             </Text>
           </Flex>
         );

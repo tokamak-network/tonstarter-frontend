@@ -423,6 +423,11 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     }
   };
 
+
+  const setInitials = () => {
+    const initial = rewardSymbol.toString()
+    return initial;
+  }
   return (
     <Flex
       {...REWARD_STYLE.containerStyle({colorMode})}
@@ -692,9 +697,10 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
           </Box>
           <Avatar
             ml={'10px'}
-            src={reward.token1Image}
+           name='TOKEN_CONTRACT !== null? rewardSymbol: ``'
+            src={reward.rewardTokenSymbolImage !== ''? reward.rewardTokenSymbolImage : 'T' }
             bg={colorMode === 'light' ? '#ffffff' : '#222222'}
-            name="T"
+            getInitials={()=>setInitials()}
             border={
               colorMode === 'light' ? '1px solid #e7edf3' : '1px solid #3c3c3c'
             }

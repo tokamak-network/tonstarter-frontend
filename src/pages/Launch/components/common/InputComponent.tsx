@@ -1,4 +1,4 @@
-import {Box, Flex, Input, Text, useColorMode} from '@chakra-ui/react';
+import {Box, Flex, Input, Select, Text, useColorMode} from '@chakra-ui/react';
 import {Projects} from '@Launch/types';
 import {ErrorMessage, Field, useFormikContext} from 'formik';
 import './input.css';
@@ -31,6 +31,23 @@ const getMaxLength = (name: string) => {
   }
 };
 
+const getPlaceHolder = (name: string) => {
+  switch (name) {
+    case 'Website ':
+      return 'https://tonstarter.tokamak.network';
+    case 'Medium ':
+      return 'https://medium.com/onther-tech';
+    case 'Telegram ':
+      return 'https://t.me/tokamak_network';
+    case 'Twitter ':
+      return 'https://twitter.com/tokamak_network';
+    case 'Discord ':
+      return 'https://dsc.gg/dragonsmidgard';
+    default:
+      return `Input ${name}`;
+  }
+};
+
 const InputComponent: React.FC<InputComponentProps> = (props) => {
   const {name, nameDisplay, inputStyle, requirement} = props;
   const {errors, values} = useFormikContext<Projects['CreateProject']>();
@@ -39,10 +56,20 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
     .split(/(?=[A-Z])/)
     .map((e) => `${e.charAt(0).toUpperCase() + e.slice(1)} `);
 
-  const titleTrimed = title.toString().replaceAll(',', '');
+  const getTitleTried = () => {
+    const titleTrimed = title.toString().replaceAll(',', '');
+    switch (titleTrimed) {
+      case 'Owner ':
+        return 'Account Address';
+      default:
+        return titleTrimed;
+    }
+  };
 
   // //@ts-ignore
   // console.log(errors[name]);
+
+  const titleTrimed = getTitleTried();
 
   return (
     <Flex flexDir={'column'} fontSize={13} pos={'relative'}>
@@ -62,8 +89,8 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
           </Flex>
           {name === 'projectName' && (
             <Text color={'#86929d'} fontSize={10}>
-              {values.projectName && 20 - values.projectName?.length} characters
-              remaining
+              {(values.projectName && 20 - values.projectName?.length) || 20}{' '}
+              characters remaining
             </Text>
           )}
         </Flex>
@@ -75,6 +102,33 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
         ) => {
           //@ts-ignore
           const isError = errors[name] === undefined ? false : true;
+
+          //selectBox feedback
+          // if (name === 'sector') {
+          //   return (
+          //     <Select
+          //       style={{
+          //         height: '32px',
+          //         border: '1px solid #dfe4ee',
+          //         borderRadius: '4px',
+          //         paddingLeft: '16px',
+          //         paddingRight: '16px',
+          //       }}
+          //       fontSize={13}
+          //       color={'#86929d'}>
+          //       <option>DeFi</option>
+          //       <option>Exchange</option>
+          //       <option>P2E</option>
+          //       <option>M2E</option>
+          //       <option>Stable</option>
+          //       <option>Social</option>
+          //       <option>Collectible</option>
+          //       <option>Marketplace</option>
+          //       <option>Custom</option>
+          //     </Select>
+          //   );
+          // }
+
           return (
             <Input
               className={
@@ -91,7 +145,7 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
               id={name}
               h={'32px'}
               _focus={{}}
-              placeholder={`Input ${titleTrimed}`}
+              placeholder={`${getPlaceHolder(titleTrimed)}`}
               {...inputStyle}></Input>
           );
         }}

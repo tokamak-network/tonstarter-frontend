@@ -2,6 +2,7 @@ import {
   Flex,
   Grid,
   GridItem,
+  Select,
   Text,
   Tooltip,
   useColorMode,
@@ -41,6 +42,7 @@ import {stosMinimumRequirements} from '@Launch/const';
 import {NumberInputStep} from './NumberInputField';
 import momentTZ from 'moment-timezone';
 import moment from 'moment';
+import SelectPair from './TokenDetails/SelectPair';
 
 export const MainTitle = (props: {
   leftTitle: string;
@@ -84,6 +86,7 @@ const SubTitle = (props: {
   isSecondColData?: boolean;
   formikName: string;
   inputRef?: any;
+  setOnBlur?: React.Dispatch<React.SetStateAction<any>>;
 }) => {
   const {
     leftTitle,
@@ -94,6 +97,7 @@ const SubTitle = (props: {
     isSecondColData,
     formikName,
     inputRef,
+    setOnBlur,
   } = props;
   const [inputVal, setInputVal] = useState<number | string>(
     //@ts-ignore
@@ -240,12 +244,14 @@ const SubTitle = (props: {
         return `${commafy(rightTitle)} ${values.tokenName}`;
       case 'Public Round 2':
         return `${commafy(rightTitle)} ${values.tokenName}`;
-      case 'Token Allocation for Liquidity Pool (5~10%)':
+      case 'Token Allocation for Liquidity Pool (5~50%)':
         return `${rightTitle} %`;
       case 'Minimum Fundraising Amount':
         return `${commafy(rightTitle)} TON`;
       case 'Address for receiving funds':
         return rightTitle ? `${shortenAddress(rightTitle)}` : '-';
+      case 'custom LP':
+        return <></>;
       default:
         return rightTitle;
     }
@@ -253,7 +259,7 @@ const SubTitle = (props: {
 
   const RightInputComponent = useMemo(() => {
     switch (leftTitle) {
-      case 'Token Allocation for Liquidity Pool (5~10%)':
+      case 'Token Allocation for Liquidity Pool (5~50%)':
         return (
           <NumberInputStep
             valueProp={inputVal}
@@ -261,6 +267,7 @@ const SubTitle = (props: {
         );
       case 'Select Pair':
         return <Text>{inputVal}</Text>;
+      // return <SelectPair></SelectPair>;
       case 'Pool Address\n(0.3% fee)':
         if (selectedVaultIndex && selectedVaultIndex < 6) {
           return <Text>{inputVal}</Text>;
@@ -274,7 +281,8 @@ const SubTitle = (props: {
             setValue={setInputVal}
             formikName={formikName}
             inputRef={inputRef}
-            style={{textAlign: 'right'}}></InputField>
+            style={{textAlign: 'right'}}
+            setOnBlur={setOnBlur}></InputField>
         );
       case 'Address for receiving funds':
         return (
@@ -313,6 +321,7 @@ const SubTitle = (props: {
             fontSize={13}
             value={inputVal}
             setValue={setInputVal}
+            setOnBlur={setOnBlur}
             formikName={formikName}
             inputRef={inputRef}
             style={{textAlign: 'right'}}
@@ -320,6 +329,108 @@ const SubTitle = (props: {
         );
     }
   }, [inputVal]);
+
+  const LeftTitleComponent = () => {
+    switch (leftTitle) {
+      case 'Public Round 1':
+        return (
+          <Flex>
+            <Text w={'88px'} color={'#7e8993'}>
+              {leftTitle}
+            </Text>
+            <CustomTooltip
+              msg={[
+                'The sum of public round 1 and 2 must equal',
+                'the value of total token allocation.',
+              ]}
+              toolTipH="44px"
+              toolTipW={254}
+              placement={'top'}></CustomTooltip>
+          </Flex>
+        );
+      case 'Minimum Fundraising Amount':
+        return (
+          <Flex>
+            <Text color={'#7e8993'} mr={'5px'}>
+              Minimum Fund- <br />
+              raising Amount
+            </Text>
+            <CustomTooltip
+              msg={[
+                'Minimum Fund Raising Amount is the minimum amount',
+                'of money you want to achieve through a public sale.',
+                'A project is considered a failure if it is not achieved.',
+                'If it fails, the investor can recover the amount.',
+                '<br />',
+                'Enterable from zero, but sufficient funding considering',
+                'a certain percentage(5~10%) is delivered',
+                'to the Initial Liquidity Vault after the public sale.',
+              ]}
+              toolTipH="154px"
+              toolTipW={322}
+              placement={'top'}
+              style={{
+                fontSize: 12,
+              }}></CustomTooltip>
+          </Flex>
+        );
+      case 'Exchange Ratio\n1 TOS':
+        return (
+          <Flex>
+            <Text color={'#7e8993'} mr={'5px'}>
+              Exchange Ratio
+              <br />1 TOS
+            </Text>
+          </Flex>
+        );
+      case 'Snapshot':
+        return (
+          <Flex pos={'relative'}>
+            <Text
+              color={'#7e8993'}
+              w={!leftTitle.includes('or Liquidity Pool') ? '101px' : '201px'}>
+              {leftTitle}
+            </Text>
+            <Flex
+              right={'20px'}
+              pos="absolute"
+              h={'100%'}
+              alignItems="center"
+              justifyContent={'center'}>
+              <CustomTooltip
+                toolTipW={322}
+                toolTipH={'224px'}
+                msg={[
+                  'Snapshot is a stage to identify if users have met the',
+                  'requirements to participate in Public Round 1',
+                  'and to determine the users’ tier. Requirements for each',
+                  'project’s Public Round 1 may vary.',
+                  'Based on this snapshot, tiers for sTOS holders are',
+                  'determined, and the higher the tier, the more project',
+                  'tokens allocated.',
+                  'Once the snapshot is taken, no matter how much sTOS',
+                  'a user has, their tier cannot be changed.',
+                  '<br />',
+                  '!*Snapshot date must be set 1 week after Deployment',
+                  '!completion',
+                ]}
+                placement={'top'}
+                important={true}></CustomTooltip>
+            </Flex>
+          </Flex>
+        );
+      default:
+        return (
+          <Flex pos={'relative'}>
+            <Text
+              color={'#7e8993'}
+              w={!leftTitle.includes('or Liquidity Pool') ? '101px' : '201px'}>
+              {leftTitle}
+            </Text>
+          </Flex>
+        );
+    }
+  };
 
   return (
     <Flex
@@ -336,63 +447,7 @@ const SubTitle = (props: {
           : 'solid 1px #323232'
       }
       fontWeight={600}>
-      {leftTitle === 'Public Round 1' && !isSecondColData ? (
-        <Flex>
-          <Text w={'88px'} color={'#7e8993'}>
-            {leftTitle}
-          </Text>
-          <CustomTooltip
-            msg={[
-              'The sum of public round 1 and 2 must equal',
-              'the value of total token allocation.',
-            ]}
-            toolTipH="44px"
-            toolTipW={254}
-            placement={'top'}></CustomTooltip>
-        </Flex>
-      ) : leftTitle === 'Minimum Fundraising Amount' && !isSecondColData ? (
-        <Flex>
-          <Text color={'#7e8993'} mr={'5px'}>
-            Minimum Fundraising <br />
-            Amount
-          </Text>
-          <CustomTooltip
-            msg={[
-              'Minimum Fundraising Amount is fundraising',
-              ' target amount to be achieved in the value',
-              'of total token allocation.',
-            ]}
-            toolTipH="66px"
-            toolTipW={254}
-            placement={'top'}></CustomTooltip>
-        </Flex>
-      ) : (
-        <Flex pos={'relative'}>
-          <Text
-            color={'#7e8993'}
-            w={!leftTitle.includes('or Liquidity Pool') ? '101px' : '201px'}>
-            {leftTitle}
-          </Text>
-          {leftTitle === 'Snapshot' && (
-            <Flex
-              right={'20px'}
-              pos="absolute"
-              h={'100%'}
-              alignItems="center"
-              justifyContent={'center'}>
-              <CustomTooltip
-                toolTipW={232}
-                toolTipH={'44px'}
-                msg={[
-                  'Snapshot date must be set 1 week after',
-                  'Deployment completion',
-                ]}
-                placement={'top'}
-                important={true}></CustomTooltip>
-            </Flex>
-          )}
-        </Flex>
-      )}
+      <LeftTitleComponent></LeftTitleComponent>
       {isEdit ? (
         isSecondColData ? (
           <Flex>
@@ -445,7 +500,7 @@ const SubTitle = (props: {
               <SingleCalendarPop
                 setDate={setClaimDate}
                 //Mainnet env
-                startTimeCap={moment().add(8, 'days').unix()}
+                startTimeCap={moment().add(12, 'hours').unix()}
                 //Testnet env
                 // startTimeCap={moment()
                 //   .add('11', 'minutes')
@@ -650,6 +705,7 @@ const PublicTokenDetail = (props: {
   } = useAppSelector(selectLaunch);
 
   const {toastMsg} = useToast();
+  const [onBlur, setOnBlur] = useState(false);
 
   //Input Value Validating
   useEffect(() => {
@@ -657,6 +713,10 @@ const PublicTokenDetail = (props: {
     const noErrBorderStyle =
       colorMode === 'light' ? '1px solid #dfe4ee' : '1px solid #373737';
     const {current} = inputRef;
+
+    if (onBlur === false) {
+      return;
+    }
 
     switch (selectedVaultType as VaultType) {
       //Switch for each vault type
@@ -817,7 +877,7 @@ const PublicTokenDetail = (props: {
         }
       }
     }
-  }, [selectedVaultType, tempVaultData, selectedVaultDetail]);
+  }, [selectedVaultType, tempVaultData, selectedVaultDetail, onBlur]);
 
   return (
     <Grid
@@ -854,6 +914,7 @@ const PublicTokenDetail = (props: {
             const {title, content, percent, formikName} = data;
             return (
               <SubTitle
+                setOnBlur={setOnBlur}
                 key={title}
                 leftTitle={title}
                 rightTitle={content}

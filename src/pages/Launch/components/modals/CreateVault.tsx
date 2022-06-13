@@ -83,6 +83,13 @@ const CreateVaultModal = () => {
         isClosable: true,
       });
     } else {
+      // if (
+      //   values.totalSupply &&
+      //   totalAllocation + Number(tokenAllocatonVal) ===
+      //     Number(values.totalSupply)
+      // ) {
+      //   return setBtnDisable(true);
+      // }
       setBtnDisable(false);
     }
   }, [tokenAllocatonVal, nameVal, values, toastMsg]);
@@ -195,7 +202,10 @@ const CreateVaultModal = () => {
                 h={'32px'}
                 value={adminAddressVal}
                 _focus={{}}
-                onChange={(e) => setAdminAddressVal(e.target.value)}></Input>
+                hover={'none'}
+                cursor={'none'}
+                // onChange={(e) => setAdminAddressVal(e.target.value)}
+              ></Input>
             </Flex>
           </Flex>
 

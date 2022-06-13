@@ -29,6 +29,7 @@ type InputFieldProp = {
   style?: {};
   tokenSymbol?: string;
   decimalLimit?: boolean;
+  setOnBlur?: React.Dispatch<React.SetStateAction<any>>;
 };
 
 const InputField: React.FC<InputFieldProp> = (props) => {
@@ -47,6 +48,7 @@ const InputField: React.FC<InputFieldProp> = (props) => {
     style,
     tokenSymbol,
     decimalLimit,
+    setOnBlur,
   } = props;
   const dispatch = useAppDispatch();
   const {
@@ -91,7 +93,15 @@ const InputField: React.FC<InputFieldProp> = (props) => {
           _focus={{}}
           placeholder={placeHolder}
           value={value === 'undefined' ? '' : value}
+          onBlur={() => {
+            if (setOnBlur) {
+              return setOnBlur(true);
+            }
+          }}
           onChange={(e) => {
+            if (setOnBlur) {
+              setOnBlur(false);
+            }
             //@ts-ignore
             setValue(e.target.value);
             if (formikName) {
@@ -157,31 +167,19 @@ const InputField: React.FC<InputFieldProp> = (props) => {
         }}
         value={value === 'undefined' ? '' : value}
         style={style}
-        onChange={(e) => {
-          // if (isStosTier) {
-          //   const targetValue = Number(e.target.value);
-          //   if (stosTierLevel === 1) {
-          //     if (targetValue < 600) {
-          //       return;
-          //     }
-          //   }
-          //   if (stosTierLevel === 2) {
-          //     if (targetValue < 1200) {
-          //       return;
-          //     }
-          //   }
-          //   if (stosTierLevel === 3) {
-          //     if (targetValue < 2200) {
-          //       return;
-          //     }
-          //   }
-          //   if (stosTierLevel === 4) {
-          //     if (targetValue < 4000) {
-          //       return;
-          //     }
-          //   }
-          // }
+        onBlur={(e) => {
+          console.log('?');
+          console.log(setOnBlur);
 
+          if (setOnBlur) {
+            return setOnBlur(true);
+          }
+        }}
+        onChange={(e) => {
+          console.log(setOnBlur);
+          if (setOnBlur) {
+            setOnBlur(false);
+          }
           if (
             decimalLimit &&
             e.target.value.split('.')[1] &&

@@ -1253,7 +1253,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
       case 'readyForToken':
         return 'Wating for token';
       case 'readyForSet':
-        return 'Ready to deploy (final)';
+        return 'Ready to initialize (final)';
       case 'finished':
         return 'Completed';
       default:
@@ -1456,7 +1456,11 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                     }),
                   );
             }}>
-            {vaultState !== 'readyForToken' ? 'Deploy' : 'Send Token'}
+            {vaultState !== 'readyForToken'
+              ? vaultState === 'ready'
+                ? 'Deploy'
+                : 'Initialize'
+              : 'Send Token'}
           </Button>
         </Box>
       </Flex>

@@ -356,8 +356,9 @@ const ConfirmTokenModal = () => {
                 </Text>
                 <Text fontSize={12} color={'gray.225'}>
                   You won't be able to edit your project after it has been
-                  deployed. Double-check the content before you click the
-                  “Deploy” button.
+                  deployed or initialized. Double-check the content before you
+                  click the {data.data.isSetStep ? `"Initialize"` : `“Deploy”`}{' '}
+                  button.
                 </Text>
               </Flex>
             </Flex>
@@ -377,7 +378,7 @@ const ConfirmTokenModal = () => {
                     ? closeModal()
                     : setDeployStep('Deploying')
                 }>
-                Deploy
+                {data.data.isSetStep ? 'Initialize' : 'Deploy'}
               </Button>
             </Box>
           </ModalBody>
@@ -419,7 +420,7 @@ const ConfirmTokenModal = () => {
                 color={'black.300'}
                 fontWeight={600}
                 textAlign={'center'}>
-                Waiting for completing to deploy {vaultName} vault
+              Waiting to complete deploying your {vaultName} vault
               </Text>
             </Flex>
           </ModalBody>
@@ -457,7 +458,7 @@ const ConfirmTokenModal = () => {
                 color={'black.300'}
                 fontWeight={600}
                 textAlign={'center'}>
-                Completed to deploy your {vaultName} vault
+                Completed deploying your {vaultName} vault
               </Text>
               <Box w={'100%'} px={'15px'} mb={'25px'}>
                 <Line></Line>
