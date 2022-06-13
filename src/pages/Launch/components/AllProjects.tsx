@@ -52,11 +52,10 @@ const AllProjects = () => {
       //refetch every 10min
       refetchInterval: 600000,
     },
-  );
+  );  
   const {
     data: {projects},
   } = useAppSelector(selectLaunch);
-
   
   useEffect(() => {
     if (data) {
