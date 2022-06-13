@@ -251,58 +251,58 @@ const ClaimRound = () => {
 
   let tokenAcc = 0;
 
-  const testComponent = (data: VaultSchedule, index: number) =>
-    useMemo(() => {
-      return (
-        <InputGroup>
-          <Input
-            h={`42px`}
-            // ref={(el) => (inputRefs.current[index] = el)}
-            _hover={{borderWidth: '1px', borderColor: '#257eee'}}
-            _focus={isErr ? {} : {borderWidth: '1px', borderColor: '#257eee'}}
-            fontSize={12}
-            placeholder={''}
-            borderRadius={0}
-            borderWidth={0}
-            textAlign={'center'}
-            value={
-              inputVals !== undefined &&
-              inputVals[index]?.claimTokenAllocation !== undefined
-                ? inputVals[index].claimTokenAllocation
-                : ''
-            }
-            onBlur={(e) => {
-              const {value} = e.target;
+  // const testComponent = (data: VaultSchedule, index: number) =>
+  //   useMemo(() => {
+  //     return (
+  //       <InputGroup>
+  //         <Input
+  //           h={`42px`}
+  //           // ref={(el) => (inputRefs.current[index] = el)}
+  //           _hover={{borderWidth: '1px', borderColor: '#257eee'}}
+  //           _focus={isErr ? {} : {borderWidth: '1px', borderColor: '#257eee'}}
+  //           fontSize={12}
+  //           placeholder={''}
+  //           borderRadius={0}
+  //           borderWidth={0}
+  //           textAlign={'center'}
+  //           value={
+  //             inputVals !== undefined &&
+  //             inputVals[index]?.claimTokenAllocation !== undefined
+  //               ? inputVals[index].claimTokenAllocation
+  //               : ''
+  //           }
+  //           onBlur={(e) => {
+  //             const {value} = e.target;
 
-              return setFieldValue(
-                //@ts-ignore
-                `vaults[${selectedVaultDetail.index}].claim[${index}]`,
-                {
-                  ...data,
-                  claimTokenAllocation: Number(value),
-                },
-              );
-            }}
-            onChange={(e) => {
-              const {value} = e.target;
+  //             return setFieldValue(
+  //               //@ts-ignore
+  //               `vaults[${selectedVaultDetail.index}].claim[${index}]`,
+  //               {
+  //                 ...data,
+  //                 claimTokenAllocation: Number(value),
+  //               },
+  //             );
+  //           }}
+  //           onChange={(e) => {
+  //             const {value} = e.target;
 
-              if (isNaN(Number(value))) {
-                return;
-              }
+  //             if (isNaN(Number(value))) {
+  //               return;
+  //             }
 
-              if (inputVals) {
-                let oldVals = [...inputVals];
-                let item = {
-                  ...oldVals[index],
-                  claimTokenAllocation: Number(value),
-                };
-                oldVals[index] = item;
-                return setInputVals(oldVals);
-              }
-            }}></Input>
-        </InputGroup>
-      );
-    }, []);
+  //             if (inputVals) {
+  //               let oldVals = [...inputVals];
+  //               let item = {
+  //                 ...oldVals[index],
+  //                 claimTokenAllocation: Number(value),
+  //               };
+  //               oldVals[index] = item;
+  //               return setInputVals(oldVals);
+  //             }
+  //           }}></Input>
+  //       </InputGroup>
+  //     );
+  //   }, []);
 
   return (
     <Flex flexDir={'column'}>
@@ -407,248 +407,245 @@ const ClaimRound = () => {
               </Flex>
             ) : (
               claim?.map((data: VaultSchedule, index: number) => {
-                {
-                  testComponent(data, index);
-                }
-                // return (
-                //   <Flex
-                //     h={'42px'}
-                //     fontSize={12}
-                //     color={colorMode === 'light' ? '#3d495d' : 'white.100'}
-                //     fontWeight={600}
-                //     bg={
-                //       colorMode === 'light'
-                //         ? index % 2 === 0
-                //           ? 'none'
-                //           : '#fafbfc'
-                //         : 'none'
-                //     }>
-                //     <Text w={'90px'} borderBottom={middleStyle.border}>
-                //       {index > 8 ? `${index + 1}` : `0${index + 1}`}
-                //     </Text>
-                //     <Flex
-                //       w={'292px'}
-                //       borderX={middleStyle.border}
-                //       borderBottom={middleStyle.border}
-                //       alignItems="center"
-                //       justifyContent={'center'}>
-                //       <Text
-                //         mr={'5px'}
-                //         color={colorMode === 'light' ? '#3d495d' : 'white.100'}
-                //         fontSize={11}>
-                //         {data.claimTime === undefined
-                //           ? '-'
-                //           : moment
-                //               .unix(data.claimTime)
-                //               .format('YYYY.MM.DD HH:mm:ss')}
-                //       </Text>
-                //       <SingleCalendarPop
-                //         //@ts-ignore
-                //         fieldValueKey={`vaults[${selectedVaultDetail.index}].claim[${index}]`}
-                //         oldValues={data}
-                //         valueKey={'claimTime'}
-                //         startTimeCap={
-                //           index === 0
-                //             ? //@ts-ignore
-                //               vaultsList[0].publicRound2End ||
-                //               moment().add(9, 'days').unix()
-                //             : (claimInfo !== undefined &&
-                //                 Number(claimInfo[index - 1]?.claimTime)) ||
-                //               0
-                //         }></SingleCalendarPop>
-                //     </Flex>
-                //     <Flex
-                //       w={'281px'}
-                //       alignItems="center"
-                //       justifyContent={'center'}
-                //       borderRight={middleStyle.border}
-                //       borderBottom={middleStyle.border}>
-                //       <InputGroup>
-                //         <Input
-                //           h={`42px`}
-                //           // ref={(el) => (inputRefs.current[index] = el)}
-                //           _hover={{borderWidth: '1px', borderColor: '#257eee'}}
-                //           _focus={
-                //             isErr
-                //               ? {}
-                //               : {borderWidth: '1px', borderColor: '#257eee'}
-                //           }
-                //           fontSize={12}
-                //           placeholder={''}
-                //           borderRadius={0}
-                //           borderWidth={0}
-                //           textAlign={'center'}
-                //           value={
-                //             inputVals !== undefined &&
-                //             inputVals[index]?.claimTokenAllocation !== undefined
-                //               ? inputVals[index].claimTokenAllocation
-                //               : ''
-                //           }
-                //           onBlur={(e) => {
-                //             const {value} = e.target;
+                return (
+                  <Flex
+                    h={'42px'}
+                    fontSize={12}
+                    color={colorMode === 'light' ? '#3d495d' : 'white.100'}
+                    fontWeight={600}
+                    bg={
+                      colorMode === 'light'
+                        ? index % 2 === 0
+                          ? 'none'
+                          : '#fafbfc'
+                        : 'none'
+                    }>
+                    <Text w={'90px'} borderBottom={middleStyle.border}>
+                      {index > 8 ? `${index + 1}` : `0${index + 1}`}
+                    </Text>
+                    <Flex
+                      w={'292px'}
+                      borderX={middleStyle.border}
+                      borderBottom={middleStyle.border}
+                      alignItems="center"
+                      justifyContent={'center'}>
+                      <Text
+                        mr={'5px'}
+                        color={colorMode === 'light' ? '#3d495d' : 'white.100'}
+                        fontSize={11}>
+                        {data.claimTime === undefined
+                          ? '-'
+                          : moment
+                              .unix(data.claimTime)
+                              .format('YYYY.MM.DD HH:mm:ss')}
+                      </Text>
+                      <SingleCalendarPop
+                        //@ts-ignore
+                        fieldValueKey={`vaults[${selectedVaultDetail.index}].claim[${index}]`}
+                        oldValues={data}
+                        valueKey={'claimTime'}
+                        startTimeCap={
+                          index === 0
+                            ? //@ts-ignore
+                              vaultsList[0].publicRound2End ||
+                              moment().add(9, 'days').unix()
+                            : (claimInfo !== undefined &&
+                                Number(claimInfo[index - 1]?.claimTime)) ||
+                              0
+                        }></SingleCalendarPop>
+                    </Flex>
+                    <Flex
+                      w={'281px'}
+                      alignItems="center"
+                      justifyContent={'center'}
+                      borderRight={middleStyle.border}
+                      borderBottom={middleStyle.border}>
+                      <InputGroup>
+                        <Input
+                          h={`42px`}
+                          // ref={(el) => (inputRefs.current[index] = el)}
+                          _hover={{borderWidth: '1px', borderColor: '#257eee'}}
+                          _focus={
+                            isErr
+                              ? {}
+                              : {borderWidth: '1px', borderColor: '#257eee'}
+                          }
+                          fontSize={12}
+                          placeholder={''}
+                          borderRadius={0}
+                          borderWidth={0}
+                          textAlign={'center'}
+                          value={
+                            inputVals !== undefined &&
+                            inputVals[index]?.claimTokenAllocation !== undefined
+                              ? inputVals[index].claimTokenAllocation
+                              : ''
+                          }
+                          onBlur={(e) => {
+                            const {value} = e.target;
 
-                //             return setFieldValue(
-                //               //@ts-ignore
-                //               `vaults[${selectedVaultDetail.index}].claim[${index}]`,
-                //               {
-                //                 ...data,
-                //                 claimTokenAllocation: Number(value),
-                //               },
-                //             );
-                //           }}
-                //           onChange={(e) => {
-                //             const {value} = e.target;
+                            return setFieldValue(
+                              //@ts-ignore
+                              `vaults[${selectedVaultDetail.index}].claim[${index}]`,
+                              {
+                                ...data,
+                                claimTokenAllocation: Number(value),
+                              },
+                            );
+                          }}
+                          onChange={(e) => {
+                            const {value} = e.target;
 
-                //             if (isNaN(Number(value))) {
-                //               return;
-                //             }
+                            if (isNaN(Number(value))) {
+                              return;
+                            }
 
-                //             if (inputVals) {
-                //               let oldVals = [...inputVals];
-                //               let item = {
-                //                 ...oldVals[index],
-                //                 claimTokenAllocation: Number(value),
-                //               };
-                //               oldVals[index] = item;
-                //               return setInputVals(oldVals);
-                //             }
-                //           }}></Input>
-                //         {/* <InputRightElement h={'42px'} mr={'2px'}>
-                //           <Flex
-                //             fontSize={13}
-                //             color={
-                //               colorMode === 'light' ? '#3e495c' : '#ffffff'
-                //             }>
-                //             <Text>{values.tokenSymbol}</Text>
-                //           </Flex>
-                //         </InputRightElement> */}
-                //       </InputGroup>
-                //     </Flex>
-                //     <Text
-                //       w={'281px'}
-                //       borderRight={middleStyle.border}
-                //       borderBottom={middleStyle.border}>
-                //       {data.claimTokenAllocation === undefined
-                //         ? '-'
-                //         : commafy((tokenAcc += data.claimTokenAllocation))}
-                //     </Text>
-                //     <Flex
-                //       w={'90px'}
-                //       alignItems="center"
-                //       justifyContent="center"
-                //       borderBottom={middleStyle.border}>
-                //       {index === 0 && claim.length === 1 ? (
-                //         <>
-                //           <Flex
-                //             w={'24px'}
-                //             h={'24px'}
-                //             alignItems="center"
-                //             justifyContent="center"
-                //             border={
-                //               colorMode === 'light'
-                //                 ? '1px solid #e6eaee'
-                //                 : '1px solid #373737'
-                //             }
-                //             bg={colorMode === 'light' ? 'white.100' : 'none'}>
-                //             <HoverImage
-                //               action={() => addRow()}
-                //               img={PlusIconNormal}
-                //               hoverImg={PlusIconHover}></HoverImage>
-                //           </Flex>
-                //           <Flex
-                //             w={'24px'}
-                //             h={'24px'}
-                //             alignItems="center"
-                //             justifyContent="center"
-                //             border={
-                //               colorMode === 'light'
-                //                 ? '1px solid #e6eaee'
-                //                 : '1px solid #373737'
-                //             }
-                //             ml={'10px'}
-                //             bg={'gray.100'}>
-                //             <HoverImage
-                //               action={() => add10Row()}
-                //               img={PlusIconNormal}
-                //               hoverImg={PlusIconHover}></HoverImage>
-                //           </Flex>
-                //         </>
-                //       ) : index === 0 && claim.length > 1 ? (
-                //         <div></div>
-                //       ) : index + 1 !== claim.length ? (
-                //         <Flex
-                //           w={'24px'}
-                //           h={'24px'}
-                //           alignItems="center"
-                //           justifyContent="center"
-                //           border={
-                //             colorMode === 'light'
-                //               ? '1px solid #e6eaee'
-                //               : '1px solid #373737'
-                //           }
-                //           bg={colorMode === 'light' ? 'white.100' : 'none'}>
-                //           <HoverImage
-                //             action={() => removeRow(index)}
-                //             img={MinusIconNormal}
-                //             hoverImg={MinusIconHover}></HoverImage>
-                //         </Flex>
-                //       ) : (
-                //         <>
-                //           <Flex
-                //             w={'24px'}
-                //             h={'24px'}
-                //             alignItems="center"
-                //             justifyContent="center"
-                //             border={
-                //               colorMode === 'light'
-                //                 ? '1px solid #e6eaee'
-                //                 : '1px solid #373737'
-                //             }
-                //             bg={colorMode === 'light' ? 'white.100' : 'none'}
-                //             mr={'10px'}>
-                //             <HoverImage
-                //               action={() => removeRow(index)}
-                //               img={MinusIconNormal}
-                //               hoverImg={MinusIconHover}></HoverImage>
-                //           </Flex>
-                //           <Flex
-                //             w={'24px'}
-                //             h={'24px'}
-                //             alignItems="center"
-                //             justifyContent="center"
-                //             border={
-                //               colorMode === 'light'
-                //                 ? '1px solid #e6eaee'
-                //                 : '1px solid #373737'
-                //             }
-                //             bg={colorMode === 'light' ? 'white.100' : 'none'}>
-                //             <HoverImage
-                //               action={() => addRow()}
-                //               img={PlusIconNormal}
-                //               hoverImg={PlusIconHover}></HoverImage>
-                //           </Flex>
-                //           <Flex
-                //             w={'24px'}
-                //             h={'24px'}
-                //             alignItems="center"
-                //             justifyContent="center"
-                //             border={
-                //               colorMode === 'light'
-                //                 ? '1px solid #e6eaee'
-                //                 : '1px solid #373737'
-                //             }
-                //             ml={'10px'}
-                //             bg={'gray.100'}>
-                //             <HoverImage
-                //               action={() => add10Row()}
-                //               img={PlusIconNormal}
-                //               hoverImg={PlusIconHover}></HoverImage>
-                //           </Flex>
-                //         </>
-                //       )}
-                //     </Flex>
-                //   </Flex>
-                // );
+                            if (inputVals) {
+                              let oldVals = [...inputVals];
+                              let item = {
+                                ...oldVals[index],
+                                claimTokenAllocation: Number(value),
+                              };
+                              oldVals[index] = item;
+                              return setInputVals(oldVals);
+                            }
+                          }}></Input>
+                        {/* <InputRightElement h={'42px'} mr={'2px'}>
+                          <Flex
+                            fontSize={13}
+                            color={
+                              colorMode === 'light' ? '#3e495c' : '#ffffff'
+                            }>
+                            <Text>{values.tokenSymbol}</Text>
+                          </Flex>
+                        </InputRightElement> */}
+                      </InputGroup>
+                    </Flex>
+                    <Text
+                      w={'281px'}
+                      borderRight={middleStyle.border}
+                      borderBottom={middleStyle.border}>
+                      {data.claimTokenAllocation === undefined
+                        ? '-'
+                        : commafy((tokenAcc += data.claimTokenAllocation))}
+                    </Text>
+                    <Flex
+                      w={'90px'}
+                      alignItems="center"
+                      justifyContent="center"
+                      borderBottom={middleStyle.border}>
+                      {index === 0 && claim.length === 1 ? (
+                        <>
+                          <Flex
+                            w={'24px'}
+                            h={'24px'}
+                            alignItems="center"
+                            justifyContent="center"
+                            border={
+                              colorMode === 'light'
+                                ? '1px solid #e6eaee'
+                                : '1px solid #373737'
+                            }
+                            bg={colorMode === 'light' ? 'white.100' : 'none'}>
+                            <HoverImage
+                              action={() => addRow()}
+                              img={PlusIconNormal}
+                              hoverImg={PlusIconHover}></HoverImage>
+                          </Flex>
+                          <Flex
+                            w={'24px'}
+                            h={'24px'}
+                            alignItems="center"
+                            justifyContent="center"
+                            border={
+                              colorMode === 'light'
+                                ? '1px solid #e6eaee'
+                                : '1px solid #373737'
+                            }
+                            ml={'10px'}
+                            bg={'gray.100'}>
+                            <HoverImage
+                              action={() => add10Row()}
+                              img={PlusIconNormal}
+                              hoverImg={PlusIconHover}></HoverImage>
+                          </Flex>
+                        </>
+                      ) : index === 0 && claim.length > 1 ? (
+                        <div></div>
+                      ) : index + 1 !== claim.length ? (
+                        <Flex
+                          w={'24px'}
+                          h={'24px'}
+                          alignItems="center"
+                          justifyContent="center"
+                          border={
+                            colorMode === 'light'
+                              ? '1px solid #e6eaee'
+                              : '1px solid #373737'
+                          }
+                          bg={colorMode === 'light' ? 'white.100' : 'none'}>
+                          <HoverImage
+                            action={() => removeRow(index)}
+                            img={MinusIconNormal}
+                            hoverImg={MinusIconHover}></HoverImage>
+                        </Flex>
+                      ) : (
+                        <>
+                          <Flex
+                            w={'24px'}
+                            h={'24px'}
+                            alignItems="center"
+                            justifyContent="center"
+                            border={
+                              colorMode === 'light'
+                                ? '1px solid #e6eaee'
+                                : '1px solid #373737'
+                            }
+                            bg={colorMode === 'light' ? 'white.100' : 'none'}
+                            mr={'10px'}>
+                            <HoverImage
+                              action={() => removeRow(index)}
+                              img={MinusIconNormal}
+                              hoverImg={MinusIconHover}></HoverImage>
+                          </Flex>
+                          <Flex
+                            w={'24px'}
+                            h={'24px'}
+                            alignItems="center"
+                            justifyContent="center"
+                            border={
+                              colorMode === 'light'
+                                ? '1px solid #e6eaee'
+                                : '1px solid #373737'
+                            }
+                            bg={colorMode === 'light' ? 'white.100' : 'none'}>
+                            <HoverImage
+                              action={() => addRow()}
+                              img={PlusIconNormal}
+                              hoverImg={PlusIconHover}></HoverImage>
+                          </Flex>
+                          <Flex
+                            w={'24px'}
+                            h={'24px'}
+                            alignItems="center"
+                            justifyContent="center"
+                            border={
+                              colorMode === 'light'
+                                ? '1px solid #e6eaee'
+                                : '1px solid #373737'
+                            }
+                            ml={'10px'}
+                            bg={'gray.100'}>
+                            <HoverImage
+                              action={() => add10Row()}
+                              img={PlusIconNormal}
+                              hoverImg={PlusIconHover}></HoverImage>
+                          </Flex>
+                        </>
+                      )}
+                    </Flex>
+                  </Flex>
+                );
               })
             )
           }
