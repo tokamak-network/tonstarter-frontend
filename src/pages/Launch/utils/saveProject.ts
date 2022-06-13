@@ -43,31 +43,35 @@ async function editProject(
   data: any,
   account: string,
   uid: string,
-  modal?: boolean,
   web3Token: string,
+  modal?: boolean,
 ) {
-  const result = await axios
-    .put(
-      `${API_SERVER_LAUNCH}/projects?chainId=${DEFAULT_NETWORK}`,
-      {...data},
-      {
-        headers: {
-          account,
-          uid,
-          auth,
+  try {
+    const result = await axios
+      .put(
+        `${API_SERVER_LAUNCH}/projects?chainId=${DEFAULT_NETWORK}`,
+        {...data},
+        {
+          headers: {
+            account,
+            uid,
+            authorization: web3Token,
+          },
         },
-      },
-    )
-    .then((res) => {
-      if (res.status === 200) {
-        if (modal === true) {
-          return alert('success');
+      )
+      .then((res) => {
+        if (res.status === 200) {
+          if (modal === true) {
+            return alert('success');
+          }
+        } else {
+          return alert('failed');
         }
-      } else {
-        return alert('failed');
-      }
-    });
-  return result;
+      });
+    return result;
+  } catch (e) {
+    return alert('failed');
+  }
 }
 
 export {saveProject, editProject};

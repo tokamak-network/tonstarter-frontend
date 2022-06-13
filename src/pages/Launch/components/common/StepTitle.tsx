@@ -34,23 +34,6 @@ const StepTitle: React.FC<StepTitleProp> = (prop) => {
         fontWeight={600}>
         {title}
       </Box>
-      {isSaveButton && (
-        <Button
-          w={'120px'}
-          h={'38px'}
-          fontSize={14}
-          color={'white.100'}
-          _hover={{}}
-          bg={colorMode ? 'blue.500' : 'blue.500'}
-          // disabled={isDisable || isSubmitting}
-          onClick={() =>
-            account && isExist === 'createproject'
-              ? saveProject(values, account)
-              : editProject(values, account as string, isExist)
-          }>
-          Save
-        </Button>
-      )}
     </Flex>
   );
 };

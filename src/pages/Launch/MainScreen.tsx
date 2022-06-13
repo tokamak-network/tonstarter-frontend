@@ -148,7 +148,13 @@ const MainScreen = () => {
             setOldData(values);
             hashKey === undefined
               ? saveProject(values, account as string)
-              : editProject(values, account as string, hashKey);
+              : editProject(
+                  values,
+                  account as string,
+                  hashKey,
+                  storageWeb3Token,
+                  false,
+                );
           }
           if (step === 3) {
             const vaults = values.vaults;
@@ -199,8 +205,8 @@ const MainScreen = () => {
                             values,
                             account as string,
                             hashKey || isExist,
-                            true,
                             storageWeb3Token,
+                            true,
                           )
                     }>
                     Save
@@ -242,8 +248,8 @@ const MainScreen = () => {
                                 values,
                                 account as string,
                                 hashKey || isExist,
-                                true,
                                 storageWeb3Token,
+                                false,
                               );
                           handleStep(true);
                         }}>
@@ -270,8 +276,8 @@ const MainScreen = () => {
                                 values,
                                 account as string,
                                 hashKey || isExist,
-                                true,
                                 storageWeb3Token,
+                                false,
                               );
                           handleStep(true);
                         }}>
