@@ -357,7 +357,7 @@ export const AirdropClaimTable = () => {
             borderBottom={'none'}
             fontSize={'16px'}
             padding={'20px 35px'}
-            fontFamily={theme.fonts.fld}>
+            fontFamily={theme.fonts.roboto}>
             <Flex minWidth={'10%'}>
               <Checkbox
                 // fontWeight={'bold'}
@@ -420,7 +420,7 @@ export const AirdropClaimTable = () => {
             borderTopRightRadius={'6px'}
             borderBottom={'none'}
             fontSize={'16px'}
-            fontFamily={theme.fonts.fld}>
+            fontFamily={theme.fonts.roboto}>
             <Flex minWidth={'10%'}>
               <Checkbox
                 fontWeight={'bold'}
@@ -431,14 +431,14 @@ export const AirdropClaimTable = () => {
               />
             </Flex>
 
-            <Text minWidth={'35%'} textAlign={'center'}>
+            <Text minWidth={'35%'} textAlign={'center'} fontSize={'12px'}>
               Token Symbol
             </Text>
-            <Text minWidth={'35%'} textAlign={'center'}>
+            <Text minWidth={'35%'} textAlign={'center'} fontSize={'12px'}>
               Amount
             </Text>
             <Text
-              fontSize={'15px'}
+              fontSize={'12px'}
               fontWeight={'bolder'}
               color={colorMode === 'light' ? '#353c48' : 'white.0'}
               minWidth={'20%'}
@@ -460,7 +460,7 @@ export const AirdropClaimTable = () => {
             borderTopRightRadius={'6px'}
             borderBottom={'none'}
             fontSize={'16px'}
-            fontFamily={theme.fonts.fld}>
+            fontFamily={theme.fonts.roboto}>
             <Flex minWidth={'10%'}>
               <Checkbox
                 fontWeight={'bold'}
@@ -471,14 +471,14 @@ export const AirdropClaimTable = () => {
               />
             </Flex>
 
-            <Text minWidth={'35%'} textAlign={'center'}>
+            <Text minWidth={'35%'} textAlign={'center'} fontSize={'12px'}>
               Token Symbol
             </Text>
-            <Text minWidth={'35%'} textAlign={'center'}>
+            <Text minWidth={'35%'} textAlign={'center'} fontSize={'12px'}>
               Amount
             </Text>
             <Text
-              fontSize={'15px'}
+              fontSize={'12px'}
               fontWeight={'bolder'}
               color={colorMode === 'light' ? '#353c48' : 'white.0'}
               minWidth={'20%'}

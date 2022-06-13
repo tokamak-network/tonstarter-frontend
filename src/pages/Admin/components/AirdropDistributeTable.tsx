@@ -365,10 +365,10 @@ export const AirdropDistributeTable = () => {
             className={'chart-cell'}
             borderTopLeftRadius={'4px'}
             borderBottom={'none'}
-            fontSize={'16px'}
+            fontSize={'12px'}
             padding={'16px 35px'}
             height={'45px'}
-            fontFamily={theme.fonts.fld}>
+            fontFamily={theme.fonts.roboto}>
             <Text
               fontSize={'12px'}
               fontWeight={'bolder'}
