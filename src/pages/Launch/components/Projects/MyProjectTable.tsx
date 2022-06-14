@@ -84,7 +84,6 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
     library,
   );
 
-  console.log(account);
   
   useEffect(() => {
     async function getNFTInfo() {
@@ -155,7 +154,7 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
         h={'100px'}
         fontFamily={theme.fonts.roboto}
         fontSize={'16px'}>
-        <Text>Please connect with metamask</Text>
+        <Text>Please connect with Metamask</Text>
       </Flex>
     );
   }

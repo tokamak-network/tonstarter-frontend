@@ -55,8 +55,6 @@ const AllProjects = () => {
   const {
     data: {projects},
   } = useAppSelector(selectLaunch);
-
-  console.log(projects);
   
   
   useEffect(() => {
