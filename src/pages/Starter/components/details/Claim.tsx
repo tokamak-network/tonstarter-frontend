@@ -176,17 +176,22 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
           0,
         );
 
-        const userClaim = await PUBLICSALE_CONTRACT.usersClaim(account);
-        const refundedAmount = BigNumber.from(userOpenSaleUserAmount[2]).eq(
-          userClaim.refundAmount,
-        );
+        console.log('--usersEx--');
+        console.log(usersEx);
+        console.log(usersEx?.saleAmount);
+        console.log(usersEx?.saleAmount.toString());
 
-        const ramainedAmount = BigNumber.from(totalClaim[2]).sub(
-          usersClaim?.claimAmount,
+        const userClaim = await PUBLICSALE_CONTRACT.usersClaim(account);
+        const refundedAmount = BigNumber.from(
+          userOpenSaleUserAmount._refundAmount,
+        ).eq(userClaim.refundAmount);
+
+        const ramainedAmount = BigNumber.from(totalClaim._totalClaim).sub(
+          usersClaim.claimAmount,
         );
 
         const convertedExSaleAmount = convertNumber({
-          amount: usersEx?.saleAmount.toString(),
+          amount: usersEx.saleAmount.toString(),
           localeString: true,
         });
         const convertedRamainedAmount = convertNumber({
