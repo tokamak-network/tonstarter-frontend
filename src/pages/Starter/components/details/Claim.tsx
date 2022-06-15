@@ -183,16 +183,16 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
 
           const userClaim = await PUBLICSALE_CONTRACT.usersClaim(account);
 
-          const refundedAmount = BigNumber.from(userOpenSaleUserAmount[2]).eq(
-            userClaim.refundAmount,
-          );
+          const refundedAmount = BigNumber.from(
+            userOpenSaleUserAmount._refundAmount,
+          ).eq(userClaim.refundAmount);
 
-          const ramainedAmount = BigNumber.from(totalClaim[isOld ? 0 : 2]).sub(
-            usersClaim[1],
+          const ramainedAmount = BigNumber.from(totalClaim._totalClaim).sub(
+            usersClaim.claimAmount,
           );
 
           const convertedExSaleAmount = convertNumber({
-            amount: usersEx[2].toString(),
+            amount: usersEx.saleAmount.toString(),
             localeString: true,
           });
           const convertedRamainedAmount = convertNumber({
