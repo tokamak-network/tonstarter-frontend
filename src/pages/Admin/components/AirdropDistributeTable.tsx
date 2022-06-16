@@ -211,7 +211,8 @@ export const AirdropDistributeTable = () => {
                 fontSize={'16px'}
                 fontFamily={theme.fonts.fld}
                 d={'flex'}
-                justifyContent={'center'}>
+                justifyContent={'center'}
+                key={token.tokenName}>
                 <Text
                   fontSize={'12px'}
                   fontFamily={theme.fonts.roboto}
