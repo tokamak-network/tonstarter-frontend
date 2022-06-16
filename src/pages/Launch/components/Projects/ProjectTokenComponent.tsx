@@ -237,7 +237,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
               Token Symbol
             </Text>
-            <Text>{project.tokenSymbol}</Text>
+            <Text>{project.tokenSymbol.toString().toUpperCase()}</Text>
           </Flex>
           <Flex
             p={'0px 20px'}
