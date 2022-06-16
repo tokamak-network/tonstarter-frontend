@@ -231,6 +231,7 @@ export const AirdropClaimTable = () => {
   const handleSelectAll = (e: any) => {
     setIsCheckAll(!isCheckAll);
     setCheckedAllBoxes(!checkedAllBoxes);
+
     if (radioValue === 'TON Staker') {
       setIsCheck(tonStakerAirdropTokens.map((data) => String(data.id)));
       setCheckedTokenAddresses(
@@ -575,23 +576,23 @@ export const AirdropClaimTable = () => {
                     bg={'#2a72e5'}
                     color={'#fff'}
                     height={'32px'}
-                    _hover={{
-                      background: 'transparent',
-                      border: 'solid 1px #2a72e5',
-                      color: themeDesign.fontColorTitle[colorMode],
-                      cursor: 'pointer',
-                    }}
+                    _hover={{}}
+                    cursor={'pointer'}
                     _active={{}}
-                    onClick={() =>
+                    onClick={() => {
                       account &&
-                      AdminActions.claimToken({
-                        account,
-                        library,
-                        address: address,
-                        tonStaker: tonStaker,
-                        tosStaker: tosStaker,
-                      })
-                    }>
+                        AdminActions.claimToken({
+                          account,
+                          library,
+                          address: address,
+                          tonStaker: tonStaker,
+                          tosStaker: tosStaker,
+                        });
+                      setIsCheck([]);
+                      setCheckedTokenAddresses([]);
+                      setIsCheckAll(false);
+                      setCheckedAllBoxes(false);
+                    }}>
                     Claim
                   </Button>
                 </Flex>
@@ -663,12 +664,8 @@ export const AirdropClaimTable = () => {
                     bg={'#2a72e5'}
                     color={'#fff'}
                     height={'32px'}
-                    _hover={{
-                      background: 'transparent',
-                      border: 'solid 1px #2a72e5',
-                      color: themeDesign.fontColorTitle[colorMode],
-                      cursor: 'pointer',
-                    }}
+                    _hover={{}}
+                    cursor={'pointer'}
                     _active={{}}
                     onClick={() =>
                       account &&
@@ -742,12 +739,8 @@ export const AirdropClaimTable = () => {
                 bg={'#2a72e5'}
                 color={'#fff'}
                 height={'32px'}
-                _hover={{
-                  background: 'transparent',
-                  border: 'solid 1px #2a72e5',
-                  color: themeDesign.fontColorTitle[colorMode],
-                  cursor: 'pointer',
-                }}
+                _hover={{}}
+                cursor={'pointer'}
                 _active={{}}
                 onClick={() =>
                   claimAirdrop({
