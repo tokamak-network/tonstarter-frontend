@@ -149,8 +149,24 @@ export const AirdropClaimTable = () => {
       const sortedTonStakerArr = tempTonStakerArr.sort((a, b) => a.id - b.id);
       const sortedDaoAirdropArr = tempDaoAirdropArr.sort((a, b) => a.id - b.id);
 
-      setTonStakerAirdropTokens(sortedTonStakerArr);
-      setDaoAirdropTokens(sortedDaoAirdropArr);
+      console.log('--sortedDaoAirdropArr--');
+      console.log(sortedTonStakerArr);
+      console.log(sortedDaoAirdropArr);
+
+      setTonStakerAirdropTokens(
+        sortedTonStakerArr.filter((tonStakerData) => {
+          if (tonStakerData.amount.toString() !== '0') {
+            return tonStakerData;
+          }
+        }),
+      );
+      setDaoAirdropTokens(
+        sortedDaoAirdropArr.filter((daoAirdropData) => {
+          if (daoAirdropData.amount !== '0.00') {
+            return daoAirdropData;
+          }
+        }),
+      );
 
       let filteredAirdropData = claimableArr.filter(
         (data) => data.amount !== '0.00',
