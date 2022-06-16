@@ -52,7 +52,7 @@ const Snapshot: React.FC<WhiteListProps> = (prop) => {
           w={'150px'}
           text={'Get sTOS'}
           func={() => {}}
-          style={{marginTop: 'auto', marginBottom: '3px'}}></CustomButton>
+          style={{marginTop: '10px'}}></CustomButton>
       </Link>
     </Flex>
   );
