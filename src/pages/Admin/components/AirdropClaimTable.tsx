@@ -15,12 +15,10 @@ import {
 } from '@chakra-ui/react';
 import {LoadingComponent} from 'components/Loading';
 import {claimAirdrop} from '../../../components/Airdrop/actions';
-import {useDispatch} from 'react-redux';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {DEPLOYED} from 'constants/index';
 import {Contract} from '@ethersproject/contracts';
 import AdminActions from '@Admin/actions';
-import {useBlockNumber} from 'hooks/useBlock';
 import * as LockTOSDividendABI from 'services/abis/LockTOSDividend.json';
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import {fetchAirdropPayload} from '../../../components/Airdrop/utils/fetchAirdropPayload';
@@ -28,6 +26,8 @@ import * as TOKENDIVIDENDPOOLPROXY from 'services/abis/TokenDividendProxyPool.js
 import {ethers} from 'ethers';
 import commafy from 'utils/commafy';
 import {getClaimalbeList} from '../../Dao/actions';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectTransactionType} from 'store/refetch.reducer';
 
 type Round = {
   allocatedAmount: string;
@@ -39,7 +39,6 @@ type Round = {
 type AirDropList = [Round] | undefined;
 
 export const AirdropClaimTable = () => {
-  const {blockNumber} = useBlockNumber();
   const {account, library} = useActiveWeb3React();
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -50,6 +49,7 @@ export const AirdropClaimTable = () => {
   const [airdropData, setAirdropData] = useState<any[]>([]);
   const [checkedTokenAddresses, setCheckedTokenAddresses] = useState<any[]>([]);
   const [radioValue, setRadioValue] = useState<string>('Genesis Airdrop');
+  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [tonStakerAirdropTokens, setTonStakerAirdropTokens] = useState<any[]>(
     [],
   );
@@ -57,8 +57,7 @@ export const AirdropClaimTable = () => {
 
   const [genesisAirdropBalance, setGenesisAirdropBalance] = useState<
     string | undefined
-  >(undefined);
-  const dispatch = useDispatch();
+  >('');
   const {LockTOSDividend_ADDRESS, TokenDividendProxyPool_ADDRESS} = DEPLOYED;
 
   const LOCKTOS_DIVIDEND_CONTRACT = new Contract(
@@ -164,7 +163,7 @@ export const AirdropClaimTable = () => {
       getClaimableAirdropTonAmounts();
     }
     /*eslint-disable*/
-  }, [account]);
+  }, [account, transactionType, blockNumber]);
 
   const availableGenesisAmount = (
     roundInfo: AirDropList,
@@ -172,7 +171,7 @@ export const AirdropClaimTable = () => {
     unclaimedAmount: string | undefined,
   ) => {
     if (roundInfo !== undefined && claimedAmount !== undefined) {
-      return setGenesisAirdropBalance(roundInfo[0].myAmount);
+      setGenesisAirdropBalance(unclaimedAmount);
     }
   };
 
@@ -186,14 +185,13 @@ export const AirdropClaimTable = () => {
         return;
       }
       const {roundInfo, claimedAmount, unclaimedAmount} = res;
-      console.log('res: ', res);
       availableGenesisAmount(roundInfo, claimedAmount, unclaimedAmount);
     }
     if (account !== undefined && library !== undefined) {
       callAirDropData();
     }
     /*eslint-disable*/
-  }, [account]);
+  }, [account, transactionType, blockNumber]);
 
   const themeDesign = {
     fontColorTitle: {
@@ -359,7 +357,7 @@ export const AirdropClaimTable = () => {
             borderBottom={'none'}
             fontSize={'16px'}
             padding={'20px 35px'}
-            fontFamily={theme.fonts.fld}>
+            fontFamily={theme.fonts.roboto}>
             <Flex minWidth={'10%'}>
               <Checkbox
                 // fontWeight={'bold'}
@@ -422,7 +420,7 @@ export const AirdropClaimTable = () => {
             borderTopRightRadius={'6px'}
             borderBottom={'none'}
             fontSize={'16px'}
-            fontFamily={theme.fonts.fld}>
+            fontFamily={theme.fonts.roboto}>
             <Flex minWidth={'10%'}>
               <Checkbox
                 fontWeight={'bold'}
@@ -433,14 +431,14 @@ export const AirdropClaimTable = () => {
               />
             </Flex>
 
-            <Text minWidth={'35%'} textAlign={'center'}>
+            <Text minWidth={'35%'} textAlign={'center'} fontSize={'12px'}>
               Token Symbol
             </Text>
-            <Text minWidth={'35%'} textAlign={'center'}>
+            <Text minWidth={'35%'} textAlign={'center'} fontSize={'12px'}>
               Amount
             </Text>
             <Text
-              fontSize={'15px'}
+              fontSize={'12px'}
               fontWeight={'bolder'}
               color={colorMode === 'light' ? '#353c48' : 'white.0'}
               minWidth={'20%'}
@@ -449,29 +447,8 @@ export const AirdropClaimTable = () => {
             </Text>
           </GridItem>
         </Grid>
-      ) : radioValue === 'DAO Airdrop' && daoAirdropTokens.length === 0 ? (
-        <Flex
-          justifyContent={'center'}
-          my={'20px'}
-          width={'100%'}
-          height={'200px'}
-          padding={'90px 100px'}
-          borderRadius={'10px'}
-          border={
-            colorMode === 'light' ? 'solid 1px #fff' : 'solid 1px #373737'
-          }
-          style={{backdropFilter: 'blur(8px)'}}
-          boxShadow={'0 1px 1px 0 rgba(96, 97, 112, 0.16)'}
-          backgroundColor={colorMode === 'light' ? '#fff' : '#222'}>
-          <Text
-            fontFamily={theme.fonts.fld}
-            color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}
-            fontWeight={'bold'}
-            fontSize={'15px'}>
-            There aren't any distributed tokens
-          </Text>
-        </Flex>
-      ) : radioValue === 'Genesis Airdrop' && daoAirdropTokens.length > 0 ? (
+      ) : radioValue === 'Genesis Airdrop' &&
+        Number(genesisAirdropBalance) > 0 ? (
         <Grid
           templateColumns="repeat(1, 1fr)"
           w={'100%'}
@@ -483,7 +460,7 @@ export const AirdropClaimTable = () => {
             borderTopRightRadius={'6px'}
             borderBottom={'none'}
             fontSize={'16px'}
-            fontFamily={theme.fonts.fld}>
+            fontFamily={theme.fonts.roboto}>
             <Flex minWidth={'10%'}>
               <Checkbox
                 fontWeight={'bold'}
@@ -494,14 +471,14 @@ export const AirdropClaimTable = () => {
               />
             </Flex>
 
-            <Text minWidth={'35%'} textAlign={'center'}>
+            <Text minWidth={'35%'} textAlign={'center'} fontSize={'12px'}>
               Token Symbol
             </Text>
-            <Text minWidth={'35%'} textAlign={'center'}>
+            <Text minWidth={'35%'} textAlign={'center'} fontSize={'12px'}>
               Amount
             </Text>
             <Text
-              fontSize={'15px'}
+              fontSize={'12px'}
               fontWeight={'bolder'}
               color={colorMode === 'light' ? '#353c48' : 'white.0'}
               minWidth={'20%'}
@@ -510,7 +487,7 @@ export const AirdropClaimTable = () => {
             </Text>
           </GridItem>
         </Grid>
-      ) : radioValue === 'Genesis Airdrop' && daoAirdropTokens.length === 0 ? (
+      ) : (
         <Flex
           justifyContent={'center'}
           my={'20px'}
@@ -532,7 +509,7 @@ export const AirdropClaimTable = () => {
             There aren't any distributed tokens
           </Text>
         </Flex>
-      ) : null}
+      )}
 
       {radioValue === 'TON Staker' && tonStakerAirdropTokens.length > 0 ? (
         tonStakerAirdropTokens.map((data: any, index: number) => {
@@ -548,7 +525,9 @@ export const AirdropClaimTable = () => {
               bg={themeDesign.bg[colorMode]}>
               <GridItem
                 border={themeDesign.border[colorMode]}
-                borderBottom={index === airdropData?.length - 1 ? '' : 'none'}
+                borderBottom={
+                  index === tonStakerAirdropTokens?.length - 1 ? '' : 'none'
+                }
                 className={'chart-cell'}
                 d={'flex'}
                 justifyContent={'center'}>
@@ -634,7 +613,9 @@ export const AirdropClaimTable = () => {
               bg={themeDesign.bg[colorMode]}>
               <GridItem
                 border={themeDesign.border[colorMode]}
-                borderBottom={index === airdropData?.length - 1 ? '' : 'none'}
+                borderBottom={
+                  index === daoAirdropTokens?.length - 1 ? '' : 'none'
+                }
                 className={'chart-cell'}
                 d={'flex'}
                 justifyContent={'center'}>

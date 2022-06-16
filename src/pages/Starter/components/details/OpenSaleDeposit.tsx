@@ -180,7 +180,6 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
   useEffect(() => {
     async function getData() {
       if (account && library && saleInfo && PUBLICSALE_CONTRACT) {
-        const test = await PUBLICSALE_CONTRACT.usersEx(account);
         const address = saleContractAddress;
         const res = await Promise.all([
           starterActions.getTotalExpectOpenSaleAmount({

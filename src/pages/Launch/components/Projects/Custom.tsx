@@ -77,9 +77,12 @@ export const Custom: FC<Custom> = ({vault, project}) => {
     }
   }
 
+
   useEffect(() => {
-    async function getLPToken() {   
-      if (account === null || account === undefined || library === undefined) {        
+    async function getLPToken() {
+      
+      if (account === null || account === undefined || library === undefined) {
+        
         return;
       }
       const now = moment().unix();
@@ -101,7 +104,8 @@ export const Custom: FC<Custom> = ({vault, project}) => {
           : await vaultC.connect(signer).claimTimes(currentRound);
 
       setDistributeDisable(Number(nowClaimRound) >= Number(currentRound));
-      const amountFormatted = parseInt(ethers.utils.formatEther(amount));      
+      const amountFormatted = parseInt(ethers.utils.formatEther(amount));
+      
       setShowDate(amountFormatted === 0 && Number(claimDate) > now);
       setClaimTime(claimDate);
       setDistributable(amountFormatted);
