@@ -28,6 +28,7 @@ import commafy from 'utils/commafy';
 import {getClaimalbeList} from '../../Dao/actions';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectTransactionType} from 'store/refetch.reducer';
+import {convertNumber} from 'utils/number';
 
 type Round = {
   allocatedAmount: string;
@@ -149,8 +150,22 @@ export const AirdropClaimTable = () => {
       const sortedTonStakerArr = tempTonStakerArr.sort((a, b) => a.id - b.id);
       const sortedDaoAirdropArr = tempDaoAirdropArr.sort((a, b) => a.id - b.id);
 
-      setTonStakerAirdropTokens(sortedTonStakerArr);
-      setDaoAirdropTokens(sortedDaoAirdropArr);
+      setTonStakerAirdropTokens(
+        sortedTonStakerArr.filter((tonStakerData) => {
+          if (
+            convertNumber({amount: tonStakerData.amount.toString()}) !== '0.00'
+          ) {
+            return tonStakerData;
+          }
+        }),
+      );
+      setDaoAirdropTokens(
+        sortedDaoAirdropArr.filter((daoAirdropData) => {
+          if (daoAirdropData.amount !== '0.00') {
+            return daoAirdropData;
+          }
+        }),
+      );
 
       let filteredAirdropData = claimableArr.filter(
         (data) => data.amount !== '0.00',
@@ -231,6 +246,7 @@ export const AirdropClaimTable = () => {
   const handleSelectAll = (e: any) => {
     setIsCheckAll(!isCheckAll);
     setCheckedAllBoxes(!checkedAllBoxes);
+
     if (radioValue === 'TON Staker') {
       setIsCheck(tonStakerAirdropTokens.map((data) => String(data.id)));
       setCheckedTokenAddresses(
@@ -335,10 +351,6 @@ export const AirdropClaimTable = () => {
                 addresses: checkedTokenAddresses,
                 type: radioValue,
               });
-            setIsCheck([]);
-            setCheckedTokenAddresses([]);
-            setIsCheckAll(false);
-            setCheckedAllBoxes(false);
           }}>
           Claim Selected
         </Button>
@@ -528,93 +540,8 @@ export const AirdropClaimTable = () => {
                 borderBottom={
                   index === tonStakerAirdropTokens?.length - 1 ? '' : 'none'
                 }
-                className={'chart-cell'}
-                d={'flex'}
-                justifyContent={'center'}>
-                <Flex minWidth={'10%'}>
-                  <Checkbox
-                    key={id}
-                    type="checkbox"
-                    name={tokenSymbol}
-                    id={id}
-                    onChange={handleClick}
-                    isChecked={isCheck.includes(String(index))}
-                    fontWeight={'bold'}
-                    fontSize={'14px'}
-                    iconSize="18px"
-                    left={'5%'}
-                    value={address}
-                  />
-                </Flex>
-                <Text
-                  fontSize={'13px'}
-                  fontFamily={theme.fonts.roboto}
-                  color={colorMode === 'light' ? '#353c48' : '#fff'}
-                  minWidth={'35%'}
-                  textAlign={'center'}>
-                  {tokenSymbol}
-                </Text>
-                <Text
-                  fontSize={'13px'}
-                  fontFamily={theme.fonts.roboto}
-                  color={colorMode === 'light' ? '#353c48' : '#fff'}
-                  minWidth={'35%'}
-                  textAlign={'center'}>
-                  {commafy(formattedAmt)}
-                </Text>
-                <Flex minWidth={'20%'} justifyContent={'center'}>
-                  <Button
-                    w={'100px'}
-                    h={'38px'}
-                    p={'7px 33px'}
-                    border={'solid 1px #2a72e5'}
-                    borderRadius={'3px'}
-                    fontSize={'13px'}
-                    fontFamily={theme.fonts.roboto}
-                    letterSpacing={'.33px'}
-                    bg={'#2a72e5'}
-                    color={'#fff'}
-                    height={'32px'}
-                    _hover={{
-                      background: 'transparent',
-                      border: 'solid 1px #2a72e5',
-                      color: themeDesign.fontColorTitle[colorMode],
-                      cursor: 'pointer',
-                    }}
-                    _active={{}}
-                    onClick={() =>
-                      account &&
-                      AdminActions.claimToken({
-                        account,
-                        library,
-                        address: address,
-                        tonStaker: tonStaker,
-                        tosStaker: tosStaker,
-                      })
-                    }>
-                    Claim
-                  </Button>
-                </Flex>
-              </GridItem>
-            </Grid>
-          );
-        })
-      ) : radioValue === 'DAO Airdrop' && daoAirdropTokens.length > 0 ? (
-        daoAirdropTokens.map((data: any, index: number) => {
-          const {id, address, amount, tokenSymbol, tonStaker, tosStaker} = data;
-          const formattedAmt = tonStaker
-            ? Number(ethers.utils.formatEther(amount)).toFixed(2)
-            : amount;
-
-          return (
-            <Grid
-              templateColumns="repeat(1, 1fr)"
-              w={'100%'}
-              bg={themeDesign.bg[colorMode]}>
-              <GridItem
-                border={themeDesign.border[colorMode]}
-                borderBottom={
-                  index === daoAirdropTokens?.length - 1 ? '' : 'none'
+                borderBottomRadius={
+                  index === tonStakerAirdropTokens?.length - 1 ? '4px' : 'none'
                 }
                 className={'chart-cell'}
                 d={'flex'}
@@ -663,12 +590,99 @@ export const AirdropClaimTable = () => {
                     bg={'#2a72e5'}
                     color={'#fff'}
                     height={'32px'}
-                    _hover={{
-                      background: 'transparent',
-                      border: 'solid 1px #2a72e5',
-                      color: themeDesign.fontColorTitle[colorMode],
-                      cursor: 'pointer',
-                    }}
+                    _hover={{}}
+                    cursor={'pointer'}
+                    _active={{}}
+                    onClick={() => {
+                      account &&
+                        AdminActions.claimToken({
+                          account,
+                          library,
+                          address: address,
+                          tonStaker: tonStaker,
+                          tosStaker: tosStaker,
+                        });
+                      setIsCheck([]);
+                      setCheckedTokenAddresses([]);
+                      setIsCheckAll(false);
+                      setCheckedAllBoxes(false);
+                    }}>
+                    Claim
+                  </Button>
+                </Flex>
+              </GridItem>
+            </Grid>
+          );
+        })
+      ) : radioValue === 'DAO Airdrop' && daoAirdropTokens.length > 0 ? (
+        daoAirdropTokens.map((data: any, index: number) => {
+          const {id, address, amount, tokenSymbol, tonStaker, tosStaker} = data;
+          const formattedAmt = tonStaker
+            ? Number(ethers.utils.formatEther(amount)).toFixed(2)
+            : amount;
+
+          return (
+            <Grid
+              templateColumns="repeat(1, 1fr)"
+              w={'100%'}
+              bg={themeDesign.bg[colorMode]}>
+              <GridItem
+                border={themeDesign.border[colorMode]}
+                borderBottom={
+                  index === daoAirdropTokens?.length - 1 ? '' : 'none'
+                }
+                borderBottomRadius={
+                  index === daoAirdropTokens?.length - 1 ? '4px' : 'none'
+                }
+                className={'chart-cell'}
+                d={'flex'}
+                justifyContent={'center'}>
+                <Flex minWidth={'10%'}>
+                  <Checkbox
+                    key={id}
+                    type="checkbox"
+                    name={tokenSymbol}
+                    id={id}
+                    onChange={handleClick}
+                    isChecked={isCheck.includes(String(index))}
+                    fontWeight={'bold'}
+                    fontSize={'14px'}
+                    iconSize="18px"
+                    left={'5%'}
+                    value={address}
+                  />
+                </Flex>
+                <Text
+                  fontSize={'13px'}
+                  fontFamily={theme.fonts.roboto}
+                  color={colorMode === 'light' ? '#353c48' : '#fff'}
+                  minWidth={'35%'}
+                  textAlign={'center'}>
+                  {tokenSymbol}
+                </Text>
+                <Text
+                  fontSize={'13px'}
+                  fontFamily={theme.fonts.roboto}
+                  color={colorMode === 'light' ? '#353c48' : '#fff'}
+                  minWidth={'35%'}
+                  textAlign={'center'}>
+                  {commafy(formattedAmt)}
+                </Text>
+                <Flex minWidth={'20%'} justifyContent={'center'}>
+                  <Button
+                    w={'100px'}
+                    h={'38px'}
+                    p={'7px 33px'}
+                    border={'solid 1px #2a72e5'}
+                    borderRadius={'3px'}
+                    fontSize={'13px'}
+                    fontFamily={theme.fonts.roboto}
+                    letterSpacing={'.33px'}
+                    bg={'#2a72e5'}
+                    color={'#fff'}
+                    height={'32px'}
+                    _hover={{}}
+                    cursor={'pointer'}
                     _active={{}}
                     onClick={() =>
                       account &&
@@ -742,12 +756,8 @@ export const AirdropClaimTable = () => {
                 bg={'#2a72e5'}
                 color={'#fff'}
                 height={'32px'}
-                _hover={{
-                  background: 'transparent',
-                  border: 'solid 1px #2a72e5',
-                  color: themeDesign.fontColorTitle[colorMode],
-                  cursor: 'pointer',
-                }}
+                _hover={{}}
+                cursor={'pointer'}
                 _active={{}}
                 onClick={() =>
                   claimAirdrop({
