@@ -117,12 +117,10 @@ export const STOS = () => {
     <Flex
       w={420}
       // h={'690px'}
-      h={'400px'}
+      h={'420px'}
       p={0}
       pt="19.5px"
       px={'20px'}
-      pb={'19.5px'}
-      // pb={'30px'}
       flexDir="column"
       bg={themeDesign.bg[colorMode]}
       borderRadius={10}
@@ -153,6 +151,7 @@ export const STOS = () => {
         justifyContent="center"
         pt="30px"
         pb="16px"
+        mb={'20px'}
         zIndex={1000}
         bg={themeDesign.bg[colorMode]}>
         <Text
