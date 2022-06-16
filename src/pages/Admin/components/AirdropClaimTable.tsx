@@ -28,6 +28,7 @@ import commafy from 'utils/commafy';
 import {getClaimalbeList} from '../../Dao/actions';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectTransactionType} from 'store/refetch.reducer';
+import {convertNumber} from 'utils/number';
 
 type Round = {
   allocatedAmount: string;
@@ -149,12 +150,11 @@ export const AirdropClaimTable = () => {
       const sortedTonStakerArr = tempTonStakerArr.sort((a, b) => a.id - b.id);
       const sortedDaoAirdropArr = tempDaoAirdropArr.sort((a, b) => a.id - b.id);
 
-      console.log(sortedTonStakerArr);
-
       setTonStakerAirdropTokens(
         sortedTonStakerArr.filter((tonStakerData) => {
-          console.log(tonStakerData.amount.toString());
-          if (tonStakerData.amount.toString() !== '0') {
+          if (
+            convertNumber({amount: tonStakerData.amount.toString()}) !== '0.00'
+          ) {
             return tonStakerData;
           }
         }),
