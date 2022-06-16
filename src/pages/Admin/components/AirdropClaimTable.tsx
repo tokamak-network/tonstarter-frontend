@@ -149,10 +149,6 @@ export const AirdropClaimTable = () => {
       const sortedTonStakerArr = tempTonStakerArr.sort((a, b) => a.id - b.id);
       const sortedDaoAirdropArr = tempDaoAirdropArr.sort((a, b) => a.id - b.id);
 
-      console.log('--sortedDaoAirdropArr--');
-      console.log(sortedTonStakerArr);
-      console.log(sortedDaoAirdropArr);
-
       setTonStakerAirdropTokens(
         sortedTonStakerArr.filter((tonStakerData) => {
           if (tonStakerData.amount.toString() !== '0') {
@@ -352,10 +348,6 @@ export const AirdropClaimTable = () => {
                 addresses: checkedTokenAddresses,
                 type: radioValue,
               });
-            setIsCheck([]);
-            setCheckedTokenAddresses([]);
-            setIsCheckAll(false);
-            setCheckedAllBoxes(false);
           }}>
           Claim Selected
         </Button>

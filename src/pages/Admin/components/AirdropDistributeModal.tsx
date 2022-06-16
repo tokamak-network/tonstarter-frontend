@@ -47,6 +47,16 @@ export const AirdropDistributeModal = () => {
 
   const {handleCloseModal} = useModal(setTokenAmount);
 
+  const [isApproveDisable, setIsApproveDisable] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (Number(tokenAmount) > 0) {
+      setIsApproveDisable(false);
+    } else {
+      setIsApproveDisable(true);
+    }
+  }, [tokenAmount]);
+
   useEffect(() => {
     setIsRay(tokenAddress === WTON_ADDRESS);
   }, [tokenAddress, WTON_ADDRESS]);
@@ -353,28 +363,30 @@ export const AirdropDistributeModal = () => {
                     : 'gray.175'
                 }></CustomInput>
             </Box>
-            <Box d="flex" flexDir="column" mb={'29px'}>
-              <Text mb={'9px'}>Distribution Timestamp</Text>
-              <CustomInput
-                w={'290px'}
-                h={'32px'}
-                border={'1px solid #dfe4ee'}
-                style={{
-                  fontSize: '12px',
-                  textAlign: 'left',
-                  border: '1px solid #dfe4ee',
-                }}
-                value={`${timeStamp} 00:00:00 UTC`}
-                placeHolder={'0.00'}
-                fontWeight={500}
-                color={
-                  timeStamp !== ''
-                    ? colorMode === 'light'
-                      ? 'gray.225'
-                      : 'white.100'
-                    : 'gray.175'
-                }></CustomInput>
-            </Box>
+            {distributeToValue !== 'TON Holder' && (
+              <Box d="flex" flexDir="column" mb={'29px'}>
+                <Text mb={'9px'}>Distribution Timestamp</Text>
+                <CustomInput
+                  w={'290px'}
+                  h={'32px'}
+                  border={'1px solid #dfe4ee'}
+                  style={{
+                    fontSize: '12px',
+                    textAlign: 'left',
+                    border: '1px solid #dfe4ee',
+                  }}
+                  value={`${timeStamp} 00:00:00 UTC`}
+                  placeHolder={'0.00'}
+                  fontWeight={500}
+                  color={
+                    timeStamp !== ''
+                      ? colorMode === 'light'
+                        ? 'gray.225'
+                        : 'white.100'
+                      : 'gray.175'
+                  }></CustomInput>
+              </Box>
+            )}
           </Flex>
 
           <Box
@@ -390,6 +402,7 @@ export const AirdropDistributeModal = () => {
               w={'150px'}
               fontSize="14px"
               _hover={{}}
+              disabled={isApproveDisable}
               onClick={approveAction}>
               Approve
             </Button>
