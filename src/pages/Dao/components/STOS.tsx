@@ -116,7 +116,6 @@ export const STOS = () => {
   return (
     <Flex
       w={420}
-      // h={'690px'}
       h={'420px'}
       p={0}
       pt="19.5px"
@@ -168,13 +167,13 @@ export const STOS = () => {
           {address}
         </Text>
       </Flex>
-      <Box h={'68px'} zIndex={1000}>
+      <Box h={'38px'} mb={'27px'} zIndex={1000}>
         <AvailableBalance></AvailableBalance>
       </Box>
-      <Box h={'68px'} zIndex={1000}>
+      <Box h={'38px'} mb={'27px'} zIndex={1000}>
         <MyStaked></MyStaked>
       </Box>
-      <Box h={'68px'} zIndex={1000}>
+      <Box h={'38px'} zIndex={1000}>
         <MySTOS></MySTOS>
       </Box>
     </Flex>
