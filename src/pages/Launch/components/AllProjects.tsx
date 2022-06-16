@@ -40,7 +40,7 @@ const AllProjects = () => {
   } = match;
 
   const {data, isLoading, error} = useQuery(
-    ['test'],
+    ['launchProjects'],
     () =>
       axios.get(fetchCampaginURL, {
         headers: {
@@ -48,15 +48,14 @@ const AllProjects = () => {
         },
       }),
     {
-      enabled: !!account,
       //refetch every 10min
       refetchInterval: 600000,
     },
-  );
+  );  
   const {
     data: {projects},
   } = useAppSelector(selectLaunch);
-
+  
   
   useEffect(() => {
     if (data) {

@@ -84,6 +84,7 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
     library,
   );
 
+  
   useEffect(() => {
     async function getNFTInfo() {
       if (account === null || account === undefined || library === undefined) {
@@ -145,7 +146,19 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
   };
 
   //data.length === 0
-  if (isLoading === true) {
+  if (!account || account === undefined || account === null ) {
+    return (
+      <Flex
+        justifyContent={'center'}
+        alignItems={'center'}
+        h={'100px'}
+        fontFamily={theme.fonts.roboto}
+        fontSize={'16px'}>
+        <Text>Please connect with Metamask</Text>
+      </Flex>
+    );
+  }
+ else if (isLoading === true) {
     return (
       <Flex
         w="1102px"
