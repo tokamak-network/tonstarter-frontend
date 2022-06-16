@@ -537,6 +537,9 @@ export const AirdropClaimTable = () => {
                 borderBottom={
                   index === tonStakerAirdropTokens?.length - 1 ? '' : 'none'
                 }
+                borderBottomRadius={
+                  index === tonStakerAirdropTokens?.length - 1 ? '4px' : 'none'
+                }
                 className={'chart-cell'}
                 d={'flex'}
                 justifyContent={'center'}>
@@ -624,6 +627,9 @@ export const AirdropClaimTable = () => {
                 border={themeDesign.border[colorMode]}
                 borderBottom={
                   index === daoAirdropTokens?.length - 1 ? '' : 'none'
+                }
+                borderBottomRadius={
+                  index === daoAirdropTokens?.length - 1 ? '4px' : 'none'
                 }
                 className={'chart-cell'}
                 d={'flex'}
