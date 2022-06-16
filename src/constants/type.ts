@@ -40,13 +40,17 @@ export type DEPLOYED_TYPE = {
   TokenDividendProxyPool_ADDRESS: string;
   pools: {
     TOS_WTON_POOL: string;
-    ETH_WTON_Address:string;
-  TOS_WTON_Address:string;
-  TOS_ETH_Address:string;
-  DOC_TOS_Address:string;
-  TOS_AURA_Address:string;
-  DOC_ETH_Address:string
+    ETH_WTON_Address: string;
+    TOS_WTON_Address: string;
+    TOS_ETH_Address: string;
+    DOC_TOS_Address: string;
+    TOS_AURA_Address: string;
+    DOC_ETH_Address: string;
   };
   UniswapV3Factory: string;
   ProjectTokenProxy: string;
+  tokens: {
+    LYDA_ADDRESS: string;
+    AURA_ADDRESS: string;
+  };
 };

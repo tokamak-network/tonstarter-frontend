@@ -29,7 +29,8 @@ import {selectTransactionType} from 'store/refetch.reducer';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 
 export const AirdropDistributeModal = () => {
-  const {TON_ADDRESS, WTON_ADDRESS, TOS_ADDRESS, DOC_ADDRESS} = DEPLOYED;
+  const {TON_ADDRESS, WTON_ADDRESS, TOS_ADDRESS, DOC_ADDRESS, tokens} =
+    DEPLOYED;
   const {data} = useAppSelector(selectModalType);
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -138,6 +139,8 @@ export const AirdropDistributeModal = () => {
     WTON_ADDRESS,
     TOS_ADDRESS,
     DOC_ADDRESS,
+    tokens.AURA_ADDRESS,
+    tokens.LYDA_ADDRESS,
     'CUSTOM TOKEN',
   ];
   const selectDistributeOptionValues = [
@@ -145,7 +148,15 @@ export const AirdropDistributeModal = () => {
     // 'TOS Holder',
     'sTOS Holder',
   ];
-  const selectOptionNames = ['TON', 'WTON', 'TOS', 'DOC', 'CUSTOM TOKEN'];
+  const selectOptionNames = [
+    'TON',
+    'WTON',
+    'TOS',
+    'DOC',
+    'AURA',
+    'LYDA',
+    'CUSTOM TOKEN',
+  ];
 
   useEffect(() => {
     if (tokenAddress === 'CUSTOM TOKEN') return setTokenAddress('');
@@ -290,9 +301,14 @@ export const AirdropDistributeModal = () => {
                 optionName={selectOptionNames}
                 setValue={setTokenAddress}
                 fontSize={'12px'}></CustomSelectBox>
-              {[TON_ADDRESS, WTON_ADDRESS, TOS_ADDRESS, DOC_ADDRESS].indexOf(
-                tokenAddress,
-              ) === -1 && (
+              {[
+                TON_ADDRESS,
+                WTON_ADDRESS,
+                TOS_ADDRESS,
+                DOC_ADDRESS,
+                tokens.AURA_ADDRESS,
+                tokens.LYDA_ADDRESS,
+              ].indexOf(tokenAddress) === -1 && (
                 <CustomInput
                   w={'290px'}
                   h={'32px'}
