@@ -60,18 +60,21 @@ export const AirdropDistributeTable = () => {
   const dispatch = useDispatch();
 
   const [timeStamp, setTimeStamp] = useState<string>('');
-  const [distributedTosTokens, setDistributedTosTokens] = useState<any[]>([]);
+  const [distributedTosTokens, setDistributedTosTokens] = useState<
+    any[] | undefined
+  >(undefined);
 
   const [loadingData, setLoadingData] = useState<boolean>(true);
   const {airdropList} = useAirdropList();
 
   useEffect(() => {
-    setLoadingData(false);
-    setDistributedTosTokens(airdropList);
+    if (airdropList) return setDistributedTosTokens(airdropList);
   }, [airdropList]);
 
   useEffect(() => {
-    console.log(distributedTosTokens);
+    if (distributedTosTokens) {
+      setLoadingData(false);
+    }
   }, [distributedTosTokens]);
 
   useEffect(() => {
@@ -153,7 +156,8 @@ export const AirdropDistributeTable = () => {
           Distribute
         </Button>
       </Flex>
-      {distributedTosTokens.length === 0 ? (
+      {distributedTosTokens !== undefined &&
+      distributedTosTokens.length === 0 ? (
         <Flex
           justifyContent={'center'}
           alignItems={'center'}
@@ -197,9 +201,11 @@ export const AirdropDistributeTable = () => {
             return (
               <GridItem
                 border={themeDesign.border[colorMode]}
-                borderBottom={index === airdropList?.length - 1 ? '' : 'none'}
+                borderBottom={
+                  airdropList && index === airdropList?.length - 1 ? '' : 'none'
+                }
                 borderBottomRadius={
-                  index === airdropList?.length - 1 ? '4px' : ''
+                  airdropList && index === airdropList?.length - 1 ? '4px' : ''
                 }
                 className={'chart-cell'}
                 fontSize={'16px'}

@@ -12,7 +12,9 @@ import moment from 'moment';
 type AirdropTokenList = {tokenName: string; amount: string}[];
 
 const useAirdropList = () => {
-  const [airdropList, setAirdropList] = useState<AirdropTokenList | []>([]);
+  const [airdropList, setAirdropList] = useState<AirdropTokenList | undefined>(
+    undefined,
+  );
   const {LockTOSDividend_ADDRESS} = DEPLOYED;
   const {blockNumber} = useBlockNumber();
   const {library} = useActiveWeb3React();
