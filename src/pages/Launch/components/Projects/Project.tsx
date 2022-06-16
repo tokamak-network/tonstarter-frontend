@@ -12,6 +12,7 @@ import {VaultComponent} from './VaultComponent';
 import {ProjectTokenComponent} from './ProjectTokenComponent';
 import {ProjectCardType} from '../../types/index';
 import {useHistory} from 'react-router-dom';
+
 type ProjectProps = {
   project: any;
 };
@@ -34,13 +35,13 @@ export const Project: FC<ProjectProps> = ({project}) => {
 
   const name = 'Project Name';
 
-  window.scrollTo(0, 0);
-  window.onbeforeunload = function () {
-    window.setTimeout(function () {
-      window.location.href = '/launch';
-    }, 0);
-    window.onbeforeunload = null; // necessary to prevent infinite loop, that kills your browser
-  };
+  // window.scrollTo(0, 0);
+  // window.onbeforeunload = function () {
+  //   window.setTimeout(function () {
+  //     window.location.href = '/launch';
+  //   }, 0);
+  //   window.onbeforeunload = null; // necessary to prevent infinite loop, that kills your browser
+  // };
   return (
     <Flex
       w={'1100px'}
