@@ -180,6 +180,8 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
             account,
             0,
           );
+          const totalSaleUserAmount =
+            await PUBLICSALE_CONTRACT.totalSaleUserAmount(account);
 
           const userClaim = await PUBLICSALE_CONTRACT.usersClaim(account);
 
@@ -190,6 +192,10 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
           const ramainedAmount = BigNumber.from(totalClaim._totalClaim).sub(
             usersClaim.claimAmount,
           );
+
+          const isRemainedZero = BigNumber.from(
+            totalSaleUserAmount._realSaleAmount,
+          ).eq(userClaim.claimAmount);
 
           const convertedExSaleAmount = convertNumber({
             amount: usersEx.saleAmount.toString(),
@@ -210,7 +216,9 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
 
           setNotRemained(refundedAmount);
           setExclusiveSale(convertedExSaleAmount || '0');
-          setRemainedAmount(convertedRamainedAmount || '0');
+          setRemainedAmount(
+            isRemainedZero ? '0.00' : convertedRamainedAmount || '0',
+          );
           setOpenSale(convertedUsersOpen || '0');
           setWithdrawAmount(convertedUserRefund || '0');
         } catch (e) {
