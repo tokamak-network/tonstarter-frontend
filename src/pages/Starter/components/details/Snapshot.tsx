@@ -36,7 +36,7 @@ const Snapshot: React.FC<WhiteListProps> = (prop) => {
         {...STATER_STYLE.mainText({colorMode, fontSize: 34})}
         mt={'13px'}>
         <Text lineHeight={'1.12rem'}>
-          {convertTimeStamp(saleInfo?.snapshot, 'YYYY.MM.DD hh:mm:ss')}
+          {convertTimeStamp(saleInfo?.snapshot, 'YYYY.MM.DD HH:mm:ss')}
         </Text>
         <Box display={isPassed ? '' : 'none'} w={'255px'}>
           <DetailCounter
