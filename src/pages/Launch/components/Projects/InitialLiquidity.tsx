@@ -120,7 +120,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
         TOS_ADDRESS,
         project.tokenAddress,
         3000,
-      );
+      );      
       setIsPool(getPool === ZERO_ADDRESS ? false : true);
       setCreatedPool(getPool === ZERO_ADDRESS ? '':getPool)
       // setIsPool(false)
@@ -292,10 +292,8 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
           <Link
             isExternal
             href={
-              vault.poolAddress && network === 'rinkeby'
-                ? `https://rinkeby.etherscan.io/address/${createdPool}`
-                : vault.poolAddress && network !== 'rinkeby'
-                ? `https://etherscan.io/address/${createdPool}`
+               createdPool !== ''
+                ? `https://info.uniswap.org/#/pools/${createdPool.toLowerCase()}`
                 : ''
             }
             _hover={{color: '#2a72e5'}}
