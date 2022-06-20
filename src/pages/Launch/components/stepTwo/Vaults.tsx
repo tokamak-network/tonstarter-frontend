@@ -27,7 +27,6 @@ const Vaults = () => {
   const {
     data: {selectedVaultIndex},
   } = useAppSelector(selectLaunch);
-  
 
   //update the transX when a vault is deleted
   useEffect(() => {
@@ -90,8 +89,6 @@ const Vaults = () => {
                       vaultType === 'Liquidity Incentive' &&
                       isMandatory === true
                         ? `${values.tokenName}-TOS LP Reward *`
-                        : isMandatory === true
-                        ? `${vaultName} *`
                         : vaultName
                     }
                     tokenAllocation={strVaultTokenAllocation}

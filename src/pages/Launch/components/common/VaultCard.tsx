@@ -118,20 +118,27 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
           </Box>
         )}
       </Flex>
-      <Text
-        h={'56px'}
-        // mb={'10px'}
-        fontSize={16}
-        fontWeight={'bold'}
-        color={
-          isSelected
-            ? 'white.100'
-            : colorMode === 'light'
-            ? '#304156'
-            : 'white.100'
-        }>
-        {name}
-      </Text>
+      <Flex>
+        {isMandatory && (
+          <Text mr={'5px'} color={isSelected ? '#ffffff' : '#ff3b3b'}>
+            *
+          </Text>
+        )}
+        <Text
+          h={'56px'}
+          // mb={'10px'}
+          fontSize={16}
+          fontWeight={'bold'}
+          color={
+            isSelected
+              ? 'white.100'
+              : colorMode === 'light'
+              ? '#304156'
+              : 'white.100'
+          }>
+          {name}
+        </Text>
+      </Flex>
       <Flex flexDir={'column'} mb={'8px'}>
         <Text
           h={'15px'}
