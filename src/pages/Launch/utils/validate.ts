@@ -1,4 +1,5 @@
-import {Projects} from '@Launch/types';
+import {Projects, VaultSchedule} from '@Launch/types';
+import {isArray} from 'lodash';
 import {Dispatch, SetStateAction} from 'react';
 import {toChecksumAddress} from 'web3-utils';
 
@@ -7,60 +8,44 @@ function validateFormikValues(
   setDisable: Dispatch<SetStateAction<boolean>>,
   setDisableForStep2: Dispatch<SetStateAction<boolean>>,
 ) {
-  const step1 = [
-    'projectName',
-    'description',
-    'tokenName',
-    'tokenSymbol',
-    'totalSupply',
-    'owner',
-    'sector',
-  ];
-
-  const step1FilledOut = step1.map((e: any) => {
-    //@ts-ignore
-    const isFilledOut = typeof values[e];
-    //@ts-ignore
-    if (isFilledOut !== 'undefined' && values[e] !== '') {
-      return true;
-    }
-    return false;
-  });
-
   const step2FilledOut = values.vaults.map((vault: any) => {
     Object.values(vault).forEach((val) => {
-      if (val !== undefined && val !== '') {
-        return true;
+      if (typeof val === 'object') {
+        //STOS Tier Object handle
+        if (val?.hasOwnProperty('oneTier')) {
+          for (const property in val) {
+            if (
+              //@ts-ignore
+              val[property].requiredStos === undefined ||
+              //@ts-ignore
+              val[property].allocationToken === undefined
+            ) {
+              return false;
+            }
+            return true;
+          }
+        }
+        //Claim array handle
+        if (isArray(val)) {
+          val.map((claimSchedule: VaultSchedule) => {
+            if (
+              claimSchedule.claimTime === undefined ||
+              claimSchedule.claimTokenAllocation === undefined
+            ) {
+              return false;
+            }
+            return true;
+          });
+        }
       }
-      return false;
+      if (val !== undefined && val !== '') {
+        return false;
+      }
+      return true;
     });
-    // for (const key in vault) {
-    //   const thisKeyValue = vault[key];
-    //   const thisKeyType = typeof thisKeyValue;
-    //   console.log(key, thisKeyValue, thisKeyType);
-    //   // if (thisKeyType === 'object') {
-    //   //   thisKeyValue.map((claim: VaultSchedule) => {
-    //   //     for (const claimKey in claim) {
-    //   //       //@ts-ignore
-    //   //       if (claim[claimKey] !== 'undefined' || claim[claimKey] !== '') {
-    //   //         return true;
-    //   //       }
-    //   //       return false;
-    //   //     }
-    //   //   });
-    //   // }
-    //   // if (thisKeyType !== 'undefined' && thisKeyValue !== '') {
-    //   //   return true;
-    //   // }
-    //   // return false;
-    // }
   });
 
-  if (step1FilledOut.includes(false)) {
-    setDisable(true);
-  } else {
-    setDisable(false);
-  }
+  console.log(step2FilledOut);
 
   // if (step1FilledOut.includes(false)) {
   //   setDisableForStep2(true);

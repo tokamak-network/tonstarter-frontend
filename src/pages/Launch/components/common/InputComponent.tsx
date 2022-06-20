@@ -43,6 +43,8 @@ const getPlaceHolder = (name: string) => {
       return 'https://twitter.com/tokamak_network';
     case 'Discord ':
       return 'https://dsc.gg/dragonsmidgard';
+    case 'Token Symbol Image ':
+      return '“URL” is required';
     default:
       return `Input ${name}`;
   }
@@ -50,7 +52,8 @@ const getPlaceHolder = (name: string) => {
 
 const InputComponent: React.FC<InputComponentProps> = (props) => {
   const {name, nameDisplay, inputStyle, requirement} = props;
-  const {errors, values} = useFormikContext<Projects['CreateProject']>();
+  const {errors, values, setFieldValue} =
+    useFormikContext<Projects['CreateProject']>();
   const {colorMode} = useColorMode();
   const title = name
     .split(/(?=[A-Z])/)
@@ -78,14 +81,14 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
       ) : (
         <Flex justifyContent={'space-between'}>
           <Flex>
-            <Text h={18} mb={2.5} color={InputComponentStyle.color[colorMode]}>
-              {title}
-            </Text>
             {requirement && (
-              <Text ml={'5px'} color={'#FF3B3B'}>
+              <Text mr={'5px'} color={'#FF3B3B'}>
                 *
               </Text>
             )}
+            <Text h={18} mb={2.5} color={InputComponentStyle.color[colorMode]}>
+              {title[0] === 'Owner ' ? 'Account Address' : title}
+            </Text>
           </Flex>
           {name === 'projectName' && (
             <Text color={'#86929d'} fontSize={10}>
@@ -104,30 +107,71 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
           const isError = errors[name] === undefined ? false : true;
 
           //selectBox feedback
-          // if (name === 'sector') {
-          //   return (
-          //     <Select
-          //       style={{
-          //         height: '32px',
-          //         border: '1px solid #dfe4ee',
-          //         borderRadius: '4px',
-          //         paddingLeft: '16px',
-          //         paddingRight: '16px',
-          //       }}
-          //       fontSize={13}
-          //       color={'#86929d'}>
-          //       <option>DeFi</option>
-          //       <option>Exchange</option>
-          //       <option>P2E</option>
-          //       <option>M2E</option>
-          //       <option>Stable</option>
-          //       <option>Social</option>
-          //       <option>Collectible</option>
-          //       <option>Marketplace</option>
-          //       <option>Custom</option>
-          //     </Select>
-          //   );
-          // }
+          if (name === 'sector') {
+            const selectList = [
+              'Defi',
+              'Exchange',
+              'P2E',
+              'M2E',
+              'Stable',
+              'Social',
+              'Collectible',
+              'Market place',
+              'Custom',
+            ];
+            const selectBoxOnChange = (e: any) => {
+              setFieldValue('sector', e.target.value);
+            };
+            const isCustom =
+              selectList.indexOf(values.sector) === -1 ||
+              values.sector === 'Custom';
+
+            return (
+              <Flex justifyContent={'space-between'}>
+                <Select
+                  style={{
+                    height: '32px',
+                    border: '1px solid #dfe4ee',
+                    borderRadius: '4px',
+                    paddingLeft: '16px',
+                    paddingRight: '16px',
+                  }}
+                  w={isCustom ? '127px' : '100%'}
+                  fontSize={13}
+                  color={'#86929d'}
+                  name={'sector'}
+                  defaultValue={isCustom ? 'Custom' : values.sector}
+                  onChange={selectBoxOnChange}>
+                  <option disabled selected>
+                    select
+                  </option>
+                  {selectList.map((value: string) => {
+                    return <option value={value}>{value}</option>;
+                  })}
+                </Select>
+                {isCustom && (
+                  <Input
+                    className={
+                      isError
+                        ? 'input-err'
+                        : colorMode === 'light'
+                        ? 'input-light'
+                        : 'input-dark'
+                    }
+                    w={'190px'}
+                    borderRadius={4}
+                    maxLength={getMaxLength(name)}
+                    fontSize={13}
+                    {...field}
+                    id={name}
+                    h={'32px'}
+                    _focus={{}}
+                    placeholder={`${getPlaceHolder(titleTrimed)}`}
+                    {...inputStyle}></Input>
+                )}
+              </Flex>
+            );
+          }
 
           return (
             <Input
