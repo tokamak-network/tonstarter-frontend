@@ -86,7 +86,6 @@ const SubTitle = (props: {
   isSecondColData?: boolean;
   formikName: string;
   inputRef?: any;
-  setOnBlur?: React.Dispatch<React.SetStateAction<any>>;
 }) => {
   const {
     leftTitle,
@@ -97,7 +96,6 @@ const SubTitle = (props: {
     isSecondColData,
     formikName,
     inputRef,
-    setOnBlur,
   } = props;
   const [inputVal, setInputVal] = useState<number | string>(
     //@ts-ignore
@@ -281,8 +279,7 @@ const SubTitle = (props: {
             setValue={setInputVal}
             formikName={formikName}
             inputRef={inputRef}
-            style={{textAlign: 'right'}}
-            setOnBlur={setOnBlur}></InputField>
+            style={{textAlign: 'right'}}></InputField>
         );
       case 'Address for receiving funds':
         return (
@@ -321,7 +318,6 @@ const SubTitle = (props: {
             fontSize={13}
             value={inputVal}
             setValue={setInputVal}
-            setOnBlur={setOnBlur}
             formikName={formikName}
             inputRef={inputRef}
             style={{textAlign: 'right'}}
@@ -701,11 +697,10 @@ const PublicTokenDetail = (props: {
   const vaults = values.vaults;
   const inputRef = useRef({});
   const {
-    data: {tempVaultData, selectedVaultType},
+    data: {tempVaultData, selectedVaultType, onBlur},
   } = useAppSelector(selectLaunch);
 
   const {toastMsg} = useToast();
-  const [onBlur, setOnBlur] = useState(false);
 
   //Input Value Validating
   useEffect(() => {
@@ -714,7 +709,7 @@ const PublicTokenDetail = (props: {
       colorMode === 'light' ? '1px solid #dfe4ee' : '1px solid #373737';
     const {current} = inputRef;
 
-    if (onBlur === false) {
+    if (onBlur.tokenDetail === false) {
       return;
     }
 
@@ -914,7 +909,6 @@ const PublicTokenDetail = (props: {
             const {title, content, percent, formikName} = data;
             return (
               <SubTitle
-                setOnBlur={setOnBlur}
                 key={title}
                 leftTitle={title}
                 rightTitle={content}

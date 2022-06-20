@@ -15,6 +15,10 @@ interface LaunchState {
         name: boolean;
       };
     };
+    onBlur: {
+      tokenDetail: boolean;
+      claimRound: boolean;
+    };
   };
   loading: 'idle' | 'pending';
   error: any;
@@ -31,6 +35,10 @@ const initialState = {
     hashKey: undefined,
     err: {
       tokenDetail: {},
+    },
+    onBlur: {
+      tokenDetail: false,
+      claimRound: false,
     },
   },
   loading: 'idle',
@@ -82,6 +90,9 @@ export const launchReducer = createSlice({
     setHashKey: (state, {payload}: PayloadAction<ProjectPayload>) => {
       state.data.hashKey = payload.data;
     },
+    setBlur: (state, {payload}: PayloadAction<ProjectPayload>) => {
+      state.data.onBlur = payload.data;
+    },
   },
   extraReducers: {
     [selectVault.pending.type]: (state, action) => {
@@ -116,4 +127,5 @@ export const {
   saveTempVaultData,
   setErr,
   setHashKey,
+  setBlur,
 } = launchReducer.actions;
