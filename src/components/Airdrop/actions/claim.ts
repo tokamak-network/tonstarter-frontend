@@ -25,7 +25,7 @@ export const claimAirdrop = async (args: AirdropClaimProps) => {
     const receipt = await Airdrop.connect(signer)?.claim();
     store.dispatch(setTxPending({tx: true}));
     if (receipt) {
-      toastWithReceipt(receipt, setTxPending);
+      toastWithReceipt(receipt, setTxPending, 'Airdrop');
     }
   } catch (err) {
     store.dispatch(setTxPending({tx: false}));

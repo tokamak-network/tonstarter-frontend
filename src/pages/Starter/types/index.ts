@@ -47,7 +47,12 @@ export type MyProject = {
   nextClaimableDate: number;
 };
 
-export type SaleStatus = 'whitelist' | 'exclusive' | 'deposit' | 'claim';
+export type SaleStatus =
+  | 'snapshot'
+  | 'whitelist'
+  | 'exclusive'
+  | 'deposit'
+  | 'claim';
 
 export type ProjectStatus = 'active' | 'upcoming' | 'past';
 export type Tier = 0 | 1 | 2 | 3 | 4;

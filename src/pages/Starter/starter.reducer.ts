@@ -71,12 +71,16 @@ export const fetchStarters = createAsyncThunk(
     // );
 
     try {
-      const matchData = starterData.filter((data: any) => {
-        return (
-          data.delistedData === undefined ||
-          data.delistedData.delistedTime === undefined
-        );
-      });
+      // const matchData = starterData.filter((data: any) => {
+      //   return (
+      //     data.delistedData === undefined ||
+      //     data.delistedData.delistedTime === undefined
+      //   );
+      // });
+
+      console.log(starterData);
+
+      const matchData = starterData;
 
       const activeData = matchData.filter(
         (data: AdminObject) => data.endDepositTime > nowTimeStamp,
