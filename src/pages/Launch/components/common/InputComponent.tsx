@@ -43,6 +43,8 @@ const getPlaceHolder = (name: string) => {
       return 'https://twitter.com/tokamak_network';
     case 'Discord ':
       return 'https://dsc.gg/dragonsmidgard';
+    case 'Token Symbol Image ':
+      return '“URL” is required';
     default:
       return `Input ${name}`;
   }
@@ -85,7 +87,7 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
               </Text>
             )}
             <Text h={18} mb={2.5} color={InputComponentStyle.color[colorMode]}>
-              {title}
+              {title[0] === 'Owner ' ? 'Account Address' : title}
             </Text>
           </Flex>
           {name === 'projectName' && (

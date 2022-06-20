@@ -15,6 +15,7 @@ import OpenStepThree from '@Launch/components/OpenStepThree';
 import validateFormikValues from '@Launch/utils/validate';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {saveProject, editProject} from '@Launch/utils/saveProject';
+import useValidateValue from './hooks/useValidateValue';
 
 const StepComponent = (props: {step: StepNumber}) => {
   const {step} = props;
