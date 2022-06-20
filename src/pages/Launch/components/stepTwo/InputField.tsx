@@ -168,15 +168,11 @@ const InputField: React.FC<InputFieldProp> = (props) => {
         value={value === 'undefined' ? '' : value}
         style={style}
         onBlur={(e) => {
-          console.log('?');
-          console.log(setOnBlur);
-
           if (setOnBlur) {
             return setOnBlur(true);
           }
         }}
         onChange={(e) => {
-          console.log(setOnBlur);
           if (setOnBlur) {
             setOnBlur(false);
           }

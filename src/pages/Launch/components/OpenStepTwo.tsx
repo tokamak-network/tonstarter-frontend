@@ -9,15 +9,27 @@ import VaultBasicSetting from '@Launch/components/modals/VaultBasicSetting';
 import TopTitle from '@Launch/components/stepTwo/TopTitle';
 import ClaimRound from '@Launch/components/stepTwo/ClaimRound';
 import Overview from '@Launch/components/stepTwo/Overview';
-import {useEffect, useState} from 'react';
+import {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import {useFormikContext} from 'formik';
+import validateFormikValues from '@Launch/utils/validate';
+import {Projects} from '@Launch/types';
 
-const OpenStepTwo = () => {
+const OpenStepTwo = (props: {
+  setDisableForStep2: Dispatch<SetStateAction<boolean>>;
+}) => {
+  const {setDisableForStep2} = props;
   const {colorMode} = useColorMode();
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const {values} = useFormikContext<Projects['CreateProject']>();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    const validation = validateFormikValues(values);
+    setDisableForStep2(validation);
+  }, [values, setDisableForStep2]);
 
   return (
     <Flex
@@ -31,8 +43,7 @@ const OpenStepTwo = () => {
         bg={isEdit ? (colorMode === 'light' ? 'white.100' : '#222222') : 'none'}
         zIndex={5}
         opacity={isEdit ? (colorMode === 'light' ? 0.25 : 0.05) : 1}
-        pointerEvents={isEdit ? 'none' : 'all'}
-        >
+        pointerEvents={isEdit ? 'none' : 'all'}>
         <TopTitle></TopTitle>
         <Box mb={'20px'}>
           <Line></Line>
