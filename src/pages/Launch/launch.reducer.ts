@@ -20,6 +20,7 @@ interface LaunchState {
       claimRound: boolean;
     };
     claimRoundTable: VaultSchedule[] | undefined;
+    uncompletedVaultIndex: any[] | undefined;
   };
   loading: 'idle' | 'pending';
   error: any;
@@ -42,6 +43,7 @@ const initialState = {
       claimRound: false,
     },
     claimRoundTable: undefined,
+    uncompletedVaultIndex: undefined,
   },
   loading: 'idle',
   error: null,
@@ -98,6 +100,12 @@ export const launchReducer = createSlice({
     setClaimRoundTable: (state, {payload}: PayloadAction<ProjectPayload>) => {
       state.data.claimRoundTable = payload.data;
     },
+    setUncompletedVaultIndex: (
+      state,
+      {payload}: PayloadAction<ProjectPayload>,
+    ) => {
+      state.data.uncompletedVaultIndex = payload.data;
+    },
   },
   extraReducers: {
     [selectVault.pending.type]: (state, action) => {
@@ -134,4 +142,5 @@ export const {
   setHashKey,
   setBlur,
   setClaimRoundTable,
+  setUncompletedVaultIndex,
 } = launchReducer.actions;

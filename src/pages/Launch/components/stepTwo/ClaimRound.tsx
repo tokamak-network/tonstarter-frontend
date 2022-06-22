@@ -202,7 +202,13 @@ const ClaimRound = () => {
                 setClaimRoundEdit(true);
               }}
               h="32px"
-              w="100px"></CustomButton>
+              w="100px"
+              isDisabled={
+                //@ts-ignore
+                selectedVaultDetail.vaultType === 'Initial Liquidity' ||
+                //@ts-ignore
+                selectedVaultDetail.vaultType === 'DAO'
+              }></CustomButton>
           </Flex>
         ) : (
           <Flex fontSize={13}>

@@ -88,7 +88,7 @@ const Vaults = () => {
                     name={
                       vaultType === 'Liquidity Incentive' &&
                       isMandatory === true
-                        ? `${values.tokenName}-TOS LP Reward *`
+                        ? `${values.tokenName}-TOS LP Reward`
                         : vaultName
                     }
                     tokenAllocation={strVaultTokenAllocation}

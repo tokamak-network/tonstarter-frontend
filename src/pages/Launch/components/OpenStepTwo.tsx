@@ -13,6 +13,8 @@ import {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import {useFormikContext} from 'formik';
 import validateFormikValues from '@Launch/utils/validate';
 import {Projects} from '@Launch/types';
+import {setUncompletedVaultIndex} from '@Launch/launch.reducer';
+import {useAppDispatch} from 'hooks/useRedux';
 
 const OpenStepTwo = (props: {
   setDisableForStep2: Dispatch<SetStateAction<boolean>>;
@@ -21,6 +23,7 @@ const OpenStepTwo = (props: {
   const {colorMode} = useColorMode();
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const {values} = useFormikContext<Projects['CreateProject']>();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -28,7 +31,8 @@ const OpenStepTwo = (props: {
 
   useEffect(() => {
     const validation = validateFormikValues(values);
-    setDisableForStep2(validation);
+    setDisableForStep2(validation.result);
+    dispatch(setUncompletedVaultIndex({data: validation.step2FilledOut}));
   }, [values, setDisableForStep2]);
 
   return (

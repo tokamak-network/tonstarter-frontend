@@ -150,7 +150,7 @@ const ClaimRoundInput = (props: {index: number}) => {
                 // ref={(el) => (inputRefs.current[index] = el)}
                 _hover={{
                   borderWidth: '1px',
-                  borderColor: isErr ? '#ff3b3b' : '#257eee',
+                  borderColor: '#257eee',
                 }}
                 _focus={
                   isErr ? {} : {borderWidth: '1px', borderColor: '#257eee'}

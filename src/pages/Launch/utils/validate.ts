@@ -92,7 +92,10 @@ function validateFormikValues(
     return result.indexOf(false) === -1 ? true : false;
   });
 
-  return step2FilledOut.indexOf(false) === -1 ? false : true;
+  return {
+    result: step2FilledOut.indexOf(false) === -1 ? false : true,
+    step2FilledOut,
+  };
 
   // if (step1FilledOut.includes(false)) {
   //   setDisableForStep2(true);
