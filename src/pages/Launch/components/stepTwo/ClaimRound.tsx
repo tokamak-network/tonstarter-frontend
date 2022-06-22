@@ -19,8 +19,12 @@ import {CustomButton} from 'components/Basic/CustomButton';
 import {CustomSelectBox} from 'components/Basic';
 import {Projects, VaultAny, VaultSchedule} from '@Launch/types';
 import moment from 'moment';
-import {selectLaunch} from '@Launch/launch.reducer';
-import {useAppSelector} from 'hooks/useRedux';
+import {
+  saveTempVaultData,
+  selectLaunch,
+  setClaimRoundTable,
+} from '@Launch/launch.reducer';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import SingleCalendarPop from '../common/SingleCalendarPop';
 import commafy from 'utils/commafy';
 import {useToast} from 'hooks/useToast';
@@ -46,7 +50,7 @@ const ClaimRound = () => {
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
 
   const {
-    data: {selectedVault},
+    data: {selectedVault, claimRoundTable, tempVaultData},
   } = useAppSelector(selectLaunch);
   const [selectedVaultDetail, setSelectedVaultDetail] = useState([]);
   const vaultsList = values.vaults;
@@ -64,193 +68,99 @@ const ClaimRound = () => {
     });
   }, [selectedVault, vaultsList]);
 
-  const [selectedDay, setSelectedDay] = useState<'14' | '30' | '60'>('14');
-  const selectOptionValues = ['14', '30', '60'];
-  const selectOptionNames = ['14 Days', '30 Days', '60 Days'];
+  // const [selectedDay, setSelectedDay] = useState<'14' | '30' | '60'>('14');
 
-  const [inputVals, setInputVals] = useState<undefined | VaultSchedule[]>(
-    undefined,
-  );
+  // const [inputVals, setInputVals] = useState<undefined | VaultSchedule[]>(
+  //   undefined,
+  // );
   const {toastMsg} = useToast();
   const inputRefs = useRef<any[]>([]);
-  const testRef = useRef<any[]>([]);
 
   const [claimInfo, setClaimInfo] = useState<any>();
+
+  const dispatch = useAppDispatch();
 
   //@ts-ignore
   const {claim} = selectedVaultDetail;
 
-  useEffect(() => {
-    setClaimInfo(claim);
-  }, [claim, selectedVaultDetail]);
+  // const setDate = useCallback(() => {
+  //   const claimValue: VaultSchedule[] = claim.map(
+  //     (data: VaultSchedule, index: number) => {
+  //       //@ts-ignore
+  //       const refTimeStamp = selectedVaultDetail.claim[0].claimTime;
+  //       if (refTimeStamp === undefined) {
+  //         return toastMsg({
+  //           status: 'error',
+  //           title: 'Date Time Error',
+  //           description: 'First date time must be filled out',
+  //           duration: 3000,
+  //           isClosable: true,
+  //         });
+  //       }
+  //       const nowTimeStamp =
+  //         index === 0
+  //           ? refTimeStamp
+  //           : moment
+  //               .unix(refTimeStamp)
+  //               .add(index * Number(selectedDay), 'days')
+  //               .unix();
+  //       return {
+  //         claimRound: index + 1,
+  //         claimTime: nowTimeStamp,
+  //         claimTokenAllocation: data.claimTokenAllocation,
+  //       };
+  //     },
+  //   );
 
-  const addRow = useCallback(() => {
-    if (selectedVaultDetail) {
-      //@ts-ignore
-      return setFieldValue(`vaults[${selectedVaultDetail.index}].claim`, [
-        ...claim,
-        defaultTableData,
-      ]);
-    }
-    /*eslint-disable*/
-  }, [claim, selectedVaultDetail]);
-
-  const add10Row = useCallback(() => {
-    if (selectedVaultDetail) {
-      //@ts-ignore
-      return setFieldValue(`vaults[${selectedVaultDetail.index}].claim`, [
-        ...claim,
-        defaultTableData,
-        defaultTableData,
-        defaultTableData,
-        defaultTableData,
-        defaultTableData,
-        defaultTableData,
-        defaultTableData,
-        defaultTableData,
-        defaultTableData,
-        defaultTableData,
-      ]);
-    }
-    /*eslint-disable*/
-  }, [claim, selectedVaultDetail]);
-
-  const removeRow = useCallback(
-    (rowIndex) => {
-      if (selectedVaultDetail) {
-        const newTableData = claim.filter(
-          (data: ClaimRoundTable, index: number) => {
-            return index !== rowIndex;
-          },
-        );
-        return setFieldValue(
-          //@ts-ignore
-          `vaults[${selectedVaultDetail.index}].claim`,
-          newTableData,
-        );
-      }
-    },
-    [claim, selectedVaultDetail],
-  );
-
-  const setDate = useCallback(() => {
-    const claimValue: VaultSchedule[] = claim.map(
-      (data: VaultSchedule, index: number) => {
-        //@ts-ignore
-        const refTimeStamp = selectedVaultDetail.claim[0].claimTime;
-        if (refTimeStamp === undefined) {
-          return toastMsg({
-            status: 'error',
-            title: 'Date Time Error',
-            description: 'First date time must be filled out',
-            duration: 3000,
-            isClosable: true,
-          });
-        }
-        const nowTimeStamp =
-          index === 0
-            ? refTimeStamp
-            : moment
-                .unix(refTimeStamp)
-                .add(index * Number(selectedDay), 'days')
-                .unix();
-        return {
-          claimRound: index + 1,
-          claimTime: nowTimeStamp,
-          claimTokenAllocation: data.claimTokenAllocation,
-        };
-      },
-    );
-
-    if (selectedVaultDetail) {
-      // setTableData(claimValue);
-      return setFieldValue(
-        //@ts-ignore
-        `vaults[${selectedVaultDetail.index}].claim`,
-        claimValue,
-      );
-    }
-    /*eslint-disable*/
-  }, [claim, selectedDay, selectedVaultDetail]);
-
-  const setAmount = useCallback(() => {
-    const claimValue: VaultSchedule[] = claim.map(
-      (data: VaultSchedule, index: number) => {
-        //@ts-ignore
-        const test = selectedVaultDetail.vaultTokenAllocation / claim.length;
-        let result;
-        if (test.toString().split('.')[1]) {
-          result =
-            test.toString().split('.')[0] +
-            '.' +
-            test.toString().split('.')[1].slice(0, 2);
-        } else {
-          result = test;
-        }
-
-        return {
-          claimRound: index + 1,
-          claimTime: data.claimTime,
-          claimTokenAllocation:
-            //@ts-ignore
-            Number(result),
-        };
-      },
-    );
-
-    if (selectedVaultDetail) {
-      // setTableData(claimValue);
-      return setFieldValue(
-        //@ts-ignore
-        `vaults[${selectedVaultDetail.index}].claim`,
-        claimValue,
-      );
-    }
-    /*eslint-disable*/
-  }, [claim, selectedDay, selectedVaultDetail]);
-
-  useEffect(() => {
-    if (claim) {
-      setInputVals(claim);
-      // setTest(false);
-    }
-  }, [claim, selectedVaultDetail]);
-
-  const [isErr, setIsErr] = useState(false);
   const [claimRoundEdit, setClaimRoundEdit] = useState(false);
 
-  useEffect(() => {
-    const errBorderStyle = '1px solid #ff3b3b';
-    const noErrBorderStyle = colorMode === 'light' ? null : null;
-    //@ts-ignore
-    const vaultTokenAllocation = selectedVaultDetail.vaultTokenAllocation;
-    const totalTokenInputs = inputRefs.current.reduce((acc, cur) => {
-      if (cur) {
-        return acc + Number(cur.value);
-      }
-    }, 0);
-    if (totalTokenInputs > vaultTokenAllocation) {
-      inputRefs.current.map((input: any) => {
-        input.style.border = errBorderStyle;
+  // useEffect(() => {
+  //   const errBorderStyle = '1px solid #ff3b3b';
+  //   const noErrBorderStyle = colorMode === 'light' ? null : null;
+  //   //@ts-ignore
+  //   const vaultTokenAllocation = selectedVaultDetail.vaultTokenAllocation;
+  //   const totalTokenInputs = inputRefs.current.reduce((acc, cur) => {
+  //     if (cur) {
+  //       return acc + Number(cur.value);
+  //     }
+  //   }, 0);
+  //   if (totalTokenInputs > vaultTokenAllocation) {
+  //     inputRefs.current.map((input: any) => {
+  //       input.style.border = errBorderStyle;
+  //     });
+  //     setIsErr(true);
+  //     toastMsg({
+  //       title: 'Token Allocation to this vault is not enough',
+  //       description:
+  //         'You have to put more token or adjust token allocation for claim rounds',
+  //       duration: 2000,
+  //       isClosable: true,
+  //       status: 'error',
+  //     });
+  //   } else {
+  //     inputRefs.current.map((input: any) => {
+  //       if (input) {
+  //         input.style.border = noErrBorderStyle;
+  //       }
+  //     });
+  //     setIsErr(false);
+  //   }
+  // }, [inputRefs, inputVals]);
+
+  const saveConfirm = useCallback(() => {
+    if (claimRoundTable && tempVaultData) {
+      const data = claimRoundTable.map((claimData: VaultSchedule) => {
+        const isExist = tempVaultData.map((tempData: VaultSchedule) => {
+          if (tempData.claimRound === claimData.claimRound) {
+            return tempData;
+          }
+        });
+        return isExist[0] === undefined ? claimData : isExist[0];
       });
-      setIsErr(true);
-      toastMsg({
-        title: 'Token Allocation to this vault is not enough',
-        description:
-          'You have to put more token or adjust token allocation for claim rounds',
-        duration: 2000,
-        isClosable: true,
-        status: 'error',
-      });
-    } else {
-      inputRefs.current.map((input: any) => {
-        if (input) {
-          input.style.border = noErrBorderStyle;
-        }
-      });
-      setIsErr(false);
+      //@ts-ignore
+      setFieldValue(`vaults.${selectedVaultDetail.index}.claim`, data);
     }
-  }, [inputRefs, inputVals]);
+  }, [claimRoundTable, tempVaultData, selectedVaultDetail]);
 
   let tokenAcc = 0;
 
@@ -277,7 +187,20 @@ const ClaimRound = () => {
           <Flex fontSize={13}>
             <CustomButton
               text="Edit"
-              func={() => setClaimRoundEdit(true)}
+              func={() => {
+                dispatch(
+                  saveTempVaultData({
+                    data: [],
+                  }),
+                );
+                dispatch(
+                  setClaimRoundTable({
+                    //@ts-ignore
+                    data: selectedVaultDetail.claim,
+                  }),
+                );
+                setClaimRoundEdit(true);
+              }}
               h="32px"
               w="100px"></CustomButton>
           </Flex>
@@ -285,7 +208,10 @@ const ClaimRound = () => {
           <Flex fontSize={13}>
             <CustomButton
               text="Confirm"
-              func={() => setClaimRoundEdit(false)}
+              func={() => {
+                saveConfirm();
+                setClaimRoundEdit(false);
+              }}
               h="32px"
               w="100px"
               style={{marginRight: '10px'}}></CustomButton>
@@ -334,12 +260,15 @@ const ClaimRound = () => {
             </Flex>
             {
               //@ts-ignore
-              selectedVaultDetail.vaultType === 'Initial Liquidity' ||
-              //@ts-ignore
-              (selectedVaultDetail.vaultType === 'DAO' && claimEdit) ? (
+              (selectedVaultDetail.vaultType === 'Initial Liquidity' ||
+                //@ts-ignore
+                selectedVaultDetail.vaultType === 'DAO' ||
+                claim === undefined ||
+                claim.length === 0) &&
+              claimRoundEdit === false ? (
                 <Flex
                   w={'100%'}
-                  borderTop={middleStyle.border}
+                  borderBottom={middleStyle.border}
                   alignItems="center"
                   justifyContent={'center'}>
                   <Text fontSize={13} color={'#808992'} fontWeight={600}>
@@ -382,20 +311,6 @@ const ClaimRound = () => {
                                 .unix(data.claimTime)
                                 .format('YYYY.MM.DD HH:mm:ss')}
                         </Text>
-                        <SingleCalendarPop
-                          //@ts-ignore
-                          fieldValueKey={`vaults[${selectedVaultDetail.index}].claim[${index}]`}
-                          oldValues={data}
-                          valueKey={'claimTime'}
-                          startTimeCap={
-                            index === 0
-                              ? //@ts-ignore
-                                vaultsList[0].publicRound2End ||
-                                moment().add(9, 'days').unix()
-                              : (claimInfo !== undefined &&
-                                  Number(claimInfo[index - 1]?.claimTime)) ||
-                                0
-                          }></SingleCalendarPop>
                       </Flex>
                       <Flex
                         w={'314px'}
@@ -403,61 +318,7 @@ const ClaimRound = () => {
                         justifyContent={'center'}
                         borderRight={middleStyle.border}
                         borderBottom={middleStyle.border}>
-                        <InputGroup>
-                          <Input
-                            h={`42px`}
-                            // ref={(el) => (inputRefs.current[index] = el)}
-                            _hover={{
-                              borderWidth: '1px',
-                              borderColor: '#257eee',
-                            }}
-                            _focus={
-                              isErr
-                                ? {}
-                                : {borderWidth: '1px', borderColor: '#257eee'}
-                            }
-                            fontSize={12}
-                            placeholder={''}
-                            borderRadius={0}
-                            borderWidth={0}
-                            textAlign={'center'}
-                            value={
-                              inputVals !== undefined &&
-                              inputVals[index]?.claimTokenAllocation !==
-                                undefined
-                                ? inputVals[index].claimTokenAllocation
-                                : ''
-                            }
-                            onBlur={(e) => {
-                              const {value} = e.target;
-
-                              return setFieldValue(
-                                //@ts-ignore
-                                `vaults[${selectedVaultDetail.index}].claim[${index}]`,
-                                {
-                                  ...data,
-                                  claimTokenAllocation: Number(value),
-                                },
-                              );
-                            }}
-                            onChange={(e) => {
-                              const {value} = e.target;
-
-                              if (isNaN(Number(value))) {
-                                return;
-                              }
-
-                              if (inputVals) {
-                                let oldVals = [...inputVals];
-                                let item = {
-                                  ...oldVals[index],
-                                  claimTokenAllocation: Number(value),
-                                };
-                                oldVals[index] = item;
-                                return setInputVals(oldVals);
-                              }
-                            }}></Input>
-                        </InputGroup>
+                        <Text>{data.claimTokenAllocation}</Text>
                       </Flex>
                       <Text
                         w={'314px'}

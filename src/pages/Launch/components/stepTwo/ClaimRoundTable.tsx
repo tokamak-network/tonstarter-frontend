@@ -112,9 +112,6 @@ const ClaimRoundTable = () => {
     setBtnDisable(validation.indexOf(true) !== -1);
   }, [roundNum, date1st, interval, amount, eachRound, eachEndRound]);
 
-  console.log('--');
-  console.log([claimRoundTable]);
-
   let tokenAcc = 0;
 
   const contentComponent = useMemo(() => {
@@ -299,6 +296,18 @@ const ClaimRoundTable = () => {
             w={'100px'}
             h={'32px'}
             isDisabled={btnDisable}></CustomButton>
+          {claimRoundTable && claimRoundTable.length > 0 && (
+            <CustomButton
+              text={'Clear All'}
+              func={() => dispatch(setClaimRoundTable({data: []}))}
+              w={'100px'}
+              h={'32px'}
+              style={{
+                marginLeft: '10px',
+                backgroundColor: '#e9edf1',
+                color: '#3a495f',
+              }}></CustomButton>
+          )}
         </Flex>
       </Flex>
       <Flex w={'100%'}>

@@ -1,15 +1,13 @@
 import {Flex, Input, Text, useColorMode, Box} from '@chakra-ui/react';
 import SingleCalendarPop from '@Launch/components/common/SingleCalendarPop';
-import {
-  saveTempVaultData,
-  selectLaunch,
-  setClaimRoundTable,
-} from '@Launch/launch.reducer';
-import {Projects} from '@Launch/types';
+import {saveTempVaultData, selectLaunch} from '@Launch/launch.reducer';
+import {Projects, VaultSchedule} from '@Launch/types';
 import {useFormikContext} from 'formik';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {useToast} from 'hooks/useToast';
 import moment from 'moment';
-import {useMemo, useState} from 'react';
+import {useCallback, useMemo, useState} from 'react';
+import commafy from 'utils/commafy';
 
 const ClaimRoundInput = (props: {index: number}) => {
   const {index} = props;
@@ -22,9 +20,10 @@ const ClaimRoundInput = (props: {index: number}) => {
   };
 
   const {
-    data: {claimRoundTable},
+    data: {claimRoundTable, tempVaultData, selectedVaultIndex},
   } = useAppSelector(selectLaunch);
   const dispatch = useAppDispatch();
+  const {toastMsg} = useToast();
 
   //legacy
   const [isErr, setIsErr] = useState(false);
@@ -33,6 +32,57 @@ const ClaimRoundInput = (props: {index: number}) => {
       ? claimRoundTable[index].claimTokenAllocation
       : 0,
   );
+  const [date, setDate] = useState(
+    claimRoundTable !== undefined ? claimRoundTable[index].claimTime : 0,
+  );
+
+  const onBlurFunc = useCallback(() => {
+    if (selectedVaultIndex !== undefined && claimRoundTable !== undefined) {
+      const vaultTokenAllocation =
+        vaultsList[selectedVaultIndex].vaultTokenAllocation;
+
+      const totalTokenInputs = claimRoundTable.reduce(
+        (prev: number, cur: VaultSchedule) => {
+          if (cur.claimTokenAllocation)
+            return prev + Number(cur.claimTokenAllocation);
+          return prev;
+        },
+        0,
+      );
+
+      console.log('----');
+      console.log(totalTokenInputs, vaultTokenAllocation);
+
+      if (totalTokenInputs > vaultTokenAllocation) {
+        setIsErr(true);
+        return toastMsg({
+          title: 'Token Allocation to this vault is not enough',
+          description:
+            'You have to put more token or adjust token allocation for claim rounds',
+          duration: 2000,
+          isClosable: true,
+          status: 'error',
+        });
+      }
+    }
+
+    const newData = {
+      claimRound: index + 1,
+      claimTime: date,
+      claimTokenAllocation: Number(input),
+    };
+    dispatch(
+      saveTempVaultData({
+        data:
+          tempVaultData.length > 0 ? [...tempVaultData, newData] : [newData],
+      }),
+    );
+  }, [input, date, claimRoundTable, selectedVaultIndex]);
+
+  const onChange = (e: any) => {
+    const {value} = e.target;
+    setInput(Number(value));
+  };
 
   const component = useMemo(() => {
     if (claimRoundTable === undefined) {
@@ -72,16 +122,12 @@ const ClaimRoundInput = (props: {index: number}) => {
                 mr={'5px'}
                 color={colorMode === 'light' ? '#3d495d' : 'white.100'}
                 fontSize={11}>
-                {claimRoundTable[index].claimTime === undefined
+                {date === undefined
                   ? '-'
-                  : moment
-                      .unix(claimRoundTable[index].claimTime as number)
-                      .format('YYYY.MM.DD HH:mm:ss')}
+                  : moment.unix(date as number).format('YYYY.MM.DD HH:mm:ss')}
               </Text>
               <SingleCalendarPop
                 //@ts-ignore
-                oldValues={claimRoundTable[index]}
-                valueKey={'claimTime'}
                 startTimeCap={
                   index === 0
                     ? //@ts-ignore
@@ -90,7 +136,8 @@ const ClaimRoundInput = (props: {index: number}) => {
                     : (claimRoundTable !== undefined &&
                         Number(claimRoundTable[index - 1]?.claimTime)) ||
                       0
-                }></SingleCalendarPop>
+                }
+                setDate={setDate}></SingleCalendarPop>
             </Flex>
             <Flex
               w={'314px'}
@@ -103,7 +150,7 @@ const ClaimRoundInput = (props: {index: number}) => {
                 // ref={(el) => (inputRefs.current[index] = el)}
                 _hover={{
                   borderWidth: '1px',
-                  borderColor: '#257eee',
+                  borderColor: isErr ? '#ff3b3b' : '#257eee',
                 }}
                 _focus={
                   isErr ? {} : {borderWidth: '1px', borderColor: '#257eee'}
@@ -114,52 +161,31 @@ const ClaimRoundInput = (props: {index: number}) => {
                 borderWidth={0}
                 textAlign={'center'}
                 value={input}
-                onBlur={(e) => {
-                  //   const {value} = e.target;
-                  //   if (isNaN(Number(value)) || value === undefined) {
-                  //     return;
-                  //   }
-                  //   const newArr: any = [];
-                  //   claimRoundTable?.map((data) => {
-                  //     newArr.push(data);
-                  //   });
-                  //   newArr.splice(index, 1);
-                  //   newArr.splice(index, 0, {
-                  //     claimRound: index + 1,
-                  //     claimTime: 1,
-                  //     claimTokenAllocation: Number(value),
-                  //   });
-                  //   dispatch(
-                  //     saveTempVaultData({
-                  //       data: newArr,
-                  //     }),
-                  //   );
-                  //   dispatch(
-                  //     setClaimRoundTable({
-                  //       data: newArr,
-                  //     }),
-                  //   );
-                }}
-                onChange={(e) => {
-                  const {value} = e.target;
-                  console.log(value);
-                  setInput(Number(value));
-                  // if (inputVals) {
-                  //   let oldVals = [...inputVals];
-                  //   let item = {
-                  //     ...oldVals[index],
-                  //     claimTokenAllocation: Number(value),
-                  //   };
-                  //   oldVals[index] = item;
-                  //   return setInputVals(oldVals);
-                  // }
-                }}></Input>
+                onBlur={onBlurFunc}
+                onChange={onChange}></Input>
             </Flex>
+            <Text
+              w={'314px'}
+              borderRight={middleStyle.border}
+              borderBottom={middleStyle.border}>
+              {commafy(
+                claimRoundTable.reduce(
+                  (prev: number, cur: VaultSchedule, currentIndex: number) => {
+                    if (cur.claimTokenAllocation && currentIndex <= index) {
+                      return prev + cur.claimTokenAllocation;
+                    } else {
+                      return prev;
+                    }
+                  },
+                  0,
+                ),
+              )}
+            </Text>
           </Flex>
         </Box>
       </Flex>
     );
-  }, [input, claimRoundTable]);
+  }, [input, claimRoundTable, vaultsList, date]);
 
   if (claimRoundTable === undefined) {
     return null;
