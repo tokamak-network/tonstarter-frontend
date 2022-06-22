@@ -28,6 +28,8 @@ import {Tab} from '../types';
 import {DEPLOYED} from 'constants/index';
 import * as TOSABI from 'services/abis/TOS.json';
 import {Contract} from '@ethersproject/contracts';
+import views from '../rewards';
+import {TokensData} from '../types'
 // import { selectBalance } from 'store/app/user.reducer';
 
 //   import {ModalTabs} from '../components/Tabs';
@@ -51,6 +53,7 @@ export const SearchModal = () => {
   const [tokenLists, setTokenLists] = useState<any[]>([]);
   const [tokenInfo, setTokenInfo] = useState<(string | number)[]>([]);
   const [balance, setBalance] = useState(0)
+  const [tokensfromAPI, setTokensfromAPI] = useState<any>([])
   const handleCloseModal = useCallback(() => {
     dispatch(closeModal());
   }, [dispatch]);
@@ -61,7 +64,7 @@ export const SearchModal = () => {
   }, [address, symbol, decimal, balance]);
 
   useEffect(() => {    
-    const tokenList = [TON_ADDRESS, TOS_ADDRESS, WTON_ADDRESS, DOC_ADDRESS, AURA_ADDRESS];
+    const tokenList = [TON_ADDRESS, TOS_ADDRESS, WTON_ADDRESS, DOC_ADDRESS, AURA_ADDRESS, '0xE1B0630D7649CdF503eABc2b6423227Be9605247'];
     setTokenLists(tokenList);
   }, [data]);
 
@@ -79,6 +82,14 @@ export const SearchModal = () => {
       dark: 'black.100',
     },
   };
+  
+  useEffect(()=> {
+    async function getTokens() {
+      const tokens = await views.getTokensData() 
+      setTokensfromAPI(tokens)
+    }
+    getTokens()
+  },[account, library])
   useEffect(() => {
     const isAddress = ethers.utils.isAddress(address);
     setValidAddress(isAddress);
@@ -178,125 +189,51 @@ export const SearchModal = () => {
                   </Text>
                   <Flex flexDirection={'column'} >
                     {tokenLists.map((token: any, index: number) => {
-                      const detailedToken = checkTokenType(ethers.utils.getAddress(token), colorMode);
-                      return (
-                        <Flex
-                        p={'5px'}
-                          key={index}
-                          onClick={() => {selectToken(index,token, detailedToken.name )
-                          }}
-                          ref={(el) => (focusTarget.current[index] = el)}
-                          alignItems={'center'}
-                          flexDir={'row'}
-                          h={'50px'}
-                          _hover={{cursor:'pointer'}}
-                          borderBottom={themeDesign.border[colorMode]}>
-                          <Avatar
-                            src={detailedToken.symbol}
-                            bg={colorMode === 'light' ? '#ffffff' : '#222222'}
-                            color="#c7d1d8"
-                            name="T"
-                            border={
-                              colorMode === 'light' ? '1px solid #e7edf3' : '1px solid #3c3c3c'
-                            }                            h="26px"
-                            w="26px"
-                            zIndex={'100'}
-                          />
-                          <Text
-                            ml={'10px'}
-                            fontFamily={theme.fonts.fld}
-                            fontSize={'17px'}
-                            color={
-                              colorMode === 'light' ? '#3d495d' : '#ffffff'
-                            }>
-                            {detailedToken.name}
-                          </Text>
-                        </Flex>
-                      );
-                    })}
+                      if (tokensfromAPI !== undefined) {
+                        const detailedToken =   tokensfromAPI.find((tokenFromList:any)=> ethers.utils.getAddress(token) === ethers.utils.getAddress(tokenFromList.tokenAddress));
+                        // const detailedToken = checkTokenType(ethers.utils.getAddress(token), colorMode);
+                        return (
+                          // <Text></Text>
+                          <Flex
+                          p={'5px'}
+                            key={index}
+                            onClick={() => {selectToken(index,token, detailedToken?.token?.symbol )
+                            }}
+                            ref={(el) => (focusTarget.current[index] = el)}
+                            alignItems={'center'}
+                            flexDir={'row'}
+                            h={'50px'}
+                            _hover={{cursor:'pointer'}}
+                            borderBottom={themeDesign.border[colorMode]}>
+                            <Avatar
+                              src={detailedToken?.tokenImage}
+                              bg={colorMode === 'light' ? '#ffffff' : '#222222'}
+                              color="#c7d1d8"
+                              name="T"
+                              border={
+                                colorMode === 'light' ? '1px solid #e7edf3' : '1px solid #3c3c3c'
+                              }                            h="26px"
+                              w="26px"
+                              zIndex={'100'}
+                            />
+                            <Text
+                              ml={'10px'}
+                              fontFamily={theme.fonts.fld}
+                              fontSize={'17px'}
+                              color={
+                                colorMode === 'light' ? '#3d495d' : '#ffffff'
+                              }>
+                              {detailedToken?.token?.symbol}
+                            </Text>
+                          </Flex>
+                        );
+                      }
+                      }
+                    
+                    )}
                   </Flex>
                 </Flex>
-              {/* ) : (
-                <Flex
-                  font={themeDesign.font[colorMode]}
-                  fontSize={'13px'}
-                  w={'290px'}
-                  flexDirection={'column'}>
-                  <Box>
-                    <Text pl="5px" pb="9px">
-                      Address
-                    </Text>
-                    <Input
-                      isInvalid={!validAddress}
-                      maxLength={42}
-                      mb="24px"
-                      fontSize={'12px'}
-                      _focus={{
-                        border: themeDesign.border[colorMode],
-                      }}
-                      border={themeDesign.border[colorMode]}
-                      w={'100%'}
-                      h={'32px'}
-                      value={address}
-                      placeholder={'Enter Address'}
-                      onChange={(e) => {
-                        const {value} = e.target;
-                        setAddress(value);
-                      }}
-                    />
-                  </Box>
-                  <Box>
-                    <Text pl="5px" pb="9px">
-                      Symbol
-                    </Text>
-                    <Input
-                      maxLength={10}
-                      mb="24px"
-                      fontSize={'12px'}
-                      _focus={{
-                        border: themeDesign.border[colorMode],
-                      }}
-                      value={symbol.toUpperCase()}
-                      border={themeDesign.border[colorMode]}
-                      w={'100%'}
-                      h={'32px'}
-                      placeholder={'Enter Symbol'}
-                      onChange={(e) => {
-                        const {value} = e.target;
-                        setSymbol(value.toUpperCase());
-                      }}
-                    />
-                  </Box>
-                  <Box>
-                    <Text pl="5px" pb="9px">
-                      Decimals
-                    </Text>
-                    <NumberInput
-                      mb="24px"
-                      fontSize={'12px'}
-                      min={0}
-                      max={36}
-                      value={Number(decimal)}
-                      w={'100%'}
-                      h={'32px'}
-                      borderColor={themeDesign.border[colorMode]}
-                      _focus={{
-                        borderColor: 'transparent',
-                      }}
-                      _active={{
-                        borderColor: 'transparent',
-                      }}
-                      _hover={{
-                        borderColor: 'transparent',
-                      }}
-                      onChange={(value) => {
-                        setDecimal(parseInt(value));
-                      }}>
-                      <NumberInputField h={'32px'} />
-                    </NumberInput>
-                  </Box>
-                </Flex>
-              )} */}
+           
             </Box>
           </Stack>
 
