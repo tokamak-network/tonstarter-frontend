@@ -1,6 +1,6 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from 'store/reducers';
-import {VaultName, VaultType} from '@Launch/types';
+import {VaultName, VaultSchedule, VaultType} from '@Launch/types';
 
 interface LaunchState {
   data: {
@@ -19,6 +19,7 @@ interface LaunchState {
       tokenDetail: boolean;
       claimRound: boolean;
     };
+    claimRoundTable: VaultSchedule[] | undefined;
   };
   loading: 'idle' | 'pending';
   error: any;
@@ -40,6 +41,7 @@ const initialState = {
       tokenDetail: false,
       claimRound: false,
     },
+    claimRoundTable: undefined,
   },
   loading: 'idle',
   error: null,
@@ -93,6 +95,9 @@ export const launchReducer = createSlice({
     setBlur: (state, {payload}: PayloadAction<ProjectPayload>) => {
       state.data.onBlur = payload.data;
     },
+    setClaimRoundTable: (state, {payload}: PayloadAction<ProjectPayload>) => {
+      state.data.claimRoundTable = payload.data;
+    },
   },
   extraReducers: {
     [selectVault.pending.type]: (state, action) => {
@@ -128,4 +133,5 @@ export const {
   setErr,
   setHashKey,
   setBlur,
+  setClaimRoundTable,
 } = launchReducer.actions;
