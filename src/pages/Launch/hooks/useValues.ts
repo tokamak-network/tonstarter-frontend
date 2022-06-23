@@ -23,6 +23,7 @@ const initialObj: Projects['CreateProject'] = {
   isTokenDeployedErr: false,
   isAllDeployed: false,
   tokenAddress: '',
+  tokenType: undefined,
   tosPrice: 0,
   projectTokenPrice: 0,
   totalTokenAllocation: 0,

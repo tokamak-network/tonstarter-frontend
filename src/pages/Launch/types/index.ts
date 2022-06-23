@@ -88,12 +88,15 @@ type VaultLiquidityIncentive = VaultCommon & {
 
 type VaultAny = VaultPublic | VaultDao | VaultC | VaultLiquidityIncentive;
 
+type TokenType = 'A' | 'B' | 'C';
+
 interface ProjectStep1 {
   projectName: string | undefined;
   description: string | undefined;
   tokenName: string | undefined;
   tokenSymbol: string | undefined;
   totalSupply: number | undefined;
+  tokenType: TokenType | undefined;
   ownerAddress: string;
   owner: string | undefined;
   sector: string;
@@ -292,4 +295,5 @@ export type {
   Step3_InfoList,
   VaultLiquidityIncentive,
   ProjectCardType,
+  TokenType,
 };

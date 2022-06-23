@@ -173,6 +173,56 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
             );
           }
 
+          //selectBox feedback
+          if (name === 'tokenType') {
+            const selectList = ['Type A', 'Type B', 'Type C'];
+            const selectBoxOnChange = (e: any) => {
+              setFieldValue('sector', e.target.value);
+            };
+
+            return (
+              <Flex justifyContent={'space-between'}>
+                <Select
+                  style={{
+                    height: '32px',
+                    border: '1px solid #dfe4ee',
+                    borderRadius: '4px',
+                    paddingLeft: '16px',
+                    paddingRight: '16px',
+                  }}
+                  w={'100%'}
+                  fontSize={13}
+                  color={'#86929d'}
+                  name={'sector'}
+                  defaultValue={values.sector}
+                  onChange={selectBoxOnChange}>
+                  <option disabled selected>
+                    select
+                  </option>
+                  {/* {selectList.map((value: string) => {
+                    return <option value={value}>{value}</option>;
+                  })} */}
+                  <option value={'A'}>Type A</option>
+                  <option value={'A'} disabled>
+                    - BURNABLE
+                  </option>
+                  <option value={'A'} disabled>
+                    - APPROVEANDCALL
+                  </option>
+                  <option value={'A'} disabled>
+                    - SNAPSHOT
+                  </option>
+                  <option value={'A'} disabled>
+                    - PERMIT
+                  </option>
+                  <option value={'A'} disabled>
+                    - NON MINTABLE
+                  </option>
+                </Select>
+              </Flex>
+            );
+          }
+
           return (
             <Input
               className={

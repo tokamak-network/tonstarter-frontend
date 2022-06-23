@@ -21,6 +21,7 @@ const filedNameList = [
   {title: 'telegram', requirement: false},
   {title: 'twitter', requirement: false},
   {title: 'discord', requirement: false},
+  {title: 'tokenType', requirement: true},
 ];
 
 const OpenStepOne = () => {
