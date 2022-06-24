@@ -34,6 +34,7 @@ import moment from 'moment';
 import ConfirmTermsModal from '@Launch/components/modals/ConfirmTerms';
 import 'react-quill/dist/quill.bubble.css';
 import Snapshot from './components/details/Snapshot';
+import NoticeModal from '@Launch/components/modals/NoticeModal';
 
 export const StarterDetail = () => {
   const {id}: {id: string} = useParams();
@@ -344,6 +345,7 @@ export const StarterDetail = () => {
       </Flex>
       <ApproveModal></ApproveModal>
       <ConfirmTermsModal></ConfirmTermsModal>
+      <NoticeModal></NoticeModal>
     </Flex>
   );
 };

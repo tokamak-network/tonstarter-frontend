@@ -30,9 +30,10 @@ type LaunchModal =
   | 'Launch_CreateRewardProgram'
   | 'Launch_Download'
   | 'Launch_ConfirmTerms';
+type NoticeModal = 'Launch_Notice' | 'Starter_Notice';
 
 type GeneralModal = 'calendar';
-type RewardModal = 'search'| 'information' | 'confirmMulticall';;
+type RewardModal = 'search' | 'information' | 'confirmMulticall';
 export type ModalType =
   | StakingModal
   | DaoModal
@@ -41,7 +42,8 @@ export type ModalType =
   | StarterModal
   | AdminModal
   | AirdropModal
-  | LaunchModal;
+  | LaunchModal
+  | NoticeModal;
 
 export type Modal = {
   modal?: ModalType;

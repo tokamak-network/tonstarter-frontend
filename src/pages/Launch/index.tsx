@@ -8,6 +8,7 @@ import {useRouteMatch} from 'react-router-dom';
 import {fetchProjects} from '@Launch/launch.reducer';
 import {useAppDispatch} from 'hooks/useRedux';
 import LaunchPage from '@Launch/LaunchPage';
+import NoticeModal from './components/modals/NoticeModal';
 
 const OpenCampagin = () => {
   const {account} = useActiveWeb3React();
@@ -40,13 +41,13 @@ const OpenCampagin = () => {
         const stat = datas[k].vaults.every((vault: any) => {
           return vault.isSet === true;
         });
-        return {name: datas[k].projectName, key: k,isSet: stat}
-      })
+        return {name: datas[k].projectName, key: k, isSet: stat};
+      });
       const filteredProjects = projects.filter(
         (project: any) => project.isSet === true,
       );
 
-      setNumProjects(filteredProjects.length)
+      setNumProjects(filteredProjects.length);
       setProjectsData(projects);
     }
   }, [data, dispatch]);
@@ -55,13 +56,14 @@ const OpenCampagin = () => {
   const {url} = match;
 
   //test
-  
+
   // if (isLoading) {
   //   return <div>loading..</div>;
   // }
   return (
     <Flex flexDir="column" mt={'78px'} alignItems="center">
-      <LaunchPage numPairs={numProjects+4}/>
+      <LaunchPage numPairs={numProjects + 4} />
+      <NoticeModal></NoticeModal>
     </Flex>
   );
 };

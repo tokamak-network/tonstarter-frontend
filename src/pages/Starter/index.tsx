@@ -6,6 +6,7 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useEffect, useState} from 'react';
 import {LoadingComponent} from 'components/Loading';
 import {useBlockNumber} from 'hooks/useBlock';
+import NoticeModal from '@Launch/components/modals/NoticeModal';
 // import {fetchUserInfo} from 'store/app/user.reducer';
 // import store from 'store';
 
@@ -43,6 +44,7 @@ export const Starter = () => {
           <LoadingComponent />
         </Center>
       )}
+      <NoticeModal></NoticeModal>
     </Flex>
   );
 };
