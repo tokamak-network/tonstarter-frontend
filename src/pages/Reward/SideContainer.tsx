@@ -1,9 +1,6 @@
 import {
- 
   Box,
   useColorMode,
-  useTheme,
- 
 } from '@chakra-ui/react';
 
 import {FC, useState, useEffect} from 'react';
@@ -18,8 +15,7 @@ import {Contract} from '@ethersproject/contracts';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {useAppSelector} from 'hooks/useRedux';
-import { fetchPoolPayload } from './utils/fetchPoolPayload';
-import { usePools } from './hooks/usePools';
+import views from './rewards';
 
 type SideContainerProps = {
   selected: string;
@@ -56,10 +52,8 @@ export const SideContainer: FC<SideContainerProps> = ({
 
   useEffect(() => {
     const getTVL = async () => {
-      if (library) {
-        const tvls = await fetchPoolPayload(library)
-        setTvl(tvls)
-      }
+      const tvls = await views.getTVL()
+      setTvl(tvls.poolTVL)
     }
     getTVL()
   },[library])

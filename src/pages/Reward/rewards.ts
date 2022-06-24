@@ -1,4 +1,4 @@
-import {fetchPoolsURL, fetchRewardsURL, fetchTokensURL} from 'constants/index';
+import {fetchPoolsURL, fetchRewardsURL, fetchTokensURL, fetchTVLURL} from 'constants/index';
 import {FetchPoolData, PoolData, TokensData, interfaceReward} from './types/index'
 import {getTokenSymbol} from './utils/getTokenSymbol';
 // import {getSigner} from 'utils/contract';
@@ -80,6 +80,17 @@ const getPoolData = async (library: any): Promise<FetchPoolData[] | undefined> =
     }
   }
 
+  const getTVL = async () => {
+    const tvlReq = await fetch(fetchTVLURL)
+      .then((res) => res.json())
+      .then((result) => result)
+    const tvlData = await tvlReq
+    if (tvlData !== undefined) {
+      return tvlData
+    } else {
+      return []
+    }
+  }
 
 
   const getRewardData = async (): Promise<interfaceReward[] | undefined> => {
@@ -96,6 +107,6 @@ const getPoolData = async (library: any): Promise<FetchPoolData[] | undefined> =
     }
   };  
 
-  const views = {getPoolData, getRewardData, getTokensData, getPoolDataWithoutReward};
+  const views = {getPoolData, getRewardData, getTokensData, getPoolDataWithoutReward, getTVL};
 
 export default views;

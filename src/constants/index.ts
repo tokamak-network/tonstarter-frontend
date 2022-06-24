@@ -17,7 +17,7 @@ export const REACT_APP_MAINNET_OPENCAMPAGIN_API = process.env
   .REACT_APP_MAINNET_OPENCAMPAGIN_API as string;
 export const REACT_APP_RINKEBY_OPENCAMPAGIN_API = process.env
   .REACT_APP_RINKEBY_OPENCAMPAGIN_API as string;
-export const REACT_APP_TOS_PRICE = process.env.REACT_APP_TOS_PRICE as string;
+export const REACT_APP_PRICE_API = process.env.REACT_APP_PRICE_API as string;
 export const REACT_APP_ETH_PRICE = process.env.REACT_APP_ETH_PRICE as string;
 export const NetworkContextName = `${new Date().getTime()}-NETWORK`;
 export const DEFAULT_NETWORK = REACT_APP_MODE === 'DEV' ? 4 : 1;
@@ -46,7 +46,8 @@ export const fetchStarterURL = `${API_SERVER}/starter?chainId=${DEFAULT_NETWORK}
 export const fetchPoolsURL = `${API_SERVER}/pool?chainId=${DEFAULT_NETWORK}`;
 export const fetchTokensURL = `${API_SERVER}/tokens?chainId=${DEFAULT_NETWORK}`;
 export const fetchCampaginURL = `${API_SERVER_LAUNCH}/projects?chainId=${DEFAULT_NETWORK}`;
-export const fetchTosPriceURL = REACT_APP_TOS_PRICE;
+export const fetchTosPriceURL = `${REACT_APP_PRICE_API}/tosprice`;
+export const fetchTVLURL = `${REACT_APP_PRICE_API}/tvl`;
 export const fetchEthPriceURL = REACT_APP_ETH_PRICE;
 export const permitTOSAddress =
   REACT_APP_MODE === 'DEV' ? '0x865264b30eb29A2978b9503B8AfE2A2DDa33eD7E' : '';
