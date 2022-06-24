@@ -118,7 +118,7 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
                 account,
                 library,
                 amount: inputTonBalance,
-                tokenType: 'TON',
+                tokenType: 'WTON',
               }),
           })
         }></CustomButton>
