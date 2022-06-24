@@ -78,8 +78,6 @@ export const fetchStarters = createAsyncThunk(
       //   );
       // });
 
-      console.log(starterData);
-
       const matchData = starterData;
 
       const activeData = matchData.filter(

@@ -152,7 +152,8 @@ const ProjectCard: React.FC<{
               ...STATER_STYLE.subTextBlack({colorMode, fontSize: 12}),
             }}
             color={colorMode === 'light' ? 'gray.125' : 'gray.475'}>
-            <Text>current / hard cap</Text>
+            <Text fontWeight={600} fontFamily={'Rajdhani'} mr={'2px'}>Current </Text>
+            <Text fontWeight={500}  fontFamily={'Rajdhani'}> / Minimum Fund Raising Amount</Text>
           </Flex>
         </Box>
         <Box mb={'30px'}>

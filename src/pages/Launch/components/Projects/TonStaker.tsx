@@ -280,9 +280,7 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
                 distributeDisable
                   ? {}
                   : {
-                      background: 'transparent',
-                      border: 'solid 1px #2a72e5',
-                      color: themeDesign.tosFont[colorMode],
+                    
                       cursor: 'pointer',
                     }
               }
