@@ -576,7 +576,7 @@ export const Condition2: React.FC<Condition2> = ({
     }
   };
   const getRatio = () => {
-    const decimal = Number(project.projectTokenPrice);
+    const decimal = Number(project.tosPrice);
     const x = new Fraction(decimal);
     return [x.n, x.d];
   };
