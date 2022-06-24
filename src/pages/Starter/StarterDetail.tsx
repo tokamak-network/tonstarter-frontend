@@ -33,6 +33,7 @@ import {ApproveModal} from './components/ApproveModal';
 import moment from 'moment';
 import ConfirmTermsModal from '@Launch/components/modals/ConfirmTerms';
 import 'react-quill/dist/quill.bubble.css';
+import Snapshot from './components/details/Snapshot';
 
 export const StarterDetail = () => {
   const {id}: {id: string} = useParams();
@@ -45,11 +46,8 @@ export const StarterDetail = () => {
     undefined,
   );
 
-  // const [activeStatus, setActiveStatus] = useState<SaleStatus | undefined>(
-  //   'deposit',
-  // );
-
   const [saleInfo, setSaleInfo] = useState<SaleInfo | undefined>(undefined);
+  const [descript, setDescript] = useState<string | null>('');
   const [detailInfo, setDetailInfo] = useState<DetailInfo | undefined>(
     undefined,
   );
@@ -184,15 +182,37 @@ export const StarterDetail = () => {
   }, [starterData, id]);
 
   useEffect(() => {
+    if (saleInfo) {
+      const div = document.createElement('div');
+      div.innerHTML = saleInfo.description;
+      const sttt = div.textContent;
+      let str;
+      if (sttt && sttt.length > 300) {
+        str = sttt.substring(0, 299) + '...';
+      } else {
+        str = sttt;
+      }
+      setDescript(str);
+    }
+  }, [saleInfo]);
+
+  useEffect(() => {
     setInterval(() => {
       if (!saleInfo) {
         return;
       }
-      const {endAddWhiteTime, endExclusiveTime, endDepositTime} = saleInfo;
+      const {
+        startAddWhiteTime,
+        endAddWhiteTime,
+        endExclusiveTime,
+        endDepositTime,
+      } = saleInfo;
       const nowTimeStamp = moment().unix();
 
       const checkStep =
-        endAddWhiteTime > nowTimeStamp
+        startAddWhiteTime > nowTimeStamp
+          ? 'snapshot'
+          : endAddWhiteTime > nowTimeStamp
           ? 'whitelist'
           : endExclusiveTime > nowTimeStamp
           ? 'exclusive'
@@ -221,6 +241,20 @@ export const StarterDetail = () => {
     );
   }
 
+  const quillStyle =
+    colorMode === 'light'
+      ? `.ql-editor span {
+      color: #000000 !important
+  }
+  .ql-bubble .ql-editor a {
+    color: #2a72e5 !important
+  }`
+      : `.ql-editor span {
+    color: #ffffff !important
+}
+.ql-bubble .ql-editor a {
+  color: #2a72e5 !important
+}`;
   return (
     <Flex mt={'122px'} w={'100%'} justifyContent="center" mb={'100px'}>
       <Flex w="1194px" flexDir="column" mb={'10px'}>
@@ -251,10 +285,11 @@ export const StarterDetail = () => {
               {saleInfo?.description}
             </Text> */}
             <Flex ml={'-15px'}>
+              <style>{quillStyle}</style>
               <ReactQuill
                 // placeholder="Input the project description"
                 readOnly={true}
-                value={saleInfo.description}
+                value={descript ? descript : ''}
                 theme={'bubble'}
                 style={{color: 'white !important'}}
               />
@@ -274,6 +309,9 @@ export const StarterDetail = () => {
             w={'1px'}
             bg={colorMode === 'light' ? '#f4f6f8' : '#323232'}
             boxShadow={'0 1px 1px 0 rgba(96, 97, 112, 0.16)'}></Box>
+          {activeStatus === 'snapshot' && (
+            <Snapshot saleInfo={saleInfo}></Snapshot>
+          )}
           {activeStatus === 'whitelist' && (
             <WhiteList
               userTier={detailInfo?.userTier || 0}

@@ -10,7 +10,7 @@ import {
 import StepTitle from '@Launch/components/common/StepTitle';
 import HoverImage from 'components/HoverImage';
 import {useFormikContext} from 'formik';
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import PlusIconNormal from 'assets/launch/plus-icon-normal.svg';
 import PlusIconHover from 'assets/launch/plus-icon-hover.svg';
 import MinusIconNormal from 'assets/launch/minus-icon-normal.svg';
@@ -93,6 +93,26 @@ const ClaimRound = () => {
     /*eslint-disable*/
   }, [claim, selectedVaultDetail]);
 
+  const add10Row = useCallback(() => {
+    if (selectedVaultDetail) {
+      //@ts-ignore
+      return setFieldValue(`vaults[${selectedVaultDetail.index}].claim`, [
+        ...claim,
+        defaultTableData,
+        defaultTableData,
+        defaultTableData,
+        defaultTableData,
+        defaultTableData,
+        defaultTableData,
+        defaultTableData,
+        defaultTableData,
+        defaultTableData,
+        defaultTableData,
+      ]);
+    }
+    /*eslint-disable*/
+  }, [claim, selectedVaultDetail]);
+
   const removeRow = useCallback(
     (rowIndex) => {
       if (selectedVaultDetail) {
@@ -151,7 +171,41 @@ const ClaimRound = () => {
     /*eslint-disable*/
   }, [claim, selectedDay, selectedVaultDetail]);
 
-  // const [test, setTest] = useState(true);
+  const setAmount = useCallback(() => {
+    const claimValue: VaultSchedule[] = claim.map(
+      (data: VaultSchedule, index: number) => {
+        //@ts-ignore
+        const test = selectedVaultDetail.vaultTokenAllocation / claim.length;
+        let result;
+        if (test.toString().split('.')[1]) {
+          result =
+            test.toString().split('.')[0] +
+            '.' +
+            test.toString().split('.')[1].slice(0, 2);
+        } else {
+          result = test;
+        }
+
+        return {
+          claimRound: index + 1,
+          claimTime: data.claimTime,
+          claimTokenAllocation:
+            //@ts-ignore
+            Number(result),
+        };
+      },
+    );
+
+    if (selectedVaultDetail) {
+      // setTableData(claimValue);
+      return setFieldValue(
+        //@ts-ignore
+        `vaults[${selectedVaultDetail.index}].claim`,
+        claimValue,
+      );
+    }
+    /*eslint-disable*/
+  }, [claim, selectedDay, selectedVaultDetail]);
 
   useEffect(() => {
     if (claim) {
@@ -197,6 +251,59 @@ const ClaimRound = () => {
 
   let tokenAcc = 0;
 
+  // const testComponent = (data: VaultSchedule, index: number) =>
+  //   useMemo(() => {
+  //     return (
+  //       <InputGroup>
+  //         <Input
+  //           h={`42px`}
+  //           // ref={(el) => (inputRefs.current[index] = el)}
+  //           _hover={{borderWidth: '1px', borderColor: '#257eee'}}
+  //           _focus={isErr ? {} : {borderWidth: '1px', borderColor: '#257eee'}}
+  //           fontSize={12}
+  //           placeholder={''}
+  //           borderRadius={0}
+  //           borderWidth={0}
+  //           textAlign={'center'}
+  //           value={
+  //             inputVals !== undefined &&
+  //             inputVals[index]?.claimTokenAllocation !== undefined
+  //               ? inputVals[index].claimTokenAllocation
+  //               : ''
+  //           }
+  //           onBlur={(e) => {
+  //             const {value} = e.target;
+
+  //             return setFieldValue(
+  //               //@ts-ignore
+  //               `vaults[${selectedVaultDetail.index}].claim[${index}]`,
+  //               {
+  //                 ...data,
+  //                 claimTokenAllocation: Number(value),
+  //               },
+  //             );
+  //           }}
+  //           onChange={(e) => {
+  //             const {value} = e.target;
+
+  //             if (isNaN(Number(value))) {
+  //               return;
+  //             }
+
+  //             if (inputVals) {
+  //               let oldVals = [...inputVals];
+  //               let item = {
+  //                 ...oldVals[index],
+  //                 claimTokenAllocation: Number(value),
+  //               };
+  //               oldVals[index] = item;
+  //               return setInputVals(oldVals);
+  //             }
+  //           }}></Input>
+  //       </InputGroup>
+  //     );
+  //   }, []);
+
   return (
     <Flex flexDir={'column'}>
       <Box
@@ -236,13 +343,24 @@ const ClaimRound = () => {
             style={{marginLeft: '10px'}}
             w={'100px'}
             h={'32px'}
-            text={'Set All'}
+            text={'Set Date'}
             //@ts-ignore
             // isDisabled={
             //   selectedVaultDetail.claim[0].claimTime !== undefined && selectedVaultDetail
             //     .claim[0].claimTime === undefined
             // }
             func={() => setDate()}></CustomButton>
+          <CustomButton
+            style={{marginLeft: '10px'}}
+            w={'100px'}
+            h={'32px'}
+            text={'Set Amount'}
+            //@ts-ignore
+            // isDisabled={
+            //   selectedVaultDetail.claim[0].claimTime !== undefined && selectedVaultDetail
+            //     .claim[0].claimTime === undefined
+            // }
+            func={() => setAmount()}></CustomButton>
         </Flex>
       </Box>
       <Flex>
@@ -345,7 +463,7 @@ const ClaimRound = () => {
                       <InputGroup>
                         <Input
                           h={`42px`}
-                          ref={(el) => (inputRefs.current[index] = el)}
+                          // ref={(el) => (inputRefs.current[index] = el)}
                           _hover={{borderWidth: '1px', borderColor: '#257eee'}}
                           _focus={
                             isErr
@@ -417,22 +535,41 @@ const ClaimRound = () => {
                       justifyContent="center"
                       borderBottom={middleStyle.border}>
                       {index === 0 && claim.length === 1 ? (
-                        <Flex
-                          w={'24px'}
-                          h={'24px'}
-                          alignItems="center"
-                          justifyContent="center"
-                          border={
-                            colorMode === 'light'
-                              ? '1px solid #e6eaee'
-                              : '1px solid #373737'
-                          }
-                          bg={colorMode === 'light' ? 'white.100' : 'none'}>
-                          <HoverImage
-                            action={() => addRow()}
-                            img={PlusIconNormal}
-                            hoverImg={PlusIconHover}></HoverImage>
-                        </Flex>
+                        <>
+                          <Flex
+                            w={'24px'}
+                            h={'24px'}
+                            alignItems="center"
+                            justifyContent="center"
+                            border={
+                              colorMode === 'light'
+                                ? '1px solid #e6eaee'
+                                : '1px solid #373737'
+                            }
+                            bg={colorMode === 'light' ? 'white.100' : 'none'}>
+                            <HoverImage
+                              action={() => addRow()}
+                              img={PlusIconNormal}
+                              hoverImg={PlusIconHover}></HoverImage>
+                          </Flex>
+                          <Flex
+                            w={'24px'}
+                            h={'24px'}
+                            alignItems="center"
+                            justifyContent="center"
+                            border={
+                              colorMode === 'light'
+                                ? '1px solid #e6eaee'
+                                : '1px solid #373737'
+                            }
+                            ml={'10px'}
+                            bg={'gray.100'}>
+                            <HoverImage
+                              action={() => add10Row()}
+                              img={PlusIconNormal}
+                              hoverImg={PlusIconHover}></HoverImage>
+                          </Flex>
+                        </>
                       ) : index === 0 && claim.length > 1 ? (
                         <div></div>
                       ) : index + 1 !== claim.length ? (
@@ -484,6 +621,23 @@ const ClaimRound = () => {
                             bg={colorMode === 'light' ? 'white.100' : 'none'}>
                             <HoverImage
                               action={() => addRow()}
+                              img={PlusIconNormal}
+                              hoverImg={PlusIconHover}></HoverImage>
+                          </Flex>
+                          <Flex
+                            w={'24px'}
+                            h={'24px'}
+                            alignItems="center"
+                            justifyContent="center"
+                            border={
+                              colorMode === 'light'
+                                ? '1px solid #e6eaee'
+                                : '1px solid #373737'
+                            }
+                            ml={'10px'}
+                            bg={'gray.100'}>
+                            <HoverImage
+                              action={() => add10Row()}
                               img={PlusIconNormal}
                               hoverImg={PlusIconHover}></HoverImage>
                           </Flex>

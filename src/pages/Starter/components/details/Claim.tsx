@@ -40,9 +40,13 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
 
   const {blockNumber} = useBlockNumber();
 
+  const isOld =
+    saleInfo.name === 'Door Open' || saleInfo.name === 'Dragons of Midgard';
+
   const PUBLICSALE_CONTRACT = useCallContract(
     saleInfo.saleContractAddress,
     'PUBLIC_SALE',
+    isOld,
   );
 
   const {STATER_STYLE} = theme;
@@ -167,52 +171,66 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
   useEffect(() => {
     async function getData() {
       if (account && PUBLICSALE_CONTRACT) {
-        const usersEx = await PUBLICSALE_CONTRACT.usersEx(account);
-        const userOpenSaleUserAmount =
-          await PUBLICSALE_CONTRACT.openSaleUserAmount(account);
-        const usersClaim = await PUBLICSALE_CONTRACT.usersClaim(account);
-        const totalClaim = await PUBLICSALE_CONTRACT.calculClaimAmount(
-          account,
-          0,
-        );
+        try {
+          const usersEx = await PUBLICSALE_CONTRACT.usersEx(account);
+          const userOpenSaleUserAmount =
+            await PUBLICSALE_CONTRACT.openSaleUserAmount(account);
+          const usersClaim = await PUBLICSALE_CONTRACT.usersClaim(account);
+          const totalClaim = await PUBLICSALE_CONTRACT.calculClaimAmount(
+            account,
+            0,
+          );
+          const totalSaleUserAmount =
+            await PUBLICSALE_CONTRACT.totalSaleUserAmount(account);
 
-        const userClaim = await PUBLICSALE_CONTRACT.usersClaim(account);
-        const refundedAmount = BigNumber.from(userOpenSaleUserAmount[2]).eq(
-          userClaim.refundAmount,
-        );
+          const userClaim = await PUBLICSALE_CONTRACT.usersClaim(account);
 
-        const ramainedAmount = BigNumber.from(totalClaim[1]).sub(
-          usersClaim?.claimAmount,
-        );
+          const refundedAmount = BigNumber.from(
+            userOpenSaleUserAmount._refundAmount,
+          ).eq(userClaim.refundAmount);
 
-        const convertedExSaleAmount = convertNumber({
-          amount: usersEx?.saleAmount.toString(),
-          localeString: true,
-        });
-        const convertedRamainedAmount = convertNumber({
-          amount: String(ramainedAmount),
-          localeString: true,
-        });
-        const convertedUsersOpen = convertNumber({
-          amount: userOpenSaleUserAmount[1].toString(),
-          localeString: true,
-        });
-        const convertedUserRefund = convertNumber({
-          amount: userOpenSaleUserAmount[2].toString(),
-          localeString: true,
-        });
+          const ramainedAmount = BigNumber.from(totalClaim._totalClaim).sub(
+            usersClaim.claimAmount,
+          );
 
-        setNotRemained(refundedAmount);
-        setExclusiveSale(convertedExSaleAmount || '0');
-        setRemainedAmount(convertedRamainedAmount || '0');
-        setOpenSale(convertedUsersOpen || '0');
-        setWithdrawAmount(convertedUserRefund || '0');
+          const isRemainedZero = BigNumber.from(
+            totalSaleUserAmount._realSaleAmount,
+          ).eq(userClaim.claimAmount);
+
+          const convertedExSaleAmount = convertNumber({
+            amount: usersEx.saleAmount.toString(),
+            localeString: true,
+          });
+          const convertedRamainedAmount = convertNumber({
+            amount: String(ramainedAmount),
+            localeString: true,
+          });
+          const convertedUsersOpen = convertNumber({
+            amount: userOpenSaleUserAmount[1].toString(),
+            localeString: true,
+          });
+          const convertedUserRefund = convertNumber({
+            amount: userOpenSaleUserAmount[2].toString(),
+            localeString: true,
+          });
+
+          setNotRemained(refundedAmount);
+          setExclusiveSale(convertedExSaleAmount || '0');
+          setRemainedAmount(
+            isRemainedZero ? '0.00' : convertedRamainedAmount || '0',
+          );
+          setOpenSale(convertedUsersOpen || '0');
+          setWithdrawAmount(convertedUserRefund || '0');
+        } catch (e) {
+          console.log('**PUBLIC SALE CONTRACT ERROR**');
+          console.log(e);
+        }
       }
     }
     if (account && PUBLICSALE_CONTRACT) {
       getData();
     }
-  }, [account, PUBLICSALE_CONTRACT, blockNumber]);
+  }, [account, PUBLICSALE_CONTRACT, blockNumber, isOld]);
 
   if (isOverHardcap === false) {
     return (

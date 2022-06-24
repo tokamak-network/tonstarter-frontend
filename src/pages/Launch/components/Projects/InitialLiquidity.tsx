@@ -120,7 +120,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
         TOS_ADDRESS,
         project.tokenAddress,
         3000,
-      );
+      );      
       setIsPool(getPool === ZERO_ADDRESS ? false : true);
       setCreatedPool(getPool === ZERO_ADDRESS ? '':getPool)
       // setIsPool(false)
@@ -292,10 +292,8 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
           <Link
             isExternal
             href={
-              vault.poolAddress && network === 'rinkeby'
-                ? `https://rinkeby.etherscan.io/address/${createdPool}`
-                : vault.poolAddress && network !== 'rinkeby'
-                ? `https://etherscan.io/address/${createdPool}`
+               createdPool !== ''
+                ? `https://info.uniswap.org/#/pools/${createdPool.toLowerCase()}`
                 : ''
             }
             _hover={{color: '#2a72e5'}}
@@ -578,9 +576,9 @@ export const Condition2: React.FC<Condition2> = ({
     }
   };
   const getRatio = () => {
-    const decimal = Number(project.projectTokenPrice);
+    const decimal = Number(project.tosPrice);
     const x = new Fraction(decimal);
-    return [x.n, x.d];
+    return [x.d, x.n];
   };
   return (
     <Flex flexDirection={'column'}>
@@ -748,9 +746,9 @@ export const Condition3: React.FC<Condition3> = ({
   };
 
   const getRatio = () => {
-    const decimal = Number(project.projectTokenPrice) / 10;
+    const decimal = Number(project.tosPrice) ;
     const x = new Fraction(decimal);
-    return [x.n, x.d];
+   return [x.d, x.n];
   };
 
   return (

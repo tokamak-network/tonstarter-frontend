@@ -930,16 +930,21 @@ const ConfirmTermsModal = () => {
                 <Flex></Flex>
               </Flex>
             </Flex>
+
             <Flex mt={'33px'} alignItems="center">
-              <Checkbox
-                w={'18px'}
-                h={'18px'}
-                mr={'12px'}
-                onChange={() => setIsCheck(!isCheck)}></Checkbox>
-              <Text fontWeight={600}>
-                I confirm that I have read, understand and agree to the Terms of
-                Use above.
-              </Text>
+              {data.data.from !== 'main' && (
+                <>
+                  <Checkbox
+                    w={'18px'}
+                    h={'18px'}
+                    mr={'12px'}
+                    onChange={() => setIsCheck(!isCheck)}></Checkbox>
+                  <Text fontWeight={600}>
+                    I confirm that I have read, understand and agree to the
+                    Terms of Use above.
+                  </Text>
+                </>
+              )}
             </Flex>
           </Flex>
 

@@ -22,6 +22,7 @@ import {openModal} from 'store/modal.reducer';
 import commafy from 'utils/commafy';
 import {selectLaunch} from '@Launch/launch.reducer';
 import {useActiveWeb3React} from 'hooks/useWeb3';
+import {createToken} from 'pages/Reward/components/api';
 
 const DeployToken = () => {
   const theme = useTheme();
@@ -63,6 +64,7 @@ const DeployToken = () => {
       //args[2] : token symbol
       setFieldValue('tokenAddress', args[0]);
       setFieldValue('isTokenDeployed', true);
+      createToken(args[0], values.tokenSymbolImage || '');
     } catch (e) {
       console.log(e);
       //need to add change states

@@ -8,6 +8,8 @@ import {
   Text,
   Button,
   Flex,
+  Tooltip,
+  Image,
   useTheme,
   useColorMode,
 } from '@chakra-ui/react';
@@ -23,15 +25,17 @@ import moment from 'moment';
 import {useBlockNumber} from 'hooks/useBlock';
 import {DEPLOYED} from 'constants/index';
 import {useERC20Token} from 'hooks/useERC20Token';
+import {selectTransactionType} from 'store/refetch.reducer';
+import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 
 export const AirdropDistributeModal = () => {
-  const {TON_ADDRESS, WTON_ADDRESS, TOS_ADDRESS, DOC_ADDRESS} = DEPLOYED;
+  const {TON_ADDRESS, WTON_ADDRESS, TOS_ADDRESS, DOC_ADDRESS, tokens} =
+    DEPLOYED;
   const {data} = useAppSelector(selectModalType);
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
   const {btnStyle} = theme;
-
   const [tokenAddress, setTokenAddress] = useState<string>(TON_ADDRESS);
   const [distributeToValue, setDistributeToValue] =
     useState<string>('TON Holder');
@@ -40,9 +44,19 @@ export const AirdropDistributeModal = () => {
   const [ableDistribute, setAbleDistribute] = useState<boolean>(false);
   const [timeStamp, setTimeStamp] = useState<string>('');
   const [isRay, setIsRay] = useState<boolean>(false);
+  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
 
-  const {blockNumber} = useBlockNumber();
   const {handleCloseModal} = useModal(setTokenAmount);
+
+  const [isApproveDisable, setIsApproveDisable] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (Number(tokenAmount) > 0) {
+      setIsApproveDisable(false);
+    } else {
+      setIsApproveDisable(true);
+    }
+  }, [tokenAmount]);
 
   useEffect(() => {
     setIsRay(tokenAddress === WTON_ADDRESS);
@@ -76,7 +90,15 @@ export const AirdropDistributeModal = () => {
     } else {
       setAllowance('0.00');
     }
-  }, [account, library, tokenAddress, isRay, distributeToValue]);
+  }, [
+    account,
+    library,
+    tokenAddress,
+    isRay,
+    distributeToValue,
+    transactionType,
+    blockNumber,
+  ]);
 
   useEffect(() => {
     if (tokenAmount === '') {
@@ -117,6 +139,8 @@ export const AirdropDistributeModal = () => {
     WTON_ADDRESS,
     TOS_ADDRESS,
     DOC_ADDRESS,
+    tokens.AURA_ADDRESS,
+    tokens.LYDA_ADDRESS,
     'CUSTOM TOKEN',
   ];
   const selectDistributeOptionValues = [
@@ -124,7 +148,15 @@ export const AirdropDistributeModal = () => {
     // 'TOS Holder',
     'sTOS Holder',
   ];
-  const selectOptionNames = ['TON', 'WTON', 'TOS', 'DOC', 'CUSTOM TOKEN'];
+  const selectOptionNames = [
+    'TON',
+    'WTON',
+    'TOS',
+    'DOC',
+    'AURA',
+    'LYDA',
+    'CUSTOM TOKEN',
+  ];
 
   useEffect(() => {
     if (tokenAddress === 'CUSTOM TOKEN') return setTokenAddress('');
@@ -236,7 +268,17 @@ export const AirdropDistributeModal = () => {
             fontWeight={600}
             color={colorMode === 'light' ? 'black.300' : 'white.100'}>
             <Box d="flex" flexDir="column" mb={'24px'}>
-              <Text mb={'9px'}>Distribute To</Text>
+              <Flex alignItems={'center'} mb={'9px'}>
+                <Text mr={'7px'}>Distribute To</Text>
+                <Tooltip
+                  hasArrow
+                  placement="top"
+                  label="sTOS Holder distributions follow the timestamp displayed, whereas TON Holder distributions happen immediately."
+                  color={theme.colors.white[100]}
+                  bg={theme.colors.gray[375]}>
+                  <Image src={tooltipIcon} />
+                </Tooltip>
+              </Flex>
               <CustomSelectBox
                 w={'290px'}
                 h={'32px'}
@@ -259,9 +301,14 @@ export const AirdropDistributeModal = () => {
                 optionName={selectOptionNames}
                 setValue={setTokenAddress}
                 fontSize={'12px'}></CustomSelectBox>
-              {[TON_ADDRESS, WTON_ADDRESS, TOS_ADDRESS, DOC_ADDRESS].indexOf(
-                tokenAddress,
-              ) === -1 && (
+              {[
+                TON_ADDRESS,
+                WTON_ADDRESS,
+                TOS_ADDRESS,
+                DOC_ADDRESS,
+                tokens.AURA_ADDRESS,
+                tokens.LYDA_ADDRESS,
+              ].indexOf(tokenAddress) === -1 && (
                 <CustomInput
                   w={'290px'}
                   h={'32px'}
@@ -332,28 +379,30 @@ export const AirdropDistributeModal = () => {
                     : 'gray.175'
                 }></CustomInput>
             </Box>
-            <Box d="flex" flexDir="column" mb={'29px'}>
-              <Text mb={'9px'}>Distribution Timestamp</Text>
-              <CustomInput
-                w={'290px'}
-                h={'32px'}
-                border={'1px solid #dfe4ee'}
-                style={{
-                  fontSize: '12px',
-                  textAlign: 'left',
-                  border: '1px solid #dfe4ee',
-                }}
-                value={`${timeStamp} 00:00:00 UTC`}
-                placeHolder={'0.00'}
-                fontWeight={500}
-                color={
-                  timeStamp !== ''
-                    ? colorMode === 'light'
-                      ? 'gray.225'
-                      : 'white.100'
-                    : 'gray.175'
-                }></CustomInput>
-            </Box>
+            {distributeToValue !== 'TON Holder' && (
+              <Box d="flex" flexDir="column" mb={'29px'}>
+                <Text mb={'9px'}>Distribution Timestamp</Text>
+                <CustomInput
+                  w={'290px'}
+                  h={'32px'}
+                  border={'1px solid #dfe4ee'}
+                  style={{
+                    fontSize: '12px',
+                    textAlign: 'left',
+                    border: '1px solid #dfe4ee',
+                  }}
+                  value={`${timeStamp} 00:00:00 UTC`}
+                  placeHolder={'0.00'}
+                  fontWeight={500}
+                  color={
+                    timeStamp !== ''
+                      ? colorMode === 'light'
+                        ? 'gray.225'
+                        : 'white.100'
+                      : 'gray.175'
+                  }></CustomInput>
+              </Box>
+            )}
           </Flex>
 
           <Box
@@ -369,6 +418,7 @@ export const AirdropDistributeModal = () => {
               w={'150px'}
               fontSize="14px"
               _hover={{}}
+              disabled={isApproveDisable}
               onClick={approveAction}>
               Approve
             </Button>

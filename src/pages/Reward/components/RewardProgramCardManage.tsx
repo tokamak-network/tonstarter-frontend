@@ -398,12 +398,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
           </Box>
           <Avatar
             ml={'10px'}
-            src={
-              checkTokenType(
-                ethers.utils.getAddress(reward.rewardToken),
-                colorMode,
-              ).symbol
-            }
+            src={reward.rewardTokenSymbolImage !== ''? reward.rewardTokenSymbolImage : "" }
             bg={colorMode === 'light' ? '#ffffff' : '#222222'}
             name="T"
             border={

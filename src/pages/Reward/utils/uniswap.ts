@@ -104,7 +104,6 @@ export const Pools = [
 ]
 
 export const getPools = async (library: any) => {
-  const promises = [];
   for (const v of Pools) {
     const poolContract = new Contract(
       v.address,
@@ -124,7 +123,6 @@ export const getPools = async (library: any) => {
       liquidity.toString(),
       slot0.tick
     )
-    
   }
 
   return Pools;

@@ -8,23 +8,27 @@ import {
   Grid,
   GridItem,
   Button,
+  Radio,
+  Stack,
+  Box,
+  RadioGroup,
 } from '@chakra-ui/react';
 import {LoadingComponent} from 'components/Loading';
-import {useDispatch} from 'react-redux';
-import {openModal} from 'store/modal.reducer';
+import {claimAirdrop} from '../../../components/Airdrop/actions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
-import {useContract} from 'hooks/useContract';
 import {DEPLOYED} from 'constants/index';
 import {Contract} from '@ethersproject/contracts';
-import moment from 'moment';
 import AdminActions from '@Admin/actions';
-import {useBlockNumber} from 'hooks/useBlock';
-import {convertNumber} from 'utils/number';
 import * as LockTOSDividendABI from 'services/abis/LockTOSDividend.json';
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import {fetchAirdropPayload} from '../../../components/Airdrop/utils/fetchAirdropPayload';
 import * as TOKENDIVIDENDPOOLPROXY from 'services/abis/TokenDividendProxyPool.json';
 import {ethers} from 'ethers';
+import commafy from 'utils/commafy';
+import {getClaimalbeList} from '../../Dao/actions';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectTransactionType} from 'store/refetch.reducer';
+import {convertNumber} from 'utils/number';
 
 type Round = {
   allocatedAmount: string;
@@ -36,26 +40,31 @@ type Round = {
 type AirDropList = [Round] | undefined;
 
 export const AirdropClaimTable = () => {
-  const {blockNumber} = useBlockNumber();
   const {account, library} = useActiveWeb3React();
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const [isCheckAll, setIsCheckAll] = useState<boolean>(false);
   const [loadingData, setLoadingData] = useState<boolean>(true);
   const [isCheck, setIsCheck] = useState<any[]>([]);
+  const [checkedAllBoxes, setCheckedAllBoxes] = useState<boolean>(false);
   const [airdropData, setAirdropData] = useState<any[]>([]);
   const [checkedTokenAddresses, setCheckedTokenAddresses] = useState<any[]>([]);
+  const [radioValue, setRadioValue] = useState<string>('Genesis Airdrop');
+  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
+  const [tonStakerAirdropTokens, setTonStakerAirdropTokens] = useState<any[]>(
+    [],
+  );
+  const [daoAirdropTokens, setDaoAirdropTokens] = useState<any[]>([]);
+
   const [genesisAirdropBalance, setGenesisAirdropBalance] = useState<
     string | undefined
-  >(undefined);
-  const [airdropList, setAirdropList] = useState<
-    {tokenName: string; amount: string}[] | undefined
-  >(undefined);
-  const dispatch = useDispatch();
+  >('');
   const {LockTOSDividend_ADDRESS, TokenDividendProxyPool_ADDRESS} = DEPLOYED;
-  const LOCKTOS_DIVIDEND_CONTRACT = useContract(
+
+  const LOCKTOS_DIVIDEND_CONTRACT = new Contract(
     LockTOSDividend_ADDRESS,
     LockTOSDividendABI.abi,
+    library,
   );
 
   const TOKEN_DIVIDEND_PROXY_POOL_CONTRACT = new Contract(
@@ -65,24 +74,30 @@ export const AirdropClaimTable = () => {
   );
 
   useEffect(() => {
-    async function getClaimableAirdropAmounts() {
+    async function getClaimableAirdropTonAmounts() {
       if (account === undefined || account === null) {
         return;
       }
-      const res = await TOKEN_DIVIDEND_PROXY_POOL_CONTRACT.getAvailableClaims(
-        account,
-      );
+      const tonRes =
+        await TOKEN_DIVIDEND_PROXY_POOL_CONTRACT.getAvailableClaims(account);
 
-      if (res === undefined) {
+      const claimList = await getClaimalbeList({account, library});
+
+      if (tonRes === undefined && claimList === undefined) {
         return;
       }
-      const {claimableAmounts, claimableTokens} = res;
+
+      const {claimableAmounts, claimableTokens} = tonRes;
+
       let claimableArr: any[] = [];
+      let tempTonStakerArr: any[] = [];
+      let tempDaoAirdropArr: any[] = [];
+
       if (claimableAmounts.length > 0 && claimableTokens) {
         await Promise.all(
           claimableTokens.map(async (tokenAddress: string, idx: number) => {
             const ERC20_CONTRACT = new Contract(
-              claimableTokens[idx],
+              tokenAddress,
               ERC20.abi,
               library,
             );
@@ -92,41 +107,78 @@ export const AirdropClaimTable = () => {
               amount: claimableAmounts[idx],
               tokenSymbol: tokenSymbol,
               id: idx,
+              tonStaker: true,
             });
           }),
         );
       }
+      if (claimList) {
+        if (claimList?.length > 0) {
+          await Promise.all(
+            claimList?.map((token: any, idx: number) => {
+              claimableArr.push({
+                address: token?.tokenAddress,
+                amount: token?.claimAmount,
+                tokenSymbol: token?.tokenName,
+                id: idx,
+                tosStaker: true,
+              });
+            }),
+          );
+        }
+      }
+      if (claimableArr.length > 0) {
+        // Push to Ton Staker arr
+        await Promise.all(
+          claimableArr.map((token: any) => {
+            if (token.tonStaker === true && token.amount !== '0.00') {
+              tempTonStakerArr.push(token);
+            }
+          }),
+        );
 
-      const sortedArr = claimableArr.sort((a, b) => a.id - b.id);
+        // Push to DAO airdrop arr
+        await Promise.all(
+          claimableArr.map((token: any) => {
+            if (token.tosStaker === true && token.amount !== '0.00') {
+              tempDaoAirdropArr.push(token);
+            }
+          }),
+        );
+      }
+
+      const sortedTonStakerArr = tempTonStakerArr.sort((a, b) => a.id - b.id);
+      const sortedDaoAirdropArr = tempDaoAirdropArr.sort((a, b) => a.id - b.id);
+
+      setTonStakerAirdropTokens(
+        sortedTonStakerArr.filter((tonStakerData) => {
+          if (
+            convertNumber({amount: tonStakerData.amount.toString()}) !== '0.00'
+          ) {
+            return tonStakerData;
+          }
+        }),
+      );
+      setDaoAirdropTokens(
+        sortedDaoAirdropArr.filter((daoAirdropData) => {
+          if (daoAirdropData.amount !== '0.00') {
+            return daoAirdropData;
+          }
+        }),
+      );
+
+      let filteredAirdropData = claimableArr.filter(
+        (data) => data.amount !== '0.00',
+      );
+      const sortedArr = filteredAirdropData.sort((a, b) => a.id - b.id);
       setLoadingData(false);
       setAirdropData(sortedArr);
-      // availableGenesisAmount(roundInfo, claimedAmount, unclaimedAmount);
     }
     if (account !== undefined && library !== undefined) {
-      getClaimableAirdropAmounts();
+      getClaimableAirdropTonAmounts();
     }
     /*eslint-disable*/
-  }, [account]);
-
-  // useEffect(() => {
-  //   async function callAirDropData() {
-  //     if (account === undefined || account === null) {
-  //       return;
-  //     }
-  //     const res = await fetchAirdropPayload(account, library);
-  //     if (res === undefined) {
-  //       return;
-  //     }
-  //     const {roundInfo, claimedAmount, unclaimedAmount} = res;
-  //     console.log('res: ', res);
-  //     setAirdropData(roundInfo);
-  //     availableGenesisAmount(roundInfo, claimedAmount, unclaimedAmount);
-  //   }
-  //   if (account !== undefined && library !== undefined) {
-  //     callAirDropData();
-  //   }
-  //   /*eslint-disable*/
-  // }, [account]);
+  }, [account, transactionType, blockNumber]);
 
   const availableGenesisAmount = (
     roundInfo: AirDropList,
@@ -134,52 +186,27 @@ export const AirdropClaimTable = () => {
     unclaimedAmount: string | undefined,
   ) => {
     if (roundInfo !== undefined && claimedAmount !== undefined) {
-      return setGenesisAirdropBalance(unclaimedAmount);
+      setGenesisAirdropBalance(unclaimedAmount);
     }
   };
 
-  // const fetchData = async () => {
-  //   let claimableTokens = [];
-  //   let isError = false;
-  //   let i = 0;
-
-  //   console.log('isError: ', isError);
-
-  //   do {
-  //     try {
-  //       const tokenAddress = await LOCKTOS_DIVIDEND_CONTRACT?.distributedTokens(
-  //         i,
-  //       );
-  //       claimableTokens.push(tokenAddress);
-  //       i++;
-  //     } catch (e) {
-  //       isError = true;
-  //     }
-  //   } while (isError === false);
-
-  //   const tokens = claimableTokens;
-  //   const nowTimeStamp = moment().unix();
-  //   const result: {tokenName: string; amount: string}[] = await Promise.all(
-  //     tokens.map(async (token: string) => {
-  //       const tokenAmount = await LOCKTOS_DIVIDEND_CONTRACT?.tokensPerWeekAt(
-  //         token,
-  //         nowTimeStamp,
-  //       );
-  //       const ERC20_CONTRACT = new Contract(token, ERC20.abi, library);
-  //       const tokenSymbol = await ERC20_CONTRACT.symbol();
-  //       return {
-  //         tokenName: tokenSymbol,
-  //         amount: convertNumber({amount: tokenAmount.toString()}) as string,
-  //       };
-  //     }),
-  //   );
-  //   return setAirdropList(result);
-  // };
-
-  // useEffect(() => {
-  //   fetchData();
-  //   /*eslint-disable*/
-  // }, [blockNumber]);
+  useEffect(() => {
+    async function callAirDropData() {
+      if (account === undefined || account === null) {
+        return;
+      }
+      const res = await fetchAirdropPayload(account, library);
+      if (res === undefined) {
+        return;
+      }
+      const {roundInfo, claimedAmount, unclaimedAmount} = res;
+      availableGenesisAmount(roundInfo, claimedAmount, unclaimedAmount);
+    }
+    if (account !== undefined && library !== undefined) {
+      callAirDropData();
+    }
+    /*eslint-disable*/
+  }, [account, transactionType, blockNumber]);
 
   const themeDesign = {
     fontColorTitle: {
@@ -218,8 +245,17 @@ export const AirdropClaimTable = () => {
 
   const handleSelectAll = (e: any) => {
     setIsCheckAll(!isCheckAll);
-    setIsCheck(airdropData.map((data) => String(data.id)));
-    setCheckedTokenAddresses(airdropData.map((data) => data.address));
+    setCheckedAllBoxes(!checkedAllBoxes);
+
+    if (radioValue === 'TON Staker') {
+      setIsCheck(tonStakerAirdropTokens.map((data) => String(data.id)));
+      setCheckedTokenAddresses(
+        tonStakerAirdropTokens.map((data) => data.address),
+      );
+    } else if (radioValue === 'DAO Airdrop') {
+      setIsCheck(daoAirdropTokens.map((data) => String(data.id)));
+      setCheckedTokenAddresses(daoAirdropTokens.map((data) => data.address));
+    }
 
     if (isCheckAll) {
       setIsCheck([]);
@@ -244,96 +280,256 @@ export const AirdropClaimTable = () => {
     setCheckedTokenAddresses(tempCheckedAddresses);
   };
 
-  return (
+  return loadingData || !airdropData ? (
+    <Flex
+      alignItems={'center'}
+      mt={'50px'}
+      justifyContent={'center'}
+      w={'100%'}>
+      <LoadingComponent />
+    </Flex>
+  ) : (
     <Flex flexDirection={'column'} w={'976px'} p={'0px'} mt={'50px'}>
-      <Flex alignItems={'center'} justifyContent={'space-between'} mb={'20px'}>
-        <Text
-          fontSize={'20px'}
-          fontFamily={theme.fonts.roboto}
-          color={themeDesign.font[colorMode]}
-          ml={'20px'}
-          height={'32px'}
-          width={'150px'}
-          fontWeight={'500'}
-          padding={'3px 23px 8px'}>
-          Token List
-        </Text>
+      <Text
+        fontSize={'20px'}
+        fontFamily={theme.fonts.roboto}
+        color={themeDesign.font[colorMode]}
+        ml={'14px'}
+        mb={'15px'}
+        fontWeight={'500'}>
+        Token List
+      </Text>
+      <Flex alignItems={'end'} justifyContent={'space-between'} mb={'20px'}>
+        <Flex>
+          <Text
+            ml={'14px'}
+            fontSize={'16px'}
+            fontFamily={theme.fonts.fld}
+            color={themeDesign.font[colorMode]}>
+            From:
+          </Text>
+          <RadioGroup onChange={setRadioValue} value={radioValue}>
+            <Stack direction="row">
+              <Box mx={'20px'} display={'flex'}>
+                <Radio value="Genesis Airdrop" size={'md'} mr={'5px'} />
+                <Text fontFamily={theme.fonts.roboto} fontSize={'14px'}>
+                  Genesis Airdrop
+                </Text>
+              </Box>
+              <Box mx={'20px'} display={'flex'}>
+                <Radio value="DAO Airdrop" size={'md'} mr={'5px'} />
+                <Text fontFamily={theme.fonts.roboto} fontSize={'14px'}>
+                  DAO Airdrop
+                </Text>
+              </Box>
+              <Box mx={'20px'} display={'flex'}>
+                <Radio value="TON Staker" size={'md'} ml={'20px'} mr={'5px'} />
+                <Text fontFamily={theme.fonts.roboto} fontSize={'14px'}>
+                  TON Staker
+                </Text>
+              </Box>
+            </Stack>
+          </RadioGroup>
+        </Flex>
         <Button
           color={themeDesign.tosFont[colorMode]}
           border={themeDesign.borderTos[colorMode]}
           height={'32px'}
-          width={'100px'}
+          width={'120px'}
           padding={'9px 23px 8px'}
           borderRadius={'4px'}
           fontSize={'13px'}
           fontFamily={theme.fonts.roboto}
           background={'transparent'}
           disabled={checkedTokenAddresses.length < 1}
+          // _hover={{background: 'transparent'}}
           onClick={() => {
             account &&
               AdminActions.claimMultipleTokens({
                 account,
                 library,
                 addresses: checkedTokenAddresses,
+                type: radioValue,
               });
-          }}
-          _hover={{background: 'transparent'}}>
-          Claim All
+          }}>
+          Claim Selected
         </Button>
       </Flex>
-      <Grid
-        templateColumns="repeat(1, 1fr)"
-        w={'100%'}
-        bg={themeDesign.bg[colorMode]}>
-        <GridItem
-          border={themeDesign.border[colorMode]}
-          className={'chart-cell'}
-          borderTopLeftRadius={'6px'}
-          borderTopRightRadius={'6px'}
-          borderBottom={'none'}
-          fontSize={'16px'}
-          fontFamily={theme.fonts.fld}>
-          <Flex minWidth={'10%'}>
-            <Checkbox
-              fontWeight={'bold'}
-              fontSize={'14px'}
-              h={'45px'}
-              left={'5%'}
-              onChange={handleSelectAll}
-            />
-          </Flex>
 
-          <Text minWidth={'35%'} textAlign={'center'}>
-            Token Symbol
-          </Text>
-          <Text minWidth={'35%'} textAlign={'center'}>
-            Amount
-          </Text>
-          <Text
-            fontSize={'15px'}
-            fontWeight={'bolder'}
-            color={colorMode === 'light' ? '#353c48' : 'white.0'}
-            minWidth={'20%'}
-            textAlign={'center'}>
-            Action
-          </Text>
-        </GridItem>
-      </Grid>
+      {radioValue === 'TON Staker' && tonStakerAirdropTokens.length > 0 ? (
+        <Grid
+          templateColumns="repeat(1, 1fr)"
+          w={'100%'}
+          bg={themeDesign.bg[colorMode]}>
+          <GridItem
+            border={themeDesign.border[colorMode]}
+            className={'chart-cell'}
+            borderTopLeftRadius={'6px'}
+            borderTopRightRadius={'6px'}
+            borderBottom={'none'}
+            fontSize={'16px'}
+            padding={'20px 35px'}
+            fontFamily={theme.fonts.roboto}>
+            <Flex minWidth={'10%'}>
+              <Checkbox
+                // fontWeight={'bold'}
+                // fontSize={'14px'}
+                // h={'45px'}
+                iconSize="18px"
+                left={'5%'}
+                onChange={handleSelectAll}
+                isChecked={checkedAllBoxes}
+              />
+            </Flex>
 
-      {loadingData || !airdropData ? (
+            <Text minWidth={'35%'} textAlign={'center'} fontSize={'12px'}>
+              Token Symbol
+            </Text>
+            <Text minWidth={'35%'} textAlign={'center'} fontSize={'12px'}>
+              Amount
+            </Text>
+            <Text
+              fontSize={'12px'}
+              fontWeight={'bolder'}
+              color={colorMode === 'light' ? '#353c48' : 'white.0'}
+              minWidth={'20%'}
+              textAlign={'center'}>
+              Action
+            </Text>
+          </GridItem>
+        </Grid>
+      ) : radioValue === 'TON Staker' && tonStakerAirdropTokens.length === 0 ? (
         <Flex
-          alignItems={'center'}
-          mt={'50px'}
           justifyContent={'center'}
-          w={'100%'}>
-          <LoadingComponent />
+          my={'20px'}
+          width={'100%'}
+          height={'200px'}
+          padding={'90px 100px'}
+          borderRadius={'10px'}
+          border={
+            colorMode === 'light' ? 'solid 1px #fff' : 'solid 1px #373737'
+          }
+          style={{backdropFilter: 'blur(8px)'}}
+          boxShadow={'0 1px 1px 0 rgba(96, 97, 112, 0.16)'}
+          backgroundColor={colorMode === 'light' ? '#fff' : '#222'}>
+          <Text
+            fontFamily={theme.fonts.fld}
+            color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}
+            fontWeight={'bold'}
+            fontSize={'15px'}>
+            There aren't any distributed tokens
+          </Text>
         </Flex>
+      ) : radioValue === 'DAO Airdrop' && daoAirdropTokens.length > 0 ? (
+        <Grid
+          templateColumns="repeat(1, 1fr)"
+          w={'100%'}
+          bg={themeDesign.bg[colorMode]}>
+          <GridItem
+            border={themeDesign.border[colorMode]}
+            className={'chart-cell'}
+            borderTopLeftRadius={'6px'}
+            borderTopRightRadius={'6px'}
+            borderBottom={'none'}
+            fontSize={'16px'}
+            fontFamily={theme.fonts.roboto}>
+            <Flex minWidth={'10%'}>
+              <Checkbox
+                fontWeight={'bold'}
+                fontSize={'14px'}
+                iconSize="18px"
+                left={'5%'}
+                onChange={handleSelectAll}
+              />
+            </Flex>
+
+            <Text minWidth={'35%'} textAlign={'center'} fontSize={'12px'}>
+              Token Symbol
+            </Text>
+            <Text minWidth={'35%'} textAlign={'center'} fontSize={'12px'}>
+              Amount
+            </Text>
+            <Text
+              fontSize={'12px'}
+              fontWeight={'bolder'}
+              color={colorMode === 'light' ? '#353c48' : 'white.0'}
+              minWidth={'20%'}
+              textAlign={'center'}>
+              Action
+            </Text>
+          </GridItem>
+        </Grid>
+      ) : radioValue === 'Genesis Airdrop' &&
+        Number(genesisAirdropBalance) > 0 ? (
+        <Grid
+          templateColumns="repeat(1, 1fr)"
+          w={'100%'}
+          bg={themeDesign.bg[colorMode]}>
+          <GridItem
+            border={themeDesign.border[colorMode]}
+            className={'chart-cell'}
+            borderTopLeftRadius={'6px'}
+            borderTopRightRadius={'6px'}
+            borderBottom={'none'}
+            fontSize={'16px'}
+            fontFamily={theme.fonts.roboto}>
+            <Flex minWidth={'10%'}>
+              <Checkbox
+                fontWeight={'bold'}
+                fontSize={'14px'}
+                iconSize="18px"
+                left={'5%'}
+                onChange={handleSelectAll}
+              />
+            </Flex>
+
+            <Text minWidth={'35%'} textAlign={'center'} fontSize={'12px'}>
+              Token Symbol
+            </Text>
+            <Text minWidth={'35%'} textAlign={'center'} fontSize={'12px'}>
+              Amount
+            </Text>
+            <Text
+              fontSize={'12px'}
+              fontWeight={'bolder'}
+              color={colorMode === 'light' ? '#353c48' : 'white.0'}
+              minWidth={'20%'}
+              textAlign={'center'}>
+              Action
+            </Text>
+          </GridItem>
+        </Grid>
       ) : (
-        airdropData.map((data: any, index: number) => {
-          const {id, address, amount, tokenSymbol} = data;
-          const formattedAmt = Number(ethers.utils.formatEther(amount)).toFixed(
-            2,
-          );
+        <Flex
+          justifyContent={'center'}
+          my={'20px'}
+          width={'100%'}
+          height={'200px'}
+          padding={'90px 100px'}
+          borderRadius={'10px'}
+          border={
+            colorMode === 'light' ? 'solid 1px #fff' : 'solid 1px #373737'
+          }
+          style={{backdropFilter: 'blur(8px)'}}
+          boxShadow={'0 1px 1px 0 rgba(96, 97, 112, 0.16)'}
+          backgroundColor={colorMode === 'light' ? '#fff' : '#222'}>
+          <Text
+            fontFamily={theme.fonts.fld}
+            color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}
+            fontWeight={'bold'}
+            fontSize={'15px'}>
+            There aren't any distributed tokens
+          </Text>
+        </Flex>
+      )}
+
+      {radioValue === 'TON Staker' && tonStakerAirdropTokens.length > 0 ? (
+        tonStakerAirdropTokens.map((data: any, index: number) => {
+          const {id, address, amount, tokenSymbol, tonStaker, tosStaker} = data;
+          const formattedAmt = tonStaker
+            ? Number(ethers.utils.formatEther(amount)).toFixed(2)
+            : amount;
+
           return (
             <Grid
               templateColumns="repeat(1, 1fr)"
@@ -341,10 +537,13 @@ export const AirdropClaimTable = () => {
               bg={themeDesign.bg[colorMode]}>
               <GridItem
                 border={themeDesign.border[colorMode]}
-                borderBottom={index === airdropData?.length - 1 ? '' : 'none'}
+                borderBottom={
+                  index === tonStakerAirdropTokens?.length - 1 ? '' : 'none'
+                }
+                borderBottomRadius={
+                  index === tonStakerAirdropTokens?.length - 1 ? '4px' : 'none'
+                }
                 className={'chart-cell'}
-                fontSize={'16px'}
-                fontFamily={theme.fonts.fld}
                 d={'flex'}
                 justifyContent={'center'}>
                 <Flex minWidth={'10%'}>
@@ -357,24 +556,26 @@ export const AirdropClaimTable = () => {
                     isChecked={isCheck.includes(String(index))}
                     fontWeight={'bold'}
                     fontSize={'14px'}
-                    h={'45px'}
+                    iconSize="18px"
                     left={'5%'}
                     value={address}
                   />
                 </Flex>
                 <Text
-                  fontSize={'15px'}
-                  color={colorMode === 'light' ? '#353c48' : 'white.0'}
+                  fontSize={'13px'}
+                  fontFamily={theme.fonts.roboto}
+                  color={colorMode === 'light' ? '#353c48' : '#fff'}
                   minWidth={'35%'}
                   textAlign={'center'}>
                   {tokenSymbol}
                 </Text>
                 <Text
-                  fontSize={'15px'}
-                  color={colorMode === 'light' ? '#353c48' : 'white.0'}
+                  fontSize={'13px'}
+                  fontFamily={theme.fonts.roboto}
+                  color={colorMode === 'light' ? '#353c48' : '#fff'}
                   minWidth={'35%'}
                   textAlign={'center'}>
-                  {formattedAmt}
+                  {commafy(formattedAmt)}
                 </Text>
                 <Flex minWidth={'20%'} justifyContent={'center'}>
                   <Button
@@ -383,29 +584,115 @@ export const AirdropClaimTable = () => {
                     p={'7px 33px'}
                     border={'solid 1px #2a72e5'}
                     borderRadius={'3px'}
-                    fontSize={'14px'}
-                    fontFamily={theme.fonts.fld}
+                    fontSize={'13px'}
+                    fontFamily={theme.fonts.roboto}
+                    letterSpacing={'.33px'}
                     bg={'#2a72e5'}
                     color={'#fff'}
-                    _hover={{
-                      background: 'transparent',
-                      border: 'solid 1px #2a72e5',
-                      color: themeDesign.fontColorTitle[colorMode],
-                      cursor: 'pointer',
-                    }}
+                    height={'32px'}
+                    _hover={{}}
+                    cursor={'pointer'}
+                    _active={{}}
+                    onClick={() => {
+                      account &&
+                        AdminActions.claimToken({
+                          account,
+                          library,
+                          address: address,
+                          tonStaker: tonStaker,
+                          tosStaker: tosStaker,
+                        });
+                      setIsCheck([]);
+                      setCheckedTokenAddresses([]);
+                      setIsCheckAll(false);
+                      setCheckedAllBoxes(false);
+                    }}>
+                    Claim
+                  </Button>
+                </Flex>
+              </GridItem>
+            </Grid>
+          );
+        })
+      ) : radioValue === 'DAO Airdrop' && daoAirdropTokens.length > 0 ? (
+        daoAirdropTokens.map((data: any, index: number) => {
+          const {id, address, amount, tokenSymbol, tonStaker, tosStaker} = data;
+          const formattedAmt = tonStaker
+            ? Number(ethers.utils.formatEther(amount)).toFixed(2)
+            : amount;
+
+          return (
+            <Grid
+              templateColumns="repeat(1, 1fr)"
+              w={'100%'}
+              bg={themeDesign.bg[colorMode]}>
+              <GridItem
+                border={themeDesign.border[colorMode]}
+                borderBottom={
+                  index === daoAirdropTokens?.length - 1 ? '' : 'none'
+                }
+                borderBottomRadius={
+                  index === daoAirdropTokens?.length - 1 ? '4px' : 'none'
+                }
+                className={'chart-cell'}
+                d={'flex'}
+                justifyContent={'center'}>
+                <Flex minWidth={'10%'}>
+                  <Checkbox
+                    key={id}
+                    type="checkbox"
+                    name={tokenSymbol}
+                    id={id}
+                    onChange={handleClick}
+                    isChecked={isCheck.includes(String(index))}
+                    fontWeight={'bold'}
+                    fontSize={'14px'}
+                    iconSize="18px"
+                    left={'5%'}
+                    value={address}
+                  />
+                </Flex>
+                <Text
+                  fontSize={'13px'}
+                  fontFamily={theme.fonts.roboto}
+                  color={colorMode === 'light' ? '#353c48' : '#fff'}
+                  minWidth={'35%'}
+                  textAlign={'center'}>
+                  {tokenSymbol}
+                </Text>
+                <Text
+                  fontSize={'13px'}
+                  fontFamily={theme.fonts.roboto}
+                  color={colorMode === 'light' ? '#353c48' : '#fff'}
+                  minWidth={'35%'}
+                  textAlign={'center'}>
+                  {commafy(formattedAmt)}
+                </Text>
+                <Flex minWidth={'20%'} justifyContent={'center'}>
+                  <Button
+                    w={'100px'}
+                    h={'38px'}
+                    p={'7px 33px'}
+                    border={'solid 1px #2a72e5'}
+                    borderRadius={'3px'}
+                    fontSize={'13px'}
+                    fontFamily={theme.fonts.roboto}
+                    letterSpacing={'.33px'}
+                    bg={'#2a72e5'}
+                    color={'#fff'}
+                    height={'32px'}
+                    _hover={{}}
+                    cursor={'pointer'}
                     _active={{}}
                     onClick={() =>
-                      dispatch(
-                        openModal({
-                          type: 'Airdrop_Claim',
-                          data: {
-                            genesisAirdropBalance: genesisAirdropBalance,
-                            tokenSymbol: tokenSymbol,
-                            tokenAddress: address,
-                            amount: formattedAmt,
-                          },
-                        }),
-                      )
+                      account &&
+                      AdminActions.claimToken({
+                        account,
+                        library,
+                        address: address,
+                        tonStaker: tonStaker,
+                        tosStaker: tosStaker,
+                      })
                     }>
                     Claim
                   </Button>
@@ -414,7 +701,76 @@ export const AirdropClaimTable = () => {
             </Grid>
           );
         })
-      )}
+      ) : radioValue === 'Genesis Airdrop' &&
+        Number(genesisAirdropBalance) > 0 ? (
+        <Grid
+          templateColumns="repeat(1, 1fr)"
+          w={'100%'}
+          bg={themeDesign.bg[colorMode]}>
+          <GridItem
+            border={themeDesign.border[colorMode]}
+            className={'chart-cell'}
+            d={'flex'}
+            justifyContent={'center'}>
+            <Flex minWidth={'10%'}>
+              <Checkbox
+                key={'Genesis'}
+                type="checkbox"
+                name={'Genesis Airdrop'}
+                id={'Genesis'}
+                onChange={handleClick}
+                isChecked={isCheck.includes('Genesis')}
+                fontWeight={'bold'}
+                fontSize={'14px'}
+                iconSize="18px"
+                left={'5%'}
+                value={'Genesis'}
+              />
+            </Flex>
+            <Text
+              fontSize={'13px'}
+              fontFamily={theme.fonts.roboto}
+              color={colorMode === 'light' ? '#353c48' : '#fff'}
+              minWidth={'35%'}
+              textAlign={'center'}>
+              TOS
+            </Text>
+            <Text
+              fontSize={'13px'}
+              fontFamily={theme.fonts.roboto}
+              color={colorMode === 'light' ? '#353c48' : '#fff'}
+              minWidth={'35%'}
+              textAlign={'center'}>
+              {commafy(genesisAirdropBalance)}
+            </Text>
+            <Flex minWidth={'20%'} justifyContent={'center'}>
+              <Button
+                w={'100px'}
+                h={'38px'}
+                p={'7px 33px'}
+                border={'solid 1px #2a72e5'}
+                borderRadius={'3px'}
+                fontSize={'13px'}
+                fontFamily={theme.fonts.roboto}
+                letterSpacing={'.33px'}
+                bg={'#2a72e5'}
+                color={'#fff'}
+                height={'32px'}
+                _hover={{}}
+                cursor={'pointer'}
+                _active={{}}
+                onClick={() =>
+                  claimAirdrop({
+                    userAddress: account,
+                    library: library,
+                  })
+                }>
+                Claim
+              </Button>
+            </Flex>
+          </GridItem>
+        </Grid>
+      ) : null}
     </Flex>
   );
 };

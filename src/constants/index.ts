@@ -44,6 +44,7 @@ export const fetchValutURL = `${API_SERVER}/vaults?chainId=${DEFAULT_NETWORK}`;
 export const fetchRewardsURL = `${API_SERVER}/reward?chainId=${DEFAULT_NETWORK}&pagesize=200`;
 export const fetchStarterURL = `${API_SERVER}/starter?chainId=${DEFAULT_NETWORK}`;
 export const fetchPoolsURL = `${API_SERVER}/pool?chainId=${DEFAULT_NETWORK}`;
+export const fetchTokensURL = `${API_SERVER}/tokens?chainId=${DEFAULT_NETWORK}`;
 export const fetchCampaginURL = `${API_SERVER_LAUNCH}/projects?chainId=${DEFAULT_NETWORK}`;
 export const fetchTosPriceURL = REACT_APP_TOS_PRICE;
 export const fetchEthPriceURL = REACT_APP_ETH_PRICE;
@@ -93,7 +94,7 @@ const MAINNET_DEPLOYED = {
   TypeCVault: '0x00065b639A3Fcc65db399a8CeF8c33327CcfE158',
   DAOVault: '0xA93f236E939E01Ff33563F9879D9A99b60D7788B',
   pools: {
-    TOS_WTON_POOL: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
+    TOS_WTON_POOL: '0x1c0ce9aaa0c12f53df3b4d8d77b82d6ad343b4e4',
     ETH_WTON_Address: '0xC29271E3a68A7647Fd1399298Ef18FeCA3879F59',
     TOS_WTON_Address: '0x1c0cE9aAA0c12f53Df3B4d8d77B82D6Ad343b4E4',
     TOS_ETH_Address: '0x2AD99c938471770DA0cD60E08eaf29EbfF67a92A',
@@ -103,6 +104,10 @@ const MAINNET_DEPLOYED = {
   },
   UniswapV3Factory: '0x1F98431c8aD98523631AE4a59f267346ea31F984',
   ProjectTokenProxy: '0x96D366bBE6B83D895D2AFd0BC0139b9089486055',
+  tokens: {
+    LYDA_ADDRESS: '0xE1B0630D7649CdF503eABc2b6423227Be9605247',
+    AURA_ADDRESS: '0xaEC59E5b4f8DbF513e260500eA96EbA173F74149',
+  },
 };
 
 const RINKEBY_DEPLOYED = {
@@ -157,6 +162,10 @@ const RINKEBY_DEPLOYED = {
   },
   UniswapV3Factory: '0x1F98431c8aD98523631AE4a59f267346ea31F984',
   ProjectTokenProxy: '0x48683aC8ab065A113323BdB5738a267D7FF7F0d6',
+  tokens: {
+    LYDA_ADDRESS: '',
+    AURA_ADDRESS: '',
+  },
 };
 
 export const DEPLOYED: DEPLOYED_TYPE =

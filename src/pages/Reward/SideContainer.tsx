@@ -26,6 +26,7 @@ type SideContainerProps = {
   pools: any[];
   rewards: any[];
   LPTokens: any[];
+  tokens: any[];
   setSelectedPoolCreated: any
 };
 const { UniswapStaker_Address } = DEPLOYED;
@@ -35,6 +36,7 @@ export const SideContainer: FC<SideContainerProps> = ({
   pools,
   rewards,
   LPTokens,
+  tokens,
   setSelectedPoolCreated
 }) => {
   const {colorMode} = useColorMode();
@@ -102,12 +104,12 @@ export const SideContainer: FC<SideContainerProps> = ({
         {selected === 'reward' ? (
           <ClaimReward rewards={rewards} tokens={withdrawableTokens} />
         ) : (
-          <CreateReward pools={pools} setSelectedPoolCreated={setSelectedPoolCreated}/>
+          <CreateReward pools={pools} setSelectedPoolCreated={setSelectedPoolCreated} tokens={tokens}/>
         )}
       </Box>
 
 
-      <PoolComponent pools={tvl} rewards={rewards} />
+      <PoolComponent pools={tvl} rewards={rewards} tokens={tokens} />
       <LPTokenComponent tokens={LPTokens} />
     </Box>
   );

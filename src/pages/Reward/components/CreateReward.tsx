@@ -74,6 +74,7 @@ type Pool = {
 type CreateRewardProps = {
   pools: Pool[];
   setSelectedPoolCreated: any;
+  tokens: any[]
 };
 
 type CreateReward = {
@@ -96,6 +97,7 @@ const { WTON_ADDRESS} = DEPLOYED;
 export const CreateReward: FC<CreateRewardProps> = ({
   pools,
   setSelectedPoolCreated,
+  tokens
 }) => {
   // const {data} = useAppSelector(selectModalType);
   const dispatch = useAppDispatch();
@@ -132,7 +134,7 @@ export const CreateReward: FC<CreateRewardProps> = ({
       setRewardAddress('');
     }
   }, [tokeninfo]);
-
+  
   // get user's timezone to pass into CustomClock
   useEffect(() => {
     const userDate = new Date();
@@ -437,7 +439,7 @@ export const CreateReward: FC<CreateRewardProps> = ({
               dispatch(
                 openModal({
                   type: 'search',
-                  data: {getTokenInfo: setTokeninfo},
+                  data: {getTokenInfo: setTokeninfo, tokens: tokens},
                 }),
               )
             }>
@@ -458,7 +460,7 @@ export const CreateReward: FC<CreateRewardProps> = ({
             border={themeDesign.border[colorMode]}
             fontSize={'13px'}
             value={amount}
-            onChange={(e) => {
+            onChange={(e: { target: { value: any; }; }) => {
               const {value} = e.target;
               setAmount(value.replace(/^0*([^0]\d*\.\d{1,2}).*/g, '$1'));
             }}

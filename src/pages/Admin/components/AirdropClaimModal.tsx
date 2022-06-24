@@ -28,13 +28,7 @@ import {Contract} from '@ethersproject/contracts';
 import * as TOKENDIVIDENDPOOLPROXY from 'services/abis/TokenDividendProxyPool.json';
 
 export const AirdropClaimModal = () => {
-  const {
-    TON_ADDRESS,
-    WTON_ADDRESS,
-    TOS_ADDRESS,
-    DOC_ADDRESS,
-    TokenDividendProxyPool_ADDRESS,
-  } = DEPLOYED;
+  const {WTON_ADDRESS, TokenDividendProxyPool_ADDRESS} = DEPLOYED;
 
   const {data} = useAppSelector(selectModalType);
   const {colorMode} = useColorMode();
@@ -48,6 +42,11 @@ export const AirdropClaimModal = () => {
   const [ableDistribute, setAbleDistribute] = useState<boolean>(false);
   const [timeStamp, setTimeStamp] = useState<string>('');
   const [isRay, setIsRay] = useState<boolean>(false);
+  const [tonStakerCheckbox, setTonStakerCheckbox] = useState<string>('0');
+  const [sTosStakerCheckbox, setSTosStakerCheckbox] = useState<string>('0');
+  const [genesisCheckbox, setGenesisCheckbox] = useState<string>('0');
+  const [totalAmount, setTotalAmount] = useState<string>('0');
+  const [isClaimDisabled, setIsClaimDisabled] = useState<boolean>(true);
 
   const TOKEN_DIVIDEND_PROXY_POOL_CONTRACT = new Contract(
     TokenDividendProxyPool_ADDRESS,
@@ -58,9 +57,14 @@ export const AirdropClaimModal = () => {
   const {blockNumber} = useBlockNumber();
   const {handleCloseModal} = useModal(setTokenAmount);
 
-  const {tokenSymbol, tokenAddress, genesisAirdropBalance, amount} = data?.data;
-
-  console.log('data: ', data);
+  const {
+    tokenSymbol,
+    tokenAddress,
+    genesisAirdropBalance,
+    amount,
+    tonStaker,
+    tosStaker,
+  } = data?.data;
 
   const themeDesign = {
     fontColorTitle: {
@@ -163,40 +167,61 @@ export const AirdropClaimModal = () => {
     }
   }, []);
 
-  const claimToken = async (tokenAddress: string) => {
-    if (account === undefined || account === null || library === undefined) {
-      return;
-    }
-    const signer = getSigner(library, account);
+  useEffect(() => {
+    let tempTotal =
+      Number(tonStakerCheckbox) +
+      Number(sTosStakerCheckbox) +
+      Number(genesisCheckbox);
 
-    const res = await TOKEN_DIVIDEND_PROXY_POOL_CONTRACT.connect(signer).claim(
-      tokenAddress,
-    );
-    console.log('claimToken res: ', res);
+    setTotalAmount(String(tempTotal));
+  }, [tonStakerCheckbox, sTosStakerCheckbox, genesisCheckbox]);
+
+  const updateTonStakerCheckbox = () => {
+    if (tonStakerCheckbox === '0') {
+      setTonStakerCheckbox(amount);
+      setIsClaimDisabled(false);
+    } else {
+      setTonStakerCheckbox('0');
+      setIsClaimDisabled(true);
+    }
   };
 
-  // const {tokenBalance, tokenSymbol} = useERC20Token({
-  //   tokenAddress: tokenAddress,
-  //   isRay: tokenAddress === WTON_ADDRESS,
-  // });
-  // const [isTokenBalanceExceed, setIsTokenBalanceExceed] =
-  //   useState<boolean>(true);
+  const updateSTosStakerCheckbox = () => {
+    if (sTosStakerCheckbox === '0') {
+      setSTosStakerCheckbox(amount);
+      setIsClaimDisabled(false);
+    } else {
+      setSTosStakerCheckbox('0');
+      setIsClaimDisabled(true);
+    }
+  };
 
-  // useEffect(() => {
-  //   const checkedTokenBalanceExceed =
-  //     Number(tokenAmount.replaceAll(',', '')) >
-  //     Number(tokenBalance.replaceAll(',', ''));
-  //   return setIsTokenBalanceExceed(checkedTokenBalanceExceed);
-  // }, [tokenAmount, tokenBalance]);
+  const updateGenesisAirdropCheckbox = () => {
+    if (genesisCheckbox === '0.00') {
+      setGenesisCheckbox(amount);
+      setIsClaimDisabled(false);
+    } else {
+      setGenesisCheckbox('0.00');
+      setIsClaimDisabled(true);
+    }
+  };
+
+  const closeModal = () => {
+    setTokenAmount('');
+    setGenesisCheckbox('0.00');
+    setSTosStakerCheckbox('0');
+    setTonStakerCheckbox('0');
+    setIsClaimDisabled(true);
+    setAllowance('');
+    handleCloseModal();
+  };
 
   return (
     <Modal
       isOpen={data.modal === 'Airdrop_Claim' ? true : false}
       isCentered
       onClose={() => {
-        setTokenAmount('');
-        setAllowance('');
-        handleCloseModal();
+        closeModal();
       }}>
       <ModalOverlay />
       <ModalContent
@@ -205,7 +230,7 @@ export const AirdropClaimModal = () => {
         w="350px"
         pt="25px"
         pb="25px">
-        <CloseButton closeFunc={handleCloseModal}></CloseButton>
+        <CloseButton closeFunc={closeModal}></CloseButton>
         <ModalBody p={0}>
           <Box
             pb={'1.250em'}
@@ -246,7 +271,7 @@ export const AirdropClaimModal = () => {
                   fontSize={'35px'}
                   mr={'3px'}
                   fontFamily={theme.fonts.roboto}>
-                  {amount}
+                  {totalAmount}
                 </Text>
                 <Text fontSize={'13px'} fontFamily={theme.fonts.roboto}>
                   {tokenSymbol}
@@ -255,31 +280,31 @@ export const AirdropClaimModal = () => {
             </Box>
             {tokenSymbol === 'TOS' && (
               <Box d="flex" mb={'29px'}>
-                <Checkbox mr={'10px'} />
+                <Checkbox mr={'10px'} onChange={updateGenesisAirdropCheckbox} />
                 <Text mr={'4px'} fontSize={'15px'}>
-                  {data?.data?.genesisAirdropBalance || '0.00'} TOS
+                  {genesisAirdropBalance || '0.00'} TOS
                 </Text>
                 <Text color={'#949494'} fontSize={'15px'}>
                   (Genesis Airdrop)
                 </Text>
               </Box>
             )}
-            {tokenSymbol === 'sTOS' && (
+            {tosStaker && (
               <Box d="flex" mb={'29px'}>
-                <Checkbox mr={'10px'} />
+                <Checkbox mr={'10px'} onChange={updateSTosStakerCheckbox} />
                 <Text mr={'4px'} fontSize={'15px'}>
-                  100 {tokenSymbol}
+                  {amount} {tokenSymbol}
                 </Text>
                 <Text color={'#949494'} fontSize={'15px'}>
-                  (DAO Airdrop)
+                  (sTOS Staker)
                 </Text>
               </Box>
             )}
-            {tokenSymbol === 'TON' && (
+            {tonStaker && (
               <Box d="flex" mb={'29px'}>
-                <Checkbox mr={'10px'} />
+                <Checkbox mr={'10px'} onChange={updateTonStakerCheckbox} />
                 <Text mr={'4px'} fontSize={'15px'}>
-                  100 {tokenSymbol}
+                  {amount} {tokenSymbol}
                 </Text>
                 <Text color={'#949494'} fontSize={'15px'}>
                   (TON Staker)
@@ -307,13 +332,16 @@ export const AirdropClaimModal = () => {
               bg={themeDesign.cancelBg[colorMode]}
               border={themeDesign.cancelBorder[colorMode]}
               _hover={{}}
-              onClick={handleCloseModal}>
+              onClick={() => {
+                closeModal();
+              }}>
               Cancel
             </Button>
             <Button
               {...btnStyle.btnAble()}
               w={'150px'}
               fontSize="14px"
+              disabled={isClaimDisabled}
               _hover={{}}
               onClick={() => {
                 account &&
@@ -321,8 +349,10 @@ export const AirdropClaimModal = () => {
                     account,
                     library,
                     address: tokenAddress,
+                    tonStaker: tonStaker,
+                    tosStaker: tosStaker,
                   });
-                handleCloseModal();
+                closeModal();
               }}>
               Claim
             </Button>

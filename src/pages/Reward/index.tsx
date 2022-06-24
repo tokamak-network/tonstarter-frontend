@@ -129,7 +129,7 @@ export const Reward = () => {
   const [selectedPoolCreate, setSelectedPoolCreated] = useState<Pool>();
   const [positions, setPositions] = useState<any[]>([]);
   const [selectedTokenType, setSelectedTokenType] = useState<string>('');
-
+ const [tokensFromAPI, setTokensFromAPI] = useState<any[]>([])
   // const arr: any = [];
   useEffect(() => {
     setSelectdPosition(undefined);
@@ -137,8 +137,10 @@ export const Reward = () => {
   useEffect(() => {
     async function fetchProjectsData() {
       const poolsData: any = await views.getPoolData(library);
+      const tokens = await views.getTokensData()
       const rewardData = await views.getRewardData();
       setPoolsFromAPI(poolsData);
+     
       const poolArray: any = [];
       if (poolsData) {
         poolsData.map((pool: any) => {
@@ -152,6 +154,9 @@ export const Reward = () => {
         });
 
         setDatas(rewardData);
+      }
+      if (tokens) {
+        setTokensFromAPI(tokens)
       }
       setPoolAddresses(poolArray);
     }
@@ -969,7 +974,7 @@ export const Reward = () => {
                     cursor={'pointer'}
                     color={'#0070ed'}
                     fontSize={'13px'}
-                    onClick={(e) => {
+                    onClick={(e: any) => {
                       e.preventDefault();
                       window.open(
                         selectedPool === undefined
@@ -990,7 +995,7 @@ export const Reward = () => {
                     cursor={'pointer'}
                     color={'#0070ed'}
                     fontSize={'13px'}
-                    onClick={(e) => {
+                    onClick={(e: { preventDefault: () => void; }) => {
                       e.preventDefault();
                       window.open(
                         selectedPoolCreate === undefined
@@ -1228,6 +1233,7 @@ export const Reward = () => {
                     sortString={sortString}
                     positionsByPool={positionsByPool}
                     LPTokens={positions}
+                    tokens={tokensFromAPI}
                   />
                 </Box>
               ) : (
@@ -1239,6 +1245,7 @@ export const Reward = () => {
                   sortString={sortString}
                   positionsByPool={positionsByPool}
                   LPTokens={positions}
+                  tokens={tokensFromAPI}
                 />
               )}
               <SideContainer
@@ -1246,6 +1253,7 @@ export const Reward = () => {
                 selected={selected}
                 rewards={datas}
                 LPTokens={positions}
+                tokens={tokensFromAPI}
                 setSelectedPoolCreated={setSelectedPoolCreated}
               />{' '}
             </Flex>

@@ -42,9 +42,9 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const {account, library} = useActiveWeb3React();
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
-const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
+  const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
 
-  const [hardcap, setHardcap] = useState<number>(0)
+  const [hardcap, setHardcap] = useState<number>(0);
 
   const network = BASE_PROVIDER._network.name;
 
@@ -87,20 +87,20 @@ const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
     } else {
       setIsAdmin(false);
     }
-  }, [account, project, vault.vaultAddress,transactionType, blockNumber]);
+  }, [account, project, vault.vaultAddress, transactionType, blockNumber]);
 
-  useEffect(()=> {
+  useEffect(() => {
     async function getHardCap() {
       if (account === null || account === undefined || library === undefined) {
         return;
       }
       const hardCapCalc = await PublicSaleVaul.hardcapCalcul();
-      const adminWithdraw = await PublicSaleVaul.adminWithdraw();       
-      setFundWithdrew(adminWithdraw)
-      setHardcap(Number(hardCapCalc))
-    } 
-    getHardCap()
-  },[account, project,vault.vaultAddress,transactionType, blockNumber])
+      const adminWithdraw = await PublicSaleVaul.adminWithdraw();
+      setFundWithdrew(adminWithdraw);
+      setHardcap(Number(hardCapCalc));
+    }
+    getHardCap();
+  }, [account, project, vault.vaultAddress, transactionType, blockNumber]);
 
   const sendTOS = async () => {
     if (account === null || account === undefined || library === undefined) {
@@ -130,6 +130,18 @@ const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
         }),
       );
     }
+  };
+  const download = () => {
+    const datastr =
+      'data:text/json;charset=utf-8,' +
+      encodeURIComponent(JSON.stringify(project));
+
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute('href', datastr);
+    downloadAnchorNode.setAttribute('download', 'exportName' + '.csv');
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
   };
   const themeDesign = {
     border: {
@@ -182,20 +194,24 @@ const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
             </Text>
             {vault.isDeployed ? (
               <Flex>
-              <Text letterSpacing={'1.3px'} fontSize={'13px'} mr={'5px'}>
-                {commafy(Number(vault.vaultTokenAllocation))}{' '}
-                {project.tokenSymbol}
-              </Text>
-              <Text letterSpacing={'1.3px'} fontSize={'13px'} color={'#7e8993'}>
-                {(
-                  (vault.vaultTokenAllocation / project.totalTokenAllocation) *
-                  100
-                )
-                  .toString()
-                  .match(/^\d+(?:\.\d{0,2})?/)}
-                %
-              </Text>
-            </Flex>
+                <Text letterSpacing={'1.3px'} fontSize={'13px'} mr={'5px'}>
+                  {commafy(Number(vault.vaultTokenAllocation))}{' '}
+                  {project.tokenSymbol}
+                </Text>
+                <Text
+                  letterSpacing={'1.3px'}
+                  fontSize={'13px'}
+                  color={'#7e8993'}>
+                  {(
+                    (vault.vaultTokenAllocation /
+                      project.totalTokenAllocation) *
+                    100
+                  )
+                    .toString()
+                    .match(/^\d+(?:\.\d{0,2})?/)}
+                  %
+                </Text>
+              </Flex>
             ) : (
               <></>
             )}
@@ -304,8 +320,9 @@ const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
                 justifyContent={'space-between'}>
                 <Text
                   fontFamily={theme.fonts.fld}
+                  w={'100px'}
                   color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
-                  Hard Cap
+                  Minimum Fund Raising Amount
                 </Text>
                 <Text fontFamily={theme.fonts.fld}>{`${commafy(
                   vault.hardCap,
@@ -399,58 +416,71 @@ const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
                         : 'NA'}
                     </Link>
                   </Flex>
-                  {now >= vault.publicRound2 ? (
-                    <>
-                      <Button
-                        fontSize={'11px'}
-                        w={'273px'}
-                        h={'25px'}
-                        mt={'5px'}
-                        bg={'#257eee'}
-                        color={'#ffffff'}
-                        isDisabled={vault.publicRound2End > moment().unix() || hardcap === 0 || fundWithdrew=== true}
-                        _disabled={{
-                          color: colorMode === 'light' ? '#86929d' : '#838383',
-                          bg: colorMode === 'light' ? '#e9edf1' : '#353535',
-                          cursor: 'not-allowed',
-                        }}
-                        _hover={
-                          vault.publicRound2End > moment().unix() || hardcap === 0 || fundWithdrew=== true
-                            ? {}
-                            : {
-                                background: 'transparent',
-                                border: 'solid 1px #2a72e5',
-                                color: themeDesign.tosFont[colorMode],
-                                cursor: 'pointer',
-                              }
-                        }
-                        _focus={
-                          vault.publicRound2End > moment().unix() || hardcap === 0 || fundWithdrew=== true
-                            ? {}
-                            : {
-                                background: 'transparent',
-                                border: 'solid 1px #2a72e5',
-                                color: themeDesign.tosFont[colorMode],
-                                cursor: 'pointer',
-                              }
-                        }
-                        _active={
-                          vault.publicRound2End > moment().unix() || hardcap === 0 || fundWithdrew=== true
-                            ? {}
-                            : {
-                                background: '#2a72e5',
-                                border: 'solid 1px #2a72e5',
-                                color: '#fff',
-                              }
-                        }
-                        onClick={() => sendTOS()}>
-                        Send TOS to Initial Liquidity Vault & Receive Funds
-                      
-                      </Button>
-                    </>
-                  ) : (
-                    <></>
-                  )}
+
+                  <Flex alignItems={'center'} mt={'5px'}>
+                    <Button
+                      fontSize={'11px'}
+                      w={'273px'}
+                      h={'25px'}
+                      mr={'2px'}
+                      bg={'#257eee'}
+                      color={'#ffffff'}
+                      isDisabled={
+                        vault.publicRound2End > moment().unix() ||
+                        hardcap === 0 ||
+                        fundWithdrew === true
+                      }
+                      _disabled={{
+                        color: colorMode === 'light' ? '#86929d' : '#838383',
+                        bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+                        cursor: 'not-allowed',
+                      }}
+                      _hover={
+                        vault.publicRound2End > moment().unix() ||
+                        hardcap === 0 ||
+                        fundWithdrew === true
+                          ? {}
+                          : {
+                              cursor: 'pointer',
+                            }
+                      }
+                      _focus={
+                        vault.publicRound2End > moment().unix() ||
+                        hardcap === 0 ||
+                        fundWithdrew === true
+                          ? {}
+                          : {
+                              background: 'transparent',
+                              border: 'solid 1px #2a72e5',
+                              color: themeDesign.tosFont[colorMode],
+                              cursor: 'pointer',
+                            }
+                      }
+                      _active={
+                        vault.publicRound2End > moment().unix() ||
+                        hardcap === 0 ||
+                        fundWithdrew === true
+                          ? {}
+                          : {
+                              background: '#2a72e5',
+                              border: 'solid 1px #2a72e5',
+                              color: '#fff',
+                            }
+                      }
+                      onClick={() => sendTOS()}>
+                      Send TOS to Initial Liquidity Vault & Receive Funds
+                    </Button>
+                    <Tooltip
+                      label="It is only possible to send TOS after the end of Public Round 2"
+                      hasArrow
+                      placement="top"
+                      color={colorMode === 'light' ? '#e6eaee' : '#424242'}
+                      aria-label={'Tooltip'}
+                      textAlign={'center'}
+                      size={'xs'}>
+                      <Image src={tooltipIcon} />
+                    </Tooltip>
+                  </Flex>
                 </Flex>
               </GridItem>
             </>
@@ -498,7 +528,7 @@ const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
                   fontFamily={theme.fonts.fld}
                   fontSize={'15px'}
                   color={themeDesign.headerFont[colorMode]}>
-                UTC  {momentTZ.tz(momentTZ.tz.guess()).format('Z')} 
+                  UTC {momentTZ.tz(momentTZ.tz.guess()).format('Z')}
                 </Text>
               </>
             ) : (
@@ -546,8 +576,13 @@ const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
                   color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
                   Whitelist
                 </Text>
-                <Text fontFamily={theme.fonts.fld}>
-                  {moment.unix(vault.whitelist).format('YYYY.MM.DD HH:mm:ss')}
+                <Text
+                  fontFamily={theme.fonts.fld}
+                  w={'100px'}
+                  textAlign={'right'}>
+                  {moment.unix(vault.whitelist).format('YYYY.MM.DD HH:mm:ss')}{' '}
+                  {`~`}{' '}
+                  {moment.unix(vault.whitelistEnd).format('MM.DD HH:mm:ss')}
                 </Text>
               </GridItem>
               <GridItem
@@ -561,10 +596,15 @@ const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
                   color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
                   Public Round 1.
                 </Text>
-                <Text fontFamily={theme.fonts.fld}>
+                <Text
+                  fontFamily={theme.fonts.fld}
+                  w={'100px'}
+                  textAlign={'right'}>
                   {moment
                     .unix(vault.publicRound1)
-                    .format('YYYY.MM.DD HH:mm:ss')}
+                    .format('YYYY.MM.DD HH:mm:ss')}{' '}
+                  {`~`}{' '}
+                  {moment.unix(vault.publicRound1End).format('MM.DD HH:mm:ss')}
                 </Text>
               </GridItem>
               <GridItem
@@ -578,10 +618,15 @@ const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
                   color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
                   Public Round 2.
                 </Text>
-                <Text fontFamily={theme.fonts.fld}>
+                <Text
+                  fontFamily={theme.fonts.fld}
+                  w={'100px'}
+                  textAlign={'right'}>
                   {moment
                     .unix(vault.publicRound2)
-                    .format('YYYY.MM.DD HH:mm:ss')}
+                    .format('YYYY.MM.DD HH:mm:ss')}{' '}
+                  {`~`}{' '}
+                  {moment.unix(vault.publicRound2End).format('MM.DD HH:mm:ss')}
                 </Text>
               </GridItem>
               <GridItem
@@ -765,6 +810,9 @@ const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
         </Button>
       </Flex> */}
       <Flex w={'100%'} justifyContent={'center'} py={'2rem'}></Flex>
+      {/* <Button w="125px" id="downloadAnchorElem" onClick={() => download()}>
+        Download
+      </Button> */}
       {vault.isDeployed ? (
         <PublicPageTable claim={vault.claim} />
       ) : (

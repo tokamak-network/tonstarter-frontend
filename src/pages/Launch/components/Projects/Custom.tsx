@@ -54,7 +54,7 @@ export const Custom: FC<Custom> = ({vault, project}) => {
     }
     const signer = getSigner(library, account);
     try {
-      const receipt = await vaultC.connect(signer).claim(claimAddress);
+      const receipt = await vaultC.connect(signer).claim();
       store.dispatch(setTxPending({tx: true}));
       if (receipt) {
         toastWithReceipt(receipt, setTxPending, 'Launch');
@@ -77,9 +77,12 @@ export const Custom: FC<Custom> = ({vault, project}) => {
     }
   }
 
+
   useEffect(() => {
     async function getLPToken() {
+      
       if (account === null || account === undefined || library === undefined) {
+        
         return;
       }
       const now = moment().unix();
@@ -89,8 +92,8 @@ export const Custom: FC<Custom> = ({vault, project}) => {
         .connect(signer)
         .calcalClaimAmount(currentRound);
 
-
       const nowClaimRound = await vaultC.connect(signer).nowClaimRound();
+      
       const disabled = Number(nowClaimRound) >= Number(currentRound);
       const claimCounts = await vaultC.connect(signer).totalClaimCounts();
 
@@ -99,17 +102,16 @@ export const Custom: FC<Custom> = ({vault, project}) => {
         Number(currentRound) === Number(claimCounts)
           ? await vaultC.connect(signer).claimTimes(Number(currentRound) - 1)
           : await vaultC.connect(signer).claimTimes(currentRound);
-      setDistributeDisable(
-        Number(nowClaimRound) >= Number(currentRound) ||
-          !ethers.utils.isAddress(claimAddress),
-      );
+
+      setDistributeDisable(Number(nowClaimRound) >= Number(currentRound));
       const amountFormatted = parseInt(ethers.utils.formatEther(amount));
+      
       setShowDate(amountFormatted === 0 && Number(claimDate) > now);
       setClaimTime(claimDate);
       setDistributable(amountFormatted);
     }
     getLPToken();
-  }, [account, library, transactionType, blockNumber]);
+  }, [account, library, transactionType, blockNumber,vault.vaultAddress]);
   const themeDesign = {
     border: {
       light: 'solid 1px #e6eaee',
@@ -157,14 +159,24 @@ export const Custom: FC<Custom> = ({vault, project}) => {
             </Text>
             {vault.isDeployed ? (
               <Flex>
-              <Text>
-                {Number(vault.vaultTokenAllocation).toLocaleString()}
-                {` `}
-                {project.tokenSymbol}
-              </Text>
-              <Text letterSpacing={'1.3px'} fontSize={'13px'} color={'#7e8993'}>
-               {((vault.vaultTokenAllocation/project.totalTokenAllocation)*100).toString()
-            .match(/^\d+(?:\.\d{0,2})?/)}%</Text>
+                <Text>
+                  {Number(vault.vaultTokenAllocation).toLocaleString()}
+                  {` `}
+                  {project.tokenSymbol}
+                </Text>
+                <Text
+                  letterSpacing={'1.3px'}
+                  fontSize={'13px'}
+                  color={'#7e8993'}>
+                  {(
+                    (vault.vaultTokenAllocation /
+                      project.totalTokenAllocation) *
+                    100
+                  )
+                    .toString()
+                    .match(/^\d+(?:\.\d{0,2})?/)}
+                  %
+                </Text>
               </Flex>
             ) : (
               <></>
@@ -202,7 +214,7 @@ export const Custom: FC<Custom> = ({vault, project}) => {
             borderRight={'none'}
             className={'chart-cell'}
             fontFamily={theme.fonts.fld}
-            borderBottom={'none'}>
+            borderBottomLeftRadius={'4px'}>
             <Text
               w={'81px'}
               color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
@@ -223,12 +235,6 @@ export const Custom: FC<Custom> = ({vault, project}) => {
               {vault.vaultAddress ? shortenAddress(vault.vaultAddress) : 'NA'}
             </Link>
           </GridItem>
-          <GridItem
-            border={themeDesign.border[colorMode]}
-            borderRight={'none'}
-            className={'chart-cell'}
-            fontFamily={theme.fonts.fld}
-            borderBottomLeftRadius={'4px'}></GridItem>
         </Flex>
         <Flex flexDirection={'column'}>
           <GridItem
@@ -263,39 +269,6 @@ export const Custom: FC<Custom> = ({vault, project}) => {
                 {project.tokenSymbol}
               </Text>
             </Flex>
-          </GridItem>
-          <GridItem
-            border={themeDesign.border[colorMode]}
-            className={'chart-cell'}
-            fontFamily={theme.fonts.fld}
-            justifyContent={'flex-start'}
-            borderBottom={'none'}>
-            <Text mr={'10px'}>Address</Text>
-            <Flex
-              borderRadius={'4px'}
-              w={'240px'}
-              h={'32px'}
-              alignItems={'baseline'}
-              border={'1px solid #dfe4ee'}
-              mr={'15px'}
-              fontWeight={'bold'}>
-              <Input
-                border={'none'}
-                h={'32px'}
-                textAlign={'right'}
-                alignItems={'center'}
-                value={claimAddress}
-                isInvalid={!ethers.utils.isAddress(claimAddress)}
-                fontSize={'15px'}
-                _focus={{norder: 'none'}}
-                _invalid={{
-                  height: '32px',
-                  marginTop: '-1px',
-                  border: '1px solid red',
-                  borderRadius: '4px',
-                }}
-                onChange={(e: any) => setClaimAddress(e.target.value)}></Input>
-            </Flex>
             <Button
               fontSize={'13px'}
               w={'100px'}
@@ -312,10 +285,7 @@ export const Custom: FC<Custom> = ({vault, project}) => {
                 distributeDisable
                   ? {}
                   : {
-                      background: 'transparent',
-                      border: 'solid 1px #2a72e5',
-                      color: themeDesign.tosFont[colorMode],
-                      cursor: 'pointer',
+                     cursor: 'pointer',
                     }
               }
               _active={
@@ -328,9 +298,10 @@ export const Custom: FC<Custom> = ({vault, project}) => {
                     }
               }
               onClick={() => claim()}>
-              Claim
+              Distribute
             </Button>
           </GridItem>
+
           <GridItem
             border={themeDesign.border[colorMode]}
             className={'chart-cell'}

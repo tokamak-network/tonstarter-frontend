@@ -115,6 +115,14 @@ export const toastWithReceipt = async (
               }),
             );
           }
+          if (from === 'Airdrop') {
+            return store.dispatch(
+              setTransaction({
+                transactionType: 'Airdrop',
+                blockNumber: receipt.blockNumber,
+              }),
+            );
+          }
         }
       })
       .catch((e: any) => console.log(e));

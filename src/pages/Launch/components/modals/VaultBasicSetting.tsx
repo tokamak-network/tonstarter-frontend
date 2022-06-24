@@ -36,6 +36,9 @@ const VaultBasicSetting = () => {
   const {remaindToken} = useTokenAllocation();
 
   const {toastMsg} = useToast();
+  const {
+    data: {tokenAllocation},
+  } = data;
 
   useEffect(() => {
     if (data.data) {
@@ -58,9 +61,11 @@ const VaultBasicSetting = () => {
       }
       return acc + cur.vaultTokenAllocation;
     }, 0);
+
     if (
       values.totalSupply &&
-      totalAllocation + Number(tokenAllocatonVal) > values.totalSupply
+      totalAllocation + Number(tokenAllocatonVal) - Number(tokenAllocation) >
+        Number(values.totalSupply)
     ) {
       setBtnDisable(true);
       toastMsg({
@@ -71,9 +76,18 @@ const VaultBasicSetting = () => {
         isClosable: true,
       });
     } else {
+      // if (
+      //   totalAllocation +
+      //     Number(tokenAllocatonVal) -
+      //     Number(tokenAllocation) -
+      //     Number(values.totalSupply) ===
+      //   0
+      // ) {
+      //   return setBtnDisable(true);
+      // }
       setBtnDisable(false);
     }
-  }, [tokenAllocatonVal, nameVal, values, toastMsg]);
+  }, [tokenAllocatonVal, nameVal, values, toastMsg, tokenAllocation]);
 
   if (!data.data) {
     return null;
@@ -149,9 +163,13 @@ const VaultBasicSetting = () => {
                 h={'32px'}
                 value={nameVal}
                 _focus={{}}
-                onChange={(e) =>
-                  isMandatory ? null : setNameVal(e.target.value)
-                }></Input>
+                hover={'none'}
+                cursor={'none'}
+
+                // onChange={(e) =>
+                //   isMandatory ? null : setNameVal(e.target.value)
+                // }>
+              ></Input>
             </Flex>
             <Flex w={'100%'} flexDir={'column'} mb={'24px'}>
               <Flex justifyContent={'space-between'}>
@@ -186,7 +204,10 @@ const VaultBasicSetting = () => {
                 h={'32px'}
                 value={adminAddressVal}
                 _focus={{}}
-                onChange={(e) => setAdminAddressVal(e.target.value)}></Input>
+                hover={'none'}
+                cursor={'none'}
+                // onChange={(e) => setAdminAddressVal(e.target.value)}></Input>
+              ></Input>
             </Flex>
           </Flex>
 

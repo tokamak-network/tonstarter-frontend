@@ -8,7 +8,7 @@ import {openToast} from 'store/app/toast.reducer';
 type AirdropClaimProps = {
   userAddress: string | null | undefined;
   library: any;
-  handleCloseModal: any;
+  handleCloseModal?: any;
 };
 
 export const claimAirdrop = async (args: AirdropClaimProps) => {
@@ -25,7 +25,7 @@ export const claimAirdrop = async (args: AirdropClaimProps) => {
     const receipt = await Airdrop.connect(signer)?.claim();
     store.dispatch(setTxPending({tx: true}));
     if (receipt) {
-      toastWithReceipt(receipt, setTxPending);
+      toastWithReceipt(receipt, setTxPending, 'Airdrop');
     }
   } catch (err) {
     store.dispatch(setTxPending({tx: false}));
