@@ -104,7 +104,7 @@ export const SideContainer: FC<SideContainerProps> = ({
         {selected === 'reward' ? (
           <ClaimReward rewards={rewards} tokens={withdrawableTokens} />
         ) : (
-          <CreateReward pools={pools} setSelectedPoolCreated={setSelectedPoolCreated}/>
+          <CreateReward pools={pools} setSelectedPoolCreated={setSelectedPoolCreated} tokens={tokens}/>
         )}
       </Box>
 

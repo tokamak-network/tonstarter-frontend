@@ -127,9 +127,6 @@ const [project, setProject] = useState<any>()
           fontSize={'14px'}
           color={'#fff'}
           _hover={{
-            background: 'transparent',
-            border: 'solid 1px #2a72e5',
-            color: themeDesign.tosFont[colorMode],
             cursor: 'pointer',
           }}
           _active={{
