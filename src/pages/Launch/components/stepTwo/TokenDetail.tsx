@@ -298,17 +298,28 @@ const SubTitle = (props: {
           </Tooltip>
         );
       case 'Minimum Fundraising Amount':
+        const tooltipLabel = values.projectTokenPrice * Number(inputVal);
         return (
-          <InputField
-            w={120}
-            h={32}
-            fontSize={13}
-            value={inputVal}
-            setValue={setInputVal}
-            formikName={formikName}
-            inputRef={inputRef}
-            style={{textAlign: 'right'}}
-            tokenSymbol={'TON'}></InputField>
+          <Tooltip
+            label={` = ${tooltipLabel} ${values.tokenSymbol}`}
+            placement={'top'}
+            minW={'120px'}
+            minH={'32px'}
+            textAlign="center"
+            lineHeight={'32px'}>
+            <Flex>
+              <InputField
+                w={120}
+                h={32}
+                fontSize={13}
+                value={inputVal}
+                setValue={setInputVal}
+                formikName={formikName}
+                inputRef={inputRef}
+                style={{textAlign: 'right'}}
+                tokenSymbol={'TON'}></InputField>
+            </Flex>
+          </Tooltip>
         );
       default:
         return (

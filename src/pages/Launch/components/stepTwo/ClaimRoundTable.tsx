@@ -7,11 +7,11 @@ import {
   Text,
   useColorMode,
 } from '@chakra-ui/react';
+import useClaimRound from '@Launch/hooks/useClaimRound';
 import {selectLaunch, setClaimRoundTable} from '@Launch/launch.reducer';
 import {Projects, VaultSchedule} from '@Launch/types';
 import {CustomSelectBox} from 'components/Basic';
 import {CustomButton} from 'components/Basic/CustomButton';
-import {index} from 'd3';
 import {useFormikContext} from 'formik';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import moment from 'moment';
@@ -68,12 +68,14 @@ const ClaimRoundTable = () => {
   };
 
   const {
-    data: {claimRoundTable},
+    data: {claimRoundTable, selectedVaultIndex},
   } = useAppSelector(selectLaunch);
   const dispatch = useAppDispatch();
   const {values} = useFormikContext<Projects['CreateProject']>();
+  const {totalClaimAmount} = useClaimRound();
 
-  const vaultsList = values.vaults;
+  console.log('--totalClaimAmount--');
+  console.log(totalClaimAmount);
 
   const autoFill = useCallback(() => {
     const claimList: VaultSchedule[] = [];
@@ -104,90 +106,22 @@ const ClaimRoundTable = () => {
   }, [roundNum, date1st, interval, amount, eachRound, eachEndRound, dispatch]);
 
   useEffect(() => {
-    const validation = [roundNum, date1st, amount, eachRound, eachEndRound].map(
-      (value: number) => {
-        return inputValidate(value);
-      },
-    );
+    const validation = [roundNum, date1st].map((value: number) => {
+      return inputValidate(value);
+    });
     setBtnDisable(validation.indexOf(true) !== -1);
-  }, [roundNum, date1st, interval, amount, eachRound, eachEndRound]);
-
-  let tokenAcc = 0;
-
-  const contentComponent = useMemo(() => {
-    if (claimRoundTable) {
-      return claimRoundTable.map((data: VaultSchedule, index: number) => {
-        return (
-          <Flex w={'100%'}>
-            <Box
-              d="flex"
-              flexDir={'column'}
-              textAlign="center"
-              border={middleStyle.border}
-              borderBottomWidth={0}
-              lineHeight={'42px'}>
-              <Flex
-                h={'42px'}
-                fontSize={12}
-                color={colorMode === 'light' ? '#3d495d' : 'white.100'}
-                fontWeight={600}
-                bg={
-                  colorMode === 'light'
-                    ? index % 2 === 0
-                      ? 'none'
-                      : '#fafbfc'
-                    : 'none'
-                }>
-                <Text w={'91px'} borderBottom={middleStyle.border}>
-                  {index > 8 ? `${index + 1}` : `0${index + 1}`}
-                </Text>
-                <Flex
-                  w={'314px'}
-                  borderX={middleStyle.border}
-                  borderBottom={middleStyle.border}
-                  alignItems="center"
-                  justifyContent={'center'}>
-                  <Text
-                    mr={'5px'}
-                    color={colorMode === 'light' ? '#3d495d' : 'white.100'}
-                    fontSize={11}>
-                    {data.claimTime === undefined
-                      ? '-'
-                      : moment
-                          .unix(data.claimTime)
-                          .format('YYYY.MM.DD HH:mm:ss')}
-                  </Text>
-                  <SingleCalendarPop
-                    //@ts-ignore
-                    oldValues={data}
-                    valueKey={'claimTime'}
-                    startTimeCap={
-                      index === 0
-                        ? //@ts-ignore
-                          vaultsList[0].publicRound2End ||
-                          moment().add(9, 'days').unix()
-                        : (claimRoundTable !== undefined &&
-                            Number(claimRoundTable[index - 1]?.claimTime)) ||
-                          0
-                    }></SingleCalendarPop>
-                </Flex>
-
-                <Text
-                  w={'314px'}
-                  borderRight={middleStyle.border}
-                  borderBottom={middleStyle.border}>
-                  {data.claimTokenAllocation === undefined
-                    ? '-'
-                    : commafy((tokenAcc += data.claimTokenAllocation))}
-                </Text>
-              </Flex>
-            </Box>
-          </Flex>
-        );
-      });
+    if (claimRoundTable?.length !== 0) {
+      return setBtnDisable(true);
     }
-    return <></>;
-  }, [claimRoundTable]);
+  }, [
+    roundNum,
+    date1st,
+    interval,
+    amount,
+    eachRound,
+    eachEndRound,
+    claimRoundTable,
+  ]);
 
   return (
     <Flex flexDir={'column'} w={'100%'}>
@@ -252,7 +186,12 @@ const ClaimRoundTable = () => {
         </Flex>
         <Flex justifyContent={'flex-start'} w={'100%'} mb={'20px'}>
           <Flex alignItems={'center'} mr={'60px'}>
-            <InputTitle title={'Amount'}></InputTitle>
+            <Flex flexDir={'column'}>
+              <InputTitle title={'Amount'}></InputTitle>
+              <Text fontSize={12} color={'#2a72e5'}>
+                Remained : {totalClaimAmount}
+              </Text>
+            </Flex>
             <Input
               ml={'20px'}
               w={'180px'}
@@ -348,146 +287,6 @@ const ClaimRoundTable = () => {
             key={`${index}_${index}`}></ClaimRoundInput>
         );
       })}
-
-      {/* {claimRoundTable?.map((data: VaultSchedule, index: number) => {
-        return (
-          <Flex w={'100%'}>
-            <Box
-              d="flex"
-              flexDir={'column'}
-              textAlign="center"
-              border={middleStyle.border}
-              borderBottomWidth={0}
-              lineHeight={'42px'}>
-              <Flex
-                h={'42px'}
-                fontSize={12}
-                color={colorMode === 'light' ? '#3d495d' : 'white.100'}
-                fontWeight={600}
-                bg={
-                  colorMode === 'light'
-                    ? index % 2 === 0
-                      ? 'none'
-                      : '#fafbfc'
-                    : 'none'
-                }>
-                <Text w={'91px'} borderBottom={middleStyle.border}>
-                  {index > 8 ? `${index + 1}` : `0${index + 1}`}
-                </Text>
-                <Flex
-                  w={'314px'}
-                  borderX={middleStyle.border}
-                  borderBottom={middleStyle.border}
-                  alignItems="center"
-                  justifyContent={'center'}>
-                  <Text
-                    mr={'5px'}
-                    color={colorMode === 'light' ? '#3d495d' : 'white.100'}
-                    fontSize={11}>
-                    {data.claimTime === undefined
-                      ? '-'
-                      : moment
-                          .unix(data.claimTime)
-                          .format('YYYY.MM.DD HH:mm:ss')}
-                  </Text>
-                  <SingleCalendarPop
-                    //@ts-ignore
-                    oldValues={data}
-                    valueKey={'claimTime'}
-                    startTimeCap={
-                      index === 0
-                        ? //@ts-ignore
-                          vaultsList[0].publicRound2End ||
-                          moment().add(9, 'days').unix()
-                        : (claimRoundTable !== undefined &&
-                            Number(claimRoundTable[index - 1]?.claimTime)) ||
-                          0
-                    }></SingleCalendarPop>
-                </Flex>
-                <Flex
-                  w={'314px'}
-                  alignItems="center"
-                  justifyContent={'center'}
-                  borderRight={middleStyle.border}
-                  borderBottom={middleStyle.border}>
-                  <InputGroup>
-                    <Input
-                      h={`42px`}
-                      // ref={(el) => (inputRefs.current[index] = el)}
-                      _hover={{
-                        borderWidth: '1px',
-                        borderColor: '#257eee',
-                      }}
-                      _focus={
-                        isErr
-                          ? {}
-                          : {borderWidth: '1px', borderColor: '#257eee'}
-                      }
-                      fontSize={12}
-                      placeholder={''}
-                      borderRadius={0}
-                      borderWidth={0}
-                      textAlign={'center'}
-                      value={
-                        claimRoundTable !== undefined &&
-                        claimRoundTable[index]?.claimTokenAllocation !==
-                          undefined
-                          ? claimRoundTable[index].claimTokenAllocation
-                          : ''
-                      }
-                      onBlur={(e) => {
-                        const {value} = e.target;
-                      }}
-                      onChange={(e) => {
-                        const {value} = e.target;
-
-                        if (isNaN(Number(value)) || value === undefined) {
-                          return;
-                        }
-
-                        console.log(claimRoundTable);
-
-                        const claimData = claimRoundTable
-                          .splice(index, 1)
-                          .splice(index, 0, {
-                            claimRound: index + 1,
-                            claimTime: 1,
-                            claimTokenAllocation: Number(value),
-                          });
-
-                        dispatch(
-                          setClaimRoundTable({
-                            data: {
-                              claimRoundTable: claimData,
-                            },
-                          }),
-                        );
-
-                        // if (inputVals) {
-                        //   let oldVals = [...inputVals];
-                        //   let item = {
-                        //     ...oldVals[index],
-                        //     claimTokenAllocation: Number(value),
-                        //   };
-                        //   oldVals[index] = item;
-                        //   return setInputVals(oldVals);
-                        // }
-                      }}></Input>
-                  </InputGroup>
-                </Flex>
-                <Text
-                  w={'314px'}
-                  borderRight={middleStyle.border}
-                  borderBottom={middleStyle.border}>
-                  {data.claimTokenAllocation === undefined
-                    ? '-'
-                    : commafy((tokenAcc += data.claimTokenAllocation))}
-                </Text>
-              </Flex>
-            </Box>
-          </Flex>
-        );
-      })} */}
     </Flex>
   );
 };

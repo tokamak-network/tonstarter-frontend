@@ -50,9 +50,6 @@ const ClaimRoundInput = (props: {index: number}) => {
         0,
       );
 
-      console.log('----');
-      console.log(totalTokenInputs, vaultTokenAllocation);
-
       if (totalTokenInputs > vaultTokenAllocation) {
         setIsErr(true);
         return toastMsg({
@@ -81,6 +78,9 @@ const ClaimRoundInput = (props: {index: number}) => {
 
   const onChange = (e: any) => {
     const {value} = e.target;
+    if (isNaN(value)) {
+      return;
+    }
     setInput(Number(value));
   };
 
@@ -145,24 +145,31 @@ const ClaimRoundInput = (props: {index: number}) => {
               justifyContent={'center'}
               borderRight={middleStyle.border}
               borderBottom={middleStyle.border}>
-              <Input
-                h={`42px`}
-                // ref={(el) => (inputRefs.current[index] = el)}
+              <Flex
+                w={'161px'}
+                h={'32px'}
+                border={'solid 1px #dfe4ee'}
                 _hover={{
                   borderWidth: '1px',
                   borderColor: '#257eee',
                 }}
                 _focus={
                   isErr ? {} : {borderWidth: '1px', borderColor: '#257eee'}
-                }
-                fontSize={12}
-                placeholder={''}
-                borderRadius={0}
-                borderWidth={0}
-                textAlign={'center'}
-                value={input}
-                onBlur={onBlurFunc}
-                onChange={onChange}></Input>
+                }>
+                <Input
+                  // ref={(el) => (inputRefs.current[index] = el)}
+
+                  w={'100%'}
+                  h={'100%'}
+                  fontSize={12}
+                  placeholder={''}
+                  borderRadius={0}
+                  borderWidth={0}
+                  textAlign={'center'}
+                  value={input}
+                  onBlur={onBlurFunc}
+                  onChange={onChange}></Input>
+              </Flex>
             </Flex>
             <Text
               w={'314px'}
@@ -172,6 +179,9 @@ const ClaimRoundInput = (props: {index: number}) => {
                 claimRoundTable.reduce(
                   (prev: number, cur: VaultSchedule, currentIndex: number) => {
                     if (cur.claimTokenAllocation && currentIndex <= index) {
+                      if (input && cur.claimTokenAllocation !== input) {
+                        return prev + input;
+                      }
                       return prev + cur.claimTokenAllocation;
                     } else {
                       return prev;
@@ -186,6 +196,9 @@ const ClaimRoundInput = (props: {index: number}) => {
       </Flex>
     );
   }, [input, claimRoundTable, vaultsList, date]);
+
+  console.log('--input--');
+  console.log(input);
 
   if (claimRoundTable === undefined) {
     return null;

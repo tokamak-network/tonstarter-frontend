@@ -48,14 +48,10 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
   useEffect(() => {
     uncompletedVaultIndex?.map((vaultUncompleted, index) => {
       if (vaultUncompleted === false && index === vaultIndex) {
-        console.log(vaultIndex);
         setThisVaultUncompleted(true);
       }
     });
   }, [uncompletedVaultIndex, vaultIndex]);
-
-  console.log(vaultIndex);
-  console.log(thisVaultUncompleted);
 
   useEffect(() => {
     if (selectedVaultIndex === vaultIndex) {
