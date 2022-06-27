@@ -524,8 +524,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
                       },
                     )}{' '}
                 {
-                  checkTokenType(ethers.utils.getAddress(reward.rewardToken))
-                    .name
+                  rewardSymbol
                 }{' '}
                 /{' '}
                 {parseFloat(

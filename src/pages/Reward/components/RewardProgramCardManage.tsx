@@ -250,7 +250,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
                   ).toLocaleString(undefined, {
                     minimumFractionDigits: 2,
                   })}{' '}
-              {checkTokenType(ethers.utils.getAddress(reward.rewardToken)).name}{' '}
+              {rewardSymbol}{' '}
               / {numStakers}
             </Text>
             <Flex flexDir={'row'}>
