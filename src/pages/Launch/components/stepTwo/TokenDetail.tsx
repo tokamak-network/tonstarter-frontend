@@ -547,6 +547,18 @@ const SubTitle = (props: {
                   : displayRightTitle(leftTitle, rightTitle)}
               </Text>
             </Tooltip>
+          ) : leftTitle.includes('Minimum') ? (
+            <Tooltip
+              label={` = ${values.projectTokenPrice * Number(rightTitle)} ${
+                values.tokenSymbol
+              }`}
+              placement={'top'}>
+              <Text textAlign={'right'}>
+                {String(rightTitle)?.includes('undefined')
+                  ? '-'
+                  : displayRightTitle(leftTitle, rightTitle)}
+              </Text>
+            </Tooltip>
           ) : (
             <Text textAlign={'right'}>
               {String(rightTitle)?.includes('undefined')

@@ -1,6 +1,7 @@
 import {Box, Flex, Input, Select, Text, useColorMode} from '@chakra-ui/react';
 import {Projects} from '@Launch/types';
 import {ErrorMessage, Field, useFormikContext} from 'formik';
+import {useState} from 'react';
 import './input.css';
 
 type InputComponentProps = {
@@ -73,6 +74,7 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
   // console.log(errors[name]);
 
   const titleTrimed = getTitleTried();
+  const [hover, setHover] = useState(false);
 
   return (
     <Flex flexDir={'column'} fontSize={13} pos={'relative'}>
@@ -190,7 +192,7 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
                     paddingLeft: '16px',
                     paddingRight: '16px',
                   }}
-                  w={'100%'}
+                  w={'327px'}
                   fontSize={13}
                   color={'#86929d'}
                   name={'sector'}
@@ -199,10 +201,20 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
                   <option disabled selected>
                     select
                   </option>
-                  {/* {selectList.map((value: string) => {
-                    return <option value={value}>{value}</option>;
-                  })} */}
-                  <option value={'A'}>Type A</option>
+                  <option
+                    value={'A'}
+                    onMouseEnter={() => {
+                      setHover(true);
+                    }}
+                    onMouseLeave={() => {
+                      setHover(false);
+                    }}
+                    style={{
+                      color: hover ? '#2a72e5' : '#3e495c',
+                      backgroundColor: 'none',
+                    }}>
+                    Type A
+                  </option>
                   <option value={'A'} disabled>
                     - BURNABLE
                   </option>
@@ -217,6 +229,23 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
                   </option>
                   <option value={'A'} disabled>
                     - NON MINTABLE
+                  </option>
+                  <option value={'A'}>Type B</option>
+                  <option value={'A'} disabled>
+                    - BURNABLE
+                  </option>
+                  <option value={'A'} disabled>
+                    - SNAPSHOT
+                  </option>
+                  <option value={'A'} disabled>
+                    - MINTABLE
+                  </option>
+                  <option value={'A'}>Type C</option>
+                  <option value={'A'} disabled>
+                    - BURNABLE
+                  </option>
+                  <option value={'A'} disabled>
+                    - MINTABLE
                   </option>
                 </Select>
               </Flex>

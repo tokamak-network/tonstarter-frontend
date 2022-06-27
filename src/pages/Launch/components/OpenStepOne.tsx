@@ -17,11 +17,11 @@ const filedNameList = [
   {title: 'tokenSymbolImage', requirement: false},
   {title: 'website', requirement: false},
   {title: 'totalSupply', requirement: true},
+  {title: 'tokenType', requirement: true},
   {title: 'medium', requirement: false},
   {title: 'telegram', requirement: false},
   {title: 'twitter', requirement: false},
   {title: 'discord', requirement: false},
-  {title: 'tokenType', requirement: true},
 ];
 
 const OpenStepOne = () => {
@@ -71,6 +71,21 @@ const OpenStepOne = () => {
                       imageLink={values.tokenSymbolImage}></TokenImage>
                   </Box>
                 </Flex>
+              );
+            }
+            if (fieldName.title === 'tokenType') {
+              return (
+                <GridItem w={'100%'} colSpan={2}>
+                  <InputComponent
+                    inputStyle={{w: '327px'}}
+                    name={fieldName.title}
+                    placeHolder={`input ${fieldName.title}`}
+                    key={fieldName.title}
+                    requirement={fieldName.requirement}></InputComponent>
+                  <Box w={'100%'} mt={'22px'}>
+                    <Line></Line>
+                  </Box>
+                </GridItem>
               );
             }
             return (
