@@ -8,7 +8,11 @@ import {
   useColorMode,
 } from '@chakra-ui/react';
 import useClaimRound from '@Launch/hooks/useClaimRound';
-import {selectLaunch, setClaimRoundTable} from '@Launch/launch.reducer';
+import {
+  saveTempVaultData,
+  selectLaunch,
+  setClaimRoundTable,
+} from '@Launch/launch.reducer';
 import {Projects, VaultSchedule} from '@Launch/types';
 import {CustomSelectBox} from 'components/Basic';
 import {CustomButton} from 'components/Basic/CustomButton';
@@ -24,6 +28,7 @@ import React, {
 } from 'react';
 import commafy from 'utils/commafy';
 import {convertTimeStamp} from 'utils/convertTIme';
+import truncNumber from 'utils/truncNumber';
 import SingleCalendarPop from '../common/SingleCalendarPop';
 import ClaimRoundInput from './ClaimRound/ClaimRoundInputs';
 
@@ -73,15 +78,30 @@ const ClaimRoundTable = () => {
   const dispatch = useAppDispatch();
   const {values} = useFormikContext<Projects['CreateProject']>();
   const {totalClaimAmount} = useClaimRound();
+  const [test, setTest] = useState<any>('-');
 
-  console.log('--totalClaimAmount--');
-  console.log(totalClaimAmount);
+  useEffect(() => {
+    setTest(totalClaimAmount);
+  }, [totalClaimAmount]);
 
   const autoFill = useCallback(() => {
     const claimList: VaultSchedule[] = [];
     const eachRoundLength = eachEndRound - eachRound + 1;
+    let acc = 0;
+
+    dispatch(
+      saveTempVaultData({
+        data: [],
+      }),
+    );
 
     for (let i = 0; i < roundNum; i++) {
+      const claimTokenAllocation =
+        i === roundNum - 1
+          ? truncNumber(amount - truncNumber(acc, 2), 2)
+          : i < eachRound - 1 || i > eachEndRound - 1
+          ? 0
+          : truncNumber(amount / eachRoundLength, 2);
       claimList.push({
         claimRound: i + 1,
         claimTime:
@@ -91,11 +111,9 @@ const ClaimRoundTable = () => {
                 .unix(date1st)
                 .add(i * Number(interval), 'days')
                 .unix(),
-        claimTokenAllocation:
-          i < eachRound - 1 || i > eachEndRound - 1
-            ? 0
-            : amount / eachRoundLength,
+        claimTokenAllocation,
       });
+      acc += claimTokenAllocation;
     }
 
     dispatch(
@@ -189,7 +207,7 @@ const ClaimRoundTable = () => {
             <Flex flexDir={'column'}>
               <InputTitle title={'Amount'}></InputTitle>
               <Text fontSize={12} color={'#2a72e5'}>
-                Remained : {totalClaimAmount}
+                Remained : {test}
               </Text>
             </Flex>
             <Input

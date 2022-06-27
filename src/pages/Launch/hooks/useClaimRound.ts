@@ -3,6 +3,7 @@ import {Projects, VaultSchedule} from '@Launch/types';
 import {useFormikContext} from 'formik';
 import {useAppSelector} from 'hooks/useRedux';
 import {useEffect, useState} from 'react';
+import truncNumber from 'utils/truncNumber';
 
 type ClaimRoundInfo = {
   totalClaimAmount: number | undefined;
@@ -20,22 +21,28 @@ const useClaimRound = () => {
   const vaultsList = values.vaults;
 
   useEffect(() => {
-    if (selectedVaultIndex && claimRoundTable) {
-      console.log('go?');
+    if (selectedVaultIndex !== undefined && claimRoundTable !== undefined) {
       const totalClaimAmount = claimRoundTable.reduce(
         (prev: number, cur: any) => {
+          console.log('--go--');
+          console.log(prev, cur.claimTokenAllocation);
           if (cur.claimTokenAllocation) {
-            return prev + cur.claimTokenAllocation;
+            const num: any = truncNumber(cur.claimTokenAllocation as number, 2);
+            const result: any = truncNumber(prev, 2) + num;
+            return truncNumber(result, 2) as any;
           }
         },
         0,
       );
-      setClaimRoundInfo({totalClaimAmount});
+      console.log('--');
+      console.log(totalClaimAmount);
+      setClaimRoundInfo({
+        totalClaimAmount:
+          vaultsList[selectedVaultIndex].vaultTokenAllocation -
+          totalClaimAmount,
+      });
     }
   }, [vaultsList, selectedVaultIndex, claimRoundTable]);
-
-  console.log('hook result');
-  console.log(claimroundInfo);
 
   return claimroundInfo;
 };

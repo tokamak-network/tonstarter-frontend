@@ -42,10 +42,20 @@ const ClaimRoundInput = (props: {index: number}) => {
         vaultsList[selectedVaultIndex].vaultTokenAllocation;
 
       const totalTokenInputs = claimRoundTable.reduce(
-        (prev: number, cur: VaultSchedule) => {
-          if (cur.claimTokenAllocation)
-            return prev + Number(cur.claimTokenAllocation);
-          return prev;
+        (prev: number, cur: VaultSchedule, currentIndex: number) => {
+          if (cur.claimTokenAllocation && currentIndex <= index) {
+            const tempData = tempVaultData.filter((data: VaultSchedule) => {
+              if (data.claimRound === cur.claimRound) {
+                return data.claimRound;
+              }
+            });
+            if (tempData.length > 0) {
+              return prev + tempData[0].claimTokenAllocation;
+            }
+            return prev + cur.claimTokenAllocation;
+          } else {
+            return prev;
+          }
         },
         0,
       );
@@ -68,10 +78,17 @@ const ClaimRoundInput = (props: {index: number}) => {
       claimTime: date,
       claimTokenAllocation: Number(input),
     };
+
+    const tempData =
+      tempVaultData.length > 0
+        ? tempVaultData.filter((data: VaultSchedule) => {
+            if (data.claimRound) return data.claimRound !== newData.claimRound;
+          })
+        : [];
+
     dispatch(
       saveTempVaultData({
-        data:
-          tempVaultData.length > 0 ? [...tempVaultData, newData] : [newData],
+        data: tempVaultData.length > 0 ? [...tempData, newData] : [newData],
       }),
     );
   }, [input, date, claimRoundTable, selectedVaultIndex]);
@@ -104,7 +121,7 @@ const ClaimRoundInput = (props: {index: number}) => {
             fontWeight={600}
             bg={
               colorMode === 'light'
-                ? index % 2 === 0
+                ? index % 2 !== 0
                   ? 'none'
                   : '#fafbfc'
                 : 'none'
@@ -179,8 +196,15 @@ const ClaimRoundInput = (props: {index: number}) => {
                 claimRoundTable.reduce(
                   (prev: number, cur: VaultSchedule, currentIndex: number) => {
                     if (cur.claimTokenAllocation && currentIndex <= index) {
-                      if (input && cur.claimTokenAllocation !== input) {
-                        return prev + input;
+                      const tempData = tempVaultData.filter(
+                        (data: VaultSchedule) => {
+                          if (data.claimRound === cur.claimRound) {
+                            return data.claimRound;
+                          }
+                        },
+                      );
+                      if (tempData.length > 0) {
+                        return prev + tempData[0].claimTokenAllocation;
                       }
                       return prev + cur.claimTokenAllocation;
                     } else {
@@ -195,10 +219,7 @@ const ClaimRoundInput = (props: {index: number}) => {
         </Box>
       </Flex>
     );
-  }, [input, claimRoundTable, vaultsList, date]);
-
-  console.log('--input--');
-  console.log(input);
+  }, [input, claimRoundTable, vaultsList, date, tempVaultData]);
 
   if (claimRoundTable === undefined) {
     return null;
