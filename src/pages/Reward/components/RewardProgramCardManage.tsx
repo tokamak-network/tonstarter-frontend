@@ -187,6 +187,7 @@ export const RewardProgramCardManage: FC<RewardProgramCardManageProps> = ({
               userAddress: account,
               positions: LPTokens,
               blockNumber: latestBlockNumber,
+              rewardSymbol: rewardSymbol,
             },
           }),
         );

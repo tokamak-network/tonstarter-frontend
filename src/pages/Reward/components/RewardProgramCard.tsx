@@ -443,6 +443,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
               userAddress: account,
               positions: LPTokens,
               blockNumber: latestBlockNumber,
+              rewardSymbol: rewardSymbol,
             },
           }),
         );
