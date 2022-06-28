@@ -73,9 +73,16 @@ const MyProjects = () => {
         setProjectsForTable(datas);
         const projs = Object.keys(datas).map((k) => {
           const listed = starterData.rawData.some((el) => el.projectKey === k);
-          const stat = datas[k].vaults.every((vault: any) => {
-            return vault.isSet === true;
-          });
+          let stat
+          if (datas[k].vaults !== undefined) {
+            const statss = datas[k].vaults.every((vault: any) => {
+              return vault.isSet === true;
+            });
+            return stat = statss
+          }
+         else {
+          return stat = false
+         }
           const div = document.createElement('div');
           div.innerHTML = datas[k].description;
           const projectURIUnformatted = {
