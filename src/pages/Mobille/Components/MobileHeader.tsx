@@ -165,7 +165,8 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
                 alignItems={'center'}>
                 <Text
                   fontSize={'15px'}
-                  fontFamily={'Titillium Web, sans-serif'}>
+                  fontFamily={'Titillium Web, sans-serif'}
+                  color={'#fff'}>
                   My Airdrop
                 </Text>
               </Flex>
@@ -183,13 +184,110 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
 
           <DrawerBody pt={'20px'}>
             <NavLink to="/launch">
-           <Flex alignItems={'center'}>
-              <Text fontFamily={'Rajdhani'} fontWeight={'bold'} fontSize={'24px'}>Launch</Text>
-              <Box>
-                <Text>NEW</Text>
-              </Box>
+              <Flex alignItems={'center'} h={'30px'} onClick={onClose}>
+                <Text
+                  fontFamily={'Rajdhani'}
+                  fontWeight={700}
+                  fontSize={'24px'}
+                  color={'#2a72e5'}
+                  mr={'7px'}>
+                  Launch
+                </Text>
+                <Flex
+                  w={'48px'}
+                  h={'20px'}
+                  borderRadius={'10px'}
+                  bg={'#257eee'}
+                  alignItems={'center'}
+                  justifyContent={'center'}>
+                  <Text
+                    textAlign={'center'}
+                    fontSize={'10px'}
+                    fontFamily={theme.fonts.openSans}
+                    fontWeight={600}
+                    color={'#ffffff'}>
+                    NEW
+                  </Text>
+                </Flex>
               </Flex>
             </NavLink>
+            <Flex
+              mt={'30px'}
+              fontFamily={'Rajdhani, sans-serif'}
+              flexDir={'column'}>
+              <Flex mb={'15px'}>
+                <Text fontWeight={'bold'} fontSize={'24px'}>
+                  DOCS
+                </Text>
+              </Flex>
+              <Flex
+                ml={'15px'}
+                flexDir={'column'}
+                fontSize={'18px'}
+                fontWeight={'bold'}>
+                <Text
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.open(
+                      'https://github.com/Onther-Tech/tonstarter-docs/blob/main/whitepaper/TONStarter%20Whitepaper.md',
+                    );
+                  }}>
+                  Whitepaper
+                </Text>
+                <Text
+                  mt={'15px'}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.open(
+                      'https://medium.com/onther-tech/tonstarter-guide-en-kr-6b7cad5773f1',
+                    );
+                  }}>
+                  Guide
+                </Text>
+              </Flex>
+              <Flex
+                ml={'25px'}
+                flexDir={'column'}
+                fontSize={'18px'}
+                fontWeight={500}>
+                <Text mt={'15px'}  onClick={(e) => {
+                  e.preventDefault();
+                  window.open(
+                    'https://medium.com/onther-tech/tonstarter-guide-en-kr-6b7cad5773f1',
+                  );
+                }}>Staking</Text>
+                <Text mt={'15px'}  onClick={(e) => {
+                  e.preventDefault();
+                  window.open(
+                    'https://medium.com/onther-tech/wton-tos-lp-staking-reward-system-en-kr-881e57ec0568',
+                  );
+                }}>Pools Staking</Text>
+                <Text mt={'15px'} onClick={(e) => {
+                  e.preventDefault();
+                  window.open(
+                    'https://medium.com/onther-tech/introduction-of-stos-en-kr-56c12a5440e0',
+                  );
+                }}>DAO Staking</Text>
+                <Text mt={'15px'} onClick={(e) => {
+                  e.preventDefault();
+                  window.open(
+                    'https://medium.com/onther-tech/tonstarter-phase-3-starter-guide-en-kr-ab97bb9e50fc',
+                  );
+                }}>Starter</Text>
+                <Text mt={'15px'}  onClick={(e) => {
+                  e.preventDefault();
+                  window.open(
+                    'https://medium.com/onther-tech/tonstarter-pools-reward-program-guide-en-kr-bef9ae274afd',
+                  );
+                }}>Rewards Program</Text>
+                <Text mt={'15px'} onClick={(e) => {
+                  e.preventDefault();
+                  window.open(
+                    'https://medium.com/onther-tech/tonstarter-launch-create-project-user-guide-en-kr-82f2ae05c673',
+                  );
+                }}>Launch</Text>
+              </Flex>
+            </Flex>
           </DrawerBody>
 
           <DrawerFooter
