@@ -85,7 +85,7 @@ export const InformationModal = () => {
 
   const {reward, stakedPools, userAddress, key, positions, blockNumber,rewardSymbol} =
     data.data;
-
+    
   const themeDesign = {
     border: {
       light: 'solid 1px #e7edf3',
@@ -119,7 +119,7 @@ export const InformationModal = () => {
 
   const rangePayload = async (args: any) => {
     const {account, library, id} = args;
-    const result = await fetchPositionRangePayloadModal(library, id, account);
+    const result = await fetchPositionRangePayloadModal(library, id, account, reward.poolAddress);
 
     return result;
   };
