@@ -78,10 +78,10 @@ const MyProjects = () => {
             const statss = datas[k].vaults.every((vault: any) => {
               return vault.isSet === true;
             });
-            return stat = statss
+            stat = statss
           }
          else {
-          return stat = false
+          stat = false
          }
           const div = document.createElement('div');
           div.innerHTML = datas[k].description;
