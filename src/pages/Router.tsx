@@ -168,7 +168,7 @@ export const Router: FC<RouterProps> = () => {
   };
 
   const {width} = useWindowDimensions();
-  if (width < 361) {
+  if (width < 479) {
     return (
       <div
         style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
