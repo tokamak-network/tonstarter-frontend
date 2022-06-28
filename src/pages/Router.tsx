@@ -176,7 +176,7 @@ export const Router: FC<RouterProps> = () => {
         <WalletModal state={walletState} isOpen={isModalOpen} onClose={onClose} />
       </div>
     );
-  } else if (width > 360 && width < 1100) {
+  } else if (width > 480 && width < 1100) {
     return <MobilePreOpen />;
   }
 
