@@ -28,6 +28,7 @@ import logoLight from 'assets/svgs/fld_bi_white.svg';
 import logoGray from 'assets/svgs/fld_bi_gray.svg';
 import m_Burger_icon from 'assets/svgs/m_Burger_icon.svg';
 import Burger_icon from 'assets/svgs/Burger_icon.svg';
+import tos_symbol from 'assets/svgs/tos_symbol.svg';
 import {ThemeSwitcher} from 'components/ThemeSwitcher';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectTxType} from 'store/tx.reducer';
@@ -47,8 +48,11 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
   const {isOpen, onOpen, onClose} = useDisclosure();
   const btnRef = useRef<any>([]);
   const match = useRouteMatch('/');
+  const myairdrop = useRouteMatch('/myairdrop');
+  const launch = useRouteMatch('/launch');
   const {colorMode} = useColorMode();
   const {tx} = useAppSelector(selectTxType);
+
   return (
     <Flex
       py={'18px'}
@@ -57,23 +61,19 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
       finalFocusRef={btnRef}
       justifyContent={'space-between'}
       h={'66px'}
-      bg={colorMode === 'light' ? '#007aff' : '#222222'}
+      // bg={colorMode === 'light' ? '#007aff' : '#222222'}
+      bg={'transparent'}
       alignItems={'center'}>
       <NavLink to="/">
         <Image
-          src={
-            match?.isExact
-              ? logoLight
-              : colorMode === 'light'
-              ? logoGray
-              : logoLight
-          }
+          src={match?.isExact ? logoLight : tos_symbol}
           color="white.200"
-          w={'182px'}
+          w={match?.isExact ? '182px' : '29px'}
           h={'25px'}
           alt="TON Starter Logo"
         />
       </NavLink>
+      <Text fontFamily={theme.fonts.fld} fontSize={'25px'} fontWeight={700} color={colorMode === 'light'? '#3e495c' : '#fff'}>{!match?.isExact ? myairdrop?.isExact? 'My Airdrop' : 'Launch' : ''}</Text>
       <Button
         onClick={onOpen}
         bg={'transparent'}
@@ -105,72 +105,75 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
             pr={'10px'}
             pl={'20px'}
             display={'flex'}
-            flexDir={'row'}>
-            <Button
-              border="solid 1px #d7d9df"
-              color={colorMode === 'dark' ? '#ffffff' : '#86929d'}
-              w={account ? (tx === true ? 136 : 151) : 136}
-              h={35}
-              fontSize={15}
-              mr={'12px'}
-              fontWeight={600}
-              onClick={walletopen}
-              borderRadius={'17.5px'}
-              bg={'transparent'}
-              zIndex={100}
-              fontFamily={'Titillium Web, sans-serif'}
-              _hover={{}}>
-              {account ? (
-                tx === true ? (
-                  <Text
-                    fontWeight={100}
-                    fontSize={'14px'}
-                    ml={'18px'}
-                    pt={'1px'}>
-                    Tx PENDING
-                  </Text>
-                ) : (
-                  <Flex flexDir={'row'} alignItems={'center'} px={'5px'}>
-                    <Box h={'25px'} ml={'-5px'} mr={'10px'}>
-                      {' '}
-                      <Jazzicon
-                        diameter={25}
-                        seed={jsNumberForAddress(account)}
-                      />
-                    </Box>
-                    <Text fontSize={'14px'}>{shortenAddress(account)}</Text>
-                  </Flex>
-                )
-              ) : (
-                'Connect wallet'
-              )}
-              {tx === true ? (
-                <CircularProgress
-                  isIndeterminate
-                  size={4}
-                  zIndex={100}
-                  color="blue.500"
-                  pos="absolute"
-                  left={'14px'}></CircularProgress>
-              ) : null}
-            </Button>
-            <NavLink to="/myairdrop">
-              <Flex
-                onClick={onClose}
-                w={'110px'}
-                h={'35px'}
-                bg={'#2a72e5'}
+            flexDir={'row'}
+            justifyContent={'space-between'}>
+            <Flex>
+              <Button
+                border="solid 1px #d7d9df"
+                color={colorMode === 'dark' ? '#ffffff' : '#86929d'}
+                w={account ? (tx === true ? 136 : 151) : 136}
+                h={35}
+                fontSize={15}
+                mr={'12px'}
+                fontWeight={600}
+                onClick={walletopen}
                 borderRadius={'17.5px'}
-                justifyContent={'center'}
-                alignItems={'center'}>
-                <Text
-                  fontSize={'15px'}
-                  fontFamily={'Titillium Web, sans-serif'}
-                  color={'#fff'}>
-                  My Airdrop
-                </Text>
-              </Flex>
-            </NavLink>
+                bg={'transparent'}
+                zIndex={100}
+                fontFamily={'Titillium Web, sans-serif'}
+                _hover={{}}>
+                {account ? (
+                  tx === true ? (
+                    <Text
+                      fontWeight={100}
+                      fontSize={'14px'}
+                      ml={'18px'}
+                      pt={'1px'}>
+                      Tx PENDING
+                    </Text>
+                  ) : (
+                    <Flex flexDir={'row'} alignItems={'center'} px={'5px'}>
+                      <Box h={'25px'} ml={'-5px'} mr={'10px'}>
+                        {' '}
+                        <Jazzicon
+                          diameter={25}
+                          seed={jsNumberForAddress(account)}
+                        />
+                      </Box>
+                      <Text fontSize={'14px'}>{shortenAddress(account)}</Text>
+                    </Flex>
+                  )
+                ) : (
+                  'Connect wallet'
+                )}
+                {tx === true ? (
+                  <CircularProgress
+                    isIndeterminate
+                    size={4}
+                    zIndex={100}
+                    color="blue.500"
+                    pos="absolute"
+                    left={'14px'}></CircularProgress>
+                ) : null}
+              </Button>
+              <NavLink to="/myairdrop">
+                <Flex
+                  onClick={onClose}
+                  w={'110px'}
+                  h={'35px'}
+                  bg={'#2a72e5'}
+                  borderRadius={'17.5px'}
+                  justifyContent={'center'}
+                  alignItems={'center'}>
+                  <Text
+                    fontSize={'15px'}
+                    fontFamily={'Titillium Web, sans-serif'}
+                    color={'#fff'}>
+                    My Airdrop
+                  </Text>
+                </Flex>
+              </NavLink>
+            </Flex>
             <IconButton
               onClick={onClose}
               aria-label={`Close Navigation`}
@@ -250,42 +253,66 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
                 flexDir={'column'}
                 fontSize={'18px'}
                 fontWeight={500}>
-                <Text mt={'15px'}  onClick={(e) => {
-                  e.preventDefault();
-                  window.open(
-                    'https://medium.com/onther-tech/tonstarter-guide-en-kr-6b7cad5773f1',
-                  );
-                }}>Staking</Text>
-                <Text mt={'15px'}  onClick={(e) => {
-                  e.preventDefault();
-                  window.open(
-                    'https://medium.com/onther-tech/wton-tos-lp-staking-reward-system-en-kr-881e57ec0568',
-                  );
-                }}>Pools Staking</Text>
-                <Text mt={'15px'} onClick={(e) => {
-                  e.preventDefault();
-                  window.open(
-                    'https://medium.com/onther-tech/introduction-of-stos-en-kr-56c12a5440e0',
-                  );
-                }}>DAO Staking</Text>
-                <Text mt={'15px'} onClick={(e) => {
-                  e.preventDefault();
-                  window.open(
-                    'https://medium.com/onther-tech/tonstarter-phase-3-starter-guide-en-kr-ab97bb9e50fc',
-                  );
-                }}>Starter</Text>
-                <Text mt={'15px'}  onClick={(e) => {
-                  e.preventDefault();
-                  window.open(
-                    'https://medium.com/onther-tech/tonstarter-pools-reward-program-guide-en-kr-bef9ae274afd',
-                  );
-                }}>Rewards Program</Text>
-                <Text mt={'15px'} onClick={(e) => {
-                  e.preventDefault();
-                  window.open(
-                    'https://medium.com/onther-tech/tonstarter-launch-create-project-user-guide-en-kr-82f2ae05c673',
-                  );
-                }}>Launch</Text>
+                <Text
+                  mt={'15px'}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.open(
+                      'https://medium.com/onther-tech/tonstarter-guide-en-kr-6b7cad5773f1',
+                    );
+                  }}>
+                  Staking
+                </Text>
+                <Text
+                  mt={'15px'}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.open(
+                      'https://medium.com/onther-tech/wton-tos-lp-staking-reward-system-en-kr-881e57ec0568',
+                    );
+                  }}>
+                  Pools Staking
+                </Text>
+                <Text
+                  mt={'15px'}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.open(
+                      'https://medium.com/onther-tech/introduction-of-stos-en-kr-56c12a5440e0',
+                    );
+                  }}>
+                  DAO Staking
+                </Text>
+                <Text
+                  mt={'15px'}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.open(
+                      'https://medium.com/onther-tech/tonstarter-phase-3-starter-guide-en-kr-ab97bb9e50fc',
+                    );
+                  }}>
+                  Starter
+                </Text>
+                <Text
+                  mt={'15px'}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.open(
+                      'https://medium.com/onther-tech/tonstarter-pools-reward-program-guide-en-kr-bef9ae274afd',
+                    );
+                  }}>
+                  Rewards Program
+                </Text>
+                <Text
+                  mt={'15px'}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.open(
+                      'https://medium.com/onther-tech/tonstarter-launch-create-project-user-guide-en-kr-82f2ae05c673',
+                    );
+                  }}>
+                  Launch
+                </Text>
               </Flex>
             </Flex>
           </DrawerBody>
