@@ -3,7 +3,7 @@ import {createBreakpoints, mode} from '@chakra-ui/theme-tools';
 import {Text, TextProps as TextPropsOriginal} from 'rebass';
 import '@fontsource/titillium-web/400.css';
 import '@fontsource/roboto/400.css';
-import '@fontsource/rajdhani/600.css';
+import '@fontsource/rajdhani';
 import '@fontsource/open-sans';
 import '@fontsource/poppins';
 import {Colors} from './styled';

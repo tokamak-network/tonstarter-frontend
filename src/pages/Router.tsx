@@ -24,6 +24,7 @@ import {MobilePreOpen} from './PreOpen/Index';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {StarterDetail} from './Starter/StarterDetail';
+import {MobileHeader} from './Mobille/Components/MobileHeader';
 import {
   CreateProject,
   ListingProjects,
@@ -167,8 +168,15 @@ export const Router: FC<RouterProps> = () => {
   };
 
   const {width} = useWindowDimensions();
-
-  if (width < 1100) {
+  if (width < 361) {
+    return (
+      <div
+        style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
+        <MobileHeader account={account}   walletopen={() => handleWalletModalOpen('wallet')}/>
+        <WalletModal state={walletState} isOpen={isModalOpen} onClose={onClose} />
+      </div>
+    );
+  } else if (width > 360 && width < 1100) {
     return <MobilePreOpen />;
   }
 
