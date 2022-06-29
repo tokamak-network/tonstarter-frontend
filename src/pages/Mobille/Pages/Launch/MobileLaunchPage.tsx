@@ -9,8 +9,8 @@ import {
 import {useState} from 'react';
 import {PageHeader} from 'components/PageHeader';
 import {useRouteMatch} from 'react-router-dom';
-//   import AllProjects from '@Launch/components/AllProjects';
-//   import MyProjects from '@Launch/components/MyProjects';
+  import AllProjects from './Components/MobileAllProjects';
+
 import MobileLaunchPageBackground from 'assets/banner/MobileLaunchPageBackground.png';
 import {useModal} from 'hooks/useModal';
 //   import ConfirmTermsModal from './components/modals/ConfirmTerms';
@@ -83,8 +83,7 @@ const MobileLaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
           height={'340px'}
           left={'50%'}
           w={'100%'}
-          transform={'translateX(-50%)'}
-          >
+          transform={'translateX(-50%)'}>
           <Flex></Flex>
           <Flex alignItems={'center'} flexDir="column">
             <Text
@@ -109,7 +108,7 @@ const MobileLaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
             background={'rgba(7, 7, 10, .8)'}
             width="100%"
             // position={'absolute'}
-            >
+          >
             <Flex
               justifyContent={'space-between'}
               flexDir="row"
@@ -142,7 +141,13 @@ const MobileLaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
         </Flex>
       </Flex>
 
-      <Flex mt={'30px'}></Flex>
+      <Flex
+        mt={'30px'}
+        justifyContent={'center'}
+        flexDirection={'column'}
+        alignItems={'center'}>
+          <AllProjects/>
+      </Flex>
     </Flex>
   );
 };

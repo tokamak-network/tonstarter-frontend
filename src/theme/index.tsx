@@ -312,6 +312,88 @@ export const STATER_STYLE = {
   },
 };
 
+export const MOBILE_STATER_STYLE = {
+  containerStyle: (props: STATER_PROP & {isUserTier?: boolean}) => ({
+    w: 320,
+    h: 194,
+    px: '20px',
+    pt: '20px',
+    pb: '20px',
+    bg: props.colorMode === 'light' ? 'white.100' : '',
+    borderRadius: 15,
+    boxShadow: '0 2px 5px 0 rgba(61, 73, 93, 0.1)',
+    border: props.isUserTier
+      ? '1px solid #0070ED'
+      : props.colorMode === 'light'
+      ? ''
+      : '1px solid #535353',
+    _hover: {border: 'solid 1px #0070ed'},
+    cursor: 'pointer',
+    fontFamily: fonts.fld,
+  }),
+  header: (props: STATER_PROP) => ({
+    fontSize: props.fontSize || 32,
+    fontWeight: 600,
+    color: props.colorMode === 'light' ? 'gray.250' : 'white.100',
+  }),
+  mainText: (props: STATER_PROP) => ({
+    fontSize: props.fontSize || 20,
+    fontWeight: 600,
+    color: props.colorMode === 'light' ? 'gray.375' : 'white.100',
+  }),
+  subText: (props: STATER_PROP) => ({
+    fontSize: props.fontSize || 14,
+    fontWeight: 600,
+    color: props.colorMode === 'light' ? 'gray.150' : 'white.100',
+  }),
+  subTextBlack: (props: STATER_PROP) => ({
+    fontSize: props.fontSize || 14,
+    fontWeight: 600,
+    color: props.colorMode === 'light' ? 'gray.125' : 'white.100',
+  }),
+  progress: {
+    mainText: (props: STATER_PROP) => ({
+      fontSize: props.fontSize || 15,
+      fontWeight: 600,
+      color: props.colorMode === 'light' ? 'gray.525' : 'white.100',
+    }),
+    percent: (props: STATER_PROP & {isZero: boolean}) => ({
+      fontSize: 13,
+      fontWeight: 600,
+      color:
+        props.colorMode === 'light'
+          ? props.isZero === true
+            ? 'gray.150'
+            : 'blue.100'
+          : props.isZero === true
+          ? 'white.100'
+          : '',
+    }),
+  },
+  btn: (props: STATER_PROP & {isActive: boolean}) => ({
+    bg: '',
+    _hover: '',
+    p: 0,
+    textAlign: 'center',
+    verticalAlign: 'center',
+    fontSize: 17,
+    borderRadius: 0,
+    paddingBottom: props.isActive ? '' : '1px',
+    color: props.isActive ? '#0070ed' : '#90a5b9',
+    borderBottom: props.isActive ? '2px solid #0070ed' : '1px solid #c5d1d9',
+  }),
+  table: {
+    container: (props: STATER_PROP & {isLast: boolean}) => ({
+      borderBottom:
+        props?.isLast === true
+          ? ''
+          : props.colorMode === 'light'
+          ? '1px solid #f4f6f8'
+          : '1px solid #323232',
+    }),
+  },
+};
+
 const TextWrapper = styled(Text)<{color: keyof Colors}>`
   color: ${({color, theme}) => (theme as any)[color]};
 `;
@@ -568,6 +650,7 @@ const theme = extendTheme({
   headerMargin,
   REWARD_STYLE,
   STATER_STYLE,
+  MOBILE_STATER_STYLE,
   bgStyle,
   MENU_STYLE,
   OpenCampaginDesign,
