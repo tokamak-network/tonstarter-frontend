@@ -58,6 +58,8 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
       py={'18px'}
       pl={'20px'}
       pr={'10px'}
+      zIndex={1000}
+      // border={'1px solid red'}
       finalFocusRef={btnRef}
       justifyContent={'space-between'}
       h={'66px'}
@@ -73,8 +75,18 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
           alt="TON Starter Logo"
         />
       </NavLink>
-      <Text fontFamily={theme.fonts.fld} fontSize={'25px'} fontWeight={700} color={colorMode === 'light'? '#3e495c' : '#fff'}>{!match?.isExact ? myairdrop?.isExact? 'My Airdrop' : 'Launch' : ''}</Text>
+      <Text
+        fontFamily={theme.fonts.fld}
+        fontSize={'25px'}
+        fontWeight={700}
+        color={colorMode === 'light' ? '#3e495c' : '#fff'}>
+        {!match?.isExact ? (myairdrop?.isExact ? 'My Airdrop' : 'Launch') : ''}
+      </Text>
       <Button
+        px={0}
+        mx={0}
+        w={'30px'}
+        h={'30px'}
         onClick={onOpen}
         bg={'transparent'}
         _focus={{

@@ -25,6 +25,7 @@ import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {StarterDetail} from './Starter/StarterDetail';
 import {MobileHeader} from './Mobille/Components/MobileHeader';
+import MobileOpenCampagin from './Mobille/Pages/Launch/Index'
 import {
   CreateProject,
   ListingProjects,
@@ -173,6 +174,11 @@ export const Router: FC<RouterProps> = () => {
       <div
         style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
         <MobileHeader account={account}   walletopen={() => handleWalletModalOpen('wallet')}/>
+        <div style={{flex: 1}}>
+        <Switch>
+        <Route exact path={`/launch`} component={MobileOpenCampagin} />
+        </Switch>
+        </div>
         <WalletModal state={walletState} isOpen={isModalOpen} onClose={onClose} />
       </div>
     );
