@@ -17,6 +17,7 @@ import {
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
+  LightMode,
   // Tooltip,
 } from '@chakra-ui/react';
 import React from 'react';
@@ -64,7 +65,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
       justifyContent={'space-between'}
       h={'66px'}
       // bg={colorMode === 'light' ? '#007aff' : '#222222'}
-      bg={'transparent'}
+      bg={match?.isExact? colorMode === 'light'? '#2a72e5' : '#222222' : 'transparent'}
       alignItems={'center'}>
       <NavLink to="/">
         <Image
