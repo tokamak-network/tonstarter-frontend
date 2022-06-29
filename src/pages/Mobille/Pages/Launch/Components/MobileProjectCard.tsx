@@ -184,12 +184,12 @@ const MobileProjectCard: React.FC<{
             bg={colorMode === 'light' ? '#e7edf3' : '#353d48'}
           />
         </Box>
-        <Flex mb={'20px'} justifyContent={'space-between'}>
-          <Box d="flex" flexDir="column" w={'99px'}>
+        <Flex justifyContent={'space-between'}>
+          <Box d="flex" flexDir="column" w={'81px'}>
             <Text
               {...MOBILE_STATER_STYLE.subTextBlack({
                 colorMode,
-                fontSize: 14,
+                fontSize: 12,
               })}
               fontFamily={theme.fonts.fld}
               color={colorMode === 'light' ? 'gray.125' : 'gray.475'}>
@@ -201,18 +201,18 @@ const MobileProjectCard: React.FC<{
                 fontFamily={theme.fonts.fld}
                 {...MOBILE_STATER_STYLE.subTextBlack({
                   colorMode,
-                  fontSize: 18,
+                  fontSize: 16,
                 })}>
                 {project.data.tokenName || 'NA'}
               </Text>
               <Text>{}</Text>
             </Box>
           </Box>
-          <Box d="flex" flexDir="column" w={'99px'}>
+          <Box d="flex" flexDir="column" w={'70px'}>
             <Text
               {...MOBILE_STATER_STYLE.subTextBlack({
                 colorMode,
-                fontSize: 14,
+                fontSize: 12,
               })}
               fontFamily={theme.fonts.fld}
               color={colorMode === 'light' ? 'gray.125' : 'gray.475'}>
@@ -223,16 +223,16 @@ const MobileProjectCard: React.FC<{
               fontFamily={theme.fonts.fld}
               {...MOBILE_STATER_STYLE.mainText({
                 colorMode,
-                fontSize: 18,
+                fontSize: 16,
               })}>
               {project.data.tokenSymbol || 'NA'}
             </Text>
           </Box>
-          <Box d="flex" flexDir="column" w={'105px'}>
+          <Box d="flex" flexDir="column" w={'94px'}>
             <Text
               {...MOBILE_STATER_STYLE.subTextBlack({
                 colorMode,
-                fontSize: 14,
+                fontSize: 12,
               })}
               fontFamily={theme.fonts.fld}
               color={colorMode === 'light' ? 'gray.125' : 'gray.475'}>
@@ -243,7 +243,7 @@ const MobileProjectCard: React.FC<{
               fontFamily={theme.fonts.fld}
               {...MOBILE_STATER_STYLE.mainText({
                 colorMode,
-                fontSize: 18,
+                fontSize: 16,
               })}>
               {Number(project.data.totalSupply).toLocaleString(undefined, {
                 minimumFractionDigits: 0,

@@ -9,6 +9,8 @@ import {
   Tooltip,
   Center,
   IconButton,
+  Icon,
+  Button,
   useColorMode,
 } from '@chakra-ui/react';
 import {useCallback, useEffect, useState} from 'react';
@@ -19,9 +21,8 @@ import {selectLaunch} from '@Launch/launch.reducer';
 //   import FeaturedProjects from '../components/FeaturedProjects';
 import MobileProjectCard from './MobileProjectCard';
 import {useActiveWeb3React} from 'hooks/useWeb3';
-// import {allProjectsData} from './FakeData';
-import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
-// import LaunchGuide from './LaunchGuide';
+import {ChevronRightIcon, ChevronLeftIcon,ChevronUpIcon} from '@chakra-ui/icons';
+import MobileLaunchGuide from './MobileLaunchGuide';
 import {fetchCampaginURL} from 'constants/index';
 import {useQuery} from 'react-query';
 import axios from 'axios';
@@ -80,8 +81,8 @@ const MobileAllProjects = () => {
   const [pageLimit, setPageLimit] = useState<number>(6);
   const [pageOptions, setPageOptions] = useState<number>(0);
   const getPaginatedData = () => {
-    const startIndex = pageIndex * pageLimit - pageLimit;
-    const endIndex = startIndex + pageLimit;
+    const startIndex = 0;
+    const endIndex = startIndex + pageLimit * pageIndex;
     return projectsData.slice(startIndex, endIndex);
   };
 
@@ -126,8 +127,7 @@ const MobileAllProjects = () => {
           alignItems={'center'}
           fontSize={'12px'}
           fontFamily={theme.fonts.fld}
-          color={colorMode === 'light' ? '#304156' : '#848c98'}
-        >
+          color={colorMode === 'light' ? '#304156' : '#848c98'}>
           <Text fontWeight={'bold'}>{projectsData.length}</Text>
           <Text ml={'2px'}> Results</Text>
         </Flex>
@@ -135,13 +135,14 @@ const MobileAllProjects = () => {
         <Select
           w={'110px'}
           h={'32px'}
+          border={'3px solid red'}
           mr={1}
           color={colorMode === 'light' ? ' #3e495c' : '#f3f4f1'}
           bg={colorMode === 'light' ? 'white.100' : 'none'}
           boxShadow={
             colorMode === 'light' ? '0 1px 1px 0 rgba(96, 97, 112, 0.14)' : ''
           }
-          border={colorMode === 'light' ? '' : 'solid 1px #424242'}
+          // border={colorMode === 'light' ? '' : 'solid 1px #424242'}
           borderRadius={4}
           size={'sm'}
           // value={pageLimit}
@@ -161,13 +162,53 @@ const MobileAllProjects = () => {
       </Flex>
       {projectsData.length !== 0 ? (
         <Grid templateColumns="repeat(1, 1fr)" gap={'20px'}>
-          {projectsData.map((project: any, index: number) => {
+          {getPaginatedData().map((project: any, index: number) => {
             return <MobileProjectCard project={project} index={index} />;
           })}
         </Grid>
       ) : (
         <></>
       )}
+      {pageIndex !== pageOptions ? (
+        <Button
+          w={'320px'}
+          mt={'10px'}
+          justifyContent={'center'}
+          alignItems={'center'}
+          border={
+            colorMode === 'light' ? '1px solid #e6eaee' : '1px solid #535353'
+          }
+          borderRadius={'15px'}
+          fontSize={'16px'}
+          fontFamily={theme.fonts.fld}
+          bg={colorMode === 'light' ? '#fff' : 'transparent'}
+          color={colorMode === 'light' ? '#86929d' : '#dee4ef'}
+          _focus={{}}
+          _active={{}}
+          onClick={() => setPageIndex(pageIndex + 1)}>
+          MORE +
+        </Button>
+      ) : (
+        <></>
+      )}
+      <MobileLaunchGuide />
+      <Flex justifyContent={'flex-end'} w={'320px'} mb={'20px'} mt={'-10px'}>
+        <Box
+          h={'40px'}
+          w={'40px'}
+          border={
+            colorMode === 'light' ? 'none' : '1px solid #535353'
+          }
+          display={'flex'}
+          justifyContent={'center'}
+          alignItems={'center'}
+          borderRadius='50%'
+          boxShadow= '0 2px 5px 0 rgba(61, 73, 93, 0.1)'
+          bg={colorMode === 'light' ? '#fff' : 'transparent'} 
+          onClick={()=> window.scrollTo(0, 0)}>
+            <ChevronUpIcon h={'2em'} w={'2em'}/>
+          </Box>
+      </Flex>
     </Flex>
   );
 };
