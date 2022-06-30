@@ -24,17 +24,16 @@ const useClaimRound = () => {
     if (selectedVaultIndex !== undefined && claimRoundTable !== undefined) {
       const totalClaimAmount = claimRoundTable.reduce(
         (prev: number, cur: any) => {
-          console.log('--go--');
-          console.log(prev, cur.claimTokenAllocation);
           if (cur.claimTokenAllocation) {
             const num: any = truncNumber(cur.claimTokenAllocation as number, 2);
             const result: any = truncNumber(prev, 2) + num;
             return truncNumber(result, 2) as any;
           }
+          return 0;
         },
         0,
       );
-      console.log('--');
+      console.log('--totalClaimAmount--');
       console.log(totalClaimAmount);
       setClaimRoundInfo({
         totalClaimAmount:
