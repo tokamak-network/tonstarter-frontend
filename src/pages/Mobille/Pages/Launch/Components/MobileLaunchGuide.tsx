@@ -59,9 +59,7 @@ const MobileLaunchGuide = () => {
         mb={'19px'}>
         Launch Guide
       </Text>
-     <Flex justifyContent={'flex-end'} w={'320px'} mb={'20px'} border={'3px solid red'}>
-        <Text>Read more +</Text>
-     </Flex>
+    
           {launchGuideData.map((guide, index) => {
             return (
               <Flex flexDirection={'column'} justifyContent={'center'} w={'320px'}>

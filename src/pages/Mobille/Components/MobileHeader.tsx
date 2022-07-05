@@ -55,7 +55,9 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
   const {tx} = useAppSelector(selectTxType);
 
   return (
-    <Flex
+    <Flex justifyContent={'space-between'}> 
+      {match?.isExact || myairdrop?.isExact || launch?.isExact?  
+       <Flex
       py={'18px'}
       pl={'20px'}
       pr={'10px'}
@@ -64,6 +66,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
       finalFocusRef={btnRef}
       justifyContent={'space-between'}
       h={'66px'}
+      w={'100%'}
       // bg={colorMode === 'light' ? '#007aff' : '#222222'}
       bg={match?.isExact? colorMode === 'light'? '#2a72e5' : '#222222' : 'transparent'}
       alignItems={'center'}>
@@ -358,6 +361,8 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
+    </Flex> :<></>}
+  
     </Flex>
   );
 };
