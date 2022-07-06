@@ -32,7 +32,7 @@ export const MobilePublic: FC<PublicPage> = ({vault, project}) => {
   const [buttonState, setButtonState] = useState('Token');
 
   return (
-    <Flex mt={'35px'} mb={'100px'} flexDir={'column'} px={'20px'}>
+    <Flex mt={'35px'} flexDir={'column'} px={'20px'}>
       <Flex
         mx={'auto'}
         mb={'20px'}
@@ -576,6 +576,7 @@ const TierComp: React.FC<TokenCompProps> = ({vault, project}) => {
         return (
           <GridItem
             style={gridItemStyle}
+            key={index}
             borderBottom={
               index !== sTosTier.length - 1
                 ? colorMode === 'light'

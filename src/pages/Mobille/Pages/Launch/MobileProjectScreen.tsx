@@ -134,8 +134,9 @@ const MobileProjectScreen = () => {
         <GridItem></GridItem>
       </Grid>
       {project?  <MobileProject project={project} /> : <LoadingComponent />}
-      <Flex justifyContent={'flex-end'} w={'320px'} mb={'20px'} mt={'-10px'}>
+      <Flex justifyContent={'flex-end'} w={'100%'} mb={'20px'} mt={'-10px'} >
         <Box
+
           h={'40px'}
           w={'40px'}
           border={
@@ -146,7 +147,7 @@ const MobileProjectScreen = () => {
           alignItems={'center'}
           borderRadius='50%'
           boxShadow= '0 2px 5px 0 rgba(61, 73, 93, 0.1)'
-          bg={colorMode === 'light' ? '#fff' : 'transparent'} 
+          bg={colorMode === 'light' ? '#fff' : '#222222'} 
           onClick={()=> window.scrollTo(0, 0)}>
             <ChevronUpIcon h={'2em'} w={'2em'}/>
           </Box>

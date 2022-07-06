@@ -84,7 +84,119 @@ export const MobileVaultTable: FC<VaultTable> = ({claim}) => {
 
       
   return (
-  <Flex>
-    <Flex></Flex>
-  </Flex>);
+    <Box
+    d="flex"
+    textAlign="center"
+    lineHeight={'42px'}
+    flexDirection={'column'}
+    mt={'20px'}>
+    <Flex
+      bg={colorMode === 'dark' ? '#222' : '#ffffff'}
+    //   justifyContent={'space-between'}
+      width={'100%'}>
+      <Text
+        height={'42px'}
+        fontSize={11}
+        w={'15%'}
+        textAlign={'center'}
+        fontWeight={'bold'}
+        border={themeDesign.border[colorMode]}
+        borderRight={'none'}>
+        Round
+      </Text>
+      <Text
+        height={'42px'}
+        fontSize={11}
+        w={'25%'}
+        textAlign={'center'}
+        fontWeight={'bold'}
+        border={themeDesign.border[colorMode]}
+        borderRight={'none'}>
+        Date
+      </Text>
+      <Text
+        height={'42px'}
+        fontSize={11}
+        w={'30%'}
+        textAlign={'center'}
+        fontWeight={'bold'}
+        border={themeDesign.border[colorMode]}
+        borderRight={'none'}>
+        Allocation
+      </Text>
+      <Text
+        // border={'solid 1px #373737'
+        height={'42px'}
+        fontSize={11}
+        w={'30%'}
+        textAlign={'center'}
+        fontWeight={'bold'}
+        border={themeDesign.border[colorMode]}>
+        Accumulated
+      </Text>
+    </Flex>
+    {tableData.map((data: any, index: number) => {
+      return (
+        <Flex
+          bg={
+            index % 2 === 0
+              ? colorMode === 'dark'
+                ? '#262626'
+                : '#fafbfc'
+              : colorMode === 'dark'
+              ? '#222'
+              : '#fff'
+          }
+          justifyContent={'space-between'}
+          width={'100%'}>
+          <Text
+            height={'42px'}
+            fontSize={12}
+            w={'15%'}
+            textAlign={'center'}
+            border={themeDesign.border[colorMode]}
+            borderTop={'none'}
+            borderRight={'none'}>
+            {data.claimRound}
+          </Text>
+          <Text
+            height={'42px'}
+            fontSize={12}
+            w={'25%'}
+            textAlign={'center'}
+            border={themeDesign.border[colorMode]}
+            borderTop={'none'}
+            borderRight={'none'}>
+            {data.claimTime === '-'
+              ? '-'
+              : moment.unix(data.claimTime).format('YYYY.MM.DD HH:mm:ss')}
+          </Text>
+          <Text
+            height={'42px'}
+            fontSize={12}
+            w={'30%'}
+            textAlign={'center'}
+            border={themeDesign.border[colorMode]}
+            borderTop={'none'}
+            borderRight={'none'}>
+            {Number(data.claimTokenAllocation).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+    })}
+          </Text>
+          <Text
+            height={'42px'}
+            fontSize={12}
+            w={'30%'}
+            textAlign={'center'}
+            border={themeDesign.border[colorMode]}
+            borderTop={'none'}>
+            {Number(data.accumulated).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+    })}
+          </Text>
+        </Flex>
+      );
+    })}
+  </Box>
+  );
 };
