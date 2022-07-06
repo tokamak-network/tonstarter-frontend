@@ -301,7 +301,9 @@ const SubTitle = (props: {
         const tooltipLabel = values.projectTokenPrice * Number(inputVal);
         return (
           <Tooltip
-            label={` = ${tooltipLabel} ${values.tokenSymbol}`}
+            label={` = ${isNaN(tooltipLabel) ? '0' : tooltipLabel} ${
+              values.tokenSymbol
+            }`}
             placement={'top'}
             minW={'120px'}
             minH={'32px'}
@@ -335,7 +337,7 @@ const SubTitle = (props: {
             tokenSymbol={values.tokenSymbol}></InputField>
         );
     }
-  }, [inputVal]);
+  }, [inputVal, values.projectTokenPrice]);
 
   const LeftTitleComponent = () => {
     switch (leftTitle) {

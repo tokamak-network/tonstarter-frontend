@@ -25,7 +25,7 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
   const [isHover, setIsHover] = useState<boolean>(false);
   const [isSelected, setIsSelected] = useState<boolean>(false);
   const {
-    data: {selectedVaultIndex, uncompletedVaultIndex},
+    data: {selectedVaultIndex, uncompletedVaultIndex, alreadySelected},
   } = useAppSelector(selectLaunch);
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const vaultsList = values.vaults;
@@ -45,18 +45,23 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
     );
   }
 
-  console.log('--uncompletedVaultIndex--');
-  console.log(selectedVaultIndex);
-  console.log(uncompletedVaultIndex);
-  console.log(thisVaultUncompleted);
-
   useEffect(() => {
     uncompletedVaultIndex?.map((vaultUncompleted, index) => {
-      if (vaultUncompleted === false && index === selectedVaultIndex) {
+      console.log(index);
+      console.log(vaultUncompleted);
+      console.log(alreadySelected);
+      console.log(alreadySelected?.indexOf(index) === 1);
+      if (
+        vaultUncompleted === false &&
+        index === vaultIndex &&
+        alreadySelected?.indexOf(index) !== -1
+      ) {
+        // console.log(selectedVaultIndex);
+        // console.log(alreadySelected?.indexOf(index) === 1);
         return setThisVaultUncompleted(true);
       }
     });
-  }, [uncompletedVaultIndex, selectedVaultIndex]);
+  }, [uncompletedVaultIndex, vaultIndex, alreadySelected]);
 
   useEffect(() => {
     if (selectedVaultIndex === vaultIndex) {

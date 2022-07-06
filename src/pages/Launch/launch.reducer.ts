@@ -10,6 +10,7 @@ interface LaunchState {
     projects: any;
     tempVaultData: any;
     hashKey: string | undefined;
+    alreadySelected: number[] | undefined;
     err: {
       tokenDetail: {
         name: boolean;
@@ -32,6 +33,7 @@ const initialState = {
     selectedVault: 'Public',
     selectedVaultType: 'Public',
     selectedVaultIndex: 0,
+    alreadySelected: [0],
     projects: [],
     tempVaultData: {},
     hashKey: undefined,
@@ -81,6 +83,9 @@ export const launchReducer = createSlice({
       state.data.selectedVault = payload.data;
       state.data.selectedVaultType = payload.vaultType;
       state.data.selectedVaultIndex = payload.vaultIndex;
+      state.data.alreadySelected = state.data.alreadySelected
+        ? ([...state.data.alreadySelected, payload.vaultIndex] as number[])
+        : ([payload.vaultIndex] as number[]);
     },
     fetchProjects: (state, {payload}: PayloadAction<ProjectPayload>) => {
       state.data.projects = payload.data;
