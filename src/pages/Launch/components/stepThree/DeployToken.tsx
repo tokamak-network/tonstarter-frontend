@@ -28,9 +28,19 @@ const DeployToken = () => {
   const theme = useTheme();
   const {OpenCampaginDesign} = theme;
   const {colorMode} = useColorMode();
-  const {ERC20AFACTORY_ADDRESS} = DEPLOYED;
+  const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
+  const {ERC20AFACTORY_ADDRESS, ERC20BFACTORY_ADDRESS, ERC20CFACTORY_ADDRESS} =
+    DEPLOYED;
+
+  const TOKEN_FACTORY_ADDRESS =
+    values.tokenType === 'A'
+      ? ERC20AFACTORY_ADDRESS
+      : values.tokenType === 'B'
+      ? ERC20BFACTORY_ADDRESS
+      : ERC20CFACTORY_ADDRESS;
+
   const ERC20_FACTORY_A = useContract(
-    ERC20AFACTORY_ADDRESS,
+    TOKEN_FACTORY_ADDRESS,
     ERC20_FACTORY_A_ABI.abi,
   );
   // @ts-ignore
@@ -40,7 +50,6 @@ const DeployToken = () => {
   } = useAppSelector(selectLaunch);
   const dispatch = useAppDispatch();
 
-  const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const {isTokenDeployed, tokenName, totalSupply, tokenAddress, tokenSymbol} =
     values;
   const {account} = useActiveWeb3React();

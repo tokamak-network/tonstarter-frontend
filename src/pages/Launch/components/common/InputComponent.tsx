@@ -179,7 +179,7 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
           if (name === 'tokenType') {
             const selectList = ['Type A', 'Type B', 'Type C'];
             const selectBoxOnChange = (e: any) => {
-              setFieldValue('sector', e.target.value);
+              setFieldValue('tokenType', e.target.value);
             };
 
             return (
@@ -196,7 +196,7 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
                   fontSize={13}
                   color={'#86929d'}
                   name={'sector'}
-                  defaultValue={values.sector}
+                  defaultValue={values.tokenType}
                   onChange={selectBoxOnChange}>
                   <option disabled selected>
                     select
@@ -230,7 +230,7 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
                   <option value={'A'} disabled>
                     - NON MINTABLE
                   </option>
-                  <option value={'A'}>Type B</option>
+                  <option value={'B'}>Type B</option>
                   <option value={'A'} disabled>
                     - BURNABLE
                   </option>
@@ -240,7 +240,7 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
                   <option value={'A'} disabled>
                     - MINTABLE
                   </option>
-                  <option value={'A'}>Type C</option>
+                  <option value={'C'}>Type C</option>
                   <option value={'A'} disabled>
                     - BURNABLE
                   </option>
