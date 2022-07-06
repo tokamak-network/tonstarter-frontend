@@ -277,7 +277,9 @@ export const Reward = () => {
                 ethers.utils.getAddress(data.pool.id),
             );
             if (includedPool) {
-              const rang = await getRange(Number(data.id), includedPool.tick);
+              console.log(includedPool);
+              
+              const rang = await getRange(Number(data.id), includedPool.tick,includedPool.id );
               return {
                 ...data,
                 range: rang?.range,
@@ -445,16 +447,16 @@ export const Reward = () => {
     orderedData,
   ]);
 
-  const getRange = async (id: number, tick: string) => {
-    const result = await rangePayload({library, id, account, tick});
+  const getRange = async (id: number, tick: string, address: string) => {
+    const result = await rangePayload({library, id, account, tick, address});
     return result;
   };
   const rangePayload = async (args: any) => {
-    const {library, id, tick} = args;
+    const {library, id, tick,address } = args;
     if (account === undefined || library === undefined || account == null) {
       return;
     }
-    const result = await fetchPositionRangePayload(library, id, account, tick);
+    const result = await fetchPositionRangePayload(library, id, account, tick,address);
     return result;
   };
 

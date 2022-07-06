@@ -443,6 +443,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
               userAddress: account,
               positions: LPTokens,
               blockNumber: latestBlockNumber,
+              rewardSymbol: rewardSymbol,
             },
           }),
         );
@@ -523,8 +524,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
                       },
                     )}{' '}
                 {
-                  checkTokenType(ethers.utils.getAddress(reward.rewardToken))
-                    .name
+                  rewardSymbol
                 }{' '}
                 /{' '}
                 {parseFloat(

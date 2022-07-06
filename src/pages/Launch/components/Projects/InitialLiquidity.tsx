@@ -1004,7 +1004,6 @@ export const Condition4: React.FC<Condition4> = ({
             bg={'#257eee'}
             color={'#ffffff'}
             isDisabled={
-              !isAdmin ||
               Number(tosBalance) === 0 ||
               Number(projTokenBalance) === 0
             }
