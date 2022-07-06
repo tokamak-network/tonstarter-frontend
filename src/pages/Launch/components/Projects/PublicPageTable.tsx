@@ -24,7 +24,7 @@ export const PublicPageTable = (prop: PublicTableProps) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   //   const vaultsList = publicTableData;
-  const [tableData, setTableData] = useState<any>(publicTableData);
+  const [tableData, setTableData] = useState<any>([]);
   const [totalAllocation, setTotalAllocation] = useState<number>(0);
 
   const themeDesign = {
