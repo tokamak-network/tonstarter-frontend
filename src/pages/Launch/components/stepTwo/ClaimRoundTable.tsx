@@ -37,10 +37,11 @@ const selectOptionNames = ['14 Days', '30 Days', '60 Days'];
 
 const InputTitle = (props: {title: string}) => {
   const {title} = props;
+  const {colorMode} = useColorMode();
   return (
     <Text
       fontSize={13}
-      color={'#2d3136'}
+      color={colorMode === 'light' ? '#2d3136' : '#f3f4f1'}
       w={title !== 'Interval' ? '109px' : '44px'}>
       {title}
     </Text>
@@ -152,7 +153,9 @@ const ClaimRoundTable = () => {
         flexDir={'column'}
         pt={'15px'}
         pl={'25px'}
-        border={'1px solid #e6eaee'}
+        border={
+          colorMode === 'light' ? '1px solid #e6eaee' : '1px solid #323232'
+        }
         borderRadius={'10px'}
         mb={'10px'}
         justifyContent="center"
@@ -176,7 +179,11 @@ const ClaimRoundTable = () => {
               ml={'20px'}
               w={'180px'}
               h={'32px'}
-              border={'1px solid #dfe4ee'}
+              border={
+                colorMode === 'light'
+                  ? '1px solid #dfe4ee'
+                  : '1px solid #424242'
+              }
               borderRadius={'4px'}
               alignItems="center"
               justifyContent={'flex-end'}

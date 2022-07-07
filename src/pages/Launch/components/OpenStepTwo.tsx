@@ -31,6 +31,8 @@ const OpenStepTwo = (props: {
 
   useEffect(() => {
     const validation = validateFormikValues(values);
+    console.log('--validation--');
+    console.log(validation.fileds);
     setDisableForStep2(validation.result);
     dispatch(setUncompletedVaultIndex({data: validation.step2FilledOut}));
   }, [values, setDisableForStep2]);

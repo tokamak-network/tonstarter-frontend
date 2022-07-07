@@ -165,7 +165,12 @@ const ClaimRoundInput = (props: {index: number}) => {
               <Flex
                 w={'161px'}
                 h={'32px'}
-                border={'solid 1px #dfe4ee'}
+                border={
+                  colorMode === 'light'
+                    ? 'solid 1px #dfe4ee'
+                    : '1px solid #424242'
+                }
+                borderRadius={4}
                 _hover={{
                   borderWidth: '1px',
                   borderColor: '#257eee',

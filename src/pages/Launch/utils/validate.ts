@@ -9,10 +9,10 @@ function validateFormikValues(
   // setDisable: Dispatch<SetStateAction<boolean>>,
   // setDisableForStep2: Dispatch<SetStateAction<boolean>>,
 ) {
+  const fileds: any[] = [];
   const step2FilledOut = values.vaults.map((vault: any) => {
     const result: any[] = [];
-    // console.log(vault);
-
+    const thisFields: any[] = [];
     Object.values(vault).forEach((val) => {
       if (typeof val === 'object') {
         //STOS Tier Object handle
@@ -28,6 +28,7 @@ function validateFormikValues(
               //@ts-ignore
               val[property].allocatedToken === ''
             ) {
+              thisFields.push(property);
               return result.push(false);
             }
             return result.push(true);
@@ -64,9 +65,11 @@ function validateFormikValues(
           // console.log(isMatchingTotalAllocation);
           // console.log(vault.vaultTokenAllocation);
           if (
-            vault.vaultTokenAllocation === undefined ||
-            isMatchingTotalAllocation !== vault.vaultTokenAllocation
+            vault.vaultTokenAllocation !== 0 &&
+            (vault.vaultTokenAllocation === undefined ||
+              isMatchingTotalAllocation !== vault.vaultTokenAllocation)
           ) {
+            thisFields.push('vaultTokenAllocation');
             return result.push(false);
           }
           //need to add validate to compare total and allocation
@@ -77,6 +80,7 @@ function validateFormikValues(
               claimSchedule.claimTime === null ||
               claimSchedule.claimTokenAllocation === null
             ) {
+              thisFields.push('claimSchedule');
               return result.push(false);
             }
             return result.push(true);
@@ -84,17 +88,21 @@ function validateFormikValues(
         }
       }
       if (val === undefined || val === '') {
+        //get key
+        //
         return result.push(false);
       } else {
         return result.push(true);
       }
     });
+    fileds.push(thisFields);
     return result.indexOf(false) === -1 ? true : false;
   });
 
   return {
     result: step2FilledOut.indexOf(false) === -1 ? false : true,
     step2FilledOut,
+    fileds,
   };
 
   // if (step1FilledOut.includes(false)) {

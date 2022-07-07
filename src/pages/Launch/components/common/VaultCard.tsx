@@ -47,10 +47,6 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
 
   useEffect(() => {
     uncompletedVaultIndex?.map((vaultUncompleted, index) => {
-      console.log(index);
-      console.log(vaultUncompleted);
-      console.log(alreadySelected);
-      console.log(alreadySelected?.indexOf(index) === 1);
       if (
         vaultUncompleted === false &&
         index === vaultIndex &&
