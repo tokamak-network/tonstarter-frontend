@@ -43,6 +43,10 @@ import {NumberInputStep} from './NumberInputField';
 import momentTZ from 'moment-timezone';
 import moment from 'moment';
 import SelectPair from './TokenDetails/SelectPair';
+import {usePoolByArrayQuery} from 'store/data/generated';
+import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
+import {Contract} from '@ethersproject/contracts';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 
 export const MainTitle = (props: {
   leftTitle: string;
@@ -148,6 +152,57 @@ const SubTitle = (props: {
     data: {tempVaultData, selectedVaultIndex},
   } = useAppSelector(selectLaunch);
 
+  //get pool address
+  const poolArr = usePoolByArrayQuery(
+    {
+      address:
+        selectedVaultIndex && selectedVaultIndex > 5
+          ? [String(tempVaultData.poolAddress)]
+          : '',
+    },
+    //  {
+    //    pollingInterval: ms`2s`,
+    //  },
+  );
+
+  const {library} = useActiveWeb3React();
+
+  useEffect(() => {
+    async function fetchPooldata() {
+      const data = poolArr.data.pools[0];
+      const {token0, token1} = data;
+      const TOKEN0_CONTRACT = new Contract(token0.id, ERC20.abi, library);
+      const TOKEN1_CONTRACT = new Contract(token1.id, ERC20.abi, library);
+      const TOKEN0_SYMBOL = await TOKEN0_CONTRACT.symbol();
+      const TOKEN1_SYMBOL = await TOKEN1_CONTRACT.symbol();
+      const tokenPair = `${TOKEN0_SYMBOL}-${TOKEN1_SYMBOL}`;
+
+      console.log('--tokenPair--');
+      console.log(tokenPair);
+
+      return dispatch(
+        saveTempVaultData({
+          data: {
+            ...tempVaultData,
+            tokenPair,
+          },
+        }),
+      );
+    }
+    if (poolArr?.data?.pools[0]) {
+      fetchPooldata();
+    } else {
+      dispatch(
+        saveTempVaultData({
+          data: {
+            ...tempVaultData,
+            tokenPair: '',
+          },
+        }),
+      );
+    }
+  }, [poolArr, library]);
+
   //@ts-ignore
   useEffect(() => {
     //Put timestamp
@@ -250,6 +305,7 @@ const SubTitle = (props: {
         return rightTitle ? `${shortenAddress(rightTitle)}` : '-';
       case 'custom LP':
         return <></>;
+      case 'Select Pair':
       default:
         return rightTitle;
     }
@@ -264,8 +320,10 @@ const SubTitle = (props: {
             formikName={formikName}></NumberInputStep>
         );
       case 'Select Pair':
+        if (selectedVaultIndex && selectedVaultIndex > 5) {
+          return <Text>{inputVal || tempVaultData.tokenPair}</Text>;
+        }
         return <Text>{inputVal}</Text>;
-      // return <SelectPair></SelectPair>;
       case 'Pool Address\n(0.3% fee)':
         if (selectedVaultIndex && selectedVaultIndex < 6) {
           return <Text>{inputVal}</Text>;
@@ -337,7 +395,7 @@ const SubTitle = (props: {
             tokenSymbol={values.tokenSymbol}></InputField>
         );
     }
-  }, [inputVal, values.projectTokenPrice]);
+  }, [inputVal, values.projectTokenPrice, tempVaultData]);
 
   const LeftTitleComponent = () => {
     switch (leftTitle) {
@@ -908,6 +966,14 @@ const PublicTokenDetail = (props: {
     }
   }, [selectedVaultType, tempVaultData, selectedVaultDetail, onBlur]);
 
+  useEffect(() => {
+    if (
+      selectedVaultType === 'Liquidity Incentive' &&
+      selectedVaultDetail?.isMandatory === false
+    ) {
+    }
+  }, [selectedVaultType, selectedVaultDetail]);
+
   if (firstColData && secondColData === null && thirdColData === null) {
     return (
       <Grid
@@ -946,7 +1012,7 @@ const PublicTokenDetail = (props: {
                 <SubTitle
                   key={title}
                   leftTitle={title}
-                  rightTitle={content}
+                  rightTitle={content !== '-' ? content : undefined}
                   isLast={index + 1 === firstColData.length}
                   inputRef={inputRef}
                   percent={percent}
