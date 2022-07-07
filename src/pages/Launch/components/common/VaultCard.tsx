@@ -147,7 +147,9 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
           fontSize={16}
           fontWeight={'bold'}
           color={
-            thisVaultUncompleted
+            thisVaultUncompleted && isSelected
+              ? 'white.100'
+              : thisVaultUncompleted
               ? '#ff3b3b'
               : isSelected
               ? 'white.100'
