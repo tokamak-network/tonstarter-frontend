@@ -112,6 +112,7 @@ interface ProjectStep2 {
   tosPrice: number;
   projectTokenPrice: number;
   totalTokenAllocation: number;
+  salePrice: number;
 }
 
 interface ProjectStep3 {

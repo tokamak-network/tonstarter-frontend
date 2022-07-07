@@ -10,12 +10,17 @@ import useTokenAllocation from '@Launch/hooks/useTokenAllocation';
 const TopTitle = () => {
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const [pricePerTon, setPricePerTon] = useState(values.projectTokenPrice);
+  const [salePrice, setSalePrice] = useState(values.projectTokenPrice);
 
   useEffect(() => {
     setFieldValue('projectTokenPrice', pricePerTon);
     // setFieldValue('tosPrice', pricePerTos);
     /*eslint-disable*/
   }, [pricePerTon]);
+
+  useEffect(() => {
+    setFieldValue('salePrice', salePrice);
+  }, [salePrice]);
 
   const {openAnyModal} = useModal();
   const {remaindToken, totalSupply} = useTokenAllocation();
@@ -58,6 +63,17 @@ const TopTitle = () => {
           value={pricePerTon}
           setValue={setPricePerTon}
           tokenSymbol={values.tokenSymbol}
+          decimalLimit={true}></InputField>
+        <Text fontSize={13} ml={'20px'} mr={'10px'}>
+          Sale Price ={' '}
+        </Text>
+        <InputField
+          w={138}
+          h={32}
+          fontSize={13}
+          value={salePrice}
+          setValue={setSalePrice}
+          tokenSymbol={'$'}
           decimalLimit={true}></InputField>
       </Flex>
     </Box>
