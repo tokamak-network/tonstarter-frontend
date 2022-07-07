@@ -205,6 +205,8 @@ const ClaimRound = () => {
               w="100px"
               isDisabled={
                 //@ts-ignore
+                selectedVaultDetail.vaultTokenAllocation === 0 ||
+                //@ts-ignore
                 selectedVaultDetail.vaultType === 'Initial Liquidity' ||
                 //@ts-ignore
                 selectedVaultDetail.vaultType === 'DAO'

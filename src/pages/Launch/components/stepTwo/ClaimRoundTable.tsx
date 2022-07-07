@@ -270,8 +270,9 @@ const ClaimRoundTable = () => {
               h={'32px'}
               style={{
                 marginLeft: '10px',
-                backgroundColor: '#e9edf1',
-                color: '#3a495f',
+                backgroundColor: colorMode === 'light' ? '#e9edf1' : '#353535',
+                color: colorMode === 'light' ? '#3a495f' : '#f3f4f1',
+                fontWeight: 'normal',
               }}></CustomButton>
           )}
         </Flex>
