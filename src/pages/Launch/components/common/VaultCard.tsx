@@ -50,7 +50,9 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
       if (
         vaultUncompleted === false &&
         index === vaultIndex &&
-        alreadySelected?.indexOf(index) !== -1
+        alreadySelected &&
+        alreadySelected.indexOf(index) !== -1 &&
+        alreadySelected[alreadySelected.length - 1] !== index
       ) {
         // console.log(selectedVaultIndex);
         // console.log(alreadySelected?.indexOf(index) === 1);
