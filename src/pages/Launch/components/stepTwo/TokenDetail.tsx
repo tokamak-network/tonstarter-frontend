@@ -561,6 +561,15 @@ const SubTitle = (props: {
                   : displayRightTitle(leftTitle, rightTitle)}
               </Text>
             </Tooltip>
+          ) : leftTitle.includes('Exchange Ratio') ? (
+            <Text textAlign={'right'}>
+              {String(rightTitle)?.includes('undefined')
+                ? '-'
+                : displayRightTitle(
+                    leftTitle,
+                    `${rightTitle} ${values.tokenSymbol}`,
+                  )}
+            </Text>
           ) : (
             <Text textAlign={'right'}>
               {String(rightTitle)?.includes('undefined')
@@ -899,6 +908,58 @@ const PublicTokenDetail = (props: {
     }
   }, [selectedVaultType, tempVaultData, selectedVaultDetail, onBlur]);
 
+  if (firstColData && secondColData === null && thirdColData === null) {
+    return (
+      <Grid
+        {...OpenCampaginDesign.border({colorMode})}
+        w={'100%'}
+        // templateColumns="repeat(3, 1fr)"
+        fontSize={13}>
+        <GridItem>
+          <MainTitle
+            leftTitle="Token"
+            rightTitle={`${commafy(
+              selectedVaultDetail?.vaultTokenAllocation,
+            )} ${values.tokenName}`}
+            subTitle={
+              selectedVaultDetail?.vaultTokenAllocation === 0
+                ? '-'
+                : `(${(
+                    (Number(selectedVaultDetail?.vaultTokenAllocation) * 100) /
+                    values.totalTokenAllocation
+                  )
+                    .toString()
+                    .match(/^\d+(?:\.\d{0,2})?/)}%)`
+            }></MainTitle>
+          {firstColData?.map(
+            (
+              data: {
+                title: string;
+                content: string | undefined;
+                percent?: number | undefined;
+                formikName: string;
+              },
+              index: number,
+            ) => {
+              const {title, content, percent, formikName} = data;
+              return (
+                <SubTitle
+                  key={title}
+                  leftTitle={title}
+                  rightTitle={content}
+                  isLast={index + 1 === firstColData.length}
+                  inputRef={inputRef}
+                  percent={percent}
+                  isEdit={isEdit}
+                  formikName={formikName}></SubTitle>
+              );
+            },
+          )}
+        </GridItem>
+      </Grid>
+    );
+  }
+
   return (
     <Grid
       {...OpenCampaginDesign.border({colorMode})}
@@ -945,7 +1006,7 @@ const PublicTokenDetail = (props: {
             );
           },
         )}
-        {firstColData === null && (
+        {/* {firstColData === null && (
           <Flex
             alignItems={'center'}
             justifyContent="center"
@@ -955,7 +1016,7 @@ const PublicTokenDetail = (props: {
             fontWeight={600}>
             <Text>There is no Token value.</Text>
           </Flex>
-        )}
+        )} */}
       </GridItem>
       <GridItem
         borderX={
@@ -980,7 +1041,7 @@ const PublicTokenDetail = (props: {
             );
           },
         )}
-        {secondColData === null && (
+        {/* {secondColData === null && (
           <Flex
             alignItems={'center'}
             justifyContent="center"
@@ -994,7 +1055,7 @@ const PublicTokenDetail = (props: {
             fontWeight={600}>
             <Text>There is no Schedule value.</Text>
           </Flex>
-        )}
+        )} */}
       </GridItem>
       <GridItem>
         <MainTitle leftTitle="sTOS Tier" rightTitle=""></MainTitle>
@@ -1027,7 +1088,7 @@ const PublicTokenDetail = (props: {
               inputRef={inputRef}></STOSTier>
           );
         })}
-        {thirdColData === null && (
+        {/* {thirdColData === null && (
           <Flex
             alignItems={'center'}
             justifyContent="center"
@@ -1041,7 +1102,7 @@ const PublicTokenDetail = (props: {
             fontWeight={600}>
             <Text>There is no sTOS Tier value.</Text>
           </Flex>
-        )}
+        )} */}
       </GridItem>
     </Grid>
   );
@@ -1097,12 +1158,12 @@ const TokenDetail = (props: {
               },
               {
                 title: 'Pool Address\n(0.3% fee)',
-                content: thisVault.poolAddress,
+                content: '0.3%',
                 formikName: 'poolAddress',
               },
               {
                 title: 'Exchange Ratio\n1 TOS',
-                content: String(values.tosPrice),
+                content: `${String(values.tosPrice)}`,
                 formikName: 'tosPrice',
               },
             ]}
