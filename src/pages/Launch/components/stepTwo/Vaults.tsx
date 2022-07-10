@@ -130,14 +130,7 @@ const Vaults = () => {
         mt={'25px'}
         mb={'4px'}>
         {vaultsList?.map((vault: Vault, index: number) => {
-          const {
-            vaultName,
-            vaultTokenAllocation,
-            isMandatory,
-            adminAddress,
-            vaultType,
-            index: vaultIndex,
-          } = vault;
+          const {vaultName, vaultType, index: vaultIndex} = vault;
           return (
             <Box
               w={'8px'}

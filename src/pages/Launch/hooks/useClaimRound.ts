@@ -33,8 +33,6 @@ const useClaimRound = () => {
         },
         0,
       );
-      console.log('--totalClaimAmount--');
-      console.log(totalClaimAmount);
       setClaimRoundInfo({
         totalClaimAmount:
           vaultsList[selectedVaultIndex].vaultTokenAllocation -

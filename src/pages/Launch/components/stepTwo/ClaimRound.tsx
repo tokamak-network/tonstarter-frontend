@@ -31,6 +31,7 @@ import {useToast} from 'hooks/useToast';
 import {CustomTooltip} from 'components/Tooltip';
 import '@Launch/components/css/claimRound.css';
 import ClaimRoundTable from './ClaimRoundTable';
+import useClaimRound from '@Launch/hooks/useClaimRound';
 
 type ClaimRoundTable = {
   dateTime: number;
@@ -82,6 +83,7 @@ const ClaimRound = () => {
 
   //@ts-ignore
   const {claim} = selectedVaultDetail;
+  const {totalClaimAmount} = useClaimRound();
 
   // const setDate = useCallback(() => {
   //   const claimValue: VaultSchedule[] = claim.map(
@@ -163,6 +165,9 @@ const ClaimRound = () => {
   }, [claimRoundTable, tempVaultData, selectedVaultDetail]);
 
   let tokenAcc = 0;
+
+  console.log('--totalClaimAmount--');
+  console.log(totalClaimAmount);
 
   return (
     <Flex flexDir={'column'} w={'100%'}>
@@ -259,9 +264,21 @@ const ClaimRound = () => {
               <Text w={'314px'} borderX={middleStyle.border}>
                 Date time
               </Text>
-              <Text w={'314px'} borderRight={middleStyle.border}>
-                Token Allocation ({values.tokenSymbol})
-              </Text>
+              <Flex
+                w={'314px'}
+                borderRight={middleStyle.border}
+                flexDir="column">
+                <Box h={'21px'} lineHeight={'21px'} pt={'8px'}>
+                  Token Allocation ({values.tokenSymbol})
+                </Box>
+                <Box
+                  h={'21px'}
+                  lineHeight={'21px'}
+                  fontSize={10}
+                  color={'#86929d'}>
+                  Remained: {totalClaimAmount}
+                </Box>
+              </Flex>
               <Text w={'314px'} borderRight={middleStyle.border}>
                 Accumulated
               </Text>

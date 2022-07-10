@@ -81,8 +81,6 @@ const ClaimRoundTable = () => {
   const {totalClaimAmount} = useClaimRound();
   const [test, setTest] = useState<any>('-');
 
-  console.log(totalClaimAmount);
-
   useEffect(() => {
     setTest(totalClaimAmount);
   }, [totalClaimAmount]);
