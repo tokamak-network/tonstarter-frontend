@@ -21,13 +21,19 @@ import {selectLaunch} from '@Launch/launch.reducer';
 //   import FeaturedProjects from '../components/FeaturedProjects';
 import MobileProjectCard from './MobileProjectCard';
 import {useActiveWeb3React} from 'hooks/useWeb3';
-import {ChevronRightIcon, ChevronLeftIcon,ChevronUpIcon} from '@chakra-ui/icons';
+import {
+  ChevronRightIcon,
+  ChevronLeftIcon,
+  ChevronUpIcon,
+} from '@chakra-ui/icons';
 import MobileLaunchGuide from './MobileLaunchGuide';
 import {fetchCampaginURL} from 'constants/index';
 import {useQuery} from 'react-query';
 import axios from 'axios';
 import {useAppDispatch} from 'hooks/useRedux';
 import {fetchProjects} from '@Launch/launch.reducer';
+import {orderBy} from 'lodash';
+import moment from 'moment';
 
 const MobileAllProjects = () => {
   const theme = useTheme();
@@ -36,6 +42,11 @@ const MobileAllProjects = () => {
   const {colorMode} = useColorMode();
   const dispatch = useAppDispatch();
   const [projectsData, setProjectsData] = useState<any>([]);
+  const [filteredData, setFilteredData] = useState<any>([]);
+  const [sortString, setSortString] = useState<string>('Latest');
+  const [pageIndex, setPageIndex] = useState<number>(1);
+  const [pageLimit, setPageLimit] = useState<number>(6);
+  const [pageOptions, setPageOptions] = useState<number>(0);
   const {
     //@ts-ignore
     params: {id},
@@ -64,15 +75,14 @@ const MobileAllProjects = () => {
       dispatch(fetchProjects({data: datas}));
       const projects = Object.keys(datas).map((k) => {
         if (datas[k].vaults !== undefined) {
-        const stat = datas[k].vaults.every((vault: any) => {
-          return vault.isSet === true;
-        });
+          const stat = datas[k].vaults.every((vault: any) => {
+            return vault.isSet === true;
+          });
 
-        return {key: k, data: datas[k], isSet: stat};
-      }
-      else {
-        return {key: k, data: datas[k], isSet: false}
-      }
+          return {key: k, data: datas[k], isSet: stat};
+        } else {
+          return {key: k, data: datas[k], isSet: false};
+        }
       });
 
       const filteredProjects = projects.filter(
@@ -83,13 +93,39 @@ const MobileAllProjects = () => {
     }
   }, [data, dispatch]);
 
-  const [pageIndex, setPageIndex] = useState<number>(1);
-  const [pageLimit, setPageLimit] = useState<number>(6);
-  const [pageOptions, setPageOptions] = useState<number>(0);
+  useEffect(() => {
+    const sortedData = changeOrder();
+    setFilteredData(sortedData);
+  }, [sortString, projectsData]);
+
+  const changeOrder = () => {
+    const now = moment().unix();
+    switch (sortString) {
+      case 'Latest':
+        return projectsData.reverse();
+      case 'Oldest':
+        return projectsData.reverse();
+      case 'Started':
+        const started = projectsData.filter(
+          (data: any) =>
+            now > data.data.vaults[0].publicRound1 &&
+            now < data.data.vaults[0].publicRound2End,
+        );
+        return started;
+      case 'Ended':
+        const ended = projectsData.filter(
+          (data: any) => now > data.data.vaults[0].publicRound2End,
+        );
+        return ended;
+      default:
+        return projectsData;
+    }
+  };
+
   const getPaginatedData = () => {
     const startIndex = 0;
     const endIndex = startIndex + pageLimit * pageIndex;
-    return projectsData.slice(startIndex, endIndex);
+    return filteredData.slice(startIndex, endIndex);
   };
 
   useEffect(() => {
@@ -141,7 +177,7 @@ const MobileAllProjects = () => {
         <Select
           w={'110px'}
           h={'32px'}
-          border={'3px solid red'}
+       
           mr={1}
           color={colorMode === 'light' ? ' #3e495c' : '#f3f4f1'}
           bg={colorMode === 'light' ? 'white.100' : 'none'}
@@ -153,7 +189,9 @@ const MobileAllProjects = () => {
           size={'sm'}
           // value={pageLimit}
           fontFamily={theme.fonts.roboto}
-          //
+          onChange={(e) => {
+            setSortString(e.target.value);
+          }}
           fontSize={'13px'}>
           <option value={'Latest'}>Latest</option>
           <option value={'Oldest'}>Oldest</option>
@@ -166,7 +204,7 @@ const MobileAllProjects = () => {
               ))} */}
         </Select>
       </Flex>
-      {projectsData.length !== 0 ? (
+      {filteredData.length !== 0 ? (
         <Grid templateColumns="repeat(1, 1fr)" gap={'20px'}>
           {getPaginatedData().map((project: any, index: number) => {
             return <MobileProjectCard project={project} index={index} />;
@@ -202,18 +240,16 @@ const MobileAllProjects = () => {
         <Box
           h={'40px'}
           w={'40px'}
-          border={
-            colorMode === 'light' ? 'none' : '1px solid #535353'
-          }
+          border={colorMode === 'light' ? 'none' : '1px solid #535353'}
           display={'flex'}
           justifyContent={'center'}
           alignItems={'center'}
-          borderRadius='50%'
-          boxShadow= '0 2px 5px 0 rgba(61, 73, 93, 0.1)'
-          bg={colorMode === 'light' ? '#fff' : 'transparent'} 
-          onClick={()=> window.scrollTo(0, 0)}>
-            <ChevronUpIcon h={'2em'} w={'2em'}/>
-          </Box>
+          borderRadius="50%"
+          boxShadow="0 2px 5px 0 rgba(61, 73, 93, 0.1)"
+          bg={colorMode === 'light' ? '#fff' : 'transparent'}
+          onClick={() => window.scrollTo(0, 0)}>
+          <ChevronUpIcon h={'2em'} w={'2em'} />
+        </Box>
       </Flex>
     </Flex>
   );
