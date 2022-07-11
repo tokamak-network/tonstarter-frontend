@@ -99,7 +99,7 @@ const MobileProjectScreen = () => {
       dark: '#777777',
     },
   };
-  console.log(project);
+
 
   useEffect(() => {
     dispatch(setHashKey({data: isExist === 'project' ? undefined : isExist}));

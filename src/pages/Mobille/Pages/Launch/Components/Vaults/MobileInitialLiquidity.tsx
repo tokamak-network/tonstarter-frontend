@@ -32,6 +32,9 @@ import store from 'store';
 import {toastWithReceipt} from 'utils';
 import {setTxPending} from 'store/tx.reducer';
 import {openToast} from 'store/app/toast.reducer';
+import Fraction from 'fraction.js';
+import {addPool} from 'pages/Admin/actions/actions';
+
 const {TOS_ADDRESS, UniswapV3Factory, NPM_Address} = DEPLOYED;
 
 type InitialLiquidity = {
@@ -45,7 +48,7 @@ type TokenCompProps = {
   createdPool: string;
 };
 
-type LPCompProps = {
+type LPComp4Props = {
   vault: any;
   project: any;
   LPToken: Number;
@@ -55,6 +58,31 @@ type LPCompProps = {
   collect: Dispatch<SetStateAction<any>>;
   isAdmin: boolean;
   npm: any;
+};
+
+type LPComp1Props = {
+  vault: any;
+  project: any;
+  LPToken: Number;
+  projTokenBalance: string;
+  tosBalance: string;
+};
+
+type LPComp2Props = {
+  project: any;
+  projTokenBalance: string;
+  tosBalance: string;
+  isAdmin: boolean;
+  InitialLiquidityCompute: any;
+};
+
+type LPComp3Props = {
+  project: any;
+  projTokenBalance: string;
+  tosBalance: string;
+  isAdmin: boolean;
+  InitialLiquidityCompute: any;
+  mint: Dispatch<SetStateAction<any>>;
 };
 export const MobileInitialLiquidity: FC<InitialLiquidity> = ({
   vault,
@@ -237,20 +265,61 @@ export const MobileInitialLiquidity: FC<InitialLiquidity> = ({
       </Flex>
       {buttonState === 'Token' ? (
         <TokenComp vault={vault} project={project} createdPool={createdPool} />
+      ) : Number(tosBalance) === 0 ? (
+        isPool && isLpToken ? (
+          <LPCompCond4
+            vault={vault}
+            project={project}
+            LPToken={LPToken}
+            tosBalance={tosBalance}
+            projTokenBalance={projTokenBalance}
+            mint={mint}
+            isAdmin={isAdmin}
+            npm={NPM}
+            collect={collect}
+          />
+        ) : (
+          <LPCompCond1
+            vault={vault}
+            project={project}
+            LPToken={LPToken}
+            tosBalance={tosBalance}
+            projTokenBalance={projTokenBalance}
+          />
+        )
+      ) : isPool ? (
+        isLpToken ? (
+          <LPCompCond4
+            vault={vault}
+            project={project}
+            LPToken={LPToken}
+            tosBalance={tosBalance}
+            projTokenBalance={projTokenBalance}
+            mint={mint}
+            isAdmin={isAdmin}
+            npm={NPM}
+            collect={collect}
+          />
+        ) : (
+          <LPCompCond3
+            project={project}
+            tosBalance={tosBalance}
+            projTokenBalance={projTokenBalance}
+            isAdmin={isAdmin}
+            InitialLiquidityCompute={InitialLiquidityCompute}
+            mint={mint}
+          />
+        )
       ) : (
-        <LPComp
-          vault={vault}
+        <LPCompCond2
           project={project}
-          LPToken={LPToken}
           tosBalance={tosBalance}
           projTokenBalance={projTokenBalance}
-          mint={mint}
           isAdmin={isAdmin}
-          npm={NPM}
-          collect={collect}
+          InitialLiquidityCompute={InitialLiquidityCompute}
         />
       )}
-      <Flex w="100%" justifyContent={'center'} mt='40px'>
+      <Flex w="100%" justifyContent={'center'} mt="40px">
         <Text
           fontFamily={theme.fonts.fld}
           fontSize="15px"
@@ -264,7 +333,520 @@ export const MobileInitialLiquidity: FC<InitialLiquidity> = ({
     </Flex>
   );
 };
-const LPComp: React.FC<LPCompProps> = ({
+const LPCompCond1: React.FC<LPComp1Props> = ({
+  vault,
+  project,
+  LPToken,
+  projTokenBalance,
+  tosBalance,
+}) => {
+  const {colorMode} = useColorMode();
+  const theme = useTheme();
+  const {account, library} = useActiveWeb3React();
+  const network = BASE_PROVIDER._network.name;
+  const [unclaimedTOS, setUnclaimedTOS] = useState<string>('0');
+  const [unclaimedProjTok, setUnclaimedProjTok] = useState<string>('0');
+
+  const gridItemStyle = {
+    display: 'flex',
+    flexDire: 'row',
+    justifyContent: 'space-between',
+    paddingLeft: '20px',
+    paddingRight: '20px',
+    alignItems: 'center',
+  };
+  const leftText = {
+    fontFamily: theme.fonts.fld,
+    fontSize: '14px',
+    color: colorMode === 'light' ? '#7e8993' : '#9d9ea5',
+  };
+  const rightText = {
+    fontFamily: theme.fonts.fld,
+    fontSize: '14px',
+    fontWeight: 'bold',
+    color: colorMode === 'light' ? '#353c48' : '#fff',
+  };
+  return (
+    <Grid
+      h={'100%'}
+      bg={colorMode === 'light' ? '#fff' : 'transparent'}
+      boxShadow={
+        colorMode === 'light' ? '0 1px 1px 0 rgba(61, 73, 93, 0.1)' : 'none'
+      }
+      border={colorMode === 'light' ? 'none' : 'solid 1px #373737'}
+      borderRadius="15px">
+      <GridItem
+        style={gridItemStyle}
+        h={'60px'}
+        borderBottom={
+          colorMode === 'light' ? '1px solid #e6eaee' : '1px solid #373737'
+        }>
+        <Text
+          fontFamily={theme.fonts.fld}
+          fontSize="14px"
+          color={colorMode === 'light' ? '#353c48' : '#fff'}
+          fontWeight={600}>
+          LP Token
+        </Text>
+      </GridItem>
+      <GridItem
+        style={gridItemStyle}
+        h={'60px'}
+        borderBottom={
+          colorMode === 'light' ? '1px solid #e6eaee' : '1px solid #373737'
+        }>
+        <Text
+          fontFamily={theme.fonts.robto}
+          fontSize="14px"
+          color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+          Please send TOS from Public sale Vault to Initial Liquidity vault.
+        </Text>
+      </GridItem>
+      <GridItem style={gridItemStyle} h={'118px'}>
+        <Flex flexDir={'column'}>
+          <Text style={leftText}>Amount in Initial Liquidity Vault</Text>
+          <Text mt={'15px'} style={rightText}>
+            {' '}
+            {Number(projTokenBalance).toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+            })}
+            {project.tokenSymbol}
+          </Text>
+          <Text style={rightText}>
+            {' '}
+            {Number(tosBalance).toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+            })}{' '}
+            {'TOS'}
+          </Text>
+        </Flex>
+      </GridItem>
+    </Grid>
+  );
+};
+
+const LPCompCond2: React.FC<LPComp2Props> = ({
+  projTokenBalance,
+  tosBalance,
+  project,
+  isAdmin,
+  InitialLiquidityCompute,
+}) => {
+  const {colorMode} = useColorMode();
+  const theme = useTheme();
+  const {account, library, chainId} = useActiveWeb3React();
+  const network = BASE_PROVIDER._network.name;
+  const gridItemStyle = {
+    display: 'flex',
+    flexDire: 'row',
+    justifyContent: 'space-between',
+    paddingLeft: '20px',
+    paddingRight: '20px',
+    alignItems: 'center',
+  };
+  const leftText = {
+    fontFamily: theme.fonts.fld,
+    fontSize: '14px',
+    color: colorMode === 'light' ? '#7e8993' : '#9d9ea5',
+  };
+  const rightText = {
+    fontFamily: theme.fonts.fld,
+    fontSize: '14px',
+    fontWeight: 'bold',
+    color: colorMode === 'light' ? '#353c48' : '#fff',
+  };
+  const themeDesign = {
+    border: {
+      light: 'solid 1px #e6eaee',
+      dark: 'solid 1px #373737',
+    },
+    font: {
+      light: 'black.300',
+      dark: 'gray.475',
+    },
+    tosFont: {
+      light: '#2a72e5',
+      dark: 'black.100',
+    },
+    borderDashed: {
+      light: 'dashed 1px #dfe4ee',
+      dark: 'dashed 1px #535353',
+    },
+    buttonColorActive: {
+      light: 'gray.225',
+      dark: 'gray.0',
+    },
+    buttonColorInactive: {
+      light: '#c9d1d8',
+      dark: '#777777',
+    },
+    headerFont: {
+      light: '#353c48',
+      dark: '#fff',
+    },
+  };
+  const bn = require('bignumber.js');
+  useEffect(() => {
+    getRatio();
+  }, [account, project]);
+
+  const getRatio = () => {
+    const decimal = Number(project.tosPrice);
+    const x = new Fraction(decimal);
+    return [x.d, x.n];
+  };
+
+  const encodePriceSqrt = (reserve1: number, reserve0: number) => {
+    return new bn(reserve1.toString())
+      .div(reserve0.toString())
+      .sqrt()
+      .multipliedBy(new bn(2).pow(96))
+      .integerValue(3)
+      .toFixed();
+  };
+
+  const createPool = async () => {
+    if (account === null || account === undefined || library === undefined) {
+      return;
+    }
+    const signer = getSigner(library, account);
+
+    const computePoolAddress = await InitialLiquidityCompute.connect(
+      signer,
+    ).computePoolAddress(TOS_ADDRESS, project.tokenAddress, 3000);
+
+    try {
+      const receipt = await InitialLiquidityCompute.connect(
+        signer,
+      ).setInitialPriceAndCreatePool(
+        getRatio()[0],
+        getRatio()[1],
+        encodePriceSqrt(getRatio()[0], getRatio()[1]),
+      );
+      store.dispatch(setTxPending({tx: true}));
+      if (receipt) {
+        toastWithReceipt(receipt, setTxPending, 'Launch');
+        await receipt.wait();
+        if (chainId) {
+          const createPoo = addPool({
+            chainId: chainId,
+            poolName: `TOS / ${project.tokenSymbol}`,
+            poolAddress: computePoolAddress[0],
+            token0Address: TOS_ADDRESS,
+            token1Address: project.tokenAddress,
+            token0Image:
+              'https://tonstarter-symbols.s3.ap-northeast-2.amazonaws.com/tos-symbol%403x.png',
+            token1Image: project.tokenSymbolImage,
+            feeTier: 3000,
+          });
+        }
+      }
+    } catch (e) {
+      store.dispatch(setTxPending({tx: false}));
+      store.dispatch(
+        //@ts-ignore
+        openToast({
+          payload: {
+            status: 'error',
+            title: 'Tx fail to send',
+            description: `something went wrong`,
+            duration: 5000,
+            isClosable: true,
+          },
+        }),
+      );
+    }
+  };
+
+  return (
+    <Grid
+      h={'100%'}
+      bg={colorMode === 'light' ? '#fff' : 'transparent'}
+      boxShadow={
+        colorMode === 'light' ? '0 1px 1px 0 rgba(61, 73, 93, 0.1)' : 'none'
+      }
+      border={colorMode === 'light' ? 'none' : 'solid 1px #373737'}
+      borderRadius="15px">
+      <GridItem
+        style={gridItemStyle}
+        h={'60px'}
+        borderBottom={
+          colorMode === 'light' ? '1px solid #e6eaee' : '1px solid #373737'
+        }>
+        <Text
+          fontFamily={theme.fonts.fld}
+          fontSize="14px"
+          color={colorMode === 'light' ? '#353c48' : '#fff'}
+          fontWeight={600}>
+          LP Token
+        </Text>
+        <Button
+          fontSize={'12px'}
+          w={'140px'}
+          h={'40px'}
+          mt={'5px'}
+          bg={'#257eee'}
+          color={'#ffffff'}
+          px={'7px'}
+          fontWeight={'normal'}
+          isDisabled={!isAdmin}
+          _disabled={{
+            color: colorMode === 'light' ? '#86929d' : '#838383',
+            bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+            cursor: 'not-allowed',
+          }}
+          _hover={
+            !isAdmin
+              ? {}
+              : {
+                  background: 'transparent',
+                  border: 'solid 1px #2a72e5',
+                  color: themeDesign.tosFont[colorMode],
+                  cursor: 'pointer',
+                  width: '152px',
+                  whiteSpace: 'normal',
+                }
+          }
+          _focus={
+            !isAdmin
+              ? {}
+              : {
+                  background: '#2a72e5',
+                  border: 'solid 1px #2a72e5',
+                  color: '#fff',
+                  width: '152px',
+                  whiteSpace: 'normal',
+                }
+          }
+          _active={
+            !isAdmin
+              ? {}
+              : {
+                  background: '#2a72e5',
+                  border: 'solid 1px #2a72e5',
+                  color: '#fff',
+                  width: '152px',
+                  whiteSpace: 'normal',
+                }
+          }
+          whiteSpace={'normal'}
+          onClick={() => createPool()}>
+          Approve to Create Pool & Set Initial Price
+        </Button>
+      </GridItem>
+      <GridItem
+        style={gridItemStyle}
+        h={'114px'}
+        borderBottom={
+          colorMode === 'light' ? '1px solid #e6eaee' : '1px solid #373737'
+        }>
+        <Flex flexDir={'column'}>
+          <Text style={leftText}>Amount in Initial Liquidity Vault</Text>
+          <Text mt={'15px'} style={rightText}>
+            {' '}
+            {Number(projTokenBalance).toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+            })}
+            {project.tokenSymbol}
+          </Text>
+          <Text style={rightText}>
+            {' '}
+            {Number(tosBalance).toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+            })}{' '}
+            {'TOS'}
+          </Text>
+        </Flex>
+      </GridItem>
+      <GridItem style={gridItemStyle} h={'104px'}>
+        <Flex flexDir={'column'}>
+          <Text
+            fontFamily={theme.fonts.fld}
+            fontSize="14px"
+            color={colorMode === 'light' ? '#353c48' : '#fff'}
+            fontWeight={600}>
+            Details
+          </Text>
+          <Flex>
+            <Text
+              fontFamily={theme.fonts.fld}
+              fontSize="13px"
+              color={colorMode === 'light' ? '#808992' : '#949494'}>
+              Exchange Ratio :
+            </Text>
+            <Text
+              ml={'2.5px'}
+              fontFamily={theme.fonts.fld}
+              fontSize="13px"
+              color={colorMode === 'light' ? '#3d495d' : '#f3f4f1'}>
+              1 TOS = {project.tosPrice} {project.tokenSymbol}
+            </Text>
+          </Flex>
+        </Flex>
+      </GridItem>
+    </Grid>
+  );
+};
+
+const LPCompCond3: React.FC<LPComp3Props> = ({
+  projTokenBalance,
+  tosBalance,
+  project,
+  isAdmin,
+  InitialLiquidityCompute,
+  mint,
+}) => {
+  const {colorMode} = useColorMode();
+  const theme = useTheme();
+  const gridItemStyle = {
+    display: 'flex',
+    flexDire: 'row',
+    justifyContent: 'space-between',
+    paddingLeft: '20px',
+    paddingRight: '20px',
+    alignItems: 'center',
+  };
+  const leftText = {
+    fontFamily: theme.fonts.fld,
+    fontSize: '14px',
+    color: colorMode === 'light' ? '#7e8993' : '#9d9ea5',
+  };
+  const rightText = {
+    fontFamily: theme.fonts.fld,
+    fontSize: '14px',
+    fontWeight: 'bold',
+    color: colorMode === 'light' ? '#353c48' : '#fff',
+  };
+  const themeDesign = {
+    border: {
+      light: 'solid 1px #e6eaee',
+      dark: 'solid 1px #373737',
+    },
+    font: {
+      light: 'black.300',
+      dark: 'gray.475',
+    },
+    tosFont: {
+      light: '#2a72e5',
+      dark: 'black.100',
+    },
+    borderDashed: {
+      light: 'dashed 1px #dfe4ee',
+      dark: 'dashed 1px #535353',
+    },
+    buttonColorActive: {
+      light: 'gray.225',
+      dark: 'gray.0',
+    },
+    buttonColorInactive: {
+      light: '#c9d1d8',
+      dark: '#777777',
+    },
+    headerFont: {
+      light: '#353c48',
+      dark: '#fff',
+    },
+  };
+
+  return (
+    <Grid
+      h={'100%'}
+      bg={colorMode === 'light' ? '#fff' : 'transparent'}
+      boxShadow={
+        colorMode === 'light' ? '0 1px 1px 0 rgba(61, 73, 93, 0.1)' : 'none'
+      }
+      border={colorMode === 'light' ? 'none' : 'solid 1px #373737'}
+      borderRadius="15px">
+      <GridItem
+        style={gridItemStyle}
+        h={'60px'}
+        borderBottom={
+          colorMode === 'light' ? '1px solid #e6eaee' : '1px solid #373737'
+        }>
+        <Text
+          fontFamily={theme.fonts.fld}
+          fontSize="14px"
+          color={colorMode === 'light' ? '#353c48' : '#fff'}
+          fontWeight={600}>
+          LP Token
+        </Text>
+        <Button
+          fontSize={'12px'}
+          w={'100px'}
+          h={'32px'}
+          px={0}
+          mt={'5px'}
+          fontWeight={500}
+          bg={'#257eee'}
+          color={'#ffffff'}
+          // isDisabled={createdPool === ZERO_ADDRESS}
+          _disabled={{
+            color: colorMode === 'light' ? '#86929d' : '#838383',
+            bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+            cursor: 'not-allowed',
+          }}
+          _hover={{}}
+          _focus={{}}
+          _active={{}}
+          whiteSpace={'normal'}
+          onClick={mint}>
+          Mint Lp Token
+        </Button>
+      </GridItem>
+      <GridItem
+        style={gridItemStyle}
+        h={'114px'}
+        borderBottom={
+          colorMode === 'light' ? '1px solid #e6eaee' : '1px solid #373737'
+        }>
+        <Flex flexDir={'column'}>
+          <Text style={leftText}>Amount in Initial Liquidity Vault</Text>
+          <Text mt={'15px'} style={rightText}>
+            {' '}
+            {Number(projTokenBalance).toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+            })}
+            {project.tokenSymbol}
+          </Text>
+          <Text style={rightText}>
+            {' '}
+            {Number(tosBalance).toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+            })}{' '}
+            {'TOS'}
+          </Text>
+        </Flex>
+      </GridItem>
+      <GridItem style={gridItemStyle} h={'104px'}>
+        <Flex flexDir={'column'}>
+          <Text
+            fontFamily={theme.fonts.fld}
+            fontSize="14px"
+            color={colorMode === 'light' ? '#353c48' : '#fff'}
+            fontWeight={600}>
+            Details
+          </Text>
+          <Flex>
+            <Text
+              fontFamily={theme.fonts.fld}
+              fontSize="13px"
+              color={colorMode === 'light' ? '#808992' : '#949494'}>
+              Exchange Ratio :
+            </Text>
+            <Text
+              ml={'2.5px'}
+              fontFamily={theme.fonts.fld}
+              fontSize="13px"
+              color={colorMode === 'light' ? '#3d495d' : '#f3f4f1'}>
+              1 TOS = {project.tosPrice} {project.tokenSymbol}
+            </Text>
+          </Flex>
+        </Flex>
+      </GridItem>
+    </Grid>
+  );
+};
+const LPCompCond4: React.FC<LPComp4Props> = ({
   vault,
   project,
   LPToken,
@@ -463,7 +1045,7 @@ const LPComp: React.FC<LPCompProps> = ({
           <Text style={rightText} mt={'15px'}>
             {Number(unclaimedProjTok).toLocaleString(undefined, {
               minimumFractionDigits: 2,
-            })} {' '}
+            })}{' '}
             {project.tokenSymbol}
           </Text>
           <Text style={rightText} mt={'5px'}>

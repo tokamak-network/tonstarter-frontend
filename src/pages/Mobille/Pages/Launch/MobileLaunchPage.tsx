@@ -6,11 +6,12 @@ import {
   Text,
   useColorMode,
 } from '@chakra-ui/react';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {PageHeader} from 'components/PageHeader';
 import {useRouteMatch} from 'react-router-dom';
-  import AllProjects from './Components/MobileAllProjects';
-
+import AllProjects from './Components/MobileAllProjects';
+import {motion, AnimatePresence} from 'framer-motion';
+import {wrap} from 'popmotion';
 import MobileLaunchPageBackground from 'assets/banner/MobileLaunchPageBackground.png';
 import {useModal} from 'hooks/useModal';
 //   import ConfirmTermsModal from './components/modals/ConfirmTerms';
@@ -25,13 +26,36 @@ const MobileLaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
   const match = useRouteMatch();
+  const [page, setPage] = useState(0);
+  const [direction, setDirection] = useState(0)
 
+  const infoList = [
+    {name: 'Raised Capital', info: '$ 7,115,401.98'},
+    {name: 'TOS Pairs (in Uniswap)', info: '23'},
+  ];
+  const infoIndex = wrap(0, infoList.length, page);
   const {
     //@ts-ignore
     params: {id},
   } = match;
   const {url} = match;
   const {active, activate, connector} = useActiveWeb3React();
+  useEffect(() => {
+    setInterval(() => {
+
+      if (page === 1) {        
+        paginate(-1);
+      } else {        
+        paginate(1);
+      }
+    }, 2000);
+    /*eslint-disable*/
+  }, []);
+
+  const paginate = (newDirection: number) => {
+    setPage(x => x + newDirection);
+    setDirection(newDirection)
+  };
 
   const themeDesign = {
     border: {
@@ -60,7 +84,29 @@ const MobileLaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
     },
   };
 
+  const variants = {
+    enter: (direction: number) => {
+      return {
+        y: direction > 0 ? -45 : +45,
+        opacity: 0,
+      };
+    },
+    center: {
+      zIndex: 1,
+      y: 0,
+      opacity: 1,
+    },
+    // exit: (direction: number) => {
+    //   return {
+    //     zIndex: 0,
+    //     y: direction < 0 ? 45 : -45,
+    //     opacity: 0
+    //   };
+    // }
+  };
+
   const {openAnyModal} = useModal();
+
   return (
     <Flex flexDir={'column'} justifyContent={'center'} w={'100%'}>
       <Flex
@@ -103,40 +149,73 @@ const MobileLaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
             </Text>
           </Flex>
           <Flex
+            flexDir={'column'}
             // justifyContent={'center'}
             // alignItems={'center'}
             background={'rgba(7, 7, 10, .8)'}
             width="100%"
             // position={'absolute'}
           >
-            <Flex
-              justifyContent={'space-between'}
-              flexDir="row"
-              alignItems={'center'}
-              h={'45px'}
-              px={'20px'}
-              w={'100%'}
-              fontFamily={theme.fonts.fld}>
-              <Text color={'yellow'} fontSize={'14px'}>
-                Raised Capital
-              </Text>
-              <Text color={'#fff'} fontSize={'15px'}>
-                $2,646,790.91
-              </Text>
-            </Flex>
-            {/* <Flex
-            justifyContent={'space-between'}
-            flexDir="row"
-            alignItems={'center'}
-            h={'45px'}
-            px={'20px'}
-            w={'100%'}
-            fontFamily={theme.fonts.fld}>
-            <Text color={'yellow'} fontSize={'14px'}>Raised Capital</Text>
-            <Text color={'#fff'} fontSize={'15px'}>
-              $2,646,790.91
-            </Text>
-          </Flex> */}
+            <AnimatePresence custom={direction} initial={false}>
+              <motion.div
+                style={{height: '45px', overflow: 'hidden'}}
+                custom={direction}
+                variants={variants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                key={page}
+                transition={{
+                  y: {type: 'spring', stiffness: 300, damping: 30}
+                }}>
+                <Flex
+                  justifyContent={'space-between'}
+                  flexDir="row"
+                  alignItems={'center'}
+                  h={'45px'}
+                  px={'20px'}
+                  w={'100%'}
+                  fontFamily={theme.fonts.fld}>
+                  <Text color={'yellow'} fontSize={'14px'}>
+                    {infoList[infoIndex].name}
+                  </Text>
+                  <Text color={'#fff'} fontSize={'15px'}>
+                    {infoList[infoIndex].info}
+                  </Text>
+                </Flex>
+
+                {/* <Flex
+                  justifyContent={'space-between'}
+                  flexDir="row"
+                  alignItems={'center'}
+                  h={'45px'}
+                  px={'20px'}
+                  w={'100%'}
+                  fontFamily={theme.fonts.fld}>
+                  <Text color={'yellow'} fontSize={'14px'}>
+                    Raised Capital
+                  </Text>
+                  <Text color={'#fff'} fontSize={'15px'}>
+                    $2,646,790.91
+                  </Text>
+                </Flex> */}
+                {/* <Flex
+                  justifyContent={'space-between'}
+                  flexDir="row"
+                  alignItems={'center'}
+                  h={'45px'}
+                  px={'20px'}
+                  w={'100%'}
+                  fontFamily={theme.fonts.fld}>
+                  <Text color={'yellow'} fontSize={'14px'}>
+                    Raised Capital
+                  </Text>
+                  <Text color={'#fff'} fontSize={'15px'}>
+                    $2,646,790.91
+                  </Text>
+                </Flex> */}
+              </motion.div>
+            </AnimatePresence>
           </Flex>
         </Flex>
       </Flex>
@@ -146,7 +225,7 @@ const MobileLaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
         justifyContent={'center'}
         flexDirection={'column'}
         alignItems={'center'}>
-          <AllProjects/>
+        <AllProjects />
       </Flex>
     </Flex>
   );

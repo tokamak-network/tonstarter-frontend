@@ -19,7 +19,6 @@ import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import * as TOSStakerAbi from 'services/abis/TOSStakerAbi.json';
 import {ethers} from 'ethers';
-import commafy from 'utils/commafy';
 import momentTZ from 'moment-timezone';
 import moment from 'moment';
 import * as TONStakerAbi from 'services/abis/TONStakerAbi.json';

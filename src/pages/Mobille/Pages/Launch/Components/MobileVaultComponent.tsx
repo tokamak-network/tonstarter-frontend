@@ -69,7 +69,7 @@ const TabComponent = (props: {project: any; vault: string; index: number}) => {
 export const MobileVaultComponent: FC<MobileVaultComponent> = ({project}) => {
   const [tabIndex, setTabIndex] = useState(0);
   const [transX, setTransX] = useState<number>(0);
-  const [flowIndex, setFlowIndex] = useState<number>(6);
+  const [flowIndex, setFlowIndex] = useState<number>(3);
   const [currentVault, setCurrentVault] = useState<string>('Public');
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const {colorMode} = useColorMode();
@@ -108,7 +108,7 @@ export const MobileVaultComponent: FC<MobileVaultComponent> = ({project}) => {
   };
 
   return (
-    <Flex flexDirection={'column'} mt={'20px'} mx={'-15px'}>
+    <Flex flexDirection={'column'} mt={'20px'} mx={'-10px'}>
       {/* <Tabs w={'100%'} onChange={(index) => setTabIndex(index)}>
         <TabList>
           {project.vaults.map((vault: any, index: number) => {
@@ -135,12 +135,12 @@ export const MobileVaultComponent: FC<MobileVaultComponent> = ({project}) => {
           hoverImg={arrowHoverLeft}
           additionalStyles={{height: '30px'}}
           action={() => {
-            if (flowIndex - project.vaults.length >= 0 || flowIndex > 6) {
-              setTransX(transX + 160);
+            if (flowIndex - project.vaults.length >= 0 || flowIndex > 6 ) {
+              setTransX(transX + 104);
               setFlowIndex(flowIndex - 1);
             }
           }}></HoverImage>
-        <Flex w={'100%'} alignItems="center" overflow={'hidden'} mx={'3px'}>
+        <Flex w={'312px'} alignItems="center" overflow={'hidden'} mx={'3px'}>
           <motion.div
             animate={{x: transX}}
             style={{display: 'flex', width: '100%'}}>
@@ -183,11 +183,10 @@ export const MobileVaultComponent: FC<MobileVaultComponent> = ({project}) => {
           additionalStyles={{height: '30px'}}
           action={() => {
             if (flowIndex < project.vaults.length) {
-              setTransX(transX - 160);
+              setTransX(transX - 104);
               setFlowIndex(flowIndex + 1);
             }
-            // setTransX(transX - 160);
-            // setFlowIndex(flowIndex + 1);
+         
           }}></HoverImage>
       </Flex>
       <TabComponent
