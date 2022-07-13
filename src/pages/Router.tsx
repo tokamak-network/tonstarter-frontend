@@ -24,9 +24,10 @@ import {MobilePreOpen} from './PreOpen/Index';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {StarterDetail} from './Starter/StarterDetail';
-import {MobileHeader} from './Mobille/Components/MobileHeader';
-import MobileOpenCampagin from './Mobille/Pages/Launch/Index';
-import MobileProjectScreen from './Mobille/Pages/Launch/MobileProjectScreen';
+import {MobileHeader} from './Mobile/Components/MobileHeader';
+import MobileOpenCampagin from './Mobile/Pages/Launch/Index';
+import MobileProjectScreen from './Mobile/Pages/Launch/MobileProjectScreen';
+import MobileAirDrop from './Mobile/Pages/AirDrop/index'
 import {
   CreateProject,
   ListingProjects,
@@ -177,6 +178,7 @@ export const Router: FC<RouterProps> = () => {
         <MobileHeader account={account}   walletopen={() => handleWalletModalOpen('wallet')}/>
         <div style={{flex: 1}}>
         <Switch>
+        <Route exact path="/myairdrop" component={MobileAirDrop} />
         <Route exact path={`/launch`} component={MobileOpenCampagin} />
         <Route
             exact

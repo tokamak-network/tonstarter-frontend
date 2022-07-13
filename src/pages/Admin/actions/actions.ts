@@ -258,8 +258,6 @@ export const claimMultipleTokens = async (args: I_CallContract2) => {
       library,
     );
 
-    console.log('args:', args);
-
     if (account === undefined || account === null || library === undefined) {
       return;
     }
