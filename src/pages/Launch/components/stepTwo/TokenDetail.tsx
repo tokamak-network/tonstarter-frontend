@@ -378,6 +378,57 @@ const SubTitle = (props: {
             </Flex>
           </Tooltip>
         );
+      case 'Public Round 1': {
+        const tooltipLabel = Number(inputVal) / values.projectTokenPrice;
+        return (
+          <Tooltip
+            label={` = ${isNaN(tooltipLabel) ? '0' : tooltipLabel} TON`}
+            placement={'top'}
+            minW={'120px'}
+            minH={'32px'}
+            textAlign="center"
+            lineHeight={'32px'}>
+            <Flex>
+              <InputField
+                w={120}
+                h={32}
+                fontSize={13}
+                value={inputVal}
+                setValue={setInputVal}
+                formikName={formikName}
+                inputRef={inputRef}
+                style={{textAlign: 'right'}}
+                tokenSymbol={values.tokenSymbol}></InputField>
+            </Flex>
+          </Tooltip>
+        );
+      }
+      case 'Public Round 2': {
+        const tooltipLabel = Number(inputVal) / values.projectTokenPrice;
+        return (
+          <Tooltip
+            label={` = ${isNaN(tooltipLabel) ? '0' : tooltipLabel} TON`}
+            placement={'top'}
+            minW={'120px'}
+            minH={'32px'}
+            textAlign="center"
+            lineHeight={'32px'}>
+            <Flex>
+              <InputField
+                w={120}
+                h={32}
+                fontSize={13}
+                value={inputVal}
+                setValue={setInputVal}
+                formikName={formikName}
+                inputRef={inputRef}
+                style={{textAlign: 'right'}}
+                tokenSymbol={values.tokenSymbol}></InputField>
+            </Flex>
+          </Tooltip>
+        );
+      }
+
       default:
         return (
           <InputField
