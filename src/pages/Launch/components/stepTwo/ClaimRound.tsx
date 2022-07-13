@@ -166,9 +166,6 @@ const ClaimRound = () => {
 
   let tokenAcc = 0;
 
-  console.log('--totalClaimAmount--');
-  console.log(totalClaimAmount);
-
   return (
     <Flex flexDir={'column'} w={'100%'}>
       <Box

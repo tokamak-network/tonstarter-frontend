@@ -177,9 +177,6 @@ const SubTitle = (props: {
       const TOKEN1_SYMBOL = await TOKEN1_CONTRACT.symbol();
       const tokenPair = `${TOKEN0_SYMBOL}-${TOKEN1_SYMBOL}`;
 
-      console.log('--tokenPair--');
-      console.log(tokenPair);
-
       return dispatch(
         saveTempVaultData({
           data: {
@@ -973,6 +970,35 @@ const PublicTokenDetail = (props: {
     ) {
     }
   }, [selectedVaultType, selectedVaultDetail]);
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (
+      tempVaultData.snapshot &&
+      tempVaultData.whitelist === undefined &&
+      tempVaultData.whitelistEnd === undefined &&
+      tempVaultData.publicRound1 === undefined &&
+      tempVaultData.publicRound1End === undefined &&
+      tempVaultData.publicRound2 === undefined &&
+      tempVaultData.publicRound2End === undefined
+    ) {
+      const oneDaySec = 86400;
+      dispatch(
+        saveTempVaultData({
+          data: {
+            ...tempVaultData,
+            whitelist: tempVaultData.snapshot + oneDaySec,
+            whitelistEnd: tempVaultData.snapshot + oneDaySec * 2,
+            publicRound1: tempVaultData.snapshot + 1 + oneDaySec * 2,
+            publicRound1End: tempVaultData.snapshot + oneDaySec * 3,
+            publicRound2: tempVaultData.snapshot + 1 + oneDaySec * 4,
+            publicRound2End: tempVaultData.snapshot + oneDaySec * 5,
+          },
+        }),
+      );
+    }
+  }, [tempVaultData.snapshot]);
 
   if (firstColData && secondColData === null && thirdColData === null) {
     return (
