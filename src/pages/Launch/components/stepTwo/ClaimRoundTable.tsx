@@ -74,7 +74,7 @@ const ClaimRoundTable = () => {
   };
 
   const {
-    data: {claimRoundTable, selectedVaultIndex},
+    data: {claimRoundTable, selectedVaultIndex, uncompletedVaultIndex},
   } = useAppSelector(selectLaunch);
   const dispatch = useAppDispatch();
   const {values} = useFormikContext<Projects['CreateProject']>();

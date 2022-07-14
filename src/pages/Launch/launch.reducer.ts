@@ -21,7 +21,13 @@ interface LaunchState {
       claimRound: boolean;
     };
     claimRoundTable: VaultSchedule[] | undefined;
-    uncompletedVaultIndex: any[] | undefined;
+    uncompletedVaultIndex:
+      | {
+          step2FilledOut: boolean[];
+          result: boolean;
+          fileds: any[];
+        }
+      | undefined;
     tempHash: string | undefined;
   };
   loading: 'idle' | 'pending';

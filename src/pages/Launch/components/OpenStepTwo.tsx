@@ -34,7 +34,7 @@ const OpenStepTwo = (props: {
     console.log('--validation--');
     console.log(validation.fileds);
     setDisableForStep2(validation.result);
-    dispatch(setUncompletedVaultIndex({data: validation.step2FilledOut}));
+    dispatch(setUncompletedVaultIndex({data: validation}));
   }, [values, setDisableForStep2]);
 
   return (

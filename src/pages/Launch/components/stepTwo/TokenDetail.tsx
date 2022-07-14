@@ -90,6 +90,7 @@ const SubTitle = (props: {
   isSecondColData?: boolean;
   formikName: string;
   inputRef?: any;
+  err?: boolean;
 }) => {
   const {
     leftTitle,
@@ -100,6 +101,7 @@ const SubTitle = (props: {
     isSecondColData,
     formikName,
     inputRef,
+    err,
   } = props;
   const [inputVal, setInputVal] = useState<number | string>(
     //@ts-ignore
@@ -641,12 +643,15 @@ const SubTitle = (props: {
           </Flex>
         )
       ) : String(rightTitle)?.includes('~') ? (
-        <Flex flexDir={'column'} textAlign={'right'}>
+        <Flex
+          flexDir={'column'}
+          color={err ? '#ff3b3b' : ''}
+          textAlign={'right'}>
           <Text>{String(rightTitle).split('~')[0]}</Text>
           <Text>~ {String(rightTitle).split('~')[1]}</Text>
         </Flex>
       ) : (
-        <Flex>
+        <Flex color={err ? '#ff3b3b' : ''}>
           {leftTitle === 'Address for receiving funds' ? (
             <Tooltip label={rightTitle} placement={'top'}>
               <Text textAlign={'right'}>
@@ -685,7 +690,10 @@ const SubTitle = (props: {
           )}
 
           {percent !== undefined && (
-            <Text ml={'5px'} color={'#7e8993'} textAlign={'right'}>
+            <Text
+              ml={'5px'}
+              color={err ? '#ff3b3b' : '#7e8993'}
+              textAlign={'right'}>
               {`(${percent.toFixed(3).replace(/\.(\d\d)\d?$/, '.$1') || '-'}%)`}
             </Text>
           )}
@@ -702,8 +710,10 @@ const STOSTier = (props: {
   isLast?: boolean;
   isEdit: boolean;
   inputRef: any;
+  err: boolean;
 }) => {
-  const {tier, requiredTos, allocatedToken, isLast, isEdit, inputRef} = props;
+  const {tier, requiredTos, allocatedToken, isLast, isEdit, inputRef, err} =
+    props;
   const {colorMode} = useColorMode();
   const [inputVal, setInputVal] = useState(requiredTos);
   const [inputVal2, setInputVal2] = useState(allocatedToken);
@@ -787,7 +797,7 @@ const STOSTier = (props: {
           </Flex>
         </>
       ) : (
-        <>
+        <Flex color={err ? '#ff3b3b' : ''}>
           <Text w={'125px'}>{commafy(requiredTos) || '-'}</Text>
           <Flex w={'137px'} justifyContent={'center'} alignItems={'center'}>
             <Text>{commafy(allocatedToken) || '-'}</Text>
@@ -806,7 +816,7 @@ const STOSTier = (props: {
                   }%)`}
             </Text>
           </Flex>
-        </>
+        </Flex>
       )}
     </Flex>
   );
@@ -900,7 +910,10 @@ const PublicTokenDetail = (props: {
           const allocatedToken_2_num = Number(allocatedToken_2.value);
           const allocatedToken_3_num = Number(allocatedToken_3.value);
           const allocatedToken_4_num = Number(allocatedToken_4.value);
+
           const tokenIsOver = pr1TokenNum + pr2TokenNum - tokenAllocation > 0;
+          const tokenIsNotEnough =
+            pr1TokenNum + pr2TokenNum - tokenAllocation < 0;
           const stosTokenAllocationOver =
             allocatedToken_1_num +
               allocatedToken_2_num +
@@ -970,6 +983,19 @@ const PublicTokenDetail = (props: {
           }
 
           if (tokenIsOver) {
+            publicRound1Allocation.style.border = errBorderStyle;
+            publicRound2Allocation.style.border = errBorderStyle;
+
+            toastMsg({
+              title: 'Token Allocation to this vault is over',
+              description:
+                'You have to put less token or adjust token allocation for public rounds',
+              duration: 2000,
+              isClosable: true,
+              status: 'error',
+            });
+            return setIsConfirm(true);
+          } else if (tokenIsNotEnough) {
             publicRound1Allocation.style.border = errBorderStyle;
             publicRound2Allocation.style.border = errBorderStyle;
 
@@ -1125,41 +1151,21 @@ const PublicTokenDetail = (props: {
                   .toString()
                   .match(/^\d+(?:\.\d{0,2})?/)}%)`
           }></MainTitle>
-        {firstColData?.map(
-          (
-            data: {
-              title: string;
-              content: string | undefined;
-              percent?: number | undefined;
-              formikName: string;
-            },
-            index: number,
-          ) => {
-            const {title, content, percent, formikName} = data;
-            return (
-              <SubTitle
-                key={title}
-                leftTitle={title}
-                rightTitle={content}
-                isLast={index + 1 === firstColData.length}
-                inputRef={inputRef}
-                percent={percent}
-                isEdit={isEdit}
-                formikName={formikName}></SubTitle>
-            );
-          },
-        )}
-        {/* {firstColData === null && (
-          <Flex
-            alignItems={'center'}
-            justifyContent="center"
-            h={'60px'}
-            fontSize={13}
-            color={'#808992'}
-            fontWeight={600}>
-            <Text>There is no Token value.</Text>
-          </Flex>
-        )} */}
+        {firstColData?.map((data: any, index: number) => {
+          const {title, content, percent, formikName, err} = data;
+          return (
+            <SubTitle
+              key={title}
+              leftTitle={title}
+              rightTitle={content}
+              isLast={index + 1 === firstColData.length}
+              inputRef={inputRef}
+              percent={percent}
+              isEdit={isEdit}
+              formikName={formikName}
+              err={err}></SubTitle>
+          );
+        })}
       </GridItem>
       <GridItem
         borderX={
@@ -1171,8 +1177,13 @@ const PublicTokenDetail = (props: {
             .tz(momentTZ.tz.guess())
             .format('Z')}`}></MainTitle>
         {secondColData?.map(
-          (data: {title: string; content: string; formikName: string}) => {
-            const {title, content, formikName} = data;
+          (data: {
+            title: string;
+            content: string;
+            formikName: string;
+            err: boolean;
+          }) => {
+            const {title, content, formikName, err} = data;
             return (
               <SubTitle
                 key={title}
@@ -1180,7 +1191,8 @@ const PublicTokenDetail = (props: {
                 rightTitle={content}
                 isEdit={isEdit}
                 isSecondColData={true}
-                formikName={formikName}></SubTitle>
+                formikName={formikName}
+                err={err}></SubTitle>
             );
           },
         )}
@@ -1219,7 +1231,7 @@ const PublicTokenDetail = (props: {
           </Flex>
         )}
         {thirdColData?.map((data: any, index: number) => {
-          const {tier, requiredTos, allocatedToken} = data;
+          const {tier, requiredTos, allocatedToken, err} = data;
           return (
             <STOSTier
               key={tier}
@@ -1228,7 +1240,8 @@ const PublicTokenDetail = (props: {
               allocatedToken={allocatedToken}
               isLast={index + 1 === thirdColData.length}
               isEdit={isEdit}
-              inputRef={inputRef}></STOSTier>
+              inputRef={inputRef}
+              err={err}></STOSTier>
           );
         })}
         {/* {thirdColData === null && (

@@ -1,7 +1,5 @@
 import {Projects, VaultSchedule} from '@Launch/types';
-import {claim} from '@Pools/actions';
 import {isArray} from 'lodash';
-import {Dispatch, SetStateAction} from 'react';
 import {toChecksumAddress} from 'web3-utils';
 
 function validateFormikValues(
@@ -64,6 +62,44 @@ function validateFormikValues(
           // console.log(vault);
           // console.log(isMatchingTotalAllocation);
           // console.log(vault.vaultTokenAllocation);
+
+          //For public vault only
+          if (vault.index === 0) {
+            const {
+              publicRound1Allocation,
+              publicRound2Allocation,
+              vaultTokenAllocation,
+              stosTier,
+            } = vault;
+            const {oneTier, twoTier, threeTier, fourTier} = stosTier;
+            const numVaultTokenAllocation = Number(vaultTokenAllocation);
+            const numPublicRound1Allocation = Number(publicRound1Allocation);
+            const numPublicRound2Allocation = Number(publicRound2Allocation);
+            const stosTierAllocation =
+              Number(oneTier.allocatedToken) +
+              Number(twoTier.allocatedToken) +
+              Number(threeTier.allocatedToken) +
+              Number(fourTier.allocatedToken);
+
+            //for public1&2
+            if (
+              numVaultTokenAllocation !==
+              numPublicRound1Allocation + numPublicRound2Allocation
+            ) {
+              thisFields.push('publicRound');
+            }
+            //for sTOS Tier
+            if (numVaultTokenAllocation !== stosTierAllocation) {
+              thisFields.push('stos tier');
+            }
+          }
+          if (
+            isMatchingTotalAllocation === undefined ||
+            isMatchingTotalAllocation === 0
+          ) {
+            thisFields.push('claimTokenAllocation');
+            return result.push(false);
+          }
           if (
             vault.vaultTokenAllocation !== 0 &&
             (vault.vaultTokenAllocation === undefined ||

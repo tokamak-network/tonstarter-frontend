@@ -1,22 +1,8 @@
-import {
-  Box,
-  Flex,
-  Input,
-  InputGroup,
-  Text,
-  useColorMode,
-  useTheme,
-} from '@chakra-ui/react';
+import {Box, Flex, Text, useColorMode, useTheme} from '@chakra-ui/react';
 import StepTitle from '@Launch/components/common/StepTitle';
-import HoverImage from 'components/HoverImage';
 import {useFormikContext} from 'formik';
-import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import PlusIconNormal from 'assets/launch/plus-icon-normal.svg';
-import PlusIconHover from 'assets/launch/plus-icon-hover.svg';
-import MinusIconNormal from 'assets/launch/minus-icon-normal.svg';
-import MinusIconHover from 'assets/launch/minus-icon-hover.svg';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import {CustomButton} from 'components/Basic/CustomButton';
-import {CustomSelectBox} from 'components/Basic';
 import {Projects, VaultAny, VaultSchedule} from '@Launch/types';
 import moment from 'moment';
 import {
@@ -51,7 +37,13 @@ const ClaimRound = () => {
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
 
   const {
-    data: {selectedVault, claimRoundTable, tempVaultData},
+    data: {
+      selectedVault,
+      claimRoundTable,
+      tempVaultData,
+      selectedVaultIndex,
+      uncompletedVaultIndex,
+    },
   } = useAppSelector(selectLaunch);
   const [selectedVaultDetail, setSelectedVaultDetail] = useState([]);
   const vaultsList = values.vaults;
@@ -84,70 +76,22 @@ const ClaimRound = () => {
   //@ts-ignore
   const {claim} = selectedVaultDetail;
   const {totalClaimAmount} = useClaimRound();
-
-  // const setDate = useCallback(() => {
-  //   const claimValue: VaultSchedule[] = claim.map(
-  //     (data: VaultSchedule, index: number) => {
-  //       //@ts-ignore
-  //       const refTimeStamp = selectedVaultDetail.claim[0].claimTime;
-  //       if (refTimeStamp === undefined) {
-  //         return toastMsg({
-  //           status: 'error',
-  //           title: 'Date Time Error',
-  //           description: 'First date time must be filled out',
-  //           duration: 3000,
-  //           isClosable: true,
-  //         });
-  //       }
-  //       const nowTimeStamp =
-  //         index === 0
-  //           ? refTimeStamp
-  //           : moment
-  //               .unix(refTimeStamp)
-  //               .add(index * Number(selectedDay), 'days')
-  //               .unix();
-  //       return {
-  //         claimRound: index + 1,
-  //         claimTime: nowTimeStamp,
-  //         claimTokenAllocation: data.claimTokenAllocation,
-  //       };
-  //     },
-  //   );
-
   const [claimRoundEdit, setClaimRoundEdit] = useState(false);
+  const [tokenAllocationErr, setTokenAllocationErr] = useState<boolean>(false);
 
-  // useEffect(() => {
-  //   const errBorderStyle = '1px solid #ff3b3b';
-  //   const noErrBorderStyle = colorMode === 'light' ? null : null;
-  //   //@ts-ignore
-  //   const vaultTokenAllocation = selectedVaultDetail.vaultTokenAllocation;
-  //   const totalTokenInputs = inputRefs.current.reduce((acc, cur) => {
-  //     if (cur) {
-  //       return acc + Number(cur.value);
-  //     }
-  //   }, 0);
-  //   if (totalTokenInputs > vaultTokenAllocation) {
-  //     inputRefs.current.map((input: any) => {
-  //       input.style.border = errBorderStyle;
-  //     });
-  //     setIsErr(true);
-  //     toastMsg({
-  //       title: 'Token Allocation to this vault is not enough',
-  //       description:
-  //         'You have to put more token or adjust token allocation for claim rounds',
-  //       duration: 2000,
-  //       isClosable: true,
-  //       status: 'error',
-  //     });
-  //   } else {
-  //     inputRefs.current.map((input: any) => {
-  //       if (input) {
-  //         input.style.border = noErrBorderStyle;
-  //       }
-  //     });
-  //     setIsErr(false);
-  //   }
-  // }, [inputRefs, inputVals]);
+  useEffect(() => {
+    if (
+      uncompletedVaultIndex?.fileds &&
+      selectedVaultIndex !== undefined &&
+      uncompletedVaultIndex?.fileds[selectedVaultIndex].length !== 0
+    ) {
+      const hasError = uncompletedVaultIndex?.fileds[
+        selectedVaultIndex
+      ].includes('claimTokenAllocation', 0);
+      return setTokenAllocationErr(hasError);
+    }
+    setTokenAllocationErr(false);
+  }, [uncompletedVaultIndex, selectedVaultIndex]);
 
   const saveConfirm = useCallback(() => {
     if (claimRoundTable && tempVaultData) {
@@ -174,7 +118,10 @@ const ClaimRound = () => {
         justifyContent={'space-between'}
         alignItems="center">
         <Flex w={'100%'}>
-          <StepTitle title={'Claim Round'} fontSize={16}></StepTitle>
+          <StepTitle
+            title={'Claim Round'}
+            fontSize={16}
+            err={tokenAllocationErr}></StepTitle>
           <Flex ml={'5px'}>
             <CustomTooltip
               msg={[
@@ -184,6 +131,16 @@ const ClaimRound = () => {
               toolTipH={'46px'}
               toolTipW={270}></CustomTooltip>
           </Flex>
+          {tokenAllocationErr && (
+            <Flex
+              ml={'25px'}
+              textAlign="center"
+              lineHeight={'36px'}
+              fontSize={13}
+              color={'red.100'}>
+              The information you entered is incorrect.
+            </Flex>
+          )}
         </Flex>
         {claimRoundEdit === false ? (
           <Flex fontSize={13}>
@@ -244,8 +201,10 @@ const ClaimRound = () => {
             d="flex"
             flexDir={'column'}
             textAlign="center"
-            border={middleStyle.border}
-            borderBottomWidth={0}
+            border={
+              tokenAllocationErr ? '1px solid #ff3b3b' : middleStyle.border
+            }
+            // borderBottomWidth={0}
             lineHeight={'42px'}>
             <Flex
               h={'42px'}

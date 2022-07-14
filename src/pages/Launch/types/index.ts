@@ -139,27 +139,32 @@ type PublicTokenColData = {
       content: string | undefined;
       percent: number | undefined;
       formikName: string;
+      err: boolean;
     },
     {
       title: 'Public Round 2';
       content: string | undefined;
       percent: number | undefined;
       formikName: string;
+      err: boolean;
     },
     {
       title: 'Token Allocation for Liquidity Pool (5~50%)';
       content: string | undefined;
       formikName: string;
+      err: boolean;
     },
     {
       title: 'Minimum Fundraising Amount';
       content: string | undefined;
       formikName: string;
+      err: boolean;
     },
     {
       title: 'Address for receiving funds';
       content: string | undefined;
       formikName: string;
+      err: boolean;
     },
   ];
   secondColData: [
@@ -167,21 +172,25 @@ type PublicTokenColData = {
       title: 'Snapshot';
       content: string;
       formikName: string;
+      err: boolean;
     },
     {
       title: 'Whitelist';
       content: string;
       formikName: string;
+      err: boolean;
     },
     {
       title: 'Public Round 1';
       content: string;
       formikName: string;
+      err: boolean;
     },
     {
       title: 'Public Round 2';
       content: string;
       formikName: string;
+      err: boolean;
     },
   ];
   thirdColData: [
@@ -190,24 +199,28 @@ type PublicTokenColData = {
       requiredTos: number | undefined;
       allocatedToken: number | undefined;
       formikName: string;
+      err: boolean;
     },
     {
       tier: '2';
       requiredTos: number | undefined;
       allocatedToken: number | undefined;
       formikName: string;
+      err: boolean;
     },
     {
       tier: '3';
       requiredTos: number | undefined;
       allocatedToken: number | undefined;
       formikName: string;
+      err: boolean;
     },
     {
       tier: '4';
       requiredTos: number | undefined;
       allocatedToken: number | undefined;
       formikName: string;
+      err: boolean;
     },
   ];
   liquidityColData?: [
