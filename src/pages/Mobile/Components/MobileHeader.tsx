@@ -68,7 +68,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
       h={'66px'}
       w={'100%'}
       // bg={colorMode === 'light' ? '#007aff' : '#222222'}
-      bg={match?.isExact? colorMode === 'light'? '#2a72e5' : '#222222' : 'transparent'}
+      bg={match?.isExact? colorMode === 'light'? '#007aff' : '#222222' : 'transparent'}
       alignItems={'center'}>
       <NavLink to="/">
         <Image

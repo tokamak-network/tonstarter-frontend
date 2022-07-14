@@ -27,7 +27,8 @@ import {StarterDetail} from './Starter/StarterDetail';
 import {MobileHeader} from './Mobile/Components/MobileHeader';
 import MobileOpenCampagin from './Mobile/Pages/Launch/Index';
 import MobileProjectScreen from './Mobile/Pages/Launch/MobileProjectScreen';
-import MobileAirDrop from './Mobile/Pages/AirDrop/index'
+import MobileAirDrop from './Mobile/Pages/AirDrop/index';
+import { MobileFLD } from './Mobile/Pages/MobileFLD.';
 import {
   CreateProject,
   ListingProjects,
@@ -178,6 +179,7 @@ export const Router: FC<RouterProps> = () => {
         <MobileHeader account={account}   walletopen={() => handleWalletModalOpen('wallet')}/>
         <div style={{flex: 1}}>
         <Switch>
+        <Route exact path="/" component={MobileFLD} />
         <Route exact path="/myairdrop" component={MobileAirDrop} />
         <Route exact path={`/launch`} component={MobileOpenCampagin} />
         <Route
