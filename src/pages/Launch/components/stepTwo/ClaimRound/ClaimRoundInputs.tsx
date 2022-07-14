@@ -6,7 +6,7 @@ import {useFormikContext} from 'formik';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {useToast} from 'hooks/useToast';
 import moment from 'moment';
-import {useCallback, useMemo, useState} from 'react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 import commafy from 'utils/commafy';
 
 const ClaimRoundInput = (props: {index: number}) => {
@@ -74,7 +74,7 @@ const ClaimRoundInput = (props: {index: number}) => {
     }
 
     const newData = {
-      claimRound: index + 1,
+      claimRound: index,
       claimTime: date,
       claimTokenAllocation: Number(input),
     };
@@ -91,7 +91,20 @@ const ClaimRoundInput = (props: {index: number}) => {
         data: tempVaultData.length > 0 ? [...tempData, newData] : [newData],
       }),
     );
-  }, [input, date, claimRoundTable, selectedVaultIndex]);
+  }, [
+    input,
+    date,
+    claimRoundTable,
+    selectedVaultIndex,
+    dispatch,
+    index,
+    tempVaultData,
+    vaultsList,
+  ]);
+
+  useEffect(() => {
+    onBlurFunc();
+  }, [date]);
 
   const onChange = (e: any) => {
     const {value} = e.target;

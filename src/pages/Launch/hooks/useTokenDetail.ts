@@ -91,7 +91,7 @@ const useTokenDetail = () => {
                 ? '-'
                 : moment.unix(snapshot).format('YYYY.MM.DD HH:mm:ss'),
             formikName: 'snapshot',
-            err: uncompletedVaultIndex?.fileds[0].includes('publicRound', 0),
+            err: uncompletedVaultIndex?.fileds[0].includes('snapshot', 0),
           },
           {
             title: 'Whitelist',
@@ -101,7 +101,7 @@ const useTokenDetail = () => {
                 : `${moment.unix(whitelist).format('YYYY.MM.DD HH:mm:ss')}
               ~${moment.unix(whitelistEnd).format('MM.DD HH:mm:ss')}`,
             formikName: 'whitelist&whitelistEnd',
-            err: uncompletedVaultIndex?.fileds[0].includes('publicRound', 0),
+            err: uncompletedVaultIndex?.fileds[0].includes('snapshot', 0),
           },
           {
             title: 'Public Round 1',
@@ -111,7 +111,7 @@ const useTokenDetail = () => {
                 : `${moment.unix(publicRound1).format('YYYY.MM.DD HH:mm:ss')}
               ~${moment.unix(publicRound1End).format('MM.DD HH:mm:ss')}`,
             formikName: 'publicRound1&publicRound1End',
-            err: uncompletedVaultIndex?.fileds[0].includes('publicRound', 0),
+            err: uncompletedVaultIndex?.fileds[0].includes('snapshot', 0),
           },
           {
             title: 'Public Round 2',
@@ -121,7 +121,7 @@ const useTokenDetail = () => {
                 : `${moment.unix(publicRound2).format('YYYY.MM.DD HH:mm:ss')}
               ~${moment.unix(publicRound2End).format('MM.DD HH:mm:ss')}`,
             formikName: 'publicRound2&publicRound2End',
-            err: uncompletedVaultIndex?.fileds[0].includes('publicRound', 0),
+            err: uncompletedVaultIndex?.fileds[0].includes('snapshot', 0),
           },
         ],
         thirdColData: [

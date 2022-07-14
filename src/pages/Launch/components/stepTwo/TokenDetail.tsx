@@ -797,9 +797,13 @@ const STOSTier = (props: {
           </Flex>
         </>
       ) : (
-        <Flex color={err ? '#ff3b3b' : ''}>
+        <Flex textAlign={'center'} lineHeight={'32px'}>
           <Text w={'125px'}>{commafy(requiredTos) || '-'}</Text>
-          <Flex w={'137px'} justifyContent={'center'} alignItems={'center'}>
+          <Flex
+            w={'137px'}
+            justifyContent={'center'}
+            alignItems={'center'}
+            color={err ? '#ff3b3b' : ''}>
             <Text>{commafy(allocatedToken) || '-'}</Text>
             <Text
               ml={'5px'}

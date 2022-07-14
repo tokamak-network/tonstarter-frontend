@@ -1,4 +1,5 @@
-import {Projects, VaultSchedule} from '@Launch/types';
+import {snapshotGap} from '@Launch/const';
+import {Projects, VaultPublic, VaultSchedule} from '@Launch/types';
 import {isArray} from 'lodash';
 import {toChecksumAddress} from 'web3-utils';
 
@@ -8,6 +9,18 @@ function validateFormikValues(
   // setDisableForStep2: Dispatch<SetStateAction<boolean>>,
 ) {
   const fileds: any[] = [];
+
+  //get public vault properties
+  const {
+    publicRound1Allocation,
+    publicRound2Allocation,
+    vaultTokenAllocation,
+    stosTier,
+    claim,
+    publicRound2End,
+    snapshot,
+  } = values.vaults[0] as VaultPublic;
+
   const step2FilledOut = values.vaults.map((vault: any) => {
     const result: any[] = [];
     const thisFields: any[] = [];
@@ -65,12 +78,6 @@ function validateFormikValues(
 
           //For public vault only
           if (vault.index === 0) {
-            const {
-              publicRound1Allocation,
-              publicRound2Allocation,
-              vaultTokenAllocation,
-              stosTier,
-            } = vault;
             const {oneTier, twoTier, threeTier, fourTier} = stosTier;
             const numVaultTokenAllocation = Number(vaultTokenAllocation);
             const numPublicRound1Allocation = Number(publicRound1Allocation);
@@ -81,18 +88,34 @@ function validateFormikValues(
               Number(threeTier.allocatedToken) +
               Number(fourTier.allocatedToken);
 
-            //for public1&2
+            //for Token tab
             if (
               numVaultTokenAllocation !==
               numPublicRound1Allocation + numPublicRound2Allocation
             ) {
               thisFields.push('publicRound');
             }
-            //for sTOS Tier
+
+            //for Schedule tab
+            if (claim) {
+              if (claim[0] && claim[0].claimTime !== undefined) {
+                //should be publicRound2End < first claimTime
+                if (Number(claim[0].claimTime) < Number(publicRound2End)) {
+                  thisFields.push('snapshot');
+                }
+                //publicRound2End must have 8days gap from now on
+                if (snapshot && snapshot < snapshotGap) {
+                  thisFields.push('snapshot');
+                }
+              }
+            }
+
+            //for sTOS Tier tab
             if (numVaultTokenAllocation !== stosTierAllocation) {
               thisFields.push('stos tier');
             }
           }
+          //claimRound
           if (
             isMatchingTotalAllocation === undefined ||
             isMatchingTotalAllocation === 0
@@ -108,8 +131,9 @@ function validateFormikValues(
             thisFields.push('vaultTokenAllocation');
             return result.push(false);
           }
+
           //need to add validate to compare total and allocation
-          val.map((claimSchedule: VaultSchedule) => {
+          val.map((claimSchedule: VaultSchedule, index: number) => {
             if (
               claimSchedule.claimTime === undefined ||
               claimSchedule.claimTokenAllocation === undefined ||
@@ -119,6 +143,18 @@ function validateFormikValues(
               thisFields.push('claimSchedule');
               return result.push(false);
             }
+
+            if (
+              index === 0 &&
+              publicRound2End &&
+              claimSchedule &&
+              claimSchedule.claimTime !== undefined &&
+              claimSchedule.claimTime < publicRound2End
+            ) {
+              thisFields.push('claimSchedule');
+              return result.push(false);
+            }
+
             return result.push(true);
           });
         }

@@ -85,9 +85,15 @@ const ClaimRound = () => {
       selectedVaultIndex !== undefined &&
       uncompletedVaultIndex?.fileds[selectedVaultIndex].length !== 0
     ) {
-      const hasError = uncompletedVaultIndex?.fileds[
-        selectedVaultIndex
-      ].includes('claimTokenAllocation', 0);
+      const hasError =
+        uncompletedVaultIndex?.fileds[selectedVaultIndex].includes(
+          'claimTokenAllocation',
+          0,
+        ) ||
+        uncompletedVaultIndex?.fileds[selectedVaultIndex].includes(
+          'claimSchedule',
+          0,
+        );
       return setTokenAllocationErr(hasError);
     }
     setTokenAllocationErr(false);
