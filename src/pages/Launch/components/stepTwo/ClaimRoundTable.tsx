@@ -128,6 +128,7 @@ const ClaimRoundTable = () => {
     const validation = [roundNum, date1st].map((value: number) => {
       return inputValidate(value);
     });
+
     setBtnDisable(validation.indexOf(true) !== -1);
     if (claimRoundTable?.length !== 0) {
       return setBtnDisable(true);

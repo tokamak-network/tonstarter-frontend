@@ -51,7 +51,7 @@ import VaultLPRewardLogicAbi from 'services/abis/VaultLPRewardLogicAbi.json';
 import {convertNumber, convertToWei} from 'utils/number';
 import commafy from 'utils/commafy';
 import {convertTimeStamp} from 'utils/convertTIme';
-import {selectLaunch} from '@Launch/launch.reducer';
+import {selectLaunch, setTempHash} from '@Launch/launch.reducer';
 
 //Project
 
@@ -518,6 +518,13 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                   100,
                   values.tosPrice * 100,
                 );
+
+              dispatch(
+                setTempHash({
+                  data: tx.hash,
+                }),
+              );
+
               const receipt = await tx.wait();
               const {logs} = receipt;
 
@@ -582,6 +589,13 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 ],
                 valutIndex,
               );
+
+              dispatch(
+                setTempHash({
+                  data: tx.hash,
+                }),
+              );
+
               const receipt = await tx.wait();
               const {logs} = receipt;
 
@@ -616,6 +630,13 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                   values.tokenAddress,
                   selectedVaultDetail?.adminAddress,
                 );
+
+              dispatch(
+                setTempHash({
+                  data: tx.hash,
+                }),
+              );
+
               const receipt = await tx.wait();
               const {logs} = receipt;
 
@@ -648,6 +669,13 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                   values.tokenAddress,
                   selectedVaultDetail?.adminAddress,
                 );
+
+              dispatch(
+                setTempHash({
+                  data: tx.hash,
+                }),
+              );
+
               const receipt = await tx.wait();
               const {logs} = receipt;
 
@@ -684,6 +712,13 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                   values.tokenAddress,
                   selectedVaultDetail?.adminAddress,
                 );
+
+              dispatch(
+                setTempHash({
+                  data: tx.hash,
+                }),
+              );
+
               const receipt = await tx.wait();
               const {logs} = receipt;
 
@@ -734,6 +769,13 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 values.tokenAddress,
                 selectedVaultDetail?.adminAddress,
               );
+
+              dispatch(
+                setTempHash({
+                  data: tx.hash,
+                }),
+              );
+
               const receipt = await tx.wait();
               const {logs} = receipt;
 
@@ -764,6 +806,13 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                   values.tokenAddress,
                   selectedVaultDetail?.adminAddress,
                 );
+
+              dispatch(
+                setTempHash({
+                  data: tx.hash,
+                }),
+              );
+
               const receipt = await tx.wait();
               const {logs} = receipt;
 
@@ -796,6 +845,13 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                   values.tokenAddress,
                   selectedVaultDetail?.adminAddress,
                 );
+
+              dispatch(
+                setTempHash({
+                  data: tx.hash,
+                }),
+              );
+
               const receipt = await tx.wait();
               const {logs} = receipt;
 

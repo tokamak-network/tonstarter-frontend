@@ -20,7 +20,7 @@ import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {selectApp} from 'store/app/app.reducer';
 import {openModal} from 'store/modal.reducer';
 import commafy from 'utils/commafy';
-import {selectLaunch} from '@Launch/launch.reducer';
+import {selectLaunch, setTempHash} from '@Launch/launch.reducer';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {createToken} from 'pages/Reward/components/api';
 
@@ -63,11 +63,19 @@ const DeployToken = () => {
         convertToWei(String(totalSupply)),
         owner,
       );
+
+      dispatch(
+        setTempHash({
+          data: tx.hash,
+        }),
+      );
+
       const receipt = await tx.wait();
       const {logs} = receipt;
       const iface = new ethers.utils.Interface(ERC20_FACTORY_A_ABI.abi);
       const result = iface.parseLog(logs[logs.length - 1]);
       const {args} = result;
+
       //args[0] : token address
       //args[1] : token name
       //args[2] : token symbol
