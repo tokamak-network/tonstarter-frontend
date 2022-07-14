@@ -74,7 +74,7 @@ const ClaimRoundInput = (props: {index: number}) => {
     }
 
     const newData = {
-      claimRound: index,
+      claimRound: index + 1,
       claimTime: date,
       claimTokenAllocation: Number(input),
     };

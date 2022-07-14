@@ -102,7 +102,7 @@ const ClaimRound = () => {
   const saveConfirm = useCallback(() => {
     if (claimRoundTable && tempVaultData) {
       const data = claimRoundTable.map((claimData: VaultSchedule) => {
-        const isExist = tempVaultData.map((tempData: VaultSchedule) => {
+        const isExist = tempVaultData.filter((tempData: VaultSchedule) => {
           if (tempData.claimRound === claimData.claimRound) {
             return tempData;
           }
@@ -111,6 +111,11 @@ const ClaimRound = () => {
       });
       //@ts-ignore
       setFieldValue(`vaults.${selectedVaultDetail.index}.claim`, data);
+      dispatch(
+        saveTempVaultData({
+          data: {},
+        }),
+      );
     }
   }, [claimRoundTable, tempVaultData, selectedVaultDetail]);
 
