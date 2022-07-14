@@ -13,7 +13,7 @@ import {
   selectLaunch,
   setClaimRoundTable,
 } from '@Launch/launch.reducer';
-import {Projects, VaultSchedule} from '@Launch/types';
+import {Projects, VaultPublic, VaultSchedule} from '@Launch/types';
 import {CustomSelectBox} from 'components/Basic';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {useFormikContext} from 'formik';
@@ -80,6 +80,7 @@ const ClaimRoundTable = () => {
   const {values} = useFormikContext<Projects['CreateProject']>();
   const {totalClaimAmount} = useClaimRound();
   const [test, setTest] = useState<any>('-');
+  const {publicRound2End} = values.vaults[0] as VaultPublic;
 
   useEffect(() => {
     setTest(totalClaimAmount);
@@ -193,7 +194,9 @@ const ClaimRoundTable = () => {
                   : convertTimeStamp(date1st, 'YYYY.MM.DD HH:mm:ss')}
               </Text>
               <Flex w={'20px'} h={'20px'} ml={'10px'}>
-                <SingleCalendarPop setDate={setDate1st}></SingleCalendarPop>
+                <SingleCalendarPop
+                  setDate={setDate1st}
+                  startTimeCap={publicRound2End}></SingleCalendarPop>
               </Flex>
             </Flex>
           </Flex>
