@@ -320,7 +320,7 @@ const SubTitle = (props: {
         );
       case 'Select Pair':
         if (selectedVaultIndex && selectedVaultIndex > 5) {
-          return <Text>{inputVal || tempVaultData.tokenPair}</Text>;
+          return <Text>{tempVaultData.tokenPair}</Text>;
         }
         return <Text>{inputVal}</Text>;
       case 'Pool Address\n(0.3% fee)':

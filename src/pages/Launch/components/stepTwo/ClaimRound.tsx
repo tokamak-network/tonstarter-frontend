@@ -238,13 +238,15 @@ const ClaimRound = () => {
                 <Box h={'21px'} lineHeight={'21px'} pt={'8px'}>
                   Token Allocation ({values.tokenSymbol})
                 </Box>
-                <Box
-                  h={'21px'}
-                  lineHeight={'21px'}
-                  fontSize={10}
-                  color={'#86929d'}>
-                  Remained: {totalClaimAmount}
-                </Box>
+                {selectedVaultIndex !== 1 && (
+                  <Box
+                    h={'21px'}
+                    lineHeight={'21px'}
+                    fontSize={10}
+                    color={'#86929d'}>
+                    Remained: {totalClaimAmount}
+                  </Box>
+                )}
               </Flex>
               <Text w={'314px'} borderRight={middleStyle.border}>
                 Accumulated
