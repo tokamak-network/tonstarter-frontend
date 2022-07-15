@@ -122,7 +122,10 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
               'Custom',
             ];
             const selectBoxOnChange = (e: any) => {
-              setFieldValue('sector', e.target.value);
+              setFieldValue(
+                'sector',
+                e.target.value === 'Custom' ? '' : e.target.value,
+              );
             };
             const isCustom =
               selectList.indexOf(values.sector) === -1 ||

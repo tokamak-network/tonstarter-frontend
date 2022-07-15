@@ -102,6 +102,8 @@ const MainScreen = () => {
   // const {web3Token} = useWeb3Token();
 
   const [oldData, setOldData] = useState();
+  const [saveBtnDisable, setSaveBtnDisable] = useState(false);
+
   const formikRef = useRef(null);
 
   if (!account) {
@@ -205,7 +207,9 @@ const MainScreen = () => {
                     _hover={{}}
                     bg={isDisable ? 'gray.25' : '#00c3c4'}
                     color={isDisable ? '#86929d' : 'white.100'}
-                    disabled={step === 3 || (step === 1 && isDisable)}
+                    disabled={
+                      step === 3 || (step === 1 && isDisable) || saveBtnDisable
+                    }
                     mr={step === 1 ? '390px' : '558px'}
                     onClick={() =>
                       account &&
