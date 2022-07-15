@@ -50,9 +50,6 @@ const MainScreen = () => {
   const {account} = useActiveWeb3React();
   const {initialValues} = useValues(account || '');
 
-  console.log('--test--');
-  console.log(initialValues);
-
   const match = useRouteMatch();
   const {url} = match;
   const isExist = url.split('/')[2];
@@ -154,7 +151,7 @@ const MainScreen = () => {
         initialValues={
           id && projects
             ? {...initialValues, ...projects[id]}
-            : {...initialValues}
+            : {...initialValues, ownerAddress: account}
         }
         validationSchema={ProjectSchema}
         validate={(values) => {

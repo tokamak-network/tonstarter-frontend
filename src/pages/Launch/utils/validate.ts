@@ -129,7 +129,7 @@ function validateFormikValues(
               isMatchingTotalAllocation !== vault.vaultTokenAllocation)
           ) {
             thisFields.push('vaultTokenAllocation');
-            return result.push(false);
+            result.push(false);
           }
 
           //need to add validate to compare total and allocation
@@ -141,11 +141,12 @@ function validateFormikValues(
               claimSchedule.claimTokenAllocation === null
             ) {
               thisFields.push('claimSchedule');
-              return result.push(false);
+              result.push(false);
             }
 
+            console.log('-gogogo-');
+
             if (
-              index === 0 &&
               publicRound2End &&
               claimSchedule &&
               claimSchedule.claimTime !== undefined &&

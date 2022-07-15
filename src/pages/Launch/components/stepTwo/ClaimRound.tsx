@@ -84,7 +84,11 @@ const ClaimRound = () => {
       uncompletedVaultIndex?.fileds &&
       selectedVaultIndex !== undefined &&
       uncompletedVaultIndex?.fileds[selectedVaultIndex].length !== 0
+      // &&
+      // claim[0].claimTime !== undefined &&
+      // claim[0].claimTokenAllocation !== undefined
     ) {
+      console.log('go?');
       const hasError =
         uncompletedVaultIndex?.fileds[selectedVaultIndex].includes(
           'claimTokenAllocation',
@@ -94,10 +98,11 @@ const ClaimRound = () => {
           'claimSchedule',
           0,
         );
+      console.log(hasError);
       return setTokenAllocationErr(hasError);
     }
     setTokenAllocationErr(false);
-  }, [uncompletedVaultIndex, selectedVaultIndex]);
+  }, [uncompletedVaultIndex, selectedVaultIndex, claim]);
 
   const saveConfirm = useCallback(() => {
     if (claimRoundTable && tempVaultData) {
@@ -258,7 +263,9 @@ const ClaimRound = () => {
                 //@ts-ignore
                 selectedVaultDetail.vaultType === 'DAO' ||
                 claim === undefined ||
-                claim.length === 0) &&
+                claim.length === 0 ||
+                claim[0].claimTime === undefined ||
+                claim[0].claimTokenAllocation === undefined) &&
               claimRoundEdit === false ? (
                 <Flex
                   w={'100%'}

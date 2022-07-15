@@ -47,9 +47,6 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
 
   useEffect(() => {
     uncompletedVaultIndex?.fileds?.map((vaultUncompleted, index) => {
-      console.log('--');
-      console.log(vaultUncompleted);
-
       if (
         vaultUncompleted.length > 0 &&
         index === vaultIndex &&

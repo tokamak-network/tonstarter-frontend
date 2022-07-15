@@ -2,7 +2,6 @@ import {useState} from 'react';
 import type {Projects, VaultC} from '@Launch/types';
 import {DEPLOYED} from 'constants/index';
 import {stosMinimumRequirements} from '@Launch/const';
-import {interactivity} from '@chakra-ui/react';
 
 const defaultParams = [
   {claimRound: 1, claimTime: undefined, claimTokenAllocation: undefined},

@@ -35,7 +35,7 @@ const useClaimRound = () => {
       );
       setClaimRoundInfo({
         totalClaimAmount:
-          vaultsList[selectedVaultIndex].vaultTokenAllocation -
+          vaultsList[selectedVaultIndex]?.vaultTokenAllocation -
           totalClaimAmount,
       });
     }
