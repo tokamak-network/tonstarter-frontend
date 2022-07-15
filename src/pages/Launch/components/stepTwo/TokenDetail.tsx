@@ -38,7 +38,7 @@ import InitialLiquidityComputeAbi from 'services/abis/Vault_InitialLiquidityComp
 import {convertTimeStamp} from 'utils/convertTIme';
 import {useToast} from 'hooks/useToast';
 import {CustomTooltip} from 'components/Tooltip';
-import {stosMinimumRequirements} from '@Launch/const';
+import {snapshotGap, stosMinimumRequirements} from '@Launch/const';
 import {NumberInputStep} from './NumberInputField';
 import momentTZ from 'moment-timezone';
 import moment from 'moment';
@@ -617,7 +617,7 @@ const SubTitle = (props: {
               <SingleCalendarPop
                 setDate={setClaimDate}
                 //Mainnet env
-                startTimeCap={moment().add(12, 'hours').unix()}
+                startTimeCap={snapshotGap}
                 //Testnet env
                 // startTimeCap={moment()
                 //   .add('11', 'minutes')
