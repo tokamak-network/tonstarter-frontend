@@ -2,6 +2,7 @@ import {useState} from 'react';
 import type {Projects, VaultC} from '@Launch/types';
 import {DEPLOYED} from 'constants/index';
 import {stosMinimumRequirements} from '@Launch/const';
+import {interactivity} from '@chakra-ui/react';
 
 const defaultParams = [
   {claimRound: 1, claimTime: undefined, claimTokenAllocation: undefined},
@@ -168,9 +169,10 @@ const initialVaultValue: VaultC = {
   isDeployedErr: false,
 };
 
-const useValues = () => {
+const useValues = (account?: string) => {
+  const initialObject = account ? {...initialObj, owner: account} : initialObj;
   const [initialValues, setInitialValues] =
-    useState<Projects['CreateProject']>(initialObj);
+    useState<Projects['CreateProject']>(initialObject);
 
   return {initialValues, setInitialValues, defaultParams, initialVaultValue};
 };

@@ -46,9 +46,12 @@ const MainScreen = () => {
   const [isDisable, setDisable] = useState<boolean>(true);
   const [isDisableForStep2, setDisableForStep2] = useState<boolean>(true);
   const [isDisableForStep3, setDisableForStep3] = useState<boolean>(true);
-  const {initialValues} = useValues();
   const theme = useTheme();
   const {account} = useActiveWeb3React();
+  const {initialValues} = useValues(account || '');
+
+  console.log('--test--');
+  console.log(initialValues);
 
   const match = useRouteMatch();
   const {url} = match;
@@ -149,7 +152,7 @@ const MainScreen = () => {
         initialValues={
           id && projects
             ? {...initialValues, ...projects[id]}
-            : {...initialValues, ownerAddress: account}
+            : {...initialValues}
         }
         validationSchema={ProjectSchema}
         validate={(values) => {
