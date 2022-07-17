@@ -107,6 +107,9 @@ export const MobileVaultComponent: FC<MobileVaultComponent> = ({project}) => {
     setCurrentIndex(idx);
   };
 
+  console.log(flowIndex);
+  
+
   return (
     <Flex flexDirection={'column'} mt={'20px'} mx={'-10px'}>
       {/* <Tabs w={'100%'} onChange={(index) => setTabIndex(index)}>
@@ -135,7 +138,7 @@ export const MobileVaultComponent: FC<MobileVaultComponent> = ({project}) => {
           hoverImg={arrowHoverLeft}
           additionalStyles={{height: '30px'}}
           action={() => {
-            if (flowIndex - project.vaults.length >= 0 || flowIndex > 6 ) {
+            if (flowIndex - project.vaults.length >= 0 || flowIndex > 3) {
               setTransX(transX + 104);
               setFlowIndex(flowIndex - 1);
             }

@@ -70,6 +70,7 @@ type WtonTosLpReward = {
     getPaginatedData: () => interfaceReward[];
     pageLimit: number;
     setPageLimit: Dispatch<SetStateAction<any>>;
+    datas: any[]
   };
 
 
@@ -377,6 +378,7 @@ useEffect(() => {
           getPaginatedData={getPaginatedData}
           pageLimit={pageLimit}
           setPageLimit={setPageLimit}
+          datas={datas}
         />
       )}
       <MobileVaultTable claim={vault.claim} />
@@ -548,7 +550,8 @@ const TokenComp: React.FC<TokenCompProps> = ({vault, project, pool}) => {
     duration,
     getPaginatedData,
     pageLimit,
-    setPageLimit
+    setPageLimit,
+    datas
   }) => {
     const {colorMode} = useColorMode();
     const theme = useTheme();
@@ -643,9 +646,10 @@ const TokenComp: React.FC<TokenCompProps> = ({vault, project, pool}) => {
           <GridItem
             style={gridItemStyle}
             h="60px"
-            borderBottom={
-              colorMode === 'light' ? '1px solid #e6eaee' : '1px solid #373737'
-            }>
+            borderBottom={getPaginatedData().length !== 0? 
+              colorMode === 'light' ? '1px solid #e6eaee' : '1px solid #373737' : 'none'
+            }
+            >
             <Text
               fontFamily={theme.fonts.fld}
               fontSize="14px"
@@ -735,7 +739,7 @@ const TokenComp: React.FC<TokenCompProps> = ({vault, project, pool}) => {
             );
           })}
         </Grid>
-        <Button
+        {getPaginatedData().length !== 0 ? <Button
             w={'100%'}
             h={'45px'}
             mt={'10px'}
@@ -751,10 +755,12 @@ const TokenComp: React.FC<TokenCompProps> = ({vault, project, pool}) => {
             color={colorMode === 'light' ? '#86929d' : '#dee4ef'}
             _focus={{}}
             _active={{}}
+            disabled={getPaginatedData().length === datas.length }
             onClick={() => setPageLimit(pageLimit+3)}
             >
             MORE +
-          </Button>
+          </Button> : <></>}
+       
       </Flex>
     );
   };

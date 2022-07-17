@@ -318,6 +318,8 @@ export const MobileAirdropClaimTable = () => {
           Claim Selected
         </Button>
       </Flex>
+      <Flex alignItems={'center'}>
+ <Text fontWeight={'bold'} mr='16px' fontFamily={theme.fonts.fld} color={colorMode ==='light'? '#7e8993':'#9d9ea5'}>From</Text>
       <Select
         w={'100%'}
         mt={'10px'}
@@ -332,10 +334,12 @@ export const MobileAirdropClaimTable = () => {
         onChange={(e) => {
           setRadioValue(e.target.value);
         }}>
-        <option value={'Genesis Airdrop'}>Genesis Airdrop</option>
         <option value={'DAO Airdrop'}>DAO Airdrop</option>
         <option value={'TON Staker'}>TON Staker</option>
+        <option value={'Genesis Airdrop'}>Genesis Airdrop</option>
       </Select>
+      </Flex>
+     
 
       {radioValue === 'Genesis Airdrop' ? (
         <MobileGenesisTable
@@ -360,15 +364,18 @@ export const MobileAirdropClaimTable = () => {
           setCheckedAllBoxes={setCheckedAllBoxes}
         />
       ) : (
-        <MobileTONTable tonStakerAirdropTokens={tonStakerAirdropTokens}  isCheck={isCheck}
-        checkedAllBoxes={checkedAllBoxes}
-        handleSelectAll={handleSelectAll}
-        handleClick={handleClick}
-        claimToken={AdminActions.claimToken}
-        setIsCheck={setIsCheck}
-        setCheckedTokenAddresses={setCheckedTokenAddresses}
-        setIsCheckAll={setIsCheckAll}
-        setCheckedAllBoxes={setCheckedAllBoxes}/>
+        <MobileTONTable
+          tonStakerAirdropTokens={tonStakerAirdropTokens}
+          isCheck={isCheck}
+          checkedAllBoxes={checkedAllBoxes}
+          handleSelectAll={handleSelectAll}
+          handleClick={handleClick}
+          claimToken={AdminActions.claimToken}
+          setIsCheck={setIsCheck}
+          setCheckedTokenAddresses={setCheckedTokenAddresses}
+          setIsCheckAll={setIsCheckAll}
+          setCheckedAllBoxes={setCheckedAllBoxes}
+        />
       )}
     </Flex>
   );

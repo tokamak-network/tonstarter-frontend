@@ -71,6 +71,7 @@ type RewardCompProps = {
   getPaginatedData: () => interfaceReward[];
   pageLimit: number;
   setPageLimit: Dispatch<SetStateAction<any>>;
+  datas: any[]
 };
 export const MobileLiquidityIncentive: FC<LiquidityIncentive> = ({
   vault,
@@ -391,6 +392,7 @@ export const MobileLiquidityIncentive: FC<LiquidityIncentive> = ({
           getPaginatedData={getPaginatedData}
           pageLimit={pageLimit}
           setPageLimit={setPageLimit}
+          datas={datas}
         />
       )}
       <MobileVaultTable claim={vault.claim} />
@@ -409,7 +411,8 @@ const RewardComp: React.FC<RewardCompProps> = ({
   duration,
   getPaginatedData,
   pageLimit,
-  setPageLimit
+  setPageLimit,
+  datas
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -505,8 +508,8 @@ const RewardComp: React.FC<RewardCompProps> = ({
         <GridItem
           style={gridItemStyle}
           h="60px"
-          borderBottom={
-            colorMode === 'light' ? '1px solid #e6eaee' : '1px solid #373737'
+          borderBottom={getPaginatedData().length !== 0? 
+            colorMode === 'light' ? '1px solid #e6eaee' : '1px solid #373737' : 'none'
           }>
           <Text
             fontFamily={theme.fonts.fld}
@@ -597,6 +600,7 @@ const RewardComp: React.FC<RewardCompProps> = ({
           );
         })}
       </Grid>
+      {getPaginatedData().length !== 0 ? 
       <Button
           w={'100%'}
           h={'45px'}
@@ -613,10 +617,11 @@ const RewardComp: React.FC<RewardCompProps> = ({
           color={colorMode === 'light' ? '#86929d' : '#dee4ef'}
           _focus={{}}
           _active={{}}
+          disabled={getPaginatedData().length === datas.length }
           onClick={() => setPageLimit(pageLimit+3)}
           >
           MORE +
-        </Button>
+        </Button>: <></> }
     </Flex>
   );
 };

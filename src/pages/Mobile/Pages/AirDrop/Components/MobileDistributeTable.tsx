@@ -74,22 +74,12 @@ export const MobileDistributeTable: FC<DistributeTable> = ({
         fontSize={'16px'}
         fontFamily={theme.fonts.roboto}>
         {' '}
-        <Text
-          w={'33.33%'}
-          textAlign={'center'}
-          fontSize={'11px'}
-          display={'flex'}
-          alignItems={'center'}
-          justifyContent={'center'}
-          h={'42px'}
-          borderRight={themeDesign.border[colorMode]}>
-          Distribute To
-        </Text>
+     
         <Text
           display={'flex'}
           alignItems={'center'}
           justifyContent={'center'}
-          w={'33.33%'}
+          w={'50%'}
           textAlign={'center'}
           fontSize={'11px'}
           h={'42px'}
@@ -103,12 +93,15 @@ export const MobileDistributeTable: FC<DistributeTable> = ({
           fontSize={'11px'}
           fontWeight={'bolder'}
           color={colorMode === 'light' ? '#353c48' : 'white.0'}
-          w={'33.33%'}
+          w={'50%'}
           textAlign={'center'}>
           Amount
         </Text>
       </GridItem>
       {distributedTosTokens?.map((token: any, index:number) => {
+          if (token.amount === '0.00') {
+            return null;
+          }
         return (
             <GridItem
             bg={(index%2 ===0 )?colorMode==='light'? '#fafbfc':'#262626': colorMode==='light'? '#ffffff':'#222222'}
@@ -126,25 +119,12 @@ export const MobileDistributeTable: FC<DistributeTable> = ({
             p={'0px'}
             justifyContent={'center'}
             key={token.tokenName}>
+           
             <Text
-              fontSize={'12px'}
+              fontSize={'13px'}
               fontFamily={theme.fonts.roboto}
               color={colorMode === 'light' ? '#353c48' : 'white.0'}
-              w={'33.33%'}
-              borderRight={themeDesign.border[colorMode]}
-            
-              display={'flex'}
-              alignItems={'center'}
-              justifyContent={'center'}
-              h={'42px'}
-              textAlign={'center'}>
-              sTOS Holder
-            </Text>
-            <Text
-              fontSize={'12px'}
-              fontFamily={theme.fonts.roboto}
-              color={colorMode === 'light' ? '#353c48' : 'white.0'}
-              w={'33.33%'}
+              w={'50%'}
               display={'flex'}
               alignItems={'center'}
               justifyContent={'center'}
@@ -154,10 +134,10 @@ export const MobileDistributeTable: FC<DistributeTable> = ({
               {token.tokenName}
             </Text>
             <Text
-              fontSize={'12px'}
+              fontSize={'13px'}
               fontFamily={theme.fonts.roboto}
               color={colorMode === 'light' ? '#353c48' : 'white.0'}
-              w={'33.33%'}
+              w={'50%'}
               display={'flex'}
               alignItems={'center'}
               justifyContent={'center'}

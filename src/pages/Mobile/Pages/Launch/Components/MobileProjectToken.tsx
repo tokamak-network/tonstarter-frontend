@@ -247,7 +247,7 @@ export const MobileProjectToken: FC<ProjectTokenProps> = ({project}) => {
           modules={modules}
           value={project.description}
           theme={'bubble'}
-          style={{color: '#ffffff !important'}}
+          style={{color: '#ffffff !important', wordBreak: 'break-word'}}
         />
       </GridItem>
     </Grid>

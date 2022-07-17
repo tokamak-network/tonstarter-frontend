@@ -37,7 +37,7 @@ import {DEPLOYED} from 'constants/index';
 import {useERC20Token} from 'hooks/useERC20Token';
 import {selectTransactionType} from 'store/refetch.reducer';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
-import { MobileDistributeTable } from './MobileDistributeTable';
+import {MobileDistributeTable} from './MobileDistributeTable';
 
 export const MobileAirDropDistributeTable = () => {
   const {colorMode} = useColorMode();
@@ -294,8 +294,7 @@ export const MobileAirDropDistributeTable = () => {
       dark: '#f3f4f1',
     },
   };
-console.log(distributedTosTokens);
-
+  console.log(distributedTosTokens);
 
   return loadingData ? (
     <Flex
@@ -451,8 +450,26 @@ console.log(distributedTosTokens);
                   color={colorMode === 'light' ? '#304156' : '#ffffff'}>
                   Token Allowance Amount
                 </Text>
-                <Flex mb={'24px'} w={'100%'}>
-                  <CustomInput
+
+                <Flex
+                  w={'100%'}
+                  h={'32px'}
+                  pl={'15px'}
+                  fontWeight={500}
+                  fontFamily={theme.fonts.roboto}
+                  borderRadius={'4px'}
+                  mb={'24px'}
+                  alignItems="center"
+                  fontSize={'12px'}
+                  border={
+                    colorMode === 'light'
+                      ? '1px solid rgba(223, 228, 238, 0.6)'
+                      : '1px solid #424242'
+                  }
+                  color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}>
+                  {allowance}
+                </Flex>
+                {/* <CustomInput
                     w={'100%'}
                     h={'32px'}
                     border={'1px solid #dfe4ee'}
@@ -470,8 +487,8 @@ console.log(distributedTosTokens);
                           ? 'gray.225'
                           : 'white.100'
                         : 'gray.175'
-                    }></CustomInput>
-                </Flex>
+                    }></CustomInput> */}
+
                 {distributeToValue !== 'TON Holder' && (
                   <Flex flexDir={'column'}>
                     <Text
@@ -481,7 +498,24 @@ console.log(distributedTosTokens);
                       Distribution Timestamp
                     </Text>
                     <Flex mb={'24px'} w={'100%'}>
-                      <CustomInput
+                      <Flex
+                        w={'100%'}
+                        h={'32px'}
+                        pl={'15px'}
+                        fontWeight={500}
+                        fontFamily={theme.fonts.roboto}
+                        borderRadius={'4px'}
+                        alignItems="center"
+                        fontSize={'12px'}
+                        border={
+                          colorMode === 'light'
+                            ? '1px solid rgba(223, 228, 238, 0.6)'
+                            : '1px solid #424242'
+                        }
+                        color={
+                          colorMode === 'light' ? '#3e495c' : '#f3f4f1'
+                        }>{`${timeStamp} 00:00:00 UTC`}</Flex>
+                      {/* <CustomInput
                         w={'100%'}
                         h={'32px'}
                         border={'1px solid #dfe4ee'}
@@ -499,7 +533,7 @@ console.log(distributedTosTokens);
                               ? 'gray.225'
                               : 'white.100'
                             : 'gray.175'
-                        }></CustomInput>
+                        }></CustomInput> */}
                     </Flex>
                   </Flex>
                 )}
@@ -536,9 +570,20 @@ console.log(distributedTosTokens);
           </DrawerContent>
         </Drawer>
       </Flex>
-      <Flex mt={'12px'} fontFamily={theme.fonts.fld} justifyContent='center' fontSize={'13px'}>
-        <Text color={colorMode==='light'? '#7e8993': '#9d9ea5'} mr={'2px'}>Schedule:</Text>
-        <Text color={colorMode==='light'? '#353c48': '#f3f4f1'}> Next(Thu.) {timeStamp} 00:00:00 (UTC)</Text>
+      <Flex
+        mt={'12px'}
+        fontFamily={theme.fonts.fld}
+        flexDir='column'
+        justifyContent="center"
+        alignItems={'center'}
+        fontSize={'13px'}>
+        <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'} mr={'2px'}>
+        sTOS Holder distribution schedule
+        </Text>
+        <Text color={colorMode === 'light' ? '#353c48' : '#f3f4f1'}>
+          {' '}
+          Next(Thu.) {timeStamp} 00:00:00 (UTC)
+        </Text>
       </Flex>
       {distributedTosTokens !== undefined &&
       distributedTosTokens.length === 0 ? (
@@ -553,8 +598,11 @@ console.log(distributedTosTokens);
           <Text>No distributions scheduled this round.</Text>
         </Flex>
       ) : (
-        <MobileDistributeTable distributedTosTokens={distributedTosTokens} airdropList={airdropList}/>
-      ) }
+        <MobileDistributeTable
+          distributedTosTokens={distributedTosTokens}
+          airdropList={airdropList}
+        />
+      )}
     </Flex>
   );
 };
