@@ -99,9 +99,9 @@ export const MobileDistributeTable: FC<DistributeTable> = ({
         </Text>
       </GridItem>
       {distributedTosTokens?.map((token: any, index:number) => {
-          if (token.amount === '0.00') {
-            return null;
-          }
+          // if (token.amount === '0.00') {
+          //   return null;
+          // }
         return (
             <GridItem
             bg={(index%2 ===0 )?colorMode==='light'? '#fafbfc':'#262626': colorMode==='light'? '#ffffff':'#222222'}

@@ -348,7 +348,7 @@ const TokenComp: React.FC<TokenCompProps> = ({vault, project}) => {
 const ScheduleComp: React.FC<TokenCompProps> = ({vault, project}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
-
+  const [isLabelOpen, setIsLabelOpen] = useState(false)
   const network = BASE_PROVIDER._network.name;
   const gridItemStyle = {
     display: 'flex',
@@ -414,12 +414,13 @@ const ScheduleComp: React.FC<TokenCompProps> = ({vault, project}) => {
           <Tooltip
             label="Snapshot date must be set 1 week after Deployment completion"
             hasArrow
+            isOpen={isLabelOpen}
             placement="top"
             color={colorMode === 'light' ? '#e6eaee' : '#424242'}
             aria-label={'Tooltip'}
             textAlign={'center'}
             size={'xs'}>
-            <Image src={tooltipIcon} />
+            <Image src={tooltipIcon} onClick={() => setIsLabelOpen(!isLabelOpen)}/>
           </Tooltip>
         </Flex>
         <Text style={rightText}>

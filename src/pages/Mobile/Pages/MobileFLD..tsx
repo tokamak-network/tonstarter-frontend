@@ -9,9 +9,10 @@ import {
   Center,
   useColorMode,
   Box,
+
 } from '@chakra-ui/react';
 import logoDark from 'assets/svgs/fldw_bi.svg';
-
+import {Link} from 'react-router-dom';
 const whiteWithOpacity = `rgba(255, 255, 255, 0.5)`;
 
 const TextComponent = (props: any) => {
@@ -103,7 +104,9 @@ export const MobileFLD = () => {
             <Container
               w={'50%'}
               p={0}
-              borderRightWidth={1}
+              h={'390px'}
+              borderRightWidth={0.5}
+              borderBottomWidth={1}
               borderRightColor={whiteWithOpacity}>
               <TextComponent
                 header="Dual Profit"
@@ -122,11 +125,14 @@ into sTOS(staked TOS)"
             </Container>
             <Container pos="relative" w={'50%'} p={0}>
               <Center
-                borderTopWidth={1}
+                borderTopWidth={0.5}
+                borderBottomWidth={0.5}
                 borderColor={whiteWithOpacity}
                 w={'100%'}
+                h={'390px'}
               pt='39px'
                 flexDirection="column"
+                justifyContent={'flex-start'}
                 alignItems="left"
                 pr={'0.750em'}
                 pl={'1.250em'}>
@@ -136,6 +142,7 @@ into sTOS(staked TOS)"
                 <Text fontSize={'11px'}>
                   Make Your Own Token and Create Token Economy
                 </Text>
+                <Link   to="/launch">
                 <Box
                   w={'106px'}
                   mt={'25px'}
@@ -151,7 +158,8 @@ into sTOS(staked TOS)"
                   justifyContent={'center'}
                   alignItems="center">
                   Launched Projects
-                </Box>
+                </Box></Link>
+               
                 <Text mt={'56px'} fontSize={'11px'}>
                  Raised Capital
                 </Text>

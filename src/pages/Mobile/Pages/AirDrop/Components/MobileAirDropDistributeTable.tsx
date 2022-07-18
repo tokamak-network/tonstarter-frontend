@@ -15,6 +15,8 @@ import {
   DrawerHeader,
   Select,
   DrawerOverlay,
+  Image,
+Tooltip,
   DrawerContent,
   DrawerCloseButton,
 } from '@chakra-ui/react';
@@ -44,6 +46,8 @@ export const MobileAirDropDistributeTable = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const {isOpen, onOpen, onClose} = useDisclosure();
+  const [isLabelOpen, setIsLabelOpen] = useState(false)
+
   const [distributedTosTokens, setDistributedTosTokens] = useState<
     any[] | undefined
   >(undefined);
@@ -64,13 +68,18 @@ export const MobileAirDropDistributeTable = () => {
   const [isRay, setIsRay] = useState<boolean>(false);
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [isApproveDisable, setIsApproveDisable] = useState<boolean>(true);
-
+  const [empty, setEmpty] = useState(false);
   useEffect(() => {
     if (airdropList) return setDistributedTosTokens(airdropList);
   }, [airdropList]);
 
   useEffect(() => {
     if (distributedTosTokens) {
+      const isEmpty = distributedTosTokens.every((token:any) => {
+        return token.amount === '0.00'
+      })
+     setEmpty(isEmpty)
+      
       setLoadingData(false);
     }
   }, [distributedTosTokens]);
@@ -577,24 +586,37 @@ export const MobileAirDropDistributeTable = () => {
         justifyContent="center"
         alignItems={'center'}
         fontSize={'13px'}>
-        <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'} mr={'2px'}>
+          <Flex alignItems={'center'}> <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'} mr={'2px'}>
         sTOS Holder distribution schedule
         </Text>
+        <Tooltip
+        isOpen={isLabelOpen}
+      
+              hasArrow
+              placement="top"
+              label="sTOS Holder distributions follow the schedule displayed, whereas TON Holder distributions happen immediately."
+              color={theme.colors.white[100]}
+              bg={theme.colors.gray[375]}>
+              <Image   h={'14px'}  w={'14px'} src={tooltipIcon}   onClick={() => setIsLabelOpen(!isLabelOpen)}/>
+            </Tooltip></Flex>
+       
         <Text color={colorMode === 'light' ? '#353c48' : '#f3f4f1'}>
           {' '}
           Next(Thu.) {timeStamp} 00:00:00 (UTC)
         </Text>
       </Flex>
       {distributedTosTokens !== undefined &&
-      distributedTosTokens.length === 0 ? (
+      distributedTosTokens.length === 0 || empty? (
         <Flex
           justifyContent={'center'}
           alignItems={'center'}
           w={'100%'}
-          py={'30px'}
+          mt={'20px'}
+         h={'100px'}
+         borderRadius='10px'
           fontFamily={theme.fonts.fld}
           fontSize={'16px'}
-          borderY={themeDesign.border[colorMode]}>
+          border={themeDesign.border[colorMode]}>
           <Text>No distributions scheduled this round.</Text>
         </Flex>
       ) : (

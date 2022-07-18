@@ -346,6 +346,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
             </Button>
             <Button colorScheme="blue">Save</Button> */}
             <ThemeSwitcher
+            
               style={{
                 marginLeft: '0',
                 color: colorMode === 'light' ? '#000000' : '#fff',
