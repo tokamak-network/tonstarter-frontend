@@ -29,6 +29,7 @@ import MobileOpenCampagin from './Mobile/Pages/Launch/Index';
 import MobileProjectScreen from './Mobile/Pages/Launch/MobileProjectScreen';
 import MobileAirDrop from './Mobile/Pages/AirDrop/index';
 import { MobileFLD } from './Mobile/Pages/MobileFLD.';
+import { MobileFooter } from './Mobile/Components/MobileFooter';
 import {
   CreateProject,
   ListingProjects,
@@ -189,6 +190,7 @@ export const Router: FC<RouterProps> = () => {
           />
         </Switch>
         </div>
+        <MobileFooter/>
         <WalletModal state={walletState} isOpen={isModalOpen} onClose={onClose} />
       </div>
     );
