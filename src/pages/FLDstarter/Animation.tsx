@@ -18,15 +18,11 @@ import Arrow from 'assets/svgs/select1_arrow_inactive.svg';
 import {selectStakes} from 'pages/Staking/staking.reducer';
 import {Stake} from 'pages/Staking/types';
 import {useAppSelector} from 'hooks/useRedux';
-import {DEPLOYED} from 'constants/index';
-import {usePoolByUserQuery, usePoolByArrayQuery} from 'store/data/enhanced';
+import { usePoolByArrayQuery } from 'store/data/enhanced';
 import ms from 'ms.macro';
-import {fetchTosPriceURL, fetchEthPriceURL} from '../../constants/index';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import views from '../Reward/rewards';
 import {selectTransactionType} from 'store/refetch.reducer';
-// import {getLiquidity} from '../Reward/utils/getLiquidity';
-import { fetchPoolPayload } from 'pages/Reward/utils/fetchPoolPayload';
 
 export interface HomeProps extends HTMLAttributes<HTMLDivElement> {
   classes?: string;
@@ -391,12 +387,8 @@ export const Animation: React.FC<HomeProps> = () => {
 
   useEffect(() => {
     async function calcLiquidity () {
-      let totalLiquidity = 0;
-      const tvl = await fetchPoolPayload(library)
-      for (const liquidity of tvl) {
-        totalLiquidity = totalLiquidity + Number(liquidity.total)
-      }
-      const res = Number(totalLiquidity).toLocaleString(undefined, {
+      const tvl = await views.getTVL();
+      const res = Number(tvl.tvl).toLocaleString(undefined, {
         minimumFractionDigits: 2,
       });
       setLiquidity(
