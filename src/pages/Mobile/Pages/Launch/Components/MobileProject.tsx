@@ -61,12 +61,6 @@ export const MobileProject: FC<MobileProjectProps> = ({project}) => {
               h={'33px'}
               isActive={!showVault}
               fontFamily={theme.fonts.fld}
-              _hover={{
-                background: 'transparent',
-                border: 'solid 1px #2a72e5',
-                color: themeDesign.font[colorMode],
-                cursor: 'pointer',
-              }}
               _active={{
                 background: '#2a72e5',
                 border: 'solid 1px #2a72e5',
@@ -89,12 +83,6 @@ export const MobileProject: FC<MobileProjectProps> = ({project}) => {
               fontSize={'14px'}
               isActive={showVault}
               fontFamily={theme.fonts.fld}
-              _hover={{
-                background: 'transparent',
-                border: 'solid 1px #2a72e5',
-                color: themeDesign.font[colorMode],
-                cursor: 'pointer',
-              }}
               _active={{
                 background: '#2a72e5',
                 border: 'solid 1px #2a72e5',

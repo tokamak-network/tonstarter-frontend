@@ -553,7 +553,7 @@ export const MobileAirDropDistributeTable = () => {
                     w={'150px'}
                     h={'38px'}
                     fontSize="14px"
-                    _hover={{}}
+                  
                     disabled={isApproveDisable}
                     onClick={approveAction}>
                     Approve
@@ -565,7 +565,7 @@ export const MobileAirDropDistributeTable = () => {
                     w={'150px'}
                     fontSize="14px"
                     h={'38px'}
-                    _hover={{}}
+                 
                     isDisabled={!ableDistribute || isTokenBalanceExceed}
                     onClick={() => {
                       distributeAction();

@@ -190,7 +190,7 @@ export const MobileDAOTable: FC<DAO> = ({
                 letterSpacing={'.33px'}
                 bg={'#2a72e5'}
                 color={'#fff'}
-                _hover={{}}
+              
                 cursor={'pointer'}
                 _active={{}}
                 onClick={() => {

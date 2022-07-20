@@ -637,7 +637,7 @@ export const Condition2: React.FC<Condition2> = ({
           }
           whiteSpace={'normal'}
           onClick={() => createPool()}>
-          Approve to Create Pool & Set Initial Price
+       Create Pool
         </Button>
       </GridItem>
       <GridItem

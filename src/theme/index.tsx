@@ -325,7 +325,7 @@ export const MOBILE_STATER_STYLE = {
       : props.colorMode === 'light'
       ? ''
       : '1px solid #535353',
-    _hover: {border: 'solid 1px #0070ed'},
+   
     cursor: 'pointer',
     fontFamily: fonts.fld,
   }),
