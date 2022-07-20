@@ -535,13 +535,17 @@ export const Condition2: React.FC<Condition2> = ({
     ).computePoolAddress(TOS_ADDRESS, project.tokenAddress, 3000);    
    
     try {
+      // const receipt = await InitialLiquidityCompute.connect(
+      //   signer,
+      // ).setInitialPriceAndCreatePool(
+      //   getRatio()[0],
+      //   getRatio()[1],
+      //   encodePriceSqrt(getRatio()[0], getRatio()[1]),
+      // );
+
       const receipt = await InitialLiquidityCompute.connect(
-        signer,
-      ).setInitialPriceAndCreatePool(
-        getRatio()[0],
-        getRatio()[1],
-        encodePriceSqrt(getRatio()[0], getRatio()[1]),
-      );
+          signer,
+        ).setCreatePool()
       store.dispatch(setTxPending({tx: true}));
       if (receipt) {
         toastWithReceipt(receipt, setTxPending, 'Launch');
@@ -595,7 +599,7 @@ export const Condition2: React.FC<Condition2> = ({
           mt={'5px'}
           bg={'#257eee'}
           color={'#ffffff'}
-          isDisabled={!isAdmin}
+          isDisabled={true}
           _disabled={{
             color: colorMode === 'light' ? '#86929d' : '#838383',
             bg: colorMode === 'light' ? '#e9edf1' : '#353535',
@@ -766,7 +770,8 @@ export const Condition3: React.FC<Condition3> = ({
           mt={'5px'}
           bg={'#257eee'}
           color={'#ffffff'}
-          // isDisabled={createdPool === ZERO_ADDRESS}
+          //  isDisabled={createdPool === ZERO_ADDRESS}
+          isDisabled={true}
           _disabled={{
             color: colorMode === 'light' ? '#86929d' : '#838383',
             bg: colorMode === 'light' ? '#e9edf1' : '#353535',
@@ -1003,10 +1008,11 @@ export const Condition4: React.FC<Condition4> = ({
             h={'32px'}
             bg={'#257eee'}
             color={'#ffffff'}
-            isDisabled={
-              Number(tosBalance) === 0 ||
-              Number(projTokenBalance) === 0
-            }
+            // isDisabled={
+            //   Number(tosBalance) === 0 ||
+            //   Number(projTokenBalance) === 0
+            // }
+            isDisabled={true}
             _disabled={{
               color: colorMode === 'light' ? '#86929d' : '#838383',
               bg: colorMode === 'light' ? '#e9edf1' : '#353535',
