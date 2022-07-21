@@ -1,5 +1,5 @@
 import {Head} from 'components/SEO';
-import {Fragment, useState} from 'react';
+import {Fragment, useState,useEffect} from 'react';
 import {
   Flex,
   Text,
@@ -13,6 +13,16 @@ import {
 } from '@chakra-ui/react';
 import logoDark from 'assets/svgs/fldw_bi.svg';
 import {Link} from 'react-router-dom';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import { fetchPoolPayload } from 'pages/Reward/utils/fetchPoolPayload';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectStakes} from 'pages/Staking/staking.reducer';
+import {Stake} from 'pages/Staking/types';
+import {useQuery} from 'react-query';
+import axios from 'axios';
+import {fetchCampaginURL} from 'constants/index';
+import {useAppDispatch} from 'hooks/useRedux';
+import {fetchProjects} from '@Launch/launch.reducer';
 const whiteWithOpacity = `rgba(255, 255, 255, 0.5)`;
 
 const TextComponent = (props: any) => {
@@ -26,6 +36,8 @@ const TextComponent = (props: any) => {
     ...rest
   } = props;
   const {colorMode} = useColorMode();
+
+  
   return (
     <Center
       w={'100%'}
@@ -56,10 +68,91 @@ const TextComponent = (props: any) => {
 };
 
 export const MobileFLD = () => {
+  const {account, library} = useActiveWeb3React();
+  const [totalStakedAmount, setTotalStakedAmount] = useState('');
   const theme = useTheme();
   const {colorMode} = useColorMode();
-  const [totalStakedAmount, setTotalStakedAmount] = useState('');
+  const {data} = useAppSelector(selectStakes);
+  const [liquidity, setLiquidity] = useState('');
+  const [numProjects, setNumProjects] = useState<number>(0);
+  const dispatch = useAppDispatch();
+  
+  const projects = useQuery(
+    ['launchProjects'],
+    () =>
+      axios.get(fetchCampaginURL, {
+        headers: {
+          account,
+        },
+      }),
+    {
+      enabled: !!account,
+      refetchInterval: 600000,
+    },
+  );
 
+  const projectsData = projects.data;
+  const isProjectsLoading = projects.isLoading;
+  
+  useEffect(() => {
+    async function calcLiquidity () {
+      let totalLiquidity = 0;
+      const tvl = await fetchPoolPayload(library)
+      for (const liquidity of tvl) {
+        totalLiquidity = totalLiquidity + Number(liquidity.total)
+      }
+      const res = Number(totalLiquidity).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+      });
+      setLiquidity(
+        res.split('.')[0] + '.' + res.split('.')[1][0] + res.split('.')[1][1],
+      );
+    }
+    calcLiquidity()
+      
+    
+  }, [library]);
+
+  useEffect(() => {
+    if (data) {
+      let total = 0;
+      data.map((e: Stake) => {
+        return (total += Number(e.stakeBalanceTON));
+      });
+      return setTotalStakedAmount(
+        Number(total).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+        }),
+      );
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (projectsData  && !isProjectsLoading) {
+      const {data: datas} = projectsData;
+      dispatch(fetchProjects({data: datas}));
+      const projects = Object.keys(datas).map((k) => {
+        if (datas[k].vaults !== undefined) {
+        const stat = datas[k].vaults.every((vault: any) => {
+          return vault.isSet === true;
+        });
+        return {name: datas[k].projectName, key: k,isSet: stat}
+      }
+      else {
+        return {key: k, data: datas[k], isSet: false}
+      }
+    })
+      
+      const filteredProjects = projects.filter(
+        (project: any) => project.isSet === true,
+      );
+      console.log(filteredProjects.length);
+      
+      setNumProjects(filteredProjects.length+4)
+    }
+  }, [data, dispatch]);
+
+  
   return (
     <Fragment>
       <Flex
@@ -87,13 +180,13 @@ export const MobileFLD = () => {
               Phase1 Total Staked
             </Text>
             <Text fontSize={'25px'}>
-              2,646,790.91 <span style={{fontSize: '15px'}}>TON</span>
+             {totalStakedAmount} <span style={{fontSize: '15px'}}>TON</span>
             </Text>
             <Text mt={'21px'} fontSize={'15px'} color={'#ffff07'}>
-              Phase 2 Total WTON-TOS liquidity
+            Total Ecosystem Value Locked
             </Text>
             <Text fontSize={'25px'}>
-              2,646,790.91 <span style={{fontSize: '15px'}}>TON</span>
+            <span style={{fontSize: '25px'}}>$</span> {liquidity}
             </Text>
           </Flex>
 
@@ -167,7 +260,7 @@ into sTOS(staked TOS)"
                 <Text mt={'30px'} fontSize={'11px'}>
                 TOS pairs (in Uniswap)
                 </Text>
-                <Text fontSize={'15px'}>20</Text>
+                <Text fontSize={'15px'}>{numProjects}</Text>
               </Center>
               {/* <TextComponent
                 header="Phase1"

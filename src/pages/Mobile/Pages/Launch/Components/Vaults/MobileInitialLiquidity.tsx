@@ -589,7 +589,7 @@ const LPCompCond2: React.FC<LPComp2Props> = ({
           color={'#ffffff'}
           px={'7px'}
           fontWeight={'normal'}
-          isDisabled={!isAdmin}
+          isDisabled={true}
           _disabled={{
             color: colorMode === 'light' ? '#86929d' : '#838383',
             bg: colorMode === 'light' ? '#e9edf1' : '#353535',
@@ -779,6 +779,7 @@ const LPCompCond3: React.FC<LPComp3Props> = ({
           fontWeight={500}
           bg={'#257eee'}
           color={'#ffffff'}
+          isDisabled={true}
           // isDisabled={createdPool === ZERO_ADDRESS}
           _disabled={{
             color: colorMode === 'light' ? '#86929d' : '#838383',
@@ -993,9 +994,10 @@ const LPCompCond4: React.FC<LPComp4Props> = ({
           h={'32px'}
           bg={'#257eee'}
           color={'#ffffff'}
-          isDisabled={
-            Number(tosBalance) === 0 || Number(projTokenBalance) === 0
-          }
+          // isDisabled={
+          //   Number(tosBalance) === 0 || Number(projTokenBalance) === 0
+          // }
+          isDisabled={true}
           _disabled={{
             color: colorMode === 'light' ? '#86929d' : '#838383',
             bg: colorMode === 'light' ? '#e9edf1' : '#353535',

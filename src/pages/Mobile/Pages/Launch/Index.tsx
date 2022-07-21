@@ -51,7 +51,8 @@ const MobileOpenCampagin = () => {
       const filteredProjects = projects.filter(
         (project: any) => project.isSet === true,
       );
-
+      console.log(filteredProjects.length);
+      
       setNumProjects(filteredProjects.length)
       setProjectsData(projects);
     }

@@ -31,7 +31,7 @@ const MobileLaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
 
   const infoList = [
     {name: 'Raised Capital', info: '$ 7,115,401.98'},
-    {name: 'TOS Pairs (in Uniswap)', info: '23'},
+    {name: 'TOS Pairs (in Uniswap)', info: numPairs},
   ];
   const infoIndex = wrap(0, infoList.length, page);
   const {
@@ -183,37 +183,6 @@ const MobileLaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
                     {infoList[infoIndex].info}
                   </Text>
                 </Flex>
-
-                {/* <Flex
-                  justifyContent={'space-between'}
-                  flexDir="row"
-                  alignItems={'center'}
-                  h={'45px'}
-                  px={'20px'}
-                  w={'100%'}
-                  fontFamily={theme.fonts.fld}>
-                  <Text color={'yellow'} fontSize={'14px'}>
-                    Raised Capital
-                  </Text>
-                  <Text color={'#fff'} fontSize={'15px'}>
-                    $2,646,790.91
-                  </Text>
-                </Flex> */}
-                {/* <Flex
-                  justifyContent={'space-between'}
-                  flexDir="row"
-                  alignItems={'center'}
-                  h={'45px'}
-                  px={'20px'}
-                  w={'100%'}
-                  fontFamily={theme.fonts.fld}>
-                  <Text color={'yellow'} fontSize={'14px'}>
-                    Raised Capital
-                  </Text>
-                  <Text color={'#fff'} fontSize={'15px'}>
-                    $2,646,790.91
-                  </Text>
-                </Flex> */}
               </motion.div>
             </AnimatePresence>
           </Flex>
