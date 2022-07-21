@@ -125,7 +125,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
             justifyContent={'space-between'}>
             <Flex>
               <Button
-                border="solid 1px #d7d9df"
+                border={colorMode === 'dark'? "solid 1px #535353": 'solid 1px #d7d9df'}
                 color={colorMode === 'dark' ? '#ffffff' : '#86929d'}
                 w={account ? (tx === true ? 136 : 151) : 136}
                 h={35}

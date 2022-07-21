@@ -427,7 +427,7 @@ export const MobileAirDropDistributeTable = () => {
                   color={colorMode === 'light' ? '#304156' : '#ffffff'}>
                   Token Amount
                 </Text>
-                <Flex mb={'24px'} w={'100%'}>
+                <Flex mb={'24px'} w={'100%'} flexDir='column'>
                   <CustomInput
                     w={'100%'}
                     h={'32px'}
@@ -441,6 +441,8 @@ export const MobileAirDropDistributeTable = () => {
                     setValue={setTokenAmount}
                     placeHolder={'0.00'}
                     fontWeight={500}
+                    numberOnly={true}
+                    error={isTokenBalanceExceed}
                     color={
                       tokenAmount !== ''
                         ? colorMode === 'light'
@@ -449,7 +451,7 @@ export const MobileAirDropDistributeTable = () => {
                         : 'gray.175'
                     }></CustomInput>
                   {isTokenBalanceExceed && (
-                    <Text color={'red.100'}>You don't have enough balance</Text>
+                    <Text color={'red.100'} mt='3px' fontSize='11px'>You don't have enough balance</Text>
                   )}
                 </Flex>
 
