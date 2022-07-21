@@ -32,7 +32,7 @@ import {selectTransactionType} from 'store/refetch.reducer';
 import {BASE_PROVIDER} from 'constants/index';
 import Fraction from 'fraction.js';
 import {addPool} from 'pages/Admin/actions/actions';
-import { ZERO_ADDRESS } from 'constants/misc';
+import {ZERO_ADDRESS} from 'constants/misc';
 // var Fraction = require('fraction.js');
 const {TOS_ADDRESS, UniswapV3Factory, NPM_Address} = DEPLOYED;
 type InitialLiquidity = {
@@ -53,6 +53,8 @@ type Condition2 = {
   project: any;
   isAdmin: boolean;
   InitialLiquidityCompute: any;
+  pool:string;
+  startTime:number
 };
 type Condition3 = {
   themeDesign: any;
@@ -78,7 +80,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
-  const {account, library,chainId} = useActiveWeb3React();
+  const {account, library, chainId} = useActiveWeb3React();
   const [disableButton, setDisableButton] = useState<boolean>(true);
   const [tosBalance, setTosBalance] = useState<string>('');
   const [projTokenBalance, setProjTokenBalance] = useState<string>('');
@@ -86,7 +88,9 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
   const [isLpToken, setIsLpToken] = useState<boolean>(false);
   const [LPToken, setLPToken] = useState<Number>(0);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
-  const [createdPool, setCreatedPool] = useState<string>('')
+  const [createdPool, setCreatedPool] = useState<string>('');
+  const [startTime, setStartTime] = useState<number>(0);
+
   const network = BASE_PROVIDER._network.name;
   const InitialLiquidityCompute = new Contract(
     vault.vaultAddress,
@@ -110,7 +114,9 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
       }
       const signer = getSigner(library, account);
       const LP = await InitialLiquidityCompute.lpToken();
-
+      const pool = await InitialLiquidityCompute.pool();
+      const start = await InitialLiquidityCompute.startTime();
+      setStartTime(start);
       const tosBal = await TOS.balanceOf(vault.vaultAddress);
       const tokBalance = await projectToken.balanceOf(vault.vaultAddress);
       const TOSBal = ethers.utils.formatEther(tosBal);
@@ -120,9 +126,9 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
         TOS_ADDRESS,
         project.tokenAddress,
         3000,
-      );      
-      setIsPool(getPool === ZERO_ADDRESS ? false : true);
-      setCreatedPool(getPool === ZERO_ADDRESS ? '':getPool)
+      );
+      setIsPool(pool === ZERO_ADDRESS ? false : true);
+      setCreatedPool(pool === ZERO_ADDRESS ? '' : pool);
       // setIsPool(false)
       setIsLpToken(Number(LP) === 0 ? false : true);
       // console.log(Number(LP));
@@ -252,17 +258,25 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
           </Text>
           {/* Need to make TON changeable. */}
           <Flex alignItems={'center'}>
-          <Text
-            fontFamily={theme.fonts.fld}
-            fontSize={'13px'}
-            color={themeDesign.headerFont[colorMode]}
-            letterSpacing={'1.3px'} mr={'5px'}>
-            {commafy(Number(vault.vaultTokenAllocation))} {project.tokenSymbol}
-          </Text>
-          <Text letterSpacing={'1.3px'} fontSize={'13px'} color={'#7e8993'}>
-               {((vault.vaultTokenAllocation/project.totalTokenAllocation)*100).toString()
-            .match(/^\d+(?:\.\d{0,2})?/)}%</Text>
-        </Flex>
+            <Text
+              fontFamily={theme.fonts.fld}
+              fontSize={'13px'}
+              color={themeDesign.headerFont[colorMode]}
+              letterSpacing={'1.3px'}
+              mr={'5px'}>
+              {commafy(Number(vault.vaultTokenAllocation))}{' '}
+              {project.tokenSymbol}
+            </Text>
+            <Text letterSpacing={'1.3px'} fontSize={'13px'} color={'#7e8993'}>
+              {(
+                (vault.vaultTokenAllocation / project.totalTokenAllocation) *
+                100
+              )
+                .toString()
+                .match(/^\d+(?:\.\d{0,2})?/)}
+              %
+            </Text>
+          </Flex>
         </GridItem>
         <GridItem
           border={themeDesign.border[colorMode]}
@@ -292,7 +306,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
           <Link
             isExternal
             href={
-               createdPool !== ''
+              createdPool !== ''
                 ? `https://info.uniswap.org/#/pools/${createdPool.toLowerCase()}`
                 : ''
             }
@@ -385,14 +399,29 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
         )
       ) : (
         <Condition2
-          themeDesign={themeDesign}
-          projTokenBalance={projTokenBalance}
-          tosBalance={tosBalance}
-          project={project}
-          isAdmin={isAdmin}
-          InitialLiquidityCompute={InitialLiquidityCompute}
-        />
+        themeDesign={themeDesign}
+        projTokenBalance={projTokenBalance}
+        tosBalance={tosBalance}
+        project={project}
+        isAdmin={isAdmin}
+        InitialLiquidityCompute={InitialLiquidityCompute}
+        pool={createdPool}
+        startTime={startTime}
+
+      />
       )}
+
+      {/* <Condition2
+        themeDesign={themeDesign}
+        projTokenBalance={projTokenBalance}
+        tosBalance={tosBalance}
+        project={project}
+        isAdmin={isAdmin}
+        InitialLiquidityCompute={InitialLiquidityCompute}
+        pool={createdPool}
+        startTime={startTime}
+
+      /> */}
     </Grid>
   );
 };
@@ -463,9 +492,9 @@ export const Condition1: React.FC<Condition1> = ({
           fontFamily={theme.fonts.fld}
           fontSize={'14px'}
           letterSpacing={'0.14px'}>
-          {(Number(projTokenBalance)).toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-      })}
+          {Number(projTokenBalance).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+          })}
         </Text>
         <Text
           textAlign={'center'}
@@ -473,9 +502,9 @@ export const Condition1: React.FC<Condition1> = ({
           fontFamily={theme.fonts.fld}
           fontSize={'14px'}
           letterSpacing={'0.14px'}>
-          {(Number(tosBalance).toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-      }))}
+          {Number(tosBalance).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+          })}
         </Text>
       </GridItem>
       <GridItem
@@ -506,6 +535,8 @@ export const Condition2: React.FC<Condition2> = ({
   project,
   isAdmin,
   InitialLiquidityCompute,
+  pool,
+  startTime
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -515,6 +546,8 @@ export const Condition2: React.FC<Condition2> = ({
   useEffect(() => {
     getRatio();
   }, [account, project]);
+
+  useEffect(() => {}, []);
 
   const encodePriceSqrt = (reserve1: number, reserve0: number) => {
     return new bn(reserve1.toString())
@@ -532,32 +565,37 @@ export const Condition2: React.FC<Condition2> = ({
 
     const computePoolAddress = await InitialLiquidityCompute.connect(
       signer,
-    ).computePoolAddress(TOS_ADDRESS, project.tokenAddress, 3000);    
-   
+    ).computePoolAddress(TOS_ADDRESS, project.tokenAddress, 3000);
+
     try {
+      // const receipt = await InitialLiquidityCompute.connect(
+      //   signer,
+      // ).setInitialPriceAndCreatePool(
+      //   getRatio()[0],
+      //   getRatio()[1],
+      //   encodePriceSqrt(getRatio()[0], getRatio()[1]),
+      // );
+
       const receipt = await InitialLiquidityCompute.connect(
         signer,
-      ).setInitialPriceAndCreatePool(
-        getRatio()[0],
-        getRatio()[1],
-        encodePriceSqrt(getRatio()[0], getRatio()[1]),
-      );
+      ).setCreatePool();
       store.dispatch(setTxPending({tx: true}));
       if (receipt) {
         toastWithReceipt(receipt, setTxPending, 'Launch');
         await receipt.wait();
-        if ( chainId) {
+        if (chainId) {
           const createPoo = addPool({
             chainId: chainId,
-            poolName:  `TOS / ${project.tokenSymbol}`,
+            poolName: `TOS / ${project.tokenSymbol}`,
             poolAddress: computePoolAddress[0],
             token0Address: TOS_ADDRESS,
             token1Address: project.tokenAddress,
-            token0Image: 'https://tonstarter-symbols.s3.ap-northeast-2.amazonaws.com/tos-symbol%403x.png',
+            token0Image:
+              'https://tonstarter-symbols.s3.ap-northeast-2.amazonaws.com/tos-symbol%403x.png',
             token1Image: project.tokenSymbolImage,
-            feeTier: 3000
-          })
-         }
+            feeTier: 3000,
+          });
+        }
       }
     } catch (e) {
       store.dispatch(setTxPending({tx: false}));
@@ -595,7 +633,7 @@ export const Condition2: React.FC<Condition2> = ({
           mt={'5px'}
           bg={'#257eee'}
           color={'#ffffff'}
-          isDisabled={!isAdmin}
+          isDisabled={true}
           _disabled={{
             color: colorMode === 'light' ? '#86929d' : '#838383',
             bg: colorMode === 'light' ? '#e9edf1' : '#353535',
@@ -673,14 +711,14 @@ export const Condition2: React.FC<Condition2> = ({
           Amount in Initial Liquidity Vault
         </Text>
         <Text textAlign={'center'} w={'35.4%'} fontFamily={theme.fonts.fld}>
-          {(Number(projTokenBalance)).toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-      })}
+          {Number(projTokenBalance).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+          })}
         </Text>
         <Text textAlign={'center'} w={'35.4%'} fontFamily={theme.fonts.fld}>
           {Number(tosBalance).toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-      })}
+            minimumFractionDigits: 2,
+          })}
         </Text>
       </GridItem>
       <GridItem
@@ -746,9 +784,9 @@ export const Condition3: React.FC<Condition3> = ({
   };
 
   const getRatio = () => {
-    const decimal = Number(project.tosPrice) ;
+    const decimal = Number(project.tosPrice);
     const x = new Fraction(decimal);
-   return [x.d, x.n];
+    return [x.d, x.n];
   };
 
   return (
@@ -766,40 +804,35 @@ export const Condition3: React.FC<Condition3> = ({
           mt={'5px'}
           bg={'#257eee'}
           color={'#ffffff'}
-          // isDisabled={createdPool === ZERO_ADDRESS}
+          //  isDisabled={createdPool === ZERO_ADDRESS}
+          isDisabled={true}
           _disabled={{
             color: colorMode === 'light' ? '#86929d' : '#838383',
             bg: colorMode === 'light' ? '#e9edf1' : '#353535',
             cursor: 'not-allowed',
           }}
-          _hover={
-           {
-                  background: 'transparent',
-                  border: 'solid 1px #2a72e5',
-                  color: themeDesign.tosFont[colorMode],
-                  cursor: 'pointer',
+          _hover={{
+            background: 'transparent',
+            border: 'solid 1px #2a72e5',
+            color: themeDesign.tosFont[colorMode],
+            cursor: 'pointer',
 
-                  whiteSpace: 'normal',
-                }
-          }
-          _focus={
-             {
-                  background: '#2a72e5',
-                  border: 'solid 1px #2a72e5',
-                  color: '#fff',
+            whiteSpace: 'normal',
+          }}
+          _focus={{
+            background: '#2a72e5',
+            border: 'solid 1px #2a72e5',
+            color: '#fff',
 
-                  whiteSpace: 'normal',
-                }
-          }
-          _active={
-             {
-                  background: '#2a72e5',
-                  border: 'solid 1px #2a72e5',
-                  color: '#fff',
+            whiteSpace: 'normal',
+          }}
+          _active={{
+            background: '#2a72e5',
+            border: 'solid 1px #2a72e5',
+            color: '#fff',
 
-                  whiteSpace: 'normal',
-                }
-          }
+            whiteSpace: 'normal',
+          }}
           whiteSpace={'normal'}
           onClick={mint}>
           Mint Lp Token
@@ -838,14 +871,14 @@ export const Condition3: React.FC<Condition3> = ({
           Amount in Initial Liquidity Vault
         </Text>
         <Text textAlign={'center'} w={'35.4%'} fontFamily={theme.fonts.fld}>
-          {(Number(projTokenBalance)).toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-      })}
+          {Number(projTokenBalance).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+          })}
         </Text>
         <Text textAlign={'center'} w={'35.4%'} fontFamily={theme.fonts.fld}>
           {Number(tosBalance).toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-      })}
+            minimumFractionDigits: 2,
+          })}
         </Text>
       </GridItem>
       <GridItem
@@ -901,7 +934,7 @@ export const Condition4: React.FC<Condition4> = ({
   const bn = require('bignumber.js');
   const [unclaimedTOS, setUnclaimedTOS] = useState<string>('0');
   const [unclaimedProjTok, setUnclaimedProjTok] = useState<string>('0');
-  
+
   useEffect(() => {
     async function getTokenInfo() {
       if (account === null || account === undefined || library === undefined) {
@@ -913,7 +946,6 @@ export const Condition4: React.FC<Condition4> = ({
         setUnclaimedTOS(ethers.utils.formatEther(data.tokensOwed0));
         setUnclaimedProjTok(ethers.utils.formatEther(data.tokensOwed1));
       }
-   
     }
 
     getTokenInfo();
@@ -988,13 +1020,13 @@ export const Condition4: React.FC<Condition4> = ({
 
         <Text textAlign={'center'} w={'24.1%'} fontFamily={theme.fonts.fld}>
           {Number(projTokenBalance).toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-      })}
+            minimumFractionDigits: 2,
+          })}
         </Text>
         <Text textAlign={'center'} w={'24.1%'} fontFamily={theme.fonts.fld}>
           {Number(tosBalance).toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-      })}
+            minimumFractionDigits: 2,
+          })}
         </Text>
         <Flex justifyContent={'center'} alignContent={'center'} w={'29.2%'}>
           <Button
@@ -1003,10 +1035,11 @@ export const Condition4: React.FC<Condition4> = ({
             h={'32px'}
             bg={'#257eee'}
             color={'#ffffff'}
-            isDisabled={
-              Number(tosBalance) === 0 ||
-              Number(projTokenBalance) === 0
-            }
+            // isDisabled={
+            //   Number(tosBalance) === 0 ||
+            //   Number(projTokenBalance) === 0
+            // }
+            isDisabled={true}
             _disabled={{
               color: colorMode === 'light' ? '#86929d' : '#838383',
               bg: colorMode === 'light' ? '#e9edf1' : '#353535',
@@ -1062,13 +1095,13 @@ export const Condition4: React.FC<Condition4> = ({
 
         <Text textAlign={'center'} w={'24.1%'} fontFamily={theme.fonts.fld}>
           {Number(unclaimedProjTok).toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-      })}
+            minimumFractionDigits: 2,
+          })}
         </Text>
         <Text textAlign={'center'} w={'24.1%'} fontFamily={theme.fonts.fld}>
           {Number(unclaimedTOS).toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-      })}
+            minimumFractionDigits: 2,
+          })}
         </Text>
         <Flex justifyContent={'center'} alignContent={'center'} w={'29.2%'}>
           <Button
