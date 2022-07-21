@@ -27,7 +27,6 @@ const MobileOpenCampagin = () => {
         },
       }),
     {
-      enabled: !!account,
       refetchInterval: 600000,
     },
   );
