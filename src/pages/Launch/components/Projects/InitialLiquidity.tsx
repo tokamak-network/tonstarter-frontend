@@ -33,6 +33,7 @@ import {BASE_PROVIDER} from 'constants/index';
 import Fraction from 'fraction.js';
 import {addPool} from 'pages/Admin/actions/actions';
 import {ZERO_ADDRESS} from 'constants/misc';
+import moment from 'moment';
 // var Fraction = require('fraction.js');
 const {TOS_ADDRESS, UniswapV3Factory, NPM_Address} = DEPLOYED;
 type InitialLiquidity = {
@@ -53,8 +54,8 @@ type Condition2 = {
   project: any;
   isAdmin: boolean;
   InitialLiquidityCompute: any;
-  pool:string;
-  startTime:number
+  pool: string;
+  startTime: number;
 };
 type Condition3 = {
   themeDesign: any;
@@ -357,7 +358,9 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
           </Text>{' '}
         </GridItem>
       </Flex>
-      {Number(tosBalance) === 0 ? isPool && isLpToken ?  <Condition4
+      {Number(tosBalance) === 0 ? (
+        isPool && isLpToken ? (
+          <Condition4
             themeDesign={themeDesign}
             projTokenBalance={projTokenBalance}
             tosBalance={tosBalance}
@@ -367,12 +370,14 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
             mint={mint}
             collect={collect}
             npm={NPM}
-          /> : (
-        <Condition1
-          themeDesign={themeDesign}
-          projTokenBalance={projTokenBalance}
-          tosBalance={tosBalance}
-        />
+          />
+        ) : (
+          <Condition1
+            themeDesign={themeDesign}
+            projTokenBalance={projTokenBalance}
+            tosBalance={tosBalance}
+          />
+        )
       ) : isPool ? (
         isLpToken ? (
           <Condition4
@@ -399,29 +404,17 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
         )
       ) : (
         <Condition2
-        themeDesign={themeDesign}
-        projTokenBalance={projTokenBalance}
-        tosBalance={tosBalance}
-        project={project}
-        isAdmin={isAdmin}
-        InitialLiquidityCompute={InitialLiquidityCompute}
-        pool={createdPool}
-        startTime={startTime}
-
-      />
+          themeDesign={themeDesign}
+          projTokenBalance={projTokenBalance}
+          tosBalance={tosBalance}
+          project={project}
+          isAdmin={isAdmin}
+          InitialLiquidityCompute={InitialLiquidityCompute}
+          pool={createdPool}
+          startTime={startTime}
+        />
       )}
 
-      {/* <Condition2
-        themeDesign={themeDesign}
-        projTokenBalance={projTokenBalance}
-        tosBalance={tosBalance}
-        project={project}
-        isAdmin={isAdmin}
-        InitialLiquidityCompute={InitialLiquidityCompute}
-        pool={createdPool}
-        startTime={startTime}
-
-      /> */}
     </Grid>
   );
 };
@@ -536,11 +529,12 @@ export const Condition2: React.FC<Condition2> = ({
   isAdmin,
   InitialLiquidityCompute,
   pool,
-  startTime
+  startTime,
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
-
+  const now = moment().unix();
+  const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
   const {account, library, chainId} = useActiveWeb3React();
   const bn = require('bignumber.js');
   useEffect(() => {
@@ -558,6 +552,7 @@ export const Condition2: React.FC<Condition2> = ({
       .toFixed();
   };
   const createPool = async () => {
+    
     if (account === null || account === undefined || library === undefined) {
       return;
     }
@@ -633,49 +628,38 @@ export const Condition2: React.FC<Condition2> = ({
           mt={'5px'}
           bg={'#257eee'}
           color={'#ffffff'}
-          isDisabled={true}
+          isDisabled={pool!==ZERO_ADDRESS &&  startTime < now}
           _disabled={{
             color: colorMode === 'light' ? '#86929d' : '#838383',
             bg: colorMode === 'light' ? '#e9edf1' : '#353535',
             cursor: 'not-allowed',
           }}
-          _hover={
-            !isAdmin
-              ? {}
-              : {
-                  background: 'transparent',
-                  border: 'solid 1px #2a72e5',
-                  color: themeDesign.tosFont[colorMode],
-                  cursor: 'pointer',
-                  width: '152px',
-                  whiteSpace: 'normal',
-                }
-          }
-          _focus={
-            !isAdmin
-              ? {}
-              : {
-                  background: '#2a72e5',
-                  border: 'solid 1px #2a72e5',
-                  color: '#fff',
-                  width: '152px',
-                  whiteSpace: 'normal',
-                }
-          }
-          _active={
-            !isAdmin
-              ? {}
-              : {
-                  background: '#2a72e5',
-                  border: 'solid 1px #2a72e5',
-                  color: '#fff',
-                  width: '152px',
-                  whiteSpace: 'normal',
-                }
-          }
+          _hover={pool!==ZERO_ADDRESS &&  startTime < now ? {}:
+            {
+            background: 'transparent',
+            border: 'solid 1px #2a72e5',
+            color: themeDesign.tosFont[colorMode],
+            cursor: 'pointer',
+            width: '152px',
+            whiteSpace: 'normal',
+          }}
+          _focus={pool!==ZERO_ADDRESS &&  startTime < now ? {}:{
+            background: '#2a72e5',
+            border: 'solid 1px #2a72e5',
+            color: '#fff',
+            width: '152px',
+            whiteSpace: 'normal',
+          }}
+          _active={pool!==ZERO_ADDRESS &&  startTime < now ? {}:{
+            background: '#2a72e5',
+            border: 'solid 1px #2a72e5',
+            color: '#fff',
+            width: '152px',
+            whiteSpace: 'normal',
+          }}
           whiteSpace={'normal'}
           onClick={() => createPool()}>
-       Create Pool
+          Create Pool
         </Button>
       </GridItem>
       <GridItem

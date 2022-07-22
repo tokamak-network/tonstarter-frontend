@@ -86,6 +86,7 @@ export const MobileFLD = () => {
         },
       }),
     {
+      // enabled: !!account,
       refetchInterval: 600000,
     },
   );
