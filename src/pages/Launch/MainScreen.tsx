@@ -145,7 +145,7 @@ const MainScreen = () => {
         />
         <Flex mt={'50px'} mb={'20px'}>
           <Steps
-            stepName={['Project&Token', 'Token Economy', 'Deploy']}
+            stepName={['Project & Token', 'Token Economy', 'Deploy']}
             currentStep={step}></Steps>
         </Flex>
       </Flex>

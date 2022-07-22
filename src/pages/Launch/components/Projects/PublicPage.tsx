@@ -425,11 +425,12 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                       mr={'2px'}
                       bg={'#257eee'}
                       color={'#ffffff'}
-                      isDisabled={
-                        vault.publicRound2End > moment().unix() ||
-                        hardcap === 0 ||
-                        fundWithdrew === true
-                      }
+                      // isDisabled={
+                      //   vault.publicRound2End > moment().unix() ||
+                      //   hardcap === 0 ||
+                      //   fundWithdrew === true
+                      // }
+                      isDisabled={true}
                       _disabled={{
                         color: colorMode === 'light' ? '#86929d' : '#838383',
                         bg: colorMode === 'light' ? '#e9edf1' : '#353535',

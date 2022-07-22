@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
+    <path style="fill:none" d="M0 0h30v30H0z"/>
+    <path data-name="선 2" transform="translate(5 15)" style="stroke:#3e495c;stroke-linejoin:round;stroke-width:2px;fill:none" d="M0 0h20"/>
+    <path data-name="선 3" transform="translate(5 8)" style="stroke:#3e495c;stroke-linejoin:round;stroke-width:2px;fill:none" d="M0 0h20"/>
+    <path data-name="선 4" transform="translate(5 23)" style="stroke:#3e495c;stroke-linejoin:round;stroke-width:2px;fill:none" d="M0 0h20"/>
+</svg>

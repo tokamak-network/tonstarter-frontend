@@ -83,9 +83,9 @@ export const InformationModal = () => {
   //@ts-ignore
   const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-  const {reward, stakedPools, userAddress, key, positions, blockNumber} =
+  const {reward, stakedPools, userAddress, key, positions, blockNumber,rewardSymbol} =
     data.data;
-
+    
   const themeDesign = {
     border: {
       light: 'solid 1px #e7edf3',
@@ -119,7 +119,7 @@ export const InformationModal = () => {
 
   const rangePayload = async (args: any) => {
     const {account, library, id} = args;
-    const result = await fetchPositionRangePayloadModal(library, id, account);
+    const result = await fetchPositionRangePayloadModal(library, id, account, reward.poolAddress);
 
     return result;
   };
@@ -658,10 +658,7 @@ export const InformationModal = () => {
                   </Text>
                   <Text fontSize={'16px'}>
                     {
-                      checkTokenType(
-                        ethers.utils.getAddress(reward.rewardToken),
-                        colorMode,
-                      ).name
+                     rewardSymbol
                     }
                   </Text>
                 </Flex>
@@ -682,11 +679,8 @@ export const InformationModal = () => {
                     {accumulatedRewards}{' '}
                   </Text>
                   <Text fontSize={'16px'}>
-                    {
-                      checkTokenType(
-                        ethers.utils.getAddress(reward.rewardToken),
-                        colorMode,
-                      ).name
+                  {
+                     rewardSymbol
                     }
                   </Text>
                 </Flex>
@@ -761,11 +755,8 @@ export const InformationModal = () => {
                     {formatAmount(refundableAmount, reward.rewardToken)}{' '}
                   </Text>
                   <Text fontSize={'16px'}>
-                    {
-                      checkTokenType(
-                        ethers.utils.getAddress(reward.rewardToken),
-                        colorMode,
-                      ).name
+                  {
+                     rewardSymbol
                     }
                   </Text>
                 </Flex>
