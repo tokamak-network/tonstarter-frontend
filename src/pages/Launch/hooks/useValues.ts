@@ -95,6 +95,7 @@ const initialObj: Projects['CreateProject'] = {
       isDeployedErr: false,
       poolAddress: undefined,
       tokenPair: undefined,
+      startTime: undefined,
     },
     {
       vaultName: 'TON Staker',

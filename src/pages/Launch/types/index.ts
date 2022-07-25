@@ -84,6 +84,7 @@ type VaultC = VaultCommon & {};
 type VaultLiquidityIncentive = VaultCommon & {
   poolAddress: string | undefined;
   tokenPair: string | undefined;
+  startTime?: string | number | undefined;
 };
 
 type VaultAny = VaultPublic | VaultDao | VaultC | VaultLiquidityIncentive;
@@ -251,6 +252,11 @@ type PublicTokenColData = {
       title: 'Exchange Ratio\n1 TOS';
       content: string | undefined;
       formikName: string;
+    },
+    {
+      title: 'Start Time';
+      content: string | undefined;
+      formikName: 'startTime';
     },
   ];
 };

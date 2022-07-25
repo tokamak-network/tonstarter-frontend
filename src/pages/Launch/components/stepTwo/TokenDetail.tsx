@@ -112,6 +112,10 @@ const SubTitle = (props: {
   const {vaults} = values;
   const publicVault = vaults[0] as VaultPublic;
 
+  // console.log(leftTitle);
+  // console.log(rightTitle);
+  // console.log(inputVal);
+
   useEffect(() => {
     //@ts-ignore
     setInputVal(rightTitle);
@@ -124,6 +128,7 @@ const SubTitle = (props: {
         | 'Whitelist'
         | 'Public Round 1'
         | 'Public Round 2'
+        | 'Start Time'
     ) {
       case 'Snapshot': {
         return publicVault.snapshot;
@@ -136,6 +141,10 @@ const SubTitle = (props: {
       }
       case 'Public Round 2': {
         return [publicVault.publicRound2, publicVault.publicRound2End];
+      }
+      case 'Start Time': {
+        //@ts-ignore
+        return vaults[1].startTime;
       }
       default:
         return 0;
@@ -211,8 +220,12 @@ const SubTitle = (props: {
         | 'Whitelist'
         | 'Public Round 1'
         | 'Public Round 2'
+        | 'Start Time'
     ) {
       case 'Snapshot': {
+        if (selectedVaultIndex !== 0) {
+          return null;
+        }
         return dispatch(
           saveTempVaultData({
             data: {
@@ -223,6 +236,9 @@ const SubTitle = (props: {
         );
       }
       case 'Whitelist': {
+        if (selectedVaultIndex !== 0) {
+          return null;
+        }
         return dispatch(
           saveTempVaultData({
             data: {
@@ -236,6 +252,9 @@ const SubTitle = (props: {
         );
       }
       case 'Public Round 1': {
+        if (selectedVaultIndex !== 0) {
+          return null;
+        }
         return dispatch(
           saveTempVaultData({
             data: {
@@ -249,6 +268,9 @@ const SubTitle = (props: {
         );
       }
       case 'Public Round 2': {
+        if (selectedVaultIndex !== 0) {
+          return null;
+        }
         return dispatch(
           saveTempVaultData({
             data: {
@@ -261,11 +283,24 @@ const SubTitle = (props: {
           }),
         );
       }
+      case 'Start Time': {
+        if (selectedVaultIndex !== 1) {
+          return null;
+        }
+        return dispatch(
+          saveTempVaultData({
+            data: {
+              ...tempVaultData,
+              startTime: claimDate,
+            },
+          }),
+        );
+      }
       default:
         break;
     }
     /*eslint-disable*/
-  }, [dateRange, claimDate, leftTitle]);
+  }, [dateRange, claimDate, leftTitle, selectedVaultIndex]);
 
   let tempValueKey = () => {
     switch (leftTitle) {
@@ -302,6 +337,10 @@ const SubTitle = (props: {
         return `${commafy(rightTitle)} TON`;
       case 'Address for receiving funds':
         return rightTitle ? `${shortenAddress(rightTitle)}` : '-';
+      case 'Start Time':
+        return rightTitle
+          ? `${convertTimeStamp(rightTitle, 'YYYY-MM-DD HH:mm:ss')}`
+          : '-';
       case 'custom LP':
         return <></>;
       case 'Select Pair':
@@ -317,6 +356,25 @@ const SubTitle = (props: {
           <NumberInputStep
             valueProp={inputVal}
             formikName={formikName}></NumberInputStep>
+        );
+      case 'Start Time':
+        return (
+          <Flex>
+            <Text mr={'5px'}>
+              {claimDate
+                ? convertTimeStamp(claimDate, 'YYYY-MM-DD HH:mm:ss')
+                : '-'}
+            </Text>
+            <SingleCalendarPop
+              setDate={setClaimDate}
+              //Mainnet env
+              startTimeCap={snapshotGap}
+              //Testnet env
+              // startTimeCap={moment()
+              //   .add('11', 'minutes')
+              //     .unix()}
+            ></SingleCalendarPop>
+          </Flex>
         );
       case 'Select Pair':
         if (selectedVaultIndex && selectedVaultIndex > 5) {
@@ -351,8 +409,6 @@ const SubTitle = (props: {
               color={'#86929d'}
               name={'sector'}
               onChange={(e: any) => {
-                console.log('valueeee');
-                console.log(e.target.value);
                 setInputVal(e.target.value);
               }}>
               <option disabled selected>
@@ -1364,6 +1420,11 @@ const TokenDetail = (props: {
                 title: 'Exchange Ratio\n1 TOS',
                 content: `${String(values.tosPrice)}`,
                 formikName: 'tosPrice',
+              },
+              {
+                title: 'Start Time',
+                content: `${String(thisVault.startTime)}`,
+                formikName: 'startTime',
               },
             ]}
             secondColData={null}
