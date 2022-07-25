@@ -76,7 +76,11 @@ const OpenStepOne = () => {
             }
             if (fieldName.title === 'tokenType') {
               return (
-                <GridItem w={'100%'} colSpan={2}>
+                <GridItem
+                  w={'100%'}
+                  colSpan={
+                    values.tokenType === 'B' || values.tokenType === 'C' ? 1 : 2
+                  }>
                   <InputComponent
                     inputStyle={{w: '327px'}}
                     name={fieldName.title}
@@ -88,6 +92,20 @@ const OpenStepOne = () => {
                   </Box>
                 </GridItem>
               );
+            }
+            if (fieldName.title === 'tokenOwnerAccount') {
+              if (values.tokenType === 'B' || values.tokenType === 'C') {
+                return (
+                  <GridItem w={'327px'}>
+                    <InputComponent
+                      name={fieldName.title}
+                      placeHolder={`input ${fieldName.title}`}
+                      key={fieldName.title}
+                      requirement={fieldName.requirement}></InputComponent>
+                  </GridItem>
+                );
+              }
+              return null;
             }
             return (
               <GridItem w={'327px'}>
