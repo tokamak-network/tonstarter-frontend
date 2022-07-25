@@ -27,7 +27,7 @@ const initialObj: Projects['CreateProject'] = {
   tokenOwnerAccount: undefined,
   tosPrice: 0,
   projectTokenPrice: 0,
-  salePrice: 0,
+  // salePrice: 0,
   totalTokenAllocation: 0,
   sector: '',
   tokenSymbolImage: '',

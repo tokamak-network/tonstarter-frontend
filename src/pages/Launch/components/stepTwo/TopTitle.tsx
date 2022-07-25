@@ -64,7 +64,7 @@ const TopTitle = () => {
           setValue={setPricePerTon}
           tokenSymbol={values.tokenSymbol}
           decimalLimit={true}></InputField>
-        <Text fontSize={13} ml={'20px'} mr={'10px'}>
+        {/* <Text fontSize={13} ml={'20px'} mr={'10px'}>
           Sale Price ={' '}
         </Text>
         <InputField
@@ -74,7 +74,7 @@ const TopTitle = () => {
           value={salePrice}
           setValue={setSalePrice}
           tokenSymbol={'$'}
-          decimalLimit={true}></InputField>
+          decimalLimit={true}></InputField> */}
       </Flex>
     </Box>
   );
