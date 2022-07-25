@@ -27,6 +27,7 @@ type CustomInputProp = {
   fontWeight?: number;
   startWithZero?: boolean;
   textAlign?: string;
+  error?: boolean
 };
 
 export const CustomInput = (prop: CustomInputProp) => {
@@ -49,6 +50,7 @@ export const CustomInput = (prop: CustomInputProp) => {
     fontWeight,
     startWithZero,
     textAlign,
+    error
   } = prop;
 
   useEffect(() => {
@@ -75,6 +77,8 @@ export const CustomInput = (prop: CustomInputProp) => {
             ? '1px solid #dfe4ee'
             : '1px solid #424242'
         }
+        isInvalid={error}
+        errorBorderColor='red.300'
         color={color || 'gray.175'}
         value={Number(value) <= 0 ? 0 : value}
         // focusBorderColor="#000000"
@@ -137,10 +141,13 @@ export const CustomInput = (prop: CustomInputProp) => {
           //   e.target.style.color = '#3e495c';
           //   e.target.style.border = '1px solid #2a72e5';
           // }}
+          isInvalid={error}
+          errorBorderColor='red.300'
           verticalAlign={'sub'}
           border="none"
-          fontWeight={'bold'}
-          w={'160px'}
+          fontWeight={maxBtn === true? 'bold' : 'normal'}
+          fontSize={maxBtn === true? '' : '12px'}
+          // w={'160px'}
           h={'100%'}
           pl={'15px'}
           _focus={{
@@ -157,6 +164,8 @@ export const CustomInput = (prop: CustomInputProp) => {
           ? '1px solid #dfe4ee'
           : '1px solid #424242'
       }
+      isInvalid={error}
+    errorBorderColor='red.300'
       textAlign={textAlign || 'center'}
       fontWeight={fontWeight || 'bold'}
       w={w}

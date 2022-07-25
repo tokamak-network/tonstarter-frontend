@@ -40,7 +40,7 @@ const AllProjects = () => {
   } = match;
 
   const {data, isLoading, error} = useQuery(
-    ['test'],
+    ['launchProjects'],
     () =>
       axios.get(fetchCampaginURL, {
         headers: {
@@ -48,25 +48,30 @@ const AllProjects = () => {
         },
       }),
     {
-      enabled: !!account,
       //refetch every 10min
       refetchInterval: 600000,
     },
-  );
+  );  
   const {
     data: {projects},
   } = useAppSelector(selectLaunch);
-
+  
   
   useEffect(() => {
     if (data) {
       const {data: datas} = data;
       dispatch(fetchProjects({data: datas}));
       const projects = Object.keys(datas).map((k) => {
-        const stat = datas[k].vaults.every((vault: any) => {
-          return vault.isSet === true;
-        });
-        return {key: k, data: datas[k], isSet: stat};
+        if (datas[k].vaults !== undefined) {
+          const stat = datas[k].vaults.every((vault: any) => {
+            return vault.isSet === true;
+          });
+          return {key: k, data: datas[k], isSet: stat};
+        }
+        else {
+          return {key: k, data: datas[k], isSet: false}
+        }
+       
       });
 
       const filteredProjects = projects.filter(

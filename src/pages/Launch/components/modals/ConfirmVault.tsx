@@ -420,7 +420,7 @@ const ConfirmTokenModal = () => {
                 color={'black.300'}
                 fontWeight={600}
                 textAlign={'center'}>
-                Waiting for completing to deploy {vaultName} vault
+              Waiting to complete deploying your {vaultName} vault
               </Text>
             </Flex>
           </ModalBody>
@@ -458,7 +458,7 @@ const ConfirmTokenModal = () => {
                 color={'black.300'}
                 fontWeight={600}
                 textAlign={'center'}>
-                Completed to deploy your {vaultName} vault
+                Completed deploying your {vaultName} vault
               </Text>
               <Box w={'100%'} px={'15px'} mb={'25px'}>
                 <Line></Line>

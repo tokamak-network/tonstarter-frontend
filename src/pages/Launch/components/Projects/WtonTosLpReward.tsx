@@ -64,7 +64,6 @@ export const WtonTosLpReward: FC<WtonTosLpReward> = ({vault, project}) => {
   const [distributable, setDistributable] = useState<number>(0);
   const [claimTime, setClaimTime] = useState<number>(0);
   const [showDate, setShowDate] = useState<boolean>(false);
-  const [distributeDisable, setDistributeDisable] = useState<boolean>(true);
   const [duration, setDuration] = useState<any[]>([0, 0]);
   const [pool, setPool] = useState<string>('');
   const [endTime, setEndTime] = useState<number>(0);
@@ -118,16 +117,6 @@ export const WtonTosLpReward: FC<WtonTosLpReward> = ({vault, project}) => {
     },
   };
 
-  const fakeData = [
-    {name: '1'},
-    {name: '2'},
-    {name: '3'},
-    {name: '4'},
-    {name: '5'},
-    {name: '6'},
-    {name: '7'},
-    {name: '8'},
-  ];
 
   useEffect(() => {
     async function getLPToken() {
@@ -152,11 +141,13 @@ export const WtonTosLpReward: FC<WtonTosLpReward> = ({vault, project}) => {
       setEndTime(Number(getProgramDuration));
       setDuration(durat);
       setPool(TOS_WTON_POOL);
-      setDistributeDisable(false);
+    
       const disabled = Number(nowClaimRound) >= Number(currentRound);
       setShowDate(amountFormatted === 0 && Number(claimDate) > now);
       setClaimTime(claimDate);
       setDistributable(amountFormatted);
+      setDisableButton(disabled || (amountFormatted === 0 && Number(claimDate) > now))
+
     }
     getLPToken();
   }, [account, library, transactionType, blockNumber, vault.vaultAddress]);
@@ -166,7 +157,6 @@ export const WtonTosLpReward: FC<WtonTosLpReward> = ({vault, project}) => {
        return;
      }
    const signer = getSigner(library, account);
-const poolsData: any = await views.getPoolData(library);
 const rewardData = await views.getRewardData();
 if (rewardData) {
 const res = await Promise.all (
@@ -481,24 +471,21 @@ setDatas(filtered);
                   padding={'6px 12px'}
                   whiteSpace={'normal'}
                   color={'#fff'}
-                  isDisabled={moment().unix() > duration[1]}
+                  isDisabled={disableButton|| moment().unix() > duration[1] || moment().unix() < claimTime}
                   _disabled={{
                     color: colorMode === 'light' ? '#86929d' : '#838383',
                     bg: colorMode === 'light' ? '#e9edf1' : '#353535',
                     cursor: 'not-allowed',
                   }}
                   _hover={
-                    disableButton
+                    disableButton|| moment().unix() > duration[1] || moment().unix() < claimTime
                       ? {}
                       : {
-                          background: 'transparent',
-                          border: 'solid 1px #2a72e5',
-                          color: themeDesign.tosFont[colorMode],
-                          cursor: 'pointer',
+                         cursor: 'pointer',
                         }
                   }
                   _active={
-                    disableButton
+                    disableButton|| moment().unix() > duration[1] || moment().unix() < claimTime
                       ? {}
                       : {
                           background: '#2a72e5',

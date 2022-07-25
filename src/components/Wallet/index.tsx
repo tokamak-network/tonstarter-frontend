@@ -177,29 +177,29 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
     return Object.keys(SUPPORTED_WALLETS).map((key) => {
       const option = SUPPORTED_WALLETS[key];
 
-      if (isMobile) {
-        // @ts-ignore
-        if (!window?.web3 && !window?.ethereum && option.mobile) {
-          return (
-            <WalletOption
-              onClick={() => {
-                option.connector !== connector &&
-                  !option.href &&
-                  tryActivation(option.connector);
-              }}
-              id={`connect-${key}`}
-              key={key}
-              active={option.connector && option.connector === connector}
-              color={option.color}
-              link={option.href}
-              header={option.name}
-              subheader={option.description}
-              icon={require('../../assets/svgs/' + option.iconName).default}
-            />
-          );
-        }
-        return null;
-      }
+      // if (isMobile) {
+      //   // @ts-ignore
+      //   if (!window?.web3 && !window?.ethereum && option.mobile) {
+      //     return (
+      //       <WalletOption
+      //         onClick={() => {
+      //           option.connector !== connector &&
+      //             !option.href &&
+      //             tryActivation(option.connector);
+      //         }}
+      //         id={`connect-${key}`}
+      //         key={key}
+      //         active={option.connector && option.connector === connector}
+      //         color={option.color}
+      //         link={option.href}
+      //         header={option.name}
+      //         subheader={option.description}
+      //         icon={require('../../assets/svgs/' + option.iconName).default}
+      //       />
+      //     );
+      //   }
+      //   return null;
+      // }
 
       // overwrite injected when needed
       if (option.connector === injected) {
@@ -234,8 +234,7 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
 
       // return rest of options
       return (
-        !isMobile &&
-        !option.mobileOnly && (
+  
           <WalletOption
             id={`connect-${key}`}
             onClick={() => {
@@ -252,7 +251,7 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
             icon={require('../../assets/svgs/' + option.iconName).default}
           />
         )
-      );
+    
     });
   };
 

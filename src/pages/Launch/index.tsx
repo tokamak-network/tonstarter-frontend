@@ -27,21 +27,26 @@ const OpenCampagin = () => {
         },
       }),
     {
-      enabled: !!account,
       refetchInterval: 600000,
     },
   );
-
+  
   useEffect(() => {
-    if (data) {
+    if (data && !isLoading) {
       const {data: datas} = data;
       dispatch(fetchProjects({data: datas}));
+      
       const projects = Object.keys(datas).map((k) => {
-        const stat = datas[k].vaults.every((vault: any) => {
-          return vault.isSet === true;
-        });
-        return {name: datas[k].projectName, key: k, isSet: stat};
-      });
+        if (datas[k].vaults !== undefined) {
+          const stat = datas[k].vaults.every((vault: any) => {
+            return vault.isSet === true;
+          });
+          return {name: datas[k].projectName, key: k,isSet: stat}
+        }
+        else {
+          return {key: k, data: datas[k], isSet: false}
+        }
+      })
       const filteredProjects = projects.filter(
         (project: any) => project.isSet === true,
       );

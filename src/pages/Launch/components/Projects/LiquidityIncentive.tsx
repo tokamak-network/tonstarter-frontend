@@ -147,11 +147,12 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
         3000,
       );
       setPool(getPool);
-      setDistributeDisable(false);
+    
       const disabled = Number(nowClaimRound) >= Number(currentRound);
       setShowDate(amountFormatted === 0 && Number(claimDate) > now);
       setClaimTime(claimDate);
       setDistributable(amountFormatted);
+      setDisableButton(disabled || (amountFormatted === 0 && Number(claimDate) > now))
     }
     getLPToken();
   }, [account, library, transactionType, blockNumber, vault.vaultAddress]);
@@ -397,16 +398,16 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
             <Link
               isExternal
               href={
-                vault.poolAddress && network === 'rinkeby'
-                  ? `https://rinkeby.etherscan.io/address/${vault.poolAddress}`
+                pool !== zero_address && network === 'rinkeby'
+                  ? `https://rinkeby.etherscan.io/address/${pool}`
                   : vault.poolAddress && network !== 'rinkeby'
-                  ? `https://etherscan.io/address/${vault.poolAddress}`
+                  ? `https://etherscan.io/address/${pool}`
                   : ''
               }
               color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
               _hover={{color: '#2a72e5'}}
               fontFamily={theme.fonts.fld}>
-              {vault.poolAddress ? shortenAddress(vault.poolAddress) : 'NA'}
+              {pool !== zero_address ? shortenAddress(pool) : 'NA'}
             </Link>
           </GridItem>
           <GridItem
@@ -484,24 +485,21 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
                   padding={'6px 12px'}
                   whiteSpace={'normal'}
                   color={'#fff'}
-                  isDisabled={distributeDisable || pool === zero_address || moment().unix() > duration[1]}
+                  isDisabled={disableButton || pool === zero_address || moment().unix() > duration[1]}
                   _disabled={{
                     color: colorMode === 'light' ? '#86929d' : '#838383',
                     bg: colorMode === 'light' ? '#e9edf1' : '#353535',
                     cursor: 'not-allowed',
                   }}
                   _hover={
-                    disableButton
+                    disableButton || pool === zero_address || moment().unix() > duration[1]
                       ? {}
                       : {
-                          background: 'transparent',
-                          border: 'solid 1px #2a72e5',
-                          color: themeDesign.tosFont[colorMode],
-                          cursor: 'pointer',
+                         cursor: 'pointer',
                         }
                   }
                   _active={
-                    disableButton
+                    disableButton || pool === zero_address || moment().unix() > duration[1]
                       ? {}
                       : {
                           background: '#2a72e5',

@@ -77,12 +77,11 @@ export const Custom: FC<Custom> = ({vault, project}) => {
     }
   }
 
+
   useEffect(() => {
     async function getLPToken() {
-      console.log('wtf');
       
       if (account === null || account === undefined || library === undefined) {
-        console.log('waaaa');
         
         return;
       }
@@ -94,7 +93,6 @@ export const Custom: FC<Custom> = ({vault, project}) => {
         .calcalClaimAmount(currentRound);
 
       const nowClaimRound = await vaultC.connect(signer).nowClaimRound();
-      console.log('nowClaimRound',nowClaimRound);
       
       const disabled = Number(nowClaimRound) >= Number(currentRound);
       const claimCounts = await vaultC.connect(signer).totalClaimCounts();
@@ -104,11 +102,9 @@ export const Custom: FC<Custom> = ({vault, project}) => {
         Number(currentRound) === Number(claimCounts)
           ? await vaultC.connect(signer).claimTimes(Number(currentRound) - 1)
           : await vaultC.connect(signer).claimTimes(currentRound);
-      console.log('hhh', Number(nowClaimRound), Number(currentRound));
 
       setDistributeDisable(Number(nowClaimRound) >= Number(currentRound));
       const amountFormatted = parseInt(ethers.utils.formatEther(amount));
-      console.log('amountFormatted',amountFormatted);
       
       setShowDate(amountFormatted === 0 && Number(claimDate) > now);
       setClaimTime(claimDate);
@@ -289,10 +285,7 @@ export const Custom: FC<Custom> = ({vault, project}) => {
                 distributeDisable
                   ? {}
                   : {
-                      background: 'transparent',
-                      border: 'solid 1px #2a72e5',
-                      color: themeDesign.tosFont[colorMode],
-                      cursor: 'pointer',
+                     cursor: 'pointer',
                     }
               }
               _active={

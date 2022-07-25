@@ -130,7 +130,7 @@ const MainScreen = () => {
         />
         <Flex mt={'50px'} mb={'20px'}>
           <Steps
-            stepName={['Project&Token', 'Token Economy', 'Deploy']}
+            stepName={['Project & Token', 'Token Economy', 'Deploy']}
             currentStep={step}></Steps>
         </Flex>
       </Flex>
@@ -142,6 +142,8 @@ const MainScreen = () => {
         }
         validationSchema={ProjectSchema}
         validate={(values) => {
+          console.log('****useFormik value****');
+          console.log(values);
           validateFormikValues(values, setDisable, setDisableForStep2);
           if (step === 3 && oldData !== values) {
             setOldData(values);

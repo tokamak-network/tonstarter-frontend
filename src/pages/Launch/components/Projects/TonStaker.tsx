@@ -75,7 +75,7 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
       setDistributable(amountFormatted);
     }
     getLPToken();
-  }, [account, library, transactionType, blockNumber]);
+  }, [account, library, transactionType, blockNumber, project, vault]);
   async function distribute() {
     if (account === null || account === undefined || library === undefined) {
       return;
@@ -280,9 +280,7 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
                 distributeDisable
                   ? {}
                   : {
-                      background: 'transparent',
-                      border: 'solid 1px #2a72e5',
-                      color: themeDesign.tosFont[colorMode],
+                    
                       cursor: 'pointer',
                     }
               }
