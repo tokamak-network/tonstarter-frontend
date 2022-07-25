@@ -12,7 +12,10 @@ import {PageHeader} from 'components/PageHeader';
 import {Project} from './components/Projects/Project';
 import {useModal} from 'hooks/useModal';
 import CreateRewardsProgramModal from './components/modals/CreateRewardsProgram';
+import SwapModal from './components/modals/SwapModal';
 import DownloadModal from './components/modals/Download';
+import MintModal from './components/modals/MintModal';
+import IncreaseModal from './components/modals/IncreaseModal';
 import {useRouteMatch} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {selectLaunch, setHashKey,fetchProjects} from '@Launch/launch.reducer';
@@ -139,7 +142,10 @@ const [project, setProject] = useState<any>()
         </Button>
       </Flex>
       <CreateRewardsProgramModal />
+      <SwapModal />
+      <MintModal />
       <DownloadModal />
+      <IncreaseModal />
     </Flex>
   );
 };
