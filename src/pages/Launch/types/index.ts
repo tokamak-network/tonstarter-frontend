@@ -106,6 +106,7 @@ interface ProjectStep1 {
   telegram: string;
   twitter: string;
   discord: string;
+  tokenOwnerAddress: string | undefined;
 }
 interface ProjectStep2 {
   vaults: VaultAny[];

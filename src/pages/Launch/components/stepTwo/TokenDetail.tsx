@@ -327,6 +327,45 @@ const SubTitle = (props: {
         if (selectedVaultIndex && selectedVaultIndex < 6) {
           return <Text>{inputVal}</Text>;
         }
+
+        //selectbox feedback
+
+        if (selectedVaultIndex && selectedVaultIndex > 5) {
+          const {DOCPool_Address, pools} = DEPLOYED;
+          const selectList = [
+            {title: 'DOC-TOS', value: DOCPool_Address},
+            {title: 'TOS_WTON', value: pools.TOS_WTON_POOL},
+            {title: 'CUSTOM', value: ''},
+          ];
+          return (
+            <Select
+              style={{
+                height: '32px',
+                border: '1px solid #dfe4ee',
+                borderRadius: '4px',
+                paddingLeft: '16px',
+                paddingRight: '16px',
+              }}
+              w={'150px'}
+              fontSize={13}
+              color={'#86929d'}
+              name={'sector'}
+              onChange={(e: any) => {
+                console.log('valueeee');
+                console.log(e.target.value);
+                setInputVal(e.target.value);
+              }}>
+              <option disabled selected>
+                select
+              </option>
+              {selectList.map((selectData: {title: string; value: string}) => {
+                return (
+                  <option value={selectData.value}>{selectData.title}</option>
+                );
+              })}
+            </Select>
+          );
+        }
         return (
           <InputField
             w={120}
@@ -987,30 +1026,30 @@ const PublicTokenDetail = (props: {
           }
 
           if (tokenIsOver) {
-            publicRound1Allocation.style.border = errBorderStyle;
-            publicRound2Allocation.style.border = errBorderStyle;
+            // publicRound1Allocation.style.border = errBorderStyle;
+            // publicRound2Allocation.style.border = errBorderStyle;
 
-            toastMsg({
-              title: 'Token Allocation to this vault is over',
-              description:
-                'You have to put less token or adjust token allocation for public rounds',
-              duration: 2000,
-              isClosable: true,
-              status: 'error',
-            });
+            // toastMsg({
+            //   title: 'Token Allocation to this vault is over',
+            //   description:
+            //     'You have to put less token or adjust token allocation for public rounds',
+            //   duration: 2000,
+            //   isClosable: true,
+            //   status: 'error',
+            // });
             return setIsConfirm(true);
           } else if (tokenIsNotEnough) {
-            publicRound1Allocation.style.border = errBorderStyle;
-            publicRound2Allocation.style.border = errBorderStyle;
+            // publicRound1Allocation.style.border = errBorderStyle;
+            // publicRound2Allocation.style.border = errBorderStyle;
 
-            toastMsg({
-              title: 'Token Allocation to this vault is not enough',
-              description:
-                'You have to put more token or adjust token allocation for public rounds',
-              duration: 2000,
-              isClosable: true,
-              status: 'error',
-            });
+            // toastMsg({
+            //   title: 'Token Allocation to this vault is not enough',
+            //   description:
+            //     'You have to put more token or adjust token allocation for public rounds',
+            //   duration: 2000,
+            //   isClosable: true,
+            //   status: 'error',
+            // });
             return setIsConfirm(true);
           } else {
             publicRound1Allocation.style.border = noErrBorderStyle;

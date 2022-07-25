@@ -115,13 +115,14 @@ function validateFormikValues(
               thisFields.push('stos tier');
             }
           }
+
           //claimRound
           if (
             isMatchingTotalAllocation === undefined ||
             isMatchingTotalAllocation === 0
           ) {
             thisFields.push('claimTokenAllocation');
-            return result.push(false);
+            result.push(false);
           }
           if (
             vault.vaultTokenAllocation !== 0 &&
@@ -143,8 +144,6 @@ function validateFormikValues(
               thisFields.push('claimSchedule');
               result.push(false);
             }
-
-            console.log('-gogogo-');
 
             if (
               publicRound2End &&

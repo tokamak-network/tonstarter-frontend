@@ -24,6 +24,7 @@ const initialObj: Projects['CreateProject'] = {
   isAllDeployed: false,
   tokenAddress: '',
   tokenType: undefined,
+  tokenOwnerAddress: undefined,
   tosPrice: 0,
   projectTokenPrice: 0,
   salePrice: 0,

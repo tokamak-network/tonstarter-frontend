@@ -62,14 +62,14 @@ const ClaimRoundInput = (props: {index: number}) => {
 
       if (totalTokenInputs > vaultTokenAllocation) {
         setIsErr(true);
-        return toastMsg({
-          title: 'Token Allocation to this vault is not enough',
-          description:
-            'You have to put more token or adjust token allocation for claim rounds',
-          duration: 2000,
-          isClosable: true,
-          status: 'error',
-        });
+        // return toastMsg({
+        //   title: 'Token Allocation to this vault is not enough',
+        //   description:
+        //     'You have to put more token or adjust token allocation for claim rounds',
+        //   duration: 2000,
+        //   isClosable: true,
+        //   status: 'error',
+        // });
       }
     }
 

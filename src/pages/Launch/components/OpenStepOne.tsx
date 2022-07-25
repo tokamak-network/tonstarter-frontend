@@ -18,6 +18,7 @@ const filedNameList = [
   {title: 'website', requirement: false},
   {title: 'totalSupply', requirement: true},
   {title: 'tokenType', requirement: true},
+  {title: 'tokenOwnerAccount', requirement: true},
   {title: 'medium', requirement: false},
   {title: 'telegram', requirement: false},
   {title: 'twitter', requirement: false},
