@@ -256,6 +256,7 @@ export const AirdropClaimTable = () => {
       setIsCheck(daoAirdropTokens.map((data) => String(data.id)));
       setCheckedTokenAddresses(daoAirdropTokens.map((data) => data.address));
     }
+    
 
     if (isCheckAll) {
       setIsCheck([]);

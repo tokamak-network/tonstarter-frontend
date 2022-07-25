@@ -75,7 +75,7 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
       setDistributable(amountFormatted);
     }
     getLPToken();
-  }, [account, library, transactionType, blockNumber]);
+  }, [account, library, transactionType, blockNumber, project, vault]);
   async function distribute() {
     if (account === null || account === undefined || library === undefined) {
       return;
