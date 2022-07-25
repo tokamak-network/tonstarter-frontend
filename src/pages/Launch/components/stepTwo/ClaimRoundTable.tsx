@@ -35,16 +35,22 @@ import ClaimRoundInput from './ClaimRound/ClaimRoundInputs';
 const selectOptionValues = ['14', '30', '60'];
 const selectOptionNames = ['14 Days', '30 Days', '60 Days'];
 
-const InputTitle = (props: {title: string}) => {
-  const {title} = props;
+const InputTitle = (props: {title: string; isRequired?: boolean}) => {
+  const {title, isRequired} = props;
   const {colorMode} = useColorMode();
   return (
-    <Text
+    <Flex
       fontSize={13}
       color={colorMode === 'light' ? '#2d3136' : '#f3f4f1'}
-      w={title !== 'Interval' ? '109px' : '44px'}>
-      {title}
-    </Text>
+      // w={title !== 'Interval' ? '109px' : '44px'}
+    >
+      {isRequired && (
+        <Text color={'red.100'} mr={'3px'}>
+          *
+        </Text>
+      )}
+      <Text>{title}</Text>
+    </Flex>
   );
 };
 
@@ -162,9 +168,11 @@ const ClaimRoundTable = () => {
         fontSize={13}>
         <Flex mb={'20px'} w={'100%'}>
           <Flex alignItems={'center'} mr={'60px'}>
-            <InputTitle title={'Number of Rounds'}></InputTitle>
+            <InputTitle
+              title={'Number of Rounds'}
+              isRequired={true}></InputTitle>
             <Input
-              ml={'20px'}
+              ml={'12px'}
               w={'180px'}
               h={'32px'}
               border={'1px solid #dfe4ee'}
@@ -174,7 +182,9 @@ const ClaimRoundTable = () => {
               onChange={(e: any) => onChange(e, setRoundnum)}></Input>
           </Flex>
           <Flex alignItems={'center'} mr={'59px'}>
-            <InputTitle title={'Date of 1st. Round'}></InputTitle>
+            <InputTitle
+              title={'Date of 1st. Round'}
+              isRequired={true}></InputTitle>
             <Flex
               ml={'20px'}
               w={'180px'}
@@ -201,7 +211,7 @@ const ClaimRoundTable = () => {
             </Flex>
           </Flex>
           <Flex alignItems={'center'}>
-            <InputTitle title={'Interval'}></InputTitle>
+            <InputTitle title={'Interval'} isRequired={true}></InputTitle>
             <Box ml={'10px'}>
               <CustomSelectBox
                 w={'180px'}
@@ -233,7 +243,7 @@ const ClaimRoundTable = () => {
           </Flex>
           <Flex alignItems={'center'}>
             <InputTitle title={'to Each Round'}></InputTitle>
-            <Flex ml={'20px'}>
+            <Flex ml={'52px'}>
               <Input
                 w={'80px'}
                 h={'32px'}
@@ -263,7 +273,16 @@ const ClaimRoundTable = () => {
             func={() => autoFill()}
             w={'100px'}
             h={'32px'}
-            isDisabled={btnDisable}></CustomButton>
+            isDisabled={btnDisable}
+            style={
+              btnDisable
+                ? {
+                    bgColor: 'transparent',
+                    border: '1px solid #e6eaee',
+                    color: '#86929d',
+                  }
+                : {}
+            }></CustomButton>
           {claimRoundTable && claimRoundTable.length > 0 && (
             <CustomButton
               text={'Clear All'}
@@ -272,8 +291,8 @@ const ClaimRoundTable = () => {
               h={'32px'}
               style={{
                 marginLeft: '10px',
-                backgroundColor: colorMode === 'light' ? '#e9edf1' : '#353535',
-                color: colorMode === 'light' ? '#3a495f' : '#f3f4f1',
+                backgroundColor: '#257eee',
+                color: 'white.100',
                 fontWeight: 'normal',
               }}></CustomButton>
           )}
