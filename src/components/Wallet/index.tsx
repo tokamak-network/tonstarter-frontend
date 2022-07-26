@@ -120,6 +120,8 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
   const tryActivation = async (connector: AbstractConnector | undefined) => {
     Object.keys(SUPPORTED_WALLETS).map((key) => {
       if (connector === SUPPORTED_WALLETS[key].connector) {
+      
+        
         return SUPPORTED_WALLETS[key].name;
       }
       return true;
@@ -176,6 +178,8 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
 
     return Object.keys(SUPPORTED_WALLETS).map((key) => {
       const option = SUPPORTED_WALLETS[key];
+      // console.log(option);
+      
 
       // if (isMobile) {
       //   // @ts-ignore
@@ -272,7 +276,7 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
                 <Flex justify="space-between">
                   {formatConnectorName()}
                   <Flex>
-                    {connector !== injected && connector !== walletlink && (
+                    {/* {connector !== injected && connector !== walletlink && (
                       <Button
                         size="xs"
                         mr={3}
@@ -286,7 +290,7 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
                         }}>
                         Disconnect
                       </Button>
-                    )}
+                    )} */}
                     {connector !== walletconnect && (active || error) && (
                       <Button
                         size="xs"

@@ -193,9 +193,9 @@ export const SUPPORTED_WALLETS: {[key: string]: WalletInfo} = {
   },
   TREZOR: {
     connector: trazorConnector,
-    name: 'TREZOR',
-    iconName: 'metamask.svg',
-    description: 'Easy-to-use browser extension.',
+    name: 'Trezor',
+    iconName: 'trezor.png',
+    description: 'Hardware Wallet.',
     href: null,
     color: '#E8831D',
     type: 'TREZOR',
