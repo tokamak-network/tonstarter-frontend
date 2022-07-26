@@ -76,14 +76,6 @@ const useAirdropList = () => {
         }),
       );
 
-      console.log('--test--');
-      console.log(result);
-      console.log(
-        result.filter((data) => {
-          return Number(data.amount) > 0;
-        }),
-      );
-
       return setAirdropList(
         result.filter((data) => {
           return Number(data.amount.replaceAll(',', '')) > 0;
