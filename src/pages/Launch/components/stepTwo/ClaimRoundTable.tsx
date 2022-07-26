@@ -298,14 +298,15 @@ const ClaimRoundTable = () => {
           )}
         </Flex>
       </Flex>
-      <Flex w={'100%'}>
+      <Flex w={'1030px'}>
         <Box
           d="flex"
           flexDir={'column'}
           textAlign="center"
           border={middleStyle.border}
           borderBottomWidth={0}
-          lineHeight={'42px'}>
+          lineHeight={'42px'}
+          w={'1030px'}>
           <Flex
             h={'42px'}
             fontSize={12}

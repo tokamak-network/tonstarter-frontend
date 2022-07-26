@@ -52,12 +52,22 @@ import {convertNumber, convertToWei} from 'utils/number';
 import commafy from 'utils/commafy';
 import {convertTimeStamp} from 'utils/convertTIme';
 import {selectLaunch, setTempHash} from '@Launch/launch.reducer';
+import bn from 'bignumber.js';
 
 //Project
 
 type DeployVaultProp = {
   vault: VaultAny;
 };
+
+function encodePriceSqrt(reserve1: number, reserve0: number) {
+  return new bn(reserve1.toString())
+    .div(reserve0.toString())
+    .sqrt()
+    .multipliedBy(new bn(2).pow(96))
+    .integerValue(3)
+    .toFixed();
+}
 
 function getContract(vaultType: VaultType, library: LibraryType) {
   switch (vaultType) {
@@ -509,15 +519,37 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
         try {
           switch (vaultType) {
             case 'Initial Liquidity': {
-              const tx = await vaultContract
-                ?.connect(signer)
-                .create(
-                  selectedVaultName,
-                  values.tokenAddress,
-                  selectedVaultDetail?.adminAddress,
-                  100,
-                  values.tosPrice * 100,
-                );
+              // New interface example
+              // await initialLiquidityVault
+              //   .connect(poolInfo.admin)
+              //   .initialize(
+              //     poolInfo.totalAllocatedAmount,
+              //     price.tos,
+              //     price.projectToken,
+              //     price.initSqrtPrice,
+              //   );
+
+              const projectTokenPrice = values.tosPrice * 100;
+
+              const tx = await vaultContract?.connect(signer).create(
+                selectedVaultDetail.vaultTokenAllocation,
+                100,
+                projectTokenPrice,
+                encodePriceSqrt(100, projectTokenPrice),
+                //@ts-ignore
+                selectedVaultDetail.startTime,
+              );
+
+              //Old interface
+              // const tx = await vaultContract
+              //   ?.connect(signer)
+              //   .create(
+              //     selectedVaultName,
+              //     values.tokenAddress,
+              //     selectedVaultDetail?.adminAddress,
+              //     100,
+              //     values.tosPrice * 100,
+              //   );
 
               dispatch(
                 setTempHash({
