@@ -110,7 +110,7 @@ const DeployToken = () => {
             color={isTokenDeployed ? 'white.100' : 'gray.400'}
             fontSize={18}
             h={'24px'}>
-            Token
+            Token {values.tokenType}
           </Text>
           <Text
             color={isTokenDeployed ? 'white.100' : '#03c4c6'}

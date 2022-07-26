@@ -368,7 +368,13 @@ const SubTitle = (props: {
             <SingleCalendarPop
               setDate={setClaimDate}
               //Mainnet env
-              startTimeCap={snapshotGap}
+              startTimeCap={
+                //@ts-ignore
+                values.vaults[0].publicRound2End
+                  ? //@ts-ignore
+                    values.vaults[0].publicRound2End
+                  : 0
+              }
               //Testnet env
               // startTimeCap={moment()
               //   .add('11', 'minutes')

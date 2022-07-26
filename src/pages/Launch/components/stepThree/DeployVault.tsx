@@ -47,6 +47,7 @@ import * as LPRewardInitializeAbi from 'services/abis/LPRewardInitializeAbi.json
 import * as VaultCFactoryAbi from 'services/abis/VaultCFactoryAbi.json';
 import * as VaultCLogicAbi from 'services/abis/VaultCLogicAbi.json';
 import * as DAOVaultAbi from 'services/abis/DAOVaultAbi.json';
+import * as InitialLiquidityVault from 'services/abis/InitialLiquidityVault.json';
 import VaultLPRewardLogicAbi from 'services/abis/VaultLPRewardLogicAbi.json';
 import {convertNumber, convertToWei} from 'utils/number';
 import commafy from 'utils/commafy';
@@ -186,7 +187,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
         ? 'readyForToken'
         : isVaultDeployed &&
           hasToken &&
-          selectedVaultDetail?.vaultType !== 'Initial Liquidity' &&
           selectedVaultDetail?.vaultType !== 'DAO'
         ? 'readyForSet'
         : 'finished',
@@ -194,11 +194,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
   }, [values, vaultType, selectedVaultDetail, hasToken, blockNumber]);
 
   useEffect(() => {
-    if (
-      hasToken &&
-      (selectedVaultDetail?.vaultType === 'Initial Liquidity' ||
-        selectedVaultDetail?.vaultType === 'DAO')
-    ) {
+    if (hasToken && selectedVaultDetail?.vaultType === 'DAO') {
       setFieldValue(`vaults[${selectedVaultDetail?.index}].isSet`, true);
     }
     /*eslint-disable*/
@@ -232,6 +228,15 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
             {
               title: 'Token Price',
               content: `1TOS : ${values?.tosPrice}${values?.tokenSymbol}` || '',
+            },
+            {
+              title: 'Start Time',
+              content:
+                `${convertTimeStamp(
+                  //@ts-ignore
+                  selectedVaultDetail?.startTime,
+                  'DD.MM.YYYY HH:mm:ss',
+                )}` || '',
             },
           ],
         };
@@ -519,37 +524,15 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
         try {
           switch (vaultType) {
             case 'Initial Liquidity': {
-              // New interface example
-              // await initialLiquidityVault
-              //   .connect(poolInfo.admin)
-              //   .initialize(
-              //     poolInfo.totalAllocatedAmount,
-              //     price.tos,
-              //     price.projectToken,
-              //     price.initSqrtPrice,
-              //   );
-
-              const projectTokenPrice = values.tosPrice * 100;
-
-              const tx = await vaultContract?.connect(signer).create(
-                selectedVaultDetail.vaultTokenAllocation,
-                100,
-                projectTokenPrice,
-                encodePriceSqrt(100, projectTokenPrice),
-                //@ts-ignore
-                selectedVaultDetail.startTime,
-              );
-
-              //Old interface
-              // const tx = await vaultContract
-              //   ?.connect(signer)
-              //   .create(
-              //     selectedVaultName,
-              //     values.tokenAddress,
-              //     selectedVaultDetail?.adminAddress,
-              //     100,
-              //     values.tosPrice * 100,
-              //   );
+              const tx = await vaultContract
+                ?.connect(signer)
+                .create(
+                  selectedVaultName,
+                  values.tokenAddress,
+                  selectedVaultDetail?.adminAddress,
+                  100,
+                  values.tosPrice * 100,
+                );
 
               dispatch(
                 setTempHash({
@@ -922,6 +905,48 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
 
         try {
           switch (vaultType) {
+            case 'Initial Liquidity': {
+              // New interface example
+              // await initialLiquidityVault
+              //   .connect(poolInfo.admin)
+              //   .initialize(
+              //     poolInfo.totalAllocatedAmount,
+              //     price.tos,
+              //     price.projectToken,
+              //     price.initSqrtPrice,
+              //   );
+
+              const InitialLiquidityVault_Contract = new Contract(
+                selectedVaultDetail.vaultAddress as string,
+                InitialLiquidityVault.abi,
+                library,
+              );
+
+              const projectTokenPrice = values.tosPrice * 100;
+              const vaultTokenAllocationWei = convertToWei(
+                String(selectedVaultDetail?.vaultTokenAllocation),
+              );
+
+              const tx = await InitialLiquidityVault_Contract?.connect(
+                signer,
+              ).initialize(
+                vaultTokenAllocationWei,
+                100,
+                projectTokenPrice,
+                encodePriceSqrt(100, projectTokenPrice),
+                //@ts-ignore
+                selectedVaultDetail.startTime,
+              );
+              const receipt = await tx.wait();
+              if (receipt) {
+                setFieldValue(
+                  `vaults[${selectedVaultDetail?.index}].isSet`,
+                  true,
+                );
+                setVaultState('finished');
+              }
+              break;
+            }
             case 'Public': {
               // 0 : _Tier : uint256[8]
               // 1 : _amount : uint256[6]
@@ -1545,7 +1570,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                   );
             }}>
             {vaultState !== 'readyForToken'
-              ? vaultState === 'ready'
+              ? vaultState === 'ready' || vaultState === 'notReady'
                 ? 'Deploy'
                 : 'Initialize'
               : 'Send Token'}
