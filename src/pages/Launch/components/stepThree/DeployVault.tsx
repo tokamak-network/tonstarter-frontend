@@ -933,7 +933,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 vaultTokenAllocationWei,
                 100,
                 projectTokenPrice,
-                encodePriceSqrt(100, projectTokenPrice),
+                encodePriceSqrt(projectTokenPrice, 100),
                 //@ts-ignore
                 selectedVaultDetail.startTime,
               );

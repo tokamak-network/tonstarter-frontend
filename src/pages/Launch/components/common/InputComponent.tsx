@@ -201,8 +201,8 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
                   name={'sector'}
                   defaultValue={values.tokenType}
                   onChange={selectBoxOnChange}>
-                  <option disabled selected>
-                    select
+                  <option disabled selected style={{display: 'none'}}>
+                    Select
                   </option>
                   <option
                     value={'A'}
@@ -215,39 +215,109 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
                     style={{
                       color: hover ? '#2a72e5' : '#3e495c',
                       backgroundColor: 'none',
+                      fontWeight: 'bold',
                     }}>
                     Type A
                   </option>
-                  <option value={'A'} disabled>
+                  <option
+                    value={'A'}
+                    style={{fontSize: '11px', color: '#808992'}}
+                    disabled>
                     - BURNABLE
                   </option>
-                  <option value={'A'} disabled>
+                  <option
+                    value={'A'}
+                    style={{fontSize: '11px', color: '#808992'}}
+                    disabled>
                     - APPROVEANDCALL
                   </option>
-                  <option value={'A'} disabled>
+                  <option
+                    value={'A'}
+                    style={{fontSize: '11px', color: '#808992'}}
+                    disabled>
                     - SNAPSHOT
                   </option>
-                  <option value={'A'} disabled>
+                  <option
+                    value={'A'}
+                    style={{fontSize: '11px', color: '#808992'}}
+                    disabled>
                     - PERMIT
                   </option>
-                  <option value={'A'} disabled>
+                  <option
+                    value={'A'}
+                    style={{fontSize: '11px', color: '#808992'}}
+                    disabled>
                     - NON MINTABLE
                   </option>
-                  <option value={'B'}>Type B</option>
-                  <option value={'A'} disabled>
+                  <option value={'A'} style={{height: '14px'}} disabled>
+                    {''}
+                  </option>
+                  <option
+                    value={'B'}
+                    onMouseEnter={() => {
+                      setHover(true);
+                    }}
+                    onMouseLeave={() => {
+                      setHover(false);
+                    }}
+                    style={{
+                      color: hover ? '#2a72e5' : '#3e495c',
+                      backgroundColor: 'none',
+                      fontWeight: 'bold',
+                      marginTop: '14px',
+                    }}>
+                    Type B
+                  </option>
+                  <option
+                    value={'A'}
+                    style={{fontSize: '11px', color: '#808992'}}
+                    disabled>
                     - BURNABLE
                   </option>
-                  <option value={'A'} disabled>
+                  <option
+                    value={'A'}
+                    style={{fontSize: '11px', color: '#808992'}}
+                    disabled>
                     - SNAPSHOT
                   </option>
-                  <option value={'A'} disabled>
+                  <option
+                    value={'A'}
+                    style={{fontSize: '11px', color: '#808992'}}
+                    disabled>
                     - MINTABLE
                   </option>
-                  <option value={'C'}>Type C</option>
-                  <option value={'A'} disabled>
+                  <option
+                    value={'A'}
+                    style={{height: '14px', color: '#808992'}}
+                    disabled>
+                    {''}
+                  </option>
+                  <option
+                    value={'C'}
+                    onMouseEnter={() => {
+                      setHover(true);
+                    }}
+                    onMouseLeave={() => {
+                      setHover(false);
+                    }}
+                    style={{
+                      color: hover ? '#2a72e5' : '#3e495c',
+                      backgroundColor: 'none',
+                      fontWeight: 'bold',
+                      marginTop: '14px',
+                    }}>
+                    Type C
+                  </option>
+                  <option
+                    value={'A'}
+                    style={{fontSize: '11px', color: '#808992'}}
+                    disabled>
                     - BURNABLE
                   </option>
-                  <option value={'A'} disabled>
+                  <option
+                    value={'A'}
+                    style={{fontSize: '11px', color: '#808992'}}
+                    disabled>
                     - MINTABLE
                   </option>
                 </Select>
