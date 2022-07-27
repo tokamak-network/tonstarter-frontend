@@ -78,10 +78,10 @@ const MyProjects = () => {
             const statss = datas[k].vaults.every((vault: any) => {
               return vault.isSet === true;
             });
-            stat = statss
+            return stat = statss
           }
          else {
-          stat = false
+          return stat = false
          }
           const div = document.createElement('div');
           div.innerHTML = datas[k].description;
@@ -90,7 +90,7 @@ const MyProjects = () => {
             description: div.textContent,
             external_url: datas[k].website,
             image: datas[k].tokenSymbolImage,
-            attributes: datas[k].vaults.map((vault: any) => {
+            attributes: datas[k].vaults?.map((vault: any) => {
               return {
                 trait_type: vault.vaultName,
                 value: vault.vaultAddress,
