@@ -34,7 +34,6 @@ import {setTxPending} from 'store/tx.reducer';
 import {openToast} from 'store/app/toast.reducer';
 import Fraction from 'fraction.js';
 import {addPool} from 'pages/Admin/actions/actions';
-
 const {TOS_ADDRESS, UniswapV3Factory, NPM_Address} = DEPLOYED;
 
 type InitialLiquidity = {
@@ -74,6 +73,8 @@ type LPComp2Props = {
   tosBalance: string;
   isAdmin: boolean;
   InitialLiquidityCompute: any;
+  pool:string;
+  startTime:number
 };
 
 type LPComp3Props = {
@@ -101,6 +102,8 @@ export const MobileInitialLiquidity: FC<InitialLiquidity> = ({
   const [LPToken, setLPToken] = useState<Number>(0);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [createdPool, setCreatedPool] = useState<string>('');
+  const [startTime, setStartTime] = useState<number>(0);
+
   const network = BASE_PROVIDER._network.name;
   const InitialLiquidityCompute = new Contract(
     vault.vaultAddress,
@@ -124,7 +127,9 @@ export const MobileInitialLiquidity: FC<InitialLiquidity> = ({
       }
       const signer = getSigner(library, account);
       const LP = await InitialLiquidityCompute.lpToken();
-
+      const pool = await InitialLiquidityCompute.pool();
+      const start = await InitialLiquidityCompute.startTime();
+      setStartTime(start);
       const tosBal = await TOS.balanceOf(vault.vaultAddress);
       const tokBalance = await projectToken.balanceOf(vault.vaultAddress);
       const TOSBal = ethers.utils.formatEther(tosBal);
@@ -135,8 +140,8 @@ export const MobileInitialLiquidity: FC<InitialLiquidity> = ({
         project.tokenAddress,
         3000,
       );
-      setIsPool(getPool === ZERO_ADDRESS ? false : true);
-      setCreatedPool(getPool === ZERO_ADDRESS ? '' : getPool);
+      setIsPool(pool === ZERO_ADDRESS ? false : true);
+      setCreatedPool(pool === ZERO_ADDRESS ? '' : getPool);
       // setIsPool(false)
       setIsLpToken(Number(LP) === 0 ? false : true);
       // console.log(Number(LP));
@@ -317,8 +322,11 @@ export const MobileInitialLiquidity: FC<InitialLiquidity> = ({
           projTokenBalance={projTokenBalance}
           isAdmin={isAdmin}
           InitialLiquidityCompute={InitialLiquidityCompute}
+          pool={createdPool}
+          startTime={startTime}
         />
       )}
+     
       <Flex w="100%" justifyContent={'center'} mt="40px">
         <Text
           fontFamily={theme.fonts.fld}
@@ -431,9 +439,13 @@ const LPCompCond2: React.FC<LPComp2Props> = ({
   project,
   isAdmin,
   InitialLiquidityCompute,
+  pool,
+  startTime
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
+  const now = moment().unix();
+  const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
   const {account, library, chainId} = useActiveWeb3React();
   const network = BASE_PROVIDER._network.name;
   const gridItemStyle = {
@@ -589,28 +601,15 @@ const LPCompCond2: React.FC<LPComp2Props> = ({
           color={'#ffffff'}
           px={'7px'}
           fontWeight={'normal'}
-          isDisabled={true}
+          isDisabled={pool!==ZERO_ADDRESS &&  startTime < now}
           _disabled={{
             color: colorMode === 'light' ? '#86929d' : '#838383',
             bg: colorMode === 'light' ? '#e9edf1' : '#353535',
             cursor: 'not-allowed',
           }}
-          _hover={
-            !isAdmin
-              ? {}
-              : {
-                  background: 'transparent',
-                  border: 'solid 1px #2a72e5',
-                  color: themeDesign.tosFont[colorMode],
-                  cursor: 'pointer',
-                  width: '152px',
-                  whiteSpace: 'normal',
-                }
-          }
-          _focus={
-            !isAdmin
-              ? {}
-              : {
+         
+          _focus={pool!==ZERO_ADDRESS &&  startTime < now ? {}:
+            {
                   background: '#2a72e5',
                   border: 'solid 1px #2a72e5',
                   color: '#fff',
@@ -618,10 +617,8 @@ const LPCompCond2: React.FC<LPComp2Props> = ({
                   whiteSpace: 'normal',
                 }
           }
-          _active={
-            !isAdmin
-              ? {}
-              : {
+          _active={pool!==ZERO_ADDRESS &&  startTime < now ? {}:
+             {
                   background: '#2a72e5',
                   border: 'solid 1px #2a72e5',
                   color: '#fff',
@@ -631,7 +628,7 @@ const LPCompCond2: React.FC<LPComp2Props> = ({
           }
           whiteSpace={'normal'}
           onClick={() => createPool()}>
-          Approve to Create Pool & Set Initial Price
+         Create Pool
         </Button>
       </GridItem>
       <GridItem

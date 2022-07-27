@@ -32,8 +32,6 @@ const OpenCampagin = () => {
     },
   );
   
-  console.log(data);
-  
   useEffect(() => {
     if (data && !isLoading) {
       const {data: datas} = data;

@@ -76,7 +76,11 @@ const useAirdropList = () => {
         }),
       );
 
-      return setAirdropList(result);
+      return setAirdropList(
+        result.filter((data) => {
+          return Number(data.amount.replaceAll(',', '')) > 0;
+        }),
+      );
     }
     fetchData();
   }, [blockNumber, LOCKTOS_DIVIDEND_CONTRACT, library]);
