@@ -136,7 +136,10 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
                 <Select
                   style={{
                     height: '32px',
-                    border: '1px solid #dfe4ee',
+                    border:
+                      colorMode === 'light'
+                        ? '1px solid #dfe4ee'
+                        : 'solid 1px #424242',
                     borderRadius: '4px',
                     paddingLeft: '16px',
                     paddingRight: '16px',
@@ -190,7 +193,10 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
                 <Select
                   style={{
                     height: '32px',
-                    border: '1px solid #dfe4ee',
+                    border:
+                      colorMode === 'light'
+                        ? '1px solid #dfe4ee'
+                        : 'solid 1px #424242',
                     borderRadius: '4px',
                     paddingLeft: '16px',
                     paddingRight: '16px',
@@ -213,7 +219,7 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
                       setHover(false);
                     }}
                     style={{
-                      color: hover ? '#2a72e5' : '#3e495c',
+                      color: colorMode === 'light' ? '#3e495c' : '#f3f4f1',
                       backgroundColor: 'none',
                       fontWeight: 'bold',
                     }}>
@@ -261,7 +267,7 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
                       setHover(false);
                     }}
                     style={{
-                      color: hover ? '#2a72e5' : '#3e495c',
+                      color: colorMode === 'light' ? '#3e495c' : '#f3f4f1',
                       backgroundColor: 'none',
                       fontWeight: 'bold',
                       marginTop: '14px',
@@ -301,7 +307,7 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
                       setHover(false);
                     }}
                     style={{
-                      color: hover ? '#2a72e5' : '#3e495c',
+                      color: colorMode === 'light' ? '#3e495c' : '#f3f4f1',
                       backgroundColor: 'none',
                       fontWeight: 'bold',
                       marginTop: '14px',
