@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 const stosMinimumRequirements = {
   tier1: 600,
   tier2: 1200,
@@ -5,4 +7,7 @@ const stosMinimumRequirements = {
   tier4: 6000,
 };
 
-export {stosMinimumRequirements};
+const snapshotGap = moment().add(8, 'days').unix();
+const nowTimeStamp = moment().unix();
+
+export {stosMinimumRequirements, snapshotGap, nowTimeStamp};
