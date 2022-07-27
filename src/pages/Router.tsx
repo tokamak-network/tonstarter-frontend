@@ -173,7 +173,7 @@ export const Router: FC<RouterProps> = () => {
   };
 
   const {width} = useWindowDimensions();
-  if (width < 479) {
+  if (width < 1100) {
     return (
       <div
         style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
@@ -194,9 +194,10 @@ export const Router: FC<RouterProps> = () => {
         <WalletModal state={walletState} isOpen={isModalOpen} onClose={onClose} />
       </div>
     );
-  } else if (width > 480 && width < 1100) {
-    return <MobilePreOpen />;
-  }
+  } 
+  // else if (width > 480 && width < 1100) {
+  //   return <MobilePreOpen />;
+  // }
 
   return (
     <div style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
