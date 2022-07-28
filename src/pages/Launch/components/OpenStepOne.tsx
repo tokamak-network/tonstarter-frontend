@@ -17,6 +17,8 @@ const filedNameList = [
   {title: 'tokenSymbolImage', requirement: false},
   {title: 'website', requirement: false},
   {title: 'totalSupply', requirement: true},
+  {title: 'tokenType', requirement: true},
+  {title: 'tokenOwnerAccount', requirement: true},
   {title: 'medium', requirement: false},
   {title: 'telegram', requirement: false},
   {title: 'twitter', requirement: false},
@@ -71,6 +73,39 @@ const OpenStepOne = () => {
                   </Box>
                 </Flex>
               );
+            }
+            if (fieldName.title === 'tokenType') {
+              return (
+                <GridItem
+                  w={'100%'}
+                  colSpan={
+                    values.tokenType === 'B' || values.tokenType === 'C' ? 1 : 2
+                  }>
+                  <InputComponent
+                    inputStyle={{w: '327px'}}
+                    name={fieldName.title}
+                    placeHolder={`input ${fieldName.title}`}
+                    key={fieldName.title}
+                    requirement={fieldName.requirement}></InputComponent>
+                  <Box w={'100%'} mt={'22px'}>
+                    <Line></Line>
+                  </Box>
+                </GridItem>
+              );
+            }
+            if (fieldName.title === 'tokenOwnerAccount') {
+              if (values.tokenType === 'B' || values.tokenType === 'C') {
+                return (
+                  <GridItem w={'327px'}>
+                    <InputComponent
+                      name={fieldName.title}
+                      placeHolder={`input ${fieldName.title}`}
+                      key={fieldName.title}
+                      requirement={fieldName.requirement}></InputComponent>
+                  </GridItem>
+                );
+              }
+              return null;
             }
             return (
               <GridItem w={'327px'}>
