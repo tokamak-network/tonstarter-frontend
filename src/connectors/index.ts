@@ -6,7 +6,7 @@ import {TrezorConnector} from '@web3-react/trezor-connector';
 
 // import {REACT_APP_MAINNET_INFURA_API, REACT_APP_RINKEBY_INFURA_API} from 'constants/index';
 
-const POLLING_INTERVAL = 8000;
+const POLLING_INTERVAL = 12000;
 const RPC_URLS = {
   1: 'https://mainnet.infura.io/v3/34448178b25e4fbda6d80f4da62afba2',
   4: 'https://rinkeby.infura.io/v3/34448178b25e4fbda6d80f4da62afba2',
@@ -40,7 +40,7 @@ export const trazorConnector = new TrezorConnector({
   url: RPC_URLS[1],
   pollingInterval: POLLING_INTERVAL,
   manifestEmail: 'ale.s@onther.io',
-  manifestAppUrl: 'https://ico2-0-frontend.vercel.app/',
+  manifestAppUrl: 'http://localhost:3000',
 });
 
 // Fixes https://github.com/NoahZinsmeister/web3-react/issues/124

@@ -1,6 +1,6 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from 'store/reducers';
-import {VaultName, VaultSchedule, VaultType} from '@Launch/types';
+import {VaultName, VaultType} from '@Launch/types';
 
 interface LaunchState {
   data: {
@@ -10,25 +10,11 @@ interface LaunchState {
     projects: any;
     tempVaultData: any;
     hashKey: string | undefined;
-    alreadySelected: number[] | undefined;
     err: {
       tokenDetail: {
         name: boolean;
       };
     };
-    onBlur: {
-      tokenDetail: boolean;
-      claimRound: boolean;
-    };
-    claimRoundTable: VaultSchedule[] | undefined;
-    uncompletedVaultIndex:
-      | {
-          step2FilledOut: boolean[];
-          result: boolean;
-          fileds: any[];
-        }
-      | undefined;
-    tempHash: string | undefined;
   };
   loading: 'idle' | 'pending';
   error: any;
@@ -40,20 +26,12 @@ const initialState = {
     selectedVault: 'Public',
     selectedVaultType: 'Public',
     selectedVaultIndex: 0,
-    alreadySelected: [0],
     projects: [],
     tempVaultData: {},
     hashKey: undefined,
     err: {
       tokenDetail: {},
     },
-    onBlur: {
-      tokenDetail: false,
-      claimRound: false,
-    },
-    claimRoundTable: undefined,
-    uncompletedVaultIndex: undefined,
-    tempHash: undefined,
   },
   loading: 'idle',
   error: null,
@@ -91,9 +69,6 @@ export const launchReducer = createSlice({
       state.data.selectedVault = payload.data;
       state.data.selectedVaultType = payload.vaultType;
       state.data.selectedVaultIndex = payload.vaultIndex;
-      state.data.alreadySelected = state.data.alreadySelected
-        ? ([...state.data.alreadySelected, payload.vaultIndex] as number[])
-        : ([payload.vaultIndex] as number[]);
     },
     fetchProjects: (state, {payload}: PayloadAction<ProjectPayload>) => {
       state.data.projects = payload.data;
@@ -106,21 +81,6 @@ export const launchReducer = createSlice({
     },
     setHashKey: (state, {payload}: PayloadAction<ProjectPayload>) => {
       state.data.hashKey = payload.data;
-    },
-    setBlur: (state, {payload}: PayloadAction<ProjectPayload>) => {
-      state.data.onBlur = payload.data;
-    },
-    setClaimRoundTable: (state, {payload}: PayloadAction<ProjectPayload>) => {
-      state.data.claimRoundTable = payload.data;
-    },
-    setUncompletedVaultIndex: (
-      state,
-      {payload}: PayloadAction<ProjectPayload>,
-    ) => {
-      state.data.uncompletedVaultIndex = payload.data;
-    },
-    setTempHash: (state, {payload}: PayloadAction<ProjectPayload>) => {
-      state.data.tempHash = payload.data;
     },
   },
   extraReducers: {
@@ -156,8 +116,4 @@ export const {
   saveTempVaultData,
   setErr,
   setHashKey,
-  setBlur,
-  setClaimRoundTable,
-  setUncompletedVaultIndex,
-  setTempHash,
 } = launchReducer.actions;

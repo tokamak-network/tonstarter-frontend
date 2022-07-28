@@ -20,7 +20,7 @@ import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {selectApp} from 'store/app/app.reducer';
 import {openModal} from 'store/modal.reducer';
 import commafy from 'utils/commafy';
-import {selectLaunch, setTempHash} from '@Launch/launch.reducer';
+import {selectLaunch} from '@Launch/launch.reducer';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {createToken} from 'pages/Reward/components/api';
 
@@ -28,19 +28,9 @@ const DeployToken = () => {
   const theme = useTheme();
   const {OpenCampaginDesign} = theme;
   const {colorMode} = useColorMode();
-  const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
-  const {ERC20AFACTORY_ADDRESS, ERC20BFACTORY_ADDRESS, ERC20CFACTORY_ADDRESS} =
-    DEPLOYED;
-
-  const TOKEN_FACTORY_ADDRESS =
-    values.tokenType === 'A'
-      ? ERC20AFACTORY_ADDRESS
-      : values.tokenType === 'B'
-      ? ERC20BFACTORY_ADDRESS
-      : ERC20CFACTORY_ADDRESS;
-
+  const {ERC20AFACTORY_ADDRESS} = DEPLOYED;
   const ERC20_FACTORY_A = useContract(
-    TOKEN_FACTORY_ADDRESS,
+    ERC20AFACTORY_ADDRESS,
     ERC20_FACTORY_A_ABI.abi,
   );
   // @ts-ignore
@@ -50,6 +40,7 @@ const DeployToken = () => {
   } = useAppSelector(selectLaunch);
   const dispatch = useAppDispatch();
 
+  const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const {isTokenDeployed, tokenName, totalSupply, tokenAddress, tokenSymbol} =
     values;
   const {account} = useActiveWeb3React();
@@ -63,19 +54,11 @@ const DeployToken = () => {
         convertToWei(String(totalSupply)),
         owner,
       );
-
-      dispatch(
-        setTempHash({
-          data: tx.hash,
-        }),
-      );
-
       const receipt = await tx.wait();
       const {logs} = receipt;
       const iface = new ethers.utils.Interface(ERC20_FACTORY_A_ABI.abi);
       const result = iface.parseLog(logs[logs.length - 1]);
       const {args} = result;
-
       //args[0] : token address
       //args[1] : token name
       //args[2] : token symbol
@@ -110,7 +93,7 @@ const DeployToken = () => {
             color={isTokenDeployed ? 'white.100' : 'gray.400'}
             fontSize={18}
             h={'24px'}>
-            Token {values.tokenType}
+            Token
           </Text>
           <Text
             color={isTokenDeployed ? 'white.100' : '#03c4c6'}

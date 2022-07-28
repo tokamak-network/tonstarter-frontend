@@ -8,7 +8,7 @@ import {
   Text,
   useColorMode,
 } from '@chakra-ui/react';
-import {saveTempVaultData, selectLaunch, setBlur} from '@Launch/launch.reducer';
+import {saveTempVaultData, selectLaunch} from '@Launch/launch.reducer';
 import {Projects, VaultPublic} from '@Launch/types';
 import {useFormikContext} from 'formik';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
@@ -29,6 +29,7 @@ type InputFieldProp = {
   style?: {};
   tokenSymbol?: string;
   decimalLimit?: boolean;
+  setOnBlur?: React.Dispatch<React.SetStateAction<any>>;
 };
 
 const InputField: React.FC<InputFieldProp> = (props) => {
@@ -47,6 +48,7 @@ const InputField: React.FC<InputFieldProp> = (props) => {
     style,
     tokenSymbol,
     decimalLimit,
+    setOnBlur,
   } = props;
   const dispatch = useAppDispatch();
   const {
@@ -92,11 +94,14 @@ const InputField: React.FC<InputFieldProp> = (props) => {
           placeholder={placeHolder}
           value={value === 'undefined' ? '' : value}
           onBlur={() => {
-            return dispatch(setBlur({data: {tokenDetail: true}}));
+            if (setOnBlur) {
+              return setOnBlur(true);
+            }
           }}
           onChange={(e) => {
-            dispatch(setBlur({data: {tokenDetail: false}}));
-
+            if (setOnBlur) {
+              setOnBlur(false);
+            }
             //@ts-ignore
             setValue(e.target.value);
             if (formikName) {
@@ -163,10 +168,18 @@ const InputField: React.FC<InputFieldProp> = (props) => {
         value={value === 'undefined' ? '' : value}
         style={style}
         onBlur={(e) => {
-          return dispatch(setBlur({data: {tokenDetail: true}}));
+          console.log('?');
+          console.log(setOnBlur);
+
+          if (setOnBlur) {
+            return setOnBlur(true);
+          }
         }}
         onChange={(e) => {
-          dispatch(setBlur({data: {tokenDetail: false}}));
+          console.log(setOnBlur);
+          if (setOnBlur) {
+            setOnBlur(false);
+          }
           if (
             decimalLimit &&
             e.target.value.split('.')[1] &&

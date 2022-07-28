@@ -10,10 +10,9 @@ import {
   Flex,
   useTheme,
   useColorMode,
-  Link,
 } from '@chakra-ui/react';
 import React, {useEffect, useState} from 'react';
-import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal';
@@ -22,8 +21,6 @@ import {LoadingComponent} from 'components/Loading';
 import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
 import commafy from 'utils/commafy';
-import {selectApp} from 'store/app/app.reducer';
-import {selectLaunch, setTempHash} from '@Launch/launch.reducer';
 
 const ConfirmTokenModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -35,12 +32,7 @@ const ConfirmTokenModal = () => {
     'Ready' | 'Deploying' | 'Done' | 'Error'
   >('Ready');
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
-  const {isTokenDeployed, isTokenDeployedErr, tokenType} = values;
-  const {data: appConfig} = useAppSelector(selectApp);
-  const {
-    data: {tempHash},
-  } = useAppSelector(selectLaunch);
-  const dispatch = useAppDispatch();
+  const {isTokenDeployed, isTokenDeployedErr} = values;
 
   useEffect(() => {
     if (isTokenDeployed === true) {
@@ -61,19 +53,9 @@ const ConfirmTokenModal = () => {
   } = data.data;
 
   function closeModal() {
-    try {
-      setFieldValue('isTokenDeployedErr', false);
-      setDeployStep('Ready');
-      dispatch(
-        setTempHash({
-          data: undefined,
-        }),
-      );
-      handleCloseModal();
-    } catch (e) {
-      console.log('--closeModal error--');
-      console.log(e);
-    }
+    setFieldValue('isTokenDeployedErr', false);
+    setDeployStep('Ready');
+    handleCloseModal();
   }
 
   if (deployStep === 'Ready') {
@@ -159,20 +141,6 @@ const ConfirmTokenModal = () => {
                   {commafy(totalSupply)}
                 </Text>
               </Box>
-              <Box
-                d="flex"
-                h={'45px'}
-                justifyContent={'space-between'}
-                w={'100%'}>
-                <Text
-                  fontSize={13}
-                  color={colorMode === 'light' ? 'gray.400' : 'white.100'}>
-                  Token Type
-                </Text>
-                <Text color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                  {tokenType}
-                </Text>
-              </Box>
               <Flex
                 mt={'35px'}
                 flexDir={'column'}
@@ -228,7 +196,8 @@ const ConfirmTokenModal = () => {
           fontFamily={theme.fonts.roboto}
           bg={colorMode === 'light' ? 'white.100' : 'black.200'}
           w="350px"
-          pt="20px">
+          pt="20px"
+          pb="25px">
           {/* <CloseButton closeFunc={() => closeModal()}></CloseButton> */}
           <ModalBody>
             <Flex
@@ -248,13 +217,6 @@ const ConfirmTokenModal = () => {
                 textAlign={'center'}>
                 Waiting to complete deploying your token
               </Text>
-              <Link
-                mt={'20px'}
-                isExternal={true}
-                href={`${appConfig.explorerTxnLink}${tempHash}`}
-                color={'blue.100'}>
-                {tempHash ? 'View on Etherscan' : ''}
-              </Link>
             </Flex>
           </ModalBody>
         </ModalContent>
@@ -286,28 +248,13 @@ const ConfirmTokenModal = () => {
               justifyContent={'center'}>
               <Text
                 w={'186px'}
+                mb={'55px'}
                 fontSize={16}
                 color={'black.300'}
                 fontWeight={600}
                 textAlign={'center'}>
-                Completed to deploy
+                Waiting to complete deploying your token
               </Text>
-              <Text
-                w={'186px'}
-                mb={'20px'}
-                fontSize={16}
-                color={'black.300'}
-                fontWeight={600}
-                textAlign={'center'}>
-                your token
-              </Text>
-              <Link
-                mb={'35px'}
-                isExternal={true}
-                href={`${appConfig.explorerTxnLink}${tempHash}`}
-                color={'blue.100'}>
-                {tempHash ? 'View on Etherscan' : ''}
-              </Link>
               <Box w={'100%'} px={'15px'} mb={'25px'}>
                 <Line></Line>
               </Box>

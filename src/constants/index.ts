@@ -1,4 +1,4 @@
-import {injected, trazorConnector} from 'connectors';
+import {injected} from 'connectors';
 import {WalletInfo} from 'types';
 import {DEPLOYED_TYPE} from './type';
 import {ethers} from 'ethers';
@@ -83,8 +83,6 @@ const MAINNET_DEPLOYED = {
   PowerTONSwapper_ADDRESS: '0xDE200f091a5CD840cD52Ece7406865607a25dF69',
   DoMsaleContractAddress: '0x3B75d3f628C29d357b484EA7d091faEd63419267',
   ERC20AFACTORY_ADDRESS: '0x230539fB72e7eeA8Bb037cA0556Fa9b0060A5d10',
-  ERC20BFACTORY_ADDRESS: '',
-  ERC20CFACTORY_ADDRESS: '',
   AutoCoinageSnapshot2_ADDRESS: '0x85Ca9f611C363065252EA9462c90743922767b55',
   TokenDividendProxyPool_ADDRESS: '0x06245F89576536E9cF844C5804a8ad1CCeDb2642',
   InitialLiquidityVault: '0xcf9A97F0CBBc2eB588E3e4301773d13267616F10',
@@ -142,8 +140,6 @@ const RINKEBY_DEPLOYED = {
   PowerTONSwapper_ADDRESS: '',
   DoMsaleContractAddress: '0xEb492922afa05D0D7704AD5c202f2ddCc386DA75',
   ERC20AFACTORY_ADDRESS: '0x58e6815aBEa00Ef6fc823899625F1D8ae98a5348',
-  ERC20BFACTORY_ADDRESS: '0xE2E57Ddf2276A239bf8Fe6282fB8A5704283fC12',
-  ERC20CFACTORY_ADDRESS: '0x13BdF37F0a28F551DB09c1a4ddfdbB63B0bff3b9',
   InitialLiquidityVault: '0x98B792CEF9a23b4CB7530E06c8fD821FdB2fBF44',
   LiquidityIncentiveVault: '0xF934A22aCF2E7169793DD1B565E5A5Ea3FDE515D',
   AutoCoinageSnapshot2_ADDRESS: '0xa441fc0670be48284e1d2f3b2a72c017b5dbaade',
@@ -194,14 +190,5 @@ export const SUPPORTED_WALLETS: {[key: string]: WalletInfo} = {
     href: null,
     color: '#E8831D',
     type: 'METAMASK',
-  },
-  TREZOR: {
-    connector: trazorConnector,
-    name: 'Trezor',
-    iconName: 'trezor.png',
-    description: 'Hardware Wallet.',
-    href: null,
-    color: '#E8831D',
-    type: 'TREZOR',
   },
 };

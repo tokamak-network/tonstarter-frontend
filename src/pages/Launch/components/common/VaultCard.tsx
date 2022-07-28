@@ -25,16 +25,13 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
   const [isHover, setIsHover] = useState<boolean>(false);
   const [isSelected, setIsSelected] = useState<boolean>(false);
   const {
-    data: {selectedVaultIndex, uncompletedVaultIndex, alreadySelected},
+    data: {selectedVaultIndex},
   } = useAppSelector(selectLaunch);
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const vaultsList = values.vaults;
 
   const {openAnyModal} = useModal();
   const {colorMode} = useColorMode();
-
-  const [thisVaultUncompleted, setThisVaultUncompleted] =
-    useState<boolean>(false);
 
   function removeVault() {
     setFieldValue(
@@ -44,20 +41,6 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
       }),
     );
   }
-
-  useEffect(() => {
-    uncompletedVaultIndex?.fileds?.map((vaultUncompleted, index) => {
-      if (
-        vaultUncompleted.length > 0 &&
-        index === vaultIndex &&
-        alreadySelected &&
-        alreadySelected.indexOf(index) !== -1 &&
-        alreadySelected[alreadySelected.length - 1] !== index
-      ) {
-        return setThisVaultUncompleted(true);
-      }
-    });
-  }, [uncompletedVaultIndex, vaultIndex, alreadySelected]);
 
   useEffect(() => {
     if (selectedVaultIndex === vaultIndex) {
@@ -135,114 +118,80 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
           </Box>
         )}
       </Flex>
-      <Flex>
-        {isMandatory && (
-          <Text mr={'5px'} color={isSelected ? '#ffffff' : '#ff3b3b'}>
-            *
-          </Text>
-        )}
+      <Text
+        h={'56px'}
+        // mb={'10px'}
+        fontSize={16}
+        fontWeight={'bold'}
+        color={
+          isSelected
+            ? 'white.100'
+            : colorMode === 'light'
+            ? '#304156'
+            : 'white.100'
+        }>
+        {name}
+      </Text>
+      <Flex flexDir={'column'} mb={'8px'}>
         <Text
-          h={'56px'}
-          // mb={'10px'}
-          fontSize={16}
-          fontWeight={'bold'}
+          h={'15px'}
+          fontSize={11}
           color={
-            thisVaultUncompleted && isSelected
-              ? 'white.100'
-              : thisVaultUncompleted
-              ? '#ff3b3b'
-              : isSelected
+            isSelected
+              ? '#a8cbf8'
+              : colorMode === 'light'
+              ? '#808992'
+              : '#9d9ea5'
+          }>
+          Token Allocation
+        </Text>
+        <Text
+          h={'20px'}
+          fontSize={15}
+          color={
+            isSelected
               ? 'white.100'
               : colorMode === 'light'
-              ? '#304156'
+              ? '#3d495d'
               : 'white.100'
-          }>
-          {name}
+          }
+          fontWeight={600}>
+          {commafy(tokenAllocation)}
         </Text>
       </Flex>
-      {thisVaultUncompleted ? (
-        <>
-          <Flex flexDir={'column'} mb={'25px'} fontSize={11}>
-            <Text h={'13px'} color={isSelected ? '#a8cbf8' : '#ff3b3b'}>
-              The information
-            </Text>
-            <Text h={'13px'} color={isSelected ? 'white.100' : '#ff3b3b'}>
-              you entered is incorrect.
-            </Text>
-          </Flex>
-          <Flex flexDir={'column'} fontSize={11}>
-            <Text h={'13px'} color={isSelected ? '#a8cbf8' : '#ff3b3b'}>
-              Please check
-            </Text>
-            <Text h={'13px'} color={isSelected ? 'white.100' : '#ff3b3b'}>
-              the Token, Tier info
-            </Text>
-          </Flex>
-        </>
-      ) : (
-        <>
-          <Flex flexDir={'column'} mb={'8px'}>
-            <Text
-              h={'15px'}
-              fontSize={11}
-              color={
-                isSelected
-                  ? '#a8cbf8'
-                  : colorMode === 'light'
-                  ? '#808992'
-                  : '#9d9ea5'
-              }>
-              Token Allocation
-            </Text>
-            <Text
-              h={'20px'}
-              fontSize={15}
-              color={
-                isSelected
-                  ? 'white.100'
-                  : colorMode === 'light'
-                  ? '#3d495d'
-                  : 'white.100'
-              }
-              fontWeight={600}>
-              {commafy(tokenAllocation)}
-            </Text>
-          </Flex>
-          <Flex flexDir={'column'}>
-            <Text
-              h={'15px'}
-              fontSize={11}
-              color={
-                isSelected
-                  ? '#a8cbf8'
-                  : colorMode === 'light'
-                  ? '#808992'
-                  : '#9d9ea5'
-              }>
-              Portion
-            </Text>
-            <Text
-              h={'20px'}
-              fontSize={15}
-              color={
-                isSelected
-                  ? 'white.100'
-                  : colorMode === 'light'
-                  ? '#3d495d'
-                  : 'white.100'
-              }
-              fontWeight={600}>
-              {(
-                (Number(tokenAllocation.replaceAll(',', '')) * 100) /
-                values.totalSupply!
-              )
-                .toString()
-                .match(/^\d+(?:\.\d{0,2})?/)}{' '}
-              %
-            </Text>
-          </Flex>
-        </>
-      )}
+      <Flex flexDir={'column'}>
+        <Text
+          h={'15px'}
+          fontSize={11}
+          color={
+            isSelected
+              ? '#a8cbf8'
+              : colorMode === 'light'
+              ? '#808992'
+              : '#9d9ea5'
+          }>
+          Portion
+        </Text>
+        <Text
+          h={'20px'}
+          fontSize={15}
+          color={
+            isSelected
+              ? 'white.100'
+              : colorMode === 'light'
+              ? '#3d495d'
+              : 'white.100'
+          }
+          fontWeight={600}>
+          {(
+            (Number(tokenAllocation.replaceAll(',', '')) * 100) /
+            values.totalSupply!
+          )
+            .toString()
+            .match(/^\d+(?:\.\d{0,2})?/)}{' '}
+          %
+        </Text>
+      </Flex>
     </Flex>
   );
 };

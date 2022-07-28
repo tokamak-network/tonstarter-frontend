@@ -46,7 +46,7 @@ export const MobileAirdropClaimTable = () => {
   const [checkedAllBoxes, setCheckedAllBoxes] = useState<boolean>(false);
   const [airdropData, setAirdropData] = useState<any[]>([]);
   const [checkedTokenAddresses, setCheckedTokenAddresses] = useState<any[]>([]);
-  const [radioValue, setRadioValue] = useState<string>('DAO Airdrop');
+  const [radioValue, setRadioValue] = useState<string>('Genesis Airdrop');
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [tonStakerAirdropTokens, setTonStakerAirdropTokens] = useState<any[]>(
     [],

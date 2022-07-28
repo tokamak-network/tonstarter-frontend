@@ -24,13 +24,15 @@ type calendarComponentProps = {
   oldValues?: {};
   valueKey?: any;
   startTimeCap?: number;
+
 };
 const SingleCalendarPop: React.FC<calendarComponentProps> = ({
   setDate,
   fieldValueKey,
   oldValues,
   valueKey,
-  startTimeCap,
+  startTimeCap
+
 }) => {
   const {colorMode} = useColorMode();
   const [image, setImage] = useState(
@@ -41,11 +43,11 @@ const SingleCalendarPop: React.FC<calendarComponentProps> = ({
 
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const createTime = (onClose: any) => {
-    create();
-
+    create()
+    
     if (fieldValueKey) {
       const timeStamp = startTime;
-      // setFieldValue(fieldValueKey, {...oldValues, [valueKey]: timeStamp});
+      setFieldValue(fieldValueKey, {...oldValues, [valueKey]: timeStamp});
       return onClose();
     } else {
       if (setDate) {
@@ -55,7 +57,7 @@ const SingleCalendarPop: React.FC<calendarComponentProps> = ({
     onClose();
   };
 
-  const create = () => {
+  const create = () =>{
     const starts = moment.unix(startTime);
     const startDates = moment(starts).set({
       hour: startTimeArray[0],
@@ -63,11 +65,11 @@ const SingleCalendarPop: React.FC<calendarComponentProps> = ({
       second: startTimeArray[2],
     });
     setStartTime(startDates.unix());
-  };
+  }
 
   useEffect(() => {
-    create();
-  }, [startTimeArray, startTime]);
+    create(); 
+  },[startTimeArray,startTime])
   return (
     <Popover closeOnBlur={true} placement="bottom">
       {({isOpen, onClose}) => (
@@ -117,12 +119,9 @@ const SingleCalendarPop: React.FC<calendarComponentProps> = ({
               <CustomCalendar
                 setValue={setStartTime}
                 startTime={startTime}
-                startTimeCap={startTimeCap}></CustomCalendar>
-              <CustomClock
-                setTime={setStartTimeArray}
-                calendarType={'start'}
-                startTime={startTime}
-                startTimeCap={startTimeCap}></CustomClock>
+                startTimeCap={startTimeCap}
+                ></CustomCalendar>
+              <CustomClock setTime={setStartTimeArray} calendarType={'start'} startTime={startTime}  startTimeCap={startTimeCap}></CustomClock>
               <Flex alignItems={'center'} justifyContent={'center'} p={'15px'}>
                 <Button
                   type="submit"
@@ -133,11 +132,7 @@ const SingleCalendarPop: React.FC<calendarComponentProps> = ({
                   color={'white.100'}
                   mr={'12px'}
                   _hover={{}}
-                  disabled={
-                    startTimeCap !== undefined
-                      ? startTime <= startTimeCap
-                      : false
-                  }
+                    disabled={startTimeCap !== undefined? startTime <= startTimeCap : false}
                   onClick={() => createTime(onClose)}>
                   Set up
                 </Button>

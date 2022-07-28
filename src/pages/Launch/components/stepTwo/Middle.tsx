@@ -84,7 +84,6 @@ const Middle: React.FC<MiddleProps> = (props) => {
   }, [selectedVaultDetail]);
 
   const isDisable =
-    selectedVaultDetail?.vaultTokenAllocation === 0 ||
     selectedVaultDetail?.index === 5 ||
     (selectedVaultDetail?.vaultType !== 'Public' &&
       selectedVaultDetail?.vaultType !== 'Liquidity Incentive' &&

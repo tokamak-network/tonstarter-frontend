@@ -10,11 +10,10 @@ type StepTitleProp = {
   fontSize?: number;
   isSaveButton?: boolean;
   lineHeight?: number;
-  err?: boolean;
 };
 
 const StepTitle: React.FC<StepTitleProp> = (prop) => {
-  const {title, fontSize, isSaveButton, lineHeight, err} = prop;
+  const {title, fontSize, isSaveButton, lineHeight} = prop;
   const {colorMode} = useColorMode();
   const {account} = useActiveWeb3React();
   const {values} = useFormikContext();
@@ -31,13 +30,7 @@ const StepTitle: React.FC<StepTitleProp> = (prop) => {
       lineHeight={lineHeight || '36px'}>
       <Box
         fontSize={fontSize || 20}
-        color={
-          err === true
-            ? '#ff3b3b'
-            : colorMode === 'light'
-            ? '#304156'
-            : 'white.100'
-        }
+        color={colorMode === 'light' ? '#304156' : 'white.100'}
         fontWeight={600}>
         {title}
       </Box>

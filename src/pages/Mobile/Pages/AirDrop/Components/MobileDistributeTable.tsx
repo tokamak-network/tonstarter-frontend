@@ -14,7 +14,7 @@ import {
   RadioGroup,
 } from '@chakra-ui/react';
 import {useActiveWeb3React} from 'hooks/useWeb3';
-import commafy from 'utils/commafy';
+
 type DistributeTable = {
   distributedTosTokens: any[]| undefined;
   airdropList: any
@@ -144,7 +144,7 @@ export const MobileDistributeTable: FC<DistributeTable> = ({
               h={'42px'}
            
               textAlign={'center'}>
-             {commafy(token.amount)}
+              {Number(token.amount).toLocaleString()}
             </Text>
           </GridItem>
         )

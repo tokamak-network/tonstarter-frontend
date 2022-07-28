@@ -266,7 +266,7 @@ const OverviewTable = () => {
                       fontSize={13}
                       bg={
                         index === 0 || index % 2 === 0
-                          ? overviewTableStyle.cellBgColor[colorMode].odd
+                          ? overviewTableStyle.cellBgColor[colorMode].even
                           : overviewTableStyle.cellBgColor[colorMode].odd
                       }>
                       {commafy(sumColumn)}

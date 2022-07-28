@@ -28,8 +28,6 @@ export type DEPLOYED_TYPE = {
   PowerTONSwapper_ADDRESS: string;
   DoMsaleContractAddress: string;
   ERC20AFACTORY_ADDRESS: string;
-  ERC20BFACTORY_ADDRESS: string;
-  ERC20CFACTORY_ADDRESS: string;
   InitialLiquidityVault: string;
   LiquidityIncentiveVault: string;
   PublicSaleVault: string;

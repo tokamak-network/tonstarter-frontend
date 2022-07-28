@@ -38,15 +38,11 @@ import InitialLiquidityComputeAbi from 'services/abis/Vault_InitialLiquidityComp
 import {convertTimeStamp} from 'utils/convertTIme';
 import {useToast} from 'hooks/useToast';
 import {CustomTooltip} from 'components/Tooltip';
-import {snapshotGap, stosMinimumRequirements} from '@Launch/const';
+import {stosMinimumRequirements} from '@Launch/const';
 import {NumberInputStep} from './NumberInputField';
 import momentTZ from 'moment-timezone';
 import moment from 'moment';
 import SelectPair from './TokenDetails/SelectPair';
-import {usePoolByArrayQuery} from 'store/data/generated';
-import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
-import {Contract} from '@ethersproject/contracts';
-import {useActiveWeb3React} from 'hooks/useWeb3';
 
 export const MainTitle = (props: {
   leftTitle: string;
@@ -90,7 +86,7 @@ const SubTitle = (props: {
   isSecondColData?: boolean;
   formikName: string;
   inputRef?: any;
-  err?: boolean;
+  setOnBlur?: React.Dispatch<React.SetStateAction<any>>;
 }) => {
   const {
     leftTitle,
@@ -101,7 +97,7 @@ const SubTitle = (props: {
     isSecondColData,
     formikName,
     inputRef,
-    err,
+    setOnBlur,
   } = props;
   const [inputVal, setInputVal] = useState<number | string>(
     //@ts-ignore
@@ -111,10 +107,6 @@ const SubTitle = (props: {
   const {values} = useFormikContext<Projects['CreateProject']>();
   const {vaults} = values;
   const publicVault = vaults[0] as VaultPublic;
-
-  // console.log(leftTitle);
-  // console.log(rightTitle);
-  // console.log(inputVal);
 
   useEffect(() => {
     //@ts-ignore
@@ -128,7 +120,6 @@ const SubTitle = (props: {
         | 'Whitelist'
         | 'Public Round 1'
         | 'Public Round 2'
-        | 'Start Time'
     ) {
       case 'Snapshot': {
         return publicVault.snapshot;
@@ -141,10 +132,6 @@ const SubTitle = (props: {
       }
       case 'Public Round 2': {
         return [publicVault.publicRound2, publicVault.publicRound2End];
-      }
-      case 'Start Time': {
-        //@ts-ignore
-        return vaults[1].startTime;
       }
       default:
         return 0;
@@ -163,54 +150,6 @@ const SubTitle = (props: {
     data: {tempVaultData, selectedVaultIndex},
   } = useAppSelector(selectLaunch);
 
-  //get pool address
-  const poolArr = usePoolByArrayQuery(
-    {
-      address:
-        selectedVaultIndex && selectedVaultIndex > 5
-          ? [String(tempVaultData.poolAddress)]
-          : '',
-    },
-    //  {
-    //    pollingInterval: ms`2s`,
-    //  },
-  );
-
-  const {library} = useActiveWeb3React();
-
-  useEffect(() => {
-    async function fetchPooldata() {
-      const data = poolArr.data.pools[0];
-      const {token0, token1} = data;
-      const TOKEN0_CONTRACT = new Contract(token0.id, ERC20.abi, library);
-      const TOKEN1_CONTRACT = new Contract(token1.id, ERC20.abi, library);
-      const TOKEN0_SYMBOL = await TOKEN0_CONTRACT.symbol();
-      const TOKEN1_SYMBOL = await TOKEN1_CONTRACT.symbol();
-      const tokenPair = `${TOKEN0_SYMBOL}-${TOKEN1_SYMBOL}`;
-
-      return dispatch(
-        saveTempVaultData({
-          data: {
-            ...tempVaultData,
-            tokenPair,
-          },
-        }),
-      );
-    }
-    if (poolArr?.data?.pools[0]) {
-      fetchPooldata();
-    } else {
-      dispatch(
-        saveTempVaultData({
-          data: {
-            ...tempVaultData,
-            tokenPair: '',
-          },
-        }),
-      );
-    }
-  }, [poolArr, library]);
-
   //@ts-ignore
   useEffect(() => {
     //Put timestamp
@@ -220,12 +159,8 @@ const SubTitle = (props: {
         | 'Whitelist'
         | 'Public Round 1'
         | 'Public Round 2'
-        | 'Start Time'
     ) {
       case 'Snapshot': {
-        if (selectedVaultIndex !== 0) {
-          return null;
-        }
         return dispatch(
           saveTempVaultData({
             data: {
@@ -236,9 +171,6 @@ const SubTitle = (props: {
         );
       }
       case 'Whitelist': {
-        if (selectedVaultIndex !== 0) {
-          return null;
-        }
         return dispatch(
           saveTempVaultData({
             data: {
@@ -252,9 +184,6 @@ const SubTitle = (props: {
         );
       }
       case 'Public Round 1': {
-        if (selectedVaultIndex !== 0) {
-          return null;
-        }
         return dispatch(
           saveTempVaultData({
             data: {
@@ -268,9 +197,6 @@ const SubTitle = (props: {
         );
       }
       case 'Public Round 2': {
-        if (selectedVaultIndex !== 0) {
-          return null;
-        }
         return dispatch(
           saveTempVaultData({
             data: {
@@ -283,24 +209,11 @@ const SubTitle = (props: {
           }),
         );
       }
-      case 'Start Time': {
-        if (selectedVaultIndex !== 1) {
-          return null;
-        }
-        return dispatch(
-          saveTempVaultData({
-            data: {
-              ...tempVaultData,
-              startTime: claimDate,
-            },
-          }),
-        );
-      }
       default:
         break;
     }
     /*eslint-disable*/
-  }, [dateRange, claimDate, leftTitle, selectedVaultIndex]);
+  }, [dateRange, claimDate, leftTitle]);
 
   let tempValueKey = () => {
     switch (leftTitle) {
@@ -337,13 +250,8 @@ const SubTitle = (props: {
         return `${commafy(rightTitle)} TON`;
       case 'Address for receiving funds':
         return rightTitle ? `${shortenAddress(rightTitle)}` : '-';
-      case 'Start Time':
-        return rightTitle
-          ? `${convertTimeStamp(rightTitle, 'YYYY-MM-DD HH:mm:ss')}`
-          : '-';
       case 'custom LP':
         return <></>;
-      case 'Select Pair':
       default:
         return rightTitle;
     }
@@ -357,76 +265,12 @@ const SubTitle = (props: {
             valueProp={inputVal}
             formikName={formikName}></NumberInputStep>
         );
-      case 'Start Time':
-        return (
-          <Flex>
-            <Text mr={'5px'}>
-              {claimDate
-                ? convertTimeStamp(claimDate, 'YYYY-MM-DD HH:mm:ss')
-                : '-'}
-            </Text>
-            <SingleCalendarPop
-              setDate={setClaimDate}
-              //Mainnet env
-              startTimeCap={
-                //@ts-ignore
-                values.vaults[0].publicRound2End
-                  ? //@ts-ignore
-                    values.vaults[0].publicRound2End
-                  : 0
-              }
-              //Testnet env
-              // startTimeCap={moment()
-              //   .add('11', 'minutes')
-              //     .unix()}
-            ></SingleCalendarPop>
-          </Flex>
-        );
       case 'Select Pair':
-        if (selectedVaultIndex && selectedVaultIndex > 5) {
-          return <Text>{tempVaultData.tokenPair}</Text>;
-        }
         return <Text>{inputVal}</Text>;
+      // return <SelectPair></SelectPair>;
       case 'Pool Address\n(0.3% fee)':
         if (selectedVaultIndex && selectedVaultIndex < 6) {
           return <Text>{inputVal}</Text>;
-        }
-
-        //selectbox feedback
-
-        if (selectedVaultIndex && selectedVaultIndex > 5) {
-          const {DOCPool_Address, pools} = DEPLOYED;
-          const selectList = [
-            {title: 'DOC-TOS', value: DOCPool_Address},
-            {title: 'TOS_WTON', value: pools.TOS_WTON_POOL},
-            {title: 'CUSTOM', value: ''},
-          ];
-          return (
-            <Select
-              style={{
-                height: '32px',
-                border: '1px solid #dfe4ee',
-                borderRadius: '4px',
-                paddingLeft: '16px',
-                paddingRight: '16px',
-              }}
-              w={'150px'}
-              fontSize={13}
-              color={'#86929d'}
-              name={'sector'}
-              onChange={(e: any) => {
-                setInputVal(e.target.value);
-              }}>
-              <option disabled selected>
-                select
-              </option>
-              {selectList.map((selectData: {title: string; value: string}) => {
-                return (
-                  <option value={selectData.value}>{selectData.title}</option>
-                );
-              })}
-            </Select>
-          );
         }
         return (
           <InputField
@@ -437,7 +281,8 @@ const SubTitle = (props: {
             setValue={setInputVal}
             formikName={formikName}
             inputRef={inputRef}
-            style={{textAlign: 'right'}}></InputField>
+            style={{textAlign: 'right'}}
+            setOnBlur={setOnBlur}></InputField>
         );
       case 'Address for receiving funds':
         return (
@@ -456,83 +301,6 @@ const SubTitle = (props: {
           </Tooltip>
         );
       case 'Minimum Fundraising Amount':
-        const tooltipLabel = values.projectTokenPrice * Number(inputVal);
-        return (
-          <Tooltip
-            label={` = ${isNaN(tooltipLabel) ? '0' : tooltipLabel} ${
-              values.tokenSymbol
-            }`}
-            placement={'top'}
-            minW={'120px'}
-            minH={'32px'}
-            textAlign="center"
-            lineHeight={'32px'}>
-            <Flex>
-              <InputField
-                w={120}
-                h={32}
-                fontSize={13}
-                value={inputVal}
-                setValue={setInputVal}
-                formikName={formikName}
-                inputRef={inputRef}
-                style={{textAlign: 'right'}}
-                tokenSymbol={'TON'}></InputField>
-            </Flex>
-          </Tooltip>
-        );
-      case 'Public Round 1': {
-        const tooltipLabel = Number(inputVal) / values.projectTokenPrice;
-        return (
-          <Tooltip
-            label={` = ${isNaN(tooltipLabel) ? '0' : tooltipLabel} TON`}
-            placement={'top'}
-            minW={'120px'}
-            minH={'32px'}
-            textAlign="center"
-            lineHeight={'32px'}>
-            <Flex>
-              <InputField
-                w={120}
-                h={32}
-                fontSize={13}
-                value={inputVal}
-                setValue={setInputVal}
-                formikName={formikName}
-                inputRef={inputRef}
-                style={{textAlign: 'right'}}
-                tokenSymbol={values.tokenSymbol}></InputField>
-            </Flex>
-          </Tooltip>
-        );
-      }
-      case 'Public Round 2': {
-        const tooltipLabel = Number(inputVal) / values.projectTokenPrice;
-        return (
-          <Tooltip
-            label={` = ${isNaN(tooltipLabel) ? '0' : tooltipLabel} TON`}
-            placement={'top'}
-            minW={'120px'}
-            minH={'32px'}
-            textAlign="center"
-            lineHeight={'32px'}>
-            <Flex>
-              <InputField
-                w={120}
-                h={32}
-                fontSize={13}
-                value={inputVal}
-                setValue={setInputVal}
-                formikName={formikName}
-                inputRef={inputRef}
-                style={{textAlign: 'right'}}
-                tokenSymbol={values.tokenSymbol}></InputField>
-            </Flex>
-          </Tooltip>
-        );
-      }
-
-      default:
         return (
           <InputField
             w={120}
@@ -543,10 +311,24 @@ const SubTitle = (props: {
             formikName={formikName}
             inputRef={inputRef}
             style={{textAlign: 'right'}}
+            tokenSymbol={'TON'}></InputField>
+        );
+      default:
+        return (
+          <InputField
+            w={120}
+            h={32}
+            fontSize={13}
+            value={inputVal}
+            setValue={setInputVal}
+            setOnBlur={setOnBlur}
+            formikName={formikName}
+            inputRef={inputRef}
+            style={{textAlign: 'right'}}
             tokenSymbol={values.tokenSymbol}></InputField>
         );
     }
-  }, [inputVal, values.projectTokenPrice, tempVaultData]);
+  }, [inputVal]);
 
   const LeftTitleComponent = () => {
     switch (leftTitle) {
@@ -718,7 +500,7 @@ const SubTitle = (props: {
               <SingleCalendarPop
                 setDate={setClaimDate}
                 //Mainnet env
-                startTimeCap={snapshotGap}
+                startTimeCap={moment().add(12, 'hours').unix()}
                 //Testnet env
                 // startTimeCap={moment()
                 //   .add('11', 'minutes')
@@ -744,15 +526,12 @@ const SubTitle = (props: {
           </Flex>
         )
       ) : String(rightTitle)?.includes('~') ? (
-        <Flex
-          flexDir={'column'}
-          color={err ? '#ff3b3b' : ''}
-          textAlign={'right'}>
+        <Flex flexDir={'column'} textAlign={'right'}>
           <Text>{String(rightTitle).split('~')[0]}</Text>
           <Text>~ {String(rightTitle).split('~')[1]}</Text>
         </Flex>
       ) : (
-        <Flex color={err ? '#ff3b3b' : ''}>
+        <Flex>
           {leftTitle === 'Address for receiving funds' ? (
             <Tooltip label={rightTitle} placement={'top'}>
               <Text textAlign={'right'}>
@@ -761,27 +540,6 @@ const SubTitle = (props: {
                   : displayRightTitle(leftTitle, rightTitle)}
               </Text>
             </Tooltip>
-          ) : leftTitle.includes('Minimum') ? (
-            <Tooltip
-              label={` = ${values.projectTokenPrice * Number(rightTitle)} ${
-                values.tokenSymbol
-              }`}
-              placement={'top'}>
-              <Text textAlign={'right'}>
-                {String(rightTitle)?.includes('undefined')
-                  ? '-'
-                  : displayRightTitle(leftTitle, rightTitle)}
-              </Text>
-            </Tooltip>
-          ) : leftTitle.includes('Exchange Ratio') ? (
-            <Text textAlign={'right'}>
-              {String(rightTitle)?.includes('undefined')
-                ? '-'
-                : displayRightTitle(
-                    leftTitle,
-                    `${rightTitle} ${values.tokenSymbol}`,
-                  )}
-            </Text>
           ) : (
             <Text textAlign={'right'}>
               {String(rightTitle)?.includes('undefined')
@@ -791,10 +549,7 @@ const SubTitle = (props: {
           )}
 
           {percent !== undefined && (
-            <Text
-              ml={'5px'}
-              color={err ? '#ff3b3b' : '#7e8993'}
-              textAlign={'right'}>
+            <Text ml={'5px'} color={'#7e8993'} textAlign={'right'}>
               {`(${percent.toFixed(3).replace(/\.(\d\d)\d?$/, '.$1') || '-'}%)`}
             </Text>
           )}
@@ -811,10 +566,8 @@ const STOSTier = (props: {
   isLast?: boolean;
   isEdit: boolean;
   inputRef: any;
-  err: boolean;
 }) => {
-  const {tier, requiredTos, allocatedToken, isLast, isEdit, inputRef, err} =
-    props;
+  const {tier, requiredTos, allocatedToken, isLast, isEdit, inputRef} = props;
   const {colorMode} = useColorMode();
   const [inputVal, setInputVal] = useState(requiredTos);
   const [inputVal2, setInputVal2] = useState(allocatedToken);
@@ -898,13 +651,9 @@ const STOSTier = (props: {
           </Flex>
         </>
       ) : (
-        <Flex textAlign={'center'} lineHeight={'32px'}>
+        <>
           <Text w={'125px'}>{commafy(requiredTos) || '-'}</Text>
-          <Flex
-            w={'137px'}
-            justifyContent={'center'}
-            alignItems={'center'}
-            color={err ? '#ff3b3b' : ''}>
+          <Flex w={'137px'} justifyContent={'center'} alignItems={'center'}>
             <Text>{commafy(allocatedToken) || '-'}</Text>
             <Text
               ml={'5px'}
@@ -921,7 +670,7 @@ const STOSTier = (props: {
                   }%)`}
             </Text>
           </Flex>
-        </Flex>
+        </>
       )}
     </Flex>
   );
@@ -952,10 +701,11 @@ const PublicTokenDetail = (props: {
   const vaults = values.vaults;
   const inputRef = useRef({});
   const {
-    data: {tempVaultData, selectedVaultType, onBlur},
+    data: {tempVaultData, selectedVaultType},
   } = useAppSelector(selectLaunch);
 
   const {toastMsg} = useToast();
+  const [onBlur, setOnBlur] = useState(false);
 
   //Input Value Validating
   useEffect(() => {
@@ -964,7 +714,7 @@ const PublicTokenDetail = (props: {
       colorMode === 'light' ? '1px solid #dfe4ee' : '1px solid #373737';
     const {current} = inputRef;
 
-    if (onBlur.tokenDetail === false) {
+    if (onBlur === false) {
       return;
     }
 
@@ -1015,10 +765,7 @@ const PublicTokenDetail = (props: {
           const allocatedToken_2_num = Number(allocatedToken_2.value);
           const allocatedToken_3_num = Number(allocatedToken_3.value);
           const allocatedToken_4_num = Number(allocatedToken_4.value);
-
           const tokenIsOver = pr1TokenNum + pr2TokenNum - tokenAllocation > 0;
-          const tokenIsNotEnough =
-            pr1TokenNum + pr2TokenNum - tokenAllocation < 0;
           const stosTokenAllocationOver =
             allocatedToken_1_num +
               allocatedToken_2_num +
@@ -1088,30 +835,17 @@ const PublicTokenDetail = (props: {
           }
 
           if (tokenIsOver) {
-            // publicRound1Allocation.style.border = errBorderStyle;
-            // publicRound2Allocation.style.border = errBorderStyle;
+            publicRound1Allocation.style.border = errBorderStyle;
+            publicRound2Allocation.style.border = errBorderStyle;
 
-            // toastMsg({
-            //   title: 'Token Allocation to this vault is over',
-            //   description:
-            //     'You have to put less token or adjust token allocation for public rounds',
-            //   duration: 2000,
-            //   isClosable: true,
-            //   status: 'error',
-            // });
-            return setIsConfirm(true);
-          } else if (tokenIsNotEnough) {
-            // publicRound1Allocation.style.border = errBorderStyle;
-            // publicRound2Allocation.style.border = errBorderStyle;
-
-            // toastMsg({
-            //   title: 'Token Allocation to this vault is not enough',
-            //   description:
-            //     'You have to put more token or adjust token allocation for public rounds',
-            //   duration: 2000,
-            //   isClosable: true,
-            //   status: 'error',
-            // });
+            toastMsg({
+              title: 'Token Allocation to this vault is not enough',
+              description:
+                'You have to put more token or adjust token allocation for public rounds',
+              duration: 2000,
+              isClosable: true,
+              status: 'error',
+            });
             return setIsConfirm(true);
           } else {
             publicRound1Allocation.style.border = noErrBorderStyle;
@@ -1145,95 +879,6 @@ const PublicTokenDetail = (props: {
     }
   }, [selectedVaultType, tempVaultData, selectedVaultDetail, onBlur]);
 
-  useEffect(() => {
-    if (
-      selectedVaultType === 'Liquidity Incentive' &&
-      selectedVaultDetail?.isMandatory === false
-    ) {
-    }
-  }, [selectedVaultType, selectedVaultDetail]);
-
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    if (
-      tempVaultData.snapshot &&
-      tempVaultData.whitelist === undefined &&
-      tempVaultData.whitelistEnd === undefined &&
-      tempVaultData.publicRound1 === undefined &&
-      tempVaultData.publicRound1End === undefined &&
-      tempVaultData.publicRound2 === undefined &&
-      tempVaultData.publicRound2End === undefined
-    ) {
-      const oneDaySec = 86400;
-      dispatch(
-        saveTempVaultData({
-          data: {
-            ...tempVaultData,
-            whitelist: tempVaultData.snapshot + oneDaySec,
-            whitelistEnd: tempVaultData.snapshot + oneDaySec * 2,
-            publicRound1: tempVaultData.snapshot + 1 + oneDaySec * 2,
-            publicRound1End: tempVaultData.snapshot + oneDaySec * 3,
-            publicRound2: tempVaultData.snapshot + 1 + oneDaySec * 4,
-            publicRound2End: tempVaultData.snapshot + oneDaySec * 5,
-          },
-        }),
-      );
-    }
-  }, [tempVaultData.snapshot]);
-
-  if (firstColData && secondColData === null && thirdColData === null) {
-    return (
-      <Grid
-        {...OpenCampaginDesign.border({colorMode})}
-        w={'100%'}
-        // templateColumns="repeat(3, 1fr)"
-        fontSize={13}>
-        <GridItem>
-          <MainTitle
-            leftTitle="Token"
-            rightTitle={`${commafy(
-              selectedVaultDetail?.vaultTokenAllocation,
-            )} ${values.tokenName}`}
-            subTitle={
-              selectedVaultDetail?.vaultTokenAllocation === 0
-                ? '-'
-                : `(${(
-                    (Number(selectedVaultDetail?.vaultTokenAllocation) * 100) /
-                    values.totalTokenAllocation
-                  )
-                    .toString()
-                    .match(/^\d+(?:\.\d{0,2})?/)}%)`
-            }></MainTitle>
-          {firstColData?.map(
-            (
-              data: {
-                title: string;
-                content: string | undefined;
-                percent?: number | undefined;
-                formikName: string;
-              },
-              index: number,
-            ) => {
-              const {title, content, percent, formikName} = data;
-              return (
-                <SubTitle
-                  key={title}
-                  leftTitle={title}
-                  rightTitle={content !== '-' ? content : undefined}
-                  isLast={index + 1 === firstColData.length}
-                  inputRef={inputRef}
-                  percent={percent}
-                  isEdit={isEdit}
-                  formikName={formikName}></SubTitle>
-              );
-            },
-          )}
-        </GridItem>
-      </Grid>
-    );
-  }
-
   return (
     <Grid
       {...OpenCampaginDesign.border({colorMode})}
@@ -1256,21 +901,42 @@ const PublicTokenDetail = (props: {
                   .toString()
                   .match(/^\d+(?:\.\d{0,2})?/)}%)`
           }></MainTitle>
-        {firstColData?.map((data: any, index: number) => {
-          const {title, content, percent, formikName, err} = data;
-          return (
-            <SubTitle
-              key={title}
-              leftTitle={title}
-              rightTitle={content}
-              isLast={index + 1 === firstColData.length}
-              inputRef={inputRef}
-              percent={percent}
-              isEdit={isEdit}
-              formikName={formikName}
-              err={err}></SubTitle>
-          );
-        })}
+        {firstColData?.map(
+          (
+            data: {
+              title: string;
+              content: string | undefined;
+              percent?: number | undefined;
+              formikName: string;
+            },
+            index: number,
+          ) => {
+            const {title, content, percent, formikName} = data;
+            return (
+              <SubTitle
+                setOnBlur={setOnBlur}
+                key={title}
+                leftTitle={title}
+                rightTitle={content}
+                isLast={index + 1 === firstColData.length}
+                inputRef={inputRef}
+                percent={percent}
+                isEdit={isEdit}
+                formikName={formikName}></SubTitle>
+            );
+          },
+        )}
+        {firstColData === null && (
+          <Flex
+            alignItems={'center'}
+            justifyContent="center"
+            h={'60px'}
+            fontSize={13}
+            color={'#808992'}
+            fontWeight={600}>
+            <Text>There is no Token value.</Text>
+          </Flex>
+        )}
       </GridItem>
       <GridItem
         borderX={
@@ -1282,13 +948,8 @@ const PublicTokenDetail = (props: {
             .tz(momentTZ.tz.guess())
             .format('Z')}`}></MainTitle>
         {secondColData?.map(
-          (data: {
-            title: string;
-            content: string;
-            formikName: string;
-            err: boolean;
-          }) => {
-            const {title, content, formikName, err} = data;
+          (data: {title: string; content: string; formikName: string}) => {
+            const {title, content, formikName} = data;
             return (
               <SubTitle
                 key={title}
@@ -1296,12 +957,11 @@ const PublicTokenDetail = (props: {
                 rightTitle={content}
                 isEdit={isEdit}
                 isSecondColData={true}
-                formikName={formikName}
-                err={err}></SubTitle>
+                formikName={formikName}></SubTitle>
             );
           },
         )}
-        {/* {secondColData === null && (
+        {secondColData === null && (
           <Flex
             alignItems={'center'}
             justifyContent="center"
@@ -1315,7 +975,7 @@ const PublicTokenDetail = (props: {
             fontWeight={600}>
             <Text>There is no Schedule value.</Text>
           </Flex>
-        )} */}
+        )}
       </GridItem>
       <GridItem>
         <MainTitle leftTitle="sTOS Tier" rightTitle=""></MainTitle>
@@ -1336,7 +996,7 @@ const PublicTokenDetail = (props: {
           </Flex>
         )}
         {thirdColData?.map((data: any, index: number) => {
-          const {tier, requiredTos, allocatedToken, err} = data;
+          const {tier, requiredTos, allocatedToken} = data;
           return (
             <STOSTier
               key={tier}
@@ -1345,11 +1005,10 @@ const PublicTokenDetail = (props: {
               allocatedToken={allocatedToken}
               isLast={index + 1 === thirdColData.length}
               isEdit={isEdit}
-              inputRef={inputRef}
-              err={err}></STOSTier>
+              inputRef={inputRef}></STOSTier>
           );
         })}
-        {/* {thirdColData === null && (
+        {thirdColData === null && (
           <Flex
             alignItems={'center'}
             justifyContent="center"
@@ -1363,7 +1022,7 @@ const PublicTokenDetail = (props: {
             fontWeight={600}>
             <Text>There is no sTOS Tier value.</Text>
           </Flex>
-        )} */}
+        )}
       </GridItem>
     </Grid>
   );
@@ -1419,18 +1078,13 @@ const TokenDetail = (props: {
               },
               {
                 title: 'Pool Address\n(0.3% fee)',
-                content: '0.3%',
+                content: thisVault.poolAddress,
                 formikName: 'poolAddress',
               },
               {
                 title: 'Exchange Ratio\n1 TOS',
-                content: `${String(values.tosPrice)}`,
+                content: String(values.tosPrice),
                 formikName: 'tosPrice',
-              },
-              {
-                title: 'Start Time',
-                content: `${String(thisVault.startTime)}`,
-                formikName: 'startTime',
               },
             ]}
             secondColData={null}

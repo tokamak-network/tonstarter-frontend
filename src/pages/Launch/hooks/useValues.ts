@@ -23,11 +23,8 @@ const initialObj: Projects['CreateProject'] = {
   isTokenDeployedErr: false,
   isAllDeployed: false,
   tokenAddress: '',
-  tokenType: undefined,
-  tokenOwnerAccount: undefined,
   tosPrice: 0,
   projectTokenPrice: 0,
-  // salePrice: 0,
   totalTokenAllocation: 0,
   sector: '',
   tokenSymbolImage: '',
@@ -95,7 +92,6 @@ const initialObj: Projects['CreateProject'] = {
       isDeployedErr: false,
       poolAddress: undefined,
       tokenPair: undefined,
-      startTime: undefined,
     },
     {
       vaultName: 'TON Staker',
@@ -170,10 +166,9 @@ const initialVaultValue: VaultC = {
   isDeployedErr: false,
 };
 
-const useValues = (account?: string) => {
-  const initialObject = account ? {...initialObj, owner: account} : initialObj;
+const useValues = () => {
   const [initialValues, setInitialValues] =
-    useState<Projects['CreateProject']>(initialObject);
+    useState<Projects['CreateProject']>(initialObj);
 
   return {initialValues, setInitialValues, defaultParams, initialVaultValue};
 };
