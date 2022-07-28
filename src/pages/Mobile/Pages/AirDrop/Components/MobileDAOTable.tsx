@@ -15,6 +15,7 @@ import {
 } from '@chakra-ui/react';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {ethers} from 'ethers';
+import commafy from 'utils/commafy';
 type DAO = {
   daoAirdropTokens: any[];
   handleSelectAll: () => void;
@@ -177,7 +178,7 @@ export const MobileDAOTable: FC<DAO> = ({
               color={colorMode === 'light' ? '#353c48' : '#fff'}
               w={'26.6%'}
               textAlign={'center'}>
-              {Number(formattedAmt).toLocaleString()}
+             {commafy(formattedAmt)}
             </Text>
             <Flex w={'31.3%'} justifyContent={'center'}>
               <Button
