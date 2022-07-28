@@ -10,7 +10,7 @@ import {useAppDispatch} from 'hooks/useRedux';
 import LaunchPage from '@Launch/LaunchPage';
 
 const OpenCampagin = () => {
-  const {account, active, connector} = useActiveWeb3React();
+  const {account} = useActiveWeb3React();
   // const {web3Token} = useWeb3Token();
   const dispatch = useAppDispatch();
 
@@ -52,10 +52,7 @@ const OpenCampagin = () => {
         (project: any) => project.isSet === true,
       );
 
-      console.log('--projects--');
-      console.log(projects);
-
-      setNumProjects(filteredProjects.length);
+      setNumProjects(filteredProjects.length)
       setProjectsData(projects);
     }
   }, [data, dispatch]);
@@ -64,13 +61,13 @@ const OpenCampagin = () => {
   const {url} = match;
 
   //test
-
+  
   // if (isLoading) {
   //   return <div>loading..</div>;
   // }
   return (
     <Flex flexDir="column" mt={'78px'} alignItems="center">
-      <LaunchPage numPairs={numProjects + 4} />
+      <LaunchPage numPairs={numProjects+4}/>
     </Flex>
   );
 };

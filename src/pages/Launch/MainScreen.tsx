@@ -15,7 +15,7 @@ import ProjectSchema from '@Launch/utils/projectSchema';
 import {PageHeader} from 'components/PageHeader';
 import Steps from '@Launch/components/Steps';
 import OpenStepTwo from '@Launch/components/OpenStepTwo';
-import {useRouteMatch, useHistory, Redirect} from 'react-router-dom';
+import {useRouteMatch, useHistory} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {selectLaunch, setHashKey} from '@Launch/launch.reducer';
 import OpenStepThree from '@Launch/components/OpenStepThree';
@@ -104,30 +104,28 @@ const MainScreen = () => {
   const formikRef = useRef(null);
 
   if (!account) {
-    return <Redirect to={{pathname: '/launch'}}></Redirect>;
+    return <div>You need to connect to the wallet</div>;
   }
 
   if (projects[id] && projects[id]?.ownerAddress !== account) {
-    return <Redirect to={{pathname: '/launch'}}></Redirect>;
-
-    // return (
-    //   <Flex
-    //     flexDir={'column'}
-    //     justifyContent={'center'}
-    //     w={'100%'}
-    //     mt={100}
-    //     mb={'100px'}>
-    //     <Flex alignItems={'center'} flexDir="column" mb={'20px'}>
-    //       <PageHeader
-    //         title={'Create Project'}
-    //         subtitle={'You can create and manage projects.'}
-    //       />
-    //       <Flex alignItems={'center'} justifyContent="center" mt={'100px'}>
-    //         This account is not owner address of this project.
-    //       </Flex>
-    //     </Flex>
-    //   </Flex>
-    // );
+    return (
+      <Flex
+        flexDir={'column'}
+        justifyContent={'center'}
+        w={'100%'}
+        mt={100}
+        mb={'100px'}>
+        <Flex alignItems={'center'} flexDir="column" mb={'20px'}>
+          <PageHeader
+            title={'Create Project'}
+            subtitle={'You can create and manage projects.'}
+          />
+          <Flex alignItems={'center'} justifyContent="center" mt={'100px'}>
+            This account is not owner address of this project.
+          </Flex>
+        </Flex>
+      </Flex>
+    );
   }
 
   return (
