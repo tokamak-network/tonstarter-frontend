@@ -43,6 +43,7 @@ const ClaimRound = () => {
       tempVaultData,
       selectedVaultIndex,
       uncompletedVaultIndex,
+      alreadySelected,
     },
   } = useAppSelector(selectLaunch);
   const [selectedVaultDetail, setSelectedVaultDetail] = useState([]);
@@ -83,7 +84,8 @@ const ClaimRound = () => {
     if (
       uncompletedVaultIndex?.fileds &&
       selectedVaultIndex !== undefined &&
-      uncompletedVaultIndex?.fileds[selectedVaultIndex]?.length !== 0
+      uncompletedVaultIndex?.fileds[selectedVaultIndex]?.length !== 0 &&
+      alreadySelected !== undefined
     ) {
       const hasError =
         uncompletedVaultIndex?.fileds[selectedVaultIndex]?.includes(
