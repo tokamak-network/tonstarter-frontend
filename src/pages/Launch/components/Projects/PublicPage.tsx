@@ -30,6 +30,7 @@ import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import {ethers} from 'ethers';
 import {BASE_PROVIDER} from 'constants/index';
+import {useModal} from 'hooks/useModal';
 type PublicPage = {
   vault: any;
   project: any;
@@ -43,7 +44,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
   const {account, library} = useActiveWeb3React();
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
-
+  const {openAnyModal} = useModal();
   const [hardcap, setHardcap] = useState<number>(0);
 
   const network = BASE_PROVIDER._network.name;
@@ -469,9 +470,9 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                             }
                       }
                       onClick={() => sendTOS()}>
-                      Send TOS to Initial Liquidity Vault & Receive Funds
+                      Send Funds
                     </Button>
-                    <Tooltip
+                    {/* <Tooltip
                       label="It is only possible to send TOS after the end of Public Round 2"
                       hasArrow
                       placement="top"
@@ -480,7 +481,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                       textAlign={'center'}
                       size={'xs'}>
                       <Image src={tooltipIcon} />
-                    </Tooltip>
+                    </Tooltip> */}
                   </Flex>
                 </Flex>
               </GridItem>
@@ -798,18 +799,48 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
           )}
         </Flex>
       </Grid>
-      {/* <Flex w={'100%'} justifyContent={'center'} py={'2rem'}>
+
+      <Flex w={'100%'} justifyContent={'center'} py={'2rem'}>
+        <Button
+          className="button-style"
+          background={'none'}
+          h={'38px'}
+          mr='12px'
+          fontSize='13px'
+          w={'150px'}
+        flexDirection='column'
+          py={'10px'}
+          _hover={{background:'transparent'}}
+          _active={{background:'transparent'}}
+          onClick={() => openAnyModal('Launch_Increase', {
+            symbol: 'LYDA',
+            amount: '56,780,000'
+          })}
+          // disabled={!vault.isDeployed}
+          // onClick={() => openAnyModal('Launch_Download', {})}
+        > <Text  
+        textAlign={'center'}
+        w="150px"
+        wordBreak={'break-word'}>
+           Send TOS to Initial
+        </Text>
+        <Text> Liquidity Vault</Text>
+         
+        </Button>
         <Button
           className="button-style"
           background={'none'}
           px={'45px'}
           py={'10px'}
-          disabled={!vault.isDeployed}
+          h={'38px'}
+          fontSize='14px'
+          w={'150px'}
+          //  disabled={!vault.isDeployed}
           // onClick={() => openAnyModal('Launch_Download', {})}
         >
           Download
         </Button>
-      </Flex> */}
+      </Flex>
       <Flex w={'100%'} justifyContent={'center'} py={'2rem'}></Flex>
       {/* <Button w="125px" id="downloadAnchorElem" onClick={() => download()}>
         Download

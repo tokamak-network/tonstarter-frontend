@@ -25,6 +25,7 @@ import {
 } from 'client/getUserBalance';
 import {MobileAirDropDistributeTable} from './Components/MobileAirDropDistributeTable';
 import { MobileAirdropClaimTable } from './Components/MobileAirdropClaimTable';
+import commafy from 'utils/commafy';
 
 const MobileAirDrop = () => {
   const {colorMode} = useColorMode();
@@ -221,7 +222,7 @@ const MobileAirDrop = () => {
           }>
           <Text style={leftText}>My Staked TON</Text>
           <Text style={rightText}>
-            {Number(userStakedTon).toLocaleString()} TON
+          {commafy(userStakedTon)} TON
           </Text>
         </GridItem>
         <GridItem
@@ -231,13 +232,13 @@ const MobileAirDrop = () => {
           }>
           <Text style={leftText}>My Staked TOS</Text>
           <Text style={rightText}>
-            {Number(userStakedTos).toLocaleString()} TOS
+          {commafy(userStakedTos)} TOS
           </Text>
         </GridItem>
         <GridItem style={gridItemStyle}>
           <Text style={leftText}>My sTOS</Text>
           <Text style={rightText}>
-            {Number(userStakedSTos).toLocaleString()} sTOS
+          {commafy(userStakedSTos)} sTOS
           </Text>
         </GridItem>
       </Grid>

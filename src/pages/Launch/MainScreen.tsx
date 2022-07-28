@@ -1,5 +1,12 @@
 import {Button, Flex, useTheme} from '@chakra-ui/react';
-import {useCallback, useEffect, useState} from 'react';
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import OpenStepOne from '@Launch/components/OpenStepOne';
 import {Formik, Form} from 'formik';
 import useValues from '@Launch/hooks/useValues';
@@ -8,21 +15,25 @@ import ProjectSchema from '@Launch/utils/projectSchema';
 import {PageHeader} from 'components/PageHeader';
 import Steps from '@Launch/components/Steps';
 import OpenStepTwo from '@Launch/components/OpenStepTwo';
-import {useRouteMatch, useHistory} from 'react-router-dom';
+import {useRouteMatch, useHistory, Redirect} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {selectLaunch, setHashKey} from '@Launch/launch.reducer';
 import OpenStepThree from '@Launch/components/OpenStepThree';
-import validateFormikValues from '@Launch/utils/validate';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {saveProject, editProject} from '@Launch/utils/saveProject';
 
-const StepComponent = (props: {step: StepNumber}) => {
-  const {step} = props;
+const StepComponent = (props: {
+  step: StepNumber;
+  setDisableForStep2: Dispatch<SetStateAction<boolean>>;
+}) => {
+  const {step, setDisableForStep2} = props;
   switch (step) {
     case 1:
       return <OpenStepOne></OpenStepOne>;
     case 2:
-      return <OpenStepTwo></OpenStepTwo>;
+      return (
+        <OpenStepTwo setDisableForStep2={setDisableForStep2}></OpenStepTwo>
+      );
     case 3:
       return <OpenStepThree></OpenStepThree>;
     default:
@@ -33,11 +44,11 @@ const StepComponent = (props: {step: StepNumber}) => {
 const MainScreen = () => {
   const [step, setStep] = useState<StepNumber>(1);
   const [isDisable, setDisable] = useState<boolean>(true);
-  const [isDisableForStep2, setDisableForStep2] = useState<boolean>(false);
+  const [isDisableForStep2, setDisableForStep2] = useState<boolean>(true);
   const [isDisableForStep3, setDisableForStep3] = useState<boolean>(true);
-  const {initialValues} = useValues();
   const theme = useTheme();
   const {account} = useActiveWeb3React();
+  const {initialValues} = useValues(account || '');
 
   const match = useRouteMatch();
   const {url} = match;
@@ -88,30 +99,35 @@ const MainScreen = () => {
   // const {web3Token} = useWeb3Token();
 
   const [oldData, setOldData] = useState();
+  const [saveBtnDisable, setSaveBtnDisable] = useState(false);
+
+  const formikRef = useRef(null);
 
   if (!account) {
-    return <div>You need to connect to the wallet</div>;
+    return <Redirect to={{pathname: '/launch'}}></Redirect>;
   }
 
   if (projects[id] && projects[id]?.ownerAddress !== account) {
-    return (
-      <Flex
-        flexDir={'column'}
-        justifyContent={'center'}
-        w={'100%'}
-        mt={100}
-        mb={'100px'}>
-        <Flex alignItems={'center'} flexDir="column" mb={'20px'}>
-          <PageHeader
-            title={'Create Project'}
-            subtitle={'You can create and manage projects.'}
-          />
-          <Flex alignItems={'center'} justifyContent="center" mt={'100px'}>
-            This account is not owner address of this project.
-          </Flex>
-        </Flex>
-      </Flex>
-    );
+    return <Redirect to={{pathname: '/launch'}}></Redirect>;
+
+    // return (
+    //   <Flex
+    //     flexDir={'column'}
+    //     justifyContent={'center'}
+    //     w={'100%'}
+    //     mt={100}
+    //     mb={'100px'}>
+    //     <Flex alignItems={'center'} flexDir="column" mb={'20px'}>
+    //       <PageHeader
+    //         title={'Create Project'}
+    //         subtitle={'You can create and manage projects.'}
+    //       />
+    //       <Flex alignItems={'center'} justifyContent="center" mt={'100px'}>
+    //         This account is not owner address of this project.
+    //       </Flex>
+    //     </Flex>
+    //   </Flex>
+    // );
   }
 
   return (
@@ -133,6 +149,7 @@ const MainScreen = () => {
         </Flex>
       </Flex>
       <Formik
+        innerRef={formikRef}
         initialValues={
           id && projects
             ? {...initialValues, ...projects[id]}
@@ -140,9 +157,8 @@ const MainScreen = () => {
         }
         validationSchema={ProjectSchema}
         validate={(values) => {
-          console.log('****useFormik value****');
-          console.log(values);
-          validateFormikValues(values, setDisable, setDisableForStep2);
+          // console.log('--formikvalues--');
+          // console.log(values);
           if (step === 3 && oldData !== values) {
             setOldData(values);
             hashKey === undefined
@@ -175,7 +191,10 @@ const MainScreen = () => {
                 flexDir={'column'}
                 alignItems="center"
                 fontFamily={theme.fonts.roboto}>
-                <StepComponent step={step} />
+                <StepComponent
+                  step={step}
+                  setDisableForStep2={setDisableForStep2}
+                />
                 <Flex mt={'50px'} fontSize={14} justifyContent="center">
                   <Button
                     type="submit"
@@ -187,7 +206,9 @@ const MainScreen = () => {
                     _hover={{}}
                     bg={isDisable ? 'gray.25' : '#00c3c4'}
                     color={isDisable ? '#86929d' : 'white.100'}
-                    disabled={step === 3 || (step === 1 && isDisable)}
+                    disabled={
+                      step === 3 || (step === 1 && isDisable) || saveBtnDisable
+                    }
                     mr={step === 1 ? '390px' : '558px'}
                     onClick={() =>
                       account &&

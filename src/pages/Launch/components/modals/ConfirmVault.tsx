@@ -13,7 +13,7 @@ import {
   Link,
 } from '@chakra-ui/react';
 import React, {useEffect, useState} from 'react';
-import {useAppSelector} from 'hooks/useRedux';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal';
@@ -23,6 +23,7 @@ import {useFormikContext} from 'formik';
 import {Projects, VaultCommon} from '@Launch/types';
 import {shortenAddress} from 'utils';
 import {selectApp} from 'store/app/app.reducer';
+import {selectLaunch, setTempHash} from '@Launch/launch.reducer';
 
 const StosInfoList = (props: {
   stosInfoList: {tier: number; requiredTos: number; allocationToken: number}[];
@@ -168,6 +169,12 @@ const ConfirmTokenModal = () => {
     (vault: VaultCommon) => vault.index === vaultIndex,
   )[0];
 
+  const {data: appConfig} = useAppSelector(selectApp);
+  const {
+    data: {tempHash},
+  } = useAppSelector(selectLaunch);
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
     if (data.data.isSetStep === true) {
       if (selectedVault?.isSet === true) {
@@ -185,10 +192,20 @@ const ConfirmTokenModal = () => {
   }, [deployStep, values, selectedVault, data]);
 
   function closeModal() {
-    setDeployStep('Ready');
-    handleCloseModal();
-    setTab(1);
-    close();
+    try {
+      setDeployStep('Ready');
+      handleCloseModal();
+      dispatch(
+        setTempHash({
+          data: undefined,
+        }),
+      );
+      setTab(1);
+      close();
+    } catch (e) {
+      console.log('--closeModal error--');
+      console.log(e);
+    }
   }
 
   if (deployStep === 'Ready') {
@@ -420,8 +437,15 @@ const ConfirmTokenModal = () => {
                 color={'black.300'}
                 fontWeight={600}
                 textAlign={'center'}>
-              Waiting to complete deploying your {vaultName} vault
+                Waiting to complete deploying your {vaultName} vault
               </Text>
+              <Link
+                mt={'20px'}
+                isExternal={true}
+                href={`${appConfig.explorerTxnLink}${tempHash}`}
+                color={'blue.100'}>
+                {tempHash ? 'View on Etherscan' : ''}
+              </Link>
             </Flex>
           </ModalBody>
         </ModalContent>
@@ -453,13 +477,28 @@ const ConfirmTokenModal = () => {
               justifyContent={'center'}>
               <Text
                 w={'186px'}
-                mb={'55px'}
                 fontSize={16}
                 color={'black.300'}
                 fontWeight={600}
                 textAlign={'center'}>
-                Completed deploying your {vaultName} vault
+                Completed to deploy
               </Text>
+              <Text
+                w={'186px'}
+                mb={'20px'}
+                fontSize={16}
+                color={'black.300'}
+                fontWeight={600}
+                textAlign={'center'}>
+                your {vaultName} vault
+              </Text>
+              <Link
+                mb={'35px'}
+                isExternal={true}
+                href={`${appConfig.explorerTxnLink}${tempHash}`}
+                color={'blue.100'}>
+                {tempHash ? 'View on Etherscan' : ''}
+              </Link>
               <Box w={'100%'} px={'15px'} mb={'25px'}>
                 <Line></Line>
               </Box>

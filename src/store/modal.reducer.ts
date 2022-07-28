@@ -29,7 +29,10 @@ type LaunchModal =
   | 'Launch_PieChartModal'
   | 'Launch_CreateRewardProgram'
   | 'Launch_Download'
-  | 'Launch_ConfirmTerms';
+  | 'Launch_ConfirmTerms'
+  | 'Launch_Swap'
+  | 'Launch_Mint'
+  | 'Launch_Increase';
 
 type GeneralModal = 'calendar';
 type RewardModal = 'search'| 'information' | 'confirmMulticall';;
