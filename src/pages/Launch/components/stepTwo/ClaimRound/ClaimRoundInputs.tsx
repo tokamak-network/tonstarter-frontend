@@ -119,8 +119,9 @@ const ClaimRoundInput = (props: {index: number}) => {
       return null;
     }
     return (
-      <Flex w={'100%'}>
+      <Flex w={'1030px'}>
         <Box
+          w={'100%'}
           d="flex"
           flexDir={'column'}
           textAlign="center"
@@ -129,6 +130,7 @@ const ClaimRoundInput = (props: {index: number}) => {
           lineHeight={'42px'}>
           <Flex
             h={'42px'}
+            w={'100%'}
             fontSize={12}
             color={colorMode === 'light' ? '#3d495d' : 'white.100'}
             fontWeight={600}
