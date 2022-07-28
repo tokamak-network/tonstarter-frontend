@@ -52,8 +52,8 @@ const OpenCampagin = () => {
         (project: any) => project.isSet === true,
       );
 
-      console.log('--projects--');
-      console.log(projects);
+      // console.log('--projects--');
+      // console.log(projects);
 
       setNumProjects(filteredProjects.length);
       setProjectsData(projects);
