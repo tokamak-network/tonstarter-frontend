@@ -23,7 +23,7 @@ import {openModal} from 'store/modal.reducer';
 import {Menu, MenuButton, MenuList, MenuItem} from '@chakra-ui/react';
 import Line from '@Launch/components/common/Line';
 import theme from 'theme';
-
+import {useWindowDimensions} from 'hooks/useWindowDimentions';
 type HeaderProps = {
   walletopen: () => void;
   account: string | undefined | null;
@@ -41,7 +41,7 @@ export const Header: React.FC<HeaderProps> = (props) => {
   const toggle = () => setIsOpen(!isOpen);
 
   const match = useRouteMatch('/');
-
+  
   return (
     <NavBarContainer {...props}>
       <Flex justifyContent={'space-between'}>
@@ -275,12 +275,12 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
       : {navLink: {background: 'transparent', color: '#f3f4f1'}};
   const pools = useRouteMatch('/rewards/pools');
   const reward = useRouteMatch('/rewards/rewardProgram');
-
+  const {width} = useWindowDimensions();
   return (
     <Box
       display={{base: isOpen ? 'block' : 'none', md: 'block'}}
       flexBasis={{base: '100%', md: 'auto'}}
-      ml={100}>
+      ml={width < 1150 ? 10: 100}>
       <Stack
         spacing={8}
         align="center"

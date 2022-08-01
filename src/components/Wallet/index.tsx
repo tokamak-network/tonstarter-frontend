@@ -120,10 +120,13 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
   const tryActivation = async (connector: AbstractConnector | undefined) => {
     Object.keys(SUPPORTED_WALLETS).map((key) => {
       if (connector === SUPPORTED_WALLETS[key].connector) {
+      
+        
         return SUPPORTED_WALLETS[key].name;
       }
       return true;
     });
+
     setPendingWallet(connector); // set wallet for pending view
     setWalletView(WALLET_VIEWS.PENDING);
     setAccountValue({signIn: true});
@@ -133,11 +136,9 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
         activate(connector, undefined, true).catch((error) => {
           if (error instanceof UnsupportedChainIdError) {
             try {
-              console.log('**connected error**');
-              console.log(error);
               activate(connector); // a little janky...can't use setError because the connector isn't set
             } catch {
-              activate(trazorConnector);
+              // activate(trazorConnector);
             }
           } else {
             setPendingError(true);
@@ -177,30 +178,32 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
 
     return Object.keys(SUPPORTED_WALLETS).map((key) => {
       const option = SUPPORTED_WALLETS[key];
+      // console.log(option);
+      
 
-      if (isMobile) {
-        // @ts-ignore
-        if (!window?.web3 && !window?.ethereum && option.mobile) {
-          return (
-            <WalletOption
-              onClick={() => {
-                option.connector !== connector &&
-                  !option.href &&
-                  tryActivation(option.connector);
-              }}
-              id={`connect-${key}`}
-              key={key}
-              active={option.connector && option.connector === connector}
-              color={option.color}
-              link={option.href}
-              header={option.name}
-              subheader={option.description}
-              icon={require('../../assets/svgs/' + option.iconName).default}
-            />
-          );
-        }
-        return null;
-      }
+      // if (isMobile) {
+      //   // @ts-ignore
+      //   if (!window?.web3 && !window?.ethereum && option.mobile) {
+      //     return (
+      //       <WalletOption
+      //         onClick={() => {
+      //           option.connector !== connector &&
+      //             !option.href &&
+      //             tryActivation(option.connector);
+      //         }}
+      //         id={`connect-${key}`}
+      //         key={key}
+      //         active={option.connector && option.connector === connector}
+      //         color={option.color}
+      //         link={option.href}
+      //         header={option.name}
+      //         subheader={option.description}
+      //         icon={require('../../assets/svgs/' + option.iconName).default}
+      //       />
+      //     );
+      //   }
+      //   return null;
+      // }
 
       // overwrite injected when needed
       if (option.connector === injected) {
@@ -235,8 +238,7 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
 
       // return rest of options
       return (
-        !isMobile &&
-        !option.mobileOnly && (
+  
           <WalletOption
             id={`connect-${key}`}
             onClick={() => {
@@ -253,7 +255,7 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
             icon={require('../../assets/svgs/' + option.iconName).default}
           />
         )
-      );
+    
     });
   };
 
@@ -274,7 +276,7 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
                 <Flex justify="space-between">
                   {formatConnectorName()}
                   <Flex>
-                    {connector !== injected && connector !== walletlink && (
+                    {/* {connector !== injected && connector !== walletlink && (
                       <Button
                         size="xs"
                         mr={3}
@@ -288,7 +290,7 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
                         }}>
                         Disconnect
                       </Button>
-                    )}
+                    )} */}
                     {connector !== walletconnect && (active || error) && (
                       <Button
                         size="xs"

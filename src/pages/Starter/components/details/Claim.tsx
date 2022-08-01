@@ -152,7 +152,7 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
         }
 
         setEndRound(String(totalRoundNum + 1));
-        setThisRound(String(roundStart + 1));
+        setThisRound(String(roundStart));
 
         //currentRound() == totalClaimCounts();
 

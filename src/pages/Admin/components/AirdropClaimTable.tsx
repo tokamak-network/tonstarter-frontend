@@ -49,7 +49,9 @@ export const AirdropClaimTable = () => {
   const [checkedAllBoxes, setCheckedAllBoxes] = useState<boolean>(false);
   const [airdropData, setAirdropData] = useState<any[]>([]);
   const [checkedTokenAddresses, setCheckedTokenAddresses] = useState<any[]>([]);
-  const [radioValue, setRadioValue] = useState<string>('Genesis Airdrop');
+  const [radioValue, setRadioValue] = useState<
+    'DAO Airdrop' | 'TON Staker' | 'Genesis Airdrop'
+  >('DAO Airdrop');
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [tonStakerAirdropTokens, setTonStakerAirdropTokens] = useState<any[]>(
     [],
@@ -308,27 +310,48 @@ export const AirdropClaimTable = () => {
             color={themeDesign.font[colorMode]}>
             From:
           </Text>
-          <RadioGroup onChange={setRadioValue} value={radioValue}>
-            <Stack direction="row">
-              <Box mx={'20px'} display={'flex'}>
-                <Radio value="Genesis Airdrop" size={'md'} mr={'5px'} />
-                <Text fontFamily={theme.fonts.roboto} fontSize={'14px'}>
-                  Genesis Airdrop
-                </Text>
-              </Box>
-              <Box mx={'20px'} display={'flex'}>
-                <Radio value="DAO Airdrop" size={'md'} mr={'5px'} />
+          <RadioGroup
+            onChange={(
+              value: 'DAO Airdrop' | 'TON Staker' | 'Genesis Airdrop',
+            ) => {
+              setRadioValue(value);
+            }}
+            value={radioValue}>
+            <Flex>
+              <Box ml={'20px'} display={'flex'}>
+                <Radio
+                  value="DAO Airdrop"
+                  size={'md'}
+                  mr={'8px'}
+                  cursor={'pointer'}
+                />
                 <Text fontFamily={theme.fonts.roboto} fontSize={'14px'}>
                   DAO Airdrop
                 </Text>
               </Box>
-              <Box mx={'20px'} display={'flex'}>
-                <Radio value="TON Staker" size={'md'} ml={'20px'} mr={'5px'} />
+              <Box ml={'25px'} display={'flex'}>
+                <Radio
+                  value="TON Staker"
+                  size={'md'}
+                  mr={'8px'}
+                  cursor={'pointer'}
+                />
                 <Text fontFamily={theme.fonts.roboto} fontSize={'14px'}>
                   TON Staker
                 </Text>
               </Box>
-            </Stack>
+              <Box ml={'25px'} display={'flex'}>
+                <Radio
+                  value="Genesis Airdrop"
+                  size={'md'}
+                  mr={'8px'}
+                  cursor={'pointer'}
+                />
+                <Text fontFamily={theme.fonts.roboto} fontSize={'14px'}>
+                  Genesis Airdrop
+                </Text>
+              </Box>
+            </Flex>
           </RadioGroup>
         </Flex>
         <Button

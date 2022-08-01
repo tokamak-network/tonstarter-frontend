@@ -15,11 +15,14 @@ export const WalletPending: FC<WalletPendingProps> = ({
   setPendingError,
   tryActivation,
 }) => {
+  console.log('error',error);
+  
   /*eslint-disable */
   const [accountValue, setAccountValue] = useLocalStorage('account', {});
   return (
     <Box>
       {error ? (
+
         <Flex alignItems="center">
           <Text>Error connecting to wallet.</Text>
           <Button

@@ -73,9 +73,16 @@ const MyProjects = () => {
         setProjectsForTable(datas);
         const projs = Object.keys(datas).map((k) => {
           const listed = starterData.rawData.some((el) => el.projectKey === k);
-          const stat = datas[k].vaults.every((vault: any) => {
-            return vault.isSet === true;
-          });
+          let stat
+          if (datas[k].vaults !== undefined) {
+            const statss = datas[k].vaults.every((vault: any) => {
+              return vault.isSet === true;
+            });
+            stat = statss
+          }
+         else {
+          stat = false
+         }
           const div = document.createElement('div');
           div.innerHTML = datas[k].description;
           const projectURIUnformatted = {
@@ -83,7 +90,7 @@ const MyProjects = () => {
             description: div.textContent,
             external_url: datas[k].website,
             image: datas[k].tokenSymbolImage,
-            attributes: datas[k].vaults.map((vault: any) => {
+            attributes: datas[k].vaults?.map((vault: any) => {
               return {
                 trait_type: vault.vaultName,
                 value: vault.vaultAddress,
@@ -112,12 +119,12 @@ const MyProjects = () => {
               minimumFractionDigits: 0,
             })  : '-',
             owner: datas[k].ownerAddress,
-            saleDate: [
+            saleDate: datas[k].vaults?  [
               datas[k].vaults[0].whitelist?datas[k].vaults[0].whitelist:0,
               datas[k].vaults[0].publicRound2End?datas[k].vaults[0].publicRound2End:0,
-            ],
-            whiteList: datas[k].vaults[0].whitelist,
-            public2End: datas[k].vaults[0].publicRound2End,
+            ]:[0,0],
+            whiteList: datas[k].vaults?  datas[k].vaults[0].whitelist: 0,
+            public2End:datas[k].vaults?   datas[k].vaults[0].publicRound2End:0,
             status: stat,
             project: datas[k],
             listed: listed,

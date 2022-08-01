@@ -60,6 +60,7 @@ export const AirdropDistributeTable = () => {
   const dispatch = useDispatch();
 
   const [timeStamp, setTimeStamp] = useState<string>('');
+  const [empty, setEmpty] = useState(false);
   const [distributedTosTokens, setDistributedTosTokens] = useState<
     any[] | undefined
   >(undefined);
@@ -73,6 +74,12 @@ export const AirdropDistributeTable = () => {
 
   useEffect(() => {
     if (distributedTosTokens) {
+
+      const isEmpty = distributedTosTokens.every((token:any) => {
+        return token.amount === '0.00'
+      })
+     setEmpty(isEmpty)
+      
       setLoadingData(false);
     }
   }, [distributedTosTokens]);
@@ -157,75 +164,85 @@ export const AirdropDistributeTable = () => {
         </Button>
       </Flex>
       {distributedTosTokens !== undefined &&
-      distributedTosTokens.length === 0 ? (
+      distributedTosTokens.length === 0  || empty? (
         <Flex
           justifyContent={'center'}
           alignItems={'center'}
           w={'100%'}
           py={'30px'}
+          h={'200px'}
           fontFamily={theme.fonts.fld}
           fontSize={'16px'}
-          borderY={themeDesign.border[colorMode]}>
+          borderRadius='10px'
+          border={themeDesign.border[colorMode]}>
           <Text>No distributions scheduled this round.</Text>
         </Flex>
       ) : (
-        <Grid templateColumns="repeat(1, 1fr)" w={'100%'} mb={'30px'}>
+        <Grid templateColumns="repeat(2, 1fr)" w={'100%'} mb={'30px'}>
           <GridItem
             border={themeDesign.border[colorMode]}
             className={'chart-cell'}
             borderTopLeftRadius={'4px'}
-            borderBottom={'none'}
+         
+          p={0}
+            fontSize={'12px'}
+            padding={'16px 35px'}
+            height={'45px'}
+            borderRight='none'
+            fontFamily={theme.fonts.roboto}>
+           
+            <Text minWidth={'50%'} textAlign={'center'} fontSize={'12px'}>
+              Token Symbol
+            </Text>
+            <Text minWidth={'50%'} textAlign={'center'} fontSize={'12px'}>
+              Amount
+            </Text>
+          </GridItem>
+          <GridItem
+            border={themeDesign.border[colorMode]}
+            className={'chart-cell'}
+          borderTopEndRadius={'4px'}
+          p={0}
             fontSize={'12px'}
             padding={'16px 35px'}
             height={'45px'}
             fontFamily={theme.fonts.roboto}>
-            <Text
-              fontSize={'12px'}
-              fontWeight={'bolder'}
-              color={colorMode === 'light' ? '#353c48' : 'white.0'}
-              minWidth={'33%'}
-              textAlign={'center'}>
-              Distribute To
-            </Text>
-            <Text minWidth={'33%'} textAlign={'center'} fontSize={'12px'}>
+            
+            <Text minWidth={'50%'} textAlign={'center'} fontSize={'12px'}>
               Token Symbol
             </Text>
-            <Text minWidth={'33%'} textAlign={'center'} fontSize={'12px'}>
+            <Text minWidth={'50%'} textAlign={'center'} fontSize={'12px'}>
               Amount
             </Text>
           </GridItem>
           {distributedTosTokens?.map((token: any, index: number) => {
-            if (token.amount === '0.00') {
-              return null;
-            }
+            // if (token.amount === '0.00') {
+            //   return null;
+            // }
             return (
               <GridItem
                 border={themeDesign.border[colorMode]}
-                borderBottom={
-                  airdropList && index === airdropList?.length - 1 ? '' : 'none'
-                }
-                borderBottomRadius={
-                  airdropList && index === airdropList?.length - 1 ? '4px' : ''
-                }
+                h={'55px'}
+                p={0}
+                borderRight={airdropList && index%2 ===0? 'none': ''}
+                // borderBottom={
+                //   airdropList && index === airdropList?.length - 1 ? '' : 'none'
+                // }
+                // borderBottomRadius={
+                //   airdropList && index === airdropList?.length - 1 ? '4px' : ''
+                // }
                 className={'chart-cell'}
                 fontSize={'16px'}
                 fontFamily={theme.fonts.fld}
                 d={'flex'}
+                borderTop='none'
                 justifyContent={'center'}
                 key={token.tokenName}>
                 <Text
                   fontSize={'12px'}
                   fontFamily={theme.fonts.roboto}
                   color={colorMode === 'light' ? '#353c48' : 'white.0'}
-                  minWidth={'33%'}
-                  textAlign={'center'}>
-                  sTOS Holder
-                </Text>
-                <Text
-                  fontSize={'12px'}
-                  fontFamily={theme.fonts.roboto}
-                  color={colorMode === 'light' ? '#353c48' : 'white.0'}
-                  minWidth={'33%'}
+                  minWidth={'50%'}
                   textAlign={'center'}>
                   {token.tokenName}
                 </Text>
@@ -233,13 +250,22 @@ export const AirdropDistributeTable = () => {
                   fontSize={'12px'}
                   fontFamily={theme.fonts.roboto}
                   color={colorMode === 'light' ? '#353c48' : 'white.0'}
-                  minWidth={'33%'}
+                  minWidth={'50%'}
                   textAlign={'center'}>
                   {commafy(token.amount)}
                 </Text>
               </GridItem>
             );
           })}
+            {airdropList  && airdropList.length%2 !== 0?  <GridItem
+            border={themeDesign.border[colorMode]}
+            className={'chart-cell'}
+          // borderBottomRightRadius={'4px'}
+         borderTop='none'
+            fontSize={'12px'}
+            padding={'16px 35px'}
+            h={'55px'}
+            fontFamily={theme.fonts.roboto}></GridItem>: <></>}
         </Grid>
       )}
     </Flex>

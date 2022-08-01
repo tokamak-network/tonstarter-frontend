@@ -398,16 +398,16 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
             <Link
               isExternal
               href={
-                vault.poolAddress && network === 'rinkeby'
-                  ? `https://rinkeby.etherscan.io/address/${vault.poolAddress}`
+                pool !== zero_address && network === 'rinkeby'
+                  ? `https://rinkeby.etherscan.io/address/${pool}`
                   : vault.poolAddress && network !== 'rinkeby'
-                  ? `https://etherscan.io/address/${vault.poolAddress}`
+                  ? `https://etherscan.io/address/${pool}`
                   : ''
               }
               color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
               _hover={{color: '#2a72e5'}}
               fontFamily={theme.fonts.fld}>
-              {vault.poolAddress ? shortenAddress(vault.poolAddress) : 'NA'}
+              {pool !== zero_address ? shortenAddress(pool) : 'NA'}
             </Link>
           </GridItem>
           <GridItem

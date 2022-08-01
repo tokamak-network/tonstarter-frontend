@@ -52,12 +52,12 @@ const [project, setProject] = useState<any>()
           },
         }),
       {
-        enabled: !!account,
+        // enabled: !!account,
         //refetch every 10min
         refetchInterval: 600000,
       },
     ); 
- 
+    
     useEffect(() => {
       if (data) {
         const {data: datas} = data;

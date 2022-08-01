@@ -24,6 +24,12 @@ import {MobilePreOpen} from './PreOpen/Index';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {StarterDetail} from './Starter/StarterDetail';
+import {MobileHeader} from './Mobile/Components/MobileHeader';
+import MobileOpenCampagin from './Mobile/Pages/Launch/Index';
+import MobileProjectScreen from './Mobile/Pages/Launch/MobileProjectScreen';
+import MobileAirDrop from './Mobile/Pages/AirDrop/index';
+import { MobileFLD } from './Mobile/Pages/MobileFLD.';
+import { MobileFooter } from './Mobile/Components/MobileFooter';
 import {
   CreateProject,
   ListingProjects,
@@ -167,10 +173,31 @@ export const Router: FC<RouterProps> = () => {
   };
 
   const {width} = useWindowDimensions();
-
   if (width < 1100) {
-    return <MobilePreOpen />;
-  }
+    return (
+      <div
+        style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
+        <MobileHeader account={account}   walletopen={() => handleWalletModalOpen('wallet')}/>
+        <div style={{flex: 1}}>
+        <Switch>
+        <Route exact path="/" component={MobileFLD} />
+        <Route exact path="/myairdrop" component={MobileAirDrop} />
+        <Route exact path={`/launch`} component={MobileOpenCampagin} />
+        <Route
+            exact
+            path={`/launch/project/:name`}
+            component={MobileProjectScreen}
+          />
+        </Switch>
+        </div>
+        <MobileFooter/>
+        <WalletModal state={walletState} isOpen={isModalOpen} onClose={onClose} />
+      </div>
+    );
+  } 
+  // else if (width > 480 && width < 1100) {
+  //   return <MobilePreOpen />;
+  // }
 
   return (
     <div style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>

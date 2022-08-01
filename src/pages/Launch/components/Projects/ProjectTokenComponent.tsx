@@ -102,7 +102,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             h={'41px'}
             w={'100%'}
             justifyContent={'space-between'}>
-            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'} fontWeight={600}>
               Project Name
             </Text>
             <Text
@@ -119,7 +119,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             h={'60px'}
             w={'100%'}
             justifyContent={'space-between'}>
-            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}  fontWeight={600}>
               Owner
             </Text>
             <Link
@@ -142,7 +142,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             h={'60px'}
             w={'100%'}
             justifyContent={'space-between'}>
-            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}  fontWeight={600}>
               Sale Price
             </Text>
             <Text>NA</Text>
@@ -154,7 +154,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             h={'60px'}
             w={'100%'}
             justifyContent={'space-between'}>
-            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}  fontWeight={600}>
               Current Price
             </Text>
             <Text>
@@ -190,7 +190,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             w={'100%'}
             justifyContent={'space-between'}
             alignItems={'center'}>
-            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}  fontWeight={600}>
               Telegram
             </Text>
             <Link
@@ -210,7 +210,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             h={'60px'}
             w={'100%'}
             justifyContent={'space-between'}>
-            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}  fontWeight={600}>
               Website
             </Text>
             <Link
@@ -230,7 +230,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             h={'60px'}
             w={'100%'}
             justifyContent={'space-between'}>
-            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}  fontWeight={600}>
               Medium
             </Text>
             <Link
@@ -249,7 +249,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             h={'60px'}
             w={'100%'}
             justifyContent={'space-between'}>
-            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}  fontWeight={600}>
               Twitter
             </Text>
             <Link
@@ -270,7 +270,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             h={'40px'}
             w={'100%'}
             justifyContent={'space-between'}>
-            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}  fontWeight={600}>
               Token Name
             </Text>
             <Text>{project.tokenName}</Text>
@@ -282,7 +282,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             h={'58.5px'}
             w={'100%'}
             justifyContent={'space-between'}>
-            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}  fontWeight={600}>
               Token Symbol
             </Text>
             <Text>{project.tokenSymbol.toString().toUpperCase()}</Text>
@@ -294,7 +294,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             h={'58.5px'}
             w={'100%'}
             justifyContent={'space-between'}>
-            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}  fontWeight={600}>
               Token Address
             </Text>
             <Link
@@ -321,7 +321,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             h={'58.5px'}
             w={'100%'}
             justifyContent={'space-between'}>
-            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}  fontWeight={600}>
               Token Exchange Rate
             </Text>
             <Flex flexDir={'column'}>
@@ -342,7 +342,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             h={'58.5px'}
             w={'100%'}
             justifyContent={'space-between'}>
-            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}  fontWeight={600}>
               Token Supply
             </Text>
             <Text>
@@ -360,7 +360,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             w={'100%'}
             justifyContent={'space-between'}
             alignItems={'center'}>
-            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}  fontWeight={600}>
               Token Symbol Image
             </Text>
             <Link
@@ -383,7 +383,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             w={'100%'}
             justifyContent={'space-between'}
             alignItems={'center'}>
-            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+            <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'} fontWeight={600}>
               Discord
             </Text>
             <Link
@@ -404,6 +404,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
           fontSize={'20px'}
           fontWeight={600}
           color={colorMode === 'light' ? '#353c48' : '#ffffff'}
+          
           mb={'15px'}>
           Description
         </Text>

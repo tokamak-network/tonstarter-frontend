@@ -14,7 +14,6 @@ type dropDownProps = {
   items: Array<string>;
   hint: string;
   select: Function;
-
 };
 
 export const DropDown: React.FC<dropDownProps> = ({
