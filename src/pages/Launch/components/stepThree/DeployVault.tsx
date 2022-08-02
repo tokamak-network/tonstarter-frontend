@@ -1522,7 +1522,13 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
             mt={'auto'}
             color={vaultState !== 'notReady' ? 'white.100' : 'gray.175'}
             // color={'white.100'}
-            border={vaultState === 'ready' ? '' : '1px solid #dfe4ee'}
+            border={
+              colorMode === 'dark'
+                ? {}
+                : vaultState === 'ready'
+                ? {}
+                : '1px solid #dfe4ee'
+            }
             isDisabled={
               vaultState === 'notReady' || vaultState === 'finished'
                 ? btnDisable
