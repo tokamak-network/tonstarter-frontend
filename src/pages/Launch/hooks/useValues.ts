@@ -171,7 +171,9 @@ const initialVaultValue: VaultC = {
 };
 
 const useValues = (account?: string) => {
-  const initialObject = account ? {...initialObj, owner: account} : initialObj;
+  const initialObject = account
+    ? {...initialObj, owner: account, tokenOwnerAccount: account}
+    : initialObj;
   const [initialValues, setInitialValues] =
     useState<Projects['CreateProject']>(initialObject);
 
