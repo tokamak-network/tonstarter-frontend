@@ -266,6 +266,7 @@ export const AirdropClaimTable = () => {
 
   const handleClick = (e: any) => {
     const {id, checked, value} = e.target;
+    
     let tempCheckedAddresses = checkedTokenAddresses;
     setIsCheck([...isCheck, id]);
     if (!checked) {
@@ -345,6 +346,8 @@ export const AirdropClaimTable = () => {
           disabled={checkedTokenAddresses.length < 1}
           // _hover={{background: 'transparent'}}
           onClick={() => {
+            // console.log(checkedTokenAddresses);
+            
             account &&
               AdminActions.claimMultipleTokens({
                 account,
@@ -552,7 +555,7 @@ export const AirdropClaimTable = () => {
                     key={id}
                     type="checkbox"
                     name={tokenSymbol}
-                    id={id}
+                    id={String(index)}
                     onChange={handleClick}
                     isChecked={isCheck.includes(String(index))}
                     fontWeight={'bold'}
@@ -643,7 +646,7 @@ export const AirdropClaimTable = () => {
                     key={id}
                     type="checkbox"
                     name={tokenSymbol}
-                    id={id}
+                    id={String(index)}
                     onChange={handleClick}
                     isChecked={isCheck.includes(String(index))}
                     fontWeight={'bold'}
