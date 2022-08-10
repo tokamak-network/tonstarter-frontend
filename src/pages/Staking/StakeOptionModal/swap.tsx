@@ -58,8 +58,7 @@ export const SwapModal = () => {
 
   return (
     <Modal
-      // isOpen={sub.type === 'manage_swap' ? true : false}
-      isOpen={true}
+      isOpen={sub.type === 'manage_swap' ? true : false}
       isCentered
       onClose={handleCloseModal}>
       <ModalOverlay />
