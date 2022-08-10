@@ -152,6 +152,7 @@ const DeployToken = () => {
             Address
           </Text>
           <Link
+            w={'100%'}
             isExternal={true}
             outline={'none'}
             _focus={{
@@ -169,7 +170,6 @@ const DeployToken = () => {
                 : 'white.100'
             }
             fontSize={22}
-            w={'144px'}
             h={'29px'}
             fontWeight={600}
             textDecoration={isTokenDeployed ? 'underline' : {}}

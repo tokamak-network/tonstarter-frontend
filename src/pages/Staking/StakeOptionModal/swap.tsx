@@ -23,7 +23,7 @@ import {useModal} from 'hooks/useModal';
 import {useCheckBalance} from 'hooks/useCheckBalance';
 import {CloseButton} from 'components/Modal/CloseButton';
 import {convertToRay} from 'utils/number';
-import {LoadingDots} from 'components/Loader/LoadingDots';
+// import {LoadingDots} from 'components/Loader/LoadingDots';
 import swapArrow from 'assets/svgs/swap-arrow-icon.svg';
 
 export const SwapModal = () => {
