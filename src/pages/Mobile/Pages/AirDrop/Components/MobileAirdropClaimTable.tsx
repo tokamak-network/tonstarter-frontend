@@ -209,12 +209,12 @@ export const MobileAirdropClaimTable = () => {
     setCheckedAllBoxes(!checkedAllBoxes);
 
     if (radioValue === 'TON Staker') {
-      setIsCheck(tonStakerAirdropTokens.map((data) => String(data.id)));
+      setIsCheck(tonStakerAirdropTokens.map((data,index) => String(index)));
       setCheckedTokenAddresses(
         tonStakerAirdropTokens.map((data) => data.address),
       );
     } else if (radioValue === 'DAO Airdrop') {
-      setIsCheck(daoAirdropTokens.map((data) => String(data.id)));
+      setIsCheck(daoAirdropTokens.map((data,index) => String(index)));
       setCheckedTokenAddresses(daoAirdropTokens.map((data) => data.address));
     } else if (radioValue === 'Genesis Airdrop') {
       setIsCheck(['Genesis']);

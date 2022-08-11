@@ -916,6 +916,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               //     price.initSqrtPrice,
               //   );
 
+              const {TOS_ADDRESS} = DEPLOYED;
               const InitialLiquidityVault_Contract = new Contract(
                 selectedVaultDetail.vaultAddress as string,
                 InitialLiquidityVault.abi,
@@ -927,13 +928,23 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 String(selectedVaultDetail?.vaultTokenAllocation),
               );
 
+              const computePoolAddress =
+                await InitialLiquidityVault_Contract.connect(
+                  signer,
+                ).computePoolAddress(TOS_ADDRESS, values.tokenAddress, 3000);
+
+              const reserv0 =
+                computePoolAddress[1] === TOS_ADDRESS ? 100 : projectTokenPrice;
+              const reserv1 =
+                computePoolAddress[2] === TOS_ADDRESS ? 100 : projectTokenPrice;
+
               const tx = await InitialLiquidityVault_Contract?.connect(
                 signer,
               ).initialize(
                 vaultTokenAllocationWei,
                 100,
                 projectTokenPrice,
-                encodePriceSqrt(projectTokenPrice, 100),
+                encodePriceSqrt(reserv1, reserv0),
                 //@ts-ignore
                 selectedVaultDetail.startTime,
               );
@@ -1511,7 +1522,13 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
             mt={'auto'}
             color={vaultState !== 'notReady' ? 'white.100' : 'gray.175'}
             // color={'white.100'}
-            border={vaultState === 'ready' ? '' : '1px solid #dfe4ee'}
+            border={
+              colorMode === 'dark'
+                ? {}
+                : vaultState === 'ready'
+                ? {}
+                : '1px solid #dfe4ee'
+            }
             isDisabled={
               vaultState === 'notReady' || vaultState === 'finished'
                 ? btnDisable
