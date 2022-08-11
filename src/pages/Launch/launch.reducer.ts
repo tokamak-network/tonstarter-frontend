@@ -40,7 +40,7 @@ const initialState = {
     selectedVault: 'Public',
     selectedVaultType: 'Public',
     selectedVaultIndex: 0,
-    alreadySelected: [0],
+    alreadySelected: undefined,
     projects: [],
     tempVaultData: {},
     hashKey: undefined,
@@ -93,7 +93,7 @@ export const launchReducer = createSlice({
       state.data.selectedVaultIndex = payload.vaultIndex;
       state.data.alreadySelected = state.data.alreadySelected
         ? ([...state.data.alreadySelected, payload.vaultIndex] as number[])
-        : ([payload.vaultIndex] as number[]);
+        : ([0, payload.vaultIndex] as number[]);
     },
     fetchProjects: (state, {payload}: PayloadAction<ProjectPayload>) => {
       state.data.projects = payload.data;

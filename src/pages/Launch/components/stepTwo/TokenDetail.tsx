@@ -112,10 +112,6 @@ const SubTitle = (props: {
   const {vaults} = values;
   const publicVault = vaults[0] as VaultPublic;
 
-  // console.log(leftTitle);
-  // console.log(rightTitle);
-  // console.log(inputVal);
-
   useEffect(() => {
     //@ts-ignore
     setInputVal(rightTitle);
@@ -177,6 +173,10 @@ const SubTitle = (props: {
   );
 
   const {library} = useActiveWeb3React();
+  const {
+    data: {alreadySelected},
+  } = useAppSelector(selectLaunch);
+  const errCondition = err && alreadySelected;
 
   useEffect(() => {
     async function fetchPooldata() {
@@ -746,13 +746,13 @@ const SubTitle = (props: {
       ) : String(rightTitle)?.includes('~') ? (
         <Flex
           flexDir={'column'}
-          color={err ? '#ff3b3b' : ''}
+          color={errCondition ? '#ff3b3b' : ''}
           textAlign={'right'}>
           <Text>{String(rightTitle).split('~')[0]}</Text>
           <Text>~ {String(rightTitle).split('~')[1]}</Text>
         </Flex>
       ) : (
-        <Flex color={err ? '#ff3b3b' : ''}>
+        <Flex color={errCondition ? '#ff3b3b' : ''}>
           {leftTitle === 'Address for receiving funds' ? (
             <Tooltip label={rightTitle} placement={'top'}>
               <Text textAlign={'right'}>
@@ -793,7 +793,7 @@ const SubTitle = (props: {
           {percent !== undefined && (
             <Text
               ml={'5px'}
-              color={err ? '#ff3b3b' : '#7e8993'}
+              color={errCondition ? '#ff3b3b' : '#7e8993'}
               textAlign={'right'}>
               {`(${percent.toFixed(3).replace(/\.(\d\d)\d?$/, '.$1') || '-'}%)`}
             </Text>
@@ -825,6 +825,10 @@ const STOSTier = (props: {
   const percent =
     (Number(allocatedToken) * 100) / Number(publicRound1Allocation);
   const [percentVal, setPercentVal] = useState(percent);
+  const {
+    data: {alreadySelected},
+  } = useAppSelector(selectLaunch);
+  const errCondition = err && alreadySelected !== undefined;
 
   useEffect(() => {
     const percent = (Number(inputVal2) * 100) / Number(publicRound1Allocation);
@@ -904,7 +908,7 @@ const STOSTier = (props: {
             w={'137px'}
             justifyContent={'center'}
             alignItems={'center'}
-            color={err ? '#ff3b3b' : ''}>
+            color={errCondition ? '#ff3b3b' : ''}>
             <Text>{commafy(allocatedToken) || '-'}</Text>
             <Text
               ml={'5px'}
@@ -952,7 +956,7 @@ const PublicTokenDetail = (props: {
   const vaults = values.vaults;
   const inputRef = useRef({});
   const {
-    data: {tempVaultData, selectedVaultType, onBlur},
+    data: {tempVaultData, selectedVaultType, onBlur, alreadySelected},
   } = useAppSelector(selectLaunch);
 
   const {toastMsg} = useToast();

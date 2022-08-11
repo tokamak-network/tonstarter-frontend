@@ -45,7 +45,7 @@ const InputTitle = (props: {title: string; isRequired?: boolean}) => {
       // w={title !== 'Interval' ? '109px' : '44px'}
     >
       {isRequired && (
-        <Text color={'red.100'} mr={'3px'}>
+        <Text color={'red.100'} mr={'3px'} pt={'3px'}>
           *
         </Text>
       )}
