@@ -30,8 +30,11 @@ export const SwapModal = () => {
   const {sub} = useAppSelector(selectModalType);
   const {account, library} = useActiveWeb3React();
   const {
-    data: {contractAddress, swapBalance, originalSwapBalance, currentTosPrice},
+    data: {swapBalance, originalSwapBalance, currentTosPrice},
   } = sub;
+
+  const contractAddress = '0x59357d4698aa898da8a1390829ae9af68ae18c35';
+
   const theme = useTheme();
   const {colorMode} = useColorMode();
   const [value, setValue] = useState<number>(0);
@@ -59,6 +62,7 @@ export const SwapModal = () => {
   return (
     <Modal
       isOpen={sub.type === 'manage_swap' ? true : false}
+      // isOpen={true}
       isCentered
       onClose={handleCloseModal}>
       <ModalOverlay />
@@ -134,7 +138,6 @@ export const SwapModal = () => {
                   fontSize={12}
                   fontWeight={600}
                   color={'#808992'}
-                  w={'104px'}
                   mr={'10px'}>
                   Balance: {swapBalance} TON
                 </Text>
