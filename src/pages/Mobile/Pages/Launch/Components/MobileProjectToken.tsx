@@ -203,14 +203,14 @@ export const MobileProjectToken: FC<ProjectTokenProps> = ({project}) => {
           </Text>
         </Flex>
       </GridItem>
-      <GridItem
+      {/* <GridItem
         style={gridItemStyle}
         borderBottom={
           colorMode === 'light' ? '1px solid #e6eaee' : '1px solid #373737'
         }>
         <Text style={leftText}>Sale Price</Text>
         <Text style={rightText}>NA</Text>
-      </GridItem>
+      </GridItem> */}
       <GridItem
         style={gridItemStyle}
         borderBottom={

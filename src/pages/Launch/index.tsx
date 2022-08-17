@@ -10,7 +10,7 @@ import {useAppDispatch} from 'hooks/useRedux';
 import LaunchPage from '@Launch/LaunchPage';
 
 const OpenCampagin = () => {
-  const {account} = useActiveWeb3React();
+  const {account, active, connector} = useActiveWeb3React();
   // const {web3Token} = useWeb3Token();
   const dispatch = useAppDispatch();
 
@@ -27,31 +27,31 @@ const OpenCampagin = () => {
         },
       }),
     {
+      // enabled: !!account,
       refetchInterval: 600000,
     },
   );
-  
+
   useEffect(() => {
     if (data && !isLoading) {
       const {data: datas} = data;
       dispatch(fetchProjects({data: datas}));
-      
+
       const projects = Object.keys(datas).map((k) => {
         if (datas[k].vaults !== undefined) {
           const stat = datas[k].vaults.every((vault: any) => {
             return vault.isSet === true;
           });
-          return {name: datas[k].projectName, key: k,isSet: stat}
+          return {name: datas[k].projectName, key: k, isSet: stat};
+        } else {
+          return {key: k, data: datas[k], isSet: false};
         }
-        else {
-          return {key: k, data: datas[k], isSet: false}
-        }
-      })
+      });
       const filteredProjects = projects.filter(
         (project: any) => project.isSet === true,
       );
 
-      setNumProjects(filteredProjects.length)
+      setNumProjects(filteredProjects.length);
       setProjectsData(projects);
     }
   }, [data, dispatch]);
@@ -60,13 +60,13 @@ const OpenCampagin = () => {
   const {url} = match;
 
   //test
-  
+
   // if (isLoading) {
   //   return <div>loading..</div>;
   // }
   return (
     <Flex flexDir="column" mt={'78px'} alignItems="center">
-      <LaunchPage numPairs={numProjects+4}/>
+      <LaunchPage numPairs={numProjects + 4} />
     </Flex>
   );
 };

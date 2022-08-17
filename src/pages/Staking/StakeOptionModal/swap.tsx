@@ -32,6 +32,7 @@ export const SwapModal = () => {
   const {
     data: {contractAddress, swapBalance, originalSwapBalance, currentTosPrice},
   } = sub;
+
   const theme = useTheme();
   const {colorMode} = useColorMode();
   const [value, setValue] = useState<number>(0);
@@ -134,7 +135,6 @@ export const SwapModal = () => {
                   fontSize={12}
                   fontWeight={600}
                   color={'#808992'}
-                  w={'104px'}
                   mr={'10px'}>
                   Balance: {swapBalance} TON
                 </Text>
@@ -209,7 +209,7 @@ export const SwapModal = () => {
               <Flex alignItems={'center'} pb={'16px'} pt={'13px'}>
                 <Flex flexDir={'column'} h={'30px'}>
                   <Text fontSize={12} fontWeight={600} color={'#808992'}>
-                    Current price : {currentTosPrice} TOS / WTO
+                    Current price : {currentTosPrice} TOS / WTON
                   </Text>
                   <Text fontSize={12} fontWeight={600} color={'#808992'}>
                     Minimum amount TOS : {79}
@@ -247,8 +247,10 @@ export const SwapModal = () => {
               occur.{' '}
               <span style={{color: '#ff3b3b'}}>
                 If slippage of 10% or more occurs, the operation will be
-                cancelled. Therefore, it is recommended to input an appropriate
-                amount of TON according to the liquidity of the pool.
+                cancelled. Please note that even if the job is canceled, the gas
+                fee will be paid. Therefore, it is recommended to input an
+                appropriate amount of TON according to the liquidity of the
+                pool.
               </span>
               {''}
               If the exchange rate of WTON-TOS is not within the range of the

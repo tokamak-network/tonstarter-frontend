@@ -14,28 +14,18 @@ type UnstakeFromLayer2 = {
 };
 
 export const swapWTONtoTOS = async (args: UnstakeFromLayer2) => {
-  const {userAddress, amount, contractAddress, library} = args;
-  if (userAddress === null || userAddress === undefined) {
-    return;
-  }
-
-  const StakeTONContract = new Contract(
-    contractAddress,
-    TokamakStakeUpgrade.abi,
-    library,
-  );
-  const signer = getSigner(library, userAddress);
-  let deadline = Date.now() / 1000 + 900;
-  deadline = parseInt(deadline.toString());
   try {
-    //Old Interface
-    // const receipt = await StakeTONContract.connect(signer).exchangeWTONtoTOS(
-    //   amount,
-    //   0,
-    //   deadline,
-    //   0,
-    //   0,
-    // );
+    const {userAddress, amount, contractAddress, library} = args;
+    if (userAddress === null || userAddress === undefined) {
+      return;
+    }
+
+    const StakeTONContract = new Contract(
+      contractAddress,
+      TokamakStakeUpgrade.abi,
+      library,
+    );
+    const signer = getSigner(library, userAddress);
     const receipt = await StakeTONContract.connect(signer).exchangeWTONtoTOS(
       amount,
     );
@@ -47,6 +37,7 @@ export const swapWTONtoTOS = async (args: UnstakeFromLayer2) => {
       store.dispatch(setTxPending({tx: false}));
     }
   } catch (err) {
+    console.log(err);
     store.dispatch(setTxPending({tx: false}));
     store.dispatch(
       //@ts-ignore

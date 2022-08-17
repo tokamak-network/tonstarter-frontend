@@ -60,11 +60,7 @@ import {
   usePoolByArrayQuery,
 } from 'store/data/generated';
 import {SideContainer} from './SideContainer';
-const {
-  UniswapStaker_Address,
-  WTON_ADDRESS,
-  TOS_ADDRESS,
-} = DEPLOYED;
+const {UniswapStaker_Address, WTON_ADDRESS, TOS_ADDRESS} = DEPLOYED;
 
 type Pool = {
   feeTier: string;
@@ -129,7 +125,7 @@ export const Reward = () => {
   const [selectedPoolCreate, setSelectedPoolCreated] = useState<Pool>();
   const [positions, setPositions] = useState<any[]>([]);
   const [selectedTokenType, setSelectedTokenType] = useState<string>('');
- const [tokensFromAPI, setTokensFromAPI] = useState<any[]>([])
+  const [tokensFromAPI, setTokensFromAPI] = useState<any[]>([]);
   // const arr: any = [];
   useEffect(() => {
     setSelectdPosition(undefined);
@@ -137,10 +133,10 @@ export const Reward = () => {
   useEffect(() => {
     async function fetchProjectsData() {
       const poolsData: any = await views.getPoolData(library);
-      const tokens = await views.getTokensData()
+      const tokens = await views.getTokensData();
       const rewardData = await views.getRewardData();
       setPoolsFromAPI(poolsData);
-     
+
       const poolArray: any = [];
       if (poolsData) {
         poolsData.map((pool: any) => {
@@ -156,7 +152,7 @@ export const Reward = () => {
         setDatas(rewardData);
       }
       if (tokens) {
-        setTokensFromAPI(tokens)
+        setTokensFromAPI(tokens);
       }
       setPoolAddresses(poolArray);
     }
@@ -222,7 +218,9 @@ export const Reward = () => {
       if (pols !== undefined) {
         const poooools = pols.map((data: any) => {
           const APIPool = poolsFromAPI.find(
-            (pol: any) => ethers.utils.getAddress(pol.poolAddress) === ethers.utils.getAddress(data.id),
+            (pol: any) =>
+              ethers.utils.getAddress(pol.poolAddress) ===
+              ethers.utils.getAddress(data.id),
           );
           const token0Image = APIPool.token0Image;
           const token1Image = APIPool.token1Image;
@@ -277,9 +275,11 @@ export const Reward = () => {
                 ethers.utils.getAddress(data.pool.id),
             );
             if (includedPool) {
-              console.log(includedPool);
-              
-              const rang = await getRange(Number(data.id), includedPool.tick,includedPool.id );
+              const rang = await getRange(
+                Number(data.id),
+                includedPool.tick,
+                includedPool.id,
+              );
               return {
                 ...data,
                 range: rang?.range,
@@ -452,11 +452,17 @@ export const Reward = () => {
     return result;
   };
   const rangePayload = async (args: any) => {
-    const {library, id, tick,address } = args;
+    const {library, id, tick, address} = args;
     if (account === undefined || library === undefined || account == null) {
       return;
     }
-    const result = await fetchPositionRangePayload(library, id, account, tick,address);
+    const result = await fetchPositionRangePayload(
+      library,
+      id,
+      account,
+      tick,
+      address,
+    );
     return result;
   };
 
@@ -476,10 +482,14 @@ export const Reward = () => {
     const poolAddress = e.target.value;
     // console.log(poolAddress);
     // console.log(pool);
-    
-    const selected: Pool = pool.find((pool) => ethers.utils.getAddress(pool.id) === ethers.utils.getAddress(poolAddress));
+
+    const selected: Pool = pool.find(
+      (pool) =>
+        ethers.utils.getAddress(pool.id) ===
+        ethers.utils.getAddress(poolAddress),
+    );
     // console.log('selected',selected);
-    
+
     setSelectedPool(selected);
     setSelectedToken(undefined);
     setSelectdPosition(undefined);
@@ -491,7 +501,9 @@ export const Reward = () => {
       setSelectdPosition(undefined);
     } else {
       const selectedRewards = datas.filter(
-        (data) => ethers.utils.getAddress(data.poolAddress) === ethers.utils.getAddress(poolAddress),
+        (data) =>
+          ethers.utils.getAddress(data.poolAddress) ===
+          ethers.utils.getAddress(poolAddress),
       );
       setOrderedData(selectedRewards);
       setFilteredData(selectedRewards);
@@ -997,7 +1009,7 @@ export const Reward = () => {
                     cursor={'pointer'}
                     color={'#0070ed'}
                     fontSize={'13px'}
-                    onClick={(e: { preventDefault: () => void; }) => {
+                    onClick={(e: {preventDefault: () => void}) => {
                       e.preventDefault();
                       window.open(
                         selectedPoolCreate === undefined

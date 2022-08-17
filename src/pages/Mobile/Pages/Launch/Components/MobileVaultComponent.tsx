@@ -15,7 +15,7 @@ import {MobileInitialLiquidity} from './Vaults/MobileInitialLiquidity';
 import {MobileTonStaker} from './Vaults/MobileTonStaker';
 import {MobileTosStaker} from './Vaults/MobileTosStaker';
 import {MobileWtonTosLpReward} from './Vaults/MobileWtonTosLpReward';
-import { MobileCustom } from './Vaults/MobileCustom';
+import {MobileCustom} from './Vaults/MobileCustom';
 import {MobileDao} from './Vaults/MobileDao';
 
 type MobileVaultComponent = {
@@ -39,11 +39,15 @@ const TabComponent = (props: {project: any; vault: string; index: number}) => {
       );
     case 'TON Staker':
       return (
-        <MobileTonStaker project={project} vault={project.vaults[index]}></MobileTonStaker>
+        <MobileTonStaker
+          project={project}
+          vault={project.vaults[index]}></MobileTonStaker>
       );
     case 'TOS Staker':
       return (
-        <MobileTosStaker project={project} vault={project.vaults[index]}></MobileTosStaker>
+        <MobileTosStaker
+          project={project}
+          vault={project.vaults[index]}></MobileTosStaker>
       );
     case 'WTON-TOS LP Reward':
       return (
@@ -58,10 +62,16 @@ const TabComponent = (props: {project: any; vault: string; index: number}) => {
           vault={project.vaults[index]}></MobileLiquidityIncentive>
       );
     case 'DAO':
-      return <MobileDao project={project} vault={project.vaults[index]}></MobileDao>;
-    
-    case 'C': 
-    return <MobileCustom project={project} vault={project.vaults[index]}></MobileCustom>
+      return (
+        <MobileDao project={project} vault={project.vaults[index]}></MobileDao>
+      );
+
+    case 'C':
+      return (
+        <MobileCustom
+          project={project}
+          vault={project.vaults[index]}></MobileCustom>
+      );
     default:
       return <div>no component for this step</div>;
   }
@@ -107,9 +117,6 @@ export const MobileVaultComponent: FC<MobileVaultComponent> = ({project}) => {
     setCurrentIndex(idx);
   };
 
-  console.log(flowIndex);
-  
-
   return (
     <Flex flexDirection={'column'} mt={'20px'} mx={'-10px'}>
       {/* <Tabs w={'100%'} onChange={(index) => setTabIndex(index)}>
@@ -150,8 +157,8 @@ export const MobileVaultComponent: FC<MobileVaultComponent> = ({project}) => {
             {project?.vaults?.map((vault: any, index: number) => {
               return (
                 <Box
-                display={'flex'}
-                justifyContent={'center'}
+                  display={'flex'}
+                  justifyContent={'center'}
                   minWidth={'104px'}
                   margin={'auto'}
                   h={'45px'}
@@ -173,8 +180,7 @@ export const MobileVaultComponent: FC<MobileVaultComponent> = ({project}) => {
                         }
                   }
                   onClick={() => setVaultInfo(vault, index)}>
-                    <Text>   {vault.vaultName}</Text>
-               
+                  <Text> {vault.vaultName}</Text>
                 </Box>
               );
             })}
@@ -189,7 +195,6 @@ export const MobileVaultComponent: FC<MobileVaultComponent> = ({project}) => {
               setTransX(transX - 104);
               setFlowIndex(flowIndex + 1);
             }
-         
           }}></HoverImage>
       </Flex>
       <TabComponent
