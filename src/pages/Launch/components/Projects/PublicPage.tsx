@@ -800,8 +800,8 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
         </Flex>
       </Grid>
 
-      <Flex w={'100%'} justifyContent={'center'} py={'2rem'}>
-        <Button
+      {/* <Flex w={'100%'} justifyContent={'center'} py={'2rem'}> */}
+        {/* <Button
           className="button-style"
           background={'none'}
           h={'38px'}
@@ -826,8 +826,8 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
         </Text>
         <Text> Liquidity Vault</Text>
          
-        </Button>
-        <Button
+        </Button> */}
+        {/* <Button
           className="button-style"
           background={'none'}
           px={'45px'}
@@ -839,8 +839,8 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
           // onClick={() => openAnyModal('Launch_Download', {})}
         >
           Download
-        </Button>
-      </Flex>
+        </Button> */}
+      {/* </Flex> */}
       <Flex w={'100%'} justifyContent={'center'} py={'2rem'}></Flex>
       {/* <Button w="125px" id="downloadAnchorElem" onClick={() => download()}>
         Download
