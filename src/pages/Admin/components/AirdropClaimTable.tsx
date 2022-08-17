@@ -49,7 +49,7 @@ export const AirdropClaimTable = () => {
   const [checkedAllBoxes, setCheckedAllBoxes] = useState<boolean>(false);
   const [airdropData, setAirdropData] = useState<any[]>([]);
   const [checkedTokenAddresses, setCheckedTokenAddresses] = useState<any[]>([]);
-  const [radioValue, setRadioValue] = useState<string>('Genesis Airdrop');
+  const [radioValue, setRadioValue] = useState<string>('DAO Airdrop');
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [tonStakerAirdropTokens, setTonStakerAirdropTokens] = useState<any[]>(
     [],
@@ -248,15 +248,14 @@ export const AirdropClaimTable = () => {
     setCheckedAllBoxes(!checkedAllBoxes);
 
     if (radioValue === 'TON Staker') {
-      setIsCheck(tonStakerAirdropTokens.map((data,index) => String(index)));
+      setIsCheck(tonStakerAirdropTokens.map((data, index) => String(index)));
       setCheckedTokenAddresses(
         tonStakerAirdropTokens.map((data) => data.address),
       );
     } else if (radioValue === 'DAO Airdrop') {
-      setIsCheck(daoAirdropTokens.map((data,index) => String(index)));
+      setIsCheck(daoAirdropTokens.map((data, index) => String(index)));
       setCheckedTokenAddresses(daoAirdropTokens.map((data) => data.address));
     }
-    
 
     if (isCheckAll) {
       setIsCheck([]);
@@ -266,7 +265,7 @@ export const AirdropClaimTable = () => {
 
   const handleClick = (e: any) => {
     const {id, checked, value} = e.target;
-    
+
     let tempCheckedAddresses = checkedTokenAddresses;
     setIsCheck([...isCheck, id]);
     if (!checked) {
@@ -313,21 +312,26 @@ export const AirdropClaimTable = () => {
           <RadioGroup onChange={setRadioValue} value={radioValue}>
             <Stack direction="row">
               <Box mx={'20px'} display={'flex'}>
-                <Radio value="Genesis Airdrop" size={'md'} mr={'5px'} />
-                <Text fontFamily={theme.fonts.roboto} fontSize={'14px'}>
-                  Genesis Airdrop
-                </Text>
-              </Box>
-              <Box mx={'20px'} display={'flex'}>
                 <Radio value="DAO Airdrop" size={'md'} mr={'5px'} />
                 <Text fontFamily={theme.fonts.roboto} fontSize={'14px'}>
                   DAO Airdrop
                 </Text>
               </Box>
               <Box mx={'20px'} display={'flex'}>
-                <Radio value="TON Staker" size={'md'} ml={'20px'} mr={'5px'} />
+                <Radio value="TON Staker" size={'md'} mr={'5px'} />
                 <Text fontFamily={theme.fonts.roboto} fontSize={'14px'}>
                   TON Staker
+                </Text>
+              </Box>
+              <Box mx={'20px'} display={'flex'}>
+                <Radio
+                  value="Genesis Airdrop"
+                  ml={'20px'}
+                  size={'md'}
+                  mr={'5px'}
+                />
+                <Text fontFamily={theme.fonts.roboto} fontSize={'14px'}>
+                  Genesis Airdrop
                 </Text>
               </Box>
             </Stack>
@@ -347,7 +351,7 @@ export const AirdropClaimTable = () => {
           // _hover={{background: 'transparent'}}
           onClick={() => {
             // console.log(checkedTokenAddresses);
-            
+
             account &&
               AdminActions.claimMultipleTokens({
                 account,

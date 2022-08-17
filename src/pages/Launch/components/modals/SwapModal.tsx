@@ -87,7 +87,8 @@ const SwapModal = () => {
 
   return (
     <Modal
-      isOpen={data.modal === 'Launch_Swap' ? true : false}
+      // isOpen={data.modal === 'Launch_Swap' ? true : false}
+      isOpen={false}
       isCentered
       onClose={() => {
         handleCloseModal();
