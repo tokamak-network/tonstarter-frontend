@@ -16,7 +16,7 @@ import {
   Select,
   DrawerOverlay,
   Image,
-Tooltip,
+  Tooltip,
   DrawerContent,
   DrawerCloseButton,
 } from '@chakra-ui/react';
@@ -46,7 +46,7 @@ export const MobileAirDropDistributeTable = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const {isOpen, onOpen, onClose} = useDisclosure();
-  const [isLabelOpen, setIsLabelOpen] = useState(false)
+  const [isLabelOpen, setIsLabelOpen] = useState(false);
 
   const [distributedTosTokens, setDistributedTosTokens] = useState<
     any[] | undefined
@@ -75,11 +75,11 @@ export const MobileAirDropDistributeTable = () => {
 
   useEffect(() => {
     if (distributedTosTokens) {
-      const isEmpty = distributedTosTokens.every((token:any) => {
-        return token.amount === '0.00'
-      })
-     setEmpty(isEmpty)
-      
+      const isEmpty = distributedTosTokens.every((token: any) => {
+        return token.amount === '0.00';
+      });
+      setEmpty(isEmpty);
+
       setLoadingData(false);
     }
   }, [distributedTosTokens]);
@@ -303,7 +303,6 @@ export const MobileAirDropDistributeTable = () => {
       dark: '#f3f4f1',
     },
   };
-  console.log(distributedTosTokens);
 
   return loadingData ? (
     <Flex
@@ -427,7 +426,7 @@ export const MobileAirDropDistributeTable = () => {
                   color={colorMode === 'light' ? '#304156' : '#ffffff'}>
                   Token Amount
                 </Text>
-                <Flex mb={'24px'} w={'100%'} flexDir='column'>
+                <Flex mb={'24px'} w={'100%'} flexDir="column">
                   <CustomInput
                     w={'100%'}
                     h={'32px'}
@@ -451,7 +450,9 @@ export const MobileAirDropDistributeTable = () => {
                         : 'gray.175'
                     }></CustomInput>
                   {isTokenBalanceExceed && (
-                    <Text color={'red.100'} mt='3px' fontSize='11px'>You don't have enough balance</Text>
+                    <Text color={'red.100'} mt="3px" fontSize="11px">
+                      You don't have enough balance
+                    </Text>
                   )}
                 </Flex>
 
@@ -555,7 +556,6 @@ export const MobileAirDropDistributeTable = () => {
                     w={'150px'}
                     h={'38px'}
                     fontSize="14px"
-                  
                     disabled={isApproveDisable}
                     onClick={approveAction}>
                     Approve
@@ -567,7 +567,6 @@ export const MobileAirDropDistributeTable = () => {
                     w={'150px'}
                     fontSize="14px"
                     h={'38px'}
-                 
                     isDisabled={!ableDistribute || isTokenBalanceExceed}
                     onClick={() => {
                       distributeAction();
@@ -584,38 +583,48 @@ export const MobileAirDropDistributeTable = () => {
       <Flex
         mt={'12px'}
         fontFamily={theme.fonts.fld}
-        flexDir='column'
+        flexDir="column"
         justifyContent="center"
         alignItems={'center'}
         fontSize={'13px'}>
-          <Flex alignItems={'center'}> <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'} mr={'2px'}>
-        sTOS Holder distribution schedule
-        </Text>
-        <Tooltip
-        isOpen={isLabelOpen}
-      
-              hasArrow
-              placement="top"
-              label="sTOS Holder distributions follow the schedule displayed, whereas TON Holder distributions happen immediately."
-              color={theme.colors.white[100]}
-              bg={theme.colors.gray[375]}>
-              <Image   h={'14px'}  w={'14px'} src={tooltipIcon}   onClick={() => setIsLabelOpen(!isLabelOpen)}/>
-            </Tooltip></Flex>
-       
+        <Flex alignItems={'center'}>
+          {' '}
+          <Text
+            color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}
+            mr={'2px'}>
+            sTOS Holder distribution schedule
+          </Text>
+          <Tooltip
+            isOpen={isLabelOpen}
+            hasArrow
+            placement="top"
+            label="sTOS Holder distributions follow the schedule displayed, whereas TON Holder distributions happen immediately."
+            color={theme.colors.white[100]}
+            bg={theme.colors.gray[375]}>
+            <Image
+              h={'14px'}
+              w={'14px'}
+              src={tooltipIcon}
+              onClick={() => setIsLabelOpen(!isLabelOpen)}
+            />
+          </Tooltip>
+        </Flex>
+
         <Text color={colorMode === 'light' ? '#353c48' : '#f3f4f1'}>
           {' '}
           Next(Thu.) {timeStamp} 00:00:00 (UTC)
         </Text>
       </Flex>
-      {distributedTosTokens !== undefined &&
-      distributedTosTokens.length === 0 || empty? (
+      {(distributedTosTokens !== undefined &&
+        distributedTosTokens.length === 0) ||
+      empty ? (
         <Flex
           justifyContent={'center'}
           alignItems={'center'}
           w={'100%'}
           mt={'20px'}
-         h={'100px'}
-         borderRadius='10px'
+          h={'100px'}
+          borderRadius="10px"
           fontFamily={theme.fonts.fld}
           fontSize={'16px'}
           border={themeDesign.border[colorMode]}>

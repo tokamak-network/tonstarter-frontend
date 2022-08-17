@@ -74,8 +74,6 @@ const SwapModal = () => {
     setBalance(tokenBalance);
   }, []);
 
-  console.log(tokenBalance);
-
   useEffect(() => {
     if (inputAmount.length > 1 && inputAmount.startsWith('0')) {
       setInputAmount(inputAmount.slice(1, inputAmount.length));
