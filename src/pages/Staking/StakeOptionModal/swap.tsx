@@ -25,6 +25,7 @@ import {CloseButton} from 'components/Modal/CloseButton';
 import {convertToRay} from 'utils/number';
 // import {LoadingDots} from 'components/Loader/LoadingDots';
 import swapArrow from 'assets/svgs/swap-arrow-icon.svg';
+import commafy from 'utils/commafy';
 
 export const SwapModal = () => {
   const {sub} = useAppSelector(selectModalType);
@@ -136,7 +137,7 @@ export const SwapModal = () => {
                   fontWeight={600}
                   color={'#808992'}
                   mr={'10px'}>
-                  Balance: {swapBalance} TON
+                  Balance: {swapBalance || '-'} TON
                 </Text>
                 <Button
                   w={'50px'}
@@ -194,7 +195,11 @@ export const SwapModal = () => {
                   variant={'outline'}
                   borderWidth={0}
                   textAlign={'right'}
-                  value={Number(swapValue).toFixed(2)}
+                  value={
+                    isNaN(Number(swapValue))
+                      ? '0'
+                      : Number(swapValue).toFixed(2)
+                  }
                   placeholder={'0.00'}
                   fontSize={20}
                   fontWeight={'bold'}
@@ -212,7 +217,7 @@ export const SwapModal = () => {
                     Current price : {currentTosPrice} TOS / WTON
                   </Text>
                   <Text fontSize={12} fontWeight={600} color={'#808992'}>
-                    Minimum amount TOS : {79}
+                    Minimum amount TOS : {commafy(value * 0.95 * 0.9)}
                   </Text>
                 </Flex>
               </Flex>
