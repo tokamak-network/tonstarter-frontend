@@ -25,6 +25,7 @@ import {CloseButton} from 'components/Modal/CloseButton';
 import {convertToRay} from 'utils/number';
 // import {LoadingDots} from 'components/Loader/LoadingDots';
 import swapArrow from 'assets/svgs/swap-arrow-icon.svg';
+import commafy from 'utils/commafy';
 
 export const SwapModal = () => {
   const {sub} = useAppSelector(selectModalType);
@@ -59,7 +60,8 @@ export const SwapModal = () => {
 
   return (
     <Modal
-      isOpen={sub.type === 'manage_swap' ? true : false}
+      // isOpen={sub.type === 'manage_swap' ? true : false}
+      isOpen={true}
       isCentered
       onClose={handleCloseModal}>
       <ModalOverlay />
@@ -212,7 +214,7 @@ export const SwapModal = () => {
                     Current price : {currentTosPrice} TOS / WTON
                   </Text>
                   <Text fontSize={12} fontWeight={600} color={'#808992'}>
-                    Minimum amount TOS : {79}
+                    Minimum amount TOS : {commafy(value * 0.95 * 0.9)}
                   </Text>
                 </Flex>
               </Flex>
