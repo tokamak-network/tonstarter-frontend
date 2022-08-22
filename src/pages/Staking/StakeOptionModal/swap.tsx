@@ -217,7 +217,7 @@ export const SwapModal = () => {
                     Current price : {currentTosPrice} TOS / WTON
                   </Text>
                   <Text fontSize={12} fontWeight={600} color={'#808992'}>
-                    Minimum amount TOS : {commafy(value * 0.95 * 0.9)}
+                    Minimum amount TOS : {commafy(swapValue * 0.95 * 0.9)}
                   </Text>
                 </Flex>
               </Flex>
