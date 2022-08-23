@@ -128,8 +128,8 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
         project.tokenAddress,
         3000,
       );
-      setIsPool(pool === ZERO_ADDRESS ? false : true);
-      setCreatedPool(pool === ZERO_ADDRESS ? '' : pool);
+      setIsPool(pool === ZERO_ADDRESS ? false : true);      
+      setCreatedPool(pool === ZERO_ADDRESS ? ZERO_ADDRESS : pool);
       // setIsPool(false)
       setIsLpToken(Number(LP) === 0 ? false : true);
       // console.log(Number(LP));
@@ -541,8 +541,8 @@ export const Condition2: React.FC<Condition2> = ({
     getRatio();
   }, [account, project]);
 
-  useEffect(() => {}, []);
-
+  // useEffect(() => {}, []);
+  
   const encodePriceSqrt = (reserve1: number, reserve0: number) => {
     return new bn(reserve1.toString())
       .div(reserve0.toString())
