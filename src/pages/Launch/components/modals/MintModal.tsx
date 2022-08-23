@@ -48,7 +48,7 @@ const MintModal = () => {
   const [programDuration, setProgramDuration] = useState<any[]>([0, 0]);
   const [balance, setBalance] = useState('0');
   const [inputAmount, setInputAmount] = useState<string>('0');
-  const [tosBalance, setTosBalance] = useState<string>('0');
+  const [projectAmount, setProjectAmount] = useState<string>('0');
   const themeDesign = {
     border: {
       light: 'solid 1px #e6eaee',
@@ -88,7 +88,7 @@ const MintModal = () => {
       InitialLiquidityComputeAbi.abi,
       library,
     );
-    const mintAmount = utils.parseUnits(tosBalance,18)
+    const mintAmount = utils.parseUnits(inputAmount,18)
    
     
     try {
@@ -159,7 +159,7 @@ const MintModal = () => {
   }, [inputAmount, setInputAmount]);
 
   useEffect(() => {
-    setTosBalance((Number(inputAmount) * project?.tosPrice).toLocaleString());
+    setProjectAmount((Number(inputAmount) * project?.tosPrice).toLocaleString());
   }, [inputAmount, data]);
   const handleCloseMintModal = () => {
     setInputAmount('0');
@@ -306,7 +306,7 @@ const MintModal = () => {
                   fontWeight={'bold'}
                   lineHeight={1.5}
                   fontSize="20px">
-                  {tosBalance}
+                  {projectAmount}
                 </Text>
               </Flex>
             </Flex>
