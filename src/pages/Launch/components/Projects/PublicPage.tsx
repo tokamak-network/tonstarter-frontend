@@ -95,7 +95,8 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
       if (account === null || account === undefined || library === undefined) {
         return;
       }
-      const hardCapCalc = await PublicSaleVaul.hardcapCalcul();
+      const hardCapCalc = await PublicSaleVaul.hardcapCalcul();      
+      const hardCapsss = await PublicSaleVaul.hardCap();      
       const adminWithdraw = await PublicSaleVaul.adminWithdraw();
       setFundWithdrew(adminWithdraw);
       setHardcap(Number(hardCapCalc));

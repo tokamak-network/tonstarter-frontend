@@ -314,17 +314,17 @@ const MintModal = () => {
               margin={'35px 25px 25px'}
               fontSize="12px"
               textAlign={'center'}>
-              Depending on the liquidity of the WTON-TOS pool, slippage may
+              Depending on the liquidity of the {project?.tokenSymbol}-TOS pool, slippage may
               occur.
               <span style={{color: '#ff3b3b'}}>
                 {' '}
                 If slippage of 10% or more occurs, the operation will be
                 cancelled. Therefore, it is recommended to input an appropriate
-                amount of TON according to the liquidity of the pool.{' '}
+                amount of TOS according to the liquidity of the pool.{' '}
               </span>
-              If the exchange rate of WTON-TOS is not within the range of the
+              If the exchange rate of {project?.tokenSymbol}-TOS is not within the range of the
               average exchange rate of the last 2 minutes + -5% of the exchange
-              rate of WTON-TOS, the operation will be canceled.
+              rate of {project?.tokenSymbol}-TOS, the operation will be canceled.
             </Text>
           </Flex>
         </ModalBody>

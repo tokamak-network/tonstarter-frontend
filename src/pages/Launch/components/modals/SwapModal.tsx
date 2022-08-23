@@ -30,6 +30,7 @@ import {Contract} from '@ethersproject/contracts';
 import {convertNumber} from 'utils/number';
 import {fetchSwapPayload} from 'pages/Staking/StakeOptionModal/utils/fetchSwapPayload';
 import commafy from 'utils/commafy';
+import * as PublicSaleVaultAbi from 'services/abis/PublicSaleVault.json';
 
 const SwapModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -48,7 +49,9 @@ const SwapModal = () => {
   const [inputAmount, setInputAmount] = useState<string>('0');
   const [swapValue, setSwapValue] = useState<number>(0);
   // const [value, setValue] = useState<number>(0);
-  const [currentTosPrice, setCurrentTosPrice] = useState<string|undefined>('0')
+  const [currentTosPrice, setCurrentTosPrice] = useState<string | undefined>(
+    '0',
+  );
 
   const themeDesign = {
     border: {
@@ -82,37 +85,46 @@ const SwapModal = () => {
   //   isRay: false,
   // });
   useEffect(() => {
-    async function getTosPrice(){
+    async function getTosPrice() {
       const tosPrice = await fetchSwapPayload(library);
-      setCurrentTosPrice(tosPrice)
-      setSwapValue(Number(inputAmount) * Number(tosPrice));      
+      setCurrentTosPrice(tosPrice);
+      setSwapValue(Number(inputAmount) * Number(tosPrice));
     }
-    getTosPrice()
+    getTosPrice();
   }, [inputAmount, data]);
 
-  
   useEffect(() => {
     async function getTONBalance() {
-      if (account === null || account === undefined || library === undefined ||data.data.vault ===undefined ) {
+      if (
+        account === null ||
+        account === undefined ||
+        library === undefined ||
+        data.data.vault === undefined
+      ) {
         return;
       }
-      const contract = new Contract(TON_ADDRESS, ERC20.abi, library);
-      const vaultBalance = await contract.balanceOf(data.data.vault?.vaultAddress);
-    
+      // const contract = new Contract(TON_ADDRESS, ERC20.abi, library);
+      // const vaultBalance = await contract.balanceOf(data.data.vault?.vaultAddress);
+
+      const PublicSaleVaul = new Contract(
+        data.data.vault?.vaultAddress,
+        PublicSaleVaultAbi.abi,
+        library,
+      );
+
+      const balanceVal = await PublicSaleVaul.hardcapCalcul();
+
       const convertedBalance = convertNumber({
-        amount: vaultBalance.toString(),
+        amount: balanceVal.toString(),
         localeString: true,
         round: false,
         type: 'custom',
         decimalPoints: 18,
       }) as string;
 
-     
       setBalance(convertedBalance);
-
-  }
-  getTONBalance()
-   
+    }
+    getTONBalance();
   }, [data]);
 
   useEffect(() => {
@@ -238,9 +250,7 @@ const SwapModal = () => {
                       ? '1px solid #535353'
                       : '1px solid #d7d9df'
                   }
-                  onClick={() =>
-                    setInputAmount(balance.replace(/,/g, ''))
-                  }>
+                  onClick={() => setInputAmount(balance.replace(/,/g, ''))}>
                   MAX
                 </Button>
               </Flex>
@@ -276,7 +286,7 @@ const SwapModal = () => {
                   fontWeight={'bold'}
                   lineHeight={1.5}
                   fontSize="20px">
-                {swapValue.toLocaleString()}
+                  {swapValue.toLocaleString()}
                 </Text>
               </Flex>
               <Text
