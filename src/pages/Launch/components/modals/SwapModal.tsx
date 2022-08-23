@@ -25,9 +25,18 @@ import {DEPLOYED} from 'constants/index';
 import {useERC20Token} from 'hooks/useERC20Token';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import swapArrow from 'assets/svgs/swap_arrow_icon.svg';
+import * as ERC20 from 'services/abis/ERC20.json';
+import {Contract} from '@ethersproject/contracts';
+import {convertNumber} from 'utils/number';
+import {fetchSwapPayload} from 'pages/Staking/StakeOptionModal/utils/fetchSwapPayload';
+import commafy from 'utils/commafy';
 
 const SwapModal = () => {
   const {data} = useAppSelector(selectModalType);
+  // const {sub} = useAppSelector(selectModalType);
+  // const {
+  //   data: {contractAddress, swapBalance, originalSwapBalance, currentTosPrice},
+  // } = sub;
   const {TON_ADDRESS, WTON_ADDRESS} = DEPLOYED;
   const {account, library} = useActiveWeb3React();
   const {colorMode} = useColorMode();
@@ -37,6 +46,9 @@ const SwapModal = () => {
   const [programDuration, setProgramDuration] = useState<any[]>([0, 0]);
   const [balance, setBalance] = useState('0');
   const [inputAmount, setInputAmount] = useState<string>('0');
+  const [swapValue, setSwapValue] = useState<number>(0);
+  // const [value, setValue] = useState<number>(0);
+  const [currentTosPrice, setCurrentTosPrice] = useState<string|undefined>('0')
 
   const themeDesign = {
     border: {
@@ -69,10 +81,41 @@ const SwapModal = () => {
     tokenAddress: TON_ADDRESS,
     isRay: false,
   });
-
   useEffect(() => {
-    setBalance(tokenBalance);
-  }, []);
+    async function getTosPrice(){
+      const tosPrice = await fetchSwapPayload(library);
+      setCurrentTosPrice(tosPrice)
+      setSwapValue(Number(inputAmount) * Number(tosPrice));
+      console.log('tosPrice',tosPrice);
+      
+    }
+    getTosPrice()
+  }, [inputAmount, data]);
+
+  
+  useEffect(() => {
+    async function getTONBalance() {
+      if (account === null || account === undefined || library === undefined ||data.data.vault ===undefined ) {
+        return;
+      }
+      const contract = new Contract(TON_ADDRESS, ERC20.abi, library);
+      const vaultBalance = await contract.balanceOf(data.data.vault?.vaultAddress);
+    
+      const convertedBalance = convertNumber({
+        amount: vaultBalance.toString(),
+        localeString: true,
+        round: false,
+        type: 'custom',
+        decimalPoints: 18,
+      }) as string;
+
+     
+      setBalance(convertedBalance);
+
+  }
+  getTONBalance()
+   
+  }, [data]);
 
   useEffect(() => {
     if (inputAmount.length > 1 && inputAmount.startsWith('0')) {
@@ -143,7 +186,7 @@ const SwapModal = () => {
                   color={colorMode === 'light' ? '#3d495d' : '#ffffff'}
                   fontWeight={'bold'}
                   fontSize="16px">
-                  WTON
+                  TON
                 </Text>
                 <NumberInput
                   h="24px"
@@ -180,7 +223,7 @@ const SwapModal = () => {
                 <Text
                   fontSize={'12px'}
                   color={colorMode === 'dark' ? '#9d9ea5' : '#808992'}>
-                  Balance: {tokenBalance} {tokenSymbol}
+                  Balance: {balance} TON
                 </Text>
                 <Button
                   fontSize={'12px'}
@@ -198,7 +241,7 @@ const SwapModal = () => {
                       : '1px solid #d7d9df'
                   }
                   onClick={() =>
-                    setInputAmount(tokenBalance.replace(/,/g, ''))
+                    setInputAmount(balance.replace(/,/g, ''))
                   }>
                   MAX
                 </Button>
@@ -235,7 +278,7 @@ const SwapModal = () => {
                   fontWeight={'bold'}
                   lineHeight={1.5}
                   fontSize="20px">
-                  7,146,412.05
+                {swapValue.toLocaleString()}
                 </Text>
               </Flex>
               <Text
@@ -243,13 +286,13 @@ const SwapModal = () => {
                 mt={'10px'}
                 fontWeight={500}
                 color={colorMode === 'dark' ? '#9d9ea5' : '#808992'}>
-                Current Price: {8.7} {'TOS/ WTON'}
+                Current Price: {currentTosPrice} TOS / WTON
               </Text>
               <Text
                 fontSize={'12px'}
                 fontWeight={500}
                 color={colorMode === 'dark' ? '#9d9ea5' : '#808992'}>
-                Minimum amount TOS: {79}
+                Minimum amount TOS: {commafy(Number(inputAmount) * 0.95 * 0.9)}
               </Text>
             </Flex>
             <Text

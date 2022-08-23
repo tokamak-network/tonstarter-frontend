@@ -431,7 +431,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                       //   hardcap === 0 ||
                       //   fundWithdrew === true
                       // }
-                      isDisabled={true}
+                      // isDisabled={true}
                       _disabled={{
                         color: colorMode === 'light' ? '#86929d' : '#838383',
                         bg: colorMode === 'light' ? '#e9edf1' : '#353535',
@@ -469,7 +469,13 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                               color: '#fff',
                             }
                       }
-                      onClick={() => sendTOS()}>
+                      onClick={() => openAnyModal('Launch_Swap', {
+                        symbol: 'LYDA',
+                        amount: '56,780,000',
+                        project:project,
+                        vault:vault
+                      })}
+                      >
                       Send Funds
                     </Button>
                     {/* <Tooltip

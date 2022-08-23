@@ -64,6 +64,7 @@ type Condition3 = {
   project: any;
   isAdmin: boolean;
   InitialLiquidityCompute: any;
+  createdPool:string;
   mint: Dispatch<SetStateAction<any>>;
 };
 type Condition4 = {
@@ -166,6 +167,8 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
         await receipt.wait();
       }
     } catch (e) {
+      console.log(e);
+      
       store.dispatch(setTxPending({tx: false}));
       store.dispatch(
         //@ts-ignore
@@ -399,6 +402,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
             project={project}
             isAdmin={isAdmin}
             InitialLiquidityCompute={InitialLiquidityCompute}
+            createdPool={createdPool}
             mint={mint}
           />
         )
@@ -747,6 +751,7 @@ export const Condition3: React.FC<Condition3> = ({
   project,
   isAdmin,
   InitialLiquidityCompute,
+  createdPool,
   mint,
 }) => {
   const {colorMode} = useColorMode();
@@ -788,8 +793,8 @@ export const Condition3: React.FC<Condition3> = ({
           mt={'5px'}
           bg={'#257eee'}
           color={'#ffffff'}
-          //  isDisabled={createdPool === ZERO_ADDRESS}
-          isDisabled={true}
+           isDisabled={createdPool === ZERO_ADDRESS}
+          // isDisabled={true}
           _disabled={{
             color: colorMode === 'light' ? '#86929d' : '#838383',
             bg: colorMode === 'light' ? '#e9edf1' : '#353535',
