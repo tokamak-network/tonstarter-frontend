@@ -22,22 +22,33 @@ import {selectModalType} from 'store/modal.reducer';
 import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal';
 import {DEPLOYED} from 'constants/index';
-import {useERC20Token} from 'hooks/useERC20Token';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import swapArrow from 'assets/svgs/swap_arrow_icon.svg';
+import {Contract} from '@ethersproject/contracts';
+import {convertNumber} from 'utils/number';
+// import {fetchSwapPayload} from 'pages/Staking/StakeOptionModal/utils/fetchSwapPayload';
+import commafy from 'utils/commafy';
+import * as ERC20 from 'services/abis/ERC20.json';
+import {getSigner} from 'utils/contract';
+import InitialLiquidityComputeAbi from 'services/abis/Vault_InitialLiquidityCompute.json';
+import store from 'store';
+import {toastWithReceipt} from 'utils';
+import {setTxPending} from 'store/tx.reducer';
+import {openToast} from 'store/app/toast.reducer';
+import {utils} from 'ethers';
 
 const MintModal = () => {
   const {data} = useAppSelector(selectModalType);
-  const {TON_ADDRESS, WTON_ADDRESS} = DEPLOYED;
+  const {TON_ADDRESS, WTON_ADDRESS, TOS_ADDRESS} = DEPLOYED;
   const {account, library} = useActiveWeb3React();
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const {handleCloseModal} = useModal();
+  const {handleCloseModal, handleOpenConfirmModal} = useModal();
   const [distributable, setDistributable] = useState<number>(0);
   const [programDuration, setProgramDuration] = useState<any[]>([0, 0]);
   const [balance, setBalance] = useState('0');
   const [inputAmount, setInputAmount] = useState<string>('0');
-
+  const [tosBalance, setTosBalance] = useState<string>('0');
   const themeDesign = {
     border: {
       light: 'solid 1px #e6eaee',
@@ -65,16 +76,76 @@ const MintModal = () => {
     },
   };
 
-  const {symbol, amount} = data?.data;
+  const {symbol, amount, project, vault} = data?.data;
 
-  const {tokenBalance, tokenSymbol} = useERC20Token({
-    tokenAddress: TON_ADDRESS,
-    isRay: false,
-  });
+  const mint = async () => {
+    if (account === null || account === undefined || library === undefined) {
+      return;
+    }
+    const signer = getSigner(library, account);
+    const InitialLiquidityCompute = new Contract(
+      vault.vaultAddress,
+      InitialLiquidityComputeAbi.abi,
+      library,
+    );
+    const mintAmount = utils.parseUnits(tosBalance,18)
+   
+    
+    try {
+      const receipt = await InitialLiquidityCompute.connect(signer).mint(mintAmount);
+      store.dispatch(setTxPending({tx: true}));
+      handleCloseMintModal();
+      if (receipt) {
+        toastWithReceipt(receipt, setTxPending, 'Launch');
+        await receipt.wait();
+      
+      }
+    } catch (e) {
+      console.log(e);
 
+      store.dispatch(setTxPending({tx: false}));
+      store.dispatch(
+        //@ts-ignore
+        openToast({
+          payload: {
+            status: 'error',
+            title: 'Tx fail to send',
+            description: `something went wrong`,
+            duration: 5000,
+            isClosable: true,
+          },
+        }),
+      );
+    }
+  };
   useEffect(() => {
-    setBalance(tokenBalance);
-  }, []);
+    async function getTOSBalance() {
+
+      if (
+        account === null ||
+        account === undefined ||
+        library === undefined ||
+        data.data.vault === undefined
+      ) {
+        return;
+      }
+      const contract = new Contract(TOS_ADDRESS, ERC20.abi, library);
+      const vaultBalance = await contract.balanceOf(
+        data.data.vault?.vaultAddress,
+      );
+
+      const convertedBalance = convertNumber({
+        amount: vaultBalance.toString(),
+        localeString: true,
+        round: false,
+        type: 'custom',
+        decimalPoints: 18,
+      }) as string;
+
+      setBalance(convertedBalance);
+    }
+    getTOSBalance();
+  }, [data]);
 
   useEffect(() => {
     if (inputAmount.length > 1 && inputAmount.startsWith('0')) {
@@ -87,12 +158,19 @@ const MintModal = () => {
     }
   }, [inputAmount, setInputAmount]);
 
+  useEffect(() => {
+    setTosBalance((Number(inputAmount) * project?.tosPrice).toLocaleString());
+  }, [inputAmount, data]);
+  const handleCloseMintModal = () => {
+    setInputAmount('0');
+    handleCloseModal();
+  };
   return (
     <Modal
       isOpen={data.modal === 'Launch_Mint' ? true : false}
       isCentered
       onClose={() => {
-        handleCloseModal();
+        handleCloseMintModal();
       }}>
       <ModalOverlay />
       <ModalContent
@@ -101,7 +179,7 @@ const MintModal = () => {
         w="350px"
         pt="20px"
         pb="25px">
-        <CloseButton closeFunc={handleCloseModal}></CloseButton>
+        <CloseButton closeFunc={handleCloseMintModal}></CloseButton>
         <ModalBody p={0}>
           <Box
             pb={'1.250em'}
@@ -138,7 +216,7 @@ const MintModal = () => {
                   color={colorMode === 'light' ? '#3d495d' : '#ffffff'}
                   fontWeight={'bold'}
                   fontSize="16px">
-                  WTON
+                  TOS
                 </Text>
                 <NumberInput
                   h="24px"
@@ -175,7 +253,7 @@ const MintModal = () => {
                 <Text
                   fontSize={'12px'}
                   color={colorMode === 'dark' ? '#9d9ea5' : '#808992'}>
-                  Balance: {tokenBalance} {tokenSymbol}
+                  Balance: {balance} TOS
                 </Text>
                 <Button
                   fontSize={'12px'}
@@ -192,9 +270,7 @@ const MintModal = () => {
                       ? '1px solid #535353'
                       : '1px solid #d7d9df'
                   }
-                  onClick={() =>
-                    setInputAmount(tokenBalance.replace(/,/g, ''))
-                  }>
+                  onClick={() => setInputAmount(balance.replace(/,/g, ''))}>
                   MAX
                 </Button>
               </Flex>
@@ -230,7 +306,7 @@ const MintModal = () => {
                   fontWeight={'bold'}
                   lineHeight={1.5}
                   fontSize="20px">
-                  {amount}
+                  {tosBalance}
                 </Text>
               </Flex>
             </Flex>
@@ -238,9 +314,17 @@ const MintModal = () => {
               margin={'35px 25px 25px'}
               fontSize="12px"
               textAlign={'center'}>
-              If the exchange rate of TOS-ProjectToken is not within the range
-              of the average exchange rate of the last 2 minutes + -5% of the
-              exchange rate of TOS-ProjectToken, the operation will be canceled.
+              Depending on the liquidity of the WTON-TOS pool, slippage may
+              occur.
+              <span style={{color: '#ff3b3b'}}>
+                {' '}
+                If slippage of 10% or more occurs, the operation will be
+                cancelled. Therefore, it is recommended to input an appropriate
+                amount of TON according to the liquidity of the pool.{' '}
+              </span>
+              If the exchange rate of WTON-TOS is not within the range of the
+              average exchange rate of the last 2 minutes + -5% of the exchange
+              rate of WTON-TOS, the operation will be canceled.
             </Text>
           </Flex>
         </ModalBody>
@@ -259,8 +343,9 @@ const MintModal = () => {
             _active={{background: ''}}
             _focus={{background: ''}}
             fontSize="14px"
-            color="white">
-          Mint
+            color="white"
+            onClick={mint}>
+            Mint
           </Button>
         </ModalFooter>
       </ModalContent>

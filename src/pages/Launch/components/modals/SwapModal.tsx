@@ -77,17 +77,15 @@ const SwapModal = () => {
     },
   };
 
-  const {tokenBalance, tokenSymbol} = useERC20Token({
-    tokenAddress: TON_ADDRESS,
-    isRay: false,
-  });
+  // const {tokenBalance, tokenSymbol} = useERC20Token({
+  //   tokenAddress: TON_ADDRESS,
+  //   isRay: false,
+  // });
   useEffect(() => {
     async function getTosPrice(){
       const tosPrice = await fetchSwapPayload(library);
       setCurrentTosPrice(tosPrice)
-      setSwapValue(Number(inputAmount) * Number(tosPrice));
-      console.log('tosPrice',tosPrice);
-      
+      setSwapValue(Number(inputAmount) * Number(tosPrice));      
     }
     getTosPrice()
   }, [inputAmount, data]);

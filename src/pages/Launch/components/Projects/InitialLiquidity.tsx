@@ -34,6 +34,8 @@ import Fraction from 'fraction.js';
 import {addPool} from 'pages/Admin/actions/actions';
 import {ZERO_ADDRESS} from 'constants/misc';
 import moment from 'moment';
+import {useModal} from 'hooks/useModal';
+
 // var Fraction = require('fraction.js');
 const {TOS_ADDRESS, UniswapV3Factory, NPM_Address} = DEPLOYED;
 type InitialLiquidity = {
@@ -66,6 +68,7 @@ type Condition3 = {
   InitialLiquidityCompute: any;
   createdPool:string;
   mint: Dispatch<SetStateAction<any>>;
+  vault:any;
 };
 type Condition4 = {
   themeDesign: any;
@@ -77,6 +80,7 @@ type Condition4 = {
   mint: Dispatch<SetStateAction<any>>;
   collect: Dispatch<SetStateAction<any>>;
   npm: any;
+  vault:any;
 };
 export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
   const {colorMode} = useColorMode();
@@ -373,6 +377,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
             mint={mint}
             collect={collect}
             npm={NPM}
+            vault={vault}
           />
         ) : (
           <Condition1
@@ -393,6 +398,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
             mint={mint}
             collect={collect}
             npm={NPM}
+            vault={vault}
           />
         ) : (
           <Condition3
@@ -404,6 +410,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
             InitialLiquidityCompute={InitialLiquidityCompute}
             createdPool={createdPool}
             mint={mint}
+            vault={vault}
           />
         )
       ) : (
@@ -753,9 +760,11 @@ export const Condition3: React.FC<Condition3> = ({
   InitialLiquidityCompute,
   createdPool,
   mint,
+  vault
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
+  const {openAnyModal} = useModal();
 
   const {account, library} = useActiveWeb3React();
   const bn = require('bignumber.js');
@@ -823,7 +832,13 @@ export const Condition3: React.FC<Condition3> = ({
             whiteSpace: 'normal',
           }}
           whiteSpace={'normal'}
-          onClick={mint}>
+          onClick={() => openAnyModal('Launch_Mint', {
+            symbol: project.tokenSymbol,
+            amount: '56,780,000',
+            project:project,
+            vault:vault
+          })}
+          >
           Mint Lp Token
         </Button>
       </GridItem>
@@ -916,6 +931,7 @@ export const Condition4: React.FC<Condition4> = ({
   mint,
   collect,
   npm,
+  vault
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -923,6 +939,7 @@ export const Condition4: React.FC<Condition4> = ({
   const bn = require('bignumber.js');
   const [unclaimedTOS, setUnclaimedTOS] = useState<string>('0');
   const [unclaimedProjTok, setUnclaimedProjTok] = useState<string>('0');
+  const {openAnyModal} = useModal();
 
   useEffect(() => {
     async function getTokenInfo() {
@@ -1024,11 +1041,11 @@ export const Condition4: React.FC<Condition4> = ({
             h={'32px'}
             bg={'#257eee'}
             color={'#ffffff'}
-            // isDisabled={
-            //   Number(tosBalance) === 0 ||
-            //   Number(projTokenBalance) === 0
-            // }
-            isDisabled={true}
+            isDisabled={
+              Number(tosBalance) === 0 ||
+              Number(projTokenBalance) === 0
+            }
+            // isDisabled={true}
             _disabled={{
               color: colorMode === 'light' ? '#86929d' : '#838383',
               bg: colorMode === 'light' ? '#e9edf1' : '#353535',
@@ -1063,7 +1080,14 @@ export const Condition4: React.FC<Condition4> = ({
                     color: '#fff',
                   }
             }
-            onClick={mint}>
+            // onClick={mint} Launch_Mint
+            onClick={() => openAnyModal('Launch_Mint', {
+              symbol: project.tokenSymbol,
+            amount: '56,780,000',
+            project:project,
+            vault:vault,
+            })}
+            >
             Increase
           </Button>
         </Flex>
