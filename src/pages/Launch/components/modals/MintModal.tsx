@@ -76,7 +76,7 @@ const MintModal = () => {
     },
   };
 
-  const {symbol, amount, project, vault} = data?.data;
+  const {symbol, amount, project, vault, type} = data?.data;
 
   const mint = async () => {
     if (account === null || account === undefined || library === undefined) {
@@ -192,7 +192,7 @@ const MintModal = () => {
               fontFamily={theme.fonts.titil}
               color={colorMode === 'light' ? 'gray.250' : 'white.100'}
               textAlign={'center'}>
-              Mint
+              {type}
             </Heading>
           </Box>
           <Flex justifyContent={'center'} alignItems="center" flexDir="column">
@@ -345,7 +345,7 @@ const MintModal = () => {
             fontSize="14px"
             color="white"
             onClick={mint}>
-            Mint
+            {type}
           </Button>
         </ModalFooter>
       </ModalContent>

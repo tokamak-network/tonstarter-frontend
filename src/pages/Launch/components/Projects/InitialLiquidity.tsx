@@ -836,7 +836,8 @@ export const Condition3: React.FC<Condition3> = ({
             symbol: project.tokenSymbol,
             amount: '56,780,000',
             project:project,
-            vault:vault
+            vault:vault,
+            type:'Mint'
           })}
           >
           Mint Lp Token
@@ -1080,12 +1081,12 @@ export const Condition4: React.FC<Condition4> = ({
                     color: '#fff',
                   }
             }
-            // onClick={mint} Launch_Mint
             onClick={() => openAnyModal('Launch_Mint', {
               symbol: project.tokenSymbol,
             amount: '56,780,000',
             project:project,
             vault:vault,
+            type:'Increase'
             })}
             >
             Increase
