@@ -593,6 +593,19 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 } catch (e) {}
               } while (valutIndex >= 0);
 
+              console.log('--PublicVault create--');
+              console.log(
+                `${values.projectName}_${selectedVaultDetail?.vaultName}`,
+                selectedVaultDetail?.adminAddress,
+                [
+                  values.tokenAddress,
+                  //@ts-ignore
+                  selectedVaultDetail?.addressForReceiving,
+                  values.vaults[1].vaultAddress,
+                ],
+                valutIndex,
+              );
+
               const tx = await vaultContract?.connect(signer).create(
                 `${values.projectName}_${selectedVaultDetail?.vaultName}`,
                 selectedVaultDetail?.adminAddress,
@@ -1081,6 +1094,9 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 PublicSaleVaultAbi.abi,
                 library,
               );
+
+              console.log('--PublicVault setAllsetting--');
+              console.log(param0, param1, param2, param3, param4);
 
               const tx = await publicVaultSecondContract
                 ?.connect(signer)

@@ -27,6 +27,7 @@ export async function createStarter(args: AdminObject) {
     }
     return res.data;
   } catch (e) {
+    console.log('**createStarter err**');
     console.log(e);
   }
 }
