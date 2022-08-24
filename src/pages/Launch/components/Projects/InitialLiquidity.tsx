@@ -1043,8 +1043,8 @@ export const Condition4: React.FC<Condition4> = ({
             bg={'#257eee'}
             color={'#ffffff'}
             isDisabled={
-              Number(tosBalance) === 0 ||
-              Number(projTokenBalance) === 0
+              Number(tosBalance) <1 ||
+              Number(projTokenBalance) < 1
             }
             // isDisabled={true}
             _disabled={{
