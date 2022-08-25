@@ -23,7 +23,7 @@ import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal';
 import {DEPLOYED} from 'constants/index';
 import {useActiveWeb3React} from 'hooks/useWeb3';
-import swapArrow from 'assets/svgs/swap_arrow_icon.svg';
+import swapArrow from 'assets/svgs/swap_arrow.svg';
 import {Contract} from '@ethersproject/contracts';
 import {convertNumber} from 'utils/number';
 // import {fetchSwapPayload} from 'pages/Staking/StakeOptionModal/utils/fetchSwapPayload';

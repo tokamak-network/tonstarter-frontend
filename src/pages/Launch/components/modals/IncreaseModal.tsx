@@ -24,7 +24,7 @@ import {
   import {DEPLOYED} from 'constants/index';
   import {useERC20Token} from 'hooks/useERC20Token';
   import {useActiveWeb3React} from 'hooks/useWeb3';
-  import swapArrow from 'assets/svgs/swap_arrow_icon.svg';
+  import swapArrow from 'assets/svgs/swap_arrow.svg';
   
   const IncreaseModal = () => {
     const {data} = useAppSelector(selectModalType);
