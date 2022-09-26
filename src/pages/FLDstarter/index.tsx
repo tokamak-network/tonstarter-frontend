@@ -28,7 +28,7 @@ export const FLDstarter = () => {
 
   return (
     <Fragment>
-      <Head title={'TON Starter'} />
+      <Head title={'TONStarter'} />
       <Animation></Animation>
       <Stack>
         <Container maxW={'6xl'} py={12}>

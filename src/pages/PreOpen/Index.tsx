@@ -49,7 +49,7 @@ export const MobilePreOpen = () => {
 
   return (
     <Fragment>
-      <Head title={'TON Starter'} />
+      <Head title={'TONStarter'} />
       <Flex
         bg={'blue.200'}
         w={'100%'}
@@ -71,7 +71,7 @@ export const MobilePreOpen = () => {
             fontSize={'1.813em'}
             fontWeight={600}>
             <Text>
-              <span style={{color: '#ffff07'}}>TON Starter</span> is optimized
+              <span style={{color: '#ffff07'}}>TONStarter</span> is optimized
             </Text>
             <Text>on the web</Text>
             <Text>Mobile is</Text>
