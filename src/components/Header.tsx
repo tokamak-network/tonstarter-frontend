@@ -661,6 +661,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
 };
 
 const NavBarContainer = ({children, ...rest}: {children: any}) => {
+  const {colorMode} = useColorMode();
   return (
     <Flex
       as="nav"
@@ -671,8 +672,7 @@ const NavBarContainer = ({children, ...rest}: {children: any}) => {
       px={8}
       py={4}
       pr={3}
-      pos="absolute"
-      zIndex={1000}
+      bg={colorMode === 'light' ? '#007aff' : '#222222'}
       {...rest}>
       {children}
     </Flex>
