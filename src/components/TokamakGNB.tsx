@@ -55,7 +55,7 @@ function TokamakGNB() {
       <Menu
         title={'Swap'}
         w={'76px'}
-        url={'https://swap.tokamak.network/'}></Menu>
+        url={'https://tonswapper.vercel.app/'}></Menu>
     </Flex>
   );
 }
