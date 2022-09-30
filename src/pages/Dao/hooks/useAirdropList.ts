@@ -54,12 +54,14 @@ const useAirdropList = () => {
 
       const tokens = claimableTokens;
       const nowTimeStamp = moment().unix();
+
       const result: {tokenName: string; amount: string}[] = await Promise.all(
         tokens.map(async (token: string) => {
           const tokenAmount = await LOCKTOS_DIVIDEND_CONTRACT?.tokensPerWeekAt(
             token,
             nowTimeStamp,
           );
+
           const ERC20_CONTRACT = new Contract(token, ERC20.abi, library);
           const tokenSymbol = await ERC20_CONTRACT.symbol();
           const tokenDecimals = await ERC20_CONTRACT.decimals();
