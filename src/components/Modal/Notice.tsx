@@ -83,13 +83,23 @@ const NoticeModal = () => {
               not work for up to 24 hours to upgrade the TOSv2 staking contract.
             </Text>
             <Text>The exact schedule will be updated later.</Text>
-            <Text>
-              Check{' '}
-              <Link color={'#2a72e5'} isExternal={true} href={link}>
-                {link}
-              </Link>{' '}
-              for more details.
-            </Text>
+            <Flex>
+              <Text>Check our medium article [</Text>
+              <Link
+                color={'#2a72e5'}
+                isExternal={true}
+                href="https://medium.com/onther-tech/tonstarter-planned-service-maintenance-smart-contract-upgrade-announcement-4362b02403c2">
+                EN
+              </Link>
+              ,
+              <Link
+                color={'#2a72e5'}
+                isExternal={true}
+                href="https://medium.com/onther-tech/%ED%86%A4%EC%8A%A4%ED%83%80%ED%84%B0-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%9C%A0%EC%A7%80-%EB%B3%B4%EC%88%98-%EB%B0%8F-%EC%8A%A4%EB%A7%88%ED%8A%B8-%EC%BB%A8%ED%8A%B8%EB%9E%99%ED%8A%B8-%EC%97%85%EA%B7%B8%EB%A0%88%EC%9D%B4%EB%93%9C-%EA%B3%B5%EC%A7%80-eaea40e9c8f6">
+                KR
+              </Link>
+              <Text>] for more details.</Text>
+            </Flex>
           </Flex>
 
           <Box mt={'25px'} mb={'25px'} px={'15px'}>
@@ -100,7 +110,9 @@ const NoticeModal = () => {
             <CustomButton
               text={'Detail'}
               func={() => {
-                window.open(link);
+                window.open(
+                  'https://medium.com/onther-tech/tonstarter-planned-service-maintenance-smart-contract-upgrade-announcement-4362b02403c2',
+                );
               }}
               style={{
                 marginRight: '12px',
