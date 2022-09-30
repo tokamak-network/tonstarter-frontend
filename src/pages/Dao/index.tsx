@@ -6,6 +6,7 @@ import {
   Image,
   useColorMode,
   useTheme,
+  Link,
 } from '@chakra-ui/react';
 import resources_icon from 'assets/svgs/resources_icon.svg';
 import {STOS} from './components/STOS';
@@ -41,6 +42,42 @@ export const DAO = () => {
   return (
     <Flex mb={'105px'}>
       <Flex mt={theme.headerMargin.mt} w="100%" flexDir="column">
+        <Flex flexDir={'column'} pl={'18.9%'} mt={'39px'}>
+          <Flex fontSize={20} fontWeight={'bold'}>
+            <Text color={'#2a72e5'}>[Notice]</Text>
+            <Text ml={'3px'}>
+              Planned service maintenance & smart contract upgrade announcement
+            </Text>
+          </Flex>
+          <Flex
+            fontSize={15}
+            flexDir={'column'}
+            mt={'15px'}
+            fontFamily={theme.fonts.fld}>
+            <Text>
+              Sometime between October ~ November 2022, TONStarter’s DAO page
+              will be deprecated and moved under the new TOSv2’s DAO page.
+              TONStarter DAO page’s “Manage”,
+            </Text>
+            <Text>
+              “Unstake”, “Stake” functionality will not work for up to 24 hours
+              to upgrade the TOSv2 staking contract. The exact schedule will be
+              updated later.
+            </Text>
+            <Flex>
+              <Text>Check</Text>
+              <Link
+                mx={'4px'}
+                color={'#2a72e5'}
+                isExternal={true}
+                href="https://tonstarter.tokamak.network/dao">
+                https://tonstarter.tokamak.network/dao
+              </Link>
+              <Text>for more details.</Text>
+            </Flex>
+          </Flex>
+        </Flex>
+
         <Flex justifyContent="center">
           <Flex w={572} mr={158} mt={'60px'} flexDir="column">
             <Box mb={'45px'}>
