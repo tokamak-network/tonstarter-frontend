@@ -68,7 +68,7 @@ const NoticeModal = () => {
             // pr={'27px'}
             fontSize={15}
             fontFamily={theme.fonts.fld}
-            color={colorMode === 'light' ? 'gray.250' : '#353c48'}>
+            color={colorMode === 'light' ? 'gray.250' : '#f3f4f1'}>
             <Text>
               Sometime between October ~ November 2022, TONStarter’s DAO page
             </Text>
@@ -104,8 +104,7 @@ const NoticeModal = () => {
               }}
               style={{
                 marginRight: '12px',
-                backgroundColor: colorMode === 'light' ? '#257eee' : '#222',
-                border: colorMode === 'light' ? '' : '1px solid #535353',
+                backgroundColor: '#257eee',
                 color: colorMode === 'light' ? '#ffffff' : '',
               }}></CustomButton>
             <CustomButton
