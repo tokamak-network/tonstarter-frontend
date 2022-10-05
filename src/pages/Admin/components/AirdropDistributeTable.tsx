@@ -68,18 +68,21 @@ export const AirdropDistributeTable = () => {
   const [loadingData, setLoadingData] = useState<boolean>(true);
   const {airdropList} = useAirdropList();
 
+  console.log('--airdropList--');
+  console.log(airdropList);
+  console.log(distributedTosTokens);
+
   useEffect(() => {
     if (airdropList) return setDistributedTosTokens(airdropList);
   }, [airdropList]);
 
   useEffect(() => {
     if (distributedTosTokens) {
+      const isEmpty = distributedTosTokens.every((token: any) => {
+        return token.amount === '0.00';
+      });
+      setEmpty(isEmpty);
 
-      const isEmpty = distributedTosTokens.every((token:any) => {
-        return token.amount === '0.00'
-      })
-     setEmpty(isEmpty)
-      
       setLoadingData(false);
     }
   }, [distributedTosTokens]);
@@ -163,8 +166,9 @@ export const AirdropDistributeTable = () => {
           Distribute
         </Button>
       </Flex>
-      {distributedTosTokens !== undefined &&
-      distributedTosTokens.length === 0  || empty? (
+      {(distributedTosTokens !== undefined &&
+        distributedTosTokens.length === 0) ||
+      empty ? (
         <Flex
           justifyContent={'center'}
           alignItems={'center'}
@@ -173,7 +177,7 @@ export const AirdropDistributeTable = () => {
           h={'200px'}
           fontFamily={theme.fonts.fld}
           fontSize={'16px'}
-          borderRadius='10px'
+          borderRadius="10px"
           border={themeDesign.border[colorMode]}>
           <Text>No distributions scheduled this round.</Text>
         </Flex>
@@ -183,14 +187,12 @@ export const AirdropDistributeTable = () => {
             border={themeDesign.border[colorMode]}
             className={'chart-cell'}
             borderTopLeftRadius={'4px'}
-         
-          p={0}
+            p={0}
             fontSize={'12px'}
             padding={'16px 35px'}
             height={'45px'}
-            borderRight='none'
+            borderRight="none"
             fontFamily={theme.fonts.roboto}>
-           
             <Text minWidth={'50%'} textAlign={'center'} fontSize={'12px'}>
               Token Symbol
             </Text>
@@ -201,13 +203,12 @@ export const AirdropDistributeTable = () => {
           <GridItem
             border={themeDesign.border[colorMode]}
             className={'chart-cell'}
-          borderTopEndRadius={'4px'}
-          p={0}
+            borderTopEndRadius={'4px'}
+            p={0}
             fontSize={'12px'}
             padding={'16px 35px'}
             height={'45px'}
             fontFamily={theme.fonts.roboto}>
-            
             <Text minWidth={'50%'} textAlign={'center'} fontSize={'12px'}>
               Token Symbol
             </Text>
@@ -224,7 +225,7 @@ export const AirdropDistributeTable = () => {
                 border={themeDesign.border[colorMode]}
                 h={'55px'}
                 p={0}
-                borderRight={airdropList && index%2 ===0? 'none': ''}
+                borderRight={airdropList && index % 2 === 0 ? 'none' : ''}
                 // borderBottom={
                 //   airdropList && index === airdropList?.length - 1 ? '' : 'none'
                 // }
@@ -235,7 +236,7 @@ export const AirdropDistributeTable = () => {
                 fontSize={'16px'}
                 fontFamily={theme.fonts.fld}
                 d={'flex'}
-                borderTop='none'
+                borderTop="none"
                 justifyContent={'center'}
                 key={token.tokenName}>
                 <Text
@@ -257,15 +258,19 @@ export const AirdropDistributeTable = () => {
               </GridItem>
             );
           })}
-            {airdropList  && airdropList.length%2 !== 0?  <GridItem
-            border={themeDesign.border[colorMode]}
-            className={'chart-cell'}
-          // borderBottomRightRadius={'4px'}
-         borderTop='none'
-            fontSize={'12px'}
-            padding={'16px 35px'}
-            h={'55px'}
-            fontFamily={theme.fonts.roboto}></GridItem>: <></>}
+          {airdropList && airdropList.length % 2 !== 0 ? (
+            <GridItem
+              border={themeDesign.border[colorMode]}
+              className={'chart-cell'}
+              // borderBottomRightRadius={'4px'}
+              borderTop="none"
+              fontSize={'12px'}
+              padding={'16px 35px'}
+              h={'55px'}
+              fontFamily={theme.fonts.roboto}></GridItem>
+          ) : (
+            <></>
+          )}
         </Grid>
       )}
     </Flex>

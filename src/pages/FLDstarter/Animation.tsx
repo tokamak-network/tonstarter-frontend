@@ -26,7 +26,7 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 import views from '../Reward/rewards';
 import {selectTransactionType} from 'store/refetch.reducer';
 // import {getLiquidity} from '../Reward/utils/getLiquidity';
-import { fetchPoolPayload } from 'pages/Reward/utils/fetchPoolPayload';
+import {fetchPoolPayload} from 'pages/Reward/utils/fetchPoolPayload';
 
 export interface HomeProps extends HTMLAttributes<HTMLDivElement> {
   classes?: string;
@@ -202,7 +202,7 @@ export const Animation: React.FC<HomeProps> = () => {
     lastPhase: 6,
     lastCircle: 7,
   });
-  
+
   const {account, library} = useActiveWeb3React();
   const [poolAddresses, setPoolAddresses] = useState<string[]>([]);
   const [poolsFromAPI, setPoolsFromAPI] = useState<any>([]);
@@ -213,7 +213,7 @@ export const Animation: React.FC<HomeProps> = () => {
   //     const tosPrices = await fetch(fetchTosPriceURL)
   //       .then((res) => res.json())
   //       .then((result) => result);
-      
+
   //     const ethPrices = await fetch(fetchEthPriceURL)
   //       .then((res) => res.json())
   //       .then((result) => result);
@@ -390,22 +390,22 @@ export const Animation: React.FC<HomeProps> = () => {
   }, [account, transactionType, blockNumber, poolArr]);
 
   useEffect(() => {
-    async function calcLiquidity () {
+    async function calcLiquidity() {
       let totalLiquidity = 0;
-      const tvl = await fetchPoolPayload(library)
-      for (const liquidity of tvl) {
-        totalLiquidity = totalLiquidity + Number(liquidity.total)
+      const tvl = await fetchPoolPayload(library);
+      if (tvl) {
+        for (const liquidity of tvl) {
+          totalLiquidity = totalLiquidity + Number(liquidity.total);
+        }
+        const res = Number(totalLiquidity).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+        });
+        setLiquidity(
+          res.split('.')[0] + '.' + res.split('.')[1][0] + res.split('.')[1][1],
+        );
       }
-      const res = Number(totalLiquidity).toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-      });
-      setLiquidity(
-        res.split('.')[0] + '.' + res.split('.')[1][0] + res.split('.')[1][1],
-      );
     }
-    calcLiquidity()
-      
-    
+    calcLiquidity();
   }, [library, pool]);
 
   useEffect(() => {

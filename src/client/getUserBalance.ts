@@ -82,14 +82,18 @@ export const getUserWTONBalance = async ({account, library}: UserContract) => {
 };
 
 export const getUserTOSStaked = async ({account, library}: any) => {
-  const {LockTOS_ADDRESS} = DEPLOYED;
-  const LockTOSContract = new Contract(
-    LockTOS_ADDRESS,
-    LockTOSABI.abi,
-    library,
-  );
-  const res = await LockTOSContract.totalLockedAmountOf(account);
-  return convertNumber({amount: res.toString(), localeString: true});
+  try {
+    const {LockTOS_ADDRESS} = DEPLOYED;
+    const LockTOSContract = new Contract(
+      LockTOS_ADDRESS,
+      LockTOSABI.abi,
+      library,
+    );
+    const res = await LockTOSContract.totalLockedAmountOf(account);
+    return convertNumber({amount: res.toString(), localeString: true});
+  } catch (e) {
+    return '-';
+  }
 };
 
 export const getUserSTOSBalance = async ({account, library}: any) => {
