@@ -26,6 +26,5 @@ export type ClaimList = {
   name: string;
   claimAmount: string;
   tokenName: string;
-  price: number;
   tokenAddress: string;
 };

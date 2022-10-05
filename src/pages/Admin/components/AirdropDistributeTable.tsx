@@ -68,10 +68,6 @@ export const AirdropDistributeTable = () => {
   const [loadingData, setLoadingData] = useState<boolean>(true);
   const {airdropList} = useAirdropList();
 
-  console.log('--airdropList--');
-  console.log(airdropList);
-  console.log(distributedTosTokens);
-
   useEffect(() => {
     if (airdropList) return setDistributedTosTokens(airdropList);
   }, [airdropList]);
