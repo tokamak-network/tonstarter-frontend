@@ -120,7 +120,7 @@ export const ManageModal = () => {
   //constant
 
   //getCurrentBlock
-  useEffect(() => {    
+  useEffect(() => {
     async function getCurrentBlock() {
       const currentBlock = await BASE_PROVIDER.getBlockNumber();
       setCurrentBlock(currentBlock);
@@ -171,8 +171,10 @@ export const ManageModal = () => {
           totalStakedAmountL2,
           totalPendingUnstakedAmountL2,
           stakeContractBalanceTon,
+          stakeContractBalanceWton,
           originalBalance,
         } = result;
+        //@ts-ignore
         const res_CanWithdralAmount = await fetchWithdrawPayload(
           library,
           contractAddress,
@@ -187,10 +189,15 @@ export const ManageModal = () => {
           totalStakedAmountL2 &&
           totalPendingUnstakedAmountL2 &&
           stakeContractBalanceTon &&
+          stakeContractBalanceWton &&
           res_CanWithdralAmount &&
           fetchedSwappedTosBalance
         ) {
-          setAvailableBalance(stakeContractBalanceTon);
+          const totalStakedBalance =
+            Number(stakeContractBalanceTon.replaceAll(',', '')) +
+            Number(stakeContractBalanceWton.replaceAll(',', ''));
+
+          setAvailableBalance(totalStakedBalance.toString() || '0');
           setTotalStaked(totalStakedAmount);
           setStakdL2(totalStakedAmountL2);
           setPendingL2Balance(totalPendingUnstakedAmountL2);
