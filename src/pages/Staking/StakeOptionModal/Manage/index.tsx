@@ -197,7 +197,7 @@ export const ManageModal = () => {
             Number(stakeContractBalanceTon.replaceAll(',', '')) +
             Number(stakeContractBalanceWton.replaceAll(',', ''));
 
-          setAvailableBalance(totalStakedBalance.toString() || '0');
+          setAvailableBalance(totalStakedBalance.toString() || '-');
           setTotalStaked(totalStakedAmount);
           setStakdL2(totalStakedAmountL2);
           setPendingL2Balance(totalPendingUnstakedAmountL2);
@@ -219,7 +219,7 @@ export const ManageModal = () => {
             return setSwapBalance('0.00');
           }
 
-          setSwapBalance(totalStakedBalance);
+          setSwapBalance(totalStakedBalance.toString() || '-');
 
           //calculate swap balance
           // if (Number(convertedUnstakeNum) <= 0) {
