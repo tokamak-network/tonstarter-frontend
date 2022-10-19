@@ -28,8 +28,8 @@ import {MobileHeader} from './Mobile/Components/MobileHeader';
 import MobileOpenCampagin from './Mobile/Pages/Launch/Index';
 import MobileProjectScreen from './Mobile/Pages/Launch/MobileProjectScreen';
 import MobileAirDrop from './Mobile/Pages/AirDrop/index';
-import { MobileFLD } from './Mobile/Pages/MobileFLD.';
-import { MobileFooter } from './Mobile/Components/MobileFooter';
+import {MobileFLD} from './Mobile/Pages/MobileFLD.';
+import {MobileFooter} from './Mobile/Components/MobileFooter';
 import {
   CreateProject,
   ListingProjects,
@@ -41,6 +41,7 @@ import {fetchTosStakes} from '@Dao/dao.reducer';
 import OpenCampagin from '@Launch/index';
 import MainScreen from '@Launch/MainScreen';
 import ProjectScreen from '@Launch/ProjectScreen';
+import ConfirmTermsModal from '@Launch/components/modals/ConfirmTerms';
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
 /*
@@ -177,24 +178,31 @@ export const Router: FC<RouterProps> = () => {
     return (
       <div
         style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
-        <MobileHeader account={account}   walletopen={() => handleWalletModalOpen('wallet')}/>
+        <MobileHeader
+          account={account}
+          walletopen={() => handleWalletModalOpen('wallet')}
+        />
         <div style={{flex: 1}}>
-        <Switch>
-        <Route exact path="/" component={MobileFLD} />
-        <Route exact path="/myairdrop" component={MobileAirDrop} />
-        <Route exact path={`/launch`} component={MobileOpenCampagin} />
-        <Route
-            exact
-            path={`/launch/project/:name`}
-            component={MobileProjectScreen}
-          />
-        </Switch>
+          <Switch>
+            <Route exact path="/" component={MobileFLD} />
+            <Route exact path="/myairdrop" component={MobileAirDrop} />
+            <Route exact path={`/launch`} component={MobileOpenCampagin} />
+            <Route
+              exact
+              path={`/launch/project/:name`}
+              component={MobileProjectScreen}
+            />
+          </Switch>
         </div>
-        <MobileFooter/>
-        <WalletModal state={walletState} isOpen={isModalOpen} onClose={onClose} />
+        <MobileFooter />
+        <WalletModal
+          state={walletState}
+          isOpen={isModalOpen}
+          onClose={onClose}
+        />
       </div>
     );
-  } 
+  }
   // else if (width > 480 && width < 1100) {
   //   return <MobilePreOpen />;
   // }
@@ -233,6 +241,7 @@ export const Router: FC<RouterProps> = () => {
           /> */}
         </Switch>
       </div>
+      <ConfirmTermsModal></ConfirmTermsModal>
       <Footer />
       <WalletModal state={walletState} isOpen={isModalOpen} onClose={onClose} />
       <AirdropModal />
