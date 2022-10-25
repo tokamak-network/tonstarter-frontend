@@ -546,10 +546,12 @@ export const ManageModal = () => {
               fontSize={'12px'}
               fontWeight={100}
               _hover={{backgroundColor: 'blue.100'}}
-              {...(stakeL2Disabled === true
-                ? {...btnStyle.btnDisable({colorMode})}
-                : {...btnStyle.btnAble()})}
-              isDisabled={stakeL2Disabled}
+              // {...(stakeL2Disabled === true
+              //   ? {...btnStyle.btnDisable({colorMode})}
+              //   : {...btnStyle.btnAble()})}
+              // isDisabled={stakeL2Disabled}
+              {...btnStyle.btnDisable({colorMode})}
+              isDisabled={true}
               onClick={() =>
                 handleOpenConfirmModal({
                   type: 'manage_stakeL2',
