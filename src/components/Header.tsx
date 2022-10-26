@@ -263,7 +263,13 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
         <NavLink
           to="/staking"
           className={match?.isExact ? 'link-match' : 'link'}
-          style={{zIndex: 100, fontFamily: theme.fonts.openSans}}>
+          style={{zIndex: 100, fontFamily: theme.fonts.openSans, background: match?.isExact
+            ? colorMode === 'light'
+              ? '#007aff'
+              : '#222222'
+            : colorMode === 'light'
+            ? 'transparent'
+            : '#222222',}}>
           Staking
         </NavLink>
         <Menu>
@@ -272,6 +278,13 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
               fontSize={16}
               fontFamily={theme.fonts.openSans}
               fontWeight={600}
+              bg={ match?.isExact
+                ? colorMode === 'light'
+                  ? '#007aff'
+                  : '#222222'
+                : colorMode === 'light'
+                ? 'transparent'
+                : '#222222'}
               color={
                 pools?.isExact || reward?.isExact
                   ? colorMode === 'light'
@@ -335,25 +348,54 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
         <NavLink
           to="/dao"
           className={match?.isExact ? 'link-match' : 'link'}
-          style={{zIndex: 100, fontFamily: theme.fonts.openSans}}>
+          style={{
+            zIndex: 100,
+            fontFamily: theme.fonts.openSans,
+            background: match?.isExact
+              ? colorMode === 'light'
+                ? '#007aff'
+                : '#222222'
+              : colorMode === 'light'
+              ? 'transparent'
+              : '#222222',
+          }}>
           DAO
         </NavLink>
         <NavLink
           to="/starter"
           className={match?.isExact ? 'link-match' : 'link'}
-          style={{zIndex: 100, fontFamily: theme.fonts.openSans}}>
+          style={{zIndex: 100, fontFamily: theme.fonts.openSans, background: match?.isExact
+            ? colorMode === 'light'
+              ? '#007aff'
+              : '#222222'
+            : colorMode === 'light'
+            ? 'transparent'
+            : '#222222',}}>
           Starter
         </NavLink>
         <NavLink
           to="/launch"
           className={match?.isExact ? 'link-match' : 'link'}
-          style={{zIndex: 100, fontFamily: theme.fonts.openSans}}>
+          style={{zIndex: 100, fontFamily: theme.fonts.openSans, background: match?.isExact
+            ? colorMode === 'light'
+              ? '#007aff'
+              : '#222222'
+            : colorMode === 'light'
+            ? 'transparent'
+            : '#222222',}}>
           Launch
         </NavLink>
         <Menu>
           <MenuButton>
             <Text
               fontFamily={theme.fonts.openSans}
+              bg={ match?.isExact
+                ? colorMode === 'light'
+                  ? '#007aff'
+                  : '#222222'
+                : colorMode === 'light'
+                ? 'transparent'
+                : '#222222'}
               className={match?.isExact ? 'link-match' : 'link'}>
               Docs
             </Text>
@@ -589,16 +631,7 @@ const NavBarContainer = ({children, ...rest}: {children: any}) => {
       // py={4}
       // pr={3}
       h="78px"
-      // bg={
-      //   match?.isExact
-      //     ? colorMode === 'light'
-      //       ? '#007aff'
-      //       : '#222222'
-      //     : colorMode === 'light'
-      //     ? 'transparent'
-      //     : '#222222'
-      // }
-      bg='transparent'
+      bg="transparent"
       {...rest}>
       {children}
     </Flex>
