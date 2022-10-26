@@ -450,7 +450,7 @@ export const Staking = () => {
     <Fragment>
       <Head title={'Staking'} />
       <Container maxW={'6xl'}>
-        <Box py={20}>
+        <Box pb={20}>
           <PageHeader
             title={'Staking'}
             subtitle={

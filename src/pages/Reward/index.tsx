@@ -585,7 +585,7 @@ export const Reward = () => {
     <Fragment>
       <Head title={'Reward'} />
       <Container maxW={'6xl'}>
-        <Box py={20}>
+        <Box pb={20}>
           <PageHeader
             title={'Rewards Program'}
             subtitle={'Stake Uniswap V3 liquidity tokens and receive rewards! '}

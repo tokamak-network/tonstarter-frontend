@@ -40,9 +40,9 @@ export const DAO = () => {
 
   return (
     <Flex mb={'105px'}>
-      <Flex mt={theme.headerMargin.mt} w="100%" flexDir="column">
+      <Flex  w="100%" flexDir="column">
         <Flex justifyContent="center">
-          <Flex w={572} mr={158} mt={'60px'} flexDir="column">
+          <Flex w={572} mr={158} mt={'70px'} flexDir="column">
             <Box mb={'45px'}>
               <Text
                 color={themeDesign.fontColor[colorMode]}
@@ -103,7 +103,7 @@ export const DAO = () => {
               <Utility></Utility>
             </Flex>
           </Flex>
-          <Flex mt={'57px'}>
+          <Flex mt={'70px'}>
             <STOS></STOS>
           </Flex>
         </Flex>

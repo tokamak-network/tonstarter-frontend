@@ -598,15 +598,15 @@ const theme = extendTheme({
           color: mode('gray.200', 'gray.125')(props),
         },
         '.link': {
-          font: fonts.body,
-          fontSize: 17,
-          fontWeight: 'bold',
+        
+          fontSize: 16,
+          fontWeight: 600,
           color: mode('gray.275', 'white.100')(props),
         },
         '.link-match': {
-          font: fonts.body,
-          fontSize: 17,
-          fontWeight: 'bold',
+         
+          fontSize: 16,
+          fontWeight: 600,
           color: mode('gray.0', 'white.100')(props),
         },
         '.fld-text1': {

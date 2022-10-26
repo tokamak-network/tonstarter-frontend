@@ -8,6 +8,8 @@ import {
   CircularProgress,
   useColorMode,
   Text,
+  Grid,
+  GridItem,
   // Tooltip,
 } from '@chakra-ui/react';
 import React from 'react';
@@ -44,26 +46,35 @@ export const Header: React.FC<HeaderProps> = (props) => {
 
   return (
     <NavBarContainer {...props}>
-      <Flex justifyContent={'space-between'}>
-        <NavLink to="/">
-          <Image
-            src={
-              match?.isExact
-                ? logoLight
-                : colorMode === 'light'
-                ? logoGray
-                : logoLight
-            }
-            color="white.200"
-            w={'11.375em'}
-            h={'1.5625em'}
-            alt="TON Starter Logo"
-          />
-        </NavLink>
-        <MenuItems isOpen={isOpen} {...props} />
-      </Flex>
-      <MenuToggle toggle={toggle} isOpen={isOpen} />
-      <MenuLinks isOpen={isOpen} {...props} />
+      <Grid templateColumns="repeat(3, 1fr)" h="78px" w="100%">
+        <GridItem display="flex" alignItems={'center'}>
+          <NavLink to="/">
+            <Image
+              src={
+                match?.isExact
+                  ? logoLight
+                  : colorMode === 'light'
+                  ? logoGray
+                  : logoLight
+              }
+              color="white.200"
+              w={'11.375em'}
+              h={'1.5625em'}
+              alt="TON Starter Logo"
+              justifySelf={'flex-start'}
+            />
+          </NavLink>
+        </GridItem>
+        <GridItem display="flex" alignItems={'center'} justifyContent="center">
+          <MenuItems isOpen={isOpen} {...props} />
+        </GridItem>
+        <GridItem
+          display="flex"
+          alignItems={'center'}
+          justifyContent="flex-end">
+          <MenuLinks isOpen={isOpen} {...props} />
+        </GridItem>
+      </Grid>
     </NavBarContainer>
   );
 };
@@ -180,45 +191,6 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
           ) : null}
         </Button>
         {account ? (
-          // <NavLink to="/myairdrop" style={{marginLeft: '0'}}>
-          //   <Button
-          //     w={'7.875rem'}
-          //     h={'2.188rem'}
-          //     style={{marginLeft: '15px'}}
-          //     marginLeft="15px"
-          //     p={0}
-          //     bg={
-          //       colorMode === 'dark'
-          //         ? 'black.200'
-          //         : match?.isExact
-          //         ? 'blue.200'
-          //         : '#2a72e5'
-          //     }
-          //     borderWidth={
-          //       colorMode === 'light' && match?.isExact === false ? '' : 1
-          //     }
-          //     borderColor={
-          //       colorMode === 'dark'
-          //         ? '#d7d9df'
-          //         : match?.isExact
-          //         ? '#a6d0ff'
-          //         : ''
-          //     }
-          //     borderRadius={'19px'}
-          //     color={
-          //       colorMode === 'dark'
-          //         ? theme.colors.gray[0]
-          //         : match?.isExact
-          //         ? 'white.100'
-          //         : 'white.100'
-          //     }
-          //     fontWeight={500}
-          //     fontSize={'15px'}
-          //     _hover={{}}
-          //     _active={{backgroundColor: 'none'}}>
-          //     My Airdrop
-          //   </Button>
-          // </NavLink>
           <NavLink to="/myairdrop" style={{marginLeft: '0'}}>
             <Button
               w={'7.875rem'}
@@ -280,9 +252,10 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
     <Box
       display={{base: isOpen ? 'block' : 'none', md: 'block'}}
       flexBasis={{base: '100%', md: 'auto'}}
-      ml={100}>
+      // ml={100}
+    >
       <Stack
-        spacing={8}
+        spacing={'60px'}
         align="center"
         justify={['center', 'space-between', 'flex-end', 'flex-end']}
         direction={['column', 'column', 'column', 'row']}
@@ -290,14 +263,15 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
         <NavLink
           to="/staking"
           className={match?.isExact ? 'link-match' : 'link'}
-          style={{zIndex: 100}}>
+          style={{zIndex: 100, fontFamily: theme.fonts.openSans}}>
           Staking
         </NavLink>
         <Menu>
           <MenuButton>
             <Text
-              fontSize={17}
-              fontWeight={'bold'}
+              fontSize={16}
+              fontFamily={theme.fonts.openSans}
+              fontWeight={600}
               color={
                 pools?.isExact || reward?.isExact
                   ? colorMode === 'light'
@@ -361,24 +335,28 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
         <NavLink
           to="/dao"
           className={match?.isExact ? 'link-match' : 'link'}
-          style={{zIndex: 100}}>
+          style={{zIndex: 100, fontFamily: theme.fonts.openSans}}>
           DAO
         </NavLink>
         <NavLink
           to="/starter"
           className={match?.isExact ? 'link-match' : 'link'}
-          style={{zIndex: 100}}>
+          style={{zIndex: 100, fontFamily: theme.fonts.openSans}}>
           Starter
         </NavLink>
         <NavLink
           to="/launch"
           className={match?.isExact ? 'link-match' : 'link'}
-          style={{zIndex: 100}}>
+          style={{zIndex: 100, fontFamily: theme.fonts.openSans}}>
           Launch
         </NavLink>
         <Menu>
           <MenuButton>
-            <Text className={match?.isExact ? 'link-match' : 'link'}>Docs</Text>
+            <Text
+              fontFamily={theme.fonts.openSans}
+              className={match?.isExact ? 'link-match' : 'link'}>
+              Docs
+            </Text>
           </MenuButton>
           <MenuList
             pos={'absolute'}
@@ -591,70 +569,6 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
             </Box>
           </MenuList>
         </Menu>
-
-        {/* <Menu>
-          <MenuButton>
-            <Text className={match?.isExact ? 'link-match' : 'link'}>
-              Admin
-            </Text>
-          </MenuButton>
-          <MenuList
-            pos={'absolute'}
-            left={'-33px'}
-            top={'15px'}
-            minW={'182px'}
-            w={'182px'}
-            h={'148px'}
-            p={0}
-            fontSize={13}
-            background={'#ffffff'}>
-            <NavLink
-              to="/admin/createproject"
-              activeStyle={{background: '#ffffff', color: '#1c1c1c'}}
-              style={{background: '#ffffff', color: '#1c1c1c'}}>
-              <MenuItem
-                _hover={{color: 'blue.100', bg: 'none'}}
-                w={'100%'}
-                h={'37px'}
-                _focus={{bg: '#ffffff'}}>
-                Create Project
-              </MenuItem>
-            </NavLink>
-            <NavLink
-              to="/admin/listproject"
-              activeStyle={{background: '#ffffff', color: '#1c1c1c'}}
-              style={{background: '#ffffff', color: '#1c1c1c'}}>
-              <MenuItem
-                _hover={{color: 'blue.100', bg: 'none'}}
-                w={'100%'}
-                h={'37px'}>
-                Listing Projects
-              </MenuItem>
-            </NavLink>
-            <NavLink
-              to="/admin/listpools"
-              activeStyle={{background: '#ffffff', color: '#1c1c1c'}}
-              style={{background: '#ffffff', color: '#1c1c1c'}}>
-              <MenuItem
-                _hover={{color: 'blue.100', bg: 'none'}}
-                w={'100%'}
-                h={'37px'}>
-                Listing Pools for Reward
-              </MenuItem>
-            </NavLink>
-            <NavLink
-              to="/admin/listrewards"
-              activeStyle={{background: '#ffffff', color: '#1c1c1c'}}
-              style={{background: '#ffffff', color: '#1c1c1c'}}>
-              <MenuItem
-                _hover={{color: 'blue.100', bg: 'none'}}
-                w={'100%'}
-                h={'37px'}>
-                Listing Reward Programs
-              </MenuItem>
-            </NavLink>
-          </MenuList>
-        </Menu> */}
       </Stack>
     </Box>
   );
@@ -662,17 +576,29 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
 
 const NavBarContainer = ({children, ...rest}: {children: any}) => {
   const {colorMode} = useColorMode();
+  const match = useRouteMatch('/');
   return (
     <Flex
       as="nav"
+      zIndex={100}
       align="center"
-      justify="space-between"
+      // justify="space-between"
       wrap="wrap"
       w="100%"
-      px={8}
-      py={4}
-      pr={3}
-      bg={colorMode === 'light' ? '#007aff' : '#222222'}
+      px={'40px'}
+      // py={4}
+      // pr={3}
+      h="78px"
+      // bg={
+      //   match?.isExact
+      //     ? colorMode === 'light'
+      //       ? '#007aff'
+      //       : '#222222'
+      //     : colorMode === 'light'
+      //     ? 'transparent'
+      //     : '#222222'
+      // }
+      bg='transparent'
       {...rest}>
       {children}
     </Flex>

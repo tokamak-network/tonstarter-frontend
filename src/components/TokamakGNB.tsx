@@ -13,7 +13,6 @@ function TokamakGNB() {
         cursor={'pointer'}
         bg={props.active ? '#FFFFFF' : ''}
         color={props.active ? '#353C48' : ''}
-        _hover={{bg: '#ffffff', color: '#353c48'}}
         fontFamily={'Titillium Web, sans-serif'}
         fontWeight="bold"
         {...props}>

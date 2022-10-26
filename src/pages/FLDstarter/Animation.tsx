@@ -425,7 +425,8 @@ export const Animation: React.FC<HomeProps> = () => {
   return (
     <Flex
       maxW="100%"
-      height={1024}
+      mt={'-78px'}
+      height={1102}
       bg={bgColor}
       position="relative"
       borderBottomWidth="1px"
