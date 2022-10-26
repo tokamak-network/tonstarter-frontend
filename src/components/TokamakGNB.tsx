@@ -2,6 +2,7 @@ import {Flex, Link, Text, useTheme} from '@chakra-ui/react';
 import '@fontsource/titillium-web';
 
 function TokamakGNB() {
+  
   function Menu(props: any) {
     const theme = useTheme();
     return (
