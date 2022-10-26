@@ -49,7 +49,7 @@ function TokamakGNB() {
       <Menu
         title={'TONStarter'}
         w={'114px'}
-        url={'https://ico2-0-frontend.vercel.app/'}
+        url={'https://rinkeby.tonstarter.tokamak.network/'}
         active={true}></Menu>
       <Menu
         title={'Staking'}
