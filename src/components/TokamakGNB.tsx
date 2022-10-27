@@ -45,7 +45,7 @@ function TokamakGNB() {
       <Menu
         title={'Tokamak Network'}
         w={'158px'}
-        url={'https://tokamak.network/#/'}></Menu>
+        url={'https://renewal-homepage.vercel.app/#/'}></Menu>
       <Menu
         title={'TONStarter'}
         w={'114px'}
