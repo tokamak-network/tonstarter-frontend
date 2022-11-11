@@ -11,8 +11,8 @@ function TokamakGNB() {
         lineHeight={'45px'}
         textAlign={'center'}
         cursor={'pointer'}
-        bg={props.active ? '#FFFFFF' : ''}
-        color={props.active ? '#353C48' : ''}
+        bg={props.activetab ? '#FFFFFF' : ''}
+        color={props.activetab ? '#353C48' : ''}
         fontFamily={'Titillium Web, sans-serif'}
         fontWeight="bold"
         {...props}>
@@ -41,28 +41,33 @@ function TokamakGNB() {
       fontSize={15}
       fontWeight={'bold'}
       justifyContent={'center'}>
-      <Menu title={'Vision'} w={'100px'} url={'https://vision-page.vercel.app/'}></Menu>
+      <Menu title={"Vision"} w={"100px"} url={"https://vision-page.vercel.app/"}></Menu>
       <Menu
-        title={'Tokamak Network'}
-        w={'158px'}
-        url={'https://renewal-homepage.vercel.app/#/'}></Menu>
+        title={"Tokamak Network"}
+        w={"158px"}
+        url={"https://renewal-homepage.vercel.app/#/"}
+      ></Menu>
       <Menu
-        title={'TONStarter'}
-        w={'114px'}
-        url={'https://rinkeby.tonstarter.tokamak.network/'}
-        active={true}></Menu>
+        title={"Simple Staking"}
+        w={"137px"}
+        url={"https://rinkeby.simple.staking.tokamak.network/"}
+      ></Menu>
       <Menu
-        title={'Staking'}
-        w={'90px'}
-        url={'https://rinkeby.simple.staking.tokamak.network/'}></Menu>
+        title={"Tokamak Network DAO"}
+        w={"190px"}
+        url={"https://rinkeby.dao.tokamak.network/#/"}
+      ></Menu>
       <Menu
-        title={'DAO'}
-        w={'68px'}
-        url={'https://rinkeby.dao.tokamak.network/#/'}></Menu>
+        title={"Swap"}
+        w={"76px"}
+        url={"https://tonswapper.vercel.app/"}
+      ></Menu>
       <Menu
-        title={'Swap'}
-        w={'76px'}
-        url={'https://tonswapper.vercel.app/'}></Menu>
+        title={"TONStarter"}
+        w={"114px"}
+        url={"https://rinkeby.tonstarter.tokamak.network/"}
+        activetab={true}
+      ></Menu>
     </Flex>
   );
 }
