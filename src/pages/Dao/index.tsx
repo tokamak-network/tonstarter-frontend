@@ -38,7 +38,7 @@ const Notice = () => {
         fontFamily={theme.fonts.fld}>
         <Text>
           TONStarter DAO page’s “Manage”, “Unstake”, “Stake” functionality will
-          not work from November 15th 12:00 ~ 17th 11:00 to upgrade the TOSv2
+          not work from November 15th 11:00 ~ 17th 12:00 to upgrade the TOSv2
           staking contract.
         </Text>
         <Text>
