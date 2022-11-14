@@ -54,7 +54,7 @@ const NoticeModal = () => {
               color={colorMode === 'light' ? 'gray.250' : 'white.100'}
               textAlign={'center'}>
               <Flex flexDir={'column'}>
-                <Text>Planned service maintenance &</Text>
+                <Text>Updated planned service maintenance &</Text>
                 <Text>smart contract upgrade announcement</Text>
               </Flex>
             </Heading>
@@ -68,11 +68,19 @@ const NoticeModal = () => {
             // pr={'27px'}
             fontSize={15}
             fontFamily={theme.fonts.fld}
-            color={colorMode === 'light' ? 'gray.250' : '#f3f4f1'}>
+            color={colorMode === 'light' ? 'gray.250' : '#f3f4f1'}
+            px={'30px'}
+            textAlign={'center'}>
             <Text>
-              Sometime between October ~ November 2022, TONStarter’s DAO page
+              TONStarter DAO page’s “Manage”, “Unstake”, “Stake” functionality
+              will not work from November 15th 12:00 ~ 17th 11:00 to upgrade the
+              TOSv2 staking contract.
             </Text>
             <Text>
+              On November 17th around 12:00 (KST), TONStarter’s DAO page will be
+              deprecated and moved under the new TOSv2’s DAO page.
+            </Text>
+            {/* <Text>
               will be deprecated and moved under the new TOSv2’s DAO page.
             </Text>
             <Text>
@@ -81,21 +89,21 @@ const NoticeModal = () => {
             </Text>
             <Text>
               not work for up to 24 hours to upgrade the TOSv2 staking contract.
-            </Text>
-            <Text>The exact schedule will be updated later.</Text>
+            </Text> */}
+            {/* <Text>The exact schedule will be updated later.</Text> */}
             <Flex>
               <Text>Check our medium article [</Text>
               <Link
                 color={'#2a72e5'}
                 isExternal={true}
-                href="https://medium.com/onther-tech/tonstarter-planned-service-maintenance-smart-contract-upgrade-announcement-4362b02403c2">
+                href="https://medium.com/onther-tech/tosv2-phase-1-release-a0b46e54f69f">
                 EN
               </Link>
               ,
               <Link
                 color={'#2a72e5'}
                 isExternal={true}
-                href="https://medium.com/onther-tech/%ED%86%A4%EC%8A%A4%ED%83%80%ED%84%B0-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%9C%A0%EC%A7%80-%EB%B3%B4%EC%88%98-%EB%B0%8F-%EC%8A%A4%EB%A7%88%ED%8A%B8-%EC%BB%A8%ED%8A%B8%EB%9E%99%ED%8A%B8-%EC%97%85%EA%B7%B8%EB%A0%88%EC%9D%B4%EB%93%9C-%EA%B3%B5%EC%A7%80-eaea40e9c8f6">
+                href="https://medium.com/onther-tech/tosv2-1%EB%8B%A8%EA%B3%84-%EA%B3%B5%EA%B0%9C-1e9465db6985">
                 KR
               </Link>
               <Text>] for more details.</Text>

@@ -87,12 +87,14 @@ export const AvailableBalance = () => {
         {...(!active || (btnType === 'Stake' && balance === '0.00')
           ? {...btnStyle.btnDisable({colorMode})}
           : {...btnStyle.btnAble()})}
+        // {...btnStyle.btnAble()})}
         w={'150px'}
         h="38px"
         p={0}
         fontSize={'14px'}
         fontWeight={400}
         isDisabled={!active || (btnType === 'Stake' && balance === '0.00')}
+        // isDisabled={true}
         _hover={btnHover.backgroundColor}
         onClick={() =>
           btnType === 'Approve' && account

@@ -85,12 +85,14 @@ export const MyStaked = () => {
         {...(active && !isEnd
           ? {...btnStyle.btnAble()}
           : {...btnStyle.btnDisable({colorMode})})}
+        // {...btnStyle.btnDisable({colorMode})}
         w={'150px'}
         h="38px"
         p={0}
         fontSize={'14px'}
         fontWeight={400}
         isDisabled={!active || isEnd}
+        // isDisabled={true}
         _hover={btnHover.backgroundColor}
         onClick={() =>
           dispatch(
