@@ -81,17 +81,17 @@ export const MySTOS = () => {
         </Flex>
       </Box>
       <Button
-        {...(active && !btnDisabled
-          ? {...btnStyle.btnAble()}
-          : {...btnStyle.btnDisable({colorMode})})}
-        // {...btnStyle.btnDisable({colorMode})}
+        // {...(active && !btnDisabled
+        //   ? {...btnStyle.btnAble()}
+        //   : {...btnStyle.btnDisable({colorMode})})}
+        {...btnStyle.btnDisable({colorMode})}
         w={'150px'}
         h="38px"
         p={0}
         fontSize={'14px'}
         fontWeight={400}
-        isDisabled={!active || btnDisabled}
-        // isDisabled={true}
+        // isDisabled={!active || btnDisabled}
+        isDisabled={true}
         _hover={btnHover.backgroundColor}
         onClick={() =>
           dispatch(

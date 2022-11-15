@@ -84,17 +84,17 @@ export const AvailableBalance = () => {
         </Flex>
       </Box>
       <Button
-        {...(!active || (btnType === 'Stake' && balance === '0.00')
-          ? {...btnStyle.btnDisable({colorMode})}
-          : {...btnStyle.btnAble()})}
-        // {...btnStyle.btnAble()})}
+        // {...(!active || (btnType === 'Stake' && balance === '0.00')
+        //   ? {...btnStyle.btnDisable({colorMode})}
+        //   : {...btnStyle.btnAble()})}
+        {...btnStyle.btnDisable({colorMode})}
         w={'150px'}
         h="38px"
         p={0}
         fontSize={'14px'}
         fontWeight={400}
-        isDisabled={!active || (btnType === 'Stake' && balance === '0.00')}
-        // isDisabled={true}
+        // isDisabled={!active || (btnType === 'Stake' && balance === '0.00')}
+        isDisabled={true}
         _hover={btnHover.backgroundColor}
         onClick={() =>
           btnType === 'Approve' && account
