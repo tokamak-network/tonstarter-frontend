@@ -55,4 +55,5 @@ export type DEPLOYED_TYPE = {
     LYDA_ADDRESS: string;
     AURA_ADDRESS: string;
   };
+  StakingV2Proxy: string;
 };

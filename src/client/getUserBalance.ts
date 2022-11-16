@@ -8,6 +8,7 @@ import * as TOSABI from 'services/abis/TOS.json';
 import * as LockTOSABI from 'services/abis/LockTOS.json';
 import * as WTONABI from 'services/abis/WTON.json';
 import * as AUTOCOINAGESNAPSHOT2ABI from 'services/abis/AutoCoinageSnapshot2.json';
+import * as StakingV2ProxyABI from 'services/abis/StakingV2Proxy.json';
 
 import {ethers} from 'ethers';
 import {BigNumber} from 'ethers';
@@ -83,14 +84,18 @@ export const getUserWTONBalance = async ({account, library}: UserContract) => {
 
 export const getUserTOSStaked = async ({account, library}: any) => {
   try {
-    const {LockTOS_ADDRESS} = DEPLOYED;
-    const LockTOSContract = new Contract(
-      LockTOS_ADDRESS,
-      LockTOSABI.abi,
+    const {StakingV2Proxy} = DEPLOYED;
+    const StakingV2Prox_CONTRACT = new Contract(
+      StakingV2Proxy,
+      StakingV2ProxyABI.abi,
       library,
     );
-    const res = await LockTOSContract.totalLockedAmountOf(account);
-    return convertNumber({amount: res.toString(), localeString: true});
+    const ltosAmount = await StakingV2Prox_CONTRACT.balanceOf(account);
+    const tosAmount = await StakingV2Prox_CONTRACT.getLtosToTosPossibleIndex(
+      ltosAmount,
+    );
+
+    return convertNumber({amount: tosAmount.toString(), localeString: true});
   } catch (e) {
     return '-';
   }
