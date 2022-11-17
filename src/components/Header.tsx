@@ -41,7 +41,7 @@ export const Header: React.FC<HeaderProps> = (props) => {
   const toggle = () => setIsOpen(!isOpen);
 
   const match = useRouteMatch('/');
-  
+
   return (
     <NavBarContainer {...props}>
       <Flex justifyContent={'space-between'}>
@@ -280,7 +280,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
     <Box
       display={{base: isOpen ? 'block' : 'none', md: 'block'}}
       flexBasis={{base: '100%', md: 'auto'}}
-      ml={width < 1150 ? 10: 100}>
+      ml={width < 1150 ? 10 : 100}>
       <Stack
         spacing={8}
         align="center"
@@ -288,11 +288,28 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
         direction={['column', 'column', 'column', 'row']}
         pt={[4, 4, 0, 0]}>
         <NavLink
-          to="/staking"
+          to="/starter"
           className={match?.isExact ? 'link-match' : 'link'}
           style={{zIndex: 100}}>
-          Staking
+          Starter
         </NavLink>
+        <NavLink
+          to="/launch"
+          className={match?.isExact ? 'link-match' : 'link'}
+          style={{zIndex: 100}}>
+          Launch
+        </NavLink>
+        <NavLink
+          to="/tosv2"
+          className={match?.isExact ? 'link-match' : 'link'}
+          style={{zIndex: 100}}
+          onClick={(e) => {
+            e.preventDefault();
+            window.open('https://tosv2.tokamak.network/');
+          }}>
+          TOSv2
+        </NavLink>
+
         <Menu>
           <MenuButton>
             <Text
@@ -359,22 +376,10 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           </MenuList>
         </Menu>
         <NavLink
-          to="/dao"
+          to="/staking"
           className={match?.isExact ? 'link-match' : 'link'}
           style={{zIndex: 100}}>
-          DAO
-        </NavLink>
-        <NavLink
-          to="/starter"
-          className={match?.isExact ? 'link-match' : 'link'}
-          style={{zIndex: 100}}>
-          Starter
-        </NavLink>
-        <NavLink
-          to="/launch"
-          className={match?.isExact ? 'link-match' : 'link'}
-          style={{zIndex: 100}}>
-          Launch
+          TON Staking
         </NavLink>
         <Menu>
           <MenuButton>
@@ -442,7 +447,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                 onClick={(e) => {
                   e.preventDefault();
                   window.open(
-                    'https://medium.com/onther-tech/tonstarter-guide-en-kr-6b7cad5773f1',
+                    'https://onther.gitbook.io/tokamak_network/v/er/02-website-guide/tonstarter/04-ton-staking',
                   );
                 }}>
                 <MenuItem
@@ -468,7 +473,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                 onClick={(e) => {
                   e.preventDefault();
                   window.open(
-                    'https://medium.com/onther-tech/wton-tos-lp-staking-reward-system-en-kr-881e57ec0568',
+                    'https://onther.gitbook.io/tokamak_network/v/er/02-website-guide/tonstarter/pools-staking',
                   );
                 }}>
                 <MenuItem
@@ -494,7 +499,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                 onClick={(e) => {
                   e.preventDefault();
                   window.open(
-                    'https://medium.com/onther-tech/introduction-of-stos-en-kr-56c12a5440e0',
+                    'https://onther.gitbook.io/tokamak_network/v/er/02-website-guide/tosv2/dao-tonstarter',
                   );
                 }}>
                 <MenuItem
@@ -520,7 +525,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                 onClick={(e) => {
                   e.preventDefault();
                   window.open(
-                    'https://medium.com/onther-tech/tonstarter-phase-3-starter-guide-en-kr-ab97bb9e50fc',
+                    'https://onther.gitbook.io/tokamak_network/v/er/02-website-guide/tonstarter/03-starter',
                   );
                 }}>
                 <MenuItem
@@ -546,7 +551,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                 onClick={(e) => {
                   e.preventDefault();
                   window.open(
-                    'https://medium.com/onther-tech/tonstarter-pools-reward-program-guide-en-kr-bef9ae274afd',
+                    'https://onther.gitbook.io/tokamak_network/v/er/02-website-guide/tonstarter/reward-program',
                   );
                 }}>
                 <MenuItem
@@ -572,7 +577,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                 onClick={(e) => {
                   e.preventDefault();
                   window.open(
-                    'https://medium.com/onther-tech/tonstarter-launch-create-project-user-guide-en-kr-82f2ae05c673',
+                    'https://onther.gitbook.io/tokamak_network/v/er/02-website-guide/tonstarter/01-launch',
                   );
                 }}>
                 <MenuItem

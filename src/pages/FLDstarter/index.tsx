@@ -64,7 +64,7 @@ export const FLDstarter = () => {
           </Button>
         </Flex>
       </Stack>
-      <NoticeModal></NoticeModal>
+      {/* <NoticeModal></NoticeModal> */}
     </Fragment>
   );
 };
