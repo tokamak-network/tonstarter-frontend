@@ -26,7 +26,7 @@ export const ThemeSwitcher: React.FC<ThemeSwitcherProps> = (props) => {
       color={
         colorMode === 'light'
           ? match?.isExact
-            ? 'white.100'
+            ? 'black.200'
             : 'black.200'
           : theme.colors.white[100]
       }

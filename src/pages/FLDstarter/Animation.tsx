@@ -26,7 +26,7 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 import views from '../Reward/rewards';
 import {selectTransactionType} from 'store/refetch.reducer';
 // import {getLiquidity} from '../Reward/utils/getLiquidity';
-import { fetchPoolPayload } from 'pages/Reward/utils/fetchPoolPayload';
+import {fetchPoolPayload} from 'pages/Reward/utils/fetchPoolPayload';
 
 export interface HomeProps extends HTMLAttributes<HTMLDivElement> {
   classes?: string;
@@ -37,12 +37,16 @@ const elements = {
   distanceMargin: 140,
   circleSize: '1',
   circleColor: '#ffffff',
+  blueCircleColor: '#98c5f7',
   whiteWithOpacity: `rgba(255, 255, 255, 0.5)`,
   whiteWithoutOpacity: `rgba(255, 255, 255, 0.0)`,
+  blueWithOpacity: `rgba(152, 197, 247, 0.5)`,
+  blueWithoutOpacity: `rgba(152, 197, 247, 0.0)`,
 };
 
-const addCircles = (props: any) => {
+const AddCircles = (props: any) => {
   const {animate, custom} = props;
+  const {colorMode} = useColorMode();
   return (
     <>
       <motion.div custom={custom} initial={{opacity: 0}} animate={animate}>
@@ -54,7 +58,10 @@ const addCircles = (props: any) => {
           opacity={1}
           style={{
             WebkitAnimation: 'none',
-            background: `${elements.circleColor}`,
+            background:
+              colorMode === 'light'
+                ? `${elements.blueCircleColor}`
+                : `${elements.circleColor}`,
           }}
         />
       </motion.div>
@@ -70,7 +77,10 @@ const addCircles = (props: any) => {
           opacity={1}
           style={{
             WebkitAnimation: 'none',
-            background: `${elements.circleColor}`,
+            background:
+              colorMode === 'light'
+                ? `${elements.blueCircleColor}`
+                : `${elements.circleColor}`,
           }}
         />
       </motion.div>
@@ -86,7 +96,10 @@ const addCircles = (props: any) => {
           opacity={1}
           style={{
             WebkitAnimation: 'none',
-            background: `${elements.circleColor}`,
+            background:
+              colorMode === 'light'
+                ? `${elements.blueCircleColor}`
+                : `${elements.circleColor}`,
           }}
         />
       </motion.div>
@@ -99,7 +112,10 @@ const addCircles = (props: any) => {
           opacity={1}
           style={{
             WebkitAnimation: 'none',
-            background: `${elements.circleColor}`,
+            background:
+              colorMode === 'light'
+                ? `${elements.blueCircleColor}`
+                : `${elements.circleColor}`,
           }}
         />
       </motion.div>
@@ -109,6 +125,7 @@ const addCircles = (props: any) => {
 
 const TextComponent = (props: any) => {
   const {header, content, circle, delay, ...rest} = props;
+  const {colorMode} = useColorMode();
 
   return (
     <Center
@@ -119,17 +136,24 @@ const TextComponent = (props: any) => {
       pr={45}
       pos={'relative'}
       {...rest}>
-      <Text fontSize="26px" fontWeight={'bold'}>
+      <Text
+        fontSize="26px"
+        fontWeight={'bold'}
+        color={colorMode === 'light' ? '#353c48' : ''}>
         {header}
       </Text>
-      <Text fontSize="15px" fontWeight={300} opacity={0.75}>
+      <Text
+        fontSize="15px"
+        fontWeight={300}
+        opacity={0.75}
+        color={colorMode === 'light' ? '#808992' : ''}>
         {content}
       </Text>
     </Center>
   );
 };
 
-const makeCircle = (left: number, top: number) => {
+const makeCircle = (left: number, top: number, colorMode: 'light' | 'dark') => {
   return (
     <SkeletonCircle
       size={elements.circleSize}
@@ -139,7 +163,7 @@ const makeCircle = (left: number, top: number) => {
       opacity={1}
       style={{
         WebkitAnimation: 'none',
-        background: `#ffffff`,
+        background: colorMode === 'light' ? '#98c5f7' : `#ffffff`,
       }}
     />
   );
@@ -202,7 +226,7 @@ export const Animation: React.FC<HomeProps> = () => {
     lastPhase: 6,
     lastCircle: 7,
   });
-  
+
   const {account, library} = useActiveWeb3React();
   const [poolAddresses, setPoolAddresses] = useState<string[]>([]);
   const [poolsFromAPI, setPoolsFromAPI] = useState<any>([]);
@@ -213,7 +237,7 @@ export const Animation: React.FC<HomeProps> = () => {
   //     const tosPrices = await fetch(fetchTosPriceURL)
   //       .then((res) => res.json())
   //       .then((result) => result);
-      
+
   //     const ethPrices = await fetch(fetchEthPriceURL)
   //       .then((res) => res.json())
   //       .then((result) => result);
@@ -226,7 +250,7 @@ export const Animation: React.FC<HomeProps> = () => {
 
   const verticalDots: number[] = [77, 221, 365, 509, 653, 797, 941];
 
-  const bgColor = colorMode === 'light' ? 'blue.200' : 'black.200';
+  const bgColor = colorMode === 'light' ? '#fafbfc' : 'black.200';
 
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const mainControls = useAnimation();
@@ -248,13 +272,21 @@ export const Animation: React.FC<HomeProps> = () => {
       borderRightWidth: [null, '1px', '1px'],
       borderLeftColor: [
         null,
-        `${elements.whiteWithOpacity}`,
-        `${elements.whiteWithOpacity}`,
+        colorMode === 'light'
+          ? `${elements.blueWithOpacity}`
+          : `${elements.whiteWithOpacity}`,
+        colorMode === 'light'
+          ? `${elements.blueWithOpacity}`
+          : `${elements.whiteWithOpacity}`,
       ],
       borderRightColor: [
         null,
-        `${elements.whiteWithoutOpacity}`,
-        `${elements.whiteWithOpacity}`,
+        colorMode === 'light'
+          ? `${elements.blueWithoutOpacity}`
+          : `${elements.whiteWithoutOpacity}`,
+        colorMode === 'light'
+          ? `${elements.blueWithOpacity}`
+          : `${elements.whiteWithOpacity}`,
       ],
 
       transition: {
@@ -266,7 +298,10 @@ export const Animation: React.FC<HomeProps> = () => {
 
     mainSubControls.start((i) => ({
       borderRightWidth: '1px',
-      borderRightColor: `${elements.whiteWithOpacity}`,
+      borderRightColor:
+        colorMode === 'light'
+          ? `${elements.blueWithOpacity}`
+          : `${elements.whiteWithOpacity}`,
       opacity: 1,
       transition: {
         delay: delay + i + 0.5,
@@ -276,14 +311,26 @@ export const Animation: React.FC<HomeProps> = () => {
 
     secondPhaseControls.start((i) => ({
       borderTopColor: [
-        elements.whiteWithoutOpacity,
-        elements.whiteWithOpacity,
-        elements.whiteWithOpacity,
+        colorMode === 'light'
+          ? elements.blueWithoutOpacity
+          : elements.whiteWithoutOpacity,
+        colorMode === 'light'
+          ? elements.blueWithOpacity
+          : elements.whiteWithOpacity,
+        colorMode === 'light'
+          ? elements.blueWithOpacity
+          : elements.whiteWithOpacity,
       ],
       borderBottomColor: [
-        elements.whiteWithoutOpacity,
-        elements.whiteWithoutOpacity,
-        elements.whiteWithOpacity,
+        colorMode === 'light'
+          ? elements.blueWithoutOpacity
+          : elements.whiteWithoutOpacity,
+        colorMode === 'light'
+          ? elements.blueWithoutOpacity
+          : elements.whiteWithoutOpacity,
+        colorMode === 'light'
+          ? elements.blueWithOpacity
+          : elements.whiteWithOpacity,
       ],
       opacity: 1,
       transition: {
@@ -390,11 +437,11 @@ export const Animation: React.FC<HomeProps> = () => {
   }, [account, transactionType, blockNumber, poolArr]);
 
   useEffect(() => {
-    async function calcLiquidity () {
+    async function calcLiquidity() {
       let totalLiquidity = 0;
-      const tvl = await fetchPoolPayload(library)
+      const tvl = await fetchPoolPayload(library);
       for (const liquidity of tvl) {
-        totalLiquidity = totalLiquidity + Number(liquidity.total)
+        totalLiquidity = totalLiquidity + Number(liquidity.total);
       }
       const res = Number(totalLiquidity).toLocaleString(undefined, {
         minimumFractionDigits: 2,
@@ -403,9 +450,7 @@ export const Animation: React.FC<HomeProps> = () => {
         res.split('.')[0] + '.' + res.split('.')[1][0] + res.split('.')[1][1],
       );
     }
-    calcLiquidity()
-      
-    
+    calcLiquidity();
   }, [library, pool]);
 
   useEffect(() => {
@@ -480,7 +525,7 @@ export const Animation: React.FC<HomeProps> = () => {
               initial={{opacity: 1}}
               animate={{opacity: getCondition(rIndex, cIndex) === true ? 1 : 0}}
               transition={{delay: (rIndex + cIndex) / 20}}>
-              {makeCircle(rIndex, c)}
+              {makeCircle(rIndex, c, colorMode)}
             </motion.div>
           );
         }),
@@ -511,7 +556,7 @@ export const Animation: React.FC<HomeProps> = () => {
             flexDirection="column"
             justifyContent="center"
             pl={'80px'}
-            color="white.100"
+            color={colorMode === 'light' ? '#353c48' : 'white.100'}
             fontWeight="semibold"
             fontSize={46}>
             <div style={{position: 'absolute', bottom: '561px'}}>
@@ -520,7 +565,10 @@ export const Animation: React.FC<HomeProps> = () => {
               <Text>Platform</Text>
             </div>
             <div style={{position: 'absolute', bottom: '302px'}}>
-              <Text fontSize={'26px'} color={'#ffff07'} h={'25px'}>
+              <Text
+                fontSize={'26px'}
+                color={colorMode === 'light' ? '#0070ed' : '#ffff07'}
+                h={'25px'}>
                 Phase 1 Total Staked
               </Text>
               <Text fontSize={'52px'} h={'60px'}>
@@ -528,7 +576,10 @@ export const Animation: React.FC<HomeProps> = () => {
               </Text>
             </div>
             <div style={{position: 'absolute', bottom: '193px'}}>
-              <Text fontSize={'26px'} color={'#ffff07'} h={'25px'}>
+              <Text
+                fontSize={'26px'}
+                color={colorMode === 'light' ? '#0070ed' : '#ffff07'}
+                h={'25px'}>
                 Total Ecosystem Value Locked
               </Text>
               <Text fontSize={'52px'} h={'60px'}>
@@ -569,12 +620,15 @@ export const Animation: React.FC<HomeProps> = () => {
               initial={{
                 borderTopWidth: '1px',
                 borderBottomWidth: '1px',
-                borderColor: `${elements.whiteWithoutOpacity}`,
+                borderColor:
+                  colorMode === 'light'
+                    ? `${elements.blueWithoutOpacity}`
+                    : `${elements.whiteWithoutOpacity}`,
               }}
               custom={timer.innerLine}
               animate={secondPhaseControls}
               style={{position: 'relative'}}>
-              {addCircles({animate: circleControls, custom: timer.circles})}
+              <AddCircles animate={circleControls} custom={timer.circles} />
               <motion.div
                 custom={timer.subText + 0.4}
                 initial={{opacity: 0}}
@@ -634,8 +688,12 @@ export const Animation: React.FC<HomeProps> = () => {
                 <div style={{background: 'black'}}></div>
               )}>
               <Wrap display="flex" h="100%" color="white.100" pt="640px">
-                <Text pl={25} fontSize="26px" fontWeight={'bold'}>
-                  ROAD MAP
+                <Text
+                  pl={25}
+                  color={colorMode === 'light' ? '#0070ed' : ''}
+                  fontSize="26px"
+                  fontWeight={'bold'}>
+                  New Feature
                 </Text>
                 <TextComponent
                   header={'Phase 1'}

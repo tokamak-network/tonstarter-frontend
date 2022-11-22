@@ -50,13 +50,7 @@ export const Header: React.FC<HeaderProps> = (props) => {
         <GridItem display="flex" alignItems={'center'}>
           <NavLink to="/">
             <Image
-              src={
-                match?.isExact
-                  ? logoLight
-                  : colorMode === 'light'
-                  ? logoGray
-                  : logoLight
-              }
+              src={colorMode === 'light' ? logoGray : logoLight}
               color="white.200"
               w={'11.375em'}
               h={'1.5625em'}
@@ -144,7 +138,7 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
               : match?.isExact
               ? account
                 ? theme.colors.gray[225]
-                : 'white.100'
+                : '#86929d'
               : theme.colors.gray[175]
           }
           w={136}
@@ -159,7 +153,7 @@ const MenuLinks: React.FC<MenuLinksProps> = ({isOpen, account, walletopen}) => {
               : match?.isExact
               ? account
                 ? 'white.100'
-                : 'blue.200'
+                : '#ffffff'
               : 'transparent'
           }
           zIndex={100}
@@ -268,7 +262,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
             fontFamily: theme.fonts.openSans,
             background: match?.isExact
               ? colorMode === 'light'
-                ? '#007aff'
+                ? 'transparent'
                 : '#222222'
               : colorMode === 'light'
               ? 'transparent'
@@ -285,7 +279,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
               bg={
                 match?.isExact
                   ? colorMode === 'light'
-                    ? '#007aff'
+                    ? 'transparent'
                     : '#222222'
                   : colorMode === 'light'
                   ? 'transparent'
@@ -298,10 +292,10 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                     : 'yellow.100'
                   : match?.isExact
                   ? colorMode === 'light'
-                    ? 'gray.0'
+                    ? '#3e495c'
                     : 'white.100'
                   : colorMode === 'light'
-                  ? 'gray.275'
+                  ? '#3e495c'
                   : 'white.100'
               }>
               Rewards
@@ -352,22 +346,6 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           </MenuList>
         </Menu>
         <NavLink
-          to="/dao"
-          className={match?.isExact ? 'link-match' : 'link'}
-          style={{
-            zIndex: 100,
-            fontFamily: theme.fonts.openSans,
-            background: match?.isExact
-              ? colorMode === 'light'
-                ? '#007aff'
-                : '#222222'
-              : colorMode === 'light'
-              ? 'transparent'
-              : '#222222',
-          }}>
-          DAO
-        </NavLink>
-        <NavLink
           to="/starter"
           className={match?.isExact ? 'link-match' : 'link'}
           style={{
@@ -375,7 +353,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
             fontFamily: theme.fonts.openSans,
             background: match?.isExact
               ? colorMode === 'light'
-                ? '#007aff'
+                ? 'transparent'
                 : '#222222'
               : colorMode === 'light'
               ? 'transparent'
@@ -391,7 +369,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
             fontFamily: theme.fonts.openSans,
             background: match?.isExact
               ? colorMode === 'light'
-                ? '#007aff'
+                ? 'transparent'
                 : '#222222'
               : colorMode === 'light'
               ? 'transparent'
@@ -406,7 +384,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
               bg={
                 match?.isExact
                   ? colorMode === 'light'
-                    ? '#007aff'
+                    ? 'transparent'
                     : '#222222'
                   : colorMode === 'light'
                   ? 'transparent'
