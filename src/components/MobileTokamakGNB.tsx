@@ -1,40 +1,40 @@
-import { Flex, Link } from "@chakra-ui/react";
-import PrevArrowIcon from "../assets/pagenate-prev-arrow-icon-inactive_1.svg";
-import NextArrowIcon from "../assets/pagenate-prev-arrow-icon-inactive_2.svg";
-import { useRef, useEffect, useState } from "react";
-import '../css/gnb_mobile.css'
-import styled from "@emotion/styled";
+import {Flex, Link} from '@chakra-ui/react';
+import PrevArrowIcon from '../assets/pagenate-prev-arrow-icon-inactive_1.svg';
+import NextArrowIcon from '../assets/pagenate-prev-arrow-icon-inactive_2.svg';
+import {useRef, useEffect, useState} from 'react';
+import '../css/gnb_mobile.css';
+import styled from '@emotion/styled';
 import '@fontsource/titillium-web';
 
 const menus = [
   {
-    title: "Vision",
-    url: "",
+    title: 'Vision',
+    url: 'https://vision-page.vercel.app/',
     isFoucsed: false,
   },
   {
-    title: "Tokamak Network",
-    url: "https://renewal-homepage.vercel.app/#/",
+    title: 'Tokamak Network',
+    url: 'https://renewal-homepage.vercel.app/#/',
     isFoucsed: false,
   },
   {
-    title: "Simple Staking",
-    url: "https://rinkeby.simple.staking.tokamak.network/",
+    title: 'Simple Staking',
+    url: 'https://rinkeby.simple.staking.tokamak.network/',
     isFoucsed: false,
   },
   {
-    title: "Tokamak Network DAO",
-    url: "https://rinkeby.dao.tokamak.network/#/",
+    title: 'Tokamak Network DAO',
+    url: 'https://rinkeby.dao.tokamak.network/#/',
     isFoucsed: false,
   },
   {
-    title: "Swap",
-    url: "http://goerli.swap.tokamak.network/",
+    title: 'Swap',
+    url: 'http://goerli.swap.tokamak.network/',
     isFoucsed: false,
   },
   {
-    title: "TONStarter",
-    url: "https://rinkeby.tonstarter.tokamak.network/",
+    title: 'TONStarter',
+    url: 'https://rinkeby.tonstarter.tokamak.network/',
     isFoucsed: true,
   },
 ];
@@ -81,12 +81,12 @@ const catchTouchStart = (e: any) => {
 };
 
 const handleNavigation = (e: any, rightArrow?: boolean) => {
-  const ref: any = document.getElementsByClassName("gnb_mobile_menu");
-  const transition = "0.8s ease-in-out";
+  const ref: any = document.getElementsByClassName('gnb_mobile_menu');
+  const transition = '0.8s ease-in-out';
 
   let direction;
 
-  if (rightArrow !== undefined) {
+  if (e === undefined || rightArrow !== undefined) {
     direction = rightArrow;
   } else {
     const touchObj = e.changedTouches[0];
@@ -156,52 +156,58 @@ const handleNavigation = (e: any, rightArrow?: boolean) => {
 };
 
 function MobileTokamakGNB() {
+  setTimeout(() => {
+    handleNavigation(undefined, true);
+    handleNavigation(undefined, true);
+    handleNavigation(undefined, true);
+    handleNavigation(undefined, true);
+  }, 1000);
+
   return (
-    <div className="gnb_mobile_header" style={{fontFamily:'Titillium Web, sans-serif'}}>
+    <div
+      className="gnb_mobile_header"
+      style={{fontFamily: 'Titillium Web, sans-serif'}}>
       <img
         src={PrevArrowIcon}
-        alt={""}
-        height={"40px"}
+        alt={''}
+        height={'40px'}
         onClick={(e) => {
           handleNavigation(e, false);
-        }}
-      ></img>
+        }}></img>
       <div className="gnb_mobile_menu_wrap">
         {menus.map((menu, index) => (
           <a
             className="gnb_mobile_menu"
             style={{
               minWidth:
-                menu.title === "Tokamak Network DAO"
-                  ? "186px"
-                  : menu.title === "Tokamak Network"
-                  ? "160px"
-                  : menu.title === "Simple Staking"
-                  ? "140px"
-                  : "",
-              fontWeight: menu.isFoucsed ? 600 : "",
+                menu.title === 'Tokamak Network DAO'
+                  ? '186px'
+                  : menu.title === 'Tokamak Network'
+                  ? '160px'
+                  : menu.title === 'Simple Staking'
+                  ? '140px'
+                  : '',
+              fontWeight: menu.isFoucsed ? 600 : '',
               opacity: menu.isFoucsed ? 1 : 0.25,
-              marginLeft: index === 0 ? `${(deviceWidth - 80 - 78) / 2}px` : "",
-              marginRight: index === menus.length - 1 ? "31%" : "",
+              marginLeft: index === 0 ? `${(deviceWidth - 80 - 78) / 2}px` : '',
+              marginRight: index === menus.length - 1 ? '31%' : '',
             }}
             href={menu.url}
             key={menu.title}
             onTouchStart={(e) => catchTouchStart(e)}
-            onTouchEnd={(e) => handleNavigation(e)}
-          >
+            onTouchEnd={(e) => handleNavigation(e)}>
             {menu.title}
           </a>
         ))}
       </div>
       <img
         src={NextArrowIcon}
-        alt={""}
-        width={"40px"}
-        height={"40px"}
+        alt={''}
+        width={'40px'}
+        height={'40px'}
         onClick={(e) => {
           handleNavigation(e, true);
-        }}
-      ></img>
+        }}></img>
     </div>
   );
 }
