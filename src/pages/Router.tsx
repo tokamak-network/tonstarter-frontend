@@ -42,6 +42,8 @@ import OpenCampagin from '@Launch/index';
 import MainScreen from '@Launch/MainScreen';
 import ProjectScreen from '@Launch/ProjectScreen';
 import TokamakGNB from 'components/TokamakGNB';
+import MobileTokamakGNB from 'components/MobileTokamakGNB';
+
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
 /*
@@ -178,6 +180,7 @@ export const Router: FC<RouterProps> = () => {
     return (
       <div
         style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
+          <MobileTokamakGNB/>
         <MobileHeader
           account={account}
           walletopen={() => handleWalletModalOpen('wallet')}
