@@ -255,7 +255,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
         direction={['column', 'column', 'column', 'row']}
         pt={[4, 4, 0, 0]}>
         <NavLink
-          to="/staking"
+          to="/starter"
           className={match?.isExact ? 'link-match' : 'link'}
           style={{
             zIndex: 100,
@@ -268,8 +268,41 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
               ? 'transparent'
               : '#222222',
           }}>
-          Staking
+          Starter
         </NavLink>
+        <NavLink
+          to="/launch"
+          className={match?.isExact ? 'link-match' : 'link'}
+          style={{
+            zIndex: 100,
+            fontFamily: theme.fonts.openSans,
+            background: match?.isExact
+              ? colorMode === 'light'
+                ? 'transparent'
+                : '#222222'
+              : colorMode === 'light'
+              ? 'transparent'
+              : '#222222',
+          }}>
+          Launch
+        </NavLink>
+        <Flex
+          className={match?.isExact ? 'link-match' : 'link'}
+          style={{
+            zIndex: 100,
+            fontFamily: theme.fonts.openSans,
+            background: match?.isExact
+              ? colorMode === 'light'
+                ? 'transparent'
+                : '#222222'
+              : colorMode === 'light'
+              ? 'transparent'
+              : '#222222',
+          }}
+          onClick={() => window.open('https://tosv2.tokamak.network/')}>
+          TOSv2
+        </Flex>
+
         <Menu>
           <MenuButton>
             <Text
@@ -346,7 +379,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           </MenuList>
         </Menu>
         <NavLink
-          to="/starter"
+          to="/staking"
           className={match?.isExact ? 'link-match' : 'link'}
           style={{
             zIndex: 100,
@@ -358,24 +391,9 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
               : colorMode === 'light'
               ? 'transparent'
               : '#222222',
+            width: '92px',
           }}>
-          Starter
-        </NavLink>
-        <NavLink
-          to="/launch"
-          className={match?.isExact ? 'link-match' : 'link'}
-          style={{
-            zIndex: 100,
-            fontFamily: theme.fonts.openSans,
-            background: match?.isExact
-              ? colorMode === 'light'
-                ? 'transparent'
-                : '#222222'
-              : colorMode === 'light'
-              ? 'transparent'
-              : '#222222',
-          }}>
-          Launch
+          TON Staking
         </NavLink>
         <Menu>
           <MenuButton>

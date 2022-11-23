@@ -156,24 +156,25 @@ const handleNavigation = (e: any, rightArrow?: boolean) => {
 };
 
 function MobileTokamakGNB() {
-  setTimeout(() => {
-    handleNavigation(undefined, true);
-    handleNavigation(undefined, true);
-    handleNavigation(undefined, true);
-    handleNavigation(undefined, true);
-  }, 1000);
+  // setTimeout(() => {
+  //   handleNavigation(undefined, true);
+  //   handleNavigation(undefined, true);
+  //   handleNavigation(undefined, true);
+  //   handleNavigation(undefined, true);
+  // }, 1000);
 
   return (
     <div
       className="gnb_mobile_header"
       style={{fontFamily: 'Titillium Web, sans-serif'}}>
       <img
-        src={PrevArrowIcon}
-        alt={''}
-        height={'40px'}
-        onClick={(e) => {
-          handleNavigation(e, false);
-        }}></img>
+      // src={PrevArrowIcon}
+      // alt={''}
+      // height={'40px'}
+      // onClick={(e) => {
+      //   handleNavigation(e, false);
+      // }}
+      ></img>
       <div className="gnb_mobile_menu_wrap">
         {menus.map((menu, index) => (
           <a
@@ -194,8 +195,9 @@ function MobileTokamakGNB() {
             }}
             href={menu.url}
             key={menu.title}
-            onTouchStart={(e) => catchTouchStart(e)}
-            onTouchEnd={(e) => handleNavigation(e)}>
+            // onTouchStart={(e) => catchTouchStart(e)}
+            // onTouchEnd={(e) => handleNavigation(e)}
+          >
             {menu.title}
           </a>
         ))}
@@ -205,9 +207,10 @@ function MobileTokamakGNB() {
         alt={''}
         width={'40px'}
         height={'40px'}
-        onClick={(e) => {
-          handleNavigation(e, true);
-        }}></img>
+        // onClick={(e) => {
+        //   handleNavigation(e, true);
+        // }}
+      ></img>
     </div>
   );
 }

@@ -7,6 +7,7 @@ import {
   SkeletonCircle,
   Wrap,
   Image,
+  Button,
 } from '@chakra-ui/react';
 import {useColorMode, useTheme} from '@chakra-ui/react';
 import {motion, useAnimation} from 'framer-motion';
@@ -15,6 +16,8 @@ import {Scrollbars} from 'react-custom-scrollbars-2';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import TONStaterLogo from 'assets/svgs/ts_bi_c.svg';
 import Arrow from 'assets/svgs/select1_arrow_inactive.svg';
+import Blue_Arrow from 'assets/svgs/blue_arrow.svg';
+
 import {selectStakes} from 'pages/Staking/staking.reducer';
 import {Stake} from 'pages/Staking/types';
 import {useAppSelector} from 'hooks/useRedux';
@@ -27,6 +30,7 @@ import views from '../Reward/rewards';
 import {selectTransactionType} from 'store/refetch.reducer';
 // import {getLiquidity} from '../Reward/utils/getLiquidity';
 import {fetchPoolPayload} from 'pages/Reward/utils/fetchPoolPayload';
+import {NavLink} from 'react-router-dom';
 
 export interface HomeProps extends HTMLAttributes<HTMLDivElement> {
   classes?: string;
@@ -150,6 +154,37 @@ const TextComponent = (props: any) => {
         {content}
       </Text>
     </Center>
+  );
+};
+
+const SubTextComponent = (props: any) => {
+  const {header, content, circle, delay, ...rest} = props;
+  const {colorMode} = useColorMode();
+
+  return (
+    <Flex
+      flexDirection="column"
+      alignItems="left"
+      pl={25}
+      pr={45}
+      pos={'relative'}
+      {...rest}>
+      <Text
+        fontSize="15px"
+        fontWeight={'bold'}
+        color={colorMode === 'light' ? '#808992' : ''}
+        h={'19px'}>
+        {header}
+      </Text>
+      <Text
+        fontSize="24px"
+        fontWeight={300}
+        opacity={0.75}
+        color={colorMode === 'light' ? '#353c48' : ''}
+        h={'30px'}>
+        {content}
+      </Text>
+    </Flex>
   );
 };
 
@@ -475,7 +510,11 @@ export const Animation: React.FC<HomeProps> = () => {
       bg={bgColor}
       position="relative"
       borderBottomWidth="1px"
-      borderBottomColor={`${elements.whiteWithOpacity}`}
+      borderBottomColor={
+        colorMode === 'light'
+          ? `${elements.blueWithOpacity}`
+          : `${elements.whiteWithOpacity}`
+      }
       fontFamily={theme.fonts.fld}>
       <motion.div
         custom={timer.lastCircle}
@@ -491,7 +530,11 @@ export const Animation: React.FC<HomeProps> = () => {
           alignItems="center"
           justifyContent="center"
           borderRadius={25}
-          borderColor={elements.whiteWithOpacity}
+          borderColor={
+            colorMode === 'light'
+              ? elements.blueWithOpacity
+              : elements.whiteWithOpacity
+          }
           bg={bgColor}
           zIndex={100}>
           <Flex
@@ -499,10 +542,17 @@ export const Animation: React.FC<HomeProps> = () => {
             w="30px"
             h="30px"
             borderRadius={25}
-            borderColor={elements.whiteWithOpacity}
+            borderColor={
+              colorMode === 'light'
+                ? elements.blueWithOpacity
+                : elements.whiteWithOpacity
+            }
             alignItems="center"
             justifyContent="center">
-            <Image width="9px" height="8px" src={Arrow}></Image>
+            <Image
+              width="9px"
+              height="8px"
+              src={colorMode === 'light' ? Blue_Arrow : Arrow}></Image>
           </Flex>
         </Flex>
       </motion.div>
@@ -687,31 +737,43 @@ export const Animation: React.FC<HomeProps> = () => {
               renderThumbHorizontal={() => (
                 <div style={{background: 'black'}}></div>
               )}>
-              <Wrap display="flex" h="100%" color="white.100" pt="640px">
-                <Text
-                  pl={25}
-                  color={colorMode === 'light' ? '#0070ed' : ''}
-                  fontSize="26px"
-                  fontWeight={'bold'}>
-                  New Feature
-                </Text>
-                <TextComponent
-                  header={'Phase 1'}
-                  content={'TOS Liquidity Mining Launch'}
+              <Flex color="white.100" pt="140px" flexDir={'column'}>
+                <Flex mb={'70px'} flexDir={'column'} pl={25}>
+                  <Text
+                    color={colorMode === 'light' ? '#0070ed' : ''}
+                    fontSize="26px"
+                    fontWeight={'bold'}
+                    mb={'5px'}>
+                    New Feature
+                  </Text>
+                  <Text
+                    fontSize="15px"
+                    fontWeight={'bold'}
+                    color={colorMode === 'light' ? '#808992' : ''}
+                    mb={'30px'}>
+                    Make Your Own Token and <br /> Create Token Economy
+                  </Text>
+                  <NavLink to="/launch">
+                    <Button
+                      w={'140px'}
+                      h={'35px'}
+                      bg={'#007aff'}
+                      fontSize={13}
+                      _hover={{}}>
+                      Launched Project
+                    </Button>
+                  </NavLink>
+                </Flex>
+                <SubTextComponent
+                  header={'Raised Capital'}
+                  content={'$ 7,115,401.98'}
+                  mb={'30px'}
                 />
-                <TextComponent
-                  header={'Phase 2'}
-                  content={'TOS staking, LP staking'}
+                <SubTextComponent
+                  header={'TOS pairs (in Uniswap)'}
+                  content={'6'}
                 />
-                <TextComponent
-                  header={'Phase 3'}
-                  content={'Project Starter Open, TONStarter Governance'}
-                />
-                <TextComponent
-                  header={'Phase 4'}
-                  content={'Tokamak Network Layer2 Integration'}
-                />
-              </Wrap>
+              </Flex>
             </Scrollbars>
           </motion.div>
         </motion.div>
