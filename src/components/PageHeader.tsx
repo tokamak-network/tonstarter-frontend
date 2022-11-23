@@ -24,7 +24,7 @@ export const PageHeader: FC<HeadProps> = ({
   const {colorMode} = useColorMode();
   const theme = useTheme();
   return (
-    <Container pt={12} maxW={'100%'}>
+    <Container pt='70px' maxW={'100%'}>
       <Flex flexDir="column" alignItems="center" justifyContent="center">
         <Heading
           fontWeight={'bold'}

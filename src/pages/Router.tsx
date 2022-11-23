@@ -41,7 +41,9 @@ import {fetchTosStakes} from '@Dao/dao.reducer';
 import OpenCampagin from '@Launch/index';
 import MainScreen from '@Launch/MainScreen';
 import ProjectScreen from '@Launch/ProjectScreen';
-import ConfirmTermsModal from '@Launch/components/modals/ConfirmTerms';
+import TokamakGNB from 'components/TokamakGNB';
+import MobileTokamakGNB from 'components/MobileTokamakGNB';
+
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
 /*
@@ -178,6 +180,7 @@ export const Router: FC<RouterProps> = () => {
     return (
       <div
         style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
+          <MobileTokamakGNB/>
         <MobileHeader
           account={account}
           walletopen={() => handleWalletModalOpen('wallet')}
@@ -203,13 +206,14 @@ export const Router: FC<RouterProps> = () => {
       </div>
     );
   }
-  // else if (width > 480 && width < 1100) {
+  //  else if (width > 480 && width < 1100) {
   //   return <MobilePreOpen />;
   // }
 
   return (
     <div style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
       <ConfirmModal></ConfirmModal>
+      <TokamakGNB></TokamakGNB>
       <Header
         account={account}
         walletopen={() => handleWalletModalOpen('wallet')}
@@ -222,6 +226,7 @@ export const Router: FC<RouterProps> = () => {
           <Route exact path="/rewards/rewardProgram" component={Reward} />
           {/* <Route exact path="/starter" component={Starter} /> */}
           <Route exact path="/starter" component={Starter} />
+          <Route exact path="/dao" component={DAO} />
           <Route exact path="/myairdrop" component={MyAirdrop} />
 
           <Route exact path={`/starter/:id`} component={StarterDetail} />
@@ -240,7 +245,6 @@ export const Router: FC<RouterProps> = () => {
           /> */}
         </Switch>
       </div>
-      <ConfirmTermsModal></ConfirmTermsModal>
       <Footer />
       <WalletModal state={walletState} isOpen={isModalOpen} onClose={onClose} />
       <AirdropModal />

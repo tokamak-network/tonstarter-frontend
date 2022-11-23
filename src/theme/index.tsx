@@ -325,7 +325,7 @@ export const MOBILE_STATER_STYLE = {
       : props.colorMode === 'light'
       ? ''
       : '1px solid #535353',
-   
+
     cursor: 'pointer',
     fontFamily: fonts.fld,
   }),
@@ -598,16 +598,14 @@ const theme = extendTheme({
           color: mode('gray.200', 'gray.125')(props),
         },
         '.link': {
-          font: fonts.body,
-          fontSize: 17,
-          fontWeight: 'bold',
-          color: mode('gray.275', 'white.100')(props),
+          fontSize: 16,
+          fontWeight: 600,
+          color: mode('#3e495c', 'white.100')(props),
         },
         '.link-match': {
-          font: fonts.body,
-          fontSize: 17,
-          fontWeight: 'bold',
-          color: mode('gray.0', 'white.100')(props),
+          fontSize: 16,
+          fontWeight: 600,
+          color: mode('0070ed', 'white.100')(props),
         },
         '.fld-text1': {
           fontFamily: props.theme.fonts.fld,

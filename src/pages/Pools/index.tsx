@@ -110,7 +110,7 @@ export const Pools = () => {
     <Fragment>
       <Head title={'Pools'} />
       <Container maxW={'6xl'}>
-        <Box pt={20} pb={10}>
+        <Box pb={10}>
           <PageHeader
             title={'Pools'}
             subtitle={'Add liquidity into TOS ecosystem and earn reward'}
