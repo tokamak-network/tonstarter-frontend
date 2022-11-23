@@ -9,32 +9,32 @@ import '@fontsource/titillium-web';
 const menus = [
   {
     title: 'Vision',
-    url: 'https://vision-page.vercel.app/',
+    url: 'https://vision.tokamak.network/',
     isFoucsed: false,
   },
   {
     title: 'Tokamak Network',
-    url: 'https://renewal-homepage.vercel.app/#/',
+    url: 'https://tokamak.network/#/',
     isFoucsed: false,
   },
   {
     title: 'Simple Staking',
-    url: 'https://rinkeby.simple.staking.tokamak.network/',
+    url: 'https://simple.staking.tokamak.network/',
     isFoucsed: false,
   },
   {
     title: 'Tokamak Network DAO',
-    url: 'https://rinkeby.dao.tokamak.network/#/',
+    url: 'https://dao.tokamak.network/#/',
     isFoucsed: false,
   },
   {
     title: 'Swap',
-    url: 'http://goerli.swap.tokamak.network/',
+    url: 'https://swap.tokamak.network/',
     isFoucsed: false,
   },
   {
     title: 'TONStarter',
-    url: 'https://rinkeby.tonstarter.tokamak.network/',
+    url: 'https://tonstarter.tokamak.network/',
     isFoucsed: true,
   },
 ];
@@ -156,25 +156,24 @@ const handleNavigation = (e: any, rightArrow?: boolean) => {
 };
 
 function MobileTokamakGNB() {
-  // setTimeout(() => {
-  //   handleNavigation(undefined, true);
-  //   handleNavigation(undefined, true);
-  //   handleNavigation(undefined, true);
-  //   handleNavigation(undefined, true);
-  // }, 1000);
+  setTimeout(() => {
+    handleNavigation(undefined, true);
+    handleNavigation(undefined, true);
+    handleNavigation(undefined, true);
+    handleNavigation(undefined, true);
+  }, 1000);
 
   return (
     <div
       className="gnb_mobile_header"
       style={{fontFamily: 'Titillium Web, sans-serif'}}>
       <img
-      // src={PrevArrowIcon}
-      // alt={''}
-      // height={'40px'}
-      // onClick={(e) => {
-      //   handleNavigation(e, false);
-      // }}
-      ></img>
+        src={PrevArrowIcon}
+        alt={''}
+        height={'40px'}
+        onClick={(e) => {
+          handleNavigation(e, false);
+        }}></img>
       <div className="gnb_mobile_menu_wrap">
         {menus.map((menu, index) => (
           <a
@@ -195,9 +194,8 @@ function MobileTokamakGNB() {
             }}
             href={menu.url}
             key={menu.title}
-            // onTouchStart={(e) => catchTouchStart(e)}
-            // onTouchEnd={(e) => handleNavigation(e)}
-          >
+            onTouchStart={(e) => catchTouchStart(e)}
+            onTouchEnd={(e) => handleNavigation(e)}>
             {menu.title}
           </a>
         ))}
@@ -207,10 +205,9 @@ function MobileTokamakGNB() {
         alt={''}
         width={'40px'}
         height={'40px'}
-        // onClick={(e) => {
-        //   handleNavigation(e, true);
-        // }}
-      ></img>
+        onClick={(e) => {
+          handleNavigation(e, true);
+        }}></img>
     </div>
   );
 }

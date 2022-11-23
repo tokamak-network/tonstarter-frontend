@@ -299,6 +299,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
               ? 'transparent'
               : '#222222',
           }}
+          cursor={'pointer'}
           onClick={() => window.open('https://tosv2.tokamak.network/')}>
           TOSv2
         </Flex>
