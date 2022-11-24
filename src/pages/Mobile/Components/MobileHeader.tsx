@@ -218,7 +218,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
             <Flex alignItems={'center'} h={'30px'}  onClick={(e) => {
                     e.preventDefault();
                     window.open(
-                      'https://github.com/Onther-Tech/tonstarter-docs/blob/main/whitepaper/TONStarter%20Whitepaper.md',
+                      'https://goerli.tosv2.tokamak.network/',
                     );
                   }}  mt={'30px'}>
                 <Text
