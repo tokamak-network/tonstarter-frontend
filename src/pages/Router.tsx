@@ -55,6 +55,9 @@ export const Router: FC<RouterProps> = () => {
       dispatch(fetchUserInfo({reset: true}));
       return alert(`Please use ${netType}`);
     }
+
+    // @ts-ignore
+    dispatch(fetchAppConfig(Number(DEFAULT_NETWORK)));
     /*eslint-disable*/
   }, [chainId]);
 
@@ -70,9 +73,6 @@ export const Router: FC<RouterProps> = () => {
       }
 
       const {signIn} = accountStorage;
-
-      // @ts-ignore
-      dispatch(fetchAppConfig({chainId}));
 
       if (signIn === false) {
         deactivate();
