@@ -14,32 +14,36 @@ import {
   useColorMode,
 } from '@chakra-ui/react';
 import React, {useCallback, useState} from 'react';
-import {useWeb3React} from '@web3-react/core';
-import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {openModal, selectModalType} from 'store/modal.reducer';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectModalType} from 'store/modal.reducer';
 import {stakeL2} from '../actions';
+import {useUser} from 'hooks/useUser';
+import {useModal} from 'hooks/useModal';
+import {useCheckBalance} from 'hooks/useCheckBalance';
+import {CloseButton} from 'components/Modal';
 
 export const StakeInLayer2Modal = () => {
-  const {account, library} = useWeb3React();
-  const {data} = useAppSelector(selectModalType);
-  const dispatch = useAppDispatch();
-  let balance = data?.data?.stakeContractBalanceTon;
+  const {sub} = useAppSelector(selectModalType);
+  const {account, library} = useUser();
+  const {balance, contractAddress} = sub.data;
 
   const [value, setValue] = useState<number>(balance);
   const theme = useTheme();
   const {colorMode} = useColorMode();
+  const {handleCloseConfirmModal} = useModal();
+  const {checkBalance} = useCheckBalance();
 
   const handleChange = useCallback((e) => setValue(e.target.value), []);
   const setMax = useCallback((_e) => setValue(balance), [balance]);
 
   const handleCloseModal = () => {
-    dispatch(openModal({type: 'manage', data: data.data}));
+    handleCloseConfirmModal();
     setValue(0);
   };
 
   return (
     <Modal
-      isOpen={data.modal === 'stakeL2' ? true : false}
+      isOpen={sub.type === 'manage_stakeL2' ? true : false}
       isCentered
       onClose={handleCloseModal}>
       <ModalOverlay />
@@ -49,6 +53,7 @@ export const StakeInLayer2Modal = () => {
         w="350px"
         pt="25px"
         pb="25px">
+        <CloseButton closeFunc={handleCloseModal}></CloseButton>
         <ModalBody p={0}>
           <Box
             pb={'1.250em'}
@@ -129,18 +134,23 @@ export const StakeInLayer2Modal = () => {
               color="white.100"
               fontSize="14px"
               _hover={{...theme.btnHover}}
-              onClick={() =>
-                stakeL2({
-                  userAddress: account,
-                  amount: value.toString(),
-                  contractAddress: data?.data?.contractAddress,
-                  miningEndTime: data?.data?.miningEndTime,
-                  status: data?.data?.status,
-                  globalWithdrawalDelay: data?.data?.globalWithdrawalDelay,
-                  library: library,
-                  handleCloseModal: handleCloseModal(),
-                })
-              }>
+              onClick={() => {
+                if (account) {
+                  const isBalance = checkBalance(
+                    Number(value),
+                    Number(balance),
+                  );
+                  if (isBalance) {
+                    stakeL2({
+                      account,
+                      library,
+                      amount: value.toString(),
+                      contractAddress,
+                    });
+                    handleCloseModal();
+                  }
+                }
+              }}>
               Stake
             </Button>
           </Box>

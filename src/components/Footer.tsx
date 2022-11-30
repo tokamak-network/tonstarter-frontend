@@ -70,13 +70,7 @@ export const Footer = () => {
 
   const bgColor = colorMode === 'light' ? 'gray.50' : 'black.200';
   return (
-    <Container
-      maxW={'full'}
-      bg={bgColor}
-      pl={'2.5em'}
-      pr={'2.5em'}
-      pos="absolute"
-      bottom={0}>
+    <Container maxW={'full'} bg={bgColor} pl={'2.5em'} pr={'2.5em'}>
       <Flex
         flexDirection={{base: 'column', md: 'row'}}
         justifyContent={'space-between'}
@@ -102,7 +96,7 @@ export const Footer = () => {
               fontSize={13}
               fontFamily={theme.fonts.body}
               fontWeight={'normal'}>
-              111 SOMERSET ROAD #06-070 111 SOMERSET SINGAPORE 238164
+              111 SOMERSET ROAD #06-07O 111 SOMERSET SINGAPORE 238164
             </Text>
           </Box>
           <Box mr={{base: 0, md: 3}}>
@@ -117,7 +111,7 @@ export const Footer = () => {
               fontSize={13}
               fontFamily={theme.fonts.body}
               fontWeight={'normal'}>
-              info@onther.io
+              hello@tokamak.network
             </Text>
           </Box>
         </Flex>

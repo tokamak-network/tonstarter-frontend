@@ -15,31 +15,41 @@ import {
 } from '@chakra-ui/react';
 import {unstakeL2} from '../actions';
 import React, {useCallback, useState} from 'react';
-import {useWeb3React} from '@web3-react/core';
-import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {openModal, selectModalType} from 'store/modal.reducer';
+import {useAppSelector} from 'hooks/useRedux';
+import {selectModalType} from 'store/modal.reducer';
+import {useUser} from 'hooks/useUser';
+import {useModal} from 'hooks/useModal';
+import {useCheckBalance} from 'hooks/useCheckBalance';
+import {CloseButton} from 'components/Modal/CloseButton';
 
 export const UnStakeFromLayer2Modal = () => {
-  const {account, library} = useWeb3React();
-  const {data} = useAppSelector(selectModalType);
-  const dispatch = useAppDispatch();
+  const {account, library} = useUser();
+  const {sub} = useAppSelector(selectModalType);
   const theme = useTheme();
   const {colorMode} = useColorMode();
+  const {handleCloseConfirmModal} = useModal();
+  const {checkBalance} = useCheckBalance();
 
-  let balance = data?.data?.totalStakedAmountL2;
+  const {
+    data: {contractAddress, totalStakedAmountL2},
+  } = sub;
 
-  const [value, setValue] = useState<number>(balance);
+  const [value, setValue] = useState<number>(0);
   const handleChange = useCallback((e) => setValue(e.target.value), []);
-  const setMax = useCallback((_e) => setValue(balance), [balance]);
+  const setMax = useCallback(
+    (_e) => setValue(totalStakedAmountL2),
+    [totalStakedAmountL2],
+  );
+
 
   const handleCloseModal = () => {
-    dispatch(openModal({type: 'manage', data: data.data}));
+    handleCloseConfirmModal();
     setValue(0);
   };
 
   return (
     <Modal
-      isOpen={data.modal === 'unstakeL2' ? true : false}
+      isOpen={sub.type === 'manage_unstakeL2' ? true : false}
       isCentered
       onClose={handleCloseModal}>
       <ModalOverlay />
@@ -49,6 +59,7 @@ export const UnStakeFromLayer2Modal = () => {
         w="350px"
         pt="25px"
         pb="25px">
+        <CloseButton closeFunc={handleCloseModal}></CloseButton>
         <ModalBody p={0}>
           <Box
             pb={'1.250em'}
@@ -117,7 +128,7 @@ export const UnStakeFromLayer2Modal = () => {
               <Text
                 fontSize={'18px'}
                 color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                {balance} TON
+                {totalStakedAmountL2} TON
               </Text>
             </Box>
           </Stack>
@@ -129,17 +140,22 @@ export const UnStakeFromLayer2Modal = () => {
               color="white.100"
               fontSize="14px"
               _hover={{...theme.btnHover}}
-              onClick={() =>
-                unstakeL2({
-                  userAddress: account,
-                  amount: value.toString(),
-                  contractAddress: data.data.contractAddress,
-                  status: data?.data?.status,
-                  library: library,
-                  handleCloseModal: handleCloseModal(),
-                })
-              }
-              disabled={+balance <= 0}
+              onClick={() => {
+                const isBalance = checkBalance(
+                  Number(value),
+                  Number(totalStakedAmountL2),
+                );
+                if (isBalance) {
+                  unstakeL2({
+                    type: value === totalStakedAmountL2 ? true : false,
+                    userAddress: account,
+                    amount: value.toString(),
+                    contractAddress,
+                    library: library,
+                  });
+                  handleCloseModal();
+                }
+              }}
               colorScheme={'blue'}>
               Unstake
             </Button>

@@ -1,7 +1,8 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from './reducers';
 
-export type ModalType =
+type DaoModal = 'dao_stake' | 'dao_unstake' | 'dao_manage';
+type StakingModal =
   | 'stake'
   | 'unstake'
   | 'claim'
@@ -12,12 +13,20 @@ export type ModalType =
   | 'swap'
   | 'airdrop';
 
+export type ModalType = StakingModal | DaoModal;
+
 export type Modal = {
   modal?: ModalType;
   data?: any;
 };
 
-type SubModalTypes = 'confirm' | undefined;
+type SubModalTypes =
+  | 'confirm'
+  | 'manage_stakeL2'
+  | 'manage_unstakeL2'
+  | 'manage_withdraw'
+  | 'manage_swap'
+  | undefined;
 
 type SubModal = {
   type: SubModalTypes;

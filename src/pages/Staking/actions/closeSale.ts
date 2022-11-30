@@ -9,9 +9,7 @@ import * as StakeVault from 'services/abis/Stake1Logic.json';
 type Endsale = {
   userAddress: string | null | undefined;
   vaultContractAddress: string;
-  miningEndTime: string | Number;
   library: any;
-  handleCloseModal: any;
 };
 
 export const closeSale = async (args: Endsale) => {
@@ -20,7 +18,7 @@ export const closeSale = async (args: Endsale) => {
     return;
   }
 
-  const stakeVault = await new Contract(
+  const stakeVault = new Contract(
     DEPLOYED.Stake1Proxy_ADDRESS,
     StakeVault.abi,
     library,
@@ -32,7 +30,7 @@ export const closeSale = async (args: Endsale) => {
       ?.closeSale(vaultContractAddress);
     store.dispatch(setTxPending({tx: true}));
     if (receipt) {
-      toastWithReceipt(receipt, setTxPending);
+      toastWithReceipt(receipt, setTxPending, "Staking");
     }
   } catch (err) {
     store.dispatch(setTxPending({tx: false}));

@@ -12,61 +12,103 @@ import {
   Stack,
   useTheme,
   useColorMode,
+  Image,
 } from '@chakra-ui/react';
-import React, {useCallback, useState, useEffect} from 'react';
+import React, {useCallback, useState, useEffect, useMemo } from 'react';
 import {useWeb3React} from '@web3-react/core';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {openModal, selectModalType} from 'store/modal.reducer';
-import {fetchSwapPayload} from './utils/fetchSwapPayload';
 import {swapWTONtoTOS} from '../actions';
+// import { useBestV3TradeExactIn } from '../../../hooks/useBestV3Trade';
+import { useDerivedSwapInfo, useSwapState, useSwapActionHandlers } from '../../../store/swap/hooks';
+import TradePrice from '../components/TradePrice';
+import { Field } from '../../../store/swap/actions';
+import {useUser} from 'hooks/useUser';
+import {useModal} from 'hooks/useModal';
+import {CloseButton} from 'components/Modal/CloseButton';
+import { SwapCurrencyPanel } from '../components/SwapCurrencyPanel';
+import arrow from 'assets/svgs/swap-arrow-icon.svg'
 
 export const SwapModal = () => {
-  const {account, library} = useWeb3React();
-  const {data} = useAppSelector(selectModalType);
+  const {sub} = useAppSelector(selectModalType);
+  const {account, library} = useUser();
+  const {
+    data: {contractAddress, swapBalance},
+  } = sub;
   const theme = useTheme();
   const {colorMode} = useColorMode();
-  const dispatch = useAppDispatch();
+  const [value, setValue] = useState<number>(0);
+  const {handleCloseConfirmModal} = useModal();
 
-  const stakeBalanceTON = data?.data?.stakeContractBalanceTon;
-  const totalStakedAmountL2 = data?.data?.totalStakedAmountL2;
-  const totalStakedAmount = data?.data?.totalStakedAmount;
-  const totalPendingUnstakedAmountL2 = data?.data?.totalPendingUnstakedAmountL2;
+  const handleChange = useCallback((e) => setValue(e.target.value), []);
+  const setMax = useCallback((_e) => setValue(swapBalance), [swapBalance]);
+
+  const { independentField, typedValue, recipient } = useSwapState()
+  const {
+    v2Trade,
+    v3TradeState: { trade: v3Trade, state: v3TradeState },
+    toggledTrade: trade,
+    allowedSlippage,
+    currencyBalances,
+    parsedAmount,
+    currencies,
+    inputError: swapInputError,
+  } = useDerivedSwapInfo()
+  console.log(allowedSlippage)
+  console.log(trade)
+  console.log(currencies)
+  console.log(currencyBalances);
+  const showWrap = false
+  const parsedAmounts = useMemo(
+    () =>
+      showWrap
+        ? {
+            [Field.INPUT]: parsedAmount,
+            [Field.OUTPUT]: parsedAmount,
+          }
+        : {
+            [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
+            [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
+          },
+    [independentField, parsedAmount, showWrap, trade]
+  )
+
+  const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
+  const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
+  
+  const handleTypeInput = useCallback(
+    (value: string) => {
+      onUserInput(Field.INPUT, value)
+    },
+    [onUserInput]
+  )
+  const handleTypeOutput = useCallback(
+    (value: string) => {
+      onUserInput(Field.OUTPUT, value)
+    },
+    [onUserInput]
+  )
+
+  const formattedAmounts = {
+    [independentField]: typedValue,
+    [dependentField]: showWrap
+      ? parsedAmounts[independentField]?.toExact() ?? ''
+      : parsedAmounts[dependentField]?.toSignificant(6) ?? '',
+  }
 
   const [swappedBalance, setSwappedBalance] = useState<string | undefined>(
     undefined,
   );
-
-  let balance =
-    Number(stakeBalanceTON) +
-    Number(totalStakedAmountL2) -
-    Number(totalStakedAmount) +
-    Number(totalPendingUnstakedAmountL2) -
-    Number(swappedBalance);
-  const [value, setValue] = useState<number>(0);
-
-  useEffect(() => {
-    async function swapPayload(data: any) {
-      const result = await fetchSwapPayload(
-        data.library,
-        data.account,
-        data.contractAddress,
-      );
-      return setSwappedBalance(result === undefined ? '0.00' : result);
-    }
-    swapPayload(data);
-  }, [data]);
-
-  const handleChange = useCallback((e) => setValue(e.target.value), []);
-  const setMax = useCallback((_e) => setValue(balance), [balance]);
+  const [showInverted, setShowInverted] = useState<boolean>(false)
 
   const handleCloseModal = () => {
-    dispatch(openModal({type: 'manage', data: data.data}));
+    handleCloseConfirmModal();
     setValue(0);
   };
 
   return (
     <Modal
-      isOpen={data.modal === 'swap' ? true : false}
+      isOpen={sub.type === 'manage_swap' ? true : false}
       isCentered
       onClose={handleCloseModal}>
       <ModalOverlay />
@@ -76,8 +118,9 @@ export const SwapModal = () => {
         w="350px"
         pt="25px"
         pb="25px">
+        <CloseButton closeFunc={handleCloseModal}></CloseButton>
         <ModalBody p={0}>
-          <Box 
+          <Box
             pb={'1.250em'}
             borderBottom={
               colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
@@ -90,6 +133,11 @@ export const SwapModal = () => {
               textAlign={'center'}>
               Swap
             </Heading>
+            <TradePrice
+              price={trade?.executionPrice}
+              showInverted={showInverted}
+              setShowInverted={setShowInverted}
+            />
             {/* <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
               
             </Text> */}
@@ -102,13 +150,18 @@ export const SwapModal = () => {
             justifyContent={'center'}
             alignItems={'center'}
             w={'full'}>
+              {/* <SwapCurrencyPanel
+                value={formattedAmounts[Field.INPUT]}
+                onUserInput={handleTypeInput}
+              /> */}
+              
             <Input
               variant={'outline'}
               borderWidth={0}
               textAlign={'center'}
               fontWeight={'bold'}
               fontSize={'4xl'}
-              value={value}
+              value={formattedAmounts[Field.INPUT]}
               width={'xs'}
               mr={6}
               onChange={handleChange}
@@ -128,7 +181,36 @@ export const SwapModal = () => {
               </Button>
             </Box>
           </Stack>
-
+          <Stack
+            as={Flex}
+            flexDir={'row'}
+            justifyContent={'center'}
+            alignItems={'center'}
+            w={'full'}
+          >
+            <Image
+              w={'20px'}
+              h={'20px'}
+              src={arrow}
+              as={Flex}
+              // flexDir={'row'}
+              justifyContent={'center'}
+              alignItems={'center'}
+            />
+          </Stack>
+          <Stack
+            pt="27px"
+            as={Flex}
+            flexDir={'row'}
+            justifyContent={'center'}
+            alignItems={'center'}
+            w={'full'}
+          >
+            <SwapCurrencyPanel
+              value={formattedAmounts[Field.OUTPUT]}
+              onUserInput={handleTypeOutput}
+            />
+          </Stack>
           <Stack
             as={Flex}
             justifyContent={'center'}
@@ -144,7 +226,7 @@ export const SwapModal = () => {
               <Text
                 fontSize={'18px'}
                 color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                {balance} TON
+                {swapBalance} TON
               </Text>
             </Box>
           </Stack>
@@ -156,16 +238,15 @@ export const SwapModal = () => {
               color="white.100"
               fontSize="14px"
               _hover={{...theme.btnHover}}
-              onClick={() =>
+              onClick={() => {
                 swapWTONtoTOS({
                   userAddress: account,
                   amount: value.toString(),
-                  contractAddress: data?.data?.contractAddress,
-                  status: data?.data?.status,
-                  library: library,
-                  handleCloseModal: handleCloseModal,
-                })
-              }>
+                  contractAddress,
+                  library,
+                });
+                handleCloseModal();
+              }}>
               Swap
             </Button>
           </Box>

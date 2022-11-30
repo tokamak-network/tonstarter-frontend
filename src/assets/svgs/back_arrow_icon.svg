@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" id="back_arrow_icon" width="22" height="22" viewBox="0 0 22 22">
+    <defs>
+        <style>
+            .cls-2{fill:none;stroke:#c7d1d8;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px}
+        </style>
+    </defs>
+    <path id="Base" fill="none" d="M0 0H22V22H0z"/>
+    <g id="icon" transform="translate(3 5)">
+        <path id="선_5" d="M15.125 0L0 0" class="cls-2" transform="translate(0 6.188)"/>
+        <path id="패스_238" d="M104.063 87.562l-6.188 6.188 6.188 6.188" class="cls-2" transform="translate(-97.875 -87.562)"/>
+    </g>
+</svg>

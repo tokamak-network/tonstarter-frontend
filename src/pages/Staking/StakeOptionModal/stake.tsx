@@ -21,6 +21,7 @@ import {stakePayToken} from '../actions';
 import {onKeyDown, useInput} from 'hooks/useInput';
 import {useModal} from 'hooks/useModal';
 import {useToast} from 'hooks/useToast';
+import {CloseButton} from 'components/Modal/CloseButton';
 
 export const StakeOptionModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -50,6 +51,7 @@ export const StakeOptionModal = () => {
         w="350px"
         pt="25px"
         pb="25px">
+        <CloseButton closeFunc={handleCloseModal}></CloseButton>
         <ModalBody p={0}>
           <Box
             pb={'1.250em'}
@@ -146,6 +148,7 @@ export const StakeOptionModal = () => {
                 handleOpenConfirmModal({
                   type: 'confirm',
                   data: {
+                    from: 'staking/stake',
                     amount: value,
                     period,
                     action: () =>

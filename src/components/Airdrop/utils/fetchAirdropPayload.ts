@@ -6,7 +6,6 @@ export const fetchAirdropPayload = async () => {
   const user = store.getState().user.data;
   const {address: account, library} = user;
   const AirdropVault = getTokamakContract('Airdrop', library);
-  
   let roundInfo: any = [];
   let claimedAmount;
   let unclaimed;

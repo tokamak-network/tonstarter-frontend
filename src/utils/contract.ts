@@ -14,6 +14,7 @@ import * as StakeVaultLogic from 'services/abis/Stake1Logic.json';
 import * as StakeVault from 'services/abis/Stake1Vault.json';
 // import * as StakeVaultStorage from 'services/abis/StakeVaultStorage.json';
 import * as AirdropVaultABI from 'services/abis/WhitelistVault.json';
+
 import {DEPLOYED} from 'constants/index';
 
 const {
@@ -39,7 +40,7 @@ export function isAddress(value: any): string | false {
 export function getSigner(
   library: Web3Provider,
   account: string,
-): JsonRpcSigner {
+): any {
   return library.getSigner(account).connectUnchecked();
 }
 
@@ -53,7 +54,7 @@ export function getProviderOrSigner(
 
 export function getTokamakContract(
   want: string,
-  library?: Web3Provider,
+  library?: any,
   address?: string,
 ): any {
   const TON = new Contract(TON_ADDRESS, TonABI.abi, library);

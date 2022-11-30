@@ -1,7 +1,7 @@
 import {useState} from 'react';
 
-export const useInput = () => {
-  const [value, setValue] = useState<any>();
+export const useInput = (defaultValue?: any) => {
+  const [value, setValue] = useState<any>(defaultValue);
   const onChange = (event: any) => {
     const {target} = event;
     const {value: inputValue} = target;
@@ -30,9 +30,6 @@ const addComma = (inputVal: any) => {
     ) {
       return _val.split('.')[0].substring(1);
     }
-
-    //   return _val.substring(1, 2);
-    // }
     if (_val === '.') {
       return _val;
     } else {

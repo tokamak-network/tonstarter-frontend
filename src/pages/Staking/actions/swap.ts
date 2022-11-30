@@ -10,9 +10,7 @@ type UnstakeFromLayer2 = {
   userAddress: string | null | undefined;
   amount: string;
   contractAddress: string;
-  status: string;
   library: any;
-  handleCloseModal: any;
 };
 
 export const swapWTONtoTOS = async (args: UnstakeFromLayer2) => {
