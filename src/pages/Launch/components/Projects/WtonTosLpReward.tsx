@@ -42,13 +42,19 @@ import {interfaceReward} from 'pages/Reward/types';
 const provider = BASE_PROVIDER;
 type WtonTosLpReward = {vault: any; project: any};
 type Key = {
-  rewardToken: string,
-  pool: string,
-  startTime: number,
-  endTime: number,
-  refundee: string
-}
-const {TOS_ADDRESS, UniswapV3Factory, NPM_Address,UniswapStaker_Address,WTON_ADDRESS} = DEPLOYED;
+  rewardToken: string;
+  pool: string;
+  startTime: number;
+  endTime: number;
+  refundee: string;
+};
+const {
+  TOS_ADDRESS,
+  UniswapV3Factory,
+  NPM_Address,
+  UniswapStaker_Address,
+  WTON_ADDRESS,
+} = DEPLOYED;
 
 export const WtonTosLpReward: FC<WtonTosLpReward> = ({vault, project}) => {
   const {colorMode} = useColorMode();
@@ -69,6 +75,8 @@ export const WtonTosLpReward: FC<WtonTosLpReward> = ({vault, project}) => {
   const [endTime, setEndTime] = useState<number>(0);
   const [poolsFromAPI, setPoolsFromAPI] = useState<any>([]);
   const [datas, setDatas] = useState<interfaceReward[] | []>([]);
+  const [currentRound, setCurrentRound] = useState(0);
+  const [nowClaim, setNowClaim] = useState(0);
 
   const {
     pools: {TOS_WTON_POOL},
@@ -117,7 +125,6 @@ export const WtonTosLpReward: FC<WtonTosLpReward> = ({vault, project}) => {
     },
   };
 
-
   useEffect(() => {
     async function getLPToken() {
       if (account === null || account === undefined || library === undefined) {
@@ -125,7 +132,9 @@ export const WtonTosLpReward: FC<WtonTosLpReward> = ({vault, project}) => {
       }
       const now = moment().unix();
       const currentRound = await VaultLPReward.currentRound();
+      setCurrentRound(Number(currentRound));
       const nowClaimRound = await VaultLPReward.nowClaimRound();
+      setNowClaim(Number(nowClaimRound));
       const totalClaimCount = await VaultLPReward.totalClaimCounts();
       const available = await VaultLPReward.availableUseAmount(currentRound);
       const amountFormatted = parseInt(ethers.utils.formatEther(available));
@@ -141,50 +150,54 @@ export const WtonTosLpReward: FC<WtonTosLpReward> = ({vault, project}) => {
       setEndTime(Number(getProgramDuration));
       setDuration(durat);
       setPool(TOS_WTON_POOL);
-    
+
       const disabled = Number(nowClaimRound) >= Number(currentRound);
       setShowDate(amountFormatted === 0 && Number(claimDate) > now);
       setClaimTime(claimDate);
       setDistributable(amountFormatted);
-      setDisableButton(disabled || (amountFormatted === 0 && Number(claimDate) > now))
-
+      setDisableButton(
+        disabled || (amountFormatted === 0 && Number(claimDate) > now),
+      );
     }
     getLPToken();
   }, [account, library, transactionType, blockNumber, vault.vaultAddress]);
 
   async function fetchProjectsData() {
     if (account === null || account === undefined || library === undefined) {
-       return;
-     }
-   const signer = getSigner(library, account);
-const rewardData = await views.getRewardData();
-if (rewardData) {
-const res = await Promise.all (
- rewardData.map(async (reward:any, index) => {
-   reward.index = index + 1;
-   const key = reward.incentiveKey;  
-     const abicoder = ethers.utils.defaultAbiCoder;   
-     const incentiveABI =
-     'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)';
-       
-   const incentiveId = soliditySha3(abicoder.encode([incentiveABI], [key]));   
-          
-   const incentiveInfo = await uniswapStakerContract
-   .connect(signer)
-   .incentives(incentiveId);
-   reward.unclaimed =incentiveInfo.totalRewardUnclaimed
-   return {...reward}
- })
-)
+      return;
+    }
+    const signer = getSigner(library, account);
+    const rewardData = await views.getRewardData();
+    if (rewardData) {
+      const res = await Promise.all(
+        rewardData.map(async (reward: any, index) => {
+          reward.index = index + 1;
+          const key = reward.incentiveKey;
+          const abicoder = ethers.utils.defaultAbiCoder;
+          const incentiveABI =
+            'tuple(address rewardToken, address pool, uint256 startTime, uint256 endTime, address refundee)';
 
-const filtered = rewardData.filter((reward: any) => 
- ethers.utils.getAddress(reward.incentiveKey.refundee) ===
-   ethers.utils.getAddress(vault.vaultAddress)
-);
+          const incentiveId = soliditySha3(
+            abicoder.encode([incentiveABI], [key]),
+          );
 
-setDatas(filtered);
-}
-}
+          const incentiveInfo = await uniswapStakerContract
+            .connect(signer)
+            .incentives(incentiveId);
+          reward.unclaimed = incentiveInfo.totalRewardUnclaimed;
+          return {...reward};
+        }),
+      );
+
+      const filtered = rewardData.filter(
+        (reward: any) =>
+          ethers.utils.getAddress(reward.incentiveKey.refundee) ===
+          ethers.utils.getAddress(vault.vaultAddress),
+      );
+
+      setDatas(filtered);
+    }
+  }
   useEffect(() => {
     fetchProjectsData();
   }, [account, library, vault.vaultAddress, transactionType, blockNumber]);
@@ -263,8 +276,7 @@ setDatas(filtered);
         };
         const create = await createReward(arg);
         if (create.success === true) {
-          
-          fetchProjectsData()
+          fetchProjectsData();
         }
       }
     } catch (e) {
@@ -284,20 +296,20 @@ setDatas(filtered);
     }
   };
 
-  const refundFunc = async(key: Key) => {
+  const refundFunc = async (key: Key) => {
     if (account === null || account === undefined || library === undefined) {
       return;
     }
     const signer = getSigner(library, account);
     try {
-      const receipt = await uniswapStakerContract.connect(signer).endIncentive(key);
-      store.dispatch(setTxPending({ tx: true }));
+      const receipt = await uniswapStakerContract
+        .connect(signer)
+        .endIncentive(key);
+      store.dispatch(setTxPending({tx: true}));
       if (receipt) {
-          toastWithReceipt(receipt, setTxPending, 'Reward');
-  
+        toastWithReceipt(receipt, setTxPending, 'Reward');
       }
-    }
-    catch (e) {
+    } catch (e) {
       store.dispatch(setTxPending({tx: false}));
       store.dispatch(
         //@ts-ignore
@@ -312,9 +324,7 @@ setDatas(filtered);
         }),
       );
     }
-  
-  }
-  
+  };
 
   const getPaginatedData = () => {
     const startIndex = pageIndex * pageLimit - pageLimit;
@@ -362,8 +372,14 @@ setDatas(filtered);
                 {project.tokenSymbol}
               </Text>
               <Text letterSpacing={'1.3px'} fontSize={'13px'} color={'#7e8993'}>
-               {((vault.vaultTokenAllocation/project.totalTokenAllocation)*100).toString()
-            .match(/^\d+(?:\.\d{0,2})?/)}%</Text>
+                {(
+                  (vault.vaultTokenAllocation / project.totalTokenAllocation) *
+                  100
+                )
+                  .toString()
+                  .match(/^\d+(?:\.\d{0,2})?/)}
+                %
+              </Text>
             </Flex>
           </GridItem>
           <GridItem
@@ -396,7 +412,9 @@ setDatas(filtered);
               color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
               _hover={{color: '#2a72e5'}}
               fontFamily={theme.fonts.fld}>
-              {vault.poolAddress ? shortenAddress('0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf') : 'NA'}
+              {vault.poolAddress
+                ? shortenAddress('0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf')
+                : 'NA'}
             </Link>
           </GridItem>
           <GridItem
@@ -455,15 +473,18 @@ setDatas(filtered);
               Liquidity Rewards Program Listed
             </Text>
             {claimTime !== 0 ? (
-               <Flex w={'70%'} alignItems={'center'} justifyContent={'flex-end'}>
-               <Flex flexDirection={'column'} mr={'20px'} textAlign={'right'}>
-                 <Text color={'#7e8993'}>You can create rewards program on</Text>
-                 <Text fontSize={'14px'}> {' '}
-                     {moment.unix(claimTime).format('MMM. DD, yyyy HH:mm:ss')} (
-                     {momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()})
+              <Flex w={'70%'} alignItems={'center'} justifyContent={'flex-end'}>
+                <Flex flexDirection={'column'} mr={'20px'} textAlign={'right'}>
+                  <Text color={'#7e8993'}>
+                    You can create rewards program on
                   </Text>
-               </Flex>
-               <Button
+                  <Text fontSize={'14px'}>
+                    {' '}
+                    {moment.unix(claimTime).format('MMM. DD, yyyy HH:mm:ss')} (
+                    {momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()})
+                  </Text>
+                </Flex>
+                <Button
                   bg={'#257eee'}
                   fontSize={'12px'}
                   height={'40px'}
@@ -471,21 +492,32 @@ setDatas(filtered);
                   padding={'6px 12px'}
                   whiteSpace={'normal'}
                   color={'#fff'}
-                  isDisabled={disableButton|| moment().unix() > duration[1] || moment().unix() < claimTime}
+                  isDisabled={
+                    disableButton ||
+                    // moment().unix() > duration[1] ||
+                    nowClaim >= currentRound ||
+                    moment().unix() < claimTime
+                  }
                   _disabled={{
                     color: colorMode === 'light' ? '#86929d' : '#838383',
                     bg: colorMode === 'light' ? '#e9edf1' : '#353535',
                     cursor: 'not-allowed',
                   }}
                   _hover={
-                    disableButton|| moment().unix() > duration[1] || moment().unix() < claimTime
+                    disableButton ||
+                    // moment().unix() > duration[1] ||
+                    nowClaim >= currentRound||
+                    moment().unix() < claimTime
                       ? {}
                       : {
-                         cursor: 'pointer',
+                          cursor: 'pointer',
                         }
                   }
                   _active={
-                    disableButton|| moment().unix() > duration[1] || moment().unix() < claimTime
+                    disableButton ||
+                    // moment().unix() > duration[1] ||
+                    nowClaim >= currentRound ||
+                    moment().unix() < claimTime
                       ? {}
                       : {
                           background: '#2a72e5',
@@ -503,82 +535,92 @@ setDatas(filtered);
                   }>
                   Create Reward Program
                 </Button>
-             </Flex>):( <></>)}
-           
-          </GridItem>
-          {getPaginatedData().map((reward: any, index:number)=> {
-            return  <GridItem
-            fontFamily={theme.fonts.fld}
-            className={'chart-cell'}
-            justifyContent={'flex-start'}
-            border={themeDesign.border[colorMode]}
-          borderTop='none'
-           >
-            <Text w={'17%'} fontSize={'18px'}>
-           #{reward.index}
-            </Text>
-            <Flex w={'40%'} flexDirection={'column'} mr={'50px'}>
-              <Text color={'#7e8993'}>Reward Duration</Text>
-              <Text>{moment.unix(reward.startTime).format('yyyy.MM.DD HH:mm')} - {moment.unix(reward.endTime).format('yyyy.MM.DD HH:mm')}</Text>
-            </Flex>
-            <Flex w={'25%'} flexDirection={'column'} mr={'20px'}>
-              <Text color={'#7e8993'}>Refundable Amount</Text>
-              <Flex alignItems={'baseline'}>
-                <Text mr={'3px'} fontSize={'16px'}>
-                  {Number(ethers.utils.formatEther(reward.unclaimed)).toLocaleString()}
-                </Text>{' '}
-                <Text> {project.tokenSymbol}</Text>
               </Flex>
-            </Flex>
-            <Button
-              bg={'#257eee'}
-              fontSize={'12px'}
-              padding={'6px 41px 5px'}
-              height={'25px'}
-              borderRadius={'4px'}
-              width={'120px'}
-              color={'#fff'}
-              isDisabled={Number(reward.unclaimed)===0 || moment().unix() < reward.endTime}
-              _disabled={{
-                color: colorMode === 'light' ? '#86929d' : '#838383',
-                bg: colorMode === 'light' ? '#e9edf1' : '#353535',
-                cursor: 'not-allowed',
-              }}
-              _hover={
-                // I set !disableButton just for UI testing purposes. Revert to disableButton (or any condition) to disable _hover and _active styles.
-                (Number(reward.unclaimed)===0)
-                  ? {}
-                  : {
-                      background: 'transparent',
-                      border: 'solid 1px #2a72e5',
-                      color: themeDesign.tosFont[colorMode],
-                      cursor: 'pointer',
-                    }
-              }
-              _active={
-                (Number(reward.unclaimed)===0)
-                  ? {}
-                  : {
-                      background: '#2a72e5',
-                      border: 'solid 1px #2a72e5',
-                      color: '#fff',
-                    }
-              }
-              onClick={() => refundFunc(reward.incentiveKey)}>
-              Refund
-            </Button>
+            ) : (
+              <></>
+            )}
           </GridItem>
-         
+          {getPaginatedData().map((reward: any, index: number) => {
+            return (
+              <GridItem
+                fontFamily={theme.fonts.fld}
+                className={'chart-cell'}
+                justifyContent={'flex-start'}
+                border={themeDesign.border[colorMode]}
+                borderTop="none">
+                <Text w={'17%'} fontSize={'18px'}>
+                  #{reward.index}
+                </Text>
+                <Flex w={'40%'} flexDirection={'column'} mr={'50px'}>
+                  <Text color={'#7e8993'}>Reward Duration</Text>
+                  <Text>
+                    {moment.unix(reward.startTime).format('yyyy.MM.DD HH:mm')} -{' '}
+                    {moment.unix(reward.endTime).format('yyyy.MM.DD HH:mm')}
+                  </Text>
+                </Flex>
+                <Flex w={'25%'} flexDirection={'column'} mr={'20px'}>
+                  <Text color={'#7e8993'}>Refundable Amount</Text>
+                  <Flex alignItems={'baseline'}>
+                    <Text mr={'3px'} fontSize={'16px'}>
+                      {Number(
+                        ethers.utils.formatEther(reward.unclaimed),
+                      ).toLocaleString()}
+                    </Text>{' '}
+                    <Text> {project.tokenSymbol}</Text>
+                  </Flex>
+                </Flex>
+                <Button
+                  bg={'#257eee'}
+                  fontSize={'12px'}
+                  padding={'6px 41px 5px'}
+                  height={'25px'}
+                  borderRadius={'4px'}
+                  width={'120px'}
+                  color={'#fff'}
+                  isDisabled={
+                    Number(reward.unclaimed) === 0 ||
+                    moment().unix() < reward.endTime
+                  }
+                  _disabled={{
+                    color: colorMode === 'light' ? '#86929d' : '#838383',
+                    bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+                    cursor: 'not-allowed',
+                  }}
+                  _hover={
+                    // I set !disableButton just for UI testing purposes. Revert to disableButton (or any condition) to disable _hover and _active styles.
+                    Number(reward.unclaimed) === 0
+                      ? {}
+                      : {
+                          background: 'transparent',
+                          border: 'solid 1px #2a72e5',
+                          color: themeDesign.tosFont[colorMode],
+                          cursor: 'pointer',
+                        }
+                  }
+                  _active={
+                    Number(reward.unclaimed) === 0
+                      ? {}
+                      : {
+                          background: '#2a72e5',
+                          border: 'solid 1px #2a72e5',
+                          color: '#fff',
+                        }
+                  }
+                  onClick={() => refundFunc(reward.incentiveKey)}>
+                  Refund
+                </Button>
+              </GridItem>
+            );
           })}
-          {[...Array(3-getPaginatedData().length)].map((i:number) => {
-            return  <GridItem
-            fontFamily={theme.fonts.fld}
-            className={'chart-cell'}
-            border={themeDesign.border[colorMode]}
-           borderTop='none'
-            fontSize={'13px'}>
-           
-          </GridItem>
+          {[...Array(3 - getPaginatedData().length)].map((i: number) => {
+            return (
+              <GridItem
+                fontFamily={theme.fonts.fld}
+                className={'chart-cell'}
+                border={themeDesign.border[colorMode]}
+                borderTop="none"
+                fontSize={'13px'}></GridItem>
+            );
           })}
           <GridItem
             fontFamily={theme.fonts.fld}
@@ -660,7 +702,10 @@ setDatas(filtered);
                     borderRadius={4}
                     aria-label={'Next Page'}
                     onClick={goToNextPage}
-                    isDisabled={pageIndex === pageOptions ||getPaginatedData().length !==3}
+                    isDisabled={
+                      pageIndex === pageOptions ||
+                      getPaginatedData().length !== 3
+                    }
                     size={'sm'}
                     ml={4}
                     mr={'1.5625em'}

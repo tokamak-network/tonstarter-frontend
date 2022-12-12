@@ -73,6 +73,8 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
   const [pool, setPool] = useState<string>('');
   const [endTime, setEndTime] = useState<number>(0);
   const [poolsFromAPI, setPoolsFromAPI] = useState<any>([]);
+  const [currentRound, setCurrentRound] = useState(0);
+  const [nowClaim, setNowClaim] = useState(0);
   const [datas, setDatas] = useState<interfaceReward[] | []>([]);
   const zero_address = '0x0000000000000000000000000000000000000000';
   const VaultLPReward = new Contract(
@@ -125,18 +127,24 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
       }
       const now = moment().unix();
       const currentRound = await VaultLPReward.currentRound();
+      setCurrentRound(Number(currentRound))
       const nowClaimRound = await VaultLPReward.nowClaimRound();
+      setNowClaim(Number(nowClaimRound))
       const totalClaimCount = await VaultLPReward.totalClaimCounts();
+      
       const available = await VaultLPReward.availableUseAmount(currentRound);
       const amountFormatted = parseInt(ethers.utils.formatEther(available));
       const getProgramDuration = await VaultLPReward.getProgramDuration(
         currentRound,
       );
+      console.log(Number(getProgramDuration));
+
       const claimDate =
         nowClaimRound === totalClaimCount
           ? 0
           : await VaultLPReward.claimTimes(nowClaimRound);
-      const endTime = Number(claimDate) + Number(getProgramDuration);
+
+      const endTime = Number(claimDate) + Number(getProgramDuration);      
       const durat = [Number(claimDate), endTime];
       setEndTime(Number(getProgramDuration));
 
@@ -147,12 +155,14 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
         3000,
       );
       setPool(getPool);
-    
+
       const disabled = Number(nowClaimRound) >= Number(currentRound);
       setShowDate(amountFormatted === 0 && Number(claimDate) > now);
       setClaimTime(claimDate);
       setDistributable(amountFormatted);
-      setDisableButton(disabled || (amountFormatted === 0 && Number(claimDate) > now))
+      setDisableButton(
+        disabled || (amountFormatted === 0 && Number(claimDate) > now),
+      );
     }
     getLPToken();
   }, [account, library, transactionType, blockNumber, vault.vaultAddress]);
@@ -269,7 +279,7 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
         };
         const create = await createReward(arg);
         if (create.success === true) {
-          fetchProjectsData()
+          fetchProjectsData();
         }
       }
     } catch (e) {
@@ -485,21 +495,32 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
                   padding={'6px 12px'}
                   whiteSpace={'normal'}
                   color={'#fff'}
-                  isDisabled={disableButton || pool === zero_address || moment().unix() > duration[1]}
+                  isDisabled={
+                    disableButton ||
+                    pool === zero_address ||
+                    // moment().unix() > duration[1]
+                    nowClaim >= currentRound
+                  }
                   _disabled={{
                     color: colorMode === 'light' ? '#86929d' : '#838383',
                     bg: colorMode === 'light' ? '#e9edf1' : '#353535',
                     cursor: 'not-allowed',
                   }}
                   _hover={
-                    disableButton || pool === zero_address || moment().unix() > duration[1]
+                    disableButton ||
+                    pool === zero_address ||
+                    // moment().unix() > duration[1]
+                    nowClaim >= currentRound
                       ? {}
                       : {
-                         cursor: 'pointer',
+                          cursor: 'pointer',
                         }
                   }
                   _active={
-                    disableButton || pool === zero_address || moment().unix() > duration[1]
+                    disableButton ||
+                    pool === zero_address ||
+                    nowClaim >= currentRound
+                    // moment().unix() > duration[1]
                       ? {}
                       : {
                           background: '#2a72e5',
@@ -559,7 +580,10 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
                   borderRadius={'4px'}
                   width={'120px'}
                   color={'#fff'}
-                  isDisabled={Number(reward.unclaimed) === 0 || moment().unix() < reward.endTime}
+                  isDisabled={
+                    Number(reward.unclaimed) === 0 ||
+                    moment().unix() < reward.endTime
+                  }
                   _disabled={{
                     color: colorMode === 'light' ? '#86929d' : '#838383',
                     bg: colorMode === 'light' ? '#e9edf1' : '#353535',
