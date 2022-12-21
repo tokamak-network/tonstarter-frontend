@@ -97,7 +97,7 @@ export const Footer = () => {
               Tokamak Network PTE.LTD
             </Text>
           </Box>
-          {/* <Box
+          <Box
             d="flex"
             justifyContent={'center'}
             alignItems={'center'}
@@ -110,7 +110,7 @@ export const Footer = () => {
               fontWeight={'normal'}>
               111 SOMERSET ROAD #06-07O 111 SOMERSET SINGAPORE 238164
             </Text>
-          </Box> */}
+          </Box>
           <Box
             d="flex"
             justifyContent={'center'}
