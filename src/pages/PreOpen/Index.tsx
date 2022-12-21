@@ -105,8 +105,8 @@ into sTOS(staked TOS)"
                 fontFamily={theme.fonts.openSans}
                 mainFontSize="0.875em"
                 subFontSize="0.688em"
-                header="ONTHER PTE. LTD."
-                content="© 2021 Onther"></TextComponent>
+                header="Tokamak Network PTE. LTD."
+                content="© 2021 Tokamak Network"></TextComponent>
               <Text
                 pos="absolute"
                 left="20px"

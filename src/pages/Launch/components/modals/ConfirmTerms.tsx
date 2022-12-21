@@ -900,7 +900,7 @@ const ConfirmTermsModal = () => {
                   </Text>
                   <Text>
                     <b>18.1</b>TONStarter - Tokamak is fully owned and operated
-                    by Onther Pte. Ltd. (UEN 201807447M), a company incorporated
+                    by Tokamak Network Pte. Ltd. (UEN 201807447M), a company incorporated
                     in Singapore.
                   </Text>
                   <br />
