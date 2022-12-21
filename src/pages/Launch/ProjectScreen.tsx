@@ -52,7 +52,6 @@ const [project, setProject] = useState<any>()
           },
         }),
       {
-        // enabled: !!account,
         //refetch every 10min
         refetchInterval: 600000,
       },

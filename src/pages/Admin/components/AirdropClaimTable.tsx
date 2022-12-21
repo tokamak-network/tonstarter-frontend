@@ -49,9 +49,7 @@ export const AirdropClaimTable = () => {
   const [checkedAllBoxes, setCheckedAllBoxes] = useState<boolean>(false);
   const [airdropData, setAirdropData] = useState<any[]>([]);
   const [checkedTokenAddresses, setCheckedTokenAddresses] = useState<any[]>([]);
-  const [radioValue, setRadioValue] = useState<
-    'DAO Airdrop' | 'TON Staker' | 'Genesis Airdrop'
-  >('DAO Airdrop');
+  const [radioValue, setRadioValue] = useState<string>('DAO Airdrop');
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [tonStakerAirdropTokens, setTonStakerAirdropTokens] = useState<any[]>(
     [],
@@ -250,12 +248,12 @@ export const AirdropClaimTable = () => {
     setCheckedAllBoxes(!checkedAllBoxes);
 
     if (radioValue === 'TON Staker') {
-      setIsCheck(tonStakerAirdropTokens.map((data) => String(data.id)));
+      setIsCheck(tonStakerAirdropTokens.map((data, index) => String(index)));
       setCheckedTokenAddresses(
         tonStakerAirdropTokens.map((data) => data.address),
       );
     } else if (radioValue === 'DAO Airdrop') {
-      setIsCheck(daoAirdropTokens.map((data) => String(data.id)));
+      setIsCheck(daoAirdropTokens.map((data, index) => String(index)));
       setCheckedTokenAddresses(daoAirdropTokens.map((data) => data.address));
     }
 
@@ -267,6 +265,7 @@ export const AirdropClaimTable = () => {
 
   const handleClick = (e: any) => {
     const {id, checked, value} = e.target;
+
     let tempCheckedAddresses = checkedTokenAddresses;
     setIsCheck([...isCheck, id]);
     if (!checked) {
@@ -310,48 +309,32 @@ export const AirdropClaimTable = () => {
             color={themeDesign.font[colorMode]}>
             From:
           </Text>
-          <RadioGroup
-            onChange={(
-              value: 'DAO Airdrop' | 'TON Staker' | 'Genesis Airdrop',
-            ) => {
-              setRadioValue(value);
-            }}
-            value={radioValue}>
-            <Flex>
-              <Box ml={'20px'} display={'flex'}>
-                <Radio
-                  value="DAO Airdrop"
-                  size={'md'}
-                  mr={'8px'}
-                  cursor={'pointer'}
-                />
+          <RadioGroup onChange={setRadioValue} value={radioValue}>
+            <Stack direction="row">
+              <Box mx={'20px'} display={'flex'}>
+                <Radio value="DAO Airdrop" size={'md'} mr={'5px'} />
                 <Text fontFamily={theme.fonts.roboto} fontSize={'14px'}>
                   DAO Airdrop
                 </Text>
               </Box>
-              <Box ml={'25px'} display={'flex'}>
-                <Radio
-                  value="TON Staker"
-                  size={'md'}
-                  mr={'8px'}
-                  cursor={'pointer'}
-                />
+              <Box mx={'20px'} display={'flex'}>
+                <Radio value="TON Staker" size={'md'} mr={'5px'} />
                 <Text fontFamily={theme.fonts.roboto} fontSize={'14px'}>
                   TON Staker
                 </Text>
               </Box>
-              <Box ml={'25px'} display={'flex'}>
+              <Box mx={'20px'} display={'flex'}>
                 <Radio
                   value="Genesis Airdrop"
+                  ml={'20px'}
                   size={'md'}
-                  mr={'8px'}
-                  cursor={'pointer'}
+                  mr={'5px'}
                 />
                 <Text fontFamily={theme.fonts.roboto} fontSize={'14px'}>
                   Genesis Airdrop
                 </Text>
               </Box>
-            </Flex>
+            </Stack>
           </RadioGroup>
         </Flex>
         <Button
@@ -367,6 +350,8 @@ export const AirdropClaimTable = () => {
           disabled={checkedTokenAddresses.length < 1}
           // _hover={{background: 'transparent'}}
           onClick={() => {
+            // console.log(checkedTokenAddresses);
+
             account &&
               AdminActions.claimMultipleTokens({
                 account,
@@ -574,7 +559,7 @@ export const AirdropClaimTable = () => {
                     key={id}
                     type="checkbox"
                     name={tokenSymbol}
-                    id={id}
+                    id={String(index)}
                     onChange={handleClick}
                     isChecked={isCheck.includes(String(index))}
                     fontWeight={'bold'}
@@ -665,7 +650,7 @@ export const AirdropClaimTable = () => {
                     key={id}
                     type="checkbox"
                     name={tokenSymbol}
-                    id={id}
+                    id={String(index)}
                     onChange={handleClick}
                     isChecked={isCheck.includes(String(index))}
                     fontWeight={'bold'}

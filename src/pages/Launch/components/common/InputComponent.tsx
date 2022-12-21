@@ -355,7 +355,7 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
       <Box
         pos={'absolute'}
         right={0}
-        w={'50%'}
+        w={'55%'}
         bg={colorMode === 'light' ? 'white.100' : '#222222'}
         textAlign={'right'}>
         <ErrorMessage

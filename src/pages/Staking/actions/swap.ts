@@ -2,7 +2,7 @@ import {getSigner} from 'utils/contract';
 import {setTxPending} from 'store/tx.reducer';
 import store from 'store';
 import {Contract} from '@ethersproject/contracts';
-import * as StakeTON from 'services/abis/StakeTON.json';
+import * as TokamakStakeUpgrade from 'services/abis/TokamakStakeUpgrade.json';
 import {toastWithReceipt} from 'utils';
 import {openToast} from 'store/app/toast.reducer';
 
@@ -14,22 +14,20 @@ type UnstakeFromLayer2 = {
 };
 
 export const swapWTONtoTOS = async (args: UnstakeFromLayer2) => {
-  const {userAddress, amount, contractAddress, library} = args;
-  if (userAddress === null || userAddress === undefined) {
-    return;
-  }
-
-  const StakeTONContract = new Contract(contractAddress, StakeTON.abi, library);
-  const signer = getSigner(library, userAddress);
-  let deadline = Date.now() / 1000 + 900;
-  deadline = parseInt(deadline.toString());
   try {
+    const {userAddress, amount, contractAddress, library} = args;
+    if (userAddress === null || userAddress === undefined) {
+      return;
+    }
+
+    const StakeTONContract = new Contract(
+      contractAddress,
+      TokamakStakeUpgrade.abi,
+      library,
+    );
+    const signer = getSigner(library, userAddress);
     const receipt = await StakeTONContract.connect(signer).exchangeWTONtoTOS(
       amount,
-      0,
-      deadline,
-      0,
-      0,
     );
     store.dispatch(setTxPending({tx: true}));
     if (receipt) {
@@ -39,6 +37,7 @@ export const swapWTONtoTOS = async (args: UnstakeFromLayer2) => {
       store.dispatch(setTxPending({tx: false}));
     }
   } catch (err) {
+    console.log(err);
     store.dispatch(setTxPending({tx: false}));
     store.dispatch(
       //@ts-ignore

@@ -40,15 +40,6 @@ export const Claim = () => {
   };
 
   useEffect(() => {
-    //@ts-ignore
-    const totalBalance = claimList.reduce((acc: any, cur: ClaimList) => {
-      return Number(acc) + cur.price;
-    }, 0);
-    setbalance(
-      totalBalance.toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-      }),
-    );
     const isClaimAmount = claimList.filter((data: ClaimList) => {
       return Number(data.claimAmount.replaceAll(',', '')) > 0;
     });

@@ -8,7 +8,6 @@ import store from 'store';
 import {openToast} from 'store/app/toast.reducer';
 import {DEPLOYED} from 'constants/index';
 import {ClaimList} from '@Dao/types';
-import {getTokenPrice} from 'utils/tokenPrice';
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 
 interface I_CallContract {
@@ -41,7 +40,6 @@ export const getClaimalbeList = async (
         claimableTokens.push(tokenAddress);
         i++;
       } catch (e) {
-        
         isError = true;
       }
     } while (isError === false);
@@ -53,11 +51,11 @@ export const getClaimalbeList = async (
       tokens.map(async (tokenAddress: string, index: number) => {
         const ERC20_CONTRACT = new Contract(tokenAddress, ERC20.abi, library);
         const tokenSymbol = await ERC20_CONTRACT.symbol();
-        const tokenContractName = await ERC20_CONTRACT.name();
-        const tokenName =
-          tokenAddress === TON_ADDRESS
-            ? 'tokamak-network'
-            : tokenContractName.toLowerCase().replaceAll(' ', '');
+        // const tokenContractName = await ERC20_CONTRACT.name();
+        // const tokenName =
+        //   tokenAddress === TON_ADDRESS
+        //     ? 'tokamak-network'
+        //     : tokenContractName.toLowerCase().replaceAll(' ', '');
         const amount = await LOCKTOS_DIVIDEND_CONTRACT.claimable(
           account,
           tokenAddress,
@@ -69,12 +67,10 @@ export const getClaimalbeList = async (
             localeString: true,
             type: tokenSymbol !== 'WTON' ? 'wei' : 'ray',
           }) || '0.00';
-        const price = await getTokenPrice(tokenName);
         const obj = {
           name: `#${index + 1}`,
           tokenName: tokenSymbol,
           claimAmount,
-          price: price * Number(claimAmount.replaceAll(',', '')),
           tokenAddress,
         };
         return obj;

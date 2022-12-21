@@ -15,6 +15,7 @@ import {useAppSelector} from 'hooks/useRedux';
 import {selectStakes} from '../Staking/staking.reducer';
 import {LoadingComponent} from 'components/Loading';
 import ConfirmTermsModal from '@Launch/components/modals/ConfirmTerms';
+import NoticeModal from 'components/Modal/Notice';
 
 export const FLDstarter = () => {
   // const [selected, setSelected] = useState<string>('hi');
@@ -28,7 +29,7 @@ export const FLDstarter = () => {
 
   return (
     <Fragment>
-      <Head title={'TON Starter'} />
+      <Head title={'TONStarter'} />
       <Animation></Animation>
       <Stack>
         <Container maxW={'6xl'} py={12}>
@@ -63,7 +64,7 @@ export const FLDstarter = () => {
           </Button>
         </Flex>
       </Stack>
-      <ConfirmTermsModal></ConfirmTermsModal>
+      {/* <NoticeModal></NoticeModal> */}
     </Fragment>
   );
 };

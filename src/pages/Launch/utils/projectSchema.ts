@@ -19,6 +19,21 @@ const ProjectSchema = Yup.object().shape({
         return false;
       }
     }),
+  tokenOwnerAccount: Yup.string()
+    .required('Required')
+    .test('onwer-check', 'Invalid Onwer Address', (value) => {
+      try {
+        if (value) {
+          const result = toChecksumAddress(String(value));
+          if (!result) {
+            return false;
+          }
+        }
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }),
   tokenSymbol: Yup.string().required('Required').max(8),
   tokenSymbolImage: Yup.string().url(),
   sector: Yup.string().required('Required'),

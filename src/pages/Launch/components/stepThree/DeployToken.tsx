@@ -10,6 +10,9 @@ import {
 } from '@chakra-ui/react';
 import {shortenAddress} from 'utils';
 import * as ERC20_FACTORY_A_ABI from 'services/abis/ERC20AFactory.json';
+import * as ERC20_FACTORY_B_ABI from 'services/abis/ERC20_FACTORY_B_ABI.json';
+import * as ERC20_FACTORY_C_ABI from 'services/abis/ERC20_FACTORY_C_ABI.json';
+
 import {DEPLOYED} from 'constants/index';
 import {useContract} from 'hooks/useContract';
 import {useFormikContext} from 'formik';
@@ -72,7 +75,14 @@ const DeployToken = () => {
 
       const receipt = await tx.wait();
       const {logs} = receipt;
-      const iface = new ethers.utils.Interface(ERC20_FACTORY_A_ABI.abi);
+
+      const iface = new ethers.utils.Interface(
+        values.tokenType === 'A'
+          ? ERC20_FACTORY_A_ABI.abi
+          : values.tokenType === 'B'
+          ? ERC20_FACTORY_B_ABI.abi
+          : ERC20_FACTORY_C_ABI.abi,
+      );
       const result = iface.parseLog(logs[logs.length - 1]);
       const {args} = result;
 
@@ -142,6 +152,7 @@ const DeployToken = () => {
             Address
           </Text>
           <Link
+            w={'100%'}
             isExternal={true}
             outline={'none'}
             _focus={{
@@ -159,7 +170,6 @@ const DeployToken = () => {
                 : 'white.100'
             }
             fontSize={22}
-            w={'144px'}
             h={'29px'}
             fontWeight={600}
             textDecoration={isTokenDeployed ? 'underline' : {}}

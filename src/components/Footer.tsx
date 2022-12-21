@@ -94,7 +94,7 @@ export const Footer = () => {
               fontSize={14}
               fontFamily={theme.fonts.body}
               letterSpacing={'normal'}>
-              ONTHER PTE.LTD
+              Tokamak Network PTE.LTD
             </Text>
           </Box>
           <Box

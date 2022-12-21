@@ -23,8 +23,9 @@ import {useModal} from 'hooks/useModal';
 import {useCheckBalance} from 'hooks/useCheckBalance';
 import {CloseButton} from 'components/Modal/CloseButton';
 import {convertToRay} from 'utils/number';
-import {LoadingDots} from 'components/Loader/LoadingDots';
+// import {LoadingDots} from 'components/Loader/LoadingDots';
 import swapArrow from 'assets/svgs/swap-arrow-icon.svg';
+import commafy from 'utils/commafy';
 
 export const SwapModal = () => {
   const {sub} = useAppSelector(selectModalType);
@@ -32,6 +33,7 @@ export const SwapModal = () => {
   const {
     data: {contractAddress, swapBalance, originalSwapBalance, currentTosPrice},
   } = sub;
+
   const theme = useTheme();
   const {colorMode} = useColorMode();
   const [value, setValue] = useState<number>(0);
@@ -84,49 +86,74 @@ export const SwapModal = () => {
               mb={'3px'}>
               Swap
             </Heading>
-            <Text
-              color="gray.175"
-              fontSize={'0.750em'}
-              textAlign={'center'}
-              w={'100%'}>
-              Current price{' '}
-              {currentTosPrice === '0' ? <LoadingDots /> : currentTosPrice} TOS
-              per TON
-            </Text>
           </Box>
 
           <Stack
-            pt="27px"
+            pt="15px"
             as={Flex}
-            flexDir={'row'}
             justifyContent={'center'}
             alignItems={'center'}
             w={'full'}>
-            <Input
-              variant={'outline'}
-              borderWidth={0}
-              textAlign={'center'}
-              fontWeight={'bold'}
-              fontSize={'4xl'}
-              value={value}
-              width={'xs'}
-              // mr={6}
-              onChange={handleChange}
-              _focus={{
-                borderWidth: 0,
-              }}
-            />
-            <Box position={'absolute'} right={5}>
-              <Button
-                onClick={setMax}
-                type={'button'}
-                variant="outline"
-                _focus={{
-                  outline: 'none',
-                }}>
-                Max
-              </Button>
-            </Box>
+            <Flex
+              w={'300px'}
+              border={'1px solid #d7d9df'}
+              flexDir={'column'}
+              borderRadius={10}
+              pl={'25px'}
+              pr={'14px'}>
+              <Flex
+                justifyContent={'space-between'}
+                alignItems={'center'}
+                pt={'16px'}>
+                <Text
+                  fontSize={16}
+                  fontWeight={600}
+                  color={'#3d495d'}
+                  textAlign={'center'}
+                  lineHeight={'24px'}>
+                  TON
+                </Text>
+                <Input
+                  h={'24px'}
+                  variant={'outline'}
+                  borderWidth={0}
+                  textAlign={'right'}
+                  value={value}
+                  onChange={handleChange}
+                  placeholder={'0.00'}
+                  fontSize={20}
+                  fontWeight={'bold'}
+                  _placeholder={{
+                    color: '#dee4ef',
+                  }}
+                  _focus={{
+                    borderWidth: 0,
+                  }}
+                />
+              </Flex>
+              <Flex alignItems={'center'} pb={'14px'} pt={'13px'}>
+                <Text
+                  fontSize={12}
+                  fontWeight={600}
+                  color={'#808992'}
+                  mr={'10px'}>
+                  Balance: {swapBalance || '-'} TON
+                </Text>
+                <Button
+                  w={'50px'}
+                  h={'20px'}
+                  fontSize={12}
+                  fontWeight={600}
+                  onClick={setMax}
+                  type={'button'}
+                  variant="outline"
+                  _focus={{
+                    outline: 'none',
+                  }}>
+                  Max
+                </Button>
+              </Flex>
+            </Flex>
           </Stack>
           <Stack
             pt="27px"
@@ -144,41 +171,106 @@ export const SwapModal = () => {
             justifyContent={'center'}
             alignItems={'center'}
             w={'full'}>
-            <Input
-              variant={'outline'}
-              borderWidth={0}
-              textAlign={'center'}
-              fontWeight={'bold'}
-              fontSize={'4xl'}
-              value={Number(swapValue).toFixed(2)}
-              width={'xs'}
-              // mr={6}
-              _focus={{
-                borderWidth: 0,
-              }}
-            />
+            <Flex
+              w={'300px'}
+              border={'1px solid #d7d9df'}
+              flexDir={'column'}
+              borderRadius={10}
+              pl={'25px'}
+              pr={'14px'}>
+              <Flex
+                justifyContent={'space-between'}
+                alignItems={'center'}
+                pt={'16px'}>
+                <Text
+                  fontSize={16}
+                  fontWeight={600}
+                  color={'#3d495d'}
+                  textAlign={'center'}
+                  lineHeight={'24px'}>
+                  TOS
+                </Text>
+                <Input
+                  h={'24px'}
+                  variant={'outline'}
+                  borderWidth={0}
+                  textAlign={'right'}
+                  value={
+                    isNaN(Number(swapValue))
+                      ? '0'
+                      : Number(swapValue).toFixed(2)
+                  }
+                  placeholder={'0.00'}
+                  fontSize={20}
+                  fontWeight={'bold'}
+                  _placeholder={{
+                    color: '#dee4ef',
+                  }}
+                  _focus={{
+                    borderWidth: 0,
+                  }}
+                />
+              </Flex>
+              <Flex alignItems={'center'} pb={'16px'} pt={'13px'}>
+                <Flex flexDir={'column'} h={'30px'}>
+                  <Text fontSize={12} fontWeight={600} color={'#808992'}>
+                    Current price : {currentTosPrice} TOS / WTON
+                  </Text>
+                  <Text fontSize={12} fontWeight={600} color={'#808992'}>
+                    Minimum amount TOS : {commafy(swapValue * 0.95 * 0.9)}
+                  </Text>
+                </Flex>
+              </Flex>
+            </Flex>
           </Stack>
-          <Stack
+          {/* <Text
+            color="gray.175"
+            fontSize={'0.750em'}
+            textAlign={'center'}
+            w={'100%'}>
+            Current price{' '}
+            {currentTosPrice === '0' ? <LoadingDots /> : currentTosPrice} TOS
+            per TON
+          </Text> */}
+          {/* <Stack
             as={Flex}
             justifyContent={'center'}
             alignItems={'center'}
             borderBottom={
               colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
             }
-            mb={'25px'}>
-            <Box textAlign={'center'} pt="33px" pb="13px">
-              <Text fontWeight={500} fontSize={'0.813em'} color={'gray.400'}>
-                Available Balance
-              </Text>
-              <Text
-                fontSize={'18px'}
-                color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                {swapBalance} TON
-              </Text>
-            </Box>
-          </Stack>
+            mb={'25px'}></Stack> */}
+          <Box
+            pt={'35px'}
+            pb={'25px'}
+            pr={'25px'}
+            pl={'25px'}
+            fontSize={12}
+            textAlign={'center'}>
+            <Text>
+              Depending on the liquidity of the WTON-TOS pool, slippage may
+              occur.{' '}
+              <span style={{color: '#ff3b3b'}}>
+                If slippage of 10% or more occurs, the operation will be
+                cancelled. Please note that even if the job is canceled, the gas
+                fee will be paid. Therefore, it is recommended to input an
+                appropriate amount of TON according to the liquidity of the
+                pool.
+              </span>
+              {''}
+              If the exchange rate of WTON-TOS is not within the range of the
+              average exchange rate of the last 2 minutes + -5% of the exchange
+              rate of WTON-TOS, the operation will be canceled.
+            </Text>
+          </Box>
 
-          <Box as={Flex} justifyContent={'center'}>
+          <Box
+            as={Flex}
+            justifyContent={'center'}
+            pt={'25px'}
+            borderTop={
+              colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
+            }>
             <Button
               w={'150px'}
               bg={'blue.500'}

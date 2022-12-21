@@ -213,7 +213,7 @@ const InputField: React.FC<InputFieldProp> = (props) => {
           }
         }}></Input>
       {tokenSymbol && (
-        <InputRightElement h={'32px'} mr={'2px'}>
+        <InputRightElement h={'32px'} ml={'5px'} mr={'2px'} pt={'2px'}>
           <Flex
             fontSize={13}
             color={colorMode === 'light' ? '#3e495c' : '#ffffff'}>

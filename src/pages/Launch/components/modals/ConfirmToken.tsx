@@ -232,7 +232,8 @@ const ConfirmTokenModal = () => {
           {/* <CloseButton closeFunc={() => closeModal()}></CloseButton> */}
           <ModalBody>
             <Flex
-              py={'40px'}
+              pt={'40px'}
+              pb={'17px'}
               flexDir={'column'}
               alignItems="center"
               justifyContent={'center'}
@@ -248,13 +249,25 @@ const ConfirmTokenModal = () => {
                 textAlign={'center'}>
                 Waiting to complete deploying your token
               </Text>
-              <Link
-                mt={'20px'}
-                isExternal={true}
-                href={`${appConfig.explorerTxnLink}${tempHash}`}
-                color={'blue.100'}>
-                {tempHash ? 'View on Etherscan' : ''}
-              </Link>
+
+              <Box w={'100%'} px={'15px'} mb={'25px'} mt={'40px'}>
+                <Line></Line>
+              </Box>
+              <Box as={Flex} flexDir="column" alignItems="center">
+                <Link
+                  isExternal={true}
+                  href={`${appConfig.explorerTxnLink}${tempHash}`}
+                  color={'blue.100'}>
+                  <Button
+                    {...btnStyle.btnAble()}
+                    w={'150px'}
+                    fontSize="14px"
+                    _hover={{}}
+                    isDisabled={tempHash ? false : true}>
+                    View on Etherscan
+                  </Button>
+                </Link>
+              </Box>
             </Flex>
           </ModalBody>
         </ModalContent>
@@ -301,13 +314,6 @@ const ConfirmTokenModal = () => {
                 textAlign={'center'}>
                 your token
               </Text>
-              <Link
-                mb={'35px'}
-                isExternal={true}
-                href={`${appConfig.explorerTxnLink}${tempHash}`}
-                color={'blue.100'}>
-                {tempHash ? 'View on Etherscan' : ''}
-              </Link>
               <Box w={'100%'} px={'15px'} mb={'25px'}>
                 <Line></Line>
               </Box>

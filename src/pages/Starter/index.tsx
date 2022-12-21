@@ -35,7 +35,7 @@ export const Starter = () => {
   }, [chainId, account, dispatch, library, blockNumber]);
 
   return (
-    <Flex mt={'72px'} w={'100%'} alignItems="center">
+    <Flex  w={'100%'} alignItems="center">
       {loading === false ? (
         <StarterMain></StarterMain>
       ) : (

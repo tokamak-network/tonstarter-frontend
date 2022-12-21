@@ -212,6 +212,23 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
                   mr={'7px'}>
                   Launch
                 </Text>
+              
+              </Flex>
+            </NavLink>
+            <Flex alignItems={'center'} h={'30px'}  onClick={(e) => {
+                    e.preventDefault();
+                    window.open(
+                      'https://tosv2.tokamak.network/',
+                    );
+                  }}  mt={'30px'}>
+                <Text
+                  fontFamily={'Rajdhani'}
+                  fontWeight={700}
+                   fontSize={'24px'}
+                
+                  mr={'7px'}>
+                  TOSV2
+                </Text>
                 <Flex
                   w={'48px'}
                   h={'20px'}
@@ -229,7 +246,6 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
                   </Text>
                 </Flex>
               </Flex>
-            </NavLink>
             <Flex
               mt={'30px'}
               fontFamily={'Rajdhani, sans-serif'}

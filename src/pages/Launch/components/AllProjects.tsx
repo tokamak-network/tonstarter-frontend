@@ -78,7 +78,7 @@ const AllProjects = () => {
         (project: any) => project.isSet === true,
       );
 
-      setProjectsData(filteredProjects);
+      setProjectsData(filteredProjects.reverse());
     }
   }, [data, dispatch]);
 

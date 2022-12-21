@@ -586,7 +586,7 @@ export const StakingTable: FC<StakingTableProps> = ({
         {/* PAGENATION FOR LATER */}
         <Flex justifyContent="flex-end" my={4} alignItems="center">
           <Flex w={'100%'} r={'100%'}>
-            <CustomTooltip
+            {/* <CustomTooltip
               toolTipW={245}
               toolTipH={'50px'}
               fontSize="12px"
@@ -607,8 +607,8 @@ export const StakingTable: FC<StakingTableProps> = ({
                   onClick={() => stakeTonControl()}>
                   Withdraw & Swap
                 </Button>
-              }></CustomTooltip>
-            <Box ml={'10px'}>
+              }></CustomTooltip> */}
+            <Box>
               <CustomTooltip
                 toolTipW={245}
                 toolTipH={'50px'}
@@ -632,7 +632,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                   </Button>
                 }></CustomTooltip>
             </Box>
-            <Box ml={'10px'}>
+            {/* <Box ml={'10px'}>
               <CustomTooltip
                 toolTipW={245}
                 toolTipH={'50px'}
@@ -657,7 +657,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                     Power TON Swap
                   </Button>
                 }></CustomTooltip>
-            </Box>
+            </Box> */}
           </Flex>
           {data.length > 10 && (
             <Flex>

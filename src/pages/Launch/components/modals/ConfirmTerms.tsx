@@ -30,6 +30,9 @@ const ConfirmTermsModal = () => {
   const match = useRouteMatch();
   const {url} = match;
 
+  console.log(isCheck);
+  console.log(url);
+
   const closeModal = () => {
     setIsCheck(false);
     handleCloseModal();
@@ -968,7 +971,7 @@ const ConfirmTermsModal = () => {
                 color: colorMode === 'light' ? '#3e495c' : '',
               }}></CustomButton>
             {data.data.from === 'launch' && (
-              <Link to={isCheck ? `${url}/createproject` : '#'}>
+              <Link to={isCheck ? `/launch/createproject` : '#'}>
                 <CustomButton
                   text={'Confirm'}
                   func={() => {

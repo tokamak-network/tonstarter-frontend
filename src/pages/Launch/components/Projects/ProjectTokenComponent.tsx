@@ -135,7 +135,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
               {project.owner ? shortenAddress(project.owner) : 'NA'}
             </Link>
           </Flex>
-          <Flex
+          {/* <Flex
             p={'0px 20px'}
             alignItems={'center'}
             borderBottom={themeDesign.border[colorMode]}
@@ -146,7 +146,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
               Sale Price
             </Text>
             <Text>NA</Text>
-          </Flex>
+          </Flex> */}
           <Flex
             p={'0px 20px'}
             alignItems={'center'}
@@ -186,7 +186,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
           <Flex
             p={'0px 20px'}
             borderBottom={themeDesign.border[colorMode]}
-            h={'58.5px'}
+            h={'60px'}
             w={'100%'}
             justifyContent={'space-between'}
             alignItems={'center'}>
@@ -279,7 +279,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             p={'0px 20px'}
             alignItems={'center'}
             borderBottom={themeDesign.border[colorMode]}
-            h={'58.5px'}
+            h={'60px'}
             w={'100%'}
             justifyContent={'space-between'}>
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}  fontWeight={600}>
@@ -291,7 +291,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             p={'0px 20px'}
             alignItems={'center'}
             borderBottom={themeDesign.border[colorMode]}
-            h={'58.5px'}
+            h={'60px'}
             w={'100%'}
             justifyContent={'space-between'}>
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}  fontWeight={600}>
@@ -318,7 +318,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             p={'0px 20px'}
             alignItems={'center'}
             borderBottom={themeDesign.border[colorMode]}
-            h={'58.5px'}
+            h={'60px'}
             w={'100%'}
             justifyContent={'space-between'}>
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}  fontWeight={600}>
@@ -339,7 +339,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             p={'0px 20px'}
             alignItems={'center'}
             borderBottom={themeDesign.border[colorMode]}
-            h={'58.5px'}
+            h={'60px'}
             w={'100%'}
             justifyContent={'space-between'}>
             <Text color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}  fontWeight={600}>
@@ -356,7 +356,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
           <Flex
             p={'0px 20px'}
             borderBottom={themeDesign.border[colorMode]}
-            h={'58.5px'}
+            h={'60px'}
             w={'100%'}
             justifyContent={'space-between'}
             alignItems={'center'}>
@@ -379,7 +379,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
           <Flex
             p={'0px 20px'}
             borderBottom={themeDesign.border[colorMode]}
-            h={'58.5px'}
+            h={'60px'}
             w={'100%'}
             justifyContent={'space-between'}
             alignItems={'center'}>

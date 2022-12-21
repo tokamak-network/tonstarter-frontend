@@ -174,7 +174,7 @@ export const MobileFLD = () => {
             alignItems="flex-start"
             fontWeight={600}>
             <Text w={'280px'} fontSize={'27px'} wordBreak={'break-word'}>
-              TON Starter Decentralized Launchpad Platform
+              TONStarter Decentralized Launchpad Platform
             </Text>
             <Text mt={'50px'} fontSize={'15px'} color={'#ffff07'}>
               Phase1 Total Staked

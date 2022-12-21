@@ -27,33 +27,30 @@ const MobileOpenCampagin = () => {
         },
       }),
     {
-      // enabled: !!account,
       refetchInterval: 600000,
     },
   );
 
   useEffect(() => {
-    if (data  && !isLoading) {
+    if (data && !isLoading) {
       const {data: datas} = data;
       dispatch(fetchProjects({data: datas}));
       const projects = Object.keys(datas).map((k) => {
         if (datas[k].vaults !== undefined) {
-        const stat = datas[k].vaults.every((vault: any) => {
-          return vault.isSet === true;
-        });
-        return {name: datas[k].projectName, key: k,isSet: stat}
-      }
-      else {
-        return {key: k, data: datas[k], isSet: false}
-      }
-    })
-      
+          const stat = datas[k].vaults.every((vault: any) => {
+            return vault.isSet === true;
+          });
+          return {name: datas[k].projectName, key: k, isSet: stat};
+        } else {
+          return {key: k, data: datas[k], isSet: false};
+        }
+      });
+
       const filteredProjects = projects.filter(
         (project: any) => project.isSet === true,
       );
-      console.log(filteredProjects.length);
-      
-      setNumProjects(filteredProjects.length)
+
+      setNumProjects(filteredProjects.length);
       setProjectsData(projects);
     }
   }, [data, dispatch]);
@@ -62,13 +59,13 @@ const MobileOpenCampagin = () => {
   const {url} = match;
 
   //test
-  
+
   // if (isLoading) {
   //   return <div>loading..</div>;
   // }
   return (
     <Flex flexDir="column" alignItems="center">
-      <MobileLaunchPage numPairs={numProjects+4}/>
+      <MobileLaunchPage numPairs={numProjects + 4} />
     </Flex>
   );
 };

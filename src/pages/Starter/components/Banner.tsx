@@ -40,7 +40,7 @@ export const Banner = () => {
             border: '1px solid #ffffff',
             marginLeft: '15px',
           }}
-          text={'Coming Soon'}
+          text={'Go to LYDA'}
           func={(e: any) => {
             e.preventDefault();
             window.open('http://lyda.so');

@@ -120,7 +120,7 @@ export const ManageModal = () => {
   //constant
 
   //getCurrentBlock
-  useEffect(() => {    
+  useEffect(() => {
     async function getCurrentBlock() {
       const currentBlock = await BASE_PROVIDER.getBlockNumber();
       setCurrentBlock(currentBlock);
@@ -171,8 +171,10 @@ export const ManageModal = () => {
           totalStakedAmountL2,
           totalPendingUnstakedAmountL2,
           stakeContractBalanceTon,
+          stakeContractBalanceWton,
           originalBalance,
         } = result;
+        //@ts-ignore
         const res_CanWithdralAmount = await fetchWithdrawPayload(
           library,
           contractAddress,
@@ -187,10 +189,15 @@ export const ManageModal = () => {
           totalStakedAmountL2 &&
           totalPendingUnstakedAmountL2 &&
           stakeContractBalanceTon &&
+          stakeContractBalanceWton &&
           res_CanWithdralAmount &&
           fetchedSwappedTosBalance
         ) {
-          setAvailableBalance(stakeContractBalanceTon);
+          const totalStakedBalance =
+            Number(stakeContractBalanceTon.replaceAll(',', '')) +
+            Number(stakeContractBalanceWton.replaceAll(',', ''));
+
+          setAvailableBalance(totalStakedBalance.toString() || '-');
           setTotalStaked(totalStakedAmount);
           setStakdL2(totalStakedAmountL2);
           setPendingL2Balance(totalPendingUnstakedAmountL2);
@@ -212,7 +219,7 @@ export const ManageModal = () => {
             return setSwapBalance('0.00');
           }
 
-          setSwapBalance(stakeContractBalanceTon);
+          setSwapBalance(totalStakedBalance.toString() || '-');
 
           //calculate swap balance
           // if (Number(convertedUnstakeNum) <= 0) {
@@ -539,10 +546,12 @@ export const ManageModal = () => {
               fontSize={'12px'}
               fontWeight={100}
               _hover={{backgroundColor: 'blue.100'}}
-              {...(stakeL2Disabled === true
-                ? {...btnStyle.btnDisable({colorMode})}
-                : {...btnStyle.btnAble()})}
-              isDisabled={stakeL2Disabled}
+              // {...(stakeL2Disabled === true
+              //   ? {...btnStyle.btnDisable({colorMode})}
+              //   : {...btnStyle.btnAble()})}
+              // isDisabled={stakeL2Disabled}
+              {...btnStyle.btnDisable({colorMode})}
+              isDisabled={true}
               onClick={() =>
                 handleOpenConfirmModal({
                   type: 'manage_stakeL2',
