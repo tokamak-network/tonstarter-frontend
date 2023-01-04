@@ -166,7 +166,7 @@ const RINKEBY_DEPLOYED = {
     DOC_ETH_Address: '',
   },
   UniswapV3Factory: '0x1F98431c8aD98523631AE4a59f267346ea31F984',
-  ProjectTokenProxy: '0x48683aC8ab065A113323BdB5738a267D7FF7F0d6',
+  ProjectTokenProxy: '0xf948d90d2A90514D4FC0F0BE2B40Ed3AeB04233a',
   tokens: {
     LYDA_ADDRESS: '',
     AURA_ADDRESS: '',

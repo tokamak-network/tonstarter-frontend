@@ -57,6 +57,7 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
         return setThisVaultUncompleted(true);
       }
     });
+    return setThisVaultUncompleted(false);
   }, [uncompletedVaultIndex, vaultIndex, alreadySelected]);
 
   useEffect(() => {

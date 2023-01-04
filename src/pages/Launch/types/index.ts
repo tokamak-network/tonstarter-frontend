@@ -5,6 +5,7 @@ type VaultName =
   | 'TOS Staker'
   | 'WTON-TOS LP Reward'
   | 'Liquidity Incentive'
+  | 'Vesting'
   | string;
 
 type VaultType =
@@ -15,6 +16,7 @@ type VaultType =
   | 'WTON-TOS LP Reward'
   | 'Liquidity Incentive'
   | 'DAO'
+  | 'Vesting'
   | 'C';
 
 interface Vault {

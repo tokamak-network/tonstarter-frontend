@@ -1534,6 +1534,15 @@ const TokenDetail = (props: {
             isEdit={isEdit}
             setIsConfirm={setIsConfirm}></PublicTokenDetail>
         );
+      case 'Vesting':
+        return (
+          <PublicTokenDetail
+            firstColData={null}
+            secondColData={null}
+            thirdColData={null}
+            isEdit={isEdit}
+            setIsConfirm={setIsConfirm}></PublicTokenDetail>
+        );
       default:
         return <>no container for this vault :(</>;
     }

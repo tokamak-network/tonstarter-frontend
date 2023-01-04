@@ -81,6 +81,9 @@ const ClaimRound = () => {
   const [tokenAllocationErr, setTokenAllocationErr] = useState<boolean>(false);
 
   useEffect(() => {
+    console.log('gogo');
+    console.log(uncompletedVaultIndex);
+
     if (
       uncompletedVaultIndex?.fileds &&
       selectedVaultIndex !== undefined &&
@@ -98,7 +101,7 @@ const ClaimRound = () => {
         );
       return setTokenAllocationErr(hasError);
     }
-    setTokenAllocationErr(false);
+    return setTokenAllocationErr(false);
   }, [uncompletedVaultIndex, selectedVaultIndex, claim]);
 
   const saveConfirm = useCallback(() => {
