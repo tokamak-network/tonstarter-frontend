@@ -127,24 +127,22 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
       }
       const now = moment().unix();
       const currentRound = await VaultLPReward.currentRound();
-      setCurrentRound(Number(currentRound))
+      setCurrentRound(Number(currentRound));
       const nowClaimRound = await VaultLPReward.nowClaimRound();
-      setNowClaim(Number(nowClaimRound))
+      setNowClaim(Number(nowClaimRound));
       const totalClaimCount = await VaultLPReward.totalClaimCounts();
-      
+
       const available = await VaultLPReward.availableUseAmount(currentRound);
       const amountFormatted = parseInt(ethers.utils.formatEther(available));
       const getProgramDuration = await VaultLPReward.getProgramDuration(
         currentRound,
       );
-      console.log(Number(getProgramDuration));
-
       const claimDate =
         nowClaimRound === totalClaimCount
           ? 0
           : await VaultLPReward.claimTimes(nowClaimRound);
 
-      const endTime = Number(claimDate) + Number(getProgramDuration);      
+      const endTime = Number(claimDate) + Number(getProgramDuration);
       const durat = [Number(claimDate), endTime];
       setEndTime(Number(getProgramDuration));
 
@@ -520,8 +518,8 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
                     disableButton ||
                     pool === zero_address ||
                     nowClaim >= currentRound
-                    // moment().unix() > duration[1]
-                      ? {}
+                      ? // moment().unix() > duration[1]
+                        {}
                       : {
                           background: '#2a72e5',
                           border: 'solid 1px #2a72e5',
@@ -546,6 +544,7 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
           {getPaginatedData().map((reward: any, index: number) => {
             return (
               <GridItem
+                key={index}
                 fontFamily={theme.fonts.fld}
                 className={'chart-cell'}
                 justifyContent={'flex-start'}

@@ -156,7 +156,7 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
               Token
             </Text>
             {vault.isDeployed ? (
-              <Flex>
+              <Flex alignItems={'center'}>
               <Text letterSpacing={'1.3px'} fontSize={'13px'} mr={'5px'}>
                 {commafy(Number(vault.vaultTokenAllocation))}{' '}
                 {project.tokenSymbol}

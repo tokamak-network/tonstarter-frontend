@@ -543,6 +543,7 @@ export const WtonTosLpReward: FC<WtonTosLpReward> = ({vault, project}) => {
           {getPaginatedData().map((reward: any, index: number) => {
             return (
               <GridItem
+              key={index}
                 fontFamily={theme.fonts.fld}
                 className={'chart-cell'}
                 justifyContent={'flex-start'}

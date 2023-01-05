@@ -60,7 +60,7 @@ function TokamakGNB() {
         title={'Swap'}
         w={'76px'}
         url={'https://swap.tokamak.network/'}></Menu>
-      <Menu title={'TONStarter'} w={'114px'} url={'#'} activetab={true}></Menu>
+      <Menu title={'TONStarter'} w={'114px'} url={'#'} activetab={'true'}></Menu>
     </Flex>
   );
 }

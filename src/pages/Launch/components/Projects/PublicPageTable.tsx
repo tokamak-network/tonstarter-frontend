@@ -139,6 +139,7 @@ export const PublicPageTable = (prop: PublicTableProps) => {
       {tableData.map((data: any, index: number) => {
         return (
           <Flex
+          key={index}
             bg={
               index % 2 === 0
                 ? colorMode === 'dark'
