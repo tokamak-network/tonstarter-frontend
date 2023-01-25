@@ -7,6 +7,13 @@ const defaultParams = [
   {claimRound: 1, claimTime: undefined, claimTokenAllocation: undefined},
 ];
 
+const vestingDefaultParams = [
+  {claimRound: 1, claimTime: undefined, claimTokenAllocation: undefined},
+  {claimRound: 2, claimTime: undefined, claimTokenAllocation: undefined},
+  {claimRound: 3, claimTime: undefined, claimTokenAllocation: undefined},
+  {claimRound: 4, claimTime: undefined, claimTokenAllocation: undefined},
+];
+
 const {
   pools: {TOS_WTON_POOL},
 } = DEPLOYED;
@@ -80,21 +87,6 @@ const initialObj: Projects['CreateProject'] = {
       publicRound2Allocation: undefined,
       claimStart: undefined,
       index: 0,
-      vesting: {
-        vaultName: 'Vesting',
-        vaultType: 'Vesting',
-        vaultTokenAllocation: 0,
-        adminAddress: '',
-        isMandatory: true,
-        claim: defaultParams,
-        vaultAddress: undefined,
-        index: 2,
-        isDeployed: false,
-        isSet: false,
-        isDeployedErr: false,
-        poolAddress: undefined,
-        startTime: undefined,
-      },
     },
     {
       vaultName: 'Initial Liquidity',
@@ -112,7 +104,19 @@ const initialObj: Projects['CreateProject'] = {
       tokenPair: undefined,
       startTime: undefined,
     },
-
+    {
+      vaultName: 'Vesting',
+      vaultType: 'Vesting',
+      vaultTokenAllocation: 0,
+      adminAddress: '',
+      isMandatory: true,
+      claim: vestingDefaultParams,
+      vaultAddress: undefined,
+      index: 2,
+      isDeployed: false,
+      isSet: false,
+      isDeployedErr: false,
+    },
     {
       vaultName: 'TON Staker',
       vaultType: 'TON Staker',

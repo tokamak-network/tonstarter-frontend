@@ -111,6 +111,7 @@ const ClaimRound = () => {
         });
         return isExist[0] === undefined ? claimData : isExist[0];
       });
+
       //@ts-ignore
       setFieldValue(`vaults.${selectedVaultDetail.index}.claim`, data);
       dispatch(

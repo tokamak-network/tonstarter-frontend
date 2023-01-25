@@ -80,21 +80,6 @@ type VaultPublic = VaultCommon & {
   tokenAllocationForLiquidity: number | undefined;
   hardCap: number | undefined;
   addressForReceiving: string | undefined;
-  vesting?: {
-    vaultName: 'Vesting';
-    vaultType: 'Vesting';
-    vaultTokenAllocation: number;
-    adminAddress: string | undefined;
-    isMandatory: true;
-    claim: VaultSchedule[];
-    vaultAddress: string | undefined;
-    index: 2;
-    isDeployed: boolean;
-    isSet: boolean;
-    isDeployedErr: boolean;
-    poolAddress: string | undefined;
-    startTime: string | number | undefined;
-  };
 };
 
 type VaultC = VaultCommon & {};

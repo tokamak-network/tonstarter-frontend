@@ -18,6 +18,7 @@ import {CustomTooltip} from 'components/Tooltip';
 import '@Launch/components/css/claimRound.css';
 import ClaimRoundTable from './ClaimRoundTable';
 import useClaimRound from '@Launch/hooks/useClaimRound';
+import VestingClaimRoundTable from './Vesting/VestingClaimRoundTable';
 
 type ClaimRoundTable = {
   dateTime: number;
@@ -55,7 +56,7 @@ const VestingRound = () => {
 
   useEffect(() => {
     vaultsList.filter((vaultData: VaultAny) => {
-      if (vaultData.vaultName === selectedVault) {
+      if (vaultData.vaultName === 'Vesting') {
         //@ts-ignore
         return setSelectedVaultDetail(vaultData);
       }
@@ -75,7 +76,8 @@ const VestingRound = () => {
   const dispatch = useAppDispatch();
 
   //@ts-ignore
-  const {claim} = selectedVaultDetail;
+  const {claim} = vaultsList[2];
+
   const {totalClaimAmount} = useClaimRound();
   const [claimRoundEdit, setClaimRoundEdit] = useState(false);
   const [tokenAllocationErr, setTokenAllocationErr] = useState<boolean>(false);
@@ -112,7 +114,7 @@ const VestingRound = () => {
         return isExist[0] === undefined ? claimData : isExist[0];
       });
       //@ts-ignore
-      setFieldValue(`vaults.${selectedVaultDetail.index}.claim`, data);
+      setFieldValue(`vaults.${2}.claim`, data);
       dispatch(
         saveTempVaultData({
           data: {},
@@ -178,15 +180,7 @@ const VestingRound = () => {
                 setClaimRoundEdit(true);
               }}
               h="32px"
-              w="100px"
-              isDisabled={
-                //@ts-ignore
-                selectedVaultDetail.vaultTokenAllocation === 0 ||
-                //@ts-ignore
-                selectedVaultDetail.vaultType === 'Initial Liquidity' ||
-                //@ts-ignore
-                selectedVaultDetail.vaultType === 'DAO'
-              }></CustomButton>
+              w="100px"></CustomButton>
           </Flex>
         ) : (
           <Flex fontSize={13}>
@@ -211,7 +205,9 @@ const VestingRound = () => {
           </Flex>
         )}
       </Box>
-      {claimRoundEdit === true && <ClaimRoundTable></ClaimRoundTable>}
+      {claimRoundEdit === true && (
+        <VestingClaimRoundTable></VestingClaimRoundTable>
+      )}
       {claimRoundEdit === false && (
         <Flex w={'100%'}>
           <Box
@@ -242,17 +238,8 @@ const VestingRound = () => {
                 borderRight={middleStyle.border}
                 flexDir="column">
                 <Box h={'21px'} lineHeight={'21px'} pt={'8px'}>
-                  Token Allocation ({values.tokenSymbol})
+                  Token Allocation (TON)
                 </Box>
-                {selectedVaultIndex !== 1 && (
-                  <Box
-                    h={'21px'}
-                    lineHeight={'21px'}
-                    fontSize={10}
-                    color={'#86929d'}>
-                    Remained: {totalClaimAmount}
-                  </Box>
-                )}
               </Flex>
               <Text w={'314px'} borderRight={middleStyle.border}>
                 Accumulated
@@ -260,14 +247,7 @@ const VestingRound = () => {
             </Flex>
             {
               //@ts-ignore
-              (selectedVaultDetail.vaultType === 'Initial Liquidity' ||
-                //@ts-ignore
-                selectedVaultDetail.vaultType === 'DAO' ||
-                claim === undefined ||
-                claim.length === 0 ||
-                claim[0].claimTime === undefined ||
-                claim[0].claimTokenAllocation === undefined) &&
-              claimRoundEdit === false ? (
+              claim.length === 0 && claimRoundEdit === false ? (
                 <Flex
                   w={'100%'}
                   borderBottom={middleStyle.border}

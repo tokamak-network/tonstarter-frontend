@@ -31,6 +31,7 @@ export type DEPLOYED_TYPE = {
   ERC20BFACTORY_ADDRESS: string;
   ERC20CFACTORY_ADDRESS: string;
   InitialLiquidityVault: string;
+  VestingVault: string;
   LiquidityIncentiveVault: string;
   PublicSaleVault: string;
   TonStakerVault: string;

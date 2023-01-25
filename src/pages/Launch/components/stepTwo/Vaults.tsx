@@ -19,7 +19,7 @@ const Vaults = () => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
   const {values} = useFormikContext<Projects['CreateProject']>();
-  const vaultsList = values.vaults;
+  const vaultsList = values.vaults.filter((vault) => vault.index !== 2);
   const dispatch = useAppDispatch();
   const [transX, setTransX] = useState<number>(0);
   const [flowIndex, setFlowIndex] = useState<number>(0);

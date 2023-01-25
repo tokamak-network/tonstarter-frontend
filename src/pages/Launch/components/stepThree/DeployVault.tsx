@@ -167,12 +167,18 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
   useEffect(() => {
     const isTokenDeployed = values.isTokenDeployed;
     const isLPDeployed = values.vaults[1].isDeployed;
+    const isVestingDeployed = values.vaults[2].isDeployed;
     const isVaultDeployed = selectedVaultDetail?.isDeployed;
     const isSet = selectedVaultDetail?.isSet;
     const vaultDeployReady =
       vaultType === 'Initial Liquidity'
         ? isTokenDeployed && !isVaultDeployed
-        : isTokenDeployed && isLPDeployed && !isVaultDeployed;
+        : vaultType === 'Vesting'
+        ? isTokenDeployed && isLPDeployed && !isVaultDeployed
+        : isTokenDeployed &&
+          isLPDeployed &&
+          isVestingDeployed &&
+          !isVaultDeployed;
 
     if (isSet) {
       return setVaultState('finished');
