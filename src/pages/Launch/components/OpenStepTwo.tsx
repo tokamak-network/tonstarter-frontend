@@ -15,6 +15,7 @@ import validateFormikValues from '@Launch/utils/validate';
 import {Projects} from '@Launch/types';
 import {setUncompletedVaultIndex} from '@Launch/launch.reducer';
 import {useAppDispatch} from 'hooks/useRedux';
+import VestingRound from './stepTwo/VestingRound';
 
 const OpenStepTwo = (props: {
   setDisableForStep2: Dispatch<SetStateAction<boolean>>;
@@ -72,6 +73,12 @@ const OpenStepTwo = (props: {
         zIndex={5}
         opacity={isEdit ? (colorMode === 'light' ? 0.25 : 0.05) : 1}
         pointerEvents={isEdit ? 'none' : 'all'}>
+        <Flex px={'35px'}>
+          <VestingRound></VestingRound>
+        </Flex>
+        <Box my={'25px'}>
+          <Line></Line>
+        </Box>
         <Flex px={'35px'}>
           <ClaimRound></ClaimRound>
         </Flex>

@@ -30,7 +30,7 @@ const defaultTableData = {
   claimTokenAllocation: undefined,
 };
 
-const ClaimRound = () => {
+const VestingRound = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {OpenCampaginDesign} = theme;
@@ -99,7 +99,7 @@ const ClaimRound = () => {
       return setTokenAllocationErr(hasError);
     }
     return setTokenAllocationErr(false);
-  }, [uncompletedVaultIndex, selectedVaultIndex, claim]);
+  }, [uncompletedVaultIndex, selectedVaultIndex, claim, alreadySelected]);
 
   const saveConfirm = useCallback(() => {
     if (claimRoundTable && tempVaultData) {
@@ -132,9 +132,13 @@ const ClaimRound = () => {
         alignItems="center">
         <Flex w={'100%'}>
           <StepTitle
-            title={'Claim Round'}
+            title={'Vesting Round'}
             fontSize={16}
             err={tokenAllocationErr}></StepTitle>
+          <StepTitle
+            title={'(for the project)'}
+            fontSize={16}
+            fontStyle={{color: '#7e8993', ml: '5px'}}></StepTitle>
           <Flex ml={'5px'}>
             <CustomTooltip
               msg={[
@@ -338,4 +342,4 @@ const ClaimRound = () => {
   );
 };
 
-export default ClaimRound;
+export default VestingRound;

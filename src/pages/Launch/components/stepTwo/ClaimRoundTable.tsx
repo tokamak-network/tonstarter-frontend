@@ -35,21 +35,28 @@ import ClaimRoundInput from './ClaimRound/ClaimRoundInputs';
 const selectOptionValues = ['14', '30', '60'];
 const selectOptionNames = ['14 Days', '30 Days', '60 Days'];
 
-const InputTitle = (props: {title: string; isRequired?: boolean}) => {
-  const {title, isRequired} = props;
+const InputTitle = (props: {
+  title: string;
+  isRequired?: boolean;
+  isErr?: boolean;
+  errMsg?: string;
+}) => {
+  const {title, isRequired, isErr, errMsg} = props;
   const {colorMode} = useColorMode();
   return (
     <Flex
       fontSize={13}
       color={colorMode === 'light' ? '#2d3136' : '#f3f4f1'}
       // w={title !== 'Interval' ? '109px' : '44px'}
-    >
+      border={isErr ? '1px solid #ff3b3b' : ''}
+      pos={'relative'}>
       {isRequired && (
         <Text color={'red.100'} mr={'3px'} pt={'3px'}>
           *
         </Text>
       )}
       <Text>{title}</Text>
+      {errMsg && <Text pos={'absolute'}>{errMsg}</Text>}
     </Flex>
   );
 };
@@ -171,15 +178,35 @@ const ClaimRoundTable = () => {
             <InputTitle
               title={'Number of Rounds'}
               isRequired={true}></InputTitle>
-            <Input
-              ml={'12px'}
-              w={'180px'}
-              h={'32px'}
-              border={'1px solid #dfe4ee'}
-              borderRadius={'4px'}
-              _focus={{}}
-              fontSize={13}
-              onChange={(e: any) => onChange(e, setRoundnum)}></Input>
+            <Flex pos={'relative'}>
+              <Input
+                ml={'12px'}
+                w={'180px'}
+                h={'32px'}
+                border={'1px solid #dfe4ee'}
+                borderRadius={'4px'}
+                _focus={{}}
+                fontSize={13}
+                style={
+                  roundNum !== 0 && roundNum < 3
+                    ? {
+                        border: '1px solid #ff3b3b',
+                      }
+                    : {}
+                }
+                onChange={(e: any) => onChange(e, setRoundnum)}></Input>
+              {roundNum < 3 && (
+                <Text
+                  pos={'absolute'}
+                  color={'#ff3b3b'}
+                  fontSize={11}
+                  w={'300px'}
+                  top={'33px'}
+                  left={'11px'}>
+                  The number of vestings has to be greater than 3
+                </Text>
+              )}
+            </Flex>
           </Flex>
           <Flex alignItems={'center'} mr={'59px'}>
             <InputTitle
@@ -226,7 +253,7 @@ const ClaimRoundTable = () => {
         <Flex justifyContent={'flex-start'} w={'100%'} mb={'20px'}>
           <Flex alignItems={'center'} mr={'60px'}>
             <Flex flexDir={'column'}>
-              <InputTitle title={'Amount'}></InputTitle>
+              <InputTitle title={'Token Allocation'}></InputTitle>
               <Text fontSize={12} color={'#2a72e5'}>
                 Remained : {test}
               </Text>
