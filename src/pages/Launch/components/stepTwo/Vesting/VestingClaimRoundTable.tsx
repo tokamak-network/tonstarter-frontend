@@ -104,6 +104,8 @@ const VestingClaimRoundTable = (props: {isVesting?: boolean}) => {
   }, [totalClaimAmount]);
 
   const autoFill = useCallback(() => {
+    console.log('gogo');
+
     const claimList: VaultSchedule[] = [];
     const eachRoundLength = eachEndRound - eachRound + 1;
     let acc = 0;
@@ -114,23 +116,34 @@ const VestingClaimRoundTable = (props: {isVesting?: boolean}) => {
       }),
     );
 
+    let leftAmount = 100 - amount;
+
     for (let i = 0; i < roundNum; i++) {
+      console.log('acc');
+
+      console.log(acc);
+      console.log(leftAmount - acc);
+
       const claimTokenAllocation =
-        i === roundNum - 1
-          ? truncNumber(amount - truncNumber(acc, 2), 2)
+        i === 0
+          ? 0
+          : i === roundNum - 1
+          ? truncNumber(leftAmount - acc, 1)
           : i < eachRound - 1 || i > eachEndRound - 1
           ? 0
-          : truncNumber(amount / eachRoundLength, 2);
+          : truncNumber(leftAmount / (eachRoundLength - 1), 1);
       claimList.push({
         claimRound: i + 1,
         claimTime:
-          i === 0
+          i === roundNum - 1
+            ? moment.unix(date1st).add(3, 'years').unix()
+            : i === 0
             ? date1st
             : moment
                 .unix(date1st)
                 .add(i * Number(interval), 'days')
                 .unix(),
-        claimTokenAllocation,
+        claimTokenAllocation: i === 0 ? 50 : claimTokenAllocation,
       });
       acc += claimTokenAllocation;
     }
@@ -160,6 +173,8 @@ const VestingClaimRoundTable = (props: {isVesting?: boolean}) => {
     eachEndRound,
     claimRoundTable,
   ]);
+
+  console.log(roundNum);
 
   return (
     <Flex flexDir={'column'} w={'100%'}>
@@ -192,14 +207,14 @@ const VestingClaimRoundTable = (props: {isVesting?: boolean}) => {
                 _focus={{}}
                 fontSize={13}
                 style={
-                  roundNum !== 0 && roundNum < 3
+                  roundNum < 3
                     ? {
                         border: '1px solid #ff3b3b',
                       }
                     : {}
                 }
                 onChange={(e: any) => onChange(e, setRoundnum)}></Input>
-              {roundNum < 3 && (
+              {roundNum !== 0 && roundNum < 3 && (
                 <Text
                   pos={'absolute'}
                   color={'#ff3b3b'}

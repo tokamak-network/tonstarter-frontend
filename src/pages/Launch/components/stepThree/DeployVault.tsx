@@ -49,6 +49,8 @@ import * as VaultCLogicAbi from 'services/abis/VaultCLogicAbi.json';
 import * as DAOVaultAbi from 'services/abis/DAOVaultAbi.json';
 import * as InitialLiquidityVault from 'services/abis/InitialLiquidityVault.json';
 import VaultLPRewardLogicAbi from 'services/abis/VaultLPRewardLogicAbi.json';
+import * as VestingPublicFundAbi from 'services/abis/VestingPublicFund.json';
+import * as VestingPublicFundFactoryAbi from 'services/abis/VestingPublicFundFactory.json';
 import {convertNumber, convertToWei} from 'utils/number';
 import commafy from 'utils/commafy';
 import {convertTimeStamp} from 'utils/convertTIme';
@@ -86,6 +88,15 @@ function getContract(vaultType: VaultType, library: LibraryType) {
       const contract = new Contract(
         InitialLiquidityVault,
         InitialLiquidityAbi.abi,
+        library,
+      );
+      return contract;
+    }
+    case 'Vesting': {
+      const {VestingVault} = DEPLOYED;
+      const contract = new Contract(
+        VestingVault,
+        VestingPublicFundFactoryAbi.abi,
         library,
       );
       return contract;
@@ -182,6 +193,22 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
 
     if (isSet) {
       return setVaultState('finished');
+    }
+
+    if (vaultType === 'Vesting') {
+      const publicVault = values.vaults[0];
+      return setVaultState(
+        !vaultDeployReady && !isVaultDeployed
+          ? 'notReady'
+          : vaultDeployReady &&
+            !isVaultDeployed &&
+            publicVault.isDeployed &&
+            publicVault.vaultAddress
+          ? 'ready'
+          : isVaultDeployed
+          ? 'readyForSet'
+          : 'finished',
+      );
     }
 
     setVaultState(
@@ -637,6 +664,45 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                   true,
                 );
                 setVaultState('readyForToken');
+              }
+              break;
+            }
+            case 'Vesting': {
+              // 0: name : string
+              // 1: addressForReceiving : address
+
+              const tx = await vaultContract?.connect(signer).create(
+                `${values.projectName}_${selectedVaultDetail?.vaultName}`,
+                //@ts-ignore
+                values.vaults[0].addressForReceiving,
+              );
+
+              dispatch(
+                setTempHash({
+                  data: tx.hash,
+                }),
+              );
+
+              const receipt = await tx.wait();
+              const {logs} = receipt;
+
+              const iface = new ethers.utils.Interface(
+                VestingPublicFundFactoryAbi.abi,
+              );
+
+              const result = iface.parseLog(logs[logs.length - 1]);
+              const {args} = result;
+
+              if (args) {
+                setFieldValue(
+                  `vaults[${selectedVaultDetail?.index}].vaultAddress`,
+                  args[0],
+                );
+                setFieldValue(
+                  `vaults[${selectedVaultDetail?.index}].isDeployed`,
+                  true,
+                );
+                setVaultState('readyForSet');
               }
               break;
             }
@@ -1144,6 +1210,59 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               }
               break;
             }
+
+            case 'Vesting': {
+              // await vestingPublicFund.connect(receivedAddress).initialize(
+              //   info.publicSaleVault.address, /// 퍼블릭볼트 주소
+              //   info.tokenAddress, /// 프로젝트 토큰 주소
+              //   vaultInfo.claimTimes,
+              //   vaultInfo.claimAmounts,
+              //   3000, // TOS-projectToken Pool 의 fee.
+              // );
+              // 0: publicSaleVaultAddress : string
+              // 1 : tokenAddress : string
+              // 2 : _claimTimes : uint256[]
+              // 3 : _claimAmounts : uint256[]
+              // 4 : TOS-projectToken pool fee : uint256
+
+              const claimTimesParam = selectedVaultDetail?.claim.map(
+                (claimData: VaultSchedule) => claimData.claimTime,
+              );
+
+              let tempSum = 0;
+
+              const claimAmountsParam = selectedVaultDetail?.claim.map(
+                (claimData: VaultSchedule) => {
+                  return (tempSum += Number(claimData.claimTokenAllocation));
+                },
+              );
+              const VestingVaultSecondContract = new Contract(
+                selectedVaultDetail.vaultAddress as string,
+                VestingPublicFundAbi.abi,
+                library,
+              );
+
+              const tx = await VestingVaultSecondContract?.connect(
+                signer,
+              ).initialize(
+                values.vaults[0].vaultAddress,
+                values.tokenAddress,
+                claimTimesParam,
+                claimAmountsParam,
+                3000,
+              );
+              const receipt = await tx.wait();
+
+              if (receipt) {
+                setFieldValue(
+                  `vaults[${selectedVaultDetail?.index}].isSet`,
+                  true,
+                );
+                setVaultState('finished');
+              }
+              break;
+            }
+
             case 'TON Staker': {
               // 0: _totalAllocatedAmountme : uint256
               // 1 : _claimCounts : uint256
@@ -1160,6 +1279,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                   return claimTokenAllocationWei;
                 },
               );
+
               // console.log(claimTimesParam);
               // console.log(claimAmountsParam);
               const vaultTokenAllocationWei = convertToWei(
@@ -1170,6 +1290,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 TONStakerInitializeAbi.abi,
                 library,
               );
+
               const tx = await TONStakerVaultSecondContract?.connect(
                 signer,
               ).initialize(
