@@ -20,6 +20,8 @@ import ClaimRoundTable from './ClaimRoundTable';
 import useClaimRound from '@Launch/hooks/useClaimRound';
 import VestingClaimRoundTable from './Vesting/VestingClaimRoundTable';
 
+import {Decimal} from 'decimal.js';
+
 type ClaimRoundTable = {
   dateTime: number;
   tokenAllocation: number;
@@ -123,7 +125,7 @@ const VestingRound = () => {
     }
   }, [claimRoundTable, tempVaultData, selectedVaultDetail]);
 
-  let tokenAcc = 0;
+  let tokenAcc = new Decimal(0);
 
   return (
     <Flex flexDir={'column'} w={'100%'}>
@@ -259,6 +261,7 @@ const VestingRound = () => {
                 </Flex>
               ) : (
                 claim?.map((data: VaultSchedule, index: number) => {
+                  tokenAcc = tokenAcc.plus(data.claimTokenAllocation || 0);
                   return (
                     <Flex
                       h={'42px'}
@@ -300,7 +303,7 @@ const VestingRound = () => {
                         justifyContent={'center'}
                         borderRight={middleStyle.border}
                         borderBottom={middleStyle.border}>
-                        <Text>{data.claimTokenAllocation}</Text>
+                        <Text>{commafy(data.claimTokenAllocation)}</Text>
                       </Flex>
                       <Text
                         w={'314px'}
@@ -308,7 +311,7 @@ const VestingRound = () => {
                         borderBottom={middleStyle.border}>
                         {data.claimTokenAllocation === undefined
                           ? '-'
-                          : commafy((tokenAcc += data.claimTokenAllocation))}
+                          : commafy(tokenAcc.toString())}
                       </Text>
                     </Flex>
                   );

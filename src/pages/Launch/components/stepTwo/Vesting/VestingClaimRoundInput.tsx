@@ -8,6 +8,7 @@ import {useToast} from 'hooks/useToast';
 import moment from 'moment';
 import {useCallback, useEffect, useMemo, useState} from 'react';
 import commafy from 'utils/commafy';
+import {Decimal} from 'decimal.js';
 
 const VestingClaimRoundInput = (props: {index: number}) => {
   const {index} = props;
@@ -215,20 +216,29 @@ const VestingClaimRoundInput = (props: {index: number}) => {
               {commafy(
                 claimRoundTable.reduce(
                   (prev: number, cur: VaultSchedule, currentIndex: number) => {
+                    const decimalPrev = new Decimal(prev);
                     if (cur.claimTokenAllocation && currentIndex <= index) {
                       const tempData = tempVaultData.filter(
                         (data: VaultSchedule) => {
                           if (data.claimRound === cur.claimRound) {
-                            return data.claimRound;
+                            return Number(commafy(data.claimRound));
                           }
                         },
                       );
                       if (tempData.length > 0) {
-                        return prev + tempData[0].claimTokenAllocation;
+                        const decimalSum = decimalPrev.plus(
+                          tempData[0].claimTokenAllocation,
+                        );
+                        return Number(commafy(decimalSum.toString()));
+                        // return prev + tempData[0].claimTokenAllocation;
                       }
-                      return prev + cur.claimTokenAllocation;
+                      const decimalSum = decimalPrev.plus(
+                        cur.claimTokenAllocation,
+                      );
+                      return Number(commafy(decimalSum.toString()));
+                      // return prev + cur.claimTokenAllocation;
                     } else {
-                      return prev;
+                      return Number(commafy(prev.toString()));
                     }
                   },
                   0,

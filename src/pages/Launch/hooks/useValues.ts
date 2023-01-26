@@ -8,10 +8,10 @@ const defaultParams = [
 ];
 
 const vestingDefaultParams = [
-  {claimRound: 1, claimTime: undefined, claimTokenAllocation: undefined},
-  {claimRound: 2, claimTime: undefined, claimTokenAllocation: undefined},
-  {claimRound: 3, claimTime: undefined, claimTokenAllocation: undefined},
-  {claimRound: 4, claimTime: undefined, claimTokenAllocation: undefined},
+  {claimRound: 1, claimTime: undefined, claimTokenAllocation: 50},
+  {claimRound: 2, claimTime: undefined, claimTokenAllocation: 17},
+  {claimRound: 3, claimTime: undefined, claimTokenAllocation: 17},
+  {claimRound: 4, claimTime: undefined, claimTokenAllocation: 16},
 ];
 
 const {

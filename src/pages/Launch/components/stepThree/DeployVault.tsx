@@ -196,19 +196,20 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
     }
 
     if (vaultType === 'Vesting') {
-      const publicVault = values.vaults[0];
-      return setVaultState(
-        !vaultDeployReady && !isVaultDeployed
-          ? 'notReady'
-          : vaultDeployReady &&
-            !isVaultDeployed &&
-            publicVault.isDeployed &&
-            publicVault.vaultAddress
-          ? 'ready'
-          : isVaultDeployed
-          ? 'readyForSet'
-          : 'finished',
-      );
+      return setVaultState('readyForSet');
+      // const publicVault = values.vaults[0];
+      // return setVaultState(
+      //   !vaultDeployReady && !isVaultDeployed
+      //     ? 'notReady'
+      //     : vaultDeployReady &&
+      //       !isVaultDeployed &&
+      //       publicVault.isDeployed &&
+      //       publicVault.vaultAddress
+      //     ? 'ready'
+      //     : isVaultDeployed
+      //     ? 'readyForSet'
+      //     : 'finished',
+      // );
     }
 
     setVaultState(
