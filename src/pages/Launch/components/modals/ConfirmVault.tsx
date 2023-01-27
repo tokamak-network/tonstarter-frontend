@@ -176,18 +176,21 @@ const ConfirmTokenModal = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (data.data.isSetStep === true) {
-      if (selectedVault?.isSet === true) {
-        return setDeployStep('Done');
+    try {
+      if (data.data.isSetStep === true) {
+        if (selectedVault?.isSet === true) {
+          return setDeployStep('Done');
+        }
+        // return setDeployStep('Ready');
+      } else {
+        if (selectedVault?.isDeployed === true) {
+          return setDeployStep('Done');
+        }
       }
-      // return setDeployStep('Ready');
-    } else {
-      if (selectedVault?.isDeployed === true) {
-        return setDeployStep('Done');
+      if (selectedVault?.isDeployedErr === true) {
+        return setDeployStep('Error');
       }
-    }
-    if (selectedVault?.isDeployedErr === true) {
-      return setDeployStep('Error');
+    } finally {
     }
   }, [deployStep, values, selectedVault, data]);
 
@@ -418,12 +421,12 @@ const ConfirmTokenModal = () => {
           fontFamily={theme.fonts.roboto}
           bg={colorMode === 'light' ? 'white.100' : 'black.200'}
           w="350px"
-          pt="20px"
+          maxH={'334px'}
+          pt="40px"
           pb="25px">
           {/* <CloseButton closeFunc={() => closeModal()}></CloseButton> */}
-          <ModalBody>
+          <ModalBody p={0}>
             <Flex
-              py={'40px'}
               flexDir={'column'}
               alignItems="center"
               justifyContent={'center'}
@@ -432,19 +435,33 @@ const ConfirmTokenModal = () => {
                 <LoadingComponent w={'80px'} h={'80px'}></LoadingComponent>
               </Box>
               <Text
-                w={'186px'}
+                w={'100%'}
                 fontSize={16}
                 color={'black.300'}
                 fontWeight={600}
                 textAlign={'center'}>
-                Waiting to complete deploying your {vaultName} vault
+                Waiting to complete deploying <br />
+                your {vaultName} vault
               </Text>
+              <Box w={'100%'} px={'15px'} mt={'40px'} mb={'25px'}>
+                <Line></Line>
+              </Box>
               <Link
-                mt={'20px'}
                 isExternal={true}
+                textDecoration={'none'}
                 href={`${appConfig.explorerTxnLink}${tempHash}`}
-                color={'blue.100'}>
+                style={{textDecoration: 'none'}}>
                 {tempHash ? 'View on Etherscan' : ''}
+                <Box as={Flex} flexDir="column" alignItems="center">
+                  <Button
+                    {...btnStyle.btnAble()}
+                    w={'150px'}
+                    fontSize="14px"
+                    _hover={{}}
+                    isDisabled={!tempHash}>
+                    View on Etherscan
+                  </Button>
+                </Box>
               </Link>
             </Flex>
           </ModalBody>

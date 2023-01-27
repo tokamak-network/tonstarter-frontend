@@ -33,8 +33,8 @@ import SingleCalendarPop from '../../common/SingleCalendarPop';
 import ClaimRoundInput from '../ClaimRound/ClaimRoundInputs';
 import VestingClaimRoundInput from './VestingClaimRoundInput';
 
-const selectOptionValues = ['30', '60'];
-const selectOptionNames = ['30 Days', '60 Days'];
+const selectOptionValues = ['30', '60', '183', '365'];
+const selectOptionNames = ['30 Days', '2 months', '6 months', '1 year'];
 
 const InputTitle = (props: {
   title: string;

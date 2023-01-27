@@ -4,6 +4,8 @@ import {useFormikContext} from 'formik';
 import {useAppSelector} from 'hooks/useRedux';
 import {useEffect, useState} from 'react';
 import truncNumber from 'utils/truncNumber';
+import commafy from 'utils/commafy';
+import {Decimal} from 'decimal.js';
 
 type ClaimRoundInfo = {
   totalClaimAmount: number | undefined;
@@ -24,10 +26,11 @@ const useClaimRound = () => {
     if (selectedVaultIndex !== undefined && claimRoundTable !== undefined) {
       const totalClaimAmount = claimRoundTable.reduce(
         (prev: number, cur: any) => {
+          const decimalPrev = new Decimal(prev);
+
           if (cur.claimTokenAllocation) {
-            const num: any = truncNumber(cur.claimTokenAllocation as number, 2);
-            const result: any = truncNumber(prev, 2) + num;
-            return truncNumber(result, 2) as any;
+            const decimalSum = decimalPrev.plus(cur.claimTokenAllocation);
+            return Number(commafy(decimalSum.toString()).replaceAll(',', ''));
           }
           return 0;
         },

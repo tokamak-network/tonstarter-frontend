@@ -196,20 +196,18 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
     }
 
     if (vaultType === 'Vesting') {
-      return setVaultState('readyForSet');
-      // const publicVault = values.vaults[0];
-      // return setVaultState(
-      //   !vaultDeployReady && !isVaultDeployed
-      //     ? 'notReady'
-      //     : vaultDeployReady &&
-      //       !isVaultDeployed &&
-      //       publicVault.isDeployed &&
-      //       publicVault.vaultAddress
-      //     ? 'ready'
-      //     : isVaultDeployed
-      //     ? 'readyForSet'
-      //     : 'finished',
-      // );
+      const publicVault = values.vaults[0];
+      return setVaultState(
+        !vaultDeployReady && !isVaultDeployed
+          ? 'notReady'
+          : vaultDeployReady && !isVaultDeployed
+          ? 'ready'
+          : isVaultDeployed &&
+            publicVault.isDeployed &&
+            publicVault.vaultAddress
+          ? 'readyForSet'
+          : 'finished',
+      );
     }
 
     setVaultState(
@@ -484,6 +482,47 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 commafy(selectedVaultDetail?.vaultTokenAllocation) || '-'
               } ${values.tokenName}`,
             },
+          ],
+        };
+        return setInfoList(info);
+      }
+      case 'Vesting': {
+        const info = {
+          Vault: [
+            {
+              title: 'Vault Name',
+              content: selectedVaultDetail?.vaultName || '-',
+            },
+            {
+              title: 'Address for receiving funds',
+              //@ts-ignore
+              content: `${vaultsList[0].addressForReceiving || '-'}`,
+              isHref: true,
+            },
+            {
+              title: 'Contract',
+              content: `${selectedVaultDetail?.vaultAddress || '-'}`,
+              isHref: true,
+            },
+          ],
+          Claim: [
+            {
+              title: `Claim Round (${selectedVaultDetail?.claim?.length})`,
+              content: '',
+            },
+            ...selectedVaultDetail?.claim?.map(
+              (claimData: VaultSchedule, index: number) => {
+                return {
+                  title: `${index + 1} ${convertTimeStamp(
+                    claimData.claimTime as number,
+                    'DD.MM.YYYY HH:mm:ss',
+                  )}`,
+                  content: `${commafy(
+                    claimData.claimTokenAllocation,
+                  )} ${'TON'}`,
+                };
+              },
+            ),
           ],
         };
         return setInfoList(info);
@@ -1567,10 +1606,10 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
       pt={'20px'}
       pb={'25px'}
       color={vaultState === 'finished' ? 'white.100' : 'gray.400'}>
-      <Flex flexDir={'column'}>
+      <Flex flexDir={'column'} h={'100%'}>
         <Box d="flex" justifyContent={'space-between'}>
           <Text fontSize={13} h={'18px'}>
-            Vaults
+            Vault
           </Text>
           <Text fontSize={12} h={'16px'} color={colorScheme.titleColor}>
             {statusTitle}
@@ -1592,56 +1631,63 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
             ? `${values.tokenSymbol}-TOS LP Reward`
             : vaultName}
         </Text>
-        <Box d="flex" flexDir={'column'} mb={'12px'}>
-          <Text fontSize={11} h={'15px'}>
-            Address
-          </Text>
-          <Link
-            isExternal={true}
-            outline={'none'}
-            _focus={{
-              outline: 'none',
-            }}
-            textDecoration={
-              selectedVaultDetail?.vaultAddress === undefined ? {} : 'underline'
-            }
-            color={
-              vaultState === 'finished'
-                ? 'white.100'
-                : colorMode === 'light'
-                ? 'gray.250'
-                : 'white.100'
-            }
-            _hover={{
-              color: selectedVaultDetail?.vaultAddress ? '#0070ed' : {},
-            }}
-            fontSize={15}
-            h={'20px'}
-            fontWeight={600}
-            href={`${appConfig.explorerLink}${selectedVaultDetail?.vaultAddress}`}>
-            {selectedVaultDetail?.vaultAddress
-              ? shortenAddress(selectedVaultDetail.vaultAddress)
-              : '-'}
-          </Link>
-        </Box>
-        <Box d="flex" justifyContent={'space-between'}>
-          <Flex flexDir={'column'}>
-            <Text fontSize={11} h={'15px'}>
-              Token Allocation
-            </Text>
-            <Text
-              color={
-                vaultState === 'finished'
-                  ? 'white.100'
-                  : colorMode === 'light'
-                  ? 'gray.250'
-                  : 'white.100'
-              }
-              fontSize={15}
-              h={'20px'}
-              fontWeight={600}>
-              {commafy(selectedVaultDetail?.vaultTokenAllocation)}
-            </Text>
+
+        <Box d="flex" justifyContent={'space-between'} mt={'auto'}>
+          <Flex flexDir={'column-reverse'} gridRowGap={'12px'}>
+            {vaultType !== 'Vesting' && (
+              <Flex flexDir={'column'}>
+                <Text fontSize={11} h={'15px'}>
+                  Token Allocation
+                </Text>
+                <Text
+                  color={
+                    vaultState === 'finished'
+                      ? 'white.100'
+                      : colorMode === 'light'
+                      ? 'gray.250'
+                      : 'white.100'
+                  }
+                  fontSize={15}
+                  h={'20px'}
+                  fontWeight={600}>
+                  {commafy(selectedVaultDetail?.vaultTokenAllocation)}
+                </Text>
+              </Flex>
+            )}
+            <Box d="flex" flexDir={'column'}>
+              <Text fontSize={11} h={'15px'}>
+                Address
+              </Text>
+              <Link
+                isExternal={true}
+                outline={'none'}
+                _focus={{
+                  outline: 'none',
+                }}
+                textDecoration={
+                  selectedVaultDetail?.vaultAddress === undefined
+                    ? {}
+                    : 'underline'
+                }
+                color={
+                  vaultState === 'finished'
+                    ? 'white.100'
+                    : colorMode === 'light'
+                    ? 'gray.250'
+                    : 'white.100'
+                }
+                _hover={{
+                  color: selectedVaultDetail?.vaultAddress ? '#0070ed' : {},
+                }}
+                fontSize={15}
+                h={'20px'}
+                fontWeight={600}
+                href={`${appConfig.explorerLink}${selectedVaultDetail?.vaultAddress}`}>
+                {selectedVaultDetail?.vaultAddress
+                  ? shortenAddress(selectedVaultDetail.vaultAddress)
+                  : '-'}
+              </Link>
+            </Box>
           </Flex>
           <Button
             w={'100px'}

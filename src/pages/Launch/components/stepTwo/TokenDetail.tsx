@@ -1510,6 +1510,30 @@ const TokenDetail = (props: {
             vault.index === selectedVaultIndex,
         )[0] as VaultLiquidityIncentive;
 
+        if (selectedVaultIndex === 6) {
+          return (
+            <PublicTokenDetail
+              firstColData={[
+                {
+                  title: 'Select Pair',
+                  content:
+                    thisVault?.isMandatory === true
+                      ? `${values.tokenName}-TOS`
+                      : thisVault?.tokenPair,
+                  formikName: 'tokenPair',
+                },
+                {
+                  title: 'Pool Address\n(0.3% fee)',
+                  content: '0.3%',
+                  formikName: 'poolAddress',
+                },
+              ]}
+              secondColData={null}
+              thirdColData={null}
+              isEdit={false}
+              setIsConfirm={setIsConfirm}></PublicTokenDetail>
+          );
+        }
         return (
           <PublicTokenDetail
             firstColData={[
@@ -1529,15 +1553,6 @@ const TokenDetail = (props: {
                 formikName: 'poolAddress',
               },
             ]}
-            secondColData={null}
-            thirdColData={null}
-            isEdit={isEdit}
-            setIsConfirm={setIsConfirm}></PublicTokenDetail>
-        );
-      case 'Vesting':
-        return (
-          <PublicTokenDetail
-            firstColData={null}
             secondColData={null}
             thirdColData={null}
             isEdit={isEdit}

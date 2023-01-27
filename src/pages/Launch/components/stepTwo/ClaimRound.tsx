@@ -317,7 +317,7 @@ const ClaimRound = () => {
                         justifyContent={'center'}
                         borderRight={middleStyle.border}
                         borderBottom={middleStyle.border}>
-                        <Text>{data.claimTokenAllocation}</Text>
+                        <Text>{commafy(data.claimTokenAllocation)}</Text>
                       </Flex>
                       <Text
                         w={'314px'}
