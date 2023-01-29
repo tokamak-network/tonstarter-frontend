@@ -29,11 +29,12 @@ import React, {
 import commafy from 'utils/commafy';
 import {convertTimeStamp} from 'utils/convertTIme';
 import truncNumber from 'utils/truncNumber';
-import SingleCalendarPop from '../common/SingleCalendarPop';
-import ClaimRoundInput from './ClaimRound/ClaimRoundInputs';
+import SingleCalendarPop from '../../common/SingleCalendarPop';
+import ClaimRoundInput from '../ClaimRound/ClaimRoundInputs';
+import VestingClaimRoundInput from './VestingClaimRoundInput';
 
-const selectOptionValues = ['14', '30', '60'];
-const selectOptionNames = ['14 Days', '30 Days', '60 Days'];
+const selectOptionValues = ['30', '60', '183', '365'];
+const selectOptionNames = ['30 Days', '2 months', '6 months', '1 year'];
 
 const InputTitle = (props: {
   title: string;
@@ -73,12 +74,12 @@ function onChange(e: Event, setState: Dispatch<React.SetStateAction<any>>) {
   setState(Number(target.value));
 }
 
-const ClaimRoundTable = (props: {isVesting?: boolean}) => {
+const VestingClaimRoundTable = (props: {isVesting?: boolean}) => {
   const {isVesting} = props;
   const {colorMode} = useColorMode();
   const [roundNum, setRoundnum] = useState<number>(0);
   const [date1st, setDate1st] = useState<number>(0);
-  const [interval, setInterval] = useState<'14' | '30' | '60'>('14');
+  const [interval, setInterval] = useState<'30' | '60'>('30');
   const [amount, setAmount] = useState<number>(0);
   const [eachRound, setEachRound] = useState<number>(0);
   const [eachEndRound, setEachEndRound] = useState<number>(0);
@@ -113,23 +114,31 @@ const ClaimRoundTable = (props: {isVesting?: boolean}) => {
       }),
     );
 
+    let leftAmount = 100 - amount;
+
     for (let i = 0; i < roundNum; i++) {
       const claimTokenAllocation =
-        i === roundNum - 1
-          ? truncNumber(amount - truncNumber(acc, 2), 2)
+        i === 0
+          ? 0
+          : i === roundNum - 1
+          ? truncNumber(leftAmount - acc, 2)
           : i < eachRound - 1 || i > eachEndRound - 1
           ? 0
-          : truncNumber(amount / eachRoundLength, 2);
+          : truncNumber(leftAmount / (eachRoundLength - 1), 2);
+
       claimList.push({
         claimRound: i + 1,
         claimTime:
-          i === 0
+          i === roundNum - 1
+            ? moment.unix(date1st).add(3, 'years').unix()
+            : i === 0
             ? date1st
             : moment
                 .unix(date1st)
                 .add(i * Number(interval), 'days')
                 .unix(),
-        claimTokenAllocation,
+        claimTokenAllocation:
+          i === 0 ? 50 : Number(claimTokenAllocation.toFixed(3)),
       });
       acc += claimTokenAllocation;
     }
@@ -190,14 +199,25 @@ const ClaimRoundTable = (props: {isVesting?: boolean}) => {
                 borderRadius={'4px'}
                 _focus={{}}
                 fontSize={13}
-                // style={
-                //   roundNum !== 0 && roundNum < 3
-                //     ? {
-                //         border: '1px solid #ff3b3b',
-                //       }
-                //     : {}
-                // }
+                style={
+                  roundNum !== 0 && roundNum < 3
+                    ? {
+                        border: '1px solid #ff3b3b',
+                      }
+                    : {}
+                }
                 onChange={(e: any) => onChange(e, setRoundnum)}></Input>
+              {roundNum !== 0 && roundNum < 3 && (
+                <Text
+                  pos={'absolute'}
+                  color={'#ff3b3b'}
+                  fontSize={11}
+                  w={'300px'}
+                  top={'33px'}
+                  left={'11px'}>
+                  The number of vestings has to be greater than 3
+                </Text>
+              )}
             </Flex>
           </Flex>
           <Flex alignItems={'center'} mr={'59px'}>
@@ -245,10 +265,9 @@ const ClaimRoundTable = (props: {isVesting?: boolean}) => {
         <Flex justifyContent={'flex-start'} w={'100%'} mb={'20px'}>
           <Flex alignItems={'center'} mr={'60px'}>
             <Flex flexDir={'column'}>
-              <InputTitle title={'Token Allocation'}></InputTitle>
-              <Text fontSize={12} color={'#2a72e5'}>
-                Remained : {test}
-              </Text>
+              <InputTitle
+                title={'Token Allocation'}
+                style={{width: '109px'}}></InputTitle>
             </Flex>
             <Input
               ml={'20px'}
@@ -339,7 +358,7 @@ const ClaimRoundTable = (props: {isVesting?: boolean}) => {
               Date time
             </Text>
             <Text w={'314px'} borderRight={middleStyle.border}>
-              Token Allocation ({values.tokenSymbol})
+              Token Allocation (TON)
             </Text>
             <Text w={'314px'} borderRight={middleStyle.border}>
               Accumulated
@@ -351,13 +370,13 @@ const ClaimRoundTable = (props: {isVesting?: boolean}) => {
 
       {claimRoundTable?.map((data: VaultSchedule, index: number) => {
         return (
-          <ClaimRoundInput
+          <VestingClaimRoundInput
             index={index}
-            key={`${index}_${index}`}></ClaimRoundInput>
+            key={`${index}_${index}`}></VestingClaimRoundInput>
         );
       })}
     </Flex>
   );
 };
 
-export default ClaimRoundTable;
+export default VestingClaimRoundTable;

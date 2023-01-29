@@ -15,12 +15,13 @@ import CreateRewardsProgramModal from './components/modals/CreateRewardsProgram'
 import DownloadModal from './components/modals/Download';
 import {useRouteMatch} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {selectLaunch, setHashKey,fetchProjects} from '@Launch/launch.reducer';
+import {selectLaunch, setHashKey, fetchProjects} from '@Launch/launch.reducer';
 import {useQuery} from 'react-query';
 import axios from 'axios';
 import {fetchCampaginURL} from 'constants/index';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {LoadingComponent} from 'components/Loading';
+import VestingClaimModal from './components/modals/VestingClaim';
 
 const ProjectScreen = () => {
   const {openAnyModal} = useModal();
@@ -28,7 +29,7 @@ const ProjectScreen = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {account} = useActiveWeb3React();
-const [project, setProject] = useState<any>()
+  const [project, setProject] = useState<any>();
   const goBackToList = useCallback(() => {
     history.push('/launch');
   }, []);
@@ -43,28 +44,27 @@ const [project, setProject] = useState<any>()
     params: {name},
   } = match;
 
-    const {data, isLoading, error} = useQuery(
-      ['test'],
-      () =>
-        axios.get(fetchCampaginURL, {
-          headers: {
-            account,
-          },
-        }),
-      {
-        //refetch every 10min
-        refetchInterval: 600000,
-      },
-    ); 
-    
-    useEffect(() => {
-      if (data) {
-        const {data: datas} = data;
-        dispatch(fetchProjects({data: datas}));
-        setProject(datas[name])
-       
-      }
-    }, [data, dispatch]);
+  const {data, isLoading, error} = useQuery(
+    ['test'],
+    () =>
+      axios.get(fetchCampaginURL, {
+        headers: {
+          account,
+        },
+      }),
+    {
+      //refetch every 10min
+      refetchInterval: 600000,
+    },
+  );
+
+  useEffect(() => {
+    if (data) {
+      const {data: datas} = data;
+      dispatch(fetchProjects({data: datas}));
+      setProject(datas[name]);
+    }
+  }, [data, dispatch]);
 
   const themeDesign = {
     border: {
@@ -116,8 +116,7 @@ const [project, setProject] = useState<any>()
           Make Your Own Token and Create Token Economy
         </Text>
         <Flex mt={'60px'} mb={'50px'}>
-          {project?  <Project project={project} /> : <LoadingComponent />}
-         
+          {project ? <Project project={project} /> : <LoadingComponent />}
         </Flex>
         <Button
           w={'180px'}
@@ -140,6 +139,7 @@ const [project, setProject] = useState<any>()
       </Flex>
       <CreateRewardsProgramModal />
       <DownloadModal />
+      <VestingClaimModal />
     </Flex>
   );
 };

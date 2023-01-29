@@ -1,7 +1,7 @@
 import {Box, Flex, Text, useColorMode, useTheme} from '@chakra-ui/react';
 import {Projects} from '@Launch/types';
 import {useFormikContext} from 'formik';
-import {useEffect, useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import commafy from 'utils/commafy';
 
 const overviewTableStyle = {
@@ -29,10 +29,14 @@ const OverviewTable = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {values} = useFormikContext<Projects['CreateProject']>();
-  const vaultsList = values.vaults;
+  // const vaultsListt = values.vaults;
   const [tableData, setTableData] = useState<any>([]);
   const [totalColData, setTotalColData] = useState<any>([]);
   const [columnLength, setColumnLength] = useState<any>([]);
+
+  const vaultsList = useMemo(() => {
+    return values.vaults.filter((vault) => vault.index !== 2);
+  }, [values.vaults]);
 
   useEffect(() => {
     const claimData = vaultsList.map((vault: any) => {

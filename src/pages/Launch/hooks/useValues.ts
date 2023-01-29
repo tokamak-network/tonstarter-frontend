@@ -7,6 +7,13 @@ const defaultParams = [
   {claimRound: 1, claimTime: undefined, claimTokenAllocation: undefined},
 ];
 
+const vestingDefaultParams = [
+  {claimRound: 1, claimTime: undefined, claimTokenAllocation: 50},
+  {claimRound: 2, claimTime: undefined, claimTokenAllocation: 17},
+  {claimRound: 3, claimTime: undefined, claimTokenAllocation: 17},
+  {claimRound: 4, claimTime: undefined, claimTokenAllocation: 16},
+];
+
 const {
   pools: {TOS_WTON_POOL},
 } = DEPLOYED;
@@ -98,6 +105,19 @@ const initialObj: Projects['CreateProject'] = {
       startTime: undefined,
     },
     {
+      vaultName: 'Vesting',
+      vaultType: 'Vesting',
+      vaultTokenAllocation: 0,
+      adminAddress: '',
+      isMandatory: true,
+      claim: vestingDefaultParams,
+      vaultAddress: undefined,
+      index: 2,
+      isDeployed: false,
+      isSet: false,
+      isDeployedErr: false,
+    },
+    {
       vaultName: 'TON Staker',
       vaultType: 'TON Staker',
       vaultTokenAllocation: 0,
@@ -105,7 +125,7 @@ const initialObj: Projects['CreateProject'] = {
       isMandatory: true,
       claim: defaultParams,
       vaultAddress: undefined,
-      index: 2,
+      index: 3,
       isDeployed: false,
       isSet: false,
       isDeployedErr: false,
@@ -118,7 +138,7 @@ const initialObj: Projects['CreateProject'] = {
       isMandatory: true,
       claim: defaultParams,
       vaultAddress: undefined,
-      index: 3,
+      index: 4,
       isDeployed: false,
       isSet: false,
       isDeployedErr: false,
@@ -131,7 +151,7 @@ const initialObj: Projects['CreateProject'] = {
       isMandatory: true,
       claim: defaultParams,
       vaultAddress: undefined,
-      index: 4,
+      index: 5,
       isDeployed: false,
       isSet: false,
       isDeployedErr: false,
@@ -146,7 +166,7 @@ const initialObj: Projects['CreateProject'] = {
       isMandatory: true,
       claim: defaultParams,
       vaultAddress: undefined,
-      index: 5,
+      index: 6,
       isDeployed: false,
       isSet: false,
       isDeployedErr: false,

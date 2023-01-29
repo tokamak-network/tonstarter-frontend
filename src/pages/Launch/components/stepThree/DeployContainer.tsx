@@ -5,7 +5,7 @@ import {saveProject} from '@Launch/utils/saveProject';
 import {useFormikContext} from 'formik';
 import {useAppDispatch} from 'hooks/useRedux';
 import {useActiveWeb3React} from 'hooks/useWeb3';
-import {useEffect} from 'react';
+import {useEffect, useMemo} from 'react';
 import DeployToken from './DeployToken';
 import DeployVault from './DeployVault';
 
@@ -39,6 +39,24 @@ const DeployContainer = () => {
             </GridItem>
           );
         }
+
+        if (vault.vaultType === 'Vesting') {
+          return (
+            <GridItem
+              rowStart={2}
+              onClick={() =>
+                dispatch(
+                  changeVault({
+                    data: vault.vaultName,
+                    vaultType: vault.vaultType,
+                  }),
+                )
+              }>
+              <DeployVault vault={vault}></DeployVault>
+            </GridItem>
+          );
+        }
+
         return (
           <div
             onClick={() =>

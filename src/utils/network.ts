@@ -1,5 +1,3 @@
-
-   
 import {DEFAULT_NETWORK} from 'constants/index';
 import {ethers} from 'ethers';
 
@@ -60,6 +58,9 @@ export const getExplorerLink = async (id: string | number | undefined) => {
     case 4:
       link = `https://rinkeby.etherscan.io/address/`;
       break;
+    case 5:
+      link = `https://goerli.etherscan.io/address/`;
+      break;
     case 42:
       link = `https://kovan.etherscan.io/address/`;
       break;
@@ -82,6 +83,9 @@ export const getExplorerTxnLink = async (id: string | number | undefined) => {
       break;
     case 4:
       link = `https://rinkeby.etherscan.io/tx/`;
+      break;
+    case 5:
+      link = `https://goerli.etherscan.io/`;
       break;
     case 42:
       link = `https://kovan.etherscan.io/tx/`;

@@ -30,9 +30,6 @@ const ConfirmTermsModal = () => {
   const match = useRouteMatch();
   const {url} = match;
 
-  console.log(isCheck);
-  console.log(url);
-
   const closeModal = () => {
     setIsCheck(false);
     handleCloseModal();

@@ -59,7 +59,7 @@ const VaultBasicSetting = () => {
       if (cur.vaultName === nameVal.replaceAll('*', '').replaceAll(' ', '')) {
         return acc;
       }
-      return acc + cur.vaultTokenAllocation;
+      return acc + Number(cur.vaultTokenAllocation);
     }, 0);
 
     if (

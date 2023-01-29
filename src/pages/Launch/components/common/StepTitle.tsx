@@ -2,7 +2,7 @@ import {Button, Flex, useColorMode} from '@chakra-ui/react';
 import {saveProject, editProject} from '@Launch/utils/saveProject';
 import {useFormikContext} from 'formik';
 import {useActiveWeb3React} from 'hooks/useWeb3';
-import {useRouteMatch} from 'react-router';
+import {useRouteMatch} from 'react-router-dom';
 import {Box} from 'rebass';
 
 type StepTitleProp = {
@@ -11,10 +11,11 @@ type StepTitleProp = {
   isSaveButton?: boolean;
   lineHeight?: number;
   err?: boolean;
+  fontStyle?: {};
 };
 
 const StepTitle: React.FC<StepTitleProp> = (prop) => {
-  const {title, fontSize, isSaveButton, lineHeight, err} = prop;
+  const {title, fontSize, isSaveButton, lineHeight, err, fontStyle} = prop;
   const {colorMode} = useColorMode();
   const {account} = useActiveWeb3React();
   const {values} = useFormikContext();
@@ -38,7 +39,8 @@ const StepTitle: React.FC<StepTitleProp> = (prop) => {
             ? '#304156'
             : 'white.100'
         }
-        fontWeight={600}>
+        fontWeight={600}
+        {...fontStyle}>
         {title}
       </Box>
       {isSaveButton && (

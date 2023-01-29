@@ -66,13 +66,17 @@ const CreateVaultModal = () => {
     }
     const totalAllocation = values.vaults.reduce((acc, cur) => {
       if (cur.vaultName === nameVal.replaceAll('*', '').replaceAll(' ', '')) {
+        console.log('acc');
+        console.log(acc);
+
         return acc;
       }
-      return acc + cur.vaultTokenAllocation;
+      return acc + Number(cur.vaultTokenAllocation);
     }, 0);
+
     if (
       values.totalSupply &&
-      totalAllocation + Number(tokenAllocatonVal) > values.totalSupply
+      Number(totalAllocation) + Number(tokenAllocatonVal) > values.totalSupply
     ) {
       setBtnDisable(true);
       toastMsg({

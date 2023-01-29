@@ -15,6 +15,8 @@ import validateFormikValues from '@Launch/utils/validate';
 import {Projects} from '@Launch/types';
 import {setUncompletedVaultIndex} from '@Launch/launch.reducer';
 import {useAppDispatch} from 'hooks/useRedux';
+import VestingRound from './stepTwo/VestingRound';
+import useSelectVault from 'hooks/launch/useSelectVault';
 
 const OpenStepTwo = (props: {
   setDisableForStep2: Dispatch<SetStateAction<boolean>>;
@@ -24,6 +26,7 @@ const OpenStepTwo = (props: {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const {values} = useFormikContext<Projects['CreateProject']>();
   const dispatch = useAppDispatch();
+  const {selectedVaultIndex} = useSelectVault();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -72,9 +75,18 @@ const OpenStepTwo = (props: {
         zIndex={5}
         opacity={isEdit ? (colorMode === 'light' ? 0.25 : 0.05) : 1}
         pointerEvents={isEdit ? 'none' : 'all'}>
+        {selectedVaultIndex === 0 && (
+          <Flex px={'35px'}>
+            <VestingRound></VestingRound>
+          </Flex>
+        )}
+        <Box my={'25px'}>
+          <Line></Line>
+        </Box>
         <Flex px={'35px'}>
           <ClaimRound></ClaimRound>
         </Flex>
+
         <Box my={'25px'}>
           <Line></Line>
         </Box>
