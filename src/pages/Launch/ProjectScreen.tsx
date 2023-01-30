@@ -22,6 +22,7 @@ import {fetchCampaginURL} from 'constants/index';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {LoadingComponent} from 'components/Loading';
 import VestingClaimModal from './components/modals/VestingClaim';
+import SwapModal from './components/modals/SwapModal';
 
 const ProjectScreen = () => {
   const {openAnyModal} = useModal();
@@ -140,6 +141,7 @@ const ProjectScreen = () => {
       <CreateRewardsProgramModal />
       <DownloadModal />
       <VestingClaimModal />
+      <SwapModal />
     </Flex>
   );
 };

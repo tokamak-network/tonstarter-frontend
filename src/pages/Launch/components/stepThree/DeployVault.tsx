@@ -666,17 +666,18 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 } catch (e) {}
               } while (valutIndex >= 0);
 
-              const tx = await vaultContract?.connect(signer).create(
-                `${values.projectName}_${selectedVaultDetail?.vaultName}`,
-                selectedVaultDetail?.adminAddress,
-                [
-                  values.tokenAddress,
-                  //@ts-ignore
-                  selectedVaultDetail?.addressForReceiving,
-                  values.vaults[1].vaultAddress,
-                ],
-                valutIndex,
-              );
+              const tx = await vaultContract
+                ?.connect(signer)
+                .create(
+                  `${values.projectName}_${selectedVaultDetail?.vaultName}`,
+                  selectedVaultDetail?.adminAddress,
+                  [
+                    values.tokenAddress,
+                    values.vaults[2].vaultAddress,
+                    values.vaults[1].vaultAddress,
+                  ],
+                  valutIndex,
+                );
 
               dispatch(
                 setTempHash({
