@@ -31,6 +31,8 @@ import {Contract} from '@ethersproject/contracts';
 import {ethers} from 'ethers';
 import {BASE_PROVIDER} from 'constants/index';
 import {useModal} from 'hooks/useModal';
+import {useDispatch} from 'react-redux';
+import {openModal} from 'store/modal.reducer';
 type PublicPage = {
   vault: any;
   project: any;
@@ -144,6 +146,9 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
   };
+
+  const dispatch = useDispatch();
+
   const themeDesign = {
     border: {
       light: 'solid 1px #e6eaee',
@@ -431,7 +436,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                       //   hardcap === 0 ||
                       //   fundWithdrew === true
                       // }
-                      isDisabled={true}
+                      // isDisabled={true}
                       _disabled={{
                         color: colorMode === 'light' ? '#86929d' : '#838383',
                         bg: colorMode === 'light' ? '#e9edf1' : '#353535',
@@ -469,7 +474,16 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                               color: '#fff',
                             }
                       }
-                      onClick={() => sendTOS()}>
+                      onClick={() =>
+                        dispatch(
+                          openModal({
+                            type: 'Launch_Swap',
+                            data: {
+                              publicVaultAddress: vault.vaultAddress,
+                            },
+                          }),
+                        )
+                      }>
                       Send Funds
                     </Button>
                     {/* <Tooltip
@@ -719,7 +733,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
 
                 return (
                   <GridItem
-                  key={index}
+                    key={index}
                     border={themeDesign.border[colorMode]}
                     borderBottom={index === sTosTier.length - 1 ? '' : 'none'}
                     className={'chart-cell'}
@@ -756,7 +770,6 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
               {[...Array(6 - sTosTier.length)].map((e: any, i: number) => {
                 return (
                   <GridItem
-
                     border={themeDesign.border[colorMode]}
                     key={i}
                     borderBottomRightRadius={
@@ -803,7 +816,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
       </Grid>
 
       {/* <Flex w={'100%'} justifyContent={'center'} py={'2rem'}> */}
-        {/* <Button
+      {/* <Button
           className="button-style"
           background={'none'}
           h={'38px'}
@@ -829,7 +842,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
         <Text> Liquidity Vault</Text>
          
         </Button> */}
-        {/* <Button
+      {/* <Button
           className="button-style"
           background={'none'}
           px={'45px'}

@@ -57,4 +57,5 @@ export type DEPLOYED_TYPE = {
     AURA_ADDRESS: string;
   };
   StakingV2Proxy: string;
+  Quoter: string;
 };

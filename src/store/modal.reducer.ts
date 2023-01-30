@@ -29,10 +29,12 @@ type LaunchModal =
   | 'Launch_PieChartModal'
   | 'Launch_CreateRewardProgram'
   | 'Launch_Download'
-  | 'Launch_ConfirmTerms';
+  | 'Launch_ConfirmTerms'
+  | 'Launch_Swap'
+  | 'Launch_Vesting';
 
 type GeneralModal = 'calendar';
-type RewardModal = 'search'| 'information' | 'confirmMulticall';;
+type RewardModal = 'search' | 'information' | 'confirmMulticall';
 export type ModalType =
   | StakingModal
   | DaoModal

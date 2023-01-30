@@ -15,6 +15,7 @@ import {
   NumberInput,
   NumberInputField,
   Image,
+  Progress,
 } from '@chakra-ui/react';
 import React, {useEffect, useState} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
@@ -22,9 +23,12 @@ import {selectModalType} from 'store/modal.reducer';
 import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal';
 import {DEPLOYED} from 'constants/index';
-import {useERC20Token} from 'hooks/useERC20Token';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import swapArrow from 'assets/svgs/swap-arrow-icon.svg';
+import {useSwapModal} from '@Launch/hooks/useSwapModal';
+
+import TokamakSymbol from 'assets/svgs/tokamak_favicon.svg';
+import TosSymbol from 'assets/svgs/tos_symbol.svg';
 
 const SwapModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -33,46 +37,20 @@ const SwapModal = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {handleCloseModal} = useModal();
-  const [distributable, setDistributable] = useState<number>(0);
-  const [programDuration, setProgramDuration] = useState<any[]>([0, 0]);
-  const [balance, setBalance] = useState('0');
   const [inputAmount, setInputAmount] = useState<string>('0');
 
-  const themeDesign = {
-    border: {
-      light: 'solid 1px #e6eaee',
-      dark: 'solid 1px #373737',
-    },
-    font: {
-      light: 'black.300',
-      dark: 'gray.475',
-    },
-    tosFont: {
-      light: '#2a72e5',
-      dark: 'black.100',
-    },
-    borderDashed: {
-      light: 'dashed 1px #dfe4ee',
-      dark: 'dashed 1px #535353',
-    },
-    buttonColorActive: {
-      light: 'gray.225',
-      dark: 'gray.0',
-    },
-    buttonColorInactive: {
-      light: '#c9d1d8',
-      dark: '#777777',
-    },
-  };
+  const {WTON_BALANCE, tosAmountOut} = useSwapModal(
+    data?.data?.publicVaultAddress,
+    Number(inputAmount.replaceAll(',', '')),
+  );
+  // const {tosAmountOut} = useSwapModal(
+  //   data?.data?.publicVaultAddress,
+  //   Number(inputAmount.replaceAll(',', '')),
+  // );
 
-  const {tokenBalance, tokenSymbol} = useERC20Token({
-    tokenAddress: TON_ADDRESS,
-    isRay: false,
-  });
+  console.log('tosAmountOut');
 
-  useEffect(() => {
-    setBalance(tokenBalance);
-  }, []);
+  console.log(tosAmountOut);
 
   useEffect(() => {
     if (inputAmount.length > 1 && inputAmount.startsWith('0')) {
@@ -87,8 +65,7 @@ const SwapModal = () => {
 
   return (
     <Modal
-      // isOpen={data.modal === 'Launch_Swap' ? true : false}
-      isOpen={false}
+      isOpen={data.modal === 'Launch_Swap' ? true : false}
       isCentered
       onClose={() => {
         handleCloseModal();
@@ -139,12 +116,15 @@ const SwapModal = () => {
               pr="14px"
               flexDir={'column'}>
               <Flex justifyContent={'space-between'} alignItems="center">
+                <Flex w={'18.2px'} h={'18.2px'} mr={'9.6px'}>
+                  <Image src={TokamakSymbol}></Image>
+                </Flex>
                 <Text
                   fontFamily={theme.fonts.roboto}
                   color={colorMode === 'light' ? '#3d495d' : '#ffffff'}
                   fontWeight={'bold'}
                   fontSize="16px">
-                  WTON
+                  TON
                 </Text>
                 <NumberInput
                   h="24px"
@@ -167,6 +147,8 @@ const SwapModal = () => {
                     textAlign={'right'}
                     errorBorderColor="red.300"
                     verticalAlign={'sub'}
+                    fontSize={20}
+                    fontWeight={'bold'}
                     border="none"
                     _focus={{
                       borderWidth: 0,
@@ -181,7 +163,7 @@ const SwapModal = () => {
                 <Text
                   fontSize={'12px'}
                   color={colorMode === 'dark' ? '#9d9ea5' : '#808992'}>
-                  Balance: {tokenBalance} {tokenSymbol}
+                  Balance: {WTON_BALANCE} {'WTON'}
                 </Text>
                 <Button
                   fontSize={'12px'}
@@ -199,7 +181,7 @@ const SwapModal = () => {
                       : '1px solid #d7d9df'
                   }
                   onClick={() =>
-                    setInputAmount(tokenBalance.replace(/,/g, ''))
+                    setInputAmount(WTON_BALANCE.replace(/,/g, ''))
                   }>
                   MAX
                 </Button>
@@ -208,7 +190,7 @@ const SwapModal = () => {
             <Image m={'20px 0px'} src={swapArrow}></Image>
             <Flex
               w="300px"
-              h="94px"
+              h="110px"
               border={
                 colorMode === 'light'
                   ? '1px solid #d7d9df'
@@ -218,56 +200,108 @@ const SwapModal = () => {
               pt={'14px'}
               pl="25px"
               pr="14px"
+              pb={'16px'}
               flexDir={'column'}>
               <Flex
                 justifyContent={'space-between'}
                 alignItems="center"
                 h="24px">
-                <Text
-                  fontFamily={theme.fonts.roboto}
-                  color={colorMode === 'light' ? '#3d495d' : '#ffffff'}
-                  fontWeight={'bold'}
-                  fontSize="16px">
-                  TOS
-                </Text>
+                <Flex alignItems={'center'}>
+                  <Flex w={'18.2px'} h={'18.2px'} mr={'9.6px'}>
+                    <Image src={TosSymbol}></Image>
+                  </Flex>
+                  <Text
+                    fontFamily={theme.fonts.roboto}
+                    color={colorMode === 'light' ? '#3d495d' : '#ffffff'}
+                    fontWeight={'bold'}
+                    fontSize="16px">
+                    TOS
+                  </Text>
+                </Flex>
                 <Text
                   fontFamily={theme.fonts.roboto}
                   color={colorMode === 'light' ? '#3d495d' : '#ffffff'}
                   fontWeight={'bold'}
                   lineHeight={1.5}
                   fontSize="20px">
-                  7,146,412.05
+                  {tosAmountOut}
                 </Text>
               </Flex>
               <Text
                 fontSize={'12px'}
                 mt={'10px'}
                 fontWeight={500}
-                color={colorMode === 'dark' ? '#9d9ea5' : '#808992'}>
-                Current Price: {8.7} {'TOS/ WTON'}
+                color={colorMode === 'dark' ? '#9d9ea5' : '#808992'}
+                lineHeight={1.33}>
+                1 TON = 2.06765 TOS
               </Text>
               <Text
                 fontSize={'12px'}
                 fontWeight={500}
-                color={colorMode === 'dark' ? '#9d9ea5' : '#808992'}>
-                Minimum amount TOS: {79}
+                color={colorMode === 'dark' ? '#9d9ea5' : '#808992'}
+                lineHeight={1.33}>
+                Price Impact : 10%
+              </Text>
+              <Text
+                fontSize={'12px'}
+                fontWeight={500}
+                color={colorMode === 'dark' ? '#9d9ea5' : '#808992'}
+                lineHeight={1.33}>
+                Average Price Impact : 5%
               </Text>
             </Flex>
-            <Text
-              margin={'35px 25px 25px'}
-              fontSize="12px"
-              textAlign={'center'}>
-              Depending on the liquidity of the WTON-TOS pool, slippage may
-              occur.
-              <span style={{color: '#ff3b3b'}}>
-                {' '}
-                If slippage of 10% or more occurs, the operation will be
-                cancelled. Therefore, it is recommended to input an appropriate
-                amount of TON according to the liquidity of the pool.{' '}
-              </span>
-              If the exchange rate of WTON-TOS is not within the range of the
-              average exchange rate of the last 2 minutes + -5% of the exchange
-              rate of WTON-TOS, the operation will be canceled.
+            {/* progress bar part                                   */}
+            <Flex
+              flexDir={'column'}
+              w={'100%'}
+              mt={'25px'}
+              mb={'30px'}
+              px={'25px'}
+              fontSize={13}
+              justifyContent={'space-between'}
+              alignItems="center">
+              <Box
+                d="flex"
+                justifyContent={'space-between'}
+                alignItems={'center'}
+                w={'100%'}
+                h={'19px'}
+                mb={'5px'}
+                fontFamily={theme.fonts.fld}>
+                <Flex alignItems={'center'} h={'19px'}>
+                  <Text fontSize={15} color={'#3f536e'} h={'19px'}>
+                    Expected Progress
+                  </Text>
+                  <Text
+                    ml={'8px'}
+                    fontSize={13}
+                    color={'#0070ed'}
+                    height={'23px'}
+                    lineHeight={'27px'}
+                    verticalAlign={'bottom'}>
+                    65.4%
+                  </Text>
+                </Flex>
+                <Text
+                  fontSize={12}
+                  color={'#3a495f'}
+                  height={'23px'}
+                  lineHeight={'27px'}
+                  verticalAlign={'bottom'}>
+                  3,981,532 / 5,000,000 TON
+                </Text>
+              </Box>
+              <Progress
+                value={65.4}
+                w={'100%'}
+                h={'6px'}
+                mt={'5px'}
+                borderRadius={'100px'}></Progress>
+            </Flex>
+            <Text margin={'0px 25px 25px'} fontSize="12px" textAlign={'center'}>
+              This interface is designed to prevent sandwich attack. The txn
+              will revert if the conditions for the price impact and the average
+              price are not met.
             </Text>
           </Flex>
         </ModalBody>
