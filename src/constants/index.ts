@@ -32,7 +32,7 @@ export const API_SERVER_LAUNCH =
 
 export const BASE_PROVIDER =
   REACT_APP_MODE === 'DEV'
-    ? ethers.getDefaultProvider('rinkeby')
+    ? ethers.getDefaultProvider("goerli")
     : ethers.getDefaultProvider('mainnet');
 
 export const OPENSEA =

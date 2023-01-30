@@ -125,9 +125,9 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             <Link
               isExternal
               href={
-                project.owner && network === 'rinkeby'
-                  ? `https://rinkeby.etherscan.io/address/${project.owner}`
-                  : project.owner && network !== 'rinkeby'
+                project.owner && network === 'goerli'
+                  ? `https://goerli.etherscan.io/address/${project.owner}`
+                  : project.owner && network !== 'goerli'
                   ? `https://etherscan.io/address/${project.owner}`
                   : ''
               }
@@ -300,9 +300,9 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
             <Link
               isExternal
               href={
-                project.owner && network === 'rinkeby'
-                  ? `https://rinkeby.etherscan.io/address/${project.tokenAddress}`
-                  : project.owner && network !== 'rinkeby'
+                project.owner && network === 'goerli'
+                  ? `https://goerli.etherscan.io/address/${project.tokenAddress}`
+                  : project.owner && network !== 'goerli'
                   ? `https://etherscan.io/address/${project.tokenAddress}`
                   : ''
               }

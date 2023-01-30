@@ -197,9 +197,9 @@ export const Custom: FC<Custom> = ({vault, project}) => {
             <Link
               isExternal
               href={
-                vault.adminAddress && network === 'rinkeby'
-                  ? `https://rinkeby.etherscan.io/address/${vault.adminAddress}`
-                  : vault.adminAddress && network !== 'rinkeby'
+                vault.adminAddress && network === 'goerli'
+                  ? `https://goerli.etherscan.io/address/${vault.adminAddress}`
+                  : vault.adminAddress && network !== 'goerli'
                   ? `https://etherscan.io/address/${vault.adminAddress}`
                   : ''
               }
@@ -223,9 +223,9 @@ export const Custom: FC<Custom> = ({vault, project}) => {
             <Link
               isExternal
               href={
-                vault.vaultAddress && network === 'rinkeby'
-                  ? `https://rinkeby.etherscan.io/address/${vault.vaultAddress}`
-                  : vault.vaultAddress && network !== 'rinkeby'
+                vault.vaultAddress && network === 'goerli'
+                  ? `https://goerli.etherscan.io/address/${vault.vaultAddress}`
+                  : vault.vaultAddress && network !== 'goerli'
                   ? `https://etherscan.io/address/${vault.vaultAddress}`
                   : ''
               }
