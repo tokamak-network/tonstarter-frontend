@@ -39,7 +39,7 @@ const VestingClaimModal = () => {
   return (
     <Modal
       //   isOpen={data.modal === '' ? true : false}
-      isOpen={true}
+      isOpen={false}
       isCentered
       onClose={() => {
         handleCloseModal();

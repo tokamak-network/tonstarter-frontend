@@ -7,6 +7,9 @@ import {useEffect} from 'react';
 import {TokenImage} from '@Admin/components/TokenImage';
 import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
+import {isProduction} from '@Launch/utils/checkConstants';
+import {CustomButton} from 'components/Basic/CustomButton';
+import {testValue} from '@Launch/utils/testValue';
 
 const filedNameList = [
   {title: 'projectName', requirement: true},
@@ -27,11 +30,13 @@ const filedNameList = [
 
 const OpenStepOne = () => {
   const {colorMode} = useColorMode();
-  const {values} = useFormikContext<Projects['CreateProject']>();
+  const {values, setValues} = useFormikContext<Projects['CreateProject']>();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const testvalues = testValue();
 
   return (
     <Flex
@@ -42,6 +47,19 @@ const OpenStepOne = () => {
       borderRadius={'10px'}
       border={colorMode === 'light' ? '' : '1px solid #373737'}
       flexDir="column">
+      {isProduction() === false && (
+        <Flex
+          justifyContent={'center'}
+          pos="absolute"
+          w={'100%'}
+          h={'100%'}
+          left={'300px'}>
+          <CustomButton
+            text="set a test value"
+            //@ts-ignore
+            func={() => setValues(testvalues)}></CustomButton>
+        </Flex>
+      )}
       <Box mb={'23px'}>
         <StepTitle title={'Project & Token'} isSaveButton={false}></StepTitle>
       </Box>

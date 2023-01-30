@@ -140,16 +140,6 @@ const MainScreen = () => {
       mt={100}
       mb={'100px'}
       pos="relative">
-      {isProduction() === false && (
-        <Flex
-          justifyContent={'center'}
-          pos="absolute"
-          w={'100%'}
-          h={'100%'}
-          left={'300px'}>
-          <CustomButton text="set a test value"></CustomButton>
-        </Flex>
-      )}
       <Flex alignItems={'center'} flexDir="column" mb={'20px'}>
         <PageHeader
           title={'Create Project'}
