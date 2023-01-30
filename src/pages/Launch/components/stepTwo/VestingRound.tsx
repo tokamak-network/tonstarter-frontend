@@ -182,7 +182,11 @@ const VestingRound = () => {
                 setClaimRoundEdit(true);
               }}
               h="32px"
-              w="100px"></CustomButton>
+              w="100px"
+              isDisabled={
+                //@ts-ignore
+                vaultsList[0].vaultTokenAllocation === 0
+              }></CustomButton>
           </Flex>
         ) : (
           <Flex fontSize={13}>

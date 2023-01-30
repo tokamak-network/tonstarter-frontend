@@ -38,6 +38,8 @@ import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import * as LiquidityIncentiveAbi from 'services/abis/LiquidityIncentiveAbi.json';
 import * as PublicSaleVaultCreateAbi from 'services/abis/PublicSaleVaultCreateAbi.json';
 import * as PublicSaleVaultAbi from 'services/abis/PublicSaleVault.json';
+import * as PublicSale from 'services/abis/PublicSale.json';
+
 import * as TONStakerAbi from 'services/abis/TONStakerAbi.json';
 import * as TONStakerInitializeAbi from 'services/abis/TONStakerInitializeAbi.json';
 import * as TOSStakerAbi from 'services/abis/TOSStakerAbi.json';
@@ -1186,12 +1188,12 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                   allTokenAllocation,
               ) as number[];
 
-              // console.log('--params--');
-              // console.log(param0, param1, param2, param3, param4);
+              console.log('--params--');
+              console.log(param0, param1, param2, param3, param4);
 
               const publicVaultSecondContract = new Contract(
                 PublicVaultData.vaultAddress as string,
-                PublicSaleVaultAbi.abi,
+                PublicSale.abi,
                 library,
               );
 

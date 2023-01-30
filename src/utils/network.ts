@@ -85,7 +85,7 @@ export const getExplorerTxnLink = async (id: string | number | undefined) => {
       link = `https://rinkeby.etherscan.io/tx/`;
       break;
     case 5:
-      link = `https://goerli.etherscan.io/`;
+      link = `https://goerli.etherscan.io/tx/`;
       break;
     case 42:
       link = `https://kovan.etherscan.io/tx/`;

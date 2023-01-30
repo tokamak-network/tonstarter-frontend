@@ -15,6 +15,9 @@ const DeployContainer = () => {
   const {account} = useActiveWeb3React();
   const dispatch = useAppDispatch();
 
+  console.log('value');
+  console.log(values);
+
   useEffect(() => {
     // saveProject(values, account as string);
   }, [values, account]);

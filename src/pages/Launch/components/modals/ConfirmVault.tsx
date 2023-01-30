@@ -451,7 +451,6 @@ const ConfirmTokenModal = () => {
                 textDecoration={'none'}
                 href={`${appConfig.explorerTxnLink}${tempHash}`}
                 style={{textDecoration: 'none'}}>
-                {tempHash ? 'View on Etherscan' : ''}
                 <Box as={Flex} flexDir="column" alignItems="center">
                   <Button
                     {...btnStyle.btnAble()}
@@ -509,13 +508,6 @@ const ConfirmTokenModal = () => {
                 textAlign={'center'}>
                 your {vaultName} vault
               </Text>
-              <Link
-                mb={'35px'}
-                isExternal={true}
-                href={`${appConfig.explorerTxnLink}${tempHash}`}
-                color={'blue.100'}>
-                {tempHash ? 'View on Etherscan' : ''}
-              </Link>
               <Box w={'100%'} px={'15px'} mb={'25px'}>
                 <Line></Line>
               </Box>

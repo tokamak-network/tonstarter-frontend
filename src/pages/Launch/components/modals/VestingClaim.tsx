@@ -170,7 +170,7 @@ const VestingClaimModal = () => {
                       fontSize={12}
                       color={'#3a495f'}
                       height={'23px'}
-                      lineHeight={'26spx'}
+                      lineHeight={'27px'}
                       verticalAlign={'bottom'}>
                       3,981,532 / 5,000,000 TON
                     </Text>
@@ -179,6 +179,7 @@ const VestingClaimModal = () => {
                     value={65.4}
                     w={'100%'}
                     h={'6px'}
+                    mt={'5px'}
                     borderRadius={'100px'}></Progress>
                 </Flex>
               </Flex>

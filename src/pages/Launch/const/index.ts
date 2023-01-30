@@ -1,3 +1,4 @@
+import {isProduction} from '@Launch/utils/checkConstants';
 import moment from 'moment';
 
 const stosMinimumRequirements = {
@@ -7,7 +8,9 @@ const stosMinimumRequirements = {
   tier4: 6000,
 };
 
-const snapshotGap = moment().add(8, 'days').unix();
+const snapshotGap = isProduction()
+  ? moment().add(8, 'days').unix()
+  : moment().add(10, 'minutes').unix();
 // const snapshotGap = 0;
 const nowTimeStamp = moment().unix();
 

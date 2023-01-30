@@ -377,8 +377,8 @@ const SubTitle = (props: {
               }
               //Testnet env
               // startTimeCap={moment()
-              //   .add('11', 'minutes')
-              //     .unix()}
+              //   .add('10', 'minutes')
+              //   .unix()}
             ></SingleCalendarPop>
           </Flex>
         );
