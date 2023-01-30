@@ -1,4 +1,4 @@
-import {FC, useEffect, useState} from 'react';
+import {FC, useEffect, useState, Dispatch, SetStateAction} from 'react';
 import {
   Flex,
   Text,
@@ -27,25 +27,65 @@ import {openToast} from 'store/app/toast.reducer';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {BASE_PROVIDER} from 'constants/index';
+import {DEPLOYED} from 'constants/index';
+import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
+
+const {TOS_ADDRESS, UniswapV3Factory, NPM_Address} = DEPLOYED;
 
 const provider = BASE_PROVIDER;
-type Vesting = {vault: any; project: any};
+type Vesting = {vault: any; project: any; setVaultInfo: Function};
 
-export const Vesting: FC <Vesting> = ({vault, project}) => {
-    const {colorMode} = useColorMode();
+export const Vesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
+  const {colorMode} = useColorMode();
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
   const [distributable, setDistributable] = useState<number>(0);
   const [claimTime, setClaimTime] = useState<number>(0);
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [distributeDisable, setDistributeDisable] = useState<boolean>(true);
-//   const vaultC = new Contract(vault.vaultAddress, VaultCLogicAbi.abi, library);
+  //   const vaultC = new Contract(vault.vaultAddress, VaultCLogicAbi.abi, library);
   const [claimAddress, setClaimAddress] = useState<string>('');
   const [showDate, setShowDate] = useState<boolean>(false);
   const network = BASE_PROVIDER._network.name;
+  const [tosBalance, setTosBalance] = useState<string>('');
+  const [completedRounds, setCompletedRounds] = useState<string>('2');
+  const [accTotal, setAccTotal] = useState(0);
+  const [accRound, setAccRound] = useState(0);
 
-  async function claim() {
-  }
+  const TOS = new Contract(TOS_ADDRESS, ERC20.abi, library);
+
+
+
+
+  async function claim() {}
+
+  useEffect(() => {
+    async function getLPToken() {
+      if (account === null || account === undefined || library === undefined) {
+        return;
+      }
+      const signer = getSigner(library, account);
+      const tosBal = await TOS.balanceOf(vault.vaultAddress);
+      const TOSBal = ethers.utils.formatEther(tosBal);
+      setTosBalance(TOSBal);
+    }
+    getLPToken();
+  }, [account, library, transactionType, blockNumber]);
+
+  useEffect(() => {
+    const initialAmount = 0;
+    const reducer = (amount: any, claim: any) =>
+      amount + claim.claimTokenAllocation;
+    const total = vault.claim.reduce(reducer, initialAmount);
+    setAccTotal(total);
+
+    const claimsCurrentRound = vault.claim.slice(
+      0,
+      Number(completedRounds) + 1,
+    );
+    const roundAccTotal = claimsCurrentRound.reduce(reducer, initialAmount);
+    setAccRound(roundAccTotal);
+  }, [account, project, vault]);
 
   const themeDesign = {
     border: {
@@ -76,9 +116,9 @@ export const Vesting: FC <Vesting> = ({vault, project}) => {
 
   return (
     <Flex flexDirection={'column'} w={'1030px'} p={'0px'}>
-         <Grid templateColumns="repeat(2, 1fr)" w={'100%'} mb={'30px'}>
-         <Flex flexDirection={'column'}>
-         <GridItem
+      <Grid templateColumns="repeat(2, 1fr)" w={'100%'} mb={'30px'}>
+        <Flex flexDirection={'column'}>
+          <GridItem
             border={themeDesign.border[colorMode]}
             borderRight={'none'}
             borderBottom={'none'}
@@ -184,13 +224,47 @@ export const Vesting: FC <Vesting> = ({vault, project}) => {
               color={colorMode === 'light' ? '#353c48' : 'white.0'}>
               Claim
             </Text>
+            {Number(tosBalance) !== 0 ? (
+              <Text fontSize={'11px'} w="260px">
+                To initiate a vesting round, please go to{' '}
+                <span
+                  style={{
+                    color: '#257eee',
+                    textDecoration: 'underline',
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => setVaultInfo(project.vaults[0], 0)}>
+                  Public Vault
+                </span>{' '}
+                and send funds to the initial liquidity vault
+              </Text>
+            ) : (
+              <Flex flexDir={'column'} fontSize={'14px'}>
+                <Flex justifyContent="flex-end">
+                  <Text>{completedRounds} Rounds Completed</Text>
+                  <Text
+                    ml="3px"
+                    color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                    [Total {vault.claim.length}]
+                  </Text>
+                </Flex>
+                <Flex justifyContent="flex-end">
+                  <Text>{`${accRound.toLocaleString()} TON / ${accTotal.toLocaleString()} TON`}</Text>
+                  <Text
+                    ml="3px"
+                    color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                    {((accRound / accTotal) * 100).toLocaleString()}% claimed
+                  </Text>
+                </Flex>
+              </Flex>
+            )}
           </GridItem>
           <GridItem
             border={themeDesign.border[colorMode]}
             borderBottom={'none'}
             className={'chart-cell'}
             fontFamily={theme.fonts.fld}>
-            <Flex alignItems={'baseline'} fontWeight={'bold'}>
+            {/* <Flex alignItems={'baseline'} fontWeight={'bold'}>
               {' '}
               <Text
                 mr={'3px'}
@@ -203,8 +277,8 @@ export const Vesting: FC <Vesting> = ({vault, project}) => {
                 fontSize={'13px'}>
                 {project.tokenSymbol}
               </Text>
-            </Flex>
-            <Button
+            </Flex> */}
+            {/* <Button
               fontSize={'13px'}
               w={'100px'}
               h={'32px'}
@@ -220,7 +294,7 @@ export const Vesting: FC <Vesting> = ({vault, project}) => {
                 distributeDisable
                   ? {}
                   : {
-                     cursor: 'pointer',
+                      cursor: 'pointer',
                     }
               }
               _active={
@@ -232,10 +306,9 @@ export const Vesting: FC <Vesting> = ({vault, project}) => {
                       color: '#fff',
                     }
               }
-              onClick={() => claim()}
-              >
+              onClick={() => claim()}>
               Distribute
-            </Button>
+            </Button> */}
           </GridItem>
 
           <GridItem
@@ -243,26 +316,30 @@ export const Vesting: FC <Vesting> = ({vault, project}) => {
             className={'chart-cell'}
             fontFamily={theme.fonts.fld}
             borderBottomRightRadius={'4px'}>
-            <Flex flexDir={'column'}>
-              {showDate ? (
-                <>
-                  {' '}
-                  <Text color={colorMode === 'light' ? '#9d9ea5' : '#7e8993'}>
-                    You can claim on
-                  </Text>
-                  <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-                    {moment.unix(claimTime).format('MMM, DD, yyyy HH:mm:ss')}{' '}
-                    {momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()}
-                  </Text>
-                </>
-              ) : (
-                <></>
-              )}
-            </Flex>
+            <Text
+              fontSize={'13px'}
+              w={'156px'}
+              color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+              Address for Receiving Funds from the Vesting Vault
+            </Text>
+            <Link
+              isExternal
+              href={
+               project.vaults[0].addressForReceiving && network === 'rinkeby'
+                  ? `https://rinkeby.etherscan.io/address/${project.vaults[0].addressForReceiving}`
+                  : vault.adminAddress && network !== 'rinkeby'
+                  ? `https://etherscan.io/address/${project.vaults[0].addressForReceiving}`
+                  : ''
+              }
+              color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+              _hover={{color: '#2a72e5'}}
+              fontFamily={theme.fonts.fld}>
+              {project.vaults[0].addressForReceiving? shortenAddress(project.vaults[0].addressForReceiving) : 'NA'}
+            </Link>
           </GridItem>
-         </Flex>
-         </Grid>
-         {vault.isDeployed ? (
+        </Flex>
+      </Grid>
+      {vault.isDeployed ? (
         <PublicPageTable claim={vault.claim} />
       ) : (
         <Flex
@@ -275,6 +352,5 @@ export const Vesting: FC <Vesting> = ({vault, project}) => {
         </Flex>
       )}
     </Flex>
-  )
-
-}
+  );
+};

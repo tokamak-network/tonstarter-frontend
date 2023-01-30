@@ -24,8 +24,9 @@ type VaultComponent = {
   project: any;
 };
 
-const TabComponent = (props: {project: any; vault: string; index: number}) => {
-  const {project, vault, index} = props;
+const TabComponent = (props: {project: any; vault: string; index: number; setVaultInfo:any}) => {
+  const {project, vault, index,setVaultInfo} = props;
+  
   switch (vault) {
     case 'Public':
       return (
@@ -64,7 +65,7 @@ const TabComponent = (props: {project: any; vault: string; index: number}) => {
 
     case 'Vesting':
       return (
-        <Vesting project={project} vault={project.vaults[index]}></Vesting>
+        <Vesting project={project} vault={project.vaults[index]} setVaultInfo={setVaultInfo}></Vesting>
       );
     case 'C':
       return <Custom project={project} vault={project.vaults[index]}></Custom>;
@@ -196,6 +197,7 @@ export const VaultComponent: FC<VaultComponent> = ({project}) => {
         project={project}
         vault={currentVault}
         index={currentIndex}
+        setVaultInfo={setVaultInfo}
       />
     </Flex>
   );

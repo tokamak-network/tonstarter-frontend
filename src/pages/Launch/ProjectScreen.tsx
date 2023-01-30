@@ -139,7 +139,7 @@ const ProjectScreen = () => {
       </Flex>
       <CreateRewardsProgramModal />
       <DownloadModal />
-      <VestingClaimModal />
+      {/* <VestingClaimModal /> */}
     </Flex>
   );
 };
