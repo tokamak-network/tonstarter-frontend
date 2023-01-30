@@ -17,7 +17,7 @@ import {
   Image,
   Progress,
 } from '@chakra-ui/react';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {useModal} from 'hooks/useModal';
@@ -29,6 +29,7 @@ import {useSwapModal} from '@Launch/hooks/useSwapModal';
 
 import TokamakSymbol from 'assets/svgs/tokamak_favicon.svg';
 import TosSymbol from 'assets/svgs/tos_symbol.svg';
+import commafy from 'utils/commafy';
 
 const SwapModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -43,14 +44,20 @@ const SwapModal = () => {
     data?.data?.publicVaultAddress,
     Number(inputAmount.replaceAll(',', '')),
   );
-  // const {tosAmountOut} = useSwapModal(
-  //   data?.data?.publicVaultAddress,
-  //   Number(inputAmount.replaceAll(',', '')),
-  // );
+  const {tosAmountOut: basicPrice} = useSwapModal(
+    data?.data?.publicVaultAddress,
+    1,
+  );
 
-  console.log('tosAmountOut');
+  const priceImpact = useMemo(() => {
+    const numTosAmountOut = Number(tosAmountOut.replaceAll(',', ''));
+    const numBasicPrice = Number(basicPrice.replaceAll(',', ''));
+    const numInputAmount = Number(inputAmount.replaceAll(',', ''));
+    const priceDiff = numTosAmountOut / numInputAmount / numBasicPrice;
+    const result = 100 - priceDiff * 100;
 
-  console.log(tosAmountOut);
+    return isNaN(result) ? '-' : commafy(result);
+  }, [tosAmountOut, basicPrice, inputAmount]);
 
   useEffect(() => {
     if (inputAmount.length > 1 && inputAmount.startsWith('0')) {
@@ -233,14 +240,14 @@ const SwapModal = () => {
                 fontWeight={500}
                 color={colorMode === 'dark' ? '#9d9ea5' : '#808992'}
                 lineHeight={1.33}>
-                1 TON = 2.06765 TOS
+                1 TON = {basicPrice} TOS
               </Text>
               <Text
                 fontSize={'12px'}
                 fontWeight={500}
                 color={colorMode === 'dark' ? '#9d9ea5' : '#808992'}
                 lineHeight={1.33}>
-                Price Impact : 10%
+                Price Impact : {priceImpact}%
               </Text>
               <Text
                 fontSize={'12px'}
