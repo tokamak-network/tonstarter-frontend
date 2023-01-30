@@ -1,4 +1,4 @@
-import {FC, useEffect, useState} from 'react';
+import {FC, useEffect, useState, Dispatch, SetStateAction} from 'react';
 import {
   Flex,
   Text,
@@ -27,12 +27,15 @@ import {openToast} from 'store/app/toast.reducer';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {BASE_PROVIDER} from 'constants/index';
-type TosStaker = {
-  vault: any;
-  project: any;
-};
+import {DEPLOYED} from 'constants/index';
+import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 
-export const TosStaker: FC<TosStaker> = ({vault, project}) => {
+const {TOS_ADDRESS, UniswapV3Factory, NPM_Address} = DEPLOYED;
+
+const provider = BASE_PROVIDER;
+type Vesting = {vault: any; project: any; setVaultInfo: Function};
+
+export const Vesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
@@ -40,75 +43,49 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
   const [claimTime, setClaimTime] = useState<number>(0);
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const [distributeDisable, setDistributeDisable] = useState<boolean>(true);
+  //   const vaultC = new Contract(vault.vaultAddress, VaultCLogicAbi.abi, library);
+  const [claimAddress, setClaimAddress] = useState<string>('');
   const [showDate, setShowDate] = useState<boolean>(false);
   const network = BASE_PROVIDER._network.name;
-  const TOSStaker = new Contract(
-    vault.vaultAddress,
-    TOSStakerInitializeAbi.abi,
-    library,
-  );
-  async function distribute() {
-    if (account === null || account === undefined || library === undefined) {
-      return;
-    }
-    const signer = getSigner(library, account);
-    try {
-      const receipt = await TOSStaker.connect(signer).claim();
-      store.dispatch(setTxPending({tx: true}));
-      if (receipt) {
-        toastWithReceipt(receipt, setTxPending, 'Launch');
-        await receipt.wait();
-      }
-    } catch (e) {
-      console.log(e);
-      
-      store.dispatch(setTxPending({tx: false}));
-      store.dispatch(
-        //@ts-ignore
-        openToast({
-          payload: {
-            status: 'error',
-            title: 'Tx fail to send',
-            description: `something went wrong`,
-            duration: 5000,
-            isClosable: true,
-          },
-        }),
-      );
-    }
-  }
+  const [tosBalance, setTosBalance] = useState<string>('');
+  const [completedRounds, setCompletedRounds] = useState<string>('2');
+  const [accTotal, setAccTotal] = useState(0);
+  const [accRound, setAccRound] = useState(0);
+
+  const TOS = new Contract(TOS_ADDRESS, ERC20.abi, library);
+
+
+
+
+  async function claim() {}
 
   useEffect(() => {
     async function getLPToken() {
       if (account === null || account === undefined || library === undefined) {
         return;
       }
-      const now = moment().unix();
       const signer = getSigner(library, account);
-      const currentRound = await TOSStaker.connect(signer).currentRound();
-      const nowClaimRound = await TOSStaker.connect(signer).nowClaimRound();
-      const amount = await TOSStaker.connect(signer).calculClaimAmount(
-        currentRound,
-      );
-      const totalClaimCount = await TOSStaker.connect(
-        signer,
-      ).totalClaimCounts();
-
-      setDistributeDisable(Number(nowClaimRound) >= Number(currentRound));
-      const disabled = Number(nowClaimRound) >= Number(currentRound);
-      const claimDate =
-        Number(currentRound) === Number(totalClaimCount)
-          ? await TOSStaker.connect(signer).claimTimes(Number(currentRound) - 1)
-          : await TOSStaker.connect(signer).claimTimes(currentRound);
-      const amountFormatted = parseInt(ethers.utils.formatEther(amount));
-
-      setShowDate(amountFormatted === 0 && Number(claimDate) > now);
-      setDistributable(amountFormatted);
-      setDistributeDisable(disabled);
-      setClaimTime(claimDate);
+      const tosBal = await TOS.balanceOf(vault.vaultAddress);
+      const TOSBal = ethers.utils.formatEther(tosBal);
+      setTosBalance(TOSBal);
     }
     getLPToken();
   }, [account, library, transactionType, blockNumber]);
+
+  useEffect(() => {
+    const initialAmount = 0;
+    const reducer = (amount: any, claim: any) =>
+      amount + claim.claimTokenAllocation;
+    const total = vault.claim.reduce(reducer, initialAmount);
+    setAccTotal(total);
+
+    const claimsCurrentRound = vault.claim.slice(
+      0,
+      Number(completedRounds) + 1,
+    );
+    const roundAccTotal = claimsCurrentRound.reduce(reducer, initialAmount);
+    setAccRound(roundAccTotal);
+  }, [account, project, vault]);
 
   const themeDesign = {
     border: {
@@ -157,14 +134,25 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
             </Text>
             {vault.isDeployed ? (
               <Flex alignItems={'center'}>
-              <Text letterSpacing={'1.3px'} fontSize={'13px'} mr={'5px'}>
-                {commafy(Number(vault.vaultTokenAllocation))}{' '}
-                {project.tokenSymbol}
-              </Text>
-              <Text letterSpacing={'1.3px'} fontSize={'13px'} color={'#7e8993'}>
-               {((vault.vaultTokenAllocation/project.totalTokenAllocation)*100).toString()
-            .match(/^\d+(?:\.\d{0,2})?/)}%</Text>
-            </Flex>
+                <Text mr={'5px'}>
+                  {Number(vault.vaultTokenAllocation).toLocaleString()}
+                  {` `}
+                  {project.tokenSymbol}
+                </Text>
+                <Text
+                  letterSpacing={'1.3px'}
+                  fontSize={'13px'}
+                  color={'#7e8993'}>
+                  {(
+                    (vault.vaultTokenAllocation /
+                      project.totalTokenAllocation) *
+                    100
+                  )
+                    .toString()
+                    .match(/^\d+(?:\.\d{0,2})?/)}
+                  %
+                </Text>
+              </Flex>
             ) : (
               <></>
             )}
@@ -234,15 +222,49 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
             <Text
               fontSize={'15px'}
               color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-              Distribute
+              Claim
             </Text>
+            {Number(tosBalance) !== 0 ? (
+              <Text fontSize={'11px'} w="260px">
+                To initiate a vesting round, please go to{' '}
+                <span
+                  style={{
+                    color: '#257eee',
+                    textDecoration: 'underline',
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => setVaultInfo(project.vaults[0], 0)}>
+                  Public Vault
+                </span>{' '}
+                and send funds to the initial liquidity vault
+              </Text>
+            ) : (
+              <Flex flexDir={'column'} fontSize={'14px'}>
+                <Flex justifyContent="flex-end">
+                  <Text>{completedRounds} Rounds Completed</Text>
+                  <Text
+                    ml="3px"
+                    color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                    [Total {vault.claim.length}]
+                  </Text>
+                </Flex>
+                <Flex justifyContent="flex-end">
+                  <Text>{`${accRound.toLocaleString()} TON / ${accTotal.toLocaleString()} TON`}</Text>
+                  <Text
+                    ml="3px"
+                    color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                    {((accRound / accTotal) * 100).toLocaleString()}% claimed
+                  </Text>
+                </Flex>
+              </Flex>
+            )}
           </GridItem>
           <GridItem
             border={themeDesign.border[colorMode]}
             borderBottom={'none'}
             className={'chart-cell'}
             fontFamily={theme.fonts.fld}>
-            <Flex alignItems={'baseline'} fontWeight={'bold'}>
+            {/* <Flex alignItems={'baseline'} fontWeight={'bold'}>
               {' '}
               <Text
                 mr={'3px'}
@@ -255,9 +277,8 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
                 fontSize={'13px'}>
                 {project.tokenSymbol}
               </Text>
-            </Flex>
-
-            <Button
+            </Flex> */}
+            {/* <Button
               fontSize={'13px'}
               w={'100px'}
               h={'32px'}
@@ -273,7 +294,7 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
                 distributeDisable
                   ? {}
                   : {
-                       cursor: 'pointer',
+                      cursor: 'pointer',
                     }
               }
               _active={
@@ -285,30 +306,36 @@ export const TosStaker: FC<TosStaker> = ({vault, project}) => {
                       color: '#fff',
                     }
               }
-              onClick={() => distribute()}>
+              onClick={() => claim()}>
               Distribute
-            </Button>
+            </Button> */}
           </GridItem>
+
           <GridItem
             border={themeDesign.border[colorMode]}
             className={'chart-cell'}
             fontFamily={theme.fonts.fld}
             borderBottomRightRadius={'4px'}>
-            {showDate === true ? (
-              <>
-                <Flex flexDir={'column'}>
-                  <Text color={colorMode === 'light' ? '#9d9ea5' : '#7e8993'}>
-                    You can distribute on
-                  </Text>
-                  <Text color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-                    {moment.unix(claimTime).format('MMM, DD, yyyy HH:mm:ss')}{' '}
-                    {momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()}
-                  </Text>
-                </Flex>
-              </>
-            ) : (
-              <></>
-            )}
+            <Text
+              fontSize={'13px'}
+              w={'156px'}
+              color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+              Address for Receiving Funds from the Vesting Vault
+            </Text>
+            <Link
+              isExternal
+              href={
+               project.vaults[0].addressForReceiving && network === 'rinkeby'
+                  ? `https://rinkeby.etherscan.io/address/${project.vaults[0].addressForReceiving}`
+                  : vault.adminAddress && network !== 'rinkeby'
+                  ? `https://etherscan.io/address/${project.vaults[0].addressForReceiving}`
+                  : ''
+              }
+              color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+              _hover={{color: '#2a72e5'}}
+              fontFamily={theme.fonts.fld}>
+              {project.vaults[0].addressForReceiving? shortenAddress(project.vaults[0].addressForReceiving) : 'NA'}
+            </Link>
           </GridItem>
         </Flex>
       </Grid>

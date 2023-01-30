@@ -17,13 +17,14 @@ import {MobileTosStaker} from './Vaults/MobileTosStaker';
 import {MobileWtonTosLpReward} from './Vaults/MobileWtonTosLpReward';
 import {MobileCustom} from './Vaults/MobileCustom';
 import {MobileDao} from './Vaults/MobileDao';
+import { MobileVesting } from './Vaults/MobileVesting';
 
 type MobileVaultComponent = {
   project: any;
 };
 
-const TabComponent = (props: {project: any; vault: string; index: number}) => {
-  const {project, vault, index} = props;
+const TabComponent = (props: {project: any; vault: string; index: number;setVaultInfo:any}) => {
+  const {project, vault, index,setVaultInfo} = props;
   switch (vault) {
     case 'Public':
       return (
@@ -65,7 +66,10 @@ const TabComponent = (props: {project: any; vault: string; index: number}) => {
       return (
         <MobileDao project={project} vault={project.vaults[index]}></MobileDao>
       );
-
+      case 'Vesting':
+        return (
+          <MobileVesting project={project} vault={project.vaults[index]} setVaultInfo={setVaultInfo}></MobileVesting>
+        );
     case 'C':
       return (
         <MobileCustom
@@ -201,6 +205,7 @@ export const MobileVaultComponent: FC<MobileVaultComponent> = ({project}) => {
         project={project}
         vault={currentVault}
         index={currentIndex}
+        setVaultInfo={setVaultInfo}
       />
     </Flex>
   );

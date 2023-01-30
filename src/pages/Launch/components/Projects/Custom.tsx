@@ -158,8 +158,8 @@ export const Custom: FC<Custom> = ({vault, project}) => {
               Token
             </Text>
             {vault.isDeployed ? (
-              <Flex>
-                <Text>
+              <Flex alignItems={'center'}>
+                <Text mr={'5px'}>
                   {Number(vault.vaultTokenAllocation).toLocaleString()}
                   {` `}
                   {project.tokenSymbol}

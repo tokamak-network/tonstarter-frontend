@@ -719,6 +719,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
 
                 return (
                   <GridItem
+                  key={index}
                     border={themeDesign.border[colorMode]}
                     borderBottom={index === sTosTier.length - 1 ? '' : 'none'}
                     className={'chart-cell'}
@@ -755,6 +756,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
               {[...Array(6 - sTosTier.length)].map((e: any, i: number) => {
                 return (
                   <GridItem
+
                     border={themeDesign.border[colorMode]}
                     key={i}
                     borderBottomRightRadius={
