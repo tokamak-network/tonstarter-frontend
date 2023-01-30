@@ -29,7 +29,7 @@ import {selectTransactionType} from 'store/refetch.reducer';
 import {BASE_PROVIDER} from 'constants/index';
 import {DEPLOYED} from 'constants/index';
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
-
+import * as PublicSaleLogic from 'services/abis/PublicSaleLogic.json';
 const {TOS_ADDRESS, UniswapV3Factory, NPM_Address} = DEPLOYED;
 
 const provider = BASE_PROVIDER;
@@ -47,30 +47,13 @@ export const Vesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
   const [claimAddress, setClaimAddress] = useState<string>('');
   const [showDate, setShowDate] = useState<boolean>(false);
   const network = BASE_PROVIDER._network.name;
-  const [tosBalance, setTosBalance] = useState<string>('');
   const [completedRounds, setCompletedRounds] = useState<string>('2');
   const [accTotal, setAccTotal] = useState(0);
   const [accRound, setAccRound] = useState(0);
+const [tosSent, setTosSent] = useState(false)
 
-  const TOS = new Contract(TOS_ADDRESS, ERC20.abi, library);
-
-
-
-
-  async function claim() {}
-
-  useEffect(() => {
-    async function getLPToken() {
-      if (account === null || account === undefined || library === undefined) {
-        return;
-      }
-      const signer = getSigner(library, account);
-      const tosBal = await TOS.balanceOf(vault.vaultAddress);
-      const TOSBal = ethers.utils.formatEther(tosBal);
-      setTosBalance(TOSBal);
-    }
-    getLPToken();
-  }, [account, library, transactionType, blockNumber]);
+console.log();
+console.log(network === '');
 
   useEffect(() => {
     const initialAmount = 0;
@@ -86,6 +69,20 @@ export const Vesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
     const roundAccTotal = claimsCurrentRound.reduce(reducer, initialAmount);
     setAccRound(roundAccTotal);
   }, [account, project, vault]);
+
+  useEffect(() => {
+    async function getInfo() {
+      if (account === null || account === undefined || library === undefined) {
+        return;
+      }
+      const signer = getSigner(library, account);
+      const publicSaleLogic = new Contract (project.vaults[0].vaultAddress, PublicSaleLogic.abi, library)
+      const isExchangeTOS = await publicSaleLogic.exchangeTOS()
+      setTosSent(isExchangeTOS)
+      
+    }
+    getInfo();
+  }, [account, project, vault, library, transactionType, blockNumber]);
 
   const themeDesign = {
     border: {
@@ -114,6 +111,8 @@ export const Vesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
     },
   };
 
+
+  
   return (
     <Flex flexDirection={'column'} w={'1030px'} p={'0px'}>
       <Grid templateColumns="repeat(2, 1fr)" w={'100%'} mb={'30px'}>
@@ -172,9 +171,9 @@ export const Vesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
             <Link
               isExternal
               href={
-                vault.adminAddress && network === 'rinkeby'
-                  ? `https://rinkeby.etherscan.io/address/${vault.adminAddress}`
-                  : vault.adminAddress && network !== 'rinkeby'
+                vault.adminAddress && network === "goerli"
+                  ? `https://goerli.etherscan.io/address/${vault.adminAddress}`
+                  : vault.adminAddress && network !== 'goerli'
                   ? `https://etherscan.io/address/${vault.adminAddress}`
                   : ''
               }
@@ -198,9 +197,9 @@ export const Vesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
             <Link
               isExternal
               href={
-                vault.vaultAddress && network === 'rinkeby'
-                  ? `https://rinkeby.etherscan.io/address/${vault.vaultAddress}`
-                  : vault.vaultAddress && network !== 'rinkeby'
+                vault.vaultAddress && network === 'goerli'
+                  ? `https://goerli.etherscan.io/address/${vault.vaultAddress}`
+                  : vault.vaultAddress && network !== 'goerli'
                   ? `https://etherscan.io/address/${vault.vaultAddress}`
                   : ''
               }
@@ -224,7 +223,7 @@ export const Vesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
               color={colorMode === 'light' ? '#353c48' : 'white.0'}>
               Claim
             </Text>
-            {Number(tosBalance) !== 0 ? (
+            {!tosSent? (
               <Text fontSize={'11px'} w="260px">
                 To initiate a vesting round, please go to{' '}
                 <span
@@ -325,16 +324,18 @@ export const Vesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
             <Link
               isExternal
               href={
-               project.vaults[0].addressForReceiving && network === 'rinkeby'
-                  ? `https://rinkeby.etherscan.io/address/${project.vaults[0].addressForReceiving}`
-                  : vault.adminAddress && network !== 'rinkeby'
+                project.vaults[0].addressForReceiving && network === 'goerli'
+                  ? `https://goerli.etherscan.io/address/${project.vaults[0].addressForReceiving}`
+                  : vault.adminAddress && network !== 'goerli'
                   ? `https://etherscan.io/address/${project.vaults[0].addressForReceiving}`
                   : ''
               }
               color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
               _hover={{color: '#2a72e5'}}
               fontFamily={theme.fonts.fld}>
-              {project.vaults[0].addressForReceiving? shortenAddress(project.vaults[0].addressForReceiving) : 'NA'}
+              {project.vaults[0].addressForReceiving
+                ? shortenAddress(project.vaults[0].addressForReceiving)
+                : 'NA'}
             </Link>
           </GridItem>
         </Flex>

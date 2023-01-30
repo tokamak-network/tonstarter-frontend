@@ -406,9 +406,9 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
             <Link
               isExternal
               href={
-                pool !== zero_address && network === 'rinkeby'
-                  ? `https://rinkeby.etherscan.io/address/${pool}`
-                  : vault.poolAddress && network !== 'rinkeby'
+                pool !== zero_address && network === 'goerli'
+                  ? `https://goerli.etherscan.io/address/${pool}`
+                  : vault.poolAddress && network !== 'goerli'
                   ? `https://etherscan.io/address/${pool}`
                   : ''
               }
@@ -429,9 +429,9 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
             <Link
               isExternal
               href={
-                vault.adminAddress && network === 'rinkeby'
-                  ? `https://rinkeby.etherscan.io/address/${vault.adminAddress}`
-                  : vault.adminAddress && network !== 'rinkeby'
+                vault.adminAddress && network === 'goerli'
+                  ? `https://goerli.etherscan.io/address/${vault.adminAddress}`
+                  : vault.adminAddress && network !== 'goerli'
                   ? `https://etherscan.io/address/${vault.adminAddress}`
                   : ''
               }
@@ -451,9 +451,9 @@ export const LiquidityIncentive: FC<LiquidityIncentive> = ({
             <Link
               isExternal
               href={
-                vault.vaultAddress && network === 'rinkeby'
-                  ? `https://rinkeby.etherscan.io/address/${vault.vaultAddress}`
-                  : vault.vaultAddress && network !== 'rinkeby'
+                vault.vaultAddress && network === 'goerli'
+                  ? `https://goerli.etherscan.io/address/${vault.vaultAddress}`
+                  : vault.vaultAddress && network !== 'goerli'
                   ? `https://etherscan.io/address/${vault.vaultAddress}`
                   : ''
               }
