@@ -48,10 +48,10 @@ type ClaimCompProps = {
   showDate: boolean;
   distributeDisable: boolean;
   claim: Dispatch<SetStateAction<any>>;
-  setVaultInfo: Function
+  setVaultInfo: Function;
 };
 
-export const MobileVesting: FC<Vesting> = ({vault, project,setVaultInfo}) => {
+export const MobileVesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const [buttonState, setButtonState] = useState('Token');
@@ -70,9 +70,7 @@ export const MobileVesting: FC<Vesting> = ({vault, project,setVaultInfo}) => {
 
   const TOS = new Contract(TOS_ADDRESS, ERC20.abi, library);
 
-  async function claim() {
-  
-  }
+  async function claim() {}
 
   useEffect(() => {
     async function getLPToken() {
@@ -102,7 +100,7 @@ export const MobileVesting: FC<Vesting> = ({vault, project,setVaultInfo}) => {
     const roundAccTotal = claimsCurrentRound.reduce(reducer, initialAmount);
     setAccRound(roundAccTotal);
   }, [account, project, vault]);
-  
+
   return (
     <Flex mt={'35px'} flexDir={'column'} px={'20px'}>
       <Flex
@@ -173,7 +171,7 @@ const ClaimComp: React.FC<ClaimCompProps> = ({
   distributeDisable,
   distributable,
   claim,
-  setVaultInfo
+  setVaultInfo,
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -243,7 +241,7 @@ const ClaimComp: React.FC<ClaimCompProps> = ({
         borderBottom={
           colorMode === 'light' ? '1px solid #e6eaee' : '1px solid #373737'
         }>
-        <Flex alignItems={'center'}>
+        {/* <Flex alignItems={'center'}>
           <Text style={rightText} mr="3px">
             {distributable.toLocaleString()}
           </Text>
@@ -284,10 +282,28 @@ const ClaimComp: React.FC<ClaimCompProps> = ({
           }
           onClick={claim}>
           Claim
-        </Button>
+        </Button> */}
       </GridItem>
       <GridItem style={gridItemStyle}>
-       
+        <Flex alignItems={'center'}>
+          <Text style={leftText} w='174px'>Address for Receiving Funds from the Vesting Vault</Text>
+          <Link
+              isExternal
+              href={
+               project.vaults[0].addressForReceiving && network === 'rinkeby'
+                  ? `https://rinkeby.etherscan.io/address/${project.vaults[0].addressForReceiving}`
+                  : vault.adminAddress && network !== 'rinkeby'
+                  ? `https://etherscan.io/address/${project.vaults[0].addressForReceiving}`
+                  : ''
+              }
+              color={colorMode === 'light' ? '#353c48' : '#ffffff'}
+              _hover={{color: '#2a72e5'}}
+              textDecor='underline'
+              fontSize='14px'
+              fontFamily={theme.fonts.fld}>
+              {project.vaults[0].addressForReceiving? shortenAddress(project.vaults[0].addressForReceiving) : 'NA'}
+            </Link>
+        </Flex>
       </GridItem>
     </Grid>
   );
