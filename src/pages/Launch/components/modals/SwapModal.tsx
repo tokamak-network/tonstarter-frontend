@@ -70,15 +70,24 @@ const SwapModal = () => {
   }, [tosAmountOut, basicPrice, inputAmount]);
 
   const exchangeTonToTos = useCallback(() => {
-    //https://www.notion.so/onther/PublicSale-Front-interface-b139403abc0f41df9af75559eba87e58
-    if (PublicVaultContract && inputAmount && pools) {
-      const inputAmountRay = convertToRay(inputAmount);
-      const {TOS_WTON_POOL} = pools;
+    console.log('go');
+    console.log(data);
 
-      return PublicVaultContract.exchangeWTONtoTOS(
-        inputAmountRay,
-        TOS_WTON_POOL,
-      );
+    //https://www.notion.so/onther/PublicSale-Front-interface-b139403abc0f41df9af75559eba87e58
+    try {
+      console.log(PublicVaultContract, inputAmount, pools);
+
+      if (PublicVaultContract && inputAmount && pools) {
+        const inputAmountRay = convertToRay(inputAmount);
+        const {TOS_WTON_POOL} = pools;
+
+        return PublicVaultContract.exchangeWTONtoTOS(
+          inputAmountRay,
+          TOS_WTON_POOL,
+        );
+      }
+    } catch (e) {
+      console.log(e);
     }
   }, [PublicVaultContract, inputAmount, pools]);
 

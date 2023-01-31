@@ -518,10 +518,17 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                         bg={'#257eee'}
                         color={'#ffffff'}
                         onClick={() => {
-                          dispatch(openModal({type: 'Launch_Swap', data: {}}));
+                          dispatch(
+                            openModal({
+                              type: 'Launch_Swap',
+                              data: {
+                                publicVaultAddress:
+                                  project.vaults[0].vaultAddress,
+                              },
+                            }),
+                          );
                         }}
-                        _hover={{cursor: 'pointer'}}
-                        color={'#ffffff'}>
+                        _hover={{cursor: 'pointer'}}>
                         Swap & Send
                       </Button>
                     </Flex>
@@ -592,8 +599,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                         onClick={() => {
                           sendTONtoVesting();
                         }}
-                        _hover={{cursor: 'pointer'}}
-                        color={'#ffffff'}>
+                        _hover={{cursor: 'pointer'}}>
                         Send TON
                       </Button>
                     </Flex>
