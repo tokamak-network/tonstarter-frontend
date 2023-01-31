@@ -64,9 +64,9 @@ const SwapModal = () => {
     const priceDiff = numTosAmountOut / numInputAmount / numBasicPrice;
     const result = 100 - priceDiff * 100;
 
-    console.log(typeof result);
-
-    return isNaN(result) || result === Infinity ? '-' : commafy(result);
+    return isNaN(result) || result === Infinity || result === -Infinity
+      ? '-'
+      : commafy(result);
   }, [tosAmountOut, basicPrice, inputAmount]);
 
   const exchangeTonToTos = useCallback(() => {
@@ -74,8 +74,6 @@ const SwapModal = () => {
     if (PublicVaultContract && inputAmount && pools) {
       const inputAmountRay = convertToRay(inputAmount);
       const {TOS_WTON_POOL} = pools;
-
-      console.log(inputAmountRay, TOS_WTON_POOL);
 
       return PublicVaultContract.exchangeWTONtoTOS(
         inputAmountRay,
@@ -256,7 +254,7 @@ const SwapModal = () => {
                   fontWeight={'bold'}
                   lineHeight={1.5}
                   fontSize="20px">
-                  {tosAmountOut}
+                  {Number(inputAmount) <= 0 ? '0.00' : tosAmountOut}
                 </Text>
               </Flex>
               <Text
