@@ -11,8 +11,6 @@ import {
   Button,
   Image,
   Progress,
-  OrderedList,
-  ListItem,
 } from '@chakra-ui/react';
 import {PublicPageTable} from './PublicPageTable';
 import {shortenAddress} from 'utils';
@@ -500,7 +498,10 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                         mr={'2px'}
                         mt="12px"
                         bg={'#257eee'}
-                        color={'#ffffff'}>
+                        color={'#ffffff'}
+                        onClick={() => {
+                          dispatch(openModal({type: 'Launch_Swap', data: {}}));
+                        }}>
                         Swap & Send
                       </Button>
                     </Flex>
