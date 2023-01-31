@@ -32,6 +32,7 @@ import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import * as PublicSaleLogic from 'services/abis/PublicSaleLogic.json';
 import * as VestingPublicFund from 'services/abis/VestingPublicFund.json';
 import {convertNumber} from 'utils/number';
+import {BigNumber} from 'ethers';
 
 const {TOS_ADDRESS, UniswapV3Factory, NPM_Address} = DEPLOYED;
 
@@ -58,7 +59,7 @@ export const Vesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
   const [totalRounds, setTotalRounds] = useState(0);
   const [currentClaimAmount, setCurrentClaimAmount] = useState(0);
   const [currentRnd, setCurrentRnd] = useState(0);
-  const [claimDisabled, setclaimDisabled] = useState(true);
+  const [claimDisabled, setClaimDisabled] = useState(true);
 
   useEffect(() => {
     async function getInfo() {
@@ -77,10 +78,8 @@ export const Vesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
         library,
       );
       const isExchangeTOS = await publicSaleLogic.exchangeTOS();
-      console.log('isExchangeTOS', isExchangeTOS);
 
       const isCurrentSqrtPrice = await vestingVault.currentSqrtPriceX96();
-      console.log('isCurrentSqrtPrice', isCurrentSqrtPrice);
       setFunds(Number(isCurrentSqrtPrice));
       setInitialized(isExchangeTOS);
       // setInitialized(true);
@@ -97,7 +96,8 @@ export const Vesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
         (Number(currentRound) > 0 && Number(calculClaimAmount) === 0) ||
         Number(isCurrentSqrtPrice) === 0;
 
-      setclaimDisabled(disabled);
+      setClaimDisabled(disabled);
+
       setAccTotal(Number(convertNumber({amount: totalAllocatedAmount})));
       setAccRound(Number(convertNumber({amount: totalClaimsAmount})));
       setCompletedRounds(

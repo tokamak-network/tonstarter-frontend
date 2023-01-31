@@ -56,6 +56,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
   const {openAnyModal} = useModal();
   const [hardcap, setHardcap] = useState<number>(0);
   const [transferredTon, setTransferredTon] = useState(0);
+  const [vestingAmount, setVestingAmount] = useState(0);
   const network = BASE_PROVIDER._network.name;
 
   const now = moment().unix();
@@ -127,6 +128,15 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
       setHardcap(Number(hc));
       const transferred = Number(hc) - Number(wt);
       setTransferredTon(transferred);
+      const totalExPurchasedAmount =
+        await PublicSaleVaul.totalExPurchasedAmount();
+      const totalOpenPurchasedAmount =
+        await PublicSaleVaul.totalOpenPurchasedAmount();
+      const xxAmount =
+        Number(convertNumber({amount: totalExPurchasedAmount})) +
+        Number(convertNumber({amount: totalOpenPurchasedAmount})) -
+        Number(convertNumber({amount: hardCapCalc}));
+      setVestingAmount(xxAmount);
     }
     getHardCap();
   }, [account, project, vault.vaultAddress, transactionType, blockNumber]);
@@ -422,6 +432,8 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 borderRight={'none'}
                 borderBottomLeftRadius={'4px'}
                 className={'chart-cell'}
+                pt={'15px'}
+                pb="15px"
                 h={now >= vault.publicRound2 ? '245px' : ''}>
                 <Flex flexDir={'column'} w="100%">
                   <Text mb={'12px'} fontSize={'13px'} fontWeight={600}>
@@ -473,6 +485,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                           }
                           color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
                           _hover={{color: '#2a72e5'}}
+                          fontWeight="bold"
                           fontFamily={theme.fonts.fld}>
                           {project.vaults[1].vaultAddress
                             ? shortenAddress(project.vaults[1].vaultAddress)
@@ -480,7 +493,12 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                         </Link>
                       </Flex>
                       <Flex w="100%" flexDir={'column'}>
-                        <Text textAlign={'right'} w="100%">
+                        <Text
+                          textAlign={'right'}
+                          w="100%"
+                          color={colorMode === 'dark' ? '#9d9ea5' : '#3a495f'}
+                          fontSize="12px"
+                          fontWeight="normal">
                           {transferredTon.toLocaleString()} /{' '}
                           {hardcap.toLocaleString()} TON
                         </Text>
@@ -501,22 +519,16 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                         color={'#ffffff'}
                         onClick={() => {
                           dispatch(openModal({type: 'Launch_Swap', data: {}}));
-                        }}>
+                        }}
+                        _hover={{cursor: 'pointer'}}
+                        color={'#ffffff'}>
                         Swap & Send
                       </Button>
                     </Flex>
                   </Flex>
-
                   <Flex>
-                    <Flex
-                      flexDir={'column'}
-                      w="100%"
-                      borderBottom={
-                        colorMode === 'light'
-                          ? '1px solid #e6eaee'
-                          : '1px solid #373737'
-                      }>
-                      <Flex justifyContent={'space-between'} w="100%">
+                    <Flex flexDir={'column'} w="100%">
+                      <Flex justifyContent={'space-between'} w="100%" pt="12px">
                         <Flex>
                           <Text
                             mr="5px"
@@ -540,6 +552,34 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                             <Image src={tooltipIcon} />
                           </Tooltip>
                         </Flex>
+                        <Link
+                          isExternal
+                          href={
+                            project.vaults[2].vaultAddress &&
+                            network === 'goerli'
+                              ? `https://goerli.etherscan.io/address/${project.vaults[2].vaultAddress}`
+                              : vault.vaultAddress && network !== 'goerli'
+                              ? `https://etherscan.io/address/${project.vaults[2].vaultAddress}`
+                              : ''
+                          }
+                          color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+                          _hover={{color: '#2a72e5'}}
+                          fontWeight="bold"
+                          fontFamily={theme.fonts.fld}>
+                          {project.vaults[1].vaultAddress
+                            ? shortenAddress(project.vaults[2].vaultAddress)
+                            : 'NA'}
+                        </Link>
+                      </Flex>
+                      <Flex w="100%" flexDir={'column'} mt="6px">
+                        <Text
+                          textAlign={'right'}
+                          fontSize="12px"
+                          lineHeight={1}
+                          fontWeight="normal"
+                          color={colorMode === 'dark' ? '#9d9ea5' : '#3a495f'}>
+                          {vestingAmount} TON
+                        </Text>
                       </Flex>
                       <Button
                         fontSize={'11px'}
@@ -551,101 +591,13 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                         color={'#ffffff'}
                         onClick={() => {
                           sendTONtoVesting();
-                        }}>
+                        }}
+                        _hover={{cursor: 'pointer'}}
+                        color={'#ffffff'}>
                         Send TON
                       </Button>
                     </Flex>
                   </Flex>
-
-                  {/* <Flex w={'273px'} justifyContent={'space-between'}>
-                    <Text
-                      fontFamily={theme.fonts.fld}
-                      color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
-                      Address for receiving funds
-                    </Text>
-                    <Link
-                      isExternal
-                      href={
-                        vault.addressForReceiving && network === 'goerli'
-                          ? `https://goerli.etherscan.io/address/${vault.addressForReceiving}`
-                          : vault.addressForReceiving && network !== 'goerli'
-                          ? `https://etherscan.io/address/${vault.addressForReceiving}`
-                          : ''
-                      }
-                      color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
-                      _hover={{color: '#2a72e5'}}
-                      fontFamily={theme.fonts.fld}>
-                      {vault.addressForReceiving
-                        ? shortenAddress(vault.addressForReceiving)
-                        : 'NA'}
-                    </Link>
-                  </Flex> */}
-
-                  {/* <Flex alignItems={'center'} mt={'5px'}>
-                    <Button
-                      fontSize={'11px'}
-                      w={'273px'}
-                      h={'25px'}
-                      mr={'2px'}
-                      bg={'#257eee'}
-                      color={'#ffffff'}
-                      // isDisabled={
-                      //   vault.publicRound2End > moment().unix() ||
-                      //   hardcap === 0 ||
-                      //   fundWithdrew === true
-                      // }
-                      // isDisabled={true}
-                      _disabled={{
-                        color: colorMode === 'light' ? '#86929d' : '#838383',
-                        bg: colorMode === 'light' ? '#e9edf1' : '#353535',
-                        cursor: 'not-allowed',
-                      }}
-                      _hover={
-                        vault.publicRound2End > moment().unix() ||
-                        hardcap === 0 ||
-                        fundWithdrew === true
-                          ? {}
-                          : {
-                              cursor: 'pointer',
-                            }
-                      }
-                      _focus={
-                        vault.publicRound2End > moment().unix() ||
-                        hardcap === 0 ||
-                        fundWithdrew === true
-                          ? {}
-                          : {
-                              background: 'transparent',
-                              border: 'solid 1px #2a72e5',
-                              color: themeDesign.tosFont[colorMode],
-                              cursor: 'pointer',
-                            }
-                      }
-                      _active={
-                        vault.publicRound2End > moment().unix() ||
-                        hardcap === 0 ||
-                        fundWithdrew === true
-                          ? {}
-                          : {
-                              background: '#2a72e5',
-                              border: 'solid 1px #2a72e5',
-                              color: '#fff',
-                            }
-                      }
-                      onClick={() =>
-                        dispatch(
-                          openModal({
-                            type: 'Launch_Swap',
-                            data: {
-                              publicVaultAddress: vault.vaultAddress,
-                            },
-                          }),
-                        )
-                      }>
-                      Send Funds
-                    </Button>
-                  
-                  </Flex> */}
                 </Flex>
               </GridItem>
             </>
