@@ -31,7 +31,6 @@ import {DEPLOYED} from 'constants/index';
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import * as PublicSaleLogic from 'services/abis/PublicSaleLogic.json';
 import * as VestingPublicFund from 'services/abis/VestingPublicFund.json';
-import { color } from 'd3';
 const {TOS_ADDRESS, UniswapV3Factory, NPM_Address} = DEPLOYED;
 
 const provider = BASE_PROVIDER;
@@ -149,30 +148,12 @@ const [claimDisabled, setclaimDisabled] = useState(true)
               color={colorMode === 'light' ? '#353c48' : 'white.0'}>
               Token
             </Text>
-            {vault.isDeployed ? (
-              <Flex alignItems={'center'}>
-                <Text mr={'5px'}>
-                  {Number(vault.vaultTokenAllocation).toLocaleString()}
-                  {` `}
-                  {project.tokenSymbol}
+            <Text mr={'5px'}>
+                  {Number(accTotal).toLocaleString()} TON
+                
+                 
                 </Text>
-                <Text
-                  letterSpacing={'1.3px'}
-                  fontSize={'13px'}
-                  color={'#7e8993'}>
-                  {(
-                    (vault.vaultTokenAllocation /
-                      project.totalTokenAllocation) *
-                    100
-                  )
-                    .toString()
-                    .match(/^\d+(?:\.\d{0,2})?/)}
-                  %
-                </Text>
-              </Flex>
-            ) : (
-              <></>
-            )}
+           
           </GridItem>
           <GridItem
             border={themeDesign.border[colorMode]}
