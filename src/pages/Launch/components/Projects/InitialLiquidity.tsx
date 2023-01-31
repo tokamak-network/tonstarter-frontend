@@ -628,13 +628,13 @@ export const Condition2: React.FC<Condition2> = ({
           mt={'5px'}
           bg={'#257eee'}
           color={'#ffffff'}
-          isDisabled={pool!==ZERO_ADDRESS &&  startTime < now}
+          isDisabled={pool!==ZERO_ADDRESS &&  startTime > now}
           _disabled={{
             color: colorMode === 'light' ? '#86929d' : '#838383',
             bg: colorMode === 'light' ? '#e9edf1' : '#353535',
             cursor: 'not-allowed',
           }}
-          _hover={pool!==ZERO_ADDRESS &&  startTime < now ? {}:
+          _hover={pool!==ZERO_ADDRESS &&  startTime > now ? {}:
             {
             background: 'transparent',
             border: 'solid 1px #2a72e5',
@@ -643,14 +643,14 @@ export const Condition2: React.FC<Condition2> = ({
             width: '152px',
             whiteSpace: 'normal',
           }}
-          _focus={pool!==ZERO_ADDRESS &&  startTime < now ? {}:{
+          _focus={pool!==ZERO_ADDRESS &&  startTime > now ? {}:{
             background: '#2a72e5',
             border: 'solid 1px #2a72e5',
             color: '#fff',
             width: '152px',
             whiteSpace: 'normal',
           }}
-          _active={pool!==ZERO_ADDRESS &&  startTime < now ? {}:{
+          _active={pool!==ZERO_ADDRESS &&  startTime > now ? {}:{
             background: '#2a72e5',
             border: 'solid 1px #2a72e5',
             color: '#fff',
