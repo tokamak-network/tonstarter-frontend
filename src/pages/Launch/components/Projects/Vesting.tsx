@@ -31,6 +31,8 @@ import {DEPLOYED} from 'constants/index';
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import * as PublicSaleLogic from 'services/abis/PublicSaleLogic.json';
 import * as VestingPublicFund from 'services/abis/VestingPublicFund.json';
+import {convertNumber} from 'utils/number';
+
 const {TOS_ADDRESS, UniswapV3Factory, NPM_Address} = DEPLOYED;
 
 const provider = BASE_PROVIDER;
@@ -98,8 +100,10 @@ const [claimDisabled, setclaimDisabled] = useState(true)
      
       setclaimDisabled(disabled)
       
-      setAccTotal(Number(totalAllocatedAmount));
-      setAccRound(Number(totalClaimsAmount));
+      
+      
+      setAccTotal(Number(convertNumber({amount: totalAllocatedAmount})));
+      setAccRound(Number(convertNumber({amount:totalClaimsAmount})));
       setCompletedRounds(
         Number(nowClaimRound) === 0 ? 0 : Number(nowClaimRound) - 1,
       );
