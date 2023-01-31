@@ -155,7 +155,12 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const {account, library} = useActiveWeb3React();
   const [vaultState, setVaultState] = useState<
-    'notReady' | 'ready' | 'readyForToken' | 'readyForSet' | 'finished'
+    | 'notReady'
+    | 'ready'
+    | 'readyForToken'
+    | 'readyForSet'
+    | 'finished'
+    | 'waitForPublic'
   >('notReady');
   const [hasToken, setHasToken] = useState<boolean>(false);
   const dispatch = useAppDispatch();
@@ -199,11 +204,14 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
 
     if (vaultType === 'Vesting') {
       const publicVault = values.vaults[0];
+
       return setVaultState(
         !vaultDeployReady && !isVaultDeployed
           ? 'notReady'
           : vaultDeployReady && !isVaultDeployed
           ? 'ready'
+          : publicVault.isDeployed === false && isVaultDeployed
+          ? 'notReady'
           : isVaultDeployed &&
             publicVault.isDeployed &&
             publicVault.vaultAddress
@@ -521,7 +529,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                   )}`,
                   content: `${commafy(
                     claimData.claimTokenAllocation,
-                  )} ${'TON'}`,
+                  )} ${'% (TON)'}`,
                 };
               },
             ),
@@ -745,7 +753,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                   `vaults[${selectedVaultDetail?.index}].isDeployed`,
                   true,
                 );
-                setVaultState('readyForSet');
+                setVaultState('notReady');
               }
               break;
             }
