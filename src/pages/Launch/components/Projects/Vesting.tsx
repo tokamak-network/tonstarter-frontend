@@ -57,6 +57,8 @@ export const Vesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
   const [currentClaimAmount, setCurrentClaimAmount] = useState(0);
 const [currentRnd, setCurrentRnd] = useState(0)
 const [claimDisabled, setclaimDisabled] = useState(true)
+
+
   useEffect(() => {
     async function getInfo() {
       if (account === null || account === undefined || library === undefined) {
@@ -76,8 +78,8 @@ const [claimDisabled, setclaimDisabled] = useState(true)
       const isExchangeTOS = await publicSaleLogic.exchangeTOS();
       const isCurrentSqrtPrice = await vestingVault.currentSqrtPriceX96();
       setFunds(Number(isCurrentSqrtPrice));
-      // setInitialized(isExchangeTOS)
-      setInitialized(true);
+      setInitialized(isExchangeTOS)
+      // setInitialized(true);
 
       const currentRound = await vestingVault.currentRound(); //now round
       const nowClaimRound = await vestingVault.nowClaimRound(); //now claim round
