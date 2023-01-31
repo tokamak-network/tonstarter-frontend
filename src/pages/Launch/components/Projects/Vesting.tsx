@@ -32,6 +32,7 @@ import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import * as PublicSaleLogic from 'services/abis/PublicSaleLogic.json';
 import * as VestingPublicFund from 'services/abis/VestingPublicFund.json';
 import {convertNumber} from 'utils/number';
+import {BigNumber} from 'ethers';
 
 const {TOS_ADDRESS, UniswapV3Factory, NPM_Address} = DEPLOYED;
 
@@ -57,9 +58,8 @@ export const Vesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
   const [funds, setFunds] = useState(0);
   const [totalRounds, setTotalRounds] = useState(0);
   const [currentClaimAmount, setCurrentClaimAmount] = useState(0);
-const [currentRnd, setCurrentRnd] = useState(0)
-const [claimDisabled, setclaimDisabled] = useState(true)
-
+  const [currentRnd, setCurrentRnd] = useState(0);
+  const [claimDisabled, setClaimDisabled] = useState(true);
 
   useEffect(() => {
     async function getInfo() {
@@ -78,14 +78,10 @@ const [claimDisabled, setclaimDisabled] = useState(true)
         library,
       );
       const isExchangeTOS = await publicSaleLogic.exchangeTOS();
-      console.log('isExchangeTOS',isExchangeTOS);
-     
-      
-      
+
       const isCurrentSqrtPrice = await vestingVault.currentSqrtPriceX96();
-      console.log('isCurrentSqrtPrice',isCurrentSqrtPrice);
       setFunds(Number(isCurrentSqrtPrice));
-      setInitialized(isExchangeTOS)
+      setInitialized(isExchangeTOS);
       // setInitialized(true);
 
       const currentRound = await vestingVault.currentRound(); //now round
@@ -95,21 +91,21 @@ const [claimDisabled, setclaimDisabled] = useState(true)
       const totalAllocatedAmount = await vestingVault.totalAllocatedAmount(); //unit
       const calculClaimAmount = await vestingVault.calculClaimAmount(
         currentRound,
-      ); //claim amount of current round      
-      const disabled = Number(currentRound) > 0 && Number(calculClaimAmount) === 0 || Number(isCurrentSqrtPrice) ===0
-     
-      setclaimDisabled(disabled)
-      
-      
-      
+      ); //claim amount of current round
+      const disabled =
+        (Number(currentRound) > 0 && Number(calculClaimAmount) === 0) ||
+        Number(isCurrentSqrtPrice) === 0;
+
+      setClaimDisabled(disabled);
+
       setAccTotal(Number(convertNumber({amount: totalAllocatedAmount})));
-      setAccRound(Number(convertNumber({amount:totalClaimsAmount})));
+      setAccRound(Number(convertNumber({amount: totalClaimsAmount})));
       setCompletedRounds(
         Number(nowClaimRound) === 0 ? 0 : Number(nowClaimRound) - 1,
       );
       setTotalRounds(Number(totalClaimCounts));
       setCurrentClaimAmount(Number(calculClaimAmount));
-      setCurrentRnd(Number(currentRound))
+      setCurrentRnd(Number(currentRound));
     }
     getInfo();
   }, [account, project, vault, library, transactionType, blockNumber]);
@@ -159,12 +155,7 @@ const [claimDisabled, setclaimDisabled] = useState(true)
               color={colorMode === 'light' ? '#353c48' : 'white.0'}>
               Token
             </Text>
-            <Text mr={'5px'}>
-                  {Number(accTotal).toLocaleString()} TON
-                
-                 
-                </Text>
-           
+            <Text mr={'5px'}>{Number(accTotal).toLocaleString()} TON</Text>
           </GridItem>
           <GridItem
             border={themeDesign.border[colorMode]}
@@ -300,12 +291,26 @@ const [claimDisabled, setclaimDisabled] = useState(true)
               Current vesting round
             </Text>
             <Flex>
-              <Flex flexDir={'column'} mr='25px'>
-                <Text fontSize={'16px'} color={colorMode==='light'?"#353c48":"#ffffff"} lineHeight='15px'>
+              <Flex flexDir={'column'} mr="25px">
+                <Text
+                  fontSize={'16px'}
+                  color={colorMode === 'light' ? '#353c48' : '#ffffff'}
+                  lineHeight="15px">
                   {currentClaimAmount.toLocaleString()}
-                  <span style={{fontSize:'12px', color:colorMode==='light'?'7e8993':'#9d9ea5'}}> TON</span>
+                  <span
+                    style={{
+                      fontSize: '12px',
+                      color: colorMode === 'light' ? '7e8993' : '#9d9ea5',
+                    }}>
+                    {' '}
+                    TON
+                  </span>
                 </Text>
-                <Text fontSize={'11px'} color={colorMode==='light'?'#7e8993' :'#9d9ea5'}>{`(Round ${currentRnd})`}</Text>
+                <Text
+                  fontSize={'11px'}
+                  color={
+                    colorMode === 'light' ? '#7e8993' : '#9d9ea5'
+                  }>{`(Round ${currentRnd})`}</Text>
               </Flex>
               <Button
                 w={'100px'}
@@ -335,7 +340,7 @@ const [claimDisabled, setclaimDisabled] = useState(true)
                       }
                 }
                 // onClick={()=>{}}
-                >
+              >
                 Claim
               </Button>
             </Flex>
