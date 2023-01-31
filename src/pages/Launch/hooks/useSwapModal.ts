@@ -21,6 +21,7 @@ export const useSwapModal = (vaultAddress: string, amountIn: number) => {
         const result = convertNumber({
           amount: balance_BN.toString(),
           localeString: true,
+          type: 'ray',
         });
         return setWTON_BALANCE(result ?? '-');
       }

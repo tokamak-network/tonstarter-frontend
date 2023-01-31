@@ -32,7 +32,7 @@ export const API_SERVER_LAUNCH =
 
 export const BASE_PROVIDER =
   REACT_APP_MODE === 'DEV'
-    ? ethers.getDefaultProvider("goerli")
+    ? ethers.getDefaultProvider('goerli')
     : ethers.getDefaultProvider('mainnet');
 
 export const OPENSEA =
@@ -160,7 +160,7 @@ const RINKEBY_DEPLOYED = {
   TypeCVault: '0xe34016a9B533376465BDbAdFe93AE510507834d0',
   DAOVault: '0x561e901F100A8C5338Cc988079f985b2C10bc72B',
   pools: {
-    TOS_WTON_POOL: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
+    TOS_WTON_POOL: '0x8DF54aDA313293E80634f981820969BE7542CEe9',
     ETH_WTON_Address: '0x8DF54aDA313293E80634f981820969BE7542CEe9',
     TOS_WTON_Address: '',
     TOS_ETH_Address: '0x3b466f5d9b49aedd65f6124d5986a9f30b1f5442',

@@ -17,7 +17,7 @@ import {
   Image,
   Progress,
 } from '@chakra-ui/react';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {useModal} from 'hooks/useModal';
@@ -31,14 +31,22 @@ import TokamakSymbol from 'assets/svgs/tokamak_favicon.svg';
 import TosSymbol from 'assets/svgs/tos_symbol.svg';
 import commafy from 'utils/commafy';
 
+import * as PublicSaleLogicAbi from 'services/abis/PublicSaleLogic.json';
+import {useContract} from 'hooks/useContract';
+import {convertToRay, convertToWei} from 'utils/number';
+
 const SwapModal = () => {
   const {data} = useAppSelector(selectModalType);
-  const {TON_ADDRESS, WTON_ADDRESS} = DEPLOYED;
+  const {TON_ADDRESS, WTON_ADDRESS, PublicSaleVault, pools} = DEPLOYED;
   const {account, library} = useActiveWeb3React();
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {handleCloseModal} = useModal();
   const [inputAmount, setInputAmount] = useState<string>('0');
+  const PublicVaultContract = useContract(
+    data?.data?.publicVaultAddress,
+    PublicSaleLogicAbi.abi,
+  );
 
   const {WTON_BALANCE, tosAmountOut} = useSwapModal(
     data?.data?.publicVaultAddress,
@@ -58,6 +66,21 @@ const SwapModal = () => {
 
     return isNaN(result) ? '-' : commafy(result);
   }, [tosAmountOut, basicPrice, inputAmount]);
+
+  const exchangeTonToTos = useCallback(() => {
+    //https://www.notion.so/onther/PublicSale-Front-interface-b139403abc0f41df9af75559eba87e58
+    if (PublicVaultContract && inputAmount && pools) {
+      const inputAmountRay = convertToRay(inputAmount);
+      const {TOS_WTON_POOL} = pools;
+
+      console.log(inputAmountRay, TOS_WTON_POOL);
+
+      return PublicVaultContract.exchangeWTONtoTOS(
+        inputAmountRay,
+        TOS_WTON_POOL,
+      );
+    }
+  }, [PublicVaultContract, inputAmount, pools]);
 
   useEffect(() => {
     if (inputAmount.length > 1 && inputAmount.startsWith('0')) {
@@ -327,7 +350,8 @@ const SwapModal = () => {
             _active={{background: ''}}
             _focus={{background: ''}}
             fontSize="14px"
-            color="white">
+            color="white"
+            onClick={() => exchangeTonToTos()}>
             Swap & Send
           </Button>
         </ModalFooter>
