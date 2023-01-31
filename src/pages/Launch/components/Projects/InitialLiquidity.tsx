@@ -563,14 +563,6 @@ export const Condition2: React.FC<Condition2> = ({
     ).computePoolAddress(TOS_ADDRESS, project.tokenAddress, 3000);
 
     try {
-      // const receipt = await InitialLiquidityCompute.connect(
-      //   signer,
-      // ).setInitialPriceAndCreatePool(
-      //   getRatio()[0],
-      //   getRatio()[1],
-      //   encodePriceSqrt(getRatio()[0], getRatio()[1]),
-      // );
-
       const receipt = await InitialLiquidityCompute.connect(
         signer,
       ).setCreatePool();
