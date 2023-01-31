@@ -93,9 +93,9 @@ const [claimDisabled, setclaimDisabled] = useState(true)
       const totalAllocatedAmount = await vestingVault.totalAllocatedAmount(); //unit
       const calculClaimAmount = await vestingVault.calculClaimAmount(
         currentRound,
-      ); //claim amount of current round
-
+      ); //claim amount of current round      
       const disabled = Number(currentRound) > 0 && Number(calculClaimAmount) === 0 || Number(isCurrentSqrtPrice) ===0
+     
       setclaimDisabled(disabled)
       
       setAccTotal(Number(totalAllocatedAmount));
@@ -315,14 +315,14 @@ const [claimDisabled, setclaimDisabled] = useState(true)
                   cursor: 'not-allowed',
                 }}
                 _hover={
-                  distributeDisable
+                  claimDisabled
                     ? {}
                     : {
                         cursor: 'pointer',
                       }
                 }
                 _active={
-                  distributeDisable
+                  claimDisabled
                     ? {}
                     : {
                         background: '#2a72e5',
