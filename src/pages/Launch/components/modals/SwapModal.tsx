@@ -64,7 +64,9 @@ const SwapModal = () => {
     const priceDiff = numTosAmountOut / numInputAmount / numBasicPrice;
     const result = 100 - priceDiff * 100;
 
-    return isNaN(result) ? '-' : commafy(result);
+    console.log(typeof result);
+
+    return isNaN(result) || result === Infinity ? '-' : commafy(result);
   }, [tosAmountOut, basicPrice, inputAmount]);
 
   const exchangeTonToTos = useCallback(() => {
