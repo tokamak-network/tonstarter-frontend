@@ -210,10 +210,9 @@ export const StarterDetail = () => {
       const nowTimeStamp = moment().unix();
 
       const checkStep =
-        // startAddWhiteTime > nowTimeStamp
-        //   ? 'snapshot'
-        //   :
-        endAddWhiteTime > nowTimeStamp
+        startAddWhiteTime > nowTimeStamp
+          ? 'snapshot'
+          : endAddWhiteTime > nowTimeStamp
           ? 'whitelist'
           : endExclusiveTime > nowTimeStamp
           ? 'exclusive'
