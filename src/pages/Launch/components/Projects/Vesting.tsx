@@ -76,7 +76,12 @@ const [claimDisabled, setclaimDisabled] = useState(true)
         library,
       );
       const isExchangeTOS = await publicSaleLogic.exchangeTOS();
+      console.log('isExchangeTOS',isExchangeTOS);
+     
+      
+      
       const isCurrentSqrtPrice = await vestingVault.currentSqrtPriceX96();
+      console.log('isCurrentSqrtPrice',isCurrentSqrtPrice);
       setFunds(Number(isCurrentSqrtPrice));
       setInitialized(isExchangeTOS)
       // setInitialized(true);
@@ -238,7 +243,7 @@ const [claimDisabled, setclaimDisabled] = useState(true)
                 </span>{' '}
                 and send funds to the initial liquidity vault
               </Text>
-            ) : funds !== 0 ? (
+            ) : funds === 0 ? (
               <Flex>
                 <Text fontSize={'11px'} w="260px">
                   Funds was sent to the initial liquidity vault, but You need to
