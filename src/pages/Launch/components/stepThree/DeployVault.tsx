@@ -181,6 +181,76 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
     }
   })[0];
 
+  //check vault state from contract
+  useEffect(()=>{
+    async function checkIsIniailized  ()  {
+      switch(vaultType) {
+        case 'Public': {
+          const PublicVaultData = selectedVaultDetail as VaultPublic;
+          if(PublicVaultData.vaultAddress !== '' || PublicVaultData.vaultAddress !== undefined ) {
+            const publicVaultSecondContract = new Contract(
+              PublicVaultData.vaultAddress as string,
+              PublicSale.abi,
+              library,
+            );
+            const snapshot = await publicVaultSecondContract.snapshot();
+            const isInitialized = Number(snapshot.toString()) !== 0;
+            console.log(selectedVaultDetail.vaultName);
+            console.log(isInitialized);
+            return setFieldValue(
+              `vaults[${selectedVaultDetail?.index}].isSet`,
+              isInitialized,
+            );
+          }
+         break;
+        }
+        case 'Initial Liquidity': {
+          if(selectedVaultDetail.vaultAddress !== '' || selectedVaultDetail.vaultAddress !== undefined ) {
+            const publicVaultSecondContract = new Contract(
+              selectedVaultDetail.vaultAddress as string,
+              InitialLiquidityVault.abi,
+              library,
+            );
+            const initSqrtPriceX96 = await publicVaultSecondContract.initSqrtPriceX96();
+            const isInitialized = Number(initSqrtPriceX96.toString()) > 0;
+            console.log(selectedVaultDetail.vaultName);
+            console.log(isInitialized);
+            return setFieldValue(
+              `vaults[${selectedVaultDetail?.index}].isSet`,
+              isInitialized,
+            );
+          }
+         break;
+        }
+        case 'DAO' :{
+           break;
+        }
+        default: {
+          if(selectedVaultDetail.vaultAddress !== '' || selectedVaultDetail.vaultAddress !== undefined ) {
+            const vualtContract = new Contract(
+              selectedVaultDetail.vaultAddress as string,
+              VestingPublicFundAbi.abi,
+              library,
+            );
+            const isInitialized = await vualtContract.settingCheck();
+            console.log(selectedVaultDetail.vaultName);
+            console.log(isInitialized);
+            return setFieldValue(
+              `vaults[${selectedVaultDetail?.index}].isSet`,
+              isInitialized,
+            );
+          }
+         break;
+        } 
+  
+      }
+    }
+    checkIsIniailized().catch(e => {
+      console.log('**checkIsIniailized err**')
+      console.log(e)
+    })
+  }, [blockNumber, vaultType, selectedVaultDetail])
+
   //setVaultState
   useEffect(() => {
     const isTokenDeployed = values.isTokenDeployed;
@@ -610,7 +680,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               const tx = await vaultContract
                 ?.connect(signer)
                 .create(
-                  selectedVaultName,
+                  selectedVaultDetail?.vaultName,
                   values.tokenAddress,
                   selectedVaultDetail?.adminAddress,
                   100,
