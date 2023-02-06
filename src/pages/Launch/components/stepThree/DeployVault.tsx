@@ -201,7 +201,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
           if(selectedVaultDetail.vaultAddress !== '' || selectedVaultDetail.vaultAddress !== undefined ) {
             const publicVaultSecondContract = new Contract(
               selectedVaultDetail.vaultAddress as string,
-              PublicSale.abi,
+              InitialLiquidityVault.abi,
               library,
             );
             const snapshot = await publicVaultSecondContract.initSqrtPriceX96()
@@ -220,7 +220,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
           if(selectedVaultDetail.vaultAddress !== '' || selectedVaultDetail.vaultAddress !== undefined ) {
             const vualtContract = new Contract(
               selectedVaultDetail.vaultAddress as string,
-              PublicSale.abi,
+              VestingPublicFundAbi.abi,
               library,
             );
             const isInitialized = await vualtContract.settingCheck()
