@@ -188,8 +188,10 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               PublicSale.abi,
               library,
             );
-            const snapshot = await publicVaultSecondContract.snapshot()
-            const isInitialized = Number(snapshot.toString()) !== 0 
+            const snapshot = await publicVaultSecondContract.snapshot();
+            const isInitialized = Number(snapshot.toString()) !== 0;
+            console.log(selectedVaultDetail.vaultName);
+            console.log(isInitialized);
             return setFieldValue(
               `vaults[${selectedVaultDetail?.index}].isSet`,
               isInitialized,
@@ -204,8 +206,10 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               InitialLiquidityVault.abi,
               library,
             );
-            const snapshot = await publicVaultSecondContract.initSqrtPriceX96()
-            const isInitialized = Number(snapshot.toString()) > 0 
+            const initSqrtPriceX96 = await publicVaultSecondContract.initSqrtPriceX96();
+            const isInitialized = Number(initSqrtPriceX96.toString()) > 0;
+            console.log(selectedVaultDetail.vaultName);
+            console.log(isInitialized);
             return setFieldValue(
               `vaults[${selectedVaultDetail?.index}].isSet`,
               isInitialized,
@@ -223,7 +227,9 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               VestingPublicFundAbi.abi,
               library,
             );
-            const isInitialized = await vualtContract.settingCheck()
+            const isInitialized = await vualtContract.settingCheck();
+            console.log(selectedVaultDetail.vaultName);
+            console.log(isInitialized);
             return setFieldValue(
               `vaults[${selectedVaultDetail?.index}].isSet`,
               isInitialized,
