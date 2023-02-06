@@ -176,6 +176,64 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
     }
   })[0];
 
+  //check vault state from contract
+  useEffect(async()=>{
+    switch(vaultType) {
+      case 'Public': {
+        const PublicVaultData = selectedVaultDetail as VaultPublic;
+        if(PublicVaultData.vaultAddress !== '' || PublicVaultData.vaultAddress !== undefined ) {
+          const publicVaultSecondContract = new Contract(
+            PublicVaultData.vaultAddress as string,
+            PublicSale.abi,
+            library,
+          );
+          const snapshot = await publicVaultSecondContract.snapshot()
+          const isInitialized = Number(snapshot.toString()) !== 0 
+          return setFieldValue(
+            `vaults[${selectedVaultDetail?.index}].isSet`,
+            isInitialized,
+          );
+        }
+       break;
+      }
+      case 'Initial Liquidity': {
+        if(selectedVaultDetail.vaultAddress !== '' || selectedVaultDetail.vaultAddress !== undefined ) {
+          const publicVaultSecondContract = new Contract(
+            selectedVaultDetail.vaultAddress as string,
+            PublicSale.abi,
+            library,
+          );
+          const snapshot = await publicVaultSecondContract.initSqrtPriceX96()
+          const isInitialized = Number(snapshot.toString()) > 0 
+          return setFieldValue(
+            `vaults[${selectedVaultDetail?.index}].isSet`,
+            isInitialized,
+          );
+        }
+       break;
+      }
+      case 'DAO' :{
+         break;
+      }
+      default: {
+        if(selectedVaultDetail.vaultAddress !== '' || selectedVaultDetail.vaultAddress !== undefined ) {
+          const vualtContract = new Contract(
+            selectedVaultDetail.vaultAddress as string,
+            PublicSale.abi,
+            library,
+          );
+          const isInitialized = await vualtContract.settingCheck()
+          return setFieldValue(
+            `vaults[${selectedVaultDetail?.index}].isSet`,
+            isInitialized,
+          );
+        }
+       break;
+      } 
+
+    }
+  }, [blockNumber, vaultType, selectedVaultDetail])
+
   //setVaultState
   useEffect(() => {
     const isTokenDeployed = values.isTokenDeployed;
