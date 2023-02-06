@@ -672,7 +672,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               const tx = await vaultContract
                 ?.connect(signer)
                 .create(
-                  selectedVaultName,
+                  selectedVaultDetail?.vaultName,
                   values.tokenAddress,
                   selectedVaultDetail?.adminAddress,
                   100,
