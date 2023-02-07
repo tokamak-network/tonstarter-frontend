@@ -25,7 +25,7 @@ const socialLinks = [
   {
     title: 'GitHub',
     icon: IconGithub,
-    href: 'https://github.com/tokamak-network/',
+    href: 'https://github.com/tokamak-network/tonstarter-frontend',
     isExternal: true,
   },
   {
