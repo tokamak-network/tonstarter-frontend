@@ -25,7 +25,7 @@ const socialLinks = [
   {
     title: 'GitHub',
     icon: IconGithub,
-    href: 'https://github.com/Onther-Tech/',
+    href: 'https://github.com/tokamak-network/',
     isExternal: true,
   },
   {
