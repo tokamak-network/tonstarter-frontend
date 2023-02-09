@@ -47,7 +47,7 @@ const SwapModal = () => {
   const PublicVaultContract = useContract(
     data?.data?.publicVaultAddress,
     PublicSaleLogicAbi.abi,
-  );
+  );  
 
   const {WTON_BALANCE, tosAmountOut} = useSwapModal(
     data?.data?.publicVaultAddress,
@@ -104,9 +104,9 @@ const SwapModal = () => {
   }, [inputAmount, setInputAmount]);
 
   useEffect(() => {
-    const err = inputAmount > WTON_BALANCE;
+    const err = inputAmount > data?.data?.balance;
     setError(err);
-  }, [inputAmount, WTON_BALANCE]);
+  }, [inputAmount, data?.data?.balance]);
   return (
     <Modal
       isOpen={data.modal === 'Launch_Swap' ? true : false}
@@ -207,7 +207,7 @@ const SwapModal = () => {
                 <Text
                   fontSize={'12px'}
                   color={colorMode === 'dark' ? '#9d9ea5' : '#808992'}>
-                  Balance: {WTON_BALANCE} {'WTON'}
+                  Balance: {data?.data?.balance} {'WTON'}
                 </Text>
                 <Button
                   fontSize={'12px'}
@@ -225,7 +225,7 @@ const SwapModal = () => {
                       : '1px solid #d7d9df'
                   }
                   onClick={() =>
-                    setInputAmount(WTON_BALANCE.replace(/,/g, ''))
+                    setInputAmount(data?.data?.balance.replace(/,/g, ''))
                   }>
                   MAX
                 </Button>

@@ -563,7 +563,9 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                                 publicVaultAddress:
                                   project.vaults[0].vaultAddress,
                                   transferredTon:transferredTon,
-                                  hardcap:hardcap
+                                  hardcap:hardcap,
+                                  balance: hardcap-transferredTon
+
 
                               },
                             }),
