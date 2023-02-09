@@ -43,6 +43,7 @@ const SwapModal = () => {
   const theme = useTheme();
   const {handleCloseModal} = useModal();
   const [inputAmount, setInputAmount] = useState<string>('0');
+  const [error, setError] = useState(false);
   const PublicVaultContract = useContract(
     data?.data?.publicVaultAddress,
     PublicSaleLogicAbi.abi,
@@ -68,7 +69,7 @@ const SwapModal = () => {
       ? '-'
       : commafy(result);
   }, [tosAmountOut, basicPrice, inputAmount]);
-  
+
   const exchangeTonToTos = useCallback(() => {
     console.log('go');
     console.log(data);
@@ -102,6 +103,10 @@ const SwapModal = () => {
     }
   }, [inputAmount, setInputAmount]);
 
+  useEffect(() => {
+    const err = inputAmount > WTON_BALANCE;
+    setError(err);
+  }, [inputAmount, WTON_BALANCE]);
   return (
     <Modal
       isOpen={data.modal === 'Launch_Swap' ? true : false}
@@ -145,7 +150,7 @@ const SwapModal = () => {
               h="78px"
               border={
                 colorMode === 'light'
-                  ? '1px solid #d7d9df'
+                  ? '1px solid #d7d9df' 
                   : '1px solid #535353'
               }
               borderRadius="10px"
@@ -319,7 +324,9 @@ const SwapModal = () => {
                     lineHeight={'27px'}
                     verticalAlign={'bottom'}>
                     {(
-                      ((Number(data?.data?.transferredTon)+Number(inputAmount)) / data?.data?.hardcap) *
+                      ((Number(data?.data?.transferredTon) +
+                        Number(inputAmount)) /
+                        data?.data?.hardcap) *
                       100
                     ).toLocaleString()}{' '}
                     %
@@ -331,7 +338,8 @@ const SwapModal = () => {
                   height={'23px'}
                   lineHeight={'27px'}
                   verticalAlign={'bottom'}>
-                  {(Number(data?.data?.transferredTon)+Number(inputAmount))} /{data?.data?.hardcap} TON
+                  {Number(data?.data?.transferredTon) + Number(inputAmount)} /
+                  {data?.data?.hardcap} TON
                 </Text>
               </Box>
               <Progress
@@ -340,7 +348,9 @@ const SwapModal = () => {
                 mt={'5px'}
                 borderRadius={'100px'}
                 value={
-                  ((data?.data?.transferredTon+Number(inputAmount)) / data?.data?.hardcap) * 100
+                  ((data?.data?.transferredTon + Number(inputAmount)) /
+                    data?.data?.hardcap) *
+                  100
                 }></Progress>
             </Flex>
             <Text margin={'0px 25px 25px'} fontSize="12px" textAlign={'center'}>
@@ -366,6 +376,12 @@ const SwapModal = () => {
             _focus={{background: ''}}
             fontSize="14px"
             color="white"
+            _disabled={{
+              bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+              color: colorMode === 'light' ? '#86929d' : '#838383',
+              cursor: 'not-allowed',
+            }}
+            isDisabled={error}
             onClick={() => exchangeTonToTos()}>
             Swap & Send
           </Button>

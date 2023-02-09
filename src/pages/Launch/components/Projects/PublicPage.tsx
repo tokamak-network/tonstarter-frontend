@@ -549,6 +549,12 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                         mt="12px"
                         bg={'#257eee'}
                         color={'#ffffff'}
+                        isDisabled={transferredTon === hardcap}
+                        _disabled={{
+                          bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+                          color: colorMode === 'light' ? '#86929d' : '#838383',
+                          cursor: 'not-allowed',
+                        }}
                         onClick={() => {
                           dispatch(
                             openModal({
@@ -563,6 +569,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                             }),
                           );
                         }}
+
                         _hover={{cursor: 'pointer'}}>
                         Swap & Send
                       </Button>
