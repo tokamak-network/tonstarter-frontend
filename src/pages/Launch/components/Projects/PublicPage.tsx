@@ -36,7 +36,7 @@ import {useModal} from 'hooks/useModal';
 import {useDispatch} from 'react-redux';
 import {openModal} from 'store/modal.reducer';
 import {convertNumber} from 'utils/number';
-
+import { useCallContract } from 'hooks/useCallContract';
 import * as WTONABI from 'services/abis/WTON.json';
 import {useContract} from 'hooks/useContract';
 type PublicPage = {
@@ -80,10 +80,15 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
         .sort((a, b) => a.tier - b.tier)
     : [];
   // console.log('vault', vault);
-  const PublicSaleVaul = new Contract(
+
+  const isOld =
+  project.name === 'Door Open' || project.name === 'Dragons of Midgard';
+
+
+  const PUBLICSALE_CONTRACT = useCallContract(
     vault.vaultAddress,
-    PublicSaleVaultAbi.abi,
-    library,
+    'PUBLIC_SALE',
+    isOld,
   );
 
   const PublicSaleContract = useContract(
@@ -115,11 +120,11 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
 
   useEffect(() => {
     async function getHardCap() {
-      if (account === null || account === undefined || library === undefined) {
+      if (account === null || account === undefined || library === undefined || PUBLICSALE_CONTRACT === null) {
         return;
       }
-      const hardCapCalc = await PublicSaleVaul.hardcapCalcul();
-      const adminWithdraw = await PublicSaleVaul.adminWithdraw();
+      const hardCapCalc = await PUBLICSALE_CONTRACT.hardcapCalcul();
+      const adminWithdraw = await PUBLICSALE_CONTRACT.adminWithdraw();
       setFundWithdrew(adminWithdraw);
 
       const wtonBalance = await WTON.balanceOf(vault.vaultAddress);
@@ -129,9 +134,9 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
       const transferred = Number(hc) - Number(wt);
       setTransferredTon(transferred);
       const totalExPurchasedAmount =
-        await PublicSaleVaul.totalExPurchasedAmount();
+        await PUBLICSALE_CONTRACT.totalExPurchasedAmount();
       const totalOpenPurchasedAmount =
-        await PublicSaleVaul.totalOpenPurchasedAmount();
+        await PUBLICSALE_CONTRACT.totalOpenPurchasedAmount();
       const xxAmount =
         Number(convertNumber({amount: totalExPurchasedAmount})) +
         Number(convertNumber({amount: totalOpenPurchasedAmount})) -
@@ -142,12 +147,12 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
   }, [account, project, vault.vaultAddress, transactionType, blockNumber]);
 
   const sendTOS = async () => {
-    if (account === null || account === undefined || library === undefined) {
+    if (account === null || account === undefined || library === undefined || PUBLICSALE_CONTRACT === null) {
       return;
     }
     const signer = getSigner(library, account);
     try {
-      const receipt = await PublicSaleVaul.connect(signer).depositWithdraw();
+      const receipt = await PUBLICSALE_CONTRACT.connect(signer).depositWithdraw();
       store.dispatch(setTxPending({tx: true}));
 
       if (receipt) {
