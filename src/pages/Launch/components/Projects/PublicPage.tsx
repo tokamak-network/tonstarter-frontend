@@ -36,9 +36,11 @@ import {useModal} from 'hooks/useModal';
 import {useDispatch} from 'react-redux';
 import {openModal} from 'store/modal.reducer';
 import {convertNumber} from 'utils/number';
-import { useCallContract } from 'hooks/useCallContract';
+import {useCallContract} from 'hooks/useCallContract';
 import * as WTONABI from 'services/abis/WTON.json';
 import {useContract} from 'hooks/useContract';
+import * as VestingPublicFund from 'services/abis/VestingPublicFund.json';
+
 type PublicPage = {
   vault: any;
   project: any;
@@ -57,6 +59,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
   const [hardcap, setHardcap] = useState<number>(0);
   const [transferredTon, setTransferredTon] = useState(0);
   const [vestingAmount, setVestingAmount] = useState(0);
+  const [sendTON, setSendTON] = useState(true);
   const network = BASE_PROVIDER._network.name;
 
   const now = moment().unix();
@@ -82,8 +85,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
   // console.log('vault', vault);
 
   const isOld =
-  project.name === 'Door Open' || project.name === 'Dragons of Midgard';
-
+    project.name === 'Door Open' || project.name === 'Dragons of Midgard';
 
   const PUBLICSALE_CONTRACT = useCallContract(
     vault.vaultAddress,
@@ -94,6 +96,16 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
   const PublicSaleContract = useContract(
     vault.vaultAddress,
     PublicSaleVaultLogicAbi.abi,
+  );
+
+  const vestingVault = project.vaults.filter(
+    (vault: any) => vault.vaultType === 'Vesting',
+  );
+
+  const vestingVaultContract = new Contract(
+    vestingVault[0].vaultAddress,
+    VestingPublicFund.abi,
+    library,
   );
 
   const sendTONtoVesting = useCallback(() => {
@@ -120,7 +132,12 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
 
   useEffect(() => {
     async function getHardCap() {
-      if (account === null || account === undefined || library === undefined || PUBLICSALE_CONTRACT === null) {
+      if (
+        account === null ||
+        account === undefined ||
+        library === undefined ||
+        PUBLICSALE_CONTRACT === null
+      ) {
         return;
       }
       const hardCapCalc = await PUBLICSALE_CONTRACT.hardcapCalcul();
@@ -142,17 +159,27 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
         Number(convertNumber({amount: totalOpenPurchasedAmount})) -
         Number(convertNumber({amount: hardCapCalc}));
       setVestingAmount(xxAmount);
+
+      const fundsInVesting = await vestingVaultContract.currentSqrtPriceX96();
+      setSendTON(Number(fundsInVesting) === 0);
     }
     getHardCap();
   }, [account, project, vault.vaultAddress, transactionType, blockNumber]);
 
   const sendTOS = async () => {
-    if (account === null || account === undefined || library === undefined || PUBLICSALE_CONTRACT === null) {
+    if (
+      account === null ||
+      account === undefined ||
+      library === undefined ||
+      PUBLICSALE_CONTRACT === null
+    ) {
       return;
     }
     const signer = getSigner(library, account);
     try {
-      const receipt = await PUBLICSALE_CONTRACT.connect(signer).depositWithdraw();
+      const receipt = await PUBLICSALE_CONTRACT.connect(
+        signer,
+      ).depositWithdraw();
       store.dispatch(setTxPending({tx: true}));
 
       if (receipt) {
@@ -529,6 +556,9 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                               data: {
                                 publicVaultAddress:
                                   project.vaults[0].vaultAddress,
+                                  transferredTon:transferredTon,
+                                  hardcap:hardcap
+
                               },
                             }),
                           );
@@ -601,6 +631,12 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                         mt="12px"
                         bg={'#257eee'}
                         color={'#ffffff'}
+                        isDisabled={!sendTON}
+                        _disabled={{
+                          bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+                          color: colorMode === 'light' ? '#86929d' : '#838383',
+                          cursor: 'not-allowed',
+                        }}
                         onClick={() => {
                           sendTONtoVesting();
                         }}
