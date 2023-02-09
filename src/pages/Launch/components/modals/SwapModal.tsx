@@ -68,7 +68,7 @@ const SwapModal = () => {
       ? '-'
       : commafy(result);
   }, [tosAmountOut, basicPrice, inputAmount]);
-
+  
   const exchangeTonToTos = useCallback(() => {
     console.log('go');
     console.log(data);
@@ -318,7 +318,11 @@ const SwapModal = () => {
                     height={'23px'}
                     lineHeight={'27px'}
                     verticalAlign={'bottom'}>
-                    65.4%
+                    {(
+                      ((Number(data?.data?.transferredTon)+Number(inputAmount)) / data?.data?.hardcap) *
+                      100
+                    ).toLocaleString()}{' '}
+                    %
                   </Text>
                 </Flex>
                 <Text
@@ -327,15 +331,17 @@ const SwapModal = () => {
                   height={'23px'}
                   lineHeight={'27px'}
                   verticalAlign={'bottom'}>
-                  3,981,532 / 5,000,000 TON
+                  {(Number(data?.data?.transferredTon)+Number(inputAmount))} /{data?.data?.hardcap} TON
                 </Text>
               </Box>
               <Progress
-                value={65.4}
                 w={'100%'}
                 h={'6px'}
                 mt={'5px'}
-                borderRadius={'100px'}></Progress>
+                borderRadius={'100px'}
+                value={
+                  ((data?.data?.transferredTon+Number(inputAmount)) / data?.data?.hardcap) * 100
+                }></Progress>
             </Flex>
             <Text margin={'0px 25px 25px'} fontSize="12px" textAlign={'center'}>
               This interface is designed to prevent sandwich attack. The txn
