@@ -19,8 +19,8 @@ export const MobileFooter = () => {
         alignItems={'center'}
         justifyContent="space-between"
         fontFamily={theme.fonts.openSans}
-        w='100%'
-        px='20px'
+        w="100%"
+        px="20px"
         color={
           match?.isExact
             ? '#fff'
@@ -29,7 +29,7 @@ export const MobileFooter = () => {
             : '#ffffff'
         }>
         <Text fontSize="14px" fontWeight={800}>
-          © 2022 Onther
+          © 2023 Tokamak Network
         </Text>
         <Text fontSize="11px" fontWeight={'normal'}>
           E. hello@tokamak.network
