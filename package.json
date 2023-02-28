@@ -145,6 +145,7 @@
     "@types/react-table": "^7.7.0",
     "@types/redux-logger": "^3.0.8",
     "craco-alias": "^3.0.1",
+    "jest": "^26.6.0",
     "react-error-overlay": "6.0.9",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
