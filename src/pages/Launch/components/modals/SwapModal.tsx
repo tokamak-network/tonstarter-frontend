@@ -49,12 +49,13 @@ const SwapModal = () => {
   );
 
   const {WTON_BALANCE, tosAmountOut} = useSwapModal(
-    data?.data?.publicVaultAddress,
     Number(inputAmount.replaceAll(',', '')),
+    data?.data?.publicVaultAddress
   );
   const {tosAmountOut: basicPrice} = useSwapModal(
-    data?.data?.publicVaultAddress,
     1,
+    data?.data?.publicVaultAddress,
+  
   );
 
   const priceImpact = useMemo(() => {

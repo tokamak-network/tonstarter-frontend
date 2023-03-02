@@ -5,8 +5,9 @@ import * as WTONABI from 'services/abis/WTON.json';
 import * as QuoterAbi from 'services/abis/Quoter.json';
 
 import {convertNumber, convertToRay, convertToWei} from 'utils/number';
+import {encode} from 'querystring';
 
-export const useSwapModal = (vaultAddress: string, amountIn: number) => {
+export const useSwapModal = ( amountIn: number, vaultAddress?: string,) => {
   const {WTON_ADDRESS, Quoter, TOS_ADDRESS} = DEPLOYED;
   const WTON_CONTRACT = useContract(WTON_ADDRESS, WTONABI.abi);
   const QUOTER_CONTRACT = useContract(Quoter, QuoterAbi.abi);
@@ -16,7 +17,7 @@ export const useSwapModal = (vaultAddress: string, amountIn: number) => {
 
   useEffect(() => {
     async function callData() {
-      if (WTON_CONTRACT) {
+      if (WTON_CONTRACT && vaultAddress) {
         const balance_BN = await WTON_CONTRACT.balanceOf(vaultAddress);
         const result = convertNumber({
           amount: balance_BN.toString(),
@@ -44,20 +45,44 @@ export const useSwapModal = (vaultAddress: string, amountIn: number) => {
         //    amountIn,
         //    0,
         //  );
+        const FEE_SIZE = 3;
+        const encodePath = (path: any, fees: any) => {
+          if (path.length !== fees.length + 1) {
+            throw new Error('path/fee lengths do not match');
+          }
+          let encoded = '0x';
+          for (let i = 0; i < fees.length; i++) {
+            encoded += path[i].slice(2);
+            encoded += fees[i].toString(16).padStart(2 * FEE_SIZE, '0');
+          }
+          encoded += path[path.length - 1].slice(2);
+          return encoded.toLowerCase();
+        };
 
-        const amountOut_BN =
-          await QUOTER_CONTRACT.callStatic.quoteExactInputSingle(
-            WTON_ADDRESS,
-            TOS_ADDRESS,
-            3000,
+        const path = encodePath([WTON_ADDRESS, TOS_ADDRESS], [3000]);
+
+        // const amountOut_BN =
+        //   await QUOTER_CONTRACT.callStatic.quoteExactInputSingle(
+        //     WTON_ADDRESS,
+        //     TOS_ADDRESS,
+        //     3000,
+        //     convertToRay(String(amountIn)),
+        //     0,
+        //   );
+
+          const amountOut_BN =
+          await QUOTER_CONTRACT.callStatic.quoteExactInput(
+            path,
             convertToRay(String(amountIn)),
-            0,
           );
 
         const result = convertNumber({
           amount: amountOut_BN.toString(),
           localeString: true,
         });
+
+        console.log(result,amountIn);
+        
         return setTosAmountOut(result ?? '-');
       }
       return setTosAmountOut('-');
