@@ -136,7 +136,8 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
         account === null ||
         account === undefined ||
         library === undefined ||
-        PUBLICSALE_CONTRACT === null
+        PUBLICSALE_CONTRACT === null ||
+        PublicSaleContract === null
       ) {
         return;
       }
@@ -160,8 +161,15 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
         Number(convertNumber({amount: hardCapCalc}));
       setVestingAmount(xxAmount);
 
+      const isExchangeTOS = await PublicSaleContract.exchangeTOS();
       const fundsInVesting = await vestingVaultContract.currentSqrtPriceX96();
-      setSendTON(Number(fundsInVesting) === 0);
+      // console.log(Number(fundsInVesting) === 0);
+
+      setSendTON(
+        Number(fundsInVesting) !== 0 &&
+          isExchangeTOS === true &&
+          adminWithdraw === false,
+      );
     }
     getHardCap();
   }, [account, project, vault.vaultAddress, transactionType, blockNumber]);
@@ -546,6 +554,12 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                         w={'273px'}
                         h={'25px'}
                         mr={'2px'}
+                        isDisabled={transferredTon === hardcap}
+                        _disabled={{
+                          bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+                          color: colorMode === 'light' ? '#86929d' : '#838383',
+                          cursor: 'not-allowed',
+                        }}
                         mt="12px"
                         bg={'#257eee'}
                         color={'#ffffff'}
@@ -556,9 +570,8 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                               data: {
                                 publicVaultAddress:
                                   project.vaults[0].vaultAddress,
-                                  transferredTon:transferredTon,
-                                  hardcap:hardcap
-
+                                transferredTon: transferredTon,
+                                hardcap: hardcap,
                               },
                             }),
                           );
