@@ -26,6 +26,7 @@ import commafy from 'utils/commafy';
 import {selectLaunch, setTempHash} from '@Launch/launch.reducer';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {createToken} from 'pages/Reward/components/api';
+import { deployVaults } from '@Launch/tests/initVaults';
 
 const DeployToken = () => {
   const theme = useTheme();
@@ -92,6 +93,7 @@ const DeployToken = () => {
       setFieldValue('tokenAddress', args[0]);
       setFieldValue('isTokenDeployed', true);
       createToken(args[0], values.tokenSymbolImage || '');
+      // TODO: run script to deploy all vaults
     } catch (e) {
       console.log(e);
       //need to add change states

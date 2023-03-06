@@ -58,14 +58,13 @@ import commafy from 'utils/commafy';
 import {convertTimeStamp} from 'utils/convertTIme';
 import {selectLaunch, setTempHash} from '@Launch/launch.reducer';
 import bn from 'bignumber.js';
+import { deployVaults } from '@Launch/tests/initVaults';
 
-//Project
-
-type DeployVaultProp = {
+export type DeployVaultProp = {
   vault: VaultAny;
 };
 
-function encodePriceSqrt(reserve1: number, reserve0: number) {
+export function encodePriceSqrt(reserve1: number, reserve0: number) {
   return new bn(reserve1.toString())
     .div(reserve0.toString())
     .sqrt()
@@ -74,7 +73,7 @@ function encodePriceSqrt(reserve1: number, reserve0: number) {
     .toFixed();
 }
 
-function getContract(vaultType: VaultType, library: LibraryType) {
+export function getContract(vaultType: VaultType, library: LibraryType) {
   switch (vaultType) {
     case 'Public': {
       const {PublicSaleVault} = DEPLOYED;
@@ -92,6 +91,7 @@ function getContract(vaultType: VaultType, library: LibraryType) {
         InitialLiquidityAbi.abi,
         library,
       );
+      console.log('initial liquidity contract', contract)
       return contract;
     }
     case 'Vesting': {
@@ -146,7 +146,8 @@ function getContract(vaultType: VaultType, library: LibraryType) {
   }
 }
 
-const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
+
+export const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
   const {vaultName, vaultType, index} = vault;
   const theme = useTheme();
   const {OpenCampaginDesign} = theme;
@@ -177,9 +178,18 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
   const vaultsList = values.vaults;
   const selectedVaultDetail = vaultsList.filter((vaultData: VaultAny) => {
     if (vaultData.index === index) {
+      console.log('vaultData', vaultData)
       return vaultData;
     }
   })[0];
+
+  const mockDeployVaults = () =>  {
+    console.info("****TEST SCRIPT RUNS****");
+      // auto deploy initialize liquidity vault
+      
+    console.info("****TEST SCRIPT STOPPED****");
+  }
+  
 
   //check vault state from contract
   useEffect(()=>{
@@ -1798,7 +1808,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                         infoList,
                         secondInfoList: infoList2,
                         stosTierList,
-                        func: () => vaultDeploy(),
+                        func: () => mockDeployVaults(),
                         close: () =>
                           setFieldValue(
                             `vaults[${selectedVaultDetail?.index}].isDeployedErr`,
@@ -1825,7 +1835,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                         secondInfoList: infoList2,
                         stosTierList,
                         isSetStep: true,
-                        func: () => vaultDeploy(),
+                        func: () => mockDeployVaults(),
                         close: () =>
                           setFieldValue(
                             `vaults[${selectedVaultDetail?.index}].isDeployedErr`,
