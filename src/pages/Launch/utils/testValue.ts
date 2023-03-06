@@ -1,3 +1,5 @@
+import moment from "moment";
+
 const monthGapTimeStamp = (currentTimeStamp: number, monthes: number) => {
   const oneMonthGap = 2629743;
   return currentTimeStamp + oneMonthGap * monthes;
@@ -5,6 +7,8 @@ const monthGapTimeStamp = (currentTimeStamp: number, monthes: number) => {
 export const testValue = () => {
   //Plus 15 min to currentTime
   const currentTimeStamp = Math.floor(Date.now() / 1000 + 900);
+  // const currentTimeStamp = moment(Date.now()).unix() + 1800;
+  // console.log('currentTimestamp from test', currentTimeStamp)
   const round2EndTime = currentTimeStamp + 1200;
   const afterRound2EndTime = round2EndTime + 1;
   const defaultData = {
@@ -13,14 +17,14 @@ export const testValue = () => {
     tokenName: 'test',
     tokenSymbol: 'test',
     totalSupply: '10000000',
-    ownerAddress: '0x8c595DA827F4182bC0E3917BccA8e654DF8223E1',
-    owner: '0x8c595DA827F4182bC0E3917BccA8e654DF8223E1',
+    ownerAddress: '0x1A30f49390703c0F0dEFf7d2a6539768003062FA',
+    owner: '0x1A30f49390703c0F0dEFf7d2a6539768003062FA',
     isTokenDeployed: false,
     isTokenDeployedErr: false,
     isAllDeployed: false,
     tokenAddress: '',
     tokenType: 'A',
-    tokenOwnerAccount: '0x8c595DA827F4182bC0E3917BccA8e654DF8223E1',
+    tokenOwnerAccount: '0x1A30f49390703c0F0dEFf7d2a6539768003062FA',
     tosPrice: '50',
     projectTokenPrice: '100',
     totalTokenAllocation: 6000000,
@@ -37,8 +41,8 @@ export const testValue = () => {
           claimRound: 1,
           claimTokenAllocation: null,
         },
-        addressForReceiving: '0x8c595DA827F4182bC0E3917BccA8e654DF8223E1',
-        adminAddress: '0x8c595DA827F4182bC0E3917BccA8e654DF8223E1',
+        addressForReceiving: '0x1A30f49390703c0F0dEFf7d2a6539768003062FA',
+        adminAddress: '0x1A30f49390703c0F0dEFf7d2a6539768003062FA',
         claim: [
           {
             claimRound: 1,
@@ -101,7 +105,7 @@ export const testValue = () => {
         publicRound2End: round2EndTime,
       },
       {
-        adminAddress: '0x8c595DA827F4182bC0E3917BccA8e654DF8223E1',
+        adminAddress: '0x1A30f49390703c0F0dEFf7d2a6539768003062FA',
         claim: [
           {
             claimRound: 1,
@@ -154,7 +158,7 @@ export const testValue = () => {
         vaultType: 'Vesting',
       },
       {
-        adminAddress: '0x8c595DA827F4182bC0E3917BccA8e654DF8223E1',
+        adminAddress: '0x1A30f49390703c0F0dEFf7d2a6539768003062FA',
         claim: [
           {
             claimRound: 1,
@@ -188,7 +192,7 @@ export const testValue = () => {
         name: 'TON Staker',
       },
       {
-        adminAddress: '0x8c595DA827F4182bC0E3917BccA8e654DF8223E1',
+        adminAddress: '0x1A30f49390703c0F0dEFf7d2a6539768003062FA',
         claim: [
           {
             claimRound: 1,
@@ -222,7 +226,7 @@ export const testValue = () => {
         name: 'TOS Staker',
       },
       {
-        adminAddress: '0x8c595DA827F4182bC0E3917BccA8e654DF8223E1',
+        adminAddress: '0x1A30f49390703c0F0dEFf7d2a6539768003062FA',
         claim: [
           {
             claimRound: 1,
@@ -258,7 +262,7 @@ export const testValue = () => {
         name: 'WTON-TOS LP Reward',
       },
       {
-        adminAddress: '0x8c595DA827F4182bC0E3917BccA8e654DF8223E1',
+        adminAddress: '0x1A30f49390703c0F0dEFf7d2a6539768003062FA',
         claim: [
           {
             claimRound: 1,
