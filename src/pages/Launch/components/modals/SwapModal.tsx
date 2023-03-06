@@ -17,7 +17,7 @@ import {
   Image,
   Progress,
 } from '@chakra-ui/react';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {useModal} from 'hooks/useModal';
@@ -31,14 +31,23 @@ import TokamakSymbol from 'assets/svgs/tokamak_favicon.svg';
 import TosSymbol from 'assets/svgs/tos_symbol.svg';
 import commafy from 'utils/commafy';
 
+import * as PublicSaleLogicAbi from 'services/abis/PublicSaleLogic.json';
+import {useContract} from 'hooks/useContract';
+import {convertToRay, convertToWei} from 'utils/number';
+
 const SwapModal = () => {
   const {data} = useAppSelector(selectModalType);
-  const {TON_ADDRESS, WTON_ADDRESS} = DEPLOYED;
+  const {TON_ADDRESS, WTON_ADDRESS, PublicSaleVault, pools} = DEPLOYED;
   const {account, library} = useActiveWeb3React();
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {handleCloseModal} = useModal();
   const [inputAmount, setInputAmount] = useState<string>('0');
+  const [error, setError] = useState(false);
+  const PublicVaultContract = useContract(
+    data?.data?.publicVaultAddress,
+    PublicSaleLogicAbi.abi,
+  );  
 
   const {WTON_BALANCE, tosAmountOut} = useSwapModal(
     data?.data?.publicVaultAddress,
@@ -56,8 +65,32 @@ const SwapModal = () => {
     const priceDiff = numTosAmountOut / numInputAmount / numBasicPrice;
     const result = 100 - priceDiff * 100;
 
-    return isNaN(result) ? '-' : commafy(result);
+    return isNaN(result) || result === Infinity || result === -Infinity
+      ? '-'
+      : commafy(result);
   }, [tosAmountOut, basicPrice, inputAmount]);
+
+  const exchangeTonToTos = useCallback(() => {
+    console.log('go');
+    console.log(data);
+
+    //https://www.notion.so/onther/PublicSale-Front-interface-b139403abc0f41df9af75559eba87e58
+    try {
+      console.log(PublicVaultContract, inputAmount, pools);
+
+      if (PublicVaultContract && inputAmount && pools) {
+        const inputAmountRay = convertToRay(inputAmount);
+        const {TOS_WTON_POOL} = pools;
+
+        return PublicVaultContract.exchangeWTONtoTOS(
+          inputAmountRay,
+          TOS_WTON_POOL,
+        );
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }, [PublicVaultContract, inputAmount, pools]);
 
   useEffect(() => {
     if (inputAmount.length > 1 && inputAmount.startsWith('0')) {
@@ -70,6 +103,10 @@ const SwapModal = () => {
     }
   }, [inputAmount, setInputAmount]);
 
+  useEffect(() => {
+    const err = inputAmount > data?.data?.balance;
+    setError(err);
+  }, [inputAmount, data?.data?.balance]);
   return (
     <Modal
       isOpen={data.modal === 'Launch_Swap' ? true : false}
@@ -113,7 +150,7 @@ const SwapModal = () => {
               h="78px"
               border={
                 colorMode === 'light'
-                  ? '1px solid #d7d9df'
+                  ? '1px solid #d7d9df' 
                   : '1px solid #535353'
               }
               borderRadius="10px"
@@ -170,7 +207,7 @@ const SwapModal = () => {
                 <Text
                   fontSize={'12px'}
                   color={colorMode === 'dark' ? '#9d9ea5' : '#808992'}>
-                  Balance: {WTON_BALANCE} {'WTON'}
+                  Balance: {data?.data?.balance} {'WTON'}
                 </Text>
                 <Button
                   fontSize={'12px'}
@@ -188,7 +225,7 @@ const SwapModal = () => {
                       : '1px solid #d7d9df'
                   }
                   onClick={() =>
-                    setInputAmount(WTON_BALANCE.replace(/,/g, ''))
+                    setInputAmount(data?.data?.balance.replace(/,/g, ''))
                   }>
                   MAX
                 </Button>
@@ -231,7 +268,7 @@ const SwapModal = () => {
                   fontWeight={'bold'}
                   lineHeight={1.5}
                   fontSize="20px">
-                  {tosAmountOut}
+                  {Number(inputAmount) <= 0 ? '0.00' : tosAmountOut}
                 </Text>
               </Flex>
               <Text
@@ -286,7 +323,13 @@ const SwapModal = () => {
                     height={'23px'}
                     lineHeight={'27px'}
                     verticalAlign={'bottom'}>
-                    65.4%
+                    {(
+                      ((Number(data?.data?.transferredTon) +
+                        Number(inputAmount)) /
+                        data?.data?.hardcap) *
+                      100
+                    ).toLocaleString()}{' '}
+                    %
                   </Text>
                 </Flex>
                 <Text
@@ -295,15 +338,20 @@ const SwapModal = () => {
                   height={'23px'}
                   lineHeight={'27px'}
                   verticalAlign={'bottom'}>
-                  3,981,532 / 5,000,000 TON
+                  {Number(data?.data?.transferredTon) + Number(inputAmount)} /
+                  {data?.data?.hardcap} TON
                 </Text>
               </Box>
               <Progress
-                value={65.4}
                 w={'100%'}
                 h={'6px'}
                 mt={'5px'}
-                borderRadius={'100px'}></Progress>
+                borderRadius={'100px'}
+                value={
+                  ((data?.data?.transferredTon + Number(inputAmount)) /
+                    data?.data?.hardcap) *
+                  100
+                }></Progress>
             </Flex>
             <Text margin={'0px 25px 25px'} fontSize="12px" textAlign={'center'}>
               This interface is designed to prevent sandwich attack. The txn
@@ -327,7 +375,14 @@ const SwapModal = () => {
             _active={{background: ''}}
             _focus={{background: ''}}
             fontSize="14px"
-            color="white">
+            color="white"
+            _disabled={{
+              bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+              color: colorMode === 'light' ? '#86929d' : '#838383',
+              cursor: 'not-allowed',
+            }}
+            isDisabled={error}
+            onClick={() => exchangeTonToTos()}>
             Swap & Send
           </Button>
         </ModalFooter>

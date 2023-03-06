@@ -1,4 +1,4 @@
-import {FC, useState, useEffect} from 'react';
+import {FC, useState, useEffect, useCallback} from 'react';
 import {
   Flex,
   Text,
@@ -10,6 +10,7 @@ import {
   Link,
   Button,
   Image,
+  Progress,
 } from '@chakra-ui/react';
 import {PublicPageTable} from './PublicPageTable';
 import {shortenAddress} from 'utils';
@@ -19,6 +20,7 @@ import moment from 'moment';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import commafy from 'utils/commafy';
 import * as PublicSaleVaultAbi from 'services/abis/PublicSaleVault.json';
+import * as PublicSaleVaultLogicAbi from 'services/abis/PublicSaleLogic.json';
 import store from 'store';
 import {toastWithReceipt} from 'utils';
 import {setTxPending} from 'store/tx.reducer';
@@ -29,14 +31,21 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 import {getSigner} from 'utils/contract';
 import {Contract} from '@ethersproject/contracts';
 import {ethers} from 'ethers';
-import {BASE_PROVIDER} from 'constants/index';
+import {BASE_PROVIDER, DEPLOYED} from 'constants/index';
 import {useModal} from 'hooks/useModal';
 import {useDispatch} from 'react-redux';
 import {openModal} from 'store/modal.reducer';
+import {convertNumber} from 'utils/number';
+import {useCallContract} from 'hooks/useCallContract';
+import * as WTONABI from 'services/abis/WTON.json';
+import {useContract} from 'hooks/useContract';
+import * as VestingPublicFund from 'services/abis/VestingPublicFund.json';
+
 type PublicPage = {
   vault: any;
   project: any;
 };
+const {WTON_ADDRESS} = DEPLOYED;
 
 export const PublicPage: FC<PublicPage> = ({vault, project}) => {
   const {colorMode} = useColorMode();
@@ -48,7 +57,9 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
   const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
   const {openAnyModal} = useModal();
   const [hardcap, setHardcap] = useState<number>(0);
-
+  const [transferredTon, setTransferredTon] = useState(0);
+  const [vestingAmount, setVestingAmount] = useState(0);
+  const [sendTON, setSendTON] = useState(true);
   const network = BASE_PROVIDER._network.name;
 
   const now = moment().unix();
@@ -72,11 +83,38 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
         .sort((a, b) => a.tier - b.tier)
     : [];
   // console.log('vault', vault);
-  const PublicSaleVaul = new Contract(
+
+  const isOld =
+    project.name === 'Door Open' || project.name === 'Dragons of Midgard';
+
+  const PUBLICSALE_CONTRACT = useCallContract(
     vault.vaultAddress,
-    PublicSaleVaultAbi.abi,
+    'PUBLIC_SALE',
+    isOld,
+  );
+
+  const PublicSaleContract = useContract(
+    vault.vaultAddress,
+    PublicSaleVaultLogicAbi.abi,
+  );
+
+  const vestingVault = project.vaults.filter(
+    (vault: any) => vault.vaultType === 'Vesting',
+  );
+
+  const vestingVaultContract = new Contract(
+    vestingVault[0].vaultAddress,
+    VestingPublicFund.abi,
     library,
   );
+
+  const sendTONtoVesting = useCallback(() => {
+    if (PublicSaleContract) {
+      return PublicSaleContract.depositWithdraw();
+    }
+  }, [PublicSaleContract]);
+
+  const WTON = new Contract(WTON_ADDRESS, WTONABI.abi, library);
   useEffect(() => {
     if (account !== undefined && account !== null) {
       if (
@@ -94,24 +132,54 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
 
   useEffect(() => {
     async function getHardCap() {
-      if (account === null || account === undefined || library === undefined) {
+      if (
+        account === null ||
+        account === undefined ||
+        library === undefined ||
+        PUBLICSALE_CONTRACT === null
+      ) {
         return;
       }
-      const hardCapCalc = await PublicSaleVaul.hardcapCalcul();
-      const adminWithdraw = await PublicSaleVaul.adminWithdraw();
+      const hardCapCalc = await PUBLICSALE_CONTRACT.hardcapCalcul();
+      const adminWithdraw = await PUBLICSALE_CONTRACT.adminWithdraw();
       setFundWithdrew(adminWithdraw);
-      setHardcap(Number(hardCapCalc));
+
+      const wtonBalance = await WTON.balanceOf(vault.vaultAddress);
+      const wt = convertNumber({amount: wtonBalance, type: 'ray'});
+      const hc = convertNumber({amount: hardCapCalc});
+      setHardcap(Number(hc));
+      const transferred = Number(hc) - Number(wt);
+      setTransferredTon(transferred);
+      const totalExPurchasedAmount =
+        await PUBLICSALE_CONTRACT.totalExPurchasedAmount();
+      const totalOpenPurchasedAmount =
+        await PUBLICSALE_CONTRACT.totalOpenPurchasedAmount();
+      const xxAmount =
+        Number(convertNumber({amount: totalExPurchasedAmount})) +
+        Number(convertNumber({amount: totalOpenPurchasedAmount})) -
+        Number(convertNumber({amount: hardCapCalc}));
+      setVestingAmount(xxAmount);
+
+      const fundsInVesting = await vestingVaultContract.currentSqrtPriceX96();
+      setSendTON(Number(fundsInVesting) === 0);
     }
     getHardCap();
   }, [account, project, vault.vaultAddress, transactionType, blockNumber]);
 
   const sendTOS = async () => {
-    if (account === null || account === undefined || library === undefined) {
+    if (
+      account === null ||
+      account === undefined ||
+      library === undefined ||
+      PUBLICSALE_CONTRACT === null
+    ) {
       return;
     }
     const signer = getSigner(library, account);
     try {
-      const receipt = await PublicSaleVaul.connect(signer).depositWithdraw();
+      const receipt = await PUBLICSALE_CONTRACT.connect(
+        signer,
+      ).depositWithdraw();
       store.dispatch(setTxPending({tx: true}));
 
       if (receipt) {
@@ -396,106 +464,195 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 borderRight={'none'}
                 borderBottomLeftRadius={'4px'}
                 className={'chart-cell'}
-                h={now >= vault.publicRound2 ? '95px' : ''}
-                justifyContent={'space-between'}>
-                <Flex flexDir={'column'}>
-                  <Flex w={'273px'} justifyContent={'space-between'}>
-                    <Text
-                      fontFamily={theme.fonts.fld}
-                      color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
-                      Address for receiving funds
-                    </Text>
-                    <Link
-                      isExternal
-                      href={
-                        vault.addressForReceiving && network === 'goerli'
-                          ? `https://goerli.etherscan.io/address/${vault.addressForReceiving}`
-                          : vault.addressForReceiving && network !== 'goerli'
-                          ? `https://etherscan.io/address/${vault.addressForReceiving}`
-                          : ''
-                      }
-                      color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
-                      _hover={{color: '#2a72e5'}}
-                      fontFamily={theme.fonts.fld}>
-                      {vault.addressForReceiving
-                        ? shortenAddress(vault.addressForReceiving)
-                        : 'NA'}
-                    </Link>
-                  </Flex>
+                pt={'15px'}
+                pb="15px"
+                h={now >= vault.publicRound2 ? '245px' : ''}>
+                <Flex flexDir={'column'} w="100%">
+                  <Text mb={'12px'} fontSize={'13px'} fontWeight={600}>
+                    Fund Initialization
+                  </Text>
 
-                  <Flex alignItems={'center'} mt={'5px'}>
-                    <Button
-                      fontSize={'11px'}
-                      w={'273px'}
-                      h={'25px'}
-                      mr={'2px'}
-                      bg={'#257eee'}
-                      color={'#ffffff'}
-                      // isDisabled={
-                      //   vault.publicRound2End > moment().unix() ||
-                      //   hardcap === 0 ||
-                      //   fundWithdrew === true
-                      // }
-                      // isDisabled={true}
-                      _disabled={{
-                        color: colorMode === 'light' ? '#86929d' : '#838383',
-                        bg: colorMode === 'light' ? '#e9edf1' : '#353535',
-                        cursor: 'not-allowed',
-                      }}
-                      _hover={
-                        vault.publicRound2End > moment().unix() ||
-                        hardcap === 0 ||
-                        fundWithdrew === true
-                          ? {}
-                          : {
-                              cursor: 'pointer',
-                            }
-                      }
-                      _focus={
-                        vault.publicRound2End > moment().unix() ||
-                        hardcap === 0 ||
-                        fundWithdrew === true
-                          ? {}
-                          : {
-                              background: 'transparent',
-                              border: 'solid 1px #2a72e5',
-                              color: themeDesign.tosFont[colorMode],
-                              cursor: 'pointer',
-                            }
-                      }
-                      _active={
-                        vault.publicRound2End > moment().unix() ||
-                        hardcap === 0 ||
-                        fundWithdrew === true
-                          ? {}
-                          : {
-                              background: '#2a72e5',
-                              border: 'solid 1px #2a72e5',
-                              color: '#fff',
-                            }
-                      }
-                      onClick={() =>
-                        dispatch(
-                          openModal({
-                            type: 'Launch_Swap',
-                            data: {
-                              publicVaultAddress: vault.vaultAddress,
-                            },
-                          }),
-                        )
+                  <Flex color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                    <Flex
+                      flexDir={'column'}
+                      w="100%"
+                      borderBottom={
+                        colorMode === 'light'
+                          ? '1px solid #e6eaee'
+                          : '1px solid #373737'
                       }>
-                      Send Funds
-                    </Button>
-                    {/* <Tooltip
-                      label="It is only possible to send TOS after the end of Public Round 2"
-                      hasArrow
-                      placement="top"
-                      color={colorMode === 'light' ? '#e6eaee' : '#424242'}
-                      aria-label={'Tooltip'}
-                      textAlign={'center'}
-                      size={'xs'}>
-                      <Image src={tooltipIcon} />
-                    </Tooltip> */}
+                      <Flex justifyContent={'space-between'} w="100%">
+                        <Flex>
+                          <Text
+                            mr="5px"
+                            fontSize={'13px'}
+                            color={
+                              colorMode === 'light' ? '#7e8993' : '#9d9ea5'
+                            }>
+                            {' '}
+                            1. Fund Initial Liquidity Vault{' '}
+                          </Text>
+                          <Tooltip
+                            label="Snapshot date must be set 1 week after Deployment completion"
+                            hasArrow
+                            placement="top"
+                            color={
+                              colorMode === 'light' ? '#e6eaee' : '#424242'
+                            }
+                            aria-label={'Tooltip'}
+                            textAlign={'center'}
+                            size={'xs'}>
+                            <Image src={tooltipIcon} />
+                          </Tooltip>
+                        </Flex>
+                        <Link
+                          isExternal
+                          href={
+                            project.vaults[1].vaultAddress &&
+                            network === 'goerli'
+                              ? `https://goerli.etherscan.io/address/${project.vaults[1].vaultAddress}`
+                              : vault.vaultAddress && network !== 'goerli'
+                              ? `https://etherscan.io/address/${project.vaults[1].vaultAddress}`
+                              : ''
+                          }
+                          color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+                          _hover={{color: '#2a72e5'}}
+                          fontWeight="bold"
+                          fontFamily={theme.fonts.fld}>
+                          {project.vaults[1].vaultAddress
+                            ? shortenAddress(project.vaults[1].vaultAddress)
+                            : 'NA'}
+                        </Link>
+                      </Flex>
+                      <Flex w="100%" flexDir={'column'}>
+                        <Text
+                          textAlign={'right'}
+                          w="100%"
+                          color={colorMode === 'dark' ? '#9d9ea5' : '#3a495f'}
+                          fontSize="12px"
+                          fontWeight="normal">
+                          {transferredTon.toLocaleString()} /{' '}
+                          {hardcap.toLocaleString()} TON
+                        </Text>
+
+                        <Progress
+                          borderRadius={10}
+                          h={'6px'}
+                          bg={colorMode === 'light' ? '#e7edf3' : '#353d48'}
+                          value={(transferredTon / hardcap) * 100}></Progress>
+                      </Flex>
+                      <Button
+                        fontSize={'11px'}
+                        w={'273px'}
+                        h={'25px'}
+                        mr={'2px'}
+                        mt="12px"
+                        bg={'#257eee'}
+                        color={'#ffffff'}
+                        isDisabled={transferredTon === hardcap}
+                        _disabled={{
+                          bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+                          color: colorMode === 'light' ? '#86929d' : '#838383',
+                          cursor: 'not-allowed',
+                        }}
+                        onClick={() => {
+                          dispatch(
+                            openModal({
+                              type: 'Launch_Swap',
+                              data: {
+                                publicVaultAddress:
+                                  project.vaults[0].vaultAddress,
+                                  transferredTon:transferredTon,
+                                  hardcap:hardcap,
+                                  balance: hardcap-transferredTon
+
+
+                              },
+                            }),
+                          );
+                        }}
+
+                        _hover={{cursor: 'pointer'}}>
+                        Swap & Send
+                      </Button>
+                    </Flex>
+                  </Flex>
+                  <Flex>
+                    <Flex flexDir={'column'} w="100%">
+                      <Flex justifyContent={'space-between'} w="100%" pt="12px">
+                        <Flex>
+                          <Text
+                            mr="5px"
+                            fontSize={'13px'}
+                            color={
+                              colorMode === 'light' ? '#7e8993' : '#9d9ea5'
+                            }>
+                            {' '}
+                            2. Initialize Vesting Vault
+                          </Text>
+                          <Tooltip
+                            label="Snapshot date must be set 1 week after Deployment completion"
+                            hasArrow
+                            placement="top"
+                            color={
+                              colorMode === 'light' ? '#e6eaee' : '#424242'
+                            }
+                            aria-label={'Tooltip'}
+                            textAlign={'center'}
+                            size={'xs'}>
+                            <Image src={tooltipIcon} />
+                          </Tooltip>
+                        </Flex>
+                        <Link
+                          isExternal
+                          href={
+                            project.vaults[2].vaultAddress &&
+                            network === 'goerli'
+                              ? `https://goerli.etherscan.io/address/${project.vaults[2].vaultAddress}`
+                              : vault.vaultAddress && network !== 'goerli'
+                              ? `https://etherscan.io/address/${project.vaults[2].vaultAddress}`
+                              : ''
+                          }
+                          color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+                          _hover={{color: '#2a72e5'}}
+                          fontWeight="bold"
+                          fontFamily={theme.fonts.fld}>
+                          {project.vaults[1].vaultAddress
+                            ? shortenAddress(project.vaults[2].vaultAddress)
+                            : 'NA'}
+                        </Link>
+                      </Flex>
+                      <Flex w="100%" flexDir={'column'} mt="6px">
+                        <Text
+                          textAlign={'right'}
+                          fontSize="12px"
+                          lineHeight={1}
+                          fontWeight="normal"
+                          color={colorMode === 'dark' ? '#9d9ea5' : '#3a495f'}>
+                          {vestingAmount} TON
+                        </Text>
+                      </Flex>
+                      <Button
+                        fontSize={'11px'}
+                        w={'273px'}
+                        h={'25px'}
+                        mr={'2px'}
+                        mt="12px"
+                        bg={'#257eee'}
+                        color={'#ffffff'}
+                        isDisabled={!sendTON}
+                        _disabled={{
+                          bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+                          color: colorMode === 'light' ? '#86929d' : '#838383',
+                          cursor: 'not-allowed',
+                        }}
+                        onClick={() => {
+                          sendTONtoVesting();
+                        }}
+                        _hover={{cursor: 'pointer'}}>
+                        Send TON
+                      </Button>
+                    </Flex>
                   </Flex>
                 </Flex>
               </GridItem>
@@ -659,7 +816,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 border={themeDesign.border[colorMode]}
                 className={'chart-cell'}
                 mr={'-1px'}
-                h={now >= vault.publicRound2 ? '95px' : ''}>
+                h={now >= vault.publicRound2 ? '245px' : ''}>
                 <Text fontFamily={theme.fonts.fld}>{''}</Text>
               </GridItem>
             </>
@@ -779,7 +936,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                     h={
                       now >= vault.publicRound2
                         ? i === 6 - sTosTier.length - 1
-                          ? '94px'
+                          ? '244px'
                           : ''
                         : ''
                     }

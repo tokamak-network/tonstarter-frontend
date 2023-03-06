@@ -17,7 +17,7 @@ import {
   Image,
   Progress,
 } from '@chakra-ui/react';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {useModal} from 'hooks/useModal';
@@ -27,6 +27,8 @@ import {useERC20Token} from 'hooks/useERC20Token';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import swapArrow from 'assets/svgs/swap_arrow_icon.svg';
 import Line from '../common/Line';
+import {useContract} from 'hooks/useContract';
+import * as vestingAbi from 'services/abis/VestingPublicFund.json';
 
 const VestingClaimModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -36,10 +38,20 @@ const VestingClaimModal = () => {
   const theme = useTheme();
   const {handleCloseModal} = useModal();
 
+  const VestingVaultContract = useContract(
+    data?.data?.vestingVaultAddress,
+    vestingAbi.abi,
+  );
+
+  const claim = useCallback(() => {
+    if (VestingVaultContract) {
+      return VestingVaultContract.claim();
+    }
+  }, [VestingVaultContract]);
+
   return (
     <Modal
-      //   isOpen={data.modal === '' ? true : false}
-      isOpen={false}
+      isOpen={data.modal === 'Launch_Vesting' ? true : false}
       isCentered
       onClose={() => {
         handleCloseModal();
@@ -201,7 +213,8 @@ const VestingClaimModal = () => {
             _active={{background: ''}}
             _focus={{background: ''}}
             fontSize="14px"
-            color="white">
+            color="white"
+            onClick={() => claim()}>
             Claim
           </Button>
         </ModalFooter>

@@ -30,6 +30,10 @@ import {BASE_PROVIDER} from 'constants/index';
 import {DEPLOYED} from 'constants/index';
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import * as PublicSaleLogic from 'services/abis/PublicSaleLogic.json';
+import * as VestingPublicFund from 'services/abis/VestingPublicFund.json';
+import {convertNumber} from 'utils/number';
+import {BigNumber} from 'ethers';
+
 const {TOS_ADDRESS, UniswapV3Factory, NPM_Address} = DEPLOYED;
 
 const provider = BASE_PROVIDER;
@@ -47,28 +51,15 @@ export const Vesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
   const [claimAddress, setClaimAddress] = useState<string>('');
   const [showDate, setShowDate] = useState<boolean>(false);
   const network = BASE_PROVIDER._network.name;
-  const [completedRounds, setCompletedRounds] = useState<string>('2');
+  const [completedRounds, setCompletedRounds] = useState(0);
   const [accTotal, setAccTotal] = useState(0);
   const [accRound, setAccRound] = useState(0);
-const [tosSent, setTosSent] = useState(false)
-
-console.log();
-console.log(network === '');
-
-  useEffect(() => {
-    const initialAmount = 0;
-    const reducer = (amount: any, claim: any) =>
-      amount + claim.claimTokenAllocation;
-    const total = vault.claim.reduce(reducer, initialAmount);
-    setAccTotal(total);
-
-    const claimsCurrentRound = vault.claim.slice(
-      0,
-      Number(completedRounds) + 1,
-    );
-    const roundAccTotal = claimsCurrentRound.reduce(reducer, initialAmount);
-    setAccRound(roundAccTotal);
-  }, [account, project, vault]);
+  const [initialized, setInitialized] = useState(false);
+  const [funds, setFunds] = useState(0);
+  const [totalRounds, setTotalRounds] = useState(0);
+  const [currentClaimAmount, setCurrentClaimAmount] = useState(0);
+  const [currentRnd, setCurrentRnd] = useState(0);
+  const [claimDisabled, setClaimDisabled] = useState(true);
 
   useEffect(() => {
     async function getInfo() {
@@ -76,10 +67,45 @@ console.log(network === '');
         return;
       }
       const signer = getSigner(library, account);
-      const publicSaleLogic = new Contract (project.vaults[0].vaultAddress, PublicSaleLogic.abi, library)
-      const isExchangeTOS = await publicSaleLogic.exchangeTOS()
-      setTosSent(isExchangeTOS)
-      
+      const publicSaleLogic = new Contract(
+        project.vaults[0].vaultAddress,
+        PublicSaleLogic.abi,
+        library,
+      );
+      const vestingVault = new Contract(
+        vault.vaultAddress,
+        VestingPublicFund.abi,
+        library,
+      );
+      const isExchangeTOS = await publicSaleLogic.exchangeTOS();
+
+      const isCurrentSqrtPrice = await vestingVault.currentSqrtPriceX96();
+      setFunds(Number(isCurrentSqrtPrice));
+      setInitialized(isExchangeTOS);
+      // setInitialized(true);
+
+      const currentRound = await vestingVault.currentRound(); //now round
+      const nowClaimRound = await vestingVault.nowClaimRound(); //now claim round
+      const totalClaimCounts = await vestingVault.totalClaimCounts(); // total rounds
+      const totalClaimsAmount = await vestingVault.totalClaimsAmount(); //unit
+      const totalAllocatedAmount = await vestingVault.totalAllocatedAmount(); //unit
+      const calculClaimAmount = await vestingVault.calculClaimAmount(
+        currentRound,
+      ); //claim amount of current round
+      const disabled =
+        (Number(currentRound) > 0 && Number(calculClaimAmount) === 0) ||
+        Number(isCurrentSqrtPrice) === 0;
+
+      setClaimDisabled(disabled);
+
+      setAccTotal(Number(convertNumber({amount: totalAllocatedAmount})));
+      setAccRound(Number(convertNumber({amount: totalClaimsAmount})));
+      setCompletedRounds(
+        Number(nowClaimRound) === 0 ? 0 : Number(nowClaimRound) - 1,
+      );
+      setTotalRounds(Number(totalClaimCounts));
+      setCurrentClaimAmount(Number(calculClaimAmount));
+      setCurrentRnd(Number(currentRound));
     }
     getInfo();
   }, [account, project, vault, library, transactionType, blockNumber]);
@@ -111,8 +137,6 @@ console.log(network === '');
     },
   };
 
-
-  
   return (
     <Flex flexDirection={'column'} w={'1030px'} p={'0px'}>
       <Grid templateColumns="repeat(2, 1fr)" w={'100%'} mb={'30px'}>
@@ -131,30 +155,7 @@ console.log(network === '');
               color={colorMode === 'light' ? '#353c48' : 'white.0'}>
               Token
             </Text>
-            {vault.isDeployed ? (
-              <Flex alignItems={'center'}>
-                <Text mr={'5px'}>
-                  {Number(vault.vaultTokenAllocation).toLocaleString()}
-                  {` `}
-                  {project.tokenSymbol}
-                </Text>
-                <Text
-                  letterSpacing={'1.3px'}
-                  fontSize={'13px'}
-                  color={'#7e8993'}>
-                  {(
-                    (vault.vaultTokenAllocation /
-                      project.totalTokenAllocation) *
-                    100
-                  )
-                    .toString()
-                    .match(/^\d+(?:\.\d{0,2})?/)}
-                  %
-                </Text>
-              </Flex>
-            ) : (
-              <></>
-            )}
+            <Text mr={'5px'}>{Number(accTotal).toLocaleString()} TON</Text>
           </GridItem>
           <GridItem
             border={themeDesign.border[colorMode]}
@@ -171,7 +172,7 @@ console.log(network === '');
             <Link
               isExternal
               href={
-                vault.adminAddress && network === "goerli"
+                vault.adminAddress && network === 'goerli'
                   ? `https://goerli.etherscan.io/address/${vault.adminAddress}`
                   : vault.adminAddress && network !== 'goerli'
                   ? `https://etherscan.io/address/${vault.adminAddress}`
@@ -223,7 +224,7 @@ console.log(network === '');
               color={colorMode === 'light' ? '#353c48' : 'white.0'}>
               Claim
             </Text>
-            {!tosSent? (
+            {!initialized ? (
               <Text fontSize={'11px'} w="260px">
                 To initiate a vesting round, please go to{' '}
                 <span
@@ -237,6 +238,22 @@ console.log(network === '');
                 </span>{' '}
                 and send funds to the initial liquidity vault
               </Text>
+            ) : funds === 0 ? (
+              <Flex>
+                <Text fontSize={'11px'} w="260px">
+                  Funds was sent to the initial liquidity vault, but You need to
+                  push set price button in{' '}
+                  <span
+                    style={{
+                      color: '#257eee',
+                      textDecoration: 'underline',
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => setVaultInfo(project.vaults[1], 1)}>
+                    Initial Liquidity Vault{' '}
+                  </span>
+                </Text>
+              </Flex>
             ) : (
               <Flex flexDir={'column'} fontSize={'14px'}>
                 <Flex justifyContent="flex-end">
@@ -244,7 +261,7 @@ console.log(network === '');
                   <Text
                     ml="3px"
                     color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
-                    [Total {vault.claim.length}]
+                    [Total {totalRounds}]
                   </Text>
                 </Flex>
                 <Flex justifyContent="flex-end">
@@ -252,7 +269,10 @@ console.log(network === '');
                   <Text
                     ml="3px"
                     color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
-                    {((accRound / accTotal) * 100).toLocaleString()}% claimed
+                    {accRound === 0 || accTotal === 0
+                      ? 0
+                      : ((accRound / accTotal) * 100).toLocaleString()}
+                    % claimed
                   </Text>
                 </Flex>
               </Flex>
@@ -263,51 +283,67 @@ console.log(network === '');
             borderBottom={'none'}
             className={'chart-cell'}
             fontFamily={theme.fonts.fld}>
-            {/* <Flex alignItems={'baseline'} fontWeight={'bold'}>
-              {' '}
-              <Text
-                mr={'3px'}
-                fontSize={'20px'}
-                color={colorMode === 'light' ? '#353c48' : 'white.0'}>
-                {distributable.toLocaleString()}
-              </Text>{' '}
-              <Text
-                color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}
-                fontSize={'13px'}>
-                {project.tokenSymbol}
-              </Text>
-            </Flex> */}
-            {/* <Button
+            <Text
               fontSize={'13px'}
-              w={'100px'}
-              h={'32px'}
-              bg={'#257eee'}
-              color={'#ffffff'}
-              isDisabled={distributeDisable}
-              _disabled={{
-                color: colorMode === 'light' ? '#86929d' : '#838383',
-                bg: colorMode === 'light' ? '#e9edf1' : '#353535',
-                cursor: 'not-allowed',
-              }}
-              _hover={
-                distributeDisable
-                  ? {}
-                  : {
-                      cursor: 'pointer',
-                    }
-              }
-              _active={
-                distributeDisable
-                  ? {}
-                  : {
-                      background: '#2a72e5',
-                      border: 'solid 1px #2a72e5',
-                      color: '#fff',
-                    }
-              }
-              onClick={() => claim()}>
-              Distribute
-            </Button> */}
+              w={'156px'}
+              color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+              {' '}
+              Current vesting round
+            </Text>
+            <Flex>
+              <Flex flexDir={'column'} mr="25px">
+                <Text
+                  fontSize={'16px'}
+                  color={colorMode === 'light' ? '#353c48' : '#ffffff'}
+                  lineHeight="15px">
+                  {currentClaimAmount.toLocaleString()}
+                  <span
+                    style={{
+                      fontSize: '12px',
+                      color: colorMode === 'light' ? '7e8993' : '#9d9ea5',
+                    }}>
+                    {' '}
+                    TON
+                  </span>
+                </Text>
+                <Text
+                  fontSize={'11px'}
+                  color={
+                    colorMode === 'light' ? '#7e8993' : '#9d9ea5'
+                  }>{`(Round ${currentRnd})`}</Text>
+              </Flex>
+              <Button
+                w={'100px'}
+                h={'32px'}
+                bg={'#257eee'}
+                color={'#ffffff'}
+                disabled={claimDisabled}
+                _disabled={{
+                  color: colorMode === 'light' ? '#86929d' : '#838383',
+                  bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+                  cursor: 'not-allowed',
+                }}
+                _hover={
+                  claimDisabled
+                    ? {}
+                    : {
+                        cursor: 'pointer',
+                      }
+                }
+                _active={
+                  claimDisabled
+                    ? {}
+                    : {
+                        background: '#2a72e5',
+                        border: 'solid 1px #2a72e5',
+                        color: '#fff',
+                      }
+                }
+                // onClick={()=>{}}
+              >
+                Claim
+              </Button>
+            </Flex>
           </GridItem>
 
           <GridItem
