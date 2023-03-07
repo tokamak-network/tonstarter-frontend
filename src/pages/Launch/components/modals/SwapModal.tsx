@@ -62,7 +62,9 @@ const SwapModal = () => {
       if (PublicVaultContract && WTON_BALANCE !== '-') {
         const isExchangeTOS = await PublicVaultContract.exchangeTOS();
 
-        const bal = isExchangeTOS ? WTON_BALANCE : (data?.data?.hardcap).toString();
+        const bal = isExchangeTOS
+          ? WTON_BALANCE
+          : (data?.data?.hardcap).toString();
         setBalance(bal);
       }
     };
@@ -70,7 +72,6 @@ const SwapModal = () => {
     getDetails();
   }, [PublicVaultContract, WTON_BALANCE, data, transactionType, blockNumber]);
 
-  
   const maxAmount = useSwapMax(Number(balance.replaceAll(',', '')));
   const maxInput = useSwapMax(Number(inputAmount.replaceAll(',', '')));
 
@@ -92,10 +93,16 @@ const SwapModal = () => {
 
   const priceImpact = useMemo(() => {
     const numTosAmountOut = Number(tosAmountOut.replaceAll(',', ''));
+
     const numBasicPrice = Number(basicPrice.replaceAll(',', ''));
+
     const numInputAmount = Number(inputAmount.replaceAll(',', ''));
-    const priceDiff = numTosAmountOut / numInputAmount / numBasicPrice;
-    const result = 100 - priceDiff * 100;
+
+    const theoreticalValue = numInputAmount * numBasicPrice;
+
+    const priceDiff = (theoreticalValue - numTosAmountOut) / theoreticalValue;
+    const result = priceDiff * 100;
+
     return isNaN(result) || result === Infinity || result === -Infinity
       ? '-'
       : commafy(result);
@@ -309,13 +316,13 @@ const SwapModal = () => {
                 lineHeight={1.33}>
                 Price Impact : {priceImpact}%
               </Text>
-              <Text
+              {/* <Text
                 fontSize={'12px'}
                 fontWeight={500}
                 color={colorMode === 'dark' ? '#9d9ea5' : '#808992'}
                 lineHeight={1.33}>
                 Average Price Impact : 5%
-              </Text>
+              </Text> */}
             </Flex>
             {/* progress bar part                                   */}
             <Flex

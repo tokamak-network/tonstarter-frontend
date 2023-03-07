@@ -65,11 +65,14 @@ export const useSwapMax = (amountIn: number) => {
     
             const afterAmountIn = await QUOTER_CONTRACT.callStatic.quoteExactOutput(
               outputPath,
-              limitParameters.amountOutMinimum,
-            );
+              limitParameters.amountOutMinimum,//wei
+            ); //ray
+
+
             const afterAmountIn2 =
               Number(ethers.utils.formatUnits(afterAmountIn, 27)) * 1.005;
-    
+
+
               const result =  isMax === true
               ? amountIn.toLocaleString()
               : afterAmountIn2.toLocaleString()
