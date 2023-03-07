@@ -66,10 +66,11 @@ export const SwapModal = () => {
     setValue(0);
   };
 
+
   const priceImpact = useMemo(() => {
     const numTosAmountOut = Number(tosAmountOut.replaceAll(',', ''));
     const numBasicPrice = Number(basicPrice.replaceAll(',', ''));
-    
+
     const numInputAmount = value;
     const priceDiff = numTosAmountOut / numInputAmount / numBasicPrice;
     const result = 100 - priceDiff * 100;

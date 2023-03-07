@@ -147,9 +147,14 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
 
       const wtonBalance = await WTON.balanceOf(vault.vaultAddress);
       const wt = convertNumber({amount: wtonBalance, type: 'ray'});
+      
       const hc = convertNumber({amount: hardCapCalc});
+      
       setHardcap(Number(hc));
-      const transferred = Number(hc) - Number(wt);
+      const isExchangeTOS = await PublicSaleContract.exchangeTOS();
+  
+      const transferred = isExchangeTOS?  Number(hc) - Number(wt) : 0;
+
       setTransferredTon(transferred);
       const totalExPurchasedAmount =
         await PUBLICSALE_CONTRACT.totalExPurchasedAmount();
@@ -161,7 +166,8 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
         Number(convertNumber({amount: hardCapCalc}));
       setVestingAmount(xxAmount);
 
-      const isExchangeTOS = await PublicSaleContract.exchangeTOS();
+     
+      
       const fundsInVesting = await vestingVaultContract.currentSqrtPriceX96();
       // console.log(Number(fundsInVesting) === 0);
 
@@ -554,7 +560,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                         w={'273px'}
                         h={'25px'}
                         mr={'2px'}
-                        isDisabled={transferredTon === hardcap}
+                        // isDisabled={transferredTon === hardcap}
                         _disabled={{
                           bg: colorMode === 'light' ? '#e9edf1' : '#353535',
                           color: colorMode === 'light' ? '#86929d' : '#838383',

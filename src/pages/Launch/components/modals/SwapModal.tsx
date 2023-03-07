@@ -30,33 +30,65 @@ import {useSwapModal} from '@Launch/hooks/useSwapModal';
 import TokamakSymbol from 'assets/svgs/tokamak_favicon.svg';
 import TosSymbol from 'assets/svgs/tos_symbol.svg';
 import commafy from 'utils/commafy';
-
+import {selectTransactionType} from 'store/refetch.reducer';
 import * as PublicSaleLogicAbi from 'services/abis/PublicSaleLogic.json';
 import {useContract} from 'hooks/useContract';
 import {convertToRay, convertToWei} from 'utils/number';
-
+import * as LibPublicSale from 'services/abis/LibPublicSale.json';
+import {useSwapMax} from '@Launch/hooks/useSwapMax';
 const SwapModal = () => {
   const {data} = useAppSelector(selectModalType);
-  const {TON_ADDRESS, WTON_ADDRESS, PublicSaleVault, pools} = DEPLOYED;
+  const {pools} = DEPLOYED;
   const {account, library} = useActiveWeb3React();
+  const [balance, setBalance] = useState<string>('0');
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {handleCloseModal} = useModal();
   const [inputAmount, setInputAmount] = useState<string>('0');
+  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
+  const [max, setMax] = useState<string>('0');
   const PublicVaultContract = useContract(
     data?.data?.publicVaultAddress,
     PublicSaleLogicAbi.abi,
   );
 
-  const {WTON_BALANCE, tosAmountOut} = useSwapModal(
-    Number(inputAmount.replaceAll(',', '')),
-    data?.data?.publicVaultAddress
-  );
-  const {tosAmountOut: basicPrice} = useSwapModal(
+  const {WTON_BALANCE, tosAmountOut: basicPrice} = useSwapModal(
     1,
     data?.data?.publicVaultAddress,
-  
   );
+
+  useEffect(() => {
+    const getDetails = async () => {
+      if (PublicVaultContract && WTON_BALANCE !== '-') {
+        const isExchangeTOS = await PublicVaultContract.exchangeTOS();
+
+        const bal = isExchangeTOS ? WTON_BALANCE : (data?.data?.hardcap).toString();
+        setBalance(bal);
+      }
+    };
+
+    getDetails();
+  }, [PublicVaultContract, WTON_BALANCE, data, transactionType, blockNumber]);
+
+  
+  const maxAmount = useSwapMax(Number(balance.replaceAll(',', '')));
+  const maxInput = useSwapMax(Number(inputAmount.replaceAll(',', '')));
+
+  const {tosAmountOut} = useSwapModal(
+    isNaN(Number(inputAmount.replaceAll(',', ''))) ||
+      Number(inputAmount.replaceAll(',', '')) === 0
+      ? 0
+      : Number(inputAmount.replaceAll(',', '')),
+    data?.data?.publicVaultAddress,
+  );
+
+  useEffect(() => {
+    if (Number(inputAmount.replaceAll(',', '')) !== 0) {
+      setMax(maxInput);
+    } else {
+      setMax(maxAmount);
+    }
+  }, [inputAmount, maxAmount, maxInput]);
 
   const priceImpact = useMemo(() => {
     const numTosAmountOut = Number(tosAmountOut.replaceAll(',', ''));
@@ -64,20 +96,17 @@ const SwapModal = () => {
     const numInputAmount = Number(inputAmount.replaceAll(',', ''));
     const priceDiff = numTosAmountOut / numInputAmount / numBasicPrice;
     const result = 100 - priceDiff * 100;
-
     return isNaN(result) || result === Infinity || result === -Infinity
       ? '-'
       : commafy(result);
   }, [tosAmountOut, basicPrice, inputAmount]);
-  
+
   const exchangeTonToTos = useCallback(() => {
     console.log('go');
     console.log(data);
 
     //https://www.notion.so/onther/PublicSale-Front-interface-b139403abc0f41df9af75559eba87e58
     try {
-      console.log(PublicVaultContract, inputAmount, pools);
-
       if (PublicVaultContract && inputAmount && pools) {
         const inputAmountRay = convertToRay(inputAmount);
         const {TOS_WTON_POOL} = pools;
@@ -203,7 +232,7 @@ const SwapModal = () => {
                 <Text
                   fontSize={'12px'}
                   color={colorMode === 'dark' ? '#9d9ea5' : '#808992'}>
-                  Balance: {WTON_BALANCE} {'WTON'}
+                  Balance: {balance} {'WTON'}
                 </Text>
                 <Button
                   fontSize={'12px'}
@@ -220,9 +249,7 @@ const SwapModal = () => {
                       ? '1px solid #535353'
                       : '1px solid #d7d9df'
                   }
-                  onClick={() =>
-                    setInputAmount(WTON_BALANCE.replace(/,/g, ''))
-                  }>
+                  onClick={() => setInputAmount(max.replace(/,/g, ''))}>
                   MAX
                 </Button>
               </Flex>
@@ -320,7 +347,9 @@ const SwapModal = () => {
                     lineHeight={'27px'}
                     verticalAlign={'bottom'}>
                     {(
-                      ((Number(data?.data?.transferredTon)+Number(inputAmount)) / data?.data?.hardcap) *
+                      ((Number(data?.data?.transferredTon) +
+                        Number(inputAmount)) /
+                        data?.data?.hardcap) *
                       100
                     ).toLocaleString()}{' '}
                     %
@@ -332,7 +361,8 @@ const SwapModal = () => {
                   height={'23px'}
                   lineHeight={'27px'}
                   verticalAlign={'bottom'}>
-                  {(Number(data?.data?.transferredTon)+Number(inputAmount))} /{data?.data?.hardcap} TON
+                  {Number(data?.data?.transferredTon) + Number(inputAmount)} /
+                  {data?.data?.hardcap} TON
                 </Text>
               </Box>
               <Progress
@@ -341,7 +371,9 @@ const SwapModal = () => {
                 mt={'5px'}
                 borderRadius={'100px'}
                 value={
-                  ((data?.data?.transferredTon+Number(inputAmount)) / data?.data?.hardcap) * 100
+                  ((data?.data?.transferredTon + Number(inputAmount)) /
+                    data?.data?.hardcap) *
+                  100
                 }></Progress>
             </Flex>
             <Text margin={'0px 25px 25px'} fontSize="12px" textAlign={'center'}>
@@ -367,6 +399,7 @@ const SwapModal = () => {
             _focus={{background: ''}}
             fontSize="14px"
             color="white"
+            disabled={Number(balance) < Number(inputAmount)}
             onClick={() => exchangeTonToTos()}>
             Swap & Send
           </Button>
