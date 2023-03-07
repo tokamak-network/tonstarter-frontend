@@ -108,7 +108,7 @@
     "codegen": "graphql-codegen --config codegen.yml",
     "test": "craco test",
     "eject": "react-scripts eject",
-    "deployV": "node /src/pages/Launch/initVaults.ts"
+    "deployV": "node deployProject.js"
   },
   "eslintConfig": {
     "extends": [

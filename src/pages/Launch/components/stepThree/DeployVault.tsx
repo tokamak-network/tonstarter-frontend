@@ -58,7 +58,6 @@ import commafy from 'utils/commafy';
 import {convertTimeStamp} from 'utils/convertTIme';
 import {selectLaunch, setTempHash} from '@Launch/launch.reducer';
 import bn from 'bignumber.js';
-import { deployVaults } from '@Launch/tests/initVaults';
 
 export type DeployVaultProp = {
   vault: VaultAny;
@@ -91,7 +90,6 @@ export function getContract(vaultType: VaultType, library: LibraryType) {
         InitialLiquidityAbi.abi,
         library,
       );
-      console.log('initial liquidity contract', contract)
       return contract;
     }
     case 'Vesting': {
@@ -1808,7 +1806,7 @@ export const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                         infoList,
                         secondInfoList: infoList2,
                         stosTierList,
-                        func: () => mockDeployVaults(),
+                        func: () => vaultDeploy(),
                         close: () =>
                           setFieldValue(
                             `vaults[${selectedVaultDetail?.index}].isDeployedErr`,
@@ -1835,7 +1833,7 @@ export const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                         secondInfoList: infoList2,
                         stosTierList,
                         isSetStep: true,
-                        func: () => mockDeployVaults(),
+                        func: () => vaultDeploy(),
                         close: () =>
                           setFieldValue(
                             `vaults[${selectedVaultDetail?.index}].isDeployedErr`,
