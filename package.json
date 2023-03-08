@@ -2,6 +2,7 @@
   "name": "tokamak-ido",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@apollo/client": "^3.3.21",
     "@chakra-ui/icons": "^1.0.13",
@@ -108,7 +109,7 @@
     "codegen": "graphql-codegen --config codegen.yml",
     "test": "craco test",
     "eject": "react-scripts eject",
-    "deployV": "node deployProject.js"
+    "deploy": "node ./scripts/deployProject.mjs"
   },
   "eslintConfig": {
     "extends": [
