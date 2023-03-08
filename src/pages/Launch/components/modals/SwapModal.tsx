@@ -108,9 +108,7 @@ const SwapModal = () => {
       : commafy(result);
   }, [tosAmountOut, basicPrice, inputAmount]);
 
-  const exchangeTonToTos = useCallback(() => {
-    console.log('go');
-    console.log(data);
+  const exchangeTonToTos = useCallback(() => {    
 
     //https://www.notion.so/onther/PublicSale-Front-interface-b139403abc0f41df9af75559eba87e58
     try {
@@ -138,7 +136,7 @@ const SwapModal = () => {
       );
     }
   }, [inputAmount, setInputAmount]);
-
+  
   return (
     <Modal
       isOpen={data.modal === 'Launch_Swap' ? true : false}
@@ -405,8 +403,13 @@ const SwapModal = () => {
             _active={{background: ''}}
             _focus={{background: ''}}
             fontSize="14px"
+            _disabled={{
+              bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+              color: colorMode === 'light' ? '#86929d' : '#838383',
+              cursor: 'not-allowed',
+            }}
             color="white"
-            disabled={Number(balance) < Number(inputAmount)}
+            disabled={Number(balance) < Number(inputAmount) || Number(priceImpact)> 10}
             onClick={() => exchangeTonToTos()}>
             Swap & Send
           </Button>

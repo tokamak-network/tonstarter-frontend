@@ -62,7 +62,6 @@ export const SwapModal = () => {
     }
   }, [inputAmount, maxAmount, maxInput]);
 
-console.log('max', max);
 
   const {tosAmountOut: basicPrice} = useSwapModal(1);
 

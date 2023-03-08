@@ -4,7 +4,7 @@ import {useEffect, useState} from 'react';
 import * as QuoterAbi from 'services/abis/Quoter.json';
 import * as LibPublicSale from 'services/abis/LibPublicSale.json';
 import {ethers} from 'ethers';
-import { convertToRay} from 'utils/number';
+import { convertToRay,convertToWei} from 'utils/number';
 
 export const useSwapMax = (amountIn: number) => {
     const {
@@ -59,18 +59,16 @@ export const useSwapMax = (amountIn: number) => {
             const amountOutMinimum3 =
               Number(ethers.utils.formatUnits(amountOutMinimum2.toString(), 18)) *
               0.995;
-    
+                  
             const isMax = amountOutMinimum3 > amountOutMinimum;
     
             const afterAmountIn = await QUOTER_CONTRACT.callStatic.quoteExactOutput(
               outputPath,
-              limitParameters.amountOutMinimum,//wei
+              convertToWei(String(amountOutMinimum3)),//wei
             ); //ray
 
-
             const afterAmountIn2 =
-              Number(ethers.utils.formatUnits(afterAmountIn, 27)) * 1.005;
-
+              Number(ethers.utils.formatUnits(afterAmountIn, 27)) * 1.005;              
 
               const result =  isMax === true
               ? amountIn.toLocaleString()
