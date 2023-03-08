@@ -78,8 +78,10 @@ export const useSwapModal = (amountIn: number, vaultAddress?: string) => {
 
         const result = Number(
           ethers.utils.formatUnits(amountOut_BN.toString(), 18),
-        ).toLocaleString();
+        ).toString();
 
+        // console.log('result',result);
+        
         return setTosAmountOut(result ?? '-');
       }
       return setTosAmountOut('-');

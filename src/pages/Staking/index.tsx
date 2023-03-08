@@ -468,13 +468,13 @@ export const Staking = () => {
           />
         </Box>
       </Container>
-      <StakeOptionModal />
+      {/* <StakeOptionModal />
       <UnstakeOptionModal />
-      <ClaimOptionModal />
+      <ClaimOptionModal /> */}
       <ManageModal />
-      <StakeInLayer2Modal />
+      {/* <StakeInLayer2Modal />
       <UnStakeFromLayer2Modal />
-      <WithdrawalOptionModal />
+      <WithdrawalOptionModal /> */}
       <SwapModal />
       <PowerTonSwap />
     </Fragment>

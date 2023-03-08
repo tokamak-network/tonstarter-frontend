@@ -16,12 +16,11 @@ export const useSwapMax = (amountIn: number) => {
       } = DEPLOYED;
       const QUOTER_CONTRACT = useContract(Quoter, QuoterAbi.abi);
       const LibraryContract = useContract(LibPublicSaleLogic, LibPublicSale.abi);
-      const [maxAmount, setMaxAmount] = useState<string>('cc');
+      const [maxAmount, setMaxAmount] = useState<string>('0');
 
       useEffect(() => {        
         async function callData() {
           if (QUOTER_CONTRACT  && LibraryContract) { 
-                       
             const FEE_SIZE = 3;
             const encodePath = (path: any, fees: any) => {
               if (path.length !== fees.length + 1) {

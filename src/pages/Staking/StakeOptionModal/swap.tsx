@@ -14,6 +14,8 @@ import {
   Image,
   useColorMode,
   Avatar,
+  NumberInput,
+  NumberInputField,
 } from '@chakra-ui/react';
 import React, {useCallback, useState, useEffect, useMemo} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
@@ -31,54 +33,79 @@ import TON_SYMBOL from 'assets/tokens/TON_symbol_nobg.svg';
 import TOS_SYMBOL from 'assets/tokens/TOS_symbol.svg';
 import TOS_symbolDark from 'assets/tokens/TOS_symbolDark.svg';
 import {useSwapModal} from '@Launch/hooks/useSwapModal';
+import {useSwapMax} from '@Launch/hooks/useSwapMax';
 
 export const SwapModal = () => {
   const {sub} = useAppSelector(selectModalType);
   const {account, library} = useActiveWeb3React();
+  const [inputAmount, setInputAmount] = useState<string>('0');
+  const [max, setMax] = useState<string>('0');
+
   const {
     data: {contractAddress, swapBalance, originalSwapBalance, currentTosPrice},
   } = sub;
 
   const theme = useTheme();
   const {colorMode} = useColorMode();
-  const [value, setValue] = useState<number>(0);
-  const [swapValue, setSwapValue] = useState<number>(0);
 
   const {handleCloseConfirmModal} = useModal();
   const {checkBalance} = useCheckBalance();
 
-  const setMax = useCallback((_e) => setValue(swapBalance), [swapBalance]);
-
-  const {tosAmountOut: basicPrice} = useSwapModal(1);
-  const {WTON_BALANCE, tosAmountOut} = useSwapModal(value);
-
-  const handleChange = useCallback((e) => {
-    setValue(e.target.value);
-    /*eslint-disable*/
-  }, []);
+  const maxAmount = useSwapMax(Number(swapBalance));
+  const maxInput = useSwapMax(Number(inputAmount.replaceAll(',', '')));
 
   useEffect(() => {
-    setSwapValue(value * Number(currentTosPrice));
-  }, [value, currentTosPrice]);
+    if (Number(inputAmount.replaceAll(',', '')) !== 0) {
+      setMax(maxInput);
+    } else {
+      setMax(maxAmount);
+    }
+  }, [inputAmount, maxAmount, maxInput]);
+
+console.log('max', max);
+
+  const {tosAmountOut: basicPrice} = useSwapModal(1);
+
+  const {tosAmountOut} = useSwapModal(
+    isNaN(Number(inputAmount.replaceAll(',', ''))) ||
+      Number(inputAmount.replaceAll(',', '')) === 0
+      ? 0
+      : Number(inputAmount.replaceAll(',', '')),
+   
+  );
 
   const handleCloseModal = () => {
     handleCloseConfirmModal();
-    setValue(0);
+    setInputAmount('0');
   };
-
 
   const priceImpact = useMemo(() => {
     const numTosAmountOut = Number(tosAmountOut.replaceAll(',', ''));
+
     const numBasicPrice = Number(basicPrice.replaceAll(',', ''));
 
-    const numInputAmount = value;
-    const priceDiff = numTosAmountOut / numInputAmount / numBasicPrice;
-    const result = 100 - priceDiff * 100;
+    const numInputAmount = Number(inputAmount.replaceAll(',', ''));
+
+    const theoreticalValue = numInputAmount * numBasicPrice;
+
+    const priceDiff = (theoreticalValue - numTosAmountOut) / theoreticalValue;
+    const result = priceDiff * 100;
 
     return isNaN(result) || result === Infinity || result === -Infinity
       ? '-'
       : commafy(result);
-  }, [tosAmountOut, basicPrice, value]);
+  }, [tosAmountOut, basicPrice,inputAmount]);
+
+  useEffect(() => {
+    if (inputAmount.length > 1 && inputAmount.startsWith('0')) {
+      setInputAmount(inputAmount.slice(1, inputAmount.length));
+    }
+    if (inputAmount.split('.')[1] !== undefined) {
+      return setInputAmount(
+        `${inputAmount.split('.')[0]}.${inputAmount.split('.')[1].slice(0, 2)}`,
+      );
+    }
+  }, [inputAmount, setInputAmount]);
 
   return (
     <Modal
@@ -157,23 +184,38 @@ export const SwapModal = () => {
                   lineHeight={'24px'}>
                   TON
                 </Text>
-                <Input
-                  h={'24px'}
-                  variant={'outline'}
-                  borderWidth={0}
-                  textAlign={'right'}
-                  value={value}
-                  onChange={handleChange}
-                  placeholder={'0.00'}
-                  fontSize={20}
-                  fontWeight={'bold'}
-                  _placeholder={{
-                    color: '#dee4ef',
-                  }}
-                  _focus={{
-                    borderWidth: 0,
-                  }}
-                />
+                <NumberInput
+                  h="24px"
+                  value={Number(inputAmount) <= 0 ? 0 : inputAmount}
+                  onChange={(value) => {
+                    if (
+                      (value === '0' || value === '00') &&
+                      value.length <= 2
+                    ) {
+                      return null;
+                    }
+                    if (value === '') {
+                      return setInputAmount('0');
+                    }
+                    return setInputAmount(value);
+                  }}>
+                  <NumberInputField
+                    placeholder="0.00"
+                    h="24px"
+                    textAlign={'right'}
+                    errorBorderColor="red.300"
+                    verticalAlign={'sub'}
+                    fontSize={20}
+                    fontWeight={'bold'}
+                    border="none"
+                    _focus={{
+                      borderWidth: 0,
+                    }}
+                    pr="0px"
+                    _active={{
+                      borderWidth: 0,
+                    }}></NumberInputField>
+                </NumberInput>
               </Flex>
               <Flex alignItems={'center'} pb={'14px'} pt={'13px'}>
                 <Text
@@ -190,7 +232,7 @@ export const SwapModal = () => {
                   h={'20px'}
                   fontSize={12}
                   fontWeight={600}
-                  onClick={setMax}
+                  onClick={() => setInputAmount(max.replace(/,/g, ''))}
                   type={'button'}
                   variant="outline"
                   borderColor={colorMode === 'dark' ? '#535353' : '#9d9ea5'}
@@ -233,7 +275,8 @@ export const SwapModal = () => {
                 justifyContent={'space-between'}
                 alignItems={'center'}
                 pt={'16px'}>
-                <Avatar
+               <Flex>
+               <Avatar
                   src={colorMode === 'light' ? TOS_SYMBOL : TOS_symbolDark}
                   backgroundColor={'transparent'}
                   bg="transparent"
@@ -257,26 +300,17 @@ export const SwapModal = () => {
                   lineHeight={'24px'}>
                   TOS
                 </Text>
-                <Input
-                  h={'24px'}
-                  variant={'outline'}
-                  borderWidth={0}
-                  textAlign={'right'}
-                  value={
-                    isNaN(Number(swapValue))
-                      ? '0'
-                      : Number(swapValue).toFixed(2)
-                  }
-                  placeholder={'0.00'}
-                  fontSize={20}
+               </Flex>
+                
+
+                <Text
+                  fontFamily={theme.fonts.roboto}
+                  color={colorMode === 'light' ? '#3d495d' : '#ffffff'}
                   fontWeight={'bold'}
-                  _placeholder={{
-                    color: '#dee4ef',
-                  }}
-                  _focus={{
-                    borderWidth: 0,
-                  }}
-                />
+                  lineHeight={1.5}
+                  fontSize="20px">
+                  {Number(inputAmount) <= 0 ? '0.00' : commafy(tosAmountOut)}
+                </Text>
               </Flex>
               <Flex alignItems={'center'} pb={'16px'} pt={'13px'}>
                 <Flex flexDir={'column'} h={'30px'}>
@@ -285,7 +319,7 @@ export const SwapModal = () => {
                     fontWeight={500}
                     color={colorMode === 'dark' ? '#9d9ea5' : '#808992'}
                     lineHeight={1.33}>
-                    1 TON = {basicPrice} TOS
+                    1 TON = {commafy(basicPrice)} TOS
                   </Text>
                   <Text
                     fontSize={'12px'}
@@ -317,17 +351,18 @@ export const SwapModal = () => {
             borderBottom={
               colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
             }
-            mb={'25px'}></Stack> */} 
-            { Number(priceImpact) >=  10?   <Text
-            margin={'0px 25px 25px'}
-            fontSize="12px"
-            textAlign={'center'}
-            color={'#ff3b3b'}
-            mt="30px">
-           Price impact has to be less than 10%
-          </Text>: null
-            }
-           
+            mb={'25px'}></Stack> */}
+          {Number(priceImpact) >= 10 ? (
+            <Text
+              margin={'0px 25px 25px'}
+              fontSize="12px"
+              textAlign={'center'}
+              color={'#ff3b3b'}
+              mt="30px">
+              Price impact has to be less than 10%
+            </Text>
+          ) : null}
+
           <Text
             margin={'0px 25px 25px'}
             fontSize="12px"
@@ -352,11 +387,11 @@ export const SwapModal = () => {
               _hover={{...theme.btnHover}}
               onClick={() => {
                 const isBalance = checkBalance(
-                  Number(value),
+                  Number(inputAmount),
                   Number(swapBalance),
                 );
                 if (isBalance) {
-                  const amountRay = convertToRay(value.toString());
+                  const amountRay = convertToRay(inputAmount.toString());
                   swapWTONtoTOS({
                     userAddress: account,
                     amount:

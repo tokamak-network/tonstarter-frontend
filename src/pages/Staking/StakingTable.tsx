@@ -455,9 +455,10 @@ export const StakingTable: FC<StakingTableProps> = ({
                           <>
                             <Box ml={'10px'} mr={'12px'}>
                               <TokenImage imageLink={TON_SYMBOL}></TokenImage>
+                           
                             </Box>
                             <Text w={'176px'}>{name}</Text>
-                            <Button onClick={()=>openModal({type: 'manage', data: {...data}})}>Manage</Button>
+                            <Button onClick={()=>openModal({type: 'manage', data: {...data}})}>manage</Button>
 
                             <Flex
                               justifyContent="flex-start"

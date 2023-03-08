@@ -298,7 +298,7 @@ const SwapModal = () => {
                   fontWeight={'bold'}
                   lineHeight={1.5}
                   fontSize="20px">
-                  {Number(inputAmount) <= 0 ? '0.00' : tosAmountOut}
+                  {Number(inputAmount) <= 0 ? '0.00' : commafy(tosAmountOut)}
                 </Text>
               </Flex>
               <Text
@@ -307,7 +307,7 @@ const SwapModal = () => {
                 fontWeight={500}
                 color={colorMode === 'dark' ? '#9d9ea5' : '#808992'}
                 lineHeight={1.33}>
-                1 TON = {basicPrice} TOS
+                1 TON = {commafy(basicPrice)} TOS
               </Text>
               <Text
                 fontSize={'12px'}
