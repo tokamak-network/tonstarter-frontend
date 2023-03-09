@@ -109,7 +109,7 @@
     "codegen": "graphql-codegen --config codegen.yml",
     "test": "craco test",
     "eject": "react-scripts eject",
-    "deploy": "node ./scripts/deployProject.mjs"
+    "deploy": "node ./scripts/deployProject.js"
   },
   "eslintConfig": {
     "extends": [
