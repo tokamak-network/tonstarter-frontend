@@ -50,7 +50,7 @@ const SwapModal = () => {
   const PublicVaultContract = useContract(
     data?.data?.publicVaultAddress,
     PublicSaleLogicAbi.abi,
-  );
+  );  
 
   const {WTON_BALANCE, tosAmountOut: basicPrice} = useSwapModal(
     1,
@@ -180,7 +180,7 @@ const SwapModal = () => {
               h="78px"
               border={
                 colorMode === 'light'
-                  ? '1px solid #d7d9df'
+                  ? '1px solid #d7d9df' 
                   : '1px solid #535353'
               }
               borderRadius="10px"
