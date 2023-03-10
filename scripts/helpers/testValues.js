@@ -4,7 +4,7 @@ const monthGapTimeStamp = (currentTimeStamp, monthes) => {
     const oneMonthGap = 2629743;
     return currentTimeStamp + oneMonthGap * monthes;
   };
-  export const testValue = () => {
+ const testValue = () => {
     //Plus 15 min to currentTime
     const currentTimeStamp = Math.floor(Date.now() / 1000 + 900);
     // const currentTimeStamp = moment(Date.now()).unix() + 1800;
@@ -301,3 +301,7 @@ const monthGapTimeStamp = (currentTimeStamp, monthes) => {
     return defaultData;
   };
   
+
+  module.exports = {
+    testValue,
+  };
