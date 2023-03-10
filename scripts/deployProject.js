@@ -1,6 +1,7 @@
-import fs from 'fs';
-import {testValue } from './helpers/testValues.js';
-import { ethers } from "ethers";
+const fs = require('fs');
+const { testValue } = require('./helpers/testValues.js');
+const { ethers } = require('ethers');
+
 
 const ERC20AFACTORY_ADDRESS = '0xb7a8115C3D45f87C121baa19092938EFaC569e40';
 const InitialLiquidityVault = '0x174e97B891701D207BD48087Fe9e3b3d10ed7c99';
