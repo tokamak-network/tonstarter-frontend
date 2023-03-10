@@ -181,14 +181,6 @@ export const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
     }
   })[0];
 
-  const mockDeployVaults = () =>  {
-    console.info("****TEST SCRIPT RUNS****");
-      // auto deploy initialize liquidity vault
-      
-    console.info("****TEST SCRIPT STOPPED****");
-  }
-  
-
   //check vault state from contract
   useEffect(()=>{
     async function checkIsIniailized  ()  {
