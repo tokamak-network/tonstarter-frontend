@@ -166,10 +166,13 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
         Number(convertNumber({amount: hardCapCalc}));
       setVestingAmount(xxAmount);
 
-     
+      const fundsInVesting = await vestingVaultContract.currentSqrtPriceX96(); //when the pool is created and the LP token is minted in the IL vault, currentSqrtPriceX96 > 0
+
+      console.log('fundsInVesting',fundsInVesting);
+      console.log('isExchangeTOS',isExchangeTOS);
+      console.log('adminWithdraw',adminWithdraw);
       
-      const fundsInVesting = await vestingVaultContract.currentSqrtPriceX96();
-      // console.log(Number(fundsInVesting) === 0);
+     
 
       setSendTON(
         Number(fundsInVesting) !== 0 &&

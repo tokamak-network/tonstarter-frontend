@@ -116,11 +116,13 @@ const SwapModal = () => {
         const inputAmountRay = convertToRay(inputAmount);
         const {TOS_WTON_POOL} = pools;
 
-        return PublicVaultContract.exchangeWTONtoTOS(
+         PublicVaultContract.exchangeWTONtoTOS(
           inputAmountRay,
           TOS_WTON_POOL,
         );
+      return  handleCloseModal()
       }
+      
     } catch (e) {
       console.log(e);
     }

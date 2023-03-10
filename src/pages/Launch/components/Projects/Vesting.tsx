@@ -57,7 +57,7 @@ export const Vesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
   const [initialized, setInitialized] = useState(false);
   const [funds, setFunds] = useState(0);
   const [totalRounds, setTotalRounds] = useState(0);
-  const [currentClaimAmount, setCurrentClaimAmount] = useState(0);
+  const [currentClaimAmount, setCurrentClaimAmount] = useState('0');
   const [currentRnd, setCurrentRnd] = useState(0);
   const [claimDisabled, setClaimDisabled] = useState(true);
 
@@ -92,6 +92,11 @@ export const Vesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
       const calculClaimAmount = await vestingVault.calculClaimAmount(
         currentRound,
       ); //claim amount of current round
+
+
+      const num = convertNumber({amount: calculClaimAmount,localeString: true,})
+
+      
       const disabled =
         (Number(currentRound) > 0 && Number(calculClaimAmount) === 0) ||
         Number(isCurrentSqrtPrice) === 0;
@@ -104,12 +109,12 @@ export const Vesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
         Number(nowClaimRound) === 0 ? 0 : Number(nowClaimRound) - 1,
       );
       setTotalRounds(Number(totalClaimCounts));
-      setCurrentClaimAmount(Number(calculClaimAmount));
+      setCurrentClaimAmount(num?num:'0');
       setCurrentRnd(Number(currentRound));
     }
     getInfo();
   }, [account, project, vault, library, transactionType, blockNumber]);
-
+  
   const themeDesign = {
     border: {
       light: 'solid 1px #e6eaee',
@@ -242,7 +247,7 @@ export const Vesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
               <Flex>
                 <Text fontSize={'11px'} w="260px">
                   Funds was sent to the initial liquidity vault, but You need to
-                  push set price button in{' '}
+                  create a pool and mint the LP token {' '}
                   <span
                     style={{
                       color: '#257eee',
@@ -296,7 +301,7 @@ export const Vesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
                   fontSize={'16px'}
                   color={colorMode === 'light' ? '#353c48' : '#ffffff'}
                   lineHeight="15px">
-                  {currentClaimAmount.toLocaleString()}
+                  {currentClaimAmount}
                   <span
                     style={{
                       fontSize: '12px',
