@@ -1,6 +1,7 @@
 const fs = require('fs');
 const { testValue } = require('./helpers/testValues.js');
 const { ethers } = require('ethers');
+const bn = require('bignumber.js');
 
 
 const ERC20AFACTORY_ADDRESS = '0xb7a8115C3D45f87C121baa19092938EFaC569e40';
@@ -23,7 +24,7 @@ const VestingPublicFundFactoryAbi = JSON.parse(fs.readFileSync('src/services/abi
 const TONStakerAbi = JSON.parse(fs.readFileSync('src/services/abis/TONStakerAbi.json'));
 const TOSStakerAbi = JSON.parse(fs.readFileSync('src/services/abis/TOSStakerAbi.json'));
 const LPrewardVaultAbi = JSON.parse(fs.readFileSync('src/services/abis/LPrewardVaultAbi.json'));
-const Vault_InitialLiquidityComputeAbi = JSON.parse(fs.readFileSync('src/services/abis/Vault_InitialLiquidityComputeAbi.json'));
+const Vault_InitialLiquidityComputeAbi = JSON.parse(fs.readFileSync('src/services/abis/Vault_InitialLiquidityCompute.json'));
 const LiquidityIncentiveAbi = JSON.parse(fs.readFileSync('src/services/abis/LiquidityIncentiveAbi.json'));
 
 // Goerli test network RPC endpoint
@@ -89,6 +90,7 @@ const getAddress = async (rawTx, abi) => {
 // Step 3 (Deploy Token)
 const deployToken = async () => {
   // contract initialize (change token abi according to contract type (Type A/B/C).
+  console.log('Start deploying token...');
   const tokenContractInterface = new ethers.Contract(ERC20AFACTORY_ADDRESS, ERC20_FACTORY_A_ABI.abi, signer);
     try {
         const rawTx = await tokenContractInterface.create(
@@ -103,6 +105,7 @@ const deployToken = async () => {
     }catch(e) {
         console.log('error deploying token', e);
     }
+  console.log('token deployed...');
 }
 
 // Deploy Initial Liquidity Vault
@@ -252,7 +255,26 @@ const startDeploy = async () => {
   }
 };
 
+export const convertToWei = (num) => ethers.utils.parseEther(num);
+
+// TODO: Send tokens to each vault
+// Ref DeployVault.tsx 1093~
+const sendTokensIL = async () => {
+  const InitialLiquidityVault_Contract = new ethers.Contract(IL_VAULT_ADDRESS, InitialLiquidityVault.abi, signer);
+  const projectTokenPrice = testValue().vaults[1].tosPrice * 100;
+  const vaultTokenAllocationWei = convertToWei(String(testValue().vaults[1].vaultTokenAllocation));
+  const computePoolAddress = await InitialLiquidityVault_Contract.connect(signer).computePoolAddress(TOS_ADDRESS, TOKEN_ADDRESS, 3000);
+  const reserv0 = computePoolAddress[1] === TOS_ADDRESS ? 100 : projectTokenPrice;
+  const reserv1 = computePoolAddress[2] === TOS_ADDRESS ? 100 : projectTokenPrice;
+
+  const rawTx = await InitialLiquidityVault_Contract.connect(
+    signer
+  ).initialize(vaultTokenAllocationWei, 100, projectTokenPrice, )
+
+
+}
 
 startDeploy();
+sendTokensIL();
 
 
