@@ -26,6 +26,7 @@ const TOSStakerAbi = JSON.parse(fs.readFileSync('src/services/abis/TOSStakerAbi.
 const LPrewardVaultAbi = JSON.parse(fs.readFileSync('src/services/abis/LPrewardVaultAbi.json'));
 const Vault_InitialLiquidityComputeAbi = JSON.parse(fs.readFileSync('src/services/abis/Vault_InitialLiquidityCompute.json'));
 const LiquidityIncentiveAbi = JSON.parse(fs.readFileSync('src/services/abis/LiquidityIncentiveAbi.json'));
+const ERC20 = JSON.parse(fs.readFileSync('src/services/abis/erc20ABI(SYMBOL).json'));
 
 // Goerli test network RPC endpoint
 const goerliRPC = "https://goerli.infura.io/v3/0a557897425742b09341c9ba1e62327d";
@@ -54,6 +55,17 @@ let VESTING_VAULT_ADDRESS = ''
 // TODO: Get project name from user
 PROJECT_NAME = 'test2';
 console.log('project name:', PROJECT_NAME);
+
+/** Helpers */
+
+const encodePriceSqrt = (reserve1, reserve0) => {
+  return new bn(reserve1.toString())
+    .div(reserve0.toString())
+    .sqrt()
+    .multipliedBy(new bn(2).pow(96))
+    .integerValue(3)
+    .toFixed();
+}
 
 //  Initialize provider and signer
 const provider = new ethers.providers.JsonRpcProvider(goerliRPC);
@@ -85,7 +97,7 @@ const getAddress = async (rawTx, abi) => {
   console.log('args[0]', args[0]);
   TOKEN_ADDRESS = args[0];
   
-  return args[0];
+  return TOKEN_ADDRESS;
 }
 // Step 3 (Deploy Token)
 const deployToken = async () => {
@@ -255,26 +267,42 @@ const startDeploy = async () => {
   }
 };
 
-export const convertToWei = (num) => ethers.utils.parseEther(num);
+const convertToWei = (num) => ethers.utils.parseEther(num);
+
+// FIXME: initialize after sending tokens
+// Ref DeployVault.tsx 1093~
+// const sendTokensIL = async () => {
+//   const InitialLiquidityVault_Contract = new ethers.Contract(IL_VAULT_ADDRESS, InitialLiquidityVault.abi, signer);
+//   const projectTokenPrice = testValue().vaults[1].tosPrice * 100;
+//   const vaultTokenAllocationWei = convertToWei(String(testValue().vaults[1].vaultTokenAllocation));
+//   const computePoolAddress = await InitialLiquidityVault_Contract.connect(signer).computePoolAddress(TOS_ADDRESS, TOKEN_ADDRESS, 3000);
+//   const reserv0 = computePoolAddress[1] === TOS_ADDRESS ? 100 : projectTokenPrice;
+//   const reserv1 = computePoolAddress[2] === TOS_ADDRESS ? 100 : projectTokenPrice;
+
+//   const rawTx = await InitialLiquidityVault_Contract.connect(
+//     signer
+//   ).initialize(vaultTokenAllocationWei, 100, projectTokenPrice, encodePriceSqrt(reserv1, reserv0),
+//   testValue().vaults[1].startTime
+//   );
+
+//   const receipt = await rawTx.wait();
+  
+
+
+// }
 
 // TODO: Send tokens to each vault
-// Ref DeployVault.tsx 1093~
-const sendTokensIL = async () => {
-  const InitialLiquidityVault_Contract = new ethers.Contract(IL_VAULT_ADDRESS, InitialLiquidityVault.abi, signer);
-  const projectTokenPrice = testValue().vaults[1].tosPrice * 100;
-  const vaultTokenAllocationWei = convertToWei(String(testValue().vaults[1].vaultTokenAllocation));
-  const computePoolAddress = await InitialLiquidityVault_Contract.connect(signer).computePoolAddress(TOS_ADDRESS, TOKEN_ADDRESS, 3000);
-  const reserv0 = computePoolAddress[1] === TOS_ADDRESS ? 100 : projectTokenPrice;
-  const reserv1 = computePoolAddress[2] === TOS_ADDRESS ? 100 : projectTokenPrice;
-
-  const rawTx = await InitialLiquidityVault_Contract.connect(
-    signer
-  ).initialize(vaultTokenAllocationWei, 100, projectTokenPrice, )
-
-
+// send tokens to Initial Liquidity vault
+const sendTokens = async () => {
+  console.log('Token address', TOKEN_ADDRESS);
+  const ERC20_CONTRACT = new ethers.Contract(TOKEN_ADDRESS, ERC20.abi, signer);
+  await ERC20_CONTRACT?.transfer(
+    // vault address
+    IL_VAULT_ADDRESS, convertToWei(testValue().vaults[1].vaultTokenAllocation.toString())
+  )
 }
 
 startDeploy();
-sendTokensIL();
+sendTokens();
 
 
