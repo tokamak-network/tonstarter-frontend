@@ -335,8 +335,31 @@ const sendTokens = async () => {
 const convertToWei = (num) => ethers.utils.parseEther(num);
 
 
+// TODO: initialize all vaults
+// Ref DeployVault.tsx 1093~
+const initializeILVault = async () => {
+  const InitialLiquidityVault_Contract = new ethers.Contract(IL_VAULT_ADDRESS, InitialLiquidityVault.abi, signer);
+  const projectTokenPrice = testValue().vaults[1].tosPrice * 100;
+  const vaultTokenAllocationWei = convertToWei(String(testValue().vaults[1].vaultTokenAllocation));
+  const computePoolAddress = await InitialLiquidityVault_Contract.connect(signer).computePoolAddress(TOS_ADDRESS, TOKEN_ADDRESS, 3000);
+  const reserv0 = computePoolAddress[1] === TOS_ADDRESS ? 100 : projectTokenPrice;
+  const reserv1 = computePoolAddress[2] === TOS_ADDRESS ? 100 : projectTokenPrice;
+
+  const rawTx = await InitialLiquidityVault_Contract.connect(
+    signer
+  ).initialize(vaultTokenAllocationWei, 100, projectTokenPrice, encodePriceSqrt(reserv1, reserv0),
+  testValue().vaults[1].startTime
+  );
+
+  const receipt = await rawTx.wait();
+  if (receipt) {
+    console.log('IL vault is initialized');
+  }
+}
+
+
 
 startDeploy();
 sendTokens();
 
-
+initializeILVault();
