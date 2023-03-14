@@ -50,6 +50,11 @@ const TOTAL_SUPPLY_WEI = TOTAL_SUPPLY;
 // deployed vault addresses
 let IL_VAULT_ADDRESS = ''
 let VESTING_VAULT_ADDRESS = ''
+let PUBLIC_VAULT_ADDRESS = ''
+let TONSTAKER_VAULT_ADDRESS = ''
+let TOSSTAKER_VAULT_ADDRESS = ''
+let LPR_VAULT_ADDRESS = ''
+let LI_VAULT_ADDRESS = ''
 
 // set a new project name
 // TODO: Get project name from user
@@ -149,7 +154,6 @@ const deployVaultVesting = async () => {
        ADDRESS_FOR_RECEIVING,
     )
     VESTING_VAULT_ADDRESS = getAddress(rawTx, VestingPublicFundFactoryAbi.abi);
-    console.log('vestingVaultAddress', VESTING_VAULT_ADDRESS);
   } catch (error) {
     console.log(error);
   }
@@ -166,8 +170,8 @@ const deployPublicVault = async () => {
        // # of vaults?
        2
     )
-    const publicVaultAddress = getAddress(rawTx, PublicSaleVaultCreateAbi.abi);
-    console.log('publicVaultAddress', publicVaultAddress);
+    PUBLIC_VAULT_ADDRESS = getAddress(rawTx, PublicSaleVaultCreateAbi.abi);
+    console.log('publicVaultAddress', PUBLIC_VAULT_ADDRESS);
   } catch (error) {
     console.log(error);
   }
@@ -182,8 +186,8 @@ const deployTONStakerVault = async () => {
       TOKEN_ADDRESS,
       OWNER_ADDRESS
     )
-    const tonStakerVault = getAddress(rawTx, TONStakerAbi.abi);
-    console.log('tonStakerVault', tonStakerVault);
+    TONSTAKER_VAULT_ADDRESS = getAddress(rawTx, TONStakerAbi.abi);
+    console.log('tonStakerVault', TONSTAKER_VAULT_ADDRESS);
   } catch (error) {
     console.log(error)
   }
@@ -198,8 +202,8 @@ const deployTOSStakerVault = async () => {
       TOKEN_ADDRESS,
       OWNER_ADDRESS
     )
-    const tonStakerVault = getAddress(rawTx, TOSStakerAbi.abi);
-    console.log('tonStakerVault', tonStakerVault);
+    TOSSTAKER_VAULT_ADDRESS = getAddress(rawTx, TOSStakerAbi.abi);
+    console.log('tosStakerVault', TOSSTAKER_VAULT_ADDRESS);
   } catch (error) {
     console.log(error)
   }
@@ -215,8 +219,8 @@ const deployLPRewardVault = async () => {
       TOKEN_ADDRESS,
       OWNER_ADDRESS
     )
-    const lpRewardVaultAddress = getAddress(rawTx, LPrewardVaultAbi.abi);
-    console.log('lpRewardVaultAddress', lpRewardVaultAddress)
+    LPR_VAULT_ADDRESS = getAddress(rawTx, LPrewardVaultAbi.abi);
+    console.log('lpRewardVaultAddress', LPR_VAULT_ADDRESS)
   } catch (error) {
     console.error(error);
   }
@@ -241,8 +245,8 @@ const deployLiquidityIncentiveVault = async () => {
     TOKEN_ADDRESS,
     OWNER_ADDRESS
   );
-  const liVaultAddress = getAddress(rawTx, LiquidityIncentiveAbi.abi);
-  console.log('liVaultAddress', liVaultAddress)
+  LI_VAULT_ADDRESS = getAddress(rawTx, LiquidityIncentiveAbi.abi);
+  console.log('liVaultAddress', LI_VAULT_ADDRESS)
   } catch (error) {
     console.error(error);
   }
@@ -267,40 +271,70 @@ const startDeploy = async () => {
   }
 };
 
-const convertToWei = (num) => ethers.utils.parseEther(num);
 
-// FIXME: initialize after sending tokens
-// Ref DeployVault.tsx 1093~
-// const sendTokensIL = async () => {
-//   const InitialLiquidityVault_Contract = new ethers.Contract(IL_VAULT_ADDRESS, InitialLiquidityVault.abi, signer);
-//   const projectTokenPrice = testValue().vaults[1].tosPrice * 100;
-//   const vaultTokenAllocationWei = convertToWei(String(testValue().vaults[1].vaultTokenAllocation));
-//   const computePoolAddress = await InitialLiquidityVault_Contract.connect(signer).computePoolAddress(TOS_ADDRESS, TOKEN_ADDRESS, 3000);
-//   const reserv0 = computePoolAddress[1] === TOS_ADDRESS ? 100 : projectTokenPrice;
-//   const reserv1 = computePoolAddress[2] === TOS_ADDRESS ? 100 : projectTokenPrice;
-
-//   const rawTx = await InitialLiquidityVault_Contract.connect(
-//     signer
-//   ).initialize(vaultTokenAllocationWei, 100, projectTokenPrice, encodePriceSqrt(reserv1, reserv0),
-//   testValue().vaults[1].startTime
-//   );
-
-//   const receipt = await rawTx.wait();
-  
-
-
-// }
 
 // TODO: Send tokens to each vault
 // send tokens to Initial Liquidity vault
-const sendTokens = async () => {
-  console.log('Token address', TOKEN_ADDRESS);
+const sendTokensPublic = async () => {
   const ERC20_CONTRACT = new ethers.Contract(TOKEN_ADDRESS, ERC20.abi, signer);
   await ERC20_CONTRACT?.transfer(
     // vault address
+    PUBLIC_VAULT_ADDRESS, convertToWei(testValue().vaults[0].vaultTokenAllocation.toString())
+  )
+}
+
+const sendTokensIL = async () => {
+  console.log('Token address', TOKEN_ADDRESS);
+  // send tokens to the 
+  const ERC20_CONTRACT = new ethers.Contract(TOKEN_ADDRESS, ERC20.abi, signer);
+  await ERC20_CONTRACT?.transfer(
     IL_VAULT_ADDRESS, convertToWei(testValue().vaults[1].vaultTokenAllocation.toString())
   )
 }
+
+const sendTokensTONS = async () => {
+  const ERC20_CONTRACT = new ethers.Contract(TOKEN_ADDRESS, ERC20.abi, signer);
+  await ERC20_CONTRACT?.transfer(
+    // vault address
+    TOSSTAKER_VAULT_ADDRESS, convertToWei(testValue().vaults[3].vaultTokenAllocation.toString())
+  )
+}
+
+const sendTokensTOSS = async () => {
+  const ERC20_CONTRACT = new ethers.Contract(TOKEN_ADDRESS, ERC20.abi, signer);
+  await ERC20_CONTRACT?.transfer(
+    // vault address
+    TOSSTAKER_VAULT_ADDRESS, convertToWei(testValue().vaults[4].vaultTokenAllocation.toString())
+  )
+}
+
+const sendTokensLPR = async () => {
+  const ERC20_CONTRACT = new ethers.Contract(TOKEN_ADDRESS, ERC20.abi, signer);
+  await ERC20_CONTRACT?.transfer(
+    LPR_VAULT_ADDRESS, convertToWei(testValue().vaults[5].vaultTokenAllocation.toString())
+  )
+}
+
+const sendTokensLI = async () => {
+  const ERC20_CONTRACT = new ethers.Contract(TOKEN_ADDRESS, ERC20.abi, signer);
+  await ERC20_CONTRACT?.transfer(
+    LI_VAULT_ADDRESS, convertToWei(testValue().vaults[6].vaultTokenAllocation.toString())
+  )
+}
+
+// send tokens to all vaults
+const sendTokens = async () => {
+  await sendTokensIL();
+  await sendTokensPublic();
+  await sendTokensTONS();
+  await sendTokensTOSS();
+  await sendTokensLPR();
+  await sendTokensLI();
+}
+
+const convertToWei = (num) => ethers.utils.parseEther(num);
+
+
 
 startDeploy();
 sendTokens();
