@@ -31,7 +31,7 @@ type LaunchModal =
   | 'Launch_Download'
   | 'Launch_ConfirmTerms'
   | 'Launch_Swap'
-  | 'Launch_Vesting';
+  | 'Launch_Vesting'
 
 type GeneralModal = 'calendar';
 type RewardModal = 'search' | 'information' | 'confirmMulticall';
