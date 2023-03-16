@@ -28,6 +28,7 @@ const filedNameList = [
   {title: 'discord', requirement: false},
 ];
 
+// Or: * passing a prop
 const OpenStepOne = () => {
   const {colorMode} = useColorMode();
   const {values, setValues} = useFormikContext<Projects['CreateProject']>();

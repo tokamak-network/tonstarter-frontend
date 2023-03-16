@@ -10,7 +10,7 @@ import {
 import OpenStepOne from '@Launch/components/OpenStepOne';
 import {Formik, Form} from 'formik';
 import useValues from '@Launch/hooks/useValues';
-import type {StepNumber, VaultCommon} from '@Launch/types';
+import type {LaunchMode, StepNumber, VaultCommon} from '@Launch/types';
 import ProjectSchema from '@Launch/utils/projectSchema';
 import {PageHeader} from 'components/PageHeader';
 import Steps from '@Launch/components/Steps';
@@ -28,11 +28,16 @@ import {useLocation} from 'react-router-dom';
 const StepComponent = (props: {
   step: StepNumber;
   setDisableForStep2: Dispatch<SetStateAction<boolean>>;
+  launchMode: string;
 }) => {
-  const {step, setDisableForStep2} = props;
+  const {step, setDisableForStep2, launchMode} = props;
   switch (step) {
     case 1:
-      return <OpenStepOne></OpenStepOne>;
+      if (launchMode === 'simplified') {
+        return <OpenStepOne></OpenStepOne>;
+      } else {
+        // Or: return <OpenSimplifiedStepOne></OpenSimplifiedStepOne>
+      }
     case 2:
       return (
         <OpenStepTwo setDisableForStep2={setDisableForStep2}></OpenStepTwo>
@@ -155,7 +160,8 @@ const MainScreen = () => {
         <Flex mt={'50px'} mb={'20px'}>
           <Steps
             stepName={['Project & Token', 'Token Economy', 'Deploy']}
-            currentStep={step}></Steps>
+            currentStep={step}>
+          </Steps>
         </Flex>
       </Flex>
       <Formik
@@ -204,6 +210,7 @@ const MainScreen = () => {
                 <StepComponent
                   step={step}
                   setDisableForStep2={setDisableForStep2}
+                  launchMode={JSON.stringify(launchMode)}
                 />
                 <Flex mt={'50px'} fontSize={14} justifyContent="center">
                   <Button

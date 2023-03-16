@@ -298,6 +298,8 @@ type ProjectCardType = {
   key: string;
 };
 
+type LaunchMode = 'simplified' | 'advance'
+
 export type {
   Projects,
   ProjectStep1,
@@ -319,4 +321,5 @@ export type {
   VaultLiquidityIncentive,
   ProjectCardType,
   TokenType,
+  LaunchMode
 };
