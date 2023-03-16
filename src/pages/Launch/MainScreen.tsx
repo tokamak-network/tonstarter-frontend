@@ -23,6 +23,7 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 import {saveProject, editProject} from '@Launch/utils/saveProject';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {isProduction} from './utils/checkConstants';
+import {useLocation} from 'react-router-dom';
 
 const StepComponent = (props: {
   step: StepNumber;
@@ -51,6 +52,10 @@ const MainScreen = () => {
   const theme = useTheme();
   const {account} = useActiveWeb3React();
   const {initialValues} = useValues(account || '');
+  const {state} = useLocation();
+
+  // Access the project launch mode parameter from link
+  const launchMode = state;
 
   const match = useRouteMatch();
   const {url} = match;
@@ -142,7 +147,9 @@ const MainScreen = () => {
       pos="relative">
       <Flex alignItems={'center'} flexDir="column" mb={'20px'}>
         <PageHeader
-          title={'Create Project'}
+          // title={'Create Project'}
+          // TODO: Remove Json stringify once feature is done
+          title={`Create Project ${JSON.stringify(launchMode)}`}
           subtitle={'You can create and manage projects.'}
         />
         <Flex mt={'50px'} mb={'20px'}>

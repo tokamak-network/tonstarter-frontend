@@ -968,7 +968,7 @@ const ConfirmTermsModal = () => {
                 color: colorMode === 'light' ? '#3e495c' : '',
               }}></CustomButton>
             {data.data.from === 'launch' && (
-              <Link to={{pathname: isCheck ? `/launch/createproject` : '#', state: {mode: data.data.mode}}}>
+              <Link to={{pathname: isCheck ? `/launch/createproject` : '#', state: data.data.mode}}>
                 <CustomButton
                   text={'Confirm'}
                   func={() => {
