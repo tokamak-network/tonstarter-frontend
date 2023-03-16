@@ -126,7 +126,7 @@ const deployToken = async () => {
           OWNER_ADDRESS
         );
 
-        TOKEN_ADDRESS = getAddress(rawTx, ERC20_FACTORY_A_ABI.abi);
+        TOKEN_ADDRESS = await getAddress(rawTx, ERC20_FACTORY_A_ABI.abi);
         console.log('Token address', TOKEN_ADDRESS);
         console.log('Token deployed...');
     }catch(e) {
