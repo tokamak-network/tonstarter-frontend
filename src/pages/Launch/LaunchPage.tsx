@@ -4,6 +4,7 @@ import {
   Flex,
   useTheme,
   Text,
+  ButtonGroup,
   useColorMode,
 } from '@chakra-ui/react';
 import {useState} from 'react';
@@ -22,6 +23,7 @@ type LaunchProps = {
 };
 const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
   const [showAllProjects, setShowAllProjects] = useState<boolean>(true);
+  const [showLaunchMode, setShowLaunchMode] = useState<boolean>(false);
   const theme = useTheme();
   const {colorMode} = useColorMode();
   const match = useRouteMatch();
@@ -31,6 +33,10 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
   } = match;
   const {url} = match;
   const {active, activate, connector} = useActiveWeb3React();
+
+  const showLaunchModes = () => {
+    setShowLaunchMode(true);
+  }
 
   const themeDesign = {
     border: {
@@ -107,8 +113,28 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
           </Flex>
           <Flex justifyContent={'center'} w={'100%'}>
             {/* <Link to={`${url}/createproject`}> */}
-            <Button
+            {!showLaunchMode && <Button
               _hover={{}}
+              bg={'blue.100'}
+              mt={'10px'}
+              color="white.100"
+              fontFamily={theme.fonts.roboto}
+              letterSpacing={'.35px'}
+              fontSize={'14px'}
+              borderRadius={'4px'}
+              width={'150px'}
+              height={'38px'}
+              padding={'12px 28px 10px'}
+              onClick={() => {
+                showLaunchModes();
+              }}
+              >
+              Create Project
+            </Button>
+            }
+            {/* </Link> */}
+            {showLaunchMode && <ButtonGroup spacing='6'>
+            <Button _hover={{}}
               bg={'blue.100'}
               mt={'10px'}
               color="white.100"
@@ -129,10 +155,30 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
                 openAnyModal('Launch_ConfirmTerms', {
                   from: 'launch',
                 });
-              }}>
-              Create Project
-            </Button>
-            {/* </Link> */}
+              }}>Simplified Launch</Button>
+            <Button _hover={{}}
+              bg={'blue.100'}
+              mt={'10px'}
+              color="white.100"
+              fontFamily={theme.fonts.roboto}
+              letterSpacing={'.35px'}
+              fontSize={'14px'}
+              borderRadius={'4px'}
+              width={'150px'}
+              height={'38px'}
+              padding={'12px 28px 10px'} 
+              onClick={() => {
+                if (!window.web3) {
+                  return window.open('https://metamask.io/download/');
+                }
+                if (!active) {
+                  return activate(injected);
+                }
+                openAnyModal('Launch_ConfirmTerms', {
+                  from: 'launch',
+                });
+              }}>Advance Mode</Button>
+            </ButtonGroup>}
           </Flex>
           <Flex
           justifyContent={'space-between'}
