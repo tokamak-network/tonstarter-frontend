@@ -967,8 +967,32 @@ const ConfirmTermsModal = () => {
                     : '1px solid #535353',
                 color: colorMode === 'light' ? '#3e495c' : '',
               }}></CustomButton>
-            {data.data.from === 'launch' && (
-              <Link to={{pathname: isCheck ? `/launch/createproject` : '#', state: data.data.mode}}>
+            {data.data.from === 'advance-mode' ? (
+              <Link to={{pathname: isCheck ? `/launch/createproject` : '#'}}>
+                <CustomButton
+                  text={'Confirm'}
+                  func={() => {
+                    if (isCheck) return closeModal();
+                  }}
+                  style={{
+                    backgroundColor: isCheck
+                      ? 'blue.500'
+                      : colorMode === 'light'
+                      ? '#e9edf1'
+                      : '#353535',
+                    color:
+                      colorMode === 'light'
+                        ? isCheck
+                          ? '#ffffff'
+                          : '#86929d'
+                        : isCheck
+                        ? '#ffffff'
+                        : '#838383',
+                  }}></CustomButton>
+              </Link>
+            ): 
+            (
+              <Link to={{pathname: isCheck ? `/launch/createprojectsimple` : '#'}}>
                 <CustomButton
                   text={'Confirm'}
                   func={() => {

@@ -43,6 +43,7 @@ import MainScreen from '@Launch/MainScreen';
 import ProjectScreen from '@Launch/ProjectScreen';
 import TokamakGNB from 'components/TokamakGNB';
 import MobileTokamakGNB from 'components/MobileTokamakGNB';
+import SimplifiedMainScreen from '@Launch/SimplifiedMainScreen'
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -231,6 +232,7 @@ export const Router: FC<RouterProps> = () => {
           <Route exact path={`/starter/:id`} component={StarterDetail} />
           <Route exact path={`/launch`} component={OpenCampagin} />
           <Route exact path={`/launch/createproject`} component={MainScreen} />
+          <Route exact path={`/launch/createprojectsimple`} component={SimplifiedMainScreen} />
           <Route
             exact
             path={`/launch/project/:name`}

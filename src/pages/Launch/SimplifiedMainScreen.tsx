@@ -7,18 +7,18 @@ import {
   useRef,
   useState,
 } from 'react';
-import OpenStepOne from '@Launch/components/OpenStepOne';
+import OpenStepOne from '@Launch/components/simplifiedLaunch/OpenStepOne';
 import {Formik, Form} from 'formik';
 import useValues from '@Launch/hooks/useValues';
 import type {LaunchMode, StepNumber, VaultCommon} from '@Launch/types';
 import ProjectSchema from '@Launch/utils/projectSchema';
 import {PageHeader} from 'components/PageHeader';
 import Steps from '@Launch/components/Steps';
-import OpenStepTwo from '@Launch/components/OpenStepTwo';
+import OpenStepTwo from '@Launch/components/simplifiedLaunch/OpenStepTwo';
 import {useRouteMatch, useHistory, Redirect} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {selectLaunch, setHashKey} from '@Launch/launch.reducer';
-import OpenStepThree from '@Launch/components/OpenStepThree';
+import OpenStepThree from '@Launch/components/simplifiedLaunch/OpenStepThree';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {saveProject, editProject} from '@Launch/utils/saveProject';
 import {CustomButton} from 'components/Basic/CustomButton';
@@ -34,9 +34,7 @@ const StepComponent = (props: {
     case 1:
         return <OpenStepOne></OpenStepOne>;
     case 2:
-      return (
-        <OpenStepTwo setDisableForStep2={setDisableForStep2}></OpenStepTwo>
-      );
+      return <OpenStepTwo></OpenStepTwo>;
     case 3:
       return <OpenStepThree></OpenStepThree>;
     default:
@@ -44,7 +42,9 @@ const StepComponent = (props: {
   }
 };
 
-const MainScreen = () => {
+const SimplifiedMainScreen = () => {
+
+// TODO: Update to reflect simplified launch UI
   const [step, setStep] = useState<StepNumber>(1);
   const [isDisable, setDisable] = useState<boolean>(true);
   const [isDisableForStep2, setDisableForStep2] = useState<boolean>(true);
@@ -52,10 +52,6 @@ const MainScreen = () => {
   const theme = useTheme();
   const {account} = useActiveWeb3React();
   const {initialValues} = useValues(account || '');
-  const {state} = useLocation();
-
-  // Access the project launch mode parameter from link
-  const launchMode = state;
 
   const match = useRouteMatch();
   const {url} = match;
@@ -289,7 +285,7 @@ const MainScreen = () => {
                         borderRadius={4}
                         onClick={() => {
                           account &&
-                          isExist === 'createproject' &&
+                          isExist === 'createprojectsimple' &&
                           hashKey === undefined
                             ? saveProject(values, account)
                             : editProject(
@@ -330,4 +326,4 @@ const MainScreen = () => {
   );
 };
 
-export default MainScreen;
+export default SimplifiedMainScreen;

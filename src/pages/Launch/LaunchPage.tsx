@@ -153,8 +153,7 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
                   return activate(injected);
                 }
                 openAnyModal('Launch_ConfirmTerms', {
-                  from: 'launch',
-                  mode: 'simplified'
+                  from: 'simplified-launch',
                 });
               }}>Simplified Launch</Button>
             <Button _hover={{}}
@@ -176,8 +175,7 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
                   return activate(injected);
                 }
                 openAnyModal('Launch_ConfirmTerms', {
-                  from: 'launch',
-                  mode: 'advance'
+                  from: 'advance-mode',
                 });
               }}>Advance Mode</Button>
             </ButtonGroup>}
