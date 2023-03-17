@@ -2,11 +2,11 @@
 import {Flex} from '@chakra-ui/react';
 
 
-const OpenStepThree = (props: any) => {
+const OpenStepThreeSimplified = (props: any) => {
 
   return (
     <Flex></Flex>
   );
 };
 
-export default OpenStepThree;
+export default OpenStepThreeSimplified;

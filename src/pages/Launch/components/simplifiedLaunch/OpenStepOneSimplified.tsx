@@ -20,7 +20,7 @@ const filedNameList = [
 ];
 
 // TODO: 
-const OpenStepOne = () => {
+const OpenStepOneSimplified = () => {
   const {colorMode} = useColorMode();
   const {values, setValues} = useFormikContext<Projects['CreateProject']>();
 
@@ -136,4 +136,4 @@ const OpenStepOne = () => {
   );
 };
 
-export default OpenStepOne;
+export default OpenStepOneSimplified;

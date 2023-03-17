@@ -7,18 +7,18 @@ import {
   useRef,
   useState,
 } from 'react';
-import OpenStepOne from '@Launch/components/simplifiedLaunch/OpenStepOne';
+import OpenStepOneSimplified from '@Launch/components/simplifiedLaunch/OpenStepOneSimplified';
 import {Formik, Form} from 'formik';
 import useValues from '@Launch/hooks/useValues';
 import type {LaunchMode, StepNumber, VaultCommon} from '@Launch/types';
 import ProjectSchema from '@Launch/utils/projectSchema';
 import {PageHeader} from 'components/PageHeader';
 import Steps from '@Launch/components/Steps';
-import OpenStepTwo from '@Launch/components/simplifiedLaunch/OpenStepTwo';
+import OpenStepTwoSimplified from '@Launch/components/simplifiedLaunch/OpenStepTwoSimplified';
 import {useRouteMatch, useHistory, Redirect} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {selectLaunch, setHashKey} from '@Launch/launch.reducer';
-import OpenStepThree from '@Launch/components/simplifiedLaunch/OpenStepThree';
+import OpenStepThreeSimplified from '@Launch/components/simplifiedLaunch/OpenStepThreeSimplified';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {saveProject, editProject} from '@Launch/utils/saveProject';
 import {CustomButton} from 'components/Basic/CustomButton';
@@ -32,11 +32,11 @@ const StepComponent = (props: {
   const {step, setDisableForStep2} = props;
   switch (step) {
     case 1:
-        return <OpenStepOne></OpenStepOne>;
+        return <OpenStepOneSimplified></OpenStepOneSimplified>;
     case 2:
-      return <OpenStepTwo></OpenStepTwo>;
+      return <OpenStepTwoSimplified></OpenStepTwoSimplified>;
     case 3:
-      return <OpenStepThree></OpenStepThree>;
+      return <OpenStepThreeSimplified></OpenStepThreeSimplified>;
     default:
       return <div>no component for this step</div>;
   }
