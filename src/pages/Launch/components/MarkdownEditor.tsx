@@ -4,9 +4,12 @@ import {useFormikContext} from 'formik';
 import {useEffect, useState} from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-type MarkdownEditorProp = {};
+type MarkdownEditorProp = {
+  launchMode?: string;
+};
 
-const MarkdownEditor: React.FC<MarkdownEditorProp> = () => {
+const MarkdownEditor: React.FC<MarkdownEditorProp> = (props) => {
+  const {launchMode} = props;
   const {colorMode} = useColorMode();
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const mkData = values.description;
@@ -126,9 +129,12 @@ const MarkdownEditor: React.FC<MarkdownEditorProp> = () => {
 
   return (
     <Flex flexDir={'column'} fontSize={13}>
-      <Text h={18} mb={2.5}>
+    {launchMode !== 'simplified' &&<Text h={18} mb={2.5}>
         Description *
-      </Text>
+      </Text>}
+    {launchMode === 'simplified' && <Text h={18} mb={2.5}>
+      <Flex fontSize={13}><Text mr={'5px'} color={'#FF3B3B'}>*</Text>Description</Flex>
+      </Text>}
       <style>{markdownStyles}</style>
       <ReactQuill
         modules={modules}

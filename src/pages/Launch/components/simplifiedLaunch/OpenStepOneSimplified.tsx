@@ -1,4 +1,4 @@
-import {Flex, Box, Grid, GridItem, useColorMode} from '@chakra-ui/react';
+import {Flex, Box, Grid, GridItem, Text, useColorMode} from '@chakra-ui/react';
 import InputComponent from '@Launch/components/common/InputComponent';
 import StepTitle from '@Launch/components/common/StepTitle';
 import Line from '@Launch/components/common/Line';
@@ -15,11 +15,9 @@ const filedNameList = [
   {title: 'projectName', requirement: true},
   {title: 'tokenName', requirement: true},
   {title: 'tokenSymbol', requirement: true},
-  {title: 'tokenSymbolUrl', requirement: true},
   {title: 'tokenSymbolImage', requirement: false},
 ];
 
-// TODO: 
 const OpenStepOneSimplified = () => {
   const {colorMode} = useColorMode();
   const {values, setValues} = useFormikContext<Projects['CreateProject']>();
@@ -55,9 +53,12 @@ const OpenStepOneSimplified = () => {
       <Box mb={'23px'}>
         <StepTitle title={'Project & Token'} isSaveButton={false}></StepTitle>
       </Box>
-      <Box mb={'40px'} pos="relative">
+      <Box mb={'40px'} pos="relative" >
         <Box w={'774px'} pos="absolute" left={'-35px'}>
           <Line></Line>
+        </Box>
+        <Box mt={'14px'} float={'right'}>
+        <Flex fontSize={13}><Text mr={'5px'} color={'#FF3B3B'}>*</Text> Required Field</Flex>
         </Box>
       </Box>
       <Grid
@@ -84,39 +85,6 @@ const OpenStepOneSimplified = () => {
                 </Flex>
               );
             }
-            if (fieldName.title === 'tokenType') {
-              return (
-                <GridItem
-                  w={'100%'}
-                  colSpan={
-                    values.tokenType === 'B' || values.tokenType === 'C' ? 1 : 2
-                  }>
-                  <InputComponent
-                    inputStyle={{w: '327px'}}
-                    name={fieldName.title}
-                    placeHolder={`input ${fieldName.title}`}
-                    key={fieldName.title}
-                    requirement={fieldName.requirement}></InputComponent>
-                  <Box w={'100%'} mt={'22px'}>
-                    <Line></Line>
-                  </Box>
-                </GridItem>
-              );
-            }
-            if (fieldName.title === 'tokenOwnerAccount') {
-              if (values.tokenType === 'B' || values.tokenType === 'C') {
-                return (
-                  <GridItem w={'327px'}>
-                    <InputComponent
-                      name={fieldName.title}
-                      placeHolder={`input ${fieldName.title}`}
-                      key={fieldName.title}
-                      requirement={fieldName.requirement}></InputComponent>
-                  </GridItem>
-                );
-              }
-              return null;
-            }
             return (
               <GridItem w={'327px'}>
                 <InputComponent
@@ -130,7 +98,7 @@ const OpenStepOneSimplified = () => {
         )}
       </Grid>
       <Box>
-        <MarkdownEditor></MarkdownEditor>
+        <MarkdownEditor launchMode="simplified"></MarkdownEditor>
       </Box>
     </Flex>
   );
