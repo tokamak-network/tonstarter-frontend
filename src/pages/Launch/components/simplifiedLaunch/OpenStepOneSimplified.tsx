@@ -10,6 +10,7 @@ import {Projects} from '@Launch/types';
 import {isProduction} from '@Launch/utils/checkConstants';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {testValue} from '@Launch/utils/testValue';
+import { SimplifiedSchedule } from '../common/SimplifiedSchedule';
 
 const filedNameList = [
   {title: 'projectName', requirement: true},
@@ -96,6 +97,9 @@ const OpenStepOneSimplified = () => {
             );
           },
         )}
+      </Grid>
+      <Grid>
+        <SimplifiedSchedule></SimplifiedSchedule>
       </Grid>
       <Box>
         <MarkdownEditor launchMode="simplified"></MarkdownEditor>

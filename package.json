@@ -41,6 +41,7 @@
     "@web3-react/walletlink-connector": "^6.1.9",
     "axios": "^0.21.4",
     "bignumber": "^1.1.0",
+    "chakra-ui-steps": "^2.0.4",
     "d3": "^7.0.0",
     "decimal.js": "^10.4.3",
     "eth-sig-util": "^3.0.1",
