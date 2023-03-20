@@ -7,7 +7,7 @@ export const UserGuideLink = () => {
     <>
     <Image ml={4} src={UserGuideImage} alt="sicon_user_guide" />
     <Link>
-        <Text mt={2} ml={1} fontSize='sm' color="gray.350">User Guide</Text>
+        <Text mt={2} ml={1} fontSize={13} color="gray.350">User Guide</Text>
     </Link>
     </>
     )
