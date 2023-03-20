@@ -6,11 +6,11 @@ type ScheduleProps = {
 };
 
 export const SimplifiedSchedule: React.FC<ScheduleProps> = (props) => {
-    const steps = [
-        { label: 'Snapshot', content },
-        { label: 'Public Sale 1', content },
-        { label: 'Public Sale 2', content },
-      ];
+    // const steps = [
+    //     { label: 'Snapshot', content },
+    //     { label: 'Public Sale 1', content },
+    //     { label: 'Public Sale 2', content },
+    //   ];
  return (
     <>
     <Grid my={2}>
