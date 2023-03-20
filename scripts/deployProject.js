@@ -84,22 +84,22 @@ const signer = new ethers.Wallet(
   'df4602acf8cafcc103cd2633d4c2c082bfe14bf0743376bb35abe5da69efaefa',
   provider
 )
-
+console.log('signer', signer);
 const convertToWei = (num) => ethers.utils.parseEther(num);
 
 // Get Token Address or Vault address
 const getAddress = async (rawTx, abi) => {
+  console.log('received rawTx',rawTx);
   // sign txn
-  const signature = await signer.signTransaction(rawTx);
-  const tempHash = ethers.utils.keccak256(signature);
-  console.log('temp hash', tempHash);
+  const signedTx =  await signer.signTransaction(rawTx)
   
+  const txResponse = await provider.sendTransaction(signedTx);
   // get txn hash
-  const tx = await signer.sendTransaction(rawTx);
-  console.log('resulted hash', tx.hash);
+  console.log('resulted hash', txResponse.hash);
+  console.log('tx', txResponse);
   
   // wait for transaction to be confirmed
-  const receipt = await tx.wait();
+  const receipt = await txResponse.wait();
   const { logs } = receipt;
   console.log('logs', logs);
   
@@ -148,7 +148,7 @@ const deployVaultIL = async () => {
       TOS_PRICE * 100
     )
 
-    IL_VAULT_ADDRESS = getAddress(rawTx, InitialLiquidityAbi.abi);
+    IL_VAULT_ADDRESS = await getAddress(rawTx, InitialLiquidityAbi.abi);
     console.log('ILVaultAddress', IL_VAULT_ADDRESS)
     console.log('Initial liquidity vault is deployed');
   } catch(e) {
@@ -165,7 +165,7 @@ const deployVaultVesting = async () => {
       `${PROJECT_NAME}_Vesting Vault`,
        ADDRESS_FOR_RECEIVING,
     )
-    VESTING_VAULT_ADDRESS = getAddress(rawTx, VestingPublicFundFactoryAbi.abi);
+    VESTING_VAULT_ADDRESS = await getAddress(rawTx, VestingPublicFundFactoryAbi.abi);
     console.log('Vesting vault is deployed');
   } catch (error) {
     console.log(error);
@@ -184,7 +184,7 @@ const deployPublicVault = async () => {
        // # of vaults?
        2
     )
-    PUBLIC_VAULT_ADDRESS = getAddress(rawTx, PublicSaleVaultCreateAbi.abi);
+    PUBLIC_VAULT_ADDRESS = await getAddress(rawTx, PublicSaleVaultCreateAbi.abi);
     console.log('publicVaultAddress', PUBLIC_VAULT_ADDRESS);
     console.log('Public vault is deployed');
   } catch (error) {
@@ -202,7 +202,7 @@ const deployTONStakerVault = async () => {
       TOKEN_ADDRESS,
       OWNER_ADDRESS
     )
-    TONSTAKER_VAULT_ADDRESS = getAddress(rawTx, TONStakerAbi.abi);
+    TONSTAKER_VAULT_ADDRESS = await getAddress(rawTx, TONStakerAbi.abi);
     console.log('tonStakerVault', TONSTAKER_VAULT_ADDRESS);
     console.log('TONStaker vault is deployed');
   } catch (error) {
@@ -220,7 +220,7 @@ const deployTOSStakerVault = async () => {
       TOKEN_ADDRESS,
       OWNER_ADDRESS
     )
-    TOSSTAKER_VAULT_ADDRESS = getAddress(rawTx, TOSStakerAbi.abi);
+    TOSSTAKER_VAULT_ADDRESS = await getAddress(rawTx, TOSStakerAbi.abi);
     console.log('tosStakerVault', TOSSTAKER_VAULT_ADDRESS);
     console.log('TOSStaker vault deployed');
   } catch (error) {
@@ -239,7 +239,7 @@ const deployLPRewardVault = async () => {
       TOKEN_ADDRESS,
       OWNER_ADDRESS
     )
-    LPR_VAULT_ADDRESS = getAddress(rawTx, LPrewardVaultAbi.abi);
+    LPR_VAULT_ADDRESS = await getAddress(rawTx, LPrewardVaultAbi.abi);
     console.log('lpRewardVaultAddress', LPR_VAULT_ADDRESS);
     console.log('WTON-TOS LP Reward vault deployed');
   } catch (error) {
@@ -266,7 +266,7 @@ const deployLiquidityIncentiveVault = async () => {
     TOKEN_ADDRESS,
     OWNER_ADDRESS
   );
-  LI_VAULT_ADDRESS = getAddress(rawTx, LiquidityIncentiveAbi.abi);
+  LI_VAULT_ADDRESS = await getAddress(rawTx, LiquidityIncentiveAbi.abi);
   console.log('liVaultAddress', LI_VAULT_ADDRESS);
   console.log('liquidity incentive vault deployed');
   } catch (error) {
@@ -710,7 +710,7 @@ const initializeVaults = async () => {
 }
 
 deployToken();
-startDeployVaults();
-sendTokens();
-initializeVaults();
+// startDeployVaults();
+// sendTokens();
+// initializeVaults();
 
