@@ -1,4 +1,4 @@
-import {Flex, Box, Grid, GridItem, Text, useColorMode} from '@chakra-ui/react';
+import {Flex, Box, Grid, GridItem, Text, useColorMode, Image, Link} from '@chakra-ui/react';
 import InputComponent from '@Launch/components/common/InputComponent';
 import StepTitle from '@Launch/components/common/StepTitle';
 import Line from '@Launch/components/common/Line';
@@ -11,6 +11,7 @@ import {isProduction} from '@Launch/utils/checkConstants';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {testValue} from '@Launch/utils/testValue';
 import { SimplifiedSchedule } from '../common/SimplifiedSchedule';
+import { UserGuideLink } from '../common/SimplifiedGuideLink';
 
 const filedNameList = [
   {title: 'projectName', requirement: true},
@@ -52,7 +53,10 @@ const OpenStepOneSimplified = () => {
         </Flex>
       )}
       <Box mb={'23px'}>
-        <StepTitle title={'Project & Token'} isSaveButton={false}></StepTitle>
+        <Flex>
+          <StepTitle title={'Project & Token'} isSaveButton={false}></StepTitle>
+          <UserGuideLink />
+        </Flex>
       </Box>
       <Box mb={'40px'} pos="relative" >
         <Box w={'774px'} pos="absolute" left={'-35px'}>
