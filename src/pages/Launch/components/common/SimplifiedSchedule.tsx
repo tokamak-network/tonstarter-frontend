@@ -3,13 +3,13 @@ import {useEffect, useState} from 'react';
 import React from 'react';
 
 type ScheduleProps = {
-    stepName: string[];
+    stepNames: string[];
     currentStep: number;
 };
   
 
 export const SimplifiedSchedule: React.FC<ScheduleProps> = (props) => {
-    const {stepName, currentStep} = props;
+    const {stepNames, currentStep} = props;
     const [maxStep, setStepMax] = useState(0);
     const {colorMode} = useColorMode();
 
@@ -18,7 +18,6 @@ export const SimplifiedSchedule: React.FC<ScheduleProps> = (props) => {
           setStepMax(currentStep);
         }
       }, [currentStep, maxStep]);
-
       
  return (
     <>
@@ -26,23 +25,23 @@ export const SimplifiedSchedule: React.FC<ScheduleProps> = (props) => {
         <Box my={2}>
             <Text fontSize='md'>Schedule</Text>
         </Box>
-        <Grid templateColumns='repeat(6, 1fr)' gap={7}>
-            <Flex fontSize={13}><Text mr={'5px'} color={'#FF3B3B'}>*</Text>Snapshot</Flex>
-            <Flex fontSize={13}><Text mr={'5px'} color={'#FF3B3B'}>*</Text>Public Sale 1</Flex>
-            <Flex fontSize={13}><Text mr={'5px'} color={'#FF3B3B'}>*</Text>Public Sale 2</Flex>
-            <Text fontSize={13}>Unlock 1</Text>
-            <Text fontSize={13}>...</Text>
-            <Text fontSize={13}>Unlock 3</Text>
-        </Grid>
         <Flex>
-      {stepName.map((step: string, index: number) => {
-        const indexNum = index + 1;
-        const isStep = currentStep === indexNum;
-        const pastStep = currentStep > indexNum || maxStep > indexNum;
-
-        return (
-          <Flex  mr={'20px'} alignItems="center" fontSize={14}>
-            <Box
+      {stepNames.map((step: string, index: number) => {
+          const indexNum = index + 1;
+          const isStep = currentStep === indexNum;
+          const pastStep = currentStep > indexNum || maxStep > indexNum;
+          return (
+          <Box alignItems="center" fontSize='xs'>
+            {/* Text - Step Name */}
+            <Flex mb={2}>
+                {(step === 'Snapshot' || step === 'Public Sale 1' || step === 'Public Sale 2') 
+                ? <Flex as='b'><Text mr={'5px'} color={'#FF3B3B'}>*</Text>{step}</Flex>
+                : <Text as='b'>{step}</Text>
+                }
+            </Flex>
+            <Flex alignItems="center">
+            {/* Dot */}
+            <Flex
               borderRadius={18}
               bg={isStep ? '#2ea1f8' : 'transparent'}
               w={'8px'}
@@ -56,10 +55,22 @@ export const SimplifiedSchedule: React.FC<ScheduleProps> = (props) => {
                   ? 'solid 1px #e6eaee'
                   : 'solid 1px #373737'
               }>
-            </Box>
-            <Box w={'120px'}
-              h={'2px'} bg={isStep? '#2ea1f8' : 'transparent'}></Box>
-          </Flex>
+            </Flex>
+            {/* Line */}
+            <Flex
+                w={'120px'}
+                h={'2px'} 
+                bg={isStep ? '#2ea1f8' : 'transparent'}
+                border={
+                    isStep
+                      ? ''
+                      : colorMode === 'light'
+                      ? 'solid 1px #e6eaee'
+                      : 'solid 1px #373737'
+                  }>
+            </Flex>
+            </Flex>
+          </Box>
         );
       })}
     </Flex>
