@@ -1,7 +1,7 @@
-import {Box, Grid, Flex, Text, useColorMode} from '@chakra-ui/react';
+import {Box, Grid, Flex, Text, useColorMode, Image} from '@chakra-ui/react';
 import {useEffect, useState} from 'react';
 import React from 'react';
-import { repeat } from 'lodash';
+import CalendarIcon from '../../../../assets/svgs/calendar_inactive_icon.svg';
 
 type ScheduleProps = {
     stepNames: string[];
@@ -89,6 +89,25 @@ export const SimplifiedSchedule: React.FC<ScheduleProps> = (props) => {
         );
       })}
     </Flex>
+    <Grid templateColumns='repeat(6, 1fr)' gap={8}>
+    {stepNames.map((step: string, index: number) => {
+          const indexNum = index + 1;
+          const isStep = currentStep === indexNum;
+          const pastStep = currentStep > indexNum || maxStep > indexNum;
+          return (
+            <Grid alignItems="center">
+            {/* date & time */}
+            <Box m={2} fontSize='xs'>
+            2023.03.09
+            10:00:01
+            </Box>
+            {(step === 'Snapshot' || step === 'Public Sale 1' || step === 'Public Sale 2') && 
+              (<Image ml={4} src={CalendarIcon} alt="calendar_inactive" />)
+            }
+          </Grid>
+        );
+      })}
+    </Grid>
     </Grid>
     </>
  )
