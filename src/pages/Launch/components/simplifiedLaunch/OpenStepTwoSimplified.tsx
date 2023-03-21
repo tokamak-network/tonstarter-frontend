@@ -1,14 +1,6 @@
 // Simplified Launch Token Economy component
 import {Flex, useColorMode, useTheme} from '@chakra-ui/react';
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import StepHeader from './openStepTwo/StepHeader';
+import StepHeader from './StepHeader';
 import StepComponent from './openStepTwo/StepComponent';
 import GraphComponent from './openStepTwo/GraphComponent';
 
@@ -26,7 +18,7 @@ const OpenStepTwoSimplified = (props: any) => {
       bg={colorMode === 'light' ? 'white.100' : 'transparent'}
       boxShadow={'0 1px 1px 0 rgba(96, 97, 112, 0.16)'}
       borderRadius="10px">
-        <StepHeader/>
+        <StepHeader deploySteps={false} title={'Token Economy'}/>
         <Flex px='35px'>
         <StepComponent/>
          <GraphComponent/>

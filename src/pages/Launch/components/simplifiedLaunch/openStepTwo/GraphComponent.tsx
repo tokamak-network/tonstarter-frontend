@@ -23,33 +23,33 @@ const GraphComponent = () => {
     
       const data = [
         {
-          "id": "erlang",
-          "label": "erlang",
-          "value": 486,
+          "id": "public",
+          "label": "Public",
+          "value": 0.3,
          
         },
         {
-          "id": "stylus",
-          "label": "stylus",
-          "value": 62,
+          "id": "ecosystem",
+          "label": "Ecosystem",
+          "value": 0.35,
        
         },
         {
-          "id": "sass",
-          "label": "sass",
-          "value": 532,
+          "id": "team",
+          "label": "Team",
+          "value": 0.15,
           
         },
         {
-          "id": "haskell",
-          "label": "haskell",
-          "value": 173,
+          "id": "liquidity",
+          "label": "Liquidity",
+          "value": 0.15,
         
         },
         {
-          "id": "scala",
-          "label": "scala",
-          "value": 40,
+          "id": "tonstarter",
+          "label": "TONStarter",
+          "value": 0.05,
          
         }
       ]
@@ -88,9 +88,9 @@ const GraphComponent = () => {
             borderRadius: '3px',
           }}>
           <div style={{display: 'flex'}}>
-            <p style={{marginRight: '5px'}}>{data.id}:</p>
+            <p style={{marginRight: '5px'}}>{data.label}:</p>
             <p style={{color: data.color}}>
-              {data.value.toString().slice(0, 4)}%
+              {data.value*100}%
             </p>
           </div>
         </div>
@@ -133,7 +133,7 @@ const GraphComponent = () => {
             .slice(0, Math.floor(formattedData.length / 2))
             .map((cur: any, index: number) => ({
               id: cur.id,
-              label: `${cur.id} (${cur.value.toString().slice(0, 4)}%)`,
+              label: `${cur.label} (${cur.value*100}%)`,
               color: cur.color,
             })),
         },
@@ -155,7 +155,7 @@ const GraphComponent = () => {
             .slice(Math.floor(formattedData.length / 2))
             .map((cur: any, index: number) => ({
               id: cur.id,
-              label: `${cur.id} (${cur.value.toString().slice(0, 4)}%)`,
+              label: `${cur.label} (${cur.value*100}%)`,
               color: cur.color,
             })),
         },

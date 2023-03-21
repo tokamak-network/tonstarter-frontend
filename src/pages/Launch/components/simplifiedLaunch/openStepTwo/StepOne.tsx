@@ -102,7 +102,7 @@ const StepOne = () => {
             </MenuItem>
           </MenuList>
         </Menu>
-        <Flex
+        {option === 'other'?  <Flex
           h="30px"
           w="130px"
           alignItems={'center'}
@@ -125,7 +125,9 @@ const StepOne = () => {
               textAlign={'left'}
               _focus={{}}></NumberInputField>
           </NumberInput>
-        </Flex>
+        </Flex>:<></>
+        }
+       
       </Flex>
     </Flex>
   );
