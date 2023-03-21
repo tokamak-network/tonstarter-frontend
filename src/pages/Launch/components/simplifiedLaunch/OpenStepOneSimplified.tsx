@@ -10,8 +10,8 @@ import {Projects} from '@Launch/types';
 import {isProduction} from '@Launch/utils/checkConstants';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {testValue} from '@Launch/utils/testValue';
-import { SimplifiedSchedule } from '../common/SimplifiedSchedule';
-import { UserGuideLink } from '../common/SimplifiedGuideLink';
+import { LaunchSchedule } from '../common/simplifiedUI/LaunchSchedule';
+import { UserGuideLink } from '../common/simplifiedUI/UserGuideLink';
 
 const filedNameList = [
   {title: 'projectName', requirement: true},
@@ -44,7 +44,6 @@ const OpenStepOneSimplified = () => {
           justifyContent={'center'}
           pos="absolute"
           w={'100%'}
-          h={'100%'}
           left={'300px'}>
           <CustomButton
             text="set a test value"
@@ -103,7 +102,7 @@ const OpenStepOneSimplified = () => {
         )}
       </Grid>
       <Grid>
-        <SimplifiedSchedule stepNames={['Snapshot', 'Public Sale 1', 'Public Sale 2', 'Unlock 1', 'Unlock 2', 'Unlock 3']} currentStep={1}></SimplifiedSchedule>
+        <LaunchSchedule stepNames={['Snapshot', 'Public Sale 1', 'Public Sale 2', 'Unlock 1', 'Unlock 2', 'Unlock 3']} currentStep={1}></LaunchSchedule>
       </Grid>
       <Box>
         <MarkdownEditor launchMode="simplified"></MarkdownEditor>
