@@ -1,6 +1,7 @@
 import {Box, Grid, Flex, Text, useColorMode} from '@chakra-ui/react';
 import {useEffect, useState} from 'react';
 import React from 'react';
+import { repeat } from 'lodash';
 
 type ScheduleProps = {
     stepNames: string[];
@@ -25,23 +26,30 @@ export const SimplifiedSchedule: React.FC<ScheduleProps> = (props) => {
         <Box my={2}>
             <Text fontSize='md'>Schedule</Text>
         </Box>
-        <Flex>
+      <Grid templateColumns='repeat(6, 1fr)' gap={8}>
       {stepNames.map((step: string, index: number) => {
           const indexNum = index + 1;
           const isStep = currentStep === indexNum;
           const pastStep = currentStep > indexNum || maxStep > indexNum;
           return (
-          <Box alignItems="center" fontSize='xs'>
-            {/* Text - Step Name */}
-            <Flex mb={2}>
+            <Grid mb={2} fontSize='xs'>
                 {(step === 'Snapshot' || step === 'Public Sale 1' || step === 'Public Sale 2') 
                 ? <Flex as='b'><Text mr={'5px'} color={'#FF3B3B'}>*</Text>{step}</Flex>
-                : <Text as='b'>{step}</Text>
+                : <Flex><Text as='b'>{step}</Text></Flex>
                 }
-            </Flex>
+          </Grid>
+        );
+      })}
+    </Grid>
+    <Flex ml={'25px'}>
+      {stepNames.map((step: string, index: number) => {
+          const indexNum = index + 1;
+          const isStep = currentStep === indexNum;
+          const pastStep = currentStep > indexNum || maxStep > indexNum;
+          return (
             <Flex alignItems="center">
             {/* Dot */}
-            <Flex
+            <Box
               borderRadius={18}
               bg={isStep ? '#2ea1f8' : 'transparent'}
               w={'8px'}
@@ -55,9 +63,10 @@ export const SimplifiedSchedule: React.FC<ScheduleProps> = (props) => {
                   ? 'solid 1px #e6eaee'
                   : 'solid 1px #373737'
               }>
-            </Flex>
+            </Box>
             {/* Line */}
-            <Flex
+            {index < stepNames.length - 1 &&
+            <Box
                 w={'120px'}
                 h={'2px'} 
                 bg={isStep ? '#2ea1f8' : 'transparent'}
@@ -68,9 +77,9 @@ export const SimplifiedSchedule: React.FC<ScheduleProps> = (props) => {
                       ? 'solid 1px #e6eaee'
                       : 'solid 1px #373737'
                   }>
-            </Flex>
-            </Flex>
-          </Box>
+            </Box>
+            }
+          </Flex>
         );
       })}
     </Flex>
